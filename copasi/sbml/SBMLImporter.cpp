@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/06 13:43:13 $
+   $Author: shoops $ 
+   $Date: 2005/07/07 15:08:34 $
    End CVS Header */
 
 #include "copasi.h"
@@ -836,6 +836,12 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* p
       //DebugFile << "Number of Reactions: "    << sbmlDoc->getModel()->getNumReactions()  << std::endl;
       pSBMLDocument = sbmlDoc;
       this->mLevel = pSBMLDocument->getLevel();
+      if (mLevel == 1)
+        {
+          pSBMLDocument->setLevel(2);
+          mLevel = pSBMLDocument->getLevel();
+        }
+
       pModel = this->createCModelFromSBMLDocument(sbmlDoc, copasi2sbmlmap);
     }
   else
