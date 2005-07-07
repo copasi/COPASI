@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/06 20:12:18 $
+   $Date: 2005/07/07 19:37:42 $
    End CVS Header */
 
 /**
@@ -275,15 +275,22 @@ void COptProblem::setProblemType(ProblemType type)
 
 COptItem & COptProblem::getOptItem(const unsigned C_INT32 & index)
 {
-  assert (index < mOptItemList.size());
+  if (mOptItemList.size() != getOptItemSize())
+    buildOptItemListFromParameterGroup();
+
+  assert(index < mOptItemList.size());
+
   return *mOptItemList[index];
 }
 
 const unsigned C_INT32 COptProblem::getOptItemSize() const
-  {return getValue("OptimizationItemList").pGROUP->size();}
+{return getValue("OptimizationItemList").pGROUP->size();}
 
 COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)
 {
+  if (mOptItemList.size() != getOptItemSize())
+    buildOptItemListFromParameterGroup();
+
   unsigned C_INT32 index = getOptItemSize();
 
   CCopasiParameterGroup * pOptimizationItemList = (CCopasiParameterGroup *) getParameter("OptimizationItemList");
@@ -308,6 +315,9 @@ COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)
 
 bool COptProblem::removeOptItem(const unsigned C_INT32 & index)
 {
+  if (mOptItemList.size() != getOptItemSize())
+    buildOptItemListFromParameterGroup();
+
   if (!(index < mOptItemList.size())) return false;
 
   pdelete(mOptItemList[index]);
@@ -319,6 +329,9 @@ bool COptProblem::removeOptItem(const unsigned C_INT32 & index)
 bool COptProblem::swapOptItem(const unsigned C_INT32 & iFrom,
                               const unsigned C_INT32 & iTo)
 {
+  if (mOptItemList.size() != getOptItemSize())
+    buildOptItemListFromParameterGroup();
+
   if (!(iFrom < mOptItemList.size()) ||
       !(iTo < mOptItemList.size()))
     return false;
@@ -331,10 +344,15 @@ bool COptProblem::swapOptItem(const unsigned C_INT32 & iFrom,
 }
 
 const std::vector< COptItem * > & COptProblem::getOptItemList() const
-{return mOptItemList;}
+  {
+    if (mOptItemList.size() != getOptItemSize())
+      const_cast<COptProblem *>(this)->buildOptItemListFromParameterGroup();
+
+    return mOptItemList;
+  }
 
 const std::vector< UpdateMethod * > & COptProblem::getCalculateVariableUpdateMethods() const
-  {return mUpdateMethods;}
+{return mUpdateMethods;}
 
 bool COptProblem::setObjectiveFunction(const std::string & infix)
 {
@@ -384,6 +402,25 @@ bool COptProblem::createObjectiveFunction()
       if (FunctionList.getIndex(mpFunction->getObjectName()) == C_INVALID_INDEX)
         FunctionList.add(mpFunction, false);
     }
+
+  return true;
+}
+
+bool COptProblem::buildOptItemListFromParameterGroup()
+{
+  std::vector< COptItem * >::iterator it = mOptItemList.begin();
+  std::vector< COptItem * >::iterator end = mOptItemList.end();
+
+  for (; it != end; ++it)
+    pdelete(it);
+
+  unsigned i, imax = getOptItemSize();
+  mOptItemList.resize(imax);
+
+  std::vector<CCopasiParameter *> & List = *getValue("OptimizationItemList").pGROUP;
+
+  for (i = 0; i < imax; i++)
+    mOptItemList[i] = new COptItem(* (CCopasiParameterGroup *) List[i]);
 
   return true;
 }

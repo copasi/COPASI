@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/05 20:14:53 $
+   $Date: 2005/07/07 19:37:42 $
    End CVS Header */
 
 /**
@@ -262,6 +262,8 @@ class COptProblem : public CCopasiProblem
     virtual void initObjects();
 
     bool createObjectiveFunction();
+
+    bool buildOptItemListFromParameterGroup();
   };
 
 #endif  // the end
