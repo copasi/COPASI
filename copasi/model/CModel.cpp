@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.224 $
+   $Revision: 1.225 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/01 14:54:06 $
+   $Author: shoops $ 
+   $Date: 2005/07/07 20:36:39 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -509,7 +509,11 @@ bool CModel::handleUnusedMetabolites()
       if (itUnused != endUnused && i == *itUnused)
         {
           pMetab = mMetabolites[i];
-          pMetab->setStatus(CModelEntity::UNUSED);
+          if (listReactionsDependentOnMetab(pMetab->getKey()).size())
+            pMetab->setStatus(CModelEntity::FIXED);
+          else
+            pMetab->setStatus(CModelEntity::UNUSED);
+
           UnusedMetabolites[k] = pMetab;
 
           k++;
