@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/28 08:30:47 $
+   $Author: anuragr $ 
+   $Date: 2005/07/07 19:37:11 $
    End CVS Header */
 
 /********************************************************
@@ -338,7 +338,7 @@ bool OptimizationItemWidget::initFromOptItem(const COptItem& item)
   if (paramObjectCN == NULL) paramObjectCN = new CCopasiObjectName();
 
   *paramObjectCN = item.getObjectCN();
-  ObjectName->setText(FROM_UTF8(paramObjectCN->getObjectName()));
+  ObjectName->setText(FROM_UTF8(RootContainer.getObject(*paramObjectCN)->getObjectDisplayName()));
 
   setItemUpperLimit(item.getUpperBound());
   setItemLowerLimit(item.getLowerBound());
