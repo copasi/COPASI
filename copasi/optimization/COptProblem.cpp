@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/07 19:37:42 $
+   $Date: 2005/07/07 19:41:04 $
    End CVS Header */
 
 /**
@@ -408,6 +408,8 @@ bool COptProblem::createObjectiveFunction()
 
 bool COptProblem::buildOptItemListFromParameterGroup()
 {
+  bool success = true;
+
   std::vector< COptItem * >::iterator it = mOptItemList.begin();
   std::vector< COptItem * >::iterator end = mOptItemList.end();
 
@@ -420,7 +422,10 @@ bool COptProblem::buildOptItemListFromParameterGroup()
   std::vector<CCopasiParameter *> & List = *getValue("OptimizationItemList").pGROUP;
 
   for (i = 0; i < imax; i++)
-    mOptItemList[i] = new COptItem(* (CCopasiParameterGroup *) List[i]);
+    {
+      mOptItemList[i] = new COptItem(* (CCopasiParameterGroup *) List[i]);
+      if (!mOptItemList[i]->isValid()) success = false;
+    }
 
   return true;
 }
