@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/07/06 19:10:19 $
+   $Date: 2005/07/07 19:37:47 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -252,6 +252,7 @@ bool OptimizationWidget::loadOptimization()
   unsigned C_INT32 imax = optimizationProblem->getOptItemSize();
 
   for (i = 0; i < imax; ++i)
+
     {
       OptimizationItemWidget * tmp;
       const COptItem& item = optimizationProblem->getOptItem(i);
@@ -274,14 +275,16 @@ bool OptimizationWidget::loadOptimization()
           i++;
           std::string objectName = "";
 
-          while (objFunc[i] != '>')
+          while (objFunc[i] != '>' && i < objFunc.length())
             {
               objectName += objFunc[i];
               i++;
             }
 
-          CCopasiObjectName c1(objectName);
-          out_str += "<" + RootContainer.getObject(c1)->getObjectDisplayName() + ">";
+          CCopasiObjectName temp_CN(objectName);
+          CCopasiObject * temp_object = (CCopasiObject *) RootContainer.getObject(temp_CN);
+          out_str += "<" + temp_object->getObjectDisplayName() + ">";
+          parseList.push_back(temp_object);
           continue;
         }
 
