@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/07 19:41:04 $
+   $Date: 2005/07/07 21:00:53 $
    End CVS Header */
 
 /**
@@ -414,7 +414,7 @@ bool COptProblem::buildOptItemListFromParameterGroup()
   std::vector< COptItem * >::iterator end = mOptItemList.end();
 
   for (; it != end; ++it)
-    pdelete(it);
+    pdelete(*it);
 
   unsigned i, imax = getOptItemSize();
   mOptItemList.resize(imax);
