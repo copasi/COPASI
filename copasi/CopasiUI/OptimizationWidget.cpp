@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/07 20:46:19 $
+   $Date: 2005/07/08 20:04:55 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -129,12 +129,12 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   mObject = NULL;
 
   methodCombo->insertItem("Random Search");
-  methodCombo->insertItem("RandomSearch Master");
+  methodCombo->insertItem("Random Search (PVM)");
   methodCombo->insertItem("Simulated Annealing");
   methodCombo->insertItem("Genetic Algorithm");
   methodCombo->insertItem("Evolutionary Program2");
   methodCombo->insertItem("Hybrid GA/SA");
-  methodCombo->insertItem("Genetic Algorithm Stoch. Rank");
+  methodCombo->insertItem("Genetic Algorithm SR");
 
   // signals and slots connections
 
@@ -234,6 +234,7 @@ bool OptimizationWidget::loadOptimization()
   COptMethod *optimizationMethod = dynamic_cast<COptMethod*>(optimizationTask->getMethod());
   if (!optimizationMethod) return false;
   // for GA
+  methodCombo->setCurrentText(FROM_UTF8(CCopasiMethod::SubTypeName[optimizationMethod->getSubType()]));
   parameterTable->setNumRows(optimizationMethod->size());
 
   unsigned C_INT32 i;
@@ -277,6 +278,9 @@ bool OptimizationWidget::loadOptimization()
 
           while (objFunc[i] != '>' && i < objFunc.length())
             {
+              if (objFunc[i] == '\\')
+                objectName += objFunc[i++];
+
               objectName += objFunc[i];
               i++;
             }
@@ -454,12 +458,17 @@ std::string OptimizationWidget::getKey()
   return optimizationTaskKey;
 }
 
-bool OptimizationWidget::changeMethod(int index)
+bool OptimizationWidget::changeMethod(int /* index */)
 {
   saveOptimization();
+
   COptTask* optimizationTask =
     dynamic_cast< COptTask * >(GlobalKeys.get(optimizationTaskKey));
-  optimizationTask->setMethodType(index + 1);
+
+  CCopasiMethod::SubType Type =
+    CCopasiMethod::TypeNameToEnum((const char *) methodCombo->currentText().utf8());
+  optimizationTask->setMethodType(Type);
+
   loadOptimization();
   return true;
 }
