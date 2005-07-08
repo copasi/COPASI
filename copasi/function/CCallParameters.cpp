@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/09 16:31:49 $
+   $Author: ssahle $ 
+   $Date: 2005/07/08 12:32:45 $
    End CVS Header */
 
 #include "copasi.h"
@@ -19,8 +19,8 @@ CFunctionParameterMap::CFunctionParameterMap():
 {};
 
 CFunctionParameterMap::CFunctionParameterMap(const CFunctionParameterMap & src):
-    mPointers(),
-    mObjects(),
+    mPointers(src.mPointers),
+    mObjects(src.mObjects),
     mpFunctionParameters(new CFunctionParameters(*src.mpFunctionParameters))
 {
   C_INT32 i, imax = mpFunctionParameters->size();
