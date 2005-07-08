@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/06 17:14:24 $
+   $Date: 2005/07/08 19:36:22 $
    End CVS Header */
 
 /**
@@ -277,6 +277,8 @@ bool CCopasiProblem::createDefaultPlot(C_INT32 id) const
 bool CCopasiProblem::initialize() {return true;}
 
 bool CCopasiProblem::calculate() {return true;}
+
+bool CCopasiProblem::restore() {return true;}
 
 bool CCopasiProblem::checkParametricConstraints() {return true;}
 

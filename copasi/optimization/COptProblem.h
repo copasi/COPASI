@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/07 19:37:42 $
+   $Date: 2005/07/08 19:36:23 $
    End CVS Header */
 
 /**
@@ -75,6 +75,11 @@ class COptProblem : public CCopasiProblem
     CVector< C_FLOAT64 > mSolutionVariables;
 
     /**
+     * A vector of solution variables
+     */
+    CVector< C_FLOAT64 > mOriginalVariables;
+
+    /**
      * A vector of solution results
      */
     C_FLOAT64 mSolutionValue;
@@ -144,6 +149,13 @@ class COptProblem : public CCopasiProblem
      * @result bool continue
      */
     virtual bool calculate();
+
+    /**
+     * Do all neccessary restore procedures so that the
+     * model is in the same state as before
+     * @result bool succes
+     */
+    virtual bool restore();
 
     /**
      * calculate function for optimization

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/08 19:05:42 $
+   $Date: 2005/07/08 19:36:22 $
    End CVS Header */
 
 /**
@@ -164,6 +164,7 @@ bool COptProblem::initialize()
   unsigned C_INT32 Size = mOptItemList.size();
   mUpdateMethods.resize(Size);
   mSolutionVariables.resize(Size);
+  mOriginalVariables.resize(Size);
 
   std::vector< COptItem * >::iterator it = mOptItemList.begin();
   std::vector< COptItem * >::iterator end = mOptItemList.end();
@@ -172,6 +173,7 @@ bool COptProblem::initialize()
     {
       if (!(*it)->compile(ContainerList)) return false;
       mUpdateMethods[i] = (*it)->getUpdateMethod();
+      mOriginalVariables[i] = *(*it)->getObjectValue();
     }
 
   if (!mpFunction)
@@ -181,6 +183,17 @@ bool COptProblem::initialize()
   if (!mpFunction) return false;
 
   return mpFunction->compile(ContainerList);
+}
+
+bool COptProblem::restore()
+{
+  unsigned C_INT32 i, imax = mOptItemList.size();
+
+  // set the original paramter values
+  for (i = 0; i < imax; i++)
+    (*mUpdateMethods[i])(mOriginalVariables[i]);
+
+  return true;
 }
 
 #ifdef WIN32
