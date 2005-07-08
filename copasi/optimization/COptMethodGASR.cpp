@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/08 19:05:42 $
+   $Date: 2005/07/08 19:35:59 $
    End CVS Header */
 
 #include <float.h>
@@ -19,7 +19,7 @@
 #include "report/CCopasiObjectReference.h"
 
 COptMethodGASR::COptMethodGASR(const CCopasiContainer * pParent):
-    COptMethod(CCopasiMethod::GeneticAlgorithm, pParent),
+    COptMethod(CCopasiMethod::GeneticAlgorithmSR, pParent),
     mGenerations(0),
     mPopulationSize(0),
     mpRandom(NULL),
@@ -243,7 +243,7 @@ bool COptMethodGASR::replicate()
       mValue[i] = mEvaluationValue;
 
       /* Calculate the phi value of the individual for SR*/
-      mPhi[i] = Phi(i);
+      mPhi[i] = phi(i);
     }
 
   return Continue;
@@ -266,7 +266,7 @@ bool COptMethodGASR::select()
 
       for (j = 0; j < TotalPopulation - 1; j++)  // lambda is number of individuals
         {
-          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||  // within bounds
+          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||   // within bounds
               (mpRandom->getRandomOO() < mPf))      // random chance to compare values outside bounds
             {
               // compare obj fcn using mValue alternative code
@@ -294,7 +294,7 @@ bool COptMethodGASR::select()
 }
 
 // evaluate the distance ofparameters to boundaries
-C_FLOAT64 COptMethodGASR::Phi(C_INT32 indivNum)
+C_FLOAT64 COptMethodGASR::phi(C_INT32 indivNum)
 {
   C_FLOAT64 phiVal = 0.0;
   C_FLOAT64 phiCalc;
@@ -303,22 +303,22 @@ C_FLOAT64 COptMethodGASR::Phi(C_INT32 indivNum)
   for (i = 0; i < mVariableSize; i++)
     {
       COptItem & OptItem = *(*mpOptItem)[i];
-      C_FLOAT64 & indvValue = (*mIndividual[indivNum])[i];
 
       // Go through parameter and constraints (all taken care of in single call)
-      switch (OptItem.checkConstraint(indvValue))
+      switch (OptItem.checkConstraint())
         {
-        case - 1:
-          phiCalc = *OptItem.getLowerBoundValue() - indvValue;
+        case - 1:  // to low
+          phiCalc = *OptItem.getLowerBoundValue() - (*mIndividual[indivNum])[i];
           phiVal += phiCalc * phiCalc;
           break;
 
-        case 1:
-          phiCalc = indvValue - *OptItem.getUpperBoundValue();
+        case 1:    // to high
+          phiCalc = (*mIndividual[indivNum])[i] - *OptItem.getUpperBoundValue();
           phiVal += phiCalc * phiCalc;
           break;
         }
     }
+
   return phiVal;
 }
 
@@ -403,7 +403,7 @@ bool COptMethodGASR::creation(unsigned C_INT32 first,
       mValue[i] = mEvaluationValue;
 
       /* Calculate the phi value of the individual for SR*/
-      mPhi[i] = Phi(i);
+      mPhi[i] = phi(i);
     }
 
   return Continue;
@@ -495,7 +495,7 @@ bool COptMethodGASR::optimise()
   mValue[0] = mEvaluationValue;
 
   /* Calculate the phi value of the individual for SR*/
-  mPhi[i] = Phi(i);
+  mPhi[0] = phi(0);
 
   // the others are random
   Continue = creation(1, mPopulationSize);

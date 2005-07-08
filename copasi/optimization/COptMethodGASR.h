@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/08 19:05:42 $
+   $Date: 2005/07/08 19:35:59 $
    End CVS Header */
 
 /**
@@ -142,7 +142,7 @@ class COptMethodGASR : public COptMethod
      * For Stochastic Ranking, evaluate the distance ofparameters to boundaries
      * @return C_FLOAT64 phiVal
      */
-    C_FLOAT64 Phi(C_INT32 indvNum);
+    C_FLOAT64 phi(C_INT32 indvNum);
 
     // Attributes
   private:
