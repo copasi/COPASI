@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/08 20:04:55 $
+   $Date: 2005/07/08 20:14:30 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -250,8 +250,18 @@ bool OptimizationWidget::loadOptimization()
 
   // the optimization items
 
-  unsigned C_INT32 imax = optimizationProblem->getOptItemSize();
+  if (*optimizationProblem->getValue("Steady-State").pSTRING != "")
+    {
+      timeCheck->setChecked(false);
+      steadystateCheck->setChecked(true);
+    }
+  else
+    {
+      timeCheck->setChecked(true);
+      steadystateCheck->setChecked(false);
+    }
 
+  unsigned C_INT32 imax = optimizationProblem->getOptItemSize();
   for (i = 0; i < imax; ++i)
 
     {
