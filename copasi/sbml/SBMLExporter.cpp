@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/06 13:43:13 $
+   $Date: 2005/07/08 14:28:28 $
    End CVS Header */
 
 #include <math.h>
@@ -847,7 +847,7 @@ void SBMLExporter::removeUnusedObjects()
   std::vector<SBase*>::iterator pos;
   std::vector<SBase*>::iterator endPos = this->mHandledSBMLObjects.end();
   ListOf* list = &model->getListOfCompartments();
-  for (i = list->getNumItems(); i > 0;++i)
+  for (i = list->getNumItems(); i > 0;--i)
     {
       SBase* object = list->get(i - 1);
       pos = std::find(this->mHandledSBMLObjects.begin(), this->mHandledSBMLObjects.end(), object);
@@ -858,7 +858,7 @@ void SBMLExporter::removeUnusedObjects()
         }
     }
   list = &model->getListOfSpecies();
-  for (i = list->getNumItems(); i > 0;++i)
+  for (i = list->getNumItems(); i > 0;--i)
     {
       SBase* object = list->get(i - 1);
       pos = std::find(this->mHandledSBMLObjects.begin(), this->mHandledSBMLObjects.end(), object);
@@ -869,7 +869,7 @@ void SBMLExporter::removeUnusedObjects()
         }
     }
   list = &model->getListOfParameters();
-  for (i = list->getNumItems(); i > 0;++i)
+  for (i = list->getNumItems(); i > 0;--i)
     {
       SBase* object = list->get(i - 1);
       pos = std::find(this->mHandledSBMLObjects.begin(), this->mHandledSBMLObjects.end(), object);
@@ -880,7 +880,7 @@ void SBMLExporter::removeUnusedObjects()
         }
     }
   list = &model->getListOfReactions();
-  for (i = list->getNumItems(); i > 0;++i)
+  for (i = list->getNumItems(); i > 0;--i)
     {
       SBase* object = list->get(i - 1);
       pos = std::find(this->mHandledSBMLObjects.begin(), this->mHandledSBMLObjects.end(), object);
