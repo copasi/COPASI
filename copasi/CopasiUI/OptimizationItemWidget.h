@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationItemWidget.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/28 08:30:47 $
+   $Author: shoops $ 
+   $Date: 2005/07/08 19:05:18 $
    End CVS Header */
 
 /********************************************************
@@ -43,6 +43,8 @@ class OptimizationItemWidget : public QWidget
     QWidget* mpParent;
 
     CCopasiObject* mpObject;
+    const CCopasiObject* mpLowerObject;
+    const CCopasiObject* mpUpperObject;
     QLabel* textLabel2;
     QComboBox* comboBoxLowerOp;
     QLabel* textLabel4;

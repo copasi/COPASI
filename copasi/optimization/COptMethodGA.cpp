@@ -1,13 +1,11 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/06 20:13:26 $
+   $Date: 2005/07/08 19:05:42 $
    End CVS Header */
 
-// ga.cpp : Genetic algorithm optimisation.
-//
 #include <float.h>
 
 #include "copasi.h"
@@ -85,14 +83,7 @@ bool COptMethodGA::setCallBack(CProcessReport * pCallBack)
 // evaluate the fitness of one individual
 bool COptMethodGA::evaluate(const CVector< C_FLOAT64 > & individual)
 {
-  unsigned C_INT32 j;
   bool Continue = true;
-
-  std::vector< UpdateMethod *>::const_iterator itMethod = mpSetCalculateVariable->begin();
-
-  // set the paramter values
-  for (j = 0; j < mVariableSize; j++, ++itMethod)
-    (**itMethod)(individual[j]);
 
   // We do not need to check whether the parametric constraints are fulfilled
   // since the parameters are created within the bounds.
@@ -165,6 +156,10 @@ bool COptMethodGA::mutate(CVector< C_FLOAT64 > & individual)
             }
           break;
         }
+
+      // We need to set the value here so that further checks take
+      // account of the value.
+      (*(*mpSetCalculateVariable)[j])(mut);
     }
 
   return true;
@@ -411,17 +406,15 @@ bool COptMethodGA::creation(unsigned C_INT32 first,
                 }
               break;
             }
+
+          // We need to set the value here so that further checks take
+          // account of the value.
+          (*(*mpSetCalculateVariable)[j])(mut);
         }
-      try
-        {
-          // calculate its fitness
-          Continue = evaluate(*mIndividual[i]);
-          mValue[i] = mEvaluationValue;
-        }
-      catch (...)
-        {
-          mValue[i] = DBL_MAX;
-        }
+
+      // calculate its fitness
+      Continue = evaluate(*mIndividual[i]);
+      mValue[i] = mEvaluationValue;
     }
 
   return Continue;
@@ -498,39 +491,29 @@ bool COptMethodGA::optimise()
   for (i = 0; i < mVariableSize; i++)
     (*mIndividual[0])[i] = *(*mpOptItem)[i]->getObjectValue();
 
-  try
-    {
-      // calculate the fitness
-      Continue = evaluate(*mIndividual[0]);
-      mValue[0] = mEvaluationValue;
-    }
+  // calculate the fitness
+  unsigned C_INT32 j;
+  std::vector< UpdateMethod *>::const_iterator itMethod = mpSetCalculateVariable->begin();
 
-  catch (...)
-    {
-      mValue[0] = DBL_MAX;
-    }
+  // set the paramter values
+  for (j = 0; j < mVariableSize; j++, ++itMethod)
+    (**itMethod)((*mIndividual[0])[j]);
 
-  if (!Continue)
-    {
-      cleanup();
-      return false;
-    }
+  Continue = evaluate(*mIndividual[0]);
+  mValue[0] = mEvaluationValue;
 
   // the others are random
-  if (!(Continue = creation(1, mPopulationSize)))
-    {
-      cleanup();
-      return false;
-    }
+  Continue = creation(1, mPopulationSize);
 
   // get the index of the fittest
   mBestIndex = fittest();
+
   // and store that value
   mBestValue = mValue[mBestIndex];
-
   mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
+  Continue = mpOptProblem->setSolutionValue(mBestValue);
 
-  if (!(Continue = mpOptProblem->setSolutionValue(mBestValue)))
+  if (!Continue)
     {
       cleanup();
       return false;

@@ -1,14 +1,11 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/06 17:39:48 $
+   $Date: 2005/07/08 19:05:42 $
    End CVS Header */
 
-// ga.cpp : Genetic algorithm optimisation.
-//
-#include "COptMethodGASR.h"
 #include <float.h>
 
 #include "copasi.h"
@@ -30,6 +27,7 @@ COptMethodGASR::COptMethodGASR(const CCopasiContainer * pParent):
     mIndividual(0),
     mCrossOverFalse(0),
     mCrossOver(0),
+    mEvaluationValue(DBL_MAX),
     mValue(0),
     mShuffle(0),
     mWins(0),
@@ -56,6 +54,7 @@ COptMethodGASR::COptMethodGASR(const COptMethodGASR & src,
     mIndividual(0),
     mCrossOverFalse(0),
     mCrossOver(0),
+    mEvaluationValue(DBL_MAX),
     mValue(0),
     mShuffle(0),
     mWins(0),
@@ -72,6 +71,7 @@ bool COptMethodGASR::setCallBack(CProcessReport * pCallBack)
 {
   CCopasiMethod::setCallBack(pCallBack);
 
+  mGeneration = 0;
   mhGenerations =
     pCallBack->addItem("Current Generation",
                        CCopasiParameter::UINT,
@@ -84,14 +84,7 @@ bool COptMethodGASR::setCallBack(CProcessReport * pCallBack)
 // evaluate the fitness of one individual
 bool COptMethodGASR::evaluate(const CVector< C_FLOAT64 > & individual)
 {
-  unsigned C_INT32 j;
   bool Continue = true;
-
-  std::vector< UpdateMethod *>::const_iterator itMethod = mpSetCalculateVariable->begin();
-
-  // set the paramter values
-  for (j = 0; j < mVariableSize; j++, ++itMethod)
-    (**itMethod)(individual[j]);
 
   // We do not need to check whether the parametric constraints are fulfilled
   // since this method allows for parameters outside the bounds
@@ -114,11 +107,11 @@ bool COptMethodGASR::swap(unsigned C_INT32 from, unsigned C_INT32 to)
   mIndividual[from] = pTmp;
 
   //**** Added for swapping individual Phi values also for Stochastic Ranking
-  CVector < C_FLOAT64 > * jTmp = indvPhi[to];
-  indvPhi[to] = indvPhi[from];
-  indvPhi[from] = jTmp;
+  C_FLOAT64 dTmp = mPhi[to];
+  mPhi[to] = mPhi[from];
+  mPhi[from] = dTmp;
 
-  C_FLOAT64 dTmp = mValue[to];
+  dTmp = mValue[to];
   mValue[to] = mValue[from];
   mValue[from] = dTmp;
 
@@ -143,32 +136,11 @@ bool COptMethodGASR::mutate(CVector< C_FLOAT64 > & individual)
       // calculate the mutatated parameter
       mut *= mpRandom->getRandomNormal(1, mMutationVarians);
 
-      /****** For SR, cannot force within bounds
-      // force it to be within the bounds
-      switch (OptItem.checkConstraint(mut))
-        {
-        case - 1:
-          mut = *OptItem.getLowerBoundValue();
-          if (!OptItem.checkLowerBound(mut)) // Inequality
-            {
-              if (mut == 0.0)
-                mut = DBL_MIN;
-              else
-                mut += mut * DBL_EPSILON;
-            }
-          break;
+      // for SR do not force to be within bounds
 
-        case 1:
-          mut = *OptItem.getUpperBoundValue();
-          if (!OptItem.checkUpperBound(mut)) // Inequality
-            {
-              if (mut == 0.0)
-                mut = -DBL_MIN;
-              else
-                mut -= mut * DBL_EPSILON;
-            }
-          break;
-        }*/
+      // We need to set the value here so that further checks take
+      // account of the value.
+      (*(*mpSetCalculateVariable)[j])(mut);
     }
 
   return true;
@@ -200,7 +172,7 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
   // We do not mind if a crossover point gets drawn twice
   for (i = 0; i < nCross; i++)
     {
-      crp = mpRandom->getRandomU(mVariableSize);
+      crp = mpRandom->getRandomU(mVariableSize - 1);
       mCrossOver[crp] = true;
     }
 
@@ -249,8 +221,6 @@ bool COptMethodGASR::replicate()
   unsigned C_INT32 i;
   bool Continue = true;
 
-  C_INT32 temp_size = mIndividual.size();
-
   // generate a random order for the parents
   shuffle();
 
@@ -271,6 +241,9 @@ bool COptMethodGASR::replicate()
       mutate(*mIndividual[i]);
       Continue = evaluate(*mIndividual[i]);
       mValue[i] = mEvaluationValue;
+
+      /* Calculate the phi value of the individual for SR*/
+      mPhi[i] = Phi(i);
     }
 
   return Continue;
@@ -279,90 +252,43 @@ bool COptMethodGASR::replicate()
 // select mPopulationSize individuals
 bool COptMethodGASR::select()
 {
-  unsigned C_INT32 i, j, u;
-  //unsigned C_INT32 nopp, opp,MaxIndex;
+  unsigned C_INT32 i, j;
   unsigned C_INT32 TotalPopulation = 2 * mPopulationSize;
   bool wasSwapped;
   unsigned C_INT32 sweepNum = TotalPopulation;  // This is default based on paper
-  //C_FLOAT64 MaxValue;
 
-  /*// tournament competition
-  mWins = 0; // Set all wins to 0.
-
-  // compete with ~ 20% of the TotalPopulation
-  nopp = std::min<unsigned C_INT32>(1, mPopulationSize / 5);
-
-  // parents and offspring are all in competition
-  for (i = 0; i < TotalPopulation; i++)
-    for (j = 0; j < nopp; j++)
-      {
-        // get random opponent
-        opp = mpRandom->getRandomU(TotalPopulation);
-
-        if (mValue[i] < mValue[opp])
-          mWins[i]++;
-        else
-          mWins[opp]++;
-      }
-
-  // selection of top mPopulationSize winners
-  for (i = 0; i < mPopulationSize; i++)
-    {
-      MaxIndex = i;
-      MaxValue = mWins[i];
-
-      for (j = i + 1; j < TotalPopulation; j++)
-        if (MaxValue < mWins[j])
-          {
-            MaxIndex = j;
-            MaxValue = mWins[j];
-          }
-
-      swap(i, MaxIndex); // The best individual in [i, TotalPopulation] is swapped to the top (i) position.
-    }*/
-
-  //*** Selection Method for Stochastic Ranking
-  //go through the array of individuals to retrieve phi values
-  for (i = 0; i < TotalPopulation; i++)
-    {
-      *indvPhi[i] = Phi(i);
-    }
-
+  // Selection Method for Stochastic Ranking
   // stochastic ranking "bubble sort"
+
   for (i = 0; i < sweepNum; i++) // Here sweepNum is optimal number of sweeps from paper
     {
       wasSwapped = false;
+
       for (j = 0; j < TotalPopulation - 1; j++)  // lambda is number of individuals
         {
-          //currentI = 0; // <- this may not be needed if swap is used instead
-          //u = dr250();  // retrieve random number between 0 and 1 uniformly distributed
-          u = mpRandom->getRandomOO();
-          //if ((indvPhi[j]== indvPhi[j+1] && indvPhi[j] == 0) || (u < 0.475))
-          // if individual value is equal to next value and within boundary or randomly generated number is less than Pf
-          if ((indvPhi[j] == indvPhi[j + 1] && indvPhi[j] == 0) || (u < Pf))  // (Pf =0.475 default)
+          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||  // within bounds
+              (mpRandom->getRandomOO() < mPf))      // random chance to compare values outside bounds
             {
               // compare obj fcn using mValue alternative code
               if (mValue[j] > mValue[j + 1])
                 {
-                  swap(j, j + 1);  //The best individual is swapped to the top position.
+                  swap(j, j + 1);
                   wasSwapped = true;
                 }
             }
-          else //indvPhi values are not equal and not within boundary
+          else //mPhi values are not equal and not within boundary
             {
-              if (indvPhi[j] > indvPhi[j + 1])
+              if (mPhi[j] > mPhi[j + 1]) // j further outside then j+1
                 {
-                  swap(j, j + 1);  //The best individual is swapped to the top position.
+                  swap(j, j + 1);
                   wasSwapped = true;
                 }
             }
-          //}
         }
+
       // if no swap then break
-      if (wasSwapped == false)
-        break;
+      if (wasSwapped == false) break;
     }
-  // This is because from original Switch/case statement...  break;
 
   return true;
 }
@@ -371,22 +297,24 @@ bool COptMethodGASR::select()
 C_FLOAT64 COptMethodGASR::Phi(C_INT32 indivNum)
 {
   C_FLOAT64 phiVal = 0.0;
-  for (int i = 0; i < mVariableSize; i++)  /******* here double check to see if indv array parameter is same as number of parameters ****
-                                        Clarify if should go through additional for loop for number of parameters */
+  C_FLOAT64 phiCalc;
+  unsigned C_INT32 i;
+
+  for (i = 0; i < mVariableSize; i++)
     {
-      C_FLOAT64 phiCalc;
       COptItem & OptItem = *(*mpOptItem)[i];
-      //C_FLOAT64 & mut = individual[j];
       C_FLOAT64 & indvValue = (*mIndividual[indivNum])[i];
 
       // Go through parameter and constraints (all taken care of in single call)
       switch (OptItem.checkConstraint(indvValue))
         {
-        case 1: phiCalc = (*mIndividual[indivNum])[i] - *OptItem.getUpperBoundValue();
+        case - 1:
+          phiCalc = *OptItem.getLowerBoundValue() - indvValue;
           phiVal += phiCalc * phiCalc;
           break;
 
-        case - 1: phiCalc = (*mIndividual[indivNum])[i] - *OptItem.getLowerBoundValue();
+        case 1:
+          phiCalc = indvValue - *OptItem.getUpperBoundValue();
           phiVal += phiCalc * phiCalc;
           break;
         }
@@ -401,7 +329,7 @@ unsigned C_INT32 COptMethodGASR::fittest()
   C_FLOAT64 BestValue = mValue[0];
 
   for (i = 1; i < mPopulationSize; i++)
-    if (mValue[i] < BestValue && !isnan(mValue[i]))
+    if (mValue[i] < BestValue && !isnan(mValue[i]) && !(mPhi[i] != 0))
       {
         BestIndex = i;
         BestValue = mValue[i];
@@ -464,18 +392,18 @@ bool COptMethodGASR::creation(unsigned C_INT32 first,
             {
               mut = (mx + mn) * 0.5;
             }
+
+          // We need to set the value here so that further checks take
+          // account of the value.
+          (*(*mpSetCalculateVariable)[j])(mut);
         }
 
-      try
-        {
-          // calculate its fitness
-          Continue = evaluate(*mIndividual[i]);
-          mValue[i] = mEvaluationValue;
-        }
-      catch (...)
-        {
-          mValue[i] = DBL_MAX;
-        }
+      // calculate its fitness
+      Continue = evaluate(*mIndividual[i]);
+      mValue[i] = mEvaluationValue;
+
+      /* Calculate the phi value of the individual for SR*/
+      mPhi[i] = Phi(i);
     }
 
   return Continue;
@@ -493,24 +421,20 @@ bool COptMethodGASR::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  //mGenerations = * (unsigned C_INT32 *) getValue("Number of Generations");
-  //mPopulationSize = * (unsigned C_INT32 *) getValue("Population Size");
   mGenerations = * getValue("Number of Generations").pUINT;
   mPopulationSize = * getValue("Population Size").pUINT;
+  C_FLOAT64 mPf = *(C_FLOAT64*) getValue("Pf").pDOUBLE;
+  if (mPf <= 0.4 || 0.5 <= mPf) mPf = 0.475;
   mpRandom =
     CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
                              * (unsigned C_INT32 *) getValue("Seed").pUINT);
 
   mVariableSize = mpOptItem->size();
 
-  //***** Below added initialization of indvPhi for SR ****
   mIndividual.resize(2*mPopulationSize);
-  indvPhi.resize(2*mPopulationSize);
+  mPhi.resize(2*mPopulationSize);
   for (i = 0; i < 2*mPopulationSize; i++)
-    {
-      mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
-      indvPhi[i] = new CVector< C_FLOAT64 >(mVariableSize);
-    }
+    mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   mCrossOverFalse.resize(mVariableSize);
   mCrossOverFalse = false;
@@ -523,13 +447,9 @@ bool COptMethodGASR::initialize()
     mShuffle[i] = i;
 
   mWins.resize(2*mPopulationSize);
+
   // initialise the variance for mutations
   mMutationVarians = 0.1;
-
-  C_FLOAT64 p = *(C_FLOAT64*) getValue("Pf").pDOUBLE;
-  if ((p > 0.4) && (p < 0.5))
-    Pf = p;
-  else Pf = 0.475;
 
   return true;
 }
@@ -540,10 +460,7 @@ bool COptMethodGASR::cleanup()
 
   pdelete(mpRandom);
   for (i = 0; i < 2*mPopulationSize; i++)
-    {
-      pdelete(mIndividual[i]);
-      pdelete(indvPhi[i]);
-    }
+    pdelete(mIndividual[i]);
 
   return true;
 }
@@ -566,38 +483,32 @@ bool COptMethodGASR::optimise()
   for (i = 0; i < mVariableSize; i++)
     (*mIndividual[0])[i] = *(*mpOptItem)[i]->getObjectValue();
 
-  try
-    {
-      // calculate the fitness
-      Continue = evaluate(*mIndividual[0]);
-      mValue[0] = mEvaluationValue;
-    }
+  // calculate the fitness
+  unsigned C_INT32 j;
+  std::vector< UpdateMethod *>::const_iterator itMethod = mpSetCalculateVariable->begin();
 
-  catch (...)
-    {
-      mValue[0] = DBL_MAX;
-    }
+  // set the paramter values
+  for (j = 0; j < mVariableSize; j++, ++itMethod)
+    (**itMethod)((*mIndividual[0])[j]);
 
-  if (!Continue)
-    {
-      cleanup();
-      return false;
-    }
+  Continue = evaluate(*mIndividual[0]);
+  mValue[0] = mEvaluationValue;
+
+  /* Calculate the phi value of the individual for SR*/
+  mPhi[i] = Phi(i);
 
   // the others are random
-  if (!(Continue = creation(1, mPopulationSize)))
-    {
-      cleanup();
-      return false;
-    }
+  Continue = creation(1, mPopulationSize);
 
   // get the index of the fittest
   mBestIndex = fittest();
+
   // and store that value
   mBestValue = mValue[mBestIndex];
-
   mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
-  if (!(Continue = mpOptProblem->setSolutionValue(mBestValue)))
+  Continue = mpOptProblem->setSolutionValue(mBestValue);
+
+  if (!Continue)
     {
       cleanup();
       return false;
@@ -645,8 +556,8 @@ bool COptMethodGASR::optimise()
           if (mpReport) mpReport->printBody();
         }
 
-      if (mpCallBack && !(Continue = mpCallBack->progress(mhGenerations)))
-        break;
+      if (mpCallBack)
+        Continue = mpCallBack->progress(mhGenerations);
     }
 
   cleanup();

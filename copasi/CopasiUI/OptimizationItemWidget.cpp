@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/07/07 19:37:11 $
+   $Author: shoops $ 
+   $Date: 2005/07/08 19:05:17 $
    End CVS Header */
 
 /********************************************************
@@ -36,6 +36,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "optimization/COptItem.h"
 
 #include "utilities/CCopasiException.h"
+#include "utilities/utility.h"
 #include "qtUtilities.h"
 #include "ObjectBrowserItem.h"
 #include "CCopasiSelectionDialog.h"
@@ -138,6 +139,9 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
   ObjectName->setEnabled(true);
 
   paramObjectCN = NULL;
+
+  mpLowerObject = NULL;
+  mpUpperObject = NULL;
 }
 
 /*
@@ -189,7 +193,8 @@ void OptimizationItemWidget::slotLowerEdit()
 
   if (browseDialog->exec () == QDialog::Accepted && selection->size() != 0)
     {
-      lineLower->setText(FROM_UTF8((selection->at(0))->getObjectDisplayName()));
+      mpLowerObject = selection->at(0);
+      lineLower->setText(FROM_UTF8(mpLowerObject->getObjectDisplayName()));
     }
 }
 
@@ -211,7 +216,8 @@ void OptimizationItemWidget::slotUpperEdit()
 
   if (browseDialog->exec () == QDialog::Accepted && selection->size() != 0)
     {
-      lineUpper->setText(FROM_UTF8((selection->at(0))->getObjectDisplayName()));
+      mpUpperObject = selection->at(0);
+      lineUpper->setText(FROM_UTF8(mpUpperObject->getObjectDisplayName()));
     }
 }
 
@@ -219,16 +225,24 @@ std::string OptimizationItemWidget::getItemUpperLimit() const
   {
     if (checkUpperInf->isChecked())
       return "inf";
+    else if (isNumber((const char*) lineUpper->text().utf8()))
+      return (const char*) lineUpper->text().utf8();
+    else if (mpUpperObject)
+      return mpUpperObject->getCN();
     else
-      return (const char*)lineUpper->text().utf8();
+      return "";
   }
 
 std::string OptimizationItemWidget::getItemLowerLimit() const
   {
     if (checkLowerInf->isChecked())
       return "-inf";
+    else if (isNumber((const char*) lineLower->text().utf8()))
+      return (const char*) lineLower->text().utf8();
+    else if (mpLowerObject)
+      return mpLowerObject->getCN();
     else
-      return (const char*)lineLower->text().utf8();
+      return "";
   }
 
 CCopasiObject* OptimizationItemWidget::getCopasiObject()
@@ -253,17 +267,30 @@ void OptimizationItemWidget::setItemUpperLimit(std::string strUpperLimit)
       lineUpper->setEnabled(false);
       lineUpper->setText("");
     }
-  else
+  else if (isNumber(strUpperLimit))
     {
       checkUpperInf->setChecked(false);
       //buttonUpperEdit->setEnabled(true);
       lineUpper->setEnabled(true);
       lineUpper->setText(FROM_UTF8(strUpperLimit));
     }
+  else
+    {
+      checkUpperInf->setChecked(false);
+      //buttonUpperEdit->setEnabled(true);
+      lineUpper->setEnabled(true);
+
+      mpUpperObject = RootContainer.getObject(strUpperLimit);
+      if (mpUpperObject)
+        lineUpper->setText(FROM_UTF8(mpUpperObject->getObjectDisplayName()));
+      else
+        lineUpper->setText("");
+    }
 }
 
 void OptimizationItemWidget::setItemLowerLimit(std::string strLowerLimit)
 {
+  mpLowerObject = NULL;
   if (strLowerLimit == "-inf")
     {
       checkLowerInf->setChecked(true);
@@ -271,12 +298,23 @@ void OptimizationItemWidget::setItemLowerLimit(std::string strLowerLimit)
       lineLower->setEnabled(false);
       lineLower->setText("");
     }
-  else
+  else if (isNumber(strLowerLimit))
     {
       checkLowerInf->setChecked(false);
       //buttonLowerEdit->setEnabled(true);
       lineLower->setEnabled(true);
       lineLower->setText(FROM_UTF8(strLowerLimit));
+    }
+  else
+    {
+      checkLowerInf->setChecked(false);
+      lineLower->setEnabled(true);
+
+      mpLowerObject = RootContainer.getObject(strLowerLimit);
+      if (mpLowerObject)
+        lineLower->setText(FROM_UTF8(mpLowerObject->getObjectDisplayName()));
+      else
+        lineLower->setText("");
     }
 }
 

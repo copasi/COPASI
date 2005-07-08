@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/06 17:39:49 $
+   $Date: 2005/07/08 19:05:42 $
    End CVS Header */
 
 /***************************************************************************
@@ -61,7 +61,7 @@ CRandomSearch::~CRandomSearch()
 /**
  * Optimizer Function
  * Returns: true if properly initialized
-//*** should return a boolean
+ //*** should return a boolean
  */
 bool CRandomSearch::initialize()
 {
@@ -86,7 +86,7 @@ bool CRandomSearch::initialize()
 /**
  * Optimizer Function
  * Returns: nothing
-//*** should return a boolean
+ //*** should return a boolean
  */ 
 //C_INT32 CRandomSearch::optimise()
 bool CRandomSearch::optimise()
@@ -166,6 +166,10 @@ bool CRandomSearch::optimise()
                 }
               break;
             }
+
+          // We need to set the value here so that further checks take
+          // account of the value.
+          (*(*mpSetCalculateVariable)[j])(mut);
         }
 
       Continue = evaluate(mIndividual);
@@ -188,14 +192,7 @@ bool CRandomSearch::optimise()
 // evaluate the fitness of one individual
 bool CRandomSearch::evaluate(const CVector< C_FLOAT64 > & individual)
 {
-  unsigned C_INT32 j;
   bool Continue = true;
-
-  std::vector< UpdateMethod *>::const_iterator itMethod = mpSetCalculateVariable->begin();
-
-  // set the paramter values
-  for (j = 0; j < mVariableSize; j++, ++itMethod)
-    (**itMethod)(individual[j]);
 
   // We do not need to check whether the parametric constraints are fulfilled
   // since the parameters are created within the bounds.

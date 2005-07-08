@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/01 20:44:10 $
+   $Date: 2005/07/08 19:05:42 $
    End CVS Header */
 
 /**
@@ -169,7 +169,7 @@ class COptMethodGASR : public COptMethod
     /**
      * Probability value used for SR ****
      */
-    C_FLOAT64 Pf;
+    C_FLOAT64 mPf;
 
     /**
      * number of parameters
@@ -182,9 +182,9 @@ class COptMethodGASR : public COptMethod
     std::vector< CVector < C_FLOAT64 > * > mIndividual;
 
     /**
-        * For Stochastic Ranking.  Used for array of Phi values for the individuals
-        */
-    std::vector< CVector < C_FLOAT64 > * > indvPhi;
+     * For Stochastic Ranking.  Used for array of Phi values for the individuals
+     */
+    CVector < C_FLOAT64 > mPhi;
 
     /**
      * Vector used to initialize the crossover point to false
