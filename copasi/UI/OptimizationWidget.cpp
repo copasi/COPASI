@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/08 20:14:30 $
+   $Author: anuragr $ 
+   $Date: 2005/07/11 23:52:15 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -31,6 +31,7 @@
 #include "model/CModel.h"
 #include "listviews.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "CReportDefinitionSelect.h"
 #include "OptimizationItemWidget.h"
 #include "ObjectBrowserDialog.h"
 #include "ObjectBrowserItem.h"
@@ -46,8 +47,7 @@
 #include "utilities/CopasiTime.h"
 
 OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags f)
-    : CopasiWidget(parent, name, f)
-    //    pParent(parent)
+    : CopasiWidget(parent, name, f), pParent(parent)
 {
   if (!name)
     setName("OptimizationWidget");
@@ -63,13 +63,13 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   paramsGroupBox->setGeometry(QRect(11, 270, 558, 228));
 
   typeGroupBox = new QGroupBox(this, "typeGroupBox");
-  typeGroupBox->setGeometry(QRect(330, 100 - 40, 230, 120 + 40));
+  typeGroupBox->setGeometry(QRect(330, 60, 230, 160));
 
   timeCheck = new QCheckBox(typeGroupBox, "timeCheck");
-  timeCheck->setGeometry(QRect(30, 50 + 20, 84, 19));
+  timeCheck->setGeometry(QRect(30, 70, 84, 19));
 
   steadystateCheck = new QCheckBox(typeGroupBox, "steadystateCheck");
-  steadystateCheck->setGeometry(QRect(30, 20 + 20, 90, 20));
+  steadystateCheck->setGeometry(QRect(30, 40, 90, 20));
 
   AddTaskButton = new QPushButton(this, "AddTaskButton");
   AddTaskButton->setGeometry(QRect(490, 230, 70, 30));
@@ -77,28 +77,34 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   AddTaskButton->setOn(FALSE);
 
   methodGroupBox = new QGroupBox(this, "methodGroupBox");
-  methodGroupBox->setGeometry(QRect(10, 100 - 40, 300, 160 + 40));
+  methodGroupBox->setGeometry(QRect(10, 60, 300, 200));
 
   methodCombo = new QComboBox(FALSE, methodGroupBox, "methodCombo");
   methodCombo->setGeometry(QRect(30, 30, 220, 20));
 
   confirmButton = new QPushButton(this, "confirmButton");
-  confirmButton->setGeometry(QRect(12, 504, 181, 24));
+  confirmButton->setGeometry(QRect(11, 504, 107, 24));
 
   runButton = new QPushButton(this, "runButton");
-  runButton->setGeometry(QRect(199, 504, 182, 24));
+  runButton->setGeometry(QRect(124, 504, 107, 24));
 
   cancelButton = new QPushButton(this, "cancelButton");
-  cancelButton->setGeometry(QRect(387, 504, 181, 24));
+  cancelButton->setGeometry(QRect(237, 504, 107, 24));
+
+  reportButton = new QPushButton(this, "reportButton");
+  reportButton->setGeometry(QRect(349, 504, 107, 24));
+
+  outputAssistantButton = new QPushButton(this, "outputAssistantButton");
+  outputAssistantButton->setGeometry(QRect(462, 504, 107, 24));
 
   selectParameterButton = new QPushButton(this, "selectParameterButton");
-  selectParameterButton->setGeometry(QRect(489, 71 - 55, 50, 24));
+  selectParameterButton->setGeometry(QRect(489, 16, 50, 24));
 
   expressionEditlabel = new QLabel(this, "expressionEditlabel");
-  expressionEditlabel->setGeometry(QRect(11, 71 - 55, 51, 24));
+  expressionEditlabel->setGeometry(QRect(11, 16, 51, 24));
 
   expressionText = new QLineEdit(this, "expressionText");
-  expressionText->setGeometry(QRect(68, 73 - 55, 415, 20));
+  expressionText->setGeometry(QRect(68, 18, 415, 20));
   expressionText->setFrameShape(QLineEdit::LineEditPanel);
   expressionText->setFrameShadow(QLineEdit::Sunken);
   languageChange();
@@ -110,7 +116,7 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   QHeader *colHeader = parameterTable->horizontalHeader();
   colHeader->setLabel(0, tr("Value"));
   parameterTable->setColumnStretchable(0, true);
-  parameterTable->setGeometry(QRect(30, 60, 220, 90 + 40));
+  parameterTable->setGeometry(QRect(30, 60, 220, 130));
 
   // tab order
 
@@ -119,6 +125,8 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   setTabOrder(timeCheck, parameterTable);
   setTabOrder(parameterTable, confirmButton);
   setTabOrder(confirmButton, cancelButton);
+  setTabOrder(cancelButton, reportButton);
+  setTabOrder(reportButton, outputAssistantButton);
 
   //scrollview
 
@@ -138,16 +146,19 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   // signals and slots connections
 
-  // * connect the runButton with the respective slot
-  connect(runButton, SIGNAL(clicked()), this, SLOT(runOptimizationTask()));
   // * connect the combo box with the respective slot
   connect(methodCombo, SIGNAL(activated(int)), this, SLOT(changeMethod(int)));
 
   connect(timeCheck, SIGNAL(clicked()), this, SLOT(slotTimechecked()));
   connect(steadystateCheck, SIGNAL(clicked()), this, SLOT(slotSteadystatechecked()));
+
+  // connect the buttons with the respective slots
+  connect(runButton, SIGNAL(clicked()), this, SLOT(runOptimizationTask()));
   connect(AddTaskButton , SIGNAL(clicked()), this, SLOT(slotAddItem()));
   connect(selectParameterButton , SIGNAL(clicked()), this, SLOT(slotChooseObject()));
   connect(confirmButton, SIGNAL(clicked()), this, SLOT(slotConfirm()));
+  connect(cancelButton, SIGNAL(clicked()), this, SLOT(CancelChangeButton()));
+  connect(reportButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
 
   //reportDefinitionButton->setEnabled(false);
 
@@ -401,14 +412,18 @@ bool OptimizationWidget::saveOptimization()
 
 void OptimizationWidget::ReportDefinitionClicked()
 {
-  /*  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
-    COptTask* optimizationTask = (COptTask*)(CCopasiContainer*)GlobalKeys.get(optimizationTaskKey);
-    pSelectDlg->setReport(&(optimizationTask->getReport()));
-    pSelectDlg->loadReportDefinitionVector();
-    if (pSelectDlg->exec () == QDialog::Rejected)
-      {
-        return;
-      }*/
+  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
+  COptTask* optimizationTask = (COptTask*)(CCopasiContainer*)GlobalKeys.get(optimizationTaskKey);
+  assert(optimizationTask);
+
+  pSelectDlg->setReport(&(optimizationTask->getReport()));
+  pSelectDlg->loadReportDefinitionVector();
+  if (pSelectDlg->exec () == QDialog::Rejected)
+    {
+      return;
+    }
+
+  delete pSelectDlg;
 }
 
 //************* CCopasiWidget interface *******************************
@@ -495,6 +510,8 @@ void OptimizationWidget::languageChange()
   confirmButton->setText(tr("confirm"));
   runButton->setText(tr("run"));
   cancelButton->setText(tr("cancel"));
+  reportButton->setText(tr("report"));
+  outputAssistantButton->setText(tr("output assistant"));
   selectParameterButton->setText(tr("..."));
   //expressionNameLabel->setText(tr("Name"));
   expressionEditlabel->setText(tr("Expression"));

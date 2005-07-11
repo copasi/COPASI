@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/06/28 20:32:43 $
+   $Date: 2005/07/11 23:52:08 $
    End CVS Header */
 
 /****************************************************************************
@@ -54,6 +54,7 @@ class OptimizationWidget : public CopasiWidget
 
   private:
     std::string optimizationTaskKey;
+    QWidget* pParent;
     //CFunction * pFunction;
 
   public:
@@ -105,6 +106,8 @@ class OptimizationWidget : public CopasiWidget
     QPushButton* confirmButton;
     QPushButton* runButton;
     QPushButton* cancelButton;
+    QPushButton* reportButton;
+    QPushButton* outputAssistantButton;
     QPushButton* selectParameterButton;
     QLabel* expressionEditlabel;
     QLineEdit* expressionText;
