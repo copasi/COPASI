@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/07 15:08:34 $
+   $Author: gauges $ 
+   $Date: 2005/07/11 15:42:29 $
    End CVS Header */
 
 #include "copasi.h"
@@ -216,14 +216,14 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
     }
 
   std::string appendix = "";
-  unsigned int counter = 0;
+  unsigned int counter = 2;
   std::ostringstream numberStream;
   while (copasiModel->getCompartments().getIndex(name + appendix) != static_cast < unsigned C_INT32
          > (-1))
     {
-      counter++;
       numberStream.str("");
       numberStream << "_" << counter;
+      counter++;
       appendix = numberStream.str();
     }
   double value;
@@ -277,13 +277,13 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
       name = sbmlSpecies->getId();
     }
   std::string appendix = "";
-  unsigned int counter = 0;
+  unsigned int counter = 2;
   std::ostringstream numberStream;
   while (copasiCompartment->getMetabolites().getIndex(name + appendix) != static_cast<unsigned C_INT32>(-1))
     {
-      counter++;
       numberStream.str("");
       numberStream << "_" << counter;
+      counter++;
       appendix = numberStream.str();
     }
 
@@ -341,13 +341,13 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       name = sbmlReaction->getId();
     }
   std::string appendix = "";
-  unsigned int counter = 0;
+  unsigned int counter = 2;
   std::ostringstream numberStream;
   while (copasiModel->getReactions().getIndex(name + appendix) != C_INVALID_INDEX)
     {
-      counter++;
       numberStream.str("");
       numberStream << "_" << counter;
+      counter++;
       appendix = numberStream.str();
     }
 
@@ -1186,14 +1186,14 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
       name = sbmlParameter->getId();
     }
   std::string appendix = "";
-  unsigned int counter = 0;
+  unsigned int counter = 2;
   std::ostringstream numberStream;
   while (copasiModel->getModelValues().getIndex(name + appendix) != static_cast < unsigned C_INT32
          > (-1))
     {
-      counter++;
       numberStream.str("");
       numberStream << "_" << counter;
+      counter++;
       appendix = numberStream.str();
     }
   double value;
