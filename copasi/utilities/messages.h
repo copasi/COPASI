@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/01 14:45:59 $
+   $Date: 2005/07/11 13:12:31 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -49,6 +49,9 @@ const MESSAGES Messages[] =
     {MCReaction + 5, "CReaction (5): Nodes of type %s are not implemented yet."},
     {MCReaction + 6, "CReaction (6): Nodes of type VARIABLE must not appear in an expression."},
     {MCReaction + 7, "CReaction (7): CMetab object '%s' is neither substrate, product nor modifier to the reaction."},
+    {MCReaction + 8, "CReaction (8): Could not find variable with name \"%s\"."},
+    {MCReaction + 9, "CReaction (9): Could not find object for key \"%s\"."},
+    {MCReaction + 10, "CReaction (10): Parameter \"%s\" is a vector."},
 
     // CChemEq
     {MCChemEq + 1, "CChemEq (1): No Substrates and no Products."},
@@ -127,6 +130,8 @@ const MESSAGES Messages[] =
     {MCFunction + 1, "Function (1): Parser error after position: '%d'."},
     {MCFunction + 2, "Function (2): Lexer error after position: '%d'."},
     {MCFunction + 3, "Function (3): Compile error after position: '%d'."},
+
+    {MCEvaluationNodeObject + 1, "CEvaluationNodeObject (1): Only references to compartment, species, parameters and reaction are allowed in expression."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}

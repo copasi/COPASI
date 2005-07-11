@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/08 14:09:52 $
+   $Date: 2005/07/11 13:12:31 $
    End CVS Header */
 
 /**
@@ -22,28 +22,29 @@
 typedef struct MESSAGES {unsigned C_INT32 No; const char * Text;}
 Message;
 
-#define MCopasiBase           5000
-#define MCReadConfig          MCopasiBase + 100
-#define MCWriteConfig         MCopasiBase + 200
-#define MCRange               MCopasiBase + 300
-#define MCKinFunction         MCopasiBase + 400
-#define MCCopasiVector        MCopasiBase + 500
-#define MCFunctionParameters  MCopasiBase + 600
-#define MCMassAction          MCopasiBase + 700
-#define MCCopasiMethod        MCopasiBase + 800
-#define MCReaction            MCopasiBase + 900
-#define MCParameter           MCopasiBase + 1000
-#define MCChemEq              MCopasiBase + 1100
-#define MCTrajectoryMethod    MCopasiBase + 1200
-#define MCXML                 MCopasiBase + 1300
-#define MCCopasiMessage       MCopasiBase + 1400
-#define MCConfiguration       MCopasiBase + 1500
-#define MCOptimization        MCopasiBase + 1600
-#define MCSBML                MCopasiBase + 1700
-#define MCTrajectoryProblem   MCopasiBase + 1800
-#define MCDirEntry            MCopasiBase + 1900
-#define MCFunction            MCopasiBase + 2000
-#define MCMathML              MCopasiBase + 2100
+#define MCopasiBase              5000
+#define MCReadConfig             MCopasiBase + 100
+#define MCWriteConfig            MCopasiBase + 200
+#define MCRange                  MCopasiBase + 300
+#define MCKinFunction            MCopasiBase + 400
+#define MCCopasiVector           MCopasiBase + 500
+#define MCFunctionParameters     MCopasiBase + 600
+#define MCMassAction             MCopasiBase + 700
+#define MCCopasiMethod           MCopasiBase + 800
+#define MCReaction               MCopasiBase + 900
+#define MCParameter              MCopasiBase + 1000
+#define MCChemEq                 MCopasiBase + 1100
+#define MCTrajectoryMethod       MCopasiBase + 1200
+#define MCXML                    MCopasiBase + 1300
+#define MCCopasiMessage          MCopasiBase + 1400
+#define MCConfiguration          MCopasiBase + 1500
+#define MCOptimization           MCopasiBase + 1600
+#define MCSBML                   MCopasiBase + 1700
+#define MCTrajectoryProblem      MCopasiBase + 1800
+#define MCDirEntry               MCopasiBase + 1900
+#define MCFunction               MCopasiBase + 2000
+#define MCMathML                 MCopasiBase + 2100
+#define MCEvaluationNodeObject   MCopasiBase + 2200
 
 /**
  *  This throws an exception with information where the error occured.

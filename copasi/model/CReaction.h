@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.84 $
+   $Revision: 1.85 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/27 15:08:11 $
+   $Date: 2005/07/11 13:12:32 $
    End CVS Header */
 
 /**
@@ -320,6 +320,12 @@ class CReaction : public CCopasiContainer
     bool setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB);
 
     /**
+     * Converts the function tree into the corresponding expression tree.
+     * All variable nodes are replaced by object nodes. 
+     */
+    CEvaluationNode* getExpressionTree();
+
+    /**
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CReaction & d);
@@ -375,6 +381,18 @@ class CReaction : public CCopasiContainer
     CEvaluationNodeVariable* object2variable(CEvaluationNodeObject* objectNode,
         std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap,
         std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    /**
+     * Replaces all variable nodes in a function tree by object nodes.
+     * On failure a NULL pointer is returned.
+     */
+    CEvaluationNode* variables2objects (CEvaluationNode* expression);
+
+    /**
+     * Converts a single variable node to an object node. 
+     * On failure a NULL pointer is returned.
+     */
+    CEvaluationNodeObject* variable2object(CEvaluationNodeVariable* pVariableNode);
   };
 
 #endif // COPASI_CReaction

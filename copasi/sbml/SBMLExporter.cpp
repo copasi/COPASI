@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/08 14:28:28 $
+   $Date: 2005/07/11 13:12:31 $
    End CVS Header */
 
 #include <math.h>
@@ -691,8 +691,9 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
   ** CKinFunction */
   else
     {
-      CKinFunction cKinFunction = static_cast<CKinFunction>(copasiReaction->getFunction());
-      node = cKinFunction.toAST();
+      CEvaluationNode* pTmpRoot = copasiReaction->getExpressionTree();
+      node = pTmpRoot->toAST();
+      pdelete(pTmpRoot);
     }
 
   /*

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/03 10:24:36 $
+   $Date: 2005/07/11 13:12:32 $
    End CVS Header */
 
 #include "copasi.h"
@@ -13,8 +13,15 @@
 #include "report/CCopasiObject.h"
 #include "report/CCopasiContainer.h"
 #include "model/CModel.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 #include "sbml/math/ASTNode.h"
+#include "sbml/SBase.h"
+#include "sbml/SBMLTypeCodes.h"
+#include "sbml/Compartment.h"
+#include "sbml/Species.h"
+#include "sbml/Parameter.h"
+#include "sbml/Reaction.h"
 
 CEvaluationNodeObject::CEvaluationNodeObject():
     CEvaluationNode(CEvaluationNode::INVALID, ""),
@@ -92,7 +99,34 @@ ASTNode* CEvaluationNodeObject::toAST() const
         // assume that it will always be the current global model.
         CCopasiObject* object = CCopasiContainer::ObjectFromName(mRegisteredObjectCN);
         assert(object);
-        node->setName(object->getObjectName().c_str());
+        // actually we need to get the name from the key of the copasi object
+        SBase* pSBase = CCopasiDataModel::Global->getCopasi2SBMLMap()[object];
+        if (pSBase)
+          {
+            switch (pSBase->getTypeCode())
+              {
+              case SBML_COMPARTMENT:
+                node->setName(dynamic_cast<Compartment*>(pSBase)->getId().c_str());
+                break;
+              case SBML_SPECIES:
+                node->setName(dynamic_cast<Species*>(pSBase)->getId().c_str());
+                break;
+              case SBML_PARAMETER:
+                node->setName(dynamic_cast<Parameter*>(pSBase)->getId().c_str());
+                break;
+              case SBML_REACTION:
+                node->setName(dynamic_cast<Reaction*>(pSBase)->getId().c_str());
+                break;
+              default:
+                CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCEvaluationNodeObject + 1);
+                break;
+              }
+          }
+        else
+          {
+            // it must be a local parameter
+            node->setName(object->getObjectName().c_str());
+          }
       }
     return node;
   }
