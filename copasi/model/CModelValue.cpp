@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/06 14:51:33 $
+   $Author: gauges $ 
+   $Date: 2005/07/12 16:30:47 $
    End CVS Header */
 
 #include <iostream>
@@ -131,6 +131,15 @@ void CModelEntity::initObjects()
   addObjectReference("Rate", mRate, CCopasiObject::ValueDbl);
 }
 
+void CModelEntity::setSBMLId(const std::string& id)
+{
+  this->mSBMLId = id;
+}
+
+const std::string& CModelEntity::getSBMLId() const
+  {
+    return this->mSBMLId;
+  }
 //********************************************************************+
 
 CModelValue::CModelValue(const std::string & name,

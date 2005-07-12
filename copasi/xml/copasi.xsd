@@ -33,6 +33,7 @@
                         <xs:attribute name="key" type="cCOMPARTMENT_KEY" use="required" id="copasi.Model.Compartment.key"/>
                         <xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.Compartment.name"/>
                         <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="required" id="copasi.Model.Compartment.stateVariable"/>
+                        <xs:attribute name="sbmlid" type="xs:string" use="optional" id="copasi.Model.Compartment.sbmlid"/>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
@@ -59,6 +60,34 @@
                           </xs:simpleType>
                         </xs:attribute>
                         <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="required" id="copasi.Model.Metabolite.stateVariable"/>
+                        <xs:attribute name="sbmlid" type="xs:string" use="optional" id="copasi.Model.Metabolite.sbmlid"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+                <xs:unique name="MetaboliteName">
+                  <xs:selector xpath="Metabolite"/>
+                  <xs:field xpath="@name"/>
+                  <xs:field xpath="@compartment"/>
+                </xs:unique>
+              </xs:element>
+              <xs:element name="ListOfModelValues" id="copasi.Model.ListOfModelValues" minOccurs="0">
+                <xs:complexType mixed="true">
+                  <xs:sequence>
+                    <xs:element name="ModelValue" id="copasi.Model.ModelValue" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="key" type="cMODELVALUE_KEY" use="required" id="copasi.Model.ModelValue.key"/>
+                        <xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.ModelValue.name"/>
+                        <xs:attribute name="status" use="required">
+                          <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                              <xs:enumeration value="fixed"/>
+                              <xs:enumeration value="variable"/>
+                            </xs:restriction>
+                          </xs:simpleType>
+                        </xs:attribute>
+                        <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="required" id="copasi.Model.ModelValue.stateVariable"/>
+                        <xs:attribute name="sbmlid" type="xs:string" use="optional" id="copasi.Model.Metabolite.sbmlid"/>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
@@ -125,6 +154,7 @@
                         <xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.Reaction.name"/>
                         <xs:attribute name="compartment" type="cCOMPARTMENT_KEYREF" use="optional" default="Compartment_00" id="copasi.Model.Reaction.compartment"/>
                         <xs:attribute name="reversible" type="xs:boolean" use="required" id="copasi.Model.Reaction.reversible"/>
+                        <xs:attribute name="sbmlid" type="xs:string" use="optional" id="copasi.Model.Reaction.sbmlid"/>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
@@ -422,6 +452,7 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
+    <xs:attribute name="sbmlid" type="xs:string" use="optional" id="copasi.FUNCTION.sbmlid"/>
   </xs:complexType>
   <xs:complexType name="cFUNCTION_PARAMETER" id="copasi.FUNCTION_PARAMETER">
     <xs:attribute name="key" type="cFUNCTION_PARAMETER_KEY" use="required" id="copasi.FUNCTION_PARAMETER.key"/>
@@ -606,6 +637,11 @@
   <xs:simpleType name="cMETABOLITE_KEY" id="copasi.METABOLITE_KEY">
     <xs:restriction base="cKEY">
       <xs:pattern value="Metabolite_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cMODELVALUE_KEY" id="copasi.MODELVALUE_KEY">
+    <xs:restriction base="cKEY">
+      <xs:pattern value="ModelValue_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="cREACTION_KEY" id="copasi.REACTION_KEY">

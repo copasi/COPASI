@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/03 10:24:36 $
+   $Date: 2005/07/12 16:30:46 $
    End CVS Header */
 
 #include "copasi.h"
@@ -367,4 +367,14 @@ void CEvaluationTree::initObjects()
 ASTNode* CEvaluationTree::toAST() const
   {
     return this->mpRoot->toAST();
+  }
+
+void CEvaluationTree::setSBMLId(const std::string& id)
+{
+  this->mSBMLId = id;
+}
+
+const std::string& CEvaluationTree::getSBMLId() const
+  {
+    return this->mSBMLId;
   }

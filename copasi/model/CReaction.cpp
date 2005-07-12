@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.132 $
+   $Revision: 1.133 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/11 13:12:32 $
+   $Date: 2005/07/12 16:30:47 $
    End CVS Header */
 
 // CReaction
@@ -1076,3 +1076,13 @@ CEvaluationNode* CReaction::getExpressionTree()
 {
   return this->variables2objects(const_cast<CFunction&>(this->getFunction()).getRoot());
 }
+
+void CReaction::setSBMLId(const std::string& id)
+{
+  this->mSBMLId = id;
+}
+
+const std::string& CReaction::getSBMLId() const
+  {
+    return this->mSBMLId;
+  }

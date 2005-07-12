@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/11 13:12:31 $
+   $Date: 2005/07/12 16:30:48 $
    End CVS Header */
 
 #include <math.h>
@@ -65,6 +65,7 @@ SBMLExporter::~SBMLExporter()
 bool SBMLExporter::exportSBML(CModel* copasiModel, std::string sbmlFilename, bool overwriteFile, int sbmlLevel, int sbmlVersion)
 {
   this->mHandledSBMLObjects.clear();
+  this->mpCopasiModel = copasiModel;
   /* create the SBMLDocument from the copasi model */
   this->sbmlDocument = this->createSBMLDocumentFromCModel(copasiModel, sbmlLevel, sbmlVersion);
   this->removeUnusedObjects();
@@ -447,8 +448,14 @@ Compartment* SBMLExporter::createSBMLCompartmentFromCCompartment(CCompartment* c
     {
       sbmlCompartment = new Compartment();
       copasi2sbmlmap[copasiCompartment] = sbmlCompartment;
-      std::string id = SBMLExporter::createUniqueId(this->mpIdSet, "compartment_");
-      this->mpIdSet->insert(id);
+
+      std::string id = copasiCompartment->getSBMLId();
+      if (id == "")
+        {
+          id = SBMLExporter::createUniqueId(this->mpIdSet, "compartment_");
+          copasiCompartment->setSBMLId(id);
+          this->mpIdSet->insert(id);
+        }
       sbmlCompartment->setId(id);
       sbmlCompartment->setSpatialDimensions(3);
       sbmlCompartment->setConstant(true);
@@ -486,8 +493,13 @@ Species* SBMLExporter::createSBMLSpeciesFromCMetab(CMetab* copasiMetabolite)
     {
       sbmlSpecies = new Species();
       copasi2sbmlmap[copasiMetabolite] = sbmlSpecies;
-      std::string id = SBMLExporter::createUniqueId(this->mpIdSet, "species_");
-      this->mpIdSet->insert(id);
+      std::string id = copasiMetabolite->getSBMLId();
+      if (id == "")
+        {
+          id = SBMLExporter::createUniqueId(this->mpIdSet, "species_");
+          copasiMetabolite->setSBMLId(id);
+          this->mpIdSet->insert(id);
+        }
       sbmlSpecies->setId(id);
     }
   this->mHandledSBMLObjects.push_back(sbmlSpecies);
@@ -537,8 +549,13 @@ Parameter* SBMLExporter::createSBMLParameterFromCModelValue(CModelValue* pModelV
     {
       pParameter = new Parameter();
       copasi2sbmlmap[pModelValue] = pParameter;
-      std::string id = SBMLExporter::createUniqueId(this->mpIdSet, "parameter_");
-      this->mpIdSet->insert(id);
+      std::string id = pModelValue->getSBMLId();
+      if (id == "")
+        {
+          id = SBMLExporter::createUniqueId(this->mpIdSet, "parameter_");
+          pModelValue->setSBMLId(id);
+          this->mpIdSet->insert(id);
+        }
       pParameter->setId(id);
     }
   this->mHandledSBMLObjects.push_back(pParameter);
@@ -576,8 +593,13 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
       /* create a new reaction object */
       sbmlReaction = new Reaction();
       copasi2sbmlmap[copasiReaction] = sbmlReaction;
-      std::string id = SBMLExporter::createUniqueId(this->mpIdSet, "reaction_");
-      this->mpIdSet->insert(id);
+      std::string id = copasiReaction->getSBMLId();
+      if (id == "")
+        {
+          id = SBMLExporter::createUniqueId(this->mpIdSet, "reaction_");
+          copasiReaction->setSBMLId(id);
+          this->mpIdSet->insert(id);
+        }
       sbmlReaction->setId(id);
     }
   this->mHandledSBMLObjects.push_back(sbmlReaction);
@@ -590,7 +612,8 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
     {
       CChemEqElement* element = chemicalEquation.getSubstrates()[counter];
       SpeciesReference* sRef = new SpeciesReference();
-      sRef->setSpecies(element->getMetaboliteKey().c_str());
+      const CMetab& metabolite = element->getMetabolite();
+      sRef->setSpecies(metabolite.getSBMLId().c_str());
       sRef->setStoichiometry(element->getMultiplicity());
       sRef->setDenominator(1);
       sbmlReaction->addReactant(*sRef);
@@ -600,7 +623,8 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
     {
       CChemEqElement* element = chemicalEquation.getProducts()[counter];
       SpeciesReference* sRef = new SpeciesReference();
-      sRef->setSpecies(element->getMetaboliteKey().c_str());
+      const CMetab& metabolite = element->getMetabolite();
+      sRef->setSpecies(metabolite.getSBMLId().c_str());
       sRef->setStoichiometry(element->getMultiplicity());
       sRef->setDenominator(1);
       sbmlReaction->addProduct(*sRef);
@@ -610,7 +634,8 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
     {
       CChemEqElement* element = chemicalEquation.getModifiers()[counter];
       ModifierSpeciesReference* sRef = new ModifierSpeciesReference();
-      sRef->setSpecies(element->getMetaboliteKey().c_str());
+      const CMetab& metabolite = element->getMetabolite();
+      sRef->setSpecies(metabolite.getSBMLId().c_str());
       sbmlReaction->addModifier(*sRef);
     }
   /* create the kinetic law */
@@ -948,6 +973,36 @@ std::set<std::string>* SBMLExporter::createIdSet(const Model* pSBMLModel)
       for (i = 0; i < iMax;++i)
         {
           pIdSet->insert(pSBMLModel->getEvent(i)->getId());
+        }
+    }
+  else
+    {
+      pIdSet = new std::set<std::string>();
+      std::string id;
+      unsigned int i, iMax;
+      iMax = this->mpCopasiModel->getNumMetabs();
+      for (i = 0; i < iMax;++i)
+        {
+          id = this->mpCopasiModel->getMetabolites()[i]->getSBMLId();
+          if (id != "") pIdSet->insert(id);
+        }
+      iMax = this->mpCopasiModel->getNumModelValues();
+      for (i = 0; i < iMax;++i)
+        {
+          id = this->mpCopasiModel->getModelValues()[i]->getSBMLId();
+          if (id != "") pIdSet->insert(id);
+        }
+      iMax = this->mpCopasiModel->getCompartments().size();
+      for (i = 0; i < iMax;++i)
+        {
+          id = this->mpCopasiModel->getCompartments()[i]->getSBMLId();
+          if (id != "") pIdSet->insert(id);
+        }
+      iMax = this->mpCopasiModel->getReactions().size();
+      for (i = 0; i < iMax;++i)
+        {
+          id = this->mpCopasiModel->getReactions()[i]->getSBMLId();
+          if (id != "") pIdSet->insert(id);
         }
     }
   return pIdSet;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/01 14:55:37 $
+   $Author: gauges $ 
+   $Date: 2005/07/12 16:30:47 $
    End CVS Header */
 
 #ifndef COPASI_CModelValue
@@ -31,17 +31,24 @@ class CModelEntity : public CCopasiContainer
      */
     std::string mKey;
 
+    /**
+     * The id of the corresponding parameter in an SBML file.
+     * This value is either set upon importing an SBML file,
+     * or when the object is first exported to an SBML file.
+     */
+    std::string mSBMLId;
+
   public:
     /**
      *  The valid states for metabolites
      */
     enum Status
     {
-      FIXED = 0,    //the entity is constant (for metabs even if they are part of a reaction)
-      REACTIONS,    //applies only for metabs, the metab concentration is changed by reactions
-      DEPENDENT,    //applies only for metabs, the metab concentration is determined by conservation rules
+      FIXED = 0,     //the entity is constant (for metabs even if they are part of a reaction)
+      REACTIONS,     //applies only for metabs, the metab concentration is changed by reactions
+      DEPENDENT,     //applies only for metabs, the metab concentration is determined by conservation rules
       UNUSED,
-      ODE,          //the entity is changed by an ordinary differential equation
+      ODE,           //the entity is changed by an ordinary differential equation
       ASSIGNMENT  //the entity is changed by an assignment rule
     };
 
@@ -126,6 +133,16 @@ class CModelEntity : public CCopasiContainer
     void setRate(const C_FLOAT64 & rate);
 
     virtual void * getReference() const;
+
+    /**
+     * Sets the SBMLId.
+     */
+    void setSBMLId(const std::string& id);
+
+    /**
+     * Returns a reference to the SBML Id.
+     */
+    const std::string& getSBMLId() const;
 
   protected:
     /**

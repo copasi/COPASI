@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/06 13:43:13 $
+   $Date: 2005/07/12 16:30:48 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -50,6 +50,8 @@ class SBMLExporter
     std::vector<SBase*> mHandledSBMLObjects;
 
     std::set<std::string>* mpIdSet;
+
+    CModel* mpCopasiModel;
 
     /**
      **  This method takes a copasi CModel object and generates a SBMLDocument
@@ -175,7 +177,7 @@ class SBMLExporter
 
     static std::string createUniqueId(const std::set<std::string>* pIdSet, const std::string& prefix);
 
-    static std::set<std::string>* createIdSet(const Model* pSBMLModel);
+    std::set<std::string>* createIdSet(const Model* pSBMLModel);
   };
 
 #endif

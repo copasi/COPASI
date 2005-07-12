@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/01 16:18:26 $
+   $Author: gauges $ 
+   $Date: 2005/07/12 16:30:50 $
    End CVS Header */
 
 /**
@@ -191,6 +191,7 @@ bool CCopasiXML::saveModel()
       Attributes.add("key", "");
       Attributes.add("name", "");
       Attributes.add("stateVariable", "");
+      Attributes.add("sbmlid", "");
 
       unsigned C_INT32 i, imax = mpModel->getCompartments().size();
       for (i = 0; i < imax; i++)
@@ -201,6 +202,14 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(1, pComp->getObjectName());
           Attributes.setValue(2,
                               mpModel->getStateTemplate().getKey(pComp->getKey()));
+          if (pComp->getSBMLId() == "")
+            {
+              Attributes.skip(3);
+            }
+          else
+            {
+              Attributes.setValue(3, pComp->getSBMLId());
+            }
           saveElement("Compartment", Attributes);
         }
 
@@ -217,6 +226,7 @@ bool CCopasiXML::saveModel()
       Attributes.add("compartment", "");
       Attributes.add("status", "");
       Attributes.add("stateVariable", "");
+      Attributes.add("sbmlid", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -229,6 +239,14 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(4,
                               mpModel->getStateTemplate().getKey(pMetab->getKey()));
 
+          if (pMetab->getSBMLId() == "")
+            {
+              Attributes.skip(5);
+            }
+          else
+            {
+              Attributes.setValue(5, pMetab->getSBMLId());
+            }
           saveElement("Metabolite", Attributes);
         }
 
@@ -244,6 +262,7 @@ bool CCopasiXML::saveModel()
       Attributes.add("name", "");
       Attributes.add("status", "");
       Attributes.add("stateVariable", "");
+      Attributes.add("sbmlid", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -253,6 +272,14 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(1, pMV->getObjectName());
           Attributes.setValue(2, CModelValue::XMLStatus[pMV->getStatus()]);
           Attributes.setValue(3, mpModel->getStateTemplate().getKey(pMV->getKey()));
+          if (pMV->getSBMLId() == "")
+            {
+              Attributes.skip(4);
+            }
+          else
+            {
+              Attributes.setValue(4, pMV->getSBMLId());
+            }
 
           saveElement("ModelValue", Attributes);
         }
@@ -276,6 +303,7 @@ bool CCopasiXML::saveModel()
       Attributes.add("name", "");
       Attributes.add("compartment", ""); //TODO necessary?
       Attributes.add("reversible", "");
+      Attributes.add("sbmlid", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -288,6 +316,14 @@ bool CCopasiXML::saveModel()
           //else
           Attributes.skip(2);
           Attributes.setValue(3, pReaction->isReversible() ? "true" : "false");
+          if (pReaction->getSBMLId() == "")
+            {
+              Attributes.skip(4);
+            }
+          else
+            {
+              Attributes.setValue(4, pReaction->getSBMLId());
+            }
 
           startSaveElement("Reaction", Attributes);
 
@@ -480,7 +516,13 @@ bool CCopasiXML::saveFunctionList()
       Attributes.add("name", pEvaluationTree->getObjectName());
       Attributes.add("type", CEvaluationTree::XMLType[pEvaluationTree->getType()]);
       if (pFunction)
-        Attributes.add("positive", pFunction->isReversible() ? "true" : "false");
+        {
+          Attributes.add("positive", pFunction->isReversible() ? "true" : "false");
+          if (pFunction->getSBMLId() != "")
+            {
+              Attributes.add("sbmlid", pFunction->getSBMLId());
+            }
+        }
       startSaveElement("Function", Attributes);
 
       startSaveElement("MathML");

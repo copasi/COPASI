@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.99 $
+   $Revision: 1.100 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/07/07 19:30:44 $
+   $Author: gauges $ 
+   $Date: 2005/07/12 16:30:50 $
    End CVS Header */
 
 /**
@@ -498,6 +498,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
   const char * Positive;
   unsigned C_INT32 index;
   CFunction * pFunction;
+  const char* SBMLId;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -517,6 +518,11 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
       pFunction = dynamic_cast<CFunction *>(mCommon.pFunction);
 
       mCommon.pFunction->setObjectName(Name);
+      SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
+      if (SBMLId != "")
+        {
+          mCommon.pFunction->setSBMLId(SBMLId);
+        }
       if (pFunction)
         {
           if (!strcmp(Positive, "unspecified"))
@@ -1354,6 +1360,7 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
   const char * Key;
   const char * Name;
   const char * StateVariable;
+  const char * SBMLId;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -1369,6 +1376,11 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
       pCompartment = new CCompartment();
       mCommon.KeyMap.addFix(Key, pCompartment);
       pCompartment->setObjectName(Name);
+      SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
+      if (SBMLId != "")
+        {
+          pCompartment->setSBMLId(SBMLId);
+        }
 
       mCommon.pModel->getCompartments().add(pCompartment, true);
       break;
@@ -1498,6 +1510,7 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
   const char * status;
   CMetab::Status Status;
   const char * StateVariable;
+  const char * SBMLId;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -1517,6 +1530,11 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
       mCommon.KeyMap.addFix(Key, pMetabolite);
       pMetabolite->setObjectName(Name);
       pMetabolite->setStatus(Status);
+      SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
+      if (SBMLId != "")
+        {
+          pMetabolite->setSBMLId(SBMLId);
+        }
 
       pCompartment =
         dynamic_cast< CCompartment* >(mCommon.KeyMap.get(Compartment));
@@ -1651,6 +1669,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
   const char * status;
   CModelEntity::Status Status;
   const char * StateVariable;
+  const char * SBMLId;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -1669,6 +1688,11 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
       mCommon.KeyMap.addFix(Key, pMV);
       pMV->setObjectName(Name);
       pMV->setStatus(Status);
+      SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
+      if (SBMLId != "")
+        {
+          pMV->setSBMLId(SBMLId);
+        }
 
       mCommon.pModel->getModelValues().add(pMV, true);
       break;
@@ -1808,6 +1832,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
   const char * Compartment; // Default Compartment_00
   const char * reversible;
   bool Reversible;
+  const char * SBMLId;
 
   mCurrentElement++; /* We should always be on the next element */
   mpCurrentHandler = NULL;
@@ -1828,6 +1853,11 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
       mCommon.KeyMap.addFix(Key, mCommon.pReaction);
       mCommon.pReaction->setObjectName(Name);
       mCommon.pReaction->setReversible(Reversible);
+      SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
+      if (SBMLId != "")
+        {
+          mCommon.pReaction->setSBMLId(SBMLId);
+        }
 
       if (strcmp(Compartment, "Compartment_00")) //TODO necessary?
         {

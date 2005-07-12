@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/11 15:42:29 $
+   $Date: 2005/07/12 16:30:48 $
    End CVS Header */
 
 #include "copasi.h"
@@ -214,7 +214,6 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
     {
       name = sbmlCompartment->getId();
     }
-
   std::string appendix = "";
   unsigned int counter = 2;
   std::ostringstream numberStream;
@@ -244,6 +243,14 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
     }
 
   CCompartment* copasiCompartment = copasiModel->createCompartment(name + appendix, value);
+  if (this->mLevel == 1)
+    {
+      copasiCompartment->setSBMLId(sbmlCompartment->getName());
+    }
+  else
+    {
+      copasiCompartment->setSBMLId(sbmlCompartment->getId());
+    }
   //DebugFile << "Created Compartment: " << copasiCompartment->getObjectName() << std::endl;
   copasi2sbmlmap[copasiCompartment] = const_cast<Compartment*>(sbmlCompartment);
   return copasiCompartment;
@@ -320,6 +327,14 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     }
   //DebugFile << "Created metabolite: " << copasiMetabolite->getObjectName() << std::endl;
   copasi2sbmlmap[copasiMetabolite] = const_cast<Species*>(sbmlSpecies);
+  if (this->mLevel == 1)
+    {
+      copasiMetabolite->setSBMLId(sbmlSpecies->getName());
+    }
+  else
+    {
+      copasiMetabolite->setSBMLId(sbmlSpecies->getId());
+    }
   return copasiMetabolite;
 }
 
@@ -612,6 +627,14 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       copasiReaction->setFunction(NULL);
     }
   //DebugFile << "Created reaction: " << copasiReaction->getObjectName() << std::endl;
+  if (this->mLevel == 1)
+    {
+      copasiReaction->setSBMLId(sbmlReaction->getName());
+    }
+  else
+    {
+      copasiReaction->setSBMLId(sbmlReaction->getId());
+    }
   return copasiReaction;
 }
 
@@ -1214,7 +1237,14 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
     }
   CModelValue* pMV = copasiModel->createModelValue(name + appendix, value);
   copasi2sbmlmap[pMV] = const_cast<Parameter*>(sbmlParameter);
-
+  if (this->mLevel == 1)
+    {
+      pMV->setSBMLId(sbmlParameter->getName());
+    }
+  else
+    {
+      pMV->setSBMLId(sbmlParameter->getId());
+    }
   return pMV;
 }
 

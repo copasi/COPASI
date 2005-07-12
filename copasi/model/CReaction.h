@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.85 $
+   $Revision: 1.86 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/11 13:12:32 $
+   $Date: 2005/07/12 16:30:47 $
    End CVS Header */
 
 /**
@@ -98,6 +98,13 @@ class CReaction : public CCopasiContainer
      *  This is a list of parameter objects.
      */
     CCopasiParameterGroup mParameters;
+
+    /**
+     * The id of the corresponding reaction in an SBML file.
+     * This value is either set upon importing an SBML file,
+     * or when the object is first exported to an SBML file.
+     */
+    std::string mSBMLId;
 
   public:
     /**
@@ -324,6 +331,16 @@ class CReaction : public CCopasiContainer
      * All variable nodes are replaced by object nodes. 
      */
     CEvaluationNode* getExpressionTree();
+
+    /**
+     * Sets the SBMLId.
+     */
+    void setSBMLId(const std::string& id);
+
+    /**
+     * Returns a reference to the SBML Id.
+     */
+    const std::string& getSBMLId() const;
 
     /**
      * insert operator

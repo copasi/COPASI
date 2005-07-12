@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/03 10:24:37 $
+   $Date: 2005/07/12 16:30:47 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -41,6 +41,13 @@ class CEvaluationTree:
      *  The string representation of valid types of a function
      */
     static const char * XMLType[];
+
+    /**
+     * The id of the corresponding function in an SBML file.
+     * This value is either set upon importing an SBML file,
+     * or when the object is first exported to an SBML file.
+     */
+    std::string mSBMLId;
 
     // Operations
   public:
@@ -182,6 +189,16 @@ class CEvaluationTree:
      * Returns the root node of the tree.
      */
     CEvaluationNode* getRoot();
+
+    /**
+     * Sets the SBMLId.
+     */
+    void setSBMLId(const std::string& id);
+
+    /**
+     * Returns a reference to the SBML Id.
+     */
+    const std::string& getSBMLId() const;
 
   protected:
     /**
