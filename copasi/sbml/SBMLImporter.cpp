@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/12 16:30:48 $
+   $Date: 2005/07/12 17:53:00 $
    End CVS Header */
 
 #include "copasi.h"
@@ -131,9 +131,9 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   /* Create all species */
   num = sbmlModel->getNumSpecies();
 
-  for (counter = num; counter > 0; counter--)
+  for (counter = 0; counter < num; ++counter)
     {
-      Species* sbmlSpecies = sbmlModel->getSpecies(counter - 1);
+      Species* sbmlSpecies = sbmlModel->getSpecies(counter);
       if (sbmlSpecies == NULL)
         {
           fatalError();
