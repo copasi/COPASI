@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 17:02:54 $
+   $Date: 2005/07/13 17:25:06 $
    End CVS Header */
 
 /**
@@ -223,7 +223,7 @@ bool CTrajectoryTask::process()
       if (mTimeSeriesRequested) mTimeSeries.add();
     }
 
-  if ((*L)(Time, NextTimeToReport))
+  if ((*L)(Time, NextTimeToReport * (1 - 100 * DBL_EPSILON)))
     {
       /* Here we will do conditional event processing */
 
