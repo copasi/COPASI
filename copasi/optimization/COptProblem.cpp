@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/08 19:36:22 $
+   $Date: 2005/07/13 18:18:58 $
    End CVS Header */
 
 /**
@@ -260,10 +260,7 @@ const C_FLOAT64 & COptProblem::getCalculateValue() const
 {return mCalculateValue;}
 
 void COptProblem::setSolutionVariables(const CVector< C_FLOAT64 > & variables)
-{
-  mSolutionVariables = variables;
-  DebugFile << mSolutionVariables << std::endl;
-}
+{mSolutionVariables = variables;}
 
 const CVector< C_FLOAT64 > & COptProblem::getSolutionVariables() const
   {return mSolutionVariables;}
@@ -271,7 +268,6 @@ const CVector< C_FLOAT64 > & COptProblem::getSolutionVariables() const
 bool COptProblem::setSolutionValue(const C_FLOAT64 & value)
 {
   mSolutionValue = value;
-  DebugFile << mSolutionValue << " :";
   if (mpCallBack) return mpCallBack->progress(mhSolutionValue);
 
   return true;
