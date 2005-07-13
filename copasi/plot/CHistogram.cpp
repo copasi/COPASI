@@ -1,13 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CHistogram.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/28 17:09:14 $
+   $Author: gauges $ 
+   $Date: 2005/07/13 12:11:08 $
    End CVS Header */
 
 #include <float.h>
-
+#include <math.h>
 #include "CHistogram.h"
 
 //  public:
