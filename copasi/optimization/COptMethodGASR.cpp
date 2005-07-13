@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 18:19:24 $
+   $Date: 2005/07/13 20:20:04 $
    End CVS Header */
 
 #include <float.h>
@@ -268,7 +268,7 @@ bool COptMethodGASR::select()
 
       for (j = 0; j < TotalPopulation - 1; j++)  // lambda is number of individuals
         {
-          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||    // within bounds
+          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||     // within bounds
               (mpRandom->getRandomOO() < mPf))      // random chance to compare values outside bounds
             {
               // compare obj fcn using mValue alternative code
@@ -309,12 +309,12 @@ C_FLOAT64 COptMethodGASR::phi(C_INT32 indivNum)
       // Go through parameter and constraints (all taken care of in single call)
       switch (OptItem.checkConstraint())
         {
-        case - 1:   // to low
+        case - 1:    // to low
           phiCalc = *OptItem.getLowerBoundValue() - (*mIndividual[indivNum])[i];
           phiVal += phiCalc * phiCalc;
           break;
 
-        case 1:     // to high
+        case 1:      // to high
           phiCalc = (*mIndividual[indivNum])[i] - *OptItem.getUpperBoundValue();
           phiVal += phiCalc * phiCalc;
           break;
@@ -423,6 +423,7 @@ bool COptMethodGASR::initialize()
   if (!COptMethod::initialize()) return false;
 
   mGenerations = * getValue("Number of Generations").pUINT;
+  mGeneration = 1;
   mPopulationSize = * getValue("Population Size").pUINT;
   C_FLOAT64 mPf = *(C_FLOAT64*) getValue("Pf").pDOUBLE;
   if (mPf <= 0.4 || 0.5 <= mPf) mPf = 0.475;
@@ -516,8 +517,8 @@ bool COptMethodGASR::optimise()
     }
 
   // ITERATE FOR gener GENERATIONS
-  for (mGeneration = 0;
-       mGeneration < mGenerations && Continue;
+  for (mGeneration = 2;
+       mGeneration <= mGenerations && Continue;
        mGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
     {
       // perturb the population if we have stalled for a while

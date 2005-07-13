@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 18:19:24 $
+   $Date: 2005/07/13 20:20:04 $
    End CVS Header */
 
 #include <float.h>
@@ -434,6 +434,8 @@ bool COptMethodGA::initialize()
   if (!COptMethod::initialize()) return false;
 
   mGenerations = * getValue("Number of Generations").pUINT;
+  mGeneration = 1;
+
   mPopulationSize = * getValue("Population Size").pUINT;
   mpRandom =
     CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
@@ -521,8 +523,8 @@ bool COptMethodGA::optimise()
     }
 
   // ITERATE FOR gener GENERATIONS
-  for (mGeneration = 0;
-       mGeneration < mGenerations && Continue;
+  for (mGeneration = 2;
+       mGeneration <= mGenerations && Continue;
        mGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
     {
       // perturb the population if we have stalled for a while
