@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/08 19:35:59 $
+   $Date: 2005/07/13 18:19:24 $
    End CVS Header */
 
 /**
@@ -59,6 +59,9 @@ class COptMethodGASR : public COptMethod
      */
     COptMethodGASR(const CCopasiContainer * pParent = NULL);
 
+    /**
+     * Initialize contained objects.
+     */
     virtual void initObjects();
 
     /**

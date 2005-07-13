@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/08 19:05:42 $
+   $Date: 2005/07/13 18:19:24 $
    End CVS Header */
 
 /***************************************************************************
@@ -20,17 +20,14 @@ email                : rluktuke@vt.edu
  ***************************************************************************/
 
 #include "copasi.h"
-#include "COptMethod.h"
-#include "CRealProblem.h"
-#include "randomGenerator/CRandom.h"
 
-//** Taken from COptMethodGA
+#include "COptMethod.h"
 #include "COptProblem.h"
-#include "COptItem.h" 
-//#include "utilities/CProcessReport.h"
-//#include "report/CCopasiObjectReference.h"
-//**** include namespace to fix CRandomSearch is not class or namespace error
+#include "COptItem.h"
 #include "CRandomSearch.h"
+
+#include "report/CCopasiObjectReference.h"
+#include "randomGenerator/CRandom.h"
 
 CRandomSearch::CRandomSearch():
     COptMethod(CCopasiMethod::RandomSearch)
@@ -38,11 +35,13 @@ CRandomSearch::CRandomSearch():
   addParameter("Number of Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 100000);
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+
+  initObjects();
 }
 
 CRandomSearch::CRandomSearch(const CRandomSearch & src):
     COptMethod(src)
-{}
+{initObjects();}
 
 /**
  * Destructor
@@ -50,6 +49,11 @@ CRandomSearch::CRandomSearch(const CRandomSearch & src):
 CRandomSearch::~CRandomSearch()
 {//*** added similar to coptga
   cleanup();
+}
+
+void CRandomSearch::initObjects()
+{
+  addObjectReference("Current Iteration", mCurrentIteration, CCopasiObject::ValueInt);
 }
 
 #ifdef WIN32 
@@ -98,12 +102,12 @@ bool CRandomSearch::optimise()
 
   C_FLOAT64 la;
 
-  unsigned C_INT32 i, j;
+  unsigned C_INT32 j;
 
   C_FLOAT64 mn;
   C_FLOAT64 mx;
 
-  for (i = 0; i < mIterations && Continue; i++)
+  for (mCurrentIteration = 0; mCurrentIteration < mIterations && Continue; mCurrentIteration++)
     {
       for (j = 0; j < mVariableSize && Continue; j++)
         {

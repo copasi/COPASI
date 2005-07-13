@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/08 19:05:42 $
+   $Date: 2005/07/13 18:19:24 $
    End CVS Header */
 
 #include <float.h>
@@ -41,6 +41,8 @@ COptMethodGA::COptMethodGA(const CCopasiContainer * pParent):
   addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 20);
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+
+  initObjects();
 }
 
 COptMethodGA::COptMethodGA(const COptMethodGA & src,
@@ -61,7 +63,7 @@ COptMethodGA::COptMethodGA(const COptMethodGA & src,
     mBestValue(DBL_MAX),
     mBestIndex(C_INVALID_INDEX),
     mGeneration(0)
-{}
+{initObjects();}
 
 COptMethodGA::~COptMethodGA()
 {cleanup();}
@@ -423,7 +425,6 @@ bool COptMethodGA::creation(unsigned C_INT32 first,
 void COptMethodGA::initObjects()
 {
   addObjectReference("Current Generation", mGeneration, CCopasiObject::ValueInt);
-  addObjectReference("Objective Value", mBestValue, CCopasiObject::ValueDbl);
 }
 
 bool COptMethodGA::initialize()

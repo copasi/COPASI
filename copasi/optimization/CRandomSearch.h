@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/01 19:27:03 $
+   $Date: 2005/07/13 18:19:24 $
    End CVS Header */
 
 /**
@@ -17,6 +17,7 @@
 //*** need to be added for definition
 class COptProblem;
 class COptMethod;
+
 #include "randomGenerator/CRandom.h"
 #include "utilities/CVector.h"
 
@@ -43,6 +44,11 @@ class CRandomSearch : public COptMethod
     virtual bool initialize();
 
     /**
+     * Initialize contained objects.
+     */
+    virtual void initObjects();
+
+    /**
      * Evaluate the fitness of one individual
      * @param const CVector< C_FLOAT64 > & individual
      * @return bool continue
@@ -59,6 +65,11 @@ class CRandomSearch : public COptMethod
      * number of iterations
      */
     unsigned C_INT32 mIterations;
+
+    /**
+     * The current iteration
+     */
+    unsigned C_INT32 mCurrentIteration;
 
     /**
      * a vector of the number of individuals.
