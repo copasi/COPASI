@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/09 16:42:35 $
+   $Date: 2005/07/13 17:24:16 $
    End CVS Header */
 
 /**
@@ -34,7 +34,8 @@ class CCallParameters : private std::vector<void *>
     union UType
       {
         const Type * value;
-        std::vector<const Type *> * vector;
+        std::vector< UType > * vector;
+        //        std::vector< void * > * unTyped;
       };
 
     typedef typename std::vector< UType >::const_iterator const_iterator;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/29 18:47:03 $
+   $Date: 2005/07/13 17:24:16 $
    End CVS Header */
 
 /**
@@ -78,7 +78,8 @@ CMassAction::~CMassAction(){DESTRUCTOR_TRACE;}
 const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & callParameters)
 {
   unsigned C_INT32 i, imax;
-  std::vector<const C_FLOAT64 *>::const_iterator Factor;
+  CCallParameters<C_FLOAT64>::const_iterator Factor;
+  //  std::vector<const C_FLOAT64 *>::const_iterator Factor;
 
   mValue = 0.0;
   C_FLOAT64 Products = 0.0;
@@ -90,7 +91,7 @@ const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & call
       Factor = callParameters[1].vector->begin();   // first substr.
 
       for (i = 0; i < imax; i++)
-        mValue *= **(Factor++);
+        mValue *= *(Factor++)->value;
     }
 
   if (isReversible() == TriFalse)
@@ -103,7 +104,7 @@ const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & call
       Factor = callParameters[3].vector->begin();   // first product
 
       for (i = 0; i < imax; i++)
-        Products *= **(Factor++);
+        Products *= *(Factor++)->value;
     }
 
   return mValue -= Products;
@@ -114,22 +115,22 @@ bool CMassAction::dependsOn(const C_FLOAT64 * parameter,
   {
     if (parameter == callParameters[0].value) return true;
 
-    std::vector<const C_FLOAT64 *>::const_iterator it;
-    std::vector<const C_FLOAT64 *>::const_iterator end;
+    CCallParameters<C_FLOAT64>::const_iterator it;
+    CCallParameters<C_FLOAT64>::const_iterator end;
 
     it = callParameters[1].vector->begin();
     end = callParameters[1].vector->end();
 
-    for (; it != end; it++) if (parameter == *it) return true;
+    for (; it != end; it++) if (parameter == it->value) return true;
 
-    if (isReversible() == TriFalse) return false;
+    if (isReversible() != TriTrue) return false;
 
     if (parameter == callParameters[2].value) return true;
 
     it = callParameters[3].vector->begin();
     end = callParameters[3].vector->end();
 
-    for (; it != end; it++) if (parameter == *it) return true;
+    for (; it != end; it++) if (parameter == it->value) return true;
 
     return false;
   }
