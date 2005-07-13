@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/27 16:09:56 $
+   $Author: shoops $ 
+   $Date: 2005/07/13 18:17:20 $
    End CVS Header */
 
 #ifndef COPASI_CVector
@@ -239,14 +239,19 @@ template <class CType> class CVector
 template <class CType>
 std::ostream &operator<<(std::ostream &os, const CVector< CType > & A)
 {
-  os << "Vector(" << A.mRows << ")" << std::endl;
+  os << "(";
 
-  unsigned C_INT32 i;
-  CType * tmp = A.mVector;
+  if (A.mRows)
+    {
+      unsigned C_INT32 i;
+      CType * tmp = A.mVector;
+      os << * (tmp++);
 
-  for (i = 0; i < A.mRows; i++)
-    os << "  " << * (tmp++);
-  os << std::endl;
+      for (i = 1; i < A.mRows; i++)
+        os << ",  " << * (tmp++);
+    }
+
+  os << ")";
   return os;
 }
 
