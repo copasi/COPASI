@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/03 10:24:36 $
+   $Author: shoops $ 
+   $Date: 2005/07/13 22:47:14 $
    End CVS Header */
 
 #include "copasi.h"
@@ -49,8 +49,9 @@ CEvaluationNodeChoice::~CEvaluationNodeChoice() {}
 
 const C_FLOAT64 & CEvaluationNodeChoice::value() const
   {
-    if (mpIf->value() != 0.0) return mpTrue->value();
-    else return mpFalse->value();
+    C_FLOAT64 &Value = *const_cast<C_FLOAT64 *>(&mValue);
+    if (mpIf->value() != 0.0) return Value = mpTrue->value();
+    else return Value = mpFalse->value();
   }
 
 bool CEvaluationNodeChoice::compile(const CEvaluationTree * /* pTree */)

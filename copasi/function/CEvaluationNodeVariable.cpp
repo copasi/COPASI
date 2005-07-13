@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVariable.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/03 10:24:36 $
+   $Author: shoops $ 
+   $Date: 2005/07/13 22:47:14 $
    End CVS Header */
 
 #include "copasi.h"
@@ -44,7 +44,7 @@ bool CEvaluationNodeVariable::compile(const CEvaluationTree * pTree)
 }
 
 const C_FLOAT64 & CEvaluationNodeVariable::value() const
-{return mpTree->getVariableValue(mIndex);}
+{return *const_cast<C_FLOAT64 *>(&mValue) = mpTree->getVariableValue(mIndex);}
 
 ASTNode* CEvaluationNodeVariable::toAST() const
   {
