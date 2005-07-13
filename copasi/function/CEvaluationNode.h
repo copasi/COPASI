@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/03 10:24:36 $
+   $Author: shoops $ 
+   $Date: 2005/07/13 22:45:45 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
@@ -37,7 +37,8 @@ class CEvaluationNode : public CCopasiNode< std::string >
       VARIABLE = 0x09000000,
       WHITESPACE = 0x0a000000,
       LOGIC = 0x0b000000,
-      MV_FUNCTION = 0x0c000000
+      MV_FUNCTION = 0x0c000000,
+      VECTOR = 0x0d000000
     };
 
     // Methods
@@ -147,6 +148,12 @@ class CEvaluationNode : public CCopasiNode< std::string >
      * @return bool isLess
      */
     bool operator < (const CEvaluationNode & rhs);
+
+    /**
+     * Retrieve the pointer to the value of the node
+     * @return const C_FLOAT64 * pValue
+     */
+    const C_FLOAT64 * getValuePointer() const;
 
     // Attributes
   protected:
@@ -276,6 +283,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
 #define PRECEDENCE_STRUCTURE_COMMA CPrecedence(0, 1)
 #define PRECEDENCE_STRUCTURE_CLOSE CPrecedence(0, ULONG_MAX)
 
+#include "CEvaluationNodeCall.h"
 #include "CEvaluationNodeChoice.h"
 #include "CEvaluationNodeConstant.h"
 #include "CEvaluationNodeFunction.h"
@@ -285,6 +293,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
 #include "CEvaluationNodeOperator.h"
 #include "CEvaluationNodeStructure.h"
 #include "CEvaluationNodeVariable.h"
+#include "CEvaluationNodeVector.h"
 #include "CEvaluationNodeWhiteSpace.h"
 
 #endif // COPASI_CEvaluationNode

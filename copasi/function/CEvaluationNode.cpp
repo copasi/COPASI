@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/03 10:24:36 $
+   $Author: shoops $ 
+   $Date: 2005/07/13 22:45:45 $
    End CVS Header */
 
 #include "copasi.h"
@@ -126,3 +126,6 @@ ASTNode* CEvaluationNode::toAST() const
   {
     return new ASTNode();
   }
+
+const C_FLOAT64 * CEvaluationNode::getValuePointer() const
+  {return &mValue;}
