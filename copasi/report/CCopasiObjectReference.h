@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/22 03:24:22 $
+   $Date: 2005/07/13 18:18:01 $
    End CVS Header */
 
 /**
@@ -211,6 +211,16 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
     }
 
     virtual void * getReference() const {return &mReference;}
+
+    /**
+     * This is the output method for any object. The default implementation
+     * provided with CCopasiObject uses the ostream operator<< of the object
+     * to print the object.To overide this default behaviour one needs to
+     * reimplement the virtual print function.
+     * @param std::ostream * ostream
+     */
+    virtual void print(std::ostream * ostream) const
+      {*ostream << mReference;}
   };
 
 /** @dia:pos 64.092,50.0714 */
