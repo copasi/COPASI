@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/12 21:09:54 $
+   $Date: 2005/07/13 17:02:54 $
    End CVS Header */
 
 /**
@@ -212,7 +212,9 @@ bool CTrajectoryTask::process()
       flagProceed = mpProgressHandler->progress(hProcess);
     }
 
-  if ((mDoOutput) && (*LE)(outputStartTime, Time) && !(Time < NextTimeToReport))
+  if ((mDoOutput) &&
+      (*LE)(outputStartTime, Time) &&
+      !(*L)(Time, NextTimeToReport * (1 - 100 * DBL_EPSILON)))
     {
       pProblem->getModel()->setState(mpState);
       pProblem->getModel()->updateRates();
@@ -221,7 +223,7 @@ bool CTrajectoryTask::process()
       if (mTimeSeriesRequested) mTimeSeries.add();
     }
 
-  if (ActualStepSize != StepSize)
+  if ((*L)(Time, NextTimeToReport))
     {
       /* Here we will do conditional event processing */
 
@@ -229,8 +231,8 @@ bool CTrajectoryTask::process()
     }
   else
     {
-      StepSize = pProblem->getStepSize();
-      NextTimeToReport = Time + StepSize;
+      NextTimeToReport += pProblem->getStepSize();
+      StepSize = NextTimeToReport - Time;
     }
 
   while ((*L)(Time, EndTime) && flagProceed)
@@ -245,7 +247,9 @@ bool CTrajectoryTask::process()
           flagProceed = mpProgressHandler->progress(hProcess);
         }
 
-      if ((mDoOutput) && (*LE)(outputStartTime, Time) && !(Time < NextTimeToReport))
+      if ((mDoOutput) &&
+          (*LE)(outputStartTime, Time) &&
+          !(*L)(Time, NextTimeToReport * (1 - 100 * DBL_EPSILON)))
         {
           pProblem->getModel()->setState(mpState);
           pProblem->getModel()->updateRates();
@@ -254,24 +258,22 @@ bool CTrajectoryTask::process()
           if (mTimeSeriesRequested) mTimeSeries.add();
         }
 
-      if (ActualStepSize != StepSize)
+      if ((*L)(Time, NextTimeToReport * (1 - 100 * DBL_EPSILON)))
         {
           /* Here we will do conditional event processing */
 
+          // Increase the step size by multplying with
+          // (1 + DBL_EPSILON) to avoid infinite loops
           StepSize = NextTimeToReport - Time;
         }
       else
         {
-          StepSize = pProblem->getStepSize();
-          NextTimeToReport = Time + StepSize;
+          NextTimeToReport += pProblem->getStepSize();
+          StepSize = NextTimeToReport - Time;
         }
     }
 
-  // This assures that the integration stops.
-  C_FLOAT64 modifiedEndTime = (StepSize < 0.0) ? pProblem->getEndTime() + StepSize * 1e-5 : pProblem->getEndTime() - StepSize * 1e-5;
-  NextTimeToReport = modifiedEndTime;
-
-  while ((*L)(Time, modifiedEndTime) && flagProceed)
+  while ((*L)(Time, NextTimeToReport * (1 - 100 * DBL_EPSILON)) && flagProceed)
     {
       ActualStepSize = pMethod->step(pProblem->getEndTime() - Time);
 
@@ -281,7 +283,7 @@ bool CTrajectoryTask::process()
           flagProceed = mpProgressHandler->progress(hProcess);
         }
 
-      if ((mDoOutput) && (*LE)(outputStartTime, Time) && !(Time < NextTimeToReport))
+      if ((mDoOutput) && (*LE)(outputStartTime, Time) && !(*L)(Time, NextTimeToReport * (1 - 100 * DBL_EPSILON)))
         {
           pProblem->getModel()->setState(mpState);
           pProblem->getModel()->updateRates();
@@ -290,9 +292,11 @@ bool CTrajectoryTask::process()
           if (mTimeSeriesRequested) mTimeSeries.add();
         }
 
-      if (ActualStepSize != (pProblem->getEndTime() - Time))
+      if ((*L)(Time, NextTimeToReport * (1 - 100 * DBL_EPSILON)))
         {
           /* Here we will do conditional event processing */
+
+          StepSize = NextTimeToReport - Time;
         }
     }
 
