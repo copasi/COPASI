@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/12 11:36:18 $
+   $Date: 2005/07/13 20:05:12 $
    End CVS Header */
 
 /**
@@ -46,11 +46,11 @@ CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiConta
     {
       pContainer = listOfContainer[containerIndex];
 
-      for (Name = objName, pObject = NULL;
-           (Name.getRemainder() != ""
-            || Name.getObjectType() == "String") &&
-           !pObject;
-           Name = Name.getRemainder())
+      Name = objName;
+
+      pObject = pContainer->getObject(Name);
+
+      for (; Name.getRemainder() != "" && !pObject; Name = Name.getRemainder())
         pObject = pContainer->getObject(Name);
     }
 
@@ -164,7 +164,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
         if (cn.getElementName(0, false) == "")
           return it->second;
 
-        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +             //TODO really?
+        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +              //TODO really?
                                         "[" + cn.getElementName(1, false) + "]");
 
         if (it->second->getObjectType() == "Reference" || !pObject)
