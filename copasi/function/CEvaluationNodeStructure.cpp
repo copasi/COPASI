@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeStructure.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/06 13:43:13 $
+   $Author: shoops $ 
+   $Date: 2005/07/13 22:54:31 $
    End CVS Header */
 
 #include "copasi.h"
@@ -22,6 +22,7 @@ CEvaluationNodeStructure::CEvaluationNodeStructure(const SubType & subType,
   switch (subType)
     {
     case OPEN:
+    case VECTOR_OPEN:
       mPrecedence = PRECEDENCE_STRUCTURE_OPEN;
       break;
 
@@ -30,6 +31,7 @@ CEvaluationNodeStructure::CEvaluationNodeStructure(const SubType & subType,
       break;
 
     case CLOSE:
+    case VECTOR_CLOSE:
       mPrecedence = PRECEDENCE_STRUCTURE_CLOSE;
       break;
 
