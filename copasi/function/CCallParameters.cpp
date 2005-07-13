@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 17:24:16 $
+   $Date: 2005/07/13 22:48:35 $
    End CVS Header */
 
 #include "copasi.h"
@@ -27,8 +27,8 @@ CFunctionParameterMap::CFunctionParameterMap(const CFunctionParameterMap & src):
   for (i = 0; i < imax; ++i)
     if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::VINT32)
       {
-        mPointers[i].vector = new std::vector< CCallParameters<C_FLOAT64>::UType >(*src.mPointers[i].vector);
-        mObjects[i].vector = new std::vector< CCallParameters<CCopasiObject>::UType >(*src.mObjects[i].vector);
+        mPointers[i].vector = new CCallParameters<C_FLOAT64>(*src.mPointers[i].vector);
+        mObjects[i].vector = new CCallParameters<CCopasiObject>(*src.mObjects[i].vector);
       }
 }
 
@@ -83,8 +83,8 @@ void CFunctionParameterMap::initCallParameters()
     {
       if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::VINT32)
         {
-          mObjects[i].vector = new std::vector< CCallParameters<CCopasiObject>::UType >;
-          mPointers[i].vector = new std::vector< CCallParameters<C_FLOAT64>::UType >;
+          mObjects[i].vector = new CCallParameters<CCopasiObject>;
+          mPointers[i].vector = new CCallParameters<C_FLOAT64>;
         }
     }
 }
@@ -137,14 +137,8 @@ void CFunctionParameterMap::addCallParameter(const std::string paramName, const 
 
   if (type < CFunctionParameter::VINT32) fatalError(); // is not a vector
 
-  // TODO: check type of object
-  CCallParameters<CCopasiObject>::UType Object;
-  Object.value = obj;
-  mObjects[index].vector->push_back(Object);
-
-  CCallParameters<C_FLOAT64>::UType Pointer;
-  Pointer.value = (const C_FLOAT64*) obj->getReference();
-  mPointers[index].vector->push_back(Pointer);
+  mObjects[index].vector->push_back(obj);
+  mPointers[index].vector->push_back((const C_FLOAT64*) obj->getReference());
 }
 
 void CFunctionParameterMap::clearCallParameter(const std::string paramName)

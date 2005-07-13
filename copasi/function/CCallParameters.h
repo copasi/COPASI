@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 17:24:16 $
+   $Date: 2005/07/13 22:48:35 $
    End CVS Header */
 
 /**
@@ -34,7 +34,7 @@ class CCallParameters : private std::vector<void *>
     union UType
       {
         const Type * value;
-        std::vector< UType > * vector;
+        CCallParameters< Type > * vector;
         //        std::vector< void * > * unTyped;
       };
 
@@ -54,21 +54,27 @@ class CCallParameters : private std::vector<void *>
 
     void resize(const unsigned C_INT32 & size)
     {
-      ((std::vector<UType> *)this)->resize(size);
+      ((std::vector<void *> *) this)->resize(size);
 
-      typename std::vector<UType>::iterator it
-      = ((std::vector<UType> *)this)->begin();
-      typename std::vector<UType>::iterator end
-      = ((std::vector<UType> *)this)->end();
+      std::vector<void *>::iterator it
+      = ((std::vector<void *> *) this)->begin();
+      typename std::vector<void *>::iterator end
+      = ((std::vector<void *> *) this)->end();
 
-      for (; it != end; ++it) it->value = NULL;
+      for (; it != end; ++it) *it = NULL;
     }
 
+    inline void push_back(const Type * value)
+  {((std::vector<const Type *> *) this)->push_back(value);}
+
+    inline void push_back(CCallParameters< Type > * vector)
+    {((std::vector<void *> *) this)->push_back(vector);}
+
     inline void clear()
-  {((std::vector<UType> *)this)->clear();}
+    {((std::vector<void *> *) this)->clear();}
 
     inline unsigned C_INT32 size() const
-      {return ((const std::vector< UType > *)this)->size();}
+      {return ((std::vector<void *> *) this)->size();}
 
     inline UType & operator[](const unsigned C_INT32 & index)
     {return (*(std::vector< UType > *)this)[index];}
@@ -77,10 +83,10 @@ class CCallParameters : private std::vector<void *>
       {return (*(const std::vector< UType > *)this)[index];}
 
     inline const_iterator begin() const
-      {return ((const std::vector< UType > *)this)->begin();}
+      {return ((std::vector<UType> *) this)->begin();}
 
     inline const_iterator end() const
-      {return ((const std::vector< UType > *)this)->end();}
+      {return ((std::vector<UType> *) this)->end();}
   };
 
 /**
