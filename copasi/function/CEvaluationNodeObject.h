@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/03 10:24:36 $
+   $Author: shoops $ 
+   $Date: 2005/07/13 22:50:08 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeObject
@@ -67,7 +67,8 @@ class CEvaluationNodeObject : public CEvaluationNode
      * Retrieve the value of the node
      * @return const C_FLOAT64 & value
      */
-    virtual inline const C_FLOAT64 & value() const {return *mpValue;}
+    virtual inline const C_FLOAT64 & value() const
+      {return *const_cast<C_FLOAT64 *>(&mValue) = *mpValue;}
 
     /**
      * Retrieve the value of the node. This method is superceded

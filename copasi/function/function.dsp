@@ -67,6 +67,10 @@ SOURCE=.\CEvaluationNode.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEvaluationNodeCall.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CEvaluationNodeChoice.cpp
 # End Source File
 # Begin Source File
@@ -100,6 +104,10 @@ SOURCE=.\CEvaluationNodeStructure.cpp
 # Begin Source File
 
 SOURCE=.\CEvaluationNodeVariable.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationNodeVector.cpp
 # End Source File
 # Begin Source File
 
@@ -175,6 +183,10 @@ SOURCE=.\CEvaluationNode.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEvaluationNodeCall.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CEvaluationNodeChoice.h
 # End Source File
 # Begin Source File
@@ -208,6 +220,10 @@ SOURCE=.\CEvaluationNodeStructure.h
 # Begin Source File
 
 SOURCE=.\CEvaluationNodeVariable.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEvaluationNodeVector.h
 # End Source File
 # Begin Source File
 

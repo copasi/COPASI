@@ -16,7 +16,9 @@
 
 /* yacc Declarations */
 %token TOKEN_NUMBER
+%token TOKEN_VARIABLE
 
+%token TOKEN_CALL
 %token TOKEN_FUNCTION
 %token TOKEN_SIGN
 
@@ -39,8 +41,10 @@
 %token TOKEN_LOGICAL_LE
 
 %token TOKEN_STRUCTURE_OPEN
+%token TOKEN_STRUCTURE_VECTOR_OPEN
 %token TOKEN_STRUCTURE_COMMA
 %token TOKEN_STRUCTURE_CLOSE
+%token TOKEN_STRUCTURE_VECTOR_CLOSE
 
 // Precedence
 %right TOKEN_LOGICAL_NOT
@@ -60,6 +64,7 @@
 %right TOKEN_OPERATOR_POWER
 
 // Right Precedence
+%right TOKEN_CALL // Will never occur
 %right TOKEN_FUNCTION // Will never occur
 %right TOKEN_SIGN // Will never occur
 %right TOKEN_LOGICAL_CHOICE // Will never occur
@@ -68,6 +73,10 @@
 %%
 
 exp:      TOKEN_NUMBER
+          {
+            mpRootNode = $1;
+          }
+        | TOKEN_VARIABLE
           {
             mpRootNode = $1;
           }
@@ -122,6 +131,11 @@ exp:      TOKEN_NUMBER
             $$->addChild($3); 
             $$->addChild($5); 
             $$->addChild($7); 
+            mpRootNode = $$; 
+          }
+        | call
+          {
+            $$ = $1;
             mpRootNode = $$; 
           }
 
@@ -244,6 +258,72 @@ bool:     TOKEN_LOGICAL_VALUE
             $$ = $1;
             $$->addChild($2);
             mpRootNode = $$; 
+          }
+
+vector:   TOKEN_STRUCTURE_VECTOR_OPEN TOKEN_STRUCTURE_VECTOR_CLOSE
+          {
+            $$ = new CEvaluationNodeVector();
+          }
+        | vstart TOKEN_STRUCTURE_VECTOR_CLOSE
+          {
+            $$ = $1;
+          }
+
+
+vstart:   TOKEN_STRUCTURE_VECTOR_OPEN exp
+          {
+            $$ = new CEvaluationNodeVector();
+            $$->addChild($2);
+          }
+        | TOKEN_STRUCTURE_VECTOR_OPEN vector
+          {
+            $$ = new CEvaluationNodeVector();
+            $$->addChild($2);
+          }
+        | vstart TOKEN_STRUCTURE_COMMA exp
+          {
+            $$->addChild($3);
+          }
+        | vstart TOKEN_STRUCTURE_COMMA vector
+          {
+            $$->addChild($3);
+          }
+
+call:     TOKEN_CALL TOKEN_STRUCTURE_OPEN TOKEN_VARIABLE TOKEN_STRUCTURE_OPEN TOKEN_STRUCTURE_CLOSE TOKEN_STRUCTURE_CLOSE
+          {
+            $$ = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, "call");
+            ((CEvaluationNodeCall *)($$))->setEvaluationTreeName($3->getData()); 
+          }
+        | TOKEN_CALL TOKEN_STRUCTURE_OPEN TOKEN_VARIABLE TOKEN_STRUCTURE_CLOSE
+          {
+            $$ = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "call");
+            ((CEvaluationNodeCall *)($$))->setEvaluationTreeName($3->getData()); 
+          }
+        | cstart exp TOKEN_STRUCTURE_CLOSE TOKEN_STRUCTURE_CLOSE
+          {
+            $$ = $1;
+            ((CEvaluationNodeCall *)($$))->addChild($2); 
+          }
+        | cstart vector TOKEN_STRUCTURE_CLOSE TOKEN_STRUCTURE_CLOSE
+          {
+            $$ = $1;
+            ((CEvaluationNodeCall *)($$))->addChild($2); 
+          }
+
+cstart:   TOKEN_CALL TOKEN_STRUCTURE_OPEN TOKEN_VARIABLE TOKEN_STRUCTURE_OPEN
+          {
+            $$ = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, "call");
+            ((CEvaluationNodeCall *)($$))->setEvaluationTreeName($3->getData()); 
+          }
+        | cstart exp TOKEN_STRUCTURE_COMMA
+          {
+            $$ = $1;
+            ((CEvaluationNodeCall *)($$))->addChild($2); 
+          }
+        | cstart vector TOKEN_STRUCTURE_COMMA
+          {
+            $$ = $1;
+            ((CEvaluationNodeCall *)($$))->addChild($2); 
           }
 ;
 

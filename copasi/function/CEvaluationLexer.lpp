@@ -159,7 +159,7 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   mpNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY,
                                        yytext);
   COMMON_ACTION;
-  return TOKEN_NUMBER;
+  return TOKEN_VARIABLE;
 %}
 
 \<([^\\\>]|\\.)*\>  %{
@@ -434,6 +434,13 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   return TOKEN_LOGICAL_CHOICE;
 %}
 
+(call|CALL)/\(   %{
+  BEGIN(sOPERATOR); 
+  mpNode = NULL;
+  COMMON_ACTION;
+  return TOKEN_CALL;
+%}
+
 <INITIAL,sSIGN>"-"   %{
   BEGIN(sOPERATOR); 
   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS,
@@ -504,6 +511,14 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   return TOKEN_STRUCTURE_OPEN;
 %}
 
+"{"   %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeStructure(CEvaluationNodeStructure::VECTOR_OPEN,
+                                        yytext);
+  COMMON_ACTION;
+  return TOKEN_STRUCTURE_VECTOR_OPEN;
+%}
+
 ","   %{
   BEGIN(sSIGN); 
   mpNode = new CEvaluationNodeStructure(CEvaluationNodeStructure::COMMA,
@@ -518,6 +533,14 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
                                         yytext);
   COMMON_ACTION;
   return TOKEN_STRUCTURE_CLOSE;
+%}
+
+"}"   %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeStructure(CEvaluationNodeStructure::VECTOR_CLOSE,
+                                        yytext);
+  COMMON_ACTION;
+  return TOKEN_STRUCTURE_VECTOR_CLOSE;
 %}
 
 [ \t\r\n]+ %{

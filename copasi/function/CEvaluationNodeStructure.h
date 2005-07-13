@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeStructure.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/03 10:24:36 $
+   $Author: shoops $ 
+   $Date: 2005/07/13 22:50:08 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeStructure
@@ -24,8 +24,10 @@ class CEvaluationNodeStructure : public CEvaluationNode
     {
       INVALID = 0x00FFFFFF,
       OPEN = 0x00000000,
-      COMMA = 0x00000001,
-      CLOSE = 0x00000002
+      VECTOR_OPEN = 0x00000001,
+      COMMA = 0x00000002,
+      CLOSE = 0x00000003,
+      VECTOR_CLOSE = 0x00000004
     };
 
     // Operations

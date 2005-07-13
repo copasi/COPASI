@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.18 $ $Author: shoops $ $Date: 2005/06/24 15:31:32 $  
+# $Revision: 1.19 $ $Author: shoops $ $Date: 2005/07/13 22:50:08 $  
 ######################################################################
 
 LIB = function
@@ -11,6 +11,7 @@ include(../common.pri)
 HEADERS += CCallParameters.h \
            CEvaluationLexer.h \
            CEvaluationNode.h \
+           CEvaluationNodeCall.h \
            CEvaluationNodeChoice.h \
            CEvaluationNodeConstant.h \
            CEvaluationNodeFunction.h \
@@ -20,6 +21,7 @@ HEADERS += CCallParameters.h \
            CEvaluationNodeOperator.h \
            CEvaluationNodeStructure.h \
            CEvaluationNodeVariable.h \
+           CEvaluationNodeVector.h \
            CEvaluationNodeWhiteSpace.h \
            CEvaluationTree.h \
            CExpression.h \
@@ -35,6 +37,7 @@ HEADERS += CCallParameters.h \
 
 SOURCES += CCallParameters.cpp \
            CEvaluationNode.cpp \
+           CEvaluationNodeCall.cpp \
            CEvaluationNodeChoice.cpp \
            CEvaluationNodeConstant.cpp \
            CEvaluationNodeFunction.cpp \
@@ -44,6 +47,7 @@ SOURCES += CCallParameters.cpp \
            CEvaluationNodeOperator.cpp \
            CEvaluationNodeStructure.cpp \
            CEvaluationNodeVariable.cpp \
+           CEvaluationNodeVector.cpp \
            CEvaluationNodeWhiteSpace.cpp \
            CEvaluationTree.cpp \
            CExpression.cpp \
