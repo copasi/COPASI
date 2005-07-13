@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/05 12:32:29 $
+   $Date: 2005/07/13 20:17:07 $
    End CVS Header */
 
 #include "copasi.h"
@@ -118,6 +118,8 @@ void CReport::printFooter()
 
 bool CReport::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
+  bool success = true;
+
   headerObjectList.clear();
   bodyObjectList.clear();
   footerObjectList.clear();
@@ -128,7 +130,7 @@ bool CReport::compile(std::vector< CCopasiContainer * > listOfContainer)
   listOfContainer.push_back(this);
 
   if (mpReportDef->isTable())
-    if (!mpReportDef->preCompileTable(listOfContainer)) return false;
+    if (!mpReportDef->preCompileTable(listOfContainer)) success = false;
 
   generateObjectsFromName(&listOfContainer, headerObjectList,
                           mpReportDef->getHeaderAddr());
@@ -137,7 +139,7 @@ bool CReport::compile(std::vector< CCopasiContainer * > listOfContainer)
   generateObjectsFromName(&listOfContainer, footerObjectList,
                           mpReportDef->getFooterAddr());
 
-  return true;
+  return success;
 }
 
 std::ostream * CReport::open(std::ostream * pOstream)
@@ -196,13 +198,6 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
       pSelected = CCopasiContainer::ObjectFromName(*pListOfContainer,
                   (*nameVector)[i]);
 
-      if (pSelected)
-        {
-          if (pSelected->isStaticString() &&
-              pSelected->getObjectParent() != this)
-            add(pSelected);
-
-          objectList.push_back(pSelected);
-        }
+      if (pSelected) objectList.push_back(pSelected);
     }
 }
