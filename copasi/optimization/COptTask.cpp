@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/08 19:36:51 $
+   $Date: 2005/07/13 18:18:24 $
    End CVS Header */
 
 /**
@@ -105,7 +105,7 @@ bool COptTask::process()
 
   bool success = pMethod->optimise();
 
-  if (Report) mReport.printHeader();
+  if (Report) mReport.printFooter();
 
   pProblem->restore();
 
