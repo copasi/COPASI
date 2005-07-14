@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.146 $
+   $Revision: 1.147 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/14 20:33:29 $
+   $Author: nsimus $ 
+   $Date: 2005/07/14 10:56:15 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -85,6 +85,7 @@ CopasiUI3Window::CopasiUI3Window():
   //mpFileMenu->setItemEnabled(nobject_browser, false);
   bobject_browser_open = false;
   mpFileMenu->setItemEnabled(nexport_menu_SBML, false);
+  mpFileMenu->setItemEnabled(nexport_menu_MathModel, false);
   mpFileMenu->setItemEnabled(nsave_menu_id, false);
   mpFileMenu->setItemEnabled(nsaveas_menu_id, false);
   msave_button->setEnabled(false);
@@ -218,14 +219,14 @@ void CopasiUI3Window::newDoc()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                                                // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                                                 // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                                                // Discard clicked or Alt+D pressed
+        case 1:                                                                                 // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                                                // Cancel clicked or Escape pressed
+        case 2:                                                                                 // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -241,6 +242,7 @@ void CopasiUI3Window::newDoc()
   if (!bobject_browser_open)
     //mpFileMenu->setItemEnabled(nobject_browser, true);
     mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
+  mpFileMenu->setItemEnabled(nexport_menu_MathModel, true);
   mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
   msave_button->setEnabled(true);
   mpFileMenu->setItemEnabled(nsave_menu_id, true);
@@ -282,14 +284,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                                                // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                                                 // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                                                // Discard clicked or Alt+D pressed
+            case 1:                                                                                 // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                                                // Cancel clicked or Escape pressed
+            case 2:                                                                                 // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -367,6 +369,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
       //if (!bobject_browser_open)
       //  mpFileMenu->setItemEnabled(nobject_browser, true);
       mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
+      mpFileMenu->setItemEnabled(nexport_menu_MathModel, true);
       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
       msave_button->setEnabled(true);
       mpFileMenu->setItemEnabled(nsave_menu_id, true);
@@ -453,14 +456,14 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                                                // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:                                                                                 // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                                                // Discard clicked or Alt+D pressed
+        case 1:                                                                                 // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                                                // Cancel clicked or Escape pressed
+        case 2:                                                                                 // Cancel clicked or Escape pressed
           return;
           break;
         }
@@ -482,14 +485,14 @@ void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                                                // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                                                 // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                                                // Discard clicked or Alt+D pressed
+            case 1:                                                                                 // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                                                // Cancel clicked or Escape pressed
+            case 2:                                                                                 // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -615,8 +618,8 @@ void CopasiUI3Window::createToolBar()
 void CopasiUI3Window::createMenuBar()
 {
   //modified on 5th feb : Ankur (left for further modification...later
-  QPixmap icon[7] = {filenew, fileopen, filesave, filesave, fileopen, filesave, fileopen};
-  const char* toolTip[8];
+  QPixmap icon[8] = {filenew, fileopen, filesave, filesave, fileopen, filesave, filesave, fileopen};
+  const char* toolTip[9];
 
   toolTip[0] = "Click this button to create a <em>new file</em>. <br>"
                "You can also select the <b>New</b> command "
@@ -648,15 +651,20 @@ void CopasiUI3Window::createMenuBar()
   toolTip[6] = "Click this button to select the output objects "
                ".\n You can also select the only numeric value ";
 
-  const char* iconName[6] = {"&New", "&Open", "&Save", "Save&As", "&Import SBML", "&Export SBML"};
-  const char* slotFileName[6] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()), SLOT(slotImportSBML()), SLOT(slotExportSBML())};
-  QKeySequence hotKey[6] = {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_I, CTRL + Key_E};
-  int fileSeparator[6] = {0, 0, 0, 0, 0, 0};
+  toolTip[7] = "Click this button to export the Mathematical Model. "
+               "You will be prompted for a file name.\n"
+               "You can also select the <b>Export MathModel</b> command "
+               "from the <b>File</b> menu.</p>";
+
+  const char* iconName[7] = {"&New", "&Open", "&Save", "Save&As", "&Import SBML", "&Export SBML", "&Export MathModel"};
+  const char* slotFileName[7] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()), SLOT(slotImportSBML()), SLOT(slotExportSBML()), SLOT(slotExportMathModel())};
+  QKeySequence hotKey[7] = {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_I, CTRL + Key_E, CTRL + Key_M};
+  int fileSeparator[7] = {0, 0, 0, 0, 0, 0, 0};
 
   mpFileMenu = new QPopupMenu(this);
   menuBar()->insertItem("&File", mpFileMenu);
   int j;
-  for (j = 0; j < 6; j++)
+  for (j = 0; j < 7; j++)
     {
       if (fileSeparator[j] == 1)
         mpFileMenu->insertSeparator();
@@ -673,6 +681,8 @@ void CopasiUI3Window::createMenuBar()
         nsaveas_menu_id = id;
       if (j == 5)
         nexport_menu_SBML = id;
+      if (j == 7)
+        nexport_menu_MathModel = id;
     }
   mpFileMenu->insertSeparator();
   mpFileMenu->insertItem("&Close", this, SLOT(newDoc()), CTRL + Key_W);
@@ -741,14 +751,14 @@ void CopasiUI3Window::slotImportSBML()
                                            "Do you want to save the changes before exiting?",
                                            "&Save", "&Discard", "Cancel", 0, 2))
             {
-            case 0:                                                                                // Save clicked or Alt+S pressed or Enter pressed.
+            case 0:                                                                                 // Save clicked or Alt+S pressed or Enter pressed.
               slotFileSave();
               break;
 
-            case 1:                                                                                // Discard clicked or Alt+D pressed
+            case 1:                                                                                 // Discard clicked or Alt+D pressed
               break;
 
-            case 2:                                                                                // Cancel clicked or Escape pressed
+            case 2:                                                                                 // Cancel clicked or Escape pressed
               return;
               break;
             }
@@ -807,6 +817,7 @@ void CopasiUI3Window::slotImportSBML()
       //if (!bobject_browser_open)
       //  mpFileMenu->setItemEnabled(nobject_browser, true);
       mpFileMenu->setItemEnabled(nexport_menu_SBML, true);
+      mpFileMenu->setItemEnabled(nexport_menu_MathModel, true);
       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
       msave_button->setEnabled(true);
       mpFileMenu->setItemEnabled(nsave_menu_id, true);
@@ -855,6 +866,56 @@ void CopasiUI3Window::slotExportSBML()
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
       if (!dataModel->exportSBML((const char *) tmp.utf8(), true))
+        {
+          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+            {
+              QMessageBox::critical(this, "Export Error",
+                                    CCopasiMessage::getAllMessageText().c_str(),
+                                    QMessageBox::Ok | QMessageBox::Default,
+                                    QMessageBox::NoButton);
+              CCopasiMessage::clearDeque();
+            }
+        }
+      setCursor(oldCursor);
+    }
+}
+
+void CopasiUI3Window::slotExportMathModel()
+{
+  ListViews::commit();
+
+  C_INT32 Answer = QMessageBox::No;
+  QString tmp;
+
+  while (Answer == QMessageBox::No)
+    {
+      std::string Default
+      = CDirEntry::dirName(CCopasiDataModel::Global->getFileName())
+        + CDirEntry::Separator
+        + CDirEntry::baseName(CCopasiDataModel::Global->getFileName())
+        + ".out";
+
+      tmp = QFileDialog::getSaveFileName(FROM_UTF8(Default),
+                                         "ASCII Files (*.out)",
+                                         this, "Export MathModel Dialog",
+                                         "Choose a filename for MathModel export.");
+      if (tmp == "") return;
+
+      if (!tmp.endsWith(".cps") && !tmp.endsWith("."))
+        tmp += ".out";
+
+      tmp = tmp.remove(QRegExp("\\.$"));
+
+      Answer = checkSelection(tmp);
+
+      if (Answer == QMessageBox::Cancel) return;
+    }
+
+  if (dataModel && tmp)
+    {
+      QCursor oldCursor = cursor();
+      setCursor(Qt::WaitCursor);
+      if (!dataModel->exportMathModel((const char *) tmp.utf8(), true))
         {
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
             {
