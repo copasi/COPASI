@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.3 $ $Author: ssahle $ $Date: 2005/06/24 09:01:40 $  
+# $Revision: 1.4 $ $Author: nsimus $ $Date: 2005/07/14 10:57:26 $  
 ######################################################################
 
 LIB = tss
@@ -10,8 +10,10 @@ include(../common.pri)
 # Input
 HEADERS += CTSSMethod.h \
            CTSSProblem.h \
-           CTSSTask.h
+           CTSSTask.h \
+	   MMASCIIExporter.h
 
 SOURCES += CTSSMethod.cpp \
            CTSSProblem.cpp \
-           CTSSTask.cpp
+           CTSSTask.cpp \
+	   MMASCIIExporter.cpp

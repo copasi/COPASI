@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/04 15:26:45 $
+   $Author: nsimus $ 
+   $Date: 2005/07/14 10:55:22 $
    End CVS Header */
 
 #include "copasi.h"
@@ -31,6 +31,7 @@
 #include "xml/CCopasiXML.h"
 #include "sbml/SBMLImporter.h"
 #include "sbml/SBMLExporter.h"
+#include "tss/MMASCIIExporter.h"
 
 CDataModelRenameHandler::CDataModelRenameHandler(CCopasiDataModel* dm)
     : mpDataModel(dm)
@@ -384,6 +385,33 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
   return exporter.exportSBML(mpModel, fileName.c_str(), overwriteFile);
 }
 
+bool CCopasiDataModel::exportMathModel(const std::string & fileName, bool overwriteFile)
+{
+  if (fileName == "") return false;
+
+  if (CDirEntry::exist(fileName))
+    {
+      if (!overwriteFile)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 1,
+                         fileName.c_str());
+          return false;
+        }
+
+      if (!CDirEntry::isWritable(fileName))
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 2,
+                         fileName.c_str());
+          return false;
+        }
+    }
+
+  MMASCIIExporter exporter;
+
+  return exporter.exportMathModel(mpModel, fileName.c_str(), overwriteFile);
+}
 CModel * CCopasiDataModel::getModel()
 {return mpModel;}
 
