@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/12 16:30:50 $
+   $Author: shoops $ 
+   $Date: 2005/07/15 18:06:27 $
    End CVS Header */
 
 /**
@@ -784,6 +784,7 @@ bool CCopasiXML::saveParameter(const CCopasiParameter & parameter)
       break;
 
     case CCopasiParameter::GROUP:
+      Attributes.skip(1);
       if (!startSaveElement("ParameterGroup", Attributes)) success = false;
       if (!saveParameterGroup(* parameter.getValue().pGROUP)) success = false;
       if (!endSaveElement("ParameterGroup")) success = false;

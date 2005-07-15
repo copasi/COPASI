@@ -554,23 +554,21 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
-    <xs:attribute name="value" type="xs:double" use="required"/>
+    <xs:attribute name="value" type="xs:string" use="required"/>
   </xs:complexType>
   <xs:complexType name="cPARAMETER_LIST">
-    <xs:sequence>
-      <xs:choice>
-        <xs:element name="ParameterGroup" minOccurs="0" maxOccurs="unbounded">
-          <xs:complexType>
-            <xs:complexContent>
-              <xs:extension base="cPARAMETER_LIST">
-                <xs:attribute name="name" type="xs:string" use="required"/>
-              </xs:extension>
-            </xs:complexContent>
-          </xs:complexType>
-        </xs:element>
-        <xs:element name="Parameter" type="cPARAMETER" minOccurs="0" maxOccurs="unbounded"/>
-      </xs:choice>
-    </xs:sequence>
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="ParameterGroup">
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:extension base="cPARAMETER_LIST">
+              <xs:attribute name="name" type="xs:string" use="required"/>
+            </xs:extension>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Parameter" type="cPARAMETER"/>
+    </xs:choice>
   </xs:complexType>
   <xs:complexType name="cREPORT_SECTION">
     <xs:choice maxOccurs="unbounded">

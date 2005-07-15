@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 17:46:17 $
+   $Date: 2005/07/15 18:06:29 $
    End CVS Header */
 
 /**
@@ -28,7 +28,7 @@
 CReportDefinition::CReportDefinition(const std::string & name,
                                      const CCopasiContainer * pParent):
     CCopasiObject(name, pParent, "ReportDefinition"),
-    mKey(GlobalKeys.add("CReportDefinition", this)),
+    mKey(GlobalKeys.add("Report", this)),
     mComment(""),
     mTaskType(CCopasiTask::timeCourse),
     mSeparator("\t"),
@@ -39,7 +39,7 @@ CReportDefinition::CReportDefinition(const std::string & name,
 CReportDefinition::CReportDefinition(const CReportDefinition & src,
                                      const CCopasiContainer * pParent):
     CCopasiObject(src, pParent),
-    mKey(GlobalKeys.add("CReportDefinition", this)),
+    mKey(GlobalKeys.add("Report", this)),
     mComment(src.mComment),
     mTaskType(src.mTaskType),
     mSeparator(src.mSeparator),
