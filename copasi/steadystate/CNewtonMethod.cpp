@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 17:09:29 $
+   $Date: 2005/07/15 18:33:06 $
    End CVS Header */
 
 #include <algorithm>
@@ -457,7 +457,10 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
       if (info)
         {
           if (info > 0)
-            return returnNewton(CNewtonMethod::singularJacobian);
+            {
+              if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+              return returnNewton(CNewtonMethod::singularJacobian);
+            }
           fatalError();
         }
 
@@ -556,6 +559,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
           else
             ReturnCode = CNewtonMethod::dampingLimitExceeded;
 
+          if (mpProgressHandler) mpProgressHandler->finish(hProcess);
           return returnNewton(ReturnCode);
         }
 
@@ -574,6 +578,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
   else
     ReturnCode = CNewtonMethod::iterationLimitExceeded;
 
+  if (mpProgressHandler) mpProgressHandler->finish(hProcess);
   return returnNewton(ReturnCode);
 }
 
