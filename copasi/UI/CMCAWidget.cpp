@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/17 17:50:39 $
+   $Date: 2005/07/15 19:03:58 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -241,7 +241,6 @@ void CMCAWidget::runMCATask()
       setCursor(Qt::WaitCursor);
       CProgressBar * tmpBar = new CProgressBar();
       steadyStateTask->setProgressHandler(tmpBar);
-      tmpBar->show();
 
       try
         {

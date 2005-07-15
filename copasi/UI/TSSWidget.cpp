@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/22 14:23:07 $
+   $Author: shoops $ 
+   $Date: 2005/07/15 19:03:59 $
    End CVS Header */
 
 /********************************************************
@@ -310,7 +310,6 @@ void TSSWidget::runTask()
     setCursor(Qt::WaitCursor);
     CProgressBar * tmpBar = new CProgressBar();
     mSteadyStateTask->setProgressHandler(tmpBar);
-    tmpBar->show();
    
     try
       {

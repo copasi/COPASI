@@ -202,11 +202,13 @@
     <variable access="private">unsigned C_INT32 mItemCount;</variable>
     <variable>bool mProceed;</variable>
     <variable>bool mPause;</variable>
+    <variable>QTimer *mpTimer;</variable>
 </variables>
 <slots>
     <slot access="protected" specifier="non virtual">btnStopPressed()</slot>
     <slot access="protected" specifier="non virtual">btnPausePressed()</slot>
     <slot access="protected" specifier="non virtual">btnContinuePressed()</slot>
+    <slot access="protected" specifier="non virtual">timerShow()</slot>
 </slots>
 <functions>
     <function specifier="non virtual" returnType="bool">insertProgressItem(CQProgressItem * pItem)</function>

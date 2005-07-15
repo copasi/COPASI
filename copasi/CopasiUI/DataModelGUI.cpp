@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2005/07/14 10:55:36 $
+   $Author: shoops $ 
+   $Date: 2005/07/15 19:03:58 $
    End CVS Header */
 
 #include "copasi.h"
@@ -52,8 +52,6 @@ void DataModelGUI::linkDataModelToGUI()
   CProgressBar* tmpBar = new CProgressBar();
 
   CCopasiDataModel::Global->getModel()->setCompileHandler(tmpBar);
-
-  tmpBar->show();
 
   //output handler
   COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();

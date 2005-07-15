@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/07/11 23:52:15 $
+   $Author: shoops $ 
+   $Date: 2005/07/15 19:03:58 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -193,7 +193,6 @@ void OptimizationWidget::runOptimizationTask()
 
   CProgressBar* tmpBar = new CProgressBar();
   optimizationTask->setProgressHandler(tmpBar);
-  tmpBar->show();
 
   CCopasiTimeVariable time = CCopasiTimeVariable::getCurrentWallTime();
 

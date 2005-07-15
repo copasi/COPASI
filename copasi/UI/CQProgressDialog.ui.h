@@ -1,12 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQProgressDialog.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/26 14:29:21 $
+   $Date: 2005/07/15 19:03:58 $
    End CVS Header */
 
-#include "qapplication.h"
+#include <qapplication.h>
+#include <qtimer.h>
 
 extern QApplication *pApp;
 bool CQProgressDialog::insertProgressItem(CQProgressItem * pItem)
@@ -46,6 +47,10 @@ void CQProgressDialog::init()
   mPause = false;
   mProceed = true;
 
+  mpTimer = new QTimer(this);
+  mpTimer->start(1500, true);
+  connect(mpTimer, SIGNAL(timeout()), this, SLOT(timerShow()));
+
   return;
 }
 
@@ -57,3 +62,6 @@ void CQProgressDialog::btnPausePressed()
 
 void CQProgressDialog::btnStopPressed()
 {mProceed = false;}
+
+void CQProgressDialog::timerShow()
+{this->show();}

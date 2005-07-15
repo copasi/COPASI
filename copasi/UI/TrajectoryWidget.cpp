@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.107 $
+   $Revision: 1.108 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/07 21:47:13 $
+   $Author: shoops $ 
+   $Date: 2005/07/15 19:03:59 $
    End CVS Header */
 
 /********************************************************
@@ -470,7 +470,6 @@ void TrajectoryWidget::runTrajectoryTask()
   CCopasiMessage::clearDeque();
   CProgressBar * tmpBar = new CProgressBar();
   tt->setProgressHandler(tmpBar);
-  tmpBar->show();
 
   try
     {
