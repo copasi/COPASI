@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 18:06:27 $
+   $Date: 2005/07/15 20:21:47 $
    End CVS Header */
 
 /**
@@ -33,6 +33,7 @@
 #include "utilities/CCopasiTask.h"
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiProblem.h"
+#include "utilities/utility.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotItem.h"
 
@@ -59,7 +60,9 @@ bool CCopasiXML::save(std::ostream & os)
 
   *mpOstream << "<!-- generated with COPASI "
   << CCopasiDataModel::Global->getVersion()->getVersion()
-  << " (http://www.copasi.org) -->"
+  << " (http://www.copasi.org) at "
+  << UTCTimeStamp()
+  << " UTC -->"
   << std::endl;
 
   CXMLAttributeList Attributes;
