@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/14 15:22:24 $
+   $Date: 2005/07/15 20:22:35 $
    End CVS Header */
 
 // CCopasiMessage
@@ -24,8 +24,8 @@
 #include "CCopasiMessage.h"
 #include "messages.h"
 #include "CCopasiException.h"
+#include "utility.h"
 
-std::string TimeStamp();
 #define INITIALTEXTSIZE 1024
 
 std::deque< CCopasiMessage > CCopasiMessage::mMessageDeque;
@@ -191,25 +191,25 @@ void CCopasiMessage::handler(const bool & _throw)
 
     case TRACE:
       mText = ">TRACE ";
-      mText += TimeStamp();
+      mText += LocalTimeStamp();
       mText += "<\n";
       break;
 
     case WARNING:
       mText = ">WARNING ";
-      mText += TimeStamp();
+      mText += LocalTimeStamp();
       mText += "<\n";
       break;
 
     case ERROR:
       mText = ">ERROR ";
-      mText += TimeStamp();
+      mText += LocalTimeStamp();
       mText += "<\n";
       break;
 
     case EXCEPTION:
       mText = ">EXCEPTION ";
-      mText += TimeStamp();
+      mText += LocalTimeStamp();
       mText += "<\n";
       break;
     }
@@ -247,33 +247,6 @@ CCopasiMessage::~CCopasiMessage(void) {}
 const std::string & CCopasiMessage::getText(void) const {return mText;}
 const CCopasiMessage::Type & CCopasiMessage::getType(void) const {return mType;}
 const unsigned C_INT32 & CCopasiMessage::getNumber(void) const {return mNumber;}
-
-std::string TimeStamp()
-{
-  time_t Time;
-  tm *sTime = NULL;
-  char str[20];
-
-  time(&Time);
-  sTime = localtime(&Time);
-
-  if (sTime)
-    {
-      sprintf(str, "%d-%.02d-%.02d %.02d:%.02d:%.02d",
-              sTime->tm_year + 1900,
-              sTime->tm_mon + 1,
-              sTime->tm_mday,
-              sTime->tm_hour,
-              sTime->tm_min,
-              sTime->tm_sec);
-    }
-  else
-    {
-      sprintf(str, "0000-00-00 00:00:00");
-    }
-
-  return (std::string) str;
-}
 
 void CCopasiMessage::lineBreak()
 {
