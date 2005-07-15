@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 22:50:08 $
+   $Date: 2005/07/15 14:21:35 $
    End CVS Header */
 
 #include <sbml/math/ASTNode.h>
@@ -15,11 +15,14 @@
 #include "CEvaluationTree.h"
 #include "CFunction.h"
 #include "CExpression.h"
+#include "CFunctionDB.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 CEvaluationNodeCall::CEvaluationNodeCall():
     CEvaluationNode(CEvaluationNode::INVALID, ""),
     mEvaluationTreeName(""),
-    mpTree(NULL),
+    mpFunction(NULL),
+    mpExpression(NULL),
     mCallNodes(),
     mpCallParameters(NULL)
 {mPrecedence = PRECEDENCE_NUMBER;}
@@ -28,13 +31,13 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
     const Data & data):
     CEvaluationNode((Type) (CEvaluationNode::FUNCTION | subType), data),
     mEvaluationTreeName(""),
-    mpTree(NULL),
+    mpFunction(NULL),
+    mpExpression(NULL),
     mCallNodes(),
     mpCallParameters(NULL)
 {
   switch (subType)
     {
-    case CALL:
     case FUNCTION:
     case EXPRESSION:
       break;
@@ -50,7 +53,8 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
 CEvaluationNodeCall::CEvaluationNodeCall(const CEvaluationNodeCall & src):
     CEvaluationNode(src),
     mEvaluationTreeName(src.mEvaluationTreeName),
-    mpTree(src.mpTree),
+    mpFunction(src.mpFunction),
+    mpExpression(src.mpExpression),
     mCallNodes(src.mCallNodes),
     mpCallParameters(NULL)
 {mpCallParameters = buildParameters(mCallNodes);}
@@ -67,14 +71,13 @@ const C_FLOAT64 & CEvaluationNodeCall::value() const
           std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
           std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
 
-          for (; it != end; ++it)
-            (*it)->value();
+          for (; it != end; ++it) (*it)->value();
         }
-        return Value = ((CFunction *) mpTree)->calcValue(*mpCallParameters);
+        return Value = mpFunction->calcValue(*mpCallParameters);
         break;
 
       case EXPRESSION:
-        return Value = ((CExpression *) mpTree)->calcValue();
+        return Value = mpExpression->calcValue();
         break;
 
       default:
@@ -83,18 +86,24 @@ const C_FLOAT64 & CEvaluationNodeCall::value() const
       }
   }
 
-bool CEvaluationNodeCall::compile(const CEvaluationTree * /* pTree */)
+bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 {
   bool success = true;
   switch (mType & 0x00FFFFFF)
     {
     case FUNCTION:
+      mpFunction =
+        dynamic_cast<CFunction *>(CCopasiDataModel::Global->getFunctionList()->findFunction(mEvaluationTreeName));
+      if (!mpFunction) return false;
       clearParameters(mpCallParameters, mCallNodes);
       mpCallParameters = buildParameters(mCallNodes);
-      if (!((CFunction *) mpTree)->compile()) success = false;
       break;
 
     case EXPRESSION:
+      mpExpression =
+        dynamic_cast<CExpression *>(CCopasiDataModel::Global->getFunctionList()->findFunction(mEvaluationTreeName));
+      if (!mpExpression) return false;
+      if (!mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer())) return false;
       break;
 
     default:
@@ -123,7 +132,7 @@ std::string CEvaluationNodeCall::getInfix() const
             Infix += "," + (*it)->getInfix();
         }
 
-        return Infix + ")";
+        return Infix + "))";
         break;
 
       case EXPRESSION:
