@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/29 18:47:03 $
+   $Date: 2005/07/15 14:19:51 $
    End CVS Header */
 
 #ifndef COPASI_CExpression
@@ -60,12 +60,18 @@ class CExpression:
      */
     virtual C_FLOAT64 * getObjectValue(const CCopasiObjectName & CN) const;
 
+    /**
+     * Retrieve the list of container used for compile
+     * @return const std::vector< CCopasiContainer * > & listOfContainer 
+     */
+    const std::vector< CCopasiContainer * > & getListOfContainer() const;
+
     // Attribute
   protected:
     /**
      * Pointer to the list of containers used for compilation.
      */
-    std::vector< CCopasiContainer * > * mpListOfContainer;
+    const std::vector< CCopasiContainer * > * mpListOfContainer;
   };
 
 #endif // COPASI_CExpression
