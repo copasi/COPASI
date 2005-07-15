@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:36:24 $
+   $Date: 2005/07/15 15:04:20 $
    End CVS Header */
 
 /**
@@ -270,14 +270,43 @@ void CTrajectoryProblem::load(CReadConfig & configBuffer,
 bool CTrajectoryProblem::sync()
 {
   bool success = true;
+
   C_FLOAT64 Tmp = getEndTime() - getStartTime();
+  C_FLOAT64 StepSize = getStepSize();
+  C_FLOAT64 StepNumber = (C_FLOAT64) getStepNumber();
 
   if (mStepNumberSetLast)
-    setValue("StepSize", Tmp / (C_FLOAT64) getStepNumber());
+    {
+      StepSize = Tmp / (C_FLOAT64) getStepNumber();
+
+      /* Assure that the step size is not to small for machine accuracy */
+      if (fabs(StepSize) < 100 * DBL_EPSILON * fabs(getStartTime()) ||
+          fabs(StepSize) < 100 * DBL_EPSILON * fabs(getEndTime()))
+        {
+          CCopasiMessage(CCopasiMessage::WARNING,
+                         MCTrajectoryProblem + 3, StepSize);
+
+          StepSize = 100 * DBL_EPSILON * std::max(fabs(getStartTime()), fabs(getEndTime()));
+          /* Assure that the step size has the appropriate sign. */
+          StepSize = (Tmp < 0.0) ? - fabs(StepSize) : fabs(StepSize);
+          StepNumber = fabs(ceil(Tmp / StepSize));
+        }
+    }
   else
     {
-      C_FLOAT64 StepSize = getStepSize();
-      C_FLOAT64 StepNumber = fabs(ceil(Tmp / StepSize));
+      if (fabs(StepSize) < 100 * DBL_EPSILON * fabs(getStartTime()) ||
+          fabs(StepSize) < 100 * DBL_EPSILON * fabs(getEndTime()))
+        {
+          CCopasiMessage(CCopasiMessage::WARNING,
+                         MCTrajectoryProblem + 3, StepSize);
+
+          StepSize = 100 * DBL_EPSILON * std::max(fabs(getStartTime()), fabs(getEndTime()));
+
+          /* Assure that the step size has the appropriate sign. */
+          StepSize = (Tmp < 0.0) ? - fabs(StepSize) : fabs(StepSize);
+        }
+
+      StepNumber = fabs(ceil(Tmp / StepSize));
 
       /* Protect against overflow */
       if ((C_FLOAT64) ULONG_MAX < StepNumber)
@@ -292,9 +321,11 @@ bool CTrajectoryProblem::sync()
         }
 
       /* Assure that the step size has the appropriate sign. */
-      setValue("StepSize", (Tmp < 0.0) ? - fabs(StepSize) : fabs(StepSize));
-      setValue("StepNumber", (unsigned C_INT32) StepNumber);
+      StepSize = (Tmp < 0.0) ? - fabs(StepSize) : fabs(StepSize);
     }
+
+  setValue("StepSize", StepSize);
+  setValue("StepNumber", (unsigned C_INT32) StepNumber);
 
   return success;
 }
