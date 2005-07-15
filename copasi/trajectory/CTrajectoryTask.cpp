@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 01:53:43 $
+   $Date: 2005/07/15 15:14:35 $
    End CVS Header */
 
 /**
@@ -153,7 +153,8 @@ bool CTrajectoryTask::process()
   const C_FLOAT64 & StartTime = pProblem->getStartTime();
 
   C_FLOAT64 ActualStepSize;
-  const unsigned C_INT32 & StepNumber = pProblem->getStepNumber();
+  C_FLOAT64 StepNumber = (EndTime - StartTime) / StepSize;
+
   unsigned C_INT32 StepCounter = 1;
 
   C_FLOAT64 outputStartTime = pProblem->getOutputStartTime();
@@ -208,6 +209,7 @@ bool CTrajectoryTask::process()
     }
 
   // We start the integration
+  // This is numerically more stable then adding pProblem->getStepSize().
   NextTimeToReport = (EndTime - StartTime) * StepCounter++ / StepNumber;
   ActualStepSize = pMethod->step(StepSize, mpState);
 
@@ -236,7 +238,10 @@ bool CTrajectoryTask::process()
     }
   else
     {
+      // This is numerically more stable then adding pProblem->getStepSize().
       NextTimeToReport = (EndTime - StartTime) * StepCounter++ / StepNumber;
+      // Make sure that we do not overstep
+      if ((*L)(EndTime, NextTimeToReport)) NextTimeToReport = EndTime;
       StepSize = NextTimeToReport - Time;
     }
 
@@ -271,7 +276,10 @@ bool CTrajectoryTask::process()
         }
       else
         {
+          // This is numerically more stable then adding pProblem->getStepSize().
           NextTimeToReport = (EndTime - StartTime) * StepCounter++ / StepNumber;
+          // Make sure that we do not overstep
+          if ((*L)(EndTime, NextTimeToReport)) NextTimeToReport = EndTime;
           StepSize = NextTimeToReport - Time;
         }
     }
