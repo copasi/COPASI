@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.120 $
+   $Revision: 1.121 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:15:44 $
+   $Date: 2005/07/15 19:40:05 $
    End CVS Header */
 
 /**********************************************************************
@@ -648,6 +648,8 @@ bool FunctionWidget1::saveToFunction()
       protectedNotify(ListViews::FUNCTION, ListViews::CHANGE, objKey);
     }
 
+  func->compile();
+
   // :TODO Bug 322: This should only be called when actual changes have been saved.
   CCopasiDataModel::Global->changed();
 
@@ -984,7 +986,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
       /* Check if user chooses to deleted Functions */
       switch (choice)
         {
-        case 0:                                                   // Yes or Enter
+        case 0:                                                    // Yes or Enter
           {
             if (reacFound == 0)
               {
@@ -1001,7 +1003,7 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             break;
           }
-        case 1:                                                   // No or Escape
+        case 1:                                                    // No or Escape
           break;
         }
     }
@@ -1033,8 +1035,8 @@ bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action
 
 bool FunctionWidget1::leave()
 {
-  if (isValid)
-    saveToFunction();
+  slotCommitButtonClicked();
+
   //mScrollView->hide();
   return true;
 }
