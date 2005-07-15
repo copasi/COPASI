@@ -437,8 +437,8 @@
           <xs:enumeration value="Function"/>
           <xs:enumeration value="Expression"/>
           <xs:enumeration value="MassAction"/>
-          <xs:enumeration value="PreDefinedKineticLaw"/>
-          <xs:enumeration value="UserDefinedKineticLaw"/>
+          <xs:enumeration value="PreDefined"/>
+          <xs:enumeration value="UserDefined"/>
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
@@ -660,7 +660,7 @@
   </xs:simpleType>
   <xs:simpleType name="cCONSTANT_KEY">
     <xs:restriction base="cKEY">
-      <xs:pattern value="Constant_\d+"/>
+      <xs:pattern value="Parameter_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="cSTATE_VARIABLE_KEY">
@@ -720,7 +720,7 @@
   </xs:simpleType>
   <xs:simpleType name="cCONSTANT_KEYREF">
     <xs:restriction base="cKEYREF">
-      <xs:pattern value="Constant_\d+"/>
+      <xs:pattern value="Parameter_\d+"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="cSTATE_VARIABLE_KEYREF">
