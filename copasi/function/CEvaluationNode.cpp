@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 22:45:45 $
+   $Date: 2005/07/15 14:23:37 $
    End CVS Header */
 
 #include "copasi.h"
@@ -102,7 +102,7 @@ CEvaluationNode::CEvaluationNode(const CEvaluationNode & src):
 CEvaluationNode::~CEvaluationNode() {}
 
 bool CEvaluationNode::compile(const CEvaluationTree * /* pTree */)
-{return (getChild() == NULL);} // We must not have any children.
+{return true;}
 
 CEvaluationNode::Data CEvaluationNode::getData() const
   {return mData;}
