@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.133 $
+   $Revision: 1.134 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/12 16:30:47 $
+   $Date: 2005/07/15 09:24:31 $
    End CVS Header */
 
 // CReaction
@@ -871,8 +871,28 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
       pTmpNode = new CEvaluationNodeStructure(static_cast<CEvaluationNodeStructure::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::CHOICE:
-      // create an error message until there is a class for it
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "CHOICE");
+      pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      // convert the two children as well
+      pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
+      if (pChildNode)
+        {
+          pTmpNode->addChild(pChildNode);
+          pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()), replacementMap, copasi2sbmlmap);
+          if (pChildNode)
+            {
+              pTmpNode->addChild(pChildNode);
+            }
+          else
+            {
+              delete pTmpNode;
+              pTmpNode = NULL;
+            }
+        }
+      else
+        {
+          delete pTmpNode;
+          pTmpNode = NULL;
+        }
       break;
     case CEvaluationNode::VARIABLE:
       // error variables may not be in an expression
@@ -882,8 +902,28 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
       pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::LOGIC:
-      // create an error message until there is a class for it
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "LOGIC");
+      pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      // convert the two children as well
+      pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
+      if (pChildNode)
+        {
+          pTmpNode->addChild(pChildNode);
+          pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()), replacementMap, copasi2sbmlmap);
+          if (pChildNode)
+            {
+              pTmpNode->addChild(pChildNode);
+            }
+          else
+            {
+              delete pTmpNode;
+              pTmpNode = NULL;
+            }
+        }
+      else
+        {
+          delete pTmpNode;
+          pTmpNode = NULL;
+        }
       break;
     case CEvaluationNode::MV_FUNCTION:
       // create an error message until there is a class for it
@@ -1022,8 +1062,28 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
       pTmpNode = new CEvaluationNodeStructure(static_cast<CEvaluationNodeStructure::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::CHOICE:
-      // create an error message until there is a class for it
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "CHOICE");
+      pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      // convert the two children as well
+      pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
+      if (pChildNode)
+        {
+          pTmpNode->addChild(pChildNode);
+          pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()));
+          if (pChildNode)
+            {
+              pTmpNode->addChild(pChildNode);
+            }
+          else
+            {
+              delete pTmpNode;
+              pTmpNode = NULL;
+            }
+        }
+      else
+        {
+          delete pTmpNode;
+          pTmpNode = NULL;
+        }
       break;
     case CEvaluationNode::VARIABLE:
       pTmpNode = this->variable2object(static_cast<CEvaluationNodeVariable*>(expression));
@@ -1032,8 +1092,28 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
       pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
     case CEvaluationNode::LOGIC:
-      // create an error message until there is a class for it
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "LOGIC");
+      pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      // convert the two children as well
+      pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
+      if (pChildNode)
+        {
+          pTmpNode->addChild(pChildNode);
+          pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()->getSibling()));
+          if (pChildNode)
+            {
+              pTmpNode->addChild(pChildNode);
+            }
+          else
+            {
+              delete pTmpNode;
+              pTmpNode = NULL;
+            }
+        }
+      else
+        {
+          delete pTmpNode;
+          pTmpNode = NULL;
+        }
       break;
     case CEvaluationNode::MV_FUNCTION:
       // create an error message until there is a class for it
