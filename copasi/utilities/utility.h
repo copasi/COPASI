@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/06 19:19:40 $
+   $Date: 2005/07/15 20:21:07 $
    End CVS Header */
 
 #ifndef COPASI_utilities
@@ -14,6 +14,23 @@
 #include <stdarg.h>
 
 #define INITIALTEXTSIZE 1024
+
+struct tm;
+
+/**
+ * Returns the time pointed to by pTime in ISO format
+ */
+std::string ISODateTime(tm * pTime);
+
+/**
+ * Returns the current local time in ISO format
+ */
+std::string LocalTimeStamp();
+
+/**
+ * Returns the current time in ISO format
+ */
+std::string UTCTimeStamp();
 
 /**
  * Check whether the given string represents a number

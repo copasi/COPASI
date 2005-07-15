@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/06 19:19:40 $
+   $Date: 2005/07/15 20:21:07 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -13,6 +13,50 @@
 
 #include "copasi.h"
 #include "utility.h"
+
+std::string ISODateTime(tm * pTime)
+{
+  char str[20];
+
+  if (pTime)
+    {
+      sprintf(str, "%d-%.02d-%.02d %.02d:%.02d:%.02d",
+              pTime->tm_year + 1900,
+              pTime->tm_mon + 1,
+              pTime->tm_mday,
+              pTime->tm_hour,
+              pTime->tm_min,
+              pTime->tm_sec);
+    }
+  else
+    {
+      sprintf(str, "0000-00-00 00:00:00");
+    }
+
+  return (std::string) str;
+}
+
+std::string LocalTimeStamp()
+{
+  time_t Time;
+  time(&Time);
+
+  tm *sTime = NULL;
+  sTime = localtime(&Time);
+
+  return ISODateTime(sTime);
+}
+
+std::string UTCTimeStamp()
+{
+  time_t Time;
+  time(&Time);
+
+  tm *sTime = NULL;
+  sTime = gmtime(&Time);
+
+  return ISODateTime(sTime);
+}
 
 bool isNumber(const std::string & str)
 {
