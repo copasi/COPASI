@@ -87,15 +87,14 @@
                           </xs:simpleType>
                         </xs:attribute>
                         <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="required" id="copasi.Model.ModelValue.stateVariable"/>
-                        <xs:attribute name="sbmlid" type="xs:string" use="optional" id="copasi.Model.Metabolite.sbmlid"/>
+                        <xs:attribute name="sbmlid" type="xs:string" use="optional" id="copasi.Model.ModelValue.sbmlid"/>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
                 </xs:complexType>
-                <xs:unique name="MetaboliteName">
-                  <xs:selector xpath="Metabolite"/>
+                <xs:unique name="ModelValueName">
+                  <xs:selector xpath="ModelValue"/>
                   <xs:field xpath="@name"/>
-                  <xs:field xpath="@compartment"/>
                 </xs:unique>
               </xs:element>
               <xs:element name="ListOfReactions" id="copasi.Model.ListOfReactions" minOccurs="0">
