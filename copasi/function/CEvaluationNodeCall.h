@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 22:50:08 $
+   $Date: 2005/07/15 14:20:51 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeCall
@@ -15,6 +15,9 @@
 
 #include "CCallParameters.h"
 #include "utilities/CCopasiMessage.h"
+
+class CFunction;
+class CExpression;
 
 /**
  * This is the class for nodes presenting opertors used in an evaluation trees.
@@ -110,15 +113,25 @@ class CEvaluationNodeCall : public CEvaluationNode
                   CCopasiNode< Data > * pAfter = NULL);
 
   private:
-    CCallParameters< C_FLOAT64 > *
+    /**
+     * Build the list of call parameters which correspond to
+     * the list of call nodes.
+     */
+    static CCallParameters< C_FLOAT64 > *
     buildParameters(const std::vector<CEvaluationNode *> & vector);
 
-    void clearParameters(CCallParameters< C_FLOAT64 > * pCallParameters,
-                         const std::vector<CEvaluationNode *> & vector);
+    /**
+     * Clear the list of call parameters.
+     */
+    static void
+    clearParameters(CCallParameters< C_FLOAT64 > * pCallParameters,
+                    const std::vector<CEvaluationNode *> & vector);
+
     // Attributes
   private:
     std::string mEvaluationTreeName;
-    CEvaluationTree * mpTree;
+    CFunction * mpFunction;
+    CExpression * mpExpression;
     std::vector<CEvaluationNode *> mCallNodes;
     CCallParameters< C_FLOAT64 > * mpCallParameters;
   };
