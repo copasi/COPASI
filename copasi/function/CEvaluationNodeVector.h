@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVector.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 22:50:08 $
+   $Date: 2005/07/15 14:24:42 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeVector
@@ -60,13 +60,6 @@ class CEvaluationNodeVector : public CEvaluationNode
      * @return const C_FLOAT64 & value
      */
     virtual const C_FLOAT64 & value() const;
-
-    /**
-     * Compile a node;
-     * @param const CEvaluationTree * pTree
-     * @return bool success;
-     */
-    virtual bool compile(const CEvaluationTree * pTree);
 
     /**
      * Retrieve the infix value of the node and its eventual child nodes.

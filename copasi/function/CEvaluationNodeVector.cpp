@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVector.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 22:50:08 $
+   $Date: 2005/07/15 14:24:42 $
    End CVS Header */
 
 #include "copasi.h"
@@ -54,9 +54,6 @@ const C_FLOAT64 & CEvaluationNodeVector::value() const
 
     return mValue;
   }
-
-bool CEvaluationNodeVector::compile(const CEvaluationTree * /* pTree */)
-{return true;}
 
 std::string CEvaluationNodeVector::getInfix() const
   {
