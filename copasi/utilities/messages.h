@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/11 13:12:31 $
+   $Author: shoops $ 
+   $Date: 2005/07/15 14:54:20 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -114,7 +114,9 @@ const MESSAGES Messages[] =
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
-     "exceeds the limit. The step size has been adjusted to avoid over flow."},
+     "exceeds the limit. The step number and step size have been adjusted to avoid over flow."},
+    {MCTrajectoryProblem + 3, "CTrajectoryProblem (3): The step size '%f' "
+     "is to small for the machine accuracy. The step number and step size have been adjusted."},
 
     // Directory Entries
     {MCDirEntry + 1, "DirEntry (1): Directory entry '%s' already exists."},
