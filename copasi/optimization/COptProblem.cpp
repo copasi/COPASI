@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 18:18:58 $
+   $Date: 2005/07/18 21:09:09 $
    End CVS Header */
 
 /**
@@ -225,6 +225,8 @@ bool COptProblem::checkFunctionalConstraints()
  */
 bool COptProblem::calculate()
 {
+  mCounter += 1;
+
   try
     {
       if (mpSteadyState != NULL)
@@ -248,8 +250,6 @@ bool COptProblem::calculate()
     {
       mCalculateValue = DBL_MAX;
     }
-
-  mCounter += 1;
 
   if (mpCallBack) return mpCallBack->progress(mhCounter);
 
