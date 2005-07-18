@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 15:14:35 $
+   $Date: 2005/07/18 14:07:35 $
    End CVS Header */
 
 /**
@@ -168,22 +168,22 @@ bool CTrajectoryTask::process()
   C_FLOAT64 handlerFactor = 100.0 / (pProblem->getEndTime() - pProblem->getStartTime());
 
   /*
-    if (mpProgressHandler)
-      mpProgressHandler->init(1000,
+    if (mpCallBack)
+      mpCallBack->init(1000,
                               "performing simulation...",
                               true);
   */
   C_FLOAT64 Percentage = 0;
   unsigned C_INT32 hProcess;
 
-  if (mpProgressHandler)
+  if (mpCallBack)
     {
-      mpProgressHandler->setName("performing simulation...");
+      mpCallBack->setName("performing simulation...");
       C_FLOAT64 hundred = 100;
-      hProcess = mpProgressHandler->addItem("Completion",
-                                            CCopasiParameter::DOUBLE,
-                                            &Percentage,
-                                            &hundred);
+      hProcess = mpCallBack->addItem("Completion",
+                                     CCopasiParameter::DOUBLE,
+                                     &Percentage,
+                                     &hundred);
     }
 
   if (mDoOutput)
@@ -213,10 +213,10 @@ bool CTrajectoryTask::process()
   NextTimeToReport = (EndTime - StartTime) * StepCounter++ / StepNumber;
   ActualStepSize = pMethod->step(StepSize, mpState);
 
-  if (mpProgressHandler)
+  if (mpCallBack)
     {
       Percentage = (Time - pProblem->getStartTime()) * handlerFactor;
-      flagProceed = mpProgressHandler->progress(hProcess);
+      flagProceed = mpCallBack->progress(hProcess);
     }
 
   if ((mDoOutput) &&
@@ -251,10 +251,10 @@ bool CTrajectoryTask::process()
 
       //std::cout << EndTime << "  " << Time << "  " << EndTime-Time << std::endl;
 
-      if (mpProgressHandler)
+      if (mpCallBack)
         {
           Percentage = (Time - pProblem->getStartTime()) * handlerFactor;
-          flagProceed = mpProgressHandler->progress(hProcess);
+          flagProceed = mpCallBack->progress(hProcess);
         }
 
       if ((mDoOutput) &&
@@ -286,7 +286,7 @@ bool CTrajectoryTask::process()
 
   //pProblem->setEndState(new CState(*mpState));
 
-  if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+  if (mpCallBack) mpCallBack->finish(hProcess);
   pProblem->getModel()->setState(mpState);
   pProblem->getModel()->updateRates();
 
@@ -365,23 +365,23 @@ bool CTrajectoryTask::processSimple(bool singleStep) //without output
 
   C_FLOAT64 Percentage = 0;
   unsigned C_INT32 hProcess;
-  if (mpProgressHandler)
+  if (mpCallBack)
     {
-      mpProgressHandler->setName("performing simulation...");
+      mpCallBack->setName("performing simulation...");
       C_FLOAT64 hundred = 100;
-      hProcess = mpProgressHandler->addItem("%",
-                                            CCopasiParameter::DOUBLE,
-                                            &Percentage,
-                                            &hundred);
+      hProcess = mpCallBack->addItem("%",
+                                     CCopasiParameter::DOUBLE,
+                                     &Percentage,
+                                     &hundred);
     }
 
   //first step
   pMethod->step(StepSize, &pProblem->getInitialState());
 
-  if (mpProgressHandler)
+  if (mpCallBack)
     {
       Percentage = (mpState->getTime() - pProblem->getStartTime()) * handlerFactor;
-      flagProceed = mpProgressHandler->progress(hProcess);
+      flagProceed = mpCallBack->progress(hProcess);
     }
 
   if (mpState->getTime() == pProblem->getEndTime()) return true; //end reached in one step
@@ -393,16 +393,16 @@ bool CTrajectoryTask::processSimple(bool singleStep) //without output
       StepSize = pProblem->getEndTime() - mpState->getTime();
       pMethod->step(StepSize);
 
-      if (mpProgressHandler)
+      if (mpCallBack)
         {
           Percentage = (mpState->getTime() - pProblem->getStartTime()) * handlerFactor;
-          flagProceed = mpProgressHandler->progress(hProcess);
+          flagProceed = mpCallBack->progress(hProcess);
         }
     }
 
   //pProblem->setEndState(new CState(*mpState));
 
-  if (mpProgressHandler) mpProgressHandler->finish(hProcess);
+  if (mpCallBack) mpCallBack->finish(hProcess);
 
   return true;
 }

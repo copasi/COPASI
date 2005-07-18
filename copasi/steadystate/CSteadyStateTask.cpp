@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 16:33:59 $
+   $Date: 2005/07/18 14:07:35 $
    End CVS Header */
 
 /**
@@ -161,7 +161,7 @@ bool CSteadyStateTask::process()
                              mJacobianX,
                              mEigenValues,
                              mEigenValuesX,
-                             mpProgressHandler);
+                             mpCallBack);
 
   mReport.printBody();
   mReport.printFooter();
@@ -196,7 +196,7 @@ bool CSteadyStateTask::processForScan(bool useInitialConditions, bool doOutput)
                              mJacobianX,
                              mEigenValues,
                              mEigenValuesX,
-                             mpProgressHandler);
+                             mpCallBack);
 
   if (!useInitialConditions) pProblem->setInitialState(store);
 

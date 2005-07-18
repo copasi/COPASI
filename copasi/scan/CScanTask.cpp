@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:34:51 $
+   $Date: 2005/07/18 14:07:34 $
    End CVS Header */
 
 /**
@@ -124,21 +124,21 @@ bool CScanTask::process()
   //init progress bar
   mProgress = 0;
   /*
-    if (mpProgressHandler) 
-      mpProgressHandler->init(pMethod->getTotalNumberOfSteps(),
-                              "performing parameter scan...",
-                              true);
+    if (mpCallBack) 
+      mpCallBack->init(pMethod->getTotalNumberOfSteps(),
+                       "performing parameter scan...",
+                       true);
   */
 
-  if (mpProgressHandler)
+  if (mpCallBack)
     {
-      mpProgressHandler->setName("performing parameter scan...");
+      mpCallBack->setName("performing parameter scan...");
 
       unsigned C_INT32 totalSteps = pMethod->getTotalNumberOfSteps();
-      mpProgressHandler->addItem("Number of Steps",
-                                 CCopasiParameter::UINT,
-                                 &mProgress,
-                                 &totalSteps);
+      mpCallBack->addItem("Number of Steps",
+                          CCopasiParameter::UINT,
+                          &mProgress,
+                          &totalSteps);
     }
   //init output handler (plotting)
   if (mpOutputHandler) mpOutputHandler->init();
@@ -147,7 +147,7 @@ bool CScanTask::process()
   if (!pMethod->scan()) success = false;
 
   //finishing progress bar and output
-  if (mpProgressHandler) mpProgressHandler->finish();
+  if (mpCallBack) mpCallBack->finish();
   if (mpOutputHandler) mpOutputHandler->finish();
 
   return success;
@@ -169,7 +169,7 @@ bool CScanTask::processCallback()
 
   //do progress bar
   ++mProgress;
-  if (mpProgressHandler) return mpProgressHandler->progress();
+  if (mpCallBack) return mpCallBack->progress();
 
   return true;
 }
@@ -225,7 +225,7 @@ bool CScanTask::initSubtask()
   if (!mpSubtask) return false;
 
   mpSubtask->getProblem()->setModel(CCopasiDataModel::Global->getModel());
-  mpSubtask->setProgressHandler(NULL);
+  mpSubtask->setCallBack(NULL);
   mpSubtask->initialize();
 
   mOutputInSubtask = * pProblem->getValue("Output in subtask").pBOOL;

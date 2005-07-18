@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 20:20:04 $
+   $Date: 2005/07/18 14:07:34 $
    End CVS Header */
 
 #include <float.h>
@@ -71,6 +71,8 @@ COptMethodGA::~COptMethodGA()
 bool COptMethodGA::setCallBack(CProcessReport * pCallBack)
 {
   CCopasiMethod::setCallBack(pCallBack);
+
+  if (!pCallBack) return true;
 
   mGeneration = 0;
   mhGenerations =

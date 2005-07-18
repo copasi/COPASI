@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 18:18:24 $
+   $Date: 2005/07/18 14:07:34 $
    End CVS Header */
 
 /**
@@ -58,7 +58,7 @@ void COptTask::cleanup(){}
 
 bool COptTask::setCallBack(CProcessReport * pCallBack)
 {
-  bool success = true;
+  bool success = CCopasiTask::setCallBack(pCallBack);
 
   if (!mpProblem->setCallBack(pCallBack)) success = false;
   if (!mpMethod->setCallBack(pCallBack)) success = false;
@@ -93,10 +93,10 @@ bool COptTask::process()
 
   if (!pProblem || !pMethod) return false;
 
-  if (mpProgressHandler)
+  if (mpCallBack)
     {
-      pProblem->setCallBack(mpProgressHandler);
-      pMethod->setCallBack(mpProgressHandler);
+      pProblem->setCallBack(mpCallBack);
+      pMethod->setCallBack(mpCallBack);
     }
 
   bool Report = (mReport.getStream() != NULL);

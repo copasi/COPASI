@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/22 12:15:49 $
+   $Author: shoops $ 
+   $Date: 2005/07/18 14:07:33 $
    End CVS Header */
 
 /**
@@ -69,7 +69,7 @@ CCopasiTask::CCopasiTask(const std::string & name,
     mpMethod(NULL),
     mReport(),
     mpOutputHandler(NULL),
-    mpProgressHandler(NULL),
+    mpCallBack(NULL),
     mpSliders(NULL)
 {}
 
@@ -84,7 +84,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
     mpMethod(NULL),
     mReport(),
     mpOutputHandler(NULL),
-    mpProgressHandler(NULL),
+    mpCallBack(NULL),
     mpSliders(NULL)
 {}
 
@@ -98,7 +98,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
     mpMethod(NULL),
     mReport(src.mReport),
     mpOutputHandler(NULL),
-    mpProgressHandler(NULL),
+    mpCallBack(NULL),
     mpSliders(NULL)
 {}
 
@@ -125,7 +125,11 @@ void CCopasiTask::setScheduled(const bool & scheduled) {mScheduled = scheduled;}
 
 const bool & CCopasiTask::isScheduled() const {return mScheduled;}
 
-bool CCopasiTask::setCallBack(CProcessReport * C_UNUSED(pCallBack)) {return false;}
+bool CCopasiTask::setCallBack(CProcessReport * pCallBack)
+{
+  mpCallBack = NULL;
+  return true;
+}
 
 bool CCopasiTask::initialize(std::ostream * C_UNUSED(pOstream)) {return false;}
 
@@ -136,6 +140,8 @@ bool CCopasiTask::processForScan(bool C_UNUSED(useInitialConditions), bool C_UNU
 bool CCopasiTask::restore()
 {
   mReport.close();
+  setCallBack(NULL);
+
   return true;
 }
 
@@ -158,8 +164,10 @@ void CCopasiTask::setOutputHandler(CCallbackHandler* pHandler)
 CCallbackHandler* CCopasiTask::getOutputHandlerAddr()
 {return mpOutputHandler;}
 
+/*
 void CCopasiTask::setProgressHandler(CProcessReport * pHandler)
-{mpProgressHandler = pHandler;}
+{mpCallBack = pHandler;}
+ */
 
 CCopasiParameterGroup * CCopasiTask::getSliders()
 {return mpSliders;}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.94 $
+   $Revision: 1.95 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 19:03:59 $
+   $Date: 2005/07/18 14:07:33 $
    End CVS Header */
 
 /********************************************************
@@ -320,7 +320,7 @@ void SteadyStateWidget::runSteadyStateTask()
 
   setCursor(Qt::WaitCursor);
   CProgressBar * tmpBar = new CProgressBar();
-  mSteadyStateTask->setProgressHandler(tmpBar);
+  mSteadyStateTask->setCallBack(tmpBar);
 
   try
     {
@@ -353,6 +353,7 @@ void SteadyStateWidget::runSteadyStateTask()
         }
     }
 
+  mSteadyStateTask->restore();
   tmpBar->finish(); pdelete(tmpBar);
 
   protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());

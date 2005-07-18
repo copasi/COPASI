@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.108 $
+   $Revision: 1.109 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 19:03:59 $
+   $Date: 2005/07/18 14:07:33 $
    End CVS Header */
 
 /********************************************************
@@ -469,7 +469,7 @@ void TrajectoryWidget::runTrajectoryTask()
   setCursor(Qt::WaitCursor);
   CCopasiMessage::clearDeque();
   CProgressBar * tmpBar = new CProgressBar();
-  tt->setProgressHandler(tmpBar);
+  tt->setCallBack(tmpBar);
 
   try
     {
@@ -501,7 +501,7 @@ void TrajectoryWidget::runTrajectoryTask()
 
   tt->restore();
 
-  tt->setProgressHandler(NULL);
+  tt->setCallBack(NULL);
   tmpBar->finish(); pdelete(tmpBar);
 
   protectedNotify(ListViews::STATE, ListViews::CHANGE,
