@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/18 14:07:34 $
+   $Date: 2005/07/18 21:06:36 $
    End CVS Header */
 
 #include <float.h>
@@ -377,7 +377,7 @@ bool COptMethodGA::creation(unsigned C_INT32 first,
               if (linear)
                 mut = mn + mpRandom->getRandomCC() * (mx - mn);
               else
-                mut = mn * pow(10, la * mpRandom->getRandomCC());
+                mut = pow(10, log10(mn) + la * mpRandom->getRandomCC());
             }
 
           catch (...)

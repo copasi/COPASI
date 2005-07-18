@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/18 14:07:34 $
+   $Date: 2005/07/18 21:06:36 $
    End CVS Header */
 
 #include <float.h>
@@ -270,7 +270,7 @@ bool COptMethodGASR::select()
 
       for (j = 0; j < TotalPopulation - 1; j++)  // lambda is number of individuals
         {
-          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||      // within bounds
+          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||       // within bounds
               (mpRandom->getRandomOO() < mPf))      // random chance to compare values outside bounds
             {
               // compare obj fcn using mValue alternative code
@@ -311,12 +311,12 @@ C_FLOAT64 COptMethodGASR::phi(C_INT32 indivNum)
       // Go through parameter and constraints (all taken care of in single call)
       switch (OptItem.checkConstraint())
         {
-        case - 1:     // to low
+        case - 1:      // to low
           phiCalc = *OptItem.getLowerBoundValue() - (*mIndividual[indivNum])[i];
           phiVal += phiCalc * phiCalc;
           break;
 
-        case 1:       // to high
+        case 1:        // to high
           phiCalc = (*mIndividual[indivNum])[i] - *OptItem.getUpperBoundValue();
           phiVal += phiCalc * phiCalc;
           break;
@@ -389,7 +389,7 @@ bool COptMethodGASR::creation(unsigned C_INT32 first,
               if (linear)
                 mut = mn + mpRandom->getRandomCC() * (mx - mn);
               else
-                mut = mn * pow(10, la * mpRandom->getRandomCC());
+                mut = pow(10, log10(mn) + la * mpRandom->getRandomCC());
             }
 
           catch (...)

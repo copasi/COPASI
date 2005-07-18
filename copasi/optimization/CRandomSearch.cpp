@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 18:19:24 $
+   $Date: 2005/07/18 21:06:36 $
    End CVS Header */
 
 /***************************************************************************
@@ -138,8 +138,9 @@ bool CRandomSearch::optimise()
               if (linear)
                 mut = mn + mpRandom->getRandomCC() * (mx - mn);
               else
-                mut = mn * pow(10, la * mpRandom->getRandomCC());
+                mut = pow(10, log10(mn) + la * mpRandom->getRandomCC());
             }
+
           catch (...)
             {
               mut = (mx + mn) * 0.5;
