@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/22 16:11:01 $
+   $Author: shoops $ 
+   $Date: 2005/07/18 21:03:21 $
    End CVS Header */
 
 /**
@@ -48,7 +48,8 @@ class CMoiety : public CCopasiContainer
      * @supplierCardinality 0..*
      */
     /** @dia:route 7,3; h,41.0337,110.831,46.5202,117.862,52.0066 */
-    CCopasiVector < CChemEqElement > mEquation;
+    // CCopasiVector < CChemEqElement > mEquation;
+    std::vector<std::pair< C_FLOAT64, CMetab * > > mEquation;
 
     // Operations
   public:

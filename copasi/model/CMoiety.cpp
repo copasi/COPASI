@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/08 09:20:52 $
+   $Author: shoops $ 
+   $Date: 2005/07/18 21:03:21 $
    End CVS Header */
 
 #include <stdio.h>
@@ -25,19 +25,19 @@
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Moiety"),
-    mKey(GlobalKeys.add("Moiety", this)),            //By G
+    mKey(GlobalKeys.add("Moiety", this)),             //By G
     mNumber(0),
     mINumber(0),
-    mEquation("Equation", this)
+    mEquation()
 {CONSTRUCTOR_TRACE;}
 
 CMoiety::CMoiety(const CMoiety & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Moiety", this)),            //By G
+    mKey(GlobalKeys.add("Moiety", this)),             //By G
     mNumber(src.mNumber),
     mINumber(src.mINumber),
-    mEquation(src.mEquation, this)
+    mEquation(src.mEquation)
 {CONSTRUCTOR_TRACE;}
 
 CMoiety::~CMoiety()
@@ -48,22 +48,23 @@ CMoiety::~CMoiety()
 
 void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite)
 {
-  CChemEqElement element;
-  element.setMultiplicity(value);
-  element.setMetabolite(pMetabolite->getKey());
+  std::pair<C_FLOAT64, CMetab *> element;
 
-  mEquation.add(element);
+  element.first = value;
+  element.second = pMetabolite;
+
+  mEquation.push_back(element);
 }
 
-void CMoiety::cleanup() {mEquation.cleanup();}
+void CMoiety::cleanup() {mEquation.clear();}
 
 C_FLOAT64 CMoiety::dependentNumber()
 {
   mNumber = mINumber;
 
   for (unsigned C_INT32 i = 1; i < mEquation.size(); i++)
-    mNumber -= mEquation[i]->getMultiplicity() *
-               mEquation[i]->getMetabolite().getNumber();
+    mNumber -=
+      mEquation[i].first * mEquation[i].second->getNumber();
 
   return mNumber;
 }
@@ -73,11 +74,11 @@ C_FLOAT64 CMoiety::dependentNumber()
   C_FLOAT64 Rate = 0.0;
  
   for (unsigned C_INT32 i = 1; i < mEquation.size(); i++)
-    Rate -= mEquation[i]->getMultiplicity() *
-            mEquation[i]->getMetabolite().getConcentrationRate() *
-            mEquation[i]->getMetabolite().getCompartment()->getVolumeInv();  //TODO::check!!!!
+    Rate -= mEquation[i].first *
+            mEquation[i].second->getConcentrationRate() *
+            mEquation[i].second->getCompartment()->getVolumeInv();  //TODO::check!!!!
  
-  return Rate * mEquation[0]->getMetabolite().getCompartment()->getVolume();
+  return Rate * mEquation[0].second->getCompartment()->getVolume();
 }*/ //seems to be unused
 
 const std::string & CMoiety::getKey() const {return mKey;} //By G
@@ -91,17 +92,17 @@ const std::string & CMoiety::getKey() const {return mKey;} //By G
       {
         if (i)
           {
-            if (mEquation[i]->getMultiplicity() < 0.0)
+            if (mEquation[i].first < 0.0)
               Description += " - ";
             else
               Description += " + ";
           }
-        if (fabs(mEquation[i]->getMultiplicity()) != 1.0)
+        if (fabs(mEquation[i].first) != 1.0)
           Description += StringPrint("%3.1f * ",
-                                     fabs(mEquation[i]->getMultiplicity()));
-        Description += mEquation[i]->getMetabolite().getObjectName();
+                                     fabs(mEquation[i].first));
+        Description += mEquation[i].second->getObjectName();
         //Description += "{" + mEquation[i]->getCompartmentName() + "}";
-        Description += "{" + mEquation[i]->getMetabolite().getCompartment()->getObjectName() + "}";
+        Description += "{" + mEquation[i].second->getCompartment()->getObjectName() + "}";
       }
     return Description;
   }*/
@@ -113,15 +114,15 @@ std::string CMoiety::getDescription(const CModel * model) const
       {
         if (i)
           {
-            if (mEquation[i]->getMultiplicity() < 0.0)
+            if (mEquation[i].first < 0.0)
               Description += " - ";
             else
               Description += " + ";
           }
-        if (fabs(mEquation[i]->getMultiplicity()) != 1.0)
+        if (fabs(mEquation[i].first) != 1.0)
           Description += StringPrint("%3.1f * ",
-                                     fabs(mEquation[i]->getMultiplicity()));
-        Description += CMetabNameInterface::getDisplayName(model, mEquation[i]->getMetabolite());
+                                     fabs(mEquation[i].first));
+        Description += CMetabNameInterface::getDisplayName(model, *mEquation[i].second);
       }
     return Description;
   }
@@ -136,8 +137,8 @@ void CMoiety::setInitialValue()
   mINumber = 0;
 
   for (unsigned C_INT32 i = 0; i < mEquation.size(); i++)
-    mINumber += mEquation[i]->getMultiplicity() *
-                mEquation[i]->getMetabolite().getInitialNumber();
+    mINumber += mEquation[i].first *
+                mEquation[i].second->getInitialNumber();
   return;
 }
 
