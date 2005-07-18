@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/15 14:54:20 $
+   $Author: gauges $ 
+   $Date: 2005/07/18 15:23:46 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -111,6 +111,10 @@ const MESSAGES Messages[] =
     {MCSBML + 8, "SBML (8): Expression tree for kinetic of reaction '%s' could not be converted."},
     {MCSBML + 9, "SBML (9): Could not set function from expression in reaction '%s'."},
     {MCSBML + 10, "SBML (10): Copasi does not support stoichiometric expressions yet."},
+    {MCSBML + 11, "SBML (11): Function \"%s\" does not start with a Lambda element."},
+    {MCSBML + 12, "SBML (12): Function \"%s\" contains invalid parameter list."},
+    {MCSBML + 13, "SBML (13): Could not read function definition for function \"%s\"."},
+    {MCSBML + 14, "SBML (14): Could not import function with id \"%s\"."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

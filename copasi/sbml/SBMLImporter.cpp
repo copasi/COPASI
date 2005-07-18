@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/12 17:53:00 $
+   $Date: 2005/07/18 15:23:45 $
    End CVS Header */
 
 #include "copasi.h"
@@ -61,6 +61,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   copasiModel->setVolumeUnit(CModel::l);
   copasiModel->setTimeUnit(CModel::s);
   copasiModel->setQuantityUnit(CModel::Mol);
+  /* Set standard units to match the standard units of SBML files. */
 
   if (sbmlModel->getNumUnitDefinitions() != 0)
     {
@@ -107,11 +108,20 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
   copasiModel->setTitle(title.c_str());
 
-  /* Set standard units to match the standard units of SBML files. */
+  /* import the functions */
+  unsigned int counter;
+  unsigned int num = sbmlModel->getNumFunctionDefinitions();
+
+  CFunctionDB* pTmpFunctionDB = new CFunctionDB();
+
+  for (counter = 0; counter < num;++counter)
+    {
+      //CFunction* pFun=this->createCFunctionFromFunctionDefinition(sbmlModel->getFunctionDefinition(counter),pTmpFunctionDB);
+    }
+
   std::map<std::string, CCompartment*> compartmentMap;
   /* Create the compartments */
-  unsigned int num = sbmlModel->getNumCompartments();
-  unsigned int counter;
+  num = sbmlModel->getNumCompartments();
   for (counter = 0; counter < num; counter++)
     {
       Compartment* sbmlCompartment = sbmlModel->getCompartment(counter);
@@ -175,7 +185,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   num = sbmlModel->getNumReactions();
   for (counter = 0; counter < num; counter++)
     {
-      this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel, copasi2sbmlmap);
+      this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel, copasi2sbmlmap, pTmpFunctionDB);
     }
   copasiModel->setCompileFlag();
   if (sbmlModel->getNumRules() > 0)
@@ -187,7 +197,86 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 4);
     }
 
+  // delete the temporary function database and all functions that are still in there.
+  CCopasiVectorN< CEvaluationTree >& functions = pTmpFunctionDB->loadedFunctions();
+  num = functions.size();
+  for (counter = 0; counter < num; ++counter)
+    {
+      CEvaluationTree* pTree = pTmpFunctionDB->findFunction(functions[counter]->getObjectName());
+      pdelete(pTree);
+    }
+  delete pTmpFunctionDB;
+
   return copasiModel;
+}
+
+CEvaluationTree* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB)
+{
+  CFunction* pTmpFunction = this->createCFunctionFromFunctionTree(sbmlFunction);
+  if (pTmpFunction)
+    {
+      pTmpFunction->setSBMLId(sbmlFunction->getId());
+      std::string functionName = sbmlFunction->getName();
+      if (functionName == "")
+        {
+          functionName = sbmlFunction->getId();
+        }
+      pTmpFunction->setObjectName(functionName);
+      unsigned int counter = 2;
+      std::ostringstream numberStream;
+      std::string appendix = "";
+      while (!pTmpFunctionDB->add(pTmpFunction, false))
+        {
+          numberStream.str("");
+          numberStream << "_" << counter;
+          counter++;
+          appendix = numberStream.str();
+          pTmpFunction->setObjectName(functionName + appendix);
+        }
+    }
+  else
+    {
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 14, sbmlFunction->getId().c_str());
+    }
+  return pTmpFunction;
+}
+
+CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinition* pSBMLFunction)
+{
+  CFunction* pFun = NULL;
+  if (pSBMLFunction->isSetMath())
+    {
+      const ASTNode* root = pSBMLFunction->getMath();
+      if (root->getType() == AST_LAMBDA)
+        {
+          // get the number of children.
+          // the first n-1 children are the parameters for the function
+          // the last child is the actual function
+          pFun = new CFunction();
+          pFun->setTree(*root->getRightChild());
+          if (pFun->getRoot() == NULL)
+            {
+              delete pFun;
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 13, pSBMLFunction->getId().c_str());
+            }
+          unsigned int i, iMax = root->getNumChildren() - 1;
+          for (i = 0; i < iMax;++i)
+            {
+              ASTNode* pVarNode = root->getChild(i);
+              if (pVarNode->getType() != AST_NAME)
+                {
+                  delete pFun;
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 12, pSBMLFunction->getId().c_str());
+                }
+              pFun->addVariable(pVarNode->getName());
+            }
+        }
+      else
+        {
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 11, pSBMLFunction->getId().c_str());
+        }
+    }
+  return pFun;
 }
 
 /**
@@ -343,9 +432,8 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
  * Reaction object.
  */
 CReaction*
-SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
 {
-  /* Check if the name of the reaction is unique. */
   if (sbmlReaction == NULL)
     {
       fatalError();
@@ -355,6 +443,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
     {
       name = sbmlReaction->getId();
     }
+  /* Check if the name of the reaction is unique. */
   std::string appendix = "";
   unsigned int counter = 2;
   std::ostringstream numberStream;

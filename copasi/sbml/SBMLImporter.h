@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/06 13:43:13 $
+   $Date: 2005/07/18 15:23:45 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -46,6 +46,14 @@ class SBMLImporter
     CModel* createCModelFromSBMLDocument(SBMLDocument* doc, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
+     * Creates and returns a Copasi CFunction from the SBML FunctionDefinition
+     * given as argument.
+     */
+    CEvaluationTree* createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB);
+
+    CFunction* createCFunctionFromFunctionTree(const FunctionDefinition* pSBMLFunction);
+
+    /**
      * Creates and returns a Copasi CCompartment from the SBML Compartment
      * given as argument.
      */
@@ -65,7 +73,7 @@ class SBMLImporter
      * Creates and returns a Copasi CReaction object from the given SBML
      * Reaction object.
      */
-    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB);
 
     /**
      * Replaces SBML user defined functions with the actual funtcion definition.
