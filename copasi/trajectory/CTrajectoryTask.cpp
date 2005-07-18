@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/18 14:07:35 $
+   $Date: 2005/07/18 21:12:18 $
    End CVS Header */
 
 /**
@@ -29,6 +29,7 @@
 #include "report/CReport.h"
 #include "utilities/COutputHandler.h"
 #include "utilities/CProcessReport.h"
+#include "utilities/CCopasiException.h"
 
 #define XXXX_Reporting
 
@@ -211,7 +212,15 @@ bool CTrajectoryTask::process()
   // We start the integration
   // This is numerically more stable then adding pProblem->getStepSize().
   NextTimeToReport = (EndTime - StartTime) * StepCounter++ / StepNumber;
-  ActualStepSize = pMethod->step(StepSize, mpState);
+  try
+    {
+      ActualStepSize = pMethod->step(StepSize, mpState);
+    }
+  catch (CCopasiException Exception)
+    {
+      if (mpCallBack) mpCallBack->finish(hProcess);
+      throw CCopasiException(CCopasiMessage::getLastMessage());
+    }
 
   if (mpCallBack)
     {
@@ -235,6 +244,8 @@ bool CTrajectoryTask::process()
       /* Here we will do conditional event processing */
 
       StepSize = NextTimeToReport - Time;
+      if (mpCallBack)
+        flagProceed = mpCallBack->proceed();
     }
   else
     {
@@ -247,7 +258,15 @@ bool CTrajectoryTask::process()
 
   while ((*L)(Time, EndTime * (1 - 100 * DBL_EPSILON)) && flagProceed)
     {
-      ActualStepSize = pMethod->step(StepSize);
+      try
+        {
+          ActualStepSize = pMethod->step(StepSize);
+        }
+      catch (CCopasiException Exception)
+        {
+          if (mpCallBack) mpCallBack->finish(hProcess);
+          throw CCopasiException(CCopasiMessage::getLastMessage());
+        }
 
       //std::cout << EndTime << "  " << Time << "  " << EndTime-Time << std::endl;
 
@@ -273,6 +292,8 @@ bool CTrajectoryTask::process()
           /* Here we will do conditional event processing */
 
           StepSize = NextTimeToReport - Time;
+          if (mpCallBack)
+            flagProceed = mpCallBack->proceed();
         }
       else
         {
