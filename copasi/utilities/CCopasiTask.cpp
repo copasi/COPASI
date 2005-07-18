@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/18 14:07:33 $
+   $Date: 2005/07/18 21:01:03 $
    End CVS Header */
 
 /**
@@ -127,7 +127,7 @@ const bool & CCopasiTask::isScheduled() const {return mScheduled;}
 
 bool CCopasiTask::setCallBack(CProcessReport * pCallBack)
 {
-  mpCallBack = NULL;
+  mpCallBack = pCallBack;
   return true;
 }
 
