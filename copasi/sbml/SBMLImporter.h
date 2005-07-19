@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/18 15:23:45 $
+   $Date: 2005/07/19 15:18:43 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -39,6 +39,8 @@ class SBMLImporter
     CFunctionDB* functionDB;
     bool mIncompleteModel;
     unsigned int mLevel;
+    std::map<CEvaluationTree*, std::string> sbmlIdMap;
+    std::vector<std::string> newFunctionsKeys;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -49,7 +51,7 @@ class SBMLImporter
      * Creates and returns a Copasi CFunction from the SBML FunctionDefinition
      * given as argument.
      */
-    CEvaluationTree* createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB);
+    CFunction* createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB);
 
     CFunction* createCFunctionFromFunctionTree(const FunctionDefinition* pSBMLFunction);
 
@@ -73,7 +75,7 @@ class SBMLImporter
      * Creates and returns a Copasi CReaction object from the given SBML
      * Reaction object.
      */
-    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB);
+    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB, const std::map<std::string, std::string>& nameMapping);
 
     /**
      * Replaces SBML user defined functions with the actual funtcion definition.
@@ -141,11 +143,20 @@ class SBMLImporter
      */
     bool sbmlId2CopasiCN(ASTNode* pNode, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CCopasiParameterGroup& pParamGroup);
 
+    /**
+     * Upon import a function object might change its name due to naming conflicts in the function
+     * database. So after importing all function, all call node data has to be replaced by new data
+     * which represents the new function name.
+     * The same has to be done later on for function call nodes in reaction kinetics.
+     */
+    void replaceCallNodeNames(CEvaluationTree* tree, const std::map<std::string, std::string>& nameMapping);
+
   public:
     SBMLImporter();
     ~SBMLImporter();
     CModel* readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
     static void printMap(const std::map<CCopasiObject*, SBase*>& map);
+    void restoreFunctionDB();
   };
 
 #endif

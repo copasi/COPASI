@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/18 15:23:45 $
+   $Date: 2005/07/19 15:18:43 $
    End CVS Header */
 
 #include "copasi.h"
@@ -110,13 +110,39 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   /* import the functions */
   unsigned int counter;
-  unsigned int num = sbmlModel->getNumFunctionDefinitions();
+  CCopasiVectorN< CEvaluationTree >& functions = this->functionDB->loadedFunctions();
+
+  unsigned int num = functions.size();
+  this->sbmlIdMap.clear();
+  for (counter = 0; counter < num; ++counter)
+    {
+      CEvaluationTree* tree = functions[counter];
+      if (!tree->getSBMLId().empty())
+        {
+          this->sbmlIdMap[tree] = tree->getSBMLId();
+          tree->setSBMLId("");
+        }
+    }
+
+  num = sbmlModel->getNumFunctionDefinitions();
 
   CFunctionDB* pTmpFunctionDB = new CFunctionDB();
-
+  std::map<std::string, std::string> nameMapping = std::map<std::string, std::string>();
   for (counter = 0; counter < num;++counter)
     {
-      //CFunction* pFun=this->createCFunctionFromFunctionDefinition(sbmlModel->getFunctionDefinition(counter),pTmpFunctionDB);
+      FunctionDefinition* pSBMLFunDef = sbmlModel->getFunctionDefinition(counter);
+      CFunction* pFun = this->createCFunctionFromFunctionDefinition(pSBMLFunDef, pTmpFunctionDB);
+      copasi2sbmlmap[pFun] = pSBMLFunDef;
+      nameMapping[pSBMLFunDef->getId()] = pFun->getObjectName();
+    }
+
+  // now go through the temporary function db and replace all call nodes with the name of the
+  // copasi function.
+  functions = pTmpFunctionDB->loadedFunctions();
+  num = functions.size();
+  for (counter = 0; counter < num; ++counter)
+    {
+      this->replaceCallNodeNames(functions[counter], nameMapping);
     }
 
   std::map<std::string, CCompartment*> compartmentMap;
@@ -185,7 +211,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   num = sbmlModel->getNumReactions();
   for (counter = 0; counter < num; counter++)
     {
-      this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel, copasi2sbmlmap, pTmpFunctionDB);
+      this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, copasiModel, copasi2sbmlmap, pTmpFunctionDB, nameMapping);
     }
   copasiModel->setCompileFlag();
   if (sbmlModel->getNumRules() > 0)
@@ -198,7 +224,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
 
   // delete the temporary function database and all functions that are still in there.
-  CCopasiVectorN< CEvaluationTree >& functions = pTmpFunctionDB->loadedFunctions();
+  functions = pTmpFunctionDB->loadedFunctions();
   num = functions.size();
   for (counter = 0; counter < num; ++counter)
     {
@@ -210,7 +236,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   return copasiModel;
 }
 
-CEvaluationTree* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB)
+CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB)
 {
   CFunction* pTmpFunction = this->createCFunctionFromFunctionTree(sbmlFunction);
   if (pTmpFunction)
@@ -221,18 +247,18 @@ CEvaluationTree* SBMLImporter::createCFunctionFromFunctionDefinition(const Funct
         {
           functionName = sbmlFunction->getId();
         }
-      pTmpFunction->setObjectName(functionName);
       unsigned int counter = 2;
       std::ostringstream numberStream;
       std::string appendix = "";
-      while (!pTmpFunctionDB->add(pTmpFunction, false))
+      while (this->functionDB->findFunction(functionName + appendix))
         {
           numberStream.str("");
           numberStream << "_" << counter;
           counter++;
           appendix = numberStream.str();
-          pTmpFunction->setObjectName(functionName + appendix);
         }
+      pTmpFunction->setObjectName(functionName + appendix);
+      pTmpFunctionDB->add(pTmpFunction, false);
     }
   else
     {
@@ -432,7 +458,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
  * Reaction object.
  */
 CReaction*
-SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
+SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB, const std::map<std::string, std::string>& nameMapping)
 {
   if (sbmlReaction == NULL)
     {
@@ -632,10 +658,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       this->replacePowerFunctionNodes(node);
       this->replaceLog((ConverterASTNode*)node);
       this->replaceRoot((ConverterASTNode*)node);
-      // handling of funny operator calls should now also be
-      // handled by the new expression tree conversion functions
       /* if it is a single compartment reaction, we have to divide the whole kinetic
-      ** equation by the volume of the compartment because copasi expects
+      ** equation by the compartment because copasi expects
       ** kinetic laws that specify concentration/time for single compartment
       ** reactions.
       */
@@ -644,43 +668,14 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           if (compartment != NULL)
             {
               /* only divide if the volume is not 1 */
-              if (compartment->getVolume() != 1.0)
-                {
-                  /* if the whole function has been multiplied by the same volume
-                  ** already, drop one level instead of adding one.
-                  */
-                  /*
-                  if(node->getLeftChild()->isReal()){
-                     std::cerr << "isReal: " << node->getLeftChild()->getReal() << std::endl;
-                     if(node->getLeftChild()->getType()==AST_REAL_E){
-                         std::cerr << "Mantissa: " << node->getLeftChild()->getMantissa() << std::endl;
-                         std::cerr << "Exponent: " << node->getLeftChild()->getExponent() << std::endl;
-                     }
-                     else if(node->getLeftChild()->getType()==AST_REAL){
-                         std::cerr << "Real: " << node->getLeftChild()->getReal() << std::endl;                        
-                     }
-                     else if(node->getLeftChild()->getType()==AST_RATIONAL){
-                         std::cerr << "Numerator: " << node->getLeftChild()->getNumerator() << std::endl;
-                         std::cerr << "Denominator: " << node->getLeftChild()->getDenominator() << std::endl;
-                         
-                     }
-                   }*/
-
-                  if ((node->getType() == AST_TIMES) && (node->getLeftChild()->isReal() && (node->getLeftChild()->getReal() == compartment->getInitialVolume())))
-                    {
-                      node = node->getRightChild();
-                    }
-                  else
-                    {
-                      ConverterASTNode* tmpNode1 = new ConverterASTNode();
-                      tmpNode1->setType(AST_DIVIDE);
-                      tmpNode1->addChild(node);
-                      ConverterASTNode* tmpNode2 = new ConverterASTNode();
-                      tmpNode2->setValue(compartment->getInitialVolume());
-                      tmpNode1->addChild(tmpNode2);
-                      node = tmpNode1;
-                    }
-                }
+              ConverterASTNode* tmpNode1 = new ConverterASTNode();
+              tmpNode1->setType(AST_DIVIDE);
+              tmpNode1->addChild(node);
+              ConverterASTNode* tmpNode2 = new ConverterASTNode();
+              tmpNode2->setType(AST_NAME);
+              tmpNode2->setName(compartment->getSBMLId().c_str());
+              tmpNode1->addChild(tmpNode2);
+              node = tmpNode1;
             }
           else
             {
@@ -695,11 +690,32 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (pExpressionTreeRoot)
         {
           CEvaluationTree* pTmpTree = CEvaluationTree::create(CEvaluationTree::Expression);
+          this->replaceCallNodeNames(pTmpTree, nameMapping);
           pTmpTree->setRoot(pExpressionTreeRoot);
-          if (!copasiReaction->setFunctionFromExpressionTree(pTmpTree, copasi2sbmlmap, this->functionDB))
+          // check if the root node is a function call
+          if (dynamic_cast<CEvaluationNodeCall*>(pExpressionTreeRoot))
             {
-              // error message
-              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 9, copasiReaction->getObjectName().c_str());
+              // if yes, we check if it corresponds to an already existing function
+              CEvaluationTree* tree = pTmpFunctionDB->findFunction(pExpressionTreeRoot->getData());
+              assert(tree);
+              //CEvaluationTree* pExistingFunction=this->findCorrespondingFunction(tree);
+              CFunction* pExistingFunction = NULL;
+              // if it does, we set the existing function for this reaction
+              if (pExistingFunction)
+                {
+                  copasiReaction->setFunction(pExistingFunction);
+                }
+              // else we take the function from the pTmpFunctionDB, copy it and set the usage correctly
+              else
+              {}
+            }
+          else
+            {
+              if (!copasiReaction->setFunctionFromExpressionTree(pTmpTree, copasi2sbmlmap, this->functionDB))
+                {
+                  // error message
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 9, copasiReaction->getObjectName().c_str());
+                }
             }
           // delete the temporary tree and all the nodes
           delete pTmpTree;
@@ -1452,4 +1468,45 @@ void SBMLImporter::printMap(const std::map<CCopasiObject*, SBase*>& map)
       ++it;
     }
   std::cout << std::endl;
+}
+
+void SBMLImporter::restoreFunctionDB()
+{
+  // set all the old sbml ids
+  std::map<CEvaluationTree*, std::string>::iterator it = this->sbmlIdMap.begin();
+  std::map<CEvaluationTree*, std::string>::iterator endIt = this->sbmlIdMap.end();
+  while (it != endIt)
+    {
+      it->first->setSBMLId(it->second);
+      ++it;
+    }
+
+  // remove all the functions that were added during import
+  std::vector<std::string>::iterator it2 = this->newFunctionsKeys.begin();
+  std::vector<std::string>::iterator endIt2 = this->newFunctionsKeys.end();
+  while (it2 != endIt2)
+    {
+      this->functionDB->removeFunction(*it2);
+      ++it2;
+    }
+}
+
+void SBMLImporter::replaceCallNodeNames(CEvaluationTree* tree, const std::map<std::string, std::string>& nameMapping)
+{
+  CEvaluationNode* node = tree->getRoot();
+  while (node)
+    {
+      CEvaluationNodeCall* pCallNode = dynamic_cast<CEvaluationNodeCall*>(node);
+      if (pCallNode)
+        {
+          std::map<std::string, std::string>::const_iterator pos = nameMapping.find(pCallNode->getData());
+
+          if (pos == nameMapping.end())
+            {
+              fatalError();
+            }
+          std::string newName = pos->second;
+          pCallNode->setData(newName);
+        }
+    }
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/19 13:00:10 $
+   $Date: 2005/07/19 15:18:43 $
    End CVS Header */
 
 #include <math.h>
@@ -729,32 +729,32 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
   if (copasiReaction->getCompartmentNumber() == 1)
     {
       ASTNode* tNode = new ASTNode(AST_TIMES);
-      ASTNode* vNode = new ASTNode(AST_REAL);
+      ASTNode* vNode = new ASTNode(AST_NAME);
       double volume = 0.0;
+      const CCompartment* compartment = NULL;
       if (copasiReaction->getChemEq().getSubstrates().size() != 0)
         {
-          volume = copasiReaction->getChemEq().getSubstrates()[0]->getMetabolite().getCompartment()->getInitialVolume();
+          compartment = copasiReaction->getChemEq().getSubstrates()[0]->getMetabolite().getCompartment();
+          volume = compartment->getInitialVolume();
         }
       else
         {
-          volume = copasiReaction->getChemEq().getProducts()[0]->getMetabolite().getCompartment()->getInitialVolume();
+          compartment = copasiReaction->getChemEq().getProducts()[0]->getMetabolite().getCompartment();
+          volume = compartment->getInitialVolume();
         }
-      if (volume != 1.0 && volume != 0.0)
+      /* if the whole function already has been divided by the same
+       ** volume, e.g. by a former export, drop one level instead of
+       ** adding another one */
+      if ((node->getType() == AST_DIVIDE) && (node->getRightChild()->getType() == AST_NAME) && (node->getRightChild()->getName() == compartment->getSBMLId()))
         {
-          /* if the whole function already has been divided by the same
-          ** volume, e.g. by a formaer export, drop one level instead of
-          ** adding another one */
-          if ((node->getType() == AST_DIVIDE) && (node->getRightChild()->getType() == AST_REAL) && (node->getRightChild()->getReal() == volume))
-            {
-              node = node->getLeftChild();
-            }
-          else
-            {
-              vNode->setValue(volume);
-              tNode->addChild(vNode);
-              tNode->addChild(node);
-              node = tNode;
-            }
+          node = node->getLeftChild();
+        }
+      else
+        {
+          vNode->setName(compartment->getSBMLId().c_str());
+          tNode->addChild(vNode);
+          tNode->addChild(node);
+          node = tNode;
         }
     }
 
