@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/12 16:30:46 $
+   $Date: 2005/07/19 15:16:03 $
    End CVS Header */
 
 #include "copasi.h"
@@ -255,6 +255,7 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
   switch (nodeType)
     {
     case AST_LAMBDA:
+      // this nodetype will never be handled directly
       break;
     case AST_PLUS:
     case AST_MINUS:
