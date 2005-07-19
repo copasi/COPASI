@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/19 19:27:00 $
+   $Date: 2005/07/19 20:05:25 $
    End CVS Header */
 
 #include "copasi.h"
@@ -283,15 +283,10 @@ bool CCopasiDataModel::autoSave()
   AutoSave += CDirEntry::Separator + "tmp_";
 
   if (mSaveFileName != "")
-    {
-      index = mSaveFileName.find_last_of(CDirEntry::Separator);
-#ifdef WIN32 // WIN32 also understands '/' as the separator.
-      if (index == C_INVALID_INDEX)
-        index = mSaveFileName.find_last_of("/");
-#endif
-      AutoSave += mSaveFileName.substr(index + 1,
-                                       mSaveFileName.length() - index - 5);
-    }
+    AutoSave += CDirEntry::baseName(mSaveFileName);
+  else
+    AutoSave += "untitled";
+
   AutoSave += ".cps";
 
   if (!saveModel(AutoSave, true, true)) return false;
