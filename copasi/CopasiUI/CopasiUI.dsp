@@ -218,10 +218,6 @@ SOURCE=.\DifferentialEquations.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Expression.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\FixedMetaboliteSymbols.cpp
 # End Source File
 # Begin Source File
