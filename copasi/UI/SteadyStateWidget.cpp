@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.95 $
+   $Revision: 1.96 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/18 14:07:33 $
+   $Date: 2005/07/19 19:29:09 $
    End CVS Header */
 
 /********************************************************
@@ -156,10 +156,7 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   Layout2 = new QHBoxLayout(0, 0, 6, "Layout2");
 
   bRunButton = new QPushButton(this, "bRunButton");
-  if (parent == NULL)
-    bRunButton->setText(trUtf8("OK"));
-  else
-    bRunButton->setText(trUtf8("Run"));
+  bRunButton->setText(trUtf8("Run"));
   bRunButton->setEnabled(true /*(parent == NULL)*/);
   Layout2->addWidget(bRunButton);
 
@@ -289,28 +286,9 @@ void SteadyStateWidget::parameterValueChanged()
 
 void SteadyStateWidget::runSteadyStateTask()
 {
-  if (CCopasiDataModel::Global->isChanged())
-    {
-      const QApplication* qApp = dataModel->getQApp();
-      if (qApp)
-        {
-          CopasiUI3Window* mainWidget = dynamic_cast<CopasiUI3Window*>(qApp->mainWidget());
-          if (mainWidget)
-            {
-              if (QMessageBox::question(mainWidget, "Model Changed", "Your model contains unsaved changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
-                {
-                  mainWidget->saveFile();
-                }
-            }
-        }
-    }
   CommitButtonClicked();
 
-  if (bRunButton->text() != "Run")
-    {
-      hide();
-      return;
-    }
+  CCopasiDataModel::Global->autoSave();
 
   CSteadyStateTask* mSteadyStateTask =
     dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));

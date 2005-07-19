@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/17 17:50:40 $
+   $Date: 2005/07/19 19:29:09 $
    End CVS Header */
 
 /*******************************************************************
@@ -202,7 +202,6 @@ bool ModelWidget::saveToModel()
     }
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  CCopasiDataModel::Global->changed();
 
   return success;
 }

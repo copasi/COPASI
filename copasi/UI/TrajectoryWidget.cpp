@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.109 $
+   $Revision: 1.110 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/18 14:07:33 $
+   $Date: 2005/07/19 19:29:10 $
    End CVS Header */
 
 /********************************************************
@@ -235,10 +235,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
 
   bRunTask = new QPushButton(this, "bRunTask");
 
-  if (parent == NULL)
-    bRunTask->setText(trUtf8("OK"));
-  else
-    bRunTask->setText(trUtf8("Run"));
+  bRunTask->setText(trUtf8("Run"));
 
   //bRunTask->setEnabled(parent == NULL);
   Layout2->addWidget(bRunTask);
@@ -418,29 +415,10 @@ void TrajectoryWidget::CommitChange()
 
 void TrajectoryWidget::runTrajectoryTask()
 {
-  if (CCopasiDataModel::Global->isChanged())
-    {
-      const QApplication* qApp = dataModel->getQApp();
-      if (qApp)
-        {
-          CopasiUI3Window* mainWidget = dynamic_cast<CopasiUI3Window*>(qApp->mainWidget());
-          if (mainWidget)
-            {
-              if (QMessageBox::question(mainWidget, "Model Changed", "Your model contains unsaved changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
-                {
-                  mainWidget->saveFile();
-                }
-            }
-        }
-    }
   checkTimeSeries();
   saveTrajectoryTask();
 
-  if (bRunTask->text() != "Run")
-    {
-      hide();
-      return;
-    }
+  CCopasiDataModel::Global->autoSave();
 
   CTrajectoryTask* tt =
     dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));

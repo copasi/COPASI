@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 20:58:12 $
+   $Date: 2005/07/19 19:29:09 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -86,25 +86,7 @@ void MoietyWidget::deleteObjects(const std::vector<std::string> & C_UNUSED(keys)
 
 void MoietyWidget::slotBtnRunClicked()
 {
-  if (CCopasiDataModel::Global->isChanged())
-    {
-      const QApplication* qApp = dataModel->getQApp();
-      if (qApp)
-        {
-          CopasiUI3Window* mainWidget = dynamic_cast<CopasiUI3Window*>(qApp->mainWidget());
-          if (mainWidget)
-            {
-              if (!CCopasiDataModel::Global->autoSave())
-                {
-                  //QMessageBox::question(mainWidget, "Temporary File Save Failed", "Unable to create temporary file .\nThis will not affect the running application but in case if\nthe application crashes with some unsaved changes those changes \nwill be lost.");
-                  if (QMessageBox::question(mainWidget, "Please save the changes !!!", "Your model contains unsaved changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
-                    {
-                      mainWidget->saveFile();
-                    }
-                }
-            }
-        }
-    }
+  CCopasiDataModel::Global->autoSave();
   CCopasiDataModel::Global->getModel()->compileIfNecessary();
   fillTable();
 

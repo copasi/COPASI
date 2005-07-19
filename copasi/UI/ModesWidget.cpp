@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/03/07 15:00:19 $
+   $Author: shoops $ 
+   $Date: 2005/07/19 19:29:09 $
    End CVS Header */
 
 /*******************************************************************
@@ -141,25 +141,8 @@ void ModesWidget::slotTableSelectionChanged()
 
 void ModesWidget::slotBtnCalculateClicked()
 {
-  if (CCopasiDataModel::Global->isChanged())
-    {
-      const QApplication* qApp = dataModel->getQApp();
-      if (qApp)
-        {
-          CopasiUI3Window* mainWidget = dynamic_cast<CopasiUI3Window*>(qApp->mainWidget());
-          if (mainWidget)
-            {
-              if (!CCopasiDataModel::Global->autoSave())
-                {
-                  //QMessageBox::question(mainWidget, "Temporary File Save Failed", "Unable to create temporary file .\nThis will not affect the running application but in case if\nthe application crashes with some unsaved changes those changes \nwill be lost.");
-                  if (QMessageBox::question(mainWidget, "Please save the changes !!!", "Your model contains unsaved changes.\nDo you want to save those changes?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No | QMessageBox::Escape) == QMessageBox::Yes)
-                    {
-                      mainWidget->saveFile();
-                    }
-                }
-            }
-        }
-    }
+  CCopasiDataModel::Global->autoSave();
+
   pdelete(modes);
   modes = new CElementaryFluxModes();
   modes->calculate(CCopasiDataModel::Global->getModel());

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.188 $
+   $Revision: 1.189 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/18 14:07:33 $
+   $Date: 2005/07/19 19:29:09 $
    End CVS Header */
 
 //***  In this file I have put "//+++" in all places where something has to be added
@@ -185,6 +185,8 @@ void ScanWidget::runScanTask()
 
   // save the state of the widget
   saveScan();
+
+  CCopasiDataModel::Global->autoSave();
 
   scanTask->initialize(NULL);
 
