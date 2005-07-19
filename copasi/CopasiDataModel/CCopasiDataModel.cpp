@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/19 17:48:35 $
+   $Date: 2005/07/19 19:27:00 $
    End CVS Header */
 
 #include "copasi.h"
@@ -294,7 +294,7 @@ bool CCopasiDataModel::autoSave()
     }
   AutoSave += ".cps";
 
-  if (!saveModel(AutoSave, true)) return false;
+  if (!saveModel(AutoSave, true, true)) return false;
 
   mAutoSaveNeeded = false;
   return true;
