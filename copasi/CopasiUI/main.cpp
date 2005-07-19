@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 17:56:10 $
+   $Date: 2005/07/19 21:00:53 $
    End CVS Header */
 
 #include <stdexcept>
@@ -22,8 +22,6 @@
 #include "commandline/COptionParser.h"
 #include "commandline/COptions.h"
 #include "DataModelGUI.h"
-
-QApplication *pApp = NULL;
 
 int main(int argc, char **argv)
 {
@@ -45,7 +43,6 @@ int main(int argc, char **argv)
     }
 
   QApplication a(argc, argv);
-  pApp = &a;
 
   CopasiUI3Window window;
   a.setMainWidget(&window);

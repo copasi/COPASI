@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2005/07/14 10:55:36 $
+   $Author: shoops $ 
+   $Date: 2005/07/19 21:00:53 $
    End CVS Header */
 
 #ifndef DATAMODELGUI_H
@@ -15,6 +15,7 @@
 #include "plot/CPlotSpec2Vector.h"
 
 class CMathModel;
+class QTimer;
 
 class DataModelGUI
   {

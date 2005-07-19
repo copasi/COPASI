@@ -1,15 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQProgressDialog.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 19:03:58 $
+   $Date: 2005/07/19 21:00:53 $
    End CVS Header */
 
 #include <qapplication.h>
 #include <qtimer.h>
 
-extern QApplication *pApp;
 bool CQProgressDialog::insertProgressItem(CQProgressItem * pItem)
 {
   if (mItemCount == 0) mpLine->show();
@@ -19,7 +18,7 @@ bool CQProgressDialog::insertProgressItem(CQProgressItem * pItem)
   CQProgressDialogLayout->addItem(mpSpacer);
 
   pItem->show();
-  pApp->processEvents();
+  qApp->processEvents();
 
   mItemCount++;
   return true;
@@ -32,7 +31,7 @@ bool CQProgressDialog::removeProgressItem(CQProgressItem * pItem)
   mItemCount--;
   if (mItemCount == 0) mpLine->hide();
 
-  pApp->processEvents();
+  qApp->processEvents();
   return true;
 }
 
