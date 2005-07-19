@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiException.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:32 $
+   $Date: 2005/07/19 15:17:13 $
    End CVS Header */
 
 /**
@@ -20,29 +20,31 @@
 
 class CCopasiException
   {
-  public:
+  private:
     /**
-     *  Default consructor. 
+     * Default consructor. 
      */
     CCopasiException();
 
+  public:
     /**
-     *  Specific consructor. Creates a exception with a message.
-     *  @param pmessage pointer to a CCopasiMessage object.
+     * Specific consructor. Creates a exception with a message.
+     * @param const CCopasiMessage & message
      */
-    CCopasiException(CCopasiMessage &message);
+    CCopasiException(const CCopasiMessage & message);
 
     /**
-     *  Destructor. 
+     * Destructor. 
      */
     ~CCopasiException();
 
     /**
-     *  Retrieves the Message associated with the exception
+     * Retrieves the Message associated with the exception
+     * @return const CCopasiMessage & message
      */
-    CCopasiMessage getMessage();
+    const CCopasiMessage & getMessage() const;
 
   private:
-    CCopasiMessage mMessage;
+    const CCopasiMessage mMessage;
   };
 #endif // COPASI_CCopasiException
