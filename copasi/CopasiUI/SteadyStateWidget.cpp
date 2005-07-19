@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.96 $
+   $Revision: 1.97 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/19 19:29:09 $
+   $Date: 2005/07/19 21:10:54 $
    End CVS Header */
 
 /********************************************************
@@ -28,6 +28,7 @@ Contact: Please contact lixu1@vt.edu.
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qmessagebox.h>
+#include <qapplication.h>
 
 #include "DataModelGUI.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -46,8 +47,6 @@ Contact: Please contact lixu1@vt.edu.
 #include "CReportDefinitionSelect.h"
 #include "CProgressBar.h"
 #include "copasiui3window.h"
-#include "qmessagebox.h"
-#include "qapplication.h"
 
 /**
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the 
@@ -288,7 +287,8 @@ void SteadyStateWidget::runSteadyStateTask()
 {
   CommitButtonClicked();
 
-  CCopasiDataModel::Global->autoSave();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
 
   CSteadyStateTask* mSteadyStateTask =
     dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
@@ -335,8 +335,8 @@ void SteadyStateWidget::runSteadyStateTask()
   tmpBar->finish(); pdelete(tmpBar);
 
   protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
-
   unsetCursor();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 
   pListView->switchToOtherWidget(211, ""); //change to the results window
 }

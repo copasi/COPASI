@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.189 $
+   $Revision: 1.190 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/19 19:29:09 $
+   $Date: 2005/07/19 21:10:54 $
    End CVS Header */
 
 //***  In this file I have put "//+++" in all places where something has to be added
@@ -19,6 +19,7 @@
 #include <qwhatsthis.h>
 #include <qmessagebox.h>
 #include <qcombobox.h>
+#include <qapplication.h>
 
 #include "copasi.h"
 
@@ -33,6 +34,7 @@
 #include "ObjectBrowserDialog.h"
 #include "ObjectBrowserItem.h"
 #include "DefaultplotDialog.h"
+#include "copasiui3window.h"
 
 //#include "SteadyStateWidget.h"
 //#include "TrajectoryWidget.h"
@@ -57,6 +59,7 @@
 #include "CScanWidgetTask.h"
 
 #include "./icons/scanwidgetbuttonicon.xpm"
+
 ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
     : CopasiWidget(parent, name, f)
     //    pParent(parent)
@@ -186,7 +189,8 @@ void ScanWidget::runScanTask()
   // save the state of the widget
   saveScan();
 
-  CCopasiDataModel::Global->autoSave();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
 
   scanTask->initialize(NULL);
 
@@ -219,33 +223,9 @@ void ScanWidget::runScanTask()
                   CCopasiDataModel::Global->getModel()->getKey());
 
   unsetCursor();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 
   return;
-
-  std::ofstream output;
-  if (scanTask->getReport().getTarget() != "")
-    {
-      if (scanTask->getReport().append())
-        output.open(FROM_UTF8(scanTask->getReport().getTarget()),
-                    std::ios_base::out | std::ios_base::app);
-      else
-        output.open(FROM_UTF8(scanTask->getReport().getTarget()),
-                    std::ios_base::out);
-    }
-  if (output.is_open())
-    scanTask->initialize(&output);
-  else //ask if user insists on proceeding
-    {
-      if (QMessageBox::information (NULL, "No output specified,",
-                                    "No report output target defined, Copasi cannot creat output for you.\n Do you want to continue running scan task with no output?",
-                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
-        return;
-    }
-
-  scanTask->process();
-
-  //  ((ListViews*)pParent)->notify(ListViews::STATE, ListViews::CHANGE, dataModel->getModel()->getKey());
-  unsetCursor();
 }
 
 bool ScanWidget::loadScan()

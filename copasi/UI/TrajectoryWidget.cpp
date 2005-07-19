@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.110 $
+   $Revision: 1.111 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/19 19:29:10 $
+   $Date: 2005/07/19 21:10:54 $
    End CVS Header */
 
 /********************************************************
@@ -29,6 +29,8 @@ Contact: Please contact lixu1@vt.edu.
 #include <qwhatsthis.h>
 #include <qvalidator.h>
 #include <qhbox.h>
+#include <qmessagebox.h>
+#include <qapplication.h>
 
 #include "TrajectoryWidget.h"
 #include "qtUtilities.h"
@@ -47,9 +49,8 @@ Contact: Please contact lixu1@vt.edu.
 #include "plot/CPlotSpec2Vector.h"
 
 #include "copasiui3window.h"
-#include "qmessagebox.h"
-#include "qapplication.h"
-#include "DefaultplotDialog.h" 
+#include "DefaultplotDialog.h"
+
 /*
  *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'.
@@ -418,7 +419,8 @@ void TrajectoryWidget::runTrajectoryTask()
   checkTimeSeries();
   saveTrajectoryTask();
 
-  CCopasiDataModel::Global->autoSave();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
 
   CTrajectoryTask* tt =
     dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
@@ -481,6 +483,7 @@ void TrajectoryWidget::runTrajectoryTask()
 
   tt->setCallBack(NULL);
   tmpBar->finish(); pdelete(tmpBar);
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 
   protectedNotify(ListViews::STATE, ListViews::CHANGE,
                   CCopasiDataModel::Global->getModel()->getKey());

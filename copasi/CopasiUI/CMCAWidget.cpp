@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/19 19:29:09 $
+   $Date: 2005/07/19 21:10:54 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -191,7 +191,9 @@ void CMCAWidget::parameterValueChanged()
 void CMCAWidget::runMCATask()
 {
   saveMCATask();
-  CCopasiDataModel::Global->autoSave();
+
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
 
   if (bRunButton->text() != "Run")
     {
@@ -272,8 +274,8 @@ void CMCAWidget::runMCATask()
   //tmpBar->finish(); pdelete(tmpBar);
 
   protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
-
   unsetCursor();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 
   pListView->switchToOtherWidget(241, ""); //change to the results window
 }

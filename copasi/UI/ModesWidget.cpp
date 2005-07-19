@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/19 19:29:09 $
+   $Date: 2005/07/19 21:10:54 $
    End CVS Header */
 
 /*******************************************************************
@@ -141,12 +141,15 @@ void ModesWidget::slotTableSelectionChanged()
 
 void ModesWidget::slotBtnCalculateClicked()
 {
-  CCopasiDataModel::Global->autoSave();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
 
   pdelete(modes);
   modes = new CElementaryFluxModes();
   modes->calculate(CCopasiDataModel::Global->getModel());
   loadModes();
+
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 }
 
 bool ModesWidget::update(ListViews::ObjectType C_UNUSED(objectType),

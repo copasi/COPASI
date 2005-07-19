@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/19 19:29:09 $
+   $Date: 2005/07/19 21:10:54 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -86,11 +86,15 @@ void MoietyWidget::deleteObjects(const std::vector<std::string> & C_UNUSED(keys)
 
 void MoietyWidget::slotBtnRunClicked()
 {
-  CCopasiDataModel::Global->autoSave();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
+
   CCopasiDataModel::Global->getModel()->compileIfNecessary();
   fillTable();
 
   mIgnoreUpdates = true; //to avoid recursive calls
   ListViews::notify(ListViews::MODEL, ListViews::CHANGE);
   mIgnoreUpdates = false; //to avoid recursive calls
+
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 }
