@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2005/07/14 10:55:22 $
+   $Author: shoops $ 
+   $Date: 2005/07/19 17:48:35 $
    End CVS Header */
 
 #include "copasi.h"
@@ -528,7 +528,15 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       break;
 
     case CCopasiTask::optimization:
-      // :TODO: implement task for optimization
+      pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+      pReport->setTaskType(taskType);
+      pReport->setComment("Automatically generated report.");
+      pReport->setIsTable(true);
+      pReport->setTitle(true);
+      pReport->setSeparator(CCopasiReportSeparator("\t"));
+      pReport->getTableAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Simulation Counter"));
+      pReport->getTableAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value"));
+      pReport->getTableAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Parameters"));
       break;
 
     case CCopasiTask::parameterFitting:
