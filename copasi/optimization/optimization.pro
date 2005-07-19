@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.13 $ $Author: anuragr $ $Date: 2005/06/28 20:32:56 $  
+# $Revision: 1.14 $ $Author: shoops $ $Date: 2005/07/19 15:02:50 $  
 ######################################################################
 
 LIB = optimization
@@ -15,12 +15,13 @@ HEADERS += COptMethod.h \
 #           COptMethodSA.h \
            COptProblem.h \
            CRandomSearch.h \
-		   COptMethodGASR.h \
+           COptMethodGASR.h \
 #           CRandomSearchMaster.h \
            CRealProblem.h \
            COptFunction.h \
-		   COptTask.h \ 
-           COptItem.h
+           COptTask.h \ 
+           COptItem.h \
+           FminBrent.h
            
 SOURCES += COptMethod.cpp \
 #           COptMethodEP2.cpp \
@@ -29,9 +30,10 @@ SOURCES += COptMethod.cpp \
 #           COptMethodSA.cpp \
            COptProblem.cpp \
            CRandomSearch.cpp \
-		   COptMethodGASR.cpp \
+           COptMethodGASR.cpp \
 #           CRandomSearchMaster.cpp \
            CRealProblem.cpp \
            COptFunction.cpp \
-		   COptTask.cpp \
-           COptItem.cpp
+	   COptTask.cpp \
+           COptItem.cpp \
+           FminBrent.cpp
