@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/18 21:12:18 $
+   $Author: gauges $ 
+   $Date: 2005/07/19 10:52:07 $
    End CVS Header */
 
 /**
@@ -219,7 +219,8 @@ bool CTrajectoryTask::process()
   catch (CCopasiException Exception)
     {
       if (mpCallBack) mpCallBack->finish(hProcess);
-      throw CCopasiException(CCopasiMessage::getLastMessage());
+      CCopasiMessage message = CCopasiMessage::getLastMessage();
+      throw CCopasiException(message);
     }
 
   if (mpCallBack)
@@ -265,7 +266,8 @@ bool CTrajectoryTask::process()
       catch (CCopasiException Exception)
         {
           if (mpCallBack) mpCallBack->finish(hProcess);
-          throw CCopasiException(CCopasiMessage::getLastMessage());
+          CCopasiMessage message = CCopasiMessage::getLastMessage();
+          throw CCopasiException(message);
         }
 
       //std::cout << EndTime << "  " << Time << "  " << EndTime-Time << std::endl;
