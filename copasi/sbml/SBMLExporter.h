@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/12 16:30:48 $
+   $Date: 2005/07/19 12:44:45 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -175,6 +175,12 @@ class SBMLExporter
     */
     bool isEmptyString(const std::string& str);
 
+    /**
+     * Create a unique id for an SBML object.
+     * I can't just take the Copasi key of the object since this might conflict
+     * with an already existing sbml id which came from the sbmlid attribute in a
+     * copasi file or directly by importing an SBML file.
+     */
     static std::string createUniqueId(const std::set<std::string>* pIdSet, const std::string& prefix);
 
     std::set<std::string>* createIdSet(const Model* pSBMLModel);

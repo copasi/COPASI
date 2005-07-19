@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/19 12:27:27 $
+   $Date: 2005/07/19 12:44:45 $
    End CVS Header */
 
 #include <math.h>
@@ -452,7 +452,7 @@ Compartment* SBMLExporter::createSBMLCompartmentFromCCompartment(CCompartment* c
       std::string id = copasiCompartment->getSBMLId();
       if (id == "")
         {
-          id = copasiCompartment->getKey(); //SBMLExporter::createUniqueId(this->mpIdSet, "compartment_");
+          id = SBMLExporter::createUniqueId(this->mpIdSet, "compartment_");
           copasiCompartment->setSBMLId(id);
           this->mpIdSet->insert(id);
         }
@@ -496,7 +496,7 @@ Species* SBMLExporter::createSBMLSpeciesFromCMetab(CMetab* copasiMetabolite)
       std::string id = copasiMetabolite->getSBMLId();
       if (id == "")
         {
-          id = copasiMetabolite->getKey(); //SBMLExporter::createUniqueId(this->mpIdSet, "species_");
+          id = SBMLExporter::createUniqueId(this->mpIdSet, "species_");
           copasiMetabolite->setSBMLId(id);
           this->mpIdSet->insert(id);
         }
@@ -552,7 +552,7 @@ Parameter* SBMLExporter::createSBMLParameterFromCModelValue(CModelValue* pModelV
       std::string id = pModelValue->getSBMLId();
       if (id == "")
         {
-          id = pModelValue->getKey(); //SBMLExporter::createUniqueId(this->mpIdSet, "parameter_");
+          id = SBMLExporter::createUniqueId(this->mpIdSet, "parameter_");
           pModelValue->setSBMLId(id);
           this->mpIdSet->insert(id);
         }
@@ -596,7 +596,7 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
       std::string id = copasiReaction->getSBMLId();
       if (id == "")
         {
-          id = copasiReaction->getKey(); //SBMLExporter::createUniqueId(this->mpIdSet, "reaction_");
+          id = SBMLExporter::createUniqueId(this->mpIdSet, "reaction_");
           copasiReaction->setSBMLId(id);
           this->mpIdSet->insert(id);
         }
