@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/15 14:21:35 $
+   $Author: gauges $ 
+   $Date: 2005/07/19 15:15:14 $
    End CVS Header */
 
 #include <sbml/math/ASTNode.h>
@@ -147,16 +147,28 @@ std::string CEvaluationNodeCall::getInfix() const
 
 CEvaluationNode* CEvaluationNodeCall::createNodeFromASTTree(const ASTNode& node)
 {
-  SubType subType;
-  std::string data = "";
+  SubType subType = CEvaluationNodeCall::FUNCTION;
+  std::string data = node.getName();
 
   CEvaluationNodeCall* convertedNode = new CEvaluationNodeCall(subType, data);
+  unsigned int i, iMax = node.getNumChildren();
+  for (i = 0; i < iMax;++i)
+    {
+      convertedNode->addChild(CEvaluationTree::convertASTNode(*node.getChild(i)));
+    }
   return convertedNode;
 }
 
 ASTNode* CEvaluationNodeCall::toAST() const
   {
-    ASTNode* node = new ASTNode(AST_FUNCTION_PIECEWISE);
+    ASTNode* node = new ASTNode(AST_FUNCTION);
+    node->setName(this->getData().c_str());
+    const CEvaluationNode* child = static_cast<const CEvaluationNode*>(this->getChild());
+    while (child)
+      {
+        node->addChild(child->toAST());
+        child = static_cast<const CEvaluationNode*>(child->getSibling());
+      }
     return node;
   }
 
