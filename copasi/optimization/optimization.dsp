@@ -105,6 +105,10 @@ SOURCE=.\CRandomSearchMaster.cpp
 
 SOURCE=.\CRealProblem.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\FminBrent.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -160,6 +164,10 @@ SOURCE=.\CRandomSearchMaster.h
 # Begin Source File
 
 SOURCE=.\CRealProblem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FminBrent.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
