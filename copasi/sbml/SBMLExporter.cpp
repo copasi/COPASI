@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/19 12:44:45 $
+   $Date: 2005/07/19 13:00:10 $
    End CVS Header */
 
 #include <math.h>
@@ -806,7 +806,9 @@ ASTNode* SBMLExporter::createTimesTree(const CCopasiVector<CChemEqElement >& vec
   if (pos == vect.size() - 1)
     {
       node = new ASTNode(AST_NAME);
-      node->setName(vect[pos]->getMetaboliteKey().c_str());
+      const CMetab& pMetab = vect[pos]->getMetabolite();
+
+      node->setName(pMetab.getSBMLId().c_str());
       /* if the stoichiometry is not 1.0, we have to add it to the exponent */
       if (multiplicity != 1.0)
         {
@@ -822,7 +824,9 @@ ASTNode* SBMLExporter::createTimesTree(const CCopasiVector<CChemEqElement >& vec
     {
       node = new ASTNode(AST_TIMES);
       ASTNode* child = new ASTNode(AST_NAME);
-      child->setName(vect[pos]->getMetaboliteKey().c_str());
+      const CMetab& pMetab = vect[pos]->getMetabolite();
+
+      child->setName(pMetab.getSBMLId().c_str());
 
       /* if the stoichiometry is not 1.0, we have to add it to the exponent */
       if (multiplicity != 1.0)
