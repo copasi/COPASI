@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/17 15:14:18 $
+   $Author: gauges $ 
+   $Date: 2005/07/19 15:14:39 $
    End CVS Header */
 
 /**
@@ -135,8 +135,8 @@ class CFunctionDB : public CCopasiContainer
      *  Delete the function functionName from the database
      *  @param "const string" &functionName
      *  @return C_INT32 Fail
-     */
-    void dBDelete(const std::string & functionName);
+     */ 
+    //void dBDelete(const std::string & functionName);
 
     /**
      *  Search for a function among the loaded functions. If no
