@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.h,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2005/07/14 10:56:15 $
+   $Author: shoops $ 
+   $Date: 2005/07/19 21:05:40 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -32,6 +32,7 @@ class CopasiUI3Window : public QMainWindow
     TrajectoryWidget* getTrajectoryWidget();
     SteadyStateWidget* getSteadyStateWidget();
     void checkPendingMessages();
+    void suspendAutoSave(const bool & suspend);
 
   protected:
     DataModelGUI* dataModel; // to keep track of the data model..
@@ -41,6 +42,7 @@ class CopasiUI3Window : public QMainWindow
   public slots:
     void slotToggleSliders();
     void slotObjectBrowserDialog();
+    void autoSave();
 
   protected slots:
     void slotFileOpen(QString file = QString::null);
@@ -80,4 +82,6 @@ class CopasiUI3Window : public QMainWindow
     QToolButton* mpToggleSliderDialogButton;
     bool mSaveAsRequired;
     void updateTitle();
+    QTimer *mpAutoSaveTimer;
+    bool mSuspendAutoSave;
   };
