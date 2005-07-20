@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/19 15:18:43 $
+   $Date: 2005/07/20 09:34:09 $
    End CVS Header */
 
 #include "copasi.h"
@@ -110,13 +110,13 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   /* import the functions */
   unsigned int counter;
-  CCopasiVectorN< CEvaluationTree >& functions = this->functionDB->loadedFunctions();
+  CCopasiVectorN< CEvaluationTree >* functions = &(this->functionDB->loadedFunctions());
 
-  unsigned int num = functions.size();
+  unsigned int num = (*functions).size();
   this->sbmlIdMap.clear();
   for (counter = 0; counter < num; ++counter)
     {
-      CEvaluationTree* tree = functions[counter];
+      CEvaluationTree* tree = (*functions)[counter];
       if (!tree->getSBMLId().empty())
         {
           this->sbmlIdMap[tree] = tree->getSBMLId();
@@ -138,11 +138,11 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   // now go through the temporary function db and replace all call nodes with the name of the
   // copasi function.
-  functions = pTmpFunctionDB->loadedFunctions();
-  num = functions.size();
+  functions = &(pTmpFunctionDB->loadedFunctions());
+  num = (*functions).size();
   for (counter = 0; counter < num; ++counter)
     {
-      this->replaceCallNodeNames(functions[counter], nameMapping);
+      this->replaceCallNodeNames((*functions)[counter], nameMapping);
     }
 
   std::map<std::string, CCompartment*> compartmentMap;
@@ -224,11 +224,11 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
 
   // delete the temporary function database and all functions that are still in there.
-  functions = pTmpFunctionDB->loadedFunctions();
-  num = functions.size();
+  functions = &(pTmpFunctionDB->loadedFunctions());
+  num = (*functions).size();
   for (counter = 0; counter < num; ++counter)
     {
-      CEvaluationTree* pTree = pTmpFunctionDB->findFunction(functions[counter]->getObjectName());
+      CEvaluationTree* pTree = pTmpFunctionDB->findFunction((*functions)[counter]->getObjectName());
       pdelete(pTree);
     }
   delete pTmpFunctionDB;
@@ -667,7 +667,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
         {
           if (compartment != NULL)
             {
-              /* only divide if the volume is not 1 */
               ConverterASTNode* tmpNode1 = new ConverterASTNode();
               tmpNode1->setType(AST_DIVIDE);
               tmpNode1->addChild(node);
@@ -696,10 +695,9 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           if (dynamic_cast<CEvaluationNodeCall*>(pExpressionTreeRoot))
             {
               // if yes, we check if it corresponds to an already existing function
-              CEvaluationTree* tree = pTmpFunctionDB->findFunction(pExpressionTreeRoot->getData());
+              CFunction* tree = dynamic_cast<CFunction*>(pTmpFunctionDB->findFunction(pExpressionTreeRoot->getData()));
               assert(tree);
-              //CEvaluationTree* pExistingFunction=this->findCorrespondingFunction(tree);
-              CFunction* pExistingFunction = NULL;
+              CFunction* pExistingFunction = this->findCorrespondingFunction(tree, copasiReaction);
               // if it does, we set the existing function for this reaction
               if (pExistingFunction)
                 {
@@ -707,8 +705,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                 }
               // else we take the function from the pTmpFunctionDB, copy it and set the usage correctly
               else
-              {}
-            }
+                {}}
           else
             {
               if (!copasiReaction->setFunctionFromExpressionTree(pTmpTree, copasi2sbmlmap, this->functionDB))
@@ -1509,4 +1506,11 @@ void SBMLImporter::replaceCallNodeNames(CEvaluationTree* tree, const std::map<st
           pCallNode->setData(newName);
         }
     }
+}
+
+CFunction* SBMLImporter::findCorrespondingFunction(const CFunction* tree, const CReaction* reaction)
+{
+  CFunction* pCorrespondingFunction = NULL;
+  //CCopasiVectorN<CEvaluationTree>& functions=this->functionDB->suitableFunctions(,reaction->);
+  return pCorrespondingFunction;
 }

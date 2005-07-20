@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/19 15:18:43 $
+   $Date: 2005/07/20 09:34:12 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -150,6 +150,8 @@ class SBMLImporter
      * The same has to be done later on for function call nodes in reaction kinetics.
      */
     void replaceCallNodeNames(CEvaluationTree* tree, const std::map<std::string, std::string>& nameMapping);
+
+    CFunction* findCorrespondingFunction(const CFunction* tree, const CReaction* reaction);
 
   public:
     SBMLImporter();
