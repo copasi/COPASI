@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/20 16:23:12 $
+   $Author: anuragr $ 
+   $Date: 2005/07/20 20:34:42 $
    End CVS Header */
 
 #ifndef COPASI_COptMethodSteepestDescent
@@ -53,6 +53,11 @@ class COptMethodSteepestDescent: public COptMethod
      * @return const C_FLOAT64 objectiveValue
      */
     const C_FLOAT64 descentLine(const C_FLOAT64 & x);
+
+    /**
+        * Initialize contained objects.
+        */
+    virtual void initObjects();
 
   public:
     /**
@@ -107,6 +112,11 @@ class COptMethodSteepestDescent: public COptMethod
     C_FLOAT64 mBestValue;
 
     /**
+        * array of values of objective function f/ individuals
+        */
+    C_FLOAT64 mValue;
+
+    /**
      * number of parameters
      */
     unsigned C_INT32 mVariableSize;
@@ -125,6 +135,11 @@ class COptMethodSteepestDescent: public COptMethod
      * Functor pointing to the descent method.
      */
     FDescent * mpDescent;
+
+    /**
+        * The current iteration
+        */
+    unsigned C_INT32 mCurrentIteration;
   };
 
 #endif  // COPASI_COptMethodSteepestDescent

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/20 16:23:12 $
+   $Author: anuragr $ 
+   $Date: 2005/07/20 20:35:03 $
    End CVS Header */
 
 #include "copasi.h"
@@ -48,10 +48,9 @@ bool COptMethodSteepestDescent::optimise()
 {
   if (!initialize()) return false;
 
-  C_INT32 i, j, k;
-  C_FLOAT64 tmp, x0, alpha, mn, md, mx, norm, daux, fmn, fmd, fmx;
+  C_INT32 i, k;
+  C_FLOAT64 tmp, x0, alpha, mn, mx, norm, daux, fmn, fmx;
   bool calc_grad;
-  bool no_convergence;
 
   // initial point is first guess
   for (i = 0; i < mVariableSize; i++)
@@ -59,7 +58,7 @@ bool COptMethodSteepestDescent::optimise()
 
   fmx = mBestValue = evaluate();
 
-  for (j = 0; j < mIterations && mContinue; j++)
+  for (mCurrentIteration = 0; mCurrentIteration < mIterations && mContinue; mCurrentIteration++)
     {
       // calculate the direction of steepest descent
       // by central finite differences
@@ -148,16 +147,24 @@ bool COptMethodSteepestDescent::optimise()
       mBestValue = fmx;
       for (i = 0; i < mVariableSize; i++)
         mIndividual[i] = *(*mpOptItem)[i]->getObjectValue();
+
       //if(callback != NULL) callback(mBestValue);
-      //if(debug) dump_data(j);
+      if (mValue < mBestValue && !isnan(mValue))
+        {
+          mBestValue = mValue;
+          mpOptProblem->setSolutionVariables(mIndividual);
+          mContinue = mpOptProblem->setSolutionValue(mBestValue);
+
+          // We found a new best value lets report it.
+          if (mpReport) mpReport->printBody();
+        }
     }
+
   return false;
 }
 
 bool COptMethodSteepestDescent::cleanup()
 {
-  unsigned C_INT32 i;
-
   // pdelete all used variables
   return true;
 }
@@ -166,7 +173,7 @@ bool COptMethodSteepestDescent::initialize()
 {
   if (!COptMethod::initialize()) return false;
 
-  mIterations = * getValue("Maximum Number of Iterations").pUINT;
+  mIterations = * getValue("Iteration Limit").pUINT;
 
   mContinue = true;
   mVariableSize = mpOptItem->size();
@@ -217,5 +224,16 @@ const C_FLOAT64 & COptMethodSteepestDescent::evaluate()
   // evaluate the fitness
   mContinue = mpOptProblem->calculate();
 
+  // check wheter the functional constraints are fulfilled
+  if (!mpOptProblem->checkFunctionalConstraints())
+    mValue = DBL_MAX;
+  else
+    mValue = mpOptProblem->getCalculateValue();
+
   return mpOptProblem->getCalculateValue();
+}
+
+void COptMethodSteepestDescent::initObjects()
+{
+  addObjectReference("Current Iteration", mCurrentIteration, CCopasiObject::ValueInt);
 }
