@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/20 09:34:12 $
+   $Date: 2005/07/20 14:00:24 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -41,6 +41,7 @@ class SBMLImporter
     unsigned int mLevel;
     std::map<CEvaluationTree*, std::string> sbmlIdMap;
     std::vector<std::string> newFunctionsKeys;
+    CModel* mpCopasiModel;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -149,9 +150,13 @@ class SBMLImporter
      * which represents the new function name.
      * The same has to be done later on for function call nodes in reaction kinetics.
      */
-    void replaceCallNodeNames(CEvaluationTree* tree, const std::map<std::string, std::string>& nameMapping);
+    void replaceCallNodeNames(CEvaluationNode* node, const std::map<std::string, std::string>& nameMapping);
 
-    CFunction* findCorrespondingFunction(const CFunction* tree, const CReaction* reaction);
+    CFunction* findCorrespondingFunction(const CFunction* tree, const CEvaluationNode* pRootNode, const CReaction* reaction);
+
+    bool areEqualFunctions(const CFunction* pFun, const CFunction* pFun2);
+
+    bool isMassAction(const CEvaluationNode* pRootNode, const CCopasiVector<CChemEqElement>* substrates, bool reversible = false, const CCopasiVector<CChemEqElement>* products = NULL);
 
   public:
     SBMLImporter();
