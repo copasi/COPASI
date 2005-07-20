@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/07/20 20:35:03 $
+   $Author: shoops $ 
+   $Date: 2005/07/20 21:09:43 $
    End CVS Header */
 
 #include "copasi.h"
@@ -174,6 +174,7 @@ bool COptMethodSteepestDescent::initialize()
   if (!COptMethod::initialize()) return false;
 
   mIterations = * getValue("Iteration Limit").pUINT;
+  mTolerance = * getValue("Tolerance").pDOUBLE;
 
   mContinue = true;
   mVariableSize = mpOptItem->size();
