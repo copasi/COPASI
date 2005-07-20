@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.225 $
+   $Revision: 1.226 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/07 20:36:39 $
+   $Date: 2005/07/20 21:08:27 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -865,6 +865,12 @@ void CModel::buildMoieties()
   return;
 }
 
+#ifdef WIN32 
+// warning C4056: overflow in floating-point constant arithmetic
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
+#endif
+
 void CModel::setTransitionTimes()
 {
   unsigned C_INT32 i, imax = mMetabolites.size();
@@ -878,7 +884,7 @@ void CModel::setTransitionTimes()
   for (i = 0; i < imax; i++)
     {
       if (CModelEntity::FIXED == mMetabolites[i]->getStatus())
-        mMetabolites[i]->setTransitionTime(DBL_MAX);
+        mMetabolites[i]->setTransitionTime(2 * DBL_MAX);
       else
         {
           TotalFlux_p = 0.0;
@@ -906,20 +912,24 @@ void CModel::setTransitionTimes()
             min_flux = TotalFlux_n;
 
           if (min_flux == 0.0)
-            TransitionTime = DBL_MAX;
+            TransitionTime = 2 * DBL_MAX;
           else
             TransitionTime = mMetabolites[i]->getNumber() / min_flux;
 
           mMetabolites[i]->setTransitionTime(TransitionTime);
           //mMetabolites[i]->setNumberRate(TotalFlux);
 
-          if (TransitionTime == DBL_MAX || mTransitionTime == DBL_MAX)
-            mTransitionTime = DBL_MAX;
+          if (!finite(TransitionTime))
+            mTransitionTime = TransitionTime;
           else
             mTransitionTime += TransitionTime;
         }
     }
 }
+
+#ifdef WIN32
+# pragma warning (default: 4056 4756)
+#endif
 
 //this is supposed to be so fast it can be called often to be kept up to date
 //all the time. At the moment it creates the mMetabolites and sorts the fixed
