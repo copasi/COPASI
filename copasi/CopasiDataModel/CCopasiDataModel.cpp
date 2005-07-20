@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/19 20:05:25 $
+   $Author: gauges $ 
+   $Date: 2005/07/20 14:01:55 $
    End CVS Header */
 
 #include "copasi.h"
@@ -32,6 +32,7 @@
 #include "sbml/SBMLImporter.h"
 #include "sbml/SBMLExporter.h"
 #include "tss/MMASCIIExporter.h"
+#include "utilities/CCopasiException.h"
 
 CDataModelRenameHandler::CDataModelRenameHandler(CCopasiDataModel* dm)
     : mpDataModel(dm)
@@ -335,9 +336,22 @@ bool CCopasiDataModel::importSBML(const std::string & fileName)
 {
   SBMLImporter importer;
   mCopasi2SBMLMap.clear();
-  CModel * pModel = importer.readSBML(fileName, mpFunctionList, mpCurrentSBMLDocument, mCopasi2SBMLMap);
+  CModel* pModel = NULL;
+  try
+    {
+      pModel = importer.readSBML(fileName, mpFunctionList, mpCurrentSBMLDocument, mCopasi2SBMLMap);
+    }
+  catch (CCopasiException except)
+    {
+      importer.restoreFunctionDB();
+      throw except;
+    }
 
-  if (pModel == NULL) return false;
+  if (pModel == NULL)
+    {
+      importer.restoreFunctionDB();
+      return false;
+    }
 
   mSaveFileName = CDirEntry::dirName(fileName)
                   + CDirEntry::Separator
