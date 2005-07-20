@@ -1,24 +1,26 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/FminBrent.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/19 15:02:50 $
+   $Date: 2005/07/20 16:16:52 $
    End CVS Header */
 
 #include <math.h>
 #include <float.h>
+#include <limits>
 
+#include "copasi.h"
 #include "FminBrent.h"
 
 #define SQRT_EPSILON sqrt(DBL_EPSILON)
-int FMinBrent(double a,                /* Left border      */
-              double b,                /* Right border      */
-              double (*f)(double x),   /* Function under investigation  */
-              double *min,             /* Location of minimum    */
-              double *fmin,            /* Value of minimum     */
-              double tol,              /* Acceptable tolerance    */
-              int maxiter)            /* Maximum number of iterations  */
+int FminBrent(double a,                 /* Left border      */
+              double b,                 /* Right border      */
+              FDescent * pF,            /* Functor for function under investigation  */
+              double *min,              /* Location of minimum    */
+              double *fmin,             /* Value of minimum     */
+              double tol,               /* Acceptable tolerance    */
+              int maxiter)             /* Maximum number of iterations  */
 {
   double x, v, w;                       /* Abscissae, descr. see above  */
   double fx;                          /* f(x)        */
@@ -30,7 +32,7 @@ int FMinBrent(double a,                /* Left border      */
   if (tol <= 0) return 1;            /* check input values    */
   if (b <= a) return 2;
 
-  v = a + r * (b - a); fv = (*f)(v);     /* First step - always gold section*/
+  v = a + r * (b - a); fv = (*pF)(v);     /* First step - always gold section*/
   x = v; w = v;
   fx = fv; fw = fv;
 
@@ -38,7 +40,7 @@ int FMinBrent(double a,                /* Left border      */
     {
       double range = b - a;             /* Range over which the minimum is */
       double middle_range = (a + b) / 2;  /* seeked       */
-      double tol_act =                 /* Actual tolerance     */
+      double tol_act =                  /* Actual tolerance     */
         SQRT_EPSILON * fabs(x) + tol / 3;
       double new_step;                /* Step at this iteration   */
 
@@ -68,9 +70,9 @@ int FMinBrent(double a,                /* Left border      */
           else                        /* and assign possible minus to  */
             q = -q;                   /* p        */
 
-          if (fabs(p) < fabs(new_step*q) &&  /* If x+p/q falls in [a,b]   */
-               p > q*(a - x + 2*tol_act) &&       /* not too close to a and   */
-               p < q*(b - x - 2*tol_act))      /* b, and isn't too large   */
+          if (fabs(p) < fabs(new_step*q) &&   /* If x+p/q falls in [a,b]   */
+              p > q*(a - x + 2*tol_act) &&        /* not too close to a and   */
+              p < q*(b - x - 2*tol_act))      /* b, and isn't too large   */
             new_step = p / q;                 /* it is accepted     */
           /* If p/q is too large then the  */
           /* gold section procedure can  */
@@ -86,7 +88,7 @@ int FMinBrent(double a,                /* Left border      */
       /* Obtain the next approximation to */
       {/* min & reduce the enveloping range*/
         register double t = x + new_step;  /* Tentative point for the min  */
-        register double ft = (*f)(t);
+        register double ft = (*pF)(t);
         if (ft <= fx)
           {/* t is a better approximation  */
             if (t < x)                /* Reduce the range so that   */

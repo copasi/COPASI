@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/FminBrent.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/19 15:02:50 $
+   $Date: 2005/07/20 16:16:52 $
    End CVS Header */
 
 #ifndef COAPSI_FminBrent
@@ -68,12 +68,43 @@
  *
  ************************************************************************
  */
-int FminBrent(double a,               /* Left border      */
-              double b,               /* Right border      */
-              double (*f)(double x),  /* Function under investigation  */
-              double *min,            /* Location of minimum    */
-              double *fmin,           /* Value of minimum     */
-              double tol,             /* Acceptable tolerance    */
-              int maxiter);          /* Maximum number of iterations  */
+
+class FDescent
+  {
+  public:
+
+    virtual const C_FLOAT64 operator()(const C_FLOAT64 & C_UNUSED(value))
+    {return std::numeric_limits<C_FLOAT64>::quiet_NaN();}
+  };
+
+template <class CType> class FDescentTemplate : public FDescent
+  {
+  private:
+    const C_FLOAT64 (CType::*mMethod)(const C_FLOAT64 &); // pointer to member function
+    CType * mpType;                                         // pointer to object
+
+  public:
+
+    // constructor - takes pointer to an object and pointer to a member and stores
+    // them in two private variables
+    FDescentTemplate(CType * pType,
+                     const C_FLOAT64 (CType::*method)(const C_FLOAT64 &))
+    {
+      mpType = pType;
+      mMethod = method;
+    };
+
+    // override operator "()"
+    virtual const C_FLOAT64 operator()(const C_FLOAT64 & value)
+    {return (*mpType.*mMethod)(value);};              // execute member function
+  };
+
+int FminBrent(double a,                /* Left border      */
+              double b,                /* Right border      */
+              FDescent * pF,           /* Functor for function under investigation  */
+              double *min,             /* Location of minimum    */
+              double *fmin,            /* Value of minimum     */
+              double tol,              /* Acceptable tolerance    */
+              int maxiter);           /* Maximum number of iterations  */
 
 #endif // COAPSI_FminBrent
