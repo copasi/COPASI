@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/07/20 05:11:10 $
+   $Author: shoops $ 
+   $Date: 2005/07/20 21:11:13 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -20,31 +20,33 @@
 #include <qframe.h>
 #include <qlineedit.h>
 #include <qtable.h>
+#include <qapplication.h>
 
 #include "copasi.h"
 
+#include "copasiui3window.h"
 #include "OptimizationWidget.h"
-#include "optimization/COptTask.h"
-#include "optimization/COptProblem.h"
-#include "optimization/COptMethod.h"
-#include "optimization/COptItem.h"
-#include "model/CModel.h"
 #include "listviews.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
 #include "CReportDefinitionSelect.h"
 #include "OptimizationItemWidget.h"
 #include "ObjectBrowserDialog.h"
 #include "ObjectBrowserItem.h"
 #include "CCopasiSelectionDialog.h"
-#include "report/CKeyFactory.h"
+#include "CScanContainerWidget.h"
 #include "qtUtilities.h"
-
-//#include "CReportDefinitionSelect.h"
 #include "qtUtilities.h"
 #include "CProgressBar.h"
+
+//#include "CReportDefinitionSelect.h"
 #include "utilities/CCopasiException.h"
-#include "CScanContainerWidget.h"
 #include "utilities/CopasiTime.h"
+#include "optimization/COptTask.h"
+#include "optimization/COptProblem.h"
+#include "optimization/COptMethod.h"
+#include "optimization/COptItem.h"
+#include "model/CModel.h"
+#include "report/CKeyFactory.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags f)
     : CopasiWidget(parent, name, f), pParent(parent)
@@ -188,14 +190,15 @@ void OptimizationWidget::runOptimizationTask()
   // save the state of the widget
   saveOptimization();
 
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
+
   optimizationTask->initialize(NULL);
 
   setCursor(Qt::WaitCursor);
 
   CProgressBar* tmpBar = new CProgressBar();
   optimizationTask->setCallBack(tmpBar);
-
-  CCopasiTimeVariable time = CCopasiTimeVariable::getCurrentWallTime();
 
   try
     {
@@ -207,10 +210,6 @@ void OptimizationWidget::runOptimizationTask()
       //TODO: message box
     }
 
-  std::cout << "*************** The optimization took "
-  << (CCopasiTimeVariable::getCurrentWallTime() - time).isoFormat()
-  << " ***************" << std::endl;
-
   //should be renamed?
 
   optimizationTask->restore();
@@ -221,6 +220,7 @@ void OptimizationWidget::runOptimizationTask()
                   CCopasiDataModel::Global->getModel()->getKey());
 
   unsetCursor();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 
   return;
 }
