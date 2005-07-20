@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/18 15:23:46 $
+   $Author: shoops $ 
+   $Date: 2005/07/20 21:10:43 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -77,6 +77,7 @@ const MESSAGES Messages[] =
     {MCTrajectoryMethod + 9, "CTrajectoryMethod (9): Negative time steps not possible with stochastic simulation."},
     {MCTrajectoryMethod + 10, "CTrajectoryMethod (10): The tau-Leap Method encountered numerical problems.\nYou can try to reduce the tau-value."},
     {MCTrajectoryMethod + 11, "CTrajectoryMethod (11): Invalid tau-value ('%.2f'). Tau must have a positive value."},
+    {MCTrajectoryMethod + 12, "CTrajectoryMethod (12): Internal step limit exceeded."},
 
     // XML Package
     {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},

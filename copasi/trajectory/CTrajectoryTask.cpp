@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/19 15:17:13 $
+   $Date: 2005/07/20 21:10:42 $
    End CVS Header */
 
 /**
@@ -116,6 +116,8 @@ bool CTrajectoryTask::initialize(std::ostream * pOstream)
 
 bool CTrajectoryTask::process()
 {
+  unsigned C_INT32 FailCounter = 0;
+
   assert(/*mpProblem && */mpMethod);
   mpMethod->isValidProblem(mpProblem);
 
@@ -242,13 +244,14 @@ bool CTrajectoryTask::process()
   if ((*L)(Time, NextTimeToReport * (1 - 100 * DBL_EPSILON)))
     {
       /* Here we will do conditional event processing */
-
+      FailCounter++;
       StepSize = NextTimeToReport - Time;
       if (mpCallBack)
         flagProceed = mpCallBack->proceed();
     }
   else
     {
+      FailCounter = 0;
       // This is numerically more stable then adding pProblem->getStepSize().
       NextTimeToReport = (EndTime - StartTime) * StepCounter++ / StepNumber;
       // Make sure that we do not overstep
@@ -291,12 +294,17 @@ bool CTrajectoryTask::process()
         {
           /* Here we will do conditional event processing */
 
+          FailCounter++;
+          if (FailCounter > 10)
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
+
           StepSize = NextTimeToReport - Time;
           if (mpCallBack)
             flagProceed = mpCallBack->proceed();
         }
       else
         {
+          FailCounter = 0;
           // This is numerically more stable then adding pProblem->getStepSize().
           NextTimeToReport = (EndTime - StartTime) * StepCounter++ / StepNumber;
           // Make sure that we do not overstep
