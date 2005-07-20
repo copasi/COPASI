@@ -1,13 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/07/20 05:10:36 $
+   $Author: shoops $ 
+   $Date: 2005/07/20 16:23:12 $
    End CVS Header */
 
 #ifndef COPASI_COptMethodSteepestDescent
 #define COPASI_COptMethodSteepestDescent
+
+class FDescent;
 
 class COptMethodSteepestDescent: public COptMethod
   {
@@ -22,16 +24,35 @@ class COptMethodSteepestDescent: public COptMethod
     COptMethodSteepestDescent(const CCopasiContainer * pParent = NULL);
 
     /**
-        * Initialize arrays and pointer.
-        * @return bool success
-        */
+     * Initialize arrays and pointer.
+     * @return bool success
+     */
     virtual bool initialize();
 
     /**
-        * Cleanup arrays and pointers.
-        * @return bool success
-        */
+     * Cleanup arrays and pointers.
+     * @return bool success
+     */
     virtual bool cleanup();
+
+    /**
+     * Evaluate the objective function for the current parameters
+     * @return const C_FLOAT64 & objectiveValue
+     */
+    const C_FLOAT64 & evaluate();
+
+    /**
+     * Calculate the gradient of the objective at the current parameters
+     */
+    void gradient();
+
+    /**
+     * Descent int the direction of the gradient with step x
+     * and evaluate the objective function
+     * @param const C_FLOAT64 & x
+     * @return const C_FLOAT64 objectiveValue
+     */
+    const C_FLOAT64 descentLine(const C_FLOAT64 & x);
 
   public:
     /**
@@ -64,23 +85,46 @@ class COptMethodSteepestDescent: public COptMethod
   private :
 
     // variables
-    int debug;     // 1 for output
-    int maxiter;    // maximum number of iterations
-    double tolerance;   // length of steps taken
-    double * candp, candx;
-    double * dsd;
 
-    // calculate the gradient of an objective function
-    void gradient();
+    /**
+     * The maximum number of iterations.
+     */
+    unsigned C_INT32 mIterations;
 
-    int FMinBrent(double a,         /* Left border      */
-                  double b,                /* Right border      */
-                  double *min,             /* Location of minimum    */
-                  double *fmin,            /* Value of minimum     */
-                  double tol,              /* Acceptable tolerance    */
-                  int maxiter);          /* Maximum number of iterations  */
+    /**
+     * The tolerance
+     */
+    C_FLOAT64 mTolerance;   // length of steps taken
 
-    double DescentLine(double x);
+    /**
+     * Indicates whether there the executions shall continue
+     */
+    bool mContinue;
+
+    /**
+     * The best value found so far.
+     */
+    C_FLOAT64 mBestValue;
+
+    /**
+     * number of parameters
+     */
+    unsigned C_INT32 mVariableSize;
+
+    /**
+     * A vector of parameters of the current individual
+     */
+    CVector < C_FLOAT64 > mIndividual;
+
+    /**
+     * A vector of parameters of the current individual
+     */
+    CVector < C_FLOAT64 > mGradient;
+
+    /**
+     * Functor pointing to the descent method.
+     */
+    FDescent * mpDescent;
   };
 
 #endif  // COPASI_COptMethodSteepestDescent
