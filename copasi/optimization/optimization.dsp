@@ -87,6 +87,10 @@ SOURCE=.\COptMethodSA.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\COptMethodSteepestDescent.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\COptProblem.cpp
 # End Source File
 # Begin Source File
@@ -144,6 +148,10 @@ SOURCE=.\COptMethodHGASA.h
 # Begin Source File
 
 SOURCE=.\COptMethodSA.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COptMethodSteepestDescent.h
 # End Source File
 # Begin Source File
 
