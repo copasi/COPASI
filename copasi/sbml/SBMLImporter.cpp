@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/20 14:00:24 $
+   $Date: 2005/07/20 16:38:32 $
    End CVS Header */
 
 #include "copasi.h"
@@ -1592,7 +1592,12 @@ bool SBMLImporter::isMassAction(const CEvaluationNode* pRootNode, const CCopasiV
           // products since it is a product of a constant and each product
           if (arguments.size() == substrates->size() + 1)
             {
-              std::vector<CChemEqElement*> v = *static_cast<const std::vector<CChemEqElement*>*>(substrates);
+              std::vector<CChemEqElement*> v = std::vector<CChemEqElement*>();
+              unsigned int k, kMax = substrates->size();
+              for (k = 0; k < kMax;++k)
+                {
+                  v.push_back((*substrates)[k]);
+                }
               unsigned int numParameters = 0;
               unsigned int i, iMax = arguments.size();
               for (i = 0;(i < iMax) && (result == true);++i)
