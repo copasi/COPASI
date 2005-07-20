@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/18 14:07:33 $
+   $Author: anuragr $ 
+   $Date: 2005/07/20 05:11:10 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -136,6 +136,7 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   mObject = NULL;
 
+  methodCombo->insertItem("Steepest Descent");
   methodCombo->insertItem("Random Search");
   methodCombo->insertItem("Random Search (PVM)");
   methodCombo->insertItem("Simulated Annealing");

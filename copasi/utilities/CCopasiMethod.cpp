@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/06 17:14:24 $
+   $Author: anuragr $ 
+   $Date: 2005/07/20 05:11:32 $
    End CVS Header */
 
 /**
@@ -27,6 +27,7 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Simulated Annealing",
     "Genetic Algorithm",
     "Evolutionary Program",
+    "Steepest Descent",
     "Hybrid GA/SA",
     "Genetic Algorithm SR",
     "Enhanced Newton",
@@ -48,6 +49,7 @@ const char* CCopasiMethod::XMLSubType[] =
     "SimulatedAnnealing",
     "GeneticAlgorithm",
     "EvolutionaryProgram2",
+    "SteepestDescent"
     "HybridGASA",
     "GeneticAlgorithmSR",
     "EnhancedNewton",
@@ -66,7 +68,8 @@ const char* CCopasiMethod::XMLSubType[] =
 CCopasiMethod::SubType CCopasiMethod::TypeNameToEnum(const std::string & subTypeName)
 {
   unsigned C_INT32 i = 0;
-  while (SubTypeName[i] != subTypeName && SubTypeName[i] != "") i++;
+  while (SubTypeName[i] != subTypeName && SubTypeName[i] != "")
+    i++;
 
   if (CCopasiMethod::SubTypeName[i] != "") return (CCopasiMethod::SubType) i;
   else return CCopasiMethod::unset;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/06 17:14:24 $
+   $Author: anuragr $ 
+   $Date: 2005/07/20 05:11:26 $
    End CVS Header */
 
 /**
@@ -39,6 +39,7 @@ class CCopasiMethod : public CCopasiParameterGroup
       SimulatedAnnealing,
       GeneticAlgorithm,
       EvolutionaryProgram2,
+      SteepestDescent,
       HybridGASA,
       GeneticAlgorithmSR,
       Newton,
