@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.135 $
+   $Revision: 1.136 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/21 11:40:11 $
+   $Author: gauges $ 
+   $Date: 2005/07/21 13:53:27 $
    End CVS Header */
 
 // CReaction
@@ -961,10 +961,11 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
 
           std::string appendix = "";
           unsigned int counter = 0;
+          std::ostringstream numberStream;
           while (pFunctionDB->findFunction(functionName + appendix) != NULL)
             {
               counter++;
-              std::ostringstream numberStream;
+              numberStream.str("");
               numberStream << "_" << counter;
               appendix = numberStream.str();
             }
