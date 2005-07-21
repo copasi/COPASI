@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 22:50:08 $
+   $Date: 2005/07/21 20:28:06 $
    End CVS Header */
 
 #ifndef lint
@@ -298,7 +298,7 @@ typedef int YYSTYPE;
 #endif
 #endif
 #define YYINITSTACKSIZE 200
-int yydebug = 1;
+int yydebug = YYDEBUG;
 int yynerrs;
 int yyerrflag;
 int yychar;
