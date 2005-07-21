@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.136 $
+   $Revision: 1.137 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/21 13:53:27 $
+   $Date: 2005/07/21 15:08:40 $
    End CVS Header */
 
 // CReaction
@@ -812,6 +812,8 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
 {
   CEvaluationNode* pTmpNode = NULL;
   CEvaluationNode* pChildNode = NULL;
+  CEvaluationNode* pOldChildNode = NULL;
+
   switch (CEvaluationNode::type(expression->getType()))
     {
     case CEvaluationNode::NUMBER:
@@ -863,11 +865,22 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
         }
       break;
     case CEvaluationNode::CALL:
-      // create an error message until there is a class for it
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "CALL");
+      pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      // convert all children
+      pOldChildNode = static_cast<CEvaluationNode*>(expression->getChild());
+      while (pOldChildNode)
+        {
+          pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
+          if (pChildNode)
+            {
+              pTmpNode->addChild(pChildNode);
+            }
+          pOldChildNode = static_cast<CEvaluationNode*>(pOldChildNode->getSibling());
+        }
       break;
     case CEvaluationNode::STRUCTURE:
-      pTmpNode = new CEvaluationNodeStructure(static_cast<CEvaluationNodeStructure::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      // this should not occur here
+      fatalError();
       break;
     case CEvaluationNode::CHOICE:
       pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());

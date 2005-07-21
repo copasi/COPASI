@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/21 13:54:39 $
+   $Date: 2005/07/21 15:08:40 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -42,6 +42,7 @@ class SBMLImporter
     std::map<CEvaluationTree*, std::string> sbmlIdMap;
     std::vector<std::string> newFunctionKeys;
     CModel* mpCopasiModel;
+    std::map<std::string, std::string> mFunctionNameMapping;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -76,7 +77,7 @@ class SBMLImporter
      * Creates and returns a Copasi CReaction object from the given SBML
      * Reaction object.
      */
-    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB, const std::map<std::string, std::string>& nameMapping);
+    CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB);
 
     /**
      * Replaces SBML user defined functions with the actual funtcion definition.
@@ -150,7 +151,7 @@ class SBMLImporter
      * which represents the new function name.
      * The same has to be done later on for function call nodes in reaction kinetics.
      */
-    void replaceCallNodeNames(CEvaluationNode* node, const std::map<std::string, std::string>& nameMapping);
+    void replaceCallNodeNames(CEvaluationNode* node, std::set<std::string>& usedFunctions);
 
     CFunction* findCorrespondingFunction(const CFunction* tree, const CEvaluationNode* pRootNode, const CReaction* reaction);
 
