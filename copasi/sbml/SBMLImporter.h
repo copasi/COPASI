@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/20 14:00:24 $
+   $Date: 2005/07/21 13:54:39 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -40,7 +40,7 @@ class SBMLImporter
     bool mIncompleteModel;
     unsigned int mLevel;
     std::map<CEvaluationTree*, std::string> sbmlIdMap;
-    std::vector<std::string> newFunctionsKeys;
+    std::vector<std::string> newFunctionKeys;
     CModel* mpCopasiModel;
 
     /**
@@ -157,6 +157,21 @@ class SBMLImporter
     bool areEqualFunctions(const CFunction* pFun, const CFunction* pFun2);
 
     bool isMassAction(const CEvaluationNode* pRootNode, const CCopasiVector<CChemEqElement>* substrates, bool reversible = false, const CCopasiVector<CChemEqElement>* products = NULL);
+
+    /**
+     * This function takes a node and tries to find out wether the tree under this node consists
+     * only of multiply operators and object nodes.
+     * The arguments to the multiply operators are returned.
+     */
+    void separateProductArguments(const CEvaluationNode* pRootNode, std::vector<const CEvaluationNode*>& arguments);
+
+    void doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCall* pCallNode);
+
+    bool isSimpleFunctionCall(const CEvaluationNode* pRootNode);
+
+    CFunction* copyFunction(const CFunction* pFun);
+
+    void setCorrectUsage(CReaction* pCopasiReaction, const CEvaluationNodeCall* pCallNode);
 
   public:
     SBMLImporter();
