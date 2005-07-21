@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/21 20:45:25 $
+   $Date: 2005/07/21 21:14:46 $
    End CVS Header */
 
 #include <string>
@@ -41,7 +41,7 @@ CEvaluationNodeConstant::CEvaluationNodeConstant(const SubType & subType,
       mValue = 0.0;
       break;
 
-    case INFINITY:
+    case _INFINITY:
       mValue = 2.0 * DBL_MAX;
       break;
 

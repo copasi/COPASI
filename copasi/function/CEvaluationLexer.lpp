@@ -77,7 +77,7 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 
 (infinity|INFINITY) %{
   BEGIN(sOPERATOR); 
-  mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::INFINITY,
+  mpNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY,
                                        yytext);
   COMMON_ACTION;
   return TOKEN_NUMBER;
