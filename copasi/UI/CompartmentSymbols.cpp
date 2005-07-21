@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Date: 2005/07/21 11:40:10 $
    End CVS Header */
 
 /*******************************************************************
@@ -175,10 +175,10 @@ void CompartmentSymbols::resizeEvent(QResizeEvent * re)
       float weight0 = 4.0, weight1 = 3.0, weight2 = 3.0, weight3 = 3.0 , weight4 = 3.0;
       float weightSum = weight0 + weight1 + weight2 + weight3 + weight4;
       int w0, w1, w2, w3 , w4;
-      w0 = newWidth * (weight0 / weightSum);
-      w1 = newWidth * (weight1 / weightSum);
-      w2 = newWidth * (weight2 / weightSum);
-      w3 = newWidth * (weight3 / weightSum);
+      w0 = (int) (newWidth * (weight0 / weightSum));
+      w1 = (int) (newWidth * (weight1 / weightSum));
+      w2 = (int) (newWidth * (weight2 / weightSum));
+      w3 = (int) (newWidth * (weight3 / weightSum));
       w4 = newWidth - w0 - w1 - w2 - w3 - table->verticalScrollBar()->width();
       table->setColumnWidth(0, w0);
       table->setColumnWidth(1, w1);

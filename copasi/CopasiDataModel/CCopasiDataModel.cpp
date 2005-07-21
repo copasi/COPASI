@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/20 21:19:29 $
+   $Date: 2005/07/21 11:40:10 $
    End CVS Header */
 
 #include "copasi.h"
@@ -275,7 +275,7 @@ bool CCopasiDataModel::autoSave()
   if (!mAutoSaveNeeded) return true;
 
   std::string AutoSave;
-  int index;
+
   COptions::getValue("Tmp", AutoSave);
   if (AutoSave == "") return false;
 

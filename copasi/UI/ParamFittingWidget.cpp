@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ParamFittingWidget.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/17 17:50:40 $
+   $Date: 2005/07/21 11:40:11 $
    End CVS Header */
 
 /********************************************************
@@ -1074,7 +1074,7 @@ void ParamFittingWidget::viewMousePressEvent(QMouseEvent* e)
   emit show_me();
 }*/
 
-void ParamFittingWidget::viewMousePressEvent(QMouseEvent* e)
+void ParamFittingWidget::viewMousePressEvent(QMouseEvent* /* e */)
 {}
 
 const std::string ParamFittingWidget::getKey()

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Date: 2005/07/21 11:40:10 $
    End CVS Header */
 
 /********************************************************
@@ -140,7 +140,6 @@ void CReportDefinitionSelect::languageChange()
 
 void CReportDefinitionSelect::loadReportDefinitionVector()
 {
-  DataModelGUI* dataModel = ListViews::getDataModel();
   CReportDefinitionVector* pReportDefinitionVector = CCopasiDataModel::Global->getReportDefinitionList();
   unsigned C_INT32 i;
   for (i = 0; i < pReportDefinitionVector->size(); i++)
@@ -199,7 +198,6 @@ void CReportDefinitionSelect::confirmClicked()
   if (!mpReport)
     //exception made here
     return;
-  DataModelGUI* dataModel = ListViews::getDataModel();
   CReportDefinitionVector* pReportDefinitionVector = CCopasiDataModel::Global->getReportDefinitionList();
   C_INT32 row;
   row = reportDefinitionNameList->currentItem();
@@ -218,7 +216,6 @@ void CReportDefinitionSelect::cleanup()
 
 void CReportDefinitionSelect::jumpToReportDefinitionEdit()
 {
-  DataModelGUI* dataModel = ListViews::getDataModel();
   CReportDefinitionVector* pReportDefinitionVector = CCopasiDataModel::Global->getReportDefinitionList();
   C_INT32 row;
   row = reportDefinitionNameList->currentItem();

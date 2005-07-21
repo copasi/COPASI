@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:15:44 $
+   $Date: 2005/07/21 11:40:10 $
    End CVS Header */
 
 #include "FunctionWidget.h"
@@ -60,27 +60,52 @@ void FunctionWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_IN
   if (!obj) return;
   const CFunction* pFunc = (const CFunction*)obj;
   table->setText(row, 1, FROM_UTF8(pFunc->getObjectName()));
+  table->setText(row, 2, FROM_UTF8(CEvaluationTree::TypeName[pFunc->getType()]));
+  table->setText(row, 3, FROM_UTF8(pFunc->getInfix()));
 
-  QString ftype;
   switch (pFunc->getType())
     {
-    case 1:
-    case 2:
-      ftype = QString("pre-defined");
+    case CEvaluationTree::PreDefined:
+    case CEvaluationTree::MassAction:
       mFlagRO[row] = true;
       break;
-    case 3:
-      ftype = QString("user-defined");
+    case CEvaluationTree::UserDefined:
+    case CEvaluationTree::Function:
+    case CEvaluationTree::Expression:
+      mFlagRO[row] = false;
       break;
     }
-  table->setText(row, 2, ftype);
-  table->setText(row, 3, FROM_UTF8(pFunc->getInfix()));
 }
 
 void FunctionWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
-  CFunction* pFunc = (CFunction*)obj;
+  CFunction* pFunc = (CFunction*) obj;
+
+  if (CEvaluationTree::TypeName[pFunc->getType()] !=
+      (const char *) table->text(row, 2).utf8())
+    {
+      QString msg;
+      msg = "Type must not be changed for '" + FROM_UTF8(pFunc->getObjectName()) + "'.\n";
+
+      QMessageBox::warning(this,
+                           "Unable to change Function Type",
+                           msg,
+                           QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+    }
+  if (pFunc->getInfix() != (const char *) table->text(row, 2).utf8())
+    {
+      if (!pFunc->setInfix((const char *) table->text(row, 2).utf8()))
+        {
+          QString msg;
+          msg = "Incorrect  mathematical description'" + FROM_UTF8(pFunc->getObjectName()) + "'.\n";
+
+          QMessageBox::warning(this,
+                               "Unable to change mathematical description",
+                               msg,
+                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        }
+    }
 }
 
 void FunctionWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
@@ -176,7 +201,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                        // Yes or Enter
+    case 0:                         // Yes or Enter
       {
         //first delete reactions
         std::set<std::string>::const_iterator it, itEnd = totalEffectedReacKeys.end();
@@ -196,7 +221,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
 
         break;
       }
-    case 1:                        // No or Escape
+    case 1:                         // No or Escape
       break;
     }
 }

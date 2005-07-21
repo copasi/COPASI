@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.134 $
+   $Revision: 1.135 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/15 09:24:31 $
+   $Author: shoops $ 
+   $Date: 2005/07/21 11:40:11 $
    End CVS Header */
 
 // CReaction
@@ -217,11 +217,10 @@ void CReaction::setParameterValue(const std::string & parameterName, C_FLOAT64 v
 
   //first find index
   CFunctionParameter::DataType Type;
-  C_INT32 index = mMap.findParameterByName(parameterName, Type);
+  unsigned C_INT32 index = mMap.findParameterByName(parameterName, Type);
   //std::cout << "reaction::setParameterValue  " << parameterName << " index " << index << std::endl;
 
-  if (index == C_INVALID_INDEX)
-    return;
+  if (index == C_INVALID_INDEX) return;
 
   if (getFunctionParameters()[index]->getType() != CFunctionParameter::FLOAT64) fatalError(); //wrong data type
 

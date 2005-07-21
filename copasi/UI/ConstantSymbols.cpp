@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ConstantSymbols.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2004/11/18 19:15:40 $
+   $Author: shoops $ 
+   $Date: 2005/07/21 11:40:10 $
    End CVS Header */
 
 /*******************************************************************
@@ -143,9 +143,9 @@ void ConstantSymbols::resizeEvent(QResizeEvent * re)
       float weight0 = 4.0, weight1 = 3.0, weight2 = 3.0, weight3 = 3.0;
       float weightSum = weight0 + weight1 + weight2 + weight3;
       int w0, w1, w2, w3;
-      w0 = newWidth * (weight0 / weightSum);
-      w1 = newWidth * (weight1 / weightSum);
-      w2 = newWidth * (weight2 / weightSum);
+      w0 = (int) (newWidth * (weight0 / weightSum));
+      w1 = (int) (newWidth * (weight1 / weightSum));
+      w2 = (int) (newWidth * (weight2 / weightSum));
       w3 = newWidth - w0 - w1 - w2 - table->verticalScrollBar()->width();
       table->setColumnWidth(0, w0);
       table->setColumnWidth(1, w1);

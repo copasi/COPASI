@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.226 $
+   $Revision: 1.227 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/20 21:08:27 $
+   $Date: 2005/07/21 11:40:11 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1733,14 +1733,15 @@ std::set<std::string> CModel::listReactionsDependentOnFunction(const std::string
   return reacKeys;
 }
 
-std::set<std::string> CModel::listReactionsDependentOnModelValue(const std::string & key)
+std::set<std::string> CModel::listReactionsDependentOnModelValue(const std::string & /* key */)
 {
   std::set<std::string> Keys;
+
+  /* :TODO:
   const CCopasiVectorN<CReaction> & Reactions = getReactions();
   C_INT32 j, jmax = Reactions.size();
-  //TODO
 
-  /* for (j = 0; j < jmax; j++)
+  for (j = 0; j < jmax; j++)
      {
        const CCopasiVector <CChemEqElement> &Substrates = Reactions[j]->getChemEq().getSubstrates();
        C_INT32 i, imax = Substrates.size();
@@ -1759,7 +1760,8 @@ std::set<std::string> CModel::listReactionsDependentOnModelValue(const std::stri
        for (i = 0; i < imax; i++)
          if (key == Modifiers[i]->getMetaboliteKey())
            Keys.insert(Reactions[j]->getKey());
-     }*/
+     }
+  */
 
   return Keys;
 }

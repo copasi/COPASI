@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 20:22:35 $
+   $Date: 2005/07/21 11:40:12 $
    End CVS Header */
 
 // CCopasiMessage
@@ -179,7 +179,7 @@ CCopasiMessage::CCopasiMessage(CCopasiMessage::Type type,
   handler();
 }
 
-void CCopasiMessage::handler(const bool & _throw)
+void CCopasiMessage::handler(const bool & /* _throw */)
 {
   std::string Text = mText;
 

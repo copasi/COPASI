@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.100 $
+   $Revision: 1.101 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/12 16:30:50 $
+   $Author: shoops $ 
+   $Date: 2005/07/21 11:40:12 $
    End CVS Header */
 
 /**
@@ -279,8 +279,8 @@ CCopasiXMLParser::UnknownElement::~UnknownElement()
   pdelete(mpCurrentHandler);
 }
 
-void CCopasiXMLParser::UnknownElement::start(const XML_Char *pszName,
-    const XML_Char **papszAttrs)
+void CCopasiXMLParser::UnknownElement::start(const XML_Char * /* pszName */,
+    const XML_Char ** /* papszAttrs */)
 {
   /* We count the level of subelements of the Unknown Elelement */
   mCurrentElement++;
@@ -581,10 +581,8 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
               break;
 
             case CEvaluationTree::UserDefined:
-#ifdef FFFF
-            case CEvaluationTree::Expression:
-#endif // FFFF
             case CEvaluationTree::Function:
+            case CEvaluationTree::Expression:
               mCommon.pFunctionList->remove(Name);
               mCommon.pFunctionList->add(mCommon.pFunction, true);
               break;
@@ -5427,7 +5425,6 @@ void CCopasiXMLParser::TableElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::TableElement::end(const XML_Char *pszName)
 {
-  const CCopasiObject * pObject = NULL;
   switch (mCurrentElement)
     {
     case Table:

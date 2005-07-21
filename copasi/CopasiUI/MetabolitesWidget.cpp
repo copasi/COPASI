@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.122 $
+   $Revision: 1.123 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/01 14:14:29 $
+   $Author: shoops $ 
+   $Date: 2005/07/21 11:40:11 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -67,13 +67,18 @@ void MetabolitesWidget::init()
 
   tableHeader->setLabel(COL_NAME, "Name");
 
-  //tableHeader->setLabel(COL_ICONCENTRATION, "Initial Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
-  //                      FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+  /*
+  tableHeader->setLabel(COL_ICONCENTRATION, "Initial Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
+                        FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+  */
 
   tableHeader->setLabel(COL_INUMBER, "Initial Number");
 
-  //tableHeader->setLabel(COL_CONCENTRATION, "Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
-  //                      FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+  /*
+  tableHeader->setLabel(COL_CONCENTRATION, "Concentration\n(" +                  FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
+                        FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+  */
+
   table->setColumnReadOnly (COL_CONCENTRATION, true);
 
   tableHeader->setLabel(COL_NUMBER, "Number");
@@ -92,8 +97,10 @@ void MetabolitesWidget::init()
   table->setColumnReadOnly (COL_OLDCOMPARTMENT, true);
   table->hideColumn(COL_OLDCOMPARTMENT);
 
-  //tableHeader->setLabel(COL_CRATE, "Rate\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + \
-  //                      "/(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + "))");
+  /*
+  tableHeader->setLabel(COL_CRATE, "Rate\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + \
+                        "/(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + "))");
+  */
 
   table->setColumnReadOnly (COL_CRATE, true);
 
@@ -364,7 +371,7 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                                          // Yes or Enter
+    case 0:                                           // Yes or Enter
       {
         for (i = 0; i < imax; i++)
           {
@@ -376,15 +383,13 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
         //TODO notify about reactions
         break;
       }
-    case 1:                                          // No or Escape
+    case 1:                                           // No or Escape
       break;
     }
 }
 
 void MetabolitesWidget::slotBtnToggleClicked()
 {
-  QHeader *tableHeader = table->horizontalHeader();
-
   if (mFlagConc)
     {
       table->hideColumn(COL_ICONCENTRATION);

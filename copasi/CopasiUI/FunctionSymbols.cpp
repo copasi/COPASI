@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:43:05 $
+   $Date: 2005/07/21 11:40:10 $
    End CVS Header */
 
 /*******************************************************************
@@ -153,8 +153,8 @@ void FunctionSymbols::resizeEvent(QResizeEvent * re)
       float weight0 = 4.0, weight1 = 3.0, weight2 = 3.0;
       float weightSum = weight0 + weight1 + weight2;
       int w0, w1, w2;
-      w0 = newWidth * (weight0 / weightSum);
-      w1 = newWidth * (weight1 / weightSum);
+      w0 = (int) (newWidth * (weight0 / weightSum));
+      w1 = (int) (newWidth * (weight1 / weightSum));
       w2 = newWidth - w0 - w1 - table->verticalScrollBar()->width();
       table->setColumnWidth(0, w0);
       table->setColumnWidth(1, w1);
