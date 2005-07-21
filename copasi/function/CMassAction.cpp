@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 17:24:16 $
+   $Date: 2005/07/21 15:57:35 $
    End CVS Header */
 
 /**
@@ -77,33 +77,35 @@ CMassAction::~CMassAction(){DESTRUCTOR_TRACE;}
 
 const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & callParameters)
 {
-  unsigned C_INT32 i, imax;
   CCallParameters<C_FLOAT64>::const_iterator Factor;
-  //  std::vector<const C_FLOAT64 *>::const_iterator Factor;
+  CCallParameters<C_FLOAT64>::const_iterator End;
 
   mValue = 0.0;
-  C_FLOAT64 Products = 0.0;
 
-  imax = callParameters[1].vector->size();   // NoSubstrates
-  if (imax)
+  Factor = callParameters[1].vector->begin();
+  End = callParameters[1].vector->end();
+  if (Factor != End)
     {
-      mValue = * callParameters[0].value;           // k1
-      Factor = callParameters[1].vector->begin();   // first substr.
+      mValue = *callParameters[0].value   // k1
+               * *(Factor++)->value;      // first substrate.
 
-      for (i = 0; i < imax; i++)
+      while (Factor != End)
         mValue *= *(Factor++)->value;
     }
 
   if (isReversible() == TriFalse)
     return mValue;
 
-  imax = callParameters[3].vector->size();   // NoProducts
-  if (imax)
-    {
-      Products = * callParameters[2].value;             // k2
-      Factor = callParameters[3].vector->begin();   // first product
+  C_FLOAT64 Products = 0.0;
 
-      for (i = 0; i < imax; i++)
+  Factor = callParameters[3].vector->begin();
+  End = callParameters[3].vector->end();
+  if (Factor != End)
+    {
+      Products = *callParameters[2].value // k2
+                 * *(Factor++)->value;    // first product.
+
+      while (Factor != End)
         Products *= *(Factor++)->value;
     }
 
