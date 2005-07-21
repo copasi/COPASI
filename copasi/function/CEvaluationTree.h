@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/12 16:30:47 $
+   $Date: 2005/07/21 13:52:15 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -189,6 +189,11 @@ class CEvaluationTree:
      * Returns the root node of the tree.
      */
     CEvaluationNode* getRoot();
+
+    /**
+     * Returns the root node of the tree.
+     */
+    const CEvaluationNode* getRoot() const;
 
     /**
      * Sets the SBMLId.
