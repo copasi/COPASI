@@ -21,7 +21,7 @@ echo byacc -dt -b $FILE_PREFIX $SOURCE_FILE
 byacc -dt -b $FILE_PREFIX $SOURCE_FILE
 sed -e 's/yyparse/yyYaccParser::yyparse/g' \
     -e 's/'$FILE_PREFIX'.tab.c/'$TARGET_FILE_C'/g' \
-    -e 's/int yydebug;/int yydebug = 1;/' \
+    -e 's/int yydebug;/int yydebug = YYDEBUG;/' \
     -e '/getenv()/d' \
     $FILE_PREFIX.tab.c > $$.tmp && \
 mv $$.tmp $FILE_PREFIX.tab.c
