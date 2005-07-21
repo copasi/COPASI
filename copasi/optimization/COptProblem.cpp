@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/18 21:09:09 $
+   $Date: 2005/07/21 20:29:49 $
    End CVS Header */
 
 /**
@@ -157,11 +157,22 @@ bool COptProblem::initialize()
 
   if (!mpSteadyState && !mpTrajectory) return false;
 
-  if (mpSteadyState) mpSteadyState->initialize();
-  if (mpTrajectory) mpTrajectory->initialize();
+  if (mpSteadyState)
+    {
+      mpSteadyState->initialize();
+      ContainerList.push_back(mpSteadyState);
+    }
+  if (mpTrajectory)
+    {
+      mpTrajectory->initialize();
+      ContainerList.push_back(mpTrajectory);
+    }
+
+  buildOptItemListFromParameterGroup();
 
   unsigned C_INT32 i;
   unsigned C_INT32 Size = mOptItemList.size();
+
   mUpdateMethods.resize(Size);
   mSolutionVariables.resize(Size);
   mOriginalVariables.resize(Size);
@@ -176,10 +187,7 @@ bool COptProblem::initialize()
       mOriginalVariables[i] = *(*it)->getObjectValue();
     }
 
-  if (!mpFunction)
-    mpFunction =
-      dynamic_cast<CExpression *>(GlobalKeys.get(* getValue("ObjectiveFunction").pKEY));
-
+  createObjectiveFunction();
   if (!mpFunction) return false;
 
   return mpFunction->compile(ContainerList);
