@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/22 08:40:20 $
+   $Date: 2005/07/22 15:15:57 $
    End CVS Header */
 
 #include "copasi.h"
@@ -697,10 +697,10 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       /* Create a new user defined CKinFunction */
       if (!sbmlId2CopasiCN(node, copasi2sbmlmap, copasiReaction->getParameters())) fatalError();
       CEvaluationNode* pExpressionTreeRoot = CEvaluationTree::convertASTNode(*node);
+      this->replaceCallNodeNames(pExpressionTreeRoot);
       if (pExpressionTreeRoot)
         {
           CEvaluationTree* pTmpTree = CEvaluationTree::create(CEvaluationTree::Expression);
-          this->replaceCallNodeNames(pTmpTree->getRoot());
           pTmpTree->setRoot(pExpressionTreeRoot);
           // check if the root node is a simple function call
           if (this->isSimpleFunctionCall(pExpressionTreeRoot))
