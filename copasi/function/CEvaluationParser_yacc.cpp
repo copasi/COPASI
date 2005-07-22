@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/21 20:28:06 $
+   $Date: 2005/07/22 19:14:49 $
    End CVS Header */
 
 #ifndef lint
@@ -310,7 +310,7 @@ short *yyss;
 short *yysslim;
 YYSTYPE *yyvs;
 int yystacksize;
-#line 331 "CEvaluationParser.ypp"
+#line 361 "CEvaluationParser.ypp"
 
 #line 288 "CEvaluationParser_yacc.cpp" 
 /* allocate initial stack or double stack size, up to YYMAXDEPTH */
@@ -755,90 +755,120 @@ YYPARSE_PARAM_DECL
 #line 264 "CEvaluationParser.ypp"
         {
           yyval = new CEvaluationNodeVector();
+          mpNodeList->push_back(yyval);
         }
         break;
       case 31:
-#line 268 "CEvaluationParser.ypp"
+#line 269 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
         }
         break;
       case 32:
-#line 274 "CEvaluationParser.ypp"
+#line 275 "CEvaluationParser.ypp"
         {
           yyval = new CEvaluationNodeVector();
+          mpNodeList->push_back(yyval);
           yyval->addChild(yyvsp[0]);
         }
         break;
       case 33:
-#line 279 "CEvaluationParser.ypp"
+#line 281 "CEvaluationParser.ypp"
         {
           yyval = new CEvaluationNodeVector();
+          mpNodeList->push_back(yyval);
           yyval->addChild(yyvsp[0]);
         }
         break;
       case 34:
-#line 284 "CEvaluationParser.ypp"
+#line 287 "CEvaluationParser.ypp"
         {
           yyval->addChild(yyvsp[0]);
         }
         break;
       case 35:
-#line 288 "CEvaluationParser.ypp"
+#line 291 "CEvaluationParser.ypp"
         {
           yyval->addChild(yyvsp[0]);
         }
         break;
       case 36:
-#line 293 "CEvaluationParser.ypp"
+#line 296 "CEvaluationParser.ypp"
         {
           yyval = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, "call");
           ((CEvaluationNodeCall *)(yyval))->setEvaluationTreeName(yyvsp[ -3]->getData());
+
+          /* Correct the node list: */
+          /* 1) set the pointer for token call correctly.*/
+          /* 2) remove the token variable node.*/
+          std::vector<CEvaluationNode *>::iterator it = mpNodeList->begin();
+          while (*it != yyvsp[ -3]) ++it;
+          *(it - 2) = yyval;
+          pdelete(*it)
+          mpNodeList->erase(it);
         }
         break;
       case 37:
-#line 298 "CEvaluationParser.ypp"
+#line 310 "CEvaluationParser.ypp"
         {
           yyval = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "call");
           ((CEvaluationNodeCall *)(yyval))->setEvaluationTreeName(yyvsp[ -1]->getData());
+
+          /* Correct the node list: */
+          /* 1) set the pointer for token call correctly.*/
+          /* 2) remove the token variable node.*/
+          std::vector<CEvaluationNode *>::iterator it = mpNodeList->begin();
+          while (*it != yyvsp[ -1]) ++it;
+          *(it - 2) = yyval;
+          pdelete(*it)
+          mpNodeList->erase(it);
         }
         break;
       case 38:
-#line 303 "CEvaluationParser.ypp"
+#line 324 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -3];
           ((CEvaluationNodeCall *)(yyval))->addChild(yyvsp[ -2]);
         }
         break;
       case 39:
-#line 308 "CEvaluationParser.ypp"
+#line 329 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -3];
           ((CEvaluationNodeCall *)(yyval))->addChild(yyvsp[ -2]);
         }
         break;
       case 40:
-#line 314 "CEvaluationParser.ypp"
+#line 335 "CEvaluationParser.ypp"
         {
           yyval = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, "call");
           ((CEvaluationNodeCall *)(yyval))->setEvaluationTreeName(yyvsp[ -1]->getData());
+
+          /* Correct the node list: */
+          /* 1) set the pointer for token call correctly.*/
+          /* 2) remove the token variable node.*/
+          std::vector<CEvaluationNode *>::iterator it = mpNodeList->begin();
+          while (*it != yyvsp[ -1]) ++it;
+          *(it - 2) = yyval;
+          pdelete(*it)
+          mpNodeList->erase(it);
         }
         break;
       case 41:
-#line 319 "CEvaluationParser.ypp"
+#line 349 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -2];
           ((CEvaluationNodeCall *)(yyval))->addChild(yyvsp[ -1]);
         }
         break;
       case 42:
-#line 324 "CEvaluationParser.ypp"
+#line 354 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -2];
           ((CEvaluationNodeCall *)(yyval))->addChild(yyvsp[ -1]);
         }
         break;
-#line 814 "CEvaluationParser_yacc.cpp"
+#line 844 "CEvaluationParser_yacc.cpp"
       }
   yyssp -= yym;
   yystate = *yyssp;

@@ -263,6 +263,7 @@ bool:     TOKEN_LOGICAL_VALUE
 vector:   TOKEN_STRUCTURE_VECTOR_OPEN TOKEN_STRUCTURE_VECTOR_CLOSE
           {
             $$ = new CEvaluationNodeVector();
+            mpNodeList->push_back($$);
           }
         | vstart TOKEN_STRUCTURE_VECTOR_CLOSE
           {
@@ -273,11 +274,13 @@ vector:   TOKEN_STRUCTURE_VECTOR_OPEN TOKEN_STRUCTURE_VECTOR_CLOSE
 vstart:   TOKEN_STRUCTURE_VECTOR_OPEN exp
           {
             $$ = new CEvaluationNodeVector();
+            mpNodeList->push_back($$);
             $$->addChild($2);
           }
         | TOKEN_STRUCTURE_VECTOR_OPEN vector
           {
             $$ = new CEvaluationNodeVector();
+            mpNodeList->push_back($$);
             $$->addChild($2);
           }
         | vstart TOKEN_STRUCTURE_COMMA exp
@@ -293,11 +296,29 @@ call:     TOKEN_CALL TOKEN_STRUCTURE_OPEN TOKEN_VARIABLE TOKEN_STRUCTURE_OPEN TO
           {
             $$ = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, "call");
             ((CEvaluationNodeCall *)($$))->setEvaluationTreeName($3->getData()); 
+
+            // Correct the node list: 
+            // 1) set the pointer for token call correctly.
+            // 2) remove the token variable node.
+            std::vector<CEvaluationNode *>::iterator it = mpNodeList->begin();
+            while (*it != $3) ++it;
+            *(it - 2) = $$;
+            pdelete(*it)
+            mpNodeList->erase(it);
           }
         | TOKEN_CALL TOKEN_STRUCTURE_OPEN TOKEN_VARIABLE TOKEN_STRUCTURE_CLOSE
           {
             $$ = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "call");
             ((CEvaluationNodeCall *)($$))->setEvaluationTreeName($3->getData()); 
+
+            // Correct the node list: 
+            // 1) set the pointer for token call correctly.
+            // 2) remove the token variable node.
+            std::vector<CEvaluationNode *>::iterator it = mpNodeList->begin();
+            while (*it != $3) ++it;
+            *(it - 2) = $$;
+            pdelete(*it)
+            mpNodeList->erase(it);
           }
         | cstart exp TOKEN_STRUCTURE_CLOSE TOKEN_STRUCTURE_CLOSE
           {
@@ -314,6 +335,15 @@ cstart:   TOKEN_CALL TOKEN_STRUCTURE_OPEN TOKEN_VARIABLE TOKEN_STRUCTURE_OPEN
           {
             $$ = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, "call");
             ((CEvaluationNodeCall *)($$))->setEvaluationTreeName($3->getData()); 
+
+            // Correct the node list: 
+            // 1) set the pointer for token call correctly.
+            // 2) remove the token variable node.
+            std::vector<CEvaluationNode *>::iterator it = mpNodeList->begin();
+            while (*it != $3) ++it;
+            *(it - 2) = $$;
+            pdelete(*it)
+            mpNodeList->erase(it);
           }
         | cstart exp TOKEN_STRUCTURE_COMMA
           {
