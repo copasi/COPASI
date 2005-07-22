@@ -457,14 +457,16 @@
     <xs:attribute name="key" type="cFUNCTION_PARAMETER_KEY" use="required" id="copasi.FUNCTION_PARAMETER.key"/>
     <xs:attribute name="name" type="xs:string" use="required" id="copasi.FUNCTION_PARAMETER.name"/>
     <xs:attribute name="order" type="xs:nonNegativeInteger" use="required" id="copasi.FUNCTION_PARAMETER.order"/>
-    <xs:attribute name="role" use="required" id="copasi.FUNCTION_PARAMETER.role">
+    <xs:attribute name="role" use="optional" default="variable" id="copasi.FUNCTION_PARAMETER.role">
       <xs:simpleType>
         <xs:restriction base="xs:string">
           <xs:enumeration value="substrate"/>
           <xs:enumeration value="product"/>
           <xs:enumeration value="modifier"/>
           <xs:enumeration value="constant"/>
-          <xs:enumeration value="other"/>
+          <xs:enumeration value="volume"/>
+          <xs:enumeration value="time"/>
+          <xs:enumeration value="variable"/>
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
