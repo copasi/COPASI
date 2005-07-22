@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/21 13:52:15 $
+   $Date: 2005/07/22 11:41:27 $
    End CVS Header */
 
 #include "copasi.h"
@@ -290,7 +290,7 @@ CEvaluationNode* CEvaluationTree::convertASTNode(const ASTNode& node)
       break;
     case AST_FUNCTION:
       // create a function call node
-      //pRoot=CEvaluationNode???::createNodeFromASTTree(pRootNode);
+      pResultNode = CEvaluationNodeCall::createNodeFromASTTree(node);
       break;
     case AST_FUNCTION_ABS:
     case AST_FUNCTION_ARCCOS:
