@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/21 15:08:40 $
+   $Date: 2005/07/22 08:40:20 $
    End CVS Header */
 
 #include "copasi.h"
@@ -140,30 +140,12 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // copasi function.
   functions = &(pTmpFunctionDB->loadedFunctions());
   num = (*functions).size();
-  std::set<std::string> usedFunctions;
   for (counter = 0; counter < num; ++counter)
     {
-      this->replaceCallNodeNames((*functions)[counter]->getRoot(), usedFunctions);
+      this->replaceCallNodeNames((*functions)[counter]->getRoot());
     }
-  // now we can already add the usedFunctions to the global database
-  // this will eliminate some name clashed later with functions added by CReaction through
-  // setFunctionFromExpression
-  std::set<std::string>::const_iterator it = usedFunctions.begin();
-  std::set<std::string>::const_iterator endIt = usedFunctions.end();
-  while (it != endIt)
-    {
-      CFunction* pFun = static_cast<CFunction*>(pTmpFunctionDB->findFunction((*it)));
-      if (!pFun)
-        {
-          fatalError();
-        }
-      this->functionDB->add(pFun, true);
-      pTmpFunctionDB->removeFunction(pFun->getKey());
-      this->newFunctionKeys.push_back(pFun->getKey());
-      ++it;
-    }
-
   std::map<std::string, CCompartment*> compartmentMap;
+
   /* Create the compartments */
   num = sbmlModel->getNumCompartments();
   for (counter = 0; counter < num; counter++)
@@ -241,13 +223,23 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 4);
     }
 
-  // delete the temporary function database and all functions that are still in there.
+  // go through the pTmpFunctionDB and remove all functions that are in this->mUsedFunctions
+  std::set<std::string>::iterator it = this->mUsedFunctions.begin();
+  std::set<std::string>::iterator endIt = this->mUsedFunctions.end();
+  while (it != endIt)
+    {
+      CEvaluationTree* pTree = pTmpFunctionDB->findFunction((*it));
+      assert(pTree);
+      pTmpFunctionDB->removeFunction(pTree->getKey());
+      ++it;
+    }
+  // the remaining functions are unused and can be removed from the global database as
   functions = &(pTmpFunctionDB->loadedFunctions());
   num = (*functions).size();
   for (counter = 0; counter < num; ++counter)
     {
       CEvaluationTree* pTree = pTmpFunctionDB->findFunction((*functions)[counter]->getObjectName());
-      pdelete(pTree);
+      this->functionDB->removeFunction(pTree->getKey());
     }
   delete pTmpFunctionDB;
 
@@ -277,6 +269,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
         }
       pTmpFunction->setObjectName(functionName + appendix);
       pTmpFunctionDB->add(pTmpFunction, false);
+      this->functionDB->add(pTmpFunction, true);
     }
   else
     {
@@ -476,7 +469,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
  * Reaction object.
  */
 CReaction*
-SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
+SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Model* C_UNUSED(sbmlModel), CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
 {
   if (sbmlReaction == NULL)
     {
@@ -666,7 +659,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
         }
       ASTNode* node = new ConverterASTNode(*kLawMath);
 
-      node = this->replaceUserDefinedFunctions(node, sbmlModel);
+      //node = this->replaceUserDefinedFunctions(node, sbmlModel);
       if (node == NULL)
         {
           delete copasiReaction;
@@ -707,8 +700,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (pExpressionTreeRoot)
         {
           CEvaluationTree* pTmpTree = CEvaluationTree::create(CEvaluationTree::Expression);
-          std::set<std::string> dummySet;
-          this->replaceCallNodeNames(pTmpTree->getRoot(), dummySet);
+          this->replaceCallNodeNames(pTmpTree->getRoot());
           pTmpTree->setRoot(pExpressionTreeRoot);
           // check if the root node is a simple function call
           if (this->isSimpleFunctionCall(pExpressionTreeRoot))
@@ -716,10 +708,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               // if yes, we check if it corresponds to an already existing function
               std::string functionName = this->mFunctionNameMapping[pExpressionTreeRoot->getData()];
               CFunction* tree = dynamic_cast<CFunction*>(pTmpFunctionDB->findFunction(functionName));
-              if (!tree)
-                {
-                  tree = dynamic_cast<CFunction*>(this->functionDB->findFunction(functionName));
-                }
               assert(tree);
               CFunction* pExistingFunction = this->findCorrespondingFunction(tree, pExpressionTreeRoot, copasiReaction);
               // if it does, we set the existing function for this reaction
@@ -748,8 +736,9 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                   pFun->setObjectName(functionName + appendix);
                   this->setCorrectUsage(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
                   this->doMapping(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
+                  pTmpFunctionDB->add(pFun, false);
                   this->functionDB->add(pFun, true);
-                  this->newFunctionKeys.push_back(copasiReaction->getFunction().getKey());
+                  this->mUsedFunctions.insert(pFun->getObjectName());
                 }
             }
           else
@@ -761,7 +750,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                 }
               else
                 {
-                  this->newFunctionKeys.push_back(copasiReaction->getFunction().getKey());
+                  pTmpFunctionDB->add(const_cast<CFunction*>(&copasiReaction->getFunction()), false);
+                  this->mUsedFunctions.insert(copasiReaction->getFunction().getObjectName());
                 }
             }
           // delete the temporary tree and all the nodes
@@ -792,13 +782,12 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
 
 /**
  * Replaces SBML user defined functions with the actual function definition.
- */
 ConverterASTNode*
 SBMLImporter::replaceUserDefinedFunctions(ASTNode* node, const Model* sbmlModel)
 {
   ConverterASTNode* newNode = new ConverterASTNode(*node);
   newNode->setChildren(new List());
-  /* make the replacement recursively, depth first */
+  // make the replacement recursively, depth first 
   unsigned int counter;
   for (counter = 0; counter < node->getNumChildren(); counter++)
     {
@@ -810,24 +799,25 @@ SBMLImporter::replaceUserDefinedFunctions(ASTNode* node, const Model* sbmlModel)
         }
       newNode->addChild(newChild);
     }
-  /* if the new node if a user defined function */
+  // if the new node if a user defined function 
   if (newNode->getType() == AST_FUNCTION)
     {
-      /* see if there is a corresponding user defined function */
+      // see if there is a corresponding user defined function 
       FunctionDefinition* funDef = this->getFunctionDefinitionForName(newNode->getName(), sbmlModel);
       if (funDef == NULL)
         {
           fatalError();
         }
-      /* make a map that maps every parameter of the function definition to a
-      ** node in the actual function call. */
+      // make a map that maps every parameter of the function definition to a
+      // node in the actual function call. 
       std::map<std::string, ASTNode*> map = this->createBVarMap(funDef->getMath()->getRightChild(), newNode);
-      /* make a new node that replaces all call parameters with the actual
-      ** parameters used in the function call. */
+      // make a new node that replaces all call parameters with the actual
+      // parameters used in the function call. 
       newNode = this->replaceBvars(funDef->getMath()->getRightChild(), map);
     }
   return newNode;
 }
+ */
 
 /**
  * Creates a map of each parameter of the function definition and its
@@ -1529,16 +1519,18 @@ void SBMLImporter::restoreFunctionDB()
     }
 
   // remove all the functions that were added during import
-  std::vector<std::string>::iterator it2 = this->newFunctionKeys.begin();
-  std::vector<std::string>::iterator endIt2 = this->newFunctionKeys.end();
+  std::set<std::string>::iterator it2 = this->mUsedFunctions.begin();
+  std::set<std::string>::iterator endIt2 = this->mUsedFunctions.end();
   while (it2 != endIt2)
     {
-      this->functionDB->removeFunction(*it2);
+      CEvaluationTree* pTree = this->functionDB->findFunction(*it2);
+      assert(pTree);
+      this->functionDB->removeFunction(pTree->getKey());
       ++it2;
     }
 }
 
-void SBMLImporter::replaceCallNodeNames(CEvaluationNode* node, std::set<std::string>& usedFunctions)
+void SBMLImporter::replaceCallNodeNames(CEvaluationNode* node)
 {
   if (node)
     {
@@ -1553,12 +1545,12 @@ void SBMLImporter::replaceCallNodeNames(CEvaluationNode* node, std::set<std::str
             }
           std::string newName = pos->second;
           pCallNode->setData(newName);
-          usedFunctions.insert(newName);
+          this->mUsedFunctions.insert(newName);
         }
       CEvaluationNode* pChildNode = static_cast<CEvaluationNode*>(node->getChild());
       while (pChildNode)
         {
-          this->replaceCallNodeNames(pChildNode, usedFunctions);
+          this->replaceCallNodeNames(pChildNode);
           pChildNode = static_cast<CEvaluationNode*>(pChildNode->getSibling());
         }
     }

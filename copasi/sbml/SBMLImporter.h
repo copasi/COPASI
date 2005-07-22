@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/21 15:08:40 $
+   $Date: 2005/07/22 08:40:21 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -40,7 +40,7 @@ class SBMLImporter
     bool mIncompleteModel;
     unsigned int mLevel;
     std::map<CEvaluationTree*, std::string> sbmlIdMap;
-    std::vector<std::string> newFunctionKeys;
+    std::set<std::string> mUsedFunctions;
     CModel* mpCopasiModel;
     std::map<std::string, std::string> mFunctionNameMapping;
 
@@ -81,8 +81,8 @@ class SBMLImporter
 
     /**
      * Replaces SBML user defined functions with the actual funtcion definition.
-     */
     ConverterASTNode* replaceUserDefinedFunctions(ASTNode* node, const Model* model);
+    */
 
     /**
      * Creates a map of each parameter of the function definition and its
@@ -151,7 +151,7 @@ class SBMLImporter
      * which represents the new function name.
      * The same has to be done later on for function call nodes in reaction kinetics.
      */
-    void replaceCallNodeNames(CEvaluationNode* node, std::set<std::string>& usedFunctions);
+    void replaceCallNodeNames(CEvaluationNode* node);
 
     CFunction* findCorrespondingFunction(const CFunction* tree, const CEvaluationNode* pRootNode, const CReaction* reaction);
 
