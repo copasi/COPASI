@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/18 21:01:03 $
+   $Author: ssahle $ 
+   $Date: 2005/07/25 09:48:10 $
    End CVS Header */
 
 /**
@@ -21,6 +21,8 @@
 #include "CCopasiMethod.h"
 #include "report/CReport.h"
 #include "report/CKeyFactory.h"
+#include "utilities/COutputHandler.h"
+#include "model/CModel.h"
 
 const std::string CCopasiTask::TypeName[] =
   {
@@ -70,7 +72,8 @@ CCopasiTask::CCopasiTask(const std::string & name,
     mReport(),
     mpOutputHandler(NULL),
     mpCallBack(NULL),
-    mpSliders(NULL)
+    mpSliders(NULL),
+    mDoOutput(OUTPUT_COMPLETE)
 {}
 
 CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
@@ -85,7 +88,8 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
     mReport(),
     mpOutputHandler(NULL),
     mpCallBack(NULL),
-    mpSliders(NULL)
+    mpSliders(NULL),
+    mDoOutput(OUTPUT_COMPLETE)
 {}
 
 CCopasiTask::CCopasiTask(const CCopasiTask & src,
@@ -99,7 +103,8 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
     mReport(src.mReport),
     mpOutputHandler(NULL),
     mpCallBack(NULL),
-    mpSliders(NULL)
+    mpSliders(NULL),
+    mDoOutput(OUTPUT_COMPLETE)
 {}
 
 CCopasiTask::~CCopasiTask()
@@ -131,15 +136,25 @@ bool CCopasiTask::setCallBack(CProcessReport * pCallBack)
   return true;
 }
 
-bool CCopasiTask::initialize(std::ostream * C_UNUSED(pOstream)) {return false;}
+bool CCopasiTask::initialize(std::ostream * pOstream)
+{
+  if (!mpProblem) return false;
+  if (!mpProblem->getModel()) return false;
 
-bool CCopasiTask::process() {return false;}
+  if (!mpProblem->getModel()->compileIfNecessary()) return false;
+  if (!mReport.open(pOstream)) return false;
+  if (!mReport.compile()) return false;
+
+  return true;
+}
+
+bool CCopasiTask::process(OutputFlag C_UNUSED(of)) {return false;}
 
 bool CCopasiTask::processForScan(bool C_UNUSED(useInitialConditions), bool C_UNUSED(doOutput)) {return false;}
 
 bool CCopasiTask::restore()
 {
-  mReport.close();
+  //mReport.close();
   setCallBack(NULL);
 
   return true;
@@ -171,3 +186,36 @@ void CCopasiTask::setProgressHandler(CProcessReport * pHandler)
 
 CCopasiParameterGroup * CCopasiTask::getSliders()
 {return mpSliders;}
+
+// output stuff
+
+bool CCopasiTask::initOutput()
+{
+  if (mDoOutput == OUTPUT_COMPLETE)
+    {
+      mReport.printHeader();
+      if (mpOutputHandler) mpOutputHandler->init();
+    }
+  return true;
+}
+
+bool CCopasiTask::doOutput()
+{
+  if (mDoOutput)
+    {
+      mReport.printBody();
+      if (mpOutputHandler) mpOutputHandler->doOutput();
+    }
+  return true;
+}
+
+bool CCopasiTask::finishOutput()
+{
+  if (mDoOutput == OUTPUT_COMPLETE)
+    {
+      mReport.printFooter();
+      mReport.close();
+      if (mpOutputHandler) mpOutputHandler->finish();
+    }
+  return true;
+}

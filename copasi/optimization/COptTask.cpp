@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/18 21:09:50 $
+   $Author: ssahle $ 
+   $Date: 2005/07/25 09:49:19 $
    End CVS Header */
 
 /**
@@ -73,10 +73,11 @@ bool COptTask::initialize(std::ostream * pOstream)
 
   if (!pProblem || !pMethod) return false;
 
-  bool success = true;
+  //initialize reporting
+  bool success = CCopasiTask::initialize(pOstream);
 
-  if (!mReport.open(pOstream)) success = false;
-  if (!mReport.compile()) success = false;
+  //if (!mReport.open(pOstream)) success = false;
+  //if (!mReport.compile()) success = false;
 
   if (!pProblem->initialize()) return false;
 
@@ -93,13 +94,15 @@ bool COptTask::process()
 
   if (!pProblem || !pMethod) return false;
 
-  bool Report = (mReport.getStream() != NULL);
+  //bool Report = (mReport.getStream() != NULL);
 
-  if (Report) mReport.printHeader();
+  //if (Report) mReport.printHeader();
+  initOutput();
 
   bool success = pMethod->optimise();
 
-  if (Report) mReport.printFooter();
+  //if (Report) mReport.printFooter();
+  finishOutput();
 
   pProblem->restore();
 

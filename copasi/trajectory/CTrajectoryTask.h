@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:32:53 $
+   $Date: 2005/07/25 09:48:50 $
    End CVS Header */
 
 /**
@@ -48,48 +48,12 @@ class CTrajectoryTask : public CCopasiTask
      */
     bool mTimeSeriesRequested;
 
-    enum OutputFlag {NO_OUTPUT = 0, OUTPUT, OUTPUT_COMPLETE};
-
-    OutputFlag mDoOutput;
-
   public:
     /**
      * Default constructor
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CTrajectoryTask(const CCopasiContainer * pParent = & RootContainer);
-
-    /* *
-     * Copy constructor
-     * @param const CTrajectoryTask & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */ 
-    //CTrajectoryTask(const CTrajectoryTask & src,
-    //                const CCopasiContainer * pParent = NULL);
-
-    /* *
-     * special constructor. Allows definition of a Trajectory task without loading one
-     */ 
-    //CTrajectoryTask(CTrajectoryProblem * pProblem,
-    //                CTrajectoryMethod::SubType type =
-    //                  CTrajectoryMethod::deterministic,
-    //                const CCopasiContainer * pParent = NULL);
-
-    /* *
-     * special constructor. Allows definition of a Trajectory task
-     * and a problem without loading one.
-     *  @param "CModel *" pmodel
-     *  @param "C_FLOAT64" starttime
-     *  @param "C_FLOAT64" endtime
-     *  @param "unsigned C_INT32" stepnumber : number of steps
-     *  @param "CTrajectoryMethod::SubType" type : type of the method that will be created
-     */ 
-    //CTrajectoryTask(CModel * pModel,
-    //                C_FLOAT64 starttime, C_FLOAT64 endtime,
-    //                unsigned C_INT32 stepnumber,
-    //                CTrajectoryMethod::SubType type
-    //                = CTrajectoryMethod::deterministic,
-    //                const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor
@@ -107,7 +71,7 @@ class CTrajectoryTask : public CCopasiTask
     /**
      * Process the task
      */
-    virtual bool process();
+    virtual bool process(OutputFlag of = OUTPUT_COMPLETE);
 
     /**
      * Process the task without any output in as few steps as possible
@@ -145,6 +109,10 @@ class CTrajectoryTask : public CCopasiTask
      * @return time series
      */
     const CTimeSeries & getTimeSeries() const;
+
+    bool initOutput();
+    bool doOutput();
+    bool finishOutput();
 
   private:
     /**

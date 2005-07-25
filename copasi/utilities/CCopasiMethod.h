@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/07/20 05:11:26 $
+   $Author: ssahle $ 
+   $Date: 2005/07/25 09:48:10 $
    End CVS Header */
 
 /**
@@ -83,8 +83,8 @@ class CCopasiMethod : public CCopasiParameterGroup
 
     /**
      * A pointer to the report 
-     */
-    CReport * mpReport;
+     */ 
+    //CReport * mpReport;
 
     // Operations
 

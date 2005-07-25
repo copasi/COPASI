@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/20 21:10:42 $
+   $Author: ssahle $ 
+   $Date: 2005/07/25 09:48:50 $
    End CVS Header */
 
 /**
@@ -26,8 +26,8 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "report/CKeyFactory.h"
-#include "report/CReport.h"
-#include "utilities/COutputHandler.h"
+#include "report/CReport.h" 
+//#include "utilities/COutputHandler.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
 
@@ -48,8 +48,7 @@ bool bl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::timeCourse, pParent),
     mpState(NULL),
-    mTimeSeriesRequested(true),
-    mDoOutput(OUTPUT_COMPLETE)
+    mTimeSeriesRequested(true)
 {
   mpProblem = new CTrajectoryProblem(this);
   mpMethod =
@@ -100,22 +99,12 @@ bool CTrajectoryTask::initialize(std::ostream * pOstream)
     dynamic_cast<CTrajectoryProblem *>(mpProblem);
   assert(pProblem);
 
-  bool success = true;
-
-  if (!mReport.open(pOstream)) success = false;
-  if (!mReport.compile()) success = false;
-  if (!pProblem->getModel()->compileIfNecessary()) success = false;
-  //  if (!pProblem->
-  //      setInitialState(pProblem->getModel()->getInitialState()))
-  //    success = false;
-
-  //pProblem->setInitialState(pProblem->getModel()->getInitialState());
-
-  return success;
+  return CCopasiTask::initialize(pOstream);
 }
 
-bool CTrajectoryTask::process()
+bool CTrajectoryTask::process(OutputFlag of)
 {
+  mDoOutput = of;
   unsigned C_INT32 FailCounter = 0;
 
   assert(/*mpProblem && */mpMethod);
@@ -170,12 +159,6 @@ bool CTrajectoryTask::process()
   bool flagProceed = true;
   C_FLOAT64 handlerFactor = 100.0 / (pProblem->getEndTime() - pProblem->getStartTime());
 
-  /*
-    if (mpCallBack)
-      mpCallBack->init(1000,
-                              "performing simulation...",
-                              true);
-  */
   C_FLOAT64 Percentage = 0;
   unsigned C_INT32 hProcess;
 
@@ -189,27 +172,8 @@ bool CTrajectoryTask::process()
                                      &hundred);
     }
 
-  if (mDoOutput)
-    {
-      pProblem->getModel()->setState(mpState);
-      pProblem->getModel()->updateRates();
-    }
-
-  if (mDoOutput == OUTPUT_COMPLETE)
-    {
-      pProblem->getModel()->setState(mpState);
-      pProblem->getModel()->updateRates();
-      mReport.printHeader();
-      if (mpOutputHandler) mpOutputHandler->init();
-      if (mTimeSeriesRequested) mTimeSeries.init(pProblem->getStepNumber(), mpState);
-    }
-
-  if ((*LE)(outputStartTime, Time) && (mDoOutput))
-    {
-      mReport.printBody();
-      if (mpOutputHandler) mpOutputHandler->doOutput();
-      if (mTimeSeriesRequested) mTimeSeries.add();
-    }
+  initOutput();
+  if ((*LE)(outputStartTime, Time)) doOutput();
 
   // We start the integration
   // This is numerically more stable then adding pProblem->getStepSize().
@@ -230,15 +194,10 @@ bool CTrajectoryTask::process()
       flagProceed = mpCallBack->progress(hProcess);
     }
 
-  if ((mDoOutput) &&
-      (*LE)(outputStartTime, Time) &&
+  if ((*LE)(outputStartTime, Time) &&
       !(*L)(Time, NextTimeToReport * (1 - 100 * DBL_EPSILON)))
     {
-      pProblem->getModel()->setState(mpState);
-      pProblem->getModel()->updateRates();
-      mReport.printBody();
-      if (mpOutputHandler) mpOutputHandler->doOutput();
-      if (mTimeSeriesRequested) mTimeSeries.add();
+      doOutput();
     }
 
   if ((*L)(Time, NextTimeToReport * (1 - 100 * DBL_EPSILON)))
@@ -279,15 +238,10 @@ bool CTrajectoryTask::process()
           flagProceed = mpCallBack->progress(hProcess);
         }
 
-      if ((mDoOutput) &&
-          (*LE)(outputStartTime, Time) &&
+      if ((*LE)(outputStartTime, Time) &&
           !(*L)(Time, NextTimeToReport * (1 - 100 * DBL_EPSILON)))
         {
-          pProblem->getModel()->setState(mpState);
-          pProblem->getModel()->updateRates();
-          mReport.printBody();
-          if (mpOutputHandler) mpOutputHandler->doOutput();
-          if (mTimeSeriesRequested) mTimeSeries.add();
+          doOutput();
         }
 
       if ((*L)(Time, NextTimeToReport * (1 - 100 * DBL_EPSILON)))
@@ -316,15 +270,11 @@ bool CTrajectoryTask::process()
   //pProblem->setEndState(new CState(*mpState));
 
   if (mpCallBack) mpCallBack->finish(hProcess);
+
   pProblem->getModel()->setState(mpState);
   pProblem->getModel()->updateRates();
 
-  if ((*LE)(outputStartTime, Time) && (mDoOutput))
-    {
-      mReport.printFooter();
-      if (mpOutputHandler) mpOutputHandler->finish();
-      if (mTimeSeriesRequested) mTimeSeries.finish();
-    }
+  finishOutput();
 
   return true;
 }
@@ -458,3 +408,61 @@ CState * CTrajectoryTask::getState()
 
 const CTimeSeries & CTrajectoryTask::getTimeSeries() const
   {return mTimeSeries;}
+
+bool CTrajectoryTask::initOutput()
+{
+  //output preparation
+  if (mDoOutput == OUTPUT_COMPLETE)
+    {
+      mpProblem->getModel()->setState(mpState);
+      mpProblem->getModel()->updateRates();
+    }
+
+  CCopasiTask::initOutput();
+
+  //time series
+  if (mDoOutput == OUTPUT_COMPLETE)
+    {
+      CTrajectoryProblem * pProblem = (CTrajectoryProblem *) mpProblem;
+      if (mTimeSeriesRequested) mTimeSeries.init(pProblem->getStepNumber(), mpState);
+    }
+  return true;
+}
+
+bool CTrajectoryTask::doOutput()
+{
+  //output preparation
+  if (mDoOutput)
+    {
+      mpProblem->getModel()->setState(mpState);
+      mpProblem->getModel()->updateRates();
+    }
+
+  CCopasiTask::doOutput();
+
+  //time series
+  if (mDoOutput == OUTPUT_COMPLETE)
+    {
+      if (mTimeSeriesRequested) mTimeSeries.add();
+    }
+  return true;
+}
+
+bool CTrajectoryTask::finishOutput()
+{
+  //output preparation
+  if (mDoOutput == OUTPUT_COMPLETE)
+    {
+      mpProblem->getModel()->setState(mpState);
+      mpProblem->getModel()->updateRates();
+    }
+
+  CCopasiTask::finishOutput();
+
+  //time series
+  if (mDoOutput == OUTPUT_COMPLETE)
+    {
+      if (mTimeSeriesRequested) mTimeSeries.finish();
+    }
+  return true;
+}

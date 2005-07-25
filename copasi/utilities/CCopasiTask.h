@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/18 14:07:33 $
+   $Author: ssahle $ 
+   $Date: 2005/07/25 09:48:10 $
    End CVS Header */
 
 /**
@@ -57,6 +57,13 @@ class CCopasiTask : public CCopasiContainer
      * XML type names of tasks known to COPASI.
      */
     static const char* XMLType[];
+
+    enum OutputFlag
+    {
+      NO_OUTPUT = 0,     //do no output
+      OUTPUT,            //do output, but do not initialize/finish
+      OUTPUT_COMPLETE   //do output, including initialization and closing
+    };
 
     // Attributes
   protected:
@@ -206,7 +213,7 @@ class CCopasiTask : public CCopasiContainer
      * Process the task
      * @return bool success
      */
-    virtual bool process();
+    virtual bool process(OutputFlag of = OUTPUT_COMPLETE);
 
     /**
      * Process the task. This is called by the scan task.
@@ -268,6 +275,19 @@ class CCopasiTask : public CCopasiContainer
      * @return CCopasiParameterGroup * pSliders
      */
     CCopasiParameterGroup * getSliders();
+
+    //the following methods are wrappers for doing output. They are intended
+    //to hide the fact that output is done using different mechanisms, e.g. reports and plots
+
+    virtual bool initOutput();
+    virtual bool doOutput();
+    virtual bool finishOutput();
+
+    inline const OutputFlag & getOutputMode() const
+      {return mDoOutput;};
+
+  protected:
+    OutputFlag mDoOutput;
   };
 
 #endif // COPASI_CCopasiTask

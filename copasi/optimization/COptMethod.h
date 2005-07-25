@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/07/20 05:10:46 $
+   $Author: ssahle $ 
+   $Date: 2005/07/25 09:49:19 $
    End CVS Header */
 
 /**
@@ -30,6 +30,7 @@
 
 class COptProblem;
 class COptItem;
+class COptTask;
 template < class CType > class CVector;
 
 // YOHE: this is an abstract class that contains many virtual functions
@@ -48,6 +49,8 @@ class COptMethod : public CCopasiMethod
   protected:
     /** @dia:route 0,2; h,36.4,4.15,33.95,4.15,23.0576 */
     COptProblem * mpOptProblem;        // pointer to remote problem
+
+    COptTask * mpParentTask;
 
     const bool mBounds;            // True if method accepts bounds on the parameters
 

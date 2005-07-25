@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/07/20 05:10:51 $
+   $Author: ssahle $ 
+   $Date: 2005/07/25 09:49:19 $
    End CVS Header */
 
 /**
@@ -64,7 +64,7 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
       /*       case GeneticAlgorithm:
                pMethod = new COptMethodGA();
                break;
-      /*
+
              case EvolutionaryProgram2:
                //      pMethod = new COptMethodEP2();
                break;
@@ -85,6 +85,7 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
 COptMethod::COptMethod():
     CCopasiMethod(CCopasiTask::optimization, CCopasiMethod::unset),
     mpOptProblem(NULL),
+    mpParentTask(NULL),
     mBounds(false)
 {CONSTRUCTOR_TRACE;}
 
@@ -92,6 +93,7 @@ COptMethod::COptMethod(CCopasiMethod::SubType subType,
                        const CCopasiContainer * pParent):
     CCopasiMethod(CCopasiTask::optimization, subType, pParent),
     mpOptProblem(NULL),
+    mpParentTask(NULL),
     mBounds(false)
 {CONSTRUCTOR_TRACE;}
 
@@ -99,6 +101,7 @@ COptMethod::COptMethod(const COptMethod & src,
                        const CCopasiContainer * pParent):
     CCopasiMethod(src, pParent),
     mpOptProblem(src.mpOptProblem),
+    mpParentTask(src.mpParentTask),
     mBounds(src.mBounds)
 {CONSTRUCTOR_TRACE;}
 
@@ -134,11 +137,13 @@ bool COptMethod::initialize()
   if (!(mpSetCalculateVariable = &mpOptProblem->getCalculateVariableUpdateMethods()))
     return false;
 
-  COptTask * pTask = dynamic_cast<COptTask *>(getObjectParent());
-  if (pTask &&
+  mpParentTask = dynamic_cast<COptTask *>(getObjectParent());
+  if (!mpParentTask) return false;
+
+  /*if (pTask &&
       (mpReport = &pTask->getReport()) &&
       !mpReport->getStream())
-    mpReport = NULL;
+    mpReport = NULL;*/
 
   return true;
 }

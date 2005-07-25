@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/07/20 05:11:32 $
+   $Author: ssahle $ 
+   $Date: 2005/07/25 09:48:10 $
    End CVS Header */
 
 /**
@@ -88,8 +88,8 @@ CCopasiMethod::CCopasiMethod():
     CCopasiParameterGroup("NoName", NULL, "Method"),
     mType(CCopasiTask::unset),
     mSubType(unset),
-    mpCallBack(NULL),
-    mpReport(NULL)
+    mpCallBack(NULL)
+    //mpReport(NULL)
 {setObjectName(SubTypeName[mType]);}
 
 CCopasiMethod::CCopasiMethod(const CCopasiTask::Type & type,
@@ -98,8 +98,8 @@ CCopasiMethod::CCopasiMethod(const CCopasiTask::Type & type,
     CCopasiParameterGroup(TypeName[type], pParent, "Method"),
     mType(type),
     mSubType(subType),
-    mpCallBack(NULL),
-    mpReport(NULL)
+    mpCallBack(NULL)
+    //mpReport(NULL)
 {setObjectName(SubTypeName[mSubType]);}
 
 CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
@@ -107,8 +107,8 @@ CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
     CCopasiParameterGroup(src, pParent),
     mType(src.mType),
     mSubType(src.mSubType),
-    mpCallBack(src.mpCallBack),
-    mpReport(src.mpReport)
+    mpCallBack(src.mpCallBack)
+    //mpReport(src.mpReport)
 {}
 
 CCopasiMethod::~CCopasiMethod() {}

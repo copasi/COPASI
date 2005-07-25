@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/18 21:06:36 $
+   $Author: ssahle $ 
+   $Date: 2005/07/25 09:49:19 $
    End CVS Header */
 
 /***************************************************************************
@@ -24,6 +24,8 @@ email                : rluktuke@vt.edu
 #include "COptMethod.h"
 #include "COptProblem.h"
 #include "COptItem.h"
+#include "COptTask.h"
+
 #include "CRandomSearch.h"
 
 #include "report/CCopasiObjectReference.h"
@@ -187,7 +189,8 @@ bool CRandomSearch::optimise()
           Continue = mpOptProblem->setSolutionValue(mBestValue);
 
           // We found a new best value lets report it.
-          if (mpReport) mpReport->printBody();
+          //if (mpReport) mpReport->printBody();
+          mpParentTask->doOutput();
         }
     }
 

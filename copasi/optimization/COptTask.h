@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/19 11:43:41 $
+   $Author: ssahle $ 
+   $Date: 2005/07/25 09:49:19 $
    End CVS Header */
 
 /**
@@ -32,13 +32,13 @@ class COptTask : public CCopasiTask
 
     /**
      * Pointer to the output stream for reporting
-     */
-    std::ostream * mpOut;
+     */ 
+    //std::ostream * mpOut;
 
     /**
      * Unique Key
-     */
-    std::string mKey;
+     */ 
+    //std::string mKey;
 
   class CallBack: public CProcessReport
       {
