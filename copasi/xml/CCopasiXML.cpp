@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 20:21:47 $
+   $Date: 2005/07/25 18:57:55 $
    End CVS Header */
 
 /**
@@ -1006,7 +1006,7 @@ bool CCopasiXML::buildFunctionList()
   for (i = 0; it != End; ++it, i++)
     (*pFunctionList)[i] = it->second;
 
-  // :TODO: Add all used expressions.
+  if (!CEvaluationTree::completeEvaluationTreeList(*pFunctionList)) success = false;
 
   if (!setFunctionList(*pFunctionList)) success = false;
 
