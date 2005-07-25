@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/20 21:11:13 $
+   $Author: anuragr $ 
+   $Date: 2005/07/25 00:16:00 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -55,70 +55,90 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
     setName("OptimizationWidget");
   setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, sizePolicy().hasHeightForWidth()));
 
-  buttonsSeparator = new QFrame(this, "buttonsSeparator");
-  buttonsSeparator->setGeometry(QRect(11, 281, 558, 16));
-  buttonsSeparator->setFrameShape(QFrame::HLine);
-  buttonsSeparator->setFrameShadow(QFrame::Sunken);
-  buttonsSeparator->setFrameShape(QFrame::HLine);
+  optimizationWidgetLayout = new QGridLayout(this, 30, 12, 0, 1, "optimizationWidgetLayout");
+
+  expressionTextLayout = new QHBoxLayout();
+
+  expressionEditlabel = new QLabel(this, "expressionEditlabel");
+  expressionTextLayout->addWidget(expressionEditlabel, 0, 0);
+
+  //expressionTextLayout
+
+  expressionText = new QLineEdit(this, "expressionText");
+  expressionText->setFrameShape(QLineEdit::LineEditPanel);
+  expressionText->setFrameShadow(QLineEdit::Sunken);
+  expressionTextLayout->addWidget(expressionText);
+
+  selectParameterButton = new QPushButton(this, "selectParameterButton");
+  expressionTextLayout->addWidget(selectParameterButton);
+
+  optimizationWidgetLayout->addMultiCellLayout(expressionTextLayout, 0, 0, 1, 10);
+
+  /*<todo=edit>*/constraintLayout =  new QGridLayout(this,  14, 10, 1, 1, "constraintLayout");
 
   paramsGroupBox = new QGroupBox(this, "paramsGroupBox");
-  paramsGroupBox->setGeometry(QRect(11, 270, 558, 228));
 
-  typeGroupBox = new QGroupBox(this, "typeGroupBox");
-  typeGroupBox->setGeometry(QRect(330, 60, 230, 160));
+  constraintLayout->addWidget(paramsGroupBox, 0, 0);
 
-  timeCheck = new QCheckBox(typeGroupBox, "timeCheck");
-  timeCheck->setGeometry(QRect(30, 70, 84, 19));
+  buttonsLayout = new QHBoxLayout(0, 0, 6, "buttonsLayout");
 
-  steadystateCheck = new QCheckBox(typeGroupBox, "steadystateCheck");
-  steadystateCheck->setGeometry(QRect(30, 40, 90, 20));
+  confirmButton = new QPushButton(this, "confirmButton");
+  buttonsLayout->addWidget(confirmButton);
+
+  runButton = new QPushButton(this, "runButton");
+  buttonsLayout->addWidget(runButton);
+
+  cancelButton = new QPushButton(this, "cancelButton");
+  buttonsLayout->addWidget(cancelButton);
+
+  reportButton = new QPushButton(this, "reportButton");
+  buttonsLayout->addWidget(reportButton);
+
+  outputAssistantButton = new QPushButton(this, "outputAssistantButton");
+  buttonsLayout->addWidget(outputAssistantButton);
+
+  constraintLayout->addLayout(buttonsLayout, 1, 0);
+
+  optimizationWidgetLayout->addMultiCellLayout(constraintLayout, 14, 28, 1, 11);
 
   AddTaskButton = new QPushButton(this, "AddTaskButton");
-  AddTaskButton->setGeometry(QRect(490, 230, 70, 30));
   AddTaskButton->setAutoMask(TRUE);
   AddTaskButton->setOn(FALSE);
 
-  methodGroupBox = new QGroupBox(this, "methodGroupBox");
-  methodGroupBox->setGeometry(QRect(10, 60, 300, 200));
+  optimizationWidgetLayout->addMultiCellWidget(AddTaskButton, 12, 12, 8, 10);
 
-  methodCombo = new QComboBox(FALSE, methodGroupBox, "methodCombo");
-  methodCombo->setGeometry(QRect(30, 30, 220, 20));
+  methodGroupBoxLayout = new QVBoxLayout(this);
 
-  confirmButton = new QPushButton(this, "confirmButton");
-  confirmButton->setGeometry(QRect(11, 504, 107, 24));
+  methodLabel = new QLabel(this, "methodLabel");
+  methodGroupBoxLayout->addWidget(methodLabel);
 
-  runButton = new QPushButton(this, "runButton");
-  runButton->setGeometry(QRect(124, 504, 107, 24));
+  methodCombo = new QComboBox(FALSE, this, "methodCombo");
+  methodGroupBoxLayout->addWidget(methodCombo);
 
-  cancelButton = new QPushButton(this, "cancelButton");
-  cancelButton->setGeometry(QRect(237, 504, 107, 24));
-
-  reportButton = new QPushButton(this, "reportButton");
-  reportButton->setGeometry(QRect(349, 504, 107, 24));
-
-  outputAssistantButton = new QPushButton(this, "outputAssistantButton");
-  outputAssistantButton->setGeometry(QRect(462, 504, 107, 24));
-
-  selectParameterButton = new QPushButton(this, "selectParameterButton");
-  selectParameterButton->setGeometry(QRect(489, 16, 50, 24));
-
-  expressionEditlabel = new QLabel(this, "expressionEditlabel");
-  expressionEditlabel->setGeometry(QRect(11, 16, 51, 24));
-
-  expressionText = new QLineEdit(this, "expressionText");
-  expressionText->setGeometry(QRect(68, 18, 415, 20));
-  expressionText->setFrameShape(QLineEdit::LineEditPanel);
-  expressionText->setFrameShadow(QLineEdit::Sunken);
-  languageChange();
-  resize(QSize(581, 447).expandedTo(minimumSizeHint()));
-
-  parameterTable = new QTable(methodGroupBox, "parameterTable");
-  parameterTable->setNumRows(0);
+  parameterTable = new QTable(this, "parameterTable");
+  parameterTable->setNumRows(3);
   parameterTable->setNumCols(1);
-  QHeader *colHeader = parameterTable->horizontalHeader();
-  colHeader->setLabel(0, tr("Value"));
-  parameterTable->setColumnStretchable(0, true);
-  parameterTable->setGeometry(QRect(30, 60, 220, 130));
+  methodGroupBoxLayout->addWidget(parameterTable);
+
+  optimizationWidgetLayout->addMultiCellLayout(methodGroupBoxLayout, 2, 10, 2, 5);
+
+  typeGroupBoxLayout = new QGridLayout(this);
+  typeGroupBoxLayout->setAlignment(Qt::AlignTop);
+
+  typeLabel = new QLabel(this, "typeLabel");
+  typeGroupBoxLayout->addWidget(typeLabel , 0, 0);
+
+  steadystateCheck = new QCheckBox(this, "steadystateCheck");
+  typeGroupBoxLayout->addWidget(steadystateCheck, 2, 0);
+
+  timeCheck = new QCheckBox(this, "timeCheck");
+  typeGroupBoxLayout->addWidget(timeCheck, 4, 0);
+
+  optimizationWidgetLayout->addMultiCellLayout(typeGroupBoxLayout, 2, 7, 8, 10);
+
+  languageChange();
+  resize(QSize(581, 478).expandedTo(minimumSizeHint()));
+  clearWState(WState_Polished);
 
   // tab order
 
@@ -501,19 +521,17 @@ bool OptimizationWidget::changeMethod(int /* index */)
 void OptimizationWidget::languageChange()
 {
   setCaption(tr("Optimization"));
-  typeGroupBox->setTitle(tr("Type"));
   timeCheck->setText(tr("Time Course"));
   steadystateCheck->setText(tr("Steady State"));
   AddTaskButton->setText(tr("Add"));
-  methodGroupBox->setTitle(tr("Optimization Technique"));
-  //expressionNameLabel_2->setText(tr("Method"));
+  methodLabel->setText(tr("Method\n\n"));
+  typeLabel->setText(tr("Type \n\n"));
   confirmButton->setText(tr("confirm"));
   runButton->setText(tr("run"));
   cancelButton->setText(tr("cancel"));
   reportButton->setText(tr("report"));
   outputAssistantButton->setText(tr("output assistant"));
-  selectParameterButton->setText(tr("..."));
-  //expressionNameLabel->setText(tr("Name"));
+  selectParameterButton->setText(tr("load objects"));
   expressionEditlabel->setText(tr("Expression"));
   expressionText->setText(QString::null);
 }

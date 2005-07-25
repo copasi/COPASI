@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/07/11 23:52:08 $
+   $Date: 2005/07/25 00:15:09 $
    End CVS Header */
 
 /****************************************************************************
@@ -33,8 +33,8 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
-class QGroupBox;
 class QCheckBox;
+class QGroupBox;
 class QLineEdit;
 class QLabel;
 class QTable;
@@ -83,26 +83,24 @@ class OptimizationWidget : public CopasiWidget
 
     QPushButton* reportDefinitionButton;
     QHBoxLayout* scrollviewLayout;
+    QHBoxLayout* expressionTextLayout;
+    QVBoxLayout *methodGroupBoxLayout;
+
+    QGridLayout* optimizationWidgetLayout, *constraintLayout, *typeGroupBoxLayout;
 
     /*<from UIC>*/
 
-    QHBoxLayout* Layoutparams;
+    QHBoxLayout* Layoutparams, *buttonsLayout;
 
     QFrame* buttonsSeparator;
     QGroupBox* paramsGroupBox;
-    QFrame* bodyField;
-    QGroupBox* typeGroupBox;
+    //QGroupBox* typeGroupBox;
     QCheckBox* timeCheck;
     QCheckBox* steadystateCheck;
     QPushButton* AddTaskButton;
-    QGroupBox* methodGroupBox;
-    QLabel* expressionNameLabel_2;
+    //QGroupBox* methodGroupBox;
+    QLabel* methodLabel, *typeLabel;
     QComboBox* methodCombo;
-    QLineEdit* param1Edit;
-    QLineEdit* param3Edit;
-    QLineEdit* param2Edit;
-    QLineEdit* param4Edit;
-    QLineEdit* param5Edit;
     QPushButton* confirmButton;
     QPushButton* runButton;
     QPushButton* cancelButton;
