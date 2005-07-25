@@ -162,6 +162,22 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   return TOKEN_LOGICAL_OR;
 %}
 
+{ID}\(/\) %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION,
+                                   yytext);
+  COMMON_ACTION;
+  return TOKEN_CALL;
+%}
+
+{ID}\( %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION,
+                                   yytext);
+  COMMON_ACTION;
+  return TOKEN_CALL;
+%}
+
 {ID}  %{
   BEGIN(sOPERATOR); 
   mpNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY,
@@ -440,13 +456,6 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
                                      yytext);
   COMMON_ACTION;
   return TOKEN_LOGICAL_CHOICE;
-%}
-
-(call|CALL)/\(   %{
-  BEGIN(sOPERATOR); 
-  mpNode = NULL;
-  COMMON_ACTION;
-  return TOKEN_CALL;
 %}
 
 <INITIAL,sSIGN>"-"   %{

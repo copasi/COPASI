@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/19 15:15:14 $
+   $Author: shoops $ 
+   $Date: 2005/07/25 15:36:40 $
    End CVS Header */
 
 #include <sbml/math/ASTNode.h>
@@ -20,7 +20,6 @@
 
 CEvaluationNodeCall::CEvaluationNodeCall():
     CEvaluationNode(CEvaluationNode::INVALID, ""),
-    mEvaluationTreeName(""),
     mpFunction(NULL),
     mpExpression(NULL),
     mCallNodes(),
@@ -29,8 +28,7 @@ CEvaluationNodeCall::CEvaluationNodeCall():
 
 CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type) (CEvaluationNode::FUNCTION | subType), data),
-    mEvaluationTreeName(""),
+    CEvaluationNode((Type) (CEvaluationNode::FUNCTION | subType), data.substr(0, data.length() - 1)),
     mpFunction(NULL),
     mpExpression(NULL),
     mCallNodes(),
@@ -52,7 +50,6 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
 
 CEvaluationNodeCall::CEvaluationNodeCall(const CEvaluationNodeCall & src):
     CEvaluationNode(src),
-    mEvaluationTreeName(src.mEvaluationTreeName),
     mpFunction(src.mpFunction),
     mpExpression(src.mpExpression),
     mCallNodes(src.mCallNodes),
@@ -93,7 +90,7 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
     {
     case FUNCTION:
       mpFunction =
-        dynamic_cast<CFunction *>(CCopasiDataModel::Global->getFunctionList()->findFunction(mEvaluationTreeName));
+        dynamic_cast<CFunction *>(CCopasiDataModel::Global->getFunctionList()->findFunction(mData));
       if (!mpFunction) return false;
       clearParameters(mpCallParameters, mCallNodes);
       mpCallParameters = buildParameters(mCallNodes);
@@ -101,7 +98,7 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
     case EXPRESSION:
       mpExpression =
-        dynamic_cast<CExpression *>(CCopasiDataModel::Global->getFunctionList()->findFunction(mEvaluationTreeName));
+        dynamic_cast<CExpression *>(CCopasiDataModel::Global->getFunctionList()->findFunction(mData));
       if (!mpExpression) return false;
       if (!mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer())) return false;
       break;
@@ -116,12 +113,10 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
 std::string CEvaluationNodeCall::getInfix() const
   {
-    std::string Infix = mData + "(" + mEvaluationTreeName;
+    std::string Infix = mData + "(";
     switch (mType & 0x00FFFFFF)
       {
       case FUNCTION:
-        Infix += "(";
-
         {
           std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
           std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
@@ -132,17 +127,16 @@ std::string CEvaluationNodeCall::getInfix() const
             Infix += "," + (*it)->getInfix();
         }
 
-        return Infix + "))";
         break;
 
       case EXPRESSION:
-        return Infix + ")";
         break;
 
       default:
         return "@";
         break;
       }
+    return Infix + ")";
   }
 
 CEvaluationNode* CEvaluationNodeCall::createNodeFromASTTree(const ASTNode& node)
@@ -171,9 +165,6 @@ ASTNode* CEvaluationNodeCall::toAST() const
       }
     return node;
   }
-
-void CEvaluationNodeCall::setEvaluationTreeName(const std::string & name)
-{mEvaluationTreeName = name;}
 
 bool CEvaluationNodeCall::addChild(CCopasiNode< Data > * pChild,
                                    CCopasiNode< Data > * pAfter)

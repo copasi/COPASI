@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 14:20:51 $
+   $Date: 2005/07/25 15:36:40 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeCall
@@ -95,12 +95,6 @@ class CEvaluationNodeCall : public CEvaluationNode
     virtual ASTNode* toAST() const;
 
     /**
-     * Set the name of the evaluation tree to be called.
-     * @param const std::string & name
-     */
-    void setEvaluationTreeName(const std::string & name);
-
-    /**
      * Add a child to a node.
      * If pAfter == this the child will be inserted at the fornt of the list
      * of children.
@@ -129,7 +123,6 @@ class CEvaluationNodeCall : public CEvaluationNode
 
     // Attributes
   private:
-    std::string mEvaluationTreeName;
     CFunction * mpFunction;
     CExpression * mpExpression;
     std::vector<CEvaluationNode *> mCallNodes;
