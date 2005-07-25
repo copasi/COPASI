@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/07/25 00:16:00 $
+   $Date: 2005/07/25 22:12:50 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -57,12 +57,19 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   optimizationWidgetLayout = new QGridLayout(this, 30, 12, 0, 1, "optimizationWidgetLayout");
 
-  expressionTextLayout = new QHBoxLayout();
+  nameLayout = new QHBoxLayout(this);
+  nameLabel = new QLabel(this, "nameLabel");
+  nameLayout->addWidget(nameLabel, 0, 0);
+
+  taskExecCheck = new QCheckBox(this, "taskExecCheck");
+  nameLayout->addWidget(taskExecCheck, 2, Qt::AlignRight);
+
+  optimizationWidgetLayout->addMultiCellLayout(nameLayout, 0, 0, 1, 10);
+
+  expressionTextLayout = new QHBoxLayout(this, 0, 1, "expressionTextLayout");
 
   expressionEditlabel = new QLabel(this, "expressionEditlabel");
   expressionTextLayout->addWidget(expressionEditlabel, 0, 0);
-
-  //expressionTextLayout
 
   expressionText = new QLineEdit(this, "expressionText");
   expressionText->setFrameShape(QLineEdit::LineEditPanel);
@@ -72,9 +79,9 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   selectParameterButton = new QPushButton(this, "selectParameterButton");
   expressionTextLayout->addWidget(selectParameterButton);
 
-  optimizationWidgetLayout->addMultiCellLayout(expressionTextLayout, 0, 0, 1, 10);
+  optimizationWidgetLayout->addMultiCellLayout(expressionTextLayout, 3, 3, 1, 10);
 
-  /*<todo=edit>*/constraintLayout =  new QGridLayout(this,  14, 10, 1, 1, "constraintLayout");
+  constraintLayout = new QGridLayout(this, 14, 10, 1, 1, "constraintLayout");
 
   paramsGroupBox = new QGroupBox(this, "paramsGroupBox");
 
@@ -99,13 +106,13 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   constraintLayout->addLayout(buttonsLayout, 1, 0);
 
-  optimizationWidgetLayout->addMultiCellLayout(constraintLayout, 14, 28, 1, 11);
+  optimizationWidgetLayout->addMultiCellLayout(constraintLayout, 16, 30, 1, 11);
 
   AddTaskButton = new QPushButton(this, "AddTaskButton");
   AddTaskButton->setAutoMask(TRUE);
   AddTaskButton->setOn(FALSE);
 
-  optimizationWidgetLayout->addMultiCellWidget(AddTaskButton, 12, 12, 8, 10);
+  optimizationWidgetLayout->addMultiCellWidget(AddTaskButton, 11, 14, 8, 10);
 
   methodGroupBoxLayout = new QVBoxLayout(this);
 
@@ -120,7 +127,7 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   parameterTable->setNumCols(1);
   methodGroupBoxLayout->addWidget(parameterTable);
 
-  optimizationWidgetLayout->addMultiCellLayout(methodGroupBoxLayout, 2, 10, 2, 5);
+  optimizationWidgetLayout->addMultiCellLayout(methodGroupBoxLayout, 5, 13, 1, 5);
 
   typeGroupBoxLayout = new QGridLayout(this);
   typeGroupBoxLayout->setAlignment(Qt::AlignTop);
@@ -134,7 +141,7 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   timeCheck = new QCheckBox(this, "timeCheck");
   typeGroupBoxLayout->addWidget(timeCheck, 4, 0);
 
-  optimizationWidgetLayout->addMultiCellLayout(typeGroupBoxLayout, 2, 7, 8, 10);
+  optimizationWidgetLayout->addMultiCellLayout(typeGroupBoxLayout, 5, 10, 8, 10);
 
   languageChange();
   resize(QSize(581, 478).expandedTo(minimumSizeHint()));
@@ -174,6 +181,7 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   connect(timeCheck, SIGNAL(clicked()), this, SLOT(slotTimechecked()));
   connect(steadystateCheck, SIGNAL(clicked()), this, SLOT(slotSteadystatechecked()));
+  connect(taskExecCheck, SIGNAL(clicked()), this, SLOT(slottaskExecCheck()));
 
   // connect the buttons with the respective slots
   connect(runButton, SIGNAL(clicked()), this, SLOT(runOptimizationTask()));
@@ -187,6 +195,7 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   // for the default option
   timeCheck->setChecked(true);
+  taskExecCheck->setChecked(false);
 }
 
 OptimizationWidget::~OptimizationWidget()
@@ -261,7 +270,6 @@ bool OptimizationWidget::loadOptimization()
 
   //scrollview->updateFromWidgetList();
 
-  //<todo>
   COptMethod *optimizationMethod = dynamic_cast<COptMethod*>(optimizationTask->getMethod());
   if (!optimizationMethod) return false;
   // for GA
@@ -427,6 +435,16 @@ bool OptimizationWidget::saveOptimization()
       optimizationProblem->setValue("Steady-State", (*CCopasiDataModel::Global->getTaskList())["Steady-State"]->getKey());
     }
 
+  if (taskExecCheck->isChecked())
+    {
+      optimizationTask->setScheduled(true);
+    }
+
+  else
+    {
+      optimizationTask->setScheduled(false);
+    }
+
   return true;
 }
 
@@ -526,12 +544,14 @@ void OptimizationWidget::languageChange()
   AddTaskButton->setText(tr("Add"));
   methodLabel->setText(tr("Method\n\n"));
   typeLabel->setText(tr("Type \n\n"));
+  nameLabel->setText(tr("<h2>Optimization</h2>"));
+  taskExecCheck->setText(tr("Task Executable"));
   confirmButton->setText(tr("confirm"));
   runButton->setText(tr("run"));
   cancelButton->setText(tr("cancel"));
   reportButton->setText(tr("report"));
   outputAssistantButton->setText(tr("output assistant"));
-  selectParameterButton->setText(tr("load objects"));
+  selectParameterButton->setText(tr("..."));
   expressionEditlabel->setText(tr("Expression"));
   expressionText->setText(QString::null);
 }
@@ -678,6 +698,22 @@ void OptimizationWidget::slotTimechecked()
 void OptimizationWidget::slotConfirm()
 {
   saveOptimization();
+}
+
+void OptimizationWidget::slottaskExecCheck()
+{
+  COptTask* optimizationTask =
+    dynamic_cast< COptTask * >(GlobalKeys.get(optimizationTaskKey));
+  if (!optimizationTask) return;
+
+  if (taskExecCheck->isChecked())
+    {
+      optimizationTask->setScheduled(true);
+    }
+  else
+    {
+      optimizationTask->setScheduled(false);
+    }
 }
 
 //***********************************************************

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/07/25 00:15:09 $
+   $Date: 2005/07/25 22:12:56 $
    End CVS Header */
 
 /****************************************************************************
@@ -90,16 +90,17 @@ class OptimizationWidget : public CopasiWidget
 
     /*<from UIC>*/
 
-    QHBoxLayout* Layoutparams, *buttonsLayout;
+    QHBoxLayout* Layoutparams, *buttonsLayout, *nameLayout;
 
     QFrame* buttonsSeparator;
     QGroupBox* paramsGroupBox;
     //QGroupBox* typeGroupBox;
     QCheckBox* timeCheck;
     QCheckBox* steadystateCheck;
+    QCheckBox* taskExecCheck;
     QPushButton* AddTaskButton;
     //QGroupBox* methodGroupBox;
-    QLabel* methodLabel, *typeLabel;
+    QLabel* methodLabel, *typeLabel, *nameLabel;
     QComboBox* methodCombo;
     QPushButton* confirmButton;
     QPushButton* runButton;
@@ -124,6 +125,7 @@ class OptimizationWidget : public CopasiWidget
     virtual void slotTimechecked();
     virtual void slotSteadystatechecked();
     virtual void slotConfirm();
+    virtual void slottaskExecCheck();
 
   protected slots:
     virtual void languageChange();
