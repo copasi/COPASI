@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/21 21:14:46 $
+   $Date: 2005/07/25 15:36:57 $
    End CVS Header */
 
 #include <string>
@@ -18,6 +18,12 @@
 CEvaluationNodeConstant::CEvaluationNodeConstant():
     CEvaluationNode(CEvaluationNode::INVALID, "")
 {mPrecedence = PRECEDENCE_NUMBER;}
+
+#ifdef WIN32 
+// warning C4056: overflow in floating-point constant arithmetic
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
+#endif
 
 CEvaluationNodeConstant::CEvaluationNodeConstant(const SubType & subType,
     const Data & data):
@@ -52,6 +58,10 @@ CEvaluationNodeConstant::CEvaluationNodeConstant(const SubType & subType,
 
   mPrecedence = PRECEDENCE_NUMBER;
 }
+
+#ifdef WIN32
+# pragma warning (default: 4056 4756)
+#endif
 
 CEvaluationNodeConstant::CEvaluationNodeConstant(const CEvaluationNodeConstant & src):
     CEvaluationNode(src)
