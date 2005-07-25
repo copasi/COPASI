@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/21 13:52:15 $
+   $Author: shoops $ 
+   $Date: 2005/07/25 18:56:22 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -15,6 +15,7 @@
 #include "report/CCopasiContainer.h"
 
 class ASTNode;
+template <class CType> class CCopasiVectorN;
 
 class CEvaluationTree:
       public CCopasiContainer
@@ -204,6 +205,15 @@ class CEvaluationTree:
      * Returns a reference to the SBML Id.
      */
     const std::string& getSBMLId() const;
+
+    /**
+     * Complete the list of evaluation tree such that all called trees are includes.
+     * @param CCopasiVectorN< CEvaluationTree > & list
+     * @param const unsigned C_INT32 & added (Default: list.size())
+     * @return bool success
+     */
+    static bool completeEvaluationTreeList(CCopasiVectorN< CEvaluationTree > & list,
+                                           const unsigned C_INT32 & added = 0);
 
   protected:
     /**

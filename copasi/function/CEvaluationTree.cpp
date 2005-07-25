@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/22 11:41:27 $
+   $Author: shoops $ 
+   $Date: 2005/07/25 18:56:22 $
    End CVS Header */
 
 #include "copasi.h"
@@ -16,11 +16,13 @@
 #include "CFunction.h"
 #include "CExpression.h"
 #include "CEvaluationLexer.h"
+#include "CFunctionDB.h"
 
 #include "report/CKeyFactory.h"
 #include "report/CCopasiObjectReference.h"
 #include "sbml/math/ASTNode.h"
 #include "utilities/CCopasiTree.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 const std::string CEvaluationTree::TypeName[] =
   {"userdefined", "predefined", "predefined", "userdefined", "userdefined", ""};
@@ -387,3 +389,31 @@ const std::string& CEvaluationTree::getSBMLId() const
   {
     return this->mSBMLId;
   }
+
+bool CEvaluationTree::completeEvaluationTreeList(CCopasiVectorN< CEvaluationTree > & list,
+    const unsigned C_INT32 & added)
+{
+  unsigned Added = 0;
+
+  unsigned C_INT32 i, imax = list.size();
+  CEvaluationTree * pTree;
+  std::vector< CEvaluationNode * >::const_iterator it;
+  std::vector< CEvaluationNode * >::const_iterator end;
+
+  for (i = (added) ? imax - added : 0; i < imax; i++)
+    {
+      pTree = list[i];
+
+      for (it = pTree->getNodeList().begin(), end = pTree->getNodeList().end(); it != end; ++it)
+        {
+          if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
+              list.add(CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[(*it)->getData()]))
+            Added ++;
+        }
+    }
+
+  if (Added)
+    return completeEvaluationTreeList(list, Added);
+  else
+    return true;
+}
