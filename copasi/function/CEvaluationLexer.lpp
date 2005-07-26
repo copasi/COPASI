@@ -6,7 +6,7 @@
 %option never-interactive
 %option c++
 
-%s sSIGN sOPERATOR
+%s sSIGN sOPERATOR sID
 
 %{
 #include <vector>
@@ -160,30 +160,6 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
                                        yytext);
   COMMON_ACTION;
   return TOKEN_LOGICAL_OR;
-%}
-
-{ID}\(/\) %{
-  BEGIN(sSIGN); 
-  mpNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION,
-                                   yytext);
-  COMMON_ACTION;
-  return TOKEN_CALL;
-%}
-
-{ID}\( %{
-  BEGIN(sSIGN); 
-  mpNode = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION,
-                                   yytext);
-  COMMON_ACTION;
-  return TOKEN_CALL;
-%}
-
-{ID}  %{
-  BEGIN(sOPERATOR); 
-  mpNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY,
-                                       yytext);
-  COMMON_ACTION;
-  return TOKEN_VARIABLE;
 %}
 
 \<([^\\\>]|\\.)*\>  %{
@@ -458,8 +434,24 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   return TOKEN_LOGICAL_CHOICE;
 %}
 
+{ID}\(/\) %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION,
+                                   yytext);
+  COMMON_ACTION;
+  return TOKEN_CALL;
+%}
+
+{ID}\( %{
+  BEGIN(sSIGN); 
+  mpNode = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION,
+                                   yytext);
+  COMMON_ACTION;
+  return TOKEN_CALL;
+%}
+
 <INITIAL,sSIGN>"-"   %{
-  BEGIN(sOPERATOR); 
+  BEGIN(sID); 
   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::MINUS,
                                        yytext);
   COMMON_ACTION;
@@ -467,7 +459,7 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 %}
 
 <INITIAL,sSIGN>"+"   %{
-  BEGIN(sOPERATOR); 
+  BEGIN(sID); 
   mpNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::PLUS,
                                        yytext);
   COMMON_ACTION;
@@ -507,6 +499,7 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 %}
 
 <sOPERATOR>"+"   %{
+  BEGIN(sID);
   mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS,
                                        yytext);
   COMMON_ACTION;
@@ -514,6 +507,7 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 %}
 
 <sOPERATOR>"-"   %{
+  BEGIN(sID);
   mpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS,
                                        yytext);
   COMMON_ACTION;
@@ -558,6 +552,14 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
                                         yytext);
   COMMON_ACTION;
   return TOKEN_STRUCTURE_VECTOR_CLOSE;
+%}
+
+<INITIAL,sSIGN,sID>{ID}  %{
+  BEGIN(sOPERATOR); 
+  mpNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_VARIABLE;
 %}
 
 [ \t\r\n]+ %{
