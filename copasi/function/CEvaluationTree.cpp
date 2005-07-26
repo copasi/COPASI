@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/25 18:56:22 $
+   $Date: 2005/07/26 19:30:42 $
    End CVS Header */
 
 #include "copasi.h"
@@ -152,10 +152,14 @@ std::string::size_type CEvaluationTree::getErrorPosition() const
   {return mErrorPosition;}
 
 const std::vector< CEvaluationNode * > & CEvaluationTree::getNodeList() const
-  {return *mpNodeList;}
+  {
+    if (!mpNodeList)
+      const_cast<CEvaluationTree *>(this)->mpNodeList = new std::vector< CEvaluationNode * >;
+    return *mpNodeList;
+  }
 
 unsigned C_INT32 CEvaluationTree::getVariableIndex(const std::string & /*name*/) const
-  {return C_INVALID_INDEX;}
+{return C_INVALID_INDEX;}
 
 const C_FLOAT64 & CEvaluationTree::getVariableValue(const unsigned C_INT32 & /*index*/) const
   {
