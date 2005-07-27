@@ -127,7 +127,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-SUBDIRS = copasi
+SUBDIRS = copasi semantic-test-suite
 EXTRA_DIST = AUTHORS COPYING ChangeLog INSTALL README TODO copasi.doxygen 
 
 ####### kdevelop will overwrite this part!!! (end)############
