@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.1 $ $Author: gauges $ $Date: 2005/07/27 12:46:46 $  
+# $Revision: 1.2 $ $Author: gauges $ $Date: 2005/07/27 16:23:09 $  
 ######################################################################
 
 TEMPLATE = app
@@ -37,7 +37,7 @@ contains(BUILD_OS, WIN32) {
 }
 
 contains(BUILD_OS, Linux) {
-  LIBS = -L../lib \
+  LIBS = -L../copasi/lib \
          -Wl,--start-group \
          $$join(COPASI_LIBS, " -l", -l) \
          -Wl,--end-group \
@@ -49,7 +49,7 @@ contains(BUILD_OS, Linux) {
 contains(BUILD_OS, SunOS) {
   QMAKE_LFLAGS += -z rescan
 
-  LIBS = -L../lib \
+  LIBS = -L../copasi/lib \
          $$join(COPASI_LIBS, " -l", -l) \
          $${LIBS}
 
