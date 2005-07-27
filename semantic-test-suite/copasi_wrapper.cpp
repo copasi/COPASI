@@ -1,0 +1,160 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/copasi_wrapper.cpp,v $
+   $Revision: 1.1 $
+   $Name:  $
+   $Author: gauges $ 
+   $Date: 2005/07/27 12:46:46 $
+   End CVS Header */
+
+#define COPASI_MAIN
+
+#include <iostream>
+#include <stdlib.h>
+
+#include "copasi.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiContainer.h"
+#include "model/CMetab.h"
+#include "report/CCopasiObjectName.h"
+#include "utilities/CCopasiVector.h"
+#include "model/CModel.h"
+#include "utilities/CCopasiException.h"
+#include "commandline/COptionParser.h"
+#include "commandline/COptions.h"
+
+#include "trajectory/CTrajectoryTask.h"
+#include "trajectory/CTrajectoryMethod.h"
+#include "trajectory/CTrajectoryProblem.h"
+#include "report/CReportDefinitionVector.h"
+#include "report/CReportDefinition.h"
+
+int main(int argc, char *argv[])
+{
+  // Parse the commandline options
+  // first argument is the SBML filename
+  // second argument is the endtime
+  // third argument is the step number
+  // fourth argument is the filename where the results are to be written
+  // fifth argument is the tmp directory (this is not needed)
+  // the rest of the arguments are species names for the result
+  try
+    {
+      // Parse the commandline options
+      COptions::init(argc, argv);
+    }
+
+  catch (copasi::autoexcept &e)
+  {}
+
+  catch (copasi::option_error &e)
+    {
+    }
+
+  char* pSBMLFilename = argv[1];
+  char* pEndTime = argv[2];
+  char* pStepNumber = argv[3];
+  char* pOutputFilename = argv[4];
+  //char* pTmpDirectory=argv[5];
+  char** pSBMLSpeciesIds = new char * [argc - 6];
+  unsigned int i, iMax = argc;
+  CTrajectoryTask* pTrajectoryTask = NULL;
+
+  double endTime = strtod(pEndTime, &pEndTime);
+  double stepNumber = strtod(pStepNumber, &pStepNumber);
+  if (endTime == 0.0)
+    {
+      std::cerr << "Invalid endtime " << pEndTime << std::endl;
+      exit(1);
+    }
+  if (stepNumber == 0.0)
+    {
+      std::cerr << "Invalid step number " << pStepNumber << std::endl;
+      exit(1);
+    }
+
+  for (i = 6; i < iMax;++i)
+    {
+      pSBMLSpeciesIds[i - 6] = argv[i];
+    }
+
+  try
+    {
+      // Create the root container.
+      CCopasiContainer::init();
+
+      // Create the global data model.
+      CCopasiDataModel::Global = new CCopasiDataModel;
+
+      // Import the SBML File
+      CCopasiDataModel::Global->importSBML(pSBMLFilename);
+
+      // create a report with the correct filename and all the species against
+      // time.
+      CReportDefinitionVector* pReports = CCopasiDataModel::Global->getReportDefinitionList();
+      CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for SBML testsuite run");
+      pReport->setTaskType(CCopasiTask::timeCourse);
+      pReport->setIsTable(true);
+
+      std::vector<CRegisteredObjectName>* pTable = pReport->getTableAddr();
+      pTable->push_back(CCopasiObjectName("CN=Root,Model=" + CCopasiDataModel::Global->getModel()->getObjectName() + ",Reference=Time"));
+      iMax = iMax - 6;
+      const CCopasiVector<CMetab>& metabolites = CCopasiDataModel::Global->getModel()->getMetabolites();
+      for (i = 0; i < iMax;++i)
+        {
+          unsigned int j, jMax = metabolites.size();
+          for (j = 0; j < jMax;++j)
+            {
+              if (metabolites[j]->getSBMLId() == pSBMLSpeciesIds[i])
+                {
+                  pTable->push_back(metabolites[i]->getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
+                  break;
+                }
+            }
+          if (j == jMax)
+            {
+              std::cerr << "Could not find a metabolite for the SBML id " << pSBMLSpeciesIds[i] << std::endl;
+              exit(1);
+            }
+        }
+
+      // create a trajectory task
+      pTrajectoryTask = new CTrajectoryTask();
+      pTrajectoryTask->getProblem()->setModel(CCopasiDataModel::Global->getModel());
+
+      pTrajectoryTask->getReport().setReportDefinition(pReport);
+      pTrajectoryTask->getReport().setTarget(pOutputFilename);
+      pTrajectoryTask->getReport().setAppend(false);
+
+      //CTrajectoryMethod* pMethod=dynamic_cast<CTrajectoryMethod*>(pTrajectoryTask->getMethod());
+      CTrajectoryProblem* pProblem = dynamic_cast<CTrajectoryProblem*>(pTrajectoryTask->getProblem());
+
+      pProblem->setStepNumber((const unsigned C_INT32)stepNumber);
+      pProblem->setEndTime((const C_FLOAT64)endTime);
+      pProblem->setTimeSeriesRequested(true);
+
+      CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();
+
+      TaskList.remove("Time-Course");
+      TaskList.add(pTrajectoryTask, true);
+
+      // save the file for control purposes
+      std::string saveFilename = pSBMLFilename;
+      saveFilename = saveFilename.substr(0, saveFilename.length() - 4) + ".cps";
+      CCopasiDataModel::Global->saveModel(saveFilename, true);
+
+      // Run the trajectory task
+
+      pTrajectoryTask->initialize();
+      pTrajectoryTask->process();
+      pTrajectoryTask->restore();
+    }
+  catch (CCopasiException Exception)
+    {
+      std::cerr << Exception.getMessage().getText() << std::endl;
+    }
+
+  pdelete(CCopasiDataModel::Global);
+  pdelete(CCopasiContainer::Root);
+
+  return 0;
+}
