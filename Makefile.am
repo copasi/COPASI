@@ -1,6 +1,6 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
-SUBDIRS = copasi
+SUBDIRS = copasi semantic-test-suite
 
 EXTRA_DIST = AUTHORS COPYING ChangeLog INSTALL README TODO copasi.doxygen 
 

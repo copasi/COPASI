@@ -1825,6 +1825,21 @@ fi
  mv $$.tmp Makefile && \
  echo depend:  >> Makefile && \
  echo "	touch Makefile" >> Makefile
+ cd ..
+ cd semantic-test-suite && \
+ echo executing in `pwd`: && \
+ echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
+ rm .qmake.internal.cache */.qmake.internal.cache; \
+ rm Makefile */Makefile; \
+ echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" $cps_build_parser && \
+ $QTDIR/bin/qmake $cps_release $cps_thread \
+                  $cps_mkl_path $cps_clapack_path $cps_expat_path $cps_qwt_path $cps_sbml_path $cps_build_parser && \
+ cat Makefile | \
+ sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
+     -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
+ mv $$.tmp Makefile && \
+ echo depend:  >> Makefile && \
+ echo "	touch Makefile" >> Makefile
 )
 
           ac_config_files="$ac_config_files Makefile"
