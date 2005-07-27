@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/copasi_wrapper.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/27 13:14:07 $
+   $Date: 2005/07/27 13:44:07 $
    End CVS Header */
 
 #define COPASI_MAIN
@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
   for (i = 6; i < iMax;++i)
     {
       pSBMLSpeciesIds[i - 6] = argv[i];
+      //std::cout << "Copying pointer to " <<  argv[i]  << "." << std::endl;
     }
 
   try
@@ -105,7 +106,8 @@ int main(int argc, char *argv[])
             {
               if (metabolites[j]->getSBMLId() == pSBMLSpeciesIds[i])
                 {
-                  pTable->push_back(metabolites[i]->getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
+                  pTable->push_back(metabolites[j]->getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
+                  //std::cout << "adding metabolite " << metabolites[j]->getObjectName() << " to report." << std::endl;
                   break;
                 }
             }
