@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/copasi_wrapper.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/27 12:46:46 $
+   $Date: 2005/07/27 13:14:07 $
    End CVS Header */
 
 #define COPASI_MAIN
@@ -47,8 +47,7 @@ int main(int argc, char *argv[])
   {}
 
   catch (copasi::option_error &e)
-    {
-    }
+  {}
 
   char* pSBMLFilename = argv[1];
   char* pEndTime = argv[2];
@@ -125,7 +124,6 @@ int main(int argc, char *argv[])
       pTrajectoryTask->getReport().setTarget(pOutputFilename);
       pTrajectoryTask->getReport().setAppend(false);
 
-      //CTrajectoryMethod* pMethod=dynamic_cast<CTrajectoryMethod*>(pTrajectoryTask->getMethod());
       CTrajectoryProblem* pProblem = dynamic_cast<CTrajectoryProblem*>(pTrajectoryTask->getProblem());
 
       pProblem->setStepNumber((const unsigned C_INT32)stepNumber);
@@ -143,6 +141,15 @@ int main(int argc, char *argv[])
       CCopasiDataModel::Global->saveModel(saveFilename, true);
 
       // Run the trajectory task
+
+      pTrajectoryTask->initialize();
+      pTrajectoryTask->process();
+      pTrajectoryTask->restore();
+
+      // create another report that will write to the directory where the input file came from
+      // this can be used for debugging
+      // create a trajectory task
+      pTrajectoryTask->getReport().setTarget(saveFilename + std::string(".CSV"));
 
       pTrajectoryTask->initialize();
       pTrajectoryTask->process();
