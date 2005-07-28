@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/25 18:55:47 $
+   $Date: 2005/07/28 14:40:50 $
    End CVS Header */
 
 #include <sbml/math/ASTNode.h>
@@ -28,7 +28,7 @@ CEvaluationNodeCall::CEvaluationNodeCall():
 
 CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type) (CEvaluationNode::CALL | subType), data.substr(0, data.length() - 1)),
+    CEvaluationNode((Type) (CEvaluationNode::CALL | subType), data),
     mpFunction(NULL),
     mpExpression(NULL),
     mCallNodes(),
