@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/03 10:24:36 $
+   $Date: 2005/07/28 12:16:32 $
    End CVS Header */
 
 #include "copasi.h"
@@ -78,7 +78,7 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
       break;
     case AST_RATIONAL:
       subType = RATIONALE;
-      ss << "(" << node.getNumerator() << " / " << node.getDenominator() << ")";
+      ss << "(" << node.getNumerator() << "/" << node.getDenominator() << ")";
       data = ss.str();
       break;
     default:
