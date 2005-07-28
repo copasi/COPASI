@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/25 09:49:19 $
+   $Author: anuragr $ 
+   $Date: 2005/07/28 00:12:29 $
    End CVS Header */
 
 #include "copasi.h"
@@ -138,10 +138,13 @@ bool COptMethodSteepestDescent::optimise()
           if (fabs(fmx - mBestValue) < mTolerance)
             //   if(norm < mTolerance)
             {
+              // an acceptable solution
               mBestValue = fmx;
               for (i = 0; i < mVariableSize; i++)
                 mIndividual[i] = *(*mpOptItem)[i]->getObjectValue();
-              // an acceptable solution
+              mpOptProblem->setSolutionVariables(mIndividual);
+              mContinue = mpOptProblem->setSolutionValue(mBestValue);
+              mpParentTask->doOutput();
               return true;
             }
         }
