@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.227 $
+   $Revision: 1.228 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/21 11:40:11 $
+   $Date: 2005/07/28 15:32:30 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -11,6 +11,12 @@
 // model.cpp : interface of the CModel class
 //
 /////////////////////////////////////////////////////////////////////////////
+#ifdef SunOS
+# include <ieeefp.h>
+#else
+# include <float.h>
+#endif
+
 #include "copasi.h"
 
 #include <string>
