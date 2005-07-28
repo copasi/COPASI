@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/copasi_wrapper.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/27 13:44:07 $
+   $Date: 2005/07/28 07:18:24 $
    End CVS Header */
 
 #define COPASI_MAIN
@@ -88,6 +88,8 @@ int main(int argc, char *argv[])
       // Import the SBML File
       CCopasiDataModel::Global->importSBML(pSBMLFilename);
 
+      //CCopasiDataModel::Global->getModel()->forceCompile();
+
       // create a report with the correct filename and all the species against
       // time.
       CReportDefinitionVector* pReports = CCopasiDataModel::Global->getReportDefinitionList();
@@ -121,6 +123,8 @@ int main(int argc, char *argv[])
       // create a trajectory task
       pTrajectoryTask = new CTrajectoryTask();
       pTrajectoryTask->getProblem()->setModel(CCopasiDataModel::Global->getModel());
+
+      pTrajectoryTask->setScheduled(true);
 
       pTrajectoryTask->getReport().setReportDefinition(pReport);
       pTrajectoryTask->getReport().setTarget(pOutputFilename);
