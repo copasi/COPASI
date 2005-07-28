@@ -436,16 +436,22 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 
 {ID}\(/\) %{
   BEGIN(sSIGN); 
-  mpNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION,
-                                   yytext);
+    { 
+      std::string tmp(yytext);
+      mpNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION,
+                                       tmp.substr(0, tmp.length() - 1));
+    }
   COMMON_ACTION;
   return TOKEN_CALL;
 %}
 
 {ID}\( %{
-  BEGIN(sSIGN); 
-  mpNode = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION,
-                                   yytext);
+  BEGIN(sSIGN);
+    { 
+      std::string tmp(yytext);
+      mpNode = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION,
+                                       tmp.substr(0, tmp.length() - 1));
+    }
   COMMON_ACTION;
   return TOKEN_CALL;
 %}
