@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test2/test.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/08 09:11:24 $
+   $Date: 2005/07/28 13:46:32 $
    End CVS Header */
 
 // Main
@@ -12,55 +12,81 @@
 //
 
 #include <stdlib.h>
-#include <sstream>
-#include <string>
-#include <iostream>
+#include "CNormalItem.h"
+#include "CNormalProduct.h"
+#include "CNormalSum.h"
+#include "CNormalLcm.h"
+#include "CNormalFraction.h"
 
-#define COPASI_MAIN
-#define COPASI_TRACE_CONSTRUCTION
-
-#include "copasi.h" 
-//#include "CopasiDataModel/CCopasiDataModel.h"
-//#include "utilities/CCopasiMessage.h"
-//#include "utilities/CCopasiException.h"
-//#include "utilities/CCopasiTask.h"
-//#include "utilities/CCopasiProblem.h"
-//#include "commandline/COptionParser.h"
-//#include "commandline/COptions.h"
-//#include "function/CFunctionDB.h"
-//#include "function/CEvaluationTree.h"
-
-#include "utilities/CopasiTime.h" 
-//#include "randomGenerator/CRandom.h"
-//#include "report/CKeyFactory.h"
-
-#include "function/CFunction.h"
-
-int main(int argc, char *argv[])
+int main()
 {
-  std::cout << "CFunction test program" << std::endl;
+  std::cout << "CNormal test program" << std::endl;
 
-  CFunction * func0 = new CFunction("abc", NULL);
+  CNormalItem* item0 = new CNormalItem();
+  item0->mName = "a";
+  CNormalItem* item1 = new CNormalItem();
+  item1->mName = "b";
 
-  func0->setInfix("2*A*B");
-  func0->compile();
+  /**CNormalProduct* product0 = new CNormalProduct();
+  product0->add(*item0);
+  product0->add(*item1);
+  product0->multiply(2.0);
+  std::cout << "product0: " << *product0 << std::endl;
+  CNormalProduct* product1 = new CNormalProduct(*product0);
+  product1->multiply(3.0);
+  std::cout << "product1: " << *product1 << std::endl;
+  CNormalSum* sum = new CNormalSum();
+  sum->add(*product0);
+  sum->add(*product1);
+  std::cout << "sum: " << *sum << std::endl;
+  */
 
-  CFunctionParameters & fp = func0->getVariables();
-
-  std::cout << "This function has " << fp.size() << " variables." << std::endl;
-
-  //now we create the data structure to call the function
-
-  CCallParameters<C_FLOAT64>* cp = new CCallParameters<C_FLOAT64>(fp.size());
-
-  //some float variables
-  C_FLOAT64 f_a = 2.0;
-  C_FLOAT64 f_b = 3.0;
-
-  (*cp)[0].value = &f_a;
-  (*cp)[1].value = &f_b;
-
-  std::cout << "" << func0->calcValue(*cp) << std::endl;
-
+  CNormalItem* item2 = new CNormalItem();
+  item2->mName = "c";
+  CNormalProduct* product0 = new CNormalProduct();
+  product0->multiply(2.0);
+  product0->multiply(*item0);
+  product0->multiply(*item0);
+  CNormalSum* sum = new CNormalSum();
+  CNormalProduct* product1 = new CNormalProduct();
+  product1->multiply(0.5);
+  product1->multiply(*item1);
+  CNormalProduct* product2 = new CNormalProduct();
+  product2->multiply(3.0);
+  product2->multiply(*item2);
+  sum->add(*product1);
+  sum->add(*product2);
+  CNormalSum* newsum = product0->multiply(*sum);
+  CNormalFraction* fraction0 = new CNormalFraction();
+  fraction0->setNumerator(*sum);
+  fraction0->setDenominator(*newsum);
+  CNormalFraction* fraction01 = new CNormalFraction();
+  CNormalSum* num01 = new CNormalSum();
+  num01->add(*product1);
+  CNormalSum* denom01 = new CNormalSum();
+  denom01->add(*product0);
+  fraction01->setNumerator(*num01);
+  fraction01->setDenominator(*denom01);
+  CNormalFraction* fraction02 = new CNormalFraction();
+  CNormalSum* num02 = new CNormalSum();
+  num02->add(*product2);
+  CNormalSum* denom02 = new CNormalSum();
+  product1->multiply(*item0);
+  denom02->add(*product1);
+  fraction02->setNumerator(*num02);
+  fraction02->setDenominator(*denom02);
+  CNormalSum* numerator = new CNormalSum();
+  numerator->add(*fraction0);
+  numerator->add(*product0);
+  numerator->add(*fraction01);
+  CNormalSum* denominator = new CNormalSum();
+  denominator->add(*sum);
+  denominator->add(*fraction02);
+  CNormalFraction* fraction1 = new CNormalFraction();
+  fraction1->setNumerator(*numerator);
+  fraction1->setDenominator(*denominator);
+  std::cout << "fraction1: " << *fraction1 << std::endl;
+  fraction1->simplifyFraction();
+  std::cout << "simplified fraction: " << *fraction1 << std::endl;
   return 0;
 }
