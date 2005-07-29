@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/22 15:15:57 $
+   $Date: 2005/07/29 12:35:17 $
    End CVS Header */
 
 #include "copasi.h"
@@ -291,6 +291,34 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
           // the last child is the actual function
           pFun = new CFunction();
           pFun->setTree(*root->getRightChild());
+          CEvaluationNode* pTmpRoot = pFun->getRoot();
+          while (pTmpRoot)
+            {
+              if (dynamic_cast<CEvaluationNodeObject*>(pTmpRoot))
+                {
+                  CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, pTmpRoot->getData().substr(1, pTmpRoot->getData().length() - 2));
+                  if (pTmpRoot->getParent())
+                    {
+                      pTmpRoot->addSibling(pVariableNode, pTmpRoot);
+                      pTmpRoot->getParent()->removeChild(pTmpRoot);
+                    }
+                  pdelete(pTmpRoot);
+                  pTmpRoot = pVariableNode;
+                }
+              if (pTmpRoot->getChild())
+                {
+                  pTmpRoot = static_cast<CEvaluationNode*>(pTmpRoot->getChild());
+                }
+              else if (pTmpRoot->getSibling())
+                {
+                  pTmpRoot = static_cast<CEvaluationNode*>(pTmpRoot->getSibling());
+                }
+              else
+                {
+                  pTmpRoot = static_cast<CEvaluationNode*>(pTmpRoot->getParent()->getSibling());
+                }
+            }
+
           if (pFun->getRoot() == NULL)
             {
               delete pFun;
