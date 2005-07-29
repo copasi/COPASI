@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/29 12:35:17 $
+   $Date: 2005/07/29 13:18:41 $
    End CVS Header */
 
 #include "copasi.h"
@@ -302,7 +302,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
                       pTmpRoot->addSibling(pVariableNode, pTmpRoot);
                       pTmpRoot->getParent()->removeChild(pTmpRoot);
                     }
-                  pdelete(pTmpRoot);
+                  //pdelete(pTmpRoot);
                   pTmpRoot = pVariableNode;
                 }
               if (pTmpRoot->getChild())
@@ -324,6 +324,8 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
               delete pFun;
               CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 13, pSBMLFunction->getId().c_str());
             }
+          pFun->setInfix(pFun->getRoot()->getInfix());
+          //pFun->setRoot(pFun->getRoot());
           unsigned int i, iMax = root->getNumChildren() - 1;
           for (i = 0; i < iMax;++i)
             {
