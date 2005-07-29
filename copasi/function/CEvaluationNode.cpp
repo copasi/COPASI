@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/29 13:16:34 $
+   $Date: 2005/07/29 13:49:09 $
    End CVS Header */
 
 #include "copasi.h"
@@ -132,9 +132,17 @@ const C_FLOAT64 * CEvaluationNode::getValuePointer() const
 
 void CEvaluationNode::printRecursively(std::ostream & os, int indent) const
   {
+    int i;
+
     os << std::endl;
+
+    for (i = 0; i < indent; ++i) os << " ";
     os << "mData: " << mData << std::endl;
-    os << "mType: " << mType << std::endl;
+
+    for (i = 0; i < indent; ++i) os << " ";
+    os << "mType: " << type(mType) << "  subType: " << subType(mType) << std::endl;
+
+    for (i = 0; i < indent; ++i) os << " ";
     os << "mValue: " << mValue << std::endl;
 
     if (getChild())
