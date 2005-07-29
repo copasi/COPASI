@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/15 15:04:20 $
+   $Author: ssahle $ 
+   $Date: 2005/07/29 12:27:10 $
    End CVS Header */
 
 /**
@@ -20,8 +20,8 @@
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CTrajectoryProblem.h"
-#include "model/CModel.h"
-#include "model/CState.h"
+#include "model/CModel.h" 
+//#include "model/CState.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 
 /**
@@ -30,8 +30,8 @@
  */
 CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
     CCopasiProblem(CCopasiTask::timeCourse, pParent),
-    mStepNumberSetLast(true),
-    mInitialState()
+    mStepNumberSetLast(true)
+    //mInitialState()
     //mEndState()
 {
   addParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 100);
@@ -52,8 +52,8 @@ CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
 CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src,
                                        const CCopasiContainer * pParent):
     CCopasiProblem(src, pParent),
-    mStepNumberSetLast(src.mStepNumberSetLast),
-    mInitialState(src.mInitialState)
+    mStepNumberSetLast(src.mStepNumberSetLast)
+    //mInitialState(src.mInitialState)
     //mEndState(src.mEndState)
 {
   initObjects();
@@ -90,7 +90,7 @@ void CTrajectoryProblem::initObjects()
 bool CTrajectoryProblem::setModel(CModel * pModel)
 {
   mpModel = pModel;
-  mInitialState.setModel(mpModel);
+  //mInitialState.setModel(mpModel);
   //mEndState.setModel(mpModel);
 
   return true;
@@ -139,7 +139,7 @@ const C_FLOAT64 & CTrajectoryProblem::getStepSize() const
 bool CTrajectoryProblem::setStartTime(const C_FLOAT64 & startTime)
 {
   setValue("StartTime", startTime);
-  mInitialState.setTime(startTime);
+  //mInitialState.setTime(startTime);
 
   return sync();
 }
@@ -188,33 +188,33 @@ bool CTrajectoryProblem::timeSeriesRequested() const
 /**
  * Set the initial state of the problem.
  * @param "const CState &" initialState
- */
-void CTrajectoryProblem::setInitialState(const CState & initialState)
+ */ 
+/*void CTrajectoryProblem::setInitialState(const CState & initialState)
 {
   mInitialState = initialState;
   mInitialState.setTime(getStartTime());
   //setStartTime(mInitialState.getTime());
   mpModel = const_cast<CModel*>(mInitialState.getModel());
-}
+}*/
 
 /**
  * Set the initial state of the problem.
  * @param "const CStateX &" initialState
- */
-void CTrajectoryProblem::setInitialState(const CStateX & initialState)
+ */ 
+/*void CTrajectoryProblem::setInitialState(const CStateX & initialState)
 {
   mInitialState = initialState;
   mInitialState.setTime(getStartTime());
   //setStartTime(mInitialState.getTime());
   mpModel = const_cast<CModel*>(mInitialState.getModel());
-}
+}*/
 
 /**
  * Retrieve the initial state of the problem.
  * @return "const CState *" pInitialState
- */
-const CState & CTrajectoryProblem::getInitialState() const
-  {return mInitialState;}
+ */ 
+//const CState & CTrajectoryProblem::getInitialState() const
+//  {return mInitialState;}
 
 /**
  * Set the end state of the problem.
@@ -260,7 +260,7 @@ void CTrajectoryProblem::load(CReadConfig & configBuffer,
       mStepNumberSetLast = true;
       setValue("StartTime", (C_FLOAT64) 0.0);
       sync();
-      mInitialState = mpModel->getInitialState();
+      //mInitialState = mpModel->getInitialState();
     }
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/07 21:50:06 $
+   $Date: 2005/07/29 12:27:10 $
    End CVS Header */
 
 /**
@@ -22,7 +22,7 @@
 #include "utilities/CCopasiProblem.h"
 #include "utilities/CReadConfig.h" 
 //#include "utilities/CWriteConfig.h"
-#include "model/CState.h"
+//#include "model/CState.h"
 
 class CModel;
 
@@ -37,8 +37,8 @@ class CTrajectoryProblem : public CCopasiProblem
 
     /**
      *  The initial state, i.e., the starting conditions of the trajectroy.
-     */
-    CState mInitialState;
+     */ 
+    //CState mInitialState;
 
     /**
      *  The final state of the trajectory at time EndTime
@@ -150,20 +150,20 @@ class CTrajectoryProblem : public CCopasiProblem
     /**
      * Set the initial state of the problem.
      * @param "const CState &" initialState
-     */
-    void setInitialState(const CState & initialState);
+     */ 
+    //void setInitialState(const CState & initialState);
 
     /**
      * Set the initial state of the problem.
      * @param "const CStateX &" initialState
-     */
-    void setInitialState(const CStateX & initialState);
+     */ 
+    //void setInitialState(const CStateX & initialState);
 
     /**
      * Retrieve the initial state of the problem.
      * @return "const CState &" pInitialState
-     */
-    const CState & getInitialState() const;
+     */ 
+    //const CState & getInitialState() const;
 
     /**
      * Set the end state of the problem.

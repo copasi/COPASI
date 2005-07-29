@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/21 11:40:12 $
+   $Author: ssahle $ 
+   $Date: 2005/07/29 12:28:04 $
    End CVS Header */
 
 #include <algorithm>
@@ -249,7 +249,8 @@ CNewtonMethod::processInternal()
 
           std::cout << "   integrating up to " << EndTime << std::endl;
 
-          pTrajectoryProblem->setInitialState(mpProblem->getInitialState());
+          //pTrajectoryProblem->setInitialState(mpProblem->getInitialState());
+          //pTrajectoryProblem->getModel()->applyInitialValues();
           //TODO: on second run do not start from the beginning
           pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime() + EndTime);
           try
@@ -313,7 +314,7 @@ CNewtonMethod::processInternal()
         {
           if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
 
-          pTrajectoryProblem->setInitialState(mpProblem->getInitialState());
+          //pTrajectoryProblem->setInitialState(mpProblem->getInitialState());
           pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime() + EndTime);
 
           try

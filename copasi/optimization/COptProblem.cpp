@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/21 20:29:49 $
+   $Author: ssahle $ 
+   $Date: 2005/07/29 12:31:25 $
    End CVS Header */
 
 /**
@@ -246,8 +246,8 @@ bool COptProblem::calculate()
 
       if (mpTrajectory != NULL)
         {
-          ((CTrajectoryProblem *) mpTrajectory->getProblem())->
-          setInitialState(mpTrajectory->getProblem()->getModel()->getInitialState());
+          //((CTrajectoryProblem *) mpTrajectory->getProblem())->
+          //setInitialState(mpTrajectory->getProblem()->getModel()->getInitialState());
           mpTrajectory->process();
         }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/25 09:48:50 $
+   $Date: 2005/07/29 12:27:10 $
    End CVS Header */
 
 /**
@@ -71,7 +71,7 @@ class CTrajectoryTask : public CCopasiTask
     /**
      * Process the task
      */
-    virtual bool process(OutputFlag of = OUTPUT_COMPLETE);
+    virtual bool process(OutputFlag of = OUTPUT_COMPLETE, bool useInitialValues = true);
 
     /**
      * Process the task without any output in as few steps as possible

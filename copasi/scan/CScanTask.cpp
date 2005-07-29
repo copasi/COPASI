@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/18 14:07:34 $
+   $Author: ssahle $ 
+   $Date: 2005/07/29 12:28:51 $
    End CVS Header */
 
 /**
@@ -159,9 +159,9 @@ bool CScanTask::processCallback()
   CSteadyStateProblem * ssProblem = dynamic_cast<CSteadyStateProblem*>(mpSubtask->getProblem());
   if (ssProblem)
   {ssProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());}
-  CTrajectoryProblem * ttProblem = dynamic_cast<CTrajectoryProblem*>(mpSubtask->getProblem());
-  if (ttProblem)
-  {ttProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());}
+  //CTrajectoryProblem * ttProblem = dynamic_cast<CTrajectoryProblem*>(mpSubtask->getProblem());
+  //if (ttProblem)
+  //  {ttProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());}
   mpSubtask->processForScan(!mAdjustInitialConditions, mOutputInSubtask);
 
   //do output
@@ -190,7 +190,7 @@ bool CScanTask::initSubtask()
   //get the parameters from the problem
   CCopasiTask::Type type = *(CCopasiTask::Type*) pProblem->getValue("Subtask").pUINT;
 
-  CTrajectoryProblem* trajProblem;
+  //CTrajectoryProblem* trajProblem;
   CSteadyStateProblem* ssProblem;
   switch (type)
     {
@@ -204,8 +204,8 @@ bool CScanTask::initSubtask()
     case CCopasiTask::timeCourse:
       mpSubtask = dynamic_cast<CCopasiTask*>
                   ((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
-      trajProblem = dynamic_cast<CTrajectoryProblem*>(mpSubtask->getProblem());
-      trajProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
+      //trajProblem = dynamic_cast<CTrajectoryProblem*>(mpSubtask->getProblem());
+      //trajProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
       break;
 
     default:

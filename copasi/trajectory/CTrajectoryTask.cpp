@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/25 09:48:50 $
+   $Date: 2005/07/29 12:27:10 $
    End CVS Header */
 
 /**
@@ -102,7 +102,7 @@ bool CTrajectoryTask::initialize(std::ostream * pOstream)
   return CCopasiTask::initialize(pOstream);
 }
 
-bool CTrajectoryTask::process(OutputFlag of)
+bool CTrajectoryTask::process(OutputFlag of, bool useInitialValues)
 {
   mDoOutput = of;
   unsigned C_INT32 FailCounter = 0;
@@ -114,12 +114,16 @@ bool CTrajectoryTask::process(OutputFlag of)
   CTrajectoryMethod * pMethod = (CTrajectoryMethod *) mpMethod;
 
   //the following is a hack that has to disappear soon.
-  pProblem->setInitialState(pProblem->getModel()->getInitialState());
+  //pProblem->setInitialState(pProblem->getModel()->getInitialState());
 
   mTimeSeriesRequested = pProblem->timeSeriesRequested();
 
+  //use initial values only if requested
+  if (useInitialValues)
+    pProblem->getModel()->applyInitialValues();
+
   pdelete(mpState);
-  mpState = new CState(pProblem->getInitialState());
+  mpState = new CState(pProblem->getModel()->getState());
 
   pMethod->setCurrentState(mpState);
   pMethod->setProblem(pProblem);
@@ -290,35 +294,32 @@ bool CTrajectoryTask::processForScan(bool useInitialConditions, bool doOutput)
   assert(pProblem);
 
   //set flag for output
-  OutputFlag storeOutput = mDoOutput;
-  if (doOutput)
-    mDoOutput = OUTPUT;
-  else
-    mDoOutput = NO_OUTPUT;
+  OutputFlag of = NO_OUTPUT;
+  if (doOutput) of = OUTPUT;
 
   //handle initial conditions
-  CState storeState;
+  /*State storeState;
   if (!useInitialConditions)
     {
       storeState = pProblem->getInitialState();
       pProblem->getModel()->setTime(pProblem->getInitialState().getTime());
       pProblem->setInitialState(pProblem->getModel()->getState());
       // pProblem->getInitialState().setTime(storeState.getTime());
-    }
+    }*/
 
   //switch off time series storage
-  bool storeTS = pProblem->timeSeriesRequested();
-  pProblem->setTimeSeriesRequested(false);
+  /*bool storeTS = pProblem->timeSeriesRequested();
+  pProblem->setTimeSeriesRequested(false);*/
 
   //do the calculation
-  process();
+  return process(of, useInitialConditions);
 
   //restore ...
-  if (!useInitialConditions) pProblem->setInitialState(storeState);
+  /*if (!useInitialConditions) pProblem->setInitialState(storeState);
   mDoOutput = storeOutput;
-  pProblem->setTimeSeriesRequested(storeTS);
+  pProblem->setTimeSeriesRequested(storeTS);*/
 
-  return true;
+  //return true;
 }
 
 bool CTrajectoryTask::processSimple(bool singleStep) //without output
@@ -329,14 +330,17 @@ bool CTrajectoryTask::processSimple(bool singleStep) //without output
   CTrajectoryProblem * pProblem = (CTrajectoryProblem *) mpProblem;
   CTrajectoryMethod * pMethod = (CTrajectoryMethod *) mpMethod;
 
+  //TODO ???
+  pProblem->getModel()->applyInitialValues();
+
   //give the method a state to work on
   pdelete(mpState);
-  mpState = new CState(pProblem->getInitialState());
+  mpState = new CState(pProblem->getModel()->getState());
   pMethod->setCurrentState(mpState);
 
   pMethod->setProblem(pProblem);
 
-  C_FLOAT64 StepSize = pProblem->getEndTime() - pProblem->getInitialState().getTime();
+  C_FLOAT64 StepSize = pProblem->getEndTime() - pProblem->getModel()->getTime();
   bool (*L)(const C_FLOAT64 &, const C_FLOAT64 &) = (StepSize < 0.0) ? &bl : &fl;
 
   bool flagProceed = false;
@@ -355,7 +359,7 @@ bool CTrajectoryTask::processSimple(bool singleStep) //without output
     }
 
   //first step
-  pMethod->step(StepSize, &pProblem->getInitialState());
+  pMethod->step(StepSize, mpState);
 
   if (mpCallBack)
     {

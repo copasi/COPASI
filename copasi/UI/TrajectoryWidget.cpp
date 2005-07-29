@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.111 $
+   $Revision: 1.112 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/19 21:10:54 $
+   $Author: ssahle $ 
+   $Date: 2005/07/29 12:34:12 $
    End CVS Header */
 
 /********************************************************
@@ -643,7 +643,7 @@ void TrajectoryWidget::saveTrajectoryTask()
 
   //set initial state
   CCopasiDataModel::Global->getModel()->compileIfNecessary();
-  trajectoryproblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
+  //trajectoryproblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
   //method
   if (CCopasiMethod::SubTypeName[trajectorymethod->getSubType()] !=
