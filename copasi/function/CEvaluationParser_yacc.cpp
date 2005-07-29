@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/25 15:36:40 $
+   $Date: 2005/07/29 15:05:46 $
    End CVS Header */
 
 #ifndef lint
@@ -803,14 +803,14 @@ YYPARSE_PARAM_DECL
 #line 300 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -2];
-          ((CEvaluationNodeCall *)(yyval))->addChild(yyvsp[ -1]);
+          static_cast<CEvaluationNodeCall *>(yyval)->addChild(yyvsp[ -1]);
         }
         break;
       case 38:
 #line 305 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -2];
-          ((CEvaluationNodeCall *)(yyval))->addChild(yyvsp[ -1]);
+          static_cast<CEvaluationNodeCall *>(yyval)->addChild(yyvsp[ -1]);
         }
         break;
       case 39:
@@ -823,14 +823,14 @@ YYPARSE_PARAM_DECL
 #line 315 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -2];
-          ((CEvaluationNodeCall *)(yyval))->addChild(yyvsp[ -1]);
+          static_cast<CEvaluationNodeCall *>(yyval)->addChild(yyvsp[ -1]);
         }
         break;
       case 41:
 #line 320 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -2];
-          ((CEvaluationNodeCall *)(yyval))->addChild(yyvsp[ -1]);
+          static_cast<CEvaluationNodeCall *>(yyval)->addChild(yyvsp[ -1]);
         }
         break;
 #line 809 "CEvaluationParser_yacc.cpp"
