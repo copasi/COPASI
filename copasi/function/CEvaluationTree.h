@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/25 18:56:22 $
+   $Author: gauges $ 
+   $Date: 2005/07/29 15:13:28 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -197,9 +197,20 @@ class CEvaluationTree:
     const CEvaluationNode* getRoot() const;
 
     /**
+     * Updates the infix and the nodeList
+     */
+    bool updateTree();
+
+    /**
      * Sets the SBMLId.
      */
     void setSBMLId(const std::string& id);
+
+    /**
+     * Compile the individual nodes.
+     * @return bool success
+     */
+    bool compileNodes();
 
     /**
      * Returns a reference to the SBML Id.
@@ -221,12 +232,6 @@ class CEvaluationTree:
      * @return bool success
      */
     bool parse();
-
-    /**
-     * Compile the individual nodes.
-     * @return bool success
-     */
-    bool compileNodes();
 
   private:
     /**

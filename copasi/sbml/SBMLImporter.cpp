@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/29 13:48:47 $
+   $Author: gauges $ 
+   $Date: 2005/07/29 15:13:28 $
    End CVS Header */
 
 #include "copasi.h"
@@ -290,6 +290,17 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
           // the first n-1 children are the parameters for the function
           // the last child is the actual function
           pFun = new CFunction();
+          unsigned int i, iMax = root->getNumChildren() - 1;
+          for (i = 0; i < iMax;++i)
+            {
+              ASTNode* pVarNode = root->getChild(i);
+              if (pVarNode->getType() != AST_NAME)
+                {
+                  delete pFun;
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 12, pSBMLFunction->getId().c_str());
+                }
+              pFun->addVariable(pVarNode->getName());
+            }
           pFun->setTree(*root->getRightChild());
           CEvaluationNode* pTmpRoot = pFun->getRoot();
           while (pTmpRoot)
@@ -301,20 +312,9 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
                     {
                       pTmpRoot->addSibling(pVariableNode, pTmpRoot);
                       pTmpRoot->getParent()->removeChild(pTmpRoot);
-                    }
-                  std::vector<CEvaluationNode*>::iterator nodeListIt = const_cast<std::vector<CEvaluationNode*>& >(pFun->getNodeList()).begin();
-                  std::vector<CEvaluationNode*>::iterator nodeListEndIt = const_cast<std::vector<CEvaluationNode*>& >(pFun->getNodeList()).end();
-                  while (nodeListIt != nodeListEndIt)
-                    {
-                      if ((*nodeListIt) == pTmpRoot)
-                        {
-                          *nodeListIt = NULL;
-                          break;
-                        }
-                      ++nodeListIt;
+                      //static_cast<CEvaluationNode*>(pVariableNode->getParent())->compile(NULL);
                     }
                   pdelete(pTmpRoot);
-
                   pTmpRoot = pVariableNode;
                 }
               if (pTmpRoot->getChild())
@@ -330,24 +330,12 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
                   pTmpRoot = static_cast<CEvaluationNode*>(pTmpRoot->getParent()->getSibling());
                 }
             }
-
+          pFun->updateTree();
+          pFun->compileNodes();
           if (pFun->getRoot() == NULL)
             {
               delete pFun;
               CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 13, pSBMLFunction->getId().c_str());
-            }
-          pFun->setInfix(pFun->getRoot()->getInfix());
-          //pFun->setRoot(pFun->getRoot());
-          unsigned int i, iMax = root->getNumChildren() - 1;
-          for (i = 0; i < iMax;++i)
-            {
-              ASTNode* pVarNode = root->getChild(i);
-              if (pVarNode->getType() != AST_NAME)
-                {
-                  delete pFun;
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 12, pSBMLFunction->getId().c_str());
-                }
-              pFun->addVariable(pVarNode->getName());
             }
         }
       else
