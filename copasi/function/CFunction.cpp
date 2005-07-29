@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/29 18:47:03 $
+   $Author: ssahle $ 
+   $Date: 2005/07/29 12:23:38 $
    End CVS Header */
 
 #include "copasi.h"
@@ -16,7 +16,8 @@ CFunction::CFunction(const std::string & name,
     CEvaluationTree(name, pParent, type),
     mVariables(),
     mUsageDescriptions(),
-    mpCallParameters(NULL)
+    mpCallParameters(NULL),
+    mReversible(TriUnspecified)
 {}
 
 CFunction::CFunction(const CFunction & src,
@@ -24,7 +25,8 @@ CFunction::CFunction(const CFunction & src,
     CEvaluationTree(src, pParent),
     mVariables(src.mVariables),
     mUsageDescriptions(src.mUsageDescriptions),
-    mpCallParameters(NULL)
+    mpCallParameters(NULL),
+    mReversible(src.mReversible)
 {}
 
 CFunction::~CFunction()
