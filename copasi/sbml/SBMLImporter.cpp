@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.81 $
+   $Revision: 1.82 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/29 13:18:41 $
+   $Date: 2005/07/29 13:31:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -302,7 +302,19 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
                       pTmpRoot->addSibling(pVariableNode, pTmpRoot);
                       pTmpRoot->getParent()->removeChild(pTmpRoot);
                     }
-                  //pdelete(pTmpRoot);
+                  std::vector<CEvaluationNode*>::iterator nodeListIt = pFun->getNodeList().begin();
+                  std::vector<CEvaluationNode*>::iterator nodeListEndIt = pFun->getNodeList().end();
+                  while (nodeListIt != nodeListEndIt)
+                    {
+                      if ((*nodeListIt) == pTmpRoot)
+                        {
+                          *nodeListIt = NULL;
+                          break;
+                        }
+                      ++nodeListIt;
+                    }
+                  pdelete(pTmpRoot);
+
                   pTmpRoot = pVariableNode;
                 }
               if (pTmpRoot->getChild())
