@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/08 19:36:22 $
+   $Author: ssahle $ 
+   $Date: 2005/07/29 12:24:43 $
    End CVS Header */
 
 /**
@@ -21,8 +21,8 @@
 
 #include "CCopasiParameterGroup.h"
 #include "CVector.h"
-#include "CCopasiTask.h"
-#include "model/CState.h"
+#include "CCopasiTask.h" 
+//#include "model/CState.h"
 
 class CModel;
 class CProcessReport;
