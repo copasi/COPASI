@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/copasi_wrapper.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/28 09:40:17 $
+   $Author: ssahle $ 
+   $Date: 2005/07/29 13:08:47 $
    End CVS Header */
 
 #define COPASI_MAIN
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
       pProblem->setStepNumber((const unsigned C_INT32)stepNumber);
       pProblem->setEndTime((const C_FLOAT64)endTime);
       pProblem->setTimeSeriesRequested(true);
-      pProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
+      //pProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
       CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();
 
