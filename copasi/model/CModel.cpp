@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.228 $
+   $Revision: 1.229 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/28 15:32:30 $
+   $Author: ssahle $ 
+   $Date: 2005/07/29 12:33:35 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1137,6 +1137,25 @@ C_INT32 CModel::findMoiety(std::string &Target) const
   }
 
 //**********************************************************************
+
+void CModel::applyInitialValues()
+{
+  mTime = mInitialTime;
+
+  unsigned C_INT32 i, imax;
+
+  /* Set the volumes */
+  for (i = 0, imax = mCompartments.size(); i < imax; ++i)
+    mCompartments[i]->setValue(mCompartments[i]->getInitialValue());
+
+  /* Set the metabolites */
+  for (i = 0, imax = mMetabolites.size(); i < imax; ++i)
+    mMetabolites[i]->setValue(mMetabolites[i]->getInitialValue());
+
+  /* Set the global parameters */
+  for (i = 0, imax = mValues.size(); i < imax; ++i)
+    mValues[i]->setValue(mValues[i]->getInitialValue());
+}
 
 bool CModel::buildStateTemplate()
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.101 $
+   $Revision: 1.102 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 16:06:54 $
+   $Date: 2005/07/29 12:33:35 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -730,6 +730,11 @@ class CModel : public CCopasiContainer
      * @return const CLinkMatrixView L
      */
     const CLinkMatrixView & getL() const;
+
+    /**
+     * initialize all values of the model with their initial values
+     */
+    void applyInitialValues();
 
     /**
      * Get the  state of the model, i.e., concentrations 
