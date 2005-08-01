@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/07/20 20:34:42 $
+   $Date: 2005/08/01 07:01:04 $
    End CVS Header */
 
 #ifndef COPASI_COptMethodSteepestDescent
@@ -62,7 +62,7 @@ class COptMethodSteepestDescent: public COptMethod
   public:
     /**
      * Copy Constructor
-     * @param const COptMethodEP2 & src
+     * @param const COptMethodSteepestDescent & src
      */
     COptMethodSteepestDescent(const COptMethodSteepestDescent& src,
                               const CCopasiContainer * pParent = NULL);
