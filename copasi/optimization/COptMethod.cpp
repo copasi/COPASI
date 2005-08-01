@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/25 09:49:19 $
+   $Author: anuragr $ 
+   $Date: 2005/08/01 06:59:46 $
    End CVS Header */
 
 /**
@@ -51,6 +51,9 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
 
     case SteepestDescent:
       pMethod = new COptMethodSteepestDescent();
+      break;
+    case EvolutionaryProgram2:
+      pMethod = new COptMethodEP();
       break;
 
       /*case RandomSearchMaster:
