@@ -1,13 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/ConverterASTNode.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2004/06/24 10:03:39 $
+   $Date: 2005/08/01 14:48:14 $
    End CVS Header */
 
 #include <string>
 #include <iostream>
+#include "sbml/util/List.h"
 
 #include "ConverterASTNode.h"
 
@@ -114,4 +115,9 @@ void ConverterASTNode::printASTNode(const ASTNode* node, unsigned int indent)
     {
       ConverterASTNode::printASTNode(node->getChild(counter), indent + 2);
     }
+};
+
+ASTNode* ConverterASTNode::removeChild(unsigned int index)
+{
+  return this->mChildren->remove(index);
 };

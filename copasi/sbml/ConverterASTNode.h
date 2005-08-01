@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/ConverterASTNode.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/03 09:28:35 $
+   $Author: gauges $ 
+   $Date: 2005/08/01 14:48:14 $
    End CVS Header */
 
 #ifndef ConverterASTNode_HPP__
@@ -24,6 +24,11 @@ class ConverterASTNode : public ASTNode
      * copied.
      */
     void setChildren(List* children);
+
+    /**
+     * Removes a child from the list of children.
+     */
+    ASTNode* removeChild(unsigned int index);
 
     /**
      * Constructor that makes a ConverterASTNode from an ASTNode.
