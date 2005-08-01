@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/19 12:44:45 $
+   $Date: 2005/08/01 14:50:48 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -149,6 +149,12 @@ class SBMLExporter
      * Removes all FunctionDefinition objects that have not been used.
      */
     void removeUnusedUnitDefinitions();
+
+    /**
+     * Checks if a given tree is multiplied by a compartment identifier.
+     * If so, a copy of the tree is returned in which the multiplication has been removed.
+     */
+    ASTNode* isDividedByVolume(const ASTNode* node, const std::string& compartmentSBMLId);
 
   public:
 

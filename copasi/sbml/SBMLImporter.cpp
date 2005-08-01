@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.84 $
+   $Revision: 1.85 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/29 15:13:28 $
+   $Date: 2005/08/01 14:50:48 $
    End CVS Header */
 
 #include "copasi.h"
@@ -689,7 +689,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
         }
       ASTNode* node = new ConverterASTNode(*kLawMath);
 
-      //node = this->replaceUserDefinedFunctions(node, sbmlModel);
       if (node == NULL)
         {
           delete copasiReaction;
@@ -708,17 +707,34 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
         {
           if (compartment != NULL)
             {
-              ConverterASTNode* tmpNode1 = new ConverterASTNode();
-              tmpNode1->setType(AST_DIVIDE);
-              tmpNode1->addChild(node);
-              ConverterASTNode* tmpNode2 = new ConverterASTNode();
-              tmpNode2->setType(AST_NAME);
-              tmpNode2->setName(compartment->getSBMLId().c_str());
-              tmpNode1->addChild(tmpNode2);
-              node = tmpNode1;
+              // check if the root node is a multiplication node and it's first child
+              // is a compartment node, if so, drop those two and make the second child
+              // new new root node
+              ASTNode* tmpNode1 = this->isMultipliedByVolume(node, compartment->getSBMLId());
+              if (tmpNode1)
+                {
+                  delete node;
+                  node = tmpNode1;
+                  if (node->getType() == AST_DIVIDE && node->getNumChildren() != 2)
+                    {
+                      fatalError();
+                    }
+                }
+              else
+                {
+                  tmpNode1 = new ConverterASTNode();
+                  tmpNode1->setType(AST_DIVIDE);
+                  tmpNode1->addChild(node);
+                  ConverterASTNode* tmpNode2 = new ConverterASTNode();
+                  tmpNode2->setType(AST_NAME);
+                  tmpNode2->setName(compartment->getSBMLId().c_str());
+                  tmpNode1->addChild(tmpNode2);
+                  node = tmpNode1;
+                }
             }
           else
             {
+              delete node;
               delete copasiReaction;
               fatalError();
             }
@@ -2069,4 +2085,61 @@ CFunction* SBMLImporter::copyFunction(const CFunction* pFun)
     }
   pNewFun->setRoot(pNewRoot);
   return pNewFun;
+}
+
+ASTNode* SBMLImporter::isMultipliedByVolume(const ASTNode* node, const std::string& compartmentSBMLId)
+{
+  ASTNode* result = NULL;
+  if (node->getType() == AST_TIMES || node->getType() == AST_DIVIDE)
+    {
+      ASTNode* pTmpResultNode = new ConverterASTNode(node->getType());
+      unsigned int i, iMax = node->getNumChildren();
+      bool found = false;
+      for (i = 0; i < iMax;++i)
+        {
+          const ASTNode* child = node->getChild(i);
+          if (node->getType() == AST_TIMES && child->getType() == AST_NAME && child->getName() == compartmentSBMLId)
+            {
+              found = true;
+            }
+          else if ((!found) && (child->getType() == AST_TIMES || child->getType() == AST_DIVIDE))
+            {
+              ASTNode* pSubResult = this->isMultipliedByVolume(child, compartmentSBMLId);
+              if (pSubResult)
+                {
+                  found = true;
+                  if (pSubResult->getNumChildren() > 1)
+                    {
+                      pTmpResultNode->addChild(pSubResult);
+                    }
+                  else if (pSubResult->getNumChildren() == 1)
+                    {
+                      pTmpResultNode->addChild(static_cast<ASTNode*>(static_cast<ConverterASTNode*>(pSubResult)->removeChild(0)));
+                      delete pSubResult;
+                    }
+                  else
+                    {
+                      delete pSubResult;
+                    }
+                }
+              else
+                {
+                  pTmpResultNode->addChild(new ConverterASTNode(*child));
+                }
+            }
+          else
+            {
+              pTmpResultNode->addChild(new ConverterASTNode(*child));
+            }
+        }
+      if (found)
+        {
+          result = pTmpResultNode;
+        }
+      else
+        {
+          delete pTmpResultNode;
+        }
+    }
+  return result;
 }

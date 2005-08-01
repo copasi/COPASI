@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/19 15:18:43 $
+   $Date: 2005/08/01 14:50:48 $
    End CVS Header */
 
 #include <math.h>
@@ -16,6 +16,7 @@
 #include "utilities/CVersion.h"
 
 #include "SBMLExporter.h"
+#include "ConverterASTNode.h"
 #include "UnitConversionFactory.hpp"
 
 #include "sbml/Unit.h"
@@ -608,35 +609,77 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
   const CChemEq chemicalEquation = copasiReaction->getChemEq();
   /* Add all substrates */
   unsigned int counter;
+  std::set<std::string> usedReferences;
   for (counter = 0; counter < chemicalEquation.getSubstrates().size(); counter++)
     {
       CChemEqElement* element = chemicalEquation.getSubstrates()[counter];
-      SpeciesReference* sRef = new SpeciesReference();
       const CMetab& metabolite = element->getMetabolite();
-      sRef->setSpecies(metabolite.getSBMLId().c_str());
+      SpeciesReference* sRef = NULL;
+      if (!(sRef = sbmlReaction->getReactant(metabolite.getSBMLId())))
+        {
+          sRef = new SpeciesReference();
+          sbmlReaction->addReactant(*sRef);
+          sRef->setSpecies(metabolite.getSBMLId().c_str());
+        }
       sRef->setStoichiometry(element->getMultiplicity());
       sRef->setDenominator(1);
-      sbmlReaction->addReactant(*sRef);
+      usedReferences.insert(sRef->getSpecies());
+    }
+  ListOf* l = &sbmlReaction->getListOfReactants();
+  for (counter = l->getNumItems(); counter > 0;--counter)
+    {
+      if (usedReferences.find(static_cast<SimpleSpeciesReference*>(l->get(counter - 1))->getSpecies()) == usedReferences.end())
+        {
+          l->remove(counter - 1);
+        }
     }
   /* Add all products */
+  usedReferences.clear();
   for (counter = 0; counter < chemicalEquation.getProducts().size(); counter++)
     {
       CChemEqElement* element = chemicalEquation.getProducts()[counter];
-      SpeciesReference* sRef = new SpeciesReference();
       const CMetab& metabolite = element->getMetabolite();
-      sRef->setSpecies(metabolite.getSBMLId().c_str());
+      SpeciesReference* sRef = NULL;
+      if (!(sRef = sbmlReaction->getProduct(metabolite.getSBMLId())))
+        {
+          sRef = new SpeciesReference();
+          sRef->setSpecies(metabolite.getSBMLId().c_str());
+          sbmlReaction->addProduct(*sRef);
+        }
       sRef->setStoichiometry(element->getMultiplicity());
       sRef->setDenominator(1);
-      sbmlReaction->addProduct(*sRef);
+      usedReferences.insert(sRef->getSpecies());
+    }
+  l = &sbmlReaction->getListOfProducts();
+  for (counter = l->getNumItems(); counter > 0;--counter)
+    {
+      if (usedReferences.find(static_cast<SimpleSpeciesReference*>(l->get(counter - 1))->getSpecies()) == usedReferences.end())
+        {
+          l->remove(counter - 1);
+        }
     }
   /* Add all modifiers */
+  usedReferences.clear();
   for (counter = 0; counter < chemicalEquation.getModifiers().size(); counter++)
     {
       CChemEqElement* element = chemicalEquation.getModifiers()[counter];
-      ModifierSpeciesReference* sRef = new ModifierSpeciesReference();
       const CMetab& metabolite = element->getMetabolite();
-      sRef->setSpecies(metabolite.getSBMLId().c_str());
-      sbmlReaction->addModifier(*sRef);
+      ModifierSpeciesReference* sRef = NULL;
+      if (!(sRef = sbmlReaction->getModifier(metabolite.getSBMLId())))
+        {
+          sRef = new ModifierSpeciesReference();
+          sRef->setSpecies(metabolite.getSBMLId().c_str());
+          sbmlReaction->addModifier(*sRef);
+        }
+      usedReferences.insert(sRef->getSpecies());
+    }
+  l = &sbmlReaction->getListOfModifiers();
+  for (counter = l->getNumItems(); counter > 0;--counter)
+    {
+      if (usedReferences.find(static_cast<SimpleSpeciesReference*>(l->get(counter - 1))->getSpecies()) == usedReferences.end())
+        {
+          l->remove(counter - 1);
+        }
     }
   /* create the kinetic law */
   /* if there is one on copasi */
@@ -728,29 +771,37 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
    */
   if (copasiReaction->getCompartmentNumber() == 1)
     {
-      ASTNode* tNode = new ASTNode(AST_TIMES);
-      ASTNode* vNode = new ASTNode(AST_NAME);
-      double volume = 0.0;
       const CCompartment* compartment = NULL;
       if (copasiReaction->getChemEq().getSubstrates().size() != 0)
         {
           compartment = copasiReaction->getChemEq().getSubstrates()[0]->getMetabolite().getCompartment();
-          volume = compartment->getInitialVolume();
         }
       else
         {
           compartment = copasiReaction->getChemEq().getProducts()[0]->getMetabolite().getCompartment();
-          volume = compartment->getInitialVolume();
         }
-      /* if the whole function already has been divided by the same
-       ** volume, e.g. by a former export, drop one level instead of
-       ** adding another one */
-      if ((node->getType() == AST_DIVIDE) && (node->getRightChild()->getType() == AST_NAME) && (node->getRightChild()->getName() == compartment->getSBMLId()))
+      // check if the importer has added a division by the volume
+      // if so remove it instead of multiplying again
+      ASTNode* tNode = this->isDividedByVolume(node, compartment->getSBMLId());
+      if (tNode)
         {
-          node = node->getLeftChild();
+          if (tNode->getNumChildren() == 0)
+            {
+              fatalError();
+            }
+          if (tNode->getNumChildren() == 1)
+            {
+              ASTNode* tmp = static_cast<ConverterASTNode*>(tNode)->removeChild(0);
+              delete tNode;
+              tNode = tmp;
+            }
+          delete node;
+          node = tNode;
         }
       else
         {
+          tNode = new ASTNode(AST_TIMES);
+          ASTNode* vNode = new ASTNode(AST_NAME);
           vNode->setName(compartment->getSBMLId().c_str());
           tNode->addChild(vNode);
           tNode->addChild(node);
@@ -1029,4 +1080,61 @@ std::string SBMLExporter::createUniqueId(const std::set<std::string>* idSet, con
         }
     }
   return id;
+}
+
+ASTNode* SBMLExporter::isDividedByVolume(const ASTNode* node, const std::string& compartmentSBMLId)
+{
+  ASTNode* result = NULL;
+  if (node->getType() == AST_DIVIDE || node->getType() == AST_TIMES)
+    {
+      ASTNode* pTmpResultNode = new ConverterASTNode(node->getType());
+      unsigned int i, iMax = node->getNumChildren();
+      bool found = false;
+      for (i = 0; i < iMax;++i)
+        {
+          const ASTNode* child = node->getChild(i);
+          if (node->getType() == AST_DIVIDE && child->getType() == AST_NAME && child->getName() == compartmentSBMLId)
+            {
+              found = true;
+            }
+          else if ((!found) && (child->getType() == AST_DIVIDE || child->getType() == AST_TIMES))
+            {
+              ASTNode* pSubResult = this->isDividedByVolume(child, compartmentSBMLId);
+              if (pSubResult)
+                {
+                  found = true;
+                  if (pSubResult->getNumChildren() > 1)
+                    {
+                      pTmpResultNode->addChild(pSubResult);
+                    }
+                  else if (pSubResult->getNumChildren() == 1)
+                    {
+                      pTmpResultNode->addChild(static_cast<ASTNode*>(static_cast<ConverterASTNode*>(pSubResult)->removeChild(0)));
+                      delete pSubResult;
+                    }
+                  else
+                    {
+                      delete pSubResult;
+                    }
+                }
+              else
+                {
+                  pTmpResultNode->addChild(new ConverterASTNode(*child));
+                }
+            }
+          else
+            {
+              pTmpResultNode->addChild(new ConverterASTNode(*child));
+            }
+        }
+      if (found)
+        {
+          result = pTmpResultNode;
+        }
+      else
+        {
+          delete pTmpResultNode;
+        }
+    }
+  return result;
 }

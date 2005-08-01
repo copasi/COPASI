@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/22 08:40:21 $
+   $Date: 2005/08/01 14:50:48 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -173,6 +173,12 @@ class SBMLImporter
     CFunction* copyFunction(const CFunction* pFun);
 
     void setCorrectUsage(CReaction* pCopasiReaction, const CEvaluationNodeCall* pCallNode);
+
+    /**
+     * Checks if a given tree is multiplied by a compartment identifier.
+     * If so, a copy of the tree is returned in which the multiplication has been removed.
+     */
+    ASTNode* isMultipliedByVolume(const ASTNode* node, const std::string& compartmentSBMLId);
 
   public:
     SBMLImporter();
