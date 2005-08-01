@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: anuragr $ 
-   $Date: 2005/07/28 00:12:29 $
+   $Date: 2005/08/01 07:00:45 $
    End CVS Header */
 
 #include "copasi.h"
@@ -154,9 +154,8 @@ bool COptMethodSteepestDescent::optimise()
         mIndividual[i] = *(*mpOptItem)[i]->getObjectValue();
 
       //if(callback != NULL) callback(mBestValue);
-      if (mValue < mBestValue && !isnan(mValue))
+      if (!isnan(mBestValue))
         {
-          mBestValue = mValue;
           mpOptProblem->setSolutionVariables(mIndividual);
           mContinue = mpOptProblem->setSolutionValue(mBestValue);
 
