@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/25 09:48:10 $
+   $Author: anuragr $ 
+   $Date: 2005/08/01 07:34:01 $
    End CVS Header */
 
 /**
@@ -26,7 +26,7 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Random Search (PVM)",
     "Simulated Annealing",
     "Genetic Algorithm",
-    "Evolutionary Program",
+    "Evolutionary Program2",
     "Steepest Descent",
     "Hybrid GA/SA",
     "Genetic Algorithm SR",
