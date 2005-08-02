@@ -1,12 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/01 14:50:48 $
+   $Date: 2005/08/02 14:31:47 $
    End CVS Header */
 
 #include <math.h>
+#include <list>
 
 #include <algorithm>
 
@@ -18,6 +19,10 @@
 #include "SBMLExporter.h"
 #include "ConverterASTNode.h"
 #include "UnitConversionFactory.hpp"
+
+#include "utilities/CCopasiTree.h"
+
+#include "function/CFunctionDB.h"
 
 #include "sbml/Unit.h"
 #include "sbml/UnitDefinition.h"
@@ -68,7 +73,7 @@ bool SBMLExporter::exportSBML(CModel* copasiModel, std::string sbmlFilename, boo
   this->mHandledSBMLObjects.clear();
   this->mpCopasiModel = copasiModel;
   /* create the SBMLDocument from the copasi model */
-  this->sbmlDocument = this->createSBMLDocumentFromCModel(copasiModel, sbmlLevel, sbmlVersion);
+  this->createSBMLDocumentFromCModel(copasiModel, sbmlLevel, sbmlVersion);
   this->removeUnusedObjects();
   if (this->sbmlDocument->getModel() != NULL)
     {
@@ -107,21 +112,24 @@ bool SBMLExporter::exportSBML(CModel* copasiModel, std::string sbmlFilename, boo
  */
 SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CModel* copasiModel, int sbmlLevel, int sbmlVersion)
 {
-  SBMLDocument* sbmlDocument = CCopasiDataModel::Global->getCurrentSBMLDocument();
-  if (!sbmlDocument)
+  this->sbmlDocument = CCopasiDataModel::Global->getCurrentSBMLDocument();
+  if (!this->sbmlDocument)
     {
       /* create a new document object */
-      sbmlDocument = new SBMLDocument();
+      this->sbmlDocument = new SBMLDocument();
     }
-  sbmlDocument->setLevel(sbmlLevel);
-  sbmlDocument->setVersion(sbmlVersion);
+  this->sbmlDocument->setLevel(sbmlLevel);
+  this->sbmlDocument->setVersion(sbmlVersion);
   /* create the model object from the copasi model */
   Model* sbmlModel = this->createSBMLModelFromCModel(copasiModel);
-  if (sbmlDocument->getModel() != sbmlModel)
+  if (this->sbmlDocument->getModel() != sbmlModel)
     {
-      sbmlDocument->setModel(sbmlModel);
+      this->sbmlDocument->setModel(sbmlModel);
     }
-  return sbmlDocument;
+
+  this->createFunctionDefinitions();
+
+  return this->sbmlDocument;
 }
 
 /**
@@ -288,6 +296,7 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
         }
     }
   pdelete(this->mpIdSet);
+
   return sbmlModel;
 }
 
@@ -760,6 +769,9 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
   else
     {
       CEvaluationNode* pTmpRoot = copasiReaction->getExpressionTree();
+      // walk the tree and look for function calls
+      std::list<const CEvaluationTree*> usedFunctionList;
+      this->findUsedFunctions(pTmpRoot, usedFunctionList);
       node = pTmpRoot->toAST();
       pdelete(pTmpRoot);
     }
@@ -1137,4 +1149,186 @@ ASTNode* SBMLExporter::isDividedByVolume(const ASTNode* node, const std::string&
         }
     }
   return result;
+}
+
+/*
+void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode,std::list<std::string>& usedFunctionList)
+{
+    if(pNode)
+    {
+        if(CEvaluationNode::type(pNode->getType())==CEvaluationNode::CALL)
+        {
+            CFunctionDB* pFunDB=CCopasiDataModel::Global->getFunctionList();
+            CEvaluationTree* pFun=pFunDB->findFunction(pNode->getData());
+            if(!pFun)
+            {
+                CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION,MCSBML + 15,pNode->getData().c_str());
+            }
+            if(usedFunctionList.find(pFun)!=usedFunctionList.end())
+            {
+                // we have a loop
+                CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION,MCSBML + 16);
+            }
+            else
+            {
+              usedFunctionList.push_back(pFun);
+              // go through the tree of that function as well
+              this->findUsedFunctions(pFun->getRoot(),usedFunctionList);
+              // find the list node for the current function name
+              // add all nodes that come after it to the mUsedFunctions
+              // delete those nodes 
+            }
+        }
+        else
+        {
+            CEvaluationNode* pChildNode=static_cast<CEvaluationNode*>(pNode->getChild());
+            while(pChildNode)
+            {
+                this->findUsedFunctions(pChildNode,usedFunctionList);
+            }
+        }
+    }
+}
+ */
+
+void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEvaluationTree*>& usedFunctionList)
+{
+  CFunctionDB* pFunDB = CCopasiDataModel::Global->getFunctionList();
+  CCopasiTree<CEvaluationNode>::iterator treeIt = pNode;
+  CCopasiTree<CEvaluationNode>::iterator treeEndIt = NULL;
+
+  while (treeIt != treeEndIt)
+    {
+      if (CEvaluationNode::type((*treeIt).getType()) == CEvaluationNode::CALL)
+        {
+          // find used function used in the corresponding function
+          CEvaluationTree* pFun = pFunDB->findFunction((*treeIt).getData());
+          if (!pFun)
+            {
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 15, (*treeIt).getData().c_str());
+            }
+          if (this->existsInList(pFun, usedFunctionList))
+            {
+              // we have a loop
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 16);
+            }
+          // if the function is already in the list of used functions, we don't have
+          // to go through it again.
+          if (!this->existsInList(pFun, this->mUsedFunctions))
+            {
+              usedFunctionList.push_back(pFun);
+              std::list<const CEvaluationTree*>::iterator pos = usedFunctionList.end();
+              --pos;
+              this->findUsedFunctions(pFun->getRoot(), usedFunctionList);
+              // add this function to mUsedFunctions after the last function in usedFunctionList
+              // if usedFunctionList does not have any entries after pos, just insert the function
+              // at the beginning
+              if (usedFunctionList.back() == (*pos))
+                {
+                  this->mUsedFunctions.push_front(pFun);
+                }
+              else
+                {
+                  std::list<const CEvaluationTree*>::iterator it = this->mUsedFunctions.begin();
+                  std::list<const CEvaluationTree*>::iterator endIt = this->mUsedFunctions.end();
+                  std::list<const CEvaluationTree*>::iterator afterPos = this->mUsedFunctions.end();
+                  while ((it != endIt) && (usedFunctionList.back() != (*pos)))
+                    {
+                      std::list<const CEvaluationTree*>::iterator it2 = usedFunctionList.begin();
+                      std::list<const CEvaluationTree*>::iterator endIt2 = usedFunctionList.end();
+                      while (it2 != endIt2)
+                        {
+                          if ((*it) == (*it2))
+                            {
+                              usedFunctionList.erase(it2);
+                              afterPos = it;
+                              break;
+                            }
+                        }
+                      ++it;
+                    }
+                  afterPos++;
+                  this->mUsedFunctions.insert(afterPos, pFun);
+                }
+            }
+        }
+      ++treeIt;
+    }
+}
+
+void SBMLExporter::createFunctionDefinitions()
+{
+  ListOf& listOfFunctionDefinitions = this->sbmlDocument->getModel()->getListOfFunctionDefinitions();
+  std::list<const CEvaluationTree*>::const_iterator it = this->mUsedFunctions.begin();
+  std::list<const CEvaluationTree*>::const_iterator endIt = this->mUsedFunctions.end();
+  std::map<std::string, std::string> replacementMap;
+
+  while (it != endIt)
+    {
+      // delete an existing function definition with this name
+      // add the new function definition
+      unsigned int i, iMax = listOfFunctionDefinitions.getNumItems();
+      for (i = 0; i < iMax;++i)
+        {
+          if (static_cast<FunctionDefinition*>(listOfFunctionDefinitions.get(i))->getId() == (*it)->getSBMLId())
+            {
+              listOfFunctionDefinitions.remove(i);
+              break;
+            }
+        }
+      replacementMap[(*it)->getObjectName()] = (*it)->getSBMLId();
+      FunctionDefinition* pSBMLFunDef = this->createSBMLFunctionDefinitionFromCEvaluationTree((*it), replacementMap);
+      ++it;
+    }
+}
+
+FunctionDefinition* SBMLExporter::createSBMLFunctionDefinitionFromCEvaluationTree(const CEvaluationTree* tree, const std::map<std::string, std::string>& replacementMap)
+{
+  // convert the tree root to an AST tree.
+  FunctionDefinition& pFunDef = this->sbmlDocument->getModel()->createFunctionDefinition();
+  pFunDef.setId(tree->getSBMLId());
+
+  ASTNode* pFunNode = tree->getRoot()->toAST();
+  // go through the AST tree and replace all function call nodes with with a call to the sbml id
+  this->replaceFunctionNames(pFunNode, replacementMap);
+  ASTNode* pLambda = new ASTNode(AST_LAMBDA);
+  // add the parameters to the function definition
+  const CFunctionParameters& funParams = static_cast<const CFunction*>(tree)->getVariables();
+  unsigned int i, iMax = funParams.size();
+  ASTNode* pParamNode = NULL;
+  for (i = 0; i < iMax;++i)
+    {
+      pParamNode = new ASTNode(AST_NAME);
+      pParamNode->setName(funParams[i]->getObjectName().c_str());
+      pLambda->addChild(pParamNode);
+    }
+  pLambda->addChild(pFunNode);
+  pFunDef.setMath(pLambda);
+  return &pFunDef;
+}
+
+void SBMLExporter::replaceFunctionNames(ASTNode* pNode, std::map<std::string, std::string> replacementMap)
+{
+  if (pNode->getType() == AST_FUNCTION)
+    {
+      pNode->setName(replacementMap[pNode->getName()].c_str());
+      assert(pNode->getName() != "");
+    }
+  unsigned int i, iMax = pNode->getNumChildren();
+  for (i = 0; i < iMax;++i)
+    {
+      this->replaceFunctionNames(pNode->getChild(i), replacementMap);
+    }
+}
+
+bool SBMLExporter::existsInList(CEvaluationTree* tree, const std::list<const CEvaluationTree*>& list)
+{
+  std::list<const CEvaluationTree*>::const_iterator it = list.begin();
+  std::list<const CEvaluationTree*>::const_iterator endIt = list.end();
+  while (it != endIt)
+    {
+      if ((*it) == tree) break;
+      ++it;
+    }
+  return it != endIt;
 }

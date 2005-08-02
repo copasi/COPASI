@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/01 14:50:48 $
+   $Date: 2005/08/02 14:31:47 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -53,6 +53,8 @@ class SBMLExporter
 
     CModel* mpCopasiModel;
 
+    std::list<const CEvaluationTree*> mUsedFunctions;
+
     /**
      **  This method takes a copasi CModel object and generates a SBMLDocument
      ** object from it.
@@ -72,6 +74,12 @@ class SBMLExporter
      ** a SBML Compartment. The pointer to the SBML Comprtment is returned.
      */
     Compartment* createSBMLCompartmentFromCCompartment(CCompartment* copasiCompartment);
+
+    /**
+     ** This method takes a pointer to a copasi CEvaluationTree object and creates
+     ** a SBML FunctionDefinition. The pointer to the SBML FunctionDefinition is returned.
+     */
+    FunctionDefinition* createSBMLFunctionDefinitionFromCEvaluationTree(const CEvaluationTree* tree, const std::map<std::string, std::string>& replacementMap);
 
     /**
      ** This method takes a pointer to a copasi CMetab object and creates a SBML 
@@ -155,6 +163,29 @@ class SBMLExporter
      * If so, a copy of the tree is returned in which the multiplication has been removed.
      */
     ASTNode* isDividedByVolume(const ASTNode* node, const std::string& compartmentSBMLId);
+
+    /**
+     * Create the function definitions for all functions used in the model.
+     */
+    void createFunctionDefinitions();
+
+    /**
+     * Recursively go through a function tree and find all functions that are used.
+     * This also covers function called by function call etc.
+     * If a loop is encountered this throws an exception.
+     */
+    void findUsedFunctions(CEvaluationNode* pNode, std::list<const CEvaluationTree*>& usedFunctionList);
+
+    /**
+     * Check if some CEvaluationTree is already in a list.
+     */
+    bool existsInList(CEvaluationTree* tree, const std::list<const CEvaluationTree*>& list);
+
+    /**
+     * Go through a tree of ASTNodes and replace the names of all function calls
+     * with the one given in the replacementMap.
+     */
+    void replaceFunctionNames(ASTNode* pNode, const std::map<std::string, std::string> replacementMap);
 
   public:
 
