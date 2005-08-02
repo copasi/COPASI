@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.138 $
+   $Revision: 1.139 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/29 12:34:43 $
+   $Date: 2005/08/02 14:28:50 $
    End CVS Header */
 
 // CReaction
@@ -1018,6 +1018,7 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
 {
   CEvaluationNode* pTmpNode = NULL;
   CEvaluationNode* pChildNode = NULL;
+  CEvaluationNode* pChildNode2 = NULL;
   switch (CEvaluationNode::type(expression->getType()))
     {
     case CEvaluationNode::NUMBER:
@@ -1068,8 +1069,23 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
         }
       break;
     case CEvaluationNode::CALL:
-      // create an error message until there is a class for it
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "CALL");
+      pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
+      // convert all children
+      pChildNode2 = static_cast<CEvaluationNode*>(expression->getChild());
+      while (pChildNode2)
+        {
+          pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(pChildNode2));
+          if (pChildNode)
+            {
+              pTmpNode->addChild(pChildNode);
+            }
+          else
+            {
+              delete pTmpNode;
+              pTmpNode = NULL;
+            }
+          pChildNode2 = static_cast<CEvaluationNode*>(pChildNode2->getSibling());
+        }
       break;
     case CEvaluationNode::STRUCTURE:
       pTmpNode = new CEvaluationNodeStructure(static_cast<CEvaluationNodeStructure::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
