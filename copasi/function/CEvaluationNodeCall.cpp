@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/28 14:40:50 $
+   $Author: gauges $ 
+   $Date: 2005/08/02 14:30:33 $
    End CVS Header */
 
 #include <sbml/math/ASTNode.h>
@@ -156,7 +156,17 @@ CEvaluationNode* CEvaluationNodeCall::createNodeFromASTTree(const ASTNode& node)
 ASTNode* CEvaluationNodeCall::toAST() const
   {
     ASTNode* node = new ASTNode(AST_FUNCTION);
-    node->setName(this->getData().c_str());
+    const std::string funName = this->getData();
+    CEvaluationTree* pFun = CCopasiDataModel::Global->getFunctionList()->findFunction(funName);
+    if (pFun->getSBMLId() != "")
+      {
+        node->setName(pFun->getSBMLId().c_str());
+      }
+    else
+      {
+        node->setName(funName.c_str());
+        pFun->setSBMLId(funName);
+      }
     const CEvaluationNode* child = static_cast<const CEvaluationNode*>(this->getChild());
     while (child)
       {
