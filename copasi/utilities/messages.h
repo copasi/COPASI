@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/20 21:10:43 $
+   $Author: gauges $ 
+   $Date: 2005/08/02 14:31:15 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -116,6 +116,8 @@ const MESSAGES Messages[] =
     {MCSBML + 12, "SBML (12): Function \"%s\" contains invalid parameter list."},
     {MCSBML + 13, "SBML (13): Could not read function definition for function \"%s\"."},
     {MCSBML + 14, "SBML (14): Could not import function with id \"%s\"."},
+    {MCSBML + 15, "SBML (15): Could not find function with id \"%s\"."},
+    {MCSBML + 16, "SBML (16): Loop found in function. That means a function calls itself either directly or indirectly."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
