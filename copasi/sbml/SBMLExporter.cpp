@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/03 11:11:52 $
+   $Date: 2005/08/03 11:34:41 $
    End CVS Header */
 
 #include <math.h>
@@ -1333,3 +1333,8 @@ bool SBMLExporter::existsInList(CEvaluationTree* tree, const std::list<const CEv
     }
   return it != endIt;
 }
+
+SBMLDocument* SBMLExporter::getSBMLDocument() const
+  {
+    return this->sbmlDocument;
+  }

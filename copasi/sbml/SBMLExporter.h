@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/02 14:31:47 $
+   $Date: 2005/08/03 11:34:41 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -221,6 +221,8 @@ class SBMLExporter
     static std::string createUniqueId(const std::set<std::string>* pIdSet, const std::string& prefix);
 
     std::set<std::string>* createIdSet(const Model* pSBMLModel);
+
+    SBMLDocument* getSBMLDocument() const;
   };
 
 #endif
