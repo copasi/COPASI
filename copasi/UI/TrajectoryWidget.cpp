@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.112 $
+   $Revision: 1.113 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/29 12:34:12 $
+   $Date: 2005/08/03 22:42:32 $
    End CVS Header */
 
 /********************************************************
@@ -379,11 +379,6 @@ void TrajectoryWidget::NumStepsSlot()
 
   checkTimeSeries();
 }
-
-//void TrajectoryWidget::storeSlot()
-//{
-//  C_INT32 steps = nStepNumber->text().toInt();
-//}
 
 void TrajectoryWidget::checkTimeSeries()
 {
