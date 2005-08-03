@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/25 09:48:10 $
+   $Date: 2005/08/03 22:15:28 $
    End CVS Header */
 
 /**
@@ -140,6 +140,7 @@ bool CCopasiTask::initialize(std::ostream * pOstream)
 {
   if (!mpProblem) return false;
   if (!mpProblem->getModel()) return false;
+  if (!mpMethod) return false;
 
   if (!mpProblem->getModel()->compileIfNecessary()) return false;
   if (!mReport.open(pOstream)) return false;
