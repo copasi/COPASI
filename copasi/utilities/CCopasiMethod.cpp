@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/08/01 07:34:01 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:13:02 $
    End CVS Header */
 
 /**
@@ -18,6 +18,7 @@
 
 #include "CCopasiMethod.h"
 #include "CCopasiMessage.h"
+#include "CCopasiProblem.h"
 
 const std::string CCopasiMethod::SubTypeName[] =
   {
@@ -130,9 +131,23 @@ const CCopasiMethod::SubType & CCopasiMethod::getSubType() const
 // {mSubType = subType;}
 
 //virtual
-bool CCopasiMethod::isValidProblem(const CCopasiProblem * C_UNUSED(pProblem))
+bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  return false; //the abstract method is not really suitable for any problem
+  if (!pProblem)
+    {
+      //no problem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCCopasiMethod + 2);
+      return false;
+    }
+
+  if (! pProblem->getModel())
+    {
+      //no model
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCCopasiMethod + 3);
+      return false;
+    }
+
+  return true;
 }
 
 void CCopasiMethod::load(CReadConfig & C_UNUSED(configBuffer),
