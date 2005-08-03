@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/02 11:52:02 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:20:56 $
    End CVS Header */
 
 #include <cmath>
@@ -457,12 +457,7 @@ const CModel* CMCAMethod::getModel() const
 //virtual
 bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  if (!pProblem)
-    {
-      //no problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "pProblem == NULL");
-      return false;
-    }
+  if (!CCopasiMethod::isValidProblem(pProblem)) return false;
 
   const CMCAProblem * pP = dynamic_cast<const CMCAProblem *>(pProblem);
   if (!pP)

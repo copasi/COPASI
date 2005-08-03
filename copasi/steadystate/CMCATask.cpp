@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/03/03 10:38:14 $
+   $Date: 2005/08/03 22:20:37 $
    End CVS Header */
 
 /**
@@ -79,17 +79,14 @@ bool CMCATask::initialize(std::ostream * pOstream)
 
 bool CMCATask::process()
 {
-  assert(mpProblem && mpMethod);
+  assert(mpMethod);
 
-  CMCAProblem* pProblem =
-    dynamic_cast<CMCAProblem *>(mpProblem);
-  assert(pProblem);
+  mpMethod->isValidProblem(mpProblem);
 
-  CMCAMethod* pMethod =
-    dynamic_cast<CMCAMethod *>(mpMethod);
+  CMCAMethod* pMethod = dynamic_cast<CMCAMethod *>(mpMethod);
   assert(pMethod);
 
-  pMethod->setModel(pProblem->getModel());
+  pMethod->setModel(mpProblem->getModel());
 
   mReport.printHeader();
   pMethod->process();
@@ -97,7 +94,7 @@ bool CMCATask::process()
   mReport.printBody();
   mReport.printFooter();
 
-  return 0;
+  return true;
 }
 
 std::ostream &operator<<(std::ostream &os, const CMCATask & C_UNUSED(A))

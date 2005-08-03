@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/11 16:33:59 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:18:13 $
    End CVS Header */
 
 /**
@@ -21,6 +21,7 @@
 #include "utilities/CCopasiVector.h"
 #include "CSteadyStateMethod.h"
 #include "CSteadyStateProblem.h"
+#include "CSteadyStateTask.h"
 #include "CEigen.h"
 
 #include "model/CModel.h"
@@ -99,6 +100,9 @@ CSteadyStateMethod::process(CState * pState,
                             CEigen & EigenValuesX,
                             CProcessReport * handler)
 {
+  mpParentTask = dynamic_cast<CSteadyStateTask *>(getObjectParent());
+  assert(mpParentTask);
+
   mpSteadyState = pState;
   mpSteadyStateX = pStateX;
   mpProblem = pProblem;
@@ -194,12 +198,7 @@ bool CSteadyStateMethod::hasNegativeConcentrations(const C_FLOAT64 & resolution)
 //virtual
 bool CSteadyStateMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  if (!pProblem)
-    {
-      //no problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "pProblem == NULL");
-      return false;
-    }
+  if (!CCopasiMethod::isValidProblem(pProblem)) return false;
 
   const CSteadyStateProblem * pP = dynamic_cast<const CSteadyStateProblem *>(pProblem);
   if (!pP)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/02 11:52:02 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:19:45 $
    End CVS Header */
 
 /**
@@ -56,7 +56,7 @@ class CNewtonMethod : public CSteadyStateMethod
     C_INT * mIpiv;
 
     //CStateX mStateX;
-    CStateX mInitialStateX;
+    //CStateX mInitialStateX;
 
     // Operations
   private:

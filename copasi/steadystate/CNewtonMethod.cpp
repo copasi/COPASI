@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/29 12:28:04 $
+   $Date: 2005/08/03 22:19:45 $
    End CVS Header */
 
 #include <algorithm>
@@ -169,8 +169,8 @@ CNewtonMethod::processInternal()
   //TODO discuss scaling
 
   // convert CState to CStateX
-  mInitialStateX = mpProblem->getInitialState();
-  *mpSteadyStateX = mInitialStateX; //not strictly necessary
+  //mInitialStateX = mpProblem->getInitialState();
+  //*mpSteadyStateX = mInitialStateX; //not strictly necessary
 
   mDimension = mpSteadyStateX->getVariableNumberSize();
   mX = const_cast< CVector< C_FLOAT64 > * >(&mpSteadyStateX->getVariableNumberVector());
@@ -644,20 +644,9 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
 //virtual
 bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  if (!pProblem)
-    {
-      //no problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "pProblem == NULL");
-      return false;
-    }
+  if (!CSteadyStateMethod::isValidProblem(pProblem)) return false;
 
-  const CSteadyStateProblem * pP = dynamic_cast<const CSteadyStateProblem *>(pProblem);
-  if (!pP)
-    {
-      //not a TrajectoryProblem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a steady state problem.");
-      return false;
-    }
+  //const CSteadyStateProblem * pP = dynamic_cast<const CSteadyStateProblem *>(pProblem);
 
   if (!((* getValue("Newton.UseNewton").pBOOL)
         || (* getValue("Newton.UseIntegration").pBOOL)

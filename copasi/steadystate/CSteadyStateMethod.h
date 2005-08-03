@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/11 16:33:59 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:18:13 $
    End CVS Header */
 
 /**
@@ -24,6 +24,7 @@
 #include "utilities/CMatrix.h"
 
 class CSteadyStateProblem;
+class CSteadyStateTask;
 class CState;
 class CStateX;
 class CEigen;
@@ -42,9 +43,14 @@ class CSteadyStateMethod : public CCopasiMethod
 
   protected:
     /**
-     *  A pointer to the trajectory problem.
+     *  A pointer to the  problem.
      */
     const CSteadyStateProblem * mpProblem;
+
+    /**
+     *  A pointer to the task.
+     */
+    CSteadyStateTask * mpParentTask;
 
     /**
      * A pointer to the steady state
