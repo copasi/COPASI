@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:32:01 $
+   $Date: 2005/08/03 22:36:49 $
    End CVS Header */
 
 /**
@@ -16,10 +16,10 @@
 #include <string>
 
 #include "utilities/CCopasiProblem.h"
-#include "utilities/CReadConfig.h"
-#include "model/CState.h"
+#include "utilities/CReadConfig.h" 
+//#include "model/CState.h"
 
-class CModel;
+//class CModel;
 
 class CScanProblem : public CCopasiProblem
   {
@@ -40,8 +40,8 @@ class CScanProblem : public CCopasiProblem
 
     /**
      *  The initial state, i.e., the starting conditions of the trajectroy/SS.
-     */
-    CState mInitialState;
+     */ 
+    //CState mInitialState;
 
     /**
      *  The initial state, i.e., the starting conditions of the trajectroy/SS.
@@ -72,8 +72,8 @@ class CScanProblem : public CCopasiProblem
     /**
      * Set the moddel the problem is dealing with.
      * @param "CModel *" pModel
-     */
-    virtual bool setModel(CModel * pModel);
+     */ 
+    //virtual bool setModel(CModel * pModel);
 
     /**
      *  Set the type of the subtask.
@@ -108,20 +108,20 @@ class CScanProblem : public CCopasiProblem
     /**
      * Set the initial state of the problem.
      * @param "const CState &" initialState
-     */
-    void setInitialState(const CState & initialState);
+     */ 
+    //void setInitialState(const CState & initialState);
 
     /**
      * Set the initial state of the problem.
      * @param "const CStateX &" initialState
-     */
-    void setInitialState(const CStateX & initialState);
+     */ 
+    //void setInitialState(const CStateX & initialState);
 
     /**
      * Retrieve the initial state of the problem.
      * @return "const CState &" pInitialState
-     */
-    const CState & getInitialState() const;
+     */ 
+    //const CState & getInitialState() const;
 
     unsigned C_INT32 getNumberOfScanItems() const;
 
@@ -134,7 +134,7 @@ class CScanProblem : public CCopasiProblem
 
     void clearScanItems();
 
-    void createDebugScan(CModel* model);
+    //void createDebugScan(CModel* model);
 
     /**
      * Load a scan problem

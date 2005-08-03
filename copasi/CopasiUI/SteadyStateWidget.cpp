@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.97 $
+   $Revision: 1.98 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/19 21:10:54 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:42:07 $
    End CVS Header */
 
 /********************************************************
@@ -241,7 +241,7 @@ void SteadyStateWidget::CommitButtonClicked()
   assert(steadystatemethod);
 
   CCopasiDataModel::Global->getModel()->compileIfNecessary();
-  steadystateproblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
+  //steadystateproblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
   bool bJacobian = taskJacobian->isChecked();
   bool bStatistics = taskStability->isChecked();

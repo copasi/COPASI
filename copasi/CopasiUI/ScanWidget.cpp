@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.190 $
+   $Revision: 1.191 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/19 21:10:54 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:41:50 $
    End CVS Header */
 
 //***  In this file I have put "//+++" in all places where something has to be added
@@ -411,7 +411,7 @@ bool ScanWidget::saveScan() const
 
     //set initial state
     CCopasiDataModel::Global->getModel()->compileIfNecessary();
-    scanProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
+    //scanProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
     // :TODO Bug 322: This should only be called when actual changes have been saved.
     CCopasiDataModel::Global->changed();

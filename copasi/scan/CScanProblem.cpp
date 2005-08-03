@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/21 20:34:51 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:36:49 $
    End CVS Header */
 
 /**
@@ -15,17 +15,17 @@
 
 #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
-#include "CScanProblem.h"
-#include "model/CModel.h"
-#include "model/CState.h"
+#include "CScanProblem.h" 
+//#include "model/CModel.h"
+//#include "model/CState.h"
 
 /**
  *  Default constructor.
  *  @param "CModel *" pModel
  */
 CScanProblem::CScanProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::scan, pParent),
-    mInitialState()
+    CCopasiProblem(CCopasiTask::scan, pParent)
+    //mInitialState()
     //mEndState()
 {
   addParameter("Subtask", CCopasiParameter::UINT, (unsigned C_INT32) CCopasiTask::timeCourse);
@@ -45,8 +45,8 @@ CScanProblem::CScanProblem(const CCopasiContainer * pParent):
  */
 CScanProblem::CScanProblem(const CScanProblem & src,
                            const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent),
-    mInitialState(src.mInitialState)
+    CCopasiProblem(src, pParent)
+    //mInitialState(src.mInitialState)
     //mEndState(src.mEndState)
 {CONSTRUCTOR_TRACE;}
 
@@ -59,13 +59,13 @@ CScanProblem::~CScanProblem()
 /**
  * Set the model the problem is dealing with.
  * @param "CModel *" pModel
- */
-bool CScanProblem::setModel(CModel * pModel)
+ */ 
+/*bool CScanProblem::setModel(CModel * pModel)
 {
   mpModel = pModel;
   mInitialState.setModel(mpModel);
   return true;
-}
+}*/
 
 //***********************************
 
@@ -102,28 +102,28 @@ const bool & CScanProblem::getAdjustInitialConditions() const
 /**
  * Set the initial state of the problem.
  * @param "const CState &" initialState
- */
-void CScanProblem::setInitialState(const CState & initialState)
+ */ 
+/*void CScanProblem::setInitialState(const CState & initialState)
 {
   mInitialState = initialState;
   mpModel = const_cast<CModel*>(mInitialState.getModel());
-}
+}*/
 
 /**
  * Set the initial state of the problem.
  * @param "const CStateX &" initialState
- */
-void CScanProblem::setInitialState(const CStateX & initialState)
+ */ 
+/*void CScanProblem::setInitialState(const CStateX & initialState)
 {
   mInitialState = initialState;
-}
+}*/
 
 /**
  * Retrieve the initial state of the problem.
  * @return "const CState *" pInitialState
- */
-const CState & CScanProblem::getInitialState() const
-  {return mInitialState;}
+ */ 
+/*const CState & CScanProblem::getInitialState() const
+  {return mInitialState;}*/
 
 /**
  * Load a trajectory problem
@@ -131,26 +131,7 @@ const CState & CScanProblem::getInitialState() const
  */
 void CScanProblem::load(CReadConfig & C_UNUSED(configBuffer),
                         CReadConfig::Mode C_UNUSED(mode))
-{
-  /*  C_FLOAT64 dbl;
-    unsigned C_INT32 uint;
-   
-    if (configBuffer.getVersion() < "4.0")
-      {
-        mpModel = Copasi->pModel;
-        configBuffer.getVariable("EndTime", "C_FLOAT64",
-                                 & dbl,
-                                 CReadConfig::LOOP);
-        setValue("EndTime", dbl);
-        configBuffer.getVariable("Points", "C_INT32",
-                                 & uint);
-        setValue("StepNumber", uint);
-        mStepNumberSetLast = true;
-        setValue("StartTime", (C_FLOAT64) 0.0);
-        sync();
-        mInitialState = mpModel->getInitialState();
-      }*/
-}
+{}
 
 unsigned C_INT32 CScanProblem::getNumberOfScanItems() const
   {
@@ -223,18 +204,18 @@ void CScanProblem::clearScanItems()
   mpScanItems->clear();
 }
 
-void CScanProblem::createDebugScan(CModel* model)
+/*void CScanProblem::createDebugScan(CModel* model)
 {
   if (model->getReactions().size() == 0) return;
-
+ 
   clearScanItems();
   setModel(model);
-
+ 
   //TODO: use the value instead of the parameter itself
-
+ 
   CCopasiParameterGroup* tmp = createScanItem(SCAN_LINEAR, 15, model->getReactions()[0]->getParameters().getParameter(0));
   tmp->setValue("Minimum", 0.34);
   tmp->setValue("Maximum", 0.78);
-
+ 
   // createScanItem(SCAN_REPEAT, 3);
-}
+}*/

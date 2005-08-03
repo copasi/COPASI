@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/29 12:28:51 $
+   $Date: 2005/08/03 22:36:49 $
    End CVS Header */
 
 /**
@@ -105,6 +105,8 @@ bool CScanTask::process()
   if (!mpProblem) fatalError();
   if (!mpMethod) fatalError();
 
+  mpMethod->isValidProblem(mpProblem);
+
   CScanProblem * pProblem = dynamic_cast<CScanProblem *>(mpProblem);
   if (!pProblem) fatalError();
   CScanMethod * pMethod = dynamic_cast<CScanMethod *>(mpMethod);
@@ -156,9 +158,9 @@ bool CScanTask::process()
 bool CScanTask::processCallback()
 {
   //do tasks
-  CSteadyStateProblem * ssProblem = dynamic_cast<CSteadyStateProblem*>(mpSubtask->getProblem());
-  if (ssProblem)
-  {ssProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());}
+  //CSteadyStateProblem * ssProblem = dynamic_cast<CSteadyStateProblem*>(mpSubtask->getProblem());
+  //if (ssProblem)
+  //{ssProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());}
   //CTrajectoryProblem * ttProblem = dynamic_cast<CTrajectoryProblem*>(mpSubtask->getProblem());
   //if (ttProblem)
   //  {ttProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());}
@@ -191,14 +193,14 @@ bool CScanTask::initSubtask()
   CCopasiTask::Type type = *(CCopasiTask::Type*) pProblem->getValue("Subtask").pUINT;
 
   //CTrajectoryProblem* trajProblem;
-  CSteadyStateProblem* ssProblem;
+  //CSteadyStateProblem* ssProblem;
   switch (type)
     {
     case CCopasiTask::steadyState:
       mpSubtask = dynamic_cast<CCopasiTask*>
                   ((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
-      ssProblem = dynamic_cast<CSteadyStateProblem*>(mpSubtask->getProblem());
-      ssProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
+      //ssProblem = dynamic_cast<CSteadyStateProblem*>(mpSubtask->getProblem());
+      //ssProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
       break;
 
     case CCopasiTask::timeCourse:
