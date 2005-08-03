@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/29 12:31:25 $
+   $Date: 2005/08/03 22:39:07 $
    End CVS Header */
 
 /**
@@ -119,7 +119,7 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
 
 void COptProblem::initObjects()
 {
-  addObjectReference("Simulation Counter", mCounter, CCopasiObject::ValueDbl);
+  addObjectReference("Simulation Counter", mCounter, CCopasiObject::ValueInt);
   addObjectReference("Best Value", mSolutionValue, CCopasiObject::ValueDbl);
   addVectorReference("Best Parameters", mSolutionVariables, CCopasiObject::ValueDbl);
 }
@@ -239,8 +239,8 @@ bool COptProblem::calculate()
     {
       if (mpSteadyState != NULL)
         {
-          ((CSteadyStateProblem *) mpSteadyState->getProblem())->
-          setInitialState(mpSteadyState->getProblem()->getModel()->getInitialState());
+          //((CSteadyStateProblem *) mpSteadyState->getProblem())->
+          //setInitialState(mpSteadyState->getProblem()->getModel()->getInitialState());
           mpSteadyState->process();
         }
 
@@ -248,7 +248,7 @@ bool COptProblem::calculate()
         {
           //((CTrajectoryProblem *) mpTrajectory->getProblem())->
           //setInitialState(mpTrajectory->getProblem()->getModel()->getInitialState());
-          mpTrajectory->process();
+          mpTrajectory->process(CCopasiTask::NO_OUTPUT);
         }
 
       mCalculateValue = mpFunction->calcValue();
