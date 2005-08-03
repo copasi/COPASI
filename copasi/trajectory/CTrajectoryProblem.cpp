@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/29 12:27:10 $
+   $Date: 2005/08/03 22:34:18 $
    End CVS Header */
 
 /**
@@ -86,15 +86,15 @@ void CTrajectoryProblem::initObjects()
 /**
  * Set the model the problem is dealing with.
  * @param "CModel *" pModel
- */
-bool CTrajectoryProblem::setModel(CModel * pModel)
+ */ 
+/*bool CTrajectoryProblem::setModel(CModel * pModel)
 {
   mpModel = pModel;
   //mInitialState.setModel(mpModel);
   //mEndState.setModel(mpModel);
-
+ 
   return true;
-}
+}*/
 
 /**
  * Set the number of time steps the trajectory method should integrate.

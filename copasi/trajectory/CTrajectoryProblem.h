@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/29 12:27:10 $
+   $Date: 2005/08/03 22:34:18 $
    End CVS Header */
 
 /**
@@ -24,7 +24,7 @@
 //#include "utilities/CWriteConfig.h"
 //#include "model/CState.h"
 
-class CModel;
+//class CModel;
 
 class CTrajectoryProblem : public CCopasiProblem
   {
@@ -70,8 +70,8 @@ class CTrajectoryProblem : public CCopasiProblem
     /**
      * Set the moddel the problem is dealing with.
      * @param "CModel *" pModel
-     */
-    virtual bool setModel(CModel * pModel);
+     */ 
+    //virtual bool setModel(CModel * pModel);
 
     /**
      * Set the number of time steps the trajectory method should integrate.
