@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/02 14:31:15 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:11:47 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -40,6 +40,8 @@ const MESSAGES Messages[] =
     // CCopasiMethod
     {MCCopasiMethod + 1, "CCopasiMethod (1): No parameter list "
      "found for name '%s' and type '%s'."},
+    {MCCopasiMethod + 2, "CCopasiMethod (2): pProblem == NULL"},
+    {MCCopasiMethod + 3, "CCopasiMethod (3): Model is not set in problem"},
 
     // CReaction
     {MCReaction + 1, "CReaction (1): Function '%s' not found."},
