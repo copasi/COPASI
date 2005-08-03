@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:34:21 $
+   $Date: 2005/08/03 22:17:10 $
    End CVS Header */
 
 /**
@@ -19,10 +19,8 @@
 
 #include <string>
 
-#include "model/CState.h"
 #include "utilities/CCopasiProblem.h"
-#include "utilities/CReadConfig.h" 
-//#include "utilities/CWriteConfig.h"
+#include "utilities/CReadConfig.h"
 
 class CSteadyStateProblem: public CCopasiProblem
   {
@@ -30,13 +28,13 @@ class CSteadyStateProblem: public CCopasiProblem
   private:
     /**
      *  The initial state, i.e., the starting conditions of the trajectroy.
-     */
-    CState mInitialState;
+     */ 
+    //CState mInitialState;
 
     /**
      *  was a initial state set?
-     */
-    bool mHasInitialState;
+     */ 
+    //bool mHasInitialState;
 
   public:
     // Operations
@@ -64,8 +62,8 @@ class CSteadyStateProblem: public CCopasiProblem
      * Set the model of the problem
      * @param CModel * pModel
      * @result bool succes
-     */
-    virtual bool setModel(CModel * pModel);
+     */ 
+    //virtual bool setModel(CModel * pModel);
 
     /**
      * Retrieve the model the problem is dealing with.
@@ -76,30 +74,30 @@ class CSteadyStateProblem: public CCopasiProblem
     /**
      * Set the initial state of the problem.
      * @param const CState & InitialState
-     */
-    void setInitialState(const CState & initialState);
+     */ 
+    //void setInitialState(const CState & initialState);
 
     /**
      * Set the initial state of the problem.
      * @param const CStateX & InitialState
-     */
-    void setInitialState(const CStateX & initialState);
+     */ 
+    //void setInitialState(const CStateX & initialState);
 
     /**
      * Retrieve the initial state of the problem.
      * @return "const CState &" pInitialState
-     */
-    const CState & getInitialState() const;
+     */ 
+    //const CState & getInitialState() const;
 
     /**
      * was an initial state set?
-     */
-    bool hasInitialState() const;
+     */ 
+    //bool hasInitialState() const;
 
     /**
      * clear the initial state. The initial state of the model will be used
-     */
-    void clearInitialState();
+     */ 
+    //void clearInitialState();
 
     /**
      * Set whether the jacobian is requested.
@@ -132,12 +130,6 @@ class CSteadyStateProblem: public CCopasiProblem
      */
     void load(CReadConfig & configBuffer,
               CReadConfig::Mode mode = CReadConfig::NEXT);
-
-    /**
-     * Save a trajectory problem
-     * @param "CWriteConfig &" configBuffer
-     */ 
-    //    void save(CWriteConfig & configBuffer) const;
 
   private:
     /**

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/11 16:33:59 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:21:33 $
    End CVS Header */
 
 /**
@@ -109,7 +109,7 @@ class CSteadyStateTask : public CCopasiTask
     /**
      * Process the task
      */
-    virtual bool process();
+    virtual bool process(OutputFlag of = OUTPUT_COMPLETE, bool useInitialValues = true);
 
     virtual bool processForScan(bool useInitialConditions, bool doOutput);
 

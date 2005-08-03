@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/18 14:07:35 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:21:33 $
    End CVS Header */
 
 /**
@@ -110,25 +110,21 @@ bool CSteadyStateTask::initialize(std::ostream * pOstream)
 {
   assert(mpProblem && mpMethod);
 
-  CSteadyStateProblem* pProblem =
-    dynamic_cast<CSteadyStateProblem *>(mpProblem);
-  assert(pProblem);
+  //CSteadyStateProblem* pProblem =
+  //  dynamic_cast<CSteadyStateProblem *>(mpProblem);
+  //assert(pProblem);
 
   bool success = true;
 
-  if (!mReport.open(pOstream)) success = false;
-  if (!mReport.compile()) success = false;
-
-  if (!pProblem->getModel()->compileIfNecessary()) success = false;
-  pProblem->setInitialState(pProblem->getModel()->getInitialState());
+  if (!CCopasiTask::initialize(pOstream)) success = false;
 
   //init states
   pdelete(mpSteadyState);
-  mpSteadyState = new CState(pProblem->getModel()->getInitialState());
+  mpSteadyState = new CState(mpProblem->getModel()->getInitialState());
   pdelete(mpSteadyStateX);
-  mpSteadyStateX = new CStateX(pProblem->getModel()->getInitialStateX());
+  mpSteadyStateX = new CStateX(mpProblem->getModel()->getInitialStateX());
 
-  mCalculateReducedSystem = (pProblem->getModel()->getNumDependentMetabs() != 0);
+  mCalculateReducedSystem = (mpProblem->getModel()->getNumDependentMetabs() != 0);
 
   //init jacobians
   mJacobian.resize(mpSteadyState->getVariableNumberSize(),
@@ -139,10 +135,19 @@ bool CSteadyStateTask::initialize(std::ostream * pOstream)
   return success;
 }
 
-bool CSteadyStateTask::process()
+bool CSteadyStateTask::process(OutputFlag of, bool useInitialValues)
 {
   assert(/*mpProblem && */mpMethod);
   mpMethod->isValidProblem(mpProblem);
+
+  mDoOutput = of;
+
+  if (useInitialValues)
+    {
+      mpProblem->getModel()->applyInitialValues();
+    }
+  *mpSteadyState = mpProblem->getModel()->getState();
+  *mpSteadyStateX = *mpSteadyState;
 
   CSteadyStateProblem* pProblem =
     dynamic_cast<CSteadyStateProblem *>(mpProblem);
@@ -182,12 +187,12 @@ bool CSteadyStateTask::processForScan(bool useInitialConditions, bool doOutput)
     dynamic_cast<CSteadyStateMethod *>(mpMethod);
   assert(pMethod);
 
-  CState store;
-  if (!useInitialConditions)
+  if (useInitialConditions)
     {
-      store = pProblem->getInitialState();
-      pProblem->setInitialState(pProblem->getModel()->getState());
+      mpProblem->getModel()->applyInitialValues();
     }
+  *mpSteadyState = mpProblem->getModel()->getState();
+  *mpSteadyStateX = *mpSteadyState;
 
   mResult = pMethod->process(mpSteadyState,
                              mpSteadyStateX,
@@ -197,8 +202,6 @@ bool CSteadyStateTask::processForScan(bool useInitialConditions, bool doOutput)
                              mEigenValues,
                              mEigenValuesX,
                              mpCallBack);
-
-  if (!useInitialConditions) pProblem->setInitialState(store);
 
   return (mResult != CSteadyStateMethod::notFound);
 }
