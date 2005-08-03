@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/02 14:31:47 $
+   $Date: 2005/08/03 11:11:52 $
    End CVS Header */
 
 #include <math.h>
@@ -55,11 +55,12 @@ SBMLExporter::SBMLExporter(): sbmlDocument(NULL), mpIdSet(NULL)
  */
 SBMLExporter::~SBMLExporter()
 {
-  /* delete the SBMLDocument created if it is not NULL */
-  if (this->sbmlDocument != NULL)
+  /* delete the SBMLDocument created if it is not NULL
+    if (this->sbmlDocument != NULL)
     {
       delete this->sbmlDocument;
     }
+    */
 }
 
 /**
