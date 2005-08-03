@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/08/01 06:59:46 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:37:39 $
    End CVS Header */
 
 /**
@@ -153,3 +153,18 @@ bool COptMethod::initialize()
 
 bool COptMethod::cleanup()
 {return true;}
+
+//virtual
+bool COptMethod::isValidProblem(const CCopasiProblem * pProblem)
+{
+  if (!CCopasiMethod::isValidProblem(pProblem)) return false;
+
+  const COptProblem * pTP = dynamic_cast<const COptProblem *>(pProblem);
+  if (!pTP)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not an optimization problem.");
+      return false;
+    }
+
+  return true;
+}

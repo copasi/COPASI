@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/08/01 06:59:59 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:37:39 $
    End CVS Header */
 
 /**
@@ -126,6 +126,12 @@ class COptMethod : public CCopasiMethod
      * @return bool success
      */
     virtual bool initialize();
+
+    /**
+     * Check if the method is suitable for this problem
+     * @return bool suitability of the method
+     */
+    virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
   protected:
     /**

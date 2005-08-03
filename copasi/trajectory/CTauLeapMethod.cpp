@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/21 20:36:24 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:32:42 $
    End CVS Header */
 
 /**
@@ -468,22 +468,9 @@ void CTauLeapMethod::updateSystem()
 //virtual
 bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  //TODO: rewrite CModel::suitableForStochasticSimulation() to use
-  //      CCopasiMessage
-  if (!pProblem)
-    {
-      //no problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 7);
-      return false;
-    }
+  if (!CTrajectoryMethod::isValidProblem(pProblem)) return false;
 
   const CTrajectoryProblem * pTP = dynamic_cast<const CTrajectoryProblem *>(pProblem);
-  if (!pTP)
-    {
-      //not a TrajectoryProblem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 8);
-      return false;
-    }
 
   if (pTP->getEndTime() < pTP->getStartTime())
     {
@@ -492,6 +479,8 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
+  //TODO: rewrite CModel::suitableForStochasticSimulation() to use
+  //      CCopasiMessage
   std::string message = pTP->getModel()->suitableForStochasticSimulation();
   if (message != "")
     {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/05/02 09:17:33 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:35:12 $
    End CVS Header */
 
 /**
@@ -216,6 +216,12 @@ class CScanMethod : public CCopasiMethod
      *  The main scan method.
      */ 
     //void scan(unsigned C_INT32 s, bool C_UNUSED(nl), void (*pCallback)(CReport *), CReport *pReport);
+
+    /**
+     * Check if the method is suitable for this problem
+     * @return bool suitability of the method
+     */
+    virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
   private:
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/17 16:45:24 $
+   $Date: 2005/08/03 22:32:42 $
    End CVS Header */
 
 /**
@@ -158,18 +158,13 @@ const double CTrajectoryMethod::step(const double & C_UNUSED(deltaT),
 //virtual
 bool CTrajectoryMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  if (!pProblem)
-    {
-      //no problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "pProblem == NULL");
-      return false;
-    }
+  if (!CCopasiMethod::isValidProblem(pProblem)) return false;
 
   const CTrajectoryProblem * pTP = dynamic_cast<const CTrajectoryProblem *>(pProblem);
   if (!pTP)
     {
       //not a TrajectoryProblem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a trajectory problem.");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 8);
       return false;
     }
 

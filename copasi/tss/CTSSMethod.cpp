@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSMethod.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/22 15:54:21 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:40:11 $
    End CVS Header */
 
 /**
@@ -95,12 +95,7 @@ bool CTSSMethod::process(CProcessReport * handler)
 //virtual
 bool CTSSMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  if (!pProblem)
-    {
-      //no problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "pProblem == NULL");
-      return false;
-    }
+  if (!CCopasiMethod::isValidProblem(pProblem)) return false;
 
   const CTSSProblem * pP = dynamic_cast<const CTSSProblem *>(pProblem);
   if (!pP)

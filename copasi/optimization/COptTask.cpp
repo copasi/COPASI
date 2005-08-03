@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/25 09:49:19 $
+   $Date: 2005/08/03 22:37:39 $
    End CVS Header */
 
 /**
@@ -93,6 +93,8 @@ bool COptTask::process()
   COptMethod * pMethod = dynamic_cast<COptMethod *>(mpMethod);
 
   if (!pProblem || !pMethod) return false;
+
+  mpMethod->isValidProblem(mpProblem);
 
   //bool Report = (mReport.getStream() != NULL);
 

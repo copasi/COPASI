@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/21 20:34:51 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:35:12 $
    End CVS Header */
 
 /**
@@ -188,20 +188,20 @@ void CScanItemRandom::step()
       C_FLOAT64 tmpF;
       switch (mRandomType)
         {
-        case 0:           //uniform
+        case 0:            //uniform
           Value = mMin + mRg->getRandomCC() * mFaktor;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 1:           //normal
+        case 1:            //normal
           tmpF = mRg->getRandomNormal01();
           Value = mMin + tmpF * mMax;
           if (mLog)
             Value = exp(Value);
           break;
 
-        case 2:           //poisson
+        case 2:            //poisson
           Value = mRg->getRandomPoisson(mMin);
           //if (mLog)
           //  *mpValue = exp(*mpValue);
@@ -326,7 +326,7 @@ bool CScanMethod::scan()
   if (!mpProblem) return false;
 
   //a hack to ensure that the first subtask is run with initial conditions
-  CCopasiDataModel::Global->getModel()->setState(&mpProblem->getInitialState());
+  //CCopasiDataModel::Global->getModel()->setState(&mpProblem->getInitialState());
 
   bool success = true;
 
@@ -384,3 +384,19 @@ bool CScanMethod::calculate() const
 
 void CScanMethod::setProblem(const CScanProblem * problem)
 {mpProblem = problem;}
+
+//virtual
+bool CScanMethod::isValidProblem(const CCopasiProblem * pProblem)
+{
+  if (!CCopasiMethod::isValidProblem(pProblem)) return false;
+
+  const CScanProblem * pP = dynamic_cast<const CScanProblem *>(pProblem);
+  if (!pP)
+    {
+      //not a TrajectoryProblem
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a Scan problem.");
+      return false;
+    }
+
+  return true;
+}

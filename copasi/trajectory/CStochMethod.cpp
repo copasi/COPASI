@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/21 20:36:24 $
+   $Author: ssahle $ 
+   $Date: 2005/08/03 22:32:42 $
    End CVS Header */
 
 #ifdef WIN32
@@ -446,7 +446,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
   mMaxBalance = maxBalance;
   //std::cout << "maxbalance" << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
-  mMaxIntBeforeStep =     /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
+  mMaxIntBeforeStep =      /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.
@@ -512,22 +512,9 @@ std::set<std::string> *CStochMethod::getAffects(C_INT32 reaction_index)
 //virtual
 bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  //TODO: rewrite CModel::suitableForStochasticSimulation() to use
-  //      CCopasiMessage
-  if (!pProblem)
-    {
-      //no problem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 7);
-      return false;
-    }
+  if (!CTrajectoryMethod::isValidProblem(pProblem)) return false;
 
   const CTrajectoryProblem * pTP = dynamic_cast<const CTrajectoryProblem *>(pProblem);
-  if (!pTP)
-    {
-      //not a TrajectoryProblem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 8);
-      return false;
-    }
 
   if (pTP->getEndTime() < pTP->getStartTime())
     {
@@ -536,6 +523,8 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
+  //TODO: rewrite CModel::suitableForStochasticSimulation() to use
+  //      CCopasiMessage
   std::string message = pTP->getModel()->suitableForStochasticSimulation();
   if (message != "")
     {
