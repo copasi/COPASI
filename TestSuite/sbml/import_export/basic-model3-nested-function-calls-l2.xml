@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="basic_model3_base">
+    <listOfFunctionDefinitions>
+        <functionDefinition id="a">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <times/>
+                        <ci> x </ci>
+                        <cn> 1.0 </cn>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="b">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <ci> a </ci>
+                        <ci> x </ci>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="z">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <ci> a </ci>
+                        <ci> x </ci>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="d">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <ci> b </ci>
+                        <ci> x </ci>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="e">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <ci> z </ci>
+                        <ci> x </ci>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="f">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <ci> d </ci>
+                        <ci> x </ci>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="g">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <ci> e </ci>
+                        <ci> x </ci>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="h">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <ci> f </ci>
+                        <ci> x </ci>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="i">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <ci> g </ci>
+                        <ci> x </ci>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="j">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <ci> h </ci>
+                        <ci> x </ci>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="k">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <ci> i </ci>
+                        <ci> x </ci>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="l">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <times/>
+                        <ci> x </ci>
+                        <cn> 1.0 </cn>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="m">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <ci> j </ci>
+                        <ci> x </ci>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="n">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <ci> k </ci>
+                        <ci> x </ci>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="o">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <ci> m </ci>
+                        <ci> x </ci>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="p">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <ci> n </ci>
+                        <ci> x </ci>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+        <functionDefinition id="q">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <lambda>
+                    <bvar><ci> x </ci></bvar>
+                    <apply>
+                        <times/>
+                        <ci> x </ci>
+                        <cn> 1.0 </cn>
+                    </apply>
+                </lambda>
+            </math>
+        </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfCompartments>
+      <compartment id="c" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="S1" compartment="c" initialAmount="1e-15"/>
+      <species id="S2" compartment="c" initialAmount="2e-15"/>
+      <species id="S3" compartment="c" initialAmount="1e-15"/>
+      <species id="S4" compartment="c" initialAmount="1e-15"/>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction id="R1" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S1"/>
+          <speciesReference species="S2"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S3"/>
+          <speciesReference species="S4"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+                  <ci> kf </ci>
+                  <apply>
+                    <ci> o  </ci>
+                    <ci> S1 </ci>
+                  </apply>
+                  <apply>
+                    <ci> p  </ci> 
+                    <ci> S2 </ci>
+                  </apply>  
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="kf" value="7.5e+14"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R2" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S3"/>
+          <speciesReference species="S4"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S1"/>
+          <speciesReference species="S2"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+                  <apply>
+                    <ci> d  </ci>
+                    <ci> kr </ci>
+                  </apply>  
+                  <apply>
+                    <ci> i  </ci>
+                    <ci> S3 </ci>
+                  </apply>
+                  <apply>
+                    <ci> h  </ci>
+                    <ci> S4 </ci>
+                  </apply>  
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="kr" value="2.5e+14"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

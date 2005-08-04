@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="Model_0" name="New Model">
+          <annotation>
+  <listOfLayouts xmlns="http://projects.eml.org/bcb/sbml/level2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <layout id="layout_1">
+      <dimensions width="254.1" height="194.497"/>
+      <listOfSpeciesGlyphs>
+        <speciesGlyph id="SpeciesGlyph_1" species="species_0">
+          <boundingBox id="BoundingBox_1">
+            <position x="203.9" y="27.2485"/>
+            <dimensions width="40.2" height="17.2485"/>
+          </boundingBox>
+        </speciesGlyph>
+        <speciesGlyph id="SpeciesGlyph_2" species="species_1">
+          <boundingBox id="BoundingBox_3">
+            <position x="204.8" y="164.497"/>
+            <dimensions width="38.4" height="17.2485"/>
+          </boundingBox>
+        </speciesGlyph>
+        <speciesGlyph id="SpeciesGlyph_3" species="species_2">
+          <boundingBox id="BoundingBox_5">
+            <position x="10.9" y="27.2485"/>
+            <dimensions width="38.4" height="17.2485"/>
+          </boundingBox>
+        </speciesGlyph>
+        <speciesGlyph id="SpeciesGlyph_4" species="species_3">
+          <boundingBox id="BoundingBox_7">
+            <position x="10" y="164.497"/>
+            <dimensions width="40.2" height="17.2485"/>
+          </boundingBox>
+        </speciesGlyph>
+      </listOfSpeciesGlyphs>
+      <listOfReactionGlyphs>
+        <reactionGlyph id="ReactionGlyph_1" reaction="reaction_0">
+          <curve>
+            <listOfCurveSegments>
+              <curveSegment xsi:type="LineSegment">
+                <start x="224" y="84.4971"/>
+                <end x="224" y="124.497"/>
+              </curveSegment>
+            </listOfCurveSegments>
+          </curve>
+          <listOfSpeciesReferenceGlyphs>
+            <speciesReferenceGlyph id="SpeciesReferenceGlyph_1" role="substrate">
+              <curve>
+                <listOfCurveSegments>
+                  <curveSegment xsi:type="LineSegment">
+                    <start x="224" y="44.4971"/>
+                    <end x="224" y="84.4971"/>
+                  </curveSegment>
+                </listOfCurveSegments>
+              </curve>
+            </speciesReferenceGlyph>
+            <speciesReferenceGlyph id="SpeciesReferenceGlyph_2" role="product">
+              <curve>
+                <listOfCurveSegments>
+                  <curveSegment xsi:type="LineSegment">
+                    <start x="224" y="124.497"/>
+                    <end x="224" y="164.497"/>
+                  </curveSegment>
+                </listOfCurveSegments>
+              </curve>
+            </speciesReferenceGlyph>
+          </listOfSpeciesReferenceGlyphs>
+        </reactionGlyph>
+        <reactionGlyph id="ReactionGlyph_2" reaction="reaction_1">
+          <curve>
+            <listOfCurveSegments>
+              <curveSegment xsi:type="LineSegment">
+                <start x="30.1" y="84.4971"/>
+                <end x="30.1" y="124.497"/>
+              </curveSegment>
+            </listOfCurveSegments>
+          </curve>
+          <listOfSpeciesReferenceGlyphs>
+            <speciesReferenceGlyph id="SpeciesReferenceGlyph_3" role="substrate">
+              <curve>
+                <listOfCurveSegments>
+                  <curveSegment xsi:type="LineSegment">
+                    <start x="30.1" y="44.4971"/>
+                    <end x="30.1" y="84.4971"/>
+                  </curveSegment>
+                </listOfCurveSegments>
+              </curve>
+            </speciesReferenceGlyph>
+            <speciesReferenceGlyph id="SpeciesReferenceGlyph_4" role="product">
+              <curve>
+                <listOfCurveSegments>
+                  <curveSegment xsi:type="LineSegment">
+                    <start x="30.1" y="124.497"/>
+                    <end x="30.1" y="164.497"/>
+                  </curveSegment>
+                </listOfCurveSegments>
+              </curve>
+            </speciesReferenceGlyph>
+          </listOfSpeciesReferenceGlyphs>
+        </reactionGlyph>
+      </listOfReactionGlyphs>
+      <listOfTextGlyphs>
+        <textGlyph id="TextGlyph_1" graphicalObject="SpeciesGlyph_1" originOfText="species_0">
+          <boundingBox id="BoundingBox_2">
+            <position x="203.9" y="27.2485"/>
+            <dimensions width="40.2" height="17.2485"/>
+          </boundingBox>
+        </textGlyph>
+        <textGlyph id="TextGlyph_2" graphicalObject="SpeciesGlyph_2" originOfText="species_1">
+          <boundingBox id="BoundingBox_4">
+            <position x="204.8" y="164.497"/>
+            <dimensions width="38.4" height="17.2485"/>
+          </boundingBox>
+        </textGlyph>
+        <textGlyph id="TextGlyph_3" graphicalObject="SpeciesGlyph_3" originOfText="species_2">
+          <boundingBox id="BoundingBox_6">
+            <position x="10.9" y="27.2485"/>
+            <dimensions width="38.4" height="17.2485"/>
+          </boundingBox>
+        </textGlyph>
+        <textGlyph id="TextGlyph_4" graphicalObject="SpeciesGlyph_4" originOfText="species_3">
+          <boundingBox id="BoundingBox_8">
+            <position x="10" y="164.497"/>
+            <dimensions width="40.2" height="17.2485"/>
+          </boundingBox>
+        </textGlyph>
+      </listOfTextGlyphs>
+    </layout>
+  </listOfLayouts>
+            </annotation>
+    <listOfFunctionDefinitions>
+      <functionDefinition id="a">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> species_0 </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> species_1 </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment_0 </ci>
+            </bvar>
+            <apply>
+              <times/>
+              <ci> compartment_0 </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vf </ci>
+                      <ci> species_0 </ci>
+                    </apply>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> species_1 </ci>
+                    </apply>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> species_0 </ci>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> species_1 </ci>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfUnitDefinitions>
+      <unitDefinition id="volume">
+        <listOfUnits>
+          <unit kind="litre" scale="-3" multiplier="1" offset="0"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="substance">
+        <listOfUnits>
+          <unit kind="mole" scale="-3" multiplier="1" offset="0"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="compartment_0" name="compartment" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="species_0" name="A" compartment="compartment_0" initialConcentration="0.1"/>
+      <species id="species_1" name="B" compartment="compartment_0" initialConcentration="0.1"/>
+      <species id="species_2" name="C" compartment="compartment_0" initialConcentration="0.1"/>
+      <species id="species_3" name="D" compartment="compartment_0" initialConcentration="0.1"/>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction id="reaction_0" name="reaction">
+        <listOfReactants>
+          <speciesReference species="species_0"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="species_1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_0 </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vf </ci>
+                      <ci> species_0 </ci>
+                    </apply>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> species_1 </ci>
+                    </apply>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> species_0 </ci>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> species_1 </ci>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kms" value="0.1"/>
+            <parameter id="Kmp" value="0.1"/>
+            <parameter id="Vf" value="0.1"/>
+            <parameter id="Vr" value="0.1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_1" name="reaction">
+        <listOfReactants>
+          <speciesReference species="species_2"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="species_3"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <ci> a </ci>
+              <ci> Vf </ci>
+              <ci> Kms </ci>
+              <ci> species_2 </ci>
+              <ci> Vr </ci>
+              <ci> Kmp </ci>
+              <ci> species_3 </ci>
+              <ci> compartment_0 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kms" value="0.1"/>
+            <parameter id="Kmp" value="0.1"/>
+            <parameter id="Vf" value="0.1"/>
+            <parameter id="Vr" value="0.1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by COPASI version 4.0 Debug 13++ on 2005-08-03 11:04 with libsbml version 2.3.2. -->
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="Model_0" name="New Model">
+   <listOfFunctionDefinitions>
+     <functionDefinition id="a">
+       <math xmlns="http://www.w3.org/1998/Math/MathML">
+         <lambda>
+         <bvar><ci>V</ci></bvar>
+         <bvar><ci>Km</ci></bvar>
+         <bvar><ci>species_0</ci></bvar>
+         <bvar><ci>compartment_0</ci></bvar>
+         <apply>
+           <times/>
+           <ci> compartment_0 </ci>
+           <apply>
+             <divide/>
+             <apply>
+               <times/>
+               <ci> V </ci>
+               <ci> species_0 </ci>
+             </apply>
+             <apply>
+               <plus/>
+               <ci> Km </ci>
+               <ci> species_0 </ci>
+             </apply>
+           </apply>
+         </apply>
+         </lambda>
+       </math>
+     </functionDefinition>
+   </listOfFunctionDefinitions>
+   <listOfUnitDefinitions>
+      <unitDefinition id="volume">
+        <listOfUnits>
+          <unit kind="litre" scale="-3" multiplier="1" offset="0"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="substance">
+        <listOfUnits>
+          <unit kind="mole" scale="-3" multiplier="1" offset="0"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="compartment_0" name="compartment" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="species_0" name="A" compartment="compartment_0" initialConcentration="0.1"/>
+      <species id="species_1" name="B" compartment="compartment_0" initialConcentration="0.1"/>
+       <species id="species_2" name="C" compartment="compartment_0" initialConcentration="0.1"/>
+      <species id="species_3" name="D" compartment="compartment_0" initialConcentration="0.1"/>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction id="reaction_0" name="reaction" reversible="false">
+        <listOfReactants>
+          <speciesReference species="species_0"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="species_1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_0 </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> V </ci>
+                  <ci> species_0 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> Km </ci>
+                  <ci> species_0 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="0.1"/>
+            <parameter id="V" value="0.1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_1" name="reaction" reversible="false">
+        <listOfReactants>
+          <speciesReference species="species_2"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="species_3"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <ci>a</ci>
+              <ci>V</ci>
+              <ci>Km</ci>
+              <ci>species_2</ci>
+              <ci>compartment_0</ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Km" value="0.1"/>
+            <parameter id="V" value="0.1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

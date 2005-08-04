@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by COPASI version 4.0 Debug 13++ on 2005-08-03 11:52 with libsbml version 2.3.2. -->
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="Model_0" name="New Model">
+    <listOfFunctionDefinitions>
+      <functionDefinition id="a">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+              <bvar><ci>Vf</ci></bvar>
+              <bvar><ci>Kms</ci></bvar>
+              <bvar><ci>species_0</ci></bvar>
+              <bvar><ci>Vr</ci></bvar>
+              <bvar><ci>Kmp</ci></bvar>
+              <bvar><ci>species_1</ci></bvar>
+              <bvar><ci>compartment_0</ci></bvar>
+              <apply>
+                <times/>
+                <ci> compartment_0 </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <ci> Vf </ci>
+                        <ci> species_0 </ci>
+                      </apply>
+                      <ci> Kms </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <ci> Vr </ci>
+                        <ci> species_1 </ci>
+                      </apply>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> species_0 </ci>
+                      <ci> Kms </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> species_1 </ci>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </lambda>  
+          </math>
+        </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfUnitDefinitions>
+      <unitDefinition id="volume">
+        <listOfUnits>
+          <unit kind="litre" scale="-3" multiplier="1" offset="0"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="substance">
+        <listOfUnits>
+          <unit kind="mole" scale="-3" multiplier="1" offset="0"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="compartment_0" name="compartment" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="species_0" name="A" compartment="compartment_0" initialConcentration="0.1"/>
+      <species id="species_1" name="B" compartment="compartment_0" initialConcentration="0.1"/>
+      <species id="species_2" name="C" compartment="compartment_0" initialConcentration="0.1"/>
+      <species id="species_3" name="D" compartment="compartment_0" initialConcentration="0.1"/>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction id="reaction_0" name="reaction">
+        <listOfReactants>
+          <speciesReference species="species_0"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="species_1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_0 </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vf </ci>
+                      <ci> species_0 </ci>
+                    </apply>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> species_1 </ci>
+                    </apply>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> species_0 </ci>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> species_1 </ci>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kms" value="0.1"/>
+            <parameter id="Kmp" value="0.1"/>
+            <parameter id="Vf" value="0.1"/>
+            <parameter id="Vr" value="0.1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_1" name="reaction">
+        <listOfReactants>
+          <speciesReference species="species_2"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="species_3"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <ci>a</ci>
+              <ci> Vf </ci>
+              <ci> Kms </ci>
+              <ci> species_2 </ci>
+              <ci> Vr </ci>
+              <ci> Kmp </ci>
+              <ci> species_3 </ci>
+              <ci> compartment_0 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="Kms" value="0.1"/>
+            <parameter id="Kmp" value="0.1"/>
+            <parameter id="Vf" value="0.1"/>
+            <parameter id="Vr" value="0.1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>
