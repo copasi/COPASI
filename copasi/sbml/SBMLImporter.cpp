@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.85 $
+   $Revision: 1.86 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/01 14:50:48 $
+   $Date: 2005/08/05 15:48:26 $
    End CVS Header */
 
 #include "copasi.h"
@@ -766,25 +766,14 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               // else we take the function from the pTmpFunctionDB, copy it and set the usage correctly
               else
                 {
-                  CFunction* pFun = this->copyFunction(tree);
-                  // we need a unique name for the function
-                  std::string appendix = "";
-                  unsigned int counter = 0;
-                  std::string functionName = pFun->getObjectName();
-                  std::ostringstream numberStream;
-                  while (this->functionDB->findFunction(functionName + appendix) || pTmpFunctionDB->findFunction(functionName + appendix))
-                    {
-                      counter++;
-                      numberStream.str("");
-                      numberStream << "_" << counter;
-                      appendix = numberStream.str();
-                    }
-                  pFun->setObjectName(functionName + appendix);
-                  this->setCorrectUsage(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
-                  this->doMapping(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
-                  pTmpFunctionDB->add(pFun, false);
-                  this->functionDB->add(pFun, true);
-                  this->mUsedFunctions.insert(pFun->getObjectName());
+                  // replace the variable nodes in tree with  nodes from
+                  CEvaluationNode* pTmpExpression = this->replaceVariables(tree, pExpressionTreeRoot);
+
+                  CEvaluationTree* pTmpTree2 = CEvaluationTree::create(CEvaluationTree::Expression);
+                  pTmpTree2->setRoot(pTmpExpression);
+                  copasiReaction->setFunctionFromExpressionTree(pTmpTree2, copasi2sbmlmap, this->functionDB);
+                  delete pTmpTree2;
+                  this->mUsedFunctions.insert(copasiReaction->getFunction().getObjectName());
                 }
             }
           else
@@ -2073,19 +2062,19 @@ bool SBMLImporter::isSimpleFunctionCall(const CEvaluationNode* pRootNode)
   return result;
 }
 
-CFunction* SBMLImporter::copyFunction(const CFunction* pFun)
+/*
+CEvaluationNode* SBMLImporter::deepCopyNode(const CEvaluationNode* node)
 {
-  CFunction* pNewFun = new CFunction(*pFun);
-  const CEvaluationNode* pRootNode = pFun->getRoot();
-  CEvaluationNode* pNewRoot = CEvaluationNode::create(pRootNode->getType(), pRootNode->getData());
-  const CEvaluationNode* pChildNode = static_cast<const CEvaluationNode*>(pRootNode->getChild());
-  while (pChildNode)
-    {
-      pNewRoot->addChild(CEvaluationNode::create(pChildNode->getType(), pChildNode->getData()));
-    }
-  pNewFun->setRoot(pNewRoot);
-  return pNewFun;
+  CEvaluationNode* pNewNode=CEvaluationNode::create(node->getType(),node->getData());
+  const CEvaluationNode* pChildNode=static_cast<const CEvaluationNode*>(node->getChild());
+  while(pChildNode)
+  {
+    pNewNode->addChild(this->deepCopyNode(pChildNode));
+    pChildNode=static_cast<const CEvaluationNode*>(pChildNode->getSibling());
+  }  
+  return pNewNode;
 }
+ */
 
 ASTNode* SBMLImporter::isMultipliedByVolume(const ASTNode* node, const std::string& compartmentSBMLId)
 {
@@ -2142,4 +2131,58 @@ ASTNode* SBMLImporter::isMultipliedByVolume(const ASTNode* node, const std::stri
         }
     }
   return result;
+}
+
+/*
+CFunction* SBMLImporter::copyFunction(const CFunction* pFunction)
+{
+    CFunction* pNewFun=new CFunction();
+    pNewFun->setRoot(this->deepCopyNode(pFunction->getRoot()));
+    pNewFun->setReversible(pFunction->isReversible());
+    return pNewFun;
+}
+ */
+
+CEvaluationNode* SBMLImporter::replaceVariables(const CFunction* f, const CEvaluationNode* pCallNode)
+{
+  // make a map that maps parameter n of function f to child n of pCallNode which must be an object
+  const CEvaluationNodeCall* pCN = dynamic_cast<const CEvaluationNodeCall*>(pCallNode);
+  if (!pCN) fatalError();
+  std::map<std::string, const CEvaluationNodeObject*> replacementMap;
+  const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCN->getChild());
+  unsigned int i, iMax = f->getVariables().size();
+  for (i = 0; i < iMax;++i)
+    {
+      if (!pObjectNode) break;
+      replacementMap[f->getVariables()[i]->getObjectName()] = pObjectNode;
+      pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pObjectNode->getSibling());
+    }
+  if (i < iMax || pObjectNode)
+    {
+      // the number of arguments to the call node was not equal to the number of the parameters in the
+      // function or one of the call arguments was not an object node
+      fatalError();
+    }
+  return this->replaceVariables(f->getRoot(), replacementMap);
+}
+
+CEvaluationNode* SBMLImporter::replaceVariables(const CEvaluationNode* pOrigNode, std::map<std::string, const CEvaluationNodeObject*> replacementMap)
+{
+  CEvaluationNode* pResultNode = NULL;
+  if (dynamic_cast<const CEvaluationNodeVariable*>(pOrigNode))
+    {
+      const CEvaluationNodeObject* pObjectNode = replacementMap[pOrigNode->getData()];
+      pResultNode = new CEvaluationNodeObject(*pObjectNode);
+    }
+  else
+    {
+      pResultNode = CEvaluationNode::create(pOrigNode->getType(), pOrigNode->getData());
+      const CEvaluationNode* pChildNode = static_cast<const CEvaluationNode*>(pOrigNode->getChild());
+      while (pChildNode)
+        {
+          pResultNode->addChild(this->replaceVariables(pChildNode, replacementMap));
+          pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
+        }
+    }
+  return pResultNode;
 }

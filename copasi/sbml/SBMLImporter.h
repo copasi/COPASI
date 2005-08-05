@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/01 14:50:48 $
+   $Date: 2005/08/05 15:48:26 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -170,7 +170,9 @@ class SBMLImporter
 
     bool isSimpleFunctionCall(const CEvaluationNode* pRootNode);
 
-    CFunction* copyFunction(const CFunction* pFun);
+    //CFunction* copyFunction(const CFunction* pFun);
+
+    //CEvaluationNode* deepCopyNode(const CEvaluationNode* pNode);
 
     void setCorrectUsage(CReaction* pCopasiReaction, const CEvaluationNodeCall* pCallNode);
 
@@ -179,6 +181,10 @@ class SBMLImporter
      * If so, a copy of the tree is returned in which the multiplication has been removed.
      */
     ASTNode* isMultipliedByVolume(const ASTNode* node, const std::string& compartmentSBMLId);
+
+    CEvaluationNode* replaceVariables(const CEvaluationNode* pOrigNode, std::map<std::string, const CEvaluationNodeObject*> replacementMap);
+
+    CEvaluationNode* replaceVariables(const CFunction* f, const CEvaluationNode* pCallNode);
 
   public:
     SBMLImporter();
