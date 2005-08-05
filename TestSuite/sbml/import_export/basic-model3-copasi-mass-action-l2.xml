@@ -8,13 +8,11 @@
              <bvar><ci> k </ci></bvar>
              <bvar><ci> x </ci></bvar>
              <bvar><ci> y </ci></bvar>
-             <bvar><ci> c </ci></bvar>
              <apply>
                <times/>
                  <ci>k</ci>
                  <ci>x</ci>
                  <ci>y</ci>
-                 <ci>c</ci>
              </apply>    
            </lambda>
         </math>
@@ -66,11 +64,14 @@
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
-              <ci> a  </ci>
-              <ci> kr </ci>
-              <ci> S3 </ci>
-              <ci> S4 </ci>
-              <ci> c  </ci>
+                <times/>
+                <apply>
+                  <ci> a  </ci>
+                  <ci> kr </ci>
+                  <ci> S3 </ci>
+                  <ci> S4 </ci>
+                </apply>  
+                <ci> c  </ci>
             </apply>
           </math>
           <listOfParameters>
