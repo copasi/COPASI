@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/08/03 22:32:42 $
+   $Date: 2005/08/05 11:46:22 $
    End CVS Header */
 
 #ifdef WIN32
@@ -321,7 +321,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
 
 C_INT32 CStochMethod::generateReactionIndex()
 {
-  C_FLOAT64 rand1 = mRandomGenerator->getRandomCC() * mA0;
+  C_FLOAT64 rand1 = mRandomGenerator->getRandomOO() * mA0;
   C_FLOAT64 sum = 0;
   unsigned C_INT32 index = 0;
 
@@ -446,7 +446,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
   mMaxBalance = maxBalance;
   //std::cout << "maxbalance" << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
-  mMaxIntBeforeStep =      /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
+  mMaxIntBeforeStep =       /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.
