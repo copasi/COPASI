@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/08/01 07:00:06 $
+   $Author: shoops $ 
+   $Date: 2005/08/05 15:11:22 $
    End CVS Header */
 
 #include "copasi.h"
@@ -260,7 +260,7 @@ bool COptMethodEP::creation()
                 {
                   (*mIndividual[i])[j] = mn + mpRandom->getRandomCC() * (mx - mn);
                 }
-              catch (unsigned int e)
+              catch (...)
                 {
                   (*mIndividual[i])[j] = mx;
                 }
@@ -292,7 +292,7 @@ bool COptMethodEP::creation()
                       break;
                     }
                 }
-              catch (unsigned C_INT32 e)
+              catch (...)
                 {
                   (*mIndividual[i])[j] = mx;
                 }
@@ -440,9 +440,8 @@ bool COptMethodEP::mutate(unsigned C_INT32 i)
         }
     }
 
-  catch (unsigned int e)
-    {
-    }
+  catch (...)
+  {}
   // evaluate the fitness
   mValue[i] = evaluate(*mIndividual[i]);
 
