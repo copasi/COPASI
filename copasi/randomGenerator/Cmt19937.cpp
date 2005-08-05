@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/Cmt19937.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:30:26 $
+   $Date: 2005/08/05 15:10:35 $
    End CVS Header */
 
 #include "copasi.h"
@@ -145,7 +145,7 @@ C_FLOAT64 Cmt19937::getRandomCC()
   mNumberU ^= (mNumberU << 15) & 0xefc60000UL;
   mNumberU ^= (mNumberU >> 18);
 
-  return (C_FLOAT64)mNumberU * (1.0 / 4294967295.0);
+  return ((C_FLOAT64) mNumberU) * (1.0 / 4294967295.0);
   /* divided by 2^32-1 */
 }
 
@@ -162,7 +162,7 @@ C_FLOAT64 Cmt19937::getRandomCO()
   mNumberU ^= (mNumberU << 15) & 0xefc60000UL;
   mNumberU ^= (mNumberU >> 18);
 
-  return (C_FLOAT64)mNumberU * (1.0 / 4294967296.0);
+  return ((C_FLOAT64) mNumberU) * (1.0 / 4294967296.0);
   /* divided by 2^32 */
 }
 
@@ -179,7 +179,7 @@ C_FLOAT64 Cmt19937::getRandomOO()
   mNumberU ^= (mNumberU << 15) & 0xefc60000UL;
   mNumberU ^= (mNumberU >> 18);
 
-  return ((C_FLOAT64)mNumberU + 0.5) * (1.0 / 4294967296.0);
+  return (((C_FLOAT64) mNumberU) + 0.5) * (1.0 / 4294967296.0);
   /* divided by 2^32 */
 }
 
