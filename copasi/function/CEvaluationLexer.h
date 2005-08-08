@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationLexer.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/21 20:28:42 $
+   $Date: 2005/08/08 21:16:31 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationLexer
@@ -106,7 +106,8 @@ class yyYaccParser
       for (; it != end && mPosition < oldPosition; ++it)
         mPosition += (*it)->getData().length();
 
-      mPosition -= (*--it)->getData().length();
+      if (mPosition > 0)
+        mPosition -= (*--it)->getData().length();
     }
   };
 
