@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/21 11:40:10 $
+   $Date: 2005/08/08 21:17:34 $
    End CVS Header */
 
 #include "FunctionWidget.h"
@@ -93,9 +93,9 @@ void FunctionWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
                            msg,
                            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
     }
-  if (pFunc->getInfix() != (const char *) table->text(row, 2).utf8())
+  if (pFunc->getInfix() != (const char *) table->text(row, 3).utf8())
     {
-      if (!pFunc->setInfix((const char *) table->text(row, 2).utf8()))
+      if (!pFunc->setInfix((const char *) table->text(row, 3).utf8()))
         {
           QString msg;
           msg = "Incorrect  mathematical description'" + FROM_UTF8(pFunc->getObjectName()) + "'.\n";
@@ -111,7 +111,7 @@ void FunctionWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 void FunctionWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
   if (exc != 2)
-    table->setText(row, 2, "");
+    table->setText(row, 2, FROM_UTF8(CEvaluationTree::TypeName[4]));
   if (exc != 3)
     table->setText(row, 3, "");
 }
@@ -201,7 +201,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
 
   switch (choice)
     {
-    case 0:                         // Yes or Enter
+    case 0:                          // Yes or Enter
       {
         //first delete reactions
         std::set<std::string>::const_iterator it, itEnd = totalEffectedReacKeys.end();
@@ -221,7 +221,7 @@ void FunctionWidget::deleteObjects(const std::vector<std::string> & keys)
 
         break;
       }
-    case 1:                         // No or Escape
+    case 1:                          // No or Escape
       break;
     }
 }
