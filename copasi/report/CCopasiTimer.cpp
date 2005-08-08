@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiTimer.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/08 17:20:30 $
+   $Date: 2005/08/08 17:47:28 $
    End CVS Header */
 
 #include "copasi.h"
@@ -68,7 +68,8 @@ bool CCopasiTimer::actualize()
       break;
     }
 
-  mElapsedTimeSeconds = mElapsedTime.getSeconds();
+  mElapsedTimeSeconds =
+    mElapsedTime.getSeconds() + (mElapsedTime.getMicroSeconds(true) / 1e6);
 
   return true;
 }
@@ -80,4 +81,7 @@ const CCopasiTimeVariable & CCopasiTimer::getElapsedTime()
 }
 
 void CCopasiTimer::print(std::ostream * ostream) const
-  {(*ostream) << mElapsedTime.isoFormat();}
+  {(*ostream) << mElapsedTimeSeconds;}
+
+void * CCopasiTimer::getReference() const
+  {return & const_cast<CCopasiTimer *>(this)->mElapsedTimeSeconds;}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiTimer.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/08 17:20:30 $
+   $Date: 2005/08/08 17:47:28 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiTimer
@@ -72,6 +72,8 @@ class CCopasiTimer: public CCopasiObject
      * @param std::ostream * ostream
      */
     virtual void print(std::ostream * ostream) const;
+
+    virtual void * getReference() const;
 
   private:
     // Attributes
