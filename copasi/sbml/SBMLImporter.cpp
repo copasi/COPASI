@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/05 15:48:26 $
+   $Date: 2005/08/08 14:55:09 $
    End CVS Header */
 
 #include "copasi.h"
@@ -773,7 +773,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                   pTmpTree2->setRoot(pTmpExpression);
                   copasiReaction->setFunctionFromExpressionTree(pTmpTree2, copasi2sbmlmap, this->functionDB);
                   delete pTmpTree2;
-                  this->mUsedFunctions.insert(copasiReaction->getFunction().getObjectName());
+                  if (copasiReaction->getFunction().getType() == CEvaluationTree::UserDefined)
+                    {
+                      pTmpFunctionDB->add(&const_cast<CFunction&>(copasiReaction->getFunction()), false);
+                      this->mUsedFunctions.insert(copasiReaction->getFunction().getObjectName());
+                    }
                 }
             }
           else
@@ -785,8 +789,11 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                 }
               else
                 {
-                  pTmpFunctionDB->add(const_cast<CFunction*>(&copasiReaction->getFunction()), false);
-                  this->mUsedFunctions.insert(copasiReaction->getFunction().getObjectName());
+                  if (copasiReaction->getFunction().getType() == CEvaluationTree::UserDefined)
+                    {
+                      pTmpFunctionDB->add(&const_cast<CFunction&>(copasiReaction->getFunction()), false);
+                      this->mUsedFunctions.insert(copasiReaction->getFunction().getObjectName());
+                    }
                 }
             }
           // delete the temporary tree and all the nodes
@@ -1601,7 +1608,24 @@ void SBMLImporter::replaceCallNodeNames(CEvaluationNode* node)
 CFunction* SBMLImporter::findCorrespondingFunction(const CFunction* tree, const CEvaluationNode* pRootNode, const CReaction* pCopasiReaction)
 {
   CFunction* pCorrespondingFunction = NULL;
-  if (this->isMassAction(pRootNode, &pCopasiReaction->getChemEq().getSubstrates(), pCopasiReaction->isReversible(), &pCopasiReaction->getChemEq().getProducts()))
+  // create a map that map function parameter names in tree to copasi objects for the call node pRootNode
+  std::map<std::string, const CCopasiObject*> replacementMap;
+  if ((!dynamic_cast<const CEvaluationNodeCall*>(pRootNode))) fatalError();
+  const CFunctionParameters& funParams = tree->getVariables();
+  unsigned int i, iMax = funParams.size();
+  const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pRootNode->getChild());
+  for (i = 0; i < iMax && pObjectNode;++i)
+    {
+      std::vector<CCopasiContainer*> containers = std::vector<CCopasiContainer*>();
+      containers.push_back(this->mpCopasiModel);
+      CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, CCopasiObjectName(pObjectNode->getData().substr(1, pObjectNode->getData().size() - 2)));
+      if (!pObject) fatalError();
+      replacementMap[funParams[i]->getObjectName()] = pObject;
+      pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pObjectNode->getSibling());
+    }
+  if (i < iMax || pObjectNode) fatalError(); // we had not enough object node arguments in pRootNode or pRootNode had more children then tree had arguments.
+
+  if (this->isMassAction(pRootNode, replacementMap, &pCopasiReaction->getChemEq().getSubstrates(), pCopasiReaction->isReversible(), &pCopasiReaction->getChemEq().getProducts()))
     {
       if (pCopasiReaction->isReversible())
         {
@@ -1686,7 +1710,7 @@ bool SBMLImporter::areEqualFunctions(const CFunction* pFun, const CFunction* pFu
   return result;
 }
 
-bool SBMLImporter::isMassAction(const CEvaluationNode* pRootNode, const CCopasiVector<CChemEqElement>* substrates, bool reversible, const CCopasiVector<CChemEqElement>* products)
+bool SBMLImporter::isMassAction(const CEvaluationNode* pRootNode, const std::map<std::string, const CCopasiObject*>& parameterMap , const CCopasiVector<CChemEqElement>* substrates, bool reversible, const CCopasiVector<CChemEqElement>* products)
 {
   bool result = true;
   if (reversible)
@@ -1695,10 +1719,10 @@ bool SBMLImporter::isMassAction(const CEvaluationNode* pRootNode, const CCopasiV
       if (op && (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(op->getType())) == CEvaluationNodeOperator::MINUS))
         {
           if (!products) fatalError();
-          result = this->isMassAction(static_cast<const CEvaluationNode*>(pRootNode->getChild()), substrates);
+          result = this->isMassAction(static_cast<const CEvaluationNode*>(pRootNode->getChild()), parameterMap, substrates);
           if (result)
             {
-              result = this->isMassAction(static_cast<const CEvaluationNode*>(pRootNode->getChild()->getSibling()), products);
+              result = this->isMassAction(static_cast<const CEvaluationNode*>(pRootNode->getChild()->getSibling()), parameterMap , products);
             }
         }
     }
@@ -1728,15 +1752,14 @@ bool SBMLImporter::isMassAction(const CEvaluationNode* pRootNode, const CCopasiV
                 {
                   // metabolites, model values and local parameters are object nodes
                   const CEvaluationNode* argument = arguments[i];
-                  if (dynamic_cast<const CEvaluationNodeObject*>(argument))
+                  if (dynamic_cast<const CEvaluationNodeVariable*>(argument))
                     {
-                      std::vector<CCopasiContainer*> listOfContainers = std::vector<CCopasiContainer*>();
-                      listOfContainers.push_back(this->mpCopasiModel);
-                      const CCopasiObject* object = CCopasiContainer::ObjectFromName(listOfContainers, argument->getData().substr(1, argument->getData().length() - 2));
-                      if (!object)
+                      std::map<std::string, const CCopasiObject*>::const_iterator pos = parameterMap.find(argument->getData());
+                      if (pos == parameterMap.end())
                         {
                           fatalError();
                         }
+                      const CCopasiObject* object = pos->second;
                       CCopasiVector<CChemEqElement>::iterator it = v.begin();
                       CCopasiVector<CChemEqElement>::iterator endIt = v.end();
                       if (dynamic_cast<const CCopasiObjectReference<C_FLOAT64>*>(object))
@@ -1802,20 +1825,20 @@ bool SBMLImporter::isMassAction(const CEvaluationNode* pRootNode, const CCopasiV
                     {
                       // so the arguments to this must be a metabolite
                       // and its stoichiometry
-                      const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(argument->getChild());
+                      const CEvaluationNodeVariable* pObjectNode = dynamic_cast<const CEvaluationNodeVariable*>(argument->getChild());
                       const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(argument->getChild()->getSibling());
                       if ((!pObjectNode) || (!pNumberNode))
                         {
                           result = false;
                           break;
                         }
-                      std::vector<CCopasiContainer*> listOfContainers = std::vector<CCopasiContainer*>();
-                      listOfContainers.push_back(this->mpCopasiModel);
-                      const CCopasiObject* object = CCopasiContainer::ObjectFromName(listOfContainers, pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2));
-                      if (!object)
+
+                      std::map<std::string, const CCopasiObject*>::const_iterator pos = parameterMap.find(argument->getData());
+                      if (pos == parameterMap.end())
                         {
                           fatalError();
                         }
+                      const CCopasiObject* object = pos->second;
                       const CMetab* metab = dynamic_cast<const CMetab*>(object);
                       if (!metab)
                         {
@@ -2172,7 +2195,7 @@ CEvaluationNode* SBMLImporter::replaceVariables(const CEvaluationNode* pOrigNode
   if (dynamic_cast<const CEvaluationNodeVariable*>(pOrigNode))
     {
       const CEvaluationNodeObject* pObjectNode = replacementMap[pOrigNode->getData()];
-      pResultNode = new CEvaluationNodeObject(*pObjectNode);
+      pResultNode = new CEvaluationNodeObject((CEvaluationNodeObject::SubType)(CEvaluationNode::subType(pObjectNode->getType())), pObjectNode->getData());
     }
   else
     {

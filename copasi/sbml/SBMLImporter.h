@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/05 15:48:26 $
+   $Date: 2005/08/08 14:55:09 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -157,7 +157,7 @@ class SBMLImporter
 
     bool areEqualFunctions(const CFunction* pFun, const CFunction* pFun2);
 
-    bool isMassAction(const CEvaluationNode* pRootNode, const CCopasiVector<CChemEqElement>* substrates, bool reversible = false, const CCopasiVector<CChemEqElement>* products = NULL);
+    bool isMassAction(const CEvaluationNode* pRootNode, const std::map<std::string, const CCopasiObject*>& parameterMap, const CCopasiVector<CChemEqElement>* substrates, bool reversible = false, const CCopasiVector<CChemEqElement>* products = NULL);
 
     /**
      * This function takes a node and tries to find out wether the tree under this node consists
