@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/29 15:13:28 $
+   $Author: shoops $ 
+   $Date: 2005/08/08 18:59:06 $
    End CVS Header */
 
 #include "copasi.h"
@@ -178,6 +178,8 @@ bool CEvaluationTree::parse()
   CEvaluationParser::freeNodeList(mpNodeList);
   mpNodeList = NULL;
   mpRoot = NULL;
+
+  if (mType == MassAction) return true;
 
   // parse the description into a linked node tree
   std::istringstream buffer(mInfix);
