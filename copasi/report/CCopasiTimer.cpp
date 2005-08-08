@@ -1,36 +1,37 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiTimer.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/29 20:24:22 $
+   $Date: 2005/08/08 17:20:30 $
    End CVS Header */
 
 #include "copasi.h"
 
 #include "CCopasiTimer.h"
-#include "report/CCopasiObjectReference.h"
+#include "CCopasiContainer.h"
+#include "CCopasiObjectReference.h"
 
 CCopasiTimer::CCopasiTimer(const Type & type,
                            const CCopasiContainer * pParent):
-    CCopasiContainer((type == CCopasiTimer::WALL) ? "Wall Clock Time" : "CPU Time",
-                     pParent, "Timer"),
+    CCopasiObject((type == CCopasiTimer::WALL) ? "Wall Clock Time" : "CPU Time",
+                  pParent, "Timer"),
     mType(type),
     mStartTime((mType == CCopasiTimer::WALL) ?
                CCopasiTimeVariable::getCurrentWallTime() :
                CCopasiTimeVariable::getCPUTime()),
     mElapsedTime(0),
     mElapsedTimeSeconds(0)
-{initObjects();}
+{setActualize(this, &CCopasiTimer::actualize);}
 
 CCopasiTimer::CCopasiTimer(const CCopasiTimer & src,
                            const CCopasiContainer * pParent):
-CCopasiContainer(src, pParent),
+CCopasiObject(src, pParent),
 mType(src.mType),
 mStartTime(src.mStartTime),
 mElapsedTime(src.mElapsedTime),
 mElapsedTimeSeconds(src.mElapsedTimeSeconds)
-{initObjects();}
+{setActualize(this, &CCopasiTimer::actualize);}
 
 CCopasiTimer::~CCopasiTimer()
 {}
@@ -78,9 +79,5 @@ const CCopasiTimeVariable & CCopasiTimer::getElapsedTime()
   return mElapsedTime;
 }
 
-void CCopasiTimer::initObjects()
-{
-  CCopasiObject * pObject;
-  pObject = addObjectReference("Elapsed Time", mElapsedTimeSeconds, CCopasiObject::ValueDbl);
-  pObject->setActualize(this, &CCopasiTimer::actualize);
-}
+void CCopasiTimer::print(std::ostream * ostream) const
+  {(*ostream) << mElapsedTime.isoFormat();}
