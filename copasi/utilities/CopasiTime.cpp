@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/01/28 17:14:53 $
+   $Date: 2005/08/08 17:23:48 $
    End CVS Header */
 
 #include <time.h>
@@ -191,7 +191,7 @@ std::string CCopasiTimeVariable::LL2String(const C_INT64 & value,
   std::string format;
 
   if (digits > 0)
-    format = "%0" + StringPrint("d", digits);
+    format = "%0" + StringPrint("%d", digits);
   else
     format = "%";
 
