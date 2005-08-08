@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/FunctionDB.xml.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/01/08 20:17:55 $
+   $Date: 2005/08/08 19:47:52 $
    End CVS Header */
 
 static char FunctionDBxml[] =
@@ -206,7 +206,7 @@ static char FunctionDBxml[] =
   "<Function key=\"Function_13\" name=\"Mass action (irreversible)\" type=\"MassAction\" positive=\"false\">\n"
   "<MathML>\n"
   "<Text>\n"
-  "k1*PRODUCT&lt; substrate_i&gt;\n"
+  "k1*PRODUCT&lt;substrate_i&gt;\n"
   "</Text>\n"
   "</MathML>\n"
   "<ListOfParameterDescriptions>\n"
@@ -217,7 +217,7 @@ static char FunctionDBxml[] =
   "<Function key=\"Function_14\" name=\"Mass action (reversible)\" type=\"MassAction\" positive=\"true\">\n"
   "<MathML>\n"
   "<Text>\n"
-  "k1*PRODUCT&lt; substrate_i&gt;-k2*PRODUCT&lt; product_j&gt;\n"
+  "k1*PRODUCT&lt;substrate_i&gt;-k2*PRODUCT&lt;product_j&gt;\n"
   "</Text>\n"
   "</MathML>\n"
   "<ListOfParameterDescriptions>\n"
