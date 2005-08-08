@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/08 17:28:04 $
+   $Date: 2005/08/08 18:03:10 $
    End CVS Header */
 
 // Main
@@ -29,9 +29,10 @@
 #include "commandline/COptions.h"
 #include "function/CFunctionDB.h"
 #include "function/CEvaluationTree.h"
+#include "function/CFunction.h"
 
-#include "utilities/CopasiTime.h"
 #include "randomGenerator/CRandom.h"
+#include "report/CCopasiTimer.h"
 #include "report/CKeyFactory.h"
 
 int main(int argc, char *argv[])
