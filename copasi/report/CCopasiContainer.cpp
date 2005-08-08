@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 20:05:12 $
+   $Date: 2005/08/08 17:21:17 $
    End CVS Header */
 
 /**
@@ -20,13 +20,20 @@
 #include "CCopasiContainer.h"
 #include "CCopasiObjectReference.h"
 #include "CCopasiStaticString.h"
+#include "CCopasiTimer.h"
+
 #include "utilities/CCopasiVector.h"
 
 CCopasiContainer * CCopasiContainer::Root = NULL;
 
 const std::vector< CCopasiContainer * > CCopasiContainer::EmptyList;
 
-void CCopasiContainer::init() {CCopasiContainer::Root = new CCopasiContainer();}
+void CCopasiContainer::init()
+{
+  CCopasiContainer::Root = new CCopasiContainer();
+  new CCopasiTimer(CCopasiTimer::WALL, CCopasiContainer::Root);
+  new CCopasiTimer(CCopasiTimer::CPU, CCopasiContainer::Root);
+}
 
 CCopasiObject * CCopasiContainer::ObjectFromName(const CCopasiObjectName & objName)
 {return CCopasiContainer::ObjectFromName(EmptyList, objName);}
@@ -164,7 +171,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
         if (cn.getElementName(0, false) == "")
           return it->second;
 
-        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +              //TODO really?
+        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +               //TODO really?
                                         "[" + cn.getElementName(1, false) + "]");
 
         if (it->second->getObjectType() == "Reference" || !pObject)
@@ -173,7 +180,8 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
           return pObject->getObject(cn.getRemainder());
       }
 
-    if (it->second->isReference() || it->second->isStaticString())
+    if (it->second->isReference() || it->second->isStaticString() ||
+        cn.getRemainder() == "")
       return it->second;
 
     return it->second->getObject(cn.getRemainder());
