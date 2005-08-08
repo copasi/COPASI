@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.102 $
+   $Revision: 1.103 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/26 21:15:03 $
+   $Date: 2005/08/08 18:58:09 $
    End CVS Header */
 
 /**
@@ -784,7 +784,7 @@ void CCopasiXMLParser::TextElement::end(const XML_Char *pszName)
       if (strcmp(pszName, "Text")) fatalError();
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
-      mCommon.Comment = mParser.getCharacterData("\x0a\x0d\t ", "");
+      mCommon.Comment = mParser.getCharacterData("\x0a\x0d\t ", " ");
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
