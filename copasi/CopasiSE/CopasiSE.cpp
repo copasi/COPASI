@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/28 13:14:27 $
+   $Author: shoops $ 
+   $Date: 2005/08/08 17:28:04 $
    End CVS Header */
 
 // Main
@@ -82,31 +82,33 @@ int main(int argc, char *argv[])
           Variables[i].value = pValue;
         }
 
-      CCopasiTimeVariable CPU = CCopasiTimeVariable::getCPUTime();
-      CCopasiTimeVariable Wall = CCopasiTimeVariable::getCurrentWallTime();
+      CCopasiTimer * pCPU =
+        const_cast<CCopasiTimer *>(static_cast<const CCopasiTimer *>(CCopasiContainer::Root->getObject((std::string)"CN=Root,Timer=CPU Time")));
+      CCopasiTimer * pWall =
+        const_cast<CCopasiTimer *>(static_cast<const CCopasiTimer *>(CCopasiContainer::Root->getObject((std::string)"CN=Root,Timer=Wall Clock Time")));
 
-      CCopasiVectorN< CFunction > & Functions =
+      CCopasiVectorN< CEvaluationTree > & Functions =
         CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
       CFunction * pFunction;
 
       for (i = 0, imax = Functions.size(); i < imax; i++)
         {
-          pFunction = Functions[i];
-          if (pFunction->getType() != CFunction::MassAction)
+          pFunction = dynamic_cast<CFunction *>(Functions[i]);
+          if (pFunction->getType() != CEvaluationTree::MassAction)
             for (j = 0; j < 100000; j++)
               pFunction->calcValue(Variables);
         }
 
-      CPU = CCopasiTimeVariable::getCPUTime() - CPU;
-      Wall = CCopasiTimeVariable::getCurrentWallTime() - Wall;
+      pCPU->actualize();
+      pWall->actualize();
 
-      std::cout << "CPU time in micro seconds:  "
-      << CCopasiTimeVariable::LL2String(CPU.getMicroSeconds())
-      << std::endl;
+      std::cout << "CPU time:  ";
+      pCPU->print(&std::cout);
+      std::cout << std::endl;
 
-      std::cout << "Wall time in micro seconds: "
-      << CCopasiTimeVariable::LL2String(Wall.getMicroSeconds())
-      << std::endl;
+      std::cout << "Wall time: ";
+      pWall->print(&std::cout);
+      std::cout << std::endl;
 #endif // XXXX
 
 #ifdef XXXX
