@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.87 $
+   $Revision: 1.88 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/08 14:55:09 $
+   $Date: 2005/08/09 15:11:58 $
    End CVS Header */
 
 #include "copasi.h"
@@ -1697,8 +1697,22 @@ bool SBMLImporter::areEqualFunctions(const CFunction* pFun, const CFunction* pFu
                 }
               else
                 {
-                  pNodeFun1 = static_cast<const CEvaluationNode*>(pNodeFun1->getParent()->getSibling());
-                  pNodeFun2 = static_cast<const CEvaluationNode*>(pNodeFun2->getParent()->getSibling());
+                  if (pNodeFun1->getParent())
+                    {
+                      pNodeFun1 = static_cast<const CEvaluationNode*>(pNodeFun1->getParent()->getSibling());
+                    }
+                  else
+                    {
+                      pNodeFun1 = NULL;
+                    }
+                  if (pNodeFun2->getParent())
+                    {
+                      pNodeFun2 = static_cast<const CEvaluationNode*>(pNodeFun2->getParent()->getSibling());
+                    }
+                  else
+                    {
+                      pNodeFun2 = NULL;
+                    }
                 }
             }
         }
@@ -2049,6 +2063,11 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
       listOfContainers.push_back(this->mpCopasiModel);
       CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
       assert(pObject);
+      if (pObject->isReference())
+        {
+          pObject = pObject->getObjectParent();
+          assert(pObject);
+        }
       const std::string& objectKey = pObject->getKey();
       pCopasiReaction->setParameterMapping(i, objectKey);
       pChild = dynamic_cast<const CEvaluationNodeObject*>(pChild->getSibling());
