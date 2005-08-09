@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/25 09:49:19 $
+   $Author: shoops $ 
+   $Date: 2005/08/09 16:51:22 $
    End CVS Header */
 
 #include <float.h>
@@ -271,7 +271,7 @@ bool COptMethodGASR::select()
 
       for (j = 0; j < TotalPopulation - 1; j++)  // lambda is number of individuals
         {
-          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||        // within bounds
+          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||         // within bounds
               (mpRandom->getRandomOO() < mPf))      // random chance to compare values outside bounds
             {
               // compare obj fcn using mValue alternative code
@@ -312,12 +312,12 @@ C_FLOAT64 COptMethodGASR::phi(C_INT32 indivNum)
       // Go through parameter and constraints (all taken care of in single call)
       switch (OptItem.checkConstraint())
         {
-        case - 1:       // to low
+        case - 1:        // to low
           phiCalc = *OptItem.getLowerBoundValue() - (*mIndividual[indivNum])[i];
           phiVal += phiCalc * phiCalc;
           break;
 
-        case 1:         // to high
+        case 1:          // to high
           phiCalc = (*mIndividual[indivNum])[i] - *OptItem.getUpperBoundValue();
           phiVal += phiCalc * phiCalc;
           break;
@@ -330,10 +330,10 @@ C_FLOAT64 COptMethodGASR::phi(C_INT32 indivNum)
 // check the best individual at this generation
 unsigned C_INT32 COptMethodGASR::fittest()
 {
-  unsigned C_INT32 i, BestIndex = 0;
-  C_FLOAT64 BestValue = mValue[0];
+  unsigned C_INT32 i, BestIndex = C_INVALID_INDEX;
+  C_FLOAT64 BestValue = DBL_MAX;
 
-  for (i = 1; i < mPopulationSize; i++)
+  for (i = 0; i < mPopulationSize; i++)
     if (mValue[i] < BestValue && !isnan(mValue[i]) && !(mPhi[i] != 0))
       {
         BestIndex = i;
@@ -508,10 +508,16 @@ bool COptMethodGASR::optimise()
   // get the index of the fittest
   mBestIndex = fittest();
 
-  // and store that value
-  mBestValue = mValue[mBestIndex];
-  mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
-  Continue = mpOptProblem->setSolutionValue(mBestValue);
+  if (mBestIndex != C_INVALID_INDEX)
+    {
+      // and store that value
+      mBestValue = mValue[mBestIndex];
+      mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
+      Continue = mpOptProblem->setSolutionValue(mBestValue);
+
+      // We found a new best value lets report it.
+      mpParentTask->doOutput();
+    }
 
   if (!Continue)
     {
@@ -549,7 +555,9 @@ bool COptMethodGASR::optimise()
 
       // get the index of the fittest
       mBestIndex = fittest();
-      if (mValue[mBestIndex] < mBestValue)
+
+      if (mBestIndex != C_INVALID_INDEX &&
+          mValue[mBestIndex] < mBestValue)
         {
           Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
           mBestValue = mValue[mBestIndex];
@@ -558,7 +566,6 @@ bool COptMethodGASR::optimise()
           Continue = mpOptProblem->setSolutionValue(mBestValue);
 
           // We found a new best value lets report it.
-          //if (mpReport) mpReport->printBody();
           mpParentTask->doOutput();
         }
 
