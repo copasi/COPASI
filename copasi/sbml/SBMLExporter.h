@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/03 11:34:41 $
+   $Date: 2005/08/09 14:28:25 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -186,6 +186,11 @@ class SBMLExporter
      * with the one given in the replacementMap.
      */
     void replaceFunctionNames(ASTNode* pNode, const std::map<std::string, std::string> replacementMap);
+
+    /**
+     * Checks if the given string is a valid SBMLId.
+     */
+    bool isValidSId(const std::string& id);
 
   public:
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/03 11:34:41 $
+   $Date: 2005/08/09 14:28:25 $
    End CVS Header */
 
 #include <math.h>
@@ -12,6 +12,7 @@
 #include <algorithm>
 
 #include "copasi.h"
+#include "report/CKeyFactory.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CVersion.h"
@@ -769,12 +770,23 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
   ** CKinFunction */
   else
     {
-      CEvaluationNode* pTmpRoot = copasiReaction->getExpressionTree();
+      //CEvaluationNode* pTmpRoot = copasiReaction->getExpressionTree();
       // walk the tree and look for function calls
+      CEvaluationTree* pTree = new CEvaluationTree("NoName", NULL, CEvaluationTree::Expression);
+      CEvaluationNodeCall* pTmpRoot = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, copasiReaction->getFunction().getObjectName());
+      const std::vector< std::vector<std::string> >& parameterMappings = copasiReaction->getParameterMappings();
+      unsigned int i, iMax = parameterMappings.size();
+      for (i = 0;i < iMax;++i)
+        {
+          CEvaluationNodeObject* pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + GlobalKeys.get(parameterMappings[i][0])->getCN() + ">");
+          pTmpRoot->addChild(pObjectNode);
+        }
+      pTree->setRoot(pTmpRoot);
+      pTree->compileNodes();
       std::list<const CEvaluationTree*> usedFunctionList;
       this->findUsedFunctions(pTmpRoot, usedFunctionList);
       node = pTmpRoot->toAST();
-      pdelete(pTmpRoot);
+      pdelete(pTree);
     }
 
   /*
@@ -1048,6 +1060,13 @@ std::set<std::string>* SBMLExporter::createIdSet(const Model* pSBMLModel)
       pIdSet = new std::set<std::string>();
       std::string id;
       unsigned int i, iMax;
+      CCopasiVectorN<CEvaluationTree>& loadedFunctions = CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+      iMax = loadedFunctions.size();
+      for (i = 0;i < iMax;++i)
+        {
+          id = loadedFunctions[i]->getSBMLId();
+          if (id != "") pIdSet->insert(id);
+        }
       iMax = this->mpCopasiModel->getNumMetabs();
       for (i = 0; i < iMax;++i)
         {
@@ -1152,46 +1171,6 @@ ASTNode* SBMLExporter::isDividedByVolume(const ASTNode* node, const std::string&
   return result;
 }
 
-/*
-void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode,std::list<std::string>& usedFunctionList)
-{
-    if(pNode)
-    {
-        if(CEvaluationNode::type(pNode->getType())==CEvaluationNode::CALL)
-        {
-            CFunctionDB* pFunDB=CCopasiDataModel::Global->getFunctionList();
-            CEvaluationTree* pFun=pFunDB->findFunction(pNode->getData());
-            if(!pFun)
-            {
-                CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION,MCSBML + 15,pNode->getData().c_str());
-            }
-            if(usedFunctionList.find(pFun)!=usedFunctionList.end())
-            {
-                // we have a loop
-                CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION,MCSBML + 16);
-            }
-            else
-            {
-              usedFunctionList.push_back(pFun);
-              // go through the tree of that function as well
-              this->findUsedFunctions(pFun->getRoot(),usedFunctionList);
-              // find the list node for the current function name
-              // add all nodes that come after it to the mUsedFunctions
-              // delete those nodes 
-            }
-        }
-        else
-        {
-            CEvaluationNode* pChildNode=static_cast<CEvaluationNode*>(pNode->getChild());
-            while(pChildNode)
-            {
-                this->findUsedFunctions(pChildNode,usedFunctionList);
-            }
-        }
-    }
-}
- */
-
 void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEvaluationTree*>& usedFunctionList)
 {
   CFunctionDB* pFunDB = CCopasiDataModel::Global->getFunctionList();
@@ -1226,6 +1205,18 @@ void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEv
               // at the beginning
               if (usedFunctionList.back() == (*pos))
                 {
+                  if (pFun->getSBMLId().empty())
+                    {
+                      if (this->isValidSId(pFun->getObjectName()) && this->mpIdSet->find(pFun->getObjectName()) == this->mpIdSet->end())
+                        {
+                          pFun->setSBMLId(pFun->getObjectName());
+                        }
+                      else
+                        {
+                          std::string id = this->createUniqueId(this->mpIdSet, "function_");
+                          pFun->setSBMLId(id);
+                        }
+                    }
                   this->mUsedFunctions.push_front(pFun);
                 }
               else
@@ -1278,7 +1269,7 @@ void SBMLExporter::createFunctionDefinitions()
             }
         }
       replacementMap[(*it)->getObjectName()] = (*it)->getSBMLId();
-      FunctionDefinition* pSBMLFunDef = this->createSBMLFunctionDefinitionFromCEvaluationTree((*it), replacementMap);
+      this->createSBMLFunctionDefinitionFromCEvaluationTree((*it), replacementMap);
       ++it;
     }
 }
@@ -1338,3 +1329,24 @@ SBMLDocument* SBMLExporter::getSBMLDocument() const
   {
     return this->sbmlDocument;
   }
+
+bool SBMLExporter::isValidSId(const std::string& id)
+{
+  bool result = true;
+  if (id.length() > 0)
+    {
+      char c = id[0];
+      result = (c == '_' || (c > 64 && c < 91) || (c > 96 && c < 123));
+      unsigned int i, iMax = id.length();
+      for (i = 1;(i < iMax) && result;++i)
+        {
+          c = id[i];
+          result = (c == '_' || (c > 64 && c < 91) || (c > 96 && c < 123) || (c > 47 && c < 58));
+        }
+    }
+  else
+    {
+      result = false;
+    }
+  return result;
+}
