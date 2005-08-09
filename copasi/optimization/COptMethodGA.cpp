@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/25 09:49:19 $
+   $Author: shoops $ 
+   $Date: 2005/08/09 16:49:24 $
    End CVS Header */
 
 #include <float.h>
@@ -318,10 +318,10 @@ bool COptMethodGA::select()
 // check the best individual at this generation
 unsigned C_INT32 COptMethodGA::fittest()
 {
-  unsigned C_INT32 i, BestIndex = 0;
-  C_FLOAT64 BestValue = mValue[0];
+  unsigned C_INT32 i, BestIndex = C_INVALID_INDEX;
+  C_FLOAT64 BestValue = DBL_MAX;
 
-  for (i = 1; i < mPopulationSize; i++)
+  for (i = 0; i < mPopulationSize; i++)
     if (mValue[i] < BestValue && !isnan(mValue[i]))
       {
         BestIndex = i;
@@ -495,15 +495,45 @@ bool COptMethodGA::optimise()
   // initialise the population
   // first individual is the initial guess
   for (i = 0; i < mVariableSize; i++)
-    (*mIndividual[0])[i] = *(*mpOptItem)[i]->getObjectValue();
+    {
+      C_FLOAT64 & mut = (*mIndividual[0])[i];
+      COptItem & OptItem = *(*mpOptItem)[i];
+
+      mut = * OptItem.getObjectValue();
+
+      // force it to be within the bounds
+      switch (OptItem.checkConstraint(mut))
+        {
+        case - 1:
+          mut = *OptItem.getLowerBoundValue();
+          if (!OptItem.checkLowerBound(mut)) // Inequality
+            {
+              if (mut == 0.0)
+                mut = DBL_MIN;
+              else
+                mut += mut * DBL_EPSILON;
+            }
+          break;
+
+        case 1:
+          mut = *OptItem.getUpperBoundValue();
+          if (!OptItem.checkUpperBound(mut)) // Inequality
+            {
+              if (mut == 0.0)
+                mut = - DBL_MIN;
+              else
+                mut -= mut * DBL_EPSILON;
+            }
+          break;
+        }
+
+      // We need to set the value here so that further checks take
+      // account of the value.
+      (*(*mpSetCalculateVariable)[i])(mut);
+    }
 
   // calculate the fitness
   unsigned C_INT32 j;
-  std::vector< UpdateMethod *>::const_iterator itMethod = mpSetCalculateVariable->begin();
-
-  // set the paramter values
-  for (j = 0; j < mVariableSize; j++, ++itMethod)
-    (**itMethod)((*mIndividual[0])[j]);
 
   Continue = evaluate(*mIndividual[0]);
   mValue[0] = mEvaluationValue;
@@ -514,10 +544,16 @@ bool COptMethodGA::optimise()
   // get the index of the fittest
   mBestIndex = fittest();
 
-  // and store that value
-  mBestValue = mValue[mBestIndex];
-  mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
-  Continue = mpOptProblem->setSolutionValue(mBestValue);
+  if (mBestIndex != C_INVALID_INDEX)
+    {
+      // and store that value
+      mBestValue = mValue[mBestIndex];
+      mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
+      Continue = mpOptProblem->setSolutionValue(mBestValue);
+
+      // We found a new best value lets report it.
+      mpParentTask->doOutput();
+    }
 
   if (!Continue)
     {
@@ -555,7 +591,8 @@ bool COptMethodGA::optimise()
 
       // get the index of the fittest
       mBestIndex = fittest();
-      if (mValue[mBestIndex] < mBestValue)
+      if (mBestIndex != C_INVALID_INDEX &&
+          mValue[mBestIndex] < mBestValue)
         {
           Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
           mBestValue = mValue[mBestIndex];
