@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTree.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/17 08:56:20 $
+   $Author: shoops $ 
+   $Date: 2005/08/09 19:12:36 $
    End CVS Header */
 
 /**
@@ -129,42 +129,14 @@ template < class _Node > class CCopasiTree
             return *this;
           }
 
-          /**
-           * Return the first node after the children of the current node.
-           * This might be a sibling or an ancestor.
-           * @return Node * pastChildren
-           */
-          _Node * pastChildren()
-          {
-            _Node * pastChildren = NULL;
-
-            if (mCurrent->getSibling())
-              pastChildren = (_Node *) mCurrent->getSibling();
-            else
-              {
-                _Node * pTmp = (_Node *) mCurrent->getParent();
-
-                while (pTmp)
-                  {
-                    if ((pastChildren = (_Node *) pTmp->getSibling()))
-                      break;
-
-                    pTmp = (_Node *) pTmp->getParent();
-                  }
-              }
-            return pastChildren;
-          }
-
+        public:
           /**
            * Prefix increment operator ++
            * @return iterator &
            */
           iterator & operator++()
           {
-            if (mCurrent->getChild())
-              mCurrent = (_Node *) mCurrent->getChild();
-            else
-              mCurrent = pastChildren();
+            mCurrent = (_Node *) mCurrent->getNext();
 
             return *this;
           }
@@ -178,7 +150,7 @@ template < class _Node > class CCopasiTree
       CCopasiTree():
           mpRoot(new _Node),
           mList()
-    {mList.insert(mpRoot);}
+      {mList.insert(mpRoot);}
 
       /**
        * Destructor
@@ -242,7 +214,7 @@ template < class _Node > class CCopasiTree
         if (Success)
           {
             iterator it = pNode;
-            iterator end = it.pastChildren();
+            iterator end = (_Node *) it->getNextNonChild();
 
             for (; it != end; ++it)
               mList.insert(&*it);
@@ -262,7 +234,7 @@ template < class _Node > class CCopasiTree
         if (pNode == mpRoot) return false; // Root must not be removed.
 
         iterator it = pNode;
-        iterator end = it.pastChildren();
+        iterator end = (_Node *) it->getNextNonChild();
 
         for (; it != end; ++it)
           mList.erase(&*it);
@@ -299,7 +271,7 @@ template < class _Node > class CCopasiTree
         if (pNode == mpRoot) return false; // Root must not be detached
 
         iterator it = pNode;
-        iterator end = it.pastChildren();
+        iterator end = (_Node *) it->getNextNonChild();
 
         for (; it != end; ++it)
           mList.erase(&*it);
