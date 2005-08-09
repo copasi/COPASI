@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiNode.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/09 19:10:50 $
+   $Date: 2005/08/09 19:44:28 $
    End CVS Header */
 
 /**
@@ -251,7 +251,10 @@ template < class _Data > class CCopasiNode
       const CCopasiNode< Data > * getSibling() const {return mpSibling;}
 
       /**
-       * Retreive the next node.
+       * Retreive a pointer to the next node, which is either a
+       * child, a sibling, or an ancestor. The nodes are evaluated
+       * in that order and the first non NULL pointer is returned.
+       * If all evaluate to NULL, NULL will be returned. 
        * @return CCopasiNode< Data > * pNext
        */
       CCopasiNode< Data > * getNext()
@@ -262,7 +265,10 @@ template < class _Data > class CCopasiNode
       }
 
       /**
-       * Retreive the next node.
+       * Retreive a pointer to the next node, which is either a
+       * child, a sibling, or an ancestor. The nodes are evaluated
+       * in that order and the first non NULL pointer is returned.
+       * If all evaluate to NULL, NULL will be returned. 
        * @return const CCopasiNode< Data > * pNext
        */
       const CCopasiNode< Data > * getNext() const
@@ -273,7 +279,10 @@ template < class _Data > class CCopasiNode
         }
 
       /**
-       * Retreive the next node which is not a child node.
+       * Retreive a pointer to the next node, which is not a child node
+       * This is either a sibling or an ancestor. The nodes are evaluated
+       * in that order and the first non NULL pointer is returned.
+       * If all evaluate to NULL, NULL will be returned. 
        * @return CCopasiNode< Data > * pNextNonChild
        */
       CCopasiNode< Data > * getNextNonChild()
@@ -285,7 +294,10 @@ template < class _Data > class CCopasiNode
       }
 
       /**
-       * Retreive the next node which is not a child node.
+       * Retreive a pointer to the next node, which is not a child node
+       * This is either a sibling or an ancestor. The nodes are evaluated
+       * in that order and the first non NULL pointer is returned.
+       * If all evaluate to NULL, NULL will be returned. 
        * @return const CCopasiNode< Data > * pNextNonChild
        */
       const CCopasiNode< Data > * getNextNonChild() const
