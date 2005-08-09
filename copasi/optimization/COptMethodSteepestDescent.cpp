@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/08/01 07:00:45 $
+   $Author: shoops $ 
+   $Date: 2005/08/09 16:52:27 $
    End CVS Header */
 
 #include "copasi.h"
@@ -54,7 +54,7 @@ bool COptMethodSteepestDescent::optimise()
   C_FLOAT64 tmp, x0, alpha, mn, mx, norm, daux, fmn, fmx;
   bool calc_grad;
 
-  // initial point is first guess
+  // initial point is first guess even though it might be outside the domain
   for (i = 0; i < mVariableSize; i++)
     mIndividual[i] = *(*mpOptItem)[i]->getObjectValue();
 
