@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/09 16:49:24 $
+   $Date: 2005/08/09 16:54:17 $
    End CVS Header */
 
 #include <float.h>
@@ -531,9 +531,6 @@ bool COptMethodGA::optimise()
       // account of the value.
       (*(*mpSetCalculateVariable)[i])(mut);
     }
-
-  // calculate the fitness
-  unsigned C_INT32 j;
 
   Continue = evaluate(*mIndividual[0]);
   mValue[0] = mEvaluationValue;
