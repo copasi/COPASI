@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiNode.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/07 19:12:32 $
+   $Date: 2005/08/09 19:10:50 $
    End CVS Header */
 
 /**
@@ -249,6 +249,52 @@ template < class _Data > class CCopasiNode
        * @return const CCopasiNode< Data > * pSibling
        */
       const CCopasiNode< Data > * getSibling() const {return mpSibling;}
+
+      /**
+       * Retreive the next node.
+       * @return CCopasiNode< Data > * pNext
+       */
+      CCopasiNode< Data > * getNext()
+      {
+        if (mpChild) return mpChild;
+
+        return getNextNonChild();
+      }
+
+      /**
+       * Retreive the next node.
+       * @return const CCopasiNode< Data > * pNext
+       */
+      const CCopasiNode< Data > * getNext() const
+        {
+          if (mpChild) return mpChild;
+
+          return getNextNonChild();
+        }
+
+      /**
+       * Retreive the next node which is not a child node.
+       * @return CCopasiNode< Data > * pNextNonChild
+       */
+      CCopasiNode< Data > * getNextNonChild()
+      {
+        if (mpSibling) return mpSibling;
+        if (mpParent) return mpParent->getNextNonChild();
+
+        return NULL;
+      }
+
+      /**
+       * Retreive the next node which is not a child node.
+       * @return const CCopasiNode< Data > * pNextNonChild
+       */
+      const CCopasiNode< Data > * getNextNonChild() const
+        {
+          if (mpSibling) return mpSibling;
+          if (mpParent) return mpParent->getNextNonChild();
+
+          return NULL;
+        }
 
     protected:
       /**
