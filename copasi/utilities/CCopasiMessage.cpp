@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/21 11:40:12 $
+   $Date: 2005/08/10 19:14:33 $
    End CVS Header */
 
 // CCopasiMessage
@@ -220,18 +220,15 @@ void CCopasiMessage::handler(const bool & /* _throw */)
 
   mMessageDeque.push_back(*this);
 
-  if (mType == EXCEPTION)
-    {
+  // All messages are printed to std::cerr
+  std::cerr << mText << std::endl;
+
 #ifdef COPASI_DEBUG
-      DebugFile << mText << std::endl;
+  DebugFile << mText << std::endl;
 #endif // COPASI_DEBUG
 
-      throw CCopasiException(*this);
-    }
-  else
-    {
-      std::cout << mText << std::endl;
-    }
+  if (mType == EXCEPTION)
+    throw CCopasiException(*this);
 }
 
 // overload assignment operator
