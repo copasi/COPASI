@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/02 14:30:33 $
+   $Author: shoops $ 
+   $Date: 2005/08/10 13:57:46 $
    End CVS Header */
 
 #include <sbml/math/ASTNode.h>
@@ -17,6 +17,8 @@
 #include "CExpression.h"
 #include "CFunctionDB.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+
+#include "utilities/utility.h"
 
 CEvaluationNodeCall::CEvaluationNodeCall():
     CEvaluationNode(CEvaluationNode::INVALID, ""),
@@ -86,11 +88,12 @@ const C_FLOAT64 & CEvaluationNodeCall::value() const
 bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 {
   bool success = true;
+
   switch (mType & 0x00FFFFFF)
     {
     case FUNCTION:
       mpFunction =
-        dynamic_cast<CFunction *>(CCopasiDataModel::Global->getFunctionList()->findFunction(mData));
+        dynamic_cast<CFunction *>(CCopasiDataModel::Global->getFunctionList()->findFunction(unQuote(mData)));
       if (!mpFunction) return false;
       clearParameters(mpCallParameters, mCallNodes);
       mpCallParameters = buildParameters(mCallNodes);
@@ -98,7 +101,7 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
     case EXPRESSION:
       mpExpression =
-        dynamic_cast<CExpression *>(CCopasiDataModel::Global->getFunctionList()->findFunction(mData));
+        dynamic_cast<CExpression *>(CCopasiDataModel::Global->getFunctionList()->findFunction(unQuote(mData)));
       if (!mpExpression) return false;
       if (!mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer())) return false;
       break;

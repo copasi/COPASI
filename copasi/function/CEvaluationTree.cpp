@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/08 18:59:06 $
+   $Date: 2005/08/10 13:57:46 $
    End CVS Header */
 
 #include "copasi.h"
@@ -22,6 +22,7 @@
 #include "report/CCopasiObjectReference.h"
 #include "sbml/math/ASTNode.h"
 #include "utilities/CCopasiTree.h"
+#include "utilities/utility.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 
 const std::string CEvaluationTree::TypeName[] =
@@ -419,7 +420,7 @@ bool CEvaluationTree::completeEvaluationTreeList(CCopasiVectorN< CEvaluationTree
       for (it = pTree->getNodeList().begin(), end = pTree->getNodeList().end(); it != end; ++it)
         {
           if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
-              list.add(CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[(*it)->getData()]))
+              list.add(CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[unQuote((*it)->getData())]))
             Added ++;
         }
     }

@@ -434,7 +434,7 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   return TOKEN_LOGICAL_CHOICE;
 %}
 
-{ID}\(/\) %{
+(\"([^\\\"]|\\.)*\"|{ID})\(/\) %{
   BEGIN(sSIGN); 
     { 
       std::string tmp(yytext);
@@ -445,7 +445,7 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   return TOKEN_CALL;
 %}
 
-{ID}\( %{
+(\"([^\\\"]|\\.)*\"|{ID})\( %{
   BEGIN(sSIGN);
     { 
       std::string tmp(yytext);
