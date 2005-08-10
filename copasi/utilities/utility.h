@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 20:21:07 $
+   $Date: 2005/08/10 13:56:58 $
    End CVS Header */
 
 #ifndef COPASI_utilities
@@ -46,6 +46,15 @@ bool isNumber(const std::string & str);
  *  @return "string" 
  */
 std::string StringPrint(const char * format, ...);
+
+/**
+ * Unesacape a quoted name. If the name is surrounded by quotes
+ * these are removed and included escape sequences '\.' are reduced
+ * to '.' else the name is returned unmodified.
+ * @param const std::string & name
+ * @return std::string unQuote
+ */
+std::string unQuote(const std::string & name);
 
 /**
  *

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 20:21:07 $
+   $Date: 2005/08/10 13:56:57 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -98,6 +98,30 @@ std::string StringPrint(const char * format, ...)
 
   delete [] Text;
   return Result;
+}
+
+std::string unQuote(const std::string & name)
+{
+  std::string Name = name;
+  std::string::size_type len = Name.length();
+
+  if (len > 1 && Name[0] == '"' && Name[len - 1] == '"')
+    {
+      // Remove surrounding double quotes.
+      Name = Name.substr(1, len - 2);
+
+      // Remove escape seqences.
+      std::string::size_type pos = Name.find("\\");
+
+      while (pos != std::string::npos)
+        {
+          Name.erase(pos, 1);
+          pos++;
+          pos = Name.find("\\", pos);
+        }
+    }
+
+  return Name;
 }
 
 C_FLOAT64 ddot(C_INT32 n,
