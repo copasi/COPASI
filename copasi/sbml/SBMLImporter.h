@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/08 14:55:09 $
+   $Date: 2005/08/10 15:15:48 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -153,11 +153,22 @@ class SBMLImporter
      */
     void replaceCallNodeNames(CEvaluationNode* node);
 
-    CFunction* findCorrespondingFunction(const CFunction* tree, const CEvaluationNode* pRootNode, const CReaction* reaction);
+    CFunction* findCorrespondingFunction(const CFunction* tree, const CReaction* reaction);
 
     bool areEqualFunctions(const CFunction* pFun, const CFunction* pFun2);
 
-    bool isMassAction(const CEvaluationNode* pRootNode, const std::map<std::string, const CCopasiObject*>& parameterMap, const CCopasiVector<CChemEqElement>* substrates, bool reversible = false, const CCopasiVector<CChemEqElement>* products = NULL);
+    /**
+     * Compares to CEvaluationNode based subtrees recursively.
+     */
+    bool SBMLImporter::areEqualSubtrees(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2);
+
+    //bool isMassAction(const CEvaluationNode* pRootNode, const std::map<std::string, const CCopasiObject*>& parameterMap, const CCopasiVector<CChemEqElement>* substrates, bool reversible = false, const CCopasiVector<CChemEqElement>* products = NULL);
+
+    std::vector<const CEvaluationNodeObject*> isMassAction(const CEvaluationTree* pTree, const CChemEq& chemicalEquation, const CEvaluationNodeCall* pCallNode = NULL);
+
+    std::vector<const CEvaluationNodeObject*> isMassActionExpression(const CEvaluationNode* pRootNode, const CChemEq& chemicalEquation);
+
+    std::vector<const CEvaluationNodeObject*> isMassActionFunction(const CFunction* pFun, const CChemEq& chemicalEquation, const std::vector<std::vector< std::string > >& functionArgumentCNs);
 
     /**
      * This function takes a node and tries to find out wether the tree under this node consists
@@ -182,9 +193,9 @@ class SBMLImporter
      */
     ASTNode* isMultipliedByVolume(const ASTNode* node, const std::string& compartmentSBMLId);
 
-    CEvaluationNode* replaceVariables(const CEvaluationNode* pOrigNode, std::map<std::string, const CEvaluationNodeObject*> replacementMap);
+    CEvaluationNode* variables2objects(const CEvaluationNode* pOrigNode, const std::map<std::string, std::string>& replacementMap);
 
-    CEvaluationNode* replaceVariables(const CFunction* f, const CEvaluationNode* pCallNode);
+    CEvaluationTree* createExpressionFromFunction(const CFunction* pFun, const std::vector<std::vector<std::string > >& functionArgumentCNs);
 
   public:
     SBMLImporter();

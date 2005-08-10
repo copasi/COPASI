@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.88 $
+   $Revision: 1.89 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/09 15:11:58 $
+   $Date: 2005/08/10 15:15:47 $
    End CVS Header */
 
 #include "copasi.h"
@@ -755,44 +755,115 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               std::string functionName = this->mFunctionNameMapping[pExpressionTreeRoot->getData()];
               CFunction* tree = dynamic_cast<CFunction*>(pTmpFunctionDB->findFunction(functionName));
               assert(tree);
-              CFunction* pExistingFunction = this->findCorrespondingFunction(tree, pExpressionTreeRoot, copasiReaction);
-              // if it does, we set the existing function for this reaction
-              if (pExistingFunction)
+              std::vector<const CEvaluationNodeObject*> v = this->isMassAction(tree, copasiReaction->getChemEq(), static_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
+              if (!v.empty())
                 {
-                  copasiReaction->setFunction(pExistingFunction);
+                  CFunction* pFun = NULL;
+                  if (copasiReaction->isReversible())
+                    {
+                      pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (reversible)"));
+                    }
+                  else
+                    {
+                      pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (irreversible)"));
+                    }
+                  if (!pFun)
+                    {
+                      fatalError();
+                    }
+                  copasiReaction->setFunction(pFun);
                   // do the mapping
-                  this->doMapping(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
+                  CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
+                  unsigned int i, iMax = v.size();
+                  for (i = 0;i < iMax;++i)
+                    {
+                      pCallNode->addChild(new CEvaluationNodeObject((CEvaluationNodeObject::SubType)(CEvaluationNode::subType(v[i]->getType())), v[i]->getData()));
+                    }
+                  this->doMapping(copasiReaction, pCallNode);
+                  delete pCallNode;
                 }
-              // else we take the function from the pTmpFunctionDB, copy it and set the usage correctly
               else
                 {
-                  // replace the variable nodes in tree with  nodes from
-                  CEvaluationNode* pTmpExpression = this->replaceVariables(tree, pExpressionTreeRoot);
-
-                  CEvaluationTree* pTmpTree2 = CEvaluationTree::create(CEvaluationTree::Expression);
-                  pTmpTree2->setRoot(pTmpExpression);
-                  copasiReaction->setFunctionFromExpressionTree(pTmpTree2, copasi2sbmlmap, this->functionDB);
-                  delete pTmpTree2;
-                  if (copasiReaction->getFunction().getType() == CEvaluationTree::UserDefined)
+                  CFunction* pExistingFunction = this->findCorrespondingFunction(tree, copasiReaction);
+                  // if it does, we set the existing function for this reaction
+                  if (pExistingFunction)
                     {
-                      pTmpFunctionDB->add(&const_cast<CFunction&>(copasiReaction->getFunction()), false);
-                      this->mUsedFunctions.insert(copasiReaction->getFunction().getObjectName());
+                      copasiReaction->setFunction(pExistingFunction);
+                      // do the mapping
+                      this->doMapping(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
+                    }
+                  // else we take the function from the pTmpFunctionDB, copy it and set the usage correctly
+                  else
+                    {
+                      // replace the variable nodes in tree with  nodes from
+                      std::map<std::string, std::string > arguments;
+                      const CFunctionParameters& funParams = tree->getVariables();
+                      const CEvaluationNode* pTmpNode = static_cast<const CEvaluationNode*>(pExpressionTreeRoot->getChild());
+                      unsigned int i, iMax = funParams.size();
+                      for (i = 0;(i < iMax) && pTmpNode;++i)
+                        {
+                          if (!(pTmpNode->getType() == CEvaluationNode::OBJECT)) fatalError();
+                          arguments[funParams[i]->getObjectName()] = pTmpNode->getData().substr(1, pTmpNode->getData().length() - 2);
+                          pTmpNode = static_cast<const CEvaluationNode*>(pTmpNode->getSibling());
+                        }
+                      assert((i == iMax) && pTmpNode == NULL);
+                      CEvaluationNode* pTmpExpression = this->variables2objects(tree->getRoot(), arguments);
+
+                      CEvaluationTree* pTmpTree2 = CEvaluationTree::create(CEvaluationTree::Expression);
+                      pTmpTree2->setRoot(pTmpExpression);
+                      copasiReaction->setFunctionFromExpressionTree(pTmpTree2, copasi2sbmlmap, this->functionDB);
+                      delete pTmpTree2;
+                      if (copasiReaction->getFunction().getType() == CEvaluationTree::UserDefined)
+                        {
+                          pTmpFunctionDB->add(&const_cast<CFunction&>(copasiReaction->getFunction()), false);
+                          this->mUsedFunctions.insert(copasiReaction->getFunction().getObjectName());
+                        }
                     }
                 }
             }
           else
             {
-              if (!copasiReaction->setFunctionFromExpressionTree(pTmpTree, copasi2sbmlmap, this->functionDB))
+              std::vector<const CEvaluationNodeObject*> v = this->isMassAction(pTmpTree, copasiReaction->getChemEq());
+              if (!v.empty())
                 {
-                  // error message
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 9, copasiReaction->getObjectName().c_str());
+                  CFunction* pFun = NULL;
+                  if (copasiReaction->isReversible())
+                    {
+                      pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (reversible)"));
+                    }
+                  else
+                    {
+                      pFun = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (irreversible)"));
+                    }
+                  if (!pFun)
+                    {
+                      fatalError();
+                    }
+                  copasiReaction->setFunction(pFun);
+                  // do the mapping
+                  CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
+                  unsigned int i, iMax = v.size();
+                  for (i = 0;i < iMax;++i)
+                    {
+                      pCallNode->addChild(new CEvaluationNodeObject((CEvaluationNodeObject::SubType)(CEvaluationNode::subType(v[i]->getType())), v[i]->getData()));
+                    }
+                  this->doMapping(copasiReaction, pCallNode);
+                  delete pCallNode;
                 }
               else
                 {
-                  if (copasiReaction->getFunction().getType() == CEvaluationTree::UserDefined)
+                  if (!copasiReaction->setFunctionFromExpressionTree(pTmpTree, copasi2sbmlmap, this->functionDB))
                     {
-                      pTmpFunctionDB->add(&const_cast<CFunction&>(copasiReaction->getFunction()), false);
-                      this->mUsedFunctions.insert(copasiReaction->getFunction().getObjectName());
+                      // error message
+                      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 9, copasiReaction->getObjectName().c_str());
+                    }
+                  else
+                    {
+                      if (copasiReaction->getFunction().getType() == CEvaluationTree::UserDefined)
+                        {
+                          pTmpFunctionDB->add(&const_cast<CFunction&>(copasiReaction->getFunction()), false);
+                          this->mUsedFunctions.insert(copasiReaction->getFunction().getObjectName());
+                        }
                     }
                 }
             }
@@ -1605,59 +1676,24 @@ void SBMLImporter::replaceCallNodeNames(CEvaluationNode* node)
  * From this expression we can determine if there already is a function in the database
  * that does the same. Or we can find out if this function is a Mass Action kinetic.
  */
-CFunction* SBMLImporter::findCorrespondingFunction(const CFunction* tree, const CEvaluationNode* pRootNode, const CReaction* pCopasiReaction)
+CFunction* SBMLImporter::findCorrespondingFunction(const CFunction* tree, const CReaction* pCopasiReaction)
 {
   CFunction* pCorrespondingFunction = NULL;
-  // create a map that map function parameter names in tree to copasi objects for the call node pRootNode
-  std::map<std::string, const CCopasiObject*> replacementMap;
-  if ((!dynamic_cast<const CEvaluationNodeCall*>(pRootNode))) fatalError();
-  const CFunctionParameters& funParams = tree->getVariables();
-  unsigned int i, iMax = funParams.size();
-  const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pRootNode->getChild());
-  for (i = 0; i < iMax && pObjectNode;++i)
+  CCopasiVector<CFunction>* functions = this->functionDB->suitableFunctions(pCopasiReaction->getChemEq().getSubstrates().size(), pCopasiReaction->getChemEq().getProducts().size(), (TriLogic)pCopasiReaction->isReversible());
+  unsigned int i, iMax = functions->size();
+  for (i = 0; i < iMax;++i)
     {
-      std::vector<CCopasiContainer*> containers = std::vector<CCopasiContainer*>();
-      containers.push_back(this->mpCopasiModel);
-      CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, CCopasiObjectName(pObjectNode->getData().substr(1, pObjectNode->getData().size() - 2)));
-      if (!pObject) fatalError();
-      replacementMap[funParams[i]->getObjectName()] = pObject;
-      pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pObjectNode->getSibling());
-    }
-  if (i < iMax || pObjectNode) fatalError(); // we had not enough object node arguments in pRootNode or pRootNode had more children then tree had arguments.
-
-  if (this->isMassAction(pRootNode, replacementMap, &pCopasiReaction->getChemEq().getSubstrates(), pCopasiReaction->isReversible(), &pCopasiReaction->getChemEq().getProducts()))
-    {
-      if (pCopasiReaction->isReversible())
+      CFunction* pFun = ((*functions)[i]);
+      // make sure the function is not compared to itself since it can already
+      // be in the database if it has been used a call in another function
+      // don't compare the mass action kinetics
+      if ((pFun != tree) && (!dynamic_cast<CMassAction*>(pFun)) && this->areEqualFunctions(pFun, tree))
         {
-          pCorrespondingFunction = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (reversible)"));
-        }
-      else
-        {
-          pCorrespondingFunction = static_cast<CFunction*>(this->functionDB->findFunction("Mass action (irreversible)"));
-        }
-      if (!pCorrespondingFunction)
-        {
-          fatalError();
+          pCorrespondingFunction = pFun;
+          break;
         }
     }
-  else
-    {
-      CCopasiVector<CFunction>* functions = this->functionDB->suitableFunctions(pCopasiReaction->getChemEq().getSubstrates().size(), pCopasiReaction->getChemEq().getProducts().size(), (TriLogic)pCopasiReaction->isReversible());
-      unsigned int i, iMax = functions->size();
-      for (i = 0; i < iMax;++i)
-        {
-          CFunction* pFun = ((*functions)[i]);
-          // make sure the function is not compared to itself since it can already
-          // be in the database if it has been used a call in another function
-          // don't compare the mass action kinetics
-          if ((pFun != tree) && (!dynamic_cast<CMassAction*>(pFun)) && this->areEqualFunctions(pFun, tree))
-            {
-              pCorrespondingFunction = pFun;
-              break;
-            }
-        }
-      delete functions;
-    }
+  delete functions;
   return pCorrespondingFunction;
 }
 
@@ -1683,38 +1719,7 @@ bool SBMLImporter::areEqualFunctions(const CFunction* pFun, const CFunction* pFu
         {
           const CEvaluationNode* pNodeFun1 = static_cast<const CEvaluationNode*>(pFun->getRoot());
           const CEvaluationNode* pNodeFun2 = static_cast<const CEvaluationNode*>(pFun2->getRoot());
-          while (pNodeFun1 || pNodeFun2)
-            {
-              if ((!pNodeFun1) || (!pNodeFun2) || (pNodeFun1->getType() != pNodeFun2->getType()) || (pNodeFun1->getData() != pNodeFun2->getData()))
-                {
-                  result = false;
-                  break;
-                }
-              if (pNodeFun1->getSibling() || pNodeFun2->getSibling())
-                {
-                  pNodeFun1 = static_cast<const CEvaluationNode*>(pNodeFun1->getSibling());
-                  pNodeFun2 = static_cast<const CEvaluationNode*>(pNodeFun2->getSibling());
-                }
-              else
-                {
-                  if (pNodeFun1->getParent())
-                    {
-                      pNodeFun1 = static_cast<const CEvaluationNode*>(pNodeFun1->getParent()->getSibling());
-                    }
-                  else
-                    {
-                      pNodeFun1 = NULL;
-                    }
-                  if (pNodeFun2->getParent())
-                    {
-                      pNodeFun2 = static_cast<const CEvaluationNode*>(pNodeFun2->getParent()->getSibling());
-                    }
-                  else
-                    {
-                      pNodeFun2 = NULL;
-                    }
-                }
-            }
+          result = this->areEqualSubtrees(pNodeFun1, pNodeFun2);
         }
     }
   else
@@ -1724,6 +1729,271 @@ bool SBMLImporter::areEqualFunctions(const CFunction* pFun, const CFunction* pFu
   return result;
 }
 
+bool SBMLImporter::areEqualSubtrees(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2)
+{
+  bool result = ((pNode1->getType() == pNode2->getType()) && (pNode1->getData() == pNode2->getData()));
+  const CEvaluationNode* pChild1 = static_cast<const CEvaluationNode*>(pNode1->getChild());
+  const CEvaluationNode* pChild2 = static_cast<const CEvaluationNode*>(pNode2->getChild());
+  while (result && pChild1 && pChild2)
+    {
+      result = this->areEqualSubtrees(pChild1, pChild2);
+      pChild1 = static_cast<const CEvaluationNode*>(pChild1->getSibling());
+      pChild2 = static_cast<const CEvaluationNode*>(pChild2->getSibling());
+    }
+  result = (result && !pChild1 && !pChild2);
+  return result;
+}
+
+std::vector<const CEvaluationNodeObject*> SBMLImporter::isMassAction(const CEvaluationTree* pTree, const CChemEq& chemicalEquation, const CEvaluationNodeCall* pCallNode)
+{
+  CEvaluationTree::Type type = pTree->getType();
+  std::vector< std::vector< std::string > > functionArgumentCNs;
+  const CEvaluationNode* pChildNode = NULL;
+  std::string str;
+  std::vector<const CEvaluationNodeObject*> result;
+  switch (type)
+    {
+    case CEvaluationTree::Function:
+    case CEvaluationTree::UserDefined:
+      pChildNode = static_cast<const CEvaluationNode*>(pCallNode->getChild());
+      while (pChildNode)
+        {
+          if (pChildNode->getType() == CEvaluationNode::OBJECT)
+            {
+              str = pChildNode->getData().substr(1, pChildNode->getData().length() - 2);
+              functionArgumentCNs.push_back(std::vector<std::string>());
+              functionArgumentCNs[functionArgumentCNs.size() - 1].push_back(str);
+              pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
+            }
+          else
+            {
+              fatalError();
+            }
+        }
+      result = this->isMassActionFunction(dynamic_cast<const CFunction*>(pTree), chemicalEquation, functionArgumentCNs);
+      break;
+    case CEvaluationTree::Expression:
+      result = this->isMassActionExpression(pTree->getRoot(), chemicalEquation);
+      break;
+    default:
+      fatalError();
+      break;
+    }
+  return result;
+}
+
+std::vector<const CEvaluationNodeObject*> SBMLImporter::isMassActionExpression(const CEvaluationNode* pRootNode, const CChemEq& chemicalEquation)
+{
+  bool result = true;
+  std::vector<const CEvaluationNodeObject*> v;
+  if (chemicalEquation.getReversibility())
+    {
+      // the root node must be a minus operator
+      // the two children must be irreversible mass action terms
+      result = (CEvaluationNode::type(pRootNode->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)(CEvaluationNode::subType(pRootNode->getType())) == CEvaluationNodeOperator::MINUS);
+      if (result)
+        {
+          const CEvaluationNode* pChildNode = static_cast<const CEvaluationNode*>(pRootNode->getChild());
+          result = (pChildNode != NULL);
+          if (result)
+            {
+              CChemEq tmpEq = CChemEq();
+              const CCopasiVector<CChemEqElement>* metabolites = &chemicalEquation.getSubstrates();
+              unsigned int i, iMax = metabolites->size();
+              result = (iMax > 0);
+              if (result)
+                {
+                  for (i = 0;i < iMax;++i)
+                    {
+                      const CChemEqElement* element = (*metabolites)[i];
+                      tmpEq.addMetabolite(element->getMetaboliteKey(), element->getMultiplicity(), CChemEq::SUBSTRATE);
+                    }
+                  v = this->isMassActionExpression(pChildNode, tmpEq);
+                  result = !v.empty();
+                  if (result)
+                    {
+                      pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
+                      result = (pChildNode != NULL);
+                      if (result)
+                        {
+                          tmpEq = CChemEq();
+                          metabolites = &chemicalEquation.getProducts();
+                          iMax = metabolites->size();
+                          result = (iMax > 0);
+                          for (i = 0;i < iMax;++i)
+                            {
+                              const CChemEqElement* element = (*metabolites)[i];
+                              tmpEq.addMetabolite(element->getMetaboliteKey(), element->getMultiplicity(), CChemEq::SUBSTRATE);
+                            }
+                          std::vector<const CEvaluationNodeObject*> v2 = this->isMassActionExpression(pChildNode, tmpEq);
+                          result = !v2.empty();
+                          if (result)
+                            {
+                              v.push_back(v2[0]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+  else
+    {
+      // the expression must contain exactly one global or local parameter
+      // the expression must contain each substrate in the CChemicalReaction
+      std::vector<const CEvaluationNode*> arguments;
+      std::map<const CMetab*, C_FLOAT64> multiplicityMap;
+      this->separateProductArguments(pRootNode, arguments);
+      unsigned int numParameters = 0, i, iMax = arguments.size();
+      std::vector<CCopasiContainer*> listOfContainers;
+      listOfContainers.push_back(this->mpCopasiModel);
+      for (i = 0;(i < iMax) && (numParameters < 2);++i)
+        {
+          const CEvaluationNode* pNode = arguments[i];
+          // the node can either be an object node
+          // or it can be a power function node
+          if (pNode->getType() == CEvaluationNode::OBJECT)
+            {
+              // it can be a global or a local parameter or an metabolite
+              std::string objectCN = pNode->getData().substr(1, pNode->getData().length() - 2);
+              const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
+              assert(pObject);
+              if (pObject->isReference())
+                {
+                  pObject = pObject->getObjectParent();
+                  if (dynamic_cast<const CMetab*>(pObject))
+                    {
+                      const CMetab* pMetab = static_cast<const CMetab*>(pObject);
+                      if (multiplicityMap.find(pMetab) != multiplicityMap.end())
+                        {
+                          multiplicityMap[pMetab] = multiplicityMap[pMetab] + 1.0;
+                        }
+                      else
+                        {
+                          multiplicityMap[pMetab] = 1.0;
+                        }
+                    }
+                  else if (dynamic_cast<const CModelValue*>(pObject))
+                    {
+                      ++numParameters;
+                      v.push_back(static_cast<const CEvaluationNodeObject*>(pNode));
+                    }
+                  else
+                    {
+                      result = false;
+                      break;
+                    }
+                }
+              else if (dynamic_cast<const CCopasiParameter*>(pObject))
+                {
+                  ++numParameters;
+                  v.push_back(static_cast<const CEvaluationNodeObject*>(pNode));
+                }
+              else
+                {
+                  result = false;
+                  break;
+                }
+            }
+          else if (pNode->getType() == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)(CEvaluationNode::type(pNode->getType())) == CEvaluationNodeOperator::POWER)
+            {
+              // the two children must be a metabolite node and a number node in this order
+              const CEvaluationNode* pChildNode = static_cast<const CEvaluationNode*>(pNode->getChild());
+              if (pChildNode->getType() == CEvaluationNode::OBJECT)
+                {
+                  std::string objectCN = pNode->getData().substr(1, pNode->getData().length() - 2);
+                  const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
+                  assert(pObject);
+                  if (pObject->isReference())
+                    {
+                      pObject = pObject->getObjectParent();
+                      if (dynamic_cast<const CMetab*>(pObject))
+                        {
+                          pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
+                          assert(pChildNode);
+                          if (pChildNode->getType() == CEvaluationNode::NUMBER)
+                            {
+                              const CMetab* pMetab = static_cast<const CMetab*>(pObject);
+                              if (multiplicityMap.find(pMetab) != multiplicityMap.end())
+                                {
+                                  multiplicityMap[pMetab] = multiplicityMap[pMetab] + pChildNode->value();
+                                }
+                              else
+                                {
+                                  multiplicityMap[pMetab] = pChildNode->value();
+                                }
+                            }
+                        }
+                    }
+                  else
+                    {
+                      result = false;
+                      break;
+                    }
+                }
+              else
+                {
+                  result = false;
+                  break;
+                }
+            }
+          else
+            {
+              result = false;
+              break;
+            }
+        }
+      if (result)
+        {
+          const CCopasiVector<CChemEqElement>& substrates = chemicalEquation.getSubstrates();
+          unsigned i, iMax = substrates.size();
+          for (i = 0;i < iMax && result;++i)
+            {
+              if (fabs(multiplicityMap[&substrates[i]->getMetabolite()] - substrates[i]->getMultiplicity()) >= 0.01)
+                {
+                  result = false;
+                  break;
+                }
+            }
+        }
+      if (!result) v.clear();
+    }
+  return v;
+}
+
+std::vector<const CEvaluationNodeObject*> SBMLImporter::isMassActionFunction(const CFunction* pFun, const CChemEq& chemicalEquation, const std::vector<std::vector< std::string > >& functionArgumentCNs)
+{
+  // create an expression from the function and call isMassActionExpression
+  CEvaluationTree* pExpressionTree = this->createExpressionFromFunction(pFun, functionArgumentCNs);
+  std::vector<const CEvaluationNodeObject*> v = this->isMassActionExpression(pExpressionTree->getRoot(), chemicalEquation);
+  delete pExpressionTree;
+  return v;
+}
+
+CEvaluationTree* SBMLImporter::createExpressionFromFunction(const CFunction* pFun, const std::vector<std::vector<std::string > >& functionArgumentCNs)
+{
+  CEvaluationTree* pTree = NULL;
+  const CFunctionParameters& pFunParams = pFun->getVariables();
+  std::string str;
+  if (pFunParams.size() == functionArgumentCNs.size())
+    {
+      std::map<std::string , std::string> variable2CNMap;
+      unsigned int i, iMax = pFunParams.size();
+      for (i = 0;i < iMax;++i)
+        {
+          // vectors should not occur here
+          assert(functionArgumentCNs[i].size() == 1);
+          variable2CNMap[pFunParams[i]->getObjectName()] = functionArgumentCNs[i][0];
+        }
+      CEvaluationNode* pTmpNode = this->variables2objects(pFun->getRoot(), variable2CNMap);
+      assert(pTmpNode);
+      pTree = CEvaluationTree::create(CEvaluationTree::Expression);
+      pTree->setRoot(pTmpNode);
+    }
+  return pTree;
+}
+
+/*
 bool SBMLImporter::isMassAction(const CEvaluationNode* pRootNode, const std::map<std::string, const CCopasiObject*>& parameterMap , const CCopasiVector<CChemEqElement>* substrates, bool reversible, const CCopasiVector<CChemEqElement>* products)
 {
   bool result = true;
@@ -1846,7 +2116,7 @@ bool SBMLImporter::isMassAction(const CEvaluationNode* pRootNode, const std::map
                           result = false;
                           break;
                         }
-
+ 
                       std::map<std::string, const CCopasiObject*>::const_iterator pos = parameterMap.find(argument->getData());
                       if (pos == parameterMap.end())
                         {
@@ -1861,7 +2131,7 @@ bool SBMLImporter::isMassAction(const CEvaluationNode* pRootNode, const std::map
                         }
                       CCopasiVector<CChemEqElement>::iterator it = v.begin();
                       CCopasiVector<CChemEqElement>::iterator endIt = v.end();
-
+ 
                       while (it != endIt)
                         {
                           CChemEqElement* element = *it;
@@ -1895,6 +2165,7 @@ bool SBMLImporter::isMassAction(const CEvaluationNode* pRootNode, const std::map
     }
   return result;
 }
+ */
 
 void SBMLImporter::separateProductArguments(const CEvaluationNode* pRootNode, std::vector<const CEvaluationNode*>& arguments)
 {
@@ -2049,18 +2320,13 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
     {
       fatalError();
     }
-  unsigned int i, iMax = pCopasiReaction->getFunction().getVariables().size();
-  const CEvaluationNodeObject* pChild = dynamic_cast<const CEvaluationNodeObject*>(pCallNode->getChild());
-  for (i = 0; i < iMax;++i)
+  std::vector<CCopasiContainer*> listOfContainers;
+  listOfContainers.push_back(this->mpCopasiModel);
+  if (dynamic_cast<const CMassAction*>(&pCopasiReaction->getFunction()))
     {
-      if (!pChild)
-        {
-          fatalError();
-        }
+      const CEvaluationNodeObject* pChild = dynamic_cast<const CEvaluationNodeObject*>(pCallNode->getChild());
       std::string objectCN = pChild->getData();
       objectCN = objectCN.substr(1, objectCN.length() - 2);
-      std::vector<CCopasiContainer*> listOfContainers;
-      listOfContainers.push_back(this->mpCopasiModel);
       CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
       assert(pObject);
       if (pObject->isReference())
@@ -2069,8 +2335,59 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           assert(pObject);
         }
       const std::string& objectKey = pObject->getKey();
-      pCopasiReaction->setParameterMapping(i, objectKey);
-      pChild = dynamic_cast<const CEvaluationNodeObject*>(pChild->getSibling());
+      pCopasiReaction->setParameterMapping("k1", objectKey);
+      const CCopasiVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getSubstrates();
+      unsigned int i, iMax = metabolites->size();
+      for (i = 0;i < iMax;++i)
+        {
+          pCopasiReaction->addParameterMapping("substrate", (*metabolites)[i]->getMetaboliteKey());
+        }
+
+      if (pCopasiReaction->isReversible())
+        {
+          pChild = dynamic_cast<const CEvaluationNodeObject*>(pChild->getSibling());
+          std::string objectCN = pChild->getData();
+          objectCN = objectCN.substr(1, objectCN.length() - 2);
+          CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
+          assert(pObject);
+          if (pObject->isReference())
+            {
+              pObject = pObject->getObjectParent();
+              assert(pObject);
+            }
+          const std::string& objectKey = pObject->getKey();
+          pCopasiReaction->setParameterMapping("k2", objectKey);
+          const CCopasiVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getProducts();
+          iMax = metabolites->size();
+          for (i = 0;i < iMax;++i)
+            {
+              pCopasiReaction->addParameterMapping("product", (*metabolites)[i]->getMetaboliteKey());
+            }
+        }
+    }
+  else
+    {
+      unsigned int i, iMax = pCopasiReaction->getFunction().getVariables().size();
+      const CEvaluationNodeObject* pChild = dynamic_cast<const CEvaluationNodeObject*>(pCallNode->getChild());
+      for (i = 0; i < iMax;++i)
+        {
+          if (!pChild)
+            {
+              fatalError();
+            }
+          std::string objectCN = pChild->getData();
+          objectCN = objectCN.substr(1, objectCN.length() - 2);
+          CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
+          assert(pObject);
+          if (pObject->isReference())
+            {
+              pObject = pObject->getObjectParent();
+              assert(pObject);
+            }
+          const std::string& objectKey = pObject->getKey();
+          pCopasiReaction->setParameterMapping(i, objectKey);
+          pChild = dynamic_cast<const CEvaluationNodeObject*>(pChild->getSibling());
+        }
     }
 }
 
@@ -2103,20 +2420,6 @@ bool SBMLImporter::isSimpleFunctionCall(const CEvaluationNode* pRootNode)
     }
   return result;
 }
-
-/*
-CEvaluationNode* SBMLImporter::deepCopyNode(const CEvaluationNode* node)
-{
-  CEvaluationNode* pNewNode=CEvaluationNode::create(node->getType(),node->getData());
-  const CEvaluationNode* pChildNode=static_cast<const CEvaluationNode*>(node->getChild());
-  while(pChildNode)
-  {
-    pNewNode->addChild(this->deepCopyNode(pChildNode));
-    pChildNode=static_cast<const CEvaluationNode*>(pChildNode->getSibling());
-  }  
-  return pNewNode;
-}
- */
 
 ASTNode* SBMLImporter::isMultipliedByVolume(const ASTNode* node, const std::string& compartmentSBMLId)
 {
@@ -2175,46 +2478,14 @@ ASTNode* SBMLImporter::isMultipliedByVolume(const ASTNode* node, const std::stri
   return result;
 }
 
-/*
-CFunction* SBMLImporter::copyFunction(const CFunction* pFunction)
-{
-    CFunction* pNewFun=new CFunction();
-    pNewFun->setRoot(this->deepCopyNode(pFunction->getRoot()));
-    pNewFun->setReversible(pFunction->isReversible());
-    return pNewFun;
-}
- */
-
-CEvaluationNode* SBMLImporter::replaceVariables(const CFunction* f, const CEvaluationNode* pCallNode)
-{
-  // make a map that maps parameter n of function f to child n of pCallNode which must be an object
-  const CEvaluationNodeCall* pCN = dynamic_cast<const CEvaluationNodeCall*>(pCallNode);
-  if (!pCN) fatalError();
-  std::map<std::string, const CEvaluationNodeObject*> replacementMap;
-  const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCN->getChild());
-  unsigned int i, iMax = f->getVariables().size();
-  for (i = 0; i < iMax;++i)
-    {
-      if (!pObjectNode) break;
-      replacementMap[f->getVariables()[i]->getObjectName()] = pObjectNode;
-      pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pObjectNode->getSibling());
-    }
-  if (i < iMax || pObjectNode)
-    {
-      // the number of arguments to the call node was not equal to the number of the parameters in the
-      // function or one of the call arguments was not an object node
-      fatalError();
-    }
-  return this->replaceVariables(f->getRoot(), replacementMap);
-}
-
-CEvaluationNode* SBMLImporter::replaceVariables(const CEvaluationNode* pOrigNode, std::map<std::string, const CEvaluationNodeObject*> replacementMap)
+CEvaluationNode* SBMLImporter::variables2objects(const CEvaluationNode* pOrigNode, const std::map<std::string, std::string>& replacementMap)
 {
   CEvaluationNode* pResultNode = NULL;
   if (dynamic_cast<const CEvaluationNodeVariable*>(pOrigNode))
     {
-      const CEvaluationNodeObject* pObjectNode = replacementMap[pOrigNode->getData()];
-      pResultNode = new CEvaluationNodeObject((CEvaluationNodeObject::SubType)(CEvaluationNode::subType(pObjectNode->getType())), pObjectNode->getData());
+      std::map<std::string , std::string>::const_iterator pos = replacementMap.find(pOrigNode->getData());
+      if (pos == replacementMap.end()) fatalError();
+      pResultNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pos->second + ">");
     }
   else
     {
@@ -2222,7 +2493,7 @@ CEvaluationNode* SBMLImporter::replaceVariables(const CEvaluationNode* pOrigNode
       const CEvaluationNode* pChildNode = static_cast<const CEvaluationNode*>(pOrigNode->getChild());
       while (pChildNode)
         {
-          pResultNode->addChild(this->replaceVariables(pChildNode, replacementMap));
+          pResultNode->addChild(this->variables2objects(pChildNode, replacementMap));
           pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
         }
     }
