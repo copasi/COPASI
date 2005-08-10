@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/10 19:37:20 $
+   $Date: 2005/08/10 20:45:08 $
    End CVS Header */
 
 // Main
@@ -138,20 +138,21 @@ int main(int argc, char *argv[])
               COptions::getValue("ExportSBML", ExportSBML);
               CCopasiDataModel::Global->exportSBML(ExportSBML, true);
             }
-          else // Save the COPASI File, which is the only thing to do.
+
+          // Check whether a save file is given.
+          if (!COptions::compareValue("Save", std::string("")))
             {
-              std::string Save("");
+              std::string Save;
+              COptions::getValue("Save", Save);
 
-              // Check whether a file for saving the resulting model is given
-              if (!COptions::compareValue("Save", std::string("")))
-                {
-                  COptions::getValue("Save", Save);
-
-                  // Since only one save file name can be specified we
-                  // stop execution.
-                }
-              CCopasiDataModel::Global->saveModel(Save);
+              CCopasiDataModel::Global->saveModel(Save, true);
             }
+
+          // If no export or save file was given, we write to the
+          // default file, but do not overwrite any existing file.
+          if (COptions::compareValue("ExportSBML", std::string("")) &&
+              COptions::compareValue("Save", std::string("")))
+            CCopasiDataModel::Global->saveModel("", false);
         }
       else
         {
@@ -193,7 +194,7 @@ int main(int argc, char *argv[])
                 {
                   std::string Save;
                   COptions::getValue("Save", Save);
-                  CCopasiDataModel::Global->saveModel(Save);
+                  CCopasiDataModel::Global->saveModel(Save, true);
 
                   // Since only one save file name can be specified we
                   // stop execution.
