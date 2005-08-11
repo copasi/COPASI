@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/08/01 07:00:11 $
+   $Author: shoops $ 
+   $Date: 2005/08/11 16:17:43 $
    End CVS Header */
 
 #ifndef COPASI_COptMethodEP
@@ -41,23 +41,23 @@ class COptMethodEP: public COptMethod
     bool evaluate(const CVector< C_FLOAT64 > & individual);
 
     /**
-        * Initialize contained objects.
-        */
+     * Initialize contained objects.
+     */
     virtual void initObjects();
 
     /**
-        * Mutate one individual
-        * @param CVector< C_FLOAT64 > & individual
-        * @return bool success
-        */
+     * Mutate one individual
+     * @param CVector< C_FLOAT64 > & individual
+     * @return bool success
+     */
     bool mutate(unsigned C_INT32 i);
 
     /**
-        * Swap individuals from and to
-        * @param unsigned C_INT32 from
-        * @param unsigned C_INT32 to
-        * @return bool success
-        */
+     * Swap individuals from and to
+     * @param unsigned C_INT32 from
+     * @param unsigned C_INT32 to
+     * @return bool success
+     */
     bool swap(unsigned C_INT32 from, unsigned C_INT32 to);
 
     /**
@@ -95,10 +95,10 @@ class COptMethodEP: public COptMethod
                  const CCopasiContainer * pParent = NULL);
 
     /**
-        * Set the call back of the problem
-        * @param CProcessReport * pCallBack
-        * @result bool succes
-        */
+     * Set the call back of the problem
+     * @param CProcessReport * pCallBack
+     * @result bool succes
+     */
     virtual bool setCallBack(CProcessReport * pCallBack);
 
     /**
@@ -111,35 +111,34 @@ class COptMethodEP: public COptMethod
      * when needed. It is noted that this procedure can give feedback 
      * of its progress by the callback function set with SetCallback.
      */
-
     virtual bool optimise();
 
   private :
-
     // variables
 
     /**
      * number of generations
      */
     unsigned C_INT32 mGenerations;
+
     /**
      * size of the population
      */
     unsigned C_INT32 mGeneration;
+
     /**
-        * Handle to the process report item "Current Generation"
-        */
+     * Handle to the process report item "Current Generation"
+     */
     unsigned C_INT32 mhGenerations;
 
     /**
-        * size of the population
-        */
-
+     * size of the population
+     */
     unsigned C_INT32 mPopulationSize;
 
     /**
-        * a pointer to the randomnumber generator.
-        */
+     * a pointer to the randomnumber generator.
+     */
     CRandom * mpRandom;
 
     unsigned C_INT32 mBestIndex;
@@ -149,14 +148,9 @@ class COptMethodEP: public COptMethod
     double tau2;    // parameter for updating variances
 
     /**
-        * number of wins of each individual in the tournament
-        */
-    CVector< unsigned C_INT32 > mWins;
-
-    /**
-     * Indicates whether there the executions shall continue
+     * number of wins of each individual in the tournament
      */
-    bool mContinue;
+    CVector< unsigned C_INT32 > mWins;
 
     /**
      * The best value found so far.
@@ -169,8 +163,8 @@ class COptMethodEP: public COptMethod
     C_FLOAT64 mEvaluationValue;
 
     /**
-        * array of values of objective function f/ individuals
-        */
+     * array of values of objective function f/ individuals
+     */
     CVector <C_FLOAT64> mValue;
 
     /**
@@ -179,13 +173,18 @@ class COptMethodEP: public COptMethod
     unsigned C_INT32 mVariableSize;
 
     /**
-        * for array of individuals w/ candidate values for the parameters
-        */
+     * for array of individuals w/ candidate values for the parameters
+     */
     std::vector< CVector < C_FLOAT64 > * > mIndividual;
 
     /**
-        * The current iteration
-        */
+     * for array of variances w/ variance values for the parameters
+     */
+    std::vector< CVector < C_FLOAT64 > * > mVariance;
+
+    /**
+     * The current iteration
+     */
     unsigned C_INT32 mCurrentIteration;
   };
 

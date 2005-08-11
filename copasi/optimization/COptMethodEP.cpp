@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/05 15:11:22 $
+   $Date: 2005/08/11 16:17:43 $
    End CVS Header */
 
 #include "copasi.h"
@@ -23,6 +23,7 @@ COptMethodEP::COptMethodEP(const CCopasiContainer * pParent):
     mpRandom(NULL),
     mVariableSize(0),
     mIndividual(0),
+    mVariance(0),
     mEvaluationValue(DBL_MAX),
     mValue(0),
     mWins(0),
@@ -45,6 +46,7 @@ COptMethodEP::COptMethodEP(const COptMethodEP & src,
     mpRandom(NULL),
     mVariableSize(0),
     mIndividual(0),
+    mVariance(0),
     mEvaluationValue(DBL_MAX),
     mValue(0),
     mWins(0),
@@ -77,36 +79,62 @@ bool COptMethodEP::setCallBack(CProcessReport * pCallBack)
 bool COptMethodEP::optimise()
 {
   if (!initialize()) return false;
-  unsigned C_INT32 i;
   bool Continue = true;
-
-  // initialise the parameters to update the variances
-  tau1 = 1.0 / sqrt(2 * mVariableSize);
-  tau2 = 1.0 / sqrt(2 * sqrt(mVariableSize));
 
   // initialise the population
   Continue = creation();
 
+  // get the index of the fittest
+  mBestIndex = fittest();
+
+  if (mBestIndex != C_INVALID_INDEX)
+    {
+      // and store that value
+      mBestValue = mValue[mBestIndex];
+      mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
+      Continue = mpOptProblem->setSolutionValue(mBestValue);
+
+      // We found a new best value lets report it.
+      mpParentTask->doOutput();
+    }
+
+  if (!Continue)
+    {
+      cleanup();
+      return false;
+    }
+
   // iterate over Generations
-  for (i = 0; i < mGenerations; i++)
+  for (mGeneration = 2; mGeneration <= mGenerations && Continue; mGeneration++)
     {
       // replicate the individuals
       Continue = replicate();
+
       // select the most fit
       Continue = select();
+
       // get the index of the fittest
       mBestIndex = fittest();
-      // signal another generation
+
+      if (mBestIndex != C_INVALID_INDEX &&
+          mValue[mBestIndex] < mBestValue)
+        {
+          mBestValue = mValue[mBestIndex];
+
+          mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
+          Continue = mpOptProblem->setSolutionValue(mBestValue);
+
+          // We found a new best value lets report it.
+          //if (mpReport) mpReport->printBody();
+          mpParentTask->doOutput();
+        }
 
       if (mpCallBack)
         Continue = mpCallBack->progress(mhGenerations);
     }
 
-  /* Declare the solution */
-  mBestValue = mValue[mBestIndex];
-  mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
-  Continue = mpOptProblem->setSolutionValue(mBestValue);
-  mpParentTask->doOutput();
+  cleanup();
+
   return Continue;
 }
 
@@ -116,7 +144,10 @@ bool COptMethodEP::cleanup()
   // pdelete all used variables
   pdelete(mpRandom);
   for (i = 0; i < 2*mPopulationSize; i++)
-    pdelete(mIndividual[i]);
+    {
+      pdelete(mIndividual[i]);
+      pdelete(mVariance[i]);
+    }
   return true;
 }
 
@@ -136,13 +167,19 @@ bool COptMethodEP::initialize()
   mVariableSize = mpOptItem->size();
 
   mIndividual.resize(2*mPopulationSize);
+  mVariance.resize(2*mPopulationSize);
   for (i = 0; i < 2*mPopulationSize; i++)
-    mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
-  mContinue = true;
+    {
+      mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
+      mVariance[i] = new CVector< C_FLOAT64 >(mVariableSize);
+    }
 
   mValue.resize(2*mPopulationSize);
-
   mWins.resize(2*mPopulationSize);
+
+  // initialise the parameters to update the variances
+  tau1 = 1.0 / sqrt(2 * mVariableSize);
+  tau2 = 1.0 / sqrt(2 * sqrt(mVariableSize));
 
   return true;
 }
@@ -174,26 +211,65 @@ void COptMethodEP::initObjects()
 
 bool COptMethodEP::creation()
 {
-  unsigned C_INT32 i, half;
-  C_INT32 j;
-  C_FLOAT64 mn, mx, la, la1;
-  C_INT32 loczero; // loczero is 1 for positive domain, -1 for negative domain and 0 for mixed
-  bool linear;
-  half = mPopulationSize / 2;
+  unsigned C_INT32 i;
+  unsigned C_INT32 j;
 
-  // set the first half of the individuals to the initial guess
+  unsigned C_INT32 location;
+  // location = -1: the interval (mn, mx] is in (-inf, 0]
+  // location =  0: 0 is in the interval (mn, mx)
+  // location =  1: the interval [mn, mx) is in [0, inf)
 
-  // for(i=0; i<half; i++)
+  C_FLOAT64 mn;
+  C_FLOAT64 mx;
+  C_FLOAT64 la;
 
-  for (j = 0; j < mVariableSize; j++)
+  bool Continue = true;
+
+  // set the first individual to the initial guess
+
+  for (i = 0; i < mVariableSize; i++)
     {
-      (*mIndividual[0])[j] = *(*mpOptItem)[j]->getObjectValue();
-      //   indv[0][nparam+j] = sqrt(fabs(*(parameter[j]->Parameter.Value)));
-      (*mIndividual[0])[mVariableSize + j] = fabs(*(*mpOptItem)[j]->getObjectValue()) * 0.5;
+      C_FLOAT64 & mut = (*mIndividual[0])[i];
+      COptItem & OptItem = *(*mpOptItem)[i];
+
+      mut = *OptItem.getObjectValue();
+
+      // force it to be within the bounds
+      switch (OptItem.checkConstraint(mut))
+        {
+        case - 1:
+          mut = *OptItem.getLowerBoundValue();
+          if (!OptItem.checkLowerBound(mut)) // Inequality
+            {
+              if (mut == 0.0)
+                mut = DBL_MIN;
+              else
+                mut += mut * DBL_EPSILON;
+            }
+          break;
+
+        case 1:
+          mut = *OptItem.getUpperBoundValue();
+          if (!OptItem.checkUpperBound(mut)) // Inequality
+            {
+              if (mut == 0.0)
+                mut = - DBL_MIN;
+              else
+                mut -= mut * DBL_EPSILON;
+            }
+          break;
+        }
+
+      // We need to set the value here so that further checks take
+      // account of the value.
+      (*(*mpSetCalculateVariable)[i])(mut);
+
+      // Set the variance for this parameter.
+      (*mVariance[0])[i] = fabs(mut) * 0.5;
     }
 
-  // calculate the fitness
-  mContinue = evaluate(*mIndividual[0]);
+  Continue = evaluate(*mIndividual[0]);
+  mValue[0] = mEvaluationValue;
   //candx[0] = evaluate(0);
 
   // and copy it to the rest
@@ -206,108 +282,116 @@ bool COptMethodEP::creation()
     {
       for (j = 0; j < mVariableSize; j++)
         {
-          // calculate lower and upper bounds
+          C_FLOAT64 & mut = (*mIndividual[i])[j];
           COptItem & OptItem = *(*mpOptItem)[j];
+
+          mut = *OptItem.getObjectValue();
+
+          // calculate lower and upper bounds
           mn = *OptItem.getLowerBoundValue();
           mx = *OptItem.getUpperBoundValue();
-          // if in the wrong order switch them
-          if (mn > mx)
-            {
-              la = mn;
-              mn = mx;
-              mx = la;
-            }
-          // initialize control variables
-          linear = false; la = 1.0;
-          // if only one of mx and mn is zero we go linear
-          if (((mn == 0.0) && (mx != 0.0)) || ((mx == 0.0) && (mn != 0.0)))
-            linear = true;
+
+          // determine the location of the intervall
+          if (0.0 <= mn)
+            location = 1;
+          else if (mx > 0)
+            location = 0;
           else
+            location = -1;
+
+          // determine whether to distribute the parameter linearly or not
+          // depending on the location and act uppon it.
+          try
             {
-              // if mn is zero make it slightly larger
-              if (mn == 0.0) mn = pow(10, DBL_MIN_10_EXP);
-              // if mx is zero make it slightly smaller
-              if (mx == 0.0) mx = pow(-10, DBL_MIN_10_EXP);
-              // find out where zero is
-              if ((mn < 0.0) && (mx < 0.0)) loczero = -1;
-              else
+              switch (location)
                 {
-                  if ((mn > 0.0) && (mx > 0.0)) loczero = 1;
-                  else loczero = 0;
-                }
-              switch (loczero)
-                {
-                case - 1: la = log10(-mn) - log10(-mx);
-                  if (la < 1.8) linear = 1;
+                case - 1:
+                  // Switch lower and upper bound and change sign, i.e.,
+                  // we can treat it similarly as location 1:
+                  mx = - *OptItem.getLowerBoundValue();
+                  mn = - *OptItem.getUpperBoundValue();
+
+                  la = log10(mx) - log10(std::max(mn, DBL_MIN));
+
+                  if (la < 1.8 || !(mn > 0.0)) // linear
+                    mut = - (mn + mpRandom->getRandomCC() * (mx - mn));
+                  else
+                    mut = - pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
                   break;
-                case 1: la = log10(mx) - log10(mn);
-                  if (la < 1.8) linear = 1;
-                  break;
-                case 0: la = log10(mx) - DBL_MIN_10_EXP;
-                  la1 = log10(-mn) - DBL_MIN_10_EXP;
-                  if ((la + la1) < 1.8) linear = 1;
-                  break;
-                }
-            }
-          // if we decided it is linear, no problems with zero so
-          // put mn and mx back to what they were and get the number
-          if (linear)
-            {
-              COptItem & OptItem = *(*mpOptItem)[j];
-              mn = *OptItem.getLowerBoundValue();
-              mx = *OptItem.getUpperBoundValue();
-              try
-                {
-                  (*mIndividual[i])[j] = mn + mpRandom->getRandomCC() * (mx - mn);
-                }
-              catch (...)
-                {
-                  (*mIndividual[i])[j] = mx;
-                }
-            }
-          // else if it is not linear we need to distinguish the 3 cases
-          else
-            {
-              try
-                {
-                  switch (loczero)
+
+                case 0:
+                  la = log10(mx) + log10(-mn);
+
+                  if (la < 3.6) // linear
+                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                  else
                     {
-                    case - 1: (*mIndividual[i])[j] = - (-mx * pow(10, la * mpRandom->getRandomCC()));
-                      break;
-                    case 1: (*mIndividual[i])[j] = mn * pow(10, la * mpRandom->getRandomCC());
-                      break;
-                    case 0: la = (fabs(mx) + fabs(mn)) * 0.5 * 0.01;
+                      C_FLOAT64 mean = (mx + mn) * 0.5;
+                      C_FLOAT64 sigma = mean * 0.01;
                       do
                         {
-                          (*mIndividual[i])[j] = mpRandom->getRandomNormal(0, la);
+                          mut = mpRandom->getRandomNormal(mean, sigma);
                         }
-                      while (((*mIndividual[i])[j] < mn) || ((*mIndividual[i])[j] > mx));
-                      break;
-
-                      // 2 never happens, this is the old case 0 kept here as it can later be useful
-                    case 2: if (mpRandom->getRandomCC() < (la1 / (la + la1)))
-                        (*mIndividual[i])[j] = - (pow(10, DBL_MIN_10_EXP) * pow(10, la1 * mpRandom->getRandomCC()));
-                      else
-                        (*mIndividual[i])[j] = pow(10, DBL_MIN_10_EXP) * pow(10, la * mpRandom->getRandomCC());
-                      break;
+                      while ((mut < mn) || (mut > mx));
                     }
-                }
-              catch (...)
-                {
-                  (*mIndividual[i])[j] = mx;
+
+                  break;
+
+                case 1:
+                  la = log10(mx) - log10(std::max(mn, DBL_MIN));
+
+                  if (la < 1.8 || !(mn > 0.0)) // linear
+                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                  else
+                    mut = pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                  break;
                 }
             }
-          // set the variance of the mutations
-          // indv[i][nparam+j] = sqrt(fabs(indv[i][j]));
-          (*mIndividual[i])[mVariableSize + j] = fabs((*mIndividual[i])[j]) * 0.5;
-        }
-      // calculate its fitness
-      mValue[i] = evaluate(*mIndividual[i]);
-    }
-  // get the index of the fittest
-  mBestIndex = fittest();
 
-  return true;
+          catch (...)
+            {
+              mut = (mx + mn) * 0.5;
+            }
+
+          // force it to be within the bounds
+          switch (OptItem.checkConstraint(mut))
+            {
+            case - 1:
+              mut = *OptItem.getLowerBoundValue();
+              if (!OptItem.checkLowerBound(mut)) // Inequality
+                {
+                  if (mut == 0.0)
+                    mut = DBL_MIN;
+                  else
+                    mut += mut * DBL_EPSILON;
+                }
+              break;
+
+            case 1:
+              mut = *OptItem.getUpperBoundValue();
+              if (!OptItem.checkUpperBound(mut)) // Inequality
+                {
+                  if (mut == 0.0)
+                    mut = - DBL_MIN;
+                  else
+                    mut -= mut * DBL_EPSILON;
+                }
+              break;
+            }
+          // We need to set the value here so that further checks take
+          // account of the value.
+          (*(*mpSetCalculateVariable)[j])(mut);
+
+          // Set the variance for this parameter.
+          (*mVariance[i])[j] = fabs(mut) * 0.5;
+        }
+
+      // calculate its fitness
+      Continue = evaluate(*mIndividual[i]);
+      mValue[i] = mEvaluationValue;
+    }
+
+  return Continue;
 }
 
 bool COptMethodEP::select()
@@ -332,6 +416,7 @@ bool COptMethodEP::select()
           if (mValue[i] <= mValue[opp]) mWins[i]++;
         }
     }
+
   // selection of top winners
   for (i = 0; i < mPopulationSize; i++)
     for (j = i + 1; j < 2*mPopulationSize; j++)
@@ -378,16 +463,21 @@ unsigned C_INT32 COptMethodEP::fittest()
 bool COptMethodEP::replicate()
 {
   unsigned C_INT32 i;
-  C_INT32 j;
+  unsigned C_INT32 j;
   bool Continue = true;
 
   // iterate over parents
-  for (i = 0; i < mPopulationSize; i++)
+  for (i = 0; i < mPopulationSize && Continue; i++)
     {
       // replicate them
-      for (j = 0; j < 2*mVariableSize; j++)
-        (*mIndividual[mPopulationSize + i])[j] = (*mIndividual[i])[j];
+      for (j = 0; j < mVariableSize; j++)
+        {
+          (*mIndividual[mPopulationSize + i])[j] = (*mIndividual[i])[j];
+          (*mVariance[mPopulationSize + i])[j] = (*mVariance[i])[j];
+        }
+
       mValue[mPopulationSize + i] = mValue[i];
+
       // possibly mutate the offspring
       Continue = mutate(mPopulationSize + i);
     }
@@ -397,53 +487,69 @@ bool COptMethodEP::replicate()
 
 bool COptMethodEP::mutate(unsigned C_INT32 i)
 {
-  C_INT32 j;
-  C_FLOAT64 mn, mx, mut, v1;
+  unsigned C_INT32 j;
+  C_FLOAT64 v1;
 
-  try
+  CVector<C_FLOAT64> & Individual = *mIndividual[i];
+  CVector<C_FLOAT64> & Variance = *mVariance[i];
+
+  v1 = mpRandom->getRandomNormal01();
+
+  // update the variances
+  for (j = 0; j < mVariableSize; j++)
     {
-      v1 = mpRandom->getRandomNormal01();
-      // update the variances
-      for (j = 0; j < mVariableSize; j++)
+      C_FLOAT64 & mut = Individual[j];
+      COptItem & OptItem = *(*mpOptItem)[j];
+
+      try
         {
-          (*mIndividual[i])[mVariableSize + j] = (*mIndividual[i])[mVariableSize + j] * exp(tau1 * v1 + tau2 * mpRandom->getRandomNormal01());
-          if ((*mIndividual[i])[mVariableSize + j] < 1e-8)
-            (*mIndividual[i])[mVariableSize + j] = 1e-8;
-        }
-      // mutate the parameters
-      for (j = 0; j < mVariableSize; j++)
-        {
-          // calculate lower and upper bounds
-          COptItem & OptItem = *(*mpOptItem)[j];
-          mn = *OptItem.getLowerBoundValue();
-          mx = *OptItem.getUpperBoundValue();
+          // update the parameter for the variances
+          Variance[j] =
+            std::max(Variance[j] * exp(tau1 * v1 + tau2 * mpRandom->getRandomNormal01()), 1e-8);
 
           // calculate the mutatated parameter
-
-          mut = sqrt((*mIndividual[i])[mVariableSize + j]);
-          mut *= mpRandom->getRandomNormal01();
-          mut = (*mIndividual[i])[j] + mut;
-          // force it to be within the bounds
-          if (OptItem.getLowerRelation() == "<")
-
-          {if (mut <= mn) mut = mn + DBL_EPSILON;}
-          else
-          {if (mut < mn) mut = mn;}
-
-          if (OptItem.getUpperRelation() == ">")
-
-          {if (mut >= mx) mut = mx - DBL_EPSILON;}
-          else
-          {if (mut > mx) mut = mx;}
-          // store it
-          (*mIndividual[i])[j] = mut;
+          mut += sqrt(Variance[j]) * mpRandom->getRandomNormal01();
         }
+
+      catch (...)
+        {
+          mut = (*OptItem.getUpperBoundValue() + *OptItem.getLowerBoundValue()) * 0.5;
+        }
+
+      // force it to be within the bounds
+      switch (OptItem.checkConstraint(mut))
+        {
+        case - 1:
+          mut = *OptItem.getLowerBoundValue();
+          if (!OptItem.checkLowerBound(mut)) // Inequality
+            {
+              if (mut == 0.0)
+                mut = DBL_MIN;
+              else
+                mut += mut * DBL_EPSILON;
+            }
+          break;
+
+        case 1:
+          mut = *OptItem.getUpperBoundValue();
+          if (!OptItem.checkUpperBound(mut)) // Inequality
+            {
+              if (mut == 0.0)
+                mut = - DBL_MIN;
+              else
+                mut -= mut * DBL_EPSILON;
+            }
+          break;
+        }
+
+      // We need to set the value here so that further checks take
+      // account of the value.
+      (*(*mpSetCalculateVariable)[j])(mut);
     }
 
-  catch (...)
-  {}
-  // evaluate the fitness
-  mValue[i] = evaluate(*mIndividual[i]);
+  // calculate its fitness
+  bool Continue = evaluate(Individual);
+  mValue[i] = mEvaluationValue;
 
-  return true;
+  return Continue;
 }
