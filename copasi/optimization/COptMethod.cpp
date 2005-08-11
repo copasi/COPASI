@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:37:39 $
+   $Author: shoops $ 
+   $Date: 2005/08/11 20:37:03 $
    End CVS Header */
 
 /**
@@ -29,7 +29,7 @@ const std::string COptMethod::TypeName[] =
     "RandomSearchMaster",
     "SimulatedAnnealing",
     "GeneticAlgorithm",
-    "EvolutionaryProgram2",
+    "EvolutionaryProgram",
     "SteepestDescent"
     "HybridGASA",
     "GeneticAlgorithmSR"
@@ -52,7 +52,8 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
     case SteepestDescent:
       pMethod = new COptMethodSteepestDescent();
       break;
-    case EvolutionaryProgram2:
+
+    case EvolutionaryProgram:
       pMethod = new COptMethodEP();
       break;
 
@@ -68,10 +69,6 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
                pMethod = new COptMethodGA();
                break;
 
-             case EvolutionaryProgram2:
-               //      pMethod = new COptMethodEP2();
-               break;
-       
              case HybridGASA:
                //      pMethod = new COptMethodHGASA();
                break;*/

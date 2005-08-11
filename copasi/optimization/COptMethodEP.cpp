@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 18:16:26 $
+   $Date: 2005/08/11 20:37:03 $
    End CVS Header */
 
 #include "copasi.h"
@@ -17,7 +17,7 @@
 #include "report/CCopasiObjectReference.h"
 
 COptMethodEP::COptMethodEP(const CCopasiContainer * pParent):
-    COptMethod(CCopasiMethod::EvolutionaryProgram2, pParent),
+    COptMethod(CCopasiMethod::EvolutionaryProgram, pParent),
     mGenerations(0),
     mPopulationSize(0),
     mpRandom(NULL),
@@ -58,22 +58,6 @@ COptMethodEP::COptMethodEP(const COptMethodEP & src,
 COptMethodEP::~COptMethodEP()
 {
   cleanup();
-}
-
-bool COptMethodEP::setCallBack(CProcessReport * pCallBack)
-{
-  CCopasiMethod::setCallBack(pCallBack);
-
-  if (!pCallBack) return true;
-
-  mGeneration = 0;
-  mhGenerations =
-    pCallBack->addItem("Current Generation",
-                       CCopasiParameter::UINT,
-                       & mGeneration,
-                       & mGenerations);
-
-  return true;
 }
 
 bool COptMethodEP::optimise()
@@ -153,11 +137,21 @@ bool COptMethodEP::cleanup()
 
 bool COptMethodEP::initialize()
 {
+  cleanup();
+
   unsigned C_INT32 i;
   if (!COptMethod::initialize()) return false;
 
   mGenerations = * getValue("Number of Generations").pUINT;
-  mGeneration = 1;
+  mGeneration = 0;
+
+  if (mpCallBack)
+    mhGenerations =
+      mpCallBack->addItem("Current Generation",
+                          CCopasiParameter::UINT,
+                          & mGeneration,
+                          & mGenerations);
+  mGeneration++;
 
   mPopulationSize = * getValue("Population Size").pUINT;
   mpRandom =
@@ -213,11 +207,6 @@ bool COptMethodEP::creation()
 {
   unsigned C_INT32 i;
   unsigned C_INT32 j;
-
-  unsigned C_INT32 location;
-  // location = -1: the interval (mn, mx] is in (-inf, 0]
-  // location =  0: 0 is in the interval (mn, mx)
-  // location =  1: the interval [mn, mx) is in [0, inf)
 
   C_FLOAT64 mn;
   C_FLOAT64 mx;
@@ -291,35 +280,22 @@ bool COptMethodEP::creation()
           mn = *OptItem.getLowerBoundValue();
           mx = *OptItem.getUpperBoundValue();
 
-          // determine the location of the intervall
-          if (0.0 <= mn)
-            location = 1;
-          else if (mx > 0)
-            location = 0;
-          else
-            location = -1;
-
-          // determine whether to distribute the parameter linearly or not
-          // depending on the location and act uppon it.
           try
             {
-              switch (location)
+              // First determine the location of the intervall
+              // Secondly determine whether to distribute the parameter linearly or not
+              // depending on the location and act uppon it.
+              if (0.0 <= mn) // the interval [mn, mx) is in [0, inf)
                 {
-                case - 1:
-                  // Switch lower and upper bound and change sign, i.e.,
-                  // we can treat it similarly as location 1:
-                  mx = - *OptItem.getLowerBoundValue();
-                  mn = - *OptItem.getUpperBoundValue();
-
                   la = log10(mx) - log10(std::max(mn, DBL_MIN));
 
                   if (la < 1.8 || !(mn > 0.0)) // linear
-                    mut = - (mn + mpRandom->getRandomCC() * (mx - mn));
+                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
                   else
-                    mut = - pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
-                  break;
-
-                case 0:
+                    mut = pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                }
+              else if (mx > 0) // 0 is in the interval (mn, mx)
+                {
                   la = log10(mx) + log10(-mn);
 
                   if (la < 3.6) // linear
@@ -334,17 +310,20 @@ bool COptMethodEP::creation()
                         }
                       while ((mut < mn) || (mut > mx));
                     }
+                }
+              else // the interval (mn, mx] is in (-inf, 0]
+                {
+                  // Switch lower and upper bound and change sign, i.e.,
+                  // we can treat it similarly as location 1:
+                  mx = - *OptItem.getLowerBoundValue();
+                  mn = - *OptItem.getUpperBoundValue();
 
-                  break;
-
-                case 1:
                   la = log10(mx) - log10(std::max(mn, DBL_MIN));
 
                   if (la < 1.8 || !(mn > 0.0)) // linear
-                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                    mut = - (mn + mpRandom->getRandomCC() * (mx - mn));
                   else
-                    mut = pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
-                  break;
+                    mut = - pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
                 }
             }
 

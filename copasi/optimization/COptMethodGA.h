@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 18:19:24 $
+   $Date: 2005/08/11 20:37:04 $
    End CVS Header */
 
 /**
@@ -36,13 +36,6 @@ class COptMethodGA : public COptMethod
      * Destructor
      */
     virtual ~COptMethodGA();
-
-    /**
-     * Set the call back of the problem
-     * @param CProcessReport * pCallBack
-     * @result bool succes
-     */
-    virtual bool setCallBack(CProcessReport * pCallBack);
 
     /**
      * Execute the optimization algorithm calling simulation routine 

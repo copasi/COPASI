@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 18:16:26 $
+   $Date: 2005/08/11 20:37:04 $
    End CVS Header */
 
 /***************************************************************************
@@ -71,6 +71,8 @@ void CRandomSearch::initObjects()
  */
 bool CRandomSearch::initialize()
 {
+  cleanup();
+
   if (!COptMethod::initialize()) return false;
 
   mIterations = * getValue("Number of Iterations").pUINT;

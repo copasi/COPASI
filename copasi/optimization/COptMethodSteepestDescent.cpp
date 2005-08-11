@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/09 16:52:27 $
+   $Date: 2005/08/11 20:37:04 $
    End CVS Header */
 
 #include "copasi.h"
@@ -21,8 +21,8 @@ COptMethodSteepestDescent::COptMethodSteepestDescent(const CCopasiContainer * pP
     COptMethod(CCopasiMethod::SteepestDescent, pParent),
     mpDescent(new FDescentTemplate<COptMethodSteepestDescent>(this, &COptMethodSteepestDescent::descentLine))
 {
-  addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
-  addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.001);
+  addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 100);
+  addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1e-6);
 }
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const COptMethodSteepestDescent & src,
@@ -35,15 +35,6 @@ COptMethodSteepestDescent::~COptMethodSteepestDescent()
   pdelete(mpDescent);
 
   cleanup();
-}
-
-bool COptMethodSteepestDescent::setCallBack(CProcessReport * pCallBack)
-{
-  CCopasiMethod::setCallBack(pCallBack);
-
-  /*  pCallBack->addItem(...);*/
-
-  return true;
 }
 
 bool COptMethodSteepestDescent::optimise()
@@ -176,6 +167,8 @@ bool COptMethodSteepestDescent::cleanup()
 
 bool COptMethodSteepestDescent::initialize()
 {
+  cleanup();
+
   if (!COptMethod::initialize()) return false;
 
   mIterations = * getValue("Iteration Limit").pUINT;

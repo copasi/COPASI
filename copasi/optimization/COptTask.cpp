@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:37:39 $
+   $Author: shoops $ 
+   $Date: 2005/08/11 20:37:04 $
    End CVS Header */
 
 /**
@@ -82,7 +82,7 @@ bool COptTask::initialize(std::ostream * pOstream)
   if (!pProblem->initialize()) return false;
 
   pMethod->setProblem(pProblem);
-  if (!pMethod->initialize()) return false;
+  //  if (!pMethod->initialize()) return false;
 
   return success;
 }

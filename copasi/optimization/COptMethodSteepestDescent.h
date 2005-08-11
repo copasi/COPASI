@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/08/01 07:01:04 $
+   $Author: shoops $ 
+   $Date: 2005/08/11 20:37:04 $
    End CVS Header */
 
 #ifndef COPASI_COptMethodSteepestDescent
@@ -66,13 +66,6 @@ class COptMethodSteepestDescent: public COptMethod
      */
     COptMethodSteepestDescent(const COptMethodSteepestDescent& src,
                               const CCopasiContainer * pParent = NULL);
-
-    /**
-        * Set the call back of the problem
-        * @param CProcessReport * pCallBack
-        * @result bool succes
-        */
-    virtual bool setCallBack(CProcessReport * pCallBack);
 
     /**
      * Destructor

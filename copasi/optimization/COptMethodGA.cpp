@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 17:44:17 $
+   $Date: 2005/08/11 20:37:03 $
    End CVS Header */
 
 #include <float.h>
@@ -68,22 +68,6 @@ COptMethodGA::COptMethodGA(const COptMethodGA & src,
 
 COptMethodGA::~COptMethodGA()
 {cleanup();}
-
-bool COptMethodGA::setCallBack(CProcessReport * pCallBack)
-{
-  CCopasiMethod::setCallBack(pCallBack);
-
-  if (!pCallBack) return true;
-
-  mGeneration = 0;
-  mhGenerations =
-    pCallBack->addItem("Current Generation",
-                       CCopasiParameter::UINT,
-                       & mGeneration,
-                       & mGenerations);
-
-  return true;
-}
 
 // evaluate the fitness of one individual
 bool COptMethodGA::evaluate(const CVector< C_FLOAT64 > & individual)
@@ -424,12 +408,22 @@ void COptMethodGA::initObjects()
 
 bool COptMethodGA::initialize()
 {
+  cleanup();
+
   unsigned C_INT32 i;
 
   if (!COptMethod::initialize()) return false;
 
   mGenerations = * getValue("Number of Generations").pUINT;
-  mGeneration = 1;
+  mGeneration = 0;
+
+  if (mpCallBack)
+    mhGenerations =
+      mpCallBack->addItem("Current Generation",
+                          CCopasiParameter::UINT,
+                          & mGeneration,
+                          & mGenerations);
+  mGeneration++;
 
   mPopulationSize = * getValue("Population Size").pUINT;
   mpRandom =

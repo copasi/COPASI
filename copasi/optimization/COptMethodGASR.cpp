@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 18:16:26 $
+   $Date: 2005/08/11 20:37:04 $
    End CVS Header */
 
 #include <float.h>
@@ -69,22 +69,6 @@ COptMethodGASR::COptMethodGASR(const COptMethodGASR & src,
 
 COptMethodGASR::~COptMethodGASR()
 {cleanup();}
-
-bool COptMethodGASR::setCallBack(CProcessReport * pCallBack)
-{
-  CCopasiMethod::setCallBack(pCallBack);
-
-  if (!pCallBack) return true;
-
-  mGeneration = 0;
-  mhGenerations =
-    pCallBack->addItem("Current Generation",
-                       CCopasiParameter::UINT,
-                       & mGeneration,
-                       & mGenerations);
-
-  return true;
-}
 
 // evaluate the fitness of one individual
 bool COptMethodGASR::evaluate(const CVector< C_FLOAT64 > & individual)
@@ -271,7 +255,7 @@ bool COptMethodGASR::select()
 
       for (j = 0; j < TotalPopulation - 1; j++)  // lambda is number of individuals
         {
-          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||          // within bounds
+          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||           // within bounds
               (mpRandom->getRandomOO() < mPf))      // random chance to compare values outside bounds
             {
               // compare obj fcn using mValue alternative code
@@ -413,15 +397,30 @@ void COptMethodGASR::initObjects()
 
 bool COptMethodGASR::initialize()
 {
+  cleanup();
+
   unsigned C_INT32 i;
 
   if (!COptMethod::initialize()) return false;
 
+  mGeneration = 0;
   mGenerations = * getValue("Number of Generations").pUINT;
-  mGeneration = 1;
+
+  if (mpCallBack)
+    mhGenerations =
+      mpCallBack->addItem("Current Generation",
+                          CCopasiParameter::UINT,
+                          & mGeneration,
+                          & mGenerations);
+  mGeneration++;
+
   mPopulationSize = * getValue("Population Size").pUINT;
-  C_FLOAT64 mPf = *(C_FLOAT64*) getValue("Pf").pDOUBLE;
-  if (mPf <= 0.4 || 0.5 <= mPf) mPf = 0.475;
+  mPf = *(C_FLOAT64*) getValue("Pf").pDOUBLE;
+  if (mPf < 0.0 || 1.0 < mPf)
+    {
+      mPf = 0.475;
+      setValue("Pf", mPf);
+    }
   mpRandom =
     CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
                              * (unsigned C_INT32 *) getValue("Seed").pUINT);

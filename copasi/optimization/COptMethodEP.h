@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 16:17:43 $
+   $Date: 2005/08/11 20:37:03 $
    End CVS Header */
 
 #ifndef COPASI_COptMethodEP
@@ -93,13 +93,6 @@ class COptMethodEP: public COptMethod
      */
     COptMethodEP(const COptMethodEP& src,
                  const CCopasiContainer * pParent = NULL);
-
-    /**
-     * Set the call back of the problem
-     * @param CProcessReport * pCallBack
-     * @result bool succes
-     */
-    virtual bool setCallBack(CProcessReport * pCallBack);
 
     /**
      * Destructor
