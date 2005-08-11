@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/09 16:54:17 $
+   $Date: 2005/08/11 17:44:17 $
    End CVS Header */
 
 #include <float.h>
@@ -344,7 +344,6 @@ bool COptMethodGA::creation(unsigned C_INT32 first,
   C_FLOAT64 mx;
   C_FLOAT64 la;
 
-  bool linear;
   bool Continue = true;
 
   for (i = first; i < Last && Continue; i++)
@@ -361,24 +360,17 @@ bool COptMethodGA::creation(unsigned C_INT32 first,
           try
             {
               // determine if linear or log scale
-              linear = false; la = 1.0;
-
               if ((mn < 0.0) || (mx <= 0.0))
-                linear = true;
+                mut = mn + mpRandom->getRandomCC() * (mx - mn);
               else
                 {
                   la = log10(mx) - log10(std::max(mn, DBL_MIN));
-                  if (la < 1.8)
-                    linear = true;
-                  else
-                    mn = std::max(mn, DBL_MIN);
-                }
 
-              // set it to a random value within the interval
-              if (linear)
-                mut = mn + mpRandom->getRandomCC() * (mx - mn);
-              else
-                mut = pow(10, log10(mn) + la * mpRandom->getRandomCC());
+                  if (la < 1.8)
+                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                  else
+                    mut = pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                }
             }
 
           catch (...)
