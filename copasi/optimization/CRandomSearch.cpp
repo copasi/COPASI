@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/25 09:49:19 $
+   $Author: shoops $ 
+   $Date: 2005/08/11 18:16:26 $
    End CVS Header */
 
 /***************************************************************************
@@ -97,7 +97,6 @@ bool CRandomSearch::initialize()
 //C_INT32 CRandomSearch::optimise()
 bool CRandomSearch::optimise()
 {
-  bool linear;
   bool Continue = true;
 
   if (!initialize()) return false;
@@ -123,24 +122,17 @@ bool CRandomSearch::optimise()
           try
             {
               // determine if linear or log scale
-              linear = false; la = 1.0;
-
               if ((mn < 0.0) || (mx <= 0.0))
-                linear = true;
+                mut = mn + mpRandom->getRandomCC() * (mx - mn);
               else
                 {
                   la = log10(mx) - log10(std::max(mn, DBL_MIN));
-                  if (la < 1.8)
-                    linear = true;
-                  else
-                    mn = std::max(mn, DBL_MIN);
-                }
 
-              // set it to a random value within the interval
-              if (linear)
-                mut = mn + mpRandom->getRandomCC() * (mx - mn);
-              else
-                mut = pow(10, log10(mn) + la * mpRandom->getRandomCC());
+                  if (la < 1.8)
+                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                  else
+                    mut = pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                }
             }
 
           catch (...)

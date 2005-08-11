@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 16:17:43 $
+   $Date: 2005/08/11 18:16:26 $
    End CVS Header */
 
 #include "copasi.h"
@@ -396,35 +396,45 @@ bool COptMethodEP::creation()
 
 bool COptMethodEP::select()
 {
-  unsigned C_INT32 i, j, nopp, opp;
+  unsigned C_INT32 i, j, nopp, opp, MaxIndex;
+  unsigned C_INT32 TotalPopulation = 2 * mPopulationSize;
+  C_FLOAT64 MaxValue;
 
   // tournament competition
-  // compete with 20% of the population
-  nopp = (unsigned int) (mPopulationSize * 0.2);
+  mWins = 0; // Set all wins to 0.
 
-  // but at least one
-  if (nopp < 1) nopp = 1;
+  // compete with ~ 20% of the TotalPopulation
+  nopp = std::max<unsigned C_INT32>(1, mPopulationSize / 5);
 
   // parents and offspring are all in competition
-  for (i = 0; i < 2*mPopulationSize; i++)
+  for (i = 0; i < TotalPopulation; i++)
+    for (j = 0; j < nopp; j++)
+      {
+        // get random opponent
+        opp = mpRandom->getRandomU(TotalPopulation - 1);
+
+        if (mValue[i] < mValue[opp])
+          mWins[i]++;
+        else
+          mWins[opp]++;
+      }
+
+  // selection of top mPopulationSize winners
+  for (i = 0; i < mPopulationSize; i++)
     {
-      mWins[i] = 0;
-      for (j = 0; j < nopp; j++)
-        {
-          // get random opponent
-          opp = mpRandom->getRandomU(mPopulationSize * 2);
-          if (mValue[i] <= mValue[opp]) mWins[i]++;
-        }
+      MaxIndex = i;
+      MaxValue = mWins[i];
+
+      for (j = i + 1; j < TotalPopulation; j++)
+        if (MaxValue < mWins[j])
+          {
+            MaxIndex = j;
+            MaxValue = mWins[j];
+          }
+
+      swap(i, MaxIndex); // The best individual in [i, TotalPopulation] is swapped to the top (i) position.
     }
 
-  // selection of top winners
-  for (i = 0; i < mPopulationSize; i++)
-    for (j = i + 1; j < 2*mPopulationSize; j++)
-      if (mWins[i] < mWins[j])
-        {
-          swap(i, j);
-          break; // <todo=confirm>
-        }
   return true;
 }
 
@@ -433,6 +443,10 @@ bool COptMethodEP::swap(unsigned C_INT32 from, unsigned C_INT32 to)
   CVector< C_FLOAT64 > * pTmp = mIndividual[to];
   mIndividual[to] = mIndividual[from];
   mIndividual[from] = pTmp;
+
+  pTmp = mVariance[to];
+  mVariance[to] = mVariance[from];
+  mVariance[from] = pTmp;
 
   C_FLOAT64 dTmp = mValue[to];
   mValue[to] = mValue[from];

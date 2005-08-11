@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/09 16:51:22 $
+   $Date: 2005/08/11 18:16:26 $
    End CVS Header */
 
 #include <float.h>
@@ -271,7 +271,7 @@ bool COptMethodGASR::select()
 
       for (j = 0; j < TotalPopulation - 1; j++)  // lambda is number of individuals
         {
-          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||         // within bounds
+          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||          // within bounds
               (mpRandom->getRandomOO() < mPf))      // random chance to compare values outside bounds
             {
               // compare obj fcn using mValue alternative code
@@ -356,7 +356,6 @@ bool COptMethodGASR::creation(unsigned C_INT32 first,
   C_FLOAT64 mx;
   C_FLOAT64 la;
 
-  bool linear;
   bool Continue = true;
 
   for (i = first; i < Last && Continue; i++)
@@ -373,24 +372,17 @@ bool COptMethodGASR::creation(unsigned C_INT32 first,
           try
             {
               // determine if linear or log scale
-              linear = false; la = 1.0;
-
               if ((mn < 0.0) || (mx <= 0.0))
-                linear = true;
+                mut = mn + mpRandom->getRandomCC() * (mx - mn);
               else
                 {
                   la = log10(mx) - log10(std::max(mn, DBL_MIN));
-                  if (la < 1.8)
-                    linear = true;
-                  else
-                    mn = std::max(mn, DBL_MIN);
-                }
 
-              // set it to a random value within the interval
-              if (linear)
-                mut = mn + mpRandom->getRandomCC() * (mx - mn);
-              else
-                mut = pow(10, log10(mn) + la * mpRandom->getRandomCC());
+                  if (la < 1.8)
+                    mut = mn + mpRandom->getRandomCC() * (mx - mn);
+                  else
+                    mut = pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+                }
             }
 
           catch (...)
