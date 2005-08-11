@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/10 15:15:48 $
+   $Date: 2005/08/11 10:51:21 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -164,11 +164,11 @@ class SBMLImporter
 
     //bool isMassAction(const CEvaluationNode* pRootNode, const std::map<std::string, const CCopasiObject*>& parameterMap, const CCopasiVector<CChemEqElement>* substrates, bool reversible = false, const CCopasiVector<CChemEqElement>* products = NULL);
 
-    std::vector<const CEvaluationNodeObject*> isMassAction(const CEvaluationTree* pTree, const CChemEq& chemicalEquation, const CEvaluationNodeCall* pCallNode = NULL);
+    std::vector<CEvaluationNodeObject*> isMassAction(const CEvaluationTree* pTree, const CChemEq& chemicalEquation, const CEvaluationNodeCall* pCallNode = NULL);
 
-    std::vector<const CEvaluationNodeObject*> isMassActionExpression(const CEvaluationNode* pRootNode, const CChemEq& chemicalEquation);
+    std::vector<CEvaluationNodeObject*> isMassActionExpression(const CEvaluationNode* pRootNode, const CChemEq& chemicalEquation);
 
-    std::vector<const CEvaluationNodeObject*> isMassActionFunction(const CFunction* pFun, const CChemEq& chemicalEquation, const std::vector<std::vector< std::string > >& functionArgumentCNs);
+    std::vector<CEvaluationNodeObject*> isMassActionFunction(const CFunction* pFun, const CChemEq& chemicalEquation, const std::vector<std::vector< std::string > >& functionArgumentCNs);
 
     /**
      * This function takes a node and tries to find out wether the tree under this node consists
@@ -196,6 +196,8 @@ class SBMLImporter
     CEvaluationNode* variables2objects(const CEvaluationNode* pOrigNode, const std::map<std::string, std::string>& replacementMap);
 
     CEvaluationTree* createExpressionFromFunction(const CFunction* pFun, const std::vector<std::vector<std::string > >& functionArgumentCNs);
+
+    void renameMassActionParameters(CEvaluationNodeCall* pCallNode);
 
   public:
     SBMLImporter();
