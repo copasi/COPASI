@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.103 $
+   $Revision: 1.104 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/08 18:58:09 $
+   $Date: 2005/08/11 20:35:51 $
    End CVS Header */
 
 /**
@@ -3450,7 +3450,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
       // create a new CPlotSpecification element depending on the type
       name = mParser.getAttributeValue("name", papszAttrs);
       sType = mParser.getAttributeValue("type", papszAttrs);
-      mCommon.pCurrentPlotItem = mCommon.pCurrentPlot->createItem(name, CPlotItem::XMLNameToEnum(sType));
+      mCommon.pCurrentPlotItem = mCommon.pCurrentPlot->createItem(name, (CPlotItem::Type) mParser.toEnum(sType.c_str(), CPlotItem::XMLType));
       //std::cout << "Created Item for Plot @" << mCommon.pCurrentPlot << ": " << mCommon.pCurrentPlotItem << std::endl;
       return;
       break;
@@ -3629,7 +3629,7 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
       name = mParser.getAttributeValue("name", papszAttrs);
       mCommon.pCurrentPlot->setObjectName(name);
       sType = mParser.getAttributeValue("type", papszAttrs);
-      mCommon.pCurrentPlot->setType(CPlotItem::XMLNameToEnum(sType));
+      mCommon.pCurrentPlot->setType((CPlotItem::Type) mParser.toEnum(sType, CPlotItem::XMLType));
       active = mParser.getAttributeValue("active", papszAttrs, "true");
 
       mCommon.pCurrentPlot->setActive(mParser.toBool(active));
@@ -4553,7 +4553,9 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
           sType = mParser.getAttributeValue("type", papszAttrs, "default");
           // first set the type of the with setMethodType of the current task
           // object
-          CCopasiMethod::SubType type = CCopasiMethod::XMLNameToEnum(sType.c_str());
+          CCopasiMethod::SubType type =
+            (CCopasiMethod::SubType) mParser.toEnum(sType.c_str(), CCopasiMethod::XMLType);
+
           if (type != CCopasiMethod::unset)
             {
               mCommon.pCurrentTask->setMethodType(type);

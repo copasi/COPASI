@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:13:02 $
+   $Author: shoops $ 
+   $Date: 2005/08/11 20:35:51 $
    End CVS Header */
 
 /**
@@ -27,7 +27,7 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Random Search (PVM)",
     "Simulated Annealing",
     "Genetic Algorithm",
-    "Evolutionary Program2",
+    "Evolutionary Program",
     "Steepest Descent",
     "Hybrid GA/SA",
     "Genetic Algorithm SR",
@@ -49,7 +49,7 @@ const char* CCopasiMethod::XMLSubType[] =
     "RandomSearch(PVM)",
     "SimulatedAnnealing",
     "GeneticAlgorithm",
-    "EvolutionaryProgram2",
+    "EvolutionaryProgram",
     "SteepestDescent"
     "HybridGASA",
     "GeneticAlgorithmSR",
@@ -73,15 +73,6 @@ CCopasiMethod::SubType CCopasiMethod::TypeNameToEnum(const std::string & subType
     i++;
 
   if (CCopasiMethod::SubTypeName[i] != "") return (CCopasiMethod::SubType) i;
-  else return CCopasiMethod::unset;
-}
-
-CCopasiMethod::SubType CCopasiMethod::XMLNameToEnum(const char * xmlTypeName)
-{
-  unsigned C_INT32 i = 0;
-  while (strcmp(xmlTypeName, XMLSubType[i]) && XMLSubType[i]) i++;
-
-  if (XMLSubType[i]) return (CCopasiMethod::SubType) i;
   else return CCopasiMethod::unset;
 }
 

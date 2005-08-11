@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/10 02:20:37 $
+   $Date: 2005/08/11 20:35:51 $
    End CVS Header */
 
 #include "CPlotItem.h"
@@ -20,7 +20,7 @@ const std::string CPlotItem::TypeName[] =
     ""
   };
 
-const std::string CPlotItem::XMLType[] =
+const char* CPlotItem::XMLType[] =
   {
     "Unset",
     "Curve2D",
@@ -28,7 +28,7 @@ const std::string CPlotItem::XMLType[] =
 
     "Plot2D",
     "SimWiz",
-    ""
+    NULL
   };
 
 CPlotItem::Type CPlotItem::TypeNameToEnum(const std::string & typeName) //static
@@ -37,24 +37,6 @@ CPlotItem::Type CPlotItem::TypeNameToEnum(const std::string & typeName) //static
   while (TypeName[i] != typeName && TypeName[i] != "") i++;
 
   if (CPlotItem::TypeName[i] != "") return (CPlotItem::Type) i;
-  else return CPlotItem::unset;
-}
-
-/*CPlotItem::Type CPlotItem::XMLNameToEnum(const char * xmlTypeName) //static
-{
-  unsigned C_INT32 i = 0;
-  while (strcmp(xmlTypeName, XMLType[i]) && XMLType[i]) i++;
- 
-  if (XMLType[i]) return (CPlotItem::Type) i;
-  else return CPlotItem::unset;
-}*/
-
-CPlotItem::Type CPlotItem::XMLNameToEnum(const std::string & xmlTypeName) //static
-{
-  unsigned C_INT32 i = 0;
-  while (xmlTypeName != XMLType[i] && XMLType[i] != "") i++;
-
-  if (XMLType[i] != "") return (CPlotItem::Type) i;
   else return CPlotItem::unset;
 }
 

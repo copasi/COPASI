@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/25 09:48:10 $
+   $Author: shoops $ 
+   $Date: 2005/08/11 20:35:51 $
    End CVS Header */
 
 /**
@@ -38,7 +38,7 @@ class CCopasiMethod : public CCopasiParameterGroup
       RandomSearchMaster,
       SimulatedAnnealing,
       GeneticAlgorithm,
-      EvolutionaryProgram2,
+      EvolutionaryProgram,
       SteepestDescent,
       HybridGASA,
       GeneticAlgorithmSR,
@@ -114,15 +114,6 @@ class CCopasiMethod : public CCopasiParameterGroup
      */
     static
     CCopasiMethod::SubType TypeNameToEnum(const std::string & subTypeName);
-
-    /**
-     * Convert a XMLSubType to the matching enum value
-     * Returns CCopasiMethod::unset if no match is found.
-     * @param (const char * xmlTypeName)
-     * @return CCopasiMethod::SubType type
-     */
-    static
-    CCopasiMethod::SubType XMLNameToEnum(const char * xmlTypeName);
 
     /**
      * Copy constructor
