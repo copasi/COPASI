@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.104 $
+   $Revision: 1.105 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 20:35:51 $
+   $Date: 2005/08/11 21:20:18 $
    End CVS Header */
 
 /**
@@ -4554,7 +4554,7 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
           // first set the type of the with setMethodType of the current task
           // object
           CCopasiMethod::SubType type =
-            (CCopasiMethod::SubType) mParser.toEnum(sType.c_str(), CCopasiMethod::XMLType);
+            (CCopasiMethod::SubType) mParser.toEnum(sType.c_str(), CCopasiMethod::XMLSubType);
 
           if (type != CCopasiMethod::unset)
             {
