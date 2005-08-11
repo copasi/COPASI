@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/07/25 22:12:50 $
+   $Author: shoops $ 
+   $Date: 2005/08/11 20:37:41 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -165,14 +165,14 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   mObject = NULL;
 
-  methodCombo->insertItem("Steepest Descent");
-  methodCombo->insertItem("Random Search");
-  methodCombo->insertItem("Random Search (PVM)");
-  methodCombo->insertItem("Simulated Annealing");
-  methodCombo->insertItem("Genetic Algorithm");
-  methodCombo->insertItem("Evolutionary Program2");
-  methodCombo->insertItem("Hybrid GA/SA");
+  methodCombo->insertItem("Evolutionary Program");
   methodCombo->insertItem("Genetic Algorithm SR");
+  methodCombo->insertItem("Genetic Algorithm");
+  //  methodCombo->insertItem("Hybrid GA/SA");
+  //  methodCombo->insertItem("Random Search (PVM)");
+  methodCombo->insertItem("Random Search");
+  //  methodCombo->insertItem("Simulated Annealing");
+  methodCombo->insertItem("Steepest Descent");
 
   // signals and slots connections
 
@@ -260,6 +260,8 @@ bool OptimizationWidget::loadOptimization()
     dynamic_cast< COptTask * >(GlobalKeys.get(optimizationTaskKey));
 
   if (!optimizationTask) return false;
+
+  taskExecCheck->setChecked(optimizationTask->isScheduled());
 
   COptProblem *optimizationProblem = dynamic_cast<COptProblem *>(optimizationTask->getProblem());
   if (!optimizationProblem) return false;
