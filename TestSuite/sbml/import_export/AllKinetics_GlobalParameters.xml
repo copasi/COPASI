@@ -1,8 +1,2606 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created by COPASI version 4.0 Debug 13++ on 2005-08-11 16:00 with libsbml version 2.3.2. -->
+<!-- Created by COPASI version 4.0 Debug 13++ on 2005-08-12 13:13 with libsbml version 2.3.2. -->
 <sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
   <model id="Model_1" name="New Model">
     <listOfFunctionDefinitions>
+      <functionDefinition id="function_34">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Vf </ci>
+                <apply>
+                  <minus/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <ci> Keq </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> substrate </ci>
+                <apply>
+                  <times/>
+                  <ci> Kms </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_33">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vr </ci>
+                    <ci> product </ci>
+                  </apply>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Kms </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Inhibitor </ci>
+                      <ci> Ki </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_32">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vr </ci>
+                    <ci> product </ci>
+                  </apply>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> substrate </ci>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> product </ci>
+                  <ci> Kmp </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> substrate </ci>
+                    <ci> Ki </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_31">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Activator </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Ka </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vf </ci>
+                      <ci> substrate </ci>
+                    </apply>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> product </ci>
+                    </apply>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+                <ci> Activator </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Ka </ci>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Kms </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                  <ci> Activator </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vr </ci>
+                    <ci> product </ci>
+                  </apply>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> substrate </ci>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> product </ci>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_29">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Shalve </ci>
+            </bvar>
+            <bvar>
+              <ci> Phalve </ci>
+            </bvar>
+            <bvar>
+              <ci> h </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Shalve </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <apply>
+                      <times/>
+                      <ci> substrate </ci>
+                      <ci> Keq </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Shalve </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Phalve </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> h </ci>
+                    <cn> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Shalve </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Phalve </ci>
+                    </apply>
+                  </apply>
+                  <ci> h </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_28">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> ModifierA </ci>
+            </bvar>
+            <bvar>
+              <ci> ModifierB </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Shalve </ci>
+            </bvar>
+            <bvar>
+              <ci> Phalve </ci>
+            </bvar>
+            <bvar>
+              <ci> h </ci>
+            </bvar>
+            <bvar>
+              <ci> MAhalve </ci>
+            </bvar>
+            <bvar>
+              <ci> alphaA </ci>
+            </bvar>
+            <bvar>
+              <ci> MBhalve </ci>
+            </bvar>
+            <bvar>
+              <ci> alphaB </ci>
+            </bvar>
+            <bvar>
+              <ci> alphaAB </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Shalve </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <apply>
+                      <times/>
+                      <ci> substrate </ci>
+                      <ci> Keq </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Shalve </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Phalve </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> h </ci>
+                    <cn> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> ModifierA </ci>
+                        <ci> MAhalve </ci>
+                      </apply>
+                      <ci> h </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> ModifierB </ci>
+                        <ci> MBhalve </ci>
+                      </apply>
+                      <ci> h </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <times/>
+                      <ci> alphaA </ci>
+                      <apply>
+                        <power/>
+                        <apply>
+                          <divide/>
+                          <ci> ModifierA </ci>
+                          <ci> MAhalve </ci>
+                        </apply>
+                        <ci> h </ci>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> alphaB </ci>
+                      <apply>
+                        <power/>
+                        <apply>
+                          <divide/>
+                          <ci> ModifierB </ci>
+                          <ci> MBhalve </ci>
+                        </apply>
+                        <ci> h </ci>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> alphaA </ci>
+                      <ci> alphaB </ci>
+                      <ci> alphaAB </ci>
+                      <apply>
+                        <power/>
+                        <apply>
+                          <divide/>
+                          <ci> ModifierA </ci>
+                          <ci> MAhalve </ci>
+                        </apply>
+                        <ci> h </ci>
+                      </apply>
+                      <apply>
+                        <power/>
+                        <apply>
+                          <divide/>
+                          <ci> ModifierB </ci>
+                          <ci> MBhalve </ci>
+                        </apply>
+                        <ci> h </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Shalve </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Phalve </ci>
+                    </apply>
+                  </apply>
+                  <ci> h </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_27">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Modifier </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Shalve </ci>
+            </bvar>
+            <bvar>
+              <ci> Phalve </ci>
+            </bvar>
+            <bvar>
+              <ci> h </ci>
+            </bvar>
+            <bvar>
+              <ci> Mhalve </ci>
+            </bvar>
+            <bvar>
+              <ci> alpha </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Shalve </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <apply>
+                      <times/>
+                      <ci> substrate </ci>
+                      <ci> Keq </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Shalve </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Phalve </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> h </ci>
+                    <cn> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> Modifier </ci>
+                        <ci> Mhalve </ci>
+                      </apply>
+                      <ci> h </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <times/>
+                      <ci> alpha </ci>
+                      <apply>
+                        <power/>
+                        <apply>
+                          <divide/>
+                          <ci> Modifier </ci>
+                          <ci> Mhalve </ci>
+                        </apply>
+                        <ci> h </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Shalve </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Phalve </ci>
+                    </apply>
+                  </apply>
+                  <ci> h </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_26">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substratea </ci>
+            </bvar>
+            <bvar>
+              <ci> substrateb </ci>
+            </bvar>
+            <bvar>
+              <ci> productp </ci>
+            </bvar>
+            <bvar>
+              <ci> productq </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Kma </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmb </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmq </ci>
+            </bvar>
+            <bvar>
+              <ci> Kia </ci>
+            </bvar>
+            <bvar>
+              <ci> Kiq </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Vf </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> substratea </ci>
+                    <ci> substrateb </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> productp </ci>
+                      <ci> productq </ci>
+                    </apply>
+                    <ci> Keq </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> substratea </ci>
+                  <ci> substrateb </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> productq </ci>
+                      <ci> Kiq </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Kma </ci>
+                  <ci> substrateb </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Kmb </ci>
+                  <ci> substratea </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vf </ci>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> Keq </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <ci> Kmq </ci>
+                      <ci> productp </ci>
+                      <apply>
+                        <plus/>
+                        <cn> 1 </cn>
+                        <apply>
+                          <divide/>
+                          <ci> substratea </ci>
+                          <ci> Kia </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> productq </ci>
+                      <apply>
+                        <plus/>
+                        <ci> Kmp </ci>
+                        <ci> productp </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_25">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> productp </ci>
+            </bvar>
+            <bvar>
+              <ci> productq </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmq </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Kip </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Vf </ci>
+                <apply>
+                  <minus/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> productp </ci>
+                      <ci> productq </ci>
+                    </apply>
+                    <ci> Keq </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Kms </ci>
+                <apply>
+                  <times/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> productp </ci>
+                      <ci> Kip </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vf </ci>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> Keq </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <ci> Kmq </ci>
+                      <ci> productp </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> Kmp </ci>
+                      <ci> productq </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> productp </ci>
+                      <ci> productq </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_24">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substratea </ci>
+            </bvar>
+            <bvar>
+              <ci> substrateb </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Kma </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmb </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Kia </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Vf </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> substratea </ci>
+                    <ci> substrateb </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <ci> Keq </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> substratea </ci>
+                  <ci> substrateb </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Kma </ci>
+                  <ci> substrateb </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Kmb </ci>
+                  <ci> substratea </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vf </ci>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> Keq </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> Kmp </ci>
+                    <apply>
+                      <times/>
+                      <ci> product </ci>
+                      <apply>
+                        <plus/>
+                        <cn> 1 </cn>
+                        <apply>
+                          <divide/>
+                          <ci> substratea </ci>
+                          <ci> Kia </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_23">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substratea </ci>
+            </bvar>
+            <bvar>
+              <ci> substrateb </ci>
+            </bvar>
+            <bvar>
+              <ci> productp </ci>
+            </bvar>
+            <bvar>
+              <ci> productq </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Kma </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmb </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmq </ci>
+            </bvar>
+            <bvar>
+              <ci> Kia </ci>
+            </bvar>
+            <bvar>
+              <ci> Kib </ci>
+            </bvar>
+            <bvar>
+              <ci> Kip </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Vf </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> substratea </ci>
+                    <ci> substrateb </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> productp </ci>
+                      <ci> productq </ci>
+                    </apply>
+                    <ci> Keq </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> substratea </ci>
+                  <ci> substrateb </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> productp </ci>
+                      <ci> Kip </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Kma </ci>
+                  <ci> substrateb </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Kmb </ci>
+                  <apply>
+                    <plus/>
+                    <ci> substratea </ci>
+                    <ci> Kia </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vf </ci>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> Keq </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <ci> Kmq </ci>
+                      <ci> productp </ci>
+                      <apply>
+                        <plus/>
+                        <cn> 1 </cn>
+                        <apply>
+                          <divide/>
+                          <ci> substratea </ci>
+                          <ci> Kia </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> productq </ci>
+                      <apply>
+                        <plus/>
+                        <apply>
+                          <times/>
+                          <ci> Kmp </ci>
+                          <apply>
+                            <plus/>
+                            <cn> 1 </cn>
+                            <apply>
+                              <divide/>
+                              <apply>
+                                <times/>
+                                <ci> Kia </ci>
+                                <ci> substrateb </ci>
+                              </apply>
+                              <apply>
+                                <times/>
+                                <ci> Kma </ci>
+                                <ci> Kmb </ci>
+                              </apply>
+                            </apply>
+                          </apply>
+                        </apply>
+                        <apply>
+                          <times/>
+                          <ci> productp </ci>
+                          <apply>
+                            <plus/>
+                            <cn> 1 </cn>
+                            <apply>
+                              <divide/>
+                              <ci> substrateb </ci>
+                              <ci> Kib </ci>
+                            </apply>
+                          </apply>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_22">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vr </ci>
+                    <ci> product </ci>
+                  </apply>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> substrate </ci>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> Inhibitor </ci>
+                    <ci> Ki </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_21">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Kis </ci>
+            </bvar>
+            <bvar>
+              <ci> Kic </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vr </ci>
+                    <ci> product </ci>
+                  </apply>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> Inhibitor </ci>
+                  <ci> Kis </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Kms </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Inhibitor </ci>
+                      <ci> Kic </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Activator </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Kas </ci>
+            </bvar>
+            <bvar>
+              <ci> Kac </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vf </ci>
+                      <ci> substrate </ci>
+                    </apply>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> product </ci>
+                    </apply>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+                <ci> Activator </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Kas </ci>
+                <ci> Activator </ci>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Kms </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> Kac </ci>
+                    <ci> Activator </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_19">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Kii </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Vf </ci>
+                <apply>
+                  <minus/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <ci> Keq </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kii </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Kms </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_18">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Modifier </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Kd </ci>
+            </bvar>
+            <bvar>
+              <ci> a </ci>
+            </bvar>
+            <bvar>
+              <ci> b </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vf </ci>
+                      <ci> substrate </ci>
+                    </apply>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> product </ci>
+                    </apply>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> b </ci>
+                      <ci> Modifier </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> a </ci>
+                      <ci> Kd </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> Modifier </ci>
+                  <ci> Kd </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Kms </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Modifier </ci>
+                      <apply>
+                        <times/>
+                        <ci> a </ci>
+                        <ci> Kd </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_17">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> v </ci>
+            </bvar>
+            <ci> v </ci>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_16">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vr </ci>
+                    <ci> product </ci>
+                  </apply>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> substrate </ci>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> product </ci>
+                  <ci> Kmp </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> Inhibitor </ci>
+                  <ci> Ki </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_15">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Activator </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Ka </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vf </ci>
+                      <ci> substrate </ci>
+                    </apply>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> product </ci>
+                    </apply>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+                <ci> Activator </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> substrate </ci>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> Ka </ci>
+                  <ci> Activator </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_14">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> n </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vr </ci>
+                    <ci> product </ci>
+                  </apply>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> substrate </ci>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> product </ci>
+                  <ci> Kmp </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> Inhibitor </ci>
+                    <ci> Ki </ci>
+                  </apply>
+                  <ci> n </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_13">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <apply>
+                  <times/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Inhibitor </ci>
+                      <ci> Ki </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_12">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> substrate </ci>
+                <apply>
+                  <times/>
+                  <ci> Km </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Ki </ci>
+                    </apply>
+                    <cn> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_11">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Ksc </ci>
+            </bvar>
+            <bvar>
+              <ci> Ksa </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> substrate </ci>
+                    <ci> Ksa </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> substrate </ci>
+                  <ci> Ksc </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> substrate </ci>
+                  <ci> Ksa </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> substrate </ci>
+                    <ci> Ksa </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Activator </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Ka </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+                <ci> Activator </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> Kms </ci>
+                  <ci> Ka </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <ci> Kms </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Activator </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_9">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> Km </ci>
+                  <ci> substrate </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> Inhibitor </ci>
+                    <ci> Ki </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_8">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Kis </ci>
+            </bvar>
+            <bvar>
+              <ci> Kic </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> Km </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Inhibitor </ci>
+                      <ci> Kis </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Inhibitor </ci>
+                      <ci> Kic </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_7">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Activator </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Kas </ci>
+            </bvar>
+            <bvar>
+              <ci> Kac </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+                <ci> Activator </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> Kms </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kas </ci>
+                    <ci> Activator </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kac </ci>
+                    <ci> Activator </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_6">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> v </ci>
+            </bvar>
+            <ci> v </ci>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Modifier </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Kd </ci>
+            </bvar>
+            <bvar>
+              <ci> a </ci>
+            </bvar>
+            <bvar>
+              <ci> b </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> b </ci>
+                      <ci> Modifier </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> a </ci>
+                      <ci> Kd </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> Km </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Modifier </ci>
+                      <ci> Kd </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Modifier </ci>
+                      <apply>
+                        <times/>
+                        <ci> a </ci>
+                        <ci> Kd </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Shalve </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> h </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <apply>
+                  <power/>
+                  <ci> substrate </ci>
+                  <ci> h </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> Shalve </ci>
+                  <ci> h </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> substrate </ci>
+                  <ci> h </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> substrate </ci>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> substrate </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Km </ci>
+                    <ci> Inhibitor </ci>
+                  </apply>
+                  <ci> Ki </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Activator </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Ka </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+                <ci> Activator </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> Kms </ci>
+                  <ci> substrate </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> Ka </ci>
+                  <ci> Activator </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
       <functionDefinition id="function_0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <lambda>
@@ -265,7 +2863,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_1 </ci>
                 <ci> species_3 </ci>
                 <ci> species_85 </ci>
                 <ci> parameter_0 </ci>
@@ -292,7 +2890,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_2 </ci>
                 <ci> species_5 </ci>
                 <ci> species_86 </ci>
                 <ci> parameter_3 </ci>
@@ -316,7 +2914,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_3 </ci>
                 <ci> species_7 </ci>
                 <ci> parameter_0 </ci>
                 <ci> parameter_4 </ci>
@@ -338,7 +2936,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_4 </ci>
                 <ci> species_9 </ci>
                 <ci> parameter_4 </ci>
                 <ci> parameter_4 </ci>
@@ -364,7 +2962,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_5 </ci>
                 <ci> species_11 </ci>
                 <ci> species_87 </ci>
                 <ci> parameter_0 </ci>
@@ -387,7 +2985,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_6 </ci>
                 <ci> parameter_5 </ci>
               </apply>
             </apply>
@@ -410,7 +3008,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_7 </ci>
                 <ci> species_13 </ci>
                 <ci> species_88 </ci>
                 <ci> parameter_6 </ci>
@@ -438,7 +3036,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_8 </ci>
                 <ci> species_15 </ci>
                 <ci> species_89 </ci>
                 <ci> parameter_7 </ci>
@@ -466,7 +3064,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_9 </ci>
                 <ci> species_17 </ci>
                 <ci> species_85 </ci>
                 <ci> parameter_8 </ci>
@@ -493,7 +3091,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_10 </ci>
                 <ci> species_19 </ci>
                 <ci> species_90 </ci>
                 <ci> parameter_9 </ci>
@@ -517,7 +3115,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_11 </ci>
                 <ci> species_21 </ci>
                 <ci> parameter_9 </ci>
                 <ci> parameter_8 </ci>
@@ -540,7 +3138,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_12 </ci>
                 <ci> species_23 </ci>
                 <ci> parameter_2 </ci>
                 <ci> parameter_3 </ci>
@@ -566,7 +3164,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_13 </ci>
                 <ci> species_25 </ci>
                 <ci> species_91 </ci>
                 <ci> parameter_4 </ci>
@@ -591,7 +3189,7 @@
             <apply>
               <times/>
               <ci> compartment_0 </ci>
-              <ci> ModelValue_10 </ci>
+              <ci> ModelValue_0 </ci>
               <ci> species_74 </ci>
               <ci> species_75 </ci>
               <ci> species_76 </ci>
@@ -615,7 +3213,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_14 </ci>
                 <ci> species_27 </ci>
                 <ci> species_26 </ci>
                 <ci> species_92 </ci>
@@ -646,7 +3244,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_15 </ci>
                 <ci> species_29 </ci>
                 <ci> species_28 </ci>
                 <ci> species_93 </ci>
@@ -676,7 +3274,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_16 </ci>
                 <ci> species_31 </ci>
                 <ci> species_30 </ci>
                 <ci> species_94 </ci>
@@ -700,7 +3298,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_17 </ci>
                 <ci> parameter_3 </ci>
               </apply>
             </apply>
@@ -723,7 +3321,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_18 </ci>
                 <ci> species_34 </ci>
                 <ci> species_33 </ci>
                 <ci> species_95 </ci>
@@ -752,7 +3350,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_19 </ci>
                 <ci> species_36 </ci>
                 <ci> species_35 </ci>
                 <ci> parameter_3 </ci>
@@ -784,13 +3382,13 @@
                 <minus/>
                 <apply>
                   <times/>
-                  <ci> ModelValue_10 </ci>
+                  <ci> ModelValue_0 </ci>
                   <ci> species_78 </ci>
                   <ci> species_79 </ci>
                 </apply>
                 <apply>
                   <times/>
-                  <ci> ModelValue_19 </ci>
+                  <ci> ModelValue_9 </ci>
                   <ci> species_80 </ci>
                   <ci> species_81 </ci>
                   <ci> species_82 </ci>
@@ -816,7 +3414,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_20 </ci>
                 <ci> species_38 </ci>
                 <ci> species_37 </ci>
                 <ci> species_96 </ci>
@@ -847,7 +3445,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_21 </ci>
                 <ci> species_40 </ci>
                 <ci> species_39 </ci>
                 <ci> species_97 </ci>
@@ -878,7 +3476,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_22 </ci>
                 <ci> species_42 </ci>
                 <ci> species_41 </ci>
                 <ci> species_98 </ci>
@@ -907,7 +3505,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_23 </ci>
                 <ci> species_45 </ci>
                 <ci> species_46 </ci>
                 <ci> species_43 </ci>
@@ -941,7 +3539,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_24 </ci>
                 <ci> species_48 </ci>
                 <ci> species_49 </ci>
                 <ci> species_47 </ci>
@@ -971,7 +3569,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_25 </ci>
                 <ci> species_52 </ci>
                 <ci> species_50 </ci>
                 <ci> species_51 </ci>
@@ -1002,7 +3600,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_26 </ci>
                 <ci> species_55 </ci>
                 <ci> species_56 </ci>
                 <ci> species_53 </ci>
@@ -1037,7 +3635,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_27 </ci>
                 <ci> species_58 </ci>
                 <ci> species_57 </ci>
                 <ci> species_99 </ci>
@@ -1070,7 +3668,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_28 </ci>
                 <ci> species_60 </ci>
                 <ci> species_59 </ci>
                 <ci> species_101 </ci>
@@ -1103,7 +3701,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_29 </ci>
                 <ci> species_62 </ci>
                 <ci> species_61 </ci>
                 <ci> parameter_0 </ci>
@@ -1129,7 +3727,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_30 </ci>
                 <ci> species_64 </ci>
                 <ci> species_63 </ci>
                 <ci> parameter_0 </ci>
@@ -1157,7 +3755,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_31 </ci>
                 <ci> species_66 </ci>
                 <ci> species_65 </ci>
                 <ci> species_103 </ci>
@@ -1184,7 +3782,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_32 </ci>
                 <ci> species_68 </ci>
                 <ci> species_67 </ci>
                 <ci> parameter_0 </ci>
@@ -1213,7 +3811,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_33 </ci>
                 <ci> species_70 </ci>
                 <ci> species_69 </ci>
                 <ci> species_104 </ci>
@@ -1240,7 +3838,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_34 </ci>
                 <ci> species_72 </ci>
                 <ci> species_71 </ci>
                 <ci> parameter_0 </ci>

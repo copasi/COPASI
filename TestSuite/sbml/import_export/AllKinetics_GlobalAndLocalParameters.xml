@@ -1,8 +1,2606 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created by COPASI version 4.0 Debug 13++ on 2005-08-11 15:59 with libsbml version 2.3.2. -->
+<!-- Created by COPASI version 4.0 Debug 13++ on 2005-08-12 13:13 with libsbml version 2.3.2. -->
 <sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
-  <model id="Model_0" name="New Model">
+  <model id="Model_1" name="New Model">
     <listOfFunctionDefinitions>
+      <functionDefinition id="function_34">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Vf </ci>
+                <apply>
+                  <minus/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <ci> Keq </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> substrate </ci>
+                <apply>
+                  <times/>
+                  <ci> Kms </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_33">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vr </ci>
+                    <ci> product </ci>
+                  </apply>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Kms </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Inhibitor </ci>
+                      <ci> Ki </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_32">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vr </ci>
+                    <ci> product </ci>
+                  </apply>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> substrate </ci>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> product </ci>
+                  <ci> Kmp </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> substrate </ci>
+                    <ci> Ki </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_31">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Activator </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Ka </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vf </ci>
+                      <ci> substrate </ci>
+                    </apply>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> product </ci>
+                    </apply>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+                <ci> Activator </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Ka </ci>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Kms </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                  <ci> Activator </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vr </ci>
+                    <ci> product </ci>
+                  </apply>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> substrate </ci>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> product </ci>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_29">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Shalve </ci>
+            </bvar>
+            <bvar>
+              <ci> Phalve </ci>
+            </bvar>
+            <bvar>
+              <ci> h </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Shalve </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <apply>
+                      <times/>
+                      <ci> substrate </ci>
+                      <ci> Keq </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Shalve </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Phalve </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> h </ci>
+                    <cn> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Shalve </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Phalve </ci>
+                    </apply>
+                  </apply>
+                  <ci> h </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_28">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> ModifierA </ci>
+            </bvar>
+            <bvar>
+              <ci> ModifierB </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Shalve </ci>
+            </bvar>
+            <bvar>
+              <ci> Phalve </ci>
+            </bvar>
+            <bvar>
+              <ci> h </ci>
+            </bvar>
+            <bvar>
+              <ci> MAhalve </ci>
+            </bvar>
+            <bvar>
+              <ci> alphaA </ci>
+            </bvar>
+            <bvar>
+              <ci> MBhalve </ci>
+            </bvar>
+            <bvar>
+              <ci> alphaB </ci>
+            </bvar>
+            <bvar>
+              <ci> alphaAB </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Shalve </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <apply>
+                      <times/>
+                      <ci> substrate </ci>
+                      <ci> Keq </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Shalve </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Phalve </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> h </ci>
+                    <cn> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> ModifierA </ci>
+                        <ci> MAhalve </ci>
+                      </apply>
+                      <ci> h </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> ModifierB </ci>
+                        <ci> MBhalve </ci>
+                      </apply>
+                      <ci> h </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <times/>
+                      <ci> alphaA </ci>
+                      <apply>
+                        <power/>
+                        <apply>
+                          <divide/>
+                          <ci> ModifierA </ci>
+                          <ci> MAhalve </ci>
+                        </apply>
+                        <ci> h </ci>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> alphaB </ci>
+                      <apply>
+                        <power/>
+                        <apply>
+                          <divide/>
+                          <ci> ModifierB </ci>
+                          <ci> MBhalve </ci>
+                        </apply>
+                        <ci> h </ci>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> alphaA </ci>
+                      <ci> alphaB </ci>
+                      <ci> alphaAB </ci>
+                      <apply>
+                        <power/>
+                        <apply>
+                          <divide/>
+                          <ci> ModifierA </ci>
+                          <ci> MAhalve </ci>
+                        </apply>
+                        <ci> h </ci>
+                      </apply>
+                      <apply>
+                        <power/>
+                        <apply>
+                          <divide/>
+                          <ci> ModifierB </ci>
+                          <ci> MBhalve </ci>
+                        </apply>
+                        <ci> h </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Shalve </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Phalve </ci>
+                    </apply>
+                  </apply>
+                  <ci> h </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_27">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Modifier </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Shalve </ci>
+            </bvar>
+            <bvar>
+              <ci> Phalve </ci>
+            </bvar>
+            <bvar>
+              <ci> h </ci>
+            </bvar>
+            <bvar>
+              <ci> Mhalve </ci>
+            </bvar>
+            <bvar>
+              <ci> alpha </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Shalve </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <apply>
+                      <times/>
+                      <ci> substrate </ci>
+                      <ci> Keq </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Shalve </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Phalve </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> h </ci>
+                    <cn> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> Modifier </ci>
+                        <ci> Mhalve </ci>
+                      </apply>
+                      <ci> h </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <times/>
+                      <ci> alpha </ci>
+                      <apply>
+                        <power/>
+                        <apply>
+                          <divide/>
+                          <ci> Modifier </ci>
+                          <ci> Mhalve </ci>
+                        </apply>
+                        <ci> h </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Shalve </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Phalve </ci>
+                    </apply>
+                  </apply>
+                  <ci> h </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_26">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substratea </ci>
+            </bvar>
+            <bvar>
+              <ci> substrateb </ci>
+            </bvar>
+            <bvar>
+              <ci> productp </ci>
+            </bvar>
+            <bvar>
+              <ci> productq </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Kma </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmb </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmq </ci>
+            </bvar>
+            <bvar>
+              <ci> Kia </ci>
+            </bvar>
+            <bvar>
+              <ci> Kiq </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Vf </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> substratea </ci>
+                    <ci> substrateb </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> productp </ci>
+                      <ci> productq </ci>
+                    </apply>
+                    <ci> Keq </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> substratea </ci>
+                  <ci> substrateb </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> productq </ci>
+                      <ci> Kiq </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Kma </ci>
+                  <ci> substrateb </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Kmb </ci>
+                  <ci> substratea </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vf </ci>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> Keq </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <ci> Kmq </ci>
+                      <ci> productp </ci>
+                      <apply>
+                        <plus/>
+                        <cn> 1 </cn>
+                        <apply>
+                          <divide/>
+                          <ci> substratea </ci>
+                          <ci> Kia </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> productq </ci>
+                      <apply>
+                        <plus/>
+                        <ci> Kmp </ci>
+                        <ci> productp </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_25">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> productp </ci>
+            </bvar>
+            <bvar>
+              <ci> productq </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmq </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Kip </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Vf </ci>
+                <apply>
+                  <minus/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> productp </ci>
+                      <ci> productq </ci>
+                    </apply>
+                    <ci> Keq </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Kms </ci>
+                <apply>
+                  <times/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> productp </ci>
+                      <ci> Kip </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vf </ci>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> Keq </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <ci> Kmq </ci>
+                      <ci> productp </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> Kmp </ci>
+                      <ci> productq </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> productp </ci>
+                      <ci> productq </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_24">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substratea </ci>
+            </bvar>
+            <bvar>
+              <ci> substrateb </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Kma </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmb </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Kia </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Vf </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> substratea </ci>
+                    <ci> substrateb </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <ci> Keq </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> substratea </ci>
+                  <ci> substrateb </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Kma </ci>
+                  <ci> substrateb </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Kmb </ci>
+                  <ci> substratea </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vf </ci>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> Keq </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> Kmp </ci>
+                    <apply>
+                      <times/>
+                      <ci> product </ci>
+                      <apply>
+                        <plus/>
+                        <cn> 1 </cn>
+                        <apply>
+                          <divide/>
+                          <ci> substratea </ci>
+                          <ci> Kia </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_23">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substratea </ci>
+            </bvar>
+            <bvar>
+              <ci> substrateb </ci>
+            </bvar>
+            <bvar>
+              <ci> productp </ci>
+            </bvar>
+            <bvar>
+              <ci> productq </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Kma </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmb </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmq </ci>
+            </bvar>
+            <bvar>
+              <ci> Kia </ci>
+            </bvar>
+            <bvar>
+              <ci> Kib </ci>
+            </bvar>
+            <bvar>
+              <ci> Kip </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Vf </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> substratea </ci>
+                    <ci> substrateb </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> productp </ci>
+                      <ci> productq </ci>
+                    </apply>
+                    <ci> Keq </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> substratea </ci>
+                  <ci> substrateb </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> productp </ci>
+                      <ci> Kip </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Kma </ci>
+                  <ci> substrateb </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Kmb </ci>
+                  <apply>
+                    <plus/>
+                    <ci> substratea </ci>
+                    <ci> Kia </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Vf </ci>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> Keq </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <ci> Kmq </ci>
+                      <ci> productp </ci>
+                      <apply>
+                        <plus/>
+                        <cn> 1 </cn>
+                        <apply>
+                          <divide/>
+                          <ci> substratea </ci>
+                          <ci> Kia </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> productq </ci>
+                      <apply>
+                        <plus/>
+                        <apply>
+                          <times/>
+                          <ci> Kmp </ci>
+                          <apply>
+                            <plus/>
+                            <cn> 1 </cn>
+                            <apply>
+                              <divide/>
+                              <apply>
+                                <times/>
+                                <ci> Kia </ci>
+                                <ci> substrateb </ci>
+                              </apply>
+                              <apply>
+                                <times/>
+                                <ci> Kma </ci>
+                                <ci> Kmb </ci>
+                              </apply>
+                            </apply>
+                          </apply>
+                        </apply>
+                        <apply>
+                          <times/>
+                          <ci> productp </ci>
+                          <apply>
+                            <plus/>
+                            <cn> 1 </cn>
+                            <apply>
+                              <divide/>
+                              <ci> substrateb </ci>
+                              <ci> Kib </ci>
+                            </apply>
+                          </apply>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_22">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vr </ci>
+                    <ci> product </ci>
+                  </apply>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> substrate </ci>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> Inhibitor </ci>
+                    <ci> Ki </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_21">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Kis </ci>
+            </bvar>
+            <bvar>
+              <ci> Kic </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vr </ci>
+                    <ci> product </ci>
+                  </apply>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> Inhibitor </ci>
+                  <ci> Kis </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Kms </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Inhibitor </ci>
+                      <ci> Kic </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Activator </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Kas </ci>
+            </bvar>
+            <bvar>
+              <ci> Kac </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vf </ci>
+                      <ci> substrate </ci>
+                    </apply>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> product </ci>
+                    </apply>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+                <ci> Activator </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Kas </ci>
+                <ci> Activator </ci>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Kms </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> Kac </ci>
+                    <ci> Activator </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_19">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Kii </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Keq </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Vf </ci>
+                <apply>
+                  <minus/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <ci> Keq </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kii </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Kms </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_18">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Modifier </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Kd </ci>
+            </bvar>
+            <bvar>
+              <ci> a </ci>
+            </bvar>
+            <bvar>
+              <ci> b </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vf </ci>
+                      <ci> substrate </ci>
+                    </apply>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> product </ci>
+                    </apply>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> b </ci>
+                      <ci> Modifier </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> a </ci>
+                      <ci> Kd </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> Modifier </ci>
+                  <ci> Kd </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Kms </ci>
+                    </apply>
+                    <apply>
+                      <divide/>
+                      <ci> product </ci>
+                      <ci> Kmp </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Modifier </ci>
+                      <apply>
+                        <times/>
+                        <ci> a </ci>
+                        <ci> Kd </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_17">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> v </ci>
+            </bvar>
+            <ci> v </ci>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_16">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vr </ci>
+                    <ci> product </ci>
+                  </apply>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> substrate </ci>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> product </ci>
+                  <ci> Kmp </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> Inhibitor </ci>
+                  <ci> Ki </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_15">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Activator </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Ka </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vf </ci>
+                      <ci> substrate </ci>
+                    </apply>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Vr </ci>
+                      <ci> product </ci>
+                    </apply>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+                <ci> Activator </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> substrate </ci>
+                    <ci> Kms </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> product </ci>
+                    <ci> Kmp </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> Ka </ci>
+                  <ci> Activator </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_14">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> product </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Vf </ci>
+            </bvar>
+            <bvar>
+              <ci> Vr </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> Kmp </ci>
+            </bvar>
+            <bvar>
+              <ci> n </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vf </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Vr </ci>
+                    <ci> product </ci>
+                  </apply>
+                  <ci> Kmp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> substrate </ci>
+                  <ci> Kms </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> product </ci>
+                  <ci> Kmp </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> Inhibitor </ci>
+                    <ci> Ki </ci>
+                  </apply>
+                  <ci> n </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_13">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <apply>
+                  <times/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Inhibitor </ci>
+                      <ci> Ki </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_12">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> substrate </ci>
+                <apply>
+                  <times/>
+                  <ci> Km </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> substrate </ci>
+                      <ci> Ki </ci>
+                    </apply>
+                    <cn> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_11">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Ksc </ci>
+            </bvar>
+            <bvar>
+              <ci> Ksa </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> substrate </ci>
+                    <ci> Ksa </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> substrate </ci>
+                  <ci> Ksc </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> substrate </ci>
+                  <ci> Ksa </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> substrate </ci>
+                    <ci> Ksa </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Activator </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Ka </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+                <ci> Activator </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> Kms </ci>
+                  <ci> Ka </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <ci> Kms </ci>
+                    <ci> substrate </ci>
+                  </apply>
+                  <ci> Activator </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_9">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> Km </ci>
+                  <ci> substrate </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> Inhibitor </ci>
+                    <ci> Ki </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_8">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Kis </ci>
+            </bvar>
+            <bvar>
+              <ci> Kic </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> Km </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Inhibitor </ci>
+                      <ci> Kis </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Inhibitor </ci>
+                      <ci> Kic </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_7">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Activator </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Kas </ci>
+            </bvar>
+            <bvar>
+              <ci> Kac </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+                <ci> Activator </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> Kms </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kas </ci>
+                    <ci> Activator </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kac </ci>
+                    <ci> Activator </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_6">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> v </ci>
+            </bvar>
+            <ci> v </ci>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Modifier </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Kd </ci>
+            </bvar>
+            <bvar>
+              <ci> a </ci>
+            </bvar>
+            <bvar>
+              <ci> b </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> b </ci>
+                      <ci> Modifier </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> a </ci>
+                      <ci> Kd </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> Km </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Modifier </ci>
+                      <ci> Kd </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> substrate </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Modifier </ci>
+                      <apply>
+                        <times/>
+                        <ci> a </ci>
+                        <ci> Kd </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Shalve </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> h </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <apply>
+                  <power/>
+                  <ci> substrate </ci>
+                  <ci> h </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> Shalve </ci>
+                  <ci> h </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> substrate </ci>
+                  <ci> h </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> substrate </ci>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Inhibitor </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Ki </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> substrate </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Km </ci>
+                    <ci> Inhibitor </ci>
+                  </apply>
+                  <ci> Ki </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Activator </ci>
+            </bvar>
+            <bvar>
+              <ci> Kms </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> Ka </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+                <ci> Activator </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> Kms </ci>
+                  <ci> substrate </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> Ka </ci>
+                  <ci> Activator </ci>
+                </apply>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
       <functionDefinition id="function_0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <lambda>
@@ -101,111 +2699,111 @@
       <compartment id="compartment_0" name="compartment" size="1"/>
     </listOfCompartments>
     <listOfSpecies>
-      <species id="species_0" name="P1" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_1" name="S1" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_2" name="P2" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_3" name="S2" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_4" name="P3" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_5" name="S3" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_6" name="P4" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_7" name="S4" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_8" name="P5" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_9" name="S5" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_10" name="P6" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_11" name="S6" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_12" name="P10" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_13" name="S10" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_14" name="P11" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_15" name="S11" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_16" name="P12" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_17" name="S12" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_18" name="P13" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_19" name="S13" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_20" name="P14" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_21" name="S14" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_22" name="P15" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_23" name="S15" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_24" name="P16" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_25" name="S16" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_26" name="P17" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_27" name="P18" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_28" name="S18" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_29" name="P19" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_30" name="S19" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_31" name="P20" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_32" name="S20" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_33" name="P21" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_34" name="P22" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_35" name="S22" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_36" name="P23" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_37" name="S23" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_38" name="P27" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_39" name="S27" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_40" name="P28" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_41" name="S28" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_42" name="P29" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_43" name="S29" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_44" name="P30" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_45" name="P31" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_46" name="S30" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_47" name="S31" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_48" name="P32" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_49" name="S32" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_50" name="S33" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_51" name="P34" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_52" name="P35" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_53" name="S34" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_54" name="P36" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_55" name="P37" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_56" name="S36" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_57" name="S37" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_58" name="P38" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_59" name="S38" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_60" name="P39" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_61" name="S39" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_62" name="P41" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_63" name="S41" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_64" name="P42" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_65" name="S42" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_66" name="P43" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_67" name="S43" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_68" name="P44" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_69" name="S44" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_70" name="P45" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_71" name="S45" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_72" name="P46" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_73" name="S46" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_74" name="P7" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_75" name="A1" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_76" name="A2" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_77" name="A3" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_78" name="B1" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_79" name="C1" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_80" name="C2" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_81" name="D1" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_82" name="D2" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_83" name="D3" compartment="compartment_0" initialConcentration="0.1"/>
-      <species id="species_84" name="M45" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_85" name="M42" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_86" name="M40" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_87" name="M39" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_88" name="," compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_89" name="M38" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_90" name="M29" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_91" name="M28" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_92" name="M27" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_93" name="M22" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_94" name="M20" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_95" name="M19" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_96" name="M18" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_97" name="M16" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_98" name="M13" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_99" name="M11" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_100" name="M10" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_101" name="M6" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_102" name="M3" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_103" name="M2" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
-      <species id="species_104" name="M1" compartment="compartment_0" initialConcentration="0.1" boundaryCondition="true" constant="true"/>
+      <species id="species_0" name="P1" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_1" name="S1" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_2" name="P2" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_3" name="S2" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_4" name="P3" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_5" name="S3" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_6" name="P4" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_7" name="S4" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_8" name="P5" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_9" name="S5" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_10" name="P6" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_11" name="S6" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_12" name="P10" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_13" name="S10" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_14" name="P11" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_15" name="S11" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_16" name="P12" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_17" name="S12" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_18" name="P13" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_19" name="S13" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_20" name="P14" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_21" name="S14" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_22" name="P15" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_23" name="S15" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_24" name="P16" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_25" name="S16" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_26" name="P18" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_27" name="S18" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_28" name="P19" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_29" name="S19" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_30" name="P20" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_31" name="S20" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_32" name="P21" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_33" name="P22" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_34" name="S22" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_35" name="P23" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_36" name="S23" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_37" name="P27" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_38" name="S27" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_39" name="P28" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_40" name="S28" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_41" name="P29" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_42" name="S29" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_43" name="P30" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_44" name="P31" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_45" name="S30" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_46" name="S31" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_47" name="P32" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_48" name="S32" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_49" name="S33" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_50" name="P34" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_51" name="P35" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_52" name="S34" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_53" name="P36" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_54" name="P37" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_55" name="S36" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_56" name="S37" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_57" name="P38" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_58" name="S38" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_59" name="P39" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_60" name="S39" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_61" name="P41" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_62" name="S41" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_63" name="P42" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_64" name="S42" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_65" name="P43" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_66" name="S43" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_67" name="P44" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_68" name="S44" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_69" name="P45" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_70" name="S45" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_71" name="P46" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_72" name="S46" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_73" name="P7" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_74" name="A1" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_75" name="A2" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_76" name="A3" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_77" name="B1" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_78" name="C1" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_79" name="C2" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_80" name="D1" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_81" name="D2" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_82" name="D3" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_83" name="P17" compartment="compartment_0" initialConcentration="0.099999975091917"/>
+      <species id="species_84" name="M1" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_85" name="M2" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_86" name="M3" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_87" name="M6" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_88" name="M10" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_89" name="M11" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_90" name="M13" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_91" name="M16" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_92" name="M18" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_93" name="M19" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_94" name="M20" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_95" name="M22" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_96" name="M27" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_97" name="M28" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_98" name="M29" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_99" name="M38" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_100" name="," compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_101" name="M39" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_102" name="M40" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_103" name="M42" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
+      <species id="species_104" name="M45" compartment="compartment_0" initialConcentration="0.099999975091917" boundaryCondition="true" constant="true"/>
     </listOfSpecies>
     <listOfParameters>
       <parameter id="parameter_0" name="K1" value="1"/>
@@ -228,7 +2826,7 @@
           <speciesReference species="species_0"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_104"/>
+          <modifierSpeciesReference species="species_84"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -238,7 +2836,7 @@
               <apply>
                 <ci> function_0 </ci>
                 <ci> species_1 </ci>
-                <ci> species_104 </ci>
+                <ci> species_84 </ci>
                 <ci> parameter_0 </ci>
                 <ci> Ks </ci>
                 <ci> parameter_2 </ci>
@@ -261,7 +2859,7 @@
           <speciesReference species="species_2"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_103"/>
+          <modifierSpeciesReference species="species_85"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -269,9 +2867,9 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_1 </ci>
                 <ci> species_3 </ci>
-                <ci> species_103 </ci>
+                <ci> species_85 </ci>
                 <ci> Kms </ci>
                 <ci> parameter_1 </ci>
                 <ci> Ka </ci>
@@ -292,7 +2890,7 @@
           <speciesReference species="species_4"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_102"/>
+          <modifierSpeciesReference species="species_86"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -300,9 +2898,9 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_2 </ci>
                 <ci> species_5 </ci>
-                <ci> species_102 </ci>
+                <ci> species_86 </ci>
                 <ci> parameter_3 </ci>
                 <ci> V </ci>
                 <ci> parameter_7 </ci>
@@ -327,7 +2925,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_3 </ci>
                 <ci> species_7 </ci>
                 <ci> Km </ci>
                 <ci> parameter_4 </ci>
@@ -352,7 +2950,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_4 </ci>
                 <ci> species_9 </ci>
                 <ci> Shalve </ci>
                 <ci> parameter_4 </ci>
@@ -374,7 +2972,7 @@
           <speciesReference species="species_10"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_101"/>
+          <modifierSpeciesReference species="species_87"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -382,9 +2980,9 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_5 </ci>
                 <ci> species_11 </ci>
-                <ci> species_101 </ci>
+                <ci> species_87 </ci>
                 <ci> parameter_0 </ci>
                 <ci> V </ci>
                 <ci> parameter_2 </ci>
@@ -401,7 +2999,7 @@
       </reaction>
       <reaction id="reaction_6" name="reaction_6" reversible="false">
         <listOfProducts>
-          <speciesReference species="species_74"/>
+          <speciesReference species="species_73"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -409,7 +3007,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_6 </ci>
                 <ci> parameter_5 </ci>
               </apply>
             </apply>
@@ -424,7 +3022,7 @@
           <speciesReference species="species_12"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_100"/>
+          <modifierSpeciesReference species="species_88"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -432,9 +3030,9 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_7 </ci>
                 <ci> species_13 </ci>
-                <ci> species_100 </ci>
+                <ci> species_88 </ci>
                 <ci> parameter_6 </ci>
                 <ci> V </ci>
                 <ci> Kas </ci>
@@ -456,7 +3054,7 @@
           <speciesReference species="species_14"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_99"/>
+          <modifierSpeciesReference species="species_89"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -464,9 +3062,9 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_8 </ci>
                 <ci> species_15 </ci>
-                <ci> species_99 </ci>
+                <ci> species_89 </ci>
                 <ci> Km </ci>
                 <ci> parameter_7 </ci>
                 <ci> parameter_7 </ci>
@@ -488,7 +3086,7 @@
           <speciesReference species="species_16"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_103"/>
+          <modifierSpeciesReference species="species_85"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -496,9 +3094,9 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_9 </ci>
                 <ci> species_17 </ci>
-                <ci> species_103 </ci>
+                <ci> species_85 </ci>
                 <ci> Km </ci>
                 <ci> parameter_8 </ci>
                 <ci> Ki </ci>
@@ -519,7 +3117,7 @@
           <speciesReference species="species_18"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_98"/>
+          <modifierSpeciesReference species="species_90"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -527,9 +3125,9 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_10 </ci>
                 <ci> species_19 </ci>
-                <ci> species_98 </ci>
+                <ci> species_90 </ci>
                 <ci> parameter_9 </ci>
                 <ci> V </ci>
                 <ci> parameter_7 </ci>
@@ -554,7 +3152,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_11 </ci>
                 <ci> species_21 </ci>
                 <ci> V </ci>
                 <ci> parameter_8 </ci>
@@ -581,7 +3179,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_12 </ci>
                 <ci> species_23 </ci>
                 <ci> Km </ci>
                 <ci> V </ci>
@@ -604,7 +3202,7 @@
           <speciesReference species="species_24"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_97"/>
+          <modifierSpeciesReference species="species_91"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -612,9 +3210,9 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_13 </ci>
                 <ci> species_25 </ci>
-                <ci> species_97 </ci>
+                <ci> species_91 </ci>
                 <ci> parameter_4 </ci>
                 <ci> V </ci>
                 <ci> parameter_6 </ci>
@@ -628,12 +3226,12 @@
       </reaction>
       <reaction id="reaction_14" name="reaction_14" reversible="false">
         <listOfReactants>
+          <speciesReference species="species_74"/>
           <speciesReference species="species_75"/>
           <speciesReference species="species_76"/>
-          <speciesReference species="species_77"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_78"/>
+          <speciesReference species="species_77"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -641,22 +3239,22 @@
               <times/>
               <ci> compartment_0 </ci>
               <ci> ModelValue_0 </ci>
+              <ci> species_74 </ci>
               <ci> species_75 </ci>
               <ci> species_76 </ci>
-              <ci> species_77 </ci>
             </apply>
           </math>
         </kineticLaw>
       </reaction>
       <reaction id="reaction_15" name="reaction_15">
         <listOfReactants>
-          <speciesReference species="species_28"/>
+          <speciesReference species="species_27"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_27"/>
+          <speciesReference species="species_26"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_96"/>
+          <modifierSpeciesReference species="species_92"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -664,10 +3262,10 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_28 </ci>
+                <ci> function_14 </ci>
                 <ci> species_27 </ci>
-                <ci> species_96 </ci>
+                <ci> species_26 </ci>
+                <ci> species_92 </ci>
                 <ci> parameter_3 </ci>
                 <ci> parameter_2 </ci>
                 <ci> Kms </ci>
@@ -686,13 +3284,13 @@
       </reaction>
       <reaction id="reaction_16" name="reaction_16">
         <listOfReactants>
-          <speciesReference species="species_30"/>
+          <speciesReference species="species_29"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_29"/>
+          <speciesReference species="species_28"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_95"/>
+          <modifierSpeciesReference species="species_93"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -700,10 +3298,10 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_30 </ci>
+                <ci> function_15 </ci>
                 <ci> species_29 </ci>
-                <ci> species_95 </ci>
+                <ci> species_28 </ci>
+                <ci> species_93 </ci>
                 <ci> Kms </ci>
                 <ci> Kmp </ci>
                 <ci> Vf </ci>
@@ -721,10 +3319,10 @@
       </reaction>
       <reaction id="reaction_17" name="reaction_17">
         <listOfReactants>
-          <speciesReference species="species_32"/>
+          <speciesReference species="species_31"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_31"/>
+          <speciesReference species="species_30"/>
         </listOfProducts>
         <listOfModifiers>
           <modifierSpeciesReference species="species_94"/>
@@ -735,9 +3333,9 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_32 </ci>
+                <ci> function_16 </ci>
                 <ci> species_31 </ci>
+                <ci> species_30 </ci>
                 <ci> species_94 </ci>
                 <ci> Kms </ci>
                 <ci> parameter_3 </ci>
@@ -756,7 +3354,7 @@
       </reaction>
       <reaction id="reaction_18" name="reaction_18">
         <listOfProducts>
-          <speciesReference species="species_33"/>
+          <speciesReference species="species_32"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -764,7 +3362,7 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
+                <ci> function_17 </ci>
                 <ci> v </ci>
               </apply>
             </apply>
@@ -776,13 +3374,13 @@
       </reaction>
       <reaction id="reaction_19" name="reaction_19">
         <listOfReactants>
-          <speciesReference species="species_35"/>
+          <speciesReference species="species_34"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_34"/>
+          <speciesReference species="species_33"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_93"/>
+          <modifierSpeciesReference species="species_95"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -790,10 +3388,10 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_35 </ci>
+                <ci> function_18 </ci>
                 <ci> species_34 </ci>
-                <ci> species_93 </ci>
+                <ci> species_33 </ci>
+                <ci> species_95 </ci>
                 <ci> parameter_2 </ci>
                 <ci> Kmp </ci>
                 <ci> parameter_4 </ci>
@@ -813,10 +3411,10 @@
       </reaction>
       <reaction id="reaction_20" name="reaction_20">
         <listOfReactants>
-          <speciesReference species="species_37"/>
+          <speciesReference species="species_36"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_36"/>
+          <speciesReference species="species_35"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -824,9 +3422,9 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_37 </ci>
+                <ci> function_19 </ci>
                 <ci> species_36 </ci>
+                <ci> species_35 </ci>
                 <ci> parameter_3 </ci>
                 <ci> Kmp </ci>
                 <ci> parameter_7 </ci>
@@ -843,13 +3441,13 @@
       </reaction>
       <reaction id="reaction_21" name="reaction_21">
         <listOfReactants>
+          <speciesReference species="species_78"/>
           <speciesReference species="species_79"/>
-          <speciesReference species="species_80"/>
         </listOfReactants>
         <listOfProducts>
+          <speciesReference species="species_80"/>
           <speciesReference species="species_81"/>
           <speciesReference species="species_82"/>
-          <speciesReference species="species_83"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -861,15 +3459,15 @@
                 <apply>
                   <times/>
                   <ci> ModelValue_0 </ci>
+                  <ci> species_78 </ci>
                   <ci> species_79 </ci>
-                  <ci> species_80 </ci>
                 </apply>
                 <apply>
                   <times/>
                   <ci> k2 </ci>
+                  <ci> species_80 </ci>
                   <ci> species_81 </ci>
                   <ci> species_82 </ci>
-                  <ci> species_83 </ci>
                 </apply>
               </apply>
             </apply>
@@ -881,13 +3479,13 @@
       </reaction>
       <reaction id="reaction_22" name="reaction_22">
         <listOfReactants>
-          <speciesReference species="species_39"/>
+          <speciesReference species="species_38"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_38"/>
+          <speciesReference species="species_37"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_92"/>
+          <modifierSpeciesReference species="species_96"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -895,10 +3493,10 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_39 </ci>
+                <ci> function_20 </ci>
                 <ci> species_38 </ci>
-                <ci> species_92 </ci>
+                <ci> species_37 </ci>
+                <ci> species_96 </ci>
                 <ci> parameter_2 </ci>
                 <ci> Kmp </ci>
                 <ci> parameter_4 </ci>
@@ -917,13 +3515,13 @@
       </reaction>
       <reaction id="reaction_23" name="reaction_23">
         <listOfReactants>
-          <speciesReference species="species_41"/>
+          <speciesReference species="species_40"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_40"/>
+          <speciesReference species="species_39"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_91"/>
+          <modifierSpeciesReference species="species_97"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -931,10 +3529,10 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_41 </ci>
+                <ci> function_21 </ci>
                 <ci> species_40 </ci>
-                <ci> species_91 </ci>
+                <ci> species_39 </ci>
+                <ci> species_97 </ci>
                 <ci> parameter_2 </ci>
                 <ci> Kmp </ci>
                 <ci> parameter_4 </ci>
@@ -953,13 +3551,13 @@
       </reaction>
       <reaction id="reaction_24" name="reaction_24">
         <listOfReactants>
-          <speciesReference species="species_43"/>
+          <speciesReference species="species_42"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_42"/>
+          <speciesReference species="species_41"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_90"/>
+          <modifierSpeciesReference species="species_98"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -967,10 +3565,10 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_43 </ci>
+                <ci> function_22 </ci>
                 <ci> species_42 </ci>
-                <ci> species_90 </ci>
+                <ci> species_41 </ci>
+                <ci> species_98 </ci>
                 <ci> Kms </ci>
                 <ci> parameter_1 </ci>
                 <ci> Vf </ci>
@@ -988,12 +3586,12 @@
       </reaction>
       <reaction id="reaction_25" name="reaction_25">
         <listOfReactants>
+          <speciesReference species="species_45"/>
           <speciesReference species="species_46"/>
-          <speciesReference species="species_47"/>
         </listOfReactants>
         <listOfProducts>
+          <speciesReference species="species_43"/>
           <speciesReference species="species_44"/>
-          <speciesReference species="species_45"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1001,11 +3599,11 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_46 </ci>
-                <ci> species_47 </ci>
-                <ci> species_44 </ci>
+                <ci> function_23 </ci>
                 <ci> species_45 </ci>
+                <ci> species_46 </ci>
+                <ci> species_43 </ci>
+                <ci> species_44 </ci>
                 <ci> Keq </ci>
                 <ci> parameter_1 </ci>
                 <ci> Vr </ci>
@@ -1030,11 +3628,11 @@
       </reaction>
       <reaction id="reaction_26" name="reaction_26">
         <listOfReactants>
+          <speciesReference species="species_48"/>
           <speciesReference species="species_49"/>
-          <speciesReference species="species_50"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_48"/>
+          <speciesReference species="species_47"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1042,10 +3640,10 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_49 </ci>
-                <ci> species_50 </ci>
+                <ci> function_24 </ci>
                 <ci> species_48 </ci>
+                <ci> species_49 </ci>
+                <ci> species_47 </ci>
                 <ci> parameter_0 </ci>
                 <ci> Kmb </ci>
                 <ci> parameter_2 </ci>
@@ -1065,11 +3663,11 @@
       </reaction>
       <reaction id="reaction_27" name="reaction_27">
         <listOfReactants>
-          <speciesReference species="species_53"/>
+          <speciesReference species="species_52"/>
         </listOfReactants>
         <listOfProducts>
+          <speciesReference species="species_50"/>
           <speciesReference species="species_51"/>
-          <speciesReference species="species_52"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1077,10 +3675,10 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_53 </ci>
-                <ci> species_51 </ci>
+                <ci> function_25 </ci>
                 <ci> species_52 </ci>
+                <ci> species_50 </ci>
+                <ci> species_51 </ci>
                 <ci> Kms </ci>
                 <ci> parameter_1 </ci>
                 <ci> Kmp </ci>
@@ -1101,12 +3699,12 @@
       </reaction>
       <reaction id="reaction_28" name="reaction_28">
         <listOfReactants>
+          <speciesReference species="species_55"/>
           <speciesReference species="species_56"/>
-          <speciesReference species="species_57"/>
         </listOfReactants>
         <listOfProducts>
+          <speciesReference species="species_53"/>
           <speciesReference species="species_54"/>
-          <speciesReference species="species_55"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1114,11 +3712,11 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_56 </ci>
-                <ci> species_57 </ci>
-                <ci> species_54 </ci>
+                <ci> function_26 </ci>
                 <ci> species_55 </ci>
+                <ci> species_56 </ci>
+                <ci> species_53 </ci>
+                <ci> species_54 </ci>
                 <ci> parameter_0 </ci>
                 <ci> Vf </ci>
                 <ci> parameter_2 </ci>
@@ -1141,13 +3739,13 @@
       </reaction>
       <reaction id="reaction_29" name="reaction_29">
         <listOfReactants>
-          <speciesReference species="species_59"/>
+          <speciesReference species="species_58"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_58"/>
+          <speciesReference species="species_57"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_89"/>
+          <modifierSpeciesReference species="species_99"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1155,10 +3753,10 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_59 </ci>
+                <ci> function_27 </ci>
                 <ci> species_58 </ci>
-                <ci> species_89 </ci>
+                <ci> species_57 </ci>
+                <ci> species_99 </ci>
                 <ci> parameter_0 </ci>
                 <ci> Vf </ci>
                 <ci> parameter_2 </ci>
@@ -1178,14 +3776,14 @@
       </reaction>
       <reaction id="reaction_30" name="reaction_30">
         <listOfReactants>
-          <speciesReference species="species_61"/>
+          <speciesReference species="species_60"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_60"/>
+          <speciesReference species="species_59"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_87"/>
-          <modifierSpeciesReference species="species_86"/>
+          <modifierSpeciesReference species="species_101"/>
+          <modifierSpeciesReference species="species_102"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1193,11 +3791,11 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_61 </ci>
+                <ci> function_28 </ci>
                 <ci> species_60 </ci>
-                <ci> species_87 </ci>
-                <ci> species_86 </ci>
+                <ci> species_59 </ci>
+                <ci> species_101 </ci>
+                <ci> species_102 </ci>
                 <ci> parameter_0 </ci>
                 <ci> Vf </ci>
                 <ci> parameter_2 </ci>
@@ -1222,10 +3820,10 @@
       </reaction>
       <reaction id="reaction_31" name="reaction_31">
         <listOfReactants>
-          <speciesReference species="species_63"/>
+          <speciesReference species="species_62"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_62"/>
+          <speciesReference species="species_61"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1233,9 +3831,9 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_63 </ci>
+                <ci> function_29 </ci>
                 <ci> species_62 </ci>
+                <ci> species_61 </ci>
                 <ci> Keq </ci>
                 <ci> parameter_1 </ci>
                 <ci> Shalve </ci>
@@ -1253,10 +3851,10 @@
       </reaction>
       <reaction id="reaction_32" name="reaction_32">
         <listOfReactants>
-          <speciesReference species="species_65"/>
+          <speciesReference species="species_64"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_64"/>
+          <speciesReference species="species_63"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1264,9 +3862,9 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_65 </ci>
+                <ci> function_30 </ci>
                 <ci> species_64 </ci>
+                <ci> species_63 </ci>
                 <ci> parameter_0 </ci>
                 <ci> Kmp </ci>
                 <ci> parameter_2 </ci>
@@ -1282,13 +3880,13 @@
       </reaction>
       <reaction id="reaction_33" name="reaction_33">
         <listOfReactants>
-          <speciesReference species="species_67"/>
+          <speciesReference species="species_66"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_66"/>
+          <speciesReference species="species_65"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_85"/>
+          <modifierSpeciesReference species="species_103"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1296,10 +3894,10 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_67 </ci>
+                <ci> function_31 </ci>
                 <ci> species_66 </ci>
-                <ci> species_85 </ci>
+                <ci> species_65 </ci>
+                <ci> species_103 </ci>
                 <ci> parameter_9 </ci>
                 <ci> Kmp </ci>
                 <ci> parameter_7 </ci>
@@ -1316,10 +3914,10 @@
       </reaction>
       <reaction id="reaction_34" name="reaction_34">
         <listOfReactants>
-          <speciesReference species="species_69"/>
+          <speciesReference species="species_68"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_68"/>
+          <speciesReference species="species_67"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1327,9 +3925,9 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_69 </ci>
+                <ci> function_32 </ci>
                 <ci> species_68 </ci>
+                <ci> species_67 </ci>
                 <ci> parameter_0 </ci>
                 <ci> Kmp </ci>
                 <ci> parameter_2 </ci>
@@ -1346,13 +3944,13 @@
       </reaction>
       <reaction id="reaction_35" name="reaction_35">
         <listOfReactants>
-          <speciesReference species="species_71"/>
+          <speciesReference species="species_70"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_70"/>
+          <speciesReference species="species_69"/>
         </listOfProducts>
         <listOfModifiers>
-          <modifierSpeciesReference species="species_84"/>
+          <modifierSpeciesReference species="species_104"/>
         </listOfModifiers>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1360,10 +3958,10 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_71 </ci>
+                <ci> function_33 </ci>
                 <ci> species_70 </ci>
-                <ci> species_84 </ci>
+                <ci> species_69 </ci>
+                <ci> species_104 </ci>
                 <ci> parameter_0 </ci>
                 <ci> Kmp </ci>
                 <ci> parameter_2 </ci>
@@ -1380,10 +3978,10 @@
       </reaction>
       <reaction id="reaction_36" name="reaction_36">
         <listOfReactants>
-          <speciesReference species="species_73"/>
+          <speciesReference species="species_72"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="species_72"/>
+          <speciesReference species="species_71"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -1391,9 +3989,9 @@
               <times/>
               <ci> compartment_0 </ci>
               <apply>
-                <ci> function_0 </ci>
-                <ci> species_73 </ci>
+                <ci> function_34 </ci>
                 <ci> species_72 </ci>
+                <ci> species_71 </ci>
                 <ci> Kms </ci>
                 <ci> parameter_1 </ci>
                 <ci> Vf </ci>
