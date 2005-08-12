@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/12 18:20:33 $
+   $Author: shoops $ 
+   $Date: 2005/08/12 19:42:11 $
    End CVS Header */
 
 #include <math.h>
@@ -1292,10 +1292,6 @@ void SBMLExporter::createFunctionDefinitions()
             }
         }
       replacementMap[(*it)->getObjectName()] = (*it)->getSBMLId();
-      (*it)->getRoot()->printRecursively();
-      std::string on = (*it)->getObjectName();
-      std::string cn = (*it)->getCN();
-      CFunction* f = (CFunction*)CCopasiDataModel::Global->getFunctionList()->findFunction("f");
       this->createSBMLFunctionDefinitionFromCEvaluationTree((*it), replacementMap);
       ++it;
     }
