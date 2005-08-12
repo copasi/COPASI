@@ -31,7 +31,7 @@
                     <xs:element name="Compartment" id="copasi.Model.Compartment" maxOccurs="unbounded">
                       <xs:complexType>
                         <xs:attribute name="key" type="cCOMPARTMENT_KEY" use="required" id="copasi.Model.Compartment.key"/>
-                        <xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.Compartment.name"/>
+                        <xs:attribute name="name" type="cNAME" use="required" id="copasi.Model.Compartment.name"/>
                         <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="required" id="copasi.Model.Compartment.stateVariable"/>
                         <xs:attribute name="sbmlid" type="xs:string" use="optional" id="copasi.Model.Compartment.sbmlid"/>
                       </xs:complexType>
@@ -49,7 +49,7 @@
                     <xs:element name="Metabolite" id="copasi.Model.Metabolite" maxOccurs="unbounded">
                       <xs:complexType>
                         <xs:attribute name="key" type="cMETABOLITE_KEY" use="required" id="copasi.Model.Metabolite.key"/>
-                        <xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.Metabolite.name"/>
+                        <xs:attribute name="name" type="cNAME" use="required" id="copasi.Model.Metabolite.name"/>
                         <xs:attribute name="compartment" type="cCOMPARTMENT_KEYREF" use="required" id="copasi.Model.Metabolite.compartment"/>
                         <xs:attribute name="status" use="required">
                           <xs:simpleType>
@@ -77,7 +77,7 @@
                     <xs:element name="ModelValue" id="copasi.Model.ModelValue" maxOccurs="unbounded">
                       <xs:complexType>
                         <xs:attribute name="key" type="cMODELVALUE_KEY" use="required" id="copasi.Model.ModelValue.key"/>
-                        <xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.ModelValue.name"/>
+                        <xs:attribute name="name" type="cNAME" use="required" id="copasi.Model.ModelValue.name"/>
                         <xs:attribute name="status" use="required">
                           <xs:simpleType>
                             <xs:restriction base="xs:string">
@@ -150,7 +150,7 @@
                           <xs:element name="KineticLaw" type="cFUNCTION_CALL" minOccurs="0"/>
                         </xs:sequence>
                         <xs:attribute name="key" type="cREACTION_KEY" use="required" id="copasi.Model.Reaction.key"/>
-                        <xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.Reaction.name"/>
+                        <xs:attribute name="name" type="cNAME" use="required" id="copasi.Model.Reaction.name"/>
                         <xs:attribute name="compartment" type="cCOMPARTMENT_KEYREF" use="optional" default="Compartment_00" id="copasi.Model.Reaction.compartment"/>
                         <xs:attribute name="reversible" type="xs:boolean" use="required" id="copasi.Model.Reaction.reversible"/>
                         <xs:attribute name="sbmlid" type="xs:string" use="optional" id="copasi.Model.Reaction.sbmlid"/>
@@ -189,7 +189,7 @@
               </xs:element>
             </xs:sequence>
             <xs:attribute name="key" type="cMODEL_KEY" use="required" id="copasi.Model.key"/>
-            <xs:attribute name="name" type="xs:string" use="required" id="copasi.Model.name"/>
+            <xs:attribute name="name" type="cNAME" use="required" id="copasi.Model.name"/>
             <xs:attribute name="timeUnit" use="required" id="copasi.Model.timeUnit">
               <xs:simpleType>
                 <xs:restriction base="xs:string">
@@ -259,7 +259,7 @@
                       <xs:complexType>
                         <xs:complexContent>
                           <xs:extension base="cPARAMETER_LIST">
-                            <xs:attribute name="name" type="xs:string" use="required"/>
+                            <xs:attribute name="name" type="cNAME" use="required"/>
                             <xs:attribute name="type" type="xs:string" use="optional" default="default"/>
                           </xs:extension>
                         </xs:complexContent>
@@ -271,7 +271,7 @@
                     </xs:element>
                   </xs:sequence>
                   <xs:attribute name="key" type="cTASK_KEY" use="required"/>
-                  <xs:attribute name="name" type="xs:string" use="required"/>
+                  <xs:attribute name="name" type="cNAME" use="required"/>
                   <xs:attribute name="type" type="cTASK_TYPE" use="required"/>
                   <xs:attribute name="scheduled" type="xs:boolean" use="optional" default="false"/>
                 </xs:complexType>
@@ -303,7 +303,7 @@
                     </xs:choice>
                   </xs:sequence>
                   <xs:attribute name="key" type="cREPORT_KEY" use="required"/>
-                  <xs:attribute name="name" type="xs:string" use="required"/>
+                  <xs:attribute name="name" type="cNAME" use="required"/>
                   <xs:attribute name="taskType" type="cTASK_TYPE" use="required"/>
                   <xs:attribute name="separator" type="xs:string" use="optional" default=" &#x09;"/>
                 </xs:complexType>
@@ -403,7 +403,7 @@
   </xs:complexType>
   <xs:complexType name="cCONSTANT" id="copasi.CONSTANT">
     <xs:attribute name="key" type="cCONSTANT_KEY" use="required"/>
-    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="name" type="cNAME" use="required"/>
     <xs:attribute name="value" type="xs:double" use="required"/>
   </xs:complexType>
   <xs:complexType name="cREACTION_ELEMENT" id="copasi.REACTION_ELEMENT">
@@ -430,7 +430,7 @@
       </xs:element>
     </xs:sequence>
     <xs:attribute name="key" type="cFUNCTION_KEY" use="required" id="copasi.FUNCTION.key"/>
-    <xs:attribute name="name" type="xs:string" use="required" id="copasi.FUNCTION.name"/>
+    <xs:attribute name="name" type="cNAME" use="required" id="copasi.FUNCTION.name"/>
     <xs:attribute name="type" use="required" id="copasi.FUNCTION.type">
       <xs:simpleType>
         <xs:restriction base="xs:string">
@@ -455,7 +455,7 @@
   </xs:complexType>
   <xs:complexType name="cFUNCTION_PARAMETER" id="copasi.FUNCTION_PARAMETER">
     <xs:attribute name="key" type="cFUNCTION_PARAMETER_KEY" use="required" id="copasi.FUNCTION_PARAMETER.key"/>
-    <xs:attribute name="name" type="xs:string" use="required" id="copasi.FUNCTION_PARAMETER.name"/>
+    <xs:attribute name="name" type="cNAME" use="required" id="copasi.FUNCTION_PARAMETER.name"/>
     <xs:attribute name="order" type="xs:nonNegativeInteger" use="required" id="copasi.FUNCTION_PARAMETER.order"/>
     <xs:attribute name="role" use="optional" default="variable" id="copasi.FUNCTION_PARAMETER.role">
       <xs:simpleType>
@@ -540,7 +540,7 @@
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="cPARAMETER">
-    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="name" type="cNAME" use="required"/>
     <xs:attribute name="type" use="required">
       <xs:simpleType>
         <xs:restriction base="xs:string">
@@ -564,7 +564,7 @@
         <xs:complexType>
           <xs:complexContent>
             <xs:extension base="cPARAMETER_LIST">
-              <xs:attribute name="name" type="xs:string" use="required"/>
+              <xs:attribute name="name" type="cNAME" use="required"/>
             </xs:extension>
           </xs:complexContent>
         </xs:complexType>
@@ -752,6 +752,11 @@
       <xs:enumeration value="optimization"/>
       <xs:enumeration value="parameterFitting"/>
       <xs:enumeration value="metabolicControlAnalysis"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cNAME" id="copasi.NAME">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[^\t\r\n]+"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>
