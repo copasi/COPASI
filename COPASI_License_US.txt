@@ -1,0 +1,136 @@
+			Non-Commercial Purpose License
+
+
+Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+Properties, Inc. and EML Research. 
+All rights reserved.
+
+Virginia Tech Intellectual Properties, Inc (VTIP) and EML Research own
+the COPASI software and its associated documentation ("Software").
+You should carefully read the following terms and conditions before
+using this software.  Your use of this Software indicates your
+acceptance of this license agreement and all terms and conditions.
+
+The main authors of COPASI are Stefan Hoops, Sven Sahle, and Ralph
+Gauges. This software has been made possible with the dedicated
+support of a large number of graduate students at VBI and EML
+Research.
+
+You are hereby granted a non-exclusive and non-transferable license to
+use and distribute the Software in both source and binary form
+according to the following terms and conditions.  This license is to
+use the Software for Non-Commercial Purpose only.  Non-Commercial
+Purpose means the use of the Software solely for internal
+non-commercial research and academic purposes.  Non-Commercial Purpose
+excludes, without limitation, any use of the Software, as part of, or
+in any way in connection with a product or service which is sold,
+offered for sale, licensed, leased, loaned, or rented.  Permission to
+use, copy, modify, and distribute this compilation for Non- Commercial
+Purpose is hereby granted without fee, subject to the following terms
+of this license.  Only verbatim, complete, and unmodified versions of
+this software (in either binary or source code form) are permitted to
+be redistributed under this license.
+
+
+1) Copies and Modifications
+
+    You must include the above copyright notice and this license on
+    any copy or modification of this compilation.  Each time you
+    redistribute this Software, the recipient automatically receives a
+    license to copy, distribute or modify the Software subject to
+    these terms and conditions.  You may not impose any further
+    restrictions on this Software or any derivative works beyond those
+    restrictions herein.
+
+    Any inquiries and comments regarding bugs, bug fixes, enhancements,
+    modifications or any other similar issues should be directed to:
+    bugs@copasi.org.
+
+
+2) Commercial Use
+
+    If you desire to use the software for profit-making or commercial
+    purposes, you agree to negotiate in good faith a license with VTIP
+    and EML Research prior to such profit-making or commercial use.
+    VTIP and EML Research shall have no obligation to grant such
+    license to you, and may grant exclusive or non-exclusive licenses
+    to others. You agree to notify VTIP and EML Research of any
+    inquiries you have for commercial use of the Software and/or its
+    modifications. You may contact the following email to discuss
+    commercial use: license@copasi.org
+
+
+3) Governing Law
+
+    This agreement shall be governed by the laws of the Commonwealth of
+    Virginia.
+
+
+4) Disclaimer of Warranty
+
+    Because this software is licensed free of charge, there is no
+    warranty for the program.  VTIP and EML Research make no warranty
+    or representation that the operation of the software in this
+    compilation will be error-free, and VTIP and EML Research are
+    under no obligation to provide any services, by way of
+    maintenance, update, or otherwise.
+
+    THIS SOFTWARE AND THE ACCOMPANYING FILES ARE LICENSED "AS IS" AND
+    WITHOUT WARRANTIES AS TO PERFORMANCE OR MERCHANTABILITY OR ANY
+    OTHER WARRANTIES WHETHER EXPRESSED OR IMPLIED.  NO WARRANTY OF
+    FITNESS FOR A PARTICULAR PURPOSE IS OFFERED.  THE ENTIRE RISK AS
+    TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD
+    THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY
+    SERVICING, REPAIR OR CORRECTION.
+
+
+5) Limitation of Liability
+
+    IN NO EVENT WILL VTIP AND EML RESEARCH, OR ANY OTHER PARTY WHO MAY
+    MODIFY AND/OR REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE
+    LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL,
+    INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR
+    INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF
+    DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU
+    OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY
+    OTHER PROGRAMS), EVEN IF VTIP AND EML RESEARCH OR OTHER PARTY HAS
+    BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+    Termination
+	This agreement is effective until terminated.  You may
+	terminate this agreement at any time by destroying all copies
+	of the software and other associated materials (e.g.,
+	documentation) in your possession.  This agreement will
+	terminate immediately without notice from VTIP and EML
+	Research if you fail to comply with any of the terms and
+	conditions of this license.  Upon termination, you must
+	destroy all copies of the software and other associated
+	materials.  This agreement will also terminate immediately
+	with out notice from VTIP and EML Research if it is found to
+	implement patented algorithms or contain copyrighted code not
+	owned or licensed to VTIP and EML Research for the purpose of
+	its inclusion in the COPASI software.  This agreement cannot
+	be terminated by any other mechanism or for any other reason
+	than those stated herein.
+
+    Use of Names
+	Users will not use the name of the Virginia Polytechnic
+	Institute and State University, Virginia Bioinformatics
+	Institute, Virginia Tech Intellectual Properties, Inc., EML
+	Research, and COPASI nor any adaptation thereof in any
+	publicity or advertising, without the prior written consent
+	from VTIP and EML Research in each case.
+
+
+6) Export License
+
+    Export of this software from the United States may require a
+    specific license from the United States Government.  It is the
+    responsibility of any person or organization contemplating export
+    to obtain such a license before exporting.
+
+
+7) END OF TERMS AND CONDITIONS
+
+    Address all correspondence regarding this license to electronic mail
+    address:  license@copasi.org
