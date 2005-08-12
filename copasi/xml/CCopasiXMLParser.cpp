@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.105 $
+   $Revision: 1.106 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 21:20:18 $
+   $Date: 2005/08/12 17:18:53 $
    End CVS Header */
 
 /**
@@ -454,6 +454,15 @@ void CCopasiXMLParser::ListOfFunctionsElement::end(const XML_Char *pszName)
       if (strcmp(pszName, "ListOfFunctions")) fatalError();
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
+      {
+        unsigned C_INT32 i, imax = mCommon.pFunctionList->size();
+        for (i = 0; i < imax; i++)
+          {
+            CFunction * pFunction =
+              dynamic_cast<CFunction *>((*mCommon.pFunctionList)[i]);
+            if (pFunction) pFunction->compile();
+          }
+      }
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
@@ -641,13 +650,7 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
     case Function:
       if (strcmp(pszName, "Function")) fatalError();
       if (!mCommon.mExistingFunction)
-        {
-          mCommon.pFunction->setInfix(mCommon.FunctionDescription);
-
-          CFunction * pFunction = dynamic_cast<CFunction *>(mCommon.pFunction);
-          if (pFunction)
-            pFunction->compile();
-        }
+        mCommon.pFunction->setInfix(mCommon.FunctionDescription);
 
       mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
