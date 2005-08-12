@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:11:47 $
+   $Author: gauges $ 
+   $Date: 2005/08/12 15:14:12 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -120,6 +120,7 @@ const MESSAGES Messages[] =
     {MCSBML + 14, "SBML (14): Could not import function with id \"%s\"."},
     {MCSBML + 15, "SBML (15): Could not find function with id \"%s\"."},
     {MCSBML + 16, "SBML (16): Loop found in function. That means a function calls itself either directly or indirectly."},
+    {MCSBML + 17, "SBML (17): Single compartment reaction found where the kinetic law does not include a division by the volume."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
