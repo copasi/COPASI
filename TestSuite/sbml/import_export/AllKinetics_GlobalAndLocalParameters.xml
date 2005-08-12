@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created by COPASI version 4.0 Debug 13++ on 2005-08-12 13:13 with libsbml version 2.3.2. -->
+<!-- Created by COPASI version 4.0 Debug 13++ on 2005-08-12 14:43 with libsbml version 2.3.2. -->
 <sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
   <model id="Model_1" name="New Model">
     <listOfFunctionDefinitions>
@@ -3238,7 +3238,7 @@
             <apply>
               <times/>
               <ci> compartment_0 </ci>
-              <ci> ModelValue_0 </ci>
+              <ci> parameter_0 </ci>
               <ci> species_74 </ci>
               <ci> species_75 </ci>
               <ci> species_76 </ci>
@@ -3458,7 +3458,7 @@
                 <minus/>
                 <apply>
                   <times/>
-                  <ci> ModelValue_0 </ci>
+                  <ci> parameter_0 </ci>
                   <ci> species_78 </ci>
                   <ci> species_79 </ci>
                 </apply>
