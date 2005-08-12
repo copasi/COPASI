@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:39:07 $
+   $Author: shoops $ 
+   $Date: 2005/08/12 18:54:25 $
    End CVS Header */
 
 /**
@@ -86,7 +86,9 @@ COptProblem::~COptProblem()
   for (; it != end; ++it)
     pdelete(*it);
 
-  if (mpFunction && CCopasiDataModel::Global && CCopasiDataModel::Global->getFunctionList())
+  if (mpFunction && CCopasiDataModel::Global &&
+      CCopasiDataModel::Global->getFunctionList() &&
+      CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[mpFunction->getObjectName()] == mpFunction)
     CCopasiDataModel::Global->getFunctionList()->loadedFunctions().remove(mpFunction->getObjectName());
 
   pdelete(mpFunction);
