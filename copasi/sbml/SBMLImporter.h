@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/11 10:51:21 $
+   $Date: 2005/08/12 15:17:50 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -43,6 +43,7 @@ class SBMLImporter
     std::set<std::string> mUsedFunctions;
     CModel* mpCopasiModel;
     std::map<std::string, std::string> mFunctionNameMapping;
+    bool mDivisionByCompartmentWarning;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -198,6 +199,11 @@ class SBMLImporter
     CEvaluationTree* createExpressionFromFunction(const CFunction* pFun, const std::vector<std::vector<std::string > >& functionArgumentCNs);
 
     void renameMassActionParameters(CEvaluationNodeCall* pCallNode);
+
+    /**
+     * Checks if the volume with the given CN is one of the parameters to the given call node.
+     */
+    bool containsVolume(const ASTNode* pNode, const std::string& compartmentCN);
 
   public:
     SBMLImporter();

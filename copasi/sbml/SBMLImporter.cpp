@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.93 $
+   $Revision: 1.94 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/12 12:47:34 $
+   $Date: 2005/08/12 15:17:50 $
    End CVS Header */
 
 #include "copasi.h"
@@ -730,6 +730,14 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                   tmpNode2->setName(compartment->getSBMLId().c_str());
                   tmpNode1->addChild(tmpNode2);
                   node = tmpNode1;
+                  if (!this->mDivisionByCompartmentWarning && compartment->getInitialVolume() == 1.0)
+                    {
+                      this->mDivisionByCompartmentWarning = true;
+                      if (node->getChild(0)->getType() == AST_FUNCTION && (!this->containsVolume(node->getChild(0), compartment->getCN())))
+                        {
+                          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 17);
+                        }
+                    }
                 }
             }
           else
@@ -1025,6 +1033,7 @@ SBMLImporter::SBMLImporter()
   this->speciesMap = std::map<std::string, CMetab*>();
   this->functionDB = NULL;
   this->mIncompleteModel = false;
+  this->mDivisionByCompartmentWarning = false;
 }
 
 /**
@@ -2534,4 +2543,19 @@ void SBMLImporter::renameMassActionParameters(CEvaluationNodeCall* pCallNode)
           pObjectNode->setData("<" + pObject->getCN() + ">");
         }
     }
+}
+
+bool SBMLImporter::containsVolume(const ASTNode* pNode, const std::string& compartmentCN)
+{
+  bool result = false;
+  unsigned int i, iMax = pNode->getNumChildren();
+  for (i = 0;i < iMax;++i)
+    {
+      if (pNode->getChild(i)->getType() == AST_NAME && pNode->getChild(i)->getName() == compartmentCN)
+        {
+          result = true;
+          break;
+        }
+    }
+  return result;
 }
