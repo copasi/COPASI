@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/10 13:57:46 $
+   $Date: 2005/08/12 17:14:37 $
    End CVS Header */
 
 #include <sbml/math/ASTNode.h>
@@ -17,8 +17,6 @@
 #include "CExpression.h"
 #include "CFunctionDB.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
-
-#include "utilities/utility.h"
 
 CEvaluationNodeCall::CEvaluationNodeCall():
     CEvaluationNode(CEvaluationNode::INVALID, ""),
@@ -93,7 +91,7 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
     {
     case FUNCTION:
       mpFunction =
-        dynamic_cast<CFunction *>(CCopasiDataModel::Global->getFunctionList()->findFunction(unQuote(mData)));
+        dynamic_cast<CFunction *>(CCopasiDataModel::Global->getFunctionList()->findFunction(mData));
       if (!mpFunction) return false;
       clearParameters(mpCallParameters, mCallNodes);
       mpCallParameters = buildParameters(mCallNodes);
@@ -101,7 +99,7 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
     case EXPRESSION:
       mpExpression =
-        dynamic_cast<CExpression *>(CCopasiDataModel::Global->getFunctionList()->findFunction(unQuote(mData)));
+        dynamic_cast<CExpression *>(CCopasiDataModel::Global->getFunctionList()->findFunction(mData));
       if (!mpExpression) return false;
       if (!mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer())) return false;
       break;
@@ -186,6 +184,17 @@ bool CEvaluationNodeCall::addChild(CCopasiNode< Data > * pChild,
   mCallNodes.push_back(static_cast<CEvaluationNode *>(pChild));
 
   return true;
+}
+
+bool CEvaluationNodeCall::removeChild(CCopasiNode< Data > * pChild)
+{
+  std::vector<CEvaluationNode *>::iterator it = mCallNodes.begin();
+  std::vector<CEvaluationNode *>::iterator end = mCallNodes.end();
+
+  while (it != end && *it != pChild) ++it;
+  if (it != end) mCallNodes.erase(it);
+
+  return CCopasiNode< Data >::removeChild(pChild);
 }
 
 CCallParameters< C_FLOAT64 > *

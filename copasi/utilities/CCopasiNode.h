@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiNode.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/09 19:44:28 $
+   $Date: 2005/08/12 17:14:37 $
    End CVS Header */
 
 /**
@@ -115,15 +115,15 @@ template < class _Data > class CCopasiNode
 
       /**
        * Add a child to a node.
-       * If pAfter == this the child will be inserted at the fornt of the list
+       * If pAfter == this the child will be inserted at the front of the list
        * of children.
        * @param CCopasiNode< Data > * pChild
        * @param CCopasiNode< Data > * pAfter 
        *        (default: NULL appended to the list of children)
        * @return bool Success
        */
-      bool addChild(CCopasiNode< Data > * pChild,
-                    CCopasiNode< Data > * pAfter = NULL)
+      virtual bool addChild(CCopasiNode< Data > * pChild,
+                            CCopasiNode< Data > * pAfter = NULL)
       {
         if (!pChild) return false;           // Nothing to insert.
 
@@ -147,7 +147,7 @@ template < class _Data > class CCopasiNode
        * @param CCopasiNode< Data > * pChild
        * @return bool Success
        */
-      bool removeChild(CCopasiNode< Data > * pChild)
+      virtual bool removeChild(CCopasiNode< Data > * pChild)
       {
         if (!pChild) return false;           // Nothing to remove.
 
@@ -172,9 +172,10 @@ template < class _Data > class CCopasiNode
        */
       const CCopasiNode< Data > * getChild() const {return mpChild;}
 
+    private:
       /**
        * Add a sibling to a node.
-       * If pAfter == this the sibling will be inserted at the fornt of the list
+       * If pAfter == this the sibling will be inserted at the front of the list
        * of siblings.
        * @param CCopasiNode< Data > * pSibling
        * @param CCopasiNode< Data > * pAfter 
@@ -238,6 +239,7 @@ template < class _Data > class CCopasiNode
           return false;                      // We did not find pSibling.
       }
 
+    public:
       /**
        * Retreive the sibling of a node.
        * @return CCopasiNode< Data > * pSibling

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/25 15:36:40 $
+   $Date: 2005/08/12 17:14:37 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeCall
@@ -96,15 +96,22 @@ class CEvaluationNodeCall : public CEvaluationNode
 
     /**
      * Add a child to a node.
-     * If pAfter == this the child will be inserted at the fornt of the list
+     * If pAfter == this the child will be inserted at the front of the list
      * of children.
      * @param CCopasiNode< Data > * pChild
      * @param CCopasiNode< Data > * pAfter 
      *        (default: NULL appended to the list of children)
      * @return bool Success
      */
-    bool addChild(CCopasiNode< Data > * pChild,
-                  CCopasiNode< Data > * pAfter = NULL);
+    virtual bool addChild(CCopasiNode< Data > * pChild,
+                          CCopasiNode< Data > * pAfter = NULL);
+
+    /**
+     * Remove a child from a node.
+     * @param CCopasiNode< Data > * pChild
+     * @return bool Success
+     */
+    virtual bool removeChild(CCopasiNode< Data > * pChild);
 
   private:
     /**
