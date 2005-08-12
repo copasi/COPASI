@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/03 11:34:41 $
+   $Date: 2005/08/12 08:23:50 $
    End CVS Header */
 
 #include "copasi.h"
@@ -215,6 +215,8 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
     }
 
   if (mpModel) mpModel->setCompileFlag();
+  this->mpCurrentSBMLDocument = NULL;
+  this->mCopasi2SBMLMap.clear();
 
   changed(false);
   return true;
@@ -305,6 +307,8 @@ bool CCopasiDataModel::newModel(CModel * pModel)
       mpModel = new CModel();
       mSaveFileName = "";
     }
+  this->mpCurrentSBMLDocument = NULL;
+  this->mCopasi2SBMLMap.clear();
 
   pdelete(mpTaskList);
   mpTaskList = new CCopasiVectorN< CCopasiTask >("TaskList", CCopasiContainer::Root);
