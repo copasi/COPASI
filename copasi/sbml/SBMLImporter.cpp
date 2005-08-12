@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.91 $
+   $Revision: 1.92 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/12 06:23:09 $
+   $Date: 2005/08/12 10:54:04 $
    End CVS Header */
 
 #include "copasi.h"
@@ -27,6 +27,7 @@
 #include "function/CFunctionDB.h"
 #include "function/CEvaluationTree.h"
 #include "report/CCopasiObjectReference.h"
+#include "utilities/CCopasiTree.h"
 
 #include "sbml/SBMLReader.h"
 #include "sbml/SBMLDocument.h"
@@ -302,33 +303,22 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
               pFun->addVariable(pVarNode->getName());
             }
           pFun->setTree(*root->getRightChild());
-          CEvaluationNode* pTmpRoot = pFun->getRoot();
-          while (pTmpRoot)
+          //CEvaluationNode* pTmpRoot = pFun->getRoot();
+          CCopasiTree<CEvaluationNode>::iterator treeIt = pFun->getRoot();
+          while (treeIt != NULL)
             {
-              if (dynamic_cast<CEvaluationNodeObject*>(pTmpRoot))
+              if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
                 {
-                  CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, pTmpRoot->getData().substr(1, pTmpRoot->getData().length() - 2));
-                  if (pTmpRoot->getParent())
+                  CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
+                  if ((*treeIt).getParent())
                     {
-                      pTmpRoot->addSibling(pVariableNode, pTmpRoot);
-                      pTmpRoot->getParent()->removeChild(pTmpRoot);
-                      //static_cast<CEvaluationNode*>(pVariableNode->getParent())->compile(NULL);
+                      (*treeIt).addSibling(pVariableNode, &(*treeIt));
+                      (*treeIt).getParent()->removeChild(&(*treeIt));
                     }
-                  pdelete(pTmpRoot);
-                  pTmpRoot = pVariableNode;
+                  delete &(*treeIt);
+                  treeIt = pVariableNode;
                 }
-              if (pTmpRoot->getChild())
-                {
-                  pTmpRoot = static_cast<CEvaluationNode*>(pTmpRoot->getChild());
-                }
-              else if (pTmpRoot->getSibling())
-                {
-                  pTmpRoot = static_cast<CEvaluationNode*>(pTmpRoot->getSibling());
-                }
-              else
-                {
-                  pTmpRoot = static_cast<CEvaluationNode*>(pTmpRoot->getParent()->getSibling());
-                }
+              ++treeIt;
             }
           pFun->updateTree();
           pFun->compileNodes();
@@ -1969,6 +1959,7 @@ std::vector<CEvaluationNodeObject*> SBMLImporter::isMassActionFunction(const CFu
 {
   // create an expression from the function and call isMassActionExpression
   CEvaluationTree* pExpressionTree = this->createExpressionFromFunction(pFun, functionArgumentCNs);
+  if (!pExpressionTree) fatalError();
   std::vector<CEvaluationNodeObject*> v = this->isMassActionExpression(pExpressionTree->getRoot(), chemicalEquation);
   delete pExpressionTree;
   return v;
