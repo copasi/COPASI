@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.90 $
+   $Revision: 1.91 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/11 10:51:21 $
+   $Date: 2005/08/12 06:23:09 $
    End CVS Header */
 
 #include "copasi.h"
@@ -777,7 +777,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                   unsigned int i, iMax = v.size();
                   for (i = 0;i < iMax;++i)
                     {
-                      CEvaluationNode* pTestNode = v[i];
                       pCallNode->addChild(v[i]);
                     }
                   this->renameMassActionParameters(pCallNode);
@@ -1900,13 +1899,13 @@ std::vector<CEvaluationNodeObject*> SBMLImporter::isMassActionExpression(const C
                   break;
                 }
             }
-          else if (pNode->getType() == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)(CEvaluationNode::type(pNode->getType())) == CEvaluationNodeOperator::POWER)
+          else if (pNode->getType() == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)(CEvaluationNode::subType(pNode->getType())) == CEvaluationNodeOperator::POWER)
             {
               // the two children must be a metabolite node and a number node in this order
               const CEvaluationNode* pChildNode = static_cast<const CEvaluationNode*>(pNode->getChild());
               if (pChildNode->getType() == CEvaluationNode::OBJECT)
                 {
-                  std::string objectCN = pNode->getData().substr(1, pNode->getData().length() - 2);
+                  std::string objectCN = pChildNode->getData().substr(1, pChildNode->getData().length() - 2);
                   const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
                   assert(pObject);
                   if (pObject->isReference())
@@ -2185,9 +2184,13 @@ void SBMLImporter::separateProductArguments(const CEvaluationNode* pRootNode, st
         {
           const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pChildNode);
           const CEvaluationNodeOperator* pOperatorNode = dynamic_cast<const CEvaluationNodeOperator*>(pChildNode);
-          if (pObjectNode || (pOperatorNode && (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperatorNode->getType())) == CEvaluationNodeOperator::POWER)))
+          if (pObjectNode)
             {
               arguments.push_back(pObjectNode);
+            }
+          else if (pOperatorNode && (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperatorNode->getType())) == CEvaluationNodeOperator::POWER))
+            {
+              arguments.push_back(pOperatorNode);
             }
           else
             {
