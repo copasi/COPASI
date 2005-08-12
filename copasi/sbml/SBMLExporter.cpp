@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/12 11:17:20 $
+   $Date: 2005/08/12 12:46:32 $
    End CVS Header */
 
 #include <math.h>
@@ -742,7 +742,18 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
       node = new ASTNode(AST_TIMES);
 
       ASTNode* parameterNode1 = new ASTNode(AST_NAME);
-      std::string parameterName1 = cMassAction.getVariables()[0]->getObjectName();
+      std::string parameterName1;
+      if (copasiReaction->isLocalParameter(0))
+        {
+          parameterName1 = cMassAction.getVariables()[0]->getObjectName();
+        }
+      else
+        {
+          parameterName1 = copasiReaction->getParameterMappings()[0][0];
+          const CModelValue* pMV = dynamic_cast<const CModelValue*>(GlobalKeys.get(parameterName1));
+          if (!pMV) fatalError();
+          parameterName1 = pMV->getSBMLId();
+        }
       parameterNode1->setName(parameterName1.c_str());
       node->addChild(parameterNode1);
       node->addChild(this->createTimesTree(copasiReaction->getChemEq().getSubstrates()));
@@ -755,7 +766,18 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
           ASTNode* backwardNode = new ASTNode(AST_TIMES);
 
           ASTNode* parameterNode2 = new ASTNode(AST_NAME);
-          std::string parameterName2 = cMassAction.getVariables()[2]->getObjectName();
+          std::string parameterName2;
+          if (copasiReaction->isLocalParameter(2))
+            {
+              parameterName2 = cMassAction.getVariables()[2]->getObjectName();
+            }
+          else
+            {
+              parameterName2 = copasiReaction->getParameterMappings()[2][0];
+              const CModelValue* pMV = dynamic_cast<const CModelValue*>(GlobalKeys.get(parameterName2));
+              if (!pMV) fatalError();
+              parameterName2 = pMV->getSBMLId();
+            }
           parameterNode2->setName(parameterName2.c_str());
           backwardNode->addChild(parameterNode2);
 
@@ -1255,13 +1277,11 @@ void SBMLExporter::createFunctionDefinitions()
   std::list<const CEvaluationTree*>::const_iterator it = this->mUsedFunctions.begin();
   std::list<const CEvaluationTree*>::const_iterator endIt = this->mUsedFunctions.end();
   std::map<std::string, std::string> replacementMap;
-  unsigned int size = this->mUsedFunctions.size();
   while (it != endIt)
     {
       // delete an existing function definition with this name
       // add the new function definition
       unsigned int i, iMax = listOfFunctionDefinitions.getNumItems();
-      const CFunction* f = (*it);
       for (i = 0; i < iMax;++i)
         {
           if (static_cast<FunctionDefinition*>(listOfFunctionDefinitions.get(i))->getId() == (*it)->getSBMLId())
