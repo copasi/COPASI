@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/14 17:38:00 $
+   $Date: 2005/08/12 17:15:07 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -19,9 +19,11 @@
 #include <assert.h>
 
 #include "CCopasiMessage.h"
+#include "CCopasiTask.h"
+#include "utility.h"
+
 #include "report/CCopasiObjectName.h"
 #include "report/CCopasiContainer.h"
-#include "utilities/CCopasiTask.h"
 
 class CReadConfig;
 //class CWriteConfig;
@@ -541,8 +543,11 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
           unsigned C_INT32 i, imax = this->size();
           const_iterator Target = this->begin();
 
+          std::string Name = unQuote(name);
           for (i = 0; i < imax; i++, Target++)
-            if (*Target && (*Target)->getObjectName() == name) return i;
+            if (*Target &&
+                ((*Target)->getObjectName() == name ||
+                 (*Target)->getObjectName() == Name)) return i;
 
           return C_INVALID_INDEX;
         }
