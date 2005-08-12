@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/09 14:28:25 $
+   $Date: 2005/08/12 11:17:20 $
    End CVS Header */
 
 #include <math.h>
@@ -1215,6 +1215,7 @@ void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEv
                         {
                           std::string id = this->createUniqueId(this->mpIdSet, "function_");
                           pFun->setSBMLId(id);
+                          this->mpIdSet->insert(id);
                         }
                     }
                   this->mUsedFunctions.push_front(pFun);
@@ -1254,12 +1255,13 @@ void SBMLExporter::createFunctionDefinitions()
   std::list<const CEvaluationTree*>::const_iterator it = this->mUsedFunctions.begin();
   std::list<const CEvaluationTree*>::const_iterator endIt = this->mUsedFunctions.end();
   std::map<std::string, std::string> replacementMap;
-
+  unsigned int size = this->mUsedFunctions.size();
   while (it != endIt)
     {
       // delete an existing function definition with this name
       // add the new function definition
       unsigned int i, iMax = listOfFunctionDefinitions.getNumItems();
+      const CFunction* f = (*it);
       for (i = 0; i < iMax;++i)
         {
           if (static_cast<FunctionDefinition*>(listOfFunctionDefinitions.get(i))->getId() == (*it)->getSBMLId())
