@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.140 $
+   $Revision: 1.141 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/05 15:49:11 $
+   $Author: shoops $ 
+   $Date: 2005/08/12 17:15:51 $
    End CVS Header */
 
 // CReaction
@@ -873,7 +873,7 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
           pChildNode = this->objects2variables(pOldChildNode, replacementMap, copasi2sbmlmap);
           if (pChildNode)
             {
-              static_cast<CEvaluationNodeCall*>(pTmpNode)->addChild(pChildNode);
+              pTmpNode->addChild(pChildNode);
             }
           pOldChildNode = static_cast<CEvaluationNode*>(pOldChildNode->getSibling());
         }

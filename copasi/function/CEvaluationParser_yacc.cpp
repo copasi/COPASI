@@ -1,65 +1,57 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.cpp,v $
-   $Revision: 1.15 $
-   $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/29 15:05:46 $
-   End CVS Header */
-
 #ifndef lint
 static char const
 yyrcsid[] = "$FreeBSD: src/usr.bin/yacc/skeleton.c,v 1.28 2000/01/17 02:04:06 bde Exp $";
 #endif
-#include <stdlib.h>
-#define YYBYACC 1
-#define YYMAJOR 1
-#define YYMINOR 9
-#define YYLEX yylex()
-#define YYEMPTY -1
-#define yyclearin (yychar=(YYEMPTY))
-#define yyerrok (yyerrflag=0)
-#define YYRECOVERING() (yyerrflag!=0)
+ #include <stdlib.h>
+ #define YYBYACC 1
+ #define YYMAJOR 1
+ #define YYMINOR 9
+ #define YYLEX yylex()
+ #define YYEMPTY -1
+ #define yyclearin (yychar=(YYEMPTY))
+ #define yyerrok (yyerrflag=0)
+ #define YYRECOVERING() (yyerrflag!=0)
 static int yygrowstack();
 #define YYPREFIX "yy"
-#line 5 "CEvaluationParser.ypp"
-#define YYSTYPE CEvaluationNode *
-#define yylval  mpNode
-#define yyerror(__str) \
-  if (yychar != YYERRCODE) correctErrorPosition(); \
-  CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
+ #line 5 "CEvaluationParser.ypp"
+ #define YYSTYPE CEvaluationNode *
+ #define yylval  mpNode
+ #define yyerror(__str) \
+   if (yychar != YYERRCODE) correctErrorPosition(); \
+   CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
 
 #include "copasi.h"
-#include "CEvaluationNode.h"
-#include "CEvaluationLexer.h"
+ #include "CEvaluationNode.h"
+ #include "CEvaluationLexer.h"
 
 #line 28 "CEvaluationParser_yacc.cpp"
-#define YYERRCODE 256
-#define TOKEN_NUMBER 257
-#define TOKEN_VARIABLE 258
-#define TOKEN_CALL 259
-#define TOKEN_FUNCTION 260
-#define TOKEN_SIGN 261
-#define TOKEN_OPERATOR_POWER 262
-#define TOKEN_OPERATOR_MULTIPLY 263
-#define TOKEN_OPERATOR_MODULUS 264
-#define TOKEN_OPERATOR_PLUS 265
-#define TOKEN_LOGICAL_CHOICE 266
-#define TOKEN_LOGICAL_VALUE 267
-#define TOKEN_LOGICAL_NOT 268
-#define TOKEN_LOGICAL_OR 269
-#define TOKEN_LOGICAL_XOR 270
-#define TOKEN_LOGICAL_AND 271
-#define TOKEN_LOGICAL_EQ 272
-#define TOKEN_LOGICAL_NE 273
-#define TOKEN_LOGICAL_GT 274
-#define TOKEN_LOGICAL_GE 275
-#define TOKEN_LOGICAL_LT 276
-#define TOKEN_LOGICAL_LE 277
-#define TOKEN_STRUCTURE_OPEN 278
-#define TOKEN_STRUCTURE_VECTOR_OPEN 279
-#define TOKEN_STRUCTURE_COMMA 280
-#define TOKEN_STRUCTURE_CLOSE 281
-#define TOKEN_STRUCTURE_VECTOR_CLOSE 282
+ #define YYERRCODE 256
+ #define TOKEN_NUMBER 257
+ #define TOKEN_VARIABLE 258
+ #define TOKEN_CALL 259
+ #define TOKEN_FUNCTION 260
+ #define TOKEN_SIGN 261
+ #define TOKEN_OPERATOR_POWER 262
+ #define TOKEN_OPERATOR_MULTIPLY 263
+ #define TOKEN_OPERATOR_MODULUS 264
+ #define TOKEN_OPERATOR_PLUS 265
+ #define TOKEN_LOGICAL_CHOICE 266
+ #define TOKEN_LOGICAL_VALUE 267
+ #define TOKEN_LOGICAL_NOT 268
+ #define TOKEN_LOGICAL_OR 269
+ #define TOKEN_LOGICAL_XOR 270
+ #define TOKEN_LOGICAL_AND 271
+ #define TOKEN_LOGICAL_EQ 272
+ #define TOKEN_LOGICAL_NE 273
+ #define TOKEN_LOGICAL_GT 274
+ #define TOKEN_LOGICAL_GE 275
+ #define TOKEN_LOGICAL_LT 276
+ #define TOKEN_LOGICAL_LE 277
+ #define TOKEN_STRUCTURE_OPEN 278
+ #define TOKEN_STRUCTURE_VECTOR_OPEN 279
+ #define TOKEN_STRUCTURE_COMMA 280
+ #define TOKEN_STRUCTURE_CLOSE 281
+ #define TOKEN_STRUCTURE_VECTOR_CLOSE 282
 const short yylhs[] =
   {
     -1,
@@ -213,11 +205,11 @@ const short yycheck[] =
     269, 270, 271, 272, 273, -1, 280,
   };
 #define YYFINAL 8
-#ifndef YYDEBUG
-#define YYDEBUG 1
-#endif
-#define YYMAXTOKEN 282
-#if YYDEBUG
+ #ifndef YYDEBUG
+ #define YYDEBUG 1
+ #endif
+ #define YYMAXTOKEN 282
+ #if YYDEBUG
 const char * const yyname[] =
   {
     "end-of-file", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -281,24 +273,24 @@ const char * const yyrule[] =
     "cstart : cstart vector TOKEN_STRUCTURE_COMMA",
   };
 #endif
-#ifndef YYSTYPE
+ #ifndef YYSTYPE
 typedef int YYSTYPE;
 #endif
-#if YYDEBUG
-#include <stdio.h>
-#endif
-#ifdef YYSTACKSIZE
-#undef YYMAXDEPTH
-#define YYMAXDEPTH YYSTACKSIZE
-#else
-#ifdef YYMAXDEPTH
-#define YYSTACKSIZE YYMAXDEPTH
-#else
-#define YYSTACKSIZE 10000
-#define YYMAXDEPTH 10000
-#endif
-#endif
-#define YYINITSTACKSIZE 200
+ #if YYDEBUG
+ #include <stdio.h>
+ #endif
+ #ifdef YYSTACKSIZE
+ #undef YYMAXDEPTH
+ #define YYMAXDEPTH YYSTACKSIZE
+ #else
+ #ifdef YYMAXDEPTH
+ #define YYSTACKSIZE YYMAXDEPTH
+ #else
+ #define YYSTACKSIZE 10000
+ #define YYMAXDEPTH 10000
+ #endif
+ #endif
+ #define YYINITSTACKSIZE 200
 int yydebug = YYDEBUG;
 int yynerrs;
 int yyerrflag;
@@ -313,7 +305,7 @@ YYSTYPE *yyvs;
 int yystacksize;
 #line 327 "CEvaluationParser.ypp"
 
-#line 289 "CEvaluationParser_yacc.cpp" 
+#line 289 "CEvaluationParser_yacc.cpp"
 /* allocate initial stack or double stack size, up to YYMAXDEPTH */
 static int yygrowstack()
 {
@@ -346,30 +338,30 @@ static int yygrowstack()
 }
 
 #define YYABORT goto yyabort
-#define YYREJECT goto yyabort
-#define YYACCEPT goto yyaccept
-#define YYERROR goto yyerrlab
+ #define YYREJECT goto yyabort
+ #define YYACCEPT goto yyaccept
+ #define YYERROR goto yyerrlab
 
 #ifndef YYPARSE_PARAM
-#if defined(__cplusplus) || __STDC__
-#define YYPARSE_PARAM_ARG void
-#define YYPARSE_PARAM_DECL
-#else /* ! ANSI-C/C++ */
-#define YYPARSE_PARAM_ARG
-#define YYPARSE_PARAM_DECL
-#endif /* ANSI-C/C++ */
-#else /* YYPARSE_PARAM */
-#ifndef YYPARSE_PARAM_TYPE
-#define YYPARSE_PARAM_TYPE void *
-#endif
-#if defined(__cplusplus) || __STDC__
-#define YYPARSE_PARAM_ARG YYPARSE_PARAM_TYPE YYPARSE_PARAM
-#define YYPARSE_PARAM_DECL
-#else /* ! ANSI-C/C++ */
-#define YYPARSE_PARAM_ARG YYPARSE_PARAM
-#define YYPARSE_PARAM_DECL YYPARSE_PARAM_TYPE YYPARSE_PARAM;
-#endif /* ANSI-C/C++ */
-#endif /* ! YYPARSE_PARAM */
+ #if defined(__cplusplus) || __STDC__
+ #define YYPARSE_PARAM_ARG void
+ #define YYPARSE_PARAM_DECL
+ #else /* ! ANSI-C/C++ */
+ #define YYPARSE_PARAM_ARG
+ #define YYPARSE_PARAM_DECL
+ #endif /* ANSI-C/C++ */
+ #else /* YYPARSE_PARAM */
+ #ifndef YYPARSE_PARAM_TYPE
+ #define YYPARSE_PARAM_TYPE void *
+ #endif
+ #if defined(__cplusplus) || __STDC__
+ #define YYPARSE_PARAM_ARG YYPARSE_PARAM_TYPE YYPARSE_PARAM
+ #define YYPARSE_PARAM_DECL
+ #else /* ! ANSI-C/C++ */
+ #define YYPARSE_PARAM_ARG YYPARSE_PARAM
+ #define YYPARSE_PARAM_DECL YYPARSE_PARAM_TYPE YYPARSE_PARAM;
+ #endif /* ANSI-C/C++ */
+ #endif /* ! YYPARSE_PARAM */
 
 int
 yyYaccParser::yyparse (YYPARSE_PARAM_ARG)
@@ -803,14 +795,14 @@ YYPARSE_PARAM_DECL
 #line 300 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -2];
-          static_cast<CEvaluationNodeCall *>(yyval)->addChild(yyvsp[ -1]);
+          yyval->addChild(yyvsp[ -1]);
         }
         break;
       case 38:
 #line 305 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -2];
-          static_cast<CEvaluationNodeCall *>(yyval)->addChild(yyvsp[ -1]);
+          yyval->addChild(yyvsp[ -1]);
         }
         break;
       case 39:
@@ -823,14 +815,14 @@ YYPARSE_PARAM_DECL
 #line 315 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -2];
-          static_cast<CEvaluationNodeCall *>(yyval)->addChild(yyvsp[ -1]);
+          yyval->addChild(yyvsp[ -1]);
         }
         break;
       case 41:
 #line 320 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -2];
-          static_cast<CEvaluationNodeCall *>(yyval)->addChild(yyvsp[ -1]);
+          yyval->addChild(yyvsp[ -1]);
         }
         break;
 #line 809 "CEvaluationParser_yacc.cpp"

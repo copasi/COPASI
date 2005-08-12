@@ -299,12 +299,12 @@ call:     TOKEN_CALL TOKEN_STRUCTURE_CLOSE
         | cstart exp TOKEN_STRUCTURE_CLOSE
           {
             $$ = $1;
-            static_cast<CEvaluationNodeCall *>($$)->addChild($2); 
+            $$->addChild($2); 
           }
         | cstart vector TOKEN_STRUCTURE_CLOSE
           {
             $$ = $1;
-            static_cast<CEvaluationNodeCall *>($$)->addChild($2); 
+            $$->addChild($2); 
           }
 
 cstart:   TOKEN_CALL 
@@ -314,12 +314,12 @@ cstart:   TOKEN_CALL
         | cstart exp TOKEN_STRUCTURE_COMMA
           {
             $$ = $1;
-            static_cast<CEvaluationNodeCall *>($$)->addChild($2); 
+            $$->addChild($2); 
           }
         | cstart vector TOKEN_STRUCTURE_COMMA
           {
             $$ = $1;
-            static_cast<CEvaluationNodeCall *>($$)->addChild($2); 
+            $$->addChild($2); 
           }
 ;
 
