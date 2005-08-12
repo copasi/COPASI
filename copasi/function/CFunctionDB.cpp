@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:14:18 $
+   $Date: 2005/08/12 17:20:22 $
    End CVS Header */
 
 /**
@@ -279,13 +279,12 @@ bool CFunctionDB::removeFunction(const std::string &key)
 
 CEvaluationTree * CFunctionDB::findFunction(const std::string & functionName)
 {
-  unsigned C_INT32 i;
+  unsigned C_INT32 index = mLoadedFunctions.getIndex(functionName);
 
-  for (i = 0; i < mLoadedFunctions.size(); i++)
-    if (functionName == mLoadedFunctions[i]->getObjectName())
-      return mLoadedFunctions[i];
-
-  return NULL;
+  if (index != C_INVALID_INDEX)
+    return mLoadedFunctions[index];
+  else
+    return NULL;
 }
 
 CEvaluationTree * CFunctionDB::findLoadFunction(const std::string & functionName)
