@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/15 11:20:27 $
+   $Date: 2005/08/15 13:56:35 $
    End CVS Header */
 
 #include <math.h>
@@ -1351,4 +1351,15 @@ bool SBMLExporter::isValidSId(const std::string& id)
       result = false;
     }
   return result;
+}
+
+void SBMLExporter::printFunctionList(const std::list<const CEvaluationTree*>& l)
+{
+  std::list<const CEvaluationTree*>::const_iterator it = l.begin();
+  while (it != l.end())
+    {
+      std::cout << (*it)->getObjectName() << " ";
+      ++it;
+    }
+  std::cout << std::endl;
 }
