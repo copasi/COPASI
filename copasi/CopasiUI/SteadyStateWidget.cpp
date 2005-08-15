@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.98 $
+   $Revision: 1.99 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/08/03 22:42:07 $
+   $Date: 2005/08/15 11:35:44 $
    End CVS Header */
 
 /********************************************************
@@ -302,7 +302,7 @@ void SteadyStateWidget::runSteadyStateTask()
 
   try
     {
-      if (!mSteadyStateTask->process())
+      if (!mSteadyStateTask->process(CCopasiTask::OUTPUT_COMPLETE, true))
         {
           tmpBar->finish();
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
