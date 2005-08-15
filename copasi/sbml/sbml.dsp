@@ -65,6 +65,10 @@ SOURCE=.\SBMLExporter.cpp
 
 SOURCE=.\SBMLImporter.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\SBMLReference.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -80,6 +84,10 @@ SOURCE=.\SBMLExporter.h
 # Begin Source File
 
 SOURCE=.\SBMLImporter.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\SBMLReference.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

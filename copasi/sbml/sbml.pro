@@ -13,6 +13,7 @@ HEADERS += StdException.h \
            ConverterASTNode.h \
            SBMLImporter.h \
            SBMLExporter.h \
+           SBMLReference.h \
            UnitConversionFactory.hpp
            
            
@@ -21,6 +22,7 @@ SOURCES += StdException.cpp \
            ConverterASTNode.cpp \
            SBMLImporter.cpp \
            SBMLExporter.cpp \
+           SBMLReference.cpp \
            UnitConversionFactory.cpp
 
 
