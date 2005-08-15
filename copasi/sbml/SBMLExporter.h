@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/15 13:56:35 $
+   $Date: 2005/08/15 15:37:18 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -185,8 +185,6 @@ class SBMLExporter
      * Checks if the given string is a valid SBMLId.
      */
     bool isValidSId(const std::string& id);
-
-    static void printFunctionList(const std::list<const CEvaluationTree*>& l);
 
   public:
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/15 13:56:35 $
+   $Date: 2005/08/15 15:37:18 $
    End CVS Header */
 
 #include <math.h>
@@ -1209,9 +1209,9 @@ void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEv
             }
           // if the function is already in the list of used functions, we don't have
           // to go through it again.
+          usedFunctionList.push_back(pFun);
           if (!this->existsInList(pFun, this->mUsedFunctions))
             {
-              usedFunctionList.push_back(pFun);
               std::list<const CEvaluationTree*>::iterator pos = usedFunctionList.end();
               --pos;
               this->findUsedFunctions(pFun->getRoot(), usedFunctionList);
@@ -1242,10 +1242,15 @@ void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEv
                   std::list<const CEvaluationTree*>::iterator afterPos = this->mUsedFunctions.end();
                   while ((it != endIt) && (usedFunctionList.back() != (*pos)))
                     {
-                      std::list<const CEvaluationTree*>::iterator it2 = usedFunctionList.begin();
+                      // pos is the position of the current function in usedFunctionList
+                      // so find the function after pos in usedFunctions that has the position
+                      // furthest to the back of this->mUsedFunctions
+                      std::list<const CEvaluationTree*>::iterator it2 = pos;
                       std::list<const CEvaluationTree*>::iterator endIt2 = usedFunctionList.end();
                       while (it2 != endIt2)
                         {
+                          const CEvaluationTree* pTree1 = (*it);
+                          const CEvaluationTree* pTree2 = (*it2);
                           if ((*it) == (*it2))
                             {
                               usedFunctionList.erase(it2);
@@ -1256,7 +1261,12 @@ void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEv
                         }
                       ++it;
                     }
-                  afterPos++;
+                  if (afterPos == this->mUsedFunctions.end())
+                    {
+                      fatalError();
+                    }
+                  const CEvaluationTree* pTree = (*afterPos);
+                  ++afterPos;
                   this->mUsedFunctions.insert(afterPos, pFun);
                 }
             }
@@ -1351,15 +1361,4 @@ bool SBMLExporter::isValidSId(const std::string& id)
       result = false;
     }
   return result;
-}
-
-void SBMLExporter::printFunctionList(const std::list<const CEvaluationTree*>& l)
-{
-  std::list<const CEvaluationTree*>::const_iterator it = l.begin();
-  while (it != l.end())
-    {
-      std::cout << (*it)->getObjectName() << " ";
-      ++it;
-    }
-  std::cout << std::endl;
 }
