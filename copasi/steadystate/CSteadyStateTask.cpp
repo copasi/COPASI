@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/08/03 22:21:33 $
+   $Date: 2005/08/15 11:31:02 $
    End CVS Header */
 
 /**
@@ -119,6 +119,7 @@ bool CSteadyStateTask::initialize(std::ostream * pOstream)
   if (!CCopasiTask::initialize(pOstream)) success = false;
 
   //init states
+  if (!mpProblem->getModel()) return false;
   pdelete(mpSteadyState);
   mpSteadyState = new CState(mpProblem->getModel()->getInitialState());
   pdelete(mpSteadyStateX);
@@ -137,7 +138,7 @@ bool CSteadyStateTask::initialize(std::ostream * pOstream)
 
 bool CSteadyStateTask::process(OutputFlag of, bool useInitialValues)
 {
-  assert(/*mpProblem && */mpMethod);
+  assert(mpMethod);
   mpMethod->isValidProblem(mpProblem);
 
   mDoOutput = of;
@@ -146,6 +147,7 @@ bool CSteadyStateTask::process(OutputFlag of, bool useInitialValues)
     {
       mpProblem->getModel()->applyInitialValues();
     }
+
   *mpSteadyState = mpProblem->getModel()->getState();
   *mpSteadyStateX = *mpSteadyState;
 
@@ -157,7 +159,9 @@ bool CSteadyStateTask::process(OutputFlag of, bool useInitialValues)
     dynamic_cast<CSteadyStateMethod *>(mpMethod);
   assert(pMethod);
 
-  mReport.printHeader();
+  //mReport.printHeader();
+  initOutput();
+  doOutput();
 
   mResult = pMethod->process(mpSteadyState,
                              mpSteadyStateX,
@@ -168,8 +172,10 @@ bool CSteadyStateTask::process(OutputFlag of, bool useInitialValues)
                              mEigenValuesX,
                              mpCallBack);
 
-  mReport.printBody();
-  mReport.printFooter();
+  //mReport.printBody();
+
+  //mReport.printFooter();
+  finishOutput();
 
   return (mResult != CSteadyStateMethod::notFound);
 }
