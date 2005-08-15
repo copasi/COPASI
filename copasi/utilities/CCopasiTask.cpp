@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/08/03 22:15:28 $
+   $Date: 2005/08/15 11:28:30 $
    End CVS Header */
 
 /**
@@ -217,6 +217,16 @@ bool CCopasiTask::finishOutput()
       mReport.printFooter();
       mReport.close();
       if (mpOutputHandler) mpOutputHandler->finish();
+    }
+  return true;
+}
+
+bool CCopasiTask::separatorOutput()
+{
+  if (mDoOutput == OUTPUT_COMPLETE)
+    {
+      //mReport.printHeader(); //TODO
+      if (mpOutputHandler) mpOutputHandler->doSeparator();
     }
   return true;
 }

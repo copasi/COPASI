@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/25 09:48:10 $
+   $Date: 2005/08/15 11:28:30 $
    End CVS Header */
 
 /**
@@ -60,8 +60,8 @@ class CCopasiTask : public CCopasiContainer
 
     enum OutputFlag
     {
-      NO_OUTPUT = 0,     //do no output
-      OUTPUT,            //do output, but do not initialize/finish
+      NO_OUTPUT = 0,      //do no output
+      OUTPUT,             //do output, but do not initialize/finish
       OUTPUT_COMPLETE   //do output, including initialization and closing
     };
 
@@ -282,6 +282,7 @@ class CCopasiTask : public CCopasiContainer
     virtual bool initOutput();
     virtual bool doOutput();
     virtual bool finishOutput();
+    virtual bool separatorOutput();
 
     inline const OutputFlag & getOutputMode() const
       {return mDoOutput;};
