@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/02 11:52:02 $
+   $Author: ssahle $ 
+   $Date: 2005/08/15 11:32:33 $
    End CVS Header */
 
 #include <limits>
@@ -140,7 +140,14 @@ bool CPlotSpec2Vector::doPlotting()
       for (; it != mObjects.end(); ++it, ++i)
         {
           if (*it)
-            data[i] = *(C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)(*it))->getReference());
+            {
+              if ((*it)->isValueDbl())
+                data[i] = *(C_FLOAT64*)((*it)->getReference());
+              else if ((*it)->isValueInt())
+                data[i] = *(C_INT32*)((*it)->getReference());
+              else data[i] = 0;
+            }
+          //data[i] = *(C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)(*it))->getReference());
           else
             data[i] = 0;
           //std::cout << "debug1: " <<  *(C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)(*it))->getReference())<< std::endl;
