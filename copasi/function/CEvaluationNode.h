@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/29 13:16:34 $
+   $Author: shoops $ 
+   $Date: 2005/08/15 14:00:40 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
@@ -36,7 +36,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
       CHOICE = 0x08000000,
       VARIABLE = 0x09000000,
       WHITESPACE = 0x0a000000,
-      LOGIC = 0x0b000000,
+      LOGICAL = 0x0b000000,
       MV_FUNCTION = 0x0c000000,
       VECTOR = 0x0d000000
     };

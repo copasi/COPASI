@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.141 $
+   $Revision: 1.142 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/12 17:15:51 $
+   $Date: 2005/08/15 14:00:48 $
    End CVS Header */
 
 // CReaction
@@ -913,7 +913,7 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
     case CEvaluationNode::WHITESPACE:
       pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
-    case CEvaluationNode::LOGIC:
+    case CEvaluationNode::LOGICAL:
       pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
       // convert the two children as well
       pChildNode = this->objects2variables(static_cast<CEvaluationNode*>(expression->getChild()), replacementMap, copasi2sbmlmap);
@@ -1120,7 +1120,7 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
     case CEvaluationNode::WHITESPACE:
       pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
       break;
-    case CEvaluationNode::LOGIC:
+    case CEvaluationNode::LOGICAL:
       pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>(CEvaluationNode::subType(expression->getType())), expression->getData());
       // convert the two children as well
       pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
