@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.107 $
+   $Revision: 1.108 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/12 19:42:59 $
+   $Author: ssahle $ 
+   $Date: 2005/08/15 11:29:44 $
    End CVS Header */
 
 /**
@@ -3883,10 +3883,13 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           break;
         }
 
-      if (Key && mCommon.pCurrentTask)
+      if (mCommon.pCurrentTask)
         {
           mCommon.pCurrentTask->setScheduled(Scheduled);
           mCommon.pCurrentTask->getProblem()->setModel(mCommon.pModel);
+        }
+      if (Key && mCommon.pCurrentTask)
+        {
           mCommon.KeyMap.addFix(Key, mCommon.pCurrentTask);
         }
 
