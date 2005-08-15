@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/08/03 22:19:45 $
+   $Date: 2005/08/15 13:52:59 $
    End CVS Header */
 
 #include <algorithm>
@@ -14,6 +14,7 @@
 
 #include "CSteadyStateMethod.h"
 #include "CSteadyStateProblem.h"
+#include "CSteadyStateTask.h"
 
 #include "model/CState.h"
 #include "model/CModel.h"
@@ -193,6 +194,8 @@ CNewtonMethod::processInternal()
   if (mUseNewton)
     {
       returnCode = processNewton();
+      mpParentTask->separatorOutput();
+
       if (returnCode == CNewtonMethod::found)
         return returnProcess(true, mFactor, mResolution);
     }
@@ -264,6 +267,9 @@ CNewtonMethod::processInternal()
               break;
             }
 
+          mpParentTask->doOutput();
+          //mpParentTask->separatorOutput();
+
           *mpSteadyStateX = *pTrajectory->getState();
 
           if (containsNaN())
@@ -285,6 +291,8 @@ CNewtonMethod::processInternal()
           if (mUseNewton)
             {
               returnCode = processNewton();
+              mpParentTask->separatorOutput();
+
               if (returnCode == CNewtonMethod::found)
               {return returnProcess(true, mFactor, mResolution);}
             }
@@ -328,6 +336,8 @@ CNewtonMethod::processInternal()
               break;
             }
 
+          mpParentTask->doOutput();
+
           *mpSteadyStateX = *pTrajectory->getState();
 
           if (containsNaN())
@@ -348,6 +358,8 @@ CNewtonMethod::processInternal()
           if (mUseNewton)
             {
               returnCode = processNewton();
+              mpParentTask->separatorOutput();
+
               if (returnCode == CNewtonMethod::found)
               {return returnProcess(true, mFactor, mResolution);}
             }
@@ -538,6 +550,8 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
           newMaxRate = targetFunction(mdxdt);
+
+          mpParentTask->doOutput();
           //std::cout << "k: " << k << " i: " << i << " target: " << newMaxRate << std::endl;
         }
 
