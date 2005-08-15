@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/12 19:42:11 $
+   $Author: gauges $ 
+   $Date: 2005/08/15 11:20:27 $
    End CVS Header */
 
 #include <math.h>
@@ -55,14 +55,7 @@ SBMLExporter::SBMLExporter(): sbmlDocument(NULL), mpIdSet(NULL)
  ** Destructor for the exporter.
  */
 SBMLExporter::~SBMLExporter()
-{
-  /* delete the SBMLDocument created if it is not NULL
-    if (this->sbmlDocument != NULL)
-    {
-      delete this->sbmlDocument;
-    }
-    */
-}
+{}
 
 /**
  ** This method takes a copasi CModel object, creates an SBMLDocument from
@@ -1277,7 +1270,6 @@ void SBMLExporter::createFunctionDefinitions()
   ListOf& listOfFunctionDefinitions = this->sbmlDocument->getModel()->getListOfFunctionDefinitions();
   std::list<const CEvaluationTree*>::const_iterator it = this->mUsedFunctions.begin();
   std::list<const CEvaluationTree*>::const_iterator endIt = this->mUsedFunctions.end();
-  std::map<std::string, std::string> replacementMap;
   while (it != endIt)
     {
       // delete an existing function definition with this name
@@ -1291,13 +1283,15 @@ void SBMLExporter::createFunctionDefinitions()
               break;
             }
         }
-      replacementMap[(*it)->getObjectName()] = (*it)->getSBMLId();
-      this->createSBMLFunctionDefinitionFromCEvaluationTree((*it), replacementMap);
+      const CEvaluationTree* tree = (*it);
+      std::string on = tree->getObjectName();
+      std::string id = tree->getSBMLId();
+      this->createSBMLFunctionDefinitionFromCEvaluationTree((*it));
       ++it;
     }
 }
 
-FunctionDefinition* SBMLExporter::createSBMLFunctionDefinitionFromCEvaluationTree(const CEvaluationTree* tree, const std::map<std::string, std::string>& replacementMap)
+FunctionDefinition* SBMLExporter::createSBMLFunctionDefinitionFromCEvaluationTree(const CEvaluationTree* tree)
 {
   // convert the tree root to an AST tree.
   FunctionDefinition& pFunDef = this->sbmlDocument->getModel()->createFunctionDefinition();
@@ -1305,7 +1299,6 @@ FunctionDefinition* SBMLExporter::createSBMLFunctionDefinitionFromCEvaluationTre
 
   ASTNode* pFunNode = tree->getRoot()->toAST();
   // go through the AST tree and replace all function call nodes with with a call to the sbml id
-  this->replaceFunctionNames(pFunNode, replacementMap);
   ASTNode* pLambda = new ASTNode(AST_LAMBDA);
   // add the parameters to the function definition
   const CFunctionParameters& funParams = static_cast<const CFunction*>(tree)->getVariables();
@@ -1320,20 +1313,6 @@ FunctionDefinition* SBMLExporter::createSBMLFunctionDefinitionFromCEvaluationTre
   pLambda->addChild(pFunNode);
   pFunDef.setMath(pLambda);
   return &pFunDef;
-}
-
-void SBMLExporter::replaceFunctionNames(ASTNode* pNode, std::map<std::string, std::string> replacementMap)
-{
-  if (pNode->getType() == AST_FUNCTION)
-    {
-      pNode->setName(replacementMap[pNode->getName()].c_str());
-      assert(pNode->getName() != "");
-    }
-  unsigned int i, iMax = pNode->getNumChildren();
-  for (i = 0; i < iMax;++i)
-    {
-      this->replaceFunctionNames(pNode->getChild(i), replacementMap);
-    }
 }
 
 bool SBMLExporter::existsInList(CEvaluationTree* tree, const std::list<const CEvaluationTree*>& list)

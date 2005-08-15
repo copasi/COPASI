@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/09 14:28:25 $
+   $Date: 2005/08/15 11:20:28 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -79,7 +79,7 @@ class SBMLExporter
      ** This method takes a pointer to a copasi CEvaluationTree object and creates
      ** a SBML FunctionDefinition. The pointer to the SBML FunctionDefinition is returned.
      */
-    FunctionDefinition* createSBMLFunctionDefinitionFromCEvaluationTree(const CEvaluationTree* tree, const std::map<std::string, std::string>& replacementMap);
+    FunctionDefinition* createSBMLFunctionDefinitionFromCEvaluationTree(const CEvaluationTree* tree);
 
     /**
      ** This method takes a pointer to a copasi CMetab object and creates a SBML 
@@ -180,12 +180,6 @@ class SBMLExporter
      * Check if some CEvaluationTree is already in a list.
      */
     bool existsInList(CEvaluationTree* tree, const std::list<const CEvaluationTree*>& list);
-
-    /**
-     * Go through a tree of ASTNodes and replace the names of all function calls
-     * with the one given in the replacementMap.
-     */
-    void replaceFunctionNames(ASTNode* pNode, const std::map<std::string, std::string> replacementMap);
 
     /**
      * Checks if the given string is a valid SBMLId.

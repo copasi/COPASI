@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.95 $
+   $Revision: 1.96 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/12 17:22:10 $
+   $Author: gauges $ 
+   $Date: 2005/08/15 11:20:28 $
    End CVS Header */
 
 #include "copasi.h"
@@ -236,10 +236,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
   // the remaining functions are unused and can be removed from the global database as
   functions = &(pTmpFunctionDB->loadedFunctions());
-  num = (*functions).size();
-  for (counter = 0; counter < num; ++counter)
+  while (pTmpFunctionDB->loadedFunctions().size() > 0)
     {
-      CEvaluationTree* pTree = pTmpFunctionDB->findFunction((*functions)[counter]->getObjectName());
+      CEvaluationTree* pTree = pTmpFunctionDB->findFunction(pTmpFunctionDB->loadedFunctions()[0]->getObjectName());
+      pTmpFunctionDB->removeFunction(pTree->getKey());
       this->functionDB->removeFunction(pTree->getKey());
     }
   delete pTmpFunctionDB;
@@ -903,45 +903,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
     }
   return copasiReaction;
 }
-
-/**
- * Replaces SBML user defined functions with the actual function definition.
-ConverterASTNode*
-SBMLImporter::replaceUserDefinedFunctions(ASTNode* node, const Model* sbmlModel)
-{
-  ConverterASTNode* newNode = new ConverterASTNode(*node);
-  newNode->setChildren(new List());
-  // make the replacement recursively, depth first 
-  unsigned int counter;
-  for (counter = 0; counter < node->getNumChildren(); counter++)
-    {
-      ConverterASTNode* newChild = this->replaceUserDefinedFunctions(node->getChild(counter), sbmlModel);
-      if (newChild == NULL)
-        {
-          //throw StdException("Error. Could not replace user defined functions.");
-          fatalError();
-        }
-      newNode->addChild(newChild);
-    }
-  // if the new node if a user defined function 
-  if (newNode->getType() == AST_FUNCTION)
-    {
-      // see if there is a corresponding user defined function 
-      FunctionDefinition* funDef = this->getFunctionDefinitionForName(newNode->getName(), sbmlModel);
-      if (funDef == NULL)
-        {
-          fatalError();
-        }
-      // make a map that maps every parameter of the function definition to a
-      // node in the actual function call. 
-      std::map<std::string, ASTNode*> map = this->createBVarMap(funDef->getMath()->getRightChild(), newNode);
-      // make a new node that replaces all call parameters with the actual
-      // parameters used in the function call. 
-      newNode = this->replaceBvars(funDef->getMath()->getRightChild(), map);
-    }
-  return newNode;
-}
- */
 
 /**
  * Creates a map of each parameter of the function definition and its
@@ -2005,180 +1966,6 @@ CEvaluationTree* SBMLImporter::createExpressionFromFunction(const CFunction* pFu
     }
   return pTree;
 }
-
-/*
-bool SBMLImporter::isMassAction(const CEvaluationNode* pRootNode, const std::map<std::string, const CCopasiObject*>& parameterMap , const CCopasiVector<CChemEqElement>* substrates, bool reversible, const CCopasiVector<CChemEqElement>* products)
-{
-  bool result = true;
-  if (reversible)
-    {
-      const CEvaluationNodeOperator* op = dynamic_cast<const CEvaluationNodeOperator*>(pRootNode);
-      if (op && (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(op->getType())) == CEvaluationNodeOperator::MINUS))
-        {
-          if (!products) fatalError();
-          result = this->isMassAction(static_cast<const CEvaluationNode*>(pRootNode->getChild()), parameterMap, substrates);
-          if (result)
-            {
-              result = this->isMassAction(static_cast<const CEvaluationNode*>(pRootNode->getChild()->getSibling()), parameterMap , products);
-            }
-        }
-    }
-  else
-    {
-      std::vector<const CEvaluationNode*> arguments = std::vector<const CEvaluationNode*>();
-      this->separateProductArguments(pRootNode, arguments);
-      if (arguments.empty())
-        {
-          result = false;
-        }
-      else
-        {
-          // the number of arguments must be one more then the number of
-          // products since it is a product of a constant and each product
-          if (arguments.size() == substrates->size() + 1)
-            {
-              std::vector<CChemEqElement*> v = std::vector<CChemEqElement*>();
-              unsigned int k, kMax = substrates->size();
-              for (k = 0; k < kMax;++k)
-                {
-                  v.push_back((*substrates)[k]);
-                }
-              unsigned int numParameters = 0;
-              unsigned int i, iMax = arguments.size();
-              for (i = 0;(i < iMax) && (result == true);++i)
-                {
-                  // metabolites, model values and local parameters are object nodes
-                  const CEvaluationNode* argument = arguments[i];
-                  if (dynamic_cast<const CEvaluationNodeVariable*>(argument))
-                    {
-                      std::map<std::string, const CCopasiObject*>::const_iterator pos = parameterMap.find(argument->getData());
-                      if (pos == parameterMap.end())
-                        {
-                          fatalError();
-                        }
-                      const CCopasiObject* object = pos->second;
-                      CCopasiVector<CChemEqElement>::iterator it = v.begin();
-                      CCopasiVector<CChemEqElement>::iterator endIt = v.end();
-                      if (dynamic_cast<const CCopasiObjectReference<C_FLOAT64>*>(object))
-                        {
-                          object = object->getObjectParent();
-                          if (dynamic_cast<const CMetab*>(object))
-                            {
-                              const CMetab* metab = dynamic_cast<const CMetab*>(object);
-                              while (it != endIt)
-                                {
-                                  CChemEqElement* element = *it;
-                                  if ((&element->getMetabolite()) == metab)
-                                    {
-                                      v.erase(it);
-                                      if (element->getMultiplicity() != 1.0)
-                                        {
-                                          result = false;
-                                        }
-                                      break;
-                                    }
-                                  ++it;
-                                }
-                              if (it == endIt)
-                                {
-                                  result = false;
-                                }
-                            }
-                          else if (dynamic_cast<const CModelValue*>(object))
-                            {
-                              numParameters++;
-                              if (numParameters > 1)
-                                {
-                                  result = false;
-                                  break;
-                                }
-                            }
-                          else
-                            {
-                              result = false;
-                              break;
-                            }
-                        }
-                      else
-                        {
-                          if (dynamic_cast<const CCopasiParameter*>(object))
-                            {
-                              numParameters++;
-                              if (numParameters > 1)
-                                {
-                                  result = false;
-                                  break;
-                                }
-                            }
-                          else
-                            {
-                              result = false;
-                              break;
-                            }
-                        }
-                    }
-                  // it could be the power operator
-                  else if (dynamic_cast<const CEvaluationNodeOperator*>(argument) && ((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(argument->getType()) == CEvaluationNodeOperator::POWER))
-                    {
-                      // so the arguments to this must be a metabolite
-                      // and its stoichiometry
-                      const CEvaluationNodeVariable* pObjectNode = dynamic_cast<const CEvaluationNodeVariable*>(argument->getChild());
-                      const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(argument->getChild()->getSibling());
-                      if ((!pObjectNode) || (!pNumberNode))
-                        {
-                          result = false;
-                          break;
-                        }
- 
-                      std::map<std::string, const CCopasiObject*>::const_iterator pos = parameterMap.find(argument->getData());
-                      if (pos == parameterMap.end())
-                        {
-                          fatalError();
-                        }
-                      const CCopasiObject* object = pos->second;
-                      const CMetab* metab = dynamic_cast<const CMetab*>(object);
-                      if (!metab)
-                        {
-                          result = false;
-                          break;
-                        }
-                      CCopasiVector<CChemEqElement>::iterator it = v.begin();
-                      CCopasiVector<CChemEqElement>::iterator endIt = v.end();
- 
-                      while (it != endIt)
-                        {
-                          CChemEqElement* element = *it;
-                          if ((&element->getMetabolite()) == metab)
-                            {
-                              v.erase(it);
-                              if (element->getMultiplicity() != (*pNumberNode->getValuePointer()))
-                                {
-                                  result = false;
-                                }
-                              break;
-                            }
-                          ++it;
-                        }
-                      if (it == endIt)
-                        {
-                          result = false;
-                        }
-                    }
-                }
-              if ((!v.empty()) || (numParameters != 1))
-                {
-                  result = false;
-                }
-            }
-          else
-            {
-              result = false;
-            }
-        }
-    }
-  return result;
-}
- */
 
 void SBMLImporter::separateProductArguments(const CEvaluationNode* pRootNode, std::vector<const CEvaluationNode*>& arguments)
 {

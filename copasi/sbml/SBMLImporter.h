@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/12 15:17:50 $
+   $Date: 2005/08/15 11:20:28 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -163,8 +163,6 @@ class SBMLImporter
      */
     bool SBMLImporter::areEqualSubtrees(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2);
 
-    //bool isMassAction(const CEvaluationNode* pRootNode, const std::map<std::string, const CCopasiObject*>& parameterMap, const CCopasiVector<CChemEqElement>* substrates, bool reversible = false, const CCopasiVector<CChemEqElement>* products = NULL);
-
     std::vector<CEvaluationNodeObject*> isMassAction(const CEvaluationTree* pTree, const CChemEq& chemicalEquation, const CEvaluationNodeCall* pCallNode = NULL);
 
     std::vector<CEvaluationNodeObject*> isMassActionExpression(const CEvaluationNode* pRootNode, const CChemEq& chemicalEquation);
@@ -181,10 +179,6 @@ class SBMLImporter
     void doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCall* pCallNode);
 
     bool isSimpleFunctionCall(const CEvaluationNode* pRootNode);
-
-    //CFunction* copyFunction(const CFunction* pFun);
-
-    //CEvaluationNode* deepCopyNode(const CEvaluationNode* pNode);
 
     void setCorrectUsage(CReaction* pCopasiReaction, const CEvaluationNodeCall* pCallNode);
 
