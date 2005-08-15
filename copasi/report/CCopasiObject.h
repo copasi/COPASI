@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/09 19:57:02 $
+   $Author: gauges $ 
+   $Date: 2005/08/15 18:55:17 $
    End CVS Header */
 
 /**
@@ -35,6 +35,8 @@ class UpdateMethod
   {
   public:
 
+    virtual ~UpdateMethod(){};
+
     virtual bool operator()(const C_FLOAT64 & C_UNUSED(value))
     {return false;}
 
@@ -62,9 +64,11 @@ template <class CType, class VType> class SpecificUpdateMethod : public UpdateMe
         mMethod = method;
       };
 
+      virtual ~SpecificUpdateMethod(){};
+
       // override operator "()"
       virtual bool operator()(const VType & value)
-      {return (*mpType.*mMethod)(value);};              // execute member function
+      {return (*mpType.*mMethod)(value);}      ;              // execute member function
     };
 
 class Actualize
@@ -73,6 +77,8 @@ class Actualize
 
     virtual bool operator()(void)
     {return false;}
+
+    virtual ~Actualize(){};
   };
 
 template <typename CType> class ActualizeTemplate : public Actualize
@@ -91,9 +97,11 @@ template <typename CType> class ActualizeTemplate : public Actualize
       mMethod = method;
     };
 
+    virtual ~ActualizeTemplate(){};
+
     // override operator "()"
     virtual bool operator()(void)
-    {return (*mpType.*mMethod)();};              // execute member function
+    {return (*mpType.*mMethod)();}    ;              // execute member function
   };
 
 class CRenameHandler;
