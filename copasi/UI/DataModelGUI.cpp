@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/15 19:03:58 $
+   $Author: ssahle $ 
+   $Date: 2005/08/15 11:34:05 $
    End CVS Header */
 
 #include "copasi.h"
@@ -58,6 +58,7 @@ void DataModelGUI::linkDataModelToGUI()
   tmpHandler->setPlotSpecVectorAddress(& mPlotDefinitionList);
   (*CCopasiDataModel::Global->getTaskList())["Time-Course"]->setOutputHandler(tmpHandler);
   (*CCopasiDataModel::Global->getTaskList())["Scan"]->setOutputHandler(tmpHandler);
+  (*CCopasiDataModel::Global->getTaskList())["Steady-State"]->setOutputHandler(tmpHandler);
 
   // optimization
   (*CCopasiDataModel::Global->getTaskList())["Optimization"]->setOutputHandler(tmpHandler);
