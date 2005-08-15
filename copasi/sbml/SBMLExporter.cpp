@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/15 15:37:18 $
+   $Date: 2005/08/15 18:54:38 $
    End CVS Header */
 
 #include <math.h>
@@ -1249,8 +1249,6 @@ void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEv
                       std::list<const CEvaluationTree*>::iterator endIt2 = usedFunctionList.end();
                       while (it2 != endIt2)
                         {
-                          const CEvaluationTree* pTree1 = (*it);
-                          const CEvaluationTree* pTree2 = (*it2);
                           if ((*it) == (*it2))
                             {
                               usedFunctionList.erase(it2);
@@ -1265,7 +1263,6 @@ void SBMLExporter::findUsedFunctions(CEvaluationNode* pNode, std::list<const CEv
                     {
                       fatalError();
                     }
-                  const CEvaluationTree* pTree = (*afterPos);
                   ++afterPos;
                   this->mUsedFunctions.insert(afterPos, pFun);
                 }
