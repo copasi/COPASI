@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/29 13:49:09 $
+   $Author: shoops $ 
+   $Date: 2005/08/15 14:01:05 $
    End CVS Header */
 
 #include "copasi.h"
@@ -31,6 +31,11 @@ CEvaluationNode * CEvaluationNode::create(const Type & type,
 
   switch (CEvaluationNode::type(type))
     {
+    case CEvaluationNode::CALL:
+      pNode = new CEvaluationNodeCall((CEvaluationNodeCall::SubType) subType(type),
+                                      contents);
+      break;
+
     case CEvaluationNode::CHOICE:
       pNode = new CEvaluationNodeChoice((CEvaluationNodeChoice::SubType) subType(type),
                                         contents);
@@ -46,8 +51,18 @@ CEvaluationNode * CEvaluationNode::create(const Type & type,
                                           contents);
       break;
 
+    case CEvaluationNode::LOGICAL:
+      pNode = new CEvaluationNodeLogical((CEvaluationNodeLogical::SubType) subType(type),
+                                         contents);
+      break;
+
     case CEvaluationNode::NUMBER:
       pNode = new CEvaluationNodeNumber((CEvaluationNodeNumber::SubType) subType(type),
+                                        contents);
+      break;
+
+    case CEvaluationNode::OBJECT:
+      pNode = new CEvaluationNodeObject((CEvaluationNodeObject::SubType) subType(type),
                                         contents);
       break;
 
@@ -56,12 +71,24 @@ CEvaluationNode * CEvaluationNode::create(const Type & type,
                                           contents);
       break;
 
+    case CEvaluationNode::STRUCTURE:
+      pNode = new CEvaluationNodeStructure((CEvaluationNodeStructure::SubType) subType(type),
+                                           contents);
+      break;
+
     case CEvaluationNode::VARIABLE:
       pNode = new CEvaluationNodeVariable((CEvaluationNodeVariable::SubType) subType(type),
                                           contents);
       break;
 
-    default:
+    case CEvaluationNode::VECTOR:
+      pNode = new CEvaluationNodeVector((CEvaluationNodeVector::SubType) subType(type),
+                                        contents);
+      break;
+
+    case CEvaluationNode::WHITESPACE:
+      pNode = new CEvaluationNodeWhiteSpace((CEvaluationNodeWhiteSpace::SubType) subType(type),
+                                            contents);
       break;
     }
 
