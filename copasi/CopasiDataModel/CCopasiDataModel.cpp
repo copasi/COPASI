@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/12 08:23:50 $
+   $Author: ssahle $ 
+   $Date: 2005/08/15 13:52:10 $
    End CVS Header */
 
 #include "copasi.h"
@@ -524,7 +524,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       pReport->setComment("Automatically generated report.");
       pReport->setIsTable(false);
       pReport->setSeparator(CCopasiReportSeparator("\t"));
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Steady-State]"));
+      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Steady-State]"));
       break;
 
     case CCopasiTask::timeCourse:
