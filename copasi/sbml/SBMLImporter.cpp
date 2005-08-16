@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.98 $
+   $Revision: 1.99 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/16 12:19:32 $
+   $Date: 2005/08/16 13:51:03 $
    End CVS Header */
 
 #include "copasi.h"
@@ -1770,7 +1770,7 @@ std::vector<CEvaluationNodeObject*> SBMLImporter::isMassActionExpression(const C
           result = (pChildNode != NULL);
           if (result)
             {
-              CChemEq tmpEq = CChemEq();
+              CChemEq tmpEq;
               const CCopasiVector<CChemEqElement>* metabolites = &chemicalEquation.getSubstrates();
               unsigned int i, iMax = metabolites->size();
               result = (iMax > 0);
@@ -1789,16 +1789,16 @@ std::vector<CEvaluationNodeObject*> SBMLImporter::isMassActionExpression(const C
                       result = (pChildNode != NULL);
                       if (result)
                         {
-                          tmpEq = CChemEq();
+                          CChemEq tmpEq2;
                           metabolites = &chemicalEquation.getProducts();
                           iMax = metabolites->size();
                           result = (iMax > 0);
                           for (i = 0;i < iMax;++i)
                             {
                               const CChemEqElement* element = (*metabolites)[i];
-                              tmpEq.addMetabolite(element->getMetaboliteKey(), element->getMultiplicity(), CChemEq::SUBSTRATE);
+                              tmpEq2.addMetabolite(element->getMetaboliteKey(), element->getMultiplicity(), CChemEq::SUBSTRATE);
                             }
-                          std::vector<CEvaluationNodeObject*> v2 = this->isMassActionExpression(pChildNode, tmpEq);
+                          std::vector<CEvaluationNodeObject*> v2 = this->isMassActionExpression(pChildNode, tmpEq2);
                           result = !v2.empty();
                           if (result)
                             {
