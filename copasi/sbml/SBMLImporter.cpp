@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.97 $
+   $Revision: 1.98 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/15 15:38:00 $
+   $Date: 2005/08/16 12:19:32 $
    End CVS Header */
 
 #include "copasi.h"
@@ -144,6 +144,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   for (counter = 0; counter < num; ++counter)
     {
       this->replaceCallNodeNames((*functions)[counter]->getRoot());
+      (*functions)[counter]->updateTree();
     }
   std::map<std::string, CCompartment*> compartmentMap;
 
@@ -732,7 +733,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                   if (!this->mDivisionByCompartmentWarning && compartment->getInitialVolume() == 1.0)
                     {
                       this->mDivisionByCompartmentWarning = true;
-                      if (node->getChild(0)->getType() == AST_FUNCTION && (!this->containsVolume(node->getChild(0), compartment->getCN())))
+                      if (node->getChild(0)->getType() == AST_FUNCTION && (!this->containsVolume(node->getChild(0), compartment->getSBMLId())))
                         {
                           CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 17);
                         }
@@ -759,7 +760,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           if (this->isSimpleFunctionCall(pExpressionTreeRoot))
             {
               // if yes, we check if it corresponds to an already existing function
-              std::string functionName = this->mFunctionNameMapping[pExpressionTreeRoot->getData()];
+              std::string functionName = pExpressionTreeRoot->getData();
               CFunction* tree = dynamic_cast<CFunction*>(pTmpFunctionDB->findFunction(functionName));
               assert(tree);
               std::vector<CEvaluationNodeObject*> v = this->isMassAction(tree, copasiReaction->getChemEq(), static_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
@@ -2331,13 +2332,13 @@ void SBMLImporter::renameMassActionParameters(CEvaluationNodeCall* pCallNode)
     }
 }
 
-bool SBMLImporter::containsVolume(const ASTNode* pNode, const std::string& compartmentCN)
+bool SBMLImporter::containsVolume(const ASTNode* pNode, const std::string& compartmentSBMLId)
 {
   bool result = false;
   unsigned int i, iMax = pNode->getNumChildren();
   for (i = 0;i < iMax;++i)
     {
-      if (pNode->getChild(i)->getType() == AST_NAME && pNode->getChild(i)->getName() == compartmentCN)
+      if (pNode->getChild(i)->getType() == AST_NAME && pNode->getChild(i)->getName() == compartmentSBMLId)
         {
           result = true;
           break;
