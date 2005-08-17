@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/15 11:34:05 $
+   $Author: gauges $ 
+   $Date: 2005/08/17 13:01:41 $
    End CVS Header */
 
 #include "copasi.h"
@@ -318,9 +318,13 @@ bool DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
 
 bool DataModelGUI::importSBML(const std::string & fileName)
 {
-  if (!CCopasiDataModel::Global->importSBML(fileName)) return false;
+  CProgressBar* tmpBar = new CProgressBar();
+
+  if (!CCopasiDataModel::Global->importSBML(fileName, tmpBar)) return false;
 
   mPlotDefinitionList.setPlotDefinitionList(CCopasiDataModel::Global->getPlotDefinitionList());
+
+  pdelete(tmpBar);
 
   linkDataModelToGUI();
   return true;
