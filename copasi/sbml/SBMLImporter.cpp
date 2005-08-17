@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.100 $
+   $Revision: 1.101 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/17 12:58:44 $
+   $Date: 2005/08/17 14:33:59 $
    End CVS Header */
 
 #include "copasi.h"
@@ -112,17 +112,22 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->mpCopasiModel->setTitle(title.c_str());
 
   /* import the functions */
-  if (mpImportHandler)
-    {
-      mpImportHandler->setName("Converting function definitions...");
-      mImportStep = 1;
-      if (!mpImportHandler->progress(mhImportStep)) return false;
-    }
-
   unsigned int counter;
   CCopasiVectorN< CEvaluationTree >* functions = &(this->functionDB->loadedFunctions());
 
   unsigned int num = (*functions).size();
+  unsigned C_INT32 step = 0, totalSteps, hStep;
+  if (mpImportHandler)
+    {
+      mImportStep = 1;
+      if (!mpImportHandler->progress(mhImportStep)) return false;
+      totalSteps = num;
+      hStep = mpImportHandler->addItem("Importing function definitions",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
+    }
+
   this->sbmlIdMap.clear();
   for (counter = 0; counter < num; ++counter)
     {
@@ -143,28 +148,50 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CFunction* pFun = this->createCFunctionFromFunctionDefinition(pSBMLFunDef, pTmpFunctionDB);
       copasi2sbmlmap[pFun] = pSBMLFunDef;
       this->mFunctionNameMapping[pSBMLFunDef->getId()] = pFun->getObjectName();
+      ++step;
+      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
 
   // now go through the temporary function db and replace all call nodes with the name of the
   // copasi function.
+  if (mpImportHandler)
+    {
+      mpImportHandler->finish(hStep);
+      mImportStep = 2;
+      if (!mpImportHandler->progress(mhImportStep)) return false;
+      step = 0;
+      totalSteps = num;
+      hStep = mpImportHandler->addItem("Replacing function call names...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
+    }
   functions = &(pTmpFunctionDB->loadedFunctions());
   num = (*functions).size();
   for (counter = 0; counter < num; ++counter)
     {
       this->replaceCallNodeNames((*functions)[counter]->getRoot());
       (*functions)[counter]->updateTree();
+      ++step;
+      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
   std::map<std::string, CCompartment*> compartmentMap;
 
   /* Create the compartments */
+  num = sbmlModel->getNumCompartments();
   if (mpImportHandler)
     {
-      mpImportHandler->setName("Converting compartments...");
-      mImportStep = 2;
+      mpImportHandler->finish(hStep);
+      mImportStep = 3;
       if (!mpImportHandler->progress(mhImportStep)) return false;
+      step = 0;
+      totalSteps = num;
+      hStep = mpImportHandler->addItem("Importing compartments...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
     }
 
-  num = sbmlModel->getNumCompartments();
   for (counter = 0; counter < num; counter++)
     {
       Compartment* sbmlCompartment = sbmlModel->getCompartment(counter);
@@ -179,16 +206,24 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           key = sbmlCompartment->getName();
         }
       compartmentMap[key] = copasiCompartment;
+      ++step;
+      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
 
   /* Create all species */
+  num = sbmlModel->getNumSpecies();
   if (mpImportHandler)
     {
-      mpImportHandler->setName("Converting species...");
-      mImportStep = 3;
+      mpImportHandler->finish(hStep);
+      mImportStep = 4;
       if (!mpImportHandler->progress(mhImportStep)) return false;
+      step = 0;
+      totalSteps = num;
+      hStep = mpImportHandler->addItem("Importing species...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
     }
-  num = sbmlModel->getNumSpecies();
 
   for (counter = 0; counter < num; ++counter)
     {
@@ -216,16 +251,24 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 5 , sbmlSpecies->getCompartment().c_str(), sbmlSpecies->getId().c_str());
         }
+      ++step;
+      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
 
   /* Create the global Parameters */
+  num = sbmlModel->getNumParameters();
   if (mpImportHandler)
     {
-      mpImportHandler->setName("Converting global parameters...");
-      mImportStep = 4;
+      mpImportHandler->finish(hStep);
+      mImportStep = 5;
       if (!mpImportHandler->progress(mhImportStep)) return false;
+      step = 0;
+      totalSteps = num;
+      hStep = mpImportHandler->addItem("Importing global parameters...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
     }
-  num = sbmlModel->getNumParameters();
   for (counter = 0; counter < num; ++counter)
     {
       Parameter* sbmlParameter = sbmlModel->getParameter(counter);
@@ -234,19 +277,29 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           fatalError();
         }
       this->createCModelValueFromParameter(sbmlParameter, this->mpCopasiModel, copasi2sbmlmap);
+      ++step;
+      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
 
   /* Create all reactions */
+  num = sbmlModel->getNumReactions();
   if (mpImportHandler)
     {
-      mpImportHandler->setName("Converting reactions...");
-      mImportStep = 5;
+      mpImportHandler->finish(hStep);
+      mImportStep = 6;
       if (!mpImportHandler->progress(mhImportStep)) return false;
+      step = 0;
+      totalSteps = num;
+      hStep = mpImportHandler->addItem("Importing reactions...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
     }
-  num = sbmlModel->getNumReactions();
   for (counter = 0; counter < num; counter++)
     {
       this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, this->mpCopasiModel, copasi2sbmlmap, pTmpFunctionDB);
+      ++step;
+      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
   this->mpCopasiModel->setCompileFlag();
   if (sbmlModel->getNumRules() > 0)
@@ -261,9 +314,15 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   // go through the pTmpFunctionDB and remove all functions that are in this->mUsedFunctions
   if (mpImportHandler)
     {
-      mpImportHandler->setName("Removing unused function definitions...");
-      mImportStep = 6;
+      mpImportHandler->finish(hStep);
+      mImportStep = 7;
       if (!mpImportHandler->progress(mhImportStep)) return false;
+      step = 0;
+      totalSteps = this->mUsedFunctions.size() + pTmpFunctionDB->loadedFunctions().size();
+      hStep = mpImportHandler->addItem("Removing unused functions...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
     }
   std::set<std::string>::iterator it = this->mUsedFunctions.begin();
   std::set<std::string>::iterator endIt = this->mUsedFunctions.end();
@@ -273,6 +332,8 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       assert(pTree);
       pTmpFunctionDB->removeFunction(pTree->getKey());
       ++it;
+      ++step;
+      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
   // the remaining functions are unused and can be removed from the global database as
   functions = &(pTmpFunctionDB->loadedFunctions());
@@ -281,6 +342,12 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CEvaluationTree* pTree = pTmpFunctionDB->findFunction(pTmpFunctionDB->loadedFunctions()[0]->getObjectName());
       pTmpFunctionDB->removeFunction(pTree->getKey());
       this->functionDB->removeFunction(pTree->getKey());
+      ++step;
+      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
+    }
+  if (mpImportHandler)
+    {
+      mpImportHandler->finish(hStep);
     }
   delete pTmpFunctionDB;
 
@@ -1080,8 +1147,8 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* p
       mImportStep = 0;
       if (mpImportHandler)
         {
-          mpImportHandler->setName("Reading SBML file...");
-          mTotalSteps = 6;
+          mpImportHandler->setName("Importing SBML file...");
+          mTotalSteps = 7;
           mhImportStep = mpImportHandler->addItem("Step",
                                                   CCopasiParameter::UINT,
                                                   & mImportStep,
