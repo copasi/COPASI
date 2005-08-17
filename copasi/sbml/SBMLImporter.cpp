@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.99 $
+   $Revision: 1.100 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/16 13:51:03 $
+   $Date: 2005/08/17 12:58:44 $
    End CVS Header */
 
 #include "copasi.h"
@@ -47,6 +47,7 @@
 
 #include "SBMLImporter.h"
 #include "ConverterASTNode.h"
+#include "utilities/CProcessReport.h"
 
 #include "utilities/CCopasiMessage.h"
 
@@ -111,6 +112,13 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->mpCopasiModel->setTitle(title.c_str());
 
   /* import the functions */
+  if (mpImportHandler)
+    {
+      mpImportHandler->setName("Converting function definitions...");
+      mImportStep = 1;
+      if (!mpImportHandler->progress(mhImportStep)) return false;
+    }
+
   unsigned int counter;
   CCopasiVectorN< CEvaluationTree >* functions = &(this->functionDB->loadedFunctions());
 
@@ -149,6 +157,13 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   std::map<std::string, CCompartment*> compartmentMap;
 
   /* Create the compartments */
+  if (mpImportHandler)
+    {
+      mpImportHandler->setName("Converting compartments...");
+      mImportStep = 2;
+      if (!mpImportHandler->progress(mhImportStep)) return false;
+    }
+
   num = sbmlModel->getNumCompartments();
   for (counter = 0; counter < num; counter++)
     {
@@ -167,6 +182,12 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
 
   /* Create all species */
+  if (mpImportHandler)
+    {
+      mpImportHandler->setName("Converting species...");
+      mImportStep = 3;
+      if (!mpImportHandler->progress(mhImportStep)) return false;
+    }
   num = sbmlModel->getNumSpecies();
 
   for (counter = 0; counter < num; ++counter)
@@ -198,6 +219,12 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
 
   /* Create the global Parameters */
+  if (mpImportHandler)
+    {
+      mpImportHandler->setName("Converting global parameters...");
+      mImportStep = 4;
+      if (!mpImportHandler->progress(mhImportStep)) return false;
+    }
   num = sbmlModel->getNumParameters();
   for (counter = 0; counter < num; ++counter)
     {
@@ -210,6 +237,12 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
 
   /* Create all reactions */
+  if (mpImportHandler)
+    {
+      mpImportHandler->setName("Converting reactions...");
+      mImportStep = 5;
+      if (!mpImportHandler->progress(mhImportStep)) return false;
+    }
   num = sbmlModel->getNumReactions();
   for (counter = 0; counter < num; counter++)
     {
@@ -226,6 +259,12 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
 
   // go through the pTmpFunctionDB and remove all functions that are in this->mUsedFunctions
+  if (mpImportHandler)
+    {
+      mpImportHandler->setName("Removing unused function definitions...");
+      mImportStep = 6;
+      if (!mpImportHandler->progress(mhImportStep)) return false;
+    }
   std::set<std::string>::iterator it = this->mUsedFunctions.begin();
   std::set<std::string>::iterator endIt = this->mUsedFunctions.end();
   while (it != endIt)
@@ -679,7 +718,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               id = pSBMLParameter->getId();
             }
           copasiReaction->getParameters().addParameter(id, CCopasiParameter::DOUBLE, pSBMLParameter->getValue());
-          std::cout << copasiReaction->getParameters().getParameter(counter)->getObjectName() << ": " << copasiReaction->getParameters().getParameter(counter)->getCN() << std::endl;
         }
 
       const ASTNode* kLawMath = kLaw->getMath();
@@ -995,6 +1033,7 @@ SBMLImporter::SBMLImporter()
   this->functionDB = NULL;
   this->mIncompleteModel = false;
   this->mDivisionByCompartmentWarning = false;
+  this->mpImportHandler = NULL;
 }
 
 /**
@@ -1037,6 +1076,18 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* p
     {
       this->functionDB = funDB;
       SBMLReader* reader = new SBMLReader(XML_SCHEMA_VALIDATION_NONE);
+
+      mImportStep = 0;
+      if (mpImportHandler)
+        {
+          mpImportHandler->setName("Reading SBML file...");
+          mTotalSteps = 6;
+          mhImportStep = mpImportHandler->addItem("Step",
+                                                  CCopasiParameter::UINT,
+                                                  & mImportStep,
+                                                  &mTotalSteps);
+        }
+
       SBMLDocument* sbmlDoc = reader->readSBML(filename);
       sbmlDoc->validate();
       if (sbmlDoc->getNumFatals() > 0)
@@ -1048,6 +1099,7 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* p
                                  pSBMLMessage->getColumn(),
                                  pSBMLMessage->getMessage().c_str());
 
+          if (mpImportHandler) mpImportHandler->finish(mhImportStep);
           return NULL;
         }
       else if (sbmlDoc->getNumErrors() > 0)
@@ -1068,6 +1120,7 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* p
                                      pSBMLMessage->getColumn(),
                                      pSBMLMessage->getMessage().c_str());
 
+              if (mpImportHandler) mpImportHandler->finish(mhImportStep);
               return NULL;
             }
           else
@@ -1078,13 +1131,11 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* p
       if (sbmlDoc->getModel() == NULL)
         {
           CCopasiMessage Message(CCopasiMessage::ERROR, MCSBML + 2);
+          if (mpImportHandler) mpImportHandler->finish(mhImportStep);
           return NULL;
         }
 
       delete reader;
-      //DebugFile << "Number of Compartments: " << sbmlDoc->getModel()->getNumCompartments() << std::endl;
-      //DebugFile << "Number of Metabolites: "  << sbmlDoc->getModel()->getNumSpecies() << std::endl;
-      //DebugFile << "Number of Reactions: "    << sbmlDoc->getModel()->getNumReactions()  << std::endl;
       pSBMLDocument = sbmlDoc;
       this->mLevel = pSBMLDocument->getLevel();
       if (mLevel == 1)
@@ -1099,7 +1150,9 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* p
     {
       //throw StdException("Error. readSBML needs a valid CFunctionDB object.");
       fatalError();
+      if (mpImportHandler) mpImportHandler->finish(mhImportStep);
     }
+  if (mpImportHandler) mpImportHandler->finish(mhImportStep);
   return this->mpCopasiModel;
 }
 
@@ -2346,3 +2399,9 @@ bool SBMLImporter::containsVolume(const ASTNode* pNode, const std::string& compa
     }
   return result;
 }
+
+void SBMLImporter::setImportHandler(CProcessReport* pHandler)
+{mpImportHandler = pHandler;}
+
+CProcessReport* SBMLImporter::getImportHandlerAddr()
+{return mpImportHandler;}

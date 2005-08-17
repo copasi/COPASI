@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/15 11:20:28 $
+   $Date: 2005/08/17 12:58:44 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -31,6 +31,7 @@ class ConverterASTNode;
 class Parameter;
 class FunctionDefinition;
 class SBase;
+class CProcessReport;
 
 class SBMLImporter
   {
@@ -44,6 +45,10 @@ class SBMLImporter
     CModel* mpCopasiModel;
     std::map<std::string, std::string> mFunctionNameMapping;
     bool mDivisionByCompartmentWarning;
+    CProcessReport* mpImportHandler;
+    unsigned C_INT32 mImportStep;
+    unsigned C_INT32 mhImportStep;
+    unsigned int C_INT32 mTotalSteps;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -205,6 +210,10 @@ class SBMLImporter
     CModel* readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
     static void printMap(const std::map<CCopasiObject*, SBase*>& map);
     void restoreFunctionDB();
+
+    void setImportHandler(CProcessReport* pHandler);
+
+    CProcessReport* getImportHandlerAddr();
   };
 
 #endif
