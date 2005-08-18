@@ -1,0 +1,964 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by COPASI version 4.0 Debug 14++ on 2005-08-17 15:32 with libsbml version 2.3.2. -->
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="Model_1" name="NoName">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">&lt;body xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+			&lt;h1&gt;Repressilator: A synthetic oscillatory network of transcriptional 
+			regulators&lt;/h1&gt;
+
+			&lt;table border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;2&quot;&gt;
+				&lt;thead&gt;
+					&lt;tr&gt;
+						&lt;th align=&quot;left&quot; valign=&quot;middle&quot; bgcolor=&quot;#eeeeee&quot;&gt;Citation&lt;/th&gt;
+					&lt;/tr&gt;
+				&lt;/thead&gt;
+				&lt;tbody&gt;
+					&lt;tr&gt;
+						&lt;td&gt;Elowitz MB, Leibler S (2000)
+							 A synthetic oscillatory network of transcriptional regulators.Nature.403 :
+							 335 - 338.
+						&lt;a href=&quot;http://www.nature.com/cgi-taf/        DynaPage.taf?file=/nature/journal/v403/n6767/full/403335a0_fs.html&quot;&gt;
+							http://
+							www.nature.com/cgi-taf/DynaPage.taf?file=/nature/journal/v403/n6767/full/
+							403335a0_fs.html
+						&lt;/a&gt;&lt;/td&gt;
+					&lt;/tr&gt;
+				&lt;/tbody&gt;
+			&lt;/table&gt;
+			
+			&lt;table border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;2&quot;&gt;
+				&lt;thead&gt;
+					&lt;tr&gt;
+						&lt;th align=&quot;left&quot; valign=&quot;middle&quot; bgcolor=&quot;#eeeeee&quot;&gt;Description&lt;/th&gt;
+					&lt;/tr&gt;
+				&lt;/thead&gt;
+				&lt;tbody&gt;
+					&lt;tr&gt;
+						&lt;td&gt;
+							This file describes the repressilator system. The authors of this model (
+							see reference)
+							 use three transcriptional repressor systems that are not part of any natural biological clock to build an oscillating network that they called the repressilator.  The model system was induced in Escherichia coli.In this system,
+							 LacI (variable X is the mRNA,
+							 variable PX is the protein)
+							 inhibits the tetracycline-
+							resistance transposon tetR (Y,
+							 PY describe mRNA and protein)
+							. Protein tetR inhibits the gene Cl from phage Lambda (
+							Z, PZ: mRNA, protein),
+							 and protein Cl inhibits lacI expression. With appropriate parameter values this system oscillates.&lt;/td&gt;
+					&lt;/tr&gt;
+				&lt;/tbody&gt;
+			&lt;/table&gt;
+			
+			&lt;table border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;2&quot;&gt;
+				&lt;thead&gt;
+					&lt;tr&gt;
+						&lt;th align=&quot;left&quot; valign=&quot;middle&quot; bgcolor=&quot;#eeeeee&quot;&gt;Rate constant      &lt;/th&gt;
+						&lt;th align=&quot;left&quot; valign=&quot;middle&quot; bgcolor=&quot;#eeeeee&quot;&gt;Reaction&lt;/th&gt;
+					&lt;/tr&gt;
+				&lt;/thead&gt;
+				&lt;tbody&gt;
+					&lt;tr&gt;
+						&lt;td&gt;k1 = 1&lt;/td&gt;
+						&lt;td&gt;X -&gt; EmptySet&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;k1 = 1&lt;/td&gt;
+						&lt;td&gt;Y -&gt; EmptySet&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;k1 = 1&lt;/td&gt;
+						&lt;td&gt;Z -&gt; EmptySet&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;K = 1 (hill khalf)&lt;/td&gt;
+						&lt;td&gt;PX |-&gt; Y&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;K = 1 (hill khalf)&lt;/td&gt;
+						&lt;td&gt;PY |-&gt; Z&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;K = 1 (hill khalf)&lt;/td&gt;
+						&lt;td&gt;PZ |-&gt; X&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;n = 2.1 (hill nhill)&lt;/td&gt;
+						&lt;td&gt;PX |-&gt; Y&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;n = 2.1 (hill nhill)&lt;/td&gt;
+						&lt;td&gt;PY |-&gt; Z&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;n = 2.1 (hill nhill)&lt;/td&gt;
+						&lt;td&gt;PZ |-&gt; X&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;{alpha0, alpha} = {0, 250} (hill basalRate)&lt;/td&gt;
+						&lt;td&gt;PX |-&gt; Y&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;{alpha0, alpha} = {0, 250} (hill basalRate)&lt;/td&gt;
+						&lt;td&gt;PY |-&gt; Z&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;{alpha0, alpha} = {0, 250} (hill basalRate)&lt;/td&gt;
+						&lt;td&gt;PZ |-&gt; X&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;alpha1 = 0 (hill vmax)&lt;/td&gt;
+						&lt;td&gt;PX |-&gt; Y&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;alpha1 = 0 (hill vmax)&lt;/td&gt;
+						&lt;td&gt;PY |-&gt; Z&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;alpha1 = 0 (hill vmax)&lt;/td&gt;
+						&lt;td&gt;PZ |-&gt; X&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;beta = 5&lt;/td&gt;
+						&lt;td&gt;PX -&gt; EmptySet&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;beta = 5&lt;/td&gt;
+						&lt;td&gt;PY -&gt; EmptySet&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;beta = 5&lt;/td&gt;
+						&lt;td&gt;PZ -&gt; EmptySet&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;beta = 5&lt;/td&gt;
+						&lt;td&gt;X + EmptySet -&gt; PX + X&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;beta = 5&lt;/td&gt;
+						&lt;td&gt;Y + EmptySet -&gt; PY + Y&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;beta = 5&lt;/td&gt;
+						&lt;td&gt;Z + EmptySet -&gt; PZ + Z&lt;/td&gt;
+					&lt;/tr&gt;
+				&lt;/tbody&gt;
+			&lt;/table&gt;
+
+			&lt;table border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;2&quot;&gt;
+				&lt;thead&gt;
+					&lt;tr&gt;
+						&lt;th align=&quot;left&quot; valign=&quot;middle&quot; bgcolor=&quot;#eeeeee&quot;&gt;Variable&lt;/th&gt;
+						&lt;th align=&quot;left&quot; valign=&quot;middle&quot; bgcolor=&quot;#eeeeee&quot;&gt;IC  &lt;/th&gt;
+						&lt;th align=&quot;left&quot; valign=&quot;middle&quot; bgcolor=&quot;#eeeeee&quot;&gt;ODE&lt;/th&gt;
+					&lt;/tr&gt;
+				&lt;/thead&gt;
+				&lt;tbody&gt;
+					&lt;tr&gt;
+						&lt;td&gt;PX&lt;/td&gt;
+						&lt;td&gt;5&lt;/td&gt;
+						&lt;td&gt;PX&apos;[t] == -(beta*PX[t]) + beta*X[t]&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;PY&lt;/td&gt;
+						&lt;td&gt;0&lt;/td&gt;
+						&lt;td&gt;PY&apos;[t] == -(beta*PY[t]) + beta*Y[t]&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;PZ&lt;/td&gt;
+						&lt;td&gt;15&lt;/td&gt;
+						&lt;td&gt;PZ&apos;[t] == -(beta*PZ[t]) + beta*Z[t]&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;X&lt;/td&gt;
+						&lt;td&gt;0&lt;/td&gt;
+						&lt;td&gt;X&apos;[t] == alpha0 + (alpha + alpha1*PZ[t]^n)/(K^n +
+							 PZ[t]^n) - k1*X[t]&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;Y&lt;/td&gt;
+						&lt;td&gt;0&lt;/td&gt;
+						&lt;td&gt;Y&apos;[t] == alpha0 + (alpha + alpha1*PX[t]^n)/(K^n +
+							 PX[t]^n) - k1*Y[t]&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;tr&gt;
+						&lt;td&gt;Z&lt;/td&gt;
+						&lt;td&gt;0&lt;/td&gt;
+						&lt;td&gt;Z&apos;[t] == alpha0 + (alpha + alpha1*PY[t]^n)/(K^n +
+							 PY[t]^n) - k1*Z[t]&lt;/td&gt;
+					&lt;/tr&gt;
+				&lt;/tbody&gt;
+			&lt;/table&gt;
+			&lt;p&gt;Generated by Cellerator Version 1.0 update 2.1127 using Mathematica 4.2 for 
+				Mac OS X (June 4, 2002), November 27, 2002 12:15:32, using (PowerMac,PowerPC,
+				Mac OS X,MacOSX,Darwin)&lt;/p&gt;
+			&lt;p&gt;author=B.E.Shapiro&lt;/p&gt;
+
+		&lt;/body&gt;</body>
+    </notes>
+    <listOfFunctionDefinitions>
+      <functionDefinition id="function_4_Reaction12">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> K </ci>
+            </bvar>
+            <bvar>
+              <ci> PY </ci>
+            </bvar>
+            <bvar>
+              <ci> alpha </ci>
+            </bvar>
+            <bvar>
+              <ci> alpha0 </ci>
+            </bvar>
+            <bvar>
+              <ci> alpha1 </ci>
+            </bvar>
+            <bvar>
+              <ci> cell </ci>
+            </bvar>
+            <bvar>
+              <ci> n </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <ci> alpha0 </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <ci> alpha </ci>
+                    <apply>
+                      <times/>
+                      <apply>
+                        <power/>
+                        <ci> PY </ci>
+                        <ci> n </ci>
+                      </apply>
+                      <ci> alpha1 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <ci> K </ci>
+                      <ci> n </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> PY </ci>
+                      <ci> n </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> cell </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_4_Reaction11">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> K </ci>
+            </bvar>
+            <bvar>
+              <ci> PX </ci>
+            </bvar>
+            <bvar>
+              <ci> alpha </ci>
+            </bvar>
+            <bvar>
+              <ci> alpha0 </ci>
+            </bvar>
+            <bvar>
+              <ci> alpha1 </ci>
+            </bvar>
+            <bvar>
+              <ci> cell </ci>
+            </bvar>
+            <bvar>
+              <ci> n </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <ci> alpha0 </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <ci> alpha </ci>
+                    <apply>
+                      <times/>
+                      <apply>
+                        <power/>
+                        <ci> PX </ci>
+                        <ci> n </ci>
+                      </apply>
+                      <ci> alpha1 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <ci> K </ci>
+                      <ci> n </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> PX </ci>
+                      <ci> n </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> cell </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_4_Reaction10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> K </ci>
+            </bvar>
+            <bvar>
+              <ci> PZ </ci>
+            </bvar>
+            <bvar>
+              <ci> alpha </ci>
+            </bvar>
+            <bvar>
+              <ci> alpha0 </ci>
+            </bvar>
+            <bvar>
+              <ci> alpha1 </ci>
+            </bvar>
+            <bvar>
+              <ci> cell </ci>
+            </bvar>
+            <bvar>
+              <ci> n </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <ci> alpha0 </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <ci> alpha </ci>
+                    <apply>
+                      <times/>
+                      <apply>
+                        <power/>
+                        <ci> PZ </ci>
+                        <ci> n </ci>
+                      </apply>
+                      <ci> alpha1 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <ci> K </ci>
+                      <ci> n </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> PZ </ci>
+                      <ci> n </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> cell </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_4_Reaction9">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> PZ </ci>
+            </bvar>
+            <bvar>
+              <ci> beta </ci>
+            </bvar>
+            <bvar>
+              <ci> cell </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> PZ </ci>
+                <ci> beta </ci>
+              </apply>
+              <ci> cell </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_4_Reaction8">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> PY </ci>
+            </bvar>
+            <bvar>
+              <ci> beta </ci>
+            </bvar>
+            <bvar>
+              <ci> cell </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> PY </ci>
+                <ci> beta </ci>
+              </apply>
+              <ci> cell </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_4_Reaction7">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> PX </ci>
+            </bvar>
+            <bvar>
+              <ci> beta </ci>
+            </bvar>
+            <bvar>
+              <ci> cell </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> PX </ci>
+                <ci> beta </ci>
+              </apply>
+              <ci> cell </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_4_Reaction6">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> Z </ci>
+            </bvar>
+            <bvar>
+              <ci> beta </ci>
+            </bvar>
+            <bvar>
+              <ci> cell </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Z </ci>
+                <ci> beta </ci>
+              </apply>
+              <ci> cell </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_4_Reaction5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> Y </ci>
+            </bvar>
+            <bvar>
+              <ci> beta </ci>
+            </bvar>
+            <bvar>
+              <ci> cell </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Y </ci>
+                <ci> beta </ci>
+              </apply>
+              <ci> cell </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_4_Reaction4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> X </ci>
+            </bvar>
+            <bvar>
+              <ci> beta </ci>
+            </bvar>
+            <bvar>
+              <ci> cell </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> X </ci>
+                <ci> beta </ci>
+              </apply>
+              <ci> cell </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_4_Reaction3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> Z </ci>
+            </bvar>
+            <bvar>
+              <ci> cell </ci>
+            </bvar>
+            <bvar>
+              <ci> k1 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> k1 </ci>
+                <ci> Z </ci>
+              </apply>
+              <ci> cell </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_4_Reaction2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> Y </ci>
+            </bvar>
+            <bvar>
+              <ci> cell </ci>
+            </bvar>
+            <bvar>
+              <ci> k1 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> k1 </ci>
+                <ci> Y </ci>
+              </apply>
+              <ci> cell </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_4_Reaction1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> X </ci>
+            </bvar>
+            <bvar>
+              <ci> cell </ci>
+            </bvar>
+            <bvar>
+              <ci> k1 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> k1 </ci>
+                <ci> X </ci>
+              </apply>
+              <ci> cell </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfCompartments>
+      <compartment id="cell" name="cell" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="PX" name="PX" compartment="cell" initialConcentration="4.99999875459585"/>
+      <species id="PY" name="PY" compartment="cell" initialConcentration="0"/>
+      <species id="PZ" name="PZ" compartment="cell" initialConcentration="14.9999962637876"/>
+      <species id="X" name="X" compartment="cell" initialConcentration="0"/>
+      <species id="Y" name="Y" compartment="cell" initialConcentration="0"/>
+      <species id="Z" name="Z" compartment="cell" initialConcentration="0"/>
+      <species id="EmptySet" name="EmptySet" compartment="cell" initialConcentration="0" boundaryCondition="true" constant="true"/>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction id="Reaction1" name="Reaction1" reversible="false">
+        <listOfReactants>
+          <speciesReference species="X"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="EmptySet"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> cell </ci>
+              <apply>
+                <ci> function_4_Reaction1 </ci>
+                <ci> X </ci>
+                <ci> cell </ci>
+                <ci> k1 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction2" name="Reaction2" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Y"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="EmptySet"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> cell </ci>
+              <apply>
+                <ci> function_4_Reaction2 </ci>
+                <ci> Y </ci>
+                <ci> cell </ci>
+                <ci> k1 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction3" name="Reaction3" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Z"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="EmptySet"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> cell </ci>
+              <apply>
+                <ci> function_4_Reaction3 </ci>
+                <ci> Z </ci>
+                <ci> cell </ci>
+                <ci> k1 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" value="1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction4" name="Reaction4" reversible="false">
+        <listOfReactants>
+          <speciesReference species="EmptySet"/>
+          <speciesReference species="X"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PX"/>
+          <speciesReference species="X"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> cell </ci>
+              <apply>
+                <ci> function_4_Reaction4 </ci>
+                <ci> X </ci>
+                <ci> beta </ci>
+                <ci> cell </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="beta" value="5"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction5" name="Reaction5" reversible="false">
+        <listOfReactants>
+          <speciesReference species="EmptySet"/>
+          <speciesReference species="Y"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PY"/>
+          <speciesReference species="Y"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> cell </ci>
+              <apply>
+                <ci> function_4_Reaction5 </ci>
+                <ci> Y </ci>
+                <ci> beta </ci>
+                <ci> cell </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="beta" value="5"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction6" name="Reaction6" reversible="false">
+        <listOfReactants>
+          <speciesReference species="EmptySet"/>
+          <speciesReference species="Z"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="PZ"/>
+          <speciesReference species="Z"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> cell </ci>
+              <apply>
+                <ci> function_4_Reaction6 </ci>
+                <ci> Z </ci>
+                <ci> beta </ci>
+                <ci> cell </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="beta" value="5"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction7" name="Reaction7" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PX"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="EmptySet"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> cell </ci>
+              <apply>
+                <ci> function_4_Reaction7 </ci>
+                <ci> PX </ci>
+                <ci> beta </ci>
+                <ci> cell </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="beta" value="5"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction8" name="Reaction8" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PY"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="EmptySet"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> cell </ci>
+              <apply>
+                <ci> function_4_Reaction8 </ci>
+                <ci> PY </ci>
+                <ci> beta </ci>
+                <ci> cell </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="beta" value="5"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction9" name="Reaction9" reversible="false">
+        <listOfReactants>
+          <speciesReference species="PZ"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="EmptySet"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> cell </ci>
+              <apply>
+                <ci> function_4_Reaction9 </ci>
+                <ci> PZ </ci>
+                <ci> beta </ci>
+                <ci> cell </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="beta" value="5"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction10" name="Reaction10" reversible="false">
+        <listOfReactants>
+          <speciesReference species="EmptySet"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="X"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="PZ"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> cell </ci>
+              <apply>
+                <ci> function_4_Reaction10 </ci>
+                <ci> K </ci>
+                <ci> PZ </ci>
+                <ci> alpha </ci>
+                <ci> alpha0 </ci>
+                <ci> alpha1 </ci>
+                <ci> cell </ci>
+                <ci> n </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="K" value="1"/>
+            <parameter id="alpha" value="250"/>
+            <parameter id="alpha0" value="0"/>
+            <parameter id="alpha1" value="0"/>
+            <parameter id="n" value="2.1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction11" name="Reaction11" reversible="false">
+        <listOfReactants>
+          <speciesReference species="EmptySet"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Y"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="PX"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> cell </ci>
+              <apply>
+                <ci> function_4_Reaction11 </ci>
+                <ci> K </ci>
+                <ci> PX </ci>
+                <ci> alpha </ci>
+                <ci> alpha0 </ci>
+                <ci> alpha1 </ci>
+                <ci> cell </ci>
+                <ci> n </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="K" value="1"/>
+            <parameter id="alpha" value="250"/>
+            <parameter id="alpha0" value="0"/>
+            <parameter id="alpha1" value="0"/>
+            <parameter id="n" value="2.1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Reaction12" name="Reaction12" reversible="false">
+        <listOfReactants>
+          <speciesReference species="EmptySet"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Z"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="PY"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> cell </ci>
+              <apply>
+                <ci> function_4_Reaction12 </ci>
+                <ci> K </ci>
+                <ci> PY </ci>
+                <ci> alpha </ci>
+                <ci> alpha0 </ci>
+                <ci> alpha1 </ci>
+                <ci> cell </ci>
+                <ci> n </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="K" value="1"/>
+            <parameter id="alpha" value="250"/>
+            <parameter id="alpha0" value="0"/>
+            <parameter id="alpha1" value="0"/>
+            <parameter id="n" value="2.1"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>
