@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/18 08:39:16 $
+   $Date: 2005/08/18 14:25:26 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -62,6 +62,8 @@ class SBMLExporter
     unsigned C_INT32 mHStep;
     unsigned C_INT32 mTotalSteps;
     unsigned C_INT32 mStep;
+
+    std::map<CCopasiObject*, SBase*> mCopasi2SBMLMap;
 
     /**
      **  This method takes a copasi CModel object and generates a SBMLDocument
@@ -193,6 +195,18 @@ class SBMLExporter
      * Checks if the given string is a valid SBMLId.
      */
     bool isValidSId(const std::string& id);
+
+    /**
+     * Remove some object from an sbml list.
+     */
+    void removeFromList(ListOf& list, SBase* pObject);
+
+    /**
+     * Create a map that maps each copasi object to the corresponding sbml object
+     * if a current SBMLDocument exists.
+     * SBML objects that do not have a corresponding copasi object are deleted.
+     */
+    void fillCopasi2SBMLMap();
 
   public:
 
