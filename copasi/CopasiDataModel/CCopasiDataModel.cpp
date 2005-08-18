@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/18 14:24:04 $
+   $Date: 2005/08/18 14:47:33 $
    End CVS Header */
 
 #include "copasi.h"
@@ -217,7 +217,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
   if (mpModel) mpModel->setCompileFlag();
   this->mpCurrentSBMLDocument = NULL;
   this->mCopasi2SBMLMap.clear();
-  this->removeSBMLIdFromFunctions();
+  //this->removeSBMLIdFromFunctions();
 
   changed(false);
   return true;
@@ -310,7 +310,7 @@ bool CCopasiDataModel::newModel(CModel * pModel)
     }
   this->mpCurrentSBMLDocument = NULL;
   this->mCopasi2SBMLMap.clear();
-  this->removeSBMLIdFromFunctions();
+  //this->removeSBMLIdFromFunctions();
 
   pdelete(mpTaskList);
   mpTaskList = new CCopasiVectorN< CCopasiTask >("TaskList", CCopasiContainer::Root);
@@ -340,7 +340,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
 {
   SBMLImporter importer;
   importer.setImportHandler(pImportHandler);
-  this->removeSBMLIdFromFunctions();
+  //this->removeSBMLIdFromFunctions();
   mCopasi2SBMLMap.clear();
   CModel* pModel = NULL;
   try
