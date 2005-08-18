@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/15 18:54:38 $
+   $Date: 2005/08/18 08:39:16 $
    End CVS Header */
 
 #include <math.h>
@@ -16,6 +16,7 @@
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CVersion.h"
+#include "utilities/CProcessReport.h"
 
 #include "SBMLExporter.h"
 #include "ConverterASTNode.h"
@@ -46,7 +47,7 @@ const char* SBMLExporter::HTML_FOOTER = "</body>";
 /**
  ** Constructor for the exporter.
  */
-SBMLExporter::SBMLExporter(): sbmlDocument(NULL), mpIdSet(NULL)
+SBMLExporter::SBMLExporter(): sbmlDocument(NULL), mpIdSet(NULL), mpExportHandler(NULL)
 {
   /* nothing to do */
 }
@@ -107,6 +108,17 @@ bool SBMLExporter::exportSBML(CModel* copasiModel, std::string sbmlFilename, boo
  */
 SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CModel* copasiModel, int sbmlLevel, int sbmlVersion)
 {
+  if (mpExportHandler)
+    {
+      mStep = 0;
+      mTotalSteps = 6;
+      mpExportHandler->setName("SBML Export");
+      mHStep = mpExportHandler->addItem("Exporting model to SBML...",
+                                        CCopasiParameter::UINT,
+                                        & mStep,
+                                        &mTotalSteps);
+    }
+
   this->sbmlDocument = CCopasiDataModel::Global->getCurrentSBMLDocument();
   if (!this->sbmlDocument)
     {
@@ -122,8 +134,16 @@ SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CModel* copasiModel, in
       this->sbmlDocument->setModel(sbmlModel);
     }
 
+  if (mpExportHandler)
+    {
+      mStep = 6;
+      if (!mpExportHandler->progress(mHStep)) return false;
+    }
   this->createFunctionDefinitions();
-
+  if (mpExportHandler)
+    {
+      mpExportHandler->finish(mHStep);
+    }
   return this->sbmlDocument;
 }
 
@@ -133,6 +153,7 @@ SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CModel* copasiModel, in
  */
 Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
 {
+  unsigned C_INT32 step = 0, totalSteps, hStep;
   Model* sbmlModel = NULL;
   std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = CCopasiDataModel::Global->getCopasi2SBMLMap();
   std::map<CCopasiObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(copasiModel);
@@ -254,44 +275,105 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
         }
     }
   /* create all compartments */
-  unsigned int counter;
-  for (counter = 0; counter < copasiModel->getCompartments().size(); counter++)
+  unsigned int counter, iMax = copasiModel->getCompartments().size();
+  if (mpExportHandler)
+    {
+      mStep = 1;
+      mpExportHandler->progress(mHStep);
+      totalSteps = iMax;
+      step = 0;
+      hStep = mpExportHandler->addItem("Creating compartments...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
+    }
+  for (counter = 0; counter < iMax; counter++)
     {
       Compartment* sbmlCompartment = this->createSBMLCompartmentFromCCompartment(copasiModel->getCompartments()[counter]);
       if (!sbmlModel->getCompartment(sbmlCompartment->getId()))
         {
           sbmlModel->addCompartment(*sbmlCompartment);
         }
+      ++step;
+      if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
   /* create all metabolites */
-  for (counter = 0; counter < copasiModel->getMetabolites().size(); counter++)
+  iMax = copasiModel->getMetabolites().size();
+  if (mpExportHandler)
+    {
+      mpExportHandler->finish(hStep);
+      mStep = 2;
+      mpExportHandler->progress(mHStep);
+      totalSteps = iMax;
+      step = 0;
+      hStep = mpExportHandler->addItem("Creating species...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
+    }
+  for (counter = 0; counter < iMax; counter++)
     {
       Species* sbmlSpecies = this->createSBMLSpeciesFromCMetab(copasiModel->getMetabolites()[counter]);
       if (!sbmlModel->getSpecies(sbmlSpecies->getId()))
         {
           sbmlModel->addSpecies(*sbmlSpecies);
         }
+      ++step;
+      if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
   /* create all global parameters */
-  for (counter = 0; counter < copasiModel->getModelValues().size(); counter++)
+  iMax = copasiModel->getModelValues().size();
+  if (mpExportHandler)
+    {
+      mpExportHandler->finish(hStep);
+      mStep = 3;
+      mpExportHandler->progress(mHStep);
+      totalSteps = iMax;
+      step = 0;
+      hStep = mpExportHandler->addItem("Creating global parameters...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
+    }
+  for (counter = 0; counter < iMax; counter++)
     {
       Parameter* sbmlParameter = this->createSBMLParameterFromCModelValue(copasiModel->getModelValues()[counter]);
       if (!sbmlModel->getParameter(sbmlParameter->getId()))
         {
           sbmlModel->addParameter(*sbmlParameter);
         }
+      ++step;
+      if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
   /* create all reactions */
-  for (counter = 0; counter < copasiModel->getReactions().size(); counter++)
+  iMax = copasiModel->getReactions().size();
+  if (mpExportHandler)
+    {
+      mpExportHandler->finish(hStep);
+      mStep = 4;
+      mpExportHandler->progress(mHStep);
+      totalSteps = iMax;
+      step = 0;
+      hStep = mpExportHandler->addItem("Creating reactions...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
+    }
+  for (counter = 0; counter < iMax; counter++)
     {
       Reaction* sbmlReaction = this->createSBMLReactionFromCReaction(copasiModel->getReactions()[counter]);
       if (!sbmlModel->getReaction(sbmlReaction->getId()))
         {
           sbmlModel->addReaction(*sbmlReaction);
         }
+      ++step;
+      if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
   pdelete(this->mpIdSet);
-
+  if (mpExportHandler)
+    {
+      mpExportHandler->finish(hStep);
+    }
   return sbmlModel;
 }
 
@@ -1358,4 +1440,14 @@ bool SBMLExporter::isValidSId(const std::string& id)
       result = false;
     }
   return result;
+}
+
+CProcessReport* SBMLExporter::getExportHandler()
+{
+  return this->mpExportHandler;
+}
+
+void SBMLExporter::setExportHandler(CProcessReport* pExportHandler)
+{
+  this->mpExportHandler = pExportHandler;
 }

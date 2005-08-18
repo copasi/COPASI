@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/15 15:37:18 $
+   $Date: 2005/08/18 08:39:16 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -26,6 +26,8 @@
 #include "sbml/KineticLaw.h"
 #include "sbml/math/ASTNode.h"
 #include "sbml/Parameter.h"
+
+class CProcessReport;
 
 class SBMLExporter
   {
@@ -54,6 +56,12 @@ class SBMLExporter
     CModel* mpCopasiModel;
 
     std::list<const CEvaluationTree*> mUsedFunctions;
+
+    CProcessReport* mpExportHandler;
+
+    unsigned C_INT32 mHStep;
+    unsigned C_INT32 mTotalSteps;
+    unsigned C_INT32 mStep;
 
     /**
      **  This method takes a copasi CModel object and generates a SBMLDocument
@@ -222,6 +230,10 @@ class SBMLExporter
     std::set<std::string>* createIdSet(const Model* pSBMLModel);
 
     SBMLDocument* getSBMLDocument() const;
+
+    void setExportHandler(CProcessReport* pExportHandler);
+
+    CProcessReport* getExportHandler();
   };
 
 #endif
