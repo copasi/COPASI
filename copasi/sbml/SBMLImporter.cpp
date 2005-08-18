@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.103 $
+   $Revision: 1.104 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/18 10:57:42 $
+   $Date: 2005/08/18 14:24:39 $
    End CVS Header */
 
 #include "copasi.h"
@@ -2508,8 +2508,7 @@ void SBMLImporter::findFunctionCalls(const CEvaluationNode* pNode, std::set<std:
         {
           if (CEvaluationNode::type((*treeIt).getType()) == CEvaluationNode::CALL)
             {
-              // Maybe I will have to unquote the data string before I can call
-              // findFunction
+              // unQuote not necessary since getIndex in CCopasiVector takes care of this.
               CEvaluationTree* pTree = pFunctionDB->findFunction((*treeIt).getData());
               if (functionNameSet.find(pTree->getObjectName()) == functionNameSet.end())
                 {
