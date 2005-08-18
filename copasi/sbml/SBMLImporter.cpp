@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.101 $
+   $Revision: 1.102 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/17 14:33:59 $
+   $Date: 2005/08/18 08:40:03 $
    End CVS Header */
 
 #include "copasi.h"
@@ -28,6 +28,7 @@
 #include "function/CEvaluationTree.h"
 #include "report/CCopasiObjectReference.h"
 #include "utilities/CCopasiTree.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 #include "sbml/SBMLReader.h"
 #include "sbml/SBMLDocument.h"
@@ -311,44 +312,15 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 4);
     }
 
-  // go through the pTmpFunctionDB and remove all functions that are in this->mUsedFunctions
   if (mpImportHandler)
     {
       mpImportHandler->finish(hStep);
       mImportStep = 7;
       if (!mpImportHandler->progress(mhImportStep)) return false;
-      step = 0;
-      totalSteps = this->mUsedFunctions.size() + pTmpFunctionDB->loadedFunctions().size();
-      hStep = mpImportHandler->addItem("Removing unused functions...",
-                                       CCopasiParameter::UINT,
-                                       & step,
-                                       &totalSteps);
     }
-  std::set<std::string>::iterator it = this->mUsedFunctions.begin();
-  std::set<std::string>::iterator endIt = this->mUsedFunctions.end();
-  while (it != endIt)
-    {
-      CEvaluationTree* pTree = pTmpFunctionDB->findFunction((*it));
-      assert(pTree);
-      pTmpFunctionDB->removeFunction(pTree->getKey());
-      ++it;
-      ++step;
-      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
-    }
-  // the remaining functions are unused and can be removed from the global database as
-  functions = &(pTmpFunctionDB->loadedFunctions());
-  while (pTmpFunctionDB->loadedFunctions().size() > 0)
-    {
-      CEvaluationTree* pTree = pTmpFunctionDB->findFunction(pTmpFunctionDB->loadedFunctions()[0]->getObjectName());
-      pTmpFunctionDB->removeFunction(pTree->getKey());
-      this->functionDB->removeFunction(pTree->getKey());
-      ++step;
-      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
-    }
-  if (mpImportHandler)
-    {
-      mpImportHandler->finish(hStep);
-    }
+
+  this->removeUnusedFunctions(pTmpFunctionDB);
+
   delete pTmpFunctionDB;
 
   return this->mpCopasiModel;
@@ -2472,3 +2444,80 @@ void SBMLImporter::setImportHandler(CProcessReport* pHandler)
 
 CProcessReport* SBMLImporter::getImportHandlerAddr()
 {return mpImportHandler;}
+
+bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB)
+{
+  if (pTmpFunctionDB)
+    {
+      unsigned C_INT32 step, totalSteps, hStep;
+      unsigned C_INT32 i, iMax = this->mpCopasiModel->getReactions().size();
+      if (mpImportHandler)
+        {
+          step = 0;
+          totalSteps = iMax;
+          hStep = mpImportHandler->addItem("Searching used functions...",
+                                           CCopasiParameter::UINT,
+                                           & step,
+                                           &totalSteps);
+        }
+      std::set<std::string> functionNameSet;
+      for (i = 0;i < iMax;++i)
+        {
+          this->findFunctionCalls(this->mpCopasiModel->getReactions()[i]->getFunction().getRoot(), functionNameSet);
+          ++step;
+          if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
+        }
+      CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+      if (mpImportHandler)
+        {
+          mpImportHandler->finish(hStep);
+          step = 0;
+          totalSteps = pTmpFunctionDB->loadedFunctions().size();
+          hStep = mpImportHandler->addItem("Removing unused functions...",
+                                           CCopasiParameter::UINT,
+                                           & step,
+                                           &totalSteps);
+        }
+      while (pTmpFunctionDB->loadedFunctions().size() != 0)
+        {
+          CEvaluationTree* pTree = pTmpFunctionDB->loadedFunctions()[0];
+          pTmpFunctionDB->removeFunction(pTree->getKey());
+          if (functionNameSet.find(pTree->getObjectName()) == functionNameSet.end())
+            {
+              pFunctionDB->removeFunction(pTree->getKey());
+              this->mUsedFunctions.erase(pTree->getObjectName());
+            }
+          ++step;
+          if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
+        }
+      if (mpImportHandler)
+        {
+          mpImportHandler->finish(hStep);
+        }
+    }
+  return true;
+}
+
+void SBMLImporter::findFunctionCalls(const CEvaluationNode* pNode, std::set<std::string>& functionNameSet)
+{
+  if (pNode)
+    {
+      CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+      CCopasiTree<const CEvaluationNode>::iterator treeIt = pNode;
+      while (treeIt != NULL)
+        {
+          if (CEvaluationNode::type((*treeIt).getType()) == CEvaluationNode::CALL)
+            {
+              // Maybe I will have to unquote the data string before I can call
+              // findFunction
+              CEvaluationTree* pTree = pFunctionDB->findFunction((*treeIt).getData());
+              if (functionNameSet.find(pTree->getObjectName()) == functionNameSet.end())
+                {
+                  functionNameSet.insert(pTree->getObjectName());
+                  this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+                }
+            }
+          ++treeIt;
+        }
+    }
+}

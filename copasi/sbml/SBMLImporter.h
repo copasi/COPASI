@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/17 12:58:44 $
+   $Date: 2005/08/18 08:40:03 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -203,6 +203,17 @@ class SBMLImporter
      * Checks if the volume with the given CN is one of the parameters to the given call node.
      */
     bool containsVolume(const ASTNode* pNode, const std::string& compartmentCN);
+
+    /**
+     * Finds all functions that are used and removes those that are not.
+     */
+    bool removeUnusedFunctions(CFunctionDB* pTmpFunctionDB);
+
+    /**
+     * Finds all functions calls directly or indirectly used in a function
+     * tree.
+     */
+    void findFunctionCalls(const CEvaluationNode* pNode, std::set<std::string>& functionNameSet);
 
   public:
     SBMLImporter();
