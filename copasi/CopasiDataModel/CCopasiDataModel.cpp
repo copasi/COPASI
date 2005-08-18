@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/18 08:39:16 $
+   $Date: 2005/08/18 14:24:04 $
    End CVS Header */
 
 #include "copasi.h"
@@ -217,6 +217,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
   if (mpModel) mpModel->setCompileFlag();
   this->mpCurrentSBMLDocument = NULL;
   this->mCopasi2SBMLMap.clear();
+  this->removeSBMLIdFromFunctions();
 
   changed(false);
   return true;
@@ -309,6 +310,7 @@ bool CCopasiDataModel::newModel(CModel * pModel)
     }
   this->mpCurrentSBMLDocument = NULL;
   this->mCopasi2SBMLMap.clear();
+  this->removeSBMLIdFromFunctions();
 
   pdelete(mpTaskList);
   mpTaskList = new CCopasiVectorN< CCopasiTask >("TaskList", CCopasiContainer::Root);
@@ -338,6 +340,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
 {
   SBMLImporter importer;
   importer.setImportHandler(pImportHandler);
+  this->removeSBMLIdFromFunctions();
   mCopasi2SBMLMap.clear();
   CModel* pModel = NULL;
   try
@@ -615,4 +618,14 @@ SBMLDocument* CCopasiDataModel::getCurrentSBMLDocument()
 std::map<CCopasiObject*, SBase*>& CCopasiDataModel::getCopasi2SBMLMap()
 {
   return this->mCopasi2SBMLMap;
+}
+
+void CCopasiDataModel::removeSBMLIdFromFunctions()
+{
+  CFunctionDB* pFunDB = CCopasiDataModel::Global->getFunctionList();
+  unsigned int i, iMax = pFunDB->loadedFunctions().size();
+  for (i = 0;i < iMax;++i)
+    {
+      pFunDB->loadedFunctions()[i]->setSBMLId("");
+    }
 }

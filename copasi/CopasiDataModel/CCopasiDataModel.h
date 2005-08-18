@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/17 13:01:05 $
+   $Date: 2005/08/18 14:24:04 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
@@ -134,6 +134,9 @@ class CCopasiDataModel
      *  This is a hack at the moment to be able to read old configuration files
      */
     CCopasiVectorS < CMetabOld > * pOldMetabolites;
+
+  protected:
+    void removeSBMLIdFromFunctions();
   };
 
 #endif // COPASI_CCopasiDataModel
