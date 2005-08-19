@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.105 $
+   $Revision: 1.106 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/18 19:31:01 $
+   $Date: 2005/08/19 07:04:39 $
    End CVS Header */
 
 #include "copasi.h"
@@ -2464,8 +2464,11 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB)
       for (i = 0;i < iMax;++i)
         {
           const CEvaluationTree* pTree = &this->mpCopasiModel->getReactions()[i]->getFunction();
-          functionNameSet.insert(pTree->getObjectName());
-          this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+          if (functionNameSet.find(pTree->getObjectName()) == functionNameSet.end())
+            {
+              functionNameSet.insert(pTree->getObjectName());
+              this->findFunctionCalls(pTree->getRoot(), functionNameSet);
+            }
           ++step;
           if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
         }
