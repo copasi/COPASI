@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/18 14:25:26 $
+   $Date: 2005/08/19 12:39:01 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -64,6 +64,8 @@ class SBMLExporter
     unsigned C_INT32 mStep;
 
     std::map<CCopasiObject*, SBase*> mCopasi2SBMLMap;
+
+    bool mExportExpressions;
 
     /**
      **  This method takes a copasi CModel object and generates a SBMLDocument
@@ -208,6 +210,24 @@ class SBMLExporter
      */
     void fillCopasi2SBMLMap();
 
+    /**
+     * Translate a function with its arguments into an expression tree.
+     * All function call will be expanded recursively.
+     * The arguments are a parameter mapping vector as
+     * used in a reaction.
+     */
+    CEvaluationNode* createExpressionTree(const CFunction* const pFun, const std::vector<std::vector<std::string> >& arguments);
+
+    /**
+     * Translate a function with its arguments into an expression tree.
+     * All function calls will be expanded recursively.
+     * The arguments are given as a vector of common names
+     * enclosed in <>.
+     */
+    CEvaluationNode* createExpressionTree(const CFunction* const pFun, const std::map<std::string, std::string>& parameterMap);
+
+    CEvaluationNode* createExpressionTree(const CEvaluationNode* const pNode, const std::map<std::string, std::string>& parameterMap);
+
   public:
 
     /**
@@ -248,6 +268,9 @@ class SBMLExporter
     void setExportHandler(CProcessReport* pExportHandler);
 
     CProcessReport* getExportHandler();
+
+    void setExportExpressions(bool value);
+    bool isSetExportExpressions() const;
   };
 
 #endif

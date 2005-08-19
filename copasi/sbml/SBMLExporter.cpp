@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/18 14:25:26 $
+   $Date: 2005/08/19 12:39:01 $
    End CVS Header */
 
 #include <math.h>
@@ -47,7 +47,7 @@ const char* SBMLExporter::HTML_FOOTER = "</body>";
 /**
  ** Constructor for the exporter.
  */
-SBMLExporter::SBMLExporter(): sbmlDocument(NULL), mpIdSet(NULL), mpExportHandler(NULL)
+SBMLExporter::SBMLExporter(): sbmlDocument(NULL), mpIdSet(NULL), mpExportHandler(NULL), mExportExpressions(false)
 {
   /* nothing to do */
 }
@@ -867,23 +867,32 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
   ** CKinFunction */
   else
     {
-      //CEvaluationNode* pTmpRoot = copasiReaction->getExpressionTree();
       // walk the tree and look for function calls
-      CEvaluationTree* pTree = new CEvaluationTree("NoName", NULL, CEvaluationTree::Expression);
-      CEvaluationNodeCall* pTmpRoot = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, copasiReaction->getFunction().getObjectName());
-      const std::vector< std::vector<std::string> >& parameterMappings = copasiReaction->getParameterMappings();
-      unsigned int i, iMax = parameterMappings.size();
-      for (i = 0;i < iMax;++i)
+      if (!this->mExportExpressions)
         {
-          CEvaluationNodeObject* pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + GlobalKeys.get(parameterMappings[i][0])->getCN() + ">");
-          pTmpRoot->addChild(pObjectNode);
+          CEvaluationTree* pTree = new CEvaluationTree("NoName", NULL, CEvaluationTree::Expression);
+          CEvaluationNodeCall* pTmpRoot = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, copasiReaction->getFunction().getObjectName());
+          const std::vector< std::vector<std::string> >& parameterMappings = copasiReaction->getParameterMappings();
+          unsigned int i, iMax = parameterMappings.size();
+          for (i = 0;i < iMax;++i)
+            {
+              CEvaluationNodeObject* pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + GlobalKeys.get(parameterMappings[i][0])->getCN() + ">");
+              pTmpRoot->addChild(pObjectNode);
+            }
+          pTree->setRoot(pTmpRoot);
+          pTree->compileNodes();
+          std::list<const CEvaluationTree*> usedFunctionList;
+          this->findUsedFunctions(pTmpRoot, usedFunctionList);
+          node = pTmpRoot->toAST();
+          pdelete(pTree);
         }
-      pTree->setRoot(pTmpRoot);
-      pTree->compileNodes();
-      std::list<const CEvaluationTree*> usedFunctionList;
-      this->findUsedFunctions(pTmpRoot, usedFunctionList);
-      node = pTmpRoot->toAST();
-      pdelete(pTree);
+      else
+        {
+          CEvaluationNode* pExpressionRoot = this->createExpressionTree(&copasiReaction->getFunction(), copasiReaction->getParameterMappings());
+          if (!pExpressionRoot) fatalError();
+          node = pExpressionRoot->toAST();
+          if (!node) fatalError();
+        }
     }
 
   /*
@@ -1653,4 +1662,104 @@ void SBMLExporter::removeFromList(ListOf& list, SBase* pObject)
           break;
         }
     }
+}
+
+CEvaluationNode* SBMLExporter::createExpressionTree(const CFunction* const pFun, const std::vector<std::vector<std::string> >& arguments)
+{
+  if (!pFun || pFun->getVariables().size() != arguments.size()) fatalError();
+  std::map< std::string, std::string > parameterMap;
+  unsigned int i, iMax = arguments.size();
+  for (i = 0;i < iMax;++i)
+    {
+      if (arguments[i].size() != 1) fatalError(); // we can't have arrays here.
+      const CCopasiObject* pObject = GlobalKeys.get(arguments[i][0]);
+      if (!pObject) fatalError();
+      parameterMap[pFun->getVariables()[i]->getObjectName()] = "<" + pObject->getCN() + ">";
+    }
+  return this->createExpressionTree(pFun, parameterMap);
+}
+
+CEvaluationNode* SBMLExporter::createExpressionTree(const CFunction* const pFun, const std::map<std::string, std::string>& parameterMap)
+{
+  if (!pFun) fatalError();
+  return this->createExpressionTree(pFun->getRoot(), parameterMap);
+}
+
+CEvaluationNode* SBMLExporter::createExpressionTree(const CEvaluationNode* const pNode, const std::map<std::string, std::string>& parameterMap)
+{
+  if (!pNode) fatalError();
+  CEvaluationNode* pResultNode = NULL;
+  const CFunction* pFun = NULL;
+  std::map<std::string, std::string>::const_iterator pos;
+  std::vector<std::vector<std::string> > arguments;
+  const CEvaluationNode* pChildNode = NULL;
+  std::vector<CCopasiContainer*> containerList;
+  containerList.push_back(this->mpCopasiModel);
+  const CCopasiObject* pObject = NULL;
+  switch (CEvaluationNode::type(pNode->getType()))
+    {
+    case CEvaluationNode::CALL:
+      pFun = dynamic_cast<const CFunction*>(CCopasiDataModel::Global->getFunctionList()->findFunction(pNode->getData()));
+      assert(pFun);
+      pChildNode = static_cast<const CEvaluationNode*>(pNode->getChild());
+      while (pChildNode)
+        {
+          pos = parameterMap.find(pChildNode->getData());
+          if (pos == parameterMap.end()) fatalError();
+          pObject = CCopasiContainer::ObjectFromName(containerList, pos->second.substr(1, pos->second.size() - 2));
+          assert(pObject);
+          arguments.push_back(std::vector<std::string>());
+          if (pObject->isReference())
+            {
+              pObject = pObject->getObjectParent();
+              assert(pObject);
+            }
+          arguments[arguments.size() - 1].push_back(pObject->getKey());
+          pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
+        }
+      pResultNode = this->createExpressionTree(pFun, arguments);
+      break;
+    case CEvaluationNode::VARIABLE:
+      // replace the variable node with an object node
+      pos = parameterMap.find(pNode->getData());
+      if (pos == parameterMap.end()) fatalError();
+      pResultNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, pos->second);
+      break;
+    case CEvaluationNode::NUMBER:
+      pResultNode = new CEvaluationNodeNumber((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
+      break;
+    case CEvaluationNode::CONSTANT:
+      pResultNode = new CEvaluationNodeConstant((CEvaluationNodeConstant::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
+      break;
+    case CEvaluationNode::OPERATOR:
+      pResultNode = new CEvaluationNodeOperator((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
+      break;
+    case CEvaluationNode::CHOICE:
+      pResultNode = new CEvaluationNodeChoice((CEvaluationNodeChoice::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
+      break;
+    case CEvaluationNode::LOGICAL:
+      pResultNode = new CEvaluationNodeLogical((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pNode->getType()), pNode->getData());
+      break;
+    default:
+      fatalError();
+      break;
+    }
+  pChildNode = static_cast<const CEvaluationNode*>(pNode->getChild());
+  while (pChildNode)
+    {
+      pResultNode->addChild(this->createExpressionTree(pChildNode, parameterMap));
+      pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
+    }
+  assert(pResultNode);
+  return pResultNode;
+}
+
+bool SBMLExporter::isSetExportExpressions() const
+  {
+    return this->mExportExpressions;
+  }
+
+void SBMLExporter::setExportExpressions(bool value)
+{
+  this->mExportExpressions = value;
 }
