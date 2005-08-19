@@ -1,15 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.151 $
+   $Revision: 1.152 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/10 16:40:21 $
+   $Author: anuragr $ 
+   $Date: 2005/08/19 21:15:39 $
    End CVS Header */
 
 #include <qlayout.h>
 #include <qtoolbutton.h>
 #include <qwhatsthis.h>
-#include <qfiledialog.h>
 #include <qpopupmenu.h>
 #include <qmenubar.h>
 #include <qapplication.h>
@@ -22,7 +21,7 @@
 #include <vector>
 
 #include "AboutDialog.h"
-
+#include "CopasiFileDialog.h"
 #include "copasiui3window.h"
 #include "listviews.h"
 #include "DataModelGUI.h"
@@ -169,19 +168,28 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
   ListViews::commit();
 
   C_INT32 Answer = QMessageBox::No;
-  QString tmp;
+  QString tmp = "";
+
+  CopasiFileDialog* fd = new CopasiFileDialog(this, "Save File Dialog", TRUE);
+
+  //set filter
+  fd->setFilter("Files (*.gps *.cps)");
+  fd->addFilter("All Files (*.*)");
+  //set mode
+  fd->setMode(QFileDialog::AnyFile);
 
   while (Answer == QMessageBox::No)
     {
-      tmp = QFileDialog::getSaveFileName(str, "COPASI Files (*.cps)",
-                                         this, "Save File Dialog",
-                                         "Choose a filename to save under.");
+      if (fd->exec() == QDialog::Accepted)
+        tmp = fd->selectedFile();
 
+      /*tmp = QFileDialog::getSaveFileName(str, "COPASI Files (*.cps)",
+                                             this, "Save File Dialog",
+                                             "Choose a filename to save under.");*/
       if (tmp == "") return;
 
       if (!tmp.endsWith(".cps") &&
           !tmp.endsWith(".")) tmp += ".cps";
-
       tmp = tmp.remove(QRegExp("\\.$"));
 
       Answer = checkSelection(tmp);
@@ -280,14 +288,27 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
   ListViews::commit();
 
-  QString newFile;
+  QString newFile = "";
+
+  CopasiFileDialog* fd = new CopasiFileDialog(this, "Open File Dialog", TRUE);
+
+  //set filter
+  fd->setFilter("Files (*.gps *.cps)");
+  fd->addFilter("All Files (*.*)");
+  //set mode
+  fd->setMode(QFileDialog::AnyFile);
 
   if (file == "")
-    newFile = QFileDialog::getOpenFileName(QString::null, "Files (*.gps *.cps)",
-                                           this, "open file dialog",
-                                           "Choose a file");
-  else
-    newFile = file;
+    if (fd->exec() == QDialog::Accepted)
+      {
+        newFile = fd->selectedFile();
+      }
+
+  /*newFile = QFileDialog::getOpenFileName(QString::null, "Files (*.gps *.cps)",
+                                          this, "open file dialog",
+                                          "Choose a file");*/
+    else
+      newFile = file;
 
   // gives the file information to the datamodel to handle it
 
