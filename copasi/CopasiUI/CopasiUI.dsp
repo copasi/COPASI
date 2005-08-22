@@ -110,6 +110,10 @@ SOURCE=.\CopasiDefaultWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CopasiFileDialog.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CopasiSlider.cpp
 # End Source File
 # Begin Source File
@@ -491,6 +495,10 @@ SOURCE=.\ConstantSymbols.h
 # Begin Source File
 
 SOURCE=.\CopasiDefaultWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CopasiFileDialog.h
 # End Source File
 # Begin Source File
 

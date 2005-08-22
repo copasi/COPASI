@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.101 $ $Author: shoops $ $Date: 2005/06/22 15:42:42 $  
+# $Revision: 1.102 $ $Author: shoops $ $Date: 2005/08/22 14:07:34 $  
 ######################################################################
 
 TEMPLATE = app
@@ -136,6 +136,7 @@ HEADERS += \
            CompartmentsWidget1.h \
            ConstantSymbols.h \
            CopasiDefaultWidget.h \
+           CopasiFileDialog.h \
            CopasiSlider.h \
            CopasiTableWidget.h \
            copasiWidget.h \
@@ -211,6 +212,7 @@ SOURCES += \
            CompartmentsWidget1.cpp \
            ConstantSymbols.cpp \
            CopasiDefaultWidget.cpp \
+           CopasiFileDialog.cpp \
            CopasiSlider.cpp \
            CopasiTableWidget.cpp \
            copasiWidget.cpp \
