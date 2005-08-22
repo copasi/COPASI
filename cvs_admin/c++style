@@ -8,25 +8,35 @@ MV=/bin/mv
 
 $GAWK -- '
 BEGIN {
-  printf "/* Begin CVS Header\n"
-  printf "    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/c++style,v $\n" 
-  printf "    $Revision: 1.17 $\n"
-  printf "    $Name:  $\n"
-  printf "    $Author: shoops $ \n"
-  printf "    $Date: 2005/08/08 19:56:13 $\n"
-  printf "    End CVS Header */\n\n"
-
-  Delete = 0
+  CheckCVSHeader = 1
 }
-
-$0 ~ ".*Begin CVS Header.*" {Delete = 1}
 
 {
-  if (Delete == 0) print
+  if (CheckCVSHeader == 1) {
+    if ($0 !~ ".*Begin CVS Header.*") {
+      printf "/* Begin CVS Header\n"
+      printf "    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/c++style,v $\n"
+      printf "    $Revision: 1.18 $\n"
+      printf "    $Name:  $\n"
+      printf "    $Author: shoops $ \n"
+      printf "    $Date: 2005/08/22 17:05:33 $\n"
+      printf "    End CVS Header */\n\n"
+      print $0
+    } else {
+      print $0
+    } 
+    CheckCVSHeader = 2
+  } else if (CheckCVSHeader == 2) {
+    if ($0 ~ "End CVS Header.*") {
+      printf "    End CVS Header */\n\n"
+      CheckCVSHeader = 0
+    } else {
+      printf " %s\n", $0
+    }
+  } else {
+    print $0
+  }
 }
-
-$0 ~ ".*End CVS Header.*" {Delete = 0}
-
 ' $1 | \
 $ASTYLE --mode=c \
         --style=gnu \
@@ -71,8 +81,9 @@ $0 !~ "^$" {
   gsub(/\{ +/, "{")
   gsub(/^\*/, " *")
         
-  $0 = gensub(/ +;/, ";", "g")
-  $0 = gensub(/([^ ]) +}/, "\\1}", "g")
+  $0 = gensub(/ +;$/, ";", "g")
+  $0 = gensub(/([^ ]) +}$/, "\\1}", "g")
+  $0 = gensub(/case (.*) *: /, "case \\1:", "g")
   
   if ($0 ~ ".*}$") {
     lastClosingBracket = 1
