@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/18 08:40:03 $
+   $Author: shoops $ 
+   $Date: 2005/08/22 14:05:28 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -48,7 +48,7 @@ class SBMLImporter
     CProcessReport* mpImportHandler;
     unsigned C_INT32 mImportStep;
     unsigned C_INT32 mhImportStep;
-    unsigned int C_INT32 mTotalSteps;
+    unsigned C_INT32 mTotalSteps;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
