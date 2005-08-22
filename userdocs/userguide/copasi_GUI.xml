@@ -33,32 +33,32 @@ It also has the advantage that Copasi essentially behaves the same on all platfo
 <title>Commandline Version and Commandline Options</title>
 <para>
 Copasi comes in two versions. One with a (hopefully) nice GUI for interactive work and one without a GUI for batch processing of model files. Both versions support the same set of commandline arguments.
+</para>
 <variablelist><title>Commandline options</title>
 <varlistentry><term>--help</term>
 <listitem>
 <para>
 Shows the usage of the program and the allowed commandline options. 
-<para>
+</para>
 <!-- CopasiUI + CopasiSE
-  --home string              Your home directory.
-  --rc string                The configuration file for copasi.
-  --systemFunctionDB string  A write protected database of kinetic
+  home string              Your home directory.
+  rc string                The configuration file for copasi.
+  systemFunctionDB string  A write protected database of kinetic
                              functions.
-  --userFunctionDB string    The user extensible database of kinetic
+  userFunctionDB string    The user extensible database of kinetic
                              functions.
-  -c, --copasidir string     The location of suplementary files for copasi.
-  -d, --default string       The SBML file to export.
-  -e, --exportSBML string    The SBML file to export.
-  -f, --copasiFile string    The file the model which specifies the model
+  -c, copasidir string     The location of suplementary files for copasi.
+  -d, default string       The SBML file to export.
+  -e, exportSBML string    The SBML file to export.
+  -f, copasiFile string    The file the model which specifies the model
                              and task.
-  -i, --importSBML string    A SBML file to import.
-  -s, --save string          The file the model is saved in after work.
+  -i, importSBML string    A SBML file to import.
+  -s, save string          The file the model is saved in after work.
 
 -->
 </listitem>
 </varlistentry>
 </variablelist>
-</para>
 </sect1>
 <sect1 id="generalGUILayout" xreflabel="Copasi GUI Elements">
 <title>Copasi GUI Elements</title>
@@ -1907,7 +1907,7 @@ The wizard leads you in six steps from creating a model to doing a time course s
 <para>Copasi is able to import <ulink url="http://www.sbml.org">SBML</ulink> level 1 and level 2 files as well as export SBML level 2 files through the corresponding entries in the <guimenu>File</guimenu> menu. For the import and export the SBML Model read with <ulink url="http://www.sbml.org/libsbml.html">libsbml</ulink> is converted to the Copasi model structure and vice versa.</para>
 <para>On exporting, Copasi converts its native model structure to an SBML model that is again written out using libsbml. Since the SBML model structure is converted into the Copasi model structure upon import, some of the information in the SBML file gets lots because Copasi does not support the corresponding model elements. Examples of data that gets lost are rules and events. Also all annotations get lost.</para>
 <para>Likewise, SBML does not support all of the elements of a Copasi model so some information from the Copasi model also gets lost when exporting an SBML file. For example task, reports and plot definitions are not exported to SBML.</para>
-<para>This is normally not a big problem since the essential parts of a model normally get imported or exported. A consequence however one should keep in mind is that if you import an SBML file into Copasi and later export it again, it might have lost some of the original information. So if your SBML model depends on rules and events, it is not suitable for import into Copasi, although this might change in the future.</para>
+<para>This is normally not a big problem since the essential parts of a model normally get imported or exported. A consequence however one should keep in mind is that if you import an SBML file into Copasi and later export it again, it might have lost some of the original information. So if your SBML model depends on rules and events, it is not suitable for import into Copasi, although this might change in the future.
 </para>
 <para>
 Upon import of an SBML file, Copasi tries to identify the function calls it read. That means if Copasi find a reaction where the kinetic law consists of a single function call, Copasi tries to find out whether the function called corresponds to one of its built in functions. So for SBML files that have been exported from Copasi, the function calls can be identified upon reimport. Since all functions that can not be recognized have to be added to the global function database, this feature might save you some entires there and keep the global function database more managable. The same goes for mass action kinetics. Copasi also tries to identify mass action kinetics on import but as oposed to other kinetics, Copasi also checks kinetic laws that don't only consist of a single function call.
