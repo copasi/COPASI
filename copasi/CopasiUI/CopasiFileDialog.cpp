@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiFileDialog.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/22 15:07:21 $
+   $Date: 2005/08/22 15:23:12 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -185,7 +185,7 @@ void CopasiFileDialog::addLocation(QWidget* w)
 CopasiFileDialog::CopasiFileDialog(QWidget * parent , const char * name , bool modal)
     : QFileDialog(parent , name , modal)
 {
-  const width = 30, length = 30;
+  const C_INT32 width = 30, length = 30;
 
   QButtonGroup * grp = new QButtonGroup(this);
 
