@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/08/19 21:16:16 $
+   $Author: shoops $ 
+   $Date: 2005/08/22 14:06:33 $
    End CVS Header */
 
 /**
@@ -20,8 +20,6 @@
 #include <string>
 #include <map>
 #include <vector>
-
-#include "copasi.h"
 
 class COptions
   {
