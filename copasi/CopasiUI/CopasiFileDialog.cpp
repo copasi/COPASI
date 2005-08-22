@@ -1,13 +1,22 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiFileDialog.cpp,v $
+   $Revision: 1.2 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2005/08/22 14:07:14 $
+   End CVS Header */
+
 #include <qapplication.h>
- #include <qlayout.h>
- #include <qbuttongroup.h>
- #include <qpixmap.h>
- #include <qimage.h>
+#include <qlayout.h>
+#include <qbuttongroup.h>
+#include <qpixmap.h>
+#include <qimage.h>
+
+#include "copasi.h"
 
 #include "commandline/COptions.h"
- #include "copasi.h"
- #include "CopasiFileDialog.h"
- #include "qtUtilities.h"
+#include "CopasiFileDialog.h"
+#include "qtUtilities.h"
 
 void CopasiFileDialog::addLocation(QWidget* w)
 {
