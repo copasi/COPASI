@@ -354,7 +354,7 @@ The list at the bottom of the metabolite widget shows the reactions in which thi
 </screenshot>
 </para>
 <para>
-    Starting with Copasi Build 13, there is a new leaf called Parameters on the Model branch right underneath the Reactions leaf. This widget allows you to view and edit all parameters of the model in one place. This saves you from moving around the model tree if you e.g. first have to edit the initial concentrations for some metabolites and afterwards parameters of one or more reactions.
+    The parameter view widget can be displayed by selecting the leaf called <guilabel>Parameters</guilabel> on the Model branch which is located right underneath the <guilabel>Reactions</guilabel> leaf. This widget allows you to view and edit all parameters of the model in one place. This saves you from moving around the model tree if you e.g. first have to edit the initial concentrations for some metabolites and afterwards parameters of one or more reactions.
     The view shows you the initial concentrations for the metabolites at the top followed by the kinetic parameters of all reactions and at the bottom the volumes of all the compartments.
     In order to change some value, you double click on which lets you input a new value. On hitting the return key or clicking somewhere else, the new value is not written to the object directly, but a '*' character appears in front of the name of the changed parameter. If you now leave this widget or press the commit button at the bottom of the dialog, the new value is written to the corresponding object in the model.
 </para>
@@ -367,7 +367,7 @@ The list at the bottom of the metabolite widget shows the reactions in which thi
 <title>Defining Reports</title>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 14 on Linux on 22/08/2005</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Reports_01.png" format="PNG" scale="30" align="center" />
@@ -375,9 +375,6 @@ The list at the bottom of the metabolite widget shows the reactions in which thi
  <imageobject>
   <imagedata fileref="images/Reports_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Reports_01.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>report table without entries</phrase>
  </textobject>
@@ -388,9 +385,11 @@ The list at the bottom of the metabolite widget shows the reactions in which thi
 </screenshot>
 </para>
 <para>
-The dialog for defining report definitions is located under the <guibutton>Output-&gt;Reports</guibutton> branch in the object tree. Double clicking on an empty row in the table creates a new report object and opens the dialog for modifying the report definition. In this dialog, can specify a name for the report in the <guilabel>ReportDefinition</guilabel> field. In the <guilabel>task</guilabel> combobox, you can choose for which kind of task this report should be written, so if you want to store the result of a time course, you choose <emphasis>Trajectory Task</emphasis> here. The report usually stores the results of its task as a table; the standard separator character for elements in this table is the tab character (\t). If you want to change this, you have to uncheck the Tab checkbox and specify the separator character or string you want in the <guilabel>Separator</guilabel> field.
-<!-- What is the comment field and the title checkbox used for -->
-Next you have to define the objects that you want to appear in the report. To add a new object to the report definition, you have to click on the button with the <guibutton>+</guibutton> symbol. This will open the object browser dialog.</para>  
+The dialog for defining report definitions is located under the <guibutton>Output-&gt;Reports</guibutton> branch in the object tree. Double clicking on an empty row in the table creates a new report object and opens the dialog for modifying the report definition. In this dialog, you can specify a name for the report in the <guilabel>Name</guilabel> field. In the <guilabel>task</guilabel> combobox, you can choose for which kind of task this report should be written, so if you want to store the result of a time course, you choose <emphasis>Time-Course</emphasis> here. The report usually stores the results of its task as a table; the standard separator character for elements in this table is the tab character (\t). If you want to change this, you have to uncheck the Tab checkbox and specify the separator character or string you want in the <guilabel>Separator</guilabel> field.
+If you want to, you can also add a comment for the report, e.g. you might want to state in words what the report is supposed to write so you and others don't have to guess from the item list (see below).  
+Next you have to define the objects that you want to appear in the report. There are two modes to define a report definition. In the standard mode, the report definition is layed out as a table. E.g. the report for a time course simulation will write one line per timestep and each line will typically contain the time followed by one or more metabolite concentrations. In the advanced mode, which you enter by clicking on the button labeled <guibutton>Advanced</guibutton>, the report is split up into three sections, a header, a body and a footer. You can define the output for each of the section separately by clicking on the corresponding tab. In order to get back to the standard table layout, you have to click on the <guibutton>Advanced</guibutton> again. Copasi will warn you that you might loose some information by converting from the advanced report definition format to the table format.
+Let's discuss how to define a report definition with table layout first since this will probably the more common case.
+To add a new object to the report definition, you have to click on the button labeled <guibutton>item</guibutton>. This will open the object browser dialog.</para>  
 <para>
 <screenshot>
 <screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
@@ -463,8 +462,12 @@ Let's assume you want to define the report for a trajectory task. In this case, 
 </mediaobject>
 </screenshot></para>
 <para>
-They will appear in the report in the same order as they appear in this list. To reorder the entries in the list, you can select individual entries and move them up and down in the list with the arrow buttons that are located to the left of the list. For example it might be a good idea to move the time object to the top of the list so that it will appear as the first table column in the file since this is the way most programs would expect it. 
+They will appear in the report in the same order as they appear in this list. To reorder the entries in the list, you can select individual entries and move them up and down in the list with the according buttons to the left of the list. For example it might be a good idea to move the time object to the top of the list so that it will appear as the first table column in the file since this is the way most programs would expect it. Also in order to delete unneccesary items, you just select them and click on the <guibutton>Delete</guibutton> button. 
 The only thing that is now left is to connect this report to a file. This has to be done in the dialog for the specific task and we will cover this when we explain how to run the individual tasks.
+</para>
+<para>
+As stated above, the advanced report definition allows you to define the output for the three parts of the report separately. The header part of the report is written once before the corresponding task, the output of the body elements occurs once per step of the corresponding task, e.g. for the time course once every timestep and the footer is written once after the task has finished. In this sense, the standard table report definition is nothing but an advanced report definition with a title header and a body that consists of the time and some metabolite concentrations separated by separator items. The footer is empty.
+If you write your own advanced report definition, you are responsible to add separator tags where appropriate. An advantage to the standard report definition is that you can add arbitrary text to any of the three sections. Everything else works as described for the standard report definition, you can add and delete items by selecting them from the object browser dialog. And just like in the standard report definition, you can move these items up and down by selecting them and clicking on the <guibutton>up</guibutton> ot <guibutton>down</guibutton> button. Separator items can be added by clicking on the <guibutton>Separator</guibutton> button. The symbol or text that makes up the separator item is again defined by the checkbox and the adjacent input field towards the tp of the report definition dialog.  
 </para>
 </sect2>
 <sect2 id="plotDefinitions" xreflabel="Defining Plots">
@@ -718,7 +721,32 @@ into the <guilabel>Formula</guilabel> field. While you are typing the formula, C
     </mml:mrow>
   </mml:math>  
 <!-- </inlineequation> -->
- and define <emphasis>A</emphasis> and <emphasis>B</emphasis> to be substrates, you will see the number 2 in the <guilabel>Min</guilabel> column of the <guilabel>SUBSTRATES</guilabel> row in the <guilabel>Application</guilabel> table. After defining this function, you will be able to use it for all chemical reaction that have at least two substrates. If you would like to limit the maximum number of substrates to lets say four, you would have to set the <guilabel>Max</guilabel> column of the <guilabel>SUBSTRATES</guilabel> row to 4. Last, but not least, you have to define whether this function can be applied to reversible, irreversible or both reaction types by selecting the <guilabel>reversible</guilabel>, <guilabel>irreversible</guilabel> or <guilabel>General</guilabel> radio button respectively. After you commit the function, you can use it for the definition of reactions.</para>
+ and define <emphasis>A</emphasis> and <emphasis>B</emphasis> to be substrates, you will see the number 2 in the <guilabel>Min</guilabel> column of the <guilabel>SUBSTRATES</guilabel> row in the <guilabel>Application</guilabel> table. After defining this function, you will be able to use it for all chemical reaction that have at least two substrates. If you would like to limit the maximum number of substrates to lets say four, you would have to set the <guilabel>Max</guilabel> column of the <guilabel>SUBSTRATES</guilabel> row to 4. Last, but not least, you have to define whether this function can be applied to reversible, irreversible or both reaction types by selecting the <guilabel>reversible</guilabel>, <guilabel>irreversible</guilabel> or <guilabel>General</guilabel> radio button respectively. 
+You can also call other functions from function definitions. There are four things you have to watch out for when you call a function within another function.
+<orderedList>
+<listItem>
+Recursive function calls are not permitted. That is a function may not call itself, neither directly nor by calling another function that might call the first function again further along the line.
+</listItem>
+<listItem>
+You have to specify the correct number of arguments to the function called.
+</listItem>
+<listItem>
+You have to specify the correct argument types to the function call. I.e. if you call "Henry-Michaelis-Menten (irreversible)" from within another function, you have to make sure that the first call argument has a usage of "Substrate" and the other two have the usage "Parameter".
+</listItem>
+<listItem>
+Which brings me to the last point. The build in function names in Copasi often use characters list "-" or even spaces, so if you want to call one of those functions, you have to quote this function name. So calling "Henry-Michalis-Menten (irreversible)" from another function would look like this:
+  <mml:math>
+    <mml:mrow>
+      <mml:mi>"Henry-Michaelis-Menten (irreversible)"</mml:mi>
+      <mml:mo> &ApplyFunction; </mml:mo>
+      <mml:mi>S</mml:mi>
+      <mml:mi>Km</mml:mi>
+      <mml:mi>V</mml:mi>
+    </mml:mrow>
+  </mml:math>  
+</listItem>
+</orderedList>
+ After you commit the function, you can use it for the definition of reactions.</para>
 <para>
 <!-- list allowed operators and functions -->
 The operators and functions that Copasi knows and therefore can be used to create user defined functions are the following:
@@ -730,10 +758,72 @@ The operators and functions that Copasi knows and therefore can be used to creat
    <entry>Description</entry>
  </row>
 </thead>
+<thread>
+  <row>
+   <entry>Logical Functions</entry>
+  </row>
+</thread>
 <tbody>
  <row>
-   <entry>log / LOG</entry>
-   <entry>natural logarithm</entry>
+   <entry>and / AND</entry>
+   <entry>logical and (&Amp;)</entry>
+ </row>
+ <row>
+   <entry>or / OR</entry>
+   <entry>logical or (|)</entry>
+ </row>
+ <row>
+   <entry>xor / XOR</entry>
+   <entry>logical xor</entry>
+ </row>
+ <row>
+   <entry>not / NOT</entry>
+   <entry>logical negation</entry>
+ </row>
+ <row>
+   <entry>le / LE</entry>
+   <entry>smaller or equal (&lt;=)</entry>
+ </row>
+ <row>
+   <entry>lt / LT</entry>
+   <entry>smaller (&lt;)</entry>
+ </row>
+ <row>
+   <entry>ge / GE</entry>
+   <entry>greater or equal (&gt;=)</entry>
+ </row>
+ <row>
+   <entry>gt / GT</entry>
+   <entry>greater (&gt;)</entry>
+ </row>
+ <row>
+   <entry>ne / NE</entry>
+   <entry>not equal (!=)</entry>
+ </row>
+ <row>
+   <entry>eq / EQ</entry>
+   <entry>equal (=)</entry>
+ </row>
+<thread>
+  <row>
+   <entry>Misc Functions</entry>
+  </row>
+</thread>
+ <row>
+   <entry>abs / ABS</entry>
+   <entry>absolute value</entry>
+ </row>
+ <row>
+   <entry>floor / FLOOR</entry>
+   <entry>floor value</entry>
+ </row>
+ <row>
+   <entry>ceil / CEIL</entry>
+   <entry>next highest integer</entry>
+ </row>
+ <row>
+   <entry>factorial / FACTORIAL</entry>
+   <entry>factorial function</entry>
  </row>
  <row>
    <entry>log10 / LOG10</entry>
@@ -743,6 +833,11 @@ The operators and functions that Copasi knows and therefore can be used to creat
    <entry>exp / EXP</entry>
    <entry>exponent function</entry>
  </row>
+<thread>
+  <row>
+   <entry>Trigonometric Functions</entry>
+  </row>
+</thread>
  <row>
    <entry>sin / SIN</entry>
    <entry>sine function</entry>
@@ -751,6 +846,99 @@ The operators and functions that Copasi knows and therefore can be used to creat
    <entry>cos / COS</entry>
    <entry>cosine function</entry>
  </row>
+ <row>
+   <entry>tan / TAN</entry>
+   <entry>tangent function</entry>
+ </row>
+ <row>
+   <entry>sec / SEC</entry>
+   <entry>secand function</entry>
+ </row>
+ <row>
+   <entry>csc / CSC</entry>
+   <entry>cosecand function</entry>
+ </row>
+ <row>
+   <entry>cot / COT</entry>
+   <entry>cotangent function</entry>
+ </row>
+ <row>
+   <entry>sinh / SINH</entry>
+   <entry>hyperbolic sine function</entry>
+ </row>
+ <row>
+   <entry>cosh / COSH</entry>
+   <entry>hyperbolic cosine function</entry>
+ </row>
+ <row>
+   <entry>tanh / TANH</entry>
+   <entry>hyperbolic tangent function</entry>
+ </row>
+ <row>
+   <entry>sech / SECH</entry>
+   <entry>hyperbolic secand function</entry>
+ </row>
+ <row>
+   <entry>csch / CSCH</entry>
+   <entry>hyperbolic cosecand function</entry>
+ </row>
+ <row>
+   <entry>coth / COTH</entry>
+   <entry>hyperbolic cotangent function</entry>
+ </row>
+ <row>
+   <entry>asin / ASIN</entry>
+   <entry>arcsine function</entry>
+ </row>
+ <row>
+   <entry>acos / ACOS</entry>
+   <entry>arccosine function</entry>
+ </row>
+ <row>
+   <entry>atan / ATAN</entry>
+   <entry>arctangent function</entry>
+ </row>
+ <row>
+   <entry>arcsec / ARCSEC</entry>
+   <entry>arcsecand function</entry>
+ </row>
+ <row>
+   <entry>arccsc / ARCCSC</entry>
+   <entry>arccosecand function</entry>
+ </row>
+ <row>
+   <entry>arccot / ARCCOT</entry>
+   <entry>arccotangent function</entry>
+ </row>
+ <row>
+   <entry>arcsinh / ARCSINH</entry>
+   <entry>hyperbolic arcsine function</entry>
+ </row>
+ <row>
+   <entry>arccosh / ARCCOSH</entry>
+   <entry>hyperbolic arccosine function</entry>
+ </row>
+ <row>
+   <entry>arctanh / ARCTANH</entry>
+   <entry>hyperbolic arctangent function</entry>
+ </row>
+ <row>
+   <entry>arcsech / ARCSECH</entry>
+   <entry>hyperbolic arcsecand function</entry>
+ </row>
+ <row>
+   <entry>arccsch / ARCCSCH</entry>
+   <entry>hyperbolic arccosecand function</entry>
+ </row>
+ <row>
+   <entry>arccoth / ARCCOTH</entry>
+   <entry>hyperbolic arccotangent function</entry>
+ </row>
+<thread>
+  <row>
+   <entry>Operators</entry>
+  </row>
+</thread>
  <row>
    <entry>+</entry>
    <entry>plus operator</entry>
@@ -768,8 +956,21 @@ The operators and functions that Copasi knows and therefore can be used to creat
    <entry>multiplication operator</entry>
  </row>
  <row>
+   <entry>%</entry>
+   <entry>modulus operator</entry>
+ </row>
+ <row>
    <entry>^</entry>
-   <entry>power function</entry>
+   <entry>power operator</entry>
+ </row>
+<thread>
+  <row>
+   <entry>Others</entry>
+  </row>
+</thread>
+ <row>
+   <entry>if / IF</entry>
+   <entry>if statement for the construction of piecewise defined functions etc.</entry>
  </row>
  <row>
    <entry>()</entry>
@@ -778,13 +979,74 @@ The operators and functions that Copasi knows and therefore can be used to creat
 </tbody>
 </tgroup>
 </table>
-<note>
+</para>
 <para>Basic function names can be written with either all lowercase letters or all letters uppercase. Mixing of upper and lowercase letters is not allowed and will lead to errors.
 </para>
-</note>
+<caution>
+<para>
+Although Copasi allows the usage of discontinuous functions (ceil, floor, factorial, etc) all integration is done by LSODA which officially can not handle discontinuous functions. Nevertheless in most cases this will lead to correct reults, however you should be aware of the fact that the usage of discontinuous functions in Copasi can lead to errors. Later versions of Copasi will use different integration methods that will be able to deal with discontinuous functions.  
+</para>
+</caution>
+<para>
+In addition to the function above, Copasi knows some predefined constant names:
+<table frame="all"><title>Builtin Constants</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+ <row>
+   <entry>Name</entry>
+   <entry>Description</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>pi / PI</entry>
+   <entry></entry>
+ </row>
+ <row>
+   <entry>exponentiale / EXPONENTIALE</entry>
+   <entry></entry>
+ </row>
+ <row>
+   <entry>true / TRUE</entry>
+   <entry></entry>
+ </row>
+ <row>
+   <entry>false / FALSE</entry>
+   <entry></entry>
+ </row>
+ <row>
+   <entry>infinity / INFINITY</entry>
+   <entry></entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+</para>
+<para>Again, builtin constant names can be written with either all lowercase letters or all letters uppercase. Mixing of upper and lowercase letters is not allowed and will lead to errors.
 </para>
 <para>
-<caution><para>Nesting of function definitions is not possible. A function definition may not contain any other defined functions, only the basic operators and functions listed in the table above.</para></caution>
+In addition to defining "normal" functions, Copasi allows the definition of piecewise defined functions. Piecewise defined functions are constructed with the IF statement. The IF statement in copasi is used like a function with three arguments. The first argument is a conditional expression that evaluates to either TRUE or FALSE, the second argument is an expression that is evaluated if the condition evaluates to TRUE otherwise the third argument, which can also be an expression, determines the value of the function. The second and third argument to the IF statement must evaluate to a double value, that means it can not be a conditional expression like the first argument. On the other hand, the second and third arguments themselves can be IF statements. So in order to make this a little more clear, we will look at how one would implement the Heaviside step function in Copasi:
+  <mml:math>
+    <mml:mrow>
+      <mml:mi> if </mml:mi>
+      <mml:mo> &ApplyFunction; </mml:mo>
+      <mml:mrow>
+        <mml:mi> x </mml:mi>
+        <mml:mo> &lt; </mml:mo>
+        <mml:mn> 0.0 </mml:mn>
+      </mml:mrow>
+      <mml:mn> 0.0 </mml:mn>
+      <mml:mi> if </mml:mi>
+      <mml:mo> &ApplyFunction; </mml:mo>
+      <mml:mrow>
+         <mml:mi> x </mml:mi>
+         <mml:mo> &gt; </mml:mo>
+         <mml:mn> 0.0 </mml:mn>
+      </mml:mrow>
+      <mml:mn> 1.0 </mml:mn>
+      <mml:mn> 0.5 </mml:mn>
+    </mml:mrow>
+  </mml:math>  
 </para>
 </sect1>
 <sect1 id="steadyStateAnalysis" xreflabel="Doing a Steady State Analysis">
@@ -1005,7 +1267,7 @@ The dialog that pops up will let you choose the report you want to use (in case 
 <para>
 The results dialog is located directly below the time course branch in the object tree. In this widget you can choose whether you want the results to be displayed as concentrations or as particle numbers and you have the possibility to store the results to file. The advantage a report has over writing a file in the results widget is that you can choose exactly which metabolite concentrations you want to store whereas the results dialog always stores all metabolites concentrations.  
 </para>
-<para>In Copasi Build 13 a new button at the bottom of the dialog let's you create a plot output for the time course simulation. If you click on the button labelled <guilabel>Output definition</guilabel>, you can choose from a list of predefined plots. When you click on one of the plots in the list on the left side of the dialog, you can see a short description of what the plot does on the right side of the dialog. By selecting one of the predefined plots and clicking on the <guilabel>Create!</guilabel> button, Copasi will create the corresponding plot item.  
+<para>A button at the bottom of the dialog let's you create a plot output for the time course simulation. If you click on the button labelled <guilabel>Output definition</guilabel>, you can choose from a list of predefined plots. When you click on one of the plots in the list on the left side of the dialog, you can see a short description of what the plot does on the right side of the dialog. By selecting one of the predefined plots and clicking on the <guilabel>Create!</guilabel> button, Copasi will create the corresponding plot item.  
 </para>
 <sect2 id="workingWithPlots" xreflabel="Working with Plots">
 <title>Working with Plots</title>
@@ -1115,7 +1377,7 @@ Depending on whether a steady state was found or not, only the elasticities tab 
 </sect1>
 <sect1 id="parameterScan" xreflabel="Doing a Parameter Scan">
 <title>Doing a Parameter Scan</title>
-<para>Parameter Scans were introduced in Copasi Build 13. The leaf for parameter scans in the object tree is located under <guibutton>Multiple Tasks -> Parameter Scan</guibutton>. At the top the dialog displays a box called <guilabel>New scan item</guilabel> together with a <guibutton>create...</guibutton>. and when the dialog is opened for the first time, the only item in the widget below is a green box called <guilabel>Task</guilabel>. This widget contains a dropdown list with all the tasks that can be used in a scan. Additionally there is a checkbox called <guilabel>use initial conditions</guilabel> and a checkbox called <guilabel>do output during task</guilabel>.</para>
+<para>The leaf for parameter scans in the object tree is located under <guibutton>Multiple Tasks -> Parameter Scan</guibutton>. At the top the dialog displays a box called <guilabel>New scan item</guilabel> together with a <guibutton>create...</guibutton>. and when the dialog is opened for the first time, the only item in the widget below is a green box called <guilabel>Task</guilabel>. This widget contains a dropdown list with all the tasks that can be used in a scan. Additionally there is a checkbox called <guilabel>use initial conditions</guilabel> and a checkbox called <guilabel>do output during task</guilabel>.</para>
 <para>
 <screenshot>
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
