@@ -72,9 +72,11 @@ PDF_STYLESHEET=/usr/share/xml/docbook/stylesheet/db2latex/latex/docbook.xsl
 
 JAVA=/usr/bin/java
 
-SAXON_JAR=/usr/share/java/saxon-6.5.3.jar
+#SAXON_JAR=/usr/share/java/saxon-6.5.4.jar
+SAXON_JAR=/sw/share/java/saxon/saxon.jar
+#SAXON_EXTENSIONS_JAR=/usr/share/java/docbook-xsl-saxon65.jar
 
-SAXON_EXTENSIONS_JAR=/usr/share/java/docbook-xsl-saxon651.jar
+SAXON_EXTENSIONS_JAR=/sw/share/xml/xsl/docbook-xsl/extensions/saxon653.jar
 
 XSLTPROC=$(JAVA) -classpath $(SAXON_JAR):$(SAXON_EXTENSIONS_JAR) com.icl.saxon.StyleSheet  
 
@@ -96,6 +98,8 @@ copasi.tex: $(SOURCES)
 #	$(PDFLATEX) $<
  
 copasi.pdf: copasi.fo
+	$(PDFXMLTEX) $<
+	$(PDFXMLTEX) $<
 	$(PDFXMLTEX) $<
 	
 copasi.html: $(SOURCES) $(IMAGES) $(HTML_STYLESHEET)

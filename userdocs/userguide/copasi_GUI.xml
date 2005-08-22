@@ -723,34 +723,47 @@ into the <guilabel>Formula</guilabel> field. While you are typing the formula, C
 <!-- </inlineequation> -->
  and define <emphasis>A</emphasis> and <emphasis>B</emphasis> to be substrates, you will see the number 2 in the <guilabel>Min</guilabel> column of the <guilabel>SUBSTRATES</guilabel> row in the <guilabel>Application</guilabel> table. After defining this function, you will be able to use it for all chemical reaction that have at least two substrates. If you would like to limit the maximum number of substrates to lets say four, you would have to set the <guilabel>Max</guilabel> column of the <guilabel>SUBSTRATES</guilabel> row to 4. Last, but not least, you have to define whether this function can be applied to reversible, irreversible or both reaction types by selecting the <guilabel>reversible</guilabel>, <guilabel>irreversible</guilabel> or <guilabel>General</guilabel> radio button respectively. 
 You can also call other functions from function definitions. There are four things you have to watch out for when you call a function within another function.
-<orderedList>
-<listItem>
+<orderedlist>
+<listitem>
+<para>
 Recursive function calls are not permitted. That is a function may not call itself, neither directly nor by calling another function that might call the first function again further along the line.
-</listItem>
-<listItem>
+</para>
+</listitem>
+<listitem>
+<para>
 You have to specify the correct number of arguments to the function called.
-</listItem>
-<listItem>
+</para>
+</listitem>
+<listitem>
+<para>
 You have to specify the correct argument types to the function call. I.e. if you call "Henry-Michaelis-Menten (irreversible)" from within another function, you have to make sure that the first call argument has a usage of "Substrate" and the other two have the usage "Parameter".
-</listItem>
-<listItem>
+</para>
+</listitem>
+<listitem>
+<para>
 Which brings me to the last point. The build in function names in Copasi often use characters list "-" or even spaces, so if you want to call one of those functions, you have to quote this function name. So calling "Henry-Michalis-Menten (irreversible)" from another function would look like this:
-  <mml:math>
+<mml:math>
     <mml:mrow>
       <mml:mi>"Henry-Michaelis-Menten (irreversible)"</mml:mi>
       <mml:mo> &ApplyFunction; </mml:mo>
+      <mml:mo> ( </mml:mo>
       <mml:mi>S</mml:mi>
+      <mml:mo> , </mml:mo>
       <mml:mi>Km</mml:mi>
+      <mml:mo> , </mml:mo>
       <mml:mi>V</mml:mi>
+      <mml:mo> ) </mml:mo>
     </mml:mrow>
   </mml:math>  
-</listItem>
-</orderedList>
+</para>
+</listitem>
+</orderedlist>
  After you commit the function, you can use it for the definition of reactions.</para>
 <para>
 <!-- list allowed operators and functions -->
 The operators and functions that Copasi knows and therefore can be used to create user defined functions are the following:
-<table frame="all"><title>Mathematical Operators and Functions</title>
+
+<table frame="all"><title>cwStandard Operators</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <thead>
  <row>
@@ -758,57 +771,45 @@ The operators and functions that Copasi knows and therefore can be used to creat
    <entry>Description</entry>
  </row>
 </thead>
-<thread>
-  <row>
-   <entry>Logical Functions</entry>
-  </row>
-</thread>
 <tbody>
  <row>
-   <entry>and / AND</entry>
-   <entry>logical and (&Amp;)</entry>
+   <entry>+</entry>
+   <entry>plus operator</entry>
  </row>
  <row>
-   <entry>or / OR</entry>
-   <entry>logical or (|)</entry>
+   <entry>-</entry>
+   <entry>minus operator</entry>
  </row>
  <row>
-   <entry>xor / XOR</entry>
-   <entry>logical xor</entry>
+   <entry>/</entry>
+   <entry>division operator</entry>
  </row>
  <row>
-   <entry>not / NOT</entry>
-   <entry>logical negation</entry>
+   <entry>*</entry>
+   <entry>multiplication operator</entry>
  </row>
  <row>
-   <entry>le / LE</entry>
-   <entry>smaller or equal (&lt;=)</entry>
+   <entry>%</entry>
+   <entry>modulus operator</entry>
  </row>
  <row>
-   <entry>lt / LT</entry>
-   <entry>smaller (&lt;)</entry>
+   <entry>^</entry>
+   <entry>power operator</entry>
  </row>
+</tbody>
+</tgroup>
+</table>
+</para>
+<para>
+<table frame="all"><title>Misc. Functions</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
  <row>
-   <entry>ge / GE</entry>
-   <entry>greater or equal (&gt;=)</entry>
+   <entry>Operator/Function</entry>
+   <entry>Description</entry>
  </row>
- <row>
-   <entry>gt / GT</entry>
-   <entry>greater (&gt;)</entry>
- </row>
- <row>
-   <entry>ne / NE</entry>
-   <entry>not equal (!=)</entry>
- </row>
- <row>
-   <entry>eq / EQ</entry>
-   <entry>equal (=)</entry>
- </row>
-<thread>
-  <row>
-   <entry>Misc Functions</entry>
-  </row>
-</thread>
+</thead>
+<tbody>
  <row>
    <entry>abs / ABS</entry>
    <entry>absolute value</entry>
@@ -826,6 +827,10 @@ The operators and functions that Copasi knows and therefore can be used to creat
    <entry>factorial function</entry>
  </row>
  <row>
+   <entry>log / LOG</entry>
+   <entry>natural logarithm</entry>
+ </row>
+ <row>
    <entry>log10 / LOG10</entry>
    <entry>logarithm for base 10</entry>
  </row>
@@ -833,11 +838,20 @@ The operators and functions that Copasi knows and therefore can be used to creat
    <entry>exp / EXP</entry>
    <entry>exponent function</entry>
  </row>
-<thread>
-  <row>
-   <entry>Trigonometric Functions</entry>
-  </row>
-</thread>
+</tbody>
+</tgroup>
+</table>
+</para>
+<para>
+<table frame="all"><title>Trigonometric Functions</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+ <row>
+   <entry>Operator/Function</entry>
+   <entry>Description</entry>
+ </row>
+</thead>
+<tbody>
  <row>
    <entry>sin / SIN</entry>
    <entry>sine function</entry>
@@ -934,40 +948,74 @@ The operators and functions that Copasi knows and therefore can be used to creat
    <entry>arccoth / ARCCOTH</entry>
    <entry>hyperbolic arccotangent function</entry>
  </row>
-<thread>
-  <row>
-   <entry>Operators</entry>
-  </row>
-</thread>
+</tbody>
+</tgroup>
+</table>
+</para>
+<para>
+<table frame="all"><title>Logical Functions</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
  <row>
-   <entry>+</entry>
-   <entry>plus operator</entry>
+   <entry>Operator/Function</entry>
+   <entry>Description</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>and / AND</entry>
+   <entry>logical and (&amp;)</entry>
  </row>
  <row>
-   <entry>-</entry>
-   <entry>minus operator</entry>
+   <entry>or / OR</entry>
+   <entry>logical or (|)</entry>
  </row>
  <row>
-   <entry>/</entry>
-   <entry>division operator</entry>
+   <entry>xor / XOR</entry>
+   <entry>logical xor</entry>
  </row>
  <row>
-   <entry>*</entry>
-   <entry>multiplication operator</entry>
+   <entry>not / NOT</entry>
+   <entry>logical negation</entry>
  </row>
  <row>
-   <entry>%</entry>
-   <entry>modulus operator</entry>
+   <entry>le / LE</entry>
+   <entry>smaller or equal (&lt;=)</entry>
  </row>
  <row>
-   <entry>^</entry>
-   <entry>power operator</entry>
+   <entry>lt / LT</entry>
+   <entry>smaller (&lt;)</entry>
  </row>
-<thread>
-  <row>
-   <entry>Others</entry>
-  </row>
-</thread>
+ <row>
+   <entry>ge / GE</entry>
+   <entry>greater or equal (&gt;=)</entry>
+ </row>
+ <row>
+   <entry>gt / GT</entry>
+   <entry>greater (&gt;)</entry>
+ </row>
+ <row>
+   <entry>ne / NE</entry>
+   <entry>not equal (!=)</entry>
+ </row>
+ <row>
+   <entry>eq / EQ</entry>
+   <entry>equal (=)</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+</para>
+<para>
+<table frame="all"><title>Miscelaneous</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<thead>
+ <row>
+   <entry>Operator/Function</entry>
+   <entry>Description</entry>
+ </row>
+</thead>
+<tbody>
  <row>
    <entry>if / IF</entry>
    <entry>if statement for the construction of piecewise defined functions etc.</entry>
@@ -979,6 +1027,7 @@ The operators and functions that Copasi knows and therefore can be used to creat
 </tbody>
 </tgroup>
 </table>
+
 </para>
 <para>Basic function names can be written with either all lowercase letters or all letters uppercase. Mixing of upper and lowercase letters is not allowed and will lead to errors.
 </para>
@@ -1000,23 +1049,23 @@ In addition to the function above, Copasi knows some predefined constant names:
 <tbody>
  <row>
    <entry>pi / PI</entry>
-   <entry></entry>
+   <entry> quotient of a circles circumference and its diameter ( 3.14159...) </entry>
  </row>
  <row>
    <entry>exponentiale / EXPONENTIALE</entry>
-   <entry></entry>
+   <entry> eulers number ( 2.7183... ) </entry>
  </row>
  <row>
    <entry>true / TRUE</entry>
-   <entry></entry>
+   <entry>boolean true value for conditional expressions</entry>
  </row>
  <row>
    <entry>false / FALSE</entry>
-   <entry></entry>
+   <entry> boolean false value for conditional expressions</entry>
  </row>
  <row>
    <entry>infinity / INFINITY</entry>
-   <entry></entry>
+   <entry> positive infinity </entry>
  </row>
 </tbody>
 </tgroup>
@@ -1030,21 +1079,29 @@ In addition to defining "normal" functions, Copasi allows the definition of piec
     <mml:mrow>
       <mml:mi> if </mml:mi>
       <mml:mo> &ApplyFunction; </mml:mo>
+      <mml:mo> ( </mml:mo>
       <mml:mrow>
         <mml:mi> x </mml:mi>
         <mml:mo> &lt; </mml:mo>
         <mml:mn> 0.0 </mml:mn>
       </mml:mrow>
+      <mml:mo> , </mml:mo>
       <mml:mn> 0.0 </mml:mn>
+      <mml:mo> , </mml:mo>
       <mml:mi> if </mml:mi>
       <mml:mo> &ApplyFunction; </mml:mo>
+      <mml:mo> ( </mml:mo>
       <mml:mrow>
          <mml:mi> x </mml:mi>
          <mml:mo> &gt; </mml:mo>
          <mml:mn> 0.0 </mml:mn>
       </mml:mrow>
+      <mml:mo> , </mml:mo>
       <mml:mn> 1.0 </mml:mn>
+      <mml:mo> , </mml:mo>
       <mml:mn> 0.5 </mml:mn>
+      <mml:mo> ) </mml:mo>
+      <mml:mo> ) </mml:mo>
     </mml:mrow>
   </mml:math>  
 </para>
