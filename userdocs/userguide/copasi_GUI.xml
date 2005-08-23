@@ -12,9 +12,6 @@
   <imageobject>
     <imagedata fileref="images/Platforms_01.ps" format="EPS" scale="30" align="center" />
   </imageobject>  
-  <!-- <imageobject>
-    <imagedata fileref="images/Platforms_01.gif" format="GIF">
-  </imageobject>  -->
   <textobject>
     <phrase>Screenshot of Copasi on Mac OS X, Linux and Windows</phrase>
   </textobject>
@@ -40,25 +37,70 @@ Copasi comes in two versions. One with a (hopefully) nice GUI for interactive wo
 <para>
 Shows the usage of the program and the allowed commandline options. 
 </para>
-<!-- CopasiUI + CopasiSE
-  home string              Your home directory.
-  rc string                The configuration file for copasi.
-  systemFunctionDB string  A write protected database of kinetic
-                             functions.
-  userFunctionDB string    The user extensible database of kinetic
-                             functions.
-  -c, copasidir string     The location of suplementary files for copasi.
-  -d, default string       The SBML file to export.
-  -e, exportSBML string    The SBML file to export.
-  -f, copasiFile string    The file the model which specifies the model
-                             and task.
-  -i, importSBML string    A SBML file to import.
-  -s, save string          The file the model is saved in after work.
-
--->
 </listitem>
 </varlistentry>
+
+<varlistentry><term>--home</term>
+<listitem>
+<para></para>
+</listItem>
+</varlistentry>
+
+<varlistentry><term>--rc</term>
+<listitem>
+<para></para>
+</listItem>
+</varlistentry>
+
+<varlistentry><term>--systemFunctionDB</term>
+<listitem>
+<para></para>
+</listItem>
+</varlistentry>
+
+<varlistentry><term>--userFunctionDB</term>
+<listitem>
+<para></para>
+</listItem>
+</varlistentry>
+
+<varlistentry><term>-c</term><term>--copasidir</term>
+<listitem>
+<para>This specifies the directory where Copasi  has been installed. It is needed to find e.g. help files.</para>
+</listItem>
+</varlistentry>
+
+<varlistentry><term>-d</term><term>--default</term>
+<listitem>
+<para></para>
+</listItem>
+</varlistentry>
+
+<varlistentry><term>-e</term><term>--exportSBML</term>
+<listitem>
+<para>With this option you can specify a name for the SBML file copasi should export. This is useful if you want to export some Copasi files to SBML in a batch job.</para>
+</listItem>
+</varlistentry>
+
+<varlistentry><term>-f</term><term>--copasiFile</term>
+<listitem>
+<para></para>
+</listItem>
+</varlistentry>
+
+<varlistentry><term>-i</term><term>--importSBML</term>
+<listitem>
+<para>This options lets you specify an SBML file that copasi shall import.</para>
+</listItem>
+</varlistentry>
+
+<varlistentry><term>-s</term><term>--save</term>
+<listitem>
+<para>This option is used to specify the name file where Copasi should store a model. This is useful if you intend to convert some SBML files to Copasi files in a batch job.</para>
+</listItem>
+</varlistentry>
 </variablelist>
+
 </sect1>
 <sect1 id="generalGUILayout" xreflabel="Copasi GUI Elements">
 <title>Copasi GUI Elements</title>
