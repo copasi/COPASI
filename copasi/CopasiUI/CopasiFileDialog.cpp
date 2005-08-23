@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiFileDialog.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/22 15:23:12 $
+   $Author: stupe $ 
+   $Date: 2005/08/23 00:48:48 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -194,6 +194,7 @@ CopasiFileDialog::CopasiFileDialog(QWidget * parent , const char * name , bool m
   exampleDirButton->setPixmap(example_img);
 
   homeDirButton = new QPushButton("home directory", grp, "homeDirButton");
+  directoryValue = new QDir();
   QImage home_img((const char **) home_data);
   homeDirButton->setPixmap(home_img);
 
@@ -224,16 +225,34 @@ CopasiFileDialog::CopasiFileDialog(QWidget * parent , const char * name , bool m
 
 void CopasiFileDialog::slotExampleDir()
 {
-  std::string ExampleDir;
-  COptions::getValue("ExampleDir", ExampleDir);
-  setDir(FROM_UTF8(ExampleDir));
+  std::string exampleDir;
+  COptions::getValue("ExampleDir", exampleDir);
+  QString examplePath = exampleDir.c_str();
+  if (directoryValue->exists(examplePath))
+    {
+      setDir(FROM_UTF8(exampleDir));
+    }
+  else
+    {
+      QMessageBox::warning(this, "Directory Not Found", examplePath, QMessageBox::Ok, 0);
+      exampleDirButton->setDown(false);
+    }
 }
 
 void CopasiFileDialog::slotHomeDir()
 {
-  std::string HomeDir;
-  COptions::getValue("Home", HomeDir);
-  setDir(FROM_UTF8(HomeDir));
+  std::string homeDir;
+  COptions::getValue("Home", homeDir);
+  QString homePath = homeDir.c_str();
+  if (directoryValue->exists(homePath))
+    {
+      setDir(FROM_UTF8(homeDir));
+    }
+  else
+    {
+      QMessageBox::warning(this, "Directory Not Found", homePath, QMessageBox::Ok, 0);
+      homeDirButton->setDown(false);
+    }
 }
 
 void CopasiFileDialog::slotCopasiDir()

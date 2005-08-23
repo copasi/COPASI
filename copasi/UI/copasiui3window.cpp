@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.152 $
+   $Revision: 1.153 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/08/19 21:15:39 $
+   $Author: stupe $ 
+   $Date: 2005/08/23 00:48:48 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -293,8 +293,8 @@ void CopasiUI3Window::slotFileOpen(QString file)
   CopasiFileDialog* fd = new CopasiFileDialog(this, "Open File Dialog", TRUE);
 
   //set filter
-  fd->setFilter("Files (*.gps *.cps)");
-  fd->addFilter("All Files (*.*)");
+  fd->setFilter("All Files (*.*)");
+  fd->addFilter("Files (*.gps *.cps)");
   //set mode
   fd->setMode(QFileDialog::AnyFile);
 
