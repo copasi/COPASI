@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/07/14 10:52:03 $
+   $Date: 2005/08/23 09:01:58 $
    End CVS Header */
 
 #ifndef MMASCIIExpoter_H__
@@ -40,8 +40,21 @@ class MMASCIIExporter
 
     /**
     ** This method tests if a string only consists of whitespace characters
-    */ 
-    //bool isEmptyString(const std::string& str);
+    */
+    bool isEmptyString(std::string & str);
+
+    /**
+     ** Returns the index of the  metabolite in MetaboliteX
+     **/
+    C_INT32 findMetabXByName(const CModel* copasiModel, const std::string & Target);
+    /**
+     ** Returns the index of the global parameter 
+     **/
+    C_INT32 findGlobalParamByName(const CModel* copasiModel, const std::string & Target);
+    /**
+     ** Returns the index of the local parameter 
+     **/
+    C_INT32 findKinParamByName(const CReaction* reac, const std::string & Target);
   };
 
 #endif
