@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/21 21:14:46 $
+   $Author: gauges $ 
+   $Date: 2005/08/23 15:44:26 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeConstant
@@ -36,7 +36,9 @@ class CEvaluationNodeConstant : public CEvaluationNode
 #endif
       FALSE = 0x00000003,
 
-      _INFINITY = 0x00000004
+      _INFINITY = 0x00000004,
+
+      _NaN = 0x00000005
     };
 
     // Operations

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/07/28 12:16:32 $
+   $Date: 2005/08/23 15:44:26 $
    End CVS Header */
 
 #include "copasi.h"
@@ -59,33 +59,54 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
   std::stringstream ss;
   SubType subType;
   std::string data = "";
+  CEvaluationNode* pNode = NULL;
   switch (type)
     {
     case AST_INTEGER:
       subType = INTEGER;
       ss << node.getInteger();
       data = ss.str();
+      pNode = new CEvaluationNodeNumber(subType, data);
       break;
     case AST_REAL:
       subType = DOUBLE;
-      ss << node.getReal();
-      data = ss.str();
+      if (node.getReal() == (2*DBL_MAX))
+        {
+          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, data);
+        }
+      else if (node.getReal() == (-2*DBL_MAX))
+        {
+          pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
+          pNode->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, ""));
+        }
+      else if (isnan(node.getReal()))
+        {
+          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, data);
+        }
+      else
+        {
+          ss << node.getReal();
+          data = ss.str();
+          pNode = new CEvaluationNodeNumber(subType, data);
+        }
       break;
     case AST_REAL_E:
       subType = ENOTATION;
       ss << node.getReal();
       data = ss.str();
+      pNode = new CEvaluationNodeNumber(subType, data);
       break;
     case AST_RATIONAL:
       subType = RATIONALE;
       ss << "(" << node.getNumerator() << "/" << node.getDenominator() << ")";
       data = ss.str();
+      pNode = new CEvaluationNodeNumber(subType, data);
       break;
     default:
       subType = INVALID;
       break;
     }
-  return new CEvaluationNodeNumber(subType, data);
+  return pNode;
 }
 
 ASTNode* CEvaluationNodeNumber::toAST() const

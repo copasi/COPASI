@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/25 15:36:57 $
+   $Author: gauges $ 
+   $Date: 2005/08/23 15:44:26 $
    End CVS Header */
 
 #include <string>
@@ -50,7 +50,9 @@ CEvaluationNodeConstant::CEvaluationNodeConstant(const SubType & subType,
     case _INFINITY:
       mValue = 2.0 * DBL_MAX;
       break;
-
+    case _NaN:
+      mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      break;
     default:
       mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       break;
@@ -117,6 +119,13 @@ ASTNode* CEvaluationNodeConstant::toAST() const
       case FALSE:
         node->setType(AST_CONSTANT_FALSE);
         break;
+      case _INFINITY:
+        node->setType(AST_REAL);
+        node->setValue(2*DBL_MAX);
+        break;
+      case _NaN:
+        node->setType(AST_REAL);
+        node->setValue(std::numeric_limits<C_FLOAT64>::quiet_NaN());
       case INVALID:
         break;
       }
