@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/19 12:39:01 $
+   $Author: ssahle $ 
+   $Date: 2005/08/24 15:03:16 $
    End CVS Header */
 
 #include <math.h>
@@ -398,7 +398,7 @@ UnitDefinition* SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(con
       unit = new Unit(UNIT_KIND_SECOND, 1, 0);
       unit->setMultiplier(3600);
     }
-  else if (u == "m")
+  else if (u == "min")
     {
       unit = new Unit(UNIT_KIND_SECOND, 1, 0);
       unit->setMultiplier(60);
@@ -1459,209 +1459,6 @@ CProcessReport* SBMLExporter::getExportHandler()
 void SBMLExporter::setExportHandler(CProcessReport* pExportHandler)
 {
   this->mpExportHandler = pExportHandler;
-}
-
-void SBMLExporter::fillCopasi2SBMLMap()
-{
-  this->mCopasi2SBMLMap.clear();
-  // check if we currently have an SBMLDocument;
-  SBMLDocument* pSBMLDoc = CCopasiDataModel::Global->getCurrentSBMLDocument();
-  unsigned int level = pSBMLDoc->getLevel();
-  if (pSBMLDoc)
-    {
-      // go through this SBMLDocument and create a map that maps the ids of each object to the object
-      std::map<std::string, SBase*> sbmlMap;
-      Model* pSBMLModel = pSBMLDoc->getModel();
-      if (pSBMLModel && mpCopasiModel)
-        {
-          unsigned int i, iMax = pSBMLModel->getNumFunctionDefinitions();
-          for (i = 0;i < iMax;++i)
-            {
-              FunctionDefinition* p = pSBMLModel->getFunctionDefinition(i);
-              if (level == 1)
-                {
-                  sbmlMap[p->getName()] = p;
-                }
-              else
-                {
-                  sbmlMap[p->getId()] = p;
-                }
-            }
-          iMax = pSBMLModel->getNumCompartments();
-          for (i = 0;i < iMax;++i)
-            {
-              Compartment* p = pSBMLModel->getCompartment(i);
-              if (level == 1)
-                {
-                  sbmlMap[p->getName()] = p;
-                }
-              else
-                {
-                  sbmlMap[p->getId()] = p;
-                }
-            }
-          iMax = pSBMLModel->getNumParameters();
-          for (i = 0;i < iMax;++i)
-            {
-              Parameter* p = pSBMLModel->getParameter(i);
-              if (level == 1)
-                {
-                  sbmlMap[p->getName()] = p;
-                }
-              else
-                {
-                  sbmlMap[p->getId()] = p;
-                }
-            }
-          iMax = pSBMLModel->getNumSpecies();
-          for (i = 0;i < iMax;++i)
-            {
-              Species* p = pSBMLModel->getSpecies(i);
-              if (level == 1)
-                {
-                  sbmlMap[p->getName()] = p;
-                }
-              else
-                {
-                  sbmlMap[p->getId()] = p;
-                }
-            }
-          iMax = pSBMLModel->getNumReactions();
-          for (i = 0;i < iMax;++i)
-            {
-              Reaction* p = pSBMLModel->getReaction(i);
-              if (level == 1)
-                {
-                  sbmlMap[p->getName()] = p;
-                }
-              else
-                {
-                  sbmlMap[p->getId()] = p;
-                }
-            }
-
-          // go through the copasi model and create a map of all objects that already have an sbml id
-          CFunctionDB* pFunDB = CCopasiDataModel::Global->getFunctionList();
-          iMax = pFunDB->loadedFunctions().size();
-          for (i = 0;i < iMax;++i)
-            {
-              CEvaluationTree* p = pFunDB->loadedFunctions()[i];
-              std::string sbmlId = p->getSBMLId();
-              if (!sbmlId.empty())
-                {
-                  std::map<std::string, SBase*>::iterator pos = sbmlMap.find(sbmlId);
-                  if (pos != sbmlMap.end())
-                    {
-                      this->mCopasi2SBMLMap[p] = pos->second;
-                      sbmlMap.erase(pos);
-                    }
-                }
-            }
-          iMax = this->mpCopasiModel->getCompartments().size();
-          for (i = 0;i < iMax;++i)
-            {
-              CCompartment* p = this->mpCopasiModel->getCompartments()[i];
-              std::string sbmlId = p->getSBMLId();
-              if (!sbmlId.empty())
-                {
-                  std::map<std::string, SBase*>::iterator pos = sbmlMap.find(sbmlId);
-                  if (pos != sbmlMap.end())
-                    {
-                      this->mCopasi2SBMLMap[p] = pos->second;
-                      sbmlMap.erase(pos);
-                    }
-                }
-            }
-          iMax = this->mpCopasiModel->getMetabolites().size();
-          for (i = 0;i < iMax;++i)
-            {
-              CMetab* p = this->mpCopasiModel->getMetabolites()[i];
-              std::string sbmlId = p->getSBMLId();
-              if (!sbmlId.empty())
-                {
-                  std::map<std::string, SBase*>::iterator pos = sbmlMap.find(sbmlId);
-                  if (pos != sbmlMap.end())
-                    {
-                      this->mCopasi2SBMLMap[p] = pos->second;
-                      sbmlMap.erase(pos);
-                    }
-                }
-            }
-          iMax = this->mpCopasiModel->getModelValues().size();
-          for (i = 0;i < iMax;++i)
-            {
-              CModelValue* p = this->mpCopasiModel->getModelValues()[i];
-              std::string sbmlId = p->getSBMLId();
-              if (!sbmlId.empty())
-                {
-                  std::map<std::string, SBase*>::iterator pos = sbmlMap.find(sbmlId);
-                  if (pos != sbmlMap.end())
-                    {
-                      this->mCopasi2SBMLMap[p] = pos->second;
-                      sbmlMap.erase(pos);
-                    }
-                }
-            }
-          iMax = this->mpCopasiModel->getReactions().size();
-          for (i = 0;i < iMax;++i)
-            {
-              CReaction* p = this->mpCopasiModel->getReactions()[i];
-              std::string sbmlId = p->getSBMLId();
-              if (!sbmlId.empty())
-                {
-                  std::map<std::string, SBase*>::iterator pos = sbmlMap.find(sbmlId);
-                  if (pos != sbmlMap.end())
-                    {
-                      this->mCopasi2SBMLMap[p] = pos->second;
-                      sbmlMap.erase(pos);
-                    }
-                }
-            }
-          // add the model
-          this->mCopasi2SBMLMap[this->mpCopasiModel] = pSBMLModel;
-          while (sbmlMap.size() > 0)
-            {
-              // delete all SBML objects that don't have corresponding Copasi objects
-              std::map<std::string, SBase*>::iterator pos = sbmlMap.begin();
-              SBase* p = pos->second;
-              switch (p->getTypeCode())
-                {
-                case SBML_FUNCTION_DEFINITION:
-                  this->removeFromList(pSBMLModel->getListOfFunctionDefinitions(), p);
-                  break;
-                case SBML_COMPARTMENT:
-                  this->removeFromList(pSBMLModel->getListOfCompartments(), p);
-                  break;
-                case SBML_SPECIES:
-                  this->removeFromList(pSBMLModel->getListOfSpecies(), p);
-                  break;
-                case SBML_REACTION:
-                  this->removeFromList(pSBMLModel->getListOfReactions(), p);
-                  break;
-                case SBML_PARAMETER:
-                  this->removeFromList(pSBMLModel->getListOfParameters(), p);
-                  break;
-                default:
-                  fatalError();
-                }
-              sbmlMap.erase(pos);
-            }
-        }
-    }
-}
-
-void SBMLExporter::removeFromList(ListOf& list, SBase* pObject)
-{
-  unsigned i, iMax = list.getNumItems();
-  for (i = 0;i < iMax;++i)
-    {
-      if (list.get(i) == pObject)
-        {
-          list.remove(i);
-          pdelete(pObject);
-          break;
-        }
-    }
 }
 
 CEvaluationNode* SBMLExporter::createExpressionTree(const CFunction* const pFun, const std::vector<std::vector<std::string> >& arguments)
