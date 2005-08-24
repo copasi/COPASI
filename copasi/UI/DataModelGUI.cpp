@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/17 13:01:41 $
+   $Date: 2005/08/24 08:06:21 $
    End CVS Header */
 
 #include "copasi.h"
@@ -30,6 +30,7 @@
 #include "steadystate/CMCATask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "utilities/CCopasiException.h"
 
 //int Folder::smModifier = 0;
 
@@ -319,15 +320,23 @@ bool DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
 bool DataModelGUI::importSBML(const std::string & fileName)
 {
   CProgressBar* tmpBar = new CProgressBar();
-
-  if (!CCopasiDataModel::Global->importSBML(fileName, tmpBar)) return false;
+  bool success = false;
+  try
+    {
+      success = CCopasiDataModel::Global->importSBML(fileName, tmpBar);
+    }
+  catch (CCopasiException except)
+    {
+      pdelete(tmpBar);
+      throw except;
+    }
 
   mPlotDefinitionList.setPlotDefinitionList(CCopasiDataModel::Global->getPlotDefinitionList());
 
   pdelete(tmpBar);
 
   linkDataModelToGUI();
-  return true;
+  return success;
 }
 
 bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile)
@@ -335,7 +344,19 @@ bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile)
   assert(mPlotDefinitionList.getPlotDefintionList() ==
          CCopasiDataModel::Global->getPlotDefinitionList());
 
-  return CCopasiDataModel::Global->exportSBML(fileName, overwriteFile);
+  CProgressBar* tmpBar = new CProgressBar();
+  bool result = false;
+  try
+    {
+      result = CCopasiDataModel::Global->exportSBML(fileName, overwriteFile, tmpBar);
+    }
+  catch (CCopasiException except)
+    {
+      pdelete(tmpBar);
+      throw except;
+    }
+  pdelete(tmpBar);
+  return result;
 }
 
 bool DataModelGUI::exportMathModel(const std::string & fileName, bool overwriteFile)
