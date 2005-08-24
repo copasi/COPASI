@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.106 $
+   $Revision: 1.107 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/19 07:04:39 $
+   $Date: 2005/08/24 08:05:31 $
    End CVS Header */
 
 #include "copasi.h"
@@ -408,7 +408,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
                 }
             }
           pFun->updateTree();
-          pFun->compileNodes();
+          pFun->compile();
           if (pFun->getRoot() == NULL)
             {
               delete pFun;
@@ -1188,8 +1188,8 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* p
   else
     {
       //throw StdException("Error. readSBML needs a valid CFunctionDB object.");
-      fatalError();
       if (mpImportHandler) mpImportHandler->finish(mhImportStep);
+      fatalError();
     }
   if (mpImportHandler) mpImportHandler->finish(mhImportStep);
   return this->mpCopasiModel;
