@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.73 $
+   $Revision: 1.74 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/11 20:37:41 $
+   $Author: stupe $ 
+   $Date: 2005/08/25 16:25:07 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -370,6 +370,9 @@ bool OptimizationWidget::slotAddItem()
       OptimizationItemWidget * tmp;
       tmp = new OptimizationItemWidget(scrollview);
       scrollview->addWidget(tmp);
+      int totalRows = scrollview->numRows();
+      scrollview->ensureCellVisible(totalRows - 1, 0);
+      tmp->ObjectName->setFocus();
       return true;
     }
 
@@ -595,35 +598,18 @@ void OptimizationWidget::slotChooseObject()
           mPrevExpr = mPrevExpr.append("<");
           mPrevExpr = mPrevExpr.append(mObject->getObjectDisplayName());
           mPrevExpr = mPrevExpr.append(">");
-          //CN = CCopasiObjectName(mObject->getObjectName());
           mpObj = (CCopasiObject*)CCopasiContainer::Root->getObject(parseMe);
-          //parseMe =
-          //mpObj = (CCopasiObject*)CCopasiContainer::Root->getObject(CN.getRemainder());
           C_FLOAT64 value = *(C_FLOAT64*)mObject->getReference();
-          //value = *(C_FLOAT64*)mpObj->getReference();
-          /*/mStr = mObject->getObjectDisplayName();
-          //const QString mPrevExpr(mStr.c_str());
-          //expressionText->remove(expressionText->len
-          //expressionText->append(mPrevExpr.truncate(mPrevExpr.lenght()-1));*/
-
-          //mPrevExpr = mPrevExpr.append(mObject->getCN());
           expressionText->setText(FROM_UTF8(mPrevExpr));
-          //rowCount = expressionText->numLines();
-          //expressionText->setCursorPosition(rowCount ,1000);
 
           if (mObject != tmpObject)
             {
               if (mObject->isValueDbl())
                 {
                   value = *(C_FLOAT64*)mObject->getReference();
-                  //lineEditMin->setText(QString::number(value*0.5));
-                  //lineEditMax->setText(QString::number(value*2));
                 }
             }
         }
-
-      //else
-      //expressionName->setText("");
     }
 
   else

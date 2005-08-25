@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.191 $
+   $Revision: 1.192 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:41:50 $
+   $Author: stupe $ 
+   $Date: 2005/08/25 16:25:07 $
    End CVS Header */
 
 //***  In this file I have put "//+++" in all places where something has to be added
@@ -300,6 +300,7 @@ bool ScanWidget::loadScan()
 
 bool ScanWidget::slotAddItem()
 {
+  int totalRows = -1;
   //+++
   CScanWidgetScan* tmp1;
   CScanWidgetRepeat* tmp2;
@@ -338,18 +339,27 @@ bool ScanWidget::slotAddItem()
       tmp1 = new CScanWidgetScan(scrollview);
       tmp1->initFromScanItem(tmpItem, CCopasiDataModel::Global->getModel());
       scrollview->insertWidget(tmp1);
+      totalRows = scrollview->numRows();
+      scrollview->ensureCellVisible(totalRows - 1, 0);
+      tmp1->lineEditMin->setFocus();
       break;
 
     case CScanProblem::SCAN_REPEAT :
       tmp2 = new CScanWidgetRepeat(scrollview);
       tmp2->initFromScanItem(tmpItem);
       scrollview->insertWidget(tmp2);
+      totalRows = scrollview->numRows();
+      scrollview->ensureCellVisible(totalRows - 1, 0);
+      tmp2->lineEditNumber->setFocus();
       break;
 
     case CScanProblem::SCAN_RANDOM :
       tmp3 = new CScanWidgetRandom(scrollview);
       tmp3->initFromScanItem(tmpItem, CCopasiDataModel::Global->getModel());
       scrollview->insertWidget(tmp3);
+      totalRows = scrollview->numRows();
+      scrollview->ensureCellVisible(totalRows - 1, 0);
+      tmp3->lineEditMin->setFocus();
       break;
 
       /*case CScanProblem::SCAN_BREAK :
