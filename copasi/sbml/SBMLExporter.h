@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/08/19 12:39:01 $
+   $Date: 2005/08/25 05:19:10 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -124,21 +124,21 @@ class SBMLExporter
      ** copasi model and returns a pointer to the corresponding SBML
      ** UnitDefinition object.
      */
-    UnitDefinition* createSBMLTimeUnitDefinitionFromCopasiTimeUnit(const std::string& u);
+    UnitDefinition* createSBMLTimeUnitDefinitionFromCopasiTimeUnit(CModel::TimeUnit u);
 
     /**
      ** This method takes a string that specifies the substance unit used in the
      ** copasi model and returns a pointer to the corresponding SBML
      ** UnitDefinition object.
      */
-    UnitDefinition* createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(const std::string& u);
+    UnitDefinition* createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(CModel::QuantityUnit u);
 
     /**
      ** This method takes a string that specifies the volume unit used in the
      ** copasi model and returns a pointer to the corresponding SBML
      ** UnitDefinition object.
      */
-    UnitDefinition* createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(const std::string& u);
+    UnitDefinition* createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(CModel::VolumeUnit u);
 
     /**
      ** This method creates an ASTNode tree where all the species specified in

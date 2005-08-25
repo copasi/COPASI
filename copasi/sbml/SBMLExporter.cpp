@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/24 15:09:29 $
+   $Author: gauges $ 
+   $Date: 2005/08/25 05:19:10 $
    End CVS Header */
 
 #include <math.h>
@@ -184,9 +184,9 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
   ** unit, we have to create a UnitDefinition and make it the default in the
   ** SBML model.
   */
-  if (!(copasiModel->getVolumeUnit() == "l"))
+  if (!(copasiModel->getVolumeUnitEnum() == CModel::l))
     {
-      UnitDefinition* uDef = this->createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(copasiModel->getVolumeUnit());
+      UnitDefinition* uDef = this->createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(copasiModel->getVolumeUnitEnum());
       if (sbmlModel->getUnitDefinition("volume"))
         {
           if (!UnitConversionFactory::areEqual(*sbmlModel->getUnitDefinition("volume"), *uDef))
@@ -215,9 +215,9 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
   ** unit, we have to create a UnitDefinition and make it the default in the
   ** SBML model.
   */
-  if (!(copasiModel->getTimeUnit() == "s"))
+  if (!(copasiModel->getTimeUnitEnum() == CModel::s))
     {
-      UnitDefinition* uDef = this->createSBMLTimeUnitDefinitionFromCopasiTimeUnit(copasiModel->getTimeUnit());
+      UnitDefinition* uDef = this->createSBMLTimeUnitDefinitionFromCopasiTimeUnit(copasiModel->getTimeUnitEnum());
       if (sbmlModel->getUnitDefinition("time"))
         {
           if (!UnitConversionFactory::areEqual(*sbmlModel->getUnitDefinition("time"), *uDef))
@@ -247,9 +247,9 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
   ** unit, we have to create a UnitDefinition and make it the default in the
   ** SBML model.
   */
-  if (!(copasiModel->getQuantityUnit() == "Mol"))
+  if (!(copasiModel->getQuantityUnitEnum() == CModel::Mol))
     {
-      UnitDefinition* uDef = this->createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(copasiModel->getQuantityUnit());
+      UnitDefinition* uDef = this->createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(copasiModel->getQuantityUnitEnum());
       if (sbmlModel->getUnitDefinition("substance"))
         {
           if (!UnitConversionFactory::areEqual(*sbmlModel->getUnitDefinition("substance"), *uDef))
@@ -382,51 +382,44 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
  ** copasi model and returns a pointer to the corresponding SBML
  ** UnitDefinition object.
  */
-UnitDefinition* SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(const std::string& u)
+UnitDefinition* SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(CModel::TimeUnit u)
 {
   UnitDefinition* uDef = new UnitDefinition("time");
   uDef->setId("time");
   Unit* unit;
 
-  if (u == "d")
+  switch (u)
     {
+    case CModel::d:
       unit = new Unit(UNIT_KIND_SECOND, 1, 0);
       unit->setMultiplier(86400);
-    }
-  else if (u == "h")
-    {
+      break;
+    case CModel::h:
       unit = new Unit(UNIT_KIND_SECOND, 1, 0);
       unit->setMultiplier(3600);
-    }
-  else if (u == "min")
-    {
+      break;
+    case CModel::m:
       unit = new Unit(UNIT_KIND_SECOND, 1, 0);
       unit->setMultiplier(60);
-    }
-
-  else if (u == "ms")
-    {
+      break;
+    case CModel::ms:
       unit = new Unit(UNIT_KIND_SECOND, 1, -3);
-    }
-  else if (u == "\xc2\xb5s")
-    {
+      break;
+    case CModel::micros:
       unit = new Unit(UNIT_KIND_SECOND, 1, -6);
-    }
-  else if (u == "ns")
-    {
+      break;
+    case CModel::ns:
       unit = new Unit(UNIT_KIND_SECOND, 1, -9);
-    }
-  else if (u == "ps")
-    {
+      break;
+    case CModel::ps:
       unit = new Unit(UNIT_KIND_SECOND, 1, -12);
-    }
-  else if (u == "fs")
-    {
+      break;
+    case CModel::fs:
       unit = new Unit(UNIT_KIND_SECOND, 1, -15);
-    }
-  else
-    {
+      break;
+    default:
       CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi time unit.");
+      break;
     }
 
   uDef->addUnit(*unit);
@@ -438,38 +431,34 @@ UnitDefinition* SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(con
  ** copasi model and returns a pointer to the corresponding SBML
  ** UnitDefinition object.
  */
-UnitDefinition* SBMLExporter::createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(const std::string& u)
+UnitDefinition* SBMLExporter::createSBMLSubstanceUnitDefinitionFromCopasiQuantityUnit(CModel::QuantityUnit u)
 {
   UnitDefinition* uDef = new UnitDefinition("substance");
   uDef->setId("substance");
   Unit* unit;
-  if (u == "mMol")
+  switch (u)
     {
+    case CModel::mMol:
       unit = new Unit(UNIT_KIND_MOLE, 1, -3);
-    }
-  else if (u == "\xc2\xb5Mol")
-    {
+      break;
+    case CModel::microMol:
       unit = new Unit(UNIT_KIND_MOLE, 1, -6);
-    }
-  else if (u == "nMol")
-    {
+      break;
+    case CModel::nMol:
       unit = new Unit(UNIT_KIND_MOLE, 1, -9);
-    }
-  else if (u == "pMol")
-    {
+      break;
+    case CModel::pMol:
       unit = new Unit(UNIT_KIND_MOLE, 1, -12);
-    }
-  else if (u == "fMol")
-    {
+      break;
+    case CModel::fMol:
       unit = new Unit(UNIT_KIND_MOLE, 1, -15);
-    }
-  else if (u == "#")
-    {
+      break;
+    case CModel::number:
       unit = new Unit(UNIT_KIND_ITEM, 1, 1);
-    }
-  else
-    {
+      break;
+    default:
       CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi quantity unit.");
+      break;
     }
   uDef->addUnit(*unit);
   return uDef;
@@ -480,38 +469,34 @@ UnitDefinition* SBMLExporter::createSBMLSubstanceUnitDefinitionFromCopasiQuantit
  ** copasi model and returns a pointer to the corresponding SBML
  ** UnitDefinition object.
  */
-UnitDefinition* SBMLExporter::createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(const std::string& u)
+UnitDefinition* SBMLExporter::createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit(CModel::VolumeUnit u)
 {
   UnitDefinition* uDef = new UnitDefinition("volume");
   uDef->setId("volume");
   Unit* unit;
-  if (u == "ml")
+  switch (u)
     {
+    case CModel::ml:
       unit = new Unit(UNIT_KIND_LITRE, 1, -3);
-    }
-  else if (u == "\xc2\xb5l")
-    {
+      break;
+    case CModel::microl:
       unit = new Unit(UNIT_KIND_LITRE, 1, -6);
-    }
-  else if (u == "nl")
-    {
+      break;
+    case CModel::nl:
       unit = new Unit(UNIT_KIND_LITRE, 1, -9);
-    }
-  else if (u == "pl")
-    {
+      break;
+    case CModel::pl:
       unit = new Unit(UNIT_KIND_LITRE, 1, -12);
-    }
-  else if (u == "fl")
-    {
+      break;
+    case CModel::fl:
       unit = new Unit(UNIT_KIND_LITRE, 1, -15);
-    }
-  else if (u == "m3")
-    {
+      break;
+    case CModel::m3:
       unit = new Unit(UNIT_KIND_METRE, 3, 1);
-    }
-  else
-    {
+      break;
+    default:
       CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi volume unit.");
+      break;
     }
   uDef->addUnit(*unit);
   return uDef;
