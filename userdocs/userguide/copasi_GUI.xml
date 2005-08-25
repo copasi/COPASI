@@ -29,7 +29,7 @@ It also has the advantage that Copasi essentially behaves the same on all platfo
 <sect1 id="commandLineSwitches" xreflabel="Copasi commandline options">
 <title>Commandline Version and Commandline Options</title>
 <para>
-Copasi comes in two versions. One with a (hopefully) nice GUI for interactive work and one without a GUI for batch processing of model files. Both versions support the same set of commandline arguments.
+Copasi comes in two versions. One with a (hopefully) nice GUI for interactive work and one without a GUI for batch processing of model files. Both versions support the same set of commandline arguments, although some do not make sense for the GUI version and will be ignored.
 </para>
 <variablelist><title>Commandline options</title>
 <varlistentry><term>--help</term>
@@ -40,51 +40,15 @@ Shows the usage of the program and the allowed commandline options.
 </listitem>
 </varlistentry>
 
-<varlistentry><term>--home</term>
-<listitem>
-<para></para>
-</listItem>
-</varlistentry>
-
-<varlistentry><term>--rc</term>
-<listitem>
-<para></para>
-</listItem>
-</varlistentry>
-
-<varlistentry><term>--systemFunctionDB</term>
-<listitem>
-<para></para>
-</listItem>
-</varlistentry>
-
-<varlistentry><term>--userFunctionDB</term>
-<listitem>
-<para></para>
-</listItem>
-</varlistentry>
-
 <varlistentry><term>-c</term><term>--copasidir</term>
 <listitem>
-<para>This specifies the directory where Copasi  has been installed. It is needed to find e.g. help files.</para>
-</listItem>
-</varlistentry>
-
-<varlistentry><term>-d</term><term>--default</term>
-<listitem>
-<para></para>
+<para>This specifies the directory where Copasi  has been installed. It is needed to find e.g. help files. On Windows and Mac OS X this is set automatically. On Linux it has to be specified if you want to use certain features. The GUI version of Copasi will issue a warning on startup if this has not been set. The commandline version does not need this directory to be specified and therefore ignores this option.</para>
 </listItem>
 </varlistentry>
 
 <varlistentry><term>-e</term><term>--exportSBML</term>
 <listitem>
-<para>With this option you can specify a name for the SBML file copasi should export. This is useful if you want to export some Copasi files to SBML in a batch job.</para>
-</listItem>
-</varlistentry>
-
-<varlistentry><term>-f</term><term>--copasiFile</term>
-<listitem>
-<para></para>
+<para>With this option you can specify a name for the SBML file copasi should export. This is useful if you want to export some Copasi files to SBML in a batch job. This only makes sense for the commandline version and it will be ignored by the GUI version.</para>
 </listItem>
 </varlistentry>
 
@@ -96,7 +60,7 @@ Shows the usage of the program and the allowed commandline options.
 
 <varlistentry><term>-s</term><term>--save</term>
 <listitem>
-<para>This option is used to specify the name file where Copasi should store a model. This is useful if you intend to convert some SBML files to Copasi files in a batch job.</para>
+<para>This option is used to specify the name file where Copasi should store a model. This is useful if you intend to convert some SBML files to Copasi files in a batch job. This also makes sense only for the commandline version and will be ignored by the GUI version.</para>
 </listItem>
 </varlistentry>
 </variablelist>
