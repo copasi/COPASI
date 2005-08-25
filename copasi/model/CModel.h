@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.102 $
+   $Revision: 1.103 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/29 12:33:35 $
+   $Author: gauges $ 
+   $Date: 2005/08/25 04:58:03 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -833,6 +833,12 @@ class CModel : public CCopasiContainer
     std::string getVolumeUnit() const;
 
     /**
+     * Get the unit for volumes
+     * @return CModel::VolumeUnit volumeUnit
+     */
+    CModel::VolumeUnit getVolumeUnitEnum() const;
+
+    /**
      * Set the unit for time. If copasi recognises 
      * the unit the conversion factors are set accordingly 
      * and true is returned.
@@ -857,6 +863,12 @@ class CModel : public CCopasiContainer
     std::string getTimeUnit() const;
 
     /**
+     * Get the unit for time
+     * @return CModel::TimeUnit timeUnit
+     */
+    CModel::TimeUnit getTimeUnitEnum() const;
+
+    /**
      * Set the unit for quantities. If copasi recognises 
      * the unit the conversion factors are set accordingly 
      * and true is returned.
@@ -879,6 +891,12 @@ class CModel : public CCopasiContainer
      * @return std::string quantityUnit
      */
     std::string getQuantityUnit() const;
+
+    /**
+     * Get the unit for quantities
+     * @return CModel::QuantityUnit quantityUnit
+     */
+    CModel::QuantityUnit getQuantityUnitEnum() const;
 
     /**
      *  Get the conversion factor quantity -> number

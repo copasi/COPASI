@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.229 $
+   $Revision: 1.230 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/29 12:33:35 $
+   $Author: gauges $ 
+   $Date: 2005/08/25 04:58:03 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1574,6 +1574,30 @@ bool CModel::setVolumeUnit(const CModel::VolumeUnit & unit)
 
 std::string CModel::getVolumeUnit() const
 {return mVolumeUnit;}
+
+CModel::VolumeUnit CModel::getVolumeUnitEnum() const
+  {
+    CModel::VolumeUnit Unit =
+      (CModel::VolumeUnit) unitCompare(mVolumeUnit, VolumeUnitName, 1);
+
+    return Unit;
+  }
+
+CModel::TimeUnit CModel::getTimeUnitEnum() const
+  {
+    CModel::TimeUnit Unit =
+      (CModel::TimeUnit) unitCompare(mTimeUnit, TimeUnitName, 1);
+
+    return Unit;
+  }
+
+CModel::QuantityUnit CModel::getQuantityUnitEnum() const
+  {
+    CModel::QuantityUnit Unit =
+      (CModel::QuantityUnit) unitCompare(mQuantityUnit, QuantityUnitName, 1);
+
+    return Unit;
+  }
 
 bool CModel::setTimeUnit(const std::string & name)
 {
