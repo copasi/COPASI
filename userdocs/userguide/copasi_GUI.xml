@@ -31,6 +31,11 @@ It also has the advantage that Copasi essentially behaves the same on all platfo
 <para>
 Copasi comes in two versions. One with a (hopefully) nice GUI for interactive work and one without a GUI for batch processing of model files. Both versions support the same set of commandline arguments, although some do not make sense for the GUI version and will be ignored.
 </para>
+<para>
+In addition to the commandline options, you can specify one or more Copasi (or Gepasi) files after the commandline options which will then be processed.
+Specifying more then one file again only makes sense for the commandline version of copasi. For each of the files, the activated tasks will be run. The commandline options for importing and exporting SBML as well as the --save option are ignored if more then one file is specified.
+Since the GUI version of Copasi can only handle one file at a time, it only makes sense to specify one file after the commandline options.
+</para>
 <variablelist><title>Commandline options</title>
 <varlistentry><term>--help</term>
 <listitem>
