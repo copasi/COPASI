@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/15 11:17:46 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:41:10 $
    End CVS Header */
 
 /**
@@ -99,6 +99,12 @@ class CCopasiXML : public CCopasiXMLInterface
     bool saveGUI();
 
     /**
+     * Save the SBML reference information
+     * @return bool success
+     */
+    bool saveSBMLReference();
+
+    /**
      * Save a Parameter.
      * @param const CCopasiParameter & parameter
      * @return bool success
@@ -133,6 +139,11 @@ class CCopasiXML : public CCopasiXMLInterface
      * The version of the COPASI XML Schema the current file adheres to.
      */
     CVersion mVersion;
+
+    /**
+     * SBML Reference
+     */
+    std::map< std::string, std::string > mSBMLReference;
   };
 
 #endif // COPASI_CCopasiXML

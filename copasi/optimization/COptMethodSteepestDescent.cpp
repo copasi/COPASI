@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 20:37:04 $
+   $Date: 2005/08/30 15:40:18 $
    End CVS Header */
 
 #include "copasi.h"
@@ -42,16 +42,45 @@ bool COptMethodSteepestDescent::optimise()
   if (!initialize()) return false;
 
   C_INT32 i, k;
-  C_FLOAT64 tmp, x0, alpha, mn, mx, norm, daux, fmn, fmx;
+  C_FLOAT64 tmp, x0, alpha, mn, mx, fmn, fmx;
   bool calc_grad;
 
-  // initial point is first guess even though it might be outside the domain
+  // initial point is first guess but we have to make sure that we
+  // are within the parameter domain
   for (i = 0; i < mVariableSize; i++)
-    mIndividual[i] = *(*mpOptItem)[i]->getObjectValue();
+    {
+      const COptItem & OptItem = *(*mpOptItem)[i];
+
+      switch (OptItem.checkConstraint())
+        {
+        case - 1:
+          mIndividual[i] = *OptItem.getLowerBoundValue();
+          (*(*mpSetCalculateVariable)[i])(mIndividual[i]);
+          break;
+
+        case 1:
+          mIndividual[i] = *OptItem.getUpperBoundValue();
+          (*(*mpSetCalculateVariable)[i])(mIndividual[i]);
+          break;
+
+        case 0:
+          mIndividual[i] = *OptItem.getObjectValue();
+          break;
+        }
+    }
 
   fmx = mBestValue = evaluate();
 
-  for (mCurrentIteration = 0; mCurrentIteration < mIterations && mContinue; mCurrentIteration++)
+  mpOptProblem->setSolutionVariables(mIndividual);
+  mContinue = mpOptProblem->setSolutionValue(mBestValue);
+
+  // We found a new best value lets report it.
+  //if (mpReport) mpReport->printBody();
+  mpParentTask->doOutput();
+
+  bool SolutionFound = false;
+
+  for (mCurrentIteration = 0; mCurrentIteration < mIterations && mContinue && !SolutionFound; mCurrentIteration++)
     {
       // calculate the direction of steepest descent
       // by central finite differences
@@ -85,10 +114,12 @@ bool COptMethodSteepestDescent::optimise()
           else mGradient[i] = 0.0;
         }
 
+      if (x0 < mTolerance) x0 = mTolerance;
+
       // we will move at a rate of 1/10 this size
       mn = mx = alpha = 0.0;
 
-      for (k = 0, calc_grad = false; (k < 9) && !calc_grad; k++)
+      for (k = 0, calc_grad = false; (k < 9) && !calc_grad && !SolutionFound; k++)
         {
           // set the minimum to the last successful step
           mn = mx;
@@ -97,12 +128,9 @@ bool COptMethodSteepestDescent::optimise()
           alpha += 0.1 * x0;
           // set the maximum to it
           mx = alpha;
+
           // take one step in that direction
-          for (i = 0, norm = 0.0; i < mVariableSize; i++)
-            {
-              (*(*mpSetCalculateVariable)[i])(mIndividual[i] + alpha * mGradient[i]);
-              if ((daux = fabs(alpha * mGradient[i])) > norm) norm = daux;
-            }
+          fmx = descentLine(alpha);
 
           fmx = evaluate();
 
@@ -113,40 +141,25 @@ bool COptMethodSteepestDescent::optimise()
               //Brent(mn, md, mx, descent_line, &alpha, &tmp, 1e-6, 50);
 
               FminBrent(mn, mx, mpDescent, &alpha, &tmp, mTolerance, 5);
-              // take one step in that direction
-              for (i = 0, norm = 0.0; i < mVariableSize; i++)
-                {
-                  (*(*mpSetCalculateVariable)[i])(mIndividual[i] + alpha * mGradient[i]);
-                  if ((daux = fabs(alpha * mGradient[i])) > norm) norm = daux;
-                }
 
-              fmx = evaluate();
+              // take one step in that direction
+              fmx = descentLine(alpha);
 
               // time to evaluate the new steepest descent direction
               calc_grad = true;
             }
-          // check if this aproximation is good enough
+
           if (fabs(fmx - mBestValue) < mTolerance)
-            //   if(norm < mTolerance)
-            {
-              // an acceptable solution
-              mBestValue = fmx;
-              for (i = 0; i < mVariableSize; i++)
-                mIndividual[i] = *(*mpOptItem)[i]->getObjectValue();
-              mpOptProblem->setSolutionVariables(mIndividual);
-              mContinue = mpOptProblem->setSolutionValue(mBestValue);
-              mpParentTask->doOutput();
-              return true;
-            }
+            SolutionFound = true;
         }
-      // this is the best approximation thus far
-      mBestValue = fmx;
+
       for (i = 0; i < mVariableSize; i++)
         mIndividual[i] = *(*mpOptItem)[i]->getObjectValue();
 
-      //if(callback != NULL) callback(mBestValue);
-      if (!isnan(mBestValue))
+      if (fmx < mBestValue && !isnan(fmx))
         {
+          mBestValue = fmx;
+
           mpOptProblem->setSolutionVariables(mIndividual);
           mContinue = mpOptProblem->setSolutionValue(mBestValue);
 
@@ -156,7 +169,7 @@ bool COptMethodSteepestDescent::optimise()
         }
     }
 
-  return false;
+  return SolutionFound;
 }
 
 bool COptMethodSteepestDescent::cleanup()
@@ -178,6 +191,8 @@ bool COptMethodSteepestDescent::initialize()
   mVariableSize = mpOptItem->size();
   mIndividual.resize(mVariableSize);
   mGradient.resize(mVariableSize);
+
+  mBestValue = DBL_MAX;
 
   return true;
 }
@@ -223,13 +238,17 @@ const C_FLOAT64 & COptMethodSteepestDescent::evaluate()
   // evaluate the fitness
   mContinue = mpOptProblem->calculate();
 
-  // check wheter the functional constraints are fulfilled
-  if (!mpOptProblem->checkFunctionalConstraints())
-    mValue = DBL_MAX;
-  else
-    mValue = mpOptProblem->getCalculateValue();
+  mValue = mpOptProblem->getCalculateValue();
 
-  return mpOptProblem->getCalculateValue();
+  // when we leave the either the parameter or functional domain
+  // we penalize the objective value by forcing it to be larger
+  // than the best value recorded so far.
+  if (mValue < mBestValue && !isnan(mValue) &&
+      (!mpOptProblem->checkParametricConstraints() ||
+       !mpOptProblem->checkFunctionalConstraints()))
+    mValue = mBestValue + fabs(mBestValue - mValue);
+
+  return mValue;
 }
 
 void COptMethodSteepestDescent::initObjects()

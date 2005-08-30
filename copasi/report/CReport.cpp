@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 20:17:07 $
+   $Date: 2005/08/30 15:40:30 $
    End CVS Header */
 
 #include "copasi.h"
@@ -113,6 +113,12 @@ void CReport::printFooter()
   (*mpOstream) << std::endl;
 }
 
+void CReport::printEmptyLine()
+{
+  if (!mpOstream) return;
+  (*mpOstream) << std::endl;
+}
+
 // Compile the List of Report Objects;
 // Support Parellel
 
@@ -179,11 +185,11 @@ void CReport::close()
 
 std::ostream * CReport::getStream() const {return mpOstream;}
 
-void CReport::printBody(CReport * pReport)
+/*void CReport::printBody(CReport * pReport)
 {
   if (pReport)
     pReport->printBody();
-}
+}*/
 
 // make to support parallel tasks
 void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * pListOfContainer,

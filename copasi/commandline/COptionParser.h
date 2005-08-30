@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/02/15 22:41:35 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:10 $
    End CVS Header */
 
 /*
@@ -49,22 +49,16 @@ namespace copasi
    */
   struct options
     {
-      options(void) :
-          SystemFunctionDB("FunctionDB.gps"),
-          UserFunctionDB("~/FunctionDB.cps")
-      {}
+      options(void) {}
       std::string ConfigFile;
       std::string CopasiDir;
-      std::string CopasiFile;
       std::map<std::string, std::string> Default;
       std::string ExportSBML;
       std::string Home;
-      std::string Tmp;
       std::string ImportSBML;
       std::string Save;
-      std::string SystemFunctionDB;
-      std::string UserFunctionDB;
-    }; // end options struct
+      std::string Tmp;
+    }  ; // end options struct
 
   /**
    * the following struct is used to record the location
@@ -75,16 +69,13 @@ namespace copasi
       typedef int size_type;
       size_type ConfigFile;
       size_type CopasiDir;
-      size_type CopasiFile;
       size_type Default;
       size_type ExportSBML;
       size_type Home;
-      size_type Tmp;
       size_type ImportSBML;
       size_type Save;
-      size_type SystemFunctionDB;
-      size_type UserFunctionDB;
-    }; // end option location struct
+      size_type Tmp;
+    }  ; // end option location struct
 
   /**
    * if there are any errors while parsing the command
@@ -162,9 +153,6 @@ namespace copasi
         option_CopasiDir,
         option_Home,
         option_Tmp,
-        option_SystemFunctionDB,
-        option_UserFunctionDB,
-        option_CopasiFile,
         option_Save,
         option_ImportSBML,
         option_ExportSBML,
@@ -183,6 +171,6 @@ namespace copasi
       void parse_short_option (char option, int position, opsource source);
       void parse_long_option (const char *option, int position, opsource source);
       void parse_value (const char *value);
-    }; // end copasi::COptionParser class
+    }  ; // end copasi::COptionParser class
 } // end copasi namespace
 #endif // COPASI_options

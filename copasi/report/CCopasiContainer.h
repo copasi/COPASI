@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/03/20 04:28:38 $
+   $Date: 2005/08/30 15:40:29 $
    End CVS Header */
 
 /**
@@ -87,7 +87,7 @@ class CCopasiContainer: public CCopasiObject
     virtual bool remove(CCopasiObject * pObject);
 
   protected:
-    virtual void initObjects();
+    void initObjects();
 
     template <class CType> CCopasiObject * addObjectReference(const std::string & name,
         CType & reference,

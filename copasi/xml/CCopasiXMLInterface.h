@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/24 20:07:55 $
+   $Date: 2005/08/30 15:41:10 $
    End CVS Header */
 
 /**
@@ -351,6 +351,13 @@ class CCopasiXMLInterface
      * @return bool success
      */
     bool saveData(const std::string & data);
+
+    /**
+     * Save xhtml to the ostream
+     * @param const std::string & xhtml
+     * @return bool success
+     */
+    bool saveXhtml(const std::string & xhtml);
 
     /**
      * Save an XML element to the ostream

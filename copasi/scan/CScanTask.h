@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/08 15:22:17 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:33 $
    End CVS Header */
 
 /**
@@ -79,10 +79,21 @@ class CScanTask : public CCopasiTask
     void cleanup();
 
     /**
-     * Initialize 
-     * @param ofstream & out
+     * Initialize the task. If an ostream is given this ostream is used
+     * instead of the target specified in the report. This allows nested 
+     * tasks to share the same output device.
+     * @param const OutputFlag & of
+     * @param std::ostream * pOstream (default: NULL)
+     * @return bool success
      */
-    bool initialize(std::ostream * out);
+    virtual bool initialize(const OutputFlag & of, std::ostream * pOstream);
+
+    /**
+     * Process the task with or without initializing to the initial state.
+     * @param const bool & useInitialValues
+     * @return bool success
+     */
+    virtual bool process(const bool & useInitialValues);
 
     /**
      * Loads parameters for this solver with data coming from a
@@ -90,11 +101,6 @@ class CScanTask : public CCopasiTask
      * @param configbuffer reference to a CReadConfig object.
      */
     void load(CReadConfig & configBuffer);
-
-    /**
-     * Do the integration
-     */
-    virtual bool process();
 
     /**
      * Do the subtask and the output

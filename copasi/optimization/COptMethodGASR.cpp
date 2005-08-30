@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 20:37:04 $
+   $Date: 2005/08/30 15:40:18 $
    End CVS Header */
 
 #include <float.h>
@@ -28,11 +28,11 @@ COptMethodGASR::COptMethodGASR(const CCopasiContainer * pParent):
     mIndividual(0),
     mCrossOverFalse(0),
     mCrossOver(0),
-    mEvaluationValue(DBL_MAX),
     mValue(0),
     mShuffle(0),
     mWins(0),
     mMutationVarians(0.1),
+    mEvaluationValue(DBL_MAX),
     mBestValue(DBL_MAX),
     mBestIndex(C_INVALID_INDEX),
     mGeneration(0)
@@ -57,11 +57,11 @@ COptMethodGASR::COptMethodGASR(const COptMethodGASR & src,
     mIndividual(0),
     mCrossOverFalse(0),
     mCrossOver(0),
-    mEvaluationValue(DBL_MAX),
     mValue(0),
     mShuffle(0),
     mWins(0),
     mMutationVarians(0.1),
+    mEvaluationValue(DBL_MAX),
     mBestValue(DBL_MAX),
     mBestIndex(C_INVALID_INDEX),
     mGeneration(0)
@@ -255,7 +255,7 @@ bool COptMethodGASR::select()
 
       for (j = 0; j < TotalPopulation - 1; j++)  // lambda is number of individuals
         {
-          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||           // within bounds
+          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||              // within bounds
               (mpRandom->getRandomOO() < mPf))      // random chance to compare values outside bounds
             {
               // compare obj fcn using mValue alternative code
@@ -292,19 +292,18 @@ C_FLOAT64 COptMethodGASR::phi(C_INT32 indivNum)
   for (i = 0; i < mVariableSize; i++)
     {
       COptItem & OptItem = *(*mpOptItem)[i];
+      C_FLOAT64 & value = (*mIndividual[indivNum])[i];
 
-      // Go through parameter and constraints (all taken care of in single call)
-      switch (OptItem.checkConstraint())
+      if (!OptItem.checkLowerBound(value))
         {
-        case - 1:        // to low
-          phiCalc = *OptItem.getLowerBoundValue() - (*mIndividual[indivNum])[i];
+          phiCalc = *OptItem.getLowerBoundValue() - value;
           phiVal += phiCalc * phiCalc;
-          break;
+        }
 
-        case 1:          // to high
-          phiCalc = (*mIndividual[indivNum])[i] - *OptItem.getUpperBoundValue();
+      if (!OptItem.checkUpperBound(value))
+        {
+          phiCalc = value - *OptItem.getUpperBoundValue();
           phiVal += phiCalc * phiCalc;
-          break;
         }
     }
 

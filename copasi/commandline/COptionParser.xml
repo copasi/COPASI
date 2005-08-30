@@ -22,7 +22,10 @@
            location="commandline"
            hidden="no">
     <name>rc</name>
-    <comment>The configuration file for copasi.</comment>
+    <comment>
+     The configuration file for copasi. The default is .copasirc in the
+     home directory.
+    </comment>
    </option>
    <option id="CopasiDir"
            type="string"
@@ -32,7 +35,9 @@
            hidden="no">
     <name>copasidir</name>
     <name>c</name>
-    <comment>The location of suplementary files for copasi.</comment>
+    <comment> 
+     The COPASI installation directory.
+    </comment>
    </option>
    <option id="Home"
            type="string"
@@ -41,7 +46,21 @@
            location="commandline"
            hidden="no">
     <name>home</name>
-    <comment>Your home directory.</comment>
+    <comment>
+     Your home directory.
+    </comment>
+   </option>
+   <option id="Tmp"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="both"
+           hidden="no">
+    <name>tmp</name>
+    <name>t</name>
+    <comment>
+     The temp directory used for autosave.
+    </comment>
    </option>
 <!--
    <option id="SystemFunctionDB"
@@ -61,8 +80,11 @@
            location="both"
            default="~/FunctionDB.cps"
            hidden="no">
-    <name>userFunctionDB</name>
-    <comment>The user extensible database of kinetic functions.</comment>
+    <name>tmp</name>
+    <name>t</name>
+    <comment>
+     The user extensible database of kinetic functions.
+    </comment>
    </option>
    <option id="CopasiFile"
            type="string"
@@ -72,7 +94,9 @@
            hidden="no">
     <name>copasiFile</name>
     <name>f</name>
-    <comment>The file which specifies the model and tasks.</comment>
+    <comment>
+     The file which specifies the model and tasks.
+    </comment>
    </option>
 -->
    <option id="Save"
@@ -84,10 +108,7 @@
     <name>save</name>
     <name>s</name>
     <comment>
-       The file the model is saved to after work. This overwrites the
-       default behaviour, which saves the resulting model in input file. 
-       If the input file is a Gepasi or SBML file its extension .gps or
-       .xml is replaced with .cps
+      The file the model is saved to after work. 
     </comment>
    </option>
    <option id="ImportSBML"
@@ -115,10 +136,10 @@
            mandatory="no"
            location="both"
            modifier="map"
-           hidden="no">
+           hidden="yes">
     <name>default</name>
     <name>d</name>
-    <comment>The SBML file to export.</comment>
+    <comment>Default settings.</comment>
    </option>
  </options>
 </cloxx>

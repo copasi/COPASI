@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/23 15:44:26 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:05 $
    End CVS Header */
 
 #include "copasi.h"
@@ -52,6 +52,12 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const CEvaluationNodeNumber & src):
 {}
 
 CEvaluationNodeNumber::~CEvaluationNodeNumber() {}
+
+#ifdef WIN32 
+// warning C4056: overflow in floating-point constant arithmetic
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
+#endif
 
 CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& node)
 {
@@ -108,6 +114,10 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
     }
   return pNode;
 }
+
+#ifdef WIN32
+# pragma warning (default: 4056 4756)
+#endif
 
 ASTNode* CEvaluationNodeNumber::toAST() const
   {

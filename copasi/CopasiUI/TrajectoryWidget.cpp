@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.113 $
+   $Revision: 1.114 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:42:32 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:51 $
    End CVS Header */
 
 /********************************************************
@@ -254,11 +254,11 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   //Layout2->addWidget(ExportToFileButton);
 
   reportDefinitionButton = new QPushButton(this, "ReportDefinition");
-  reportDefinitionButton->setText(trUtf8("Report..."));
+  reportDefinitionButton->setText(trUtf8("Report"));
   Layout2->addWidget(reportDefinitionButton);
 
   outputDefinitionButton = new QPushButton(this, "OutputDefinition");
-  outputDefinitionButton->setText(trUtf8("Output assistant..."));
+  outputDefinitionButton->setText(trUtf8("Output Assistant"));
   Layout2->addWidget(outputDefinitionButton);
 
   TrajectoryWidgetLayout->addMultiCellLayout(Layout2, 13, 13, 0, 3);
@@ -421,7 +421,7 @@ void TrajectoryWidget::runTrajectoryTask()
     dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
   assert(tt);
 
-  tt->initialize();
+  tt->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
 
   CTrajectoryProblem* trajectoryproblem =
     dynamic_cast<CTrajectoryProblem *>(tt->getProblem());
@@ -448,7 +448,7 @@ void TrajectoryWidget::runTrajectoryTask()
 
   try
     {
-      if (tt->process())
+      if (tt->process(true))
         {
           if (setInitialState->isChecked())
             {

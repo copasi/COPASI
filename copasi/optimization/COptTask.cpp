@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 20:37:04 $
+   $Date: 2005/08/30 15:40:18 $
    End CVS Header */
 
 /**
@@ -66,7 +66,8 @@ bool COptTask::setCallBack(CProcessReport * pCallBack)
   return success;
 }
 
-bool COptTask::initialize(std::ostream * pOstream)
+bool COptTask::initialize(const OutputFlag & of,
+                          std::ostream * pOstream)
 {
   COptProblem * pProblem = dynamic_cast<COptProblem *>(mpProblem);
   COptMethod * pMethod = dynamic_cast<COptMethod *>(mpMethod);
@@ -74,8 +75,9 @@ bool COptTask::initialize(std::ostream * pOstream)
   if (!pProblem || !pMethod) return false;
 
   //initialize reporting
-  bool success = CCopasiTask::initialize(pOstream);
+  bool success = true;
 
+  if (!CCopasiTask::initialize(of, pOstream)) success = false;
   //if (!mReport.open(pOstream)) success = false;
   //if (!mReport.compile()) success = false;
 
@@ -87,7 +89,7 @@ bool COptTask::initialize(std::ostream * pOstream)
   return success;
 }
 
-bool COptTask::process()
+bool COptTask::process(const bool & /* useInitialValues */)
 {
   COptProblem * pProblem = dynamic_cast<COptProblem *>(mpProblem);
   COptMethod * pMethod = dynamic_cast<COptMethod *>(mpMethod);

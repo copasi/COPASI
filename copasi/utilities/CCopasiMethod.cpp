@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 20:35:51 $
+   $Date: 2005/08/30 15:40:58 $
    End CVS Header */
 
 /**
@@ -50,7 +50,7 @@ const char* CCopasiMethod::XMLSubType[] =
     "SimulatedAnnealing",
     "GeneticAlgorithm",
     "EvolutionaryProgram",
-    "SteepestDescent"
+    "SteepestDescent",
     "HybridGASA",
     "GeneticAlgorithmSR",
     "EnhancedNewton",
@@ -87,7 +87,7 @@ CCopasiMethod::CCopasiMethod():
 CCopasiMethod::CCopasiMethod(const CCopasiTask::Type & type,
                              const CCopasiMethod::SubType & subType,
                              const CCopasiContainer * pParent):
-    CCopasiParameterGroup(TypeName[type], pParent, "Method"),
+    CCopasiParameterGroup(CCopasiTask::TypeName[type], pParent, "Method"),
     mType(type),
     mSubType(subType),
     mpCallBack(NULL)
@@ -141,6 +141,27 @@ bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
   return true;
 }
 
-void CCopasiMethod::load(CReadConfig & C_UNUSED(configBuffer),
-                         CReadConfig::Mode C_UNUSED(mode))
+void CCopasiMethod::load(CReadConfig & /* configBuffer */,
+                         CReadConfig::Mode /* mode */)
 {fatalError();}
+
+void CCopasiMethod::print(std::ostream * ostream) const
+  {*ostream << *this;}
+
+std::ostream &operator<<(std::ostream &os, const CCopasiMethod & o)
+{
+  os << "Method: " << o.getObjectName() << std::endl;
+
+  CCopasiParameterGroup::parameterGroup::const_iterator it =
+    o.CCopasiParameter::getValue().pGROUP->begin();
+  CCopasiParameterGroup::parameterGroup::const_iterator end =
+    o.CCopasiParameter::getValue().pGROUP->end();
+
+  for (; it != end; ++it)
+    {
+      (*it)->print(&os);
+      os << std::endl;
+    }
+
+  return os;
+}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetTask.ui.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/02 11:52:01 $
+   $Date: 2005/08/30 15:39:50 $
    End CVS Header */
 
 /****************************************************************************
@@ -86,10 +86,12 @@ bool CScanWidgetTask::saveToScanProblem(CScanProblem * pg) const
     return true;
   }
 
-void CScanWidgetTask::typeChanged(int n)
+void CScanWidgetTask::typeChanged(int C_UNUSED(n))
 {
+  /*
   if (n == 1) //time course
     checkOutput->setEnabled(true);
   else
     checkOutput->setEnabled(false);
+  */
 }

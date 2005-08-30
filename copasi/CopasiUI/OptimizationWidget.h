@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/07/25 22:12:56 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:51 $
    End CVS Header */
 
 /****************************************************************************
@@ -102,7 +102,6 @@ class OptimizationWidget : public CopasiWidget
     //QGroupBox* methodGroupBox;
     QLabel* methodLabel, *typeLabel, *nameLabel;
     QComboBox* methodCombo;
-    QPushButton* confirmButton;
     QPushButton* runButton;
     QPushButton* cancelButton;
     QPushButton* reportButton;

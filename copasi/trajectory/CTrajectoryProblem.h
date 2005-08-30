@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:34:18 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:49 $
    End CVS Header */
 
 /**
@@ -201,7 +201,7 @@ class CTrajectoryProblem : public CCopasiProblem
      */
     bool sync();
 
-    virtual void initObjects();
+    void initObjects();
   };
 
 #endif // COPASI_CTrajectoryProblem

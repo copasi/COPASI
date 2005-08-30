@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.180 $
+   $Revision: 1.181 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/21 11:40:11 $
+   $Date: 2005/08/30 15:39:51 $
    End CVS Header */
 
 /****************************************************************************
@@ -495,10 +495,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 31:
         return scanWidget;
         break;
-#ifdef COPASI_DEBUG
       case 32:
         return optimizationWidget;
         break;
+#ifdef COPASI_DEBUG
       case 33:
         return paramFittingWidget;
         break;
@@ -992,7 +992,8 @@ bool ListViews::detach()
 bool ListViews::notify(ObjectType objectType, Action action, const std::string & key) //static
 {
   //std::cout << "notify: " << objectType << "  " << action << " " << key << std::endl;
-  CCopasiDataModel::Global->changed();
+  if (objectType != MODEL && action != ADD)
+    CCopasiDataModel::Global->changed();
 
   bool success = true;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/11 13:12:32 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:05 $
    End CVS Header */
 
 #include "copasi.h"
@@ -46,7 +46,13 @@ CEvaluationNodeObject::~CEvaluationNodeObject() {}
 
 bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 {
-  mpValue = pTree->getObjectValue(mRegisteredObjectCN);
+  const CCopasiObject * pObject =
+    pTree->getObject(mRegisteredObjectCN);
+
+  if (pObject)
+    mpValue = (C_FLOAT64 *) pTree->getObject(mRegisteredObjectCN)->getReference();
+  else
+    mpValue = NULL;
 
   if (mpValue == NULL) return false;
 
@@ -66,6 +72,16 @@ bool CEvaluationNodeObject::setData(const Data & data)
 
 std::string CEvaluationNodeObject::getInfix() const
   {return "<" + mRegisteredObjectCN + ">";}
+
+std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTree) const
+  {
+    const CCopasiObject * pObject =
+      pTree->getObject(mRegisteredObjectCN);
+
+    if (pObject == NULL) return "<" + mRegisteredObjectCN + ">";
+
+    return "<" + pObject->getObjectDisplayName() + ">";
+  }
 
 CEvaluationNode* CEvaluationNodeObject::createNodeFromASTTree(const ASTNode& node)
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:20:37 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:33 $
    End CVS Header */
 
 /**
@@ -60,7 +60,8 @@ void CMCATask::load(CReadConfig & configBuffer)
   ((CMCAMethod *) mpMethod)->load(configBuffer);
 }
 
-bool CMCATask::initialize(std::ostream * pOstream)
+bool CMCATask::initialize(const OutputFlag & of,
+                          std::ostream * pOstream)
 {
   assert(mpProblem && mpMethod);
 
@@ -70,14 +71,15 @@ bool CMCATask::initialize(std::ostream * pOstream)
 
   bool success = true;
 
-  if (!mReport.open(pOstream)) success = false;
-  if (!mReport.compile()) success = false;
+  //initialize reporting
+  if (!CCopasiTask::initialize(of, pOstream)) success = false;
+
   if (!pProblem->getModel()->compileIfNecessary()) success = false;
 
   return success;
 }
 
-bool CMCATask::process()
+bool CMCATask::process(const bool & /* useInitialValues */)
 {
   assert(mpMethod);
 

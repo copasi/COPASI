@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/14 12:14:36 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:51 $
    End CVS Header */
 
 #include <qpushbutton.h>
@@ -75,7 +75,7 @@ bool StateWidget::loadFromBackend()
   = dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
 
   if (!pSteadyStateTask) return false;
-  if (!pSteadyStateTask->getState()) return false;
+  if (!pSteadyStateTask->getState()) return mCentralWidget->clear();
   return mCentralWidget->loadAll(pSteadyStateTask);
 }
 

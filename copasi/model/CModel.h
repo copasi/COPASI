@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.103 $
+   $Revision: 1.104 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/25 04:58:03 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:17 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -49,7 +49,7 @@ class CModel : public CCopasiContainer
     /**
      *  Enum of valid time units
      */
-    enum TimeUnit {d = 0, h, m, s, ms, micros, ns, ps, fs};
+    enum TimeUnit {d = 0, h, min, s, ms, micros, ns, ps, fs};
 
     /**
      * String representation of valid time units

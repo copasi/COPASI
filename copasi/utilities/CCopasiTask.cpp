@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/15 11:28:30 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:58 $
    End CVS Header */
 
 /**
@@ -23,6 +23,7 @@
 #include "report/CKeyFactory.h"
 #include "utilities/COutputHandler.h"
 #include "model/CModel.h"
+#include "report/CCopasiObjectReference.h"
 
 const std::string CCopasiTask::TypeName[] =
   {
@@ -66,15 +67,19 @@ CCopasiTask::CCopasiTask(const std::string & name,
     CCopasiContainer(name, pParent, type),
     mType(CCopasiTask::unset),
     mKey(GlobalKeys.add("Task", this)),
+    mDescription(this),
+    mResult(this),
     mScheduled(false),
     mpProblem(NULL),
     mpMethod(NULL),
     mReport(),
+    mpCurrentReport(&mReport),
     mpOutputHandler(NULL),
     mpCallBack(NULL),
     mpSliders(NULL),
-    mDoOutput(OUTPUT_COMPLETE)
-{}
+    mDoOutput(OUTPUT_COMPLETE),
+    mOutputCounter(0)
+{initObjects();}
 
 CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
                          const CCopasiContainer * pParent,
@@ -82,30 +87,38 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
     CCopasiContainer(CCopasiTask::TypeName[taskType], pParent, type),
     mType(taskType),
     mKey(GlobalKeys.add("Task", this)),
+    mDescription(this),
+    mResult(this),
     mScheduled(false),
     mpProblem(NULL),
     mpMethod(NULL),
     mReport(),
+    mpCurrentReport(&mReport),
     mpOutputHandler(NULL),
     mpCallBack(NULL),
     mpSliders(NULL),
-    mDoOutput(OUTPUT_COMPLETE)
-{}
+    mDoOutput(OUTPUT_COMPLETE),
+    mOutputCounter(0)
+{initObjects();}
 
 CCopasiTask::CCopasiTask(const CCopasiTask & src,
                          const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mType(src.mType),
     mKey(GlobalKeys.add("Task", this)),
+    mDescription(src.mDescription, this),
+    mResult(src.mResult, this),
     mScheduled(src.mScheduled),
     mpProblem(NULL),
     mpMethod(NULL),
     mReport(src.mReport),
+    mpCurrentReport(src.mpCurrentReport),
     mpOutputHandler(NULL),
     mpCallBack(NULL),
     mpSliders(NULL),
-    mDoOutput(OUTPUT_COMPLETE)
-{}
+    mDoOutput(OUTPUT_COMPLETE),
+    mOutputCounter(0)
+{initObjects();}
 
 CCopasiTask::~CCopasiTask()
 {
@@ -136,22 +149,28 @@ bool CCopasiTask::setCallBack(CProcessReport * pCallBack)
   return true;
 }
 
-bool CCopasiTask::initialize(std::ostream * pOstream)
+bool CCopasiTask::initialize(const OutputFlag & of,
+                             std::ostream * pOstream)
 {
   if (!mpProblem) return false;
   if (!mpProblem->getModel()) return false;
   if (!mpMethod) return false;
 
   if (!mpProblem->getModel()->compileIfNecessary()) return false;
+
+  mDoOutput = of;
+  if (mDoOutput == NO_OUTPUT) return true;
+
   if (!mReport.open(pOstream)) return false;
   if (!mReport.compile()) return false;
 
   return true;
 }
 
-bool CCopasiTask::process(OutputFlag C_UNUSED(of)) {return false;}
+bool CCopasiTask::process(const bool & useInitialValues)
+{return false;}
 
-bool CCopasiTask::processForScan(bool C_UNUSED(useInitialConditions), bool C_UNUSED(doOutput)) {return false;}
+//bool CCopasiTask::processForScan(bool C_UNUSED(useInitialConditions), bool C_UNUSED(doOutput)) {return false;}
 
 bool CCopasiTask::restore()
 {
@@ -170,7 +189,15 @@ bool CCopasiTask::setMethodType(const int & C_UNUSED(type))
 
 CCopasiMethod * CCopasiTask::getMethod() {return mpMethod;}
 
+const CCopasiMethod * CCopasiTask::getMethod() const {return mpMethod;}
+
 CReport & CCopasiTask::getReport() {return mReport;}
+
+const CCopasiTask::CDescription & CCopasiTask::getDescription() const
+  {return mDescription;}
+
+const CCopasiTask::CResult & CCopasiTask::getResult() const
+  {return mResult;}
 
 void CCopasiTask::cleanup() {}
 
@@ -192,9 +219,11 @@ CCopasiParameterGroup * CCopasiTask::getSliders()
 
 bool CCopasiTask::initOutput()
 {
+  mOutputCounter = 0;
+
   if (mDoOutput == OUTPUT_COMPLETE)
     {
-      mReport.printHeader();
+      if (mpCurrentReport) mpCurrentReport->printHeader();
       if (mpOutputHandler) mpOutputHandler->init();
     }
   return true;
@@ -204,9 +233,10 @@ bool CCopasiTask::doOutput()
 {
   if (mDoOutput)
     {
-      mReport.printBody();
+      if (mpCurrentReport) mpCurrentReport->printBody();
       if (mpOutputHandler) mpOutputHandler->doOutput();
     }
+  ++mOutputCounter;
   return true;
 }
 
@@ -214,8 +244,11 @@ bool CCopasiTask::finishOutput()
 {
   if (mDoOutput == OUTPUT_COMPLETE)
     {
-      mReport.printFooter();
-      mReport.close();
+      if (mpCurrentReport)
+        {
+          mpCurrentReport->printFooter();
+          mpCurrentReport->close();
+        }
       if (mpOutputHandler) mpOutputHandler->finish();
     }
   return true;
@@ -225,8 +258,85 @@ bool CCopasiTask::separatorOutput()
 {
   if (mDoOutput == OUTPUT_COMPLETE)
     {
-      //mReport.printHeader(); //TODO
+      if (mpCurrentReport) mpCurrentReport->printEmptyLine();
       if (mpOutputHandler) mpOutputHandler->doSeparator();
     }
   return true;
+}
+
+void CCopasiTask::initObjects()
+{
+  addObjectReference("Output counter", mOutputCounter, CCopasiObject::ValueInt);
+}
+
+CCopasiTask::CDescription::CDescription(const CCopasiContainer * pParent):
+    CCopasiObject("Description", pParent, "Object")
+{}
+
+CCopasiTask::CDescription::CDescription(const CCopasiTask::CDescription & src,
+                                        const CCopasiContainer * pParent):
+    CCopasiObject(src, pParent)
+{}
+
+CCopasiTask::CDescription::~CDescription() {}
+
+void CCopasiTask::CDescription::print(std::ostream * ostream) const
+  {*ostream << *this;}
+
+std::ostream &operator<<(std::ostream &os,
+                         const CCopasiTask::CDescription & o)
+{
+  const CCopasiTask & Task = *static_cast<const CCopasiTask *>(o.getObjectParent());
+
+  os << Task.getObjectName() << " Task" << std::endl << std::endl;
+
+  if (Task.getProblem())
+    {
+      Task.getProblem()->print(&os);
+      os << std::endl;
+    }
+  else
+    os << "No Problem Specified!" << std::endl;
+
+  if (Task.getMethod())
+    {
+      Task.getMethod()->print(&os);
+      os << std::endl;
+    }
+  else
+    os << "No Method Specified!" << std::endl;
+
+  return os;
+}
+
+CCopasiTask::CResult::CResult(const CCopasiContainer * pParent):
+    CCopasiObject("Result", pParent, "Object")
+{}
+
+CCopasiTask::CResult::CResult(const CCopasiTask::CResult & src,
+                              const CCopasiContainer * pParent):
+    CCopasiObject(src, pParent)
+{}
+
+CCopasiTask::CResult::~CResult() {}
+
+void CCopasiTask::CResult::print(std::ostream * ostream) const
+  {*ostream << *this;}
+
+std::ostream &operator<<(std::ostream &os,
+                         const CCopasiTask::CResult & o)
+{
+  const CCopasiTask & Task = *static_cast<const CCopasiTask *>(o.getObjectParent());
+
+  os << Task.getObjectName() << " Result:" << std::endl << std::endl;
+
+  if (Task.getProblem())
+    {
+      Task.getProblem()->printResult(&os);
+      os << std::endl;
+    }
+  else
+    os << "No Problem Specified!" << std::endl;
+
+  return os;
 }

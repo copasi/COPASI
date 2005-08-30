@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/29 12:27:10 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:49 $
    End CVS Header */
 
 /**
@@ -91,7 +91,8 @@ void CTrajectoryTask::load(CReadConfig & configBuffer)
   ((CTrajectoryMethod *)mpMethod)->setProblem((CTrajectoryProblem *) mpProblem);
 }
 
-bool CTrajectoryTask::initialize(std::ostream * pOstream)
+bool CTrajectoryTask::initialize(const OutputFlag & of,
+                                 std::ostream * pOstream)
 {
   assert(mpProblem && mpMethod);
 
@@ -99,28 +100,35 @@ bool CTrajectoryTask::initialize(std::ostream * pOstream)
     dynamic_cast<CTrajectoryProblem *>(mpProblem);
   assert(pProblem);
 
-  return CCopasiTask::initialize(pOstream);
+  return CCopasiTask::initialize(of, pOstream);
 }
 
-bool CTrajectoryTask::process(OutputFlag of, bool useInitialValues)
+bool CTrajectoryTask::process(const bool & useInitialValues)
 {
-  mDoOutput = of;
-  unsigned C_INT32 FailCounter = 0;
-
   assert(/*mpProblem && */mpMethod);
   mpMethod->isValidProblem(mpProblem);
+
+  //*****
+
+  if (useInitialValues)
+    mpProblem->getModel()->applyInitialValues();
+
+  mpCurrentReport = &mReport;
+
+  //*****
 
   CTrajectoryProblem * pProblem = (CTrajectoryProblem *) mpProblem;
   CTrajectoryMethod * pMethod = (CTrajectoryMethod *) mpMethod;
 
+  mTimeSeriesRequested = pProblem->timeSeriesRequested();
+
   //the following is a hack that has to disappear soon.
   //pProblem->setInitialState(pProblem->getModel()->getInitialState());
 
-  mTimeSeriesRequested = pProblem->timeSeriesRequested();
+  unsigned C_INT32 FailCounter = 0;
 
-  //use initial values only if requested
-  if (useInitialValues)
-    pProblem->getModel()->applyInitialValues();
+  //set the start time
+  pProblem->getModel()->setTime(pProblem->getStartTime());
 
   pdelete(mpState);
   mpState = new CState(pProblem->getModel()->getState());
@@ -130,6 +138,13 @@ bool CTrajectoryTask::process(OutputFlag of, bool useInitialValues)
 
   C_FLOAT64 StepSize = pProblem->getStepSize();
   C_FLOAT64 NextTimeToReport;
+
+  const C_FLOAT64 & Time = mpState->getTime();
+  const C_FLOAT64 & EndTime = pProblem->getEndTime();
+  const C_FLOAT64 & StartTime = pProblem->getStartTime();
+
+  C_FLOAT64 ActualStepSize;
+  C_FLOAT64 StepNumber = (EndTime - StartTime) / StepSize;
 
   bool (*LE)(const C_FLOAT64 &, const C_FLOAT64 &);
   bool (*L)(const C_FLOAT64 &, const C_FLOAT64 &);
@@ -143,13 +158,6 @@ bool CTrajectoryTask::process(OutputFlag of, bool useInitialValues)
       LE = &fle;
       L = &fl;
     }
-
-  const C_FLOAT64 & Time = mpState->getTime();
-  const C_FLOAT64 & EndTime = pProblem->getEndTime();
-  const C_FLOAT64 & StartTime = pProblem->getStartTime();
-
-  C_FLOAT64 ActualStepSize;
-  C_FLOAT64 StepNumber = (EndTime - StartTime) / StepSize;
 
   unsigned C_INT32 StepCounter = 1;
 
@@ -181,7 +189,7 @@ bool CTrajectoryTask::process(OutputFlag of, bool useInitialValues)
 
   // We start the integration
   // This is numerically more stable then adding pProblem->getStepSize().
-  NextTimeToReport = (EndTime - StartTime) * StepCounter++ / StepNumber;
+  NextTimeToReport = StartTime + (EndTime - StartTime) * StepCounter++ / StepNumber;
   try
     {
       ActualStepSize = pMethod->step(StepSize, mpState);
@@ -216,7 +224,7 @@ bool CTrajectoryTask::process(OutputFlag of, bool useInitialValues)
     {
       FailCounter = 0;
       // This is numerically more stable then adding pProblem->getStepSize().
-      NextTimeToReport = (EndTime - StartTime) * StepCounter++ / StepNumber;
+      NextTimeToReport = StartTime + (EndTime - StartTime) * StepCounter++ / StepNumber;
       // Make sure that we do not overstep
       if ((*L)(EndTime, NextTimeToReport)) NextTimeToReport = EndTime;
       StepSize = NextTimeToReport - Time;
@@ -264,7 +272,7 @@ bool CTrajectoryTask::process(OutputFlag of, bool useInitialValues)
         {
           FailCounter = 0;
           // This is numerically more stable then adding pProblem->getStepSize().
-          NextTimeToReport = (EndTime - StartTime) * StepCounter++ / StepNumber;
+          NextTimeToReport = StartTime + (EndTime - StartTime) * StepCounter++ / StepNumber;
           // Make sure that we do not overstep
           if ((*L)(EndTime, NextTimeToReport)) NextTimeToReport = EndTime;
           StepSize = NextTimeToReport - Time;
@@ -284,43 +292,45 @@ bool CTrajectoryTask::process(OutputFlag of, bool useInitialValues)
 }
 
 //virtual
+/*
 bool CTrajectoryTask::processForScan(bool useInitialConditions, bool doOutput)
 {
-  assert(/*mpProblem && */mpMethod);
+  assert(mpProblem && mpMethod);
   mpMethod->isValidProblem(mpProblem);
-
+ 
   CTrajectoryProblem* pProblem =
     dynamic_cast<CTrajectoryProblem *>(mpProblem);
   assert(pProblem);
-
+ 
   //set flag for output
   OutputFlag of = NO_OUTPUT;
   if (doOutput) of = OUTPUT;
-
+ 
   //handle initial conditions
-  /*State storeState;
+  / *State storeState;
   if (!useInitialConditions)
     {
       storeState = pProblem->getInitialState();
       pProblem->getModel()->setTime(pProblem->getInitialState().getTime());
       pProblem->setInitialState(pProblem->getModel()->getState());
       // pProblem->getInitialState().setTime(storeState.getTime());
-    }*/
-
+    }* /
+ 
   //switch off time series storage
-  /*bool storeTS = pProblem->timeSeriesRequested();
-  pProblem->setTimeSeriesRequested(false);*/
-
+  / *bool storeTS = pProblem->timeSeriesRequested();
+  pProblem->setTimeSeriesRequested(false);* /
+ 
   //do the calculation
   return process(of, useInitialConditions);
-
+ 
   //restore ...
-  /*if (!useInitialConditions) pProblem->setInitialState(storeState);
+  / *if (!useInitialConditions) pProblem->setInitialState(storeState);
   mDoOutput = storeOutput;
-  pProblem->setTimeSeriesRequested(storeTS);*/
-
+  pProblem->setTimeSeriesRequested(storeTS);* /
+ 
   //return true;
 }
+ */
 
 bool CTrajectoryTask::processSimple(bool singleStep) //without output
 {

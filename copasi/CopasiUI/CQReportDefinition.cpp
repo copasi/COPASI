@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQReportDefinition.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 17:43:08 $
+   $Date: 2005/08/30 15:39:50 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQReportDefinition.ui'
  **
- ** Created: Wed May 11 13:40:05 2005
- **      by: The User Interface Compiler ($Id: CQReportDefinition.cpp,v 1.2 2005/05/11 17:43:08 shoops Exp $)
+ ** Created: Thu Aug 25 09:03:57 2005
+ **      by: The User Interface Compiler ($Id: CQReportDefinition.cpp,v 1.3 2005/08/30 15:39:50 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,19 +18,19 @@
 #include "CQReportDefinition.h"
 
 #include <qvariant.h>
-#include <qpushbutton.h>
-#include <qframe.h>
-#include <qlabel.h>
-#include <qtextedit.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qcheckbox.h>
-#include <qtabwidget.h>
-#include <qlistbox.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include "CQReportDefinition.ui.h"
+ #include <qpushbutton.h>
+ #include <qframe.h>
+ #include <qlabel.h>
+ #include <qtextedit.h>
+ #include <qlineedit.h>
+ #include <qcombobox.h>
+ #include <qcheckbox.h>
+ #include <qtabwidget.h>
+ #include <qlistbox.h>
+ #include <qlayout.h>
+ #include <qtooltip.h>
+ #include <qwhatsthis.h>
+ #include "CQReportDefinition.ui.h"
 
 /*
  *  Constructs a CQReportDefinition which is a child of 'parent', with the
@@ -54,19 +54,19 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
   mpReportFrameLayout = new QGridLayout(mpReportFrame, 1, 1, 11, 6, "mpReportFrameLayout");
 
   mpSeparatorLabel = new QLabel(mpReportFrame, "mpSeparatorLabel");
-  mpSeparatorLabel->setMinimumSize(QSize(57, 0));
+  mpSeparatorLabel->setMinimumSize(QSize(62, 0));
   mpSeparatorLabel->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
 
   mpReportFrameLayout->addWidget(mpSeparatorLabel, 2, 0);
 
   mpNameLabel = new QLabel(mpReportFrame, "mpNameLabel");
-  mpNameLabel->setMinimumSize(QSize(45, 0));
+  mpNameLabel->setMinimumSize(QSize(62, 0));
   mpNameLabel->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
 
   mpReportFrameLayout->addWidget(mpNameLabel, 0, 0);
 
   mpCommentLabel = new QLabel(mpReportFrame, "mpCommentLabel");
-  mpCommentLabel->setMinimumSize(QSize(53, 0));
+  mpCommentLabel->setMinimumSize(QSize(62, 0));
   mpCommentLabel->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
 
   mpReportFrameLayout->addWidget(mpCommentLabel, 1, 0);
@@ -117,42 +117,42 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
   mpBtnAdvanced = new QPushButton(mpEditListsFrame, "mpBtnAdvanced");
   mpBtnAdvanced->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, mpBtnAdvanced->sizePolicy().hasHeightForWidth()));
   mpBtnAdvanced->setMinimumSize(QSize(90, 0));
-  mpBtnAdvanced->setMaximumSize(QSize(100, 32767));
+  mpBtnAdvanced->setMaximumSize(QSize(112, 32767));
   layout2->addWidget(mpBtnAdvanced);
 
   mpBtnItem = new QPushButton(mpEditListsFrame, "mpBtnItem");
   mpBtnItem->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, mpBtnItem->sizePolicy().hasHeightForWidth()));
-  mpBtnItem->setMaximumSize(QSize(100, 32767));
+  mpBtnItem->setMaximumSize(QSize(112, 32767));
   layout2->addWidget(mpBtnItem);
 
   mpBtnSeparator = new QPushButton(mpEditListsFrame, "mpBtnSeparator");
   mpBtnSeparator->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, mpBtnSeparator->sizePolicy().hasHeightForWidth()));
-  mpBtnSeparator->setMaximumSize(QSize(100, 32767));
+  mpBtnSeparator->setMaximumSize(QSize(112, 32767));
   layout2->addWidget(mpBtnSeparator);
 
   mpBtnText = new QPushButton(mpEditListsFrame, "mpBtnText");
   mpBtnText->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, mpBtnText->sizePolicy().hasHeightForWidth()));
-  mpBtnText->setMaximumSize(QSize(100, 32767));
+  mpBtnText->setMaximumSize(QSize(112, 32767));
   layout2->addWidget(mpBtnText);
 
   mpBtnDelete = new QPushButton(mpEditListsFrame, "mpBtnDelete");
   mpBtnDelete->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, mpBtnDelete->sizePolicy().hasHeightForWidth()));
-  mpBtnDelete->setMaximumSize(QSize(100, 32767));
+  mpBtnDelete->setMaximumSize(QSize(112, 32767));
   layout2->addWidget(mpBtnDelete);
 
   mpBtnUp = new QPushButton(mpEditListsFrame, "mpBtnUp");
   mpBtnUp->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, mpBtnUp->sizePolicy().hasHeightForWidth()));
-  mpBtnUp->setMaximumSize(QSize(100, 32767));
+  mpBtnUp->setMaximumSize(QSize(112, 32767));
   layout2->addWidget(mpBtnUp);
 
   mpBtnDown = new QPushButton(mpEditListsFrame, "mpBtnDown");
   mpBtnDown->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, mpBtnDown->sizePolicy().hasHeightForWidth()));
-  mpBtnDown->setMaximumSize(QSize(100, 32767));
+  mpBtnDown->setMaximumSize(QSize(112, 32767));
   layout2->addWidget(mpBtnDown);
 
   mpTitleCheck = new QCheckBox(mpEditListsFrame, "mpTitleCheck");
   mpTitleCheck->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, mpTitleCheck->sizePolicy().hasHeightForWidth()));
-  mpTitleCheck->setMaximumSize(QSize(100, 32767));
+  mpTitleCheck->setMaximumSize(QSize(112, 32767));
   layout2->addWidget(mpTitleCheck);
   mpSpacerBtnLayout = new QSpacerItem(20, 16, QSizePolicy::Minimum, QSizePolicy::Expanding);
   layout2->addItem(mpSpacerBtnLayout);
@@ -195,10 +195,10 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
   clearWState(WState_Polished);
 
   // signals and slots connections
-  connect(mpName, SIGNAL(changed()), this, SLOT(nameChanged()));
-  connect(mpTaskBox, SIGNAL(changed()), this, SLOT(taskChanged()));
-  connect(mpCommentEdit, SIGNAL(changed()), this, SLOT(commentChanged()));
-  connect(mpSeparator, SIGNAL(changed()), this, SLOT(separatorChanged()));
+  connect(mpName, SIGNAL(textChanged(const QString &)), this, SLOT(nameChanged(const QString &)));
+  connect(mpTaskBox, SIGNAL(textChanged(const QString &)), this, SLOT(taskChanged(const QString &)));
+  connect(mpCommentEdit, SIGNAL(textChanged()), this, SLOT(commentChanged()));
+  connect(mpSeparator, SIGNAL(textChanged(const QString &)), this, SLOT(separatorChanged(const QString &)));
   connect(mpTabCheck, SIGNAL(clicked()), this, SLOT(chkTabClicked()));
   connect(mpTitleCheck, SIGNAL(clicked()), this, SLOT(chkTitleClicked()));
   connect(mpBtnAdvanced, SIGNAL(clicked()), this, SLOT(btnAdvancedClicked()));

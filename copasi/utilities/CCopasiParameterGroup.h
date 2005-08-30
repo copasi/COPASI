@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 20:11:11 $
+   $Date: 2005/08/30 15:40:58 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -331,6 +331,23 @@ class CCopasiParameterGroup: public CCopasiParameter
      */
     unsigned C_INT32 getIndex(const std::string & name) const;
 
+    /**
+     * This is the output method for any object. The default implementation
+     * provided with CCopasiObject uses the ostream operator<< of the object
+     * to print the object.To overide this default behaviour one needs to
+     * reimplement the virtual print function.
+     * @param std::ostream * ostream
+     */
+    virtual void print(std::ostream * ostream) const;
+
+    /**
+     * Output stream operator
+     * @param ostream & os
+     * @param const CCopasiParameterGroup & o
+     * @return ostream & os
+     */
+    friend std::ostream &operator<<(std::ostream &os, const CCopasiParameterGroup & o);
+
   private:
     /**
      * Create or copy the parameterGroup 
@@ -348,27 +365,6 @@ class CCopasiParameterGroup: public CCopasiParameter
      * @param CCopasiParameter * pParameter
      */
     void addParameter(CCopasiParameter * pParameter);
-
-    /**
-     * Output stream operator
-     * @param ostream & os
-     * @param const CCopasiParameterGroup & A
-     * @return ostream & os
-     */
-    friend std::ostream & operator << (std::ostream & os,
-                                       const CCopasiParameterGroup & A)
-    {
-      os << (CCopasiParameter) A;
-
-      parameterGroup::const_iterator it =
-        A.mValue.pGROUP->begin();
-      parameterGroup::const_iterator end =
-        A.mValue.pGROUP->end();
-
-      for (; it != end; ++it) os << **it;
-
-      return os;
-    }
   };
 
 #endif // COPASI_CCopasiParameterGroup

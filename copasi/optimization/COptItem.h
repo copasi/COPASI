@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:34:20 $
+   $Date: 2005/08/30 15:40:17 $
    End CVS Header */
 
 #ifndef COPASI_COptItem
@@ -76,6 +76,12 @@ class COptItem
      * @return const CCopasiObjectName objectCN
      */
     const CCopasiObjectName getObjectCN() const;
+
+    /**
+     * Retrieve the display name of the optimization item.
+     * @return std::string displayName
+     */
+    std::string getObjectDisplayName() const;
 
     /**
      * Set the lower bound.
@@ -206,6 +212,14 @@ class COptItem
     inline const C_FLOAT64 * COptItem::getUpperBoundValue() const
       {return mpUpperBound;}
 
+    /**
+     * Output stream operator
+     * @param ostream & os
+     * @param const COptItem & A
+     * @return ostream & os
+     */
+    friend std::ostream &operator<<(std::ostream &os, const COptItem & o);
+
     //Attributes:
   private:
     /**
@@ -214,7 +228,12 @@ class COptItem
     CCopasiParameterGroup * mpGroup;
 
     /**
-     * A pointer to the object value
+     * A pointer to the object
+     */
+    const CCopasiObject * mpObject;
+
+    /**
+     * A pointer to the object update method
      */
     UpdateMethod * mpMethod;
 
@@ -222,6 +241,11 @@ class COptItem
      * A pointer to the object value
      */
     const C_FLOAT64 * mpObjectValue;
+
+    /**
+     * A pointer to the object for the lower bound
+     */
+    const CCopasiObject * mpLowerObject;
 
     /**
      * A pointer to the lower bound value
@@ -240,6 +264,11 @@ class COptItem
      * @return bool fulfills
      */
     bool (*mpLowerRel)(const C_FLOAT64 & val1, const C_FLOAT64 & val2);
+
+    /**
+     * A pointer to the object for the upper bound
+     */
+    const CCopasiObject * mpUpperObject;
 
     /**
      * A pointer to the upper bound value

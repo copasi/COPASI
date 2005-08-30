@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:41:00 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:50 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -205,7 +205,7 @@ void CMCAWidget::runMCATask()
     dynamic_cast<CMCATask *>(GlobalKeys.get(objKey));
   assert(mcaTask);
 
-  mcaTask->initialize();
+  mcaTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
   CMCAProblem* mcaProblem =
     dynamic_cast<CMCAProblem *>(mcaTask->getProblem());
   assert(mcaProblem);
@@ -221,7 +221,7 @@ void CMCAWidget::runMCATask()
 
       //dynamic_cast<CSteadyStateProblem*>(steadyStateTask->getProblem())->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
-      steadyStateTask->initialize();
+      steadyStateTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
 
       setCursor(Qt::WaitCursor);
       CProgressBar * tmpBar = new CProgressBar();
@@ -229,7 +229,7 @@ void CMCAWidget::runMCATask()
 
       try
         {
-          steadyStateTask->process();
+          steadyStateTask->process(true);
         }
 
       catch (CCopasiException Exception)
@@ -257,7 +257,7 @@ void CMCAWidget::runMCATask()
 
   try
     {
-      mcaTask->process();
+      mcaTask->process(true);
     }
 
   catch (CCopasiException Exception)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/22 14:05:28 $
+   $Date: 2005/08/30 15:40:32 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__

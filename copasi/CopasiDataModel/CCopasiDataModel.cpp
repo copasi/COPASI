@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/18 14:47:33 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:22 $
    End CVS Header */
 
 #include "copasi.h"
@@ -83,6 +83,7 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
     mAutoSaveNeeded(false),
     mRenameHandler(this),
     mpCurrentSBMLDocument(NULL),
+    mSBMLFileName(""),
     pOldMetabolites(new CCopasiVectorS < CMetabOld >)
 {
   mpVersion->setVersion(COPASI_VERSION_MAJOR,
@@ -216,6 +217,8 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
 
   if (mpModel) mpModel->setCompileFlag();
   this->mpCurrentSBMLDocument = NULL;
+  mSBMLFileName = "";
+
   this->mCopasi2SBMLMap.clear();
   //this->removeSBMLIdFromFunctions();
 
@@ -238,7 +241,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
           return false;
         }
 
-      if (!CDirEntry::isWritable(fileName))
+      if (!CDirEntry::isWritable(FileName))
         {
           CCopasiMessage(CCopasiMessage::ERROR,
                          MCDirEntry + 2,
@@ -268,7 +271,11 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
   os << tmp.str();
   if (os.fail()) return false;
 
-  if (!autoSave) changed(false);
+  if (!autoSave)
+    {
+      changed(false);
+      mSaveFileName = FileName;
+    }
 
   return true;
 }
@@ -307,10 +314,10 @@ bool CCopasiDataModel::newModel(CModel * pModel)
     {
       mpModel = new CModel();
       mSaveFileName = "";
+      mSBMLFileName = "";
+      this->mpCurrentSBMLDocument = NULL;
+      this->mCopasi2SBMLMap.clear();
     }
-  this->mpCurrentSBMLDocument = NULL;
-  this->mCopasi2SBMLMap.clear();
-  //this->removeSBMLIdFromFunctions();
 
   pdelete(mpTaskList);
   mpTaskList = new CCopasiVectorN< CCopasiTask >("TaskList", CCopasiContainer::Root);
@@ -340,7 +347,6 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
 {
   SBMLImporter importer;
   importer.setImportHandler(pImportHandler);
-  //this->removeSBMLIdFromFunctions();
   mCopasi2SBMLMap.clear();
   CModel* pModel = NULL;
   try
@@ -368,6 +374,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
     mSaveFileName += Suffix;
 
   mSaveFileName += ".cps";
+  mSBMLFileName = fileName;
 
   return newModel(pModel);
 }
@@ -399,6 +406,8 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
   exporter.setExportHandler(pExportHandler);
   bool result = exporter.exportSBML(mpModel, fileName.c_str(), overwriteFile);
   this->mpCurrentSBMLDocument = exporter.getSBMLDocument();
+  mSBMLFileName = fileName;
+
   return result;
 }
 
@@ -460,7 +469,6 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
       break;
 
     case CCopasiTask::optimization:
-      // :TODO: implement task for optimization
       pTask = new COptTask(mpTaskList);
       break;
 
@@ -471,8 +479,6 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
 
     case CCopasiTask::mca:
       pTask = new CMCATask(mpTaskList);
-      // :TODO: This must be avoided.
-      static_cast<CMCAMethod *>(pTask->getMethod())->setModel(mpModel);
       break;
 
 #ifdef COPASI_TSS
@@ -548,12 +554,28 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
       pReport->setTaskType(taskType);
       pReport->setComment("Automatically generated report.");
-      pReport->setIsTable(true);
-      pReport->setTitle(true);
+      pReport->setIsTable(false);
+      pReport->setTitle(false);
       pReport->setSeparator(CCopasiReportSeparator("\t"));
-      pReport->getTableAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Simulation Counter"));
-      pReport->getTableAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value"));
-      pReport->getTableAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Parameters"));
+
+      // Header
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Object=Description"));
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Simulation Counter\\]"));
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Value\\]"));
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Parameters\\]"));
+
+      // Body
+      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Simulation Counter"));
+      pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
+      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value"));
+      pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
+      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Parameters"));
+
+      // Footer
+      pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
+      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
       break;
 
     case CCopasiTask::parameterFitting:
@@ -614,6 +636,15 @@ SBMLDocument* CCopasiDataModel::getCurrentSBMLDocument()
 {
   return this->mpCurrentSBMLDocument;
 }
+
+bool CCopasiDataModel::setSBMLFileName(const std::string & fileName)
+{
+  mSBMLFileName = fileName;
+  return true;
+}
+
+const std::string & CCopasiDataModel::getSBMLFileName() const
+  {return mSBMLFileName;}
 
 std::map<CCopasiObject*, SBase*>& CCopasiDataModel::getCopasi2SBMLMap()
 {

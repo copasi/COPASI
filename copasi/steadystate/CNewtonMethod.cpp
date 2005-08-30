@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/15 13:52:59 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:33 $
    End CVS Header */
 
 #include <algorithm>
@@ -227,7 +227,7 @@ CNewtonMethod::processInternal()
       pTrajectoryMethod->setValue("LSODA.MaxStepsInternal",
                                   * getValue("Newton.LSODA.MaxStepsInternal").pUINT);
 
-      pTrajectory->initialize();
+      pTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL);
     }
 
   bool stepLimitReached = false;

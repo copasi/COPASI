@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 22:50:08 $
+   $Date: 2005/08/30 15:40:05 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeObject
@@ -89,6 +89,12 @@ class CEvaluationNodeObject : public CEvaluationNode
      * @return const Data & value
      */
     virtual std::string getInfix() const;
+
+    /**
+     * Retrieve the display string of the node and its eventual child nodes.
+     * @return const Data & value
+     */
+    virtual std::string getDisplayString(const CEvaluationTree * pTree) const;
 
     /**
      * Create a new operator node from an ASTNode tree.

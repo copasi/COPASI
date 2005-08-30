@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/05 12:32:29 $
+   $Date: 2005/08/30 15:40:30 $
    End CVS Header */
 
 /****************************************************************************
@@ -146,9 +146,14 @@ class CReport : public CCopasiContainer
     void printFooter();
 
     /**
-     *  to print body
+     * to print an empty line
      */
-    static void printBody(CReport * pReport);
+    void printEmptyLine();
+
+    /**
+     *  to print body
+     */ 
+    //static void printBody(CReport * pReport);
   };
 
 #endif

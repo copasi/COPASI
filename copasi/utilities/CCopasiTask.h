@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/15 11:28:30 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:58 $
    End CVS Header */
 
 /**
@@ -60,10 +60,88 @@ class CCopasiTask : public CCopasiContainer
 
     enum OutputFlag
     {
-      NO_OUTPUT = 0,      //do no output
-      OUTPUT,             //do output, but do not initialize/finish
-      OUTPUT_COMPLETE   //do output, including initialization and closing
+      NO_OUTPUT = 0,               //do no output
+      OUTPUT,                      //do output, but do not initialize/finish
+      OUTPUT_COMPLETE          //do output, including initialization and closing
     };
+
+  class CDescription: public CCopasiObject
+      {
+      public:
+        /**
+         * Default constructor
+         */
+        CDescription(const CCopasiContainer * pParent = NULL);
+
+        /**
+         * Copy constructor
+         * @param const CDescription & src
+         * @param const CCopasiContainer * pParent (default: NULL)
+         */
+        CDescription(const CDescription & src,
+                     const CCopasiContainer * pParent = NULL);
+
+        /**
+         * Destructor
+         */
+        virtual ~CDescription();
+
+        /**
+         * This is the output method for any object. The default implementation
+         * provided with CCopasiObject uses the ostream operator<< of the object
+         * to print the object.To overide this default behaviour one needs to
+         * reimplement the virtual print function.
+         * @param std::ostream * ostream
+         */
+        virtual void print(std::ostream * ostream) const;
+
+        /**
+         * Output stream operator
+         * @param ostream & os
+         * @param const CDescription & A
+         * @return ostream & os
+         */
+        friend std::ostream &operator<<(std::ostream &os, const CDescription & o);
+      };
+
+  class CResult: public CCopasiObject
+      {
+      public:
+        /**
+         * Default constructor
+         */
+        CResult(const CCopasiContainer * pParent = NULL);
+
+        /**
+         * Copy constructor
+         * @param const CResult & src
+         * @param const CCopasiContainer * pParent (default: NULL)
+         */
+        CResult(const CResult & src,
+                const CCopasiContainer * pParent = NULL);
+
+        /**
+         * Destructor
+         */
+        virtual ~CResult();
+
+        /**
+         * This is the output method for any object. The default implementation
+         * provided with CCopasiObject uses the ostream operator<< of the object
+         * to print the object.To overide this default behaviour one needs to
+         * reimplement the virtual print function.
+         * @param std::ostream * ostream
+         */
+        virtual void print(std::ostream * ostream) const;
+
+        /**
+         * Output stream operator
+         * @param ostream & os
+         * @param const CResult & A
+         * @return ostream & os
+         */
+        friend std::ostream &operator<<(std::ostream &os, const CResult & o);
+      };
 
     // Attributes
   protected:
@@ -76,6 +154,16 @@ class CCopasiTask : public CCopasiContainer
      * The key of the task
      */
     std::string mKey;
+
+    /**
+     * The description of the task.
+     */
+    CDescription mDescription;
+
+    /**
+     * The result of the task.
+     */
+    CResult mResult;
 
     /**
      * Tells whether the task is scheduled for execution
@@ -93,9 +181,15 @@ class CCopasiTask : public CCopasiContainer
     CCopasiMethod * mpMethod;
 
     /**
-     * The report used to track results of the task.
+     * The report that belongs to this specific task
      */
     CReport mReport;
+
+    /**
+     * The report actually used to track results.
+     * May be an external report from some parent task
+     */
+    CReport* mpCurrentReport;
 
     /**
      * The output handler (at this time only for plotting)
@@ -205,20 +299,23 @@ class CCopasiTask : public CCopasiContainer
      * Initialize the task. If an ostream is given this ostream is used
      * instead of the target specified in the report. This allows nested 
      * tasks to share the same output device.
+     * @param const OutputFlag & of
      * @param std::ostream * pOstream (default: NULL)
-     */
-    virtual bool initialize(std::ostream * pOstream = NULL);
-
-    /**
-     * Process the task
      * @return bool success
      */
-    virtual bool process(OutputFlag of = OUTPUT_COMPLETE);
+    virtual bool initialize(const OutputFlag & of, std::ostream * pOstream);
+
+    /**
+     * Process the task with or without initializing to the initial state.
+     * @param const bool & useInitialValues
+     * @return bool success
+     */
+    virtual bool process(const bool & useInitialValues);
 
     /**
      * Process the task. This is called by the scan task.
-     */
-    virtual bool processForScan(bool useInitialConditions, bool doOutput);
+     */ 
+    //virtual bool processForScan(bool useInitialConditions, bool doOutput);
 
     /**
      * Perform neccessary cleaup procedures
@@ -229,6 +326,10 @@ class CCopasiTask : public CCopasiContainer
      * Retrieve the problem
      */
     CCopasiProblem * getProblem();
+
+    /**
+     * Retrieve the problem
+     */
     const CCopasiProblem * getProblem() const;
 
     /**
@@ -244,9 +345,24 @@ class CCopasiTask : public CCopasiContainer
     CCopasiMethod * getMethod();
 
     /**
+     * Retrieve the method
+     */
+    const CCopasiMethod * getMethod() const;
+
+    /**
      * Retrieve the report
      */
     CReport & getReport();
+
+    /**
+     * Retrieve the description
+     */
+    const CDescription & getDescription() const;
+
+    /**
+     * Retrieve the result
+     */
+    const CResult & getResult() const;
 
     /**
      * Cleanup function
@@ -289,6 +405,10 @@ class CCopasiTask : public CCopasiContainer
 
   protected:
     OutputFlag mDoOutput;
+    unsigned C_INT32 mOutputCounter;
+
+  private:
+    void initObjects();
   };
 
 #endif // COPASI_CCopasiTask

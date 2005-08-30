@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/10 13:56:57 $
+   $Date: 2005/08/30 15:40:58 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -11,7 +11,10 @@
 
 #define  COPASI_TRACE_CONSTRUCTION
 
+#include <time.h>
+
 #include "copasi.h"
+
 #include "utility.h"
 
 std::string ISODateTime(tm * pTime)

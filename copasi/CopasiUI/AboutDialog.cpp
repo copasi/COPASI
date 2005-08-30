@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/AboutDialog.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/15 15:16:47 $
+   $Date: 2005/08/30 15:39:50 $
    End CVS Header */
 
 #include "AboutDialog.h"
@@ -28,7 +28,6 @@ const char* AboutDialog::text =
   "Please report errors to bugs@copasi.org.\n"
   "\n"
   "\n"
-  "\n"
   "COPASI is provided \"AS IS\" without warranty of any kind, either "
   "express or implied, including but not limited to the implied "
   "warranties of merchantability and fitness for a particular purpose. In "
@@ -42,8 +41,9 @@ const char* AboutDialog::text =
   "- Qt3 GUI framework\n"
   "- QWT 4.2.0 plotting framework\n"
   "- Expat 1.95.7 XML parser\n"
-  "- libsbml 2.2.0\n"
+  "- libsbml 2.3.2\n"
   "- CLAPACK 3.0 or LAPACK 3.0\n"
+  "- Intel Math Kernel Library\n"
   "- LSODA from ODEPACK\n"
   "- Mersenne Twister random number generator,\n"
   "   Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura"

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAResultSubwidget.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/26 10:42:12 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:50 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CMCAResultSubwidget.ui'
  **
  ** Created: Mo Apr 25 16:46:35 2005
- **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.h,v 1.5 2005/04/26 10:42:12 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.h,v 1.6 2005/08/30 15:39:50 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -59,6 +59,7 @@ class CMCAResultSubwidget : public QWidget
     virtual void loadElasticities(const CMCAMethod * mcaMethod);
     virtual void loadConcentrationCCs(const CMCAMethod * mcaMethod);
     virtual void loadFluxCCs(const CMCAMethod * mcaMethod);
+    virtual void clear();
 
   protected:
     QVBoxLayout* CMCAResultSubwidgetLayout;

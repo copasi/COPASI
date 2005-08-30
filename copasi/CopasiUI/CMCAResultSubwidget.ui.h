@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAResultSubwidget.ui.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/17 20:09:15 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:50 $
    End CVS Header */
 
 /****************************************************************************
@@ -33,7 +33,11 @@ void CMCAResultSubwidget::loadAll(const CMCAMethod * mcaMethod)
   if (mcaMethod)
     {
       mMCAMethod = mcaMethod;
-      if (!mcaMethod->getModel()) return;
+      if (!mcaMethod->getModel())
+        {
+          clear();
+          return;
+        }
 
       if (mcaMethod->getSteadyStateStatus() == CSteadyStateMethod::found)
         {
@@ -161,4 +165,20 @@ void CMCAResultSubwidget::slotSave()
 void CMCAResultSubwidget::slotScaled()
 {
   loadAll(mMCAMethod);
+}
+
+void CMCAResultSubwidget::clear()
+{
+  mTopLabel->setText("No result available, please execute the MCA task.");
+
+  mTableElasticities->setNumRows(0);
+  mTableElasticities->setNumCols(0);
+
+  mTableCCC->setNumRows(0);
+  mTableCCC->setNumCols(0);
+
+  mTableFCC->setNumRows(0);
+  mTableFCC->setNumCols(0);
+
+  return;
 }

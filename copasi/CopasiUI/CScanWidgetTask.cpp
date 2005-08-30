@@ -1,33 +1,33 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetTask.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/11 21:29:28 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:50 $
    End CVS Header */
 
 /****************************************************************************
- ** Form implementation generated from reading ui file 'CScanWidgetTask.ui'
- **
- ** Created: Mo Apr 11 23:23:08 2005
- **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.4 2005/04/11 21:29:28 ssahle Exp $)
- **
- ** WARNING! All changes made in this file will be lost!
- ****************************************************************************/
+  ** Form implementation generated from reading ui file 'CScanWidgetTask.ui'
+  **
+  ** Created: Mi Aug 17 11:04:05 2005
+  **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.5 2005/08/30 15:39:50 shoops Exp $)
+  **
+  ** WARNING! All changes made in this file will be lost!
+  ****************************************************************************/
 
 #include "CScanWidgetTask.h"
 
 #include <qvariant.h>
-#include <qpushbutton.h>
-#include <qframe.h>
-#include <qlabel.h>
-#include <qcombobox.h>
-#include <qtoolbutton.h>
-#include <qcheckbox.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include "CScanWidgetTask.ui.h"
+ #include <qpushbutton.h>
+ #include <qframe.h>
+ #include <qlabel.h>
+ #include <qcombobox.h>
+ #include <qtoolbutton.h>
+ #include <qcheckbox.h>
+ #include <qlayout.h>
+ #include <qtooltip.h>
+ #include <qwhatsthis.h>
+ #include "CScanWidgetTask.ui.h"
 
 /*
  *  Constructs a CScanWidgetTask as a child of 'parent', with the
@@ -111,7 +111,7 @@ void CScanWidgetTask::languageChange()
   buttonEdit->setText(tr("..."));
   checkInitialConditions->setText(tr("always use initial conditions"));
   QToolTip::add(checkInitialConditions, tr("If this is activated every calculation will start with the initial conditions specified in the model. <p>If it is not activated only the first calculation will use the initial value specified in the model. All subsequent calculations will start with the result of the previous calculation."));
-  checkOutput->setText(tr("Output time series"));
-  checkOutput->setAccel(QKeySequence(tr("Ctrl+T, Ctrl+R")));
-  QToolTip::add(checkOutput, tr("if this is activated all the calculated time series will be plotted. <p>If it is not activated only the state at the end of each simulation will be plotted."));
+  checkOutput->setText(tr("output from subtask"));
+  checkOutput->setAccel(QKeySequence(QString::null));
+  QToolTip::add(checkOutput, tr("If this is activated output will be generated during each calculation. <p>If it is not activated only the state at the end of each calculation will be plotted."));
 }

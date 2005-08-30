@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/29 12:27:10 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:49 $
    End CVS Header */
 
 /**
@@ -64,14 +64,18 @@ class CTrajectoryTask : public CCopasiTask
      * Initialize the task. If an ostream is given this ostream is used
      * instead of the target specified in the report. This allows nested 
      * tasks to share the same output device.
+     * @param const OutputFlag & of
      * @param std::ostream * pOstream (default: NULL)
+     * @return bool success
      */
-    virtual bool initialize(std::ostream * pOstream = NULL);
+    virtual bool initialize(const OutputFlag & of, std::ostream * pOstream);
 
     /**
-     * Process the task
+     * Process the task with or without initializing to the initial state.
+     * @param const bool & useInitialValues
+     * @return bool success
      */
-    virtual bool process(OutputFlag of = OUTPUT_COMPLETE, bool useInitialValues = true);
+    virtual bool process(const bool & useInitialValues);
 
     /**
      * Process the task without any output in as few steps as possible
@@ -81,8 +85,8 @@ class CTrajectoryTask : public CCopasiTask
 
     /**
      * Process the task (called by Scan task)
-     */
-    virtual bool processForScan(bool useInitialConditions, bool doOutput);
+     */ 
+    //virtual bool processForScan(bool useInitialConditions, bool doOutput);
 
     /**
      * Set the method type applied to solve the task

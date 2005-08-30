@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CXMLHandler.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:36:26 $
+   $Date: 2005/08/30 15:41:11 $
    End CVS Header */
 
 /**
@@ -47,6 +47,11 @@ template<class CType, class CCommon>
        */
       CXMLElementHandler * mpCurrentHandler;
 
+      /**
+       *
+       */
+      C_INT32 mLastKnownElement;
+
       // Operations
     public:
       /**
@@ -56,7 +61,8 @@ template<class CType, class CCommon>
           mParser(parser),
           mCommon(common),
           mCurrentElement(-1),
-          mpCurrentHandler(NULL)
+          mpCurrentHandler(NULL),
+          mLastKnownElement(-1)
       {}
 
       /**

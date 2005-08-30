@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.99 $
+   $Revision: 1.100 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/15 11:35:44 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:51 $
    End CVS Header */
 
 /********************************************************
@@ -171,8 +171,8 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   //ExportFileButton->setText(trUtf8("Export To File"));
   //Layout2->addWidget(ExportFileButton);
 
-  reportDefinitionButton = new QPushButton(this, "ReportDefinition");
-  reportDefinitionButton->setText(trUtf8("ReportDefinition"));
+  reportDefinitionButton = new QPushButton(this, "Report");
+  reportDefinitionButton->setText(trUtf8("Report"));
   Layout2->addWidget(reportDefinitionButton);
 
   SteadyStateWidgetLayout->addMultiCellLayout(Layout2, 9, 9, 0, 2);
@@ -294,7 +294,7 @@ void SteadyStateWidget::runSteadyStateTask()
     dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
   assert(mSteadyStateTask);
 
-  mSteadyStateTask->initialize();
+  mSteadyStateTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
 
   setCursor(Qt::WaitCursor);
   CProgressBar * tmpBar = new CProgressBar();
@@ -302,7 +302,7 @@ void SteadyStateWidget::runSteadyStateTask()
 
   try
     {
-      if (!mSteadyStateTask->process(CCopasiTask::OUTPUT_COMPLETE, true))
+      if (!mSteadyStateTask->process(true))
         {
           tmpBar->finish();
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)

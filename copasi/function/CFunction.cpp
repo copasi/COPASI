@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/29 12:23:38 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:05 $
    End CVS Header */
 
 #include "copasi.h"
@@ -146,7 +146,10 @@ void CFunction::load(CReadConfig & configBuffer,
         UsageDescription.setRange(Type, CRange::Infinity);
       else
         UsageDescription.setRange(Type);
-      mUsageDescriptions.add(UsageDescription);
+
+      if (!mUsageDescriptions.add(UsageDescription) &&
+          CCopasiMessage::peekLastMessage().getNumber() == MCCopasiVector + 2)
+        CCopasiMessage::getLastMessage();
 
       configBuffer.getVariable("Products", "C_INT32", &Type);
       UsageDescription.setUsage("PRODUCT");
@@ -154,7 +157,10 @@ void CFunction::load(CReadConfig & configBuffer,
         UsageDescription.setRange(Type, CRange::Infinity);
       else
         UsageDescription.setRange(Type);
-      mUsageDescriptions.add(UsageDescription);
+
+      if (!mUsageDescriptions.add(UsageDescription) &&
+          CCopasiMessage::peekLastMessage().getNumber() == MCCopasiVector + 2)
+        CCopasiMessage::getLastMessage();
 
       mode = CReadConfig::SEARCH;
     }

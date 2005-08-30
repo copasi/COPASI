@@ -1,10 +1,10 @@
 ######################################################################
-# $Revision: 1.20 $ $Author: shoops $ $Date: 2005/06/22 14:02:33 $  
+# $Revision: 1.21 $ $Author: shoops $ $Date: 2005/08/30 15:39:33 $  
 ######################################################################
 
 TEMPLATE = app
 
-CONFIG -= qt
+# CONFIG -= qt
 
 include(../common.pri)
 
@@ -44,6 +44,27 @@ contains(BUILD_OS, Linux) {
          $${LIBS}
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
+
+  release {
+    dynamic_LFLAGS = $${QMAKE_LFLAGS}
+    dynamic_LFLAGS -= -static
+
+    dynamic_LIBS = -Wl,-Bstatic $${LIBS} -Wl,-Bdynamic 
+    dynamic.target   = CopasiSE-dynamic
+    dynamic.depends  = $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${TARGETDEPS}
+    dynamic.commands = \
+      $(LINK) $${dynamic_LFLAGS} -L$(QTDIR)/lib -L/usr/X11R6/lib \
+              -o $@ $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${dynamic_LIBS} \
+              -Wl,--start-group -Wl,-Bstatic \
+              -lm \
+              -Wl,--end-group -Wl,-Bdynamic \
+              -ldl -lpthread && \
+              strip $@
+
+    QMAKE_EXTRA_UNIX_TARGETS += dynamic
+
+    distribution.extra = make $${dynamic.target};
+  }
 }
 
 contains(BUILD_OS, SunOS) {
@@ -73,3 +94,10 @@ contains(BUILD_OS, Darwin){
 HEADERS += 
 
 SOURCES += CopasiSE.cpp
+
+release {
+  distribution.path = .
+  distribution.file = CopasiSE
+
+  INSTALLS += distribution
+}

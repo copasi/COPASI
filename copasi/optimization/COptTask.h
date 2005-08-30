@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/25 09:49:19 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:18 $
    End CVS Header */
 
 /**
@@ -125,22 +125,28 @@ class COptTask : public CCopasiTask
     virtual bool setCallBack(CProcessReport * pCallBack);
 
     /**
-     * Initilize 
-     * @param ofstream & out
+     * Initialize the task. If an ostream is given this ostream is used
+     * instead of the target specified in the report. This allows nested 
+     * tasks to share the same output device.
+     * @param const OutputFlag & of
+     * @param std::ostream * pOstream (default: NULL)
+     * @return bool success
      */
-    bool initialize(std::ostream * out);
+    virtual bool initialize(const OutputFlag & of, std::ostream * pOstream);
 
     /**
-        * Set the method type applied to solve the task
-        * @param const CCopasiMethod::SubType & type
-        * @return bool success
-        */
+     * Process the task with or without initializing to the initial state.
+     * @param const bool & useInitialValues
+     * @return bool success
+     */
+    virtual bool process(const bool & useInitialValues);
+
+    /**
+     * Set the method type applied to solve the task
+     * @param const CCopasiMethod::SubType & type
+     * @return bool success
+     */
     virtual bool setMethodType(const int & type);
-
-    /**
-     * Do the integration
-     */
-    virtual bool process();
 
     /**
      * Do the single tasks and the output

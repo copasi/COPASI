@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.230 $
+   $Revision: 1.231 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/25 04:58:03 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:17 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -58,7 +58,7 @@ const char * CModel::VolumeUnitName[] =
   {"m\xc2\xb3", "l", "ml", "\xc2\xb5l", "nl", "pl", "fl", NULL};
 
 const char * CModel::TimeUnitName[] =
-  {"d", "h", "m", "s", "ms", "\xc2\xb5s", "ns", "ps", "fs", NULL};
+  {"d", "h", "min", "s", "ms", "\xc2\xb5s", "ns", "ps", "fs", NULL};
 
 const char * CModel::QuantityUnitName[] =
   {"Mol", "mMol", "\xc2\xb5Mol", "nMol", "pMol", "fMol", "#", NULL};
@@ -1615,7 +1615,7 @@ bool CModel::setTimeUnit(const CModel::TimeUnit & unit)
     {
     case d:
     case h:
-    case m:
+    case min:
     case s:
     case ms:
     case micros:

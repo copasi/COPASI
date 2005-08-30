@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiStaticString.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/12 11:48:16 $
+   $Date: 2005/08/30 15:40:30 $
    End CVS Header */
 
 #include "copasi.h"
@@ -40,10 +40,15 @@ void CCopasiStaticString::print(std::ostream * ostream) const
 
 std::string CCopasiStaticString::getObjectDisplayName(bool C_UNUSED(regular) /*=true*/,
     bool C_UNUSED(richtext) /*=false*/) const
-  {return "'" + mStaticString + "'";}
+  {
+    if (mStaticString == "\n")
+      return "<linebreak>";
+
+    return "'" + mStaticString + "'";
+  }
 
 const std::string & CCopasiStaticString::getStaticString() const
-  {return mStaticString;}
+{return mStaticString;}
 
 CCopasiReportSeparator::CCopasiReportSeparator(const std::string & name,
     const CCopasiContainer * pParent):

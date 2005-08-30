@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSTask.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/22 15:42:42 $
+   $Date: 2005/08/30 15:40:49 $
    End CVS Header */
 
 /**
@@ -52,14 +52,18 @@ class CTSSTask : public CCopasiTask
      * Initialize the task. If an ostream is given this ostream is used
      * instead of the target specified in the report. This allows nested 
      * tasks to share the same output device.
+     * @param const OutputFlag & of
      * @param std::ostream * pOstream (default: NULL)
+     * @return bool success
      */
-    virtual bool initialize(std::ostream * pOstream = NULL);
+    virtual bool initialize(const OutputFlag & of, std::ostream * pOstream);
 
     /**
-     * Process the task
+     * Process the task with or without initializing to the initial state.
+     * @param const bool & useInitialValues
+     * @return bool success
      */
-    virtual bool process();
+    virtual bool process(const bool & useInitialValues);
 
     virtual bool processForScan(bool useInitialConditions, bool doOutput);
 

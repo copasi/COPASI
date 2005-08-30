@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/12 18:54:25 $
+   $Date: 2005/08/30 15:40:18 $
    End CVS Header */
 
 /**
@@ -47,13 +47,13 @@ COptProblem::COptProblem(const CCopasiContainer * pParent):
     mpFunction(NULL),
     mOptItemList()
 {
-  addGroup("OptimizationItemList");
-  addGroup("OptimizationConstraintList");
-
   addParameter("Steady-State", CCopasiParameter::KEY, (std::string) "");
   addParameter("Time-Course", CCopasiParameter::KEY, (std::string) "");
   addParameter("ObjectiveFunction", CCopasiParameter::KEY, (std::string) "");
   addParameter("Maximize", CCopasiParameter::BOOL, (bool) false);
+
+  addGroup("OptimizationItemList");
+  addGroup("OptimizationConstraintList");
 
   initObjects();
 }
@@ -161,12 +161,12 @@ bool COptProblem::initialize()
 
   if (mpSteadyState)
     {
-      mpSteadyState->initialize();
+      mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL);
       ContainerList.push_back(mpSteadyState);
     }
   if (mpTrajectory)
     {
-      mpTrajectory->initialize();
+      mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL);
       ContainerList.push_back(mpTrajectory);
     }
 
@@ -243,7 +243,7 @@ bool COptProblem::calculate()
         {
           //((CSteadyStateProblem *) mpSteadyState->getProblem())->
           //setInitialState(mpSteadyState->getProblem()->getModel()->getInitialState());
-          mpSteadyState->process();
+          mpSteadyState->process(CCopasiTask::NO_OUTPUT);
         }
 
       if (mpTrajectory != NULL)
@@ -451,4 +451,56 @@ bool COptProblem::buildOptItemListFromParameterGroup()
     }
 
   return true;
+}
+
+void COptProblem::print(std::ostream * ostream) const
+{*ostream << *this;}
+
+void COptProblem::printResult(std::ostream * ostream) const
+  {
+    *ostream << "    Objective Function Value: " << mSolutionValue << std::endl;
+    *ostream << std::endl;
+
+    std::vector< COptItem * >::const_iterator itItem =
+      mOptItemList.begin();
+    std::vector< COptItem * >::const_iterator endItem =
+      mOptItemList.end();
+
+    unsigned C_INT32 i;
+
+    for (i = 0; itItem != endItem; ++itItem, i++)
+      *ostream << "    " << (*itItem)->getObjectDisplayName() << ": "
+      << mSolutionVariables[i] << std::endl;
+  }
+
+std::ostream &operator<<(std::ostream &os, const COptProblem & o)
+{
+  os << "Problem Description:" << std::endl;
+
+  os << "Subtask: " << std::endl;
+
+  if (o.mpSteadyState)
+    o.mpSteadyState->getDescription().print(&os);
+  else if (o.mpTrajectory)
+    o.mpTrajectory->getDescription().print(&os);
+  else
+    os << "No Subtask specified.";
+
+  os << std::endl;
+
+  os << "Objective Function:" << std::endl;
+  os << "    " << o.mpFunction->getDisplayString() << std::endl;
+  os << std:: endl;
+
+  os << "List of Optimization Items:" << std::endl;
+
+  std::vector< COptItem * >::const_iterator itItem =
+    o.mOptItemList.begin();
+  std::vector< COptItem * >::const_iterator endItem =
+    o.mOptItemList.end();
+
+  for (; itItem != endItem; ++itItem)
+    os << "    " << **itItem << std::endl;
+
+  return os;
 }

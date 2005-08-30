@@ -10,6 +10,10 @@ Panel.
 To install this package run the SETUP.EXE file and follow the on-screen
 instructions. 
 
+There is a command line version of Copasi named CopasiSE.exe in the bin
+folder (inside the Copasi installation folder). You may want to add this
+folder to your PATH environment variable, or otherwise you need to call
+it with its full pathname. 
 
 KNOWN PROBLEMS:
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/02/15 22:41:35 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:10 $
    End CVS Header */
 
 /*
@@ -35,19 +35,14 @@
 namespace
   {
   const char const_usage[] =
-    "  --home string              Your home directory.\n"
-    "  --rc string                The configuration file for copasi.\n"
-    "  --systemFunctionDB string  A write protected database of kinetic\n"
-    "                             functions.\n"
-    "  --userFunctionDB string    The user extensible database of kinetic\n"
-    "                             functions.\n"
-    "  -c, --copasidir string     The location of suplementary files for copasi.\n"
-    "  -d, --default string       The SBML file to export.\n"
-    "  -e, --exportSBML string    The SBML file to export.\n"
-    "  -f, --copasiFile string    The file the model which specifies the model\n"
-    "                             and task.\n"
-    "  -i, --importSBML string    A SBML file to import.\n"
-    "  -s, --save string          The file the model is saved in after work.\n";
+    "  --home string            Your home directory.\n"
+    "  --rc string              The configuration file for copasi. The default\n"
+    "                           is .copasirc in the home directory.\n"
+    "  -c, --copasidir string   The COPASI installation directory.\n"
+    "  -e, --exportSBML string  The SBML file to export.\n"
+    "  -i, --importSBML string  A SBML file to import.\n"
+    "  -s, --save string        The file the model is saved to after work.\n"
+    "  -t, --tmp string         The temp directory used for autosave.\n";
 
   const char const_help_comment[] =
     "use the -h option for help";
@@ -171,24 +166,18 @@ void copasi::COptionParser::finalize (void)
           throw option_error("missing value for 'rc' option");
         case option_CopasiDir:
           throw option_error("missing value for 'copasidir' option");
-        case option_CopasiFile:
-          throw option_error("missing value for 'copasiFile' option");
         case option_Default:
           throw option_error("missing value for 'default' option");
         case option_ExportSBML:
           throw option_error("missing value for 'exportSBML' option");
         case option_Home:
           throw option_error("missing value for 'home' option");
-        case option_Tmp:
-          throw option_error("missing value for 'tmp' option");
         case option_ImportSBML:
           throw option_error("missing value for 'importSBML' option");
         case option_Save:
           throw option_error("missing value for 'save' option");
-        case option_SystemFunctionDB:
-          throw option_error("missing value for 'systemFunctionDB' option");
-        case option_UserFunctionDB:
-          throw option_error("missing value for 'userFunctionDB' option");
+        case option_Tmp:
+          throw option_error("missing value for 'tmp' option");
         }
     }
 }
@@ -295,16 +284,6 @@ void copasi::COptionParser::parse_short_option (char option, int position, opsou
       state_ = state_value;
       locations_.ExportSBML = position;
       return;
-    case 'f':
-      source = source; // kill compiler unused variable warning
-      if (locations_.CopasiFile)
-        {
-          throw option_error("the 'copasiFile' option is only allowed once");
-        }
-      openum_ = option_CopasiFile;
-      state_ = state_value;
-      locations_.CopasiFile = position;
-      return;
     case 'i':
       if (source != source_cl) throw option_error("the 'importSBML' option can only be used on the command line");
       if (locations_.ImportSBML)
@@ -325,6 +304,16 @@ void copasi::COptionParser::parse_short_option (char option, int position, opsou
       state_ = state_value;
       locations_.Save = position;
       return;
+    case 't':
+      source = source; // kill compiler unused variable warning
+      if (locations_.Tmp)
+        {
+          throw option_error("the 'tmp' option is only allowed once");
+        }
+      openum_ = option_Tmp;
+      state_ = state_value;
+      locations_.Tmp = position;
+      return;
     case 'h':
       if (source != source_cl) break;
       throw autoexcept(autothrow_help, const_usage);
@@ -341,19 +330,7 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
 {
   option = expand_long_name(option);
 
-  if (strcmp(option, "copasiFile") == 0)
-    {
-      source = source; // kill compiler unused variable warning
-      if (locations_.CopasiFile)
-        {
-          throw option_error("the 'copasiFile' option is only allowed once");
-        }
-      openum_ = option_CopasiFile;
-      locations_.CopasiFile = position;
-      state_ = state_value;
-      return;
-    }
-  else if (strcmp(option, "copasidir") == 0)
+  if (strcmp(option, "copasidir") == 0)
     {
       if (source != source_cl) throw option_error("the 'copasidir' option is only allowed on the command line");
       if (locations_.CopasiDir)
@@ -397,18 +374,6 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
       state_ = state_value;
       return;
     }
-  else if (strcmp(option, "tmp") == 0)
-    {
-      if (source != source_cl) throw option_error("the 'tmp' option is only allowed on the command line");
-      if (locations_.Tmp)
-        {
-          throw option_error("the 'tmp' option is only allowed once");
-        }
-      openum_ = option_Tmp;
-      locations_.Tmp = position;
-      state_ = state_value;
-      return;
-    }
   else if (strcmp(option, "importSBML") == 0)
     {
       if (source != source_cl) throw option_error("the 'importSBML' option is only allowed on the command line");
@@ -445,27 +410,15 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
       state_ = state_value;
       return;
     }
-  else if (strcmp(option, "systemFunctionDB") == 0)
+  else if (strcmp(option, "tmp") == 0)
     {
       source = source; // kill compiler unused variable warning
-      if (locations_.SystemFunctionDB)
+      if (locations_.Tmp)
         {
-          throw option_error("the 'systemFunctionDB' option is only allowed once");
+          throw option_error("the 'tmp' option is only allowed once");
         }
-      openum_ = option_SystemFunctionDB;
-      locations_.SystemFunctionDB = position;
-      state_ = state_value;
-      return;
-    }
-  else if (strcmp(option, "userFunctionDB") == 0)
-    {
-      source = source; // kill compiler unused variable warning
-      if (locations_.UserFunctionDB)
-        {
-          throw option_error("the 'userFunctionDB' option is only allowed once");
-        }
-      openum_ = option_UserFunctionDB;
-      locations_.UserFunctionDB = position;
+      openum_ = option_Tmp;
+      locations_.Tmp = position;
       state_ = state_value;
       return;
     }
@@ -490,11 +443,6 @@ void copasi::COptionParser::parse_value (const char *value)
     case option_CopasiDir:
       {
         options_.CopasiDir = value;
-      }
-      break;
-    case option_CopasiFile:
-      {
-        options_.CopasiFile = value;
       }
       break;
     case option_Default:
@@ -533,11 +481,6 @@ void copasi::COptionParser::parse_value (const char *value)
         options_.Home = value;
       }
       break;
-    case option_Tmp:
-      {
-        options_.Tmp = value;
-      }
-      break;
     case option_ImportSBML:
       {
         options_.ImportSBML = value;
@@ -548,14 +491,9 @@ void copasi::COptionParser::parse_value (const char *value)
         options_.Save = value;
       }
       break;
-    case option_SystemFunctionDB:
+    case option_Tmp:
       {
-        options_.SystemFunctionDB = value;
-      }
-      break;
-    case option_UserFunctionDB:
-      {
-        options_.UserFunctionDB = value;
+        options_.Tmp = value;
       }
       break;
     }
@@ -573,9 +511,6 @@ namespace
     std::string::size_type name_size = name.size();
     std::vector<const char*> matches;
 
-    if (name_size <= 10 && name.compare("copasiFile") == 0)
-      matches.push_back("copasiFile");
-
     if (name_size <= 9 && name.compare("copasidir") == 0)
       matches.push_back("copasidir");
 
@@ -588,9 +523,6 @@ namespace
     if (name_size <= 4 && name.compare("home") == 0)
       matches.push_back("home");
 
-    if (name_size <= 3 && name.compare("tmp") == 0)
-      matches.push_back("tmp");
-
     if (name_size <= 10 && name.compare("importSBML") == 0)
       matches.push_back("importSBML");
 
@@ -600,11 +532,8 @@ namespace
     if (name_size <= 4 && name.compare("save") == 0)
       matches.push_back("save");
 
-    if (name_size <= 16 && name.compare("systemFunctionDB") == 0)
-      matches.push_back("systemFunctionDB");
-
-    if (name_size <= 14 && name.compare("userFunctionDB") == 0)
-      matches.push_back("userFunctionDB");
+    if (name_size <= 3 && name.compare("tmp") == 0)
+      matches.push_back("tmp");
 
     if (name_size <= 4 && name.compare("help") == 0)
       matches.push_back("help");

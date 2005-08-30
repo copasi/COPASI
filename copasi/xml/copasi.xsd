@@ -387,6 +387,19 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="SBMLReference" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="SBMLMap" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="SBMLid" type="cSBMLid" use="required"/>
+                  <xs:attribute name="COPASIkey" type="cKEYREF" use="required"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="file" type="xs:string" use="required"/>
+          </xs:complexType>
+        </xs:element>
       </xs:sequence>
       <xs:attribute name="versionMajor" type="xs:integer"/>
       <xs:attribute name="versionMinor" type="xs:integer"/>
@@ -621,6 +634,11 @@
   <xs:simpleType name="cKEY" id="copasi.KEY">
     <xs:restriction base="xs:ID">
       <xs:pattern value="[_a-zA-Z]+_\d+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cSBMLid" id="copasi.SBMLid">
+    <xs:restriction base="xs:ID">
+      <xs:pattern value="[_a-zA-Z][_a-zA-Z0-9]*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="cMODEL_KEY" id="copasi.MODEL_KEY">

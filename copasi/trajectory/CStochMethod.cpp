@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/05 11:46:22 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:49 $
    End CVS Header */
 
 #ifdef WIN32
@@ -35,7 +35,7 @@
 C_INT32 CStochMethod::checkModel(CModel * C_UNUSED(pmodel))
 {
   // Here several checks will be performed to validate the model
-  return 1; // suggest direct method
+  return 2; // suggest next reaction method
 
   // TODO check if stoich is integer
 }
@@ -43,7 +43,7 @@ C_INT32 CStochMethod::checkModel(CModel * C_UNUSED(pmodel))
 CStochMethod *
 CStochMethod::createStochMethod(CTrajectoryProblem * pProblem)
 {
-  C_INT32 result = 1; // direct method as default
+  C_INT32 result = 2; // next reaction method as default
   if (pProblem && pProblem->getModel())
     {
       result = checkModel(pProblem->getModel());
@@ -79,15 +79,20 @@ CStochMethod::CStochMethod(const CCopasiContainer * pParent):
                CCopasiParameter::INT, (C_INT32) 1000000);
   // 0: default; 1: direct method; 2: next reaction method
   addParameter("STOCH.Subtype",
+               CCopasiParameter::UINT, (unsigned C_INT32) 2);
+
+  addParameter("STOCH.UseRandomSeed",
+               CCopasiParameter::BOOL, false);
+  addParameter("STOCH.RandomSeed",
                CCopasiParameter::UINT, (unsigned C_INT32) 1);
 
-  mRandomGenerator = CRandom::createGenerator(CRandom::r250);
+  mpRandomGenerator = CRandom::createGenerator(CRandom::r250);
 }
 
 CStochMethod::~CStochMethod()
 {
-  delete mRandomGenerator;
-  mRandomGenerator = 0;
+  delete mpRandomGenerator;
+  mpRandomGenerator = NULL;
 }
 
 const double CStochMethod::step(const double & deltaT)
@@ -137,6 +142,10 @@ const double CStochMethod::step(const double & deltaT,
 {
   /* get configuration data */
   mMaxSteps = * getValue("STOCH.MaxSteps").pINT;
+
+  bool useRandomSeed = * getValue("STOCH.UseRandomSeed").pBOOL;
+  unsigned C_INT32 randomSeed = * getValue("STOCH.RandomSeed").pUINT;
+  if (useRandomSeed) mpRandomGenerator->initialize(randomSeed);
 
   *mpCurrentState = *initialState; //TODO seem to be identical
 
@@ -321,7 +330,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
 
 C_INT32 CStochMethod::generateReactionIndex()
 {
-  C_FLOAT64 rand1 = mRandomGenerator->getRandomOO() * mA0;
+  C_FLOAT64 rand1 = mpRandomGenerator->getRandomOO() * mA0;
   C_FLOAT64 sum = 0;
   unsigned C_INT32 index = 0;
 
@@ -338,13 +347,13 @@ C_INT32 CStochMethod::generateReactionIndex()
 
 C_FLOAT64 CStochMethod::generateReactionTime()
 {
-  C_FLOAT32 rand2 = mRandomGenerator->getRandomOO();
+  C_FLOAT32 rand2 = mpRandomGenerator->getRandomOO();
   return - 1 * log(rand2) / mA0;
 }
 
 C_FLOAT64 CStochMethod::generateReactionTime(C_INT32 reaction_index)
 {
-  C_FLOAT32 rand2 = mRandomGenerator->getRandomOO();
+  C_FLOAT32 rand2 = mpRandomGenerator->getRandomOO();
   return - 1 * log(rand2) / mAmu[reaction_index];
 }
 
@@ -446,7 +455,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
   mMaxBalance = maxBalance;
   //std::cout << "maxbalance" << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
-  mMaxIntBeforeStep =       /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
+  mMaxIntBeforeStep =         /*INT_MAX*/ LLONG_MAX - 1 - mMaxSteps * mMaxBalance;
 
   // Delete the memory allocated in getDependsOn() and getAffects()
   // since this is allocated in other functions.

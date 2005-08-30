@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/29 12:24:43 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:58 $
    End CVS Header */
 
 /**
@@ -183,6 +183,31 @@ class CCopasiProblem : public CCopasiParameterGroup
      * @result bool fullfilled
      */
     virtual bool checkFunctionalConstraints();
+
+    /**
+     * This is the output method for any object. The default implementation
+     * provided with CCopasiObject uses the ostream operator<< of the object
+     * to print the object.To overide this default behaviour one needs to
+     * reimplement the virtual print function.
+     * @param std::ostream * ostream
+     */
+    virtual void print(std::ostream * ostream) const;
+
+    /**
+     * Output stream operator
+     * @param ostream & os
+     * @param const CCopasiProblem & A
+     * @return ostream & os
+     */
+    friend std::ostream &operator<<(std::ostream &os, const CCopasiProblem & o);
+
+    /**
+     * This is the output method for any rsult of a problem. The default implementation
+     * provided with CCopasiProblem. Does only print "Not implmented." To overide this
+     * default behaviour one needs to reimplement the virtual printResult function.
+     * @param std::ostream * ostream
+     */
+    virtual void printResult(std::ostream * ostream) const;
   };
 
 #endif // COPASI_CCopasiProblem

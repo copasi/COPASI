@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.192 $
+   $Revision: 1.193 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/08/25 16:25:07 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:51 $
    End CVS Header */
 
 //***  In this file I have put "//+++" in all places where something has to be added
@@ -35,6 +35,7 @@
 #include "ObjectBrowserItem.h"
 #include "DefaultplotDialog.h"
 #include "copasiui3window.h"
+#include "CReportDefinitionSelect.h"
 
 //#include "SteadyStateWidget.h"
 //#include "TrajectoryWidget.h"
@@ -61,8 +62,8 @@
 #include "./icons/scanwidgetbuttonicon.xpm"
 
 ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
-    : CopasiWidget(parent, name, f)
-    //    pParent(parent)
+    : CopasiWidget(parent, name, f),
+    pParent(parent)
 {
   if (!name)
     setName("ScanWidget");
@@ -72,15 +73,40 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
 
   //*****************
 
-  TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText("<h2>Parameter Scan</h2>");
-  ScanWidgetLayout->addWidget(TextLabel1, 0, 0);
+  QHBoxLayout* tmpLayout = new QHBoxLayout();
+
+  taskNameLabel = new QLabel(this, "taskNameLabel");
+  //taskNameLabel->setText(trUtf8("Task Name"));
+  taskNameLabel->setText(trUtf8("<h2>Parameter Scan</h2>"));
+  taskNameLabel->setAlignment(int(QLabel::AlignVCenter
+                                  | QLabel::AlignLeft));
+  //SteadyStateWidgetLayout->addWidget(taskNameLabel, 0, 0);
+  tmpLayout->addWidget(taskNameLabel);
+
+  QSpacerItem* tmpSpacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  tmpLayout->addItem(tmpSpacer);
+
+  bExecutable = new QCheckBox(this, "bExecutable");
+  bExecutable->setText(trUtf8("Task Executable"));
+  // this is the child widget to edit an steadystatetask
+  bExecutable->setChecked(parent == NULL);
+  bExecutable->setEnabled(parent != NULL);
+  //SteadyStateWidgetLayout->addWidget(bExecutable, 0, 2);
+  tmpLayout->addWidget(bExecutable);
+
+  ScanWidgetLayout->addMultiCellLayout(tmpLayout, 0, 0, 0, 2);
+
+  //***********
+
+  //TextLabel1 = new QLabel(this, "TextLabel1");
+  //TextLabel1->setText("<h2>Parameter Scan</h2>");
+  //ScanWidgetLayout->addWidget(TextLabel1, 0, 0);
 
   //**********************
 
-  QHBoxLayout* tmpLayout = new QHBoxLayout();
+  tmpLayout = new QHBoxLayout();
 
-  QSpacerItem* tmpSpacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  tmpSpacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum);
   tmpLayout->addItem(tmpSpacer);
 
   QLabel* tmpLabel = new QLabel(this);
@@ -119,11 +145,11 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   Layout2->addWidget(cancelChange);
 
   reportDefinitionButton = new QPushButton(this, "ReportDefinition");
-  reportDefinitionButton->setText(trUtf8("Report..."));
+  reportDefinitionButton->setText(trUtf8("Report"));
   Layout2->addWidget(reportDefinitionButton);
 
   outputDefinitionButton = new QPushButton(this, "OutputDefinition");
-  outputDefinitionButton->setText(trUtf8("Output assistant..."));
+  outputDefinitionButton->setText(trUtf8("Output Assistant"));
   Layout2->addWidget(outputDefinitionButton);
 
   ScanWidgetLayout->addMultiCellLayout(Layout2, 6, 6, 0, 2);
@@ -159,7 +185,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, WFlags f)
   /*sExecutable->setEnabled(false);
   scanButton->setEnabled(true);*/
 
-  reportDefinitionButton->setEnabled(false);
+  //reportDefinitionButton->setEnabled(false);
 }
 
 ScanWidget::~ScanWidget()
@@ -192,7 +218,7 @@ void ScanWidget::runScanTask()
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
 
-  scanTask->initialize(NULL);
+  scanTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
 
   setCursor(Qt::WaitCursor);
   CProgressBar * tmpBar = new CProgressBar();
@@ -202,7 +228,7 @@ void ScanWidget::runScanTask()
 
   try
     {
-      scanTask->process();
+      scanTask->process(true);
     }
   catch (CCopasiException Exception)
     {
@@ -236,6 +262,8 @@ bool ScanWidget::loadScan()
 
   CScanProblem *scanProblem = dynamic_cast<CScanProblem *>(scanTask->getProblem());
   if (!scanProblem) return false;
+
+  bExecutable->setChecked(scanTask->isScheduled());
 
   mModel = scanProblem->getModel();
 
@@ -386,6 +414,10 @@ bool ScanWidget::saveScan() const
     CScanProblem *scanProblem = dynamic_cast<CScanProblem *>(scanTask->getProblem());
     if (!scanProblem) return false;
 
+    //set the executable flag
+    bool bScheduled = bExecutable->isChecked();
+    scanTask->setScheduled(bScheduled);
+
     scanProblem->clearScanItems();
 
     const std::vector<QWidget*> & widgetList = scrollview->getWidgetList();
@@ -431,14 +463,16 @@ bool ScanWidget::saveScan() const
 
 void ScanWidget::ReportDefinitionClicked()
 {
-  /*  CReportDefinitionSelect* pSelectDlg = new CReportDefinitionSelect(pParent);
-    CScanTask* scanTask = (CScanTask*)(CCopasiContainer*)GlobalKeys.get(scanTaskKey);
-    pSelectDlg->setReport(&(scanTask->getReport()));
-    pSelectDlg->loadReportDefinitionVector();
-    if (pSelectDlg->exec () == QDialog::Rejected)
-      {
-        return;
-      }*/
+  CScanTask* task =
+    dynamic_cast< CScanTask * >(GlobalKeys.get(scanTaskKey));
+  assert(task);
+
+  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pParent);
+  pSelectDlg->setReport(&task->getReport());
+  pSelectDlg->loadReportDefinitionVector();
+  pSelectDlg->exec();
+
+  delete pSelectDlg;
 }
 
 void ScanWidget::outputDefinitionClicked()

@@ -37,11 +37,10 @@ if [ x"$#" = x1 ]; then
     strip ${TMPDIR}/copasi/CopasiUI.app/Contents/MacOS/CopasiUI
 
 # copy the commandline version if it exists
-#    :TODO: Uncomment when CopasiSE is ready for ptime time.
-#    if [ -e copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE ] ; then    
-#      cp copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE ${TMPDIR}/copasi/
-#      strip ${TMPDIR}/copasi/CopasiSE
-#    fi  
+    if [ -e copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE ] ; then    
+      cp copasi/CopasiSE/CopasiSE.app/Contents/MacOS/CopasiSE ${TMPDIR}/copasi/
+      strip ${TMPDIR}/copasi/CopasiSE
+    fi  
     
 # copy the icon into the Resources directory
     echo "Creating Resources directory."
@@ -67,7 +66,8 @@ echo "Set the icon in the Info.plist file."
     echo "Copy examples to example directory."
     cp ./TestSuite/distribution/* \
       ${TMPDIR}/copasi/examples/
-    chmod 444 ${TMPDIR}/copasi/examples/
+# we have defer this to later so that we are able to chown
+#    chmod 444 ${TMPDIR}/copasi/examples/
 
 # copy the files for the wizard into the Resources directory
     echo "Making directory for wizard."
@@ -86,6 +86,8 @@ echo "Set the icon in the Info.plist file."
     ${SETFILE} -a b ${TMPDIR}/copasi/CopasiUI.app
 
     chown -R 99:99 ${TMPDIR}/copasi
+# this had been deferred earlier
+    chmod 444 ${TMPDIR}/copasi/examples/*.*
 
 # Unmount temporary image
     hdiutil eject ${drive}
@@ -95,6 +97,7 @@ echo "Set the icon in the Info.plist file."
     ;;
 
   xLinux|xSunOS)
+    [ -e $build-$1 ] && rm -rf $build-$1
     mkdir $build-$1
     cd $build-$1
  
@@ -115,15 +118,14 @@ echo "Set the icon in the Info.plist file."
     cp ../copasi/CopasiUI/CopasiUI  copasi/bin
     chmod 755 copasi/bin/CopasiUI
 
-#    :TODO: Uncomment when CopasiSE is ready for prime time.
-#    cp ../copasi/CopasiSE/CopasiSE  copasi/bin
-#    chmod 755 copasi/bin/CopasiSE
+    cp ../copasi/CopasiSE/CopasiSE  copasi/bin
+    chmod 755 copasi/bin/CopasiSE
 
     cp ../TestSuite/distribution/* copasi/share/copasi/examples
     chmod 444 copasi/share/copasi/examples/*
 
     cp ../copasi/CopasiUI/icons/Copasi??-Alpha.xpm copasi/share/copasi/icons
-    chmod 644 copasi/share/copasi/icons
+    chmod 644 copasi/share/copasi/icons/*
 
     cp ../copasi/wizard/help_html/*.html copasi/share/copasi/doc/html
     chmod 644 copasi/share/copasi/doc/html/*.html
@@ -136,13 +138,14 @@ echo "Set the icon in the Info.plist file."
 
     if [ x"$1" == "xLinux" ]; then
       cp ../copasi/CopasiUI/CopasiUI-dynamic  copasi/bin/CopasiUI
+      cp ../copasi/CopasiSE/CopasiSE-dynamic  copasi/bin/CopasiSE
       chmod 755 copasi/bin/CopasiUI
 
       tar -czf ../Copasi-$build-$1-Dynamic.tar.gz copasi
     fi
 
     cd ..
-    rm -rf $build-$1
+#    rm -rf $build-$1
     ;;
   esac
 

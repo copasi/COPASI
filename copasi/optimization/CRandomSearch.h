@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 18:19:24 $
+   $Date: 2005/08/30 15:40:18 $
    End CVS Header */
 
 /**
@@ -46,7 +46,7 @@ class CRandomSearch : public COptMethod
     /**
      * Initialize contained objects.
      */
-    virtual void initObjects();
+    void initObjects();
 
     /**
      * Evaluate the fitness of one individual

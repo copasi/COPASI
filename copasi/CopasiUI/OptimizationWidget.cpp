@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/08/25 16:25:07 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:51 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -89,9 +89,6 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   buttonsLayout = new QHBoxLayout(0, 0, 6, "buttonsLayout");
 
-  confirmButton = new QPushButton(this, "confirmButton");
-  buttonsLayout->addWidget(confirmButton);
-
   runButton = new QPushButton(this, "runButton");
   buttonsLayout->addWidget(runButton);
 
@@ -152,8 +149,7 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   setTabOrder(expressionText, steadystateCheck);
   setTabOrder(steadystateCheck, timeCheck);
   setTabOrder(timeCheck, parameterTable);
-  setTabOrder(parameterTable, confirmButton);
-  setTabOrder(confirmButton, cancelButton);
+  setTabOrder(parameterTable, cancelButton);
   setTabOrder(cancelButton, reportButton);
   setTabOrder(reportButton, outputAssistantButton);
 
@@ -187,7 +183,6 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   connect(runButton, SIGNAL(clicked()), this, SLOT(runOptimizationTask()));
   connect(AddTaskButton , SIGNAL(clicked()), this, SLOT(slotAddItem()));
   connect(selectParameterButton , SIGNAL(clicked()), this, SLOT(slotChooseObject()));
-  connect(confirmButton, SIGNAL(clicked()), this, SLOT(slotConfirm()));
   connect(cancelButton, SIGNAL(clicked()), this, SLOT(CancelChangeButton()));
   connect(reportButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
 
@@ -222,7 +217,7 @@ void OptimizationWidget::runOptimizationTask()
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
 
-  optimizationTask->initialize(NULL);
+  optimizationTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
 
   setCursor(Qt::WaitCursor);
 
@@ -231,7 +226,7 @@ void OptimizationWidget::runOptimizationTask()
 
   try
     {
-      optimizationTask->process();
+      optimizationTask->process(true);
     }
   catch (CCopasiException Exception)
     {
@@ -551,11 +546,10 @@ void OptimizationWidget::languageChange()
   typeLabel->setText(tr("Type \n\n"));
   nameLabel->setText(tr("<h2>Optimization</h2>"));
   taskExecCheck->setText(tr("Task Executable"));
-  confirmButton->setText(tr("confirm"));
-  runButton->setText(tr("run"));
-  cancelButton->setText(tr("cancel"));
-  reportButton->setText(tr("report"));
-  outputAssistantButton->setText(tr("output assistant"));
+  runButton->setText(tr("Run"));
+  cancelButton->setText(tr("Revert"));
+  reportButton->setText(tr("Report"));
+  outputAssistantButton->setText(tr("Output Assistant"));
   selectParameterButton->setText(tr("..."));
   expressionEditlabel->setText(tr("Expression"));
   expressionText->setText(QString::null);
@@ -675,12 +669,12 @@ bool OptimizationWidget::saveExpression()
 
 void OptimizationWidget::slotSteadystatechecked()
 {
-  timeCheck->setChecked(false);
+  timeCheck->setChecked(!steadystateCheck->isChecked());
 }
 
 void OptimizationWidget::slotTimechecked()
 {
-  steadystateCheck->setChecked(false);
+  steadystateCheck->setChecked(!timeCheck->isChecked());
 }
 
 void OptimizationWidget::slotConfirm()

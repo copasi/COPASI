@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.107 $
+   $Revision: 1.108 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/24 08:05:31 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:31 $
    End CVS Header */
 
 #include "copasi.h"
@@ -1329,7 +1329,7 @@ SBMLImporter::handleTimeUnit(const UnitDefinition* uDef)
                 }
               else if (u->getMultiplier() == 60.0)
                 {
-                  tUnit = CModel::m;
+                  tUnit = CModel::min;
                 }
               else if (u->getMultiplier() == 3600.0)
                 {

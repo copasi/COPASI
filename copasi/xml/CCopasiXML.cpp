@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/25 18:57:55 $
+   $Date: 2005/08/30 15:41:10 $
    End CVS Header */
 
 /**
@@ -88,6 +88,7 @@ bool CCopasiXML::save(std::ostream & os)
   if (!saveReportList()) success = false;
   if (!savePlotList()) success = false;
   if (!saveGUI()) success = false;
+  if (!saveSBMLReference()) success = false;
 
   endSaveElement("COPASI");
 
@@ -173,15 +174,7 @@ bool CCopasiXML::saveModel()
   startSaveElement("Model", Attributes);
 
   startSaveElement("Comment");
-
-  Attributes.erase();
-  Attributes.add("xmlns", "http://www.w3.org/1999/xhtml");
-  startSaveElement("body", Attributes);
-
-  saveData(mpModel->getComments()); // :TODO: we need to have saveXHTML
-
-  endSaveElement("body");
-
+  saveXhtml(mpModel->getComments());
   endSaveElement("Comment");
 
   unsigned C_INT32 i, imax;
@@ -194,7 +187,6 @@ bool CCopasiXML::saveModel()
       Attributes.add("key", "");
       Attributes.add("name", "");
       Attributes.add("stateVariable", "");
-      Attributes.add("sbmlid", "");
 
       unsigned C_INT32 i, imax = mpModel->getCompartments().size();
       for (i = 0; i < imax; i++)
@@ -205,14 +197,9 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(1, pComp->getObjectName());
           Attributes.setValue(2,
                               mpModel->getStateTemplate().getKey(pComp->getKey()));
-          if (pComp->getSBMLId() == "")
-            {
-              Attributes.skip(3);
-            }
-          else
-            {
-              Attributes.setValue(3, pComp->getSBMLId());
-            }
+          if (pComp->getSBMLId() != "")
+            mSBMLReference[pComp->getSBMLId()] = pComp->getKey();
+
           saveElement("Compartment", Attributes);
         }
 
@@ -229,7 +216,6 @@ bool CCopasiXML::saveModel()
       Attributes.add("compartment", "");
       Attributes.add("status", "");
       Attributes.add("stateVariable", "");
-      Attributes.add("sbmlid", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -242,14 +228,9 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(4,
                               mpModel->getStateTemplate().getKey(pMetab->getKey()));
 
-          if (pMetab->getSBMLId() == "")
-            {
-              Attributes.skip(5);
-            }
-          else
-            {
-              Attributes.setValue(5, pMetab->getSBMLId());
-            }
+          if (pMetab->getSBMLId() != "")
+            mSBMLReference[pMetab->getSBMLId()] = pMetab->getKey();
+
           saveElement("Metabolite", Attributes);
         }
 
@@ -265,7 +246,6 @@ bool CCopasiXML::saveModel()
       Attributes.add("name", "");
       Attributes.add("status", "");
       Attributes.add("stateVariable", "");
-      Attributes.add("sbmlid", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -275,14 +255,8 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(1, pMV->getObjectName());
           Attributes.setValue(2, CModelValue::XMLStatus[pMV->getStatus()]);
           Attributes.setValue(3, mpModel->getStateTemplate().getKey(pMV->getKey()));
-          if (pMV->getSBMLId() == "")
-            {
-              Attributes.skip(4);
-            }
-          else
-            {
-              Attributes.setValue(4, pMV->getSBMLId());
-            }
+          if (pMV->getSBMLId() != "")
+            mSBMLReference[pMV->getSBMLId()] = pMV->getKey();
 
           saveElement("ModelValue", Attributes);
         }
@@ -306,7 +280,6 @@ bool CCopasiXML::saveModel()
       Attributes.add("name", "");
       Attributes.add("compartment", ""); //TODO necessary?
       Attributes.add("reversible", "");
-      Attributes.add("sbmlid", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -319,14 +292,8 @@ bool CCopasiXML::saveModel()
           //else
           Attributes.skip(2);
           Attributes.setValue(3, pReaction->isReversible() ? "true" : "false");
-          if (pReaction->getSBMLId() == "")
-            {
-              Attributes.skip(4);
-            }
-          else
-            {
-              Attributes.setValue(4, pReaction->getSBMLId());
-            }
+          if (pReaction->getSBMLId() != "")
+            mSBMLReference[pReaction->getSBMLId()] = pReaction->getKey();
 
           startSaveElement("Reaction", Attributes);
 
@@ -522,10 +489,9 @@ bool CCopasiXML::saveFunctionList()
         {
           Attributes.add("positive", pFunction->isReversible() ? "true" : "false");
           if (pFunction->getSBMLId() != "")
-            {
-              Attributes.add("sbmlid", pFunction->getSBMLId());
-            }
+            mSBMLReference[pFunction->getSBMLId()] = pFunction->getKey();
         }
+
       startSaveElement("Function", Attributes);
 
       startSaveElement("MathML");
@@ -877,11 +843,7 @@ bool CCopasiXML::saveReportList()
       startSaveElement("Report", Attributes);
 
       startSaveElement("Comment");
-      Attributes.erase();
-      Attributes.add("xmlns", "http://www.w3.org/1999/xhtml");
-      startSaveElement("body", Attributes);
-      saveData(pReport->getComment());
-      endSaveElement("body");
+      saveXhtml(pReport->getComment());
       endSaveElement("Comment");
 
       if (pReport->isTable())
@@ -967,6 +929,38 @@ bool CCopasiXML::saveGUI()
   endSaveElement("GUI");
 
   return success;
+}
+
+bool CCopasiXML::saveSBMLReference()
+{
+  if (!CCopasiDataModel::Global) return false;
+
+  if (CCopasiDataModel::Global->getSBMLFileName() != "" &&
+      mSBMLReference.size() == 0)
+    return true;
+
+  CXMLAttributeList Attributes;
+  Attributes.add("file", CCopasiDataModel::Global->getSBMLFileName());
+
+  startSaveElement("SBMLReference", Attributes);
+  Attributes.erase();
+  Attributes.add("SBMLid", "");
+  Attributes.add("COPASIkey", "");
+
+  std::map<std::string, std::string>::const_iterator it = mSBMLReference.begin();
+  std::map<std::string, std::string>::const_iterator end = mSBMLReference.end();
+
+  for (; it != end; ++it)
+    {
+      Attributes.setValue(0, it->first);
+      Attributes.setValue(1, it->second);
+
+      saveElement("SBMLMap", Attributes);
+    }
+
+  endSaveElement("SBMLReference");
+
+  return true;
 }
 
 bool CCopasiXML::buildFunctionList()

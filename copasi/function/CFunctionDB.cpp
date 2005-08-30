@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/12 17:20:22 $
+   $Date: 2005/08/30 15:40:05 $
    End CVS Header */
 
 /**
@@ -117,6 +117,9 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
           // CCopasiVector (2): Object '%s' allready exists.
           if ((MCCopasiVector + 2) != CCopasiMessage::peekLastMessage().getNumber())
             return Fail = 1;
+
+          // Remove the ignored meesage.
+          CCopasiMessage::getLastMessage();
         }
     }
 

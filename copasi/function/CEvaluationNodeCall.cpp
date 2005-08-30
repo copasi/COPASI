@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/12 17:14:37 $
+   $Date: 2005/08/30 15:40:04 $
    End CVS Header */
 
 #include <sbml/math/ASTNode.h>
@@ -138,6 +138,34 @@ std::string CEvaluationNodeCall::getInfix() const
         break;
       }
     return Infix + ")";
+  }
+
+std::string CEvaluationNodeCall::getDisplayString(const CEvaluationTree * pTree) const
+  {
+    std::string DisplayString = mData + "(";
+    switch (mType & 0x00FFFFFF)
+      {
+      case FUNCTION:
+        {
+          std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
+          std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
+
+          if (it != end) DisplayString += (*it++)->getDisplayString(pTree);
+
+          for (; it != end; ++it)
+            DisplayString += "," + (*it)->getDisplayString(pTree);
+        }
+
+        break;
+
+      case EXPRESSION:
+        break;
+
+      default:
+        return "@";
+        break;
+      }
+    return DisplayString + ")";
   }
 
 CEvaluationNode* CEvaluationNodeCall::createNodeFromASTTree(const ASTNode& node)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 14:19:51 $
+   $Date: 2005/08/30 15:40:05 $
    End CVS Header */
 
 #ifndef COPASI_CExpression
@@ -54,11 +54,11 @@ class CExpression:
     virtual const C_FLOAT64 & calcValue();
 
     /**
-     * Retrieve a pointer to the value of the object define dby CN.
+     * Retrieve a pointer to the object define dby CN.
      * @param const CCopasiObjectName & CN
-     * @return C_FLOAT64 * value
+     * @return const CCopasiObject * value
      */
-    virtual C_FLOAT64 * getObjectValue(const CCopasiObjectName & CN) const;
+    virtual const CCopasiObject * getObject(const CCopasiObjectName & CN) const;
 
     /**
      * Retrieve the list of container used for compile
@@ -66,12 +66,31 @@ class CExpression:
      */
     const std::vector< CCopasiContainer * > & getListOfContainer() const;
 
+    /**
+     * This method performa an infix update if a referenced object has been renamed
+     * @return bool success
+     */
+    bool updateInfix();
+
+    /**
+     * Retrieve the human readable display string.
+     * Note, the expression must be compiled for this return a displayable
+     * string.
+     * @return const std::string & displayString
+     */
+    const std::string & getDisplayString() const;
+
     // Attribute
   protected:
     /**
      * Pointer to the list of containers used for compilation.
      */
     const std::vector< CCopasiContainer * > * mpListOfContainer;
+
+    /**
+     * Human readable display string.
+     */
+    std::string mDisplayString;
   };
 
 #endif // COPASI_CExpression

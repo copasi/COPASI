@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/25 05:19:10 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:31 $
    End CVS Header */
 
 #include <math.h>
@@ -398,7 +398,7 @@ UnitDefinition* SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(CMo
       unit = new Unit(UNIT_KIND_SECOND, 1, 0);
       unit->setMultiplier(3600);
       break;
-    case CModel::m:
+    case CModel::min:
       unit = new Unit(UNIT_KIND_SECOND, 1, 0);
       unit->setMultiplier(60);
       break;

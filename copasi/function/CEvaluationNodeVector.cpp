@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVector.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 14:24:42 $
+   $Date: 2005/08/30 15:40:05 $
    End CVS Header */
 
 #include "copasi.h"
@@ -68,6 +68,21 @@ std::string CEvaluationNodeVector::getInfix() const
       Infix += "," + (*it)->getInfix();
 
     return Infix + "}";
+  }
+
+std::string CEvaluationNodeVector::getDisplayString(const CEvaluationTree * pTree) const
+  {
+    std::string DisplayString = "{";
+
+    std::vector< CEvaluationNode * >::const_iterator it = mVector.begin();
+    std::vector< CEvaluationNode * >::const_iterator end = mVector.end();
+
+    if (it != end) DisplayString += (*it++)->getDisplayString(pTree);
+
+    for (; it != end; ++it)
+      DisplayString += "," + (*it)->getDisplayString(pTree);
+
+    return DisplayString + "}";
   }
 
 CEvaluationNode* CEvaluationNodeVector::createNodeFromASTTree(const ASTNode& node)

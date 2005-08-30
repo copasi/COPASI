@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/03 10:24:36 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:04 $
    End CVS Header */
 
 #include "copasi.h"
@@ -98,6 +98,30 @@ std::string CEvaluationNodeLogical::getInfix() const
           Infix += " " + mpRight->getInfix();
 
         return Infix;
+      }
+    else
+      return "@";
+  }
+
+std::string CEvaluationNodeLogical::getDisplayString(const CEvaluationTree * pTree) const
+  {
+    if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+      {
+        Data DisplayString;
+
+        if (*mpLeft < *(CEvaluationNode *)this)
+          DisplayString = "(" + mpLeft->getDisplayString(pTree) + ")";
+        else
+          DisplayString = mpLeft->getDisplayString(pTree) + " ";
+
+        DisplayString += mData;
+
+        if (!(*(CEvaluationNode *)this < *mpRight))
+          DisplayString += "(" + mpRight->getDisplayString(pTree) + ")";
+        else
+          DisplayString += " " + mpRight->getDisplayString(pTree);
+
+        return DisplayString;
       }
     else
       return "@";

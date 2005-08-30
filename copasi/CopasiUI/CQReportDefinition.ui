@@ -73,7 +73,7 @@
                     </property>
                     <property name="minimumSize">
                         <size>
-                            <width>57</width>
+                            <width>62</width>
                             <height>0</height>
                         </size>
                     </property>
@@ -90,7 +90,7 @@
                     </property>
                     <property name="minimumSize">
                         <size>
-                            <width>45</width>
+                            <width>62</width>
                             <height>0</height>
                         </size>
                     </property>
@@ -107,7 +107,7 @@
                     </property>
                     <property name="minimumSize">
                         <size>
-                            <width>53</width>
+                            <width>62</width>
                             <height>0</height>
                         </size>
                     </property>
@@ -266,7 +266,7 @@
                             </property>
                             <property name="maximumSize">
                                 <size>
-                                    <width>100</width>
+                                    <width>112</width>
                                     <height>32767</height>
                                 </size>
                             </property>
@@ -288,7 +288,7 @@
                             </property>
                             <property name="maximumSize">
                                 <size>
-                                    <width>100</width>
+                                    <width>112</width>
                                     <height>32767</height>
                                 </size>
                             </property>
@@ -310,7 +310,7 @@
                             </property>
                             <property name="maximumSize">
                                 <size>
-                                    <width>100</width>
+                                    <width>112</width>
                                     <height>32767</height>
                                 </size>
                             </property>
@@ -332,7 +332,7 @@
                             </property>
                             <property name="maximumSize">
                                 <size>
-                                    <width>100</width>
+                                    <width>112</width>
                                     <height>32767</height>
                                 </size>
                             </property>
@@ -354,7 +354,7 @@
                             </property>
                             <property name="maximumSize">
                                 <size>
-                                    <width>100</width>
+                                    <width>112</width>
                                     <height>32767</height>
                                 </size>
                             </property>
@@ -376,7 +376,7 @@
                             </property>
                             <property name="maximumSize">
                                 <size>
-                                    <width>100</width>
+                                    <width>112</width>
                                     <height>32767</height>
                                 </size>
                             </property>
@@ -398,7 +398,7 @@
                             </property>
                             <property name="maximumSize">
                                 <size>
-                                    <width>100</width>
+                                    <width>112</width>
                                     <height>32767</height>
                                 </size>
                             </property>
@@ -420,7 +420,7 @@
                             </property>
                             <property name="maximumSize">
                                 <size>
-                                    <width>100</width>
+                                    <width>112</width>
                                     <height>32767</height>
                                 </size>
                             </property>
@@ -565,27 +565,27 @@
 <connections>
     <connection>
         <sender>mpName</sender>
-        <signal>changed()</signal>
+        <signal>textChanged(const QString &amp;)</signal>
         <receiver>CQReportDefinition</receiver>
-        <slot>nameChanged()</slot>
+        <slot>nameChanged(const QString &amp;)</slot>
     </connection>
     <connection>
         <sender>mpTaskBox</sender>
-        <signal>changed()</signal>
+        <signal>textChanged(const QString &amp;)</signal>
         <receiver>CQReportDefinition</receiver>
-        <slot>taskChanged()</slot>
+        <slot>taskChanged(const QString &amp;)</slot>
     </connection>
     <connection>
         <sender>mpCommentEdit</sender>
-        <signal>changed()</signal>
+        <signal>textChanged()</signal>
         <receiver>CQReportDefinition</receiver>
         <slot>commentChanged()</slot>
     </connection>
     <connection>
         <sender>mpSeparator</sender>
-        <signal>changed()</signal>
+        <signal>textChanged(const QString &amp;)</signal>
         <receiver>CQReportDefinition</receiver>
-        <slot>separatorChanged()</slot>
+        <slot>separatorChanged(const QString &amp;)</slot>
     </connection>
     <connection>
         <sender>mpTabCheck</sender>
@@ -700,10 +700,10 @@
     <variable access="private">CReportDefinition * mpReportDefinition;</variable>
 </variables>
 <slots>
-    <slot access="private" specifier="non virtual">nameChanged()</slot>
-    <slot access="private" specifier="non virtual">taskChanged()</slot>
+    <slot access="private" specifier="non virtual">nameChanged(const QString &amp; string)</slot>
+    <slot access="private" specifier="non virtual">taskChanged(const QString &amp; string)</slot>
     <slot access="private" specifier="non virtual">commentChanged()</slot>
-    <slot access="private" specifier="non virtual">separatorChanged()</slot>
+    <slot access="private" specifier="non virtual">separatorChanged(const QString &amp; string)</slot>
     <slot access="private" specifier="non virtual">chkTabClicked()</slot>
     <slot access="private" specifier="non virtual">btnAdvancedClicked()</slot>
     <slot access="private" specifier="non virtual">btnItemClicked()</slot>

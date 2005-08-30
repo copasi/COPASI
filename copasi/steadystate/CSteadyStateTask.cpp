@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/15 11:31:02 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:34 $
    End CVS Header */
 
 /**
@@ -106,7 +106,8 @@ const CEigen & CSteadyStateTask::getEigenValuesReduced() const
     return mEigenValuesX;
   }
 
-bool CSteadyStateTask::initialize(std::ostream * pOstream)
+bool CSteadyStateTask::initialize(const OutputFlag & of,
+                                  std::ostream * pOstream)
 {
   assert(mpProblem && mpMethod);
 
@@ -116,7 +117,7 @@ bool CSteadyStateTask::initialize(std::ostream * pOstream)
 
   bool success = true;
 
-  if (!CCopasiTask::initialize(pOstream)) success = false;
+  if (!CCopasiTask::initialize(of, pOstream)) success = false;
 
   //init states
   if (!mpProblem->getModel()) return false;
@@ -136,12 +137,10 @@ bool CSteadyStateTask::initialize(std::ostream * pOstream)
   return success;
 }
 
-bool CSteadyStateTask::process(OutputFlag of, bool useInitialValues)
+bool CSteadyStateTask::process(const bool & useInitialValues)
 {
   assert(mpMethod);
   mpMethod->isValidProblem(mpProblem);
-
-  mDoOutput = of;
 
   if (useInitialValues)
     {

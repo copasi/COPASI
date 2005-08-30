@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 16:46:49 $
+   $Date: 2005/08/30 15:41:10 $
    End CVS Header */
 
 /**
@@ -98,6 +98,10 @@ void encodeATTRIBUTE(const char & chr, std::ostringstream & xml)
 
     case '\t':           // Without this <tab> is converted to <space>
       xml << "&#x09;";
+      break;
+
+    case '\n':           // Without this linebreak is converted to <space>
+      xml << "&#x0a;";
       break;
 
     default:
@@ -337,6 +341,25 @@ bool CCopasiXMLInterface::freeGUI()
 bool CCopasiXMLInterface::saveData(const std::string & data)
 {
   *mpOstream << mIndent << CCopasiXMLInterface::encode(data) << std::endl;
+
+  return true;
+}
+
+bool CCopasiXMLInterface::saveXhtml(const std::string & xhtml)
+{
+  if (xhtml[0] == '<')
+    *mpOstream << xhtml << std::endl;
+  else
+    {
+      CXMLAttributeList Attributes;
+      Attributes.add("xmlns", "http://www.w3.org/1999/xhtml");
+
+      startSaveElement("body", Attributes);
+
+      saveData(xhtml);
+
+      endSaveElement("body");
+    }
 
   return true;
 }

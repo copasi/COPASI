@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.h,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/07 21:45:41 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:51 $
    End CVS Header */
 
 /****************************************************************************
@@ -60,15 +60,17 @@ class ScanWidget : public CopasiWidget
 
     //inline std::string getScanTaskKey() const {return scanTaskKey;};
 
+    QWidget* pParent;
+
     CScanContainerWidget* scrollview;
-    QCheckBox* sExecutable;
+    QCheckBox* bExecutable;
     QPushButton* scanButton;
     QPushButton* cancelChange;
 
     QPushButton* buttonNewItem;
     QComboBox* comboType;
 
-    QLabel* TextLabel1;
+    QLabel* taskNameLabel;
     QLabel* TextLabel2;
     QLabel* TextLabel3;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CluX.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/25 18:13:21 $
+   $Date: 2005/08/30 15:40:58 $
    End CVS Header */
 
 #ifndef COPASI_CluX
@@ -107,16 +107,36 @@ template <class Matrix, class Subscript>
                   t = fabs(A(i, j));
                 }
 
-            row[j] = jp;
-
             // jp now has the index of maximum element
             // of column j, below the diagonal
 
             if (A(jp, j) == 0) // now we have to swap colums to find a pivot
               {
-                if (jl <= j)
+                // Instead of blindly swapping with the last available
+                // column we first check whether it is suitable. If not
+                // we proceed with the lat but one ...
+                while (j < jl)
+                  {
+                    jp = j;
+                    t = fabs(A(j, jl));
+
+                    for (i = j + 1; i < M; i++)
+                      if (fabs(A(i, jl)) > t)
+                        {
+                          jp = i;
+                          t = fabs(A(i, jl));
+                        }
+
+                    if (t > 0.0) break; // Found a suitable column
+                    // and row
+
+                    jl--; // proceed with previous column
+                  }
+
+                if (j == jl)
                   return 1; // we are done
-                for (k = 0; k < M; k++)
+
+                for (k = 0; k < M; k++) // swap columns jl and j
                   {
                     t = A(k, jl);
                     A(k, jl) = A(k, j);
@@ -124,10 +144,9 @@ template <class Matrix, class Subscript>
                   }
                 col[jl] = j;
                 jl--;
-                continue;
               }
-            else
-              break;
+
+            break;
           }
 
         if (jp != j)      // swap rows j and jp
@@ -137,6 +156,7 @@ template <class Matrix, class Subscript>
               A(j, k) = A(jp, k);
               A(jp, k) = t;
             }
+        row[j] = jp;
 
         if (j < M - 1)    // compute elements j+1 <= k < M of jth column
           {

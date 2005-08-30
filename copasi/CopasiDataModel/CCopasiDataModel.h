@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/18 14:24:04 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:22 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
@@ -91,6 +91,8 @@ class CCopasiDataModel
     void changed(const bool & changed = true);
 
     SBMLDocument* getCurrentSBMLDocument();
+    bool setSBMLFileName(const std::string & fileName);
+    const std::string & getSBMLFileName() const;
 
     std::map<CCopasiObject*, SBase*>& getCopasi2SBMLMap();
 
@@ -118,6 +120,11 @@ class CCopasiDataModel
      * to create the current Model.
      */
     SBMLDocument* mpCurrentSBMLDocument;
+
+    /**
+     * The name of the referenced SBML file
+     */
+    std::string mSBMLFileName;
 
     /**
      * This will map each Copasi object to the

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:36:38 $
+   $Date: 2005/08/30 15:40:58 $
    End CVS Header */
 
 /**
@@ -43,6 +43,28 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
   createGroup(rhs.mValue.pGROUP);
 
   return *this;
+}
+
+void CCopasiParameterGroup::print(std::ostream * ostream) const
+  {*ostream << *this;}
+
+std::ostream &operator<<(std::ostream &os, const CCopasiParameterGroup & o)
+{
+  os << "<<< Parameter Group: " << o.getObjectName() << std::endl;
+
+  CCopasiParameterGroup::parameterGroup::const_iterator it =
+    o.CCopasiParameter::getValue().pGROUP->begin();
+  CCopasiParameterGroup::parameterGroup::const_iterator end =
+    o.CCopasiParameter::getValue().pGROUP->end();
+
+  for (; it != end; ++it)
+    {
+      (*it)->print(&os);
+      os << std::endl;
+    }
+
+  os << ">>> Parameter Group: " << o.getObjectName() << std::endl;
+  return os;
 }
 
 void CCopasiParameterGroup::createGroup(const parameterGroup * pGroup)

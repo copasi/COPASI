@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/23 15:44:26 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:04 $
    End CVS Header */
 
 #include <string>
@@ -50,9 +50,11 @@ CEvaluationNodeConstant::CEvaluationNodeConstant(const SubType & subType,
     case _INFINITY:
       mValue = 2.0 * DBL_MAX;
       break;
+
     case _NaN:
       mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       break;
+
     default:
       mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       break;
@@ -101,6 +103,12 @@ CEvaluationNode* CEvaluationNodeConstant::createNodeFromASTTree(const ASTNode& n
   return new CEvaluationNodeConstant(subType, data);
 }
 
+#ifdef WIN32 
+// warning C4056: overflow in floating-point constant arithmetic
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
+#endif
+
 ASTNode* CEvaluationNodeConstant::toAST() const
   {
     SubType subType = (SubType)CEvaluationNode::subType(this->getType());
@@ -131,3 +139,7 @@ ASTNode* CEvaluationNodeConstant::toAST() const
       }
     return node;
   }
+
+#ifdef WIN32
+# pragma warning (default: 4056 4756)
+#endif

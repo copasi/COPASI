@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 16:34:13 $
+   $Date: 2005/08/30 15:39:51 $
    End CVS Header */
 
 /****************************************************************************
@@ -224,6 +224,30 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
       tabWidget->setTabEnabled(tabWidget->page(4), false);
       tabWidget->setTabEnabled(tabWidget->page(5), false);
     }
+
+  return true;
+}
+
+bool StateSubwidget::clear()
+{
+  topLabel->setText("No result available, please execute the steady-state task.");
+
+  concentrationsTable->setNumRows(0);
+  numbersTable->setNumRows(0);
+
+  tableFlux->setNumRows(0);
+
+  tableJacobian->setNumRows(0);
+  tableJacobian->setNumCols(0);
+
+  tableEigenValues->setNumRows(0);
+
+  tableJacobianX->setNumRows(0);
+  tableJacobianX->setNumCols(0);
+
+  tableEigenValuesX->setNumRows(0);
+
+  stabilityTextEdit->setText("");
 
   return true;
 }

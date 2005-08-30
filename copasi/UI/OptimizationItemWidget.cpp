@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/08 19:05:17 $
+   $Date: 2005/08/30 15:39:51 $
    End CVS Header */
 
 /********************************************************
@@ -55,7 +55,7 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
   textLabel2 = new QLabel(this, "textLabel2");
   textLabel2->setGeometry(QRect(190, 10, 48, 20));
 
-  comboBoxLowerOp = new QComboBox(FALSE, this, "comboBoxLowerOp");
+  comboBoxLowerOp = new QLabel(this, "comboBoxLowerOp");
   comboBoxLowerOp->setGeometry(QRect(130, 30, 43, 20));
 
   textLabel4 = new QLabel(this, "textLabel4");
@@ -84,7 +84,7 @@ OptimizationItemWidget::OptimizationItemWidget(QWidget* parent, const char* name
   line3->setFrameShadow(QFrame::Sunken);
   line3->setFrameShape(QFrame::VLine);
 
-  comboBoxUpperOp = new QComboBox(FALSE, this, "comboBoxUpperOp");
+  comboBoxUpperOp = new QLabel(this, "comboBoxUpperOp");
   comboBoxUpperOp->setGeometry(QRect(320, 30, 43, 20));
 
   line3_2 = new QFrame(this, "line3_2");
@@ -158,15 +158,10 @@ void OptimizationItemWidget::languageChange()
   textLabel2->setText(tr("Parameter"));
   textLabel4->setText(tr("Lower"));
 
-  comboBoxLowerOp->clear();
-  comboBoxLowerOp->insertItem(tr("<"));
-  comboBoxLowerOp->insertItem(tr("<="));
-  comboBoxLowerOp->insertItem(tr("=="));
+  comboBoxLowerOp->setText(tr("<="));
 
-  comboBoxUpperOp->clear();
-  comboBoxUpperOp->insertItem(tr("<"));
-  comboBoxUpperOp->insertItem(tr("<="));
-  comboBoxUpperOp->insertItem(tr("=="));
+  comboBoxUpperOp->setText(tr("<="));
+
   textLabel3->setText(tr("Upper"));
   checkUpperInf->setText(tr("+ Inf"));
   checkLowerInf->setText(tr("- Inf"));
@@ -320,22 +315,22 @@ void OptimizationItemWidget::setItemLowerLimit(std::string strLowerLimit)
 
 std::string OptimizationItemWidget::getItemUpperOper() const
   {
-    return (const char*)comboBoxUpperOp->currentText().utf8();
+    return (const char*)comboBoxUpperOp->text().utf8();
   }
 
 std::string OptimizationItemWidget::getItemLowerOper() const
   {
-    return (const char*)comboBoxLowerOp->currentText().utf8();
+    return (const char*)comboBoxLowerOp->text().utf8();
   }
 
 void OptimizationItemWidget::setItemUpperOper(std::string oper)
 {
-  comboBoxUpperOp->setCurrentText(FROM_UTF8(oper));
+  comboBoxUpperOp->setText("<=");
 }
 
 void OptimizationItemWidget::setItemLowerOper(std::string oper)
 {
-  comboBoxLowerOp->setCurrentText(FROM_UTF8(oper));
+  comboBoxLowerOp->setText("<=");
 }
 
 void OptimizationItemWidget::slotParamEdit()

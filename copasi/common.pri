@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.45 $ $Author: shoops $ $Date: 2005/06/22 14:02:33 $  
+# $Revision: 1.46 $ $Author: shoops $ $Date: 2005/08/30 15:38:57 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -104,9 +104,10 @@ contains(BUILD_OS, WIN32) {
     DEFINES += USE_MKL
     QMAKE_CXXFLAGS_DEBUG   += -I"$${MKL_PATH}\include"
     QMAKE_CXXFLAGS_RELEASE += -I"$${MKL_PATH}\include"
-    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${MKL_PATH}\ia32\lib"
-    QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${MKL_PATH}\ia32\lib"
-    LIBS += mkl_lapack.lib mkl_p3.lib mkl_c.lib
+    QMAKE_LFLAGS_WINDOWS += /LIBPATH:"$${MKL_PATH}\32\lib"
+    QMAKE_LFLAGS_CONSOLE += /LIBPATH:"$${MKL_PATH}\32\lib"
+#    LIBS += mkl_lapack.lib mkl_p3.lib mkl_c.lib
+    LIBS += mkl_lapack.lib mkl_ia32.lib guide.lib
   } else {
     !isEmpty(CLAPACK_PATH) {
       DEFINES += USE_CLAPACK
@@ -218,7 +219,8 @@ contains(BUILD_OS, Linux) {
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
     INCLUDEPATH += $${MKL_PATH}/include
-    LIBS += -lmkl_lapack -lmkl_p3 -lg2c -lpthread
+#    LIBS += -lmkl_lapack -lmkl_ia32 -lg2c -lpthread
+    LIBS += -lmkl_lapack -lmkl_ia32 -lguide -lpthread
     LIBS +=  -L$${MKL_PATH}/lib/32
   } else {
     !isEmpty(CLAPACK_PATH) {

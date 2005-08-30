@@ -1,26 +1,26 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQReportDefinition.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 18:07:49 $
+   $Date: 2005/08/30 15:39:50 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQReportDefinition.ui'
  **
- ** Created: Wed May 11 14:05:34 2005
- **      by: The User Interface Compiler ($Id: CQReportDefinition.h,v 1.3 2005/05/11 18:07:49 shoops Exp $)
+ ** Created: Thu Aug 25 09:03:57 2005
+ **      by: The User Interface Compiler ($Id: CQReportDefinition.h,v 1.4 2005/08/30 15:39:50 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef CQREPORTDEFINITION_H
-#define CQREPORTDEFINITION_H
+ #define CQREPORTDEFINITION_H
 
 #include <qvariant.h>
-#include <qlistbox.h>
-#include "copasiWidget.h"
+ #include <qlistbox.h>
+ #include "copasiWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -103,10 +103,10 @@ class CQReportDefinition : public CopasiWidget
     bool setAdvancedMode(const bool & advanced);
 
   private slots:
-    void nameChanged();
-    void taskChanged();
+    void nameChanged(const QString & string);
+    void taskChanged(const QString & string);
     void commentChanged();
-    void separatorChanged();
+    void separatorChanged(const QString & string);
     void chkTabClicked();
     void btnAdvancedClicked();
     void btnItemClicked();

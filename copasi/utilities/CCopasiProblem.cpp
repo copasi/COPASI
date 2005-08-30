@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/08 19:36:22 $
+   $Date: 2005/08/30 15:40:58 $
    End CVS Header */
 
 /**
@@ -283,3 +283,27 @@ bool CCopasiProblem::restore() {return true;}
 bool CCopasiProblem::checkParametricConstraints() {return true;}
 
 bool CCopasiProblem::checkFunctionalConstraints() {return true;}
+
+void CCopasiProblem::print(std::ostream * ostream) const
+  {*ostream << *this;}
+
+void CCopasiProblem::printResult(std::ostream * ostream) const
+  {*ostream << "Not implemented.";}
+
+std::ostream &operator<<(std::ostream &os, const CCopasiProblem & o)
+{
+  os << "Problem Description:" << std::endl;
+
+  CCopasiParameterGroup::parameterGroup::const_iterator it =
+    o.CCopasiParameter::getValue().pGROUP->begin();
+  CCopasiParameterGroup::parameterGroup::const_iterator end =
+    o.CCopasiParameter::getValue().pGROUP->end();
+
+  for (; it != end; ++it)
+    {
+      (*it)->print(&os);
+      os << std::endl;
+    }
+
+  return os;
+}

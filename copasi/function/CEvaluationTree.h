@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/29 15:13:28 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:05 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -180,11 +180,11 @@ class CEvaluationTree:
     virtual const C_FLOAT64 & getVariableValue(const unsigned C_INT32 & index) const;
 
     /**
-     * Retrieve a pointer to the value of the object define dby CN.
+     * Retrieve a pointer to the object define dby CN.
      * @param const CCopasiObjectName & CN
-     * @return C_FLOAT64 * value
+     * @return const CCopasiObject * value
      */
-    virtual C_FLOAT64 * getObjectValue(const CCopasiObjectName & CN) const;
+    virtual const CCopasiObject * getObject(const CCopasiObjectName & CN) const;
 
     /**
      * Returns the root node of the tree.
@@ -251,11 +251,13 @@ class CEvaluationTree:
      */
     std::string mKey;
 
+  protected:
     /**
      * The infix representation of the expression
      */
     std::string mInfix;
 
+  private:
     /**
      * The error position in case the compilation fails.
      * std::string::npos indicates no error.

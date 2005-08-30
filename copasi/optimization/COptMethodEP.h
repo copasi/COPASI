@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 20:37:03 $
+   $Date: 2005/08/30 15:40:17 $
    End CVS Header */
 
 #ifndef COPASI_COptMethodEP
@@ -43,7 +43,7 @@ class COptMethodEP: public COptMethod
     /**
      * Initialize contained objects.
      */
-    virtual void initObjects();
+    void initObjects();
 
     /**
      * Mutate one individual

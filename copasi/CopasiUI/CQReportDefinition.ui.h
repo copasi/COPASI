@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQReportDefinition.ui.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/02 12:23:43 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:39:50 $
    End CVS Header */
 
 #include <qmessagebox.h>
@@ -19,16 +19,16 @@
 #include "report/CReportDefinitionVector.h"
 #include "report/CCopasiStaticString.h"
 
-void CQReportDefinition::nameChanged()
+void CQReportDefinition::nameChanged(const QString & /* string */)
 {mChanged = true;}
 
-void CQReportDefinition::taskChanged()
+void CQReportDefinition::taskChanged(const QString & /* string */)
 {mChanged = true;}
 
 void CQReportDefinition::commentChanged()
 {mChanged = true;}
 
-void CQReportDefinition::separatorChanged()
+void CQReportDefinition::separatorChanged(const QString & /* string */)
 {mChanged = true;}
 
 void CQReportDefinition::chkTabClicked()
@@ -203,7 +203,7 @@ void CQReportDefinition::btnUpClicked()
   QListBox * pList = static_cast<QListBox *>(mpReportSectionTab->currentPage());
   unsigned C_INT32 i, multipleSelection;
 
-  QListBoxItem * pAfter;
+  QListBoxItem * pAfter = NULL;
   QListBoxItem * pMove;
 
   for (i = pList->count() - 1, multipleSelection = 0; i < ULONG_MAX; i--)
@@ -449,8 +449,21 @@ bool CQReportDefinition::save()
 
   if (mpReportDefinition->getObjectName() != (const char*) mpName->text().utf8())
     {
-      mpReportDefinition->setObjectName((const char*) mpName->text().utf8());
-      protectedNotify(ListViews::REPORT, ListViews::RENAME, mKey);
+      if (!mpReportDefinition->setObjectName((const char*) mpName->text().utf8()))
+        {
+          QString msg;
+          msg = "Unable to rename report '" + FROM_UTF8(mpReportDefinition->getObjectName()) + "'\n"
+                + "to '" + mpName->text() + "' since a report with that name already exists.";
+
+          QMessageBox::warning(this,
+                               "Unable to rename Report",
+                               msg,
+                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+
+          mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
+        }
+      else
+        protectedNotify(ListViews::REPORT, ListViews::RENAME, mKey);
     }
 
   mpReportDefinition->setTaskType((CCopasiTask::Type) mpTaskBox->currentItem());

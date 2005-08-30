@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:36:38 $
+   $Date: 2005/08/30 15:40:58 $
    End CVS Header */
 
 /**
@@ -159,6 +159,49 @@ bool CCopasiParameter::isValidValue(const CCopasiParameterGroup::parameterGroup 
     return true;
   }
 
+void CCopasiParameter::print(std::ostream * ostream) const
+{*ostream << *this;}
+
+std::ostream &operator<<(std::ostream &os, const CCopasiParameter & o)
+{
+  os << "    " << o.getObjectName() << ": ";
+
+  switch (o.mType)
+    {
+    case CCopasiParameter::DOUBLE:
+      case CCopasiParameter::UDOUBLE:
+      os << * o.mValue.pDOUBLE;
+      break;
+
+    case CCopasiParameter::INT:
+      os << * o.mValue.pINT;
+      break;
+
+    case CCopasiParameter::UINT:
+      os << * o.mValue.pUINT;
+      break;
+
+    case CCopasiParameter::BOOL:
+      os << * o.mValue.pBOOL;
+      break;
+
+    case CCopasiParameter::STRING:
+    case CCopasiParameter::KEY:
+      os << * o.mValue.pSTRING;
+      break;
+
+    case CCopasiParameter::CN:
+      os << * o.mValue.pCN;
+      break;
+
+    case CCopasiParameter::GROUP:
+    case CCopasiParameter::INVALID:
+      break;
+    }
+
+  return os;
+}
+
 void * CCopasiParameter::getReference() const
 {return const_cast<void *>(mValue.pVOID);}
 
@@ -167,7 +210,7 @@ CCopasiParameter::Value CCopasiParameter::createValue(const Value & value)
   switch (mType)
     {
     case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+    case CCopasiParameter::UDOUBLE:
       mValue.pDOUBLE = new C_FLOAT64;
       if (value.pDOUBLE) * mValue.pDOUBLE = * value.pDOUBLE;
       mSize = sizeof(C_FLOAT64);

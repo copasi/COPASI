@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:36:49 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:33 $
    End CVS Header */
 
 /**
@@ -64,10 +64,13 @@ void CScanTask::cleanup()
   //-pdelete(mReport);
 }
 
-bool CScanTask::initialize(std::ostream * out)
+bool CScanTask::initialize(const OutputFlag & of,
+                           std::ostream * pOstream)
 {
   CScanProblem* pProblem =
     dynamic_cast<CScanProblem *>(mpProblem);
+
+  assert(pProblem);
 
   bool success = true;
 
@@ -79,8 +82,6 @@ bool CScanTask::initialize(std::ostream * out)
   //mReport.open(mpOut);
   //mReport.compile();
 
-  assert(pProblem);
-
   // for Steadystate Report
   //  if (pProblem->processSteadyState())
   //    pProblem->getSteadyStateTask()->initialize(mpOut);
@@ -88,6 +89,10 @@ bool CScanTask::initialize(std::ostream * out)
   // for Trajectory Report
   //  if (pProblem->processTrajectory())
   //    pProblem->getTrajectoryTask()->initialize(mpOut);
+
+  //initialize reporting
+  if (!CCopasiTask::initialize(of, pOstream)) success = false;
+
   return success;
 }
 
@@ -100,7 +105,7 @@ void CScanTask::load(CReadConfig & C_UNUSED(configBuffer))
   //pProblem->load(configBuffer);
 }
 
-bool CScanTask::process()
+bool CScanTask::process(const bool & /* useInitialValues */)
 {
   if (!mpProblem) fatalError();
   if (!mpMethod) fatalError();
@@ -164,7 +169,7 @@ bool CScanTask::processCallback()
   //CTrajectoryProblem * ttProblem = dynamic_cast<CTrajectoryProblem*>(mpSubtask->getProblem());
   //if (ttProblem)
   //  {ttProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());}
-  mpSubtask->processForScan(!mAdjustInitialConditions, mOutputInSubtask);
+  mpSubtask->process(!mAdjustInitialConditions);
 
   //do output
   if (mpOutputHandler && (!mOutputInSubtask)) mpOutputHandler->doOutput();
@@ -228,7 +233,7 @@ bool CScanTask::initSubtask()
 
   mpSubtask->getProblem()->setModel(CCopasiDataModel::Global->getModel());
   mpSubtask->setCallBack(NULL);
-  mpSubtask->initialize();
+  mpSubtask->initialize(NO_OUTPUT, NULL);
 
   mOutputInSubtask = * pProblem->getValue("Output in subtask").pBOOL;
   if (type != CCopasiTask::timeCourse)

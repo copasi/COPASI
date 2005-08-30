@@ -179,16 +179,16 @@
                                 <cstring>checkOutput</cstring>
                             </property>
                             <property name="text">
-                                <string>Output time series</string>
+                                <string>output from subtask</string>
                             </property>
                             <property name="accel">
-                                <string>Ctrl+T, Ctrl+R</string>
+                                <string></string>
                             </property>
                             <property name="checked">
                                 <bool>true</bool>
                             </property>
                             <property name="toolTip" stdset="0">
-                                <string>if this is activated all the calculated time series will be plotted. &lt;p&gt;If it is not activated only the state at the end of each simulation will be plotted.</string>
+                                <string>If this is activated output will be generated during each calculation. &lt;p&gt;If it is not activated only the state at the end of each calculation will be plotted.</string>
                             </property>
                         </widget>
                         <spacer>

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:14:17 $
+   $Date: 2005/08/30 15:41:10 $
    End CVS Header */
 
 /**
@@ -20,6 +20,7 @@
 #include <stack>
 #include <map>
 #include <string>
+#include <sstream>
 
 #include "CExpat.h"
 #include "CXMLHandler.h"
@@ -1296,8 +1297,18 @@ class CCopasiXMLParser : public CExpat
         enum Element
         {
           Comment = 0,
-          Ignore
+          xhtml
         };
+
+        /**
+         * String stream to handle xhtml comments
+         */
+        std::ostringstream mXhtml;
+
+        /**
+         * The level of xhtml elements.
+         */
+        unsigned C_INT32 mLevel;
 
         // Operations
       public:
@@ -2361,7 +2372,8 @@ class CCopasiXMLParser : public CExpat
           ListOfTasks,
           ListOfReports,
           ListOfPlots,
-          GUI
+          GUI,
+          SBMLReference
         };
 
         // Operations
@@ -2782,6 +2794,88 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
+  class SBMLReferenceElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          SBMLReference = 0,
+          SBMLMap
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        SBMLReferenceElement(CCopasiXMLParser & parser,
+                             SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~SBMLReferenceElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
+  class SBMLMapElement:
+          public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Enum of invoked parsers
+         */
+        enum Element
+        {
+          SBMLMap = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        SBMLMapElement(CCopasiXMLParser & parser,
+                       SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~SBMLMapElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
     // Operations
   private:
     /**

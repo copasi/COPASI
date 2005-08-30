@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/02 11:52:02 $
+   $Date: 2005/08/30 15:40:49 $
    End CVS Header */
 
 #ifndef COPASI_CStochMethod
@@ -214,7 +214,7 @@ class CStochMethod : public CTrajectoryMethod
     /**
      * The random number generator
      */
-    CRandom *mRandomGenerator;
+    CRandom *mpRandomGenerator;
 
     /**
      * A pointer to the instance of CModel being used.

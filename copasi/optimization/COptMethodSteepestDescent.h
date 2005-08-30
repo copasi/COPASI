@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 20:37:04 $
+   $Date: 2005/08/30 15:40:18 $
    End CVS Header */
 
 #ifndef COPASI_COptMethodSteepestDescent
@@ -57,7 +57,7 @@ class COptMethodSteepestDescent: public COptMethod
     /**
         * Initialize contained objects.
         */
-    virtual void initObjects();
+    void initObjects();
 
   public:
     /**

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/19 15:14:39 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:05 $
    End CVS Header */
 
 /**
@@ -64,7 +64,7 @@ class CFunctionDB : public CCopasiContainer
      */
     void cleanup();
 
-    virtual void initObjects();
+    void initObjects();
 
     bool CFunctionDB::load();
 

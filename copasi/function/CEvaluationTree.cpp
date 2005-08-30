@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/12 17:19:33 $
+   $Date: 2005/08/30 15:40:05 $
    End CVS Header */
 
 #include "copasi.h"
@@ -167,7 +167,7 @@ const C_FLOAT64 & CEvaluationTree::getVariableValue(const unsigned C_INT32 & /*i
     return Value;
   }
 
-C_FLOAT64 * CEvaluationTree::getObjectValue(const CCopasiObjectName & /*CN*/) const
+const CCopasiObject * CEvaluationTree::getObject(const CCopasiObjectName & /*CN*/) const
   {return NULL;}
 
 bool CEvaluationTree::parse()
@@ -184,8 +184,6 @@ bool CEvaluationTree::parse()
   // parse the description into a linked node tree
   std::istringstream buffer(mInfix);
   CEvaluationLexer Parser(&buffer);
-
-  CCopasiMessage::clearDeque();
 
   success = (Parser.yyparse() == 0);
 

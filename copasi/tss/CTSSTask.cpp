@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSTask.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/18 14:07:35 $
+   $Date: 2005/08/30 15:40:49 $
    End CVS Header */
 
 /**
@@ -55,7 +55,7 @@ void CTSSTask::cleanup()
 
 void CTSSTask::print(std::ostream * ostream) const {(*ostream) << (*this);}
 
-bool CTSSTask::initialize(std::ostream * pOstream)
+bool CTSSTask::initialize(const OutputFlag & of, std::ostream * pOstream)
 {
   assert(mpProblem && mpMethod);
 
@@ -65,8 +65,7 @@ bool CTSSTask::initialize(std::ostream * pOstream)
 
   bool success = true;
 
-  if (!mReport.open(pOstream)) success = false;
-  if (!mReport.compile()) success = false;
+  if (CCopasiTask::initialize(of, pOstream)) success = false;
 
   if (!pProblem->getModel()->compileIfNecessary()) success = false;
   //pProblem->setInitialState(pProblem->getModel()->getInitialState());
@@ -74,7 +73,7 @@ bool CTSSTask::initialize(std::ostream * pOstream)
   return success;
 }
 
-bool CTSSTask::process()
+bool CTSSTask::process(const bool & /* useInitialValues */)
 {
   assert(/*mpProblem && */mpMethod);
   mpMethod->isValidProblem(mpProblem);

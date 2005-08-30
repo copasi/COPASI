@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 20:37:03 $
+   $Date: 2005/08/30 15:40:17 $
    End CVS Header */
 
 #include "copasi.h"
@@ -19,17 +19,17 @@
 COptMethodEP::COptMethodEP(const CCopasiContainer * pParent):
     COptMethod(CCopasiMethod::EvolutionaryProgram, pParent),
     mGenerations(0),
+    mGeneration(0),
     mPopulationSize(0),
     mpRandom(NULL),
-    mVariableSize(0),
-    mIndividual(0),
-    mVariance(0),
-    mEvaluationValue(DBL_MAX),
-    mValue(0),
+    mBestIndex(C_INVALID_INDEX),
     mWins(0),
     mBestValue(DBL_MAX),
-    mBestIndex(C_INVALID_INDEX),
-    mGeneration(0)
+    mEvaluationValue(DBL_MAX),
+    mValue(0),
+    mVariableSize(0),
+    mIndividual(0),
+    mVariance(0)
 {
   addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
   addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 20);
@@ -42,17 +42,17 @@ COptMethodEP::COptMethodEP(const CCopasiContainer * pParent):
 COptMethodEP::COptMethodEP(const COptMethodEP & src,
                            const CCopasiContainer * pParent): COptMethod(src, pParent),
     mGenerations(0),
+    mGeneration(0),
     mPopulationSize(0),
     mpRandom(NULL),
-    mVariableSize(0),
-    mIndividual(0),
-    mVariance(0),
-    mEvaluationValue(DBL_MAX),
-    mValue(0),
+    mBestIndex(C_INVALID_INDEX),
     mWins(0),
     mBestValue(DBL_MAX),
-    mBestIndex(C_INVALID_INDEX),
-    mGeneration(0)
+    mEvaluationValue(DBL_MAX),
+    mValue(0),
+    mVariableSize(0),
+    mIndividual(0),
+    mVariance(0)
 {initObjects();}
 
 COptMethodEP::~COptMethodEP()

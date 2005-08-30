@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/25 05:19:10 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:31 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__

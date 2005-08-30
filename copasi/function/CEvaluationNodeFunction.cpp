@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/03 10:24:36 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:40:04 $
    End CVS Header */
 
 #include "copasi.h"
@@ -194,6 +194,14 @@ std::string CEvaluationNodeFunction::getInfix() const
   {
     if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
       return mData + "(" + mpLeft->getInfix() + ")";
+    else
+      return "@";
+  }
+
+std::string CEvaluationNodeFunction::getDisplayString(const CEvaluationTree * pTree) const
+  {
+    if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
+      return mData + "(" + mpLeft->getDisplayString(pTree) + ")";
     else
       return "@";
   }

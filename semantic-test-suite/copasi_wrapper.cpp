@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/copasi_wrapper.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/07/29 13:08:47 $
+   $Author: shoops $ 
+   $Date: 2005/08/30 15:41:11 $
    End CVS Header */
 
 #define COPASI_MAIN
@@ -149,8 +149,8 @@ int main(int argc, char *argv[])
 
       // Run the trajectory task
 
-      pTrajectoryTask->initialize();
-      pTrajectoryTask->process();
+      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+      pTrajectoryTask->process(true);
       pTrajectoryTask->restore();
 
       // create another report that will write to the directory where the input file came from
@@ -158,8 +158,8 @@ int main(int argc, char *argv[])
       // create a trajectory task
       pTrajectoryTask->getReport().setTarget(saveFilename + std::string(".CSV"));
 
-      pTrajectoryTask->initialize();
-      pTrajectoryTask->process();
+      pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+      pTrajectoryTask->process(true);
       pTrajectoryTask->restore();
     }
   catch (CCopasiException Exception)
