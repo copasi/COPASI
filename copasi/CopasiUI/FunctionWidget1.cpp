@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.121 $
+   $Revision: 1.122 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 19:40:05 $
+   $Date: 2005/08/31 15:46:07 $
    End CVS Header */
 
 /**********************************************************************
@@ -657,55 +657,6 @@ bool FunctionWidget1::saveToFunction()
   return true;
 }
 
-void FunctionWidget1::updateParameters()
-{
-  // :TODO: this method messes with the sorting of the parameters
-  // :TODO: This function should be returning whether the parameters were actually changed. //
-
-  const std::vector<CNodeK*> & v = ((CKinFunction*) mpFunction)->getNodes();
-  CFunctionParameters & params = mpFunction->getVariables();
-
-  unsigned C_INT32 index;
-  CFunctionParameter::DataType type;
-  std::vector<std::string> paramNames;
-
-  //first create the new parameters
-  unsigned C_INT32 i;
-  for (i = 0; i < v.size(); i++)
-    {
-      if (v[i]->isIdentifier())
-        {
-          paramNames.push_back(v[i]->getName());
-          index = params.findParameterByName(v[i]->getName(), type);
-          if (index == C_INVALID_INDEX)
-            {
-              mpFunction->addVariable(v[i]->getName(), "PARAMETER",
-                                      CFunctionParameter::FLOAT64);
-            }
-        }
-    }
-
-  //next delete the parameters that are not in the node tree
-  std::vector<std::string>::const_iterator it, itEnd = paramNames.end();
-  bool found;
-  for (i = 0; i < params.size(); i++)
-    {
-      const std::string & name = params[i]->getObjectName();
-
-      //check if name is in paramNames
-      found = false;
-      for (it = paramNames.begin(); it != itEnd; ++it)
-        if (name == *it)
-        {found = true; break;}
-
-      if (!found)
-        {
-          params.remove(name);
-        }
-    }
-  params.updateUsageRanges();
-}
-
 void FunctionWidget1::updateApplication()
 {
   // :TODO: This function should be returning whether the application was actually changed //
@@ -766,21 +717,9 @@ void FunctionWidget1::slotFcnDescriptionChanged()
   //std::cout << "*:" << (const char *)textBrowser->text().utf8() << ":*" << std::endl;
   flagChanged = true;
 
-  //just set the description (with implicit compile()) and update parameters.
   try
     {
-      mpFunction->setInfix((const char *)textBrowser->text().utf8());
-    }
-  catch (CCopasiException Exception)
-  {}
-  updateParameters();
-
-  //try again (to see if the description is valid)
-  //the first call to setInfix would have thrown an exc. even if a param name has changed
-  isValid = true;
-  try
-    {
-      mpFunction->setInfix((const char *)textBrowser->text().utf8());
+      isValid = mpFunction->setInfix((const char *)textBrowser->text().utf8());
     }
   catch (CCopasiException Exception)
     {
