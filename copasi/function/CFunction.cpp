@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:05 $
+   $Date: 2005/08/31 13:55:26 $
    End CVS Header */
 
 #include "copasi.h"
@@ -199,9 +199,20 @@ bool CFunction::initVariables()
   std::vector< CEvaluationNode * >::iterator end
   = mpNodeList->end();
 
+  CFunctionParameters NewVariables;
+
   for (; it != end; ++it)
     if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::VARIABLE)
-      mVariables.add((*it)->getData(), CFunctionParameter::FLOAT64, "VARIABLE");
+      {
+        mVariables.add((*it)->getData(), CFunctionParameter::FLOAT64, "VARIABLE");
+        NewVariables.add((*it)->getData(), CFunctionParameter::FLOAT64, "VARIABLE");
+      }
+
+  CFunctionParameter::DataType Type;
+  unsigned C_INT32 i;
+  for (i = mVariables.size() - 1; i < C_INVALID_INDEX; i--)
+    if (NewVariables.findParameterByName(mVariables[i]->getObjectName(), Type) == C_INVALID_INDEX)
+      mVariables.remove(mVariables[i]->getObjectName());
 
   return true;
 }
