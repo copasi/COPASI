@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.2 $ $Author: ssahle $ $Date: 2005/07/28 13:46:32 $  
+# $Revision: 1.3 $ $Author: ssahle $ $Date: 2005/08/31 14:26:54 $  
 ######################################################################
 
 TEMPLATE = app
@@ -71,15 +71,19 @@ contains(BUILD_OS, Darwin){
 
 # Input
 HEADERS +=  CNormalItem.h \
+            CNormalItemPower.h\
             CNormalProduct.h \
 	    CNormalSum.h \
 	    CNormalLcm.h \
 	    CNormalFraction.h \
+      CNormalTranslation.h\
 
 	    
 SOURCES +=  CNormalItem.cpp \
+            CNormalItemPower.cpp\
             CNormalProduct.cpp \
 	    CNormalSum.cpp \
 	    CNormalLcm.cpp \
 	    CNormalFraction.cpp \
+      CNormalTranslation.cpp\
 	    test.cpp

@@ -1,15 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test2/CNormalItem.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/28 13:46:06 $
+   $Date: 2005/08/31 14:26:54 $
    End CVS Header */
 
 #ifndef COPASI_CNormalItem
 #define COPASI_CNormalItem
 
-#include <vector>
+#include "function/CEvaluationTree.h"
+#include "function/CEvaluationNode.h"
+#include "function/CEvaluationNodeOperator.h"
+#include "function/CEvaluationNodeFunction.h"
+
 #include "copasi.h"
 
 /**
@@ -23,11 +27,13 @@ class CNormalItem
      */
     enum Type
     {
-      VARIABLE ,
+      CONSTANT,
+      VARIABLE,
       FUNCTION
     };
 
     std::string mName;
+    Type mType;
 
     /**
      * Default constructor
@@ -35,9 +41,32 @@ class CNormalItem
     CNormalItem();
 
     /**
+     * Data constructor
+     */
+    CNormalItem(const std::string& name, const Type& type);
+
+    /**
      * Copy contructor
      */
     CNormalItem(const CNormalItem& src);
+
+    /**
+     * Create an item from an evaluation node that need not be of specific type.
+     * @return CNormalItem*, pointer to newly created item.
+     */
+    static CNormalItem* createItem(const CEvaluationNode* node);
+
+    /**
+     * Set the name of this item
+     * @return true.
+     */
+    bool setName(const std::string& name);
+
+    /**
+     * Set the type of this item.
+     * @return true.
+     */
+    bool setType(const Type& type);
 
     /**
      * Retrieve the name of this item.
@@ -46,80 +75,25 @@ class CNormalItem
     const std::string getName() const;
 
     /**
+     * Retrieve the type of this item.
+     * @return mType
+     */
+    const Type& getType() const;
+
+    /**
      * Examine equality of two items.
      * @return bool.
      */
     bool operator==(const CNormalItem & rhs) const;
 
-    friend std::ostream & operator<<(std::ostream &os,
-                                     const CNormalItem & d);
-
-    friend bool compareItems(const CNormalItem* item1, const CNormalItem* item2);
-  };
-
-/**
- * The class for powers of items used in CNormal
- */
-class CNormalItemPower
-  {
-  private:
     /**
-     * Enumeration of members.
-     */
-    CNormalItem mItem;
-    C_FLOAT64 mExp;
-
-  public:
-    /**
-     * Default constructor
-     */
-    CNormalItemPower();
-
-    /**
-     * Copy Constructor
-     */
-    CNormalItemPower(const CNormalItemPower& src);
-
-    /**
-     * Create a new power of the given item and exponent
-     * @return CNormalItemPower, the newly created power.
-     */
-    CNormalItemPower(const CNormalItem& item, const C_FLOAT64& exp);
-
-    /**
-     * Set the base of this itempower.
-     * @return true.
-     */
-    bool setItem(const CNormalItem& item);
-
-    /**
-     * Set the exponent of this power
-     * @return true
-     */
-    bool setExp(const C_FLOAT64& number);
-
-    /**
-     * Retrieve the base of this power
-     * @return mItem
-     */
-    const CNormalItem& getItem() const;
-
-    /**
-     * Retrieve the exponent of this power
-     * @return mExp
-     */
-    const C_FLOAT64& getExp() const;
-
-    /**
-     * Examine equality of two item powers.
+     * Examine inequality of two item.
      * @return bool.
      */
-    bool operator==(const CNormalItemPower & rhs) const;
+    bool operator<(const CNormalItem & rhs) const;
 
     friend std::ostream & operator<<(std::ostream &os,
-                                     const CNormalItemPower & d);
-
-    friend bool compareItemPowers(const CNormalItemPower* itemPower1, const CNormalItemPower* itemPower2);
+                                     const CNormalItem & d);
   };
 
 #endif // COPASI_CNormalItem

@@ -1,15 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test2/CNormalLcm.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/28 13:46:06 $
+   $Date: 2005/08/31 14:26:54 $
    End CVS Header */
 
 #ifndef COPASI_CNormalLcm
 #define COPASI_CNormalLcm
 
 #include <vector>
+#include <set>
 #include "copasi.h"
 
 #include "CNormalItem.h"
@@ -27,8 +28,9 @@ class CNormalLcm
     /**
      * Enumeration of members
      */
-    std::vector<CNormalItemPower*> mItemPowers;
-    std::vector<CNormalSum*> mSums;
+    std::set <CNormalItemPower*, compareItemPowers> mItemPowers;
+    //std::set <CNormalPower*, comparePowers> mPowers;
+    std::vector<CNormalSum*> mSums; //mSums do not contain fractions!!
 
   public:
     /**
@@ -42,34 +44,53 @@ class CNormalLcm
     CNormalLcm(const CNormalLcm& src);
 
     /**
-     * Add an itempower to this lcm.
+     * Assignment operator
+     */
+    CNormalLcm & operator=(const CNormalLcm& src);
+
+    /**
+     * Destructor
+     */
+    ~CNormalLcm();
+
+    /**
+     * Add an itempower to this lcm,
+     * ie. lcm := LeastCommonMultiple(lcm,itempower)
      * @return true.
      */
     bool add(const CNormalItemPower& itemPower);
 
+    /*
+     * Add a power to this lcm,
+     * ie. lcm := LeastCommonMultiple(lcm,power)
+     * @return true.
+     *
+    bool add(const CNormalPower& power);*/
+
     /**
-     * Add a sum to this lcm.
+     * Add a fractionless sum to this lcm,
+     * ie. lcm := LeastCommonMultiple(lcm,sum)
      * @return true.
      */
     bool add(const CNormalSum& sum);
 
     /**
-     * Remove an itempower from this lcm.
+     * Remove an itempower from this lcm, provided it is a factor
      * @return true.
      */
     bool remove(const CNormalItemPower& itemPower);
 
     /**
-     * Remove a sum from this lcm.
+     * Remove a fractionless sum from this lcm, provided it is a factor
      * @return true.
      */
     bool remove(const CNormalSum& sum);   //sum must not contain fractions!!
 
     /**
-     * Retrieve the vector of itempowers of this lcm.
+     * Retrieve the set of itempowers of this lcm.
      * @return mItemPowers.
      */
-    const std::vector<CNormalItemPower*>& getItemPowers() const;
+    const std::set <CNormalItemPower*, compareItemPowers>& getItemPowers() const;
 
     /**
      * Retrieve the vector of sums of this lcm.

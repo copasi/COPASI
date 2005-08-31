@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:04 $
+   $Author: ssahle $ 
+   $Date: 2005/08/31 14:24:24 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
@@ -141,6 +141,13 @@ class CEvaluationNodeFunction : public CEvaluationNode
      * @return ASTNode* return a pointer to the newly created node;
      */
     virtual ASTNode* toAST() const;
+
+    /**
+     * Create a simplified node for a functionNode with children child1 and child2 (if not exist, = NULL),
+     * and assign new children
+     * @return CEvaluationNode* return a pointer to the simplified node;
+     */
+    virtual CEvaluationNode* simplifyNode(CEvaluationNode *child1, CEvaluationNode *child2) const;
 
   private:
     static inline C_FLOAT64 sec(C_FLOAT64 value)

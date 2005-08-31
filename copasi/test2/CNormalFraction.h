@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test2/CNormalFraction.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/28 13:46:06 $
+   $Date: 2005/08/31 14:26:54 $
    End CVS Header */
 
 #ifndef COPASI_CNormalFraction
@@ -42,13 +42,19 @@ class CNormalFraction
     CNormalFraction(const CNormalFraction& src);
 
     /**
+     * Create a fraction from a node. node is necessarily a DIVIDE operator if not the root node of the tree.
+     * @return CNormalFraction*, pointer to newly created fraction.
+     */
+    static CNormalFraction* createFraction(const CEvaluationNode* node);
+
+    /**
      * Set numerator of this fraction
      * @return true.
      */
     bool setNumerator(const CNormalSum& numerator);
 
     /**
-     * Set denominator of this fraction
+     * Set denominator of this fraction.
      * @return true.
      */
     bool setDenominator(const CNormalSum& denominator);
@@ -60,11 +66,10 @@ class CNormalFraction
     bool checkDenominatorOne() const;
 
     /**
-     * Remove the denominator of this fraction.
-     * -applicable if checkDenominatorOne() = true-
-     * @return pointer to mNumerator
+     * Set the denominator of this fraction equal 1.
+     * @return true.
      */
-    CNormalSum* removeDenominator();
+    bool setDenominatorOne();
 
     /**
      * Retrieve the numerator of this fraction.
@@ -91,8 +96,8 @@ class CNormalFraction
     bool expand(const CNormalLcm& lcm);
 
     /**
-     * Cancel common items in numerator and denominator of this fraction if possible.
-     * @return true
+     * Cancel common items of mNumerator and mDenominator. 
+     * @return true.
      */
     bool cancel();
 
@@ -103,7 +108,7 @@ class CNormalFraction
     bool multiply(const C_FLOAT64& number);
 
     /**
-     * Multiply a fraction with a power of an item.
+     * Multiply a fraction with an itempower.
      * @return true.
      */
     bool multiply(const CNormalItemPower& itemPower);
@@ -117,17 +122,49 @@ class CNormalFraction
     /**
      * Multiply this fraction by a lcm.
      * @return CNormalSum*, pointer to result of multiplication ie. a normal sum.
+     * This fraction is useless now.
      */
     const CNormalSum* multiply(CNormalLcm lcm);
 
     /**
      * Check if numerator and denominator contain fractions,
-     * find lcm of respective denominators and expand this fraction by lcm.
-     * @return bool. True if it has been simplified, false if no simplification was necessary.
+     * find lcm of respective denominators, expand this fraction by lcm and cancel.
+     * @return true
      */
-    bool simplifyFraction();
+    bool simplify();
 
     bool operator==(const CNormalFraction & rhs) const;
+
+    /*
+     * Remove the denominator of this fraction.
+     * -applicable if checkDenominatorOne() = true-
+     * @return pointer to mNumerator
+     *
+    CNormalSum* removeDenominator();*/
+
+    /*
+     * Multiply this fraction with a sum.
+     * @return true.
+     *
+    bool multiply(const CNormalSum& sum);*/
+
+    /*
+     * Multiply this fraction with a fraction.
+     * @return true.
+     *
+    bool multiply(const CNormalFraction& fraction);*/
+
+    /*
+     * Divide this fraction by a fraction.
+     * @return true.
+     *
+    bool divide(const CNormalFraction& fraction);*/
+
+    /*
+     * Check whether this fraction equals another fraction. 
+     *  @return bool
+     *
+    bool checkEqual(const CNormalFraction& fraction) const;*/
 
     friend std::ostream & operator<<(std::ostream &os,
                                      const CNormalFraction & d);

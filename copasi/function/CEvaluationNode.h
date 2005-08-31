@@ -1,14 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:04 $
+   $Author: ssahle $ 
+   $Date: 2005/08/31 14:23:45 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
 #define COPASI_CEvaluationNode
 
+#include "copasi.h"
 #include "utilities/CCopasiNode.h"
 
 class CEvaluationTree;
@@ -147,6 +148,24 @@ class CEvaluationNode : public CCopasiNode< std::string >
     virtual ASTNode* toAST() const;
 
     /**
+     * Copy a node and assign new children child1 and child2
+     * @return CEvaluationNode* return a pointer to the new node
+     */
+    CEvaluationNode* copyNode(CEvaluationNode *child1, CEvaluationNode *child2) const;
+
+    /**
+     * Copy the whole branch with this node as root.
+     * @return CEvaluationNode*, return a pointer to the root of the newly copied branch
+     */
+    CEvaluationNode* copyBranch() const;
+
+    /**
+     * Create a simplified node from the original node with children child1 and child2 (if not exist, = NULL)
+     * @return CEvaluationNode* return a pointer to the simplified node;
+     */
+    virtual CEvaluationNode* simplifyNode(CEvaluationNode *child1, CEvaluationNode *child2) const;
+
+    /**
      * Comparison operator used to evaluate the precedence of the node.
      * it compares the right precdence of the left node with the left
      * precedence of the right node.
@@ -161,7 +180,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
      */
     const C_FLOAT64 * getValuePointer() const;
 
-    void printRecursively(std::ostream & os, int indent = 0) const;
+    void printRecursively(std::ostream & os = std::cout, int indent = 0) const;
 
     // Attributes
   protected:

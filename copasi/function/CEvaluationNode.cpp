@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:04 $
+   $Author: ssahle $ 
+   $Date: 2005/08/31 14:23:44 $
    End CVS Header */
 
 #include "copasi.h"
@@ -151,6 +151,44 @@ const CEvaluationNode::Type & CEvaluationNode::getType() const
 
 bool CEvaluationNode::operator < (const CEvaluationNode & rhs)
 {return (mPrecedence.right < rhs.mPrecedence.left);}
+
+CEvaluationNode* CEvaluationNode::copyNode(CEvaluationNode *child1, CEvaluationNode *child2) const
+  {
+    CEvaluationNode *newnode = create(getType(), getData());
+    if (child1 != NULL)
+      {
+        newnode->addChild(child1, NULL);
+        if (child2 != NULL)
+          {
+            newnode->addChild(child2, child1);
+          }
+      }
+    return newnode;
+  }
+
+CEvaluationNode* CEvaluationNode::copyBranch() const
+  {
+    const CEvaluationNode *child1 = dynamic_cast<const CEvaluationNode*>(getChild());
+    CEvaluationNode *newchild1 = NULL;
+    CEvaluationNode *newchild2 = NULL;
+    if (child1 != NULL)
+      {
+        newchild1 = child1->copyBranch();
+        const CEvaluationNode *child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
+        if (child2 != NULL)
+          {
+            newchild2 = child2->copyBranch();
+          }
+      }
+    CEvaluationNode *newnode = copyNode(newchild1, newchild2);
+    return newnode;
+  }
+
+CEvaluationNode* CEvaluationNode::simplifyNode(CEvaluationNode *child1, CEvaluationNode *child2) const
+  {
+    CEvaluationNode *newnode = copyNode(child1, child2);
+    return newnode;
+  }
 
 ASTNode* CEvaluationNode::toAST() const
   {

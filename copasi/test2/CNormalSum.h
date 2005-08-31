@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test2/CNormalSum.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/07/28 13:46:06 $
+   $Date: 2005/08/31 14:26:54 $
    End CVS Header */
 
 #ifndef COPASI_CNormalSum
@@ -12,7 +12,7 @@
 #include <vector>
 #include "copasi.h"
 
-#include "CNormalItem.h" 
+#include "CNormalItemPower.h" 
 //#include "CNormalProduct.h"
 //#include "CNormalLcm.h"
 //#include "CNormalFraction.h"
@@ -20,6 +20,9 @@
 class CNormalProduct;
 class CNormalLcm;
 class CNormalFraction;
+
+class compareProducts
+{public: bool operator()(const CNormalProduct* product1, const CNormalProduct* product2); };
 
 /**
  * The class for sums used in CNormal
@@ -30,8 +33,8 @@ class CNormalSum
     /**
      * Enumeration of members
      */
-    std::vector<CNormalProduct*> mProducts;
-    std::vector<CNormalFraction*> mFractions;
+    std::set<CNormalProduct*, compareProducts> mProducts;
+    std::set<CNormalFraction*> mFractions;
 
   public:
     /**
@@ -43,6 +46,22 @@ class CNormalSum
      * Copy Constructor
      */
     CNormalSum(const CNormalSum& src);
+
+    /**
+     * Assignment operator
+     */
+    CNormalSum & operator=(const CNormalSum& src);
+
+    /**
+     * Destructor
+     */
+    ~CNormalSum();
+
+    /**
+     * Create a sum from an evaluation node -node does not need to be a PLUS operator!
+     * @return CNormalSum*, pointer to newly created sum
+     */
+    static CNormalSum* CNormalSum::createSum(const CEvaluationNode* node);
 
     /**
      * Retrieve the number of summands of this sum.
@@ -69,19 +88,13 @@ class CNormalSum
     bool add(const CNormalSum& sum);
 
     /**
-     * Check if this sum contains fractions.
-     * @return bool.
-     */
-    bool checkForFractions() const;
-
-    /**
      * Multiply this sum with a number.
      * @return true.
      */
     bool multiply(const C_FLOAT64& number);
 
     /**
-     * Multiply this sum with a power of an item.
+     * Multiply this sum with an itempower.
      * @return true.
      */
     bool multiply(const CNormalItemPower& itemPower);
@@ -93,23 +106,43 @@ class CNormalSum
     bool multiply(const CNormalSum& sum);
 
     /**
-     * Multiply this sum by a lcm.
+     * Multiply this sum by a lcm
+     * Numerator and denominator of mFractions do not contain further fractions!
      * @return true.
      */
     bool multiply(const CNormalLcm& lcm);
 
     /**
-     * Retrieve the vector of products of this sum.
-     * @return mProducts
+     * Divide this sum by an itempower, provided it is a factor of it
+     * -This sum does not contain fractions!
+     * @return true.
      */
-    const std::vector<CNormalProduct*>& getProducts() const;
+    bool divide(const CNormalItemPower& itemPower);
 
     /**
-     * Retrieve the vector of fractions of this sum.
+     * Check if an itempower is a factor of this sum.
+     * @return positive C_FLOAT64, exponent of the largest power of the item contained in this sum.
+     *         if == 0, power is not a factor of this sum.
+     * This sum does not contain fractions!!
+     */
+    C_FLOAT64 checkFactor(const CNormalItemPower& itemPower) const;
+
+    /**
+     * Retrieve the set of products of this sum.
+     * @return mProducts
+     */
+    const std::set<CNormalProduct*, compareProducts>& getProducts() const;
+
+    /**
+     * Retrieve the set of fractions of this sum.
      * @return mFractions.
      */
-    const std::vector<CNormalFraction*>& getFractions() const;
+    const std::set<CNormalFraction*>& getFractions() const;
 
+    /**
+     * Examine equality of two sums.
+     * @return bool.
+     */
     bool operator==(const CNormalSum & rhs) const;
 
     friend std::ostream & operator<<(std::ostream &os,

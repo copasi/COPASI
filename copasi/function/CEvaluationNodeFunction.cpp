@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:04 $
+   $Author: ssahle $ 
+   $Date: 2005/08/31 14:24:24 $
    End CVS Header */
 
 #include "copasi.h"
@@ -487,4 +487,94 @@ ASTNode* CEvaluationNodeFunction::toAST() const
         node->addChild(child1->toAST());
       }
     return node;
+  }
+
+CEvaluationNode* CEvaluationNodeFunction::simplifyNode(CEvaluationNode *child1, CEvaluationNode *child2) const
+  {
+    switch (mType & 0x00FFFFFF)
+      {
+      case MINUS:
+        {
+          switch (CEvaluationNode::type(child1->getType()))
+            {
+            case CEvaluationNode::OPERATOR:
+              {
+                switch (CEvaluationNode::subType(child1->getType()))
+                  {
+                  case CEvaluationNodeOperator::DIVIDE:
+                    {// -(a/b) -> (-a)/b
+                      // want to recognize a fraction in a sum easily
+                      CEvaluationNode *newnode = CEvaluationNode::create((Type)(OPERATOR | CEvaluationNodeOperator::DIVIDE), "/");
+                      CEvaluationNode *newchild1 = CEvaluationNode::create((Type)(FUNCTION | MINUS), "-");
+                      CEvaluationNode *newchild2 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
+                      CEvaluationNode *grandchild = dynamic_cast<CEvaluationNode*>(child1->getChild())->copyBranch();
+                      newnode->addChild(newchild1, NULL);
+                      newnode->addChild(newchild2, newchild1);
+                      newchild1->addChild(grandchild, NULL);
+                      delete child1;
+                      return newnode;
+                    }
+                  case CEvaluationNodeOperator::PLUS:
+                    {// -(a+b) -> (-a)+(-b)
+                      // negativity should be property of product
+                      CEvaluationNode *newnode = CEvaluationNode::create((Type)(OPERATOR | CEvaluationNodeOperator::PLUS), "+");
+                      CEvaluationNode *newchild1 = CEvaluationNode::create((Type)(FUNCTION | MINUS), "-");
+                      CEvaluationNode *newchild2 = CEvaluationNode::create((Type)(FUNCTION | MINUS), "-");
+                      CEvaluationNode *grandchild1 = dynamic_cast<CEvaluationNode*>(child1->getChild())->copyBranch();
+                      CEvaluationNode *grandchild2 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
+                      newnode->addChild(newchild1, NULL);
+                      newnode->addChild(newchild2, newchild1);
+                      newchild1->addChild(grandchild1, NULL);
+                      newchild2->addChild(grandchild2, NULL);
+                      delete child1;
+                      return newnode;
+                    }
+                  default:  // cases POWER, MULTIPLY, MODULUS. don't expect MINUS to occur anymore
+                    {
+                      CEvaluationNode *newnode = copyNode(child1, child2);
+                      return newnode;
+                    }
+                  }
+              }
+            case CEvaluationNode::FUNCTION:
+              {
+                if (child1->getData() == "-")
+                  {// -(-a) -> a
+                    CEvaluationNode *newnode = dynamic_cast<CEvaluationNode*>(child1->getChild())->copyBranch();
+                    delete child1;
+                    return newnode;
+                  }
+                // default: copy
+                CEvaluationNode *newnode = copyNode(child1, child2);
+                return newnode;
+              }
+            case CEvaluationNode::NUMBER:
+              {
+                std::stringstream tmp;
+                tmp << child1->value() * (-1.0);
+                CEvaluationNode* newnode = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), tmp.str());
+                delete child1;
+                return newnode;
+              }
+            default:   //cases VARIABLE, CONSTANT..
+              {
+                CEvaluationNode *newnode = copyNode(child1, child2);
+                return newnode;
+              }
+            }
+        }
+      case SQRT:
+        {// write as ^0.5
+          CEvaluationNode* newnode = CEvaluationNode::create((Type)(OPERATOR | CEvaluationNodeOperator::POWER), "^");
+          CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), "0.5");
+          newnode->addChild(child1, NULL);
+          newnode->addChild(newchild2, child1);
+          return newnode;
+        }
+      default:
+        {
+          CEvaluationNode *newnode = copyNode(child1, child2);
+          return newnode;
+        }
+      }
   }
