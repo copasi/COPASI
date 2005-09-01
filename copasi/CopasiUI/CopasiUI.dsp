@@ -142,6 +142,10 @@ SOURCE=.\CProgressBar.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQFileDialogBtnGrp.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQProgressDialog.cpp
 # End Source File
 # Begin Source File
@@ -527,6 +531,10 @@ SOURCE=.\CPlotSelectionDialog.h
 # Begin Source File
 
 SOURCE=.\CProgressBar.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQFileDialogBtnGrp.h
 # End Source File
 # Begin Source File
 
@@ -916,6 +924,10 @@ SOURCE=..\common.pri
 # Begin Source File
 
 SOURCE=.\CopasiUI.pro
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQFileDialogBtnGrp.ui
 # End Source File
 # Begin Source File
 
