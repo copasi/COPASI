@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/27 16:06:54 $
+   $Author: shoops $ 
+   $Date: 2005/09/01 01:48:01 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -12,10 +12,12 @@
 #include "CChemEqInterface.h"
 #include "CMetabNameInterface.h"
 #include "CChemEq.h"
+#include "CChemEqParser.h"
 #include "CReaction.h"
+#include "CModel.h"
+
 #include "utilities/CCopasiVector.h"
 #include "utilities/utility.h"
-#include "model/CModel.h"
 
 CChemEqInterface::CChemEqInterface()
 {}
@@ -68,6 +70,28 @@ std::string CChemEqInterface::getChemEqString(bool expanded) const
 
 bool CChemEqInterface::setChemEqString(const std::string & ces)
 {
+  // parse the description into a linked node tree
+  std::istringstream buffer(ces);
+  CChemEqParser Parser(&buffer);
+
+  bool success = (Parser.yyparse() == 0);
+
+  if (success)
+    {
+      mReversibility = Parser.isReversible();
+
+      mSubstrateNames = Parser.getSubstrateNames();
+      mSubstrateMult = Parser.getSubstrateMulitplicities();
+
+      mProductNames = Parser.getProductNames();
+      mProductMult = Parser.getProductMulitplicities();
+
+      mModifierNames = Parser.getModifierNames();
+      mModifierMult = Parser.getModifierMulitplicities();
+    }
+
+  return success;
+#ifdef XXXX
   std::string Substrates, Products, Modifiers;
 
   //cleanup();
@@ -82,6 +106,7 @@ bool CChemEqInterface::setChemEqString(const std::string & ces)
   if (!setElements(mModifierNames, mModifierMult, Modifiers, true)) return false;
 
   return true;
+#endif // XXXX
 }
 
 bool CChemEqInterface::loadFromChemEq(const CModel * model, const CChemEq & ce)
@@ -183,6 +208,8 @@ void CChemEqInterface::clearModifiers()
 
 std::string CChemEqInterface::writeElement(const std::string & name, C_FLOAT64 mult, bool expanded)
 {
+  std::string Name = quote(name);
+
   if (expanded)
     {
       std::string ces;
@@ -190,16 +217,16 @@ std::string CChemEqInterface::writeElement(const std::string & name, C_FLOAT64 m
       for (i = 0; i < imax; ++i)
         {
           if (i) ces += " + ";
-          ces += name;
+          ces += Name;
         }
       return ces;
     }
   else
     {
       if (mult == 1.0)
-        return name;
+        return Name;
       else
-        return StringPrint("%g * %s", mult, name.c_str());
+        return StringPrint("%g * %s", mult, Name.c_str());
     }
 }
 
@@ -489,6 +516,13 @@ void CChemEqInterface::setChemEqFromString(const CModel * model, CReaction & rea
 /*static*/
 bool CChemEqInterface::isValidEq(const std::string & eq)
 {
+  // parse the description into a linked node tree
+  std::istringstream buffer(eq);
+  CChemEqParser Parser(&buffer);
+
+  return (Parser.yyparse() == 0);
+
+#ifdef XXXX
   std::string Substrates, Products, Modifiers;
 
   if (!checkFirstLevel(eq)) return false;
@@ -508,6 +542,7 @@ bool CChemEqInterface::isValidEq(const std::string & eq)
   if (!setElements(dummyNames, dummyMults, Modifiers, true)) return false;
 
   return true;
+#endif // XXXX
 }
 
 //static
