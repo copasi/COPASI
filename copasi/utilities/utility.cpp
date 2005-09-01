@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/01 01:06:56 $
+   $Date: 2005/09/01 13:34:04 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -127,9 +127,10 @@ std::string unQuote(const std::string & name)
   return Name;
 }
 
-std::string quote(const std::string & name)
+std::string quote(const std::string & name,
+                  const std::string & additionalEscapes)
 {
-  if (name.find_first_of(" \\\"") == std::string::npos)
+  if (name.find_first_of(" \"" + additionalEscapes) == std::string::npos)
     return name;
 
 #define toBeEscaped "\\\""

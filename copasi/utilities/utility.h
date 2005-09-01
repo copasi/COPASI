@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/01 01:06:56 $
+   $Date: 2005/09/01 13:34:04 $
    End CVS Header */
 
 #ifndef COPASI_utilities
@@ -57,13 +57,17 @@ std::string StringPrint(const char * format, ...);
 std::string unQuote(const std::string & name);
 
 /**
- * Surround a name with quotes if the name contains a space else
- * the name is returned unmodified.. In the quoted name " and \
- * are escaped. 
+ * Surround a name with quotes if the name contains a space or
+ * double quote else the name is returned unmodified. In the
+ * quoted name " and \ are escaped. The parameter additionalEscapes
+ * forces quotes around names containing any of the character in the 
+ * parameter.
  * @param const std::string & name
- * @return std::string unQuote
+ * @param const std::string & additionalEscapes (default: "")
+ * @return std::string quote
  */
-std::string quote(const std::string & name);
+std::string quote(const std::string & name,
+                  const std::string & additionalEscapes = "");
 
 /**
  *
