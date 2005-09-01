@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiFileDialog.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/08/23 00:48:48 $
+   $Author: shoops $ 
+   $Date: 2005/09/01 17:03:03 $
    End CVS Header */
 
 #ifndef COPASI_FILE_DIALOG
@@ -14,22 +14,20 @@
 #include <qdir.h>
 #include <qpushbutton.h>
 
+#include "CQFileDialogBtnGrp.h"
+
 class CopasiFileDialog : public QFileDialog
   {
     Q_OBJECT
   private:
-    QPushButton *exampleDirButton;
-    QPushButton *homeDirButton;
-    QPushButton *copasiDirButton;
-    QDir *directoryValue;
+    CQFileDialogBtnGrp * mpGrp;
 
   public:
     CopasiFileDialog(QWidget * parent , const char * name , bool modal);
-    void addLocation(QWidget*);
+
   public slots:
     virtual void slotExampleDir();
     virtual void slotHomeDir();
-    virtual void slotCopasiDir();
   };
 
 #endif
