@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/10 13:56:58 $
+   $Date: 2005/09/01 01:06:56 $
    End CVS Header */
 
 #ifndef COPASI_utilities
@@ -55,6 +55,15 @@ std::string StringPrint(const char * format, ...);
  * @return std::string unQuote
  */
 std::string unQuote(const std::string & name);
+
+/**
+ * Surround a name with quotes if the name contains a space else
+ * the name is returned unmodified.. In the quoted name " and \
+ * are escaped. 
+ * @param const std::string & name
+ * @return std::string unQuote
+ */
+std::string quote(const std::string & name);
 
 /**
  *

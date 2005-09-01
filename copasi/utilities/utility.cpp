@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:58 $
+   $Date: 2005/09/01 01:06:56 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -125,6 +125,26 @@ std::string unQuote(const std::string & name)
     }
 
   return Name;
+}
+
+std::string quote(const std::string & name)
+{
+  if (name.find_first_of(" \\\"") == std::string::npos)
+    return name;
+
+#define toBeEscaped "\\\""
+  std::string Escaped(name);
+  std::string::size_type pos = Escaped.find_first_of(toBeEscaped);
+
+  while (pos != std::string::npos)
+    {
+      Escaped.insert(pos, "\\");
+      pos += 2;
+      pos = Escaped.find_first_of(toBeEscaped, pos);
+    }
+
+  return "\"" + Escaped + "\"";
+#undef toBeEscaped
 }
 
 C_FLOAT64 ddot(C_INT32 n,
