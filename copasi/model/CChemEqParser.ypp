@@ -1,0 +1,133 @@
+// The bison parser together with CEvaluationFlexLexer builds
+// the evaluation tree.
+
+%{
+
+#define YYSTYPE CChemEqParserBase::Data *
+
+#ifdef yylval
+# undef yylval
+#endif
+#define yylval mpData
+
+#ifdef yyerror
+# undef yyerror
+#endif
+#define yyerror(__str) \
+  if (yychar != YYERRCODE) correctErrorPosition(); \
+  CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
+
+#include "copasi.h"
+#include "CChemEqParser.h"
+
+#include "utilities/CCopasiMessage.h"
+
+%}
+
+/* yacc Declarations */
+%token TOKEN_NUMBER
+
+%token TOKEN_MULTIPLY
+
+%token TOKEN_PLUS
+
+%token TOKEN_METABOLITE
+
+%token TOKEN_BEGIN_PRODUCTS
+
+%token TOKEN_BEGIN_MODIFIERS
+
+// Precedence
+
+// Right Precedence
+
+/* Grammar follows */
+%%
+
+reaction:  substrates products modifiers
+           {
+           }
+         | substrates TOKEN_BEGIN_PRODUCTS modifiers
+           {
+             mReversibility = ($2->name == "=") ? true: false;
+             pdelete($2);
+           }
+         | substrates products
+           {
+           }
+         | substrates TOKEN_BEGIN_PRODUCTS
+           {
+             mReversibility = ($2->name == "=") ? true: false;
+             pdelete($2);
+           }
+         | products modifiers
+           {
+           }
+
+substrates: reactant 
+           {
+             mSubstrateNames.push_back($1->name);
+             mSubstrateMult.push_back($1->multiplicity);
+             pdelete($1);
+           }
+         | substrates TOKEN_PLUS reactant
+           {
+             mSubstrateNames.push_back($3->name);
+             mSubstrateMult.push_back($3->multiplicity);
+             pdelete($2);
+             pdelete($3);
+           }
+
+products: TOKEN_BEGIN_PRODUCTS reactant 
+           {
+             mReversibility = ($1->name == "=") ? true: false;
+
+             mProductNames.push_back($2->name);
+             mProductMult.push_back($2->multiplicity);
+             pdelete($1);
+             pdelete($2);
+           }
+         | products TOKEN_PLUS reactant
+           {
+             mProductNames.push_back($3->name);
+             mProductMult.push_back($3->multiplicity);
+             pdelete($2);
+             pdelete($3);
+           }
+
+modifiers: TOKEN_BEGIN_MODIFIERS reactant 
+           {
+             mModifierNames.push_back($2->name);
+             mModifierMult.push_back($2->multiplicity);
+             pdelete($1);
+             pdelete($2);
+           }
+         | modifiers reactant
+           {
+             mModifierNames.push_back($2->name);
+             mModifierMult.push_back($2->multiplicity);
+             pdelete($2);
+           }
+
+reactant: TOKEN_METABOLITE
+          {
+            $$ = $1;
+            $$->multiplicity = 1.0;
+          }  
+        | TOKEN_NUMBER TOKEN_METABOLITE
+          {
+            $$ = $2;
+            $$->multiplicity = strtod($1->name.c_str(), NULL);
+            pdelete($1);
+          }
+        | TOKEN_NUMBER TOKEN_MULTIPLY TOKEN_METABOLITE
+          {
+            $$ = $3;
+            $$->multiplicity = strtod($1->name.c_str(), NULL);
+            pdelete($1);
+            pdelete($2);
+          }
+;
+
+%%
+

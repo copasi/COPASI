@@ -67,6 +67,18 @@ SOURCE=.\CChemEqInterface.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CChemEqParser.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CChemEqParser_lex.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CChemEqParser_yacc.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CCompartment.cpp
 # End Source File
 # Begin Source File
@@ -139,6 +151,14 @@ SOURCE=.\CChemEqInterface.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CChemEqParser.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CChemEqParser_yacc.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CCompartment.h
 # End Source File
 # Begin Source File
@@ -202,6 +222,14 @@ SOURCE=.\model.h
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=.\CChemEqParser.lpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CChemEqParser.ypp
+# End Source File
 # Begin Source File
 
 SOURCE=..\common.pri

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.11 $ $Author: shoops $ $Date: 2005/05/27 19:35:48 $  
+# $Revision: 1.12 $ $Author: shoops $ $Date: 2005/09/01 01:47:33 $  
 ######################################################################
 
 LIB = model
@@ -11,6 +11,7 @@ include(../common.pri)
 HEADERS += CChemEq.h \
            CChemEqElement.h \
            CChemEqInterface.h \
+           CChemEqParser.h \
            CCompartment.h \
            CDeTerm.h \
            CMetab.h \
@@ -30,6 +31,7 @@ HEADERS += CChemEq.h \
 SOURCES += CChemEq.cpp \
            CChemEqElement.cpp \
            CChemEqInterface.cpp \
+           CChemEqParser.cpp \
            CCompartment.cpp \
            CDeTerm.cpp \
            CMetab.cpp \
@@ -44,6 +46,16 @@ SOURCES += CChemEq.cpp \
            CSpec2Model.cpp \
            CSpecLine.cpp \
            CState.cpp
+
+contains(BUILD_PARSER, yes) {
+  YACCSOURCES += CChemEqParser.ypp
+  LEXSOURCES += CChemEqParser.lpp  
+}
+else {
+  HEADERS += CChemEqParser_yacc.h
+  SOURCES += CChemEqParser_yacc.cpp \
+             CChemEqParser_lex.cpp
+}
 
 1.target = CScanInputFlexLexer.cpp
 1.depends = CScanInputFlexLexer.lpp 
