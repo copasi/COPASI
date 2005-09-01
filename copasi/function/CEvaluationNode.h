@@ -1,13 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/31 14:23:45 $
+   $Author: shoops $ 
+   $Date: 2005/09/01 18:07:48 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
 #define COPASI_CEvaluationNode
+
+#include <iostream>
 
 #include "copasi.h"
 #include "utilities/CCopasiNode.h"
