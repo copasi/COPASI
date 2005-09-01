@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.102 $ $Author: shoops $ $Date: 2005/08/22 14:07:34 $  
+# $Revision: 1.103 $ $Author: shoops $ $Date: 2005/09/01 17:02:40 $  
 ######################################################################
 
 TEMPLATE = app
@@ -284,10 +284,12 @@ SOURCES += \
 # FORMS += CQProgressDialog.ui
 # FORMS += CQReportDefinition.ui
 # FORMS += CQTextDialog.ui
+# FORMS += CQFileDialogBtnGrp.ui
 
 # headers generated from .ui files   
 HEADERS += \
            CMCAResultSubwidget.h \
+           CQFileDialogBtnGrp.h \
            CQProgressItem.h \
            CQProgressItem.ui.h \
            CQProgressItemBar.ui.h \
@@ -315,6 +317,7 @@ HEADERS += \
 # sources generated from .ui files   
 SOURCES += \
            CMCAResultSubwidget.cpp \
+           CQFileDialogBtnGrp.cpp \
            CQProgressItem.cpp \
            CQProgressItemBar.cpp \
            CQProgressItemText.cpp \

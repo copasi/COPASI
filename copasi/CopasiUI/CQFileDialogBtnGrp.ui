@@ -1,0 +1,112 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>CQFileDialogBtnGrp</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>CQFileDialogBtnGrp</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>120</width>
+            <height>289</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form1</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QToolButton">
+            <property name="name">
+                <cstring>mpBtnHome</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>1</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+            <property name="iconSet">
+                <iconset>image0</iconset>
+            </property>
+            <property name="usesBigPixmap">
+                <bool>true</bool>
+            </property>
+            <property name="usesTextLabel">
+                <bool>true</bool>
+            </property>
+            <property name="textLabel">
+                <string>Home</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Home Directory</string>
+            </property>
+        </widget>
+        <widget class="QToolButton">
+            <property name="name">
+                <cstring>mpBtnExamples</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>1</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+            <property name="iconSet">
+                <iconset>image1</iconset>
+            </property>
+            <property name="usesBigPixmap">
+                <bool>true</bool>
+            </property>
+            <property name="usesTextLabel">
+                <bool>true</bool>
+            </property>
+            <property name="textLabel">
+                <string>Examples</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>COPASI Examples</string>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>mpSpacer</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>10</width>
+                    <height>40</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<images>
+    <image name="image0">
+        <data format="PNG" length="1120">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000042749444154789cad955d6c536518c77fefdbd36efd1ca585eec3022bfb90321dd0646e2b4364d031e563846d8220ba000a7867628c89893784e8a509228610a3318bf1cac569108d89c10d12099b6e8e10301b5b196385ae8c15baaf73bce869d78571a1f19ffc73f29cf7c9ef793f9ebc2f9aa69132506df3babf016a00032032c7ff8d25ba841002a82b7979234008c80614fd3f19797542882ca18b274866400f0577d7adca2b5a01ebbca5c061c0024831a7639bfcde7326490270000621c4a742084df719bda84ccd786365c3962deb0fec6072760a361543c05b0d1cd4e106e0f46b9b2b3ed9fbac9b157600760256e0c8af7bf6d09ae41cd20b1aa51062b567cdcaa353454e3a6ef67269e4068c3d84b23cf0e75602b5c0e99617d7bff16af9522cf7fea2b908ca5d7c019c017818893030b70b4b009304faee74ff7db2aff5271e0ddec3240cf0681afe08c3ad18c08196fae0c1fd652eaeffdecee59129d6161573b4dc4260094d00d3aa8a360776a4c000d814331baaaa5897eb03b715dc3698980ab4d40777edf33be9bad046fb00b40dc0ad4804b7dd46e829c8b3c0f9e16126e7c066404a2dd967b5d58777323211054d23db66c670f751a02554e5dbe777d2ddd9ce7703a01657128ec3d77d31aedd1ea5dc2d79678da47bfc1a1fa6a7986c885478f5b74b17f9a5bf8791892889ef7b0307f296cd835afc95bcb4e5397efef6631a8e1ce5741fdc180757964aa800bcf63438d9a69aa621847001af14ee0ed62486c7025b17391f836e0b55525db11acf122726a391f6f39d9c39f111cd85605460240e3f0c295c199d41856245aff234e051c2e38190dde6db5b6a790c1aac28233fd785c36ec52005bbb76de0667894539f7d4ef34af0bbb2596a4e909881de28fb53e0d0f3afefaaa1f3a26f7bae4ad7a551ce0d82fd996aea6b2bd2d01c8715a3a22084c022256f1f69a4d857c089f78e633424c89210cc85de28cd8a1062756145d92a7789f7ce85ab7dfd8d6dd70a019a1a36b3f585b554ac598567a9931c8795f07084d8fd095455c5b7bc0087ddccf6501577226f71ea6c1bd7fbc3008340bb02cc3c18895250b49ca2c60d57464bed3d7c7979c7f1f78f61929338ac566cb66c8c8a42ecfe0481cd6fa64f49bb7b018b941cdebf0d7fc932ea9adf05f800f85302a140e326fac76ed33d36a46136ce00e47bdc78dc4e721c96f4f2555505e0ab45797a63999152623667e1b05953f5224054b1e62faee9b8dfcf44df103c98d4884fcd02d8ac1698996521e5c71ece8ba510288a2115c681b8121f8e9ee46c471d4e6b31858b617a6158a69e78576648013a812ec6e23ec6e2eb0113d0343b19a3abe7fabce4d8781c8021925b9299931a0312904c108091e415e8043c402ba0fd07ff08f801bbd09fa4d4652f75670376c005d8f4580366f5ef42bb330d8c933cbcf134785e9610525f8549b7cc187e125805a6744f2f08fe3ff40f787e9dc517238ba90000000049454e44ae426082</data>
+    </image>
+    <image name="image1">
+        <data format="PNG" length="1641">89504e470d0a1a0a0000000d4948445200000020000000200806000000737a7af40000063049444154789cc5975d4c54671ac77f671864e80cc3000a520bc8c8887c75b0480fc682a60458cc2ef5034c765dd95dbb179b26dbecbad10d17b5ed8598b5c678554dbaad447ad3ea2a098d74c14450d730509861942f4725805a3e876198816166e0dd0b2dbb58e4c3ddc6e7ee9c93f3fc7feffbbce779fe47ba75eb162f33142f551d50febf1265656d161ecf3dbcde91b97b0ac52ad4ea544ca676e92703484b9b140e87099bad9ababa21cce6e9b9675aad82f7dfdf8e2c970893e9ce82102f0c9098382ecce66f39726484baba08fc7e098f27149f2f00a3719cf5eb2771bbfdb4b6b6101dfdd673f3ac18202d6d5af4f5d5f2e1878fb9793384870fa351a9fcbcf18693bc3c3b1a8d82f47423f1f1394812b8a714b4b68e3eb704d272bf828c8c2861b73772f2643d972ea9191951b165cb187bf7ce909f1f4944442a3add4e4ca68ee78a2d144bee802ca70887a3869a9a4aaaaaa6a8ae8e4408415e9e83c38763301adf41a54aa0b1d12c41c74ab4970690e564d1dcfc19274edca3be3e048f47476aaa9bc387fdbcfdf60e74bac2a727dcbc62e125015252bda2bde313cacbed5cbd1a8e4ae5a7b4b49f92922864f95dac56b704ed2f2cbc28803e61527cf4f1d7545d0e66643814591ea5b858c9be7dfbb1d94225abd5fd3f0b3f1720c1e016e72aaaf9f27c28b3b3ccabb5c532b1a203b6620083c125cacb2f50f9a58ef571d31c39e227377707ddddb192c532b1a2c46f66ac117e4f2f08ff931b9212a52a8ea696e1798b980330185ca2a2e21b2a2bc3d0687c9495055350f0aba7b55e5ea4c4540b952e078fe33ab69a26eed5b63133ed03202028900df9468cd9fb45b06e378da64e099ef60183c1258e1dbb4865a58ef8780f6565c11415fd91e6e6be25c5b3b2360bbfa79391eecf19b4d4d2d7e4a0abcec5f7a35a7ac7a398990d0004610a0771ba4136bea52479570c2925a769b9ad91a4c9c9dbe2dcb9b31c3daa46a3f171ead42a0a0af663b5ba96149733a3c578dfa7dcada9c37aa987de3641efe45aeefbe291d6bcc2484024b3d213009d70b06ea69f8d0e2beb5e73f3cbcbefb226e96f28bbba2ab978d1871070e8d0238a8a3ea1b9f9d1a2e25bd283c548f7df317d5ac395b31ebafb56f3d897853d6c1d5b77b9d8ba3688df1d8c44ab0d417a9a498828269c517cfe57b05db3d174b69adc8f0b50b6b53560b5e6909e3e4e7676ca92e246c3b0309f3b8ee51f9ddc35afa2c6b983f1d028e45c2707df99a2b0f01768347ad4ea941fb56559de2436ed3cc0173765f4d7eb496a3d8dd2eff7e2f72b888f77a3d7e7d0b14837351a8645c3b13fd1787e900697cc40989e6d077c14ed9a213bfb67cfcc82851229f0a2648048ec8fc0f9f0bbe54f43a36158982b8ed1787e9066672aabf35fe5377b2729dcf973c2c3b36869195c7416c8728ae8edbd40fd1535b19e07accd0822cab86779005972923057fc9efa93f7f997672bab77c671fc74367171c5984c1d524fcfe0a2efcb72b2f8aef9334e95dfc659dbcb06ad9d88e27cc237fd657900538ecb7456f533301682765b247f2e4b202eae6451abf54364a4b9c4e3ce0f38533ec4f0d56162b576524af5e4ef2bc56c9990944ae52a94ca597a7ad43c78701dc8fb51129ffb0e7d96692cde4c126202d990b0b8cfcb929384d76dc1ebeae2da4727b873a99fd9fe1822b4e16c2bcb64f76ff773d7162201288dc6edbcfeba038b45c78d1bedbcf7de01d1dc3c302fb9222004b5562256d147bf3992966b5f9125bf2a580841c070c728ad5fd4e21c98c4fa4fc1d85818f7c2d2d85e1a3a4f1ce09946e4e5d0a1c7e4e4a49298b87bdef08918fd40745db949ff5d2553bd3e02251f331e10cfe8cf08059333c1b40fadc725d4f4842693b8799ac2bda114efdb8dcda699873dd78a8f1fbf4055d52b4c4c049296e664cf9e59f2f2d6101c1c04807ffa06fe290b633d3e06dbe05113dcaf03fff47c8001d6d2c526be57c7111debe5e01fec64e7a49298b867c1693ae7097f309b67cef4d2d0a0a5a74787563b4d40c07ff656fcd772bd6e981e0731fbe43a30708660959fd7f43e128d1e32df0ca2b0504f6cecaf176d6ef34ca92c278bb1b1933434b470f4e8069c4e252c58e86743909eee243fdf4e52522c46632e6ab57e59fe6141579c99b94e0c0d7d8ddfef9eebe58bca0bd06836be902b5eb62dffa9e2a5ff9cbe74807f032fc7b84f36c7a5ce0000000049454e44ae426082</data>
+    </image>
+</images>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
