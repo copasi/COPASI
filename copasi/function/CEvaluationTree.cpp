@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:05 $
+   $Date: 2005/09/01 01:26:39 $
    End CVS Header */
 
 #include "copasi.h"
@@ -123,7 +123,7 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
 
 CEvaluationTree::~CEvaluationTree()
 {
-  if (mpNodeList != NULL) CEvaluationParser::freeNodeList(mpNodeList);
+  if (mpNodeList != NULL) CEvaluationLexer::freeNodeList(mpNodeList);
   GlobalKeys.remove(mKey);
 }
 
@@ -175,7 +175,7 @@ bool CEvaluationTree::parse()
   bool success = true;
 
   // clean up
-  CEvaluationParser::freeNodeList(mpNodeList);
+  CEvaluationLexer::freeNodeList(mpNodeList);
   mpNodeList = NULL;
   mpRoot = NULL;
 
@@ -195,7 +195,7 @@ bool CEvaluationTree::parse()
     {
       mErrorPosition = Parser.getErrorPosition();
 
-      CEvaluationParser::freeNodeList(mpNodeList);
+      CEvaluationLexer::freeNodeList(mpNodeList);
       mpNodeList = NULL;
       mpRoot = NULL;
     }
@@ -234,7 +234,7 @@ bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
 {
   if (pRootNode == NULL) return false;
   if (mpNodeList != NULL)
-    CEvaluationParser::freeNodeList(mpNodeList);
+    CEvaluationLexer::freeNodeList(mpNodeList);
 
   mpRoot = pRootNode;
 

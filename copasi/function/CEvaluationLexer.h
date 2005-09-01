@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationLexer.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/08 21:16:31 $
+   $Date: 2005/09/01 01:26:39 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationLexer
@@ -16,7 +16,7 @@
 #include "FlexLexer.h"
 
 #undef yyYaccParser
-#define yyYaccParser CEvaluationParser
+#define yyYaccParser CEvaluationParserBase
 
 #undef YYDEBUG
 #ifdef COPASI_DEBUG

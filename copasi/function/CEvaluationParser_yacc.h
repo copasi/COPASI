@@ -1,3 +1,11 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.h,v $
+   $Revision: 1.15 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2005/09/01 01:26:39 $
+   End CVS Header */
+
 #ifndef YYERRCODE
  #define YYERRCODE 256
  #endif
