@@ -40,30 +40,35 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   return TOKEN_NUMBER;
 %}
  
-" + "   %{
+"+"   %{
   COMMON_ACTION;
   return TOKEN_PLUS;
 %}
 
-" * "   %{
+"*"   %{
   COMMON_ACTION;
   return TOKEN_MULTIPLY;
 %}
 
-(\"([^\\\"]|\\.)*\")|(([^ ;]|;[^ ])*) %{
+";" %{
+  COMMON_ACTION;
+  return TOKEN_BEGIN_MODIFIERS;
+%}
+
+(->|=) %{
+  COMMON_ACTION;
+  return TOKEN_BEGIN_PRODUCTS;
+%}
+
+\"([^\\\"]|\\.)*\" %{
   COMMON_ACTION;
   mpData->name = unQuote(mpData->name);
   return TOKEN_METABOLITE;
 %}
 
-" "(->|=)" " %{
+([^-;= ]|;[^ ]|-[^> ])*[-]* %{
   COMMON_ACTION;
-  return TOKEN_BEGIN_PRODUCTS;
-%}
-
-"; " %{
-  COMMON_ACTION;
-  return TOKEN_BEGIN_MODIFIERS;
+  return TOKEN_METABOLITE;
 %}
 
 [ \t\r\n]+ %{

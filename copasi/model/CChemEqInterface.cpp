@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/01 01:48:01 $
+   $Date: 2005/09/01 13:34:35 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -58,10 +58,17 @@ std::string CChemEqInterface::getChemEqString(bool expanded) const
       {
         ChemicalEquation += ";";
 
+        std::string Name;
         for (j = 0; j < mModifierNames.size(); j++)
           {
             ChemicalEquation += " ";
-            ChemicalEquation += mModifierNames[j];
+
+            Name = quote(mModifierNames[j]);
+            if (isNumber(Name) ||
+                Name[Name.length() - 1] == ';')
+              Name = "\"" + Name + "\"";
+
+            ChemicalEquation += Name;
           }
       }
 
@@ -209,6 +216,9 @@ void CChemEqInterface::clearModifiers()
 std::string CChemEqInterface::writeElement(const std::string & name, C_FLOAT64 mult, bool expanded)
 {
   std::string Name = quote(name);
+  if (isNumber(Name) ||
+      Name[Name.length() - 1] == ';')
+    Name = "\"" + Name + "\"";
 
   if (expanded)
     {
