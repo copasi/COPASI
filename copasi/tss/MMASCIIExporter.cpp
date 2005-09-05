@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/08/23 09:01:58 $
+   $Date: 2005/09/05 09:26:46 $
    End CVS Header */
 
 #include <math.h>
@@ -43,7 +43,7 @@ bool MMASCIIExporter::isEmptyString(std::string & str)
   return (str.find_first_not_of(" \n\t\r") == std::string::npos);
 }
 /**
- **        Returns the index of the metab
+ **        This method finds the metab by the name, returns an index
  **/
 C_INT32 MMASCIIExporter::findMetabXByName(const CModel* copasiModel, const std::string & Target)
 {
@@ -60,7 +60,26 @@ C_INT32 MMASCIIExporter::findMetabXByName(const CModel* copasiModel, const std::
   return - 1;
 }
 /**
- **        Returns the index of the global parameter 
+ **        This method finds the compartement by the name, returns an index
+ **/
+C_INT32 MMASCIIExporter::findCompByName(const CModel* copasiModel, const std::string & Target)
+{
+  std::string name;
+
+  const CCopasiVector< CCompartment > & comps = copasiModel->getCompartments();
+  unsigned C_INT32 comps_size = comps.size();
+  unsigned C_INT32 id;
+
+  for (id = 0; id < comps_size; id++)
+    {
+      name = comps[id]->getObjectName();
+      if (name == Target)
+        return id;
+    }
+  return - 1;
+}
+/**
+ **        This method finds the global parameter by the name, returns an index   
  **/
 C_INT32 MMASCIIExporter::findGlobalParamByName(const CModel* copasiModel, const std::string & Target)
 {
@@ -78,7 +97,7 @@ C_INT32 MMASCIIExporter::findGlobalParamByName(const CModel* copasiModel, const 
   return - 1;
 }
 /**
- **        Returns the index of the local parameter 
+ **        This method finds the local reactions parameter by the name, returns an index  
  **/
 C_INT32 MMASCIIExporter::findKinParamByName(const CReaction* reac, const std::string & Target)
 {
@@ -121,7 +140,8 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
 
   std::ofstream outFile(mmasciiFilename.c_str(), std::ios::out);
 
-  outFile << "//Metabolites:" << std::endl;
+  outFile << "#ifdef METABOLITES" << std::endl;
+  //outFile << "//Metabolites:" << std::endl;
 
   unsigned C_INT32 i, metab_size;
   CMetab* metab;
@@ -137,9 +157,11 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
       << '\t' << CModelEntity::StatusName[metab->getStatus()]
       << std::endl;
     }
+  outFile << "#endif // METABOLITES" << std::endl;
   outFile << std::endl;
 
-  outFile << "//Moiety:" << std::endl;
+  outFile << "#ifdef MOIETY" << std::endl;
+  //outFile << "//Moiety:" << std::endl;
 
   const CModel::CLinkMatrixView & L = copasiModel->getL();
 
@@ -191,9 +213,46 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
       outFile << "x[" << i << "] = " << Value << Description.str() << ";" << '\t'
       << "// " << comment.str() << " = const" << std::endl;
     }
+
+  outFile << "#endif // MOIETY" << std::endl;
   outFile << std::endl;
 
-  outFile << "//Kinetic Parameters:" << std::endl;
+  outFile << "#ifdef COMPARTMENTS" << std::endl;
+  //outFile << "//Compartments:" << std::endl;
+
+  const CCopasiVector< CCompartment > & comps = copasiModel->getCompartments();
+  unsigned C_INT32 comps_size = comps.size();
+
+  for (i = 0; i < comps_size; i++)
+    {
+      outFile << "c[" << i << "]="
+      << comps[i]->getVolume() << ";"
+      << '\t' << "//" << comps[i]->getObjectName().c_str()
+      << std::endl;
+    }
+
+  outFile << "#endif // COMPARTMENTS" << std::endl;
+  outFile << std::endl;
+
+  outFile << "#ifdef GLOBAL_PARAMETERS" << std::endl;
+  //outFile << "//Kinetic parameters (global):" << std::endl;
+
+  const CCopasiVector< CModelValue > & modvals = copasiModel->getModelValues();
+  unsigned C_INT32 modvals_size = modvals.size();
+
+  for (i = 0; i < modvals_size; i++)
+    {
+      outFile << "gk[" << i << "]="
+      << modvals[i]->getValue() << ";"
+      << '\t' << "//" << modvals[i]->getObjectName().c_str()
+      << std::endl;
+    }
+
+  outFile << "#endif GLOBAL_PARAMETERS" << std::endl;
+  outFile << std::endl;
+
+  outFile << "#ifdef KINETIC_PARAMETERS" << std::endl;
+  //outFile << "//Kinetic parameters (local reactions parameters):" << std::endl;
 
   unsigned C_INT32 reacs_size, count = 0;
   const CCopasiVector< CReaction > & reacs = copasiModel->getReactionsX();
@@ -219,203 +278,148 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
         }
     }
 
+  outFile << "#endif // KINETIC_PARAMETERS" << std::endl;
   outFile << std::endl;
 
-  outFile << "//Global Parameters:" << std::endl;
+  outFile << "#ifdef KINETIC_FUNCTIONS" << std::endl;
+  //outFile << "//Kinetic Functions:" << std::endl;
 
-  const CCopasiVector< CModelValue > & modvals = copasiModel->getModelValues();
-  unsigned C_INT32 modvals_size = modvals.size();
+  std::string newFunctionNames[reacs_size];
+  bool isNewName[reacs_size];
 
-  for (i = 0; i < modvals_size; i++)
+  for (i = 0; i < reacs_size; ++i)
+    if (reacs[i]->getFunction().getType() != CEvaluationTree::MassAction)
+      {
+        newFunctionNames[i] = reacs[i]->getFunction().getObjectName();
+        isNewName[i] = true;
+      }
+  count = 0;
+  for (i = 0; i < reacs_size; ++i)
     {
-      outFile << "c[" << i << "]="
-      << modvals[i]->getValue() << ";"
-      << '\t' << "//" << modvals[i]->getObjectName().c_str()
-      << std::endl;
-    }
+      std::string tmpName;
+      std::ostringstream newName;
 
-  outFile << std::endl;
-  outFile << "//Kinetic Functions:" << std::endl;
+      reac = reacs[i];
+
+      if (reac->getFunction().getType() != CEvaluationTree::MassAction)
+        if (isNewName[i])
+          {
+            tmpName = reac->getFunction().getObjectName();
+            newName << " Function_" << count << "_";
+            newFunctionNames[i] = newName.str();
+
+            for (j = i + 1; j < reacs_size; ++j)
+              if (newFunctionNames[j] == tmpName)
+                {
+                  newFunctionNames[j] = newName.str();
+                  isNewName[j] = false;
+                }
+            count++;
+          }
+    }
 
   for (i = 0; i < reacs_size; ++i)
     {
       unsigned C_INT32 params_size;
+      std::ostringstream newName;
+
       reac = reacs[i];
       params_size = reac->getFunctionParameters().size();
 
       if (reac->getFunction().getType() != CEvaluationTree::MassAction)
-        {
-          outFile << std::endl;
-          outFile << "double "
-          //<< "KineticFunction_" << i
-          << reac->getFunction().getObjectName().c_str()
-          << "(";
+        if (isNewName[i])
+          {
+            outFile << std::endl;
+            outFile << "double "
+            << newFunctionNames[i]
+            //<< reac->getFunction().getObjectName().c_str()
+            << "(";
 
-          for (j = 0; j < params_size; ++j)
-            {
-              outFile << "double " << reac->getFunctionParameters()[j]->getObjectName().c_str();
-              if (j != params_size - 1) outFile << ", ";
-            }
+            for (j = 0; j < params_size; ++j)
+              {
+                outFile << "double " << reac->getFunctionParameters()[j]->getObjectName().c_str();
+                if (j != params_size - 1) outFile << ", ";
+              }
 
-          outFile << ") ";
-          outFile << '\t' << "//" << reac->getFunction().getObjectName().c_str() << std::endl;
-          outFile << "{return  " << reac->getFunction().getInfix().c_str() << "; } " << std::endl;
-        }
+            outFile << ") ";
+            outFile << '\t' << "//" << reac->getFunction().getObjectName().c_str() << std::endl;
+            outFile << "{return  " << reac->getFunction().getInfix().c_str() << "; } " << std::endl;
+          }
     }
 
+  outFile << "#endif // KINETIC_FUNCTIONS" << std::endl;
   outFile << std::endl;
-  outFile << "//Differential Equations:" << std::endl;
+
+  outFile << "#ifdef DIFFERENTIAL_EQUATIONS" << std::endl;
+  //outFile << "//Differential Equations:" << std::endl;
 
   const CMatrix< C_FLOAT64 > & redStoi = copasiModel->getRedStoi();
+  const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
 
   for (i = 0; i < indep_size; ++i)
     {
       unsigned C_INT32 counter = 0;
 
       std::ostringstream equation;
-      std::string eq;
+      std::string tmpstr;
+
+      unsigned C_INT32 compartment_index;
+      const CCompartment* compartment = metabs[i]->getCompartment();
+
+      compartment_index = findCompByName(copasiModel, compartment->getObjectName());
 
       for (j = 0; j < reacs_size; ++j)
         {
           unsigned C_INT32 k;
-          eq = equation.str();
+          tmpstr = equation.str();
 
           reac = reacs[j];
+
           if (fabs(redStoi[i][j]) > 0.0)
             {
               if (redStoi[i][j] < 0.0)
                 equation << " - ";
               else
-                if (!(isEmptyString(eq))) equation << " + ";
+                if (!(isEmptyString(tmpstr))) equation << " + ";
 
-              if (fabs(redStoi[i][j]) != 1.0)
+              if (fabs(redStoi[i][j]) != 1.0) equation << fabs(redStoi[i][j]) << " * ";
 
-                if (reac->getFunction().getType() != CEvaluationTree::MassAction)
-                  {
-                    const CFunctionParameters & params = reac->getFunctionParameters();
-                    unsigned C_INT32 params_size = params.size();
-                    const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
+              if (reac->getFunction().getType() != CEvaluationTree::MassAction)
+                {
+                  const CFunctionParameters & params = reac->getFunctionParameters();
+                  unsigned C_INT32 params_size = params.size();
+                  const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
 
-                    equation <<
-                    // "KineticFunction_" << j ; TODO : check out the corresponding export name of the function
-                    reac->getFunction().getObjectName().c_str() << " (";
+                  equation
+                  << newFunctionNames[j]
+                  //<< reac->getFunction().getObjectName().c_str()
+                  << "(";
 
-                    for (k = 0; k < params_size; ++k)
-                      {
-                        C_INT32 index;
-                        std::string usage = params[k]->getUsage();
-                        std::string name;
+                  for (k = 0; k < params_size; ++k)
+                    {
+                      C_INT32 index;
+                      std::string usage = params[k]->getUsage();
+                      std::string name;
 
-                        CCopasiObject * tmp = GlobalKeys.get(keyMap[k][0]);
+                      CCopasiObject * tmp = GlobalKeys.get(keyMap[k][0]);
 
-                        if ((usage == "SUBSTRATE") || (usage == "PRODUCT") || (usage == "MODIFIER"))
-                          {
-                            CMetab* metab;
-                            metab = dynamic_cast< CMetab * >(tmp);
-                            name = metab ->getObjectName();
+                      if ((usage == "SUBSTRATE") || (usage == "PRODUCT") || (usage == "MODIFIER"))
+                        {
+                          CMetab* metab;
+                          metab = dynamic_cast< CMetab * >(tmp);
+                          name = metab ->getObjectName();
 
-                            index = findMetabXByName(copasiModel, name);
-                            equation << "x[";
-                            equation << index << "]";
-                          }
-
-                        if (usage == "PARAMETER")
-                          if (!(reac->isLocalParameter(k)))
-                            {
-                              CModelValue* modval;
-                              modval = dynamic_cast< CModelValue * >(tmp);
-                              name = modval ->getObjectName();
-                              index = findGlobalParamByName(copasiModel, name);
-                              equation << "c[";
-                              equation << index << "]";
-                            }
-                          else
-                            {
-                              CCopasiParameter* param;
-                              param = dynamic_cast< CCopasiParameter * >(tmp);
-                              name = param->getObjectName();
-
-                              index = findKinParamByName(reac, name);
-                              equation << "k[";
-                              equation << counter + index << "]";
-                            }
-
-                        if (k != params_size - 1) equation << ", ";
-                      }
-
-                    equation << ")";
-                  }
-                else
-                  {
-                    std::ostringstream massaction;
-                    std::string name;
-                    std::string usage;
-
-                    const CCopasiVector<CChemEqElement> & substrs = reac->getChemEq().getSubstrates();
-                    const CCopasiVector<CChemEqElement> & prods = reac->getChemEq().getProducts();
-                    const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
-                    CCopasiObject * tmp;
-
-                    unsigned C_INT32 substrs_size = substrs.size(), prods_size = prods.size();
-                    unsigned C_INT32 m, mult;
-                    C_INT32 index;
-
-                    CChemEqElement* substr;
-                    CChemEqElement* prod;
-
-                    const CMassAction cMassAction = static_cast<const CMassAction>(reac->getFunction());
-
-                    massaction << "(";
-
-                    usage = cMassAction.getVariables()[0]->getUsage().c_str();
-                    tmp = GlobalKeys.get(keyMap[0][0]);
-
-                    if (!(reac->isLocalParameter(0)))
-                      {
-                        CModelValue* modval;
-                        modval = dynamic_cast< CModelValue * >(tmp);
-                        name = modval ->getObjectName();
-                        index = findGlobalParamByName(copasiModel, name);
-                        massaction << "c[" << index << "]";
-                      }
-                    else
-                      {
-                        CCopasiParameter* param;
-                        param = dynamic_cast< CCopasiParameter * >(tmp);
-                        name = param->getObjectName();
-
-                        index = findKinParamByName(reac, name);
-                        massaction << "k[" << counter + index << "]";
-                      }
-
-                    for (k = 0; k < substrs_size; ++k)
-                      {
-                        substr = substrs[k];
-                        mult = substr->getMultiplicity();
-
-                        name = substr->getMetabolite().getObjectName();
-                        index = findMetabXByName(copasiModel, name);
-                        massaction << " * x[" << index << "]";
-
-                        if (mult > 1)
-                          for (m = 1; m < mult; ++m)
-                            massaction << " * x[" << index << "]";
-                      }
-
-                    if (cMassAction.isReversible() == TriTrue)
-                      {
-                        massaction << " - ";
-                        usage = cMassAction.getVariables()[0]->getUsage().c_str();
-
-                        tmp = GlobalKeys.get(keyMap[2][0]);
-
-                        if (!(reac->isLocalParameter(2)))
+                          index = findMetabXByName(copasiModel, name);
+                          equation << "x[" << index << "]";
+                        }
+                      if (usage == "PARAMETER")
+                        if (!(reac->isLocalParameter(k)))
                           {
                             CModelValue* modval;
                             modval = dynamic_cast< CModelValue * >(tmp);
                             name = modval ->getObjectName();
                             index = findGlobalParamByName(copasiModel, name);
-                            massaction << "c[" << index << "]";
+                            equation << "gk[" << index << "]";
                           }
                         else
                           {
@@ -424,34 +428,144 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
                             name = param->getObjectName();
 
                             index = findKinParamByName(reac, name);
-                            massaction << "k[" << counter + index << "]";
+                            equation << "k[" << counter + index << "]";
                           }
+                      if (usage == "VOLUME")
+                        {
+                          CCompartment* comp;
+                          comp = dynamic_cast< CCompartment * >(tmp);
+                          name = comp->getObjectName();
 
-                        for (k = 0; k < prods_size; ++k)
-                          {
-                            prod = prods[k];
-                            mult = prod->getMultiplicity();
+                          index = findCompByName(copasiModel, name);
+                          equation << "c[";
+                          equation << index << "]";
+                        }
+                      if (usage == "VARIABLE")
+                        {
+                          CModelValue* modval;
+                          modval = dynamic_cast< CModelValue * >(tmp);
 
-                            name = prod->getMetabolite().getObjectName();
-                            index = findMetabXByName(copasiModel, name);
-                            massaction << " * x[" << index << "]";
+                          outFile << std::endl;
+                          outFile << "******* Function parameter" << modval->getObjectName().c_str()
+                          << ": this version does not support the parameters usage VARIABLE ******";
 
-                            if (mult > 1)
-                              for (m = 1; m < mult; ++m)
-                                massaction << " * x[" << index << "]";
-                          }
-                      }
+                          return false;
+                        }
 
-                    massaction << ") ";
-                    equation << massaction.str();
-                  }
+                      if (k != params_size - 1) equation << ", ";
+                    }
+
+                  equation << ")";
+                }
+              else
+                {
+                  std::ostringstream massaction;
+                  std::string name;
+                  std::string usage;
+
+                  const CCopasiVector<CChemEqElement> & substrs = reac->getChemEq().getSubstrates();
+                  const CCopasiVector<CChemEqElement> & prods = reac->getChemEq().getProducts();
+                  const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
+                  CCopasiObject * tmp;
+
+                  unsigned C_INT32 substrs_size = substrs.size(), prods_size = prods.size();
+                  unsigned C_INT32 m, mult;
+                  C_INT32 index;
+
+                  CChemEqElement* substr;
+                  CChemEqElement* prod;
+
+                  const CMassAction cMassAction = static_cast<const CMassAction>(reac->getFunction());
+
+                  massaction << "(";
+
+                  usage = cMassAction.getVariables()[0]->getUsage().c_str();
+                  tmp = GlobalKeys.get(keyMap[0][0]);
+
+                  if (!(reac->isLocalParameter(0)))
+                    {
+                      CModelValue* modval;
+                      modval = dynamic_cast< CModelValue * >(tmp);
+                      name = modval ->getObjectName();
+                      index = findGlobalParamByName(copasiModel, name);
+                      massaction << "gk[" << index << "]";
+                    }
+                  else
+                    {
+                      CCopasiParameter* param;
+                      param = dynamic_cast< CCopasiParameter * >(tmp);
+                      name = param->getObjectName();
+
+                      index = findKinParamByName(reac, name);
+                      massaction << "k[" << counter + index << "]";
+                    }
+
+                  for (k = 0; k < substrs_size; ++k)
+                    {
+                      substr = substrs[k];
+                      mult = substr->getMultiplicity();
+
+                      name = substr->getMetabolite().getObjectName();
+                      index = findMetabXByName(copasiModel, name);
+                      massaction << " * x[" << index << "]";
+
+                      if (mult > 1)
+                        for (m = 1; m < mult; ++m)
+                          massaction << " * x[" << index << "]";
+                    }
+
+                  if (cMassAction.isReversible() == TriTrue)
+                    {
+                      massaction << " - ";
+                      usage = cMassAction.getVariables()[0]->getUsage().c_str();
+
+                      tmp = GlobalKeys.get(keyMap[2][0]);
+
+                      if (!(reac->isLocalParameter(2)))
+                        {
+                          CModelValue* modval;
+                          modval = dynamic_cast< CModelValue * >(tmp);
+                          name = modval ->getObjectName();
+                          index = findGlobalParamByName(copasiModel, name);
+                          massaction << "gk[" << index << "]";
+                        }
+                      else
+                        {
+                          CCopasiParameter* param;
+                          param = dynamic_cast< CCopasiParameter * >(tmp);
+                          name = param->getObjectName();
+
+                          index = findKinParamByName(reac, name);
+                          massaction << "k[" << counter + index << "]";
+                        }
+
+                      for (k = 0; k < prods_size; ++k)
+                        {
+                          prod = prods[k];
+                          mult = prod->getMultiplicity();
+
+                          name = prod->getMetabolite().getObjectName();
+                          index = findMetabXByName(copasiModel, name);
+                          massaction << " * x[" << index << "]";
+
+                          if (mult > 1)
+                            for (m = 1; m < mult; ++m)
+                              massaction << " * x[" << index << "]";
+                        }
+                    }
+
+                  massaction << ") ";
+                  equation << massaction.str();
+                }
+
+              if (reac->getCompartmentNumber() != 1) equation << " / c[" << compartment_index << "]";
             }
 
           counter += reac->getParameters().size();
         }
-
       outFile << "dx[" << i << "] = " << equation.str() << ";" << std::endl;
     }
+  outFile << "#endif // DIFFERENTIAL_EQUATIONS" << std::endl;
 
   return true;
 }
