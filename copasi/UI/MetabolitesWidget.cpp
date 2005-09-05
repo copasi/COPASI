@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.123 $
+   $Revision: 1.124 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/21 11:40:11 $
+   $Date: 2005/09/05 16:25:23 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -447,8 +447,12 @@ void MetabolitesWidget::initialConcentrationChanged(unsigned C_INT32 row)
   const CMetab * pMetab
   = static_cast< CMetab * >(GlobalKeys.get(mKeys[row]));
 
-  const CCompartment * pCompartment
-  = CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)table->text(row, COL_OLDCOMPARTMENT).utf8()];
+  const CCompartment * pCompartment = NULL;
+  try
+    {
+      pCompartment = CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)table->text(row, COL_OLDCOMPARTMENT).utf8()];
+    }
+  catch (...) {}
 
   if (!pMetab || !pCompartment) return;
 
