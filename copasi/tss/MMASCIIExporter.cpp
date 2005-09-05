@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/09/05 09:26:46 $
+   $Date: 2005/09/05 12:02:26 $
    End CVS Header */
 
 #include <math.h>
@@ -140,13 +140,38 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
 
   std::ofstream outFile(mmasciiFilename.c_str(), std::ios::out);
 
-  outFile << "#ifdef METABOLITES" << std::endl;
-  //outFile << "//Metabolites:" << std::endl;
+  outFile << "#ifdef SIZE_DEFINITIONS" << std::endl;
+  unsigned C_INT32 metab_size = copasiModel->getMetabolitesX().size();
+  unsigned C_INT32 indep_size = copasiModel->getNumIndependentMetabs();
+  unsigned C_INT32 comps_size = copasiModel->getCompartments().size();
+  unsigned C_INT32 modvals_size = copasiModel->getModelValues().size();
+  unsigned C_INT32 reacs_size = copasiModel->getReactionsX().size();
 
-  unsigned C_INT32 i, metab_size;
+  unsigned C_INT32 i, count;
+  const CCopasiVector< CReaction > & reacs = copasiModel->getReactionsX();
+  CReaction* reac;
+
+  count = 0;
+  for (i = 0; i < reacs_size; ++i)
+    {
+      reac = reacs[i];
+      count = count + reac->getParameters().size();
+    }
+
+  outFile << "#define N_METABS " << metab_size << std::endl;
+  outFile << "#define N_INDEP_METABS " << indep_size << std::endl;
+  outFile << "#define N_COMPARTMENTS " << comps_size << std::endl;
+  outFile << "#define N_GLOBAL_PARAMS " << modvals_size << std::endl;
+  outFile << "#define N_KIN_PARAMS " << count << std::endl;
+  outFile << "#define N_REACTIONS " << reacs_size << std::endl;
+
+  outFile << "#endif // SIZE_DEFINITIONS" << std::endl;
+  outFile << std::endl;
+
+  outFile << "#ifdef METABOLITES" << std::endl;
+
   CMetab* metab;
 
-  metab_size = copasiModel->getMetabolitesX().size();
   for (i = 0; i < metab_size; i++)
     {
       metab = copasiModel->getMetabolitesX()[i];
@@ -161,11 +186,10 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
   outFile << std::endl;
 
   outFile << "#ifdef MOIETY" << std::endl;
-  //outFile << "//Moiety:" << std::endl;
 
   const CModel::CLinkMatrixView & L = copasiModel->getL();
 
-  unsigned C_INT32 indep_dep_size, indep_size = copasiModel->getNumIndependentMetabs();
+  unsigned C_INT32 indep_dep_size;
   unsigned C_INT32 j;
   C_FLOAT64 Value;
 
@@ -218,10 +242,8 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
   outFile << std::endl;
 
   outFile << "#ifdef COMPARTMENTS" << std::endl;
-  //outFile << "//Compartments:" << std::endl;
 
   const CCopasiVector< CCompartment > & comps = copasiModel->getCompartments();
-  unsigned C_INT32 comps_size = comps.size();
 
   for (i = 0; i < comps_size; i++)
     {
@@ -235,10 +257,8 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
   outFile << std::endl;
 
   outFile << "#ifdef GLOBAL_PARAMETERS" << std::endl;
-  //outFile << "//Kinetic parameters (global):" << std::endl;
 
   const CCopasiVector< CModelValue > & modvals = copasiModel->getModelValues();
-  unsigned C_INT32 modvals_size = modvals.size();
 
   for (i = 0; i < modvals_size; i++)
     {
@@ -252,13 +272,8 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
   outFile << std::endl;
 
   outFile << "#ifdef KINETIC_PARAMETERS" << std::endl;
-  //outFile << "//Kinetic parameters (local reactions parameters):" << std::endl;
 
-  unsigned C_INT32 reacs_size, count = 0;
-  const CCopasiVector< CReaction > & reacs = copasiModel->getReactionsX();
-  CReaction* reac;
-
-  reacs_size = reacs.size();
+  count = 0;
 
   for (i = 0; i < reacs_size; ++i)
     {
@@ -282,7 +297,6 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
   outFile << std::endl;
 
   outFile << "#ifdef KINETIC_FUNCTIONS" << std::endl;
-  //outFile << "//Kinetic Functions:" << std::endl;
 
   std::string newFunctionNames[reacs_size];
   bool isNewName[reacs_size];
@@ -332,7 +346,6 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
             outFile << std::endl;
             outFile << "double "
             << newFunctionNames[i]
-            //<< reac->getFunction().getObjectName().c_str()
             << "(";
 
             for (j = 0; j < params_size; ++j)
@@ -351,7 +364,6 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
   outFile << std::endl;
 
   outFile << "#ifdef DIFFERENTIAL_EQUATIONS" << std::endl;
-  //outFile << "//Differential Equations:" << std::endl;
 
   const CMatrix< C_FLOAT64 > & redStoi = copasiModel->getRedStoi();
   const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
@@ -392,7 +404,6 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
 
                   equation
                   << newFunctionNames[j]
-                  //<< reac->getFunction().getObjectName().c_str()
                   << "(";
 
                   for (k = 0; k < params_size; ++k)
