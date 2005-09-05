@@ -65,6 +65,10 @@ SOURCE=.\CTSSProblem.cpp
 
 SOURCE=.\CTSSTask.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\MMASCIIExporter.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -80,6 +84,10 @@ SOURCE=.\CTSSProblem.h
 # Begin Source File
 
 SOURCE=.\CTSSTask.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\MMASCIIExporter.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
