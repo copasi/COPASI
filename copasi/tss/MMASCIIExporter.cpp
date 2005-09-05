@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2005/09/05 12:02:26 $
+   $Author: shoops $ 
+   $Date: 2005/09/05 13:59:38 $
    End CVS Header */
 
 #include <math.h>
@@ -298,8 +298,8 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
 
   outFile << "#ifdef KINETIC_FUNCTIONS" << std::endl;
 
-  std::string newFunctionNames[reacs_size];
-  bool isNewName[reacs_size];
+  std::vector< std::string > newFunctionNames(reacs_size);
+  std::vector< bool > isNewName(reacs_size);
 
   for (i = 0; i < reacs_size; ++i)
     if (reacs[i]->getFunction().getType() != CEvaluationTree::MassAction)
