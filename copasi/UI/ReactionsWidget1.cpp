@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.171 $
+   $Revision: 1.172 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:15:44 $
+   $Date: 2005/09/15 18:45:24 $
    End CVS Header */
 
 /*********************************************************************
@@ -231,7 +231,7 @@ bool ReactionsWidget1::saveToReaction()
   mRi.setReactionName((const char *)LineEdit1->text().utf8());
 
   //this writes all changes to the reaction
-  if (!mRi.writeBackToReaction(*(CCopasiDataModel::Global->getModel())))
+  if (!mRi.writeBackToReaction(NULL, *(CCopasiDataModel::Global->getModel())))
     {
       CCopasiObject * pReaction = GlobalKeys.get(objKey);
       if (mRi.getReactionName() != pReaction->getObjectName())
@@ -378,7 +378,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                                             // No or Escape
+        default:                                               // No or Escape
           break;
         }
     }

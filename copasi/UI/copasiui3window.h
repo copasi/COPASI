@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/10 16:40:21 $
+   $Date: 2005/09/15 18:45:24 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -58,11 +58,10 @@ class CopasiUI3Window : public QMainWindow
     void aboutQt();
     void slotQuit();
     void slotConvertToIrreversible();
-    void closeEvent(QCloseEvent* ce);
+    void closeEvent(QCloseEvent* e);
     void listViewsFolderChanged(QListViewItem* item);
 
   private:
-    int closeFlag;
     int newFlag;
     QString FixedTitle;
     QToolButton * msave_button;

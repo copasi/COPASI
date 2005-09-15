@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/13 12:14:51 $
+   $Date: 2005/09/15 18:45:24 $
    End CVS Header */
 
 #include "ReactionsWidget.h"
@@ -109,7 +109,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
   //first check if new metabolites need to be created
   bool createdMetabs = ri.createMetabolites(*(CCopasiDataModel::Global->getModel()));
   //this writes all changes to the reaction
-  ri.writeBackToReaction(*(CCopasiDataModel::Global->getModel()));
+  ri.writeBackToReaction(NULL, *(CCopasiDataModel::Global->getModel()));
   //CCopasiDataModel::Global->getModel()->compile();
   //this tells the gui what it needs to know.
   if (createdMetabs) ListViews::notify(ListViews::METABOLITE, ListViews::ADD, "");

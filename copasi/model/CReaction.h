@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/12 16:30:47 $
+   $Author: shoops $ 
+   $Date: 2005/09/15 18:45:25 $
    End CVS Header */
 
 /**
@@ -123,6 +123,10 @@ class CReaction : public CCopasiContainer
     CReaction(const CReaction & src,
               const CCopasiContainer * pParent = NULL);
 
+  private:
+    CReaction & operator= (const CReaction &);
+
+  public:
     /**
      *  Destructor
      */

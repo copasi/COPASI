@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:33 $
+   $Date: 2005/09/15 18:45:25 $
    End CVS Header */
 
 #include <algorithm>
@@ -234,7 +234,7 @@ CNewtonMethod::processInternal()
   C_FLOAT64 EndTime;
   if (mUseIntegration)
     {
-      std::cout << "Try integrating ..." << std::endl;
+      //std::cout << "Try integrating ..." << std::endl;
 
       unsigned C_INT32 hProcess;
       unsigned C_INT32 Step = 0;
@@ -250,7 +250,7 @@ CNewtonMethod::processInternal()
         {
           if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
 
-          std::cout << "   integrating up to " << EndTime << std::endl;
+          //std::cout << "   integrating up to " << EndTime << std::endl;
 
           //pTrajectoryProblem->setInitialState(mpProblem->getInitialState());
           //pTrajectoryProblem->getModel()->applyInitialValues();
@@ -262,7 +262,7 @@ CNewtonMethod::processInternal()
             }
           catch (CCopasiException Exception)
             {
-              std::cout << std::endl << "exception in trajectory task" << std::endl;
+              //std::cout << std::endl << "exception in trajectory task" << std::endl;
               *mpSteadyStateX = *pTrajectory->getState();
               break;
             }
@@ -299,7 +299,7 @@ CNewtonMethod::processInternal()
 
           if (stepLimitReached)
             {
-              std::cout << "Step limit reached at Endtime " << EndTime << std::endl;
+              //std::cout << "Step limit reached at Endtime " << EndTime << std::endl;
               break;
             }
         }
@@ -331,7 +331,7 @@ CNewtonMethod::processInternal()
             }
           catch (CCopasiException Exception)
             {
-              std::cout << std::endl << "exception in trajectory task" << std::endl;
+              //std::cout << std::endl << "exception in trajectory task" << std::endl;
               *mpSteadyStateX = *pTrajectory->getState();
               break;
             }
@@ -365,7 +365,7 @@ CNewtonMethod::processInternal()
             }
           if (stepLimitReached)
             {
-              std::cout << "Step limit reached at Endtime " << EndTime << std::endl;
+              //std::cout << "Step limit reached at Endtime " << EndTime << std::endl;
               break;
             }
         }
@@ -392,14 +392,14 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
   if (isSteadyState(oldMaxRate))
     return returnNewton(CNewtonMethod::found);
 
-  std::cout << "Before: " << oldMaxRate << std::endl;
+  //std::cout << "Before: " << oldMaxRate << std::endl;
 
   // Start the iterations
   C_INT info = 0;
   char T = 'T'; /* difference between fortran's and c's matrix storrage */
   C_INT one = 1;
 
-  std::cout << "processNewton called" << std::endl;
+  //std::cout << "processNewton called" << std::endl;
 
   unsigned C_INT32 hProcess;
   k = 0;
@@ -559,7 +559,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
       if (i == 32)
         {
-          std::cout << "a newton step did not improve the target function" << std::endl;
+          //std::cout << "a newton step did not improve the target function" << std::endl;
 
           //discard the step
           *mX = mXold; //memcpy(mX->array(), mXold.array(), mDimension * sizeof(C_FLOAT64));

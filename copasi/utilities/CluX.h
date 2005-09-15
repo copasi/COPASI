@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CluX.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:58 $
+   $Date: 2005/09/15 18:45:24 $
    End CVS Header */
 
 #ifndef COPASI_CluX
@@ -133,7 +133,7 @@ template <class Matrix, class Subscript>
                     jl--; // proceed with previous column
                   }
 
-                if (j == jl)
+                if (j >= jl)
                   return 1; // we are done
 
                 for (k = 0; k < M; k++) // swap columns jl and j

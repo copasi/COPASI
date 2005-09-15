@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 19:03:59 $
+   $Date: 2005/09/15 18:45:24 $
    End CVS Header */
 
 /********************************************************
@@ -78,7 +78,7 @@ TSSWidget::TSSWidget(QWidget* parent, const char* name, WFlags fl)
   tmpLayout->addItem(tmpSpacer);
 
   bExecutable = new QCheckBox(this, "bExecutable");
-  bExecutable->setText(trUtf8("Task Executable"));
+  bExecutable->setText(trUtf8("executable"));
   // this is the child widget to edit an steadystatetask
   bExecutable->setChecked(parent == NULL);
   bExecutable->setEnabled(parent != NULL);

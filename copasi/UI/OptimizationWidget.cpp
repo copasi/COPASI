@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:51 $
+   $Date: 2005/09/15 18:45:24 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -212,17 +212,43 @@ void OptimizationWidget::runOptimizationTask()
   if (!optimizationTask) return;
 
   // save the state of the widget
-  saveOptimization();
-
-  static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
-  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
-
-  optimizationTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+  if (!saveOptimization())
+    {
+      QMessageBox::warning(this, "Simulation Error",
+                           CCopasiMessage::getAllMessageText().c_str(),
+                           QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+      return;
+    }
 
   setCursor(Qt::WaitCursor);
 
   CProgressBar* tmpBar = new CProgressBar();
   optimizationTask->setCallBack(tmpBar);
+
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
+
+  if (!optimizationTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL))
+    {
+      if (CCopasiMessage::peekLastMessage().getNumber() == MCCopasiTask + 5 ||
+          CCopasiMessage::peekLastMessage().getNumber() == MCCopasiTask + 6)
+        {
+          CCopasiMessage::getLastMessage();
+        }
+      else
+        {
+          tmpBar->finish(); pdelete(tmpBar);
+          unsetCursor();
+          static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
+          static_cast<CopasiUI3Window *>(qApp->mainWidget())->setEnabled(true);
+          QMessageBox::warning(this, "Simulation Error",
+                               CCopasiMessage::getAllMessageText().c_str(),
+                               QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+          return;
+        }
+    }
 
   try
     {
@@ -230,8 +256,14 @@ void OptimizationWidget::runOptimizationTask()
     }
   catch (CCopasiException Exception)
     {
-      std::cout << std::endl << "exception in optimization task" << std::endl;
-      //TODO: message box
+      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+        {
+          tmpBar->finish();
+          QMessageBox::warning(this, "Simulation Error",
+                               CCopasiMessage::getAllMessageText().c_str(),
+                               QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+        }
     }
 
   //should be renamed?
@@ -360,19 +392,15 @@ bool OptimizationWidget::loadOptimization()
 
 bool OptimizationWidget::slotAddItem()
 {
-  if (expressionText->text().length() > 0)
-    {
-      OptimizationItemWidget * tmp;
-      tmp = new OptimizationItemWidget(scrollview);
-      scrollview->addWidget(tmp);
-      int totalRows = scrollview->numRows();
-      scrollview->ensureCellVisible(totalRows - 1, 0);
-      tmp->ObjectName->setFocus();
-      return true;
-    }
+  OptimizationItemWidget * tmp;
+  tmp = new OptimizationItemWidget(scrollview);
+  scrollview->addWidget(tmp);
 
-  else
-    return false;
+  int totalRows = scrollview->numRows();
+  scrollview->ensureCellVisible(totalRows - 1, 0);
+  tmp->ObjectName->setFocus();
+
+  return true;
 }
 
 bool OptimizationWidget::saveOptimization()
@@ -422,7 +450,7 @@ bool OptimizationWidget::saveOptimization()
   //CCopasiDataModel::Global->getModel()->compileIfNecessary();
   // optimizationProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
-  saveExpression(); // save objective function
+  bool success = saveExpression(); // save objective function
 
   if (timeCheck->isChecked())
     {
@@ -445,7 +473,7 @@ bool OptimizationWidget::saveOptimization()
       optimizationTask->setScheduled(false);
     }
 
-  return true;
+  return success;
 }
 
 void OptimizationWidget::ReportDefinitionClicked()
@@ -545,7 +573,7 @@ void OptimizationWidget::languageChange()
   methodLabel->setText(tr("Method\n\n"));
   typeLabel->setText(tr("Type \n\n"));
   nameLabel->setText(tr("<h2>Optimization</h2>"));
-  taskExecCheck->setText(tr("Task Executable"));
+  taskExecCheck->setText(tr("executable"));
   runButton->setText(tr("Run"));
   cancelButton->setText(tr("Revert"));
   reportButton->setText(tr("Report"));
@@ -649,6 +677,12 @@ bool OptimizationWidget::saveExpression()
               it++;
             }
 
+          if (it == parseList.end())
+            {
+              CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
+              return false;
+            }
+
           InfixCN += ">";
         }
     }
@@ -661,7 +695,11 @@ bool OptimizationWidget::saveExpression()
   COptProblem *optimizationProblem = dynamic_cast<COptProblem *>(optimizationTask->getProblem());
   if (!optimizationProblem) return false;
 
-  optimizationProblem->setObjectiveFunction(InfixCN);
+  if (!optimizationProblem->setObjectiveFunction(InfixCN))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
+      return false;
+    }
 
   // :TODO: need to handle errors.
   return true;

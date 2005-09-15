@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CProgressBar.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/26 14:29:21 $
+   $Date: 2005/09/15 18:45:24 $
    End CVS Header */
 
 #if !defined HANDLER_PROGRESS_BAR
@@ -97,6 +97,9 @@ class CProgressBar : public CProcessReport, public CQProgressDialog
      * @return sucess
      */
     virtual bool setName(const std::string & name);
+
+  protected:
+    virtual void closeEvent(QCloseEvent *e);
 
   private:
     CVector< CQProgressItem * > mProgressItemList;

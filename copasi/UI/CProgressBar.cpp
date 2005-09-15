@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/19 21:04:18 $
+   $Date: 2005/09/15 18:45:24 $
    End CVS Header */
 
 #include <qprogressdialog.h>
@@ -24,13 +24,24 @@ extern QApplication *pApp;
 CProgressBar::CProgressBar(QWidget* parent, const char* name,
                            bool modal, WFlags fl):
     CProcessReport(),
-    CQProgressDialog(parent, name, modal, fl),
+    CQProgressDialog(parent, name, modal, fl | WStyle_Minimize),
     mProgressItemList(1),
     mNextEventProcessing(QTime::currentTime())
-{mProgressItemList[0] = NULL;}
+{
+  mProgressItemList[0] = NULL;
+
+  // Whenever a progress bar is active we do not want any user
+  // intervention.
+  if (qApp && qApp->mainWidget())
+    qApp->mainWidget()->setEnabled(false);
+}
 
 CProgressBar::~CProgressBar()
 {
+  // We need to activate the user interface again.
+  if (qApp->mainWidget())
+    qApp->mainWidget()->setEnabled(true);
+
   unsigned C_INT32 i, imax = mProgressItemList.size();
 
   for (i = 0; i < imax; i++)
@@ -134,3 +145,6 @@ bool CProgressBar::setName(const std::string & name)
   setCaption(FROM_UTF8(name));
   return (CProcessReport::setName(name) && mProceed);
 }
+
+void CProgressBar::closeEvent(QCloseEvent *e)
+{e->ignore();}

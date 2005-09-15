@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:34 $
+   $Date: 2005/09/15 18:45:25 $
    End CVS Header */
 
 /**
@@ -114,11 +114,6 @@ class CSteadyStateTask : public CCopasiTask
      * @return bool success
      */
     virtual bool process(const bool & useInitialValues);
-
-    /**
-     * Process the task. This is called by the scan task.
-     */
-    virtual bool processForScan(bool useInitialConditions, bool doOutput);
 
     /**
      * This is the output method for any object. The default implementation

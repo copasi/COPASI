@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/14 17:43:06 $
+   $Date: 2005/09/15 18:45:25 $
    End CVS Header */
 
 #ifndef CREACTIONINTERFACE_H
@@ -182,7 +182,7 @@ class CReactionInterface
 
     void initFromReaction(const CModel & model, const std::string & key);
 
-    bool writeBackToReaction(CModel & model) const;
+    bool writeBackToReaction(CReaction * rea, CModel & model) const;
 
     bool createMetabolites(CModel & model) const;
 

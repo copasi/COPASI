@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:33 $
+   $Date: 2005/09/15 18:45:26 $
    End CVS Header */
 
 /**
@@ -67,20 +67,16 @@ void CScanTask::cleanup()
 bool CScanTask::initialize(const OutputFlag & of,
                            std::ostream * pOstream)
 {
-  CScanProblem* pProblem =
-    dynamic_cast<CScanProblem *>(mpProblem);
-
-  assert(pProblem);
+  assert(mpProblem && mpMethod);
 
   bool success = true;
+  if (!CCopasiTask::initialize(of, pOstream)) success = false;
 
-  if (!pProblem->getModel()->compileIfNecessary()) success = false;
+  //CScanProblem* pProblem =
+  //  dynamic_cast<CScanProblem *>(mpProblem);
+  //assert(pProblem);
 
-  //  pdelete(mpOutEnd);
-  //mpOut = & out;
-  // added by Liang for Scan Report
-  //mReport.open(mpOut);
-  //mReport.compile();
+  //if (!mpProblem->getModel()->compileIfNecessary()) success = false;
 
   // for Steadystate Report
   //  if (pProblem->processSteadyState())
@@ -89,9 +85,6 @@ bool CScanTask::initialize(const OutputFlag & of,
   // for Trajectory Report
   //  if (pProblem->processTrajectory())
   //    pProblem->getTrajectoryTask()->initialize(mpOut);
-
-  //initialize reporting
-  if (!CCopasiTask::initialize(of, pOstream)) success = false;
 
   return success;
 }
@@ -114,6 +107,7 @@ bool CScanTask::process(const bool & /* useInitialValues */)
 
   CScanProblem * pProblem = dynamic_cast<CScanProblem *>(mpProblem);
   if (!pProblem) fatalError();
+
   CScanMethod * pMethod = dynamic_cast<CScanMethod *>(mpMethod);
   if (!pMethod) fatalError();
 
@@ -147,15 +141,18 @@ bool CScanTask::process(const bool & /* useInitialValues */)
                           &mProgress,
                           &totalSteps);
     }
+
   //init output handler (plotting)
-  if (mpOutputHandler) mpOutputHandler->init();
+  //if (mpOutputHandler) mpOutputHandler->init();
+  initOutput();
 
   //calling the scanner, output is done in the callback
   if (!pMethod->scan()) success = false;
 
   //finishing progress bar and output
   if (mpCallBack) mpCallBack->finish();
-  if (mpOutputHandler) mpOutputHandler->finish();
+  //if (mpOutputHandler) mpOutputHandler->finish();
+  finishOutput();
 
   return success;
 }
@@ -172,7 +169,8 @@ bool CScanTask::processCallback()
   mpSubtask->process(!mAdjustInitialConditions);
 
   //do output
-  if (mpOutputHandler && (!mOutputInSubtask)) mpOutputHandler->doOutput();
+  //if (mpOutputHandler && (!mOutputInSubtask)) mpOutputHandler->doOutput();
+  if (!mOutputInSubtask) doOutput();
 
   //do progress bar
   ++mProgress;
@@ -184,7 +182,8 @@ bool CScanTask::processCallback()
 bool CScanTask::outputSeparatorCallback(bool isLast)
 {
   if ((!isLast) || mOutputInSubtask)
-    if (mpOutputHandler) return mpOutputHandler->doSeparator();
+    return separatorOutput();
+  //if (mpOutputHandler) return mpOutputHandler->doSeparator();
   return true;
 }
 
@@ -229,17 +228,21 @@ bool CScanTask::initSubtask()
   else
     {mpSubtask=NULL;}*/
 
+  mOutputInSubtask = * pProblem->getValue("Output in subtask").pBOOL;
+  //if (type != CCopasiTask::timeCourse)
+  //  mOutputInSubtask = false;
+
+  mAdjustInitialConditions = * pProblem->getValue("Adjust initial conditions").pBOOL;
+
   if (!mpSubtask) return false;
 
   mpSubtask->getProblem()->setModel(CCopasiDataModel::Global->getModel());
   mpSubtask->setCallBack(NULL);
-  mpSubtask->initialize(NO_OUTPUT, NULL);
 
-  mOutputInSubtask = * pProblem->getValue("Output in subtask").pBOOL;
-  if (type != CCopasiTask::timeCourse)
-    mOutputInSubtask = false;
-
-  mAdjustInitialConditions = * pProblem->getValue("Adjust initial conditions").pBOOL;
+  if (mOutputInSubtask)
+    mpSubtask->initialize(OUTPUT, NULL);
+  else
+    mpSubtask->initialize(NO_OUTPUT, NULL);
 
   return true;
 }

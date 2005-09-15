@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:58 $
+   $Date: 2005/09/15 18:45:24 $
    End CVS Header */
 
 /**
@@ -152,22 +152,50 @@ bool CCopasiTask::setCallBack(CProcessReport * pCallBack)
 bool CCopasiTask::initialize(const OutputFlag & of,
                              std::ostream * pOstream)
 {
-  if (!mpProblem) return false;
-  if (!mpProblem->getModel()) return false;
-  if (!mpMethod) return false;
+  bool success = true;
 
-  if (!mpProblem->getModel()->compileIfNecessary()) return false;
+  if (!mpProblem)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 1, getObjectName().c_str());
+      return false;
+    }
+  if (!mpProblem->getModel())
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 2, getObjectName().c_str());
+      return false;
+    }
+  if (!mpMethod)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 3, getObjectName().c_str());
+      return false;
+    }
+
+  if (!mpProblem->getModel()->compileIfNecessary())
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCCopasiTask + 4, mpProblem->getModel()->getObjectName().c_str());
+      return false;
+    }
 
   mDoOutput = of;
   if (mDoOutput == NO_OUTPUT) return true;
 
-  if (!mReport.open(pOstream)) return false;
-  if (!mReport.compile()) return false;
+  if (!mReport.open(pOstream))
+    {
+      // Warning
+      CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 5, mReport.getObjectName().c_str());
+      success = false;
+    }
+  if (!mReport.compile())
+    {
+      // Warning
+      CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, mReport.getObjectName().c_str());
+      success = false;
+    }
 
-  return true;
+  return success;
 }
 
-bool CCopasiTask::process(const bool & useInitialValues)
+bool CCopasiTask::process(const bool &)
 {return false;}
 
 //bool CCopasiTask::processForScan(bool C_UNUSED(useInitialConditions), bool C_UNUSED(doOutput)) {return false;}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/20 13:18:34 $
+   $Date: 2005/09/15 18:45:24 $
    End CVS Header */
 
 /****************************************************************************
@@ -141,7 +141,7 @@ class CopasiTableWidget : public CopasiWidget
      * @param unsigned C_INT32 row
      * @param unsigned C_INT32 col
      */
-    virtual void valueChanged(unsigned C_INT32 row, unsigned C_INT32 col)
+    virtual void valueChanged(unsigned C_INT32 /*row*/, unsigned C_INT32 /*col*/)
     {return;}
 
     /**

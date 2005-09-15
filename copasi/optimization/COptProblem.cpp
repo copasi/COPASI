@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:18 $
+   $Date: 2005/09/15 18:45:26 $
    End CVS Header */
 
 /**
@@ -182,6 +182,12 @@ bool COptProblem::initialize()
   std::vector< COptItem * >::iterator it = mOptItemList.begin();
   std::vector< COptItem * >::iterator end = mOptItemList.end();
 
+  if (it == end)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 6);
+      return false;
+    }
+
   for (i = 0; it != end; ++it, i++)
     {
       if (!(*it)->compile(ContainerList)) return false;
@@ -192,7 +198,13 @@ bool COptProblem::initialize()
   createObjectiveFunction();
   if (!mpFunction) return false;
 
-  return mpFunction->compile(ContainerList);
+  if (!mpFunction->compile(ContainerList))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
+      return false;
+    }
+
+  return true;
 }
 
 bool COptProblem::restore()
@@ -236,6 +248,7 @@ bool COptProblem::checkFunctionalConstraints()
 bool COptProblem::calculate()
 {
   mCounter += 1;
+  bool success = false;
 
   try
     {
@@ -243,14 +256,14 @@ bool COptProblem::calculate()
         {
           //((CSteadyStateProblem *) mpSteadyState->getProblem())->
           //setInitialState(mpSteadyState->getProblem()->getModel()->getInitialState());
-          mpSteadyState->process(CCopasiTask::NO_OUTPUT);
+          success = mpSteadyState->process(true);
         }
 
       if (mpTrajectory != NULL)
         {
           //((CTrajectoryProblem *) mpTrajectory->getProblem())->
           //setInitialState(mpTrajectory->getProblem()->getModel()->getInitialState());
-          mpTrajectory->process(CCopasiTask::NO_OUTPUT);
+          success = mpTrajectory->process(true);
         }
 
       mCalculateValue = mpFunction->calcValue();
@@ -258,8 +271,10 @@ bool COptProblem::calculate()
 
   catch (...)
     {
-      mCalculateValue = DBL_MAX;
+      success = false;
     }
+
+  if (!success) mCalculateValue = DBL_MAX;
 
   if (mpCallBack) return mpCallBack->progress(mhCounter);
 

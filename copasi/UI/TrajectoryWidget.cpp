@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.114 $
+   $Revision: 1.115 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:51 $
+   $Date: 2005/09/15 18:45:24 $
    End CVS Header */
 
 /********************************************************
@@ -95,7 +95,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   tmpLayout->addItem(tmpSpacer);
 
   bExecutable = new QCheckBox(this, "bExecutable");
-  bExecutable->setText(trUtf8("Task Executable"));
+  bExecutable->setText(trUtf8("executable"));
   // this is the child widget to edit an steadystatetask
   bExecutable->setChecked(parent == NULL);
   bExecutable->setEnabled(parent != NULL);

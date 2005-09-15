@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/Tree.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/02 09:42:56 $
+   $Author: shoops $ 
+   $Date: 2005/09/15 18:45:24 $
    End CVS Header */
 
 /****************************************************************************
@@ -41,6 +41,10 @@ class IndexedNode
 
     IndexedNode(const IndexedNode & src);
 
+  private:
+    IndexedNode & operator=(const IndexedNode&);
+
+  public:
     ~IndexedNode(); // destructor
 
     const std::vector<IndexedNode*>& children() const;

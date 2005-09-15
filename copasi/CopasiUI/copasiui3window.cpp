@@ -1,11 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.154 $
+   $Revision: 1.155 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/08/29 15:28:10 $
+   $Author: shoops $ 
+   $Date: 2005/09/15 18:45:24 $
    End CVS Header */
 
+#include <qapplication.h>
 #include <qlayout.h>
 #include <qtoolbutton.h>
 #include <qwhatsthis.h>
@@ -77,7 +78,6 @@ CopasiUI3Window::CopasiUI3Window():
   setIcon(QPixmap((const char **) Copasi16_Alpha_xpm));
 
   // Set the window caption/title
-  closeFlag = 0;
   newFlag = 0;
   FixedTitle = "COPASI (";
   FixedTitle += FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion());
@@ -90,6 +90,10 @@ CopasiUI3Window::CopasiUI3Window():
   bobject_browser_open = false;
   mpFileMenu->setItemEnabled(nexport_menu_SBML, false);
   mpFileMenu->setItemEnabled(nexport_menu_MathModel, false);
+
+  //disable menu option
+  mpFileMenu->setItemVisible(nexport_menu_MathModel, false);
+
   mpFileMenu->setItemEnabled(nsave_menu_id, false);
   mpFileMenu->setItemEnabled(nsaveas_menu_id, false);
   msave_button->setEnabled(false);
@@ -493,51 +497,52 @@ void CopasiUI3Window::slotQuit()
                                        "Do you want to save the changes before exiting?",
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
-        case 0:                                                                                     // Save clicked or Alt+S pressed or Enter pressed.
+        case 0:  // Save clicked or Alt+S pressed or Enter pressed.
           slotFileSave();
           break;
 
-        case 1:                                                                                     // Discard clicked or Alt+D pressed
+        case 1:  // Discard clicked or Alt+D pressed
           break;
 
-        case 2:                                                                                     // Cancel clicked or Escape pressed
+        case 2:  // Cancel clicked or Escape pressed
           return;
           break;
         }
     }
 
-  closeFlag = 1;
-
+  CleanUp();
   qApp->quit();
 }
 
-void CopasiUI3Window::closeEvent(QCloseEvent* C_UNUSED(ce))
+void CopasiUI3Window::closeEvent(QCloseEvent* ce)
 {
-  if (closeFlag == 0)
+  ListViews::commit();
+
+  if (dataModel && CCopasiDataModel::Global->isChanged())
     {
-      if (dataModel && CCopasiDataModel::Global->isChanged())
+      switch (QMessageBox::information(this, "COPASI",
+                                       "The document contains unsaved changes\n"
+                                       "Do you want to save the changes before exiting?",
+                                       "&Save", "&Discard", "Cancel", 0, 2))
         {
-          switch (QMessageBox::information(this, "COPASI",
-                                           "The document contains unsaved changes\n"
-                                           "Do you want to save the changes before exiting?",
-                                           "&Save", "&Discard", "Cancel", 0, 2))
-            {
-            case 0:                                                                                     // Save clicked or Alt+S pressed or Enter pressed.
-              slotFileSave();
-              break;
+        case 0:  // Save clicked or Alt+S pressed or Enter pressed.
+          slotFileSave();
+          break;
 
-            case 1:                                                                                     // Discard clicked or Alt+D pressed
-              break;
+        case 1:  // Discard clicked or Alt+D pressed
+          break;
 
-            case 2:                                                                                     // Cancel clicked or Escape pressed
-              return;
-              break;
-            }
+        case 2:  // Cancel clicked or Escape pressed
+          ce->ignore();
+          return;
+          break;
         }
-      CleanUp();
-      qApp->quit();
     }
+
+  CleanUp();
+  ce->accept();
 }
+
 // Cleanup all the temp .cps files created at runtime.
 void CopasiUI3Window::CleanUp()
 {

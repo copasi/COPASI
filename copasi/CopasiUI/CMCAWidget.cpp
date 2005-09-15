@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:50 $
+   $Date: 2005/09/15 18:45:24 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -84,7 +84,7 @@ CMCAWidget::CMCAWidget(QWidget* parent, const char* name, WFlags fl)
   tmpLayout->addItem(tmpSpacer);
 
   bExecutable = new QCheckBox(this, "bExecutable");
-  bExecutable->setText(trUtf8("Task Executable"));
+  bExecutable->setText(trUtf8("executable"));
   // this is the child widget to edit an steadystatetask
   bExecutable->setChecked(parent == NULL);
   bExecutable->setEnabled(parent != NULL);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:15:39 $
+   $Date: 2005/09/15 18:45:25 $
    End CVS Header */
 
 #include <string>
@@ -109,15 +109,16 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
     }
 }
 
-bool CReactionInterface::writeBackToReaction(CModel & model) const
+bool CReactionInterface::writeBackToReaction(CReaction * rea, CModel & model) const
   {
     if (!isValid()) return false; // do nothing
     if (!(*mpParameters == mpFunction->getVariables())) return false; // do nothing
 
     bool success = true;
 
-    CReaction *rea;
-    rea = dynamic_cast< CReaction *>(GlobalKeys.get(mReactionReferenceKey));
+    //CReaction *rea;
+    if (rea == NULL)
+      rea = dynamic_cast< CReaction *>(GlobalKeys.get(mReactionReferenceKey));
 
     if (!rea->setObjectName(mReactionName))
       success = false;

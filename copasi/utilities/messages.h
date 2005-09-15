@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/12 15:15:28 $
+   $Author: shoops $ 
+   $Date: 2005/09/15 18:45:24 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -102,6 +102,8 @@ const MESSAGES Messages[] =
     {MCOptimization + 2, "Optimization (2): Lower Bound '%s' not found."},
     {MCOptimization + 3, "Optimization (3): Upper Bound '%s' not found."},
     {MCOptimization + 4, "Optimization (4): Invalid Relationship: '%s'."},
+    {MCOptimization + 5, "Optimization (5): Invalid Objective Functions."},
+    {MCOptimization + 6, "Optimization (6): No adjustable Parameters specified."},
 
     // SBML
     // {MCSBML + 1, "SBML (1): Available"},
@@ -144,6 +146,13 @@ const MESSAGES Messages[] =
     {MCFunction + 3, "Function (3): Compile error after position: '%d'."},
 
     {MCEvaluationNodeObject + 1, "CEvaluationNodeObject (1): Only references to compartment, species, parameters and reaction are allowed in expression."},
+
+    {MCCopasiTask + 1, "CCopasiTask (1): No problem defined for Task '%s'."},
+    {MCCopasiTask + 2, "CCopasiTask (2): No model associated for Task '%s'."},
+    {MCCopasiTask + 3, "CCopasiTask (3): No method defined for Task '%s'."},
+    {MCCopasiTask + 4, "CCopasiTask (4): Error compiling Model '%s'."},
+    {MCCopasiTask + 5, "CCopasiTask (5): No target defined for Report '%s'."},
+    {MCCopasiTask + 6, "CCopasiTask (6): Problems compiling Report '%s'."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
