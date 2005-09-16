@@ -64,32 +64,32 @@ This can be used to specify the location of the configuration file for copasi. N
 <varlistentry><term>-c</term><term>--copasidir</term>
 <listitem>
 <para>This specifies the directory where Copasi  has been installed. It is needed to find e.g. help files. On Windows and Mac OS X this is set automatically. On Linux it has to be specified if you want to use certain features. The GUI version of Copasi will issue a warning on startup if this has not been set. The commandline version does not need this directory to be specified and therefore ignores this option.</para>
-</listItem>
+</listitem>
 </varlistentry>
 
 <varlistentry><term>-e</term><term>--exportSBML</term>
 <listitem>
 <para>With this option you can specify a name for the SBML file copasi should export. This is useful if you want to export some Copasi files to SBML in a batch job. This only makes sense for the commandline version and it will be ignored by the GUI version.</para>
-</listItem>
+</listitem>
 </varlistentry>
 
 <varlistentry><term>-i</term><term>--importSBML</term>
 <listitem>
 <para>This options lets you specify an SBML file that copasi shall import.</para>
-</listItem>
+</listitem>
 </varlistentry>
 
 <varlistentry><term>-s</term><term>--save</term>
 <listitem>
 <para>This option is used to specify the name file where Copasi should store a model. This is useful if you intend to convert some SBML files to Copasi files in a batch job. This also makes sense only for the commandline version and will be ignored by the GUI version.</para>
-</listItem>
+</listitem>
 </varlistentry>
 <varlistentry><term>-t</term><term>--tmp</term>
 <listitem>
 <para>
 This option can be used to specify a temporary directory where copasi will autosave some data periodically. Normally Copasi uses the systems temporary directory (e.g. /tmp/ under Linux).
 </para>
-</listItem>
+</listitem>
 </varlistentry>
 </variablelist>
 
@@ -1798,15 +1798,14 @@ We assume you have a model that consists of several reactions and two of those r
  </caption> 
 </mediaobject>
 </screenshot>
-<screenshot>
 </para>
 
 <para>
-If you go to the optimization dialog which you can find in the tree under <guilabel>Multiple Task</quilabel>-><guilabel>Optimization</guilabel>, you will get a screen similar to the one above. At the top of the dialog, you can find an edit line called Expression where you have to input your objective function, that is the expression that Copasi will try to minimize during the optimization. In our case, we want to find the value of k where te ratio of R1 and R2 is maximal. This can be achieved in two ways, either we reverse the ratio and minimize the ration of R2/R1, or we add a "-" sign to or ratio R1/R2. (For the sake of simplicity, I will assume here that the fluxes R1 and R2 will always be positive.) For this example I will use the second posibility and therefore the objective function would be -(R1/R2). Now you can't just enter this expression into the line edit field since Copasi does not associate the names R1 and R2 with the fluxes through your reactions. In order to build this expression, you have to start typing "-(" into the line edit field. Now, you have to press the button to the right of the line edit field which opens the object browser. In this object browser, you select the flux (particle or concentration) which belongs to R1 and press the <guibutton>OK</guibutton> button. Now you will get a string that corresponds to this flux object right after the part of the expression you already typed. You can now go on by typing "/" followed by the selection of the flux for R2. You end the expression by typing ")". Please be aware that you allowed to edit the expression, but only those parts of the expression that do not belong to object representation strings. Everything that has been inserted via selection from the object browser may not be modified. You may however delete complete identifier expressions.
+If you go to the optimization dialog which you can find in the tree under <guilabel>Multiple Task</guilabel>-><guilabel>Optimization</guilabel>, you will get a screen similar to the one above. At the top of the dialog, you can find an edit line called Expression where you have to input your objective function, that is the expression that Copasi will try to minimize during the optimization. In our case, we want to find the value of k where te ratio of R1 and R2 is maximal. This can be achieved in two ways, either we reverse the ratio and minimize the ration of R2/R1, or we add a "-" sign to or ratio R1/R2. (For the sake of simplicity, I will assume here that the fluxes R1 and R2 will always be positive.) For this example I will use the second posibility and therefore the objective function would be -(R1/R2). Now you can't just enter this expression into the line edit field since Copasi does not associate the names R1 and R2 with the fluxes through your reactions. In order to build this expression, you have to start typing "-(" into the line edit field. Now, you have to press the button to the right of the line edit field which opens the object browser. In this object browser, you select the flux (particle or concentration) which belongs to R1 and press the <guibutton>OK</guibutton> button. Now you will get a string that corresponds to this flux object right after the part of the expression you already typed. You can now go on by typing "/" followed by the selection of the flux for R2. You end the expression by typing ")". Please be aware that you allowed to edit the expression, but only those parts of the expression that do not belong to object representation strings. Everything that has been inserted via selection from the object browser may not be modified. You may however delete complete identifier expressions.
 This interface is work in progress and we hope to have a better solution in upcoming releaes.
 </para>
 <para>
-You can run the optimization task with several different methods which can be selected via the drop down list below the input field for the objective function. Each of those methods has a number of parameters which are documented in the <xref linkend="methods" /> chapter. 
+You can run the optimization task with several different methods which can be selected via the drop down list below the input field for the objective function. Each of those methods has a number of parameters which are documented in the methods chapter. 
 </para>
 <para>
 The optimization task can also be run on two subtasks, namely the "Time Course" and the "Steadystate" subtask. Which one is used for the optimization run can be selected via the correspondingly named checkboxes right of the method selection widget. So for our example we would choose the time course subtask.
@@ -1816,6 +1815,7 @@ The only thing we have not done yet is to tell Copasi which parameter(s) it shou
 </para>
 
 <para>
+<screenshot>
 <screeninfo>Produced with Copasi Build 15 on Linux on 09/16/2005</screeninfo>
 <mediaobject>
  <imageobject>
