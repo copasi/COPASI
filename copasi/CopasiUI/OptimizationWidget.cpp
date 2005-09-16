@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/15 18:45:24 $
+   $Date: 2005/09/16 17:46:59 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -161,14 +161,9 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   mObject = NULL;
 
-  methodCombo->insertItem("Evolutionary Program");
-  methodCombo->insertItem("Genetic Algorithm SR");
-  methodCombo->insertItem("Genetic Algorithm");
-  //  methodCombo->insertItem("Hybrid GA/SA");
-  //  methodCombo->insertItem("Random Search (PVM)");
-  methodCombo->insertItem("Random Search");
-  //  methodCombo->insertItem("Simulated Annealing");
-  methodCombo->insertItem("Steepest Descent");
+  unsigned C_INT32 i;
+  for (i = 0; COptTask::validMethods[i] != CCopasiMethod::unset; i++)
+    methodCombo->insertItem(FROM_UTF8(CCopasiMethod::SubTypeName[COptTask::validMethods[i]]));
 
   // signals and slots connections
 
