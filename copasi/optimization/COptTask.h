@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 17:46:24 $
+   $Date: 2005/09/16 18:58:37 $
    End CVS Header */
 
 /**
@@ -37,8 +37,11 @@ class COptTask : public CCopasiTask
 
     /**
      * default constructor
+     * @param const CCopasiTask::Type & type (default: optimization)
+     * @param const CCopasiContainer * pParent (default: RootContainer)
      */
-    COptTask(const CCopasiContainer * pParent = & RootContainer);
+    COptTask(const CCopasiTask::Type & type = CCopasiTask::optimization,
+             const CCopasiContainer * pParent = & RootContainer);
 
     /**
      * Copy constructor

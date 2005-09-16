@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 17:46:24 $
+   $Date: 2005/09/16 18:58:37 $
    End CVS Header */
 
 /**
@@ -40,10 +40,11 @@ unsigned C_INT32 COptTask::validMethods[] =
     CCopasiMethod::unset
   };
 
-COptTask::COptTask(const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::optimization, pParent)
+COptTask::COptTask(const CCopasiTask::Type & type,
+                   const CCopasiContainer * pParent):
+    CCopasiTask(type, pParent)
 {
-  mpProblem = new COptProblem(this);
+  mpProblem = new COptProblem(type, this);
   mpMethod = COptMethod::createMethod();
   this->add(mpMethod, true);
   //  mpMethod->setObjectParent(this);

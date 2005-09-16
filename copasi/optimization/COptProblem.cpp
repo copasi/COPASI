@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/15 18:45:26 $
+   $Date: 2005/09/16 18:58:37 $
    End CVS Header */
 
 /**
@@ -40,8 +40,9 @@
 #include "utilities/CProcessReport.h"
 
 //  Default constructor
-COptProblem::COptProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::optimization, pParent),
+COptProblem::COptProblem(const CCopasiTask::Type & type,
+                         const CCopasiContainer * pParent):
+    CCopasiProblem(type, pParent),
     mpSteadyState(NULL),
     mpTrajectory(NULL),
     mpFunction(NULL),

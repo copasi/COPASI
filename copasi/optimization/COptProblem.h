@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:18 $
+   $Date: 2005/09/16 18:58:37 $
    End CVS Header */
 
 /**
@@ -42,7 +42,7 @@ enum ProblemType
 class COptProblem : public CCopasiProblem
   {
     //data member
-  private:
+  protected:
     /**
      * Pointer to CSteadyStateTask.  To be used in calculate() to select between
      * trajectory and steady state method
@@ -105,9 +105,11 @@ class COptProblem : public CCopasiProblem
 
     /**
      * Default constructor
+     * @param const CCopasiTask::Type & type (default: optimization)
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    COptProblem(const CCopasiContainer * pParent = NULL);
+    COptProblem(const CCopasiTask::Type & type = CCopasiTask::optimization,
+                const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor.
