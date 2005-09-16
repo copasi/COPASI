@@ -45,6 +45,22 @@ Shows the usage of the program and the allowed commandline options.
 </listitem>
 </varlistentry>
 
+<varlistentry><term>--home</term>
+<listitem>
+<para>
+This can be used to tell copasi where your home directory is located. Normally you don't have to use this. 
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>--rc</term>
+<listitem>
+<para>
+This can be used to specify the location of the configuration file for copasi. Normally this is called .copasirc and is located in the users home directory. But if you want Copasi to use a different one, you can specify it with this switch.   
+</para>
+</listitem>
+</varlistentry>
+
 <varlistentry><term>-c</term><term>--copasidir</term>
 <listitem>
 <para>This specifies the directory where Copasi  has been installed. It is needed to find e.g. help files. On Windows and Mac OS X this is set automatically. On Linux it has to be specified if you want to use certain features. The GUI version of Copasi will issue a warning on startup if this has not been set. The commandline version does not need this directory to be specified and therefore ignores this option.</para>
@@ -66,6 +82,13 @@ Shows the usage of the program and the allowed commandline options.
 <varlistentry><term>-s</term><term>--save</term>
 <listitem>
 <para>This option is used to specify the name file where Copasi should store a model. This is useful if you intend to convert some SBML files to Copasi files in a batch job. This also makes sense only for the commandline version and will be ignored by the GUI version.</para>
+</listItem>
+</varlistentry>
+<varlistentry><term>-t</term><term>--tmp</term>
+<listitem>
+<para>
+This option can be used to specify a temporary directory where copasi will autosave some data periodically. Normally Copasi uses the systems temporary directory (e.g. /tmp/ under Linux).
+</para>
 </listItem>
 </varlistentry>
 </variablelist>
@@ -1745,8 +1768,78 @@ What we have left out so far are the two checkboxes at the bottom of the <guilab
 <para>
 The second checkbox is labeled <guilabel>Output time series</guilabel> is it is checked, Copasi will plot the complete time series result each time a time series task runs. So if during your scan, 10 time series are calculated, all ten are overlayed in the same window. If the checkbox is unchecked, Copasi will only plot the end result,i.e. the concentrations after the last step, of each time series. Since this checkbox only makes sense for the time series task, it will be disabled if another task is chosen for the scan.
 </para>
+</sect1>
+
+<sect1 id="optimization" xreflabel="Running an Optimization Task">
+<title>Running an Optimization Task</title>
+
+<para>
+With the optimization task, you are able to find the minimal value of a given objective function by scanning one or more parameters over a given range. This probably sounds rather cryptic, therefore, lets try to illustrate this with a simple example.
+</para>
+<para>
+We assume you have a model that consists of several reactions and two of those reactions fluxes (R1, R2) depend on a certain parameter k (either directly or indirectly). Now you are interested in finding the optimal value of k so that the ratio of R1/R2 will be maximal. So lets see how you would do this in Copasi.
+</para>
+
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 15 on Linux on 09/16/2005</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Optimization_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Optimization_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>linux screenshot that shows Copasi optimizatition dialog</phrase>
+ </textobject>
+ <caption>
+  <para>Optimization Dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+<screenshot>
+</para>
+
+<para>
+If you go to the optimization dialog which you can find in the tree under <guilabel>Multiple Task</quilabel>-><guilabel>Optimization</guilabel>, you will get a screen similar to the one above. At the top of the dialog, you can find an edit line called Expression where you have to input your objective function, that is the expression that Copasi will try to minimize during the optimization. In our case, we want to find the value of k where te ratio of R1 and R2 is maximal. This can be achieved in two ways, either we reverse the ratio and minimize the ration of R2/R1, or we add a "-" sign to or ratio R1/R2. (For the sake of simplicity, I will assume here that the fluxes R1 and R2 will always be positive.) For this example I will use the second posibility and therefore the objective function would be -(R1/R2). Now you can't just enter this expression into the line edit field since Copasi does not associate the names R1 and R2 with the fluxes through your reactions. In order to build this expression, you have to start typing "-(" into the line edit field. Now, you have to press the button to the right of the line edit field which opens the object browser. In this object browser, you select the flux (particle or concentration) which belongs to R1 and press the <guibutton>OK</guibutton> button. Now you will get a string that corresponds to this flux object right after the part of the expression you already typed. You can now go on by typing "/" followed by the selection of the flux for R2. You end the expression by typing ")". Please be aware that you allowed to edit the expression, but only those parts of the expression that do not belong to object representation strings. Everything that has been inserted via selection from the object browser may not be modified. You may however delete complete identifier expressions.
+This interface is work in progress and we hope to have a better solution in upcoming releaes.
+</para>
+<para>
+You can run the optimization task with several different methods which can be selected via the drop down list below the input field for the objective function. Each of those methods has a number of parameters which are documented in the <xref linkend="methods" /> chapter. 
+</para>
+<para>
+The optimization task can also be run on two subtasks, namely the "Time Course" and the "Steadystate" subtask. Which one is used for the optimization run can be selected via the correspondingly named checkboxes right of the method selection widget. So for our example we would choose the time course subtask.
+</para>
+<para>
+The only thing we have not done yet is to tell Copasi which parameter(s) it should scan in order to minimize the objective function. This can be done by first clicking on the <guibutton>Add</guibutton> button below the subtask selection boxes. Once you have clicked on this button a new widget will appear in the box at the bottom. In th middle of this widget, there is another line edit field where can can specify which parameter is to be scanned. The selection is again done via clicking on the button to the right of the edit field and selecting the correct parameter from the object browser. To the left and the right of the parameter input, you can specify the upper and lower bounds for the parameter during the scan. Per default, the checkboxes for -Infinity and +Infinity are selected as the range for the scan. Since a computer can not handle infinetisimaly small or large numbers, the scan will effectifely proceed from the lowest possible the the largest possible double precision number. If you want to specify your own range, you have to first deselect the +Inf or -Inf checkbox and then you can set your own bounds. If you want to delete a parameter from the scan list, you just click on the corresponding button which you find at the left side of each parameter row and if you want to scan more then one parameter, you just add more by clicking on the <guibutton>Add</guibutton> again and add as many parameters as you like. Or more likely as many as your computer can handle since it should be clear that new each parameter will prolong the calculation depending on the value range and the method parameters used. 
+</para>
+
+<para>
+<screeninfo>Produced with Copasi Build 15 on Linux on 09/16/2005</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Optimization_02.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Optimization_02.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>linux screenshot that shows the progress dialog drung an optimization task run </phrase>
+ </textobject>
+ <caption>
+  <para>Optimization Progress Dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+
+<para>
+Once you have set up all the parameters, you are ready to run the optimization task by clicking on the <guibutton>run</guibutton>. Copasi will now display a progress dialog which informs you about the progress of the calculation and about the best (smallest) value found for the objective function up to this step. Since this progress dialog will close once the optimization task has run, you probably also want to define a report to be written during the calculation. The easiest way to define a report for the optimization task is to click on the <guibutton>report</guibutton> button at the bottom of the dialog. In the dialog that opens, you select "Optimization" from the drop down list labeled <guilabel>ReportDefinition</guilabel> and then you select a filename where the report is to be stored in the field labeled <guilabel>Target</guilabel>. You can either type a filename manually, or you can select one by clicking on the <guibutton>browse</guibutton> button. When you are finished, you click the <guibutton>Confirm</guibutton> button. Now the next tme you run the optimization, a report will be stored in the location you specified. 
+</para>
 
 </sect1>
+
 <sect1 id="usingSliders" xreflabel="Defining and Using Sliders">
 <title>Defining and Using Sliders</title>
 <para>Starting with Copasi Build 11 sliders to change parameter values interactively are available. So far they can be used in the time course task and the steady state task.</para>
