@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 20:37:04 $
+   $Date: 2005/09/16 17:48:31 $
    End CVS Header */
 
 /***************************************************************************
@@ -32,7 +32,7 @@ email                : rluktuke@vt.edu
 #include "randomGenerator/CRandom.h"
 
 CRandomSearch::CRandomSearch():
-    COptMethod(CCopasiMethod::RandomSearch)
+    COptMethod(CCopasiTask::optimization, CCopasiMethod::RandomSearch)
 {
   addParameter("Number of Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 100000);
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);

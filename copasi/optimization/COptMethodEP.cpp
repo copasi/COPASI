@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:17 $
+   $Date: 2005/09/16 17:48:31 $
    End CVS Header */
 
 #include "copasi.h"
@@ -17,7 +17,7 @@
 #include "report/CCopasiObjectReference.h"
 
 COptMethodEP::COptMethodEP(const CCopasiContainer * pParent):
-    COptMethod(CCopasiMethod::EvolutionaryProgram, pParent),
+    COptMethod(CCopasiTask::optimization, CCopasiMethod::EvolutionaryProgram, pParent),
     mGenerations(0),
     mGeneration(0),
     mPopulationSize(0),

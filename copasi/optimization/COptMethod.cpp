@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 20:37:03 $
+   $Date: 2005/09/16 17:48:31 $
    End CVS Header */
 
 /**
@@ -21,26 +21,35 @@
 
 #include "COptTask.h"
 #include "COptMethod.h"
-#include "COptProblem.h"
-
+#include "COptProblem.h" 
+/*
 const std::string COptMethod::TypeName[] =
   {
-    "RandomSearch",
-    "RandomSearchMaster",
-    "SimulatedAnnealing",
-    "GeneticAlgorithm",
     "EvolutionaryProgram",
+    "GeneticAlgorithm",
+    "GeneticAlgorithmSR",
+//    "HybridGASA",
+    "RandomSearch",
+//    "RandomSearchMaster",
+//    "SimulatedAnnealing",
     "SteepestDescent"
-    "HybridGASA",
-    "GeneticAlgorithmSR"
+    ""
   };
-
+ */
 COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
 {
   COptMethod * pMethod = NULL;
 
   switch (subType)
     {
+    case EvolutionaryProgram:
+      pMethod = new COptMethodEP();
+      break;
+
+    case GeneticAlgorithm:
+      pMethod = new COptMethodGA();
+      break;
+
     case GeneticAlgorithmSR:
       pMethod = new COptMethodGASR();
       break;
@@ -52,26 +61,6 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
     case SteepestDescent:
       pMethod = new COptMethodSteepestDescent();
       break;
-
-    case EvolutionaryProgram:
-      pMethod = new COptMethodEP();
-      break;
-
-      /*case RandomSearchMaster:
-        //      pMethod = new CRandomSearchMaster();
-        break;
-
-      case SimulatedAnnealing:
-        //      pMethod = new COptMethodSA();
-        break;*/
-
-      /*       case GeneticAlgorithm:
-               pMethod = new COptMethodGA();
-               break;
-
-             case HybridGASA:
-               //      pMethod = new COptMethodHGASA();
-               break;*/
 
     default:
       pMethod = new COptMethodGA();
@@ -89,9 +78,10 @@ COptMethod::COptMethod():
     mBounds(false)
 {CONSTRUCTOR_TRACE;}
 
-COptMethod::COptMethod(CCopasiMethod::SubType subType,
+COptMethod::COptMethod(const CCopasiTask::Type & taskType,
+                       const COptMethod::SubType & subType,
                        const CCopasiContainer * pParent):
-    CCopasiMethod(CCopasiTask::optimization, subType, pParent),
+    CCopasiMethod(taskType, subType, pParent),
     mpOptProblem(NULL),
     mpParentTask(NULL),
     mBounds(false)

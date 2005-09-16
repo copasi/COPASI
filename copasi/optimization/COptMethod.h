@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:37:39 $
+   $Author: shoops $ 
+   $Date: 2005/09/16 17:48:31 $
    End CVS Header */
 
 /**
@@ -40,7 +40,7 @@ template < class CType > class CVector;
 class COptMethod : public CCopasiMethod
   {
   public:
-    static const std::string TypeName[];
+    //    static const std::string TypeName[];
 
     // Attributes
   public:
@@ -73,11 +73,13 @@ class COptMethod : public CCopasiMethod
 
   protected:
     /**
-     *
-     * @param CCopasiMethod::SubType subType
+     * Specific constructor
+     * @param const CCopasiTask::Type & type
+     * @param const CCopasiMethod::SubType & subType
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    COptMethod(CCopasiMethod::SubType subType,
+    COptMethod(const CCopasiTask::Type & taskType,
+               const SubType & subType,
                const CCopasiContainer * pParent = NULL);
 
   public:

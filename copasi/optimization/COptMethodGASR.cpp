@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:18 $
+   $Date: 2005/09/16 17:48:31 $
    End CVS Header */
 
 #include <float.h>
@@ -20,7 +20,7 @@
 #include "report/CCopasiObjectReference.h"
 
 COptMethodGASR::COptMethodGASR(const CCopasiContainer * pParent):
-    COptMethod(CCopasiMethod::GeneticAlgorithmSR, pParent),
+    COptMethod(CCopasiTask::optimization, CCopasiMethod::GeneticAlgorithmSR, pParent),
     mGenerations(0),
     mPopulationSize(0),
     mpRandom(NULL),

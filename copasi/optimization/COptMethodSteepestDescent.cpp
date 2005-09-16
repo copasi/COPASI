@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:18 $
+   $Date: 2005/09/16 17:48:31 $
    End CVS Header */
 
 #include "copasi.h"
@@ -18,7 +18,7 @@
 #include "report/CCopasiObjectReference.h"
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const CCopasiContainer * pParent):
-    COptMethod(CCopasiMethod::SteepestDescent, pParent),
+    COptMethod(CCopasiTask::optimization, CCopasiMethod::SteepestDescent, pParent),
     mpDescent(new FDescentTemplate<COptMethodSteepestDescent>(this, &COptMethodSteepestDescent::descentLine))
 {
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 100);
