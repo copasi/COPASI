@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:58 $
+   $Date: 2005/09/16 17:03:52 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -360,6 +360,7 @@ class CCopasiParameterGroup: public CCopasiParameter
      */
     void deleteGroup();
 
+  protected:
     /**
      * Add a parameter
      * @param CCopasiParameter * pParameter
