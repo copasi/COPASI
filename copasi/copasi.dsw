@@ -89,6 +89,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name tss
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name fitting
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -158,6 +161,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name tss
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name fitting
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -199,6 +205,18 @@ Package=<4>
 ###############################################################################
 
 Project: "elementaryFluxModes"=.\elementaryFluxModes\elementaryFluxModes.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "fitting"=.\parameterFitting\fitting.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

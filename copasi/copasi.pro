@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.12 $ $Author: ssahle $ $Date: 2005/06/22 09:26:52 $  
+# $Revision: 1.13 $ $Author: shoops $ $Date: 2005/09/16 19:08:34 $  
 ######################################################################
 
 include(common.pri)
@@ -15,7 +15,7 @@ SUBDIRS += mathmodel
 SUBDIRS += model
 SUBDIRS += mml
 SUBDIRS += optimization
-#SUBDIRS += output
+SUBDIRS += parameterFitting
 SUBDIRS += plot
 SUBDIRS += randomGenerator
 SUBDIRS += report
