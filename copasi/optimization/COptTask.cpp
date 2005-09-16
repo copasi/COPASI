@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/15 18:45:26 $
+   $Date: 2005/09/16 17:46:24 $
    End CVS Header */
 
 /**
@@ -29,6 +29,16 @@
 //#include "steadystate/CSteadyStateTask.h"
 //#include "steadystate/CSteadyStateProblem.h"
 //#include "utilities/COutputHandler.h"
+
+unsigned C_INT32 COptTask::validMethods[] =
+  {
+    CCopasiMethod::GeneticAlgorithm,
+    CCopasiMethod::GeneticAlgorithmSR,
+    CCopasiMethod::EvolutionaryProgram,
+    CCopasiMethod::RandomSearch,
+    CCopasiMethod::SteepestDescent,
+    CCopasiMethod::unset
+  };
 
 COptTask::COptTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::optimization, pParent)
@@ -133,35 +143,4 @@ bool COptTask::setMethodType(const int & type)
   //mpMethod->setObjectParent(this);
 
   return true;
-}
-
-COptTask::CallBack::CallBack(CProcessReport & parentCallBack):
-    CProcessReport(),
-    mParentCallBack(parentCallBack)
-{}
-
-COptTask::CallBack::~CallBack() {}
-
-unsigned C_INT32 COptTask::CallBack::addItem(const std::string & name,
-    const CCopasiParameter::Type & type,
-    const void * pValue,
-    const void * pEndValue)
-{
-  CProcessReport::addItem(name, type, pValue, pEndValue);
-  return mParentCallBack.addItem(name, type, pValue, pEndValue);
-}
-
-bool COptTask::CallBack::progress(const unsigned C_INT32 & index)
-{
-  return mParentCallBack.progress(index);
-}
-
-bool COptTask::CallBack::reset(const unsigned C_INT32 & index)
-{
-  return mParentCallBack.reset(index);
-}
-
-bool COptTask::CallBack::finish(const unsigned C_INT32 & index)
-{
-  return mParentCallBack.finish(index);
 }

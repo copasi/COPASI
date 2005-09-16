@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:18 $
+   $Date: 2005/09/16 17:46:24 $
    End CVS Header */
 
 /**
@@ -28,72 +28,12 @@ class CReport;
 class COptTask : public CCopasiTask
   {
     //Attributes
-  private:
-
-    /**
-     * Pointer to the output stream for reporting
-     */ 
-    //std::ostream * mpOut;
-
-    /**
-     * Unique Key
-     */ 
-    //std::string mKey;
-
-  class CallBack: public CProcessReport
-      {
-        // Attributes
-      private:
-        CProcessReport & mParentCallBack;
-
-        // Operations
-      public:
-        CallBack(CProcessReport & parentCallBack);
-
-        virtual ~CallBack();
-
-        virtual unsigned C_INT32 addItem(const std::string & name,
-                                         const CCopasiParameter::Type & type,
-                                         const void * pValue,
-                                         const void * pEndValue = NULL);
-
-        virtual bool progress(const unsigned C_INT32 & index = C_INVALID_INDEX);
-
-        virtual bool reset(const unsigned C_INT32 & index = C_INVALID_INDEX);
-
-        virtual bool finish(const unsigned C_INT32 & index = C_INVALID_INDEX);
-
-        bool setParentCallBack(CProcessReport * pCallBack);
-      };
-
-    /**
-     * problem callback
-     */
-    CallBack *mpProblemCallBack;
-
-    /**
-     * method callback
-     */
-    CallBack * mpMethodCallBack;
-
-    /**
-     * for progress bar
-     */ 
-    //unsigned C_INT32 mProgress;
-
-    /*
-     Output value address
-    */ 
-    //   CVector<C_FLOAT64*>* pValueAddrMatrix;
-    //Operations
 
   public:
-
-    //    inline void setValueMatrixAddr(CVector<C_FLOAT64*>* pInputValueAddrMatrix)
-    //    {
-    //      mpProblem->setValueMatrixAddr(pInputValueAddrMatrix);
-    //      pValueAddrMatrix = pInputValueAddrMatrix;
-    //}
+    /**
+     * The methods which can be selected for preforming this task.
+     */
+    static unsigned C_INT32 validMethods[];
 
     /**
      * default constructor
