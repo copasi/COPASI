@@ -22,7 +22,7 @@
 </screenshot>
 </para>
 <para>
-It also has the advantage that Copasi essentially behaves the same on all platforms supported, while still showing platform specific behaviour. E.g. on a Mac OS X computer, the user will have the menu at the top of the screen and the menu entry for the about dialog will appear in the Copasi menu rather then the help menu.</para>
+It also has the advantage that Copasi essentially behaves the same on all platforms supported, while still showing platform specific behavior. E.g. on a Mac OS X computer, the user will have the menu at the top of the screen and the menu entry for the about dialog will appear in the Copasi menu rather then the help menu.</para>
 <para>In the following sections, we will explain how to use the graphical user interface of Copasi. Everything should be applicable to all supported platforms. If there is a difference for some platforms we will try to point that out explicitly.    
 </para>
 </sect1>
@@ -33,7 +33,7 @@ Copasi comes in two versions. One with a (hopefully) nice GUI for interactive wo
 </para>
 <para>
 In addition to the commandline options, you can specify one or more Copasi (or Gepasi) files after the commandline options which will then be processed.
-Specifying more then one file again only makes sense for the commandline version of copasi. For each of the files, the activated tasks will be run. The commandline options for importing and exporting SBML as well as the --save option are ignored if more then one file is specified.
+Specifying more then one file again only makes sense for the commandline version of Copasi. For each of the files, the activated tasks will be run. The commandline options for importing and exporting SBML as well as the --save option are ignored if more then one file is specified.
 Since the GUI version of Copasi can only handle one file at a time, it only makes sense to specify one file after the commandline options.
 </para>
 <variablelist><title>Commandline options</title>
@@ -48,7 +48,7 @@ Shows the usage of the program and the allowed commandline options.
 <varlistentry><term>--home</term>
 <listitem>
 <para>
-This can be used to tell copasi where your home directory is located. Normally you don't have to use this. 
+This can be used to tell Copasi where your home directory is located. Normally you don't have to use this. 
 </para>
 </listitem>
 </varlistentry>
@@ -56,7 +56,7 @@ This can be used to tell copasi where your home directory is located. Normally y
 <varlistentry><term>--rc</term>
 <listitem>
 <para>
-This can be used to specify the location of the configuration file for copasi. Normally this is called .copasirc and is located in the users home directory. But if you want Copasi to use a different one, you can specify it with this switch.   
+This can be used to specify the location of the configuration file for Copasi. Normally this is called .copasirc and is located in the users home directory. But if you want Copasi to use a different one, you can specify it with this switch.   
 </para>
 </listitem>
 </varlistentry>
@@ -69,13 +69,13 @@ This can be used to specify the location of the configuration file for copasi. N
 
 <varlistentry><term>-e</term><term>--exportSBML</term>
 <listitem>
-<para>With this option you can specify a name for the SBML file copasi should export. This is useful if you want to export some Copasi files to SBML in a batch job. This only makes sense for the commandline version and it will be ignored by the GUI version.</para>
+<para>With this option you can specify a name for the SBML file Copasi should export. This is useful if you want to export some Copasi files to SBML in a batch job. This only makes sense for the commandline version and it will be ignored by the GUI version.</para>
 </listitem>
 </varlistentry>
 
 <varlistentry><term>-i</term><term>--importSBML</term>
 <listitem>
-<para>This options lets you specify an SBML file that copasi shall import.</para>
+<para>This options lets you specify an SBML file that Copasi shall import.</para>
 </listitem>
 </varlistentry>
 
@@ -87,7 +87,7 @@ This can be used to specify the location of the configuration file for copasi. N
 <varlistentry><term>-t</term><term>--tmp</term>
 <listitem>
 <para>
-This option can be used to specify a temporary directory where copasi will autosave some data periodically. Normally Copasi uses the systems temporary directory (e.g. /tmp/ under Linux).
+This option can be used to specify a temporary directory where Copasi will autosave some data periodically. Normally Copasi uses the systems temporary directory (e.g. /tmp/ under Linux).
 </para>
 </listitem>
 </varlistentry>
@@ -156,7 +156,7 @@ On the top of the main window, you have the menubar (on the Mac, the menubar is 
 </para>
 <para>
 <caution>
-<para>You should be aware that changing the defaults units actually changes the model. If you for example change the default volume units from liters to mililiters, all the particle numbers in your model change by a factor of 1000.</para>
+<para>You should be aware that changing the defaults units actually changes the model. If you for example change the default volume units from liters to milliliters, all the particle numbers in your model change by a factor of 1000.</para>
 </caution>
 </para>
 </sect1>
@@ -241,7 +241,7 @@ A status of new means that the compartment has been created, but is has not been
 </screenshot>
 </para>
 <para>
-If you have already committed the compartment, you can delete it by selecting the table row (or one cell of the table row) that contains the compartment you want to delete and clicking the <guibutton>delete</guibutton> button. You will notice that the compartment does not get deleted at once, but rather the status changes to <emphasis>deleted</emphasis>. You can still undo the delete by clicking the <guibutton>revert</guibutton> button or the <guibutton>delete/undelete</guibutton> button, or you can finalise the delete action by clicking on the <guibutton>commit</guibutton> button. Again leaving this dialog by selecting another object in the object tree or double clicking on the table has the same effect as clicking on the <guibutton>commit</guibutton> button.</para>
+If you have already committed the compartment, you can delete it by selecting the table row (or one cell of the table row) that contains the compartment you want to delete and clicking the <guibutton>delete</guibutton> button. You will notice that the compartment does not get deleted at once, but rather the status changes to <emphasis>deleted</emphasis>. You can still undo the delete by clicking the <guibutton>revert</guibutton> button or the <guibutton>delete/undelete</guibutton> button, or you can finalize the delete action by clicking on the <guibutton>commit</guibutton> button. Again leaving this dialog by selecting another object in the object tree or double clicking on the table has the same effect as clicking on the <guibutton>commit</guibutton> button.</para>
 <para>The <guibutton>clear</guibutton> button is just a convenience function to delete all compartments. If you click on it, the status of all compartments in the table will be changed to <emphasis>deleted</emphasis> and a subsequent <guibutton>commit</guibutton> will remove the compartments from the model.</para>
 <para>The most convenient way to add a compartment is to just click on an empty name cell in the table and type the name of the compartment. Once you leave the cell by either hitting the return or the tab key or by clicking somewhere else, the compartment appears in the table with a status of <emphasis>new</emphasis>. Actually hitting the return key after typing the name brings you directly into the next row and you can continue adding compartments until all compartments are defined. You now only have to commit your changes in one of the ways mentioned above and all the compartments get added to the model.</para>
 <para>The third way to add a new compartment is to double click on an empty row in the table. This is essentially the same as clicking the <guibutton>new</guibutton> button and double clicking on the newly added compartment entry.</para>
@@ -426,7 +426,7 @@ When typing reaction equations you should keep in mind that metabolite names in 
 </screenshot>
 </para>
 <para>
-    The parameter view widget can be displayed by selecting the leaf called <guilabel>Parameters</guilabel> on the Model branch which is located right underneath the <guilabel>Reactions</guilabel> leaf. This widget allows you to view and edit all parameters of the model in one place. This saves you from moving around the model tree if you e.g. first have to edit the initial concentrations for some metabolites and afterwards parameters of one or more reactions.
+    The parameter view widget can be displayed by selecting the leaf called <guilabel>Parameters</guilabel> on the Model branch which is located right underneath the <guilabel>Reactions</guilabel> leaf. This widget allows you to view and edit all parameters of the model in one place. This saves you from moving around the model tree if you e.g. first have to edit the initial concentrations for some metabolites and afterward parameters of one or more reactions.
     The view shows you the initial concentrations for the metabolites at the top followed by the kinetic parameters of all reactions and at the bottom the volumes of all the compartments.
     In order to change some value, you double click on which lets you input a new value. On hitting the return key or clicking somewhere else, the new value is not written to the object directly, but a '*' character appears in front of the name of the changed parameter. If you now leave this widget or press the commit button at the bottom of the dialog, the new value is written to the corresponding object in the model.
 </para>
@@ -459,7 +459,7 @@ When typing reaction equations you should keep in mind that metabolite names in 
 <para>
 The dialog for defining report definitions is located under the <guibutton>Output-&gt;Reports</guibutton> branch in the object tree. Double clicking on an empty row in the table creates a new report object and opens the dialog for modifying the report definition. In this dialog, you can specify a name for the report in the <guilabel>Name</guilabel> field. In the <guilabel>task</guilabel> combobox, you can choose for which kind of task this report should be written, so if you want to store the result of a time course, you choose <emphasis>Time-Course</emphasis> here. The report usually stores the results of its task as a table; the standard separator character for elements in this table is the tab character (\t). If you want to change this, you have to uncheck the Tab checkbox and specify the separator character or string you want in the <guilabel>Separator</guilabel> field.
 If you want to, you can also add a comment for the report, e.g. you might want to state in words what the report is supposed to write so you and others don't have to guess from the item list (see below).  
-Next you have to define the objects that you want to appear in the report. There are two modes to define a report definition. In the standard mode, the report definition is layed out as a table. E.g. the report for a time course simulation will write one line per timestep and each line will typically contain the time followed by one or more metabolite concentrations. In the advanced mode, which you enter by clicking on the button labeled <guibutton>Advanced</guibutton>, the report is split up into three sections, a header, a body and a footer. You can define the output for each of the section separately by clicking on the corresponding tab. In order to get back to the standard table layout, you have to click on the <guibutton>Advanced</guibutton> again. Copasi will warn you that you might loose some information by converting from the advanced report definition format to the table format.
+Next you have to define the objects that you want to appear in the report. There are two modes to define a report definition. In the standard mode, the report definition is laid out as a table. E.g. the report for a time course simulation will write one line per timestep and each line will typically contain the time followed by one or more metabolite concentrations. In the advanced mode, which you enter by clicking on the button labeled <guibutton>Advanced</guibutton>, the report is split up into three sections, a header, a body and a footer. You can define the output for each of the section separately by clicking on the corresponding tab. In order to get back to the standard table layout, you have to click on the <guibutton>Advanced</guibutton> again. Copasi will warn you that you might loose some information by converting from the advanced report definition format to the table format.
 Let's discuss how to define a report definition with table layout first since this will probably the more common case.
 To add a new object to the report definition, you have to click on the button labeled <guibutton>item</guibutton>. This will open the object browser dialog.</para>  
 <para>
@@ -531,7 +531,7 @@ Let's assume you want to define the report for a trajectory task. In this case, 
 </mediaobject>
 </screenshot></para>
 <para>
-They will appear in the report in the same order as they appear in this list. To reorder the entries in the list, you can select individual entries and move them up and down in the list with the according buttons to the left of the list. For example it might be a good idea to move the time object to the top of the list so that it will appear as the first table column in the file since this is the way most programs would expect it. Also in order to delete unneccesary items, you just select them and click on the <guibutton>Delete</guibutton> button. 
+They will appear in the report in the same order as they appear in this list. To reorder the entries in the list, you can select individual entries and move them up and down in the list with the according buttons to the left of the list. For example it might be a good idea to move the time object to the top of the list so that it will appear as the first table column in the file since this is the way most programs would expect it. Also in order to delete unnecessary items, you just select them and click on the <guibutton>Delete</guibutton> button. 
 The only thing that is now left is to connect this report to a file. This has to be done in the dialog for the specific task and we will cover this when we explain how to run the individual tasks.
 </para>
 <para>
@@ -554,7 +554,7 @@ The only thing that is now left is to connect this report to a file. This has to
 </screenshot></para>
 <para>
 As stated above, the advanced report definition allows you to define the output for the three parts of the report separately. The header part of the report is written once before the corresponding task, the output of the body elements occurs once per step of the corresponding task, e.g. for the time course once every timestep and the footer is written once after the task has finished. In this sense, the standard table report definition is nothing but an advanced report definition with a title header and a body that consists of the time and some metabolite concentrations separated by separator items. The footer is empty.
-If you write your own advanced report definition, you are responsible to add separator tags where appropriate. An advantage to the standard report definition is that you can add arbitrary text to any of the three sections. Everything else works as described for the standard report definition, you can add and delete items by selecting them from the object browser dialog. And just like in the standard report definition, you can move these items up and down by selecting them and clicking on the <guibutton>up</guibutton> ot <guibutton>down</guibutton> button. Separator items can be added by clicking on the <guibutton>Separator</guibutton> button. The symbol or text that makes up the separator item is again defined by the checkbox and the adjacent input field towards the tp of the report definition dialog.  
+If you write your own advanced report definition, you are responsible to add separator tags where appropriate. An advantage to the standard report definition is that you can add arbitrary text to any of the three sections. Everything else works as described for the standard report definition, you can add and delete items by selecting them from the object browser dialog. And just like in the standard report definition, you can move these items up and down by selecting them and clicking on the <guibutton>up</guibutton> or <guibutton>down</guibutton> button. Separator items can be added by clicking on the <guibutton>Separator</guibutton> button. The symbol or text that makes up the separator item is again defined by the checkbox and the adjacent input field towards the top of the report definition dialog.  
 </para>
 </sect2>
 <sect2 id="plotDefinitions" xreflabel="Defining Plots">
@@ -852,7 +852,7 @@ Which brings me to the last point. The build in function names in Copasi often u
 <!-- list allowed operators and functions -->
 The operators and functions that Copasi knows and therefore can be used to create user defined functions are the following:
 
-<table frame="all"><title>cwStandard Operators</title>
+<table frame="all"><title>Standard Operators</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <thead>
  <row>
@@ -1096,7 +1096,7 @@ The operators and functions that Copasi knows and therefore can be used to creat
 </table>
 </para>
 <para>
-<table frame="all"><title>Miscelaneous</title>
+<table frame="all"><title>Miscellaneous</title>
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <thead>
  <row>
@@ -1122,7 +1122,7 @@ The operators and functions that Copasi knows and therefore can be used to creat
 </para>
 <caution>
 <para>
-Although Copasi allows the usage of discontinuous functions (ceil, floor, factorial, etc) all integration is done by LSODA which officially can not handle discontinuous functions. Nevertheless in most cases this will lead to correct reults, however you should be aware of the fact that the usage of discontinuous functions in Copasi can lead to errors. Later versions of Copasi will use different integration methods that will be able to deal with discontinuous functions.  
+Although Copasi allows the usage of discontinuous functions (ceil, floor, factorial, etc) all integration is done by LSODA which officially can not handle discontinuous functions. Nevertheless in most cases this will lead to correct results, however you should be aware of the fact that the usage of discontinuous functions in Copasi can lead to errors. Later versions of Copasi will use different integration methods that will be able to deal with discontinuous functions.  
 </para>
 </caution>
 <para>
@@ -1142,7 +1142,7 @@ In addition to the function above, Copasi knows some predefined constant names:
  </row>
  <row>
    <entry>exponentiale / EXPONENTIALE</entry>
-   <entry> eulers number ( 2.7183... ) </entry>
+   <entry> Euler's number ( 2.7183... ) </entry>
  </row>
  <row>
    <entry>true / TRUE</entry>
@@ -1163,7 +1163,7 @@ In addition to the function above, Copasi knows some predefined constant names:
 <para>Again, builtin constant names can be written with either all lowercase letters or all letters uppercase. Mixing of upper and lowercase letters is not allowed and will lead to errors.
 </para>
 <para>
-In addition to defining "normal" functions, Copasi allows the definition of piecewise defined functions. Piecewise defined functions are constructed with the IF statement. The IF statement in copasi is used like a function with three arguments. The first argument is a conditional expression that evaluates to either TRUE or FALSE, the second argument is an expression that is evaluated if the condition evaluates to TRUE otherwise the third argument, which can also be an expression, determines the value of the function. The second and third argument to the IF statement must evaluate to a double value, that means it can not be a conditional expression like the first argument. On the other hand, the second and third arguments themselves can be IF statements. So in order to make this a little more clear, we will look at how one would implement the Heaviside step function in Copasi:
+In addition to defining "normal" functions, Copasi allows the definition of piecewise defined functions. Piecewise defined functions are constructed with the IF statement. The IF statement in Copasi is used like a function with three arguments. The first argument is a conditional expression that evaluates to either TRUE or FALSE, the second argument is an expression that is evaluated if the condition evaluates to TRUE otherwise the third argument, which can also be an expression, determines the value of the function. The second and third argument to the IF statement must evaluate to a double value, that means it can not be a conditional expression like the first argument. On the other hand, the second and third arguments themselves can be IF statements. So in order to make this a little more clear, we will look at how one would implement the Heaviside step function in Copasi:
 </para>
 <para>
 <mml:math>
@@ -1362,7 +1362,7 @@ Every mass conservation relation also has a separate leave in the object tree be
 </screenshot>
 </para>
 <para>
-The dialog should be more or less self explaining. You can change several parameters for the time course, e.g. the start time, the end time and the number of intervals that is being calculated in the time range. Alternatively to setting the number of intervals, you can also set the size of the interval. If you set either one, the other will be updated accordingly. Also if you change the time range, number of intervals will stay the same, which means that the interval size will be adjusted. The checkbox labelled <guilabel>store time series in memory</guilabel> tells Copasi to keep the result of the time series calculation in memory in order to display it in a result dialog. Since this can be a large amount of data depending on the size of your model and/or the number of intervals you want Copasi to calculate, you should disable this if you think the result might not fit into memory. The consequence of disabling this checkbox is that you need to <link linkend="reportDefinitions">define a report</link> in order to store the results of the time course simulation.</para>
+The dialog should be more or less self explaining. You can change several parameters for the time course, e.g. the start time, the end time and the number of intervals that is being calculated in the time range. Alternatively to setting the number of intervals, you can also set the size of the interval. If you set either one, the other will be updated accordingly. Also if you change the time range, number of intervals will stay the same, which means that the interval size will be adjusted. The checkbox labeled <guilabel>store time series in memory</guilabel> tells Copasi to keep the result of the time series calculation in memory in order to display it in a result dialog. Since this can be a large amount of data depending on the size of your model and/or the number of intervals you want Copasi to calculate, you should disable this if you think the result might not fit into memory. The consequence of disabling this checkbox is that you need to <link linkend="reportDefinitions">define a report</link> in order to store the results of the time course simulation.</para>
 <para>Copasi supports two different methods for calculating time course simulations. Copasi can use the LSODA solver to calculate the time course deterministically or it can use a stochastic solver which uses the <emphasis>Direct Method</emphasis> by Gillespie to calculate the time course stochastically. Depending on the solver you have chosen, you can set several parameters in the <guilabel>Parameter value</guilabel> table that influence the way the method works. A detailed explanation of those parameters will follow in the <!-- <xref linkend=" -->methods<!-- " /> --> part of this document.</para>
 <para>In case you <link linkend="reportDefinitions">defined a report definition</link>, you have to associate this report definition with a file for Copasi to be able to write the results to that file. To do that, you click on the <guibutton>Report Definition</guibutton> button. If no report definition had been defined, Copasi informs you that it created a new one and asks you if you want to edit it. If you don't know how to define a report definition, please go back to the <xref linkend="reportDefinitions" /> section. Since the report definition Copasi created automatically will be empty, it is recommended that you edit it in order to get some output. Once you are finished creating the report definition go back to the time course dialog and click on the <guibutton>Report Definition</guibutton> button again.</para>
 <para>
@@ -1415,7 +1415,7 @@ The dialog that pops up will let you choose the report you want to use (in case 
 <para>
 The results dialog is located directly below the time course branch in the object tree. In this widget you can choose whether you want the results to be displayed as concentrations or as particle numbers and you have the possibility to store the results to file. The advantage a report has over writing a file in the results widget is that you can choose exactly which metabolite concentrations you want to store whereas the results dialog always stores all metabolites concentrations.  
 </para>
-<para>A button at the bottom of the dialog let's you create a plot output for the time course simulation. If you click on the button labelled <guilabel>Output definition</guilabel>, you can choose from a list of predefined plots. When you click on one of the plots in the list on the left side of the dialog, you can see a short description of what the plot does on the right side of the dialog. By selecting one of the predefined plots and clicking on the <guilabel>Create!</guilabel> button, Copasi will create the corresponding plot item.  
+<para>A button at the bottom of the dialog let's you create a plot output for the time course simulation. If you click on the button labeled <guilabel>Output definition</guilabel>, you can choose from a list of predefined plots. When you click on one of the plots in the list on the left side of the dialog, you can see a short description of what the plot does on the right side of the dialog. By selecting one of the predefined plots and clicking on the <guilabel>Create!</guilabel> button, Copasi will create the corresponding plot item.  
 </para>
 <sect2 id="workingWithPlots" xreflabel="Working with Plots">
 <title>Working with Plots</title>
@@ -1439,7 +1439,7 @@ The results dialog is located directly below the time course branch in the objec
    <phrase>dialog window showing a plot</phrase>
  </textobject>
  <caption>
-  <para>copasi plot window</para>
+  <para>Copasi plot window</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -1549,7 +1549,7 @@ Depending on whether a steady state was found or not, only the elasticities tab 
 </screenshot>
 </para>
 <para>
-    The tasks for which scan can be conducted are steady state, time course and metabolic control analysis calculations. So if we want to do a scan for a time course calculation, we choose "Time Course" from the dropdown list in the <guilabel>Task</guilabel> widget. We will ignore the two checkboxes for the time being and take a look at the dropdown list at the top of the <guilabel>Scan Task</guilabel> dialog. This dropdown list contains four entries named "Parameter Scan", "Repeat" and "Random distribution". Those are additional elements that can be added to the main widget below to form complex tasks. Let's look at one after the other and start with the "Parameter Scan". As it is right now, the scan task does not do anything since we haven't told it yet which parameter we want to scan. To define a parameter for the scan, you choose "Parameter Scan" from the dropdown list at the top and press the create button. Copasi will add a new widget to the dialog that is called <guilabel>Scan</guilabel>. The <guilabel>Scan</guilabel> widget contains some empty lineedit fields and a button labelled <guibutton>...</guibutton> and a checkbox labelled <guilabel>logarithmic</guilabel>. </para>
+    The tasks for which scan can be conducted are steady state, time course and metabolic control analysis calculations. So if we want to do a scan for a time course calculation, we choose "Time Course" from the dropdown list in the <guilabel>Task</guilabel> widget. We will ignore the two checkboxes for the time being and take a look at the dropdown list at the top of the <guilabel>Scan Task</guilabel> dialog. This dropdown list contains four entries named "Parameter Scan", "Repeat" and "Random distribution". Those are additional elements that can be added to the main widget below to form complex tasks. Let's look at one after the other and start with the "Parameter Scan". As it is right now, the scan task does not do anything since we haven't told it yet which parameter we want to scan. To define a parameter for the scan, you choose "Parameter Scan" from the dropdown list at the top and press the create button. Copasi will add a new widget to the dialog that is called <guilabel>Scan</guilabel>. The <guilabel>Scan</guilabel> widget contains some empty lineedit fields and a button labeled <guibutton>...</guibutton> and a checkbox labeled <guilabel>logarithmic</guilabel>. </para>
 <para>
 <screenshot>
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
@@ -1573,7 +1573,7 @@ Depending on whether a steady state was found or not, only the elasticities tab 
 </screenshot>
 </para>
 <para>
-First thing you have to do is select the parameter for the scan. You do this by clicking on the <guibutton>...</guibutton> button and selecting some parameter from the selection dialog that appears. Once you are finished with your selection and pressed the <guibutton>OK</guibutton> button, the name of the object you chose will appear in the lineedit field beside the <guibutton>...</guibutton> button. In the lineedit fields below you can now specify the minimal value the parameter will have during the scan as well as the maximal value. After choosing the object, these values will be set to half the objects value for the minimum and double the objects value for the maximum. In the <guilabel>Interval</guilabel> you can specify how many intervals Copasi uses during the scan to raise the value from minimum to maximum. Last but not least, the <guilabel>logarithmic</guilabel> checkbox determines welter the value is raised in linear steps if the box is unchecked or in logarithmic steps if the box is checked.  Now you are set to run your first simple scan by clicking on the <guibutton>Run</guibutton> at the bottom of the dialog. In order to actually see some result, you have to have some kind of output defined. The scan task can not do reports yet, but if a plot is defined, the scan task will do plotting while running the scan. If you did not change the number of intervals from the default, the scan task will run 10 time course simulations each with a different value for the chosen parameter and in turn you will see 10 plots overlayed in one plot window.
+First thing you have to do is select the parameter for the scan. You do this by clicking on the <guibutton>...</guibutton> button and selecting some parameter from the selection dialog that appears. Once you are finished with your selection and pressed the <guibutton>OK</guibutton> button, the name of the object you chose will appear in the lineedit field beside the <guibutton>...</guibutton> button. In the lineedit fields below you can now specify the minimal value the parameter will have during the scan as well as the maximal value. After choosing the object, these values will be set to half the objects value for the minimum and double the objects value for the maximum. In the <guilabel>Interval</guilabel> you can specify how many intervals Copasi uses during the scan to raise the value from minimum to maximum. Last but not least, the <guilabel>logarithmic</guilabel> checkbox determines welter the value is raised in linear steps if the box is unchecked or in logarithmic steps if the box is checked.  Now you are set to run your first simple scan by clicking on the <guibutton>Run</guibutton> at the bottom of the dialog. In order to actually see some result, you have to have some kind of output defined. The scan task can not do reports yet, but if a plot is defined, the scan task will do plotting while running the scan. If you did not change the number of intervals from the default, the scan task will run 10 time course simulations each with a different value for the chosen parameter and in turn you will see 10 plots overlaid in one plot window.
 </para>
 <para>
     So far we have only scratched the surface of the scan dialog. E.g. if you want to do a two-dimensional scan, i.e. a scan where two parameters are independently scanned, you can add a second <guilabel>Scan</guilabel> widget by adding it to the main dialog just like you did for the first parameter. You select "Parameter Scan" in the dropdown list and push the <guibutton>... Create!</guibutton> button.</para>
@@ -1766,7 +1766,7 @@ With the buttons on the left of each item other then the <guilabel>Task</guilabe
 What we have left out so far are the two checkboxes at the bottom of the <guilabel>Task</guilabel> widget. The first checkbox is labeled <guilabel>always use initial conditions</guilabel>. If this checkbox is checked, each task that is run runs with the same initial conditions. If the checkbox is not checked, only the first task that runs uses the initial conditions from the model, each subsequent task uses the conditions as they are after the preceding task has finished. 
 </para>
 <para>
-The second checkbox is labeled <guilabel>Output time series</guilabel> is it is checked, Copasi will plot the complete time series result each time a time series task runs. So if during your scan, 10 time series are calculated, all ten are overlayed in the same window. If the checkbox is unchecked, Copasi will only plot the end result,i.e. the concentrations after the last step, of each time series. Since this checkbox only makes sense for the time series task, it will be disabled if another task is chosen for the scan.
+The second checkbox is labeled <guilabel>Output time series</guilabel> is it is checked, Copasi will plot the complete time series result each time a time series task runs. So if during your scan, 10 time series are calculated, all ten are overloaded in the same window. If the checkbox is unchecked, Copasi will only plot the end result,i.e. the concentrations after the last step, of each time series. Since this checkbox only makes sense for the time series task, it will be disabled if another task is chosen for the scan.
 </para>
 </sect1>
 
@@ -1791,7 +1791,7 @@ We assume you have a model that consists of several reactions and two of those r
   <imagedata fileref="images/Optimization_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>linux screenshot that shows Copasi optimizatition dialog</phrase>
+   <phrase>linux screenshot that shows Copasi optimization dialog</phrase>
  </textobject>
  <caption>
   <para>Optimization Dialog</para>
@@ -1801,8 +1801,8 @@ We assume you have a model that consists of several reactions and two of those r
 </para>
 
 <para>
-If you go to the optimization dialog which you can find in the tree under <guilabel>Multiple Task</guilabel>-><guilabel>Optimization</guilabel>, you will get a screen similar to the one above. At the top of the dialog, you can find an edit line called Expression where you have to input your objective function, that is the expression that Copasi will try to minimize during the optimization. In our case, we want to find the value of k where te ratio of R1 and R2 is maximal. This can be achieved in two ways, either we reverse the ratio and minimize the ration of R2/R1, or we add a "-" sign to or ratio R1/R2. (For the sake of simplicity, I will assume here that the fluxes R1 and R2 will always be positive.) For this example I will use the second posibility and therefore the objective function would be -(R1/R2). Now you can't just enter this expression into the line edit field since Copasi does not associate the names R1 and R2 with the fluxes through your reactions. In order to build this expression, you have to start typing "-(" into the line edit field. Now, you have to press the button to the right of the line edit field which opens the object browser. In this object browser, you select the flux (particle or concentration) which belongs to R1 and press the <guibutton>OK</guibutton> button. Now you will get a string that corresponds to this flux object right after the part of the expression you already typed. You can now go on by typing "/" followed by the selection of the flux for R2. You end the expression by typing ")". Please be aware that you allowed to edit the expression, but only those parts of the expression that do not belong to object representation strings. Everything that has been inserted via selection from the object browser may not be modified. You may however delete complete identifier expressions.
-This interface is work in progress and we hope to have a better solution in upcoming releaes.
+If you go to the optimization dialog which you can find in the tree under <guilabel>Multiple Task</guilabel>-><guilabel>Optimization</guilabel>, you will get a screen similar to the one above. At the top of the dialog, you can find an edit line called Expression where you have to input your objective function, that is the expression that Copasi will try to minimize during the optimization. In our case, we want to find the value of k where the ratio of R1 and R2 is maximal. This can be achieved in two ways, either we reverse the ratio and minimize the ration of R2/R1, or we add a "-" sign to or ratio R1/R2. (For the sake of simplicity, I will assume here that the fluxes R1 and R2 will always be positive.) For this example I will use the second possibility and therefore the objective function would be -(R1/R2). Now you can't just enter this expression into the line edit field since Copasi does not associate the names R1 and R2 with the fluxes through your reactions. In order to build this expression, you have to start typing "-(" into the line edit field. Now, you have to press the button to the right of the line edit field which opens the object browser. In this object browser, you select the flux (particle or concentration) which belongs to R1 and press the <guibutton>OK</guibutton> button. Now you will get a string that corresponds to this flux object right after the part of the expression you already typed. You can now go on by typing "/" followed by the selection of the flux for R2. You end the expression by typing ")". Please be aware that you allowed to edit the expression, but only those parts of the expression that do not belong to object representation strings. Everything that has been inserted via selection from the object browser may not be modified. You may however delete complete identifier expressions.
+This interface is work in progress and we hope to have a better solution in upcoming releases.
 </para>
 <para>
 You can run the optimization task with several different methods which can be selected via the drop down list below the input field for the objective function. Each of those methods has a number of parameters which are documented in the methods chapter. 
@@ -1811,7 +1811,7 @@ You can run the optimization task with several different methods which can be se
 The optimization task can also be run on two subtasks, namely the "Time Course" and the "Steadystate" subtask. Which one is used for the optimization run can be selected via the correspondingly named checkboxes right of the method selection widget. So for our example we would choose the time course subtask.
 </para>
 <para>
-The only thing we have not done yet is to tell Copasi which parameter(s) it should scan in order to minimize the objective function. This can be done by first clicking on the <guibutton>Add</guibutton> button below the subtask selection boxes. Once you have clicked on this button a new widget will appear in the box at the bottom. In th middle of this widget, there is another line edit field where can can specify which parameter is to be scanned. The selection is again done via clicking on the button to the right of the edit field and selecting the correct parameter from the object browser. To the left and the right of the parameter input, you can specify the upper and lower bounds for the parameter during the scan. Per default, the checkboxes for -Infinity and +Infinity are selected as the range for the scan. Since a computer can not handle infinetisimaly small or large numbers, the scan will effectifely proceed from the lowest possible the the largest possible double precision number. If you want to specify your own range, you have to first deselect the +Inf or -Inf checkbox and then you can set your own bounds. If you want to delete a parameter from the scan list, you just click on the corresponding button which you find at the left side of each parameter row and if you want to scan more then one parameter, you just add more by clicking on the <guibutton>Add</guibutton> again and add as many parameters as you like. Or more likely as many as your computer can handle since it should be clear that new each parameter will prolong the calculation depending on the value range and the method parameters used. 
+The only thing we have not done yet is to tell Copasi which parameter(s) it should scan in order to minimize the objective function. This can be done by first clicking on the <guibutton>Add</guibutton> button below the subtask selection boxes. Once you have clicked on this button a new widget will appear in the box at the bottom. In th middle of this widget, there is another line edit field where can can specify which parameter is to be scanned. The selection is again done via clicking on the button to the right of the edit field and selecting the correct parameter from the object browser. To the left and the right of the parameter input, you can specify the upper and lower bounds for the parameter during the scan. Per default, the checkboxes for -Infinity and +Infinity are selected as the range for the scan. Since a computer can not handle infinitesimally small or large numbers, the scan will effectively proceed from the lowest possible the the largest possible double precision number. If you want to specify your own range, you have to first deselect the +Inf or -Inf checkbox and then you can set your own bounds. If you want to delete a parameter from the scan list, you just click on the corresponding button which you find at the left side of each parameter row and if you want to scan more then one parameter, you just add more by clicking on the <guibutton>Add</guibutton> again and add as many parameters as you like. Or more likely as many as your computer can handle since it should be clear that new each parameter will prolong the calculation depending on the value range and the method parameters used. 
 </para>
 
 <para>
@@ -1825,7 +1825,7 @@ The only thing we have not done yet is to tell Copasi which parameter(s) it shou
   <imagedata fileref="images/Optimization_02.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>linux screenshot that shows the progress dialog drung an optimization task run </phrase>
+   <phrase>linux screenshot that shows the progress dialog during an optimization task run </phrase>
  </textobject>
  <caption>
   <para>Optimization Progress Dialog</para>
@@ -1835,7 +1835,7 @@ The only thing we have not done yet is to tell Copasi which parameter(s) it shou
 </para>
 
 <para>
-Once you have set up all the parameters, you are ready to run the optimization task by clicking on the <guibutton>run</guibutton>. Copasi will now display a progress dialog which informs you about the progress of the calculation and about the best (smallest) value found for the objective function up to this step. Since this progress dialog will close once the optimization task has run, you probably also want to define a report to be written during the calculation. The easiest way to define a report for the optimization task is to click on the <guibutton>report</guibutton> button at the bottom of the dialog. In the dialog that opens, you select "Optimization" from the drop down list labeled <guilabel>ReportDefinition</guilabel> and then you select a filename where the report is to be stored in the field labeled <guilabel>Target</guilabel>. You can either type a filename manually, or you can select one by clicking on the <guibutton>browse</guibutton> button. When you are finished, you click the <guibutton>Confirm</guibutton> button. Now the next tme you run the optimization, a report will be stored in the location you specified. 
+Once you have set up all the parameters, you are ready to run the optimization task by clicking on the <guibutton>run</guibutton>. Copasi will now display a progress dialog which informs you about the progress of the calculation and about the best (smallest) value found for the objective function up to this step. Since this progress dialog will close once the optimization task has run, you probably also want to define a report to be written during the calculation. The easiest way to define a report for the optimization task is to click on the <guibutton>report</guibutton> button at the bottom of the dialog. In the dialog that opens, you select "Optimization" from the drop down list labeled <guilabel>ReportDefinition</guilabel> and then you select a filename where the report is to be stored in the field labeled <guilabel>Target</guilabel>. You can either type a filename manually, or you can select one by clicking on the <guibutton>browse</guibutton> button. When you are finished, you click the <guibutton>Confirm</guibutton> button. Now the next time you run the optimization, a report will be stored in the location you specified. 
 </para>
 
 </sect1>
@@ -1858,10 +1858,10 @@ Once you have set up all the parameters, you are ready to run the optimization t
   <imagedata fileref="images/Sliders_01.gif" format="GIF">
  </imageobject> -->
  <textobject>
-   <phrase>linux screenshot that shows copasi with a plot window and the slider dialog</phrase>
+   <phrase>linux screenshot that shows Copasi with a plot window and the slider dialog</phrase>
  </textobject>
  <caption>
-  <para>copasi with plot window and sliders</para>
+  <para>Copasi with plot window and sliders</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -1893,8 +1893,8 @@ Alternatively you can now add and modify existing sliders via a context menu. Th
 </screenshot>
 </para>
 <para>
-Once you are in the dialog for the definition of a new slider, you have to choose an object to manipulate via the slider. This object can be selected from the selection dialog that pops up when you click on the <guibutton>choose object</guibutton> button. The selection tree is the same as the ones you get when <link linkend="plotDefinitions">selecting objects for a plot</link>. The selection dialog also offers an expert mode in case the object you want to manipulate with the slider is not present in the simplified tree. Usually the objects that you want to modify in  the time course simulation are one or several of the reaction parameters. This way you can interactively see how the behaviour of your model changes when you change a specific parameter. In combination with plots this is a very powerful way to examine the behaviour of your model.</para>
-<para>After you have selected an object, you can set the parameters for the slider. You specify the range the slider has to cover in the <guilabel>Minimum Value</guilabel> and <guilabel>Maximum Value</guilabel> fields. Additionally you can specify if the slider shall have a logarithmic or a linear scale<!-- and if the slider should be used for all tasks that support sliders or only for the task the slider was defined in-->. Per default sliders have a linear scale<!-- and are only defined for the task in which the you create them-->. Normally a slider will be available for all tasks that support sliders. An exception to this are slider for bjects that are directly associated with a specific task, e.g. the number of steps in a time series, if you choose such an object for a slider, the slider will only be available for this task.  
+Once you are in the dialog for the definition of a new slider, you have to choose an object to manipulate via the slider. This object can be selected from the selection dialog that pops up when you click on the <guibutton>choose object</guibutton> button. The selection tree is the same as the ones you get when <link linkend="plotDefinitions">selecting objects for a plot</link>. The selection dialog also offers an expert mode in case the object you want to manipulate with the slider is not present in the simplified tree. Usually the objects that you want to modify in  the time course simulation are one or several of the reaction parameters. This way you can interactively see how the behavior of your model changes when you change a specific parameter. In combination with plots this is a very powerful way to examine the behavior of your model.</para>
+<para>After you have selected an object, you can set the parameters for the slider. You specify the range the slider has to cover in the <guilabel>Minimum Value</guilabel> and <guilabel>Maximum Value</guilabel> fields. Additionally you can specify if the slider shall have a logarithmic or a linear scale<!-- and if the slider should be used for all tasks that support sliders or only for the task the slider was defined in-->. Per default sliders have a linear scale<!-- and are only defined for the task in which the you create them-->. Normally a slider will be available for all tasks that support sliders. An exception to this are slider for objects that are directly associated with a specific task, e.g. the number of steps in a time series, if you choose such an object for a slider, the slider will only be available for this task.  
 <para>
 <screenshot>
 <screeninfo>Produced with Copasi CVS on Mac OS X on 03/31/2005</screeninfo>
@@ -1917,9 +1917,9 @@ Once you are in the dialog for the definition of a new slider, you have to choos
 </mediaobject>
 </screenshot>
 </para>
-At the bottom of the dialog there is a button labelled <guilabel>extended options</guilabel>. If you click on this button the label will change to <guilabel>base options</guilabel> and more options that influence the sliders behaviour will show up. Clicking the button a second time will hide these options again.
+At the bottom of the dialog there is a button labeled <guilabel>extended options</guilabel>. If you click on this button the label will change to <guilabel>base options</guilabel> and more options that influence the sliders behavior will show up. Clicking the button a second time will hide these options again.
 The extended options contain mostly fields that let you modify how many steps the slider has (see explanation below).
-The <guilabel>Object Value</guilabel> field determines the current value of the object that is associated with the slider. In the <guilabel>Number of minor ticks</guilabel> field you specify how many minor ticks your slider will have. And in the <guilabel>Ticksize factor</guilabel> field you specify how many minor ticks make a major tick. Major ticks can be used to coarsely go through the range of the slider whereas minor ticks allow you to step through the range in a more fine grained fashion. Instead of specifying the number of minor ticks, you can specify the size of a minor tick. If you change either of those two values, the other one will be adjusted accordingly. The formula is <!-- <phrase role="math">(Maxium Value - Minimum Value) / number of minor ticks = minor tick size</phrase> -->
+The <guilabel>Object Value</guilabel> field determines the current value of the object that is associated with the slider. In the <guilabel>Number of minor ticks</guilabel> field you specify how many minor ticks your slider will have. And in the <guilabel>Ticksize factor</guilabel> field you specify how many minor ticks make a major tick. Major ticks can be used to coarsely go through the range of the slider whereas minor ticks allow you to step through the range in a more fine grained fashion. Instead of specifying the number of minor ticks, you can specify the size of a minor tick. If you change either of those two values, the other one will be adjusted accordingly. The formula is <!-- <phrase role="math">(Maximum Value - Minimum Value) / number of minor ticks = minor tick size</phrase> -->
 <!-- <inlineequation> -->
   <mml:math>
     <mml:mrow>
@@ -2014,7 +2014,7 @@ The wizard leads you in six steps from creating a model to doing a time course s
 <para>This is normally not a big problem since the essential parts of a model normally get imported or exported. A consequence however one should keep in mind is that if you import an SBML file into Copasi and later export it again, it might have lost some of the original information. So if your SBML model depends on rules and events, it is not suitable for import into Copasi, although this might change in the future.
 </para>
 <para>
-Upon import of an SBML file, Copasi tries to identify the function calls it read. That means if Copasi find a reaction where the kinetic law consists of a single function call, Copasi tries to find out whether the function called corresponds to one of its built in functions. So for SBML files that have been exported from Copasi, the function calls can be identified upon reimport. Since all functions that can not be recognized have to be added to the global function database, this feature might save you some entires there and keep the global function database more managable. The same goes for mass action kinetics. Copasi also tries to identify mass action kinetics on import but as oposed to other kinetics, Copasi also checks kinetic laws that don't only consist of a single function call.
+Upon import of an SBML file, Copasi tries to identify the function calls it read. That means if Copasi find a reaction where the kinetic law consists of a single function call, Copasi tries to find out whether the function called corresponds to one of its built in functions. So for SBML files that have been exported from Copasi, the function calls can be identified upon reimport. Since all functions that can not be recognized have to be added to the global function database, this feature might save you some entries there and keep the global function database more manageable. The same goes for mass action kinetics. Copasi also tries to identify mass action kinetics on import but as opposed to other kinetics, Copasi also checks kinetic laws that don't only consist of a single function call.
 </para>
 <para>
 This is still very rudimentary and we hope to improve this function recognition in the future so that also functions exported from other programs can be recognized.
