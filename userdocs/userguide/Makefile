@@ -72,11 +72,16 @@ PDF_STYLESHEET=/usr/share/xml/docbook/stylesheet/db2latex/latex/docbook.xsl
 
 JAVA=/usr/bin/java
 
-#SAXON_JAR=/usr/share/java/saxon-6.5.4.jar
-SAXON_JAR=/sw/share/java/saxon/saxon.jar
-#SAXON_EXTENSIONS_JAR=/usr/share/java/docbook-xsl-saxon65.jar
+# This is known to work with saxon 6.5.3, it is best to download the files from
+# the server since the debian packages seem to be broken.
+SAXON_JAR=/usr/share/java/saxon-6.5.4.jar
+#SAXON_JAR=/sw/share/java/saxon/saxon.jar
+# This has been tested with the extensions included in the docbokk-xsl version
+# 1.69.1, again, it is best to download those from the server instead of using
+# the ones from the distribution.
+# SAXON_EXTENSIONS_JAR=/usr/share/java/docbook-xsl-saxon65.jar
 
-SAXON_EXTENSIONS_JAR=/sw/share/xml/xsl/docbook-xsl/extensions/saxon653.jar
+#SAXON_EXTENSIONS_JAR=/sw/share/xml/xsl/docbook-xsl/extensions/saxon653.jar
 
 XSLTPROC=$(JAVA) -classpath $(SAXON_JAR):$(SAXON_EXTENSIONS_JAR) com.icl.saxon.StyleSheet  
 
