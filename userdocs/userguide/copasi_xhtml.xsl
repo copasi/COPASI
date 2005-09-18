@@ -4,12 +4,14 @@
 <!--
 <xsl:import href="/usr/share/xml/docbook/stylesheet/nwalsh/xhtml/profile-docbook.xsl"/>
 -->
-<xsl:import href="/sw/share/xml/xsl/docbook-xsl/xhtml/profile-docbook.xsl"/>
 <!--
-<xsl:import href="/home/ralph/tools/docbook-xsl-1.67.2/xhtml/docbook.xsl" />
+<xsl:import href="/sw/share/xml/xsl/docbook-xsl/xhtml/profile-docbook.xsl"/>
 -->
 
+<xsl:import href="/home/ralph/tools/docbook-xsl-1.69.1/xhtml/docbook.xsl" />
+
 <xsl:param name="use.extensions" select="1" />
+<xsl:param name="tablecolumns.extension" select="1" />
 <xsl:param name="graphicsize.extension" select="1" />
 <xsl:param name="ignore.image.scaling" select="1" />
 <xsl:param name="default.image.width" select="50" />
