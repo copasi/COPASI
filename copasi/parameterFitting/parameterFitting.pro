@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.1 $ $Author: shoops $ $Date: 2005/09/16 19:20:33 $  
+# $Revision: 1.2 $ $Author: shoops $ $Date: 2005/09/19 21:12:54 $  
 ######################################################################
 
 LIB = fitting
@@ -10,12 +10,16 @@ include(../common.pri)
 # Input
 HEADERS += CExperiment.h \
            CExperimentSet.h \
+           CExperimentObjectMap.h \
+           CFitItem.h \
            CFitMethod.h \
            CFitProblem.h \
            CFitTask.h
            
 SOURCES += CExperiment.cpp \
-           CExperimentSet.cpp \
+           CExperimentSet.cpp  \
+           CExperimentObjectMap.cpp \
+           CFitItem.cpp \
            CFitMethod.cpp \
            CFitProblem.cpp \
            CFitTask.cpp

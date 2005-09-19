@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitMethod.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 19:08:34 $
+   $Date: 2005/09/19 21:12:54 $
    End CVS Header */
 
 #include "copasi.h"
@@ -66,10 +66,8 @@ bool CFitMethod::initialize()
 {
   if (!COptMethod::initialize()) return false;
 
-  /* :TODO: enable the code below.
   mpFitTask = dynamic_cast<CFitTask *>(getObjectParent());
   if (!mpFitTask) return false;
-  */
 
   return true;
 }
@@ -78,14 +76,12 @@ bool CFitMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
   if (!COptMethod::isValidProblem(pProblem)) return false;
 
-  /* :TODO: enable the code below.
   const CFitProblem * pTP = dynamic_cast<const CFitProblem *>(pProblem);
   if (!pTP)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a parameter fitting problem.");
       return false;
     }
-  */
 
   return true;
 }

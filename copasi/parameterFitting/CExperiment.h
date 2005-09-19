@@ -1,19 +1,22 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 19:08:34 $
+   $Date: 2005/09/19 21:12:54 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
- #define COPASI_CExperiment
+#define COPASI_CExperiment
 
 #include <string>
 
 #include "utilities/CCopasiParameterGroup.h"
- #include "utilities/CCopasiTask.h"
- #include "utilities/CMatrix.h"
+#include "utilities/CCopasiTask.h"
+#include "utilities/CMatrix.h"
+#include "utilities/CVector.h"
+
+class CExperimentObjectMap;
 
 class CExperiment: public CCopasiParameterGroup
   {
@@ -65,6 +68,28 @@ class CExperiment: public CCopasiParameterGroup
      * Destructor
      */
     virtual ~CExperiment();
+
+    /**
+     * Compile the map. This function must be called 
+     * before any operations can be performed.
+     * @param const std::vector< CCopasiContainer * > listOfContainer
+     * @return bool success
+     */
+    bool compile(const std::vector< CCopasiContainer * > listOfContainer =
+                   CCopasiContainer::EmptyList);
+
+    /**
+     * Reads the experiment data form a the given stream
+     * @param std::istream & in
+     * @return bool success
+     */
+    bool read(std::istream & in);
+
+    /**
+     * Reads the experiment data from *mpFileName at line *mpFirstRow
+     * @return bool success
+     */
+    bool read();
 
     /**
      * Retrieve the experiment type
@@ -161,48 +186,54 @@ class CExperiment: public CCopasiParameterGroup
 
   private:
     // Attributes
+
     /**
-     * This is realized a CCopasiParameter type STRING
+     * The key of the experiment
+     */ 
+    //    const std::string mKey;
+
+    /**
+     * This is realized as a CCopasiParameter type STRING
      */
     std::string * mpFileName;
 
     /**
-     * This is realized a CCopasiParameter type UINT
+     * This is realized as a CCopasiParameter type UINT
      */
-    unsigned C_INT32 * mpPosition;
+    unsigned C_INT32 * mpFirstRow;
 
     /**
-     * This is realized a CCopasiParameter type UINT
+     * This is realized as a CCopasiParameter type UINT
      */
     CCopasiTask::Type * mpTaskType;
 
     /**
-     * This is realized a CCopasiParameter type STRING
+     * This is realized as a CCopasiParameter type STRING
      */
     std::string * mpSeperator;
 
     /**
-     * This is realized a CCopasiParameter type BOOL
+     * This is realized as a CCopasiParameter type BOOL
      */
     bool * mpRowOriented;
 
     /**
-     * This is realized a CCopasiParameter type UINT
+     * This is realized as a CCopasiParameter type UINT
      */
     unsigned C_INT32 *mpNameRow;
 
     /**
-     * This is realized a CCopasiParameter type UINT
+     * This is realized as a CCopasiParameter type UINT
      */
     unsigned C_INT32 * mpNumRows;
 
     /**
-     * This is realized a CCopasiParameter type UINT
+     * This is realized as a CCopasiParameter type UINT
      */
     unsigned C_INT32 * mpNumColumns;
 
     /**
-     * This is realized a CCopasiParameter type GROUP
+     * This is realized as a CCopasiParameter type GROUP
      */
     std::vector< CCopasiParameter * > * mpColumnType;
 
@@ -210,6 +241,11 @@ class CExperiment: public CCopasiParameterGroup
      * The column names if available after reading a file
      */
     std::vector< std::string > mRowName;
+
+    /**
+     * This is realized as a CCopasiParameter type GROUP
+     */
+    CExperimentObjectMap * mpObjectMap;
 
     /**
      * The relevant independent experimental data after reading a file
@@ -220,6 +256,14 @@ class CExperiment: public CCopasiParameterGroup
      * The relevant dependent experimental data after reading a file
      */
     CMatrix< C_FLOAT64 > mDataDependent;
+
+    CVector< C_FLOAT64 > mMeans;
+
+    CVector< C_FLOAT64 > mVariances;
+
+    CVector< C_FLOAT64 * > mDependentValues;
+
+    CVector< UpdateMethod * > mIndependentUpdateMethods;
   };
 
 #endif // COPASI_CExperiment

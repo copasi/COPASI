@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 19:08:34 $
+   $Date: 2005/09/19 21:12:54 $
    End CVS Header */
 
 #ifndef COPASI_CExperimentSet
@@ -94,6 +94,13 @@ class CExperimentSet: public CCopasiParameterGroup
      * @return const CMatrix< C_FLOAT64 > & dependentData
      */
     const CMatrix< C_FLOAT64 > & getDependentData(const unsigned C_INT32 & index) const;
+
+  private:
+    /**
+     * Allocates all group parameters and assures that they are 
+     * properly initialized.
+     */
+    void initializeParameter();
 
   private:
     // Attributes
