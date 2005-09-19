@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: stupe $ 
-   $Date: 2005/09/19 09:44:12 $
+   $Date: 2005/09/19 15:38:53 $
    End CVS Header */
 
 /********************************************************
@@ -235,6 +235,7 @@ void CReportDefinitionSelect::jumpToFileBrowser()
     {
       targetEdit->setText(reportFile);
     }
+  delete fd;
 }
 
 void CReportDefinitionSelect::setReport(CReport* newReport)
