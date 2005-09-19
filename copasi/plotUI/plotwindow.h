@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/16 14:51:29 $
+   $Author: stupe $ 
+   $Date: 2005/09/19 09:44:12 $
    End CVS Header */
 
 #include <fstream>
@@ -12,6 +12,7 @@
 #include <qmainwindow.h>
 #include <qtoolbutton.h>
 #include "copasi.h"
+#include <CopasiUI\CopasiFileDialog.h>
 
 class CopasiPlot;
 class CPlotSpecification;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReportDefinitionSelect.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:12:46 $
+   $Author: stupe $ 
+   $Date: 2005/09/19 09:44:12 $
    End CVS Header */
 
 /********************************************************
@@ -20,6 +20,7 @@ Contact: Please contact lixu1@vt.edu.
 
 #include <qvariant.h>
 #include <qdialog.h>
+#include <CopasiFileDialog.h>
 
 class QVBoxLayout;
 class QHBoxLayout;

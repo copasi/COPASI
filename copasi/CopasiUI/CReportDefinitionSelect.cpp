@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReportDefinitionSelect.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/21 11:40:10 $
+   $Author: stupe $ 
+   $Date: 2005/09/19 09:44:12 $
    End CVS Header */
 
 /********************************************************
@@ -226,11 +226,11 @@ void CReportDefinitionSelect::jumpToReportDefinitionEdit()
 
 void CReportDefinitionSelect::jumpToFileBrowser()
 {
-  QString reportFile = QFileDialog::getSaveFileName(
-                         QString::null, "TEXT Files (*.txt)",
-                         this, "report target file browser",
-                         "Choose to create a new a file");
+  CopasiFileDialog* fd = new CopasiFileDialog(this, "Save File Dialog", TRUE);
 
+  QString reportFile = fd->GetSaveFileName(QString::null, "TEXT Files (*.txt)",
+                       this, "report target file browser",
+                       "Choose to create a new a file");
   if (reportFile)
     {
       targetEdit->setText(reportFile);
