@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.155 $
+   $Revision: 1.156 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/15 18:45:24 $
+   $Author: stupe $ 
+   $Date: 2005/09/19 09:56:02 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -176,21 +176,17 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
 
   CopasiFileDialog* fd = new CopasiFileDialog(this, "Save File Dialog", TRUE);
 
-  //set filter
+  // Need to look into this. Filter is not getting set when passes as parameter. Also destroy CopasiFileDialog after using it.
   fd->setFilter("Files (*.gps *.cps)");
   fd->addFilter("All Files (*.*)");
-  //set mode
-  fd->setMode(QFileDialog::AnyFile);
 
   while (Answer == QMessageBox::No)
     {
-      if (fd->exec() == QDialog::Accepted)
-        tmp = fd->selectedFile();
+      tmp = fd->GetSaveFileName(str, "COPASI Files (*.gps *cps);;All Files (*.*)",
+                                 this, "Save File Dialog",
+                                 "Choose a filename to save under.");
 
-      /*tmp = QFileDialog::getSaveFileName(str, "COPASI Files (*.cps)",
-                                             this, "Save File Dialog",
-                                             "Choose a filename to save under.");*/
-      if (tmp == "") return;
+      if (tmp) return;
 
       if (!tmp.endsWith(".cps") &&
           !tmp.endsWith(".")) tmp += ".cps";
@@ -296,23 +292,14 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
   CopasiFileDialog* fd = new CopasiFileDialog(this, "Open File Dialog", TRUE);
 
-  //set filter
+  // Need to look into this. Filter is not getting set when passes as parameter. Also destroy CopasiFileDialog after using it.
   fd->setFilter("All Files (*.*)");
   fd->addFilter("Files (*.gps *.cps)");
-  //set mode
-  fd->setMode(QFileDialog::ExistingFile);
 
   if (file == "")
-    if (fd->exec() == QDialog::Accepted)
-      {
-        newFile = fd->selectedFile();
-      }
-
-  /*newFile = QFileDialog::getOpenFileName(QString::null, "Files (*.gps *.cps)",
-                                          this, "open file dialog",
-                                          "Choose a file");*/
-    else
-      newFile = file;
+    newFile = fd->GetOpenFileName(QString::null, "All Files (*.*);;Files (*.gps *.cps)", this, "open file dialog", "Choose a file");
+  else
+    newFile = file;
 
   // gives the file information to the datamodel to handle it
 
@@ -781,11 +768,12 @@ void CopasiUI3Window::slotImportSBML(QString file)
 
   QString SBMLFile;
 
+  CopasiFileDialog* fd = new CopasiFileDialog(this, "Open File Dialog", TRUE);
+
   if (file == "")
-    SBMLFile = QFileDialog::getOpenFileName(
-                 QString::null, "XML Files (*.xml)",
-                 this, "import file dialog",
-                 "Choose a file");
+    SBMLFile = fd->GetOpenFileName(QString::null, "XML Files (*.xml)",
+                                    this, "import file dialog",
+                                    "Choose a file");
   else
     SBMLFile = file;
 
@@ -883,6 +871,7 @@ void CopasiUI3Window::slotExportSBML()
 
   C_INT32 Answer = QMessageBox::No;
   QString tmp;
+  CopasiFileDialog* fd = new CopasiFileDialog(this, "Save File Dialog", TRUE);
 
   while (Answer == QMessageBox::No)
     {
@@ -892,11 +881,11 @@ void CopasiUI3Window::slotExportSBML()
         + CDirEntry::baseName(CCopasiDataModel::Global->getFileName())
         + ".xml";
 
-      tmp = QFileDialog::getSaveFileName(FROM_UTF8(Default),
-                                         "XML Files (*.xml)",
-                                         this, "Export SBML Dialog",
-                                         "Choose a filename for SBML export.");
-      if (tmp == "") return;
+      tmp = fd->GetSaveFileName(FROM_UTF8(Default),
+                                 "XML Files (*.xml)",
+                                 this, "Export SBML Dialog",
+                                 "Choose a filename for SBML export.");
+      if (tmp) return;
 
       if (!tmp.endsWith(".xml") && !tmp.endsWith("."))
         tmp += ".xml";
@@ -933,6 +922,7 @@ void CopasiUI3Window::slotExportMathModel()
 
   C_INT32 Answer = QMessageBox::No;
   QString tmp;
+  CopasiFileDialog* fd = new CopasiFileDialog(this, "Save File Dialog", TRUE);
 
   while (Answer == QMessageBox::No)
     {
@@ -942,11 +932,12 @@ void CopasiUI3Window::slotExportMathModel()
         + CDirEntry::baseName(CCopasiDataModel::Global->getFileName())
         + ".out";
 
-      tmp = QFileDialog::getSaveFileName(FROM_UTF8(Default),
-                                         "ASCII Files (*.out)",
-                                         this, "Export MathModel Dialog",
-                                         "Choose a filename for MathModel export.");
-      if (tmp == "") return;
+      tmp = fd->GetSaveFileName(FROM_UTF8(Default),
+                                 "ASCII Files (*.out)",
+                                 this, "Export MathModel Dialog",
+                                 "Choose a filename for MathModel export.");
+
+      if (tmp) return;
 
       if (!tmp.endsWith(".cps") && !tmp.endsWith("."))
         tmp += ".out";
@@ -957,7 +948,6 @@ void CopasiUI3Window::slotExportMathModel()
 
       if (Answer == QMessageBox::Cancel) return;
     }
-
   if (dataModel && tmp)
     {
       QCursor oldCursor = cursor();
