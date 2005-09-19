@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ParamFittingWidget.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/21 11:40:11 $
+   $Author: stupe $ 
+   $Date: 2005/09/19 10:03:53 $
    End CVS Header */
 
 /********************************************************
@@ -103,7 +103,7 @@ ParamFittingWidget::ParamFittingWidget(QWidget* parent, const char* name, WFlags
   dataFileText->setFrameShadow(QLineEdit::Sunken);
   ParamFittingWidgetLayout->addMultiCellWidget(dataFileText, 0, 0, 1, 3);
 
-  dataButtonsLayout = new QHBoxLayout(this, 0, 6, "dataButtonsLayout");
+  dataButtonsLayout = new QHBoxLayout(NULL, 0, 6, "dataButtonsLayout");
   browseButton = new QPushButton("Browse", this, "browseButton");
   dataButtonsLayout->addWidget(browseButton);
   dataFormatButton = new QPushButton(this, "dataFormatButton");
@@ -141,7 +141,7 @@ ParamFittingWidget::ParamFittingWidget(QWidget* parent, const char* name, WFlags
 
   // The following code is for the next two gui lines for showing method parameters
   // labels line/ this would be dynamically generated and displayed based on selected method
-  methodParamLabelsLayout = new QHBoxLayout(this, 0, 10, "methodParamLabelsLayout");
+  methodParamLabelsLayout = new QHBoxLayout(NULL, 0, 10, "methodParamLabelsLayout");
   sampleLabel1 = new QLabel("Param1", this, "sampleLabel1");
   sampleLabel2 = new QLabel("Param2", this, "sampleLabel2");
   sampleLabel3 = new QLabel("Param3", this, "sampleLabel3");
@@ -152,7 +152,7 @@ ParamFittingWidget::ParamFittingWidget(QWidget* parent, const char* name, WFlags
   methodParamLabelsLayout -> addWidget(sampleLabel4);
   ParamFittingWidgetLayout->addMultiCellLayout(methodParamLabelsLayout, 3, 3, 0, 3);
   // text field label entry line
-  methodParamTextboxLayout = new QHBoxLayout(this, 0, 10, "methodParamLabelsLayout");
+  methodParamTextboxLayout = new QHBoxLayout(NULL, 0, 10, "methodParamLabelsLayout");
   methodParam1Text = new QLineEdit(this, "methodParam1Text");
   methodParam2Text = new QLineEdit(this, "methodParam2Text");
   methodParam3Text = new QLineEdit(this, "methodParam3Text");
@@ -178,7 +178,7 @@ ParamFittingWidget::ParamFittingWidget(QWidget* parent, const char* name, WFlags
 
   //3rd gui line: type of experiment to run: steady state or time course with parameter
   //adjustment edit button options
-  steadyStateOrTimeLayout = new QHBoxLayout(this, 0, 6, "steadyStateOrTimeLayout");
+  steadyStateOrTimeLayout = new QHBoxLayout(NULL, 0, 6, "steadyStateOrTimeLayout");
   //qbuttongroup = new QButtonGroup(this, "buttonGroup");
   //radioButtonLayout = new QVBoxLayout(qbuttongroup, 0, 6, "radioButtonLayout");
   //steadyStateRadio = new QRadioButton("Steady State", qbuttongroup, "steadyStateRadio");

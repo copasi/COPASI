@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:39:51 $
+   $Author: stupe $ 
+   $Date: 2005/09/19 10:03:53 $
    End CVS Header */
 
 #include <qpushbutton.h>
@@ -38,7 +38,7 @@ StateWidget::StateWidget(QWidget* parent, const char* name, WFlags fl)
 
   parentLayout = new QVBoxLayout(this, 0, 0, "parentLayout");
   stateLayout = new QHBoxLayout(0, 0 , 6, "StateLayout");
-  mWidgetLayout = new QGridLayout(this, 1, 1, 0, -1, "Layout");
+  mWidgetLayout = new QGridLayout(NULL, 1, 1, 0, -1, "Layout");
 
   mCentralWidget = new StateSubwidget(this, "StateSubwidget");
   mWidgetLayout->addWidget(mCentralWidget, 0, 0);

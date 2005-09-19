@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/16 17:46:59 $
+   $Author: stupe $ 
+   $Date: 2005/09/19 10:03:53 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -57,7 +57,7 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   optimizationWidgetLayout = new QGridLayout(this, 30, 12, 0, 1, "optimizationWidgetLayout");
 
-  nameLayout = new QHBoxLayout(this);
+  nameLayout = new QHBoxLayout();
   nameLabel = new QLabel(this, "nameLabel");
   nameLayout->addWidget(nameLabel, 0, 0);
 
@@ -66,7 +66,7 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   optimizationWidgetLayout->addMultiCellLayout(nameLayout, 0, 0, 1, 10);
 
-  expressionTextLayout = new QHBoxLayout(this, 0, 1, "expressionTextLayout");
+  expressionTextLayout = new QHBoxLayout(NULL, 0, 1, "expressionTextLayout");
 
   expressionEditlabel = new QLabel(this, "expressionEditlabel");
   expressionTextLayout->addWidget(expressionEditlabel, 0, 0);
@@ -81,7 +81,7 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   optimizationWidgetLayout->addMultiCellLayout(expressionTextLayout, 3, 3, 1, 10);
 
-  constraintLayout = new QGridLayout(this, 14, 10, 1, 1, "constraintLayout");
+  constraintLayout = new QGridLayout(NULL, 14, 10, 1, 1, "constraintLayout");
 
   paramsGroupBox = new QGroupBox(this, "paramsGroupBox");
 
@@ -111,7 +111,7 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   optimizationWidgetLayout->addMultiCellWidget(AddTaskButton, 11, 14, 8, 10);
 
-  methodGroupBoxLayout = new QVBoxLayout(this);
+  methodGroupBoxLayout = new QVBoxLayout();
 
   methodLabel = new QLabel(this, "methodLabel");
   methodGroupBoxLayout->addWidget(methodLabel);
@@ -126,7 +126,7 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
 
   optimizationWidgetLayout->addMultiCellLayout(methodGroupBoxLayout, 5, 13, 1, 5);
 
-  typeGroupBoxLayout = new QGridLayout(this);
+  typeGroupBoxLayout = new QGridLayout();
   typeGroupBoxLayout->setAlignment(Qt::AlignTop);
 
   typeLabel = new QLabel(this, "typeLabel");
