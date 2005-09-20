@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiFileDialog.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/09/19 09:44:12 $
+   $Author: shoops $ 
+   $Date: 2005/09/20 13:21:12 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -17,14 +17,18 @@
 #include "commandline/COptions.h"
 #include "utilities/CDirEntry.h"
 
-CopasiFileDialog::CopasiFileDialog(QWidget * parent , const char * name , bool modal)
+CopasiFileDialog::CopasiFileDialog(QWidget * parent ,
+                                   const char * name ,
+                                   bool modal)
     : QFileDialog(parent , name , modal)
 {
   mpGrp = new CQFileDialogBtnGrp(this);
   addLeftWidget(mpGrp);
 
-  connect(mpGrp->mpBtnExamples, SIGNAL(pressed()), this, SLOT(slotExampleDir()));
-  connect(mpGrp->mpBtnHome, SIGNAL(pressed()), this, SLOT(slotHomeDir()));
+  connect(mpGrp->mpBtnExamples, SIGNAL(pressed()),
+          this, SLOT(slotExampleDir()));
+  connect(mpGrp->mpBtnHome, SIGNAL(pressed()),
+          this, SLOT(slotHomeDir()));
 }
 
 void CopasiFileDialog::slotExampleDir()
@@ -38,12 +42,19 @@ void CopasiFileDialog::slotExampleDir()
     }
   else
     {
-      QMessageBox::warning(this, "Directory Not Found", FROM_UTF8(ExampleDir), QMessageBox::Ok, 0);
+      QMessageBox::warning(this, "Directory Not Found", FROM_UTF8(ExampleDir),
+                           QMessageBox::Ok, 0);
       mpGrp->mpBtnExamples->setDown(false);
     }
 }
 
-QString CopasiFileDialog::GetOpenFileName(const QString & startWith, const QString & filter, QWidget * parent, const char * name, const QString & caption , QString * selectedFilter, bool resolveSymlinks)
+QString CopasiFileDialog::GetOpenFileName(const QString & /* startWith */,
+    const QString & /* filter */,
+    QWidget * /* parent */,
+    const char * /* name */,
+    const QString & /* caption */,
+    QString * /* selectedFilter */,
+    bool /* resolveSymlinks */)
 
 {
   QString newFile = "";
@@ -57,7 +68,13 @@ QString CopasiFileDialog::GetOpenFileName(const QString & startWith, const QStri
   return NULL;
 }
 
-QString CopasiFileDialog::GetSaveFileName(const QString & startWith, const QString & filter, QWidget * parent, const char * name, const QString & caption, QString * selectedFilter, bool resolveSymlinks)
+QString CopasiFileDialog::GetSaveFileName(const QString & /* startWith */,
+    const QString & /* filter */,
+    QWidget * /* parent */,
+    const char * /* name */,
+    const QString & /* caption */,
+    QString * /* selectedFilter */,
+    bool /* resolveSymlinks */)
 {
   QString newFile = "";
   //this->setFilter(filter);
@@ -81,7 +98,8 @@ void CopasiFileDialog::slotHomeDir()
     }
   else
     {
-      QMessageBox::warning(this, "Directory Not Found", FROM_UTF8(homeDir), QMessageBox::Ok, 0);
+      QMessageBox::warning(this, "Directory Not Found", FROM_UTF8(homeDir),
+                           QMessageBox::Ok, 0);
       mpGrp->mpBtnHome->setDown(false);
     }
 }
