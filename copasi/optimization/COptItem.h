@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:17 $
+   $Date: 2005/09/20 12:36:14 $
    End CVS Header */
 
 #ifndef COPASI_COptItem
@@ -23,7 +23,7 @@ class COptItem
     friend class COptProblem;
 
     //Operations
-  private:
+  protected:
     /**
      * Specific Constructor
      */
@@ -55,14 +55,14 @@ class COptItem
     /**
      * Destructor
      */
-    ~COptItem();
+    virtual ~COptItem();
 
     /**
      * Initialize the optimization item.
      * @param const CCopasiObjectName & objectCN
      * @return bool success
      */
-    bool initialize(const CCopasiObjectName & objectCN);
+    virtual bool initialize(const CCopasiObjectName & objectCN);
 
     /**
      * Set the object of the optimization item.
@@ -139,13 +139,13 @@ class COptItem
      * Retrieve the update method
      * @return UpdateMethod * pUpdateMethod
      */
-    UpdateMethod * getUpdateMethod() const;
+    virtual UpdateMethod * getUpdateMethod() const;
 
     /**
      * Check the validity of the optimization item.
      * @return bool isValid
      */
-    bool isValid() const;
+    virtual bool isValid() const;
 
     /**
      * Check whether the group describes a valid optimization item.
@@ -221,12 +221,13 @@ class COptItem
     friend std::ostream &operator<<(std::ostream &os, const COptItem & o);
 
     //Attributes:
-  private:
+  protected:
     /**
      * A pointer to the parameter group which stores the information.
      */
     CCopasiParameterGroup * mpGroup;
 
+  private:
     /**
      * A pointer to the object
      */
