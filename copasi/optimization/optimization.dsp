@@ -26,17 +26,17 @@ CFG=optimization - Win32 Build
 # PROP Scc_LocalPath ""
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "Build"
-# PROP BASE Intermediate_Dir "Build"
+# PROP BASE Output_Dir "."
+# PROP BASE Intermediate_Dir "."
 # PROP BASE Cmd_Line "nmake /f "Makefile""
-# PROP BASE Rebuild_Opt "/a"
+# PROP BASE Rebuild_Opt "clean all"
 # PROP BASE Target_File "../lib/optimization.lib"
 # PROP BASE Bsc_Name ""
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Build"
-# PROP Intermediate_Dir "Build"
+# PROP Output_Dir "."
+# PROP Intermediate_Dir "."
 # PROP Cmd_Line "nmake /f Makefile"
 # PROP Rebuild_Opt "clean all"
 # PROP Target_File "../lib/optimization.lib"
