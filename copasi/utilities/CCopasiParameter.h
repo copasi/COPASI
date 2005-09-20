@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:58 $
+   $Date: 2005/09/20 12:34:30 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -70,12 +70,13 @@ class CCopasiParameter: public CCopasiContainer
      */
     static const char* XMLType[];
 
-  private:
+  protected:
     /**
      * The key of the parameter.
      */
     std::string mKey;
 
+  private:
     /**
      * The type of the parameter
      */
