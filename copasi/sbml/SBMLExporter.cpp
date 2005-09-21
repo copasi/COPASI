@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:31 $
+   $Author: gauges $ 
+   $Date: 2005/09/21 14:27:14 $
    End CVS Header */
 
 #include <math.h>
@@ -49,14 +49,16 @@ const char* SBMLExporter::HTML_FOOTER = "</body>";
  */
 SBMLExporter::SBMLExporter(): sbmlDocument(NULL), mpIdSet(NULL), mpExportHandler(NULL), mExportExpressions(false)
 {
-  /* nothing to do */
+  this->mpIdSet = new std::set<std::string>;
 }
 
 /**
  ** Destructor for the exporter.
  */
 SBMLExporter::~SBMLExporter()
-{}
+{
+  pdelete(this->mpIdSet);
+}
 
 /**
  ** This method takes a copasi CModel object, creates an SBMLDocument from
@@ -170,6 +172,7 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
       sbmlModel->setId(copasiModel->getKey().c_str());
     }
   this->mHandledSBMLObjects.push_back(sbmlModel);
+  if (this->mpIdSet) pdelete(this->mpIdSet);
   this->mpIdSet = SBMLExporter::createIdSet(sbmlModel);
   if (!copasiModel->getObjectName().empty())
     {
@@ -1748,3 +1751,8 @@ void SBMLExporter::setExportExpressions(bool value)
 {
   this->mExportExpressions = value;
 }
+
+const std::list<const CEvaluationTree*>& SBMLExporter::getUsedFunctionList() const
+  {
+    return this->mUsedFunctions;
+  }

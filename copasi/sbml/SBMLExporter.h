@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:31 $
+   $Author: gauges $ 
+   $Date: 2005/09/21 14:27:14 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -271,6 +271,7 @@ class SBMLExporter
 
     void setExportExpressions(bool value);
     bool isSetExportExpressions() const;
+    const std::list<const CEvaluationTree*>& getUsedFunctionList() const;
   };
 
 #endif
