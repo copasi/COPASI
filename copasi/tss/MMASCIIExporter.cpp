@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/05 13:59:38 $
+   $Author: nsimus $ 
+   $Date: 2005/09/21 11:06:25 $
    End CVS Header */
 
 #include <math.h>
@@ -21,6 +21,11 @@
 #include "model/CChemEqElement.h"
 #include "function/CFunction.h"
 #include "report/CKeyFactory.h"
+#include "function/CEvaluationTree.h"
+#include "function/CEvaluationNodeObject.h"
+#include "sbml/math/ASTNode.h"
+#include "utilities/CCopasiTree.h"
+
 #include <iostream>
 #include <fstream>
 
@@ -334,30 +339,94 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
 
   for (i = 0; i < reacs_size; ++i)
     {
-      unsigned C_INT32 params_size;
-      std::ostringstream newName;
-
       reac = reacs[i];
-      params_size = reac->getFunctionParameters().size();
 
       if (reac->getFunction().getType() != CEvaluationTree::MassAction)
-        if (isNewName[i])
-          {
-            outFile << std::endl;
-            outFile << "double "
-            << newFunctionNames[i]
-            << "(";
+        {
+          unsigned C_INT32 varbs_size, test_count = 0;
+          const CFunction* func;
+          CFunction* tmpFunc = NULL;
 
-            for (j = 0; j < params_size; ++j)
-              {
-                outFile << "double " << reac->getFunctionParameters()[j]->getObjectName().c_str();
-                if (j != params_size - 1) outFile << ", ";
-              }
+          std::map< std::string, std::string > parameterMap;
+          std::map< std::string, std::string > constName;
+          std::map< std::string, unsigned C_INT32 > tmpIndex;
 
-            outFile << ") ";
-            outFile << '\t' << "//" << reac->getFunction().getObjectName().c_str() << std::endl;
-            outFile << "{return  " << reac->getFunction().getInfix().c_str() << "; } " << std::endl;
-          }
+          func = &(reac->getFunction());
+
+          tmpFunc = new CFunction(*func);
+          varbs_size = func->getVariables().size();
+
+          for (j = 0; j < varbs_size; ++j)
+            parameterMap[func->getVariables()[j]->getObjectName()] = "\n";
+
+          constName["SUBSTRATE"] = "sub_"; tmpIndex["SUBSTRATE"] = 0;
+          constName["PRODUCT"] = "prod_"; tmpIndex["PRODUCT"] = 0;
+          constName["PARAMETER"] = "param_"; tmpIndex["PARAMETER"] = 0;
+          constName["MODIFIER"] = "modif_"; tmpIndex["MODIFIER"] = 0;
+          constName["VOLUME"] = "volume_"; tmpIndex["VOLUME"] = 0;
+          constName["VARIABLE"] = "varb_"; tmpIndex["VARIABLE"] = 0;
+
+          std::cout << "vorher:" << std::endl;
+          if (tmpFunc->getRoot())
+            tmpFunc->getRoot()->printRecursively(std::cout);
+
+          CCopasiTree<CEvaluationNode>::iterator it = tmpFunc->getRoot();
+
+          while (it != NULL)
+            {
+              if (CEvaluationNode::type(it->getType()) == CEvaluationNode::VARIABLE)
+                {
+                  std::cout << "it->data " << it->getData() << std::endl;
+
+                  const CFunctionParameter* param = func->getVariables()[it->getData()];
+                  std::string usage = param->getUsage();
+
+                  if ((isEmptyString(parameterMap[param->getObjectName()])))
+                    {
+                      CFunctionParameter* tmpParam = tmpFunc->getVariables()[it->getData()];
+                      std::ostringstream tmpName;
+
+                      //tmpName << "toto_" << test_count;
+                      tmpName << constName[usage] << tmpIndex[usage];
+                      tmpParam->setName(tmpName.str());
+                      it->setData(tmpName.str());
+
+                      parameterMap[param->getObjectName()] = tmpName.str();
+                      //test_count++;
+                      tmpIndex[usage]++;
+                    }
+                  else
+                    {
+                      it->setData(parameterMap[param->getObjectName()]);
+                    }
+                }
+
+              ++it;
+            }
+
+          tmpFunc->updateTree();
+
+          std::cout << "nachher:" << std::endl;
+          if (tmpFunc->getRoot())
+            tmpFunc->getRoot()->printRecursively();
+
+          if (isNewName[i])
+            {
+              outFile << std::endl;
+              outFile << "double " << newFunctionNames[i] << "(";
+
+              for (j = 0; j < varbs_size; ++j)
+                {
+                  //      outFile << "double " << tmpFunc->getVariables()[j]->getObjectName().c_str() << "(" << tmpFunc->getVariables()[j]->getUsage().c_str()<< ")";
+                  outFile << "double " << tmpFunc->getVariables()[j]->getObjectName().c_str();
+                  if (j != varbs_size - 1) outFile << ", ";
+                }
+
+              outFile << ") ";
+              outFile << '\t' << "//" << reac->getFunction().getObjectName().c_str() << std::endl;
+              outFile << "{return  " << tmpFunc->getInfix().c_str() << "; } " << std::endl;
+            }
+        }
     }
 
   outFile << "#endif // KINETIC_FUNCTIONS" << std::endl;
