@@ -10,6 +10,13 @@
 ]> 
 
 <book id="book" xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<title>COPASI Documentation</title>
+<bookinfo>
+  <title>COPASI Documentation</title>
+  <author><firstname>Ralph</firstname><surname>Gauges</surname>
+    </author>
+</bookinfo>
+
 &gui;
 <!--
 &commandLine;
