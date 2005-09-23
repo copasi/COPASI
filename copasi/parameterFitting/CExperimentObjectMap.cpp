@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/23 19:12:16 $
+   $Date: 2005/09/23 19:28:32 $
    End CVS Header */
 
 #include <vector>
@@ -62,8 +62,6 @@ bool CExperimentObjectMap::removeObject(const std::string & CN)
 
 bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listOfContainer)
 {
-  bool success = true;
-
   unsigned C_INT32 i, imax = size();
   unsigned C_INT32 Column;
 

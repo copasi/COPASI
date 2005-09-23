@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/23 19:17:28 $
+   $Date: 2005/09/23 19:28:32 $
    End CVS Header */
 
 #include <algorithm>
@@ -96,9 +96,7 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
 
 CExperiment * CExperimentSet::addExperiment(const CExperiment & experiment)
 {
-  unsigned C_INT32 index = size();
-
-  CExperiment * pExperiment = new CExperiment();
+  CExperiment * pExperiment = new CExperiment(experiment);
   addParameter(pExperiment);
 
   return pExperiment;

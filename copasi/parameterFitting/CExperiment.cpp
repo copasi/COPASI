@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/23 19:17:28 $
+   $Date: 2005/09/23 19:28:32 $
    End CVS Header */
 
 #include <fstream>
@@ -44,7 +44,7 @@ CExperiment::CExperiment(const CCopasiContainer * pParent):
     mpNumRows(NULL),
     mpNumColumns(NULL),
     mpColumnType(NULL),
-    mRowName(NULL),
+    mRowName(),
     mpObjectMap(NULL),
     mDataIndependent(0, 0),
     mDataDependent(0, 0),
@@ -66,7 +66,7 @@ CExperiment::CExperiment(const CExperiment & src,
     mpNumRows(NULL),
     mpNumColumns(NULL),
     mpColumnType(NULL),
-    mRowName(NULL),
+    mRowName(src.mRowName),
     mpObjectMap(NULL),
     mDataIndependent(src.mDataIndependent),
     mDataDependent(src.mDataDependent),
@@ -88,7 +88,7 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
     mpNumRows(NULL),
     mpNumColumns(NULL),
     mpColumnType(NULL),
-    mRowName(NULL),
+    mRowName(),
     mpObjectMap(NULL),
     mDataIndependent(0, 0),
     mDataDependent(0, 0),
