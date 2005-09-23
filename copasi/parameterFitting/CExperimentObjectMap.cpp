@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/19 21:12:54 $
+   $Date: 2005/09/23 19:12:16 $
    End CVS Header */
 
 #include <vector>
@@ -67,7 +67,15 @@ bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listO
   unsigned C_INT32 i, imax = size();
   unsigned C_INT32 Column;
 
-  mObjects.resize(imax);
+  // We need to find out the size of the object map
+  for (i = 0; i < imax; i++)
+    {
+      Column = strtoul(getName(i).c_str(), NULL, 0);
+      if (mLastColumn < Column)
+        mLastColumn = Column;
+    }
+
+  mObjects.resize(mLastColumn);
   mObjects = NULL;
 
   CCopasiObject * pObject = NULL;
@@ -80,10 +88,8 @@ bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listO
                                               *getValue(i).pCN)) != NULL &&
           pObject->isValueDbl())
         {
-          Column = strtoul(getName(i).c_str(), NULL, 1);
+          Column = strtoul(getName(i).c_str(), NULL, 0);
           mObjects[Column] = pObject;
-          if (mLastColumn < Column)
-            mLastColumn = Column;
         }
       else
         return false;
