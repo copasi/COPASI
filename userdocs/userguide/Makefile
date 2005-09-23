@@ -1,4 +1,78 @@
+# I would prefer to use the xhtml stylesheet because the MathML are not allowed in normal HTML.
+# Most browsers seem to render it anyway.
+# The XHTML output does not make a whitespace after tags which looks very ugly. Maybe this will be fixed in later
+# versions of the XHTML stylesheet (or we can fix it if we know enough about docbook.)
+HTML_STYLESHEET=/usr/share/xml/docbook/stylesheet/nwalsh/html/profile-docbook.xsl
 
+FO_STYLESHEET=copasi_fo.xsl
+
+XHTML_STYLESHEET=copasi_xhtml.xsl
+
+PDF_STYLESHEET=/usr/share/xml/docbook/stylesheet/db2latex/latex/docbook.xsl
+
+JAVA=/usr/bin/java
+
+# This is known to work with saxon 6.5.3, it is best to download the files from
+# the server since the debian packages seem to be broken.
+SAXON_JAR=/usr/share/java/saxon-6.5.4.jar
+#SAXON_JAR=/sw/share/java/saxon/saxon.jar
+# This has been tested with the extensions included in the docbokk-xsl version
+# 1.69.1, again, it is best to download those from the server instead of using
+# the ones from the distribution.
+# SAXON_EXTENSIONS_JAR=/usr/share/java/docbook-xsl-saxon65.jar
+
+#SAXON_EXTENSIONS_JAR=/sw/share/xml/xsl/docbook-xsl/extensions/saxon653.jar
+
+XSLTPROC=$(JAVA) -classpath $(SAXON_JAR):$(SAXON_EXTENSIONS_JAR) com.icl.saxon.StyleSheet  
+
+
+# The following variables need to be adjusted to suit your installation
+# The dblatex installation directory
+DBLATEX_PATH=/home/usr
+DBLATEX=$(DBLATEX_PATH)/bin/dblatex
+DBLATEX_TEXINPUTS=$(TEXINPUTS):$(DBLATEX_PATH)/share/dblatex/latex/style:$(DBLATEX_PATH)/share/dblatex/latex/graphics
+
+# The PDFLATEX executable
+PDFLATEX=/home/usr/teTeX/bin/pdflatex
+
+
+# PDFXMLTEX=/usr/bin/pdfxmltex
+
+.PHONY: clean all
+
+all: copasi.pdf copasi.xhtml copasi.html
+
+copasi.tex: $(SOURCES)
+	$(DBLATEX) -t tex copasi.xml
+
+copasi.pdf: copasi.tex $(IMAGES)
+	TEXINPUTS=$(DBLATEX_TEXINPUTS) $(PDFLATEX) $<
+	TEXINPUTS=$(DBLATEX_TEXINPUTS) $(PDFLATEX) $<
+	TEXINPUTS=$(DBLATEX_TEXINPUTS) $(PDFLATEX) $<
+
+#copasi.pdf: copasi.fo
+#	$(PDFXMLTEX) $<
+#	$(PDFXMLTEX) $<
+#	$(PDFXMLTEX) $<
+
+copasi.html: $(SOURCES) $(IMAGES) $(HTML_STYLESHEET)
+	$(XSLTPROC) -o $@ $< $(HTML_STYLESHEET) 
+
+copasi.xhtml: $(SOURCES) $(IMAGES) $(XHTML_STYLESHEET)
+	$(XSLTPROC) -o $@ $< $(XHTML_STYLESHEET) 
+
+copasi.fo: $(SOURCES) $(IMAGES) $(FO_STYLESHEET)
+	$(XSLTPROC) -o $@ $< $(FO_STYLESHEET)
+
+clean:
+	rm -f copasi.pdf
+	rm -f copasi.html
+	rm -f copasi.out
+	rm -f copasi.idx
+	rm -f copasi.log
+	rm -f copasi.aux
+	rm -f copasi.glo
+	rm -f fotex.log
 
 SOURCES = copasi.xml \
           copasi_GUI.xml \
@@ -6,7 +80,6 @@ SOURCES = copasi.xml \
           copasi_fileFormats.xml \
           copasi_methods.xml 
 
-   
 IMAGES = images/Compartments_01.png \
          images/Compartments_02.png \
          images/Compartments_03.png \
@@ -58,70 +131,3 @@ IMAGES = images/Compartments_01.png \
 	 figures/warning.eps \
 	 figures/warning.pdf
 
-# I would prefer to use the xhtml stylesheet because the MathML are not allowed in normal HTML.
-# Most browsers seem to render it anyway.
-# The XHTML output does not make a whitespace after tags which looks very ugly. Maybe this will be fixed in later
-# versions of the XHTML stylesheet (or we can fix it if we know enough about docbook.)
-HTML_STYLESHEET=/usr/share/xml/docbook/stylesheet/nwalsh/html/profile-docbook.xsl
-
-FO_STYLESHEET=copasi_fo.xsl
-
-XHTML_STYLESHEET=copasi_xhtml.xsl
-
-PDF_STYLESHEET=/usr/share/xml/docbook/stylesheet/db2latex/latex/docbook.xsl
-
-JAVA=/usr/bin/java
-
-# This is known to work with saxon 6.5.3, it is best to download the files from
-# the server since the debian packages seem to be broken.
-SAXON_JAR=/usr/share/java/saxon-6.5.4.jar
-#SAXON_JAR=/sw/share/java/saxon/saxon.jar
-# This has been tested with the extensions included in the docbokk-xsl version
-# 1.69.1, again, it is best to download those from the server instead of using
-# the ones from the distribution.
-# SAXON_EXTENSIONS_JAR=/usr/share/java/docbook-xsl-saxon65.jar
-
-#SAXON_EXTENSIONS_JAR=/sw/share/xml/xsl/docbook-xsl/extensions/saxon653.jar
-
-XSLTPROC=$(JAVA) -classpath $(SAXON_JAR):$(SAXON_EXTENSIONS_JAR) com.icl.saxon.StyleSheet  
-
-
-PDFLATEX=/usr/bin/pdflatex
-
-PDFXMLTEX=/usr/bin/pdfxmltex
-
-.PHONY: clean all
-
-all: copasi.pdf copasi.xhtml copasi.html
-
-copasi.tex: $(SOURCES)
-	$(XSLTPROC) -o $@ $< $(PDF_STYLESHEET) 
-
-#copasi.pdf: copasi.tex $(IMAGES)
-#	$(PDFLATEX) $<
-#	$(PDFLATEX) $<
-#	$(PDFLATEX) $<
- 
-copasi.pdf: copasi.fo
-	$(PDFXMLTEX) $<
-	$(PDFXMLTEX) $<
-	$(PDFXMLTEX) $<
-	
-copasi.html: $(SOURCES) $(IMAGES) $(HTML_STYLESHEET)
-	$(XSLTPROC) -o $@ $< $(HTML_STYLESHEET) 
-
-copasi.xhtml: $(SOURCES) $(IMAGES) $(XHTML_STYLESHEET)
-	$(XSLTPROC) -o $@ $< $(XHTML_STYLESHEET) 
-
-copasi.fo: $(SOURCES) $(IMAGES) $(FO_STYLESHEET)
-	$(XSLTPROC) -o $@ $< $(FO_STYLESHEET)
-
-clean:
-	rm -f copasi.pdf
-	rm -f copasi.html
-	rm -f copasi.out
-	rm -f copasi.idx
-	rm -f copasi.log
-	rm -f copasi.aux
-	rm -f copasi.glo
-	rm -f fotex.log
