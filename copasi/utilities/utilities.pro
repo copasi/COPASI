@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.15 $ $Author: shoops $ $Date: 2005/09/23 18:59:12 $  
+# $Revision: 1.16 $ $Author: shoops $ $Date: 2005/09/23 19:05:07 $  
 ######################################################################
 
 LIB = utilities
@@ -55,6 +55,6 @@ SOURCES += CAnnotatedMatrix.cpp \
            CSlider.cpp \
 #           CSparseMatrix.cpp \
 #           CSparseVector.cpp \
-           CTableCell.h \
+           CTableCell.cpp \
            CVersion.cpp \
            utility.cpp
