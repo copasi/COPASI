@@ -1,14 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/23 18:59:12 $
+   $Date: 2005/09/23 19:08:21 $
    End CVS Header */
 
 #include <limits>
- #include <iostream>
- #include <sstream>
+#include <iostream>
+#include <sstream>
+#include <float.h>
 
 #include "copasi.h"
 
@@ -28,7 +29,7 @@ CTableCell::CTableCell(const CTableCell & src):
     mIsValue(src.mIsValue)
 {}
 
-CTableCell::~CTableCell();
+CTableCell::~CTableCell() {}
 
 bool CTableCell::setSeparator(const char & separator)
 {
@@ -44,7 +45,7 @@ const std::string & CTableCell::getName() const {return mName;}
 
 const C_FLOAT64 & CTableCell::getValue() const {return mValue;}
 
-#ifdef WIN32
+#ifdef WIN32 
 // warning C4056: overflow in floating-point constant arithmetic
 // warning C4756: overflow in constant arithmetic
 # pragma warning (disable: 4056 4756)
