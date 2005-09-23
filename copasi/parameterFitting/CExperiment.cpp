@@ -1,12 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/19 21:12:54 $
+   $Date: 2005/09/23 19:17:28 $
    End CVS Header */
 
 #include <fstream>
+#include <limits>
 
 #include "copasi.h"
 
@@ -14,6 +15,7 @@
 #include "CExperimentObjectMap.h"
 
 #include "report/CKeyFactory.h"
+#include "utilities/CTableCell.h"
 
 const std::string CExperiment::TypeName[] =
   {
@@ -36,7 +38,7 @@ CExperiment::CExperiment(const CCopasiContainer * pParent):
     mpFileName(NULL),
     mpFirstRow(NULL),
     mpTaskType(NULL),
-    mpSeperator(NULL),
+    mpSeparator(NULL),
     mpRowOriented(NULL),
     mpNameRow(NULL),
     mpNumRows(NULL),
@@ -58,7 +60,7 @@ CExperiment::CExperiment(const CExperiment & src,
     mpFileName(NULL),
     mpFirstRow(NULL),
     mpTaskType(NULL),
-    mpSeperator(NULL),
+    mpSeparator(NULL),
     mpRowOriented(NULL),
     mpNameRow(NULL),
     mpNumRows(NULL),
@@ -80,7 +82,7 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
     mpFileName(NULL),
     mpFirstRow(NULL),
     mpTaskType(NULL),
-    mpSeperator(NULL),
+    mpSeparator(NULL),
     mpRowOriented(NULL),
     mpNameRow(NULL),
     mpNumRows(NULL),
@@ -122,7 +124,7 @@ void CExperiment::initializeParameter()
 
   if (!getParameter("Seperator"))
     addParameter("Seperator", CCopasiParameter::STRING, std::string("\t"));
-  mpSeperator = getValue("Seperator").pSTRING;
+  mpSeparator = getValue("Seperator").pSTRING;
 
   if (!getParameter("Data is Row Oriented"))
     addParameter("Data is Row Oriented", CCopasiParameter::BOOL, (bool) true);
@@ -175,11 +177,6 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   unsigned C_INT32 IndependentCount = mDataIndependent.numCols();
   unsigned C_INT32 DependentCount = mDataDependent.numCols();
 
-  mDataIndependent.resize(*mpNumRows, IndependentCount);
-  mDataDependent.resize(*mpNumRows, DependentCount);
-
-  mMeans.resize(DependentCount);
-  mVariances.resize(DependentCount);
   mDependentValues.resize(DependentCount);
   mIndependentUpdateMethods.resize(IndependentCount);
 
@@ -212,7 +209,8 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   return success;
 }
 
-bool CExperiment::read(std::istream & in)
+bool CExperiment::read(std::istream & in,
+                       unsigned C_INT32 & currentLine)
 {
   // Allocate for reading
   unsigned C_INT32 i, imax = mpColumnType->size();
@@ -237,30 +235,106 @@ bool CExperiment::read(std::istream & in)
         break;
       }
 
-  mDataIndependent.resize(*mpNumRows, IndependentCount);
-  mDataDependent.resize(*mpNumRows, DependentCount);
+  unsigned C_INT32 NumRows =
+    (*mpNameRow != C_INVALID_INDEX) ? *mpNumRows - 1 : *mpNumRows;
 
-  return true;
-}
+  mDataIndependent.resize(NumRows, IndependentCount);
+  mDataDependent.resize(NumRows, DependentCount);
 
-bool CExperiment::read()
-{
-  std::ifstream in;
+  CTableRow Row(*mpNumColumns, (*mpSeparator)[0]);
+  const std::vector< CTableCell > & Cells = Row.getCells();
 
-  in.open(mpFileName->c_str(), std::ios::binary);
-  if (in.fail()) return false;
+  unsigned C_INT32 j;
 
-  unsigned C_INT32 i, imax = *mpFirstRow;
+  if (currentLine > *mpFirstRow) return false; // We are past our first line
 
-  std::stringbuf buffer();
-
-  for (i = 0; i < imax; i++)
+  // forwind to our first line
+  for (j = 0; j < *mpFirstRow && !in.fail(); j++)
     {
       in.ignore(LONG_MAX, '\x0a');
-      if (in.fail()) return false;
+      currentLine++;
     }
 
-  return read(in);
+  for (j = 0; j < NumRows && !in.fail(); j++)
+    {
+      in >> Row;
+      currentLine++;
+
+      if (j == *mpNameRow)
+        {
+          j--;
+          continue;
+        }
+
+      IndependentCount = 0;
+      DependentCount = 0;
+
+      for (i = 0; i < imax; i++)
+        {
+          switch (*(*mpColumnType)[i]->getValue().pUINT)
+            {
+            case ignore:
+              break;
+
+            case independent:
+              mDataIndependent[j][IndependentCount++] =
+                Cells[i].getValue();
+              break;
+
+            case dependent:
+              mDataDependent[j][DependentCount++] =
+                Cells[i].getValue();
+              break;
+            }
+        }
+    }
+
+  if ((in.fail() && !in.eof()) ||
+      j != NumRows) return false;
+
+  // We need to calculate the means and variances
+  mMeans.resize(DependentCount);
+  mVariances.resize(DependentCount);
+  unsigned C_INT32 Count;
+
+  for (i = 0; i < DependentCount; i++)
+    {
+      C_FLOAT64 & Mean = mMeans[i];
+      Mean = 0.0;
+      Count = 0;
+
+      for (j = 0; j < NumRows; j++)
+        {
+          C_FLOAT64 & Data = mDataDependent[j][i];
+          if (!isnan(Data))
+            {
+              Count++;
+              Mean += Data;
+            }
+        }
+
+      if (Count)
+        Mean /= Count;
+      else
+        Mean = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+      C_FLOAT64 & Variance = mVariances[i];
+      Variance = 0;
+
+      for (j = 0; j < NumRows; j++)
+        {
+          C_FLOAT64 & Data = mDataDependent[j][i];
+          if (!isnan(Data))
+            Variance += pow((Mean - Data), 2);
+        }
+
+      if (Count > 1)
+        Variance = Variance / (Count - 1);
+      else
+        Variance = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+    }
+
+  return true;
 }
 
 const CCopasiTask::Type & CExperiment::getExperimentType() const
@@ -271,6 +345,15 @@ const CMatrix< C_FLOAT64 > & CExperiment::getIndependentData() const
 
 const CMatrix< C_FLOAT64 > & CExperiment::getDependentData() const
   {return mDataDependent;}
+
+const std::string & CExperiment::getFileName() const
+  {return *mpFileName;}
+
+bool CExperiment::setFileName(const std::string & fileName)
+{
+  *mpFileName = fileName;
+  return true;
+}
 
 const CExperiment::Type & CExperiment::getColumnType(const unsigned C_INT32 & index) const
   {
@@ -304,11 +387,11 @@ bool CExperiment::setNumRows(const unsigned C_INT32 & rows)
 }
 
 const std::string & CExperiment::getSeperator() const
-  {return *mpSeperator;}
+  {return *mpSeparator;}
 
 bool CExperiment::setSeperator(const std::string & seperator)
 {
-  *mpSeperator = seperator;
+  *mpSeparator = seperator;
   return true;
 }
 
@@ -319,4 +402,12 @@ bool CExperiment::setIsRowOriented(const bool & isRowOriented)
 {
   *mpRowOriented = isRowOriented;
   return true;
+}
+
+bool CExperiment::compare(const CExperiment * lhs,
+                          const CExperiment * rhs)
+{
+  return (*lhs->mpFileName < *rhs->mpFileName ||
+          (*lhs->mpFileName == *rhs->mpFileName &&
+           *lhs->mpFirstRow < *rhs->mpFirstRow));
 }

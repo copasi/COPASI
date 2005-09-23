@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/19 21:12:54 $
+   $Date: 2005/09/23 19:17:28 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -70,8 +70,8 @@ class CExperiment: public CCopasiParameterGroup
     virtual ~CExperiment();
 
     /**
-     * Compile the map. This function must be called 
-     * before any operations can be performed.
+     * Compile the experiment. This function must be called 
+     * before any evaluations can be performed.
      * @param const std::vector< CCopasiContainer * > listOfContainer
      * @return bool success
      */
@@ -81,15 +81,10 @@ class CExperiment: public CCopasiParameterGroup
     /**
      * Reads the experiment data form a the given stream
      * @param std::istream & in
+     * @param unsigned C_INT32 & currentLine
      * @return bool success
      */
-    bool read(std::istream & in);
-
-    /**
-     * Reads the experiment data from *mpFileName at line *mpFirstRow
-     * @return bool success
-     */
-    bool read();
+    bool read(std::istream & in, unsigned C_INT32 & currentLine);
 
     /**
      * Retrieve the experiment type
@@ -108,6 +103,19 @@ class CExperiment: public CCopasiParameterGroup
      * @return const CMatrix< C_FLOAT64 > & dependentData
      */
     const CMatrix< C_FLOAT64 > & getDependentData() const;
+
+    /**
+     * Retrieve the file name
+     * @return const std::string & fileName
+     */
+    const std::string & getFileName() const;
+
+    /**
+     * Set the file name
+     * @param const std::string & fileName
+     * @return bool success
+     */
+    bool setFileName(const std::string & fileName);
 
     /**
      * Retrieve the type fo the indexed column.
@@ -177,6 +185,16 @@ class CExperiment: public CCopasiParameterGroup
      */
     bool setIsRowOriented(const bool & isRowOriented);
 
+    /**
+     * Comparison used to evaluate the order of the experiment
+     * based on the filename and starting line number.
+     * @param const CExperiment * lhs;
+     * @param const CExperiment * rhs;
+     * @return bool isLess
+     */
+    static bool compare(const CExperiment * lhs,
+                        const CExperiment * rhs);
+
   private:
     /**
      * Allocates all group parameters and assures that they are 
@@ -210,7 +228,7 @@ class CExperiment: public CCopasiParameterGroup
     /**
      * This is realized as a CCopasiParameter type STRING
      */
-    std::string * mpSeperator;
+    std::string * mpSeparator;
 
     /**
      * This is realized as a CCopasiParameter type BOOL

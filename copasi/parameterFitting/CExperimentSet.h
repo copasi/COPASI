@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/19 21:12:54 $
+   $Date: 2005/09/23 19:17:28 $
    End CVS Header */
 
 #ifndef COPASI_CExperimentSet
@@ -46,6 +46,15 @@ class CExperimentSet: public CCopasiParameterGroup
      * Destructor
      */
     virtual ~CExperimentSet();
+
+    /**
+     * Compile the experiment set. This function must be called 
+     * before any evaluations can be performed.
+     * @param const std::vector< CCopasiContainer * > listOfContainer
+     * @return bool success
+     */
+    bool compile(const std::vector< CCopasiContainer * > listOfContainer =
+                   CCopasiContainer::EmptyList);
 
     /**
      * Add an experiment

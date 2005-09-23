@@ -1,15 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/19 21:12:54 $
+   $Date: 2005/09/23 19:17:28 $
    End CVS Header */
+
+#include <algorithm>
 
 #include "copasi.h"
 
 #include "CExperimentSet.h"
- #include "CExperiment.h"
+#include "CExperiment.h"
 
 CExperimentSet::CExperimentSet(const CCopasiContainer * pParent):
     CCopasiParameterGroup("Experiment Set", pParent),
@@ -50,6 +52,46 @@ void CExperimentSet::initializeParameter()
     }
 
   mpExperiments = static_cast<std::vector<CExperiment * > * >(mValue.pVOID);
+}
+
+#include <algorithm>
+
+bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfContainer)
+{
+  bool success = true;
+
+  // First we need to sort the experiments so that we can make use of continued
+  // file reading.
+  std::vector< CExperiment * >::iterator it = mpExperiments->begin();
+  std::vector< CExperiment * >::iterator end = mpExperiments->end();
+
+  // We use the '<' operator defined in CExperiment.
+  std::sort(it, end, &CExperiment::compare);
+
+  std::ifstream in;
+  std::string CurrentFileName("");
+  unsigned C_INT32 CurrentLineNumber = 0;
+  for (it = mpExperiments->begin(); it != end; ++it)
+    {
+      if (CurrentFileName != (*it)->getFileName())
+        {
+          CurrentFileName = (*it)->getFileName();
+          CurrentLineNumber = 0;
+          if (in.is_open())
+            {
+              in.close();
+              in.clear();
+            }
+
+          in.open(CurrentFileName.c_str(), std::ios::binary);
+          if (in.fail()) return false; // File can not be opened.
+        }
+
+      if (!(*it)->read(in, CurrentLineNumber)) return false;
+      if (!(*it)->compile(listOfContainer)) return false;
+    }
+
+  return success;
 }
 
 CExperiment * CExperimentSet::addExperiment(const CExperiment & experiment)
