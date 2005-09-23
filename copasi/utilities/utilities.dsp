@@ -123,6 +123,10 @@ SOURCE=.\CSparseVector.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CTableCell.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CVersion.cpp
 # End Source File
 # Begin Source File
@@ -224,6 +228,10 @@ SOURCE=.\CSparseMatrix.h
 # Begin Source File
 
 SOURCE=.\CSparseVector.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CTableCell.h
 # End Source File
 # Begin Source File
 

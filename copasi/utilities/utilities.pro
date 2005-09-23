@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.14 $ $Author: ssahle $ $Date: 2005/05/13 13:27:04 $  
+# $Revision: 1.15 $ $Author: shoops $ $Date: 2005/09/23 18:59:12 $  
 ######################################################################
 
 LIB = utilities
@@ -24,13 +24,14 @@ HEADERS += CAnnotatedMatrix.h \
            CIndexedPriorityQueue.h \
            CluX.h \
            CMatrix.h \
+           CopasiTime.h \
            COutputHandler.h \
            CProcessReport.h \
            CReadConfig.h \
            CSlider.h \
 #           CSparseMatrix.h \
 #           CSparseVector.h \
-           CopasiTime.h \
+           CTableCell.h \
            CVector.h \
            CVersion.h \
            messages.h \
@@ -47,12 +48,13 @@ SOURCES += CAnnotatedMatrix.cpp \
            CDependencyGraph.cpp \
            CDirEntry.cpp \
            CIndexedPriorityQueue.cpp \
+           CopasiTime.cpp \
            COutputHandler.cpp \
            CProcessReport.cpp \
            CReadConfig.cpp \
            CSlider.cpp \
 #           CSparseMatrix.cpp \
 #           CSparseVector.cpp \
-           CopasiTime.cpp \
+           CTableCell.h \
            CVersion.cpp \
            utility.cpp
