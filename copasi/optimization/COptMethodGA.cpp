@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 17:48:31 $
+   $Date: 2005/09/26 20:57:40 $
    End CVS Header */
 
 #include <float.h>
@@ -17,7 +17,16 @@
 
 #include "randomGenerator/CRandom.h"
 #include "utilities/CProcessReport.h"
+#include "utilities/CSort.h"
 #include "report/CCopasiObjectReference.h"
+
+// Why does this have to be instantiated for unsigned C_INT32 * and
+// not for C_FLOAT64 * under Visual C++ 6.0
+#ifdef WIN32
+bool sortDefault(const std::pair<unsigned C_INT32 *, unsigned C_INT32> & lhs,
+                 const std::pair<unsigned C_INT32 *, unsigned C_INT32> & rhs)
+{return *lhs.first < *rhs.first;}
+#endif
 
 COptMethodGA::COptMethodGA(const CCopasiContainer * pParent):
     COptMethod(CCopasiTask::optimization, CCopasiMethod::GeneticAlgorithm, pParent),
@@ -281,20 +290,13 @@ bool COptMethodGA::select()
       }
 
   // selection of top mPopulationSize winners
-  for (i = 0; i < mPopulationSize; i++)
-    {
-      MaxIndex = i;
-      MaxValue = mWins[i];
+  CVector<unsigned C_INT32> Pivot;
+  partialSortWithPivot(mWins.array(),
+                       mWins.array() + mPopulationSize,
+                       mWins.array() + TotalPopulation,
+                       Pivot);
 
-      for (j = i + 1; j < TotalPopulation; j++)
-        if (MaxValue < mWins[j])
-          {
-            MaxIndex = j;
-            MaxValue = mWins[j];
-          }
-
-      swap(i, MaxIndex); // The best individual in [i, TotalPopulation] is swapped to the top (i) position.
-    }
+  applyPivot(Pivot, this, &COptMethodGA::swap);
 
   return true;
 }
