@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSort.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/26 20:56:11 $
+   $Date: 2005/09/26 21:03:33 $
    End CVS Header */
 
 #ifndef COPASI_CSort
@@ -32,7 +32,7 @@ void sortWithPivot(RandomAccessIterator first,
   RandomAccessIterator it;
   unsigned C_INT32 i;
 
-  CVector<std::pair<RandomAccessIterator, unsigned C_INT32> >::elementType * itToBeSorted;
+  typename CVector<std::pair<RandomAccessIterator, unsigned C_INT32> >::elementType * itToBeSorted;
 
   for (it = first, i = 0, itToBeSorted = ToBeSorted.array();
        it != last;
@@ -74,7 +74,7 @@ void partialSortWithPivot(RandomAccessIterator first,
   RandomAccessIterator it;
   unsigned C_INT32 i;
 
-  CVector<std::pair<RandomAccessIterator, unsigned C_INT32> >::elementType * itToBeSorted;
+  typename CVector<std::pair<RandomAccessIterator, unsigned C_INT32> >::elementType * itToBeSorted;
 
   for (it = first, i = 0, itToBeSorted = ToBeSorted.array();
        it != last;
@@ -104,8 +104,9 @@ void partialSortWithPivot(RandomAccessIterator first,
 
 template <typename RandomAccessIterator, typename LessThanCompare>
 bool sortSpecified(const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs,
-                   const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs)
-{return (*LessThanCompare)(*lhs.first, *rhs.first);}
+                   const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs,
+                   LessThanCompare pCompare)
+{return (*pCompare)(*lhs.first, *rhs.first);}
 
 template <typename RandomAccessIterator, typename LessThanCompare>
 void sortWithPivot(RandomAccessIterator first,
@@ -122,7 +123,7 @@ void sortWithPivot(RandomAccessIterator first,
   RandomAccessIterator it;
   unsigned C_INT32 i;
 
-  CVector<std::pair<RandomAccessIterator, unsigned C_INT32> >::elementType * itToBeSorted;
+  typename CVector<std::pair<RandomAccessIterator, unsigned C_INT32> >::elementType * itToBeSorted;
 
   for (it = first, i = 0, itToBeSorted = ToBeSorted.array();
        it != last;
