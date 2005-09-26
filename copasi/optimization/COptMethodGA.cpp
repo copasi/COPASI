@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/26 20:57:40 $
+   $Date: 2005/09/26 21:06:20 $
    End CVS Header */
 
 #include <float.h>
@@ -266,9 +266,8 @@ bool COptMethodGA::replicate()
 // select mPopulationSize individuals
 bool COptMethodGA::select()
 {
-  unsigned C_INT32 i, j, nopp, opp, MaxIndex;
+  unsigned C_INT32 i, j, nopp, opp;
   unsigned C_INT32 TotalPopulation = 2 * mPopulationSize;
-  C_FLOAT64 MaxValue;
 
   // tournament competition
   mWins = 0; // Set all wins to 0.
