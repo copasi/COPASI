@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.16 $ $Author: shoops $ $Date: 2005/09/23 19:05:07 $  
+# $Revision: 1.17 $ $Author: shoops $ $Date: 2005/09/26 20:56:11 $  
 ######################################################################
 
 LIB = utilities
@@ -31,6 +31,7 @@ HEADERS += CAnnotatedMatrix.h \
            CSlider.h \
 #           CSparseMatrix.h \
 #           CSparseVector.h \
+           CSort.h \
            CTableCell.h \
            CVector.h \
            CVersion.h \
