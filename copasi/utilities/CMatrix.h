@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/17 08:56:20 $
+   $Author: shoops $ 
+   $Date: 2005/09/26 20:52:29 $
    End CVS Header */
 
 #ifndef COPASI_CMatrix
@@ -13,6 +13,8 @@
 #include <assert.h>
 
 #include "copasi.h"
+
+#include "CVector.h"
 
 template<typename CType> class CMatrix;
 
@@ -274,6 +276,46 @@ class CMatrix
      * @return const CType * array
      */
     virtual const CType * array() const {return mArray;}
+
+    /**
+     * Reorder the rows according to the provided pivots
+     * @param const CVector<unsigned C_INT32> & pivot
+     * @return bool success
+     */
+    bool applyPivot(const CVector<unsigned C_INT32> & pivot)
+    {
+      if (pivot.size() != mRows) return false;
+
+      CVector< bool > Applied(mRows);
+      Applied = false;
+      CType *pTmp = new CType[mCols];
+
+      unsigned C_INT32 i;
+      unsigned C_INT32 to;
+      unsigned C_INT32 from;
+
+      for (i = 0; i < mCols; i++)
+        if (!Applied[i])
+          {
+            memcpy(pTmp, mArray + i, mCols * sizeof(CType));
+            to = i;
+            from = pivot[i];
+
+            while (from != i)
+              {
+                memcpy(mArray + to, mArray + from, mCols * sizeof(CType));
+                Applied[to] = true;
+
+                to = from;
+              }
+
+            memcpy(mArray + to, pTmp, mCols * sizeof(CType));
+            Applied[to] = true;
+          }
+
+      pdelete(pTmp);
+      return true;
+    }
 
     /**
      * Output stream operator

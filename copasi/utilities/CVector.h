@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/15 18:45:24 $
+   $Date: 2005/09/26 20:52:29 $
    End CVS Header */
 
 #ifndef COPASI_CVector
 #define COPASI_CVector
 
 #include <iostream>
-#include <stdarg.h>
+
 #include "copasi.h"
 
 template<typename CType> class CVector;
@@ -32,9 +32,9 @@ template <class CType> class CVector
     // Attributes
   private:
     /**
-     * Number of rows in the vector.
+     * Size of the vector.
      */
-    unsigned C_INT32 mRows;
+    unsigned C_INT32 mSize;
 
     /**
      * The array storing the vector elements
@@ -45,91 +45,55 @@ template <class CType> class CVector
   public:
     /**
      * Default constructor
-     * @param unsigned C_INT32 rows (default = 0)
+     * @param unsigned C_INT32 size (default = 0)
      */
-    CVector(unsigned C_INT32 rows = 0) :
-        mRows(rows),
+    CVector(unsigned C_INT32 size = 0) :
+        mSize(size),
         mVector(NULL)
-    {if (mRows) mVector = new CType[mRows];}
+    {if (mSize) mVector = new CType[mSize];}
 
     /**
      * Copy constructor
      * @param const CVector <CType> & src
      */
     CVector(const CVector <CType> & src):
-        mRows(src.mRows),
+        mSize(src.mSize),
         mVector(NULL)
     {
-      if (mRows)
+      if (mSize)
         {
-          mVector = new CType[mRows];
-          memcpy(mVector, src.mVector, mRows * sizeof(CType));
+          mVector = new CType[mSize];
+          memcpy(mVector, src.mVector, mSize * sizeof(CType));
         }
     }
-
-    /**
-     * Initializing constructor
-     * @param const unsigned C_INT32 & rows
-     * @param CType first
-     * @param ... (rows - 1 arguments of CType)
-     */
-#ifdef XXXX
-    CVector(const unsigned C_INT32 & rows, CType first, ...):
-        mRows(rows),
-        mVector(NULL)
-    {
-      if (mRows)
-        {
-          mVector = new CType[mRows];
-          mVector[0] = first;
-
-          va_list values; // = NULL;
-          va_start(values, first);
-
-#if (CType ==  SubType)
-          for (unsigned C_INT32 i = 1; i < mRows; i++)
-            mVector[i] = (CType) va_arg(values, int);
-#else
-          if (sizeof(CType) > sizeof(int))
-            for (unsigned C_INT32 i = 1; i < mRows; i++)
-              mVector[i] = va_arg(values, CType);
-          else /* sizes smaller or equal to int are promoted to int */
-            for (unsigned C_INT32 i = 1; i < mRows; i++)
-              mVector[i] = (CType) va_arg(values, int);
-#endif
-
-          va_end(values);
-        }
-    }
-#endif // XXXX
 
     /**
      * Destructor.
      */
     ~CVector()
-  {if (mVector) delete [] mVector;}
+    {if (mVector) delete [] mVector;}
 
     /**
      * The number of elements stored in the vector.
      * @return unsigned C_INT32 size
      */
-    unsigned C_INT32 size() const {return mRows;}
+    unsigned C_INT32 size() const {return mSize;}
 
     /**
-     * The number of rows of the vector.
-     * @return unsigned C_INT32 rows
+     * The number of size of the vector.
+     * @return unsigned C_INT32 size
      */
-    unsigned C_INT32 numRows() const {return mRows;}
+    unsigned C_INT32 numSize() const {return mSize;}
 
     /**
      * Resize the vector. The previous content is lost
-     * @param unsigned C_INT32 rows
+     * @param unsigned C_INT32 size
      */
-    void resize(unsigned C_INT32 rows)
+    void resize(unsigned C_INT32 size)
     {
       //TODO: maybe we should only resize if the vector gets bigger
       //or much smaller?
-      if (rows == mRows) return;
+      if (size == mSize) return;
 
       if (mVector)
         {
@@ -137,9 +101,9 @@ template <class CType> class CVector
           mVector = NULL;
         }
 
-      mRows = rows;
+      mSize = size;
 
-      if (mRows) mVector = new CType[mRows];
+      if (mSize) mVector = new CType[mSize];
       //TODO: maybe we should only resize if the vector gets bigger
       //or much smaller?
     }
@@ -156,9 +120,9 @@ template <class CType> class CVector
           //std::cout << "===" << std::endl;
           return * this;
         }
-      if (mRows != rhs.mRows) resize(rhs.mRows);
+      if (mSize != rhs.mSize) resize(rhs.mSize);
 
-      memcpy(mVector, rhs.mVector, mRows * sizeof(CType));
+      memcpy(mVector, rhs.mVector, mSize * sizeof(CType));
 
       return * this;
     }
@@ -173,7 +137,7 @@ template <class CType> class CVector
       unsigned C_INT32 i;
       CType * tmp = mVector;
 
-      for (i = 0; i < mRows; i++, tmp++) *tmp = value;
+      for (i = 0; i < mSize; i++, tmp++) *tmp = value;
 
       return *this;
     }
@@ -225,6 +189,45 @@ template <class CType> class CVector
     const CType * array() const {return mVector;}
 
     /**
+     * Reorder the elements according to the provided pivots
+     * @param const CVector<unsigned C_INT32> & pivot
+     * @return bool success
+     */
+    bool applyPivot(const CVector<unsigned C_INT32> & pivot)
+    {
+      if (pivot.size() != mSize) return false;
+
+      CVector< bool > Applied(mSize);
+      Applied = false;
+      CType tmp;
+
+      unsigned C_INT32 i;
+      unsigned C_INT32 to;
+      unsigned C_INT32 from;
+
+      for (i = 0; i < mSize; i++)
+        if (!Applied[i])
+          {
+            tmp = mVector[i];
+            to = i;
+            from = pivot[i];
+
+            while (from != i)
+              {
+                mVector[to] = mVector[from];
+                Applied[to] = true;
+
+                to = from;
+              }
+
+            mVector[to] = tmp;
+            Applied[to] = true;
+          }
+
+      return true;
+    }
+
+    /**
      * Output stream operator
      * @param ostream & os
      * @param const CVector< CType > & A
@@ -244,13 +247,13 @@ std::ostream &operator<<(std::ostream &os, const CVector< CType > & A)
 {
   os << "(";
 
-  if (A.mRows)
+  if (A.mSize)
     {
       unsigned C_INT32 i;
       CType * tmp = A.mVector;
       os << * (tmp++);
 
-      for (i = 1; i < A.mRows; i++)
+      for (i = 1; i < A.mSize; i++)
         os << ",  " << * (tmp++);
     }
 
