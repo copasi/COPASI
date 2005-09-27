@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSort.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/27 14:11:04 $
+   $Date: 2005/09/27 17:19:26 $
    End CVS Header */
 
 #ifndef COPASI_CSort
@@ -14,33 +14,31 @@
 #include "CVector.h"
 
 template <typename RandomAccessIterator>
-class CCompareFunctorBase
+class FCompareBase
   {
   public:
-    bool operator() (const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs,
-                     const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs)
+    virtual bool operator() (const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs,
+                             const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs)
     {return *lhs.first < *rhs.first;}
   };
 
 template <typename RandomAccessIterator>
-class CCompareFunctor : CCompareFunctorBase<RandomAccessIterator>
+class FCompare : FCompareBase<RandomAccessIterator>
   {
   private:
-    CCompareFunctor();
+    FCompare() {}
 
   public:
-    CCompareFunctor(bool (*method)(const std::pair<RandomAccessIterator, unsigned C_INT32> &,
-                                   const std::pair<RandomAccessIterator, unsigned C_INT32> &)):
+    FCompare(bool (*method)(RandomAccessIterator::value_type, RandomAccessIterator::value_type)):
         mpCompare(method)
     {}
 
-    bool operator() (const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs,
-                     const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs)
+    virtual bool operator() (const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs,
+                             const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs)
     {return (*mpCompare)(*lhs.first, *rhs.first);}
 
   private:
-    bool (*mpCompare)(const std::pair<RandomAccessIterator, unsigned C_INT32> &,
-                      const std::pair<RandomAccessIterator, unsigned C_INT32> &);
+    bool (*mpCompare)(RandomAccessIterator::value_type, RandomAccessIterator::value_type);
   };
 
 template <typename RandomAccessIterator>
@@ -48,7 +46,7 @@ void sortWithPivot(RandomAccessIterator first,
                    RandomAccessIterator last,
                    CVector<unsigned C_INT32> & pivot)
 {
-  CCompareFunctorBase<RandomAccessIterator> Compare;
+  FCompareBase<RandomAccessIterator> Compare;
 
   __sortWithPivot(first, last, Compare, pivot);
 
@@ -61,7 +59,7 @@ void sortWithPivot(RandomAccessIterator first,
                    LessThanCompare comp,
                    CVector<unsigned C_INT32> & pivot)
 {
-  CCompareFunctor<RandomAccessIterator> Compare(comp);
+  FCompare<RandomAccessIterator> Compare(comp);
 
   __sortWithPivot(first, middle, last, Compare, pivot);
 
@@ -71,7 +69,7 @@ void sortWithPivot(RandomAccessIterator first,
 template <typename RandomAccessIterator>
 void __sortWithPivot(RandomAccessIterator first,
                      RandomAccessIterator last,
-                     CCompareFunctorBase<RandomAccessIterator> & compare,
+                     FCompareBase<RandomAccessIterator> & compare,
                      CVector<unsigned C_INT32> & pivot)
 {
   assert(first < last);
@@ -116,7 +114,7 @@ void partialSortWithPivot(RandomAccessIterator first,
                           RandomAccessIterator last,
                           CVector<unsigned C_INT32> & pivot)
 {
-  CCompareFunctorBase<RandomAccessIterator> Compare;
+  FCompareBase<RandomAccessIterator> Compare;
 
   __partialSortWithPivot(first, middle, last, Compare, pivot);
 
@@ -130,7 +128,7 @@ void partialSortWithPivot(RandomAccessIterator first,
                           LessThanCompare comp,
                           CVector<unsigned C_INT32> & pivot)
 {
-  CCompareFunctor<RandomAccessIterator> Compare(comp);
+  FCompare<RandomAccessIterator> Compare(comp);
 
   __partialSortWithPivot(first, middle, last, Compare, pivot);
 
@@ -141,7 +139,7 @@ template <typename RandomAccessIterator>
 void __partialSortWithPivot(RandomAccessIterator first,
                             RandomAccessIterator middle,
                             RandomAccessIterator last,
-                            CCompareFunctorBase<RandomAccessIterator> & compare,
+                            FCompareBase<RandomAccessIterator> & compare,
                             CVector<unsigned C_INT32> & pivot)
 {
   assert(first < middle && middle <= last);
@@ -181,15 +179,54 @@ void __partialSortWithPivot(RandomAccessIterator first,
   return;
 }
 
+template <typename IndexType, typename ReturnType>
+class FSwapBase
+  {
+  protected:
+    FSwapBase() {}
+
+  public:
+    FSwapBase(ReturnType (*swap) (IndexType, IndexType)):
+        mpSwap(swap)
+    {}
+
+    virtual ReturnType operator() (IndexType to, IndexType from)
+    {return (*mpSwap)(to, from);}
+
+  private:
+    ReturnType (*mpSwap)(IndexType, IndexType);
+  };
+
+template <typename ClassType, typename IndexType, typename ReturnType>
+class FSwapClass : public FSwapBase<IndexType, ReturnType>
+  {
+  protected:
+    FSwapClass() {}
+
+  public:
+    FSwapClass(ClassType * pType, ReturnType (ClassType::*swap) (IndexType, IndexType)):
+        FSwapBase<IndexType, ReturnType>(),
+        mpType(pType),
+        mpSwap(swap)
+    {}
+
+    virtual ReturnType operator() (IndexType to, IndexType from)
+    {return (*mpType.*mpSwap)(to, from);}
+
+  private:
+    ClassType * mpType;
+    ReturnType (ClassType::*mpSwap)(IndexType, IndexType);
+  };
+
 /**
  * Reorder the elements according to the provided pivots
  * @param const CVector<unsigned C_INT32> & pivot
+ * @param FSwapBase<IndexType, ReturnType> & swap
  * @return bool success
  */
-template <typename CType, typename CIndexType, typename CReturnType>
+template <typename IndexType, typename ReturnType>
 bool applyPivot(const CVector<unsigned C_INT32> & pivot,
-                CType *pType,
-                CReturnType (CType::*swapElements)(CIndexType, CIndexType))
+                FSwapBase<IndexType, ReturnType> & swap)
 {
   CVector< bool > Applied(pivot.size());
   Applied = false;
@@ -206,7 +243,7 @@ bool applyPivot(const CVector<unsigned C_INT32> & pivot,
 
         while (from != i)
           {
-            (*pType.*swapElements)(to, from);
+            swap(to, from);
             Applied[to] = true;
 
             to = from;
@@ -224,13 +261,13 @@ bool applyPivot(const CVector<unsigned C_INT32> & pivot,
  * provided pivots.
  * @param const CVector<unsigned C_INT32> & pivot
  * @param const unsigned C_INT32 & ordered
+ * @param FSwapBase<IndexType, ReturnType> & swap
  * @return bool success
  */
-template <typename CType, typename CIndexType, typename CReturnType>
+template <typename IndexType, typename ReturnType>
 bool applyPartialPivot(const CVector<unsigned C_INT32> & pivot,
                        const unsigned C_INT32 & ordered,
-                       CType *pType,
-                       CReturnType (CType::*swapElements)(CIndexType, CIndexType))
+                       FSwapBase<IndexType, ReturnType> & swap)
 {
   CVector< bool > Applied(pivot.size());
   Applied = false;
@@ -249,7 +286,7 @@ bool applyPartialPivot(const CVector<unsigned C_INT32> & pivot,
           {
             if (to < ordered || from < ordered)
               {
-                (*pType.*swapElements)(to, from);
+                swap(to, from);
                 Applied[to] = true;
 
                 to = from;
