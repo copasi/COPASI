@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/27 14:22:30 $
+   $Date: 2005/09/27 17:19:44 $
    End CVS Header */
 
 #include <float.h>
@@ -288,7 +288,8 @@ bool COptMethodGA::select()
                        mLosses.array() + TotalPopulation,
                        mPivot);
 
-  applyPartialPivot(mPivot, mPopulationSize, this, &COptMethodGA::swap);
+  FSwapClass<COptMethodGA, unsigned C_INT32, bool> Swap(this, &COptMethodGA::swap);
+  applyPartialPivot(mPivot, mPopulationSize, Swap);
 
   return true;
 }
