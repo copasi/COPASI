@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSort.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/27 02:39:40 $
+   $Date: 2005/09/27 14:11:04 $
    End CVS Header */
 
 #ifndef COPASI_CSort
@@ -191,20 +191,18 @@ bool applyPivot(const CVector<unsigned C_INT32> & pivot,
                 CType *pType,
                 CReturnType (CType::*swapElements)(CIndexType, CIndexType))
 {
-  unsigned C_INT32 size = pivot.size();
-
-  CVector< bool > Applied(size);
+  CVector< bool > Applied(pivot.size());
   Applied = false;
 
   unsigned C_INT32 i;
   unsigned C_INT32 to;
   unsigned C_INT32 from;
 
-  for (i = 0; i < size; i++)
+  for (i = 0; i < ordered; i++)
     if (!Applied[i])
       {
         to = i;
-        from = pivot[i];
+        from = pivot[to];
 
         while (from != i)
           {
@@ -212,6 +210,52 @@ bool applyPivot(const CVector<unsigned C_INT32> & pivot,
             Applied[to] = true;
 
             to = from;
+            from = pivot[to];
+          }
+
+        Applied[to] = true;
+      }
+
+  return true;
+}
+
+/**
+ * Partial reordering of the first 'ordered' elements according to the
+ * provided pivots.
+ * @param const CVector<unsigned C_INT32> & pivot
+ * @param const unsigned C_INT32 & ordered
+ * @return bool success
+ */
+template <typename CType, typename CIndexType, typename CReturnType>
+bool applyPartialPivot(const CVector<unsigned C_INT32> & pivot,
+                       const unsigned C_INT32 & ordered,
+                       CType *pType,
+                       CReturnType (CType::*swapElements)(CIndexType, CIndexType))
+{
+  CVector< bool > Applied(pivot.size());
+  Applied = false;
+
+  unsigned C_INT32 i;
+  unsigned C_INT32 to;
+  unsigned C_INT32 from;
+
+  for (i = 0; i < ordered; i++)
+    if (!Applied[i])
+      {
+        to = i;
+        from = pivot[to];
+
+        while (from != i)
+          {
+            if (to < ordered || from < ordered)
+              {
+                (*pType.*swapElements)(to, from);
+                Applied[to] = true;
+
+                to = from;
+              }
+
+            from = pivot[from];
           }
 
         Applied[to] = true;
