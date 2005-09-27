@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 17:48:31 $
+   $Date: 2005/09/27 02:11:19 $
    End CVS Header */
 
 /***************************************************************************
@@ -67,7 +67,7 @@ void CRandomSearch::initObjects()
 /**
  * Optimizer Function
  * Returns: true if properly initialized
- //*** should return a boolean
+ * should return a boolean
  */
 bool CRandomSearch::initialize()
 {
@@ -94,7 +94,7 @@ bool CRandomSearch::initialize()
 /**
  * Optimizer Function
  * Returns: nothing
- //*** should return a boolean
+ * should return a boolean
  */ 
 //C_INT32 CRandomSearch::optimise()
 bool CRandomSearch::optimise()
@@ -192,7 +192,7 @@ bool CRandomSearch::optimise()
 }
 
 // evaluate the fitness of one individual
-bool CRandomSearch::evaluate(const CVector< C_FLOAT64 > & individual)
+bool CRandomSearch::evaluate(const CVector< C_FLOAT64 > & /* individual */)
 {
   bool Continue = true;
 

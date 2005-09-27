@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 17:48:31 $
+   $Date: 2005/09/27 02:11:19 $
    End CVS Header */
 
 #include "copasi.h"
@@ -179,7 +179,7 @@ bool COptMethodEP::initialize()
 }
 
 // evaluate the fitness of one individual
-bool COptMethodEP::evaluate(const CVector< C_FLOAT64 > & individual)
+bool COptMethodEP::evaluate(const CVector< C_FLOAT64 > & /* individual */)
 {
   bool Continue = true;
 

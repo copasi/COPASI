@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 17:48:31 $
+   $Date: 2005/09/27 02:11:19 $
    End CVS Header */
 
 #include "copasi.h"
@@ -41,7 +41,7 @@ bool COptMethodSteepestDescent::optimise()
 {
   if (!initialize()) return false;
 
-  C_INT32 i, k;
+  unsigned C_INT32 i, k;
   C_FLOAT64 tmp, x0, alpha, mn, mx, fmn, fmx;
   bool calc_grad;
 
@@ -226,7 +226,7 @@ void COptMethodSteepestDescent::gradient()
 
 const C_FLOAT64 COptMethodSteepestDescent::descentLine(const C_FLOAT64 & x)
 {
-  for (C_INT32 i = 0; i < mVariableSize; i++)
+  for (unsigned C_INT32 i = 0; i < mVariableSize; i++)
     (*(*mpSetCalculateVariable)[i])(mIndividual[i] + x * mGradient[i]);
 
   return evaluate();

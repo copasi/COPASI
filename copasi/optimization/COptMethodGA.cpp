@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/26 21:06:20 $
+   $Date: 2005/09/27 02:11:19 $
    End CVS Header */
 
 #include <float.h>
@@ -79,7 +79,7 @@ COptMethodGA::~COptMethodGA()
 {cleanup();}
 
 // evaluate the fitness of one individual
-bool COptMethodGA::evaluate(const CVector< C_FLOAT64 > & individual)
+bool COptMethodGA::evaluate(const CVector< C_FLOAT64 > & /* individual */)
 {
   bool Continue = true;
 
@@ -553,17 +553,20 @@ bool COptMethodGA::optimise()
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
         {
-          Continue = creation(mPopulationSize / 2, mPopulationSize);
+          Continue = creation((unsigned C_INT32) (mPopulationSize / 2),
+                              mPopulationSize);
           Stalled10 = Stalled30 = Stalled50 = 0;
         }
       else if (Stalled > 30 && Stalled30 > 30)
         {
-          Continue = creation(mPopulationSize * 0.7, mPopulationSize);
+          Continue = creation((unsigned C_INT32) (mPopulationSize * 0.7),
+                              mPopulationSize);
           Stalled10 = Stalled30 = 0;
         }
       else if (Stalled > 10 && Stalled10 > 10)
         {
-          Continue = creation(mPopulationSize * 0.9, mPopulationSize);
+          Continue = creation((unsigned C_INT32) (mPopulationSize * 0.9),
+                              mPopulationSize);
           Stalled10 = 0;
         }
       // replicate the individuals
