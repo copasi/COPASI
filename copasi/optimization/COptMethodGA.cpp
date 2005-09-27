@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/27 02:11:19 $
+   $Date: 2005/09/27 14:16:35 $
    End CVS Header */
 
 #include <float.h>
@@ -20,14 +20,6 @@
 #include "utilities/CSort.h"
 #include "report/CCopasiObjectReference.h"
 
-// Why does this have to be instantiated for unsigned C_INT32 * and
-// not for C_FLOAT64 * under Visual C++ 6.0
-#ifdef WIN32
-bool sortDefault(const std::pair<unsigned C_INT32 *, unsigned C_INT32> & lhs,
-                 const std::pair<unsigned C_INT32 *, unsigned C_INT32> & rhs)
-{return *lhs.first < *rhs.first;}
-#endif
-
 COptMethodGA::COptMethodGA(const CCopasiContainer * pParent):
     COptMethod(CCopasiTask::optimization, CCopasiMethod::GeneticAlgorithm, pParent),
     mGenerations(0),
@@ -40,7 +32,7 @@ COptMethodGA::COptMethodGA(const CCopasiContainer * pParent):
     mEvaluationValue(DBL_MAX),
     mValue(0),
     mShuffle(0),
-    mWins(0),
+    mLosses(0),
     mMutationVarians(0.1),
     mBestValue(DBL_MAX),
     mBestIndex(C_INVALID_INDEX),
@@ -68,7 +60,7 @@ COptMethodGA::COptMethodGA(const COptMethodGA & src,
     mEvaluationValue(DBL_MAX),
     mValue(0),
     mShuffle(0),
-    mWins(0),
+    mLosses(0),
     mMutationVarians(0.1),
     mBestValue(DBL_MAX),
     mBestIndex(C_INVALID_INDEX),
@@ -108,9 +100,9 @@ bool COptMethodGA::swap(unsigned C_INT32 from, unsigned C_INT32 to)
   mValue[to] = mValue[from];
   mValue[from] = dTmp;
 
-  C_INT32 iTmp = mWins[to];
-  mWins[to] = mWins[from];
-  mWins[from] = iTmp;
+  C_INT32 iTmp = mLosses[to];
+  mLosses[to] = mLosses[from];
+  mLosses[from] = iTmp;
 
   return true;
 }
@@ -270,7 +262,7 @@ bool COptMethodGA::select()
   unsigned C_INT32 TotalPopulation = 2 * mPopulationSize;
 
   // tournament competition
-  mWins = 0; // Set all wins to 0.
+  mLosses = 0; // Set all wins to 0.
 
   // compete with ~ 20% of the TotalPopulation
   nopp = std::max<unsigned C_INT32>(1, mPopulationSize / 5);
@@ -283,19 +275,19 @@ bool COptMethodGA::select()
         opp = mpRandom->getRandomU(TotalPopulation - 1);
 
         if (mValue[i] < mValue[opp])
-          mWins[i]++;
+          mLosses[opp]++;
         else
-          mWins[opp]++;
+          mLosses[i]++;
       }
 
   // selection of top mPopulationSize winners
   CVector<unsigned C_INT32> Pivot;
-  partialSortWithPivot(mWins.array(),
-                       mWins.array() + mPopulationSize,
-                       mWins.array() + TotalPopulation,
+  partialSortWithPivot(mLosses.array(),
+                       mLosses.array() + mPopulationSize,
+                       mLosses.array() + TotalPopulation,
                        Pivot);
 
-  applyPivot(Pivot, this, &COptMethodGA::swap);
+  applyPartialPivot(Pivot, mPopulationSize, this, &COptMethodGA::swap);
 
   return true;
 }
@@ -447,7 +439,7 @@ bool COptMethodGA::initialize()
   for (i = 0; i < mPopulationSize; i++)
     mShuffle[i] = i;
 
-  mWins.resize(2*mPopulationSize);
+  mLosses.resize(2*mPopulationSize);
 
   // initialise the variance for mutations
   mMutationVarians = 0.1;
