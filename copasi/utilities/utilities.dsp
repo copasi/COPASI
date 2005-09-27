@@ -223,6 +223,10 @@ SOURCE=.\CSlider.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CSort.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CSparseMatrix.h
 # End Source File
 # Begin Source File
