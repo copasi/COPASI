@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/27 14:16:35 $
+   $Date: 2005/09/27 14:22:30 $
    End CVS Header */
 
 #include <float.h>
@@ -33,6 +33,7 @@ COptMethodGA::COptMethodGA(const CCopasiContainer * pParent):
     mValue(0),
     mShuffle(0),
     mLosses(0),
+    mPivot(0),
     mMutationVarians(0.1),
     mBestValue(DBL_MAX),
     mBestIndex(C_INVALID_INDEX),
@@ -61,6 +62,7 @@ COptMethodGA::COptMethodGA(const COptMethodGA & src,
     mValue(0),
     mShuffle(0),
     mLosses(0),
+    mPivot(0),
     mMutationVarians(0.1),
     mBestValue(DBL_MAX),
     mBestIndex(C_INVALID_INDEX),
@@ -281,13 +283,12 @@ bool COptMethodGA::select()
       }
 
   // selection of top mPopulationSize winners
-  CVector<unsigned C_INT32> Pivot;
   partialSortWithPivot(mLosses.array(),
                        mLosses.array() + mPopulationSize,
                        mLosses.array() + TotalPopulation,
-                       Pivot);
+                       mPivot);
 
-  applyPartialPivot(Pivot, mPopulationSize, this, &COptMethodGA::swap);
+  applyPartialPivot(mPivot, mPopulationSize, this, &COptMethodGA::swap);
 
   return true;
 }

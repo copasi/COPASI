@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/27 14:12:41 $
+   $Date: 2005/09/27 14:22:30 $
    End CVS Header */
 
 /**
@@ -195,6 +195,11 @@ class COptMethodGA : public COptMethod
      * number of losses of each individual in the tournament
      */
     CVector< unsigned C_INT32 > mLosses;
+
+    /**
+     * The pivot vector used for sorting
+     */
+    CVector<unsigned C_INT32> mPivot;
 
     /**
      * variance for mutations
