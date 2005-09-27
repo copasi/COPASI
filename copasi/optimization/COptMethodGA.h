@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:17 $
+   $Date: 2005/09/27 14:12:41 $
    End CVS Header */
 
 /**
@@ -192,9 +192,9 @@ class COptMethodGA : public COptMethod
     CVector< unsigned C_INT32 > mShuffle;
 
     /**
-     * number of wins of each individual in the tournament
+     * number of losses of each individual in the tournament
      */
-    CVector< unsigned C_INT32 > mWins;
+    CVector< unsigned C_INT32 > mLosses;
 
     /**
      * variance for mutations
