@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:58 $
+   $Date: 2005/09/28 15:59:44 $
    End CVS Header */
 
 /**
@@ -26,21 +26,29 @@ CCopasiParameterGroup::CCopasiParameterGroup():
 CCopasiParameterGroup::CCopasiParameterGroup(const CCopasiParameterGroup & src,
     const CCopasiContainer * pParent):
     CCopasiParameter(src, pParent)
-{createGroup(src.mValue.pGROUP);}
+{copyGroup(src.mValue.pGROUP);}
 
 CCopasiParameterGroup::CCopasiParameterGroup(const std::string & name,
     const CCopasiContainer * pParent,
     const std::string & objectType):
     CCopasiParameter(name, CCopasiParameter::GROUP, NULL, pParent, objectType)
-{createGroup();}
+{copyGroup(NULL);}
 
 CCopasiParameterGroup::~CCopasiParameterGroup()
-{deleteGroup();}
+{
+  clearGroup();
+
+  if (mValue.pGROUP)
+    {
+      delete mValue.pGROUP;
+      mValue.pGROUP = NULL;
+    }
+}
 
 CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParameterGroup & rhs)
 {
   setObjectName(rhs.getObjectName());
-  createGroup(rhs.mValue.pGROUP);
+  copyGroup(rhs.mValue.pGROUP);
 
   return *this;
 }
@@ -67,32 +75,37 @@ std::ostream &operator<<(std::ostream &os, const CCopasiParameterGroup & o)
   return os;
 }
 
-void CCopasiParameterGroup::createGroup(const parameterGroup * pGroup)
+void CCopasiParameterGroup::copyGroup(const parameterGroup * pGroup)
 {
-  deleteGroup();
+  if (!mValue.pGROUP)
+    {
+      mValue.pGROUP = new parameterGroup;
+      mSize = sizeof(parameterGroup);
+    }
 
-  mValue.pGROUP = new parameterGroup;
-  mSize = sizeof(parameterGroup);
+  clearGroup();
 
   if (!pGroup) return;
 
-  index_iterator it = const_cast< parameterGroup * >(pGroup)->begin();
-  index_iterator end = const_cast< parameterGroup * >(pGroup)->end();
+  parameterGroup::const_iterator it_const = pGroup->begin();
+  parameterGroup::const_iterator end_const = pGroup->end();
 
   CCopasiParameter * pParameter;
 
-  for (; it != end; ++it)
+  for (; it_const != end_const; ++it_const)
     {
-      if ((*it)->getType() == GROUP)
-        pParameter = new CCopasiParameterGroup(* (CCopasiParameterGroup *) * it);
+      if ((*it_const)->getType() == GROUP)
+        pParameter = new CCopasiParameterGroup(* (CCopasiParameterGroup *) * it_const);
       else
-        pParameter = new CCopasiParameter(**it);
+        pParameter = new CCopasiParameter(**it_const);
 
       addParameter(pParameter);
     }
+
+  return;
 }
 
-void CCopasiParameterGroup::deleteGroup()
+void CCopasiParameterGroup::clearGroup()
 {
   if (!mValue.pGROUP) return;
 
@@ -101,11 +114,7 @@ void CCopasiParameterGroup::deleteGroup()
 
   for (; it != end; ++it) pdelete(*it);
 
-  if (mValue.pGROUP)
-    {
-      delete mValue.pGROUP;
-      mValue.pGROUP = NULL;
-    }
+  mValue.pGROUP->clear();
 }
 
 bool CCopasiParameterGroup::addParameter(const CCopasiParameter & parameter)
@@ -207,9 +216,20 @@ CCopasiParameter * CCopasiParameterGroup::getParameter(const std::string & name)
   if (range.first == range.second) return NULL;
 
   return
-  (CCopasiParameter *) (CCopasiContainer *)
-  const_cast< CCopasiObject * >(range.first->second);
+  dynamic_cast<CCopasiParameter *>(const_cast< CCopasiObject * >(range.first->second));
 }
+
+const CCopasiParameter * CCopasiParameterGroup::getParameter(const std::string & name) const
+  {
+    std::pair < CCopasiContainer::objectMap::const_iterator,
+    CCopasiContainer::objectMap::const_iterator > range =
+      getObjects().equal_range(name);
+
+    if (range.first == range.second) return NULL;
+
+    return
+    dynamic_cast<CCopasiParameter *>(range.first->second);
+  }
 
 CCopasiParameter * CCopasiParameterGroup::getParameter(const unsigned C_INT32 & index)
 {
@@ -226,6 +246,18 @@ const CCopasiParameter * CCopasiParameterGroup::getParameter(const unsigned C_IN
 
     return NULL;
   }
+
+CCopasiParameterGroup * CCopasiParameterGroup::getGroup(const std::string & name)
+{return dynamic_cast<CCopasiParameterGroup *>(getParameter(name));}
+
+const CCopasiParameterGroup * CCopasiParameterGroup::getGroup(const std::string & name) const
+  {return dynamic_cast<const CCopasiParameterGroup *>(getParameter(name));}
+
+CCopasiParameterGroup * CCopasiParameterGroup::getGroup(const unsigned C_INT32 & index)
+{return dynamic_cast<CCopasiParameterGroup *>(getParameter(index));}
+
+const CCopasiParameterGroup * CCopasiParameterGroup::getGroup(const unsigned C_INT32 & index) const
+  {return dynamic_cast<const CCopasiParameterGroup *>(getParameter(index));}
 
 const CCopasiParameter::Value & CCopasiParameterGroup::getValue(const std::string & name) const
   {
@@ -347,7 +379,7 @@ bool CCopasiParameterGroup::swap(index_iterator & from,
 unsigned C_INT32 CCopasiParameterGroup::size() const
 {return mValue.pGROUP->size();}
 
-void CCopasiParameterGroup::clear() {createGroup();}
+void CCopasiParameterGroup::clear() {copyGroup(NULL);}
 
 unsigned C_INT32 CCopasiParameterGroup::getIndex(const std::string & name) const
   {

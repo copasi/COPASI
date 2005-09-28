@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 17:03:52 $
+   $Date: 2005/09/28 15:59:44 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -187,11 +187,52 @@ class CCopasiParameterGroup: public CCopasiParameter
 
     /**
      * Retrieve a parameter or subgroup from the group
+     * @param const std::string & name
+     * @return const CCopasiParameter * parameter
+     */
+    const CCopasiParameter * getParameter(const std::string & name) const;
+
+    /**
+     * Retrieve a parameter or subgroup from the group
      * @param const unsigned C_INT32 & index
      * @return CCopasiParameter * parameter
      */
     CCopasiParameter * getParameter(const unsigned C_INT32 & index);
+
+    /**
+     * Retrieve a parameter or subgroup from the group
+     * @param const unsigned C_INT32 & index
+     * @return const CCopasiParameter * parameter
+     */
     const CCopasiParameter * getParameter(const unsigned C_INT32 & index) const;
+
+    /**
+     * Retrieve a subgroup from the group
+     * @param const std::string & name
+     * @return CCopasiParameterGroup * group
+     */
+    CCopasiParameterGroup * getGroup(const std::string & name);
+
+    /**
+     * Retrieve a subgroup from the group
+     * @param const std::string & name
+     * @return const CCopasiParameterGroup * group
+     */
+    const CCopasiParameterGroup * getGroup(const std::string & name) const;
+
+    /**
+     * Retrieve a parameter or subgroup from the group
+     * @param const unsigned C_INT32 & index
+     * @return CCopasiParameter * parameter
+     */
+    CCopasiParameterGroup * getGroup(const unsigned C_INT32 & index);
+
+    /**
+     * Retrieve a parameter or subgroup from the group
+     * @param const unsigned C_INT32 & index
+     * @return const CCopasiParameter * parameter
+     */
+    const CCopasiParameterGroup * getGroup(const unsigned C_INT32 & index) const;
 
     /**
      * Retreive a pointer to the value of a parameter or subgroup
@@ -351,16 +392,16 @@ class CCopasiParameterGroup: public CCopasiParameter
   private:
     /**
      * Create or copy the parameterGroup 
-     * @param const parameterGroup * pGroup (default: NULL)
+     * @param const parameterGroup * pGroup
      */
-    void createGroup(const parameterGroup * pGroup = NULL);
+    void copyGroup(const parameterGroup * pGroup);
 
     /**
-     * Delete the parameterGroup
+     * clear the parameterGroup
      */
-    void deleteGroup();
+    void clearGroup();
 
-  protected:
+  public:
     /**
      * Add a parameter
      * @param CCopasiParameter * pParameter
