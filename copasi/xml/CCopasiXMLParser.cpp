@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.110 $
+   $Revision: 1.111 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 19:00:03 $
+   $Date: 2005/09/29 19:26:17 $
    End CVS Header */
 
 /**
@@ -4126,6 +4126,7 @@ void CCopasiXMLParser::TaskElement::end(const XML_Char *pszName)
 
     case Problem:
       if (strcmp(pszName, "Problem")) fatalError();
+      mCommon.pCurrentTask->getProblem()->elevateChildren();
       break;
 
     case Method:
