@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:35:01 $
+   $Date: 2005/09/29 19:50:10 $
    End CVS Header */
 
 #include <fstream>
@@ -422,7 +422,8 @@ bool CExperiment::addColumnType(const unsigned C_INT32 & index, const Type & typ
   std::string Index = StringPrint("%d", index);
   if (mpColumnType->getParameter(Index)) return false;
 
-  return mpColumnType->addParameter(Index, CCopasiParameter::UINT, type);
+  return mpColumnType->addParameter(Index, CCopasiParameter::UINT,
+                                    (unsigned C_INT32) type);
 }
 
 bool CExperiment::removeColumnType(const unsigned C_INT32 & index)
