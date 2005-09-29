@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/28 15:59:44 $
+   $Date: 2005/09/29 19:22:03 $
    End CVS Header */
 
 /**
@@ -38,12 +38,10 @@ CCopasiParameterGroup::~CCopasiParameterGroup()
 {
   clearGroup();
 
-  if (mValue.pGROUP)
-    {
-      delete mValue.pGROUP;
-      mValue.pGROUP = NULL;
-    }
+  pdelete(mValue.pGROUP);
 }
+
+bool CCopasiParameterGroup::elevateChildren() {return true;}
 
 CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParameterGroup & rhs)
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/15 18:45:24 $
+   $Date: 2005/09/29 19:24:27 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -61,8 +61,12 @@ const MESSAGES Messages[] =
     {MCChemEq + 3, "CChemEq (3): No Substrates and Products are in different compartments."},
 
     // CMethodParameter
-    {MCParameter + 1, "CMethodParameter (1): Invalid value '%f' for '%s' "
+    {MCParameter + 1, "CCopasiParameter (1): Invalid value '%f' for '%s' "
      "which is of type '%s'."},
+    {MCParameter + 2, "CCopasiParameter (2): Elevation failed, since no parameter is provided."},
+    {MCParameter + 3, "CCopasiParameter (3): Elevation failed, since the parameter is not of the required source type."},
+    {MCParameter + 4, "CCopasiParameter (4): Elevation failed, since elevation of children failed."},
+    {MCParameter + 5, "CCopasiParameter (5): Elevation failed, since the parameter is not member of this group."},
 
     // CTrajectoryMethod
     {MCTrajectoryMethod + 1, "CTrajectoryMethod (1): Hybrid simulation not "

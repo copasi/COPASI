@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/28 15:59:44 $
+   $Date: 2005/09/29 19:22:03 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "CCopasiParameter.h"
+#include "CCopasiMessage.h"
 
 /**
  *  CCopasiParameterGroup class.
@@ -58,6 +59,13 @@ class CCopasiParameterGroup: public CCopasiParameter
      * Destructor
      */
     virtual ~CCopasiParameterGroup();
+
+    /**
+     * This methods must be called to elevate subgroups to
+     * derived objects. The default implementation does nothing.
+     * @return bool success
+     */
+    virtual bool elevateChildren();
 
     /**
      * Assignement operator
@@ -158,6 +166,44 @@ class CCopasiParameterGroup: public CCopasiParameter
       }
 
     /**
+     * Assert that a parameter with the given name and type is present.
+     * If not the parameter is created with the default value.
+     * @param const std::string & name
+     * @param const CCopasiParameter::Type type
+     * @param const CType & Value
+     * @return CCopasiParameter * pParameter
+     */
+    template < class CType >
+          CCopasiParameter * assertParameter(const std::string & name,
+                                             const CCopasiParameter::Type type,
+                                             const CType & defaultValue)
+      {
+        CCopasiParameter * pParm = getParameter(name);
+        if (pParm && pParm->getType() == type) return pParm;
+
+        if (pParm) remove(name);
+
+        addParameter(name, type, defaultValue);
+
+        return getParameter(name);
+      }
+
+    /**
+     * Assert that a group with the given name and GroupType is present.
+     * If not the group is created with the default value.
+     * @param const std::string & name
+     * @return CCopasiParameterGroup * pGroup
+     */
+    template <typename GroupType>
+    GroupType * assertGroup(const std::string & name)
+    {
+      CCopasiParameter * pParm = getParameter(name);
+      if (pParm && pParm->getType() != GROUP) remove(name);
+
+      return elevate<GroupType, CCopasiParameterGroup>(pParm);
+    }
+
+    /**
      * Add a subgroup to the group
      * @param const std::string & name
      * @return bool success
@@ -221,16 +267,16 @@ class CCopasiParameterGroup: public CCopasiParameter
     const CCopasiParameterGroup * getGroup(const std::string & name) const;
 
     /**
-     * Retrieve a parameter or subgroup from the group
+     * Retrieve a subgroup from the group
      * @param const unsigned C_INT32 & index
-     * @return CCopasiParameter * parameter
+     * @return CCopasiParameterGroup * parameter
      */
     CCopasiParameterGroup * getGroup(const unsigned C_INT32 & index);
 
     /**
-     * Retrieve a parameter or subgroup from the group
+     * Retrieve a subgroup from the group
      * @param const unsigned C_INT32 & index
-     * @return const CCopasiParameter * parameter
+     * @return const CCopasiParameterGroup * parameter
      */
     const CCopasiParameterGroup * getGroup(const unsigned C_INT32 & index) const;
 
@@ -408,5 +454,69 @@ class CCopasiParameterGroup: public CCopasiParameter
      */
     void addParameter(CCopasiParameter * pParameter);
   };
+
+/**
+ * Elevate a CCopasiParameter pointer to ElevateTo. If pParm is NULL,
+ * not of type ElevateFrom, or the elevation fails a NULL pointer is
+ * returned. If the elevation is success full the parameter *pParm is
+ * replaced with the elevated object.
+ * @param CCopasiParameter * pParm
+ * @return ElevateTo * pTo
+ */
+template <typename ElevateTo, typename ElevateFrom>
+ElevateTo * elevate(CCopasiParameter * pParm)
+{
+  if (!pParm)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 2);
+      return NULL;
+    }
+
+  ElevateFrom * pFrom = dynamic_cast<ElevateFrom *>(pParm);
+  if (!pFrom)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 3);
+      return NULL;
+    }
+
+  ElevateTo * pTo = dynamic_cast<ElevateTo *>(pParm);
+
+  if (!pTo)
+    {
+      CCopasiParameterGroup * pGrp =
+        dynamic_cast<CCopasiParameterGroup *>(pParm->getObjectParent());
+
+      if (pGrp)
+        {
+          std::vector< CCopasiParameter * >::iterator it =
+            pGrp->CCopasiParameter::getValue().pGROUP->begin();
+          std::vector< CCopasiParameter * >::iterator end =
+            pGrp->CCopasiParameter::getValue().pGROUP->end();
+
+          while (it != end && *it != pParm) ++it;
+
+          if (it == end)
+            {
+              CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 5);
+              return NULL;
+            }
+
+          pTo = new ElevateTo(*pFrom);
+          delete pParm;
+
+          pGrp->CCopasiContainer::add(pTo, true);
+          *it = pTo;
+        }
+      else
+        pTo = new ElevateTo(*pFrom);
+    }
+  else if (!pTo->elevateChildren())
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 4);
+      return NULL;
+    }
+
+  return pTo;
+}
 
 #endif // COPASI_CCopasiParameterGroup
