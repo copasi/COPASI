@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:22:03 $
+   $Date: 2005/09/29 19:56:20 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -201,6 +201,70 @@ class CCopasiParameterGroup: public CCopasiParameter
       if (pParm && pParm->getType() != GROUP) remove(name);
 
       return elevate<GroupType, CCopasiParameterGroup>(pParm);
+    }
+
+    /**
+     * Elevate a CCopasiParameter pointer to ElevateTo. If pParm is NULL,
+     * not of type ElevateFrom, or the elevation fails a NULL pointer is
+     * returned. If the elevation is success full the parameter *pParm is
+     * replaced with the elevated object.
+     * @param CCopasiParameter * pParm
+     * @return ElevateTo * pTo
+     */
+    template <typename ElevateTo, typename ElevateFrom>
+    ElevateTo * elevate(CCopasiParameter * pParm)
+    {
+      if (!pParm)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 2);
+          return NULL;
+        }
+
+      ElevateFrom * pFrom = dynamic_cast<ElevateFrom *>(pParm);
+      if (!pFrom)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 3);
+          return NULL;
+        }
+
+      ElevateTo * pTo = dynamic_cast<ElevateTo *>(pParm);
+
+      if (!pTo)
+        {
+          CCopasiParameterGroup * pGrp =
+            dynamic_cast<CCopasiParameterGroup *>(pParm->getObjectParent());
+
+          if (pGrp)
+            {
+              std::vector< CCopasiParameter * >::iterator it =
+                pGrp->CCopasiParameter::getValue().pGROUP->begin();
+              std::vector< CCopasiParameter * >::iterator end =
+                pGrp->CCopasiParameter::getValue().pGROUP->end();
+
+              while (it != end && *it != pParm) ++it;
+
+              if (it == end)
+                {
+                  CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 5);
+                  return NULL;
+                }
+
+              pTo = new ElevateTo(*pFrom);
+              delete pParm;
+
+              pGrp->CCopasiContainer::add(pTo, true);
+              *it = pTo;
+            }
+          else
+            pTo = new ElevateTo(*pFrom);
+        }
+      else if (!pTo->elevateChildren())
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 4);
+          return NULL;
+        }
+
+      return pTo;
     }
 
     /**
@@ -454,69 +518,5 @@ class CCopasiParameterGroup: public CCopasiParameter
      */
     void addParameter(CCopasiParameter * pParameter);
   };
-
-/**
- * Elevate a CCopasiParameter pointer to ElevateTo. If pParm is NULL,
- * not of type ElevateFrom, or the elevation fails a NULL pointer is
- * returned. If the elevation is success full the parameter *pParm is
- * replaced with the elevated object.
- * @param CCopasiParameter * pParm
- * @return ElevateTo * pTo
- */
-template <typename ElevateTo, typename ElevateFrom>
-ElevateTo * elevate(CCopasiParameter * pParm)
-{
-  if (!pParm)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 2);
-      return NULL;
-    }
-
-  ElevateFrom * pFrom = dynamic_cast<ElevateFrom *>(pParm);
-  if (!pFrom)
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 3);
-      return NULL;
-    }
-
-  ElevateTo * pTo = dynamic_cast<ElevateTo *>(pParm);
-
-  if (!pTo)
-    {
-      CCopasiParameterGroup * pGrp =
-        dynamic_cast<CCopasiParameterGroup *>(pParm->getObjectParent());
-
-      if (pGrp)
-        {
-          std::vector< CCopasiParameter * >::iterator it =
-            pGrp->CCopasiParameter::getValue().pGROUP->begin();
-          std::vector< CCopasiParameter * >::iterator end =
-            pGrp->CCopasiParameter::getValue().pGROUP->end();
-
-          while (it != end && *it != pParm) ++it;
-
-          if (it == end)
-            {
-              CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 5);
-              return NULL;
-            }
-
-          pTo = new ElevateTo(*pFrom);
-          delete pParm;
-
-          pGrp->CCopasiContainer::add(pTo, true);
-          *it = pTo;
-        }
-      else
-        pTo = new ElevateTo(*pFrom);
-    }
-  else if (!pTo->elevateChildren())
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 4);
-      return NULL;
-    }
-
-  return pTo;
-}
 
 #endif // COPASI_CCopasiParameterGroup
