@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/23 19:28:32 $
+   $Date: 2005/09/29 19:35:01 $
    End CVS Header */
 
 #include <vector>
@@ -19,25 +19,23 @@ CExperimentObjectMap::CExperimentObjectMap(const std::string & name,
     CCopasiParameterGroup(name, pParent),
     mObjects(0),
     mLastColumn(0)
-{initializeParameter();}
+{}
 
 CExperimentObjectMap::CExperimentObjectMap(const CExperimentObjectMap & src,
     const CCopasiContainer * pParent):
     CCopasiParameterGroup(src, pParent),
     mObjects(src.mObjects),
     mLastColumn(src.mLastColumn)
-{initializeParameter();}
+{}
 
 CExperimentObjectMap::CExperimentObjectMap(const CCopasiParameterGroup & group,
     const CCopasiContainer * pParent):
     CCopasiParameterGroup(group, pParent),
     mObjects(0),
     mLastColumn(0)
-{initializeParameter();}
+{}
 
 CExperimentObjectMap::~CExperimentObjectMap() {}
-
-void CExperimentObjectMap::initializeParameter() {}
 
 bool CExperimentObjectMap::addObject(const std::string & CN,
                                      const unsigned C_INT32 & column)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/19 21:12:54 $
+   $Date: 2005/09/29 19:35:01 $
    End CVS Header */
 
 #ifndef COPASI_CExperimentObjectMap
@@ -80,13 +80,6 @@ class CExperimentObjectMap: public CCopasiParameterGroup
      * @return const unsigned C_INT32 & lastColumn
      */
     const unsigned C_INT32 & getLastColumn() const;
-
-  private:
-    /**
-     * Allocates all group parameters and assures that they are 
-     * properly initialized.
-     */
-    void initializeParameter();
 
   private:
     // Attributes:

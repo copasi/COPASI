@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/20 13:07:40 $
+   $Date: 2005/09/29 19:35:01 $
    End CVS Header */
 
 #ifndef COPASI_CFitItem
@@ -16,23 +16,42 @@ class CFitItem : public COptItem
     friend class CFitProblem;
 
     //Operations
-  private:
-    /**
-     * Specific Constructor
-     */
-    CFitItem(CCopasiParameterGroup & group);
-
   public:
     /**
-     * Copy Constructor
-     * @param CFitItem & src
+     * Default constructor
+     * @param const std::string & name (default: FitItem)
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CFitItem(CFitItem & src);
+    CFitItem(const std::string & name = "FitItem",
+             const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Copy constructor
+     * @param const CFitItem & src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CFitItem(const CFitItem & src,
+             const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Specific constructor used for reading copasi files
+     * @param const CCopasiParameterGroup & group
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CFitItem(const CCopasiParameterGroup & group,
+             const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor
      */
     virtual ~CFitItem();
+
+    /**
+     * This methods must be called to elevate subgroups to
+     * derived objects. The default implementation does nothing.
+     * @return bool success
+     */
+    virtual bool elevateChildren();
 
     /**
      * Initialize the optimization item.
@@ -118,7 +137,20 @@ class CFitItem : public COptItem
     unsigned C_INT32 getExperimentCount() const;
 
   private:
+    /**
+     * Allocates all group parameters and assures that they are 
+     * properly initialized.
+     */
+    void initializeParameter();
+
+  private:
     // Attributes
+    /**
+     * A pointer to the value of the CCopasiParameterGroup holding the 
+     * list of AffectedExperiments
+     */
+    CCopasiParameterGroup * mpGrpAffectedExperiments;
+
     /**
      * The value for local items, which affect the experiments in the list.
      */

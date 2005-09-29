@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/09/29 12:51:32 $
+   $Author: shoops $ 
+   $Date: 2005/09/29 19:35:01 $
    End CVS Header */
 
 #include <fstream>
@@ -17,13 +17,15 @@
 
 #include "report/CKeyFactory.h"
 #include "utilities/CTableCell.h"
+#include "utilities/CSort.h"
+#include "utilities/utility.h"
 
 const std::string CExperiment::TypeName[] =
   {
     "ignored",
     "independent",
     "dependent",
-    ""
+    "Time"
   };
 
 const char* CExperiment::XMLType[] =
@@ -31,11 +33,13 @@ const char* CExperiment::XMLType[] =
     "ignored",
     "independent",
     "dependent",
+    "time",
     NULL
   };
 
-CExperiment::CExperiment(const CCopasiContainer * pParent):
-    CCopasiParameterGroup("Experiment", pParent),
+CExperiment::CExperiment(const std::string & name,
+                         const CCopasiContainer * pParent):
+    CCopasiParameterGroup(name, pParent),
     mpFileName(NULL),
     mpFirstRow(NULL),
     mpTaskType(NULL),
@@ -45,12 +49,13 @@ CExperiment::CExperiment(const CCopasiContainer * pParent):
     mpNumRows(NULL),
     mpNumColumns(NULL),
     mpColumnType(NULL),
-    mRowName(),
+    mColumnName(),
     mpObjectMap(NULL),
+    mDataTime(0),
     mDataIndependent(0, 0),
     mDataDependent(0, 0),
     mMeans(0),
-    mVariances(0),
+    mVariancesInv(0),
     mDependentValues(0),
     mIndependentUpdateMethods(0)
 {initializeParameter();}
@@ -67,12 +72,13 @@ CExperiment::CExperiment(const CExperiment & src,
     mpNumRows(NULL),
     mpNumColumns(NULL),
     mpColumnType(NULL),
-    mRowName(src.mRowName),
+    mColumnName(src.mColumnName),
     mpObjectMap(NULL),
+    mDataTime(src.mDataTime),
     mDataIndependent(src.mDataIndependent),
     mDataDependent(src.mDataDependent),
     mMeans(src.mMeans),
-    mVariances(src.mVariances),
+    mVariancesInv(src.mVariancesInv),
     mDependentValues(src.mDependentValues),
     mIndependentUpdateMethods(src.mIndependentUpdateMethods)
 {initializeParameter();}
@@ -89,12 +95,13 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
     mpNumRows(NULL),
     mpNumColumns(NULL),
     mpColumnType(NULL),
-    mRowName(),
+    mColumnName(),
     mpObjectMap(NULL),
+    mDataTime(0),
     mDataIndependent(0, 0),
     mDataDependent(0, 0),
     mMeans(0),
-    mVariances(0),
+    mVariancesInv(0),
     mDependentValues(0),
     mIndependentUpdateMethods(0)
 {initializeParameter();}
@@ -143,19 +150,36 @@ void CExperiment::initializeParameter()
     addParameter("Number of Columns", CCopasiParameter::UINT, (unsigned C_INT32) 0);
   mpNumColumns = getValue("Number of Columns").pUINT;
 
-  if (!getParameter("Column Role"))
-    addGroup("Column Role");
-  mpColumnType = getValue("Column Role").pGROUP;
+  if (getGroup("Column Role")) addGroup("Column Role");
 
-  CCopasiParameterGroup * pGrp = dynamic_cast<CCopasiParameterGroup *>(getParameter("Object Map"));
+  if (getGroup("Object Map")) addGroup("Object Map");
 
-  if (!pGrp)
-    mpObjectMap = new CExperimentObjectMap("Object Map");
-  else
-    mpObjectMap = new CExperimentObjectMap(*pGrp);
+  elevateChildren();
+}
 
-  removeParameter("Object Map");
-  addParameter(mpObjectMap);
+bool CExperiment::elevateChildren()
+{
+  mpColumnType =
+    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(getGroup("Column Role"));
+  if (!mpColumnType) return false;
+
+  mpObjectMap =
+    elevate<CExperimentObjectMap, CCopasiParameterGroup>(getGroup("Object Map"));
+  if (!mpObjectMap) return false;
+
+  return true;
+}
+
+C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index)
+{
+  C_FLOAT64 s = 0.0;
+
+  unsigned C_INT32 i , imax = mDataDependent.numCols();
+
+  for (i = 0; i < imax; i++)
+    s += pow(mDataDependent(index, i) - *mDependentValues[i], 2) * mVariancesInv[i];
+
+  return s;
 }
 
 bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContainer)
@@ -184,8 +208,10 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   IndependentCount = 0;
   DependentCount = 0;
 
+  bool TimeFound = false;
+
   for (i = 0; i < imax; i++)
-    switch (*(*mpColumnType)[i]->getValue().pUINT)
+    switch (*mpColumnType->getValue(StringPrint("%d", i)).pUINT)
       {
       case ignore:
         if (i < LastMappedColumn && Objects[i])
@@ -193,19 +219,27 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
         break;
 
       case independent:
-        if ((i < LastMappedColumn && !Objects[i]) ||
-            i >= LastMappedColumn) success = false;
+        if ((i < LastMappedColumn && !Objects[i]) || // Object not found
+            i >= LastMappedColumn) success = false;  // The column must be mapped
         mIndependentUpdateMethods[IndependentCount++] =
           Objects[i]->getUpdateMethod();
         break;
 
       case dependent:
-        if ((i < LastMappedColumn && !Objects[i]) ||
-            i >= LastMappedColumn) success = false;
+        if ((i < LastMappedColumn && !Objects[i]) || // Object not found
+            i >= LastMappedColumn) success = false;  // The column must be mapped
         mDependentValues[DependentCount++] =
           (C_FLOAT64 *) Objects[i]->getReference();
         break;
+
+      case time:
+        TimeFound = true;
+        break;
       }
+
+  /* We need to check whether a column is mapped to time */
+  if (!TimeFound && *mpTaskType == CCopasiTask::timeCourse)
+    success = false;
 
   return success;
 }
@@ -222,7 +256,7 @@ bool CExperiment::read(std::istream & in,
   unsigned C_INT32 DependentCount = 0;
 
   for (i = 0; i < imax; i++)
-    switch (*(*mpColumnType)[i]->getValue().pUINT)
+    switch (*mpColumnType->getValue(StringPrint("%d", i)).pUINT)
       {
       case ignore:
         break;
@@ -234,13 +268,18 @@ bool CExperiment::read(std::istream & in,
       case dependent:
         DependentCount++;
         break;
+
+      case time:
+        break;
       }
 
   unsigned C_INT32 NumRows =
     (*mpNameRow != C_INVALID_INDEX) ? *mpNumRows - 1 : *mpNumRows;
 
+  mDataTime.resize(NumRows);
   mDataIndependent.resize(NumRows, IndependentCount);
   mDataDependent.resize(NumRows, DependentCount);
+  mColumnName.resize(IndependentCount + DependentCount);
 
   CTableRow Row(*mpNumColumns, (*mpSeparator)[0]);
   const std::vector< CTableCell > & Cells = Row.getCells();
@@ -250,7 +289,7 @@ bool CExperiment::read(std::istream & in,
   if (currentLine > *mpFirstRow) return false; // We are past our first line
 
   // forwind to our first line
-  for (j = 0; j < *mpFirstRow && !in.fail(); j++)
+  for (j = currentLine; j < *mpFirstRow && !in.fail(); j++)
     {
       in.ignore(LONG_MAX, '\x0a');
       currentLine++;
@@ -264,6 +303,9 @@ bool CExperiment::read(std::istream & in,
       if (j == *mpNameRow)
         {
           j--;
+          for (i = 0; i < *mpNumColumns; i++)
+            mColumnName[i] = Cells[i].getName();
+
           continue;
         }
 
@@ -272,7 +314,7 @@ bool CExperiment::read(std::istream & in,
 
       for (i = 0; i < imax; i++)
         {
-          switch (*(*mpColumnType)[i]->getValue().pUINT)
+          switch (*mpColumnType->getValue(StringPrint("%d", i)).pUINT)
             {
             case ignore:
               break;
@@ -286,6 +328,10 @@ bool CExperiment::read(std::istream & in,
               mDataDependent[j][DependentCount++] =
                 Cells[i].getValue();
               break;
+
+            case time:
+              mDataTime[j] = Cells[i].getValue();
+              break;
             }
         }
     }
@@ -295,7 +341,7 @@ bool CExperiment::read(std::istream & in,
 
   // We need to calculate the means and variances
   mMeans.resize(DependentCount);
-  mVariances.resize(DependentCount);
+  mVariancesInv.resize(DependentCount);
   unsigned C_INT32 Count;
 
   for (i = 0; i < DependentCount; i++)
@@ -319,7 +365,7 @@ bool CExperiment::read(std::istream & in,
       else
         Mean = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-      C_FLOAT64 & Variance = mVariances[i];
+      C_FLOAT64 & Variance = mVariancesInv[i];
       Variance = 0;
 
       for (j = 0; j < NumRows; j++)
@@ -330,16 +376,31 @@ bool CExperiment::read(std::istream & in,
         }
 
       if (Count > 1)
-        Variance = Variance / (Count - 1);
+        Variance = (Count - 1.0) / Variance;
       else
-        Variance = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+        Variance = 1;
+    }
+
+  // If it is a time course this is the place to sort
+  // :TODO: We need to check that all other independent data is not changing.
+  if (*mpTaskType == CCopasiTask::timeCourse)
+    {
+      CVector<unsigned C_INT32> Pivot;
+      sortWithPivot(mDataTime.array(), mDataTime.array() + mDataTime.size(), Pivot);
+
+      mDataTime.applyPivot(Pivot);
+      mDataIndependent.applyPivot(Pivot);
+      mDataDependent.applyPivot(Pivot);
     }
 
   return true;
 }
 
 const CCopasiTask::Type & CExperiment::getExperimentType() const
-{return *mpTaskType;}
+  {return *mpTaskType;}
+
+const CVector< C_FLOAT64 > & CExperiment::getTimeData() const
+  {return mDataTime;}
 
 const CMatrix< C_FLOAT64 > & CExperiment::getIndependentData() const
   {return mDataIndependent;}
@@ -356,17 +417,29 @@ bool CExperiment::setFileName(const std::string & fileName)
   return true;
 }
 
+bool CExperiment::addColumnType(const unsigned C_INT32 & index, const Type & type)
+{
+  std::string Index = StringPrint("%d", index);
+  if (mpColumnType->getParameter(Index)) return false;
+
+  return mpColumnType->addParameter(Index, CCopasiParameter::UINT, type);
+}
+
+bool CExperiment::removeColumnType(const unsigned C_INT32 & index)
+{return removeParameter(StringPrint("%d", index));}
+
 const CExperiment::Type & CExperiment::getColumnType(const unsigned C_INT32 & index) const
   {
-    assert (index < mpColumnType->size());
-    return * static_cast<CExperiment::Type *>((*mpColumnType)[index]->getValue().pVOID);
+    std::string Index = StringPrint("%d", index);
+    return * static_cast<CExperiment::Type *>(mpColumnType->getValue(Index).pVOID);
   }
 
 bool CExperiment::setColumnType(const unsigned C_INT32 & index,
                                 const CExperiment::Type & type)
 {
-  assert (index < mpColumnType->size());
-  return (*mpColumnType)[index]->setValue((unsigned C_INT32) type);
+  std::string Index = StringPrint("%d", index);
+
+  return mpColumnType->setValue(Index, (unsigned C_INT32) type);
 }
 
 const unsigned C_INT32 & CExperiment::getNumColumns() const

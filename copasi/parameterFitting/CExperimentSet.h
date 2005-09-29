@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/23 19:17:28 $
+   $Date: 2005/09/29 19:35:01 $
    End CVS Header */
 
 #ifndef COPASI_CExperimentSet
@@ -22,9 +22,11 @@ class CExperimentSet: public CCopasiParameterGroup
   public:
     /**
      * Default constructor
+     * @param const std::string & name (default: Experiment Set)
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CExperimentSet(const CCopasiContainer * pParent = NULL);
+    CExperimentSet(const std::string & name = "Experiment Set",
+                   const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor
@@ -46,6 +48,13 @@ class CExperimentSet: public CCopasiParameterGroup
      * Destructor
      */
     virtual ~CExperimentSet();
+
+    /**
+     * This methods must be called to elevate subgroups to
+     * derived objects. The default implementation does nothing.
+     * @return bool success
+     */
+    virtual bool elevateChildren();
 
     /**
      * Compile the experiment set. This function must be called 

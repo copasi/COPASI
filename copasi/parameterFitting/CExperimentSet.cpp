@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/23 19:28:32 $
+   $Date: 2005/09/29 19:35:01 $
    End CVS Header */
 
 #include <algorithm>
@@ -13,8 +13,9 @@
 #include "CExperimentSet.h"
 #include "CExperiment.h"
 
-CExperimentSet::CExperimentSet(const CCopasiContainer * pParent):
-    CCopasiParameterGroup("Experiment Set", pParent),
+CExperimentSet::CExperimentSet(const std::string & name,
+                               const CCopasiContainer * pParent):
+    CCopasiParameterGroup(name, pParent),
     mpExperiments(NULL)
 {initializeParameter();}
 
@@ -34,27 +35,20 @@ CExperimentSet::~CExperimentSet() {}
 
 void CExperimentSet::initializeParameter()
 {
-  CExperiment * pExp;
-  CCopasiParameterGroup * pGrp;
+  mpExperiments = static_cast<std::vector<CExperiment * > * >(mValue.pVOID);
+  elevateChildren();
+}
 
+bool CExperimentSet::elevateChildren()
+{
   index_iterator it = mValue.pGROUP->begin();
   index_iterator end = mValue.pGROUP->end();
 
   for (; it != end; ++it)
-    {
-      if (!(pGrp = dynamic_cast<CCopasiParameterGroup *>(*it)))
-        pExp = new CExperiment();
-      else
-        pExp = new CExperiment(*pGrp);
+    if (!elevate<CExperiment, CCopasiParameterGroup>(*it)) return false;
 
-      pdelete(*it);
-      *it = pExp;
-    }
-
-  mpExperiments = static_cast<std::vector<CExperiment * > * >(mValue.pVOID);
+  return true;
 }
-
-#include <algorithm>
 
 bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfContainer)
 {
@@ -65,7 +59,6 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
   std::vector< CExperiment * >::iterator it = mpExperiments->begin();
   std::vector< CExperiment * >::iterator end = mpExperiments->end();
 
-  // We use the '<' operator defined in CExperiment.
   std::sort(it, end, &CExperiment::compare);
 
   std::ifstream in;

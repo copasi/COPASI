@@ -1,40 +1,60 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 19:08:34 $
+   $Date: 2005/09/29 19:37:47 $
    End CVS Header */
 
 #include "copasi.h"
 
 #include "CFitProblem.h"
+#include "CExperimentSet.h"
 
 #include "optimization/COptItem.h"
- #include "steadystate/CSteadyStateTask.h"
- #include "trajectory/CTrajectoryTask.h"
- #include "utilities/CProcessReport.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "trajectory/CTrajectoryTask.h"
+#include "utilities/CProcessReport.h"
 
 //  Default constructor
 CFitProblem::CFitProblem(const CCopasiTask::Type & type,
                          const CCopasiContainer * pParent):
-    COptProblem(type, pParent)
-{
-  removeParameter("ObjectiveFunction");
-  removeParameter("Maximize");
-
-  addGroup("ExperimentSet");
-}
+    COptProblem(type, pParent),
+    mpExperimentSet(NULL)
+{}
 
 // copy constructor
 CFitProblem::CFitProblem(const CFitProblem& src,
                          const CCopasiContainer * pParent):
-    COptProblem(src, pParent)
+    COptProblem(src, pParent),
+    mpExperimentSet(NULL)
 {}
 
 // Destructor
 CFitProblem::~CFitProblem()
 {}
+
+void CFitProblem::initializeParameter()
+{
+  removeParameter("ObjectiveFunction");
+  removeParameter("Maximize");
+
+  if (!(getGroup("Experiment Set")))
+    addGroup("Experiment Set");
+
+  elevateChildren();
+}
+
+bool CFitProblem::elevateChildren()
+{
+  mpExperimentSet =
+    elevate<CExperimentSet, CCopasiParameterGroup>(getGroup("Experiment Set"));
+  if (!mpExperimentSet) return false;
+
+  // :TODO: elevate COptItems to CFitItems when possible.
+
+  return true;
+}
 
 bool CFitProblem::setModel(CModel * pModel)
 {return COptProblem::setModel(pModel);}
@@ -52,6 +72,8 @@ bool CFitProblem::initialize()
         CCopasiMessage::getLastMessage();
     }
 
+  // Build a matrix of experiment and experiment local items.
+
   return true;
 }
 
@@ -64,7 +86,7 @@ bool CFitProblem::initialize()
  */
 bool CFitProblem::calculate()
 {
-  /* :TODO: */
+  // :TODO: implmement me!
 
   mCounter += 1;
   bool success = false;
@@ -116,9 +138,9 @@ std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
   os << "List of Optimization Items:" << std::endl;
 
   std::vector< COptItem * >::const_iterator itItem =
-    o.mOptItemList.begin();
+    o.mpOptItems->begin();
   std::vector< COptItem * >::const_iterator endItem =
-    o.mOptItemList.end();
+    o.mpOptItems->end();
 
   for (; itItem != endItem; ++itItem)
     os << "    " << **itItem << std::endl;

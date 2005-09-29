@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/23 19:17:28 $
+   $Date: 2005/09/29 19:35:01 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -29,6 +29,7 @@ class CExperiment: public CCopasiParameterGroup
       ignore = 0,
       independent,
       dependent,
+      time
     };
 
     /**
@@ -44,9 +45,11 @@ class CExperiment: public CCopasiParameterGroup
 
     /**
      * Default constructor
+     * @param const std::string & name (default: Experiment)
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CExperiment(const CCopasiContainer * pParent = NULL);
+    CExperiment(const std::string & name = "Experiment",
+                const CCopasiContainer * pParent = NULL);
 
     /**
      * Copy constructor
@@ -68,6 +71,15 @@ class CExperiment: public CCopasiParameterGroup
      * Destructor
      */
     virtual ~CExperiment();
+
+    /**
+     * This methods must be called to elevate subgroups to
+     * derived objects. The default implementation does nothing.
+     * @return bool success
+     */
+    virtual bool elevateChildren();
+
+    C_FLOAT64 sumOfSquares(const unsigned C_INT32 & index);
 
     /**
      * Compile the experiment. This function must be called 
@@ -93,6 +105,12 @@ class CExperiment: public CCopasiParameterGroup
     const CCopasiTask::Type & getExperimentType() const;
 
     /**
+     * Retrieve the time data of the experiment.
+     * @return const CVector< C_FLOAT64 > & timeData
+     */
+    const CVector< C_FLOAT64 > & getTimeData() const;
+
+    /**
      * Retrieve the independent data of the experiment.
      * @return const CMatrix< C_FLOAT64 > & independentData
      */
@@ -116,6 +134,21 @@ class CExperiment: public CCopasiParameterGroup
      * @return bool success
      */
     bool setFileName(const std::string & fileName);
+
+    /**
+     * Retrieve the type fo the indexed column.
+     * @param const unsigned C_INT32 & index,
+     * @param const Type & type
+     * @return bool success
+     */
+    bool addColumnType(const unsigned C_INT32 & index, const Type & type);
+
+    /**
+     * Retrieve the type fo the indexed column.
+     * @param const unsigned C_INT32 & index,
+     * @return bool success
+     */
+    bool removeColumnType(const unsigned C_INT32 & index);
 
     /**
      * Retrieve the type fo the indexed column.
@@ -253,17 +286,22 @@ class CExperiment: public CCopasiParameterGroup
     /**
      * This is realized as a CCopasiParameter type GROUP
      */
-    std::vector< CCopasiParameter * > * mpColumnType;
+    CCopasiParameterGroup * mpColumnType;
 
     /**
      * The column names if available after reading a file
      */
-    std::vector< std::string > mRowName;
+    std::vector< std::string > mColumnName;
 
     /**
      * This is realized as a CCopasiParameter type GROUP
      */
     CExperimentObjectMap * mpObjectMap;
+
+    /**
+     * The vector of time points
+     */
+    CVector< C_FLOAT64 > mDataTime;
 
     /**
      * The relevant independent experimental data after reading a file
@@ -277,7 +315,7 @@ class CExperiment: public CCopasiParameterGroup
 
     CVector< C_FLOAT64 > mMeans;
 
-    CVector< C_FLOAT64 > mVariances;
+    CVector< C_FLOAT64 > mVariancesInv;
 
     CVector< C_FLOAT64 * > mDependentValues;
 

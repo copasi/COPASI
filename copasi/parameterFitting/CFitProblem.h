@@ -1,15 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 19:08:34 $
+   $Date: 2005/09/29 19:37:47 $
    End CVS Header */
 
 #ifndef COPASI_CFitProblem
- #define COPASI_CFitProblem
+#define COPASI_CFitProblem
 
 #include "optimization/COptProblem.h"
+
+class CExperimentSet;
 
 class CFitProblem : public COptProblem
   {
@@ -35,6 +37,13 @@ class CFitProblem : public COptProblem
      * Destructor
      */
     virtual ~CFitProblem();
+
+    /**
+     * This methods must be called to elevate subgroups to
+     * derived objects. The default implementation does nothing.
+     * @return bool success
+     */
+    virtual bool elevateChildren();
 
     /**
      * Set the model of the problem
@@ -101,12 +110,26 @@ class CFitProblem : public COptProblem
     friend std::ostream &operator<<(std::ostream &os, const CFitProblem & o);
 
     /**
-     * This is the output method for any rsult of a problem. The default implementation
+     * This is the output method for any result of a problem. The default implementation
      * provided with CCopasiProblem. Does only print "Not implmented." To overide this
      * default behaviour one needs to reimplement the virtual printResult function.
      * @param std::ostream * ostream
      */
     virtual void printResult(std::ostream * ostream) const;
+
+  private:
+    /**
+     * Allocates all group parameters and assures that they are 
+     * properly initialized.
+     */
+    void initializeParameter();
+
+  private:
+    // Attributes
+    /**
+     * The experiment set to which the model is fitted.
+     */
+    CExperimentSet * mpExperimentSet;
   };
 
 #endif  // COPASI_CFitProblem
