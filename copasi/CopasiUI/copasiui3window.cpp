@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.157 $
+   $Revision: 1.158 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/09/19 15:38:53 $
+   $Author: shoops $ 
+   $Date: 2005/09/29 19:29:45 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -186,7 +186,7 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
                                 this, "Save File Dialog",
                                 "Choose a filename to save under.");
 
-      if (tmp) return;
+      if (!tmp) return;
 
       if (!tmp.endsWith(".cps") &&
           !tmp.endsWith(".")) tmp += ".cps";
@@ -889,7 +889,7 @@ void CopasiUI3Window::slotExportSBML()
                                 "XML Files (*.xml)",
                                 this, "Export SBML Dialog",
                                 "Choose a filename for SBML export.");
-      if (tmp) return;
+      if (!tmp) return;
 
       if (!tmp.endsWith(".xml") && !tmp.endsWith("."))
         tmp += ".xml";
@@ -942,7 +942,7 @@ void CopasiUI3Window::slotExportMathModel()
                                 this, "Export MathModel Dialog",
                                 "Choose a filename for MathModel export.");
 
-      if (tmp) return;
+      if (!tmp) return;
 
       if (!tmp.endsWith(".cps") && !tmp.endsWith("."))
         tmp += ".out";
