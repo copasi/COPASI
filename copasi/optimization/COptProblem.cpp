@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 18:58:37 $
+   $Date: 2005/09/29 19:23:13 $
    End CVS Header */
 
 /**
@@ -43,19 +43,19 @@
 COptProblem::COptProblem(const CCopasiTask::Type & type,
                          const CCopasiContainer * pParent):
     CCopasiProblem(type, pParent),
+    mpParmSteadyStateKey(NULL),
+    mpParmTimeCourseKey(NULL),
+    mpParmObjectiveFunctionKey(NULL),
+    mpParmMaximize(NULL),
+    mpGrpItems(NULL),
+    mpGrpConstraints(NULL),
+    mpOptItems(NULL),
+    mpConstraintItems(NULL),
     mpSteadyState(NULL),
     mpTrajectory(NULL),
-    mpFunction(NULL),
-    mOptItemList()
+    mpFunction(NULL)
 {
-  addParameter("Steady-State", CCopasiParameter::KEY, (std::string) "");
-  addParameter("Time-Course", CCopasiParameter::KEY, (std::string) "");
-  addParameter("ObjectiveFunction", CCopasiParameter::KEY, (std::string) "");
-  addParameter("Maximize", CCopasiParameter::BOOL, (bool) false);
-
-  addGroup("OptimizationItemList");
-  addGroup("OptimizationConstraintList");
-
+  initializeParameter();
   initObjects();
 }
 
@@ -63,36 +63,101 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
 COptProblem::COptProblem(const COptProblem& src,
                          const CCopasiContainer * pParent):
     CCopasiProblem(src, pParent),
+    mpParmSteadyStateKey(NULL),
+    mpParmTimeCourseKey(NULL),
+    mpParmObjectiveFunctionKey(NULL),
+    mpParmMaximize(NULL),
+    mpGrpItems(NULL),
+    mpGrpConstraints(NULL),
+    mpOptItems(NULL),
+    mpConstraintItems(NULL),
     mpSteadyState(src.mpSteadyState),
     mpTrajectory(src.mpTrajectory),
-    mpFunction(NULL),
-    mOptItemList()
+    mpFunction(NULL)
 {
+  initializeParameter();
+  initObjects();
+
   if (src.mpFunction)
     {
       createObjectiveFunction();
       mpFunction->setInfix(src.mpFunction->getInfix());
       setValue("ObjectiveFunction", mpFunction->getKey());
     }
-
-  initObjects();
 }
 
 // Destructor
 COptProblem::~COptProblem()
 {
-  std::vector<COptItem *>::iterator it = mOptItemList.begin();
-  std::vector<COptItem *>::iterator end = mOptItemList.end();
-
-  for (; it != end; ++it)
-    pdelete(*it);
-
   if (mpFunction && CCopasiDataModel::Global &&
       CCopasiDataModel::Global->getFunctionList() &&
       CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[mpFunction->getObjectName()] == mpFunction)
     CCopasiDataModel::Global->getFunctionList()->loadedFunctions().remove(mpFunction->getObjectName());
 
   pdelete(mpFunction);
+}
+
+void COptProblem::initializeParameter()
+{
+  if (!getParameter("Steady-State"))
+    addParameter("Steady-State", CCopasiParameter::KEY, std::string(""));
+  mpParmSteadyStateKey = getValue("Steady-State").pKEY;
+
+  if (!getParameter("Time-Course"))
+    addParameter("Time-Course", CCopasiParameter::KEY, std::string(""));
+  mpParmTimeCourseKey = getValue("Time-Course").pKEY;
+
+  if (!getParameter("ObjectiveFunction"))
+    addParameter("ObjectiveFunction", CCopasiParameter::KEY, std::string(""));
+  mpParmObjectiveFunctionKey = getValue("ObjectiveFunction").pKEY;
+
+  if (!getParameter("Maximize"))
+    addParameter("Maximize", CCopasiParameter::BOOL, false);
+  mpParmMaximize = getValue("Maximize").pBOOL;
+
+  if (!getGroup("OptimizationItemList"))
+    addGroup("OptimizationItemList");
+
+  if (!getGroup("OptimizationConstraintList"))
+    addGroup("OptimizationConstraintList");
+
+  elevateChildren();
+}
+
+bool COptProblem::elevateChildren()
+{
+  mpGrpItems =
+    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(getGroup("OptimizationItemList"));
+  if (!mpGrpItems) return false;
+
+  std::vector<CCopasiParameter *> * pValue =
+    mpGrpItems->CCopasiParameter::getValue().pGROUP;
+
+  index_iterator it = pValue->begin();
+  index_iterator end = pValue->end();
+
+  for (; it != end; ++it)
+    if (!elevate<COptItem, CCopasiParameterGroup>(*it)) return false;
+
+  mpOptItems =
+    static_cast<std::vector<COptItem * > * >(mpGrpItems->CCopasiParameter::getValue().pVOID);
+
+  mpGrpConstraints =
+    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(getGroup("OptimizationConstraintList"));
+  if (!mpGrpConstraints) return false;
+
+  pValue = mpGrpConstraints->CCopasiParameter::getValue().pGROUP;
+
+  it = pValue->begin();
+  end = pValue->end();
+
+  for (; it != end; ++it)
+    if (!elevate<COptItem, CCopasiParameterGroup>(*it)) return false;
+
+  mpConstraintItems =
+    static_cast<std::vector<COptItem * > * >(mpGrpItems->CCopasiParameter::getValue().pVOID);
+
+  return true;
 }
 
 bool COptProblem::setModel(CModel * pModel)
@@ -171,17 +236,15 @@ bool COptProblem::initialize()
       ContainerList.push_back(mpTrajectory);
     }
 
-  buildOptItemListFromParameterGroup();
-
   unsigned C_INT32 i;
-  unsigned C_INT32 Size = mOptItemList.size();
+  unsigned C_INT32 Size = mpOptItems->size();
 
   mUpdateMethods.resize(Size);
   mSolutionVariables.resize(Size);
   mOriginalVariables.resize(Size);
 
-  std::vector< COptItem * >::iterator it = mOptItemList.begin();
-  std::vector< COptItem * >::iterator end = mOptItemList.end();
+  std::vector< COptItem * >::iterator it = mpOptItems->begin();
+  std::vector< COptItem * >::iterator end = mpOptItems->end();
 
   if (it == end)
     {
@@ -210,7 +273,7 @@ bool COptProblem::initialize()
 
 bool COptProblem::restore()
 {
-  unsigned C_INT32 i, imax = mOptItemList.size();
+  unsigned C_INT32 i, imax = mpOptItems->size();
 
   // set the original paramter values
   for (i = 0; i < imax; i++)
@@ -225,8 +288,8 @@ bool COptProblem::restore()
 
 bool COptProblem::checkParametricConstraints()
 {
-  std::vector< COptItem * >::const_iterator it = mOptItemList.begin();
-  std::vector< COptItem * >::const_iterator end = mOptItemList.end();
+  std::vector< COptItem * >::const_iterator it = mpOptItems->begin();
+  std::vector< COptItem * >::const_iterator end = mpOptItems->end();
 
   for (; it != end; ++it)
     if ((*it)->checkConstraint()) return false;
@@ -313,85 +376,33 @@ void COptProblem::setProblemType(ProblemType type)
 }
 
 COptItem & COptProblem::getOptItem(const unsigned C_INT32 & index)
-{
-  if (mOptItemList.size() != getOptItemSize())
-    buildOptItemListFromParameterGroup();
-
-  assert(index < mOptItemList.size());
-
-  return *mOptItemList[index];
-}
+{return *(*mpOptItems)[index];}
 
 const unsigned C_INT32 COptProblem::getOptItemSize() const
-{return getValue("OptimizationItemList").pGROUP->size();}
+  {return mpGrpItems->size();}
 
 COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)
 {
-  if (mOptItemList.size() != getOptItemSize())
-    buildOptItemListFromParameterGroup();
+  COptItem * pItem = new COptItem();
+  pItem->setObjectCN(objectCN);
 
-  unsigned C_INT32 index = getOptItemSize();
+  mpGrpItems->addParameter(pItem);
 
-  CCopasiParameterGroup * pOptimizationItemList = (CCopasiParameterGroup *) getParameter("OptimizationItemList");
-
-  pOptimizationItemList->addGroup("OptimizationItem");
-
-  CCopasiParameterGroup * pOptItem =
-    (CCopasiParameterGroup *) pOptimizationItemList->getParameter(index);
-
-  assert(pOptItem != NULL);
-
-  COptItem * pTmp = new COptItem(*pOptItem);
-
-  //pTmp->setLowerBound(
-
-  if (!pTmp->initialize(objectCN)) fatalError();
-
-  mOptItemList.push_back(pTmp);
-
-  return *pTmp;
+  return *pItem;
 }
 
 bool COptProblem::removeOptItem(const unsigned C_INT32 & index)
-{
-  if (mOptItemList.size() != getOptItemSize())
-    buildOptItemListFromParameterGroup();
-
-  if (!(index < mOptItemList.size())) return false;
-
-  pdelete(mOptItemList[index]);
-  mOptItemList.erase(mOptItemList.begin() + index);
-
-  return ((CCopasiParameterGroup *) getParameter("OptimizationItemList"))->removeParameter(index);
-}
+{return mpGrpItems->removeParameter(index);}
 
 bool COptProblem::swapOptItem(const unsigned C_INT32 & iFrom,
                               const unsigned C_INT32 & iTo)
-{
-  if (mOptItemList.size() != getOptItemSize())
-    buildOptItemListFromParameterGroup();
-
-  if (!(iFrom < mOptItemList.size()) ||
-      !(iTo < mOptItemList.size()))
-    return false;
-
-  COptItem * pTmp = mOptItemList[iFrom];
-  mOptItemList[iFrom] = mOptItemList[iTo];
-  mOptItemList[iTo] = pTmp;
-
-  return ((CCopasiParameterGroup *) getParameter("OptimizationItemList"))->swap(iFrom, iTo);
-}
+{return mpGrpItems->swap(iFrom, iTo);}
 
 const std::vector< COptItem * > & COptProblem::getOptItemList() const
-  {
-    if (mOptItemList.size() != getOptItemSize())
-      const_cast<COptProblem *>(this)->buildOptItemListFromParameterGroup();
-
-    return mOptItemList;
-  }
+  {return *mpOptItems;}
 
 const std::vector< UpdateMethod * > & COptProblem::getCalculateVariableUpdateMethods() const
-{return mUpdateMethods;}
+  {return mUpdateMethods;}
 
 bool COptProblem::setObjectiveFunction(const std::string & infix)
 {
@@ -445,18 +456,19 @@ bool COptProblem::createObjectiveFunction()
   return true;
 }
 
+#ifdef XXXX
 bool COptProblem::buildOptItemListFromParameterGroup()
 {
   bool success = true;
 
-  std::vector< COptItem * >::iterator it = mOptItemList.begin();
-  std::vector< COptItem * >::iterator end = mOptItemList.end();
+  std::vector< COptItem * >::iterator it = mpOptItems->begin();
+  std::vector< COptItem * >::iterator end = mpOptItems->end();
 
   for (; it != end; ++it)
     pdelete(*it);
 
   unsigned i, imax = getOptItemSize();
-  mOptItemList.resize(imax);
+  mpOptItems->resize(imax);
 
   std::vector<CCopasiParameter *> & List = *getValue("OptimizationItemList").pGROUP;
 
@@ -468,6 +480,7 @@ bool COptProblem::buildOptItemListFromParameterGroup()
 
   return true;
 }
+#endif // XXXX
 
 void COptProblem::print(std::ostream * ostream) const
 {*ostream << *this;}
@@ -478,9 +491,9 @@ void COptProblem::printResult(std::ostream * ostream) const
     *ostream << std::endl;
 
     std::vector< COptItem * >::const_iterator itItem =
-      mOptItemList.begin();
+      mpOptItems->begin();
     std::vector< COptItem * >::const_iterator endItem =
-      mOptItemList.end();
+      mpOptItems->end();
 
     unsigned C_INT32 i;
 
@@ -511,9 +524,9 @@ std::ostream &operator<<(std::ostream &os, const COptProblem & o)
   os << "List of Optimization Items:" << std::endl;
 
   std::vector< COptItem * >::const_iterator itItem =
-    o.mOptItemList.begin();
+    o.mpOptItems->begin();
   std::vector< COptItem * >::const_iterator endItem =
-    o.mOptItemList.end();
+    o.mpOptItems->end();
 
   for (; itItem != endItem; ++itItem)
     os << "    " << **itItem << std::endl;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:17 $
+   $Date: 2005/09/29 19:23:13 $
    End CVS Header */
 
 #include <float.h>
@@ -17,48 +17,78 @@
 #include "utilities/CCopasiMessage.h"
 #include "utilities/utility.h"
 
-COptItem::COptItem(CCopasiParameterGroup & group) :
-    mpGroup(&group),
+COptItem::COptItem(const std::string & name,
+                   const CCopasiContainer * pParent):
+    CCopasiParameterGroup(name, pParent),
+    mpParmObjectCN(NULL),
+    mpParmLowerBound(NULL),
+    mpParmUpperBound(NULL),
     mpObject(NULL),
     mpMethod(NULL),
     mpObjectValue(NULL),
     mpLowerObject(NULL),
     mpLowerBound(NULL),
     mLowerBound(0.0),
-    mpLowerRel(NULL),
     mpUpperObject(NULL),
     mpUpperBound(NULL),
-    mUpperBound(0.0),
-    mpUpperRel(NULL)
-{}
+    mUpperBound(0.0)
+{initializeParameter();}
 
-COptItem::COptItem(COptItem & src) :
-    mpGroup(src.mpGroup),
-    mpObject(src.mpObject),
-    mpMethod(src.mpMethod),
-    mpObjectValue(src.mpObjectValue),
-    mpLowerObject(src.mpLowerObject),
-    mpLowerBound(src.mpLowerBound),
-    mLowerBound(src.mLowerBound),
-    mpLowerRel(src.mpLowerRel),
-    mpUpperObject(src.mpUpperObject),
-    mpUpperBound(src.mpUpperBound),
-    mUpperBound(src.mUpperBound),
-    mpUpperRel(src.mpUpperRel)
-{}
+COptItem::COptItem(const COptItem & src,
+                   const CCopasiContainer * pParent):
+    CCopasiParameterGroup(src, pParent),
+    mpParmObjectCN(NULL),
+    mpParmLowerBound(NULL),
+    mpParmUpperBound(NULL),
+    mpObject(NULL),
+    mpMethod(NULL),
+    mpObjectValue(NULL),
+    mpLowerObject(NULL),
+    mpLowerBound(NULL),
+    mLowerBound(0.0),
+    mpUpperObject(NULL),
+    mpUpperBound(NULL),
+    mUpperBound(0.0)
+{initializeParameter();}
+
+COptItem::COptItem(const CCopasiParameterGroup & group,
+                   const CCopasiContainer * pParent):
+    CCopasiParameterGroup(group, pParent),
+    mpParmObjectCN(NULL),
+    mpParmLowerBound(NULL),
+    mpParmUpperBound(NULL),
+    mpObject(NULL),
+    mpMethod(NULL),
+    mpObjectValue(NULL),
+    mpLowerObject(NULL),
+    mpLowerBound(NULL),
+    mLowerBound(0.0),
+    mpUpperObject(NULL),
+    mpUpperBound(NULL),
+    mUpperBound(0.0)
+{initializeParameter();}
 
 COptItem::~COptItem()
 {}
 
+void COptItem::initializeParameter()
+{
+  if (!getParameter("ObjectCN"))
+    addParameter("ObjectCN", CCopasiParameter::CN, CCopasiObjectName(""));
+  mpParmObjectCN = getValue("ObjectCN").pCN;
+
+  if (!getParameter("LowerBound"))
+    addParameter("LowerBound", CCopasiParameter::CN, CCopasiObjectName("-inf"));
+  mpParmLowerBound = getValue("LowerBound").pCN;
+
+  if (!getParameter("UpperBound"))
+    addParameter("UpperBound", CCopasiParameter::CN, CCopasiObjectName("inf"));
+  mpParmUpperBound = getValue("UpperBound").pCN;
+}
+
 bool COptItem::initialize(const CCopasiObjectName & objectCN)
 {
-  mpGroup->clear();
-
-  mpGroup->addParameter("ObjectCN", CCopasiParameter::CN, (CCopasiObjectName) objectCN);
-  mpGroup->addParameter("LowerBound", CCopasiParameter::CN, (CCopasiObjectName) "-inf");
-  mpGroup->addParameter("LowerRelation", CCopasiParameter::STRING, (std::string) "<=");
-  mpGroup->addParameter("UpperBound", CCopasiParameter::CN, (CCopasiObjectName) "inf");
-  mpGroup->addParameter("UpperRelation", CCopasiParameter::STRING, (std::string) "<=");
+  *mpParmObjectCN = objectCN;
 
   return isValid();
 }
@@ -73,11 +103,12 @@ bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
       return false;
     }
 
-  return mpGroup->setValue(0, objectCN);
+  *mpParmObjectCN = objectCN;
+  return true;
 }
 
 const CCopasiObjectName COptItem::getObjectCN() const
-  {return * mpGroup->getValue(0).pCN;}
+  {return *mpParmObjectCN;}
 
 std::string COptItem::getObjectDisplayName() const
   {
@@ -100,25 +131,12 @@ bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound)
       return false;
     }
 
-  return mpGroup->setValue(1, lowerBound);
+  *mpParmLowerBound = lowerBound;
+  return true;
 }
 
 const std::string COptItem::getLowerBound() const
-  {return * mpGroup->getValue(1).pCN;}
-
-bool COptItem::setLowerRelation(const std::string & lowerRel)
-{
-  if (lowerRel != "<" && lowerRel != "<=")
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 4, lowerRel.c_str());
-      return false;
-    }
-
-  return mpGroup->setValue(2, lowerRel);
-}
-
-const std::string COptItem::getLowerRelation() const
-  {return * mpGroup->getValue(2).pSTRING;}
+  {return *mpParmLowerBound;}
 
 bool COptItem::setUpperBound(const CCopasiObjectName & upperBound)
 {
@@ -133,55 +151,23 @@ bool COptItem::setUpperBound(const CCopasiObjectName & upperBound)
       return false;
     }
 
-  return mpGroup->setValue(3, upperBound);
+  *mpParmUpperBound = upperBound;
+  return true;
 }
 
 const std::string COptItem::getUpperBound() const
-  {return * mpGroup->getValue(3).pCN;}
-
-bool COptItem::setUpperRelation(const std::string & upperRel)
-{
-  if (upperRel != "<" && upperRel != "<=")
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 4, upperRel.c_str());
-      return false;
-    }
-
-  return mpGroup->setValue(4, upperRel);
-}
-
-const std::string COptItem::getUpperRelation() const
-  {return * mpGroup->getValue(4).pSTRING;}
+  {return *mpParmUpperBound;}
 
 UpdateMethod * COptItem::getUpdateMethod() const
   {return mpMethod;}
 
 bool COptItem::isValid() const
   {
-    CCopasiParameter * pParameter;
-
-    pParameter = (CCopasiParameter *) mpGroup->getParameter(0);
-    if (!pParameter || pParameter->getObjectName() != "ObjectCN") return false;
-
-    pParameter = (CCopasiParameter *) mpGroup->getParameter(1);
-    if (!pParameter || pParameter->getObjectName() != "LowerBound") return false;
-
-    pParameter = (CCopasiParameter *) mpGroup->getParameter(2);
-    if (!pParameter || pParameter->getObjectName() != "LowerRelation") return false;
-
-    pParameter = (CCopasiParameter *) mpGroup->getParameter(3);
-    if (!pParameter || pParameter->getObjectName() != "UpperBound") return false;
-
-    pParameter = (CCopasiParameter *) mpGroup->getParameter(4);
-    if (!pParameter || pParameter->getObjectName() != "UpperRelation") return false;
-
     COptItem *pTmp = const_cast<COptItem *>(this);
 
     if (!pTmp->setObjectCN(getObjectCN())) return false;
     if (!pTmp->setLowerBound(getLowerBound())) return false;
-    if (!pTmp->setLowerRelation(getLowerRelation())) return false;
     if (!pTmp->setUpperBound(getUpperBound())) return false;
-    if (!pTmp->setUpperRelation(getUpperRelation())) return false;
 
     return true;
   }
@@ -234,9 +220,6 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
       return false;
     }
 
-  if (getLowerRelation() == "<") mpLowerRel = less;
-  else mpLowerRel = lessOrEqual;
-
   mpUpperObject = NULL;
   mpUpperBound = NULL;
   Bound = getUpperBound();
@@ -261,31 +244,28 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
       return false;
     }
 
-  if (getUpperRelation() == "<") mpUpperRel = less;
-  else mpUpperRel = lessOrEqual;
-
   return true;
 }
 
 C_INT32 COptItem::checkConstraint() const
   {
-    if (!mpLowerRel(*mpLowerBound, *mpObjectValue)) return - 1;
-    if (!mpUpperRel(*mpObjectValue, *mpUpperBound)) return 1;
+    if (*mpLowerBound > *mpObjectValue) return - 1;
+    if (*mpObjectValue > *mpUpperBound) return 1;
     return 0;
   }
 
 C_INT32 COptItem::checkConstraint(const C_FLOAT64 & value) const
   {
-    if (!mpLowerRel(*mpLowerBound, value)) return - 1;
-    if (!mpUpperRel(value, *mpUpperBound)) return 1;
+    if (*mpLowerBound > value) return - 1;
+    if (value > *mpUpperBound) return 1;
     return 0;
   }
 
 bool COptItem::checkLowerBound(const C_FLOAT64 & value) const
-{return mpLowerRel(*mpLowerBound, value);}
+{return *mpLowerBound <= value;}
 
 bool COptItem::checkUpperBound(const C_FLOAT64 & value) const
-  {return mpUpperRel(value, *mpUpperBound);}
+  {return value <= *mpUpperBound;}
 
 bool COptItem::less(const C_FLOAT64 & val1, const C_FLOAT64 & val2)
 {return (val1 < val2);}
@@ -306,9 +286,9 @@ std::ostream &operator<<(std::ostream &os, const COptItem & o)
   else
     os << o.getLowerBound();
 
-  os << " " << o.getLowerRelation() << " ";
+  os << " <= ";
   os << o.mpObject->getObjectDisplayName();
-  os << " " << o.getUpperRelation() << " ";
+  os << " <= ";
 
   if (o.mpUpperObject)
     os << o.mpUpperObject->getObjectDisplayName();

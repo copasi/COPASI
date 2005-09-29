@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/20 12:36:14 $
+   $Date: 2005/09/29 19:23:13 $
    End CVS Header */
 
 #ifndef COPASI_COptItem
@@ -13,22 +13,15 @@
 
 #include "report/CCopasiObject.h"
 #include "report/CCopasiContainer.h"
+#include "utilities/CCopasiParameterGroup.h"
 
-class CCopasiParameterGroup;
 class CCopasiObjectName;
 class COptProblem;
 
-class COptItem
+class COptItem: public CCopasiParameterGroup
   {
-    friend class COptProblem;
-
     //Operations
   protected:
-    /**
-     * Specific Constructor
-     */
-    COptItem(CCopasiParameterGroup & group);
-
     /**
      * Checks whether val1 < val2
      * @param const C_FLOAT64 & val1
@@ -47,10 +40,28 @@ class COptItem
 
   public:
     /**
-     * Copy Constructor
-     * @param COptItem & src
+     * Default constructor
+     * @param const std::string & name (default: OptimizationItem)
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    COptItem(COptItem & src);
+    COptItem(const std::string & name = "OptimizationItem",
+             const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Copy constructor
+     * @param const COptItem & src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    COptItem(const COptItem & src,
+             const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Specific constructor used for reading copasi files
+     * @param const CCopasiParameterGroup & group
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    COptItem(const CCopasiParameterGroup & group,
+             const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor
@@ -97,19 +108,6 @@ class COptItem
     const std::string getLowerBound() const;
 
     /**
-     * Set the lower relationship.
-     * @param const std::string & lowerRel (< or <=)
-     * @return bool success
-     */
-    bool setLowerRelation(const std::string & lowerRel);
-
-    /**
-     * Retrieve the lower relationship.
-     * @return const std::string lowerRel
-     */
-    const std::string getLowerRelation() const;
-
-    /**
      * Set the upper bound.
      * @param const CCopasiObjectName & upperBound
      * @return bool success
@@ -121,19 +119,6 @@ class COptItem
      * @return const std::string upperBound
      */
     const std::string getUpperBound() const;
-
-    /**
-     * Set the upper relationship.
-     * @param const std::string & upperRel (< or <=)
-     * @return bool success
-     */
-    bool setUpperRelation(const std::string & upperRel);
-
-    /**
-     * Retrieve the upper relationship.
-     * @return const std::string upperRel
-     */
-    const std::string getUpperRelation() const;
 
     /**
      * Retrieve the update method
@@ -220,14 +205,30 @@ class COptItem
      */
     friend std::ostream &operator<<(std::ostream &os, const COptItem & o);
 
-    //Attributes:
-  protected:
-    /**
-     * A pointer to the parameter group which stores the information.
-     */
-    CCopasiParameterGroup * mpGroup;
-
   private:
+    /**
+     * Allocates all group parameters and assures that they are 
+     * properly initialized.
+     */
+    void initializeParameter();
+
+    //Attributes:
+  private:
+    /**
+     * A pointer to the value of the CCopasiParameter holding the ObjectCN
+     */
+    std::string * mpParmObjectCN;
+
+    /**
+     * A pointer to the value of the CCopasiParameter holding the LowerBound
+     */
+    std::string * mpParmLowerBound;
+
+    /**
+     * A pointer to the value of the CCopasiParameter holding the UpperBound
+     */
+    std::string * mpParmUpperBound;
+
     /**
      * A pointer to the object
      */
@@ -259,14 +260,6 @@ class COptItem
     C_FLOAT64 mLowerBound;
 
     /**
-     * A pointer to the function for checking the lower relationship
-     * @param const C_FLOAT64 & val1
-     * @param const C_FLOAT64 & val2
-     * @return bool fulfills
-     */
-    bool (*mpLowerRel)(const C_FLOAT64 & val1, const C_FLOAT64 & val2);
-
-    /**
      * A pointer to the object for the upper bound
      */
     const CCopasiObject * mpUpperObject;
@@ -280,14 +273,6 @@ class COptItem
      * The value of the upper bound (only if not on object) 
      */
     C_FLOAT64 mUpperBound;
-
-    /**
-     * A pointer to the function for checking the upper relationship
-     * @param const C_FLOAT64 & val1
-     * @param const C_FLOAT64 & val2
-     * @return bool fulfills
-     */
-    bool (*mpUpperRel)(const C_FLOAT64 & val1, const C_FLOAT64 & val2);
   };
 
 #endif // COPASI_COptItem

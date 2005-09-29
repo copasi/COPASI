@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 18:58:37 $
+   $Date: 2005/09/29 19:23:13 $
    End CVS Header */
 
 /**
@@ -41,64 +41,6 @@ enum ProblemType
 /** @dia:pos -4.4,4.15 */
 class COptProblem : public CCopasiProblem
   {
-    //data member
-  protected:
-    /**
-     * Pointer to CSteadyStateTask.  To be used in calculate() to select between
-     * trajectory and steady state method
-     */
-    CSteadyStateTask * mpSteadyState;
-
-    /**
-     * Pointer to CTrajectory.  To be used in calculate() to select between
-     * trajectory and steady state method
-     */
-    CTrajectoryTask * mpTrajectory;
-
-    /**
-     * The objective function which should be minimized or maximized.
-     */
-    CExpression * mpFunction;
-
-    std::vector< COptItem * > mOptItemList;
-
-    std::vector< UpdateMethod * > mUpdateMethods;
-
-    /**
-     * A vector of results for calculate
-     */
-    C_FLOAT64 mCalculateValue;
-
-    /**
-     * A vector of solution variables
-     */
-    CVector< C_FLOAT64 > mSolutionVariables;
-
-    /**
-     * A vector of solution variables
-     */
-    CVector< C_FLOAT64 > mOriginalVariables;
-
-    /**
-     * A vector of solution results
-     */
-    C_FLOAT64 mSolutionValue;
-
-    /**
-     * Counter of evaluations
-     */
-    unsigned C_INT32 mCounter;
-
-    /**
-     * Handle of "Best Value" process report item
-     */
-    unsigned C_INT32 mhSolutionValue;
-
-    /**
-     * Handle of "Simulation Counter" process report item
-     */
-    unsigned C_INT32 mhCounter;
-
     // Implementation
 
   public:
@@ -123,6 +65,13 @@ class COptProblem : public CCopasiProblem
      * Destructor
      */
     virtual ~COptProblem();
+
+    /**
+     * This methods must be called to elevate subgroups to
+     * derived objects. The default implementation does nothing.
+     * @return bool success
+     */
+    virtual bool elevateChildren();
 
     /**
      * Set the model of the problem
@@ -298,11 +247,113 @@ class COptProblem : public CCopasiProblem
     virtual void printResult(std::ostream * ostream) const;
 
   private:
+    /**
+     * Allocates all group parameters and assures that they are 
+     * properly initialized.
+     */
+    void initializeParameter();
+
     void initObjects();
 
     bool createObjectiveFunction();
 
-    bool buildOptItemListFromParameterGroup();
+    //    bool buildOptItemListFromParameterGroup();
+
+    //data member
+  protected:
+    /**
+     * A pointer to the value of the CCopasiParameter holding the SteadyStateKey
+     */
+    std::string * mpParmSteadyStateKey;
+
+    /**
+     * A pointer to the value of the CCopasiParameter holding the TimeCourseKey
+     */
+    std::string * mpParmTimeCourseKey;
+
+    /**
+     * A pointer to the value of the CCopasiParameter holding the ObjectiveFunctionKey
+     */
+    std::string * mpParmObjectiveFunctionKey;
+
+    /**
+     * A pointer to the value of the CCopasiParameter holding Maximize
+     */
+    bool * mpParmMaximize;
+
+    /**
+     * A pointer to the value of the CCopasiParameterGroup holding the OptimizationItems
+     */
+    CCopasiParameterGroup * mpGrpItems;
+
+    /**
+     * A pointer to the value of the CCopasiParameter holding the OptimizationConstraints
+     */
+    CCopasiParameterGroup * mpGrpConstraints;
+
+    /**
+     * A pointer to the vector of optimization items 
+     */
+    std::vector<COptItem *> * mpOptItems;
+
+    /**
+     * A pointer to the vector of optimization constraints
+     */
+    std::vector<COptItem *> * mpConstraintItems;
+
+    /**
+     * Pointer to CSteadyStateTask.  To be used in calculate() to select between
+     * trajectory and steady state method
+     */
+    CSteadyStateTask * mpSteadyState;
+
+    /**
+     * Pointer to CTrajectory.  To be used in calculate() to select between
+     * trajectory and steady state method
+     */
+    CTrajectoryTask * mpTrajectory;
+
+    /**
+     * The objective function which should be minimized or maximized.
+     */
+    CExpression * mpFunction;
+
+    std::vector< UpdateMethod * > mUpdateMethods;
+
+    /**
+     * A vector of results for calculate
+     */
+    C_FLOAT64 mCalculateValue;
+
+    /**
+     * A vector of solution variables
+     */
+    CVector< C_FLOAT64 > mSolutionVariables;
+
+    /**
+     * A vector of solution variables
+     */
+    CVector< C_FLOAT64 > mOriginalVariables;
+
+    /**
+     * A vector of solution results
+     */
+    C_FLOAT64 mSolutionValue;
+
+    /**
+     * Counter of evaluations
+     */
+    unsigned C_INT32 mCounter;
+
+    /**
+     * Handle of "Best Value" process report item
+     */
+    unsigned C_INT32 mhSolutionValue;
+
+    /**
+     * Handle of "Simulation Counter" process report item
+     */
+    unsigned C_INT32 mhCounter;
   };
 
 #endif  // the end
