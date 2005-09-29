@@ -1,14 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/23 19:28:32 $
+   $Author: ssahle $ 
+   $Date: 2005/09/29 12:51:32 $
    End CVS Header */
 
 #include <fstream>
 #include <limits>
 
+#include <math.h>
 #include "copasi.h"
 
 #include "CExperiment.h"
