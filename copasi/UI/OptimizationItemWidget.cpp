@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:51 $
+   $Date: 2005/09/29 19:25:04 $
    End CVS Header */
 
 /********************************************************
@@ -356,9 +356,7 @@ bool OptimizationItemWidget::saveToOptItem(COptProblem * pg) const
       {
         COptItem & pTmp = (pg->addOptItem(*paramObjectCN));
         pTmp.setLowerBound(getItemLowerLimit());
-        pTmp.setLowerRelation(getItemLowerOper());
         pTmp.setUpperBound(getItemUpperLimit());
-        pTmp.setUpperRelation(getItemUpperOper());
         return true;
       }
 
@@ -376,8 +374,8 @@ bool OptimizationItemWidget::initFromOptItem(const COptItem& item)
   setItemUpperLimit(item.getUpperBound());
   setItemLowerLimit(item.getLowerBound());
 
-  setItemUpperOper(item.getUpperRelation());
-  setItemLowerOper(item.getLowerRelation());
+  setItemUpperOper("<=");
+  setItemLowerOper("<=");
 
   return true;
 }
