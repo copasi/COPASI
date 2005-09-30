@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:35:01 $
+   $Date: 2005/09/30 15:19:03 $
    End CVS Header */
 
 #ifndef COPASI_CFitItem
@@ -52,13 +52,6 @@ class CFitItem : public COptItem
      * @return bool success
      */
     virtual bool elevateChildren();
-
-    /**
-     * Initialize the optimization item.
-     * @param const CCopasiObjectName & objectCN
-     * @return bool success
-     */
-    virtual bool initialize(const CCopasiObjectName & objectCN);
 
     /**
      * Retrieve the update method

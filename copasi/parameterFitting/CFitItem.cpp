@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:35:01 $
+   $Date: 2005/09/30 15:19:03 $
    End CVS Header */
 
 #include "copasi.h"
@@ -49,13 +49,6 @@ bool CFitItem::elevateChildren()
   if (!mpGrpAffectedExperiments) return false;
 
   return true;
-}
-
-bool CFitItem::initialize(const CCopasiObjectName & objectCN)
-{
-  if (!COptItem::initialize(objectCN)) return false;
-
-  return isValid();
 }
 
 bool CFitItem::isValid() const
