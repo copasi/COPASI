@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/30 14:43:27 $
+   $Date: 2005/09/30 15:17:07 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -181,7 +181,7 @@ class CCopasiParameterGroup: public CCopasiParameter
         CCopasiParameter * pParm = getParameter(name);
         if (pParm && pParm->getType() == type) return pParm;
 
-        if (pParm) remove(name);
+        if (pParm) removeParameter(name);
 
         addParameter(name, type, defaultValue);
 
