@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/30 15:51:21 $
+   $Date: 2005/09/30 21:08:16 $
    End CVS Header */
 
 #include "copasi.h"
@@ -14,6 +14,7 @@
 
 CFitItem::CFitItem(const std::string & name,
                    const CCopasiContainer * pParent):
+    COptItem(name, pParent),
     mpGrpAffectedExperiments(NULL),
     mLocalValue(0),
     mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
@@ -21,6 +22,7 @@ CFitItem::CFitItem(const std::string & name,
 
 CFitItem::CFitItem(const CFitItem & src,
                    const CCopasiContainer * pParent):
+    COptItem(src, pParent),
     mpGrpAffectedExperiments(NULL),
     mLocalValue(0),
     mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
@@ -28,6 +30,7 @@ CFitItem::CFitItem(const CFitItem & src,
 
 CFitItem::CFitItem(const CCopasiParameterGroup & group,
                    const CCopasiContainer * pParent):
+    COptItem(group, pParent),
     mpGrpAffectedExperiments(NULL),
     mLocalValue(0),
     mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))

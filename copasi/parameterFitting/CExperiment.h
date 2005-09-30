@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:35:01 $
+   $Date: 2005/09/30 21:08:16 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -315,7 +315,7 @@ class CExperiment: public CCopasiParameterGroup
 
     CVector< C_FLOAT64 > mMeans;
 
-    CVector< C_FLOAT64 > mVariancesInv;
+    CVector< C_FLOAT64 > mWeight;
 
     CVector< C_FLOAT64 * > mDependentValues;
 

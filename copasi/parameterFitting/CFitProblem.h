@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:37:47 $
+   $Date: 2005/09/30 21:08:16 $
    End CVS Header */
 
 #ifndef COPASI_CFitProblem
@@ -130,6 +130,11 @@ class CFitProblem : public COptProblem
      * The experiment set to which the model is fitted.
      */
     CExperimentSet * mpExperimentSet;
+
+    /**
+     * Vector of vectors of update methods for items for each experiment.
+     */
+    std::vector< std::vector< UpdateMethod * > > mExperimentUpdateMethods;
   };
 
 #endif  // COPASI_CFitProblem

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/30 15:51:21 $
+   $Date: 2005/09/30 21:08:16 $
    End CVS Header */
 
 #include <fstream>
@@ -55,7 +55,7 @@ CExperiment::CExperiment(const std::string & name,
     mDataIndependent(0, 0),
     mDataDependent(0, 0),
     mMeans(0),
-    mVariancesInv(0),
+    mWeight(0),
     mDependentValues(0),
     mIndependentUpdateMethods(0)
 {initializeParameter();}
@@ -78,7 +78,7 @@ CExperiment::CExperiment(const CExperiment & src,
     mDataIndependent(src.mDataIndependent),
     mDataDependent(src.mDataDependent),
     mMeans(src.mMeans),
-    mVariancesInv(src.mVariancesInv),
+    mWeight(src.mWeight),
     mDependentValues(src.mDependentValues),
     mIndependentUpdateMethods(src.mIndependentUpdateMethods)
 {initializeParameter();}
@@ -101,7 +101,7 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
     mDataIndependent(0, 0),
     mDataDependent(0, 0),
     mMeans(0),
-    mVariancesInv(0),
+    mWeight(0),
     mDependentValues(0),
     mIndependentUpdateMethods(0)
 {initializeParameter();}
@@ -158,7 +158,7 @@ C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index)
   unsigned C_INT32 i , imax = mDataDependent.numCols();
 
   for (i = 0; i < imax; i++)
-    s += pow(mDataDependent(index, i) - *mDependentValues[i], 2) * mVariancesInv[i];
+    s += pow(mDataDependent(index, i) - *mDependentValues[i], 2) * mWeight[i];
 
   return s;
 }
@@ -192,7 +192,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   bool TimeFound = false;
 
   for (i = 0; i < imax; i++)
-    switch (*mpColumnType->getValue(StringPrint("%d", i)).pUINT)
+    switch (getColumnType(i))
       {
       case ignore:
         if (i < LastMappedColumn && Objects[i])
@@ -237,7 +237,7 @@ bool CExperiment::read(std::istream & in,
   unsigned C_INT32 DependentCount = 0;
 
   for (i = 0; i < imax; i++)
-    switch (*mpColumnType->getValue(StringPrint("%d", i)).pUINT)
+    switch (getColumnType(i))
       {
       case ignore:
         break;
@@ -295,7 +295,7 @@ bool CExperiment::read(std::istream & in,
 
       for (i = 0; i < imax; i++)
         {
-          switch (*mpColumnType->getValue(StringPrint("%d", i)).pUINT)
+          switch (getColumnType(i))
             {
             case ignore:
               break;
@@ -320,9 +320,12 @@ bool CExperiment::read(std::istream & in,
   if ((in.fail() && !in.eof()) ||
       j != NumRows) return false;
 
-  // We need to calculate the means and variances
+  // We need to calculate the means and the weights
   mMeans.resize(DependentCount);
-  mVariancesInv.resize(DependentCount);
+  mWeight.resize(DependentCount);
+  C_FLOAT64 MaxWeight = 0.0;
+  C_FLOAT64 MinWeight = DBL_MAX;
+
   unsigned C_INT32 Count;
 
   for (i = 0; i < DependentCount; i++)
@@ -346,24 +349,44 @@ bool CExperiment::read(std::istream & in,
       else
         Mean = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-      C_FLOAT64 & Variance = mVariancesInv[i];
-      Variance = 0;
-
-      for (j = 0; j < NumRows; j++)
-        {
-          C_FLOAT64 & Data = mDataDependent[j][i];
-          if (!isnan(Data))
-            Variance += pow((Mean - Data), 2);
-        }
+      C_FLOAT64 & Weight = mWeight[i];
+      Weight = 0;
 
       if (Count > 1)
-        Variance = (Count - 1.0) / Variance;
+        {
+          for (j = 0; j < NumRows; j++)
+            {
+              C_FLOAT64 & Data = mDataDependent[j][i];
+              if (!isnan(Data))
+                Weight += pow((Mean - Data), 2);
+            }
+
+          if (Weight > 0)
+            {
+              Weight = (Count - 1.0) / Weight;
+
+              if (Weight > MaxWeight) MaxWeight = Weight;
+              if (Weight < MinWeight) MinWeight = Weight;
+            }
+          else
+            Weight = -Count; // All values where equal to the mean
+        }
       else
-        Variance = 1;
+        Weight = -1.0; // One or less values
     }
 
-  // If it is a time course this is the place to sort
-  // :TODO: We need to check that all other independent data is not changing.
+  // We have to make a guess for the weights which could not be calculated
+  for (i = 0; i < DependentCount; i++)
+    {
+      if (!(mWeight[i] < -0.5)) continue;
+
+      if (mWeight[i] < -1.5)
+        mWeight[i] *= -MaxWeight; // All values where equal to the mean
+      else
+        mWeight[i] = 0.5 * (MaxWeight + MinWeight); // One or less values
+    }
+
+  // If it is a time course this is the place to assert that it is sorted.
   if (*mpTaskType == CCopasiTask::timeCourse)
     {
       CVector<unsigned C_INT32> Pivot;
@@ -412,16 +435,14 @@ bool CExperiment::removeColumnType(const unsigned C_INT32 & index)
 
 const CExperiment::Type & CExperiment::getColumnType(const unsigned C_INT32 & index) const
   {
-    std::string Index = StringPrint("%d", index);
-    return * static_cast<CExperiment::Type *>(mpColumnType->getValue(Index).pVOID);
+    return
+    * static_cast<CExperiment::Type *>(mpColumnType->getValue(StringPrint("%d", index)).pVOID);
   }
 
 bool CExperiment::setColumnType(const unsigned C_INT32 & index,
                                 const CExperiment::Type & type)
 {
-  std::string Index = StringPrint("%d", index);
-
-  return mpColumnType->setValue(Index, (unsigned C_INT32) type);
+  return mpColumnType->setValue(StringPrint("%d", index), (unsigned C_INT32) type);
 }
 
 const unsigned C_INT32 & CExperiment::getNumColumns() const
