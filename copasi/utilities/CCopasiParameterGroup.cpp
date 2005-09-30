@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:22:03 $
+   $Date: 2005/09/30 14:43:26 $
    End CVS Header */
 
 /**
@@ -169,6 +169,17 @@ bool CCopasiParameterGroup::addGroup(const std::string & name)
 {
   addParameter(new CCopasiParameterGroup(name));
   return true;
+}
+
+CCopasiParameterGroup * CCopasiParameterGroup::assertGroup(const std::string & name)
+{
+  CCopasiParameterGroup * pGrp = getGroup(name);
+  if (pGrp) return pGrp;
+
+  removeParameter(name);
+
+  addGroup(name);
+  return getGroup(name);
 }
 
 bool CCopasiParameterGroup::removeParameter(const std::string & name)
