@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:23:13 $
+   $Date: 2005/09/30 15:19:53 $
    End CVS Header */
 
 /**
@@ -99,27 +99,17 @@ COptProblem::~COptProblem()
 
 void COptProblem::initializeParameter()
 {
-  if (!getParameter("Steady-State"))
-    addParameter("Steady-State", CCopasiParameter::KEY, std::string(""));
-  mpParmSteadyStateKey = getValue("Steady-State").pKEY;
+  mpParmSteadyStateKey =
+    assertParameter("Steady-State", CCopasiParameter::KEY, std::string(""))->getValue().pKEY;
+  mpParmTimeCourseKey =
+    assertParameter("Time-Course", CCopasiParameter::KEY, std::string(""))->getValue().pKEY;
+  mpParmObjectiveFunctionKey =
+    assertParameter("ObjectiveFunction", CCopasiParameter::KEY, std::string(""))->getValue().pKEY;
+  mpParmMaximize =
+    assertParameter("Maximize", CCopasiParameter::BOOL, false)-> getValue().pBOOL;
 
-  if (!getParameter("Time-Course"))
-    addParameter("Time-Course", CCopasiParameter::KEY, std::string(""));
-  mpParmTimeCourseKey = getValue("Time-Course").pKEY;
-
-  if (!getParameter("ObjectiveFunction"))
-    addParameter("ObjectiveFunction", CCopasiParameter::KEY, std::string(""));
-  mpParmObjectiveFunctionKey = getValue("ObjectiveFunction").pKEY;
-
-  if (!getParameter("Maximize"))
-    addParameter("Maximize", CCopasiParameter::BOOL, false);
-  mpParmMaximize = getValue("Maximize").pBOOL;
-
-  if (!getGroup("OptimizationItemList"))
-    addGroup("OptimizationItemList");
-
-  if (!getGroup("OptimizationConstraintList"))
-    addGroup("OptimizationConstraintList");
+  mpGrpItems = assertGroup("OptimizationItemList");
+  mpGrpConstraints = assertGroup("OptimizationConstraintList");
 
   elevateChildren();
 }
@@ -127,7 +117,7 @@ void COptProblem::initializeParameter()
 bool COptProblem::elevateChildren()
 {
   mpGrpItems =
-    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(getGroup("OptimizationItemList"));
+    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpItems);
   if (!mpGrpItems) return false;
 
   std::vector<CCopasiParameter *> * pValue =
@@ -143,7 +133,7 @@ bool COptProblem::elevateChildren()
     static_cast<std::vector<COptItem * > * >(mpGrpItems->CCopasiParameter::getValue().pVOID);
 
   mpGrpConstraints =
-    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(getGroup("OptimizationConstraintList"));
+    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpConstraints);
   if (!mpGrpConstraints) return false;
 
   pValue = mpGrpConstraints->CCopasiParameter::getValue().pGROUP;
