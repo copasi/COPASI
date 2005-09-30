@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/30 15:19:03 $
+   $Date: 2005/09/30 15:51:21 $
    End CVS Header */
 
 #include "copasi.h"
@@ -37,15 +37,12 @@ CFitItem::~CFitItem()
 {pdelete(mpLocalMethod);}
 
 void CFitItem::initializeParameter()
-{
-  if (!getGroup("Affected Experiments"))
-    addGroup("Affected Experiments");
-}
+{mpGrpAffectedExperiments = assertGroup("Affected Experiments");}
 
 bool CFitItem::elevateChildren()
 {
   mpGrpAffectedExperiments =
-    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(getGroup("Affected Experiments"));
+    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpAffectedExperiments);
   if (!mpGrpAffectedExperiments) return false;
 
   return true;

@@ -1,14 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:37:47 $
+   $Date: 2005/09/30 15:51:21 $
    End CVS Header */
 
 #include "copasi.h"
 
 #include "CFitProblem.h"
+#include "CFitItem.h"
 #include "CExperimentSet.h"
 
 #include "optimization/COptItem.h"
@@ -39,8 +40,7 @@ void CFitProblem::initializeParameter()
   removeParameter("ObjectiveFunction");
   removeParameter("Maximize");
 
-  if (!(getGroup("Experiment Set")))
-    addGroup("Experiment Set");
+  assertGroup("Experiment Set");
 
   elevateChildren();
 }
@@ -51,7 +51,19 @@ bool CFitProblem::elevateChildren()
     elevate<CExperimentSet, CCopasiParameterGroup>(getGroup("Experiment Set"));
   if (!mpExperimentSet) return false;
 
-  // :TODO: elevate COptItems to CFitItems when possible.
+  std::vector<COptItem * >::iterator it = mpOptItems->begin();
+  std::vector<COptItem * >::iterator end = mpOptItems->end();
+
+  for (; it != end; ++it)
+    if ((*it)->getGroup("Affected Experiments") &&
+        !((*it) = elevate<CFitItem, COptItem>(*it))) return false;
+
+  it = mpConstraintItems->begin();
+  end = mpConstraintItems->end();
+
+  for (; it != end; ++it)
+    if ((*it)->getGroup("Affected Experiments") &&
+        !((*it) = elevate<CFitItem, COptItem>(*it))) return false;
 
   return true;
 }

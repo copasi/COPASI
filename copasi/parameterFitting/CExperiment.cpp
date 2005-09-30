@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:50:10 $
+   $Date: 2005/09/30 15:51:21 $
    End CVS Header */
 
 #include <fstream>
@@ -113,46 +113,27 @@ void CExperiment::initializeParameter()
   GlobalKeys.remove(mKey);
   mKey = GlobalKeys.add("Experiment", this);
 
-  if (!getParameter("Key"))
-    addParameter("Key", CCopasiParameter::KEY, mKey);
-  else
-    setValue("Key", mKey);
+  assertParameter("Key", CCopasiParameter::KEY, mKey)->setValue(mKey);
 
-  if (!getParameter("File Name"))
-    addParameter("File Name", CCopasiParameter::STRING, std::string(""));
-  mpFileName = getValue("File Name").pSTRING;
+  mpFileName =
+    assertParameter("File Name", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
+  mpFirstRow =
+    assertParameter("Position in File", CCopasiParameter::UINT, (unsigned C_INT32) C_INVALID_INDEX)->getValue().pUINT;
+  mpTaskType = (CCopasiTask::Type *)
+               assertParameter("Experiment Type", CCopasiParameter::UINT, (unsigned C_INT32) CCopasiTask::unset)->getValue().pUINT;
+  mpSeparator =
+    assertParameter("Seperator", CCopasiParameter::STRING, std::string("\t"))->getValue().pSTRING;
+  mpRowOriented =
+    assertParameter("Data is Row Oriented", CCopasiParameter::BOOL, (bool) true)->getValue().pBOOL;
+  mpNameRow =
+    assertParameter("Row containing Names", CCopasiParameter::UINT, (unsigned C_INT32) C_INVALID_INDEX)->getValue().pUINT;
+  mpNumRows =
+    assertParameter("Number of Rows", CCopasiParameter::UINT, (unsigned C_INT32) 0)->getValue().pUINT;
+  mpNumColumns =
+    assertParameter("Number of Columns", CCopasiParameter::UINT, (unsigned C_INT32) 0)->getValue().pUINT;
 
-  if (!getParameter("Position in File"))
-    addParameter("Position in File", CCopasiParameter::UINT, (unsigned C_INT32) C_INVALID_INDEX);
-  mpFirstRow = getValue("").pUINT;
-
-  if (!getParameter("Experiment Type"))
-    addParameter("Experiment Type", CCopasiParameter::UINT, (unsigned C_INT32) CCopasiTask::unset);
-  mpTaskType = (CCopasiTask::Type *) getValue("Experiment Type").pUINT;
-
-  if (!getParameter("Seperator"))
-    addParameter("Seperator", CCopasiParameter::STRING, std::string("\t"));
-  mpSeparator = getValue("Seperator").pSTRING;
-
-  if (!getParameter("Data is Row Oriented"))
-    addParameter("Data is Row Oriented", CCopasiParameter::BOOL, (bool) true);
-  mpRowOriented = getValue("Data is Row Oriented").pBOOL;
-
-  if (!getParameter("Row containing Names"))
-    addParameter("Row containing Names", CCopasiParameter::UINT, (unsigned C_INT32) C_INVALID_INDEX);
-  mpNameRow = getValue("Row containing Names").pUINT;
-
-  if (!getParameter("Number of Rows"))
-    addParameter("Number of Rows", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-  mpNumRows = getValue("Number of Rows").pUINT;
-
-  if (!getParameter("Number of Columns"))
-    addParameter("Number of Columns", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-  mpNumColumns = getValue("Number of Columns").pUINT;
-
-  if (getGroup("Column Role")) addGroup("Column Role");
-
-  if (getGroup("Object Map")) addGroup("Object Map");
+  mpColumnType = assertGroup("Column Role");
+  assertGroup("Object Map");
 
   elevateChildren();
 }
@@ -160,7 +141,7 @@ void CExperiment::initializeParameter()
 bool CExperiment::elevateChildren()
 {
   mpColumnType =
-    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(getGroup("Column Role"));
+    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpColumnType);
   if (!mpColumnType) return false;
 
   mpObjectMap =

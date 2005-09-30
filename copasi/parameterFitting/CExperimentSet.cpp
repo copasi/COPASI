@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:35:01 $
+   $Date: 2005/09/30 15:51:21 $
    End CVS Header */
 
 #include <algorithm>
@@ -34,10 +34,7 @@ CExperimentSet::CExperimentSet(const CCopasiParameterGroup & group,
 CExperimentSet::~CExperimentSet() {}
 
 void CExperimentSet::initializeParameter()
-{
-  mpExperiments = static_cast<std::vector<CExperiment * > * >(mValue.pVOID);
-  elevateChildren();
-}
+{elevateChildren();}
 
 bool CExperimentSet::elevateChildren()
 {
@@ -46,6 +43,8 @@ bool CExperimentSet::elevateChildren()
 
   for (; it != end; ++it)
     if (!elevate<CExperiment, CCopasiParameterGroup>(*it)) return false;
+
+  mpExperiments = static_cast<std::vector<CExperiment * > * >(mValue.pVOID);
 
   return true;
 }
