@@ -953,5 +953,13 @@ SOURCE=.\CQReportDefinition.ui
 
 SOURCE=.\CQTextDialog.ui
 # End Source File
+# Begin Source File
+
+SOURCE=.\StateSubwidget.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\TimeSeriesSubwidget.ui
+# End Source File
 # End Target
 # End Project
