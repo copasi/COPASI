@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/30 21:08:16 $
+   $Date: 2005/10/01 03:02:53 $
    End CVS Header */
 
 #include "copasi.h"
@@ -174,6 +174,8 @@ bool CFitProblem::calculate()
                   pProblem->setEndTime(Exp.getTimeData()[j]);
                   Continue = mpTrajectory->process(j ? false : true);
                   break;
+
+                default:
                 }
 
               mCalculateValue += Exp.sumOfSquares(j);
