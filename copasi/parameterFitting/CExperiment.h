@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/30 21:08:16 $
+   $Date: 2005/10/03 14:02:46 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -97,6 +97,13 @@ class CExperiment: public CCopasiParameterGroup
      * @return bool success
      */
     bool read(std::istream & in, unsigned C_INT32 & currentLine);
+
+    /**
+     * Update the model with the independent data of the experiment
+     * @param const unsigned C_INT32 & index
+     * @return bool success
+     */
+    bool updateModelWithIndependentData(const unsigned C_INT32 & index);
 
     /**
      * Retrieve the experiment type

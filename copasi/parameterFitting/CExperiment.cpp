@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/01 03:01:39 $
+   $Date: 2005/10/03 14:02:46 $
    End CVS Header */
 
 #include <fstream>
@@ -401,8 +401,19 @@ bool CExperiment::read(std::istream & in,
   return true;
 }
 
+bool CExperiment::updateModelWithIndependentData(const unsigned C_INT32 & index)
+{
+  unsigned C_INT32 i, imax = mIndependentUpdateMethods.size();
+
+  for (i = 0; i < imax; i++)
+    if (!(*mIndependentUpdateMethods[i])(mDataIndependent(index, i)))
+      return false;
+
+  return true;
+}
+
 const CCopasiTask::Type & CExperiment::getExperimentType() const
-  {return *mpTaskType;}
+{return *mpTaskType;}
 
 const CVector< C_FLOAT64 > & CExperiment::getTimeData() const
   {return mDataTime;}
