@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/30 21:08:16 $
+   $Date: 2005/10/03 15:25:52 $
    End CVS Header */
 
 #include "copasi.h"
@@ -75,7 +75,16 @@ std::ostream &operator<<(std::ostream &os, const CFitItem & o)
 {
   os << * static_cast<const COptItem *>(&o);
 
-  // :TODO: add local ouput
+  unsigned C_INT32 i, imax = o.mpGrpAffectedExperiments->size();
+
+  os << "Affected Experiments:" << std::endl << "  ";
+  if (imax == 0) os << "all";
+
+  for (i = 0; i < imax; i++)
+    {
+      if (i) os << ", ";
+      os << o.getExperiment(i);
+    }
 
   return os;
 }
