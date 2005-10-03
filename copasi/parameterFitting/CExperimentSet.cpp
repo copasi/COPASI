@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/30 15:51:21 $
+   $Date: 2005/10/03 14:02:16 $
    End CVS Header */
 
 #include <algorithm>
@@ -12,6 +12,8 @@
 
 #include "CExperimentSet.h"
 #include "CExperiment.h"
+
+#include "report/CKeyFactory.h"
 
 CExperimentSet::CExperimentSet(const std::string & name,
                                const CCopasiContainer * pParent):
@@ -117,3 +119,17 @@ const CMatrix< C_FLOAT64 > & CExperimentSet::getIndependentData(const unsigned C
 
 const CMatrix< C_FLOAT64 > & CExperimentSet::getDependentData(const unsigned C_INT32 & index) const
   {return getExperiment(index)->getDependentData();}
+
+unsigned C_INT32 CExperimentSet::keyToIndex(const std::string & key) const
+  {
+    const CExperiment * pExp = dynamic_cast<const CExperiment *>(GlobalKeys.get(key));
+
+    if (!pExp) return C_INVALID_INDEX;
+
+    unsigned C_INT32 i, imax = size();
+
+    for (i = 0; i < imax; i++)
+      if (pExp == getExperiment(i)) return i;
+
+    return C_INVALID_INDEX;
+  }

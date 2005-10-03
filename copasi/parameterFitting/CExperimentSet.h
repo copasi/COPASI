@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:35:01 $
+   $Date: 2005/10/03 14:02:16 $
    End CVS Header */
 
 #ifndef COPASI_CExperimentSet
@@ -112,6 +112,13 @@ class CExperimentSet: public CCopasiParameterGroup
      * @return const CMatrix< C_FLOAT64 > & dependentData
      */
     const CMatrix< C_FLOAT64 > & getDependentData(const unsigned C_INT32 & index) const;
+
+    /**
+     * Convert an experiment key to an index
+     * @param const std::string & key
+     * @return unsigned C_INT32 index
+     */
+    unsigned C_INT32 keyToIndex(const std::string & key) const;
 
   private:
     /**
