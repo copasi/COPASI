@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/26 20:52:29 $
+   $Date: 2005/10/03 14:03:05 $
    End CVS Header */
 
 #ifndef COPASI_CMatrix
@@ -186,6 +186,7 @@ class CMatrix
       return *this;
     }
 
+#ifdef XXXX
     /**
      * Scalar multiplication operator
      * @param const CType & value
@@ -226,6 +227,7 @@ class CMatrix
 
       return *this;
     }
+#endif // XXXX
 
     /**
      * Retrieve a row of the matrix using c-style indexing
