@@ -1,15 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/30 21:08:16 $
+   $Date: 2005/10/03 15:35:08 $
    End CVS Header */
 
 #ifndef COPASI_CFitProblem
 #define COPASI_CFitProblem
 
 #include "optimization/COptProblem.h"
+#include "utilities/CMatrix.h"
 
 class CExperimentSet;
 
@@ -132,9 +133,9 @@ class CFitProblem : public COptProblem
     CExperimentSet * mpExperimentSet;
 
     /**
-     * Vector of vectors of update methods for items for each experiment.
+     * Matrix of update methods for items for each experiment.
      */
-    std::vector< std::vector< UpdateMethod * > > mExperimentUpdateMethods;
+    CMatrix< UpdateMethod * > mExperimentUpdateMethods;
   };
 
 #endif  // COPASI_CFitProblem

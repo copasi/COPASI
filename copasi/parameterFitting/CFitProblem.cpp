@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/01 03:04:49 $
+   $Date: 2005/10/03 15:35:06 $
    End CVS Header */
 
 #include "copasi.h"
@@ -14,6 +14,7 @@
 #include "CExperimentSet.h"
 #include "CExperiment.h"
 
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "optimization/COptItem.h"
 #include "steadystate/CSteadyStateTask.h"
@@ -26,14 +27,14 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
                          const CCopasiContainer * pParent):
     COptProblem(type, pParent),
     mpExperimentSet(NULL)
-{}
+{initializeParameter();}
 
 // copy constructor
 CFitProblem::CFitProblem(const CFitProblem& src,
                          const CCopasiContainer * pParent):
     COptProblem(src, pParent),
     mpExperimentSet(NULL)
-{}
+{initializeParameter();}
 
 // Destructor
 CFitProblem::~CFitProblem()
@@ -43,6 +44,25 @@ void CFitProblem::initializeParameter()
 {
   removeParameter("ObjectiveFunction");
   removeParameter("Maximize");
+
+  CCopasiVectorN< CCopasiTask > * pTasks = CCopasiDataModel::Global->getTaskList();
+  unsigned C_INT32 i, imax = pTasks->size();
+
+  if (*mpParmSteadyStateKey == "")
+    for (i = 0; i < imax; i++)
+      if ((*pTasks)[i]->getType() == CCopasiTask::steadyState)
+        {
+          *mpParmSteadyStateKey = (*pTasks)[i]->getKey();
+          break;
+        }
+
+  if (*mpParmTimeCourseKey == "")
+    for (i = 0; i < imax; i++)
+      if ((*pTasks)[i]->getType() == CCopasiTask::timeCourse)
+        {
+          *mpParmTimeCourseKey = (*pTasks)[i]->getKey();
+          break;
+        }
 
   assertGroup("Experiment Set");
 
@@ -100,28 +120,35 @@ bool CFitProblem::initialize()
   if (!mpExperimentSet->compile(ContainerList)) return false;
 
   // Build a matrix of experiment and experiment local items.
-  mExperimentUpdateMethods.resize(mpExperimentSet->size());
+  mExperimentUpdateMethods.resize(mpExperimentSet->size(),
+                                  mpOptItems->size());
+  mExperimentUpdateMethods = NULL;
 
   std::vector<COptItem * >::iterator it = mpOptItems->begin();
   std::vector<COptItem * >::iterator end = mpOptItems->end();
 
   CFitItem * pItem;
-  unsigned i, imax;
-  for (; it != end; ++it)
+  unsigned C_INT32 i, imax;
+  unsigned C_INT32 j;
+  unsigned C_INT32 Index;
+
+  for (j = 0; it != end; ++it, j++)
     {
       pItem = static_cast<CFitItem *>(*it);
       imax = pItem->getExperimentCount();
       if (imax == 0)
         {
-          for (i = 0, imax = mpOptItems->size(); i < imax; i++)
-            mExperimentUpdateMethods[i].push_back(pItem->COptItem::getUpdateMethod());
+          for (i = 0, imax = mpExperimentSet->size(); i < imax; i++)
+            mExperimentUpdateMethods(i, j) = pItem->COptItem::getUpdateMethod();
         }
       else
         {
           for (i = 0; i < imax; i++)
-            // :TODO: map the experiment key to an experiment index
-            // mExperimentUpdateMethods[pItem->getExperiment(i)].push_back(pItem->COptItem::getUpdateMethod();
-;
+            {
+              if ((Index = mpExperimentSet->keyToIndex(pItem->getExperiment(i))) == C_INVALID_INDEX)
+                return false;
+              mExperimentUpdateMethods(Index, j) = pItem->COptItem::getUpdateMethod();
+            };
         }
     }
 
@@ -137,13 +164,11 @@ bool CFitProblem::initialize()
  */
 bool CFitProblem::calculate()
 {
-  // :TODO: implmement me!
-
   mCounter += 1;
   bool Continue = true;
 
   unsigned i, imax = mpExperimentSet->size();
-  unsigned j, jmax;
+  unsigned j, jmax = mpOptItems->size();
   mCalculateValue = 0.0;
 
   CTrajectoryProblem * pProblem =
@@ -155,14 +180,17 @@ bool CFitProblem::calculate()
         {
           CExperiment & Exp = *mpExperimentSet->getExperiment(i);
 
-          // :TODO: set the global fit item values.
-          // :TODO: set the experiment local fit item values.
+          // set the global and experiment local fit item values.
+          for (j = 0; j < jmax; j++)
+            if (mExperimentUpdateMethods(i, j))
+              (*mExperimentUpdateMethods(i, j))(static_cast<CFitItem *>((*mpOptItems)[j])->getLocalValue());
 
           jmax = Exp.getNumRows();
 
           for (j = 0; j < jmax && Continue; j++) // For each data row;
             {
-              // :TODO: set independent data
+              // set independent data
+              Exp.updateModelWithIndependentData(j);
 
               switch (Exp.getExperimentType())
                 {
