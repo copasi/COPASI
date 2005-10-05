@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.11 $ $Author: shoops $ $Date: 2005/06/29 20:24:22 $  
+# $Revision: 1.12 $ $Author: ssahle $ $Date: 2005/10/05 14:07:22 $  
 ######################################################################
 
 LIB = report
@@ -15,6 +15,7 @@ HEADERS += CCopasiContainer.h \
            CCopasiStaticString.h \
            CCopasiTimer.h \
 		       CKeyFactory.h \
+           COutputAssistant.h \  
            CRenameHandler.h \
 		       CReportDefinition.h \
 		       CReportDefinitionVector.h \
@@ -27,6 +28,7 @@ SOURCES += CCopasiContainer.cpp \
            CCopasiStaticString.cpp \
            CCopasiTimer.cpp \
 		       CKeyFactory.cpp \
+           COutputAssistant.cpp \  
 		       CReportDefinition.cpp \
 		       CReportDefinitionVector.cpp \
 		       CReport.cpp 
