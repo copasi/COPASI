@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/05 13:47:33 $
+   $Author: shoops $ 
+   $Date: 2005/10/05 16:24:51 $
    End CVS Header */
 
 #include <qcheckbox.h>
@@ -37,6 +37,8 @@
 #include "copasiui3window.h"
 #include "CReportDefinitionSelect.h"
 #include "DefaultplotDialog.h"
+#include "CQTaskHeaderWidget.h"
+#include "CQTaskBtnWidget.h"
 
 /*
  *  Constructs a TaskWidget which is a child of 'parent', with the 
@@ -49,76 +51,13 @@ TaskWidget::TaskWidget(QWidget* parent, const char* name, WFlags fl)
     setName("TaskWidget");
   setCaption(trUtf8("TaskWidget"));
 
-  mainLayout = new QVBoxLayout(this, 11, 8, "TaskMainWidget");
+  mpHeaderWidget = new CQTaskHeaderWidget(this);
+  mpBtnWidget = new CQTaskBtnWidget(this);
 
-  TaskWidgetLayout = new QGridLayout(mainLayout, 1, 1, 8, "TaskWidgetLayout");
-
-  //*******************
-
-  nameLayout = new QHBoxLayout();
-
-  taskNameLabel = new QLabel(this, "taskNameLabel");
-  taskNameLabel->setText(trUtf8("<h2>??? Task</h2>"));
-  taskNameLabel->setAlignment(int(QLabel::AlignVCenter
-                                  | QLabel::AlignLeft));
-  nameLayout->addWidget(taskNameLabel);
-
-  QSpacerItem* tmpSpacer = new QSpacerItem(0, 0, QSizePolicy::Preferred, QSizePolicy::Minimum);
-  nameLayout->addItem(tmpSpacer);
-
-  bExecutable = new QCheckBox(this, "bExecutable");
-  bExecutable->setText(trUtf8("executable"));
-  bExecutable->setChecked(parent == NULL);
-  bExecutable->setEnabled(parent != NULL);
-  nameLayout->addWidget(bExecutable);
-
-  //  TaskWidgetLayout->addMultiCellLayout(tmpLayout, 0, 0, 1, 3);
-
-  //*******************
-
-  lineButton = new QFrame(this, "line");
-  lineButton->setFrameShape(QFrame::HLine);
-  lineButton->setFrameShadow(QFrame::Sunken);
-  mainLayout->addWidget(lineButton);
-
-  //*******************
-
-  buttonLayout = new QHBoxLayout(0, 0, 6, "buttonLayout");
-
-  runTaskButton = new QPushButton(this, "runTaskButton");
-  runTaskButton->setText(trUtf8("Run"));
-  buttonLayout->addWidget(runTaskButton);
-
-  cancelChangeButton = new QPushButton(this, "cancelChangeButton");
-  cancelChangeButton->setText(trUtf8("Revert"));
-  buttonLayout->addWidget(cancelChangeButton);
-
-  reportDefinitionButton = new QPushButton(this, "ReportDefinition");
-  reportDefinitionButton->setText(trUtf8("Report"));
-  buttonLayout->addWidget(reportDefinitionButton);
-
-  outputDefinitionButton = new QPushButton(this, "OutputDefinition");
-  outputDefinitionButton->setText(trUtf8("Output Assistant"));
-  buttonLayout->addWidget(outputDefinitionButton);
-
-  mainLayout->addLayout(buttonLayout);
-
-  //*******************
-
-  //setTabOrder(bExecutable, setInitialState);
-  //setTabOrder(parameterTable, bRunTask);
-  //  setTabOrder(bRunTask, commitChange);
-  //  setTabOrder(commitChange, cancelChangeButton);
-  setTabOrder(runTaskButton, cancelChangeButton);
-  setTabOrder(cancelChangeButton, reportDefinitionButton);
-
-  // signals and slots connections
-  connect(cancelChangeButton, SIGNAL(clicked()), this, SLOT(CancelChangeClicked()));
-  connect(runTaskButton, SIGNAL(clicked()), this, SLOT(runTaskClicked()));
-  connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
-  connect(outputDefinitionButton, SIGNAL(clicked()), this, SLOT(outputDefinitionClicked()));
-  //connect(bExecutable, SIGNAL(clicked()), this, SLOT(EnableRunTask()));
-  //connect(ComboBox1, SIGNAL(activated(int)), this, SLOT(UpdateMethod()));
+  connect(mpBtnWidget->mpBtnRun, SIGNAL(clicked()), this, SLOT(runBtnClicked()));
+  connect(mpBtnWidget->mpBtnRevert, SIGNAL(clicked()), this, SLOT(revertBtnClicked()));
+  connect(mpBtnWidget->mpBtnReport, SIGNAL(clicked()), this, SLOT(reportBtnClicked()));
+  connect(mpBtnWidget->mpBtnAssistant, SIGNAL(clicked()), this, SLOT(assistantBtnClicked()));
 }
 
 TaskWidget::~TaskWidget()
@@ -126,20 +65,20 @@ TaskWidget::~TaskWidget()
 
 //************************************************************
 
-void TaskWidget::CancelChangeClicked()
+void TaskWidget::revertBtnClicked()
 {
   loadTask();
 }
 
-void TaskWidget::runTaskClicked()
+void TaskWidget::runBtnClicked()
 {
   runTask();
 }
 
-void TaskWidget::ReportDefinitionClicked()
+void TaskWidget::reportBtnClicked()
 {
   CCopasiTask* task =
-    dynamic_cast< CCopasiTask * >(GlobalKeys.get(objKey));
+    dynamic_cast< CCopasiTask * >(GlobalKeys.get(mObjectKey));
   assert(task);
 
   CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(this); //TODO parent?
@@ -150,10 +89,10 @@ void TaskWidget::ReportDefinitionClicked()
   delete pSelectDlg;
 }
 
-void TaskWidget::outputDefinitionClicked()
+void TaskWidget::assistantBtnClicked()
 {
   CCopasiTask* task =
-    dynamic_cast< CCopasiTask * >(GlobalKeys.get(objKey));
+    dynamic_cast< CCopasiTask * >(GlobalKeys.get(mObjectKey));
   assert(task);
 
   DefaultPlotDialog * pDlg = new DefaultPlotDialog(this);
@@ -176,44 +115,40 @@ void TaskWidget::outputDefinitionClicked()
 bool TaskWidget::loadExecutable()
 {
   CCopasiTask* mpTask =
-    dynamic_cast<CCopasiTask*>(GlobalKeys.get(objKey));
+    dynamic_cast<CCopasiTask*>(GlobalKeys.get(mObjectKey));
   assert(mpTask);
 
-  bExecutable->setChecked(mpTask->isScheduled());
+  mpHeaderWidget->mpBoxExecutable->setChecked(mpTask->isScheduled());
   return true;
 }
 
 bool TaskWidget::saveExecutable()
 {
   CCopasiTask* mpTask =
-    dynamic_cast<CCopasiTask*>(GlobalKeys.get(objKey));
+    dynamic_cast<CCopasiTask*>(GlobalKeys.get(mObjectKey));
   assert(mpTask);
 
-  bool bScheduled = bExecutable->isChecked();
-  mpTask->setScheduled(bScheduled);
+  mpTask->setScheduled(mpHeaderWidget->mpBoxExecutable->isChecked());
   return true;
 }
 
 //************* parameter table ***********************
 
-bool TaskWidget::constructMethodParameterTable()
+bool TaskWidget::formatMethodParameterTable(QTable * pParameterTable)
 {
-  parameterTable = new QTable(this, "parameterTable");
-  if (!parameterTable) return false;
-
-  parameterTable->setNumRows(0);
-  parameterTable->setNumCols(1);
-  parameterTable->setColumnStretchable(0, true);
-  QHeader *colHeader = parameterTable->horizontalHeader();
+  pParameterTable->setNumRows(0);
+  pParameterTable->setNumCols(1);
+  pParameterTable->setColumnStretchable(0, true);
+  QHeader *colHeader = pParameterTable->horizontalHeader();
   colHeader->setLabel(0, tr("Value"));
-  parameterTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+  pParameterTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
   return true;
 }
 
-bool TaskWidget::loadMethodParameters()
+bool TaskWidget::loadMethodParameters(QTable * pParameterTable)
 {
   CCopasiTask* task =
-    dynamic_cast<CCopasiTask *>(GlobalKeys.get(objKey));
+    dynamic_cast<CCopasiTask *>(GlobalKeys.get(mObjectKey));
   if (!task) return false;
 
   CCopasiMethod* method = task->getMethod();
@@ -223,8 +158,8 @@ bool TaskWidget::loadMethodParameters()
   QString value;
   QString strname;
 
-  parameterTable->setNumRows(method->size());
-  QHeader *rowHeader = parameterTable->verticalHeader();
+  pParameterTable->setNumRows(method->size());
+  QHeader *rowHeader = pParameterTable->verticalHeader();
 
   unsigned C_INT32 i;
   CCopasiParameter::Type Type;
@@ -234,16 +169,16 @@ bool TaskWidget::loadMethodParameters()
       rowHeader->setLabel(i, strname);
 
       value = getParameterValue(method, i, &Type);
-      pItem = new QTableItem (parameterTable, QTableItem::Always, value);
-      parameterTable->setItem(i, 0, pItem);
+      pItem = new QTableItem (pParameterTable, QTableItem::Always, value);
+      pParameterTable->setItem(i, 0, pItem);
     }
   return true;
 }
 
-bool TaskWidget::saveMethodParameters()
+bool TaskWidget::saveMethodParameters(QTable * pParameterTable)
 {
   CCopasiTask* task =
-    dynamic_cast<CCopasiTask *>(GlobalKeys.get(objKey));
+    dynamic_cast<CCopasiTask *>(GlobalKeys.get(mObjectKey));
   if (!task) return false;
 
   CCopasiMethod* method = task->getMethod();
@@ -255,14 +190,15 @@ bool TaskWidget::saveMethodParameters()
 
   for (i = 0; i < method->size(); i++)
     {
-      pItem = parameterTable->item(i, 0);
+      pItem = pParameterTable->item(i, 0);
       value = pItem->text();
       setParameterValue(method, i, value);
     }
   return true;
 }
 
-bool TaskWidget::addMethodParameterTableToLayout(unsigned int row, unsigned int maxcol)
+#ifdef XXXX
+bool TaskWidget::addMethodpParameterTableToLayout(unsigned int row, unsigned int maxcol)
 {
   methodParLabel = new QLabel(this, "methodParLabel");
   methodParLabel->setText(tr("Method parameters"));
@@ -271,14 +207,15 @@ bool TaskWidget::addMethodParameterTableToLayout(unsigned int row, unsigned int 
   methodParLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   TaskWidgetLayout->addWidget(methodParLabel, row, 0);
 
-  if (!constructMethodParameterTable()) return false;
-  TaskWidgetLayout->addMultiCellWidget(parameterTable, row, row + 1, 1, maxcol);
+  if (!constructMethodpParameterTable()) return false;
+  TaskWidgetLayout->addMultiCellWidget(pParameterTable, row, row + 1, 1, maxcol);
 
   QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Preferred);
   TaskWidgetLayout->addItem(spacer, row + 1, 0);
 
   return true;
 }
+#endif // XXXX
 
 //*********************************************************************
 
@@ -294,7 +231,7 @@ bool TaskWidget::commonBeforeRunTask()
       return false;
     }
 
-  CCopasiTask* task = dynamic_cast< CCopasiTask * >(GlobalKeys.get(objKey));
+  CCopasiTask* task = dynamic_cast< CCopasiTask * >(GlobalKeys.get(mObjectKey));
   if (!task) return false;
 
   //set mouse cursor
@@ -313,7 +250,7 @@ bool TaskWidget::commonBeforeRunTask()
 
 bool TaskWidget::commonAfterRunTask()
 {
-  CCopasiTask* task = dynamic_cast< CCopasiTask * >(GlobalKeys.get(objKey));
+  CCopasiTask* task = dynamic_cast< CCopasiTask * >(GlobalKeys.get(mObjectKey));
   if (!task) return false;
 
   if (mProgressBar)
@@ -350,9 +287,9 @@ bool TaskWidget::leave()
 
 bool TaskWidget::enter(const std::string & key)
 {
-  if (!dynamic_cast< CCopasiTask * >(GlobalKeys.get(key))) return false;
+  if (key != "") mObjectKey = key;
 
-  objKey = key;
+  if (!dynamic_cast< CCopasiTask * >(GlobalKeys.get(mObjectKey))) return false;
 
   return loadTask();
 }
