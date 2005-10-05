@@ -1,26 +1,27 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DefaultplotDialog.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/18 09:04:14 $
+   $Date: 2005/10/05 14:08:20 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'DefaultplotDialog.ui'
  **
- ** Created: Mo Apr 18 00:01:46 2005
- **      by: The User Interface Compiler ($Id: DefaultplotDialog.h,v 1.1 2005/04/18 09:04:14 ssahle Exp $)
+ ** Created: Wed Oct 5 15:59:05 2005
+ **      by: The User Interface Compiler ($Id: DefaultplotDialog.h,v 1.2 2005/10/05 14:08:20 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef DEFAULTPLOTDIALOG_H
-#define DEFAULTPLOTDIALOG_H
+ #define DEFAULTPLOTDIALOG_H
 
 #include <qvariant.h>
-#include <qdialog.h>
-#include "utilities/CCopasiProblem.h"
+ #include <qdialog.h>
+ #include <vector>
+ #include "copasi.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -32,6 +33,8 @@ class QLabel;
 class QLineEdit;
 class QTextEdit;
 class QPushButton;
+class CCopasiProblem;
+class CCopasiTask;
 
 class DefaultPlotDialog : public QDialog
   {
@@ -48,11 +51,13 @@ class DefaultPlotDialog : public QDialog
     QPushButton* createButton;
     QPushButton* cancelButton;
 
-    virtual void setProblem(const CCopasiProblem * p);
+  public slots:
+    virtual void setTask(CCopasiTask * t);
+    virtual void newSlot();
 
   protected:
-    const CCopasiProblem* mpProblem;
-    std::vector<CDefaultPlotDescription> mList;
+    CCopasiTask* mpTask;
+    std::vector<C_INT32> mList;
     int mIndex;
 
     QGridLayout* DefaultPlotDialogLayout;
