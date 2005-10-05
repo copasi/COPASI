@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DefaultplotDialog.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/18 12:45:21 $
+   $Author: ssahle $ 
+   $Date: 2005/10/05 13:56:52 $
    End CVS Header */
 
 /****************************************************************************
@@ -19,44 +19,48 @@
  *****************************************************************************/
 
 #include "qtUtilities.h"
+#include "utilities/CCopasiTask.h"
+#include "report/COutputAssistant.h"
 
 void DefaultPlotDialog::slotCreate()
 {
-  if (!mpProblem) return;
-  if (mpProblem->createDefaultPlot(mIndex))
+  if (!mpTask) return;
+  if (COutputAssistant::createDefaultOutput(mIndex, mpTask))
     this->accept();
   else
     this->reject();
 }
 
-void DefaultPlotDialog::setProblem(const CCopasiProblem * p)
+void DefaultPlotDialog::setTask(CCopasiTask * t)
 {
   //set window header
   //this->resize(640, 480);
   this->setCaption("Output definition assistant");
 
-  mpProblem = p;
-  if (!mpProblem) return;
+  mpTask = t;
+  if (!mpTask->getProblem()) return;
   //todo check
-  mList = p->getListOfDefaultPlotDescriptions();
-
+  mList = COutputAssistant::getListOfDefaultOutputDescriptions(mpTask->getProblem());
   listBox->clear();
 
-  std::vector<CDefaultPlotDescription>::const_iterator it, itEnd = mList.end();
+  std::vector<C_INT32>::const_iterator it, itEnd = mList.end();
   for (it = mList.begin(); it != itEnd; ++it)
     {
-      listBox->insertItem(FROM_UTF8(it->name));
+      listBox->insertItem(FROM_UTF8(COutputAssistant::getItemName(*it)));
     }
   listBox->setSelected(0, true);
 }
 
 void DefaultPlotDialog::slotSelect()
 {
-  if (!mpProblem) return;
+  if (!mpTask) return;
   //std::cout << listBox->currentItem() << std::endl;
 
   C_INT32 i = listBox->currentItem();
-  mIndex = mList[i].id;
-  lineEditTitle->setText(mList[i].name.c_str());
-  textEdit->setText(mList[i].description.c_str());
+  mIndex = mList[i];
+  lineEditTitle->setText(FROM_UTF8(COutputAssistant::getItemName(mIndex)));
+  textEdit->setText(FROM_UTF8(COutputAssistant::getItem(mIndex).description));
 }
+
+void DefaultPlotDialog::newSlot()
+{}

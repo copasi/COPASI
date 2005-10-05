@@ -113,20 +113,24 @@
     </connection>
 </connections>
 <includes>
-    <include location="local" impldecl="in declaration">utilities/CCopasiProblem.h</include>
+    <include location="global" impldecl="in declaration">vector</include>
+    <include location="local" impldecl="in declaration">copasi.h</include>
     <include location="local" impldecl="in implementation">DefaultplotDialog.ui.h</include>
 </includes>
+<forwards>
+    <forward>class CCopasiProblem</forward>
+    <forward>class CCopasiTask</forward>
+</forwards>
 <variables>
-    <variable>const CCopasiProblem* mpProblem;</variable>
-    <variable>std::vector&lt;CDefaultPlotDescription&gt; mList;</variable>
+    <variable>CCopasiTask* mpTask;</variable>
+    <variable>std::vector&lt;C_INT32&gt; mList;</variable>
     <variable>int mIndex;</variable>
 </variables>
 <slots>
     <slot access="protected">slotCreate()</slot>
+    <slot>setTask( CCopasiTask * t )</slot>
     <slot access="protected">slotSelect()</slot>
+    <slot>newSlot()</slot>
 </slots>
-<functions>
-    <function>setProblem( const CCopasiProblem * p )</function>
-</functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
