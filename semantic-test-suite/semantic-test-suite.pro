@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.2 $ $Author: gauges $ $Date: 2005/07/27 16:23:09 $  
+# $Revision: 1.3 $ $Author: shoops $ $Date: 2005/10/05 18:19:32 $  
 ######################################################################
 
 TEMPLATE = app
@@ -16,6 +16,7 @@ COPASI_LIBS = \
          copasiDM \
          copasiXML \
          elementaryFluxModes \
+         fitting \
          function \
          mathmodel \
          model \
