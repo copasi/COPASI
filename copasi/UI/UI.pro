@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.105 $ $Author: shoops $ $Date: 2005/10/05 16:26:53 $  
+# $Revision: 1.106 $ $Author: shoops $ $Date: 2005/10/05 18:17:53 $  
 ######################################################################
 
 TEMPLATE = app
@@ -288,9 +288,9 @@ SOURCES += \
 # FORMS += CQReportDefinition.ui
 # FORMS += CQTextDialog.ui
 # FORMS += CQFileDialogBtnGrp.ui
-FORMS += CQFittingWidget.ui
-FORMS += CQTaskHeaderWidget.ui
-FORMS += CQTaskBtnWidget.ui
+# FORMS += CQFittingWidget.ui
+# FORMS += CQTaskHeaderWidget.ui
+# FORMS += CQTaskBtnWidget.ui
 
 # headers generated from .ui files   
 HEADERS += \
