@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.115 $
+   $Revision: 1.116 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/15 18:45:24 $
+   $Author: ssahle $ 
+   $Date: 2005/10/05 14:11:07 $
    End CVS Header */
 
 /********************************************************
@@ -507,7 +507,7 @@ void TrajectoryWidget::outputDefinitionClicked()
   assert(task);
 
   DefaultPlotDialog * pDlg = new DefaultPlotDialog(this);
-  pDlg->setProblem(task->getProblem());
+  pDlg->setTask(task);
   if (pDlg->exec() == QDialog::Accepted)
     {
       //std::cout << "plot created" << std::endl;

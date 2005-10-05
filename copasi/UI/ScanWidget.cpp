@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.194 $
+   $Revision: 1.195 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/15 18:45:24 $
+   $Author: ssahle $ 
+   $Date: 2005/10/05 14:11:07 $
    End CVS Header */
 
 //***  In this file I have put "//+++" in all places where something has to be added
@@ -482,7 +482,7 @@ void ScanWidget::outputDefinitionClicked()
   assert(task);
 
   DefaultPlotDialog * pDlg = new DefaultPlotDialog(this);
-  pDlg->setProblem(task->getProblem());
+  pDlg->setTask(task);
   if (pDlg->exec() == QDialog::Accepted)
     {
       //std::cout << "plot created" << std::endl;
