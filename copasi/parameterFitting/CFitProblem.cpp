@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/03 15:35:06 $
+   $Date: 2005/10/05 16:21:48 $
    End CVS Header */
 
 #include "copasi.h"
@@ -45,24 +45,32 @@ void CFitProblem::initializeParameter()
   removeParameter("ObjectiveFunction");
   removeParameter("Maximize");
 
-  CCopasiVectorN< CCopasiTask > * pTasks = CCopasiDataModel::Global->getTaskList();
-  unsigned C_INT32 i, imax = pTasks->size();
+  CCopasiVectorN< CCopasiTask > * pTasks = NULL;
+  if (CCopasiDataModel::Global)
+    pTasks = CCopasiDataModel::Global->getTaskList();
+  if (!pTasks)
+    pTasks = dynamic_cast<CCopasiVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
 
-  if (*mpParmSteadyStateKey == "")
-    for (i = 0; i < imax; i++)
-      if ((*pTasks)[i]->getType() == CCopasiTask::steadyState)
-        {
-          *mpParmSteadyStateKey = (*pTasks)[i]->getKey();
-          break;
-        }
+  if (pTasks)
+    {
+      unsigned C_INT32 i, imax = pTasks->size();
 
-  if (*mpParmTimeCourseKey == "")
-    for (i = 0; i < imax; i++)
-      if ((*pTasks)[i]->getType() == CCopasiTask::timeCourse)
-        {
-          *mpParmTimeCourseKey = (*pTasks)[i]->getKey();
-          break;
-        }
+      if (*mpParmSteadyStateKey == "")
+        for (i = 0; i < imax; i++)
+          if ((*pTasks)[i]->getType() == CCopasiTask::steadyState)
+            {
+              *mpParmSteadyStateKey = (*pTasks)[i]->getKey();
+              break;
+            }
+
+      if (*mpParmTimeCourseKey == "")
+        for (i = 0; i < imax; i++)
+          if ((*pTasks)[i]->getType() == CCopasiTask::timeCourse)
+            {
+              *mpParmTimeCourseKey = (*pTasks)[i]->getKey();
+              break;
+            }
+    }
 
   assertGroup("Experiment Set");
 
