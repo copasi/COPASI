@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CProcessReport.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/05 16:19:56 $
+   $Date: 2005/10/05 16:37:52 $
    End CVS Header */
 
 #ifndef COPASI_CProcessReport
@@ -14,11 +14,7 @@
 
 #include "CCopasiParameter.h"
 
-#ifdef WIN32
-# include "CVector.h"
-#else
-template < typename CType > class CVector;
-#endif
+#include "CVector.h"
 
 class CProcessReportItem: public CCopasiParameter
   {
