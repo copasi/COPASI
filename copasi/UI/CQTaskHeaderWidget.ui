@@ -1,0 +1,78 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>CQTaskHeaderWidget</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>CQTaskHeaderWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>290</width>
+            <height>46</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>CQTaskHeaderWidget</string>
+    </property>
+    <hbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>mpLblName</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>200</width>
+                    <height>0</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>&lt;h2&gt;Task&lt;/h2&gt;</string>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>mpSpacer</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>50</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>mpBoxExecutable</cstring>
+            </property>
+            <property name="text">
+                <string>executable</string>
+            </property>
+        </widget>
+    </hbox>
+</widget>
+<includes>
+    <include location="global" impldecl="in declaration">string</include>
+</includes>
+<forwards>
+    <forward>class CCopasiTask;</forward>
+</forwards>
+<functions>
+    <function specifier="non virtual" returnType="bool">setTaskName(const std::string &amp; name)</function>
+    <function specifier="non virtual" returnType="bool">saveExecutable(CCopasiTask * pTask)</function>
+    <function specifier="non virtual" returnType="bool">loadExecutable(const CCopasiTask * pTask)</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
