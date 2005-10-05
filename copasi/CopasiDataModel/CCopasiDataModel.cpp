@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 19:00:03 $
+   $Date: 2005/10/05 16:26:52 $
    End CVS Header */
 
 #include "copasi.h"
@@ -13,26 +13,26 @@
 #include "commandline/COptions.h"
 #include "function/CFunctionDB.h"
 #include "model/CModel.h"
-#include "utilities/CCopasiVector.h"
-#include "utilities/CCopasiTask.h"
-#include "utilities/CCopasiProblem.h"
-#include "utilities/CDirEntry.h"
+#include "optimization/COptTask.h"
+#include "parameterFitting/CFitTask.h"
+#include "plot/COutputDefinitionVector.h"
+#include "report/CKeyFactory.h"
+#include "report/CReportDefinitionVector.h"
+#include "sbml/SBMLExporter.h"
+#include "sbml/SBMLImporter.h"
+#include "scan/CScanTask.h"
+#include "steadystate/CMCAMethod.h"
+#include "steadystate/CMCATask.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
-#include "scan/CScanTask.h"
-#include "optimization/COptTask.h"
-#include "steadystate/CMCATask.h"
-#include "steadystate/CMCAMethod.h"
 #include "tss/CTSSTask.h"
-#include "report/CReportDefinitionVector.h"
-#include "report/CKeyFactory.h" 
-//#include "plot/CPlotSpecification.h"
-#include "plot/COutputDefinitionVector.h"
-#include "xml/CCopasiXML.h"
-#include "sbml/SBMLImporter.h"
-#include "sbml/SBMLExporter.h"
 #include "tss/MMASCIIExporter.h"
 #include "utilities/CCopasiException.h"
+#include "utilities/CCopasiProblem.h"
+#include "utilities/CCopasiTask.h"
+#include "utilities/CCopasiVector.h"
+#include "utilities/CDirEntry.h"
+#include "xml/CCopasiXML.h"
 
 CDataModelRenameHandler::CDataModelRenameHandler(CCopasiDataModel* dm)
     : mpDataModel(dm)
@@ -473,8 +473,7 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
       break;
 
     case CCopasiTask::parameterFitting:
-      // :TODO: implement task for parameter fitting
-      return pTask;
+      pTask = new CFitTask(taskType, mpTaskList);
       break;
 
     case CCopasiTask::mca:

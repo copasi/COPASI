@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.181 $
+   $Revision: 1.182 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:51 $
+   $Date: 2005/10/05 16:26:53 $
    End CVS Header */
 
 /****************************************************************************
@@ -60,7 +60,7 @@
 #include "mathmodel/CMathModel.h"
 #include "listviews.h"
 #include "qtUtilities.h"
-#include "ParamFittingWidget.h"
+#include "CQFittingWidget.h"
 #include "CMCAWidget.h"
 #include "CMCAResultWidget.h"
 #include "CQReportDefinition.h"
@@ -367,7 +367,7 @@ void ListViews::ConstructNodeWidgets()
   if (!optimizationWidget) optimizationWidget = new OptimizationWidget(this);
   optimizationWidget->hide();
 
-  if (!paramFittingWidget) paramFittingWidget = new ParamFittingWidget(this);
+  if (!paramFittingWidget) paramFittingWidget = new CQFittingWidget(this);
   paramFittingWidget->hide();
 
   if (!plotWidget) plotWidget = new PlotWidget(this);

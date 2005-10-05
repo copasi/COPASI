@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.97 $
+   $Revision: 1.98 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/22 14:49:28 $
+   $Author: shoops $ 
+   $Date: 2005/10/05 16:26:53 $
    End CVS Header */
 
 /****************************************************************************
@@ -59,7 +59,7 @@ class PlotWidget1;
 class PlotWidget;
 class CopasiDefaultWidget;
 class TimeSeriesWidget;
-class ParamFittingWidget;
+class CQFittingWidget;
 class CMCAWidget;
 class CMCAResultWidget;
 class CQReportDefinition;
@@ -167,7 +167,7 @@ class ListViews : public QSplitter
     MoietyWidget *moietyWidget;
     MoietyWidget1 *moietyWidget1;
     OptimizationWidget *optimizationWidget;
-    ParamFittingWidget *paramFittingWidget;
+    CQFittingWidget *paramFittingWidget;
     ParametersWidget *parametersWidget;
     PlotWidget *plotWidget;
     PlotWidget1 *plotWidget1;

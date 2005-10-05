@@ -146,6 +146,10 @@ SOURCE=.\CQFileDialogBtnGrp.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQFittingWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQProgressDialog.cpp
 # End Source File
 # Begin Source File
@@ -167,6 +171,14 @@ SOURCE=.\CQReportDefinition.cpp
 # Begin Source File
 
 SOURCE=.\CQReportListItem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQTaskBtnWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQTaskHeaderWidget.cpp
 # End Source File
 # Begin Source File
 
@@ -418,6 +430,10 @@ SOURCE=.\TableDefinition1.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\TaskWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\TimeSeriesSubwidget.cpp
 # End Source File
 # Begin Source File
@@ -538,6 +554,14 @@ SOURCE=.\CQFileDialogBtnGrp.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQFittingWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQFittingWidget.ui.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQProgressDialog.h
 # End Source File
 # Begin Source File
@@ -579,6 +603,18 @@ SOURCE=.\CQReportDefinition.ui.h
 # Begin Source File
 
 SOURCE=.\CQReportListItem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQTaskBtnWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQTaskHeaderWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQTaskHeaderWidget.ui.h
 # End Source File
 # Begin Source File
 
@@ -886,6 +922,10 @@ SOURCE=.\TableDefinition1.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\TaskWidget.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\TimeSeriesSubwidget.h
 # End Source File
 # Begin Source File
@@ -948,6 +988,14 @@ SOURCE=.\CQProgressItemText.ui
 # Begin Source File
 
 SOURCE=.\CQReportDefinition.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQTaskBtnWidget.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQTaskHeaderWidget.ui
 # End Source File
 # Begin Source File
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.111 $
+   $Revision: 1.112 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:26:17 $
+   $Date: 2005/10/05 16:26:52 $
    End CVS Header */
 
 /**
@@ -34,6 +34,7 @@
 #include "steadystate/CMCATask.h"
 #include "scan/CScanTask.h"
 #include "optimization/COptTask.h"
+#include "parameterFitting/CFitTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
@@ -4032,6 +4033,9 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           break;
         case CCopasiTask::optimization:
           mCommon.pCurrentTask = new COptTask(Type, mCommon.pTaskList);
+          break;
+        case CCopasiTask::parameterFitting:
+          mCommon.pCurrentTask = new CFitTask(Type, mCommon.pTaskList);
           break;
         default:
           mParser.pushElementHandler(&mParser.mUnknownElement);

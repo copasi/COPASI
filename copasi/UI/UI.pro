@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.104 $ $Author: ssahle $ $Date: 2005/10/05 13:53:12 $  
+# $Revision: 1.105 $ $Author: shoops $ $Date: 2005/10/05 16:26:53 $  
 ######################################################################
 
 TEMPLATE = app
@@ -14,6 +14,7 @@ COPASI_LIBS = \
          copasiDM \
          copasiXML \
          elementaryFluxModes \
+         fitting \
          function \
          mathmodel \
          mml \
@@ -287,11 +288,16 @@ SOURCES += \
 # FORMS += CQReportDefinition.ui
 # FORMS += CQTextDialog.ui
 # FORMS += CQFileDialogBtnGrp.ui
+FORMS += CQFittingWidget.ui
+FORMS += CQTaskHeaderWidget.ui
+FORMS += CQTaskBtnWidget.ui
 
 # headers generated from .ui files   
 HEADERS += \
            CMCAResultSubwidget.h \
            CQFileDialogBtnGrp.h \
+           CQFittingWidget.h \
+           CQFittingWidget.ui.h \
            CQProgressItem.h \
            CQProgressItem.ui.h \
            CQProgressItemBar.ui.h \
@@ -302,6 +308,9 @@ HEADERS += \
            CQProgressDialog.ui.h \
            CQReportDefinition.h \
            CQReportDefinition.ui.h \
+           CQTaskBtnWidget.h \
+           CQTaskHeaderWidget.h \
+           CQTaskHeaderWidget.ui.h \
            CQTextDialog.h \
            CQTextDialog.ui.h \
            CUpDownSubwidget.h \
@@ -320,11 +329,14 @@ HEADERS += \
 SOURCES += \
            CMCAResultSubwidget.cpp \
            CQFileDialogBtnGrp.cpp \
+           CQFittingWidget.cpp \
            CQProgressItem.cpp \
            CQProgressItemBar.cpp \
            CQProgressItemText.cpp \
            CQProgressDialog.cpp \
            CQReportDefinition.cpp \
+           CQTaskBtnWidget.cpp \
+           CQTaskHeaderWidget.cpp \
            CQTextDialog.cpp \
            CUpDownSubwidget.cpp \
            CScanWidgetBreak.cpp \
