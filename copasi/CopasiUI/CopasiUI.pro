@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.103 $ $Author: shoops $ $Date: 2005/09/01 17:02:40 $  
+# $Revision: 1.104 $ $Author: ssahle $ $Date: 2005/10/05 13:53:12 $  
 ######################################################################
 
 TEMPLATE = app
@@ -183,6 +183,7 @@ HEADERS += \
            SteadyStateWidget.h \
            TableDefinition.h \
            TableDefinition1.h \
+           TaskWidget.h \
            TimeSeriesWidget.h \
            TrajectoryWidget.h \
            Tree.h \
@@ -260,6 +261,7 @@ SOURCES += \
            SteadyStateWidget.cpp \
            TableDefinition.cpp \
            TableDefinition1.cpp \
+           TaskWidget.cpp \
            TimeSeriesWidget.cpp \
            TrajectoryWidget.cpp \
            Tree.cpp \
