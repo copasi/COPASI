@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/03 16:37:42 $
+   $Author: ssahle $ 
+   $Date: 2005/10/05 13:47:33 $
    End CVS Header */
 
 #include <qcheckbox.h>
@@ -17,15 +17,18 @@
 #include <qwhatsthis.h>
 #include <qvalidator.h>
 #include <qhbox.h>
-#include <qmessagebox.h> 
-//#include <qapplication.h>
+#include <qmessagebox.h>
+#include <qapplication.h>
 
 #include "TaskWidget.h"
 #include "qtUtilities.h"
 
 #include "listviews.h"
 #include "DataModelGUI.h"
+#include "utilities/CCopasiTask.h"
+#include "utilities/CCopasiMethod.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "model/CModel.h"
 #include "report/CKeyFactory.h"
 #include "MyLineEdit.h"
 #include "utilities/CCopasiException.h"
@@ -168,6 +171,8 @@ void TaskWidget::outputDefinitionClicked()
   if (pDlg)delete pDlg;
 }
 
+//************  executable button *******************
+
 bool TaskWidget::loadExecutable()
 {
   CCopasiTask* mpTask =
@@ -186,6 +191,139 @@ bool TaskWidget::saveExecutable()
 
   bool bScheduled = bExecutable->isChecked();
   mpTask->setScheduled(bScheduled);
+  return true;
+}
+
+//************* parameter table ***********************
+
+bool TaskWidget::constructMethodParameterTable()
+{
+  parameterTable = new QTable(this, "parameterTable");
+  if (!parameterTable) return false;
+
+  parameterTable->setNumRows(0);
+  parameterTable->setNumCols(1);
+  parameterTable->setColumnStretchable(0, true);
+  QHeader *colHeader = parameterTable->horizontalHeader();
+  colHeader->setLabel(0, tr("Value"));
+  parameterTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+  return true;
+}
+
+bool TaskWidget::loadMethodParameters()
+{
+  CCopasiTask* task =
+    dynamic_cast<CCopasiTask *>(GlobalKeys.get(objKey));
+  if (!task) return false;
+
+  CCopasiMethod* method = task->getMethod();
+  if (!method) return false;
+
+  QTableItem * pItem;
+  QString value;
+  QString strname;
+
+  parameterTable->setNumRows(method->size());
+  QHeader *rowHeader = parameterTable->verticalHeader();
+
+  unsigned C_INT32 i;
+  CCopasiParameter::Type Type;
+  for (i = 0; i < method->size(); i++)
+    {
+      strname = FROM_UTF8(method->getName(i));
+      rowHeader->setLabel(i, strname);
+
+      value = getParameterValue(method, i, &Type);
+      pItem = new QTableItem (parameterTable, QTableItem::Always, value);
+      parameterTable->setItem(i, 0, pItem);
+    }
+  return true;
+}
+
+bool TaskWidget::saveMethodParameters()
+{
+  CCopasiTask* task =
+    dynamic_cast<CCopasiTask *>(GlobalKeys.get(objKey));
+  if (!task) return false;
+
+  CCopasiMethod* method = task->getMethod();
+  if (!method) return false;
+
+  unsigned C_INT32 i;
+  QTableItem * pItem;
+  QString value;
+
+  for (i = 0; i < method->size(); i++)
+    {
+      pItem = parameterTable->item(i, 0);
+      value = pItem->text();
+      setParameterValue(method, i, value);
+    }
+  return true;
+}
+
+bool TaskWidget::addMethodParameterTableToLayout(unsigned int row, unsigned int maxcol)
+{
+  methodParLabel = new QLabel(this, "methodParLabel");
+  methodParLabel->setText(tr("Method parameters"));
+  methodParLabel->setAlignment(int(QLabel::AlignVCenter
+                                   | QLabel::AlignRight));
+  methodParLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+  TaskWidgetLayout->addWidget(methodParLabel, row, 0);
+
+  if (!constructMethodParameterTable()) return false;
+  TaskWidgetLayout->addMultiCellWidget(parameterTable, row, row + 1, 1, maxcol);
+
+  QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Preferred);
+  TaskWidgetLayout->addItem(spacer, row + 1, 0);
+
+  return true;
+}
+
+//*********************************************************************
+
+bool TaskWidget::commonBeforeRunTask()
+{
+  // save the state of the widget
+  if (!saveTask())
+    {
+      QMessageBox::warning(this, "Simulation Error",
+                           CCopasiMessage::getAllMessageText().c_str(),
+                           QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+      return false;
+    }
+
+  CCopasiTask* task = dynamic_cast< CCopasiTask * >(GlobalKeys.get(objKey));
+  if (!task) return false;
+
+  //set mouse cursor
+  setCursor(Qt::WaitCursor);
+
+  //handle autosave feature
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
+
+  //create progress bar
+  mProgressBar = new CProgressBar();
+  task->setCallBack(mProgressBar);
+
+  return true;
+}
+
+bool TaskWidget::commonAfterRunTask()
+{
+  CCopasiTask* task = dynamic_cast< CCopasiTask * >(GlobalKeys.get(objKey));
+  if (!task) return false;
+
+  if (mProgressBar)
+  {mProgressBar->finish(); pdelete(mProgressBar);}
+  task->setCallBack(NULL);
+
+  protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
+  unsetCursor();
+  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
+
   return true;
 }
 

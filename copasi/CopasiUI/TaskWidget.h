@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TaskWidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/03 16:37:42 $
+   $Author: ssahle $ 
+   $Date: 2005/10/05 13:47:33 $
    End CVS Header */
 
 #ifndef TASKWIDGET_H
@@ -25,6 +25,7 @@ class QLineEdit;
 class QPushButton;
 class QTable;
 //class CModel;
+class CProgressBar;
 
 class TaskWidget : public CopasiWidget
   {
@@ -49,6 +50,7 @@ class TaskWidget : public CopasiWidget
 
   protected:
     std::string objKey;
+    CProgressBar * mProgressBar;
 
     virtual bool loadTask() = 0;
     virtual bool saveTask() = 0;
@@ -58,11 +60,23 @@ class TaskWidget : public CopasiWidget
     bool loadExecutable();
     bool saveExecutable();
 
-    //void loadMethodParameters();
+    //these methods should be called by the constructor, loadTask(), or saveTask() methods
+    //of the derived classes. They handle the method parameters table
+    bool constructMethodParameterTable();
+    bool loadMethodParameters();
+    bool saveMethodParameters();
+    //add label and table to the layout, using standard copasi design
+    bool addMethodParameterTableToLayout(unsigned int row, unsigned int maxcol);
+
+    //this method should be called at the beginning or the end of the runTask() method
+    //of the derived classes, respectively
+    bool commonBeforeRunTask();
+    bool commonAfterRunTask();
 
     QFrame* lineButton;
     QFrame* tmpLine;
-    //QTable* parameterTable;
+    QTable* parameterTable;
+    QLabel* methodParLabel;
 
     QVBoxLayout* mainLayout;
     QGridLayout* TaskWidgetLayout;
