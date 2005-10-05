@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/05 13:41:09 $
+   $Author: shoops $ 
+   $Date: 2005/10/05 16:25:14 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -21,20 +21,21 @@
 #include <qwhatsthis.h>
 #include <qmessagebox.h>
 
-#include "DataModelGUI.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "qtUtilities.h"
-
 #include "TSSWidget.h"
+#include "DataModelGUI.h"
+#include "qtUtilities.h"
+#include "listviews.h"
+#include "CProgressBar.h"
+#include "copasiui3window.h"
+#include "CQTaskBtnWidget.h"
+#include "CQTaskHeaderWidget.h"
+
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "tss/CTSSTask.h"
 #include "tss/CTSSProblem.h"
 #include "model/CModel.h"
-#include "listviews.h"
 #include "utilities/CCopasiException.h"
 #include "report/CKeyFactory.h"
-#include "CProgressBar.h"
-#include "copasiui3window.h"
-#include "qmessagebox.h"
 
 /**
  *  Constructs a TSSWidget which is a child of 'parent', with the 
@@ -47,24 +48,36 @@ TSSWidget::TSSWidget(QWidget* parent, const char* name, WFlags fl)
     setName("TSSWidget");
   setCaption(trUtf8("TSSWidget"));
 
-  //********** name ********************
-  taskNameLabel->setText(trUtf8("<h2>Time scale separation</h2>"));
-  //taskNameLabel->setAlignment(int(QLabel::AlignVCenter
-  //                                | QLabel::AlignRight));
-  TaskWidgetLayout->addMultiCellLayout(nameLayout, 0, 0, 1, 2);
+  setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, sizePolicy().hasHeightForWidth()));
+  setMinimumSize(QSize(0, 0));
+  TSSWidgetLayout = new QVBoxLayout(this, 11, 6, "TSSWidgetLayout");
 
-  tmpLine = new QFrame(this, "line");
-  tmpLine->setFrameShape(QFrame::HLine);
-  //line8_2->setFrameShadow(QFrame::Sunken);
-  TaskWidgetLayout->addMultiCellWidget(tmpLine, 1, 1, 0, 2);
+  mpGridLayout = new QGridLayout(0, 1, 1, 0, 6, "mpGridLayout");
 
-  addMethodParameterTableToLayout(2, 2);
+  mpTblParameter = new QTable(this, "mpTblParameter");
+  mpTblParameter->setNumCols(mpTblParameter->numCols() + 1);
+  mpTblParameter->horizontalHeader()->setLabel(mpTblParameter->numCols() - 1, tr("Value"));
+  mpTblParameter->setNumRows(mpTblParameter->numRows() + 1);
+  mpTblParameter->verticalHeader()->setLabel(mpTblParameter->numRows() - 1, tr("Name"));
+  mpTblParameter->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)0, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
+  mpTblParameter->setMinimumSize(QSize(0, 110));
+  mpTblParameter->setNumRows(1);
+  mpTblParameter->setNumCols(1);
 
-  // signals and slots connections
-  //connect(taskJacobian, SIGNAL(toggled(bool)), this, SLOT(taskJacobianToggled()));
+  mpGridLayout->addWidget(mpTblParameter, 1, 1);
 
-  // tab order
-  //setTabOrder(ExportFileButton, reportDefinitionButton);
+  mpLblParameter = new QLabel(this, "mpLblParameter");
+  mpLblParameter->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpLblParameter->sizePolicy().hasHeightForWidth()));
+  mpLblParameter->setMinimumSize(QSize(0, 0));
+  mpLblParameter->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
+
+  mpGridLayout->addWidget(mpLblParameter, 1, 0);
+  TSSWidgetLayout->addLayout(mpGridLayout);
+
+  mpHeaderWidget->setTaskName("Time Scale Separation");
+
+  TSSWidgetLayout->insertWidget(0, mpHeaderWidget);
+  TSSWidgetLayout->addWidget(mpBtnWidget);
 }
 
 /*
@@ -76,10 +89,10 @@ TSSWidget::~TSSWidget()
 bool TSSWidget::saveTask()
 {
   saveExecutable();
-  saveMethodParameters();
+  saveMethodParameters(mpTblParameter);
 
   CTSSTask* tssTask =
-    dynamic_cast<CTSSTask *>(GlobalKeys.get(objKey));
+    dynamic_cast<CTSSTask *>(GlobalKeys.get(mObjectKey));
   assert(tssTask);
 
   CTSSProblem* problem =
@@ -103,7 +116,7 @@ bool TSSWidget::runTask()
 
   /*
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
+    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(mObjectKey));
   assert(mSteadyStateTask);
 
   mSteadyStateTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
@@ -152,10 +165,10 @@ bool TSSWidget::runTask()
 bool TSSWidget::loadTask()
 {
   loadExecutable();
-  loadMethodParameters();
+  loadMethodParameters(mpTblParameter);
 
   CTSSTask* tssTask =
-    dynamic_cast<CTSSTask *>(GlobalKeys.get(objKey));
+    dynamic_cast<CTSSTask *>(GlobalKeys.get(mObjectKey));
   assert(tssTask);
 
   CTSSProblem* problem =
