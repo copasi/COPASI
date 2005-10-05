@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.12 $ $Author: shoops $ $Date: 2005/09/01 01:47:33 $  
+# $Revision: 1.13 $ $Author: ssahle $ $Date: 2005/10/05 14:06:54 $  
 ######################################################################
 
 LIB = model
@@ -19,7 +19,7 @@ HEADERS += CChemEq.h \
            CModel.h \
            CModelValue.h \
            CMoiety.h \
-           #CParticleNumberList.h \
+           CObjectLists.h \
            CReaction.h \
            CReactionInterface.h \
            CScanInputFlexLexer.h \
@@ -39,7 +39,7 @@ SOURCES += CChemEq.cpp \
            CModel.cpp \
            CModelValue.cpp \
            CMoiety.cpp \
-           #CParticleNumberList.cpp \
+           CObjectLists.cpp \
            CReaction.cpp \
            CReactionInterface.cpp \
            CScanInputFlexLexer.cpp \
