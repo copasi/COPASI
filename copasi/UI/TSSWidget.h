@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/05 16:25:14 $
+   $Author: ssahle $ 
+   $Date: 2005/10/06 15:14:24 $
    End CVS Header */
 
 #ifndef TSSWIDGET_H
@@ -66,8 +66,8 @@ class TSSWidget : public TaskWidget
     //virtual void ReportDefinitionClicked();
 
   protected:
-    QVBoxLayout* TSSWidgetLayout;
-    QGridLayout* mpGridLayout;
+    QGridLayout* TSSWidgetLayout;
+    //QGridLayout* mpGridLayout;
     QTable* mpTblParameter;
     QLabel* mpLblParameter;
   };

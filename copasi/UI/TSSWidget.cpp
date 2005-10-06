@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/05 16:25:14 $
+   $Author: ssahle $ 
+   $Date: 2005/10/06 15:14:24 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -48,36 +48,48 @@ TSSWidget::TSSWidget(QWidget* parent, const char* name, WFlags fl)
     setName("TSSWidget");
   setCaption(trUtf8("TSSWidget"));
 
-  setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, sizePolicy().hasHeightForWidth()));
-  setMinimumSize(QSize(0, 0));
-  TSSWidgetLayout = new QVBoxLayout(this, 11, 6, "TSSWidgetLayout");
+  //setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, sizePolicy().hasHeightForWidth()));
+  //setMinimumSize(QSize(0, 0));
+  TSSWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "TSSWidgetLayout");
 
-  mpGridLayout = new QGridLayout(0, 1, 1, 0, 6, "mpGridLayout");
+  mpHeaderWidget->setTaskName("Time Scale Separation");
+  TSSWidgetLayout->addWidget(mpHeaderWidget, 0, 1);
+
+  addHLineToGridLayout(TSSWidgetLayout, 1, 1);
+
+  //mpGridLayout = new QGridLayout(0, 1, 1, 0, 6, "mpGridLayout");
 
   mpTblParameter = new QTable(this, "mpTblParameter");
   mpTblParameter->setNumCols(mpTblParameter->numCols() + 1);
   mpTblParameter->horizontalHeader()->setLabel(mpTblParameter->numCols() - 1, tr("Value"));
   mpTblParameter->setNumRows(mpTblParameter->numRows() + 1);
+
   mpTblParameter->verticalHeader()->setLabel(mpTblParameter->numRows() - 1, tr("Name"));
-  mpTblParameter->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)0, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
+  mpTblParameter->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)0, 0, 0,
+                                mpTblParameter->sizePolicy().hasHeightForWidth()));
+
   mpTblParameter->setMinimumSize(QSize(0, 110));
   mpTblParameter->setNumRows(1);
   mpTblParameter->setNumCols(1);
 
-  mpGridLayout->addWidget(mpTblParameter, 1, 1);
+  addMethodParameterTableToGridLayout(mpTblParameter, TSSWidgetLayout, 2, 1);
 
-  mpLblParameter = new QLabel(this, "mpLblParameter");
-  mpLblParameter->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpLblParameter->sizePolicy().hasHeightForWidth()));
-  mpLblParameter->setMinimumSize(QSize(0, 0));
-  mpLblParameter->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
+  QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  TSSWidgetLayout->addMultiCell(spacer, 4, 4, 0, 1);
 
-  mpGridLayout->addWidget(mpLblParameter, 1, 0);
-  TSSWidgetLayout->addLayout(mpGridLayout);
+  //TSSWidgetLayout->addWidget(mpTblParameter, 1, 1);
 
-  mpHeaderWidget->setTaskName("Time Scale Separation");
+  //mpLblParameter = new QLabel(this, "mpLblParameter");
+  //mpLblParameter->setText("Method parameters");
+  //mpLblParameter->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+  //mpLblParameter->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, //mpLblParameter->sizePolicy().hasHeightForWidth()));
+  //mpLblParameter->setMinimumSize(QSize(0, 0));
+  //mpLblParameter->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
 
-  TSSWidgetLayout->insertWidget(0, mpHeaderWidget);
-  TSSWidgetLayout->addWidget(mpBtnWidget);
+  //TSSWidgetLayout->addWidget(mpLblParameter, 1, 0);
+  //TSSWidgetLayout->addLayout(mpGridLayout);
+
+  TSSWidgetLayout->addMultiCellWidget(mpBtnWidget, 5, 5, 0, 1);
 }
 
 /*

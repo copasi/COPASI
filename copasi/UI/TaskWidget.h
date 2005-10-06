@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/05 16:24:51 $
+   $Author: ssahle $ 
+   $Date: 2005/10/06 15:14:24 $
    End CVS Header */
 
 #ifndef TASKWIDGET_H
@@ -82,6 +82,10 @@ class TaskWidget : public CopasiWidget
     bool saveMethodParameters(QTable * pParameterTable);
 
     //add label and table to the layout, using standard copasi design
+    bool addMethodParameterTableToGridLayout(QTable * pParameterTable,
+        QGridLayout* grid, unsigned int row, unsigned int maxcol);
+
+    bool addHLineToGridLayout(QGridLayout* grid, unsigned int row, unsigned int maxcol);
 
     //this method should be called at the beginning or the end of the runTask() method
     //of the derived classes, respectively

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/05 16:24:51 $
+   $Author: ssahle $ 
+   $Date: 2005/10/06 15:14:24 $
    End CVS Header */
 
 #include <qcheckbox.h>
@@ -197,25 +197,32 @@ bool TaskWidget::saveMethodParameters(QTable * pParameterTable)
   return true;
 }
 
-#ifdef XXXX
-bool TaskWidget::addMethodpParameterTableToLayout(unsigned int row, unsigned int maxcol)
+bool TaskWidget::addMethodParameterTableToGridLayout(QTable * pParameterTable,
+    QGridLayout* grid, unsigned int row, unsigned int maxcol)
 {
-  methodParLabel = new QLabel(this, "methodParLabel");
+  QLabel *methodParLabel = new QLabel(this, "methodParLabel");
   methodParLabel->setText(tr("Method parameters"));
   methodParLabel->setAlignment(int(QLabel::AlignVCenter
                                    | QLabel::AlignRight));
   methodParLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-  TaskWidgetLayout->addWidget(methodParLabel, row, 0);
+  grid->addWidget(methodParLabel, row, 0);
 
-  if (!constructMethodpParameterTable()) return false;
-  TaskWidgetLayout->addMultiCellWidget(pParameterTable, row, row + 1, 1, maxcol);
+  //if (!constructMethodpParameterTable()) return false;
+  grid->addMultiCellWidget(pParameterTable, row, row + 1, 1, maxcol);
 
   QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Preferred);
-  TaskWidgetLayout->addItem(spacer, row + 1, 0);
+  grid->addItem(spacer, row + 1, 0);
 
   return true;
 }
-#endif // XXXX
+
+bool TaskWidget::addHLineToGridLayout(QGridLayout* grid, unsigned int row, unsigned int maxcol)
+{
+  QFrame * line = new QFrame(this, "line");
+  line->setFrameShape(QFrame::HLine);
+  line->setFrameShadow(QFrame::Sunken);
+  grid->addMultiCellWidget(line, row, row, 0, maxcol);
+}
 
 //*********************************************************************
 
