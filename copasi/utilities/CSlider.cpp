@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/15 13:37:08 $
+   $Date: 2005/10/06 20:10:09 $
    End CVS Header */
 
 #include "copasi.h"
@@ -108,6 +108,7 @@ bool CSlider::setSliderObject(CCopasiObject * pObject)
     }
   if (this->mSync) this->sync();
   C_FLOAT64 value = this->getSliderValue();
+  this->mOriginalValue = value;
   if (this->mMinValue > value)
     {
       this->mMinValue = value;
@@ -117,6 +118,11 @@ bool CSlider::setSliderObject(CCopasiObject * pObject)
       this->mMaxValue = value;
     }
   return true;
+}
+
+void CSlider::resetValue()
+{
+  this->setSliderValue(this->mOriginalValue);
 }
 
 void CSlider::resetRange()
@@ -150,6 +156,28 @@ bool CSlider::setSliderType(const CSlider::Type type)
 
 const CSlider::Type CSlider::getSliderType() const
   {return mSliderType;}
+
+bool CSlider::setOriginalValue(const C_FLOAT64 value)
+{
+  if (mSliderType != Undefined)
+    {
+      mOriginalValue = value;
+      if (mOriginalValue < this->mMinValue)
+        {
+          mOriginalValue = this->mMinValue;
+        }
+      if (mOriginalValue > this->mMaxValue)
+        {
+          mOriginalValue = this->mMaxValue;
+        }
+
+      return true;
+    }
+  else
+    {
+      return false;
+    }
+}
 
 bool CSlider::setSliderValue(const C_FLOAT64 value,
                              const bool & writeToObject)
@@ -205,6 +233,11 @@ void CSlider::writeToObject()
 
   return;
 }
+
+const C_FLOAT64 CSlider::getOriginalValue() const
+  {
+    return this->mOriginalValue;
+  }
 
 const C_FLOAT64 CSlider::getSliderValue() const
   {

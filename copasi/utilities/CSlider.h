@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/13 11:35:10 $
+   $Author: gauges $ 
+   $Date: 2005/10/06 20:10:09 $
    End CVS Header */
 
 #ifndef COPASI_CSlider
@@ -125,6 +125,20 @@ class CSlider : public CCopasiContainer
     const CSlider::Type getSliderType() const;
 
     /**
+     * Set the sliders original value.
+     * @param const C_FLOAT64 Value
+     * @param const bool & writeToObject (Default: true)
+     * @return bool succes
+     */
+    bool setOriginalValue(const C_FLOAT64 value);
+
+    /**
+     * Retrieve the original slider Value.
+     * @return const C_FLOAT64 Value
+     */
+    const C_FLOAT64 getOriginalValue() const;
+
+    /**
      * Set the slider value.
      * @param const C_FLOAT64 Value
      * @param const bool & writeToObject (Default: true)
@@ -132,6 +146,12 @@ class CSlider : public CCopasiContainer
      */
     bool setSliderValue(const C_FLOAT64 value,
                         const bool & writeToObject = true);
+
+    /**
+     * Sets the value of the slider back to it's original
+     * value.
+     */
+    void CSlider::resetValue();
 
     /**
      * Retrieve the slider Value.
@@ -267,6 +287,11 @@ class CSlider : public CCopasiContainer
      * The value of the slider-
      */
     C_FLOAT64 mValue;
+
+    /**
+     * The original value of the slider-
+     */
+    C_FLOAT64 mOriginalValue;
 
     /**
      * The minimun value of the slider
