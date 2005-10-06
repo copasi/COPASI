@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/15 18:45:24 $
+   $Date: 2005/10/06 14:34:38 $
    End CVS Header */
 
 /**
@@ -49,6 +49,11 @@ const char* CCopasiTask::XMLType[] =
     "metabolicControlAnalysis",
     "timeScaleSeparation",
     NULL
+  };
+
+const unsigned C_INT32 CCopasiTask::TaskValidMethods[] =
+  {
+    CCopasiMethod::unset
   };
 
 //static
@@ -207,6 +212,9 @@ bool CCopasiTask::restore()
 
   return true;
 }
+
+const unsigned C_INT32 * CCopasiTask::validMethods() const
+  {return TaskValidMethods;}
 
 CCopasiProblem * CCopasiTask::getProblem() {return mpProblem;}
 
