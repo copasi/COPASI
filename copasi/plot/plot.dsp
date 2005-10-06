@@ -67,10 +67,6 @@ SOURCE=.\CPlotItem.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\CPlotSpec.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\CPlotSpec2Vector.cpp
 # End Source File
 # Begin Source File
