@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/03/23 18:58:37 $
+   $Date: 2005/10/06 20:12:40 $
    End CVS Header */
 
 #ifndef CopasiSlider_H__
@@ -39,14 +39,17 @@ class CopasiSlider: public QHBox
     void setNumMinorTicks(unsigned C_INT32 numMinorTicks);
     void setMinValue(C_FLOAT64 value);
     void setMaxValue(C_FLOAT64 value);
+    void setOriginalValue(C_FLOAT64 value);
     C_FLOAT64 minValue() const;
     C_FLOAT64 maxValue() const;
+    C_FLOAT64 originalValue() const;
     void updateValue(bool modifyRange);
     CCopasiObject* object() const;
     void setObject(CCopasiObject* object);
     CSlider* getCSlider() const;
     void updateLabel();
     void updateSliderData();
+    void resetValue();
 
   public slots:
     void sliderValueChanged(int value);

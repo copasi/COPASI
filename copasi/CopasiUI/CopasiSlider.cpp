@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiSlider.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/15 14:10:33 $
+   $Date: 2005/10/06 20:12:40 $
    End CVS Header */
 
 #include <math.h>
@@ -304,4 +304,19 @@ int CopasiSlider::calculatePositionFromValue(C_FLOAT64 value)
       position = 0;
     }
   return position;
+}
+
+void CopasiSlider::resetValue()
+{
+  this->setValue(this->originalValue());
+}
+
+C_FLOAT64 CopasiSlider::originalValue() const
+  {
+    return this->mpCSlider->getOriginalValue();
+  }
+
+void CopasiSlider::setOriginalValue(C_FLOAT64 value)
+{
+  this->mpCSlider->setOriginalValue(value);
 }
