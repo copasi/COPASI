@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 19:19:18 $
+   $Date: 2005/10/06 20:31:36 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -28,6 +28,7 @@ bool CQFittingWidget::saveTask()
   // :TODO: implement me!
   if (mpChanged) CCopasiDataModel::Global->changed();
 
+  mpChanged = false;
   return true;
 }
 
