@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 20:31:36 $
+   $Date: 2005/10/06 20:35:05 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -22,7 +22,7 @@ bool CQFittingWidget::saveTask()
     dynamic_cast< CFitTask * >(GlobalKeys.get(mObjectKey));
   if (!pTask) return false;
 
-  saveExecutable();
+  saveCommon();
   saveMethod();
 
   // :TODO: implement me!
@@ -38,7 +38,7 @@ bool CQFittingWidget::loadTask()
     dynamic_cast< CFitTask * >(GlobalKeys.get(mObjectKey));
   if (!pTask) return false;
 
-  loadExecutable();
+  loadCommon();
   loadMethod();
 
   // :TODO: implement me!

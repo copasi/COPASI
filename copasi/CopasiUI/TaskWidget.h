@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TaskWidget.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 19:19:18 $
+   $Date: 2005/10/06 20:35:05 $
    End CVS Header */
 
 #ifndef TASKWIDGET_H
@@ -80,8 +80,8 @@ class TaskWidget : public CopasiWidget
 
     //these methods should be called by the loadTask() or saveTask() methods
     //of the derived classes. They handle the "executable" checkbox
-    bool loadExecutable();
-    bool saveExecutable();
+    bool loadCommon();
+    bool saveCommon();
 
     //these methods should be called by the constructor, loadTask(), or saveTask() methods
     //of the derived classes. They handle the method parameters table

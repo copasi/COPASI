@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 19:19:18 $
+   $Date: 2005/10/06 20:35:05 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingWidget.ui'
  **
- ** Created: Thu Oct 6 15:02:54 2005
- **      by: The User Interface Compiler ($Id: CQFittingWidget.cpp,v 1.2 2005/10/06 19:19:18 shoops Exp $)
+ ** Created: Thu Oct 6 16:33:45 2005
+ **      by: The User Interface Compiler ($Id: CQFittingWidget.cpp,v 1.3 2005/10/06 20:35:05 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

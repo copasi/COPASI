@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TSSWidget.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 19:19:18 $
+   $Date: 2005/10/06 20:35:05 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -65,7 +65,7 @@ TSSWidget::~TSSWidget()
 
 bool TSSWidget::saveTask()
 {
-  saveExecutable();
+  saveCommon();
   saveMethod();
 
   CTSSTask* tssTask =
@@ -144,7 +144,7 @@ bool TSSWidget::runTask()
 
 bool TSSWidget::loadTask()
 {
-  loadExecutable();
+  loadCommon();
   loadMethod();
 
   CTSSTask* tssTask =

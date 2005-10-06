@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TaskWidget.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 19:19:18 $
+   $Date: 2005/10/06 20:35:05 $
    End CVS Header */
 
 #include <qcheckbox.h>
@@ -141,6 +141,15 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods)
 
 void TaskWidget::revertBtnClicked()
 {
+  if (!mpTask) return;
+
+  CCopasiMethod* method = mpTask->getMethod();
+  if (method != mpMethod)
+    {
+      pdelete(mpMethod);
+      mpMethod = method;
+    }
+
   loadTask();
 }
 
@@ -197,23 +206,32 @@ void TaskWidget::changeMethod(int /* index */)
 
 //************  executable button *******************
 
-bool TaskWidget::loadExecutable()
+bool TaskWidget::loadCommon()
 {
   if (!mpTask) return false;
 
   mpHeaderWidget->mpBoxExecutable->setChecked(mpTask->isScheduled());
+  mpHeaderWidget->mpUpdateModel->setChecked(mpTask->isUpdateModel());
   return true;
 }
 
-bool TaskWidget::saveExecutable()
+bool TaskWidget::saveCommon()
 {
   if (!mpTask) return false;
 
-  bool executable = mpHeaderWidget->mpBoxExecutable->isChecked();
+  bool Value = mpHeaderWidget->mpBoxExecutable->isChecked();
 
-  if (mpTask->isScheduled() != executable)
+  if (mpTask->isScheduled() != Value)
     {
-      mpTask->setScheduled(executable);
+      mpTask->setScheduled(Value);
+      mpChanged = true;
+    }
+
+  Value = mpHeaderWidget->mpUpdateModel->isChecked();
+
+  if (mpTask->isUpdateModel() != Value)
+    {
+      mpTask->setUpdateModel(Value);
       mpChanged = true;
     }
 
