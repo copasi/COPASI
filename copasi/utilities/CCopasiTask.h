@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 17:34:18 $
+   $Date: 2005/10/06 19:41:20 $
    End CVS Header */
 
 /**
@@ -65,8 +65,8 @@ class CCopasiTask : public CCopasiContainer
 
     enum OutputFlag
     {
-      NO_OUTPUT = 0,                 //do no output
-      OUTPUT,                        //do output, but do not initialize/finish
+      NO_OUTPUT = 0,                  //do no output
+      OUTPUT,                         //do output, but do not initialize/finish
       OUTPUT_COMPLETE          //do output, including initialization and closing
     };
 
@@ -176,6 +176,12 @@ class CCopasiTask : public CCopasiContainer
     bool mScheduled;
 
     /**
+     * Tells whether the task shall update the model with the result.
+     * The restore method must act accordingly.
+     */
+    bool mUpdateModel;
+
+    /**
      * The problem of the task
      */
     CCopasiProblem * mpProblem;
@@ -283,7 +289,7 @@ class CCopasiTask : public CCopasiContainer
 
     /**
      * Set whether the task is scheduled
-     * @param const bool & scheduled (default: true)
+     * @param const bool & scheduled
      */
     void setScheduled(const bool & scheduled);
 
@@ -292,6 +298,18 @@ class CCopasiTask : public CCopasiContainer
      * @return const bool & scheduled
      */
     const bool & isScheduled() const;
+
+    /**
+     * Set whether the task must update the model
+     * @param const bool & updateModel
+     */
+    void setUpdateModel(const bool & updateModel);
+
+    /**
+     * Check whether the task must update the modle
+     * @return const bool & updateModel
+     */
+    const bool & isUpdateModel() const;
 
     /**
      * Set the call back of the task

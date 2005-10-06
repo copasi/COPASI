@@ -274,6 +274,7 @@
                   <xs:attribute name="name" type="cNAME" use="required"/>
                   <xs:attribute name="type" type="cTASK_TYPE" use="required"/>
                   <xs:attribute name="scheduled" type="xs:boolean" use="optional" default="false"/>
+                  <xs:attribute name="updateModel" type="xs:boolean" use="optional" default="false"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>

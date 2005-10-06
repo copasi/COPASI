@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 17:34:18 $
+   $Date: 2005/10/06 19:41:20 $
    End CVS Header */
 
 /**
@@ -75,6 +75,7 @@ CCopasiTask::CCopasiTask(const std::string & name,
     mDescription(this),
     mResult(this),
     mScheduled(false),
+    mUpdateModel(false),
     mpProblem(NULL),
     mpMethod(NULL),
     mReport(),
@@ -95,6 +96,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
     mDescription(this),
     mResult(this),
     mScheduled(false),
+    mUpdateModel(false),
     mpProblem(NULL),
     mpMethod(NULL),
     mReport(),
@@ -114,6 +116,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
     mDescription(src.mDescription, this),
     mResult(src.mResult, this),
     mScheduled(src.mScheduled),
+    mUpdateModel(src.mUpdateModel),
     mpProblem(NULL),
     mpMethod(NULL),
     mReport(src.mReport),
@@ -147,6 +150,10 @@ const std::string & CCopasiTask::getKey() const {return mKey;}
 void CCopasiTask::setScheduled(const bool & scheduled) {mScheduled = scheduled;}
 
 const bool & CCopasiTask::isScheduled() const {return mScheduled;}
+
+void CCopasiTask::setUpdateModel(const bool & updateModel) {mUpdateModel = updateModel;}
+
+const bool & CCopasiTask::isUpdateModel() const {return mUpdateModel;}
 
 bool CCopasiTask::setCallBack(CProcessReport * pCallBack)
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.112 $
+   $Revision: 1.113 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/05 16:26:52 $
+   $Date: 2005/10/06 19:41:20 $
    End CVS Header */
 
 /**
@@ -4003,6 +4003,7 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
   const char * type;
   CCopasiTask::Type Type;
   bool Scheduled = false;
+  bool UpdateModel = false;
 
   switch (mCurrentElement)
     {
@@ -4015,6 +4016,7 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
       type = mParser.getAttributeValue("type", papszAttrs);
       Type = (CCopasiTask::Type)mParser.toEnum(type, CCopasiTask::XMLType);
       Scheduled = mParser.toBool(mParser.getAttributeValue("scheduled", papszAttrs, "false"));
+      UpdateModel = mParser.toBool(mParser.getAttributeValue("updateModel", papszAttrs, "false"));
 
       // create a new CCopasiTask element depending on the type
       switch (Type)
@@ -4049,6 +4051,7 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
       if (mCommon.pCurrentTask)
         {
           mCommon.pCurrentTask->setScheduled(Scheduled);
+          mCommon.pCurrentTask->setUpdateModel(UpdateModel);
           mCommon.pCurrentTask->getProblem()->setModel(mCommon.pModel);
         }
       if (Key && mCommon.pCurrentTask)

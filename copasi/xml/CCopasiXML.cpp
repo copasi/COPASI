@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:41:10 $
+   $Date: 2005/10/06 19:41:20 $
    End CVS Header */
 
 /**
@@ -659,6 +659,7 @@ bool CCopasiXML::saveTaskList()
       Attributes.add("name", pTask->getObjectName());
       Attributes.add("type", CCopasiTask::XMLType[pTask->getType()]);
       Attributes.add("scheduled", pTask->isScheduled() ? "true" : "false");
+      Attributes.add("updateModel", pTask->isUpdateModel() ? "true" : "false");
 
       startSaveElement("Task", Attributes);
 
