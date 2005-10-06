@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/04/05 20:45:38 $
+   $Date: 2005/10/06 20:14:08 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -95,6 +95,8 @@ class SliderDialog: public QDialog
     void sliderValueChanged();
     void sliderReleased();
     void sliderPressed();
+    void resetValue();
+    void setDefault();
   };
 
 #endif

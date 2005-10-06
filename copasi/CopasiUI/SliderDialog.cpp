@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/15 14:10:33 $
+   $Date: 2005/10/06 20:14:08 $
    End CVS Header */
 
 #include <iostream>
@@ -119,6 +119,8 @@ SliderDialog::SliderDialog(QWidget* parent): QDialog(parent),
   this->contextMenu->insertItem("Add New Slider", this, SLOT(createNewSlider()));
   this->contextMenu->insertItem("Remove Slider", this, SLOT(removeSlider()));
   this->contextMenu->insertItem("Edit Slider", this, SLOT(editSlider()));
+  this->contextMenu->insertItem("Reset Value", this, SLOT(resetValue()));
+  this->contextMenu->insertItem("Set new default value", this, SLOT(setDefault()));
 
   this->sliderMap[ -1].push_back(new QLabel("<p>There are no sliders available for this task. If you select one of the tasks that supports sliders in the copasi object tree, this dialog will become active.</p>", this->sliderBox));
 
@@ -659,4 +661,14 @@ bool SliderDialog::eventFilter(QObject*, QEvent* event)
       this->setCurrentSlider(pSlider);
     }
   return false;
+}
+
+void SliderDialog::resetValue()
+{
+  this->currSlider->resetValue();
+}
+
+void SliderDialog::setDefault()
+{
+  this->currSlider->setOriginalValue(this->currSlider->value());
 }
