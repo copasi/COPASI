@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 14:34:38 $
+   $Date: 2005/10/06 17:34:18 $
    End CVS Header */
 
 /**
@@ -58,10 +58,15 @@ class CCopasiTask : public CCopasiContainer
      */
     static const char* XMLType[];
 
+    /**
+     * The methods which can be selected for performing this task.
+     */
+    static const unsigned C_INT32 ValidMethods[];
+
     enum OutputFlag
     {
-      NO_OUTPUT = 0,                //do no output
-      OUTPUT,                       //do output, but do not initialize/finish
+      NO_OUTPUT = 0,                 //do no output
+      OUTPUT,                        //do output, but do not initialize/finish
       OUTPUT_COMPLETE          //do output, including initialization and closing
     };
 
@@ -206,12 +211,6 @@ class CCopasiTask : public CCopasiContainer
      */
     CCopasiParameterGroup * mpSliders;
 
-  private:
-    /**
-     * The methods which can be selected for performing this task.
-     */
-    static const unsigned C_INT32 TaskValidMethods[];
-
   public:
     /**
      * Default constructor
@@ -327,12 +326,6 @@ class CCopasiTask : public CCopasiContainer
      * Perform neccessary cleaup procedures
      */
     virtual bool restore();
-
-    /**
-     * The methods which can be selected for performing this task.
-     * @return const unsigned C_INT32 * validMethods
-     */
-    virtual const unsigned C_INT32 * validMethods() const;
 
     /**
      * Retrieve the problem

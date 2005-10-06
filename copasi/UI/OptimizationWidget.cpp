@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/09/19 10:03:53 $
+   $Author: shoops $ 
+   $Date: 2005/10/06 17:34:19 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -162,8 +162,8 @@ OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags
   mObject = NULL;
 
   unsigned C_INT32 i;
-  for (i = 0; COptTask::validMethods[i] != CCopasiMethod::unset; i++)
-    methodCombo->insertItem(FROM_UTF8(CCopasiMethod::SubTypeName[COptTask::validMethods[i]]));
+  for (i = 0; COptTask::ValidMethods[i] != CCopasiMethod::unset; i++)
+    methodCombo->insertItem(FROM_UTF8(CCopasiMethod::SubTypeName[COptTask::ValidMethods[i]]));
 
   // signals and slots connections
 

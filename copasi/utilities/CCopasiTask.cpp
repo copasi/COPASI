@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 14:34:38 $
+   $Date: 2005/10/06 17:34:18 $
    End CVS Header */
 
 /**
@@ -51,7 +51,7 @@ const char* CCopasiTask::XMLType[] =
     NULL
   };
 
-const unsigned C_INT32 CCopasiTask::TaskValidMethods[] =
+const unsigned C_INT32 CCopasiTask::ValidMethods[] =
   {
     CCopasiMethod::unset
   };
@@ -212,9 +212,6 @@ bool CCopasiTask::restore()
 
   return true;
 }
-
-const unsigned C_INT32 * CCopasiTask::validMethods() const
-  {return TaskValidMethods;}
 
 CCopasiProblem * CCopasiTask::getProblem() {return mpProblem;}
 

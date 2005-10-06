@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 18:58:37 $
+   $Date: 2005/10/06 17:34:18 $
    End CVS Header */
 
 /**
@@ -33,7 +33,7 @@ class COptTask : public CCopasiTask
     /**
      * The methods which can be selected for preforming this task.
      */
-    static unsigned C_INT32 validMethods[];
+    static unsigned C_INT32 ValidMethods[];
 
     /**
      * default constructor

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 18:58:37 $
+   $Date: 2005/10/06 17:34:18 $
    End CVS Header */
 
 /**
@@ -30,7 +30,7 @@
 //#include "steadystate/CSteadyStateProblem.h"
 //#include "utilities/COutputHandler.h"
 
-unsigned C_INT32 COptTask::validMethods[] =
+unsigned C_INT32 COptTask::ValidMethods[] =
   {
     CCopasiMethod::GeneticAlgorithm,
     CCopasiMethod::GeneticAlgorithmSR,
