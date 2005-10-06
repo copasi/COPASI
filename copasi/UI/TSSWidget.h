@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/06 15:14:24 $
+   $Author: shoops $ 
+   $Date: 2005/10/06 19:19:19 $
    End CVS Header */
 
 #ifndef TSSWIDGET_H
@@ -42,6 +42,7 @@ class TSSWidget : public TaskWidget
   protected:
     virtual bool loadTask();
     virtual bool saveTask();
+    virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
 
     //QCheckBox* taskJacobian;
     //QCheckBox* taskStability;
@@ -66,7 +67,7 @@ class TSSWidget : public TaskWidget
     //virtual void ReportDefinitionClicked();
 
   protected:
-    QGridLayout* TSSWidgetLayout;
+    QVBoxLayout* TSSWidgetLayout;
     //QGridLayout* mpGridLayout;
     QTable* mpTblParameter;
     QLabel* mpLblParameter;

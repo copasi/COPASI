@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQTaskHeaderWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/05 16:24:07 $
+   $Date: 2005/10/06 19:19:18 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTaskHeaderWidget.ui'
  **
- ** Created: Tue Oct 4 17:05:39 2005
- **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.cpp,v 1.1 2005/10/05 16:24:07 shoops Exp $)
+ ** Created: Thu Oct 6 13:30:57 2005
+ **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.cpp,v 1.2 2005/10/06 19:19:18 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -39,13 +39,16 @@ CQTaskHeaderWidget::CQTaskHeaderWidget(QWidget* parent, const char* name, WFlags
   mpLblName = new QLabel(this, "mpLblName");
   mpLblName->setMinimumSize(QSize(200, 0));
   CQTaskHeaderWidgetLayout->addWidget(mpLblName);
-  mpSpacer = new QSpacerItem(50, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  mpSpacer = new QSpacerItem(70, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
   CQTaskHeaderWidgetLayout->addItem(mpSpacer);
+
+  mpUpdateModel = new QCheckBox(this, "mpUpdateModel");
+  CQTaskHeaderWidgetLayout->addWidget(mpUpdateModel);
 
   mpBoxExecutable = new QCheckBox(this, "mpBoxExecutable");
   CQTaskHeaderWidgetLayout->addWidget(mpBoxExecutable);
   languageChange();
-  resize(QSize(290, 46).expandedTo(minimumSizeHint()));
+  resize(QSize(521, 46).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 }
 
@@ -65,5 +68,6 @@ void CQTaskHeaderWidget::languageChange()
 {
   setCaption(tr("CQTaskHeaderWidget"));
   mpLblName->setText(tr("<h2>Task</h2>"));
+  mpUpdateModel->setText(tr("update model"));
   mpBoxExecutable->setText(tr("executable"));
 }

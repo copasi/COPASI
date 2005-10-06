@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>290</width>
+            <width>521</width>
             <height>46</height>
         </rect>
     </property>
@@ -48,11 +48,19 @@
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>50</width>
+                    <width>70</width>
                     <height>20</height>
                 </size>
             </property>
         </spacer>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>mpUpdateModel</cstring>
+            </property>
+            <property name="text">
+                <string>update model</string>
+            </property>
+        </widget>
         <widget class="QCheckBox">
             <property name="name">
                 <cstring>mpBoxExecutable</cstring>
@@ -71,8 +79,6 @@
 </forwards>
 <functions>
     <function specifier="non virtual" returnType="bool">setTaskName(const std::string &amp; name)</function>
-    <function specifier="non virtual" returnType="bool">saveExecutable(CCopasiTask * pTask)</function>
-    <function specifier="non virtual" returnType="bool">loadExecutable(const CCopasiTask * pTask)</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

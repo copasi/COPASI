@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>600</width>
-            <height>434</height>
+            <width>523</width>
+            <height>352</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -41,89 +41,40 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="Line" row="2" column="0" rowspan="1" colspan="4">
+                <widget class="QPushButton" row="0" column="2">
                     <property name="name">
-                        <cstring>mpLine</cstring>
+                        <cstring>mpBtnExperiment</cstring>
                     </property>
-                    <property name="frameShape">
-                        <enum>HLine</enum>
+                    <property name="text">
+                        <string>Experimental Data</string>
                     </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
+                </widget>
+                <widget class="QPushButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>mpBtnAdd</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Add Parameter</string>
+                    </property>
+                </widget>
+                <spacer row="0" column="1">
+                    <property name="name">
+                        <cstring>mpSpacer</cstring>
                     </property>
                     <property name="orientation">
                         <enum>Horizontal</enum>
                     </property>
-                </widget>
-                <widget class="QTable" row="1" column="1">
-                    <column>
-                        <property name="text">
-                            <string>Value</string>
-                        </property>
-                        <property name="pixmap">
-                            <pixmap></pixmap>
-                        </property>
-                    </column>
-                    <row>
-                        <property name="text">
-                            <string>Name</string>
-                        </property>
-                        <property name="pixmap">
-                            <pixmap></pixmap>
-                        </property>
-                    </row>
-                    <row>
-                        <property name="text">
-                            <string>Name</string>
-                        </property>
-                        <property name="pixmap">
-                            <pixmap></pixmap>
-                        </property>
-                    </row>
-                    <row>
-                        <property name="text">
-                            <string>Name</string>
-                        </property>
-                        <property name="pixmap">
-                            <pixmap></pixmap>
-                        </property>
-                    </row>
-                    <property name="name">
-                        <cstring>mpTblParameter</cstring>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
                     </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
+                    <property name="sizeHint">
                         <size>
-                            <width>0</width>
-                            <height>0</height>
+                            <width>40</width>
+                            <height>20</height>
                         </size>
                     </property>
-                    <property name="numRows">
-                        <number>3</number>
-                    </property>
-                    <property name="numCols">
-                        <number>1</number>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>mpLblMethod</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Method</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignVCenter|AlignRight</set>
-                    </property>
-                </widget>
-                <widget class="QTabWidget" row="4" column="0" rowspan="1" colspan="4">
+                </spacer>
+                <widget class="QTabWidget" row="1" column="0" rowspan="1" colspan="3">
                     <property name="name">
                         <cstring>mpTabWidget</cstring>
                     </property>
@@ -134,19 +85,6 @@
                         <attribute name="title">
                             <string>Parameters</string>
                         </attribute>
-                        <widget class="CScanContainerWidget">
-                            <property name="name">
-                                <cstring>cScanContainerWidget3</cstring>
-                            </property>
-                            <property name="geometry">
-                                <rect>
-                                    <x>0</x>
-                                    <y>0</y>
-                                    <width>101</width>
-                                    <height>31</height>
-                                </rect>
-                            </property>
-                        </widget>
                     </widget>
                     <widget class="QWidget">
                         <property name="name">
@@ -155,84 +93,8 @@
                         <attribute name="title">
                             <string>Constraints</string>
                         </attribute>
-                        <widget class="CScanContainerWidget">
-                            <property name="name">
-                                <cstring>cScanContainerWidget4</cstring>
-                            </property>
-                            <property name="geometry">
-                                <rect>
-                                    <x>0</x>
-                                    <y>0</y>
-                                    <width>101</width>
-                                    <height>31</height>
-                                </rect>
-                            </property>
-                        </widget>
                     </widget>
                 </widget>
-                <widget class="QComboBox" row="0" column="1">
-                    <property name="name">
-                        <cstring>mpBoxMethod</cstring>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="3" column="0">
-                    <property name="name">
-                        <cstring>mpBtnAdd</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Add Parameter</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
-                    <property name="name">
-                        <cstring>mpLblParameter</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>5</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>0</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Method Parameter</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignTop|AlignRight</set>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="0" column="3">
-                    <property name="name">
-                        <cstring>mpBtnExperiment</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Experiment Data</string>
-                    </property>
-                </widget>
-                <spacer row="0" column="2">
-                    <property name="name">
-                        <cstring>spacer8</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Maximum</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>40</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
             </grid>
         </widget>
     </vbox>
@@ -254,22 +116,6 @@
         </sizepolicy>
         <pixmap>image0</pixmap>
     </customwidget>
-    <customwidget>
-        <class>CScanContainerWidget</class>
-        <header location="local">CScanContainerWidget.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>-1</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-    </customwidget>
 </customwidgets>
 <images>
     <image name="image0">
@@ -280,16 +126,21 @@
     <include location="local" impldecl="in declaration">TaskWidget.h</include>
     <include location="local" impldecl="in declaration">CScanContainerWidget.h</include>
 </includes>
+<variables>
+    <variable>CScanContainerWidget * mpConstraints;</variable>
+    <variable>QHBoxLayout * mpParameterPageLayout;</variable>
+    <variable>CScanContainerWidget * mpParameters;</variable>
+    <variable>QHBoxLayout * mpConstraintPageLayout;</variable>
+</variables>
 <functions>
     <function returnType="bool">runTask()</function>
     <function access="protected" returnType="bool">loadTask()</function>
     <function access="protected" returnType="bool">saveTask()</function>
     <function access="private" specifier="non virtual">init()</function>
+    <function access="protected" returnType="CCopasiMethod *">createMethod(const CCopasiMethod::SubType &amp; type)</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>taskwidget.h</includehint>
-    <includehint>cscancontainerwidget.h</includehint>
-    <includehint>cscancontainerwidget.h</includehint>
 </includehints>
 </UI>

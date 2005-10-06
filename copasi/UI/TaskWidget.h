@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/06 15:14:24 $
+   $Author: shoops $ 
+   $Date: 2005/10/06 19:19:18 $
    End CVS Header */
 
 #ifndef TASKWIDGET_H
@@ -24,9 +24,13 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QTable;
+class QSpacerItem;
 
 class CQTaskHeaderWidget;
 class CQTaskBtnWidget;
+
+class CCopasiTask;
+#include "utilities/CCopasiMethod.h"
 
 //class CModel;
 class CProgressBar;
@@ -62,6 +66,8 @@ class TaskWidget : public CopasiWidget
 
     void assistantBtnClicked();
 
+    void changeMethod(int);
+
   protected:
     std::string mObjectKey;
     CProgressBar * mProgressBar;
@@ -70,6 +76,8 @@ class TaskWidget : public CopasiWidget
 
     virtual bool saveTask() = 0;
 
+    virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type) = 0;
+
     //these methods should be called by the loadTask() or saveTask() methods
     //of the derived classes. They handle the "executable" checkbox
     bool loadExecutable();
@@ -77,15 +85,11 @@ class TaskWidget : public CopasiWidget
 
     //these methods should be called by the constructor, loadTask(), or saveTask() methods
     //of the derived classes. They handle the method parameters table
-    bool formatMethodParameterTable(QTable * pParameterTable);
-    bool loadMethodParameters(QTable * pParameterTable);
-    bool saveMethodParameters(QTable * pParameterTable);
+    void addMethodSelectionBox(const unsigned C_INT32 * validMethods);
+    void addMethodParameterTable(const unsigned C_INT32 & rows = 4);
 
-    //add label and table to the layout, using standard copasi design
-    bool addMethodParameterTableToGridLayout(QTable * pParameterTable,
-        QGridLayout* grid, unsigned int row, unsigned int maxcol);
-
-    bool addHLineToGridLayout(QGridLayout* grid, unsigned int row, unsigned int maxcol);
+    bool loadMethod();
+    bool saveMethod();
 
     //this method should be called at the beginning or the end of the runTask() method
     //of the derived classes, respectively
@@ -93,8 +97,21 @@ class TaskWidget : public CopasiWidget
     bool commonAfterRunTask();
 
     CQTaskHeaderWidget * mpHeaderWidget;
-
     CQTaskBtnWidget * mpBtnWidget;
+
+    QGridLayout * mpMethodLayout;
+
+    QLabel * mpLblParameter;
+    QTable * mpTblParameter;
+    QSpacerItem * mpSpacer1;
+    QLabel * mpLblMethod;
+    QComboBox * mpBoxMethod;
+    QSpacerItem * mpSpacer2;
+
+    CCopasiTask * mpTask;
+    CCopasiMethod * mpMethod;
+
+    bool mpChanged;
   };
 
 #endif

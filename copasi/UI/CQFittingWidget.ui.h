@@ -1,18 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/05 16:24:07 $
+   $Date: 2005/10/06 19:19:18 $
    End CVS Header */
 
 #include <qlabel.h>
 
 #include "CQTaskBtnWidget.h"
- #include "CQTaskHeaderWidget.h"
+#include "CQTaskHeaderWidget.h"
 
 #include "report/CKeyFactory.h"
- #include "parameterFitting/CFitTask.h"
+#include "parameterFitting/CFitTask.h"
+#include "parameterFitting/CFitMethod.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 bool CQFittingWidget::saveTask()
 {
@@ -20,9 +22,12 @@ bool CQFittingWidget::saveTask()
     dynamic_cast< CFitTask * >(GlobalKeys.get(mObjectKey));
   if (!pTask) return false;
 
-  mpHeaderWidget->saveExecutable(pTask);
+  saveExecutable();
+  saveMethod();
 
   // :TODO: implement me!
+  if (mpChanged) CCopasiDataModel::Global->changed();
+
   return true;
 }
 
@@ -32,11 +37,17 @@ bool CQFittingWidget::loadTask()
     dynamic_cast< CFitTask * >(GlobalKeys.get(mObjectKey));
   if (!pTask) return false;
 
-  mpHeaderWidget->loadExecutable(pTask);
+  loadExecutable();
+  loadMethod();
 
   // :TODO: implement me!
+
+  mpChanged = false;
   return true;
 }
+
+CCopasiMethod * CQFittingWidget::createMethod(const CCopasiMethod::SubType & type)
+{return CFitMethod::createMethod(type);}
 
 bool CQFittingWidget::runTask()
 {
@@ -54,4 +65,15 @@ void CQFittingWidget::init()
 
   CQFittingWidgetLayout->insertWidget(0, mpHeaderWidget);
   CQFittingWidgetLayout->addWidget(mpBtnWidget);
+
+  addMethodSelectionBox(CFitTask::ValidMethods);
+  addMethodParameterTable();
+
+  mpParameterPageLayout = new QHBoxLayout(mpParametersPage, 0, 6, "mpParameterPageLayout");
+  mpParameters = new CScanContainerWidget(mpParametersPage);
+  mpParameterPageLayout->addWidget(mpParameters);
+
+  mpConstraintPageLayout = new QHBoxLayout(mpConstraintsPage, 0, 6, "mpParameterPageLayout");
+  mpConstraints = new CScanContainerWidget(mpConstraintsPage);
+  mpConstraintPageLayout->addWidget(mpConstraints);
 }

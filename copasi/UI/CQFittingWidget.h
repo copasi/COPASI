@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/05 16:24:07 $
+   $Date: 2005/10/06 19:19:18 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingWidget.ui'
  **
- ** Created: Wed Oct 5 12:16:35 2005
- **      by: The User Interface Compiler ($Id: CQFittingWidget.h,v 1.1 2005/10/05 16:24:07 shoops Exp $)
+ ** Created: Thu Oct 6 15:02:52 2005
+ **      by: The User Interface Compiler ($Id: CQFittingWidget.h,v 1.2 2005/10/06 19:19:18 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -27,14 +27,9 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
-class CScanContainerWidget;
-class QFrame;
-class QTable;
-class QLabel;
+class QPushButton;
 class QTabWidget;
 class QWidget;
-class QComboBox;
-class QPushButton;
 
 class CQFittingWidget : public TaskWidget
   {
@@ -44,28 +39,27 @@ class CQFittingWidget : public TaskWidget
     CQFittingWidget(QWidget* parent = 0, const char* name = 0);
     ~CQFittingWidget();
 
-    QFrame* mpLine;
-    QTable* mpTblParameter;
-    QLabel* mpLblMethod;
+    QPushButton* mpBtnExperiment;
+    QPushButton* mpBtnAdd;
     QTabWidget* mpTabWidget;
     QWidget* mpParametersPage;
-    CScanContainerWidget* cScanContainerWidget3;
     QWidget* mpConstraintsPage;
-    CScanContainerWidget* cScanContainerWidget4;
-    QComboBox* mpBoxMethod;
-    QPushButton* mpBtnAdd;
-    QLabel* mpLblParameter;
-    QPushButton* mpBtnExperiment;
 
     virtual bool runTask();
 
   protected:
+    CScanContainerWidget * mpConstraints;
+    QHBoxLayout * mpParameterPageLayout;
+    CScanContainerWidget * mpParameters;
+    QHBoxLayout * mpConstraintPageLayout;
+
     virtual bool loadTask();
     virtual bool saveTask();
+    virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
 
     QVBoxLayout* CQFittingWidgetLayout;
     QGridLayout* mpGridLayout;
-    QSpacerItem* spacer8;
+    QSpacerItem* mpSpacer;
 
   protected slots:
     virtual void languageChange();

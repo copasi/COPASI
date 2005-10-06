@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQTaskBtnWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/05 16:24:07 $
+   $Date: 2005/10/06 19:19:18 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTaskBtnWidget.ui'
  **
- ** Created: Tue Oct 4 17:05:38 2005
- **      by: The User Interface Compiler ($Id: CQTaskBtnWidget.h,v 1.1 2005/10/05 16:24:07 shoops Exp $)
+ ** Created: Wed Oct 5 16:43:27 2005
+ **      by: The User Interface Compiler ($Id: CQTaskBtnWidget.h,v 1.2 2005/10/06 19:19:18 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,8 +25,8 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
-class QFrame;
 class QPushButton;
+class QFrame;
 
 class CQTaskBtnWidget : public QWidget
   {
@@ -36,14 +36,15 @@ class CQTaskBtnWidget : public QWidget
     CQTaskBtnWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~CQTaskBtnWidget();
 
-    QFrame* mpLine;
-    QPushButton* mpBtnRevert;
     QPushButton* mpBtnRun;
-    QPushButton* mpBtnReport;
     QPushButton* mpBtnAssistant;
+    QPushButton* mpBtnRevert;
+    QPushButton* mpBtnReport;
+    QFrame* mpLine;
 
   protected:
-    QGridLayout* CQTaskBtnWidgetLayout;
+    QVBoxLayout* CQTaskBtnWidgetLayout;
+    QGridLayout* mpGridLayout;
 
   protected slots:
     virtual void languageChange();
