@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQTaskHeaderWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 19:19:18 $
+   $Date: 2005/10/06 20:30:42 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTaskHeaderWidget.ui'
  **
- ** Created: Thu Oct 6 13:30:57 2005
- **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.cpp,v 1.2 2005/10/06 19:19:18 shoops Exp $)
+ ** Created: Thu Oct 6 16:20:47 2005
+ **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.cpp,v 1.3 2005/10/06 20:30:42 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -39,11 +39,13 @@ CQTaskHeaderWidget::CQTaskHeaderWidget(QWidget* parent, const char* name, WFlags
   mpLblName = new QLabel(this, "mpLblName");
   mpLblName->setMinimumSize(QSize(200, 0));
   CQTaskHeaderWidgetLayout->addWidget(mpLblName);
-  mpSpacer = new QSpacerItem(70, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  CQTaskHeaderWidgetLayout->addItem(mpSpacer);
+  mpSpacer1 = new QSpacerItem(90, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  CQTaskHeaderWidgetLayout->addItem(mpSpacer1);
 
   mpUpdateModel = new QCheckBox(this, "mpUpdateModel");
   CQTaskHeaderWidgetLayout->addWidget(mpUpdateModel);
+  mpSpacer2 = new QSpacerItem(30, 20, QSizePolicy::Preferred, QSizePolicy::Minimum);
+  CQTaskHeaderWidgetLayout->addItem(mpSpacer2);
 
   mpBoxExecutable = new QCheckBox(this, "mpBoxExecutable");
   CQTaskHeaderWidgetLayout->addWidget(mpBoxExecutable);

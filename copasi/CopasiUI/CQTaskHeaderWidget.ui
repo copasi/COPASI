@@ -38,7 +38,7 @@
         </widget>
         <spacer>
             <property name="name">
-                <cstring>mpSpacer</cstring>
+                <cstring>mpSpacer1</cstring>
             </property>
             <property name="orientation">
                 <enum>Horizontal</enum>
@@ -48,7 +48,7 @@
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>70</width>
+                    <width>90</width>
                     <height>20</height>
                 </size>
             </property>
@@ -61,6 +61,23 @@
                 <string>update model</string>
             </property>
         </widget>
+        <spacer>
+            <property name="name">
+                <cstring>mpSpacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Preferred</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>30</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
         <widget class="QCheckBox">
             <property name="name">
                 <cstring>mpBoxExecutable</cstring>
