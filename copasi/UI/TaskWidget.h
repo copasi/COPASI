@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/06 20:35:05 $
+   $Author: ssahle $ 
+   $Date: 2005/10/07 14:14:14 $
    End CVS Header */
 
 #ifndef TASKWIDGET_H
@@ -85,8 +85,12 @@ class TaskWidget : public CopasiWidget
 
     //these methods should be called by the constructor, loadTask(), or saveTask() methods
     //of the derived classes. They handle the method parameters table
-    void addMethodSelectionBox(const unsigned C_INT32 * validMethods);
-    void addMethodParameterTable(const unsigned C_INT32 & rows = 4);
+    void addMethodSelectionBox(const unsigned C_INT32 * validMethods, unsigned int row = 2);
+    void addMethodParameterTable(const unsigned C_INT32 & rows = 4, unsigned int row = 3);
+
+    //convenience functions
+    void addHeaderToGrid(unsigned int row = 0);
+    bool addHLineToGrid(QGridLayout* grid, unsigned int row, unsigned int maxcol);
 
     bool loadMethod();
     bool saveMethod();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TaskWidget.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/07 13:48:38 $
+   $Author: ssahle $ 
+   $Date: 2005/10/07 14:14:14 $
    End CVS Header */
 
 #include <qcheckbox.h>
@@ -74,24 +74,43 @@ TaskWidget::~TaskWidget()
 
 //************************************************************
 
-void TaskWidget::addMethodParameterTable(const unsigned C_INT32 & rows)
+void TaskWidget::addHeaderToGrid(unsigned int row)
+{
+  if (!mpMethodLayout)
+    {
+      mpMethodLayout = new QGridLayout(0, 2, 2, 0, 6, "mpMethodLayout");
+      static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
+    }
+
+  mpMethodLayout->addMultiCellWidget(mpHeaderWidget, row, row, 1, 2);
+}
+
+bool TaskWidget::addHLineToGrid(QGridLayout* grid, unsigned int row, unsigned int maxcol)
+{
+  QFrame * line = new QFrame(this, "line");
+  line->setFrameShape(QFrame::HLine);
+  line->setFrameShadow(QFrame::Sunken);
+  grid->addMultiCellWidget(line, row, row, 0, maxcol);
+}
+
+void TaskWidget::addMethodParameterTable(const unsigned C_INT32 & rows, unsigned int row)
 {
   if (mpTblParameter) return;
-
-  unsigned C_INT32 Row = 1;
 
   if (!mpMethodLayout)
     {
       mpMethodLayout = new QGridLayout(0, 1, 1, 0, 6, "mpMethodLayout");
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
-      Row = 0;
+      //Row = 0;
     }
 
-  mpLblParameter = new QLabel(mpBtnWidget, "mpLblParameter");
+  QWidget* pParent = mpMethodLayout->mainWidget();
+
+  mpLblParameter = new QLabel(pParent, "mpLblParameter");
   mpLblParameter->setText(tr("Method Parameter"));
   mpLblParameter->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
 
-  mpTblParameter = new QTable(mpBtnWidget, "mpTblParameter");
+  mpTblParameter = new QTable(pParent, "mpTblParameter");
   mpTblParameter->setNumRows(rows);
   mpTblParameter->setNumCols(1);
 
@@ -103,14 +122,14 @@ void TaskWidget::addMethodParameterTable(const unsigned C_INT32 & rows)
 
   mpSpacer1 = new QSpacerItem(130, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
 
-  mpMethodLayout->addWidget(mpLblParameter, Row, 0);
-  mpMethodLayout->addWidget(mpTblParameter, Row, 1);
-  mpMethodLayout->addItem(mpSpacer1, Row, 2);
+  mpMethodLayout->addWidget(mpLblParameter, row, 0);
+  mpMethodLayout->addWidget(mpTblParameter, row, 1);
+  mpMethodLayout->addItem(mpSpacer1, row, 2);
 
   return;
 }
 
-void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods)
+void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, unsigned int row)
 {
   if (!mpMethodLayout)
     {
@@ -118,11 +137,13 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods)
       static_cast<QVBoxLayout *>(mpBtnWidget->layout())->insertLayout(0, mpMethodLayout);
     }
 
-  mpLblMethod = new QLabel(mpBtnWidget, "mpLblMethod");
+  QWidget* pParent = mpMethodLayout->mainWidget();
+
+  mpLblMethod = new QLabel(pParent, "mpLblMethod");
   mpLblMethod->setText(tr("Method"));
   mpLblMethod->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
 
-  mpBoxMethod = new QComboBox(FALSE, mpBtnWidget, "mpBoxMethod");
+  mpBoxMethod = new QComboBox(FALSE, pParent, "mpBoxMethod");
 
   unsigned C_INT32 i;
   for (i = 0; validMethods[i] != CCopasiMethod::unset; i++)
@@ -130,9 +151,9 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods)
 
   mpSpacer2 = new QSpacerItem(130, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
 
-  mpMethodLayout->addWidget(mpLblMethod, 0, 0);
-  mpMethodLayout->addWidget(mpBoxMethod, 0, 1);
-  mpMethodLayout->addItem(mpSpacer2, 0, 2);
+  mpMethodLayout->addWidget(mpLblMethod, row, 0);
+  mpMethodLayout->addWidget(mpBoxMethod, row, 1);
+  mpMethodLayout->addItem(mpSpacer2, row, 2);
 
   connect(mpBoxMethod, SIGNAL(activated(int)), this, SLOT(changeMethod(int)));
 
