@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/07 16:43:28 $
+   $Date: 2005/10/07 18:41:23 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Fri Oct 7 11:52:16 2005
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.1 2005/10/07 16:43:28 shoops Exp $)
+ ** Created: Fri Oct 7 14:23:54 2005
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.2 2005/10/07 18:41:23 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -30,6 +30,7 @@ class QLabel;
 class QCheckBox;
 class QLineEdit;
 class QToolButton;
+class QComboBox;
 class CFitProblem;
 class CFitItem;
 class CCopasiObject;
@@ -44,16 +45,19 @@ class CQFittingItemWidget : public QWidget
     ~CQFittingItemWidget();
 
     QLabel* mpLblLower;
-    QLabel* mpLblUpper;
-    QLabel* mpLblObject;
     QCheckBox* mpLowerInf;
-    QCheckBox* mpUpperInf;
-    QLineEdit* mpEditUpper;
-    QToolButton* mpBtnUpperEdit;
-    QLineEdit* mpEditObject;
-    QToolButton* mpBtnObject;
     QLineEdit* mpEditLower;
     QToolButton* mpBtnLowerEdit;
+    QLabel* mpLblUpper;
+    QLineEdit* mpEditUpper;
+    QToolButton* mpBtnUpperEdit;
+    QCheckBox* mpUpperInf;
+    QLabel* mpLblExperiments;
+    QComboBox* mpBoxExperiments;
+    QToolButton* mpBtnExperiments;
+    QLabel* mpLblObject;
+    QLineEdit* mpEditObject;
+    QToolButton* mpBtnObject;
 
     virtual bool initFromFitItem(const CFitItem & item);
     virtual bool saveToFitItem(CFitProblem * pg) const;
@@ -65,11 +69,11 @@ class CQFittingItemWidget : public QWidget
     CCopasiObject* mpObject;
 
     QGridLayout* CQFittingItemWidgetLayout;
-    QSpacerItem* mpSpacerRight;
     QSpacerItem* mpSpacerLeft;
-    QHBoxLayout* mpLayoutUpper;
-    QHBoxLayout* mpLayoutObject;
     QHBoxLayout* mpLayoutLower;
+    QHBoxLayout* mpLayoutUpper;
+    QHBoxLayout* mpLayoutExperiments;
+    QHBoxLayout* mpLayoutObject;
 
   protected slots:
     virtual void languageChange();

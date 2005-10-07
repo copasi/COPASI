@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/07 16:42:27 $
+   $Date: 2005/10/07 18:41:23 $
    End CVS Header */
 
 #include <qcheckbox.h>
@@ -116,13 +116,13 @@ void TaskWidget::addMethodParameterTable(const unsigned C_INT32 & rows, unsigned
   mpTblParameter->setNumRows(rows);
   mpTblParameter->setNumCols(1);
 
-  mpTblParameter->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, QSizePolicy::Fixed, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
-  mpTblParameter->setFixedHeight(mpTblParameter->sizeHint().height() + 2);
-
   mpTblParameter->horizontalHeader()->setLabel(0, tr("Value"));
   mpTblParameter->verticalHeader()->setMovingEnabled(false);
 
-  mpSpacer1 = new QSpacerItem(130, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+  mpTblParameter->setFixedHeight(mpTblParameter->sizeHint().height() + 2);
+  mpTblParameter->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
+
+  mpSpacer1 = new QSpacerItem(0, 20, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 
   mpMethodLayout->addWidget(mpLblParameter, row, 0);
   mpMethodLayout->addWidget(mpTblParameter, row, 1);
@@ -151,7 +151,7 @@ void TaskWidget::addMethodSelectionBox(const unsigned C_INT32 * validMethods, un
   for (i = 0; validMethods[i] != CCopasiMethod::unset; i++)
     mpBoxMethod->insertItem(FROM_UTF8(CCopasiMethod::SubTypeName[validMethods[i]]));
 
-  mpSpacer2 = new QSpacerItem(130, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+  mpSpacer2 = new QSpacerItem(0, 20, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 
   mpMethodLayout->addWidget(mpLblMethod, row, 0);
   mpMethodLayout->addWidget(mpBoxMethod, row, 1);
@@ -293,6 +293,8 @@ bool TaskWidget::loadMethod()
           mpTblParameter->setItem(i, 0, pItem);
         }
     }
+
+  mpTblParameter->setFixedWidth(mpTblParameter->sizeHint().width() + 20);
 
   return true;
 }

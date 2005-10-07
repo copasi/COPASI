@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/07 16:43:28 $
+   $Date: 2005/10/07 18:41:22 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Fri Oct 7 11:52:16 2005
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.1 2005/10/07 16:43:28 shoops Exp $)
+ ** Created: Fri Oct 7 14:23:55 2005
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.2 2005/10/07 18:41:22 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,6 +23,7 @@
  #include <qcheckbox.h>
  #include <qlineedit.h>
  #include <qtoolbutton.h>
+ #include <qcombobox.h>
  #include <qlayout.h>
  #include <qtooltip.h>
  #include <qwhatsthis.h>
@@ -37,52 +38,19 @@ CQFittingItemWidget::CQFittingItemWidget(QWidget* parent, const char* name, WFla
 {
   if (!name)
     setName("CQFittingItemWidget");
-  setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, sizePolicy().hasHeightForWidth()));
+  setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)1, 0, 0, sizePolicy().hasHeightForWidth()));
   CQFittingItemWidgetLayout = new QGridLayout(this, 1, 1, 3, 0, "CQFittingItemWidgetLayout");
 
   mpLblLower = new QLabel(this, "mpLblLower");
 
   CQFittingItemWidgetLayout->addWidget(mpLblLower, 1, 0);
-
-  mpLblUpper = new QLabel(this, "mpLblUpper");
-
-  CQFittingItemWidgetLayout->addWidget(mpLblUpper, 2, 0);
-
-  mpLblObject = new QLabel(this, "mpLblObject");
-
-  CQFittingItemWidgetLayout->addWidget(mpLblObject, 0, 0);
+  mpSpacerLeft = new QSpacerItem(12, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+  CQFittingItemWidgetLayout->addItem(mpSpacerLeft, 1, 1);
 
   mpLowerInf = new QCheckBox(this, "mpLowerInf");
   mpLowerInf->setChecked(TRUE);
 
-  CQFittingItemWidgetLayout->addWidget(mpLowerInf, 1, 4);
-
-  mpUpperInf = new QCheckBox(this, "mpUpperInf");
-  mpUpperInf->setChecked(TRUE);
-
-  CQFittingItemWidgetLayout->addWidget(mpUpperInf, 2, 4);
-
-  mpLayoutUpper = new QHBoxLayout(0, 0, 6, "mpLayoutUpper");
-
-  mpEditUpper = new QLineEdit(this, "mpEditUpper");
-  mpEditUpper->setEnabled(FALSE);
-  mpLayoutUpper->addWidget(mpEditUpper);
-
-  mpBtnUpperEdit = new QToolButton(this, "mpBtnUpperEdit");
-  mpLayoutUpper->addWidget(mpBtnUpperEdit);
-
-  CQFittingItemWidgetLayout->addLayout(mpLayoutUpper, 2, 2);
-
-  mpLayoutObject = new QHBoxLayout(0, 0, 6, "mpLayoutObject");
-
-  mpEditObject = new QLineEdit(this, "mpEditObject");
-  mpEditObject->setEnabled(FALSE);
-  mpLayoutObject->addWidget(mpEditObject);
-
-  mpBtnObject = new QToolButton(this, "mpBtnObject");
-  mpLayoutObject->addWidget(mpBtnObject);
-
-  CQFittingItemWidgetLayout->addLayout(mpLayoutObject, 0, 2);
+  CQFittingItemWidgetLayout->addWidget(mpLowerInf, 1, 2);
 
   mpLayoutLower = new QHBoxLayout(0, 0, 6, "mpLayoutLower");
 
@@ -95,13 +63,61 @@ CQFittingItemWidget::CQFittingItemWidget(QWidget* parent, const char* name, WFla
   mpBtnLowerEdit = new QToolButton(this, "mpBtnLowerEdit");
   mpLayoutLower->addWidget(mpBtnLowerEdit);
 
-  CQFittingItemWidgetLayout->addLayout(mpLayoutLower, 1, 2);
-  mpSpacerRight = new QSpacerItem(6, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
-  CQFittingItemWidgetLayout->addMultiCell(mpSpacerRight, 1, 2, 3, 3);
-  mpSpacerLeft = new QSpacerItem(6, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
-  CQFittingItemWidgetLayout->addMultiCell(mpSpacerLeft, 1, 2, 1, 1);
+  CQFittingItemWidgetLayout->addLayout(mpLayoutLower, 1, 4);
+
+  mpLblUpper = new QLabel(this, "mpLblUpper");
+
+  CQFittingItemWidgetLayout->addWidget(mpLblUpper, 2, 0);
+
+  mpLayoutUpper = new QHBoxLayout(0, 0, 6, "mpLayoutUpper");
+
+  mpEditUpper = new QLineEdit(this, "mpEditUpper");
+  mpEditUpper->setEnabled(FALSE);
+  mpLayoutUpper->addWidget(mpEditUpper);
+
+  mpBtnUpperEdit = new QToolButton(this, "mpBtnUpperEdit");
+  mpLayoutUpper->addWidget(mpBtnUpperEdit);
+
+  CQFittingItemWidgetLayout->addLayout(mpLayoutUpper, 2, 4);
+
+  mpUpperInf = new QCheckBox(this, "mpUpperInf");
+  mpUpperInf->setChecked(TRUE);
+
+  CQFittingItemWidgetLayout->addWidget(mpUpperInf, 2, 2);
+
+  mpLblExperiments = new QLabel(this, "mpLblExperiments");
+
+  CQFittingItemWidgetLayout->addMultiCellWidget(mpLblExperiments, 3, 3, 0, 2);
+
+  mpLayoutExperiments = new QHBoxLayout(0, 0, 6, "mpLayoutExperiments");
+
+  mpBoxExperiments = new QComboBox(FALSE, this, "mpBoxExperiments");
+  mpBoxExperiments->setEnabled(TRUE);
+  mpBoxExperiments->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)0, 0, 0, mpBoxExperiments->sizePolicy().hasHeightForWidth()));
+  mpBoxExperiments->setDuplicatesEnabled(FALSE);
+  mpLayoutExperiments->addWidget(mpBoxExperiments);
+
+  mpBtnExperiments = new QToolButton(this, "mpBtnExperiments");
+  mpLayoutExperiments->addWidget(mpBtnExperiments);
+
+  CQFittingItemWidgetLayout->addLayout(mpLayoutExperiments, 3, 4);
+
+  mpLblObject = new QLabel(this, "mpLblObject");
+
+  CQFittingItemWidgetLayout->addWidget(mpLblObject, 0, 0);
+
+  mpLayoutObject = new QHBoxLayout(0, 0, 6, "mpLayoutObject");
+
+  mpEditObject = new QLineEdit(this, "mpEditObject");
+  mpEditObject->setEnabled(FALSE);
+  mpLayoutObject->addWidget(mpEditObject);
+
+  mpBtnObject = new QToolButton(this, "mpBtnObject");
+  mpLayoutObject->addWidget(mpBtnObject);
+
+  CQFittingItemWidgetLayout->addLayout(mpLayoutObject, 0, 4);
   languageChange();
-  resize(QSize(190, 72).expandedTo(minimumSizeHint()));
+  resize(QSize(579, 94).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
@@ -127,13 +143,15 @@ CQFittingItemWidget::~CQFittingItemWidget()
  */
 void CQFittingItemWidget::languageChange()
 {
-  setCaption(tr("Form1"));
+  setCaption(tr("CQFittingItemWidget"));
   mpLblLower->setText(tr("Lower Bound"));
-  mpLblUpper->setText(tr("Upper Bound"));
-  mpLblObject->setText(tr("Object"));
   mpLowerInf->setText(tr("- Infinity"));
-  mpUpperInf->setText(tr("+ Infinity"));
-  mpBtnUpperEdit->setText(tr("..."));
-  mpBtnObject->setText(tr("..."));
   mpBtnLowerEdit->setText(tr("..."));
+  mpLblUpper->setText(tr("Upper Bound"));
+  mpBtnUpperEdit->setText(tr("..."));
+  mpUpperInf->setText(tr("+ Infinity"));
+  mpLblExperiments->setText(tr("Affected Experiments"));
+  mpBtnExperiments->setText(tr("..."));
+  mpLblObject->setText(tr("Object"));
+  mpBtnObject->setText(tr("..."));
 }

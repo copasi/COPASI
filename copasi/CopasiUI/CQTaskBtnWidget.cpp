@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQTaskBtnWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/07 13:48:05 $
+   $Date: 2005/10/07 18:41:23 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTaskBtnWidget.ui'
  **
- ** Created: Fri Oct 7 08:28:03 2005
- **      by: The User Interface Compiler ($Id: CQTaskBtnWidget.cpp,v 1.3 2005/10/07 13:48:05 shoops Exp $)
+ ** Created: Fri Oct 7 14:23:55 2005
+ **      by: The User Interface Compiler ($Id: CQTaskBtnWidget.cpp,v 1.4 2005/10/07 18:41:23 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -19,7 +19,6 @@
 
 #include <qvariant.h>
  #include <qpushbutton.h>
- #include <qframe.h>
  #include <qlayout.h>
  #include <qtooltip.h>
  #include <qwhatsthis.h>
@@ -54,16 +53,9 @@ CQTaskBtnWidget::CQTaskBtnWidget(QWidget* parent, const char* name, WFlags fl)
   mpBtnReport = new QPushButton(this, "mpBtnReport");
 
   mpGridLayout->addWidget(mpBtnReport, 1, 2);
-
-  mpLine = new QFrame(this, "mpLine");
-  mpLine->setFrameShape(QFrame::HLine);
-  mpLine->setFrameShadow(QFrame::Sunken);
-  mpLine->setFrameShape(QFrame::HLine);
-
-  mpGridLayout->addMultiCellWidget(mpLine, 0, 0, 0, 3);
   CQTaskBtnWidgetLayout->addLayout(mpGridLayout);
   languageChange();
-  resize(QSize(367, 44).expandedTo(minimumSizeHint()));
+  resize(QSize(367, 35).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // tab order

@@ -8,20 +8,20 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>190</width>
-            <height>72</height>
+            <width>579</width>
+            <height>94</height>
         </rect>
     </property>
     <property name="sizePolicy">
         <sizepolicy>
             <hsizetype>5</hsizetype>
-            <vsizetype>0</vsizetype>
+            <vsizetype>1</vsizetype>
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
     <property name="caption">
-        <string>Form1</string>
+        <string>CQFittingItemWidget</string>
     </property>
     <grid>
         <property name="name">
@@ -41,23 +41,24 @@
                 <string>Lower Bound</string>
             </property>
         </widget>
-        <widget class="QLabel" row="2" column="0">
+        <spacer row="1" column="1">
             <property name="name">
-                <cstring>mpLblUpper</cstring>
+                <cstring>mpSpacerLeft</cstring>
             </property>
-            <property name="text">
-                <string>Upper Bound</string>
+            <property name="orientation">
+                <enum>Horizontal</enum>
             </property>
-        </widget>
-        <widget class="QLabel" row="0" column="0">
-            <property name="name">
-                <cstring>mpLblObject</cstring>
+            <property name="sizeType">
+                <enum>Fixed</enum>
             </property>
-            <property name="text">
-                <string>Object</string>
+            <property name="sizeHint">
+                <size>
+                    <width>12</width>
+                    <height>20</height>
+                </size>
             </property>
-        </widget>
-        <widget class="QCheckBox" row="1" column="4">
+        </spacer>
+        <widget class="QCheckBox" row="1" column="2">
             <property name="name">
                 <cstring>mpLowerInf</cstring>
             </property>
@@ -68,70 +69,7 @@
                 <bool>true</bool>
             </property>
         </widget>
-        <widget class="QCheckBox" row="2" column="4">
-            <property name="name">
-                <cstring>mpUpperInf</cstring>
-            </property>
-            <property name="text">
-                <string>+ Infinity</string>
-            </property>
-            <property name="checked">
-                <bool>true</bool>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="2" column="2">
-            <property name="name">
-                <cstring>mpLayoutUpper</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLineEdit">
-                    <property name="name">
-                        <cstring>mpEditUpper</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                </widget>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>mpBtnUpperEdit</cstring>
-                    </property>
-                    <property name="text">
-                        <string>...</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget" row="0" column="2">
-            <property name="name">
-                <cstring>mpLayoutObject</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLineEdit">
-                    <property name="name">
-                        <cstring>mpEditObject</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                </widget>
-                <widget class="QToolButton">
-                    <property name="name">
-                        <cstring>mpBtnObject</cstring>
-                    </property>
-                    <property name="text">
-                        <string>...</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget" row="1" column="2">
+        <widget class="QLayoutWidget" row="1" column="4">
             <property name="name">
                 <cstring>mpLayoutLower</cstring>
             </property>
@@ -163,40 +101,130 @@
                 </widget>
             </hbox>
         </widget>
-        <spacer row="1" column="3" rowspan="2" colspan="1">
+        <widget class="QLabel" row="2" column="0">
             <property name="name">
-                <cstring>mpSpacerRight</cstring>
+                <cstring>mpLblUpper</cstring>
             </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
+            <property name="text">
+                <string>Upper Bound</string>
             </property>
-            <property name="sizeType">
-                <enum>Fixed</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>6</width>
-                    <height>20</height>
-                </size>
-            </property>
-        </spacer>
-        <spacer row="1" column="1" rowspan="2" colspan="1">
+        </widget>
+        <widget class="QLayoutWidget" row="2" column="4">
             <property name="name">
-                <cstring>mpSpacerLeft</cstring>
+                <cstring>mpLayoutUpper</cstring>
             </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>mpEditUpper</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+                <widget class="QToolButton">
+                    <property name="name">
+                        <cstring>mpBtnUpperEdit</cstring>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QCheckBox" row="2" column="2">
+            <property name="name">
+                <cstring>mpUpperInf</cstring>
             </property>
-            <property name="sizeType">
-                <enum>Fixed</enum>
+            <property name="text">
+                <string>+ Infinity</string>
             </property>
-            <property name="sizeHint">
-                <size>
-                    <width>6</width>
-                    <height>20</height>
-                </size>
+            <property name="checked">
+                <bool>true</bool>
             </property>
-        </spacer>
+        </widget>
+        <widget class="QLabel" row="3" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>mpLblExperiments</cstring>
+            </property>
+            <property name="text">
+                <string>Affected Experiments</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="3" column="4">
+            <property name="name">
+                <cstring>mpLayoutExperiments</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QComboBox">
+                    <property name="name">
+                        <cstring>mpBoxExperiments</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="duplicatesEnabled">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+                <widget class="QToolButton">
+                    <property name="name">
+                        <cstring>mpBtnExperiments</cstring>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLabel" row="0" column="0">
+            <property name="name">
+                <cstring>mpLblObject</cstring>
+            </property>
+            <property name="text">
+                <string>Object</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="0" column="4">
+            <property name="name">
+                <cstring>mpLayoutObject</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>mpEditObject</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+                <widget class="QToolButton">
+                    <property name="name">
+                        <cstring>mpBtnObject</cstring>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
     </grid>
 </widget>
 <connections>

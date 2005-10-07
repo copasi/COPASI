@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>367</width>
-            <height>44</height>
+            <height>35</height>
         </rect>
     </property>
     <property name="caption">
@@ -77,20 +77,6 @@
                     </property>
                     <property name="text">
                         <string>Report</string>
-                    </property>
-                </widget>
-                <widget class="Line" row="0" column="0" rowspan="1" colspan="4">
-                    <property name="name">
-                        <cstring>mpLine</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>HLine</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
                     </property>
                 </widget>
             </grid>
