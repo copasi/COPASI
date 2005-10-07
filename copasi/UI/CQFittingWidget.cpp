@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 20:35:05 $
+   $Date: 2005/10/07 13:49:24 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingWidget.ui'
  **
- ** Created: Thu Oct 6 16:33:45 2005
- **      by: The User Interface Compiler ($Id: CQFittingWidget.cpp,v 1.3 2005/10/06 20:35:05 shoops Exp $)
+ ** Created: Fri Oct 7 09:38:10 2005
+ **      by: The User Interface Compiler ($Id: CQFittingWidget.cpp,v 1.4 2005/10/07 13:49:24 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -65,6 +65,11 @@ CQFittingWidget::CQFittingWidget(QWidget* parent, const char* name)
   languageChange();
   resize(QSize(523, 352).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
+
+  // signals and slots connections
+  connect(mpBtnAdd, SIGNAL(clicked()), this, SLOT(slotBtnAdd()));
+  connect(mpBtnExperiment, SIGNAL(clicked()), this, SLOT(slotExperimentData()));
+  connect(mpTabWidget, SIGNAL(currentChanged(QWidget*)), this, SLOT(slotPageChange(QWidget*)));
   init();
 }
 
@@ -85,6 +90,6 @@ void CQFittingWidget::languageChange()
   setCaption(tr("Fitting"));
   mpBtnExperiment->setText(tr("Experimental Data"));
   mpBtnAdd->setText(tr("Add Parameter"));
-  mpTabWidget->changeTab(mpParametersPage, tr("Parameters"));
-  mpTabWidget->changeTab(mpConstraintsPage, tr("Constraints"));
+  mpTabWidget->changeTab(mpParametersPage, tr("Parameters (0)"));
+  mpTabWidget->changeTab(mpConstraintsPage, tr("Constraints (0)"));
 }

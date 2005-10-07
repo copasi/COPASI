@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingWidget.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 20:35:05 $
+   $Date: 2005/10/07 13:49:24 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingWidget.ui'
  **
- ** Created: Thu Oct 6 16:33:44 2005
- **      by: The User Interface Compiler ($Id: CQFittingWidget.h,v 1.3 2005/10/06 20:35:05 shoops Exp $)
+ ** Created: Fri Oct 7 09:38:10 2005
+ **      by: The User Interface Compiler ($Id: CQFittingWidget.h,v 1.4 2005/10/07 13:49:24 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -48,10 +48,11 @@ class CQFittingWidget : public TaskWidget
     virtual bool runTask();
 
   protected:
-    CScanContainerWidget * mpConstraints;
-    QHBoxLayout * mpParameterPageLayout;
-    CScanContainerWidget * mpParameters;
     QHBoxLayout * mpConstraintPageLayout;
+    CScanContainerWidget * mpParameters;
+    QHBoxLayout * mpParameterPageLayout;
+    CScanContainerWidget * mpConstraints;
+    CScanContainerWidget * mpCurrentList;
 
     virtual bool loadTask();
     virtual bool saveTask();
@@ -63,6 +64,11 @@ class CQFittingWidget : public TaskWidget
 
   protected slots:
     virtual void languageChange();
+
+    void slotBtnAdd();
+    void slotExperimentData();
+    void slotPageChange(QWidget * currentPage);
+    void slotItemDeleted();
 
   private:
     QPixmap image0;
