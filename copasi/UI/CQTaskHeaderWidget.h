@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskHeaderWidget.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/06 20:30:42 $
+   $Author: ssahle $ 
+   $Date: 2005/10/07 14:15:11 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTaskHeaderWidget.ui'
  **
- ** Created: Thu Oct 6 16:20:47 2005
- **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.h,v 1.3 2005/10/06 20:30:42 shoops Exp $)
+ ** Created: Fri Oct 7 13:39:32 2005
+ **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.h,v 1.4 2005/10/07 14:15:11 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

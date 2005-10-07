@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQTaskHeaderWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/06 20:30:42 $
+   $Author: ssahle $ 
+   $Date: 2005/10/07 14:15:11 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTaskHeaderWidget.ui'
  **
- ** Created: Thu Oct 6 16:20:47 2005
- **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.cpp,v 1.3 2005/10/06 20:30:42 shoops Exp $)
+ ** Created: Fri Oct 7 13:41:48 2005
+ **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.cpp,v 1.4 2005/10/07 14:15:11 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -34,6 +34,7 @@ CQTaskHeaderWidget::CQTaskHeaderWidget(QWidget* parent, const char* name, WFlags
 {
   if (!name)
     setName("CQTaskHeaderWidget");
+  setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, sizePolicy().hasHeightForWidth()));
   CQTaskHeaderWidgetLayout = new QHBoxLayout(this, 0, 6, "CQTaskHeaderWidgetLayout");
 
   mpLblName = new QLabel(this, "mpLblName");
@@ -50,7 +51,7 @@ CQTaskHeaderWidget::CQTaskHeaderWidget(QWidget* parent, const char* name, WFlags
   mpBoxExecutable = new QCheckBox(this, "mpBoxExecutable");
   CQTaskHeaderWidgetLayout->addWidget(mpBoxExecutable);
   languageChange();
-  resize(QSize(521, 46).expandedTo(minimumSizeHint()));
+  resize(QSize(521, 28).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 }
 

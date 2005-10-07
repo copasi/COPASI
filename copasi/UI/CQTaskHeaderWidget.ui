@@ -7,10 +7,18 @@
     <property name="geometry">
         <rect>
             <x>0</x>
-            <y>0</y>
+            <y>9</y>
             <width>521</width>
-            <height>46</height>
+            <height>28</height>
         </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
     </property>
     <property name="caption">
         <string>CQTaskHeaderWidget</string>
