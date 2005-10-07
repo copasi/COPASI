@@ -146,6 +146,10 @@ SOURCE=.\CQFileDialogBtnGrp.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQFittingItemWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQFittingWidget.cpp
 # End Source File
 # Begin Source File
@@ -551,6 +555,14 @@ SOURCE=.\CProgressBar.h
 # Begin Source File
 
 SOURCE=.\CQFileDialogBtnGrp.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQFittingItemWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQFittingItemWidget.ui.h
 # End Source File
 # Begin Source File
 
@@ -968,6 +980,10 @@ SOURCE=.\CopasiUI.pro
 # Begin Source File
 
 SOURCE=.\CQFileDialogBtnGrp.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQFittingItemWidget.ui
 # End Source File
 # Begin Source File
 

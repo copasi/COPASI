@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.106 $ $Author: shoops $ $Date: 2005/10/05 18:17:53 $  
+# $Revision: 1.107 $ $Author: shoops $ $Date: 2005/10/07 16:44:06 $  
 ######################################################################
 
 TEMPLATE = app
@@ -288,14 +288,18 @@ SOURCES += \
 # FORMS += CQReportDefinition.ui
 # FORMS += CQTextDialog.ui
 # FORMS += CQFileDialogBtnGrp.ui
+# FORMS += CQFittingItemWidget.ui
 # FORMS += CQFittingWidget.ui
 # FORMS += CQTaskHeaderWidget.ui
 # FORMS += CQTaskBtnWidget.ui
+# FORMS += OptimizationItemWidget.ui
 
 # headers generated from .ui files   
 HEADERS += \
            CMCAResultSubwidget.h \
            CQFileDialogBtnGrp.h \
+           CQFittingItemWidget.h \
+           CQFittingItemWidget.ui.h \
            CQFittingWidget.h \
            CQFittingWidget.ui.h \
            CQProgressItem.h \
@@ -321,6 +325,8 @@ HEADERS += \
            CScanWidgetTask.h  \ 
            DefaultplotDialog.h \
            objectdebug.h \
+           OptimizationItemWidget.h \
+           OptimizationItemWidget.ui.h \
            SliderSettingsDialog.h \
            StateSubwidget.h \
            TimeSeriesSubwidget.h 
@@ -329,6 +335,7 @@ HEADERS += \
 SOURCES += \
            CMCAResultSubwidget.cpp \
            CQFileDialogBtnGrp.cpp \
+           CQFittingItemWidget.cpp \
            CQFittingWidget.cpp \
            CQProgressItem.cpp \
            CQProgressItemBar.cpp \
@@ -346,6 +353,7 @@ SOURCES += \
            CScanWidgetTask.cpp \  
            DefaultplotDialog.cpp \
            objectdebug.cpp \
+           OptimizationItemWidget.cpp \
            SliderSettingsDialog.cpp \
            StateSubwidget.cpp \
            TimeSeriesSubwidget.cpp 

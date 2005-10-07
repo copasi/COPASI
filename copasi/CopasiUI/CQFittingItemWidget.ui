@@ -1,0 +1,268 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>CQFittingItemWidget</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>CQFittingItemWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>190</width>
+            <height>72</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Form1</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>3</number>
+        </property>
+        <property name="spacing">
+            <number>0</number>
+        </property>
+        <widget class="QLabel" row="1" column="0">
+            <property name="name">
+                <cstring>mpLblLower</cstring>
+            </property>
+            <property name="text">
+                <string>Lower Bound</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="2" column="0">
+            <property name="name">
+                <cstring>mpLblUpper</cstring>
+            </property>
+            <property name="text">
+                <string>Upper Bound</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="0" column="0">
+            <property name="name">
+                <cstring>mpLblObject</cstring>
+            </property>
+            <property name="text">
+                <string>Object</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox" row="1" column="4">
+            <property name="name">
+                <cstring>mpLowerInf</cstring>
+            </property>
+            <property name="text">
+                <string>- Infinity</string>
+            </property>
+            <property name="checked">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QCheckBox" row="2" column="4">
+            <property name="name">
+                <cstring>mpUpperInf</cstring>
+            </property>
+            <property name="text">
+                <string>+ Infinity</string>
+            </property>
+            <property name="checked">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="2" column="2">
+            <property name="name">
+                <cstring>mpLayoutUpper</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>mpEditUpper</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+                <widget class="QToolButton">
+                    <property name="name">
+                        <cstring>mpBtnUpperEdit</cstring>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget" row="0" column="2">
+            <property name="name">
+                <cstring>mpLayoutObject</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>mpEditObject</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+                <widget class="QToolButton">
+                    <property name="name">
+                        <cstring>mpBtnObject</cstring>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget" row="1" column="2">
+            <property name="name">
+                <cstring>mpLayoutLower</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>mpEditLower</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                </widget>
+                <widget class="QToolButton">
+                    <property name="name">
+                        <cstring>mpBtnLowerEdit</cstring>
+                    </property>
+                    <property name="text">
+                        <string>...</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <spacer row="1" column="3" rowspan="2" colspan="1">
+            <property name="name">
+                <cstring>mpSpacerRight</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Fixed</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>6</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="1" column="1" rowspan="2" colspan="1">
+            <property name="name">
+                <cstring>mpSpacerLeft</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Fixed</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>6</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>mpLowerInf</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>CQFittingItemWidget</receiver>
+        <slot>slotNegativeInfinity()</slot>
+    </connection>
+    <connection>
+        <sender>mpUpperInf</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>CQFittingItemWidget</receiver>
+        <slot>slotPositiveInfinity()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtnLowerEdit</sender>
+        <signal>clicked()</signal>
+        <receiver>CQFittingItemWidget</receiver>
+        <slot>slotLowerEdit()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtnUpperEdit</sender>
+        <signal>clicked()</signal>
+        <receiver>CQFittingItemWidget</receiver>
+        <slot>slotUpperEdit()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtnObject</sender>
+        <signal>clicked()</signal>
+        <receiver>CQFittingItemWidget</receiver>
+        <slot>slotParamEdit()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="global" impldecl="in declaration">string</include>
+</includes>
+<forwards>
+    <forward>class CFitProblem</forward>
+    <forward>class CFitItem</forward>
+    <forward>class CCopasiObject</forward>
+    <forward>class CCopasiObjectName</forward>
+</forwards>
+<variables>
+    <variable>CCopasiObjectName* mpObjectCN;</variable>
+    <variable>const CCopasiObject* mpLowerObject;</variable>
+    <variable>const CCopasiObject* mpUpperObject;</variable>
+    <variable>CCopasiObject* mpObject;</variable>
+</variables>
+<slots>
+    <slot access="private">slotNegativeInfinity()</slot>
+    <slot access="private">slotPositiveInfinity()</slot>
+    <slot access="private">slotLowerEdit()</slot>
+    <slot access="private">slotUpperEdit()</slot>
+    <slot access="private">slotParamEdit()</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function returnType="bool">initFromFitItem( const CFitItem &amp; item )</function>
+    <function returnType="bool">saveToFitItem( CFitProblem * pg ) const</function>
+    <function access="private">setItemUpperLimit( std::string strUpperLimit )</function>
+    <function access="private">setItemLowerLimit( std::string strLowerLimit )</function>
+    <function access="private" returnType="std::string">getItemUpperLimit() const</function>
+    <function access="private" returnType="std::string">getItemLowerLimit() const</function>
+    <function access="private" returnType="CCopasiObject *">getCopasiObject()</function>
+    <function access="private">setCopasiObjectPtr( CCopasiObject * sourceObject )</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
