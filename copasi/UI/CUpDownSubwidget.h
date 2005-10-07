@@ -1,26 +1,26 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CUpDownSubwidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/06 13:15:59 $
+   $Author: shoops $ 
+   $Date: 2005/10/07 16:40:39 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CUpDownSubwidget.ui'
  **
- ** Created: Mi Apr 6 00:33:03 2005
- **      by: The User Interface Compiler ($Id: CUpDownSubwidget.h,v 1.4 2005/04/06 13:15:59 ssahle Exp $)
+ ** Created: Fri Oct 7 11:58:54 2005
+ **      by: The User Interface Compiler ($Id: CUpDownSubwidget.h,v 1.5 2005/10/07 16:40:39 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef CUPDOWNSUBWIDGET_H
-#define CUPDOWNSUBWIDGET_H
+ #define CUPDOWNSUBWIDGET_H
 
 #include <qvariant.h>
-#include <qpixmap.h>
-#include <qwidget.h>
+ #include <qpixmap.h>
+ #include <qwidget.h>
 
 class QVBoxLayout;
 class QHBoxLayout;

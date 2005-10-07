@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>124</width>
-            <height>146</height>
+            <width>120</width>
+            <height>67</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -45,7 +45,7 @@
                     <cstring>unnamed</cstring>
                 </property>
                 <property name="margin">
-                    <number>5</number>
+                    <number>3</number>
                 </property>
                 <property name="spacing">
                     <number>3</number>
@@ -116,7 +116,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>40</height>
+                    <height>6</height>
                 </size>
             </property>
         </spacer>
@@ -124,13 +124,13 @@
 </widget>
 <images>
     <image name="image0">
-        <data format="PNG" length="130">89504e470d0a1a0a0000000d494844520000000f0000000f08060000003bd6954a000000494944415428916360c00ffee3936422a0192fc0a7b91a8dc6008c7834233b19ab3a5c36a3db86d5765c36630b280cb5540f305c0184218ecdd9f8e216453d45ce26040626850d62cd00452007f842f7eea60000000049454e44ae426082</data>
+        <data format="PNG" length="144">89504e470d0a1a0a0000000d494844520000000f0000000f08060000003bd6954a0000005749444154789ccd92410ac02010031dbfddc7a7278bd844848a3417c135cca022a9a40092449ad7d85c482c0357bfda33491b780649dd92475aa25b724f9dd1f75e585434fb2f6da7dc32aa7fd28e4fd52cceffb07f976f05e325ff82bdc45e0000000049454e44ae426082</data>
     </image>
     <image name="image1">
-        <data format="PNG" length="208">89504e470d0a1a0a0000000d494844520000000f0000000f08060000003bd6954a00000097494441542891d5d1b10dc2301404d087448f101320d1640b1a06c91c192d0d13d0bab1940922c4063436b2824d6828b8d277f7effe37ff8fc018882b9ad8d404e61a19189271c86f9b9a083d749c725aa2a78ecb5afd2135c8697399d84c2eeb638747c7a1a6d9368c23ee1feb2d938b7df7b8e19aa85e65dfa53962822c4c03cf38d606bcaaa6ba55d4beaa24deaed91af28deeb77802705e38a56564c3b60000000049454e44ae426082</data>
+        <data format="PNG" length="248">89504e470d0a1a0a0000000d494844520000000f0000000f08060000003bd6954a000000bf49444154789cad92410ac2301444df887b114f20b8a8b770e3413c478f968d2770d9b410e8098a7801bf1b536c6caa543f04c26426c34c223363ee2c662bff2aae25e7a53025f052e8396636581eba0a428ad75056106a2823a6b4b0462aef7002d89beda21b80a02dcc8e3d3975882e1ebae816f729efcdf9257f07ac805b61b619e32c33426770d5547330748e79056be02238033cb161de54eca520680122b1914a8383c1365b9807e7c18d15987baafe60accddc251fdbfe667efadb0f18e8d73408f977e50000000049454e44ae426082</data>
     </image>
     <image name="image2">
-        <data format="PNG" length="136">89504e470d0a1a0a0000000d494844520000000f0000000f08060000003bd6954a0000004f4944415428916360c00ffee3936422a0192f18a29a19b188e10b2414f55477760d0eb518e2d89ccdc080dde9186a6912dae84ec4ea155cce666040753a3e75584135d4806a523562b31d03501460009aa008f90eab60630000000049454e44ae426082</data>
+        <data format="PNG" length="146">89504e470d0a1a0a0000000d494844520000000f0000000f08060000003bd6954a0000005949444154789cd5933b0ec0300843fd7aeedcdd9d3a94e02a43338425121ff13001db4a06d836297ec5ca053bb4982a181015ace2fd8e3d42eee49fb0a51ebddbf716b52b623b4a8b2dbdd1d317fdc21ee55deffc74df761837e76225f38a3d31d10000000049454e44ae426082</data>
     </image>
 </images>
 <connections>
@@ -153,9 +153,6 @@
         <slot>slotDown()</slot>
     </connection>
 </connections>
-<includes>
-    <include location="local" impldecl="in implementation">CUpDownSubwidget.ui.h</include>
-</includes>
 <variables>
     <variable>int mIndex;</variable>
 </variables>
