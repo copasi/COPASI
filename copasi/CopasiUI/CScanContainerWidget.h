@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanContainerWidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/22 16:17:27 $
+   $Author: shoops $ 
+   $Date: 2005/10/07 13:47:32 $
    End CVS Header */
 
 #ifndef CCONTAINERWIDGET_H
@@ -50,6 +50,9 @@ class CScanContainerWidget : public QTable
 
   protected:
     void updateIndices();
+
+  signals:
+    void itemDeleted();
   };
 
 #endif

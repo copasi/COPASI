@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanContainerWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/22 17:21:29 $
+   $Author: shoops $ 
+   $Date: 2005/10/07 13:47:32 $
    End CVS Header */
 
 #include "CScanContainerWidget.h"
@@ -151,6 +151,8 @@ void CScanContainerWidget::slotDel(int index)
   //std::cout << "***del*** " << index << std::endl;
   removeRow(index);
   updateIndices();
+
+  emit itemDeleted();
 }
 
 void CScanContainerWidget::updateIndices()
