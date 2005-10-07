@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/07 14:14:14 $
+   $Author: shoops $ 
+   $Date: 2005/10/07 16:42:27 $
    End CVS Header */
 
 #include <qcheckbox.h>
@@ -91,6 +91,8 @@ bool TaskWidget::addHLineToGrid(QGridLayout* grid, unsigned int row, unsigned in
   line->setFrameShape(QFrame::HLine);
   line->setFrameShadow(QFrame::Sunken);
   grid->addMultiCellWidget(line, row, row, 0, maxcol);
+
+  return true;
 }
 
 void TaskWidget::addMethodParameterTable(const unsigned C_INT32 & rows, unsigned int row)
