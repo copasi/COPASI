@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQTaskBtnWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 19:19:18 $
+   $Date: 2005/10/07 13:48:05 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTaskBtnWidget.ui'
  **
- ** Created: Wed Oct 5 16:43:27 2005
- **      by: The User Interface Compiler ($Id: CQTaskBtnWidget.cpp,v 1.2 2005/10/06 19:19:18 shoops Exp $)
+ ** Created: Fri Oct 7 08:28:03 2005
+ **      by: The User Interface Compiler ($Id: CQTaskBtnWidget.cpp,v 1.3 2005/10/07 13:48:05 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -34,6 +34,8 @@ CQTaskBtnWidget::CQTaskBtnWidget(QWidget* parent, const char* name, WFlags fl)
   if (!name)
     setName("CQTaskBtnWidget");
   CQTaskBtnWidgetLayout = new QVBoxLayout(this, 0, 6, "CQTaskBtnWidgetLayout");
+  mpSpacer = new QSpacerItem(20, 1, QSizePolicy::Minimum, QSizePolicy::Preferred);
+  CQTaskBtnWidgetLayout->addItem(mpSpacer);
 
   mpGridLayout = new QGridLayout(0, 1, 1, 0, 6, "mpGridLayout");
 
@@ -61,7 +63,7 @@ CQTaskBtnWidget::CQTaskBtnWidget(QWidget* parent, const char* name, WFlags fl)
   mpGridLayout->addMultiCellWidget(mpLine, 0, 0, 0, 3);
   CQTaskBtnWidgetLayout->addLayout(mpGridLayout);
   languageChange();
-  resize(QSize(367, 35).expandedTo(minimumSizeHint()));
+  resize(QSize(367, 44).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // tab order

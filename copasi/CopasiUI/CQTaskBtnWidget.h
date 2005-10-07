@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQTaskBtnWidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 19:19:18 $
+   $Date: 2005/10/07 13:48:05 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTaskBtnWidget.ui'
  **
- ** Created: Wed Oct 5 16:43:27 2005
- **      by: The User Interface Compiler ($Id: CQTaskBtnWidget.h,v 1.2 2005/10/06 19:19:18 shoops Exp $)
+ ** Created: Fri Oct 7 08:28:03 2005
+ **      by: The User Interface Compiler ($Id: CQTaskBtnWidget.h,v 1.3 2005/10/07 13:48:05 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -44,6 +44,7 @@ class CQTaskBtnWidget : public QWidget
 
   protected:
     QVBoxLayout* CQTaskBtnWidgetLayout;
+    QSpacerItem* mpSpacer;
     QGridLayout* mpGridLayout;
 
   protected slots:
