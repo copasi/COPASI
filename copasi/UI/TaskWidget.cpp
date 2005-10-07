@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 20:35:05 $
+   $Date: 2005/10/07 13:48:38 $
    End CVS Header */
 
 #include <qcheckbox.h>
@@ -94,12 +94,12 @@ void TaskWidget::addMethodParameterTable(const unsigned C_INT32 & rows)
   mpTblParameter = new QTable(mpBtnWidget, "mpTblParameter");
   mpTblParameter->setNumRows(rows);
   mpTblParameter->setNumCols(1);
-  mpTblParameter->horizontalHeader()->setLabel(0, tr("Value"));
-  unsigned int height = mpTblParameter->sizeHint().height();
 
   mpTblParameter->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, QSizePolicy::Fixed, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
-  mpTblParameter->setMinimumSize(QSize(0, height));
-  mpTblParameter->setMaximumSize(QSize(32767, height));
+  mpTblParameter->setFixedHeight(mpTblParameter->sizeHint().height() + 2);
+
+  mpTblParameter->horizontalHeader()->setLabel(0, tr("Value"));
+  mpTblParameter->verticalHeader()->setMovingEnabled(false);
 
   mpSpacer1 = new QSpacerItem(130, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
 
