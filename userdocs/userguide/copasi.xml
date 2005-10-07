@@ -7,6 +7,7 @@
  <!ENTITY commandLine SYSTEM "copasi_commandLine.xml" >  
  <!ENTITY methods SYSTEM "copasi_methods.xml" >  
  <!ENTITY fileFormats SYSTEM "copasi_fileFormats.xml" >  
+ <!ENTITY bibliography SYSTEM "copasi_bibliography.xml" >  
 ]> 
 
 <book id="book" xmlns:mml="http://www.w3.org/1998/Math/MathML">
@@ -24,6 +25,7 @@
 &commandLine;
 &methods;
 &fileFormats;
+&bibliography;
 -->
 </book>
 
