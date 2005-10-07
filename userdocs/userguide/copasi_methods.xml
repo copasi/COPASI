@@ -128,10 +128,10 @@ To be written
 <sect2 id="HybridSimulation" xreflabel="Hybrid Simulation">
 <title>Hybrid Simulation</title>
 <sect3 id="JuergensHybrid" xreflabel="Juergens Hybrid">
-<title>Jürgens Hybrid Method (Please change to the appropriate name)</title>
+<title>Juergens Hybrid Method (Please change to the appropriate name)</title>
 <para>To be written</para>
 
-<variablelist><title>Options for Jürgens Hybrid</title>
+<variablelist><title>Options for Juergens Hybrid</title>
 <varlistentry><term>HYBRID.MaxSteps</term>
 <listitem>
 <para>

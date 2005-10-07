@@ -5,7 +5,7 @@
 [
  <!ENTITY gui SYSTEM "copasi_GUI.xml" >  
  <!ENTITY commandLine SYSTEM "copasi_commandLine.xml" >  
- <!ENTITY methods SYSTEM "copasi_methods.xml" >  
+ <!ENTITY copasi_methods SYSTEM "copasi_methods.xml" >  
  <!ENTITY fileFormats SYSTEM "copasi_fileFormats.xml" >  
  <!ENTITY bibliography SYSTEM "copasi_bibliography.xml" >  
 ]> 
@@ -21,12 +21,14 @@
 </bookinfo>
 
 &gui;
-<!--
-&commandLine;
-&methods;
-&fileFormats;
+
+<!-- &commandLine; -->
+
+&copasi_methods;
+
+<!-- &fileFormats; -->
+
 &bibliography;
--->
 </book>
 
 
