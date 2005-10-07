@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.107 $ $Author: shoops $ $Date: 2005/10/07 16:44:06 $  
+# $Revision: 1.108 $ $Author: shoops $ $Date: 2005/10/07 17:03:17 $  
 ######################################################################
 
 TEMPLATE = app
@@ -108,6 +108,7 @@ contains(BUILD_OS, SunOS) {
 contains(BUILD_OS, Darwin){
   QMAKE_LFLAGS += -Wl,-search_paths_first
   
+  COPASI_LIBS += model
   COPASI_LIBS += randomGenerator
   COPASI_LIBS += function
   
@@ -166,7 +167,6 @@ HEADERS += \
            ObjectBrowserDialog.h \
            ObjectBrowserItem.h \
            ObjectBrowserWidget.h \
-           OptimizationItemWidget.h \
            OptimizationWidget.h \
            ParametersWidget.h \
            ParamFittingItemWidget.h \
@@ -244,7 +244,6 @@ SOURCES += \
            ObjectBrowserDialog.cpp \
            ObjectBrowserItem.cpp \
            ObjectBrowserWidget.cpp \
-           OptimizationItemWidget.cpp \
            OptimizationWidget.cpp \
            ParametersWidget.cpp \
            ParamFittingItemWidget.cpp \
