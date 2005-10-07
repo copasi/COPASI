@@ -1,16 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/07 13:49:24 $
+   $Date: 2005/10/07 16:42:04 $
    End CVS Header */
 
 #include <qlabel.h>
+#include <qtoolbutton.h>
 
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
-#include "OptimizationItemWidget.h"
+#include "CQFittingItemWidget.h"
 
 #include "report/CKeyFactory.h"
 #include "parameterFitting/CFitTask.h"
@@ -63,13 +64,12 @@ bool CQFittingWidget::runTask()
 
 void CQFittingWidget::slotBtnAdd()
 {
-  OptimizationItemWidget * tmp;
-  tmp = new OptimizationItemWidget(mpCurrentList);
+  CQFittingItemWidget * tmp = new CQFittingItemWidget(mpCurrentList);
   mpCurrentList->addWidget(tmp);
 
   int totalRows = mpCurrentList->numRows();
   mpCurrentList->ensureCellVisible(totalRows - 1, 0);
-  tmp->ObjectName->setFocus();
+  tmp->mpBtnObject->setFocus();
 
   QString TabLabel = mpTabWidget->tabLabel(mpTabWidget->currentPage());
   TabLabel.replace(QString::number(totalRows - 1), QString::number(totalRows));
