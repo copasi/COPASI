@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/09/05 09:26:46 $
+   $Date: 2005/10/07 12:35:49 $
    End CVS Header */
 
 #ifndef MMASCIIExpoter_H__
@@ -59,6 +59,12 @@ class MMASCIIExporter
      ** This method finds the local reactions parameter by the name, returns an index
      **/
     C_INT32 findKinParamByName(const CReaction* reac, const std::string & Target);
+    /**
+     **   This method finds internal functions calls in a temporary evaluation tree
+     **   and export them in output file 
+     **/ 
+    //void functionExport(CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet,  std::map< std::string, std::string > &functionNameMap, std::string mmasciiFilename);
+    void functionExport(CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::ostringstream & outFunction);
   };
 
 #endif

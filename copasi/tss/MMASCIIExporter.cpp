@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/09/21 11:06:25 $
+   $Date: 2005/10/07 12:35:49 $
    End CVS Header */
 
 #include <math.h>
@@ -20,6 +20,7 @@
 #include "model/CMoiety.h"
 #include "model/CChemEqElement.h"
 #include "function/CFunction.h"
+#include "function/CFunctionDB.h"
 #include "report/CKeyFactory.h"
 #include "function/CEvaluationTree.h"
 #include "function/CEvaluationNodeObject.h"
@@ -119,7 +120,104 @@ C_INT32 MMASCIIExporter::findKinParamByName(const CReaction* reac, const std::st
     }
   return - 1;
 }
+/**
+ **         This method finds internal functions calls in a temporary evaluation tree
+ **         and export them in  output file 
+ **/
+void MMASCIIExporter::functionExport(CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::ostringstream & outFunction)
+{
+  if (pNode)
+    {
+      CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+      CCopasiTree< CEvaluationNode>::iterator treeIt = pNode;
 
+      while (treeIt != NULL)
+        {
+          if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
+            {
+              const CFunction* pFunc;
+              CFunction* tmpFunc = NULL;
+              pFunc = static_cast<CFunction*> (pFunctionDB->findFunction((*treeIt).getData()));
+
+              tmpFunc = new CFunction(*pFunc);
+
+              if (tmpFunc->getRoot())
+                tmpFunc->getRoot()->printRecursively(std::cout);
+
+              functionExport(tmpFunc->getRoot(), exportedFunctionSet, functionNameMap, outFunction);
+
+              if (tmpFunc->getRoot())
+                tmpFunc->getRoot()->printRecursively(std::cout);
+
+              if (pFunc->getType() != CEvaluationTree::MassAction)
+                {
+                  CCopasiTree< CEvaluationNode>::iterator newIt = tmpFunc->getRoot();
+                  unsigned C_INT32 j, varbs_size = tmpFunc->getVariables().size();
+                  unsigned C_INT32 index = 0;
+                  std::map< std::string, std::string > parameterNameMap;
+                  std::set<std::string> parameterNameSet;
+
+                  for (j = 0; j < varbs_size; ++j)
+                    {
+                      if (parameterNameSet.find(tmpFunc->getVariables()[j]->getObjectName()) == parameterNameSet.end())
+                        {
+                          std::ostringstream tmpName;
+                          tmpName << "param_" << index;
+                          parameterNameMap[ tmpFunc->getVariables()[j]->getObjectName() ] = tmpName.str();
+                          parameterNameSet.insert(tmpFunc->getVariables()[j]->getObjectName());
+                          index++;
+                        }
+                    }
+
+                  while (newIt != NULL)
+                    {
+                      if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
+                        {
+                          newIt->setData(parameterNameMap[ tmpFunc->getVariables()[newIt->getData()]->getObjectName() ]);
+                        }
+
+                      ++newIt;
+                    }
+
+                  std::cout << "vorher:" << std::endl;
+
+                  if (tmpFunc->getRoot())
+                    tmpFunc->getRoot()->printRecursively(std::cout);
+
+                  tmpFunc->updateTree();
+
+                  std::cout << "naher:" << std::endl;
+
+                  if (tmpFunc->getRoot())
+                    tmpFunc->getRoot()->printRecursively(std::cout);
+
+                  std::string name = tmpFunc->getObjectName();
+
+                  if (exportedFunctionSet.find(name) == exportedFunctionSet.end())
+                    {
+                      unsigned C_INT32 j, varbs_size = tmpFunc->getVariables().size();
+
+                      outFunction << std::endl;
+                      outFunction << "double " << functionNameMap[name] << "(";
+
+                      for (j = 0; j < varbs_size; ++j)
+                        {
+                          outFunction << "double " << parameterNameMap[ tmpFunc->getVariables()[j]->getObjectName().c_str() ];
+                          if (j != varbs_size - 1) outFunction << ", ";
+                        }
+
+                      outFunction << ") ";
+                      outFunction << '\t' << "//" << name << std::endl;
+                      outFunction << "{return  " << tmpFunc->getInfix().c_str() << "; } " << std::endl;
+
+                      exportedFunctionSet.insert(name);
+                    }
+                }
+            }
+          ++treeIt;
+        }
+    }
+}
 /**
  ** This method takes some of the copasi CModel objects 
  ** and writes them in the ASCII format in an output file.    
@@ -303,39 +401,23 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
 
   outFile << "#ifdef KINETIC_FUNCTIONS" << std::endl;
 
-  std::vector< std::string > newFunctionNames(reacs_size);
-  std::vector< bool > isNewName(reacs_size);
+  std::set<std::string> functionNameSet;
+  std::set<std::string> exportedFunctionSet;
+  std::map< std::string, std::string > functionNameMap;
+  CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+  unsigned C_INT32 tmpFuncIndex = 0;
 
   for (i = 0; i < reacs_size; ++i)
     if (reacs[i]->getFunction().getType() != CEvaluationTree::MassAction)
       {
-        newFunctionNames[i] = reacs[i]->getFunction().getObjectName();
-        isNewName[i] = true;
+        std::ostringstream tmpName;
+
+        tmpName << "Function_" << tmpFuncIndex << "_";
+        functionNameMap[reacs[i]->getFunction().getObjectName()] = tmpName.str();
+        tmpFuncIndex++;
       }
-  count = 0;
-  for (i = 0; i < reacs_size; ++i)
-    {
-      std::string tmpName;
-      std::ostringstream newName;
 
-      reac = reacs[i];
-
-      if (reac->getFunction().getType() != CEvaluationTree::MassAction)
-        if (isNewName[i])
-          {
-            tmpName = reac->getFunction().getObjectName();
-            newName << " Function_" << count << "_";
-            newFunctionNames[i] = newName.str();
-
-            for (j = i + 1; j < reacs_size; ++j)
-              if (newFunctionNames[j] == tmpName)
-                {
-                  newFunctionNames[j] = newName.str();
-                  isNewName[j] = false;
-                }
-            count++;
-          }
-    }
+  tmpFuncIndex = 0;
 
   for (i = 0; i < reacs_size; ++i)
     {
@@ -343,21 +425,52 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
 
       if (reac->getFunction().getType() != CEvaluationTree::MassAction)
         {
-          unsigned C_INT32 varbs_size, test_count = 0;
           const CFunction* func;
           CFunction* tmpFunc = NULL;
 
+          func = &(reac->getFunction());
+          tmpFunc = new CFunction(*func);
+
+          CCopasiTree<CEvaluationNode>::iterator it = tmpFunc->getRoot();
+
+          while (it != NULL)
+            {
+              if (CEvaluationNode::type(it->getType()) == CEvaluationNode::CALL)
+                {
+                  std::ostringstream tmpName;
+                  const CFunction* pFunc;
+                  pFunc = static_cast<CFunction*> (pFunctionDB->findFunction((*it).getData()));
+
+                  if (pFunc->getType() != CEvaluationTree::MassAction)
+                    {
+                      if (functionNameSet.find(pFunc->getObjectName()) == functionNameSet.end())
+                        {
+                          tmpName << "function_" << tmpFuncIndex << "_";
+                          functionNameMap[pFunc->getObjectName()] = tmpName.str();
+
+                          functionNameSet.insert(pFunc->getObjectName());
+                          tmpFuncIndex++;
+                        }
+                    }
+                  /* else "Mass Action " */
+                }
+
+              ++it;
+            }
+
+          std::ostringstream outFunction;
+
+          if (tmpFunc->getRoot())
+            functionExport(tmpFunc->getRoot(), exportedFunctionSet, functionNameMap, outFunction);
+
+          outFile << outFunction.str();
+
+          unsigned C_INT32 varbs_size = func->getVariables().size();
           std::map< std::string, std::string > parameterMap;
+          std::set<std::string> parameterNameSet;
+
           std::map< std::string, std::string > constName;
           std::map< std::string, unsigned C_INT32 > tmpIndex;
-
-          func = &(reac->getFunction());
-
-          tmpFunc = new CFunction(*func);
-          varbs_size = func->getVariables().size();
-
-          for (j = 0; j < varbs_size; ++j)
-            parameterMap[func->getVariables()[j]->getObjectName()] = "\n";
 
           constName["SUBSTRATE"] = "sub_"; tmpIndex["SUBSTRATE"] = 0;
           constName["PRODUCT"] = "prod_"; tmpIndex["PRODUCT"] = 0;
@@ -370,7 +483,7 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
           if (tmpFunc->getRoot())
             tmpFunc->getRoot()->printRecursively(std::cout);
 
-          CCopasiTree<CEvaluationNode>::iterator it = tmpFunc->getRoot();
+          it = tmpFunc->getRoot();
 
           while (it != NULL)
             {
@@ -381,19 +494,18 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
                   const CFunctionParameter* param = func->getVariables()[it->getData()];
                   std::string usage = param->getUsage();
 
-                  if ((isEmptyString(parameterMap[param->getObjectName()])))
+                  if (parameterNameSet.find(param->getObjectName()) == parameterNameSet.end())
                     {
                       CFunctionParameter* tmpParam = tmpFunc->getVariables()[it->getData()];
                       std::ostringstream tmpName;
 
-                      //tmpName << "toto_" << test_count;
                       tmpName << constName[usage] << tmpIndex[usage];
                       tmpParam->setName(tmpName.str());
                       it->setData(tmpName.str());
 
                       parameterMap[param->getObjectName()] = tmpName.str();
-                      //test_count++;
                       tmpIndex[usage]++;
+                      parameterNameSet.insert(param->getObjectName());
                     }
                   else
                     {
@@ -401,6 +513,14 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
                     }
                 }
 
+              if (CEvaluationNode::type(it->getType()) == CEvaluationNode::CALL)
+                {
+                  const CFunction* pFunc;
+                  pFunc = static_cast<CFunction*> (pFunctionDB->findFunction((*it).getData()));
+
+                  if (pFunc->getType() != CEvaluationTree::MassAction)
+                    it->setData(functionNameMap[pFunc->getObjectName()]);
+                }
               ++it;
             }
 
@@ -410,21 +530,24 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
           if (tmpFunc->getRoot())
             tmpFunc->getRoot()->printRecursively();
 
-          if (isNewName[i])
+          std::string name = reac->getFunction().getObjectName();
+
+          if (exportedFunctionSet.find(name) == exportedFunctionSet.end())
             {
               outFile << std::endl;
-              outFile << "double " << newFunctionNames[i] << "(";
+              outFile << "double " << functionNameMap[name] << "(";
 
               for (j = 0; j < varbs_size; ++j)
                 {
-                  //      outFile << "double " << tmpFunc->getVariables()[j]->getObjectName().c_str() << "(" << tmpFunc->getVariables()[j]->getUsage().c_str()<< ")";
                   outFile << "double " << tmpFunc->getVariables()[j]->getObjectName().c_str();
                   if (j != varbs_size - 1) outFile << ", ";
                 }
 
               outFile << ") ";
-              outFile << '\t' << "//" << reac->getFunction().getObjectName().c_str() << std::endl;
+              outFile << '\t' << "//" << name << std::endl;
               outFile << "{return  " << tmpFunc->getInfix().c_str() << "; } " << std::endl;
+
+              exportedFunctionSet.insert(name);
             }
         }
     }
@@ -472,7 +595,7 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
                   const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
 
                   equation
-                  << newFunctionNames[j]
+                  << functionNameMap[reac->getFunction().getObjectName()]
                   << "(";
 
                   for (k = 0; k < params_size; ++k)
