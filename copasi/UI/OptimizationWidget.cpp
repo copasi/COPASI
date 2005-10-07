@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 17:34:19 $
+   $Date: 2005/10/07 16:40:23 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -393,7 +393,7 @@ bool OptimizationWidget::slotAddItem()
 
   int totalRows = scrollview->numRows();
   scrollview->ensureCellVisible(totalRows - 1, 0);
-  tmp->ObjectName->setFocus();
+  tmp->lineObjectName->setFocus();
 
   return true;
 }

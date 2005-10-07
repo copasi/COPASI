@@ -1,0 +1,233 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>OptimizationItemWidget</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>OptimizationItemWidget</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>630</width>
+            <height>125</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form1</string>
+    </property>
+    <hbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>5</number>
+        </property>
+        <widget class="QFrame">
+            <property name="name">
+                <cstring>frame</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>6</number>
+                </property>
+                <widget class="QCheckBox" row="1" column="2">
+                    <property name="name">
+                        <cstring>checkLowerInf</cstring>
+                    </property>
+                    <property name="text">
+                        <string>- Infinity</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="2" column="2">
+                    <property name="name">
+                        <cstring>checkUpperInf</cstring>
+                    </property>
+                    <property name="text">
+                        <string>+ Infinity</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLower</cstring>
+                    </property>
+                    <property name="text">
+                        <string>lower bound</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textUpper</cstring>
+                    </property>
+                    <property name="text">
+                        <string>upper bound</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="1" column="1">
+                    <property name="name">
+                        <cstring>layoutLower</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>lineLower</cstring>
+                            </property>
+                            <property name="frameShape">
+                                <enum>LineEditPanel</enum>
+                            </property>
+                            <property name="frameShadow">
+                                <enum>Sunken</enum>
+                            </property>
+                        </widget>
+                        <widget class="QToolButton">
+                            <property name="name">
+                                <cstring>buttonLowerEdit</cstring>
+                            </property>
+                            <property name="text">
+                                <string>...</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget" row="2" column="1">
+                    <property name="name">
+                        <cstring>layoutUpper</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>lineUpper</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QToolButton">
+                            <property name="name">
+                                <cstring>buttonUpperEdit</cstring>
+                            </property>
+                            <property name="text">
+                                <string>...</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget" row="0" column="1">
+                    <property name="name">
+                        <cstring>layoutParameter</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>lineObjectName</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QToolButton">
+                            <property name="name">
+                                <cstring>buttonParamEdit</cstring>
+                            </property>
+                            <property name="text">
+                                <string>...</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textParameter</cstring>
+                    </property>
+                    <property name="text">
+                        <string>parameter</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </hbox>
+</widget>
+<connections>
+    <connection>
+        <sender>checkLowerInf</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>OptimizationItemWidget</receiver>
+        <slot>slotNegativeInfinity()</slot>
+    </connection>
+    <connection>
+        <sender>checkUpperInf</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>OptimizationItemWidget</receiver>
+        <slot>slotPositiveInfinity()</slot>
+    </connection>
+    <connection>
+        <sender>buttonLowerEdit</sender>
+        <signal>clicked()</signal>
+        <receiver>OptimizationItemWidget</receiver>
+        <slot>slotLowerEdit()</slot>
+    </connection>
+    <connection>
+        <sender>buttonUpperEdit</sender>
+        <signal>clicked()</signal>
+        <receiver>OptimizationItemWidget</receiver>
+        <slot>slotUpperEdit()</slot>
+    </connection>
+    <connection>
+        <sender>buttonParamEdit</sender>
+        <signal>clicked()</signal>
+        <receiver>OptimizationItemWidget</receiver>
+        <slot>slotParamEdit()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="global" impldecl="in declaration">string</include>
+</includes>
+<forwards>
+    <forward>class COptProblem</forward>
+    <forward>class COptItem</forward>
+    <forward>class CCopasiObject</forward>
+    <forward>class CCopasiObjectName</forward>
+</forwards>
+<variables>
+    <variable>CCopasiObjectName* paramObjectCN;</variable>
+    <variable>const CCopasiObject* mpLowerObject;</variable>
+    <variable>const CCopasiObject* mpUpperObject;</variable>
+    <variable>CCopasiObject* mpObject;</variable>
+</variables>
+<slots>
+    <slot access="private">slotNegativeInfinity()</slot>
+    <slot access="private">slotPositiveInfinity()</slot>
+    <slot access="private">slotLowerEdit()</slot>
+    <slot access="private">slotUpperEdit()</slot>
+    <slot access="private">slotParamEdit()</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function returnType="bool">initFromOptItem( const COptItem &amp; item )</function>
+    <function returnType="bool">saveToOptItem( COptProblem * pg ) const</function>
+    <function access="private">setItemUpperLimit( std::string strUpperLimit )</function>
+    <function access="private">setItemLowerLimit( std::string strLowerLimit )</function>
+    <function access="private" returnType="std::string">getItemUpperLimit() const</function>
+    <function access="private" returnType="std::string">getItemLowerLimit() const</function>
+    <function access="private" returnType="CCopasiObject *">getCopasiObject()</function>
+    <function access="private">setCopasiObjectPtr( CCopasiObject * sourceObject )</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

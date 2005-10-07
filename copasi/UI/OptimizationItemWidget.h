@@ -1,37 +1,40 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationItemWidget.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:51 $
+   $Date: 2005/10/07 16:40:23 $
    End CVS Header */
 
-/********************************************************
-Comment : OptimizationItemWidget for embeded widget for limit of the optimization function
- *********************************************************/
+/****************************************************************************
+ ** Form interface generated from reading ui file 'OptimizationItemWidget.ui'
+ **
+ ** Created: Fri Oct 7 12:38:58 2005
+ **      by: The User Interface Compiler ($Id: OptimizationItemWidget.h,v 1.21 2005/10/07 16:40:23 shoops Exp $)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
 
 #ifndef OPTIMIZATIONITEMWIDGET_H
-#define OPTIMIZATIONITEMWIDGET_H
+ #define OPTIMIZATIONITEMWIDGET_H
 
 #include <qvariant.h>
-#include <qwidget.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
-
-#include "copasi.h"
-#include "report/CCopasiObject.h"
-#include "optimization/COptProblem.h"
+ #include <qwidget.h>
+ #include <string>
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
-class QLabel;
-class ScanLineEdit;
-class QPushButton;
-class QComboBox;
-class ScanCheckBox;
+class QSpacerItem;
 class QFrame;
-class OptimizationWidget;
+class QCheckBox;
+class QLabel;
+class QLineEdit;
+class QToolButton;
+class COptProblem;
+class COptItem;
+class CCopasiObject;
+class CCopasiObjectName;
 
 class OptimizationItemWidget : public QWidget
   {
@@ -40,63 +43,53 @@ class OptimizationItemWidget : public QWidget
   public:
     OptimizationItemWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~OptimizationItemWidget();
-    QWidget* mpParent;
 
-    CCopasiObject* mpObject;
-    const CCopasiObject* mpLowerObject;
-    const CCopasiObject* mpUpperObject;
-    QLabel* textLabel2;
-    QLabel* comboBoxLowerOp;
-    QLabel* textLabel4;
-    QLineEdit* lineLower;
-    QLineEdit* ObjectName;
-    QPushButton* buttonParamEdit;
-    QPushButton* buttonLowerEdit;
-    QFrame* line3;
-    QLabel* comboBoxUpperOp;
-    QFrame* line3_2;
-    QLabel* textLabel3;
-    QLineEdit* lineUpper;
-    QPushButton* buttonUpperEdit;
-    QCheckBox* checkUpperInf;
+    QFrame* frame;
     QCheckBox* checkLowerInf;
+    QCheckBox* checkUpperInf;
+    QLabel* textLower;
+    QLabel* textUpper;
+    QLineEdit* lineLower;
+    QToolButton* buttonLowerEdit;
+    QLineEdit* lineUpper;
+    QToolButton* buttonUpperEdit;
+    QLineEdit* lineObjectName;
+    QToolButton* buttonParamEdit;
+    QLabel* textParameter;
 
-    std::string getItemUpperLimit() const;
-    std::string getItemLowerLimit() const;
-
-    void setItemUpperLimit(std::string strUpperLimit);
-    void setItemLowerLimit(std::string strLowerLimit);
-
-    std::string getItemUpperOper() const;
-    std::string getItemLowerOper() const;
-
-    void setItemUpperOper(std::string oper);
-    void setItemLowerOper(std::string oper);
-
-    CCopasiObject* getCopasiObject();
-    void setCopasiObjectPtr (CCopasiObject* sourceObject);
-
+    virtual bool initFromOptItem(const COptItem & item);
     virtual bool saveToOptItem(COptProblem * pg) const;
-    virtual bool initFromOptItem(const COptItem&);
-
-  private:
-
-    CCopasiObjectName* paramObjectCN;
-
-  public slots:
-    virtual void slotPosInfClicked();
-    virtual void slotLowerEdit();
-    virtual void slotNegInfClicked();
-    virtual void slotUpperEdit();
-    virtual void slotParamEdit();
 
   protected:
-    QGridLayout* OptimizationItemWidgetLayout;
-    QHBoxLayout* layout13;
-    QHBoxLayout* layout14;
+    CCopasiObjectName* paramObjectCN;
+    const CCopasiObject* mpLowerObject;
+    const CCopasiObject* mpUpperObject;
+    CCopasiObject* mpObject;
+
+    QHBoxLayout* OptimizationItemWidgetLayout;
+    QGridLayout* frameLayout;
+    QHBoxLayout* layoutLower;
+    QHBoxLayout* layoutUpper;
+    QHBoxLayout* layoutParameter;
 
   protected slots:
     virtual void languageChange();
+
+  private:
+    void init();
+    virtual void setItemUpperLimit(std::string strUpperLimit);
+    virtual void setItemLowerLimit(std::string strLowerLimit);
+    virtual std::string getItemUpperLimit() const;
+    virtual std::string getItemLowerLimit() const;
+    virtual CCopasiObject * getCopasiObject();
+    virtual void setCopasiObjectPtr(CCopasiObject * sourceObject);
+
+  private slots:
+    virtual void slotNegativeInfinity();
+    virtual void slotPositiveInfinity();
+    virtual void slotLowerEdit();
+    virtual void slotUpperEdit();
+    virtual void slotParamEdit();
   };
 
 #endif // OPTIMIZATIONITEMWIDGET_H
