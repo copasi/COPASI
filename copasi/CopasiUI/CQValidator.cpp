@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQValidator.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/10 18:46:31 $
+   $Author: ssahle $ 
+   $Date: 2005/10/10 18:52:51 $
    End CVS Header */
 
-#include <QLineEdit.h>
+#include <qlineedit.h>
 
 #include <float.h>
 
