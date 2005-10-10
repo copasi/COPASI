@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:58 $
+   $Author: ssahle $ 
+   $Date: 2005/10/10 16:12:03 $
    End CVS Header */
 
 /**
@@ -39,7 +39,7 @@ const std::string CCopasiMethod::SubTypeName[] =
     "MCA Method (Reder)",
     "Scan Framework",
     "Time scale separation Method",
-    ""
+    "Sensitivities Method"
   };
 
 const char* CCopasiMethod::XMLSubType[] =
@@ -61,6 +61,7 @@ const char* CCopasiMethod::XMLSubType[] =
     "MCAMethod(Reder)",
     "ScanFramework",
     "TimeScaleSeparationMethod",
+    "SensitivitiesMethod",
     NULL
   };
 

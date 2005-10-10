@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/06 19:41:20 $
+   $Author: ssahle $ 
+   $Date: 2005/10/10 16:12:03 $
    End CVS Header */
 
 /**
@@ -44,6 +44,7 @@ class CCopasiTask : public CCopasiContainer
       parameterFitting,
       mca,
       tss,
+      sens,
       unset,
     };
 
@@ -65,8 +66,8 @@ class CCopasiTask : public CCopasiContainer
 
     enum OutputFlag
     {
-      NO_OUTPUT = 0,                  //do no output
-      OUTPUT,                         //do output, but do not initialize/finish
+      NO_OUTPUT = 0,                   //do no output
+      OUTPUT,                          //do output, but do not initialize/finish
       OUTPUT_COMPLETE          //do output, including initialization and closing
     };
 
