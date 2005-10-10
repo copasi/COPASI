@@ -581,12 +581,6 @@ when setting the "Number of Minor Ticks".</string>
     </connection>
     <connection>
         <sender>mpMinValueEdit</sender>
-        <signal>returnPressed()</signal>
-        <receiver>SliderSettingsDialog</receiver>
-        <slot>minValueChanged()</slot>
-    </connection>
-    <connection>
-        <sender>mpMinValueEdit</sender>
         <signal>lostFocus()</signal>
         <receiver>SliderSettingsDialog</receiver>
         <slot>minValueChanged()</slot>
@@ -596,12 +590,6 @@ when setting the "Number of Minor Ticks".</string>
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>SliderSettingsDialog</receiver>
         <slot>lineEditChanged()</slot>
-    </connection>
-    <connection>
-        <sender>mpMaxValueEdit</sender>
-        <signal>returnPressed()</signal>
-        <receiver>SliderSettingsDialog</receiver>
-        <slot>maxValueChanged()</slot>
     </connection>
     <connection>
         <sender>mpMaxValueEdit</sender>
@@ -632,6 +620,18 @@ when setting the "Number of Minor Ticks".</string>
         <signal>toggled(bool)</signal>
         <receiver>SliderSettingsDialog</receiver>
         <slot>logCheckBoxToggled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>mpOriginalValueEdit</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>lineEditChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpOriginalValueEdit</sender>
+        <signal>lostFocus()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>originalValueChanged()</slot>
     </connection>
 </connections>
 <tabstops>
@@ -671,6 +671,7 @@ when setting the "Number of Minor Ticks".</string>
     <variable>double mMaxValue;</variable>
     <variable>double mMinValue;</variable>
     <variable>double mValue;</variable>
+    <variable>double mOriginalValue;</variable>
     <variable>unsigned int mMinorMajorFactor;</variable>
     <variable>unsigned int mNumMinorTicks;</variable>
     <variable>std::vector&lt; CSlider* &gt; mDefinedSliders;</variable>
@@ -696,6 +697,7 @@ when setting the "Number of Minor Ticks".</string>
     <slot access="protected">extendedOptionsClicked()</slot>
     <slot access="protected">logCheckBoxToggled( bool on )</slot>
     <slot access="protected">globalCheckBoxToggled()</slot>
+    <slot access="protected">originalValueChanged()</slot>
 </slots>
 <functions>
     <function returnType="CSlider *">getSlider()</function>

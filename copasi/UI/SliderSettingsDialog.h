@@ -1,29 +1,29 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/13 16:20:18 $
+   $Author: gauges $ 
+   $Date: 2005/10/10 17:06:58 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'SliderSettingsDialog.ui'
  **
- ** Created: Wed Apr 13 09:48:29 2005
- **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.8 2005/04/13 16:20:18 shoops Exp $)
+ ** Created: Mon Oct 10 18:51:11 2005
+ **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.9 2005/10/10 17:06:58 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef SLIDERSETTINGSDIALOG_H
-#define SLIDERSETTINGSDIALOG_H
+ #define SLIDERSETTINGSDIALOG_H
 
 #include <qvariant.h>
-#include <qdialog.h>
-#include <vector>
-#include <string>
-#include "utilities/CSlider.h"
-#include "copasi.h"
+ #include <qdialog.h>
+ #include <vector>
+ #include <string>
+ #include "utilities/CSlider.h"
+ #include "copasi.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -54,14 +54,16 @@ class SliderSettingsDialog : public QDialog
     QCheckBox* mpLogCheckBox;
     QPushButton* mpExtendedOptionsButton;
     QFrame* mpExtendedOptionsFrame;
-    QLabel* mpMinorMajorFactorLabel;
     QLabel* mpNumMinorTicksLabel;
+    QLabel* mpMinorMajorFactorLabel;
+    QLabel* mpObjectValueLabel;
     QLineEdit* mpNumMinorTicksEdit;
-    QLineEdit* mpMinorTickSizeEdit;
     QLineEdit* mpObjectValueEdit;
     QLineEdit* mpMinorMajorFactorEdit;
-    QLabel* mpObjectValueLabel;
     QLabel* mpMinorTickSizeLabel;
+    QLineEdit* mpOriginalValueEdit;
+    QLineEdit* mpMinorTickSizeEdit;
+    QLabel* mpOriginalValueLabel;
     QPushButton* mpOkButton;
     QPushButton* mpCancelButton;
 
@@ -84,6 +86,7 @@ class SliderSettingsDialog : public QDialog
     double mMaxValue;
     double mMinValue;
     double mValue;
+    double mOriginalValue;
     unsigned int mMinorMajorFactor;
     unsigned int mNumMinorTicks;
     std::vector< CSlider* > mDefinedSliders;
@@ -108,6 +111,7 @@ class SliderSettingsDialog : public QDialog
     QGridLayout* mpExtendedOptionsFrameLayout;
     QSpacerItem* mpSpacer1_3;
     QSpacerItem* mpSpacer1_2;
+    QSpacerItem* mpSpacer1_3_2;
     QHBoxLayout* mpLayout2;
 
   protected slots:
@@ -125,6 +129,7 @@ class SliderSettingsDialog : public QDialog
     virtual void extendedOptionsClicked();
     virtual void logCheckBoxToggled(bool on);
     virtual void globalCheckBoxToggled();
+    virtual void originalValueChanged();
   };
 
 #endif // SLIDERSETTINGSDIALOG_H

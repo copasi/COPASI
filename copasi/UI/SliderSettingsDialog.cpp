@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/13 16:20:18 $
+   $Author: gauges $ 
+   $Date: 2005/10/10 17:06:58 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'SliderSettingsDialog.ui'
  **
- ** Created: Wed Apr 13 09:48:30 2005
- **      by: The User Interface Compiler ($Id: SliderSettingsDialog.cpp,v 1.9 2005/04/13 16:20:18 shoops Exp $)
+ ** Created: Mon Oct 10 18:51:16 2005
+ **      by: The User Interface Compiler ($Id: SliderSettingsDialog.cpp,v 1.10 2005/10/10 17:06:58 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,23 +18,23 @@
 #include "SliderSettingsDialog.h"
 
 #include <qvariant.h>
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qcheckbox.h>
-#include <qframe.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include "qtUtilities.h"
-#include "qlistbox.h"
-#include "qvalidator.h"
-#include "qregexp.h"
-#include "CCopasiSelectionDialog.h"
-#include "report/CCopasiObject.h"
-#include "report/CCopasiObjectName.h"
-#include "model/CModel.h"
-#include "SliderSettingsDialog.ui.h"
+ #include <qpushbutton.h>
+ #include <qlabel.h>
+ #include <qlineedit.h>
+ #include <qcheckbox.h>
+ #include <qframe.h>
+ #include <qlayout.h>
+ #include <qtooltip.h>
+ #include <qwhatsthis.h>
+ #include "qtUtilities.h"
+ #include "qlistbox.h"
+ #include "qvalidator.h"
+ #include "qregexp.h"
+ #include "CCopasiSelectionDialog.h"
+ #include "report/CCopasiObject.h"
+ #include "report/CCopasiObjectName.h"
+ #include "model/CModel.h"
+ #include "SliderSettingsDialog.ui.h"
 
 /*
  *  Constructs a SliderSettingsDialog as a child of 'parent', with the
@@ -110,46 +110,57 @@ SliderSettingsDialog::SliderSettingsDialog(QWidget* parent, const char* name, bo
   mpExtendedOptionsFrame->setFrameShadow(QFrame::Raised);
   mpExtendedOptionsFrameLayout = new QGridLayout(mpExtendedOptionsFrame, 1, 1, 11, 6, "mpExtendedOptionsFrameLayout");
 
+  mpNumMinorTicksLabel = new QLabel(mpExtendedOptionsFrame, "mpNumMinorTicksLabel");
+
+  mpExtendedOptionsFrameLayout->addWidget(mpNumMinorTicksLabel, 0, 0);
+
   mpMinorMajorFactorLabel = new QLabel(mpExtendedOptionsFrame, "mpMinorMajorFactorLabel");
 
   mpExtendedOptionsFrameLayout->addWidget(mpMinorMajorFactorLabel, 1, 0);
 
-  mpNumMinorTicksLabel = new QLabel(mpExtendedOptionsFrame, "mpNumMinorTicksLabel");
+  mpObjectValueLabel = new QLabel(mpExtendedOptionsFrame, "mpObjectValueLabel");
+  mpObjectValueLabel->setMargin(0);
 
-  mpExtendedOptionsFrameLayout->addWidget(mpNumMinorTicksLabel, 0, 0);
+  mpExtendedOptionsFrameLayout->addWidget(mpObjectValueLabel, 2, 0);
 
   mpNumMinorTicksEdit = new QLineEdit(mpExtendedOptionsFrame, "mpNumMinorTicksEdit");
   mpNumMinorTicksEdit->setAlignment(int(QLineEdit::AlignRight));
 
   mpExtendedOptionsFrameLayout->addWidget(mpNumMinorTicksEdit, 0, 1);
 
-  mpMinorTickSizeEdit = new QLineEdit(mpExtendedOptionsFrame, "mpMinorTickSizeEdit");
-  mpMinorTickSizeEdit->setAlignment(int(QLineEdit::AlignRight));
-
-  mpExtendedOptionsFrameLayout->addWidget(mpMinorTickSizeEdit, 0, 4);
-
   mpObjectValueEdit = new QLineEdit(mpExtendedOptionsFrame, "mpObjectValueEdit");
   mpObjectValueEdit->setAlignment(int(QLineEdit::AlignRight));
 
-  mpExtendedOptionsFrameLayout->addWidget(mpObjectValueEdit, 1, 4);
+  mpExtendedOptionsFrameLayout->addWidget(mpObjectValueEdit, 2, 1);
+  mpSpacer1_3 = new QSpacerItem(40, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+  mpExtendedOptionsFrameLayout->addItem(mpSpacer1_3, 1, 2);
+  mpSpacer1_2 = new QSpacerItem(40, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+  mpExtendedOptionsFrameLayout->addItem(mpSpacer1_2, 0, 2);
+  mpSpacer1_3_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  mpExtendedOptionsFrameLayout->addItem(mpSpacer1_3_2, 2, 3);
 
   mpMinorMajorFactorEdit = new QLineEdit(mpExtendedOptionsFrame, "mpMinorMajorFactorEdit");
   mpMinorMajorFactorEdit->setAlignment(int(QLineEdit::AlignRight));
 
   mpExtendedOptionsFrameLayout->addWidget(mpMinorMajorFactorEdit, 1, 1);
-  mpSpacer1_3 = new QSpacerItem(40, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
-  mpExtendedOptionsFrameLayout->addItem(mpSpacer1_3, 1, 2);
-  mpSpacer1_2 = new QSpacerItem(40, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
-  mpExtendedOptionsFrameLayout->addItem(mpSpacer1_2, 0, 2);
-
-  mpObjectValueLabel = new QLabel(mpExtendedOptionsFrame, "mpObjectValueLabel");
-  mpObjectValueLabel->setMargin(0);
-
-  mpExtendedOptionsFrameLayout->addWidget(mpObjectValueLabel, 1, 3);
 
   mpMinorTickSizeLabel = new QLabel(mpExtendedOptionsFrame, "mpMinorTickSizeLabel");
 
   mpExtendedOptionsFrameLayout->addWidget(mpMinorTickSizeLabel, 0, 3);
+
+  mpOriginalValueEdit = new QLineEdit(mpExtendedOptionsFrame, "mpOriginalValueEdit");
+  mpOriginalValueEdit->setAlignment(int(QLineEdit::AlignRight));
+
+  mpExtendedOptionsFrameLayout->addWidget(mpOriginalValueEdit, 1, 4);
+
+  mpMinorTickSizeEdit = new QLineEdit(mpExtendedOptionsFrame, "mpMinorTickSizeEdit");
+  mpMinorTickSizeEdit->setAlignment(int(QLineEdit::AlignRight));
+
+  mpExtendedOptionsFrameLayout->addWidget(mpMinorTickSizeEdit, 0, 4);
+
+  mpOriginalValueLabel = new QLabel(mpExtendedOptionsFrame, "mpOriginalValueLabel");
+
+  mpExtendedOptionsFrameLayout->addWidget(mpOriginalValueLabel, 1, 3);
   SliderSettingsDialogLayout->addWidget(mpExtendedOptionsFrame);
 
   mpLayout2 = new QHBoxLayout(0, 0, 6, "mpLayout2");
@@ -162,7 +173,7 @@ SliderSettingsDialog::SliderSettingsDialog(QWidget* parent, const char* name, bo
   mpLayout2->addWidget(mpCancelButton);
   SliderSettingsDialogLayout->addLayout(mpLayout2);
   languageChange();
-  resize(QSize(486, 279).expandedTo(minimumSizeHint()));
+  resize(QSize(728, 387).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
@@ -178,15 +189,15 @@ SliderSettingsDialog::SliderSettingsDialog(QWidget* parent, const char* name, bo
   connect(mpNumMinorTicksEdit, SIGNAL(returnPressed()), this, SLOT(numMinorTicksChanged()));
   connect(mpNumMinorTicksEdit, SIGNAL(lostFocus()), this, SLOT(numMinorTicksChanged()));
   connect(mpNumMinorTicksEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
-  connect(mpMinValueEdit, SIGNAL(returnPressed()), this, SLOT(minValueChanged()));
   connect(mpMinValueEdit, SIGNAL(lostFocus()), this, SLOT(minValueChanged()));
   connect(mpMinValueEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
-  connect(mpMaxValueEdit, SIGNAL(returnPressed()), this, SLOT(maxValueChanged()));
   connect(mpMaxValueEdit, SIGNAL(lostFocus()), this, SLOT(maxValueChanged()));
   connect(mpMaxValueEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
   connect(mpObjectBrowseButton, SIGNAL(clicked()), this, SLOT(browseButtonPressed()));
   connect(mpExtendedOptionsButton, SIGNAL(clicked()), this, SLOT(extendedOptionsClicked()));
   connect(mpLogCheckBox, SIGNAL(toggled(bool)), this, SLOT(logCheckBoxToggled(bool)));
+  connect(mpOriginalValueEdit, SIGNAL(textChanged(const QString&)), this, SLOT(lineEditChanged()));
+  connect(mpOriginalValueEdit, SIGNAL(lostFocus()), this, SLOT(originalValueChanged()));
 
   // tab order
   setTabOrder(mpObjectNameLineEdit, mpObjectBrowseButton);
@@ -248,6 +259,11 @@ void SliderSettingsDialog::languageChange()
   QToolTip::add(mpExtendedOptionsButton, tr("Displays or hides an extended set of options."));
   QWhatsThis::add(mpExtendedOptionsButton, tr("Clicking this button either displays or hides\n"
                    "some more less often needed options."));
+  mpNumMinorTicksLabel->setText(tr("Number of Minor Ticks:"));
+  QToolTip::add(mpNumMinorTicksLabel, tr("Number of steps for the slider."));
+  QWhatsThis::add(mpNumMinorTicksLabel, tr("This value determines how many steps\n"
+                   "the slider makes from minimum to \n"
+                   "maximum value."));
   mpMinorMajorFactorLabel->setText(tr("Ticksize factor:"));
   QToolTip::add(mpMinorMajorFactorLabel, tr("how many minor ticks make a major tick"));
   QWhatsThis::add(mpMinorMajorFactorLabel, tr("This value determines how many minor \n"
@@ -256,22 +272,24 @@ void SliderSettingsDialog::languageChange()
                    "ticks are larger steps.\n"
                    "The user can make a minor step via the cursor\n"
                    "keys and a major step via the page up/down keys."));
-  mpNumMinorTicksLabel->setText(tr("Number of Minor Ticks:"));
-  QToolTip::add(mpNumMinorTicksLabel, tr("Number of steps for the slider."));
-  QWhatsThis::add(mpNumMinorTicksLabel, tr("This value determines how many steps\n"
-                   "the slider makes from minimum to \n"
-                   "maximum value."));
-  mpNumMinorTicksEdit->setText(tr("10.0"));
-  mpMinorTickSizeEdit->setText(tr("1.0"));
-  mpObjectValueEdit->setText(tr("50.0"));
-  mpMinorMajorFactorEdit->setText(tr("10.0"));
   mpObjectValueLabel->setText(tr("Object Value:"));
   QToolTip::add(mpObjectValueLabel, tr("The value of the underlying object."));
   QWhatsThis::add(mpObjectValueLabel, tr("Here the user can change the actual value of the object\n"
                    "when editing or creating a slider."));
+  mpNumMinorTicksEdit->setText(tr("10.0"));
+  mpObjectValueEdit->setText(tr("50.0"));
+  mpMinorMajorFactorEdit->setText(tr("10.0"));
   mpMinorTickSizeLabel->setText(tr("Minor Ticksize:"));
   QToolTip::add(mpMinorTickSizeLabel, tr("Value change corresponding to a minor step"));
   QWhatsThis::add(mpMinorTickSizeLabel, tr("This value signifies the value change that\n"
+                   "corresponds to one minor step on the slider.\n"
+                   "The user can either set this directly or indirectly\n"
+                   "when setting the \"Number of Minor Ticks\"."));
+  mpOriginalValueEdit->setText(tr("1.0"));
+  mpMinorTickSizeEdit->setText(tr("1.0"));
+  mpOriginalValueLabel->setText(tr("Original Value"));
+  QToolTip::add(mpOriginalValueLabel, tr("Value change corresponding to a minor step"));
+  QWhatsThis::add(mpOriginalValueLabel, tr("This value signifies the value change that\n"
                    "corresponds to one minor step on the slider.\n"
                    "The user can either set this directly or indirectly\n"
                    "when setting the \"Number of Minor Ticks\"."));

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/06/15 13:37:07 $
+   $Date: 2005/10/10 17:06:58 $
    End CVS Header */
 
 /****************************************************************************
@@ -42,7 +42,6 @@ void SliderSettingsDialog::setSlider(CSlider * slider)
   if (found)
     {
       this->mpSlider = slider;
-      //      this->mpObjectNameLineEdit->setText(FROM_UTF8(slider->getSliderObject()->getCN()));
       if (slider->getSliderObject())
         {
           this->mpObjectNameLineEdit->setText(FROM_UTF8(slider->getSliderObject()->getObjectDisplayName()));
@@ -51,7 +50,6 @@ void SliderSettingsDialog::setSlider(CSlider * slider)
         {
           this->mpObjectNameLineEdit->setText("Object not avalable!");
         }
-      //this->mpObjectBrowseButton->hide();
       this->updateInputFields();
       this->updateInputFieldsValues();
     }
@@ -75,6 +73,9 @@ void SliderSettingsDialog::updateInputFieldsValues()
     {
       this->mValue = this->mpSlider->getSliderValue();
       this->mpObjectValueEdit->setText(QString::number(this->mValue));
+
+      this->mOriginalValue = this->mpSlider->getOriginalValue();
+      this->mpOriginalValueEdit->setText(QString::number(this->mOriginalValue));
 
       this->mMinValue = this->mpSlider->getMinValue();
       this->mpMinValueEdit->setText(QString::number(this->mMinValue));
@@ -114,6 +115,7 @@ void SliderSettingsDialog::updateInputFields()
       this->mpNumMinorTicksEdit->setEnabled(true);
       this->mpObjectValueEdit->setEnabled(true);
       this->mpLogCheckBox->setEnabled(true);
+      this->mpOriginalValueEdit->setEnabled(true);
     }
   else
     {
@@ -124,6 +126,7 @@ void SliderSettingsDialog::updateInputFields()
       this->mpMinorTickSizeEdit->setEnabled(false);
       this->mpNumMinorTicksEdit->setEnabled(false);
       this->mpObjectValueEdit->setEnabled(false);
+      this->mpOriginalValueEdit->setEnabled(false);
       this->mpLogCheckBox->setEnabled(false);
     }
 }
@@ -182,7 +185,19 @@ void SliderSettingsDialog::minValueChanged()
 {
   // check if it is smaller than the current value
   // if not, set it to the current value
-  this->mMinValue = mpMinValueEdit->text().toDouble();
+  double value = mpMinValueEdit->text().toDouble();
+  if (value > this->mOriginalValue)
+    {
+      if (QMessageBox::warning(this, "Range to small.", "The minimum value you set is smaller than the default value\n of the slider. The new default will be set to the minimum.\n\n Do you want to procceed?", QMessageBox::Yes, QMessageBox::No | QMessageBox::Default) != QMessageBox::Yes)
+        {
+          this->mpMinValueEdit->setText(QString::number(this->mMinValue));
+          this->mChanged = false;
+          return;
+        }
+      this->mOriginalValue = value;
+      this->mpOriginalValueEdit->setText(QString::number(this->mOriginalValue));
+    }
+  this->mMinValue = value;
   if (this->mMinValue > this->mMaxValue)
     {
       this->mMaxValue = this->mMinValue;
@@ -190,10 +205,6 @@ void SliderSettingsDialog::minValueChanged()
     }
   if (this->mMinValue > this->mValue)
     {
-      /*
-        this->mMinValue = this->mValue;
-        this->mpMinValueEdit->setText(QString::number(this->mMinValue));
-        */
       this->mValue = this->mMinValue;
       this->mpObjectValueEdit->setText(QString::number(this->mValue));
     }
@@ -212,7 +223,19 @@ void SliderSettingsDialog::maxValueChanged()
 {
   // check if it is larget then the current value
   // else set it to the current value
-  this->mMaxValue = mpMaxValueEdit->text().toDouble();
+  double value = mpMaxValueEdit->text().toDouble();
+  if (value < this->mOriginalValue)
+    {
+      if (QMessageBox::warning(this, "Range to small.", "The maximum value you set is smaller than the default value\n of the slider. The new default will be set to the maximum.\n\n Do you want to procceed?", QMessageBox::Yes, QMessageBox::No | QMessageBox::Default) != QMessageBox::Yes)
+        {
+          this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
+          this->mChanged = false;
+          return;
+        }
+      this->mOriginalValue = value;
+      this->mpOriginalValueEdit->setText(QString::number(this->mOriginalValue));
+    }
+  this->mMaxValue = value;
   if (this->mMinValue > this->mMaxValue)
     {
       this->mMinValue = this->mMaxValue;
@@ -220,10 +243,6 @@ void SliderSettingsDialog::maxValueChanged()
     }
   if (this->mMaxValue < this->mValue)
     {
-      /*
-      this->mMaxValue = this->mValue;
-      this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
-      */
       this->mValue = this->mMaxValue;
       this->mpObjectValueEdit->setText(QString::number(this->mValue));
     }
@@ -234,25 +253,16 @@ void SliderSettingsDialog::maxValueChanged()
 
 void SliderSettingsDialog::objectValueChanged()
 {
-  // check if the value is within range, else set it to
-  // the closest border of the range
+  // check if the value is within range, else set a new range
   // get the value and set it in the current slider
   this->mValue = mpObjectValueEdit->text().toDouble();
   if (this->mValue > this->mMaxValue)
     {
-      /*
-      this->mValue = this->mMaxValue;
-      this->mpObjectValueEdit->setText(QString::number(this->mValue));
-      */
       this->mMaxValue = this->mValue;
       this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
     }
   if (this->mValue < this->mMinValue)
     {
-      /*
-      this->mValue = this->mMinValue;
-      this->mpObjectValueEdit->setText(QString::number(this->mValue));
-        */
       this->mMinValue = this->mValue;
       this->mpMinValueEdit->setText(QString::number(this->mMinValue));
     }
@@ -274,6 +284,7 @@ void SliderSettingsDialog::init()
   // this->mpExtendedOptionsFrame->hide();
   this->mpExtendedOptionsButton->setText("Advanced <<");
   mpObjectValueEdit->setValidator(new QDoubleValidator(this));
+  mpOriginalValueEdit->setValidator(new QDoubleValidator(this));
   mpMinValueEdit->setValidator(new QDoubleValidator(this));
   mpMaxValueEdit->setValidator(new QDoubleValidator(this));
   mpMinorTickSizeEdit->setValidator(new QDoubleValidator(this));
@@ -406,6 +417,7 @@ void SliderSettingsDialog::updateSlider()
       this->mpSlider->setTickNumber(this->mNumMinorTicks);
       this->mpSlider->setTickFactor(this->mMinorMajorFactor);
       this->mpSlider->setScaling(this->mScaling);
+      this->mpSlider->setOriginalValue(this->mOriginalValue);
     }
 }
 
@@ -466,9 +478,28 @@ void SliderSettingsDialog::globalCheckBoxToggled()
 void SliderSettingsDialog::updateInternalValues()
 {
   objectValueChanged();
+  originalValueChanged();
   minValueChanged();
   maxValueChanged();
   minorMajorFactorChanged();
   minorTickSizeChanged();
   numMinorTicksChanged();
+}
+
+void SliderSettingsDialog::originalValueChanged()
+{
+  // check if the value is within range, else set it to
+  // set new values for the range
+  this->mOriginalValue = mpOriginalValueEdit->text().toDouble();
+  if (this->mOriginalValue > this->mMaxValue)
+    {
+      this->mMaxValue = this->mOriginalValue;
+      this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
+    }
+  if (this->mOriginalValue < this->mMinValue)
+    {
+      this->mMinValue = this->mOriginalValue;
+      this->mpMinValueEdit->setText(QString::number(this->mMinValue));
+    }
+  this->mChanged = false;
 }
