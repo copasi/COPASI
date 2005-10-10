@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiTimer.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/08 17:47:28 $
+   $Date: 2005/10/10 19:59:50 $
    End CVS Header */
 
 #include "copasi.h"
@@ -15,7 +15,7 @@
 CCopasiTimer::CCopasiTimer(const Type & type,
                            const CCopasiContainer * pParent):
     CCopasiObject((type == CCopasiTimer::WALL) ? "Wall Clock Time" : "CPU Time",
-                  pParent, "Timer"),
+                  pParent, "Timer", CCopasiObject::ValueDbl),
     mType(type),
     mStartTime((mType == CCopasiTimer::WALL) ?
                CCopasiTimeVariable::getCurrentWallTime() :
