@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/07 18:41:23 $
+   $Date: 2005/10/10 18:51:43 $
    End CVS Header */
 
 #include <qcheckbox.h>
@@ -235,6 +235,8 @@ bool TaskWidget::loadCommon()
 
   mpHeaderWidget->mpBoxExecutable->setChecked(mpTask->isScheduled());
   mpHeaderWidget->mpUpdateModel->setChecked(mpTask->isUpdateModel());
+
+  mpHeaderWidget->saved();
   return true;
 }
 
@@ -258,6 +260,7 @@ bool TaskWidget::saveCommon()
       mpChanged = true;
     }
 
+  mpHeaderWidget->saved();
   return true;
 }
 
