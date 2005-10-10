@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.108 $ $Author: shoops $ $Date: 2005/10/07 17:03:17 $  
+# $Revision: 1.109 $ $Author: shoops $ $Date: 2005/10/10 18:47:23 $  
 ######################################################################
 
 TEMPLATE = app
@@ -145,6 +145,7 @@ HEADERS += \
            copasiui3window.h \
            CProgressBar.h \
            CQReportListItem.h \
+           CQValidator.h \
            CScanContainerWidget.h \
            CTimeSeriesTable.h \
            DataModelGUI.h \
@@ -221,6 +222,7 @@ SOURCES += \
            copasiui3window.cpp \
            CProgressBar.cpp \
            CQReportListItem.cpp \
+           CQValidator.cpp \
            CScanContainerWidget.cpp \
            CTimeSeriesTable.cpp \
            DataModelGUI.cpp \

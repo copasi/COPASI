@@ -190,6 +190,10 @@ SOURCE=.\CQTextDialog.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQValidator.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CReactionInterface.cpp
 # End Source File
 # Begin Source File
@@ -638,6 +642,10 @@ SOURCE=.\CQTextDialog.ui.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQValidator.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CReactionInterface.h
 # End Source File
 # Begin Source File
@@ -827,6 +835,10 @@ SOURCE=.\Observer.h
 # Begin Source File
 
 SOURCE=.\OptimizationItemWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\OptimizationItemWidget.ui.h
 # End Source File
 # Begin Source File
 
