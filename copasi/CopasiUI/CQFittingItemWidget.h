@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/07 18:41:23 $
+   $Date: 2005/10/10 18:53:10 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Fri Oct 7 14:23:54 2005
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.2 2005/10/07 18:41:23 shoops Exp $)
+ ** Created: Mon Oct 10 11:54:12 2005
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.3 2005/10/10 18:53:10 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -31,10 +31,12 @@ class QCheckBox;
 class QLineEdit;
 class QToolButton;
 class QComboBox;
-class CFitProblem;
+class CCopasiSelectionDialog;
 class CFitItem;
 class CCopasiObject;
 class CCopasiObjectName;
+class CQValidatorBound;
+class CQValidatorNotEmpty;
 
 class CQFittingItemWidget : public QWidget
   {
@@ -59,14 +61,18 @@ class CQFittingItemWidget : public QWidget
     QLineEdit* mpEditObject;
     QToolButton* mpBtnObject;
 
-    virtual bool initFromFitItem(const CFitItem & item);
-    virtual bool saveToFitItem(CFitProblem * pg) const;
-
   protected:
+    CFitItem * mpFitItem;
     CCopasiObjectName* mpObjectCN;
     const CCopasiObject* mpLowerObject;
     const CCopasiObject* mpUpperObject;
     CCopasiObject* mpObject;
+    CQValidatorNotEmpty * mpObjectValidator;
+    CQValidatorBound * mpLowerValidator;
+    CQValidatorBound * mpUpperValidator;
+
+    bool loadFitItem(const CFitItem * pItem);
+    CFitItem * saveFitItem(CFitItem * pItem);
 
     QGridLayout* CQFittingItemWidgetLayout;
     QSpacerItem* mpSpacerLeft;
@@ -86,13 +92,15 @@ class CQFittingItemWidget : public QWidget
     virtual std::string getItemLowerLimit() const;
     virtual CCopasiObject * getCopasiObject();
     virtual void setCopasiObjectPtr(CCopasiObject * sourceObject);
+    void destroy();
 
   private slots:
-    virtual void slotNegativeInfinity();
-    virtual void slotPositiveInfinity();
-    virtual void slotLowerEdit();
-    virtual void slotUpperEdit();
-    virtual void slotParamEdit();
+    void slotNegativeInfinity();
+    void slotPositiveInfinity();
+    void slotLowerEdit();
+    void slotUpperEdit();
+    void slotParamEdit();
+    void slotExperiments();
   };
 
 #endif // CQFITTINGITEMWIDGET_H

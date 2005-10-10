@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/07 18:41:22 $
+   $Date: 2005/10/10 18:53:10 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Fri Oct 7 14:23:55 2005
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.2 2005/10/07 18:41:22 shoops Exp $)
+ ** Created: Mon Oct 10 11:54:13 2005
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.3 2005/10/10 18:53:10 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -109,7 +109,8 @@ CQFittingItemWidget::CQFittingItemWidget(QWidget* parent, const char* name, WFla
   mpLayoutObject = new QHBoxLayout(0, 0, 6, "mpLayoutObject");
 
   mpEditObject = new QLineEdit(this, "mpEditObject");
-  mpEditObject->setEnabled(FALSE);
+  mpEditObject->setEnabled(TRUE);
+  mpEditObject->setReadOnly(TRUE);
   mpLayoutObject->addWidget(mpEditObject);
 
   mpBtnObject = new QToolButton(this, "mpBtnObject");
@@ -126,6 +127,7 @@ CQFittingItemWidget::CQFittingItemWidget(QWidget* parent, const char* name, WFla
   connect(mpBtnLowerEdit, SIGNAL(clicked()), this, SLOT(slotLowerEdit()));
   connect(mpBtnUpperEdit, SIGNAL(clicked()), this, SLOT(slotUpperEdit()));
   connect(mpBtnObject, SIGNAL(clicked()), this, SLOT(slotParamEdit()));
+  connect(mpBtnExperiments, SIGNAL(clicked()), this, SLOT(slotExperiments()));
   init();
 }
 
@@ -134,6 +136,7 @@ CQFittingItemWidget::CQFittingItemWidget(QWidget* parent, const char* name, WFla
  */
 CQFittingItemWidget::~CQFittingItemWidget()
 {
+  destroy();
   // no need to delete child widgets, Qt does it all for us
 }
 

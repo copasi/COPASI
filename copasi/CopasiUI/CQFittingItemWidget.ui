@@ -212,7 +212,10 @@
                         <cstring>mpEditObject</cstring>
                     </property>
                     <property name="enabled">
-                        <bool>false</bool>
+                        <bool>true</bool>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QToolButton">
@@ -258,39 +261,53 @@
         <receiver>CQFittingItemWidget</receiver>
         <slot>slotParamEdit()</slot>
     </connection>
+    <connection>
+        <sender>mpBtnExperiments</sender>
+        <signal>clicked()</signal>
+        <receiver>CQFittingItemWidget</receiver>
+        <slot>slotExperiments()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="global" impldecl="in declaration">string</include>
 </includes>
 <forwards>
-    <forward>class CFitProblem</forward>
+    <forward>class CCopasiSelectionDialog</forward>
     <forward>class CFitItem</forward>
     <forward>class CCopasiObject</forward>
     <forward>class CCopasiObjectName</forward>
+    <forward>class CQValidatorBound</forward>
+    <forward>class CQValidatorNotEmpty</forward>
 </forwards>
 <variables>
+    <variable>CFitItem * mpFitItem;</variable>
     <variable>CCopasiObjectName* mpObjectCN;</variable>
     <variable>const CCopasiObject* mpLowerObject;</variable>
     <variable>const CCopasiObject* mpUpperObject;</variable>
     <variable>CCopasiObject* mpObject;</variable>
+    <variable>CQValidatorNotEmpty * mpObjectValidator;</variable>
+    <variable>CQValidatorBound * mpLowerValidator;</variable>
+    <variable>CQValidatorBound * mpUpperValidator;</variable>
 </variables>
 <slots>
-    <slot access="private">slotNegativeInfinity()</slot>
-    <slot access="private">slotPositiveInfinity()</slot>
-    <slot access="private">slotLowerEdit()</slot>
-    <slot access="private">slotUpperEdit()</slot>
-    <slot access="private">slotParamEdit()</slot>
+    <slot access="private" specifier="non virtual">slotNegativeInfinity()</slot>
+    <slot access="private" specifier="non virtual">slotPositiveInfinity()</slot>
+    <slot access="private" specifier="non virtual">slotLowerEdit()</slot>
+    <slot access="private" specifier="non virtual">slotUpperEdit()</slot>
+    <slot access="private" specifier="non virtual">slotParamEdit()</slot>
+    <slot access="private" specifier="non virtual">slotExperiments()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
-    <function returnType="bool">initFromFitItem( const CFitItem &amp; item )</function>
-    <function returnType="bool">saveToFitItem( CFitProblem * pg ) const</function>
+    <function access="protected" specifier="non virtual" returnType="bool">loadFitItem( const CFitItem * pItem )</function>
+    <function access="protected" specifier="non virtual" returnType="CFitItem *">saveFitItem(CFitItem * pItem) </function>
     <function access="private">setItemUpperLimit( std::string strUpperLimit )</function>
     <function access="private">setItemLowerLimit( std::string strLowerLimit )</function>
     <function access="private" returnType="std::string">getItemUpperLimit() const</function>
     <function access="private" returnType="std::string">getItemLowerLimit() const</function>
     <function access="private" returnType="CCopasiObject *">getCopasiObject()</function>
     <function access="private">setCopasiObjectPtr( CCopasiObject * sourceObject )</function>
+    <function access="private" specifier="non virtual">destroy()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
