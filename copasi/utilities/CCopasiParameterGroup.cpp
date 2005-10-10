@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/30 14:43:26 $
+   $Date: 2005/10/10 21:08:43 $
    End CVS Header */
 
 /**
@@ -71,6 +71,24 @@ std::ostream &operator<<(std::ostream &os, const CCopasiParameterGroup & o)
 
   os << ">>> Parameter Group: " << o.getObjectName() << std::endl;
   return os;
+}
+
+bool operator==(const CCopasiParameterGroup & lhs,
+                const CCopasiParameterGroup & rhs)
+{
+  if (lhs.getObjectName() != rhs.getObjectName()) return false;
+  if (lhs.mValue.pGROUP->size() != rhs.mValue.pGROUP->size()) return false;
+
+  CCopasiParameterGroup::parameterGroup::const_iterator itLhs =
+    lhs.mValue.pGROUP->begin();
+  CCopasiParameterGroup::parameterGroup::const_iterator endLhs =
+    lhs.mValue.pGROUP->end();
+
+  CCopasiParameterGroup::parameterGroup::const_iterator itRhs =
+    rhs.mValue.pGROUP->begin();
+
+  for (; itLhs != endLhs; ++itLhs, itRhs)
+    if (!(**itLhs == **itRhs)) return false;
 }
 
 void CCopasiParameterGroup::copyGroup(const parameterGroup * pGroup)

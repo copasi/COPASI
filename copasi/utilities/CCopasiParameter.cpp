@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:58 $
+   $Date: 2005/10/10 21:08:43 $
    End CVS Header */
 
 /**
@@ -200,6 +200,13 @@ std::ostream &operator<<(std::ostream &os, const CCopasiParameter & o)
     }
 
   return os;
+}
+
+bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
+{
+  if (lhs.getObjectName() != rhs.getObjectName()) return false;
+  if (lhs.mSize != rhs.mSize) return false;
+  return !memcmp(lhs.mValue.pVOID, rhs.mValue.pVOID, lhs.mSize);
 }
 
 void * CCopasiParameter::getReference() const

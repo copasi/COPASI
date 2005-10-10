@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/30 15:17:07 $
+   $Date: 2005/10/10 21:08:43 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -427,6 +427,15 @@ class CCopasiParameterGroup: public CCopasiParameter
      * @return ostream & os
      */
     friend std::ostream &operator<<(std::ostream &os, const CCopasiParameterGroup & o);
+
+    /**
+     * Comparison operator
+     * @param const CCopasiParameterGroup & lhs
+     * @param const CCopasiParameterGroup & rhs
+     * @return bool equal
+     */
+    friend bool operator==(const CCopasiParameterGroup & lhs,
+                           const CCopasiParameterGroup & rhs);
 
   private:
     /**

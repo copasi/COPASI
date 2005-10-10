@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/20 12:34:30 $
+   $Date: 2005/10/10 21:08:43 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -254,6 +254,14 @@ class CCopasiParameter: public CCopasiContainer
      * @return ostream & os
      */
     friend std::ostream &operator<<(std::ostream &os, const CCopasiParameter & o);
+
+    /**
+     * Comparison operator
+     * @param const CCopasiParameter & lhs
+     * @param const CCopasiParameter & rhs
+     * @return bool equal
+     */
+    friend bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs);
 
     virtual void * getReference() const;
 
