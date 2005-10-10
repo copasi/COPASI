@@ -7,9 +7,9 @@
     <property name="geometry">
         <rect>
             <x>0</x>
-            <y>9</y>
+            <y>1</y>
             <width>521</width>
-            <height>28</height>
+            <height>26</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -96,14 +96,40 @@
         </widget>
     </hbox>
 </widget>
+<connections>
+    <connection>
+        <sender>mpBoxExecutable</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>CQTaskHeaderWidget</receiver>
+        <slot>slotExecutable()</slot>
+    </connection>
+    <connection>
+        <sender>mpUpdateModel</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>CQTaskHeaderWidget</receiver>
+        <slot>slotUpdate()</slot>
+    </connection>
+</connections>
 <includes>
     <include location="global" impldecl="in declaration">string</include>
 </includes>
 <forwards>
     <forward>class CCopasiTask;</forward>
 </forwards>
+<variables>
+    <variable>bool mExecutableChanged;</variable>
+    <variable>bool mUpdateChanged;</variable>
+    <variable>QColor mSavedColor;</variable>
+    <variable>QColor mChangedColor;</variable>
+</variables>
+<slots>
+    <slot access="protected" specifier="non virtual">slotUpdate()</slot>
+    <slot access="protected" specifier="non virtual">slotExecutable()</slot>
+</slots>
 <functions>
     <function specifier="non virtual" returnType="bool">setTaskName(const std::string &amp; name)</function>
+    <function access="private" specifier="non virtual">init()</function>
+    <function specifier="non virtual">saved()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

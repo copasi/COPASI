@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQTaskHeaderWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/07 14:15:11 $
+   $Author: shoops $ 
+   $Date: 2005/10/10 18:50:57 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTaskHeaderWidget.ui'
  **
- ** Created: Fri Oct 7 13:41:48 2005
- **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.cpp,v 1.4 2005/10/07 14:15:11 ssahle Exp $)
+ ** Created: Mon Oct 10 14:48:39 2005
+ **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.cpp,v 1.5 2005/10/10 18:50:57 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -51,8 +51,13 @@ CQTaskHeaderWidget::CQTaskHeaderWidget(QWidget* parent, const char* name, WFlags
   mpBoxExecutable = new QCheckBox(this, "mpBoxExecutable");
   CQTaskHeaderWidgetLayout->addWidget(mpBoxExecutable);
   languageChange();
-  resize(QSize(521, 28).expandedTo(minimumSizeHint()));
+  resize(QSize(521, 26).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
+
+  // signals and slots connections
+  connect(mpBoxExecutable, SIGNAL(toggled(bool)), this, SLOT(slotExecutable()));
+  connect(mpUpdateModel, SIGNAL(toggled(bool)), this, SLOT(slotUpdate()));
+  init();
 }
 
 /*

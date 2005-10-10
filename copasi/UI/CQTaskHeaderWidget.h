@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskHeaderWidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/07 14:15:11 $
+   $Author: shoops $ 
+   $Date: 2005/10/10 18:50:57 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTaskHeaderWidget.ui'
  **
- ** Created: Fri Oct 7 13:39:32 2005
- **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.h,v 1.4 2005/10/07 14:15:11 ssahle Exp $)
+ ** Created: Mon Oct 10 14:48:39 2005
+ **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.h,v 1.5 2005/10/10 18:50:57 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -43,14 +43,26 @@ class CQTaskHeaderWidget : public QWidget
     QCheckBox* mpBoxExecutable;
 
     bool setTaskName(const std::string & name);
+    void saved();
 
   protected:
+    bool mExecutableChanged;
+    bool mUpdateChanged;
+    QColor mSavedColor;
+    QColor mChangedColor;
+
     QHBoxLayout* CQTaskHeaderWidgetLayout;
     QSpacerItem* mpSpacer1;
     QSpacerItem* mpSpacer2;
 
   protected slots:
     virtual void languageChange();
+
+    void slotUpdate();
+    void slotExecutable();
+
+  private:
+    void init();
   };
 
 #endif // CQTASKHEADERWIDGET_H
