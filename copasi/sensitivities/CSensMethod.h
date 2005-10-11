@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/10/10 16:13:43 $
+   $Date: 2005/10/11 16:20:45 $
    End CVS Header */
 
 #ifndef COPASI_SENSMethod
@@ -47,8 +47,8 @@ class CSensMethod : public CCopasiMethod
      * @param CCopasiMethod::SubType subType 
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CSensMethod(CCopasiMethod::SubType subType,
-                const CCopasiContainer * pParent = NULL);
+    explicit CSensMethod(CCopasiMethod::SubType subType,
+                         const CCopasiContainer * pParent = NULL);
 
   public:
     /**
@@ -107,7 +107,9 @@ class CSensMethod : public CCopasiMethod
 
     std::vector<std::vector<CCopasiObject*> > mTargetObjects, mVariableObjects;
 
-    std::vector<unsigned int> mTargetSizes, mVariableSizes;
+    std::vector<unsigned int> mTargetSizes, mVariableSizes, mIndex;
+
+    unsigned int mTargetDim, mVariableDim;
   };
 
 #endif // COPASI_CTSSMethod

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/10/10 16:13:43 $
+   $Date: 2005/10/11 16:20:45 $
    End CVS Header */
 
 /**
@@ -99,28 +99,33 @@ bool CSensMethod::initialize(CSensProblem* problem)
   //initialize the object vectors
 
   //resize the arrays
-  mTargetSizes.clear(); mTargetSizes.resize(mTargetObjects.size());
-  //mTarget1.clear(); mTarget1.resize(mTargetObjects.size());
-  //mTarget2.clear(); mTarget2.resize(mTargetObjects.size());
+  mTargetDim = mTargetObjects.size();
+  mTargetSizes.clear(); mTargetSizes.resize(mTargetDim);
 
-  unsigned C_INT32 i, imax;
+  unsigned C_INT32 i;
 
-  for (i = 0; i < mTargetObjects.size(); ++i)
+  for (i = 0; i < mTargetDim; ++i)
     {
       mTargetSizes[i] = mTargetObjects[i].size();
-
-      //mTarget1[i].resize(mTargetObjects[i].size());
-      //mTarget2[i].resize(mTargetObjects[i].size());
     }
 
-  mVariableSizes.clear(); mVariableSizes.resize(mVariableObjects.size());
+  mTarget1.resize(mTargetSizes);
+  mTarget2.resize(mTargetSizes);
 
-  for (i = 0; i < mVariableObjects.size(); ++i)
+  mVariableDim = mVariableObjects.size();
+  mVariableSizes.clear(); mVariableSizes.resize(mVariableDim);
+
+  for (i = 0; i < mVariableDim; ++i)
     {
       mVariableSizes[i] = mVariableObjects[i].size();
     }
 
   //CCopasiArray mResult;
+  //mResultDim =
+  mIndex.clear(); mIndex.resize(mTargetDim + mVariableDim);
+  std::vector<unsigned int>::iterator it = copy(mTargetSizes.begin(), mTargetSizes.end(), mIndex.begin());
+  copy(mVariableSizes.begin(), mVariableSizes.end(), it);
+  mResult.resize(mIndex);
 }
 
 bool CSensMethod::processInternal()
