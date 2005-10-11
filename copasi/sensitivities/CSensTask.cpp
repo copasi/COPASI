@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/10/10 16:13:43 $
+   $Date: 2005/10/11 16:21:49 $
    End CVS Header */
 
 /**
@@ -25,7 +25,7 @@
 #define XXXX_Reporting
 
 CSensTask::CSensTask(const CCopasiContainer * pParent):
-    CCopasiTask(CCopasiTask::tss, pParent)
+    CCopasiTask(CCopasiTask::sens, pParent)
 {
   mpProblem = new CSensProblem(this);
   mpMethod = CSensMethod::createSensMethod(CCopasiMethod::sensMethod);
