@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:07:22 $
+   $Date: 2005/10/11 16:19:59 $
    End CVS Header */
 
 #include <iostream>
@@ -42,7 +42,7 @@ bool CCallbackHandler::doSeparator()
   return true;
 }
 
-bool CCallbackHandler::init(C_INT32 maxSteps, const std::string & text, bool cancelButton)
+bool CCallbackHandler::init(C_INT32, const std::string &, bool)
 {
 #ifdef COPASI_DEBUG
   std::cout << "CallbackHandler: init" << std::endl;
@@ -50,7 +50,7 @@ bool CCallbackHandler::init(C_INT32 maxSteps, const std::string & text, bool can
   return true;
 }
 
-bool CCallbackHandler::reInit(C_INT32 maxSteps, const std::string & text)
+bool CCallbackHandler::reInit(C_INT32 /*maxSteps*/, const std::string & /*text*/)
 {
 #ifdef COPASI_DEBUG
   std::cout << "CallbackHandler: reInit" << std::endl;
@@ -58,7 +58,7 @@ bool CCallbackHandler::reInit(C_INT32 maxSteps, const std::string & text)
   return true;
 }
 
-bool CCallbackHandler::progress(C_INT32 steps)
+bool CCallbackHandler::progress(C_INT32 /*steps*/)
 {
 #ifdef COPASI_DEBUG
   std::cout << "CallbackHandler: progress" << std::endl;

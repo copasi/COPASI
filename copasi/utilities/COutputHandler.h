@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/02/27 20:07:22 $
+   $Date: 2005/10/11 16:19:59 $
    End CVS Header */
 
 #if !defined OUTPUT_HANDLER
@@ -16,6 +16,8 @@
 class CCallbackHandler
   {
   public:
+
+    virtual ~CCallbackHandler() {};
 
     //for output handler
     virtual bool init();
