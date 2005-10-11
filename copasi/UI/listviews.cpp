@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.182 $
+   $Revision: 1.183 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/05 16:26:53 $
+   $Author: ssahle $ 
+   $Date: 2005/10/11 16:24:30 $
    End CVS Header */
 
 /****************************************************************************
@@ -46,6 +46,7 @@
 #include "SteadyStateWidget.h"
 #include "StateWidget.h"
 #include "ScanWidget.h"
+#include "SensitivitiesWidget.h"
 #include "OptimizationWidget.h"
 #include "TableDefinition.h"
 #include "TableDefinition1.h"
@@ -211,6 +212,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     reactionsWidget(NULL),
     reactionsWidget1(NULL),
     scanWidget(NULL),
+    sensWidget(NULL),
     stateWidget(NULL),
     steadystateWidget(NULL),
     tableDefinition(NULL),
@@ -402,6 +404,11 @@ void ListViews::ConstructNodeWidgets()
   tssWidget->hide();
 #endif
 
+#ifdef COPASI_SENS
+  if (!sensWidget) sensWidget = new SensitivitiesWidget(this);
+  sensWidget->hide();
+#endif
+
   if (!timeSeriesWidget) timeSeriesWidget = new TimeSeriesWidget(this);
   timeSeriesWidget->hide();
 
@@ -503,6 +510,11 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         return paramFittingWidget;
         break;
 #endif // COPASI_DEBUG
+#ifdef COPASI_SENS
+      case 34:
+        return sensWidget;
+        break;
+#endif
       case 43:                                        //Report
         return tableDefinition;
         break;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.98 $
+   $Revision: 1.99 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/05 16:26:53 $
+   $Author: ssahle $ 
+   $Date: 2005/10/11 16:24:30 $
    End CVS Header */
 
 /****************************************************************************
@@ -48,6 +48,7 @@ class ReactionsWidget1;
 class ReactionsWidget;
 class SteadyStateWidget;
 class ScanWidget;
+class SensitivitiesWidget;
 class StateWidget;
 class TrajectoryWidget;
 class TableDefinition;
@@ -174,6 +175,7 @@ class ListViews : public QSplitter
     ReactionsWidget *reactionsWidget;
     ReactionsWidget1 *reactionsWidget1;
     ScanWidget *scanWidget;
+    SensitivitiesWidget *sensWidget;
     StateWidget *stateWidget;
     SteadyStateWidget *steadystateWidget;
     TableDefinition *tableDefinition;

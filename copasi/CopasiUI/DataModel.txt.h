@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.txt.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/05 16:26:53 $
+   $Author: ssahle $ 
+   $Date: 2005/10/11 16:24:03 $
    End CVS Header */
 
 static char DataModeltxt[] =
@@ -39,6 +39,9 @@ static char DataModeltxt[] =
   "3:31:Parameter Scan\n"
   "3:32:Optimization\n"
   "3:33:Parameter Fitting\n"
+#ifdef COPASI_SENS
+  "3:34:Sensitivities\n"
+#endif
   "0:4:Output\n"
   "4:42:Plots\n"
   "4:43:Reports\n"

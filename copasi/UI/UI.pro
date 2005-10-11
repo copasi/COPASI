@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.109 $ $Author: shoops $ $Date: 2005/10/10 18:47:23 $  
+# $Revision: 1.110 $ $Author: ssahle $ $Date: 2005/10/11 16:24:03 $  
 ######################################################################
 
 TEMPLATE = app
@@ -25,6 +25,7 @@ COPASI_LIBS = \
          report \
          sbmlimport \
          scan \
+         sensitivities \
          steadystate \
          trajectory \
          tss \
@@ -180,6 +181,7 @@ HEADERS += \
            ScanItemWidget.h \
            ScanScrollView.h \
            ScanWidget.h \
+           SensitivitiesWidget.h \
            SliderDialog.h \
            StateWidget.h \
            SteadyStateWidget.h \
@@ -258,6 +260,7 @@ SOURCES += \
            ScanItemWidget.cpp \
            ScanScrollView.cpp \
            ScanWidget.cpp \
+           SensitivitiesWidget.cpp \
            SliderDialog.cpp \
            StateWidget.cpp \
            SteadyStateWidget.cpp \
