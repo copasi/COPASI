@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/10/10 17:06:58 $
+   $Date: 2005/10/11 09:34:41 $
    End CVS Header */
 
 /****************************************************************************
@@ -133,6 +133,12 @@ void SliderSettingsDialog::updateInputFields()
 
 void SliderSettingsDialog::okButtonPressed()
 {
+  // disconnect all signal receivers from
+  // the min and max value edit fields
+  // otherwise, they would generate an
+  // uneccesary focusLost signal
+  disconnect(mpMinValueEdit, 0, 0, 0);
+  disconnect(mpMaxValueEdit, 0, 0, 0);
   // only now change underlying slider
   this->updateSlider();
   // close dialog with positive feedback
@@ -186,35 +192,35 @@ void SliderSettingsDialog::minValueChanged()
   // check if it is smaller than the current value
   // if not, set it to the current value
   double value = mpMinValueEdit->text().toDouble();
-  if (value > this->mOriginalValue)
+  if ((value > this->mOriginalValue) &&
+      (QMessageBox::warning(this, "Range to small.", "The minimum value you set is smaller than the default value\n of the slider. The new default will be set to the minimum.\n\n Do you want to procceed?", QMessageBox::Yes, QMessageBox::No | QMessageBox::Default) != QMessageBox::Yes)
+)
     {
-      if (QMessageBox::warning(this, "Range to small.", "The minimum value you set is smaller than the default value\n of the slider. The new default will be set to the minimum.\n\n Do you want to procceed?", QMessageBox::Yes, QMessageBox::No | QMessageBox::Default) != QMessageBox::Yes)
-        {
-          this->mpMinValueEdit->setText(QString::number(this->mMinValue));
-          this->mChanged = false;
-          return;
-        }
+      this->mpMinValueEdit->setText(QString::number(this->mMinValue));
+    }
+  else
+    {
       this->mOriginalValue = value;
       this->mpOriginalValueEdit->setText(QString::number(this->mOriginalValue));
-    }
-  this->mMinValue = value;
-  if (this->mMinValue > this->mMaxValue)
-    {
-      this->mMaxValue = this->mMinValue;
-      this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
-    }
-  if (this->mMinValue > this->mValue)
-    {
-      this->mValue = this->mMinValue;
-      this->mpObjectValueEdit->setText(QString::number(this->mValue));
-    }
-  this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
-  this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
-  if (this->mMinValue <= 0.0 && this->mpLogCheckBox->isChecked())
-    {
-      QMessageBox::critical(this, "wrong min value", "For logarithmic sliders, the minimum value may not be 0.0 or negative.\nPlease set the minimum value to some (possibly very small) positive number first.", QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
-      this->mpLogCheckBox->setChecked(false);
-      this->mScaling = CSlider::linear;
+      this->mMinValue = value;
+      if (this->mMinValue > this->mMaxValue)
+        {
+          this->mMaxValue = this->mMinValue;
+          this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
+        }
+      if (this->mMinValue > this->mValue)
+        {
+          this->mValue = this->mMinValue;
+          this->mpObjectValueEdit->setText(QString::number(this->mValue));
+        }
+      this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
+      this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
+      if (this->mMinValue <= 0.0 && this->mpLogCheckBox->isChecked())
+        {
+          QMessageBox::critical(this, "wrong min value", "For logarithmic sliders, the minimum value may not be 0.0 or negative.\nPlease set the minimum value to some (possibly very small) positive number first.", QMessageBox::Ok | QMessageBox::Default , QMessageBox::NoButton);
+          this->mpLogCheckBox->setChecked(false);
+          this->mScaling = CSlider::linear;
+        }
     }
   this->mChanged = false;
 }
