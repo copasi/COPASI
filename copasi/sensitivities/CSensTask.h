@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/10/10 16:13:43 $
+   $Date: 2005/10/11 16:22:28 $
    End CVS Header */
 
 /**
@@ -21,7 +21,7 @@
 #include "utilities/CReadConfig.h"
 #include "CSensMethod.h"
 
-class CTSSProblem;
+//class CTSSProblem;
 class CState;
 class CReportDefinitionVector;
 
