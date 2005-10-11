@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/08/15 11:32:33 $
+   $Date: 2005/10/11 16:22:51 $
    End CVS Header */
 
 #include <limits>
@@ -38,7 +38,7 @@ bool CPlotSpec2Vector::setPlotDefinitionList(COutputDefinitionVector * pPlotDefi
   return true;
 }
 
-CCopasiVectorN< CPlotSpecification> * CPlotSpec2Vector::getPlotDefintionList()
+CCopasiVectorN< CPlotSpecification> * CPlotSpec2Vector::getPlotDefinitionList()
 {return mpPlotDefinitionList;}
 
 bool CPlotSpec2Vector::initPlottingFromObjects()

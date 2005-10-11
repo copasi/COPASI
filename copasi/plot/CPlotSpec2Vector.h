@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/18 09:23:17 $
+   $Date: 2005/10/11 16:22:51 $
    End CVS Header */
 
 #if !defined PLOTSPECIFICATION_VECTOR
@@ -75,7 +75,7 @@ class CPlotSpec2Vector : public CCopasiObject
     //const std::string& getKey();
 
     bool setPlotDefinitionList(COutputDefinitionVector * pPlotDefinitionList);
-    CCopasiVectorN< CPlotSpecification > * getPlotDefintionList();
+    CCopasiVectorN< CPlotSpecification > * getPlotDefinitionList();
   };
 
 #endif
