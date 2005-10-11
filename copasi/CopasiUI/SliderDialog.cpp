@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/10/06 20:14:08 $
+   $Author: ssahle $ 
+   $Date: 2005/10/11 08:55:37 $
    End CVS Header */
 
 #include <iostream>
@@ -546,7 +546,7 @@ void SliderDialog::runSteadyStateTask()
   CopasiUI3Window* p = dynamic_cast<CopasiUI3Window*>(this->parent());
   if (p)
     {
-      p->getSteadyStateWidget()->runSteadyStateTask();
+      p->getSteadyStateWidget()->runTask();
     }
 }
 void SliderDialog::closeEvent(QCloseEvent* e)
