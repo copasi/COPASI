@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.13 $ $Author: shoops $ $Date: 2005/09/16 19:08:34 $  
+# $Revision: 1.14 $ $Author: ssahle $ $Date: 2005/10/11 16:28:05 $  
 ######################################################################
 
 include(common.pri)
@@ -21,6 +21,7 @@ SUBDIRS += randomGenerator
 SUBDIRS += report
 SUBDIRS += sbml
 SUBDIRS += scan
+SUBDIRS += sensitivities
 SUBDIRS += steadystate
 SUBDIRS += trajectory
 SUBDIRS += tss
@@ -31,4 +32,5 @@ SUBDIRS += wizard
 # Now the excecutables
 SUBDIRS += CopasiSE
 SUBDIRS += CopasiUI
+#SUBDIRS += test2
 #SUBDIRS += test

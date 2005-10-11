@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.22 $ $Author: shoops $ $Date: 2005/10/05 16:26:52 $  
+# $Revision: 1.23 $ $Author: ssahle $ $Date: 2005/10/11 16:25:25 $  
 ######################################################################
 
 TEMPLATE = app
@@ -26,6 +26,7 @@ COPASI_LIBS = \
          report \
          sbmlimport \
          scan \
+         sensitivities \
          steadystate \
          trajectory \
          tss \

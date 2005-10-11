@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/05 16:26:52 $
+   $Author: ssahle $ 
+   $Date: 2005/10/11 16:25:51 $
    End CVS Header */
 
 #include "copasi.h"
@@ -20,12 +20,13 @@
 #include "report/CReportDefinitionVector.h"
 #include "sbml/SBMLExporter.h"
 #include "sbml/SBMLImporter.h"
-#include "scan/CScanTask.h"
-#include "steadystate/CMCAMethod.h"
+#include "scan/CScanTask.h" 
+//#include "steadystate/CMCAMethod.h"
 #include "steadystate/CMCATask.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "tss/CTSSTask.h"
+#include "sensitivities/CSensTask.h"
 #include "tss/MMASCIIExporter.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/CCopasiProblem.h"
@@ -483,6 +484,12 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
 #ifdef COPASI_TSS
     case CCopasiTask::tss:
       pTask = new CTSSTask(mpTaskList);
+      break;
+#endif
+
+#ifdef COPASI_SENS
+    case CCopasiTask::sens:
+      pTask = new CSensTask(mpTaskList);
       break;
 #endif
 
