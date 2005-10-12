@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/11 16:20:45 $
+   $Author: shoops $ 
+   $Date: 2005/10/12 13:39:40 $
    End CVS Header */
 
 /**
@@ -123,9 +123,12 @@ bool CSensMethod::initialize(CSensProblem* problem)
   //CCopasiArray mResult;
   //mResultDim =
   mIndex.clear(); mIndex.resize(mTargetDim + mVariableDim);
-  std::vector<unsigned int>::iterator it = copy(mTargetSizes.begin(), mTargetSizes.end(), mIndex.begin());
-  copy(mVariableSizes.begin(), mVariableSizes.end(), it);
+  std::vector<unsigned int>::iterator it =
+    std::copy(mTargetSizes.begin(), mTargetSizes.end(), mIndex.begin());
+  std::copy(mVariableSizes.begin(), mVariableSizes.end(), it);
   mResult.resize(mIndex);
+
+  return true;
 }
 
 bool CSensMethod::processInternal()
@@ -150,6 +153,8 @@ bool CSensMethod::processInternal()
 
     //restore variable
   }
+
+  return true;
 }
 
 //bool CSensMethod::calculateOneSensitivity()
