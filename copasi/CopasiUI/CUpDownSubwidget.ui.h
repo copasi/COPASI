@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CUpDownSubwidget.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/04 14:33:18 $
+   $Author: shoops $ 
+   $Date: 2005/10/12 20:22:03 $
    End CVS Header */
 
 /****************************************************************************
@@ -21,6 +21,12 @@
 void CUpDownSubwidget::init()
 {
   setIndex(0, true, true);
+  enableCopy(false);
+}
+
+void CUpDownSubwidget::slotCopy()
+{
+  emit copy(mIndex);
 }
 
 void CUpDownSubwidget::slotUp()
@@ -36,6 +42,12 @@ void CUpDownSubwidget::slotDown()
 void CUpDownSubwidget::slotDel()
 {
   emit del(mIndex);
+}
+
+void CUpDownSubwidget::enableCopy(const bool & enable)
+{
+  if (enable) toolButtonCopy->show();
+  else toolButtonCopy->hide();
 }
 
 void CUpDownSubwidget::setIndex(int index, bool isFirst, bool isLast)

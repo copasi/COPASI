@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>120</width>
-            <height>67</height>
+            <height>52</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -31,42 +31,22 @@
             <cstring>unnamed</cstring>
         </property>
         <property name="margin">
-            <number>0</number>
+            <number>3</number>
         </property>
         <property name="spacing">
             <number>0</number>
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout3</cstring>
+                <cstring>layout6</cstring>
             </property>
             <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
                 <property name="margin">
-                    <number>3</number>
+                    <number>0</number>
                 </property>
-                <property name="spacing">
-                    <number>3</number>
-                </property>
-                <widget class="QToolButton" row="0" column="1">
-                    <property name="name">
-                        <cstring>toolButtonUp</cstring>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>image0</iconset>
-                    </property>
-                </widget>
                 <widget class="QToolButton" row="0" column="0">
                     <property name="name">
                         <cstring>toolButtonDel</cstring>
@@ -81,7 +61,41 @@
                         <string></string>
                     </property>
                     <property name="iconSet">
+                        <iconset>image0</iconset>
+                    </property>
+                </widget>
+                <widget class="QToolButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>toolButtonUp</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="iconSet">
                         <iconset>image1</iconset>
+                    </property>
+                </widget>
+                <widget class="QToolButton" row="1" column="0">
+                    <property name="name">
+                        <cstring>toolButtonCopy</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image2</iconset>
                     </property>
                 </widget>
                 <widget class="QToolButton" row="1" column="1">
@@ -98,7 +112,7 @@
                         <string></string>
                     </property>
                     <property name="iconSet">
-                        <iconset>image2</iconset>
+                        <iconset>image3</iconset>
                     </property>
                 </widget>
             </grid>
@@ -124,21 +138,24 @@
 </widget>
 <images>
     <image name="image0">
-        <data format="PNG" length="144">89504e470d0a1a0a0000000d494844520000000f0000000f08060000003bd6954a0000005749444154789ccd92410ac02010031dbfddc7a7278bd844848a3417c135cca022a9a40092449ad7d85c482c0357bfda33491b780649dd92475aa25b724f9dd1f75e585434fb2f6da7dc32aa7fd28e4fd52cceffb07f976f05e325ff82bdc45e0000000049454e44ae426082</data>
-    </image>
-    <image name="image1">
         <data format="PNG" length="248">89504e470d0a1a0a0000000d494844520000000f0000000f08060000003bd6954a000000bf49444154789cad92410ac2301444df887b114f20b8a8b770e3413c478f968d2770d9b410e8098a7801bf1b536c6caa543f04c26426c34c223363ee2c662bff2aae25e7a53025f052e8396636581eba0a428ad75056106a2823a6b4b0462aef7002d89beda21b80a02dcc8e3d3975882e1ebae816f729efcdf9257f07ac805b61b619e32c33426770d5547330748e79056be02238033cb161de54eca520680122b1914a8383c1365b9807e7c18d15987baafe60accddc251fdbfe667efadb0f18e8d73408f977e50000000049454e44ae426082</data>
     </image>
+    <image name="image1">
+        <data format="PNG" length="144">89504e470d0a1a0a0000000d494844520000000f0000000f08060000003bd6954a0000005749444154789ccd92410ac02010031dbfddc7a7278bd844848a3417c135cca022a9a40092449ad7d85c482c0357bfda33491b780649dd92475aa25b724f9dd1f75e585434fb2f6da7dc32aa7fd28e4fd52cceffb07f976f05e325ff82bdc45e0000000049454e44ae426082</data>
+    </image>
     <image name="image2">
+        <data format="PNG" length="593">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000021849444154789c7d92cb4a5c411086bfeaee3973c611417211110251b39090598ab8c8222f1212920708248b1102821b4dde203197951b1f20ccd2808a06c445445422518859a8a873c6b99ed395c578d749416daae8bfffffeb96d9d9f583cece76a7ea89638ff78a31969595cdf6e5e5b5e713132fbef0bf5a5ada6c78eff5b46b35affbfb155d5dfdab5353df7564e4d31b55a5559bab82d64210046c6cfc616fef80300cdee5f3936f5b19b8262002491293cbf53338f89081815e44ccfd5602ee26016b2dc562994aa54e474796e1e1478f17167e7d88e338532c56b233333fbe8d8fbffc78238328f2babd7da87373eb7a7454bd34dfd989746beb50a7a7e77474f4eb6b55bdeca05a8572b98a31166b2de9f4f93a9b05ef33ecee1e124511e974f83e9f9fbc7bc64015eaf506ce19c2d02122a85ec9eb842048d1dd7d87fefe7bb4b585afce04ea7510b188b4c205c608e9748aaeae5bf4f4dcc6b914ce98f387704e30c6912470717e5ae5729d52a98cf74a26934644705154218a1a445115ef15ef3d49a2d4eb3172c14e14798e8f6ba80ad96c066b2dce812b14e6a70a857973f9a65a25977bf06468a8b7ef146e1c37080287310663e4c4a1e0c6c69e3dbd296fa1b0fcd97bfa8c8124f1586b8863c55a83b50611dbe4d20a5818862751009a51acbd4ef8da4f3c27de3c984a8188e07d0a118f480c808869426c25b0b8f8b3b6b6f61ba004a0aa244973a79a2002a55225fe07d9bb1db50b9787950000000049454e44ae426082</data>
+    </image>
+    <image name="image3">
         <data format="PNG" length="146">89504e470d0a1a0a0000000d494844520000000f0000000f08060000003bd6954a0000005949444154789cd5933b0ec0300843fd7aeedcdd9d3a94e02a43338425121ff13001db4a06d836297ec5ca053bb4982a181015ace2fd8e3d42eee49fb0a51ebddbf716b52b623b4a8b2dbdd1d317fdc21ee55deffc74df761837e76225f38a3d31d10000000049454e44ae426082</data>
     </image>
 </images>
 <connections>
     <connection>
-        <sender>toolButtonDel</sender>
+        <sender>toolButtonDown</sender>
         <signal>clicked()</signal>
         <receiver>CUpDownSubwidget</receiver>
-        <slot>slotDel()</slot>
+        <slot>slotDown()</slot>
     </connection>
     <connection>
         <sender>toolButtonUp</sender>
@@ -147,29 +164,38 @@
         <slot>slotUp()</slot>
     </connection>
     <connection>
-        <sender>toolButtonDown</sender>
+        <sender>toolButtonDel</sender>
         <signal>clicked()</signal>
         <receiver>CUpDownSubwidget</receiver>
-        <slot>slotDown()</slot>
+        <slot>slotDel()</slot>
+    </connection>
+    <connection>
+        <sender>toolButtonCopy</sender>
+        <signal>clicked()</signal>
+        <receiver>CUpDownSubwidget</receiver>
+        <slot>slotCopy()</slot>
     </connection>
 </connections>
 <variables>
     <variable>int mIndex;</variable>
 </variables>
 <signals>
+    <signal>copy(int)</signal>
     <signal>up(int)</signal>
     <signal>down(int)</signal>
     <signal>del(int)</signal>
 </signals>
 <slots>
-    <slot access="protected">slotUp()</slot>
-    <slot access="protected">slotDown()</slot>
-    <slot access="protected">slotDel()</slot>
-    <slot>setIndex( int index, bool isFirst, bool isLast )</slot>
+    <slot access="protected" specifier="non virtual">slotUp()</slot>
+    <slot access="protected" specifier="non virtual">slotDown()</slot>
+    <slot access="protected" specifier="non virtual">slotDel()</slot>
+    <slot>setIndex(int,bool,bool)</slot>
+    <slot access="protected" specifier="non virtual">slotCopy()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function returnType="int">getIndex() const</function>
+    <function specifier="non virtual">enableCopy(const bool &amp;)</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

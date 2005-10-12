@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CUpDownSubwidget.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/07 16:40:39 $
+   $Date: 2005/10/12 20:22:03 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CUpDownSubwidget.ui'
  **
- ** Created: Fri Oct 7 11:58:54 2005
- **      by: The User Interface Compiler ($Id: CUpDownSubwidget.h,v 1.5 2005/10/07 16:40:39 shoops Exp $)
+ ** Created: Wed Oct 12 15:58:53 2005
+ **      by: The User Interface Compiler ($Id: CUpDownSubwidget.h,v 1.6 2005/10/12 20:22:03 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -36,16 +36,19 @@ class CUpDownSubwidget : public QWidget
     CUpDownSubwidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~CUpDownSubwidget();
 
-    QToolButton* toolButtonUp;
     QToolButton* toolButtonDel;
+    QToolButton* toolButtonUp;
+    QToolButton* toolButtonCopy;
     QToolButton* toolButtonDown;
 
     virtual int getIndex() const;
+    void enableCopy(const bool &);
 
   public slots:
-    virtual void setIndex(int index, bool isFirst, bool isLast);
+    virtual void setIndex(int, bool, bool);
 
   signals:
+    void copy(int);
     void up(int);
     void down(int);
     void del(int);
@@ -55,19 +58,21 @@ class CUpDownSubwidget : public QWidget
 
     QVBoxLayout* CUpDownSubwidgetLayout;
     QSpacerItem* spacer;
-    QGridLayout* layout3;
+    QGridLayout* layout6;
 
   protected slots:
     virtual void languageChange();
 
-    virtual void slotUp();
-    virtual void slotDown();
-    virtual void slotDel();
+    void slotUp();
+    void slotDown();
+    void slotDel();
+    void slotCopy();
 
   private:
     QPixmap image0;
     QPixmap image1;
     QPixmap image2;
+    QPixmap image3;
 
     void init();
   };
