@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/10 18:53:10 $
+   $Date: 2005/10/12 13:26:30 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Mon Oct 10 11:54:12 2005
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.3 2005/10/10 18:53:10 shoops Exp $)
+ ** Created: Tue Oct 11 17:57:42 2005
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.4 2005/10/12 13:26:30 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -37,6 +37,7 @@ class CCopasiObject;
 class CCopasiObjectName;
 class CQValidatorBound;
 class CQValidatorNotEmpty;
+class QColor;
 
 class CQFittingItemWidget : public QWidget
   {
@@ -61,18 +62,21 @@ class CQFittingItemWidget : public QWidget
     QLineEdit* mpEditObject;
     QToolButton* mpBtnObject;
 
-  protected:
-    CFitItem * mpFitItem;
-    CCopasiObjectName* mpObjectCN;
-    const CCopasiObject* mpLowerObject;
-    const CCopasiObject* mpUpperObject;
-    CCopasiObject* mpObject;
-    CQValidatorNotEmpty * mpObjectValidator;
-    CQValidatorBound * mpLowerValidator;
-    CQValidatorBound * mpUpperValidator;
+    bool loadFitItem(const CFitItem & item);
+    bool saveFitItem(CFitItem & item);
 
-    bool loadFitItem(const CFitItem * pItem);
-    CFitItem * saveFitItem(CFitItem * pItem);
+  protected:
+    QColor mChangedColor;
+    QColor mSavedColor;
+    bool mUpperInfChanged;
+    bool mLowerInfChanged;
+    CQValidatorBound * mpUpperValidator;
+    CQValidatorBound * mpLowerValidator;
+    CQValidatorNotEmpty * mpObjectValidator;
+    const CCopasiObject* mpUpperObject;
+    const CCopasiObject* mpLowerObject;
+    CCopasiObjectName* mpObjectCN;
+    CFitItem * mpFitItem;
 
     QGridLayout* CQFittingItemWidgetLayout;
     QSpacerItem* mpSpacerLeft;
@@ -86,12 +90,6 @@ class CQFittingItemWidget : public QWidget
 
   private:
     void init();
-    virtual void setItemUpperLimit(std::string strUpperLimit);
-    virtual void setItemLowerLimit(std::string strLowerLimit);
-    virtual std::string getItemUpperLimit() const;
-    virtual std::string getItemLowerLimit() const;
-    virtual CCopasiObject * getCopasiObject();
-    virtual void setCopasiObjectPtr(CCopasiObject * sourceObject);
     void destroy();
 
   private slots:

@@ -278,16 +278,20 @@
     <forward>class CCopasiObjectName</forward>
     <forward>class CQValidatorBound</forward>
     <forward>class CQValidatorNotEmpty</forward>
+    <forward>class QColor</forward>
 </forwards>
 <variables>
-    <variable>CFitItem * mpFitItem;</variable>
-    <variable>CCopasiObjectName* mpObjectCN;</variable>
-    <variable>const CCopasiObject* mpLowerObject;</variable>
-    <variable>const CCopasiObject* mpUpperObject;</variable>
-    <variable>CCopasiObject* mpObject;</variable>
-    <variable>CQValidatorNotEmpty * mpObjectValidator;</variable>
-    <variable>CQValidatorBound * mpLowerValidator;</variable>
+    <variable>QColor mChangedColor;</variable>
+    <variable>QColor mSavedColor;</variable>
+    <variable>bool mUpperInfChanged;</variable>
+    <variable>bool mLowerInfChanged;</variable>
     <variable>CQValidatorBound * mpUpperValidator;</variable>
+    <variable>CQValidatorBound * mpLowerValidator;</variable>
+    <variable>CQValidatorNotEmpty * mpObjectValidator;</variable>
+    <variable>const CCopasiObject* mpUpperObject;</variable>
+    <variable>const CCopasiObject* mpLowerObject;</variable>
+    <variable>CCopasiObjectName* mpObjectCN;</variable>
+    <variable>CFitItem * mpFitItem;</variable>
 </variables>
 <slots>
     <slot access="private" specifier="non virtual">slotNegativeInfinity()</slot>
@@ -299,14 +303,8 @@
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
-    <function access="protected" specifier="non virtual" returnType="bool">loadFitItem( const CFitItem * pItem )</function>
-    <function access="protected" specifier="non virtual" returnType="CFitItem *">saveFitItem(CFitItem * pItem) </function>
-    <function access="private">setItemUpperLimit( std::string strUpperLimit )</function>
-    <function access="private">setItemLowerLimit( std::string strLowerLimit )</function>
-    <function access="private" returnType="std::string">getItemUpperLimit() const</function>
-    <function access="private" returnType="std::string">getItemLowerLimit() const</function>
-    <function access="private" returnType="CCopasiObject *">getCopasiObject()</function>
-    <function access="private">setCopasiObjectPtr( CCopasiObject * sourceObject )</function>
+    <function specifier="non virtual" returnType="bool">loadFitItem( const CFitItem &amp; item )</function>
+    <function specifier="non virtual" returnType="bool">saveFitItem(CFitItem &amp; item) </function>
     <function access="private" specifier="non virtual">destroy()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>

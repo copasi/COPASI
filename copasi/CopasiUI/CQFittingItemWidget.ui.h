@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/10 18:53:10 $
+   $Date: 2005/10/12 13:26:30 $
    End CVS Header */
 
 #include "CCopasiSelectionDialog.h"
@@ -12,11 +12,22 @@
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "parameterFitting/CFitItem.h"
+#include "utilities/utility.h"
 
 void CQFittingItemWidget::init()
 {
-  mpObject = NULL;
-  mpFitItem = NULL;
+  mpFitItem = new CFitItem;
+
+  mLowerInfChanged = false;
+  mUpperInfChanged = false;
+
+  int h, s, v;
+
+  mSavedColor = paletteBackgroundColor();
+  mSavedColor.getHsv(&h, &s, &v);
+
+  if (s < 20) s = 20;
+  mChangedColor.setHsv(240, s, v);
 
   mpObjectValidator = new CQValidatorNotEmpty(mpEditObject);
   mpEditObject->setValidator(mpObjectValidator);
@@ -33,51 +44,41 @@ void CQFittingItemWidget::init()
 
 void CQFittingItemWidget::destroy()
 {
-  pdelete(mpObject);
   pdelete(mpFitItem);
 }
-
-void CQFittingItemWidget::setItemUpperLimit(std::string strUpperLimit)
-{}
-
-void CQFittingItemWidget::setItemLowerLimit(std::string strLowerLimit)
-{}
-
-std::string CQFittingItemWidget::getItemUpperLimit() const
-  {
-    return "";
-  }
-
-std::string CQFittingItemWidget::getItemLowerLimit() const
-  {
-    return "";
-  }
-
-CCopasiObject * CQFittingItemWidget::getCopasiObject()
-{
-  return mpObject;
-}
-
-void CQFittingItemWidget::setCopasiObjectPtr(CCopasiObject * sourceObject)
-{}
 
 void CQFittingItemWidget::slotNegativeInfinity()
 {
   mpEditLower->setEnabled(!mpLowerInf->isChecked());
-  if (mpEditLower->isEnabled()) mpLowerValidator->revalidate();
+
+  mLowerInfChanged = !mLowerInfChanged;
+
+  if (mLowerInfChanged)
+    {
+      mpLowerInf->setPaletteBackgroundColor(mChangedColor);
+      if (mpEditLower->isEnabled()) mpLowerValidator->revalidate();
+    }
+  else
+    mpLowerInf->setPaletteBackgroundColor(mSavedColor);
 }
 
 void CQFittingItemWidget::slotPositiveInfinity()
 {
   mpEditUpper->setEnabled(!mpUpperInf->isChecked());
-  if (mpEditUpper->isEnabled()) mpUpperValidator->revalidate();
+
+  mUpperInfChanged = !mUpperInfChanged;
+
+  if (mUpperInfChanged)
+    {
+      mpUpperInf->setPaletteBackgroundColor(mChangedColor);
+      if (mpEditUpper->isEnabled()) mpUpperValidator->revalidate();
+    }
+  else
+    mpUpperInf->setPaletteBackgroundColor(mSavedColor);
 }
 
 void CQFittingItemWidget::slotLowerEdit()
 {
-  mpLowerInf->setChecked(false);
-  mpEditLower->setEnabled(true);
-
   std::vector<CCopasiObject*> Selection;
 
   CCopasiSelectionDialog * pBrowseDialog = new CCopasiSelectionDialog(this);
@@ -87,7 +88,10 @@ void CQFittingItemWidget::slotLowerEdit()
 
   if (pBrowseDialog->exec () == QDialog::Accepted && Selection.size() != 0)
     {
-      mpFitItem->setLowerBound(Selection[0]->getObjectName());
+      mpLowerInf->setChecked(false);
+      mpEditLower->setEnabled(true);
+
+      mpFitItem->setLowerBound(Selection[0]->getCN());
 
       QString Value = FROM_UTF8(Selection[0]->getObjectDisplayName());
       mpLowerValidator->forceAcceptance(Value);
@@ -97,9 +101,6 @@ void CQFittingItemWidget::slotLowerEdit()
 
 void CQFittingItemWidget::slotUpperEdit()
 {
-  mpUpperInf->setChecked(false);
-  mpEditUpper->setEnabled(true);
-
   std::vector<CCopasiObject*> Selection;
 
   CCopasiSelectionDialog * pBrowseDialog = new CCopasiSelectionDialog(this);
@@ -109,7 +110,10 @@ void CQFittingItemWidget::slotUpperEdit()
 
   if (pBrowseDialog->exec () == QDialog::Accepted && Selection.size() != 0)
     {
-      mpFitItem->setUpperBound(Selection[0]->getObjectName());
+      mpUpperInf->setChecked(false);
+      mpEditUpper->setEnabled(true);
+
+      mpFitItem->setUpperBound(Selection[0]->getCN());
 
       QString Value = FROM_UTF8(Selection[0]->getObjectDisplayName());
       mpUpperValidator->forceAcceptance(Value);
@@ -128,7 +132,7 @@ void CQFittingItemWidget::slotParamEdit()
 
   if (pBrowseDialog->exec () == QDialog::Accepted && Selection.size() != 0)
     {
-      mpFitItem->setObjectCN(Selection[0]->getObjectName());
+      mpFitItem->setObjectCN(Selection[0]->getCN());
 
       QString Value = FROM_UTF8(Selection[0]->getObjectDisplayName());
       mpObjectValidator->forceAcceptance(Value);
@@ -139,15 +143,91 @@ void CQFittingItemWidget::slotParamEdit()
 void CQFittingItemWidget::slotExperiments()
 {}
 
-bool CQFittingItemWidget::loadFitItem(const CFitItem * pItem)
+bool CQFittingItemWidget::loadFitItem(const CFitItem & item)
 {
   pdelete(mpFitItem);
-  mpFitItem = new CFitItem(*pItem);
+  mpFitItem = new CFitItem(item);
+
+  QString Value;
+
+  const CCopasiObject *pObject = RootContainer.getObject(mpFitItem->getObjectCN());
+
+  if (pObject)
+    Value = FROM_UTF8(pObject->getObjectDisplayName());
+  else
+    Value = "Not found: " + FROM_UTF8(mpFitItem->getObjectCN());
+
+  mpEditObject->setText(Value);
+
+  if (mpFitItem->getLowerBound() == "-inf" ||
+      isNumber(mpFitItem->getLowerBound()))
+    Value = FROM_UTF8(mpFitItem->getLowerBound());
+  else if ((pObject = RootContainer.getObject(mpFitItem->getLowerBound())))
+    Value = FROM_UTF8(pObject->getObjectDisplayName());
+  else
+    Value = "Not found: " + FROM_UTF8(mpFitItem->getLowerBound());
+
+  mpEditLower->setText(Value);
+  mpLowerInf->setChecked(Value == "-inf");
+
+  if (mpFitItem->getUpperBound() == "inf" ||
+      isNumber(mpFitItem->getUpperBound()))
+    Value = FROM_UTF8(mpFitItem->getUpperBound());
+  else if ((pObject = RootContainer.getObject(mpFitItem->getUpperBound())))
+    Value = FROM_UTF8(pObject->getObjectDisplayName());
+  else
+    Value = "Not found: " + FROM_UTF8(mpFitItem->getUpperBound());
+
+  mpEditUpper->setText(Value);
+  mpUpperInf->setChecked(Value == "inf");
+
+  // :TODO: load affected experiments.
+
+  mpLowerInf->setPaletteBackgroundColor(mSavedColor);
+  mLowerInfChanged = false;
+  mpUpperInf->setPaletteBackgroundColor(mSavedColor);
+  mUpperInfChanged = false;
+  mpObjectValidator->saved();
+  mpLowerValidator->saved();
+  mpUpperValidator->saved();
 
   return true;
 }
 
-CFitItem * CQFittingItemWidget::saveFitItem(CFitItem * pItem)
+bool CQFittingItemWidget::saveFitItem(CFitItem & item)
 {
-  return mpFitItem;
+  bool changed = false;
+
+  if (mpLowerInf->isChecked())
+    mpFitItem->setLowerBound(CCopasiObjectName("-inf"));
+  else if (isNumber((const char *) mpEditLower->text().utf8()))
+    mpFitItem->setLowerBound(CCopasiObjectName((const char *) mpEditLower->text().utf8()));
+
+  if (mpUpperInf->isChecked())
+    mpFitItem->setUpperBound(CCopasiObjectName("inf"));
+  else if (isNumber((const char *) mpEditUpper->text().utf8()))
+    mpFitItem->setUpperBound(CCopasiObjectName((const char *) mpEditUpper->text().utf8()));
+
+  // :TODO: save affected experiments.
+
+  if (!(item == * mpFitItem))
+    {
+      changed = true;
+
+      item.setObjectCN(mpFitItem->getObjectCN());
+      item.setLowerBound(mpFitItem->getLowerBound());
+      item.setUpperBound(mpFitItem->getUpperBound());
+
+      // :TODO: save affected experiments.
+    }
+
+  mpLowerInf->setPaletteBackgroundColor(mSavedColor);
+  mLowerInfChanged = false;
+  mpUpperInf->setPaletteBackgroundColor(mSavedColor);
+  mUpperInfChanged = false;
+  mpObjectValidator->saved();
+  mpLowerValidator->saved();
+  mpUpperValidator->saved();
+
+  return changed;
 }
