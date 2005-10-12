@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/12 13:26:30 $
+   $Date: 2005/10/12 20:23:19 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Tue Oct 11 17:57:42 2005
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.4 2005/10/12 13:26:30 shoops Exp $)
+ ** Created: Wed Oct 12 13:34:08 2005
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.5 2005/10/12 20:23:19 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -64,6 +64,7 @@ class CQFittingItemWidget : public QWidget
 
     bool loadFitItem(const CFitItem & item);
     bool saveFitItem(CFitItem & item);
+    CQFittingItemWidget * copy();
 
   protected:
     QColor mChangedColor;

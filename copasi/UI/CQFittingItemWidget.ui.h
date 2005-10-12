@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/12 13:26:30 $
+   $Date: 2005/10/12 20:23:19 $
    End CVS Header */
 
 #include "CCopasiSelectionDialog.h"
@@ -142,6 +142,45 @@ void CQFittingItemWidget::slotParamEdit()
 
 void CQFittingItemWidget::slotExperiments()
 {}
+
+CQFittingItemWidget * CQFittingItemWidget::copy()
+{
+  CQFittingItemWidget * pWidget =
+    new CQFittingItemWidget(static_cast<QWidget *>(parent()));
+
+  pWidget->mpEditObject->setText(mpEditObject->text());
+  pWidget->mpFitItem->setObjectCN(mpFitItem->getObjectCN());
+  pWidget->mpObjectValidator->forceAcceptance(mpEditObject->text());
+  pWidget->mpObjectValidator->revalidate();
+
+  pWidget->mpLowerInf->setChecked(mpLowerInf->isChecked());
+  pWidget->mLowerInfChanged = mLowerInfChanged;
+  pWidget->mpEditLower->setText(mpEditLower->text());
+  pWidget->mpFitItem->setLowerBound(mpFitItem->getLowerBound());
+
+  const CCopasiObject *pObject;
+
+  if (isNumber((const char *)mpEditLower->text().utf8()))
+    pWidget->mpLowerValidator->forceAcceptance(mpEditLower->text());
+  if ((pObject = RootContainer.getObject(mpFitItem->getLowerBound())))
+    pWidget->mpLowerValidator->forceAcceptance(FROM_UTF8(pObject->getObjectDisplayName()));
+  pWidget->mpLowerValidator->revalidate();
+
+  pWidget->mpUpperInf->setChecked(mpUpperInf->isChecked());
+  pWidget->mUpperInfChanged = mUpperInfChanged;
+  pWidget->mpEditUpper->setText(mpEditUpper->text());
+  pWidget->mpFitItem->setUpperBound(mpFitItem->getUpperBound());
+
+  if (isNumber((const char *)mpEditUpper->text().utf8()))
+    pWidget->mpUpperValidator->forceAcceptance(mpEditUpper->text());
+  if ((pObject = RootContainer.getObject(mpFitItem->getUpperBound())))
+    pWidget->mpUpperValidator->forceAcceptance(FROM_UTF8(pObject->getObjectDisplayName()));
+  pWidget->mpUpperValidator->revalidate();
+
+  // :TODO: Copy affected experiments.
+
+  return pWidget;
+}
 
 bool CQFittingItemWidget::loadFitItem(const CFitItem & item)
 {

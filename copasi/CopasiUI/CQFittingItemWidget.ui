@@ -306,6 +306,7 @@
     <function specifier="non virtual" returnType="bool">loadFitItem( const CFitItem &amp; item )</function>
     <function specifier="non virtual" returnType="bool">saveFitItem(CFitItem &amp; item) </function>
     <function access="private" specifier="non virtual">destroy()</function>
+    <function specifier="non virtual" returnType="CQFittingItemWidget *">copy()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
