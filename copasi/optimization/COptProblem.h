@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:23:13 $
+   $Date: 2005/10/12 13:24:06 $
    End CVS Header */
 
 /**
@@ -131,6 +131,12 @@ class COptProblem : public CCopasiProblem
      * @return const std::vector< COptItem * > & optItemList
      */
     const std::vector< COptItem * > & getOptItemList() const;
+
+    /**
+     * Retrieve the list of constraints.
+     * @return const std::vector< COptItem * > & constraintList
+     */
+    const std::vector< COptItem * > & getConstraintList() const;
 
     /**
      * Retrieve the update methods for the variables for calculation.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/30 15:19:53 $
+   $Date: 2005/10/12 13:24:06 $
    End CVS Header */
 
 /**
@@ -145,7 +145,7 @@ bool COptProblem::elevateChildren()
     if (!elevate<COptItem, CCopasiParameterGroup>(*it)) return false;
 
   mpConstraintItems =
-    static_cast<std::vector<COptItem * > * >(mpGrpItems->CCopasiParameter::getValue().pVOID);
+    static_cast<std::vector<COptItem * > * >(mpGrpConstraints->CCopasiParameter::getValue().pVOID);
 
   return true;
 }
@@ -390,6 +390,9 @@ bool COptProblem::swapOptItem(const unsigned C_INT32 & iFrom,
 
 const std::vector< COptItem * > & COptProblem::getOptItemList() const
   {return *mpOptItems;}
+
+const std::vector< COptItem * > & COptProblem::getConstraintList() const
+  {return *mpConstraintItems;}
 
 const std::vector< UpdateMethod * > & COptProblem::getCalculateVariableUpdateMethods() const
   {return mUpdateMethods;}
