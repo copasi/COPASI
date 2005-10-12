@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/12 13:25:03 $
+   $Date: 2005/10/12 20:23:31 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -220,6 +220,22 @@ void CQFittingWidget::slotItemDeleted()
   mpTabWidget->setTabLabel(mpTabWidget->currentPage(), TabLabel);
 }
 
+void CQFittingWidget::slotCopyItemWidget(int index)
+{
+  CQFittingItemWidget * tmp =
+    static_cast<CQFittingItemWidget *>(mpCurrentList->getWidgetList()[index])->copy();
+
+  mpCurrentList->insertWidget(tmp, index + 1);
+
+  int totalRows = mpCurrentList->numRows();
+  mpCurrentList->ensureCellVisible(index + 1, 0);
+  tmp->mpBtnObject->setFocus();
+
+  QString TabLabel = mpTabWidget->tabLabel(mpTabWidget->currentPage());
+  TabLabel.replace(QString::number(totalRows - 1), QString::number(totalRows));
+  mpTabWidget->setTabLabel(mpTabWidget->currentPage(), TabLabel);
+}
+
 void CQFittingWidget::init()
 {
   mpHeaderWidget->setTaskName("Parameter Fitting");
@@ -232,13 +248,17 @@ void CQFittingWidget::init()
 
   mpParameterPageLayout = new QHBoxLayout(mpParametersPage, 0, 6, "mpParameterPageLayout");
   mpParameters = new CScanContainerWidget(mpParametersPage);
+  mpParameters->enableCopy(true);
   mpParameterPageLayout->addWidget(mpParameters);
   connect(mpParameters, SIGNAL(itemDeleted()), this, SLOT(slotItemDeleted()));
+  connect(mpParameters, SIGNAL(copyWidget(int)), this, SLOT(slotCopyItemWidget(int)));
 
   mpConstraintPageLayout = new QHBoxLayout(mpConstraintsPage, 0, 6, "mpConstraintsPageLayout");
   mpConstraints = new CScanContainerWidget(mpConstraintsPage);
+  mpConstraints->enableCopy(true);
   mpConstraintPageLayout->addWidget(mpConstraints);
   connect(mpConstraints, SIGNAL(itemDeleted()), this, SLOT(slotItemDeleted()));
+  connect(mpConstraints, SIGNAL(copyWidget(int)), this, SLOT(slotCopyItemWidget(int)));
 
   mpCurrentList = mpParameters;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanContainerWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/07 13:47:32 $
+   $Date: 2005/10/12 20:23:01 $
    End CVS Header */
 
 #include "CScanContainerWidget.h"
@@ -30,6 +30,7 @@ CScanContainerWidget::CScanContainerWidget(QWidget* parent, const char* name)
   setSelectionMode(QTable::NoSelection);
   setFocusStyle(QTable::FollowStyle);
 
+  mCopyEnabled = false;
   //TODO maybe reemplement paintFocus() to make the focus completely invisible
   // (it is already invisible most of the time)
 }
@@ -69,9 +70,11 @@ void CScanContainerWidget::addWidget(QWidget* widget, bool controls /*=true*/)
     {
       CUpDownSubwidget * tmpUD = new CUpDownSubwidget(this);
       tmpUD->setIndex(i, false, true); //assumes...
+      tmpUD->enableCopy(mCopyEnabled);
       connect(tmpUD, SIGNAL(del(int)), this, SLOT(slotDel(int)));
       connect(tmpUD, SIGNAL(up(int)), this, SLOT(slotUp(int)));
       connect(tmpUD, SIGNAL(down(int)), this, SLOT(slotDown(int)));
+      connect(tmpUD, SIGNAL(copy(int)), this, SLOT(slotCopy(int)));
       setCellWidget(i, 0, tmpUD);
 
       //tell the widget above that it is not the last anymore
@@ -101,10 +104,12 @@ void CScanContainerWidget::insertWidget(QWidget* widget, int row)
   if (true) //add control widget
     {
       CUpDownSubwidget * tmpUD = new CUpDownSubwidget(this);
+      tmpUD->enableCopy(mCopyEnabled);
       //tmpUD->setIndex(i, true);
       connect(tmpUD, SIGNAL(del(int)), this, SLOT(slotDel(int)));
       connect(tmpUD, SIGNAL(up(int)), this, SLOT(slotUp(int)));
       connect(tmpUD, SIGNAL(down(int)), this, SLOT(slotDown(int)));
+      connect(tmpUD, SIGNAL(copy(int)), this, SLOT(slotCopy(int)));
       setCellWidget(i, 0, tmpUD);
 
       //tell the widget above that it is not the last anymore
@@ -155,6 +160,9 @@ void CScanContainerWidget::slotDel(int index)
   emit itemDeleted();
 }
 
+void CScanContainerWidget::slotCopy(int index)
+{emit copyWidget(index);}
+
 void CScanContainerWidget::updateIndices()
 {
   //update the indices of the updown widgets
@@ -172,3 +180,6 @@ void CScanContainerWidget::updateIndices()
         }
     }
 }
+
+void CScanContainerWidget::enableCopy(const bool & enable)
+{mCopyEnabled = enable;}

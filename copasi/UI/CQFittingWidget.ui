@@ -158,6 +158,7 @@
     <slot access="protected" specifier="non virtual">slotExperimentData()</slot>
     <slot access="protected" specifier="non virtual">slotPageChange(QWidget * currentPage)</slot>
     <slot access="protected" specifier="non virtual">slotItemDeleted()</slot>
+    <slot access="protected" specifier="non virtual">slotCopyItemWidget(int)</slot>
 </slots>
 <functions>
     <function returnType="bool">runTask()</function>

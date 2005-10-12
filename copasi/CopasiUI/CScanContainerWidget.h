@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanContainerWidget.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/07 13:47:32 $
+   $Date: 2005/10/12 20:23:01 $
    End CVS Header */
 
 #ifndef CCONTAINERWIDGET_H
@@ -42,17 +42,22 @@ class CScanContainerWidget : public QTable
 
     //insert before row, if row=-1 insert before the last row
     void insertWidget(QWidget* widget, int row = -1);
+    void enableCopy(const bool & enable);
 
   protected slots:
     void slotUp(int index);
     void slotDown(int index);
     void slotDel(int index);
+    void slotCopy(int index);
 
   protected:
     void updateIndices();
 
   signals:
     void itemDeleted();
+    void copyWidget(int);
+
+    bool mCopyEnabled;
   };
 
 #endif
