@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/10/11 16:20:45 $
+   $Date: 2005/10/12 14:48:46 $
    End CVS Header */
 
 #ifndef COPASI_SENSMethod
@@ -25,7 +25,7 @@ class CSensMethod : public CCopasiMethod
   {
   protected:
     /**
-     *  A pointer to the tss problem.
+     *  A pointer to the sensitivities problem.
      */
     const CSensProblem * mpProblem;
 
@@ -101,13 +101,16 @@ class CSensMethod : public CCopasiMethod
      */
     bool processInternal();
 
+    bool doOneCalculation();
+    bool storeTargetValues(CCopasiArray & target);
+
     CCopasiArray mTarget1, mTarget2;
 
     CCopasiArray mResult;
 
     std::vector<std::vector<CCopasiObject*> > mTargetObjects, mVariableObjects;
 
-    std::vector<unsigned int> mTargetSizes, mVariableSizes, mIndex;
+    std::vector<unsigned int> mTargetSizes, mVariableSizes, mIndex, mTargetIndex, mVariableIndex;
 
     unsigned int mTargetDim, mVariableDim;
   };

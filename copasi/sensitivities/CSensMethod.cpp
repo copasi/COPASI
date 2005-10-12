@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/12 13:39:40 $
+   $Author: ssahle $ 
+   $Date: 2005/10/12 14:48:46 $
    End CVS Header */
 
 /**
@@ -101,6 +101,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
   //resize the arrays
   mTargetDim = mTargetObjects.size();
   mTargetSizes.clear(); mTargetSizes.resize(mTargetDim);
+  mTargetIndex.clear(); mTargetIndex.resize(mTargetDim);
 
   unsigned C_INT32 i;
 
@@ -114,6 +115,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
   mVariableDim = mVariableObjects.size();
   mVariableSizes.clear(); mVariableSizes.resize(mVariableDim);
+  mVariableIndex.clear(); mVariableIndex.resize(mVariableDim);
 
   for (i = 0; i < mVariableDim; ++i)
     {
@@ -136,8 +138,10 @@ bool CSensMethod::processInternal()
   //store current state
 
   //do subtask
+  doOneCalculation();
 
   //store target values to mTarget1
+  storeTargetValues(mTarget1);
 
   //for()
   {
@@ -146,14 +150,46 @@ bool CSensMethod::processInternal()
     //change one variable
 
     //do subtask
+    doOneCalculation();
 
     //store target values to mTarget2
+    storeTargetValues(mTarget2);
 
     //calculate actual sensitivities
 
     //restore variable
   }
+  return true;
+}
 
+bool CSensMethod::doOneCalculation()
+{
+  //only explicit
+  if (true)
+    {
+      mpProblem->getModel()->updateRates();
+    }
+
+  //subtask
+  if (false)
+    {
+    }
+
+  return true;
+}
+
+bool CSensMethod::storeTargetValues(CCopasiArray & target)
+{
+  //so far only 1D array of objects are supported
+  assert(mTargetDim == 1);
+
+  std::vector<CCopasiObject*>::const_iterator it, itEnd = mTargetObjects[0].end();
+  unsigned int i;
+  for (it = mTargetObjects[0].begin(), i = 0; it != itEnd; ++it, ++i)
+    {
+      mVariableIndex[0] = i;
+      mResult[mVariableIndex] = *(C_FLOAT64*)((*it)->getReference());
+    }
   return true;
 }
 
