@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/30 15:19:53 $
+   $Date: 2005/10/12 17:54:58 $
    End CVS Header */
 
 #include <float.h>
@@ -100,7 +100,7 @@ const CCopasiObjectName COptItem::getObjectCN() const
 
 std::string COptItem::getObjectDisplayName() const
   {
-    if (!mpObject && const_cast<COptItem *>(this)->compile())
+    if (!mpObject && !const_cast<COptItem *>(this)->compile())
       return "Invalid Optimization Item";
 
     return mpObject->getObjectDisplayName();
