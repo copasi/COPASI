@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSort.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/28 02:00:20 $
+   $Date: 2005/10/12 20:32:16 $
    End CVS Header */
 
 #ifndef COPASI_CSort
@@ -109,7 +109,7 @@ void sortWithPivot(RandomAccessIterator first,
 {
   FCompare<RandomAccessIterator, LessThanCompare> Compare(method);
 
-  __sortWithPivot(first, middle, last, Compare, pivot);
+  __sortWithPivot(first, last, Compare, pivot);
 
   return;
 }
@@ -361,11 +361,11 @@ bool applyPivot(const CVector<unsigned C_INT32> & pivot,
   CVector< bool > Applied(pivot.size());
   Applied = false;
 
-  unsigned C_INT32 i;
+  unsigned C_INT32 i, imax = pivot.size();
   unsigned C_INT32 to;
   unsigned C_INT32 from;
 
-  for (i = 0; i < ordered; i++)
+  for (i = 0; i < imax; i++)
     if (!Applied[i])
       {
         to = i;
