@@ -117,7 +117,6 @@
     <include location="local" impldecl="in declaration">copasi.h</include>
     <include location="local" impldecl="in implementation">qmessagebox.h</include>
     <include location="local" impldecl="in implementation">qfiledialog.h</include>
-    <include location="local" impldecl="in implementation">TimeSeriesSubwidget.ui.h</include>
     <include location="global" impldecl="in implementation">qregexp.h</include>
 </includes>
 <slots>
@@ -126,9 +125,6 @@
     <slot access="protected">init()</slot>
     <slot returnType="CTimeSeriesTable *">table()</slot>
 </slots>
-<functions>
-    <function returnType="C_INT32">checkSelection(const QString&amp; file)</function>
-</functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>ctimeseriestable.h</includehint>
