@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/05 16:21:48 $
+   $Date: 2005/10/12 14:10:04 $
    End CVS Header */
 
 #include "copasi.h"
@@ -79,6 +79,9 @@ void CFitProblem::initializeParameter()
 
 bool CFitProblem::elevateChildren()
 {
+  // This call is necessarry since CFitProblem is derived from COptProblem.
+  if (!COptProblem::elevateChildren()) return false;
+
   mpExperimentSet =
     elevate<CExperimentSet, CCopasiParameterGroup>(getGroup("Experiment Set"));
   if (!mpExperimentSet) return false;
