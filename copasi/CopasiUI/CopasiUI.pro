@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.111 $ $Author: shoops $ $Date: 2005/10/13 13:16:29 $  
+# $Revision: 1.112 $ $Author: shoops $ $Date: 2005/10/13 14:08:38 $  
 ######################################################################
 
 TEMPLATE = app
@@ -185,7 +185,6 @@ HEADERS += \
            SliderDialog.h \
            StateWidget.h \
            SteadyStateWidget.h \
-           TaskWidget.h \
            TableDefinition.h \
            TableDefinition1.h \
            TaskWidget.h \
@@ -256,7 +255,6 @@ SOURCES += \
            SliderDialog.cpp \
            StateWidget.cpp \
            SteadyStateWidget.cpp \
-           TaskWidget.cpp \
            TableDefinition.cpp \
            TableDefinition1.cpp \
            TaskWidget.cpp \
