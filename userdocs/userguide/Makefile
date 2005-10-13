@@ -28,12 +28,12 @@ XSLTPROC=$(JAVA) -classpath $(SAXON_JAR):$(SAXON_EXTENSIONS_JAR) com.icl.saxon.S
 
 # The following variables need to be adjusted to suit your installation
 # The dblatex installation directory
-DBLATEX_PATH=/home/usr
+DBLATEX_PATH=/usr/local/dblatex
 DBLATEX=$(DBLATEX_PATH)/bin/dblatex
 DBLATEX_TEXINPUTS=$(TEXINPUTS):$(DBLATEX_PATH)/share/dblatex/latex/style:$(DBLATEX_PATH)/share/dblatex/latex/graphics
 
 # The PDFLATEX executable
-PDFLATEX=/home/usr/teTeX/bin/pdflatex
+PDFLATEX=/usr/bin/pdflatex
 
 
 # PDFXMLTEX=/usr/bin/pdfxmltex
@@ -65,6 +65,7 @@ copasi.fo: $(SOURCES) $(IMAGES) $(FO_STYLESHEET)
 	$(XSLTPROC) -o $@ $< $(FO_STYLESHEET)
 
 clean:
+	rm -f copasi.tex
 	rm -f copasi.pdf
 	rm -f copasi.html
 	rm -f copasi.out
@@ -74,11 +75,13 @@ clean:
 	rm -f copasi.glo
 	rm -f fotex.log
 
-SOURCES = copasi.xml \
-          copasi_GUI.xml \
-          copasi_commandLine.xml \
-          copasi_fileFormats.xml \
-          copasi_methods.xml 
+SOURCES = \
+	copasi.xml \
+	copasi_GUI.xml \
+	copasi_commandLine.xml \
+	copasi_fileFormats.xml \
+	copasi_methods.xml \
+	copasi_bibliography.xml
 
 IMAGES = images/Compartments_01.png \
          images/Compartments_02.png \
