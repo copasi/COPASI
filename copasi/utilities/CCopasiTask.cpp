@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/10 16:12:03 $
+   $Author: shoops $ 
+   $Date: 2005/10/13 13:06:24 $
    End CVS Header */
 
 /**
@@ -162,6 +162,11 @@ bool CCopasiTask::setCallBack(CProcessReport * pCallBack)
   mpCallBack = pCallBack;
   return true;
 }
+
+CProcessReport * CCopasiTask::getCallBack() const
+  {
+    return mpCallBack;
+  }
 
 bool CCopasiTask::initialize(const OutputFlag & of,
                              std::ostream * pOstream)

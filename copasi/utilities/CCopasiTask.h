@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/10 16:12:03 $
+   $Author: shoops $ 
+   $Date: 2005/10/13 13:06:24 $
    End CVS Header */
 
 /**
@@ -66,8 +66,8 @@ class CCopasiTask : public CCopasiContainer
 
     enum OutputFlag
     {
-      NO_OUTPUT = 0,                   //do no output
-      OUTPUT,                          //do output, but do not initialize/finish
+      NO_OUTPUT = 0,                    //do no output
+      OUTPUT,                           //do output, but do not initialize/finish
       OUTPUT_COMPLETE          //do output, including initialization and closing
     };
 
@@ -318,6 +318,8 @@ class CCopasiTask : public CCopasiContainer
      * @result bool succes
      */
     virtual bool setCallBack(CProcessReport * pCallBack);
+
+    CProcessReport * getCallBack() const;
 
     /**
      * Initialize the task. If an ostream is given this ostream is used

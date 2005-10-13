@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:58 $
+   $Date: 2005/10/13 13:06:24 $
    End CVS Header */
 
 // CCopasiMessage
@@ -25,6 +25,9 @@
 #include "messages.h"
 #include "CCopasiException.h"
 #include "utility.h"
+
+#include "commandline/COptionParser.h"
+#include "commandline/COptions.h"
 
 #define INITIALTEXTSIZE 1024
 
@@ -221,7 +224,8 @@ void CCopasiMessage::handler(const bool & /* _throw */)
   mMessageDeque.push_back(*this);
 
   // All messages are printed to std::cerr
-  if (mNumber != MCCopasiMessage + 1)
+  if (COptions::compareValue("Verbose", true) &&
+      mNumber != MCCopasiMessage + 1)
     {
       std::cerr << mText << std::endl;
 
