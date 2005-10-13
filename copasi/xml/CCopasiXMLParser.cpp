@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.113 $
+   $Revision: 1.114 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/06 19:41:20 $
+   $Date: 2005/10/13 12:50:20 $
    End CVS Header */
 
 /**
@@ -5201,7 +5201,9 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
 void CCopasiXMLParser::ReportElement::end(const XML_Char *pszName)
 {
   if (!strcmp(pszName, "Report") &&
-      (mCurrentElement == Header || mCurrentElement == Body))
+      (mCurrentElement == Comment ||
+       mCurrentElement == Header ||
+       mCurrentElement == Body))
     mCurrentElement = Report;
 
   switch (mCurrentElement)
