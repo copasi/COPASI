@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:10 $
+   $Date: 2005/10/13 12:35:27 $
    End CVS Header */
 
 /*
@@ -38,6 +38,8 @@ namespace
     "  --home string            Your home directory.\n"
     "  --rc string              The configuration file for copasi. The default\n"
     "                           is .copasirc in the home directory.\n"
+    "  --verbose                Enable output of messages during runtime to\n"
+    "                           std::error.\n"
     "  -c, --copasidir string   The COPASI installation directory.\n"
     "  -e, --exportSBML string  The SBML file to export.\n"
     "  -i, --importSBML string  A SBML file to import.\n"
@@ -178,6 +180,8 @@ void copasi::COptionParser::finalize (void)
           throw option_error("missing value for 'save' option");
         case option_Tmp:
           throw option_error("missing value for 'tmp' option");
+        case option_Verbose:
+          throw option_error("missing value for 'verbose' option");
         }
     }
 }
@@ -422,6 +426,18 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
       state_ = state_value;
       return;
     }
+  else if (strcmp(option, "verbose") == 0)
+    {
+      source = source; // kill compiler unused variable warning
+      if (locations_.Verbose)
+        {
+          throw option_error("the 'verbose' option is only allowed once");
+        }
+      openum_ = option_Verbose;
+      locations_.Verbose = position;
+      options_.Verbose = !options_.Verbose;
+      return;
+    }
   else if (source == source_cl && strcmp(option, "help") == 0)
     {
       throw autoexcept(autothrow_help, const_usage);
@@ -496,6 +512,8 @@ void copasi::COptionParser::parse_value (const char *value)
         options_.Tmp = value;
       }
       break;
+    case option_Verbose:
+      break;
     }
 }
 //#########################################################################
@@ -534,6 +552,9 @@ namespace
 
     if (name_size <= 3 && name.compare("tmp") == 0)
       matches.push_back("tmp");
+
+    if (name_size <= 7 && name.compare("verbose") == 0)
+      matches.push_back("verbose");
 
     if (name_size <= 4 && name.compare("help") == 0)
       matches.push_back("help");

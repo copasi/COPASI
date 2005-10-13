@@ -62,6 +62,18 @@
      The temp directory used for autosave.
     </comment>
    </option>
+   <option id="Verbose"
+           type="flag"
+           mandatory="no"
+           strict="yes"
+           location="both"
+           default="false"
+           hidden="no">
+    <name>verbose</name>
+    <comment>
+     Enable output of messages during runtime to std::error.
+    </comment>
+   </option>
 <!--
    <option id="SystemFunctionDB"
            type="string"

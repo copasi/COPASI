@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:10 $
+   $Date: 2005/10/13 12:35:27 $
    End CVS Header */
 
 #define COPASI_TRACE_CONSTRUCTION
@@ -158,6 +158,7 @@ void COptions::init(C_INT argc, char *argv[])
      setValue("OptionId", Options.OptionID); */
 
   setValue("Tmp", Options.Tmp);
+  setValue("Verbose", Options.Verbose);
   setValue("Save", Options.Save);
   setValue("ImportSBML", Options.ImportSBML);
   setValue("ExportSBML", Options.ExportSBML);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:10 $
+   $Date: 2005/10/13 12:35:27 $
    End CVS Header */
 
 /*
@@ -49,7 +49,10 @@ namespace copasi
    */
   struct options
     {
-      options(void) {}
+      options(void) :
+          Verbose(false)
+      {}
+
       std::string ConfigFile;
       std::string CopasiDir;
       std::map<std::string, std::string> Default;
@@ -58,6 +61,7 @@ namespace copasi
       std::string ImportSBML;
       std::string Save;
       std::string Tmp;
+      bool Verbose;
     }  ; // end options struct
 
   /**
@@ -75,6 +79,7 @@ namespace copasi
       size_type ImportSBML;
       size_type Save;
       size_type Tmp;
+      size_type Verbose;
     }  ; // end option location struct
 
   /**
@@ -153,6 +158,7 @@ namespace copasi
         option_CopasiDir,
         option_Home,
         option_Tmp,
+        option_Verbose,
         option_Save,
         option_ImportSBML,
         option_ExportSBML,
