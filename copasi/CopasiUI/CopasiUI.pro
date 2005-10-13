@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.110 $ $Author: ssahle $ $Date: 2005/10/11 16:24:03 $  
+# $Revision: 1.111 $ $Author: shoops $ $Date: 2005/10/13 13:16:29 $  
 ######################################################################
 
 TEMPLATE = app
@@ -185,6 +185,7 @@ HEADERS += \
            SliderDialog.h \
            StateWidget.h \
            SteadyStateWidget.h \
+           TaskWidget.h \
            TableDefinition.h \
            TableDefinition1.h \
            TaskWidget.h \
@@ -193,15 +194,6 @@ HEADERS += \
            Tree.h \
            TSSWidget.h
 
-# INTERFACES += CompartmentsWidget.ui \
-#               FunctionWidget1.ui \
-#               MetabolitesWidget1.ui \
-#               MoietyWidget1.ui \
-#               ObjectBrowser.ui \
-#               objectdebug.ui \
-#               ReactionsWidget1.ui \
-#               SteadyStateWidget.ui \
-#               TrajectoryWidget.ui
 
 SOURCES += \
            AboutDialog.cpp \
@@ -264,6 +256,7 @@ SOURCES += \
            SliderDialog.cpp \
            StateWidget.cpp \
            SteadyStateWidget.cpp \
+           TaskWidget.cpp \
            TableDefinition.cpp \
            TableDefinition1.cpp \
            TaskWidget.cpp \
@@ -275,9 +268,9 @@ SOURCES += \
 # FORMS += TimeSeriesSubwidget.ui
 # FORMS += StateSubwidget.ui
 # FORMS += CMCAResultSubwidget.ui
-# FORMS += SimpleSelectionWidget.ui        
-# FORMS += SliderSettingsDialog.ui    
-# FORMS += objectdebug.ui       
+# FORMS += SimpleSelectionWidget.ui
+# FORMS += SliderSettingsDialog.ui 
+# FORMS += objectdebug.ui
 # FORMS += CUpDownSubwidget.ui
 # FORMS += CScanWidgetBreak.ui
 # FORMS += CScanWidgetRandom.ui
