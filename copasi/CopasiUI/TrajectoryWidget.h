@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/18 11:40:02 $
+   $Author: shoops $ 
+   $Date: 2005/10/13 13:44:03 $
    End CVS Header */
 
 /********************************************************
@@ -83,7 +83,7 @@ class TrajectoryWidget : public CopasiWidget
     void saveTrajectoryTask();
     void loadMethodParameters();
 
-    QWidget* pParent;
+    //QWidget* pParent;
     QGridLayout* TrajectoryWidgetLayout;
     QHBoxLayout* Layout2;
     QFrame* line8;

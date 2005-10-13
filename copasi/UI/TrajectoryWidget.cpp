@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.116 $
+   $Revision: 1.117 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/05 14:11:07 $
+   $Author: shoops $ 
+   $Date: 2005/10/13 13:44:03 $
    End CVS Header */
 
 /********************************************************
@@ -57,7 +57,7 @@ Contact: Please contact lixu1@vt.edu.
  */
 TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
     : CopasiWidget(parent, name, fl),
-    pParent(parent),
+    //pParent(parent),
     mpProblem(NULL)
 {
   if (!name)
@@ -492,7 +492,7 @@ void TrajectoryWidget::ReportDefinitionClicked()
     dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(objKey));
   assert(trajectoryTask);
 
-  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pParent);
+  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(this /*pParent*/);
   pSelectDlg->setReport(&trajectoryTask->getReport());
   pSelectDlg->loadReportDefinitionVector();
   pSelectDlg->exec();
