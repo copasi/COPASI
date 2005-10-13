@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/10 18:46:31 $
+   $Date: 2005/10/13 00:18:22 $
    End CVS Header */
 
 #ifndef COPASI_CQValidator
@@ -23,7 +23,7 @@ class CQValidator : public QValidator
 
     virtual State revalidate();
 
-    virtual void forceAcceptance(QString & input) const;
+    virtual void forceAcceptance(const QString & input) const;
 
     virtual void saved() const;
 
@@ -60,7 +60,7 @@ class CQValidatorBound : public CQValidator
 
     virtual State validate(QString & input, int & pos) const;
 
-    virtual void forceAcceptance(QString & input) const;
+    virtual void forceAcceptance(const QString & input) const;
 
     //Attributes
   protected:

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/10 18:52:51 $
+   $Author: shoops $ 
+   $Date: 2005/10/13 00:18:22 $
    End CVS Header */
 
 #include <qlineedit.h>
@@ -51,7 +51,7 @@ void CQValidator::saved() const
     mpLineEdit->setPaletteBackgroundColor(mSavedColor);
   }
 
-void CQValidator::forceAcceptance(QString & input) const
+void CQValidator::forceAcceptance(const QString & input) const
   {
     const_cast<CQValidator *>(this)->mLastAccepted = input;
     setColor(Acceptable);
@@ -98,7 +98,7 @@ QValidator::State CQValidatorBound::validate (QString & input, int & pos) const
     return Acceptable;
   }
 
-void CQValidatorBound::forceAcceptance(QString & input) const
+void CQValidatorBound::forceAcceptance(const QString & input) const
   {
     const_cast<CQValidatorBound *>(this)->mValidBound = input;
 
