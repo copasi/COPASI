@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/14 11:51:41 $
+   $Date: 2005/10/14 16:36:01 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -14,6 +14,7 @@
 #include "CQTaskHeaderWidget.h"
 #include "CQFittingItemWidget.h"
 #include "CProgressBar.h"
+#include "CQExperimentData.h"
 
 #include "report/CKeyFactory.h"
 #include "parameterFitting/CFitTask.h"
@@ -186,15 +187,7 @@ bool CQFittingWidget::runTask()
   try
     {
       if (!pTask->process(true))
-        {
-          mProgressBar->finish();
-          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-            {
-              mProgressBar->finish();
-              QMessageBox::warning(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-              CCopasiMessage::clearDeque();
-            }
-        }
+        throw CCopasiException(CCopasiMessage::peekLastMessage());
     }
 
   catch (CCopasiException Exception)
@@ -233,7 +226,16 @@ void CQFittingWidget::slotBtnAdd()
 }
 
 void CQFittingWidget::slotExperimentData()
-{}
+{
+  CQExperimentData * pDialog = new CQExperimentData(this);
+
+  if (pDialog->exec () == QDialog::Accepted)
+    {
+      // :TODO: implement action if needed
+    }
+
+  pdelete(pDialog);
+}
 
 void CQFittingWidget::slotPageChange(QWidget * currentPage)
 {
