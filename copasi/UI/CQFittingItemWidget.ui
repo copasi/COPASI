@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>579</width>
+            <width>190</width>
             <height>94</height>
         </rect>
     </property>
@@ -273,6 +273,7 @@
 </includes>
 <forwards>
     <forward>class CCopasiSelectionDialog</forward>
+    <forward>class COptItem</forward>
     <forward>class CFitItem</forward>
     <forward>class CCopasiObject</forward>
     <forward>class CCopasiObjectName</forward>
@@ -281,17 +282,18 @@
     <forward>class QColor</forward>
 </forwards>
 <variables>
-    <variable>QColor mChangedColor;</variable>
-    <variable>QColor mSavedColor;</variable>
-    <variable>bool mUpperInfChanged;</variable>
-    <variable>bool mLowerInfChanged;</variable>
-    <variable>CQValidatorBound * mpUpperValidator;</variable>
-    <variable>CQValidatorBound * mpLowerValidator;</variable>
-    <variable>CQValidatorNotEmpty * mpObjectValidator;</variable>
-    <variable>const CCopasiObject* mpUpperObject;</variable>
-    <variable>const CCopasiObject* mpLowerObject;</variable>
+    <variable>COptItem * mpItem;</variable>
     <variable>CCopasiObjectName* mpObjectCN;</variable>
-    <variable>CFitItem * mpFitItem;</variable>
+    <variable>const CCopasiObject* mpLowerObject;</variable>
+    <variable>const CCopasiObject* mpUpperObject;</variable>
+    <variable>CQValidatorNotEmpty * mpObjectValidator;</variable>
+    <variable>CQValidatorBound * mpLowerValidator;</variable>
+    <variable>CQValidatorBound * mpUpperValidator;</variable>
+    <variable>bool mLowerInfChanged;</variable>
+    <variable>bool mUpperInfChanged;</variable>
+    <variable>QColor mSavedColor;</variable>
+    <variable>QColor mChangedColor;</variable>
+    <variable>bool mIsFitItem;</variable>
 </variables>
 <slots>
     <slot access="private" specifier="non virtual">slotNegativeInfinity()</slot>
@@ -303,10 +305,15 @@
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
-    <function specifier="non virtual" returnType="bool">loadFitItem( const CFitItem &amp; item )</function>
-    <function specifier="non virtual" returnType="bool">saveFitItem(CFitItem &amp; item) </function>
+    <function specifier="non virtual" returnType="bool">load(const CFitItem &amp; item )</function>
+    <function specifier="non virtual" returnType="bool">save(CFitItem &amp; item) </function>
     <function access="private" specifier="non virtual">destroy()</function>
     <function specifier="non virtual" returnType="CQFittingItemWidget *">copy()</function>
+    <function specifier="non virtual">enableFitItem(const bool &amp;)</function>
+    <function specifier="non virtual" returnType="bool">load(const COptItem &amp;)</function>
+    <function specifier="non virtual" returnType="bool">save(COptItem &amp; item)</function>
+    <function access="protected" specifier="non virtual" returnType="bool">loadCommon(const COptItem &amp;)</function>
+    <function access="protected" specifier="non virtual" returnType="bool">saveCommon(COptItem &amp;)</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

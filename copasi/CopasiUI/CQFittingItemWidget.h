@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/12 20:23:19 $
+   $Date: 2005/10/14 11:51:02 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Wed Oct 12 13:34:08 2005
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.5 2005/10/12 20:23:19 shoops Exp $)
+ ** Created: Thu Oct 13 15:36:24 2005
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.6 2005/10/14 11:51:02 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -32,6 +32,7 @@ class QLineEdit;
 class QToolButton;
 class QComboBox;
 class CCopasiSelectionDialog;
+class COptItem;
 class CFitItem;
 class CCopasiObject;
 class CCopasiObjectName;
@@ -62,22 +63,29 @@ class CQFittingItemWidget : public QWidget
     QLineEdit* mpEditObject;
     QToolButton* mpBtnObject;
 
-    bool loadFitItem(const CFitItem & item);
-    bool saveFitItem(CFitItem & item);
+    bool load(const CFitItem & item);
+    bool save(CFitItem & item);
     CQFittingItemWidget * copy();
+    void enableFitItem(const bool &);
+    bool load(const COptItem &);
+    bool save(COptItem & item);
 
   protected:
-    QColor mChangedColor;
-    QColor mSavedColor;
-    bool mUpperInfChanged;
-    bool mLowerInfChanged;
-    CQValidatorBound * mpUpperValidator;
-    CQValidatorBound * mpLowerValidator;
-    CQValidatorNotEmpty * mpObjectValidator;
-    const CCopasiObject* mpUpperObject;
-    const CCopasiObject* mpLowerObject;
+    COptItem * mpItem;
     CCopasiObjectName* mpObjectCN;
-    CFitItem * mpFitItem;
+    const CCopasiObject* mpLowerObject;
+    const CCopasiObject* mpUpperObject;
+    CQValidatorNotEmpty * mpObjectValidator;
+    CQValidatorBound * mpLowerValidator;
+    CQValidatorBound * mpUpperValidator;
+    bool mLowerInfChanged;
+    bool mUpperInfChanged;
+    QColor mSavedColor;
+    QColor mChangedColor;
+    bool mIsFitItem;
+
+    bool loadCommon(const COptItem &);
+    bool saveCommon(COptItem &);
 
     QGridLayout* CQFittingItemWidgetLayout;
     QSpacerItem* mpSpacerLeft;

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/12 20:23:19 $
+   $Date: 2005/10/14 11:51:02 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Wed Oct 12 13:34:09 2005
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.5 2005/10/12 20:23:19 shoops Exp $)
+ ** Created: Thu Oct 13 15:36:24 2005
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.6 2005/10/14 11:51:02 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -118,7 +118,7 @@ CQFittingItemWidget::CQFittingItemWidget(QWidget* parent, const char* name, WFla
 
   CQFittingItemWidgetLayout->addLayout(mpLayoutObject, 0, 4);
   languageChange();
-  resize(QSize(579, 94).expandedTo(minimumSizeHint()));
+  resize(QSize(190, 94).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections

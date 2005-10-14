@@ -1,10 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/12 20:23:19 $
+   $Date: 2005/10/14 11:51:02 $
    End CVS Header */
+
+#include <qapplication.h>
 
 #include "CCopasiSelectionDialog.h"
 #include "CQValidator.h"
@@ -16,7 +18,8 @@
 
 void CQFittingItemWidget::init()
 {
-  mpFitItem = new CFitItem;
+  mpItem = NULL;
+  enableFitItem(false);
 
   mLowerInfChanged = false;
   mUpperInfChanged = false;
@@ -43,9 +46,7 @@ void CQFittingItemWidget::init()
 }
 
 void CQFittingItemWidget::destroy()
-{
-  pdelete(mpFitItem);
-}
+{pdelete(mpItem);}
 
 void CQFittingItemWidget::slotNegativeInfinity()
 {
@@ -91,7 +92,7 @@ void CQFittingItemWidget::slotLowerEdit()
       mpLowerInf->setChecked(false);
       mpEditLower->setEnabled(true);
 
-      mpFitItem->setLowerBound(Selection[0]->getCN());
+      mpItem->setLowerBound(Selection[0]->getCN());
 
       QString Value = FROM_UTF8(Selection[0]->getObjectDisplayName());
       mpLowerValidator->forceAcceptance(Value);
@@ -113,7 +114,7 @@ void CQFittingItemWidget::slotUpperEdit()
       mpUpperInf->setChecked(false);
       mpEditUpper->setEnabled(true);
 
-      mpFitItem->setUpperBound(Selection[0]->getCN());
+      mpItem->setUpperBound(Selection[0]->getCN());
 
       QString Value = FROM_UTF8(Selection[0]->getObjectDisplayName());
       mpUpperValidator->forceAcceptance(Value);
@@ -132,7 +133,7 @@ void CQFittingItemWidget::slotParamEdit()
 
   if (pBrowseDialog->exec () == QDialog::Accepted && Selection.size() != 0)
     {
-      mpFitItem->setObjectCN(Selection[0]->getCN());
+      mpItem->setObjectCN(Selection[0]->getCN());
 
       QString Value = FROM_UTF8(Selection[0]->getObjectDisplayName());
       mpObjectValidator->forceAcceptance(Value);
@@ -147,33 +148,34 @@ CQFittingItemWidget * CQFittingItemWidget::copy()
 {
   CQFittingItemWidget * pWidget =
     new CQFittingItemWidget(static_cast<QWidget *>(parent()));
+  pWidget->enableFitItem(mIsFitItem);
 
   pWidget->mpEditObject->setText(mpEditObject->text());
-  pWidget->mpFitItem->setObjectCN(mpFitItem->getObjectCN());
+  pWidget->mpItem->setObjectCN(mpItem->getObjectCN());
   pWidget->mpObjectValidator->forceAcceptance(mpEditObject->text());
   pWidget->mpObjectValidator->revalidate();
 
   pWidget->mpLowerInf->setChecked(mpLowerInf->isChecked());
   pWidget->mLowerInfChanged = mLowerInfChanged;
   pWidget->mpEditLower->setText(mpEditLower->text());
-  pWidget->mpFitItem->setLowerBound(mpFitItem->getLowerBound());
+  pWidget->mpItem->setLowerBound(mpItem->getLowerBound());
 
   const CCopasiObject *pObject;
 
   if (isNumber((const char *)mpEditLower->text().utf8()))
     pWidget->mpLowerValidator->forceAcceptance(mpEditLower->text());
-  if ((pObject = RootContainer.getObject(mpFitItem->getLowerBound())))
+  if ((pObject = RootContainer.getObject(mpItem->getLowerBound())))
     pWidget->mpLowerValidator->forceAcceptance(FROM_UTF8(pObject->getObjectDisplayName()));
   pWidget->mpLowerValidator->revalidate();
 
   pWidget->mpUpperInf->setChecked(mpUpperInf->isChecked());
   pWidget->mUpperInfChanged = mUpperInfChanged;
   pWidget->mpEditUpper->setText(mpEditUpper->text());
-  pWidget->mpFitItem->setUpperBound(mpFitItem->getUpperBound());
+  pWidget->mpItem->setUpperBound(mpItem->getUpperBound());
 
   if (isNumber((const char *)mpEditUpper->text().utf8()))
     pWidget->mpUpperValidator->forceAcceptance(mpEditUpper->text());
-  if ((pObject = RootContainer.getObject(mpFitItem->getUpperBound())))
+  if ((pObject = RootContainer.getObject(mpItem->getUpperBound())))
     pWidget->mpUpperValidator->forceAcceptance(FROM_UTF8(pObject->getObjectDisplayName()));
   pWidget->mpUpperValidator->revalidate();
 
@@ -182,40 +184,57 @@ CQFittingItemWidget * CQFittingItemWidget::copy()
   return pWidget;
 }
 
-bool CQFittingItemWidget::loadFitItem(const CFitItem & item)
+bool CQFittingItemWidget::load(const CFitItem & item)
 {
-  pdelete(mpFitItem);
-  mpFitItem = new CFitItem(item);
+  if (!mIsFitItem) return false;
 
+  pdelete(mpItem);
+  mpItem = new CFitItem(item);
+
+  return loadCommon(item);
+}
+
+bool CQFittingItemWidget::load(const COptItem & item)
+{
+  if (mIsFitItem) return false;
+
+  pdelete(mpItem);
+  mpItem = new COptItem(item);
+
+  return loadCommon(item);
+}
+
+bool CQFittingItemWidget::loadCommon(const COptItem & item)
+{
   QString Value;
 
-  const CCopasiObject *pObject = RootContainer.getObject(mpFitItem->getObjectCN());
+  const CCopasiObject *pObject = RootContainer.getObject(mpItem->getObjectCN());
 
   if (pObject)
     Value = FROM_UTF8(pObject->getObjectDisplayName());
   else
-    Value = "Not found: " + FROM_UTF8(mpFitItem->getObjectCN());
+    Value = "Not found: " + FROM_UTF8(mpItem->getObjectCN());
 
   mpEditObject->setText(Value);
 
-  if (mpFitItem->getLowerBound() == "-inf" ||
-      isNumber(mpFitItem->getLowerBound()))
-    Value = FROM_UTF8(mpFitItem->getLowerBound());
-  else if ((pObject = RootContainer.getObject(mpFitItem->getLowerBound())))
+  if (mpItem->getLowerBound() == "-inf" ||
+      isNumber(mpItem->getLowerBound()))
+    Value = FROM_UTF8(mpItem->getLowerBound());
+  else if ((pObject = RootContainer.getObject(mpItem->getLowerBound())))
     Value = FROM_UTF8(pObject->getObjectDisplayName());
   else
-    Value = "Not found: " + FROM_UTF8(mpFitItem->getLowerBound());
+    Value = "Not found: " + FROM_UTF8(mpItem->getLowerBound());
 
   mpEditLower->setText(Value);
   mpLowerInf->setChecked(Value == "-inf");
 
-  if (mpFitItem->getUpperBound() == "inf" ||
-      isNumber(mpFitItem->getUpperBound()))
-    Value = FROM_UTF8(mpFitItem->getUpperBound());
-  else if ((pObject = RootContainer.getObject(mpFitItem->getUpperBound())))
+  if (mpItem->getUpperBound() == "inf" ||
+      isNumber(mpItem->getUpperBound()))
+    Value = FROM_UTF8(mpItem->getUpperBound());
+  else if ((pObject = RootContainer.getObject(mpItem->getUpperBound())))
     Value = FROM_UTF8(pObject->getObjectDisplayName());
   else
-    Value = "Not found: " + FROM_UTF8(mpFitItem->getUpperBound());
+    Value = "Not found: " + FROM_UTF8(mpItem->getUpperBound());
 
   mpEditUpper->setText(Value);
   mpUpperInf->setChecked(Value == "inf");
@@ -233,31 +252,39 @@ bool CQFittingItemWidget::loadFitItem(const CFitItem & item)
   return true;
 }
 
-bool CQFittingItemWidget::saveFitItem(CFitItem & item)
+bool CQFittingItemWidget::save(CFitItem & item)
+{
+  bool changed = saveCommon(item);
+
+  // :TODO: load affected experiments.
+
+  return changed;
+}
+
+bool CQFittingItemWidget::save(COptItem & item)
+{return saveCommon(item);}
+
+bool CQFittingItemWidget::saveCommon(COptItem & item)
 {
   bool changed = false;
 
   if (mpLowerInf->isChecked())
-    mpFitItem->setLowerBound(CCopasiObjectName("-inf"));
+    mpItem->setLowerBound(CCopasiObjectName("-inf"));
   else if (isNumber((const char *) mpEditLower->text().utf8()))
-    mpFitItem->setLowerBound(CCopasiObjectName((const char *) mpEditLower->text().utf8()));
+    mpItem->setLowerBound(CCopasiObjectName((const char *) mpEditLower->text().utf8()));
 
   if (mpUpperInf->isChecked())
-    mpFitItem->setUpperBound(CCopasiObjectName("inf"));
+    mpItem->setUpperBound(CCopasiObjectName("inf"));
   else if (isNumber((const char *) mpEditUpper->text().utf8()))
-    mpFitItem->setUpperBound(CCopasiObjectName((const char *) mpEditUpper->text().utf8()));
+    mpItem->setUpperBound(CCopasiObjectName((const char *) mpEditUpper->text().utf8()));
 
-  // :TODO: save affected experiments.
-
-  if (!(item == * mpFitItem))
+  if (!(item == * mpItem))
     {
       changed = true;
 
-      item.setObjectCN(mpFitItem->getObjectCN());
-      item.setLowerBound(mpFitItem->getLowerBound());
-      item.setUpperBound(mpFitItem->getUpperBound());
-
-      // :TODO: save affected experiments.
+      item.setObjectCN(mpItem->getObjectCN());
+      item.setLowerBound(mpItem->getLowerBound());
+      item.setUpperBound(mpItem->getUpperBound());
     }
 
   mpLowerInf->setPaletteBackgroundColor(mSavedColor);
@@ -269,4 +296,29 @@ bool CQFittingItemWidget::saveFitItem(CFitItem & item)
   mpUpperValidator->saved();
 
   return changed;
+}
+
+void CQFittingItemWidget::enableFitItem(const bool & enable)
+{
+  mIsFitItem = enable;
+  pdelete(mpItem);
+
+  if (mIsFitItem)
+    {
+      mpItem = new CFitItem;
+
+      mpLblExperiments->show();
+      mpBoxExperiments->show();
+      mpBtnExperiments->show();
+    }
+  else
+    {
+      mpItem = new COptItem;
+
+      mpLblExperiments->hide();
+      mpBoxExperiments->hide();
+      mpBtnExperiments->hide();
+    }
+
+  qApp->processEvents();
 }
