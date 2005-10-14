@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/10/07 12:35:49 $
+   $Date: 2005/10/14 10:01:34 $
    End CVS Header */
 
 #ifndef MMASCIIExpoter_H__
@@ -20,10 +20,10 @@ class MMASCIIExporter
     **  
     */
   public:
-    /**
-     ** Default constructor for the exporter.
-     */
 
+    /**
+    ** Default constructor for the exporter.
+    */
     MMASCIIExporter();
     /*
     ** Destructor for the exporter.
@@ -60,11 +60,13 @@ class MMASCIIExporter
      **/
     C_INT32 findKinParamByName(const CReaction* reac, const std::string & Target);
     /**
-     **   This method finds internal functions calls in a temporary evaluation tree
-     **   and export them in output file 
-     **/ 
-    //void functionExport(CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet,  std::map< std::string, std::string > &functionNameMap, std::string mmasciiFilename);
-    void functionExport(CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::ostringstream & outFunction);
+     **   This method finds internal functions calls 
+     **/
+    void findInternalFunctionsCalls(CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction);
+    /**
+     **    This method exports the function in C format 
+     **/
+    void functionCoutput(const CFunction* pFunc, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction);
   };
 
 #endif

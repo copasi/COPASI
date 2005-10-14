@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/10/07 12:35:49 $
+   $Date: 2005/10/14 10:01:19 $
    End CVS Header */
 
 #include <math.h>
@@ -121,103 +121,137 @@ C_INT32 MMASCIIExporter::findKinParamByName(const CReaction* reac, const std::st
   return - 1;
 }
 /**
- **         This method finds internal functions calls in a temporary evaluation tree
- **         and export them in  output file 
+ **         This method exports the functions in C format     
  **/
-void MMASCIIExporter::functionExport(CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::ostringstream & outFunction)
+void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction)
+{
+  CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+
+  CFunction* tmpFunc = NULL;
+  tmpFunc = new CFunction(*pFunc);
+
+  if (pFunc->getType() != CEvaluationTree::MassAction)
+    {
+      std::ostringstream tmpName;
+
+      if (functionNameSet.find(pFunc->getObjectName()) == functionNameSet.end())
+        {
+          tmpName << "function_" << findex << "_";
+          functionNameMap[pFunc->getObjectName()] = tmpName.str();
+          functionNameSet.insert(pFunc->getObjectName());
+          findex++;
+        }
+
+      CCopasiTree< CEvaluationNode>::iterator newIt = tmpFunc->getRoot();
+      unsigned C_INT32 j, varbs_size = tmpFunc->getVariables().size();
+      std::map< std::string, std::string > parameterNameMap;
+      std::set<std::string> parameterNameSet;
+
+      unsigned C_INT32 pindex = 0;
+
+      for (j = 0; j < varbs_size; ++j)
+        {
+          if (parameterNameSet.find(tmpFunc->getVariables()[j]->getObjectName()) == parameterNameSet.end())
+            {
+              std::ostringstream tmpName;
+              tmpName << "a_" << pindex;
+              parameterNameMap[ tmpFunc->getVariables()[j]->getObjectName() ] = tmpName.str();
+              parameterNameSet.insert(tmpFunc->getVariables()[j]->getObjectName());
+              pindex++;
+            }
+        }
+
+      while (newIt != NULL)
+        {
+          if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
+            {
+              newIt->setData(parameterNameMap[ tmpFunc->getVariables()[newIt->getData()]->getObjectName() ]);
+            }
+
+          if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::CALL)
+            {
+              const CFunction* callFunc;
+              callFunc = static_cast<CFunction*> (pFunctionDB->findFunction((*newIt).getData()));
+              if (callFunc->getType() != CEvaluationTree::MassAction)
+                newIt->setData(functionNameMap[callFunc->getObjectName()]);
+            }
+
+          ++newIt;
+        }
+
+      std::cout << "vorher:" << std::endl;
+
+      if (tmpFunc->getRoot())
+        tmpFunc->getRoot()->printRecursively(std::cout);
+
+      tmpFunc->updateTree();
+
+      std::cout << "naher:" << std::endl;
+
+      if (tmpFunc->getRoot())
+        tmpFunc->getRoot()->printRecursively(std::cout);
+
+      std::string name = tmpFunc->getObjectName();
+
+      if (exportedFunctionSet.find(name) == exportedFunctionSet.end())
+        {
+          unsigned C_INT32 j, varbs_size = tmpFunc->getVariables().size();
+
+          outFunction << std::endl;
+          outFunction << "double " << functionNameMap[name] << "(";
+
+          for (j = 0; j < varbs_size; ++j)
+            {
+              outFunction << "double " << parameterNameMap[ tmpFunc->getVariables()[j]->getObjectName().c_str() ];
+              if (j != varbs_size - 1) outFunction << ", ";
+            }
+
+          outFunction << ") ";
+          outFunction << '\t' << "//" << name << std::endl;
+          outFunction << "{return  " << tmpFunc->getInfix().c_str() << "; } " << std::endl;
+
+          exportedFunctionSet.insert(name);
+        }
+    }
+}
+
+/**
+ **         This method finds internal functions calls 
+ **/
+void MMASCIIExporter::findInternalFunctionsCalls(CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction)
 {
   if (pNode)
     {
       CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
-      CCopasiTree< CEvaluationNode>::iterator treeIt = pNode;
+      CCopasiTree<CEvaluationNode>::iterator treeIt = pNode;
 
       while (treeIt != NULL)
         {
-          if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
+          if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL) // treeIt == pNode
             {
               const CFunction* pFunc;
-              CFunction* tmpFunc = NULL;
               pFunc = static_cast<CFunction*> (pFunctionDB->findFunction((*treeIt).getData()));
 
+              CFunction* tmpFunc = NULL;
               tmpFunc = new CFunction(*pFunc);
 
-              if (tmpFunc->getRoot())
-                tmpFunc->getRoot()->printRecursively(std::cout);
+              findInternalFunctionsCalls(tmpFunc->getRoot(), exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction);
 
-              functionExport(tmpFunc->getRoot(), exportedFunctionSet, functionNameMap, outFunction);
+              std::cout << "vorher:" << std::endl;
+              if (pFunc->getRoot())
+                pFunc->getRoot()->printRecursively(std::cout);
 
-              if (tmpFunc->getRoot())
-                tmpFunc->getRoot()->printRecursively(std::cout);
+              functionCoutput(pFunc, exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction);
 
-              if (pFunc->getType() != CEvaluationTree::MassAction)
-                {
-                  CCopasiTree< CEvaluationNode>::iterator newIt = tmpFunc->getRoot();
-                  unsigned C_INT32 j, varbs_size = tmpFunc->getVariables().size();
-                  unsigned C_INT32 index = 0;
-                  std::map< std::string, std::string > parameterNameMap;
-                  std::set<std::string> parameterNameSet;
-
-                  for (j = 0; j < varbs_size; ++j)
-                    {
-                      if (parameterNameSet.find(tmpFunc->getVariables()[j]->getObjectName()) == parameterNameSet.end())
-                        {
-                          std::ostringstream tmpName;
-                          tmpName << "param_" << index;
-                          parameterNameMap[ tmpFunc->getVariables()[j]->getObjectName() ] = tmpName.str();
-                          parameterNameSet.insert(tmpFunc->getVariables()[j]->getObjectName());
-                          index++;
-                        }
-                    }
-
-                  while (newIt != NULL)
-                    {
-                      if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
-                        {
-                          newIt->setData(parameterNameMap[ tmpFunc->getVariables()[newIt->getData()]->getObjectName() ]);
-                        }
-
-                      ++newIt;
-                    }
-
-                  std::cout << "vorher:" << std::endl;
-
-                  if (tmpFunc->getRoot())
-                    tmpFunc->getRoot()->printRecursively(std::cout);
-
-                  tmpFunc->updateTree();
-
-                  std::cout << "naher:" << std::endl;
-
-                  if (tmpFunc->getRoot())
-                    tmpFunc->getRoot()->printRecursively(std::cout);
-
-                  std::string name = tmpFunc->getObjectName();
-
-                  if (exportedFunctionSet.find(name) == exportedFunctionSet.end())
-                    {
-                      unsigned C_INT32 j, varbs_size = tmpFunc->getVariables().size();
-
-                      outFunction << std::endl;
-                      outFunction << "double " << functionNameMap[name] << "(";
-
-                      for (j = 0; j < varbs_size; ++j)
-                        {
-                          outFunction << "double " << parameterNameMap[ tmpFunc->getVariables()[j]->getObjectName().c_str() ];
-                          if (j != varbs_size - 1) outFunction << ", ";
-                        }
-
-                      outFunction << ") ";
-                      outFunction << '\t' << "//" << name << std::endl;
-                      outFunction << "{return  " << tmpFunc->getInfix().c_str() << "; } " << std::endl;
-
-                      exportedFunctionSet.insert(name);
-                    }
-                }
+              std::cout << "naher:" << std::endl;
+              if (pFunc->getRoot())
+                pFunc->getRoot()->printRecursively(std::cout);
             }
           ++treeIt;
         }
     }
 }
+
 /**
  ** This method takes some of the copasi CModel objects 
  ** and writes them in the ASCII format in an output file.    
@@ -401,155 +435,116 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
 
   outFile << "#ifdef KINETIC_FUNCTIONS" << std::endl;
 
+  std::map< std::string, std::string > functionNameMap;
   std::set<std::string> functionNameSet;
   std::set<std::string> exportedFunctionSet;
-  std::map< std::string, std::string > functionNameMap;
-  CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
-  unsigned C_INT32 tmpFuncIndex = 0;
-
-  for (i = 0; i < reacs_size; ++i)
-    if (reacs[i]->getFunction().getType() != CEvaluationTree::MassAction)
-      {
-        std::ostringstream tmpName;
-
-        tmpName << "Function_" << tmpFuncIndex << "_";
-        functionNameMap[reacs[i]->getFunction().getObjectName()] = tmpName.str();
-        tmpFuncIndex++;
-      }
-
-  tmpFuncIndex = 0;
+  unsigned C_INT32 findex = 0;
 
   for (i = 0; i < reacs_size; ++i)
     {
       reac = reacs[i];
 
-      if (reac->getFunction().getType() != CEvaluationTree::MassAction)
-        {
-          const CFunction* func;
-          CFunction* tmpFunc = NULL;
+      {
+        std::ostringstream outFunction;
 
-          func = &(reac->getFunction());
-          tmpFunc = new CFunction(*func);
+        const CFunction* pFunc;
+        CFunction* tmpFunc = NULL;
 
-          CCopasiTree<CEvaluationNode>::iterator it = tmpFunc->getRoot();
+        pFunc = &(reac->getFunction());
+        tmpFunc = new CFunction(*pFunc);
 
-          while (it != NULL)
-            {
-              if (CEvaluationNode::type(it->getType()) == CEvaluationNode::CALL)
-                {
-                  std::ostringstream tmpName;
-                  const CFunction* pFunc;
-                  pFunc = static_cast<CFunction*> (pFunctionDB->findFunction((*it).getData()));
+        if (tmpFunc->getRoot())
+          findInternalFunctionsCalls(tmpFunc->getRoot(), exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction);
 
-                  if (pFunc->getType() != CEvaluationTree::MassAction)
-                    {
-                      if (functionNameSet.find(pFunc->getObjectName()) == functionNameSet.end())
-                        {
-                          tmpName << "function_" << tmpFuncIndex << "_";
-                          functionNameMap[pFunc->getObjectName()] = tmpName.str();
+        std::cout << "vorher_1:" << std::endl;
+        if (pFunc->getRoot())
+          pFunc->getRoot()->printRecursively(std::cout);
 
-                          functionNameSet.insert(pFunc->getObjectName());
-                          tmpFuncIndex++;
-                        }
-                    }
-                  /* else "Mass Action " */
-                }
+        functionCoutput(pFunc, exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction);
 
-              ++it;
-            }
+        std::cout << "naher_1:" << std::endl;
+        if (pFunc->getRoot())
+          pFunc->getRoot()->printRecursively(std::cout);
 
-          std::ostringstream outFunction;
+        outFile << outFunction.str();
 
-          if (tmpFunc->getRoot())
-            functionExport(tmpFunc->getRoot(), exportedFunctionSet, functionNameMap, outFunction);
+        /* unsigned C_INT32 varbs_size = func->getVariables().size(); ?pFunc
+        std::map< std::string, std::string > parameterMap;
+        std::set<std::string> parameterNameSet;
 
-          outFile << outFunction.str();
+        std::map< std::string, std::string > constName;
+        std::map< std::string, unsigned C_INT32 > tmpIndex;
 
-          unsigned C_INT32 varbs_size = func->getVariables().size();
-          std::map< std::string, std::string > parameterMap;
-          std::set<std::string> parameterNameSet;
+        constName["SUBSTRATE"] = "sub_"; tmpIndex["SUBSTRATE"] = 0;
+        constName["PRODUCT"] = "prod_"; tmpIndex["PRODUCT"] = 0;
+        constName["PARAMETER"] = "param_"; tmpIndex["PARAMETER"] = 0;
+        constName["MODIFIER"] = "modif_"; tmpIndex["MODIFIER"] = 0;
+        constName["VOLUME"] = "volume_"; tmpIndex["VOLUME"] = 0;
+        constName["VARIABLE"] = "varb_"; tmpIndex["VARIABLE"] = 0;
 
-          std::map< std::string, std::string > constName;
-          std::map< std::string, unsigned C_INT32 > tmpIndex;
+        std::cout << "vorher:" << std::endl;
+        if (tmpFunc->getRoot())
+          tmpFunc->getRoot()->printRecursively(std::cout);
 
-          constName["SUBSTRATE"] = "sub_"; tmpIndex["SUBSTRATE"] = 0;
-          constName["PRODUCT"] = "prod_"; tmpIndex["PRODUCT"] = 0;
-          constName["PARAMETER"] = "param_"; tmpIndex["PARAMETER"] = 0;
-          constName["MODIFIER"] = "modif_"; tmpIndex["MODIFIER"] = 0;
-          constName["VOLUME"] = "volume_"; tmpIndex["VOLUME"] = 0;
-          constName["VARIABLE"] = "varb_"; tmpIndex["VARIABLE"] = 0;
+        it = tmpFunc->getRoot();
 
-          std::cout << "vorher:" << std::endl;
-          if (tmpFunc->getRoot())
-            tmpFunc->getRoot()->printRecursively(std::cout);
+        while (it != NULL)
+          {
+            if (CEvaluationNode::type(it->getType()) == CEvaluationNode::VARIABLE)
+              {
+                std::cout << "it->data " << it->getData() << std::endl;
 
-          it = tmpFunc->getRoot();
+                const CFunctionParameter* param = func->getVariables()[it->getData()];
+                std::string usage = param->getUsage();
 
-          while (it != NULL)
-            {
-              if (CEvaluationNode::type(it->getType()) == CEvaluationNode::VARIABLE)
-                {
-                  std::cout << "it->data " << it->getData() << std::endl;
+                if (parameterNameSet.find(param->getObjectName()) == parameterNameSet.end())
+                  {
+                    CFunctionParameter* tmpParam = tmpFunc->getVariables()[it->getData()];
+                    std::ostringstream tmpName;
 
-                  const CFunctionParameter* param = func->getVariables()[it->getData()];
-                  std::string usage = param->getUsage();
+                    tmpName << constName[usage] << tmpIndex[usage];
+                    tmpParam->setName(tmpName.str());
+                    it->setData(tmpName.str());
 
-                  if (parameterNameSet.find(param->getObjectName()) == parameterNameSet.end())
-                    {
-                      CFunctionParameter* tmpParam = tmpFunc->getVariables()[it->getData()];
-                      std::ostringstream tmpName;
+                    parameterMap[param->getObjectName()] = tmpName.str();
+                    tmpIndex[usage]++;
+                    parameterNameSet.insert(param->getObjectName());
+                  }
+                else
+                  {
+                    it->setData(parameterMap[param->getObjectName()]);
+                  }
+              } 
 
-                      tmpName << constName[usage] << tmpIndex[usage];
-                      tmpParam->setName(tmpName.str());
-                      it->setData(tmpName.str());
+            ++it;
+          }
 
-                      parameterMap[param->getObjectName()] = tmpName.str();
-                      tmpIndex[usage]++;
-                      parameterNameSet.insert(param->getObjectName());
-                    }
-                  else
-                    {
-                      it->setData(parameterMap[param->getObjectName()]);
-                    }
-                }
+        tmpFunc->updateTree();
 
-              if (CEvaluationNode::type(it->getType()) == CEvaluationNode::CALL)
-                {
-                  const CFunction* pFunc;
-                  pFunc = static_cast<CFunction*> (pFunctionDB->findFunction((*it).getData()));
+        std::cout << "nachher:" << std::endl;
+        if (tmpFunc->getRoot())
+          tmpFunc->getRoot()->printRecursively();
 
-                  if (pFunc->getType() != CEvaluationTree::MassAction)
-                    it->setData(functionNameMap[pFunc->getObjectName()]);
-                }
-              ++it;
-            }
+        std::string name = reac->getFunction().getObjectName();
 
-          tmpFunc->updateTree();
+        if (exportedFunctionSet.find(name) == exportedFunctionSet.end())
+          {
+            outFile << std::endl;
+            outFile << "double " << functionNameMap[name] << "(";
 
-          std::cout << "nachher:" << std::endl;
-          if (tmpFunc->getRoot())
-            tmpFunc->getRoot()->printRecursively();
+            for (j = 0; j < varbs_size; ++j)
+              {
+                outFile << "double " << tmpFunc->getVariables()[j]->getObjectName().c_str();
+                if (j != varbs_size - 1) outFile << ", ";
+              }
 
-          std::string name = reac->getFunction().getObjectName();
+            outFile << ") ";
+            outFile << '\t' << "//" << name << std::endl;
+            outFile << "{return  " << tmpFunc->getInfix().c_str() << "; } " << std::endl;
 
-          if (exportedFunctionSet.find(name) == exportedFunctionSet.end())
-            {
-              outFile << std::endl;
-              outFile << "double " << functionNameMap[name] << "(";
-
-              for (j = 0; j < varbs_size; ++j)
-                {
-                  outFile << "double " << tmpFunc->getVariables()[j]->getObjectName().c_str();
-                  if (j != varbs_size - 1) outFile << ", ";
-                }
-
-              outFile << ") ";
-              outFile << '\t' << "//" << name << std::endl;
-              outFile << "{return  " << tmpFunc->getInfix().c_str() << "; } " << std::endl;
-
-              exportedFunctionSet.insert(name);
-            }
-        }
+            exportedFunctionSet.insert(name);
+          } */
+      }
     }
 
   outFile << "#endif // KINETIC_FUNCTIONS" << std::endl;
