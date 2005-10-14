@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.112 $ $Author: shoops $ $Date: 2005/10/13 14:08:38 $  
+# $Revision: 1.113 $ $Author: shoops $ $Date: 2005/10/14 16:27:27 $  
 ######################################################################
 
 TEMPLATE = app
@@ -282,9 +282,11 @@ SOURCES += \
 # FORMS += CQProgressDialog.ui
 # FORMS += CQReportDefinition.ui
 # FORMS += CQTextDialog.ui
+# FORMS += CQExperimentData.ui
 # FORMS += CQFileDialogBtnGrp.ui
 # FORMS += CQFittingItemWidget.ui
 # FORMS += CQFittingWidget.ui
+# FORMS += CQOptimizationWidget.ui
 # FORMS += CQTaskHeaderWidget.ui
 # FORMS += CQTaskBtnWidget.ui
 # FORMS += OptimizationItemWidget.ui
@@ -293,10 +295,14 @@ SOURCES += \
 HEADERS += \
            CMCAResultSubwidget.h \
            CQFileDialogBtnGrp.h \
+           CQExperimentData.h \
+           CQExperimentData.ui.h \
            CQFittingItemWidget.h \
            CQFittingItemWidget.ui.h \
            CQFittingWidget.h \
            CQFittingWidget.ui.h \
+           CQOptimizationWidget.h \
+           CQOptimizationWidget.ui.h \
            CQProgressItem.h \
            CQProgressItem.ui.h \
            CQProgressItemBar.ui.h \
@@ -329,9 +335,11 @@ HEADERS += \
 # sources generated from .ui files   
 SOURCES += \
            CMCAResultSubwidget.cpp \
+           CQExperimentData.cpp \
            CQFileDialogBtnGrp.cpp \
            CQFittingItemWidget.cpp \
            CQFittingWidget.cpp \
+           CQOptimizationWidget.cpp \
            CQProgressItem.cpp \
            CQProgressItemBar.cpp \
            CQProgressItemText.cpp \

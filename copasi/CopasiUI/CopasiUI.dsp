@@ -142,6 +142,10 @@ SOURCE=.\CProgressBar.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQExperimentData.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQFileDialogBtnGrp.cpp
 # End Source File
 # Begin Source File
@@ -151,6 +155,10 @@ SOURCE=.\CQFittingItemWidget.cpp
 # Begin Source File
 
 SOURCE=.\CQFittingWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQOptimizationWidget.cpp
 # End Source File
 # Begin Source File
 
@@ -558,6 +566,14 @@ SOURCE=.\CProgressBar.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQExperimentData.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQExperimentData.ui.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQFileDialogBtnGrp.h
 # End Source File
 # Begin Source File
@@ -575,6 +591,14 @@ SOURCE=.\CQFittingWidget.h
 # Begin Source File
 
 SOURCE=.\CQFittingWidget.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQOptimizationWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQOptimizationWidget.ui.h
 # End Source File
 # Begin Source File
 
@@ -991,11 +1015,19 @@ SOURCE=.\CopasiUI.pro
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQExperimentData.ui
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQFileDialogBtnGrp.ui
 # End Source File
 # Begin Source File
 
 SOURCE=.\CQFittingItemWidget.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQOptimizationWidget.ui
 # End Source File
 # Begin Source File
 
