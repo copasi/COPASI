@@ -1,17 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/12 20:23:31 $
+   $Date: 2005/10/14 11:51:41 $
    End CVS Header */
 
 #include <qlabel.h>
 #include <qtoolbutton.h>
+#include <qmessagebox.h>
 
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
 #include "CQFittingItemWidget.h"
+#include "CProgressBar.h"
 
 #include "report/CKeyFactory.h"
 #include "parameterFitting/CFitTask.h"
@@ -19,6 +21,7 @@
 #include "parameterFitting/CFitMethod.h"
 #include "parameterFitting/CFitProblem.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "utilities/CCopasiException.h"
 
 bool CQFittingWidget::saveTask()
 {
@@ -43,7 +46,7 @@ bool CQFittingWidget::saveTask()
     std::min<unsigned C_INT32>(pVector->size(), mpParameters->numRows());
 
   for (i = 0; i < imax; i++)
-    if (static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->saveFitItem(*(*pVector)[i]))
+    if (static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->save(*(*pVector)[i]))
       mpChanged = true;
 
   // Remove exceeding parameters
@@ -67,7 +70,7 @@ bool CQFittingWidget::saveTask()
       for (; i < imax; i++)
         {
           pFitItem = new CFitItem();
-          static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->saveFitItem(*pFitItem);
+          static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->save(*pFitItem);
           pGroup->addParameter(pFitItem);
         }
     }
@@ -81,7 +84,7 @@ bool CQFittingWidget::saveTask()
     std::min<unsigned C_INT32>(pVector->size(), mpConstraints->numRows());
 
   for (i = 0; i < imax; i++)
-    if (static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->saveFitItem(*(*pVector)[i]))
+    if (static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->save(*(*pVector)[i]))
       mpChanged = true;
 
   // Remove exceeding constraints
@@ -105,7 +108,7 @@ bool CQFittingWidget::saveTask()
       for (; i < imax; i++)
         {
           pFitItem = new CFitItem();
-          static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->saveFitItem(*pFitItem);
+          static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->save(*pFitItem);
           pGroup->addParameter(pFitItem);
         }
     }
@@ -140,7 +143,8 @@ bool CQFittingWidget::loadTask()
   for (; it != end; ++it)
     {
       pFitItemWidget = new CQFittingItemWidget(mpParameters);
-      pFitItemWidget->loadFitItem(*static_cast<const CFitItem *>(*it));
+      pFitItemWidget->enableFitItem(true);
+      pFitItemWidget->load(*static_cast<const CFitItem *>(*it));
       mpParameters->addWidget(pFitItemWidget);
     }
 
@@ -154,7 +158,8 @@ bool CQFittingWidget::loadTask()
   for (; it != end; ++it)
     {
       pFitItemWidget = new CQFittingItemWidget(mpConstraints);
-      pFitItemWidget->loadFitItem(*static_cast<const CFitItem *>(*it));
+      pFitItemWidget->enableFitItem(true);
+      pFitItemWidget->load(*static_cast<const CFitItem *>(*it));
       mpConstraints->addWidget(pFitItemWidget);
     }
 
@@ -174,13 +179,46 @@ bool CQFittingWidget::runTask()
     dynamic_cast< CFitTask * >(GlobalKeys.get(mObjectKey));
   if (!pTask) return false;
 
-  // :TODO: implement me!
+  if (!commonBeforeRunTask()) return false;
+
+  pTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+
+  try
+    {
+      if (!pTask->process(true))
+        {
+          mProgressBar->finish();
+          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+            {
+              mProgressBar->finish();
+              QMessageBox::warning(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+              CCopasiMessage::clearDeque();
+            }
+        }
+    }
+
+  catch (CCopasiException Exception)
+    {
+      mProgressBar->finish();
+      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+        {
+          mProgressBar->finish();
+          QMessageBox::warning(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+        }
+    }
+
+  pTask->restore();
+
+  commonAfterRunTask();
+
   return true;
 }
 
 void CQFittingWidget::slotBtnAdd()
 {
   CQFittingItemWidget * tmp = new CQFittingItemWidget(mpCurrentList);
+  tmp->enableFitItem(true);
   mpCurrentList->addWidget(tmp);
 
   int totalRows = mpCurrentList->numRows();
