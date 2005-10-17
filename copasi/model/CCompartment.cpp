@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/01 14:55:37 $
+   $Author: shoops $ 
+   $Date: 2005/10/17 14:54:15 $
    End CVS Header */
 
 // CCompartment
@@ -139,7 +139,10 @@ bool CCompartment::setValue(const C_FLOAT64 & volume)
 bool CCompartment::createMetabolite(const CMetab & metabolite)
 {
   CMetab * pMetab = new CMetab(metabolite);
-  return addMetabolite(pMetab);
+  if (addMetabolite(pMetab)) return true;
+
+  delete pMetab;
+  return false;
 }
 
 bool CCompartment::addMetabolite(CMetab * pMetabolite)
