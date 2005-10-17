@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/03 14:02:16 $
+   $Date: 2005/10/17 15:02:18 $
    End CVS Header */
 
 #include <algorithm>
@@ -14,6 +14,7 @@
 #include "CExperiment.h"
 
 #include "report/CKeyFactory.h"
+#include "utilities/utility.h"
 
 CExperimentSet::CExperimentSet(const std::string & name,
                                const CCopasiContainer * pParent):
@@ -90,7 +91,18 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
 
 CExperiment * CExperimentSet::addExperiment(const CExperiment & experiment)
 {
+  // We need to make sure that the experiment name is unique.
+  std::string name = experiment.getObjectName();
+
+  int i = 0;
+  while (getParameter(name))
+    {
+      i++;
+      name = StringPrint("%s_%d", experiment.getObjectName().c_str(), i);
+    }
+
   CExperiment * pExperiment = new CExperiment(experiment);
+  pExperiment->setObjectName(name);
   addParameter(pExperiment);
 
   return pExperiment;
