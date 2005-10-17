@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTree.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/09 19:12:36 $
+   $Author: ssahle $ 
+   $Date: 2005/10/17 12:05:48 $
    End CVS Header */
 
 /**
@@ -135,6 +135,91 @@ template < class _Node > class CCopasiTree
            * @return iterator &
            */
           iterator & operator++()
+          {
+            mCurrent = (_Node *) mCurrent->getNext();
+
+            return *this;
+          }
+        };
+
+      /**
+       * A const forward iterator used to traverse the tree.
+       */
+#if (defined __GNUC__ && __GNUC__ < 3)
+    class const_iterator: public std::forward_iterator< _Node, ptrdiff_t >
+#else
+    class const_iterator:
+            public std::iterator< std::forward_iterator_tag, _Node, ptrdiff_t >
+#endif
+
+        {
+        private:
+          /**
+           * A pointer to the current node.
+           */
+          const _Node * mCurrent;
+
+        public:
+          /**
+           * Default constructor.
+           * Note: When no argument is given the iterator points to the end of 
+           *       the tree.
+           * @param Node * begin (default NULL)
+           */
+          const_iterator(const _Node * begin = NULL):
+              mCurrent(begin)
+          {}
+
+          /**
+           * Copy constructor
+           * @param const iterator & src
+           */
+          const_iterator(const const_iterator & src):
+              mCurrent(src.mCurrent)
+          {}
+
+          /**
+           * Destructor
+           */
+          ~const_iterator() {}
+
+          /**
+           * Dereference operator * returns the node the iterator points to.
+           * @return Node &
+           */
+          const _Node & operator*() const {return * mCurrent;}
+
+          /**
+           * Dereference operator * returns the node the iterator points to.
+           * @return Node &
+           */
+          const _Node * operator->() const {return mCurrent;}
+
+          /**
+           * Comparison operator !=
+           * @param const iterator &rhs
+           * @return bool not-equal
+           */
+          bool operator!=(const const_iterator &rhs)
+          {return (mCurrent != rhs.mCurrent);}
+
+          /**
+           * Assignement operator from a node to an iterator
+           * @param Node * pNode
+           * @return iterator &
+           */
+          const_iterator & operator=(const _Node * pNode)
+          {
+            mCurrent = pNode;
+            return *this;
+          }
+
+        public:
+          /**
+           * Prefix increment operator ++
+           * @return iterator &
+           */
+          const_iterator & operator++()
           {
             mCurrent = (_Node *) mCurrent->getNext();
 
