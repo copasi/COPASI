@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/10/19 11:36:45 $
+   $Date: 2005/10/19 11:52:16 $
    End CVS Header */
 
 #include <iostream>
@@ -611,6 +611,7 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
   {
     SCopasiXMLGUI* pGUI = CCopasiDataModel::Global->getGUI();
     assert(pGUI);
+    bool sliderDeleted = false;
     CCopasiVector<CSlider>* pSliderList = pGUI->pSliderList;
     assert(pSliderList);
     // go through the list in reverse so that items can be deleted
@@ -621,7 +622,13 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
         CSlider* pSlider = (*pSliderList)[i - 1];
         if (this->sliderObjectChanged(pSlider->getSliderObject(), pSlider->getSliderObjectCN()))
           {
+            if (!sliderDeleted)
+              {
+                QMessageBox::information(NULL, "Missing slider objects", "One or more objects that had\nsliders defined have been\ndeleted. Sliders will therefore\nbe deleted as well.", QMessageBox::Ok | QMessageBox::Default);
+              }
             pSliderList->remove(i - 1);
+            pdelete(pSlider);
+            sliderDeleted = true;
           }
         else
           {
