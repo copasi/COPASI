@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/11 08:55:37 $
+   $Author: gauges $ 
+   $Date: 2005/10/19 11:36:45 $
    End CVS Header */
 
 #include <iostream>
@@ -613,18 +613,26 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
     assert(pGUI);
     CCopasiVector<CSlider>* pSliderList = pGUI->pSliderList;
     assert(pSliderList);
-    unsigned int i, maxSliders = pSliderList->size();
+    // go through the list in reverse so that items can be deleted
+    unsigned int i, iMax = pSliderList->size();
     bool issueWarning = false;
-    for (i = 0; i < maxSliders;++i)
+    for (i = iMax;i > 0;--i)
       {
-        CSlider* pSlider = (*pSliderList)[i];
-        if (pSlider->getAssociatedEntityKey() == CCopasiDataModel::Global->getModel()->getKey() || pSlider->getAssociatedEntityKey() == pObject->getKey())
+        CSlider* pSlider = (*pSliderList)[i - 1];
+        if (this->sliderObjectChanged(pSlider->getSliderObject(), pSlider->getSliderObjectCN()))
           {
-            if (!pSlider->compile())
+            pSliderList->remove(i - 1);
+          }
+        else
+          {
+            if (pSlider->getAssociatedEntityKey() == CCopasiDataModel::Global->getModel()->getKey() || pSlider->getAssociatedEntityKey() == pObject->getKey())
               {
-                issueWarning = true;
+                if (!pSlider->compile())
+                  {
+                    issueWarning = true;
+                  }
+                pVector->insert(pVector->begin(), pSlider);
               }
-            pVector->push_back(pSlider);
           }
       }
     return pVector;
@@ -672,3 +680,12 @@ void SliderDialog::setDefault()
 {
   this->currSlider->setOriginalValue(this->currSlider->value());
 }
+
+bool SliderDialog::sliderObjectChanged(const CCopasiObject* pObject, const CCopasiObjectName& cn) const
+  {
+    CModel* pModel = CCopasiDataModel::Global->getModel();
+    std::vector<CCopasiContainer*> listOfContainers;
+    listOfContainers.push_back(pModel);
+    const CCopasiObject* newObject = CCopasiContainer::ObjectFromName(listOfContainers, cn);
+    return pObject != newObject;
+  }
