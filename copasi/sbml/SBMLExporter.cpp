@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/09/21 14:27:14 $
+   $Author: shoops $ 
+   $Date: 2005/10/21 19:08:24 $
    End CVS Header */
 
 #include <math.h>
@@ -196,10 +196,10 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
             {
               ListOf& list = sbmlModel->getListOfUnitDefinitions();
               unsigned int i = list.getNumItems();
-              for (; i > 0;++i)
+              for (; i > 0;--i)
                 {
                   UnitDefinition* uDef = dynamic_cast<UnitDefinition*>(list.get(i - 1));
-                  if (uDef->getId() == "volume")
+                  if (uDef && uDef->getId() == "volume")
                     {
                       list.remove(i - 1);
                       pdelete(uDef);
