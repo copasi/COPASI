@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.108 $
+   $Revision: 1.109 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:31 $
+   $Date: 2005/10/22 15:22:22 $
    End CVS Header */
 
 #include "copasi.h"
@@ -1108,7 +1108,7 @@ void SBMLImporter::replacePowerFunctionNodes(ASTNode* node)
  * caller.
  */
 CModel*
-SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument* pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument *& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   this->mpCopasiModel = NULL;
   if (funDB != NULL)
