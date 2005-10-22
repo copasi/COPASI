@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/27 02:11:19 $
+   $Date: 2005/10/22 13:36:25 $
    End CVS Header */
 
 #include "copasi.h"
@@ -156,7 +156,7 @@ bool COptMethodSteepestDescent::optimise()
       for (i = 0; i < mVariableSize; i++)
         mIndividual[i] = *(*mpOptItem)[i]->getObjectValue();
 
-      if (fmx < mBestValue && !isnan(fmx))
+      if (fmx < mBestValue)
         {
           mBestValue = fmx;
 
@@ -243,7 +243,7 @@ const C_FLOAT64 & COptMethodSteepestDescent::evaluate()
   // when we leave the either the parameter or functional domain
   // we penalize the objective value by forcing it to be larger
   // than the best value recorded so far.
-  if (mValue < mBestValue && !isnan(mValue) &&
+  if (mValue < mBestValue &&
       (!mpOptProblem->checkParametricConstraints() ||
        !mpOptProblem->checkFunctionalConstraints()))
     mValue = mBestValue + fabs(mBestValue - mValue);

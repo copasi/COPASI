@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/27 02:11:19 $
+   $Date: 2005/10/22 13:36:40 $
    End CVS Header */
 
 /***************************************************************************
@@ -176,7 +176,7 @@ bool CRandomSearch::optimise()
       Continue = evaluate(mIndividual);
 
       // COMPARE
-      if (mValue < mBestValue && !isnan(mValue))
+      if (mValue < mBestValue)
         {
           mBestValue = mValue;
           mpOptProblem->setSolutionVariables(mIndividual);

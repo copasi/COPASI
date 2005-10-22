@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/27 17:19:44 $
+   $Date: 2005/10/22 13:36:25 $
    End CVS Header */
 
 #include <float.h>
@@ -300,8 +300,8 @@ unsigned C_INT32 COptMethodGA::fittest()
   unsigned C_INT32 i, BestIndex = C_INVALID_INDEX;
   C_FLOAT64 BestValue = DBL_MAX;
 
-  for (i = 0; i < mPopulationSize; i++)
-    if (mValue[i] < BestValue && !isnan(mValue[i]))
+  for (i = 0; i < mPopulationSize && !mLosses[i]; i++)
+    if (mValue[i] < BestValue)
       {
         BestIndex = i;
         BestValue = mValue[i];

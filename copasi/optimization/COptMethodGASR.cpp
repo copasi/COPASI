@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/27 02:11:19 $
+   $Date: 2005/10/22 13:36:25 $
    End CVS Header */
 
 #include <float.h>
@@ -316,7 +316,7 @@ unsigned C_INT32 COptMethodGASR::fittest()
   C_FLOAT64 BestValue = DBL_MAX;
 
   for (i = 0; i < mPopulationSize; i++)
-    if (mValue[i] < BestValue && !isnan(mValue[i]) && !(mPhi[i] != 0))
+    if (mValue[i] < BestValue && !(mPhi[i] != 0))
       {
         BestIndex = i;
         BestValue = mValue[i];
