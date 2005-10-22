@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/12 13:24:06 $
+   $Date: 2005/10/22 13:34:57 $
    End CVS Header */
 
 /**
@@ -328,7 +328,7 @@ bool COptProblem::calculate()
       success = false;
     }
 
-  if (!success) mCalculateValue = DBL_MAX;
+  if (!success || isnan(mCalculateValue)) mCalculateValue = DBL_MAX;
 
   if (mpCallBack) return mpCallBack->progress(mhCounter);
 
