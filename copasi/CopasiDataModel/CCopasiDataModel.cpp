@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/11 16:25:51 $
+   $Author: shoops $ 
+   $Date: 2005/10/22 15:23:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -217,11 +217,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
     }
 
   if (mpModel) mpModel->setCompileFlag();
-  this->mpCurrentSBMLDocument = NULL;
   mSBMLFileName = "";
-
-  this->mCopasi2SBMLMap.clear();
-  //this->removeSBMLIdFromFunctions();
 
   changed(false);
   return true;
@@ -316,7 +312,9 @@ bool CCopasiDataModel::newModel(CModel * pModel)
       mpModel = new CModel();
       mSaveFileName = "";
       mSBMLFileName = "";
-      this->mpCurrentSBMLDocument = NULL;
+
+      pdelete(mpCurrentSBMLDocument);
+
       this->mCopasi2SBMLMap.clear();
     }
 
@@ -350,9 +348,13 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
   importer.setImportHandler(pImportHandler);
   mCopasi2SBMLMap.clear();
   CModel* pModel = NULL;
+
+  SBMLDocument * pSBMLDocument = NULL;
+  std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
+
   try
     {
-      pModel = importer.readSBML(fileName, mpFunctionList, mpCurrentSBMLDocument, mCopasi2SBMLMap);
+      pModel = importer.readSBML(fileName, mpFunctionList, pSBMLDocument, Copasi2SBMLMap);
     }
   catch (CCopasiException except)
     {
@@ -376,6 +378,11 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
 
   mSaveFileName += ".cps";
   mSBMLFileName = fileName;
+
+  pdelete(mpCurrentSBMLDocument);
+
+  mpCurrentSBMLDocument = pSBMLDocument;
+  mCopasi2SBMLMap = Copasi2SBMLMap;
 
   return newModel(pModel);
 }
@@ -405,11 +412,15 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
 
   SBMLExporter exporter;
   exporter.setExportHandler(pExportHandler);
-  bool result = exporter.exportSBML(mpModel, fileName.c_str(), overwriteFile);
-  this->mpCurrentSBMLDocument = exporter.getSBMLDocument();
+  if (!exporter.exportSBML(mpModel, fileName.c_str(), overwriteFile)) return false;
+
+  if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
+    pdelete(mpCurrentSBMLDocument);
+
+  mpCurrentSBMLDocument = exporter.getSBMLDocument();
   mSBMLFileName = fileName;
 
-  return result;
+  return true;
 }
 
 bool CCopasiDataModel::exportMathModel(const std::string & fileName, bool overwriteFile)
