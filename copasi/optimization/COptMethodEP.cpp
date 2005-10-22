@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/27 02:11:19 $
+   $Date: 2005/10/22 13:35:54 $
    End CVS Header */
 
 #include "copasi.h"
@@ -15,6 +15,7 @@
 
 #include "randomGenerator/CRandom.h"
 #include "report/CCopasiObjectReference.h"
+#include "utilities/CSort.h"
 
 COptMethodEP::COptMethodEP(const CCopasiContainer * pParent):
     COptMethod(CCopasiTask::optimization, CCopasiMethod::EvolutionaryProgram, pParent),
@@ -23,7 +24,7 @@ COptMethodEP::COptMethodEP(const CCopasiContainer * pParent):
     mPopulationSize(0),
     mpRandom(NULL),
     mBestIndex(C_INVALID_INDEX),
-    mWins(0),
+    mLosses(0),
     mBestValue(DBL_MAX),
     mEvaluationValue(DBL_MAX),
     mValue(0),
@@ -46,7 +47,7 @@ COptMethodEP::COptMethodEP(const COptMethodEP & src,
     mPopulationSize(0),
     mpRandom(NULL),
     mBestIndex(C_INVALID_INDEX),
-    mWins(0),
+    mLosses(0),
     mBestValue(DBL_MAX),
     mEvaluationValue(DBL_MAX),
     mValue(0),
@@ -169,7 +170,7 @@ bool COptMethodEP::initialize()
     }
 
   mValue.resize(2*mPopulationSize);
-  mWins.resize(2*mPopulationSize);
+  mLosses.resize(2*mPopulationSize);
 
   // initialise the parameters to update the variances
   tau1 = 1.0 / sqrt(2 * mVariableSize);
@@ -375,12 +376,11 @@ bool COptMethodEP::creation()
 
 bool COptMethodEP::select()
 {
-  unsigned C_INT32 i, j, nopp, opp, MaxIndex;
+  unsigned C_INT32 i, j, nopp, opp;
   unsigned C_INT32 TotalPopulation = 2 * mPopulationSize;
-  C_FLOAT64 MaxValue;
 
   // tournament competition
-  mWins = 0; // Set all wins to 0.
+  mLosses = 0; // Set all losses to 0.
 
   // compete with ~ 20% of the TotalPopulation
   nopp = std::max<unsigned C_INT32>(1, mPopulationSize / 5);
@@ -393,26 +393,18 @@ bool COptMethodEP::select()
         opp = mpRandom->getRandomU(TotalPopulation - 1);
 
         if (mValue[i] < mValue[opp])
-          mWins[i]++;
+          mLosses[opp]++;
         else
-          mWins[opp]++;
+          mLosses[i]++;
       }
 
-  // selection of top mPopulationSize winners
-  for (i = 0; i < mPopulationSize; i++)
-    {
-      MaxIndex = i;
-      MaxValue = mWins[i];
+  partialSortWithPivot(mLosses.array(),
+                       mLosses.array() + mPopulationSize,
+                       mLosses.array() + TotalPopulation,
+                       mPivot);
 
-      for (j = i + 1; j < TotalPopulation; j++)
-        if (MaxValue < mWins[j])
-          {
-            MaxIndex = j;
-            MaxValue = mWins[j];
-          }
-
-      swap(i, MaxIndex); // The best individual in [i, TotalPopulation] is swapped to the top (i) position.
-    }
+  FSwapClass<COptMethodEP, unsigned C_INT32, bool> Swap(this, &COptMethodEP::swap);
+  applyPartialPivot(mPivot, mPopulationSize, Swap);
 
   return true;
 }
@@ -431,9 +423,9 @@ bool COptMethodEP::swap(unsigned C_INT32 from, unsigned C_INT32 to)
   mValue[to] = mValue[from];
   mValue[from] = dTmp;
 
-  C_INT32 iTmp = mWins[to];
-  mWins[to] = mWins[from];
-  mWins[from] = iTmp;
+  C_INT32 iTmp = mLosses[to];
+  mLosses[to] = mLosses[from];
+  mLosses[from] = iTmp;
 
   return true;
 }
@@ -443,8 +435,8 @@ unsigned C_INT32 COptMethodEP::fittest()
   unsigned C_INT32 i, BestIndex = 0;
   C_FLOAT64 BestValue = mValue[0];
 
-  for (i = 1; i < mPopulationSize; i++)
-    if (mValue[i] < BestValue && !isnan(mValue[i]))
+  for (i = 1; i < mPopulationSize && !mLosses[i]; i++)
+    if (mValue[i] < BestValue)
       {
         BestIndex = i;
         BestValue = mValue[i];

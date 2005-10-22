@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:17 $
+   $Date: 2005/10/22 13:35:54 $
    End CVS Header */
 
 #ifndef COPASI_COptMethodEP
@@ -143,7 +143,7 @@ class COptMethodEP: public COptMethod
     /**
      * number of wins of each individual in the tournament
      */
-    CVector< unsigned C_INT32 > mWins;
+    CVector< unsigned C_INT32 > mLosses;
 
     /**
      * The best value found so far.
@@ -179,6 +179,11 @@ class COptMethodEP: public COptMethod
      * The current iteration
      */
     unsigned C_INT32 mCurrentIteration;
+
+    /**
+     * Pivot vector used for sorting
+     */
+    CVector<unsigned C_INT32> mPivot;
   };
 
 #endif  // COPASI_COptMethodEP
