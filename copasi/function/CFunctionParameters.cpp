@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/27 14:53:35 $
+   $Date: 2005/10/23 19:54:27 $
    End CVS Header */
 
 /**
@@ -107,7 +107,7 @@ unsigned C_INT32 CFunctionParameters::size() const {return mParameters.size();}
 const CCopasiVectorNS < CUsageRange > & CFunctionParameters::getUsageRanges() const
   {return mUsageRanges;}
 
-const CFunctionParameter &
+const CFunctionParameter *
 CFunctionParameters::getParameterByUsage(const std::string & usage,
     unsigned C_INT32 & pos) const
   {
@@ -117,14 +117,14 @@ CFunctionParameters::getParameterByUsage(const std::string & usage,
       if (mParameters[i]->getUsage() == usage)
         {
           pos = i + 1;
-          return *mParameters[i];
+          return mParameters[i];
         }
 
-    CCopasiMessage(CCopasiMessage::ERROR,
+    CCopasiMessage(CCopasiMessage::WARNING,
                    MCFunctionParameters + 2,
                    usage.c_str(), pos);
-    // This line is never reached!
-    return *mParameters[i];
+
+    return mParameters[i];
   }
 
 unsigned C_INT32 CFunctionParameters::getNumberOfParametersByUsage(const std::string & usage) const

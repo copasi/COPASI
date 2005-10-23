@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/02 20:01:33 $
+   $Author: shoops $ 
+   $Date: 2005/10/23 19:54:27 $
    End CVS Header */
 
 /**
@@ -154,7 +154,7 @@ class CFunctionParameters : public CCopasiContainer
      *  @param "unsigned C_INT32 &" pos (first call should be with 0)
      *  @return "CFunctionParameter &" usageRange
      */
-    const CFunctionParameter & getParameterByUsage(const std::string & usage,
+    const CFunctionParameter * getParameterByUsage(const std::string & usage,
         unsigned C_INT32 & pos) const;
 
     /**

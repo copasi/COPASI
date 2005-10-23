@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/15 18:45:25 $
+   $Date: 2005/10/23 19:54:28 $
    End CVS Header */
 
 #include <string>
@@ -336,7 +336,7 @@ void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
   // get the first parameter with the respective role
   CFunctionParameter::DataType Type;
   unsigned C_INT32 pos = 0;
-  Type = mpParameters->getParameterByUsage(role, pos).getType();
+  Type = mpParameters->getParameterByUsage(role, pos)->getType();
 
   if (Type == CFunctionParameter::VFLOAT64)
     {
@@ -353,7 +353,7 @@ void CReactionInterface::connectFromScratch(std::string role, bool pedantic)
 
       for (i = 1; i < imax; ++i)
         {
-          Type = mpParameters->getParameterByUsage(role, pos).getType();
+          Type = mpParameters->getParameterByUsage(role, pos)->getType();
           if (Type != CFunctionParameter::FLOAT64) fatalError();
 
           if (el.size() > i)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/31 13:55:26 $
+   $Date: 2005/10/23 19:54:27 $
    End CVS Header */
 
 #include "copasi.h"
@@ -225,7 +225,7 @@ bool CFunction::guessModifierUsageRange()
     {
       unsigned C_INT32 pos = 0;
 
-      if (mVariables.getParameterByUsage("MODIFIER", pos).getType() == CFunctionParameter::VFLOAT64)
+      if (mVariables.getParameterByUsage("MODIFIER", pos)->getType() == CFunctionParameter::VFLOAT64)
         addUsage("MODIFIER", 0, CRange::Infinity);
       else
         addUsage("MODIFIER", imax, CRange::NoRange);

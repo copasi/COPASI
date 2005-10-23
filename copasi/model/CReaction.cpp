@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.142 $
+   $Revision: 1.143 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/15 14:00:48 $
+   $Date: 2005/10/23 19:54:28 $
    End CVS Header */
 
 // CReaction
@@ -340,7 +340,7 @@ void CReaction::initializeParameters()
   /* Add missing parameters with default value 1.0. */
   for (i = 0, pos = 0; i < imax; ++i)
     {
-      name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getObjectName();
+      name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos)->getObjectName();
       //      param.setName(name);
       if (!mParameters.getParameter(name))
         {
@@ -450,7 +450,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
 
       if (Type < CFunctionParameter::VINT32)
         {
-          Type = mMap.getFunctionParameters().getParameterByUsage("SUBSTRATE", pos).getType();
+          Type = mMap.getFunctionParameters().getParameterByUsage("SUBSTRATE", pos)->getType();
           parName = mMap.getFunctionParameters()[pos - 1]->getObjectName();
           if (Type >= CFunctionParameter::VINT32)
             clearParameterMapping(parName);
@@ -480,7 +480,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
 
       if (Type < CFunctionParameter::VINT32)
         {
-          Type = mMap.getFunctionParameters().getParameterByUsage("PRODUCT", pos).getType();
+          Type = mMap.getFunctionParameters().getParameterByUsage("PRODUCT", pos)->getType();
           parName = mMap.getFunctionParameters()[pos - 1]->getObjectName();
           if (Type >= CFunctionParameter::VINT32)
             clearParameterMapping(parName);
@@ -510,7 +510,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
 
       if (Type < CFunctionParameter::VINT32)
         {
-          Type = mMap.getFunctionParameters().getParameterByUsage("MODIFIER", pos).getType();
+          Type = mMap.getFunctionParameters().getParameterByUsage("MODIFIER", pos)->getType();
           parName = mMap.getFunctionParameters()[pos - 1]->getObjectName();
           if (Type >= CFunctionParameter::VINT32)
             clearParameterMapping(parName);
@@ -540,7 +540,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       name = StringPrint("Param%d", i);
       configbuffer.getVariable(name, "C_FLOAT64", &value);
 
-      Type = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos).getType();
+      Type = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos)->getType();
       if (Type != CFunctionParameter::FLOAT64) {Fail = 1; return Fail;}
 
       setParameterValue(mMap.getFunctionParameters()[pos - 1]->getObjectName(), value);
