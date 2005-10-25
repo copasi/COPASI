@@ -59,6 +59,10 @@ SOURCE=.\CExperiment.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CExperimentFileInfo.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CExperimentObjectMap.cpp
 # End Source File
 # Begin Source File
@@ -88,6 +92,10 @@ SOURCE=.\CFitTask.cpp
 # Begin Source File
 
 SOURCE=.\CExperiment.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CExperimentFileInfo.h
 # End Source File
 # Begin Source File
 
