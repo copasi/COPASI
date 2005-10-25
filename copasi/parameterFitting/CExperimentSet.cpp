@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/17 15:02:18 $
+   $Date: 2005/10/25 17:00:10 $
    End CVS Header */
 
 #include <algorithm>
@@ -49,6 +49,8 @@ bool CExperimentSet::elevateChildren()
 
   mpExperiments = static_cast<std::vector<CExperiment * > * >(mValue.pVOID);
 
+  sort();
+
   return true;
 }
 
@@ -58,14 +60,15 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
 
   // First we need to sort the experiments so that we can make use of continued
   // file reading.
-  std::vector< CExperiment * >::iterator it = mpExperiments->begin();
-  std::vector< CExperiment * >::iterator end = mpExperiments->end();
-
-  std::sort(it, end, &CExperiment::compare);
+  sort();
 
   std::ifstream in;
   std::string CurrentFileName("");
   unsigned C_INT32 CurrentLineNumber = 0;
+
+  std::vector< CExperiment * >::iterator it = mpExperiments->begin();
+  std::vector< CExperiment * >::iterator end = mpExperiments->end();
+
   for (it = mpExperiments->begin(); it != end; ++it)
     {
       if (CurrentFileName != (*it)->getFileName())
@@ -104,6 +107,8 @@ CExperiment * CExperimentSet::addExperiment(const CExperiment & experiment)
   CExperiment * pExperiment = new CExperiment(experiment);
   pExperiment->setObjectName(name);
   addParameter(pExperiment);
+
+  sort();
 
   return pExperiment;
 }
@@ -145,3 +150,13 @@ unsigned C_INT32 CExperimentSet::keyToIndex(const std::string & key) const
 
     return C_INVALID_INDEX;
   }
+
+void CExperimentSet::sort()
+{
+  std::vector< CExperiment * >::iterator it = mpExperiments->begin();
+  std::vector< CExperiment * >::iterator end = mpExperiments->end();
+
+  std::sort(it, end, &CExperiment::compare);
+
+  return;
+}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/03 14:02:16 $
+   $Date: 2005/10/25 17:00:10 $
    End CVS Header */
 
 #ifndef COPASI_CExperimentSet
@@ -119,6 +119,11 @@ class CExperimentSet: public CCopasiParameterGroup
      * @return unsigned C_INT32 index
      */
     unsigned C_INT32 keyToIndex(const std::string & key) const;
+
+    /**
+     * Sort the experiments in the set
+     */
+    void sort();
 
   private:
     /**
