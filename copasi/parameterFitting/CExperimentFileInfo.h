@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/25 17:00:56 $
+   $Date: 2005/10/25 18:17:41 $
    End CVS Header */
 
 #ifndef COPASI_CExperimentFileInfo
@@ -94,6 +94,11 @@ class CExperimentFileInfo
      *
      */
     std::vector< std::string > getExperimentNames() const;
+
+    /**
+     *
+     */
+    CExperiment * getExperiment(const std::string & name);
 
     /**
      *

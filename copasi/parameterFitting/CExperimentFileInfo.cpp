@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/25 17:00:56 $
+   $Date: 2005/10/25 18:17:41 $
    End CVS Header */
 
 #include "copasi.h"
@@ -94,6 +94,17 @@ std::vector< std::string > CExperimentFileInfo::getExperimentNames() const
 
     return List;
   }
+
+CExperiment * CExperimentFileInfo::getExperiment(const std::string & name)
+{
+  unsigned C_INT32 i, imax;
+
+  for (i = 0, imax = mList.size(); i < imax; i++)
+    if (mList[i]->pExperiment->getObjectName() == name)
+      return mList[i]->pExperiment;
+
+  return NULL;
+}
 
 bool CExperimentFileInfo::getFirstUnusedSection(unsigned C_INT32 & First,
     unsigned C_INT32 & Last)
