@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/25 17:00:10 $
+   $Date: 2005/10/25 17:26:22 $
    End CVS Header */
 
 #include <algorithm>
@@ -160,3 +160,21 @@ void CExperimentSet::sort()
 
   return;
 }
+
+std::vector< std::string > CExperimentSet::getFileNames() const
+  {
+    std::vector< std::string > List;
+    std::string currentFile = "";
+
+    std::vector< CExperiment * >::iterator it = mpExperiments->begin();
+    std::vector< CExperiment * >::iterator end = mpExperiments->end();
+
+    for (; it != end; ++it)
+      if (currentFile != (*it)->getFileName())
+        {
+          currentFile = (*it)->getFileName();
+          List.push_back(currentFile);
+        }
+
+    return List;
+  }

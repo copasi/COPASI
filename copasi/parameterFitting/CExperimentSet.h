@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/25 17:00:10 $
+   $Date: 2005/10/25 17:26:22 $
    End CVS Header */
 
 #ifndef COPASI_CExperimentSet
@@ -124,6 +124,12 @@ class CExperimentSet: public CCopasiParameterGroup
      * Sort the experiments in the set
      */
     void sort();
+
+    /**
+     * Retrieve the list of file names
+     * @return std::vector< std::string > fileNames
+     */
+    std::vector< std::string > getFileNames() const;
 
   private:
     /**
