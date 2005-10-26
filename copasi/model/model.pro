@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.13 $ $Author: ssahle $ $Date: 2005/10/05 14:06:54 $  
+# $Revision: 1.14 $ $Author: ssahle $ $Date: 2005/10/26 18:28:06 $  
 ######################################################################
 
 LIB = model
@@ -13,7 +13,7 @@ HEADERS += CChemEq.h \
            CChemEqInterface.h \
            CChemEqParser.h \
            CCompartment.h \
-           CDeTerm.h \
+ #          CDeTerm.h \
            CMetab.h \
            CMetabNameInterface.h \
            CModel.h \
@@ -23,8 +23,8 @@ HEADERS += CChemEq.h \
            CReaction.h \
            CReactionInterface.h \
            CScanInputFlexLexer.h \
-           CSpec2Model.h \
-           CSpecLine.h \
+#           CSpec2Model.h \
+#           CSpecLine.h \
            CState.h \
            model.h
            
@@ -33,7 +33,7 @@ SOURCES += CChemEq.cpp \
            CChemEqInterface.cpp \
            CChemEqParser.cpp \
            CCompartment.cpp \
-           CDeTerm.cpp \
+#           CDeTerm.cpp \
            CMetab.cpp \
            CMetabNameInterface.cpp \
            CModel.cpp \
@@ -43,8 +43,8 @@ SOURCES += CChemEq.cpp \
            CReaction.cpp \
            CReactionInterface.cpp \
            CScanInputFlexLexer.cpp \
-           CSpec2Model.cpp \
-           CSpecLine.cpp \
+#           CSpec2Model.cpp \
+#           CSpecLine.cpp \
            CState.cpp
 
 contains(BUILD_PARSER, yes) {
