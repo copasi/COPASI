@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.104 $
+   $Revision: 1.105 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:17 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:20:58 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -44,7 +44,7 @@ class CModel : public CCopasiContainer
     /**
      * String representation of valid volume units
      */
-    static const char * VolumeUnitName[];
+    static const char * VolumeUnitNames[];
 
     /**
      *  Enum of valid time units
@@ -54,7 +54,7 @@ class CModel : public CCopasiContainer
     /**
      * String representation of valid time units
      */
-    static const char * TimeUnitName[];
+    static const char * TimeUnitNames[];
 
     /**
      *  Enum of valid quantitye units
@@ -64,7 +64,7 @@ class CModel : public CCopasiContainer
     /**
      * String representation of valid quantity units
      */
-    static const char * QuantityUnitName[];
+    static const char * QuantityUnitNames[];
 
     //Attributes
   public:
@@ -228,18 +228,21 @@ class CModel : public CCopasiContainer
 
     /**
      * The volume unit used in the Model
-     */
-    std::string mVolumeUnit;
+     */ 
+    //std::string mVolumeUnit;
+    VolumeUnit mVolumeUnit;
 
     /**
      * The time unit used in the Model
-     */
-    std::string mTimeUnit;
+     */ 
+    //std::string mTimeUnit;
+    TimeUnit mTimeUnit;
 
     /**
      * The quantity unit used in the Model
-     */
-    std::string mQuantityUnit;
+     */ 
+    //std::string mQuantityUnit;
+    QuantityUnit mQuantityUnit;
 
     /**
      *  for array of compartments
@@ -830,7 +833,7 @@ class CModel : public CCopasiContainer
      * Get the unit for volumes
      * @return std::string volumeUnit
      */
-    std::string getVolumeUnit() const;
+    std::string getVolumeUnitName() const;
 
     /**
      * Get the unit for volumes
@@ -860,7 +863,7 @@ class CModel : public CCopasiContainer
      * Get the unit for time
      * @return std::string timeUnit
      */
-    std::string getTimeUnit() const;
+    std::string getTimeUnitName() const;
 
     /**
      * Get the unit for time
@@ -890,7 +893,7 @@ class CModel : public CCopasiContainer
      * Get the unit for quantities
      * @return std::string quantityUnit
      */
-    std::string getQuantityUnit() const;
+    std::string getQuantityUnitName() const;
 
     /**
      * Get the unit for quantities
@@ -907,6 +910,11 @@ class CModel : public CCopasiContainer
      *  Get the conversion factor number -> quantity
      */
     const C_FLOAT64 & getNumber2QuantityFactor() const;
+
+    //** convenience methods:
+    std::string getConcentrationUnitName() const;
+    std::string getConcentrationRateUnitName() const;
+    std::string getQuantityRateUnitName() const;
 
     //************  create/remove model entities *******************
 
@@ -1064,10 +1072,10 @@ class CModel : public CCopasiContainer
      * @param const char ** units (list of valid units)
      * @param const unsigned C_INT32 unique (minimum characters being unique)
      * @return unsigned C_INT32 unit
-     */
-    static unsigned C_INT32 unitCompare(const std::string & name,
-                                        const char ** units,
-                                        const unsigned C_INT32 unique);
+     */ 
+    //static unsigned C_INT32 unitCompare(const std::string & name,
+    //                                    const char ** units
+    //                                    /*const unsigned C_INT32 unique*/);
 
     /**
      * Build the state template for the model.

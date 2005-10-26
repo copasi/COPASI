@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.232 $
+   $Revision: 1.233 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/15 18:45:25 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:20:58 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -54,22 +54,22 @@
 #define CCHECK
 #endif
 
-const char * CModel::VolumeUnitName[] =
+const char * CModel::VolumeUnitNames[] =
   {"m\xc2\xb3", "l", "ml", "\xc2\xb5l", "nl", "pl", "fl", NULL};
 
-const char * CModel::TimeUnitName[] =
+const char * CModel::TimeUnitNames[] =
   {"d", "h", "min", "s", "ms", "\xc2\xb5s", "ns", "ps", "fs", NULL};
 
-const char * CModel::QuantityUnitName[] =
+const char * CModel::QuantityUnitNames[] =
   {"Mol", "mMol", "\xc2\xb5Mol", "nMol", "pMol", "fMol", "#", NULL};
 
 CModel::CModel():
     CCopasiContainer("New Model", &RootContainer, "Model"),
     mKey(GlobalKeys.add("Model", this)),
     mComments(),
-    mVolumeUnit("ml"),
-    mTimeUnit("s"),
-    mQuantityUnit("mMol"),
+    mVolumeUnit(ml),
+    mTimeUnit(s),
+    mQuantityUnit(mMol),
     mCompartments("Compartments", this),
     mMetabolites("Metabolites", this),
     mMetabolitesX("Reduced Model Metabolites", this),
@@ -231,48 +231,48 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   try
     {
-      Fail = configBuffer.getVariable("TimeUnit", "string", &mTimeUnit,
+      Fail = configBuffer.getVariable("TimeUnit", "string", &tmp,
                                       CReadConfig::LOOP);
     }
   catch (CCopasiException Exception)
     {
       if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
-        mTimeUnit = "unknown";
+        tmp = ""; //unknown?
       else
         throw Exception;
     }
 
-  setTimeUnit(mTimeUnit); // set the factors
+  setTimeUnit(tmp); // set the factors
 
   try
     {
-      Fail = configBuffer.getVariable("ConcentrationUnit", "string", &mQuantityUnit,
+      Fail = configBuffer.getVariable("ConcentrationUnit", "string", &tmp,
                                       CReadConfig::LOOP);
     }
   catch (CCopasiException Exception)
     {
       if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
-        mQuantityUnit = "unknown";
+        tmp = "";  //unknown?
       else
         throw Exception;
     }
 
-  setQuantityUnit(mQuantityUnit); // set the factors
+  setQuantityUnit(tmp); // set the factors
 
   try
     {
-      Fail = configBuffer.getVariable("VolumeUnit", "string", &mVolumeUnit,
+      Fail = configBuffer.getVariable("VolumeUnit", "string", &tmp,
                                       CReadConfig::LOOP);
     }
   catch (CCopasiException Exception)
     {
       if ((MCReadConfig + 1) == Exception.getMessage().getNumber())
-        mVolumeUnit = "unknown";
+        tmp = ""; //unknown?
       else
         throw Exception;
     }
 
-  setVolumeUnit(mVolumeUnit); // set the factors
+  setVolumeUnit(tmp); // set the factors
 
   if (configBuffer.getVersion() < "4")
     mInitialTime = 0;
@@ -1523,133 +1523,145 @@ void CModel::getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64
 
 //**********************************************************************
 
-unsigned C_INT32 CModel::unitCompare(const std::string & name,
-                                     const char ** units,
+/*unsigned C_INT32 CModel::unitCompare(const std::string & name,
+                                     const char ** units
                                      const unsigned C_INT32 unique)
 {
   unsigned C_INT32 i, j;
   std::string Unit;
-
+ 
+  //for (i = 0; *units; i++, units++)
+  //  {
+  //    Unit = *units;
+  //    for (j = Unit.length(); j >= unique || j == Unit.length(); j--)
+  //      if (Unit.substr(0, j) == name.substr(0, j)) return i;
+  //}
+  
   for (i = 0; *units; i++, units++)
     {
       Unit = *units;
-      for (j = Unit.length(); j >= unique || j == Unit.length(); j--)
-        if (Unit.substr(0, j) == name.substr(0, j)) return i;
+        if (Unit == name) return i;
     }
-
+ 
   return i;
-}
+}*/
 
 bool CModel::setVolumeUnit(const std::string & name)
 {
-  CModel::VolumeUnit Unit =
-    (CModel::VolumeUnit) unitCompare(name, VolumeUnitName, 2);
+  int unit = toEnum(name.c_str(), VolumeUnitNames);
 
-  return setVolumeUnit(Unit);
+  if (-1 == unit)
+    return setVolumeUnit(ml);
+  else
+    return setVolumeUnit((CModel::VolumeUnit) unit);
 }
 
 bool CModel::setVolumeUnit(const CModel::VolumeUnit & unit)
 {
-  bool success = true;
+  mVolumeUnit = unit;
+  return true;
 
-  switch (unit)
-    {
-    case m3:
-    case l:
-    case ml:
-    case microl:
-    case nl:
-    case pl:
-    case fl:
-      mVolumeUnit = VolumeUnitName[unit];
-      break;
-
-    default:
-      mVolumeUnit = VolumeUnitName[ml];
-      success = false;
-    }
-
-  return success;
+  /*bool success = true;
+   
+    switch (unit)
+      {
+      case m3:
+      case l:
+      case ml:
+      case microl:
+      case nl:
+      case pl:
+      case fl:
+        mVolumeUnit = VolumeUnitName[unit];
+        break;
+   
+      default:
+        mVolumeUnit = VolumeUnitName[ml];
+        success = false;
+      }
+   
+    return success;*/
 }
 
-std::string CModel::getVolumeUnit() const
-{return mVolumeUnit;}
+std::string CModel::getVolumeUnitName() const
+  {
+    return VolumeUnitNames[mVolumeUnit];
+  }
 
 CModel::VolumeUnit CModel::getVolumeUnitEnum() const
   {
-    CModel::VolumeUnit Unit =
-      (CModel::VolumeUnit) unitCompare(mVolumeUnit, VolumeUnitName, 1);
-
-    return Unit;
+    return mVolumeUnit;
   }
 
-CModel::TimeUnit CModel::getTimeUnitEnum() const
-  {
-    CModel::TimeUnit Unit =
-      (CModel::TimeUnit) unitCompare(mTimeUnit, TimeUnitName, 1);
-
-    return Unit;
-  }
-
-CModel::QuantityUnit CModel::getQuantityUnitEnum() const
-  {
-    CModel::QuantityUnit Unit =
-      (CModel::QuantityUnit) unitCompare(mQuantityUnit, QuantityUnitName, 1);
-
-    return Unit;
-  }
+//****
 
 bool CModel::setTimeUnit(const std::string & name)
 {
-  CModel::TimeUnit Unit =
-    (CModel::TimeUnit) unitCompare(name, TimeUnitName, 1);
+  int unit = toEnum(name.c_str(), TimeUnitNames);
 
-  return setTimeUnit(Unit);
+  if (-1 == unit)
+    return setTimeUnit(s);
+  else
+    return setTimeUnit((CModel::TimeUnit) unit);
 }
 
 bool CModel::setTimeUnit(const CModel::TimeUnit & unit)
 {
-  bool success = true;
+  mTimeUnit = unit;
+  return true;
 
-  switch (unit)
-    {
-    case d:
-    case h:
-    case min:
-    case s:
-    case ms:
-    case micros:
-    case ns:
-    case ps:
-    case fs:
-      mTimeUnit = TimeUnitName[unit];
-      break;
-
-    default:
-      mTimeUnit = TimeUnitName[s];
-      success = false;
-    }
-
-  return success;
+  //   bool success = true;
+  //
+  //   switch (unit)
+  //     {
+  //     case d:
+  //     case h:
+  //     case min:
+  //     case s:
+  //     case ms:
+  //     case micros:
+  //     case ns:
+  //     case ps:
+  //     case fs:
+  //       mTimeUnit = TimeUnitName[unit];
+  //       break;
+  //
+  //     default:
+  //       mTimeUnit = TimeUnitName[s];
+  //       success = false;
+  //}
+  //
+  //   return success;
 }
 
-std::string CModel::getTimeUnit() const
-{return mTimeUnit;}
+std::string CModel::getTimeUnitName() const
+  {
+    return TimeUnitNames[mTimeUnit];
+  }
+
+CModel::TimeUnit CModel::getTimeUnitEnum() const
+  {
+    return mTimeUnit;
+  }
+
+//****
 
 bool CModel::setQuantityUnit(const std::string & name)
 {
-  CModel::QuantityUnit Unit =
-    (CModel::QuantityUnit) unitCompare(name, QuantityUnitName, 2);
+  int unit = toEnum(name.c_str(), QuantityUnitNames);
 
-  return setQuantityUnit(Unit);
+  if (-1 == unit)
+    return setQuantityUnit(mMol);
+  else
+    return setQuantityUnit((CModel::QuantityUnit) unit);
 }
 
 bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
 {
-  CModel::QuantityUnit Unit = unit;
   bool success = true;
+  mQuantityUnit = unit;
 
-  switch (Unit)
+  switch (unit)
     {
     case Mol:
       mQuantity2NumberFactor = AVOGADRO;
@@ -1680,12 +1692,10 @@ bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
       break;
 
     default:
-      Unit = number;
+      mQuantityUnit = number;
       mQuantity2NumberFactor = 1.0;
       success = false;
     }
-
-  mQuantityUnit = QuantityUnitName[Unit];
 
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
@@ -1701,14 +1711,41 @@ bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
   return success;
 }
 
-std::string CModel::getQuantityUnit() const
-  {return mQuantityUnit;}
+std::string CModel::getQuantityUnitName() const
+  {
+    return QuantityUnitNames[mQuantityUnit];
+  }
+
+CModel::QuantityUnit CModel::getQuantityUnitEnum() const
+  {
+    return mQuantityUnit;
+  }
 
 const C_FLOAT64 & CModel::getQuantity2NumberFactor() const
   {return mQuantity2NumberFactor;}
 
 const C_FLOAT64 & CModel::getNumber2QuantityFactor() const
   {return mNumber2QuantityFactor;}
+
+//*****
+
+std::string CModel::getConcentrationUnitName() const
+  {
+    return getQuantityUnitName() + "/" + getVolumeUnitName();
+  }
+
+std::string CModel::getConcentrationRateUnitName() const
+  {
+    return getQuantityUnitName()
+    + "/(" + getVolumeUnitName()
+    + "*" + getTimeUnitName() + ")";
+  }
+
+std::string CModel::getQuantityRateUnitName() const
+  {
+    return getQuantityUnitName()
+    + "/" + getTimeUnitName();
+  }
 
 //**********************************************************************
 
