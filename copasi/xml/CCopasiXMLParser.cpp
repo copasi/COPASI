@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.114 $
+   $Revision: 1.115 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/13 12:50:20 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:24:02 $
    End CVS Header */
 
 /**
@@ -532,7 +532,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
       type = mParser.getAttributeValue("type", papszAttrs);
-      Type = (CEvaluationTree::Type) mParser.toEnum(type, CEvaluationTree::XMLType);
+      Type = (CEvaluationTree::Type)toEnum(type, CEvaluationTree::XMLType);
       Positive = mParser.getAttributeValue("positive", papszAttrs, "unspecified");
 
       mCommon.mExistingFunction = false;
@@ -1098,7 +1098,7 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
 
       timeUnit = mParser.getAttributeValue("timeUnit", papszAttrs);
       TimeUnit =
-        (CModel::TimeUnit) mParser.toEnum(timeUnit, CModel::TimeUnitName);
+        (CModel::TimeUnit)toEnum(timeUnit, CModel::TimeUnitNames);
       if (TimeUnit == -1)
         {
           if (strcmp(timeUnit, "m"))
@@ -1109,12 +1109,12 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
 
       volumeUnit = mParser.getAttributeValue("volumeUnit", papszAttrs);
       VolumeUnit =
-        (CModel::VolumeUnit) mParser.toEnum(volumeUnit, CModel::VolumeUnitName);
+        (CModel::VolumeUnit)toEnum(volumeUnit, CModel::VolumeUnitNames);
       if (VolumeUnit == -1) fatalError();
 
       quantityUnit = mParser.getAttributeValue("quantityUnit", papszAttrs);
       QuantityUnit =
-        (CModel::QuantityUnit) mParser.toEnum(quantityUnit, CModel::QuantityUnitName);
+        (CModel::QuantityUnit) toEnum(quantityUnit, CModel::QuantityUnitNames);
       if (QuantityUnit == -1) fatalError();
 
       StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs);
@@ -1607,7 +1607,7 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
       Name = mParser.getAttributeValue("name", papszAttrs);
       Compartment = mParser.getAttributeValue("compartment", papszAttrs);
       status = mParser.getAttributeValue("status", papszAttrs);
-      Status = (CMetab::Status) mParser.toEnum(status, CMetab::XMLStatus);
+      Status = (CMetab::Status) toEnum(status, CMetab::XMLStatus);
       StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs);
 
       pMetabolite = new CMetab();
@@ -1771,7 +1771,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
       status = mParser.getAttributeValue("status", papszAttrs);
-      Status = (CMetab::Status) mParser.toEnum(status, CModelEntity::XMLStatus);
+      Status = (CMetab::Status) toEnum(status, CModelEntity::XMLStatus);
       StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs);
 
       pMV = new CModelValue();
@@ -3608,7 +3608,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
       // create a new CPlotSpecification element depending on the type
       name = mParser.getAttributeValue("name", papszAttrs);
       sType = mParser.getAttributeValue("type", papszAttrs);
-      mCommon.pCurrentPlotItem = mCommon.pCurrentPlot->createItem(name, (CPlotItem::Type) mParser.toEnum(sType.c_str(), CPlotItem::XMLType));
+      mCommon.pCurrentPlotItem = mCommon.pCurrentPlot->createItem(name, (CPlotItem::Type) toEnum(sType.c_str(), CPlotItem::XMLType));
       //std::cout << "Created Item for Plot @" << mCommon.pCurrentPlot << ": " << mCommon.pCurrentPlotItem << std::endl;
       return;
       break;
@@ -3790,7 +3790,7 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
       name = mParser.getAttributeValue("name", papszAttrs);
       mCommon.pCurrentPlot->setObjectName(name);
       sType = mParser.getAttributeValue("type", papszAttrs);
-      mCommon.pCurrentPlot->setType((CPlotItem::Type) mParser.toEnum(sType, CPlotItem::XMLType));
+      mCommon.pCurrentPlot->setType((CPlotItem::Type) toEnum(sType, CPlotItem::XMLType));
       active = mParser.getAttributeValue("active", papszAttrs, "true");
 
       mCommon.pCurrentPlot->setActive(mParser.toBool(active));
@@ -4014,7 +4014,7 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
 
       Key = mParser.getAttributeValue("key", papszAttrs, false);
       type = mParser.getAttributeValue("type", papszAttrs);
-      Type = (CCopasiTask::Type)mParser.toEnum(type, CCopasiTask::XMLType);
+      Type = (CCopasiTask::Type)toEnum(type, CCopasiTask::XMLType);
       Scheduled = mParser.toBool(mParser.getAttributeValue("scheduled", papszAttrs, "false"));
       UpdateModel = mParser.toBool(mParser.getAttributeValue("updateModel", papszAttrs, "false"));
 
@@ -4749,7 +4749,7 @@ void CCopasiXMLParser::MethodElement::start(const XML_Char *pszName,
           // first set the type of the with setMethodType of the current task
           // object
           CCopasiMethod::SubType type =
-            (CCopasiMethod::SubType) mParser.toEnum(sType.c_str(), CCopasiMethod::XMLSubType);
+            (CCopasiMethod::SubType) toEnum(sType.c_str(), CCopasiMethod::XMLSubType);
 
           if (type != CCopasiMethod::unset)
             {
@@ -5095,8 +5095,8 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
 
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
-      type = (CCopasiTask::Type)mParser.toEnum(mParser.getAttributeValue("taskType", papszAttrs),
-             CCopasiTask::XMLType);
+      type = (CCopasiTask::Type)toEnum(mParser.getAttributeValue("taskType", papszAttrs),
+                                       CCopasiTask::XMLType);
       Separator = mParser.getAttributeValue("separator", papszAttrs, "\t");
 
       // create a new report
@@ -5909,7 +5909,7 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
       AssociatedEntityKey = mParser.getAttributeValue("associatedEntityKey", papszAttrs);
       ObjectCN = mParser.getAttributeValue("objectCN", papszAttrs);
       objectType = mParser.getAttributeValue("objectType", papszAttrs);
-      ObjectType = (CSlider::Type) mParser.toEnum(objectType, CSlider::TypeName);
+      ObjectType = (CSlider::Type) toEnum(objectType, CSlider::TypeName);
       tmp = mParser.getAttributeValue("objectValue", papszAttrs);
       ObjectValue = mParser.toDBL(tmp);
       tmp = mParser.getAttributeValue("minValue", papszAttrs);

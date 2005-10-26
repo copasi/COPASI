@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/28 19:05:42 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:22:37 $
    End CVS Header */
 
 /**
@@ -696,17 +696,17 @@ class CExpatTemplate
      * @param const char * attribute
      * @param const char ** enumNames 
      * @return bool
-     */
-    static int toEnum(const char * attribute,
-                      const char ** enumNames)
-    {
-      if (!attribute) return - 1;
-
-      for (int i = 0; *enumNames; i++, enumNames++)
-        if (!strcmp(attribute, *enumNames)) return i;
-
-      return - 1;
-    }
+     */ 
+    //     static int toEnum(const char * attribute,
+    //                       const char ** enumNames)
+    //     {
+    //       if (!attribute) return - 1;
+    //
+    //       for (int i = 0; *enumNames; i++, enumNames++)
+    //         if (!strcmp(attribute, *enumNames)) return i;
+    //
+    //       return - 1;
+    //}
 
     /**
      * Convert an attribute to double. If attribute is NULL

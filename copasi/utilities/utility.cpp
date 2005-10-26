@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/01 13:34:04 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:22:36 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -1050,4 +1050,15 @@ void FixXHTML(const std::string &original, std::string &fixed)
         }
       Str = Str.substr(len - i - 1);
     }
+}
+
+int toEnum(const char * attribute,
+           const char ** enumNames)
+{
+  if (!attribute) return - 1;
+
+  for (int i = 0; *enumNames; i++, enumNames++)
+    if (!strcmp(attribute, *enumNames)) return i;
+
+  return - 1;
 }

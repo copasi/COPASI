@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/01 13:34:04 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:22:36 $
    End CVS Header */
 
 #ifndef COPASI_utilities
@@ -153,5 +153,16 @@ void FixSName(const std::string &original, std::string &fixed)
  */
 void FixXHTML(const std::string &original, std::string &fixed)
 ;
+
+/**
+  * Convert an attribute to enum. If attribute is NULL
+  * or no matching name is found -1 is returned. Note: enumNames must be 
+  * zero terminated.
+  * @param const char * attribute
+  * @param const char ** enumNames 
+  * @return bool
+  */
+int toEnum(const char * attribute,
+           const char ** enumNames);
 
 #endif // COPASI_utilities
