@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.159 $
+   $Revision: 1.160 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/26 14:29:18 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:29:40 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -1016,6 +1016,11 @@ TrajectoryWidget* CopasiUI3Window::getTrajectoryWidget()
 SteadyStateWidget* CopasiUI3Window::getSteadyStateWidget()
 {
   return listViews->steadystateWidget;
+}
+
+ScanWidget* CopasiUI3Window::getScanWidget()
+{
+  return listViews->scanWidget;
 }
 
 void CopasiUI3Window::checkPendingMessages()
