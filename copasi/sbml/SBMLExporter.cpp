@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/21 19:08:24 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:26:48 $
    End CVS Header */
 
 #include <math.h>
@@ -495,7 +495,7 @@ UnitDefinition* SBMLExporter::createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit
       unit = new Unit(UNIT_KIND_LITRE, 1, -15);
       break;
     case CModel::m3:
-      unit = new Unit(UNIT_KIND_METRE, 3, 1);
+      unit = new Unit(UNIT_KIND_METRE, 3, 0);
       break;
     default:
       CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi volume unit.");
