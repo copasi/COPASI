@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/10/19 11:36:45 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:35:14 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -70,6 +70,7 @@ class SliderDialog: public QDialog
     virtual void contextMenuEvent(QContextMenuEvent* e);
 
     virtual void runTimeCourse();
+    virtual void runScanTask();
     virtual void SliderDialog::runSteadyStateTask();
     virtual void closeEvent(QCloseEvent* e);
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/10/19 11:52:16 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:35:14 $
    End CVS Header */
 
 #include <iostream>
@@ -29,6 +29,7 @@
 #include "copasiui3window.h"
 #include "TrajectoryWidget.h"
 #include "SteadyStateWidget.h"
+#include "ScanWidget.h"
 #include "SliderSettingsDialog.h"
 #include "xml/CCopasiXMLInterface.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -40,17 +41,18 @@
 #include "qtUtilities.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "steadystate/CSteadyStateTask.h"
+#include "scan/CScanTask.h"
 #include "utilities/CSlider.h"
 #include "model/CModel.h"
 
-C_INT32 SliderDialog::numMappings = 4;
+C_INT32 SliderDialog::numMappings = 5;
 C_INT32 SliderDialog::folderMappings[][2] = {
-      {21, 21}, {211, 21}, {23, 23}, {231, 23}
+      {21, 21}, {211, 21}, {23, 23}, {231, 23}, {31, 31}
     };
 
-C_INT32 SliderDialog::numKnownTasks = 2;
-C_INT32 SliderDialog::knownTaskIDs[] = {21, 23};
-char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course"};
+C_INT32 SliderDialog::numKnownTasks = 3;
+C_INT32 SliderDialog::knownTaskIDs[] = {21, 23, 31};
+char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course", "Scan"};
 
 SliderDialog::SliderDialog(QWidget* parent): QDialog(parent),
     runTaskButton(NULL),
@@ -126,6 +128,7 @@ SliderDialog::SliderDialog(QWidget* parent): QDialog(parent),
 
   this->taskMap[23] = &SliderDialog::runTimeCourse;
   this->taskMap[21] = &SliderDialog::runSteadyStateTask;
+  this->taskMap[31] = &SliderDialog::runScanTask;
 
   connect(runTaskButton, SIGNAL(clicked()), this, SLOT(runTask()));
   connect(newSliderButton, SIGNAL(clicked()), this, SLOT(createNewSlider()));
@@ -549,6 +552,17 @@ void SliderDialog::runSteadyStateTask()
       p->getSteadyStateWidget()->runTask();
     }
 }
+
+void SliderDialog::runScanTask()
+{
+  CopasiUI3Window* p = dynamic_cast<CopasiUI3Window*>(this->parent());
+  if (p)
+    {
+      p->getScanWidget()->enter((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
+      p->getScanWidget()->runScanTask();
+    }
+}
+
 void SliderDialog::closeEvent(QCloseEvent* e)
 {
   QDialog::closeEvent(e);
@@ -570,6 +584,9 @@ CCopasiTask* SliderDialog::getTaskForFolderId(C_INT32 folderId)
       break;
     case 23:
       task = dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+      break;
+    case 31:
+      task = dynamic_cast<CScanTask *>((*CCopasiDataModel::Global->getTaskList())["Scan"]);
       break;
     default:
       task = NULL;
