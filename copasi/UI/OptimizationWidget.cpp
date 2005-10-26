@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/07 16:40:23 $
+   $Author: stupe $ 
+   $Date: 2005/10/26 15:43:18 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -47,6 +47,9 @@
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+
+#include "steadystate/CSteadyStateProblem.h"
+#include "trajectory/CTrajectoryProblem.h"
 
 OptimizationWidget::OptimizationWidget(QWidget* parent, const char* name, WFlags f)
     : CopasiWidget(parent, name, f), pParent(parent)
@@ -261,18 +264,49 @@ void OptimizationWidget::runOptimizationTask()
         }
     }
 
-  //should be renamed?
-
   optimizationTask->restore();
 
-  tmpBar->finish(); pdelete(tmpBar);
+  const CSteadyStateProblem *steadyStateProb;
+  const CTrajectoryProblem *trajectoryProb;
 
+  CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();
+  unsigned int p, pmax = TaskList.size();
+  if (isSteadyStateChecked())
+    {
+      for (p = 0; p < pmax; p++)
+        {
+          steadyStateProb = dynamic_cast< CSteadyStateProblem *>(TaskList[ p ]->getProblem());
+          if (!steadyStateProb) continue;
+          {
+            break;
+          }
+        }
+    }
+  else
+    {
+      for (p = 0; p < pmax; p++)
+        {
+          trajectoryProb = dynamic_cast< CTrajectoryProblem *>(TaskList[ p ]->getProblem());
+          if (!trajectoryProb) continue;
+          {
+            break;
+          }
+        }
+    }
+
+  if (p != pmax)
+    {
+      TaskList[ p ]->getProblem()->setModel(CCopasiDataModel::Global->getModel());
+      TaskList[ p ]->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+      TaskList[ p ]->process(true);
+      TaskList[ p ]->restore();
+    }
+  tmpBar->finish(); pdelete(tmpBar);
   protectedNotify(ListViews::STATE, ListViews::CHANGE,
                   CCopasiDataModel::Global->getModel()->getKey());
-
   unsetCursor();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
-
+  pListView->switchToOtherWidget(321, "");
   return;
 }
 
@@ -729,6 +763,12 @@ void OptimizationWidget::slottaskExecCheck()
     {
       optimizationTask->setScheduled(false);
     }
+}
+
+bool OptimizationWidget::isSteadyStateChecked()
+{
+  if (steadystateCheck->isChecked()) return true;
+  else return false;
 }
 
 //***********************************************************

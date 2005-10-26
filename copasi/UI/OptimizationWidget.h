@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationWidget.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:39:51 $
+   $Author: stupe $ 
+   $Date: 2005/10/26 15:43:18 $
    End CVS Header */
 
 /****************************************************************************
@@ -66,6 +66,7 @@ class OptimizationWidget : public CopasiWidget
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
     virtual std::string getKey();
+    bool isSteadyStateChecked();
 
   protected:
     bool loadOptimization();

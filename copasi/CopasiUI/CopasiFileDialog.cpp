@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiFileDialog.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/26 14:28:23 $
+   $Author: stupe $ 
+   $Date: 2005/10/26 15:43:18 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -17,7 +17,7 @@
 #include "commandline/COptions.h"
 #include "utilities/CDirEntry.h"
 
-QDir CopasiFileDialog::mLastDir = QDir::current();
+QDir CopasiFileDialog::mLastDir; // = QDir::current();
 
 CopasiFileDialog::CopasiFileDialog(QWidget * parent ,
                                    const char * name ,

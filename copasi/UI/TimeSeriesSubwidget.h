@@ -1,27 +1,27 @@
 /* Begin CVS Header
    $Source: /home/cvs/copasi_dev/cvs_admin/c++style,v $
-   $Revision: 1.16 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 18:38:04 $
+   $Date: 2005/08/30 16:36:51 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
- ** Created: Tue Apr 19 17:26:54 2005
- **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.h,v 1.6 2005/05/02 11:52:02 shoops Exp $)
+ ** Created: Mon Oct 24 12:45:56 2005
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.3   edited Nov 24 2003 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef TIMESERIESSUBWIDGET_H
-#define TIMESERIESSUBWIDGET_H
+ #define TIMESERIESSUBWIDGET_H
 
 #include <qvariant.h>
-#include <qpixmap.h>
-#include <qwidget.h>
-#include "copasi.h"
+ #include <qpixmap.h>
+ #include <qwidget.h>
+ #include "copasi.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -30,6 +30,8 @@ class QSpacerItem;
 class CTimeSeriesTable;
 class QComboBox;
 class QPushButton;
+class QTabWidget;
+class QTextEdit;
 
 class TimeSeriesSubWidget : public QWidget
   {
@@ -41,7 +43,14 @@ class TimeSeriesSubWidget : public QWidget
 
     QComboBox* comboBox;
     QPushButton* ButtonSaveData;
+    QTabWidget* tabWidget2;
+    QWidget* tab;
+    QTextEdit* optimizationResultText;
+    QWidget* tab_2;
     CTimeSeriesTable* dataTable;
+
+    bool clear();
+    void displayOptimizationTab(bool displayOptTab);
 
   public slots:
     virtual CTimeSeriesTable * table();
@@ -50,6 +59,8 @@ class TimeSeriesSubWidget : public QWidget
     QVBoxLayout* TimeSeriesSubWidgetLayout;
     QHBoxLayout* toplayout;
     QSpacerItem* spacer;
+    QVBoxLayout* tabLayout;
+    QVBoxLayout* tabLayout_2;
 
   protected slots:
     virtual void languageChange();

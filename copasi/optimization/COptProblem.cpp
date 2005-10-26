@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/22 13:34:57 $
+   $Author: stupe $ 
+   $Date: 2005/10/26 15:43:19 $
    End CVS Header */
 
 /**
@@ -480,6 +480,10 @@ void COptProblem::print(std::ostream * ostream) const
 
 void COptProblem::printResult(std::ostream * ostream) const
   {
+    if (mSolutionVariables.numSize() == 0)
+      {
+        return;
+      }
     *ostream << "    Objective Function Value: " << mSolutionValue << std::endl;
     *ostream << std::endl;
 
@@ -491,8 +495,10 @@ void COptProblem::printResult(std::ostream * ostream) const
     unsigned C_INT32 i;
 
     for (i = 0; itItem != endItem; ++itItem, i++)
-      *ostream << "    " << (*itItem)->getObjectDisplayName() << ": "
-      << mSolutionVariables[i] << std::endl;
+      {
+        *ostream << "    " << (*itItem)->getObjectDisplayName() << ": "
+        << mSolutionVariables[i] << std::endl;
+      }
   }
 
 std::ostream &operator<<(std::ostream &os, const COptProblem & o)

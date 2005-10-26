@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesSubwidget.ui.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/26 14:29:18 $
+   $Author: stupe $ 
+   $Date: 2005/10/26 15:43:18 $
    End CVS Header */
 
 /****************************************************************************
@@ -20,6 +20,9 @@
 
 #include "qtUtilities.h"
 #include <CopasiFileDialog.h>
+#include "optimization/COptProblem.h"
+#include "optimization/COptTask.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 void TimeSeriesSubWidget::saveDataToFile()
 {
@@ -62,6 +65,17 @@ void TimeSeriesSubWidget::saveDataToFile()
     }
 }
 
+void TimeSeriesSubWidget::displayOptimizationTab(bool displayOptTab)
+{
+  if (displayOptTab)
+    {
+      tabWidget2->insertTab(tab, "OptimizationResults", 0);
+      tabWidget2->setCurrentPage(0);
+    }
+  else
+    tabWidget2->removePage(tab);
+}
+
 void TimeSeriesSubWidget::toggleView()
 {
   if (comboBox->currentItem() == 0)
@@ -73,6 +87,7 @@ void TimeSeriesSubWidget::toggleView()
 void TimeSeriesSubWidget::init()
 {
   dataTable->setNumRows(10);
+  displayOptimizationTab(false);
 }
 
 CTimeSeriesTable* TimeSeriesSubWidget::table()

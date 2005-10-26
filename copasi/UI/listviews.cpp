@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.183 $
+   $Revision: 1.184 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/11 16:24:30 $
+   $Author: stupe $ 
+   $Date: 2005/10/26 15:43:18 $
    End CVS Header */
 
 /****************************************************************************
@@ -48,6 +48,7 @@
 #include "ScanWidget.h"
 #include "SensitivitiesWidget.h"
 #include "OptimizationWidget.h"
+#include "OptimizationResultWidget.h"
 #include "TableDefinition.h"
 #include "TableDefinition1.h"
 #include "report/CReportDefinitionVector.h"
@@ -204,6 +205,8 @@ ListViews::ListViews(QWidget *parent, const char *name):
     modesWidget(NULL),
     moietyWidget(NULL),
     moietyWidget1(NULL),
+    optResultWidgetS(NULL),
+    optResultWidgetT(NULL),
     optimizationWidget(NULL),
     paramFittingWidget(NULL),
     parametersWidget(NULL),
@@ -369,6 +372,12 @@ void ListViews::ConstructNodeWidgets()
   if (!optimizationWidget) optimizationWidget = new OptimizationWidget(this);
   optimizationWidget->hide();
 
+  if (!optResultWidgetS) optResultWidgetS = new OptimizationResultWidget(this);
+  optResultWidgetS->hide();
+
+  if (!optResultWidgetT) optResultWidgetT = new OptimizationResultWidget(this, 0, 0, 1);
+  optResultWidgetT->hide();
+
   if (!paramFittingWidget) paramFittingWidget = new CQFittingWidget(this);
   paramFittingWidget->hide();
 
@@ -504,6 +513,12 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         break;
       case 32:
         return optimizationWidget;
+        break;
+      case 321:
+        if (optimizationWidget->isSteadyStateChecked())
+          return optResultWidgetS;
+        else
+          return optResultWidgetT;
         break;
 #ifdef COPASI_DEBUG
       case 33:

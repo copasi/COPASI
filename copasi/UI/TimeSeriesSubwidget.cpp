@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /home/cvs/copasi_dev/cvs_admin/c++style,v $
-   $Revision: 1.16 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/11/05 18:38:04 $
+   $Date: 2005/08/30 16:36:51 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
- ** Created: Tue Apr 19 17:26:57 2005
- **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.cpp,v 1.6.6.1 2005/04/19 15:34:59 gauges Exp $)
+ ** Created: Mon Oct 24 12:45:57 2005
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.3   edited Nov 24 2003 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,16 +18,18 @@
 #include "TimeSeriesSubwidget.h"
 
 #include <qvariant.h>
-#include <qregexp.h>
-#include <qcombobox.h>
-#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include "qmessagebox.h"
-#include "qfiledialog.h"
-#include "CTimeSeriesTable.h"
-#include "TimeSeriesSubwidget.ui.h"
+ #include <qregexp.h>
+ #include <qpushbutton.h>
+ #include <qcombobox.h>
+ #include <qtabwidget.h>
+ #include <qtextedit.h>
+ #include <qlayout.h>
+ #include <qtooltip.h>
+ #include <qwhatsthis.h>
+ #include "qmessagebox.h"
+ #include "qfiledialog.h"
+ #include "CTimeSeriesTable.h"
+ #include "TimeSeriesSubwidget.ui.h"
 
 /*
  *  Constructs a TimeSeriesSubWidget as a child of 'parent', with the
@@ -38,23 +40,43 @@ TimeSeriesSubWidget::TimeSeriesSubWidget(QWidget* parent, const char* name, WFla
 {
   if (!name)
     setName("TimeSeriesSubWidget");
+  setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, sizePolicy().hasHeightForWidth()));
   TimeSeriesSubWidgetLayout = new QVBoxLayout(this, 11, 6, "TimeSeriesSubWidgetLayout");
 
-  toplayout = new QHBoxLayout(0, 0, 6, "toplayout");
+  toplayout = new QHBoxLayout(0, 1, 1, "toplayout");
 
   comboBox = new QComboBox(FALSE, this, "comboBox");
+  comboBox->setMinimumSize(QSize(0, 20));
   toplayout->addWidget(comboBox);
   spacer = new QSpacerItem(170, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
   toplayout->addItem(spacer);
 
   ButtonSaveData = new QPushButton(this, "ButtonSaveData");
+  ButtonSaveData->setMinimumSize(QSize(0, 20));
   toplayout->addWidget(ButtonSaveData);
   TimeSeriesSubWidgetLayout->addLayout(toplayout);
 
-  dataTable = new CTimeSeriesTable(this, "dataTable");
-  TimeSeriesSubWidgetLayout->addWidget(dataTable);
+  tabWidget2 = new QTabWidget(this, "tabWidget2");
+  tabWidget2->setGeometry(QRect(10, 40, 550, 510));
+
+  tab = new QWidget(tabWidget2, "tab");
+  tabLayout = new QVBoxLayout(tab, 11, 6, "tabLayout");
+
+  optimizationResultText = new QTextEdit(tab, "optimizationResultText");
+  optimizationResultText->setReadOnly(TRUE);
+  tabLayout->addWidget(optimizationResultText);
+  tabWidget2->insertTab(tab, QString(""));
+
+  tab_2 = new QWidget(tabWidget2, "tab_2");
+  tabLayout_2 = new QVBoxLayout(tab_2, 11, 6, "tabLayout_2");
+
+  dataTable = new CTimeSeriesTable(tab_2, "dataTable");
+  dataTable->setReadOnly(TRUE);
+  tabLayout_2->addWidget(dataTable);
+  tabWidget2->insertTab(tab_2, QString(""));
+  TimeSeriesSubWidgetLayout->addWidget(tabWidget2);
   languageChange();
-  resize(QSize(565, 608).expandedTo(minimumSizeHint()));
+  resize(QSize(600, 497).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
@@ -82,4 +104,6 @@ void TimeSeriesSubWidget::languageChange()
   comboBox->insertItem(tr("Concentrations"));
   comboBox->insertItem(tr("Particle Numbers"));
   ButtonSaveData->setText(tr("Save data to file"));
+  tabWidget2->changeTab(tab, tr("OptimizationResult"));
+  tabWidget2->changeTab(tab_2, tr("TimeSeries"));
 }

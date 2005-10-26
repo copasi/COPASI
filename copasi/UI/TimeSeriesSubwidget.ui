@@ -8,72 +8,154 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>565</width>
-            <height>608</height>
+            <width>600</width>
+            <height>497</height>
         </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>7</hsizetype>
+            <vsizetype>7</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
     </property>
     <property name="caption">
         <string>Form1</string>
     </property>
-    <vbox>
+     <vbox>
+     <widget class="QLayoutWidget">
         <property name="name">
-            <cstring>unnamed</cstring>
+            <cstring>toplayout</cstring>
         </property>
-        <widget class="QLayoutWidget">
+        <property name="geometry">
+            <rect>
+                <x>13</x>
+                <y>0</y>
+                <width>550</width>
+                <height>30</height>
+            </rect>
+        </property>
+        <hbox>
             <property name="name">
-                <cstring>toplayout</cstring>
+                <cstring>unnamed</cstring>
             </property>
-            <hbox>
+            <property name="margin">
+                <number>1</number>
+            </property>
+            <property name="spacing">
+                <number>1</number>
+            </property>
+            <widget class="QComboBox">
+                <item>
+                    <property name="text">
+                        <string>Concentrations</string>
+                    </property>
+                </item>
+                <item>
+                    <property name="text">
+                        <string>Particle Numbers</string>
+                    </property>
+                </item>
+                <property name="name">
+                    <cstring>comboBox</cstring>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>0</width>
+                        <height>20</height>
+                    </size>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>spacer</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>170</width>
+                        <height>20</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>ButtonSaveData</cstring>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>0</width>
+                        <height>20</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>Save data to file</string>
+                </property>
+            </widget>
+        </hbox>
+    </widget>
+    <widget class="QTabWidget">
+        <property name="name">
+            <cstring>tabWidget2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>40</y>
+                <width>550</width>
+                <height>510</height>
+            </rect>
+        </property>
+        
+<widget class="QWidget">
+            <property name="name">
+                <cstring>tab</cstring>
+            </property>
+            <attribute name="title">
+                <string>OptimizationResult</string>
+            </attribute>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QComboBox">
-                    <item>
-                        <property name="text">
-                            <string>Concentrations</string>
+                <widget class="QTextEdit">
+                <property name="name">
+                    <cstring>optimizationResultText</cstring>
+                </property>
+                <property name="readOnly">
+                            <bool>true</bool>
                         </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Particle Numbers</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>comboBox</cstring>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>170</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>ButtonSaveData</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Save data to file</string>
-                    </property>
-                </widget>
-            </hbox>
+            </widget>
+</vbox>
         </widget>
-        <widget class="CTimeSeriesTable">
+        <widget class="QWidget">
             <property name="name">
-                <cstring>dataTable</cstring>
+                <cstring>tab</cstring>
             </property>
+            <attribute name="title">
+                <string>TimeSeries</string>
+            </attribute>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+            <widget class="CTimeSeriesTable">
+                <property name="name">
+                    <cstring>dataTable</cstring>
+                </property>
+                <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
+            </widget>
+            </vbox>
         </widget>
+    </widget>
     </vbox>
 </widget>
 <customwidgets>
@@ -125,6 +207,10 @@
     <slot access="protected">init()</slot>
     <slot returnType="CTimeSeriesTable *">table()</slot>
 </slots>
+<functions>
+    <function specifier="non virtual" returnType="bool">clear()</function>
+    <function specifier="non virtual">displayOptimizationTab( bool displayOptTab )</function>
+</functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>ctimeseriestable.h</includehint>

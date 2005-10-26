@@ -1,27 +1,27 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesSubwidget.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/17 18:11:02 $
+   $Author: stupe $ 
+   $Date: 2005/10/26 15:43:18 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
- ** Created: Tue Apr 19 17:26:54 2005
- **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.h,v 1.7 2005/05/17 18:11:02 shoops Exp $)
+ ** Created: Mon Oct 24 12:45:56 2005
+ **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.h,v 1.8 2005/10/26 15:43:18 stupe Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef TIMESERIESSUBWIDGET_H
-#define TIMESERIESSUBWIDGET_H
+ #define TIMESERIESSUBWIDGET_H
 
 #include <qvariant.h>
-#include <qpixmap.h>
-#include <qwidget.h>
-#include "copasi.h"
+ #include <qpixmap.h>
+ #include <qwidget.h>
+ #include "copasi.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -30,6 +30,8 @@ class QSpacerItem;
 class CTimeSeriesTable;
 class QComboBox;
 class QPushButton;
+class QTabWidget;
+class QTextEdit;
 
 class TimeSeriesSubWidget : public QWidget
   {
@@ -41,7 +43,14 @@ class TimeSeriesSubWidget : public QWidget
 
     QComboBox* comboBox;
     QPushButton* ButtonSaveData;
+    QTabWidget* tabWidget2;
+    QWidget* tab;
+    QTextEdit* optimizationResultText;
+    QWidget* tab_2;
     CTimeSeriesTable* dataTable;
+
+    bool clear();
+    void displayOptimizationTab(bool displayOptTab);
 
   public slots:
     virtual CTimeSeriesTable * table();
@@ -50,6 +59,8 @@ class TimeSeriesSubWidget : public QWidget
     QVBoxLayout* TimeSeriesSubWidgetLayout;
     QHBoxLayout* toplayout;
     QSpacerItem* spacer;
+    QVBoxLayout* tabLayout;
+    QVBoxLayout* tabLayout_2;
 
   protected slots:
     virtual void languageChange();

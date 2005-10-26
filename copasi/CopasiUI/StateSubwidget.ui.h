@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:39:51 $
+   $Author: stupe $ 
+   $Date: 2005/10/26 15:43:18 $
    End CVS Header */
 
 /****************************************************************************
@@ -26,11 +26,25 @@
 #include <sstream>
 #include "listviews.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "optimization/COptProblem.h"
+#include "optimization/COptTask.h"
 
 void StateSubwidget::init()
 {
   topLabel->setText("");
+  displayOptimizationTab(false);
   //bla
+}
+
+void StateSubwidget::displayOptimizationTab(bool displayOptTab)
+{
+  if (displayOptTab)
+    {
+      tabWidget->insertTab(TabPage, "OptimizationResults", 0);
+      tabWidget->setCurrentPage(0);
+    }
+  else
+    tabWidget->removePage(TabPage);
 }
 
 bool StateSubwidget::loadMetabolites(const CModel* model)
@@ -154,6 +168,7 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
   ss << task->getEigenValuesReduced();
 
   stabilityTextEdit->setText(FROM_UTF8(ss.str()));
+  return;
 }
 
 void StateSubwidget::showUnits()

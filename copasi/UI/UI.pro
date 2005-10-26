@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.113 $ $Author: shoops $ $Date: 2005/10/14 16:27:27 $  
+# $Revision: 1.114 $ $Author: stupe $ $Date: 2005/10/26 15:43:18 $  
 ######################################################################
 
 TEMPLATE = app
@@ -187,6 +187,7 @@ HEADERS += \
            SteadyStateWidget.h \
            TableDefinition.h \
            TableDefinition1.h \
+           OptimizationResultWidget.h \
            TaskWidget.h \
            TimeSeriesWidget.h \
            TrajectoryWidget.h \
@@ -214,6 +215,7 @@ SOURCES += \
            copasiWidget.cpp \
            copasiui3window.cpp \
            CProgressBar.cpp \
+           OptimizationResultWidget.cpp \
            CQReportListItem.cpp \
            CQValidator.cpp \
            CScanContainerWidget.cpp \

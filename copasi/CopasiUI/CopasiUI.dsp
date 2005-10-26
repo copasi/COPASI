@@ -354,6 +354,10 @@ SOURCE=.\OptimizationItemWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\OptimizationResultWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\OptimizationWidget.cpp
 # End Source File
 # Begin Source File
@@ -863,6 +867,10 @@ SOURCE=.\OptimizationItemWidget.h
 # Begin Source File
 
 SOURCE=.\OptimizationItemWidget.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\OptimizationResultWidget.h
 # End Source File
 # Begin Source File
 

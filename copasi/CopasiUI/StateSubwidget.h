@@ -1,26 +1,26 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:39:51 $
+   $Author: stupe $ 
+   $Date: 2005/10/26 15:43:18 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Fri Apr 15 13:53:25 2005
- **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.7 2005/08/30 15:39:51 shoops Exp $)
+ ** Created: Mon Oct 24 12:17:46 2005
+ **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.8 2005/10/26 15:43:18 stupe Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef STATESUBWIDGET_H
-#define STATESUBWIDGET_H
+ #define STATESUBWIDGET_H
 
 #include <qvariant.h>
-#include <qwidget.h>
-#include "model/CState.h"
+ #include <qwidget.h>
+ #include "model/CState.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -28,9 +28,9 @@ class QGridLayout;
 class QSpacerItem;
 class QLabel;
 class QTabWidget;
+class QTextEdit;
 class QTable;
 class QSplitter;
-class QTextEdit;
 class CModel;
 class CSteadyStateTask;
 
@@ -44,31 +44,34 @@ class StateSubwidget : public QWidget
 
     QLabel* topLabel;
     QTabWidget* tabWidget;
+    QWidget* TabPage;
+    QTextEdit* optimizationResultText;
     QWidget* tab;
     QTable* concentrationsTable;
     QWidget* tab_2;
     QTable* numbersTable;
-    QWidget* TabPage;
-    QTable* tableFlux;
     QWidget* TabPage_2;
+    QTable* tableFlux;
+    QWidget* TabPage_3;
     QSplitter* splitterJacobian;
     QTable* tableJacobian;
     QLabel* textLabelJacobian;
     QTable* tableEigenValues;
     QLabel* textLabelEigenvalues;
-    QWidget* TabPage_3;
+    QWidget* TabPage_4;
     QSplitter* splitterJacobianX;
     QTable* tableJacobianX;
     QLabel* textLabelJacobianX;
     QTable* tableEigenValuesX;
     QLabel* textLabelEigenvaluesX;
-    QWidget* TabPage_4;
+    QWidget* TabPage_5;
     QTextEdit* stabilityTextEdit;
 
     virtual bool loadMetabolites(const CModel * model);
     virtual bool loadReactions(const CModel * model);
     virtual bool loadAll(const CSteadyStateTask * task);
-    virtual bool clear();
+    void displayOptimizationTab(bool display);
+    bool clear();
 
   public slots:
     virtual void loadJacobian(const CSteadyStateTask * task);
@@ -76,20 +79,21 @@ class StateSubwidget : public QWidget
 
   protected:
     QVBoxLayout* StateSubwidgetLayout;
+    QVBoxLayout* TabPageLayout;
     QVBoxLayout* tabLayout;
     QVBoxLayout* tabLayout_2;
-    QVBoxLayout* TabPageLayout;
     QVBoxLayout* TabPageLayout_2;
+    QVBoxLayout* TabPageLayout_3;
     QGridLayout* layoutJacobian;
     QSpacerItem* spacer3;
     QGridLayout* layoutEigenvalues;
     QSpacerItem* spacer4;
-    QVBoxLayout* TabPageLayout_3;
+    QVBoxLayout* TabPageLayout_4;
     QGridLayout* layoutJacobianX;
     QSpacerItem* spacer3_2;
     QGridLayout* layoutEigenvaluesX;
     QSpacerItem* spacer4_2;
-    QVBoxLayout* TabPageLayout_4;
+    QVBoxLayout* TabPageLayout_5;
 
   protected slots:
     virtual void languageChange();
