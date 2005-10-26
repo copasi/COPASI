@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiFileDialog.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/20 13:21:12 $
+   $Date: 2005/10/26 14:28:23 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -17,11 +17,15 @@
 #include "commandline/COptions.h"
 #include "utilities/CDirEntry.h"
 
+QDir CopasiFileDialog::mLastDir = QDir::current();
+
 CopasiFileDialog::CopasiFileDialog(QWidget * parent ,
                                    const char * name ,
                                    bool modal)
     : QFileDialog(parent , name , modal)
 {
+  setDir(mLastDir);
+
   mpGrp = new CQFileDialogBtnGrp(this);
   addLeftWidget(mpGrp);
 
@@ -29,6 +33,56 @@ CopasiFileDialog::CopasiFileDialog(QWidget * parent ,
           this, SLOT(slotExampleDir()));
   connect(mpGrp->mpBtnHome, SIGNAL(pressed()),
           this, SLOT(slotHomeDir()));
+}
+
+CopasiFileDialog::~CopasiFileDialog()
+{
+  const QDir * pTmp = dir();
+  mLastDir = * pTmp;
+  delete pTmp;
+}
+
+QString CopasiFileDialog::getOpenFileName(const QString & startWith,
+    const QString & filter,
+    const QString & caption,
+    QString selectedFilter)
+
+{
+  if (!startWith.isNull()) this->setSelection(startWith);
+  if (!filter.isNull()) this->setFilters(filter);
+  if (!caption.isNull()) this->setCaption(caption);
+  if (selectedFilter) this->setSelectedFilter(selectedFilter);
+
+  this->setMode(QFileDialog::ExistingFile);
+
+  QString newFile = "";
+  if (this->exec() == QDialog::Accepted)
+    {
+      newFile = this->selectedFile();
+      return newFile;
+    }
+  return NULL;
+}
+
+QString CopasiFileDialog::getSaveFileName(const QString & startWith,
+    const QString & filter,
+    const QString & caption,
+    QString selectedFilter)
+{
+  if (!startWith.isNull()) this->setSelection(startWith);
+  if (!filter.isNull()) this->setFilters(filter);
+  if (!caption.isNull()) this->setCaption(caption);
+  if (selectedFilter) this->setSelectedFilter(selectedFilter);
+
+  this->setMode(QFileDialog::AnyFile);
+
+  QString newFile = "";
+  if (this->exec() == QDialog::Accepted)
+    {
+      newFile = this->selectedFile();
+      return newFile;
+    }
+  return NULL;
 }
 
 void CopasiFileDialog::slotExampleDir()
@@ -48,45 +102,6 @@ void CopasiFileDialog::slotExampleDir()
     }
 }
 
-QString CopasiFileDialog::GetOpenFileName(const QString & /* startWith */,
-    const QString & /* filter */,
-    QWidget * /* parent */,
-    const char * /* name */,
-    const QString & /* caption */,
-    QString * /* selectedFilter */,
-    bool /* resolveSymlinks */)
-
-{
-  QString newFile = "";
-  //this->setFilter(filter);
-  this->setMode(QFileDialog::ExistingFile);
-  if (this->exec() == QDialog::Accepted)
-    {
-      newFile = this->selectedFile();
-      return newFile;
-    }
-  return NULL;
-}
-
-QString CopasiFileDialog::GetSaveFileName(const QString & /* startWith */,
-    const QString & /* filter */,
-    QWidget * /* parent */,
-    const char * /* name */,
-    const QString & /* caption */,
-    QString * /* selectedFilter */,
-    bool /* resolveSymlinks */)
-{
-  QString newFile = "";
-  //this->setFilter(filter);
-  this->setMode(QFileDialog::AnyFile);
-  if (this->exec() == QDialog::Accepted)
-    {
-      newFile = this->selectedFile();
-      return newFile;
-    }
-  return NULL;
-}
-
 void CopasiFileDialog::slotHomeDir()
 {
   std::string homeDir;
@@ -102,4 +117,34 @@ void CopasiFileDialog::slotHomeDir()
                            QMessageBox::Ok, 0);
       mpGrp->mpBtnHome->setDown(false);
     }
+}
+
+QString CopasiFileDialog::getOpenFileName(QWidget * parent,
+    const char * name,
+    const QString & startWith,
+    const QString & filter,
+    const QString & caption,
+    QString selectedFilter)
+{
+  CopasiFileDialog * pDialog = new CopasiFileDialog(parent, name, true);
+
+  QString File = pDialog->getOpenFileName(startWith, filter, caption, selectedFilter);
+  delete pDialog;
+
+  return File;
+}
+
+QString CopasiFileDialog::getSaveFileName(QWidget * parent,
+    const char * name,
+    const QString & startWith,
+    const QString & filter,
+    const QString & caption,
+    QString selectedFilter)
+{
+  CopasiFileDialog * pDialog = new CopasiFileDialog(parent, name, true);
+
+  QString File = pDialog->getSaveFileName(startWith, filter, caption, selectedFilter);
+  delete pDialog;
+
+  return File;
 }
