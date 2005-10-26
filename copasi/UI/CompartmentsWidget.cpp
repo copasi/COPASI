@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.96 $
+   $Revision: 1.97 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/13 12:15:05 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:28:58 $
    End CVS Header */
 
 /*******************************************************************
@@ -66,7 +66,7 @@ void CompartmentsWidget::showHeaders()
   tableHeader->setLabel(1, "Name");
   if (CCopasiDataModel::Global->getModel())
     {
-      std::string str = CCopasiDataModel::Global->getModel()->getVolumeUnit();
+      std::string str = CCopasiDataModel::Global->getModel()->getVolumeUnitName();
       tableHeader->setLabel(2, "Volume\n(" + FROM_UTF8(str) + ")");
     }
 }

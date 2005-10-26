@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.121 $
+   $Revision: 1.122 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/27 16:10:47 $
+   $Date: 2005/10/26 18:30:41 $
    End CVS Header */
 
 /*******************************************************************
@@ -262,13 +262,13 @@ MetabolitesWidget1::~MetabolitesWidget1()
    clicked in the tree   */
 bool MetabolitesWidget1::loadFromMetabolite()
 {
-  mLblInitConcentration->setText("Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + \
-                                 "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+  mLblInitConcentration->setText("Concentration\n("
+                                 + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
 
-  mLblTransitionTime->setText("Transition Time (" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")");
+  mLblTransitionTime->setText("Transition Time (" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnitName()) + ")");
 
-  mLblRate->setText("Rate of concentration change\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + \
-                    "/(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + "))");
+  mLblRate->setText("Rate of concentration change\n("
+                    + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationRateUnitName()) + ")");
 
   if (!mpMetab) return false;
 

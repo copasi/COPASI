@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.172 $
+   $Revision: 1.173 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/15 18:45:24 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:34:23 $
    End CVS Header */
 
 /*********************************************************************
@@ -206,8 +206,7 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
   if (!reaction) return false;
 
   TextLabel8->setText(tr("Flux ("
-                         + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit())
-                         + "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")"));
+                         + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityRateUnitName()) + ")"));
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to the reaction
@@ -378,7 +377,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                                               // No or Escape
+        default:                                                // No or Escape
           break;
         }
     }

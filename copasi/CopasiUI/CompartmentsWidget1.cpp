@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/05/29 21:46:26 $
+   $Date: 2005/10/26 18:28:58 $
    End CVS Header */
 
 /*******************************************************************
@@ -188,8 +188,8 @@ bool CompartmentsWidget1::loadFromCompartment(const CCompartment * compartn)
   LineEdit4->setReadOnly(true);
 
   /* <---for displaying units in the Widget */
-  TextLabel2_2->setText("Transient Volume\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
-  TextLabel2->setText("Initial  Volume\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+  TextLabel2_2->setText("Transient Volume\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
+  TextLabel2->setText("Initial  Volume\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
   /* ---> */
   currentCompt = compartn;
   return true;

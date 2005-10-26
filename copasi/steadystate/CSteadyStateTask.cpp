@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/15 18:45:25 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:25:56 $
    End CVS Header */
 
 /**
@@ -216,11 +216,11 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   unsigned C_INT32 i, imax = Metabolites.size();
 
   os << "Metabolite" << "\t";
-  os << "Concentration (" << pModel->getQuantityUnit() << "/" << pModel->getVolumeUnit() << ")" << "\t";
-  os << "Concentration Rate (" << pModel->getQuantityUnit() << "/(" << pModel->getVolumeUnit() << "*" << pModel->getTimeUnit() << "))" << "\t";
+  os << "Concentration (" << pModel->getConcentrationUnitName() << ")" << "\t";
+  os << "Concentration Rate (" << pModel->getConcentrationRateUnitName() << ")" << "\t";
   os << "Particle Number" << "\t";
-  os << "Particle Number Rate (1/" << pModel->getTimeUnit() << ")" << "\t";
-  os << "Transition Time (" << pModel->getTimeUnit() << ")" << std::endl;
+  os << "Particle Number Rate (1/" << pModel->getTimeUnitName() << ")" << "\t";
+  os << "Transition Time (" << pModel->getTimeUnitName() << ")" << std::endl;
 
   for (i = 0; i < imax; ++i)
     {
@@ -241,8 +241,8 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   imax = Reactions.size();
 
   os << "Reaction" << "\t";
-  os << "Flux (" << pModel->getQuantityUnit() << "/" << pModel->getTimeUnit() << ")" << "\t";
-  os << "Particle Flux (1/" << pModel->getTimeUnit() << ")" << std::endl;
+  os << "Flux (" << pModel->getQuantityRateUnitName() << ")" << "\t";
+  os << "Particle Flux (1/" << pModel->getTimeUnitName() << ")" << std::endl;
 
   for (i = 0; i < imax; ++i)
     {

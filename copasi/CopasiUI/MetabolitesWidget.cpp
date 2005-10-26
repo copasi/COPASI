@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.124 $
+   $Revision: 1.125 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/05 16:25:23 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:30:41 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -123,12 +123,10 @@ void MetabolitesWidget::showHeaders()
   tableHeader->setLabel(1, "Name");
   if (CCopasiDataModel::Global->getModel())
     {
-      tableHeader->setLabel(COL_ICONCENTRATION, "Initial Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
-                            FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
-      tableHeader->setLabel(COL_CONCENTRATION, "Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + "/" + \
-                            FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
-      tableHeader->setLabel(COL_CRATE, "Rate\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + \
-                            "/(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + "*" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + "))");
+      tableHeader->setLabel(COL_ICONCENTRATION, "Initial Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
+      tableHeader->setLabel(COL_CONCENTRATION, "Concentration\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
+      tableHeader->setLabel(COL_CRATE, "Rate\n("
+                            + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationRateUnitName()) + ")");
     }
 }
 

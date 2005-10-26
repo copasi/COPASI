@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.84 $
+   $Revision: 1.85 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/15 18:45:24 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:34:23 $
    End CVS Header */
 
 #include "ReactionsWidget.h"
@@ -66,8 +66,8 @@ void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
 
   const CReaction* pRea = (const CReaction*)obj;
 
-  table->horizontalHeader()->setLabel(4, "Flux\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnit()) + \
-                                      "/" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getTimeUnit()) + ")");
+  table->horizontalHeader()->setLabel(4, "Flux\n("
+                                      + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityRateUnitName()) + ")");
 
   table->setText(row, 1, FROM_UTF8(pRea->getObjectName()));
 

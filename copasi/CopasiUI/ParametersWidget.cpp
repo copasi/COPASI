@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ParametersWidget.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/21 20:33:59 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:34:23 $
    End CVS Header */
 
 #include "ParametersWidget.h"
@@ -204,7 +204,7 @@ bool ParametersWidget::loadFromModel()
 
   //Compartments
   mCompItem = new CParameterListItem(listView, "Compartment volumes");
-  unit = FROM_UTF8(model->getVolumeUnit());
+  unit = FROM_UTF8(model->getVolumeUnitName());
   const CCopasiVector< CCompartment > & comps = model->getCompartments();
   imax = comps.size();
   for (i = 0; i < imax; ++i)
@@ -213,7 +213,7 @@ bool ParametersWidget::loadFromModel()
 
   //Metabs
   mMetabItem = new CParameterListItem(listView, "Initial concentrations");
-  unit = FROM_UTF8(model->getQuantityUnit() + "/" + model->getVolumeUnit());
+  unit = FROM_UTF8(model->getConcentrationUnitName());
   const CCopasiVector< CMetab > & metabs = model->getMetabolites();
   imax = metabs.size();
   for (i = 0; i < imax; ++i)

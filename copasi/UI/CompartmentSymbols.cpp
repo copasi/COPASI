@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/21 11:40:10 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:28:58 $
    End CVS Header */
 
 /*******************************************************************
@@ -95,8 +95,8 @@ void CompartmentSymbols::loadCompartmentSymbols(CMathModel *model)
 {
   QHeader *tableHeader = table->horizontalHeader();
 
-  tableHeader->setLabel(2, "Initial Volume\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
-  tableHeader->setLabel(3, "Volume\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnit()) + ")");
+  tableHeader->setLabel(2, "Initial Volume\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
+  tableHeader->setLabel(3, "Volume\n(" + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
 
   dataModel->updateMathModel();
 

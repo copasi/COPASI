@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/19 19:29:09 $
+   $Author: ssahle $ 
+   $Date: 2005/10/26 18:33:54 $
    End CVS Header */
 
 /*******************************************************************
@@ -137,28 +137,28 @@ bool ModelWidget::loadModel(CModel *model)
   QStringList comboEntries;
 
   unsigned int temp1;
-  for (temp1 = 0; model->TimeUnitName[temp1] /*!= ""*/; temp1++)
+  for (temp1 = 0; model->TimeUnitNames[temp1] /*!= ""*/; temp1++)
     {
-      comboEntries.push_front(QString::fromUtf8(model->TimeUnitName[temp1]));
+      comboEntries.push_front(QString::fromUtf8(model->TimeUnitNames[temp1]));
     }
   ComboBox1->insertStringList(comboEntries, -1);
-  ComboBox1->setCurrentText(FROM_UTF8(model->getTimeUnit()));
+  ComboBox1->setCurrentText(FROM_UTF8(model->getTimeUnitName()));
 
   QStringList comboEntries1;
-  for (temp1 = 0; CModel::VolumeUnitName[temp1]  /*!= ""*/; temp1++)
+  for (temp1 = 0; CModel::VolumeUnitNames[temp1]  /*!= ""*/; temp1++)
     {
-      comboEntries1.push_front(QString::fromUtf8(CModel::VolumeUnitName[temp1]));
+      comboEntries1.push_front(QString::fromUtf8(CModel::VolumeUnitNames[temp1]));
     }
   ComboBox2->insertStringList(comboEntries1, -1);
-  ComboBox2->setCurrentText(FROM_UTF8(model->getVolumeUnit()));
+  ComboBox2->setCurrentText(FROM_UTF8(model->getVolumeUnitName()));
 
   QStringList comboEntries2;
-  for (temp1 = 0; CModel::QuantityUnitName[temp1] /*!= ""*/; temp1++)
+  for (temp1 = 0; CModel::QuantityUnitNames[temp1] /*!= ""*/; temp1++)
     {
-      comboEntries2.push_front(QString::fromUtf8(CModel::QuantityUnitName[temp1]));
+      comboEntries2.push_front(QString::fromUtf8(CModel::QuantityUnitNames[temp1]));
     }
   ComboBox3->insertStringList(comboEntries2, -1);
-  ComboBox3->setCurrentText(FROM_UTF8(model->getQuantityUnit()));
+  ComboBox3->setCurrentText(FROM_UTF8(model->getQuantityUnitName()));
 
   return ret;
 }
@@ -183,19 +183,19 @@ bool ModelWidget::saveToModel()
       protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
     }
 
-  if ((const char *)ComboBox1->currentText().utf8() != model->getTimeUnit())
+  if ((const char *)ComboBox1->currentText().utf8() != model->getTimeUnitName())
     {
       model->setTimeUnit((const char *)ComboBox1->currentText().utf8());
       protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
     }
 
-  if ((const char *)ComboBox2->currentText().utf8() != model->getVolumeUnit())
+  if ((const char *)ComboBox2->currentText().utf8() != model->getVolumeUnitName())
     {
       model->setVolumeUnit((const char *)ComboBox2->currentText().utf8());
       protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
     }
 
-  if ((const char *)ComboBox3->currentText().utf8() != model->getQuantityUnit())
+  if ((const char *)ComboBox3->currentText().utf8() != model->getQuantityUnitName())
     {
       model->setQuantityUnit((const char *)ComboBox3->currentText().utf8());
       protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
