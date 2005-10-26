@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:23:39 $
+   $Author: shoops $ 
+   $Date: 2005/10/26 18:47:30 $
    End CVS Header */
 
 /**
@@ -52,6 +52,9 @@ CCopasiXML::~CCopasiXML() {}
 
 bool CCopasiXML::save(std::ostream & os)
 {
+  char * locale = strdup(setlocale(LC_NUMERIC, NULL));
+  setlocale(LC_NUMERIC, "C");
+
   mpOstream = &os;
   bool success = true;
 
@@ -91,6 +94,9 @@ bool CCopasiXML::save(std::ostream & os)
   if (!saveSBMLReference()) success = false;
 
   endSaveElement("COPASI");
+
+  setlocale(LC_NUMERIC, locale);
+  pdelete(locale);
 
   return success;
 }
