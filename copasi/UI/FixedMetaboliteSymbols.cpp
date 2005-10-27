@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FixedMetaboliteSymbols.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/26 18:50:01 $
+   $Author: ssahle $ 
+   $Date: 2005/10/27 11:53:53 $
    End CVS Header */
 
 /*******************************************************************
@@ -93,8 +93,7 @@ void FixedMetaboliteSymbols::loadFixedMetaboliteSymbols(CMathModel *model)
 {
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(3, "Concentration\n(" \
-                        + FROM_UTF8(CCopasiDataModel::Global->getModel()->getQuantityUnitName()) + "/"\
-                        + FROM_UTF8(CCopasiDataModel::Global->getModel()->getVolumeUnitName()) + ")");
+                        + FROM_UTF8(CCopasiDataModel::Global->getModel()->getConcentrationUnitName()) + ")");
 
   dataModel->updateMathModel();
 
