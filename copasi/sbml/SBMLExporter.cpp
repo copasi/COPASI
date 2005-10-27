@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:26:48 $
+   $Author: gauges $ 
+   $Date: 2005/10/27 19:40:57 $
    End CVS Header */
 
 #include <math.h>
@@ -1382,7 +1382,13 @@ FunctionDefinition* SBMLExporter::createSBMLFunctionDefinitionFromCEvaluationTre
   // convert the tree root to an AST tree.
   FunctionDefinition& pFunDef = this->sbmlDocument->getModel()->createFunctionDefinition();
   pFunDef.setId(tree->getSBMLId());
-
+  if (!tree->getRoot())
+    {
+      std::string errorMessage = std::string("Can not export function");
+      errorMessage += tree->getObjectName();
+      errorMessage += std::string(". Function does not have a valid root node.");
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, errorMessage.c_str());
+    }
   ASTNode* pFunNode = tree->getRoot()->toAST();
   // go through the AST tree and replace all function call nodes with with a call to the sbml id
   ASTNode* pLambda = new ASTNode(AST_LAMBDA);
