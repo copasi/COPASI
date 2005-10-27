@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/23 19:54:27 $
+   $Author: ssahle $ 
+   $Date: 2005/10/27 15:25:38 $
    End CVS Header */
 
 /**
@@ -141,7 +141,7 @@ unsigned C_INT32 CFunctionParameters::getNumberOfParametersByUsage(const std::st
 unsigned C_INT32 CFunctionParameters::findParameterByName(const std::string & name,
     CFunctionParameter::DataType & dataType) const
   {
-    std::string VectorName = name.substr(0, name.find_last_of('_'));
+    //std::string VectorName = name.substr(0, name.find_last_of('_'));
     std::string Name;
     unsigned C_INT32 i, imax = mParameters.size();
 
@@ -149,7 +149,7 @@ unsigned C_INT32 CFunctionParameters::findParameterByName(const std::string & na
       {
         Name = mParameters[i]->getObjectName();
 
-        if (Name == name || Name == VectorName)
+        if (Name == name)
           {
             dataType = mParameters[i]->getType();
             return i;
