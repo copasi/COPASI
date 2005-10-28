@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:32 $
+   $Date: 2005/10/28 12:45:22 $
    End CVS Header */
 
 // CReadConfig
@@ -142,7 +142,7 @@ C_INT32 CReadConfig::getVariable(const std::string& name,
           if (mBuffer.eof())
             {
               if (!(mode & CReadConfig::LOOP))
-                CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 1,
+                CCopasiMessage(CCopasiMessage::EXCEPTION, MCReadConfig + 1,
                                name.c_str(), mFilename.c_str(),
                                mLineNumber);
 
