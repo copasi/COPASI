@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingWidget.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:38:20 $
+   $Date: 2005/10/28 16:01:45 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingWidget.ui'
  **
- ** Created: Wed Oct 26 13:41:56 2005
- **      by: The User Interface Compiler ($Id: CQFittingWidget.cpp,v 1.6 2005/10/28 15:38:20 shoops Exp $)
+ ** Created: Fri Oct 28 12:00:59 2005
+ **      by: The User Interface Compiler ($Id: CQFittingWidget.cpp,v 1.7 2005/10/28 16:01:45 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -24,7 +24,6 @@
  #include <qlayout.h>
  #include <qtooltip.h>
  #include <qwhatsthis.h>
- #include "taskwidget.h"
  #include "TaskWidget.h"
  #include "CQFittingWidget.ui.h"
 
@@ -56,10 +55,10 @@ CQFittingWidget::CQFittingWidget(QWidget* parent, const char* name)
   mpTabWidget = new QTabWidget(this, "mpTabWidget");
 
   mpParametersPage = new QWidget(mpTabWidget, "mpParametersPage");
-  mpTabWidget->insertTab(mpParametersPage, QString::fromLatin1(""));
+  mpTabWidget->insertTab(mpParametersPage, QString(""));
 
   mpConstraintsPage = new QWidget(mpTabWidget, "mpConstraintsPage");
-  mpTabWidget->insertTab(mpConstraintsPage, QString::fromLatin1(""));
+  mpTabWidget->insertTab(mpConstraintsPage, QString(""));
 
   mpGridLayout->addMultiCellWidget(mpTabWidget, 1, 1, 0, 2);
   CQFittingWidgetLayout->addLayout(mpGridLayout);
