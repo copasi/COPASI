@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:49 $
+   $Date: 2005/10/28 15:36:18 $
    End CVS Header */
 
 /**
@@ -261,7 +261,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
           /* Here we will do conditional event processing */
 
           FailCounter++;
-          if (FailCounter > 10)
+          if (FailCounter > 0) // Currently this is correct since no events are processed.
             CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
 
           StepSize = NextTimeToReport - Time;
