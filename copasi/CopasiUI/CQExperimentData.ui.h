@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:38:20 $
+   $Date: 2005/10/28 16:12:27 $
    End CVS Header */
 
 #include <algorithm>
@@ -524,18 +524,21 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment)
   else
     pExperiment->setSeparator((const char *) mpEditSeparator->text().utf8());
 
-  C_INT32 pos = mpEditFirst->text().length();
-  if (mpValidatorFirst->validate(mpEditFirst->text(), pos) == QValidator::Acceptable)
-    pExperiment->setFirstRow(mpEditFirst->text().toULong());
+  QString value = mpEditFirst->text();
+  int pos = value.length();
+  if (mpValidatorFirst->validate(value, pos) == QValidator::Acceptable)
+    pExperiment->setFirstRow(value.toULong());
 
-  pos = mpEditLast->text().length();
-  if (mpValidatorLast->validate(mpEditLast->text(), pos) == QValidator::Acceptable)
-    pExperiment->setLastRow(mpEditLast->text().toULong());
+  value = mpEditLast->text();
+  pos = value.length();
+  if (mpValidatorLast->validate(value, pos) == QValidator::Acceptable)
+    pExperiment->setLastRow(value.toULong());
 
-  pos = mpEditHeader->text().length();
+  value = mpEditHeader->text();
+  pos = value.length();
   if (mpCheckHeader->isChecked() &&
-      mpValidatorHeader->validate(mpEditHeader->text(), pos) == QValidator::Acceptable)
-    pExperiment->setHeaderRow(mpEditHeader->text().toULong());
+      mpValidatorHeader->validate(value, pos) == QValidator::Acceptable)
+    pExperiment->setHeaderRow(value.toULong());
   else
     {
       pExperiment->setHeaderRow(C_INVALID_INDEX);
