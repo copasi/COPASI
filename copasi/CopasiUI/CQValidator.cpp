@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQValidator.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/13 00:18:22 $
+   $Date: 2005/10/28 17:56:23 $
    End CVS Header */
 
 #include <qlineedit.h>
@@ -31,7 +31,7 @@ CQValidator::CQValidator(QLineEdit * parent, const char * name):
 QValidator::State CQValidator::validate(QString & input, int & /* pos */) const
   {
     if (input == mLastAccepted)
-      saved();
+      mpLineEdit->setPaletteBackgroundColor(mSavedColor);
     else
       setColor(Acceptable);
 
@@ -51,7 +51,7 @@ void CQValidator::saved() const
     mpLineEdit->setPaletteBackgroundColor(mSavedColor);
   }
 
-void CQValidator::forceAcceptance(const QString & input) const
+void CQValidator::force(const QString & input) const
   {
     const_cast<CQValidator *>(this)->mLastAccepted = input;
     setColor(Acceptable);
@@ -73,12 +73,14 @@ CQValidatorNotEmpty::CQValidatorNotEmpty(QLineEdit * parent, const char * name):
 
 QValidator::State CQValidatorNotEmpty::validate(QString & input, int & /* pos */) const
   {
-    if (input == "")
-      setColor(Invalid);
-    else
-      forceAcceptance(input);
+    if (input != "")
+      {
+        force(input);
+        return Acceptable;
+      }
 
-    return Acceptable;
+    setColor(Invalid);
+    return Intermediate;
   }
 
 CQValidatorBound::CQValidatorBound(QLineEdit * parent, const char * name):
@@ -91,16 +93,18 @@ QValidator::State CQValidatorBound::validate (QString & input, int & pos) const
   {
     if (input == mValidBound ||
         mpDoubleValidator->validate(input, pos) == Acceptable)
-      forceAcceptance(input);
-    else
-      setColor(Invalid);
+      {
+        force(input);
+        return Acceptable;
+      }
 
-    return Acceptable;
+    setColor(Invalid);
+    return Intermediate;
   }
 
-void CQValidatorBound::forceAcceptance(const QString & input) const
+void CQValidatorBound::force(const QString & input) const
   {
     const_cast<CQValidatorBound *>(this)->mValidBound = input;
 
-    CQValidator::forceAcceptance(input);
+    CQValidator::force(input);
   }

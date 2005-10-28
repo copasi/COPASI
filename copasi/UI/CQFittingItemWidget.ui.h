@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:38:20 $
+   $Date: 2005/10/28 17:56:23 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -96,7 +96,7 @@ void CQFittingItemWidget::slotLowerEdit()
       mpItem->setLowerBound(Selection[0]->getCN());
 
       QString Value = FROM_UTF8(Selection[0]->getObjectDisplayName());
-      mpLowerValidator->forceAcceptance(Value);
+      mpLowerValidator->force(Value);
       mpEditLower->setText(Value);
     }
 }
@@ -118,7 +118,7 @@ void CQFittingItemWidget::slotUpperEdit()
       mpItem->setUpperBound(Selection[0]->getCN());
 
       QString Value = FROM_UTF8(Selection[0]->getObjectDisplayName());
-      mpUpperValidator->forceAcceptance(Value);
+      mpUpperValidator->force(Value);
       mpEditUpper->setText(Value);
     }
 }
@@ -137,7 +137,7 @@ void CQFittingItemWidget::slotParamEdit()
       mpItem->setObjectCN(Selection[0]->getCN());
 
       QString Value = FROM_UTF8(Selection[0]->getObjectDisplayName());
-      mpObjectValidator->forceAcceptance(Value);
+      mpObjectValidator->force(Value);
       mpEditObject->setText(Value);
     }
 }
@@ -153,7 +153,7 @@ CQFittingItemWidget * CQFittingItemWidget::copy()
 
   pWidget->mpEditObject->setText(mpEditObject->text());
   pWidget->mpItem->setObjectCN(mpItem->getObjectCN());
-  pWidget->mpObjectValidator->forceAcceptance(mpEditObject->text());
+  pWidget->mpObjectValidator->force(mpEditObject->text());
   pWidget->mpObjectValidator->revalidate();
 
   pWidget->mpLowerInf->setChecked(mpLowerInf->isChecked());
@@ -164,9 +164,9 @@ CQFittingItemWidget * CQFittingItemWidget::copy()
   const CCopasiObject *pObject;
 
   if (isNumber((const char *)mpEditLower->text().utf8()))
-    pWidget->mpLowerValidator->forceAcceptance(mpEditLower->text());
+    pWidget->mpLowerValidator->force(mpEditLower->text());
   if ((pObject = RootContainer.getObject(mpItem->getLowerBound())))
-    pWidget->mpLowerValidator->forceAcceptance(FROM_UTF8(pObject->getObjectDisplayName()));
+    pWidget->mpLowerValidator->force(FROM_UTF8(pObject->getObjectDisplayName()));
   pWidget->mpLowerValidator->revalidate();
 
   pWidget->mpUpperInf->setChecked(mpUpperInf->isChecked());
@@ -175,9 +175,9 @@ CQFittingItemWidget * CQFittingItemWidget::copy()
   pWidget->mpItem->setUpperBound(mpItem->getUpperBound());
 
   if (isNumber((const char *)mpEditUpper->text().utf8()))
-    pWidget->mpUpperValidator->forceAcceptance(mpEditUpper->text());
+    pWidget->mpUpperValidator->force(mpEditUpper->text());
   if ((pObject = RootContainer.getObject(mpItem->getUpperBound())))
-    pWidget->mpUpperValidator->forceAcceptance(FROM_UTF8(pObject->getObjectDisplayName()));
+    pWidget->mpUpperValidator->force(FROM_UTF8(pObject->getObjectDisplayName()));
   pWidget->mpUpperValidator->revalidate();
 
   // :TODO: Copy affected experiments.
