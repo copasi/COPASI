@@ -7,8 +7,8 @@
     <property name="geometry">
         <rect>
             <x>0</x>
-            <y>1</y>
-            <width>521</width>
+            <y>0</y>
+            <width>230</width>
             <height>26</height>
         </rect>
     </property>
@@ -34,33 +34,18 @@
             <property name="name">
                 <cstring>mpLblName</cstring>
             </property>
-            <property name="minimumSize">
-                <size>
-                    <width>200</width>
-                    <height>0</height>
-                </size>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>3</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
             </property>
             <property name="text">
                 <string>&lt;h2&gt;Task&lt;/h2&gt;</string>
             </property>
         </widget>
-        <spacer>
-            <property name="name">
-                <cstring>mpSpacer1</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>90</width>
-                    <height>20</height>
-                </size>
-            </property>
-        </spacer>
         <widget class="QCheckBox">
             <property name="name">
                 <cstring>mpUpdateModel</cstring>
@@ -71,17 +56,17 @@
         </widget>
         <spacer>
             <property name="name">
-                <cstring>mpSpacer2</cstring>
+                <cstring>mpSpacer</cstring>
             </property>
             <property name="orientation">
                 <enum>Horizontal</enum>
             </property>
             <property name="sizeType">
-                <enum>Preferred</enum>
+                <enum>Maximum</enum>
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>30</width>
+                    <width>20</width>
                     <height>20</height>
                 </size>
             </property>

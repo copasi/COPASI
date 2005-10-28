@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQTaskHeaderWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/10 18:50:57 $
+   $Date: 2005/10/28 15:37:24 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTaskHeaderWidget.ui'
  **
- ** Created: Mon Oct 10 14:48:39 2005
- **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.cpp,v 1.5 2005/10/10 18:50:57 shoops Exp $)
+ ** Created: Mon Oct 24 11:02:10 2005
+ **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.cpp,v 1.6 2005/10/28 15:37:24 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -38,20 +38,18 @@ CQTaskHeaderWidget::CQTaskHeaderWidget(QWidget* parent, const char* name, WFlags
   CQTaskHeaderWidgetLayout = new QHBoxLayout(this, 0, 6, "CQTaskHeaderWidgetLayout");
 
   mpLblName = new QLabel(this, "mpLblName");
-  mpLblName->setMinimumSize(QSize(200, 0));
+  mpLblName->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)5, 0, 0, mpLblName->sizePolicy().hasHeightForWidth()));
   CQTaskHeaderWidgetLayout->addWidget(mpLblName);
-  mpSpacer1 = new QSpacerItem(90, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  CQTaskHeaderWidgetLayout->addItem(mpSpacer1);
 
   mpUpdateModel = new QCheckBox(this, "mpUpdateModel");
   CQTaskHeaderWidgetLayout->addWidget(mpUpdateModel);
-  mpSpacer2 = new QSpacerItem(30, 20, QSizePolicy::Preferred, QSizePolicy::Minimum);
-  CQTaskHeaderWidgetLayout->addItem(mpSpacer2);
+  mpSpacer = new QSpacerItem(20, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+  CQTaskHeaderWidgetLayout->addItem(mpSpacer);
 
   mpBoxExecutable = new QCheckBox(this, "mpBoxExecutable");
   CQTaskHeaderWidgetLayout->addWidget(mpBoxExecutable);
   languageChange();
-  resize(QSize(521, 26).expandedTo(minimumSizeHint()));
+  resize(QSize(230, 26).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections

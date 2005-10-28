@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskHeaderWidget.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/10 18:50:57 $
+   $Date: 2005/10/28 15:37:24 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQTaskHeaderWidget.ui'
  **
- ** Created: Mon Oct 10 14:48:39 2005
- **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.h,v 1.5 2005/10/10 18:50:57 shoops Exp $)
+ ** Created: Mon Oct 24 11:02:10 2005
+ **      by: The User Interface Compiler ($Id: CQTaskHeaderWidget.h,v 1.6 2005/10/28 15:37:24 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -52,8 +52,7 @@ class CQTaskHeaderWidget : public QWidget
     QColor mChangedColor;
 
     QHBoxLayout* CQTaskHeaderWidgetLayout;
-    QSpacerItem* mpSpacer1;
-    QSpacerItem* mpSpacer2;
+    QSpacerItem* mpSpacer;
 
   protected slots:
     virtual void languageChange();
