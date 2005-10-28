@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/25 17:26:22 $
+   $Date: 2005/10/28 15:42:03 $
    End CVS Header */
 
 #include <algorithm>
@@ -117,16 +117,13 @@ bool CExperimentSet::removeExperiment(const unsigned C_INT32 & index)
 {return removeParameter(index);}
 
 CExperiment * CExperimentSet::getExperiment(const unsigned C_INT32 & index)
-{
-  assert (index < size());
-  return (*mpExperiments)[index];
-}
+{return (*mpExperiments)[index];}
 
 const CExperiment * CExperimentSet::getExperiment(const unsigned C_INT32 & index) const
-  {
-    assert (index < size());
-    return (*mpExperiments)[index];
-  }
+  {return (*mpExperiments)[index];}
+
+const CExperiment * CExperimentSet::getExperiment(const std::string & name) const
+  {return dynamic_cast<const CExperiment *>(getGroup(name));}
 
 const CCopasiTask::Type & CExperimentSet::getExperimentType(const unsigned C_INT32 & index) const
   {return getExperiment(index)->getExperimentType();}

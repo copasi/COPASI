@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/25 18:17:41 $
+   $Date: 2005/10/28 15:38:20 $
    End CVS Header */
 
 #include "copasi.h"
@@ -14,30 +14,37 @@
 
 CExperimentFileInfo::CExperimentFileInfo():
     mpSet(NULL),
-    mFilename(""),
+    mFileName(""),
     mList(),
     mLines(0),
-    mUnusedEnd(C_INVALID_INDEX)
+    mUsedEnd(C_INVALID_INDEX)
 {}
 
 CExperimentFileInfo::CExperimentFileInfo(CExperimentSet & set):
     mpSet(&set),
-    mFilename(""),
+    mFileName(""),
     mList(),
     mLines(0),
-    mUnusedEnd(C_INVALID_INDEX)
+    mUsedEnd(C_INVALID_INDEX)
 {}
 
 CExperimentFileInfo::~CExperimentFileInfo()
-{}
-
-bool CExperimentFileInfo::setFilename(const std::string & filename)
 {
-  mFilename = filename;
+  unsigned C_INT32 i, imax;
+
+  for (i = 0, imax = mList.size(); i < imax; i++)
+    pdelete(mList[i]);
+
+  mList.clear();
+}
+
+bool CExperimentFileInfo::setFileName(const std::string & fileName)
+{
+  mFileName = fileName;
   mLines = 0;
 
   std::ifstream in;
-  in.open(mFilename.c_str(), std::ios::binary);
+  in.open(mFileName.c_str(), std::ios::binary);
   if (in.fail()) return false; // File can not be opened.
 
   // forwind to count lines in file
@@ -52,35 +59,94 @@ bool CExperimentFileInfo::setFilename(const std::string & filename)
   return sync();
 }
 
+const std::string & CExperimentFileInfo::getFileName() const
+{return mFileName;}
+
 bool CExperimentFileInfo::sync()
 {
-  unsigned C_INT32 i, imax = mpSet->size();
+  mpSet->sort();
 
-  for (i = 0; i < imax; i++)
-    if (mpSet->getExperiment(i)->getFileName() == mFilename) break;
+  unsigned C_INT32 i, imax;
+
+  for (i = 0, imax = mList.size(); i < imax; i++)
+    pdelete(mList[i]);
 
   mList.clear();
 
-  for (i = 0; i < imax; i++)
+  // Find the desired file name
+  for (i = 0, imax = mpSet->size(); i < imax; i++)
+    if (mpSet->getExperiment(i)->getFileName() == mFileName) break;
+
+  // Continue as long as the file name does not change
+  for (; i < imax; i++)
     {
-      if (mpSet->getExperiment(i)->getFileName() != mFilename) break;
+      if (mpSet->getExperiment(i)->getFileName() != mFileName) break;
       mList.push_back(new CExperimentInfo(*mpSet->getExperiment(i)));
     }
 
-  unsigned C_INT32 Last = 0;
+  mUsedEnd = C_INVALID_INDEX;
 
-  for (i = 0, imax = mList.size(); i < imax; i++)
-    {
-      if (Last <= mList[i]->First) return false;
+  return validate();
+}
 
-      Last = mList[i]->Last;
+bool CExperimentFileInfo::validate() const
+  {
+    unsigned C_INT32 Last = 0;
+    unsigned C_INT32 i, imax;
 
-      if (Last > mLines) return false;
-    }
+    for (i = 0, imax = mList.size(); i < imax; i++)
+      {
+        if (Last >= mList[i]->First) return false;
 
-  mUnusedEnd = C_INVALID_INDEX;
+        Last = mList[i]->Last;
 
-  return true;
+        if (Last > mLines) return false;
+      }
+
+    return true;
+  }
+
+bool CExperimentFileInfo::validateFirst(const unsigned C_INT32 & index,
+                                        const unsigned C_INT32 & value)
+{
+  if (mLines < value ||
+      mList[index]->Last < value ||
+      (value == mList[index]->Last &&
+       value == mList[index]->pExperiment->getHeaderRow())) return false;
+
+  unsigned C_INT32 Saved = mList[index]->First;
+  mList[index]->First = value;
+
+  bool Result = validate();
+  mList[index]->First = Saved;
+
+  return Result;
+}
+
+bool CExperimentFileInfo::validateLast(const unsigned C_INT32 & index,
+                                       const unsigned C_INT32 & value)
+{
+  if (mLines < value ||
+      value < mList[index]->First ||
+      (value == mList[index]->First &&
+       value == mList[index]->pExperiment->getHeaderRow())) return false;
+
+  unsigned C_INT32 Saved = mList[index]->Last;
+  mList[index]->Last = value;
+
+  bool Result = validate();
+  mList[index]->Last = Saved;
+
+  return Result;
+}
+
+bool CExperimentFileInfo::validateHeader(const unsigned C_INT32 & index,
+    const unsigned C_INT32 & value)
+{
+  return (value <= mLines &&
+          (mList[index]->First < mList[index]->Last ||
+           value < mList[index]->First ||
+           mList[index]->Last < value));
 }
 
 std::vector< std::string > CExperimentFileInfo::getExperimentNames() const
@@ -109,7 +175,7 @@ CExperiment * CExperimentFileInfo::getExperiment(const std::string & name)
 bool CExperimentFileInfo::getFirstUnusedSection(unsigned C_INT32 & First,
     unsigned C_INT32 & Last)
 {
-  mUnusedEnd = 0;
+  mUsedEnd = 0;
 
   return getNextUnusedSection(First, Last);
 }
@@ -117,32 +183,27 @@ bool CExperimentFileInfo::getFirstUnusedSection(unsigned C_INT32 & First,
 bool CExperimentFileInfo::getNextUnusedSection(unsigned C_INT32 & First,
     unsigned C_INT32 & Last)
 {
-  First = mUnusedEnd;
+  First = mUsedEnd + 1;
 
-  unsigned C_INT32 i, imax;
+  unsigned C_INT32 i, imax = mList.size();
 
-  for (i = 0, imax = mList.size(); i < imax; i++)
-    if (First < mList[i]->First) break;
-
-  for (; i < imax; i++)
+  for (i = 0; i < imax; i++)
     {
-      Last = mList[i]->First;
-
-      if (First < Last)
+      if (First < mList[i]->First)
         {
-          mUnusedEnd = Last;
+          Last = mList[i]->First - 1;
+          mUsedEnd = Last;
 
           return true;
         }
 
-      First = mList[i]->Last;
+      First = mList[i]->Last + 1;
     }
 
-  Last = mLines;
-
-  if (First < Last)
+  if (First < mLines)
     {
-      mUnusedEnd = Last;
+      Last = mLines;
+      mUsedEnd = Last;
 
       return true;
     }
@@ -150,7 +211,7 @@ bool CExperimentFileInfo::getNextUnusedSection(unsigned C_INT32 & First,
   First = C_INVALID_INDEX;
   Last = C_INVALID_INDEX;
 
-  mUnusedEnd = Last;
+  mUsedEnd = mLines;
 
   return false;
 }
@@ -163,13 +224,8 @@ CExperimentFileInfo::CExperimentInfo::CExperimentInfo():
 
 CExperimentFileInfo::CExperimentInfo::CExperimentInfo(CExperiment & Experiment):
     pExperiment(&Experiment),
-    First(* Experiment.getValue("Position in File").pUINT),
-    Last(C_INVALID_INDEX)
-{
-  Last = First + *pExperiment->getValue("Number of Rows").pUINT - 1;
-
-  if (*pExperiment->getValue("Row containing Names").pUINT != C_INVALID_INDEX)
-    Last++;
-}
+    First(pExperiment->getFirstRow()),
+    Last(pExperiment->getLastRow())
+{}
 
 CExperimentFileInfo::CExperimentInfo::~CExperimentInfo() {}

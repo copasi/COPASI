@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/14 11:51:02 $
+   $Date: 2005/10/28 15:38:20 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Thu Oct 13 15:36:24 2005
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.6 2005/10/14 11:51:02 shoops Exp $)
+ ** Created: Wed Oct 26 13:39:24 2005
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.7 2005/10/28 15:38:20 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -19,8 +19,10 @@
  #define CQFITTINGITEMWIDGET_H
 
 #include <qvariant.h>
+ #include <qpixmap.h>
  #include <qwidget.h>
  #include <string>
+ #include <map>
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -63,12 +65,13 @@ class CQFittingItemWidget : public QWidget
     QLineEdit* mpEditObject;
     QToolButton* mpBtnObject;
 
-    bool load(const CFitItem & item);
-    bool save(CFitItem & item);
     CQFittingItemWidget * copy();
-    void enableFitItem(const bool &);
-    bool load(const COptItem &);
+    bool load(const CFitItem & item);
+    bool load(const COptItem & item);
+    bool save(CFitItem & item);
     bool save(COptItem & item);
+    void enableFitItem(const bool & enable);
+    bool update(const std::map<std::string, std::string> & keymap);
 
   protected:
     COptItem * mpItem;
@@ -84,8 +87,8 @@ class CQFittingItemWidget : public QWidget
     QColor mChangedColor;
     bool mIsFitItem;
 
-    bool loadCommon(const COptItem &);
-    bool saveCommon(COptItem &);
+    bool loadCommon(const COptItem & item);
+    bool saveCommon(COptItem & item);
 
     QGridLayout* CQFittingItemWidgetLayout;
     QSpacerItem* mpSpacerLeft;
@@ -98,6 +101,8 @@ class CQFittingItemWidget : public QWidget
     virtual void languageChange();
 
   private:
+    QPixmap image0;
+
     void init();
     void destroy();
 

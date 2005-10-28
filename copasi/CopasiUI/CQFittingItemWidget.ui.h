@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/14 11:51:02 $
+   $Date: 2005/10/28 15:38:20 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -13,6 +13,7 @@
 #include "qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CKeyFactory.h"
 #include "parameterFitting/CFitItem.h"
 #include "utilities/utility.h"
 
@@ -321,4 +322,39 @@ void CQFittingItemWidget::enableFitItem(const bool & enable)
     }
 
   qApp->processEvents();
+}
+
+bool CQFittingItemWidget::update(const std::map<std::string, std::string> & keymap)
+{
+  if (!mIsFitItem) return false;
+
+  bool success = true;
+
+  CCopasiParameterGroup *pGroup = mpItem->getGroup("Affected Experiments");
+
+  std::map<std::string, std::string>::const_iterator it = keymap.begin();
+  std::map<std::string, std::string>::const_iterator end = keymap.end();
+
+  unsigned C_INT32 i;
+
+  mpBoxExperiments->clear();
+  for (i = pGroup->size() - 1; i != C_INVALID_INDEX; i--)
+    {
+      it = keymap.find(*pGroup->getValue(i).pKEY);
+
+      if (it != end)
+        {
+          pGroup->setValue(i, it->second);
+          mpBoxExperiments->insertItem(FROM_UTF8(GlobalKeys.get(it->second)->getObjectName()), 0);
+        }
+      else
+        {
+          pGroup->removeParameter(i);
+          success = false;
+        }
+    }
+
+  if (!mpBoxExperiments->count()) mpBoxExperiments->insertItem("All");
+
+  return success;
 }

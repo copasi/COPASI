@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/14 16:36:01 $
+   $Date: 2005/10/28 15:38:20 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -21,6 +21,8 @@
 #include "parameterFitting/CFitItem.h"
 #include "parameterFitting/CFitMethod.h"
 #include "parameterFitting/CFitProblem.h"
+#include "parameterFitting/CExperimentSet.h"
+#include "parameterFitting/CExperiment.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiException.h"
 
@@ -133,6 +135,18 @@ bool CQFittingWidget::loadTask()
     dynamic_cast<CFitProblem *>(mpTask->getProblem());
   if (!pProblem) return false;
 
+  pdelete(mpExperimentSet)
+  CExperimentSet * pExperimentSet =
+    dynamic_cast<CExperimentSet *>(pProblem->getGroup("Experiment Set"));
+  mpExperimentSet = new CExperimentSet(*pExperimentSet);
+
+  mKeyMap.clear();
+  unsigned C_INT32 i, imax = mpExperimentSet->size();
+
+  for (i = 0; i < imax; i++)
+    mKeyMap[pExperimentSet->getExperiment(i)->CCopasiParameter::getKey()] =
+      mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey();
+
   CQFittingItemWidget * pFitItemWidget;
 
   std::vector< COptItem * >::const_iterator it =
@@ -146,6 +160,7 @@ bool CQFittingWidget::loadTask()
       pFitItemWidget = new CQFittingItemWidget(mpParameters);
       pFitItemWidget->enableFitItem(true);
       pFitItemWidget->load(*static_cast<const CFitItem *>(*it));
+      pFitItemWidget->update(mKeyMap);
       mpParameters->addWidget(pFitItemWidget);
     }
 
@@ -161,6 +176,7 @@ bool CQFittingWidget::loadTask()
       pFitItemWidget = new CQFittingItemWidget(mpConstraints);
       pFitItemWidget->enableFitItem(true);
       pFitItemWidget->load(*static_cast<const CFitItem *>(*it));
+      pFitItemWidget->update(mKeyMap);
       mpConstraints->addWidget(pFitItemWidget);
     }
 
@@ -168,6 +184,7 @@ bool CQFittingWidget::loadTask()
   mpTabWidget->setTabLabel(mpConstraintsPage, TabLabel);
 
   mpChanged = false;
+
   return true;
 }
 
@@ -228,10 +245,39 @@ void CQFittingWidget::slotBtnAdd()
 void CQFittingWidget::slotExperimentData()
 {
   CQExperimentData * pDialog = new CQExperimentData(this);
+  CExperimentSet * pExperimentSet = new CExperimentSet(* mpExperimentSet);
+  pDialog->load(pExperimentSet);
+
+  std::map<std::string, std::string> KeyMap;
+  unsigned C_INT32 i, imax = mpExperimentSet->size();
+
+  for (i = 0; i < imax; i++)
+    KeyMap[mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey()] =
+      pExperimentSet->getExperiment(i)->CCopasiParameter::getKey();
 
   if (pDialog->exec () == QDialog::Accepted)
     {
-      // :TODO: implement action if needed
+      pdelete(mpExperimentSet);
+      mpExperimentSet = pExperimentSet;
+
+      unsigned C_INT32 i, imax;
+
+      for (i = 0, imax = mpParameters->numRows(); i < imax; i++)
+        static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->update(KeyMap);
+
+      for (i = 0, imax = mpConstraints->numRows(); i < imax; i++)
+        static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->update(KeyMap);
+
+      std::map<std::string, std::string>::iterator it = mKeyMap.begin();
+      std::map<std::string, std::string>::iterator end = mKeyMap.end();
+      std::map<std::string, std::string>::iterator found;
+
+      std::map<std::string, std::string> NewKeyMap;
+      for (; it != end; ++it)
+        if ((found = KeyMap.find(it->second)) != KeyMap.end())
+          NewKeyMap[it->first] = found->second;
+
+      mKeyMap = NewKeyMap;
     }
 
   pdelete(pDialog);
@@ -301,4 +347,5 @@ void CQFittingWidget::init()
   connect(mpConstraints, SIGNAL(copyWidget(int)), this, SLOT(slotCopyItemWidget(int)));
 
   mpCurrentList = mpParameters;
+  mpExperimentSet = NULL;
 }

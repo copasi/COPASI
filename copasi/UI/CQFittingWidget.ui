@@ -146,7 +146,12 @@
     <include location="local" impldecl="in declaration">TaskWidget.h</include>
     <include location="local" impldecl="in declaration">CScanContainerWidget.h</include>
 </includes>
+<forwards>
+    <forward>class CExperimentSet</forward>
+</forwards>
 <variables>
+    <variable>std::map&lt;std::string, std::string&gt; mKeyMap;</variable>
+    <variable>CExperimentSet * mpExperimentSet;</variable>
     <variable>QHBoxLayout * mpConstraintPageLayout;</variable>
     <variable>CScanContainerWidget * mpParameters;</variable>
     <variable>QHBoxLayout * mpParameterPageLayout;</variable>

@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>190</width>
+            <width>195</width>
             <height>94</height>
         </rect>
     </property>
@@ -95,8 +95,17 @@
                     <property name="name">
                         <cstring>mpBtnLowerEdit</cstring>
                     </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
                     <property name="text">
-                        <string>...</string>
+                        <string></string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image0</iconset>
                     </property>
                 </widget>
             </hbox>
@@ -129,8 +138,17 @@
                     <property name="name">
                         <cstring>mpBtnUpperEdit</cstring>
                     </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
                     <property name="text">
-                        <string>...</string>
+                        <string></string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image0</iconset>
                     </property>
                 </widget>
             </hbox>
@@ -185,8 +203,17 @@
                     <property name="name">
                         <cstring>mpBtnExperiments</cstring>
                     </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
                     <property name="text">
-                        <string>...</string>
+                        <string></string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image0</iconset>
                     </property>
                 </widget>
             </hbox>
@@ -222,14 +249,28 @@
                     <property name="name">
                         <cstring>mpBtnObject</cstring>
                     </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
                     <property name="text">
-                        <string>...</string>
+                        <string></string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>image0</iconset>
                     </property>
                 </widget>
             </hbox>
         </widget>
     </grid>
 </widget>
+<images>
+    <image name="image0">
+        <data format="PNG" length="200">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000008f49444154789ca5524912c020088b4e1fc6d37c1a3fb3076d599aee78104258265a008599e03ace262880a225529b276242793512b622758d843432ac620f3c91f9feb6fc32a6695af929e6d6fd7a9f88c804e32246c7f9474c29afc695d89a716ac616ebe8893267e4e2ccd3a1412c7c17170087a7e13f916370e274003d097683c1bef2577322b692934fb15fb6026f3b535771e668df0000000049454e44ae426082</data>
+    </image>
+</images>
 <connections>
     <connection>
         <sender>mpLowerInf</sender>
@@ -270,6 +311,8 @@
 </connections>
 <includes>
     <include location="global" impldecl="in declaration">string</include>
+    <include location="global" impldecl="in declaration">map</include>
+    <include location="local" impldecl="in implementation">CQFittingItemWidget.ui.h</include>
 </includes>
 <forwards>
     <forward>class CCopasiSelectionDialog</forward>
@@ -305,15 +348,16 @@
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
-    <function specifier="non virtual" returnType="bool">load(const CFitItem &amp; item )</function>
-    <function specifier="non virtual" returnType="bool">save(CFitItem &amp; item) </function>
     <function access="private" specifier="non virtual">destroy()</function>
     <function specifier="non virtual" returnType="CQFittingItemWidget *">copy()</function>
-    <function specifier="non virtual">enableFitItem(const bool &amp;)</function>
-    <function specifier="non virtual" returnType="bool">load(const COptItem &amp;)</function>
-    <function specifier="non virtual" returnType="bool">save(COptItem &amp; item)</function>
-    <function access="protected" specifier="non virtual" returnType="bool">loadCommon(const COptItem &amp;)</function>
-    <function access="protected" specifier="non virtual" returnType="bool">saveCommon(COptItem &amp;)</function>
+    <function specifier="non virtual" returnType="bool">load( const CFitItem &amp; item )</function>
+    <function specifier="non virtual" returnType="bool">load( const COptItem &amp; item )</function>
+    <function access="protected" specifier="non virtual" returnType="bool">loadCommon( const COptItem &amp; item )</function>
+    <function specifier="non virtual" returnType="bool">save( CFitItem &amp; item )</function>
+    <function specifier="non virtual" returnType="bool">save( COptItem &amp; item )</function>
+    <function access="protected" specifier="non virtual" returnType="bool">saveCommon( COptItem &amp; item )</function>
+    <function specifier="non virtual">enableFitItem( const bool &amp; enable )</function>
+    <function specifier="non virtual" returnType="bool">update( const std::map&lt;std::string, std::string&gt; &amp; keymap )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

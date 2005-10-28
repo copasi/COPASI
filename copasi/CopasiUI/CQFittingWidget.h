@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingWidget.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/12 20:23:31 $
+   $Date: 2005/10/28 15:38:20 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingWidget.ui'
  **
- ** Created: Wed Oct 12 16:03:46 2005
- **      by: The User Interface Compiler ($Id: CQFittingWidget.h,v 1.5 2005/10/12 20:23:31 shoops Exp $)
+ ** Created: Wed Oct 26 13:41:56 2005
+ **      by: The User Interface Compiler ($Id: CQFittingWidget.h,v 1.6 2005/10/28 15:38:20 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -30,6 +30,7 @@ class QSpacerItem;
 class QPushButton;
 class QTabWidget;
 class QWidget;
+class CExperimentSet;
 
 class CQFittingWidget : public TaskWidget
   {
@@ -48,6 +49,8 @@ class CQFittingWidget : public TaskWidget
     virtual bool runTask();
 
   protected:
+    std::map<std::string, std::string> mKeyMap;
+    CExperimentSet * mpExperimentSet;
     QHBoxLayout * mpConstraintPageLayout;
     CScanContainerWidget * mpParameters;
     QHBoxLayout * mpParameterPageLayout;

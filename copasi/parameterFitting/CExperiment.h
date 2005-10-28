@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/03 14:02:46 $
+   $Date: 2005/10/28 15:38:20 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -106,6 +106,13 @@ class CExperiment: public CCopasiParameterGroup
     bool updateModelWithIndependentData(const unsigned C_INT32 & index);
 
     /**
+     * set the experiment type
+     * @param const CCopasiTask::Type & experimentType
+     * @return bool success
+     */
+    bool setExperimentType(const CCopasiTask::Type & type);
+
+    /**
      * Retrieve the experiment type
      * @return const CCopasiTask::Type & experimentType
      */
@@ -186,30 +193,62 @@ class CExperiment: public CCopasiParameterGroup
     bool setNumColumns(const unsigned C_INT32 & cols);
 
     /**
-     * Retrieve the number of rows
-     * @return const unsigned C_INT32 & numRows
+     * Retrieve the first row
+     * @return const unsigned C_INT32 & firstRow
      */
-    const unsigned C_INT32 & getNumRows() const;
+    const unsigned C_INT32 & getFirstRow() const;
 
     /**
-     * Set the number of data rows in a stream
-     * @param const unsigned C_INT32 & rows
+     * Set the first row containing data
+     * @param const unsigned C_INT32 & firstRow
      * @return bool success
      */
-    bool setNumRows(const unsigned C_INT32 & rows);
+    bool setFirstRow(const unsigned C_INT32 & firstRow);
+
+    /**
+     * Retrieve the last row
+     * @return const unsigned C_INT32 & lastRow
+     */
+    const unsigned C_INT32 & getLastRow() const;
+
+    /**
+     * Set the last row containing data
+     * @param const unsigned C_INT32 & lastRow
+     * @return bool success
+     */
+    bool setLastRow(const unsigned C_INT32 & lastRow);
+
+    /**
+     * Retrieve the header row
+     * @return const unsigned C_INT32 & headerRow
+     */
+    const unsigned C_INT32 & getHeaderRow() const;
+
+    /**
+     * Set the header row containing data
+     * @param const unsigned C_INT32 & headerRow
+     * @return bool success
+     */
+    bool setHeaderRow(const unsigned C_INT32 & headerRow);
+
+    /**
+     * Retrieve the number of rows
+     * @return const unsigned C_INT32 numRows
+     */
+    const unsigned C_INT32 getNumRows() const;
 
     /**
      * Retrieve the seperator
-     * @return const std::string & seperator
+     * @return const std::string & separator
      */
-    const std::string & getSeperator() const;
+    const std::string & getSeparator() const;
 
     /**
      * Set the seperator used when reading a stream
-     * @param const std::string & seperator
+     * @param const std::string & separator
      * @return bool success
      */
-    bool setSeperator(const std::string & seperator);
+    bool setSeparator(const std::string & seperator);
 
     /**
      * Check whter the data is row oriented.
@@ -263,6 +302,11 @@ class CExperiment: public CCopasiParameterGroup
     /**
      * This is realized as a CCopasiParameter type UINT
      */
+    unsigned C_INT32 * mpLastRow;
+
+    /**
+     * This is realized as a CCopasiParameter type UINT
+     */
     CCopasiTask::Type * mpTaskType;
 
     /**
@@ -278,12 +322,7 @@ class CExperiment: public CCopasiParameterGroup
     /**
      * This is realized as a CCopasiParameter type UINT
      */
-    unsigned C_INT32 *mpNameRow;
-
-    /**
-     * This is realized as a CCopasiParameter type UINT
-     */
-    unsigned C_INT32 * mpNumRows;
+    unsigned C_INT32 *mpHeaderRow;
 
     /**
      * This is realized as a CCopasiParameter type UINT

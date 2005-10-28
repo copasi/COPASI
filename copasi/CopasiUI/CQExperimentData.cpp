@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/14 16:26:03 $
+   $Date: 2005/10/28 15:38:20 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Fri Oct 14 12:06:34 2005
- **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.1 2005/10/14 16:26:03 shoops Exp $)
+ ** Created: Fri Oct 28 10:29:29 2005
+ **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.2 2005/10/28 15:38:20 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -145,6 +145,27 @@ static const unsigned char image1_data[] =
     0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82
   };
 
+static const unsigned char image2_data[] =
+  {
+    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
+    0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10,
+    0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0xf3, 0xff, 0x61, 0x00, 0x00, 0x00,
+    0x8f, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0xa5, 0x52, 0x49, 0x12, 0xc0,
+    0x20, 0x08, 0x8b, 0x4e, 0x1f, 0xc6, 0xd3, 0x7c, 0x1a, 0x3f, 0xb3, 0x07,
+    0x6d, 0x59, 0x9a, 0xee, 0x78, 0x10, 0x42, 0x58, 0x26, 0x5a, 0x00, 0x85,
+    0x99, 0xe0, 0x3a, 0xce, 0x26, 0x28, 0x80, 0xa2, 0x25, 0x52, 0x9b, 0x27,
+    0x62, 0x42, 0x79, 0x35, 0x12, 0xb6, 0x22, 0x75, 0x8d, 0x84, 0x34, 0x32,
+    0xac, 0x62, 0x0f, 0x3c, 0x91, 0xf9, 0xfe, 0xb6, 0xfc, 0x32, 0xa6, 0x69,
+    0x5a, 0xf9, 0x29, 0xe6, 0xd6, 0xfd, 0x7a, 0x9f, 0x88, 0xc8, 0x04, 0xe3,
+    0x22, 0x46, 0xc7, 0xf9, 0x47, 0x4c, 0x29, 0xaf, 0xc6, 0x95, 0xd8, 0x9a,
+    0x71, 0x6a, 0xc6, 0x16, 0xeb, 0xe8, 0x89, 0x32, 0x67, 0xe4, 0xe2, 0xcc,
+    0xd3, 0xa1, 0x41, 0x2c, 0x7c, 0x17, 0x17, 0x00, 0x87, 0xa7, 0xe1, 0x3f,
+    0x91, 0x63, 0x70, 0xe2, 0x74, 0x00, 0x3d, 0x09, 0x76, 0x83, 0xc1, 0xbe,
+    0xf2, 0x57, 0x73, 0x22, 0xb6, 0x92, 0x93, 0x4f, 0xb1, 0x5f, 0xb6, 0x02,
+    0x6f, 0x3b, 0x53, 0x57, 0x71, 0xe6, 0x68, 0xdf, 0x00, 0x00, 0x00, 0x00,
+    0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82
+  };
+
 /*
  *  Constructs a CQExperimentData as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -160,6 +181,8 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   image0 = img;
   img.loadFromData(image1_data, sizeof(image1_data), "PNG");
   image1 = img;
+  img.loadFromData(image2_data, sizeof(image2_data), "PNG");
+  image2 = img;
   if (!name)
     setName("CQExperimentData");
   setSizeGripEnabled(TRUE);
@@ -212,83 +235,53 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpLayoutFile->addWidget(mpLblExperiment, 0, 3);
   CQExperimentDataLayout->addLayout(mpLayoutFile);
 
-  mpLayoutExperiment = new QGridLayout(0, 1, 1, 0, 6, "mpLayoutExperiment");
-
-  mpLblHeader = new QLabel(this, "mpLblHeader");
-  mpLblHeader->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
-
-  mpLayoutExperiment->addWidget(mpLblHeader, 1, 3);
+  mpLayoutExperiment = new QGridLayout(0, 1, 1, 0, 3, "mpLayoutExperiment");
 
   mpBtnLast = new QToolButton(this, "mpBtnLast");
-  mpBtnLast->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)4, (QSizePolicy::SizeType)4, 0, 0, mpBtnLast->sizePolicy().hasHeightForWidth()));
+  mpBtnLast->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)1, 0, 0, mpBtnLast->sizePolicy().hasHeightForWidth()));
+  mpBtnLast->setMaximumSize(QSize(20, 20));
+  mpBtnLast->setIconSet(QIconSet(image2));
 
-  mpLayoutExperiment->addWidget(mpBtnLast, 2, 2);
+  mpLayoutExperiment->addWidget(mpBtnLast, 1, 5);
 
-  mpBtnFirst = new QToolButton(this, "mpBtnFirst");
-  mpBtnFirst->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)4, (QSizePolicy::SizeType)4, 0, 0, mpBtnFirst->sizePolicy().hasHeightForWidth()));
+  mpLblLast = new QLabel(this, "mpLblLast");
+  mpLblLast->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
 
-  mpLayoutExperiment->addWidget(mpBtnFirst, 1, 2);
+  mpLayoutExperiment->addWidget(mpLblLast, 1, 3);
 
-  mpBtnHeader = new QToolButton(this, "mpBtnHeader");
-  mpBtnHeader->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)4, (QSizePolicy::SizeType)4, 0, 0, mpBtnHeader->sizePolicy().hasHeightForWidth()));
+  mpCheckTab = new QCheckBox(this, "mpCheckTab");
+  mpCheckTab->setChecked(TRUE);
 
-  mpLayoutExperiment->addWidget(mpBtnHeader, 1, 5);
-
-  mpCheckHeader = new QCheckBox(this, "mpCheckHeader");
-  mpCheckHeader->setChecked(TRUE);
-
-  mpLayoutExperiment->addWidget(mpCheckHeader, 1, 6);
+  mpLayoutExperiment->addWidget(mpCheckTab, 1, 2);
 
   mpEditFirst = new QLineEdit(this, "mpEditFirst");
   mpEditFirst->setFrameShape(QLineEdit::LineEditPanel);
   mpEditFirst->setFrameShadow(QLineEdit::Sunken);
 
-  mpLayoutExperiment->addWidget(mpEditFirst, 1, 1);
-
-  mpEditSeparator = new QLineEdit(this, "mpEditSeparator");
-  mpEditSeparator->setEnabled(FALSE);
-  mpEditSeparator->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)0, 0, 0, mpEditSeparator->sizePolicy().hasHeightForWidth()));
-
-  mpLayoutExperiment->addMultiCellWidget(mpEditSeparator, 0, 0, 4, 5);
-
-  mpEditName = new QLineEdit(this, "mpEditName");
-
-  mpLayoutExperiment->addMultiCellWidget(mpEditName, 0, 0, 1, 2);
-
-  mpCheckTab = new QCheckBox(this, "mpCheckTab");
-  mpCheckTab->setChecked(TRUE);
-
-  mpLayoutExperiment->addWidget(mpCheckTab, 0, 6);
+  mpLayoutExperiment->addWidget(mpEditFirst, 0, 4);
 
   mpEditHeader = new QLineEdit(this, "mpEditHeader");
   mpEditHeader->setEnabled(FALSE);
 
-  mpLayoutExperiment->addWidget(mpEditHeader, 1, 4);
-
-  mpEditLast = new QLineEdit(this, "mpEditLast");
-
-  mpLayoutExperiment->addWidget(mpEditLast, 2, 1);
-
-  mpLblLast = new QLabel(this, "mpLblLast");
-  mpLblLast->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
-
-  mpLayoutExperiment->addWidget(mpLblLast, 2, 0);
-
-  mpLblFirst = new QLabel(this, "mpLblFirst");
-  mpLblFirst->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
-
-  mpLayoutExperiment->addWidget(mpLblFirst, 1, 0);
+  mpLayoutExperiment->addWidget(mpEditHeader, 2, 4);
 
   mpLblName = new QLabel(this, "mpLblName");
   mpLblName->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
 
   mpLayoutExperiment->addWidget(mpLblName, 0, 0);
 
-  mpLblSeperator = new QLabel(this, "mpLblSeperator");
-  mpLblSeperator->setMinimumSize(QSize(0, 0));
-  mpLblSeperator->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  mpEditSeparator = new QLineEdit(this, "mpEditSeparator");
+  mpEditSeparator->setEnabled(FALSE);
+  mpEditSeparator->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)0, 0, 0, mpEditSeparator->sizePolicy().hasHeightForWidth()));
 
-  mpLayoutExperiment->addWidget(mpLblSeperator, 0, 3);
+  mpLayoutExperiment->addWidget(mpEditSeparator, 1, 1);
+
+  mpBtnFirst = new QToolButton(this, "mpBtnFirst");
+  mpBtnFirst->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)1, 0, 0, mpBtnFirst->sizePolicy().hasHeightForWidth()));
+  mpBtnFirst->setMaximumSize(QSize(20, 20));
+  mpBtnFirst->setIconSet(QIconSet(image2));
+
+  mpLayoutExperiment->addWidget(mpBtnFirst, 0, 5);
 
   mpBtnGroup = new QButtonGroup(this, "mpBtnGroup");
   mpBtnGroup->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)4, 0, 0, mpBtnGroup->sizePolicy().hasHeightForWidth()));
@@ -301,12 +294,48 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpBtnGroupLayout->setAlignment(Qt::AlignTop);
 
   mpBtnSteadystate = new QRadioButton(mpBtnGroup, "mpBtnSteadystate");
+  mpBtnSteadystate->setChecked(TRUE);
   mpBtnGroupLayout->addWidget(mpBtnSteadystate);
 
   mpBtnTimeCourse = new QRadioButton(mpBtnGroup, "mpBtnTimeCourse");
   mpBtnGroupLayout->addWidget(mpBtnTimeCourse);
 
   mpLayoutExperiment->addMultiCellWidget(mpBtnGroup, 0, 2, 7, 7);
+
+  mpBtnHeader = new QToolButton(this, "mpBtnHeader");
+  mpBtnHeader->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)1, 0, 0, mpBtnHeader->sizePolicy().hasHeightForWidth()));
+  mpBtnHeader->setMaximumSize(QSize(20, 20));
+  mpBtnHeader->setIconSet(QIconSet(image2));
+
+  mpLayoutExperiment->addWidget(mpBtnHeader, 2, 5);
+
+  mpEditLast = new QLineEdit(this, "mpEditLast");
+
+  mpLayoutExperiment->addWidget(mpEditLast, 1, 4);
+
+  mpLblSeperator = new QLabel(this, "mpLblSeperator");
+  mpLblSeperator->setMinimumSize(QSize(0, 0));
+  mpLblSeperator->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+
+  mpLayoutExperiment->addWidget(mpLblSeperator, 1, 0);
+
+  mpCheckHeader = new QCheckBox(this, "mpCheckHeader");
+
+  mpLayoutExperiment->addWidget(mpCheckHeader, 2, 6);
+
+  mpEditName = new QLineEdit(this, "mpEditName");
+
+  mpLayoutExperiment->addMultiCellWidget(mpEditName, 0, 0, 1, 2);
+
+  mpLblFirst = new QLabel(this, "mpLblFirst");
+  mpLblFirst->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+
+  mpLayoutExperiment->addWidget(mpLblFirst, 0, 3);
+
+  mpLblHeader = new QLabel(this, "mpLblHeader");
+  mpLblHeader->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+
+  mpLayoutExperiment->addWidget(mpLblHeader, 2, 3);
   CQExperimentDataLayout->addLayout(mpLayoutExperiment);
 
   mpTable = new QTable(this, "mpTable");
@@ -332,15 +361,15 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpLayoutButton->addWidget(mpBtnCancel);
   CQExperimentDataLayout->addLayout(mpLayoutButton);
   languageChange();
-  resize(QSize(448, 314).expandedTo(minimumSizeHint()));
+  resize(QSize(410, 281).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
   connect(mpBtnFirst, SIGNAL(clicked()), this, SLOT(slotFirst()));
   connect(mpBtnLast, SIGNAL(clicked()), this, SLOT(slotLast()));
   connect(mpBtnHeader, SIGNAL(clicked()), this, SLOT(slotHeader()));
-  connect(mpCheckHeader, SIGNAL(clicked()), this, SLOT(slotCheckHeader()));
-  connect(mpCheckTab, SIGNAL(clicked()), this, SLOT(slotCheckTab()));
+  connect(mpCheckHeader, SIGNAL(toggled(bool)), this, SLOT(slotCheckHeader(bool)));
+  connect(mpCheckTab, SIGNAL(toggled(bool)), this, SLOT(slotCheckTab(bool)));
   connect(mpBtnSteadystate, SIGNAL(toggled(bool)), this, SLOT(slotExprimentType(bool)));
   connect(mpBtnOK, SIGNAL(clicked()), this, SLOT(slotOK()));
   connect(mpBtnRevert, SIGNAL(clicked()), this, SLOT(slotRevert()));
@@ -349,6 +378,9 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   connect(mpBtnFileDelete, SIGNAL(clicked()), this, SLOT(slotFileDelete()));
   connect(mpBtnExperimentAdd, SIGNAL(clicked()), this, SLOT(slotExperimentAdd()));
   connect(mpBtnExperimentDelete, SIGNAL(clicked()), this, SLOT(slotExperimentDelete()));
+  connect(mpBoxFile, SIGNAL(currentChanged(QListBoxItem*)), this, SLOT(slotFileChanged(QListBoxItem*)));
+  connect(mpBoxExperiment, SIGNAL(currentChanged(QListBoxItem*)), this, SLOT(slotExperimentChanged(QListBoxItem*)));
+  init();
 }
 
 /*
@@ -356,6 +388,7 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
  */
 CQExperimentData::~CQExperimentData()
 {
+  destroy();
   // no need to delete child widgets, Qt does it all for us
 }
 
@@ -376,19 +409,19 @@ void CQExperimentData::languageChange()
   mpBoxExperiment->clear();
   mpBoxExperiment->insertItem(QString::null);
   mpLblExperiment->setText(tr("Experiment"));
-  mpLblHeader->setText(tr("Header"));
-  mpBtnLast->setText(tr("..."));
-  mpBtnFirst->setText(tr("..."));
-  mpBtnHeader->setText(tr("..."));
-  mpCheckHeader->setText(QString::null);
-  mpCheckTab->setText(tr("<tab>"));
+  mpBtnLast->setText(QString::null);
   mpLblLast->setText(tr("Last Row"));
-  mpLblFirst->setText(tr("First Row"));
+  mpCheckTab->setText(tr("<tab>"));
   mpLblName->setText(tr("Name"));
-  mpLblSeperator->setText(tr("Separator"));
+  mpBtnFirst->setText(QString::null);
   mpBtnGroup->setTitle(tr("Experiment Type"));
   mpBtnSteadystate->setText(tr("Steady State"));
   mpBtnTimeCourse->setText(tr("Time Course"));
+  mpBtnHeader->setText(QString::null);
+  mpLblSeperator->setText(tr("Separator"));
+  mpCheckHeader->setText(QString::null);
+  mpLblFirst->setText(tr("First Row"));
+  mpLblHeader->setText(tr("Header"));
   mpTable->horizontalHeader()->setLabel(0, tr("Column Name"));
   mpTable->horizontalHeader()->setLabel(1, tr("Type"));
   mpTable->horizontalHeader()->setLabel(2, tr("Model Object"));
