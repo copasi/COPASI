@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:35:14 $
+   $Author: gauges $ 
+   $Date: 2005/10/31 14:16:37 $
    End CVS Header */
 
 #include <iostream>
@@ -41,18 +41,19 @@
 #include "qtUtilities.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "steadystate/CSteadyStateTask.h"
+#include "steadystate/CMCATask.h"
 #include "scan/CScanTask.h"
 #include "utilities/CSlider.h"
 #include "model/CModel.h"
 
-C_INT32 SliderDialog::numMappings = 5;
+C_INT32 SliderDialog::numMappings = 7;
 C_INT32 SliderDialog::folderMappings[][2] = {
-      {21, 21}, {211, 21}, {23, 23}, {231, 23}, {31, 31}
+      {21, 21}, {211, 21}, {23, 23}, {231, 23}, {24, 24} , {241, 24} , {31, 31}
     };
 
-C_INT32 SliderDialog::numKnownTasks = 3;
-C_INT32 SliderDialog::knownTaskIDs[] = {21, 23, 31};
-char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course", "Scan"};
+C_INT32 SliderDialog::numKnownTasks = 4;
+C_INT32 SliderDialog::knownTaskIDs[] = {21, 23, 24, 31};
+char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course", "MCA" , "Scan"};
 
 SliderDialog::SliderDialog(QWidget* parent): QDialog(parent),
     runTaskButton(NULL),
@@ -584,6 +585,9 @@ CCopasiTask* SliderDialog::getTaskForFolderId(C_INT32 folderId)
       break;
     case 23:
       task = dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+      break;
+    case 24:
+      task = dynamic_cast<CMCATask *>((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]);
       break;
     case 31:
       task = dynamic_cast<CScanTask *>((*CCopasiDataModel::Global->getTaskList())["Scan"]);
