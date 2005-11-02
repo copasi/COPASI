@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 18:02:52 $
+   $Date: 2005/11/02 21:42:11 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -106,6 +106,24 @@ class CExperiment: public CCopasiParameterGroup
     bool read(std::istream & in, unsigned C_INT32 & currentLine);
 
     /**
+     * Reads the header row for the experiment data
+     * @return bool success
+     */
+    bool readColumnNames();
+
+    /**
+     * Try to guess the number of columns
+     * @return unsigned C_INT32 numColumns
+     */
+    unsigned C_INT32 guessColumnNumber() const;
+
+    /**
+     * Retrieve the column names
+     * @return const std::vector< std::string > & columnNames;
+     */
+    const std::vector< std::string > & getColumnNames() const;
+
+    /**
      * Update the model with the independent data of the experiment
      * @param const unsigned C_INT32 & index
      * @return bool success
@@ -174,9 +192,9 @@ class CExperiment: public CCopasiParameterGroup
     /**
      * Retrieve the type fo the indexed column.
      * @param const unsigned C_INT32 & index,
-     * @return const Type & columnType
+     * @return Type columnType
      */
-    const Type & getColumnType(const unsigned C_INT32 & index) const;
+    Type getColumnType(const unsigned C_INT32 & index) const;
 
     /**
      * Set the type of the indexed column.

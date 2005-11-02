@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 18:02:52 $
+   $Date: 2005/11/02 21:42:11 $
    End CVS Header */
 
 #include <fstream>
@@ -412,6 +412,60 @@ bool CExperiment::read(std::istream & in,
   return true;
 }
 
+bool CExperiment::readColumnNames()
+{
+  mColumnName.resize(*mpNumColumns);
+
+  if (*mpHeaderRow == C_INVALID_INDEX) return false;
+
+  // Open the file
+  std::ifstream in;
+  in.open(this->mpFileName->c_str(), std::ios::binary);
+  if (in.fail()) return false;
+
+  // Forwind to header row.
+  unsigned C_INT32 i;
+  for (i = 1; i < *mpHeaderRow && !in.fail(); i++)
+    in.ignore(LONG_MAX, '\x0a');
+
+  // Read row
+  CTableRow Row(*mpNumColumns, (*mpSeparator)[0]);
+  const std::vector< CTableCell > & Cells = Row.getCells();
+  in >> Row;
+
+  if (in.fail() && !in.eof()) return false;
+
+  for (i = 0; i < *mpNumColumns; i++)
+    mColumnName[i] = Cells[i].getName();
+
+  return true;
+}
+
+unsigned C_INT32 CExperiment::guessColumnNumber() const
+  {
+    unsigned C_INT32 tmp, count = 0;
+
+    std::ifstream in;
+    in.open(this->mpFileName->c_str(), std::ios::binary);
+    if (in.fail()) return false;
+
+    // Forwind to first row.
+    unsigned C_INT32 i;
+    for (i = 1; i < *mpFirstRow && !in.fail(); i++)
+      in.ignore(LONG_MAX, '\x0a');
+
+    CTableRow Row(0, (*mpSeparator)[0]);
+
+    for (i--; i < *mpLastRow; i++)
+      if ((tmp = Row.guessColumnNumber(in, false)) > count)
+        count = tmp;
+
+    return count;
+  }
+
+const std::vector< std::string > & CExperiment::getColumnNames() const
+{return mColumnName;}
+
 bool CExperiment::updateModelWithIndependentData(const unsigned C_INT32 & index)
 {
   unsigned C_INT32 i, imax = mIndependentUpdateMethods.size();
@@ -507,20 +561,29 @@ bool CExperiment::addColumnType(const unsigned C_INT32 & index, const Type & typ
 bool CExperiment::removeColumnType(const unsigned C_INT32 & index)
 {return removeParameter(StringPrint("%d", index));}
 
-const CExperiment::Type & CExperiment::getColumnType(const unsigned C_INT32 & index) const
+CExperiment::Type CExperiment::getColumnType(const unsigned C_INT32 & index) const
   {
-    return
-    * static_cast<CExperiment::Type *>(mpColumnType->getValue(StringPrint("%d", index)).pVOID);
+    CCopasiParameter * pParm = mpColumnType->getParameter(StringPrint("%d", index));
+
+    if (pParm)
+      return * static_cast<CExperiment::Type *>(pParm->getValue().pVOID);
+    else
+      return dependent;
   }
 
 bool CExperiment::setColumnType(const unsigned C_INT32 & index,
                                 const CExperiment::Type & type)
 {
-  return mpColumnType->setValue(StringPrint("%d", index), (unsigned C_INT32) type);
+  CCopasiParameter * pParm = mpColumnType->getParameter(StringPrint("%d", index));
+
+  if (pParm)
+    return pParm->setValue((unsigned C_INT32) type);
+  else
+    return addColumnType(index, type);
 }
 
 const unsigned C_INT32 & CExperiment::getNumColumns() const
-  {return *mpNumColumns;}
+{return *mpNumColumns;}
 
 bool CExperiment::setNumColumns(const unsigned C_INT32 & cols)
 {
