@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/12 14:10:04 $
+   $Date: 2005/11/02 15:10:32 $
    End CVS Header */
 
 #include "copasi.h"
@@ -82,21 +82,62 @@ bool CFitProblem::elevateChildren()
   // This call is necessarry since CFitProblem is derived from COptProblem.
   if (!COptProblem::elevateChildren()) return false;
 
+  // :TODO: Fix the key map
+  std::map<std::string, std::string> KeyMap;
+
+  std::vector<CCopasiParameter *> * pExperiments =
+    getGroup("Experiment Set")->CCopasiParameter::getValue().pGROUP;
+  std::vector<CCopasiParameter *>::iterator itExp;
+  std::vector<CCopasiParameter *>::iterator endExp;
+
+  for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
+    if (static_cast<CCopasiParameterGroup *>(*itExp)->getValue("Key").pKEY)
+      KeyMap[*static_cast<CCopasiParameterGroup *>(*itExp)->getValue("Key").pKEY] =
+        (*itExp)->getObjectName();
+
   mpExperimentSet =
     elevate<CExperimentSet, CCopasiParameterGroup>(getGroup("Experiment Set"));
   if (!mpExperimentSet) return false;
+
+  std::map<std::string, std::string>::iterator itMap;
+  std::map<std::string, std::string>::iterator endMap;
+  CExperiment * pExperiment;
+  for (itMap = KeyMap.begin(), endMap = KeyMap.end(); itMap != endMap; ++itMap)
+    {
+      pExperiment = mpExperimentSet->getExperiment(itMap->second);
+      itMap->second = pExperiment->CCopasiParameter::getKey();
+      pExperiment->setValue("Key", itMap->second);
+    }
 
   std::vector<COptItem * >::iterator it = mpOptItems->begin();
   std::vector<COptItem * >::iterator end = mpOptItems->end();
 
   for (; it != end; ++it)
-    if (!((*it) = elevate<CFitItem, COptItem>(*it))) return false;
+    {
+      if (!((*it) = elevate<CFitItem, COptItem>(*it)))
+        return false;
+
+      pExperiments =
+        (*it)->getParameter("Affected Experiments")->getValue().pGROUP;
+
+      for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
+        (*itExp)->setValue(KeyMap[*(*itExp)->getValue().pKEY]);
+    }
 
   it = mpConstraintItems->begin();
   end = mpConstraintItems->end();
 
   for (; it != end; ++it)
-    if (!((*it) = elevate<CFitItem, COptItem>(*it))) return false;
+    {
+      if (!((*it) = elevate<CFitItem, COptItem>(*it)))
+        return false;
+
+      pExperiments =
+        (*it)->getParameter("Affected Experiments")->getValue().pGROUP;
+
+      for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
+        (*itExp)->setValue(KeyMap[*(*itExp)->getValue().pKEY]);
+    }
 
   return true;
 }
