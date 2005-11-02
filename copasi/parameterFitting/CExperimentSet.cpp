@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:42:03 $
+   $Date: 2005/11/02 15:11:33 $
    End CVS Header */
 
 #include <algorithm>
@@ -18,7 +18,7 @@
 
 CExperimentSet::CExperimentSet(const std::string & name,
                                const CCopasiContainer * pParent):
-    CCopasiParameterGroup(name, pParent),
+    CCopasiParameterGroup(name, pParent, "CExperimentSet"),
     mpExperiments(NULL)
 {initializeParameter();}
 
@@ -113,17 +113,17 @@ CExperiment * CExperimentSet::addExperiment(const CExperiment & experiment)
   return pExperiment;
 }
 
-bool CExperimentSet::removeExperiment(const unsigned C_INT32 & index)
-{return removeParameter(index);}
-
 CExperiment * CExperimentSet::getExperiment(const unsigned C_INT32 & index)
 {return (*mpExperiments)[index];}
 
 const CExperiment * CExperimentSet::getExperiment(const unsigned C_INT32 & index) const
   {return (*mpExperiments)[index];}
 
+CExperiment * CExperimentSet::getExperiment(const std::string & name)
+{return static_cast<CExperiment *>(getGroup(name));}
+
 const CExperiment * CExperimentSet::getExperiment(const std::string & name) const
-  {return dynamic_cast<const CExperiment *>(getGroup(name));}
+  {return static_cast<const CExperiment *>(getGroup(name));}
 
 const CCopasiTask::Type & CExperimentSet::getExperimentType(const unsigned C_INT32 & index) const
   {return getExperiment(index)->getExperimentType();}

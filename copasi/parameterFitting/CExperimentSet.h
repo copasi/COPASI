@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:42:03 $
+   $Date: 2005/11/02 15:11:33 $
    End CVS Header */
 
 #ifndef COPASI_CExperimentSet
@@ -72,13 +72,6 @@ class CExperimentSet: public CCopasiParameterGroup
     CExperiment * addExperiment(const CExperiment & experiment);
 
     /**
-     * Remove the indexed experiment
-     * @param const unsigned C_INT32 & index,
-     * @return bool success
-     */
-    bool removeExperiment(const unsigned C_INT32 & index);
-
-    /**
      * Retrieve the indexed experiment
      * @param const unsigned C_INT32 & index,
      * @return CExperiment * experiment
@@ -91,6 +84,13 @@ class CExperimentSet: public CCopasiParameterGroup
      * @return const CExperiment * experiment
      */
     const CExperiment * getExperiment(const unsigned C_INT32 & index) const;
+
+    /**
+     * Retrieve the indexed experiment
+     * @param const std::string & name,
+     * @return CExperiment * experiment
+     */
+    CExperiment * getExperiment(const std::string & name);
 
     /**
      * Retrieve the indexed experiment
