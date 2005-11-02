@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.114 $ $Author: stupe $ $Date: 2005/10/26 15:43:18 $  
+# $Revision: 1.115 $ $Author: shoops $ $Date: 2005/11/02 16:01:45 $  
 ######################################################################
 
 TEMPLATE = app
@@ -285,6 +285,7 @@ SOURCES += \
 # FORMS += CQReportDefinition.ui
 # FORMS += CQTextDialog.ui
 # FORMS += CQExperimentData.ui
+# FORMS += CQExperimentSelection.ui
 # FORMS += CQFileDialogBtnGrp.ui
 # FORMS += CQFittingItemWidget.ui
 # FORMS += CQFittingWidget.ui
@@ -299,6 +300,8 @@ HEADERS += \
            CQFileDialogBtnGrp.h \
            CQExperimentData.h \
            CQExperimentData.ui.h \
+           CQExperimentSelection.h \
+           CQExperimentSelection.ui.h \
            CQFittingItemWidget.h \
            CQFittingItemWidget.ui.h \
            CQFittingWidget.h \
@@ -338,6 +341,7 @@ HEADERS += \
 SOURCES += \
            CMCAResultSubwidget.cpp \
            CQExperimentData.cpp \
+           CQExperimentSelection.cpp \
            CQFileDialogBtnGrp.cpp \
            CQFittingItemWidget.cpp \
            CQFittingWidget.cpp \
