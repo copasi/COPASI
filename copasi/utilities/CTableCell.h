@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/23 18:59:12 $
+   $Date: 2005/11/02 21:40:14 $
    End CVS Header */
 
 #ifndef COPASI_CTableCell
@@ -124,6 +124,16 @@ class CTableRow
      * @return const unsigned C_INT32 size
      */
     const unsigned C_INT32 size() const;
+
+    /**
+     * Try to guess the number of columns
+     * in the current line
+     * @param std::istream &is
+     * @param const bool & rewind
+     * @return unsigned C_INT32 numColumns
+     */
+    unsigned C_INT32 guessColumnNumber(std::istream &is,
+                                       const bool & rewind);
 
     /**
      * Formated stream input operator

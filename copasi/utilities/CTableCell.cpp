@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/23 19:08:21 $
+   $Date: 2005/11/02 21:40:14 $
    End CVS Header */
 
 #include <limits>
@@ -148,6 +148,32 @@ bool CTableRow::resize(const unsigned C_INT32 & size)
 const unsigned C_INT32 CTableRow::size() const
 {return mCells.size();}
 
+unsigned C_INT32 CTableRow::guessColumnNumber(std::istream &is,
+    const bool & rewind)
+{
+  std::istream::pos_type pos;
+  if (rewind) pos = is.tellg();
+
+  std::stringstream line;
+  is.get(*line.rdbuf(), '\x0a');
+  is.ignore(1);
+
+  if (rewind) is.seekg(pos);
+
+  CTableCell Cell(mSeparator);
+  unsigned C_INT32 count = 0;
+
+  while (!line.eof())
+    {
+      line >> Cell;
+      count++;
+    }
+
+  if (Cell.getName() == "") count--;
+
+  return count;
+}
+
 std::istream & operator >> (std::istream &is, CTableRow & row)
 {
   std::stringstream line;
@@ -163,6 +189,7 @@ std::istream & operator >> (std::istream &is, CTableRow & row)
 
   if (it == end) return is;
 
+  // Missing columns are filled with default
   CTableCell Unread(row.mSeparator);
   for (; it != end; ++it)
     *it = Unread;
