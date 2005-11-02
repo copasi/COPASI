@@ -460,6 +460,9 @@
             <property name="numCols">
                 <number>3</number>
             </property>
+            <property name="selectionMode">
+                <enum>NoSelection</enum>
+            </property>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
@@ -614,6 +617,12 @@
         <receiver>CQExperimentData</receiver>
         <slot>slotExperimentChanged(QListBoxItem*)</slot>
     </connection>
+    <connection>
+        <sender>mpEditHeader</sender>
+        <signal>lostFocus()</signal>
+        <receiver>CQExperimentData</receiver>
+        <slot>slotUpdateTable()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="global" impldecl="in declaration">string</include>
@@ -656,7 +665,7 @@
     <slot access="protected" specifier="non virtual">slotFileDelete()</slot>
     <slot access="protected" specifier="non virtual">slotCancel()</slot>
     <slot access="protected" specifier="non virtual">slotOK()</slot>
-    <slot>syncExperiments()</slot>
+    <slot access="protected" specifier="non virtual">slotUpdateTable()</slot>
 </slots>
 <functions>
     <function returnType="bool">load( CExperimentSet * &amp; pExperimentSet )</function>
@@ -664,6 +673,7 @@
     <function access="private" specifier="non virtual">destroy()</function>
     <function access="protected" specifier="non virtual" returnType="bool">loadExperiment( const CExperiment * pExperiment )</function>
     <function access="protected" specifier="non virtual" returnType="bool">saveExperiment( CExperiment * pExperiment )</function>
+    <function access="protected" specifier="non virtual">syncExperiments()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 15:48:31 $
+   $Date: 2005/11/02 21:46:39 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Mon Oct 31 11:59:05 2005
- **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.3 2005/11/02 15:48:31 shoops Exp $)
+ ** Created: Wed Nov 2 16:19:52 2005
+ **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.4 2005/11/02 21:46:39 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -347,6 +347,7 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpTable->horizontalHeader()->setLabel(mpTable->numCols() - 1, tr("Model Object"));
   mpTable->setNumRows(3);
   mpTable->setNumCols(3);
+  mpTable->setSelectionMode(QTable::NoSelection);
   CQExperimentDataLayout->addWidget(mpTable);
 
   mpLayoutButton = new QHBoxLayout(0, 0, 6, "mpLayoutButton");
@@ -380,6 +381,7 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   connect(mpBtnExperimentDelete, SIGNAL(clicked()), this, SLOT(slotExperimentDelete()));
   connect(mpBoxFile, SIGNAL(currentChanged(QListBoxItem*)), this, SLOT(slotFileChanged(QListBoxItem*)));
   connect(mpBoxExperiment, SIGNAL(currentChanged(QListBoxItem*)), this, SLOT(slotExperimentChanged(QListBoxItem*)));
+  connect(mpEditHeader, SIGNAL(lostFocus()), this, SLOT(slotUpdateTable()));
   init();
 }
 

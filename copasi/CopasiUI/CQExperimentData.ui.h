@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 15:48:31 $
+   $Date: 2005/11/02 21:46:39 $
    End CVS Header */
 
 #include <algorithm>
@@ -106,6 +106,9 @@ class CQExperimentDataValidator: public CQValidatorNotEmpty
                   }
 
                 mpContext->mpExperiment->setHeaderRow(input.toULong());
+                break;
+
+              default:
                 break;
               }
           }
@@ -222,6 +225,7 @@ void CQExperimentData::slotExperimentAdd()
   pExperiment->setLastRow(Last);
   pExperiment->setFileName(mpFileInfo->getFileName());
 
+  pExperiment->setNumColumns(pExperiment->guessColumnNumber());
   mpFileInfo->sync();
 
   mpBoxExperiment->insertItem(FROM_UTF8(pExperiment->getObjectName()));
@@ -466,11 +470,15 @@ bool CQExperimentData::load(CExperimentSet *& pExperimentSet)
   else
     slotFileChanged(NULL);
 
+  slotUpdateTable();
+
   return true;
 }
 
 void CQExperimentData::init()
 {
+  mpTable->setColumnReadOnly(0, true);
+
   mpExperimentSetCopy = NULL;
   mpFileInfo = NULL;
   mpExperiment = NULL;
@@ -645,4 +653,32 @@ void CQExperimentData::syncExperiments()
     }
 
   return;
+}
+
+void CQExperimentData::slotUpdateTable()
+{
+  mpExperiment->readColumnNames();
+  const std::vector<std::string> & ColumnNames = mpExperiment->getColumnNames();
+
+  QStringList ColumnTypes;
+  const std::string * pTmp = CExperiment::TypeName;
+  while (*pTmp != "")
+    {
+      ColumnTypes.push_back(FROM_UTF8(*pTmp));
+      pTmp++;
+    }
+
+  unsigned C_INT32 i, imax = ColumnNames.size();
+  mpTable->setNumRows(imax);
+
+  QTableItem * pItem;
+  QComboTableItem * pComboItem;
+
+  for (i = 0; i < imax; i++)
+    {
+      mpTable->setText(i, 0, FROM_UTF8(ColumnNames[i]));
+      pComboItem = new QComboTableItem(mpTable, ColumnTypes, false);
+      pComboItem->setCurrentItem(mpExperiment->getColumnType(i));
+      mpTable->setItem(i, 1, pComboItem);
+    }
 }
