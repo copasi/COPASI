@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 16:09:11 $
+   $Date: 2005/11/02 18:03:57 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -98,10 +98,22 @@ bool CQFittingWidget::saveTask()
   std::vector< CFitItem * > * pVector =
     static_cast<std::vector< CFitItem * > *>(pGroup->CCopasiParameter::getValue().pVOID);
 
+  // Change the affected experiments keys
+  std::vector<CCopasiParameter *> * pExp;
+  std::vector<CCopasiParameter *>::iterator itExp;
+  std::vector<CCopasiParameter *>::iterator endExp;
+
   imax = std::min<unsigned C_INT32>(pVector->size(), mpParameters->numRows());
   for (i = 0; i < imax; i++)
-    if (static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->save(*(*pVector)[i]))
-      mpChanged = true;
+    {
+      pExp = (*pVector)[i]->getGroup("Affected Experiments")->CCopasiParameter::getValue().pGROUP;
+
+      for (itExp = pExp->begin(), endExp = pExp->end(); itExp != endExp; ++itExp)
+        (*itExp)->setValue(mKeyMap[*(*itExp)->getValue().pKEY]);
+
+      if (static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->save(*(*pVector)[i]))
+        mpChanged = true;
+    }
 
   // Remove exceeding parameters
   imax = pVector->size();
@@ -129,11 +141,6 @@ bool CQFittingWidget::saveTask()
         }
     }
 
-  // Change the affected experiments keys
-  std::vector<CCopasiParameter *> * pExp;
-  std::vector<CCopasiParameter *>::iterator itExp;
-  std::vector<CCopasiParameter *>::iterator endExp;
-
   for (i = 0, imax = pGroup->size(); i < imax; i++)
     {
       pExp = (*pVector)[i]->getGroup("Affected Experiments")->CCopasiParameter::getValue().pGROUP;
@@ -151,8 +158,15 @@ bool CQFittingWidget::saveTask()
     std::min<unsigned C_INT32>(pVector->size(), mpConstraints->numRows());
 
   for (i = 0; i < imax; i++)
-    if (static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->save(*(*pVector)[i]))
-      mpChanged = true;
+    {
+      pExp = (*pVector)[i]->getGroup("Affected Experiments")->CCopasiParameter::getValue().pGROUP;
+
+      for (itExp = pExp->begin(), endExp = pExp->end(); itExp != endExp; ++itExp)
+        (*itExp)->setValue(mKeyMap[*(*itExp)->getValue().pKEY]);
+
+      if (static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->save(*(*pVector)[i]))
+        mpChanged = true;
+    }
 
   // Remove exceeding constraints
   imax = pVector->size();
