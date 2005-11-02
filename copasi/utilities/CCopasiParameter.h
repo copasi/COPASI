@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/10 21:08:43 $
+   $Date: 2005/11/02 15:09:36 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -128,6 +128,13 @@ class CCopasiParameter: public CCopasiContainer
      * Destructor
      */
     virtual ~CCopasiParameter();
+
+    /**
+     * Assignment operator
+     * @param const CCopasiParameter & rhs
+     * @return CCopasiParameter & lhs
+     */
+    CCopasiParameter & operator = (const CCopasiParameter & rhs);
 
     /**
      * Return the key of this model

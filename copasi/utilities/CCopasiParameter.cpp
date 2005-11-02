@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/10 21:08:43 $
+   $Date: 2005/11/02 15:09:36 $
    End CVS Header */
 
 /**
@@ -95,6 +95,51 @@ CCopasiParameter::~CCopasiParameter()
   deleteValue();
 }
 
+CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)
+{
+  assert (mType == rhs.mType);
+
+  if (getObjectName() != rhs.getObjectName())
+    setObjectName(rhs.getObjectName());
+
+  switch (mType)
+    {
+    case CCopasiParameter::DOUBLE:
+      case CCopasiParameter::UDOUBLE:
+      *mValue.pDOUBLE = *rhs.mValue.pDOUBLE;
+      break;
+
+    case CCopasiParameter::INT:
+      *mValue.pINT = *rhs.mValue.pINT;
+      break;
+
+    case CCopasiParameter::UINT:
+      *mValue.pUINT = *rhs.mValue.pUINT;
+      break;
+
+    case CCopasiParameter::BOOL:
+      *mValue.pBOOL = *rhs.mValue.pBOOL;
+      break;
+
+    case CCopasiParameter::STRING:
+    case CCopasiParameter::KEY:
+      *mValue.pSTRING = *rhs.mValue.pSTRING;
+      break;
+
+    case CCopasiParameter::CN:
+      *mValue.pCN = *rhs.mValue.pCN;
+      break;
+
+    case CCopasiParameter::GROUP:
+      *static_cast<CCopasiParameterGroup *>(this) = *static_cast<const CCopasiParameterGroup *>(&rhs);
+      break;
+
+    case CCopasiParameter::INVALID:
+      break;
+    }
+
+  return *this;
+}
 const std::string & CCopasiParameter::getKey() const {return mKey;}
 
 bool CCopasiParameter::setValue(const std::vector< CCopasiParameter * > & value)
@@ -169,7 +214,7 @@ std::ostream &operator<<(std::ostream &os, const CCopasiParameter & o)
   switch (o.mType)
     {
     case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+    case CCopasiParameter::UDOUBLE:
       os << * o.mValue.pDOUBLE;
       break;
 
