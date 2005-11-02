@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 15:47:22 $
+   $Date: 2005/11/02 16:03:40 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -232,7 +232,7 @@ bool CQFittingWidget::loadTask()
     {
       pFitItemWidget = new CQFittingItemWidget(mpParameters);
       pFitItemWidget->enableFitItem(true);
-      pFitItemWidget->setExperimentSet(mpExperimentSet);
+      pFitItemWidget->setExperimentSet(const_cast<const CExperimentSet *>(mpExperimentSet));
       pFitItemWidget->load(*static_cast<const CFitItem *>(*it));
       mpParameters->addWidget(pFitItemWidget);
     }
@@ -248,7 +248,7 @@ bool CQFittingWidget::loadTask()
     {
       pFitItemWidget = new CQFittingItemWidget(mpConstraints);
       pFitItemWidget->enableFitItem(true);
-      pFitItemWidget->setExperimentSet(mpExperimentSet);
+      pFitItemWidget->setExperimentSet(const_cast<const CExperimentSet *>(mpExperimentSet));
       pFitItemWidget->load(*static_cast<const CFitItem *>(*it));
       mpConstraints->addWidget(pFitItemWidget);
     }
@@ -302,7 +302,7 @@ void CQFittingWidget::slotBtnAdd()
 {
   CQFittingItemWidget * tmp = new CQFittingItemWidget(mpCurrentList);
   tmp->enableFitItem(true);
-  tmp->setExperimentSet(mpExperimentSet);
+  tmp->setExperimentSet(const_cast<const CExperimentSet *>(mpExperimentSet));
   mpCurrentList->addWidget(tmp);
 
   int totalRows = mpCurrentList->numRows();
