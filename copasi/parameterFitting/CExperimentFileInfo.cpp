@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:38:20 $
+   $Date: 2005/11/02 21:40:46 $
    End CVS Header */
 
 #include "copasi.h"
@@ -48,11 +48,9 @@ bool CExperimentFileInfo::setFileName(const std::string & fileName)
   if (in.fail()) return false; // File can not be opened.
 
   // forwind to count lines in file
-  while (true)
+  while (!in.eof())
     {
       in.ignore(LONG_MAX, '\x0a');
-      if (in.eof() || in.fail()) break;
-
       mLines++;
     }
 
@@ -60,7 +58,7 @@ bool CExperimentFileInfo::setFileName(const std::string & fileName)
 }
 
 const std::string & CExperimentFileInfo::getFileName() const
-{return mFileName;}
+  {return mFileName;}
 
 bool CExperimentFileInfo::sync()
 {
