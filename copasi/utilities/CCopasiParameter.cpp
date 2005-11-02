@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 15:09:36 $
+   $Date: 2005/11/02 18:02:21 $
    End CVS Header */
 
 /**
@@ -250,8 +250,45 @@ std::ostream &operator<<(std::ostream &os, const CCopasiParameter & o)
 bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
 {
   if (lhs.getObjectName() != rhs.getObjectName()) return false;
-  if (lhs.mSize != rhs.mSize) return false;
-  return !memcmp(lhs.mValue.pVOID, rhs.mValue.pVOID, lhs.mSize);
+  if (lhs.mType != rhs.mType) return false;
+
+  switch (lhs.mType)
+    {
+    case CCopasiParameter::DOUBLE:
+    case CCopasiParameter::UDOUBLE:
+      return *lhs.mValue.pDOUBLE == *rhs.mValue.pDOUBLE;
+      break;
+
+    case CCopasiParameter::INT:
+      return *lhs.mValue.pINT == *rhs.mValue.pINT;
+      break;
+
+    case CCopasiParameter::UINT:
+      return *lhs.mValue.pUINT == *rhs.mValue.pUINT;
+      break;
+
+    case CCopasiParameter::BOOL:
+      return *lhs.mValue.pBOOL == *rhs.mValue.pBOOL;
+      break;
+
+    case CCopasiParameter::STRING:
+    case CCopasiParameter::KEY:
+      return *lhs.mValue.pSTRING == *rhs.mValue.pSTRING;
+      break;
+
+    case CCopasiParameter::CN:
+      return *lhs.mValue.pCN == *rhs.mValue.pCN;
+      break;
+
+    case CCopasiParameter::GROUP:
+      return *static_cast<const CCopasiParameterGroup *>(&lhs) ==
+      *static_cast<const CCopasiParameterGroup *>(&rhs);
+      break;
+
+    case CCopasiParameter::INVALID:
+      return !memcmp(lhs.mValue.pVOID, rhs.mValue.pVOID, lhs.mSize);
+      break;
+    }
 }
 
 void * CCopasiParameter::getReference() const
