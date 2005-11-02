@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:38:20 $
+   $Date: 2005/11/02 15:47:22 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -39,15 +39,66 @@ bool CQFittingWidget::saveTask()
     dynamic_cast<CFitProblem *>(mpTask->getProblem());
   if (!pProblem) return false;
 
+  // Save experiment set
+  CExperimentSet * pExperimentSet =
+    dynamic_cast<CExperimentSet *>(pProblem->getGroup("Experiment Set"));
+
+  std::string Name;
+  CExperiment * pExperiment;
+  unsigned C_INT32 i, imax;
+
+  std::set<CExperiment *> DealtWith;
+
+  for (i = pExperimentSet->size() - 1; i != C_INVALID_INDEX; i--)
+    {
+      pExperiment =
+        dynamic_cast<CExperiment *>(GlobalKeys.get(mKeyMap[pExperimentSet->getExperiment(i)->CCopasiParameter::getKey()]));
+
+      if (pExperiment && pExperiment == mpExperimentSet->getExperiment(pExperiment->getObjectName()))
+        {
+          if (!(*pExperimentSet->getExperiment(i) == *pExperiment))
+            {
+              *pExperimentSet->getExperiment(i) = *pExperiment;
+              mpChanged = true;
+            }
+
+          DealtWith.insert(pExperiment);
+        }
+      else
+        {
+          mKeyMap.erase(pExperimentSet->getExperiment(i)->CCopasiParameter::getKey());
+          pExperimentSet->removeParameter(i);
+          mpChanged = true;
+        }
+    }
+
+  for (i = 0, imax = mpExperimentSet->size(); i < imax; i++)
+    {
+      pExperiment = mpExperimentSet->getExperiment(i);
+      if (DealtWith.count(pExperiment)) continue;
+
+      pExperiment = pExperimentSet->addExperiment(*pExperiment);
+      mKeyMap[pExperiment->CCopasiParameter::getKey()] =
+        mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey();
+      mpChanged = true;
+    }
+
+  // We need to invert the key map for saving!
+  std::map<std::string, std::string>::iterator it = mKeyMap.begin();
+  std::map<std::string, std::string>::iterator end = mKeyMap.end();
+  std::map<std::string, std::string>::iterator found;
+
+  std::map<std::string, std::string> KeyMap;
+  for (; it != end; ++it)
+    KeyMap[it->second] = it->first;
+
   // Save parameters
   CCopasiParameterGroup * pGroup = pProblem->getGroup("OptimizationItemList");
 
   std::vector< CFitItem * > * pVector =
     static_cast<std::vector< CFitItem * > *>(pGroup->CCopasiParameter::getValue().pVOID);
 
-  unsigned C_INT32 i, imax =
-    std::min<unsigned C_INT32>(pVector->size(), mpParameters->numRows());
-
+  imax = std::min<unsigned C_INT32>(pVector->size(), mpParameters->numRows());
   for (i = 0; i < imax; i++)
     if (static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->save(*(*pVector)[i]))
       mpChanged = true;
@@ -76,6 +127,19 @@ bool CQFittingWidget::saveTask()
           static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->save(*pFitItem);
           pGroup->addParameter(pFitItem);
         }
+    }
+
+  // Change the affected experiments keys
+  std::vector<CCopasiParameter *> * pExp;
+  std::vector<CCopasiParameter *>::iterator itExp;
+  std::vector<CCopasiParameter *>::iterator endExp;
+
+  for (i = 0, imax = pGroup->size(); i < imax; i++)
+    {
+      pExp = (*pVector)[i]->getGroup("Affected Experiments")->CCopasiParameter::getValue().pGROUP;
+
+      for (itExp = pExp->begin(), endExp = pExp->end(); itExp != endExp; ++itExp)
+        (*itExp)->setValue(KeyMap[*(*itExp)->getValue().pKEY]);
     }
 
   // Save constraints
@@ -114,6 +178,15 @@ bool CQFittingWidget::saveTask()
           static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->save(*pFitItem);
           pGroup->addParameter(pFitItem);
         }
+    }
+
+  // Change the affected experiments keys
+  for (i = 0, imax = pGroup->size(); i < imax; i++)
+    {
+      pExp = (*pVector)[i]->getGroup("Affected Experiments")->CCopasiParameter::getValue().pGROUP;
+
+      for (itExp = pExp->begin(), endExp = pExp->end(); itExp != endExp; ++itExp)
+        (*itExp)->setValue(KeyMap[*(*itExp)->getValue().pKEY]);
     }
 
   if (mpChanged) CCopasiDataModel::Global->changed();
@@ -159,8 +232,8 @@ bool CQFittingWidget::loadTask()
     {
       pFitItemWidget = new CQFittingItemWidget(mpParameters);
       pFitItemWidget->enableFitItem(true);
+      pFitItemWidget->setExperimentSet(mpExperimentSet);
       pFitItemWidget->load(*static_cast<const CFitItem *>(*it));
-      pFitItemWidget->update(mKeyMap);
       mpParameters->addWidget(pFitItemWidget);
     }
 
@@ -175,8 +248,8 @@ bool CQFittingWidget::loadTask()
     {
       pFitItemWidget = new CQFittingItemWidget(mpConstraints);
       pFitItemWidget->enableFitItem(true);
+      pFitItemWidget->setExperimentSet(mpExperimentSet);
       pFitItemWidget->load(*static_cast<const CFitItem *>(*it));
-      pFitItemWidget->update(mKeyMap);
       mpConstraints->addWidget(pFitItemWidget);
     }
 
@@ -229,6 +302,7 @@ void CQFittingWidget::slotBtnAdd()
 {
   CQFittingItemWidget * tmp = new CQFittingItemWidget(mpCurrentList);
   tmp->enableFitItem(true);
+  tmp->setExperimentSet(mpExperimentSet);
   mpCurrentList->addWidget(tmp);
 
   int totalRows = mpCurrentList->numRows();
@@ -245,39 +319,17 @@ void CQFittingWidget::slotBtnAdd()
 void CQFittingWidget::slotExperimentData()
 {
   CQExperimentData * pDialog = new CQExperimentData(this);
-  CExperimentSet * pExperimentSet = new CExperimentSet(* mpExperimentSet);
-  pDialog->load(pExperimentSet);
-
-  std::map<std::string, std::string> KeyMap;
-  unsigned C_INT32 i, imax = mpExperimentSet->size();
-
-  for (i = 0; i < imax; i++)
-    KeyMap[mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey()] =
-      pExperimentSet->getExperiment(i)->CCopasiParameter::getKey();
+  pDialog->load(mpExperimentSet);
 
   if (pDialog->exec () == QDialog::Accepted)
     {
-      pdelete(mpExperimentSet);
-      mpExperimentSet = pExperimentSet;
-
       unsigned C_INT32 i, imax;
 
       for (i = 0, imax = mpParameters->numRows(); i < imax; i++)
-        static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->update(KeyMap);
+        static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->update();
 
       for (i = 0, imax = mpConstraints->numRows(); i < imax; i++)
-        static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->update(KeyMap);
-
-      std::map<std::string, std::string>::iterator it = mKeyMap.begin();
-      std::map<std::string, std::string>::iterator end = mKeyMap.end();
-      std::map<std::string, std::string>::iterator found;
-
-      std::map<std::string, std::string> NewKeyMap;
-      for (; it != end; ++it)
-        if ((found = KeyMap.find(it->second)) != KeyMap.end())
-          NewKeyMap[it->first] = found->second;
-
-      mKeyMap = NewKeyMap;
+        static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->update();
     }
 
   pdelete(pDialog);

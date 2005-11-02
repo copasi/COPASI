@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:38:20 $
+   $Date: 2005/11/02 15:47:22 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Wed Oct 26 13:39:25 2005
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.7 2005/10/28 15:38:20 shoops Exp $)
+ ** Created: Wed Nov 2 10:40:16 2005
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.8 2005/11/02 15:47:22 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -101,6 +101,8 @@ CQFittingItemWidget::CQFittingItemWidget(QWidget* parent, const char* name, WFla
 
   mpEditUpper = new QLineEdit(this, "mpEditUpper");
   mpEditUpper->setEnabled(FALSE);
+  mpEditUpper->setFrameShape(QLineEdit::LineEditPanel);
+  mpEditUpper->setFrameShadow(QLineEdit::Sunken);
   mpLayoutUpper->addWidget(mpEditUpper);
 
   mpBtnUpperEdit = new QToolButton(this, "mpBtnUpperEdit");

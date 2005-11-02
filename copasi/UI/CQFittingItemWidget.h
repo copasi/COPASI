@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:38:20 $
+   $Date: 2005/11/02 15:47:22 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Wed Oct 26 13:39:24 2005
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.7 2005/10/28 15:38:20 shoops Exp $)
+ ** Created: Wed Nov 2 10:40:16 2005
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.8 2005/11/02 15:47:22 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -41,6 +41,7 @@ class CCopasiObjectName;
 class CQValidatorBound;
 class CQValidatorNotEmpty;
 class QColor;
+class CExperimentSet;
 
 class CQFittingItemWidget : public QWidget
   {
@@ -66,14 +67,16 @@ class CQFittingItemWidget : public QWidget
     QToolButton* mpBtnObject;
 
     CQFittingItemWidget * copy();
-    bool load(const CFitItem & item);
+    virtual bool load(const CFitItem & item);
     bool load(const COptItem & item);
     bool save(CFitItem & item);
     bool save(COptItem & item);
     void enableFitItem(const bool & enable);
-    bool update(const std::map<std::string, std::string> & keymap);
+    virtual bool update();
+    void setExperimentSet(const CExperimentSet * & pExperimentSet);
 
   protected:
+    const CExperimentSet ** mppSet;
     COptItem * mpItem;
     CCopasiObjectName* mpObjectCN;
     const CCopasiObject* mpLowerObject;

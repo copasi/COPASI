@@ -1,25 +1,30 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 17:56:23 $
+   $Date: 2005/11/02 15:47:22 $
    End CVS Header */
 
 #include <qapplication.h>
 
 #include "CCopasiSelectionDialog.h"
 #include "CQValidator.h"
+#include "CQExperimentSelection.h"
 #include "qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 #include "parameterFitting/CFitItem.h"
+#include "parameterFitting/CFitProblem.h"
+#include "parameterFitting/CExperiment.h"
+#include "parameterFitting/CExperimentSet.h"
 #include "utilities/utility.h"
 
 void CQFittingItemWidget::init()
 {
   mpItem = NULL;
+  mppSet = NULL;
   enableFitItem(false);
 
   mLowerInfChanged = false;
@@ -143,7 +148,25 @@ void CQFittingItemWidget::slotParamEdit()
 }
 
 void CQFittingItemWidget::slotExperiments()
-{}
+{
+  if (mIsFitItem)
+    {
+      CQExperimentSelection * pDialog = new CQExperimentSelection(this);
+      pDialog->load(mpBoxExperiments, * mppSet);
+      if (pDialog->exec() == QDialog::Accepted)
+        {
+          mpItem->getGroup("Affected Experiments")->clear();
+          unsigned C_INT32 i, imax = mpBoxExperiments->count();
+          QString Name;
+          for (i = 0; i < imax; i++)
+            {
+              if ((Name = mpBoxExperiments->text(i)) != "All")
+                static_cast<CFitItem *>(mpItem)->addExperiment((*mppSet)->getExperiment((const char *) Name.utf8())->CCopasiParameter::getKey());
+            }
+        }
+      delete pDialog;
+    }
+}
 
 CQFittingItemWidget * CQFittingItemWidget::copy()
 {
@@ -180,7 +203,13 @@ CQFittingItemWidget * CQFittingItemWidget::copy()
     pWidget->mpUpperValidator->force(FROM_UTF8(pObject->getObjectDisplayName()));
   pWidget->mpUpperValidator->revalidate();
 
-  // :TODO: Copy affected experiments.
+  if (mIsFitItem)
+    {
+      pWidget->mppSet = mppSet;
+      unsigned C_INT32 i, imax = mpBoxExperiments->count();
+      for (i = 0; i < imax; i++)
+        pWidget->mpBoxExperiments->insertItem(mpBoxExperiments->text(i));
+    }
 
   return pWidget;
 }
@@ -192,7 +221,26 @@ bool CQFittingItemWidget::load(const CFitItem & item)
   pdelete(mpItem);
   mpItem = new CFitItem(item);
 
-  return loadCommon(item);
+  bool success = loadCommon(item);
+
+  unsigned C_INT32 i, imax = static_cast<CFitItem *>(mpItem)->getExperimentCount();
+  for (i = 0; i < imax; i++)
+    {
+      const CCopasiObject * pObject =
+        GlobalKeys.get(static_cast<CFitItem *>(mpItem)->getExperiment(i));
+      if (pObject)
+        mpBoxExperiments->insertItem(FROM_UTF8(pObject->getObjectName()));
+    }
+
+  // Change the key to reflect the local copy *mppSet
+  mpItem->getGroup("Affected Experiments")->clear();
+  for (i = 0, imax = mpBoxExperiments->count(); i < imax; i++)
+    static_cast<CFitItem *>(mpItem)->addExperiment((*mppSet)->getExperiment((const char *) mpBoxExperiments->text(i).utf8())->CCopasiParameter::getKey());
+
+  if (!static_cast<CFitItem *>(mpItem)->getExperimentCount())
+    mpBoxExperiments->insertItem("All");
+
+  return success;
 }
 
 bool CQFittingItemWidget::load(const COptItem & item)
@@ -240,8 +288,6 @@ bool CQFittingItemWidget::loadCommon(const COptItem & item)
   mpEditUpper->setText(Value);
   mpUpperInf->setChecked(Value == "inf");
 
-  // :TODO: load affected experiments.
-
   mpLowerInf->setPaletteBackgroundColor(mSavedColor);
   mLowerInfChanged = false;
   mpUpperInf->setPaletteBackgroundColor(mSavedColor);
@@ -257,7 +303,11 @@ bool CQFittingItemWidget::save(CFitItem & item)
 {
   bool changed = saveCommon(item);
 
-  // :TODO: load affected experiments.
+  if (!(*item.getGroup("Affected Experiments") == *mpItem->getGroup("Affected Experiments")))
+    {
+      *item.getGroup("Affected Experiments") = *mpItem->getGroup("Affected Experiments");
+      changed = true;
+    }
 
   return changed;
 }
@@ -324,7 +374,7 @@ void CQFittingItemWidget::enableFitItem(const bool & enable)
   qApp->processEvents();
 }
 
-bool CQFittingItemWidget::update(const std::map<std::string, std::string> & keymap)
+bool CQFittingItemWidget::update()
 {
   if (!mIsFitItem) return false;
 
@@ -332,21 +382,15 @@ bool CQFittingItemWidget::update(const std::map<std::string, std::string> & keym
 
   CCopasiParameterGroup *pGroup = mpItem->getGroup("Affected Experiments");
 
-  std::map<std::string, std::string>::const_iterator it = keymap.begin();
-  std::map<std::string, std::string>::const_iterator end = keymap.end();
-
-  unsigned C_INT32 i;
+  unsigned C_INT32 i, imax;
 
   mpBoxExperiments->clear();
-  for (i = pGroup->size() - 1; i != C_INVALID_INDEX; i--)
-    {
-      it = keymap.find(*pGroup->getValue(i).pKEY);
 
-      if (it != end)
-        {
-          pGroup->setValue(i, it->second);
-          mpBoxExperiments->insertItem(FROM_UTF8(GlobalKeys.get(it->second)->getObjectName()), 0);
-        }
+  for (i = 0, imax = pGroup->size(); i < imax; i++)
+    {
+      CCopasiObject * pObject = GlobalKeys.get(*pGroup->getValue(i).pKEY);
+      if (pObject)
+        mpBoxExperiments->insertItem(FROM_UTF8(pObject->getObjectName()), 0);
       else
         {
           pGroup->removeParameter(i);
@@ -358,3 +402,6 @@ bool CQFittingItemWidget::update(const std::map<std::string, std::string> & keym
 
   return success;
 }
+
+void CQFittingItemWidget::setExperimentSet(const CExperimentSet * & pExperimentSet)
+{mppSet = &pExperimentSet;}

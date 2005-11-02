@@ -133,6 +133,12 @@
                     <property name="enabled">
                         <bool>false</bool>
                     </property>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
                 </widget>
                 <widget class="QToolButton">
                     <property name="name">
@@ -323,8 +329,10 @@
     <forward>class CQValidatorBound</forward>
     <forward>class CQValidatorNotEmpty</forward>
     <forward>class QColor</forward>
+    <forward>class CExperimentSet</forward>
 </forwards>
 <variables>
+    <variable>const CExperimentSet ** mppSet;</variable>
     <variable>COptItem * mpItem;</variable>
     <variable>CCopasiObjectName* mpObjectCN;</variable>
     <variable>const CCopasiObject* mpLowerObject;</variable>
@@ -350,14 +358,15 @@
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
     <function specifier="non virtual" returnType="CQFittingItemWidget *">copy()</function>
-    <function specifier="non virtual" returnType="bool">load( const CFitItem &amp; item )</function>
+    <function returnType="bool">load( const CFitItem &amp; item )</function>
     <function specifier="non virtual" returnType="bool">load( const COptItem &amp; item )</function>
     <function access="protected" specifier="non virtual" returnType="bool">loadCommon( const COptItem &amp; item )</function>
     <function specifier="non virtual" returnType="bool">save( CFitItem &amp; item )</function>
     <function specifier="non virtual" returnType="bool">save( COptItem &amp; item )</function>
     <function access="protected" specifier="non virtual" returnType="bool">saveCommon( COptItem &amp; item )</function>
     <function specifier="non virtual">enableFitItem( const bool &amp; enable )</function>
-    <function specifier="non virtual" returnType="bool">update( const std::map&lt;std::string, std::string&gt; &amp; keymap )</function>
+    <function returnType="bool">update()</function>
+    <function specifier="non virtual">setExperimentSet( const CExperimentSet * &amp; pExperimentSet )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
