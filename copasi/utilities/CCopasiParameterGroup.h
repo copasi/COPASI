@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/10 21:08:43 $
+   $Date: 2005/11/02 15:08:58 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameterGroup
@@ -436,18 +436,6 @@ class CCopasiParameterGroup: public CCopasiParameter
      */
     friend bool operator==(const CCopasiParameterGroup & lhs,
                            const CCopasiParameterGroup & rhs);
-
-  private:
-    /**
-     * Create or copy the parameterGroup 
-     * @param const parameterGroup * pGroup
-     */
-    void copyGroup(const parameterGroup * pGroup);
-
-    /**
-     * clear the parameterGroup
-     */
-    void clearGroup();
 
   public:
     /**

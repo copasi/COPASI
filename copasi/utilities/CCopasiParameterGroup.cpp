@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/10 21:08:43 $
+   $Date: 2005/11/02 15:08:58 $
    End CVS Header */
 
 /**
@@ -26,18 +26,31 @@ CCopasiParameterGroup::CCopasiParameterGroup():
 CCopasiParameterGroup::CCopasiParameterGroup(const CCopasiParameterGroup & src,
     const CCopasiContainer * pParent):
     CCopasiParameter(src, pParent)
-{copyGroup(src.mValue.pGROUP);}
+{
+  if (!mValue.pGROUP)
+    {
+      mValue.pGROUP = new parameterGroup;
+      mSize = sizeof(parameterGroup);
+    }
+
+  *this = src;
+}
 
 CCopasiParameterGroup::CCopasiParameterGroup(const std::string & name,
     const CCopasiContainer * pParent,
     const std::string & objectType):
     CCopasiParameter(name, CCopasiParameter::GROUP, NULL, pParent, objectType)
-{copyGroup(NULL);}
+{
+  if (!mValue.pGROUP)
+    {
+      mValue.pGROUP = new parameterGroup;
+      mSize = sizeof(parameterGroup);
+    }
+}
 
 CCopasiParameterGroup::~CCopasiParameterGroup()
 {
-  clearGroup();
-
+  clear();
   pdelete(mValue.pGROUP);
 }
 
@@ -45,14 +58,44 @@ bool CCopasiParameterGroup::elevateChildren() {return true;}
 
 CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParameterGroup & rhs)
 {
-  setObjectName(rhs.getObjectName());
-  copyGroup(rhs.mValue.pGROUP);
+  if (getObjectName() != rhs.getObjectName())
+    setObjectName(rhs.getObjectName());
+
+  parameterGroup::const_iterator itRHS = rhs.mValue.pGROUP->begin();
+  parameterGroup::const_iterator endRHS = rhs.mValue.pGROUP->end();
+
+  parameterGroup::iterator itLHS = mValue.pGROUP->begin();
+  parameterGroup::iterator endLHS = mValue.pGROUP->end();
+
+  for (; itRHS != endRHS && itLHS != endLHS; ++itRHS, ++itLHS)
+    **itLHS = **itRHS;
+
+  CCopasiParameter * pParameter;
+
+  for (; itRHS != endRHS; ++itRHS)
+    {
+      if ((*itRHS)->getType() == GROUP)
+        pParameter = new CCopasiParameterGroup(* (CCopasiParameterGroup *) * itRHS);
+      else
+        pParameter = new CCopasiParameter(**itRHS);
+
+      addParameter(pParameter);
+    }
+
+  if (itLHS != endLHS)
+    {
+      parameterGroup::iterator itTmp;
+      for (itTmp = itLHS; itTmp != endLHS; ++itTmp)
+        pdelete(*itTmp);
+
+      mValue.pGROUP->erase(itLHS, endLHS);
+    }
 
   return *this;
 }
 
 void CCopasiParameterGroup::print(std::ostream * ostream) const
-  {*ostream << *this;}
+{*ostream << *this;}
 
 std::ostream &operator<<(std::ostream &os, const CCopasiParameterGroup & o)
 {
@@ -87,50 +130,10 @@ bool operator==(const CCopasiParameterGroup & lhs,
   CCopasiParameterGroup::parameterGroup::const_iterator itRhs =
     rhs.mValue.pGROUP->begin();
 
-  for (; itLhs != endLhs; ++itLhs, itRhs)
+  for (; itLhs != endLhs; ++itLhs, ++itRhs)
     if (!(**itLhs == **itRhs)) return false;
-}
 
-void CCopasiParameterGroup::copyGroup(const parameterGroup * pGroup)
-{
-  if (!mValue.pGROUP)
-    {
-      mValue.pGROUP = new parameterGroup;
-      mSize = sizeof(parameterGroup);
-    }
-
-  clearGroup();
-
-  if (!pGroup) return;
-
-  parameterGroup::const_iterator it_const = pGroup->begin();
-  parameterGroup::const_iterator end_const = pGroup->end();
-
-  CCopasiParameter * pParameter;
-
-  for (; it_const != end_const; ++it_const)
-    {
-      if ((*it_const)->getType() == GROUP)
-        pParameter = new CCopasiParameterGroup(* (CCopasiParameterGroup *) * it_const);
-      else
-        pParameter = new CCopasiParameter(**it_const);
-
-      addParameter(pParameter);
-    }
-
-  return;
-}
-
-void CCopasiParameterGroup::clearGroup()
-{
-  if (!mValue.pGROUP) return;
-
-  index_iterator it = mValue.pGROUP->begin();
-  index_iterator end = mValue.pGROUP->end();
-
-  for (; it != end; ++it) pdelete(*it);
-
-  mValue.pGROUP->clear();
+  return true;
 }
 
 bool CCopasiParameterGroup::addParameter(const CCopasiParameter & parameter)
@@ -406,7 +409,18 @@ bool CCopasiParameterGroup::swap(index_iterator & from,
 unsigned C_INT32 CCopasiParameterGroup::size() const
 {return mValue.pGROUP->size();}
 
-void CCopasiParameterGroup::clear() {copyGroup(NULL);}
+void CCopasiParameterGroup::clear()
+{
+  if (mValue.pGROUP)
+    {
+      index_iterator it = mValue.pGROUP->begin();
+      index_iterator end = mValue.pGROUP->end();
+
+      for (; it != end; ++it) pdelete(*it);
+
+      mValue.pGROUP->clear();
+    }
+}
 
 unsigned C_INT32 CCopasiParameterGroup::getIndex(const std::string & name) const
   {
