@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:38:20 $
+   $Date: 2005/11/02 15:48:31 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Fri Oct 28 10:29:28 2005
- **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.2 2005/10/28 15:38:20 shoops Exp $)
+ ** Created: Mon Oct 31 11:59:05 2005
+ **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.3 2005/11/02 15:48:31 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -84,13 +84,13 @@ class CQExperimentData : public QDialog
 
     friend class CQExperimentDataValidator;
 
-    bool load(CExperimentSet * pExperimentSet);
+    virtual bool load(CExperimentSet * & pExperimentSet);
 
   public slots:
     virtual void syncExperiments();
 
   protected:
-    CQExperimentDataValidator * mpValidatorHeader;;
+    CQExperimentDataValidator * mpValidatorHeader;
     CQExperimentDataValidator * mpValidatorLast;
     CExperiment * mpExperiment;
     CExperimentFileInfo * mpFileInfo;
@@ -100,6 +100,7 @@ class CQExperimentData : public QDialog
     std::map<std::string, std::string> mFileMap;
     CQExperimentDataValidator * mpValidatorFirst;
     unsigned int mShown;
+    CQExperimentDataValidator * mpValidatorName;
 
     bool loadExperiment(const CExperiment * pExperiment);
     bool saveExperiment(CExperiment * pExperiment);

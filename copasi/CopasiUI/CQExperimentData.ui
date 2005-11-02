@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>410</width>
-            <height>281</height>
+            <width>398</width>
+            <height>306</height>
         </rect>
     </property>
     <property name="caption">
@@ -627,7 +627,7 @@
     <forward>class CQExperimentDataValidator</forward>
 </forwards>
 <variables>
-    <variable>CQExperimentDataValidator * mpValidatorHeader;;</variable>
+    <variable>CQExperimentDataValidator * mpValidatorHeader;</variable>
     <variable>CQExperimentDataValidator * mpValidatorLast;</variable>
     <variable>CExperiment * mpExperiment;</variable>
     <variable>CExperimentFileInfo * mpFileInfo;</variable>
@@ -638,6 +638,7 @@
     <variable access="public">friend class CQExperimentDataValidator;</variable>
     <variable>CQExperimentDataValidator * mpValidatorFirst;</variable>
     <variable>unsigned int mShown;</variable>
+    <variable>CQExperimentDataValidator * mpValidatorName;</variable>
 </variables>
 <slots>
     <slot access="protected" specifier="non virtual">slotRevert()</slot>
@@ -658,7 +659,7 @@
     <slot>syncExperiments()</slot>
 </slots>
 <functions>
-    <function specifier="non virtual" returnType="bool">load( CExperimentSet * pExperimentSet )</function>
+    <function returnType="bool">load( CExperimentSet * &amp; pExperimentSet )</function>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
     <function access="protected" specifier="non virtual" returnType="bool">loadExperiment( const CExperiment * pExperiment )</function>

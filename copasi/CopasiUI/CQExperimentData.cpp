@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:38:20 $
+   $Date: 2005/11/02 15:48:31 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Fri Oct 28 10:29:29 2005
- **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.2 2005/10/28 15:38:20 shoops Exp $)
+ ** Created: Mon Oct 31 11:59:05 2005
+ **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.3 2005/11/02 15:48:31 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -361,7 +361,7 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpLayoutButton->addWidget(mpBtnCancel);
   CQExperimentDataLayout->addLayout(mpLayoutButton);
   languageChange();
-  resize(QSize(410, 281).expandedTo(minimumSizeHint()));
+  resize(QSize(398, 306).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections

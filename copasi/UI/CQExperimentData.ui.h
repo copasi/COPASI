@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 16:12:27 $
+   $Date: 2005/11/02 15:48:31 $
    End CVS Header */
 
 #include <algorithm>
@@ -18,15 +18,17 @@
 #include "parameterFitting/CExperiment.h"
 #include "parameterFitting/CExperimentFileInfo.h"
 
+#include "report/CKeyFactory.h"
 #include "utilities/CDirEntry.h"
 #include "utilities/utility.h"
 
-class CQExperimentDataValidator: public CQValidator
+class CQExperimentDataValidator: public CQValidatorNotEmpty
   {
   public:
     enum Type
     {
-      FirstRow = 0,
+      Name = 0,
+      FirstRow,
       LastRow,
       HeaderRow
     };
@@ -37,8 +39,8 @@ class CQExperimentDataValidator: public CQValidator
                               const char * name,
                               CQExperimentData * pContext,
                               const Type & type):
-        CQValidator(parent, name),
-        mpIntValidator(new QIntValidator(1, LONG_MAX, this)),
+        CQValidatorNotEmpty(parent, name),
+        mpIntValidator(new QIntValidator(1, LONG_MAX, parent)),
         mpContext(pContext),
         mType(type)
     {}
@@ -47,52 +49,68 @@ class CQExperimentDataValidator: public CQValidator
       {
         if (mpContext->mShown == C_INVALID_INDEX) return Acceptable;
 
-        if (mpIntValidator->validate(input, pos) != Acceptable)
+        if (mType == Name)
           {
-            setColor(Invalid);
-            return Intermediate;
+            if (input == "All")
+              {
+                setColor(Invalid);
+                return Intermediate;
+              }
+            if (mpContext->mpExperimentSetCopy->getParameter((const char *) input.utf8()))
+              {
+                setColor(Invalid);
+                return Intermediate;
+              }
+          }
+        else
+          {
+            if (mpIntValidator->validate(input, pos) != Acceptable)
+              {
+                setColor(Invalid);
+                return Intermediate;
+              }
+
+            unsigned C_INT32 First, Last;
+
+            switch (mType)
+              {
+              case FirstRow:
+                if (!mpContext->mpFileInfo->validateFirst(mpContext->mShown, input.toULong()))
+                  {
+                    setColor(Invalid);
+                    return Intermediate;
+                  }
+
+                mpContext->mpExperiment->setFirstRow(input.toULong());
+                mpContext->mpFileInfo->sync();
+                mpContext->mpBtnExperimentAdd->setEnabled(mpContext->mpFileInfo->getFirstUnusedSection(First, Last));
+                break;
+
+              case LastRow:
+                if (!mpContext->mpFileInfo->validateLast(mpContext->mShown, input.toULong()))
+                  {
+                    setColor(Invalid);
+                    return Intermediate;
+                  }
+
+                mpContext->mpExperiment->setLastRow(input.toULong());
+                mpContext->mpFileInfo->sync();
+                mpContext->mpBtnExperimentAdd->setEnabled(mpContext->mpFileInfo->getFirstUnusedSection(First, Last));
+                break;
+
+              case HeaderRow:
+                if (!mpContext->mpFileInfo->validateHeader(mpContext->mShown, input.toULong()))
+                  {
+                    setColor(Invalid);
+                    return Intermediate;
+                  }
+
+                mpContext->mpExperiment->setHeaderRow(input.toULong());
+                break;
+              }
           }
 
-        switch (mType)
-          {
-          case FirstRow:
-            if (!mpContext->mpFileInfo->validateFirst(mpContext->mShown, input.toULong()))
-              {
-                setColor(Invalid);
-                return Intermediate;
-              }
-
-            mpContext->mpExperiment->setFirstRow(input.toULong());
-            break;
-
-          case LastRow:
-            if (!mpContext->mpFileInfo->validateLast(mpContext->mShown, input.toULong()))
-              {
-                setColor(Invalid);
-                return Intermediate;
-              }
-
-            mpContext->mpExperiment->setLastRow(input.toULong());
-            break;
-
-          case HeaderRow:
-            if (!mpContext->mpFileInfo->validateHeader(mpContext->mShown, input.toULong()))
-              {
-                setColor(Invalid);
-                return Intermediate;
-              }
-
-            mpContext->mpExperiment->setHeaderRow(input.toULong());
-            break;
-          }
-
-        CQValidator::validate(input, pos);
-        mpContext->syncExperiments();
-
-        unsigned C_INT32 First, Last;
-        mpContext->mpBtnExperimentAdd->setEnabled(mpContext->mpFileInfo->getFirstUnusedSection(First, Last));
-
-        return Acceptable;
+        return CQValidatorNotEmpty::validate(input, pos);
       }
 
     // virtual State revalidate();
@@ -256,7 +274,7 @@ void CQExperimentData::slotExperimentDelete()
     slotExperimentChanged(NULL);
 
   // remove experiment
-  mpExperimentSetCopy->removeExperiment(mpExperimentSetCopy->keyToIndex(key));
+  mpExperimentSetCopy->removeParameter(mpExperimentSetCopy->keyToIndex(key));
   syncExperiments();
 
   unsigned C_INT32 First, Last;
@@ -278,10 +296,15 @@ void CQExperimentData::slotFileAdd()
   std::map<std::string, std::string>::const_iterator end = mFileMap.end();
   unsigned C_INT32 i;
 
-  for (i = 0; it != end; ++it, i++)
+  for (; it != end; ++it)
     if (it->second == (const char *) File.utf8())
       {
-        mpBoxFile->setSelected(i, true);
+        for (i = 0; i < mpBoxFile->count(); i++)
+          if (it->first == (const char *) mpBoxFile->item(i)->text().utf8())
+            {
+              mpBoxFile->setSelected(i, true);
+              break;
+            }
         return;
       }
 
@@ -356,7 +379,7 @@ void CQExperimentData::slotFileDelete()
   unsigned C_INT32 i = mpExperimentSetCopy->size() - 1;
   for (; i < C_INVALID_INDEX; i--)
     if (mpExperimentSetCopy->getExperiment(i)->getFileName() == FileName)
-      mpExperimentSetCopy->removeExperiment(i);
+      mpExperimentSetCopy->removeParameter(i);
 }
 
 void CQExperimentData::slotCancel()
@@ -367,16 +390,32 @@ void CQExperimentData::slotCancel()
 
 void CQExperimentData::slotOK()
 {
+  // Force the save all current changes.
   slotExperimentChanged(NULL);
 
-  // :TODO: reflect changes in the dialog in the data.
-  // i.e., copy information from mpExperimentSetCopy to mpExperimentSet
+  CExperiment * pExperiment;
+  unsigned C_INT32 i = mpExperimentSet->size() - 1;
+  for (; i < C_INVALID_INDEX; i--)
+    {
+      pExperiment =
+        dynamic_cast<CExperiment *>(GlobalKeys.get(mKeyMap[mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey()]));
+      if (pExperiment)
+        {
+          *mpExperimentSet->getExperiment(i) = *pExperiment;
+          mpExperimentSetCopy->removeParameter(pExperiment->getObjectName());
+        }
+      else
+        mpExperimentSet->removeParameter(i);
+    }
+
+  for (i = 0; i < mpExperimentSetCopy->size(); i++)
+    mpExperimentSet->addExperiment(*mpExperimentSetCopy->getExperiment(i));
 
   pdelete(mpExperimentSetCopy);
   accept();
 }
 
-bool CQExperimentData::load(CExperimentSet * pExperimentSet)
+bool CQExperimentData::load(CExperimentSet *& pExperimentSet)
 {
   if (!pExperimentSet) return false;
 
@@ -397,10 +436,8 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet)
   unsigned C_INT32 i, imax = mpExperimentSet->size();
 
   for (i = 0; i < imax; i++)
-    mKeyMap[mpExperimentSetCopy->getExperiment(i)->CCopasiParameter::getKey()] =
-      mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey();
-
-  // :TODO: Display the data in the dialog.
+    mKeyMap[mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey()] =
+      mpExperimentSetCopy->getExperiment(i)->CCopasiParameter::getKey();
 
   // fill file list box
   mpBoxFile->clear();
@@ -425,7 +462,7 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet)
     }
 
   if (mpBoxFile->count())
-    mpBoxFile->setSelected(0, true);
+    mpBoxFile->setSelected(0, true); // This tiggers the rest of the update :)
   else
     slotFileChanged(NULL);
 
@@ -438,6 +475,8 @@ void CQExperimentData::init()
   mpFileInfo = NULL;
   mpExperiment = NULL;
 
+  mpValidatorName = new CQExperimentDataValidator(mpEditName, 0, this, CQExperimentDataValidator::Name);
+  mpEditName->setValidator(mpValidatorName);
   mpValidatorFirst = new CQExperimentDataValidator(mpEditFirst, 0, this, CQExperimentDataValidator::FirstRow);
   mpEditFirst->setValidator(mpValidatorFirst);
   mpValidatorLast = new CQExperimentDataValidator(mpEditLast, 0, this, CQExperimentDataValidator::LastRow);
@@ -505,6 +544,7 @@ bool CQExperimentData::loadExperiment(const CExperiment * pExperiment)
         mpBtnSteadystate->setChecked(true);
     }
 
+  mpValidatorName->saved();
   mpValidatorFirst->saved();
   mpValidatorLast->saved();
   mpValidatorHeader->saved();
@@ -515,17 +555,29 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment)
 {
   if (!pExperiment) return false;
 
-  if (pExperiment->getObjectName() != (const char *) mpEditName->text() &&
-      !mpExperimentSetCopy->getExperiment((const char *) mpEditName->text()))
-    pExperiment->setObjectName((const char *) mpEditName->text());
+  QString value = mpEditName->text();
+  int pos = value.length();
+
+  if (pExperiment->getObjectName() != (const char *) value &&
+      mpValidatorName->validate(value, pos) == QValidator::Acceptable)
+    {
+      int current = mpBoxExperiment->currentItem();
+      disconnect(mpBoxExperiment, SIGNAL(currentChanged(QListBoxItem*)),
+                 this, SLOT(slotExperimentChanged(QListBoxItem*)));
+      mpBoxExperiment->changeItem(value, mShown);
+      mpBoxExperiment->setSelected(current, true);
+      connect(mpBoxExperiment, SIGNAL(currentChanged(QListBoxItem*)),
+              this, SLOT(slotExperimentChanged(QListBoxItem*)));
+      pExperiment->setObjectName((const char *) value);
+    }
 
   if (mpCheckTab->isChecked())
     pExperiment->setSeparator("\t");
   else
     pExperiment->setSeparator((const char *) mpEditSeparator->text().utf8());
 
-  QString value = mpEditFirst->text();
-  int pos = value.length();
+  value = mpEditFirst->text();
+  pos = value.length();
   if (mpValidatorFirst->validate(value, pos) == QValidator::Acceptable)
     pExperiment->setFirstRow(value.toULong());
 
@@ -555,6 +607,7 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment)
   unsigned C_INT32 First, Last;
   mpBtnExperimentAdd->setEnabled(mpFileInfo->getFirstUnusedSection(First, Last));
 
+  mpValidatorName->saved();
   mpValidatorFirst->saved();
   mpValidatorLast->saved();
   mpValidatorHeader->saved();
