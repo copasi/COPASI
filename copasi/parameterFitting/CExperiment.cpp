@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:38:20 $
+   $Date: 2005/11/02 15:12:03 $
    End CVS Header */
 
 #include <fstream>
@@ -108,6 +108,18 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
 {initializeParameter();}
 
 CExperiment::~CExperiment() {}
+
+CExperiment & CExperiment::operator = (const CExperiment & rhs)
+{
+  std::string Key = *getValue("Key").pKEY;
+
+  *static_cast<CCopasiParameterGroup *>(this) =
+    *static_cast<const CCopasiParameterGroup *>(&rhs);
+
+  setValue("Key", Key);
+
+  return *this;
+}
 
 void CExperiment::initializeParameter()
 {

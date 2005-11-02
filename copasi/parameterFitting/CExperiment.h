@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:38:20 $
+   $Date: 2005/11/02 15:12:03 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -71,6 +71,13 @@ class CExperiment: public CCopasiParameterGroup
      * Destructor
      */
     virtual ~CExperiment();
+
+    /**
+     * Assignement operator
+     * @param const CExperiment & rhs
+     * @return CExperiment & lhs
+     */
+    CExperiment & operator = (const CExperiment & rhs);
 
     /**
      * This methods must be called to elevate subgroups to
