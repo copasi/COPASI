@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQValidator.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 17:56:23 $
+   $Date: 2005/11/02 15:13:41 $
    End CVS Header */
 
 #include <qlineedit.h>
@@ -71,13 +71,10 @@ CQValidatorNotEmpty::CQValidatorNotEmpty(QLineEdit * parent, const char * name):
     CQValidator(parent, name)
 {}
 
-QValidator::State CQValidatorNotEmpty::validate(QString & input, int & /* pos */) const
+QValidator::State CQValidatorNotEmpty::validate(QString & input, int & pos) const
   {
     if (input != "")
-      {
-        force(input);
-        return Acceptable;
-      }
+      return CQValidator::validate(input, pos);
 
     setColor(Invalid);
     return Intermediate;
