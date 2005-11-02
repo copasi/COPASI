@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 15:12:03 $
+   $Date: 2005/11/02 18:02:52 $
    End CVS Header */
 
 #include <fstream>
@@ -558,4 +558,19 @@ bool CExperiment::compare(const CExperiment * lhs,
   return (*lhs->mpFileName < *rhs->mpFileName ||
           (*lhs->mpFileName == *rhs->mpFileName &&
            *lhs->mpFirstRow < *rhs->mpFirstRow));
+}
+
+bool operator == (const CExperiment & lhs,
+                  const CExperiment & rhs)
+{
+  std::string Key = *lhs.getValue("Key").pKEY;
+  const_cast<CExperiment *>(&lhs)->setValue("Key", *rhs.getValue("Key").pKEY);
+
+  bool Result =
+    (*static_cast<const CCopasiParameterGroup *>(&lhs) ==
+     *static_cast<const CCopasiParameterGroup *>(&rhs));
+
+  const_cast<CExperiment *>(&lhs)->setValue("Key", Key);
+
+  return Result;
 }

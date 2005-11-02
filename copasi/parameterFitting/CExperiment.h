@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 15:12:03 $
+   $Date: 2005/11/02 18:02:52 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -280,6 +280,15 @@ class CExperiment: public CCopasiParameterGroup
      */
     static bool compare(const CExperiment * lhs,
                         const CExperiment * rhs);
+
+    /**
+     * Comparison operator
+     * @param const CExperiment & lhs
+     * @param const CExperiment & rhs
+     * @return bool equal
+     */
+    friend bool operator == (const CExperiment & lhs,
+                             const CExperiment & rhs);
 
   private:
     /**
