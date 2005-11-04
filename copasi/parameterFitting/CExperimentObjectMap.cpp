@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:35:01 $
+   $Date: 2005/11/04 12:48:18 $
    End CVS Header */
 
 #include <vector>
@@ -37,26 +37,36 @@ CExperimentObjectMap::CExperimentObjectMap(const CCopasiParameterGroup & group,
 
 CExperimentObjectMap::~CExperimentObjectMap() {}
 
-bool CExperimentObjectMap::addObject(const std::string & CN,
-                                     const unsigned C_INT32 & column)
+bool CExperimentObjectMap::addObjectCN(const unsigned C_INT32 & index,
+                                       const std::string & CN)
 {
-  std::string Column = StringPrint("%d", column);
-  if (getParameter(Column)) return false;
+  std::string Index = StringPrint("%d", index);
+  if (getParameter(Index)) return false;
 
-  return addParameter(Column, CCopasiParameter::CN, CN);
+  return addParameter(Index, CCopasiParameter::CN, (CCopasiObjectName) CN);
 }
 
-bool CExperimentObjectMap::removeObject(const std::string & CN)
+bool CExperimentObjectMap::removeObjectCN(const unsigned C_INT32 & index)
+{return removeParameter(StringPrint("%d", index));}
+
+bool CExperimentObjectMap::setObjectCN(const unsigned C_INT32 & index,
+                                       const std::string & CN)
 {
-  unsigned C_INT32 i, imax = size();
-
-  for (i = 0; i < imax; i++)
-    if (*getValue(i).pCN == CN) break;
-
-  if (i == imax) return false;
-
-  return removeParameter(i);
+  CCopasiParameter * pParm = getParameter(StringPrint("%d", index));
+  if (pParm)
+    return pParm->setValue((CCopasiObjectName) CN);
+  else
+    return addObjectCN(index, CN);
 }
+
+std::string CExperimentObjectMap::getObjectCN(const unsigned C_INT32 & index) const
+  {
+    const CCopasiParameter * pParm = getParameter(StringPrint("%d", index));
+    if (pParm)
+      return *pParm->getValue().pCN;
+    else
+      return "";
+  }
 
 bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listOfContainer)
 {

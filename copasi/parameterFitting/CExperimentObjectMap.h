@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/29 19:35:01 $
+   $Date: 2005/11/04 12:48:18 $
    End CVS Header */
 
 #ifndef COPASI_CExperimentObjectMap
@@ -46,19 +46,34 @@ class CExperimentObjectMap: public CCopasiParameterGroup
 
     /**
      * Add an object to the map.
+     * @param const unsigned C_INT32 & index
      * @param const std::string & CN
-     * @param const unsigned C_INT32 & column
      * @return bool success
      */
-    bool addObject(const std::string & CN,
-                   const unsigned C_INT32 & column);
+    bool addObjectCN(const unsigned C_INT32 & index,
+                     const std::string & CN);
 
     /**
      * Remove an object from the map.
+     * @param const unsigned C_INT32 & index
+     * @return bool success
+     */
+    bool removeObjectCN(const unsigned C_INT32 & index);
+
+    /**
+     * Set the indexed object CN
+     * @param const unsigned C_INT32 & index
      * @param const std::string & CN
      * @return bool success
      */
-    bool removeObject(const std::string & CN);
+    bool setObjectCN(const unsigned C_INT32 & index,
+                     const std::string & CN);
+
+    /**
+     * Retrieve the CN of the indexed object
+     * @return const std::string & objectCN
+     */
+    std::string getObjectCN(const unsigned C_INT32 & index) const;
 
     /**
      * Compile the map. This function must be called 
