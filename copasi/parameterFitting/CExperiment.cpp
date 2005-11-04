@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 21:42:11 $
+   $Date: 2005/11/04 13:08:21 $
    End CVS Header */
 
 #include <fstream>
@@ -513,6 +513,9 @@ bool CExperiment::setFileName(const std::string & fileName)
   *mpFileName = fileName;
   return true;
 }
+
+CExperimentObjectMap & CExperiment::getObjectMap()
+{return * mpObjectMap;}
 
 const unsigned C_INT32 & CExperiment::getFirstRow() const
   {return *mpFirstRow;}

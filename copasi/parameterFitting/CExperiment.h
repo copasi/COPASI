@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 21:42:11 $
+   $Date: 2005/11/04 13:08:21 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -173,6 +173,12 @@ class CExperiment: public CCopasiParameterGroup
      * @return bool success
      */
     bool setFileName(const std::string & fileName);
+
+    /**
+     * Retrieve the object map
+     * @return CExperimentObjectMap & mpObjectMap
+     */
+    CExperimentObjectMap & getObjectMap();
 
     /**
      * Retrieve the type fo the indexed column.
