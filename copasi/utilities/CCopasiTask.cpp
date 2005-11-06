@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/13 13:06:24 $
+   $Date: 2005/11/06 14:30:10 $
    End CVS Header */
 
 /**
@@ -23,6 +23,7 @@
 #include "report/CKeyFactory.h"
 #include "utilities/COutputHandler.h"
 #include "model/CModel.h"
+#include "model/CState.h"
 #include "report/CCopasiObjectReference.h"
 
 const std::string CCopasiTask::TypeName[] =
@@ -78,6 +79,7 @@ CCopasiTask::CCopasiTask(const std::string & name,
     mResult(this),
     mScheduled(false),
     mUpdateModel(false),
+    mpInitialState(NULL),
     mpProblem(NULL),
     mpMethod(NULL),
     mReport(),
@@ -99,6 +101,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
     mResult(this),
     mScheduled(false),
     mUpdateModel(false),
+    mpInitialState(NULL),
     mpProblem(NULL),
     mpMethod(NULL),
     mReport(),
@@ -119,6 +122,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
     mResult(src.mResult, this),
     mScheduled(src.mScheduled),
     mUpdateModel(src.mUpdateModel),
+    mpInitialState(src.mpInitialState ? new CState(*src.mpInitialState) : NULL),
     mpProblem(NULL),
     mpMethod(NULL),
     mReport(src.mReport),
@@ -133,6 +137,8 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
 CCopasiTask::~CCopasiTask()
 {
   GlobalKeys.remove(mKey);
+
+  pdelete(mpInitialState);
   pdelete(mpProblem);
   pdelete(mpMethod);
   pdelete(mpSliders);
@@ -211,6 +217,12 @@ bool CCopasiTask::initialize(const OutputFlag & of,
       success = false;
     }
 
+  if (!mUpdateModel)
+    {
+      pdelete(mpInitialState);
+      mpInitialState = new CState(mpProblem->getModel()->getInitialState());
+    }
+
   return success;
 }
 
@@ -223,6 +235,9 @@ bool CCopasiTask::restore()
 {
   //mReport.close();
   setCallBack(NULL);
+
+  if (!mUpdateModel && mpInitialState)
+    mpProblem->getModel()->setInitialState(mpInitialState);
 
   return true;
 }
@@ -317,7 +332,7 @@ void CCopasiTask::initObjects()
 }
 
 CCopasiTask::CDescription::CDescription(const CCopasiContainer * pParent):
-    CCopasiObject("Description", pParent, "Object")
+CCopasiObject("Description", pParent, "Object")
 {}
 
 CCopasiTask::CDescription::CDescription(const CCopasiTask::CDescription & src,

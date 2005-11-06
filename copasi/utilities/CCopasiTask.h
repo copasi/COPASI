@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/13 13:06:24 $
+   $Date: 2005/11/06 14:30:10 $
    End CVS Header */
 
 /**
@@ -27,6 +27,7 @@ class CCopasiMethod;
 class CCallbackHandler;
 class CCopasiParameterGroup;
 class CProcessReport;
+class CState;
 
 class CCopasiTask : public CCopasiContainer
   {
@@ -66,8 +67,8 @@ class CCopasiTask : public CCopasiContainer
 
     enum OutputFlag
     {
-      NO_OUTPUT = 0,                    //do no output
-      OUTPUT,                           //do output, but do not initialize/finish
+      NO_OUTPUT = 0,                     //do no output
+      OUTPUT,                            //do output, but do not initialize/finish
       OUTPUT_COMPLETE          //do output, including initialization and closing
     };
 
@@ -181,6 +182,12 @@ class CCopasiTask : public CCopasiContainer
      * The restore method must act accordingly.
      */
     bool mUpdateModel;
+
+    /**
+     * The state of the model before execution of the task. If mUpdateModel
+     * is false this state is restored.
+     */
+    CState * mpInitialState;
 
     /**
      * The problem of the task
