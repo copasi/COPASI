@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitTask.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 19:08:34 $
+   $Date: 2005/11/06 22:19:49 $
    End CVS Header */
 
 /**
@@ -35,6 +35,7 @@ CFitTask::CFitTask(const CCopasiTask::Type & type,
                    const CCopasiContainer * pParent):
     COptTask(type, pParent)
 {
+  pdelete(mpProblem);
   mpProblem = new CFitProblem(type, this);
   mpMethod = CFitMethod::createMethod();
   this->add(mpMethod, true);
@@ -46,6 +47,7 @@ CFitTask::CFitTask(const CFitTask & src,
                    const CCopasiContainer * pParent):
     COptTask(src, pParent)
 {
+  pdelete(mpProblem);
   mpProblem = new CFitProblem(* (CFitProblem *) src.mpProblem, this);
   mpMethod = CFitMethod::createMethod();
   this->add(mpMethod, true);

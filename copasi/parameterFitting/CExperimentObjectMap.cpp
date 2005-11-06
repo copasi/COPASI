@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/04 12:48:18 $
+   $Date: 2005/11/06 22:19:49 $
    End CVS Header */
 
 #include <vector>
@@ -81,12 +81,11 @@ bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listO
         mLastColumn = Column;
     }
 
-  mObjects.resize(mLastColumn);
+  mObjects.resize(mLastColumn + 1);
   mObjects = NULL;
 
   CCopasiObject * pObject = NULL;
 
-  mLastColumn = 0;
   for (i = 0; i < imax; i++)
     {
       if ((pObject =

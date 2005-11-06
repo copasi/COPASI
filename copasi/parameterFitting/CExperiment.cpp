@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/04 13:08:21 $
+   $Date: 2005/11/06 22:19:49 $
    End CVS Header */
 
 #include <fstream>
@@ -58,7 +58,9 @@ CExperiment::CExperiment(const std::string & name,
     mMeans(0),
     mWeight(0),
     mDependentValues(0),
-    mIndependentUpdateMethods(0)
+    mIndependentUpdateMethods(0),
+    mIndependentValues(0),
+    mNumDataRows(0)
 {initializeParameter();}
 
 CExperiment::CExperiment(const CExperiment & src,
@@ -81,7 +83,9 @@ CExperiment::CExperiment(const CExperiment & src,
     mMeans(src.mMeans),
     mWeight(src.mWeight),
     mDependentValues(src.mDependentValues),
-    mIndependentUpdateMethods(src.mIndependentUpdateMethods)
+    mIndependentUpdateMethods(src.mIndependentUpdateMethods),
+    mIndependentValues(src.mIndependentValues),
+    mNumDataRows(src.mNumDataRows)
 {initializeParameter();}
 
 CExperiment::CExperiment(const CCopasiParameterGroup & group,
@@ -104,7 +108,8 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
     mMeans(0),
     mWeight(0),
     mDependentValues(0),
-    mIndependentUpdateMethods(0)
+    mIndependentUpdateMethods(0),
+    mIndependentValues(0)
 {initializeParameter();}
 
 CExperiment::~CExperiment() {}
@@ -186,42 +191,43 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   unsigned C_INT32 LastMappedColumn = mpObjectMap->getLastColumn();
   const CVector< CCopasiObject * > & Objects = mpObjectMap->getMappedObjects();
 
-  unsigned C_INT32 i, imax = mpColumnType->size();
-  if (*mpNumColumns < imax)
+  unsigned C_INT32 i, imax = getLastNotIgnoredColumn();
+  if (*mpNumColumns <= imax)
     success = false; // More column types specified than we have data columns
 
-  if (imax < LastMappedColumn)
-    success = false; // An unspecified column, i.e, ignored column is mapped
+  if (LastMappedColumn < imax)
+    success = false; // More column types specified than we have mapped columns
 
   unsigned C_INT32 IndependentCount = mDataIndependent.numCols();
   unsigned C_INT32 DependentCount = mDataDependent.numCols();
 
   mDependentValues.resize(DependentCount);
   mIndependentUpdateMethods.resize(IndependentCount);
+  mIndependentValues.resize(IndependentCount);
 
   IndependentCount = 0;
   DependentCount = 0;
 
   bool TimeFound = false;
 
-  for (i = 0; i < imax; i++)
+  for (i = 0; i <= imax; i++)
     switch (getColumnType(i))
       {
       case ignore:
-        if (i < LastMappedColumn && Objects[i])
-          success = false; // An ignored column is mapped.
         break;
 
       case independent:
-        if ((i < LastMappedColumn && !Objects[i]) || // Object not found
-            i >= LastMappedColumn) success = false;  // The column must be mapped
-        mIndependentUpdateMethods[IndependentCount++] =
+        if (!Objects[i]) // Object not found
+          return false;  // The column must be mapped
+        mIndependentUpdateMethods[IndependentCount] =
           Objects[i]->getUpdateMethod();
+        mIndependentValues[IndependentCount++] =
+          *(C_FLOAT64 *)Objects[i]->getReference();
         break;
 
       case dependent:
-        if ((i < LastMappedColumn && !Objects[i]) || // Object not found
-            i >= LastMappedColumn) success = false;  // The column must be mapped
+        if (!Objects[i]) // Object not found
+          return false;  // The column must be mapped
         mDependentValues[DependentCount++] =
           (C_FLOAT64 *) Objects[i]->getReference();
         break;
@@ -248,11 +254,14 @@ bool CExperiment::read(std::istream & in,
 
   unsigned C_INT32 IndependentCount = 0;
   unsigned C_INT32 DependentCount = 0;
+  unsigned C_INT32 TimeCount = 0;
+  unsigned C_INT32 IgnoreCount = 0;
 
   for (i = 0; i < imax; i++)
     switch (getColumnType(i))
       {
       case ignore:
+        IgnoreCount++;
         break;
 
       case independent:
@@ -264,15 +273,17 @@ bool CExperiment::read(std::istream & in,
         break;
 
       case time:
+        TimeCount++;
         break;
       }
 
-  unsigned C_INT32 NumRows = getNumRows();
+  mNumDataRows = *mpLastRow - *mpFirstRow +
+                 ((*mpHeaderRow < *mpFirstRow || *mpLastRow < *mpHeaderRow) ? 1 : 0);
 
-  mDataTime.resize(NumRows);
-  mDataIndependent.resize(NumRows, IndependentCount);
-  mDataDependent.resize(NumRows, DependentCount);
-  mColumnName.resize(IndependentCount + DependentCount);
+  mDataTime.resize(TimeCount ? mNumDataRows : 0);
+  mDataIndependent.resize(mNumDataRows, IndependentCount);
+  mDataDependent.resize(mNumDataRows, DependentCount);
+  mColumnName.resize(IndependentCount + DependentCount + TimeCount);
 
   CTableRow Row(*mpNumColumns, (*mpSeparator)[0]);
   const std::vector< CTableCell > & Cells = Row.getCells();
@@ -288,16 +299,17 @@ bool CExperiment::read(std::istream & in,
       currentLine++;
     }
 
-  for (j = 0; j < NumRows && !in.fail(); j++)
+  for (j = 0; j < mNumDataRows && !in.fail(); j++, currentLine++)
     {
       in >> Row;
-      currentLine++;
-
-      if (j == *mpHeaderRow)
+      if (currentLine == *mpHeaderRow)
         {
           j--;
+
+          unsigned C_INT32 Column = 0;
           for (i = 0; i < *mpNumColumns; i++)
-            mColumnName[i] = Cells[i].getName();
+            if (getColumnType(i) != ignore)
+              mColumnName[Column++] = Cells[i].getName();
 
           continue;
         }
@@ -330,7 +342,7 @@ bool CExperiment::read(std::istream & in,
     }
 
   if ((in.fail() && !in.eof()) ||
-      j != NumRows) return false;
+      j != mNumDataRows) return false;
 
   // We need to calculate the means and the weights
   mMeans.resize(DependentCount);
@@ -346,7 +358,7 @@ bool CExperiment::read(std::istream & in,
       Mean = 0.0;
       Count = 0;
 
-      for (j = 0; j < NumRows; j++)
+      for (j = 0; j < mNumDataRows; j++)
         {
           C_FLOAT64 & Data = mDataDependent[j][i];
           if (!isnan(Data))
@@ -366,7 +378,7 @@ bool CExperiment::read(std::istream & in,
 
       if (Count > 1)
         {
-          for (j = 0; j < NumRows; j++)
+          for (j = 0; j < mNumDataRows; j++)
             {
               C_FLOAT64 & Data = mDataDependent[j][i];
               if (!isnan(Data))
@@ -407,7 +419,17 @@ bool CExperiment::read(std::istream & in,
       mDataTime.applyPivot(Pivot);
       mDataIndependent.applyPivot(Pivot);
       mDataDependent.applyPivot(Pivot);
+
+      for (mNumDataRows--; mNumDataRows != C_INVALID_INDEX; mNumDataRows--)
+        if (!isnan(mDataTime[mNumDataRows])) break;
+
+      mNumDataRows++;
     }
+
+  // Guess missing dependent values
+  for (i = 0; i < mNumDataRows; i++)
+    for (j = 0; j < DependentCount; j++)
+      if (isnan(mDataDependent[i][j])) mDataDependent[i][j] = mMeans[j];
 
   return true;
 }
@@ -472,6 +494,17 @@ bool CExperiment::updateModelWithIndependentData(const unsigned C_INT32 & index)
 
   for (i = 0; i < imax; i++)
     if (!(*mIndependentUpdateMethods[i])(mDataIndependent(index, i)))
+      return false;
+
+  return true;
+}
+
+bool CExperiment::restoreModelIndependentData()
+{
+  unsigned C_INT32 i, imax = mIndependentUpdateMethods.size();
+
+  for (i = 0; i < imax; i++)
+    if (!(*mIndependentUpdateMethods[i])(mIndependentValues[i]))
       return false;
 
   return true;
@@ -562,16 +595,19 @@ bool CExperiment::addColumnType(const unsigned C_INT32 & index, const Type & typ
 }
 
 bool CExperiment::removeColumnType(const unsigned C_INT32 & index)
-{return removeParameter(StringPrint("%d", index));}
+{return mpColumnType->removeParameter(StringPrint("%d", index));}
 
-CExperiment::Type CExperiment::getColumnType(const unsigned C_INT32 & index) const
+const CExperiment::Type & CExperiment::getColumnType(const unsigned C_INT32 & index) const
   {
     CCopasiParameter * pParm = mpColumnType->getParameter(StringPrint("%d", index));
 
-    if (pParm)
-      return * static_cast<CExperiment::Type *>(pParm->getValue().pVOID);
-    else
-      return dependent;
+    if (!pParm)
+      {
+        const_cast<CExperiment *>(this)->addColumnType(index, dependent);
+        pParm = mpColumnType->getParameter(StringPrint("%d", index));
+      }
+
+    return * static_cast<CExperiment::Type *>(pParm->getValue().pVOID);
   }
 
 bool CExperiment::setColumnType(const unsigned C_INT32 & index,
@@ -585,6 +621,16 @@ bool CExperiment::setColumnType(const unsigned C_INT32 & index,
     return addColumnType(index, type);
 }
 
+unsigned C_INT32 CExperiment::getLastNotIgnoredColumn() const
+  {
+    unsigned C_INT32 i = mpColumnType->size();
+
+    for (i = mpColumnType->size() - 1; i != C_INVALID_INDEX; i--)
+      if (getColumnType(i) != ignore) return i;
+
+    return C_INVALID_INDEX;
+  }
+
 const unsigned C_INT32 & CExperiment::getNumColumns() const
 {return *mpNumColumns;}
 
@@ -594,11 +640,8 @@ bool CExperiment::setNumColumns(const unsigned C_INT32 & cols)
   return true;
 }
 
-const unsigned C_INT32 CExperiment::getNumRows() const
-  {
-    return *mpLastRow - *mpFirstRow +
-    (*mpHeaderRow < *mpFirstRow || *mpLastRow < *mpHeaderRow) ? 1 : 0;
-  }
+const unsigned C_INT32 CExperiment::getNumDataRows() const
+  {return mNumDataRows;}
 
 const std::string & CExperiment::getSeparator() const
   {return *mpSeparator;}

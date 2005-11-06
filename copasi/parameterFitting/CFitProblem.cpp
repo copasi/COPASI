@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 15:10:32 $
+   $Date: 2005/11/06 22:19:49 $
    End CVS Header */
 
 #include "copasi.h"
@@ -16,6 +16,7 @@
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
+#include "model/CState.h"
 #include "optimization/COptItem.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
@@ -26,19 +27,26 @@
 CFitProblem::CFitProblem(const CCopasiTask::Type & type,
                          const CCopasiContainer * pParent):
     COptProblem(type, pParent),
-    mpExperimentSet(NULL)
+    mpExperimentSet(NULL),
+    mpTrajectoryProblem(NULL),
+    mpInitialState(NULL)
 {initializeParameter();}
 
 // copy constructor
 CFitProblem::CFitProblem(const CFitProblem& src,
                          const CCopasiContainer * pParent):
     COptProblem(src, pParent),
-    mpExperimentSet(NULL)
+    mpExperimentSet(NULL),
+    mpTrajectoryProblem(NULL),
+    mpInitialState(NULL)
 {initializeParameter();}
 
 // Destructor
 CFitProblem::~CFitProblem()
-{}
+{
+  pdelete(mpTrajectoryProblem);
+  pdelete(mpInitialState);
+}
 
 void CFitProblem::initializeParameter()
 {
@@ -82,7 +90,6 @@ bool CFitProblem::elevateChildren()
   // This call is necessarry since CFitProblem is derived from COptProblem.
   if (!COptProblem::elevateChildren()) return false;
 
-  // :TODO: Fix the key map
   std::map<std::string, std::string> KeyMap;
 
   std::vector<CCopasiParameter *> * pExperiments =
@@ -204,6 +211,26 @@ bool CFitProblem::initialize()
         }
     }
 
+  pdelete(mpTrajectoryProblem);
+  mpTrajectoryProblem =
+    new CTrajectoryProblem(*static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem()));
+
+  static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem())->setStepNumber(1);
+
+  pdelete(mpInitialState);
+  mpInitialState = new CState(mpModel->getInitialState());
+
+  return true;
+}
+
+bool CFitProblem::restore()
+{
+  *mpTrajectory->getProblem() = *mpTrajectoryProblem;
+  pdelete(mpTrajectoryProblem);
+
+  pdelete(mpInitialState);
+
+  COptProblem::restore();
   return true;
 }
 
@@ -232,27 +259,39 @@ bool CFitProblem::calculate()
         {
           CExperiment & Exp = *mpExperimentSet->getExperiment(i);
 
+          mpModel->setInitialState(mpInitialState);
+
           // set the global and experiment local fit item values.
           for (j = 0; j < jmax; j++)
             if (mExperimentUpdateMethods(i, j))
               (*mExperimentUpdateMethods(i, j))(static_cast<CFitItem *>((*mpOptItems)[j])->getLocalValue());
 
-          jmax = Exp.getNumRows();
+          jmax = Exp.getNumDataRows();
 
           for (j = 0; j < jmax && Continue; j++) // For each data row;
             {
-              // set independent data
-              Exp.updateModelWithIndependentData(j);
-
               switch (Exp.getExperimentType())
                 {
                 case CCopasiTask::steadyState:
+                  // set independent data
+                  Exp.updateModelWithIndependentData(j);
                   Continue = mpSteadyState->process(true);
                   break;
 
                 case CCopasiTask::timeCourse:
-                  pProblem->setEndTime(Exp.getTimeData()[j]);
-                  Continue = mpTrajectory->process(j ? false : true);
+                  if (j)
+                    {
+                      pProblem->setEndTime(Exp.getTimeData()[j]);
+                      pProblem->setStartTime(Exp.getTimeData()[j - 1]);
+                      Continue = mpTrajectory->process(false);
+                    }
+                  else
+                    {
+                      // set independent data
+                      Exp.updateModelWithIndependentData(j);
+                      pProblem->setStartTime(Exp.getTimeData()[j]);
+                      mpModel->setState(&mpModel->getInitialState());
+                    }
                   break;
 
                 default:
@@ -260,6 +299,20 @@ bool CFitProblem::calculate()
                 }
 
               mCalculateValue += Exp.sumOfSquares(j);
+            }
+
+          // restore independent data
+          Exp.restoreModelIndependentData();
+
+          switch (Exp.getExperimentType())
+            {
+            case CCopasiTask::steadyState:
+              mpSteadyState->restore();
+              break;
+
+            case CCopasiTask::timeCourse:
+              mpTrajectory->restore();
+              break;
             }
         }
     }
@@ -307,3 +360,6 @@ std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
 
   return os;
 }
+
+bool CFitProblem::createObjectiveFunction()
+{return true;}

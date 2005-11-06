@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/05 16:21:16 $
+   $Date: 2005/11/06 22:19:49 $
    End CVS Header */
 
 #ifndef COPASI_CFitProblem
@@ -13,6 +13,8 @@
 #include "utilities/CMatrix.h"
 
 class CExperimentSet;
+class CTrajectoryProblem;
+class CState;
 
 class CFitProblem : public COptProblem
   {
@@ -75,6 +77,13 @@ class CFitProblem : public COptProblem
     virtual bool calculate();
 
     /**
+     * Do all neccessary restore procedures so that the
+     * model is in the same state as before
+     * @result bool succes
+     */
+    virtual bool restore();
+
+    /**
      * This is the output method for any object. The default implementation
      * provided with CCopasiObject uses the ostream operator<< of the object
      * to print the object.To overide this default behaviour one needs to
@@ -106,6 +115,8 @@ class CFitProblem : public COptProblem
      */
     void initializeParameter();
 
+    virtual bool createObjectiveFunction();
+
   private:
     // Attributes
     /**
@@ -117,6 +128,16 @@ class CFitProblem : public COptProblem
      * Matrix of update methods for items for each experiment.
      */
     CMatrix< UpdateMethod * > mExperimentUpdateMethods;
+
+    /**
+     * Copy of the trajectory problem so that we can restore the defaults
+     */
+    CTrajectoryProblem * mpTrajectoryProblem;
+
+    /**
+     * Copy of the initial state needed for calculate
+     */
+    CState * mpInitialState;
   };
 
 #endif  // COPASI_CFitProblem

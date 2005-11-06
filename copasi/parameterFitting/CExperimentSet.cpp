@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 15:11:33 $
+   $Date: 2005/11/06 22:19:49 $
    End CVS Header */
 
 #include <algorithm>
@@ -64,7 +64,7 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
 
   std::ifstream in;
   std::string CurrentFileName("");
-  unsigned C_INT32 CurrentLineNumber = 0;
+  unsigned C_INT32 CurrentLineNumber = 1;
 
   std::vector< CExperiment * >::iterator it = mpExperiments->begin();
   std::vector< CExperiment * >::iterator end = mpExperiments->end();
@@ -74,7 +74,7 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
       if (CurrentFileName != (*it)->getFileName())
         {
           CurrentFileName = (*it)->getFileName();
-          CurrentLineNumber = 0;
+          CurrentLineNumber = 1;
           if (in.is_open())
             {
               in.close();

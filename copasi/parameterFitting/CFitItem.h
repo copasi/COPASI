@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/30 15:19:03 $
+   $Date: 2005/11/06 22:19:49 $
    End CVS Header */
 
 #ifndef COPASI_CFitItem
@@ -101,6 +101,12 @@ class CFitItem : public COptItem
      * @return const C_FLOAT64 & value
      */
     const C_FLOAT64 & getLocalValue() const;
+
+    /**
+     * Retrieve the value of the optimization object.
+     * @return const C_FLOAT64 * objectValue
+     */
+    virtual const C_FLOAT64 * getObjectValue() const;
 
     /**
      * Add an experiment to the list of affected experiments.

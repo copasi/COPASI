@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/03 15:25:52 $
+   $Date: 2005/11/06 22:19:49 $
    End CVS Header */
 
 #include "copasi.h"
@@ -65,8 +65,7 @@ bool CFitItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 {
   if (!COptItem::compile(listOfContainer)) return false;
 
-  if (mpGrpAffectedExperiments->size() == 0)
-    return false;
+  mLocalValue = * COptItem::getObjectValue();
 
   return true;
 }
@@ -97,6 +96,9 @@ bool CFitItem::setLocalValue(const C_FLOAT64 & value)
 
 const C_FLOAT64 & CFitItem::getLocalValue() const
   {return mLocalValue;}
+
+const C_FLOAT64 * CFitItem::getObjectValue() const
+  {return & mLocalValue;}
 
 UpdateMethod * CFitItem::getUpdateMethod() const
   {return mpLocalMethod;}

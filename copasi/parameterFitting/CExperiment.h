@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/04 13:08:21 $
+   $Date: 2005/11/06 22:19:49 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -131,6 +131,12 @@ class CExperiment: public CCopasiParameterGroup
     bool updateModelWithIndependentData(const unsigned C_INT32 & index);
 
     /**
+     * Restore the model with the independent data from before the experiment
+     * @return bool success
+     */
+    bool restoreModelIndependentData();
+
+    /**
      * set the experiment type
      * @param const CCopasiTask::Type & experimentType
      * @return bool success
@@ -198,9 +204,9 @@ class CExperiment: public CCopasiParameterGroup
     /**
      * Retrieve the type fo the indexed column.
      * @param const unsigned C_INT32 & index,
-     * @return Type columnType
+     * @return const Type & columnType
      */
-    Type getColumnType(const unsigned C_INT32 & index) const;
+    const Type & getColumnType(const unsigned C_INT32 & index) const;
 
     /**
      * Set the type of the indexed column.
@@ -209,6 +215,12 @@ class CExperiment: public CCopasiParameterGroup
      * @return bool success
      */
     bool setColumnType(const unsigned C_INT32 & index, const Type & type);
+
+    /**
+     * Retrievet he last non ignored column
+     * @return unsigned C_INT32 lastNotIgnoredColumn
+     */
+    unsigned C_INT32 getLastNotIgnoredColumn() const;
 
     /**
      * Retrieve the number of columns
@@ -263,10 +275,10 @@ class CExperiment: public CCopasiParameterGroup
     bool setHeaderRow(const unsigned C_INT32 & headerRow);
 
     /**
-     * Retrieve the number of rows
-     * @return const unsigned C_INT32 numRows
+     * Retrieve the number of data rows
+     * @return const unsigned C_INT32 numDataRows
      */
-    const unsigned C_INT32 getNumRows() const;
+    const unsigned C_INT32 getNumDataRows() const;
 
     /**
      * Retrieve the seperator
@@ -406,6 +418,10 @@ class CExperiment: public CCopasiParameterGroup
     CVector< C_FLOAT64 * > mDependentValues;
 
     CVector< UpdateMethod * > mIndependentUpdateMethods;
+
+    CVector< C_FLOAT64 > mIndependentValues;
+
+    unsigned C_INT32 mNumDataRows;
   };
 
 #endif // COPASI_CExperiment
