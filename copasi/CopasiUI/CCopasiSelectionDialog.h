@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSelectionDialog.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/01/19 13:51:21 $
+   $Author: shoops $ 
+   $Date: 2005/11/06 22:20:10 $
    End CVS Header */
 
 #ifndef CCopasiSelectionDialog_H__
@@ -50,6 +50,9 @@ class CCopasiSelectionDialog: public QDialog
     void setModel(const CModel* model);
     void setSingleSelection(bool singleSelectionMode);
     void enableExpertMode(bool enable);
+
+    static CCopasiObject * getObjectSingle(QWidget * parent = 0);
+    static std::vector<CCopasiObject *> getObjectVector(QWidget * parent = 0);
   };
 
 #endif /* SimpleSelectionDialog_H__ */

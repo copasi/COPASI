@@ -1,20 +1,34 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/02 12:20:50 $
+   $Author: shoops $ 
+   $Date: 2005/11/06 22:20:10 $
    End CVS Header */
 
-#include "CCopasiSelectionDialog.h"
 #include "qpushbutton.h"
 #include "qcheckbox.h"
 #include "qhbox.h"
 #include "qvbox.h"
 #include "qlayout.h"
+
+#include "CCopasiSelectionDialog.h"
 #include "CCopasiSelectionWidget.h"
 
-CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * name , bool modal): QDialog(parent, name, modal), mpOKButton(NULL), mpCancelButton(NULL), mpModeCheckBox(NULL), mpButtonBox(NULL), mpMainWidget(NULL), mpMainLayout(NULL), mpTmpVector(new std::vector<CCopasiObject*>()), mpOutputVector(NULL), mExpertMode(false), mExpertModeEnabled(true)
+#include "CopasiDataModel/CCopasiDataModel.h"
+
+CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * name , bool modal):
+    QDialog(parent, name, modal),
+    mpOKButton(NULL),
+    mpCancelButton(NULL),
+    mpModeCheckBox(NULL),
+    mpButtonBox(NULL),
+    mpMainWidget(NULL),
+    mpMainLayout(NULL),
+    mpTmpVector(new std::vector<CCopasiObject*>()),
+    mpOutputVector(NULL),
+    mExpertMode(false),
+    mExpertModeEnabled(true)
 {
   this->setWFlags(this->getWFlags() | Qt::WDestructiveClose);
   this->mpMainLayout = new QVBoxLayout(this);
@@ -50,12 +64,7 @@ CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * n
 
 CCopasiSelectionDialog::~CCopasiSelectionDialog()
 {
-  /*  delete this->mpOKButton;
-    delete this->mpCancelButton;
-    delete this->mpModeCheckBox;
-    delete this->mpButtonBox;
-    delete this->mpMainLayout;
-    delete this->mpSelectionWidget;*/
+  delete mpTmpVector;
 }
 
 void CCopasiSelectionDialog::setModel(const CModel* model)
@@ -103,4 +112,34 @@ void CCopasiSelectionDialog::enableExpertMode(bool enable)
     {
       this->mpModeCheckBox->show();
     }
+}
+
+CCopasiObject * CCopasiSelectionDialog::getObjectSingle(QWidget * parent)
+{
+  std::vector<CCopasiObject *> Selection;
+
+  CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
+  pDialog->setModel(CCopasiDataModel::Global->getModel());
+  pDialog->setSingleSelection(true);
+  pDialog->setOutputVector(&Selection);
+
+  if (pDialog->exec () == QDialog::Accepted && Selection.size() != 0)
+    return Selection[0];
+  else
+    return NULL;
+}
+
+std::vector<CCopasiObject *> CCopasiSelectionDialog::getObjectVector(QWidget * parent)
+{
+  std::vector<CCopasiObject *> Selection;
+
+  CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
+  pDialog->setModel(CCopasiDataModel::Global->getModel());
+  pDialog->setSingleSelection(false);
+  pDialog->setOutputVector(&Selection);
+
+  if (pDialog->exec () == QDialog::Rejected)
+    Selection.clear();
+
+  return Selection;
 }
