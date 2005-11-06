@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>398</width>
-            <height>306</height>
+            <height>377</height>
         </rect>
     </property>
     <property name="caption">
@@ -440,17 +440,74 @@
                 <property name="text">
                     <string>Column Name</string>
                 </property>
+                <property name="pixmap">
+                    <pixmap></pixmap>
+                </property>
             </column>
             <column>
                 <property name="text">
                     <string>Type</string>
+                </property>
+                <property name="pixmap">
+                    <pixmap></pixmap>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>Hidden</string>
+                </property>
+                <property name="pixmap">
+                    <pixmap></pixmap>
+                </property>
+            </column>
+            <column>
+                <property name="text">
+                    <string>&lt;&gt;</string>
+                </property>
+                <property name="pixmap">
+                    <pixmap></pixmap>
                 </property>
             </column>
             <column>
                 <property name="text">
                     <string>Model Object</string>
                 </property>
+                <property name="pixmap">
+                    <pixmap></pixmap>
+                </property>
             </column>
+            <column>
+                <property name="text">
+                    <string>Hidden</string>
+                </property>
+                <property name="pixmap">
+                    <pixmap></pixmap>
+                </property>
+            </column>
+            <row>
+                <property name="text">
+                    <string>1</string>
+                </property>
+                <property name="pixmap">
+                    <pixmap></pixmap>
+                </property>
+            </row>
+            <row>
+                <property name="text">
+                    <string>2</string>
+                </property>
+                <property name="pixmap">
+                    <pixmap></pixmap>
+                </property>
+            </row>
+            <row>
+                <property name="text">
+                    <string>3</string>
+                </property>
+                <property name="pixmap">
+                    <pixmap></pixmap>
+                </property>
+            </row>
             <property name="name">
                 <cstring>mpTable</cstring>
             </property>
@@ -458,7 +515,7 @@
                 <number>3</number>
             </property>
             <property name="numCols">
-                <number>3</number>
+                <number>6</number>
             </property>
             <property name="selectionMode">
                 <enum>NoSelection</enum>
@@ -634,8 +691,10 @@
     <forward>class CExperimentFileInfo</forward>
     <forward>class CExperiment</forward>
     <forward>class CQExperimentDataValidator</forward>
+    <forward>class QSignalMapper</forward>
 </forwards>
 <variables>
+    <variable>QSignalMapper * mpBtnMap;</variable>
     <variable>CQExperimentDataValidator * mpValidatorHeader;</variable>
     <variable>CQExperimentDataValidator * mpValidatorLast;</variable>
     <variable>CExperiment * mpExperiment;</variable>
@@ -648,6 +707,7 @@
     <variable>CQExperimentDataValidator * mpValidatorFirst;</variable>
     <variable>unsigned int mShown;</variable>
     <variable>CQExperimentDataValidator * mpValidatorName;</variable>
+    <variable>QSignalMapper * mpComboMap;</variable>
 </variables>
 <slots>
     <slot access="protected" specifier="non virtual">slotRevert()</slot>
@@ -666,14 +726,17 @@
     <slot access="protected" specifier="non virtual">slotCancel()</slot>
     <slot access="protected" specifier="non virtual">slotOK()</slot>
     <slot access="protected" specifier="non virtual">slotUpdateTable()</slot>
+    <slot access="protected" specifier="non virtual">slotModelObject( int row )</slot>
+    <slot access="protected" specifier="non virtual">slotTypeChanged( int row )</slot>
 </slots>
 <functions>
-    <function returnType="bool">load( CExperimentSet * &amp; pExperimentSet )</function>
+    <function specifier="non virtual" returnType="bool">load( CExperimentSet * &amp; pExperimentSet )</function>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
     <function access="protected" specifier="non virtual" returnType="bool">loadExperiment( const CExperiment * pExperiment )</function>
     <function access="protected" specifier="non virtual" returnType="bool">saveExperiment( CExperiment * pExperiment )</function>
     <function access="protected" specifier="non virtual">syncExperiments()</function>
+    <function access="protected" specifier="non virtual">loadTable( const bool &amp; guess )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 18:03:57 $
+   $Date: 2005/11/06 22:21:02 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -286,10 +286,11 @@ bool CQFittingWidget::runTask()
 
   if (!commonBeforeRunTask()) return false;
 
-  pTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
-
   try
     {
+      if (!pTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL))
+        throw CCopasiException(CCopasiMessage::peekLastMessage());
+
       if (!pTask->process(true))
         throw CCopasiException(CCopasiMessage::peekLastMessage());
     }

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 21:46:39 $
+   $Date: 2005/11/06 22:21:02 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Wed Nov 2 16:19:52 2005
- **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.4 2005/11/02 21:46:39 shoops Exp $)
+ ** Created: Sun Nov 6 11:17:14 2005
+ **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.5 2005/11/06 22:21:02 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -42,6 +42,7 @@ class CExperimentSet;
 class CExperimentFileInfo;
 class CExperiment;
 class CQExperimentDataValidator;
+class QSignalMapper;
 
 class CQExperimentData : public QDialog
   {
@@ -84,9 +85,10 @@ class CQExperimentData : public QDialog
 
     friend class CQExperimentDataValidator;
 
-    virtual bool load(CExperimentSet * & pExperimentSet);
+    bool load(CExperimentSet * & pExperimentSet);
 
   protected:
+    QSignalMapper * mpBtnMap;
     CQExperimentDataValidator * mpValidatorHeader;
     CQExperimentDataValidator * mpValidatorLast;
     CExperiment * mpExperiment;
@@ -98,10 +100,12 @@ class CQExperimentData : public QDialog
     CQExperimentDataValidator * mpValidatorFirst;
     unsigned int mShown;
     CQExperimentDataValidator * mpValidatorName;
+    QSignalMapper * mpComboMap;
 
     bool loadExperiment(const CExperiment * pExperiment);
     bool saveExperiment(CExperiment * pExperiment);
     void syncExperiments();
+    void loadTable(const bool & guess);
 
     QVBoxLayout* CQExperimentDataLayout;
     QGridLayout* mpLayoutFile;
@@ -128,6 +132,8 @@ class CQExperimentData : public QDialog
     void slotCancel();
     void slotOK();
     void slotUpdateTable();
+    void slotModelObject(int row);
+    void slotTypeChanged(int row);
 
   private:
     QPixmap image0;

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 21:46:39 $
+   $Date: 2005/11/06 22:21:02 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Wed Nov 2 16:19:52 2005
- **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.4 2005/11/02 21:46:39 shoops Exp $)
+ ** Created: Sun Nov 6 11:17:14 2005
+ **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.5 2005/11/06 22:21:02 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -344,9 +344,21 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpTable->setNumCols(mpTable->numCols() + 1);
   mpTable->horizontalHeader()->setLabel(mpTable->numCols() - 1, tr("Type"));
   mpTable->setNumCols(mpTable->numCols() + 1);
+  mpTable->horizontalHeader()->setLabel(mpTable->numCols() - 1, tr("Hidden"));
+  mpTable->setNumCols(mpTable->numCols() + 1);
+  mpTable->horizontalHeader()->setLabel(mpTable->numCols() - 1, tr("<>"));
+  mpTable->setNumCols(mpTable->numCols() + 1);
   mpTable->horizontalHeader()->setLabel(mpTable->numCols() - 1, tr("Model Object"));
+  mpTable->setNumCols(mpTable->numCols() + 1);
+  mpTable->horizontalHeader()->setLabel(mpTable->numCols() - 1, tr("Hidden"));
+  mpTable->setNumRows(mpTable->numRows() + 1);
+  mpTable->verticalHeader()->setLabel(mpTable->numRows() - 1, tr("1"));
+  mpTable->setNumRows(mpTable->numRows() + 1);
+  mpTable->verticalHeader()->setLabel(mpTable->numRows() - 1, tr("2"));
+  mpTable->setNumRows(mpTable->numRows() + 1);
+  mpTable->verticalHeader()->setLabel(mpTable->numRows() - 1, tr("3"));
   mpTable->setNumRows(3);
-  mpTable->setNumCols(3);
+  mpTable->setNumCols(6);
   mpTable->setSelectionMode(QTable::NoSelection);
   CQExperimentDataLayout->addWidget(mpTable);
 
@@ -362,7 +374,7 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpLayoutButton->addWidget(mpBtnCancel);
   CQExperimentDataLayout->addLayout(mpLayoutButton);
   languageChange();
-  resize(QSize(398, 306).expandedTo(minimumSizeHint()));
+  resize(QSize(398, 377).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
@@ -426,7 +438,13 @@ void CQExperimentData::languageChange()
   mpLblHeader->setText(tr("Header"));
   mpTable->horizontalHeader()->setLabel(0, tr("Column Name"));
   mpTable->horizontalHeader()->setLabel(1, tr("Type"));
-  mpTable->horizontalHeader()->setLabel(2, tr("Model Object"));
+  mpTable->horizontalHeader()->setLabel(2, tr("Hidden"));
+  mpTable->horizontalHeader()->setLabel(3, tr("<>"));
+  mpTable->horizontalHeader()->setLabel(4, tr("Model Object"));
+  mpTable->horizontalHeader()->setLabel(5, tr("Hidden"));
+  mpTable->verticalHeader()->setLabel(0, tr("1"));
+  mpTable->verticalHeader()->setLabel(1, tr("2"));
+  mpTable->verticalHeader()->setLabel(2, tr("3"));
   mpBtnOK->setText(tr("&OK"));
   mpBtnOK->setAccel(QKeySequence(tr("Alt+O")));
   mpBtnRevert->setText(tr("&Revert"));
