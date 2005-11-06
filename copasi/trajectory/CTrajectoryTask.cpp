@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:36:18 $
+   $Date: 2005/11/06 22:14:32 $
    End CVS Header */
 
 /**
@@ -100,27 +100,35 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
     dynamic_cast<CTrajectoryProblem *>(mpProblem);
   assert(pProblem);
 
-  return CCopasiTask::initialize(of, pOstream);
+  dynamic_cast<CTrajectoryMethod *>(mpMethod)->setProblem(pProblem);
+  bool success = mpMethod->isValidProblem(mpProblem);
+
+  pdelete(mpState);
+  mpState = new CState(pProblem->getModel()->getState());
+
+  if (!CCopasiTask::initialize(of, pOstream)) success = false;
+  mTimeSeriesRequested = pProblem->timeSeriesRequested();
+
+  initOutput();
+
+  mpCurrentReport = &mReport;
+
+  return success;
 }
 
 bool CTrajectoryTask::process(const bool & useInitialValues)
 {
   assert(/*mpProblem && */mpMethod);
-  mpMethod->isValidProblem(mpProblem);
 
   //*****
 
   if (useInitialValues)
     mpProblem->getModel()->applyInitialValues();
 
-  mpCurrentReport = &mReport;
-
   //*****
 
   CTrajectoryProblem * pProblem = (CTrajectoryProblem *) mpProblem;
   CTrajectoryMethod * pMethod = (CTrajectoryMethod *) mpMethod;
-
-  mTimeSeriesRequested = pProblem->timeSeriesRequested();
 
   //the following is a hack that has to disappear soon.
   //pProblem->setInitialState(pProblem->getModel()->getInitialState());
@@ -130,11 +138,9 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   //set the start time
   pProblem->getModel()->setTime(pProblem->getStartTime());
 
-  pdelete(mpState);
-  mpState = new CState(pProblem->getModel()->getState());
+  *mpState = pProblem->getModel()->getState();
 
   pMethod->setCurrentState(mpState);
-  pMethod->setProblem(pProblem);
 
   C_FLOAT64 StepSize = pProblem->getStepSize();
   C_FLOAT64 NextTimeToReport;
@@ -184,7 +190,6 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
                                      &hundred);
     }
 
-  initOutput();
   if ((*LE)(outputStartTime, Time)) doOutput();
 
   // We start the integration
