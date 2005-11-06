@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/22 13:35:54 $
+   $Date: 2005/11/06 22:16:27 $
    End CVS Header */
 
 #include "copasi.h"
@@ -274,8 +274,6 @@ bool COptMethodEP::creation()
         {
           C_FLOAT64 & mut = (*mIndividual[i])[j];
           COptItem & OptItem = *(*mpOptItem)[j];
-
-          mut = *OptItem.getObjectValue();
 
           // calculate lower and upper bounds
           mn = *OptItem.getLowerBoundValue();
