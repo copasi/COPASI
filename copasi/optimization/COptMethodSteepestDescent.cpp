@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/22 13:36:25 $
+   $Date: 2005/11/06 22:17:03 $
    End CVS Header */
 
 #include "copasi.h"
@@ -55,18 +55,18 @@ bool COptMethodSteepestDescent::optimise()
         {
         case - 1:
           mIndividual[i] = *OptItem.getLowerBoundValue();
-          (*(*mpSetCalculateVariable)[i])(mIndividual[i]);
           break;
 
         case 1:
           mIndividual[i] = *OptItem.getUpperBoundValue();
-          (*(*mpSetCalculateVariable)[i])(mIndividual[i]);
           break;
 
         case 0:
           mIndividual[i] = *OptItem.getObjectValue();
           break;
         }
+
+      (*(*mpSetCalculateVariable)[i])(mIndividual[i]);
     }
 
   fmx = mBestValue = evaluate();
