@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/30 15:18:51 $
+   $Date: 2005/11/06 22:15:30 $
    End CVS Header */
 
 #ifndef COPASI_COptItem
@@ -138,8 +138,8 @@ class COptItem: public CCopasiParameterGroup
      * @param const std::vector< CCopasiContainer * > listOfContainer
      * @return bool success
      */
-    bool compile(const std::vector< CCopasiContainer * > listOfContainer =
-                   CCopasiContainer::EmptyList);
+    virtual bool compile(const std::vector< CCopasiContainer * > listOfContainer =
+                           CCopasiContainer::EmptyList);
 
     /**
      * This functions check whether the current value is within the limits
@@ -174,7 +174,7 @@ class COptItem: public CCopasiParameterGroup
      * Retrieve the value of the optimization object.
      * @return const C_FLOAT64 * objectValue
      */
-    const C_FLOAT64 * getObjectValue() const;
+    virtual const C_FLOAT64 * getObjectValue() const;
 
     /**
      * Retrieve the value of the lower bound.
