@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/10/26 15:43:19 $
+   $Author: shoops $ 
+   $Date: 2005/11/06 22:18:20 $
    End CVS Header */
 
 /**
@@ -246,13 +246,12 @@ bool COptProblem::initialize()
     {
       if (!(*it)->compile(ContainerList)) return false;
       mUpdateMethods[i] = (*it)->getUpdateMethod();
-      mOriginalVariables[i] = *(*it)->getObjectValue();
+      mOriginalVariables[i] = *(*it)->COptItem::getObjectValue();
     }
 
   createObjectiveFunction();
-  if (!mpFunction) return false;
 
-  if (!mpFunction->compile(ContainerList))
+  if (!mpFunction || !mpFunction->compile(ContainerList))
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
       return false;
@@ -267,7 +266,7 @@ bool COptProblem::restore()
 
   // set the original paramter values
   for (i = 0; i < imax; i++)
-    (*mUpdateMethods[i])(mOriginalVariables[i]);
+    (*(*mpOptItems)[i]->COptItem::getUpdateMethod())(mOriginalVariables[i]);
 
   return true;
 }
@@ -413,8 +412,11 @@ const std::string COptProblem::getObjectiveFunction()
 
 bool COptProblem::createObjectiveFunction()
 {
+  CCopasiParameter * pParm = getParameter("ObjectiveFunction");
+  if (!pParm) return false;
+
   mpFunction =
-    dynamic_cast<CExpression *>(GlobalKeys.get(* getValue("ObjectiveFunction").pKEY));
+    dynamic_cast<CExpression *>(GlobalKeys.get(* pParm->getValue().pKEY));
 
   CCopasiVectorN<CEvaluationTree> & FunctionList =
     CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
@@ -516,9 +518,12 @@ std::ostream &operator<<(std::ostream &os, const COptProblem & o)
 
   os << std::endl;
 
-  os << "Objective Function:" << std::endl;
-  os << "    " << o.mpFunction->getDisplayString() << std::endl;
-  os << std:: endl;
+  if (o.mpFunction)
+    {
+      os << "Objective Function:" << std::endl;
+      os << "    " << o.mpFunction->getDisplayString() << std::endl;
+      os << std:: endl;
+    }
 
   os << "List of Optimization Items:" << std::endl;
 
@@ -526,6 +531,12 @@ std::ostream &operator<<(std::ostream &os, const COptProblem & o)
     o.mpOptItems->begin();
   std::vector< COptItem * >::const_iterator endItem =
     o.mpOptItems->end();
+
+  for (; itItem != endItem; ++itItem)
+    os << "    " << **itItem << std::endl;
+
+  itItem = o.mpConstraintItems->begin();
+  endItem = o.mpConstraintItems->end();
 
   for (; itItem != endItem; ++itItem)
     os << "    " << **itItem << std::endl;
