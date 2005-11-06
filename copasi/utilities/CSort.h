@@ -1,15 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSort.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/12 20:32:16 $
+   $Date: 2005/11/06 14:06:49 $
    End CVS Header */
 
 #ifndef COPASI_CSort
- #define COPASI_CSort
+#define COPASI_CSort
 
 #include <algorithm>
+#include <float.h>
 
 #include "CVector.h"
 
@@ -23,14 +24,19 @@ class FCompareBase
   {
   public:
     /**
-     * Operator wrapping the coparison operator <
+     * Operator wrapping the comparison operator <
      * @param const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs
      * @param const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs
      * @return bool lessThan
      */
     virtual bool operator() (const std::pair<RandomAccessIterator, unsigned C_INT32> & lhs,
                              const std::pair<RandomAccessIterator, unsigned C_INT32> & rhs)
-    {return *lhs.first < *rhs.first;}
+    {
+      return
+      isnan(*lhs.first) ?
+      (isnan(*rhs.first) ? lhs.first < rhs.first : false) :
+          (isnan(*rhs.first) ? true : *lhs.first < *rhs.first);
+    }
   };
 
 /**
@@ -52,7 +58,7 @@ class FCompare : FCompareBase<RandomAccessIterator>
      * @param LessThanCompare method
      */
     FCompare(LessThanCompare method):
-        mpCompare(method)
+    mpCompare(method)
     {}
 
     /**
