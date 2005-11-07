@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:19:49 $
+   $Date: 2005/11/07 20:39:50 $
    End CVS Header */
 
 #include "copasi.h"
@@ -248,16 +248,18 @@ bool CFitProblem::calculate()
 
   unsigned i, imax = mpExperimentSet->size();
   unsigned j, jmax = mpOptItems->size();
+  unsigned kmax;
   mCalculateValue = 0.0;
 
   CTrajectoryProblem * pProblem =
     static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
+  CExperiment * pExp;
 
   try
     {
       for (i = 0; i < imax && Continue; i++) // For each experiment
         {
-          CExperiment & Exp = *mpExperimentSet->getExperiment(i);
+          pExp = mpExperimentSet->getExperiment(i);
 
           mpModel->setInitialState(mpInitialState);
 
@@ -266,30 +268,30 @@ bool CFitProblem::calculate()
             if (mExperimentUpdateMethods(i, j))
               (*mExperimentUpdateMethods(i, j))(static_cast<CFitItem *>((*mpOptItems)[j])->getLocalValue());
 
-          jmax = Exp.getNumDataRows();
+          kmax = pExp->getNumDataRows();
 
-          for (j = 0; j < jmax && Continue; j++) // For each data row;
+          for (j = 0; j < kmax && Continue; j++) // For each data row;
             {
-              switch (Exp.getExperimentType())
+              switch (pExp->getExperimentType())
                 {
                 case CCopasiTask::steadyState:
                   // set independent data
-                  Exp.updateModelWithIndependentData(j);
+                  pExp->updateModelWithIndependentData(j);
                   Continue = mpSteadyState->process(true);
                   break;
 
                 case CCopasiTask::timeCourse:
                   if (j)
                     {
-                      pProblem->setEndTime(Exp.getTimeData()[j]);
-                      pProblem->setStartTime(Exp.getTimeData()[j - 1]);
+                      pProblem->setEndTime(pExp->getTimeData()[j]);
+                      pProblem->setStartTime(pExp->getTimeData()[j - 1]);
                       Continue = mpTrajectory->process(false);
                     }
                   else
                     {
                       // set independent data
-                      Exp.updateModelWithIndependentData(j);
-                      pProblem->setStartTime(Exp.getTimeData()[j]);
+                      pExp->updateModelWithIndependentData(j);
+                      pProblem->setStartTime(pExp->getTimeData()[j]);
                       mpModel->setState(&mpModel->getInitialState());
                     }
                   break;
@@ -298,13 +300,13 @@ bool CFitProblem::calculate()
                   break;
                 }
 
-              mCalculateValue += Exp.sumOfSquares(j);
+              mCalculateValue += pExp->sumOfSquares(j);
             }
 
           // restore independent data
-          Exp.restoreModelIndependentData();
+          pExp->restoreModelIndependentData();
 
-          switch (Exp.getExperimentType())
+          switch (pExp->getExperimentType())
             {
             case CCopasiTask::steadyState:
               mpSteadyState->restore();
@@ -320,6 +322,7 @@ bool CFitProblem::calculate()
   catch (...)
     {
       mCalculateValue = DBL_MAX;
+      pExp->restoreModelIndependentData();
     }
 
   if (mpCallBack) return mpCallBack->progress(mhCounter);
