@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:21:02 $
+   $Date: 2005/11/07 20:53:36 $
    End CVS Header */
 
 #include <algorithm>
@@ -349,6 +349,18 @@ void CQExperimentData::slotFileAdd()
   mpBoxFile->insertItem(FROM_UTF8(baseName));
 
   mpBoxFile->setSelected(mpBoxFile->count() - 1, true);
+
+  unsigned C_INT32 First, Last;
+  if (mpFileInfo->getFirstUnusedSection(First, Last))
+    {
+      do
+        {
+          slotExperimentAdd();
+        }
+      while (mpBtnExperimentAdd->isEnabled());
+
+      mpBoxExperiment->setSelected(0, true);
+    }
 }
 
 void CQExperimentData::slotFileChanged(QListBoxItem * pItem)
