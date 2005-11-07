@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 21:40:14 $
+   $Date: 2005/11/07 20:38:34 $
    End CVS Header */
 
 #ifndef COPASI_CTableCell
@@ -65,6 +65,13 @@ class CTableCell
     const C_FLOAT64 & getValue() const;
 
     /**
+     * Check whether a cell contains any data.
+     * A cell is considered empty when it only contains
+     * whitespace charaters.
+     */
+    const bool & isEmpty() const;
+
+    /**
      * Formated stream input operator
      * @param CTableCell & cell
      * @return std::istream &
@@ -81,6 +88,8 @@ class CTableCell
     C_FLOAT64 mValue;
 
     bool mIsValue;
+
+    bool mIsEmpty;
   };
 
 class CTableRow
@@ -136,6 +145,12 @@ class CTableRow
                                        const bool & rewind);
 
     /**
+     * Check whether row contains any cells with data
+     * A row is considered empty when it all cells are empty.
+     */
+    const bool & isEmpty() const;
+
+    /**
      * Formated stream input operator
      * @param CTableRow & cell
      * @return std::istream &
@@ -148,6 +163,8 @@ class CTableRow
     std::vector< CTableCell > mCells;
 
     char mSeparator;
+
+    bool mIsEmpty;
   };
 
 #endif // COPASI_CTableCell

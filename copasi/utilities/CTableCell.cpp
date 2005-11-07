@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 21:40:14 $
+   $Date: 2005/11/07 20:38:34 $
    End CVS Header */
 
 #include <limits>
@@ -19,14 +19,16 @@ CTableCell::CTableCell(const char & separator):
     mSeparator(separator),
     mName(""),
     mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mIsValue(false)
+    mIsValue(false),
+    mIsEmpty(true)
 {}
 
 CTableCell::CTableCell(const CTableCell & src):
     mSeparator(src.mSeparator),
     mName(src.mName),
     mValue(src.mValue),
-    mIsValue(src.mIsValue)
+    mIsValue(src.mIsValue),
+    mIsEmpty(src.mIsEmpty)
 {}
 
 CTableCell::~CTableCell() {}
@@ -40,6 +42,8 @@ bool CTableCell::setSeparator(const char & separator)
 const char & CTableCell::getSeparator() const {return mSeparator;}
 
 const bool & CTableCell::isValue() const {return mIsValue;}
+
+const bool & CTableCell::isEmpty() const {return mIsEmpty;}
 
 const std::string & CTableCell::getName() const {return mName;}
 
@@ -73,6 +77,7 @@ std::istream & operator >> (std::istream &is, CTableCell & cell)
       cell.mIsValue = false;
       cell.mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
+      cell.mIsEmpty = true;
       return is;
     }
   else
@@ -83,6 +88,8 @@ std::istream & operator >> (std::istream &is, CTableCell & cell)
         cell.mName = cell.mName.substr(begin);
       else
         cell.mName = cell.mName.substr(begin, end - begin + 1);
+
+      cell.mIsEmpty = false;
     }
 
   /* Try to convert the string into a number */
@@ -119,12 +126,14 @@ std::istream & operator >> (std::istream &is, CTableCell & cell)
 CTableRow::CTableRow(const unsigned C_INT32 & size,
                      const char & separator):
     mCells(0),
-    mSeparator(separator)
+    mSeparator(separator),
+    mIsEmpty(true)
 {resize(size);}
 
 CTableRow::CTableRow(const CTableRow & src):
     mCells(src.mCells),
-    mSeparator(src.mSeparator)
+    mSeparator(src.mSeparator),
+    mIsEmpty(src.mIsEmpty)
 {}
 
 CTableRow::~CTableRow() {}
@@ -174,6 +183,8 @@ unsigned C_INT32 CTableRow::guessColumnNumber(std::istream &is,
   return count;
 }
 
+const bool & CTableRow::isEmpty() const {return mIsEmpty;}
+
 std::istream & operator >> (std::istream &is, CTableRow & row)
 {
   std::stringstream line;
@@ -181,16 +192,27 @@ std::istream & operator >> (std::istream &is, CTableRow & row)
   is.get(*line.rdbuf(), '\x0a');
   is.ignore(1);
 
+  row.mIsEmpty = true;
   std::vector< CTableCell >::iterator it = row.mCells.begin();
   std::vector< CTableCell >::iterator end = row.mCells.end();
 
   for (; it != end && !line.fail(); ++it)
-    line >> *it;
+    {
+      line >> *it;
+      if (!it->isEmpty()) row.mIsEmpty = false;
+    }
+
+  CTableCell Unread(row.mSeparator);
+  while (!line.fail() && !line.eof())
+    {
+      row.mCells.push_back(Unread);
+      line >> row.mCells.back();
+      if (!row.mCells.back().isEmpty()) row.mIsEmpty = false;
+    }
 
   if (it == end) return is;
 
   // Missing columns are filled with default
-  CTableCell Unread(row.mSeparator);
   for (; it != end; ++it)
     *it = Unread;
 
