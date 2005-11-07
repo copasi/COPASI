@@ -1,23 +1,26 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 21:40:46 $
+   $Date: 2005/11/07 20:39:00 $
    End CVS Header */
+
+#include <sstream>
 
 #include "copasi.h"
 
 #include "CExperimentFileInfo.h"
- #include "CExperiment.h"
- #include "CExperimentSet.h"
+#include "CExperiment.h"
+#include "CExperimentSet.h"
 
 CExperimentFileInfo::CExperimentFileInfo():
     mpSet(NULL),
     mFileName(""),
     mList(),
     mLines(0),
-    mUsedEnd(C_INVALID_INDEX)
+    mUsedEnd(C_INVALID_INDEX),
+    mEmptyLines()
 {}
 
 CExperimentFileInfo::CExperimentFileInfo(CExperimentSet & set):
@@ -25,7 +28,8 @@ CExperimentFileInfo::CExperimentFileInfo(CExperimentSet & set):
     mFileName(""),
     mList(),
     mLines(0),
-    mUsedEnd(C_INVALID_INDEX)
+    mUsedEnd(C_INVALID_INDEX),
+    mEmptyLines()
 {}
 
 CExperimentFileInfo::~CExperimentFileInfo()
@@ -42,23 +46,32 @@ bool CExperimentFileInfo::setFileName(const std::string & fileName)
 {
   mFileName = fileName;
   mLines = 0;
+  mEmptyLines.clear();
 
   std::ifstream in;
   in.open(mFileName.c_str(), std::ios::binary);
   if (in.fail()) return false; // File can not be opened.
 
+  std::stringstream line;
+
   // forwind to count lines in file
   while (!in.eof())
     {
-      in.ignore(LONG_MAX, '\x0a');
+      line.str("");
+      in.get(*line.rdbuf(), '\x0a');
+      in.ignore(1);
+
       mLines++;
+
+      if (line.str().find_first_not_of("\x20\x09\x0d\x0a") == std::string::npos)
+        mEmptyLines.push_back(mLines);
     }
 
   return sync();
 }
 
 const std::string & CExperimentFileInfo::getFileName() const
-  {return mFileName;}
+{return mFileName;}
 
 bool CExperimentFileInfo::sync()
 {
@@ -192,10 +205,11 @@ bool CExperimentFileInfo::getNextUnusedSection(unsigned C_INT32 & First,
           Last = mList[i]->First - 1;
           mUsedEnd = Last;
 
-          return true;
+          return adjustForEmptyLines(First, Last);
         }
 
-      First = mList[i]->Last + 1;
+      if (mList[i]->Last + 1 > First)
+        First = mList[i]->Last + 1;
     }
 
   if (First < mLines)
@@ -203,7 +217,7 @@ bool CExperimentFileInfo::getNextUnusedSection(unsigned C_INT32 & First,
       Last = mLines;
       mUsedEnd = Last;
 
-      return true;
+      return adjustForEmptyLines(First, Last);
     }
 
   First = C_INVALID_INDEX;
@@ -212,6 +226,32 @@ bool CExperimentFileInfo::getNextUnusedSection(unsigned C_INT32 & First,
   mUsedEnd = mLines;
 
   return false;
+}
+
+bool CExperimentFileInfo::adjustForEmptyLines(unsigned C_INT32 & First,
+    unsigned C_INT32 & Last)
+{
+  std::vector<unsigned C_INT32>::const_iterator it = mEmptyLines.begin();
+  std::vector<unsigned C_INT32>::const_iterator end = mEmptyLines.end();
+
+  while (*it < First && it != end) ++it;
+
+  if (it != end && *it == First)
+    {
+      if (First == Last)
+        return getNextUnusedSection(First, Last);
+
+      First++;
+      return adjustForEmptyLines(First, Last);
+    }
+
+  if (*it <= Last)
+    {
+      Last = *it - 1;
+      mUsedEnd = Last;
+    }
+
+  return true;
 }
 
 CExperimentFileInfo::CExperimentInfo::CExperimentInfo():

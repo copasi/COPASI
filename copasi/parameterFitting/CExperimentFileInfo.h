@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:42:03 $
+   $Date: 2005/11/07 20:39:00 $
    End CVS Header */
 
 #ifndef COPASI_CExperimentFileInfo
@@ -140,6 +140,12 @@ class CExperimentFileInfo
     bool getNextUnusedSection(unsigned C_INT32 & First,
                               unsigned C_INT32 & Last);
 
+    /**
+     *
+     */
+    bool adjustForEmptyLines(unsigned C_INT32 & First,
+                             unsigned C_INT32 & Last);
+
     // Attributes
   private:
     /**
@@ -166,6 +172,11 @@ class CExperimentFileInfo
      *
      */
     unsigned C_INT32 mUsedEnd;
+
+    /**
+     *
+     */
+    std::vector< unsigned C_INT32 > mEmptyLines;
   };
 
 #endif // COPASI_CExperimentFileInfo
