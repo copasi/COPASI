@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:21:02 $
+   $Date: 2005/11/07 20:41:26 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -297,7 +297,6 @@ bool CQFittingWidget::runTask()
 
   catch (CCopasiException Exception)
     {
-      mProgressBar->finish();
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
           mProgressBar->finish();
