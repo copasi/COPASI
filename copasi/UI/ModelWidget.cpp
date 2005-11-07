@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:33:54 $
+   $Author: stupe $ 
+   $Date: 2005/11/07 21:23:35 $
    End CVS Header */
 
 /*******************************************************************
@@ -86,15 +86,26 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
   Line1->setFrameShape(QFrame::HLine);
   ModelWidgetLayout->addMultiCellWidget(Line1, 5, 5, 0, 2);
 
-  TextLabel5 = new QLabel(this, "TextLabel5");
-  TextLabel5->setText(trUtf8("Description"));
-  TextLabel5->setAlignment(int(QLabel::AlignTop
-                               | QLabel::AlignRight));
-  ModelWidgetLayout->addWidget(TextLabel5, 6, 0);
   textBrowser = new QTextBrowser (this, "Text Browser");
   ModelWidgetLayout->addMultiCellWidget(textBrowser, 6, 6, 1, 2);
 
+  editComments = new QTextEdit(this, "Edit Comments");
+  editComments->setTextFormat(Qt::PlainText);
+  ModelWidgetLayout->addMultiCellWidget(editComments, 7, 7, 1, 2);
+  editComments->setText("");
+  editComments->hide();
+
+  showDescription = new QPushButton(this, "Description");
+  showDescription->setText(trUtf8("Show Markup"));
+  connect(showDescription, SIGNAL(clicked()), this, SLOT(toggleEditorBox()));
+
   //********* buttons ***********
+
+  showMarkupLayout = new QVBoxLayout(0, 0, 6, "MarkupLayout");
+  spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Minimum);
+  showMarkupLayout->addWidget(showDescription);
+  showMarkupLayout->addItem(spacer);
+  ModelWidgetLayout->addLayout(showMarkupLayout, 6, 0);
 
   Layout5 = new QHBoxLayout(0, 0, 6, "Layout5");
 
@@ -115,6 +126,22 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
 }
 
+void ModelWidget::toggleEditorBox()
+{
+  if (editComments->isShown())
+    {
+      editComments->hide();
+      showDescription->setText(trUtf8("Show Markup"));
+      textBrowser->setText(editComments->text());
+    }
+  else
+    {
+      editComments->setText(textBrowser->text());
+      editComments->show();
+      showDescription->setText(trUtf8("Hide Markup"));
+    }
+}
+
 /*
  *  Destroys the object and frees any allocated resources
  */
@@ -130,6 +157,7 @@ bool ModelWidget::loadModel(CModel *model)
 
   LineEdit->setText(FROM_UTF8(model->getObjectName()));
   textBrowser->setText(FROM_UTF8(model->getComments()));
+  editComments->setText(FROM_UTF8(model->getComments()));
   textBrowser->setReadOnly(FALSE);
   ComboBox1->clear();
   ComboBox2->clear();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/09/23 15:33:57 $
+   $Author: stupe $ 
+   $Date: 2005/11/07 21:23:35 $
    End CVS Header */
 
 /****************************************************************************
@@ -24,6 +24,7 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QFrame;
+class QSpacerItem;
 class QLineEdit;
 class QLabel;
 class QComboBox;
@@ -46,6 +47,9 @@ class ModelWidget : public CopasiWidget
     virtual void slotBtnCancelClicked();
     virtual void slotBtnOKClicked();
 
+  public slots:
+    virtual void toggleEditorBox();
+
   protected:
     bool loadModel(CModel *model);
     bool saveToModel();
@@ -53,13 +57,17 @@ class ModelWidget : public CopasiWidget
 
     QGridLayout* ModelWidgetLayout;
     QHBoxLayout* Layout5;
+    QVBoxLayout* showMarkupLayout;
+    QSpacerItem* spacer;
     QLineEdit* LineEdit;
     QTextBrowser* textBrowser;
+    QTextEdit* editComments;
     QLabel* TextLabel1;
     QLabel* TextLabel2;
     QLabel* TextLabel3;
     QLabel* TextLabel4;
     QLabel* TextLabel5;
+    QPushButton* showDescription;
     QComboBox* ComboBox1;
     QComboBox* ComboBox2;
     QComboBox* ComboBox3;
