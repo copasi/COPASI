@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/10/05 15:57:04 $
+   $Date: 2005/11/08 16:19:38 $
    End CVS Header */
 
 #ifndef CANNOTATEDMATRIX_H
@@ -11,20 +11,40 @@
 
 #include <utilities/CMatrix.h>
 #include "report/CCopasiContainer.h"
+#include "report/CCopasiObjectName.h"
 
 //preliminary
 #include <string>
 
 #include "copasi.h"
 
-/**
- * this class contains an n-dimensional array
- */
-class CCopasiArray
+class CCopasiAbstractArray
   {
   public:
     typedef std::vector<unsigned int> index_type;
     typedef C_FLOAT64 data_type;
+
+    //CCopasiAbstractArray();
+    //CCopasiAbstractArray(const index_type & sizes);
+
+    virtual void resize(const index_type & sizes) = 0;
+
+    virtual data_type & operator[] (const index_type & index) = 0;
+    virtual const data_type & operator[] (const index_type & index) const = 0;
+
+    virtual const index_type & size() const = 0;
+
+    virtual unsigned int dimensionality() const = 0;
+  };
+
+/**
+ * this class contains an n-dimensional array
+ */
+class CCopasiArray: public CCopasiAbstractArray
+  {
+  public:
+    //typedef std::vector<unsigned int> index_type;
+    //typedef C_FLOAT64 data_type;
 
     CCopasiArray();
     CCopasiArray(const index_type & sizes);
@@ -48,13 +68,37 @@ class CCopasiArray
       {return mDim;}
   };
 
+class CAbstractAnnotation: public CCopasiContainer
+  {
+  private:
+    std::vector< std::vector<CRegisteredObjectName> > mAnnotations;
+
+    std::vector< std::string > mDimensionDescriptions;
+
+    std::string mDescription;
+
+  public:
+
+    unsigned int getDimension() const
+      {return mAnnotations.size();}
+
+    const std::vector<CRegisteredObjectName> & getAnnotations(unsigned int d) const
+      {return mAnnotations[d];}
+
+    const std::string & getDimensionDescription(unsigned int d) const
+      {return mDimensionDescriptions[d];}
+
+    const std::string & getDescription() const
+      {return mDescription;}
+  };
+
 #define C_KEYTYPE std::string
 #include "CCopasiVector.h"
 
 /**
  */
 
-class CAnnotatedMatrix : public CMatrix<C_FLOAT64>, public CCopasiContainer
+class CAnnotatedMatrixOld : public CMatrix<C_FLOAT64>, public CCopasiContainer
   {
   private:
     C_KEYTYPE mKey;
@@ -66,15 +110,15 @@ class CAnnotatedMatrix : public CMatrix<C_FLOAT64>, public CCopasiContainer
     std::vector<C_KEYTYPE> mColumnsReferences;
 
   public:
-    CAnnotatedMatrix(const std::string & name = "NoName",
-                     const CCopasiContainer * pParent = NULL);
+    CAnnotatedMatrixOld(const std::string & name = "NoName",
+                        const CCopasiContainer * pParent = NULL);
 
-    CAnnotatedMatrix(const CAnnotatedMatrix & src,
-                     const CCopasiContainer * pParent = NULL);
+    CAnnotatedMatrixOld(const CAnnotatedMatrixOld & src,
+                        const CCopasiContainer * pParent = NULL);
 
-    ~CAnnotatedMatrix();
+    ~CAnnotatedMatrixOld();
 
-    const C_KEYTYPE & getRowsReference() const
+    /*const C_KEYTYPE & getRowsReference() const
       {return mRowsReference;}
 
     const C_KEYTYPE & getColumnsReference() const
@@ -85,6 +129,7 @@ class CAnnotatedMatrix : public CMatrix<C_FLOAT64>, public CCopasiContainer
 
     const std::vector<C_KEYTYPE> & getColumnsReferences() const
       {return mColumnsReferences;}
+    */
 
     template <class CType1, class CType2>
           void setup(const CCopasiVector<CType1> & rows, const CCopasiVector<CType2> & columns)

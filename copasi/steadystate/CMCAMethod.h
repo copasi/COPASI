@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/17 16:44:27 $
+   $Date: 2005/11/08 16:18:26 $
    End CVS Header */
 
 #ifndef COPASI_CMCAMethod_H__
@@ -29,17 +29,17 @@ class CMCAMethod: public CCopasiMethod
     /**
      * MCA Matrices
      */
-    CAnnotatedMatrix mUnscaledElasticities;
+    CAnnotatedMatrixOld mUnscaledElasticities;
 
-    CAnnotatedMatrix mUnscaledConcCC;
+    CAnnotatedMatrixOld mUnscaledConcCC;
 
-    CAnnotatedMatrix mUnscaledFluxCC;
+    CAnnotatedMatrixOld mUnscaledFluxCC;
 
-    CAnnotatedMatrix mScaledElasticities;
+    CAnnotatedMatrixOld mScaledElasticities;
 
-    CAnnotatedMatrix mScaledConcCC;
+    CAnnotatedMatrixOld mScaledConcCC;
 
-    CAnnotatedMatrix mScaledFluxCC;
+    CAnnotatedMatrixOld mScaledFluxCC;
 
     /**
      * 1 if MCA coeffs are to be unscaled
@@ -79,28 +79,28 @@ class CMCAMethod: public CCopasiMethod
 
     virtual ~CMCAMethod();
 
-    const CAnnotatedMatrix & getUnscaledElasticities() const
+    const CAnnotatedMatrixOld & getUnscaledElasticities() const
       {return mUnscaledElasticities;}
 
     void calculateUnscaledElasticities(C_FLOAT64 res);
 
-    const CAnnotatedMatrix & getUnscaledConcentrationCC() const
+    const CAnnotatedMatrixOld & getUnscaledConcentrationCC() const
       {return mUnscaledConcCC;}
 
     int calculateUnscaledConcentrationCC();
 
-    const CAnnotatedMatrix & getUnscaledFluxCC() const
+    const CAnnotatedMatrixOld & getUnscaledFluxCC() const
       {return mUnscaledFluxCC;}
 
     void calculateUnscaledFluxCC(int condition);
 
-    const CAnnotatedMatrix & getScaledElasticities() const
+    const CAnnotatedMatrixOld & getScaledElasticities() const
       {return mScaledElasticities;}
 
-    const CAnnotatedMatrix & getScaledConcentrationCC() const
+    const CAnnotatedMatrixOld & getScaledConcentrationCC() const
       {return mScaledConcCC;}
 
-    const CAnnotatedMatrix & getScaledFluxCC() const
+    const CAnnotatedMatrixOld & getScaledFluxCC() const
       {return mScaledFluxCC;}
 
     /**

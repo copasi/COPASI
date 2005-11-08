@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/10/05 15:57:04 $
+   $Date: 2005/11/08 16:19:38 $
    End CVS Header */
 
 #include "CAnnotatedMatrix.h"
@@ -65,8 +65,8 @@ const CCopasiArray::data_type & CCopasiArray::operator[] (const index_type & ind
 //
 //*******************************************************
 
-CAnnotatedMatrix::CAnnotatedMatrix(const std::string & name,
-                                   const CCopasiContainer * pParent):
+CAnnotatedMatrixOld::CAnnotatedMatrixOld(const std::string & name,
+    const CCopasiContainer * pParent):
     CMatrix<C_FLOAT64>(),
     CCopasiContainer(name, pParent, "AnnotatedMatrix",
                      CCopasiObject::Container |
@@ -77,8 +77,8 @@ CAnnotatedMatrix::CAnnotatedMatrix(const std::string & name,
   CONSTRUCTOR_TRACE;
 }
 
-CAnnotatedMatrix::CAnnotatedMatrix(const CAnnotatedMatrix & src,
-                                   const CCopasiContainer * pParent):
+CAnnotatedMatrixOld::CAnnotatedMatrixOld(const CAnnotatedMatrixOld & src,
+    const CCopasiContainer * pParent):
     CMatrix<C_FLOAT64>(),
     CCopasiContainer(src, pParent),
     mKey(GlobalKeys.add("AnnotatedMatrix", this))
@@ -87,5 +87,5 @@ CAnnotatedMatrix::CAnnotatedMatrix(const CAnnotatedMatrix & src,
   CONSTRUCTOR_TRACE;
 }
 
-CAnnotatedMatrix::~CAnnotatedMatrix()
+CAnnotatedMatrixOld::~CAnnotatedMatrixOld()
 {}
