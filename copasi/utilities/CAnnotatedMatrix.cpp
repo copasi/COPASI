@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/08 16:19:38 $
+   $Date: 2005/11/09 12:09:50 $
    End CVS Header */
 
 #include "CAnnotatedMatrix.h"
@@ -60,6 +60,90 @@ const CCopasiArray::data_type & CCopasiArray::operator[] (const index_type & ind
       tmpindex += *itIndex * *it;
 
     return mData[tmpindex];
+  }
+
+//
+//*******************************************************
+
+CCopasiMatrixInterface::CCopasiMatrixInterface(CMatrix<C_FLOAT64> * matrix)
+    : mMatrix(matrix)
+{
+  assert(mMatrix);
+  mSizes.resize(2);
+  mSizes[0] = mMatrix->numRows();
+  mSizes[1] = mMatrix->numCols();
+}
+
+void CCopasiMatrixInterface::resize(const index_type & sizes)
+{
+  assert(sizes.size() == 2);
+  mSizes = sizes;
+  mMatrix->resize(mSizes[0], mSizes[1]);
+}
+
+CCopasiArray::data_type & CCopasiMatrixInterface::operator[] (const index_type & index)
+{
+#ifdef COPASI_DEBUG
+  assert(index.size() == 2);
+#endif
+  return (*mMatrix)(index[0], index[1]);
+}
+
+const CCopasiArray::data_type & CCopasiMatrixInterface::operator[] (const index_type & index) const
+  {
+#ifdef COPASI_DEBUG
+    assert(index.size() == 2);
+#endif
+    return (*mMatrix)(index[0], index[1]);
+  }
+
+//
+//*******************************************************
+
+CArrayAnnotation::CArrayAnnotation(const std::string & name,
+                                   const CCopasiContainer * pParent,
+                                   CCopasiAbstractArray * array)
+    : CCopasiContainer(name, pParent, "Array" /*, flags */),  //TODO: flags
+    mArray(array)
+{
+  assert(mArray);
+
+  resizeAnnotations();
+}
+
+void CArrayAnnotation::resizeAnnotations()
+{
+  mAnnotations.resize(mArray->dimensionality());
+  unsigned int i;
+  for (i = 0; i < mArray->dimensionality(); ++i)
+    mAnnotations[i].resize(mArray->size()[i]);
+
+  mDimensionDescriptions.resize(mArray->dimensionality());
+}
+
+//private
+void CArrayAnnotation::resize(const CCopasiAbstractArray::index_type & sizes)
+{
+  assert(mArray);
+  mArray->resize(sizes);
+  resizeAnnotations();
+}
+
+void CArrayAnnotation::printDebug(std::ostream & out) const
+  {
+    out << mDescription << std::endl;
+    out << "  Dimensionality: " << dimensionality() << std::endl;
+
+    unsigned int i, j;
+    for (i = 0; i < dimensionality(); ++i)
+      {
+        out << "   " << i << ": " << mDimensionDescriptions[i] << std::endl;
+
+        for (j = 0; j < mAnnotations[i].size(); ++j)
+          out << "     " << mAnnotations[i][j] << std::endl;
+
+        out << std::endl;
+      }
   }
 
 //

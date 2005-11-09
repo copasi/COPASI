@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/08 16:19:38 $
+   $Date: 2005/11/09 12:09:50 $
    End CVS Header */
 
 #ifndef CANNOTATEDMATRIX_H
@@ -26,6 +26,7 @@ class CCopasiAbstractArray
 
     //CCopasiAbstractArray();
     //CCopasiAbstractArray(const index_type & sizes);
+    virtual ~CCopasiAbstractArray() {};
 
     virtual void resize(const index_type & sizes) = 0;
 
@@ -48,6 +49,7 @@ class CCopasiArray: public CCopasiAbstractArray
 
     CCopasiArray();
     CCopasiArray(const index_type & sizes);
+    ~CCopasiArray() {};
 
     void resize(const index_type & sizes);
 
@@ -68,9 +70,43 @@ class CCopasiArray: public CCopasiAbstractArray
       {return mDim;}
   };
 
-class CAbstractAnnotation: public CCopasiContainer
+/**
+ * this class provides an interface to a CMatrix<C_FLOAT64>
+ */
+class CCopasiMatrixInterface: public CCopasiAbstractArray
+  {
+  public:
+
+    CCopasiMatrixInterface(CMatrix<C_FLOAT64> * matrix);
+    ~CCopasiMatrixInterface() {};
+
+    void resize(const index_type & sizes);
+
+    data_type & operator[] (const index_type & index);
+    const data_type & operator[] (const index_type & index) const;
+
+  private:
+    CMatrix<C_FLOAT64> * mMatrix;
+    //std::vector<data_type> mData;
+    std::vector<unsigned int> mSizes;
+    //unsigned int mDim;
+    //std::vector<unsigned int> mFactors;
+
+  public:
+    const index_type & size() const
+      {return mSizes;}
+
+    unsigned int dimensionality() const
+      {return 2;}
+  };
+
+//**********************************************************************
+
+class CArrayAnnotation: public CCopasiContainer
   {
   private:
+    CCopasiAbstractArray * mArray;
+
     std::vector< std::vector<CRegisteredObjectName> > mAnnotations;
 
     std::vector< std::string > mDimensionDescriptions;
@@ -78,8 +114,17 @@ class CAbstractAnnotation: public CCopasiContainer
     std::string mDescription;
 
   public:
+    CArrayAnnotation(const std::string & name,
+                     const CCopasiContainer * pParent,
+                     CCopasiAbstractArray * array);
 
-    unsigned int getDimension() const
+  private:
+    CArrayAnnotation();
+    CArrayAnnotation(const CArrayAnnotation &);
+    CArrayAnnotation & operator=(const CArrayAnnotation &);
+
+  public:
+    unsigned int dimensionality() const
       {return mAnnotations.size();}
 
     const std::vector<CRegisteredObjectName> & getAnnotations(unsigned int d) const
@@ -90,7 +135,20 @@ class CAbstractAnnotation: public CCopasiContainer
 
     const std::string & getDescription() const
       {return mDescription;}
+
+    void resize(const CCopasiAbstractArray::index_type & sizes);
+
+  private:
+    void resizeAnnotations();
+
+  public:
+    void printDebug(std::ostream & out) const;
+
+    virtual void print(std::ostream * ostream) const
+      {printDebug(*ostream);}
   };
+
+//**********************************************************************
 
 #define C_KEYTYPE std::string
 #include "CCopasiVector.h"
