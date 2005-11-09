@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/09 16:23:12 $
+   $Date: 2005/11/09 16:27:43 $
    End CVS Header */
 
 #include "CAnnotatedMatrix.h"
@@ -103,7 +103,7 @@ const CCopasiArray::data_type & CCopasiMatrixInterface::operator[] (const index_
 CArrayAnnotation::CArrayAnnotation(const std::string & name,
                                    const CCopasiContainer * pParent,
                                    CCopasiAbstractArray * array)
-    : CCopasiContainer(name, pParent, "Array" /*, flags */),   //TODO: flags
+    : CCopasiContainer(name, pParent, "Array" /*, flags */),    //TODO: flags
     mArray(array)
 {
   assert(mArray);
@@ -132,7 +132,7 @@ void CArrayAnnotation::setAnnotation(unsigned int d, unsigned int i, const std::
   assert(d < mAnnotations.size());
   assert(i < mAnnotations[d].size());
 
-  mAnnotations[d][i] = s;
+  mAnnotations[d][i] = cn;
 }
 
 const std::string & CArrayAnnotation::getDimensionDescription(unsigned int d)
