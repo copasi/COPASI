@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/09 12:09:50 $
+   $Date: 2005/11/09 16:23:12 $
    End CVS Header */
 
 #ifndef CANNOTATEDMATRIX_H
@@ -110,8 +110,11 @@ class CArrayAnnotation: public CCopasiContainer
     std::vector< std::vector<CRegisteredObjectName> > mAnnotations;
 
     std::vector< std::string > mDimensionDescriptions;
+    std::vector< CCopasiContainer * > mCopasiVectors;
 
     std::string mDescription;
+
+    bool mOnTheFly;
 
   public:
     CArrayAnnotation(const std::string & name,
@@ -124,28 +127,40 @@ class CArrayAnnotation: public CCopasiContainer
     CArrayAnnotation & operator=(const CArrayAnnotation &);
 
   public:
-    unsigned int dimensionality() const
-      {return mAnnotations.size();}
 
-    const std::vector<CRegisteredObjectName> & getAnnotations(unsigned int d) const
-      {return mAnnotations[d];}
+    bool onTheFly() const
+      {return mOnTheFly;}
 
-    const std::string & getDimensionDescription(unsigned int d) const
-      {return mDimensionDescriptions[d];}
+    void setOnTheFly(bool flag)
+    {mOnTheFly = flag;}
 
-    const std::string & getDescription() const
-      {return mDescription;}
+    unsigned int dimensionality() const;
+
+    const std::vector<CRegisteredObjectName> & getAnnotations(unsigned int d);
+    void setAnnotation(unsigned int d, unsigned int i, const std::string cn);
+
+    const std::string & getDimensionDescription(unsigned int d);
+    void setDimensionDescription(unsigned int d, const std::string & s);
+
+    const std::string & getDescription() const;
+    void setDescription(const std::string & s);
 
     void resize(const CCopasiAbstractArray::index_type & sizes);
 
   private:
     void resizeAnnotations();
+    bool CArrayAnnotation::updateAnnotations();
+
+    bool createAnnotationsFromCopasiVector(unsigned int d, const CCopasiContainer* v);
 
   public:
     void printDebug(std::ostream & out) const;
 
     virtual void print(std::ostream * ostream) const
-      {printDebug(*ostream);}
+      {
+        const_cast<CArrayAnnotation*>(this)->updateAnnotations();
+        printDebug(*ostream);
+      }
   };
 
 //**********************************************************************

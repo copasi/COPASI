@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/09 12:09:50 $
+   $Date: 2005/11/09 16:23:12 $
    End CVS Header */
 
 #include "CAnnotatedMatrix.h"
@@ -103,7 +103,7 @@ const CCopasiArray::data_type & CCopasiMatrixInterface::operator[] (const index_
 CArrayAnnotation::CArrayAnnotation(const std::string & name,
                                    const CCopasiContainer * pParent,
                                    CCopasiAbstractArray * array)
-    : CCopasiContainer(name, pParent, "Array" /*, flags */),  //TODO: flags
+    : CCopasiContainer(name, pParent, "Array" /*, flags */),   //TODO: flags
     mArray(array)
 {
   assert(mArray);
@@ -111,6 +111,92 @@ CArrayAnnotation::CArrayAnnotation(const std::string & name,
   resizeAnnotations();
 }
 
+unsigned int CArrayAnnotation::dimensionality() const
+  {
+    if (mOnTheFly)
+      return mArray->dimensionality();
+    else
+      return mAnnotations.size();
+  }
+
+const std::vector<CRegisteredObjectName> & CArrayAnnotation::getAnnotations(unsigned int d)
+{
+  if (mOnTheFly)
+    updateAnnotations();
+
+  return mAnnotations[d];
+}
+
+void CArrayAnnotation::setAnnotation(unsigned int d, unsigned int i, const std::string cn)
+{
+  assert(d < mAnnotations.size());
+  assert(i < mAnnotations[d].size());
+
+  mAnnotations[d][i] = s;
+}
+
+const std::string & CArrayAnnotation::getDimensionDescription(unsigned int d)
+{
+  if (mOnTheFly)
+    mDimensionDescriptions.resize(mArray->dimensionality());
+
+  return mDimensionDescriptions[d];
+}
+
+void CArrayAnnotation::setDimensionDescription(unsigned int d, const std::string & s)
+{
+  assert(d < mDimensionDescriptions.size());
+  mDimensionDescriptions[d] = s;
+}
+
+const std::string & CArrayAnnotation::getDescription() const
+  {return mDescription;}
+
+void CArrayAnnotation::setDescription(const std::string & s)
+{mDescription = s;}
+
+//private
+bool CArrayAnnotation::updateAnnotations()
+{
+  bool success = true;
+
+  resizeAnnotations();
+
+  unsigned int i;
+  for (i = 0; i < mArray->dimensionality(); ++i)
+    {
+      if (mCopasiVectors[i])
+        if (!createAnnotationsFromCopasiVector(i, mCopasiVectors[i]))
+          success = false;
+        else
+          success = false;
+    }
+  return success;
+}
+
+bool CArrayAnnotation::createAnnotationsFromCopasiVector(unsigned int d, const CCopasiContainer* v)
+{
+  if (!v) return false;
+  if (! (v->isVector() || v->isNameVector())) return false;
+  if (d >= mArray->dimensionality()) return false;
+
+  //now we know we have a vector. A CCopasiVector[N/S], hopefully, so that the following cast is valid:
+  const std::vector<const CCopasiObject*>* pVector = reinterpret_cast<const std::vector<const CCopasiObject*>* >(v);
+
+  if (pVector->size() != mAnnotations[d].size()) return false;
+
+  unsigned int i;
+  for (i = 0; i < pVector->size(); ++i)
+    {
+      if (!(*pVector)[i])
+        return false;
+      else
+        mAnnotations[d][i] = (*pVector)[i]->getCN();
+    }
+  return true;
+}
+
+//private
 void CArrayAnnotation::resizeAnnotations()
 {
   mAnnotations.resize(mArray->dimensionality());
@@ -119,9 +205,9 @@ void CArrayAnnotation::resizeAnnotations()
     mAnnotations[i].resize(mArray->size()[i]);
 
   mDimensionDescriptions.resize(mArray->dimensionality());
+  mCopasiVectors.resize(mArray->dimensionality());
 }
 
-//private
 void CArrayAnnotation::resize(const CCopasiAbstractArray::index_type & sizes)
 {
   assert(mArray);
