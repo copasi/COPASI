@@ -10,7 +10,7 @@ variable:
 If you use bash type (while replacing <copasi-path> with the directory where 
 you installed COPASI):
 
-export COPASI_DIR=<copasi-path>
+export COPASIDIR=<copasi-path>
 
 If you want to use that permanently you can add that command to your .bashrc
 file.
@@ -19,7 +19,7 @@ file.
 If you use tcsh type (while replacing <copasi-path> with the directory where 
 you installed COPASI):
 
-setenv COPASI_DIR=<copasi-path>
+setenv COPASIDIR=<copasi-path>
 
 If you wish to associate an icons with COPASI you may find icons in the
 directory <copasi-path>/share/copasi/icons.
