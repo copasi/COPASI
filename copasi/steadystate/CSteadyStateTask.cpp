@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/10/26 18:25:56 $
+   $Date: 2005/11/09 12:08:43 $
    End CVS Header */
 
 /**
@@ -204,7 +204,9 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
 
   // Update all necessary values.
   const CState * pState = A.getState();
+  if (!pState) return os;
   CModel * pModel = const_cast<CModel *>(pState->getModel());
+  if (!pModel) return os;
 
   pModel->setState(pState);
   pModel->updateRates();
