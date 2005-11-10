@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.234 $
+   $Revision: 1.235 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/10 09:36:36 $
+   $Date: 2005/11/10 10:12:04 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2198,7 +2198,7 @@ void CModel::initObjects()
   // addObjectReference("Inverse Quantity Conversion Factor",
   //                    mNumber2QuantityFactor);
 
-  CArrayAnnotation * tmp = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface(&mStoi));
+  CArrayAnnotation * tmp = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoi));
   tmp->setOnTheFly(true);
   tmp->setDescription("Stoichiometry Matrix");
   tmp->setDimensionDescription(0, "Metabolites");
@@ -2206,13 +2206,21 @@ void CModel::initObjects()
   tmp->setCopasiVector(0, &mMetabolites);
   tmp->setCopasiVector(1, &mSteps);
 
-  tmp = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface(&mRedStoi));
+  tmp = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi));
   tmp->setOnTheFly(true);
   tmp->setDescription("Reduced stoichiometry Matrix");
   tmp->setDimensionDescription(0, "Metabolites");
   tmp->setDimensionDescription(1, "Reactions");
   tmp->setCopasiVector(0, &mMetabolitesX);
   tmp->setCopasiVector(1, &mStepsX);
+
+  tmp = new CArrayAnnotation("Link matrix(ann)", this, new CCopasiMatrixInterface<CLinkMatrixView>(&mLView));
+  tmp->setOnTheFly(true);
+  tmp->setDescription("Link matrix");
+  tmp->setDimensionDescription(0, "Metabolites (full system)");
+  tmp->setDimensionDescription(1, "Metabolites (reduced system)");
+  tmp->setCopasiVector(0, &mMetabolites);
+  tmp->setCopasiVector(1, &mMetabolitesX);
 }
 
 bool CModel::hasReversibleReaction() const
