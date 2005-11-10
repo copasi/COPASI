@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/10 09:35:59 $
+   $Date: 2005/11/10 10:11:11 $
    End CVS Header */
 
 #ifndef CANNOTATEDMATRIX_H
@@ -28,7 +28,7 @@ class CCopasiAbstractArray
     //CCopasiAbstractArray(const index_type & sizes);
     virtual ~CCopasiAbstractArray() {};
 
-    virtual void resize(const index_type & sizes) = 0;
+    //virtual void resize(const index_type & sizes) = 0;
 
     virtual data_type & operator[] (const index_type & index) = 0;
     virtual const data_type & operator[] (const index_type & index) const = 0;
@@ -71,29 +71,58 @@ class CCopasiArray: public CCopasiAbstractArray
   };
 
 /**
- * this class provides an interface to a CMatrix<C_FLOAT64>
+ * this class provides an interface to a CMatrix<C_FLOAT64> or a CLinkMatrixView,
+ * that is to every 2-dimensional class that has numRows(), numCols(), and operator()(row, col)
  */
+
+template<class MatrixType>
 class CCopasiMatrixInterface: public CCopasiAbstractArray
   {
   public:
 
-    CCopasiMatrixInterface(CMatrix<C_FLOAT64> * matrix);
+    CCopasiMatrixInterface(MatrixType * matrix)
+        : mMatrix(matrix)
+    {
+      assert(mMatrix);
+      mSizes.resize(2);
+      mSizes[0] = mMatrix->numRows();
+      mSizes[1] = mMatrix->numCols();
+    }
     ~CCopasiMatrixInterface() {};
 
-    void resize(const index_type & sizes);
+    //void resize(const index_type & sizes);
 
-    data_type & operator[] (const index_type & index);
-    const data_type & operator[] (const index_type & index) const;
+    data_type & operator[] (const index_type & index)
+    {
+#ifdef COPASI_DEBUG
+      assert(index.size() == 2);
+#endif
+      return (*mMatrix)(index[0], index[1]);
+    }
+
+    const data_type & operator[] (const index_type & index) const
+      {
+#ifdef COPASI_DEBUG
+        assert(index.size() == 2);
+#endif
+        return (*mMatrix)(index[0], index[1]);
+      }
 
   private:
-    CMatrix<C_FLOAT64> * mMatrix;
+    MatrixType * mMatrix;
     //std::vector<data_type> mData;
     std::vector<unsigned int> mSizes;
     //unsigned int mDim;
     //std::vector<unsigned int> mFactors;
 
   public:
-    const index_type & size() const;
+    const index_type & size() const
+      {
+        CCopasiMatrixInterface * tmp = const_cast<CCopasiMatrixInterface*>(this);
+        tmp->mSizes[0] = mMatrix->numRows();
+        tmp->mSizes[1] = mMatrix->numCols();
+        return mSizes;
+      }
 
     unsigned int dimensionality() const
       {return 2;}
@@ -146,7 +175,7 @@ class CArrayAnnotation: public CCopasiContainer
     const std::string & getDescription() const;
     void setDescription(const std::string & s);
 
-    void resize(const CCopasiAbstractArray::index_type & sizes);
+    void resize(/*const CCopasiAbstractArray::index_type & sizes*/);
 
   private:
     void resizeAnnotations();

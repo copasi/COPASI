@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/10 09:35:59 $
+   $Date: 2005/11/10 10:11:11 $
    End CVS Header */
 
 #include "CAnnotatedMatrix.h"
@@ -65,45 +65,12 @@ const CCopasiArray::data_type & CCopasiArray::operator[] (const index_type & ind
 //
 //*******************************************************
 
-CCopasiMatrixInterface::CCopasiMatrixInterface(CMatrix<C_FLOAT64> * matrix)
-    : mMatrix(matrix)
-{
-  assert(mMatrix);
-  mSizes.resize(2);
-  mSizes[0] = mMatrix->numRows();
-  mSizes[1] = mMatrix->numCols();
-}
-
-void CCopasiMatrixInterface::resize(const index_type & sizes)
+/*void CCopasiMatrixInterface::resize(const index_type & sizes)
 {
   assert(sizes.size() == 2);
   mSizes = sizes;
   mMatrix->resize(mSizes[0], mSizes[1]);
-}
-
-const CCopasiAbstractArray::index_type & CCopasiMatrixInterface::size() const
-  {
-    CCopasiMatrixInterface * tmp = const_cast<CCopasiMatrixInterface*>(this);
-    tmp->mSizes[0] = mMatrix->numRows();
-    tmp->mSizes[1] = mMatrix->numCols();
-    return mSizes;
-  }
-
-CCopasiArray::data_type & CCopasiMatrixInterface::operator[] (const index_type & index)
-{
-#ifdef COPASI_DEBUG
-  assert(index.size() == 2);
-#endif
-  return (*mMatrix)(index[0], index[1]);
-}
-
-const CCopasiArray::data_type & CCopasiMatrixInterface::operator[] (const index_type & index) const
-  {
-#ifdef COPASI_DEBUG
-    assert(index.size() == 2);
-#endif
-    return (*mMatrix)(index[0], index[1]);
-  }
+}*/
 
 //
 //*******************************************************
@@ -111,7 +78,7 @@ const CCopasiArray::data_type & CCopasiMatrixInterface::operator[] (const index_
 CArrayAnnotation::CArrayAnnotation(const std::string & name,
                                    const CCopasiContainer * pParent,
                                    CCopasiAbstractArray * array)
-    : CCopasiContainer(name, pParent, "Array" /*, flags */),     //TODO: flags
+    : CCopasiContainer(name, pParent, "Array" /*, flags */),      //TODO: flags
     mArray(array)
 {
   assert(mArray);
@@ -222,10 +189,10 @@ void CArrayAnnotation::resizeAnnotations()
   mCopasiVectors.resize(mArray->dimensionality());
 }
 
-void CArrayAnnotation::resize(const CCopasiAbstractArray::index_type & sizes)
+void CArrayAnnotation::resize(/*const CCopasiAbstractArray::index_type & sizes*/)
 {
   assert(mArray);
-  mArray->resize(sizes);
+  //mArray->resize(sizes);
   resizeAnnotations();
 }
 
