@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.233 $
+   $Revision: 1.234 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/10/26 18:20:58 $
+   $Date: 2005/11/10 09:36:36 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -47,6 +47,7 @@
 #include "utilities/CProcessReport.h"
 #include "CReactionInterface.h"
 #include "clapackwrap.h"
+#include "utilities/CAnnotatedMatrix.h"
 
 #ifdef COPASI_DEBUG
 #define CCHECK {check();}
@@ -2196,6 +2197,22 @@ void CModel::initObjects()
   addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor, CCopasiObject::ValueDbl);
   // addObjectReference("Inverse Quantity Conversion Factor",
   //                    mNumber2QuantityFactor);
+
+  CArrayAnnotation * tmp = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface(&mStoi));
+  tmp->setOnTheFly(true);
+  tmp->setDescription("Stoichiometry Matrix");
+  tmp->setDimensionDescription(0, "Metabolites");
+  tmp->setDimensionDescription(1, "Reactions");
+  tmp->setCopasiVector(0, &mMetabolites);
+  tmp->setCopasiVector(1, &mSteps);
+
+  tmp = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface(&mRedStoi));
+  tmp->setOnTheFly(true);
+  tmp->setDescription("Reduced stoichiometry Matrix");
+  tmp->setDimensionDescription(0, "Metabolites");
+  tmp->setDimensionDescription(1, "Reactions");
+  tmp->setCopasiVector(0, &mMetabolitesX);
+  tmp->setCopasiVector(1, &mStepsX);
 }
 
 bool CModel::hasReversibleReaction() const
