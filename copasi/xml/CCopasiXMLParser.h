@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/10 15:09:02 $
+   $Date: 2005/11/10 15:23:55 $
    End CVS Header */
 
 /**
@@ -2181,7 +2181,7 @@ class CCopasiXMLParser : public CExpat
           Header = 0,
           Object,
           Text,
-          ReportReference
+          Report
         };
 
         // Operations
@@ -2230,7 +2230,7 @@ class CCopasiXMLParser : public CExpat
           Body = 0,
           Object,
           Text,
-          ReportReference
+          Report
         };
 
         // Operations
@@ -2279,7 +2279,7 @@ class CCopasiXMLParser : public CExpat
           Footer = 0,
           Object,
           Text,
-          ReportReference
+          Report
         };
 
         // Operations

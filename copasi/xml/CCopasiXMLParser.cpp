@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.116 $
+   $Revision: 1.117 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/10 15:09:01 $
+   $Date: 2005/11/10 15:23:55 $
    End CVS Header */
 
 /**
@@ -5302,8 +5302,8 @@ void CCopasiXMLParser::HeaderElement::start(const XML_Char *pszName,
         }
       break;
 
-    case ReportReference:
-      if (!strcmp(pszName, "ReportReference"))
+    case Report:
+      if (!strcmp(pszName, "Report"))
         {
           /* If we do not have an text element handler we create one. */
           if (!mpTextElement)
@@ -5356,8 +5356,8 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
       mCurrentElement = Header;
       break;
 
-    case ReportReference:
-      if (strcmp(pszName, "ReportReference")) fatalError();
+    case Report:
+      if (strcmp(pszName, "Report")) fatalError();
       // add the key that is stored in mCommon.Comment to the map
       if (mCommon.reportReferenceMap.find(mCommon.Comment) == mCommon.reportReferenceMap.end())
         {
@@ -5428,8 +5428,8 @@ void CCopasiXMLParser::BodyElement::start(const XML_Char *pszName,
         }
       break;
 
-    case ReportReference:
-      if (!strcmp(pszName, "ReportReference"))
+    case Report:
+      if (!strcmp(pszName, "Report"))
         {
           /* If we do not have an text element handler we create one. */
           if (!mpTextElement)
@@ -5482,8 +5482,8 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
       mCurrentElement = Body;
       break;
 
-    case ReportReference:
-      if (strcmp(pszName, "ReportReference")) fatalError();
+    case Report:
+      if (strcmp(pszName, "Report")) fatalError();
       // add the key that is stored in mCommon.Comment to the map
       if (mCommon.reportReferenceMap.find(mCommon.Comment) == mCommon.reportReferenceMap.end())
         {
@@ -5554,8 +5554,8 @@ void CCopasiXMLParser::FooterElement::start(const XML_Char *pszName,
         }
       break;
 
-    case ReportReference:
-      if (!strcmp(pszName, "ReportReference"))
+    case Report:
+      if (!strcmp(pszName, "Report"))
         {
           /* If we do not have an text element handler we create one. */
           if (!mpTextElement)
@@ -5608,8 +5608,8 @@ void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
       mCurrentElement = Footer;
       break;
 
-    case ReportReference:
-      if (strcmp(pszName, "ReportReference")) fatalError();
+    case Report:
+      if (strcmp(pszName, "Report")) fatalError();
       // add the key that is stored in mCommon.Comment to the map
       if (mCommon.reportReferenceMap.find(mCommon.Comment) == mCommon.reportReferenceMap.end())
         {
