@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:53:56 $
+   $Author: ssahle $ 
+   $Date: 2005/11/10 09:33:59 $
    End CVS Header */
 
 /****************************************************************************
@@ -167,5 +167,7 @@ void ObjectDebug::action(QListViewItem * item, const QPoint & C_UNUSED(pnt), int
   if (!testObj) return;
 
   std::cout << testObj->getObjectDisplayName() << std::endl;
-  std::cout << *testObj << std::endl;
+  //std::cout << *testObj << std::endl;
+  testObj->print(&std::cout);
+  std::cout << std::endl;
 }

@@ -1,25 +1,25 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/objectdebug.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/16 13:51:35 $
+   $Date: 2005/11/10 09:33:59 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'objectdebug.ui'
  **
- ** Created: Do Dez 16 10:00:20 2004
- **      by: The User Interface Compiler ($Id: objectdebug.h,v 1.4 2004/12/16 13:51:35 ssahle Exp $)
+ ** Created: Mi Nov 9 01:31:48 2005
+ **      by: The User Interface Compiler ($Id: objectdebug.h,v 1.5 2005/11/10 09:33:59 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef OBJECTDEBUG_H
-#define OBJECTDEBUG_H
+ #define OBJECTDEBUG_H
 
 #include <qvariant.h>
-#include <qdialog.h>
+ #include <qdialog.h>
 
 class QVBoxLayout;
 class QHBoxLayout;

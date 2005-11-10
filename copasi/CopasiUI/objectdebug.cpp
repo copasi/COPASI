@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/objectdebug.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/12/16 13:51:35 $
+   $Date: 2005/11/10 09:33:59 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'objectdebug.ui'
  **
- ** Created: Do Dez 16 10:00:22 2004
- **      by: The User Interface Compiler ($Id: objectdebug.cpp,v 1.5 2004/12/16 13:51:35 ssahle Exp $)
+ ** Created: Mi Nov 9 01:45:05 2005
+ **      by: The User Interface Compiler ($Id: objectdebug.cpp,v 1.6 2005/11/10 09:33:59 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,14 +18,14 @@
 #include "objectdebug.h"
 
 #include <qvariant.h>
-#include <qpushbutton.h>
-#include <qheader.h>
-#include <qlistview.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qimage.h>
-#include <qpixmap.h>
+ #include <qpushbutton.h>
+ #include <qheader.h>
+ #include <qlistview.h>
+ #include <qlayout.h>
+ #include <qtooltip.h>
+ #include <qwhatsthis.h>
+ #include <qimage.h>
+ #include <qpixmap.h>
 
 #include "objectdebug.ui.h"
 
