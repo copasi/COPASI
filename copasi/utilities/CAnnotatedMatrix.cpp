@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/09 16:27:43 $
+   $Date: 2005/11/10 09:35:59 $
    End CVS Header */
 
 #include "CAnnotatedMatrix.h"
@@ -81,6 +81,14 @@ void CCopasiMatrixInterface::resize(const index_type & sizes)
   mMatrix->resize(mSizes[0], mSizes[1]);
 }
 
+const CCopasiAbstractArray::index_type & CCopasiMatrixInterface::size() const
+  {
+    CCopasiMatrixInterface * tmp = const_cast<CCopasiMatrixInterface*>(this);
+    tmp->mSizes[0] = mMatrix->numRows();
+    tmp->mSizes[1] = mMatrix->numCols();
+    return mSizes;
+  }
+
 CCopasiArray::data_type & CCopasiMatrixInterface::operator[] (const index_type & index)
 {
 #ifdef COPASI_DEBUG
@@ -103,7 +111,7 @@ const CCopasiArray::data_type & CCopasiMatrixInterface::operator[] (const index_
 CArrayAnnotation::CArrayAnnotation(const std::string & name,
                                    const CCopasiContainer * pParent,
                                    CCopasiAbstractArray * array)
-    : CCopasiContainer(name, pParent, "Array" /*, flags */),    //TODO: flags
+    : CCopasiContainer(name, pParent, "Array" /*, flags */),     //TODO: flags
     mArray(array)
 {
   assert(mArray);
@@ -149,6 +157,12 @@ void CArrayAnnotation::setDimensionDescription(unsigned int d, const std::string
   mDimensionDescriptions[d] = s;
 }
 
+void CArrayAnnotation::setCopasiVector(unsigned int d, const CCopasiContainer* v)
+{
+  assert(d < mCopasiVectors.size());
+  mCopasiVectors[d] = v;
+}
+
 const std::string & CArrayAnnotation::getDescription() const
   {return mDescription;}
 
@@ -181,12 +195,12 @@ bool CArrayAnnotation::createAnnotationsFromCopasiVector(unsigned int d, const C
   if (d >= mArray->dimensionality()) return false;
 
   //now we know we have a vector. A CCopasiVector[N/S], hopefully, so that the following cast is valid:
-  const std::vector<const CCopasiObject*>* pVector = reinterpret_cast<const std::vector<const CCopasiObject*>* >(v);
+  const CCopasiVector<const CCopasiObject>* pVector = reinterpret_cast<const CCopasiVector<const CCopasiObject>* >(v);
 
-  if (pVector->size() != mAnnotations[d].size()) return false;
+  if (pVector->size() < mAnnotations[d].size()) return false;
 
   unsigned int i;
-  for (i = 0; i < pVector->size(); ++i)
+  for (i = 0; i < mAnnotations[d].size(); ++i)
     {
       if (!(*pVector)[i])
         return false;
@@ -215,6 +229,25 @@ void CArrayAnnotation::resize(const CCopasiAbstractArray::index_type & sizes)
   resizeAnnotations();
 }
 
+void CArrayAnnotation::printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const
+  {
+    unsigned int i, imax = mArray->size()[level];
+    for (i = 0; i < imax; ++i)
+      {
+        index[level] = i;
+
+        if (level == dimensionality() - 1)
+          {
+            out << (*mArray)[index] << "  ";
+          }
+        else
+          {
+            printDebugLoop(out, index, level + 1);
+            out << std::endl;
+          }
+      }
+  }
+
 void CArrayAnnotation::printDebug(std::ostream & out) const
   {
     out << mDescription << std::endl;
@@ -230,6 +263,9 @@ void CArrayAnnotation::printDebug(std::ostream & out) const
 
         out << std::endl;
       }
+
+    CCopasiAbstractArray::index_type index; index.resize(dimensionality());
+    printDebugLoop(out, index, 0);
   }
 
 //

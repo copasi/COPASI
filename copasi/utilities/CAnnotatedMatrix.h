@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/09 16:23:12 $
+   $Date: 2005/11/10 09:35:59 $
    End CVS Header */
 
 #ifndef CANNOTATEDMATRIX_H
@@ -93,8 +93,7 @@ class CCopasiMatrixInterface: public CCopasiAbstractArray
     //std::vector<unsigned int> mFactors;
 
   public:
-    const index_type & size() const
-      {return mSizes;}
+    const index_type & size() const;
 
     unsigned int dimensionality() const
       {return 2;}
@@ -110,7 +109,7 @@ class CArrayAnnotation: public CCopasiContainer
     std::vector< std::vector<CRegisteredObjectName> > mAnnotations;
 
     std::vector< std::string > mDimensionDescriptions;
-    std::vector< CCopasiContainer * > mCopasiVectors;
+    std::vector< const CCopasiContainer * > mCopasiVectors;
 
     std::string mDescription;
 
@@ -142,6 +141,8 @@ class CArrayAnnotation: public CCopasiContainer
     const std::string & getDimensionDescription(unsigned int d);
     void setDimensionDescription(unsigned int d, const std::string & s);
 
+    void setCopasiVector(unsigned int d, const CCopasiContainer* v);
+
     const std::string & getDescription() const;
     void setDescription(const std::string & s);
 
@@ -152,6 +153,8 @@ class CArrayAnnotation: public CCopasiContainer
     bool CArrayAnnotation::updateAnnotations();
 
     bool createAnnotationsFromCopasiVector(unsigned int d, const CCopasiContainer* v);
+
+    void printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const;
 
   public:
     void printDebug(std::ostream & out) const;
