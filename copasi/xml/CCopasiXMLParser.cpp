@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.115 $
+   $Revision: 1.116 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:24:02 $
+   $Author: shoops $ 
+   $Date: 2005/11/10 15:09:01 $
    End CVS Header */
 
 /**
@@ -5254,12 +5254,17 @@ void CCopasiXMLParser::ReportElement::end(const XML_Char *pszName)
 
 CCopasiXMLParser::HeaderElement::HeaderElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mpCommentElement(NULL),
+    mpObjectElement(NULL),
+    mpTextElement(NULL)
 {}
 
 CCopasiXMLParser::HeaderElement::~HeaderElement()
 {
-  pdelete(mpCurrentHandler);
+  pdelete(mpCommentElement);
+  pdelete(mpObjectElement);
+  pdelete(mpTextElement);
 }
 
 void CCopasiXMLParser::HeaderElement::start(const XML_Char *pszName,
@@ -5278,9 +5283,11 @@ void CCopasiXMLParser::HeaderElement::start(const XML_Char *pszName,
     case Text:
       if (!strcmp(pszName, "html"))
         {
-          /* If we do not have a text element handler we create one. */
-          if (!mpCurrentHandler)
-            mpCurrentHandler = new TextElement(mParser, mCommon);
+          /* If we do not have a comment element handler we create one. */
+          if (!mpCommentElement)
+            mpCommentElement = new CommentElement(mParser, mCommon);
+
+          mpCurrentHandler = mpCommentElement;
         }
       break;
 
@@ -5288,36 +5295,38 @@ void CCopasiXMLParser::HeaderElement::start(const XML_Char *pszName,
       if (!strcmp(pszName, "Object"))
         {
           /* If we do not have an Object element handler we create one. */
-          if (!mpCurrentHandler)
-            mpCurrentHandler = new ObjectElement(mParser, mCommon);
+          if (!mpObjectElement)
+            mpObjectElement = new ObjectElement(mParser, mCommon);
+
+          mpCurrentHandler = mpObjectElement;
         }
       break;
 
-    case Report:
-      if (!strcmp(pszName, "Report"))
+    case ReportReference:
+      if (!strcmp(pszName, "ReportReference"))
         {
-          /* If we do not have an Object element handler we create one. */
-          if (!mpCurrentHandler)
-            mpCurrentHandler = new TextElement(mParser, mCommon);
+          /* If we do not have an text element handler we create one. */
+          if (!mpTextElement)
+            mpTextElement = new TextElement(mParser, mCommon);
+
+          mpCurrentHandler = mpTextElement;
         }
-      /* Push the Text element handler on the stack and call it. */
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
       break;
 
     default:
       mLastKnownElement = mCurrentElement - 1;
       mCurrentElement = UNKNOWN_ELEMENT;
       mParser.pushElementHandler(&mParser.mUnknownElement);
-      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
-  /* Push the Text element handler on the stack and call it. */
+
+  /* Push the current element handler on the stack and call it. */
   if (mpCurrentHandler)
     {
       mParser.pushElementHandler(mpCurrentHandler);
     }
-  mpCurrentHandler->start(pszName, papszAttrs);
+
+  mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
@@ -5347,8 +5356,8 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
       mCurrentElement = Header;
       break;
 
-    case Report:
-      if (strcmp(pszName, "Report")) fatalError();
+    case ReportReference:
+      if (strcmp(pszName, "ReportReference")) fatalError();
       // add the key that is stored in mCommon.Comment to the map
       if (mCommon.reportReferenceMap.find(mCommon.Comment) == mCommon.reportReferenceMap.end())
         {
@@ -5360,7 +5369,7 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
       break;
 
     case UNKNOWN_ELEMENT:
-      mCurrentElement = mLastKnownElement;
+      mCurrentElement = Header;
       break;
 
     default:
@@ -5371,12 +5380,17 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
 
 CCopasiXMLParser::BodyElement::BodyElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mpCommentElement(NULL),
+    mpObjectElement(NULL),
+    mpTextElement(NULL)
 {}
 
 CCopasiXMLParser::BodyElement::~BodyElement()
 {
-  pdelete(mpCurrentHandler);
+  pdelete(mpCommentElement);
+  pdelete(mpObjectElement);
+  pdelete(mpTextElement);
 }
 
 void CCopasiXMLParser::BodyElement::start(const XML_Char *pszName,
@@ -5395,9 +5409,11 @@ void CCopasiXMLParser::BodyElement::start(const XML_Char *pszName,
     case Text:
       if (!strcmp(pszName, "html"))
         {
-          /* If we do not have a text element handler we create one. */
-          if (!mpCurrentHandler)
-            mpCurrentHandler = new TextElement(mParser, mCommon);
+          /* If we do not have a comment element handler we create one. */
+          if (!mpCommentElement)
+            mpCommentElement = new CommentElement(mParser, mCommon);
+
+          mpCurrentHandler = mpCommentElement;
         }
       break;
 
@@ -5405,36 +5421,38 @@ void CCopasiXMLParser::BodyElement::start(const XML_Char *pszName,
       if (!strcmp(pszName, "Object"))
         {
           /* If we do not have an Object element handler we create one. */
-          if (!mpCurrentHandler)
-            mpCurrentHandler = new ObjectElement(mParser, mCommon);
+          if (!mpObjectElement)
+            mpObjectElement = new ObjectElement(mParser, mCommon);
+
+          mpCurrentHandler = mpObjectElement;
         }
       break;
 
-    case Report:
-      if (!strcmp(pszName, "Report"))
+    case ReportReference:
+      if (!strcmp(pszName, "ReportReference"))
         {
-          /* If we do not have an Object element handler we create one. */
-          if (!mpCurrentHandler)
-            mpCurrentHandler = new TextElement(mParser, mCommon);
+          /* If we do not have an text element handler we create one. */
+          if (!mpTextElement)
+            mpTextElement = new TextElement(mParser, mCommon);
+
+          mpCurrentHandler = mpTextElement;
         }
-      /* Push the Text element handler on the stack and call it. */
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
       break;
 
     default:
       mLastKnownElement = mCurrentElement - 1;
       mCurrentElement = UNKNOWN_ELEMENT;
       mParser.pushElementHandler(&mParser.mUnknownElement);
-      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
-  /* Push the Text element handler on the stack and call it. */
+
+  /* Push the current element handler on the stack and call it. */
   if (mpCurrentHandler)
     {
       mParser.pushElementHandler(mpCurrentHandler);
     }
-  mpCurrentHandler->start(pszName, papszAttrs);
+
+  mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
@@ -5464,8 +5482,8 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
       mCurrentElement = Body;
       break;
 
-    case Report:
-      if (strcmp(pszName, "Report")) fatalError();
+    case ReportReference:
+      if (strcmp(pszName, "ReportReference")) fatalError();
       // add the key that is stored in mCommon.Comment to the map
       if (mCommon.reportReferenceMap.find(mCommon.Comment) == mCommon.reportReferenceMap.end())
         {
@@ -5477,7 +5495,7 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
       break;
 
     case UNKNOWN_ELEMENT:
-      mCurrentElement = mLastKnownElement;
+      mCurrentElement = Body;
       break;
 
     default:
@@ -5488,12 +5506,17 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
 
 CCopasiXMLParser::FooterElement::FooterElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mpCommentElement(NULL),
+    mpObjectElement(NULL),
+    mpTextElement(NULL)
 {}
 
 CCopasiXMLParser::FooterElement::~FooterElement()
 {
-  pdelete(mpCurrentHandler);
+  pdelete(mpCommentElement);
+  pdelete(mpObjectElement);
+  pdelete(mpTextElement);
 }
 
 void CCopasiXMLParser::FooterElement::start(const XML_Char *pszName,
@@ -5512,9 +5535,11 @@ void CCopasiXMLParser::FooterElement::start(const XML_Char *pszName,
     case Text:
       if (!strcmp(pszName, "html"))
         {
-          /* If we do not have a text element handler we create one. */
-          if (!mpCurrentHandler)
-            mpCurrentHandler = new TextElement(mParser, mCommon);
+          /* If we do not have a comment element handler we create one. */
+          if (!mpCommentElement)
+            mpCommentElement = new CommentElement(mParser, mCommon);
+
+          mpCurrentHandler = mpCommentElement;
         }
       break;
 
@@ -5522,36 +5547,38 @@ void CCopasiXMLParser::FooterElement::start(const XML_Char *pszName,
       if (!strcmp(pszName, "Object"))
         {
           /* If we do not have an Object element handler we create one. */
-          if (!mpCurrentHandler)
-            mpCurrentHandler = new ObjectElement(mParser, mCommon);
+          if (!mpObjectElement)
+            mpObjectElement = new ObjectElement(mParser, mCommon);
+
+          mpCurrentHandler = mpObjectElement;
         }
       break;
 
-    case Report:
-      if (!strcmp(pszName, "Report"))
+    case ReportReference:
+      if (!strcmp(pszName, "ReportReference"))
         {
-          /* If we do not have an Object element handler we create one. */
-          if (!mpCurrentHandler)
-            mpCurrentHandler = new TextElement(mParser, mCommon);
+          /* If we do not have an text element handler we create one. */
+          if (!mpTextElement)
+            mpTextElement = new TextElement(mParser, mCommon);
+
+          mpCurrentHandler = mpTextElement;
         }
-      /* Push the Text element handler on the stack and call it. */
-      mParser.pushElementHandler(mpCurrentHandler);
-      mpCurrentHandler->start(pszName, papszAttrs);
       break;
 
     default:
       mLastKnownElement = mCurrentElement - 1;
       mCurrentElement = UNKNOWN_ELEMENT;
       mParser.pushElementHandler(&mParser.mUnknownElement);
-      mParser.onStartElement(pszName, papszAttrs);
       break;
     }
-  /* Push the Text element handler on the stack and call it. */
+
+  /* Push the current element handler on the stack and call it. */
   if (mpCurrentHandler)
     {
       mParser.pushElementHandler(mpCurrentHandler);
     }
-  mpCurrentHandler->start(pszName, papszAttrs);
+
+  mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
@@ -5581,8 +5608,8 @@ void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
       mCurrentElement = Footer;
       break;
 
-    case Report:
-      if (strcmp(pszName, "Report")) fatalError();
+    case ReportReference:
+      if (strcmp(pszName, "ReportReference")) fatalError();
       // add the key that is stored in mCommon.Comment to the map
       if (mCommon.reportReferenceMap.find(mCommon.Comment) == mCommon.reportReferenceMap.end())
         {
@@ -5594,7 +5621,7 @@ void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
       break;
 
     case UNKNOWN_ELEMENT:
-      mCurrentElement = mLastKnownElement;
+      mCurrentElement = Footer;
       break;
 
     default:

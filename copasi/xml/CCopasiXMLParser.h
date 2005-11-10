@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:41:10 $
+   $Date: 2005/11/10 15:09:02 $
    End CVS Header */
 
 /**
@@ -2129,6 +2129,46 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
+  class TextElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
+      {
+        // Attributes
+      private:
+        /**
+         * Text
+         */
+        enum Element
+        {
+          Text = 0
+        };
+
+        // Operations
+      public:
+        /**
+         * Constructor
+         */
+        TextElement(CCopasiXMLParser & parser,
+                    SCopasiXMLParserCommon & common);
+
+        /**
+         * Destructor
+         */
+        virtual ~TextElement();
+
+        /**
+         * Start element handler
+         * @param const XML_Char *pszName
+         * @param const XML_Char **papszAttrs
+         */
+        virtual void start(const XML_Char *pszName,
+                           const XML_Char **papszAttrs);
+
+        /**
+         * End element handler
+         * @param const XML_Char *pszName
+         */
+        virtual void end(const XML_Char *pszName);
+      };
+
   class HeaderElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
@@ -2141,7 +2181,7 @@ class CCopasiXMLParser : public CExpat
           Header = 0,
           Object,
           Text,
-          Report
+          ReportReference
         };
 
         // Operations
@@ -2170,6 +2210,12 @@ class CCopasiXMLParser : public CExpat
          * @param const XML_Char *pszName
          */
         virtual void end(const XML_Char *pszName);
+
+        // Attributes
+      private:
+        CommentElement * mpCommentElement;
+        ObjectElement * mpObjectElement;
+        TextElement * mpTextElement;
       };
 
   class BodyElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
@@ -2184,7 +2230,7 @@ class CCopasiXMLParser : public CExpat
           Body = 0,
           Object,
           Text,
-          Report
+          ReportReference
         };
 
         // Operations
@@ -2213,6 +2259,12 @@ class CCopasiXMLParser : public CExpat
          * @param const XML_Char *pszName
          */
         virtual void end(const XML_Char *pszName);
+
+        // Attributes
+      private:
+        CommentElement * mpCommentElement;
+        ObjectElement * mpObjectElement;
+        TextElement * mpTextElement;
       };
 
   class FooterElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
@@ -2227,7 +2279,7 @@ class CCopasiXMLParser : public CExpat
           Footer = 0,
           Object,
           Text,
-          Report
+          ReportReference
         };
 
         // Operations
@@ -2256,6 +2308,12 @@ class CCopasiXMLParser : public CExpat
          * @param const XML_Char *pszName
          */
         virtual void end(const XML_Char *pszName);
+
+        // Attributes
+      private:
+        CommentElement * mpCommentElement;
+        ObjectElement * mpObjectElement;
+        TextElement * mpTextElement;
       };
 
   class TableElement:
@@ -2429,46 +2487,6 @@ class CCopasiXMLParser : public CExpat
          * Destructor
          */
         virtual ~ListOfFunctionsElement();
-
-        /**
-         * Start element handler
-         * @param const XML_Char *pszName
-         * @param const XML_Char **papszAttrs
-         */
-        virtual void start(const XML_Char *pszName,
-                           const XML_Char **papszAttrs);
-
-        /**
-         * End element handler
-         * @param const XML_Char *pszName
-         */
-        virtual void end(const XML_Char *pszName);
-      };
-
-  class TextElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
-      {
-        // Attributes
-      private:
-        /**
-         * Text
-         */
-        enum Element
-        {
-          Text = 0
-        };
-
-        // Operations
-      public:
-        /**
-         * Constructor
-         */
-        TextElement(CCopasiXMLParser & parser,
-                    SCopasiXMLParserCommon & common);
-
-        /**
-         * Destructor
-         */
-        virtual ~TextElement();
 
         /**
          * Start element handler
