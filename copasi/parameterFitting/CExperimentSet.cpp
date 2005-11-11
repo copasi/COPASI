@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:19:49 $
+   $Date: 2005/11/11 13:32:43 $
    End CVS Header */
 
 #include <algorithm>
@@ -174,4 +174,16 @@ std::vector< std::string > CExperimentSet::getFileNames() const
         }
 
     return List;
+  }
+
+unsigned C_INT32 CExperimentSet::getDataPointCount() const
+  {
+    unsigned C_INT32 Count = 0;
+    std::vector< CExperiment * >::iterator it = mpExperiments->begin();
+    std::vector< CExperiment * >::iterator end = mpExperiments->end();
+
+    for (; it != end; ++it)
+      Count += (*it)->getDependentData().numRows() * (*it)->getDependentData().numCols();
+
+    return Count;
   }

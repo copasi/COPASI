@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 15:11:33 $
+   $Date: 2005/11/11 13:32:43 $
    End CVS Header */
 
 #ifndef COPASI_CExperimentSet
@@ -137,6 +137,12 @@ class CExperimentSet: public CCopasiParameterGroup
      * @return std::vector< std::string > fileNames
      */
     std::vector< std::string > getFileNames() const;
+
+    /**
+     * Retreive the number of data points of all experiments combined.
+     * @return unsigned C_INT32 dataPointCount
+     */
+    unsigned C_INT32 getDataPointCount() const;
 
   private:
     /**
