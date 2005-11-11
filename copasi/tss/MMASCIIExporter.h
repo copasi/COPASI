@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/10/14 10:01:34 $
+   $Date: 2005/11/11 13:39:05 $
    End CVS Header */
 
 #ifndef MMASCIIExpoter_H__
@@ -62,7 +62,7 @@ class MMASCIIExporter
     /**
      **   This method finds internal functions calls 
      **/
-    void findInternalFunctionsCalls(CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction);
+    void findInternalFunctionsCalls(const CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction);
     /**
      **    This method exports the function in C format 
      **/

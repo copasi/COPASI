@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/11/11 13:07:17 $
+   $Date: 2005/11/11 13:39:05 $
    End CVS Header */
 
 #include <math.h>
@@ -220,7 +220,7 @@ void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::stri
                       newparent->addChild(newchild2, newchild1);
                     }
 
-                  if (0) // TODO: the current Copasi version does not support this case, the following part is not tested
+                  if (0) // *************** TODO: the current Copasi version does not support the case bellow, the following part is not tested
                     if (CEvaluationNode::type(child2->getType()) == CEvaluationNode::VECTOR)
                       {
                         const std::vector<CEvaluationNode *> & vector = dynamic_cast< CEvaluationNodeVector *> (child2) ->getVector();
@@ -250,7 +250,7 @@ void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::stri
                             newparent->addChild(newchild2, newchild1);
                             std::cout << "newparent->getChild (it == end):" << newparent->getChild()->getData() << std::endl;
                           }
-                      } // END of this TODO;
+                      } // END of this TODO. ****************************************************************************************************
 
                   if (parent)
                     {
@@ -334,37 +334,24 @@ void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::stri
 /**
  **         This method finds internal functions calls 
  **/
-void MMASCIIExporter::findInternalFunctionsCalls(CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction)
+void MMASCIIExporter::findInternalFunctionsCalls(const CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction)
 {
   if (pNode)
     {
       CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
-      CCopasiTree<CEvaluationNode>::iterator treeIt = pNode;
+      CCopasiTree<CEvaluationNode>::const_iterator treeIt = pNode;
 
       while (treeIt != NULL)
         {
           if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
             {
-              const CFunction* pFunc;
-              pFunc = static_cast<CFunction*> (pFunctionDB->findFunction((*treeIt).getData()));
+              const CFunction* iFunc;
+              iFunc = static_cast<CFunction*> (pFunctionDB->findFunction((*treeIt).getData()));
 
-              CFunction* tmpFunc = NULL;
-              tmpFunc = new CFunction(*pFunc);
+              findInternalFunctionsCalls(iFunc->getRoot(), exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction);
 
-              findInternalFunctionsCalls(tmpFunc->getRoot(), exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction);
-
-              if (pFunc->getType() != CEvaluationTree::MassAction)
-                {
-                  /*    std::cout << "vorher:" << std::endl;
-                                    if (pFunc->getRoot()) 
-                       pFunc->getRoot()->printRecursively(std::cout); */
-
-                  functionCoutput(pFunc, exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction);
-
-                  /*   std::cout << "naher:" << std::endl;
-                     if (pFunc->getRoot())
-                      pFunc->getRoot()->printRecursively(std::cout); */
-                }
+              if (iFunc->getType() != CEvaluationTree::MassAction)
+                functionCoutput(iFunc, exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction);
             }
 
           ++treeIt;
@@ -566,14 +553,10 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
 
       std::ostringstream outFunction;
 
-      const CFunction* pFunc;
-      CFunction* tmpFunc = NULL;
+      const CFunction* pFunc = &(reac->getFunction());
 
-      pFunc = &(reac->getFunction());
-      tmpFunc = new CFunction(*pFunc);
-
-      if (tmpFunc->getRoot())
-        findInternalFunctionsCalls(tmpFunc->getRoot(), exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction);
+      if (pFunc->getRoot())
+        findInternalFunctionsCalls(pFunc->getRoot(), exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction);
 
       if (pFunc->getType() != CEvaluationTree::MassAction)
         functionCoutput(pFunc, exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction);
