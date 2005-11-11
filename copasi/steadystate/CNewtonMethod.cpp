@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/15 18:45:25 $
+   $Date: 2005/11/11 12:41:37 $
    End CVS Header */
 
 #include <algorithm>
@@ -433,6 +433,21 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
        *             integer * lda,
        *             integer *ipiv,
        *             integer *info)
+       *
+       *  Purpose
+       *  =======
+       *
+       *  DGETRF computes an LU factorization of a general M-by-N matrix A
+       *  using partial pivoting with row interchanges.
+       *
+       *  The factorization has the form
+       *     A = P * L * U
+       *  where P is a permutation matrix, L is lower triangular with unit
+       *  diagonal elements (lower trapezoidal if m > n), and U is upper
+       *  triangular (upper trapezoidal if m < n).
+       *
+       *  This is the right-looking Level 3 BLAS version of the algorithm.
+       *
        *  Arguments
        *  =========
        *
