@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:19:49 $
+   $Date: 2005/11/11 13:34:23 $
    End CVS Header */
 
 #include "copasi.h"
@@ -121,3 +121,19 @@ bool CFitItem::removeExperiment(const unsigned C_INT32 & index)
 
 unsigned C_INT32 CFitItem::getExperimentCount() const
   {return mpGrpAffectedExperiments->size();}
+
+bool CFitItem::updateBounds(std::vector<COptItem * >::iterator it)
+{
+  while (*it != this)
+    {
+      if (mpLowerObject && (getLowerBound() == (*it)->getObjectCN()))
+        mpLowerBound = &static_cast<CFitItem *>(*it)->getLocalValue();
+
+      if (mpUpperObject && (getUpperBound() == (*it)->getObjectCN()))
+        mpUpperBound = &static_cast<CFitItem *>(*it)->getLocalValue();
+
+      ++it;
+    }
+
+  return true;
+}

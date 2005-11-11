@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:19:49 $
+   $Date: 2005/11/11 13:34:30 $
    End CVS Header */
 
 #ifndef COPASI_CFitItem
@@ -134,6 +134,13 @@ class CFitItem : public COptItem
      * @return unsigned C_INT32 size
      */
     unsigned C_INT32 getExperimentCount() const;
+
+    /**
+     * Update bounds
+     * @param std::vector<COptItem * >::iterator it
+     * @return bool success
+     */
+    bool updateBounds(std::vector<COptItem * >::iterator it);
 
   private:
     /**
