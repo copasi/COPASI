@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:15:30 $
+   $Date: 2005/11/11 13:21:09 $
    End CVS Header */
 
 #ifndef COPASI_COptItem
@@ -206,7 +206,7 @@ class COptItem: public CCopasiParameterGroup
     void initializeParameter();
 
     //Attributes:
-  private:
+  protected:
     /**
      * A pointer to the value of the CCopasiParameter holding the ObjectCN
      */
