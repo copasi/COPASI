@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/10 10:11:11 $
+   $Date: 2005/11/11 10:05:48 $
    End CVS Header */
 
 #ifndef CANNOTATEDMATRIX_H
@@ -181,67 +181,21 @@ class CArrayAnnotation: public CCopasiContainer
     void resizeAnnotations();
     bool CArrayAnnotation::updateAnnotations();
 
-    bool createAnnotationsFromCopasiVector(unsigned int d, const CCopasiContainer* v);
-
     void printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const;
 
   public:
+    bool createAnnotationsFromCopasiVector(unsigned int d, const CCopasiContainer* v);
+
     void printDebug(std::ostream & out) const;
 
     virtual void print(std::ostream * ostream) const
       {
-        const_cast<CArrayAnnotation*>(this)->updateAnnotations();
+        if (mOnTheFly)
+          const_cast<CArrayAnnotation*>(this)->updateAnnotations();
         printDebug(*ostream);
       }
   };
 
 //**********************************************************************
-
-#define C_KEYTYPE std::string
-#include "CCopasiVector.h"
-
-/**
- */
-
-class CAnnotatedMatrixOld : public CMatrix<C_FLOAT64>, public CCopasiContainer
-  {
-  private:
-    C_KEYTYPE mKey;
-
-    C_KEYTYPE mRowsReference;
-    C_KEYTYPE mColumnsReference;
-
-    std::vector<C_KEYTYPE> mRowsReferences;
-    std::vector<C_KEYTYPE> mColumnsReferences;
-
-  public:
-    CAnnotatedMatrixOld(const std::string & name = "NoName",
-                        const CCopasiContainer * pParent = NULL);
-
-    CAnnotatedMatrixOld(const CAnnotatedMatrixOld & src,
-                        const CCopasiContainer * pParent = NULL);
-
-    ~CAnnotatedMatrixOld();
-
-    /*const C_KEYTYPE & getRowsReference() const
-      {return mRowsReference;}
-
-    const C_KEYTYPE & getColumnsReference() const
-      {return mRowsReference;}
-
-    const std::vector<C_KEYTYPE> & getRowsReferences() const
-      {return mRowsReferences;}
-
-    const std::vector<C_KEYTYPE> & getColumnsReferences() const
-      {return mColumnsReferences;}
-    */
-
-    template <class CType1, class CType2>
-          void setup(const CCopasiVector<CType1> & rows, const CCopasiVector<CType2> & columns)
-      {
-        resize(rows.size(), columns.size());
-        //all the references
-      }
-  };
 
 #endif

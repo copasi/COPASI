@@ -1,13 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/10 10:11:11 $
+   $Date: 2005/11/11 10:05:47 $
    End CVS Header */
 
 #include "CAnnotatedMatrix.h"
 #include "report/CKeyFactory.h"
+#include "CCopasiVector.h"
 
 CCopasiArray::CCopasiArray()
     : mDim(0) {}
@@ -78,7 +79,7 @@ const CCopasiArray::data_type & CCopasiArray::operator[] (const index_type & ind
 CArrayAnnotation::CArrayAnnotation(const std::string & name,
                                    const CCopasiContainer * pParent,
                                    CCopasiAbstractArray * array)
-    : CCopasiContainer(name, pParent, "Array" /*, flags */),      //TODO: flags
+    : CCopasiContainer(name, pParent, "Array" /*, flags */),       //TODO: flags
     mArray(array)
 {
   assert(mArray);
@@ -237,28 +238,3 @@ void CArrayAnnotation::printDebug(std::ostream & out) const
 
 //
 //*******************************************************
-
-CAnnotatedMatrixOld::CAnnotatedMatrixOld(const std::string & name,
-    const CCopasiContainer * pParent):
-    CMatrix<C_FLOAT64>(),
-    CCopasiContainer(name, pParent, "AnnotatedMatrix",
-                     CCopasiObject::Container |
-                     CCopasiObject::NonUniqueName),
-    mKey(GlobalKeys.add("AnnotatedMatrix", this))
-{
-  //initObjects();
-  CONSTRUCTOR_TRACE;
-}
-
-CAnnotatedMatrixOld::CAnnotatedMatrixOld(const CAnnotatedMatrixOld & src,
-    const CCopasiContainer * pParent):
-    CMatrix<C_FLOAT64>(),
-    CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("AnnotatedMatrix", this))
-{
-  //initObjects();
-  CONSTRUCTOR_TRACE;
-}
-
-CAnnotatedMatrixOld::~CAnnotatedMatrixOld()
-{}
