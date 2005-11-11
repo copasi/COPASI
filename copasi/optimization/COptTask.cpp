@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/10/26 15:43:19 $
+   $Author: shoops $ 
+   $Date: 2005/11/11 13:20:36 $
    End CVS Header */
 
 /**
@@ -112,35 +112,22 @@ bool COptTask::process(const bool & /* useInitialValues */)
 
   mpMethod->isValidProblem(mpProblem);
 
-  //bool Report = (mReport.getStream() != NULL);
-
-  //if (Report) mReport.printHeader();
   initOutput();
 
   bool success = pMethod->optimise();
 
-  //if (Report) mReport.printFooter();
   finishOutput();
 
-  //should be renamed?
-  // Optimization is done and we have best values for the parameters.
   mSolutionVariables = pProblem->getSolutionVariables();
-  // From those values we need to update the model as while simulation the current state of the model might
-  // not be the same as the state when best values are reached.
-  // Hence get the pointers to UpdateMethods, get best parameter values and update the state.
   mUpdateMethods = pProblem->getCalculateVariableUpdateMethods();
+
   std::vector< UpdateMethod * >::iterator it = mUpdateMethods.begin();
   std::vector< UpdateMethod * >::iterator end = mUpdateMethods.end();
-  // set the best paramter values
-  // parameterCount = mSolutionVariables
+
   for (int i = 0; it != end; ++it, i++)
     (*mUpdateMethods[i])(mSolutionVariables[i]);
 
-  // pProblem->calculate();
-  // Now as state is updated we need to perform steady state analysis from this optimized state.
-
-  // call restore at the last -- or u might want to check with Stefan if this restore is reqd or not... - Sameer
-  // pProblem->restore();
+  pProblem->calculate();
 
   return success;
 }
