@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/08 16:18:26 $
+   $Date: 2005/11/11 10:06:34 $
    End CVS Header */
 
 #ifndef COPASI_CMCAMethod_H__
@@ -29,17 +29,23 @@ class CMCAMethod: public CCopasiMethod
     /**
      * MCA Matrices
      */
-    CAnnotatedMatrixOld mUnscaledElasticities;
+    CMatrix<C_FLOAT64> mUnscaledElasticities;
+    CArrayAnnotation* mUnscaledElasticitiesAnn;
 
-    CAnnotatedMatrixOld mUnscaledConcCC;
+    CMatrix<C_FLOAT64> mUnscaledConcCC;
+    CArrayAnnotation* mUnscaledConcCCAnn;
 
-    CAnnotatedMatrixOld mUnscaledFluxCC;
+    CMatrix<C_FLOAT64> mUnscaledFluxCC;
+    CArrayAnnotation* mUnscaledFluxCCAnn;
 
-    CAnnotatedMatrixOld mScaledElasticities;
+    CMatrix<C_FLOAT64> mScaledElasticities;
+    CArrayAnnotation* mScaledElasticitiesAnn;
 
-    CAnnotatedMatrixOld mScaledConcCC;
+    CMatrix<C_FLOAT64> mScaledConcCC;
+    CArrayAnnotation* mScaledConcCCAnn;
 
-    CAnnotatedMatrixOld mScaledFluxCC;
+    CMatrix<C_FLOAT64> mScaledFluxCC;
+    CArrayAnnotation* mScaledFluxCCAnn;
 
     /**
      * 1 if MCA coeffs are to be unscaled
@@ -61,6 +67,8 @@ class CMCAMethod: public CCopasiMethod
 
     CSteadyStateMethod::ReturnCode mSSStatus;
 
+    void initObjects();
+
   public:
     /**
      * Default constructor
@@ -79,28 +87,28 @@ class CMCAMethod: public CCopasiMethod
 
     virtual ~CMCAMethod();
 
-    const CAnnotatedMatrixOld & getUnscaledElasticities() const
+    const CMatrix<C_FLOAT64> & getUnscaledElasticities() const
       {return mUnscaledElasticities;}
 
     void calculateUnscaledElasticities(C_FLOAT64 res);
 
-    const CAnnotatedMatrixOld & getUnscaledConcentrationCC() const
+    const CMatrix<C_FLOAT64> & getUnscaledConcentrationCC() const
       {return mUnscaledConcCC;}
 
     int calculateUnscaledConcentrationCC();
 
-    const CAnnotatedMatrixOld & getUnscaledFluxCC() const
+    const CMatrix<C_FLOAT64> & getUnscaledFluxCC() const
       {return mUnscaledFluxCC;}
 
     void calculateUnscaledFluxCC(int condition);
 
-    const CAnnotatedMatrixOld & getScaledElasticities() const
+    const CMatrix<C_FLOAT64> & getScaledElasticities() const
       {return mScaledElasticities;}
 
-    const CAnnotatedMatrixOld & getScaledConcentrationCC() const
+    const CMatrix<C_FLOAT64> & getScaledConcentrationCC() const
       {return mScaledConcCC;}
 
-    const CAnnotatedMatrixOld & getScaledFluxCC() const
+    const CMatrix<C_FLOAT64> & getScaledFluxCC() const
       {return mScaledFluxCC;}
 
     /**

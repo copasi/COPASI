@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/08/03 22:20:56 $
+   $Date: 2005/11/11 10:06:34 $
    End CVS Header */
 
 #include <cmath>
@@ -20,6 +20,9 @@
 #include "CMCAMethod.h"
 #include "CMCAProblem.h"
 
+//TODO: put all matrix resizing and annotations creation in one place, so
+// that it has to be done only once if several MCA are calculated (e.g. in a scan)
+
 /**
  * Default constructor
  */
@@ -33,6 +36,60 @@ CMCAMethod::CMCAMethod(const CCopasiContainer* pParent):
   mFactor = 1.0e-9;
   mSSStatus = CSteadyStateMethod::notFound;
   mSteadyStateResolution = mFactor;
+
+  initObjects();
+}
+
+void CMCAMethod::initObjects()
+{
+  CArrayAnnotation *
+  tmp = new CArrayAnnotation("Unscaled elasticities", this,
+                             new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mUnscaledElasticities));
+  tmp->setOnTheFly(false);
+  tmp->setDescription("Unscaled elasticity matrix");
+  tmp->setDimensionDescription(0, "Reactions (reduced system)");
+  tmp->setDimensionDescription(1, "Metabolites (reduced system)");
+  mUnscaledElasticitiesAnn = tmp;
+
+  tmp = new CArrayAnnotation("Unscaled concentration control coefficients", this,
+                             new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mUnscaledConcCC));
+  tmp->setOnTheFly(false);
+  tmp->setDescription("Unscaled concentration control coefficients");
+  tmp->setDimensionDescription(0, "Metabolites (reduced system)");
+  tmp->setDimensionDescription(1, "Reactions (reduced system)");
+  mUnscaledConcCCAnn = tmp;
+
+  tmp = new CArrayAnnotation("Unscaled flux control coefficients", this,
+                             new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mUnscaledFluxCC));
+  tmp->setOnTheFly(false);
+  tmp->setDescription("Unscaled flux control coefficients");
+  tmp->setDimensionDescription(0, "Reactions (reduced system)");
+  tmp->setDimensionDescription(1, "Reactions (reduced system)");
+  mUnscaledFluxCCAnn = tmp;
+
+  tmp = new CArrayAnnotation("Scaled elasticities", this,
+                             new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mScaledElasticities));
+  tmp->setOnTheFly(false);
+  tmp->setDescription("Scaled elasticity matrix");
+  tmp->setDimensionDescription(0, "Reactions (reduced system)");
+  tmp->setDimensionDescription(1, "Metabolites (reduced system)");
+  mScaledElasticitiesAnn = tmp;
+
+  tmp = new CArrayAnnotation("Scaled concentration control coefficients", this,
+                             new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mScaledConcCC));
+  tmp->setOnTheFly(false);
+  tmp->setDescription("Scaled concentration control coefficients");
+  tmp->setDimensionDescription(0, "Metabolites (reduced system)");
+  tmp->setDimensionDescription(1, "Reactions (reduced system)");
+  mScaledConcCCAnn = tmp;
+
+  tmp = new CArrayAnnotation("Scaled flux control coefficients", this,
+                             new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mScaledFluxCC));
+  tmp->setOnTheFly(false);
+  tmp->setDescription("Scaled flux control coefficients");
+  tmp->setDimensionDescription(0, "Reactions (reduced system)");
+  tmp->setDimensionDescription(1, "Reactions (reduced system)");
+  mScaledFluxCCAnn = tmp;
 }
 
 /**
@@ -53,9 +110,15 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 res)
   CCopasiVector<CMetab> & metabs = mpModel->getMetabolitesX();
   CCopasiVector<CReaction> & reacs = mpModel->getReactionsX();
 
-  mUnscaledElasticities.setup(reacs, metabs);
+  //mUnscaledElasticities.setup(reacs, metabs);
   unsigned C_INT32 numReacs = reacs.size();
   unsigned C_INT32 numMetabs = metabs.size();
+  mUnscaledElasticities.resize(numReacs, numMetabs);
+
+  //update annotated matrix
+  mUnscaledElasticitiesAnn->resize();
+  mUnscaledElasticitiesAnn->createAnnotationsFromCopasiVector(0, &reacs);
+  mUnscaledElasticitiesAnn->createAnnotationsFromCopasiVector(1, &metabs);
 
   unsigned C_INT32 i, j;
   C_FLOAT64 store, temp;
@@ -271,6 +334,11 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   //std::cout << "ConcCC  (= aux2*RedStoi = -L * redJac^-1 * redStoi)" << std::endl;
   //std::cout << (CMatrix<C_FLOAT64>)mUnscaledConcCC << std::endl;
 
+  //update annotations
+  mUnscaledConcCCAnn->resize();
+  mUnscaledConcCCAnn->createAnnotationsFromCopasiVector(0, &mpModel->getMetabolitesX());
+  mUnscaledConcCCAnn->createAnnotationsFromCopasiVector(1, &mpModel->getReactionsX());
+
   return MCA_OK;
 }
 
@@ -299,6 +367,11 @@ void CMCAMethod::calculateUnscaledFluxCC(int condition)
               mUnscaledFluxCC[i][j] += mUnscaledElasticities[i][k] * mUnscaledConcCC[k][j];
           }
     }
+
+  //update annotations
+  mUnscaledFluxCCAnn->resize();
+  mUnscaledFluxCCAnn->createAnnotationsFromCopasiVector(0, &mpModel->getReactionsX());
+  mUnscaledFluxCCAnn->createAnnotationsFromCopasiVector(1, &mpModel->getReactionsX());
 }
 
 void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
@@ -331,6 +404,12 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
         else
           mScaledElasticities[i][j] = DBL_MAX;
       }
+
+  //update annotated matrix
+  mScaledElasticitiesAnn->resize();
+  mScaledElasticitiesAnn->createAnnotationsFromCopasiVector(0, &mpModel->getReactionsX());
+  mScaledElasticitiesAnn->createAnnotationsFromCopasiVector(1, &mpModel->getMetabolitesX());
+
   //std::cout << "scElas " << std::endl;
   //std::cout << (CMatrix<C_FLOAT64>)mScaledElasticities << std::endl;
 
@@ -352,6 +431,11 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   //std::cout << "scConcCC " << std::endl;
   //std::cout << (CMatrix<C_FLOAT64>)mScaledConcCC << std::endl;
 
+  //update annotations
+  mScaledConcCCAnn->resize();
+  mScaledConcCCAnn->createAnnotationsFromCopasiVector(0, &mpModel->getMetabolitesX());
+  mScaledConcCCAnn->createAnnotationsFromCopasiVector(1, &mpModel->getReactionsX());
+
   // Scale FluxCC
   mScaledFluxCC.resize(mUnscaledFluxCC.numRows(), mUnscaledFluxCC.numCols());
   for (i = 0; i < mpModel->getTotSteps(); i++)
@@ -368,6 +452,11 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
       }
   //std::cout << "scFluxCC " << std::endl;
   //std::cout << (CMatrix<C_FLOAT64>)mScaledFluxCC << std::endl;
+
+  //update annotations
+  mScaledFluxCCAnn->resize();
+  mScaledFluxCCAnn->createAnnotationsFromCopasiVector(0, &mpModel->getReactionsX());
+  mScaledFluxCCAnn->createAnnotationsFromCopasiVector(1, &mpModel->getReactionsX());
 }
 
 /**
