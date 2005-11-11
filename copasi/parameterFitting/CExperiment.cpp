@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:19:49 $
+   $Date: 2005/11/11 13:34:47 $
    End CVS Header */
 
 #include <fstream>
@@ -57,10 +57,12 @@ CExperiment::CExperiment(const std::string & name,
     mDataDependent(0, 0),
     mMeans(0),
     mWeight(0),
+    mWeightSquare(0),
     mDependentValues(0),
     mIndependentUpdateMethods(0),
     mIndependentValues(0),
-    mNumDataRows(0)
+    mNumDataRows(0),
+    mDataDependentCalculated(0)
 {initializeParameter();}
 
 CExperiment::CExperiment(const CExperiment & src,
@@ -82,10 +84,12 @@ CExperiment::CExperiment(const CExperiment & src,
     mDataDependent(src.mDataDependent),
     mMeans(src.mMeans),
     mWeight(src.mWeight),
+    mWeightSquare(src.mWeightSquare),
     mDependentValues(src.mDependentValues),
     mIndependentUpdateMethods(src.mIndependentUpdateMethods),
     mIndependentValues(src.mIndependentValues),
-    mNumDataRows(src.mNumDataRows)
+    mNumDataRows(src.mNumDataRows),
+    mDataDependentCalculated(src.mDataDependentCalculated)
 {initializeParameter();}
 
 CExperiment::CExperiment(const CCopasiParameterGroup & group,
@@ -107,9 +111,12 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
     mDataDependent(0, 0),
     mMeans(0),
     mWeight(0),
+    mWeightSquare(0),
     mDependentValues(0),
     mIndependentUpdateMethods(0),
-    mIndependentValues(0)
+    mIndependentValues(0),
+    mNumDataRows(0),
+    mDataDependentCalculated(0)
 {initializeParameter();}
 
 CExperiment::~CExperiment() {}
@@ -169,16 +176,39 @@ bool CExperiment::elevateChildren()
   return true;
 }
 
-C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index)
-{
-  C_FLOAT64 s = 0.0;
+C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index,
+                                    C_FLOAT64 *& dependentValues,
+                                    C_FLOAT64 *& residuals) const
+  {
+    C_FLOAT64 s = 0.0;
 
-  unsigned C_INT32 i , imax = mDataDependent.numCols();
+    unsigned C_INT32 i , imax = mDataDependent.numCols();
+
+    if (residuals)
+      for (i = 0; i < imax; i++, dependentValues++, residuals++)
+        {
+          *dependentValues = *mDependentValues[i];
+          *residuals = (mDataDependent(index, i) - *dependentValues) * mWeight[i];
+          s += *residuals * *residuals;
+        }
+    else
+      for (i = 0; i < imax; i++, dependentValues++)
+        {
+          *dependentValues = *mDependentValues[i];
+          s += pow(mDataDependent(index, i) - *dependentValues, 2) * mWeightSquare[i];
+        }
+
+    return s;
+  }
+
+void CExperiment::storeCalculatedValues(const unsigned C_INT32 & index)
+{
+  unsigned C_INT32 i , imax = mDataDependentCalculated.numCols();
 
   for (i = 0; i < imax; i++)
-    s += pow(mDataDependent(index, i) - *mDependentValues[i], 2) * mWeight[i];
+    mDataDependentCalculated(index, i) = *mDependentValues[i];
 
-  return s;
+  return;
 }
 
 bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContainer)
@@ -283,6 +313,7 @@ bool CExperiment::read(std::istream & in,
   mDataTime.resize(TimeCount ? mNumDataRows : 0);
   mDataIndependent.resize(mNumDataRows, IndependentCount);
   mDataDependent.resize(mNumDataRows, DependentCount);
+  mDataDependentCalculated.resize(mNumDataRows, DependentCount);
   mColumnName.resize(IndependentCount + DependentCount + TimeCount);
 
   CTableRow Row(*mpNumColumns, (*mpSeparator)[0]);
@@ -341,12 +372,14 @@ bool CExperiment::read(std::istream & in,
         }
     }
 
+  // :TODO: write proper error message
   if ((in.fail() && !in.eof()) ||
       j != mNumDataRows) return false;
 
   // We need to calculate the means and the weights
   mMeans.resize(DependentCount);
   mWeight.resize(DependentCount);
+  mWeightSquare.resize(DependentCount);
   C_FLOAT64 MaxWeight = 0.0;
   C_FLOAT64 MinWeight = DBL_MAX;
 
@@ -373,8 +406,8 @@ bool CExperiment::read(std::istream & in,
       else
         Mean = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-      C_FLOAT64 & Weight = mWeight[i];
-      Weight = 0;
+      C_FLOAT64 & WeightSquare = mWeightSquare[i];
+      WeightSquare = 0;
 
       if (Count > 1)
         {
@@ -382,32 +415,32 @@ bool CExperiment::read(std::istream & in,
             {
               C_FLOAT64 & Data = mDataDependent[j][i];
               if (!isnan(Data))
-                Weight += pow((Mean - Data), 2);
+                WeightSquare += pow((Mean - Data), 2);
             }
 
-          if (Weight > 0)
+          if (WeightSquare > 0)
             {
-              Weight = (Count - 1.0) / Weight;
+              WeightSquare = (Count - 1.0) / WeightSquare;
 
-              if (Weight > MaxWeight) MaxWeight = Weight;
-              if (Weight < MinWeight) MinWeight = Weight;
+              if (WeightSquare > MaxWeight) MaxWeight = WeightSquare;
+              if (WeightSquare < MinWeight) MinWeight = WeightSquare;
             }
           else
-            Weight = -Count; // All values where equal to the mean
+            WeightSquare = -Count; // All values where equal to the mean
         }
       else
-        Weight = -1.0; // One or less values
+        WeightSquare = -1.0; // One or less values
     }
 
   // We have to make a guess for the weights which could not be calculated
   for (i = 0; i < DependentCount; i++)
     {
-      if (!(mWeight[i] < -0.5)) continue;
+      if (mWeightSquare[i] < -1.5)
+        mWeightSquare[i] *= -MaxWeight; // All values where equal to the mean
+      else if (mWeightSquare[i] < -0.5)
+        mWeightSquare[i] = 0.5 * (MaxWeight + MinWeight); // One or less values
 
-      if (mWeight[i] < -1.5)
-        mWeight[i] *= -MaxWeight; // All values where equal to the mean
-      else
-        mWeight[i] = 0.5 * (MaxWeight + MinWeight); // One or less values
+      mWeight[i] = sqrt(mWeightSquare[i]);
     }
 
   // If it is a time course this is the place to assert that it is sorted.

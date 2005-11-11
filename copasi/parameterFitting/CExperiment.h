@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:19:49 $
+   $Date: 2005/11/11 13:34:47 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -86,7 +86,11 @@ class CExperiment: public CCopasiParameterGroup
      */
     virtual bool elevateChildren();
 
-    C_FLOAT64 sumOfSquares(const unsigned C_INT32 & index);
+    C_FLOAT64 sumOfSquares(const unsigned C_INT32 & index,
+                           C_FLOAT64 *& dependentValues,
+                           C_FLOAT64 *& residuals) const;
+
+    void storeCalculatedValues(const unsigned C_INT32 & index);
 
     /**
      * Compile the experiment. This function must be called 
@@ -415,6 +419,8 @@ class CExperiment: public CCopasiParameterGroup
 
     CVector< C_FLOAT64 > mWeight;
 
+    CVector< C_FLOAT64 > mWeightSquare;
+
     CVector< C_FLOAT64 * > mDependentValues;
 
     CVector< UpdateMethod * > mIndependentUpdateMethods;
@@ -422,6 +428,11 @@ class CExperiment: public CCopasiParameterGroup
     CVector< C_FLOAT64 > mIndependentValues;
 
     unsigned C_INT32 mNumDataRows;
+
+    /**
+     * The relevant dependent experimental data after reading a file
+     */
+    CMatrix< C_FLOAT64 > mDataDependentCalculated;
   };
 
 #endif // COPASI_CExperiment

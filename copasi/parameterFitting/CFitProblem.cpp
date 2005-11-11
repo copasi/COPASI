@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/07 20:39:50 $
+   $Date: 2005/11/11 13:34:47 $
    End CVS Header */
 
 #include "copasi.h"
@@ -23,13 +23,18 @@
 #include "trajectory/CTrajectoryProblem.h"
 #include "utilities/CProcessReport.h"
 
+#include "clapackwrap.h"        //use CLAPACK
+
 //  Default constructor
 CFitProblem::CFitProblem(const CCopasiTask::Type & type,
                          const CCopasiContainer * pParent):
     COptProblem(type, pParent),
     mpExperimentSet(NULL),
     mpTrajectoryProblem(NULL),
-    mpInitialState(NULL)
+    mpInitialState(NULL),
+    mDependentValues(0),
+    mResiduals(0),
+    mStoreResults(false)
 {initializeParameter();}
 
 // copy constructor
@@ -38,7 +43,10 @@ CFitProblem::CFitProblem(const CFitProblem& src,
     COptProblem(src, pParent),
     mpExperimentSet(NULL),
     mpTrajectoryProblem(NULL),
-    mpInitialState(NULL)
+    mpInitialState(NULL),
+    mDependentValues(src.mDependentValues),
+    mResiduals(src.mResiduals),
+    mStoreResults(src.mStoreResults)
 {initializeParameter();}
 
 // Destructor
@@ -186,6 +194,8 @@ bool CFitProblem::initialize()
   std::vector<COptItem * >::iterator it = mpOptItems->begin();
   std::vector<COptItem * >::iterator end = mpOptItems->end();
 
+  std::vector<COptItem * >::iterator itTmp;
+
   CFitItem * pItem;
   unsigned C_INT32 i, imax;
   unsigned C_INT32 j;
@@ -194,6 +204,8 @@ bool CFitProblem::initialize()
   for (j = 0; it != end; ++it, j++)
     {
       pItem = static_cast<CFitItem *>(*it);
+      pItem->updateBounds(mpOptItems->begin());
+
       imax = pItem->getExperimentCount();
       if (imax == 0)
         {
@@ -220,6 +232,8 @@ bool CFitProblem::initialize()
   pdelete(mpInitialState);
   mpInitialState = new CState(mpModel->getInitialState());
 
+  mDependentValues.resize(mpExperimentSet->getDataPointCount());
+
   return true;
 }
 
@@ -234,13 +248,6 @@ bool CFitProblem::restore()
   return true;
 }
 
-/**
- * calculate() decides whether the problem is a steady state problem or a
- * trajectory problem based on whether the pointer to that type of problem
- * is null or not.  It then calls the process() method for that type of 
- * problem.  Currently process takes ofstream& as a parameter but it will
- * change so that process() takes no parameters.
- */
 bool CFitProblem::calculate()
 {
   mCounter += 1;
@@ -248,16 +255,19 @@ bool CFitProblem::calculate()
 
   unsigned i, imax = mpExperimentSet->size();
   unsigned j, jmax = mpOptItems->size();
-  unsigned kmax;
+  unsigned kmax, line;
   mCalculateValue = 0.0;
 
   CTrajectoryProblem * pProblem =
     static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
   CExperiment * pExp;
 
+  C_FLOAT64 * Residuals = mResiduals.array();
+  C_FLOAT64 * DependentValues = mDependentValues.array();
+
   try
     {
-      for (i = 0; i < imax && Continue; i++) // For each experiment
+      for (i = 0, line = 0; i < imax && Continue; i++) // For each experiment
         {
           pExp = mpExperimentSet->getExperiment(i);
 
@@ -300,7 +310,8 @@ bool CFitProblem::calculate()
                   break;
                 }
 
-              mCalculateValue += pExp->sumOfSquares(j);
+              mCalculateValue += pExp->sumOfSquares(j, DependentValues, Residuals);
+              if (mStoreResults) pExp->storeCalculatedValues(j);
             }
 
           // restore independent data
@@ -366,3 +377,357 @@ std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
 
 bool CFitProblem::createObjectiveFunction()
 {return true;}
+
+const CVector< C_FLOAT64 > & CFitProblem::getDependentValues() const
+  {return mDependentValues;}
+
+bool CFitProblem::setResidualsRequired(const bool & required)
+{
+  if (required)
+    mResiduals.resize(mpExperimentSet->getDataPointCount());
+  else
+    mResiduals.resize(0);
+
+  return true;
+}
+
+const CVector< C_FLOAT64 > & CFitProblem::getResiduals() const
+{return mResiduals;}
+
+bool CFitProblem::storeBestResult()
+{
+  // Set the current values to the solution values.
+  unsigned C_INT32 i, imax = mSolutionVariables.size();
+  for (i = 0; i < imax; i++)
+    (*mUpdateMethods[i])(mSolutionVariables[i]);
+
+  mStoreResults = true;
+  bool success = calculate();
+  mStoreResults = false;
+
+  fisher();
+
+  return success;
+}
+
+bool CFitProblem::fisher(const C_FLOAT64 & factor,
+                         const C_FLOAT64 & resolution)
+{
+  // Set the current values to the solution values.
+  unsigned C_INT32 i, imax = mSolutionVariables.size();
+  unsigned C_INT32 j, jmax = mDependentValues.size();
+  unsigned C_INT32 l, lmax = mSolutionVariables.size();
+
+  for (i = 0; i < imax; i++)
+    (*mUpdateMethods[i])(mSolutionVariables[i]);
+
+  calculate();
+
+  // Keep the results
+  C_FLOAT64 SumOfSquares = mCalculateValue;
+  CVector< C_FLOAT64 > DependentValues = mDependentValues;
+
+  C_FLOAT64 StandardDeviation = 0.0;
+
+  CVector< C_FLOAT64 > ParameterStandardDeviation;
+  ParameterStandardDeviation.resize(imax);
+  ParameterStandardDeviation = 0.0;
+
+  if (jmax > imax)
+    StandardDeviation = sqrt(SumOfSquares / (jmax - imax));
+
+  CMatrix< C_FLOAT64 > Fisher;
+  Fisher.resize(imax, imax);
+
+  CVector< C_FLOAT64 > Gradient;
+  Gradient.resize(imax);
+
+  CMatrix< C_FLOAT64 > dyp;
+  dyp.resize(imax, jmax);
+
+  C_FLOAT64 Current;
+  C_FLOAT64 Delta;
+
+  // Calculate the gradient
+  for (i = 0; i < imax; i++)
+    {
+      Current = mSolutionVariables[i];
+
+      if (Current != 0.0)
+        {
+          (*mUpdateMethods[i])(Current * (1.0 + factor));
+          Delta = 1.0 / (Current * factor);
+        }
+      else
+        {
+          (*mUpdateMethods[i])(resolution);
+          Delta = 1.0 / resolution;
+        }
+
+      calculate();
+
+      Gradient[i] = (mCalculateValue - SumOfSquares) * Delta;
+
+      for (j = 0; j < jmax; j++)
+        dyp(i, j) = (mDependentValues[j] - DependentValues[j]) * Delta;
+
+      // Restore the value
+      (*mUpdateMethods[i])(Current);
+    }
+
+  DebugFile << Gradient << std::endl;
+
+  // Construct the fisher information matrix
+  for (i = 0; i < imax; i++)
+    for (l = 0; l <= i; l++)
+      {
+        C_FLOAT64 & tmp = Fisher(i, l);
+
+        tmp = 0.0;
+
+        for (j = 0; j < jmax; j++)
+          tmp += dyp(i, j) * dyp(l, j);
+
+        tmp *= 2.0;
+
+        if (l != i)
+          Fisher(l, i) = tmp;
+      }
+
+  DebugFile << Fisher << std::endl;
+
+  /* We use dsytrf_ and dsytri_ to invert the symmetric fisher information matrix */
+
+  /* int dsytrf_(char *uplo,
+   *             integer *n, 
+   *             doublereal *a, 
+   *             integer * lda, 
+   *             integer *ipiv, 
+   *             doublereal *work, 
+   *             integer *lwork, 
+   *             integer *info);
+   *
+   *  -- LAPACK routine (version 3.0) --
+   *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+   *     Courant Institute, Argonne National Lab, and Rice University
+   *     June 30, 1999
+   *
+   *  Purpose
+   *  =======
+   *
+   *  DSYTRF computes the factorization of a real symmetric matrix A using
+   *  the Bunch-Kaufman diagonal pivoting method.  The form of the
+   *  factorization is
+   *
+   *     A = U*D*U**T  or  A = L*D*L**T
+   *
+   *  where U (or L) is a product of permutation and unit upper (lower)
+   *  triangular matrices, and D is symmetric and block diagonal with
+   *  1-by-1 and 2-by-2 diagonal blocks.
+   *
+   *  This is the blocked version of the algorithm, calling Level 3 BLAS.
+   *
+   *  Arguments
+   *  =========
+   *
+   *  UPLO    (input) CHARACTER*1
+   *          = 'U':  Upper triangle of A is stored;
+   *          = 'L':  Lower triangle of A is stored.
+   *
+   *  N       (input) INTEGER
+   *          The order of the matrix A.  N >= 0.
+   *
+   *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+   *          On entry, the symmetric matrix A.  If UPLO = 'U', the leading
+   *          N-by-N upper triangular part of A contains the upper
+   *          triangular part of the matrix A, and the strictly lower
+   *          triangular part of A is not referenced.  If UPLO = 'L', the
+   *          leading N-by-N lower triangular part of A contains the lower
+   *          triangular part of the matrix A, and the strictly upper
+   *          triangular part of A is not referenced.
+   *
+   *          On exit, the block diagonal matrix D and the multipliers used
+   *          to obtain the factor U or L (see below for further details).
+   *
+   *  LDA     (input) INTEGER
+   *          The leading dimension of the array A.  LDA >= max(1,N).
+   *
+   *  IPIV    (output) INTEGER array, dimension (N)
+   *          Details of the interchanges and the block structure of D.
+   *          If IPIV(k) > 0, then rows and columns k and IPIV(k) were
+   *          interchanged and D(k,k) is a 1-by-1 diagonal block.
+   *          If UPLO = 'U' and IPIV(k) = IPIV(k-1) < 0, then rows and
+   *          columns k-1 and -IPIV(k) were interchanged and D(k-1:k,k-1:k)
+   *          is a 2-by-2 diagonal block.  If UPLO = 'L' and IPIV(k) =
+   *          IPIV(k+1) < 0, then rows and columns k+1 and -IPIV(k) were
+   *          interchanged and D(k:k+1,k:k+1) is a 2-by-2 diagonal block.
+   *
+   *  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+   *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+   *
+   *  LWORK   (input) INTEGER
+   *          The length of WORK.  LWORK >=1.  For best performance
+   *          LWORK >= N*NB, where NB is the block size returned by ILAENV.
+   *
+   *          If LWORK = -1, then a workspace query is assumed; the routine
+   *          only calculates the optimal size of the WORK array, returns
+   *          this value as the first entry of the WORK array, and no error
+   *          message related to LWORK is issued by XERBLA.
+   *
+   *  INFO    (output) INTEGER
+   *          = 0:  successful exit
+   *          < 0:  if INFO = -i, the i-th argument had an illegal value
+   *          > 0:  if INFO = i, D(i,i) is exactly zero.  The factorization
+   *                has been completed, but the block diagonal matrix D is
+   *                exactly singular, and division by zero will occur if it
+   *                is used to solve a system of equations.
+   *
+   *  Further Details
+   *  ===============
+   *
+   *  If UPLO = 'U', then A = U*D*U', where
+   *     U = P(n)*U(n)* ... *P(k)U(k)* ...,
+   *  i.e., U is a product of terms P(k)*U(k), where k decreases from n to
+   *  1 in steps of 1 or 2, and D is a block diagonal matrix with 1-by-1
+   *  and 2-by-2 diagonal blocks D(k).  P(k) is a permutation matrix as
+   *  defined by IPIV(k), and U(k) is a unit upper triangular matrix, such
+   *  that if the diagonal block D(k) is of order s (s = 1 or 2), then
+   *
+   *             (I    v    0)   k-s
+   *     U(k) =  (0    I    0)   s
+   *             (0    0    I)   n-k
+   *                k-s   s   n-k
+   *
+   *  If s = 1, D(k) overwrites A(k,k), and v overwrites A(1:k-1,k).
+   *  If s = 2, the upper triangle of D(k) overwrites A(k-1,k-1), A(k-1,k),
+   *  and A(k,k), and v overwrites A(1:k-2,k-1:k).
+   *
+   *  If UPLO = 'L', then A = L*D*L', where
+   *     L = P(1)*L(1)* ... *P(k)*L(k)* ...,
+   *  i.e., L is a product of terms P(k)*L(k), where k increases from 1 to
+   *  n in steps of 1 or 2, and D is a block diagonal matrix with 1-by-1
+   *  and 2-by-2 diagonal blocks D(k).  P(k) is a permutation matrix as
+   *  defined by IPIV(k), and L(k) is a unit lower triangular matrix, such
+   *  that if the diagonal block D(k) is of order s (s = 1 or 2), then
+   *
+   *             (I    0     0)  k-1
+   *     L(k) =  (0    I     0)  s
+   *             (0    v     I)  n-k-s+1
+   *                k-1   s  n-k-s+1
+   *
+   *  If s = 1, D(k) overwrites A(k,k), and v overwrites A(k+1:n,k).
+   *  If s = 2, the lower triangle of D(k) overwrites A(k,k), A(k+1,k),
+   *  and A(k+1,k+1), and v overwrites A(k+2:n,k:k+1).
+   *
+   */
+
+  char U = 'U';
+  C_INT info = 0;
+  C_INT N = imax;
+
+  CVector< C_INT > ipiv;
+  ipiv.resize(imax);
+
+  C_INT lwork = -1; // Instruct dsytrf_ to determine work array size.
+  CVector< C_FLOAT64 > work;
+  work.resize(1);
+
+  dsytrf_(&U, &N, Fisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
+  if (info)
+    return false; // :TODO: create error message
+
+  lwork = work[0];
+  work.resize(lwork);
+
+  dsytrf_(&U, &N, Fisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
+  if (info)
+    return false; // :TODO: create error message
+
+  /* int dsytri_(char *uplo,
+   *             integer *n, 
+   *             doublereal *a,
+   *             integer * lda,
+   *             integer *ipiv,
+   *             doublereal *work,
+   *             integer *info);
+   *
+   *  -- LAPACK routine (version 3.0) --
+   *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+   *     Courant Institute, Argonne National Lab, and Rice University
+   *     March 31, 1993
+   *
+   *  Purpose
+   *  =======
+   *
+   *  DSYTRI computes the inverse of a real symmetric indefinite matrix
+   *  A using the factorization A = U*D*U**T or A = L*D*L**T computed by
+   *  DSYTRF.
+   *
+   *  Arguments
+   *  =========
+   *
+   *  UPLO    (input) CHARACTER*1
+   *          Specifies whether the details of the factorization are stored
+   *          as an upper or lower triangular matrix.
+   *          = 'U':  Upper triangular, form is A = U*D*U**T;
+   *          = 'L':  Lower triangular, form is A = L*D*L**T.
+   *
+   *  N       (input) INTEGER
+   *          The order of the matrix A.  N >= 0.
+   *
+   *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+   *          On entry, the block diagonal matrix D and the multipliers
+   *          used to obtain the factor U or L as computed by DSYTRF.
+   *
+   *          On exit, if INFO = 0, the (symmetric) inverse of the original
+   *          matrix.  If UPLO = 'U', the upper triangular part of the
+   *          inverse is formed and the part of A below the diagonal is not
+   *          referenced; if UPLO = 'L' the lower triangular part of the
+   *          inverse is formed and the part of A above the diagonal is
+   *          not referenced.
+   *
+   *  LDA     (input) INTEGER
+   *          The leading dimension of the array A.  LDA >= max(1,N).
+   *
+   *  IPIV    (input) INTEGER array, dimension (N)
+   *          Details of the interchanges and the block structure of D
+   *          as determined by DSYTRF.
+   *
+   *  WORK    (workspace) DOUBLE PRECISION array, dimension (N)
+   *
+   *  INFO    (output) INTEGER
+   *          = 0: successful exit
+   *          < 0: if INFO = -i, the i-th argument had an illegal value
+   *          > 0: if INFO = i, D(i,i) = 0; the matrix is singular and its
+   *               inverse could not be computed.
+   *
+   */
+  dsytri_(&U, &N, Fisher.array(), &N, ipiv.array(), work.array(), &info);
+  if (info)
+    return false; // :TODO: create error message
+
+  // rescale the ovariant matrix to have unit diagonal
+  for (i = 0; i < imax; i++)
+    {
+      C_FLOAT64 & tmp = Fisher(i, i);
+
+      tmp = sqrt(tmp);
+      ParameterStandardDeviation[i] = StandardDeviation * tmp;
+    }
+
+  for (i = 0; i < imax; i++)
+    for (l = 0; l < i; l++)
+      {
+        Fisher(i, l) /= Fisher(i, i) * Fisher(l, l);
+        Fisher(l, i) = Fisher(i, l);
+      }
+
+  for (i = 0; i < imax; i++)
+    Fisher(i, i) = 1.0;
+
+  DebugFile << StandardDeviation << std::endl;
+  DebugFile << ParameterStandardDeviation << std::endl;
+  DebugFile << Fisher << std::endl;
+
+  return true;
+}

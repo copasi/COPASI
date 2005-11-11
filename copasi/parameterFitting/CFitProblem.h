@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:19:49 $
+   $Date: 2005/11/11 13:34:47 $
    End CVS Header */
 
 #ifndef COPASI_CFitProblem
@@ -108,6 +108,39 @@ class CFitProblem : public COptProblem
      */
     virtual void printResult(std::ostream * ostream) const;
 
+    /**
+     * Retrieve the vector of residuals
+     * @return const CVector< C_FLOAT64 > & dependentValues
+     */
+    const CVector< C_FLOAT64 > & getDependentValues() const;
+
+    /**
+     * Set residual required
+     * @param const bool & required
+     * @return bool success
+     */
+    bool setResidualsRequired(const bool & required);
+
+    /**
+     * Retrieve the vector of residuals
+     * @return const CVector< C_FLOAT64 > & residuals
+     */
+    const CVector< C_FLOAT64 > & getResiduals() const;
+
+    /**
+     * Store the simulated data for the best result in the experiments
+     * @return bool success
+     */
+    bool storeBestResult();
+
+    /**
+     * Calculate the Fisher information matrix
+     * @param const C_FLOAT64 & factor (Default: 1.0e-003)
+     * @param const C_FLOAT64 & resolution (Default: 1.0e-009)
+     */
+    bool fisher(const C_FLOAT64 & factor = 1.0e-003,
+                const C_FLOAT64 & resolution = 1.0e-009);
+
   private:
     /**
      * Allocates all group parameters and assures that they are 
@@ -138,6 +171,22 @@ class CFitProblem : public COptProblem
      * Copy of the initial state needed for calculate
      */
     CState * mpInitialState;
+
+    /**
+     * The simulation values
+     */
+    CVector< C_FLOAT64 > mDependentValues;
+
+    /**
+     * Matrix of the residuals.
+     */
+    CVector< C_FLOAT64 > mResiduals;
+
+    /**
+     * Indicates whether the results shall be stored. The default
+     * is false.
+     */
+    bool mStoreResults;
   };
 
 #endif  // COPASI_CFitProblem
