@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/11 10:05:47 $
+   $Date: 2005/11/11 13:14:12 $
    End CVS Header */
 
 #include "CAnnotatedMatrix.h"
@@ -79,7 +79,7 @@ const CCopasiArray::data_type & CCopasiArray::operator[] (const index_type & ind
 CArrayAnnotation::CArrayAnnotation(const std::string & name,
                                    const CCopasiContainer * pParent,
                                    CCopasiAbstractArray * array)
-    : CCopasiContainer(name, pParent, "Array" /*, flags */),       //TODO: flags
+    : CCopasiContainer(name, pParent, "Array" /*, flags */),        //TODO: flags
     mArray(array)
 {
   assert(mArray);
@@ -109,6 +109,21 @@ void CArrayAnnotation::setAnnotation(unsigned int d, unsigned int i, const std::
   assert(i < mAnnotations[d].size());
 
   mAnnotations[d][i] = cn;
+}
+
+std::vector<std::string> CArrayAnnotation::getAnnotationsDisplay(unsigned int d)
+{
+  if (mOnTheFly)
+    updateAnnotations();
+
+  std::vector<std::string> ret;
+
+  unsigned int i, imax = mAnnotations[d].size();
+  ret.resize(imax);
+  for (i = 0; i < imax; ++i)
+    ret[i] = CCopasiContainer::ObjectFromName(mAnnotations[d][i])->getObjectDisplayName();
+
+  return ret;
 }
 
 const std::string & CArrayAnnotation::getDimensionDescription(unsigned int d)
@@ -226,8 +241,10 @@ void CArrayAnnotation::printDebug(std::ostream & out) const
       {
         out << "   " << i << ": " << mDimensionDescriptions[i] << std::endl;
 
+        //std::vector<std::string> names = const_cast<CArrayAnnotation*>(this)->getAnnotationsDisplay(i);
+
         for (j = 0; j < mAnnotations[i].size(); ++j)
-          out << "     " << mAnnotations[i][j] << std::endl;
+          out << "     " << mAnnotations[i][j] /*<< " :" << names[j]*/ << std::endl;
 
         out << std::endl;
       }
