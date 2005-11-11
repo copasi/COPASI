@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAResultSubwidget.ui.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/08 16:17:53 $
+   $Date: 2005/11/11 10:04:20 $
    End CVS Header */
 
 /****************************************************************************
@@ -86,7 +86,7 @@ void CMCAResultSubwidget::loadElasticities(const CMCAMethod * mcaMethod)
     {
       header->setLabel(i, FROM_UTF8(model->getMetabolitesX()[i]->getObjectName()));
     }
-  const CAnnotatedMatrixOld & elasticities = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledElasticities() : mcaMethod->getUnscaledElasticities();
+  const CMatrix<C_FLOAT64> & elasticities = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledElasticities() : mcaMethod->getUnscaledElasticities();
   if (elasticities.numRows() == 0 || elasticities.numCols() == 0) return;
   for (i = 0; i < numRows;++i)
     {
@@ -117,7 +117,7 @@ void CMCAResultSubwidget::loadConcentrationCCs(const CMCAMethod * mcaMethod)
     {
       header->setLabel(i, FROM_UTF8(model->getReactionsX()[i]->getObjectName()));
     }
-  const CAnnotatedMatrixOld & CCCs = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledConcentrationCC() : mcaMethod->getUnscaledConcentrationCC();
+  const CMatrix<C_FLOAT64> & CCCs = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledConcentrationCC() : mcaMethod->getUnscaledConcentrationCC();
   if (CCCs.numRows() == 0 || CCCs.numCols() == 0) return;
   for (i = 0; i < numRows;++i)
     {
@@ -148,7 +148,7 @@ void CMCAResultSubwidget::loadFluxCCs(const CMCAMethod * mcaMethod)
     {
       header->setLabel(i, FROM_UTF8(model->getReactionsX()[i]->getObjectName()));
     }
-  const CAnnotatedMatrixOld & FCCs = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledFluxCC() : mcaMethod->getUnscaledFluxCC();
+  const CMatrix<C_FLOAT64> & FCCs = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledFluxCC() : mcaMethod->getUnscaledFluxCC();
   if (FCCs.numRows() == 0 || FCCs.numCols() == 0) return;
   for (i = 0; i < numRows;++i)
     {

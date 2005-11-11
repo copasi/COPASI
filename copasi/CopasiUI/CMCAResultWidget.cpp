@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAResultWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/18 16:26:50 $
+   $Author: ssahle $ 
+   $Date: 2005/11/11 10:04:21 $
    End CVS Header */
 
 #include <qlayout.h>
@@ -15,6 +15,7 @@
 #include "steadystate/CMCATask.h"
 #include "steadystate/CMCAMethod.h"
 #include "qtUtilities.h"
+#include "utilities/CCopasiVector.h"
 
 /*
  *  Constructs a CMCAResultWidget which is a child of 'parent', with the 
