@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesSubwidget.ui.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/10/26 15:43:18 $
+   $Author: ssahle $ 
+   $Date: 2005/11/14 15:13:52 $
    End CVS Header */
 
 /****************************************************************************
@@ -36,7 +36,7 @@ void TimeSeriesSubWidget::saveDataToFile()
                                           QString::null, QString::null, "Save to");
 
       std::cout << "fileName: " << fileName << std::endl;
-      if (fileName) return;
+      if (fileName.isEmpty()) return;
 
       if (!fileName.endsWith(".txt") &&
           !fileName.endsWith(".")) fileName += ".txt";
