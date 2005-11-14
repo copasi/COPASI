@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitTask.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/11 13:34:47 $
+   $Date: 2005/11/14 17:43:01 $
    End CVS Header */
 
 /**
@@ -91,7 +91,7 @@ bool CFitTask::process(const bool & /* useInitialValues */)
 
   finishOutput();
 
-  pProblem->storeBestResult();
+  pProblem->calculateStatistics();
 
   return success;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/11 13:34:47 $
+   $Date: 2005/11/14 17:43:01 $
    End CVS Header */
 
 #include "copasi.h"
@@ -255,7 +255,7 @@ bool CFitProblem::calculate()
 
   unsigned i, imax = mpExperimentSet->size();
   unsigned j, jmax = mpOptItems->size();
-  unsigned kmax, line;
+  unsigned kmax;
   mCalculateValue = 0.0;
 
   CTrajectoryProblem * pProblem =
@@ -267,7 +267,7 @@ bool CFitProblem::calculate()
 
   try
     {
-      for (i = 0, line = 0; i < imax && Continue; i++) // For each experiment
+      for (i = 0; i < imax && Continue; i++) // For each experiment
         {
           pExp = mpExperimentSet->getExperiment(i);
 
@@ -394,34 +394,24 @@ bool CFitProblem::setResidualsRequired(const bool & required)
 const CVector< C_FLOAT64 > & CFitProblem::getResiduals() const
 {return mResiduals;}
 
-bool CFitProblem::storeBestResult()
-{
-  // Set the current values to the solution values.
-  unsigned C_INT32 i, imax = mSolutionVariables.size();
-  for (i = 0; i < imax; i++)
-    (*mUpdateMethods[i])(mSolutionVariables[i]);
-
-  mStoreResults = true;
-  bool success = calculate();
-  mStoreResults = false;
-
-  fisher();
-
-  return success;
-}
-
-bool CFitProblem::fisher(const C_FLOAT64 & factor,
-                         const C_FLOAT64 & resolution)
+bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
+                                      const C_FLOAT64 & resolution)
 {
   // Set the current values to the solution values.
   unsigned C_INT32 i, imax = mSolutionVariables.size();
   unsigned C_INT32 j, jmax = mDependentValues.size();
   unsigned C_INT32 l, lmax = mSolutionVariables.size();
+  unsigned C_INT32 k, kmax = mpExperimentSet->size();
 
   for (i = 0; i < imax; i++)
     (*mUpdateMethods[i])(mSolutionVariables[i]);
 
+  mStoreResults = true;
   calculate();
+  mStoreResults = false;
+
+  for (k = 0; k < kmax; k++)
+    mpExperimentSet->getExperiment(k)->calculateStatistics();
 
   // Keep the results
   C_FLOAT64 SumOfSquares = mCalculateValue;

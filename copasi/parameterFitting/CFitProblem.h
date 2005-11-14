@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/11 13:34:47 $
+   $Date: 2005/11/14 17:43:01 $
    End CVS Header */
 
 #ifndef COPASI_CFitProblem
@@ -128,18 +128,12 @@ class CFitProblem : public COptProblem
     const CVector< C_FLOAT64 > & getResiduals() const;
 
     /**
-     * Store the simulated data for the best result in the experiments
-     * @return bool success
-     */
-    bool storeBestResult();
-
-    /**
-     * Calculate the Fisher information matrix
+     * Calculate the statistics for the problem
      * @param const C_FLOAT64 & factor (Default: 1.0e-003)
      * @param const C_FLOAT64 & resolution (Default: 1.0e-009)
      */
-    bool fisher(const C_FLOAT64 & factor = 1.0e-003,
-                const C_FLOAT64 & resolution = 1.0e-009);
+    bool calculateStatistics(const C_FLOAT64 & factor = 1.0e-003,
+                             const C_FLOAT64 & resolution = 1.0e-009);
 
   private:
     /**
