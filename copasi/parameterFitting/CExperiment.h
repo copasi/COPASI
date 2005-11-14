@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/11 13:34:47 $
+   $Date: 2005/11/14 17:42:40 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -86,12 +86,6 @@ class CExperiment: public CCopasiParameterGroup
      */
     virtual bool elevateChildren();
 
-    C_FLOAT64 sumOfSquares(const unsigned C_INT32 & index,
-                           C_FLOAT64 *& dependentValues,
-                           C_FLOAT64 *& residuals) const;
-
-    void storeCalculatedValues(const unsigned C_INT32 & index);
-
     /**
      * Compile the experiment. This function must be called 
      * before any evaluations can be performed.
@@ -108,6 +102,33 @@ class CExperiment: public CCopasiParameterGroup
      * @return bool success
      */
     bool read(std::istream & in, unsigned C_INT32 & currentLine);
+
+    /**
+     * Calculate the sum of squares for the indexed row of the experiment.
+     * On return dependentValues contains the calculated values. If
+     * residuals is not NULL residuals will contain the differences 
+     * between the calculated and the experiment values.
+     * @param const unsigned C_INT32 & index
+     * @param C_FLOAT64 *& dependentValues (must not be NULL)
+     * @param C_FLOAT64 *& residuals (may be NULL)
+     * @return C_FLOAT64 sumOfSquares
+     */
+    C_FLOAT64 sumOfSquares(const unsigned C_INT32 & index,
+                           C_FLOAT64 *& dependentValues,
+                           C_FLOAT64 *& residuals) const;
+
+    /**
+     * Store the calculated values for the indexed row
+     * @param const unsigned C_INT32 & index
+     */
+    void storeCalculatedValues(const unsigned C_INT32 & index);
+
+    /**
+     * Calculate statistics by comparing the stored calculated values
+     * with the measurements.
+     * @return bool success
+     */
+    bool calculateStatistics();
 
     /**
      * Reads the header row for the experiment data
@@ -433,6 +454,15 @@ class CExperiment: public CCopasiParameterGroup
      * The relevant dependent experimental data after reading a file
      */
     CMatrix< C_FLOAT64 > mDataDependentCalculated;
+
+    C_FLOAT64 mMean;
+    C_FLOAT64 mVariance;
+
+    CVector< C_FLOAT64 > mRowMean;
+    CVector< C_FLOAT64 > mRowVariance;
+
+    CVector< C_FLOAT64 > mColumnMean;
+    CVector< C_FLOAT64 > mColumnVariance;
   };
 
 #endif // COPASI_CExperiment

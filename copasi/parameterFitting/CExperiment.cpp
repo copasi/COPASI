@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/11 13:34:47 $
+   $Date: 2005/11/14 17:42:40 $
    End CVS Header */
 
 #include <fstream>
@@ -26,7 +26,8 @@ const std::string CExperiment::TypeName[] =
     "ignored",
     "independent",
     "dependent",
-    "Time"
+    "Time",
+    ""
   };
 
 const char* CExperiment::XMLType[] =
@@ -180,6 +181,7 @@ C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index,
                                     C_FLOAT64 *& dependentValues,
                                     C_FLOAT64 *& residuals) const
   {
+    C_FLOAT64 Residual;
     C_FLOAT64 s = 0.0;
 
     unsigned C_INT32 i , imax = mDataDependent.numCols();
@@ -195,7 +197,8 @@ C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index,
       for (i = 0; i < imax; i++, dependentValues++)
         {
           *dependentValues = *mDependentValues[i];
-          s += pow(mDataDependent(index, i) - *dependentValues, 2) * mWeightSquare[i];
+          Residual = (mDataDependent(index, i) - *dependentValues) * mWeight[i];
+          s += Residual * Residual;
         }
 
     return s;
@@ -209,6 +212,117 @@ void CExperiment::storeCalculatedValues(const unsigned C_INT32 & index)
     mDataDependentCalculated(index, i) = *mDependentValues[i];
 
   return;
+}
+
+bool CExperiment::calculateStatistics()
+{
+  unsigned C_INT32 numRows = mDataDependent.numRows();
+  unsigned C_INT32 numCols = mDataDependent.numCols();
+
+  // Overall statistic;
+  mMean = 0.0;
+  mVariance = 0.0;
+  unsigned C_INT32 Count = 0;
+
+  // per row statistic;
+  mRowMean.resize(numRows);
+  mRowMean = 0.0;
+  mRowVariance.resize(numRows);
+  mRowVariance = 0.0;
+  CVector< unsigned C_INT32 > RowCount;
+  RowCount.resize(numRows);
+  RowCount = 0;
+
+  // per column statistic;
+  mColumnMean.resize(numCols);
+  mColumnMean = 0.0;
+  mColumnVariance.resize(numCols);
+  mColumnVariance = 0.0;
+  CVector< unsigned C_INT32 > ColumnCount;
+  ColumnCount.resize(numCols);
+  ColumnCount = 0;
+
+  unsigned C_INT32 i, j;
+  C_FLOAT64 Residual;
+
+  for (i = 0; i < numRows; i++)
+    {
+      for (j = 0; j < numCols; j++)
+        {
+          Residual = mDataDependentCalculated(i, j) - mDataDependent(i, j);
+
+          if (isnan(Residual)) continue;
+
+          mMean += Residual;
+          Count++;
+
+          mRowMean[i] += Residual;
+          RowCount[i]++;
+
+          mColumnMean[j] += Residual;
+          ColumnCount[j]++;
+        }
+    }
+
+  if (Count)
+    mMean /= Count;
+  else
+    mMean = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  for (i = 0; i < numRows; i++)
+    {
+      if (RowCount[i])
+        mRowMean[i] /= RowCount[i];
+      else
+        mRowMean[i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+    }
+
+  for (j = 0; j < numCols; j++)
+    {
+      if (ColumnCount[j])
+        mColumnMean[j] /= ColumnCount[i];
+      else
+        mColumnMean[j] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+    }
+
+  for (i = 0; i < numRows; i++)
+    {
+      for (j = 0; j < numCols; j++)
+        {
+          Residual = mDataDependentCalculated(i, j) - mDataDependent(i, j);
+
+          if (isnan(Residual)) continue;
+
+          mVariance += (Residual - mMean) * (Residual - mMean);
+
+          mRowVariance[i] += (Residual - mRowMean[i]) * (Residual - mRowMean[i]);
+
+          mColumnVariance[j] += (Residual - mColumnMean[j]) * (Residual - mColumnMean[j]);
+        }
+    }
+
+  if (Count > 1)
+    mVariance /= Count - 1;
+  else
+    mVariance = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  for (i = 0; i < numRows; i++)
+    {
+      if (RowCount[i] > 1)
+        mRowVariance[i] /= RowCount[i] - 1;
+      else
+        mRowVariance[i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+    }
+
+  for (j = 0; j < numCols; j++)
+    {
+      if (ColumnCount[j] > 1)
+        mColumnVariance[j] /= ColumnCount[i] - 1;
+      else
+        mColumnVariance[j] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+    }
+
+  return true;
 }
 
 bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContainer)
