@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:21:02 $
+   $Date: 2005/11/15 23:15:44 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Sun Nov 6 11:17:14 2005
- **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.5 2005/11/06 22:21:02 shoops Exp $)
+ ** Created: Tue Nov 15 18:09:19 2005
+ **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.6 2005/11/15 23:15:44 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -351,12 +351,6 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpTable->horizontalHeader()->setLabel(mpTable->numCols() - 1, tr("Model Object"));
   mpTable->setNumCols(mpTable->numCols() + 1);
   mpTable->horizontalHeader()->setLabel(mpTable->numCols() - 1, tr("Hidden"));
-  mpTable->setNumRows(mpTable->numRows() + 1);
-  mpTable->verticalHeader()->setLabel(mpTable->numRows() - 1, tr("1"));
-  mpTable->setNumRows(mpTable->numRows() + 1);
-  mpTable->verticalHeader()->setLabel(mpTable->numRows() - 1, tr("2"));
-  mpTable->setNumRows(mpTable->numRows() + 1);
-  mpTable->verticalHeader()->setLabel(mpTable->numRows() - 1, tr("3"));
   mpTable->setNumRows(3);
   mpTable->setNumCols(6);
   mpTable->setSelectionMode(QTable::NoSelection);
@@ -394,6 +388,7 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   connect(mpBoxFile, SIGNAL(currentChanged(QListBoxItem*)), this, SLOT(slotFileChanged(QListBoxItem*)));
   connect(mpBoxExperiment, SIGNAL(currentChanged(QListBoxItem*)), this, SLOT(slotExperimentChanged(QListBoxItem*)));
   connect(mpEditHeader, SIGNAL(lostFocus()), this, SLOT(slotUpdateTable()));
+  connect(mpEditSeparator, SIGNAL(textChanged(const QString&)), this, SLOT(slotSeparator()));
   init();
 }
 
@@ -442,9 +437,6 @@ void CQExperimentData::languageChange()
   mpTable->horizontalHeader()->setLabel(3, tr("<>"));
   mpTable->horizontalHeader()->setLabel(4, tr("Model Object"));
   mpTable->horizontalHeader()->setLabel(5, tr("Hidden"));
-  mpTable->verticalHeader()->setLabel(0, tr("1"));
-  mpTable->verticalHeader()->setLabel(1, tr("2"));
-  mpTable->verticalHeader()->setLabel(2, tr("3"));
   mpBtnOK->setText(tr("&OK"));
   mpBtnOK->setAccel(QKeySequence(tr("Alt+O")));
   mpBtnRevert->setText(tr("&Revert"));

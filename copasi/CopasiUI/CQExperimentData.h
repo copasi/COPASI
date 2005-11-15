@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:21:02 $
+   $Date: 2005/11/15 23:15:44 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Sun Nov 6 11:17:14 2005
- **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.5 2005/11/06 22:21:02 shoops Exp $)
+ ** Created: Tue Nov 15 18:09:18 2005
+ **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.6 2005/11/15 23:15:44 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -106,6 +106,7 @@ class CQExperimentData : public QDialog
     bool saveExperiment(CExperiment * pExperiment);
     void syncExperiments();
     void loadTable(const bool & guess);
+    bool saveTable();
 
     QVBoxLayout* CQExperimentDataLayout;
     QGridLayout* mpLayoutFile;
@@ -134,6 +135,7 @@ class CQExperimentData : public QDialog
     void slotUpdateTable();
     void slotModelObject(int row);
     void slotTypeChanged(int row);
+    void slotSeparator();
 
   private:
     QPixmap image0;

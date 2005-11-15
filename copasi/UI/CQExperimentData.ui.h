@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/07 20:53:36 $
+   $Date: 2005/11/15 23:15:44 $
    End CVS Header */
 
 #include <algorithm>
@@ -219,6 +219,8 @@ void CQExperimentData::slotExprimentType(bool isSteadyState)
 {
   if (!mpExperiment) return;
 
+  saveTable();
+
   unsigned C_INT32 i, imax = mpTable->numRows();
   if (isSteadyState)
     for (i = 0; i < imax; i++)
@@ -235,7 +237,15 @@ void CQExperimentData::slotExprimentType(bool isSteadyState)
 }
 
 void CQExperimentData::slotCheckTab(bool checked)
-{mpEditSeparator->setEnabled(!checked);}
+{
+  mpEditSeparator->setEnabled(!checked);
+
+  if (mpEditSeparator->isEnabled() &&
+      mpEditSeparator->text().isEmpty())
+    mpEditSeparator->setText(",");
+  else
+    slotSeparator();
+}
 
 void CQExperimentData::slotCheckHeader(bool checked)
 {mpEditHeader->setEnabled(checked);}
@@ -674,18 +684,7 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment)
   mpValidatorLast->saved();
   mpValidatorHeader->saved();
 
-  CExperimentObjectMap & ObjectMap = mpExperiment->getObjectMap();
-  unsigned C_INT32 i, imax = mpTable->numRows();
-  for (i = 0; i < imax; i++)
-    {
-      CExperiment::Type Type =
-        static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->currentItem());
-      if (mpExperiment->getColumnType(i) != Type)
-        mpExperiment->setColumnType(i, Type);
-
-      if (ObjectMap.getObjectCN(i) != (const char *) mpTable->text(i, COL_OBJECT_HIDDEN).utf8())
-        ObjectMap.setObjectCN(i, (const char *) mpTable->text(i, COL_OBJECT_HIDDEN).utf8());
-    }
+  saveTable();
 
   return true;
 }
@@ -905,4 +904,39 @@ void CQExperimentData::slotTypeChanged(int row)
   mpTable->setText(row, COL_TYPE_HIDDEN, QString::number(NewType));
 
   return;
+}
+
+void CQExperimentData::slotSeparator()
+{
+  if (!mpExperiment) return;
+
+  saveTable();
+
+  if (mpCheckTab->isChecked())
+    mpExperiment->setSeparator("\t");
+  else
+    mpExperiment->setSeparator((const char *) mpEditSeparator->text().utf8());
+
+  mpExperiment->setNumColumns(mpExperiment->guessColumnNumber());
+  mpExperiment->readColumnNames();
+
+  loadTable(true);
+}
+
+bool CQExperimentData::saveTable()
+{
+  CExperimentObjectMap & ObjectMap = mpExperiment->getObjectMap();
+  unsigned C_INT32 i, imax = mpTable->numRows();
+  for (i = 0; i < imax; i++)
+    {
+      CExperiment::Type Type =
+        static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->currentItem());
+      if (mpExperiment->getColumnType(i) != Type)
+        mpExperiment->setColumnType(i, Type);
+
+      if (ObjectMap.getObjectCN(i) != (const char *) mpTable->text(i, COL_OBJECT_HIDDEN).utf8())
+        ObjectMap.setObjectCN(i, (const char *) mpTable->text(i, COL_OBJECT_HIDDEN).utf8());
+    }
+
+  return true;
 }

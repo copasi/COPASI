@@ -440,74 +440,32 @@
                 <property name="text">
                     <string>Column Name</string>
                 </property>
-                <property name="pixmap">
-                    <pixmap></pixmap>
-                </property>
             </column>
             <column>
                 <property name="text">
                     <string>Type</string>
                 </property>
-                <property name="pixmap">
-                    <pixmap></pixmap>
-                </property>
             </column>
             <column>
                 <property name="text">
                     <string>Hidden</string>
-                </property>
-                <property name="pixmap">
-                    <pixmap></pixmap>
                 </property>
             </column>
             <column>
                 <property name="text">
                     <string>&lt;&gt;</string>
                 </property>
-                <property name="pixmap">
-                    <pixmap></pixmap>
-                </property>
             </column>
             <column>
                 <property name="text">
                     <string>Model Object</string>
-                </property>
-                <property name="pixmap">
-                    <pixmap></pixmap>
                 </property>
             </column>
             <column>
                 <property name="text">
                     <string>Hidden</string>
                 </property>
-                <property name="pixmap">
-                    <pixmap></pixmap>
-                </property>
             </column>
-            <row>
-                <property name="text">
-                    <string>1</string>
-                </property>
-                <property name="pixmap">
-                    <pixmap></pixmap>
-                </property>
-            </row>
-            <row>
-                <property name="text">
-                    <string>2</string>
-                </property>
-                <property name="pixmap">
-                    <pixmap></pixmap>
-                </property>
-            </row>
-            <row>
-                <property name="text">
-                    <string>3</string>
-                </property>
-                <property name="pixmap">
-                    <pixmap></pixmap>
-                </property>
-            </row>
             <property name="name">
                 <cstring>mpTable</cstring>
             </property>
@@ -680,6 +638,12 @@
         <receiver>CQExperimentData</receiver>
         <slot>slotUpdateTable()</slot>
     </connection>
+    <connection>
+        <sender>mpEditSeparator</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>CQExperimentData</receiver>
+        <slot>slotSeparator()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="global" impldecl="in declaration">string</include>
@@ -728,6 +692,7 @@
     <slot access="protected" specifier="non virtual">slotUpdateTable()</slot>
     <slot access="protected" specifier="non virtual">slotModelObject( int row )</slot>
     <slot access="protected" specifier="non virtual">slotTypeChanged( int row )</slot>
+    <slot access="protected" specifier="non virtual">slotSeparator()</slot>
 </slots>
 <functions>
     <function specifier="non virtual" returnType="bool">load( CExperimentSet * &amp; pExperimentSet )</function>
@@ -737,6 +702,7 @@
     <function access="protected" specifier="non virtual" returnType="bool">saveExperiment( CExperiment * pExperiment )</function>
     <function access="protected" specifier="non virtual">syncExperiments()</function>
     <function access="protected" specifier="non virtual">loadTable( const bool &amp; guess )</function>
+    <function access="protected" specifier="non virtual" returnType="bool">saveTable()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
