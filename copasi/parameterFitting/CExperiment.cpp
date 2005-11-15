@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/15 19:21:18 $
+   $Date: 2005/11/15 23:15:04 $
    End CVS Header */
 
 #include <fstream>
@@ -791,9 +791,9 @@ const unsigned C_INT32 CExperiment::getNumDataRows() const
 const std::string & CExperiment::getSeparator() const
   {return *mpSeparator;}
 
-bool CExperiment::setSeparator(const std::string & seperator)
+bool CExperiment::setSeparator(const std::string & separator)
 {
-  *mpSeparator = seperator;
+  *mpSeparator = separator;
   return true;
 }
 
