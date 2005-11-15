@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.109 $
+   $Revision: 1.110 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/22 15:22:22 $
+   $Author: gauges $ 
+   $Date: 2005/11/15 23:01:52 $
    End CVS Header */
 
 #include "copasi.h"
@@ -506,10 +506,15 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
   if (sbmlSpecies->isSetSpatialSizeUnits())
     {
       const std::string szU = sbmlSpecies->getSpatialSizeUnits();
-      if (szU == "volume")
+      if (szU != "volume")
         {
           /* !!!! create a warning that the spatialSizeUnits will be ignored */
+          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 19, sbmlSpecies->getId().c_str());
         }
+    }
+  if (sbmlSpecies->getHasOnlySubstanceUnits() == true)
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 18, sbmlSpecies->getId().c_str());
     }
   std::string name = sbmlSpecies->getName();
   if (name == "")
