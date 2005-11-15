@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/14 17:42:40 $
+   $Date: 2005/11/15 01:52:38 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -351,6 +351,13 @@ class CExperiment: public CCopasiParameterGroup
     friend bool operator == (const CExperiment & lhs,
                              const CExperiment & rhs);
 
+    /**
+     * This is the output method for the statistics for the experiment.
+     * This method is called from CFitProblem::printResult.
+     * @param std::ostream * ostream
+     */
+    virtual void printResult(std::ostream * ostream) const;
+
   private:
     /**
      * Allocates all group parameters and assures that they are 
@@ -456,13 +463,13 @@ class CExperiment: public CCopasiParameterGroup
     CMatrix< C_FLOAT64 > mDataDependentCalculated;
 
     C_FLOAT64 mMean;
-    C_FLOAT64 mVariance;
+    C_FLOAT64 mSD;
 
     CVector< C_FLOAT64 > mRowMean;
-    CVector< C_FLOAT64 > mRowVariance;
+    CVector< C_FLOAT64 > mRowSD;
 
     CVector< C_FLOAT64 > mColumnMean;
-    CVector< C_FLOAT64 > mColumnVariance;
+    CVector< C_FLOAT64 > mColumnSD;
   };
 
 #endif // COPASI_CExperiment

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/14 17:42:40 $
+   $Date: 2005/11/15 01:52:38 $
    End CVS Header */
 
 #include <fstream>
@@ -221,14 +221,14 @@ bool CExperiment::calculateStatistics()
 
   // Overall statistic;
   mMean = 0.0;
-  mVariance = 0.0;
+  mSD = 0.0;
   unsigned C_INT32 Count = 0;
 
   // per row statistic;
   mRowMean.resize(numRows);
   mRowMean = 0.0;
-  mRowVariance.resize(numRows);
-  mRowVariance = 0.0;
+  mRowSD.resize(numRows);
+  mRowSD = 0.0;
   CVector< unsigned C_INT32 > RowCount;
   RowCount.resize(numRows);
   RowCount = 0;
@@ -236,8 +236,8 @@ bool CExperiment::calculateStatistics()
   // per column statistic;
   mColumnMean.resize(numCols);
   mColumnMean = 0.0;
-  mColumnVariance.resize(numCols);
-  mColumnVariance = 0.0;
+  mColumnSD.resize(numCols);
+  mColumnSD = 0.0;
   CVector< unsigned C_INT32 > ColumnCount;
   ColumnCount.resize(numCols);
   ColumnCount = 0;
@@ -280,7 +280,7 @@ bool CExperiment::calculateStatistics()
   for (j = 0; j < numCols; j++)
     {
       if (ColumnCount[j])
-        mColumnMean[j] /= ColumnCount[i];
+        mColumnMean[j] /= ColumnCount[j];
       else
         mColumnMean[j] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
@@ -293,33 +293,31 @@ bool CExperiment::calculateStatistics()
 
           if (isnan(Residual)) continue;
 
-          mVariance += (Residual - mMean) * (Residual - mMean);
-
-          mRowVariance[i] += (Residual - mRowMean[i]) * (Residual - mRowMean[i]);
-
-          mColumnVariance[j] += (Residual - mColumnMean[j]) * (Residual - mColumnMean[j]);
+          mSD += (Residual - mMean) * (Residual - mMean);
+          mRowSD[i] += (Residual - mRowMean[i]) * (Residual - mRowMean[i]);
+          mColumnSD[j] += (Residual - mColumnMean[j]) * (Residual - mColumnMean[j]);
         }
     }
 
-  if (Count > 1)
-    mVariance /= Count - 1;
+  if (Count)
+    mSD = sqrt(mSD / Count);
   else
-    mVariance = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+    mSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
   for (i = 0; i < numRows; i++)
     {
-      if (RowCount[i] > 1)
-        mRowVariance[i] /= RowCount[i] - 1;
+      if (RowCount[i])
+        mRowSD[i] = sqrt(mRowSD[i] / RowCount[i]);
       else
-        mRowVariance[i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+        mRowSD[i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
 
   for (j = 0; j < numCols; j++)
     {
-      if (ColumnCount[j] > 1)
-        mColumnVariance[j] /= ColumnCount[i] - 1;
+      if (ColumnCount[j])
+        mColumnSD[j] = sqrt(mColumnSD[j] / ColumnCount[j]);
       else
-        mColumnVariance[j] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+        mColumnSD[j] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
 
   return true;
@@ -523,18 +521,18 @@ bool CExperiment::read(std::istream & in,
       C_FLOAT64 & WeightSquare = mWeightSquare[i];
       WeightSquare = 0;
 
-      if (Count > 1)
+      if (Count)
         {
           for (j = 0; j < mNumDataRows; j++)
             {
               C_FLOAT64 & Data = mDataDependent[j][i];
               if (!isnan(Data))
-                WeightSquare += pow((Mean - Data), 2);
+                WeightSquare += (Mean - Data) * (Mean - Data);
             }
 
           if (WeightSquare > 0)
             {
-              WeightSquare = (Count - 1.0) / WeightSquare;
+              WeightSquare = Count / WeightSquare;
 
               if (WeightSquare > MaxWeight) MaxWeight = WeightSquare;
               if (WeightSquare < MinWeight) MinWeight = WeightSquare;
@@ -543,7 +541,7 @@ bool CExperiment::read(std::istream & in,
             WeightSquare = -Count; // All values where equal to the mean
         }
       else
-        WeightSquare = -1.0; // One or less values
+        WeightSquare = -1.0; // Zero values
     }
 
   // We have to make a guess for the weights which could not be calculated
@@ -830,3 +828,53 @@ bool operator == (const CExperiment & lhs,
 
   return Result;
 }
+
+void CExperiment::printResult(std::ostream * ostream) const
+  {
+    std::ostream & os = *ostream;
+
+    os << "File Name:\t" << *mpFileName << std::endl;
+    os << "Experiment:\t" << getObjectName() << std::endl;
+
+    os << "Error Mean:\t" << mMean << std::endl;
+    os << "Error Standart Deviation:\t" << mSD << std::endl;
+
+    unsigned i, imax = mNumDataRows;
+    unsigned j, jmax = mDataDependent.numCols();
+    unsigned k, kmax = getLastNotIgnoredColumn() + 1;
+
+    const CVector<CCopasiObject *> & Objects =
+      mpObjectMap->getMappedObjects();
+
+    os << "Row\t";
+    for (k = 0; k < kmax; k++)
+      if (getColumnType(k) == CExperiment::dependent)
+        {
+          if (Objects[k])
+            os << Objects[k]->getObjectDisplayName();
+
+          os << "\t";
+        }
+    os << "Mean\tStandart Deviation" << std::endl << std::endl;
+
+    for (i = 0; i < imax; i++)
+      {
+        os << i + 1 << ".\t";
+        for (j = 0; j < jmax; j++)
+          os << mDataDependentCalculated(i, j) - mDataDependent(i, j) << "\t";
+
+        os << mRowMean[i] << "\t" << mRowSD[i] << std::endl;
+      }
+
+    os << "Mean\t";
+    for (j = 0; j < jmax; j++)
+      os << mColumnMean[j] << "\t";
+    os << std::endl;
+
+    os << "Standart Deviation\t";
+    for (j = 0; j < jmax; j++)
+      os << mColumnSD[j] << "\t";
+    os << std::endl;
+
+    return;
+  }

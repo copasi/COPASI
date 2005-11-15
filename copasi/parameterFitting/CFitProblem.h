@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/14 17:43:01 $
+   $Date: 2005/11/15 01:52:38 $
    End CVS Header */
 
 #ifndef COPASI_CFitProblem
@@ -181,6 +181,14 @@ class CFitProblem : public COptProblem
      * is false.
      */
     bool mStoreResults;
+
+    CVector< C_FLOAT64 > mGradient;
+
+    C_FLOAT64 mSD;
+
+    CVector< C_FLOAT64 > mParameterSD;
+
+    CMatrix< C_FLOAT64 > mFisher;
   };
 
 #endif  // COPASI_CFitProblem

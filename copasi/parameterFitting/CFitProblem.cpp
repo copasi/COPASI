@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/14 17:43:01 $
+   $Date: 2005/11/15 01:52:38 $
    End CVS Header */
 
 #include "copasi.h"
@@ -345,7 +345,28 @@ void CFitProblem::print(std::ostream * ostream) const
 {*ostream << *this;}
 
 void CFitProblem::printResult(std::ostream * ostream) const
-  {COptProblem::printResult(ostream);}
+  {
+    COptProblem::printResult(ostream);
+
+    std::ostream & os = *ostream;
+
+    os << "Gradient:" << std::endl;
+    os << "  " << mGradient << std::endl;
+
+    os << "Standart Deviation:" << std::endl;
+    os << "  " << mSD << std::endl;
+
+    os << "Parameter Standart Deviation:" << std::endl;
+    os << "  " << mParameterSD << std::endl;
+
+    os << "Parameter Dependence:" << std::endl;
+    os << "  " << mFisher << std::endl;
+
+    unsigned C_INT32 k, kmax = mpExperimentSet->size();
+
+    for (k = 0; k < kmax; k++)
+      mpExperimentSet->getExperiment(k)->printResult(ostream);
+  }
 
 std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
 {
@@ -417,20 +438,17 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   C_FLOAT64 SumOfSquares = mCalculateValue;
   CVector< C_FLOAT64 > DependentValues = mDependentValues;
 
-  C_FLOAT64 StandardDeviation = 0.0;
+  mSD = 0.0;
 
-  CVector< C_FLOAT64 > ParameterStandardDeviation;
-  ParameterStandardDeviation.resize(imax);
-  ParameterStandardDeviation = 0.0;
+  mParameterSD.resize(imax);
+  mParameterSD = 0.0;
 
   if (jmax > imax)
-    StandardDeviation = sqrt(SumOfSquares / (jmax - imax));
+    mSD = sqrt(SumOfSquares / jmax);
 
-  CMatrix< C_FLOAT64 > Fisher;
-  Fisher.resize(imax, imax);
+  mFisher.resize(imax, imax);
 
-  CVector< C_FLOAT64 > Gradient;
-  Gradient.resize(imax);
+  mGradient.resize(imax);
 
   CMatrix< C_FLOAT64 > dyp;
   dyp.resize(imax, jmax);
@@ -456,7 +474,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       calculate();
 
-      Gradient[i] = (mCalculateValue - SumOfSquares) * Delta;
+      mGradient[i] = (mCalculateValue - SumOfSquares) * Delta;
 
       for (j = 0; j < jmax; j++)
         dyp(i, j) = (mDependentValues[j] - DependentValues[j]) * Delta;
@@ -465,13 +483,11 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       (*mUpdateMethods[i])(Current);
     }
 
-  DebugFile << Gradient << std::endl;
-
   // Construct the fisher information matrix
   for (i = 0; i < imax; i++)
     for (l = 0; l <= i; l++)
       {
-        C_FLOAT64 & tmp = Fisher(i, l);
+        C_FLOAT64 & tmp = mFisher(i, l);
 
         tmp = 0.0;
 
@@ -481,10 +497,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
         tmp *= 2.0;
 
         if (l != i)
-          Fisher(l, i) = tmp;
+          mFisher(l, i) = tmp;
       }
-
-  DebugFile << Fisher << std::endl;
 
   /* We use dsytrf_ and dsytri_ to invert the symmetric fisher information matrix */
 
@@ -622,14 +636,14 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   CVector< C_FLOAT64 > work;
   work.resize(1);
 
-  dsytrf_(&U, &N, Fisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
+  dsytrf_(&U, &N, mFisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
   if (info)
     return false; // :TODO: create error message
 
   lwork = work[0];
   work.resize(lwork);
 
-  dsytrf_(&U, &N, Fisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
+  dsytrf_(&U, &N, mFisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
   if (info)
     return false; // :TODO: create error message
 
@@ -692,32 +706,28 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
    *               inverse could not be computed.
    *
    */
-  dsytri_(&U, &N, Fisher.array(), &N, ipiv.array(), work.array(), &info);
+  dsytri_(&U, &N, mFisher.array(), &N, ipiv.array(), work.array(), &info);
   if (info)
     return false; // :TODO: create error message
 
-  // rescale the ovariant matrix to have unit diagonal
+  // rescale the lower bound of the covariant matrix to have unit diagonal
   for (i = 0; i < imax; i++)
     {
-      C_FLOAT64 & tmp = Fisher(i, i);
+      C_FLOAT64 & tmp = mFisher(i, i);
 
       tmp = sqrt(tmp);
-      ParameterStandardDeviation[i] = StandardDeviation * tmp;
+      mParameterSD[i] = mSD * tmp;
     }
 
   for (i = 0; i < imax; i++)
     for (l = 0; l < i; l++)
       {
-        Fisher(i, l) /= Fisher(i, i) * Fisher(l, l);
-        Fisher(l, i) = Fisher(i, l);
+        mFisher(i, l) /= mFisher(i, i) * mFisher(l, l);
+        mFisher(l, i) = mFisher(i, l);
       }
 
   for (i = 0; i < imax; i++)
-    Fisher(i, i) = 1.0;
-
-  DebugFile << StandardDeviation << std::endl;
-  DebugFile << ParameterStandardDeviation << std::endl;
-  DebugFile << Fisher << std::endl;
+    mFisher(i, i) = 1.0;
 
   return true;
 }
