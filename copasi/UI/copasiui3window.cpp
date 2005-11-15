@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.160 $
+   $Revision: 1.161 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/10/26 18:29:40 $
+   $Date: 2005/11/15 14:49:32 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -578,53 +578,31 @@ void CopasiUI3Window::aboutQt()
 void CopasiUI3Window::createToolBar()
 {
   QToolBar *tbMain = new QToolBar(this, "MainToolBar");
-  const int numofIcons = 3;
-
-  // put something in it
-  QPixmap icon[numofIcons ] = {filenew, fileopen, filesave};
-  const char* iconName[numofIcons ] = {"New", "Open", "Save"};
-  const char* slotFileName[numofIcons ] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave())};
-
-  const char* toolTip[numofIcons ];
-
-  toolTip[0] = "Click this button to create a <em>new file</em>. <br>"
-               "You can also select the <b>New</b> command "
-               "from the <b>File</b> menu.</p>";
-
-  toolTip[1] = "Click this button to open a <em>new file</em>. <br>"
-               "You can also select the <b>Open</b> command "
-               "from the <b>File</b> menu.</p>";
-
-  toolTip[2] = "<p>Click this button to save the file you "
-               "are editing. You will be prompted for a file name.\n"
-               "You can also select the <b>Save</b> command "
-               "from the <b>File</b> menu.</p>";
-
-  toolTip[3] = "<p>Click this button to show/hide the sliders dialog. This is the same as clicking on <b>Show Sliders</b> in the <b>Tools</b> menu.</p>";
-
   QToolButton* toolb;
-  int j;
-  for (j = 0; j < numofIcons; j++)
-    {
-      toolb = new QToolButton(icon[j], iconName[j], QString::null,
-                              this, slotFileName[j], tbMain);
 
-      QWhatsThis::add(toolb, toolTip[j]);
+  //new
+  toolb = new QToolButton(QPixmap(filenew), "New", QString::null,
+                          this, SLOT(newDoc()), tbMain);
+  QWhatsThis::add(toolb, "Click this button to create a <em>new file</em>. <br>You can also select the <b>New</b> command from the <b>File</b> menu.</p>");
 
-      if (j == numofIcons - 1)
-        msave_button = toolb;
-    }
+  //open
+  toolb = new QToolButton(QPixmap(fileopen), "Open", QString::null,
+                          this, SLOT(slotFileOpen()), tbMain);
+  QWhatsThis::add(toolb, "Click this button to open a <em>new file</em>. <br>You can also select the <b>Open</b> command from the <b>File</b> menu.</p>");
+
+  //save
+  msave_button = new QToolButton(QPixmap(filesave), "Save", QString::null,
+                                 this, SLOT(slotFileSave()), tbMain);
+  QWhatsThis::add(msave_button, "<p>Click this button to save the file you are editing. You will be prompted for a file name.\nYou can also select the <b>Save</b> command from the <b>File</b> menu.</p>");
 
   // add a toobar toggle button to display/hide slider dialog
-
-  QPixmap toggleSliderDialogPixmap = toggleSliderDialog;
-  this->mpToggleSliderDialogButton = new QToolButton(toggleSliderDialogPixmap, "toggleSliderDialog", QString::null, this, SLOT(slotToggleSliders()), tbMain);
-
-  QWhatsThis::add(this->mpToggleSliderDialogButton, "<p>Click this button to show/hide the sliders dialog. This is the same as clicking on <b>show sliders</b> in the <b>Tools</b> menu.</p>");
+  mpToggleSliderDialogButton = new QToolButton(QPixmap(toggleSliderDialog), "Toggle slider dialog", QString::null,
+                               this, SLOT(slotToggleSliders()), tbMain);
+  QWhatsThis::add(mpToggleSliderDialogButton, "<p>Click this button to show/hide the sliders dialog. This is the same as clicking on <b>show sliders</b> in the <b>Tools</b> menu.</p>");
   this->mpToggleSliderDialogButton->setToggleButton(true);
 
+  //What's this
   toolb = QWhatsThis::whatsThisButton(tbMain);
-
   QWhatsThis::add(toolb, "This is a <b>What's This</b> button "
                   "It enables the user to ask for help "
                   "about widgets on the screen.");
