@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/15 09:24:43 $
+   $Author: shoops $ 
+   $Date: 2005/11/15 19:21:18 $
    End CVS Header */
 
 #include <fstream>
@@ -360,7 +360,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
 
       case independent:
         if (!Objects[i]) // Object not found
-          return false;  // The column must be mapped
+          return false;  // :TODO: create error message The column must be mapped
         mIndependentUpdateMethods[IndependentCount] =
           Objects[i]->getUpdateMethod();
         mIndependentValues[IndependentCount++] =
@@ -369,7 +369,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
 
       case dependent:
         if (!Objects[i]) // Object not found
-          return false;  // The column must be mapped
+          return false;  // :TODO: create error message The column must be mapped
         mDependentValues[DependentCount++] =
           (C_FLOAT64 *) Objects[i]->getReference();
         break;

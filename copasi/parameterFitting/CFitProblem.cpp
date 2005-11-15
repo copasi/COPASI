@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/15 09:24:43 $
+   $Author: shoops $ 
+   $Date: 2005/11/15 19:21:18 $
    End CVS Header */
 
 #include "copasi.h"
@@ -239,7 +239,9 @@ bool CFitProblem::initialize()
 
 bool CFitProblem::restore()
 {
-  *mpTrajectory->getProblem() = *mpTrajectoryProblem;
+  if (mpTrajectoryProblem)
+    *mpTrajectory->getProblem() = *mpTrajectoryProblem;
+
   pdelete(mpTrajectoryProblem);
 
   pdelete(mpInitialState);
