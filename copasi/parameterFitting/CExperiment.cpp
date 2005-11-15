@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/15 01:52:38 $
+   $Author: ssahle $ 
+   $Date: 2005/11/15 09:24:43 $
    End CVS Header */
 
 #include <fstream>
@@ -837,7 +837,7 @@ void CExperiment::printResult(std::ostream * ostream) const
     os << "Experiment:\t" << getObjectName() << std::endl;
 
     os << "Error Mean:\t" << mMean << std::endl;
-    os << "Error Standart Deviation:\t" << mSD << std::endl;
+    os << "Error Standard Deviation:\t" << mSD << std::endl;
 
     unsigned i, imax = mNumDataRows;
     unsigned j, jmax = mDataDependent.numCols();
@@ -855,7 +855,7 @@ void CExperiment::printResult(std::ostream * ostream) const
 
           os << "\t";
         }
-    os << "Mean\tStandart Deviation" << std::endl << std::endl;
+    os << "Mean\tStandard Deviation" << std::endl << std::endl;
 
     for (i = 0; i < imax; i++)
       {
@@ -871,7 +871,7 @@ void CExperiment::printResult(std::ostream * ostream) const
       os << mColumnMean[j] << "\t";
     os << std::endl;
 
-    os << "Standart Deviation\t";
+    os << "Standard Deviation\t";
     for (j = 0; j < jmax; j++)
       os << mColumnSD[j] << "\t";
     os << std::endl;

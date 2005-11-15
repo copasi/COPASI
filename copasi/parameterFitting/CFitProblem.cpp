@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/15 01:52:38 $
+   $Author: ssahle $ 
+   $Date: 2005/11/15 09:24:43 $
    End CVS Header */
 
 #include "copasi.h"
@@ -353,10 +353,10 @@ void CFitProblem::printResult(std::ostream * ostream) const
     os << "Gradient:" << std::endl;
     os << "  " << mGradient << std::endl;
 
-    os << "Standart Deviation:" << std::endl;
+    os << "Standard Deviation:" << std::endl;
     os << "  " << mSD << std::endl;
 
-    os << "Parameter Standart Deviation:" << std::endl;
+    os << "Parameter Standard Deviation:" << std::endl;
     os << "  " << mParameterSD << std::endl;
 
     os << "Parameter Dependence:" << std::endl;
