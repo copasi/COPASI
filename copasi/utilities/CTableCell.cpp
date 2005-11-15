@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/07 20:38:34 $
+   $Date: 2005/11/15 18:47:00 $
    End CVS Header */
 
 #include <limits>
@@ -165,6 +165,11 @@ unsigned C_INT32 CTableRow::guessColumnNumber(std::istream &is,
 
   std::stringstream line;
   is.get(*line.rdbuf(), '\x0a');
+
+  // std::istream::get sets the failbit if it does not extract anything.
+  // We expect empty lines and have to correct for it.
+  if (is.fail() && !is.eof()) is.clear();
+
   is.ignore(1);
 
   if (rewind) is.seekg(pos);
@@ -190,6 +195,11 @@ std::istream & operator >> (std::istream &is, CTableRow & row)
   std::stringstream line;
 
   is.get(*line.rdbuf(), '\x0a');
+
+  // std::istream::get sets the failbit if it does not extract anything.
+  // We expect empty lines and have to correct for it.
+  if (is.fail() && !is.eof()) is.clear();
+
   is.ignore(1);
 
   row.mIsEmpty = true;

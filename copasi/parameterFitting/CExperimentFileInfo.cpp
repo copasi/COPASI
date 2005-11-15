@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/07 20:39:00 $
+   $Date: 2005/11/15 18:47:00 $
    End CVS Header */
 
 #include <sstream>
@@ -53,14 +53,17 @@ bool CExperimentFileInfo::setFileName(const std::string & fileName)
   if (in.fail()) return false; // File can not be opened.
 
   std::stringstream line;
-
   // forwind to count lines in file
   while (!in.eof())
     {
       line.str("");
       in.get(*line.rdbuf(), '\x0a');
-      in.ignore(1);
 
+      // std::istream::get sets the failbit if it does not extract anything.
+      // We expect empty lines and have to correct for it.
+      if (in.fail() && !in.eof()) in.clear();
+
+      in.ignore(1);
       mLines++;
 
       if (line.str().find_first_not_of("\x20\x09\x0d\x0a") == std::string::npos)
