@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:19:05 $
+   $Date: 2005/11/15 01:51:49 $
    End CVS Header */
 
 /**
@@ -245,7 +245,7 @@ class COptProblem : public CCopasiProblem
     friend std::ostream &operator<<(std::ostream &os, const COptProblem & o);
 
     /**
-     * This is the output method for any rsult of a problem. The default implementation
+     * This is the output method for any result of a problem. The default implementation
      * provided with CCopasiProblem. Does only print "Not implmented." To overide this
      * default behaviour one needs to reimplement the virtual printResult function.
      * @param std::ostream * ostream
