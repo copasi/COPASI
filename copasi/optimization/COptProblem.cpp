@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:18:20 $
+   $Date: 2005/11/15 19:25:34 $
    End CVS Header */
 
 /**
@@ -511,9 +511,11 @@ std::ostream &operator<<(std::ostream &os, const COptProblem & o)
 
   if (o.mpSteadyState)
     o.mpSteadyState->getDescription().print(&os);
-  else if (o.mpTrajectory)
+
+  if (o.mpTrajectory)
     o.mpTrajectory->getDescription().print(&os);
-  else
+
+  if (!o.mpTrajectory && !o.mpSteadyState)
     os << "No Subtask specified.";
 
   os << std::endl;
