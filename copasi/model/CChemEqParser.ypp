@@ -64,6 +64,10 @@ reaction:  substrates products modifiers
            {
            }
 
+         | products
+           {
+           }
+
 substrates: reactant 
            {
              mSubstrateNames.push_back($1->name);
