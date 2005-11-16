@@ -1,0 +1,141 @@
+%% This is an evolving article style
+%% steeling ideas from different places
+
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{babel}
+\usepackage[linktocpage,colorlinks,urlcolor=blue,pdfstartview=FitH]{hyperref}
+
+\newcommand{\boldsymbol}[1]{\mbox{\boldmath $#1$}}
+\newcommand{\N}{\mbox{$I\!\!N$}}
+\newcommand{\Z}{\mbox{$Z\!\!\!Z$}}
+\newcommand{\Q}{\mbox{$I\:\!\!\!\!\!Q$}}
+\newcommand{\R}{\mbox{$I\!\!R$}}
+
+\makeindex 
+\makeatletter
+\makeatother
+
+\begin{document}
+
+\title{Calculating the Fisher Information Matrix \\
+for Parameter Fitting}
+
+\author{Stefan Hoops\\
+ Virginia Bioinformatics Institute - 0477\\
+ Virginia Tech\\
+ Bioinformatics Facility I\\
+ Blacksburg, VA 24061 \\
+ USA \\
+ \href{mailto:Stefan Hoops <shoops@vt.edu>}{shoops@vt.edu}}
+
+\date{2005-11-11}
+
+\maketitle
+\begin{abstract}
+The \href{http://planetmath.org/encyclopedia/FisherInformationMatrix.html}
+{Fisher Information Matrix} $\boldsymbol{I}$ is a measure for how much
+information is known about a parameter set $\boldsymbol{\theta}$.  The
+\href{http://planetmath.org/encyclopedia/CovarianceMatrix.html}
+{covariance matrix} $C$ of the parameter set is bound by the
+Cram\'er-Rao inequality $\boldsymbol{C} \ge \boldsymbol{I}^{-1}$ from
+below. This allows us to judge the quality of the fitted parameter
+set.
+\end{abstract}
+
+\section{Calculating the Fisher Information Matrix}
+
+Let $\boldsymbol{X} \in \R^{n}$ be a vector denoting the $n$
+measurements we intend to fit with a model depending on $p$ parameters
+denoted by $\boldsymbol{\theta} \in \R^{p}$. For our model we assume
+that the value $X_k$ is given by a normal distribution
+$\boldsymbol{\emph{N}}(\mu_k, \sigma_k^2)$. The mean value $\mu_k$
+must obviously depend on the parameter set $\boldsymbol{\theta}$. Whereas
+the variance $\sigma_i^2$ is not influenced by the
+parameters and we assume that $\sigma_k^2 = 1/2$ for all $n$
+measurements. This leads us to the 
+\href{http://planetmath.org/encyclopedia/Distribution.html}
+{probability density function} for
+$X_k$
+%
+\begin{eqnarray}\label{PDF}
+p(X_k|\boldsymbol{\theta}) = 
+ \frac{1}{\sqrt{\pi}} 
+ \exp\left(-(X_k - \mu_k(\boldsymbol{\theta}))^2\right)
+\end{eqnarray}
+%
+which gives rise to the 
+\href{http://planetmath.org/encyclopedia/LikelihoodFunction.html}
+{likelihood function}
+%
+\begin{eqnarray}\label{likelyhood}
+L(\boldsymbol{\theta}|\boldsymbol{X}) = 
+ \pi^{-\frac{n}{2}} 
+ \exp\left(- \sum_{k=0}^{n} (X_k - \mu_k(\boldsymbol{\theta}))^2\right)
+\end{eqnarray}
+%
+and the more convenient log likelihood function
+%
+\begin{eqnarray}\label{loglikelyhood}
+l(\boldsymbol{\theta}|\boldsymbol{X}) = 
+ - \frac{n}{2}\ln(\pi) 
+ - \sum_{k=0}^{n}(X_k - \mu_k(\boldsymbol{\theta}))^2
+\end{eqnarray}
+%
+The Fisher Information Matrix $\boldsymbol{I}$ is defined by
+\begin{eqnarray}\label{Fisher}
+\boldsymbol{I}_{i, j}(\boldsymbol{\theta})) = 
+\mbox{\bf E}
+\left(
+-\frac{\partial^2 \, l(\boldsymbol{\theta}|\boldsymbol{X})}
+{\partial \theta_i \; \partial \theta_j}
+\right)
+\end{eqnarray}
+where {\bf E} denotes the 
+\href{http://planetmath.org/encyclopedia/ExpectedValue.html}
+{expectation value} and $i$ and $j$ are in
+$1, \ldots, p$.
+%
+\begin{eqnarray}
+\boldsymbol{I}_{i, j}(\boldsymbol{\theta}))
+& = &
+\mbox{\bf E}
+\left(
+-\frac{\partial}
+{\partial \theta_i}
+\left(
+\frac{\partial \, l(\boldsymbol{\theta}|\boldsymbol{X})}
+{\partial \theta_j} 
+\right)
+\right)\\
+& = &
+\mbox{\bf E}
+\left(
+-2 \frac{\partial}
+{\partial \theta_i}
+\sum_{k=0}^{n}(X_k - \mu_k(\boldsymbol{\theta}))
+\frac{\mu_k(\boldsymbol{\theta})}{\partial \theta_j}
+\right)\\
+& = &
+\mbox{\bf E}
+\left(
+2 \sum_{k=0}^{n}
+\frac{\mu_k(\boldsymbol{\theta})}{\partial \theta_i}
+\frac{\mu_k(\boldsymbol{\theta})}{\partial \theta_j}
+- 2 
+\sum_{k=0}^{n}
+(X_k - \mu_k(\boldsymbol{\theta})) 
+\frac{\partial^2 \, \mu_k(\boldsymbol{\theta})}
+{\partial \theta_i \; \partial \theta_j}
+\right)\\
+& = &
+2 \sum_{k=0}^{n}
+\frac{\mu_k(\boldsymbol{\theta})}{\partial \theta_i}
+\frac{\mu_k(\boldsymbol{\theta})}{\partial \theta_j}
+\end{eqnarray}
+%
+In the last equality we made use of the fact that the expectation
+value of $X_k$ is $\mu_k(\boldsymbol{\theta})$.
+
+\end{document}

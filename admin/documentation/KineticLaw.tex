@@ -1,0 +1,255 @@
+%% This is an evolving article style
+%% steeling ideas from different places
+
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{babel}
+\usepackage[linktocpage,colorlinks,urlcolor=blue]{hyperref}
+
+\newcommand{\boldsymbol}[1]{\mbox{\boldmath $#1$}}
+\newcommand{\N}{\mbox{$I\!\!N$}}
+\newcommand{\Z}{\mbox{$Z\!\!\!Z$}}
+\newcommand{\Q}{\mbox{$I\:\!\!\!\!\!Q$}}
+\newcommand{\R}{\mbox{$I\!\!R$}}
+
+\makeindex 
+\makeatletter
+\makeatother
+
+\begin{document}
+
+\title{COPASI's and SBML's Kinetic Law Representation}
+
+\author{Stefan Hoops\\
+ Virginia Bioinformatics Institute - 0477\\
+ Virginia Tech\\
+ Bioinformatics Facility I\\
+ Blacksburg, VA 24061 \\
+ USA \\
+ \href{mailto:Stefan Hoops <shoops@vt.edu>}{shoops@vt.edu}}
+
+\date{2005-11-14}
+
+\maketitle
+\begin{abstract}
+The presentation of kinetic laws in
+\href{http://www.copasi.org}{COPASI} and
+\href{http://prdownloads.sourceforge.net/sbml/sbml-level-2-v1.pdf?download}
+{SBML Level 2 Version 1} differs. In this document we explain the
+reason for this difference. In addition the
+\href{http://www.sbml.org}{SBML} rate laws written by COPASI are known
+to create problems in some software packages which are listed as
+supporting SBML. We explain why we consider our presentation as
+correct SBML and correct from the modeling standpoint.
+\end{abstract}
+
+\section{Rate Laws in COPASI}
+Rate laws in COPASI are presented to the user as functions describing
+the change of metabolites involved in a chemical reaction in
+concentration per time. They are always dependent on the
+concentrations of metabolites involved in the model. We are using this
+representation since the user is familiar with it and the units for
+kinetic constants found in the literature are normally consistent with
+it.
+
+However internally due to the fact that COPASI deals with multi
+compartment models we have to calculate particle numbers and not
+concentrations, since individual species items are preserved and not
+their concentration. For example to correctly address the problem of
+transport reactions between two compartments we must calculate the
+change of the particle number of the metabolite in its compartment
+instead of its change of concentration. This leads to the necessity to
+reinterpret the rate laws.
+
+This necessity is shown in the following example where we consider a
+transport reaction from compartment $\boldsymbol{A}$ to compartment
+$\boldsymbol{B}$. 
+%
+\begin{eqnarray}
+\boldsymbol{S} \rightarrow \boldsymbol{P}
+\end{eqnarray} 
+%
+Let the volumes of both compartment be $V_A = 2\, \mbox{l}$ and $V_B =
+1\, \mbox{l}$. The rate law is simple irreversible Mass action with
+constant $R = 1\, \frac{1}{\mbox{s}}$.  If we start with the initial
+concentration of
+%
+\begin{eqnarray}
+\left[\boldsymbol{S}\right]_0 = 1\; \mbox{Mol/l}
+\mbox{,} &&
+\left[\boldsymbol{P}\right]_0 = 0\; \mbox{Mol/l}
+\end{eqnarray} 
+%
+By using the traditional rate law we have the following differential
+equations 
+%
+\begin{eqnarray}
+\frac{\delta \left[\boldsymbol{S}\right]}{\delta t} 
+= - R \left[\boldsymbol{S}\right]
+\mbox{,} &&
+\frac{\delta \left[\boldsymbol{P}\right]}{\delta t} 
+=   R \left[\boldsymbol{S}\right] 
+\end{eqnarray} 
+%
+This leads to the solution
+%
+\begin{eqnarray}
+\left[\boldsymbol{S}\right](t) = \left[\boldsymbol{S}\right]_0 \exp(-Rt)
+\mbox{,} &&
+\left[\boldsymbol{P}\right](t) = \left[\boldsymbol{S}\right]_0
+(1 - \exp(-Rt))
+\end{eqnarray} 
+%
+which for $t \rightarrow \infty$ leads to 
+%
+\begin{eqnarray}
+\left[\boldsymbol{S}\right]_\infty = 0\; \mbox{Mol/l}
+\mbox{,} &&
+\left[\boldsymbol{P}\right]_\infty = \left[\boldsymbol{S}\right]_0 = 1\; \mbox{Mol/l} 
+\end{eqnarray} 
+%
+This is clearly a contradiction to the mass conservation
+$\boldsymbol{S} + \boldsymbol{P} = const.$ since the initial particle
+number is $2\; \mbox{Mol}$ and the ending particle number is $1\;
+\mbox{Mol}$.
+
+To calculate the change of particle numbers instead of the change of
+concentration we rescale the kinetic law for ordinary reactions ,
+i.e., reactions involving only species in one compartment
+automatically by the compartments volume. Reactions not involving
+multiple compartments are not automatically rescaled and are
+interpreted as describing changes of particle numbers per time. In the
+above example this leads to the following differential equations
+%
+\begin{eqnarray}
+\frac{\delta \boldsymbol{S}}{\delta t} 
+= - R\, \left[\boldsymbol{S}\right]
+\mbox{,} &&
+\frac{\delta \boldsymbol{P}}{\delta t} 
+=   R\, \left[\boldsymbol{S}\right] \
+\end{eqnarray} 
+%
+which for constant volume is equivalent to
+%
+\hypertarget{COPASI_1}{
+\begin{eqnarray}\label{COPASI_1}
+\frac{\delta \left[\boldsymbol{S}\right]}{\delta t} 
+= - \frac{R}{V_A} \left[\boldsymbol{S}\right]
+\mbox{,} &&
+\frac{\delta \left[\boldsymbol{P}\right]}{\delta t} 
+=   \frac{R}{V_B} \left[\boldsymbol{S}\right] \
+\end{eqnarray} 
+}
+%
+With the above initial conditions
+%
+\begin{eqnarray}
+\left[\boldsymbol{S}(t)\right] = \left[\boldsymbol{S}\right]_0 \, \exp(-Rt) 
+\mbox{,} &&
+\left[\boldsymbol{P}(t)\right] = \left[\boldsymbol{S}\right]_0 
+\frac{V_A}{V_B}\, (1 - \exp(-Rt))
+\end{eqnarray} 
+%
+which for $t \rightarrow \infty$ leads to 
+%
+\begin{eqnarray}
+\left[\boldsymbol{S}\right]_\infty = 0\; \mbox{Mol/l}
+\mbox{,} &&
+\left[\boldsymbol{P}\right]_\infty
+ = \left[\boldsymbol{S}\right]_0\, \frac{V_A}{V_B}
+ = 2\; \mbox{Mol/l} 
+\end{eqnarray} 
+%
+This result is in accordance with the mass conservation of species
+$\boldsymbol{X}$.
+
+Let us know look at the same reaction with $\boldsymbol{S}$ and
+$\boldsymbol{P}$ in the same compartment with the volume
+$V$. In COPASI we will have
+%
+\begin{eqnarray}
+\frac{\delta \boldsymbol{S}}{\delta t} 
+= - R\, V\, \left[\boldsymbol{S}\right]
+\mbox{,} &&
+\frac{\delta \boldsymbol{P}}{\delta t} 
+=   R\, V\, \left[\boldsymbol{S}\right] \
+\end{eqnarray} 
+%
+which for constant volume is equivalent to
+%
+\hypertarget{COPASI_2}{
+\begin{eqnarray}\label{COPASI_2}
+\frac{\delta \left[\boldsymbol{S}\right]}{\delta t} 
+= - R \left[\boldsymbol{S}\right]
+\mbox{,} &&
+\frac{\delta \left[\boldsymbol{P}\right]}{\delta t} 
+=   R \left[\boldsymbol{S}\right] \
+\end{eqnarray} 
+}
+%
+With the above initial conditions
+%
+\begin{eqnarray}
+\left[\boldsymbol{S}(t)\right] = \left[\boldsymbol{S}\right]_0 \, \exp(-Rt) 
+\mbox{,} &&
+\left[\boldsymbol{P}(t)\right] = \left[\boldsymbol{S}\right]_0 
+\, (1 - \exp(-Rt))
+\end{eqnarray} 
+%
+which for $t \rightarrow \infty$ leads to expected result
+%
+\begin{eqnarray}
+\left[\boldsymbol{S}\right]_\infty = 0\; \mbox{Mol/l}
+\mbox{,} &&
+\left[\boldsymbol{P}\right]_\infty
+ = \left[\boldsymbol{S}\right]_0
+ = 1\; \mbox{Mol/l} 
+\end{eqnarray} 
+%
+
+\section{Rate Laws in SBML}
+The rate law for reactions in SBML Level 2 Version 1 is explained in
+section 4.9.7 of the specifications. Please note that paragraph 2
+explicitly mentions that the rate law is not what is traditionally
+understood. Instead the rate law describes the change of particle
+numbers similarly to COPASI's internal representation. The actual
+example given in the SBML specification is closely related the one
+found above and the differential equations of the transport problem
+described above would be in SBML notation
+%
+\hypertarget{SBML}{
+\begin{eqnarray}\label{SBML}
+\frac{\delta \left[\boldsymbol{S}\right]}{\delta t} 
+= - \frac{R}{V_A} \left[\boldsymbol{S}\right]
+\mbox{,} &&
+\frac{\delta \left[\boldsymbol{P}\right]}{\delta t} 
+=   \frac{R}{V_B} \left[\boldsymbol{S}\right] \
+\end{eqnarray} 
+}
+%
+
+\section{COPASI's rate laws in SBML}
+As a result of the previous two chapters we see that for reactions
+involving multiple compartments (\hyperlink{COPASI_1}{Equation
+\ref*{COPASI_1}}) we can directly write the COPASI rate law as the
+SBML rate (\hyperlink{SBML}{Equation \ref*{SBML}}) law. However, for
+reactions which are involving only metabolites from one compartment
+(\hyperlink{COPASI_2}{Equation \ref*{COPASI_2}}) we need to multiply
+the rate law with the volume of that compartment which leads in our
+example to
+%
+\begin{eqnarray}
+R_{\mbox{\tiny{SBML}}} = V \, R_{\mbox{\tiny{COPASI}}}
+\end{eqnarray} 
+%
+This equation seems to indicate that at least one of
+$R_{\mbox{\tiny{SBML}}}$ or $R_{\mbox{\tiny{COPASI}}}$ is volume
+dependent. Since the ODEs (\hyperlink{COPASI_2}{Equation
+\ref*{COPASI_2}}) derived from the traditional rate laws lead to
+concentration changes, which are independent from the volume of the
+compartment for constant $R$ we have that $R_{\mbox{\tiny{COPASI}}}$
+is volume independent, i.e, $R_{\mbox{\tiny{SBML}}}$ must be volume
+dependent.
+
+\end{document}
