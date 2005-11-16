@@ -38,45 +38,7 @@ PDFLATEX=/usr/bin/pdflatex
 
 # PDFXMLTEX=/usr/bin/pdfxmltex
 
-.PHONY: clean all
-
-all: copasi.pdf copasi.xhtml copasi.html
-
-copasi.tex: $(SOURCES)
-	$(DBLATEX) -t tex copasi.xml
-
-copasi.pdf: copasi.tex $(IMAGES)
-	TEXINPUTS=$(DBLATEX_TEXINPUTS) $(PDFLATEX) $<
-	TEXINPUTS=$(DBLATEX_TEXINPUTS) $(PDFLATEX) $<
-	TEXINPUTS=$(DBLATEX_TEXINPUTS) $(PDFLATEX) $<
-
-#copasi.pdf: copasi.fo
-#	$(PDFXMLTEX) $<
-#	$(PDFXMLTEX) $<
-#	$(PDFXMLTEX) $<
-
-copasi.html: $(SOURCES) $(IMAGES) $(HTML_STYLESHEET)
-	$(XSLTPROC) -o $@ $< $(HTML_STYLESHEET) 
-
-copasi.xhtml: $(SOURCES) $(IMAGES) $(XHTML_STYLESHEET)
-	$(XSLTPROC) -o $@ $< $(XHTML_STYLESHEET) 
-
-copasi.fo: $(SOURCES) $(IMAGES) $(FO_STYLESHEET)
-	$(XSLTPROC) -o $@ $< $(FO_STYLESHEET)
-
-clean:
-	rm -f copasi.tex
-	rm -f copasi.pdf
-	rm -f copasi.html
-	rm -f copasi.out
-	rm -f copasi.idx
-	rm -f copasi.log
-	rm -f copasi.aux
-	rm -f copasi.glo
-	rm -f fotex.log
-
-SOURCES = \
-	copasi.xml \
+SOURCES = copasi.xml \
 	copasi_GUI.xml \
 	copasi_commandLine.xml \
 	copasi_fileFormats.xml \
@@ -133,4 +95,41 @@ IMAGES = images/Compartments_01.png \
 	 figures/tip.pdf \
 	 figures/warning.eps \
 	 figures/warning.pdf
+
+.PHONY: clean all
+
+all: copasi.pdf copasi.xhtml copasi.html
+
+copasi.tex: $(SOURCES)
+	$(DBLATEX) -t tex copasi.xml
+
+copasi.pdf: copasi.tex $(IMAGES)
+	TEXINPUTS=$(DBLATEX_TEXINPUTS) $(PDFLATEX) $<
+	TEXINPUTS=$(DBLATEX_TEXINPUTS) $(PDFLATEX) $<
+	TEXINPUTS=$(DBLATEX_TEXINPUTS) $(PDFLATEX) $<
+
+#copasi.pdf: copasi.fo
+#	$(PDFXMLTEX) $<
+#	$(PDFXMLTEX) $<
+#	$(PDFXMLTEX) $<
+
+copasi.html: $(SOURCES) $(IMAGES) $(HTML_STYLESHEET)
+	$(XSLTPROC) -o $@ $< $(HTML_STYLESHEET) 
+
+copasi.xhtml: $(SOURCES) $(IMAGES) $(XHTML_STYLESHEET)
+	$(XSLTPROC) -o $@ $< $(XHTML_STYLESHEET) 
+
+copasi.fo: $(SOURCES) $(IMAGES) $(FO_STYLESHEET)
+	$(XSLTPROC) -o $@ $< $(FO_STYLESHEET)
+
+clean:
+	rm -f copasi.tex
+	rm -f copasi.pdf
+	rm -f copasi.html
+	rm -f copasi.out
+	rm -f copasi.idx
+	rm -f copasi.log
+	rm -f copasi.aux
+	rm -f copasi.glo
+	rm -f fotex.log
 
