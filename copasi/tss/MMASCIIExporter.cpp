@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/11/11 13:39:05 $
+   $Date: 2005/11/17 10:17:40 $
    End CVS Header */
 
 #include <math.h>
@@ -122,6 +122,57 @@ C_INT32 MMASCIIExporter::findKinParamByName(const CReaction* reac, const std::st
   return - 1;
 }
 /**
+ **         This method assembles an expression sub tree for some internal call of Mass Action. 
+ **         The sub tree has to be included in the tree of corresponding root kinetic function in order to    
+ **         export this function in the C format whithout the user defined internall Mass Action calls  
+ **/
+void MMASCIIExporter::assembleSubTreeForMassAction(CEvaluationNode* newNode, CEvaluationNode* child1, CEvaluationNode* child2)
+{
+  CEvaluationNode* newparent = newNode;
+  CEvaluationNode* newchild1 = child1->copyBranch();
+  newparent->addChild(newchild1, NULL);
+  CEvaluationNode* newchild2;
+
+  if (CEvaluationNode::type(child2->getType()) == CEvaluationNode::VARIABLE)
+    {
+      newchild2 = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MULTIPLY), "*");
+      newparent->addChild(newchild2, newchild1);
+      newparent = newchild2;
+      newchild1 = child2->copyBranch();
+      newparent->addChild(newchild1, NULL);
+      newchild2 = child2->copyBranch();
+      newparent->addChild(newchild2, newchild1);
+    }
+
+  if (0) // *************** TODO: the current Copasi version does not support the case bellow, the following part is not tested
+    if (CEvaluationNode::type(child2->getType()) == CEvaluationNode::VECTOR)
+      {
+        const std::vector<CEvaluationNode *> & vector = dynamic_cast< CEvaluationNodeVector *> (child2) ->getVector();
+        std::vector<CEvaluationNode *>::const_iterator it = vector.begin();
+        std::vector<CEvaluationNode *>::const_iterator end = vector.end();
+
+        unsigned C_INT32 i = 0;
+
+        while (it != end)
+          {
+            newchild2 = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MULTIPLY), "*");
+            newparent->addChild(newchild2, newchild1);
+
+            newparent = newchild2;
+            newchild1 = dynamic_cast<CEvaluationNode*>(vector[i]);
+            newparent->addChild(newchild1, NULL);
+            it++;
+            i++;
+          }
+
+        if (it == end)
+          {
+            newchild2 = dynamic_cast<CEvaluationNode*>(vector[i]);
+            newparent->addChild(newchild2, newchild1);
+          }
+      } // END of this TODO. ****************************************************************************************************
+}
+/**
  **         This method exports the functions in C format     
  **/
 void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction)
@@ -173,11 +224,11 @@ void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::stri
               tmpIndex[usage]++;
             }
         }
-      /***********************************************************************/
-      std::cout << "vorher:" << tmpFunc->getObjectName() << std::endl;
 
-      if (tmpFunc->getRoot())
-        tmpFunc->getRoot()->printRecursively(std::cout);
+      /********** The part bellow take care of the possible internal Mass Action calls *********/
+
+      /* if (tmpFunc->getRoot())
+        tmpFunc->getRoot()->printRecursively(std::cout); */
 
       while (treeIt != NULL)
         {
@@ -186,71 +237,32 @@ void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::stri
               const CFunction* callFunc;
               callFunc = static_cast<CFunction*> (pFunctionDB->findFunction((*treeIt).getData()));
 
-              if (callFunc->getObjectName() == "Mass action (irreversible)")
+              if (callFunc->getType() == CEvaluationTree::MassAction)
                 {
                   CEvaluationNode* parent = dynamic_cast<CEvaluationNode*>(treeIt->getParent());
                   CEvaluationNode* child1 = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
-
                   CEvaluationNode* child2 = dynamic_cast<CEvaluationNode*>((treeIt->getChild())->getSibling());
 
-                  CEvaluationNode* newNode = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MULTIPLY), "*");
+                  CEvaluationNode* newNode;
+                  CEvaluationNode* newNode1 = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MULTIPLY), "*");
 
-                  CEvaluationNode* newparent = newNode;
-                  CEvaluationNode* newchild1 = child1->copyBranch();
-                  newparent->addChild(newchild1, NULL);
-                  CEvaluationNode* newchild2;
+                  assembleSubTreeForMassAction(newNode1, child1, child2);
 
-                  std::cout << "child2->getType()";
+                  if (callFunc->getObjectName() == "Mass action (irreversible)") newNode = newNode1;
 
-                  if (CEvaluationNode::type(child2->getType()) == CEvaluationNode::VECTOR)
-                    std::cout << " == " << std::endl;
-                  else
-                    std::cout << "!= ";
-
-                  std::cout << "VECTOR" << std::endl;
-
-                  if (CEvaluationNode::type(child2->getType()) == CEvaluationNode::VARIABLE)
+                  if (callFunc->getObjectName() == "Mass action (reversible)")
                     {
-                      newchild2 = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MULTIPLY), "*");
-                      newparent->addChild(newchild2, newchild1);
-                      newparent = newchild2;
-                      newchild1 = child2->copyBranch();
-                      newparent->addChild(newchild1, NULL);
-                      newchild2 = child2->copyBranch();
-                      newparent->addChild(newchild2, newchild1);
+                      newNode = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MINUS), "-");
+                      newNode->addChild(newNode1, NULL);
+
+                      CEvaluationNode* newNode2 = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MULTIPLY), "*");
+                      CEvaluationNode* child3 = dynamic_cast<CEvaluationNode*>((child2)->getSibling());
+                      CEvaluationNode* child4 = dynamic_cast<CEvaluationNode*>((child3)->getSibling());
+
+                      assembleSubTreeForMassAction(newNode2, child3, child4);
+
+                      newNode->addChild(newNode2, newNode1);
                     }
-
-                  if (0) // *************** TODO: the current Copasi version does not support the case bellow, the following part is not tested
-                    if (CEvaluationNode::type(child2->getType()) == CEvaluationNode::VECTOR)
-                      {
-                        const std::vector<CEvaluationNode *> & vector = dynamic_cast< CEvaluationNodeVector *> (child2) ->getVector();
-                        std::vector<CEvaluationNode *>::const_iterator it = vector.begin();
-                        std::vector<CEvaluationNode *>::const_iterator end = vector.end();
-
-                        //std::cout << "it, end:" << it << std::endl;
-
-                        unsigned C_INT32 i = 0;
-
-                        while (it != end)
-                          {
-                            newchild2 = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MULTIPLY), "*");
-                            newparent->addChild(newchild2, newchild1);
-
-                            newparent = newchild2;
-                            newchild1 = dynamic_cast<CEvaluationNode*>(vector[i]);
-                            newparent->addChild(newchild1, NULL);
-                            it++;
-                            i++;
-                          }
-
-                        if (it == end)
-                          {
-                            newchild2 = dynamic_cast<CEvaluationNode*>(vector[i]);
-                            std::cout << "newchild (it==end):" << newchild2->getData() << std::endl;
-                            newparent->addChild(newchild2, newchild1);
-                            std::cout << "newparent->getChild (it == end):" << newparent->getChild()->getData() << std::endl;
-                          }
-                      } // END of this TODO. ****************************************************************************************************
 
                   if (parent)
                     {
@@ -266,21 +278,16 @@ void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::stri
           ++treeIt;
         }
 
-      /* tmpFunc->updateTree();
+      /* if (tmpFunc->getRoot())
+        tmpFunc->getRoot()->printRecursively(std::cout); */
 
-      std::cout << "naher:" << std::endl;
-
-      if (tmpFunc->getRoot())
-       tmpFunc->getRoot()->printRecursively(std::cout); */
-
-      /*******************************************************************/
+      /***************************************************************************/
 
       while (newIt != NULL)
         {
           if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
             {
               newIt->setData(parameterNameMap[ tmpFunc->getVariables()[newIt->getData()]->getObjectName() ]);
-              std::cout << "variables:" << newIt->getData() << std::endl;
             }
 
           if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::CALL)
@@ -294,18 +301,16 @@ void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::stri
           ++newIt;
         }
 
-      /* std::cout << "vorher:" << std::endl;
-
+      /*
       if (tmpFunc->getRoot())
       tmpFunc->getRoot()->printRecursively(std::cout);
       */
 
       tmpFunc->updateTree();
 
-      std::cout << "naher:" << tmpFunc->getObjectName() << std::endl;
-
+      /*
       if (tmpFunc->getRoot())
-        tmpFunc->getRoot()->printRecursively(std::cout);
+        tmpFunc->getRoot()->printRecursively(std::cout); */
 
       std::string name = tmpFunc->getObjectName();
 

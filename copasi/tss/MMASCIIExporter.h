@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/11/11 13:39:05 $
+   $Date: 2005/11/17 10:18:01 $
    End CVS Header */
 
 #ifndef MMASCIIExpoter_H__
@@ -67,6 +67,12 @@ class MMASCIIExporter
      **    This method exports the function in C format 
      **/
     void functionCoutput(const CFunction* pFunc, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction);
+    /**
+     **      This method assembles an expression sub tree for some internal call of Mass Action.
+     **      The sub tree has to be included in the tree of corresponding root kinetic function in order to
+     **      export this function in the C format whithout the user defined internall Mass Action calls
+     **/
+    void MMASCIIExporter::assembleSubTreeForMassAction(CEvaluationNode* newNode, CEvaluationNode* child1, CEvaluationNode* child2);
   };
 
 #endif
