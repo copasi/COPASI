@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.143 $
+   $Revision: 1.144 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/23 19:54:28 $
+   $Author: gauges $ 
+   $Date: 2005/11/18 16:23:26 $
    End CVS Header */
 
 // CReaction
@@ -754,7 +754,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                                 {
                                   delete pVariableNode;
                                   pVariableNode = NULL;
-                                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 7, id.c_str());
+                                  CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 7, id.c_str(), this->getSBMLId().c_str());
                                 }
                             }
                         }
@@ -944,6 +944,8 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
     case CEvaluationNode::INVALID:
       CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 2);
       // create an error message
+      break;
+    default:
       break;
     }
   return pTmpNode;
@@ -1151,6 +1153,8 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
     case CEvaluationNode::INVALID:
       CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 2);
       // create an error message
+      break;
+    default:
       break;
     }
   return pTmpNode;

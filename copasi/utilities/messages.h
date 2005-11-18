@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/11/15 23:01:52 $
+   $Date: 2005/11/18 16:23:26 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -50,7 +50,7 @@ const MESSAGES Messages[] =
     {MCReaction + 4, "CReaction (4): Only Metabolites, Compartments or Parameter object nodes are allowed in kinetic functions."},
     {MCReaction + 5, "CReaction (5): Nodes of type %s are not implemented yet."},
     {MCReaction + 6, "CReaction (6): Nodes of type VARIABLE must not appear in an expression."},
-    {MCReaction + 7, "CReaction (7): CMetab object '%s' is neither substrate, product nor modifier to the reaction."},
+    {MCReaction + 7, "CReaction (7): CMetab object '%s' is neither substrate, product nor modifier to reaction '%s' but it is used in the kinetic law."},
     {MCReaction + 8, "CReaction (8): Could not find variable with name \"%s\"."},
     {MCReaction + 9, "CReaction (9): Could not find object for key \"%s\"."},
     {MCReaction + 10, "CReaction (10): Parameter \"%s\" is a vector."},
