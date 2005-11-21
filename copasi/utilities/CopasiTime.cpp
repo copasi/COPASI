@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/08 17:23:48 $
+   $Date: 2005/11/21 20:20:01 $
    End CVS Header */
 
 #include <time.h>
@@ -173,7 +173,7 @@ CCopasiTimeVariable CCopasiTimeVariable::getCPUTime()
                   (FILETIME *) &KernelTime,
                   (FILETIME *) &UserTime);
 
-  return UserTime.QuadPart / LLONG_CONST(10);
+  return (KernelTime.QuadPart + UserTime.QuadPart) / LLONG_CONST(10);
 
 #else
   struct rusage ResourceUsage;
