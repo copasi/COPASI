@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiTimer.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/10 19:59:50 $
+   $Date: 2005/11/21 15:33:58 $
    End CVS Header */
 
 #include "copasi.h"
@@ -69,7 +69,7 @@ bool CCopasiTimer::actualize()
     }
 
   mElapsedTimeSeconds =
-    mElapsedTime.getSeconds() + (mElapsedTime.getMicroSeconds(true) / 1e6);
+    (mElapsedTime.getMicroSeconds() * 1e-6);
 
   return true;
 }
