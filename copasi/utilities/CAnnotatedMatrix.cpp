@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/11 13:21:46 $
+   $Author: shoops $ 
+   $Date: 2005/11/21 16:55:18 $
    End CVS Header */
 
 #include "CAnnotatedMatrix.h"
@@ -79,7 +79,7 @@ const CCopasiArray::data_type & CCopasiArray::operator[] (const index_type & ind
 CArrayAnnotation::CArrayAnnotation(const std::string & name,
                                    const CCopasiContainer * pParent,
                                    CCopasiAbstractArray * array)
-    : CCopasiContainer(name, pParent, "Array" /*, flags */),         //TODO: flags
+    : CCopasiContainer(name, pParent, "Array" /*, flags */),          //TODO: flags
     mArray(array)
 {
   assert(mArray);
@@ -186,14 +186,16 @@ bool CArrayAnnotation::updateAnnotations()
   return success;
 }
 
-bool CArrayAnnotation::createAnnotationsFromCopasiVector(unsigned int d, const CCopasiContainer* v)
+bool CArrayAnnotation::createAnnotationsFromCopasiVector(unsigned int d,
+    const CCopasiContainer* v)
 {
   if (!v) return false;
   if (! (v->isVector() || v->isNameVector())) return false;
   if (d >= mArray->dimensionality()) return false;
 
   //now we know we have a vector. A CCopasiVector[N/S], hopefully, so that the following cast is valid:
-  const CCopasiVector<const CCopasiObject>* pVector = reinterpret_cast<const CCopasiVector<const CCopasiObject>* >(v);
+  const CCopasiVector< CCopasiObject > * pVector =
+    reinterpret_cast<const CCopasiVector< CCopasiObject > * >(v);
 
   if (pVector->size() < mAnnotations[d].size()) return false;
 
