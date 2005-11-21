@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.184 $
+   $Revision: 1.185 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/10/26 15:43:18 $
+   $Author: shoops $ 
+   $Date: 2005/11/21 22:15:12 $
    End CVS Header */
 
 /****************************************************************************
@@ -520,11 +520,9 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         else
           return optResultWidgetT;
         break;
-#ifdef COPASI_DEBUG
       case 33:
         return paramFittingWidget;
         break;
-#endif // COPASI_DEBUG
 #ifdef COPASI_SENS
       case 34:
         return sensWidget;
