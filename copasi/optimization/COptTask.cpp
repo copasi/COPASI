@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/11 13:20:36 $
+   $Date: 2005/11/21 15:36:01 $
    End CVS Header */
 
 /**
@@ -56,7 +56,7 @@ COptTask::COptTask(const COptTask & src,
     CCopasiTask(src, pParent)
 {
   mpProblem = new COptProblem(* (COptProblem *) src.mpProblem, this);
-  mpMethod = COptMethod::createMethod();
+  mpMethod = COptMethod::createMethod(src.mpMethod->getSubType());
   this->add(mpMethod, true);
   //  mpMethod->setObjectParent(this);
   ((COptMethod *) mpMethod)->setProblem((COptProblem *) mpProblem);
@@ -136,20 +136,12 @@ bool COptTask::setMethodType(const int & type)
 {
   CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
 
-  //*************************** bellow commented *****
-  // To get the following portions to work COptMethod needs to implement
-  // isValidSubType method
-  /*if (!COptMethod::isValidSubType(Type)) return false;*/
   if (mpMethod->getSubType() == Type) return true;
 
   pdelete (mpMethod);
-  //****Current COptMethod only takes type parameter, modify as needed later on if
-  //    want to add COptProblem parameter ***/
-  /*mpMethod =
-    COptMethod::createMethod(Type,(COptProblem *) mpProblem);*/
+
   mpMethod = COptMethod::createMethod(Type);
   this->add(mpMethod, true);
-  //mpMethod->setObjectParent(this);
 
   return true;
 }
