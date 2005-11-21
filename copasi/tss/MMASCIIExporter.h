@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/11/17 10:18:01 $
+   $Date: 2005/11/21 10:09:48 $
    End CVS Header */
 
 #ifndef MMASCIIExpoter_H__
@@ -62,11 +62,11 @@ class MMASCIIExporter
     /**
      **   This method finds internal functions calls 
      **/
-    void findInternalFunctionsCalls(const CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction);
+    void findInternalFunctionsCalls(const CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction, std::ostringstream & outFunctionHeader);
     /**
      **    This method exports the function in C format 
      **/
-    void functionCoutput(const CFunction* pFunc, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction);
+    void functionCoutput(const CFunction* pFunc, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction, std::ostringstream & outFunctionHeader);
     /**
      **      This method assembles an expression sub tree for some internal call of Mass Action.
      **      The sub tree has to be included in the tree of corresponding root kinetic function in order to

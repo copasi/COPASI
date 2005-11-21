@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/11/17 10:17:40 $
+   $Date: 2005/11/21 10:09:47 $
    End CVS Header */
 
 #include <math.h>
@@ -175,7 +175,7 @@ void MMASCIIExporter::assembleSubTreeForMassAction(CEvaluationNode* newNode, CEv
 /**
  **         This method exports the functions in C format     
  **/
-void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction)
+void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction, std::ostringstream & outFunctionHeader)
 {
   CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
 
@@ -321,15 +321,23 @@ void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::stri
           outFunction << std::endl;
           outFunction << "double " << functionNameMap[name] << "(";
 
+          outFunctionHeader << std::endl;
+          outFunctionHeader << "double " << functionNameMap[name] << "(";
+
           for (j = 0; j < varbs_size; ++j)
             {
               outFunction << "double " << parameterNameMap[ tmpFunc->getVariables()[j]->getObjectName().c_str() ];
               if (j != varbs_size - 1) outFunction << ", ";
+
+              outFunctionHeader << "double " << parameterNameMap[ tmpFunc->getVariables()[j]->getObjectName().c_str() ];
+              if (j != varbs_size - 1) outFunctionHeader << ", ";
             }
 
           outFunction << ") ";
           outFunction << '\t' << "//" << name << std::endl;
           outFunction << "{return  " << tmpFunc->getInfix().c_str() << "; } " << std::endl;
+
+          outFunctionHeader << "); ";
 
           exportedFunctionSet.insert(name);
         }
@@ -339,7 +347,7 @@ void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::stri
 /**
  **         This method finds internal functions calls 
  **/
-void MMASCIIExporter::findInternalFunctionsCalls(const CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction)
+void MMASCIIExporter::findInternalFunctionsCalls(const CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction, std::ostringstream & outFunctionHeader)
 {
   if (pNode)
     {
@@ -353,10 +361,10 @@ void MMASCIIExporter::findInternalFunctionsCalls(const CEvaluationNode* pNode, s
               const CFunction* iFunc;
               iFunc = static_cast<CFunction*> (pFunctionDB->findFunction((*treeIt).getData()));
 
-              findInternalFunctionsCalls(iFunc->getRoot(), exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction);
+              findInternalFunctionsCalls(iFunc->getRoot(), exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction, outFunctionHeader);
 
               if (iFunc->getType() != CEvaluationTree::MassAction)
-                functionCoutput(iFunc, exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction);
+                functionCoutput(iFunc, exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction, outFunctionHeader);
             }
 
           ++treeIt;
@@ -425,13 +433,28 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
     {
       metab = copasiModel->getMetabolitesX()[i];
 
-      outFile << "x[" << i << "]="
+      outFile << "y[" << i << "]="
       << metab->getInitialConcentration() << ";"
       << '\t' << "//" << metab->getObjectName().c_str() << ","
       << '\t' << CModelEntity::StatusName[metab->getStatus()]
       << std::endl;
     }
   outFile << "#endif // METABOLITES" << std::endl;
+  outFile << std::endl;
+
+  outFile << "#ifdef INDEP_METABOLITES" << std::endl;
+
+  for (i = 0; i < indep_size; i++)
+    {
+      metab = copasiModel->getMetabolitesX()[i];
+
+      outFile << "x[" << i << "]="
+      << metab->getInitialConcentration() << ";"
+      << '\t' << "//" << metab->getObjectName().c_str() << ","
+      << '\t' << CModelEntity::StatusName[metab->getStatus()]
+      << std::endl;
+    }
+  outFile << "#endif // INDEP_METABOLITES" << std::endl;
   outFile << std::endl;
 
   outFile << "#ifdef MOIETY" << std::endl;
@@ -471,19 +494,19 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
               }
             if (fabs(L(i, j)) != 1.0)
               {
-                Description << fabs(L(i, j)) << " * " << "x[" << j << "]";
+                Description << fabs(L(i, j)) << " * " << "y[" << j << "]";
                 comment << fabs(L(i, j)) << " * " << copasiModel->getMetabolitesX()[j]->getObjectName();
               }
             else
               {
-                Description << "x[" << j << "]";
+                Description << "y[" << j << "]";
                 comment << copasiModel->getMetabolitesX()[j]->getObjectName();
               }
 
             Value -= L(i, j) * copasiModel->getMetabolitesX()[j]->getInitialConcentration();
           }
 
-      outFile << "x[" << i << "] = " << Value << Description.str() << ";" << '\t'
+      outFile << "y[" << i << "] = " << Value << Description.str() << ";" << '\t'
       << "// " << comment.str() << " = const" << std::endl;
     }
 
@@ -517,7 +540,7 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
       << std::endl;
     }
 
-  outFile << "#endif GLOBAL_PARAMETERS" << std::endl;
+  outFile << "#endif // GLOBAL_PARAMETERS" << std::endl;
   outFile << std::endl;
 
   outFile << "#ifdef KINETIC_PARAMETERS" << std::endl;
@@ -545,30 +568,34 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
   outFile << "#endif // KINETIC_PARAMETERS" << std::endl;
   outFile << std::endl;
 
-  outFile << "#ifdef KINETIC_FUNCTIONS" << std::endl;
-
   std::map< std::string, std::string > functionNameMap;
   std::set<std::string> functionNameSet;
   std::set<std::string> exportedFunctionSet;
   unsigned C_INT32 findex = 0;
+  std::ostringstream outFunction;
+  std::ostringstream outFunctionHeader;
 
   for (i = 0; i < reacs_size; ++i)
     {
       reac = reacs[i];
 
-      std::ostringstream outFunction;
-
       const CFunction* pFunc = &(reac->getFunction());
 
       if (pFunc->getRoot())
-        findInternalFunctionsCalls(pFunc->getRoot(), exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction);
+        findInternalFunctionsCalls(pFunc->getRoot(), exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction, outFunctionHeader);
 
       if (pFunc->getType() != CEvaluationTree::MassAction)
-        functionCoutput(pFunc, exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction);
-
-      outFile << outFunction.str();
+        functionCoutput(pFunc, exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction, outFunctionHeader);
     }
 
+  outFile << "#ifdef KINETIC_FUNCTIONS_HEADER";
+  outFile << outFunctionHeader.str();
+  outFile << std::endl;
+  outFile << "#endif // KINETIC_FUNCTIONS_HEADER" << std::endl;
+  outFile << std::endl;
+
+  outFile << "#ifdef KINETIC_FUNCTIONS";
+  outFile << outFunction.str();
   outFile << "#endif // KINETIC_FUNCTIONS" << std::endl;
   outFile << std::endl;
 
@@ -626,11 +653,19 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
                       if ((usage == "SUBSTRATE") || (usage == "PRODUCT") || (usage == "MODIFIER"))
                         {
                           CMetab* metab;
-                          metab = dynamic_cast< CMetab * >(tmp);
-                          name = metab ->getObjectName();
 
-                          index = findMetabXByName(copasiModel, name);
-                          equation << "x[" << index << "]";
+                          metab = dynamic_cast< CMetab * >(tmp);
+
+                          if (metab->getStatus() == CModelEntity::FIXED)
+                            {
+                              equation << metab->getInitialConcentration();
+                            }
+                          else
+                            {
+                              name = metab ->getObjectName();
+                              index = findMetabXByName(copasiModel, name);
+                              equation << "y[" << index << "]";
+                            }
                         }
                       if (usage == "PARAMETER")
                         if (!(reac->isLocalParameter(k)))
@@ -725,13 +760,24 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
                       substr = substrs[k];
                       mult = substr->getMultiplicity();
 
-                      name = substr->getMetabolite().getObjectName();
-                      index = findMetabXByName(copasiModel, name);
-                      massaction << " * x[" << index << "]";
+                      if (substr->getMetabolite().getStatus() == CModelEntity::FIXED)
+                        {
+                          massaction << " * " << substr->getMetabolite().getInitialConcentration();
 
-                      if (mult > 1)
-                        for (m = 1; m < mult; ++m)
-                          massaction << " * x[" << index << "]";
+                          if (mult > 1)
+                            for (m = 1; m < mult; ++m)
+                              massaction << " * " << substr->getMetabolite().getInitialConcentration();
+                        }
+                      else
+                        {
+                          name = substr->getMetabolite().getObjectName();
+                          index = findMetabXByName(copasiModel, name);
+                          massaction << " * y[" << index << "]";
+
+                          if (mult > 1)
+                            for (m = 1; m < mult; ++m)
+                              massaction << " * y[" << index << "]";
+                        }
                     }
 
                   if (cMassAction.isReversible() == TriTrue)
@@ -764,16 +810,26 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
                           prod = prods[k];
                           mult = prod->getMultiplicity();
 
-                          name = prod->getMetabolite().getObjectName();
-                          index = findMetabXByName(copasiModel, name);
-                          massaction << " * x[" << index << "]";
+                          if (prod->getMetabolite().getStatus() == CModelEntity::FIXED)
+                            {
+                              massaction << " * " << prod->getMetabolite().getInitialConcentration();
 
-                          if (mult > 1)
-                            for (m = 1; m < mult; ++m)
-                              massaction << " * x[" << index << "]";
+                              if (mult > 1)
+                                for (m = 1; m < mult; ++m)
+                                  massaction << " * " << prod->getMetabolite().getInitialConcentration();
+                            }
+                          else
+                            {
+                              name = metab->getObjectName();
+                              index = findMetabXByName(copasiModel, name);
+                              massaction << " * y[" << index << "]";
+
+                              if (mult > 1)
+                                for (m = 1; m < mult; ++m)
+                                  massaction << " * y[" << index << "]";
+                            }
                         }
                     }
-
                   massaction << ") ";
                   equation << massaction.str();
                 }
@@ -783,7 +839,7 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
 
           counter += reac->getParameters().size();
         }
-      outFile << "dx[" << i << "] = " << equation.str() << ";" << std::endl;
+      outFile << "dxdt[" << i << "] = " << equation.str() << ";" << std::endl;
     }
   outFile << "#endif // DIFFERENTIAL_EQUATIONS" << std::endl;
 
