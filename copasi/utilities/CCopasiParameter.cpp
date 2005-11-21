@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 18:02:21 $
+   $Date: 2005/11/21 17:05:52 $
    End CVS Header */
 
 /**
@@ -286,6 +286,7 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
       break;
 
     case CCopasiParameter::INVALID:
+    default:
       return !memcmp(lhs.mValue.pVOID, rhs.mValue.pVOID, lhs.mSize);
       break;
     }
