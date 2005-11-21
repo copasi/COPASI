@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/11 16:22:51 $
+   $Author: shoops $ 
+   $Date: 2005/11/21 20:32:54 $
    End CVS Header */
 
 #include <limits>
@@ -12,6 +12,7 @@
 #include "CPlotSpec2Vector.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiObjectReference.h"
+#include "report/CCopasiTimer.h"
 #include "utilities/CCopasiVector.h"
 #include "model/CModel.h"
 #include "plotwindow.h"
@@ -141,6 +142,8 @@ bool CPlotSpec2Vector::doPlotting()
         {
           if (*it)
             {
+              if ((*it)->getActualize()) (*(*it)->getActualize())();
+
               if ((*it)->isValueDbl())
                 data[i] = *(C_FLOAT64*)((*it)->getReference());
               else if ((*it)->isValueInt())
@@ -238,6 +241,9 @@ bool CPlotSpec2Vector::compile()
           //TODO check hasValue()
           //std::cout << "    compile: " << pSelected->getObjectName() << std::endl;
           mObjects.push_back(pSelected);
+
+          if (dynamic_cast<CCopasiTimer *>(pSelected))
+            dynamic_cast<CCopasiTimer *>(pSelected)->start();
         }
     }
   return true; //success;
