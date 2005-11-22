@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:18:13 $
+   $Author: shoops $ 
+   $Date: 2005/11/22 16:45:26 $
    End CVS Header */
 
 /**
@@ -148,7 +148,6 @@ class CSteadyStateMethod : public CCopasiMethod
      */
     CSteadyStateMethod::ReturnCode process(CState * pState,
                                            CStateX * pStateX,
-                                           const CSteadyStateProblem * pProblem,
                                            CMatrix< C_FLOAT64 > & jacobian,
                                            CMatrix< C_FLOAT64 > & jacobianX,
                                            CEigen & EigenValues,
@@ -160,6 +159,13 @@ class CSteadyStateMethod : public CCopasiMethod
      * @return bool suitability of the method
      */
     virtual bool isValidProblem(const CCopasiProblem * pProblem);
+
+    /**
+     * Initialize the method must be called before process
+     * @param const CSteadyStateProblem * pProblem
+     * @return bool success
+     */
+    virtual bool initialize(const CSteadyStateProblem * pProblem);
 
   protected:
 

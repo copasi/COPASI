@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:19:45 $
+   $Author: shoops $ 
+   $Date: 2005/11/22 16:45:26 $
    End CVS Header */
 
 /**
@@ -20,6 +20,8 @@
 #include "utilities/CMatrix.h"
 #include "utilities/CVector.h"
 #include "model/CState.h"
+
+class CTrajectoryTask;
 
 class CNewtonMethod : public CSteadyStateMethod
   {
@@ -54,6 +56,8 @@ class CNewtonMethod : public CSteadyStateMethod
     CVector< C_FLOAT64 > mdxdt;
     //CMatrix< C_FLOAT64 > mJacobianX;
     C_INT * mIpiv;
+
+    CTrajectoryTask * mpTrajectory;
 
     //CStateX mStateX;
     //CStateX mInitialStateX;
@@ -112,6 +116,13 @@ class CNewtonMethod : public CSteadyStateMethod
      * @return bool suitability of the method
      */
     virtual bool isValidProblem(const CCopasiProblem * pProblem);
+
+    /**
+     * Initialize the method must be called before process
+     * @param const CSteadyStateProblem * pProblem
+     * @return bool success
+     */
+    virtual bool initialize(const CSteadyStateProblem * pProblem);
 
   private:
     /**

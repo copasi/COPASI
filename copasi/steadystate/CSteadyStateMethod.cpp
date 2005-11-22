@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:18:13 $
+   $Author: shoops $ 
+   $Date: 2005/11/22 16:45:26 $
    End CVS Header */
 
 /**
@@ -93,7 +93,6 @@ CSteadyStateMethod::~CSteadyStateMethod()
 CSteadyStateMethod::ReturnCode
 CSteadyStateMethod::process(CState * pState,
                             CStateX * pStateX,
-                            const CSteadyStateProblem * pProblem,
                             CMatrix< C_FLOAT64 > & jacobian,
                             CMatrix< C_FLOAT64 > & jacobianX,
                             CEigen & EigenValues,
@@ -105,7 +104,6 @@ CSteadyStateMethod::process(CState * pState,
 
   mpSteadyState = pState;
   mpSteadyStateX = pStateX;
-  mpProblem = pProblem;
   mpJacobian = & jacobian;
   mpJacobianX = & jacobianX;
   mpEigenValues = & EigenValues;
@@ -207,6 +205,13 @@ bool CSteadyStateMethod::isValidProblem(const CCopasiProblem * pProblem)
       CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a steady state problem.");
       return false;
     }
+
+  return true;
+}
+
+bool CSteadyStateMethod::initialize(const CSteadyStateProblem * pProblem)
+{
+  mpProblem = pProblem;
 
   return true;
 }

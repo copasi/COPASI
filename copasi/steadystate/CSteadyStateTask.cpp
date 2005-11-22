@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/09 12:08:43 $
+   $Author: shoops $ 
+   $Date: 2005/11/22 16:45:26 $
    End CVS Header */
 
 /**
@@ -111,9 +111,7 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 {
   assert(mpProblem && mpMethod);
 
-  //CSteadyStateProblem* pProblem =
-  //  dynamic_cast<CSteadyStateProblem *>(mpProblem);
-  //assert(pProblem);
+  if (!mpMethod->isValidProblem(mpProblem)) return false;
 
   bool success = true;
 
@@ -134,22 +132,6 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
   mJacobianX.resize(mpSteadyStateX->getVariableNumberSize(),
                     mpSteadyStateX->getVariableNumberSize());
 
-  return success;
-}
-
-bool CSteadyStateTask::process(const bool & useInitialValues)
-{
-  assert(mpMethod);
-  mpMethod->isValidProblem(mpProblem);
-
-  if (useInitialValues)
-    {
-      mpProblem->getModel()->applyInitialValues();
-    }
-
-  *mpSteadyState = mpProblem->getModel()->getState();
-  *mpSteadyStateX = *mpSteadyState;
-
   CSteadyStateProblem* pProblem =
     dynamic_cast<CSteadyStateProblem *>(mpProblem);
   assert(pProblem);
@@ -158,22 +140,36 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
     dynamic_cast<CSteadyStateMethod *>(mpMethod);
   assert(pMethod);
 
-  //mReport.printHeader();
+  if (!pMethod->initialize(pProblem)) success = false;
+
+  return success;
+}
+
+bool CSteadyStateTask::process(const bool & useInitialValues)
+{
+  if (useInitialValues)
+    {
+      mpProblem->getModel()->applyInitialValues();
+    }
+
+  *mpSteadyState = mpProblem->getModel()->getState();
+  *mpSteadyStateX = *mpSteadyState;
+
+  CSteadyStateMethod* pMethod =
+    dynamic_cast<CSteadyStateMethod *>(mpMethod);
+  assert(pMethod);
+
   initOutput();
   doOutput();
 
   mResult = pMethod->process(mpSteadyState,
                              mpSteadyStateX,
-                             pProblem,
                              mJacobian,
                              mJacobianX,
                              mEigenValues,
                              mEigenValuesX,
                              mpCallBack);
 
-  //mReport.printBody();
-
-  //mReport.printFooter();
   finishOutput();
 
   return (mResult != CSteadyStateMethod::notFound);

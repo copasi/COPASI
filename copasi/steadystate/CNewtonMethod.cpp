@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/11 12:41:37 $
+   $Date: 2005/11/22 16:45:26 $
    End CVS Header */
 
 #include <algorithm>
@@ -31,7 +31,8 @@
 
 CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
     CSteadyStateMethod(CCopasiMethod::Newton, pParent),
-    mIpiv(NULL)
+    mIpiv(NULL),
+    mpTrajectory(NULL)
 {
   addParameter("Newton.UseNewton",
                CCopasiParameter::BOOL, true);
@@ -62,7 +63,8 @@ CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
 CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
                              const CCopasiContainer * pParent):
     CSteadyStateMethod(src, pParent),
-    mIpiv(NULL)
+    mIpiv(NULL),
+    mpTrajectory(NULL)
 {}
 
 CNewtonMethod::~CNewtonMethod()
@@ -71,7 +73,8 @@ CNewtonMethod::~CNewtonMethod()
 void CNewtonMethod::cleanup()
 {
   if (mIpiv) delete [] mIpiv; mIpiv = NULL;
-  // pdelete(mIpiv);
+
+  pdelete(mpTrajectory);
 }
 
 void CNewtonMethod::load(CReadConfig & configBuffer,
@@ -144,51 +147,10 @@ void CNewtonMethod::load(CReadConfig & configBuffer,
 CSteadyStateMethod::ReturnCode
 CNewtonMethod::processInternal()
 {
-  CTrajectoryTask * pTrajectory = NULL;
-  CTrajectoryProblem * pTrajectoryProblem = NULL;
-  CTrajectoryMethod * pTrajectoryMethod = NULL;
-
-  cleanup();
-
-  /* Configure Newton */
-  mUseNewton = mUseIntegration = mUseBackIntegration = mAcceptNegative = false;
-
-  if (* getValue("Newton.UseNewton").pBOOL)
-    mUseNewton = true;
-  if (* getValue("Newton.UseIntegration").pBOOL)
-    mUseIntegration = true;
-  if (* getValue("Newton.UseBackIntegration").pBOOL)
-    mUseBackIntegration = true;
-  if (* getValue("Newton.acceptNegativeConcentrations").pBOOL)
-    mAcceptNegative = true;
-
-  mIterationLimit = * getValue("Newton.IterationLimit").pUINT;
-  mFactor = * getValue("Newton.DerivationFactor").pUDOUBLE;
-  mResolution = * getValue("Newton.Resolution").pUDOUBLE;
-  mScaledResolution =
-    mResolution; // * initialState.getModel()->getQuantity2NumberFactor();
-  //TODO discuss scaling
-
-  // convert CState to CStateX
-  //mInitialStateX = mpProblem->getInitialState();
-  //*mpSteadyStateX = mInitialStateX; //not strictly necessary
-
-  mDimension = mpSteadyStateX->getVariableNumberSize();
-  mX = const_cast< CVector< C_FLOAT64 > * >(&mpSteadyStateX->getVariableNumberVector());
-
-  mH.resize(mDimension);
-  mXold.resize(mDimension);
-  mdxdt.resize(mDimension);
-  //mJacobianX.resize(mDimension, mDimension);
-  mIpiv = new C_INT [mDimension];
-
-  /*
-    if (mpProgressHandler) 
-      mpProgressHandler->init(0, "performing steady state calculation...", true);
-  */
-
   if (mpProgressHandler)
     mpProgressHandler->setName("performing steady state calculation...");
+
+  mX = const_cast< CVector< C_FLOAT64 > * >(&mpSteadyStateX->getVariableNumberVector());
 
   CNewtonMethod::NewtonReturnCode returnCode;
   if (mUseNewton)
@@ -200,38 +162,13 @@ CNewtonMethod::processInternal()
         return returnProcess(true, mFactor, mResolution);
     }
 
-  if (mUseIntegration || mUseBackIntegration)
-    {
-      // create an appropriate trajectory task
-      pTrajectory = new CTrajectoryTask(this);
-
-      pTrajectoryProblem =
-        dynamic_cast<CTrajectoryProblem *>(pTrajectory->getProblem());
-      assert(pTrajectoryProblem);
-
-      pTrajectoryMethod =
-        dynamic_cast<CTrajectoryMethod *>(pTrajectory->getMethod());
-      assert(pTrajectoryMethod);
-
-      pTrajectoryProblem->setModel(mpProblem->getModel());
-      pTrajectoryProblem->setStepNumber(1);
-
-      pTrajectoryMethod->setValue("LSODA.RelativeTolerance",
-                                  * getValue("Newton.LSODA.RelativeTolerance").pUDOUBLE);
-      pTrajectoryMethod->setValue("LSODA.AbsoluteTolerance",
-                                  * getValue("Newton.LSODA.AbsoluteTolerance").pUDOUBLE);
-      pTrajectoryMethod->setValue("LSODA.AdamsMaxOrder",
-                                  * getValue("Newton.LSODA.AdamsMaxOrder").pUINT);
-      pTrajectoryMethod->setValue("LSODA.BDFMaxOrder",
-                                  * getValue("Newton.LSODA.BDFMaxOrder").pUINT);
-      pTrajectoryMethod->setValue("LSODA.MaxStepsInternal",
-                                  * getValue("Newton.LSODA.MaxStepsInternal").pUINT);
-
-      pTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL);
-    }
-
   bool stepLimitReached = false;
   C_FLOAT64 EndTime;
+
+  CTrajectoryProblem * pTrajectoryProblem =
+    dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
+  assert(pTrajectoryProblem);
+
   if (mUseIntegration)
     {
       //std::cout << "Try integrating ..." << std::endl;
@@ -258,19 +195,19 @@ CNewtonMethod::processInternal()
           pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime() + EndTime);
           try
             {
-              stepLimitReached = !pTrajectory->processSimple(true); //single step
+              stepLimitReached = !mpTrajectory->processSimple(true); //single step
             }
           catch (CCopasiException Exception)
             {
               //std::cout << std::endl << "exception in trajectory task" << std::endl;
-              *mpSteadyStateX = *pTrajectory->getState();
+              *mpSteadyStateX = *mpTrajectory->getState();
               break;
             }
 
           mpParentTask->doOutput();
           //mpParentTask->separatorOutput();
 
-          *mpSteadyStateX = *pTrajectory->getState();
+          *mpSteadyStateX = *mpTrajectory->getState();
 
           if (containsNaN())
             break;
@@ -327,18 +264,18 @@ CNewtonMethod::processInternal()
 
           try
             {
-              stepLimitReached = !pTrajectory->processSimple(true); //single step
+              stepLimitReached = !mpTrajectory->processSimple(true); //single step
             }
           catch (CCopasiException Exception)
             {
               //std::cout << std::endl << "exception in trajectory task" << std::endl;
-              *mpSteadyStateX = *pTrajectory->getState();
+              *mpSteadyStateX = *mpTrajectory->getState();
               break;
             }
 
           mpParentTask->doOutput();
 
-          *mpSteadyStateX = *pTrajectory->getState();
+          *mpSteadyStateX = *mpTrajectory->getState();
 
           if (containsNaN())
             break;
@@ -371,9 +308,6 @@ CNewtonMethod::processInternal()
         }
       if (mpProgressHandler) mpProgressHandler->finish(hProcess);
     }
-
-  pdelete(pTrajectory);
-  cleanup();
 
   if (mpProgressHandler) mpProgressHandler->finish();
 
@@ -684,6 +618,84 @@ bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
       //would do nothing
       CCopasiMessage(CCopasiMessage::EXCEPTION, "At least one of the features \n   - UseNewton\n   - UseIntegration\n   - UseBackIntegration\nmust be activated.");
       return false;
+    }
+
+  return true;
+}
+
+bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
+{
+  if (!CSteadyStateMethod::initialize(pProblem)) return false;
+
+  CTrajectoryProblem * pTrajectoryProblem = NULL;
+  CTrajectoryMethod * pTrajectoryMethod = NULL;
+
+  cleanup();
+
+  /* Configure Newton */
+  mUseNewton = mUseIntegration = mUseBackIntegration = mAcceptNegative = false;
+
+  if (* getValue("Newton.UseNewton").pBOOL)
+    mUseNewton = true;
+  if (* getValue("Newton.UseIntegration").pBOOL)
+    mUseIntegration = true;
+  if (* getValue("Newton.UseBackIntegration").pBOOL)
+    mUseBackIntegration = true;
+  if (* getValue("Newton.acceptNegativeConcentrations").pBOOL)
+    mAcceptNegative = true;
+
+  mIterationLimit = * getValue("Newton.IterationLimit").pUINT;
+  mFactor = * getValue("Newton.DerivationFactor").pUDOUBLE;
+  mResolution = * getValue("Newton.Resolution").pUDOUBLE;
+  mScaledResolution =
+    mResolution; // * initialState.getModel()->getQuantity2NumberFactor();
+  //TODO discuss scaling
+
+  // convert CState to CStateX
+  //mInitialStateX = mpProblem->getInitialState();
+  //*mpSteadyStateX = mInitialStateX; //not strictly necessary
+
+  mDimension = mpProblem->getModel()->getMetabolitesInd().size();
+
+  mH.resize(mDimension);
+  mXold.resize(mDimension);
+  mdxdt.resize(mDimension);
+  //mJacobianX.resize(mDimension, mDimension);
+  mIpiv = new C_INT [mDimension];
+
+  /*
+    if (mpProgressHandler) 
+      mpProgressHandler->init(0, "performing steady state calculation...", true);
+  */
+
+  if (mUseIntegration || mUseBackIntegration)
+    {
+      // create an appropriate trajectory task
+      mpTrajectory = new CTrajectoryTask(this);
+
+      pTrajectoryProblem =
+        dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
+      assert(pTrajectoryProblem);
+
+      pTrajectoryMethod =
+        dynamic_cast<CTrajectoryMethod *>(mpTrajectory->getMethod());
+      assert(pTrajectoryMethod);
+
+      pTrajectoryProblem->setModel(mpProblem->getModel());
+      pTrajectoryProblem->setStepNumber(1);
+
+      pTrajectoryMethod->setValue("LSODA.RelativeTolerance",
+                                  * getValue("Newton.LSODA.RelativeTolerance").pUDOUBLE);
+      pTrajectoryMethod->setValue("LSODA.AbsoluteTolerance",
+                                  * getValue("Newton.LSODA.AbsoluteTolerance").pUDOUBLE);
+      pTrajectoryMethod->setValue("LSODA.AdamsMaxOrder",
+                                  * getValue("Newton.LSODA.AdamsMaxOrder").pUINT);
+      pTrajectoryMethod->setValue("LSODA.BDFMaxOrder",
+                                  * getValue("Newton.LSODA.BDFMaxOrder").pUINT);
+      pTrajectoryMethod->setValue("LSODA.MaxStepsInternal",
+                                  * getValue("Newton.LSODA.MaxStepsInternal").pUINT);
+
+      mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL);
     }
 
   return true;
