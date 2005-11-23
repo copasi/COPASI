@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/01 18:07:48 $
+   $Author: gauges $ 
+   $Date: 2005/11/23 12:18:29 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
@@ -183,6 +183,8 @@ class CEvaluationNode : public CCopasiNode< std::string >
     const C_FLOAT64 * getValuePointer() const;
 
     void printRecursively(std::ostream & os = std::cout, int indent = 0) const;
+
+    void printRecursively() const;
 
     // Attributes
   protected:

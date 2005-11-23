@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/31 14:23:44 $
+   $Author: gauges $ 
+   $Date: 2005/11/23 12:18:29 $
    End CVS Header */
 
 #include "copasi.h"
@@ -218,4 +218,8 @@ void CEvaluationNode::printRecursively(std::ostream & os, int indent) const
 
     if (getSibling())
       ((CEvaluationNode*)getSibling())->printRecursively(os, indent);
+  }
+void CEvaluationNode::printRecursively() const
+  {
+    this->printRecursively(std::cout, 0);
   }
