@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.144 $
+   $Revision: 1.145 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/11/18 16:23:26 $
+   $Date: 2005/11/23 14:22:52 $
    End CVS Header */
 
 // CReaction
@@ -767,12 +767,12 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                 }
               else if (dynamic_cast<CModelValue*>(object))
                 {
-                  // usage = "VARIABLE"
+                  // usage = "PARAMETER"
                   id = dynamic_cast<Parameter*>(pos->second)->getId();
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
                   if (replacementMap.find(id) == replacementMap.end())
                     {
-                      CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64, "VARIABLE");
+                      CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64, "PARAMETER");
                       replacementMap[id] = std::make_pair(object, pFunParam);
                     }
                 }
