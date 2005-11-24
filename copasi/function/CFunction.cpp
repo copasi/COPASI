@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/24 14:51:29 $
+   $Date: 2005/11/24 15:45:55 $
    End CVS Header */
 
 #include "copasi.h"
@@ -120,52 +120,47 @@ void CFunction::load(CReadConfig & configBuffer,
 {
   //  cleanup();
 
-  if (configBuffer.getVersion() < "4")
+  C_INT32 Type;
+  CUsageRange UsageDescription;
+
+  mode = CReadConfig::SEARCH;
+  configBuffer.getVariable("User-defined", "C_INT32", &Type, mode);
+
+  switch (Type)
     {
-      C_INT32 Type;
-      CUsageRange UsageDescription;
+    case 1:
+      setType(UserDefined);
+      break;
 
-      mode = CReadConfig::SEARCH;
-      configBuffer.getVariable("User-defined", "C_INT32", &Type, mode);
-
-      switch (Type)
-        {
-        case 1:
-          setType(UserDefined);
-          break;
-
-        default:
-          fatalError();
-        }
-
-      configBuffer.getVariable("Reversible", "C_INT32", &mReversible);
-
-      configBuffer.getVariable("Substrates", "C_INT32", &Type);
-      UsageDescription.setUsage("SUBSTRATE");
-      if (Type == 0)
-        UsageDescription.setRange(Type, CRange::Infinity);
-      else
-        UsageDescription.setRange(Type);
-
-      if (!mUsageDescriptions.add(UsageDescription) &&
-          CCopasiMessage::peekLastMessage().getNumber() == MCCopasiVector + 2)
-        CCopasiMessage::getLastMessage();
-
-      configBuffer.getVariable("Products", "C_INT32", &Type);
-      UsageDescription.setUsage("PRODUCT");
-      if (Type == 0)
-        UsageDescription.setRange(Type, CRange::Infinity);
-      else
-        UsageDescription.setRange(Type);
-
-      if (!mUsageDescriptions.add(UsageDescription) &&
-          CCopasiMessage::peekLastMessage().getNumber() == MCCopasiVector + 2)
-        CCopasiMessage::getLastMessage();
-
-      mode = CReadConfig::SEARCH;
+    default:
+      fatalError();
     }
+
+  configBuffer.getVariable("Reversible", "C_INT32", &mReversible);
+
+  configBuffer.getVariable("Substrates", "C_INT32", &Type);
+  UsageDescription.setUsage("SUBSTRATE");
+  if (Type == 0)
+    UsageDescription.setRange(Type, CRange::Infinity);
   else
-    fatalError();
+    UsageDescription.setRange(Type);
+
+  if (!mUsageDescriptions.add(UsageDescription) &&
+      CCopasiMessage::peekLastMessage().getNumber() == MCCopasiVector + 2)
+    CCopasiMessage::getLastMessage();
+
+  configBuffer.getVariable("Products", "C_INT32", &Type);
+  UsageDescription.setUsage("PRODUCT");
+  if (Type == 0)
+    UsageDescription.setRange(Type, CRange::Infinity);
+  else
+    UsageDescription.setRange(Type);
+
+  if (!mUsageDescriptions.add(UsageDescription) &&
+      CCopasiMessage::peekLastMessage().getNumber() == MCCopasiVector + 2)
+    CCopasiMessage::getLastMessage();
+
+  mode = CReadConfig::SEARCH;
 
   std::string tmp;
   configBuffer.getVariable("FunctionName", "string", &tmp, mode);
@@ -173,16 +168,6 @@ void CFunction::load(CReadConfig & configBuffer,
 
   configBuffer.getVariable("Description", "string", &tmp);
   setInfix(tmp);
-
-  /*if (configBuffer.getVersion() >= "4")
-    {
-      fatalError();
-      unsigned C_INT32 Size;
-      configBuffer.getVariable("Reversible", "C_INT32", &mReversible);
-      configBuffer.getVariable("UsageDescriptionSize", "C_INT32", &Size);
-      //mUsageDescriptions.load(configBuffer, Size);
-      mVariables.load(configBuffer);
-    }*/
 
   // For older file version the parameters have to be build from information
   // dependend on the function type. Luckilly, only user defined functions are

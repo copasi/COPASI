@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:05 $
+   $Author: ssahle $ 
+   $Date: 2005/11/24 15:45:55 $
    End CVS Header */
 
 /**
@@ -77,12 +77,8 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
   C_INT32 Size = 0;
   C_INT32 Fail = 0;
 
-  if (configbuffer.getVersion() < "4")
-    configbuffer.getVariable("TotalUDKinetics", "C_INT32", &Size,
-                             CReadConfig::LOOP);
-  else
-    configbuffer.getVariable("TotalKinetics", "C_INT32", &Size,
-                             CReadConfig::LOOP);
+  configbuffer.getVariable("TotalUDKinetics", "C_INT32", &Size,
+                           CReadConfig::LOOP);
 
   for (C_INT32 i = 0; i < Size; i++)
     {

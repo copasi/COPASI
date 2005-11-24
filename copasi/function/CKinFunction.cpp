@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/17 15:14:18 $
+   $Author: ssahle $ 
+   $Date: 2005/11/24 15:45:55 $
    End CVS Header */
 
 /**
@@ -45,22 +45,21 @@ CKinFunction::CKinFunction(const CFunction & src,
   CONSTRUCTOR_TRACE;
 
   if (configBuffer)
-    if (configBuffer->getVersion() < "4")
-      {
-        unsigned C_INT32 i, Size;
-        configBuffer->getVariable("Nodes", "C_INT32", &Size);
-        mNodes.resize(Size);
+    {
+      unsigned C_INT32 i, Size;
+      configBuffer->getVariable("Nodes", "C_INT32", &Size);
+      mNodes.resize(Size);
 
-        for (i = 0; i < Size; i++)
-          {
-            mNodes[i] = new CNodeK;
-            mNodes[i]->load(*configBuffer);
-          }
+      for (i = 0; i < Size; i++)
+        {
+          mNodes[i] = new CNodeK;
+          mNodes[i]->load(*configBuffer);
+        }
 
-        createParameters();
+      createParameters();
 
-        cleanupNodes();
-      }
+      cleanupNodes();
+    }
 
   //  compile();
 }
