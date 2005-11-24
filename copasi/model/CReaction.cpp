@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.145 $
+   $Revision: 1.146 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/11/23 14:22:52 $
+   $Author: ssahle $ 
+   $Date: 2005/11/24 15:51:25 $
    End CVS Header */
 
 // CReaction
@@ -126,12 +126,10 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
   if ((Fail = configbuffer.getVariable("Reversible", "bool", &revers,
                                        CReadConfig::SEARCH)))
     return Fail;
+
   mChemEq.setReversibility(revers); // TODO: this should be consistent with the ChemEq string
 
-  if (configbuffer.getVersion() < "4")
-    Fail = loadOld(configbuffer);
-  //else
-  //Fail = loadNew(configbuffer);
+  Fail = loadOld(configbuffer);
 
   return Fail;
 }

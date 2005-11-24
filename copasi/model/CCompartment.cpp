@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/17 14:54:15 $
+   $Author: ssahle $ 
+   $Date: 2005/11/24 15:51:25 $
    End CVS Header */
 
 // CCompartment
@@ -81,18 +81,6 @@ C_INT32 CCompartment::load(CReadConfig & configbuffer)
     return Fail;
 
   setVolume(mIValue);
-
-  if (configbuffer.getVersion() < "4")
-    return Fail;
-
-  C_INT32 MetabolitesNo;
-
-  if ((Fail = configbuffer.getVariable("MetabolitesNo", "C_INT32",
-                                       (void *) & MetabolitesNo)))
-    return Fail;
-
-  CMetab::setParentCompartment(this);
-  mMetabolites.load(configbuffer, MetabolitesNo);
 
   return Fail;
 }

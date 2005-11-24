@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.235 $
+   $Revision: 1.236 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/10 10:12:04 $
+   $Date: 2005/11/24 15:51:25 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -201,15 +201,12 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   std::string tmp;
 
   // For old Versions we must read the list of Metabolites beforehand
-  if (configBuffer.getVersion() < "4")
-    {
-      if ((Fail = configBuffer.getVariable("TotalMetabolites", "C_INT32",
-                                           &Size, CReadConfig::LOOP)))
-        return Fail;
+  if ((Fail = configBuffer.getVariable("TotalMetabolites", "C_INT32",
+                                       &Size, CReadConfig::LOOP)))
+    return Fail;
 
-      // :TODO: Remove OldMetabolites as part of the data model.
-      CCopasiDataModel::Global->pOldMetabolites->load(configBuffer, Size);
-    }
+  // :TODO: Remove OldMetabolites as part of the data model.
+  CCopasiDataModel::Global->pOldMetabolites->load(configBuffer, Size);
 
   if ((Fail = configBuffer.getVariable("Title", "string", &tmp,
                                        CReadConfig::LOOP)))
@@ -275,14 +272,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   setVolumeUnit(tmp); // set the factors
 
-  if (configBuffer.getVersion() < "4")
-    mInitialTime = 0;
-  else
-    {
-      if ((Fail = configBuffer.getVariable("InitialTime", "C_FLOAT64",
-                                           &mInitialTime, CReadConfig::LOOP)))
-        return Fail;
-    }
+  mInitialTime = 0;
 
   if ((Fail = configBuffer.getVariable("TotalCompartments", "C_INT32", &Size,
                                        CReadConfig::LOOP)))
@@ -290,19 +280,16 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   mCompartments.load(configBuffer, Size);
 
-  if (configBuffer.getVersion() < "4")
+  // Create the correct compartment / metabolite relationships
+  CMetab *pMetabolite;
+
+  for (i = 0; i < CCopasiDataModel::Global->pOldMetabolites->size(); i++)
     {
-      // Create the correct compartment / metabolite relationships
-      CMetab *pMetabolite;
+      pMetabolite = new CMetab;
+      mCompartments[(*CCopasiDataModel::Global->pOldMetabolites)[i]->getIndex()]->
+      addMetabolite(pMetabolite);
 
-      for (i = 0; i < CCopasiDataModel::Global->pOldMetabolites->size(); i++)
-        {
-          pMetabolite = new CMetab;
-          mCompartments[(*CCopasiDataModel::Global->pOldMetabolites)[i]->getIndex()]->
-          addMetabolite(pMetabolite);
-
-          (*pMetabolite) = *(*CCopasiDataModel::Global->pOldMetabolites)[i];
-        }
+      (*pMetabolite) = *(*CCopasiDataModel::Global->pOldMetabolites)[i];
     }
 
   //DebugFile << mCompartments;       //debug
