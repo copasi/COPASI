@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.122 $
+   $Revision: 1.123 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/31 15:46:07 $
+   $Author: ssahle $ 
+   $Date: 2005/11/24 14:52:28 $
    End CVS Header */
 
 /**********************************************************************
@@ -347,7 +347,7 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
   return true;
 }
 
-bool FunctionWidget1::loadUsageTable(const CCopasiVectorNS<CUsageRange>& usages)
+bool FunctionWidget1::loadUsageTable(const CCopasiVectorN<CUsageRange>& usages)
 {
   if (usages.size() == 0)
     {
@@ -575,8 +575,8 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
     } //TODO: this is propably much too complicated
 
   //Usages of the function
-  CCopasiVectorNS < CUsageRange > & tarU = target->getUsageDescriptions();
-  const CCopasiVectorNS < CUsageRange > & srcU = src->getUsageDescriptions();
+  CCopasiVectorN < CUsageRange > & tarU = target->getUsageDescriptions();
+  const CCopasiVectorN < CUsageRange > & srcU = src->getUsageDescriptions();
 
   tarU.cleanup();
   for (i = 0; i < srcU.size(); i++)
@@ -663,7 +663,7 @@ void FunctionWidget1::updateApplication()
 
   CUsageRange Application;
   const CFunctionParameters &functParam = mpFunction->getVariables();
-  CCopasiVectorNS < CUsageRange > & functUsage = mpFunction ->getUsageDescriptions();
+  CCopasiVectorN < CUsageRange > & functUsage = mpFunction ->getUsageDescriptions();
   functUsage.cleanup();
 
   Application.setUsage("SUBSTRATE");

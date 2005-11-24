@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/31 15:46:07 $
+   $Author: ssahle $ 
+   $Date: 2005/11/24 14:52:28 $
    End CVS Header */
 
 /****************************************************************************
@@ -38,7 +38,7 @@ class QtMmlWidget;
 class CFunction;
 class CFunctionParameters;
 class CUsageRange;
-template <class CType> class CCopasiVectorNS;
+template <class CType> class CCopasiVectorN;
 
 class FunctionWidget1 : public CopasiWidget
   {
@@ -64,7 +64,7 @@ class FunctionWidget1 : public CopasiWidget
   protected:
     bool loadFromFunction(const CFunction* = NULL);
     bool loadParameterTable(const CFunctionParameters & params);
-    bool loadUsageTable(const CCopasiVectorNS<CUsageRange>& usages);
+    bool loadUsageTable(const CCopasiVectorN<CUsageRange>& usages);
     bool loadReversibility(TriLogic rev);
     void updateApplication();
     bool saveToFunction();
