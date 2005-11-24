@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/06 14:52:07 $
+   $Author: gauges $ 
+   $Date: 2005/11/24 15:20:36 $
    End CVS Header */
 
 #include "CCopasiSimpleSelectionTree.h"
@@ -13,6 +13,7 @@
 #include "utilities/CCopasiParameter.h"
 #include "utilities/CCopasiParameterGroup.h"
 #include "report/CCopasiObject.h"
+#include "report/CCopasiContainer.h"
 #include "report/CCopasiObjectName.h"
 #include "qtUtilities.h"
 
@@ -71,8 +72,14 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
 {
   if (!model) return;
 
-  QListViewItem* item = new QListViewItem(this->timeSubtree, "time");
+  QListViewItem* item = new QListViewItem(this->timeSubtree, "simulation timestep");
   this->treeItems[item] = (CCopasiObject*)model->getObject(CCopasiObjectName("Reference=Time"));
+  item = new QListViewItem(this->timeSubtree, "cpu time");
+  CCopasiObject* obj = (CCopasiObject*)CCopasiContainer::Root->getObject(CCopasiObjectName("Timer=CPU Time"));
+  this->treeItems[item] = obj;
+  item = new QListViewItem(this->timeSubtree, "real time");
+  obj = (CCopasiObject*)CCopasiContainer::Root->getObject(CCopasiObjectName("Timer=Wall Clock Time"));
+  this->treeItems[item] = obj;
 
   // find all metabolites and create items in the metabolite subtree
   const CCopasiVector<CMetab>& metabolites = model->getMetabolites();
