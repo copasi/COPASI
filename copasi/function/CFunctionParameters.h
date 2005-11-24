@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/23 19:54:27 $
+   $Author: ssahle $ 
+   $Date: 2005/11/24 14:51:29 $
    End CVS Header */
 
 /**
@@ -42,7 +42,7 @@ class CFunctionParameters : public CCopasiContainer
      * @supplierCardinality 0..*
      */
     /** @dia:route 0,2; h,10.7176,6.51973,7.07775,25.0674,1.28919 */
-    CCopasiVectorNS < CUsageRange > mUsageRanges;
+    CCopasiVectorN < CUsageRange > mUsageRanges;
 
     // Operations
 
@@ -79,9 +79,9 @@ class CFunctionParameters : public CCopasiContainer
      *  @param "CReadConfig &" configBuffer,
      *  @param "CReadConfig::Mode" mode (Default: CReadConfig::NEXT)
      *  @return Fail
-     */
-    void load(CReadConfig & configBuffer,
-              CReadConfig::Mode mode = CReadConfig::NEXT);
+     */ 
+    //void load(CReadConfig & configBuffer,
+    //          CReadConfig::Mode mode = CReadConfig::NEXT);
 
     /**
      *  Add a parameter to the parameter list
@@ -142,7 +142,7 @@ class CFunctionParameters : public CCopasiContainer
      *  Retreives the vector of usage ranges for the parameters
      *  @return "vector < CUsageRange * > & usageRanges
      */
-    const CCopasiVectorNS < CUsageRange > & getUsageRanges() const;
+    const CCopasiVectorN < CUsageRange > & getUsageRanges() const;
 
     /**
      *  Retrieves the first parameter with the specified usage after pos

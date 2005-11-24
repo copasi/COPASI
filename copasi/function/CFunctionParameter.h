@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/02 20:01:01 $
+   $Date: 2005/11/24 14:51:29 $
    End CVS Header */
 
 /**
@@ -124,24 +124,10 @@ class CFunctionParameter : public CCopasiContainer
                       CReadConfig::Mode mode = CReadConfig::NEXT);
 
     /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     * (Which usually has a file attached but may also have socket)
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return Fail
-     */ 
-    //    virtual void save(CWriteConfig & configbuffer);
-
-    /**
      *  Retrieves the key of the function parameter.
      *  @return std::string name
      */
     virtual const std::string & getKey() const;
-
-    /**
-     *  Retrieves the name of the parameter
-     *  @return  "const string" & name
-     */ 
-    //    const std::string & getName() const;
 
     /**
      *  Sets the name of the parameter

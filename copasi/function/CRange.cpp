@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CRange.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/10/09 02:09:43 $
+   $Author: ssahle $ 
+   $Date: 2005/11/24 14:51:29 $
    End CVS Header */
 
 /**
@@ -47,17 +47,11 @@ CRange::CRange(const unsigned C_INT32 & low,
 
 CRange::~CRange() {DESTRUCTOR_TRACE;}
 
-void CRange::load(CReadConfig & configBuffer,
+/*void CRange::load(CReadConfig & configBuffer,
                   CReadConfig::Mode mode)
 {
   configBuffer.getVariable("Low", "C_INT32", &mLow, mode);
   configBuffer.getVariable("High", "C_INT32", &mHigh);
-}
-
-/*void CRange::save(CWriteConfig & configBuffer)
-{
-  configBuffer.setVariable("Low", "C_INT32", &mLow);
-  configBuffer.setVariable("High", "C_INT32", &mHigh);
 }*/
 
 void CRange::setLow(const unsigned C_INT32& low) {mLow = low;}

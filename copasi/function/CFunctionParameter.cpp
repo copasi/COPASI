@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/14 17:32:54 $
+   $Author: ssahle $ 
+   $Date: 2005/11/24 14:51:29 $
    End CVS Header */
 
 /**
@@ -113,19 +113,9 @@ void CFunctionParameter::load(CReadConfig & configbuffer,
   configbuffer.getVariable("Usage", "string", &mUsage);
 }
 
-/*void CFunctionParameter::save(CWriteConfig & configbuffer)
-{
-  std::string tmp = getObjectName();
-  configbuffer.setVariable("FunctionParameter", "string", &tmp);
-  configbuffer.setVariable("DataType", "C_INT32", &mType);
-  configbuffer.setVariable("Usage", "string", &mUsage);
-}*/
-
 bool CFunctionParameter::setName(const std::string & name) {return setObjectName(name);}
 
 const std::string & CFunctionParameter::getKey() const {return mKey;}
-
-//const std::string & CFunctionParameter::getName() const {return getObjectName();}
 
 void CFunctionParameter::setUsage(const std::string & usage) {mUsage = usage;}
 

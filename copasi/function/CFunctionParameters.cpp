@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/10/27 15:25:38 $
+   $Date: 2005/11/24 14:51:29 $
    End CVS Header */
 
 /**
@@ -40,17 +40,19 @@ void CFunctionParameters::cleanup()
   mUsageRanges.cleanup();
 }
 
+/*
 void CFunctionParameters::load(CReadConfig & configBuffer,
                                CReadConfig::Mode mode)
 {
   unsigned C_INT32 Size;
-
+ 
   configBuffer.getVariable("ParameterSize", "C_INT32", &Size, mode);
   mParameters.load(configBuffer, Size);
-
+ 
   configBuffer.getVariable("UsageParameterSize", "C_INT32", &Size);
   mUsageRanges.load(configBuffer, Size);
 }
+ */
 
 void CFunctionParameters::add(const CFunctionParameter & parameter)
 {
@@ -104,7 +106,7 @@ const CFunctionParameter * CFunctionParameters::operator[](const std::string &na
 
 unsigned C_INT32 CFunctionParameters::size() const {return mParameters.size();}
 
-const CCopasiVectorNS < CUsageRange > & CFunctionParameters::getUsageRanges() const
+const CCopasiVectorN < CUsageRange > & CFunctionParameters::getUsageRanges() const
   {return mUsageRanges;}
 
 const CFunctionParameter *

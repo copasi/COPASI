@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/29 18:47:03 $
+   $Author: ssahle $ 
+   $Date: 2005/11/24 14:51:29 $
    End CVS Header */
 
 #ifndef COPASI_CFunction
@@ -121,15 +121,15 @@ class CFunction:
 
     /**
      * Retrives the of the usage description of variables.
-     * @return CCopasiVectorNS < CUsageRange > & usage
+     * @return CCopasiVectorN < CUsageRange > & usage
      */
-    CCopasiVectorNS < CUsageRange > & getUsageDescriptions();
+    CCopasiVectorN < CUsageRange > & getUsageDescriptions();
 
     /**
      * Retrives the of the usage description of variables.
-     * @return const CCopasiVectorNS < CUsageRange > & usage
+     * @return const CCopasiVectorN < CUsageRange > & usage
      */
-    const CCopasiVectorNS < CUsageRange > & getUsageDescriptions() const;
+    const CCopasiVectorN < CUsageRange > & getUsageDescriptions() const;
 
     /**
      * Adds one usage descriptiont
@@ -171,7 +171,7 @@ class CFunction:
      *  Specifically it describes what number of substrates and products a
      *  reaction may have to be able to use this function as its rate function.
      */
-    CCopasiVectorNS < CUsageRange > mUsageDescriptions;
+    CCopasiVectorN < CUsageRange > mUsageDescriptions;
 
     /**
      * A pointer to the call parameters during calculation.

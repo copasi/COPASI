@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CRange.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/10/09 02:09:43 $
+   $Author: ssahle $ 
+   $Date: 2005/11/24 14:51:29 $
    End CVS Header */
 
 /**
@@ -32,7 +32,7 @@ class CRange : public CCopasiContainer
      */
     enum Constants
     {
-      Infinity = -1,       // 0xFFFF
+      Infinity = -1,        // 0xFFFF
       NoRange = 0
     };
 
@@ -89,17 +89,9 @@ class CRange : public CCopasiContainer
      *  (CReadConfig object reads an input stream)
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
-     */
-    virtual void load(CReadConfig & configbuffer,
-                      CReadConfig::Mode mode = CReadConfig::NEXT);
-
-    /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     * (Which usually has a file attached but may also have socket)
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return Fail
      */ 
-    //    virtual void save(CWriteConfig & configbuffer);
+    //virtual void load(CReadConfig & configbuffer,
+    //                  CReadConfig::Mode mode = CReadConfig::NEXT);
 
     /**
      *  Set the lower Bound

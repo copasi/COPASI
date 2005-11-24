@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CUsageRange.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/10/09 02:09:43 $
+   $Author: ssahle $ 
+   $Date: 2005/11/24 14:51:29 $
    End CVS Header */
 
 /**
@@ -56,17 +56,9 @@ class CUsageRange : public CRange
      *  (CReadConfig object reads an input stream)
      *  @param configBuffer reference to a CReadConfig object.
      *  @return Fail
-     */
-    virtual void load(CReadConfig & configBuffer,
-                      CReadConfig::Mode mode = CReadConfig::NEXT);
-
-    /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     * (Which usually has a file attached but may also have socket)
-     *  @param configBuffer reference to a CWriteConfig object.
-     *  @return Fail
      */ 
-    //    virtual void save(CWriteConfig & configBuffer);
+    //virtual void load(CReadConfig & configBuffer,
+    //                  CReadConfig::Mode mode = CReadConfig::NEXT);
 
     /**
      *  Retrieves the usage of the range

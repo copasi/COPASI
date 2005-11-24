@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/23 19:54:27 $
+   $Author: ssahle $ 
+   $Date: 2005/11/24 14:51:29 $
    End CVS Header */
 
 #include "copasi.h"
@@ -69,10 +69,10 @@ bool CFunction::addVariable(const std::string & name,
                             const CFunctionParameter::DataType & type)
 {return mVariables.add(name, type, usage);}
 
-CCopasiVectorNS < CUsageRange > & CFunction::getUsageDescriptions()
+CCopasiVectorN < CUsageRange > & CFunction::getUsageDescriptions()
 {return mUsageDescriptions;}
 
-const CCopasiVectorNS < CUsageRange > & CFunction::getUsageDescriptions() const
+const CCopasiVectorN < CUsageRange > & CFunction::getUsageDescriptions() const
   {return mUsageDescriptions;}
 
 const C_FLOAT64 & CFunction::calcValue(const CCallParameters<C_FLOAT64> & callParameters)
@@ -174,14 +174,15 @@ void CFunction::load(CReadConfig & configBuffer,
   configBuffer.getVariable("Description", "string", &tmp);
   setInfix(tmp);
 
-  if (configBuffer.getVersion() >= "4")
+  /*if (configBuffer.getVersion() >= "4")
     {
+      fatalError();
       unsigned C_INT32 Size;
       configBuffer.getVariable("Reversible", "C_INT32", &mReversible);
       configBuffer.getVariable("UsageDescriptionSize", "C_INT32", &Size);
-      mUsageDescriptions.load(configBuffer, Size);
+      //mUsageDescriptions.load(configBuffer, Size);
       mVariables.load(configBuffer);
-    }
+    }*/
 
   // For older file version the parameters have to be build from information
   // dependend on the function type. Luckilly, only user defined functions are
