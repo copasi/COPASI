@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/11/24 15:20:36 $
+   $Date: 2005/11/24 21:36:21 $
    End CVS Header */
 
 #include "CCopasiSimpleSelectionTree.h"
@@ -25,6 +25,10 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
   this->addColumn("");
   this->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, this->sizePolicy().hasHeightForWidth()));
   this->expertSubtree = new QListViewItem(this, "expert");
+
+#ifdef COPASI_DEBUG
+  this->matrixSubtree = new QListViewItem(this, "matrices");
+#endif // COPASI_DEBUG
 
   this->modelValueSubtree = new QListViewItem(this, "global parameters");
   //this->valueSubtree = new QListViewItem(this->modelValueSubtree, "transient values");
@@ -185,6 +189,14 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
       //                         FROM_UTF8(("d(" + name + ")/dt")));
       //treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Rate"));
     }
+
+#ifdef COPASI_DEBUG
+
+  // experimental annotated matrix
+  item = new QListViewItem(this->matrixSubtree, "stoichiometric matrix");
+  CCopasiObject* object = (CCopasiObject*)model->getObject(CCopasiObjectName("Array=Stoichiometry(ann)"));
+  treeItems[item] = object;
+#endif // COPASI_DEBUG
 
   if (this->selectionMode() == QListView::NoSelection)
     {

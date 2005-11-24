@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSimpleSelectionTree.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/06 14:52:07 $
+   $Author: gauges $ 
+   $Date: 2005/11/24 21:36:22 $
    End CVS Header */
 
 #ifndef SimpleSelectionTree_H__
@@ -53,6 +53,7 @@ class CCopasiSimpleSelectionTree: public QListView
     QListViewItem* volumeSubtree;
     QListViewItem* initialVolumeSubtree;
     QListViewItem* expertSubtree;
+    QListViewItem* matrixSubtree;
     std::map<QListViewItem*, CCopasiObject*> treeItems;
     std::vector<CCopasiObject*>* mpOutputVector;
 
