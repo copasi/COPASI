@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/06 22:15:07 $
+   $Author: ssahle $ 
+   $Date: 2005/11/24 15:43:11 $
    End CVS Header */
 
 #include "copasi.h"
@@ -132,6 +132,12 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
     {
       File.close();
       CReadConfig inbuf(fileName.c_str());
+      if (inbuf.getVersion() >= "4")
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         "Can't handle Gepasi Files with Version>=4.");
+          return false;
+        }
 
       newModel();
       mpModel->load(inbuf);
