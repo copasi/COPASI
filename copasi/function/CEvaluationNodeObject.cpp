@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:05 $
+   $Author: nsimus $ 
+   $Date: 2005/11/28 14:03:06 $
    End CVS Header */
 
 #include "copasi.h"
@@ -74,6 +74,16 @@ std::string CEvaluationNodeObject::getInfix() const
   {return "<" + mRegisteredObjectCN + ">";}
 
 std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTree) const
+  {
+    const CCopasiObject * pObject =
+      pTree->getObject(mRegisteredObjectCN);
+
+    if (pObject == NULL) return "<" + mRegisteredObjectCN + ">";
+
+    return "<" + pObject->getObjectDisplayName() + ">";
+  }
+
+std::string CEvaluationNodeObject::getDisplay_C_String(const CEvaluationTree * pTree) const
   {
     const CCopasiObject * pObject =
       pTree->getObject(mRegisteredObjectCN);

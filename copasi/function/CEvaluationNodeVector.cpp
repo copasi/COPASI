@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVector.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:05 $
+   $Author: nsimus $ 
+   $Date: 2005/11/28 14:03:40 $
    End CVS Header */
 
 #include "copasi.h"
@@ -81,6 +81,21 @@ std::string CEvaluationNodeVector::getDisplayString(const CEvaluationTree * pTre
 
     for (; it != end; ++it)
       DisplayString += "," + (*it)->getDisplayString(pTree);
+
+    return DisplayString + "}";
+  }
+
+std::string CEvaluationNodeVector::getDisplay_C_String(const CEvaluationTree * pTree) const
+  {
+    std::string DisplayString = "{";
+
+    std::vector< CEvaluationNode * >::const_iterator it = mVector.begin();
+    std::vector< CEvaluationNode * >::const_iterator end = mVector.end();
+
+    if (it != end) DisplayString += (*it++)->getDisplay_C_String(pTree);
+
+    for (; it != end; ++it)
+      DisplayString += "," + (*it)->getDisplay_C_String(pTree);
 
     return DisplayString + "}";
   }

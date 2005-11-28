@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/31 14:25:18 $
+   $Author: nsimus $ 
+   $Date: 2005/11/28 14:03:06 $
    End CVS Header */
 
 #include "copasi.h"
@@ -111,6 +111,51 @@ std::string CEvaluationNodeOperator::getDisplayString(const CEvaluationTree * pT
           DisplayString += "(" + mpRight->getDisplayString(pTree) + ")";
         else
           DisplayString += mpRight->getDisplayString(pTree);
+
+        return DisplayString;
+      }
+    else
+      return "@";
+  }
+
+std::string CEvaluationNodeOperator::getDisplay_C_String(const CEvaluationTree * pTree) const
+  {
+    if (const_cast<CEvaluationNodeOperator *>(this)->compile(NULL))
+      {
+        Data DisplayString;
+
+        if ((SubType)CEvaluationNode::subType(this->getType()) == POWER)
+          {
+            DisplayString += "pow(";
+
+            if (*mpLeft < *(CEvaluationNode *)this)
+              DisplayString += "(" + mpLeft->getDisplay_C_String(pTree) + ")";
+            else
+              DisplayString += mpLeft->getDisplay_C_String(pTree);
+
+            DisplayString += ",";
+
+            if (!(*(CEvaluationNode *)this < *mpRight))
+              DisplayString += "(" + mpRight->getDisplay_C_String(pTree) + ")";
+            else
+              DisplayString += mpRight->getDisplay_C_String(pTree);
+
+            DisplayString += ")";
+          }
+        else
+          {
+            if (*mpLeft < *(CEvaluationNode *)this)
+              DisplayString = "(" + mpLeft->getDisplay_C_String(pTree) + ")";
+            else
+              DisplayString = mpLeft->getDisplay_C_String(pTree);
+
+            DisplayString += mData;
+
+            if (!(*(CEvaluationNode *)this < *mpRight))
+              DisplayString += "(" + mpRight->getDisplay_C_String(pTree) + ")";
+            else
+              DisplayString += mpRight->getDisplay_C_String(pTree);
+          }
 
         return DisplayString;
       }
@@ -807,7 +852,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(CEvaluationNode *child1, 
           newchild2->addChild(child2, NULL);
           return newnode;
         }
-      default:  //case MODULUS
+      default:   //case MODULUS
         {
           CEvaluationNode *newnode = copyNode(child1, child2);
           return newnode;

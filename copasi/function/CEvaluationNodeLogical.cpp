@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:04 $
+   $Author: nsimus $ 
+   $Date: 2005/11/28 14:02:39 $
    End CVS Header */
 
 #include "copasi.h"
@@ -120,6 +120,30 @@ std::string CEvaluationNodeLogical::getDisplayString(const CEvaluationTree * pTr
           DisplayString += "(" + mpRight->getDisplayString(pTree) + ")";
         else
           DisplayString += " " + mpRight->getDisplayString(pTree);
+
+        return DisplayString;
+      }
+    else
+      return "@";
+  }
+
+std::string CEvaluationNodeLogical::getDisplay_C_String(const CEvaluationTree * pTree) const
+  {
+    if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+      {
+        Data DisplayString;
+
+        if (*mpLeft < *(CEvaluationNode *)this)
+          DisplayString = "(" + mpLeft->getDisplay_C_String(pTree) + ")";
+        else
+          DisplayString = mpLeft->getDisplay_C_String(pTree) + " ";
+
+        DisplayString += mData;
+
+        if (!(*(CEvaluationNode *)this < *mpRight))
+          DisplayString += "(" + mpRight->getDisplay_C_String(pTree) + ")";
+        else
+          DisplayString += " " + mpRight->getDisplay_C_String(pTree);
 
         return DisplayString;
       }

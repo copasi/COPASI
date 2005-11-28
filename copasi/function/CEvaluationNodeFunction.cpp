@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/31 14:24:24 $
+   $Author: nsimus $ 
+   $Date: 2005/11/28 14:02:39 $
    End CVS Header */
 
 #include "copasi.h"
@@ -202,6 +202,14 @@ std::string CEvaluationNodeFunction::getDisplayString(const CEvaluationTree * pT
   {
     if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
       return mData + "(" + mpLeft->getDisplayString(pTree) + ")";
+    else
+      return "@";
+  }
+
+std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree * pTree) const
+  {
+    if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
+      return mData + "(" + mpLeft->getDisplay_C_String(pTree) + ")";
     else
       return "@";
   }
@@ -529,7 +537,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(CEvaluationNode *child1, 
                       delete child1;
                       return newnode;
                     }
-                  default:  // cases POWER, MULTIPLY, MODULUS. don't expect MINUS to occur anymore
+                  default:   // cases POWER, MULTIPLY, MODULUS. don't expect MINUS to occur anymore
                     {
                       CEvaluationNode *newnode = copyNode(child1, child2);
                       return newnode;
@@ -556,7 +564,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(CEvaluationNode *child1, 
                 delete child1;
                 return newnode;
               }
-            default:   //cases VARIABLE, CONSTANT..
+            default:    //cases VARIABLE, CONSTANT..
               {
                 CEvaluationNode *newnode = copyNode(child1, child2);
                 return newnode;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:04 $
+   $Author: nsimus $ 
+   $Date: 2005/11/28 14:02:07 $
    End CVS Header */
 
 #include <sbml/math/ASTNode.h>
@@ -154,6 +154,34 @@ std::string CEvaluationNodeCall::getDisplayString(const CEvaluationTree * pTree)
 
           for (; it != end; ++it)
             DisplayString += "," + (*it)->getDisplayString(pTree);
+        }
+
+        break;
+
+      case EXPRESSION:
+        break;
+
+      default:
+        return "@";
+        break;
+      }
+    return DisplayString + ")";
+  }
+
+std::string CEvaluationNodeCall::getDisplay_C_String(const CEvaluationTree * pTree) const
+  {
+    std::string DisplayString = mData + "(";
+    switch (mType & 0x00FFFFFF)
+      {
+      case FUNCTION:
+        {
+          std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
+          std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
+
+          if (it != end) DisplayString += (*it++)->getDisplay_C_String(pTree);
+
+          for (; it != end; ++it)
+            DisplayString += "," + (*it)->getDisplay_C_String(pTree);
         }
 
         break;

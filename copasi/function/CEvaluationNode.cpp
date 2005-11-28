@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/11/23 12:18:29 $
+   $Author: nsimus $ 
+   $Date: 2005/11/28 14:02:39 $
    End CVS Header */
 
 #include "copasi.h"
@@ -146,6 +146,9 @@ std::string CEvaluationNode::getInfix() const
 std::string CEvaluationNode::getDisplayString(const CEvaluationTree * /* pTree */) const
   {return mData;}
 
+std::string CEvaluationNode::getDisplay_C_String(const CEvaluationTree * /* pTree */) const
+  {return mData;}
+
 const CEvaluationNode::Type & CEvaluationNode::getType() const
   {return mType;}
 
@@ -154,6 +157,8 @@ bool CEvaluationNode::operator < (const CEvaluationNode & rhs)
 
 CEvaluationNode* CEvaluationNode::copyNode(CEvaluationNode *child1, CEvaluationNode *child2) const
   {
+    std::cout << " this->getData() " << this->CEvaluationNode::getData() << std::endl;
+
     CEvaluationNode *newnode = create(getType(), getData());
     if (child1 != NULL)
       {

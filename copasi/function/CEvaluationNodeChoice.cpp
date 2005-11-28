@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:04 $
+   $Author: nsimus $ 
+   $Date: 2005/11/28 14:02:07 $
    End CVS Header */
 
 #include "copasi.h"
@@ -80,6 +80,14 @@ std::string CEvaluationNodeChoice::getDisplayString(const CEvaluationTree * pTre
   {
     if (const_cast<CEvaluationNodeChoice *>(this)->compile(NULL))
       return mData + "(" + mpIf->getDisplayString(pTree) + "," + mpTrue->getDisplayString(pTree) + "," + mpFalse->getDisplayString(pTree) + ")";
+    else
+      return "@";
+  }
+
+std::string CEvaluationNodeChoice::getDisplay_C_String(const CEvaluationTree * pTree) const
+  {
+    if (const_cast<CEvaluationNodeChoice *>(this)->compile(NULL))
+      return mData + "(" + mpIf->getDisplay_C_String(pTree) + "," + mpTrue->getDisplay_C_String(pTree) + "," + mpFalse->getDisplay_C_String(pTree) + ")";
     else
       return "@";
   }
