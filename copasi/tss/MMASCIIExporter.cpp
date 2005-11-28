@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/11/21 10:09:47 $
+   $Date: 2005/11/28 14:04:57 $
    End CVS Header */
 
 #include <math.h>
@@ -306,7 +306,7 @@ void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::stri
       tmpFunc->getRoot()->printRecursively(std::cout);
       */
 
-      tmpFunc->updateTree();
+      /* tmpFunc->updateTree(); */
 
       /*
       if (tmpFunc->getRoot())
@@ -335,7 +335,8 @@ void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::stri
 
           outFunction << ") ";
           outFunction << '\t' << "//" << name << std::endl;
-          outFunction << "{return  " << tmpFunc->getInfix().c_str() << "; } " << std::endl;
+          //outFunction << "{return  " << tmpFunc->getInfix().c_str() << "; } " << std::endl;
+          outFunction << "{return  " << tmpFunc->getRoot()->getDisplay_C_String(tmpFunc).c_str() << "; } " << std::endl;
 
           outFunctionHeader << "); ";
 
@@ -596,6 +597,7 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
 
   outFile << "#ifdef KINETIC_FUNCTIONS";
   outFile << outFunction.str();
+  outFile << std::endl;
   outFile << "#endif // KINETIC_FUNCTIONS" << std::endl;
   outFile << std::endl;
 
