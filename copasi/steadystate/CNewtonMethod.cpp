@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/22 16:45:26 $
+   $Date: 2005/11/28 18:17:44 $
    End CVS Header */
 
 #include <algorithm>
@@ -51,7 +51,7 @@ CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
   addParameter("Newton.LSODA.RelativeTolerance",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
   addParameter("Newton.LSODA.AbsoluteTolerance",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-012);
+               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e009);
   addParameter("Newton.LSODA.AdamsMaxOrder",
                CCopasiParameter::UINT, (unsigned C_INT32) 12);
   addParameter("Newton.LSODA.BDFMaxOrder",
