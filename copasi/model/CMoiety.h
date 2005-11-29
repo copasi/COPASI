@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/18 21:03:21 $
+   $Date: 2005/11/29 22:01:45 $
    End CVS Header */
 
 /**
@@ -127,11 +127,6 @@ class CMoiety : public CCopasiContainer
     void setInitialValue();
 
     /**
-     * get the string representation of the moiety
-     */
-    std::string getDescription() const;
-
-    /**
      * get the string representation of the moiety using the CMetabNameInterface
      */
     std::string getDescription(const CModel* model) const;
@@ -144,23 +139,25 @@ class CMoiety : public CCopasiContainer
     /**
      *
      */
-    C_FLOAT64 dependentRate();
-
-    /**
-     *
-     */
     C_FLOAT64 getNumber() const;
 
     /**
-     * Returns the address of mNumber
+     *  Returns a string with the name of this compartment.
+     *  @return std::string key
      */
-    void * getNumberAddr();
+    virtual const std::string & getKey() const; //By G
 
     /**
-        *  Returns a string with the name of this compartment.
-        *  @return std::string key
-        */
-    virtual const std::string & getKey() const; //By G
+     * Refreshes the value of the dependent number
+     * @return bool success
+     */
+    bool refreshDependentNumber();
+
+  private:
+    /**
+     * Initialize the contained CCopasiObjects
+     */
+    void initObjects();
   };
 
 #endif // COPASI_CMoiety
