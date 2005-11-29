@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CluX.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/15 18:45:24 $
+   $Date: 2005/11/29 17:19:22 $
    End CVS Header */
 
 #ifndef COPASI_CluX
@@ -14,7 +14,7 @@
 //  Typical usage:
 //
 //    Matrix(double) A;
-//    Vector(Subscript) ipiv;
+//    Vector(unsigned C_INT32) ipiv;
 //    Vector(double) b;
 //
 //    1)  LU_Factor(A,ipiv);
@@ -48,7 +48,13 @@
 //                  the rows of A were reordered to increase
 //                  numerical stability.
 //
+// The following pivot vectors describe the reordering necessary to achieve
+// zero diagonal elements only in the last consecutive elemts of U
+//
 // col      (output) Vector(1:N)    Pivot vector. Describes how
+//                  the colums of A were reordered to avoid zero pivots.
+//
+// lRow     (output) Vector(1:M)    Pivot vector. Describes how
 //                  the colums of A were reordered to avoid zero pivots.
 //
 // Return value:
@@ -56,138 +62,13 @@
 // int      (0 if successful, 1 otherwise)
 //
 //
-#include "CProcessReport.h"
 
-template <class Matrix, class Subscript>
-      int LUfactor(Matrix &A, std::vector< Subscript > & row, std::vector< Subscript > & col, CProcessReport * cb = NULL)
-  {
-    Subscript M = A.numRows();
-    Subscript N = A.numCols();
+template < typename ValueType > class CMatrix;
+template < typename ValueType > class CVector;
 
-    if (M == 0 || N == 0)
-      return 0;
-    if (row.size() != M)
-      row.resize(M);
-    if (col.size() != N)
-      col.resize(N);
-
-    Subscript i = 0, j = 0, k = 0;
-    Subscript jp = 0;
-    Subscript jl = N - 1;
-
-    for (i = 0; i < M; i++)
-      row[i] = i;
-    for (i = 0; i < N; i++)
-      col[i] = i;
-
-    typename Matrix::elementType t;
-
-  Subscript minMN = (M < N ? M : N);        // min(M,N);
-
-    unsigned C_INT32 hProcess;
-    if (cb)
-      hProcess = cb->addItem("LU decomposition...",
-                             CCopasiParameter::UINT,
-                             &j,
-                             &minMN);
-
-    for (j = 0; j < minMN; j++)
-      {
-        if (cb && !cb->progress(hProcess)) return 1;
-
-        // find pivot in column j and  test for singularity.
-        while (true)
-          {
-            jp = j;
-            t = fabs(A(j, j));
-            for (i = j + 1; i < M; i++)
-              if (fabs(A(i, j)) > t)
-                {
-                  jp = i;
-                  t = fabs(A(i, j));
-                }
-
-            // jp now has the index of maximum element
-            // of column j, below the diagonal
-
-            if (A(jp, j) == 0) // now we have to swap colums to find a pivot
-              {
-                // Instead of blindly swapping with the last available
-                // column we first check whether it is suitable. If not
-                // we proceed with the lat but one ...
-                while (j < jl)
-                  {
-                    jp = j;
-                    t = fabs(A(j, jl));
-
-                    for (i = j + 1; i < M; i++)
-                      if (fabs(A(i, jl)) > t)
-                        {
-                          jp = i;
-                          t = fabs(A(i, jl));
-                        }
-
-                    if (t > 0.0) break; // Found a suitable column
-                    // and row
-
-                    jl--; // proceed with previous column
-                  }
-
-                if (j >= jl)
-                  return 1; // we are done
-
-                for (k = 0; k < M; k++) // swap columns jl and j
-                  {
-                    t = A(k, jl);
-                    A(k, jl) = A(k, j);
-                    A(k, j) = t;
-                  }
-                col[jl] = j;
-                jl--;
-              }
-
-            break;
-          }
-
-        if (jp != j)      // swap rows j and jp
-          for (k = 0; k < N; k++)
-            {
-              t = A(j, k);
-              A(j, k) = A(jp, k);
-              A(jp, k) = t;
-            }
-        row[j] = jp;
-
-        if (j < M - 1)    // compute elements j+1 <= k < M of jth column
-          {
-            // note A(j,j), was A(jp,p) previously which was
-            // guarranteed not to be zero (Label #1)
-            //
-            typename Matrix::elementType recp = 1.0 / A(j, j);
-
-            for (k = j + 1; k < M; k++)
-              A(k, j) *= recp;
-          }
-
-        if (j < minMN - 1)
-          {
-            // rank-1 update to trailing submatrix:   E = E - x*y;
-            //
-            // E is the region A(j+1:M, j+1:N)
-            // x is the column vector A(j+1:M,j)
-            // y is row vector A(j,j+1:N)
-
-            Subscript ii, jj;
-
-            for (ii = j + 1; ii < M; ii++)
-              for (jj = j + 1; jj < N; jj++)
-                A(ii, jj) -= A(ii, j) * A(j, jj);
-          }
-      }
-
-    if (cb) cb->finish(hProcess);
-
-    return 0;
-  }
+bool LUfactor(CMatrix< C_FLOAT64 > & A,
+              CVector< unsigned C_INT32 > & row,
+              CVector< unsigned C_INT32 > & col,
+              CVector< unsigned C_INT32 > & lRow);
 
 #endif // COPASI_CluX

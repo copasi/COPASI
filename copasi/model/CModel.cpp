@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.236 $
+   $Revision: 1.237 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/24 15:51:25 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:19:20 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,6 @@
 
 // #define DEBUG_MATRIX
 
-#define  COPASI_TRACE_CONSTRUCTION
 #include "CCompartment.h"
 #include "CMetab.h"
 #include "CModel.h"
@@ -543,82 +542,32 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
 {
   unsigned C_INT32 i;
 
-  std::vector < unsigned C_INT32 > rowLU(mStoi.numRows());
-  std::vector < unsigned C_INT32 > colLU(mStoi.numCols());
-
-  mRowLU.resize(mStoi.numRows());
-  for (i = 0; i < mRowLU.size(); i++)
-    mRowLU[i] = i;
-
-  mColLU.resize(mStoi.numCols());
-  for (i = 0; i < mColLU.size(); i++)
-    mColLU[i] = i;
-
   LU = mStoi;
 
-  LUfactor(LU, rowLU, colLU, mpCompileHandler);
-
-  // mMetabolitesX = mMetabolites;
-
-  mStepsX.resize(mSteps.size(), false);
-
-  for (i = 0; i < mSteps.size(); i++)
-    mStepsX[i] = mSteps[i];
+  LUfactor(LU, mRowLU, mColLU, mLRowLU);
 
   // permutate Metabolites and Steps to match rearangements done during
   // LU decomposition
 
-  // Create a more understandable permutation vector for row and column
-  // interchanges
+  for (i = 0; i < mRowLU.size(); i++)
+    mMetabolitesX[i] = mMetabolites[mRowLU[i]];
 
-  CMetab *pMetab;
-  unsigned C_INT32 tmp;
+  mStepsX.resize(mSteps.size(), false);
+  mFluxesX.resize(mStepsX.size());
+  mParticleFluxesX.resize(mStepsX.size());
 
-  for (i = 0; i < (unsigned C_INT32) rowLU.size(); i++)
+  for (i = 0; i < mSteps.size(); i++)
     {
-      if (rowLU[i] > i)
-        {
-          pMetab = mMetabolitesX[i];
-          mMetabolitesX[i] = mMetabolitesX[rowLU[i]];
-          mMetabolitesX[rowLU[i]] = pMetab;
-
-          tmp = mRowLU[i];
-          mRowLU[i] = mRowLU[rowLU[i]];
-          mRowLU[rowLU[i]] = tmp;
-        }
-    }
-
-  CReaction *pStep;
-
-  for (i = colLU.size(); 0 < i--;)
-    {
-      if (colLU[i] < i)
-        {
-          pStep = mStepsX[i];
-          mStepsX[i] = mStepsX[colLU[i]];
-          mStepsX[colLU[i]] = pStep;
-
-          tmp = mColLU[i];
-          mColLU[i] = mColLU[colLU[i]];
-          mColLU[colLU[i]] = tmp;
-        }
+      mStepsX[i] = mSteps[mColLU[i]];
+      mFluxesX[i] = &mStepsX[i]->getFlux();
+      mParticleFluxesX[i] = &mStepsX[i]->getParticleFlux();
     }
 
 #ifdef DEBUG_MATRIX
   DebugFile << "Metabolite reordering " << mRowLU << std::endl;
   DebugFile << "Reaction reordering " << mColLU << std::endl;
+  DebugFile << "LU Row reordering " << mLRowLU << std::endl;
 #endif
-  //std::cout << "Metabolite reordering " << mRowLU << std::endl;
-  //std::cout << "Reaction reordering " << mColLU << std::endl;
-
-  mFluxesX.resize(mStepsX.size());
-  mParticleFluxesX.resize(mStepsX.size());
-
-  for (i = 0; i < mStepsX.size(); i++)
-    {
-      mFluxesX[i] = &mStepsX[i]->getFlux();
-      mParticleFluxesX[i] = &mStepsX[i]->getParticleFlux();
-    }
 
   return;
 }
@@ -628,13 +577,13 @@ void CModel::setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU)
   unsigned C_INT32 i;
   unsigned C_INT32 iIndependent = 0, iVariable = 0;
 
-  unsigned C_INT32 imax = (LU.numRows() < LU.numCols()) ?
-                          LU.numRows() : LU.numCols();
+  unsigned C_INT32 imax =
+    (LU.numRows() < LU.numCols()) ? LU.numRows() : LU.numCols();
 
   for (i = 0; i < imax; i++)
     {
       // Interupt processing when first dependent metabolite is found.
-      if (LU[i][i] == 0.0) break;
+      if (LU[mLRowLU[i]][mColLU[i]] == 0.0) break;
 
       mMetabolitesX[i]->setStatus(CModelEntity::REACTIONS);
     }
@@ -729,7 +678,7 @@ void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
 
   for (i = 1; i < (unsigned C_INT32) N; i++)
     for (j = 0; j < i; j++)
-      R(i, j) = LU(i, j);
+      R(i, j) = LU(mLRowLU[i], mColLU[j]);
 
   /* to take care of differences between fortran's and c's memory  acces,
      we need to take the transpose, i.e.,the upper triangular */
@@ -803,18 +752,16 @@ void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
     for (j = 0; j < jmax; j++)
       {
         sum = & mL(i - imin, j);
-        *sum = LU(i, j);
+        *sum = LU(mLRowLU[i], mColLU[j]);
 
         for (k = j + 1; k < jmax; k++)
-          *sum += LU(i, k) * R(k, j);
+          *sum += LU(mLRowLU[i], mColLU[k]) * R(k, j);
       }
 
 #ifdef DEBUG_MATRIX
   DebugFile << "Link Matrix:" << std::endl;
   DebugFile << mLView << std::endl;
 #endif // DEBUG_MATRIX
-  //std::cout << "Link Matrix:" << std::endl;
-  //std::cout << mLView << std::endl;
 }
 
 void CModel::updateMoietyValues()
@@ -2265,7 +2212,7 @@ std::ostream &operator<<(std::ostream &os,
   for (i = 0; i < imax; i++)
     {
       for (j = 0; j < jmax; j++)
-        os << "  " << A(i, j);
+        os << "\t" << A(i, j);
       os << std::endl;
     }
   return os;

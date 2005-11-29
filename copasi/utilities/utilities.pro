@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.17 $ $Author: shoops $ $Date: 2005/09/26 20:56:11 $  
+# $Revision: 1.18 $ $Author: shoops $ $Date: 2005/11/29 17:19:22 $  
 ######################################################################
 
 LIB = utilities
@@ -49,6 +49,7 @@ SOURCES += CAnnotatedMatrix.cpp \
            CDependencyGraph.cpp \
            CDirEntry.cpp \
            CIndexedPriorityQueue.cpp \
+           CluX.cpp \
            CopasiTime.cpp \
            COutputHandler.cpp \
            CProcessReport.cpp \
