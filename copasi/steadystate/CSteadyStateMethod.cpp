@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/22 16:45:26 $
+   $Date: 2005/11/29 17:28:16 $
    End CVS Header */
 
 /**
@@ -15,7 +15,6 @@
  *  Created for Copasi by Stefan Hoops 2002
  */
 
-#define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 
 #include "utilities/CCopasiVector.h"

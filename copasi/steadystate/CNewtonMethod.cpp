@@ -1,15 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/28 18:17:44 $
+   $Date: 2005/11/29 17:28:16 $
    End CVS Header */
 
 #include <algorithm>
 #include <cmath>
 
-#define  COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 
 #include "CSteadyStateMethod.h"

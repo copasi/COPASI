@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/28 18:16:37 $
+   $Date: 2005/11/29 17:28:20 $
    End CVS Header */
 
 /*
@@ -98,7 +98,6 @@ tam@wri.com
 #include <algorithm>
 #include <assert.h>
 
-// #define  COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 
 #include "CTrajectoryMethod.h"
@@ -212,25 +211,25 @@ const double CLsodaMethod::step(const double & deltaT)
 
   C_FLOAT64 StartTime = mTime;
 
-  lsoda(mDim,                                         // number of variables
-        mY - 1,                                       // the array of current concentrations
+  lsoda(mDim,                                          // number of variables
+        mY - 1,                                        // the array of current concentrations
         // fortran style vector !!!
-        &mTime,                                       // the current time
-        StartTime + deltaT,                           // the final time
-        1,                                            // scalar error control
-        (&mRtol) - 1,                                 // relative tolerance array
+        &mTime,                                        // the current time
+        StartTime + deltaT,                            // the final time
+        1,                                             // scalar error control
+        (&mRtol) - 1,                                  // relative tolerance array
         // fortran style vector !!!
-        (&mAtol) - 1,                                 // absolute tolerance array
+        (&mAtol) - 1,                                  // absolute tolerance array
         // fortran style vector !!!
-        1,                                            // output by overshoot & interpolatation
-        &mLsodaStatus,                                // the state control variable
-        1,                                            // optional inputs are being used
-        2,                                            // jacobian calculated internally
-        0, 0, 0,                                      // options left at default values
-        mMaxSteps,                                    // max iterations for each lsoda call
-        0,                                            // another value left at the default
-        mAdams,                                       // max order for Adams method
-        mBDF,                                         // max order for BDF method
+        1,                                             // output by overshoot & interpolatation
+        &mLsodaStatus,                                 // the state control variable
+        1,                                             // optional inputs are being used
+        2,                                             // jacobian calculated internally
+        0, 0, 0,                                       // options left at default values
+        mMaxSteps,                                     // max iterations for each lsoda call
+        0,                                             // another value left at the default
+        mAdams,                                        // max order for Adams method
+        mBDF,                                          // max order for BDF method
         0.0, 0.0, 0.0, 0.0); // more options left at default values
 
   if (mLsodaStatus == -1) mLsodaStatus = 2;
@@ -2638,7 +2637,7 @@ void CLsodaMethod::resetcoeff(void)
 }     /*   end resetcoeff   */
 
 void CLsodaMethod::eval(C_FLOAT64 t,
-                        C_FLOAT64 * y,                          /* Fortran style vector */
+                        C_FLOAT64 * y,                           /* Fortran style vector */
                         C_FLOAT64 * ydot)  /* Fortran style vector */
 {
   assert (y + 1 == mY);

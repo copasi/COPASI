@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:36:49 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:28:14 $
    End CVS Header */
 
 /**
@@ -13,7 +13,6 @@
 
 #include <string>
 
-#define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CScanProblem.h" 
 //#include "model/CModel.h"

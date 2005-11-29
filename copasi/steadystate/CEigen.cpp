@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 16:33:59 $
+   $Date: 2005/11/29 17:28:15 $
    End CVS Header */
 
 /**
@@ -17,8 +17,6 @@
  */
 
 #include <cmath>
-
-#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "clapackwrap.h"        //use CLAPACK
@@ -323,18 +321,18 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
    */
   dgees_(&mJobvs,
          &mSort,
-         NULL,               // mSelect,           //NULL,
-         &mN,                              //&n,
+         NULL,                // mSelect,           //NULL,
+         &mN,                               //&n,
          mA.array(),
          & mLDA,
-         & mSdim,                      // output
+         & mSdim,                       // output
          mR.array(),
          mI.array(),
          mpVS,
          & mLdvs,
          mpWork,
          & mLWork,
-         mpBWork,                        //NULL
+         mpBWork,                         //NULL
          &mInfo);            //output
 
   if (mInfo) fatalError();

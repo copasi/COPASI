@@ -1,12 +1,10 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDependencyGraph.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/02 11:52:02 $
+   $Date: 2005/11/29 17:28:23 $
    End CVS Header */
-
-#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "CDependencyGraph.h"

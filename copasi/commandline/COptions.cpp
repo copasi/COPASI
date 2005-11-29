@@ -1,12 +1,10 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/21 20:20:42 $
+   $Date: 2005/11/29 17:27:17 $
    End CVS Header */
-
-#define COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 

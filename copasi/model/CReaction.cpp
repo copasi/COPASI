@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.146 $
+   $Revision: 1.147 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/24 15:51:25 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:28:12 $
    End CVS Header */
 
 // CReaction
@@ -12,8 +12,6 @@
 // (C) Pedro Mendes 1995-2000
 //
 // Converted for Copasi by Stefan Hoops
-
-#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 

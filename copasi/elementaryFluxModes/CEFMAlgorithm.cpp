@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: gasingh $ 
-   $Date: 2004/03/10 04:19:33 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:28:10 $
    End CVS Header */
 
 /**
@@ -14,7 +14,6 @@
  * (C) Stefan Hoops 2002
  */
 
-// #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CEFMAlgorithm.h"
 #include "CFluxMode.h"

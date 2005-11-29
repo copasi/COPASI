@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:32:42 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:28:20 $
    End CVS Header */
 
 /**
@@ -15,7 +15,6 @@
  *  Created for Copasi by Stefan Hoops 2002
  */
 
-#define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CTrajectoryMethod.h"
 #include "CTrajectoryProblem.h"

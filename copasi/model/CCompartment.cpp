@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/24 15:51:25 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:28:12 $
    End CVS Header */
 
 // CCompartment
@@ -15,8 +15,6 @@
 
 #include <iostream>
 #include <float.h>
-
-#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "utilities/CReadConfig.h"

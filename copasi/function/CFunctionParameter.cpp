@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/24 14:51:29 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:28:11 $
    End CVS Header */
 
 /**
@@ -13,7 +13,6 @@
  * (C) Stefan Hoops 2001
  */
 
-#define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CFunctionParameter.h"
 #include "report/CKeyFactory.h"

@@ -1,14 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSProblem.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/22 15:54:21 $
+   $Date: 2005/11/29 17:28:22 $
    End CVS Header */
 
 #include <string>
 
-#define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CTSSProblem.h" 
 //#include "model/CModel.h"

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:33 $
+   $Date: 2005/11/29 17:27:17 $
    End CVS Header */
 
 // Main
@@ -17,7 +17,6 @@
 #include <iostream>
 
 #define COPASI_MAIN
-#define COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "CopasiDataModel/CCopasiDataModel.h"

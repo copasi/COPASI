@@ -1,16 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/11 10:06:34 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:28:15 $
    End CVS Header */
 
 #include <cmath>
 #include <limits.h>
 #include <float.h>
-
-#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "utilities/CReadConfig.h"

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:32:42 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:28:20 $
    End CVS Header */
 
 /**
@@ -24,7 +24,6 @@
  */
 
 /* DEFINE ********************************************************************/
-#define  COPASI_TRACE_CONSTRUCTION
 
 #include "mathematics.h" // pow(), floor()
 
@@ -86,13 +85,13 @@ CTauLeapMethod *CTauLeapMethod::createTauLeapMethod(CTrajectoryProblem * C_UNUSE
   switch (result)
     {
       // Error: TauLeap simulation impossible
-      /*    case - 3:                // non-integer stoichometry
+      /*    case - 3:               // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:                // reversible reaction exists
+      case - 2:               // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
-      case - 1:                // more than one compartment involved
+      case - 1:               // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/ 
       // Everything alright: Hybrid simulation possible

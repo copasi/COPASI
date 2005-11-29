@@ -1,14 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/Tree.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/02 09:42:56 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:27:17 $
    End CVS Header */
 
 #include <assert.h>
 
-#define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 
 #include "Tree.h"

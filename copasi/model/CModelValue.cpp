@@ -1,16 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/12 16:30:47 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:28:12 $
    End CVS Header */
 
 #include <iostream>
 #include <string>
 #include <vector>
-
-#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "CopasiDataModel/CCopasiDataModel.h"

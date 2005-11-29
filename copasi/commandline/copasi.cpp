@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/Attic/copasi.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:20:09 $
+   $Date: 2005/11/29 17:27:17 $
    End CVS Header */
 
 // Main
@@ -29,7 +29,6 @@
 #include <iostream>
 
 #define COPASI_MAIN
-#define COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "utilities/CGlobals.h"

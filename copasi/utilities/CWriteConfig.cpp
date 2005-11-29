@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CWriteConfig.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:35:32 $
+   $Date: 2005/11/29 17:28:23 $
    End CVS Header */
 
 // CWriteConfig
@@ -17,8 +17,6 @@
 
 #include <stdio.h>
 #include <assert.h>
-
-#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "CGlobals.h"

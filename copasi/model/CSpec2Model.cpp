@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/17 15:15:39 $
+   $Date: 2005/11/29 17:28:12 $
    End CVS Header */
 
 #undef yyFlexLexer
@@ -13,8 +13,6 @@
 #include <sstream>
 #include <fstream>
 #include <algorithm>
-
-#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "utilities/CCopasiMessage.h"

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqElement.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/30 15:18:42 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:28:12 $
    End CVS Header */
 
 // CChemEqElement
@@ -11,8 +11,6 @@
 // A class describing an element of a chemical equation
 // (C) Stefan Hoops 2001
 //
-
-#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "utilities/CCopasiVector.h"

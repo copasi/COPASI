@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/02/18 20:44:22 $
+   $Date: 2005/11/29 17:28:23 $
    End CVS Header */
 
 /**
@@ -11,8 +11,6 @@
  * 
  * (C) Pedro Mendes 2001
  */
-
-#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "CVersion.h"

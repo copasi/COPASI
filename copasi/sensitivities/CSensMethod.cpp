@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/12 14:48:46 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:28:14 $
    End CVS Header */
 
 /**
@@ -15,7 +15,6 @@
  *  Created for Copasi by Stefan Hoops 2002
  */
 
-#define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 
 //#include "utilities/CCopasiVector.h"
@@ -172,8 +171,7 @@ bool CSensMethod::doOneCalculation()
 
   //subtask
   if (false)
-    {
-    }
+  {}
 
   return true;
 }

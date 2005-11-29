@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxScore.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2004/10/11 01:39:58 $
+   $Date: 2005/11/29 17:28:10 $
    End CVS Header */
 
 /**
@@ -14,7 +14,6 @@
  * (C) Stefan Hoops 2002
  */
 
-// #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CFluxScore.h"
 

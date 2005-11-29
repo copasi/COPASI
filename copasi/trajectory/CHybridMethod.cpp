@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:36:24 $
+   $Date: 2005/11/29 17:28:20 $
    End CVS Header */
 
 /**
@@ -22,7 +22,6 @@
  */
 
 /* DEFINE ********************************************************************/
-#define  COPASI_TRACE_CONSTRUCTION
 
 #ifdef WIN32
 #define min _cpp_min
@@ -76,14 +75,14 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * C_UNUSED(p
 
   switch (result)
     {
-      /*    case - 3:                     // non-integer stoichometry
+      /*    case - 3:                    // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:                     // reversible reaction exists
+      case - 2:                    // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
 
-      case - 1:                     // more than one compartment involved
+      case - 1:                    // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/
     case 1:

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/13 13:06:24 $
+   $Date: 2005/11/29 17:28:23 $
    End CVS Header */
 
 // CCopasiMessage
@@ -17,8 +17,6 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdarg.h>
-
-#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "CCopasiMessage.h"

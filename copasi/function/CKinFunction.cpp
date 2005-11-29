@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/24 15:45:55 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:28:11 $
    End CVS Header */
 
 /**
@@ -12,8 +12,6 @@
  * Created for Copasi by Stefan Hoops
  * (C) Stefan Hoops 2002
  */
-
-#define COPASI_TRACE_CONSTRUCTION
 
 #undef yyFlexLexer
 #define yyFlexLexer CKinFunctionFlexLexer

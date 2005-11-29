@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxMode.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/26 21:48:35 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:28:10 $
    End CVS Header */
 
 /**
@@ -14,7 +14,6 @@
  * (C) Stefan Hoops 2002
  */
 
-// #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CFluxMode.h"
 #include "CTableauLine.h"

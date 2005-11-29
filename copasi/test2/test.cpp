@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test2/test.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/31 14:26:54 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:28:19 $
    End CVS Header */
 
 // Main
@@ -12,7 +12,6 @@
 //
 
 #define COPASI_MAIN
-#define COPASI_TRACE_CONSTRUCTION
 #include <stdlib.h>
 #include <sstream>
 #include <string>
@@ -112,3 +111,4 @@ same as:
 Shalve^(-1)*Vf*(substrate-Keq^(-1)*product)*(Shalve^(-1)*substrate+Phalve^(-1)*product)^(h-1)/((MAhalve^h*MBhalve^h+ModifierA^h*MBhalve^h+ModifierB^h*MAhalve^h)/(MAhalve^h*MBhalve^h+alphaA*ModifierA^h*MBhalve^h+alphaB*ModifierB^h*MAhalve^h+alphaA*alphaB*alphaAB*ModifierA^h*ModifierB^h)+(Shalve^(-1)*substrate+Phalve^(-1)*product)^h)
 simplified form:
  (Keq * Phalve * Vf * alphaA^2 * alphaAB^2 * alphaB^2 * substrate * ((Phalve * substrate + Shalve * product)^h) * (ModifierA^(2 * h)) * (ModifierB^(2 * h)) + 2 * Keq * Phalve * Vf * alphaA^2 * alphaAB * alphaB * substrate * ((Phalve * substrate + Shalve * product)^h) * (MBhalve^h) * (ModifierA^(2 * h)) * (ModifierB^h) + Keq * Phalve * Vf * alphaA^2 * substrate * ((Phalve * substrate + Shalve * product)^h) * (MBhalve^(2 * h)) * (ModifierA^(2 * h)) + 2 * Keq * Phalve * Vf * alphaA * alphaAB * alphaB^2 * substrate * ((Phalve * substrate + Shalve * product)^h) * (MAhalve^h) * (ModifierA^h) * (ModifierB^(2 * h)) + 2 * Keq * Phalve * Vf * alphaA * alphaAB * alphaB * substrate * ((Phalve * substrate + Shalve * product)^h) * (MAhalve^h) * (MBhalve^h) * (ModifierA^h) * (ModifierB^h) + 2 * Keq * Phalve * Vf * alphaA * alphaB * substrate * ((Phalve * substrate + Shalve * product)^h) * (MAhalve^h) * (MBhalve^h) * (ModifierA^h) * (ModifierB^h) + 2 * Keq * Phalve * Vf * alphaA * substrate * ((Phalve * substrate + Shalve * product)^h) * (MAhalve^h) * (MBhalve^(2 * h)) * (ModifierA^h) + Keq * Phalve * Vf * alphaB^2 * substrate * ((Phalve * substrate + Shalve * product)^h) * (MAhalve^(2 * h)) * (ModifierB^(2 * h)) + 2 * Keq * Phalve * Vf * alphaB * substrate * ((Phalve * substrate + Shalve * product)^h) * (MAhalve^(2 * h)) * (MBhalve^h) * (ModifierB^h) + Keq * Phalve * Vf * substrate * ((Phalve * substrate + Shalve * product)^h) * (MAhalve^(2 * h)) * (MBhalve^(2 * h)) + (-1) * Phalve * Vf * alphaA^2 * alphaAB^2 * alphaB^2 * product * ((Phalve * substrate + Shalve * product)^h) * (ModifierA^(2 * h)) * (ModifierB^(2 * h)) + (-2) * Phalve * Vf * alphaA^2 * alphaAB * alphaB * product * ((Phalve * substrate + Shalve * product)^h) * (MBhalve^h) * (ModifierA^(2 * h)) * (ModifierB^h) + (-1) * Phalve * Vf * alphaA^2 * product * ((Phalve * substrate + Shalve * product)^h) * (MBhalve^(2 * h)) * (ModifierA^(2 * h)) + (-2) * Phalve * Vf * alphaA * alphaAB * alphaB^2 * product * ((Phalve * substrate + Shalve * product)^h) * (MAhalve^h) * (Mo
+ 

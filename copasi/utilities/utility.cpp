@@ -1,16 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:22:36 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 17:28:23 $
    End CVS Header */
 
 #include "mathematics.h"
 #include <stdio.h>
-
-#define  COPASI_TRACE_CONSTRUCTION
-
 #include <time.h>
 
 #include "copasi.h"

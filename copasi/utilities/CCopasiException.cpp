@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiException.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/19 15:17:13 $
+   $Date: 2005/11/29 17:28:23 $
    End CVS Header */
 
 // CErrorMessage
@@ -12,8 +12,6 @@
 // (C) Stefan Hoops 2001
 
 #include <string>
-
-#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "CCopasiException.h"

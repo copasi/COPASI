@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/09 16:31:49 $
+   $Date: 2005/11/29 17:28:11 $
    End CVS Header */
 
 // CNodeK.cpp : classes for function tree
@@ -13,7 +13,6 @@
 #include "mathematics.h"
 #include <stdio.h>
 
-#define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/CCopasiMessage.h"

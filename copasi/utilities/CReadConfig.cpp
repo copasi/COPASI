@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 12:45:22 $
+   $Date: 2005/11/29 17:28:23 $
    End CVS Header */
 
 // CReadConfig
@@ -16,8 +16,6 @@
 #include <fstream>
 
 #include <assert.h>
-
-#define  COPASI_TRACE_CONSTRUCTION
 
 #include "copasi.h"
 #include "CCopasiMessage.h"

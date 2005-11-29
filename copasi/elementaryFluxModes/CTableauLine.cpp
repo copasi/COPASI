@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauLine.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2003/10/16 16:23:13 $
+   $Date: 2005/11/29 17:28:10 $
    End CVS Header */
 
 /**
@@ -16,7 +16,6 @@
 
 #include <iostream>
 
-// #define COPASI_TRACE_CONSTRUCTION
 #include "copasi.h"
 #include "CTableauLine.h"
 CTableauLine::CTableauLine() {CONSTRUCTOR_TRACE; mFluxScore = NULL;}
