@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/12/16 14:44:54 $
+   $Author: shoops $ 
+   $Date: 2005/11/29 21:22:41 $
    End CVS Header */
 
 /********************************************************
@@ -38,6 +38,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "report/CCopasiObject.h"
 #include "report/CCopasiObjectName.h"
 #include "report/CCopasiContainer.h"
+#include "report/CCopasiStaticString.h"
 #include "utilities/CCopasiVector.h"
 
 #include "./icons/objectAll.xpm"
@@ -486,6 +487,14 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem* parent,
       while (it != end)
         {
           current = it->second;
+
+          // Skip all strings
+          if (dynamic_cast<CCopasiStaticString *>(current))
+            {
+              it++;
+              continue;
+            }
+
           ObjectBrowserItem* currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
           last = currentItem;
           currentItem->setText(0, FROM_UTF8(current->getObjectName()));
