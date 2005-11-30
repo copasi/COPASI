@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2005/11/28 14:02:07 $
+   $Author: shoops $ 
+   $Date: 2005/11/30 22:01:08 $
    End CVS Header */
 
 #include <sbml/math/ASTNode.h>
@@ -111,6 +111,18 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
   return success;
 }
+
+bool CEvaluationNodeCall::calls(std::set< std::string > & list) const
+  {
+    if (list.count(mData)) return true;
+
+    CEvaluationTree * pTree =
+      CCopasiDataModel::Global->getFunctionList()->findFunction(mData);
+
+    if (pTree) return pTree->calls(list);
+
+    return false;
+  }
 
 std::string CEvaluationNodeCall::getInfix() const
   {

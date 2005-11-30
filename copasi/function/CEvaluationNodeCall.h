@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2005/11/28 14:02:07 $
+   $Author: shoops $ 
+   $Date: 2005/11/30 22:01:08 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeCall
@@ -74,6 +74,13 @@ class CEvaluationNodeCall : public CEvaluationNode
      * @return bool success;
      */
     virtual bool compile(const CEvaluationTree * pTree);
+
+    /**
+     * Check whether node the calls any tree in the list
+     * @param std::set< std::string > & list
+     * @return bool calls
+     */
+    bool calls(std::set< std::string > & list) const;
 
     /**
      * Retrieve the infix value of the node and its eventual child nodes.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.123 $
+   $Revision: 1.124 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/24 14:52:28 $
+   $Author: shoops $ 
+   $Date: 2005/11/30 22:01:07 $
    End CVS Header */
 
 /**********************************************************************
@@ -723,7 +723,6 @@ void FunctionWidget1::slotFcnDescriptionChanged()
     }
   catch (CCopasiException Exception)
     {
-      std::cout << "error in function" << std::endl;
       isValid = false;
     }
 
@@ -733,6 +732,15 @@ void FunctionWidget1::slotFcnDescriptionChanged()
     }
   else
     {
+      if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 4)
+        {
+          QMessageBox::critical(this, "Function Error",
+                                CCopasiMessage::getLastMessage().getText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default,
+                                QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+        }
+
       commitChanges->setEnabled(false);
     }
 

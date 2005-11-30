@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:05 $
+   $Date: 2005/11/30 22:01:08 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -225,6 +225,19 @@ class CEvaluationTree:
      */
     static bool completeEvaluationTreeList(CCopasiVectorN< CEvaluationTree > & list,
                                            const unsigned C_INT32 & added = 0);
+
+    /**
+     * Check whether the the tree has circular dependencies.
+     * @return bool hasCircularDependency
+     */
+    bool hasCircularDependency() const;
+
+    /**
+     * Check whether the the calls any tree in the list
+     * @param std::set< std::string > & list
+     * @return bool calls
+     */
+    bool calls(std::set< std::string > & list) const;
 
   protected:
     /**

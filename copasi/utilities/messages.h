@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/11/18 16:23:26 $
+   $Author: shoops $ 
+   $Date: 2005/11/30 22:01:08 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -150,6 +150,7 @@ const MESSAGES Messages[] =
     {MCFunction + 1, "Function (1): Parser error after position: '%d'."},
     {MCFunction + 2, "Function (2): Lexer error after position: '%d'."},
     {MCFunction + 3, "Function (3): Compile error after position: '%d'."},
+    {MCFunction + 4, "Function (4): Circular dependency detected."},
 
     {MCEvaluationNodeObject + 1, "CEvaluationNodeObject (1): Only references to compartment, species, parameters and reaction are allowed in expression."},
 

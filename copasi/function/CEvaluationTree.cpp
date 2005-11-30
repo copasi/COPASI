@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/01 01:26:39 $
+   $Date: 2005/11/30 22:01:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -198,6 +198,12 @@ bool CEvaluationTree::parse()
       CEvaluationLexer::freeNodeList(mpNodeList);
       mpNodeList = NULL;
       mpRoot = NULL;
+    }
+
+  if (success && hasCircularDependency())
+    {
+      success = false;
+      CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 4, mErrorPosition);
     }
 
   return success;
@@ -428,3 +434,34 @@ bool CEvaluationTree::completeEvaluationTreeList(CCopasiVectorN< CEvaluationTree
   else
     return true;
 }
+
+bool CEvaluationTree::hasCircularDependency() const
+  {
+    std::set< std::string > List;
+
+    return calls(List);
+  }
+
+bool CEvaluationTree::calls(std::set< std::string > & list) const
+  {
+    if (!mpNodeList) return false;
+
+    std::pair<std::set< std::string >::iterator, bool> Result = list.insert(getObjectName());
+    if (!Result.second) return true;
+
+    bool Calls = false;
+    std::vector< CEvaluationNode * >::iterator it;
+    std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
+
+    for (it = mpNodeList->begin(); it != end; ++it)
+      if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
+          dynamic_cast<CEvaluationNodeCall *>(*it)->calls(list))
+        {
+          Calls = true;
+          break;
+        }
+
+    list.erase(Result.first);
+
+    return Calls;
+  }
