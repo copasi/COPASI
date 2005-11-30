@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:27:17 $
+   $Date: 2005/11/30 13:35:43 $
    End CVS Header */
 
 // Main
@@ -33,9 +33,14 @@
 #include "randomGenerator/CRandom.h"
 #include "report/CCopasiTimer.h"
 #include "report/CKeyFactory.h"
+#include "utilities/CVersion.h"
+#include "utilities/CDirEntry.h"
 
 int main(int argc, char *argv[])
 {
+  std::stringstream Out;
+  std::stringstream Error;
+
   try
     {
       // Parse the commandline options
@@ -47,19 +52,15 @@ int main(int argc, char *argv[])
       switch (e.get_autothrow_id())
         {
         case copasi::autothrow_help:
-          std::cout << "Usage: " << argv[0] << " [options]\n";
-          std::cout << e.what();
+          Out << "Usage: " << CDirEntry::baseName(argv[0]) << " [options] [file]\n";
+          Out << e.what();
         }
-
-      return 1;
     }
 
   catch (copasi::option_error &e)
     {
-      std::cerr << argv[0] << ": " << e.what() << "\n";
-      std::cerr << e.get_help_comment() << std::endl;
-
-      return 1;
+      Error << CDirEntry::baseName(argv[0]) << ": " << e.what() << "\n";
+      Error << e.get_help_comment() << std::endl;
     }
 
   try
@@ -69,6 +70,22 @@ int main(int argc, char *argv[])
 
       // Create the global data model.
       CCopasiDataModel::Global = new CCopasiDataModel;
+
+      std::cout << "COPASI Version "
+      << CCopasiDataModel::Global->getVersion()->getVersion()
+      << std::endl << std::endl;
+
+      if (Out.str() != "")
+        {
+          std::cout << Out.str();
+          return 1;
+        }
+
+      if (Error.str() != "")
+        {
+          std::cerr << Error.str();
+          return 1;
+        }
 
 #ifdef XXXX
       CCallParameters<C_FLOAT64> Variables(20);
@@ -157,6 +174,32 @@ int main(int argc, char *argv[])
         {
           COptions::nonOptionType::const_iterator it = Files.begin();
           COptions::nonOptionType::const_iterator end = Files.end();
+
+          if (it == end) // Create a usage message
+            {
+              std::string Help = "--help";
+              const char * Argv[2];
+              Argv[0] = argv[0];
+              Argv[1] = Help.c_str();
+
+              copasi::COptionParser * pParser = new copasi::COptionParser;
+              try
+                {
+                  pParser->parse(2, (char **) Argv);
+                }
+
+              catch (copasi::autoexcept &e)
+                {
+                  switch (e.get_autothrow_id())
+                    {
+                    case copasi::autothrow_help:
+                      std::cout << "Usage: " << CDirEntry::baseName(argv[0]) << " [options] [file]\n";
+                      std::cout << e.what();
+                    }
+                }
+
+              return 1;
+            }
 
           for (; it != end; ++it)
             {
