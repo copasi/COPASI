@@ -99,6 +99,10 @@ SOURCE=.\CIndexedPriorityQueue.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CluX.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CopasiTime.cpp
 # End Source File
 # Begin Source File
