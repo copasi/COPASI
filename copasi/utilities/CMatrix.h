@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:28:23 $
+   $Date: 2005/12/02 19:07:24 $
    End CVS Header */
 
 #ifndef COPASI_CMatrix
@@ -253,7 +253,10 @@ class CMatrix
      */
     virtual inline elementType & operator()(const unsigned C_INT32 & row,
                                             const unsigned C_INT32 & col)
-    {return *(mArray + row * mCols + col);}
+    {
+      assert (row < mRows && col < mCols);
+      return *(mArray + row * mCols + col);
+    }
 
     /**
      * Retrieve a matrix element using c-style indexing.
@@ -263,7 +266,10 @@ class CMatrix
      */
     virtual inline const elementType & operator()(const unsigned C_INT32 & row,
         const unsigned C_INT32 & col) const
-      {return *(mArray + row * mCols + col);}
+      {
+        assert (row < mRows && col < mCols);
+        return *(mArray + row * mCols + col);
+      }
 
     /**
      * Retrieve the array of the matrix elements. This is suitable
