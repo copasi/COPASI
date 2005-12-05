@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.115 $ $Author: shoops $ $Date: 2005/11/02 16:01:45 $  
+# $Revision: 1.116 $ $Author: shoops $ $Date: 2005/12/05 21:17:20 $  
 ######################################################################
 
 TEMPLATE = app
@@ -112,6 +112,7 @@ contains(BUILD_OS, Darwin){
   COPASI_LIBS += model
   COPASI_LIBS += randomGenerator
   COPASI_LIBS += function
+  COPASI_LIBS += utilities
   
   LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
          $$LIBS
