@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.237 $
+   $Revision: 1.238 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:19:20 $
+   $Date: 2005/12/05 15:59:03 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -544,7 +544,7 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
 
   LU = mStoi;
 
-  LUfactor(LU, mRowLU, mColLU, mLRowLU);
+  LUfactor(LU, mRowLU, mColLU, mpCompileHandler);
 
   // permutate Metabolites and Steps to match rearangements done during
   // LU decomposition
@@ -566,7 +566,8 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
 #ifdef DEBUG_MATRIX
   DebugFile << "Metabolite reordering " << mRowLU << std::endl;
   DebugFile << "Reaction reordering " << mColLU << std::endl;
-  DebugFile << "LU Row reordering " << mLRowLU << std::endl;
+  DebugFile << "LU Decomposistion" << std::endl;
+  DebugFile << LU;
 #endif
 
   return;
@@ -583,7 +584,7 @@ void CModel::setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU)
   for (i = 0; i < imax; i++)
     {
       // Interupt processing when first dependent metabolite is found.
-      if (LU[mLRowLU[i]][mColLU[i]] == 0.0) break;
+      if (fabs(LU(i, i)) < DBL_EPSILON) break;
 
       mMetabolitesX[i]->setStatus(CModelEntity::REACTIONS);
     }
@@ -678,7 +679,12 @@ void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
 
   for (i = 1; i < (unsigned C_INT32) N; i++)
     for (j = 0; j < i; j++)
-      R(i, j) = LU(mLRowLU[i], mColLU[j]);
+      R(i, j) = LU(i, j);
+
+#ifdef DEBUG_MATRIX
+  DebugFile << "L" << std::endl;
+  DebugFile << R << std::endl;
+#endif
 
   /* to take care of differences between fortran's and c's memory  acces,
      we need to take the transpose, i.e.,the upper triangular */
@@ -743,19 +749,27 @@ void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
   dtrtri_(&cL, &cU, &N, R.array(), &LDA, &Info);
   if (Info) fatalError();
 
+#ifdef DEBUG_MATRIX
+  DebugFile << "L inverse" << std::endl;
+  DebugFile << R << std::endl;
+#endif
+
   mL.resize(getNumDependentMetabs(), getNumIndependentMetabs());
 
   imin = getNumIndependentMetabs(), imax = getNumVariableMetabs();
   jmax = getNumIndependentMetabs();
 
+  // Construct L_0
   for (i = imin; i < imax; i++)
     for (j = 0; j < jmax; j++)
       {
         sum = & mL(i - imin, j);
-        *sum = LU(mLRowLU[i], mColLU[j]);
+        *sum = LU(i, j);
 
         for (k = j + 1; k < jmax; k++)
-          *sum += LU(mLRowLU[i], mColLU[k]) * R(k, j);
+          *sum += LU(i, k) * R(k, j);
+
+        if (fabs(*sum) < DBL_EPSILON) *sum = 0.0;
       }
 
 #ifdef DEBUG_MATRIX

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.106 $
+   $Revision: 1.107 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:19:21 $
+   $Date: 2005/12/05 15:59:03 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -358,11 +358,6 @@ class CModel : public CCopasiContainer
      * Vector for storing the column interchanges during LU-Decomposition
      */
     CVector< unsigned C_INT32 > mColLU;
-
-    /**
-     * Vector for storing the row interchanges during LU-Decomposition
-     */
-    CVector< unsigned C_INT32 > mLRowLU;
 
     /**
      *   This matrix stores L

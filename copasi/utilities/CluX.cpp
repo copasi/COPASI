@@ -1,18 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CluX.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/02 19:08:09 $
+   $Date: 2005/12/05 15:59:03 $
    End CVS Header */
 
 #include <algorithm>
+#include <math.h>
+#include <float.h>
 
 #include "copasi.h"
 
 #include "CluX.h"
 #include "CMatrix.h"
 #include "CVector.h"
+#include "CProcessReport.h"
 
 #include "clapackwrap.h"
 
@@ -21,7 +24,173 @@
 bool LUfactor(CMatrix< C_FLOAT64 > & A,
               CVector< unsigned C_INT32 > & row,
               CVector< unsigned C_INT32 > & col,
-              CVector< unsigned C_INT32 > & lRow)
+              CProcessReport * cb)
+{
+  unsigned C_INT32 Rows = A.numRows();
+  unsigned C_INT32 Cols = A.numCols();
+  unsigned C_INT32 Dim = std::min(Rows, Cols);
+
+  if (row.size() != Rows) row.resize(Rows);
+  if (col.size() != Cols) col.resize(Cols);
+  unsigned C_INT32 i = 0, j = 0, k = 0;
+  unsigned C_INT32 rowP = 0, colP = Cols - 1;
+
+  for (i = 0; i < Rows; i++)
+    row[i] = i;
+
+  for (i = 0; i < Cols; i++)
+    col[i] = i;
+
+  C_FLOAT64 Work = .5 * Dim * (Dim - 1);
+  C_FLOAT64 Completion = 0;
+
+  unsigned C_INT32 hProcess;
+  if (cb)
+    hProcess = cb->addItem("LU decomposition...",
+                           CCopasiParameter::DOUBLE,
+                           &Completion,
+                           &Work);
+
+  C_FLOAT64 tmp;
+  C_FLOAT64 * pTmp1;
+  C_FLOAT64 * pTmp2;
+  C_FLOAT64 * pTmp3;
+
+  for (i = 0; i < Dim; i++)
+    {
+      Completion += Dim - i;
+
+      if (cb && !cb->progress(hProcess)) return false;
+
+      // find pivot in column j and  test for singularity.
+      while (true)
+        {
+          rowP = C_INVALID_INDEX;
+          tmp = 0.0;
+
+          for (j = i, pTmp1 = &A(i, i); j < Rows; j++, pTmp1 += Cols)
+            if (fabs(*pTmp1) > tmp) // (fabs(A(j, i)) > t)
+              {
+                rowP = j;
+                tmp = fabs(*pTmp1); // fabs(A(j, i));
+              }
+
+          // rowP now has the index of maximum element
+          // of column j, below the diagonal
+
+          if (tmp < DBL_EPSILON) // now we have to swap colums to find a pivot
+            {
+              // Instead of blindly swapping with the last available
+              // column we first check whether it is suitable. If not
+              // we proceed with the lat but one ...
+              while (i < colP)
+                {
+                  rowP = C_INVALID_INDEX;
+                  tmp = 0.0;
+
+                  for (j = i, pTmp1 = &A(i, colP); j < Rows; j++, pTmp1 += Cols)
+                    if (fabs(*pTmp1) > tmp) // (fabs(A(j, colP)) > t)
+                      {
+                        rowP = j;
+                        tmp = fabs(*pTmp1); // fabs(A(j, colP));
+                      }
+
+                  if (tmp >= DBL_EPSILON) break; // Found a suitable column
+                  // and row
+
+                  colP--; // proceed with previous column
+                }
+
+              if (i >= colP)
+                {
+                  if (cb) cb->finish(hProcess);
+                  return true;
+                }
+
+              // Swap columns i and colP
+              pTmp1 = &A(0, i);
+              pTmp2 = &A(0, colP);
+
+              for (k = 0; k < Rows; k++, pTmp1 += Cols, pTmp2 += Cols)
+                {
+                  tmp = *pTmp1;
+                  *pTmp1 = *pTmp2;
+                  *pTmp2 = tmp;
+                }
+
+              std::swap(col[i], col[colP]);
+              colP--;
+            }
+
+          // Swap rows i and rowP
+          pTmp1 = &A(i, 0);
+          pTmp2 = &A(rowP, 0);
+
+          for (k = 0; k < Cols; k++, pTmp1++, pTmp2++)
+            {
+              tmp = *pTmp1;
+              *pTmp1 = *pTmp2;
+              *pTmp2 = tmp;
+            }
+
+          std::swap(row[i], row[rowP]);
+          break;
+        }
+
+      if (i < Rows - 1)    // compute elements i+1 <= k < M of i-th column
+        {
+          // note A(i,i) is guarranteed not to be zero
+          tmp = 1.0 / A(i, i);
+
+          pTmp1 = &A(i + 1, i);
+
+          for (k = i + 1; k < Rows; k++, pTmp1 += Cols)
+            * pTmp1 *= tmp;
+        }
+
+      if (i < Dim - 1)
+        {
+          // rank-1 update to trailing submatrix:   E = E - x*y;
+          //
+          // E is the region A(i+1:M, i+1:N)
+          // x is the column vector A(i+1:M,i)
+          // y is row vector A(i,i+1:N)
+
+          unsigned C_INT32 ii, jj;
+
+          pTmp1 = &A(i + 1, i);
+          pTmp3 = &A(i + 1, i + 1);
+
+          for (ii = i + 1; ii < Rows; ii++, pTmp1 += Cols, pTmp3 += i + 1)
+            {
+              pTmp2 = &A(i, i + 1);
+
+              for (jj = i + 1; jj < Cols; jj++, pTmp2++, pTmp3++)
+                {
+                  *pTmp3 -= *pTmp1 * *pTmp2;
+                  //                  if (fabs(*pTmp3) < DBL_EPSILON) *pTmp3 = 0.0;
+                }
+            }
+        }
+
+#ifdef DEBUG_MATRIX
+      DebugFile << rowP << "\tx\t" << colP + 1 << std::endl;
+      DebugFile << "Row\t" << row << std::endl;
+      DebugFile << "Col\t" << col << std::endl;
+      DebugFile << A << std::endl;
+#endif
+    }
+
+  if (cb) cb->finish(hProcess);
+
+  return true;
+}
+
+#ifdef XXXX
+bool LUfactor(CMatrix< C_FLOAT64 > & A,
+              CVector< unsigned C_INT32 > & row,
+              CVector< unsigned C_INT32 > & col,
+              CProcessReport * cb)
 {
   CVector< unsigned C_INT32 > lCol;
 
@@ -142,7 +311,7 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
 
             pTmp1 = &T(0, i + iTop);
             pTmp2 = &T(0, RowPivot[i] - 1 + iTop);
-;
+
             for (k = 0; k < iTop; k++, pTmp1 += Rows, pTmp2 += Rows)
               {
                 tmp = *pTmp1;
@@ -264,3 +433,4 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
 
   return true;
 }
+#endif // XXXX

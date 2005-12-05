@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CluX.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:19:22 $
+   $Date: 2005/12/05 15:59:03 $
    End CVS Header */
 
 #ifndef COPASI_CluX
@@ -48,13 +48,7 @@
 //                  the rows of A were reordered to increase
 //                  numerical stability.
 //
-// The following pivot vectors describe the reordering necessary to achieve
-// zero diagonal elements only in the last consecutive elemts of U
-//
 // col      (output) Vector(1:N)    Pivot vector. Describes how
-//                  the colums of A were reordered to avoid zero pivots.
-//
-// lRow     (output) Vector(1:M)    Pivot vector. Describes how
 //                  the colums of A were reordered to avoid zero pivots.
 //
 // Return value:
@@ -62,13 +56,13 @@
 // int      (0 if successful, 1 otherwise)
 //
 //
-
+class CProcessReport;
 template < typename ValueType > class CMatrix;
 template < typename ValueType > class CVector;
 
 bool LUfactor(CMatrix< C_FLOAT64 > & A,
               CVector< unsigned C_INT32 > & row,
               CVector< unsigned C_INT32 > & col,
-              CVector< unsigned C_INT32 > & lRow);
+              CProcessReport * cb = NULL);
 
 #endif // COPASI_CluX
