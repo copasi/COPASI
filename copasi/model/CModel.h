@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.107 $
+   $Revision: 1.108 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/05 15:59:03 $
+   $Date: 2005/12/05 19:45:15 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -469,6 +469,12 @@ class CModel : public CCopasiContainer
      *  Build the core of the link matrix L
      *  @param const CMatrix< C_FLOAT64 > & LU
      */
+    void buildLinkZero();
+
+    /**
+     *  Build the core of the link matrix L
+     *  @param const CMatrix< C_FLOAT64 > & LU
+     */
     void buildL(const CMatrix< C_FLOAT64 > & LU);
 
     /**
@@ -479,9 +485,8 @@ class CModel : public CCopasiContainer
 
     /**
      *  Set the status of the metabolites
-     *  @param const CMatrix< C_FLOAT64 > & LU
      */
-    void setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU);
+    void setMetabolitesStatus();
 
     /**
      *  Build the Reduced Stoichiometry Matrix from the LU decomposition

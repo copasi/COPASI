@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.238 $
+   $Revision: 1.239 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/05 15:59:03 $
+   $Date: 2005/12/05 19:45:15 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -321,10 +321,6 @@ bool CModel::compile()
 {
   CMatrix< C_FLOAT64 > LU;
 
-  unsigned C_INT32 i, imax = mSteps.size();
-  for (i = 0; i < imax; i++)
-    mSteps[i]->compile(/*mCompartments*/);
-
   unsigned C_INT32 CompileStep = 0;
   unsigned C_INT32 hCompileStep;
   if (mpCompileHandler)
@@ -336,26 +332,40 @@ bool CModel::compile()
                      & CompileStep,
                      &totalSteps);
     }
+  unsigned C_INT32 i, imax = mSteps.size();
+  for (i = 0; i < imax; i++)
+    mSteps[i]->compile(/*mCompartments*/);
 
-  buildStoi();
   CompileStep = 1;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
-  lUDecomposition(LU);
+  buildStoi();
   CompileStep = 2;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
-  setMetabolitesStatus(LU);
+  buildLinkZero();
   CompileStep = 3;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+
+  /*
+    lUDecomposition(LU);
+    CompileStep = 2;
+    if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+  */
 
   buildRedStoi();
   CompileStep = 4;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
-  buildL(LU);
+  setMetabolitesStatus();
   CompileStep = 5;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+
+  /*
+    buildL(LU);
+    CompileStep = 5;
+    if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+  */
 
   buildMoieties();
   CompileStep = 6;
@@ -573,25 +583,19 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
   return;
 }
 
-void CModel::setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU)
+void CModel::setMetabolitesStatus()
 {
   unsigned C_INT32 i;
   unsigned C_INT32 iIndependent = 0, iVariable = 0;
 
-  unsigned C_INT32 imax =
-    (LU.numRows() < LU.numCols()) ? LU.numRows() : LU.numCols();
+  unsigned C_INT32 imax = mMetabolitesX.size() - mL.numRows();
 
   for (i = 0; i < imax; i++)
-    {
-      // Interupt processing when first dependent metabolite is found.
-      if (fabs(LU(i, i)) < DBL_EPSILON) break;
-
-      mMetabolitesX[i]->setStatus(CModelEntity::REACTIONS);
-    }
+    mMetabolitesX[i]->setStatus(CModelEntity::REACTIONS);
 
   iIndependent = i;
 
-  for (; i < LU.numRows(); i++)
+  for (; i < iIndependent + mL.numRows(); i++)
     mMetabolitesX[i]->setStatus(CModelEntity::DEPENDENT);
 
   iVariable = i;
@@ -615,15 +619,31 @@ void CModel::setMetabolitesStatus(const CMatrix< C_FLOAT64 > & LU)
 
 void CModel::buildRedStoi()
 {
-  C_INT32 i, imax = mMetabolitesInd.size();
+  C_INT32 i, imax = mMetabolites.size() - mL.numRows();
   C_INT32 j, jmax = mStepsX.size();                // wei for compiler
 
   mRedStoi.resize(imax, jmax);
-
   /* just have to swap rows and colums */
   for (i = 0; i < imax; i++)
     for (j = 0; j < jmax; j++)
       mRedStoi(i, j) = mStoi(mRowLU[i], mColLU[j]);
+
+  imax = mMetabolites.size();
+  mMetabolitesX.resize(imax, false);
+  for (i = 0; i < imax; i++)
+    mMetabolitesX[i] = mMetabolites[mRowLU[i]];
+
+  imax = mSteps.size();
+  mStepsX.resize(mSteps.size(), false);
+  mFluxesX.resize(mStepsX.size());
+  mParticleFluxesX.resize(mStepsX.size());
+
+  for (i = 0; i < imax; i++)
+    {
+      mStepsX[i] = mSteps[mColLU[i]];
+      mFluxesX[i] = &mStepsX[i]->getFlux();
+      mParticleFluxesX[i] = &mStepsX[i]->getParticleFlux();
+    }
 
 #ifdef XXXX
   for (i = 0; i < imax; i++)
@@ -2340,3 +2360,251 @@ void CModel::check() const
     {std::cout << "******** compile should have been called" << std::endl;}
   }
 #endif
+
+void CModel::buildLinkZero()
+{
+  // Prior to a call to buildLinkZero the stoichiometry matrix mStoi must
+  // have been constructed.
+
+  mRedStoi = mStoi;
+
+  C_INT M = mRedStoi.numCols();
+  C_INT N = mRedStoi.numRows();
+  C_INT LDA = std::max<C_INT>(1, M);
+
+  CVector< C_INT > JPVT(N);
+  JPVT = 0;
+
+  unsigned C_INT32 Dim = std::min(M, N);
+  if (Dim == 0) return;
+
+  CVector< C_FLOAT64 > TAU(Dim);
+
+  CVector< C_FLOAT64 > WORK(1);
+  C_INT LWORK = -1;
+  C_INT INFO;
+
+  // QR factorization of the stoichimetry matrix
+  /*
+   *  -- LAPACK routine (version 3.0) --
+   *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+   *     Courant Institute, Argonne National Lab, and Rice University
+   *     June 30, 1999
+   *
+   *  Purpose
+   *  =======
+   *
+   *  DGEQP3 computes a QR factorization with column pivoting of a
+   *  matrix A:  A*P = Q*R  using Level 3 BLAS.
+   *
+   *  Arguments
+   *  =========
+   *
+   *  M       (input) INTEGER
+   *          The number of rows of the matrix A. M >= 0.
+   *
+   *  N       (input) INTEGER
+   *          The number of columns of the matrix A.  N >= 0.
+   *
+   *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+   *          On entry, the M-by-N matrix A.
+   *          On exit, the upper triangle of the array contains the
+   *          min(M,N)-by-N upper trapezoidal matrix R; the elements below
+   *          the diagonal, together with the array TAU, represent the
+   *          orthogonal matrix Q as a product of min(M,N) elementary
+   *          reflectors.
+   *
+   *  LDA     (input) INTEGER
+   *          The leading dimension of the array A. LDA >= max(1,M).
+   *
+   *  JPVT    (input/output) INTEGER array, dimension (N)
+   *          On entry, if JPVT(J).ne.0, the J-th column of A is permuted
+   *          to the front of A*P (a leading column); if JPVT(J)=0,
+   *          the J-th column of A is a free column.
+   *          On exit, if JPVT(J)=K, then the J-th column of A*P was the
+   *          the K-th column of A.
+   *
+   *  TAU     (output) DOUBLE PRECISION array, dimension (min(M,N))
+   *          The scalar factors of the elementary reflectors.
+   *
+   *  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+   *          On exit, if INFO=0, WORK(1) returns the optimal LWORK.
+   *
+   *  LWORK   (input) INTEGER
+   *          The dimension of the array WORK. LWORK >= 3*N+1.
+   *          For optimal performance LWORK >= 2*N+(N+1)*NB, where NB
+   *          is the optimal blocksize.
+   *
+   *          If LWORK = -1, then a workspace query is assumed; the routine
+   *          only calculates the optimal size of the WORK array, returns
+   *          this value as the first entry of the WORK array, and no error
+   *          message related to LWORK is issued by XERBLA.
+   *
+   *  INFO    (output) INTEGER
+   *          = 0: successful exit.
+   *          < 0: if INFO = -i, the i-th argument had an illegal value.
+   *
+   *  Further Details
+   *  ===============
+   *
+   *  The matrix Q is represented as a product of elementary reflectors
+   *
+   *     Q = H(1) H(2) . . . H(k), where k = min(m,n).
+   *
+   *  Each H(i) has the form
+   *
+   *     H(i) = I - tau * v * v'
+   *
+   *  where tau is a real/complex scalar, and v is a real/complex vector
+   *  with v(1:i-1) = 0 and v(i) = 1; v(i+1:m) is stored on exit in
+   *  A(i+1:m,i), and tau in TAU(i).
+   *
+   *  Based on contributions by
+   *    G. Quintana-Orti, Depto. de Informatica, Universidad Jaime I, Spain
+   *    X. Sun, Computer Science Dept., Duke University, USA
+   *
+   */
+
+#ifdef DEBUG_MATRIX
+  DebugFile << CTransposeView< CMatrix< C_FLOAT64 > >(mRedStoi) << std::endl;
+#endif
+
+  dgeqp3_(&M, &N, mRedStoi.array(), &LDA,
+          JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
+  if (INFO < 0) fatalError();
+
+  LWORK = WORK[0];
+  WORK.resize(LWORK);
+
+  dgeqp3_(&M, &N, mRedStoi.array(), &LDA,
+          JPVT.array(), TAU.array(), WORK.array(), &LWORK, &INFO);
+  if (INFO < 0) fatalError();
+
+  unsigned C_INT32 i;
+  mRowLU.resize(N);
+  for (i = 0; i < N; i++)
+    mRowLU[i] = JPVT[i] - 1;
+
+  mColLU.resize(M);
+  for (i = 0; i < M; i++)
+    mColLU[i] = i;
+
+#ifdef DEBUG_MATRIX
+  DebugFile << "QR Factorization:" << std::endl;
+  DebugFile << "Row permutation:\t" << mRowLU << std::endl;
+  DebugFile << "Column permutation:\t" << mColLU << std::endl;
+  DebugFile << CTransposeView< CMatrix< C_FLOAT64 > >(mRedStoi) << std::endl;
+#endif
+
+  C_INT independent = 0;
+  while (independent < Dim &&
+         fabs(mRedStoi(independent, independent)) > 100 * DBL_EPSILON) independent++;
+
+  // Resize mL
+  mL.resize(N - independent, independent);
+  if (N == independent || independent == 0) return;
+
+  /* to take care of differences between fortran's and c's memory  acces,
+     we need to take the transpose, i.e.,the upper triangular */
+  char cL = 'U';
+  char cU = 'N'; /* 1 in the diaogonal of R */
+
+  // Calculate Row Echelon form of R.
+  // First invert R_1,1
+  /* int dtrtri_(char *uplo,
+   *             char *diag, 
+   *             integer *n, 
+   *             doublereal * A,
+   *             integer *lda, 
+   *             integer *info);   
+   *  -- LAPACK routine (version 3.0) --
+   *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+   *     Courant Institute, Argonne National Lab, and Rice University
+   *     March 31, 1993
+   *
+   *  Purpose
+   *  =======
+   *
+   *  DTRTRI computes the inverse of a real upper or lower triangular
+   *  matrix A.
+   *
+   *  This is the Level 3 BLAS version of the algorithm.
+   *
+   *  Arguments
+   *  =========
+   *
+   *  uplo    (input) CHARACTER*1
+   *          = 'U':  A is upper triangular;
+   *          = 'L':  A is lower triangular.
+   *
+   *  diag    (input) CHARACTER*1
+   *          = 'N':  A is non-unit triangular;
+   *          = 'U':  A is unit triangular.
+   *
+   *  n       (input) INTEGER
+   *          The order of the matrix A.  n >= 0.
+   *
+   *  A       (input/output) DOUBLE PRECISION array, dimension (lda,n)
+   *          On entry, the triangular matrix A.  If uplo = 'U', the
+   *          leading n-by-n upper triangular part of the array A contains
+   *          the upper triangular matrix, and the strictly lower
+   *          triangular part of A is not referenced.  If uplo = 'L', the
+   *          leading n-by-n lower triangular part of the array A contains
+   *          the lower triangular matrix, and the strictly upper
+   *          triangular part of A is not referenced.  If diag = 'U', the
+   *          diagonal elements of A are also not referenced and are
+   *          assumed to be 1.
+   *          On exit, the (triangular) inverse of the original matrix, in
+   *          the same storage format.
+   *
+   *  lda     (input) INTEGER
+   *          The leading dimension of the array A.  lda >= max(1,n).
+   *
+   *  info    (output) INTEGER
+   *          = 0: successful exit
+   *          < 0: if info = -i, the i-th argument had an illegal value
+   *          > 0: if info = i, A(i,i) is exactly zero.  The triangular
+   *               matrix is singular and its inverse can not be computed.
+   */
+  dtrtri_(&cL, &cU, &independent, mRedStoi.array(), &LDA, &INFO);
+  if (INFO < 0) fatalError();
+
+#ifdef DEBUG_MATRIX
+  DebugFile << "Invert R_1,1:" << std::endl;
+  DebugFile << CTransposeView< CMatrix< C_FLOAT64 > >(mRedStoi) << std::endl;
+#endif
+
+  unsigned C_INT32 j, k;
+
+  // Compute Link_0 = inverse(R_1,1) * R_1,2
+  C_FLOAT64 * pTmp1 = &mL(0, 0);
+  C_FLOAT64 * pTmp2;
+  C_FLOAT64 * pTmp3;
+
+  for (j = 0; j < N - independent; j++)
+    for (i = 0; i < independent; i++, pTmp1++)
+      {
+        pTmp2 = &mRedStoi(j + independent, i);
+        pTmp3 = &mRedStoi(i, i);
+
+        // assert(&mL(j, i) == pTmp3);
+        *pTmp1 = 0.0;
+
+        for (k = i; k < independent; k++, pTmp2++, pTmp3 += M)
+          {
+            // assert(&mRedStoi(j + independent, k) == pTmp2);
+            // assert(&mRedStoi(k, i) == pTmp3);
+
+            *pTmp1 += *pTmp3 * *pTmp2;
+          }
+
+        if (fabs(*pTmp1) < 100 * DBL_EPSILON) *pTmp1 = 0.0;
+      }
+
+#ifdef DEBUG_MATRIX
+  DebugFile << "Link Zero Matrix:" << std::endl;
+  DebugFile << mL << std::endl;
+#endif // DEBUG_MATRIX
+
+  return;
+}
