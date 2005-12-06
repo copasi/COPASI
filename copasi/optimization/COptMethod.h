@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 17:48:31 $
+   $Date: 2005/12/06 19:19:30 $
    End CVS Header */
 
 /**
@@ -148,6 +148,7 @@ class COptMethod : public CCopasiMethod
 // #include "COptMethodSA.h"
 #include "COptMethodGA.h"
 #include "COptMethodGASR.h"
+#include "COptMethodHookeJeeves.h"
 #include "COptMethodSteepestDescent.h"
 #include "COptMethodEP.h" 
 // #include "COptMethodHGASA.h"

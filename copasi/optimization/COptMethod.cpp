@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:28:13 $
+   $Date: 2005/12/06 19:19:28 $
    End CVS Header */
 
 /**
@@ -50,6 +50,10 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
 
     case GeneticAlgorithmSR:
       pMethod = new COptMethodGASR();
+      break;
+
+    case HookeJeeves:
+      pMethod = new COptMethodHookeJeeves();
       break;
 
     case RandomSearch:
