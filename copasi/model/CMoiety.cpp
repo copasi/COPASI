@@ -1,12 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 22:01:45 $
+   $Date: 2005/12/06 16:29:55 $
    End CVS Header */
 
 #include <stdio.h>
+#include <float.h>
 #include "mathematics.h"
 
 #include "copasi.h"
@@ -24,7 +25,7 @@
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Moiety"),
-    mKey(GlobalKeys.add("Moiety", this)),               //By G
+    mKey(GlobalKeys.add("Moiety", this)),                //By G
     mNumber(0),
     mINumber(0),
     mEquation()
@@ -36,7 +37,7 @@ CMoiety::CMoiety(const std::string & name,
 CMoiety::CMoiety(const CMoiety & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Moiety", this)),               //By G
+    mKey(GlobalKeys.add("Moiety", this)),                //By G
     mNumber(src.mNumber),
     mINumber(src.mINumber),
     mEquation(src.mEquation)
@@ -100,9 +101,10 @@ std::string CMoiety::getDescription(const CModel * model) const
             else
               Description += " + ";
           }
-        if (fabs(mEquation[i].first) != 1.0)
-          Description += StringPrint("%3.1f * ",
-                                     fabs(mEquation[i].first));
+        if (fabs(mEquation[i].first) > 1.0 + 100 * DBL_EPSILON ||
+            fabs(mEquation[i].first) < 1.0 - 100 * DBL_EPSILON)
+          Description += StringPrint("%g * ", fabs(mEquation[i].first));
+
         Description += CMetabNameInterface::getDisplayName(model, *mEquation[i].second);
       }
     return Description;
