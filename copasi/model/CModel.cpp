@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.239 $
+   $Revision: 1.240 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/05 19:45:15 $
+   $Date: 2005/12/06 12:58:21 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -486,7 +486,7 @@ bool CModel::handleUnusedMetabolites()
   for (i = 0; i < imax; i++)
     {
       for (j = 0; j < jmax; j++)
-        if (mStoi[i][j] != 0.0) break;
+        if (fabs(mStoi(i, j)) > DBL_EPSILON) break;
 
       if (j == jmax) Unused.push_back(i);
     }
@@ -586,19 +586,8 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
 void CModel::setMetabolitesStatus()
 {
   unsigned C_INT32 i;
-  unsigned C_INT32 iIndependent = 0, iVariable = 0;
-
-  unsigned C_INT32 imax = mMetabolitesX.size() - mL.numRows();
-
-  for (i = 0; i < imax; i++)
-    mMetabolitesX[i]->setStatus(CModelEntity::REACTIONS);
-
-  iIndependent = i;
-
-  for (; i < iIndependent + mL.numRows(); i++)
-    mMetabolitesX[i]->setStatus(CModelEntity::DEPENDENT);
-
-  iVariable = i;
+  unsigned C_INT32 iVariable = mStoi.numRows();
+  unsigned C_INT32 iIndependent = iVariable - mL.numRows();
 
   assert(mNumFixed + iVariable == mMetabolites.size());
 
@@ -607,79 +596,50 @@ void CModel::setMetabolitesStatus()
 
   for (i = 0; i < iIndependent; i++)
     {
+      mMetabolitesX[i]->setStatus(CModelEntity::REACTIONS);
       mMetabolitesInd[i] = mMetabolitesX[i];
       mMetabolitesVar[i] = mMetabolitesX[i];
     }
 
   for (; i < iVariable; i++)
-    mMetabolitesVar[i] = mMetabolitesX[i];
+    {
+      mMetabolitesVar[i] = mMetabolitesX[i];
+      mMetabolitesX[i]->setStatus(CModelEntity::DEPENDENT);
+    }
 
   return;
 }
 
 void CModel::buildRedStoi()
 {
-  C_INT32 i, imax = mMetabolites.size() - mL.numRows();
-  C_INT32 j, jmax = mStepsX.size();                // wei for compiler
+  C_INT32 i, imax = mStoi.numRows() - mL.numRows();
+  C_INT32 j, jmax = mStoi.numCols();
 
   mRedStoi.resize(imax, jmax);
+
   /* just have to swap rows and colums */
   for (i = 0; i < imax; i++)
     for (j = 0; j < jmax; j++)
       mRedStoi(i, j) = mStoi(mRowLU[i], mColLU[j]);
 
-  imax = mMetabolites.size();
-  mMetabolitesX.resize(imax, false);
-  for (i = 0; i < imax; i++)
+  for (i = 0, imax = mStoi.numRows(); i < imax; i++)
     mMetabolitesX[i] = mMetabolites[mRowLU[i]];
 
-  imax = mSteps.size();
-  mStepsX.resize(mSteps.size(), false);
-  mFluxesX.resize(mStepsX.size());
-  mParticleFluxesX.resize(mStepsX.size());
+  mStepsX.resize(jmax, false);
+  mFluxesX.resize(jmax);
+  mParticleFluxesX.resize(jmax);
 
-  for (i = 0; i < imax; i++)
+  for (j = 0; j < jmax; j++)
     {
-      mStepsX[i] = mSteps[mColLU[i]];
-      mFluxesX[i] = &mStepsX[i]->getFlux();
-      mParticleFluxesX[i] = &mStepsX[i]->getParticleFlux();
+      mStepsX[j] = mSteps[mColLU[j]];
+      mFluxesX[j] = &mStepsX[j]->getFlux();
+      mParticleFluxesX[j] = &mStepsX[j]->getParticleFlux();
     }
-
-#ifdef XXXX
-  for (i = 0; i < imax; i++)
-    for (j = 0; j < jmax; j++)
-      {
-        /* Since L[i,k] = 1 for k = i and L[i,k] = 0 for k > i
-           we have to avoid L[i,k] where k >= i, i.e.. k < i.
-           Similarly, since U[k,j] = 0 for k > j
-           we have to avoid U[k,j] where k > j, i.e., k <= j. */
-
-        if (j < i)
-          {
-            Sum = 0.0;
-            kmax = j + 1;
-          }
-        else
-          {
-            /* For j < i we are missing a part of the sum: */
-            /* Sum +=  LU[i][j]; since L[i,i] = 1 */
-            Sum = LU[i][j];
-            kmax = i;
-          }
-
-        for (k = 0; k < kmax; k++)
-          Sum += LU[i][k] * LU[k][j];
-
-        mRedStoi[i][j] = Sum;
-      }
-#endif // XXXX
 
 #ifdef DEBUG_MATRIX
   DebugFile << "Reduced Stoichiometry Matrix" << std::endl;
   DebugFile << mRedStoi << std::endl;
 #endif
-  //std::cout << "Reduced Stoichiometry Matrix" << std::endl;
-  //std::cout << mRedStoi << std::endl;
 
   return;
 }
@@ -826,7 +786,7 @@ void CModel::buildMoieties()
 
       for (j = 0; j < jmax; j++)
         {
-          if (mLView(i, j) != 0.0)
+          if (fabs(mLView(i, j)) > DBL_EPSILON)
             pMoiety->add(- mLView(i, j), mMetabolitesX[j]);
         }
 
