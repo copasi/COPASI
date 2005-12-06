@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/10 16:12:03 $
+   $Author: shoops $ 
+   $Date: 2005/12/06 20:03:11 $
    End CVS Header */
 
 /**
@@ -31,6 +31,7 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Steepest Descent",
     "Hybrid GA/SA",
     "Genetic Algorithm SR",
+    "Hooke & Jeeves",
     "Enhanced Newton",
     "Deterministic (LSODA)",
     "Stochastic",
@@ -53,6 +54,7 @@ const char* CCopasiMethod::XMLSubType[] =
     "SteepestDescent",
     "HybridGASA",
     "GeneticAlgorithmSR",
+    "HookeJeeves",
     "EnhancedNewton",
     "Deterministic(LSODA)",
     "Stochastic",

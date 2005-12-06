@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/21 15:36:01 $
+   $Date: 2005/12/06 20:03:11 $
    End CVS Header */
 
 /**
@@ -34,6 +34,7 @@ unsigned C_INT32 COptTask::ValidMethods[] =
   {
     CCopasiMethod::GeneticAlgorithm,
     CCopasiMethod::GeneticAlgorithmSR,
+    CCopasiMethod::HookeJeeves,
     CCopasiMethod::EvolutionaryProgram,
     CCopasiMethod::RandomSearch,
     CCopasiMethod::SteepestDescent,

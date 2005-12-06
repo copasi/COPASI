@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.17 $ $Author: anuragr $ $Date: 2005/08/01 06:59:31 $  
+# $Revision: 1.18 $ $Author: shoops $ $Date: 2005/12/06 20:03:11 $  
 ######################################################################
 
 LIB = optimization
@@ -11,13 +11,14 @@ include(../common.pri)
 HEADERS += COptMethod.h \
 #           COptMethodEP2.h \
            COptMethodGA.h \
+           COptMethodHookeJeeves.h \
 #           COptMethodHGASA.h \
 #           COptMethodSA.h \
            COptProblem.h \
            CRandomSearch.h \
            COptMethodGASR.h \
            COptMethodSteepestDescent.h \
-		   COptMethodEP.h \
+		       COptMethodEP.h \
 #           CRandomSearchMaster.h \
            CRealProblem.h \
            COptFunction.h \
@@ -28,13 +29,14 @@ HEADERS += COptMethod.h \
 SOURCES += COptMethod.cpp \
 #           COptMethodEP2.cpp \
            COptMethodGA.cpp \
+           COptMethodHookeJeeves.cpp \
 #           COptMethodHGASA.cpp \
 #           COptMethodSA.cpp \
            COptProblem.cpp \
            CRandomSearch.cpp \
            COptMethodGASR.cpp \
            COptMethodSteepestDescent.cpp \
-		   COptMethodEP.cpp \
+		       COptMethodEP.cpp \
 #           CRandomSearchMaster.cpp \
            CRealProblem.cpp \
            COptFunction.cpp \
