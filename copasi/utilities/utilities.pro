@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.18 $ $Author: shoops $ $Date: 2005/11/29 17:19:22 $  
+# $Revision: 1.19 $ $Author: shoops $ $Date: 2005/12/07 21:20:13 $  
 ######################################################################
 
 LIB = utilities
@@ -29,7 +29,7 @@ HEADERS += CAnnotatedMatrix.h \
            CProcessReport.h \
            CReadConfig.h \
            CSlider.h \
-#           CSparseMatrix.h \
+           CSparseMatrix.h \
 #           CSparseVector.h \
            CSort.h \
            CTableCell.h \
@@ -55,7 +55,7 @@ SOURCES += CAnnotatedMatrix.cpp \
            CProcessReport.cpp \
            CReadConfig.cpp \
            CSlider.cpp \
-#           CSparseMatrix.cpp \
+           CSparseMatrix.cpp \
 #           CSparseVector.cpp \
            CTableCell.cpp \
            CVersion.cpp \
