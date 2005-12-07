@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/07 10:55:57 $
+   $Date: 2005/12/07 15:42:55 $
    End CVS Header */
 
 #include "copasi.h"
@@ -169,15 +169,30 @@ bool CFunction::isSuitable(const unsigned C_INT32 noSubstrates,
     return false;
 
   //check substrates
-  if (!mVariables.isVector(CFunctionParameter::SUBSTRATE))
-    if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) != noSubstrates)
-      return false;
+  if (mVariables.isVector(CFunctionParameter::SUBSTRATE))
+    {
+      if (noSubstrates < 1)
+        return false;
+    }
+  else //is no vector
+    {
+      if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) != noSubstrates)
+        return false;
+    }
 
   //check products
   if (reversible == TriTrue)
-    if (!mVariables.isVector(CFunctionParameter::PRODUCT))
-      if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) != noProducts)
-        return false;
-
+    {
+      if (mVariables.isVector(CFunctionParameter::PRODUCT))
+        {
+          if (noProducts < 1)
+            return false;
+        }
+      else //is no vector
+        {
+          if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) != noProducts)
+            return false;
+        }
+    }
   return true;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/07 10:55:59 $
+   $Date: 2005/12/07 15:42:55 $
    End CVS Header */
 
 /**
@@ -276,6 +276,26 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
 
       if (pFunction->isSuitable(noSubstrates, noProducts, reversibility))
         ret.push_back(pFunction);
+    }
+
+  //always add constant flux it is is missing
+  if (reversibility == TriTrue)
+    {
+      if ((noSubstrates > 0) || (noProducts > 0)) //constant flux was not yet added
+        {
+          pFunction = dynamic_cast<CFunction*>(findFunction("Constant flux (reversible)"));
+          if (!pFunction) fatalError();
+          ret.push_back(pFunction);
+        }
+    }
+  else //irreversible
+    {
+      if (noSubstrates > 0) //constant flux was not yet added
+        {
+          pFunction = dynamic_cast<CFunction*>(findFunction("Constant flux (irreversible)"));
+          if (!pFunction) fatalError();
+          ret.push_back(pFunction);
+        }
     }
 
   return ret;

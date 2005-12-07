@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/07 10:55:59 $
+   $Date: 2005/12/07 15:42:55 $
    End CVS Header */
 
 /**
@@ -75,22 +75,6 @@ class CFunctionDB : public CCopasiContainer
      *  @return mFail
      */
     C_INT32 load(CReadConfig & configbuffer);
-
-    /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  (Which usually has a file attached but may also have socket)
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return mFail
-     */ 
-    //    C_INT32 save(CWriteConfig & configbuffer);
-
-    /**
-     *  Saves the contents of the object to a CWriteConfig object.
-     *  This function uses the file format of Gepasi 3.21
-     *  @param pconfigbuffer reference to a CWriteConfig object.
-     *  @return mFail
-     */ 
-    //    C_INT32 saveOld(CWriteConfig & configbuffer);
 
     /**
      *
