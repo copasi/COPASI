@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.240 $
+   $Revision: 1.241 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/06 12:58:21 $
+   $Date: 2005/12/07 21:23:00 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -449,13 +449,13 @@ void CModel::buildStoi()
 
       for (j = 0; j < (unsigned C_INT32) mStoi.numRows(); j++)
         {
-          mStoi[j][i] = 0.0;
+          mStoi(j, i) = 0.0;
           key = mMetabolites[j]->getKey(); //TODO use reference?
 
           for (k = 0; k < Structure.size(); k++)
             if (Structure[k]->getMetaboliteKey() == key)
               {
-                mStoi[j][i] = Structure[k]->getMultiplicity();
+                mStoi(j, i) = Structure[k]->getMultiplicity();
                 break;
               }
         }
@@ -528,7 +528,7 @@ bool CModel::handleUnusedMetabolites()
 
           // The row needs to be copied to the new stoichiometry matrix
           for (j = 0; j < jmax; j++)
-            Stoi[i - k][j] = mStoi[i][j];
+            Stoi(i - k, j) = (C_FLOAT64) mStoi(i, j);
         }
     }
 
@@ -825,7 +825,7 @@ void CModel::setTransitionTimes()
           TotalFlux_p = 0.0;
           for (j = 0; j < jmax; j++)
             {
-              PartialFlux = mStoi[i][j] * *mParticleFluxes[j];
+              PartialFlux = mStoi(i, j) * *mParticleFluxes[j];
 
               if (PartialFlux > 0.0)
                 TotalFlux_p += PartialFlux;
@@ -835,7 +835,7 @@ void CModel::setTransitionTimes()
           TotalFlux_n = 0.0;
           for (j = 0; j < jmax; j++)
             {
-              PartialFlux = - mStoi[i][j] * *mParticleFluxes[j];
+              PartialFlux = - mStoi(i, j) * *mParticleFluxes[j];
 
               if (PartialFlux > 0.0)
                 TotalFlux_n += PartialFlux;
@@ -1373,7 +1373,7 @@ void CModel::updateRates()
     {
       tmp = 0.0;
       for (j = 0; j < jmax; ++j)
-        tmp += mStoi[i][j] * *mParticleFluxes[j];
+        tmp += mStoi(i, j) * *mParticleFluxes[j];
       mMetabolites[i]->setNumberRate(tmp);
     }
 
@@ -1424,7 +1424,7 @@ void CModel::getDerivatives_particles(const CState * state, CVector< C_FLOAT64 >
       derivatives[i] = 0.0;
 
       for (j = 0; j < jmax; j++)
-        derivatives[i] += mStoi[i][j] * *mParticleFluxes[j];
+        derivatives[i] += mStoi(i, j) * *mParticleFluxes[j];
     }
 }
 
@@ -1446,7 +1446,7 @@ void CModel::getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64
       derivatives[i] = 0.0;
 
       for (j = 0; j < jmax; j++)
-        derivatives[i] += mRedStoi[i][j] * *mParticleFluxesX[j];
+        derivatives[i] += mRedStoi(i, j) * *mParticleFluxesX[j];
     }
 }
 
@@ -2297,7 +2297,7 @@ std::string CModel::suitableForStochasticSimulation() const
         //  for (j=0; i<metabSize; j++)
         for (j = 0; j < mStoi.numRows(); j++)
           {
-            multFloat = mStoi[j][i];
+            multFloat = mStoi(j, i);
             multInt = static_cast<C_INT32>(floor(multFloat + 0.5)); // +0.5 to get a rounding out of the static_cast to int!
             if ((multFloat - multInt) > 0.01)
               return "Not all stoichiometries are integer numbers. \nThat means that discrete simulation is not possible.";
