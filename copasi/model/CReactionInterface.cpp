@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/07 10:59:18 $
+   $Date: 2005/12/07 15:43:49 $
    End CVS Header */
 
 #include <string>
@@ -21,6 +21,7 @@ CReactionInterface::CReactionInterface():
     mpFunction(NULL),
     mpParameters(NULL)
 {emptyString = "";}
+
 CReactionInterface::~CReactionInterface()
 {
   pdelete(mpParameters);
@@ -223,7 +224,7 @@ void CReactionInterface::clearFunction()
 
 void CReactionInterface::setChemEqString(const std::string & eq, const std::string & newFunction)
 {
-  std::cout << "setChemEqString: " << eq << std::endl;
+  //std::cout << "setChemEqString: " << eq << std::endl;
   mChemEqI.setChemEqString(eq);
   findAndSetFunction(newFunction);
 }
