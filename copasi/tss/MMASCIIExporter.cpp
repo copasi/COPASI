@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2005/11/28 14:04:57 $
+   $Author: ssahle $ 
+   $Date: 2005/12/07 12:54:30 $
    End CVS Header */
 
 #include <math.h>
@@ -201,22 +201,22 @@ void MMASCIIExporter::functionCoutput(const CFunction *pFunc, std::set<std::stri
       std::map< std::string, std::string > parameterNameMap;
       std::set<std::string> parameterNameSet;
 
-      std::map< std::string, std::string > constName;
-      std::map< std::string, unsigned C_INT32 > tmpIndex;
+      std::map< CFunctionParameter::Role, std::string > constName;
+      std::map< CFunctionParameter::Role, unsigned C_INT32 > tmpIndex;
 
-      constName["SUBSTRATE"] = "sub_"; tmpIndex["SUBSTRATE"] = 0;
-      constName["PRODUCT"] = "prod_"; tmpIndex["PRODUCT"] = 0;
-      constName["PARAMETER"] = "param_"; tmpIndex["PARAMETER"] = 0;
-      constName["MODIFIER"] = "modif_"; tmpIndex["MODIFIER"] = 0;
-      constName["VOLUME"] = "volume_"; tmpIndex["VOLUME"] = 0;
-      constName["VARIABLE"] = "varb_"; tmpIndex["VARIABLE"] = 0;
+      constName[CFunctionParameter::SUBSTRATE] = "sub_"; tmpIndex[CFunctionParameter::SUBSTRATE] = 0;
+      constName[CFunctionParameter::PRODUCT] = "prod_"; tmpIndex[CFunctionParameter::PRODUCT] = 0;
+      constName[CFunctionParameter::PARAMETER] = "param_"; tmpIndex[CFunctionParameter::PARAMETER] = 0;
+      constName[CFunctionParameter::MODIFIER] = "modif_"; tmpIndex[CFunctionParameter::MODIFIER] = 0;
+      constName[CFunctionParameter::VOLUME] = "volume_"; tmpIndex[CFunctionParameter::VOLUME] = 0;
+      constName[CFunctionParameter::VARIABLE] = "varb_"; tmpIndex[CFunctionParameter::VARIABLE] = 0;
 
       for (j = 0; j < varbs_size; ++j)
         {
           if (parameterNameSet.find(tmpFunc->getVariables()[j]->getObjectName()) == parameterNameSet.end())
             {
               std::ostringstream tmpName;
-              std::string usage = tmpFunc->getVariables()[j]->getUsage();
+              CFunctionParameter::Role usage = tmpFunc->getVariables()[j]->getUsage();
 
               tmpName << constName[usage] << tmpIndex[usage];
               parameterNameMap[ tmpFunc->getVariables()[j]->getObjectName() ] = tmpName.str();
@@ -647,12 +647,13 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
                   for (k = 0; k < params_size; ++k)
                     {
                       C_INT32 index;
-                      std::string usage = params[k]->getUsage();
+                      CFunctionParameter::Role usage = params[k]->getUsage();
                       std::string name;
 
                       CCopasiObject * tmp = GlobalKeys.get(keyMap[k][0]);
 
-                      if ((usage == "SUBSTRATE") || (usage == "PRODUCT") || (usage == "MODIFIER"))
+                      if ((usage == CFunctionParameter::SUBSTRATE) || (usage == CFunctionParameter::PRODUCT)
+                          || (usage == CFunctionParameter::MODIFIER))
                         {
                           CMetab* metab;
 
@@ -669,7 +670,7 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
                               equation << "y[" << index << "]";
                             }
                         }
-                      if (usage == "PARAMETER")
+                      if (usage == CFunctionParameter::PARAMETER)
                         if (!(reac->isLocalParameter(k)))
                           {
                             CModelValue* modval;
@@ -687,7 +688,7 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
                             index = findKinParamByName(reac, name);
                             equation << "k[" << counter + index << "]";
                           }
-                      if (usage == "VOLUME")
+                      if (usage == CFunctionParameter::VOLUME)
                         {
                           CCompartment* comp;
                           comp = dynamic_cast< CCompartment * >(tmp);
@@ -697,7 +698,7 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
                           equation << "c[";
                           equation << index << "]";
                         }
-                      if (usage == "VARIABLE")
+                      if (usage == CFunctionParameter::VARIABLE)
                         {
                           CModelValue* modval;
                           modval = dynamic_cast< CModelValue * >(tmp);
@@ -718,7 +719,7 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
                 {
                   std::ostringstream massaction;
                   std::string name;
-                  std::string usage;
+                  //CFunctionParameter::Role usage; //seems to be unused
 
                   const CCopasiVector<CChemEqElement> & substrs = reac->getChemEq().getSubstrates();
                   const CCopasiVector<CChemEqElement> & prods = reac->getChemEq().getProducts();
@@ -736,7 +737,7 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
 
                   massaction << "(";
 
-                  usage = cMassAction.getVariables()[0]->getUsage().c_str();
+                  //usage = cMassAction.getVariables()[0]->getUsage(); //seems to be unused
                   tmp = GlobalKeys.get(keyMap[0][0]);
 
                   if (!(reac->isLocalParameter(0)))
@@ -785,7 +786,7 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
                   if (cMassAction.isReversible() == TriTrue)
                     {
                       massaction << " - ";
-                      usage = cMassAction.getVariables()[0]->getUsage().c_str();
+                      //usage = cMassAction.getVariables()[0]->getUsage(); //seems to be unused
 
                       tmp = GlobalKeys.get(keyMap[2][0]);
 
