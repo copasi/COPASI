@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.125 $
+   $Revision: 1.126 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/07 11:08:34 $
+   $Author: shoops $ 
+   $Date: 2005/12/07 21:36:07 $
    End CVS Header */
 
 /**********************************************************************
@@ -421,6 +421,8 @@ bool FunctionWidget1::loadUsageTable(/*const CCopasiVectorN<CUsageRange>& usages
    
     //TODO: render "MODIFIER" usages differently?
   */
+
+  return true;
 }
 
 bool FunctionWidget1::loadReversibility(TriLogic rev)
