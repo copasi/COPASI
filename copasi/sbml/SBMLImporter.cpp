@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.110 $
+   $Revision: 1.111 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/11/15 23:01:52 $
+   $Date: 2005/12/07 09:08:40 $
    End CVS Header */
 
 #include "copasi.h"
@@ -1749,7 +1749,7 @@ void SBMLImporter::replaceCallNodeNames(CEvaluationNode* node)
 CFunction* SBMLImporter::findCorrespondingFunction(const CFunction* tree, const CReaction* pCopasiReaction)
 {
   CFunction* pCorrespondingFunction = NULL;
-  CCopasiVector<CFunction>* functions = this->functionDB->suitableFunctions(pCopasiReaction->getChemEq().getSubstrates().size(), pCopasiReaction->getChemEq().getProducts().size(), (TriLogic)pCopasiReaction->isReversible());
+  CCopasiVector<CFunction>* functions = this->functionDB->suitableFunctions(pCopasiReaction->getChemEq().getSubstrates().size(), pCopasiReaction->getChemEq().getProducts().size(), pCopasiReaction->isReversible() ? TriTrue : TriFalse);
   unsigned int i, iMax = functions->size();
   for (i = 0; i < iMax;++i)
     {
