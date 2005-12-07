@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/10/27 19:40:57 $
+   $Author: ssahle $ 
+   $Date: 2005/12/07 11:02:42 $
    End CVS Header */
 
 #include <math.h>
@@ -934,7 +934,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
   for (counter = 0; counter < copasiReaction->getFunctionParameters().size(); counter++)
     {
       const CFunctionParameter* para = copasiReaction->getFunctionParameters()[counter];
-      if (para->getUsage() == "PARAMETER")
+      if (para->getUsage() == CFunctionParameter::PARAMETER)
         {
           // only create a parameter if it is a local parameter,
           // otherwise the parameter already has been created

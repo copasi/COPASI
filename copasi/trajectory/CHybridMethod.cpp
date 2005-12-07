@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/29 17:28:20 $
+   $Author: ssahle $ 
+   $Date: 2005/12/07 11:07:08 $
    End CVS Header */
 
 /**
@@ -75,14 +75,14 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * C_UNUSED(p
 
   switch (result)
     {
-      /*    case - 3:                    // non-integer stoichometry
+      /*    case - 3:                   // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:                    // reversible reaction exists
+      case - 2:                   // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
 
-      case - 1:                    // more than one compartment involved
+      case - 1:                   // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/
     case 1:
@@ -1158,7 +1158,7 @@ std::set<std::string> *CHybridMethod::getDependsOn(C_INT32 rIndex)
 
   for (i = 0; i < imax; ++i)
     {
-      if ((*mpReactions)[rIndex]->getFunctionParameters()[i]->getUsage() == "PARAMETER")
+      if ((*mpReactions)[rIndex]->getFunctionParameters()[i]->getUsage() == CFunctionParameter::PARAMETER)
         continue;
       //metablist = (*mpReactions)[rIndex]->getParameterMappingMetab(i);
       const std::vector <std::string> & metabKeylist =

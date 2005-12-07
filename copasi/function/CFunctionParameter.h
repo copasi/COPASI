@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/24 14:51:29 $
+   $Date: 2005/12/07 10:55:59 $
    End CVS Header */
 
 /**
@@ -31,29 +31,33 @@ class CFunctionParameter : public CCopasiContainer
      */
     static const std::string DataTypeName[];
 
+    enum Role
+    {
+      SUBSTRATE = 0,
+      PRODUCT,
+      MODIFIER,
+      PARAMETER,
+      VOLUME,
+      VARIABLE
+    };
+
     /**
      *  The string representation of valid roles of a function parameter
      */
     static const std::string RoleNameXML[];
-    static const std::string RoleNameInternal[];
     static const std::string RoleNameDisplay[];
 
   public:
 
-    static const std::string & convertRoleNameToXML(const std::string & role);
-    static const std::string & convertXMLRoleNameToInternal(const std::string & role);
-    static const std::string & convertRoleNameToDisplay(const std::string & role);
+    /*
     static const std::string & convertDisplayRoleNameToInternal(const std::string & role);
+    */
+    static Role xmlRole2Enum(const std::string & role);
 
     /**
      *  Valid data type for a function parameter
      */
     enum DataType {INT32 = 0, FLOAT64, VINT32, VFLOAT64};
-
-    /**
-     * Valid roles for a function parameter
-     */ 
-    //enum Role {substrate = 0, product, modifier, constant, volume, other};
 
   private:
     /**
@@ -73,7 +77,7 @@ class CFunctionParameter : public CCopasiContainer
      *  implication for CFunction but it might be used in derived classes.
      *  Possible usage is SUBSTRATE, PRODUCT, MODIFIER, or PARAMETER
      */
-    std::string mUsage;
+    Role mUsage;
 
   public:
     /**
@@ -101,7 +105,7 @@ class CFunctionParameter : public CCopasiContainer
      */
     CFunctionParameter(const std::string & name,
                        const DataType & type,
-                       const std::string & usage,
+                       Role usage,
                        const CCopasiContainer * pParent = NULL);
 
     /**
@@ -130,12 +134,6 @@ class CFunctionParameter : public CCopasiContainer
     virtual const std::string & getKey() const;
 
     /**
-     *  Sets the name of the parameter
-     *  @param "const string" & name
-     */
-    bool setName(const std::string & name);
-
-    /**
      *  Retrieves the data type of the parameter
      *  @return "const CFunctionParameter::DataType" & type
      */
@@ -151,13 +149,13 @@ class CFunctionParameter : public CCopasiContainer
      *  Retrieves the usage of the parameter
      *  @return "const string" & usage
      */
-    const std::string & getUsage() const;
+    Role getUsage() const;
 
     /**
      *  Sets the usage of the parameter
      *  @param "const string" & usage
      */
-    void setUsage(const std::string & usage);
+    void setUsage(Role usage);
 
     /**
      * insert operator
@@ -167,7 +165,7 @@ class CFunctionParameter : public CCopasiContainer
       os << "CFunctionParameter: "
       << d.getObjectName()
       << " mType " << d.mType
-      << " mUsage " << d.mUsage << std::endl;
+      << " mUsage " << RoleNameDisplay[d.mUsage] << std::endl;
 
       return os;
     }

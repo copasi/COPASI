@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.147 $
+   $Revision: 1.148 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/29 17:28:12 $
+   $Author: ssahle $ 
+   $Date: 2005/12/07 10:59:18 $
    End CVS Header */
 
 // CReaction
@@ -326,7 +326,7 @@ void CReaction::initializeParameters()
 {
   if (!mpFunction) fatalError();
   unsigned C_INT32 i;
-  unsigned C_INT32 imax = mMap.getFunctionParameters().getNumberOfParametersByUsage("PARAMETER");
+  unsigned C_INT32 imax = mMap.getFunctionParameters().getNumberOfParametersByUsage(CFunctionParameter::PARAMETER);
   unsigned C_INT32 pos;
   std::string name;
 
@@ -336,7 +336,7 @@ void CReaction::initializeParameters()
   /* Add missing parameters with default value 1.0. */
   for (i = 0, pos = 0; i < imax; ++i)
     {
-      name = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos)->getObjectName();
+      name = mMap.getFunctionParameters().getParameterByUsage(CFunctionParameter::PARAMETER, pos)->getObjectName();
       //      param.setName(name);
       if (!mParameters.getParameter(name))
         {
@@ -413,139 +413,146 @@ void CReaction::compile()
   setScalingFactor();
 }
 
-C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
+bool CReaction::loadOneRole(CReadConfig & configbuffer,
+                            CFunctionParameter::Role role, unsigned C_INT32 n,
+                            const std::string & prefix)
 {
-  std::string name;
+  CModel * pModel = (CModel*) getObjectAncestor("Model");
+  const CCopasiVector< CMetab > & Metabolites = pModel->getMetabolites();
 
-  C_INT32 Fail = 0;
-  unsigned C_INT32 SubstrateSize, ProductSize, ModifierSize, ParameterSize;
   unsigned C_INT32 i, imax, pos;
   C_INT32 index;
-  std::string parName, metabName;
+  std::string name, parName, metabName;
+  const CFunctionParameter* pParameter;
 
-  CFunctionParameter::DataType Type;
+  if (mMap.getFunctionParameters().isVector(role))
+    {
+      if (mMap.getFunctionParameters().getNumberOfParametersByUsage(role) != 1)
+        {
+          std::cout << "not exactly one variable of this role as vector" << std::endl;
+          fatalError();
+        }
+
+      pos = 0;
+      pParameter = mMap.getFunctionParameters().getParameterByUsage(role, pos);
+      if (!pParameter)
+        {
+          std::cout << "could not find variable" << std::endl;
+          fatalError();
+        }
+
+      parName = pParameter->getObjectName();
+      clearParameterMapping(parName);
+
+      for (i = 0; i < n; i++)
+        {
+          name = StringPrint(std::string(prefix + "%d").c_str(), i);
+          configbuffer.getVariable(name, "C_INT32", &index);
+
+          metabName = (*CCopasiDataModel::Global->pOldMetabolites)[index]->getObjectName();
+          addParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
+        }
+    }
+  else //no vector
+    {
+      imax = mMap.getFunctionParameters().getNumberOfParametersByUsage(role);
+      if (imax > n)
+        {
+          std::cout << "no. of metabs not matching function definition" << std::endl;
+          fatalError();
+        }
+
+      for (i = 0, pos = 0; i < imax; i++)
+        {
+          name = StringPrint(std::string(prefix + "%d").c_str(), i);
+          configbuffer.getVariable(name, "C_INT32", &index);
+
+          metabName = (*CCopasiDataModel::Global->pOldMetabolites)[index]->getObjectName();
+
+          pParameter = mMap.getFunctionParameters().getParameterByUsage(role, pos);
+          if (!pParameter)
+            {
+              std::cout << "could not find variable" << std::endl;
+              fatalError();
+            }
+          if (pParameter->getType() >= CFunctionParameter::VINT32)
+            {
+              std::cout << "unexpected vector variable" << std::endl;
+              fatalError();
+            }
+
+          parName = pParameter->getObjectName();
+          setParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
+
+          // in the old files the chemical equation does not contain
+          // information about modifiers. This has to be extracted from here.
+          if (role == CFunctionParameter::MODIFIER)
+            mChemEq.addMetabolite(Metabolites[pModel->findMetabByName(metabName)]->getKey(),
+                                  1, CChemEq::MODIFIER);
+        }
+
+      //just throw away the rest (the gepasi files gives all metabs, not only
+      //those that influence the kinetics)
+      for (i = imax; i < n; i++)
+        {
+          name = StringPrint(std::string(prefix + "%d").c_str(), i);
+          configbuffer.getVariable(name, "C_INT32", &index);
+        }
+    }
+  return true;
+}
+
+C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
+{
+  unsigned C_INT32 SubstrateSize, ProductSize, ModifierSize, ParameterSize;
 
   configbuffer.getVariable("Substrates", "C_INT32", &SubstrateSize);
   configbuffer.getVariable("Products", "C_INT32", &ProductSize);
   configbuffer.getVariable("Modifiers", "C_INT32", &ModifierSize);
   configbuffer.getVariable("Constants", "C_INT32", &ParameterSize);
 
-  // Construct substrates mapping
-  // this works only because of a strange signed->unsigned cast in usageRangeSize()!
-  imax = std::min(SubstrateSize, usageRangeSize("SUBSTRATE")); //some checks?
+  // Construct metabolite mappings
+  loadOneRole(configbuffer, CFunctionParameter::SUBSTRATE,
+              SubstrateSize, "Subs");
 
-  CModel * pModel = (CModel*) getObjectAncestor("Model");
-  const CCopasiVector< CMetab > & Metabolites = pModel->getMetabolites();
+  loadOneRole(configbuffer, CFunctionParameter::PRODUCT,
+              ProductSize, "Prod");
 
-  for (i = 0, pos = 0, Type = CFunctionParameter::INT32; i < imax; i++)
-    {
-      name = StringPrint("Subs%d", i);
-      configbuffer.getVariable(name, "C_INT32", &index);
+  loadOneRole(configbuffer, CFunctionParameter::MODIFIER,
+              ModifierSize, "Modf");
 
-      metabName = (*CCopasiDataModel::Global->pOldMetabolites)[index]->getObjectName();
-
-      if (Type < CFunctionParameter::VINT32)
-        {
-          Type = mMap.getFunctionParameters().getParameterByUsage("SUBSTRATE", pos)->getType();
-          parName = mMap.getFunctionParameters()[pos - 1]->getObjectName();
-          if (Type >= CFunctionParameter::VINT32)
-            clearParameterMapping(parName);
-        }
-
-      if (Type >= CFunctionParameter::VINT32)
-        addParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
-      else
-        setParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
-    }
-
-  for (i = imax; i < SubstrateSize; i++)
-    {
-      name = StringPrint("Subs%d", i);
-      configbuffer.getVariable(name, "C_INT32", &index);
-    }
-
-  // Construct Products mapping
-  imax = std::min(ProductSize, usageRangeSize("PRODUCT"));
-
-  for (i = 0, pos = 0, Type = CFunctionParameter::INT32; i < imax; i++)
-    {
-      name = StringPrint("Prod%d", i);
-      configbuffer.getVariable(name, "C_INT32", &index);
-
-      metabName = (*CCopasiDataModel::Global->pOldMetabolites)[index]->getObjectName();
-
-      if (Type < CFunctionParameter::VINT32)
-        {
-          Type = mMap.getFunctionParameters().getParameterByUsage("PRODUCT", pos)->getType();
-          parName = mMap.getFunctionParameters()[pos - 1]->getObjectName();
-          if (Type >= CFunctionParameter::VINT32)
-            clearParameterMapping(parName);
-        }
-
-      if (Type >= CFunctionParameter::VINT32)
-        addParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
-      else
-        setParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
-    }
-
-  for (i = imax; i < ProductSize; i++)
-    {
-      name = StringPrint("Prod%d", i);
-      configbuffer.getVariable(name, "C_INT32", &index);
-    }
-
-  // Construct modifiers mapping
-  imax = std::min(ModifierSize, usageRangeSize("MODIFIER"));
-
-  for (i = 0, pos = 0, Type = CFunctionParameter::INT32; i < imax; i++)
-    {
-      name = StringPrint("Modf%d", i);
-      configbuffer.getVariable(name, "C_INT32", &index);
-
-      metabName = (*CCopasiDataModel::Global->pOldMetabolites)[index]->getObjectName();
-
-      if (Type < CFunctionParameter::VINT32)
-        {
-          Type = mMap.getFunctionParameters().getParameterByUsage("MODIFIER", pos)->getType();
-          parName = mMap.getFunctionParameters()[pos - 1]->getObjectName();
-          if (Type >= CFunctionParameter::VINT32)
-            clearParameterMapping(parName);
-        }
-
-      if (Type >= CFunctionParameter::VINT32)
-        addParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
-      else
-        setParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)]->getKey());
-
-      // in the old files the chemical equation does not contain
-      // information about modifiers. This has to be extracted from here.
-      mChemEq.addMetabolite(Metabolites[pModel->findMetabByName(metabName)]->getKey(), 1, CChemEq::MODIFIER);
-    }
-
-  for (i = imax; i < ModifierSize; i++)
-    {
-      name = StringPrint("Modf%d", i);
-      configbuffer.getVariable(name, "C_INT32", &index);
-    }
+  C_INT32 Fail = 0;
 
   // Construct parameters
-  imax = ParameterSize;
+  if (mMap.getFunctionParameters().getNumberOfParametersByUsage(CFunctionParameter::PARAMETER)
+      != ParameterSize)
+    {
+      std::cout << "no. of parameters not matching function definition" << std::endl;
+      fatalError();
+    }
+
+  unsigned C_INT32 i, pos;
+  std::string name;
+  const CFunctionParameter* pParameter;
   C_FLOAT64 value;
-  for (i = 0, pos = 0; i < imax; i++)
+  for (i = 0, pos = 0; i < ParameterSize; i++)
     {
       name = StringPrint("Param%d", i);
       configbuffer.getVariable(name, "C_FLOAT64", &value);
 
-      Type = mMap.getFunctionParameters().getParameterByUsage("PARAMETER", pos)->getType();
-      if (Type != CFunctionParameter::FLOAT64) {Fail = 1; return Fail;}
+      pParameter = mMap.getFunctionParameters().getParameterByUsage(CFunctionParameter::PARAMETER, pos);
+      if (!pParameter)
+        {
+          std::cout << "could not find variable" << std::endl;
+          fatalError();
+        }
+      if (pParameter->getType() != CFunctionParameter::FLOAT64)
+        {
+          std::cout << "unexpected parameter type" << std::endl;
+          fatalError();
+        }
 
-      setParameterValue(mMap.getFunctionParameters()[pos - 1]->getObjectName(), value);
-    }
-
-  for (i = imax; i < ParameterSize; i++)
-    {
-      name = StringPrint("Param%d", i);
-      configbuffer.getVariable(name, "C_INT32", &index);
+      setParameterValue(pParameter->getObjectName(), value);
     }
 
   return Fail;
@@ -583,25 +590,6 @@ C_FLOAT64 CReaction::calculatePartialDerivative(C_FLOAT64 & xi,
   else
     return 0.0;
 }
-
-unsigned C_INT32 CReaction::usageRangeSize(const std::string & usage) const
-  {
-    if (!mpFunction) fatalError();
-    const CUsageRange * pUsageRange = NULL;
-    C_INT32 Size = 0;
-    unsigned C_INT32 Index;
-
-    Index = mMap.getFunctionParameters().getUsageRanges().getIndex(usage);
-    if (Index != C_INVALID_INDEX)
-      pUsageRange = mMap.getFunctionParameters().getUsageRanges()[Index];
-
-    if (pUsageRange)
-      Size = std::max(pUsageRange->getLow(), pUsageRange->getHigh());
-
-    return Size;
-    // if I understand correctly this works only because infinity=-1 becomes a very big number when
-    // converted to unsigned int
-  }
 
 unsigned C_INT32 CReaction::getCompartmentNumber() const
 {return mChemEq.getCompartmentNumber();}
@@ -712,13 +700,14 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                       bool found = false;
                       const CCopasiVector<CChemEqElement>* v = &this->getChemEq().getSubstrates();
                       unsigned int i;
-                      std::string usage;
+                      //std::string usage;
+                      CFunctionParameter::Role usage;
                       for (i = 0; i < v->size();++i)
                         {
                           if ((&((*v)[i]->getMetabolite())) == static_cast<CMetab *>(object))
                             {
                               found = true;
-                              usage = "SUBSTRATE";
+                              usage = CFunctionParameter::SUBSTRATE;
                               break;
                             }
                         }
@@ -730,7 +719,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                               if ((&((*v)[i]->getMetabolite())) == static_cast<CMetab *>(object))
                                 {
                                   found = true;
-                                  usage = "PRODUCT";
+                                  usage = CFunctionParameter::PRODUCT;
                                   break;
                                 }
                             }
@@ -742,7 +731,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                                   if ((&((*v)[i]->getMetabolite())) == static_cast<CMetab *>(object))
                                     {
                                       found = true;
-                                      usage = "MODIFIER";
+                                      usage = CFunctionParameter::MODIFIER;
                                       break;
                                     }
                                 }
@@ -768,7 +757,8 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
                   if (replacementMap.find(id) == replacementMap.end())
                     {
-                      CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64, "PARAMETER");
+                      CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
+                                                      CFunctionParameter::PARAMETER);
                       replacementMap[id] = std::make_pair(object, pFunParam);
                     }
                 }
@@ -779,7 +769,8 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
                   if (replacementMap.find(id) == replacementMap.end())
                     {
-                      CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64, "VOLUME");
+                      CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
+                                                      CFunctionParameter::VOLUME);
                       replacementMap[id] = std::make_pair(object, pFunParam);
                     }
                 }
@@ -796,7 +787,8 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
           pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
           if (replacementMap.find(id) == replacementMap.end())
             {
-              CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64, "PARAMETER");
+              CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
+                                              CFunctionParameter::PARAMETER);
               replacementMap[id] = std::make_pair(object, pFunParam);
             }
         }

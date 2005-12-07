@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.19 $ $Author: shoops $ $Date: 2005/07/13 22:50:08 $  
+# $Revision: 1.20 $ $Author: ssahle $ $Date: 2005/12/07 10:55:59 $  
 ######################################################################
 
 LIB = function
@@ -31,9 +31,9 @@ HEADERS += CCallParameters.h \
            CFunctionParameters.h \
            CKinFunction.h \
            CMassAction.h \
-           CNodeK.h \
-           CRange.h \
-           CUsageRange.h
+           CNodeK.h 
+        #   CRange.h \
+        #   CUsageRange.h
 
 SOURCES += CCallParameters.cpp \
            CEvaluationNode.cpp \
@@ -58,9 +58,9 @@ SOURCES += CCallParameters.cpp \
            CKinFunction.cpp \
            CKinFunctionFlexLexer.cpp \
            CMassAction.cpp \
-           CNodeK.cpp \
-           CRange.cpp \
-           CUsageRange.cpp
+           CNodeK.cpp 
+        #   CRange.cpp \
+        #   CUsageRange.cpp
 
 contains(BUILD_PARSER, yes) {
   YACCSOURCES += CEvaluationParser.ypp

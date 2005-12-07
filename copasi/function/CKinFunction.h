@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/14 17:47:44 $
+   $Author: ssahle $ 
+   $Date: 2005/12/07 10:55:59 $
    End CVS Header */
 
 /**
@@ -83,88 +83,24 @@ class CKinFunction : public CFunction
      */
     void cleanup();
 
-#ifdef XXXX
-    /**
-     *  Loads an object with data coming from a CReadConfig object.
-     *  (CReadConfig object reads an input stream)
-     *  @param pconfigbuffer reference to a CReadConfig object.
-     *  @return Fail
-     */
-    void load(CReadConfig & configbuffer,
-              CReadConfig::Mode mode = CReadConfig::LOOP);
-#endif // XXXX
-
     virtual void writeMathML(std::ostream & out) const;
-
-#ifdef FFFF
-    /**
-     *  Compile a function
-     */
-    void CNodeKcompile();
-#endif // FFFF
-
-#ifdef  FFFF
-    /**
-     *  This parses the function into a binary tree
-     */
-    C_INT32 parse();
-#endif // FFFF
-
-#ifdef FFFF
-    /**
-     *  Set the description of the function
-     *  @param "const string &" description
-     */
-    virtual void setDescription(const std::string& description);
-#endif // FFFF
-
-#ifdef FFFF
-    /**
-     *  Calculates the value of the function
-     *  @param const CCallParameters<C_FLOAT64> & callParameters
-     *  @return "C_FLOAT64" result
-     */
-    virtual C_FLOAT64
-    calcValue(const CCallParameters<C_FLOAT64> & callParameters) const;
-#endif // FFFF
-
-#ifdef FFFF
-    /**
-     * Returns whether the function depends on the given parameter
-     * &param const void * parameter
-     * &param const CCallParameters<C_FLOAT64> & callParameters
-     * &param bool dependsOn
-     */
-    virtual bool dependsOn(const void * parameter,
-                           const CCallParameters<C_FLOAT64> & callParameters) const;
-#endif // FFFF
 
     /**
      *  Retreives the nodes of the function
      */
     std::vector< CNodeK * > & getNodes();
 
-    /*
-     pre compile to check if the expression is valid
-    */ 
-    // void preCompile();
-
-    /*
-     connect each node with its type or indetify the CCopasiObject from CCopasiName
-    */ 
-    // void connect();
-
   private:
 
     /**
         *  This function indentify the object from name
-        */
-    bool createObjList();
+        */ 
+    //bool createObjList();
 
     /**
         *  This  connects the nodes to build the binary function tree
-        */
-    C_INT32 connectNodes();
+        */ 
+    //C_INT32 connectNodes();
 
     /**
      * This function is part of the algorithm that builds the binary tree.
@@ -174,8 +110,8 @@ class CKinFunction : public CFunction
      * returned.
      * @param C_INT16 priority
      * @return CNodeK *
-     */
-    CNodeK * parseExpression(C_INT16 priority);
+     */ 
+    //CNodeK * parseExpression(C_INT16 priority);
 
     /**
      * This function is part of the algorithm that builds the binary tree.
@@ -186,22 +122,13 @@ class CKinFunction : public CFunction
      * node is returned. If the node is a function or a unary minus the argument is
      * parsed and a pointer to the function node is returned. 
      * @return CNodeK *
-     */
-    CNodeK * parsePrimary();
+     */ 
+    //CNodeK * parsePrimary();
 
     /**
      *  This function creates the parameter description for older file versions
      */
     void createParameters();
-
-#ifdef  FFFF
-    /**
-     *  This function assignes the appropriate indeces to nodes of type identifier
-     *  so that the value of the matching call parameter is returned when 
-     *  calculating the function.
-     */
-    void initIdentifierNodes();
-#endif // FFFF
 
     /**
      * Cleanup nodes

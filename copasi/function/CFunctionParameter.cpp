@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/29 17:28:11 $
+   $Author: ssahle $ 
+   $Date: 2005/12/07 10:55:59 $
    End CVS Header */
 
 /**
@@ -26,46 +26,19 @@ const std::string CFunctionParameter::RoleNameXML[] =
   {"substrate", "product", "modifier", "constant", "volume", "variable", ""};
 
 //static
-const std::string CFunctionParameter::RoleNameInternal[] =
-  {"SUBSTRATE", "PRODUCT", "MODIFIER", "PARAMETER", "VOLUME", "VARIABLE", ""};
-
-//static
 const std::string CFunctionParameter::RoleNameDisplay[] =
   {"Substrate", "Product", "Modifier", "Parameter", "Volume", "Variable", ""};
 
-//const char * CFunctionParameter::RoleName[] =
-//  {"substrate", "product", "modifier", "constant", "other", NULL};
-
 //static
-const std::string & CFunctionParameter::convertRoleNameToXML(const std::string & role)
+CFunctionParameter::Role CFunctionParameter::xmlRole2Enum(const std::string & xmlrole)
 {
   C_INT32 i;
-  for (i = 0; (RoleNameInternal[i] != "") && (RoleNameInternal[i] != role); ++i);
-  return RoleNameXML[i];
-}
+  for (i = 0; (RoleNameXML[i] != "") && (RoleNameXML[i] != xmlrole); ++i);
 
-//static
-const std::string & CFunctionParameter::convertXMLRoleNameToInternal(const std::string & role)
-{
-  C_INT32 i;
-  for (i = 0; (RoleNameXML[i] != "") && (RoleNameXML[i] != role); ++i);
-  return RoleNameInternal[i];
-}
-
-//static
-const std::string & CFunctionParameter::convertRoleNameToDisplay(const std::string & role)
-{
-  C_INT32 i;
-  for (i = 0; (RoleNameInternal[i] != "") && (RoleNameInternal[i] != role); ++i);
-  return RoleNameDisplay[i];
-}
-
-//static
-const std::string & CFunctionParameter::convertDisplayRoleNameToInternal(const std::string & role)
-{
-  C_INT32 i;
-  for (i = 0; (RoleNameDisplay[i] != "") && (RoleNameDisplay[i] != role); ++i);
-  return RoleNameInternal[i];
+  if (RoleNameXML[i] == "")
+    return VARIABLE; //default for invalid xml string
+  else
+    return (Role)i;
 }
 
 CFunctionParameter::CFunctionParameter(const std::string & name,
@@ -73,7 +46,7 @@ CFunctionParameter::CFunctionParameter(const std::string & name,
     CCopasiContainer(name, pParent, "Variable"),
     mKey(GlobalKeys.add("FunctionParameter", this)),
     mType((CFunctionParameter::DataType) - 1),
-    mUsage("unknown")
+    mUsage(VARIABLE)
 {CONSTRUCTOR_TRACE;}
 
 CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
@@ -86,7 +59,7 @@ CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
 
 CFunctionParameter::CFunctionParameter(const std::string &name,
                                        const enum CFunctionParameter::DataType &type,
-                                       const std::string &usage,
+                                       Role usage,
                                        const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Variable"),
     mKey(GlobalKeys.add("FunctionParameter", this)),
@@ -112,13 +85,11 @@ void CFunctionParameter::load(CReadConfig & configbuffer,
   configbuffer.getVariable("Usage", "string", &mUsage);
 }
 
-bool CFunctionParameter::setName(const std::string & name) {return setObjectName(name);}
-
 const std::string & CFunctionParameter::getKey() const {return mKey;}
 
-void CFunctionParameter::setUsage(const std::string & usage) {mUsage = usage;}
+void CFunctionParameter::setUsage(Role usage) {mUsage = usage;}
 
-const std::string & CFunctionParameter::getUsage() const {return mUsage;}
+CFunctionParameter::Role CFunctionParameter::getUsage() const {return mUsage;}
 
 void CFunctionParameter::setType(const CFunctionParameter::DataType & type)
 {mType = type;}

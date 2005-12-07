@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:49 $
+   $Author: ssahle $ 
+   $Date: 2005/12/07 11:07:08 $
    End CVS Header */
 
 #ifdef WIN32
@@ -478,7 +478,7 @@ std::set<std::string> *CStochMethod::getDependsOn(C_INT32 reaction_index)
 
   for (i = 0; i < imax; ++i)
     {
-      if (mpModel->getReactions()[reaction_index]->getFunctionParameters()[i]->getUsage() == "PARAMETER")
+      if (mpModel->getReactions()[reaction_index]->getFunctionParameters()[i]->getUsage() == CFunctionParameter::PARAMETER)
         continue;
       //metablist = mpModel->getReactions()[reaction_index]->getParameterMappingMetab(i);
       const std::vector <std::string> & metabKeylist =

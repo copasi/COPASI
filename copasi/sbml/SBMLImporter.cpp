@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.111 $
+   $Revision: 1.112 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/12/07 09:08:40 $
+   $Author: ssahle $ 
+   $Date: 2005/12/07 11:02:52 $
    End CVS Header */
 
 #include "copasi.h"
@@ -22,8 +22,8 @@
 #include "model/CReaction.h"
 #include "model/CModelValue.h"
 #include "copasi.h"
-#include "function/CNodeK.h"
-#include "function/CKinFunction.h"
+#include "function/CNodeK.h" 
+//#include "function/CKinFunction.h"
 #include "function/CFunctionDB.h"
 #include "function/CEvaluationTree.h"
 #include "report/CCopasiObjectReference.h"
@@ -1749,11 +1749,14 @@ void SBMLImporter::replaceCallNodeNames(CEvaluationNode* node)
 CFunction* SBMLImporter::findCorrespondingFunction(const CFunction* tree, const CReaction* pCopasiReaction)
 {
   CFunction* pCorrespondingFunction = NULL;
-  CCopasiVector<CFunction>* functions = this->functionDB->suitableFunctions(pCopasiReaction->getChemEq().getSubstrates().size(), pCopasiReaction->getChemEq().getProducts().size(), pCopasiReaction->isReversible() ? TriTrue : TriFalse);
-  unsigned int i, iMax = functions->size();
+  std::vector<CFunction*> functions = this->functionDB->suitableFunctions(
+                                        pCopasiReaction->getChemEq().getSubstrates().size(),
+                                        pCopasiReaction->getChemEq().getProducts().size(),
+                                        pCopasiReaction->isReversible() ? TriTrue : TriFalse);
+  unsigned int i, iMax = functions.size();
   for (i = 0; i < iMax;++i)
     {
-      CFunction* pFun = ((*functions)[i]);
+      CFunction* pFun = (functions[i]);
       // make sure the function is not compared to itself since it can already
       // be in the database if it has been used a call in another function
       // don't compare the mass action kinetics
@@ -1763,7 +1766,6 @@ CFunction* SBMLImporter::findCorrespondingFunction(const CFunction* tree, const 
           break;
         }
     }
-  delete functions;
   return pCorrespondingFunction;
 }
 
@@ -2166,15 +2168,15 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
                         {
                         case CChemEq::SUBSTRATE:
                           // it is a substrate
-                          pFunParam->setUsage("SUBSTRATE");
+                          pFunParam->setUsage(CFunctionParameter::SUBSTRATE);
                           break;
                         case CChemEq::PRODUCT:
                           // it is a product
-                          pFunParam->setUsage("PRODUCT");
+                          pFunParam->setUsage(CFunctionParameter::PRODUCT);
                           break;
                         case CChemEq::MODIFIER:
                           // it is a modifier
-                          pFunParam->setUsage("MODIFIER");
+                          pFunParam->setUsage(CFunctionParameter::MODIFIER);
                           break;
                         default:
                           fatalError();
@@ -2191,12 +2193,12 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
           else if (dynamic_cast<const CModelValue*>(object))
             {
               // it is a global parameter
-              pFunParam->setUsage("VARIABLE");
+              pFunParam->setUsage(CFunctionParameter::PARAMETER);
             }
           else if (dynamic_cast<const CCompartment*>(object))
             {
               // it is a volume
-              pFunParam->setUsage("VOLUME");
+              pFunParam->setUsage(CFunctionParameter::VOLUME);
             }
           else
             {
@@ -2206,7 +2208,7 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
       else
         {
           // it is a local parameter
-          pFunParam->setUsage("PARAMETER");
+          pFunParam->setUsage(CFunctionParameter::PARAMETER);
         }
       pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
       ++parameterIndex;

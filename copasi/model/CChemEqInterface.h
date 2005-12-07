@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/09/22 20:58:23 $
+   $Date: 2005/12/07 10:59:18 $
    End CVS Header */
 
 #ifndef CCHEMEQINTERFACE_H
@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 #include <set>
+
+#include "function/CFunctionParameter.h"
 
 class CChemEq;
 class CModel;
@@ -42,8 +44,8 @@ class CChemEqInterface
     bool loadFromChemEq(const CModel * model, const CChemEq & ce);
     bool writeToChemEq(const CModel * model, CChemEq & ce) const;
 
-    const std::vector<std::string> & getListOfNames(const std::string & role) const;
-    const std::vector<C_FLOAT64> & getListOfMultiplicities(const std::string & role) const;
+    const std::vector<std::string> & getListOfNames(CFunctionParameter::Role role) const;
+    const std::vector<C_FLOAT64> & getListOfMultiplicities(CFunctionParameter::Role role) const;
 
     //right now only modifiers can be added to the ChemEq without entering them into the CHemEq string
     void addModifier(const std::string & name);
@@ -54,7 +56,7 @@ class CChemEqInterface
 
     void reverse();
 
-    C_INT32 getMolecularity(const std::string & role) const;
+    C_INT32 getMolecularity(CFunctionParameter::Role role) const;
 
     std::set<std::string> listOfNonUniqueMetabNames(const CModel * model) const;
     std::set<std::string> listOfNonExistingMetabNames(const CModel * model) const;

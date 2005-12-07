@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/24 14:51:29 $
+   $Date: 2005/12/07 10:55:59 $
    End CVS Header */
 
 #ifndef COPASI_CFunction
@@ -116,30 +116,8 @@ class CFunction:
      * @return bool success
      */
     bool addVariable(const std::string & name,
-                     const std::string & usage = "VARIABLE",
+                     CFunctionParameter::Role usage = CFunctionParameter::VARIABLE,
                      const CFunctionParameter::DataType & type = CFunctionParameter::FLOAT64);
-
-    /**
-     * Retrives the of the usage description of variables.
-     * @return CCopasiVectorN < CUsageRange > & usage
-     */
-    CCopasiVectorN < CUsageRange > & getUsageDescriptions();
-
-    /**
-     * Retrives the of the usage description of variables.
-     * @return const CCopasiVectorN < CUsageRange > & usage
-     */
-    const CCopasiVectorN < CUsageRange > & getUsageDescriptions() const;
-
-    /**
-     * Adds one usage descriptiont
-     * @param const string & usage (SUBSTRATE or PRODUCT)
-     * @param const unsigned C_INT32 & lowerBound
-     * @param const unsigned C_INT32 & upperBound
-     */
-    void addUsage(const std::string& usage,
-                  const unsigned C_INT32 & lowerBound,
-                  const unsigned C_INT32 & upperBound);
 
     /**
      *  Loads an object with data coming from a CReadConfig object.
@@ -151,9 +129,16 @@ class CFunction:
     virtual void load(CReadConfig & configBuffer,
                       CReadConfig::Mode mode = CReadConfig::SEARCH);
 
+    /**
+     * determines whether the function is suitable for a reaction with
+     * the given number of substrates and products and reversibility
+     */
+    bool isSuitable(const unsigned C_INT32 noSubstrates,
+                    const unsigned C_INT32 noProducts,
+                    const TriLogic reversible);
+
   protected:
     bool initVariables();
-    bool guessModifierUsageRange();
 
     // Attributes
   private:
@@ -164,14 +149,6 @@ class CFunction:
      *  for evaluation and its eventual type.
      */
     CFunctionParameters mVariables;
-
-    /**
-     *  A vector of usages ranges describing the condition under which a 
-     *  function may be used.
-     *  Specifically it describes what number of substrates and products a
-     *  reaction may have to be able to use this function as its rate function.
-     */
-    CCopasiVectorN < CUsageRange > mUsageDescriptions;
 
     /**
      * A pointer to the call parameters during calculation.

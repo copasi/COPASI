@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/01 13:34:35 $
+   $Author: ssahle $ 
+   $Date: 2005/12/07 10:59:18 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -181,21 +181,21 @@ bool CChemEqInterface::writeToChemEq(const CModel * model, CChemEq & ce) const
     return ret; //TODO: really check
   }
 
-const std::vector<std::string> & CChemEqInterface::getListOfNames(const std::string & role) const
+const std::vector<std::string> & CChemEqInterface::getListOfNames(CFunctionParameter::Role role) const
   {
-    if (role == "SUBSTRATE") return mSubstrateNames;
-    else if (role == "PRODUCT") return mProductNames;
-    else if (role == "MODIFIER") return mModifierNames;
+    if (role == CFunctionParameter::SUBSTRATE) return mSubstrateNames;
+    else if (role == CFunctionParameter::PRODUCT) return mProductNames;
+    else if (role == CFunctionParameter::MODIFIER) return mModifierNames;
     else fatalError();
 
     return mSubstrateNames; //never reached
   }
 
-const std::vector<C_FLOAT64> & CChemEqInterface::getListOfMultiplicities(const std::string & role) const
+const std::vector<C_FLOAT64> & CChemEqInterface::getListOfMultiplicities(CFunctionParameter::Role role) const
   {
-    if (role == "SUBSTRATE") return mSubstrateMult;
-    else if (role == "PRODUCT") return mProductMult;
-    else if (role == "MODIFIER") return mModifierMult;
+    if (role == CFunctionParameter::SUBSTRATE) return mSubstrateMult;
+    else if (role == CFunctionParameter::PRODUCT) return mProductMult;
+    else if (role == CFunctionParameter::MODIFIER) return mModifierMult;
     else fatalError();
 
     return mSubstrateMult; //never reached
@@ -405,15 +405,15 @@ bool CChemEqInterface::extractModifier(const std::string & input,
   return true;
 }
 
-C_INT32 CChemEqInterface::getMolecularity(const std::string & role) const
+C_INT32 CChemEqInterface::getMolecularity(CFunctionParameter::Role role) const
   {
     const std::vector<C_FLOAT64> * tmpVector = NULL;
 
-    if (role == "SUBSTRATE")
+    if (role == CFunctionParameter::SUBSTRATE)
       tmpVector = &mSubstrateMult;
-    else if (role == "PRODUCT")
+    else if (role == CFunctionParameter::PRODUCT)
       tmpVector = &mProductMult;
-    else if (role == "MODIFIER")
+    else if (role == CFunctionParameter::MODIFIER)
       tmpVector = &mModifierMult;
     else fatalError();
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/24 14:51:29 $
+   $Date: 2005/12/07 10:55:59 $
    End CVS Header */
 
 /**
@@ -19,7 +19,6 @@
 #include "utilities/CReadConfig.h"
 #include "utilities/CCopasiVector.h"
 #include "CFunctionParameter.h"
-#include "CUsageRange.h"
 #include "report/CCopasiContainer.h"
 
 /** @dia:pos 10.7176,6.51973 */
@@ -35,16 +34,6 @@ class CFunctionParameters : public CCopasiContainer
      */
     /** @dia:route 0,3; h,15.1888,24.6765,8.71728,7.21973,10.7176 */
     CCopasiVectorNS < CFunctionParameter > mParameters;
-
-    /**
-     *  A vector describing the ranges of numbers of parameters for
-     *  a specific usage
-     * @supplierCardinality 0..*
-     */
-    /** @dia:route 0,2; h,10.7176,6.51973,7.07775,25.0674,1.28919 */
-    CCopasiVectorN < CUsageRange > mUsageRanges;
-
-    // Operations
 
   public:
     /**
@@ -74,16 +63,6 @@ class CFunctionParameters : public CCopasiContainer
     void cleanup();
 
     /**
-     *  Loads an object with data coming from a CReadConfig object.
-     *  (CReadConfig object reads an input stream)
-     *  @param "CReadConfig &" configBuffer,
-     *  @param "CReadConfig::Mode" mode (Default: CReadConfig::NEXT)
-     *  @return Fail
-     */ 
-    //void load(CReadConfig & configBuffer,
-    //          CReadConfig::Mode mode = CReadConfig::NEXT);
-
-    /**
      *  Add a parameter to the parameter list
      *  @param "const CFunctionParameter &" parameter
      */
@@ -107,19 +86,13 @@ class CFunctionParameters : public CCopasiContainer
      */
     bool add(const std::string & name,
              const CFunctionParameter::DataType & type,
-             const std::string & usage);
+             CFunctionParameter::Role usage);
 
     /**
      *  Remove a parameter from the parameter list
      *  @param "const CFunctionParameter &" parameter
      */
     void remove(const std::string & name);
-
-    /**
-     *  Retrieves the vector of function parameters
-     *  @return "CCopasiVectorNS < CFunctionParameter >" & parameter
-     */ 
-    // CCopasiVectorNS < CFunctionParameter > & getParameters();
 
     /**
      *
@@ -134,15 +107,15 @@ class CFunctionParameters : public CCopasiContainer
     const CFunctionParameter * operator[](const std::string &name) const;
 
     /**
-     *
+     * number of parameters
      */
     unsigned C_INT32 size() const;
 
     /**
-     *  Retreives the vector of usage ranges for the parameters
-     *  @return "vector < CUsageRange * > & usageRanges
+     * tells whether there is a parameter with vector type and the given role
+     * (if there is one it is assumed it is the only one with this role)
      */
-    const CCopasiVectorN < CUsageRange > & getUsageRanges() const;
+    bool isVector(CFunctionParameter::Role role) const;
 
     /**
      *  Retrieves the first parameter with the specified usage after pos
@@ -154,13 +127,13 @@ class CFunctionParameters : public CCopasiContainer
      *  @param "unsigned C_INT32 &" pos (first call should be with 0)
      *  @return "CFunctionParameter &" usageRange
      */
-    const CFunctionParameter * getParameterByUsage(const std::string & usage,
+    const CFunctionParameter * getParameterByUsage(CFunctionParameter::Role usage,
         unsigned C_INT32 & pos) const;
 
     /**
      * gets the number of Parameters with a specific usage
      */
-    unsigned C_INT32 getNumberOfParametersByUsage(const std::string & usage) const;
+    unsigned C_INT32 getNumberOfParametersByUsage(CFunctionParameter::Role usage) const;
 
     /**
      * find a parameter by its name and return its index
@@ -177,16 +150,11 @@ class CFunctionParameters : public CCopasiContainer
     {
       os << "++++CFunctionParameters: " << std::endl;
       os << "    CFunctionParameters.mParameters " << std::endl << d.mParameters;
-      os << "    CFunctionParameters.mUsageRanges " << std::endl << d.mUsageRanges;
+      //os << "    CFunctionParameters.mUsageRanges " << std::endl << d.mUsageRanges;
       os << "----CFunctionParameters " << std::endl;
 
       return os;
     }
-
-    /**
-     *  WHAT DOES THIS DO ??????
-     */
-    void updateUsageRanges();
   };
 
 #endif // COPASI_CFunctionParameters

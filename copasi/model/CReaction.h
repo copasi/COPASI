@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.87 $
+   $Revision: 1.88 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/15 18:45:25 $
+   $Author: ssahle $ 
+   $Date: 2005/12/07 10:59:18 $
    End CVS Header */
 
 /**
@@ -29,7 +29,6 @@
 #include "CChemEqElement.h"
 #include "CCompartment.h"
 
-//template < class CType > class CVector;
 class CReadConfig;
 class SBase;
 class CFunctionDB;
@@ -354,16 +353,16 @@ class CReaction : public CCopasiContainer
   private:
 
     /**
-     *
+     *  loads a reaction from a gepasi file
      */
     C_INT32 loadOld(CReadConfig & configbuffer);
 
     /**
-     *  Returns the max number of elements for the specified usage
-     *  @param "const string" & usage
-     *  @return unsigned C_INT32 size
+     *  used for loading gepasi files. Loads the mapping for one role
      */
-    unsigned C_INT32 usageRangeSize(const std::string & usage) const;
+    bool loadOneRole(CReadConfig & configbuffer,
+                     CFunctionParameter::Role role, unsigned C_INT32 n,
+                     const std::string & prefix);
 
     /**
      * Sets the scaling factor of the for the fluxes

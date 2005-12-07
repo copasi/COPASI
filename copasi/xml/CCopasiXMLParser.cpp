@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.117 $
+   $Revision: 1.118 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/10 15:23:55 $
+   $Author: ssahle $ 
+   $Date: 2005/12/07 11:01:34 $
    End CVS Header */
 
 /**
@@ -884,8 +884,6 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::start(const XML_Char 
 
 void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *pszName)
 {
-  CUsageRange UsageDescription;
-  const CCopasiVectorN< CUsageRange > * pUsageRanges = NULL;
   unsigned C_INT32 index;
 
   switch (mCurrentElement)
@@ -893,37 +891,6 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *p
     case ListOfParameterDescriptions:
       if (strcmp(pszName, "ListOfParameterDescriptions")) fatalError();
 
-      // :TODO: This should be obsolete.
-      {
-        CFunction * pFunction = dynamic_cast<CFunction *>(mCommon.pFunction);
-        if (!mCommon.mExistingFunction && pFunction)
-          {
-            pUsageRanges = & pFunction->getVariables().getUsageRanges();
-            UsageDescription.setUsage("SUBSTRATE");
-            if ((index = pUsageRanges->getIndex("SUBSTRATE")) != C_INVALID_INDEX)
-              {
-                UsageDescription.setRange((*pUsageRanges)[index]->getLow(),
-                                          (*pUsageRanges)[index]->getHigh());
-                pFunction->getUsageDescriptions().add(UsageDescription);
-              }
-
-            UsageDescription.setUsage("PRODUCT");
-            if ((index = pUsageRanges->getIndex("PRODUCT")) != C_INVALID_INDEX)
-              {
-                UsageDescription.setRange((*pUsageRanges)[index]->getLow(),
-                                          (*pUsageRanges)[index]->getHigh());
-                pFunction->getUsageDescriptions().add(UsageDescription);
-              }
-
-            UsageDescription.setUsage("MODIFIER");
-            if ((index = pUsageRanges->getIndex("MODIFIER")) != C_INVALID_INDEX)
-              {
-                UsageDescription.setRange((*pUsageRanges)[index]->getLow(),
-                                          (*pUsageRanges)[index]->getHigh());
-                pFunction->getUsageDescriptions().add(UsageDescription);
-              }
-          }
-      }
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;
 
@@ -966,8 +933,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
   const char * Name;
   const char * Order;
   const char * role; /*substrate, product, modifier, constant, other*/
-  //CFunctionParameter::Role Role;
-  std::string Role;
+  CFunctionParameter::Role Role;
   const char * minOccurs;
   unsigned C_INT32 MinOccurs;
   const char * maxOccurs;
@@ -992,10 +958,8 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
       mOrder++;
 
       role = mParser.getAttributeValue("role", papszAttrs);
-      //Role = (CFunctionParameter::Role) mParser.toEnum(role, CFunctionParameter::RoleName);
-      //if (Role == -1) fatalError();
-      Role = CFunctionParameter::convertXMLRoleNameToInternal(role);
-      if (Role == "") fatalError();
+      Role = CFunctionParameter::xmlRole2Enum(role);
+      //if (Role == "") fatalError();
 
       minOccurs = mParser.getAttributeValue("minOccurs", papszAttrs, "1");
       MinOccurs = atoi(minOccurs);
@@ -1011,7 +975,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
       else
         {
           pParm = new CFunctionParameter();
-          pParm->setName(Name);
+          pParm->setObjectName(Name);
           pParm->setUsage(Role);
 
           if (MaxOccurs == 1 && MinOccurs == 1)

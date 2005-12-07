@@ -1,13 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.124 $
+   $Revision: 1.125 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/30 22:01:07 $
+   $Author: ssahle $ 
+   $Date: 2005/12/07 11:08:34 $
    End CVS Header */
 
 /**********************************************************************
- **  $ CopasiUI/FunctionWidget1.cpp                 
+ **  $ CopasiUI/FunctionWidget1.cpp
  **  $ Author  : Mrinmayee Kulkarni
  
  ** This file creates the GUI for the  information about an individual
@@ -305,7 +305,7 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
   for (i = 0; CFunctionParameter::DataTypeName[i] != ""; i++)
     functionType += (FROM_UTF8(CFunctionParameter::DataTypeName[i]));
 
-  std::string usage;
+  CFunctionParameter::Role usage;
   QString qUsage;
 
   //C_INT32 noOffunctParams = functParam.size();
@@ -314,13 +314,32 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
   for (j = 0; j < params.size(); j++)
     {
       usage = params[j]->getUsage();
-      qUsage = FROM_UTF8(CFunctionParameter::convertRoleNameToDisplay(usage));
-      if (usage == "SUBSTRATE") {color = subsColor;}
-      else if (usage == "PRODUCT") {color = prodColor;}
-      else if (usage == "MODIFIER") {color = modiColor;}
-      else if (usage == "PARAMETER") {color = paraColor;}
-      else if (usage == "VOLUME") {color = volColor;}
-      else {qUsage = "unknown"; color = QColor(255, 20, 20);}
+      qUsage = FROM_UTF8(CFunctionParameter::RoleNameDisplay[usage]);
+
+      switch (usage)
+        {
+        case CFunctionParameter::SUBSTRATE :
+          color = subsColor;
+          break;
+        case CFunctionParameter::PRODUCT :
+          color = prodColor;
+          break;
+        case CFunctionParameter::MODIFIER :
+          color = modiColor;
+          break;
+        case CFunctionParameter::PARAMETER :
+          color = paraColor;
+          break;
+        case CFunctionParameter::VOLUME :
+          color = volColor;
+          break;
+        case CFunctionParameter::VARIABLE :
+          color = QColor(250, 250, 250);
+          break;
+        default :
+          qUsage = "unknown";
+          color = QColor(255, 20, 20);
+        }
 
       // col. 0
       Table1->setItem(j, 0, new ColorTableItem(Table1, QTableItem::WhenCurrent, color,
@@ -347,67 +366,61 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
   return true;
 }
 
-bool FunctionWidget1::loadUsageTable(const CCopasiVectorN<CUsageRange>& usages)
+bool FunctionWidget1::loadUsageTable(/*const CCopasiVectorN<CUsageRange>& usages*/)
 {
-  if (usages.size() == 0)
-    {
-      Table2->setNumRows(1);
-      Table2->setText(0, 0, "none");
-      Table2->setText(0, 1, "");
-      return true;
-    }
-
-  unsigned C_INT32 j, jmax = usages.size();
-  QString s1, s2;
-  std::string name;
-  Table2->setNumRows(jmax);
-  for (j = 0; j < jmax; ++j)
-    {
-      s1 = "Number of ";
-      name = usages[j]->getObjectName();
-      /*if (name == "SUBSTRATE")
-        s1 += "Substrates:";
-      else if (name == "PRODUCT")
-        s1 += "Products:";
-      else if (name == "MODIFIER")
-        s1 += "Modifiers:";
-      else
-        s1 += FROM_UTF8(name);*/
-      s1 += FROM_UTF8(CFunctionParameter::convertRoleNameToDisplay(name)) + "s:";
-      //relies on the fact that the plural of all roles is regular
-
-      Table2->setText(j, 0, s1);
-      //Table2->adjustColumn(0);
-
-      switch (usages[j]->getHigh())
-        {
-        case 0:
-          s2 = "exactly " + QString::number(usages[j]->getLow());
-          break;
-
-        case - 1:
-          if (usages[j]->getLow() == 0)
-            s2 = "any";
-          else
-            s2 = QString::number(usages[j]->getLow()) + " or more";
-          break;
-
-        default:
-          if (usages[j]->getLow() == usages[j]->getHigh())
+  /*
+    if (usages.size() == 0)
+      {
+        Table2->setNumRows(1);
+        Table2->setText(0, 0, "none");
+        Table2->setText(0, 1, "");
+        return true;
+      }
+   
+    unsigned C_INT32 j, jmax = usages.size();
+    QString s1, s2;
+    std::string name;
+    Table2->setNumRows(jmax);
+    for (j = 0; j < jmax; ++j)
+      {
+        s1 = "Number of ";
+        name = usages[j]->getObjectName();
+        s1 += FROM_UTF8(CFunctionParameter::convertRoleNameToDisplay(name)) + "s:";
+        //relies on the fact that the plural of all roles is regular
+   
+        Table2->setText(j, 0, s1);
+        //Table2->adjustColumn(0);
+   
+        switch (usages[j]->getHigh())
+          {
+          case 0:
             s2 = "exactly " + QString::number(usages[j]->getLow());
-          else
-            s2 = QString::number(usages[j]->getLow()) + " - "
-                 + QString::number(usages[j]->getHigh());
-        }
-
-      Table2->setText(j, 1, s2);
-    }
-
-  Table2->adjustColumn(0);
-  Table2->adjustColumn(1);
-  return true;
-
-  //TODO: render "MODIFIER" usages differently?
+            break;
+   
+          case - 1:
+            if (usages[j]->getLow() == 0)
+              s2 = "any";
+            else
+              s2 = QString::number(usages[j]->getLow()) + " or more";
+            break;
+   
+          default:
+            if (usages[j]->getLow() == usages[j]->getHigh())
+              s2 = "exactly " + QString::number(usages[j]->getLow());
+            else
+              s2 = QString::number(usages[j]->getLow()) + " - "
+                   + QString::number(usages[j]->getHigh());
+          }
+   
+        Table2->setText(j, 1, s2);
+      }
+   
+    Table2->adjustColumn(0);
+    Table2->adjustColumn(1);
+    return true;
+   
+    //TODO: render "MODIFIER" usages differently?
+  */
 }
 
 bool FunctionWidget1::loadReversibility(TriLogic rev)
@@ -509,8 +522,7 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   loadParameterTable(pFunction->getVariables());
 
   // application table
-  // loadUsageTable(pFunction->getUsageDescriptions());
-  loadUsageTable(pFunction->getVariables().getUsageRanges());
+  loadUsageTable(/*pFunction->getVariables().getUsageRanges()*/);
 
   isValid = true;
   flagChanged = false;
@@ -574,6 +586,7 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
         }
     } //TODO: this is propably much too complicated
 
+  /*
   //Usages of the function
   CCopasiVectorN < CUsageRange > & tarU = target->getUsageDescriptions();
   const CCopasiVectorN < CUsageRange > & srcU = src->getUsageDescriptions();
@@ -591,6 +604,7 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
     }
   catch (CCopasiException Exception)
   {}
+  */
 
   return true;
 }
@@ -657,15 +671,16 @@ bool FunctionWidget1::saveToFunction()
   return true;
 }
 
+/*
 void FunctionWidget1::updateApplication()
 {
   // :TODO: This function should be returning whether the application was actually changed //
-
+ 
   CUsageRange Application;
   const CFunctionParameters &functParam = mpFunction->getVariables();
   CCopasiVectorN < CUsageRange > & functUsage = mpFunction ->getUsageDescriptions();
   functUsage.cleanup();
-
+ 
   Application.setUsage("SUBSTRATE");
   if (functParam.getUsageRanges().getIndex("SUBSTRATE") != C_INVALID_INDEX)
     {
@@ -678,7 +693,7 @@ void FunctionWidget1::updateApplication()
       //Application.setRange(CRange::NoRange, Application.getHigh());
       //functUsage.add(Application);
     }
-
+ 
   Application.setUsage("PRODUCT");
   if (functParam.getUsageRanges().getIndex("PRODUCT") != C_INVALID_INDEX)
     {
@@ -691,7 +706,7 @@ void FunctionWidget1::updateApplication()
       //Application.setRange(CRange::NoRange, Application.getHigh());
       //functUsage.add(Application);
     }
-
+ 
   Application.setUsage("MODIFIER");
   if (functParam.getUsageRanges().getIndex("MODIFIER") != C_INVALID_INDEX)
     {
@@ -704,9 +719,10 @@ void FunctionWidget1::updateApplication()
       //Application.setRange(CRange::NoRange, Application.getHigh());
       //functUsage.add(Application);
     }
-
+ 
   //TODO: Volumes?
 }
+ */
 
 //************** slots for changes in the widgets *************************************
 
@@ -748,40 +764,36 @@ void FunctionWidget1::slotFcnDescriptionChanged()
   loadParameterTable(mpFunction->getVariables());
 
   // application table
-  updateApplication();
-  // loadUsageTable(mpFunction->getUsageDescriptions());
-  loadUsageTable(mpFunction->getVariables().getUsageRanges());
-  //
+  //updateApplication();
+  loadUsageTable(/*mpFunction->getVariables().getUsageRanges()*/);
+
   textBrowser->setFocus();
 }
 
 void FunctionWidget1::slotTableValueChanged(int row, int col)
 {
-  std::cout << "table changed " << row << " " << col << std::endl;
+  //std::cout << "table changed " << row << " " << col << std::endl;
   flagChanged = true;
 
   CFunctionParameters &functParam = mpFunction->getVariables();
 
   if (col == 2) //Usage
     {
-      QString qUsage = Table1->text(row, col);
-      std::string usage = CFunctionParameter::convertDisplayRoleNameToInternal((const char*)qUsage.utf8());
-      /*if (qUsage == "Substrate") {usage = "SUBSTRATE";}
-      else if (qUsage == "Product") {usage = "PRODUCT";}
-      else if (qUsage == "Modifier") {usage = "MODIFIER";}
-      else if (qUsage == "Parameter") {usage = "PARAMETER";}
-      else {fatalError();}*/
-      if (usage == "") fatalError();
+      QComboTableItem * tmpItem = dynamic_cast<QComboTableItem *>(Table1->item(row, col));
+      if (!tmpItem) fatalError();
+      //QString qUsage = Table1->text(row, col);
+      CFunctionParameter::Role usage = (CFunctionParameter::Role)tmpItem->currentItem();
+
+      //CFunctionParameter::convertDisplayRoleNameToInternal((const char*)qUsage.utf8());
 
       functParam[row]->setUsage(usage);
-      functParam.updateUsageRanges();
+      //functParam.updateUsageRanges();
     }
 
   //update tables
   loadParameterTable(mpFunction->getVariables());
-  updateApplication();
-  // loadUsageTable(mpFunction->getUsageDescriptions());
-  loadUsageTable(mpFunction->getVariables().getUsageRanges());
+  //updateApplication();
+  loadUsageTable(/*mpFunction->getVariables().getUsageRanges()*/);
 }
 
 void FunctionWidget1::slotAppTableValueChanged(int C_UNUSED(row), int C_UNUSED(col))

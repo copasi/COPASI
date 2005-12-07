@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/29 17:28:10 $
+   $Author: ssahle $ 
+   $Date: 2005/12/07 10:55:59 $
    End CVS Header */
 
 /**
@@ -121,41 +121,6 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
   return Fail;
 }
 
-/*C_INT32 CFunctionDB::save(CWriteConfig &configbuffer)
-{
-  C_INT32 Size = mLoadedFunctions.size();
-  C_INT32 Fail = 0;
- 
-  if ((Fail = configbuffer.setVariable("TotalKinetics", "C_INT32", &Size)))
-    return Fail;
- 
-  mLoadedFunctions.save(configbuffer);
- 
-  return Fail;
-}
- 
-C_INT32 CFunctionDB::saveOld(CWriteConfig &configbuffer)
-{
-  C_INT32 Size;
-  C_INT32 Fail = 0;
-  C_INT32 i, j;
- 
-  Size = mLoadedFunctions.size();
-  for (i = j = 0; i < Size; i++)
-    if (mLoadedFunctions[i]->getType() == CFunction::UserDefined)
-      j++;
- 
-  if ((Fail = configbuffer.setVariable("TotalUDKinetics", "C_INT32", &j)))
-    return Fail;
- 
-  // because CCopasiVector does not have saveOld, we will save them one by one
-  for (i = 0; i < Size; i++)
-    if (mLoadedFunctions[i]->getType() == CFunction::UserDefined)
-      mLoadedFunctions[i]->saveOld(configbuffer);
- 
-  return Fail;
-}*/
-
 void CFunctionDB::setFilename(const std::string & filename)
 {mFilename = filename;}
 
@@ -271,10 +236,6 @@ bool CFunctionDB::removeFunction(const std::string &key)
   return true;
 }
 
-// void CFunctionDB::dBDelete(const string & functionName)
-// {
-//}
-
 CEvaluationTree * CFunctionDB::findFunction(const std::string & functionName)
 {
   unsigned C_INT32 index = mLoadedFunctions.getIndex(functionName);
@@ -299,41 +260,23 @@ CEvaluationTree * CFunctionDB::findLoadFunction(const std::string & functionName
 CCopasiVectorN < CEvaluationTree > & CFunctionDB::loadedFunctions()
 {return mLoadedFunctions;}
 
-CCopasiVector <CFunction> *
+std::vector<CFunction*>
 CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
                                const unsigned C_INT32 noProducts,
-                               const TriLogic reversible)
+                               const TriLogic reversibility)
 {
-  CCopasiVector< CFunction >* pFunctionVector = new CCopasiVector< CFunction >();
-  unsigned C_INT32 i, imax;
-  unsigned C_INT32 j, jmax;
+  std::vector<CFunction*> ret;
   CFunction *pFunction;
-  CUsageRange * pRange;
 
-  for (i = 0, imax = mLoadedFunctions.size(); i < imax; i++)
+  unsigned C_INT32 i, imax = mLoadedFunctions.size();
+  for (i = 0; i < imax; i++)
     {
       pFunction = dynamic_cast<CFunction *>(mLoadedFunctions[i]);
       if (!pFunction) continue;
 
-      if (reversible != TriUnspecified &&
-          reversible != pFunction->isReversible() &&
-          pFunction->isReversible() != TriUnspecified)
-        continue;
-
-      for (j = 0, jmax = pFunction->getUsageDescriptions().size();
-           j < jmax; j++)
-        {
-          pRange = pFunction->getUsageDescriptions()[j];
-
-          if (pRange->getUsage() == "SUBSTRATE")
-            if (!pRange->isInRange(noSubstrates)) break;
-
-          if (pRange->getUsage() == "PRODUCT")
-            if (!pRange->isInRange(noProducts)) break;
-        }
-
-      if (j == jmax) pFunctionVector->add(pFunction);
+      if (pFunction->isSuitable(noSubstrates, noProducts, reversibility))
+        ret.push_back(pFunction);
     }
 
-  return pFunctionVector;
+  return ret;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/15 18:45:25 $
+   $Author: ssahle $ 
+   $Date: 2005/12/07 10:59:18 $
    End CVS Header */
 
 #ifndef CREACTIONINTERFACE_H
@@ -107,7 +107,7 @@ class CReactionInterface
      * This produces a list of metab names (from the chem eq) for use in
      * the combo boxes. The role must be given like a usage, e.g. "SUBSTRATE".
      */
-    const std::vector<std::string> & getListOfMetabs(std::string role) const;
+    const std::vector<std::string> & getListOfMetabs(CFunctionParameter::Role role) const;
 
     /**
      * set the function.
@@ -133,10 +133,10 @@ class CReactionInterface
         else return (false);
       }
 
-    std::string getUsage(unsigned C_INT32 index) const
+    CFunctionParameter::Role getUsage(unsigned C_INT32 index) const
       {
         if (mpFunction) return (*mpParameters)[index]->getUsage();
-        else return emptyString;
+        else return CFunctionParameter::VARIABLE;
       }
 
     std::string getParameterName(unsigned C_INT32 index) const
@@ -192,14 +192,14 @@ class CReactionInterface
      * is the mapping of this parameter locked?
      */
     bool isLocked(unsigned C_INT32 index) const;
-    bool isLocked(std::string usage) const;
+    bool isLocked(CFunctionParameter::Role usage) const;
 
   private:
 
     /**
      * guesses how to connect metabs with parameters for a specific usage
      */
-    void connectFromScratch(std::string role, bool pedantic);
+    void connectFromScratch(CFunctionParameter::Role role, bool pedantic);
 
     void clearFunction();
 
@@ -210,10 +210,10 @@ class CReactionInterface
     void findAndSetFunction(const std::string & newFunction = "");
 
     /**
-     * returns a list of metabolites (from the chemical equation). Species´ can occur
+     * returns a list of metabolites (from the chemical equation). Species can occur
      * several times according to theit multiplicity
      */
-    std::vector<std::string> getExpandedMetabList(const std::string & role) const;
+    std::vector<std::string> getExpandedMetabList(CFunctionParameter::Role role) const;
 
     void loadNameMap(const CModel & model, const CReaction & rea);
   };

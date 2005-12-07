@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/26 18:47:30 $
+   $Author: ssahle $ 
+   $Date: 2005/12/07 11:01:34 $
    End CVS Header */
 
 /**
@@ -523,34 +523,22 @@ bool CCopasiXML::saveFunctionList()
           Attributes.add("minOccurs", "");
           Attributes.add("maxOccurs", "");
 
-          //std::string Usage;
-
           for (j = 0; j < jmax; j++)
             {
               pParameter = pFunction->getVariables()[j];
               Attributes.setValue(0, pParameter->getKey());
               Attributes.setValue(1, pParameter->getObjectName());
               Attributes.setValue(2, j);
-              /*Usage = pParameter->getUsage();
-              if (Usage == "SUBSTRATE")
-                Attributes.setValue(3, "substrate");
-              else if (Usage == "PRODUCT")
-                Attributes.setValue(3, "product");
-              else if (Usage == "MODIFIER")
-                Attributes.setValue(3, "modifier");
-              else if (Usage == "PARAMETER")
-                Attributes.setValue(3, "constant");
-              else
-                Attributes.setValue(3, "other");*/
-              Attributes.setValue(3, CFunctionParameter::convertRoleNameToXML(pParameter->getUsage()));
+              Attributes.setValue(3, CFunctionParameter::RoleNameXML[pParameter->getUsage()]);
 
-              if (pParameter->getType() < CFunctionParameter::VINT32)
+              if (true /*pParameter->getType() < CFunctionParameter::VINT32*/)
                 {
                   Attributes.skip(4);
                   Attributes.skip(5);
                 }
               else
                 {
+                  /*
                   CUsageRange * pUsageRange =
                     pFunction->getVariables().getUsageRanges()[pParameter->getUsage()];
                   Attributes.setValue(4, pUsageRange->getLow());
@@ -558,6 +546,7 @@ bool CCopasiXML::saveFunctionList()
                     Attributes.setValue(5, "unbounded");
                   else
                     Attributes.setValue(5, pUsageRange->getHigh());
+                  */
                 }
 
               saveElement("ParameterDescription", Attributes);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/06/02 19:56:23 $
+   $Date: 2005/12/07 11:09:23 $
    End CVS Header */
 
 #include <qstringlist.h>
@@ -90,7 +90,7 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
   std::vector<std::string>::const_iterator sourceIt, sourceItEnd;
   std::vector<std::string>::const_iterator searchIt, searchItEnd;
 
-  lll = ri.getListOfMetabs("SUBSTRATE");
+  lll = ri.getListOfMetabs(CFunctionParameter::SUBSTRATE);
   sourceItEnd = lll.end();
   for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
     {
@@ -102,7 +102,7 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
         ret.push_back(*sourceIt);
     }
 
-  lll = ri.getListOfMetabs("PRODUCT");
+  lll = ri.getListOfMetabs(CFunctionParameter::PRODUCT);
   sourceItEnd = lll.end();
   for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
     {
@@ -114,7 +114,7 @@ const std::vector<std::string> ParameterTable::getListOfAllMetabNames(const CMod
         ret.push_back(*sourceIt);
     }
 
-  lll = ri.getListOfMetabs("MODIFIER");
+  lll = ri.getListOfMetabs(CFunctionParameter::MODIFIER);
   sourceItEnd = lll.end();
   for (sourceIt = lll.begin(); sourceIt != sourceItEnd; ++sourceIt)
     {
@@ -183,7 +183,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   QPixmap * pLocked = new QPixmap((const char**)locked_xpm);
   QPixmap * pUnlocked = new QPixmap((const char**)unlocked_xpm);
 
-  std::string usage;
+  CFunctionParameter::Role usage;
   QString qUsage;
   QColor color;
   const std::vector<std::string> * metabNames;
@@ -207,31 +207,50 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
 
       // set the stuff that is different for the specific usages
       usage = ri.getUsage(i);
-      qUsage = FROM_UTF8(CFunctionParameter::convertRoleNameToDisplay(usage));
-      if (usage == "SUBSTRATE") {color = subsColor;}
-      else if (usage == "PRODUCT") {color = prodColor;}
-      else if (usage == "MODIFIER") {color = modiColor;}
-      else if (usage == "PARAMETER") {color = paraColor;}
-      else if (usage == "VOLUME") {color = volColor;}
-      else {qUsage = "unknown"; color = QColor(255, 20, 20);}
+      qUsage = FROM_UTF8(CFunctionParameter::RoleNameDisplay[usage]);
+
+      switch (usage)
+        {
+        case CFunctionParameter::SUBSTRATE :
+          color = subsColor;
+          break;
+        case CFunctionParameter::PRODUCT :
+          color = prodColor;
+          break;
+        case CFunctionParameter::MODIFIER :
+          color = modiColor;
+          break;
+        case CFunctionParameter::PARAMETER :
+          color = paraColor;
+          break;
+        case CFunctionParameter::VOLUME :
+          color = volColor;
+          break;
+        case CFunctionParameter::VARIABLE :
+          color = QColor(255, 20, 20);
+          break;
+        default :
+          qUsage = "unknown";
+          color = QColor(255, 20, 20);
+        }
 
       // add first column
       item = new ColorTableItem(this, QTableItem::Never, color, qUsage);
-      if (usage == "SUBSTRATE") item->setPixmap(*pSubstrate);
-      if (usage == "PRODUCT") item->setPixmap(*pProduct);
-      if (usage == "MODIFIER") item->setPixmap(*pModifier);
+      if (usage == CFunctionParameter::SUBSTRATE) item->setPixmap(*pSubstrate);
+      if (usage == CFunctionParameter::PRODUCT) item->setPixmap(*pProduct);
+      if (usage == CFunctionParameter::MODIFIER) item->setPixmap(*pModifier);
       setItem(rowCounter, 0, item);
 
       // add second column
       item = new ColorTableItem(this, QTableItem::Never, color, FROM_UTF8(ri.getParameterName(i)));
-      if ((usage != "PARAMETER") && (usage != "VOLUME"))
+      if ((usage != CFunctionParameter::PARAMETER) && (usage != CFunctionParameter::VOLUME))
         {
           if (ri.isLocked(i)) item->setPixmap(*pLocked); else item->setPixmap(*pUnlocked);
         }
       setItem(rowCounter, 1, item);
 
       // add  column
-      if (usage == "PARAMETER")
+      if (usage == CFunctionParameter::PARAMETER)
         {
           item = new ColorCheckTableItem(this, color, "global");
           dynamic_cast<ColorCheckTableItem*>(item)->setChecked(!ri.isLocalValue(i));
@@ -243,10 +262,12 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
       setItem(rowCounter, 2, item);
 
       // add a line for a metabolite Parameter
-      if ((usage == "SUBSTRATE") || (usage == "PRODUCT") || (usage == "MODIFIER"))
+      if ((usage == CFunctionParameter::SUBSTRATE)
+          || (usage == CFunctionParameter::PRODUCT)
+          || (usage == CFunctionParameter::MODIFIER))
         {
           // get the list of possible metabs (for the combo box)
-          if (usage == "MODIFIER") //get all metabs; modifiers are never locked
+          if (usage == CFunctionParameter::MODIFIER) //get all metabs; modifiers are never locked
             vectorOfStrings2QStringList(getListOfAllMetabNames(model, ri), qsl);
           else //only get the modifiers from the ChemEq
             {
@@ -299,7 +320,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
             }
         }
       // add a line for a kinetic parameter
-      else if (usage == "PARAMETER")
+      else if (usage == CFunctionParameter::PARAMETER)
         {
           if (ri.isLocalValue(i))
             {
@@ -314,7 +335,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
             }
         }
       // add a line for a kinetic parameter
-      else if (usage == "VOLUME")
+      else if (usage == CFunctionParameter::VOLUME)
         {
           combo = new QComboTableItem(this, getListOfAllCompartmentNames(model));
           combo->setCurrentItem(FROM_UTF8(ri.getCompartment(i)));

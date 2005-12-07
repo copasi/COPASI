@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/11/24 15:45:55 $
+   $Date: 2005/12/07 10:55:57 $
    End CVS Header */
 
 #include "copasi.h"
@@ -15,7 +15,6 @@ CFunction::CFunction(const std::string & name,
                      const CEvaluationTree::Type & type):
     CEvaluationTree(name, pParent, type),
     mVariables(),
-    mUsageDescriptions(),
     mpCallParameters(NULL),
     mReversible(TriUnspecified)
 {}
@@ -24,7 +23,6 @@ CFunction::CFunction(const CFunction & src,
                      const CCopasiContainer * pParent):
     CEvaluationTree(src, pParent),
     mVariables(src.mVariables),
-    mUsageDescriptions(src.mUsageDescriptions),
     mpCallParameters(NULL),
     mReversible(src.mReversible)
 {}
@@ -65,15 +63,9 @@ const CFunctionParameters & CFunction::getVariables() const
   {return mVariables;}
 
 bool CFunction::addVariable(const std::string & name,
-                            const std::string & usage,
+                            CFunctionParameter::Role usage,
                             const CFunctionParameter::DataType & type)
 {return mVariables.add(name, type, usage);}
-
-CCopasiVectorN < CUsageRange > & CFunction::getUsageDescriptions()
-{return mUsageDescriptions;}
-
-const CCopasiVectorN < CUsageRange > & CFunction::getUsageDescriptions() const
-  {return mUsageDescriptions;}
 
 const C_FLOAT64 & CFunction::calcValue(const CCallParameters<C_FLOAT64> & callParameters)
 {
@@ -103,25 +95,12 @@ bool CFunction::dependsOn(const C_FLOAT64 * parameter,
       return false;
   }
 
-void CFunction::addUsage(const std::string& usage,
-                         const unsigned C_INT32 & lowerBound,
-                         const unsigned C_INT32 & upperBound)
-{
-  CUsageRange *u;
-  u = new CUsageRange();
-  u->setUsage(usage);
-  u->setLow(lowerBound);
-  u->setHigh(upperBound);
-  mUsageDescriptions.add(u);
-}
-
 void CFunction::load(CReadConfig & configBuffer,
                      CReadConfig::Mode mode)
 {
   //  cleanup();
 
   C_INT32 Type;
-  CUsageRange UsageDescription;
 
   mode = CReadConfig::SEARCH;
   configBuffer.getVariable("User-defined", "C_INT32", &Type, mode);
@@ -138,28 +117,6 @@ void CFunction::load(CReadConfig & configBuffer,
 
   configBuffer.getVariable("Reversible", "C_INT32", &mReversible);
 
-  configBuffer.getVariable("Substrates", "C_INT32", &Type);
-  UsageDescription.setUsage("SUBSTRATE");
-  if (Type == 0)
-    UsageDescription.setRange(Type, CRange::Infinity);
-  else
-    UsageDescription.setRange(Type);
-
-  if (!mUsageDescriptions.add(UsageDescription) &&
-      CCopasiMessage::peekLastMessage().getNumber() == MCCopasiVector + 2)
-    CCopasiMessage::getLastMessage();
-
-  configBuffer.getVariable("Products", "C_INT32", &Type);
-  UsageDescription.setUsage("PRODUCT");
-  if (Type == 0)
-    UsageDescription.setRange(Type, CRange::Infinity);
-  else
-    UsageDescription.setRange(Type);
-
-  if (!mUsageDescriptions.add(UsageDescription) &&
-      CCopasiMessage::peekLastMessage().getNumber() == MCCopasiVector + 2)
-    CCopasiMessage::getLastMessage();
-
   mode = CReadConfig::SEARCH;
 
   std::string tmp;
@@ -172,14 +129,13 @@ void CFunction::load(CReadConfig & configBuffer,
   // For older file version the parameters have to be build from information
   // dependend on the function type. Luckilly, only user defined functions are
   // the only ones occuring in those files.
-
-  guessModifierUsageRange();
 }
 
 bool CFunction::initVariables()
 {
   if (mpNodeList == NULL) return false;
 
+  //first add all variables to the existing list
   std::vector< CEvaluationNode * >::iterator it
   = mpNodeList->begin();
   std::vector< CEvaluationNode * >::iterator end
@@ -190,10 +146,11 @@ bool CFunction::initVariables()
   for (; it != end; ++it)
     if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::VARIABLE)
       {
-        mVariables.add((*it)->getData(), CFunctionParameter::FLOAT64, "VARIABLE");
-        NewVariables.add((*it)->getData(), CFunctionParameter::FLOAT64, "VARIABLE");
+        mVariables.add((*it)->getData(), CFunctionParameter::FLOAT64, CFunctionParameter::VARIABLE);
+        NewVariables.add((*it)->getData(), CFunctionParameter::FLOAT64, CFunctionParameter::VARIABLE);
       }
 
+  //now remove all variables that are not in the tree anymore
   CFunctionParameter::DataType Type;
   unsigned C_INT32 i;
   for (i = mVariables.size() - 1; i < C_INVALID_INDEX; i--)
@@ -203,19 +160,24 @@ bool CFunction::initVariables()
   return true;
 }
 
-bool CFunction::guessModifierUsageRange()
+bool CFunction::isSuitable(const unsigned C_INT32 noSubstrates,
+                           const unsigned C_INT32 noProducts,
+                           const TriLogic reversible)
 {
-  unsigned C_INT32 imax = mVariables.getNumberOfParametersByUsage("MODIFIER");
+  //first reversibility:
+  if (reversible != this->isReversible())
+    return false;
 
-  if (imax != 0)
-    {
-      unsigned C_INT32 pos = 0;
+  //check substrates
+  if (!mVariables.isVector(CFunctionParameter::SUBSTRATE))
+    if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) != noSubstrates)
+      return false;
 
-      if (mVariables.getParameterByUsage("MODIFIER", pos)->getType() == CFunctionParameter::VFLOAT64)
-        addUsage("MODIFIER", 0, CRange::Infinity);
-      else
-        addUsage("MODIFIER", imax, CRange::NoRange);
-    }
+  //check products
+  if (reversible == TriTrue)
+    if (!mVariables.isVector(CFunctionParameter::PRODUCT))
+      if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) != noProducts)
+        return false;
 
   return true;
 }
