@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/07 15:42:55 $
+   $Date: 2005/12/08 14:50:44 $
    End CVS Header */
 
 #include "copasi.h"
@@ -194,5 +194,10 @@ bool CFunction::isSuitable(const unsigned C_INT32 noSubstrates,
             return false;
         }
     }
+
+  //no VARIABLE variables allowed for kinetic functions
+  if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::VARIABLE) != 0)
+    return false;
+
   return true;
 }
