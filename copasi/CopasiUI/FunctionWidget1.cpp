@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.127 $
+   $Revision: 1.128 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/08 14:56:37 $
+   $Date: 2005/12/08 15:18:25 $
    End CVS Header */
 
 /**********************************************************************
@@ -298,7 +298,11 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
   // list of usages for combobox
   QStringList Usages;
   for (i = 0; CFunctionParameter::RoleNameDisplay[i] != ""; i++)
-    Usages += (FROM_UTF8(CFunctionParameter::RoleNameDisplay[i]));
+    {
+      if (dynamic_cast<CKinFunction *>(mpFunction) &&
+          CFunctionParameter::VARIABLE == (CFunctionParameter::Role) i) continue;
+      Usages += (FROM_UTF8(CFunctionParameter::RoleNameDisplay[i]));
+    }
 
   //create list of data types (for combobox)
   QStringList functionType;
