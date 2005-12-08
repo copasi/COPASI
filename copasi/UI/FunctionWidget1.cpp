@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.126 $
+   $Revision: 1.127 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/07 21:36:07 $
+   $Date: 2005/12/08 14:56:37 $
    End CVS Header */
 
 /**********************************************************************
@@ -545,6 +545,9 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
   CFunctionParameter::DataType Type;
   unsigned C_INT32 index;
   unsigned C_INT32 i, j;
+
+  if (src->getInfix() != target->getInfix())
+    target->setInfix(src->getInfix());
 
   for (i = 0; i < pfunctParam.size(); i++)
     {
