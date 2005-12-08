@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/08 14:50:44 $
+   $Author: shoops $ 
+   $Date: 2005/12/08 15:20:14 $
    End CVS Header */
 
 #include "copasi.h"
@@ -165,7 +165,8 @@ bool CFunction::isSuitable(const unsigned C_INT32 noSubstrates,
                            const TriLogic reversible)
 {
   //first reversibility:
-  if (reversible != this->isReversible())
+  if (reversible != this->isReversible() &&
+      this->isReversible() != TriUnspecified)
     return false;
 
   //check substrates
