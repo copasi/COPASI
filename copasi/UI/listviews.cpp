@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.185 $
+   $Revision: 1.186 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/21 22:15:12 $
+   $Author: ssahle $ 
+   $Date: 2005/12/08 13:40:40 $
    End CVS Header */
 
 /****************************************************************************
@@ -205,9 +205,9 @@ ListViews::ListViews(QWidget *parent, const char *name):
     modesWidget(NULL),
     moietyWidget(NULL),
     moietyWidget1(NULL),
+    optimizationWidget(NULL),
     optResultWidgetS(NULL),
     optResultWidgetT(NULL),
-    optimizationWidget(NULL),
     paramFittingWidget(NULL),
     parametersWidget(NULL),
     plotWidget(NULL),
