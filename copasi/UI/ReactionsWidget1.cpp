@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.173 $
+   $Revision: 1.174 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/10/26 18:34:23 $
+   $Date: 2005/12/09 14:58:16 $
    End CVS Header */
 
 /*********************************************************************
@@ -377,7 +377,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                                                // No or Escape
+        default:                                                 // No or Escape
           break;
         }
     }
@@ -430,7 +430,7 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
   std::cout << "slotValueChanged " << index << " " << sub << " " << newValue << std::endl;
 
   // setValue
-  if (mRi.getUsage(index) == "PARAMETER")
+  if (mRi.getUsage(index) == CFunctionParameter::PARAMETER)
     {
       if (sub != 0) return;
 
@@ -439,7 +439,7 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
       else
         mRi.setGlobalParameter(index, (const char *)newValue.utf8());
     }
-  else if (mRi.getUsage(index) == "VOLUME")
+  else if (mRi.getUsage(index) == CFunctionParameter::VOLUME)
     {
       if (sub != 0) return;
       mRi.setCompartment(index, (const char *)newValue.utf8());
