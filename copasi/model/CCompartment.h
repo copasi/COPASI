@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/01 14:55:37 $
+   $Author: shoops $ 
+   $Date: 2005/12/12 22:09:17 $
    End CVS Header */
 
 /**
@@ -152,7 +152,7 @@ class CCompartment : public CModelEntity
      *  @return bool success
      *  @see mVolume
      */
-    inline bool setVolume(const C_FLOAT64 & volume) {setValue(volume); return true;};
+    inline bool setVolume(const C_FLOAT64 & volume) {return setValue(volume);};
 
     virtual bool setValue(const C_FLOAT64 & volume);
 

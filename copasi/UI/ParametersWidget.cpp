@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:34:23 $
+   $Author: shoops $ 
+   $Date: 2005/12/12 22:09:17 $
    End CVS Header */
 
 #include "ParametersWidget.h"
@@ -292,7 +292,7 @@ bool ParametersWidget::saveToModel() const
           {
             changed = true;
             CCompartment* tmp = dynamic_cast<CCompartment*>(child->getObject());
-            if (tmp) tmp->setVolume(child->getValue());
+            if (tmp) tmp->setInitialVolume(child->getValue());
           }
         child = (CParameterListItem *)child->nextSibling();
       }
