@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSparseMatrix.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/07 21:20:13 $
+   $Date: 2005/12/12 20:19:46 $
    End CVS Header */
 
 ///////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@
 ///////////////////////////////////////////////////////////
 
 #ifndef COPASI_CSparseMatrix
- #define COPASI_CSparseMatrix
+#define COPASI_CSparseMatrix
 
 #include <vector>
 
@@ -129,7 +129,83 @@ class CCompressedColumnFormat
   private:
     CCompressedColumnFormat();
 
+    // Iterator
   public:
+#if (defined __GNUC__ && __GNUC__ < 3)
+  class const_row_iterator: public std::forward_iterator< C_FLOAT64, ptrdiff_t >
+#else
+  class const_row_iterator:
+          public std::iterator< std::forward_iterator_tag, C_FLOAT64, ptrdiff_t >
+#endif
+
+      {
+      public:
+        /**
+         * Default constructor.
+         */
+        const_row_iterator(const CCompressedColumnFormat * pMatrix = NULL,
+                           const unsigned C_INT32 & rowIndex = C_INVALID_INDEX);
+
+        /**
+         * Copy constructor
+         * @param const iterator & src
+         */
+        const_row_iterator(const const_row_iterator & src);
+
+        /**
+         * Destructor
+         */
+        ~const_row_iterator();
+
+        /**
+         * Dereference operator * returns the node the iterator points to.
+         * @return C_FLOAT64 &
+         */
+        const C_FLOAT64 & operator*() const;
+
+        /**
+         * Dereference operator * returns the node the iterator points to.
+         * @return C_FLOAT64 &
+         */
+        const C_FLOAT64 & operator->() const;
+
+        /**
+         * Comparison operator !=
+         * @param const const_row_iterator & rhs
+         * @return bool not-equal
+         */
+        bool operator!=(const const_row_iterator & rhs);
+
+        /**
+         * Assignement operator from a node to an iterator
+         * @param const const_row_iterator & rhs
+         * @return iterator &
+         */
+        const_row_iterator & operator=(const const_row_iterator & rhs);
+
+        /**
+         * Prefix increment operator ++
+         * @return iterator &
+         */
+        const_row_iterator & operator++();
+
+        const unsigned C_INT32 & getColumnIndex() const;
+
+      private:
+        // Attributes
+        const CCompressedColumnFormat * mpMatrix;
+
+        unsigned C_INT32 mRowIndex;
+
+        const unsigned C_INT32 *mpRowIndex;
+
+        unsigned C_INT32 mColumnIndex;
+
+        const unsigned C_INT32 *mpColumnIndex;
+
+        const C_FLOAT64 *mpCurrent;
+      };
+
     CCompressedColumnFormat(const unsigned C_INT32 & rows,
                             const unsigned C_INT32 & columns,
                             const unsigned C_INT32 & nonZeros);
@@ -146,6 +222,15 @@ class CCompressedColumnFormat
     const unsigned C_INT32 * getColumnStart() const;
     unsigned C_INT32 * getColumnStart();
     CCompressedColumnFormat & operator = (const CSparseMatrix & ccf);
+
+    const_row_iterator beginRow(const unsigned C_INT32 & row) const;
+    const_row_iterator endRow(const unsigned C_INT32 & row) const;
   };
+
+#ifdef COPASI_DEBUG
+bool SparseMatrixTest(const unsigned C_INT32 & size,
+                      const C_FLOAT64 & sparseness,
+                      const unsigned C_INT32 & seed = 0);
+#endif
 
 #endif // COPASI_CSparseMatrix
