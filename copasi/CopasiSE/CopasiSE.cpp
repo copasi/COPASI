@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/30 13:35:43 $
+   $Date: 2005/12/12 20:20:38 $
    End CVS Header */
 
 // Main
@@ -35,11 +35,25 @@
 #include "report/CKeyFactory.h"
 #include "utilities/CVersion.h"
 #include "utilities/CDirEntry.h"
+#include "utilities/CSparseMatrix.h"
 
 int main(int argc, char *argv[])
 {
   std::stringstream Out;
   std::stringstream Error;
+
+#ifdef XXXX
+  C_FLOAT64 sparseness = 0.00;
+  SparseMatrixTest(10, sparseness);
+  SparseMatrixTest(25, sparseness);
+  SparseMatrixTest(50, sparseness);
+  SparseMatrixTest(100, sparseness);
+  SparseMatrixTest(250, sparseness);
+  SparseMatrixTest(500, sparseness);
+  SparseMatrixTest(1000, sparseness);
+
+  return 0;
+#endif XXXX
 
   try
     {
