@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/04/14 15:22:24 $
+   $Date: 2005/12/12 21:56:34 $
    End CVS Header */
 
 #ifndef COPASI_CLsodaMethod
@@ -12,6 +12,8 @@
 #include <string>
 #include "utilities/CVector.h"
 
+class CModel;
+class CState;
 class CStateX;
 
 class CLsodaMethod : public CTrajectoryMethod
@@ -23,9 +25,19 @@ class CLsodaMethod : public CTrajectoryMethod
     // Attributes
   private:
     /**
+     *  A pointer to the current state in complete model view.
+     */
+    CState * mpStateC;
+
+    /**
      *  A pointer to the current state in reduced model view.
      */
-    CStateX * mpStateX;
+    CStateX * mpStateR;
+
+    /**
+     * A pointer to the evaluation function to be used during integration
+     */
+    void (CLsodaMethod::*mpEval)(C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot);
 
     /**
      *  Dimension of the ODE system.
@@ -58,9 +70,19 @@ class CLsodaMethod : public CTrajectoryMethod
     C_INT32 mLsodaStatus;
 
     /**
+     *
+     */
+    bool mReducedModel;
+
+    /**
      *  Relative tolerance.
      */
     C_FLOAT64 mRtol;
+
+    /**
+     *
+     */
+    bool mDefaultAtol;
 
     /**
      *  Absolute tolerance.
@@ -215,6 +237,13 @@ class CLsodaMethod : public CTrajectoryMethod
      */
     const double step(const double & deltaT, const CState * initialState);
 
+    /**
+     * Calculate the default absolute tolerance
+     * @param const CModel * pModel
+     * @return C_FLOAT64 defaultAtol
+     */
+    C_FLOAT64 getDefaultAtol(const CModel * pModel) const;
+
     // the following operations were public in Clsoda.
   private:
     void xsetf(C_INT32 mflag);
@@ -252,11 +281,18 @@ class CLsodaMethod : public CTrajectoryMethod
 
   private:
     /**
-     *  This in connection with mModel replaces the callback function!!!
+     *  This evaluates the derivatives for the complete model
      */
-    void eval(C_FLOAT64 t,
-              C_FLOAT64 * y,
-              C_FLOAT64 * ydot);
+    void evalC(C_FLOAT64 t,
+               C_FLOAT64 * y,
+               C_FLOAT64 * ydot);
+
+    /**
+     *  This evaluates the derivatives for the reduced model
+     */
+    void evalR(C_FLOAT64 t,
+               C_FLOAT64 * y,
+               C_FLOAT64 * ydot);
 
     // This are standard lsoda parameters
     void terminate(C_INT32 * istate);
