@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.117 $
+   $Revision: 1.118 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/13 13:44:03 $
+   $Date: 2005/12/12 21:54:56 $
    End CVS Header */
 
 /********************************************************
@@ -483,6 +483,7 @@ void TrajectoryWidget::runTrajectoryTask()
   protectedNotify(ListViews::STATE, ListViews::CHANGE,
                   CCopasiDataModel::Global->getModel()->getKey());
 
+  loadTrajectoryTask();
   unsetCursor();
 }
 
