@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/15 19:21:18 $
+   $Date: 2005/12/13 17:27:24 $
    End CVS Header */
 
 #include "copasi.h"
@@ -309,6 +309,12 @@ bool CFitProblem::calculate()
                   break;
 
                 default:
+                  break;
+                }
+
+              if (!Continue)
+                {
+                  mCalculateValue = DBL_MAX;
                   break;
                 }
 
