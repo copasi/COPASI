@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.118 $
+   $Revision: 1.119 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/12 21:54:56 $
+   $Date: 2005/12/13 16:59:35 $
    End CVS Header */
 
 /********************************************************
@@ -411,6 +411,8 @@ void TrajectoryWidget::CommitChange()
 
 void TrajectoryWidget::runTrajectoryTask()
 {
+  bool success = true;
+
   checkTimeSeries();
   saveTrajectoryTask();
 
@@ -421,7 +423,28 @@ void TrajectoryWidget::runTrajectoryTask()
     dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(objKey));
   assert(tt);
 
-  tt->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+  CCopasiMessage::clearDeque();
+
+  try
+    {
+      success = tt->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+    }
+  catch (...)
+    {
+      success = false;
+    }
+
+  if (!success &&
+      CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+    {
+      CCopasiMessage::Type Severity = CCopasiMessage::getHighestSeverity();
+      QMessageBox::warning(this, "Simulation Error",
+                           CCopasiMessage::getAllMessageText().c_str(),
+                           QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+
+      if (Severity > CCopasiMessage::WARNING) return;
+    }
 
   CTrajectoryProblem* trajectoryproblem =
     dynamic_cast<CTrajectoryProblem *>(tt->getProblem());

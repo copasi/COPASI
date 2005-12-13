@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/15 18:45:23 $
+   $Date: 2005/12/13 16:59:35 $
    End CVS Header */
 
 /**
@@ -80,25 +80,30 @@ class CCopasiMessage
 
   private:
     /**
-     *  Message text.
+     * Message text.
      */
     std::string mText;
 
     /**
-     *  Message type.
+     * Message type.
      */
     CCopasiMessage::Type mType;
 
     /**
-     *  Message Number
+     * Message Number
      */
     unsigned C_INT32 mNumber;
 
     /**
-     *  The stack of messages. Each message created with one of 
-     *  the specific constructors is automically added to the stack.
+     * The stack of messages. Each message created with one of 
+     * the specific constructors is automically added to the stack.
      */
     static std::deque< CCopasiMessage > mMessageDeque;
+
+    /**
+     * The highest severity of the messages in the deque.
+     */
+    static CCopasiMessage::Type mHighestSeverity;
 
     // Operations
 
@@ -151,6 +156,12 @@ class CCopasiMessage
      * This function clears the message stack.
      */
     static void clearDeque();
+
+    /**
+     * Retrieve highest severity of the messages in the deque.
+     * @return const CCopasiMessage::Type & highestSeverity
+     */
+    static const CCopasiMessage::Type & getHighestSeverity();
 
     /**
      *  Default consructor. 
