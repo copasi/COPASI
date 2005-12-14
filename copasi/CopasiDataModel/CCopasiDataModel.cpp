@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 00:10:54 $
+   $Date: 2005/12/14 00:36:41 $
    End CVS Header */
 
 #include "copasi.h"
@@ -163,6 +163,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
         mSaveFileName += Suffix;
 
       mSaveFileName += ".cps";
+      mSBMLFileName = "";
     }
   else if (!Line.compare(0, 5, "<?xml"))
     {
@@ -193,6 +194,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
         }
 
       newModel();
+      mSBMLFileName = "";
 
       if (XML.getModel())
         {
@@ -232,7 +234,6 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
     }
 
   if (mpModel) mpModel->setCompileFlag();
-  mSBMLFileName = "";
 
   changed(false);
   return true;
@@ -366,6 +367,15 @@ bool CCopasiDataModel::newModel(CModel * pModel)
 
 bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* pImportHandler)
 {
+  std::string PWD;
+  COptions::getValue("PWD", PWD);
+
+  std::string Filename = fileName;
+
+  if (CDirEntry::isRelativePath(Filename) &&
+      !CDirEntry::makePathAbsolute(Filename, PWD))
+    Filename = CDirEntry::fileName(Filename);
+
   SBMLImporter importer;
   importer.setImportHandler(pImportHandler);
   mCopasi2SBMLMap.clear();
@@ -376,7 +386,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
 
   try
     {
-      pModel = importer.readSBML(fileName, mpFunctionList, pSBMLDocument, Copasi2SBMLMap);
+      pModel = importer.readSBML(Filename, mpFunctionList, pSBMLDocument, Copasi2SBMLMap);
     }
   catch (CCopasiException except)
     {
@@ -390,16 +400,16 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
       return false;
     }
 
-  mSaveFileName = CDirEntry::dirName(fileName)
+  mSaveFileName = CDirEntry::dirName(Filename)
                   + CDirEntry::Separator
-                  + CDirEntry::baseName(fileName);
+                  + CDirEntry::baseName(Filename);
 
-  std::string Suffix = CDirEntry::suffix(fileName);
+  std::string Suffix = CDirEntry::suffix(Filename);
   if (strcasecmp(Suffix.c_str(), ".xml") != 0)
     mSaveFileName += Suffix;
 
   mSaveFileName += ".cps";
-  mSBMLFileName = fileName;
+  mSBMLFileName = Filename;
 
   pdelete(mpCurrentSBMLDocument);
 
@@ -413,34 +423,43 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
 {
   if (fileName == "") return false;
 
-  if (CDirEntry::exist(fileName))
+  std::string PWD;
+  COptions::getValue("PWD", PWD);
+
+  std::string Filename = fileName;
+
+  if (CDirEntry::isRelativePath(Filename) &&
+      !CDirEntry::makePathAbsolute(Filename, PWD))
+    Filename = CDirEntry::fileName(Filename);
+
+  if (CDirEntry::exist(Filename))
     {
       if (!overwriteFile)
         {
           CCopasiMessage(CCopasiMessage::ERROR,
                          MCDirEntry + 1,
-                         fileName.c_str());
+                         Filename.c_str());
           return false;
         }
 
-      if (!CDirEntry::isWritable(fileName))
+      if (!CDirEntry::isWritable(Filename))
         {
           CCopasiMessage(CCopasiMessage::ERROR,
                          MCDirEntry + 2,
-                         fileName.c_str());
+                         Filename.c_str());
           return false;
         }
     }
 
   SBMLExporter exporter;
   exporter.setExportHandler(pExportHandler);
-  if (!exporter.exportSBML(mpModel, fileName.c_str(), overwriteFile)) return false;
+  if (!exporter.exportSBML(mpModel, Filename.c_str(), overwriteFile)) return false;
 
   if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
     pdelete(mpCurrentSBMLDocument);
 
   mpCurrentSBMLDocument = exporter.getSBMLDocument();
-  mSBMLFileName = fileName;
+  mSBMLFileName = Filename;
 
   return true;
 }
@@ -703,11 +722,16 @@ SBMLDocument* CCopasiDataModel::getCurrentSBMLDocument()
 bool CCopasiDataModel::setSBMLFileName(const std::string & fileName)
 {
   mSBMLFileName = fileName;
+
+  if (CDirEntry::isRelativePath(mSBMLFileName) &&
+      !CDirEntry::makePathAbsolute(mSBMLFileName, mSaveFileName))
+    mSBMLFileName = CDirEntry::fileName(mSBMLFileName);
+
   return true;
 }
 
 const std::string & CCopasiDataModel::getSBMLFileName() const
-  {return mSBMLFileName;}
+{return mSBMLFileName;}
 
 std::map<CCopasiObject*, SBase*>& CCopasiDataModel::getCopasi2SBMLMap()
 {
