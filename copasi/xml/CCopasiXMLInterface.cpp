@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 00:08:05 $
+   $Date: 2005/12/14 17:10:16 $
    End CVS Header */
 
 /**
@@ -350,7 +350,15 @@ bool CCopasiXMLInterface::saveData(const std::string & data)
 bool CCopasiXMLInterface::saveXhtml(const std::string & xhtml)
 {
   if (xhtml[0] == '<')
-    *mpOstream << mIndent << xhtml << std::endl;
+    {
+      std::string::size_type pos = xhtml.find('>');
+      std::string FirstElement = xhtml.substr(0, pos);
+
+      if (FirstElement.find("xmlns=\"http://www.w3.org/1999/xhtml\"") == std::string::npos)
+        FirstElement += " xmlns=\"http://www.w3.org/1999/xhtml\"";
+
+      *mpOstream << mIndent << FirstElement << xhtml.substr(pos) << std::endl;
+    }
   else
     {
       CXMLAttributeList Attributes;
