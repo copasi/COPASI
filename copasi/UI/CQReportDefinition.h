@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:50 $
+   $Date: 2005/12/14 18:08:27 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQReportDefinition.ui'
  **
- ** Created: Thu Aug 25 09:03:57 2005
- **      by: The User Interface Compiler ($Id: CQReportDefinition.h,v 1.4 2005/08/30 15:39:50 shoops Exp $)
+ ** Created: Wed Dec 14 13:05:15 2005
+ **      by: The User Interface Compiler ($Id: CQReportDefinition.h,v 1.5 2005/12/14 18:08:27 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -75,9 +75,9 @@ class CQReportDefinition : public CopasiWidget
     QPushButton* mpBtnNewReport;
     QPushButton* mpBtnDeleteReport;
 
-    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
+    virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
   protected:
     QVBoxLayout* CQReportDefinitionLayout;
@@ -116,10 +116,10 @@ class CQReportDefinition : public CopasiWidget
     void btnUpClicked();
     void btnDownClicked();
     void chkTitleClicked();
-    void btnCommitClicked();
-    void btnRevertClicked();
-    void btnNewReportClicked();
     void btnDeleteReportClicked();
+    void btnNewReportClicked();
+    void btnRevertClicked();
+    void btnCommitClicked();
   };
 
 #endif // CQREPORTDEFINITION_H

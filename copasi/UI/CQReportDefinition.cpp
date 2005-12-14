@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:50 $
+   $Date: 2005/12/14 18:08:27 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQReportDefinition.ui'
  **
- ** Created: Thu Aug 25 09:03:57 2005
- **      by: The User Interface Compiler ($Id: CQReportDefinition.cpp,v 1.3 2005/08/30 15:39:50 shoops Exp $)
+ ** Created: Wed Dec 14 13:05:16 2005
+ **      by: The User Interface Compiler ($Id: CQReportDefinition.cpp,v 1.4 2005/12/14 18:08:27 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,19 +18,19 @@
 #include "CQReportDefinition.h"
 
 #include <qvariant.h>
- #include <qpushbutton.h>
- #include <qframe.h>
- #include <qlabel.h>
- #include <qtextedit.h>
- #include <qlineedit.h>
- #include <qcombobox.h>
- #include <qcheckbox.h>
- #include <qtabwidget.h>
- #include <qlistbox.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include "CQReportDefinition.ui.h"
+#include <qpushbutton.h>
+#include <qframe.h>
+#include <qlabel.h>
+#include <qtextedit.h>
+#include <qlineedit.h>
+#include <qcombobox.h>
+#include <qcheckbox.h>
+#include <qtabwidget.h>
+#include <qlistbox.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include "CQReportDefinition.ui.h"
 
 /*
  *  Constructs a CQReportDefinition which is a child of 'parent', with the
@@ -195,10 +195,10 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
   clearWState(WState_Polished);
 
   // signals and slots connections
-  connect(mpName, SIGNAL(textChanged(const QString &)), this, SLOT(nameChanged(const QString &)));
+  connect(mpName, SIGNAL(textChanged(const QString&)), this, SLOT(nameChanged(const QString&)));
   connect(mpTaskBox, SIGNAL(textChanged(const QString &)), this, SLOT(taskChanged(const QString &)));
   connect(mpCommentEdit, SIGNAL(textChanged()), this, SLOT(commentChanged()));
-  connect(mpSeparator, SIGNAL(textChanged(const QString &)), this, SLOT(separatorChanged(const QString &)));
+  connect(mpSeparator, SIGNAL(textChanged(const QString&)), this, SLOT(separatorChanged(const QString&)));
   connect(mpTabCheck, SIGNAL(clicked()), this, SLOT(chkTabClicked()));
   connect(mpTitleCheck, SIGNAL(clicked()), this, SLOT(chkTitleClicked()));
   connect(mpBtnAdvanced, SIGNAL(clicked()), this, SLOT(btnAdvancedClicked()));
