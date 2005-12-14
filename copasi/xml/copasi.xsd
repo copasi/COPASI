@@ -195,7 +195,7 @@
                 <xs:restriction base="xs:string">
                   <xs:enumeration value="d"/>
                   <xs:enumeration value="h"/>
-                  <xs:enumeration value="m"/>
+                  <xs:enumeration value="min"/>
                   <xs:enumeration value="s"/>
                   <xs:enumeration value="ms"/>
                   <xs:enumeration value="µs"/>
