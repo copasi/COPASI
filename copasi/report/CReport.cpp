@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/21 15:41:26 $
+   $Date: 2005/12/14 00:11:53 $
    End CVS Header */
 
 #include "copasi.h"
+
 #include "CReportDefinition.h"
 #include "CReport.h"
 #include "CCopasiContainer.h"
 #include "CCopasiTimer.h"
+
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "utilities/CDirEntry.h"
 
 //////////////////////////////////////////////////
 //
@@ -189,6 +193,10 @@ std::ostream * CReport::open(std::ostream * pOstream)
     }
   else if (mTarget != "")
     {
+      if (CDirEntry::isRelativePath(mTarget) &&
+          !CDirEntry::makePathAbsolute(mTarget, CCopasiDataModel::Global->getFileName()))
+        mTarget = CDirEntry::fileName(mTarget);
+
       mpOstream = new std::ofstream;
       mStreamOwner = true;
 
