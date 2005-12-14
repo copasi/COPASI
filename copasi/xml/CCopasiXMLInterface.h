@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:41:10 $
+   $Date: 2005/12/14 00:08:05 $
    End CVS Header */
 
 /**
@@ -132,6 +132,11 @@ class CCopasiXMLInterface
      * Indent
      */
     std::string mIndent;
+
+    /**
+     * The filename if available
+     */
+    std::string mFilename;
 
     // Operations
   public:
