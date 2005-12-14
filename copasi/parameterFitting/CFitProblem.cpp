@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/13 17:27:24 $
+   $Date: 2005/12/14 19:16:31 $
    End CVS Header */
 
 #include "copasi.h"
@@ -358,6 +358,7 @@ void CFitProblem::printResult(std::ostream * ostream) const
 
     std::ostream & os = *ostream;
 
+    os << std::endl;
     os << "Gradient:" << std::endl;
     os << "  " << mGradient << std::endl;
 
@@ -384,14 +385,16 @@ std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
 
   if (o.mpSteadyState)
     o.mpSteadyState->getDescription().print(&os);
-  else if (o.mpTrajectory)
+
+  if (o.mpTrajectory)
     o.mpTrajectory->getDescription().print(&os);
-  else
+
+  if (!o.mpTrajectory && !o.mpSteadyState)
     os << "No Subtask specified.";
 
   os << std::endl;
 
-  os << "List of Optimization Items:" << std::endl;
+  os << "List of Fitting Items:" << std::endl;
 
   std::vector< COptItem * >::const_iterator itItem =
     o.mpOptItems->begin();
@@ -399,7 +402,13 @@ std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
     o.mpOptItems->end();
 
   for (; itItem != endItem; ++itItem)
-    os << "    " << **itItem << std::endl;
+    os << "    " << *static_cast<CFitItem *>(*itItem) << std::endl;
+
+  itItem = o.mpConstraintItems->begin();
+  endItem = o.mpConstraintItems->end();
+
+  for (; itItem != endItem; ++itItem)
+    os << "    " << *static_cast<CFitItem *>(*itItem) << std::endl;
 
   return os;
 }
