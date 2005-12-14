@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.241 $
+   $Revision: 1.242 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/07 21:23:00 $
+   $Date: 2005/12/14 18:09:56 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2336,7 +2336,19 @@ void CModel::buildLinkZero()
   JPVT = 0;
 
   unsigned C_INT32 Dim = std::min(M, N);
-  if (Dim == 0) return;
+  if (Dim == 0)
+    {
+      unsigned C_INT32 i;
+      mRowLU.resize(N);
+      for (i = 0; i < N; i++)
+        mRowLU[i] = i;
+
+      mColLU.resize(M);
+      for (i = 0; i < M; i++)
+        mColLU[i] = i;
+
+      return;
+    }
 
   CVector< C_FLOAT64 > TAU(Dim);
 
