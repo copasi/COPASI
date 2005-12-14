@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.73 $
+   $Revision: 1.74 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/07 11:01:34 $
+   $Author: shoops $ 
+   $Date: 2005/12/14 00:09:08 $
    End CVS Header */
 
 /**
@@ -33,6 +33,7 @@
 #include "utilities/CCopasiTask.h"
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiProblem.h"
+#include "utilities/CDirEntry.h"
 #include "utilities/utility.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotItem.h"
@@ -664,7 +665,13 @@ bool CCopasiXML::saveTaskList()
         {
           Attributes.erase();
           Attributes.add("reference", tReport.getReportDefinition()->getKey());
-          Attributes.add("target", tReport.getTarget());
+
+          std::string Target = tReport.getTarget();
+          if (!CDirEntry::isRelativePath(Target) &&
+              !CDirEntry::makePathRelative(Target, mFilename))
+            Target = CDirEntry::fileName(Target);
+
+          Attributes.add("target", Target);
           Attributes.add("append", tReport.append());
           saveElement("Report", Attributes);
         }
