@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/05/24 08:27:19 $
+   $Author: shoops $ 
+   $Date: 2005/12/14 00:07:29 $
    End CVS Header */
 
 #ifndef COPASI_CDirEntry
@@ -72,6 +72,13 @@ class CDirEntry
     static std::string baseName(const std::string & path);
 
     /**
+     * Returns the file name, i.e., the directory path is removed from 'path'.
+     * @param const std::string & path
+     * @return std::string fileName
+     */
+    static std::string fileName(const std::string & path);
+
+    /**
      * Returns the directory path to the parent directoryu, i.e., 
      * the file name or directory name are removed from 'path'.
      * @param const std::string & path
@@ -130,6 +137,30 @@ class CDirEntry
      */
     static bool match(const std::string & name,
                       const std::vector< std::string > & patternList);
+
+    /**
+     * Checks whether the given path is relative
+     * @return bool isRelative
+     */
+    static bool isRelativePath(const std::string & path);
+
+    /**
+     * Makes the absolute path relative to the path given in relativeTo
+     * @param std::string & absolutePath
+     * @param const std::string & relativeTo
+     * @return bool success
+     */
+    static bool makePathRelative(std::string & absolutePath,
+                                 const std::string & relativeTo);
+
+    /**
+     * Makes the relative path absolute to the path given in absoluteTo
+     * @param std::string & relativePath
+     * @param const std::string & absoluteTo
+     * @return bool success
+     */
+    static bool makePathAbsolute(std::string & relativePath,
+                                 const std::string & absoluteTo);
 
   private:
     /**

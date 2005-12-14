@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/23 17:20:25 $
+   $Date: 2005/12/14 00:07:29 $
    End CVS Header */
 
 #include <sys/types.h>
@@ -92,6 +92,20 @@ std::string CDirEntry::baseName(const std::string & path)
     end = path.length();
 
   return path.substr(start, end - start);
+}
+
+std::string CDirEntry::fileName(const std::string & path)
+{
+  std::string::size_type start = path.find_last_of(Separator);
+#ifdef WIN32 // WIN32 also understands '/' as the separator.
+  if (start == std::string::npos)
+    start = path.find_last_of("/");
+#endif
+
+  if (start == std::string::npos) start = 0;
+  else start++; // We do not want the separator.
+
+  return path.substr(start);
 }
 
 std::string CDirEntry::dirName(const std::string & path)
@@ -270,6 +284,76 @@ bool CDirEntry::match(const std::string & name,
     Match = matchInternal(name, *it++, at, after);
 
   return Match;
+}
+
+bool CDirEntry::isRelativePath(const std::string & path)
+{
+#ifdef WIN32
+  return path[1] != ':';
+#else
+  return path[0] != '/';
+#endif
+}
+
+bool CDirEntry::makePathRelative(std::string & absolutePath,
+                                 const std::string & relativeTo)
+{
+  if (isRelativePath(absolutePath) ||
+      isRelativePath(relativeTo)) return false; // Nothing can be done.
+
+  std:: string RelativeTo = relativeTo;
+  if (isFile(RelativeTo)) RelativeTo = dirName(RelativeTo);
+
+  if (!isDir(RelativeTo)) return false;
+
+  unsigned C_INT32 i, imax = std::min(absolutePath.length(), RelativeTo.length());
+
+  for (i = 0; i < imax; i++)
+    if (absolutePath[i] != RelativeTo[i]) break;
+
+#ifdef WIN32
+  if (i = 0) return false; // A different drive letter we cannot do anything
+#endif
+
+  RelativeTo = RelativeTo.substr(i);
+
+  std::string relativePath;
+  while (RelativeTo != "")
+    {
+      relativePath += "../";
+      RelativeTo = dirName(RelativeTo);
+    }
+
+  absolutePath = relativePath + absolutePath.substr(i);
+
+#ifdef WIN32
+  for (i = 0, imax = absolutePath.length(); i < imax; i++)
+    if (absolutePath[i] == '\\') absolutePath[i] = '/';
+#endif
+
+  return true;
+}
+
+bool CDirEntry::makePathAbsolute(std::string & relativePath,
+                                 const std::string & absoluteTo)
+{
+  if (!isRelativePath(relativePath) ||
+      isRelativePath(absoluteTo)) return false; // Nothing can be done.
+
+  std:: string AbsoluteTo = absoluteTo;
+  if (isFile(AbsoluteTo)) AbsoluteTo = dirName(AbsoluteTo);
+
+  if (!isDir(AbsoluteTo)) return false;
+
+  while (!relativePath.compare(0, 3, "../"))
+    {
+      AbsoluteTo = dirName(AbsoluteTo);
+      relativePath = relativePath.substr(3);
+    }
+
+  relativePath = AbsoluteTo + "/" + relativePath;
+
+  return true;
 }
 
 bool CDirEntry::matchInternal(const std::string & name,
