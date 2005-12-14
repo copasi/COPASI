@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.118 $
+   $Revision: 1.119 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/07 11:01:34 $
+   $Author: shoops $ 
+   $Date: 2005/12/14 21:47:55 $
    End CVS Header */
 
 /**
@@ -3203,7 +3203,7 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
           if (pME)
             {
               pME->setInitialValue(Value);
-              pME->setValue(Value);
+              //              pME->setValue(Value);
               continue;
             }
 

@@ -1,14 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.89 $
+   $Revision: 1.90 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:28:12 $
+   $Date: 2005/12/14 21:47:55 $
    End CVS Header */
 
 #include <iostream>
 #include <string>
 #include <vector>
+#include <limits>
 
 #include "copasi.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -44,8 +45,8 @@ CMetab::CMetab(const std::string & name,
     CModelEntity(name, pParent, "Metabolite",
                  CCopasiObject::NonUniqueName),
     //mKey(GlobalKeys.add("Metabolite", this)),
-    mConc(-1.0),
-    mIConc(-1.0),
+    mConc(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+    mIConc(0.0),
     //mNumber(-1.0),
     //mINumber(-1.0),
     //mRate(0.0),

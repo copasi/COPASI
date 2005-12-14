@@ -1,14 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:28:12 $
+   $Date: 2005/12/14 21:47:55 $
    End CVS Header */
 
 #include <iostream>
 #include <string>
 #include <vector>
+#include <limits>
 
 #include "copasi.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -34,7 +35,7 @@ CModelEntity::CModelEntity(const std::string & name,
                            const unsigned C_INT32 & flag):
     CCopasiContainer(name, pParent, type, flag),
     mKey(""),
-    mValue(0.0),
+    mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mIValue(0.0),
     mRate(0.0),
     //    mTT(0.0),
