@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/07 12:59:07 $
+   $Date: 2005/12/14 00:06:52 $
    End CVS Header */
 
 /**
@@ -143,6 +143,11 @@ class COptMethodHookeJeeves : public COptMethod
      * The best value found so far
      */
     C_FLOAT64 mBestValue;
+
+    /**
+     * Flag indicating whether the computation shall continue
+     */
+    bool mContinue;
   };
 
 #endif  // COPASI_COptMethodHookeJeeves

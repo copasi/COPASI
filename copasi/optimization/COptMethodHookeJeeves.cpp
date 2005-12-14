@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/06 19:19:30 $
+   $Date: 2005/12/14 00:06:52 $
    End CVS Header */
 
 // hoojee.cpp : optimisation by the method of Hooke and Jeeves
@@ -48,7 +48,7 @@ COptMethodHookeJeeves::~COptMethodHookeJeeves()
 
 bool COptMethodHookeJeeves::optimise()
 {
-  bool Continue = true;
+  mContinue = true;
 
   if (!initialize()) return false;
 
@@ -85,7 +85,7 @@ bool COptMethodHookeJeeves::optimise()
       (*(*mpSetCalculateVariable)[i])(mut);
     }
 
-  Continue = evaluate();
+  mContinue &= evaluate();
 
   // The first value is also the best
   mBestValue = mEvaluationValue;
@@ -93,7 +93,7 @@ bool COptMethodHookeJeeves::optimise()
   mpOptProblem->setSolutionValue(mBestValue);
   mpParentTask->doOutput();
 
-  if (!Continue)
+  if (!mContinue)
     {
       cleanup();
       return false;
@@ -111,11 +111,11 @@ bool COptMethodHookeJeeves::optimise()
 
   newf = mBestValue;
 
-  while ((mIteration < mIterationLimit) && (steplength > mTolerance))
+  while ((mIteration < mIterationLimit) && (steplength > mTolerance) && mContinue)
     {
       // signal another iteration to Gepasi
       if (mpCallBack)
-        Continue = mpCallBack->progress(mhIteration);
+        mContinue &= mpCallBack->progress(mhIteration);
 
       mIteration++;
       iadj++;
@@ -127,7 +127,7 @@ bool COptMethodHookeJeeves::optimise()
 
       /* if we made some improvements, pursue that direction */
       Keep = true;
-      while ((newf < mBestValue) && Keep)
+      while ((newf < mBestValue) && Keep && mContinue)
         {
           // We found a better value
           mBestValue = newf;
@@ -237,8 +237,6 @@ bool COptMethodHookeJeeves::cleanup()
 
 bool COptMethodHookeJeeves::evaluate()
 {
-  bool Continue = true;
-
   // We do not need to check whether the parametric constraints are fulfilled
   // since the parameters are created within the bounds.
 
@@ -246,10 +244,10 @@ bool COptMethodHookeJeeves::evaluate()
   if (!mpOptProblem->checkParametricConstraints())
     {
       mEvaluationValue = DBL_MAX;
-      return Continue;
+      return mContinue;
     }
 
-  Continue = mpOptProblem->calculate();
+  mContinue &= mpOptProblem->calculate();
 
   // check wheter the functional constraints are fulfilled
   if (!mpOptProblem->checkFunctionalConstraints())
@@ -257,7 +255,7 @@ bool COptMethodHookeJeeves::evaluate()
   else
     mEvaluationValue = mpOptProblem->getCalculateValue();
 
-  return Continue;
+  return mContinue;
 }
 
 // given a point, look for a better one nearby, one coord at a time
