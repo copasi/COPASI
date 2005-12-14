@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 00:36:10 $
+   $Date: 2005/12/14 17:08:29 $
    End CVS Header */
 
 /**
@@ -938,7 +938,7 @@ bool CCopasiXML::saveSBMLReference()
 {
   if (!CCopasiDataModel::Global) return false;
 
-  if (CCopasiDataModel::Global->getSBMLFileName() != "" &&
+  if (CCopasiDataModel::Global->getSBMLFileName() == "" ||
       mSBMLReference.size() == 0)
     return true;
 
