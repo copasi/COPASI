@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 00:09:08 $
+   $Date: 2005/12/14 00:36:10 $
    End CVS Header */
 
 /**
@@ -943,7 +943,13 @@ bool CCopasiXML::saveSBMLReference()
     return true;
 
   CXMLAttributeList Attributes;
-  Attributes.add("file", CCopasiDataModel::Global->getSBMLFileName());
+
+  std::string SBMLFile = CCopasiDataModel::Global->getSBMLFileName();
+  if (!CDirEntry::isRelativePath(SBMLFile) &&
+      !CDirEntry::makePathRelative(SBMLFile, mFilename))
+    SBMLFile = CDirEntry::fileName(SBMLFile);
+
+  Attributes.add("file", SBMLFile);
 
   startSaveElement("SBMLReference", Attributes);
   Attributes.erase();
