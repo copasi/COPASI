@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.161 $
+   $Revision: 1.162 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/15 14:49:32 $
+   $Author: shoops $ 
+   $Date: 2005/12/14 18:19:05 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -178,7 +178,7 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
     {
       tmp =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          str, "COPASI Files (*.gps *cps);;All Files (*.*)",
+                                          str, "COPASI Files (*cps);;All Files (*.*)",
                                           "Choose a filename to save under.");
 
       if (!tmp) return;
