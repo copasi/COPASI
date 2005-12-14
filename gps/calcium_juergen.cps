@@ -399,6 +399,4 @@ Kummer et al. (2000) Biophys. J. 79, 1188-1195
   </ListOfPlots>
   <GUI>
   </GUI>
-  <SBMLReference file="">
-  </SBMLReference>
 </COPASI>
