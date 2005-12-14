@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 00:36:41 $
+   $Date: 2005/12/14 17:17:03 $
    End CVS Header */
 
 #include "copasi.h"
@@ -175,6 +175,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
       XML.setFunctionList(mpFunctionList->loadedFunctions());
 
       SCopasiXMLGUI *pGUI = NULL;
+      std::string SBMLFilenameBkp = mSBMLFileName;
 
       if (mWithGUI)
         {
@@ -190,17 +191,11 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
           XML.freePlotList();
           XML.freeGUI();
 
+          mSBMLFileName = SBMLFilenameBkp;
           return false;
         }
 
-      newModel();
-      mSBMLFileName = "";
-
-      if (XML.getModel())
-        {
-          pdelete(mpModel);
-          mpModel = XML.getModel();
-        }
+      newModel(XML.getModel());
 
       if (XML.getTaskList())
         {
