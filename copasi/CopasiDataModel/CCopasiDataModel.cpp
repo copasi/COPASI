@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/24 15:43:11 $
+   $Author: shoops $ 
+   $Date: 2005/12/14 00:10:54 $
    End CVS Header */
 
 #include "copasi.h"
@@ -115,13 +115,22 @@ CCopasiDataModel::~CCopasiDataModel()
 
 bool CCopasiDataModel::loadModel(const std::string & fileName)
 {
-  std::ifstream File(fileName.c_str());
+  std::string PWD;
+  COptions::getValue("PWD", PWD);
+
+  std::string Filename = fileName;
+
+  if (CDirEntry::isRelativePath(Filename) &&
+      !CDirEntry::makePathAbsolute(Filename, PWD))
+    Filename = CDirEntry::fileName(Filename);
+
+  std::ifstream File(Filename.c_str());
 
   if (File.fail())
     {
       CCopasiMessage Message(CCopasiMessage::RAW,
                              "File error when opening '%s'.",
-                             fileName.c_str());
+                             Filename.c_str());
       return false;
     }
 
@@ -131,7 +140,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
   if (!Line.compare(0, 8, "Version="))
     {
       File.close();
-      CReadConfig inbuf(fileName.c_str());
+      CReadConfig inbuf(Filename.c_str());
       if (inbuf.getVersion() >= "4")
         {
           CCopasiMessage(CCopasiMessage::ERROR,
@@ -145,11 +154,11 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
       dynamic_cast<CSteadyStateTask *>((*mpTaskList)["Steady-State"])->load(inbuf);
       dynamic_cast<CTrajectoryTask *>((*mpTaskList)["Time-Course"])->load(inbuf);
 
-      mSaveFileName = CDirEntry::dirName(fileName)
+      mSaveFileName = CDirEntry::dirName(Filename)
                       + CDirEntry::Separator
-                      + CDirEntry::baseName(fileName);
+                      + CDirEntry::baseName(Filename);
 
-      std::string Suffix = CDirEntry::suffix(fileName);
+      std::string Suffix = CDirEntry::suffix(Filename);
       if (strcasecmp(Suffix.c_str(), ".gps") != 0)
         mSaveFileName += Suffix;
 
@@ -219,7 +228,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
           mpGUI = pGUI;
         }
 
-      mSaveFileName = fileName;
+      mSaveFileName = Filename;
     }
 
   if (mpModel) mpModel->setCompileFlag();
@@ -233,6 +242,13 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
                                  const bool & autoSave)
 {
   std::string FileName = (fileName != "") ? fileName : mSaveFileName;
+
+  std::string PWD;
+  COptions::getValue("PWD", PWD);
+
+  if (CDirEntry::isRelativePath(FileName) &&
+      !CDirEntry::makePathAbsolute(FileName, PWD))
+    FileName = CDirEntry::fileName(FileName);
 
   if (CDirEntry::exist(FileName))
     {
