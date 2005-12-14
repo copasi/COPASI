@@ -322,7 +322,7 @@
               <xs:element name="PlotSpecification" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:complexContent>
-                    <xs:extension base="cPLOTITEM">
+                    <xs:extension base="cPARAMETER_LIST">
                       <xs:sequence>
                         <xs:element name="ListOfPlotItems">
                           <xs:complexType>
@@ -332,6 +332,15 @@
                           </xs:complexType>
                         </xs:element>
                       </xs:sequence>
+                      <xs:attribute name="name" type="cNAME" use="required"/>
+                      <xs:attribute name="type" use="required">
+                        <xs:simpleType>
+                          <xs:restriction base="xs:string">
+                            <xs:enumeration value="Plot2D"/>
+                            <xs:enumeration value="SimWiz"/>
+                          </xs:restriction>
+                        </xs:simpleType>
+                      </xs:attribute>
                       <xs:attribute name="active" type="xs:boolean" use="optional" default="true"/>
                     </xs:extension>
                   </xs:complexContent>
@@ -619,13 +628,13 @@
             </xs:complexType>
           </xs:element>
         </xs:sequence>
+        <xs:attribute name="name" type="cNAME" use="required"/>
         <xs:attribute name="type" use="required">
           <xs:simpleType>
             <xs:restriction base="xs:string">
               <xs:enumeration value="Unset"/>
-              <xs:enumeration value="Curve2d"/>
-              <xs:enumeration value="Plot2d"/>
-              <xs:enumeration value="SimWiz"/>
+              <xs:enumeration value="Curve2D"/>
+              <xs:enumeration value="Histogram1DItem"/>
             </xs:restriction>
           </xs:simpleType>
         </xs:attribute>
