@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TSSWidget.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/07 14:14:29 $
+   $Author: shoops $ 
+   $Date: 2005/12/15 17:00:49 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -92,7 +92,7 @@ bool TSSWidget::saveTask()
   //...
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  if (mpChanged) CCopasiDataModel::Global->changed();
+  if (mChanged) CCopasiDataModel::Global->changed();
   return true;
 }
 
@@ -170,7 +170,7 @@ bool TSSWidget::loadTask()
 
   //...
 
-  mpChanged = false;
+  mChanged = false;
 
   return true;
 }

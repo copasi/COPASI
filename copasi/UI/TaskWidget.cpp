@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/10 18:51:43 $
+   $Date: 2005/12/15 17:00:49 $
    End CVS Header */
 
 #include <qcheckbox.h>
@@ -62,6 +62,9 @@ TaskWidget::TaskWidget(QWidget* parent, const char* name, WFlags fl)
   mpLblMethod = NULL;
   mpBoxMethod = NULL;
   mpSpacer2 = NULL;
+
+  mpTask = NULL;
+  mpMethod = NULL;;
 
   connect(mpBtnWidget->mpBtnRun, SIGNAL(clicked()), this, SLOT(runBtnClicked()));
   connect(mpBtnWidget->mpBtnRevert, SIGNAL(clicked()), this, SLOT(revertBtnClicked()));
@@ -249,7 +252,7 @@ bool TaskWidget::saveCommon()
   if (mpTask->isScheduled() != Value)
     {
       mpTask->setScheduled(Value);
-      mpChanged = true;
+      mChanged = true;
     }
 
   Value = mpHeaderWidget->mpUpdateModel->isChecked();
@@ -257,7 +260,7 @@ bool TaskWidget::saveCommon()
   if (mpTask->isUpdateModel() != Value)
     {
       mpTask->setUpdateModel(Value);
-      mpChanged = true;
+      mChanged = true;
     }
 
   mpHeaderWidget->saved();
@@ -312,7 +315,7 @@ bool TaskWidget::saveMethod()
   if (method->getSubType() != mpMethod->getSubType())
     {
       mpTask->setMethodType(mpMethod->getSubType());
-      mpChanged = true;
+      mChanged = true;
     }
 
   mpMethod = mpTask->getMethod();
@@ -329,7 +332,7 @@ bool TaskWidget::saveMethod()
       if (value != getParameterValue(mpMethod, i, &Type))
         {
           setParameterValue(mpMethod, i, value);
-          mpChanged = true;
+          mChanged = true;
         }
     }
 

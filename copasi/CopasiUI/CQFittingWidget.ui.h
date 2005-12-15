@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/07 20:41:26 $
+   $Date: 2005/12/15 17:00:49 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -59,7 +59,7 @@ bool CQFittingWidget::saveTask()
           if (!(*pExperimentSet->getExperiment(i) == *pExperiment))
             {
               *pExperimentSet->getExperiment(i) = *pExperiment;
-              mpChanged = true;
+              mChanged = true;
             }
 
           DealtWith.insert(pExperiment);
@@ -68,7 +68,7 @@ bool CQFittingWidget::saveTask()
         {
           mKeyMap.erase(pExperimentSet->getExperiment(i)->CCopasiParameter::getKey());
           pExperimentSet->removeParameter(i);
-          mpChanged = true;
+          mChanged = true;
         }
     }
 
@@ -80,7 +80,7 @@ bool CQFittingWidget::saveTask()
       pExperiment = pExperimentSet->addExperiment(*pExperiment);
       mKeyMap[pExperiment->CCopasiParameter::getKey()] =
         mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey();
-      mpChanged = true;
+      mChanged = true;
     }
 
   // We need to invert the key map for saving!
@@ -112,14 +112,14 @@ bool CQFittingWidget::saveTask()
         (*itExp)->setValue(mKeyMap[*(*itExp)->getValue().pKEY]);
 
       if (static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->save(*(*pVector)[i]))
-        mpChanged = true;
+        mChanged = true;
     }
 
   // Remove exceeding parameters
   imax = pVector->size();
   if (i < imax)
     {
-      mpChanged = true;
+      mChanged = true;
 
       for (; i < imax; i++)
         pGroup->removeParameter(i);
@@ -129,7 +129,7 @@ bool CQFittingWidget::saveTask()
   imax = mpParameters->numRows();
   if (i < imax)
     {
-      mpChanged = true;
+      mChanged = true;
 
       CFitItem * pFitItem;
 
@@ -165,14 +165,14 @@ bool CQFittingWidget::saveTask()
         (*itExp)->setValue(mKeyMap[*(*itExp)->getValue().pKEY]);
 
       if (static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->save(*(*pVector)[i]))
-        mpChanged = true;
+        mChanged = true;
     }
 
   // Remove exceeding constraints
   imax = pVector->size();
   if (i < imax)
     {
-      mpChanged = true;
+      mChanged = true;
 
       for (; i < imax; i++)
         pGroup->removeParameter(i);
@@ -182,7 +182,7 @@ bool CQFittingWidget::saveTask()
   imax = mpConstraints->numRows();
   if (i < imax)
     {
-      mpChanged = true;
+      mChanged = true;
 
       CFitItem * pFitItem;
 
@@ -203,9 +203,9 @@ bool CQFittingWidget::saveTask()
         (*itExp)->setValue(KeyMap[*(*itExp)->getValue().pKEY]);
     }
 
-  if (mpChanged) CCopasiDataModel::Global->changed();
+  if (mChanged) CCopasiDataModel::Global->changed();
 
-  mpChanged = false;
+  mChanged = false;
   return true;
 }
 
@@ -270,7 +270,7 @@ bool CQFittingWidget::loadTask()
   TabLabel = "Constraints (" + QString::number(mpConstraints->numRows()) + ")";
   mpTabWidget->setTabLabel(mpConstraintsPage, TabLabel);
 
-  mpChanged = false;
+  mChanged = false;
 
   return true;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/07 14:14:14 $
+   $Author: shoops $ 
+   $Date: 2005/12/15 17:00:49 $
    End CVS Header */
 
 #ifndef TASKWIDGET_H
@@ -115,7 +115,7 @@ class TaskWidget : public CopasiWidget
     CCopasiTask * mpTask;
     CCopasiMethod * mpMethod;
 
-    bool mpChanged;
+    bool mChanged;
   };
 
 #endif

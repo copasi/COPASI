@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/14 16:27:00 $
+   $Date: 2005/12/15 17:00:49 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -48,13 +48,13 @@ bool CQOptimizationWidget::saveTask()
 
   for (i = 0; i < imax; i++)
     if (static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->save(*(*pVector)[i]))
-      mpChanged = true;
+      mChanged = true;
 
   // Remove exceeding parameters
   imax = pVector->size();
   if (i < imax)
     {
-      mpChanged = true;
+      mChanged = true;
 
       for (; i < imax; i++)
         pGroup->removeParameter(i);
@@ -64,7 +64,7 @@ bool CQOptimizationWidget::saveTask()
   imax = mpParameters->numRows();
   if (i < imax)
     {
-      mpChanged = true;
+      mChanged = true;
 
       COptItem * pFitItem;
 
@@ -86,13 +86,13 @@ bool CQOptimizationWidget::saveTask()
 
   for (i = 0; i < imax; i++)
     if (static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->save(*(*pVector)[i]))
-      mpChanged = true;
+      mChanged = true;
 
   // Remove exceeding constraints
   imax = pVector->size();
   if (i < imax)
     {
-      mpChanged = true;
+      mChanged = true;
 
       for (; i < imax; i++)
         pGroup->removeParameter(i);
@@ -102,7 +102,7 @@ bool CQOptimizationWidget::saveTask()
   imax = mpConstraints->numRows();
   if (i < imax)
     {
-      mpChanged = true;
+      mChanged = true;
 
       COptItem * pFitItem;
 
@@ -114,9 +114,9 @@ bool CQOptimizationWidget::saveTask()
         }
     }
 
-  if (mpChanged) CCopasiDataModel::Global->changed();
+  if (mChanged) CCopasiDataModel::Global->changed();
 
-  mpChanged = false;
+  mChanged = false;
   return true;
 }
 
@@ -165,7 +165,7 @@ bool CQOptimizationWidget::loadTask()
   TabLabel = "Constraints (" + QString::number(mpConstraints->numRows()) + ")";
   mpTabWidget->setTabLabel(mpConstraintsPage, TabLabel);
 
-  mpChanged = false;
+  mChanged = false;
   return true;
 }
 

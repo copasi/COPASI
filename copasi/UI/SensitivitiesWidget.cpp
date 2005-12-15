@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/11 16:33:26 $
+   $Author: shoops $ 
+   $Date: 2005/12/15 17:00:49 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -92,7 +92,7 @@ bool SensitivitiesWidget::saveTask()
   //...
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
-  if (mpChanged) CCopasiDataModel::Global->changed();
+  if (mChanged) CCopasiDataModel::Global->changed();
   return true;
 }
 
@@ -129,7 +129,7 @@ bool SensitivitiesWidget::loadTask()
 
   //...
 
-  mpChanged = false;
+  mChanged = false;
 
   return true;
 }
