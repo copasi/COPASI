@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/07 10:55:59 $
+   $Date: 2005/12/15 15:25:59 $
    End CVS Header */
 
 /**
@@ -38,6 +38,7 @@ class CFunctionParameter : public CCopasiContainer
       MODIFIER,
       PARAMETER,
       VOLUME,
+      TIME,
       VARIABLE
     };
 
