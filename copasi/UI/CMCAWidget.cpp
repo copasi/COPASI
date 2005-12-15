@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/15 18:45:24 $
+   $Date: 2005/12/15 17:01:01 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -190,6 +190,8 @@ void CMCAWidget::parameterValueChanged()
 
 void CMCAWidget::runMCATask()
 {
+  bool success = true;
+
   saveMCATask();
 
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
@@ -205,79 +207,60 @@ void CMCAWidget::runMCATask()
     dynamic_cast<CMCATask *>(GlobalKeys.get(objKey));
   assert(mcaTask);
 
-  mcaTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+  try
+    {
+      success = mcaTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+    }
+  catch (CCopasiException)
+    {
+      success = false;
+    }
+
+  if (!success &&
+      CCopasiMessage::getHighestSeverity() > CCopasiMessage::WARNING)
+    {
+      QMessageBox::warning(this, "Simulation Error",
+                           CCopasiMessage::getAllMessageText().c_str(),
+                           QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+
+      return;
+    }
+
+  CCopasiMessage::clearDeque();
+  success = true;
+
   CMCAProblem* mcaProblem =
     dynamic_cast<CMCAProblem *>(mcaTask->getProblem());
   assert(mcaProblem);
 
-  // if a steady state analysis is needed, run it first
-  // if a steady state was found, set the flag in the mca task
-  // set the resolution of the mca task
-  if (mcaProblem->isSteadyStateRequested())
-    {
-      CSteadyStateTask* steadyStateTask =
-        dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
-      assert(steadyStateTask);
-
-      //dynamic_cast<CSteadyStateProblem*>(steadyStateTask->getProblem())->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
-
-      steadyStateTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
-
-      setCursor(Qt::WaitCursor);
-      CProgressBar * tmpBar = new CProgressBar();
-      steadyStateTask->setCallBack(tmpBar);
-
-      try
-        {
-          steadyStateTask->process(true);
-        }
-
-      catch (CCopasiException Exception)
-        {
-          QMessageBox mb("Copasi",
-                         "Could not find a Steady State",
-                         QMessageBox::NoIcon,
-                         QMessageBox::Ok | QMessageBox::Escape,
-                         QMessageBox::NoButton,
-                         QMessageBox::NoButton);
-          mb.exec();
-        }
-
-      tmpBar->finish(); pdelete(tmpBar);
-
-      protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
-
-      unsetCursor();
-      dynamic_cast<CMCAMethod*>(mcaTask->getMethod())->setSteadyStateStatus(steadyStateTask->getResult());
-    }
-
   setCursor(Qt::WaitCursor);
-  //CProgressBar* tmpBar = new CProgressBar(dataModel);
-  //mMCATask->setProgressHandler(tmpBar);
 
   try
     {
-      mcaTask->process(true);
+      success &= mcaTask->process(true);
     }
-
-  catch (CCopasiException Exception)
+  catch (CCopasiException)
     {
-      QMessageBox mb("Copasi",
-                     "Could not finish metabolic control analysis.",
-                     QMessageBox::NoIcon,
-                     QMessageBox::Ok | QMessageBox::Escape,
-                     QMessageBox::NoButton,
-                     QMessageBox::NoButton);
-      mb.exec();
+      success = false;
     }
 
-  //tmpBar->finish(); pdelete(tmpBar);
+  if (!success &&
+      CCopasiMessage::getHighestSeverity() > CCopasiMessage::WARNING)
+    {
+      QMessageBox::warning(this, "Simulation Error",
+                           CCopasiMessage::getAllMessageText().c_str(),
+                           QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+
+      return;
+    }
+
+  mcaTask->restore();
 
   protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
   unsetCursor();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 
-  pListView->switchToOtherWidget(241, ""); //change to the results window
+  if (success) pListView->switchToOtherWidget(241, ""); //change to the results window
 }
 
 void CMCAWidget::loadMCATask()

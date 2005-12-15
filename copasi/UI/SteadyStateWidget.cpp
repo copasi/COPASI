@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.102 $
+   $Revision: 1.103 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/11 08:55:37 $
+   $Author: shoops $ 
+   $Date: 2005/12/15 16:58:29 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -127,29 +127,44 @@ CCopasiMethod * SteadyStateWidget::createMethod(const CCopasiMethod::SubType & t
 
 bool SteadyStateWidget::runTask()
 {
+  bool success = true;
+
   if (!commonBeforeRunTask()) return false;
-
-  /*
-  saveTask();
-
-  static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
-  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
-
-  setCursor(Qt::WaitCursor);
-  CProgressBar * tmpBar = new CProgressBar();
-  mSteadyStateTask->setCallBack(tmpBar);
-  */
 
   CSteadyStateTask* mSteadyStateTask =
     dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(mObjectKey));
   assert(mSteadyStateTask);
 
-  mSteadyStateTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+  try
+    {
+      success = mSteadyStateTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+    }
+  catch (CCopasiException)
+    {
+      success = false;
+    }
+
+  if (!success &&
+      CCopasiMessage::getHighestSeverity() > CCopasiMessage::WARNING)
+    {
+      mProgressBar->finish();
+      QMessageBox::warning(this, "Simulation Error",
+                           CCopasiMessage::getAllMessageText().c_str(),
+                           QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      commonAfterRunTask();
+
+      return success;
+    }
+
+  CCopasiMessage::clearDeque();
+  success = true;
 
   try
     {
       if (!mSteadyStateTask->process(true))
         {
+          success = false;
+
           mProgressBar->finish();
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
             {
@@ -158,7 +173,7 @@ bool SteadyStateWidget::runTask()
               CCopasiMessage::clearDeque();
             }
         }
-      else if (mpHeaderWidget->mpUpdateModel->isChecked())
+      else if (mpHeaderWidget->mpUpdateModel->isChecked()) // this should be handled in restore()
         {
           const CState *currentState = mSteadyStateTask->getState();
           if (currentState)
@@ -168,6 +183,7 @@ bool SteadyStateWidget::runTask()
 
   catch (CCopasiException Exception)
     {
+      success = false;
       mProgressBar->finish();
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
@@ -179,19 +195,11 @@ bool SteadyStateWidget::runTask()
 
   mSteadyStateTask->restore();
 
-  /*
-  tmpBar->finish(); pdelete(tmpBar);
-
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
-  unsetCursor();
-  static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
-  */
-
   commonAfterRunTask();
 
-  pListView->switchToOtherWidget(211, ""); //change to the results window
+  if (success && isShown()) pListView->switchToOtherWidget(211, ""); //change to the results window
 
-  return true;
+  return success;
 }
 
 bool SteadyStateWidget::loadTask()
