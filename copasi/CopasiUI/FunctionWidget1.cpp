@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.128 $
+   $Revision: 1.129 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/12/08 15:18:25 $
+   $Author: ssahle $ 
+   $Date: 2005/12/15 15:38:22 $
    End CVS Header */
 
 /**********************************************************************
@@ -291,6 +291,7 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
   QColor modiColor(250, 250, 190);
   QColor paraColor(210, 210, 255);
   QColor volColor(210, 210, 255);
+  QColor timeColor(210, 210, 210);
   QColor color;
 
   unsigned C_INT32 i, j;
@@ -336,6 +337,9 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
           break;
         case CFunctionParameter::VOLUME :
           color = volColor;
+          break;
+        case CFunctionParameter::TIME :
+          color = timeColor;
           break;
         case CFunctionParameter::VARIABLE :
           color = QColor(250, 250, 250);

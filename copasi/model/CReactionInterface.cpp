@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/07 15:43:49 $
+   $Date: 2005/12/15 15:37:04 $
    End CVS Header */
 
 #include <string>
@@ -136,6 +136,10 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea, CModel & model) co
         else if (getUsage(i) == CFunctionParameter::VOLUME)
           {
             rea->setParameterMapping(i, model.getCompartments()[mNameMap[i][0]]->getKey());
+          }
+        else if (getUsage(i) == CFunctionParameter::TIME)
+          {
+            rea->setParameterMapping(i, model.getKey()); //time is the value of the model
           }
         else
           {
@@ -364,7 +368,8 @@ bool CReactionInterface::isLocked(CFunctionParameter::Role usage) const
     unsigned C_INT32 listSize;
     if ((usage == CFunctionParameter::PARAMETER)
         || (usage == CFunctionParameter::MODIFIER)
-        || (usage == CFunctionParameter::VOLUME))
+        || (usage == CFunctionParameter::VOLUME)
+        || (usage == CFunctionParameter::TIME))
       return false; //modifiers are never locked!
     else
       listSize = mChemEqI.getListOfNames(usage).size();

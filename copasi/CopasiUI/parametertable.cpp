@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/07 11:09:23 $
+   $Date: 2005/12/15 15:38:58 $
    End CVS Header */
 
 #include <qstringlist.h>
@@ -176,6 +176,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   QColor modiColor(250, 250, 190);
   QColor paraColor(210, 210, 255);
   QColor volColor(210, 210, 255);
+  QColor timeColor(210, 210, 210);
 
   QPixmap * pProduct = new QPixmap((const char**)product_xpm);
   QPixmap * pSubstrate = new QPixmap((const char**)substrate_xpm);
@@ -226,6 +227,9 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
         case CFunctionParameter::VOLUME :
           color = volColor;
           break;
+        case CFunctionParameter::TIME :
+          color = timeColor;
+          break;
         case CFunctionParameter::VARIABLE :
           color = QColor(255, 20, 20);
           break;
@@ -243,7 +247,9 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
 
       // add second column
       item = new ColorTableItem(this, QTableItem::Never, color, FROM_UTF8(ri.getParameterName(i)));
-      if ((usage != CFunctionParameter::PARAMETER) && (usage != CFunctionParameter::VOLUME))
+      if ((usage != CFunctionParameter::PARAMETER)
+          && (usage != CFunctionParameter::VOLUME)
+          && (usage != CFunctionParameter::TIME))
         {
           if (ri.isLocked(i)) item->setPixmap(*pLocked); else item->setPixmap(*pUnlocked);
         }
@@ -340,6 +346,12 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
           combo = new QComboTableItem(this, getListOfAllCompartmentNames(model));
           combo->setCurrentItem(FROM_UTF8(ri.getCompartment(i)));
           setItem(rowCounter, 3, combo);
+        }
+      // add a line for time
+      else if (usage == CFunctionParameter::TIME)
+        {
+          item = new ColorTableItem(this, QTableItem::OnTyping, color, "");
+          setItem(rowCounter, 3, item);
         }
       // add a line for an unknown role
       else

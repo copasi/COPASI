@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/07 10:59:18 $
+   $Date: 2005/12/15 15:37:04 $
    End CVS Header */
 
 #ifndef CREACTIONINTERFACE_H
@@ -17,7 +17,7 @@
 #include "model/CChemEqInterface.h"
 #include "function/CFunction.h"
 
-class CFunction;
+//class CFunction;
 class CModel;
 
 /**
