@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.108 $
+   $Revision: 1.109 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/12/05 19:45:15 $
+   $Author: ssahle $ 
+   $Date: 2005/12/15 15:36:12 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -636,6 +636,11 @@ class CModel : public CCopasiContainer
      * @return string key
      */
     const std::string & getKey() const;
+
+    /**
+     * Return a pointer to the current time
+     */
+    virtual void * getReference() const;
 
     /**
      * Return the title of this model
