@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/13 16:59:35 $
+   $Date: 2005/12/15 16:36:57 $
    End CVS Header */
 
 /**
@@ -100,11 +100,6 @@ class CCopasiMessage
      */
     static std::deque< CCopasiMessage > mMessageDeque;
 
-    /**
-     * The highest severity of the messages in the deque.
-     */
-    static CCopasiMessage::Type mHighestSeverity;
-
     // Operations
 
   public:
@@ -161,7 +156,7 @@ class CCopasiMessage
      * Retrieve highest severity of the messages in the deque.
      * @return const CCopasiMessage::Type & highestSeverity
      */
-    static const CCopasiMessage::Type & getHighestSeverity();
+    static CCopasiMessage::Type getHighestSeverity();
 
     /**
      *  Default consructor. 

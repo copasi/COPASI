@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/13 16:59:35 $
+   $Date: 2005/12/15 16:36:57 $
    End CVS Header */
 
 // CCopasiMessage
@@ -30,7 +30,6 @@
 #define INITIALTEXTSIZE 1024
 
 std::deque< CCopasiMessage > CCopasiMessage::mMessageDeque;
-CCopasiMessage::Type CCopasiMessage::mHighestSeverity = CCopasiMessage::RAW;
 
 const CCopasiMessage & CCopasiMessage::peekFirstMessage()
 {
@@ -91,12 +90,20 @@ std::string CCopasiMessage::getAllMessageText(const bool & chronological)
 void CCopasiMessage::clearDeque()
 {
   mMessageDeque.clear();
-  mHighestSeverity = RAW;
   return;
 }
 
-const CCopasiMessage::Type & CCopasiMessage::getHighestSeverity()
-{return mHighestSeverity;}
+CCopasiMessage::Type CCopasiMessage::getHighestSeverity()
+{
+  CCopasiMessage::Type HighestSeverity = RAW;
+  std::deque< CCopasiMessage >::iterator it = mMessageDeque.begin();
+  std::deque< CCopasiMessage >::iterator end = mMessageDeque.end();
+
+  for (; it != end; ++it)
+    if (it->getType() > HighestSeverity) HighestSeverity = it->getType();
+
+  return HighestSeverity;
+}
 
 CCopasiMessage::CCopasiMessage(void):
     mText(),
@@ -224,7 +231,6 @@ void CCopasiMessage::handler(const bool & /* _throw */)
   if (mType != RAW) lineBreak();
 
   mMessageDeque.push_back(*this);
-  if (mType > mHighestSeverity) mHighestSeverity = mType;
 
   // All messages are printed to std::cerr
   if (COptions::compareValue("Verbose", true) &&
