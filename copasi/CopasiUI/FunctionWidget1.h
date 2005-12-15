@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.h,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/07 11:08:34 $
+   $Date: 2005/12/15 17:34:13 $
    End CVS Header */
 
 /****************************************************************************
@@ -58,8 +58,9 @@ class FunctionWidget1 : public CopasiWidget
     virtual void slotNewButtonClicked();
     virtual void slotDeleteButtonClicked();
     virtual void slotTableValueChanged(int row, int col);
-    virtual void slotAppTableValueChanged(int row, int col);
+    //virtual void slotAppTableValueChanged(int row, int col);
     virtual void slotFcnDescriptionChanged();
+    virtual void slotReversibilityChanged();
 
   protected:
     bool loadFromFunction(const CFunction* = NULL);

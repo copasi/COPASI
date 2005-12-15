@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.129 $
+   $Revision: 1.130 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/15 15:38:22 $
+   $Date: 2005/12/15 17:34:13 $
    End CVS Header */
 
 /**********************************************************************
@@ -14,6 +14,7 @@
  ** function obtained from the functions database.It is the second level 
  ** widget for functions.  
  ***********************************************************************/
+#include <sstream>
 #include <qvariant.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -268,7 +269,11 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   connect(newFcn, SIGNAL(clicked()), this, SLOT(slotNewButtonClicked()));
   connect(deleteFcn, SIGNAL(clicked()), this, SLOT(slotDeleteButtonClicked()));
   connect(Table1, SIGNAL(valueChanged(int, int)), this, SLOT(slotTableValueChanged(int, int)));
-  connect(Table2, SIGNAL(valueChanged(int, int)), this, SLOT(slotAppTableValueChanged(int, int)));
+
+  connect(RadioButton1, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
+  connect(RadioButton2, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
+  connect(RadioButton3, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
+
   connect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
 }
 
@@ -374,8 +379,85 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
   return true;
 }
 
+//this generates the text reperesentation of the usage restrictions
 bool FunctionWidget1::loadUsageTable(/*const CCopasiVectorN<CUsageRange>& usages*/)
 {
+  std::vector<std::string> stringlist;
+  bool checkProducts = false;
+
+  if (RadioButton1->isChecked() == true)
+    {
+      stringlist.push_back("Only reversible reactions");
+      checkProducts = true;
+    }
+  else if (RadioButton2->isChecked() == true)
+    {
+      stringlist.push_back("Only irreversible reactions");
+    }
+  else
+  {}
+
+  //substrates
+  if (mpFunction->getVariables().isVector(CFunctionParameter::SUBSTRATE))
+    {
+      stringlist.push_back("At least one substrate");
+    }
+  else
+    {
+      std::stringstream ss;
+      if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) == 0)
+        {
+          ss << "No substrate";
+        }
+      else
+        {
+          ss << "Exactly "
+          << mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE)
+          << " substrate";
+          if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) > 1)
+            ss << "s"; //plural
+        }
+      stringlist.push_back(ss.str());
+    }
+
+  //products
+  if (checkProducts)
+    {
+      if (mpFunction->getVariables().isVector(CFunctionParameter::PRODUCT))
+        {
+          stringlist.push_back("At least one product");
+        }
+      else
+        {
+          std::stringstream ss;
+          if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) == 0)
+            {
+              ss << "No product";
+            }
+          else
+            {
+              ss << "Exactly "
+              << mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::PRODUCT)
+              << " product";
+              if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) > 1)
+                ss << "s"; //plural
+            }
+          stringlist.push_back(ss.str());
+        }
+    }
+
+  if (stringlist.size() == 0)
+    stringlist.push_back("None");
+
+  Table2->setNumRows(stringlist.size());
+  unsigned C_INT32 row;
+  for (row = 0; row < stringlist.size(); ++row)
+    {
+      Table2->setText(row, 0, stringlist[row]);
+    }
+
+  Table2->adjustColumn(0);
+
   /*
     if (usages.size() == 0)
       {
@@ -809,9 +891,9 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
   loadUsageTable(/*mpFunction->getVariables().getUsageRanges()*/);
 }
 
-void FunctionWidget1::slotAppTableValueChanged(int C_UNUSED(row), int C_UNUSED(col))
+void FunctionWidget1::slotReversibilityChanged()
 {
-  //this table is read only at the moment
+  loadUsageTable();
 }
 
 //**************** slots for buttons *********************************************
