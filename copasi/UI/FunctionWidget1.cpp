@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.130 $
+   $Revision: 1.131 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/15 17:34:13 $
+   $Author: shoops $ 
+   $Date: 2005/12/15 20:48:12 $
    End CVS Header */
 
 /**********************************************************************
@@ -453,7 +453,7 @@ bool FunctionWidget1::loadUsageTable(/*const CCopasiVectorN<CUsageRange>& usages
   unsigned C_INT32 row;
   for (row = 0; row < stringlist.size(); ++row)
     {
-      Table2->setText(row, 0, stringlist[row]);
+      Table2->setText(row, 0, FROM_UTF8(stringlist[row]));
     }
 
   Table2->adjustColumn(0);
