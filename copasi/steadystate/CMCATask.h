@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:33 $
+   $Date: 2005/12/15 16:57:10 $
    End CVS Header */
 
 /**
@@ -83,6 +83,11 @@ class CMCATask : public CCopasiTask
      * @return bool success
      */
     virtual bool process(const bool & useInitialValues);
+
+    /**
+     * Perform neccessary cleaup procedures
+     */
+    virtual bool restore();
 
     /**
      * Loads parameters for this solver with data coming from a

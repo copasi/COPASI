@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:33 $
+   $Date: 2005/12/15 16:57:10 $
    End CVS Header */
 
 /**
@@ -21,6 +21,8 @@
 #include "CMCATask.h"
 #include "CMCAProblem.h"
 #include "CMCAMethod.h"
+#include "CSteadyStateTask.h"
+
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "report/CKeyFactory.h"
@@ -69,34 +71,65 @@ bool CMCATask::initialize(const OutputFlag & of,
     dynamic_cast<CMCAProblem *>(mpProblem);
   assert(pProblem);
 
+  if (!mpMethod->isValidProblem(mpProblem)) return false;
+
   bool success = true;
 
   //initialize reporting
   if (!CCopasiTask::initialize(of, pOstream)) success = false;
-
   if (!pProblem->getModel()->compileIfNecessary()) success = false;
+
+  CSteadyStateTask *pSubTask = pProblem->getSubTask();
+  if (pSubTask)
+    success = pSubTask->initialize(of, mReport.getStream());
 
   return success;
 }
 
-bool CMCATask::process(const bool & /* useInitialValues */)
+bool CMCATask::process(const bool & useInitialValues)
 {
-  assert(mpMethod);
+  bool success = true;
 
-  mpMethod->isValidProblem(mpProblem);
+  assert(mpMethod);
 
   CMCAMethod* pMethod = dynamic_cast<CMCAMethod *>(mpMethod);
   assert(pMethod);
-
   pMethod->setModel(mpProblem->getModel());
 
-  mReport.printHeader();
+  CSteadyStateTask *pSubTask =
+    dynamic_cast<CMCAProblem *>(mpProblem)->getSubTask();
+  if (pSubTask)
+    {
+      pSubTask->setCallBack(mpCallBack);
+      success &= pSubTask->process(useInitialValues);
+
+      if (!success) return false;
+
+      pMethod->setSteadyStateStatus(pSubTask->getResult());
+    }
+
+  CCopasiTask::initOutput();
+
   pMethod->process();
 
-  mReport.printBody();
-  mReport.printFooter();
+  CCopasiTask::doOutput();
+  CCopasiTask::finishOutput();
 
   return true;
+}
+
+bool CMCATask::restore()
+{
+  bool success = true;
+
+  CSteadyStateTask *pSubTask =
+    dynamic_cast<CMCAProblem *>(mpProblem)->getSubTask();
+  if (pSubTask)
+    success &= pSubTask->restore();
+
+  success &= CCopasiTask::restore();
+
+  return success;
 }
 
 std::ostream &operator<<(std::ostream &os, const CMCATask & C_UNUSED(A))

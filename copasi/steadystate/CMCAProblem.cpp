@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:28:15 $
+   $Date: 2005/12/15 16:57:09 $
    End CVS Header */
 
 /**
@@ -18,8 +18,12 @@
 
 #include "copasi.h"
 #include "CMCAProblem.h"
+#include "CSteadyStateTask.h"
+
+#include "CopasiDatamodel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CState.h"
+#include "report/CKeyFactory.h"
 
 /**
  *  Default constructor.
@@ -29,7 +33,8 @@ CMCAProblem::CMCAProblem(const CCopasiContainer * pParent):
     CCopasiProblem(CCopasiTask::steadyState, pParent),
     mInitialState()
 {
-  addParameter("SteadyStateRequested", CCopasiParameter::BOOL, true);
+  //  addParameter("SteadyStateRequested", CCopasiParameter::BOOL, true);
+  addParameter("Steady-State", CCopasiParameter::KEY, std::string(""));
   CONSTRUCTOR_TRACE;
 }
 
@@ -67,9 +72,12 @@ void CMCAProblem::load(CReadConfig & configBuffer,
 {
   if (configBuffer.getVersion() < "4.0")
     {
+      bool SteadyStateRequested;
       configBuffer.getVariable("RepxSteadyStateAnalysis", "bool" ,
-                               getValue("SteadyStateRequested").pBOOL,
+                               &SteadyStateRequested,
                                CReadConfig::LOOP);
+
+      setSteadyStateRequested(SteadyStateRequested);
     }
 }
 
@@ -105,11 +113,27 @@ const CState & CMCAProblem::getInitialState() const
  * @param bool * steadyStateRequested
  */
 void CMCAProblem::setSteadyStateRequested(bool & steadyStateRequested)
-{setValue("SteadyStateRequested", steadyStateRequested);}
+{
+  CSteadyStateTask * pSubTask =
+    dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+
+  if (steadyStateRequested && pSubTask)
+    setValue("Steady-State", pSubTask->getKey());
+  else
+    setValue("Steady-State", std::string(""));
+}
 
 /**
  * Retrieve whether the steady state analysis is requested.
  * @return bool steadyStateRequested
  */
 bool CMCAProblem::isSteadyStateRequested() const
-  {return * getValue("SteadyStateRequested").pBOOL;}
+{return (* getValue("Steady-State").pKEY != "");}
+
+CSteadyStateTask * CMCAProblem::getSubTask() const
+  {
+    if (isSteadyStateRequested())
+      return dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(* getValue("Steady-State").pKEY));
+    else
+      return NULL;
+  }

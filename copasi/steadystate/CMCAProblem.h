@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/21 15:29:57 $
+   $Author: shoops $ 
+   $Date: 2005/12/15 16:57:10 $
    End CVS Header */
 
 /**
@@ -22,6 +22,8 @@
 #include "model/CState.h"
 #include "utilities/CCopasiProblem.h"
 #include "utilities/CReadConfig.h"
+
+class CSteadyStateTask;
 
 class CMCAProblem: public CCopasiProblem
   {
@@ -90,6 +92,12 @@ class CMCAProblem: public CCopasiProblem
      * @return bool steadyStateRequested
      */
     bool isSteadyStateRequested() const;
+
+    /**
+     * Retrieve the subtask
+     * return CSteadyStateTask * pSubTask;
+     */
+    CSteadyStateTask * getSubTask() const;
 
     /**
      * Load a trajectory problem
