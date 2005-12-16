@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/15 17:34:13 $
+   $Date: 2005/12/16 15:19:00 $
    End CVS Header */
 
 /****************************************************************************
@@ -70,6 +70,7 @@ class FunctionWidget1 : public CopasiWidget
     void updateApplication();
     bool saveToFunction();
     bool copyFunctionContentsToFunction(const CFunction* src, CFunction* target);
+    bool functionParametersChanged();
 
     std::string objKey;
     bool flagRO;

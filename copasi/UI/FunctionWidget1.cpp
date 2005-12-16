@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.131 $
+   $Revision: 1.132 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/12/15 20:48:12 $
+   $Author: ssahle $ 
+   $Date: 2005/12/16 15:19:00 $
    End CVS Header */
 
 /**********************************************************************
@@ -286,11 +286,6 @@ FunctionWidget1::~FunctionWidget1()
 
 bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
 {
-  //TODO: memory leak?
-  //QPixmap * pProduct = new QPixmap((const char**)product_xpm);
-  //QPixmap * pSubstrate = new QPixmap((const char**)substrate_xpm);
-  //QPixmap * pModifier = new QPixmap((const char**)modifier_xpm);
-
   QColor subsColor(255, 210, 210);
   QColor prodColor(210, 255, 210);
   QColor modiColor(250, 250, 190);
@@ -360,27 +355,20 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
 
       // col. 1
       QString temp = FROM_UTF8(CFunctionParameter::DataTypeName[params[j]->getType()]);
-      //QComboTableItem * item = new QComboTableItem(Table1, functionType);
       ComboItem * item = new ComboItem(Table1, QTableItem::WhenCurrent, color, functionType);
       Table1->setItem(j, 1, item);
-      //item->setCurrentItem(temp);
       item->setText(temp);
 
       // col. 2
-      //item = new ComboItem(Table1, QTableItem::WhenCurrent, color, Usages);
       QComboTableItem * item2 = new QComboTableItem(Table1, Usages);
-      //item->setText(qUsage);
       item2->setCurrentItem(qUsage);
-      //if (usage == "SUBSTRATE") item2->setPixmap(*pSubstrate);
-      //if (usage == "PRODUCT") item2->setPixmap(*pProduct);
-      //if (usage == "MODIFIER") item2->setPixmap(*pModifier);
       Table1->setItem(j, 2, item2);
     }
   return true;
 }
 
 //this generates the text reperesentation of the usage restrictions
-bool FunctionWidget1::loadUsageTable(/*const CCopasiVectorN<CUsageRange>& usages*/)
+bool FunctionWidget1::loadUsageTable()
 {
   std::vector<std::string> stringlist;
   bool checkProducts = false;
@@ -457,60 +445,6 @@ bool FunctionWidget1::loadUsageTable(/*const CCopasiVectorN<CUsageRange>& usages
     }
 
   Table2->adjustColumn(0);
-
-  /*
-    if (usages.size() == 0)
-      {
-        Table2->setNumRows(1);
-        Table2->setText(0, 0, "none");
-        Table2->setText(0, 1, "");
-        return true;
-      }
-   
-    unsigned C_INT32 j, jmax = usages.size();
-    QString s1, s2;
-    std::string name;
-    Table2->setNumRows(jmax);
-    for (j = 0; j < jmax; ++j)
-      {
-        s1 = "Number of ";
-        name = usages[j]->getObjectName();
-        s1 += FROM_UTF8(CFunctionParameter::convertRoleNameToDisplay(name)) + "s:";
-        //relies on the fact that the plural of all roles is regular
-   
-        Table2->setText(j, 0, s1);
-        //Table2->adjustColumn(0);
-   
-        switch (usages[j]->getHigh())
-          {
-          case 0:
-            s2 = "exactly " + QString::number(usages[j]->getLow());
-            break;
-   
-          case - 1:
-            if (usages[j]->getLow() == 0)
-              s2 = "any";
-            else
-              s2 = QString::number(usages[j]->getLow()) + " or more";
-            break;
-   
-          default:
-            if (usages[j]->getLow() == usages[j]->getHigh())
-              s2 = "exactly " + QString::number(usages[j]->getLow());
-            else
-              s2 = QString::number(usages[j]->getLow()) + " - "
-                   + QString::number(usages[j]->getHigh());
-          }
-   
-        Table2->setText(j, 1, s2);
-      }
-   
-    Table2->adjustColumn(0);
-    Table2->adjustColumn(1);
-    return true;
-   
-    //TODO: render "MODIFIER" usages differently?
-  */
 
   return true;
 }
@@ -681,27 +615,15 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
         }
     } //TODO: this is propably much too complicated
 
-  /*
-  //Usages of the function
-  CCopasiVectorN < CUsageRange > & tarU = target->getUsageDescriptions();
-  const CCopasiVectorN < CUsageRange > & srcU = src->getUsageDescriptions();
-
-  tarU.cleanup();
-  for (i = 0; i < srcU.size(); i++)
-    {
-      tarU.add(*srcU[i]);
-    }
-
-  //Description
-  try
-    {
-      target->CEvaluationTree::setInfix(src->getInfix());
-    }
-  catch (CCopasiException Exception)
-  {}
-  */
-
   return true;
+}
+
+bool FunctionWidget1::functionParametersChanged()
+{
+  CFunction* func = dynamic_cast<CFunction*>(GlobalKeys.get(objKey));
+  if (!func) return false;
+
+  return (!(func->getVariables() == mpFunction->getVariables()));
 }
 
 bool FunctionWidget1::saveToFunction()
@@ -766,59 +688,6 @@ bool FunctionWidget1::saveToFunction()
   return true;
 }
 
-/*
-void FunctionWidget1::updateApplication()
-{
-  // :TODO: This function should be returning whether the application was actually changed //
- 
-  CUsageRange Application;
-  const CFunctionParameters &functParam = mpFunction->getVariables();
-  CCopasiVectorN < CUsageRange > & functUsage = mpFunction ->getUsageDescriptions();
-  functUsage.cleanup();
- 
-  Application.setUsage("SUBSTRATE");
-  if (functParam.getUsageRanges().getIndex("SUBSTRATE") != C_INVALID_INDEX)
-    {
-      Application.setRange(functParam.getUsageRanges()["SUBSTRATE"]->getLow(),
-                           functParam.getUsageRanges()["SUBSTRATE"]->getHigh());
-      functUsage.add(Application);
-    }
-  else
-    {
-      //Application.setRange(CRange::NoRange, Application.getHigh());
-      //functUsage.add(Application);
-    }
- 
-  Application.setUsage("PRODUCT");
-  if (functParam.getUsageRanges().getIndex("PRODUCT") != C_INVALID_INDEX)
-    {
-      Application.setRange(functParam.getUsageRanges()["PRODUCT"]->getLow(),
-                           functParam.getUsageRanges()["PRODUCT"]->getHigh());
-      functUsage.add(Application);
-    }
-  else
-    {
-      //Application.setRange(CRange::NoRange, Application.getHigh());
-      //functUsage.add(Application);
-    }
- 
-  Application.setUsage("MODIFIER");
-  if (functParam.getUsageRanges().getIndex("MODIFIER") != C_INVALID_INDEX)
-    {
-      Application.setRange(functParam.getUsageRanges()["MODIFIER"]->getLow(),
-                           functParam.getUsageRanges()["MODIFIER"]->getHigh());
-      functUsage.add(Application);
-    }
-  else
-    {
-      //Application.setRange(CRange::NoRange, Application.getHigh());
-      //functUsage.add(Application);
-    }
- 
-  //TODO: Volumes?
-}
- */
-
 //************** slots for changes in the widgets *************************************
 
 /*This function is called when the Function Description is changed.*/
@@ -860,7 +729,7 @@ void FunctionWidget1::slotFcnDescriptionChanged()
 
   // application table
   //updateApplication();
-  loadUsageTable(/*mpFunction->getVariables().getUsageRanges()*/);
+  loadUsageTable();
 
   textBrowser->setFocus();
 }
@@ -876,19 +745,14 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
     {
       QComboTableItem * tmpItem = dynamic_cast<QComboTableItem *>(Table1->item(row, col));
       if (!tmpItem) fatalError();
-      //QString qUsage = Table1->text(row, col);
       CFunctionParameter::Role usage = (CFunctionParameter::Role)tmpItem->currentItem();
 
-      //CFunctionParameter::convertDisplayRoleNameToInternal((const char*)qUsage.utf8());
-
       functParam[row]->setUsage(usage);
-      //functParam.updateUsageRanges();
     }
 
   //update tables
   loadParameterTable(mpFunction->getVariables());
-  //updateApplication();
-  loadUsageTable(/*mpFunction->getVariables().getUsageRanges()*/);
+  loadUsageTable();
 }
 
 void FunctionWidget1::slotReversibilityChanged()
@@ -907,10 +771,9 @@ void FunctionWidget1::slotCommitButtonClicked()
 {
   // :TODO: We should check what changes have been done to the function //
 
-  if (flagChanged)
+  if (functionParametersChanged())
     {
       std::set<std::string> dependentReactions;
-
       if (dataModel && CCopasiDataModel::Global->getModel())
         {
           dependentReactions =
@@ -919,30 +782,22 @@ void FunctionWidget1::slotCommitButtonClicked()
       else
         return;
 
-      QString msg1 = "Cannot change Function. ";
-      msg1.append("Following dependencies with listed Reaction(s) exist:\n");
-      int msg1Empty = 1;
-
+      QString reactions;
       std::set<std::string>::iterator it = dependentReactions.begin();
       std::set<std::string>::iterator end = dependentReactions.end();
-
-      bool reacFound = (it != end) ? true : false;
-
-      if (reacFound)
+      for (; it != end; it++)
         {
-          msg1Empty = 0;
-
-          for (; it != end; it++)
-            {
-              msg1.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
-              msg1.append(" ---> ");
-              msg1.append(FROM_UTF8(mpFunction->getObjectName()));
-              msg1.append("\n");
-            }
+          reactions.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
+          reactions.append(" ---> ");
+          reactions.append(FROM_UTF8(mpFunction->getObjectName()));
+          reactions.append("\n");
         }
 
-      if (msg1Empty == 0)
+      if (dependentReactions.size() > 0)
         {
+          QString msg1 = "Cannot change Function. ";
+          msg1.append("Following dependencies with listed Reaction(s) exist:\n");
+          msg1.append(reactions);
           QMessageBox::warning(this, "Sorry, Cannot Change",
                                msg1,
                                "OK", 0, 0, 0, 1);
