@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/12/12 22:09:17 $
+   $Author: stupe $ 
+   $Date: 2005/12/17 21:26:09 $
    End CVS Header */
 
 // CCompartment
@@ -93,18 +93,24 @@ const CCopasiVectorNS < CMetab > & CCompartment::getMetabolites() const
 
 bool CCompartment::setInitialValue(const C_FLOAT64 & volume)
 {
-  C_FLOAT64 Factor = volume / mIValue;
+  C_FLOAT64 Factor = 0;
+  if (mIValue)
+    {
+      Factor = volume / mIValue;
+    }
+
   mIValue = volume;
 
   /* This assumes state==FIXED */
   setValue(volume);
-
   C_INT32 i, imax = mMetabolites.size();
   for (i = 0; i < imax; ++i)
     {
       //update particle numbers
       mMetabolites[i]->setInitialNumber(mMetabolites[i]->getInitialNumber() * Factor);
       mMetabolites[i]->setNumber(mMetabolites[i]->getNumber() * Factor);
+      mMetabolites[i]->setInitialConcentration(mMetabolites[i]->getInitialConcentration()); // a hack
+      mMetabolites[i]->setConcentration(mMetabolites[i]->getConcentration()); // a hack
     }
 
   return true;

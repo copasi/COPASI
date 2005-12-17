@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.97 $
+   $Revision: 1.98 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:28:58 $
+   $Author: stupe $ 
+   $Date: 2005/12/17 21:26:09 $
    End CVS Header */
 
 /*******************************************************************
@@ -22,6 +22,8 @@
 #include <qfont.h>
 #include <qpushbutton.h>
 #include <qaction.h>
+#include <qregexp.h>
+#include <qvalidator.h>
 
 //#include "MyTable.h"
 #include "model/CModel.h"
@@ -83,6 +85,14 @@ void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned 
 void CompartmentsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
+  int pos = 0;
+  QDoubleValidator v = new QDoubleValidator(this, "");
+  if ((v.validate(table->text(row, 2), pos) == QValidator::Intermediate) || (v.validate(table->text(row, 2), pos) == QValidator::Invalid))
+    {
+      QMessageBox::warning(this, "Parent Compartment Widget::Invalid Input!!!", "Only double values are allowed in the Volume column",
+                           QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      return;
+    }
   CCompartment* pComp = (CCompartment*)obj;
   pComp->setInitialVolume(table->text(row, 2).toDouble());
 }

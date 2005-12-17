@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.186 $
+   $Revision: 1.187 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/08 13:40:40 $
+   $Author: stupe $ 
+   $Date: 2005/12/17 21:26:09 $
    End CVS Header */
 
 /****************************************************************************
@@ -623,6 +623,7 @@ FolderListItem* ListViews::findListViewItem(int id, std::string key) //should al
  *************************************************************************************/
 void ListViews::slotFolderChanged(QListViewItem *i)
 {
+  bool changeWidget = true;
   if (!i) return;
 
   folders->setCurrentItem(i);
@@ -642,7 +643,8 @@ void ListViews::slotFolderChanged(QListViewItem *i)
   // leave old widget
   if (currentWidget)
     {
-      currentWidget->leave();
+      changeWidget = currentWidget->leave();
+      if (!changeWidget) return;
       //item may point to an invalid ListViewItem now
       item = (FolderListItem*)folders->currentItem();
     }

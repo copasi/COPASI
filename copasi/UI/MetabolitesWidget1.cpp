@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.122 $
+   $Revision: 1.123 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:30:41 $
+   $Author: stupe $ 
+   $Date: 2005/12/17 21:26:09 $
    End CVS Header */
 
 /*******************************************************************
@@ -398,9 +398,10 @@ bool MetabolitesWidget1::saveToMetabolite()
           CCopasiDataModel::Global->getModel()->setCompileFlag();
         }
     }
+
   else
     {
-      if (mpMetab->getStatus() != CModelEntity::REACTIONS) //TODO: should be ...==METAB_FIXED ?
+      if (mpMetab->getStatus() == CModelEntity::FIXED) // TODO: should be ...== METAB_FIXED ?
         {
           mpMetab->setStatus(CModelEntity::REACTIONS);
           protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
@@ -470,6 +471,7 @@ void MetabolitesWidget1::slotBtnCancelClicked()
 void MetabolitesWidget1::slotBtnOKClicked()
 {
   //let the user confirm?
+  static_cast<MyLineEdit *>(mEditInitNumber)->slotForceUpdate();
   saveToMetabolite();
 }
 
@@ -567,6 +569,7 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
           {
             enter("");
           }
+#undef DELETE
         protectedNotify(ListViews::METABOLITE, ListViews::DELETE, objKey);
         //TODO notify about reactions
         break;

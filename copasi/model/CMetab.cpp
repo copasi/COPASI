@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.90 $
+   $Revision: 1.91 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/12/14 21:47:55 $
+   $Author: stupe $ 
+   $Date: 2005/12/17 21:26:09 $
    End CVS Header */
 
 #include <iostream>
@@ -202,8 +202,10 @@ bool CMetab::setInitialValue(const C_FLOAT64 & initialNumber)
 {
   //if (mINumber == initialNumber) return true;
 
-  mIConc = initialNumber * mpCompartment->getVolumeInv()
-           * mpModel->getNumber2QuantityFactor();
+  if (initialNumber)
+    {
+      mIConc = initialNumber * mpCompartment->getVolumeInv() * mpModel->getNumber2QuantityFactor();
+    }
   mIValue = initialNumber;
 
   if (mStatus == FIXED)
