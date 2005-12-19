@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.119 $
+   $Revision: 1.120 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 21:47:55 $
+   $Date: 2005/12/19 20:26:27 $
    End CVS Header */
 
 /**
@@ -3210,7 +3210,7 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
           pModel = dynamic_cast< CModel* >(GlobalKeys.get(*it));
           if (pModel)
             {
-              pModel->setTime(Value);
+              pModel->setInitialTime(Value);
               continue;
             }
 
