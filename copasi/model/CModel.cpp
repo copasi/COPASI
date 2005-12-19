@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.243 $
+   $Revision: 1.244 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/15 15:36:11 $
+   $Author: shoops $ 
+   $Date: 2005/12/19 20:27:04 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@ CModel::CModel():
     mParticleFluxesX(),
     mValues("Values", this),
     mInitialTime(0),
-    mTime(0),
+    mTime(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mTransitionTime(0),
     mMoieties("Moieties", this),
     mStoi(),
