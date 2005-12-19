@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ParametersWidget.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/12/12 22:09:17 $
+   $Author: ssahle $ 
+   $Date: 2005/12/19 13:11:42 $
    End CVS Header */
 
 #include "ParametersWidget.h"
@@ -40,6 +40,7 @@ class CParameterListItem : public QListViewItem
         mIsChanged(false)
     {
       setOpen(true);
+      setSelectable(false);
     }
 
     CParameterListItem(CParameterListItem *parent, const QString & text)
@@ -48,6 +49,7 @@ class CParameterListItem : public QListViewItem
         mIsChanged(false)
     {
       setOpen(true);
+      setSelectable(false);
     }
 
     CParameterListItem(CParameterListItem *parent, const QString & name,
@@ -87,8 +89,19 @@ class CParameterListItem : public QListViewItem
         }
     }
 
+    //this constructor is used for global parameters in reactions
+    CParameterListItem(CParameterListItem *parent, const QString & name,
+                       CCopasiObject* obj, const QString & value, const QString & unit)
+        : QListViewItem(parent, name, "", value, unit),
+        mpObject(obj),
+        mIsChanged(false)
+    {
+      setRenameEnabled(COL_VALUE, false);
+      setText(COL_STATUS, "global");
+    }
+
     CCopasiObject* getObject() const
-    {return mpObject;}
+      {return mpObject;}
 
     C_FLOAT64 getValue() const
       {return text(COL_VALUE).toDouble();}
@@ -231,11 +244,35 @@ bool ParametersWidget::loadFromModel()
       reac = reacs[i];
       tmp = new CParameterListItem(mReacItem, FROM_UTF8(reac->getObjectName()));
 
-      jmax = reac->getParameters().size();
+      const CFunctionParameters & params = reac->getFunctionParameters();
+      jmax = params.size();
+      for (j = 0; j < jmax; ++j)
+        if (params[j]->getUsage() == CFunctionParameter::PARAMETER)
+          {
+            CCopasiObject * obj = GlobalKeys.get(reac->getParameterMappings()[j][0]);
+            if (!obj) continue;
+
+            if (reac->isLocalParameter(j))
+              {
+                CCopasiParameter * par = dynamic_cast<CCopasiParameter*>(obj); //must be a CCopasiParameter
+                if (!par) continue; //or rather fatal error?
+                new CParameterListItem(tmp, FROM_UTF8(params[j]->getObjectName()), par,
+                                       * par->getValue().pDOUBLE, "");
+              }
+            else
+              {
+                CModelValue * par = dynamic_cast<CModelValue*>(obj); //must be a CModelValue
+                if (!par) continue; //or rather fatal error?
+                new CParameterListItem(tmp, FROM_UTF8(params[j]->getObjectName()), par,
+                                       FROM_UTF8("-> " + par->getObjectName()), "");
+              }
+          }
+
+      /*jmax = reac->getParameters().size();
       for (j = 0; j < jmax; ++j)
         new CParameterListItem(tmp, FROM_UTF8(reac->getParameters().getParameter(j)->getObjectName()),
                                reac->getParameters().getParameter(j),
-                               * reac->getParameters().getParameter(j)->getValue().pDOUBLE, "");
+                               * reac->getParameters().getParameter(j)->getValue().pDOUBLE, "");*/
     }
 
   //global Parameters
@@ -311,6 +348,7 @@ bool ParametersWidget::saveToModel() const
                 changed = true;
                 CCopasiParameter* tmp = dynamic_cast<CCopasiParameter*>(child2->getObject());
                 if (tmp) tmp->setValue(child2->getValue());
+                //this does nothing for global parameters since the dynamic cast fails for those
               }
             child2 = (CParameterListItem *)child2->nextSibling();
           }
