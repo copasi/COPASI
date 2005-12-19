@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelWidget.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/11/07 21:23:35 $
+   $Author: shoops $ 
+   $Date: 2005/12/19 19:41:01 $
    End CVS Header */
 
 /****************************************************************************
@@ -67,6 +67,11 @@ class ModelWidget : public CopasiWidget
     QLabel* TextLabel3;
     QLabel* TextLabel4;
     QLabel* TextLabel5;
+    QLabel* mpLblInitial;
+    QLabel* mpLblCurrent;
+    QLabel* mpLblTime;
+    QLineEdit *mpInitialTime;
+    QLineEdit *mpCurrentTime;
     QPushButton* showDescription;
     QComboBox* ComboBox1;
     QComboBox* ComboBox2;

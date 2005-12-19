@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/11/07 21:23:35 $
+   $Author: shoops $ 
+   $Date: 2005/12/19 19:41:00 $
    End CVS Header */
 
 /*******************************************************************
@@ -82,16 +82,38 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
   //ComboBox3->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   ModelWidgetLayout->addWidget(ComboBox3, 4, 1);
 
+  mpLblInitial = new QLabel(this, "mpLblInitial");
+  mpLblInitial->setText("Initial");
+  mpLblInitial->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignLeft));
+  ModelWidgetLayout->addWidget(mpLblInitial, 5, 1);
+
+  mpLblCurrent = new QLabel(this, "mpLblCurrent");
+  mpLblCurrent->setText("Current");
+  mpLblCurrent->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignLeft));
+  ModelWidgetLayout->addWidget(mpLblCurrent, 5, 2);
+
+  mpLblTime = new QLabel(this, "mpLblTime");
+  mpLblTime->setText("Time (s)");
+  mpLblTime->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  ModelWidgetLayout->addWidget(mpLblTime, 6, 0);
+
+  mpInitialTime = new QLineEdit(this, "mpInitialTime");
+  ModelWidgetLayout->addWidget(mpInitialTime, 6, 1);
+
+  mpCurrentTime = new QLineEdit(this, "mpCurrentTime");
+  mpCurrentTime->setEnabled(false);
+  ModelWidgetLayout->addWidget(mpCurrentTime, 6, 2);
+
   QFrame * Line1 = new QFrame(this, "Line1");
   Line1->setFrameShape(QFrame::HLine);
-  ModelWidgetLayout->addMultiCellWidget(Line1, 5, 5, 0, 2);
+  ModelWidgetLayout->addMultiCellWidget(Line1, 7, 7, 0, 2);
 
   textBrowser = new QTextBrowser (this, "Text Browser");
-  ModelWidgetLayout->addMultiCellWidget(textBrowser, 6, 6, 1, 2);
+  ModelWidgetLayout->addMultiCellWidget(textBrowser, 8, 8, 1, 2);
 
   editComments = new QTextEdit(this, "Edit Comments");
   editComments->setTextFormat(Qt::PlainText);
-  ModelWidgetLayout->addMultiCellWidget(editComments, 7, 7, 1, 2);
+  ModelWidgetLayout->addMultiCellWidget(editComments, 9, 9, 1, 2);
   editComments->setText("");
   editComments->hide();
 
@@ -105,7 +127,7 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
   spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Minimum);
   showMarkupLayout->addWidget(showDescription);
   showMarkupLayout->addItem(spacer);
-  ModelWidgetLayout->addLayout(showMarkupLayout, 6, 0);
+  ModelWidgetLayout->addLayout(showMarkupLayout, 8, 0);
 
   Layout5 = new QHBoxLayout(0, 0, 6, "Layout5");
 
@@ -119,7 +141,7 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
 
   // preliminary
 
-  ModelWidgetLayout->addMultiCellLayout(Layout5, 8, 8, 0, 2);
+  ModelWidgetLayout->addMultiCellLayout(Layout5, 10, 10, 0, 2);
 
   // signals and slots connections
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
@@ -172,6 +194,8 @@ bool ModelWidget::loadModel(CModel *model)
   ComboBox1->insertStringList(comboEntries, -1);
   ComboBox1->setCurrentText(FROM_UTF8(model->getTimeUnitName()));
 
+  mpLblTime->setText("Time (" + ComboBox1->currentText() + ")");
+
   QStringList comboEntries1;
   for (temp1 = 0; CModel::VolumeUnitNames[temp1]  /*!= ""*/; temp1++)
     {
@@ -187,6 +211,9 @@ bool ModelWidget::loadModel(CModel *model)
     }
   ComboBox3->insertStringList(comboEntries2, -1);
   ComboBox3->setCurrentText(FROM_UTF8(model->getQuantityUnitName()));
+
+  mpInitialTime->setText(QString::number(model->getInitialTime()));
+  mpCurrentTime->setText(QString::number(model->getTime()));
 
   return ret;
 }
@@ -229,6 +256,11 @@ bool ModelWidget::saveToModel()
       protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
     }
 
+  if (mpInitialTime->text() != QString::number(model->getInitialTime()))
+    {
+      model->setInitialTime(mpInitialTime->text().toDouble());
+      protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
+    }
   // :TODO Bug 322: This should only be called when actual changes have been saved.
 
   return success;
@@ -244,6 +276,7 @@ void ModelWidget::slotBtnOKClicked()
 {
   //let the user confirm?
   saveToModel();
+  loadModel(dynamic_cast< CModel * >(GlobalKeys.get(objKey)));
 }
 
 bool ModelWidget::update(ListViews::ObjectType objectType,
