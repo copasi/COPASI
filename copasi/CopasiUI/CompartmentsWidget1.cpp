@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.85 $
+   $Revision: 1.86 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/12/17 21:26:09 $
+   $Author: ssahle $ 
+   $Date: 2005/12/19 13:10:41 $
    End CVS Header */
 
 /*******************************************************************
@@ -215,7 +215,8 @@ void CompartmentsWidget1::slotListBoxCurrentChanged(const QString & C_UNUSED(m))
 bool CompartmentsWidget1::saveToCompartment()
 {
   int cursor = 0;
-  if (LineEdit3->validator()->validate(LineEdit3->text(), cursor) == QValidator::Intermediate)
+  QString tmpstring = LineEdit3->text();
+  if (LineEdit3->validator()->validate(tmpstring, cursor) == QValidator::Intermediate)
     {
       QMessageBox::warning(this, "Compartment Widget::Invalid Input!!!", "Please check Initial Volume. It can not be empty.",
                            QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
