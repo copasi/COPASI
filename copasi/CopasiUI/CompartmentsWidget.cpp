@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.99 $
+   $Revision: 1.100 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/19 13:10:41 $
+   $Author: shoops $ 
+   $Date: 2005/12/19 20:25:31 $
    End CVS Header */
 
 /*******************************************************************
@@ -88,9 +88,11 @@ void CompartmentsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* 
   int pos = 0;
   QDoubleValidator v(this, "");
   QString tmpstring = table->text(row, 2);
-  if ((v.validate(tmpstring, pos) == QValidator::Intermediate) || (v.validate(tmpstring, pos) == QValidator::Invalid))
+  if ((v.validate(tmpstring, pos) == QValidator::Intermediate) ||
+      (v.validate(tmpstring, pos) == QValidator::Invalid))
     {
-      QMessageBox::warning(this, "Parent Compartment Widget::Invalid Input!!!", "Only double values are allowed in the Volume column",
+      QMessageBox::warning(this, "Parent Compartment Widget::Invalid Input!!!",
+                           "The volume must be given",
                            QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
       return;
     }
