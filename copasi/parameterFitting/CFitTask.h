@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitTask.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/16 19:08:34 $
+   $Date: 2005/12/19 17:17:20 $
    End CVS Header */
 
 /**
@@ -77,6 +77,11 @@ class CFitTask : public COptTask
      * @return bool success
      */
     virtual bool process(const bool & useInitialValues);
+
+    /**
+     * Perform neccessary cleaup procedures
+     */
+    virtual bool restore();
 
     /**
      * Set the method type applied to solve the task

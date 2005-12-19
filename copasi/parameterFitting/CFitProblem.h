@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/15 01:52:38 $
+   $Date: 2005/12/19 17:17:20 $
    End CVS Header */
 
 #ifndef COPASI_CFitProblem
@@ -77,13 +77,6 @@ class CFitProblem : public COptProblem
     virtual bool calculate();
 
     /**
-     * Do all neccessary restore procedures so that the
-     * model is in the same state as before
-     * @result bool succes
-     */
-    virtual bool restore();
-
-    /**
      * This is the output method for any object. The default implementation
      * provided with CCopasiObject uses the ostream operator<< of the object
      * to print the object.To overide this default behaviour one needs to
@@ -134,6 +127,12 @@ class CFitProblem : public COptProblem
      */
     bool calculateStatistics(const C_FLOAT64 & factor = 1.0e-003,
                              const C_FLOAT64 & resolution = 1.0e-009);
+
+    /**
+     * Restore the trajectory problem
+     * @result bool succes
+     */
+    bool restoreTrajectoryProblem();
 
   private:
     /**

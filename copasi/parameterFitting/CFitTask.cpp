@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitTask.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/21 15:35:07 $
+   $Date: 2005/12/19 17:17:20 $
    End CVS Header */
 
 /**
@@ -96,6 +96,14 @@ bool CFitTask::process(const bool & /* useInitialValues */)
   finishOutput();
 
   return success;
+}
+
+bool CFitTask::restore()
+{
+  // The subtasks must be completely restored.
+  dynamic_cast<CFitProblem *>(mpProblem)->restoreTrajectoryProblem();
+
+  return CCopasiTask::restore();
 }
 
 bool CFitTask::setMethodType(const int & type)
