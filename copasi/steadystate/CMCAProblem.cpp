@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/15 16:57:09 $
+   $Date: 2005/12/19 18:12:43 $
    End CVS Header */
 
 /**
@@ -20,7 +20,7 @@
 #include "CMCAProblem.h"
 #include "CSteadyStateTask.h"
 
-#include "CopasiDatamodel/CCopasiDataModel.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "report/CKeyFactory.h"
