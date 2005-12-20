@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/copasi_wrapper.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:41:11 $
+   $Date: 2005/12/20 20:11:39 $
    End CVS Header */
 
 #define COPASI_MAIN
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
       CTrajectoryProblem* pProblem = dynamic_cast<CTrajectoryProblem*>(pTrajectoryTask->getProblem());
 
       pProblem->setStepNumber((const unsigned C_INT32)stepNumber);
-      pProblem->setEndTime((const C_FLOAT64)endTime);
+      pProblem->setDuration((const C_FLOAT64)endTime);
       pProblem->setTimeSeriesRequested(true);
       //pProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
