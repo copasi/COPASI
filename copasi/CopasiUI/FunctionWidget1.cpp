@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.132 $
+   $Revision: 1.133 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/16 15:19:00 $
+   $Author: shoops $ 
+   $Date: 2005/12/20 20:57:07 $
    End CVS Header */
 
 /**********************************************************************
@@ -14,7 +14,7 @@
  ** function obtained from the functions database.It is the second level 
  ** widget for functions.  
  ***********************************************************************/
-#include <sstream>
+
 #include <qvariant.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -34,25 +34,27 @@
 #include <qtextbrowser.h>
 #include <qmessagebox.h>
 #include <qwidgetstack.h>
+
+#include <sstream>
 #include <stdlib.h>
 #include <algorithm>
 
 #include "copasi.h"
 #include "listviews.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
 #include "FunctionWidget1.h"
 #include "qtUtilities.h"
 #include "parametertable.h" // just for the table item widgets
+
+#include "mml/qtmmlwidget.h"
+
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CMetab.h"
 #include "model/CModel.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiException.h"
 #include "function/CFunction.h"
 #include "function/CFunctionDB.h"
 #include "function/CKinFunction.h"
 #include "report/CKeyFactory.h"
-
-#include "mml/qtmmlwidget.h"
 
 //#include "./icons/product.xpm"
 //#include "./icons/substrate.xpm"
