@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.162 $
+   $Revision: 1.163 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 18:19:05 $
+   $Date: 2005/12/20 22:27:45 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -81,7 +81,7 @@ CopasiUI3Window::CopasiUI3Window():
   newFlag = 0;
   FixedTitle = "COPASI (";
   FixedTitle += FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion());
-  FixedTitle += " test version) ";
+  FixedTitle += " RC 1) ";
   updateTitle();
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar

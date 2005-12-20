@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiDefaultWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/08 12:57:51 $
+   $Author: shoops $ 
+   $Date: 2005/12/20 22:27:45 $
    End CVS Header */
 
 /*******************************************************************
@@ -34,7 +34,7 @@
 #include "qtUtilities.h" 
 //#include "report/CKeyFactory.h"
 
-#include "./icons/copasi_beta.xpm"
+#include "./icons/copasi_rc.xpm"
 
 /*
  *  Constructs a MoietyWidget which is a child of 'parent', with the 
@@ -51,7 +51,7 @@ CopasiDefaultWidget::CopasiDefaultWidget(QWidget *parent, const char * name, WFl
   //setCaption("CopasiDefaultWidget");
   CopasiDefaultWidgetLayout = new QGridLayout(this, 3, 3, 11, 6, "CopasiDefaultWidgetLayout");
 
-  QPixmap * pLogo = new QPixmap((const char**)copasi_beta_xpm);
+  QPixmap * pLogo = new QPixmap((const char**)copasi_rc_xpm);
 
   TextLabel1 = new QLabel(this, "TextLabel1");
   TextLabel1->setText("empty");
