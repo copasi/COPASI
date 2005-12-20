@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/07 11:07:08 $
+   $Author: shoops $ 
+   $Date: 2005/12/20 19:25:07 $
    End CVS Header */
 
 #ifdef WIN32
@@ -525,7 +525,7 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   const CTrajectoryProblem * pTP = dynamic_cast<const CTrajectoryProblem *>(pProblem);
 
-  if (pTP->getEndTime() < pTP->getStartTime())
+  if (pTP->getDuration() < 0.0)
     {
       //back integration not possible
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 9);

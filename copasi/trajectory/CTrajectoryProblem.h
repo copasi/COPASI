@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:49 $
+   $Date: 2005/12/20 19:25:07 $
    End CVS Header */
 
 /**
@@ -20,11 +20,7 @@
 #include <string>
 
 #include "utilities/CCopasiProblem.h"
-#include "utilities/CReadConfig.h" 
-//#include "utilities/CWriteConfig.h"
-//#include "model/CState.h"
-
-//class CModel;
+#include "utilities/CReadConfig.h"
 
 class CTrajectoryProblem : public CCopasiProblem
   {
@@ -68,10 +64,11 @@ class CTrajectoryProblem : public CCopasiProblem
     ~CTrajectoryProblem();
 
     /**
-     * Set the moddel the problem is dealing with.
-     * @param "CModel *" pModel
-     */ 
-    //virtual bool setModel(CModel * pModel);
+     * This methods must be called to elevate subgroups to
+     * derived objects. The default implementation does nothing.
+     * @return bool success
+     */
+    virtual bool elevateChildren();
 
     /**
      * Set the number of time steps the trajectory method should integrate.
@@ -100,30 +97,17 @@ class CTrajectoryProblem : public CCopasiProblem
     const C_FLOAT64 & getStepSize() const;
 
     /**
-     * Set the start time.
-     * @param "const C_FLOAT64 &" startTime
-     * @parem bool success
-     */
-    bool setStartTime(const C_FLOAT64 & startTime);
-
-    /**
-     * Retrieve the start time.
-     * @return "const C_FLOAT64 &" startTime
-     */
-    const C_FLOAT64 & getStartTime() const;
-
-    /**
      * Set the end time.
-     * @param "const C_FLOAT64 &" endTime
+     * @param "const C_FLOAT64 &" duration
      * @parem bool success
      */
-    bool setEndTime(const C_FLOAT64 & endTime);
+    bool setDuration(const C_FLOAT64 & duration);
 
     /**
      * Retrieve the end time.
-     * @return "const C_FLOAT64 &" endTime
+     * @return "const C_FLOAT64 &" duration
      */
-    const C_FLOAT64 & getEndTime() const;
+    const C_FLOAT64 & getDuration() const;
 
     /**
      * Set the end time.
@@ -148,51 +132,12 @@ class CTrajectoryProblem : public CCopasiProblem
     bool timeSeriesRequested() const;
 
     /**
-     * Set the initial state of the problem.
-     * @param "const CState &" initialState
-     */ 
-    //void setInitialState(const CState & initialState);
-
-    /**
-     * Set the initial state of the problem.
-     * @param "const CStateX &" initialState
-     */ 
-    //void setInitialState(const CStateX & initialState);
-
-    /**
-     * Retrieve the initial state of the problem.
-     * @return "const CState &" pInitialState
-     */ 
-    //const CState & getInitialState() const;
-
-    /**
-     * Set the end state of the problem.
-     * @param "const CState *" pEndState
-     */ 
-    //void setEndState(const CState * pEndState);
-
-    /**
-     * Set the end state of the problem.
-     * @param "const CStateX *" pEndState
-     */ 
-    //void setEndState(const CStateX * pEndState);
-
-    /**
-     * Retrieve the end state of the problem.
-     * @return "const CState &" pEndState
-     */ 
-    //const CState & getEndState() const;
-
-    /**
      * Load a trajectory problem
      * @param "CReadConfig &" configBuffer
      * @param "CReadConfig::Mode mode (Default: CReadConfig::NEXT)
      */
     void load(CReadConfig & configBuffer,
               CReadConfig::Mode mode = CReadConfig::NEXT);
-
-    //virtual std::vector<CDefaultPlotDescription> getListOfDefaultPlotDescriptions() const;
-    //virtual bool createDefaultPlot(C_INT32 id) const;
 
   private:
     /**

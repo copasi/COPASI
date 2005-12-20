@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.120 $
+   $Revision: 1.121 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/15 17:00:07 $
+   $Date: 2005/12/20 19:25:03 $
    End CVS Header */
 
 /********************************************************
@@ -107,32 +107,16 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   QSpacerItem* spacer2 = new QSpacerItem(0, 15, QSizePolicy::Minimum, QSizePolicy::Fixed);
   TrajectoryWidgetLayout->addItem(spacer2, 1, 1);
 
-  //line8 = new QFrame(this, "line8");
-  //line8->setFrameShape(QFrame::HLine);
-  //TrajectoryWidgetLayout->addMultiCellWidget(line8, 1, 1, 0, 3);
-
-  //*****************************
-
-  nStartTime = new MyLineEdit(this, "nStartTime");
-  //nStartTime->setText(trUtf8(""));
-  nStartTime->setValidator(new QDoubleValidator(nStartTime));
-  TrajectoryWidgetLayout->addWidget(nStartTime, 2, 1);
-
-  TextLabel1_3 = new QLabel(this, "TextLabel1_3");
-  TextLabel1_3->setText(trUtf8("Start Time"));
-  TextLabel1_3->setAlignment(int(QLabel::AlignVCenter
-                                 | QLabel::AlignRight));
-  TrajectoryWidgetLayout->addWidget(TextLabel1_3, 2, 0);
-
   //****
-  nEndTime = new MyLineEdit(this, "nEndTime");
-  //nEndTime->setText(trUtf8(""));
-  nEndTime->setValidator(new QDoubleValidator(nEndTime));
-  TrajectoryWidgetLayout->addWidget(nEndTime, 2, 3);
+  nDuration = new MyLineEdit(this, "nDuration");
+  //nDuration->setText(trUtf8(""));
+  nDuration->setValidator(new QDoubleValidator(nDuration));
+  TrajectoryWidgetLayout->addWidget(nDuration, 2, 1);
 
   TextLabel1_2_2 = new QLabel(this, "TextLabel1_2_2");
-  TextLabel1_2_2->setText(trUtf8("   End Time"));
-  TrajectoryWidgetLayout->addWidget(TextLabel1_2_2, 2, 2);
+  TextLabel1_2_2->setText(trUtf8("Duration"));
+  TextLabel1_2_2->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  TrajectoryWidgetLayout->addWidget(TextLabel1_2_2, 2, 0);
 
   //****
   nStepSize = new MyLineEdit(this, "nStepSize");
@@ -164,7 +148,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   tmpLayout->addWidget(mCheckBoxStartOutput);
 
   mLineEditStartOutput = new QLineEdit(this);
-  mLineEditStartOutput->setValidator(new QDoubleValidator(nEndTime));
+  mLineEditStartOutput->setValidator(new QDoubleValidator(nDuration));
   tmpLayout->addWidget(mLineEditStartOutput);
 
   tmpSpacer = new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
@@ -265,9 +249,8 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
 
   //setTabOrder(taskName, bExecutable);
   setTabOrder(bExecutable, setInitialState);
-  setTabOrder(setInitialState, nStartTime);
-  setTabOrder(nStartTime, nEndTime);
-  setTabOrder(nEndTime, nStepSize);
+  setTabOrder(setInitialState, nDuration);
+  setTabOrder(nDuration, nStepSize);
   setTabOrder(nStepSize, nStepNumber);
   setTabOrder(nStepNumber, ComboBox1);
   setTabOrder(ComboBox1, parameterTable);
@@ -288,8 +271,8 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   connect(ComboBox1, SIGNAL(activated(int)), this, SLOT(UpdateMethod()));
   //connect(ExportToFileButton, SIGNAL(clicked()), this, SLOT(ExportToFile()));
 
-  connect(nStartTime, SIGNAL(edited()), this, SLOT(StartTimeSlot()));
-  connect(nEndTime, SIGNAL(edited()), this, SLOT(EndTimeSlot()));
+  //  connect(nStartTime, SIGNAL(edited()), this, SLOT(StartTimeSlot()));
+  connect(nDuration, SIGNAL(edited()), this, SLOT(DurationSlot()));
   connect(nStepSize, SIGNAL(edited()), this, SLOT(StepsizeSlot()));
   connect(nStepNumber, SIGNAL(edited()), this, SLOT(NumStepsSlot()));
 
@@ -309,6 +292,7 @@ TrajectoryWidget::~TrajectoryWidget()
 
 #define TSMAX 10000000
 
+#ifdef XXXX
 void TrajectoryWidget::StartTimeSlot()
 {
   if (!mpProblem->setStartTime(nStartTime->text().toDouble()) &&
@@ -326,10 +310,11 @@ void TrajectoryWidget::StartTimeSlot()
 
   checkTimeSeries();
 }
+#endif // XXXX
 
-void TrajectoryWidget::EndTimeSlot()
+void TrajectoryWidget::DurationSlot()
 {
-  if (!mpProblem->setEndTime(nEndTime->text().toDouble()) &&
+  if (!mpProblem->setDuration(nDuration->text().toDouble()) &&
       CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
     {
       QMessageBox::warning(this, QString("File Warning"),
@@ -574,10 +559,11 @@ void TrajectoryWidget::loadTrajectoryTask()
   //numbers
   nStepSize->setText(QString::number(trajectoryproblem->getStepSize()));
   nStepNumber->setText(QString::number(trajectoryproblem->getStepNumber()));
-  nStartTime->setText(QString::number(trajectoryproblem->getStartTime()));
-  nEndTime->setText(QString::number(trajectoryproblem->getEndTime()));
+  //  nStartTime->setText(QString::number(trajectoryproblem->getStartTime()));
+  nDuration->setText(QString::number(trajectoryproblem->getDuration()));
 
-  bool tmpflag (trajectoryproblem->getStartTime() == trajectoryproblem->getOutputStartTime());
+  bool tmpflag (CCopasiDataModel::Global->getModel()->getInitialTime()
+                == trajectoryproblem->getOutputStartTime());
   mCheckBoxStartOutput->setChecked(!tmpflag);
   mLineEditStartOutput->setEnabled(!tmpflag);
   mLineEditStartOutput->setText(QString::number(trajectoryproblem->getOutputStartTime()));
@@ -651,13 +637,13 @@ void TrajectoryWidget::saveTrajectoryTask()
     trajectoryproblem->setStepSize(nStepSize->text().toDouble());
   else if (trajectoryproblem->getStepNumber() != nStepNumber->text().toULong())
     trajectoryproblem->setStepNumber(nStepNumber->text().toLong());
-  trajectoryproblem->setStartTime(nStartTime->text().toDouble());
-  trajectoryproblem->setEndTime(nEndTime->text().toDouble());
+  //  trajectoryproblem->setStartTime(nStartTime->text().toDouble());
+  trajectoryproblem->setDuration(nDuration->text().toDouble());
 
   if (mCheckBoxStartOutput->isChecked())
     trajectoryproblem->setOutputStartTime(mLineEditStartOutput->text().toDouble());
   else
-    trajectoryproblem->setOutputStartTime(nStartTime->text().toDouble());
+    trajectoryproblem->setOutputStartTime(CCopasiDataModel::Global->getModel()->getInitialTime());
 
   trajectoryproblem->setTimeSeriesRequested(bStoreTimeSeries->isChecked());
 

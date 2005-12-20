@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:49 $
+   $Date: 2005/12/20 19:25:07 $
    End CVS Header */
 
 /**
@@ -80,8 +80,8 @@ class CTrajectoryTask : public CCopasiTask
     /**
      * Process the task without any output in as few steps as possible
      * 
-     */
-    virtual bool processSimple(bool singleStep = false);
+     */ 
+    // virtual bool processSimple(bool singleStep = false);
 
     /**
      * Process the task (called by Scan task)

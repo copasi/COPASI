@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:28:20 $
+   $Date: 2005/12/20 19:25:07 $
    End CVS Header */
 
 /**
@@ -85,13 +85,13 @@ CTauLeapMethod *CTauLeapMethod::createTauLeapMethod(CTrajectoryProblem * C_UNUSE
   switch (result)
     {
       // Error: TauLeap simulation impossible
-      /*    case - 3:               // non-integer stoichometry
+      /*    case - 3:              // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:               // reversible reaction exists
+      case - 2:              // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
-      case - 1:               // more than one compartment involved
+      case - 1:              // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/ 
       // Everything alright: Hybrid simulation possible
@@ -471,7 +471,7 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   const CTrajectoryProblem * pTP = dynamic_cast<const CTrajectoryProblem *>(pProblem);
 
-  if (pTP->getEndTime() < pTP->getStartTime())
+  if (pTP->getDuration() < 0.0)
     {
       //back integration not possible
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 9);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:28:16 $
+   $Date: 2005/12/20 19:25:04 $
    End CVS Header */
 
 #include <algorithm>
@@ -162,11 +162,12 @@ CNewtonMethod::processInternal()
     }
 
   bool stepLimitReached = false;
-  C_FLOAT64 EndTime;
+  C_FLOAT64 Duration;
 
   CTrajectoryProblem * pTrajectoryProblem =
     dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
   assert(pTrajectoryProblem);
+  pTrajectoryProblem->setStepNumber(1);
 
   if (mUseIntegration)
     {
@@ -182,19 +183,14 @@ CNewtonMethod::processInternal()
                                               & Step,
                                               & MaxSteps);
 
-      for (EndTime = 0.01; EndTime < 1.0e10; EndTime *= 2, Step++)
+      for (Duration = 0.01; Duration < 1.0e10; Duration *= 2, Step++)
         {
           if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
 
-          //std::cout << "   integrating up to " << EndTime << std::endl;
-
-          //pTrajectoryProblem->setInitialState(mpProblem->getInitialState());
-          //pTrajectoryProblem->getModel()->applyInitialValues();
-          //TODO: on second run do not start from the beginning
-          pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime() + EndTime);
+          pTrajectoryProblem->setDuration(Duration);
           try
             {
-              stepLimitReached = !mpTrajectory->processSimple(true); //single step
+              stepLimitReached = !mpTrajectory->process(true); //single step
             }
           catch (CCopasiException Exception)
             {
@@ -204,7 +200,6 @@ CNewtonMethod::processInternal()
             }
 
           mpParentTask->doOutput();
-          //mpParentTask->separatorOutput();
 
           *mpSteadyStateX = *mpTrajectory->getState();
 
@@ -222,8 +217,6 @@ CNewtonMethod::processInternal()
               return returnProcess(true, mFactor, mResolution);
             }
 
-          //try Newton
-          //mInitialStateX = mStateX;
           if (mUseNewton)
             {
               returnCode = processNewton();
@@ -235,7 +228,7 @@ CNewtonMethod::processInternal()
 
           if (stepLimitReached)
             {
-              //std::cout << "Step limit reached at Endtime " << EndTime << std::endl;
+              //std::cout << "Step limit reached at Endtime " << Duration << std::endl;
               break;
             }
         }
@@ -254,16 +247,15 @@ CNewtonMethod::processInternal()
                                               & Step,
                                               & MaxSteps);
 
-      for (EndTime = -0.01; EndTime > -1.0e10; EndTime *= 2, Step++)
+      for (Duration = -0.01; Duration > -1.0e10; Duration *= 2, Step++)
         {
           if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
 
-          //pTrajectoryProblem->setInitialState(mpProblem->getInitialState());
-          pTrajectoryProblem->setEndTime(pTrajectoryProblem->getStartTime() + EndTime);
+          pTrajectoryProblem->setDuration(Duration);
 
           try
             {
-              stepLimitReached = !mpTrajectory->processSimple(true); //single step
+              stepLimitReached = !mpTrajectory->process(true); //single step
             }
           catch (CCopasiException Exception)
             {
@@ -301,7 +293,7 @@ CNewtonMethod::processInternal()
             }
           if (stepLimitReached)
             {
-              //std::cout << "Step limit reached at Endtime " << EndTime << std::endl;
+              //std::cout << "Step limit reached at Endtime " << Duration << std::endl;
               break;
             }
         }

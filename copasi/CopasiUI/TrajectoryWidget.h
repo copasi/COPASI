@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/13 13:44:03 $
+   $Date: 2005/12/20 19:25:03 $
    End CVS Header */
 
 /********************************************************
@@ -49,26 +49,18 @@ class TrajectoryWidget : public CopasiWidget
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
 
-    //void setModel(CModel* newModel);
-
   signals:
-    //virtual void runFinished(CModel*);
 
   protected slots:
     virtual void CancelChange();
     virtual void CommitChange();
-    //virtual void EnableRunTask();
-    //virtual void ExportToFile();
     virtual void UpdateMethod(const bool & update = true);
     virtual void ReportDefinitionClicked();
     virtual void outputDefinitionClicked();
 
-    virtual void StartTimeSlot();
-    virtual void EndTimeSlot();
+    virtual void DurationSlot();
     virtual void StepsizeSlot();
     virtual void NumStepsSlot();
-
-    //virtual void storeSlot();
 
     //checks whether the time series will be too huge
     void checkTimeSeries();
@@ -91,25 +83,20 @@ class TrajectoryWidget : public CopasiWidget
     QLabel* taskNameLabel;
     QFrame* line7;
     QFrame* line7_2;
-    //QLineEdit* taskName;
     QComboBox* ComboBox1;
-    QLineEdit* nStartTime;
     QCheckBox* bExecutable, *setInitialState;
     QCheckBox* bStoreTimeSeries;
     QLabel* parameterValueLabel;
     QLabel* TextLabel1;
-    QLabel* TextLabel1_3;
     QLabel* TextLabel1_3_2;
     QLineEdit* nStepSize;
     QLabel* TextLabel1_2_2;
-    QLineEdit* nEndTime;
+    QLineEdit* nDuration;
     QLineEdit* nStepNumber;
     QLabel* TextLabel1_2;
     QFrame* line6;
     QPushButton* bRunTask;
-    //QPushButton* commitChange;
     QPushButton* cancelChange;
-    //QPushButton* ExportToFileButton;
     QPushButton* reportDefinitionButton;
     QPushButton* outputDefinitionButton;
     QLineEdit* mLineEditStartOutput;

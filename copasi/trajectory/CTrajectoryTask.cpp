@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:14:32 $
+   $Date: 2005/12/20 19:25:07 $
    End CVS Header */
 
 /**
@@ -135,8 +135,8 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   unsigned C_INT32 FailCounter = 0;
 
-  //set the start time
-  pProblem->getModel()->setTime(pProblem->getStartTime());
+  // set the start time
+  // pProblem->getModel()->setTime(pProblem->getStartTime());
 
   *mpState = pProblem->getModel()->getState();
 
@@ -146,11 +146,11 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   C_FLOAT64 NextTimeToReport;
 
   const C_FLOAT64 & Time = mpState->getTime();
-  const C_FLOAT64 & EndTime = pProblem->getEndTime();
-  const C_FLOAT64 & StartTime = pProblem->getStartTime();
+  const C_FLOAT64 EndTime = Time + pProblem->getDuration();
+  const C_FLOAT64 StartTime = Time;
 
   C_FLOAT64 ActualStepSize;
-  C_FLOAT64 StepNumber = (EndTime - StartTime) / StepSize;
+  C_FLOAT64 StepNumber = (pProblem->getDuration()) / StepSize;
 
   bool (*LE)(const C_FLOAT64 &, const C_FLOAT64 &);
   bool (*L)(const C_FLOAT64 &, const C_FLOAT64 &);
@@ -169,13 +169,13 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   C_FLOAT64 outputStartTime = pProblem->getOutputStartTime();
 
-  if (StepSize == 0.0 && pProblem->getEndTime() != pProblem->getStartTime())
+  if (StepSize == 0.0 && pProblem->getDuration() != 0.0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryProblem + 1, StepSize);
       return false;
     }
   bool flagProceed = true;
-  C_FLOAT64 handlerFactor = 100.0 / (pProblem->getEndTime() - pProblem->getStartTime());
+  C_FLOAT64 handlerFactor = 100.0 / pProblem->getDuration();
 
   C_FLOAT64 Percentage = 0;
   unsigned C_INT32 hProcess;
@@ -207,7 +207,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   if (mpCallBack)
     {
-      Percentage = (Time - pProblem->getStartTime()) * handlerFactor;
+      Percentage = (Time - StartTime) * handlerFactor;
       flagProceed = mpCallBack->progress(hProcess);
     }
 
@@ -251,7 +251,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
       if (mpCallBack)
         {
-          Percentage = (Time - pProblem->getStartTime()) * handlerFactor;
+          Percentage = (Time - StartTime) * handlerFactor;
           flagProceed = mpCallBack->progress(hProcess);
         }
 
@@ -337,6 +337,7 @@ bool CTrajectoryTask::processForScan(bool useInitialConditions, bool doOutput)
 }
  */
 
+#ifdef XXXX
 bool CTrajectoryTask::processSimple(bool singleStep) //without output
 {
   assert(/*mpProblem && */mpMethod);
@@ -351,15 +352,17 @@ bool CTrajectoryTask::processSimple(bool singleStep) //without output
   //give the method a state to work on
   pdelete(mpState);
   mpState = new CState(pProblem->getModel()->getState());
+  C_FLOAT64 StartTime = mpState->getTime();
+
   pMethod->setCurrentState(mpState);
 
   pMethod->setProblem(pProblem);
 
-  C_FLOAT64 StepSize = pProblem->getEndTime() - pProblem->getModel()->getTime();
+  C_FLOAT64 StepSize = pProblem->getDuration() - pProblem->getModel()->getTime();
   bool (*L)(const C_FLOAT64 &, const C_FLOAT64 &) = (StepSize < 0.0) ? &bl : &fl;
 
   bool flagProceed = false;
-  C_FLOAT64 handlerFactor = 100.0 / (pProblem->getEndTime() - pProblem->getStartTime());
+  C_FLOAT64 handlerFactor = 100.0 / pProblem->getDuration();
 
   C_FLOAT64 Percentage = 0;
   unsigned C_INT32 hProcess;
@@ -378,22 +381,22 @@ bool CTrajectoryTask::processSimple(bool singleStep) //without output
 
   if (mpCallBack)
     {
-      Percentage = (mpState->getTime() - pProblem->getStartTime()) * handlerFactor;
+      Percentage = (mpState->getTime() - StartTime) * handlerFactor;
       flagProceed = mpCallBack->progress(hProcess);
     }
 
-  if (mpState->getTime() == pProblem->getEndTime()) return true; //end reached in one step
+  if (mpState->getTime() == pProblem->getDuration()) return true; //end reached in one step
   if (singleStep) return false; //end not reached but only one step requested
 
   //more Steps if necessary
-  while ((*L)(mpState->getTime(), pProblem->getEndTime()) && (!flagProceed))
+  while ((*L)(mpState->getTime(), pProblem->getDuration()) && (!flagProceed))
     {
-      StepSize = pProblem->getEndTime() - mpState->getTime();
+      StepSize = pProblem->getDuration() - mpState->getTime();
       pMethod->step(StepSize);
 
       if (mpCallBack)
         {
-          Percentage = (mpState->getTime() - pProblem->getStartTime()) * handlerFactor;
+          Percentage = (mpState->getTime() - StartTime) * handlerFactor;
           flagProceed = mpCallBack->progress(hProcess);
         }
     }
@@ -404,6 +407,7 @@ bool CTrajectoryTask::processSimple(bool singleStep) //without output
 
   return true;
 }
+#endif // XXXX
 
 bool CTrajectoryTask::setMethodType(const int & type)
 {
