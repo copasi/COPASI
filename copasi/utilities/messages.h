@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.51 $
+   $Revision: 1.51.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/30 22:01:08 $
+   $Date: 2005/12/21 19:52:24 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -160,6 +160,9 @@ const MESSAGES Messages[] =
     {MCCopasiTask + 4, "CCopasiTask (4): Error compiling Model '%s'."},
     {MCCopasiTask + 5, "CCopasiTask (5): No target defined for Report '%s'."},
     {MCCopasiTask + 6, "CCopasiTask (6): Problems compiling Report '%s'."},
+
+    {MCSteadyState + 1, "CSteadyState (1): The model is explicitly time dependent. "
+     "Therefore, the calculation of a steady state is not very meaning full."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
