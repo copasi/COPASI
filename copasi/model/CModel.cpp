@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.244 $
+   $Revision: 1.244.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/19 20:27:04 $
+   $Date: 2005/12/21 17:17:00 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2583,3 +2583,21 @@ void CModel::buildLinkZero()
 
   return;
 }
+
+bool CModel::isAutonomous() const
+  {
+    const CKinFunction * pFunction;
+
+    std::vector< CReaction * >::const_iterator it = getReactions().begin();
+    std::vector< CReaction * >::const_iterator end = getReactions().end();
+
+    for (; it != end; ++it)
+      if ((pFunction =
+             dynamic_cast<const CKinFunction * >(&(*it)->getFunction())) != NULL &&
+          pFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::TIME))
+        {
+          return false;
+        }
+
+    return true;
+  }

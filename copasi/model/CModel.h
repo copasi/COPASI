@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.109 $
+   $Revision: 1.109.2.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/15 15:36:12 $
+   $Author: shoops $ 
+   $Date: 2005/12/21 17:17:00 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -1059,6 +1059,12 @@ class CModel : public CCopasiContainer
      * check if the model is suitable for stochastic simulation
      **/
     std::string suitableForStochasticSimulation() const;
+
+    /**
+     * Check whether the model is autonomous
+     * @return bool isAutonomous
+     */
+    bool isAutonomous() const;
 
   private:
 
