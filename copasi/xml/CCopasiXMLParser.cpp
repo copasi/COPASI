@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.120 $
+   $Revision: 1.120.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/19 20:26:27 $
+   $Date: 2005/12/21 19:51:55 $
    End CVS Header */
 
 /**
@@ -2901,8 +2901,9 @@ void CCopasiXMLParser::SourceParameterElement::start(const XML_Char *pszName,
   const char * Reference;
   CCopasiObject * pObject;
   CCopasiParameter * pParameter;
-  //CMetab * pMetabolite;
+  CModel * pModel;
   CModelEntity * pME;
+
   switch (mCurrentElement)
     {
     case SourceParameter:
@@ -2913,17 +2914,14 @@ void CCopasiXMLParser::SourceParameterElement::start(const XML_Char *pszName,
 
       pObject = mCommon.KeyMap.get(Reference);
 
-      /*if ((pParameter = dynamic_cast< CCopasiParameter * >(pObject)))
-        mCommon.SourceParameterKeys.push_back(pParameter->getKey());
-      else if ((pMetabolite = dynamic_cast< CMetab * >(pObject)))
-        mCommon.SourceParameterKeys.push_back(pMetabolite->getKey());
-      else fatalError();*/
-
       if ((pParameter = dynamic_cast< CCopasiParameter * >(pObject)))
         mCommon.SourceParameterKeys.push_back(pParameter->getKey());
       else if ((pME = dynamic_cast<CModelEntity*>(pObject)))
         mCommon.SourceParameterKeys.push_back(pME->getKey());
-      else fatalError();
+      else if ((pModel = dynamic_cast<CModel *>(pObject)))
+        mCommon.SourceParameterKeys.push_back(pModel->getKey());
+      else
+        fatalError();
 
       break;
 
