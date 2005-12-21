@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.121 $
+   $Revision: 1.121.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:25:03 $
+   $Date: 2005/12/21 19:54:09 $
    End CVS Header */
 
 /********************************************************
@@ -397,6 +397,7 @@ void TrajectoryWidget::CommitChange()
 void TrajectoryWidget::runTrajectoryTask()
 {
   bool success = true;
+  CCopasiMessage::clearDeque();
 
   checkTimeSeries();
   saveTrajectoryTask();
