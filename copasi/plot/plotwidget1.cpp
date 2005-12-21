@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwidget1.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.41.10.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/18 09:32:21 $
+   $Author: shoops $ 
+   $Date: 2005/12/21 20:07:42 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.41 2005/04/18 09:32:21 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.41.10.1 2005/12/21 20:07:42 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -413,6 +413,8 @@ void PlotWidget1::deletePlot()
 
 void PlotWidget1::addPlot()
 {
+  leave();
+
   std::string name = "plot_";
   int i = 0;
   CPlotSpecification* pPl = NULL;

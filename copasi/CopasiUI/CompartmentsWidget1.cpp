@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.86 $
+   $Revision: 1.86.2.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/19 13:10:41 $
+   $Author: shoops $ 
+   $Date: 2005/12/21 20:07:41 $
    End CVS Header */
 
 /*******************************************************************
@@ -276,6 +276,8 @@ void CompartmentsWidget1::slotBtnOKClicked()
 
 void CompartmentsWidget1::slotBtnNewClicked()
 {
+  slotBtnOKClicked();
+
   std::string name = "compartment";
   int i = 0;
   CCompartment* pCom;

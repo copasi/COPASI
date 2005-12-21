@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.174 $
+   $Revision: 1.174.2.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/09 14:58:16 $
+   $Author: shoops $ 
+   $Date: 2005/12/21 20:07:42 $
    End CVS Header */
 
 /*********************************************************************
@@ -326,6 +326,8 @@ void ReactionsWidget1::slotNameChanged()
 // added 5/19/04
 void ReactionsWidget1::slotBtnNewClicked()
 {
+  slotBtnOKClicked();
+
   std::string name = "reaction";
   int i = 0;
   while (!CCopasiDataModel::Global->getModel()->createReaction(name))
@@ -377,7 +379,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                                                 // No or Escape
+        default:                                                  // No or Escape
           break;
         }
     }

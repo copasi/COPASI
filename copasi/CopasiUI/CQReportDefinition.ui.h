@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQReportDefinition.ui.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.10.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:50 $
+   $Date: 2005/12/21 20:07:42 $
    End CVS Header */
 
 #include <qmessagebox.h>
@@ -317,6 +317,8 @@ void CQReportDefinition::btnDeleteReportClicked()
 
 void CQReportDefinition::btnNewReportClicked()
 {
+  btnCommitClicked();
+
   std::string Name = "report";
 
   int i = 0;

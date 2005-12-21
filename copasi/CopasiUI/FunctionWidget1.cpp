@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.133 $
+   $Revision: 1.133.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 20:57:07 $
+   $Date: 2005/12/21 20:07:42 $
    End CVS Header */
 
 /**********************************************************************
@@ -827,7 +827,8 @@ void FunctionWidget1::slotCommitButtonClicked()
 
 void FunctionWidget1::slotNewButtonClicked()
 {
-  //TODO: check if a commit is necessary here
+  slotCommitButtonClicked();
+
   std::string name = "function";
   int i = 0;
   CFunction* pFunc;

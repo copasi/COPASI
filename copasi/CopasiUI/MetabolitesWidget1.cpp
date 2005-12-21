@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.123 $
+   $Revision: 1.123.2.1 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/12/17 21:26:09 $
+   $Author: shoops $ 
+   $Date: 2005/12/21 20:07:42 $
    End CVS Header */
 
 /*******************************************************************
@@ -477,6 +477,8 @@ void MetabolitesWidget1::slotBtnOKClicked()
 
 void MetabolitesWidget1::slotBtnNewClicked()
 {
+  slotBtnOKClicked();
+
   if (CCopasiDataModel::Global->getModel()->getCompartments().size() == 0)
     CCopasiDataModel::Global->getModel()->createCompartment("compartment");
 
