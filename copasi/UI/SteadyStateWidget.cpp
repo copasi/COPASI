@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.103 $
+   $Revision: 1.103.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/15 16:58:29 $
+   $Date: 2005/12/21 19:54:57 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -128,6 +128,7 @@ CCopasiMethod * SteadyStateWidget::createMethod(const CCopasiMethod::SubType & t
 bool SteadyStateWidget::runTask()
 {
   bool success = true;
+  CCopasiMessage::clearDeque();
 
   if (!commonBeforeRunTask()) return false;
 
@@ -151,6 +152,19 @@ bool SteadyStateWidget::runTask()
       QMessageBox::warning(this, "Simulation Error",
                            CCopasiMessage::getAllMessageText().c_str(),
                            QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      commonAfterRunTask();
+
+      return success;
+    }
+
+  if (!success &&
+      CCopasiMessage::getHighestSeverity() == CCopasiMessage::WARNING &&
+      QMessageBox::warning (this, "Simulation Warning",
+                            CCopasiMessage::getAllMessageText().c_str(),
+                            "Continue", "Stop", NULL,
+                            0, 1) == 1)
+    {
+      mProgressBar->finish();
       commonAfterRunTask();
 
       return success;
