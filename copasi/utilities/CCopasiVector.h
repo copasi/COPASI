@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.65 $
+   $Revision: 1.65.6.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/12 17:15:07 $
+   $Date: 2005/12/21 17:16:39 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -81,6 +81,18 @@ template < class CType > class CCopasiVector:
         this->cleanup();
         DESTRUCTOR_TRACE;
       }
+
+      iterator begin()
+      {return static_cast< std::vector< CType * > *>(this)->begin();}
+
+      const_iterator begin() const
+        {return static_cast<const std::vector< CType * > *>(this)->begin();}
+
+      iterator end()
+      {return static_cast< std::vector< CType * > *>(this)->end();}
+
+      const_iterator end() const
+        {return static_cast<const std::vector< CType * > *>(this)->end();}
 
       /**
        *  Cleanup
