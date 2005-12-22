@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.244.2.1 $
+   $Revision: 1.244.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/21 17:17:00 $
+   $Date: 2005/12/22 16:01:07 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2103,6 +2103,7 @@ bool CModel::convert2NonReversible()
 
 void CModel::initObjects()
 {
+  addObjectReference("Initial Time", mInitialTime, CCopasiObject::ValueDbl);
   addObjectReference("Time", mTime, CCopasiObject::ValueDbl);
   addObjectReference("Comments", mComments);
   //  add(&mCompartments);
