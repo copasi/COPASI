@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.61.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:25:04 $
+   $Date: 2005/12/22 17:24:37 $
    End CVS Header */
 
 #include <algorithm>
@@ -164,10 +164,15 @@ CNewtonMethod::processInternal()
   bool stepLimitReached = false;
   C_FLOAT64 Duration;
 
-  CTrajectoryProblem * pTrajectoryProblem =
-    dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
-  assert(pTrajectoryProblem);
-  pTrajectoryProblem->setStepNumber(1);
+  CTrajectoryProblem * pTrajectoryProblem;
+
+  if (mpTrajectory)
+    {
+      pTrajectoryProblem =
+        dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
+      assert(pTrajectoryProblem);
+      pTrajectoryProblem->setStepNumber(1);
+    }
 
   if (mUseIntegration)
     {
