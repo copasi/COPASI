@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.76.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 17:08:29 $
+   $Date: 2005/12/23 16:39:39 $
    End CVS Header */
 
 /**
@@ -15,8 +15,10 @@
  * Copyright Stefan Hoops
  */
 #include <iostream>
-#include "copasi.h"
 #include <map>
+#include <locale>
+
+#include "copasi.h"
 
 #include "CCopasiXML.h"
 #include "CCopasiXMLParser.h"
@@ -53,8 +55,8 @@ CCopasiXML::~CCopasiXML() {}
 
 bool CCopasiXML::save(std::ostream & os)
 {
-  char * locale = strdup(setlocale(LC_NUMERIC, NULL));
-  setlocale(LC_NUMERIC, "C");
+  os.imbue(std::locale::classic());
+  os.precision(16);
 
   mpOstream = &os;
   bool success = true;
@@ -96,14 +98,14 @@ bool CCopasiXML::save(std::ostream & os)
 
   endSaveElement("COPASI");
 
-  setlocale(LC_NUMERIC, locale);
-  pdelete(locale);
-
   return success;
 }
 
 bool CCopasiXML::load(std::istream & is)
 {
+  is.imbue(std::locale::classic());
+  is.precision(16);
+
   mpIstream = &is;
   bool success = true;
   bool done = false;
@@ -446,21 +448,23 @@ bool CCopasiXML::saveModel()
   startSaveElement("InitialState", Attributes);
   CState InitialState = mpModel->getInitialState();
 
-  std::stringstream data;
-  data << encodeDBL(InitialState.getTime());
+  *mpOstream << mIndent;
+
+  *mpOstream << (DBL) InitialState.getTime();
   for (i = 0, imax = InitialState.getVolumeSize(); i < imax; i++)
-    data << " " << encodeDBL(InitialState.getVolume(i));
+    *mpOstream << " " << (DBL) InitialState.getVolume(i);
 
   for (i = 0, imax = InitialState.getVariableNumberSize(); i < imax; i++)
-    data << " " << encodeDBL(InitialState.getVariableNumber(i));
+    *mpOstream << " " << (DBL) InitialState.getVariableNumber(i);
 
   for (i = 0, imax = InitialState.getFixedNumberSize(); i < imax; i++)
-    data << " " << encodeDBL(InitialState.getFixedNumber(i));
+    *mpOstream << " " << (DBL) InitialState.getFixedNumber(i);
 
   for (i = 0, imax = InitialState.getGlobalParameterSize(); i < imax; i++)
-    data << " " << encodeDBL(InitialState.getGlobalParameter(i));
+    *mpOstream << " " << (DBL) InitialState.getGlobalParameter(i);
 
-  saveData(data.str());
+  *mpOstream << std::endl;
+
   endSaveElement("InitialState");
 
   endSaveElement("Model");

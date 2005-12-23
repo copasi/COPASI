@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.26.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 00:08:05 $
+   $Date: 2005/12/23 16:39:39 $
    End CVS Header */
 
 /**
@@ -79,6 +79,25 @@ class CCopasiXMLInterface
       attribute,
       character
     };
+
+    class DBL
+      {
+        // Operations
+      public:
+        DBL(const C_FLOAT64 & value = 0.0);
+
+        DBL(const char * value);
+
+        ~DBL();
+
+        operator const C_FLOAT64 & () const;
+
+        friend std::ostream & operator << (std::ostream & os, const DBL & dbl);
+
+        // Attributes
+      private:
+        C_FLOAT64 mValue;
+      };
 
     // Attributes
   protected:
@@ -339,8 +358,8 @@ class CCopasiXMLInterface
      * Encode a given string to a valid XML string
      * @param const C_FLOAT64 & dbl
      * @return std::string encoded
-     */
-    static std::string encodeDBL(const C_FLOAT64 & dbl);
+     */ 
+    //    static std::string encodeDBL(const C_FLOAT64 & dbl);
 
     /**
     * Encode a given string to a utf-8 string
@@ -624,4 +643,5 @@ class CXMLAttributeList
      */
     std::string getAttribute(const unsigned C_INT32 & index) const;
   };
+
 #endif // COPASI_CCopasiXMLInterface

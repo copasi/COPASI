@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.120.2.1 $
+   $Revision: 1.120.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/21 19:51:55 $
+   $Date: 2005/12/23 16:39:39 $
    End CVS Header */
 
 /**
@@ -884,8 +884,6 @@ void CCopasiXMLParser::ListOfParameterDescriptionsElement::start(const XML_Char 
 
 void CCopasiXMLParser::ListOfParameterDescriptionsElement::end(const XML_Char *pszName)
 {
-  unsigned C_INT32 index;
-
   switch (mCurrentElement)
     {
     case ListOfParameterDescriptions:
@@ -2155,7 +2153,7 @@ void CCopasiXMLParser::SubstrateElement::start(const XML_Char *pszName,
       if (!pMetabolite) fatalError();
 
       mCommon.pReaction->addSubstrate(pMetabolite->getKey(),
-                                      mParser.toDBL(Stoichiometry));
+                                      CCopasiXMLInterface::DBL(Stoichiometry));
       break;
 
     default:
@@ -2299,7 +2297,7 @@ void CCopasiXMLParser::ProductElement::start(const XML_Char *pszName,
       if (!pMetabolite) fatalError();
 
       mCommon.pReaction->addProduct(pMetabolite->getKey(),
-                                    mParser.toDBL(Stoichiometry));
+                                    CCopasiXMLInterface::DBL(Stoichiometry));
       break;
 
     default:
@@ -2443,7 +2441,7 @@ void CCopasiXMLParser::ModifierElement::start(const XML_Char *pszName,
       if (!pMetabolite) fatalError();
 
       mCommon.pReaction->addModifier(pMetabolite->getKey(),
-                                     mParser.toDBL(Stoichiometry));
+                                     CCopasiXMLInterface::DBL(Stoichiometry));
       break;
 
     default:
@@ -2588,7 +2586,7 @@ void CCopasiXMLParser::ConstantElement::start(const XML_Char *pszName,
       mCommon.pReaction->
       getParameters().addParameter(Name,
                                    CCopasiParameter::DOUBLE,
-                                   mParser.toDBL(Value));
+                                   CCopasiXMLInterface::DBL(Value));
 
       mCommon.KeyMap.addFix(Key,
                             mCommon.pReaction->getParameters().getParameter(Name));
@@ -3194,7 +3192,7 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
         {
           if (Values.fail()) break;
 
-          Value = mParser.toDBL(StringValue.c_str());
+          Value = CCopasiXMLInterface::DBL(StringValue.c_str());
 
           //handles compartments, metabs, and model values
           pME = dynamic_cast< CModelEntity* >(GlobalKeys.get(*it));
@@ -3494,7 +3492,7 @@ void CCopasiXMLParser::ChannelSpecElement::start(const XML_Char *pszName, const 
         }
       else
         {
-          min = mParser.toDBL(sMin);
+          min = CCopasiXMLInterface::DBL(sMin);
           mCommon.pCurrentChannelSpec->min = min;
         }
       sMax = mParser.getAttributeValue("max", papszAttrs, false);
@@ -3504,7 +3502,7 @@ void CCopasiXMLParser::ChannelSpecElement::start(const XML_Char *pszName, const 
         }
       else
         {
-          max = mParser.toDBL(sMax);
+          max = CCopasiXMLInterface::DBL(sMax);
           mCommon.pCurrentChannelSpec->max = max;
         }
       return;
@@ -4590,13 +4588,13 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
       if (sType == "float")
         {
           type = CCopasiParameter::DOUBLE;
-          double d = mParser.toDBL(sValue.c_str());
+          double d = CCopasiXMLInterface::DBL(sValue.c_str());
           pValue = &d;
         }
       else if (sType == "unsignedFloat")
         {
           type = CCopasiParameter::UDOUBLE;
-          d = mParser.toDBL(sValue.c_str());
+          d = CCopasiXMLInterface::DBL(sValue.c_str());
           pValue = &d;
         }
       else if (sType == "integer")
@@ -5900,11 +5898,11 @@ void CCopasiXMLParser::SliderElement::start(const XML_Char *pszName,
       objectType = mParser.getAttributeValue("objectType", papszAttrs);
       ObjectType = (CSlider::Type) toEnum(objectType, CSlider::TypeName);
       tmp = mParser.getAttributeValue("objectValue", papszAttrs);
-      ObjectValue = mParser.toDBL(tmp);
+      ObjectValue = CCopasiXMLInterface::DBL(tmp);
       tmp = mParser.getAttributeValue("minValue", papszAttrs);
-      MinValue = mParser.toDBL(tmp);
+      MinValue = CCopasiXMLInterface::DBL(tmp);
       tmp = mParser.getAttributeValue("maxValue", papszAttrs);
-      MaxValue = mParser.toDBL(tmp);
+      MaxValue = CCopasiXMLInterface::DBL(tmp);
       tmp = mParser.getAttributeValue("tickNumber", papszAttrs, "1000");
       TickNumber = atoi(tmp);
       tmp = mParser.getAttributeValue("tickFactor", papszAttrs, "100");
