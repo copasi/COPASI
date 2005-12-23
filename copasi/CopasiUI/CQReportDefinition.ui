@@ -67,6 +67,136 @@
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
+            <widget class="QTextEdit" row="1" column="1" rowspan="1" colspan="4">
+                <property name="name">
+                    <cstring>mpCommentEdit</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>7</hsizetype>
+                        <vsizetype>0</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>0</width>
+                        <height>50</height>
+                    </size>
+                </property>
+                <property name="resizePolicy">
+                    <enum>Manual</enum>
+                </property>
+            </widget>
+            <widget class="QLineEdit" row="0" column="1">
+                <property name="name">
+                    <cstring>mpName</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>3</hsizetype>
+                        <vsizetype>0</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>150</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="frameShape">
+                    <enum>LineEditPanel</enum>
+                </property>
+                <property name="frameShadow">
+                    <enum>Sunken</enum>
+                </property>
+            </widget>
+            <widget class="QComboBox" row="0" column="3" rowspan="1" colspan="2">
+                <property name="name">
+                    <cstring>mpTaskBox</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>3</hsizetype>
+                        <vsizetype>0</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>150</width>
+                        <height>0</height>
+                    </size>
+                </property>
+            </widget>
+            <widget class="QLayoutWidget" row="2" column="1">
+                <property name="name">
+                    <cstring>mpSeparatorLayout</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLineEdit">
+                        <property name="name">
+                            <cstring>mpSeparator</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>7</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>mpTabCheck</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&lt;tab&gt;</string>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+            <widget class="QLineEdit" row="2" column="4">
+                <property name="name">
+                    <cstring>mpPrecision</cstring>
+                </property>
+            </widget>
+            <widget class="QLabel" row="2" column="2" rowspan="1" colspan="2">
+                <property name="name">
+                    <cstring>mpPrecisionLabel</cstring>
+                </property>
+                <property name="text">
+                    <string>Precision</string>
+                </property>
+                <property name="alignment">
+                    <set>AlignVCenter|AlignRight</set>
+                </property>
+            </widget>
+            <widget class="QLabel" row="0" column="2">
+                <property name="name">
+                    <cstring>mpTaskLabel</cstring>
+                </property>
+                <property name="minimumSize">
+                    <size>
+                        <width>45</width>
+                        <height>0</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>Task</string>
+                </property>
+                <property name="alignment">
+                    <set>AlignVCenter|AlignRight</set>
+                </property>
+            </widget>
             <widget class="QLabel" row="2" column="0">
                 <property name="name">
                     <cstring>mpSeparatorLabel</cstring>
@@ -118,110 +248,6 @@
                     <set>AlignTop|AlignRight</set>
                 </property>
             </widget>
-            <widget class="QTextEdit" row="1" column="1" rowspan="1" colspan="3">
-                <property name="name">
-                    <cstring>mpCommentEdit</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>7</hsizetype>
-                        <vsizetype>0</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>0</width>
-                        <height>50</height>
-                    </size>
-                </property>
-                <property name="resizePolicy">
-                    <enum>Manual</enum>
-                </property>
-            </widget>
-            <widget class="QLineEdit" row="0" column="1">
-                <property name="name">
-                    <cstring>mpName</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>3</hsizetype>
-                        <vsizetype>0</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>150</width>
-                        <height>0</height>
-                    </size>
-                </property>
-            </widget>
-            <widget class="QComboBox" row="0" column="3">
-                <property name="name">
-                    <cstring>mpTaskBox</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>3</hsizetype>
-                        <vsizetype>0</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>150</width>
-                        <height>0</height>
-                    </size>
-                </property>
-            </widget>
-            <widget class="QLineEdit" row="2" column="1">
-                <property name="name">
-                    <cstring>mpSeparator</cstring>
-                </property>
-                <property name="sizePolicy">
-                    <sizepolicy>
-                        <hsizetype>3</hsizetype>
-                        <vsizetype>0</vsizetype>
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>150</width>
-                        <height>0</height>
-                    </size>
-                </property>
-            </widget>
-            <widget class="QCheckBox" row="2" column="2">
-                <property name="name">
-                    <cstring>mpTabCheck</cstring>
-                </property>
-                <property name="text">
-                    <string>&lt;tab&gt;</string>
-                </property>
-            </widget>
-            <widget class="QLabel" row="0" column="2">
-                <property name="name">
-                    <cstring>mpTaskLabel</cstring>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>45</width>
-                        <height>0</height>
-                    </size>
-                </property>
-                <property name="text">
-                    <string>Task</string>
-                </property>
-                <property name="alignment">
-                    <set>AlignVCenter|AlignRight</set>
-                </property>
-            </widget>
         </grid>
     </widget>
     <widget class="QFrame">
@@ -240,7 +266,7 @@
             </property>
             <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>layout2</cstring>
+                    <cstring>mpEditBtnLayout</cstring>
                 </property>
                 <vbox>
                     <property name="name">
@@ -588,6 +614,12 @@
         <slot>separatorChanged(const QString&amp;)</slot>
     </connection>
     <connection>
+        <sender>mpPrecision</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>CQReportDefinition</receiver>
+        <slot>precisionChanged(const QString&amp;)</slot>
+    </connection>
+    <connection>
         <sender>mpTabCheck</sender>
         <signal>clicked()</signal>
         <receiver>CQReportDefinition</receiver>
@@ -704,6 +736,7 @@
     <slot access="private" specifier="non virtual">taskChanged(const QString &amp; string)</slot>
     <slot access="private" specifier="non virtual">commentChanged()</slot>
     <slot access="private" specifier="non virtual">separatorChanged(const QString &amp; string)</slot>
+    <slot access="private" specifier="non virtual">precisionChanged(const QString &amp; string)</slot>
     <slot access="private" specifier="non virtual">chkTabClicked()</slot>
     <slot access="private" specifier="non virtual">btnAdvancedClicked()</slot>
     <slot access="private" specifier="non virtual">btnItemClicked()</slot>

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.120.2.2 $
+   $Revision: 1.120.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/23 16:39:39 $
+   $Date: 2005/12/23 18:03:00 $
    End CVS Header */
 
 /**
@@ -5039,6 +5039,7 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
   const char * Key;
   const char * Name;
   const char * Separator;
+  const char * Precision;
   CCopasiTask::Type type;
 
   mCurrentElement++; /* We should always be on the next element */
@@ -5057,13 +5058,16 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
       Name = mParser.getAttributeValue("name", papszAttrs);
       type = (CCopasiTask::Type)toEnum(mParser.getAttributeValue("taskType", papszAttrs),
                                        CCopasiTask::XMLType);
+
       Separator = mParser.getAttributeValue("separator", papszAttrs, "\t");
+      Precision = mParser.getAttributeValue("precision", papszAttrs, "6");
 
       // create a new report
       mCommon.pReport = new CReportDefinition();
       mCommon.pReport->setObjectName(Name);
       mCommon.pReport->setTaskType(type);
       mCommon.pReport->setSeparator(CCopasiReportSeparator(Separator));
+      mCommon.pReport->setPrecision(atoi(Precision));
 
       /* We have a new report and add it to the list */
       mCommon.pReportList->add(mCommon.pReport, true);

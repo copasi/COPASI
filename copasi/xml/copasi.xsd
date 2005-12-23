@@ -307,6 +307,7 @@
                   <xs:attribute name="name" type="cNAME" use="required"/>
                   <xs:attribute name="taskType" type="cTASK_TYPE" use="required"/>
                   <xs:attribute name="separator" type="xs:string" use="optional" default=" &#x09;"/>
+                  <xs:attribute name="precision" type="xs:positiveInteger" use="optional" default="6"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
