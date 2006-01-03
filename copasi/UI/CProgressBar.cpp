@@ -1,19 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-   $Revision: 1.17.2.3 $
+   $Revision: 1.17.2.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/03 19:25:25 $
+   $Date: 2006/01/03 21:40:32 $
    End CVS Header */
 
 #include <qprogressdialog.h>
 #include <qapplication.h>
 #include <qlayout.h>
 #include <qapplication.h>
-
-#ifdef SunOS
-# include <unistd.h>
-#endif
+#include <qwaitcondition.h>
 
 #include "copasi.h"
 #include "qtUtilities.h"
@@ -109,7 +106,8 @@ bool CProgressBar::progress(const unsigned C_INT32 & handle)
 
   while (mPause)
     {
-      sleep(500);
+      QWaitCondition Pause;
+      Pause.wait(500);
       qApp->processEvents();
     }
 
