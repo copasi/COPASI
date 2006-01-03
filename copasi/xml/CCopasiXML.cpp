@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.76.2.2 $
+   $Revision: 1.76.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/23 18:03:00 $
+   $Date: 2006/01/03 20:59:39 $
    End CVS Header */
 
 /**
@@ -711,6 +711,7 @@ bool CCopasiXML::saveParameter(const CCopasiParameter & parameter)
   bool success = true;
 
   CXMLAttributeList Attributes;
+  std::string File;
 
   Attributes.add("name", parameter.getObjectName());
 
@@ -751,6 +752,15 @@ bool CCopasiXML::saveParameter(const CCopasiParameter & parameter)
 
     case CCopasiParameter::KEY:
       Attributes.add("value", * parameter.getValue().pKEY);
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
+    case CCopasiParameter::FILE:
+      File = * parameter.getValue().pFILE;
+      if (!CDirEntry::isRelativePath(File) &&
+          !CDirEntry::makePathRelative(File, mFilename))
+        File = CDirEntry::fileName(File);
+      Attributes.add("value", File);
       if (!saveElement("Parameter", Attributes)) success = false;
       break;
 

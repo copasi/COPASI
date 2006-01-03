@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.120.2.3 $
+   $Revision: 1.120.2.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/23 18:03:00 $
+   $Date: 2006/01/03 20:59:39 $
    End CVS Header */
 
 /**
@@ -3677,6 +3677,10 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
                   }
                   break;
 
+                case CCopasiParameter::FILE:
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pFILE);
+                  break;
+
                 case CCopasiParameter::CN:
                   p->setValue(* mCommon.pCurrentParameter->getValue().pCN);
                   break;
@@ -4125,7 +4129,6 @@ void CCopasiXMLParser::ReportInstanceElement::start(const XML_Char* pszName, con
   mCurrentElement++; // We should always be on the next element
 
   std::string target;
-  std::string sAppend;
   bool append;
   std::string reference;
 
@@ -4136,8 +4139,7 @@ void CCopasiXMLParser::ReportInstanceElement::start(const XML_Char* pszName, con
       reference = mParser.getAttributeValue("reference", papszAttrs);
       target = mParser.getAttributeValue("target", papszAttrs);
 
-      sAppend = mParser.toBool(mParser.getAttributeValue("append", papszAttrs, "false"));
-      append = mParser.toBool(sAppend.c_str());
+      append = mParser.toBool(mParser.getAttributeValue("append", papszAttrs, "false"));
       mCommon.pCurrentTask->getReport().setAppend(append);
       mCommon.pCurrentTask->getReport().setTarget(target);
       if (mCommon.taskReferenceMap.find(reference) == mCommon.taskReferenceMap.end())
@@ -4311,6 +4313,10 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
               }
               break;
 
+            case CCopasiParameter::FILE:
+              p->setValue(* mCommon.pCurrentParameter->getValue().pFILE);
+              break;
+
             case CCopasiParameter::CN:
               p->setValue(* mCommon.pCurrentParameter->getValue().pCN);
               break;
@@ -4356,6 +4362,7 @@ void CCopasiXMLParser::ProblemElement::end(const XML_Char *pszName)
             case CCopasiParameter::STRING:
             case CCopasiParameter::CN:
             case CCopasiParameter::KEY:
+            case CCopasiParameter::FILE:
             case CCopasiParameter::INVALID:
               break;
 
@@ -4632,7 +4639,11 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
           type = CCopasiParameter::KEY;
           pValue = &sValue;
         }
-
+      else if (sType == "file")
+        {
+          type = CCopasiParameter::FILE;
+          pValue = &sValue;
+        }
       else if (sType == "cn")
         {
           type = CCopasiParameter::CN;
@@ -4820,6 +4831,10 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
               }
               break;
 
+            case CCopasiParameter::FILE:
+              p->setValue(* mCommon.pCurrentParameter->getValue().pFILE);
+              break;
+
             case CCopasiParameter::CN:
               p->setValue(* mCommon.pCurrentParameter->getValue().pCN);
               break;
@@ -4864,6 +4879,7 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
             case CCopasiParameter::BOOL:
             case CCopasiParameter::STRING:
             case CCopasiParameter::KEY:
+            case CCopasiParameter::FILE:
             case CCopasiParameter::CN:
             case CCopasiParameter::INVALID:
               break;
