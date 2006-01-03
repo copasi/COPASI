@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.72.2.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/07 11:02:42 $
+   $Author: shoops $ 
+   $Date: 2006/01/03 18:53:50 $
    End CVS Header */
 
 #include <math.h>
@@ -389,7 +389,7 @@ UnitDefinition* SBMLExporter::createSBMLTimeUnitDefinitionFromCopasiTimeUnit(CMo
 {
   UnitDefinition* uDef = new UnitDefinition("time");
   uDef->setId("time");
-  Unit* unit;
+  Unit* unit = NULL;
 
   switch (u)
     {
@@ -438,7 +438,7 @@ UnitDefinition* SBMLExporter::createSBMLSubstanceUnitDefinitionFromCopasiQuantit
 {
   UnitDefinition* uDef = new UnitDefinition("substance");
   uDef->setId("substance");
-  Unit* unit;
+  Unit* unit = NULL;
   switch (u)
     {
     case CModel::mMol:
@@ -476,7 +476,7 @@ UnitDefinition* SBMLExporter::createSBMLVolumeUnitDefinitionFromCopasiVolumeUnit
 {
   UnitDefinition* uDef = new UnitDefinition("volume");
   uDef->setId("volume");
-  Unit* unit;
+  Unit* unit = NULL;
   switch (u)
     {
     case CModel::ml:
