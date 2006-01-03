@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQProgressDialog.ui.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.4.8.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/19 21:00:53 $
+   $Date: 2006/01/03 16:10:06 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -38,8 +38,10 @@ bool CQProgressDialog::removeProgressItem(CQProgressItem * pItem)
 void CQProgressDialog::init()
 {
   mpLine->hide();
-  mpBtnPause->hide();
-  mpBtnContinue->hide();
+  //  mpBtnPause->hide();
+  //  mpBtnContinue->hide();
+
+  mpBtnContinue->setEnabled(false);
 
   mItemCount = 0;
 
@@ -54,13 +56,30 @@ void CQProgressDialog::init()
 }
 
 void CQProgressDialog::btnContinuePressed()
-{mPause = false;}
+{
+  mPause = false;
+
+  mpBtnPause->setEnabled(true);
+  mpBtnContinue->setEnabled(false);
+}
 
 void CQProgressDialog::btnPausePressed()
-{mPause = true;}
+{
+  mPause = true;
+
+  mpBtnPause->setEnabled(false);
+  mpBtnContinue->setEnabled(true);
+}
 
 void CQProgressDialog::btnStopPressed()
-{mProceed = false;}
+{
+  mPause = false;
+  mProceed = false;
+
+  mpBtnPause->setEnabled(false);
+  mpBtnContinue->setEnabled(false);
+  mpBtnStop->setEnabled(false);
+}
 
 void CQProgressDialog::timerShow()
 {this->show();}
