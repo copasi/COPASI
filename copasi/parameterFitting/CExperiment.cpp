@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.23.2.1 $
+   $Revision: 1.23.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/03 21:18:36 $
+   $Date: 2006/01/03 21:21:34 $
    End CVS Header */
 
 #include <fstream>
@@ -16,7 +16,7 @@
 #include "CExperiment.h"
 #include "CExperimentObjectMap.h"
 
-#include "CopasidataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CTableCell.h"
 #include "utilities/CSort.h"
