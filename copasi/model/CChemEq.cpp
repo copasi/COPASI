@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.45.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:28:11 $
+   $Date: 2006/01/03 20:58:03 $
    End CVS Header */
 
 // CChemEqElement
@@ -114,21 +114,43 @@ unsigned C_INT32 CChemEq::getCompartmentNumber() const
 
 const CCompartment & CChemEq::getLargestCompartment() const
   {
-    unsigned C_INT32 index, i, imax = mBalances.size();
+    unsigned C_INT32 indexSubstrates = C_INVALID_INDEX;
+    unsigned C_INT32 indexProducts = C_INVALID_INDEX;
+    unsigned C_INT32 i, imax;
 
-    C_FLOAT64 tmp, maxVol = 0;
+    C_FLOAT64 tmp, maxVol = -1.0;
 
-    for (i = 0; i < imax; i++)
+    for (i = 0, imax = mSubstrates.size(); i < imax; i++)
       {
-        tmp = mBalances[i]->getMetabolite().getCompartment()->getVolume();
+        tmp = mSubstrates[i]->getMetabolite().getCompartment()->getVolume();
 
         if (tmp > maxVol)
           {
             maxVol = tmp;
-            index = i;
+            indexSubstrates = i;
           }
       }
-    return *mBalances[index]->getMetabolite().getCompartment();
+
+    for (i = 0, imax = mProducts.size(); i < imax; i++)
+      {
+        tmp = mProducts[i]->getMetabolite().getCompartment()->getVolume();
+
+        if (tmp > maxVol)
+          {
+            maxVol = tmp;
+            indexProducts = i;
+          }
+      }
+
+    if (indexProducts != C_INVALID_INDEX)
+      return *mProducts[indexProducts]->getMetabolite().getCompartment();
+
+    if (indexSubstrates != C_INVALID_INDEX)
+      return *mSubstrates[indexSubstrates]->getMetabolite().getCompartment();
+
+    fatalError();
+
+    return *mSubstrates[indexSubstrates]->getMetabolite().getCompartment();
   }
 
 /*const CCompartment & CChemEq::getSmallestCompartment() const
