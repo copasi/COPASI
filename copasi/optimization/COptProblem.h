@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.43 $
+   $Revision: 1.43.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/15 01:51:49 $
+   $Date: 2006/01/03 17:40:38 $
    End CVS Header */
 
 /**
@@ -104,9 +104,10 @@ class COptProblem : public CCopasiProblem
     /**
      * Do all neccessary restore procedures so that the
      * model is in the same state as before
+     * @parem const bool & updateModel
      * @result bool succes
      */
-    virtual bool restore();
+    virtual bool restore(const bool & updateModel);
 
     /**
      * calculate function for optimization

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.71.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/15 19:25:34 $
+   $Date: 2006/01/03 17:40:38 $
    End CVS Header */
 
 /**
@@ -260,20 +260,23 @@ bool COptProblem::initialize()
   return true;
 }
 
-bool COptProblem::restore()
-{
-  unsigned C_INT32 i, imax = mpOptItems->size();
-
-  // set the original paramter values
-  for (i = 0; i < imax; i++)
-    (*(*mpOptItems)[i]->COptItem::getUpdateMethod())(mOriginalVariables[i]);
-
-  return true;
-}
-
 #ifdef WIN32
 # pragma warning (default: 4056 4756)
 #endif
+
+bool COptProblem::restore(const bool & updateModel)
+{
+  unsigned C_INT32 i, imax = mpOptItems->size();
+
+  if (updateModel)
+    for (i = 0; i < imax; i++)
+      (*(*mpOptItems)[i]->COptItem::getUpdateMethod())(mSolutionVariables[i]);
+  else
+    for (i = 0; i < imax; i++)
+      (*(*mpOptItems)[i]->COptItem::getUpdateMethod())(mOriginalVariables[i]);
+
+  return true;
+}
 
 bool COptProblem::checkParametricConstraints()
 {
