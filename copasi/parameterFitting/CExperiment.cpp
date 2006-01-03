@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.23.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/15 23:15:04 $
+   $Date: 2006/01/03 21:18:36 $
    End CVS Header */
 
 #include <fstream>
@@ -16,9 +16,11 @@
 #include "CExperiment.h"
 #include "CExperimentObjectMap.h"
 
+#include "CopasidataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CTableCell.h"
 #include "utilities/CSort.h"
+#include "utilities/CDirEntry.h"
 #include "utilities/utility.h"
 
 const std::string CExperiment::TypeName[] =
@@ -142,7 +144,7 @@ void CExperiment::initializeParameter()
   assertParameter("Key", CCopasiParameter::KEY, mKey)->setValue(mKey);
 
   mpFileName =
-    assertParameter("File Name", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
+    assertParameter("File Name", CCopasiParameter::FILE, std::string(""))->getValue().pFILE;
   mpFirstRow =
     assertParameter("First Row", CCopasiParameter::UINT, (unsigned C_INT32) C_INVALID_INDEX)->getValue().pUINT;
   mpLastRow =
@@ -587,7 +589,7 @@ bool CExperiment::readColumnNames()
 
   // Open the file
   std::ifstream in;
-  in.open(this->mpFileName->c_str(), std::ios::binary);
+  in.open(getFileName().c_str(), std::ios::binary);
   if (in.fail()) return false;
 
   // Forwind to header row.
@@ -613,7 +615,7 @@ unsigned C_INT32 CExperiment::guessColumnNumber() const
     unsigned C_INT32 tmp, count = 0;
 
     std::ifstream in;
-    in.open(this->mpFileName->c_str(), std::ios::binary);
+    in.open(getFileName().c_str(), std::ios::binary);
     if (in.fail()) return false;
 
     // Forwind to first row.
@@ -684,7 +686,16 @@ const CMatrix< C_FLOAT64 > & CExperiment::getDependentData() const
   {return mDataDependent;}
 
 const std::string & CExperiment::getFileName() const
-  {return *mpFileName;}
+  {
+    std::string * pFileName = const_cast<CExperiment *>(this)->mpFileName;
+
+    if (CDirEntry::isRelativePath(*pFileName) &&
+        !CDirEntry::makePathAbsolute(*pFileName,
+                                     CCopasiDataModel::Global->getFileName()))
+      *pFileName = CDirEntry::fileName(*pFileName);
+
+    return *mpFileName;
+  }
 
 bool CExperiment::setFileName(const std::string & fileName)
 {
@@ -809,8 +820,8 @@ bool CExperiment::setIsRowOriented(const bool & isRowOriented)
 bool CExperiment::compare(const CExperiment * lhs,
                           const CExperiment * rhs)
 {
-  return (*lhs->mpFileName < *rhs->mpFileName ||
-          (*lhs->mpFileName == *rhs->mpFileName &&
+  return (lhs->getFileName() < rhs->getFileName() ||
+          (lhs->getFileName() == rhs->getFileName() &&
            *lhs->mpFirstRow < *rhs->mpFirstRow));
 }
 
@@ -833,7 +844,7 @@ void CExperiment::printResult(std::ostream * ostream) const
   {
     std::ostream & os = *ostream;
 
-    os << "File Name:\t" << *mpFileName << std::endl;
+    os << "File Name:\t" << getFileName() << std::endl;
     os << "Experiment:\t" << getObjectName() << std::endl;
 
     os << "Error Mean:\t" << mMean << std::endl;
