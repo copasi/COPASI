@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.39.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/22 13:36:25 $
+   $Date: 2006/01/03 18:28:52 $
    End CVS Header */
 
 #include <float.h>
@@ -128,24 +128,10 @@ bool COptMethodGA::mutate(CVector< C_FLOAT64 > & individual)
         {
         case - 1:
           mut = *OptItem.getLowerBoundValue();
-          if (!OptItem.checkLowerBound(mut)) // Inequality
-            {
-              if (mut == 0.0)
-                mut = DBL_MIN;
-              else
-                mut += mut * DBL_EPSILON;
-            }
           break;
 
         case 1:
           mut = *OptItem.getUpperBoundValue();
-          if (!OptItem.checkUpperBound(mut)) // Inequality
-            {
-              if (mut == 0.0)
-                mut = -DBL_MIN;
-              else
-                mut -= mut * DBL_EPSILON;
-            }
           break;
         }
 
@@ -362,24 +348,10 @@ bool COptMethodGA::creation(unsigned C_INT32 first,
             {
             case - 1:
               mut = *OptItem.getLowerBoundValue();
-              if (!OptItem.checkLowerBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = DBL_MIN;
-                  else
-                    mut += mut * DBL_EPSILON;
-                }
               break;
 
             case 1:
               mut = *OptItem.getUpperBoundValue();
-              if (!OptItem.checkUpperBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = - DBL_MIN;
-                  else
-                    mut -= mut * DBL_EPSILON;
-                }
               break;
             }
 
@@ -487,24 +459,10 @@ bool COptMethodGA::optimise()
         {
         case - 1:
           mut = *OptItem.getLowerBoundValue();
-          if (!OptItem.checkLowerBound(mut)) // Inequality
-            {
-              if (mut == 0.0)
-                mut = DBL_MIN;
-              else
-                mut += mut * DBL_EPSILON;
-            }
           break;
 
         case 1:
           mut = *OptItem.getUpperBoundValue();
-          if (!OptItem.checkUpperBound(mut)) // Inequality
-            {
-              if (mut == 0.0)
-                mut = - DBL_MIN;
-              else
-                mut -= mut * DBL_EPSILON;
-            }
           break;
         }
 
