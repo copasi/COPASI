@@ -1,15 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-   $Revision: 1.17.2.2 $
+   $Revision: 1.17.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/03 18:59:58 $
+   $Date: 2006/01/03 19:25:25 $
    End CVS Header */
 
 #include <qprogressdialog.h>
 #include <qapplication.h>
 #include <qlayout.h>
 #include <qapplication.h>
+
+#ifdef SunOS
+# include <unistd.h>
+#endif
 
 #include "copasi.h"
 #include "qtUtilities.h"
