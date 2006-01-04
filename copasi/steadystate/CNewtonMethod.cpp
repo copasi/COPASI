@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.61.2.1 $
+   $Revision: 1.61.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/22 17:24:37 $
+   $Date: 2006/01/04 22:33:51 $
    End CVS Header */
 
 #include <algorithm>
@@ -485,7 +485,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
       //repeat till the new max rate is smaller than the old and all concentrations are positive.
       //max 32 times
-      for (i = 0; (i < 32) && !((newMaxRate < oldMaxRate) && (allPositive() || mAcceptNegative)); i++)
+      for (i = 0; (i < 32) && !((newMaxRate < oldMaxRate) && (mAcceptNegative || allPositive())); i++)
         {
           for (j = 0; j < mDimension; j++)
             {
@@ -512,7 +512,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
           oldMaxRate = targetFunction(mdxdt);
 
-          if (isSteadyState(oldMaxRate))
+          if (isSteadyState(oldMaxRate) && (mAcceptNegative || allPositive()))
             ReturnCode = CNewtonMethod::found;
           else if (oldMaxRate < mScaledResolution)
             ReturnCode = CNewtonMethod::notFound;
@@ -529,8 +529,6 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
       oldMaxRate = newMaxRate;
     }
 
-  if (mpProgressHandler) mpProgressHandler->finish(hProcess);
-
   if (isSteadyState(oldMaxRate))
     ReturnCode = CNewtonMethod::found;
   else if (oldMaxRate < mScaledResolution)
@@ -546,7 +544,15 @@ bool CNewtonMethod::allPositive() const
   {
     C_INT32 i, imax = mX->size();
     for (i = 0; i < imax; ++i)
-      if ((*mX)[i] < 0) return false;
+      if ((*mX)[i] < 0)
+        return false;
+
+    const C_FLOAT64 * pTmp =
+      mpSteadyStateX->getDependentNumberVector().array();
+    imax = mpSteadyStateX->getDependentNumberVector().size();
+    for (i = 0; i < imax; ++i, pTmp++)
+      if (*pTmp < 0)
+        return false;
 
     return true;
   }
@@ -556,7 +562,8 @@ bool CNewtonMethod::containsNaN() const
     //checks for NaNs
     C_INT32 i, imax = mX->size();
     for (i = 0; i < imax; ++i)
-      if (isnan((*mX)[i])) return true;
+      if (isnan((*mX)[i]))
+        return true;
 
     return false;
   }
