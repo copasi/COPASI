@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.9.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/19 18:12:43 $
+   $Date: 2006/01/04 19:12:48 $
    End CVS Header */
 
 /**
@@ -112,10 +112,11 @@ const CState & CMCAProblem::getInitialState() const
  * Set whether the steady state analysis is requested.
  * @param bool * steadyStateRequested
  */
-void CMCAProblem::setSteadyStateRequested(bool & steadyStateRequested)
+void CMCAProblem::setSteadyStateRequested(const bool & steadyStateRequested)
 {
-  CSteadyStateTask * pSubTask =
-    dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+  CSteadyStateTask * pSubTask = NULL;
+  if (CCopasiDataModel::Global && CCopasiDataModel::Global->getTaskList())
+    pSubTask = dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
 
   if (steadyStateRequested && pSubTask)
     setValue("Steady-State", pSubTask->getKey());

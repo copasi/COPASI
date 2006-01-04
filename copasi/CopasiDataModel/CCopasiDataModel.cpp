@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.55.2.1 $
+   $Revision: 1.55.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/04 15:21:35 $
+   $Date: 2006/01/04 19:12:48 $
    End CVS Header */
 
 #include "copasi.h"
@@ -23,6 +23,7 @@
 #include "scan/CScanTask.h" 
 //#include "steadystate/CMCAMethod.h"
 #include "steadystate/CMCATask.h"
+#include "steadystate/CMCAProblem.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "tss/CTSSTask.h"
@@ -526,6 +527,7 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
 
     case CCopasiTask::mca:
       pTask = new CMCATask(mpTaskList);
+      static_cast< CMCAProblem * >(pTask->getProblem())->setSteadyStateRequested(true);
       break;
 
 #ifdef COPASI_TSS

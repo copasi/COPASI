@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.3.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/15 16:57:10 $
+   $Date: 2006/01/04 19:12:48 $
    End CVS Header */
 
 /**
@@ -83,9 +83,9 @@ class CMCAProblem: public CCopasiProblem
 
     /**
      * Set whether the steady state analysis is requested.
-     * @param bool & steadyStateRequested
+     * @param const bool & steadyStateRequested
      */
-    void setSteadyStateRequested(bool & steadyStateRequested);
+    void setSteadyStateRequested(const bool & steadyStateRequested);
 
     /**
      * Retrieve whether a steady state analysis is requested.
