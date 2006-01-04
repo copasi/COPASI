@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.120.2.4 $
+   $Revision: 1.120.2.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/03 20:59:39 $
+   $Date: 2006/01/04 14:26:43 $
    End CVS Header */
 
 /**
@@ -2586,7 +2586,7 @@ void CCopasiXMLParser::ConstantElement::start(const XML_Char *pszName,
       mCommon.pReaction->
       getParameters().addParameter(Name,
                                    CCopasiParameter::DOUBLE,
-                                   CCopasiXMLInterface::DBL(Value));
+                                   (C_FLOAT64) CCopasiXMLInterface::DBL(Value));
 
       mCommon.KeyMap.addFix(Key,
                             mCommon.pReaction->getParameters().getParameter(Name));
@@ -3169,9 +3169,7 @@ void CCopasiXMLParser::InitialStateElement::start(const XML_Char *pszName,
 void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
 {
   std::istringstream Values;
-  std::istringstream::pos_type pos;
   std::string StringValue;
-  //const char* s;
   std::vector< std::string >::iterator it;
   std::vector< std::string >::iterator end;
   double Value;
