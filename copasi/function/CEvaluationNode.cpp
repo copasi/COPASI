@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.22.2.1 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2005/11/28 14:02:39 $
+   $Author: shoops $ 
+   $Date: 2006/01/04 15:21:36 $
    End CVS Header */
 
 #include "copasi.h"
@@ -157,7 +157,7 @@ bool CEvaluationNode::operator < (const CEvaluationNode & rhs)
 
 CEvaluationNode* CEvaluationNode::copyNode(CEvaluationNode *child1, CEvaluationNode *child2) const
   {
-    std::cout << " this->getData() " << this->CEvaluationNode::getData() << std::endl;
+    //std::cout << " this->getData() " << this->CEvaluationNode::getData() << std::endl;
 
     CEvaluationNode *newnode = create(getType(), getData());
     if (child1 != NULL)

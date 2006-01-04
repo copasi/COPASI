@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.65.6.1 $
+   $Revision: 1.65.6.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/21 17:16:39 $
+   $Date: 2006/01/04 15:21:41 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -537,12 +537,14 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
           if (name.getObjectName() == "")
             return pObject; //cn contains no "="; type cannot be checked
 
+#ifdef COPASI_DEBUG
           std::cout << "CCopasiVector::getObject: Vector contains object of right name but wrong type" << std::endl;
           std::cout << "  CN            " << name << std::endl;
           std::cout << "  CN.getName(0) " << name.getElementName(0) << std::endl;
           std::cout << "  Index         " << Index << std::endl;
           std::cout << "  CN.getObjName " << name.getObjectName() << std::endl;
           std::cout << "  CN.getObjType " << name.getObjectType() << std::endl << std::endl;
+#endif // COPASI_DEBUG
 
           return NULL;
         }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.63.8.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/08 21:17:34 $
+   $Date: 2006/01/04 15:21:36 $
    End CVS Header */
 
 #include "FunctionWidget.h"
@@ -137,7 +137,7 @@ CCopasiObject* FunctionWidget::createNewObject(const std::string & name)
 
   CCopasiDataModel::Global->getFunctionList()->add(pFunc = new CKinFunction(nname), true);
 
-  std::cout << " *** created Function: " << nname << " : " << pFunc->getKey() << std::endl;
+  //std::cout << " *** created Function: " << nname << " : " << pFunc->getKey() << std::endl;
   return pFunc;
 }
 

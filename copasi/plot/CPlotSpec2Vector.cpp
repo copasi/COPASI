@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.18.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/21 20:32:54 $
+   $Date: 2006/01/04 15:21:37 $
    End CVS Header */
 
 #include <limits>
@@ -48,7 +48,7 @@ bool CPlotSpec2Vector::initPlottingFromObjects()
 
   if (!mpPlotDefinitionList || mpPlotDefinitionList->size() == 0)
     {
-      std::cout << "plot: not plots defined" << std::endl;
+      //std::cout << "plot: not plots defined" << std::endl;
       return false;
     }
 
@@ -56,13 +56,13 @@ bool CPlotSpec2Vector::initPlottingFromObjects()
 
   if (!initAllPlots()) //create mObjectNames;
     {
-      std::cout << "plot: problem while creating indices" << std::endl;
+      //std::cout << "plot: problem while creating indices" << std::endl;
       return false;
     }
 
   if (mObjectNames.size() <= 0)
     {
-      std::cout << "plot: number of objects <=0" << std::endl;
+      //std::cout << "plot: number of objects <=0" << std::endl;
       return false;
     }
   data.resize(mObjectNames.size());
@@ -112,7 +112,7 @@ bool CPlotSpec2Vector::initAllPlots()
       if ((*mpPlotDefinitionList)[i]->isActive())
         {
           key = (*mpPlotDefinitionList)[i]->CCopasiParameter::getKey();
-          std::cout << key << std::endl;
+          //std::cout << key << std::endl;
 
           if (windowMap[key] == NULL)
             {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.51.8.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/17 15:49:31 $
+   $Date: 2006/01/04 15:21:36 $
    End CVS Header */
 
 #include "TableDefinition.h"
@@ -93,7 +93,7 @@ CCopasiObject* TableDefinition::createNewObject(const std::string & name)
       nname = name;
       nname += (const char *)QString::number(i).utf8();
     }
-  std::cout << " *** created ReportDefinition: " << nname << " : " << pRep->getKey() << std::endl;
+  //std::cout << " *** created ReportDefinition: " << nname << " : " << pRep->getKey() << std::endl;
   return pRep;
 }
 

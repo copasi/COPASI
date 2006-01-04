@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.174.2.1 $
+   $Revision: 1.174.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/21 20:07:42 $
+   $Date: 2006/01/04 15:21:36 $
    End CVS Header */
 
 /*********************************************************************
@@ -379,7 +379,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                                                  // No or Escape
+        default:                                                   // No or Escape
           break;
         }
     }
@@ -387,7 +387,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
 void ReactionsWidget1::FillWidgetFromRI()
 {
-  std::cout << "FillWidget " << std::endl;
+  //std::cout << "FillWidget " << std::endl;
   LineEdit1->setText(FROM_UTF8(mRi.getReactionName()));
 
   LineEdit2->setText(FROM_UTF8(mRi.getChemEqString()));
@@ -429,7 +429,7 @@ void ReactionsWidget1::FillWidgetFromRI()
 
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 {
-  std::cout << "slotValueChanged " << index << " " << sub << " " << newValue << std::endl;
+  //std::cout << "slotValueChanged " << index << " " << sub << " " << newValue << std::endl;
 
   // setValue
   if (mRi.getUsage(index) == CFunctionParameter::PARAMETER)

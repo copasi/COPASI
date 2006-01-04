@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-   $Revision: 1.17.2.4 $
+   $Revision: 1.17.2.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/03 21:40:32 $
+   $Date: 2006/01/04 15:21:36 $
    End CVS Header */
 
 #include <qprogressdialog.h>
@@ -142,6 +142,13 @@ bool CProgressBar::proceed()
   if (mNextEventProcessing < QTime::currentTime())
     {
       mNextEventProcessing = QTime::currentTime().addMSecs(1000);
+      qApp->processEvents();
+    }
+
+  while (mPause)
+    {
+      QWaitCondition Pause;
+      Pause.wait(500);
       qApp->processEvents();
     }
 

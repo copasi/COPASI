@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.33.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:25:05 $
+   $Date: 2006/01/04 15:21:40 $
    End CVS Header */
 
 /**
@@ -55,7 +55,7 @@
  */
 CHybridMethod::~CHybridMethod()
 {
-  std::cout << "~CHybridMethod() " << CCopasiParameter::getObjectName() << std::endl;
+  //std::cout << "~CHybridMethod() " << CCopasiParameter::getObjectName() << std::endl;
   cleanup();
   DESTRUCTOR_TRACE;
 }
@@ -75,14 +75,14 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * C_UNUSED(p
 
   switch (result)
     {
-      /*    case - 3:                  // non-integer stoichometry
+      /*    case - 3:                 // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:                  // reversible reaction exists
+      case - 2:                 // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
 
-      case - 1:                  // more than one compartment involved
+      case - 1:                 // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/
     case 1:
@@ -207,19 +207,19 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
 
   /* get configuration data */
   mMaxSteps = * getValue("HYBRID.MaxSteps").pUINT;
-  std::cout << "HYBRID.MaxSteps: " << mMaxSteps << std::endl;
+  //std::cout << "HYBRID.MaxSteps: " << mMaxSteps << std::endl;
   mLowerStochLimit = * getValue("HYBRID.LowerStochLimit").pDOUBLE;
-  std::cout << "HYBRID.LowerStochLimit: " << mLowerStochLimit << std::endl;
+  //std::cout << "HYBRID.LowerStochLimit: " << mLowerStochLimit << std::endl;
   mUpperStochLimit = * getValue("HYBRID.UpperStochLimit").pDOUBLE;
-  std::cout << "HYBRID.UpperStochLimit: " << mUpperStochLimit << std::endl;
+  //std::cout << "HYBRID.UpperStochLimit: " << mUpperStochLimit << std::endl;
   mStepsize = * getValue("HYBRID.RungeKuttaStepsize").pDOUBLE;
-  std::cout << "HYBRID.RungeKuttaStepsize: " << mStepsize << std::endl;
+  //std::cout << "HYBRID.RungeKuttaStepsize: " << mStepsize << std::endl;
   mPartitioningInterval = * getValue("HYBRID.PartitioningInterval").pUINT;
-  std::cout << "HYBRID.PartitioningInterval: " << mPartitioningInterval << std::endl;
+  //std::cout << "HYBRID.PartitioningInterval: " << mPartitioningInterval << std::endl;
   mUseRandomSeed = * getValue("HYBRID.UseRandomSeed").pBOOL;
-  std::cout << "HYBRID.UseRandomSeed: " << mUseRandomSeed << std::endl;
+  //std::cout << "HYBRID.UseRandomSeed: " << mUseRandomSeed << std::endl;
   mRandomSeed = * getValue("HYBRID.RandomSeed").pUINT;
-  std::cout << "HYBRID.RandomSeed: " << mRandomSeed << std::endl;
+  //std::cout << "HYBRID.RandomSeed: " << mRandomSeed << std::endl;
   if (mUseRandomSeed) mpRandomGenerator->initialize(mRandomSeed);
   mStoi = mpModel->getStoi();
   mStepsAfterPartitionSystem = 0;
@@ -758,7 +758,7 @@ void CHybridMethod::setupBalances()
         }
     }
 
-  mMaxBalance = maxBalance; std::cout << "mMaxBalance: " << mMaxBalance << std::endl;
+  mMaxBalance = maxBalance; //std::cout << "mMaxBalance: " << mMaxBalance << std::endl;
   //mMaxIntBeforeStep= numeric_limits<C_INT32>::max() - mMaxSteps*mMaxBalance;
   mMaxIntBeforeStep = INT_MAX - 1 - mMaxSteps * mMaxBalance;
 
@@ -1004,8 +1004,8 @@ void CHybridMethod::setupPriorityQueue(C_FLOAT64 startTime)
           calculateAmu(i);
           time = startTime + generateReactionTime(i);
           mPQ.insertStochReaction(i, time);
-          std::cout << "time: " << mpCurrentState->getTime() << " rIndex: "
-          << i << "      ->stoch" << std::endl; // DEBUG
+          //std::cout << "time: " << mpCurrentState->getTime() << " rIndex: "
+          //<< i << "      ->stoch" << std::endl; // DEBUG
         }
     }
   return;
@@ -1037,8 +1037,8 @@ void CHybridMethod::partitionSystem()
                 {
                   insertDeterministicReaction(*iter);
                   mPQ.removeStochReaction(*iter);
-                  std::cout << "time: " << mpCurrentState->getTime() << " rIndex: " << *iter
-                  << " stoch->" << std::endl; // DEBUG
+                  //std::cout << "time: " << mpCurrentState->getTime() << " rIndex: " << *iter
+                  //<< " stoch->" << std::endl; // DEBUG
                 }
             }
         }
@@ -1059,8 +1059,8 @@ void CHybridMethod::partitionSystem()
                   mAmuOld[*iter] = mAmu[*iter];
                   key = mpCurrentState->getTime() + generateReactionTime(*iter);
                   mPQ.insertStochReaction(*iter, key);
-                  std::cout << "time: " << mpCurrentState->getTime() << " rIndex: " << *iter
-                  << "      ->stoch" << std::endl; // DEBUG
+                  //std::cout << "time: " << mpCurrentState->getTime() << " rIndex: " << *iter
+                  //<< "      ->stoch" << std::endl; // DEBUG
                 }
               mReactionFlags[*iter].mValue++;
             }
@@ -1170,7 +1170,7 @@ std::set<std::string> *CHybridMethod::getDependsOn(C_INT32 rIndex)
           //std::cout << " " << metablist[j]->getObjectName() << ":" << metablist[j]->getKey();
         }
     }
-  std::cout << std::endl;
+  //std::cout << std::endl;
   return retset;
 }
 
@@ -1189,16 +1189,16 @@ std::set<std::string> *CHybridMethod::getAffects(C_INT32 rIndex)
   // Get the balances  associated with the reaction at this index
   // XXX We first get the chemical equation, then the balances, since the getBalances method in CReaction is unimplemented!
 
-  std::cout << rIndex << " affects ";
+  //std::cout << rIndex << " affects ";
   for (i = 0; i < mLocalBalances[rIndex].size(); i++)
     {
       if (mLocalBalances[rIndex][i].mMultiplicity != 0)
         {
           retset->insert(mLocalBalances[rIndex][i].mpMetabolite->getKey());
-          std::cout << " " << mLocalBalances[rIndex][i].mpMetabolite->getObjectName() << ":" << mLocalBalances[rIndex][i].mpMetabolite->getKey();
+          //std::cout << " " << mLocalBalances[rIndex][i].mpMetabolite->getObjectName() << ":" << mLocalBalances[rIndex][i].mpMetabolite->getKey();
         }
     }
-  std::cout << std::endl;
+  //std::cout << std::endl;
   return retset;
 }
 

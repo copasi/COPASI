@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.244.2.2 $
+   $Revision: 1.244.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/22 16:01:07 $
+   $Date: 2006/01/04 15:21:37 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2030,7 +2030,7 @@ bool CModel::convert2NonReversible()
       {
         ret = false;
         reac0 = steps[i];
-        std::cout << i << "  ";
+        //std::cout << i << "  ";
 
         //create the two new reactions
         reac1 = new CReaction(/* *reac0, &steps*/);
@@ -2051,7 +2051,7 @@ bool CModel::convert2NonReversible()
 
         //set the new function
         fn = reac0->getFunction().getObjectName();
-        std::cout << fn << "  " << std::endl;
+        //std::cout << fn << "  " << std::endl;
 
         if (fn == "Mass action (reversible)")
           {

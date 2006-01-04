@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.55.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 17:17:03 $
+   $Date: 2006/01/04 15:21:35 $
    End CVS Header */
 
 #include "copasi.h"
@@ -53,9 +53,9 @@ bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::strin
       {
         if (oldCN.compare(0, oldCN.size(), **it, 0, oldCN.size()) == 0)
           {
-            std::cout << "   match:   " << **it << std::endl;
+            //std::cout << "   match:   " << **it << std::endl;
             (**it).replace(0, oldCN.size(), newCN);
-            std::cout << "     -->    " << **it << std::endl;
+            //std::cout << "     -->    " << **it << std::endl;
           }
         else
           {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.11.8.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/31 09:43:16 $
+   $Author: shoops $ 
+   $Date: 2006/01/04 15:21:37 $
    End CVS Header */
 
 #include "model/CModel.h"
@@ -77,7 +77,7 @@ bool CPlotSpecification::createDefaultPlot(const CModel* model)
   const CCopasiObject * tmp;
 
   CPlotDataChannelSpec name1 = model->getObject(CCopasiObjectName("Reference=Time"))->getCN();
-  std::cout << name1 << std::endl;
+  //std::cout << name1 << std::endl;
 
   unsigned C_INT32 i, imax = model->getMetabolites().size();
   for (i = 0; i < imax; ++i)

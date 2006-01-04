@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.85 $
+   $Revision: 1.85.2.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:34:23 $
+   $Author: shoops $ 
+   $Date: 2006/01/04 15:21:36 $
    End CVS Header */
 
 #include "ReactionsWidget.h"
@@ -96,7 +96,7 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
       //first check if the string is a valid equation
       if (!CChemEqInterface::isValidEq((const char *)equation.utf8()))
         {
-          std::cout << "Not a valid equation!\n\n";
+          //std::cout << "Not a valid equation!\n\n";
           return;
         }
       else
@@ -140,7 +140,7 @@ CCopasiObject* ReactionsWidget::createNewObject(const std::string & name)
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
-  std::cout << " *** created Reaction: " << nname << " : " << pRea->getKey() << std::endl;
+  //std::cout << " *** created Reaction: " << nname << " : " << pRea->getKey() << std::endl;
   return pRea;
 }
 

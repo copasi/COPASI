@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.50.8.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/29 20:24:05 $
+   $Date: 2006/01/04 15:21:38 $
    End CVS Header */
 
 /**
@@ -272,7 +272,7 @@ bool CCopasiObject::isSeparator() const
 const std::string & CCopasiObject::getKey() const
   {
     static std::string DefaultKey("");
-    std::cout << "*********** CCopasiObject::getKey() should never be called! *********" << std::endl;
+    //std::cout << "*********** CCopasiObject::getKey() should never be called! *********" << std::endl;
     return DefaultKey;
   }
 

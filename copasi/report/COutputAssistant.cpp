@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.2.2.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/05 14:02:13 $
+   $Author: shoops $ 
+   $Date: 2006/01/04 15:21:38 $
    End CVS Header */
 
 #include "COutputAssistant.h"
@@ -236,19 +236,19 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 {
   if (!task)
     {
-      std::cout << "task==NULL in COutputAssistant::createDefaultOutput()" << std::endl;
+      //std::cout << "task==NULL in COutputAssistant::createDefaultOutput()" << std::endl;
       return NULL;
     }
   if (!task->getProblem())
     {
-      std::cout << "problem==NULL in COutputAssistant::createDefaultOutput()" << std::endl;
+      //std::cout << "problem==NULL in COutputAssistant::createDefaultOutput()" << std::endl;
       return NULL;
     }
 
   CModel* pModel = task->getProblem()->getModel();
   if (!pModel)
     {
-      std::cout << "model==NULL in COutputAssistant::createDefaultOutput()" << std::endl;
+      //std::cout << "model==NULL in COutputAssistant::createDefaultOutput()" << std::endl;
       return NULL;
     }
 
@@ -323,7 +323,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
 
   std::vector<const CCopasiObject*>::const_iterator it, itEnd = y.end();
 
-  //debug output
+#ifdef COPASI_DEBUG
   std::cout << "COutputAssistant::createPlot:" << std::endl;
   std::cout << " name: " << name << std::endl;
 
@@ -331,7 +331,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
 
   for (it = y.begin(); it != itEnd; ++it)
     std::cout << (*it)->getObjectDisplayName() << std::endl;
-  //end: debug output
+#endif // COPASI_DEBUG
 
   //create plot with unique name
   unsigned C_INT32 i = 0;
@@ -375,12 +375,12 @@ CReportDefinition* COutputAssistant::createTable(const std::string & name,
 {
   std::vector<const CCopasiObject*>::const_iterator it, itEnd = d.end();
 
-  //debug output
+#ifdef COPASI_DEBUG
   std::cout << "COutputAssistant::createTable:" << std::endl;
   std::cout << " name: " << name << std::endl;
   for (it = d.begin(); it != itEnd; ++it)
     std::cout << (*it)->getObjectDisplayName() << std::endl;
-  //end: debug output
+#endif // COPASI_DEBUG
 
   //create plot with unique name
   unsigned C_INT32 i = 0;

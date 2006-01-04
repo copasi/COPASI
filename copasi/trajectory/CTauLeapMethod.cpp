@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.11.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:25:07 $
+   $Date: 2006/01/04 15:21:40 $
    End CVS Header */
 
 /**
@@ -64,7 +64,7 @@ const C_FLOAT64 CTauLeapMethod::cof[6] =
  */
 CTauLeapMethod::~CTauLeapMethod()
 {
-  std::cout << "~CTauLeapMethod() " << CCopasiParameter::getObjectName() << std::endl;
+  //std::cout << "~CTauLeapMethod() " << CCopasiParameter::getObjectName() << std::endl;
   cleanup();
   DESTRUCTOR_TRACE;
 }
@@ -85,13 +85,13 @@ CTauLeapMethod *CTauLeapMethod::createTauLeapMethod(CTrajectoryProblem * C_UNUSE
   switch (result)
     {
       // Error: TauLeap simulation impossible
-      /*    case - 3:              // non-integer stoichometry
+      /*    case - 3:             // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:              // reversible reaction exists
+      case - 2:             // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
-      case - 1:              // more than one compartment involved
+      case - 1:             // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/ 
       // Everything alright: Hybrid simulation possible
@@ -206,11 +206,11 @@ void CTauLeapMethod::initMethod()
 
   /* get configuration data */
   mTau = * getValue("TAULEAP.Tau").pDOUBLE;
-  std::cout << "TAULEAP.Tau: " << mTau << std::endl;
+  //std::cout << "TAULEAP.Tau: " << mTau << std::endl;
   mUseRandomSeed = * getValue("TAULEAP.UseRandomSeed").pBOOL;
-  std::cout << "TAULEAP.UseRandomSeed: " << mUseRandomSeed << std::endl;
+  //std::cout << "TAULEAP.UseRandomSeed: " << mUseRandomSeed << std::endl;
   mRandomSeed = * getValue("TAULEAP.RandomSeed").pUINT;
-  std::cout << "TAULEAP.RandomSeed: " << mRandomSeed << std::endl;
+  //std::cout << "TAULEAP.RandomSeed: " << mRandomSeed << std::endl;
   if (mUseRandomSeed) mpRandomGenerator->initialize(mRandomSeed);
 
   /* set up internal data structures */

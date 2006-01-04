@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.27.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:28:15 $
+   $Date: 2006/01/04 15:21:39 $
    End CVS Header */
 
 #include <cmath>
@@ -240,6 +240,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   //debug
   //std::cout << "aux2 = aux1 * L,  equals reduced Jacobian" << std::endl;
 
+#ifdef COPASI_DEBUG
   for (i = 0; i < mpModel->getNumIndependentMetabs(); i++)
     {
       for (j = 0; j < mpModel->getNumIndependentMetabs(); j++)
@@ -247,6 +248,7 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
       std::cout << std::endl;
     }
   //std::cout << std::endl;
+#endif // COPASI_DEBUG
 
   // LU decomposition of aux2 (for inversion)
   // dgefa -> luX??

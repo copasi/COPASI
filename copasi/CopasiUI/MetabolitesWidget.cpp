@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.125 $
+   $Revision: 1.125.2.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:30:41 $
+   $Author: shoops $ 
+   $Date: 2006/01/04 15:21:36 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -306,7 +306,7 @@ CCopasiObject* MetabolitesWidget::createNewObject(const std::string & name)
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
-  std::cout << " *** created Metabolite: " << nname << " : " << pMetab->getKey() << std::endl;
+  //std::cout << " *** created Metabolite: " << nname << " : " << pMetab->getKey() << std::endl;
   return pMetab;
 }
 

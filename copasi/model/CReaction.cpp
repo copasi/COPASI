@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.148 $
+   $Revision: 1.148.2.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/07 10:59:18 $
+   $Author: shoops $ 
+   $Date: 2006/01/04 15:21:37 $
    End CVS Header */
 
 // CReaction
@@ -429,7 +429,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
     {
       if (mMap.getFunctionParameters().getNumberOfParametersByUsage(role) != 1)
         {
-          std::cout << "not exactly one variable of this role as vector" << std::endl;
+          //std::cout << "not exactly one variable of this role as vector" << std::endl;
           fatalError();
         }
 
@@ -437,7 +437,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
       pParameter = mMap.getFunctionParameters().getParameterByUsage(role, pos);
       if (!pParameter)
         {
-          std::cout << "could not find variable" << std::endl;
+          //std::cout << "could not find variable" << std::endl;
           fatalError();
         }
 
@@ -458,7 +458,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
       imax = mMap.getFunctionParameters().getNumberOfParametersByUsage(role);
       if (imax > n)
         {
-          std::cout << "no. of metabs not matching function definition" << std::endl;
+          //std::cout << "no. of metabs not matching function definition" << std::endl;
           fatalError();
         }
 
@@ -472,12 +472,12 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
           pParameter = mMap.getFunctionParameters().getParameterByUsage(role, pos);
           if (!pParameter)
             {
-              std::cout << "could not find variable" << std::endl;
+              //std::cout << "could not find variable" << std::endl;
               fatalError();
             }
           if (pParameter->getType() >= CFunctionParameter::VINT32)
             {
-              std::cout << "unexpected vector variable" << std::endl;
+              //std::cout << "unexpected vector variable" << std::endl;
               fatalError();
             }
 
@@ -527,7 +527,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   if (mMap.getFunctionParameters().getNumberOfParametersByUsage(CFunctionParameter::PARAMETER)
       != ParameterSize)
     {
-      std::cout << "no. of parameters not matching function definition" << std::endl;
+      //std::cout << "no. of parameters not matching function definition" << std::endl;
       fatalError();
     }
 
@@ -543,12 +543,12 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       pParameter = mMap.getFunctionParameters().getParameterByUsage(CFunctionParameter::PARAMETER, pos);
       if (!pParameter)
         {
-          std::cout << "could not find variable" << std::endl;
+          //std::cout << "could not find variable" << std::endl;
           fatalError();
         }
       if (pParameter->getType() != CFunctionParameter::FLOAT64)
         {
-          std::cout << "unexpected parameter type" << std::endl;
+          //std::cout << "unexpected parameter type" << std::endl;
           fatalError();
         }
 
