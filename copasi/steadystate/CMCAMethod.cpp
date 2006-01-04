@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.27.2.1 $
+   $Revision: 1.27.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/04 15:21:39 $
+   $Date: 2006/01/04 20:22:41 $
    End CVS Header */
 
 #include <cmath>
@@ -412,6 +412,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
 
   //std::cout << "scElas " << std::endl;
   //std::cout << (CMatrix<C_FLOAT64>)mScaledElasticities << std::endl;
+  if (mSSStatus != CSteadyStateMethod::found) return;
 
   // Scale ConcCC
   mScaledConcCC.resize(mUnscaledConcCC.numRows(), mUnscaledConcCC.numCols());
@@ -475,13 +476,15 @@ void CMCAMethod::setModel(CModel* model)
 int CMCAMethod::CalculateMCA(CSteadyStateMethod::ReturnCode C_UNUSED(status), C_FLOAT64 res)
 {
   assert(mpModel);
-  int ret;
+  int ret = MCA_OK;
 
   calculateUnscaledElasticities(res);
 
-  ret = calculateUnscaledConcentrationCC();
-
-  calculateUnscaledFluxCC(ret);
+  if (mSSStatus == CSteadyStateMethod::found)
+    {
+      ret = calculateUnscaledConcentrationCC();
+      calculateUnscaledFluxCC(ret);
+    }
 
   scaleMCA(ret, res);
 
