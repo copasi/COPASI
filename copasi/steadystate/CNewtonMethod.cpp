@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.61.2.2 $
+   $Revision: 1.61.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/04 22:33:51 $
+   $Date: 2006/01/04 22:43:51 $
    End CVS Header */
 
 #include <algorithm>
@@ -211,7 +211,7 @@ CNewtonMethod::processInternal()
           if (containsNaN())
             break;
 
-          if (!(allPositive() || mAcceptNegative))
+          if (!(mAcceptNegative || allPositive()))
             break;
 
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
@@ -276,7 +276,7 @@ CNewtonMethod::processInternal()
           if (containsNaN())
             break;
 
-          if (!(allPositive() || mAcceptNegative))
+          if (!(mAcceptNegative || allPositive()))
             break;
 
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
