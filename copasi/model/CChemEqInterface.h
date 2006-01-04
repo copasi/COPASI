@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.11.2.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/07 10:59:18 $
+   $Author: shoops $ 
+   $Date: 2006/01/04 15:20:45 $
    End CVS Header */
 
 #ifndef CCHEMEQINTERFACE_H
@@ -70,23 +70,6 @@ class CChemEqInterface
 
   private:
     static std::string writeElement(const std::string & name, C_FLOAT64 mult, bool expanded);
-    static bool splitChemEq(const std::string & input,
-                            std::string & left, std::string & right, std::string & mod);
-
-    static bool setElements(std::vector<std::string> & names,
-                            std::vector<C_FLOAT64> & mults,
-                            const std::string & reaction,
-                            const bool modif = false);
-
-    static bool extractElement(const std::string & input,
-                               std::string::size_type & pos,
-                               std::string & name, C_FLOAT64 & mult);
-
-    static bool extractModifier(const std::string & input,
-                                std::string::size_type & pos,
-                                std::string & name);
-
-    static bool checkFirstLevel(const std::string & eq);
   };
 
 #endif
