@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.120.2.5 $
+   $Revision: 1.120.2.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/04 14:26:43 $
+   $Date: 2006/01/04 16:47:14 $
    End CVS Header */
 
 /**
@@ -1236,7 +1236,7 @@ void CCopasiXMLParser::CommentElement::start(const XML_Char *pszName,
       break;
 
     case xhtml:
-      mXhtml << mParser.getCharacterData();
+      mXhtml << CCopasiXMLInterface::encode(mParser.getCharacterData());
       mXhtml << "<" << pszName;
       for (ppAttrs = papszAttrs; *ppAttrs && **ppAttrs; ppAttrs += 2)
         mXhtml << " " << *ppAttrs << "=\""
@@ -1264,7 +1264,11 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
     {
     case Comment:
       if (strcmp(pszName, "Comment")) fatalError();
-      mXhtml << mParser.getCharacterData();
+      if (mXhtml.str() != "")
+        mXhtml << CCopasiXMLInterface::encode(mParser.getCharacterData());
+      else
+        mXhtml << mParser.getCharacterData();
+
       mCommon.Comment = mXhtml.str();
 
       {
@@ -1288,7 +1292,7 @@ void CCopasiXMLParser::CommentElement::end(const XML_Char *pszName)
       break;
 
     case xhtml:
-      mXhtml << mParser.getCharacterData();
+      mXhtml << CCopasiXMLInterface::encode(mParser.getCharacterData());
       mXhtml << "</" << pszName << ">";
 
       mLevel--;
