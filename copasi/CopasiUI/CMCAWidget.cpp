@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.25.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/15 17:01:01 $
+   $Date: 2006/01/04 19:20:38 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -250,8 +250,6 @@ void CMCAWidget::runMCATask()
       QMessageBox::warning(this, "Simulation Error",
                            CCopasiMessage::getAllMessageText().c_str(),
                            QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-
-      return;
     }
 
   mcaTask->restore();
