@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.21.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:25:04 $
+   $Date: 2006/01/05 21:12:27 $
    End CVS Header */
 
 #include "copasi.h"
@@ -301,6 +301,12 @@ bool CFitProblem::calculate()
                       // set independent data
                       pExp->updateModelWithIndependentData(j);
                       mpModel->setState(&mpModel->getInitialState());
+
+                      if (pExp->getTimeData()[0] != mpModel->getInitialTime())
+                        {
+                          pProblem->setDuration(pExp->getTimeData()[j] - mpModel->getInitialTime());
+                          Continue = mpTrajectory->process(false);
+                        }
                     }
                   break;
 
