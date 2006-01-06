@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.41.2.1 $
+   $Revision: 1.41.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/23 18:02:59 $
+   $Date: 2006/01/06 18:06:47 $
    End CVS Header */
 
 #include "copasi.h"
@@ -209,7 +209,7 @@ std::ostream * CReport::open(std::ostream * pOstream)
 
       if (!((std::ofstream *) mpOstream)->is_open()) pdelete(mpOstream);
 
-      mpOstream->precision(mpReportDef->getPrecision());
+      if (mpOstream) mpOstream->precision(mpReportDef->getPrecision());
     }
 
   return mpOstream;
