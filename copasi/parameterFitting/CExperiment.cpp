@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.23.2.2 $
+   $Revision: 1.23.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/03 21:21:34 $
+   $Date: 2006/01/06 16:26:26 $
    End CVS Header */
 
 #include <fstream>
@@ -862,8 +862,11 @@ void CExperiment::printResult(std::ostream * ostream) const
       if (getColumnType(k) == CExperiment::dependent)
         {
           if (Objects[k])
-            os << Objects[k]->getObjectDisplayName();
-
+            {
+              os << Objects[k]->getObjectDisplayName() << " [Data]\t";
+              os << Objects[k]->getObjectDisplayName() << " [Fit]\t";
+              os << Objects[k]->getObjectDisplayName() << " [Error]";
+            }
           os << "\t";
         }
     os << "Mean\tStandard Deviation" << std::endl << std::endl;
@@ -872,19 +875,22 @@ void CExperiment::printResult(std::ostream * ostream) const
       {
         os << i + 1 << ".\t";
         for (j = 0; j < jmax; j++)
-          os << mDataDependentCalculated(i, j) - mDataDependent(i, j) << "\t";
-
+          {
+            os << mDataDependent(i, j) << "\t";
+            os << mDataDependentCalculated(i, j) << "\t";
+            os << mDataDependentCalculated(i, j) - mDataDependent(i, j) << "\t";
+          }
         os << mRowMean[i] << "\t" << mRowSD[i] << std::endl;
       }
 
-    os << "Mean\t";
+    os << "Mean";
     for (j = 0; j < jmax; j++)
-      os << mColumnMean[j] << "\t";
+      os << "\t\t\t" << mColumnMean[j];
     os << std::endl;
 
-    os << "Standard Deviation\t";
+    os << "Standard Deviation";
     for (j = 0; j < jmax; j++)
-      os << mColumnSD[j] << "\t";
+      os << "\t\t\t" << mColumnSD[j];
     os << std::endl;
 
     return;
