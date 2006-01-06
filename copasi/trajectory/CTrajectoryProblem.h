@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.20.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:25:07 $
+   $Date: 2006/01/06 15:07:02 $
    End CVS Header */
 
 /**
@@ -26,6 +26,31 @@ class CTrajectoryProblem : public CCopasiProblem
   {
     // Attributes
   private:
+    /**
+     *
+     */
+    C_FLOAT64 * mpDuration;
+
+    /**
+     *
+     */
+    C_FLOAT64 * mpStepSize;
+
+    /**
+     *
+     */
+    unsigned C_INT32 * mpStepNumber;
+
+    /**
+     *
+     */
+    bool * mpTimeSeriesRequested;
+
+    /**
+     *
+     */
+    C_FLOAT64 * mpOutputStartTime;
+
     /**
      *  Indicate whether the step number or step size was set last.
      */
