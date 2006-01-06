@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.71.2.1 $
+   $Revision: 1.71.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/03 17:40:38 $
+   $Date: 2006/01/06 14:15:03 $
    End CVS Header */
 
 /**
@@ -156,16 +156,24 @@ bool COptProblem::setModel(CModel * pModel)
   return true;
 }
 
+#ifdef WIN32 
+// warning C4056: overflow in floating-point constant arithmetic
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
+#endif
+
 bool COptProblem::setCallBack(CProcessReport * pCallBack)
 {
   CCopasiProblem::setCallBack(pCallBack);
 
   if (pCallBack)
     {
+      mSolutionValue = DBL_MAX * 2;
       mhSolutionValue =
         mpCallBack->addItem("Best Value",
                             CCopasiParameter::DOUBLE,
                             & mSolutionValue);
+      mCounter = 0;
       mhCounter =
         mpCallBack->addItem("Simulation Counter",
                             CCopasiParameter::UINT,
@@ -181,12 +189,6 @@ void COptProblem::initObjects()
   addObjectReference("Best Value", mSolutionValue, CCopasiObject::ValueDbl);
   addVectorReference("Best Parameters", mSolutionVariables, CCopasiObject::ValueDbl);
 }
-
-#ifdef WIN32 
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
 
 bool COptProblem::initialize()
 {
