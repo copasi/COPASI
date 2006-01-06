@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.21.2.1 $
+   $Revision: 1.21.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/05 21:12:27 $
+   $Date: 2006/01/06 20:28:55 $
    End CVS Header */
 
 #include "copasi.h"
@@ -17,7 +17,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CState.h"
-#include "optimization/COptItem.h"
+#include "report/CKeyFactory.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
@@ -356,27 +356,68 @@ void CFitProblem::print(std::ostream * ostream) const
 
 void CFitProblem::printResult(std::ostream * ostream) const
   {
-    COptProblem::printResult(ostream);
-
     std::ostream & os = *ostream;
 
+    if (mSolutionVariables.numSize() == 0)
+      {
+        return;
+      }
+
+    os << "Objective Function Value:\t" << mSolutionValue << std::endl;
+    os << "Standard Deviation:\t" << mSD << std::endl;
     os << std::endl;
-    os << "Gradient:" << std::endl;
-    os << "  " << mGradient << std::endl;
 
-    os << "Standard Deviation:" << std::endl;
-    os << "  " << mSD << std::endl;
+    std::vector< COptItem * >::const_iterator itItem =
+      mpOptItems->begin();
+    std::vector< COptItem * >::const_iterator endItem =
+      mpOptItems->end();
 
-    os << "Parameter Standard Deviation:" << std::endl;
-    os << "  " << mParameterSD << std::endl;
+    CFitItem * pFitItem;
+    CExperiment * pExperiment;
 
+    unsigned C_INT32 i, j;
+
+    os << "\tParameter\tValue\tGradient\tStandard Deviation" << std::endl;
+    for (i = 0; itItem != endItem; ++itItem, i++)
+      {
+        os << "\t" << (*itItem)->getObjectDisplayName();
+        pFitItem = static_cast<CFitItem *>(*itItem);
+
+        if (pFitItem->getExperimentCount() != 0)
+          {
+            os << " (";
+
+            for (j = 0; j < pFitItem->getExperimentCount(); j++)
+              {
+                if (j) os << ", ";
+
+                pExperiment =
+                  dynamic_cast< CExperiment * >(GlobalKeys.get(pFitItem->getExperiment(j)));
+
+                if (pExperiment)
+                  os << pExperiment->getObjectName();
+              }
+
+            os << ")";
+          }
+
+        os << ":\t" << mSolutionVariables[i];
+        os << "\t" << mGradient[i];
+        os << "\t" << mParameterSD[i];
+        os << std::endl;
+      }
+
+    os << std::endl;
     os << "Parameter Dependence:" << std::endl;
     os << "  " << mFisher << std::endl;
 
     unsigned C_INT32 k, kmax = mpExperimentSet->size();
 
     for (k = 0; k < kmax; k++)
-      mpExperimentSet->getExperiment(k)->printResult(ostream);
+      {
+        mpExperimentSet->getExperiment(k)->printResult(ostream);
+        os << std::endl;
+      }
   }
 
 std::ostream &operator<<(std::ostream &os, const CFitProblem & o)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.23.2.3 $
+   $Revision: 1.23.2.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/06 16:26:26 $
+   $Date: 2006/01/06 20:28:55 $
    End CVS Header */
 
 #include <fstream>
@@ -885,7 +885,12 @@ void CExperiment::printResult(std::ostream * ostream) const
 
     os << "Mean";
     for (j = 0; j < jmax; j++)
-      os << "\t\t\t" << mColumnMean[j];
+      os << "\t" << mMeans[j] << "\t\t" << mColumnMean[j];
+    os << std::endl;
+
+    os << "Weight";
+    for (j = 0; j < jmax; j++)
+      os << "\t\t\t" << mWeight[j];
     os << std::endl;
 
     os << "Standard Deviation";
