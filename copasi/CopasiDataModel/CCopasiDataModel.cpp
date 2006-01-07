@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.55.2.2 $
+   $Revision: 1.55.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/04 19:12:48 $
+   $Date: 2006/01/07 04:33:52 $
    End CVS Header */
 
 #include "copasi.h"
@@ -278,14 +278,8 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
 
   // We are first writing to a temporary stream to prevent accidental
   // destruction of an existing file in case the save command fails.
-  std::ostringstream tmp;
-  if (!XML.save(tmp)) return false;
 
-  std::ofstream os(FileName.c_str());
-  if (os.fail()) return false;
-
-  os << tmp.str();
-  if (os.fail()) return false;
+  if (!XML.CCopasiXMLInterface::save(FileName)) return false;
 
   if (!autoSave)
     {

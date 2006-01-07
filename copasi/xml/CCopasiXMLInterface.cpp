@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.37.2.1 $
+   $Revision: 1.37.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/23 16:39:39 $
+   $Date: 2006/01/07 04:33:53 $
    End CVS Header */
 
 /**
@@ -283,11 +283,17 @@ bool CCopasiXMLInterface::load(const std::string & fileName)
 bool CCopasiXMLInterface::save(const std::string & fileName)
 {
   mFilename = fileName;
-  std::ofstream os(fileName.c_str());
 
+  std::ostringstream tmp;
+  if (!save(tmp)) return false;
+
+  std::ofstream os(mFilename.c_str());
   if (os.fail()) return false;
 
-  return save(os);
+  os << tmp.str();
+  if (os.fail()) return false;
+
+  return true;
 }
 
 bool CCopasiXMLInterface::setModel(const CModel & model)
