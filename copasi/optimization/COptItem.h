@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.13.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/11 13:21:09 $
+   $Date: 2006/01/07 02:54:56 $
    End CVS Header */
 
 #ifndef COPASI_COptItem
@@ -146,7 +146,7 @@ class COptItem: public CCopasiParameterGroup
      * of the optimization item.
      * @return C_INT32 result (-1: to small, 0: within boundaries, 1 to large)
      */
-    C_INT32 checkConstraint() const;
+    virtual C_INT32 checkConstraint() const;
 
     /**
      * This functions check whether the value is within the limits

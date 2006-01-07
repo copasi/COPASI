@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.5.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/11 13:34:30 $
+   $Date: 2006/01/07 02:54:57 $
    End CVS Header */
 
 #ifndef COPASI_CFitItem
@@ -80,6 +80,13 @@ class CFitItem : public COptItem
      */
     virtual bool compile(const std::vector< CCopasiContainer * > listOfContainer =
                            CCopasiContainer::EmptyList);
+
+    /**
+     * This functions check whether the current value is within the limits
+     * of the optimization item.
+     * @return C_INT32 result (-1: to small, 0: within boundaries, 1 to large)
+     */
+    virtual C_INT32 checkConstraint() const;
 
     /**
      * Output stream operator

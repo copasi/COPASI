@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.9.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 19:16:31 $
+   $Date: 2006/01/07 02:54:57 $
    End CVS Header */
 
 #include "copasi.h"
@@ -69,6 +69,13 @@ bool CFitItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 
   return true;
 }
+
+C_INT32 CFitItem::checkConstraint() const
+  {
+    if (*mpLowerBound > mLocalValue) return - 1;
+    if (mLocalValue > *mpUpperBound) return 1;
+    return 0;
+  }
 
 std::ostream &operator<<(std::ostream &os, const CFitItem & o)
 {
