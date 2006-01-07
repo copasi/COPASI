@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.11.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 00:07:29 $
+   $Date: 2006/01/07 04:30:58 $
    End CVS Header */
 
 #include <sys/types.h>
@@ -312,7 +312,7 @@ bool CDirEntry::makePathRelative(std::string & absolutePath,
     if (absolutePath[i] != RelativeTo[i]) break;
 
 #ifdef WIN32
-  if (i = 0) return false; // A different drive letter we cannot do anything
+  if (i == 0) return false; // A different drive letter we cannot do anything
 #endif
 
   RelativeTo = RelativeTo.substr(i);
@@ -324,7 +324,10 @@ bool CDirEntry::makePathRelative(std::string & absolutePath,
       RelativeTo = dirName(RelativeTo);
     }
 
-  absolutePath = relativePath + absolutePath.substr(i);
+  if (relativePath != "")
+    absolutePath = relativePath + absolutePath.substr(i);
+  else
+    absolutePath = absolutePath.substr(i + 1);
 
 #ifdef WIN32
   for (i = 0, imax = absolutePath.length(); i < imax; i++)
