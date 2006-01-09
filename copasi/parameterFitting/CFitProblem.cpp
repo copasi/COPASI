@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.21.2.2 $
+   $Revision: 1.21.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/06 20:28:55 $
+   $Date: 2006/01/09 14:28:47 $
    End CVS Header */
 
 #include "copasi.h"
@@ -498,10 +498,10 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   C_FLOAT64 SumOfSquares = mCalculateValue;
   CVector< C_FLOAT64 > DependentValues = mDependentValues;
 
-  mSD = 0.0;
+  mSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
   mParameterSD.resize(imax);
-  mParameterSD = 0.0;
+  mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
   if (jmax > imax)
     mSD = sqrt(SumOfSquares / jmax);
@@ -698,14 +698,20 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   dsytrf_(&U, &N, mFisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
   if (info)
-    return false; // :TODO: create error message
+    {
+      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      return false; // :TODO: create error message
+    }
 
   lwork = work[0];
   work.resize(lwork);
 
   dsytrf_(&U, &N, mFisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
   if (info)
-    return false; // :TODO: create error message
+    {
+      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      return false; // :TODO: create error message
+    }
 
   /* int dsytri_(char *uplo,
    *             integer *n, 
