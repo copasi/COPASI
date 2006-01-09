@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.21.2.3 $
+   $Revision: 1.21.2.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/09 14:28:47 $
+   $Date: 2006/01/09 15:38:37 $
    End CVS Header */
 
 #include "copasi.h"
@@ -408,7 +408,7 @@ void CFitProblem::printResult(std::ostream * ostream) const
       }
 
     os << std::endl;
-    os << "Parameter Dependence:" << std::endl;
+    os << "Parameter Interdependence:" << std::endl;
     os << "  " << mFisher << std::endl;
 
     unsigned C_INT32 k, kmax = mpExperimentSet->size();
@@ -521,7 +521,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
     {
       Current = mSolutionVariables[i];
 
-      if (Current != 0.0)
+      if (fabs(Current) > resolution)
         {
           (*mUpdateMethods[i])(Current * (1.0 + factor));
           Delta = 1.0 / (Current * factor);
@@ -556,8 +556,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
         tmp *= 2.0;
 
-        if (l != i)
-          mFisher(l, i) = tmp;
+        //        if (l != i)
+        //          mFisher(l, i) = tmp;
       }
 
   /* We use dsytrf_ and dsytri_ to invert the symmetric fisher information matrix */
