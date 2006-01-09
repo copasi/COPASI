@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.11.2.1 $
+   $Revision: 1.11.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/07 04:30:58 $
+   $Date: 2006/01/09 15:37:34 $
    End CVS Header */
 
 #include <sys/types.h>
@@ -110,6 +110,7 @@ std::string CDirEntry::fileName(const std::string & path)
 
 std::string CDirEntry::dirName(const std::string & path)
 {
+  if (path == "") return path;
 #ifdef WIN32 // WIN32 also understands '/' as the separator.
   std::string::size_type end = path.find_last_of(Separator + "/");
 #else
@@ -124,6 +125,8 @@ std::string CDirEntry::dirName(const std::string & path)
       end = path.find_last_of(Separator, end);
 #endif
     }
+
+  if (end == std::string::npos) return "";
 
   return path.substr(0, end);
 }
