@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.125.2.1 $
+   $Revision: 1.125.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/04 15:21:36 $
+   $Date: 2006/01/10 16:44:05 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -483,14 +483,19 @@ void MetabolitesWidget::compartmentChanged(unsigned C_INT32 row)
   const CMetab * pMetab
   = static_cast< CMetab * >(GlobalKeys.get(mKeys[row]));
 
-  const CCompartment * pCompartment
-  = CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)table->text(row, COL_OLDCOMPARTMENT).utf8()];
+  QString Compartment = table->text(row, COL_OLDCOMPARTMENT);
+
+  const CCompartment * pCompartment = NULL;
+
+  if (Compartment != "")
+    pCompartment =
+      CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)table->text(row, COL_OLDCOMPARTMENT).utf8()];
 
   if (!pMetab || !pCompartment) return;
 
   C_FLOAT64 Factor = 1.0 / pCompartment->getInitialVolume();
 
-  QString Compartment = table->text(row, COL_COMPARTMENT);
+  Compartment = table->text(row, COL_COMPARTMENT);
   table->setText(row, COL_OLDCOMPARTMENT, Compartment);
 
   pCompartment
