@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.53.2.1 $
+   $Revision: 1.53.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/04 15:21:37 $
+   $Date: 2006/01/10 14:12:07 $
    End CVS Header */
 
 // CSate.cpp
@@ -45,7 +45,6 @@ CState::~CState() {}
 CState & CState::operator =(const CStateX & stateX)
 {
 #ifdef COPASI_DEBUG
-  //this->check("operator= lhs");
   stateX.check("operator= rhs");
 #endif
 
@@ -59,34 +58,21 @@ CState & CState::operator =(const CStateX & stateX)
     {
       mVariableNumbers.resize(mpModel->getNumVariableMetabs());
 
-      unsigned C_INT32 i, iVariable, iTotal;
+      const unsigned C_INT32 * pPermutation =
+        mpModel->getMetabolitePermutation().array();
 
-      iVariable = stateX.mVariableNumbers.size();
-      iTotal = iVariable + stateX.mDependentNumbers.size();
-
-      if (mVariableNumbers.size() != iTotal)
-        {
-          //std::cout << "In CState assignment: Inconsistent src state" << std::endl;
-          mVariableNumbers.resize(0);
-          return *this;
-        }
-
-      const CVector< unsigned C_INT32 > & Permutation =
-        mpModel->getMetabolitePermutation();
-
-      C_FLOAT64 * Dbl =
+      C_FLOAT64 * pTo =
         const_cast< C_FLOAT64 * >(mVariableNumbers.array());
 
-      for (i = 0; i < iVariable; i++)
-        {
-          *(Dbl + Permutation[i]) = stateX.mVariableNumbers[i];
-        }
+      const C_FLOAT64 * pIt = stateX.mVariableNumbers.array();
+      const C_FLOAT64 * pEnd = pIt + stateX.mVariableNumbers.size();
+      for (; pIt != pEnd; ++pIt, ++pPermutation)
+        *(pTo + *pPermutation) = *pIt;
 
-      for (; i < iTotal; i++)
-        {
-          *(Dbl + Permutation[i]) =
-            stateX.mDependentNumbers[i - iVariable]; //TODO use ptr increments
-        }
+      pIt = stateX.mDependentNumbers.array();
+      pEnd = pIt + stateX.mDependentNumbers.size();
+      for (; pIt != pEnd; ++pIt, ++pPermutation)
+        *(pTo + *pPermutation) = *pIt;
     }
   else
     {
@@ -99,7 +85,6 @@ CState & CState::operator =(const CStateX & stateX)
 CState & CState::operator =(const CState & state)
 {
 #ifdef COPASI_DEBUG
-  //this->check("operator= lhs");
   state.check("operator= rhs");
 #endif
 
@@ -203,7 +188,7 @@ void CState::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
 #ifdef COPASI_DEBUG
     this->check("calculate Jacobian");
 #endif
-    //std::cout << "calculateJacobian" << std::endl;
+
     const CMatrix< C_FLOAT64 > & Stoi = mpModel->getStoi();
     unsigned C_INT32 mNo = Stoi.numRows();
     unsigned C_INT32 rNo = Stoi.numCols();
@@ -225,55 +210,6 @@ void CState::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
         }
   }
 
-/*void CState::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
-                                  const C_FLOAT64 & factor,
-                                  const C_FLOAT64 & resolution)
-{
-  unsigned C_INT32 i, j, dim = mVariableNumbers.size();
-  C_FLOAT64 * x =
-    const_cast<C_FLOAT64 *>(mVariableNumbers.array());
-  jacobian.resize(dim, dim);
- 
-  // constants for differentiation by finite differences
-  C_FLOAT64 K1 = 1 + factor;
-  C_FLOAT64 K2 = 1 - factor;
-  C_FLOAT64 K3 = 2 * factor;
- 
-  C_FLOAT64 store, temp;
-  CVector< C_FLOAT64 > f1(dim);
-  CVector< C_FLOAT64 > f2(dim);
- 
-  for (i = 0; i < dim; i++)
-    {
-      // if y[i] is zero, the derivative will be calculated at a small
-      //  positive value (no point in considering negative values!).
-      //  let's stick with SSRes*(1.0+DerivFactor)
- 
-      store = x[i];
- 
-      if (store < resolution)
-        temp = resolution * K1;
-      else
-        temp = store;
- 
-      x[i] = temp * K1;
-      const_cast<CModel *>(mpModel)->getDerivatives(this, f1);
- 
-      x[i] = temp * K2;
-      const_cast<CModel *>(mpModel)->getDerivatives(this, f2);
- 
-      for (j = 0; j < dim; j++)
-        jacobian[j][i] = (f1[j] - f2[j]) / (temp * K3);
- 
-      x[i] = store;
-    }
- 
-  // We need this to reset the model (a bad hack)
-  const_cast<CModel *>(mpModel)->getDerivatives(this, f2);
- 
-  return;
-}*/
-
 void CState::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
                                        const C_FLOAT64 & factor,
                                        const C_FLOAT64 & resolution) const
@@ -282,24 +218,30 @@ void CState::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
     this->check("calculate Elasticity");
 #endif
     const_cast<CModel *>(mpModel)->setState(this);
-    const CCopasiVectorNS< CReaction > & Reactions = mpModel->getReactions();
-    unsigned C_INT32 i, imax = Reactions.size();
 
-    const CCopasiVector< CMetab > & Metabolites = mpModel->getMetabolites();
+    unsigned C_INT32 i;
+    const unsigned C_INT32 nCol = elasticityMatrix.numCols();
 
-    unsigned C_INT32 j, jmax = mpModel->getNumVariableMetabs();
+    C_FLOAT64 * itE;
+    C_FLOAT64 * startE = const_cast<C_FLOAT64 *>(elasticityMatrix.array());
 
-    C_FLOAT64 * x;
-    C_FLOAT64 invVolume;
+    CCopasiVector< CReaction >::const_iterator itReaction;
+    CCopasiVector< CReaction >::const_iterator startReaction = mpModel->getReactions().begin();
+    CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
 
-    for (j = 0; j < jmax; j++)
+    CCopasiVector< CMetab >::const_iterator itMetab;
+    CCopasiVector< CMetab >::const_iterator startMetab = mpModel->getMetabolites().begin();
+    CCopasiVector< CMetab >::const_iterator endMetab = startMetab + mpModel->getNumVariableMetabs();
+
+    for (itMetab = startMetab, i = 0; itMetab != endMetab; ++itMetab, i++)
       {
-        x = const_cast< C_FLOAT64 * >(&Metabolites[j]->getConcentration());
-        invVolume = Metabolites[j]->getCompartment()->getVolumeInv();
+        C_FLOAT64 & X = *const_cast<C_FLOAT64 *>(&(*itMetab)->getConcentration());
+        const C_FLOAT64 & invVolume = (*itMetab)->getCompartment()->getVolumeInv();
 
-        for (i = 0; i < imax; i++)
-          elasticityMatrix(i, j) = invVolume *    // * UnitFactor/UnitFactor
-                                   Reactions[i]->calculatePartialDerivative(*x, factor, resolution);
+        for (itReaction = startReaction, itE = startE + i;
+             itReaction != endReaction;
+             ++itReaction, itE += nCol)
+          * itE = invVolume * (*itReaction)->calculatePartialDerivative(X, factor, resolution);
       }
 
     return;
@@ -325,8 +267,6 @@ void CState::check(const std::string & m) const
         std::cout << "CState: " << m << ": mpModel==NULL" << std::endl;
         return;
       }
-
-    //mpModel->check();
 
     if (mFixedNumbers.size() != mpModel->getNumMetabs() - mpModel->getNumVariableMetabs())
     {std::cout << "CState: " << m << ": mismatch in fixedNumbers" << std::endl;}
@@ -361,9 +301,9 @@ CStateX::~CStateX(){}
 CStateX & CStateX::operator =(const CState & state)
 {
 #ifdef COPASI_DEBUG
-  //this->check("operator= lhs");
   state.check("operator= rhs");
 #endif
+
   mpModel = state.mpModel;
   mTime = state.mTime;
   mVolumes = state.mVolumes;
@@ -375,36 +315,21 @@ CStateX & CStateX::operator =(const CState & state)
       mVariableNumbers.resize(mpModel->getNumIndependentMetabs());
       mDependentNumbers.resize(mpModel->getNumDependentMetabs());
 
-      unsigned C_INT32 i, iVariable, iTotal;
+      const unsigned C_INT32 * pPermutation =
+        mpModel->getMetabolitePermutation().array();
 
-      iVariable = mVariableNumbers.size();
-      iTotal = iVariable + mDependentNumbers.size();
+      const C_FLOAT64 * pFrom =
+        const_cast< C_FLOAT64 * >(state.mVariableNumbers.array());
 
-      if (state.mVariableNumbers.size() != iTotal)
-        {
-          //std::cout << "In CXState assignment: Inconsistent src state" << std::endl;
-          mVariableNumbers.resize(0);
-          mDependentNumbers.resize(0);
-          return *this;
-        }
+      C_FLOAT64 * pIt = const_cast< C_FLOAT64 * >(mVariableNumbers.array());
+      C_FLOAT64 * pEnd = pIt + mVariableNumbers.size();
+      for (; pIt != pEnd; ++pIt, ++pPermutation)
+        *pIt = *(pFrom + *pPermutation);
 
-      const CVector< unsigned C_INT32 > & Permutation =
-        mpModel->getMetabolitePermutation();
-
-      C_FLOAT64 * Dbl =
-        const_cast< C_FLOAT64 * >(mVariableNumbers.array());
-
-      for (i = 0; i < iVariable; i++, Dbl++)
-        {
-          *Dbl = state.mVariableNumbers[Permutation[i]];
-        }
-
-      Dbl = const_cast< C_FLOAT64 * >(mDependentNumbers.array());
-
-      for (i = iVariable; i < iTotal; i++, Dbl++)
-        {
-          *Dbl = state.mVariableNumbers[Permutation[i]];
-        }
+      pIt = const_cast< C_FLOAT64 * >(mDependentNumbers.array());
+      pEnd = pIt + mDependentNumbers.size();
+      for (; pIt != pEnd; ++pIt, ++pPermutation)
+        *pIt = *(pFrom + *pPermutation);
     }
   else
     {
@@ -418,9 +343,9 @@ CStateX & CStateX::operator =(const CState & state)
 CStateX & CStateX::operator =(const CStateX & stateX)
 {
 #ifdef COPASI_DEBUG
-  //this->check("operator= lhs");
   stateX.check("operator= rhs");
 #endif
+
   mpModel = stateX.mpModel;
   mTime = stateX.mTime;
   mVolumes = stateX.mVolumes;
@@ -471,7 +396,7 @@ void CStateX::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
 #ifdef COPASI_DEBUG
     this->check("calculate Jacobian");
 #endif
-    //std::cout << "calculateJacobianX" << std::endl;
+
     const CModel::CLinkMatrixView & L = mpModel->getL();
     unsigned C_INT32 mNo = L.numRows();
     unsigned C_INT32 iNo = L.numCols();
@@ -514,56 +439,18 @@ void CStateX::updateDependentNumbers()
   this->check("update dependent numbers");
 #endif
 
-  mpModel->updateDepMetabNumbers(*this);
-}
+  const_cast<CModel *>(mpModel)->setStateX(this);
 
-/*void CStateX::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
-                                   const C_FLOAT64 & factor,
-                                   const C_FLOAT64 & resolution)
-{
-  unsigned C_INT32 i, j, dim = mVariableNumbers.size();
-  C_FLOAT64 * x =
-    const_cast<C_FLOAT64 *>(mVariableNumbers.array());
-  jacobian.resize(dim, dim);
- 
-  // constants for differentiation by finite differences
-  C_FLOAT64 K1 = 1 + factor;
-  C_FLOAT64 K2 = 1 - factor;
-  C_FLOAT64 K3 = 2 * factor;
- 
-  C_FLOAT64 store, temp;
-  CVector< C_FLOAT64 > f1(dim);
-  CVector< C_FLOAT64 > f2(dim);
- 
-  for (i = 0; i < dim; i++)
-    {
-      // if x[i] is zero, the derivative will be calculated at a small
-      // positive value (no point in considering negative values!).
-      // let's stick with SSRes*(1.0+DerivFactor)
-      store = x[i];
- 
-      if (store < resolution)
-        temp = resolution * K1;
-      else
-        temp = store;
- 
-      x[i] = temp * K1;
-      const_cast<CModel *>(mpModel)->getDerivatives(this, f1);
- 
-      x[i] = temp * K2;
-      const_cast<CModel *>(mpModel)->getDerivatives(this, f2);
- 
-      for (j = 0; j < dim; j++)
-        jacobian[j][i] = (f1[j] - f2[j]) / (temp * K3);
- 
-      x[i] = store;
-    }
- 
-  // We need this to reset the model (a bad hack)
-  const_cast<CModel *>(mpModel)->getDerivatives(this, f2);
- 
-  return;
-}*/
+  C_FLOAT64 * Tmp = mDependentNumbers.array();
+
+  CCopasiVector< CMetab >::const_iterator it =
+    mpModel->getMetabolitesX().begin() + mpModel->getNumIndependentMetabs();
+  CCopasiVector< CMetab >::const_iterator end =
+    it + mpModel->getNumDependentMetabs();
+
+  for (; it != end; ++it, Tmp++)
+    *Tmp = (*it)->getValue();
+}
 
 void CStateX::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
                                         const C_FLOAT64 & factor,
@@ -572,29 +459,34 @@ void CStateX::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
 #ifdef COPASI_DEBUG
     this->check("calculate elasticities");
 #endif
+
     const_cast<CModel *>(mpModel)->setStateX(this);
-    const CCopasiVector< CReaction > & Reactions = mpModel->getReactionsX();
-    unsigned C_INT32 i, imax = Reactions.size();
 
-    const CCopasiVector< CMetab > & Metabolites = mpModel->getMetabolitesX();
-    unsigned C_INT32 j, jmax = mpModel->getNumVariableMetabs();
+    unsigned C_INT32 i;
+    const unsigned C_INT32 nCol = elasticityMatrix.numCols();
 
-    C_FLOAT64 * x;
-    C_FLOAT64 invVolume;
+    C_FLOAT64 * itE;
+    C_FLOAT64 * startE = const_cast<C_FLOAT64 *>(elasticityMatrix.array());
 
-    for (j = 0; j < jmax; j++)
+    CCopasiVector< CReaction >::const_iterator itReaction;
+    CCopasiVector< CReaction >::const_iterator startReaction = mpModel->getReactions().begin();
+    CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
+
+    CCopasiVector< CMetab >::const_iterator itMetab;
+    CCopasiVector< CMetab >::const_iterator startMetab = mpModel->getMetabolitesX().begin();
+    CCopasiVector< CMetab >::const_iterator endMetab = startMetab + mpModel->getNumVariableMetabs();
+
+    for (itMetab = startMetab, i = 0; itMetab != endMetab; ++itMetab, i++)
       {
-        x = const_cast< C_FLOAT64 * >(&Metabolites[j]->getConcentration());
-        invVolume = Metabolites[j]->getCompartment()->getVolumeInv();
+        C_FLOAT64 & X = *const_cast<C_FLOAT64 *>(&(*itMetab)->getConcentration());
+        const C_FLOAT64 & invVolume = (*itMetab)->getCompartment()->getVolumeInv();
 
-        for (i = 0; i < imax; i++)
-          {
-            elasticityMatrix(i, j) = invVolume *    // * UnitFactor/UnitFactor
-                                     Reactions[i]->calculatePartialDerivative(*x, factor, resolution);
-          }
+        for (itReaction = startReaction, itE = startE + i;
+             itReaction != endReaction;
+             ++itReaction, itE += nCol)
+          * itE = invVolume * (*itReaction)->calculatePartialDerivative(X, factor, resolution);
       }
 
-    //    DebugFile << "Elasiticity Matrix: " << elasticityMatrix << std::endl;
     return;
   }
 

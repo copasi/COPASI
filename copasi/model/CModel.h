@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.109.2.1 $
+   $Revision: 1.109.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/21 17:17:00 $
+   $Date: 2006/01/10 14:12:06 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -498,12 +498,14 @@ class CModel : public CCopasiContainer
      */
     void buildMoieties();
 
+  private:
     /**
      *  compute the actual initial value of all moieties 
      *  (from the initial values of the metabolites).
      */
     void updateMoietyValues();
 
+  public:
     /**
      *  This calculate the right hand side (ydot) of the ODE for LSODA
      */ 
@@ -1009,13 +1011,6 @@ class CModel : public CCopasiContainer
      * @return const CVector<unsigned C_INT32> & permutation
      */
     const CVector< unsigned C_INT32 > & getReactionPermutation() const;
-
-    /**
-     * Calculates the particle numbers of the dependent
-     * metabolites for the given reduced model stateX and updates the state
-     * @param CStateX & stateX
-     */
-    void updateDepMetabNumbers (const CStateX & stateX) const;
 
     /**
      * Set the transient concentrations and volumes according to the

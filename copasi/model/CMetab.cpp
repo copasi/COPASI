@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.91 $
+   $Revision: 1.91.2.1 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/12/17 21:26:09 $
+   $Author: shoops $ 
+   $Date: 2006/01/10 14:12:06 $
    End CVS Header */
 
 #include <iostream>
@@ -12,6 +12,7 @@
 #include <limits>
 
 #include "copasi.h"
+
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/utility.h"
 #include "report/CCopasiObjectReference.h"
@@ -44,16 +45,12 @@ CMetab::CMetab(const std::string & name,
                const CCopasiContainer * pParent):
     CModelEntity(name, pParent, "Metabolite",
                  CCopasiObject::NonUniqueName),
-    //mKey(GlobalKeys.add("Metabolite", this)),
     mConc(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mIConc(0.0),
-    //mNumber(-1.0),
-    //mINumber(-1.0),
-    //mRate(0.0),
     mTT(0.0),
-    //mStatus(REACTIONS),
     mpCompartment(NULL),
-    mpModel(NULL)
+    mpModel(NULL),
+    mMoieties()
 {
   mKey = GlobalKeys.add("Metabolite", this);
   mStatus = REACTIONS;
@@ -73,16 +70,12 @@ CMetab::CMetab(const std::string & name,
 CMetab::CMetab(const CMetab & src,
                const CCopasiContainer * pParent):
     CModelEntity(src, pParent),
-    //mKey(GlobalKeys.add("Metabolite", this)),
     mConc(src.mConc),
     mIConc(src.mIConc),
-    //mNumber(src.mNumber),
-    //mINumber(src.mINumber),
-    //mRate(src.mRate),
     mTT(src.mTT),
-    //mStatus(src.mStatus),
     mpCompartment(NULL),
-    mpModel(NULL)
+    mpModel(NULL),
+    mMoieties()
 {
   mKey = GlobalKeys.add("Metabolite", this);
   initModel();
@@ -180,8 +173,11 @@ bool CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
   if (mStatus == FIXED)
     setConcentration(initialConcentration);
 
-  if (mpModel)
-    const_cast<CModel*>(mpModel)->updateMoietyValues();
+  std::set< CMoiety * >::iterator it = mMoieties.begin();
+  std::set< CMoiety * >::iterator end = mMoieties.end();
+
+  for (; it != end; ++it)
+    (*it)->setInitialValue();
 
   return true;
 }
@@ -206,13 +202,17 @@ bool CMetab::setInitialValue(const C_FLOAT64 & initialNumber)
     {
       mIConc = initialNumber * mpCompartment->getVolumeInv() * mpModel->getNumber2QuantityFactor();
     }
+
   mIValue = initialNumber;
 
   if (mStatus == FIXED)
     setNumber(initialNumber);
 
-  if (mpModel)
-    const_cast<CModel*>(mpModel)->updateMoietyValues();
+  std::set< CMoiety * >::iterator it = mMoieties.begin();
+  std::set< CMoiety * >::iterator end = mMoieties.end();
+
+  for (; it != end; ++it)
+    (*it)->setInitialValue();
 
   return true;
 }
@@ -370,6 +370,12 @@ std::string CMetab::getObjectDisplayName(bool regular, bool richtext) const
 
     return CCopasiObject::getObjectDisplayName(regular, richtext);
   }
+
+void CMetab::addMoiety(CMoiety * pMoiety)
+{mMoieties.insert(pMoiety);}
+
+void CMetab::clearMoieties()
+{mMoieties.clear();}
 
 //******************* CMetabOld ***************************************************
 

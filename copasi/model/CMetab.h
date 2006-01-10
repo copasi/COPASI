@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.62 $
+   $Revision: 1.62.8.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/01 14:55:37 $
+   $Author: shoops $ 
+   $Date: 2006/01/10 14:12:06 $
    End CVS Header */
 
 /**
@@ -17,6 +17,7 @@
 
 #include <string>
 #include <iostream>
+#include <set>
 
 #include "model/CModelValue.h"
 
@@ -25,6 +26,7 @@ class CReadConfig;
 //class CWriteConfig;
 class CMetabOld;
 class CModel;
+class CMoiety;
 
 #define METAB_MOIETY 7
 
@@ -107,6 +109,11 @@ class CMetab : public CModelEntity
      */
     /** @dia:route 15,38; h,108.729,55.8961,170.684,44.1423,177.081 */
     const CModel * mpModel;
+
+    /**
+     * The set of moieties the metabolite is part of
+     */
+    std::set< CMoiety * > mMoieties;
 
     /**
      * This the default parent compartmnet used on creation
@@ -279,6 +286,17 @@ class CMetab : public CModelEntity
      * @param const CCompartment * parentCompartmnte
      */
     static void setParentCompartment(const CCompartment * parentCompartment);
+
+    /**
+     * Add a moiety to the list
+     * @param CMoiety * pMoiety
+     */
+    void addMoiety(CMoiety * pMoiety);
+
+    /**
+     * Clear the list of moieties
+     */
+    void clearMoieties();
 
   private:
     /**
