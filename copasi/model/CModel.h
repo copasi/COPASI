@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.109.2.2 $
+   $Revision: 1.109.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/10 14:12:06 $
+   $Date: 2006/01/11 13:11:01 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -745,6 +745,12 @@ class CModel : public CCopasiContainer
      * @return const CLinkMatrixView L
      */
     const CLinkMatrixView & getL() const;
+
+    /**
+     * Get the relevant portion of the link matrix L.
+     * @return const CMatrix< C_FLOAT64 > & L0
+     */
+    const CMatrix< C_FLOAT64 > & getL0() const;
 
     /**
      * initialize all values of the model with their initial values

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.244.2.4 $
+   $Revision: 1.244.2.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/10 14:12:06 $
+   $Date: 2006/01/11 13:11:01 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -45,8 +45,10 @@
 #include "utilities/utility.h"
 #include "utilities/CProcessReport.h"
 #include "CReactionInterface.h"
-#include "clapackwrap.h"
 #include "utilities/CAnnotatedMatrix.h"
+
+#include "blaswrap.h"
+#include "clapackwrap.h"
 
 #ifdef COPASI_DEBUG
 #define CCHECK {check();}
@@ -1007,6 +1009,9 @@ const CCopasiVector < CMoiety > & CModel::getMoieties() const
 const CModel::CLinkMatrixView & CModel::getL() const
   {CCHECK return mLView;}
 
+const CMatrix< C_FLOAT64 > & CModel::getL0() const
+  {return mL;}
+
 const CModel::CStateTemplate & CModel::getStateTemplate() const
   {CCHECK return mStateTemplate;}
 
@@ -1420,32 +1425,6 @@ void CModel::updateRates()
   setTransitionTimes();
 }
 
-//**********************************************************************
-
-/*void CModel::getRates(const CState * state, C_FLOAT64 * rates)
-{
-  setState(state);
- 
-  unsigned C_INT32 i, imax;
- 
-  for (i = 0, imax = mSteps.size(); i < imax; i++)
-    rates[i] = mSteps[i]->calculate();
- 
-  return;
-}
- 
-void CModel::getRatesX(const CStateX * state, C_FLOAT64 * rates)
-{
-  setStateX(state);
- 
-  unsigned C_INT32 i, imax;
- 
-  for (i = 0, imax = mStepsX.size(); i < imax; i++)
-    rates[i] = mStepsX[i]->calculate();
- 
-  return;
-}*/
-
 void CModel::getDerivatives_particles(const CState * state, CVector< C_FLOAT64 > & derivatives)
 {
   setState(state);
@@ -1490,31 +1469,6 @@ void CModel::getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64
     }
 }
 
-//**********************************************************************
-
-/*unsigned C_INT32 CModel::unitCompare(const std::string & name,
-                                     const char ** units
-                                     const unsigned C_INT32 unique)
-{
-  unsigned C_INT32 i, j;
-  std::string Unit;
- 
-  //for (i = 0; *units; i++, units++)
-  //  {
-  //    Unit = *units;
-  //    for (j = Unit.length(); j >= unique || j == Unit.length(); j--)
-  //      if (Unit.substr(0, j) == name.substr(0, j)) return i;
-  //}
-  
-  for (i = 0; *units; i++, units++)
-    {
-      Unit = *units;
-        if (Unit == name) return i;
-    }
- 
-  return i;
-}*/
-
 bool CModel::setVolumeUnit(const std::string & name)
 {
   int unit = toEnum(name.c_str(), VolumeUnitNames);
@@ -1529,27 +1483,6 @@ bool CModel::setVolumeUnit(const CModel::VolumeUnit & unit)
 {
   mVolumeUnit = unit;
   return true;
-
-  /*bool success = true;
-   
-    switch (unit)
-      {
-      case m3:
-      case l:
-      case ml:
-      case microl:
-      case nl:
-      case pl:
-      case fl:
-        mVolumeUnit = VolumeUnitName[unit];
-        break;
-   
-      default:
-        mVolumeUnit = VolumeUnitName[ml];
-        success = false;
-      }
-   
-    return success;*/
 }
 
 std::string CModel::getVolumeUnitName() const
@@ -1578,29 +1511,6 @@ bool CModel::setTimeUnit(const CModel::TimeUnit & unit)
 {
   mTimeUnit = unit;
   return true;
-
-  //   bool success = true;
-  //
-  //   switch (unit)
-  //     {
-  //     case d:
-  //     case h:
-  //     case min:
-  //     case s:
-  //     case ms:
-  //     case micros:
-  //     case ns:
-  //     case ps:
-  //     case fs:
-  //       mTimeUnit = TimeUnitName[unit];
-  //       break;
-  //
-  //     default:
-  //       mTimeUnit = TimeUnitName[s];
-  //       success = false;
-  //}
-  //
-  //   return success;
 }
 
 std::string CModel::getTimeUnitName() const
