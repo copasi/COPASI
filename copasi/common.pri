@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.46 $ $Author: shoops $ $Date: 2005/08/30 15:38:57 $  
+# $Revision: 1.46.2.1 $ $Author: shoops $ $Date: 2006/01/11 13:42:10 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -165,7 +165,7 @@ contains(BUILD_OS, SunOS) {
   } else {
     !isEmpty(LAPACK_PATH) {
       message("Using lapack.")
-      DEFINES += USE_CLAPACK
+      DEFINES += USE_LAPACK
       INCLUDEPATH += $${LAPACK_PATH}/include
       LIBS += -llapack -lblas  -lg2c
       LIBS += -L$${LAPACK_PATH}/lib
@@ -232,7 +232,7 @@ contains(BUILD_OS, Linux) {
     } else {
       !isEmpty(LAPACK_PATH) {
         message("Using lapack.")
-        DEFINES += USE_CLAPACK
+        DEFINES += USE_LAPACK
         INCLUDEPATH += $${LAPACK_PATH}/include
         LIBS += -llapack -lblas  -lg2c
         LIBS += -L$${LAPACK_PATH}/lib
