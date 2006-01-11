@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.120.2.6 $
+   $Revision: 1.120.2.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/04 16:47:14 $
+   $Date: 2006/01/11 19:06:37 $
    End CVS Header */
 
 /**
@@ -468,11 +468,18 @@ void CCopasiXMLParser::ListOfFunctionsElement::end(const XML_Char *pszName)
       mCurrentElement = START_ELEMENT;
       {
         unsigned C_INT32 i, imax = mCommon.pFunctionList->size();
-        for (i = 0; i < imax; i++)
+        for (i = imax - 1; i != C_INVALID_INDEX; i--)
           {
             CFunction * pFunction =
               dynamic_cast<CFunction *>((*mCommon.pFunctionList)[i]);
-            if (pFunction) pFunction->compile();
+
+            if (pFunction && !pFunction->compile())
+              {
+                CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 6,
+                                       pFunction->getObjectName().c_str(),
+                                       mParser.getCurrentLineNumber());
+                mCommon.pFunctionList->CCopasiVector< CEvaluationTree >::remove(i);
+              }
           }
       }
 
@@ -2660,13 +2667,23 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
 
       pFunction =
         dynamic_cast< CFunction* >(mCommon.KeyMap.get(Function));
-      if (!pFunction) fatalError();
+
+      if (!pFunction)
+        {
+          CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 7, Function,
+                                 mCommon.pReaction->getObjectName().c_str(),
+                                 mParser.getCurrentLineNumber());
+          pFunction = CCopasiDataModel::Global->mpUndefined;
+        }
 
       mCommon.pReaction->setFunction(pFunction);
       break;
 
     case ListOfCallParameters:
       if (strcmp(pszName, "ListOfCallParameters")) fatalError();
+
+      if (&mCommon.pReaction->getFunction() == CCopasiDataModel::Global->mpUndefined)
+        mParser.onStartElement(pszName, papszAttrs);
 
       /* If we do not have a etc element handler we create one. */
       if (!mpCurrentHandler)
@@ -2707,7 +2724,11 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
       break;
 
     case UNKNOWN_ELEMENT:
-      mCurrentElement = mLastKnownElement;
+      if (&mCommon.pReaction->getFunction() == CCopasiDataModel::Global->mpUndefined)
+        mCurrentElement = KineticLaw;
+      else
+        mCurrentElement = mLastKnownElement;
+
       break;
 
     default:
