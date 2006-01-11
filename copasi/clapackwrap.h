@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/clapackwrap.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.8.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:38:57 $
+   $Date: 2006/01/11 13:38:57 $
    End CVS Header */
 
 #ifdef min
@@ -1236,9 +1236,7 @@ extern "C"
 # define zupmtr_ ZUPMTR
 # include "mkl_lapack.h"
 #else
-# ifdef USE_CLAPACK
-#  include "f2c.h"
-# endif
+# include "f2c.h"
 # include "clapack.h"
 #endif // USE_MKL
   }
