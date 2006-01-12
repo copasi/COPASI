@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.11.2.1 $
+   $Revision: 1.11.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/04 15:21:40 $
+   $Date: 2006/01/12 16:50:22 $
    End CVS Header */
 
 /**
@@ -85,13 +85,13 @@ CTauLeapMethod *CTauLeapMethod::createTauLeapMethod(CTrajectoryProblem * C_UNUSE
   switch (result)
     {
       // Error: TauLeap simulation impossible
-      /*    case - 3:             // non-integer stoichometry
+      /*    case - 3:            // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:             // reversible reaction exists
+      case - 2:            // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
-      case - 1:             // more than one compartment involved
+      case - 1:            // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/ 
       // Everything alright: Hybrid simulation possible
@@ -428,17 +428,18 @@ C_INT32 CTauLeapMethod::calculateAmu(C_INT32 index)
   // rate_factor is the rate function divided by substrate_factor.
   // It would be more efficient if this was generated directly, since in effect we
   // are multiplying and then dividing by the same thing (substrate_factor)!
-  mpModel->getReactions()[index]->calculate();
+  C_FLOAT64 rate_factor = mpModel->getReactions()[index]->calculateParticleFlux();
 
   if (flag)
     {
-      C_FLOAT64 rate_factor = mpModel->getReactions()[index]->getParticleFlux() / substrate_factor;
       //cout << "Rate factor = " << rate_factor << endl;
-      amu *= rate_factor;
+      amu *= rate_factor / substrate_factor;
       mAmu[index] = amu;
     }
   else
-  {mAmu[index] = mpModel->getReactions()[index]->getParticleFlux();}
+    {
+      mAmu[index] = rate_factor;
+    }
 
   //std::cout << "Index = " << index << "  Amu = " << amu << std::endl;
   return 0;

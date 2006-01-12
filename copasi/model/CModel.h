@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.109.2.4 $
+   $Revision: 1.109.2.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/12 15:08:28 $
+   $Date: 2006/01/12 16:50:22 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -291,8 +291,7 @@ class CModel : public CCopasiContainer
     /**
      *  Vectors of fluxes of the reactions.
      */
-    CVector< const C_FLOAT64 * > mFluxes;
-    CVector< const C_FLOAT64 * > mParticleFluxes;
+    CVector< C_FLOAT64 > mParticleFluxes;
 
     /**
      *  vector of non concentration values in the model
@@ -575,12 +574,14 @@ class CModel : public CCopasiContainer
 
     //********** TT *****************************
 
+  private:
     /**
      *  Set the transition times for all internal metabolites and the
      *  transistion time of the model.
      */
     void setTransitionTimes();
 
+  public:
     //********** Reactions *****************************
 
     /**
@@ -1057,6 +1058,11 @@ class CModel : public CCopasiContainer
      * @return bool found
      */
     bool handleUnusedMetabolites();
+
+    /**
+     * Calculates all reactions and updates the particle fluxes.
+     */
+    void calculateReactions();
 
     /**
      * Initialize the contained CCopasiObjects

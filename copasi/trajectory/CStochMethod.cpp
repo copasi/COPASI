@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.47.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:25:07 $
+   $Date: 2006/01/12 16:50:22 $
    End CVS Header */
 
 #ifdef WIN32
@@ -273,17 +273,18 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   // rate_factor is the rate function divided by substrate_factor.
   // It would be more efficient if this was generated directly, since in effect we
   // are multiplying and then dividing by the same thing (substrate_factor)!
-  mpModel->getReactions()[index]->calculate();
+  C_FLOAT64 rate_factor = mpModel->getReactions()[index]->calculateParticleFlux();
 
   if (flag)
     {
-      C_FLOAT64 rate_factor = mpModel->getReactions()[index]->getParticleFlux() / substrate_factor;
       //cout << "Rate factor = " << rate_factor << endl;
-      amu *= rate_factor;
+      amu *= rate_factor / substrate_factor;
       mAmu[index] = amu;
     }
   else
-  {mAmu[index] = mpModel->getReactions()[index]->getParticleFlux();}
+    {
+      mAmu[index] = rate_factor;
+    }
 
   //std::cout << "Index = " << index << "  Amu = " << amu << std::endl;
   return 0;

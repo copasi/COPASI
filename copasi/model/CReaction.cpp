@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.148.2.1 $
+   $Revision: 1.148.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/04 15:21:37 $
+   $Date: 2006/01/12 16:50:22 $
    End CVS Header */
 
 // CReaction
@@ -558,11 +558,23 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   return Fail;
 }
 
-C_FLOAT64 CReaction::calculate()
+const C_FLOAT64 & CReaction::calculateFlux()
+{
+  calculate();
+  return mFlux;
+}
+
+const C_FLOAT64 & CReaction::calculateParticleFlux()
+{
+  calculate();
+  return mParticleFlux;
+}
+
+void CReaction::calculate()
 {
   mFlux = *mScalingFactor * mpFunction->calcValue(mMap.getPointers());
   mParticleFlux = *mUnitScalingFactor * mFlux;
-  return mFlux;
+  return;
 }
 
 C_FLOAT64 CReaction::calculatePartialDerivative(C_FLOAT64 & xi,

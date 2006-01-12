@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.244.2.6 $
+   $Revision: 1.244.2.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/12 15:08:28 $
+   $Date: 2006/01/12 16:50:22 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -76,11 +76,8 @@ CModel::CModel():
     mMetabolites("Metabolites", this),
     mMetabolitesX("Reduced Model Metabolites", this),
     mMetabolitesInd("Independent Metabolites", this),
-    //mMetabolitesDep("Dependent Metabolites", this),
     mMetabolitesVar("Variable Metabolites", this),
     mSteps("Reactions", this),
-    //mStepsInd("Independent Reactions", this),
-    mFluxes(),
     mParticleFluxes(),
     mValues("Values", this),
     mInitialTime(0),
@@ -127,11 +124,8 @@ CModel::CModel(const CModel & src):
     mMetabolites(src.mMetabolites, this),
     mMetabolitesX(src.mMetabolitesX, this),
     mMetabolitesInd(src.mMetabolitesInd, this),
-    //mMetabolitesDep(src.mMetabolitesDep, this),
     mMetabolitesVar(src.mMetabolitesVar, this),
     mSteps(src.mSteps, this),
-    //mStepsInd(src.mStepsInd, this),
-    mFluxes(src.mFluxes),
     mParticleFluxes(src.mParticleFluxes),
     mValues(src.mValues, this),
     mInitialTime(src.mInitialTime),
@@ -181,7 +175,6 @@ void CModel::cleanup()
   mMetabolitesInd.resize(0);
   //mMetabolitesDep.resize(0);
   mMetabolitesVar.resize(0);
-  mFluxes.resize(0);
   mParticleFluxes.resize(0);
 }
 
@@ -410,14 +403,7 @@ void CModel::buildStoi()
 
   initializeMetabolites();
 
-  mFluxes.resize(mSteps.size());
   mParticleFluxes.resize(mSteps.size());
-
-  for (i = 0; i < mSteps.size(); i++)
-    {
-      mFluxes[i] = & mSteps[i]->getFlux();
-      mParticleFluxes[i] = & mSteps[i]->getParticleFlux();
-    }
 
   imax = mMetabolites.size();
   mStoi.resize(imax - mNumFixed, mSteps.size());
@@ -541,42 +527,16 @@ bool CModel::handleUnusedMetabolites()
   return true;
 }
 
-#ifdef XXXX
-void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
+void CModel::calculateReactions()
 {
-  unsigned C_INT32 i;
+  CCopasiVector< CReaction >::iterator it = mSteps.begin();
+  CCopasiVector< CReaction >::iterator end = mSteps.end();
 
-  LU = mStoi;
+  C_FLOAT64 * pFlux = mParticleFluxes.array();
 
-  LUfactor(LU, mRowLU, mColLU, mpCompileHandler);
-
-  // permutate Metabolites and Steps to match rearangements done during
-  // LU decomposition
-
-  for (i = 0; i < mRowLU.size(); i++)
-    mMetabolitesX[i] = mMetabolites[mRowLU[i]];
-
-  mStepsX.resize(mSteps.size(), false);
-  mFluxesX.resize(mStepsX.size());
-  mParticleFluxesX.resize(mStepsX.size());
-
-  for (i = 0; i < mSteps.size(); i++)
-    {
-      mStepsX[i] = mSteps[mColLU[i]];
-      mFluxesX[i] = &mStepsX[i]->getFlux();
-      mParticleFluxesX[i] = &mStepsX[i]->getParticleFlux();
-    }
-
-#ifdef DEBUG_MATRIX
-  DebugFile << "Metabolite reordering " << mRowLU << std::endl;
-  DebugFile << "Reaction reordering " << mColLU << std::endl;
-  DebugFile << "LU Decomposistion" << std::endl;
-  DebugFile << LU;
-#endif
-
-  return;
+  for (;it != end; ++it, ++pFlux)
+    *pFlux = (*it)->calculateParticleFlux();
 }
-#endif // XXXX
 
 void CModel::setMetabolitesStatus()
 {
@@ -811,7 +771,7 @@ void CModel::setTransitionTimes()
           TotalFlux_p = 0.0;
           for (j = 0; j < jmax; j++)
             {
-              PartialFlux = mStoi(i, j) * *mParticleFluxes[j];
+              PartialFlux = mStoi(i, j) * mParticleFluxes[j];
 
               if (PartialFlux > 0.0)
                 TotalFlux_p += PartialFlux;
@@ -821,7 +781,7 @@ void CModel::setTransitionTimes()
           TotalFlux_n = 0.0;
           for (j = 0; j < jmax; j++)
             {
-              PartialFlux = - mStoi(i, j) * *mParticleFluxes[j];
+              PartialFlux = - mStoi(i, j) * mParticleFluxes[j];
 
               if (PartialFlux > 0.0)
                 TotalFlux_n += PartialFlux;
@@ -977,10 +937,7 @@ const CMatrix < C_FLOAT64 >& CModel::getStoi() const
   {CCHECK return mStoi;}
 
 const CCopasiVector < CMoiety > & CModel::getMoieties() const
-  {return mMoieties;} //TODO: resolv when to recalculate moieties...
-
-//const CCopasiVectorN< CReaction > & CModel::getStepsX() const
-//  {CCHECK return mStepsX;}
+  {return mMoieties;}
 
 const CModel::CLinkMatrixView & CModel::getL() const
   {CCHECK return mLView;}
@@ -1380,18 +1337,19 @@ void CModel::setStateX(const CStateX * state)
 void CModel::updateRates()
 {
   CCHECK
-  unsigned C_INT32 j, jmax = mSteps.size();
-  for (j = 0; j < jmax; ++j)
-    mSteps[j]->calculate();
+
+  calculateReactions();
 
   // Calculate ydot = Stoi * v
-  unsigned C_INT32 i, imax = getNumVariableMetabs();
+  unsigned C_INT32 i, imax = mStoi.numRows();
+  unsigned C_INT32 j, jmax = mStoi.numCols();
   C_FLOAT64 tmp;
+
   for (i = 0; i < imax; ++i)
     {
       tmp = 0.0;
       for (j = 0; j < jmax; ++j)
-        tmp += mStoi(i, j) * *mParticleFluxes[j];
+        tmp += mStoi(i, j) * mParticleFluxes[j];
       mMetabolites[i]->setNumberRate(tmp);
     }
 
@@ -1407,8 +1365,7 @@ void CModel::getDerivatives_particles(const CState * state, CVector< C_FLOAT64 >
 
   assert (derivatives.size() == imax);
 
-  for (j = 0; j < jmax; j++)
-    mSteps[j]->calculate();
+  calculateReactions();
 
   // Calculate ydot = Stoi * v
   for (i = 0; i < imax; i++)
@@ -1416,7 +1373,7 @@ void CModel::getDerivatives_particles(const CState * state, CVector< C_FLOAT64 >
       derivatives[i] = 0.0;
 
       for (j = 0; j < jmax; j++)
-        derivatives[i] += mStoi(i, j) * *mParticleFluxes[j];
+        derivatives[i] += mStoi(i, j) * mParticleFluxes[j];
     }
 #ifdef XXXX
   char T = 'N';
@@ -1563,8 +1520,7 @@ void CModel::getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64
 
   assert (derivatives.size() == imax);
 
-  for (j = 0; j < jmax; j++)
-    mSteps[j]->calculate();
+  calculateReactions();
 
   // Calculate ydot = RedStoi * v
   for (i = 0; i < imax; i++)
@@ -1572,7 +1528,7 @@ void CModel::getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64
       derivatives[i] = 0.0;
 
       for (j = 0; j < jmax; j++)
-        derivatives[i] += mRedStoi(i, j) * *mParticleFluxes[j];
+        derivatives[i] += mRedStoi(i, j) * mParticleFluxes[j];
     }
 }
 
@@ -2160,29 +2116,17 @@ void CModel::initObjects()
   addObjectReference("Initial Time", mInitialTime, CCopasiObject::ValueDbl);
   addObjectReference("Time", mTime, CCopasiObject::ValueDbl);
   addObjectReference("Comments", mComments);
-  //  add(&mCompartments);
-  //  add(&mMetabolites);
-  //  add(&mMetabolitesX);
-  //  add(&mMetabolitesInd);
-  //  add(&mMetabolitesDep);
-  //  add(&mSteps);
-  //  add(&mStepsX);
-  //  //add(&mStepsInd);
-  addVectorReference("Fluxes", mFluxes, CCopasiObject::ValueDbl);
-  //  addVectorReference("Reduced Model Fluxes", mFluxesX);
-  addVectorReference("Particle Fluxes", mParticleFluxes, CCopasiObject::ValueDbl);
-  //  addVectorReference("Reduced Model Scaled Fluxes", mScaledFluxesX);
-  // addObjectReference("Transition Time", mTransitionTime);
+
+  // These are broken since they contain pointers to values :(
+  //  addVectorReference("Fluxes", mFluxes, CCopasiObject::ValueDbl);
+  //  addVectorReference("Particle Fluxes", mParticleFluxes, CCopasiObject::ValueDbl);
+
   addMatrixReference("Stoichiometry", mStoi, CCopasiObject::ValueDbl);
   addMatrixReference("Reduced Model Stoichiometry", mRedStoi, CCopasiObject::ValueDbl);
-  // addVectorReference("Metabolite Interchanges", mRowLU);
-  // addVectorReference("Reaction Interchanges", mColLU);
-  // addMatrixReference("L", mL);
+
   addMatrixReference("Link Matrix", mLView, CCopasiObject::ValueDbl);
   addObjectReference("Quantity Unit", mQuantityUnit);
   addObjectReference("Quantity Conversion Factor", mQuantity2NumberFactor, CCopasiObject::ValueDbl);
-  // addObjectReference("Inverse Quantity Conversion Factor",
-  //                    mNumber2QuantityFactor);
 
   CArrayAnnotation * tmp = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoi));
   tmp->setOnTheFly(true);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.27.2.3 $
+   $Revision: 1.27.2.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/12 15:07:23 $
+   $Date: 2006/01/12 16:50:22 $
    End CVS Header */
 
 #include <cmath>
@@ -151,20 +151,14 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 res)
 
       // Calculate the fluxes
       for (i = 0; i < numReacs; i++)
-        {
-          reacs[i]->calculate();
-          f1[i] = reacs[i]->getParticleFlux();
-        }
+        f1[i] = reacs[i]->calculateParticleFlux();
 
       // now X-dx
       metabs[j]->setNumber(temp * K2);
 
       // calculate the fluxes
       for (i = 0; i < numReacs; i++)
-        {
-          reacs[i]->calculate();
-          f2[i] = reacs[i]->getParticleFlux();
-        }
+        f2[i] = reacs[i]->calculateParticleFlux();
 
       // set column j of Dxv
       for (i = 0; i < numReacs; i++)
@@ -176,7 +170,7 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 res)
 
   // make shure the fluxes are correct afterwords (needed for scaling of the MCA results)
   for (i = 0; i < numReacs; i++)
-  {reacs[i]->calculate();}
+  {reacs[i]->calculateParticleFlux();}
 
   //std::cout << "elasticities" << std::endl;
   //std::cout << (CMatrix<C_FLOAT64>)mUnscaledElasticities << std::endl;

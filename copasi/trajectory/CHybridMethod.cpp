@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.33.2.1 $
+   $Revision: 1.33.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/04 15:21:40 $
+   $Date: 2006/01/12 16:50:22 $
    End CVS Header */
 
 /**
@@ -75,14 +75,14 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * C_UNUSED(p
 
   switch (result)
     {
-      /*    case - 3:                 // non-integer stoichometry
+      /*    case - 3:                // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:                 // reversible reaction exists
+      case - 2:                // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
 
-      case - 1:                 // more than one compartment involved
+      case - 1:                // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/
     case 1:
@@ -406,7 +406,7 @@ void CHybridMethod::calculateDerivative(std::vector <C_FLOAT64> & deriv)
   // Calculate all the needed kinetic functions of the deterministic reactions
   for (j = mFirstReactionFlag; j != NULL; j = j->mpNext)
     {
-      (*mpReactions)[j->mIndex]->calculate();
+      (*mpReactions)[j->mIndex]->calculateParticleFlux();
     }
 
   // For each metabolite add up the contributions of the det. reactions
@@ -627,11 +627,10 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
   // rate_factor is the rate function divided by substrate_factor.
   // It would be more efficient if this was generated directly, since in effect we
   // are multiplying and then dividing by the same thing (substrate_factor)!
-  (*mpReactions)[rIndex]->calculate();
   //  mpModel->getReactions()[rIndex]->calculate();
   //  C_FLOAT64 rate_factor = mpModel->getReactions()[rIndex]->getParticleFlux() / substrate_factor;
 
-  C_FLOAT64 rate_factor = (*mpReactions)[rIndex]->getParticleFlux() / substrate_factor;
+  C_FLOAT64 rate_factor = (*mpReactions)[rIndex]->calculateParticleFlux() / substrate_factor;
   //std::cout << "Rate factor = " << rate_factor << std::endl;
   amu *= rate_factor;
   mAmu[rIndex] = amu;
