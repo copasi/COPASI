@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.71.2.2 $
+   $Revision: 1.71.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/06 14:15:03 $
+   $Date: 2006/01/12 17:21:10 $
    End CVS Header */
 
 /**
@@ -175,7 +175,7 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
                             & mSolutionValue);
       mCounter = 0;
       mhCounter =
-        mpCallBack->addItem("Simulation Counter",
+        mpCallBack->addItem("Function Evaluations",
                             CCopasiParameter::UINT,
                             & mCounter);
     }
@@ -185,7 +185,7 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
 
 void COptProblem::initObjects()
 {
-  addObjectReference("Simulation Counter", mCounter, CCopasiObject::ValueInt);
+  addObjectReference("Function Evaluations", mCounter, CCopasiObject::ValueInt);
   addObjectReference("Best Value", mSolutionValue, CCopasiObject::ValueDbl);
   addVectorReference("Best Parameters", mSolutionVariables, CCopasiObject::ValueDbl);
 }

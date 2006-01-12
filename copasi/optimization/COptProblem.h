@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.43.2.1 $
+   $Revision: 1.43.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/03 17:40:38 $
+   $Date: 2006/01/12 17:21:10 $
    End CVS Header */
 
 /**
@@ -358,7 +358,7 @@ class COptProblem : public CCopasiProblem
     unsigned C_INT32 mhSolutionValue;
 
     /**
-     * Handle of "Simulation Counter" process report item
+     * Handle of "Function Evaluations" process report item
      */
     unsigned C_INT32 mhCounter;
   };

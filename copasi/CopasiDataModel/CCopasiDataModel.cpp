@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.55.2.3 $
+   $Revision: 1.55.2.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/07 04:33:52 $
+   $Date: 2006/01/12 17:21:11 $
    End CVS Header */
 
 #include "copasi.h"
@@ -609,14 +609,14 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
 
       // Header
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Object=Description"));
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Simulation Counter\\]"));
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Function Evaluations\\]"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Value\\]"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Parameters\\]"));
 
       // Body
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Simulation Counter"));
+      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations"));
       pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
       pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value"));
       pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
@@ -637,14 +637,14 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
 
       // Header
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Fitting],Object=Description"));
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Simulation Counter\\]"));
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Function Evaluations\\]"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Value\\]"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Parameters\\]"));
 
       // Body
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Simulation Counter"));
+      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Function Evaluations"));
       pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
       pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Best Value"));
       pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
