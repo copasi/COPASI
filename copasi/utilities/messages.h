@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.51.2.1 $
+   $Revision: 1.51.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/21 19:52:24 $
+   $Date: 2006/01/12 14:30:00 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -91,6 +91,8 @@ const MESSAGES Messages[] =
     {MCXML + 3, "XML (3): Unknown element '%s' encountered at line '%d'."},
     {MCXML + 4, "XML (4): Unknown parameter '%s' encountered at line '%d'."},
     {MCXML + 5, "XML (5): Unknown task type '%s' encountered at line '%d'."},
+    {MCXML + 6, "XML (6): Invalid function '%s' encountered at line '%d'."},
+    {MCXML + 7, "XML (7): Unknown function '%s' in reaction '%s' encountered at line '%d'."},
 
     // CCopasiMessage
     {MCCopasiMessage + 1, "Message (1): No more messages."},
