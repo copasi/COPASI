@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.109.2.3 $
+   $Revision: 1.109.2.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/11 13:11:01 $
+   $Date: 2006/01/12 15:08:28 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -289,24 +289,10 @@ class CModel : public CCopasiContainer
     CCopasiVectorNS< CReaction > mSteps;
 
     /**
-     *  Vector of reference to reactions in reduced model representation.
-     */
-    /** @dia:route 154,33; h,177.081,90.7423,168.084,88.0337,159.088 */
-    CCopasiVectorN< CReaction > mStepsX;
-
-    /**
-     *  Vector of reference to independend reactions.
-     */
-    /** @dia:route 154,37; h,177.081,90.7423,168.084,89.6337,159.088 */
-    //CCopasiVectorN< CReaction > mStepsInd;
-
-    /**
      *  Vectors of fluxes of the reactions.
      */
     CVector< const C_FLOAT64 * > mFluxes;
-    CVector< const C_FLOAT64 * > mFluxesX;
     CVector< const C_FLOAT64 * > mParticleFluxes;
-    CVector< const C_FLOAT64 * > mParticleFluxesX;
 
     /**
      *  vector of non concentration values in the model
@@ -356,8 +342,8 @@ class CModel : public CCopasiContainer
 
     /**
      * Vector for storing the column interchanges during LU-Decomposition
-     */
-    CVector< unsigned C_INT32 > mColLU;
+     */ 
+    //    CVector< unsigned C_INT32 > mColLU;
 
     /**
      *   This matrix stores L
@@ -477,11 +463,13 @@ class CModel : public CCopasiContainer
      */
     void buildL(const CMatrix< C_FLOAT64 > & LU);
 
+#ifdef XXXX
     /**
      *  LU-Decomposition of the stoichiometry matrix
      *  @param CMatrix< C_FLOAT64 > & LU
      */
     void lUDecomposition(CMatrix< C_FLOAT64 > & LU);
+#endif // XXXX
 
     /**
      *  Set the status of the metabolites
@@ -607,14 +595,6 @@ class CModel : public CCopasiContainer
      */
     const CCopasiVectorNS < CReaction > & getReactions() const;
 
-    /**
-     * Retreives the vector of steps in the order used by the reduced model.
-     * @return const CCopasiVectorN< CReaction > &
-     */
-    const CCopasiVectorN< CReaction > & getReactionsX() const;
-    CCopasiVectorN< CReaction > & getReactionsX();
-
-    // Added by Yongqun He
     /**
      * Get the total steps
      * @return unsigned C_INT32 total steps;
@@ -1015,8 +995,8 @@ class CModel : public CCopasiContainer
     /**
      * Retrieve the reaction permutation vector
      * @return const CVector<unsigned C_INT32> & permutation
-     */
-    const CVector< unsigned C_INT32 > & getReactionPermutation() const;
+     */ 
+    //    const CVector< unsigned C_INT32 > & getReactionPermutation() const;
 
     /**
      * Set the transient concentrations and volumes according to the

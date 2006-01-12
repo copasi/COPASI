@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.14.2.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/07 12:54:30 $
+   $Author: shoops $ 
+   $Date: 2006/01/12 15:07:23 $
    End CVS Header */
 
 #include <math.h>
@@ -403,10 +403,10 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
   unsigned C_INT32 indep_size = copasiModel->getNumIndependentMetabs();
   unsigned C_INT32 comps_size = copasiModel->getCompartments().size();
   unsigned C_INT32 modvals_size = copasiModel->getModelValues().size();
-  unsigned C_INT32 reacs_size = copasiModel->getReactionsX().size();
+  unsigned C_INT32 reacs_size = copasiModel->getReactions().size();
 
   unsigned C_INT32 i, count;
-  const CCopasiVector< CReaction > & reacs = copasiModel->getReactionsX();
+  const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
   CReaction* reac;
 
   count = 0;

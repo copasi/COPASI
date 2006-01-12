@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAResultSubwidget.ui.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.15.2.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/11 10:04:20 $
+   $Author: shoops $ 
+   $Date: 2006/01/12 15:07:23 $
    End CVS Header */
 
 /****************************************************************************
@@ -79,7 +79,7 @@ void CMCAResultSubwidget::loadElasticities(const CMCAMethod * mcaMethod)
   QHeader* header = mTableElasticities->verticalHeader();
   for (i = 0; i < numRows;++i)
     {
-      header->setLabel(i, FROM_UTF8(model->getReactionsX()[i]->getObjectName()));
+      header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
     }
   header = mTableElasticities->horizontalHeader();
   for (i = 0; i < numCols;++i)
@@ -115,7 +115,7 @@ void CMCAResultSubwidget::loadConcentrationCCs(const CMCAMethod * mcaMethod)
   header = mTableCCC->horizontalHeader();
   for (i = 0; i < numCols;++i)
     {
-      header->setLabel(i, FROM_UTF8(model->getReactionsX()[i]->getObjectName()));
+      header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
     }
   const CMatrix<C_FLOAT64> & CCCs = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledConcentrationCC() : mcaMethod->getUnscaledConcentrationCC();
   if (CCCs.numRows() == 0 || CCCs.numCols() == 0) return;
@@ -141,12 +141,12 @@ void CMCAResultSubwidget::loadFluxCCs(const CMCAMethod * mcaMethod)
   QHeader* header = mTableFCC->verticalHeader();
   for (i = 0; i < numRows;++i)
     {
-      header->setLabel(i, FROM_UTF8(model->getReactionsX()[i]->getObjectName()));
+      header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
     }
   header = mTableFCC->horizontalHeader();
   for (i = 0; i < numCols;++i)
     {
-      header->setLabel(i, FROM_UTF8(model->getReactionsX()[i]->getObjectName()));
+      header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
     }
   const CMatrix<C_FLOAT64> & FCCs = (mComboScale->currentItem() == 0) ? mcaMethod->getScaledFluxCC() : mcaMethod->getUnscaledFluxCC();
   if (FCCs.numRows() == 0 || FCCs.numCols() == 0) return;

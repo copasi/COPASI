@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.244.2.5 $
+   $Revision: 1.244.2.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/11 13:11:01 $
+   $Date: 2006/01/12 15:08:28 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -79,12 +79,9 @@ CModel::CModel():
     //mMetabolitesDep("Dependent Metabolites", this),
     mMetabolitesVar("Variable Metabolites", this),
     mSteps("Reactions", this),
-    mStepsX("Reduced Model Reactions", this),
     //mStepsInd("Independent Reactions", this),
     mFluxes(),
-    mFluxesX(),
     mParticleFluxes(),
-    mParticleFluxesX(),
     mValues("Values", this),
     mInitialTime(0),
     mTime(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
@@ -133,12 +130,9 @@ CModel::CModel(const CModel & src):
     //mMetabolitesDep(src.mMetabolitesDep, this),
     mMetabolitesVar(src.mMetabolitesVar, this),
     mSteps(src.mSteps, this),
-    mStepsX(src.mStepsX, this),
     //mStepsInd(src.mStepsInd, this),
     mFluxes(src.mFluxes),
-    mFluxesX(src.mFluxesX),
     mParticleFluxes(src.mParticleFluxes),
-    mParticleFluxesX(src.mParticleFluxesX),
     mValues(src.mValues, this),
     mInitialTime(src.mInitialTime),
     mTime(src.mTime),
@@ -181,7 +175,6 @@ void CModel::cleanup()
   mMoieties.cleanup();
 
   /* The references */
-  mStepsX.resize(0);
   //mStepsInd.resize(0);
   mMetabolites.resize(0);
   mMetabolitesX.resize(0);
@@ -189,9 +182,7 @@ void CModel::cleanup()
   //mMetabolitesDep.resize(0);
   mMetabolitesVar.resize(0);
   mFluxes.resize(0);
-  mFluxesX.resize(0);
   mParticleFluxes.resize(0);
-  mParticleFluxesX.resize(0);
 }
 
 C_INT32 CModel::load(CReadConfig & configBuffer)
@@ -550,6 +541,7 @@ bool CModel::handleUnusedMetabolites()
   return true;
 }
 
+#ifdef XXXX
 void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
 {
   unsigned C_INT32 i;
@@ -584,6 +576,7 @@ void CModel::lUDecomposition(CMatrix< C_FLOAT64 > & LU)
 
   return;
 }
+#endif // XXXX
 
 void CModel::setMetabolitesStatus()
 {
@@ -622,21 +615,10 @@ void CModel::buildRedStoi()
   /* just have to swap rows and colums */
   for (i = 0; i < imax; i++)
     for (j = 0; j < jmax; j++)
-      mRedStoi(i, j) = mStoi(mRowLU[i], mColLU[j]);
+      mRedStoi(i, j) = mStoi(mRowLU[i], j);
 
   for (i = 0, imax = mStoi.numRows(); i < imax; i++)
     mMetabolitesX[i] = mMetabolites[mRowLU[i]];
-
-  mStepsX.resize(jmax, false);
-  mFluxesX.resize(jmax);
-  mParticleFluxesX.resize(jmax);
-
-  for (j = 0; j < jmax; j++)
-    {
-      mStepsX[j] = mSteps[mColLU[j]];
-      mFluxesX[j] = &mStepsX[j]->getFlux();
-      mParticleFluxesX[j] = &mStepsX[j]->getParticleFlux();
-    }
 
 #ifdef DEBUG_MATRIX
   DebugFile << "Reduced Stoichiometry Matrix" << std::endl;
@@ -920,12 +902,6 @@ CCopasiVectorNS < CReaction > & CModel::getReactions()
 const CCopasiVectorNS < CReaction > & CModel::getReactions() const
   {return mSteps;}
 
-CCopasiVectorN< CReaction > & CModel::getReactionsX()
-{CCHECK return mStepsX;}
-
-const CCopasiVectorN< CReaction > & CModel::getReactionsX() const
-  {CCHECK return mStepsX;}
-
 CCopasiVector< CMetab > & CModel::getMetabolites()
 {return mMetabolites;}
 
@@ -1039,9 +1015,6 @@ const C_FLOAT64 & CModel::getTime() const
 
 const CVector<unsigned C_INT32> & CModel::getMetabolitePermutation() const
   {CCHECK return mRowLU;}
-
-const CVector<unsigned C_INT32> & CModel::getReactionPermutation() const
-  {CCHECK return mColLU;}
 
 //**********************************************************************
 
@@ -1445,6 +1418,140 @@ void CModel::getDerivatives_particles(const CState * state, CVector< C_FLOAT64 >
       for (j = 0; j < jmax; j++)
         derivatives[i] += mStoi(i, j) * *mParticleFluxes[j];
     }
+#ifdef XXXX
+  char T = 'N';
+  C_INT M = 1;
+  C_INT N = getNumVariableMetabs();
+  C_INT K = mSteps.size();
+  C_FLOAT64 Alpha = 1.0;
+  C_FLOAT64 Beta = 0.0;
+
+  /*     SUBROUTINE DGEMM (TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB,
+   *                        BETA, C, LDC)
+   *     .. Scalar Arguments ..
+   *     CHARACTER*1        TRANSA, TRANSB
+   *      INTEGER            M, N, K, LDA, LDB, LDC
+   *      DOUBLE PRECISION   ALPHA, BETA
+   *     .. Array Arguments ..
+   *      DOUBLE PRECISION   A(LDA, *), B(LDB, *), C(LDC, *)
+   *     ..
+   *
+   *  Purpose
+   *  =======
+   *
+   *  DGEMM  performs one of the matrix-matrix operations
+   *
+   *     C := alpha*op(A)*op(B) + beta*C,
+   *
+   *  where  op(X) is one of
+   *
+   *     op(X) = X   or   op(X) = X',
+   *
+   *  alpha and beta are scalars, and A, B and C are matrices, with op(A)
+   *  an m by k matrix,  op(B)  a  k by n matrix and  C an m by n matrix.
+   *
+   *  Parameters
+   *  ==========
+   *
+   *  TRANSA - CHARACTER*1.
+   *           On entry, TRANSA specifies the form of op(A) to be used in
+   *           the matrix multiplication as follows:
+   *
+   *              TRANSA = 'N' or 'n',  op(A) = A.
+   *
+   *              TRANSA = 'T' or 't',  op(A) = A'.
+   *
+   *              TRANSA = 'C' or 'c',  op(A) = A'.
+   *
+   *           Unchanged on exit.
+   *
+   *  TRANSB - CHARACTER*1.
+   *           On entry, TRANSB specifies the form of op(B) to be used in
+   *           the matrix multiplication as follows:
+   *
+   *              TRANSB = 'N' or 'n',  op(B) = B.
+   *
+   *              TRANSB = 'T' or 't',  op(B) = B'.
+   *
+   *              TRANSB = 'C' or 'c',  op(B) = B'.
+   *
+   *           Unchanged on exit.
+   *
+   *  M      - INTEGER.
+   *           On entry,  M  specifies  the number  of rows  of the  matrix
+   *           op(A)  and of the  matrix  C.  M  must  be at least  zero.
+   *           Unchanged on exit.
+   *
+   *  N      - INTEGER.
+   *           On entry,  N  specifies the number  of columns of the matrix
+   *           op(B) and the number of columns of the matrix C. N must be
+   *           at least zero.
+   *           Unchanged on exit.
+   *
+   *  K      - INTEGER.
+   *           On entry,  K  specifies  the number of columns of the matrix
+   *           op(A) and the number of rows of the matrix op(B). K must
+   *           be at least  zero.
+   *           Unchanged on exit.
+   *
+   *  ALPHA  - DOUBLE PRECISION.
+   *           On entry, ALPHA specifies the scalar alpha.
+   *           Unchanged on exit.
+   *
+   *  A      - DOUBLE PRECISION array of DIMENSION (LDA, ka), where ka is
+   *           k  when  TRANSA = 'N' or 'n',  and is  m  otherwise.
+   *           Before entry with  TRANSA = 'N' or 'n',  the leading  m by k
+   *           part of the array  A  must contain the matrix  A,  otherwise
+   *           the leading  k by m  part of the array  A  must contain  the
+   *           matrix A.
+   *           Unchanged on exit.
+   *
+   *  LDA    - INTEGER.
+   *           On entry, LDA specifies the first dimension of A as declared
+   *           in the calling (sub) program. When  TRANSA = 'N' or 'n' then
+   *           LDA must be at least  max(1, m), otherwise  LDA must be at
+   *           least  max(1, k).
+   *           Unchanged on exit.
+   *
+   *  B      - DOUBLE PRECISION array of DIMENSION (LDB, kb), where kb is
+   *           n  when  TRANSB = 'N' or 'n',  and is  k  otherwise.
+   *           Before entry with  TRANSB = 'N' or 'n',  the leading  k by n
+   *           part of the array  B  must contain the matrix  B,  otherwise
+   *           the leading  n by k  part of the array  B  must contain  the
+   *           matrix B.
+   *           Unchanged on exit.
+   *
+   *  LDB    - INTEGER.
+   *           On entry, LDB specifies the first dimension of B as declared
+   *           in the calling (sub) program. When  TRANSB = 'N' or 'n' then
+   *           LDB must be at least  max(1, k), otherwise  LDB must be at
+   *           least  max(1, n).
+   *           Unchanged on exit.
+   *
+   *  BETA   - DOUBLE PRECISION.
+   *           On entry,  BETA  specifies the scalar  beta.  When  BETA  is
+   *           supplied as zero then C need not be set on input.
+   *           Unchanged on exit.
+   *
+   *  C      - DOUBLE PRECISION array of DIMENSION (LDC, n).
+   *           Before entry, the leading  m by n  part of the array  C must
+   *           contain the matrix  C,  except when  beta  is zero, in which
+   *           case C need not be set on entry.
+   *           On exit, the array  C  is overwritten by the  m by n  matrix
+   *           (alpha*op(A)*op(B) + beta*C).
+   *
+   *  LDC    - INTEGER.
+   *           On entry, LDC specifies the first dimension of C as declared
+   *           in  the  calling  (sub)  program.   LDC  must  be  at  least
+   *           max(1, m).
+   *           Unchanged on exit.
+   *
+   *
+   *  Level 3 Blas routine.
+   */
+  dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
+         mStoi.array(), &K, &Beta, derivatives.array(), &M);
+#endif // XXXX
 }
 
 void CModel::getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64 > & derivatives)
@@ -1452,12 +1559,12 @@ void CModel::getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64
   setStateX(state);
 
   unsigned C_INT32 i, imax = mMetabolitesInd.size();
-  unsigned C_INT32 j, jmax = mStepsX.size();
+  unsigned C_INT32 j, jmax = mSteps.size();
 
   assert (derivatives.size() == imax);
 
   for (j = 0; j < jmax; j++)
-    mStepsX[j]->calculate();
+    mSteps[j]->calculate();
 
   // Calculate ydot = RedStoi * v
   for (i = 0; i < imax; i++)
@@ -1465,7 +1572,7 @@ void CModel::getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64
       derivatives[i] = 0.0;
 
       for (j = 0; j < jmax; j++)
-        derivatives[i] += mRedStoi(i, j) * *mParticleFluxesX[j];
+        derivatives[i] += mRedStoi(i, j) * *mParticleFluxes[j];
     }
 }
 
@@ -2091,7 +2198,7 @@ void CModel::initObjects()
   tmp->setDimensionDescription(0, "Metabolites");
   tmp->setDimensionDescription(1, "Reactions");
   tmp->setCopasiVector(0, &mMetabolitesX);
-  tmp->setCopasiVector(1, &mStepsX);
+  tmp->setCopasiVector(1, &mSteps);
 
   tmp = new CArrayAnnotation("Link matrix(ann)", this, new CCopasiMatrixInterface<CLinkMatrixView>(&mLView));
   tmp->setOnTheFly(true);
@@ -2294,10 +2401,6 @@ void CModel::buildLinkZero()
       for (i = 0; i < N; i++)
         mRowLU[i] = i;
 
-      mColLU.resize(M);
-      for (i = 0; i < M; i++)
-        mColLU[i] = i;
-
       return;
     }
 
@@ -2408,14 +2511,9 @@ void CModel::buildLinkZero()
   for (i = 0; i < N; i++)
     mRowLU[i] = JPVT[i] - 1;
 
-  mColLU.resize(M);
-  for (i = 0; i < M; i++)
-    mColLU[i] = i;
-
 #ifdef DEBUG_MATRIX
   DebugFile << "QR Factorization:" << std::endl;
   DebugFile << "Row permutation:\t" << mRowLU << std::endl;
-  DebugFile << "Column permutation:\t" << mColLU << std::endl;
   DebugFile << CTransposeView< CMatrix< C_FLOAT64 > >(mRedStoi) << std::endl;
 #endif
 
