@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.109.2.5 $
+   $Revision: 1.109.2.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/12 16:50:22 $
+   $Date: 2006/01/13 16:29:52 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -796,9 +796,9 @@ class CModel : public CCopasiContainer
      * The parameter derivatives must at least provide space for
      * state->getVariableNumberSize() double
      * &param CState * state (input)
-     * &param CVector< C_FLOAT64 > & derivatives (output)
+     * &param C_FLOAT64 * derivatives (output)
      */
-    void getDerivatives_particles(const CState * state, CVector< C_FLOAT64 > & derivatives);
+    void getDerivatives_particles(const CState * state, C_FLOAT64 * derivatives);
 
     /**
      * Calculate the changes of particles numbers of the metabolites 
@@ -806,9 +806,9 @@ class CModel : public CCopasiContainer
      * The parameter derivatives must at least provide space for
      * state->getVariableNumberSize() double
      * &param CStateX * stateX (input)
-     * &param CVector< C_FLOAT64 > & derivatives (output)
+     * &param C_FLOAT64 * derivatives (output)
      */
-    void getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64 > & derivatives);
+    void getDerivativesX_particles(const CStateX * state, C_FLOAT64 * derivatives);
 
     /**
      * Set the unit for volumes. If copasi recognises 

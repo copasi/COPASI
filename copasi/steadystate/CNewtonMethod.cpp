@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.61.2.3 $
+   $Revision: 1.61.2.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/04 22:43:51 $
+   $Date: 2006/01/13 16:29:52 $
    End CVS Header */
 
 #include <algorithm>
@@ -214,7 +214,7 @@ CNewtonMethod::processInternal()
           if (!(mAcceptNegative || allPositive()))
             break;
 
-          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
+          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt.array());
 
           if (isSteadyState(targetFunction(mdxdt)))
             {
@@ -279,7 +279,7 @@ CNewtonMethod::processInternal()
           if (!(mAcceptNegative || allPositive()))
             break;
 
-          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
+          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt.array());
           if (isSteadyState(targetFunction(mdxdt)))
             {
               *mpSteadyState = *mpSteadyStateX; //convert back to CState
@@ -317,7 +317,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
   C_INT32 i, j, k;
   C_FLOAT64 oldMaxRate, newMaxRate;
 
-  const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
+  const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt.array());
   oldMaxRate = targetFunction(mdxdt);
   if (isSteadyState(oldMaxRate))
     return returnNewton(CNewtonMethod::found);
@@ -493,7 +493,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
               mH[j] /= 2;
             }
 
-          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
+          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt.array());
           newMaxRate = targetFunction(mdxdt);
 
           mpParentTask->doOutput();
@@ -509,7 +509,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
           //discard the step
           *mX = mXold; //memcpy(mX->array(), mXold.array(), mDimension * sizeof(C_FLOAT64));
 
-          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
+          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt.array());
           oldMaxRate = targetFunction(mdxdt);
 
           if (isSteadyState(oldMaxRate) && (mAcceptNegative || allPositive()))

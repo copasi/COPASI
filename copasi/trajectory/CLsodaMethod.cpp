@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.33.2.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/13 13:28:44 $
+   $Author: shoops $ 
+   $Date: 2006/01/13 16:29:51 $
    End CVS Header */
 
 /*
@@ -229,25 +229,25 @@ const double CLsodaMethod::step(const double & deltaT)
 
   C_FLOAT64 StartTime = mTime;
 
-  lsoda(mDim,                                            // number of variables
-        mY - 1,                                          // the array of current concentrations
+  lsoda(mDim,                                             // number of variables
+        mY - 1,                                           // the array of current concentrations
         // fortran style vector !!!
-        &mTime,                                          // the current time
-        StartTime + deltaT,                              // the final time
-        1,                                               // scalar error control
-        (&mRtol) - 1,                                    // relative tolerance array
+        &mTime,                                           // the current time
+        StartTime + deltaT,                               // the final time
+        1,                                                // scalar error control
+        (&mRtol) - 1,                                     // relative tolerance array
         // fortran style vector !!!
-        (&mAtol) - 1,                                    // absolute tolerance array
+        (&mAtol) - 1,                                     // absolute tolerance array
         // fortran style vector !!!
-        1,                                               // output by overshoot & interpolatation
-        &mLsodaStatus,                                   // the state control variable
-        1,                                               // optional inputs are being used
-        2,                                               // jacobian calculated internally
-        0, 0, 0,                                         // options left at default values
-        mMaxSteps,                                       // max iterations for each lsoda call
-        0,                                               // another value left at the default
-        mAdams,                                          // max order for Adams method
-        mBDF,                                            // max order for BDF method
+        1,                                                // output by overshoot & interpolatation
+        &mLsodaStatus,                                    // the state control variable
+        1,                                                // optional inputs are being used
+        2,                                                // jacobian calculated internally
+        0, 0, 0,                                          // options left at default values
+        mMaxSteps,                                        // max iterations for each lsoda call
+        0,                                                // another value left at the default
+        mAdams,                                           // max order for Adams method
+        mBDF,                                             // max order for BDF method
         0.0, 0.0, 0.0, 0.0); // more options left at default values
 
   if (mLsodaStatus == -1) mLsodaStatus = 2;
@@ -2700,27 +2700,25 @@ void CLsodaMethod::resetcoeff(void)
 }     /*   end resetcoeff   */
 
 void CLsodaMethod::evalC(C_FLOAT64 t,
-                         C_FLOAT64 * y,                             /* Fortran style vector */
+                         C_FLOAT64 * y,                              /* Fortran style vector */
                          C_FLOAT64 * ydot)  /* Fortran style vector */
 {
   assert (y + 1 == mY);
   mpStateC->setTime(t);
 
-  const_cast<CModel *>(mpStateC->getModel())->getDerivatives_particles(mpStateC, mYdot);
+  const_cast<CModel *>(mpStateC->getModel())->getDerivatives_particles(mpStateC, ydot + 1);
 
-  memcpy(ydot + 1, mYdot.array(), mYdot.size() * sizeof(C_FLOAT64));
   return;
 }
 
 void CLsodaMethod::evalR(C_FLOAT64 t,
-                         C_FLOAT64 * y,                             /* Fortran style vector */
+                         C_FLOAT64 * y,                              /* Fortran style vector */
                          C_FLOAT64 * ydot)  /* Fortran style vector */
 {
   assert (y + 1 == mY);
   mpStateR->setTime(t);
 
-  const_cast<CModel *>(mpStateR->getModel())->getDerivativesX_particles(mpStateR, mYdot);
+  const_cast<CModel *>(mpStateR->getModel())->getDerivativesX_particles(mpStateR, ydot + 1);
 
-  memcpy(ydot + 1, mYdot.array(), mYdot.size() * sizeof(C_FLOAT64));
   return;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.244.2.8 $
+   $Revision: 1.244.2.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/12 17:20:25 $
+   $Date: 2006/01/13 16:29:52 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1356,7 +1356,7 @@ void CModel::updateRates()
   setTransitionTimes();
 }
 
-void CModel::getDerivatives_particles(const CState * state, CVector< C_FLOAT64 > & derivatives)
+void CModel::getDerivatives_particles(const CState * state, C_FLOAT64 * derivatives)
 {
   setState(state);
 
@@ -1364,16 +1364,16 @@ void CModel::getDerivatives_particles(const CState * state, CVector< C_FLOAT64 >
 
   char T = 'N';
   C_INT M = 1;
-  C_INT N = derivatives.size();
+  C_INT N = getNumVariableMetabs();
   C_INT K = mSteps.size();
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 0.0;
 
   dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
-         mStoi.array(), &K, &Beta, derivatives.array(), &M);
+         mStoi.array(), &K, &Beta, derivatives, &M);
 }
 
-void CModel::getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64 > & derivatives)
+void CModel::getDerivativesX_particles(const CStateX * state, C_FLOAT64 * derivatives)
 {
   setStateX(state);
 
@@ -1381,13 +1381,13 @@ void CModel::getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64
 
   char T = 'N';
   C_INT M = 1;
-  C_INT N = derivatives.size();
+  C_INT N = getNumIndependentMetabs();
   C_INT K = mSteps.size();
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 0.0;
 
   dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
-         mRedStoi.array(), &K, &Beta, derivatives.array(), &M);
+         mRedStoi.array(), &K, &Beta, derivatives, &M);
 }
 
 bool CModel::setVolumeUnit(const std::string & name)
