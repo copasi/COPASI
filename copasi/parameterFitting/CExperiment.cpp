@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.23.2.6 $
+   $Revision: 1.23.2.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/13 14:59:15 $
+   $Date: 2006/01/13 16:22:58 $
    End CVS Header */
 
 #include <fstream>
@@ -827,8 +827,8 @@ bool CExperiment::setIsRowOriented(const bool & isRowOriented)
 bool CExperiment::compare(const CExperiment * lhs,
                           const CExperiment * rhs)
 {
-  return (lhs->mpFileName < rhs->mpFileName ||
-          (lhs->mpFileName == rhs->mpFileName &&
+  return (*lhs->mpFileName < *rhs->mpFileName ||
+          (*lhs->mpFileName == *rhs->mpFileName &&
            *lhs->mpFirstRow < *rhs->mpFirstRow));
 }
 
