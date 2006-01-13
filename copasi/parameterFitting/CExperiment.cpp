@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.23.2.4 $
+   $Revision: 1.23.2.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/06 20:28:55 $
+   $Date: 2006/01/13 14:13:17 $
    End CVS Header */
 
 #include <fstream>
@@ -186,20 +186,25 @@ C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index,
     C_FLOAT64 Residual;
     C_FLOAT64 s = 0.0;
 
-    unsigned C_INT32 i , imax = mDataDependent.numCols();
+    C_FLOAT64 const * pDataDependent = mDataDependent[index];
+    C_FLOAT64 const * pEnd = pDataDependent + mDataDependent.numCols();
+    C_FLOAT64 * const * ppDependentValues = mDependentValues.array();
+    C_FLOAT64 const * pWeight = mWeight.array();
 
     if (residuals)
-      for (i = 0; i < imax; i++, dependentValues++, residuals++)
+      for (; pDataDependent != pEnd;
+           pDataDependent++, ppDependentValues++, pWeight++, dependentValues++, residuals++)
         {
-          *dependentValues = *mDependentValues[i];
-          *residuals = (mDataDependent(index, i) - *dependentValues) * mWeight[i];
+          *dependentValues = **ppDependentValues;
+          *residuals = (*pDataDependent - *dependentValues) * *pWeight;
           s += *residuals * *residuals;
         }
     else
-      for (i = 0; i < imax; i++, dependentValues++)
+      for (; pDataDependent != pEnd;
+           pDataDependent++, ppDependentValues++, pWeight++, dependentValues++)
         {
-          *dependentValues = *mDependentValues[i];
-          Residual = (mDataDependent(index, i) - *dependentValues) * mWeight[i];
+          *dependentValues = **ppDependentValues;
+          Residual = (*pDataDependent - *dependentValues) * *pWeight;
           s += Residual * Residual;
         }
 
@@ -208,10 +213,12 @@ C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index,
 
 void CExperiment::storeCalculatedValues(const unsigned C_INT32 & index)
 {
-  unsigned C_INT32 i , imax = mDataDependentCalculated.numCols();
+  C_FLOAT64 * pDataDependentCalculated = mDataDependentCalculated[index];
+  C_FLOAT64 * pEnd = pDataDependentCalculated + mDataDependentCalculated.numCols();
+  C_FLOAT64 * const * ppDependentValues = mDependentValues.array();
 
-  for (i = 0; i < imax; i++)
-    mDataDependentCalculated(index, i) = *mDependentValues[i];
+  for (; pDataDependentCalculated != pEnd; pDataDependentCalculated++, ppDependentValues++)
+    *pDataDependentCalculated = **ppDependentValues;
 
   return;
 }
