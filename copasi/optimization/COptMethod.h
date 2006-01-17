@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.22.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/06 19:19:30 $
+   $Date: 2006/01/17 14:42:19 $
    End CVS Header */
 
 /**
@@ -63,6 +63,11 @@ class COptMethod : public CCopasiMethod
      * A vector of pointers to the optimization parameter
      */
     const std::vector< COptItem * > * mpOptItem;
+
+    /**
+     * A vector of pointers to the functional constraints
+     */
+    const std::vector< COptItem * > * mpOptContraints;
 
     // Operations
   private:

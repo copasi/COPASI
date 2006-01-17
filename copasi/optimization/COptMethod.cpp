@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.23.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/06 19:19:28 $
+   $Date: 2006/01/17 14:42:19 $
    End CVS Header */
 
 /**
@@ -125,6 +125,8 @@ bool COptMethod::initialize()
   if (!mpOptProblem)
     return false;
   if (!(mpOptItem = &mpOptProblem->getOptItemList()))
+    return false;
+  if (!(mpOptContraints = &mpOptProblem->getConstraintList()))
     return false;
   if (!(mpSetCalculateVariable = &mpOptProblem->getCalculateVariableUpdateMethods()))
     return false;
