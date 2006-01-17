@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.21.2.1 $
+   $Revision: 1.21.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/03 18:29:33 $
+   $Date: 2006/01/17 14:43:23 $
    End CVS Header */
 
 #include <float.h>
@@ -281,27 +281,46 @@ bool COptMethodGASR::select()
   return true;
 }
 
-// evaluate the distance ofparameters to boundaries
+// evaluate the distance of parameters and constraints to boundaries
 C_FLOAT64 COptMethodGASR::phi(C_INT32 indivNum)
 {
   C_FLOAT64 phiVal = 0.0;
   C_FLOAT64 phiCalc;
-  unsigned C_INT32 i;
 
-  for (i = 0; i < mVariableSize; i++)
+  std::vector< COptItem * >::const_iterator it = mpOptItem->begin();
+  std::vector< COptItem * >::const_iterator end = mpOptItem->end();
+  C_FLOAT64 * pValue = mIndividual[indivNum]->array();
+
+  for (; it != end; ++it, pValue++)
     {
-      COptItem & OptItem = *(*mpOptItem)[i];
-      C_FLOAT64 & value = (*mIndividual[indivNum])[i];
-
-      switch (OptItem.checkConstraint(value))
+      switch ((*it)->checkConstraint())
         {
         case - 1:
-          phiCalc = *OptItem.getLowerBoundValue() - value;
+          phiCalc = *(*it)->getLowerBoundValue() - *pValue;
           phiVal += phiCalc * phiCalc;
           break;
 
         case 1:
-          phiCalc = value - *OptItem.getUpperBoundValue();
+          phiCalc = *pValue - *(*it)->getUpperBoundValue();
+          phiVal += phiCalc * phiCalc;
+          break;
+        }
+    }
+
+  it = mpOptContraints->begin();
+  end = mpOptContraints->end();
+
+  for (; it != end; ++it)
+    {
+      switch ((*it)->checkConstraint())
+        {
+        case - 1:
+          phiCalc = *(*it)->getLowerBoundValue() - *(*it)->getObjectValue();
+          phiVal += phiCalc * phiCalc;
+          break;
+
+        case 1:
+          phiCalc = *(*it)->getObjectValue() - *(*it)->getUpperBoundValue();
           phiVal += phiCalc * phiCalc;
           break;
         }
