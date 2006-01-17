@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-   $Revision: 1.33.2.2 $
+   $Revision: 1.33.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/17 15:16:06 $
+   $Date: 2006/01/17 15:36:25 $
    End CVS Header */
 
 /*
@@ -208,7 +208,7 @@ CLsodaMethod::~CLsodaMethod()
   lsoda_freevectors();
 }
 
-const double CLsodaMethod::step(const double & deltaT)
+void CLsodaMethod::step(const double & deltaT)
 {
   if (!mDim) //just do nothing if there are no variables
     {
@@ -224,30 +224,30 @@ const double CLsodaMethod::step(const double & deltaT)
           *mpCurrentState = *mpStateR;
         }
 
-      return deltaT;
+      return;
     }
 
   C_FLOAT64 StartTime = mTime;
 
-  lsoda(mDim,                                              // number of variables
-        mY - 1,                                            // the array of current concentrations
+  lsoda(mDim,                                               // number of variables
+        mY - 1,                                             // the array of current concentrations
         // fortran style vector !!!
-        &mTime,                                            // the current time
-        StartTime + deltaT,                                // the final time
-        1,                                                 // scalar error control
-        (&mRtol) - 1,                                      // relative tolerance array
+        &mTime,                                             // the current time
+        StartTime + deltaT,                                 // the final time
+        1,                                                  // scalar error control
+        (&mRtol) - 1,                                       // relative tolerance array
         // fortran style vector !!!
-        (&mAtol) - 1,                                      // absolute tolerance array
+        (&mAtol) - 1,                                       // absolute tolerance array
         // fortran style vector !!!
-        1,                                                 // output by overshoot & interpolatation
-        &mLsodaStatus,                                     // the state control variable
-        1,                                                 // optional inputs are being used
-        2,                                                 // jacobian calculated internally
-        0, 0, 0,                                           // options left at default values
-        mMaxSteps,                                         // max iterations for each lsoda call
-        0,                                                 // another value left at the default
-        mAdams,                                            // max order for Adams method
-        mBDF,                                              // max order for BDF method
+        1,                                                  // output by overshoot & interpolatation
+        &mLsodaStatus,                                      // the state control variable
+        1,                                                  // optional inputs are being used
+        2,                                                  // jacobian calculated internally
+        0, 0, 0,                                            // options left at default values
+        mMaxSteps,                                          // max iterations for each lsoda call
+        0,                                                  // another value left at the default
+        mAdams,                                             // max order for Adams method
+        mBDF,                                               // max order for BDF method
         0.0, 0.0, 0.0, 0.0); // more options left at default values
 
   if (mLsodaStatus == -1) mLsodaStatus = 2;
@@ -270,7 +270,7 @@ const double CLsodaMethod::step(const double & deltaT)
       *mpCurrentState = *mpStateR;
     }
 
-  return mTime - StartTime;
+  return;
 }
 
 void CLsodaMethod::start(const CState * initialState)
@@ -2699,7 +2699,7 @@ void CLsodaMethod::resetcoeff(void)
 }     /*   end resetcoeff   */
 
 void CLsodaMethod::evalC(C_FLOAT64 t,
-                         C_FLOAT64 * y,                               /* Fortran style vector */
+                         C_FLOAT64 * y,                                /* Fortran style vector */
                          C_FLOAT64 * ydot)  /* Fortran style vector */
 {
   assert (y + 1 == mY);
@@ -2711,7 +2711,7 @@ void CLsodaMethod::evalC(C_FLOAT64 t,
 }
 
 void CLsodaMethod::evalR(C_FLOAT64 t,
-                         C_FLOAT64 * y,                               /* Fortran style vector */
+                         C_FLOAT64 * y,                                /* Fortran style vector */
                          C_FLOAT64 * ydot)  /* Fortran style vector */
 {
   assert (y + 1 == mY);

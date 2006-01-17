@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.66.2.1 $
+   $Revision: 1.66.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/17 15:16:06 $
+   $Date: 2006/01/17 15:36:25 $
    End CVS Header */
 
 /**
@@ -149,7 +149,6 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   const C_FLOAT64 EndTime = Time + pProblem->getDuration();
   const C_FLOAT64 StartTime = Time;
 
-  C_FLOAT64 ActualStepSize;
   C_FLOAT64 StepNumber = (pProblem->getDuration()) / StepSize;
 
   bool (*LE)(const C_FLOAT64 &, const C_FLOAT64 &);
@@ -198,7 +197,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   try
     {
       pMethod->start(mpState);
-      ActualStepSize = pMethod->step(StepSize);
+      pMethod->step(StepSize);
     }
   catch (CCopasiException Exception)
     {
@@ -240,7 +239,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
     {
       try
         {
-          ActualStepSize = pMethod->step(StepSize);
+          pMethod->step(StepSize);
         }
       catch (CCopasiException Exception)
         {
@@ -295,6 +294,18 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   finishOutput();
 
   return true;
+}
+
+void CTrajectoryTask::processStart(const bool & useInitialValues)
+{
+  return;
+}
+
+bool CTrajectoryTask::processStep()
+{
+  bool success = true;
+
+  return success;
 }
 
 bool CTrajectoryTask::setMethodType(const int & type)

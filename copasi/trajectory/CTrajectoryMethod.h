@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.h,v $
-   $Revision: 1.20.10.1 $
+   $Revision: 1.20.10.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/17 15:16:06 $
+   $Date: 2006/01/17 15:36:25 $
    End CVS Header */
 
 /**
@@ -127,15 +127,14 @@ class CTrajectoryMethod : public CCopasiMethod
     void setProblem(CTrajectoryProblem * problem);
 
     /**
-     *  This instructs the method to calculate a a time step of deltaT
+     *  This instructs the method to calculate a time step of deltaT
      *  starting with the current state, i.e., the result of the previous
      *  step.
      *  The new state (after deltaT) is expected in the current state.
      *  The return value is the actual timestep taken.
      *  @param "const double &" deltaT
-     *  @return "const double" actualDeltaT
      */
-    virtual const double step(const double & deltaT);
+    virtual void step(const double & deltaT);
 
     /**
      *  This instructs the method to prepare for integration

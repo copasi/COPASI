@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.47.2.2 $
+   $Revision: 1.47.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/17 15:16:06 $
+   $Date: 2006/01/17 15:36:25 $
    End CVS Header */
 
 #ifdef WIN32
@@ -95,7 +95,7 @@ CStochMethod::~CStochMethod()
   mpRandomGenerator = NULL;
 }
 
-const double CStochMethod::step(const double & deltaT)
+void CStochMethod::step(const double & deltaT)
 {
   // write the current state to the model:
   //mpProblem->getModel()->setState(mpCurrentState); //?
@@ -134,7 +134,7 @@ const double CStochMethod::step(const double & deltaT)
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumber();
 
-  return deltaT;
+  return;
 }
 
 void CStochMethod::start(const CState * initialState)

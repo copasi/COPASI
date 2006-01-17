@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.33.2.3 $
+   $Revision: 1.33.2.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/17 15:16:06 $
+   $Date: 2006/01/17 15:36:24 $
    End CVS Header */
 
 /**
@@ -75,14 +75,14 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * C_UNUSED(p
 
   switch (result)
     {
-      /*    case - 3:               // non-integer stoichometry
+      /*    case - 3:              // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:               // reversible reaction exists
+      case - 2:              // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
 
-      case - 1:               // more than one compartment involved
+      case - 1:              // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/
     case 1:
@@ -94,7 +94,7 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * C_UNUSED(p
   return method;
 }
 
-const double CHybridMethod::step(const double & deltaT)
+void CHybridMethod::step(const double & deltaT)
 {
   //outputDebug(std::cout, 0);
   // write the current state to the model
@@ -127,7 +127,7 @@ const double CHybridMethod::step(const double & deltaT)
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumber();
 
-  return deltaT;
+  return;
 }
 
 void CHybridMethod::start(const CState * initialState)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-   $Revision: 1.28.2.1 $
+   $Revision: 1.28.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/17 15:16:06 $
+   $Date: 2006/01/17 15:36:25 $
    End CVS Header */
 
 /**
@@ -136,10 +136,9 @@ void CTrajectoryMethod::setProblem(CTrajectoryProblem * problem)
  *  The new state (after deltaT) is expected in the current state.
  *  The return value is the actual timestep taken.
  *  @param "const double &" deltaT
- *  @return "const double" actualDeltaT
  */
-const double CTrajectoryMethod::step(const double & C_UNUSED(deltaT))
-{return 0.0;}
+void CTrajectoryMethod::step(const double & C_UNUSED(deltaT))
+{return ;}
 
 /**
  *  This instructs the method to calculate a a time step of deltaT
