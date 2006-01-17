@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.17.10.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/17 13:33:56 $
+   $Author: shoops $ 
+   $Date: 2006/01/17 15:16:06 $
    End CVS Header */
 
 /**
@@ -140,19 +140,14 @@ class CHybridMethod : public CTrajectoryMethod
      *  @param "const double &" deltaT
      *  @return "const double" actualDeltaT
      */
-    const double step(const double & deltaT);
+    virtual const double step(const double & deltaT);
 
     /**
-     *  This instructs the method to calculate a time step of deltaT
+     *  This instructs the method to prepare for integration
      *  starting with the initialState given.
-     *  Also initialization of the method is done.
-     *  The new state (after deltaT) is expected in the current state.
-     *  The return value is the actual timestep taken.
-     *  @param "double &" deltaT
      *  @param "const CState *" initialState
-     *  @return "const double" actualDeltaT
      */
-    const double step(const double & deltaT, const CState * initialState);
+    virtual void start(const CState * initialState);
 
     /**
     * Check if the method is suitable for this problem

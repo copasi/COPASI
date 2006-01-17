@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.33.2.2 $
+   $Revision: 1.33.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/12 16:50:22 $
+   $Date: 2006/01/17 15:16:06 $
    End CVS Header */
 
 /**
@@ -75,14 +75,14 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * C_UNUSED(p
 
   switch (result)
     {
-      /*    case - 3:                // non-integer stoichometry
+      /*    case - 3:               // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:                // reversible reaction exists
+      case - 2:               // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
 
-      case - 1:                // more than one compartment involved
+      case - 1:               // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/
     case 1:
@@ -130,8 +130,7 @@ const double CHybridMethod::step(const double & deltaT)
   return deltaT;
 }
 
-const double CHybridMethod::step(const double & deltaT,
-                                 const CState * initialState)
+void CHybridMethod::start(const CState * initialState)
 {
   *mpCurrentState = *initialState;
 
@@ -141,7 +140,7 @@ const double CHybridMethod::step(const double & deltaT,
   // call init of the simulation method, can be overloaded in derived classes
   initMethod(mpCurrentState->getTime());
 
-  return step(deltaT);
+  return;
 }
 
 /* PROTECTED METHODS *********************************************************/

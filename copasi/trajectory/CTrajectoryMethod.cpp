@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.28.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:28:20 $
+   $Date: 2006/01/17 15:16:06 $
    End CVS Header */
 
 /**
@@ -150,9 +150,8 @@ const double CTrajectoryMethod::step(const double & C_UNUSED(deltaT))
  *  @param "const CState *" initialState
  *  @return "const double &" actualDeltaT
  */
-const double CTrajectoryMethod::step(const double & C_UNUSED(deltaT),
-                                     const CState * C_UNUSED(initialState))
-{return 0.0;}
+void CTrajectoryMethod::start(const CState * C_UNUSED(initialState))
+{return;}
 
 //virtual
 bool CTrajectoryMethod::isValidProblem(const CCopasiProblem * pProblem)

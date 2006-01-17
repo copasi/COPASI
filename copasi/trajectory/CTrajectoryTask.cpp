@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.66 $
+   $Revision: 1.66.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:25:07 $
+   $Date: 2006/01/17 15:16:06 $
    End CVS Header */
 
 /**
@@ -197,7 +197,8 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   NextTimeToReport = StartTime + (EndTime - StartTime) * StepCounter++ / StepNumber;
   try
     {
-      ActualStepSize = pMethod->step(StepSize, mpState);
+      pMethod->start(mpState);
+      ActualStepSize = pMethod->step(StepSize);
     }
   catch (CCopasiException Exception)
     {
@@ -295,119 +296,6 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   return true;
 }
-
-//virtual
-/*
-bool CTrajectoryTask::processForScan(bool useInitialConditions, bool doOutput)
-{
-  assert(mpProblem && mpMethod);
-  mpMethod->isValidProblem(mpProblem);
- 
-  CTrajectoryProblem* pProblem =
-    dynamic_cast<CTrajectoryProblem *>(mpProblem);
-  assert(pProblem);
- 
-  //set flag for output
-  OutputFlag of = NO_OUTPUT;
-  if (doOutput) of = OUTPUT;
- 
-  //handle initial conditions
-  / *State storeState;
-  if (!useInitialConditions)
-    {
-      storeState = pProblem->getInitialState();
-      pProblem->getModel()->setTime(pProblem->getInitialState().getTime());
-      pProblem->setInitialState(pProblem->getModel()->getState());
-      // pProblem->getInitialState().setTime(storeState.getTime());
-    }* /
- 
-  //switch off time series storage
-  / *bool storeTS = pProblem->timeSeriesRequested();
-  pProblem->setTimeSeriesRequested(false);* /
- 
-  //do the calculation
-  return process(of, useInitialConditions);
- 
-  //restore ...
-  / *if (!useInitialConditions) pProblem->setInitialState(storeState);
-  mDoOutput = storeOutput;
-  pProblem->setTimeSeriesRequested(storeTS);* /
- 
-  //return true;
-}
- */
-
-#ifdef XXXX
-bool CTrajectoryTask::processSimple(bool singleStep) //without output
-{
-  assert(/*mpProblem && */mpMethod);
-  mpMethod->isValidProblem(mpProblem); //TODO perhaps omit this check for performance reasons?
-
-  CTrajectoryProblem * pProblem = (CTrajectoryProblem *) mpProblem;
-  CTrajectoryMethod * pMethod = (CTrajectoryMethod *) mpMethod;
-
-  //TODO ???
-  pProblem->getModel()->applyInitialValues();
-
-  //give the method a state to work on
-  pdelete(mpState);
-  mpState = new CState(pProblem->getModel()->getState());
-  C_FLOAT64 StartTime = mpState->getTime();
-
-  pMethod->setCurrentState(mpState);
-
-  pMethod->setProblem(pProblem);
-
-  C_FLOAT64 StepSize = pProblem->getDuration() - pProblem->getModel()->getTime();
-  bool (*L)(const C_FLOAT64 &, const C_FLOAT64 &) = (StepSize < 0.0) ? &bl : &fl;
-
-  bool flagProceed = false;
-  C_FLOAT64 handlerFactor = 100.0 / pProblem->getDuration();
-
-  C_FLOAT64 Percentage = 0;
-  unsigned C_INT32 hProcess;
-  if (mpCallBack)
-    {
-      mpCallBack->setName("performing simulation...");
-      C_FLOAT64 hundred = 100;
-      hProcess = mpCallBack->addItem("%",
-                                     CCopasiParameter::DOUBLE,
-                                     &Percentage,
-                                     &hundred);
-    }
-
-  //first step
-  pMethod->step(StepSize, mpState);
-
-  if (mpCallBack)
-    {
-      Percentage = (mpState->getTime() - StartTime) * handlerFactor;
-      flagProceed = mpCallBack->progress(hProcess);
-    }
-
-  if (mpState->getTime() == pProblem->getDuration()) return true; //end reached in one step
-  if (singleStep) return false; //end not reached but only one step requested
-
-  //more Steps if necessary
-  while ((*L)(mpState->getTime(), pProblem->getDuration()) && (!flagProceed))
-    {
-      StepSize = pProblem->getDuration() - mpState->getTime();
-      pMethod->step(StepSize);
-
-      if (mpCallBack)
-        {
-          Percentage = (mpState->getTime() - StartTime) * handlerFactor;
-          flagProceed = mpCallBack->progress(hProcess);
-        }
-    }
-
-  //pProblem->setEndState(new CState(*mpState));
-
-  if (mpCallBack) mpCallBack->finish(hProcess);
-
-  return true;
-}
-#endif // XXXX
 
 bool CTrajectoryTask::setMethodType(const int & type)
 {

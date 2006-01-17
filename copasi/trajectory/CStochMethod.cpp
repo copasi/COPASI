@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.47.2.1 $
+   $Revision: 1.47.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/12 16:50:22 $
+   $Date: 2006/01/17 15:16:06 $
    End CVS Header */
 
 #ifdef WIN32
@@ -137,8 +137,7 @@ const double CStochMethod::step(const double & deltaT)
   return deltaT;
 }
 
-const double CStochMethod::step(const double & deltaT,
-                                const CState * initialState)
+void CStochMethod::start(const CState * initialState)
 {
   /* get configuration data */
   mMaxSteps = * getValue("STOCH.MaxSteps").pINT;
@@ -183,7 +182,7 @@ const double CStochMethod::step(const double & deltaT,
   initMethod(mpCurrentState->getTime());
 
   mMaxStepsReached = false;
-  return step(deltaT);
+  return;
 }
 
 C_INT32 CStochMethod::updatePropensities()
