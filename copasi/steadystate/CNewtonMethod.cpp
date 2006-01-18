@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.61.2.4 $
+   $Revision: 1.61.2.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/13 16:29:52 $
+   $Date: 2006/01/18 17:02:03 $
    End CVS Header */
 
 #include <algorithm>
@@ -573,6 +573,9 @@ CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode)
 {
   mpProblem->getModel()->setStateX(mpSteadyStateX);
   mpProblem->getModel()->updateRates();
+
+  // This is necessarry since the dependent numbers are ignored during calculation.
+  mpSteadyStateX->updateDependentNumbers();
   *mpSteadyState = *mpSteadyStateX; //convert back to CState
 
   return returnCode;
