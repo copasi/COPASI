@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.61.2.5 $
+   $Revision: 1.61.2.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/18 17:02:03 $
+   $Date: 2006/01/18 17:42:03 $
    End CVS Header */
 
 #include <algorithm>
@@ -540,22 +540,25 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
   return returnNewton(ReturnCode);
 }
 
-bool CNewtonMethod::allPositive() const
-  {
-    C_INT32 i, imax = mX->size();
-    for (i = 0; i < imax; ++i)
-      if ((*mX)[i] < 0)
-        return false;
+bool CNewtonMethod::allPositive()
+{
+  C_INT32 i, imax = mX->size();
+  for (i = 0; i < imax; ++i)
+    if ((*mX)[i] < 0)
+      return false;
 
-    const C_FLOAT64 * pTmp =
-      mpSteadyStateX->getDependentNumberVector().array();
-    imax = mpSteadyStateX->getDependentNumberVector().size();
-    for (i = 0; i < imax; ++i, pTmp++)
-      if (*pTmp < 0)
-        return false;
+  // This is necessarry since the dependent numbers are ignored during calculation.
+  mpSteadyStateX->updateDependentNumbers();
 
-    return true;
-  }
+  const C_FLOAT64 * pTmp =
+    mpSteadyStateX->getDependentNumberVector().array();
+  imax = mpSteadyStateX->getDependentNumberVector().size();
+  for (i = 0; i < imax; ++i, pTmp++)
+    if (*pTmp < 0)
+      return false;
+
+  return true;
+}
 
 bool CNewtonMethod::containsNaN() const
   {
