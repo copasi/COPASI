@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.25.2.1 $
+   $Revision: 1.25.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/17 15:36:25 $
+   $Date: 2006/01/18 18:02:32 $
    End CVS Header */
 
 /**
@@ -34,9 +34,9 @@ class CTrajectoryTask : public CCopasiTask
   private:
 
     /**
-     * A pointer to the current state of the integration.
+     * whether the time series should be stored in mTimeSeries
      */
-    CState * mpState;
+    bool mTimeSeriesRequested;
 
     /**
      * the time series (if requested)
@@ -44,9 +44,24 @@ class CTrajectoryTask : public CCopasiTask
     CTimeSeries mTimeSeries;
 
     /**
-     * whether the time series should be stored in mTimeSeries
+     * A pointer to the trajectory Problem
      */
-    bool mTimeSeriesRequested;
+    CTrajectoryProblem * mpTrajectoryProblem;
+
+    /**
+     * A pointer to the trajectory method
+     */
+    CTrajectoryMethod * mpTrajectoryMethod;
+
+    /**
+     * A pointer to the current state of the integration.
+     */
+    CState * mpCurrentState;
+
+    /**
+     * A pointer to the current time of the integration.
+     */
+    const C_FLOAT64 * mpCurrentTime;
 
   public:
     /**
@@ -85,9 +100,10 @@ class CTrajectoryTask : public CCopasiTask
 
     /**
      * Integrates one step
+     * @param const C_FLOAT64 & nextTime
      * @return bool success;
      */
-    bool processStep();
+    bool processStep(const C_FLOAT64 & nextTime);
 
     /**
      * Process the task without any output in as few steps as possible
