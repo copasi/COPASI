@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.13.2.1 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2005/11/28 14:03:06 $
+   $Author: ssahle $ 
+   $Date: 2006/01/18 14:18:33 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeOperator
@@ -84,7 +84,7 @@ class CEvaluationNodeOperator : public CEvaluationNode
             break;
 
           case MODULUS:
-            Value = (C_FLOAT64) (((C_INT32) mpLeft->value()) * ((C_INT32) mpRight->value()));
+            Value = (C_FLOAT64) (((C_INT32) mpLeft->value()) % ((C_INT32) mpRight->value()));
             break;
 
           case PLUS:
