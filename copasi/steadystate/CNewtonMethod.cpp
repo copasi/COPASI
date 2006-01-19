@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.61.2.6 $
+   $Revision: 1.61.2.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/18 17:42:03 $
+   $Date: 2006/01/19 17:51:55 $
    End CVS Header */
 
 #include <algorithm>
@@ -480,8 +480,9 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
       newMaxRate = oldMaxRate * 1.001;
 
       // copy values of increment to h
-      for (i = 0; i < mDimension; i++)
-        mH[i] = mdxdt[i];
+      mH = mdxdt;
+      // for (i = 0; i < mDimension; i++)
+      //   mH[i] = mdxdt[i];
 
       //repeat till the new max rate is smaller than the old and all concentrations are positive.
       //max 32 times
@@ -542,19 +543,26 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
 bool CNewtonMethod::allPositive()
 {
-  C_INT32 i, imax = mX->size();
-  for (i = 0; i < imax; ++i)
-    if ((*mX)[i] < 0)
+  C_FLOAT64 ParticleResolution =
+    - mResolution * mpSteadyStateX->getModel()->getQuantity2NumberFactor();
+
+  const C_FLOAT64 * pIt = mX->array();
+  const C_FLOAT64 * pEnd = pIt + mX->size();
+  CCopasiVector< CMetab >::const_iterator itMetab
+  = mpSteadyStateX->getModel()->getMetabolitesX().begin();
+
+  for (; pIt != pEnd; ++pIt, itMetab++)
+    if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getVolume())
       return false;
 
   // This is necessarry since the dependent numbers are ignored during calculation.
   mpSteadyStateX->updateDependentNumbers();
 
-  const C_FLOAT64 * pTmp =
-    mpSteadyStateX->getDependentNumberVector().array();
-  imax = mpSteadyStateX->getDependentNumberVector().size();
-  for (i = 0; i < imax; ++i, pTmp++)
-    if (*pTmp < 0)
+  pIt = mpSteadyStateX->getDependentNumberVector().array();
+  pEnd = pIt + mpSteadyStateX->getDependentNumberVector().size();
+
+  for (; pIt != pEnd; ++pIt, itMetab++)
+    if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getVolume())
       return false;
 
   return true;
@@ -563,9 +571,12 @@ bool CNewtonMethod::allPositive()
 bool CNewtonMethod::containsNaN() const
   {
     //checks for NaNs
+    const C_FLOAT64 * pIt = mX->array();
+    const C_FLOAT64 * pEnd = pIt + mX->size();
     C_INT32 i, imax = mX->size();
-    for (i = 0; i < imax; ++i)
-      if (isnan((*mX)[i]))
+
+    for (; pIt != pEnd; ++pIt)
+      if (isnan(*pIt))
         return true;
 
     return false;
@@ -586,10 +597,10 @@ CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode)
 
 bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
 {
-  if (containsNaN())
+  if (value > mScaledResolution)
     return false;
 
-  if (value > mScaledResolution)
+  if (containsNaN())
     return false;
 
   return true;
@@ -597,19 +608,22 @@ bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
 
 C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particlefluxes) const
   {
-    const CCopasiVector<CMetab> & metabs = mpSteadyStateX->getModel()->getMetabolitesInd();
     const C_FLOAT64 & factor = mpSteadyStateX->getModel()->getNumber2QuantityFactor();
 
     C_FLOAT64 tmp, store = 0;
 
-    C_INT32 i, imax = metabs.size();
-    for (i = 0; i < imax; ++i)
+    const C_FLOAT64 * pIt = particlefluxes.array();
+    const C_FLOAT64 * pEnd = pIt + particlefluxes.size();
+    CCopasiVector< CMetab >::const_iterator itMetab
+    = mpSteadyStateX->getModel()->getMetabolitesX().begin();
+
+    for (; pIt != pEnd; ++pIt, itMetab++)
       {
-        tmp = fabs(/*mdxdt*/particlefluxes[i] * metabs[i]->getCompartment()->getVolumeInv() * factor);
+        tmp = fabs(*pIt * (*itMetab)->getCompartment()->getVolumeInv() * factor);
         if (tmp > store)
           store = tmp;
-        //std::cout << metabs[i]->getObjectName() << "  " << tmp << std::endl;
       }
+
     return store;
   }
 
