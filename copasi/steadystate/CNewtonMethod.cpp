@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.61.2.7 $
+   $Revision: 1.61.2.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/19 17:51:55 $
+   $Date: 2006/01/19 19:07:32 $
    End CVS Header */
 
 #include <algorithm>
@@ -481,17 +481,20 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
       // copy values of increment to h
       mH = mdxdt;
-      // for (i = 0; i < mDimension; i++)
-      //   mH[i] = mdxdt[i];
 
       //repeat till the new max rate is smaller than the old and all concentrations are positive.
       //max 32 times
       for (i = 0; (i < 32) && !((newMaxRate < oldMaxRate) && (mAcceptNegative || allPositive())); i++)
         {
-          for (j = 0; j < mDimension; j++)
+          C_FLOAT64 * pX = mX->array();
+          C_FLOAT64 * pXold = mXold.array();
+          C_FLOAT64 * pH = mH.array();
+          C_FLOAT64 * pEnd = pH + mDimension;
+
+          for (; pH != pEnd; ++pH, ++pX, ++pXold)
             {
-              (*mX)[j] = mXold[j] - mH[j];
-              mH[j] /= 2;
+              *pX = *pXold - *pH;
+              (*pH) *= 0.5;
             }
 
           const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt.array());
