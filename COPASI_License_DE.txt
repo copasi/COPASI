@@ -11,8 +11,8 @@ You should carefully read the following terms and conditions before
 using this software.  Your use of this Software indicates your
 acceptance of this license agreement and all terms and conditions.
 
-The main authors of COPASI are Stefan Hoops, Sven Sahle, and Ralph
-Gauges. This software has been made possible with the dedicated
+The main authors of COPASI are Pedro Mendes, Stefan Hoops, Sven Sahle, 
+and Ralph Gauges. This software has been made possible with the dedicated
 support of a large number of graduate students at VBI and EML
 Research.
 
