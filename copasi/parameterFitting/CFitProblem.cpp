@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.21.2.5 $
+   $Revision: 1.21.2.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/18 18:03:15 $
+   $Date: 2006/01/20 15:34:35 $
    End CVS Header */
 
 #include "copasi.h"
@@ -367,6 +367,14 @@ void CFitProblem::printResult(std::ostream * ostream) const
 
     os << "Objective Function Value:\t" << mSolutionValue << std::endl;
     os << "Standard Deviation:\t" << mSD << std::endl;
+
+    CCopasiTimeVariable CPUTime = const_cast<CFitProblem *>(this)->mCPUTime.getElapsedTime();
+
+    os << "Function Evaluations:\t" << mCounter << std::endl;
+    os << "CPU Time [s]:\t"
+    << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
+    << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
+    os << "Evaluations/Second [1/s]:\t" << (1000 * mCounter) / (C_FLOAT64) CPUTime.getMilliSeconds() << std::endl;
     os << std::endl;
 
     std::vector< COptItem * >::const_iterator itItem =

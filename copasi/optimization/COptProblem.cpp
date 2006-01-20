@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.71.2.3 $
+   $Revision: 1.71.2.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/12 17:21:10 $
+   $Date: 2006/01/20 15:34:35 $
    End CVS Header */
 
 /**
@@ -53,7 +53,16 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
     mpConstraintItems(NULL),
     mpSteadyState(NULL),
     mpTrajectory(NULL),
-    mpFunction(NULL)
+    mpFunction(NULL),
+    mUpdateMethods(),
+    mCalculateValue(0),
+    mSolutionVariables(),
+    mOriginalVariables(),
+    mSolutionValue(0),
+    mCounter(0),
+    mCPUTime(CCopasiTimer::CPU, this),
+    mhSolutionValue(C_INVALID_INDEX),
+    mhCounter(C_INVALID_INDEX)
 {
   initializeParameter();
   initObjects();
@@ -73,7 +82,16 @@ COptProblem::COptProblem(const COptProblem& src,
     mpConstraintItems(NULL),
     mpSteadyState(src.mpSteadyState),
     mpTrajectory(src.mpTrajectory),
-    mpFunction(NULL)
+    mpFunction(NULL),
+    mUpdateMethods(),
+    mCalculateValue(src.mCalculateValue),
+    mSolutionVariables(src.mSolutionVariables),
+    mOriginalVariables(src.mOriginalVariables),
+    mSolutionValue(src.mCalculateValue),
+    mCounter(0),
+    mCPUTime(CCopasiTimer::CPU, this),
+    mhSolutionValue(C_INVALID_INDEX),
+    mhCounter(C_INVALID_INDEX)
 {
   initializeParameter();
   initObjects();
@@ -258,6 +276,8 @@ bool COptProblem::initialize()
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
       return false;
     }
+
+  mCPUTime.start();
 
   return true;
 }
@@ -491,7 +511,15 @@ void COptProblem::printResult(std::ostream * ostream) const
       {
         return;
       }
-    *ostream << "    Objective Function Value: " << mSolutionValue << std::endl;
+    *ostream << "    Objective Function Value:\t" << mSolutionValue << std::endl;
+
+    CCopasiTimeVariable CPUTime = const_cast<COptProblem *>(this)->mCPUTime.getElapsedTime();
+
+    *ostream << "    Function Evaluations:\t" << mCounter << std::endl;
+    *ostream << "    CPU Time [s]:\t"
+    << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
+    << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
+    *ostream << "    Evaluations/Second [1/s]:\t" << (1000 * mCounter) / (C_FLOAT64) CPUTime.getMilliSeconds() << std::endl;
     *ostream << std::endl;
 
     std::vector< COptItem * >::const_iterator itItem =

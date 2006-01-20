@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.43.2.2 $
+   $Revision: 1.43.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/12 17:21:10 $
+   $Date: 2006/01/20 15:34:35 $
    End CVS Header */
 
 /**
@@ -21,6 +21,8 @@
 
 #include <string>
 #include <vector>
+
+#include "report/CCopasiTimer.h"
 
 #include "utilities/CCopasiProblem.h"
 #include "utilities/CVector.h"
@@ -351,6 +353,11 @@ class COptProblem : public CCopasiProblem
      * Counter of evaluations
      */
     unsigned C_INT32 mCounter;
+
+    /**
+     * A CPU Timer 
+     */
+    CCopasiTimer mCPUTime;
 
     /**
      * Handle of "Best Value" process report item
