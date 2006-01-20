@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.23.2.7 $
+   $Revision: 1.23.2.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/13 16:22:58 $
+   $Date: 2006/01/20 15:35:08 $
    End CVS Header */
 
 #include <fstream>
@@ -865,6 +865,9 @@ void CExperiment::printResult(std::ostream * ostream) const
       mpObjectMap->getMappedObjects();
 
     os << "Row\t";
+    if (*mpTaskType == CCopasiTask::timeCourse)
+      os << "Time\t";
+
     for (k = 0; k < kmax; k++)
       if (getColumnType(k) == CExperiment::dependent)
         {
@@ -881,6 +884,9 @@ void CExperiment::printResult(std::ostream * ostream) const
     for (i = 0; i < imax; i++)
       {
         os << i + 1 << ".\t";
+        if (*mpTaskType == CCopasiTask::timeCourse)
+          os << mDataTime[i] << "\t";
+
         for (j = 0; j < jmax; j++)
           {
             os << mDataDependent(i, j) << "\t";
@@ -891,16 +897,22 @@ void CExperiment::printResult(std::ostream * ostream) const
       }
 
     os << "Mean";
+    if (*mpTaskType == CCopasiTask::timeCourse)
+      os << "\t";
     for (j = 0; j < jmax; j++)
       os << "\t" << mMeans[j] << "\t\t" << mColumnMean[j];
     os << std::endl;
 
     os << "Weight";
+    if (*mpTaskType == CCopasiTask::timeCourse)
+      os << "\t";
     for (j = 0; j < jmax; j++)
       os << "\t\t\t" << mWeight[j];
     os << std::endl;
 
     os << "Standard Deviation";
+    if (*mpTaskType == CCopasiTask::timeCourse)
+      os << "\t";
     for (j = 0; j < jmax; j++)
       os << "\t\t\t" << mColumnSD[j];
     os << std::endl;
