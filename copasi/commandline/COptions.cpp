@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.26.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:27:17 $
+   $Date: 2006/01/23 16:10:55 $
    End CVS Header */
 
 #include "copasi.h"
@@ -157,6 +157,7 @@ void COptions::init(C_INT argc, char *argv[])
 
   if (Options.Tmp != "") setValue("Tmp", Options.Tmp);
   setValue("Verbose", Options.Verbose);
+  setValue("License", Options.License);
   setValue("Save", Options.Save);
   setValue("ImportSBML", Options.ImportSBML);
   setValue("ExportSBML", Options.ExportSBML);
