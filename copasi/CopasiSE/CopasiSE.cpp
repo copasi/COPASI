@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.26.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:42:51 $
+   $Date: 2006/01/23 16:12:02 $
    End CVS Header */
 
 // Main
@@ -18,7 +18,14 @@
 
 #define COPASI_MAIN
 
+#ifdef COPASI_EML
+# include "LicenseDE.txt.h"
+#else
+# include "LicenseUS.txt.h"
+#endif
+
 #include "copasi.h"
+
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
@@ -75,6 +82,15 @@ int main(int argc, char *argv[])
     {
       Error << CDirEntry::baseName(argv[0]) << ": " << e.what() << "\n";
       Error << e.get_help_comment() << std::endl;
+    }
+
+  bool License;
+  COptions::getValue("License", License);
+
+  if (License)
+    {
+      std::cout << CopasiLicense << std::endl;
+      return 0;
     }
 
   try
