@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.163 $
+   $Revision: 1.163.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 22:27:45 $
+   $Date: 2006/01/23 16:12:59 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -20,6 +20,8 @@
 #include <qtimer.h>
 
 #include <vector>
+
+extern const char * CopasiLicense;
 
 #include "AboutDialog.h"
 #include "CopasiFileDialog.h"
@@ -553,7 +555,14 @@ void CopasiUI3Window::slotFilePrint()
  *******************************************************************************************/
 void CopasiUI3Window::about()
 {
-  AboutDialog* aboutDialog = new AboutDialog(this);
+  AboutDialog* aboutDialog = new AboutDialog(this, AboutDialog::text, 76, 30);
+  aboutDialog->setCaption(FixedTitle);
+  aboutDialog->exec();
+}
+
+void CopasiUI3Window::license()
+{
+  AboutDialog* aboutDialog = new AboutDialog(this, CopasiLicense, 76, 30);
   aboutDialog->setCaption(FixedTitle);
   aboutDialog->exec();
 }
@@ -704,6 +713,7 @@ void CopasiUI3Window::createMenuBar()
   help->insertItem("Simple &Wizard", this, SLOT(slotTutorialWizard()));
   help->insertSeparator();
   help->insertItem("&About", this, SLOT(about()), Key_F1);
+  help->insertItem("&License", this, SLOT(license()));
   help->insertItem("About &Qt", this, SLOT(aboutQt()));
   help->insertSeparator();
   help->insertItem("What's &This", this, SLOT(whatsThis()), SHIFT + Key_F1);

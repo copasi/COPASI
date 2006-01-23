@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.h,v $
-   $Revision: 1.52 $
+   $Revision: 1.52.2.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:29:40 $
+   $Author: shoops $ 
+   $Date: 2006/01/23 16:12:59 $
    End CVS Header */
 
 #include <qmainwindow.h>
@@ -57,6 +57,7 @@ class CopasiUI3Window : public QMainWindow
     void slotExportMathModel();
     void slotTutorialWizard();
     void about();
+    void license();
     void aboutQt();
     void slotQuit();
     void slotConvertToIrreversible();

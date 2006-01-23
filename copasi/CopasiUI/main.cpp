@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.22.8.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/19 21:00:53 $
+   $Date: 2006/01/23 16:12:59 $
    End CVS Header */
 
 #include <stdexcept>
@@ -11,6 +11,13 @@
 #include <qapplication.h>
 
 #define COPASI_MAIN
+
+#ifdef COPASI_EML
+# include "LicenseDE.txt.h"
+#else
+# include "LicenseUS.txt.h"
+#endif
+
 #include "copasiversion.h"
 
 #include "copasiui3window.h"
