@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.46 $ $Author: shoops $ $Date: 2005/08/30 15:38:57 $  
+# $Revision: 1.47 $ $Author: nsimus $ $Date: 2006/01/24 12:42:32 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -23,6 +23,7 @@ CONFIG += rtti
 
 debug {
   DEFINES += COPASI_DEBUG
+  DEFINES += COPASI_TSS
 }
 
 !contains(BUILD_OS, WIN32) {
@@ -202,7 +203,7 @@ contains(BUILD_OS, Linux) {
     }
   }
  
-  QMAKE_LFLAGS += -static
+  #QMAKE_LFLAGS += -static
 
   !isEmpty(SBML_PATH){
     LIBS+=  -L$${SBML_PATH}/lib
