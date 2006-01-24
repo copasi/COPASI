@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.46.2.1 $ $Author: shoops $ $Date: 2006/01/11 13:42:10 $  
+# $Revision: 1.46.2.2 $ $Author: shoops $ $Date: 2006/01/24 16:10:42 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -20,6 +20,16 @@ DEFINES+=LIBSBML_STATIC
 # Common configuration settings
 CONFIG += exceptions
 CONFIG += rtti
+
+# COPASI License to use
+isEmpty(USE_LICENSE){
+  DEFINES += COPASI_LICENSE_US
+} else {
+  contains(USE_LICENSE, DE) {
+    DEFINES += COPASI_LICENSE_DE
+  }
+}
+
 
 debug {
   DEFINES += COPASI_DEBUG

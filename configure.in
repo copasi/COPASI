@@ -28,7 +28,7 @@ AC_ARG_WITH([sbml],
                  [Path to SBML Library ]),
   [SBML_PATH=$withval])
 
-
+dnl LAPACK library alternatives
 AC_ARG_WITH([clapack],
   AC_HELP_STRING([--with-clapack=PATH],
                  [Path to CLAPACK Library ]),
@@ -50,9 +50,14 @@ AC_ARG_WITH([qwt],
                  [Path to QWT Library ]),
   [QWT_PATH=$withval])
 
+AC_ARG_WITH([copasi-license],
+  AC_HELP_STRING([--with-copasi-license],
+                 [Specify whether to use the German (DE) or US (US) license.]),
+  [COPASI_LICENSE=$withval])
+
 AC_ARG_WITH([build-parser],
   AC_HELP_STRING([--with-build-parser],
-                 [Specify wether to build lex and yacc sources.]),
+                 [Specify whether to build lex and yacc sources.]),
   [BUILD_PARSER=$withval])
 
 if test "x$prefix" = "xNONE"; then
@@ -60,8 +65,11 @@ if test "x$prefix" = "xNONE"; then
   ac_configure_args="$ac_configure_args --prefix $prefix"
 fi
 
+if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US"; then
+  cps_copasi_license="USE_LICENSE=$COPASI_LICENSE"
+fi
+
 if test x"$BUILD_PARSER" = x"yes"; then
-  prefix=$ac_default_prefix
   cps_build_parser="BUILD_PARSER=yes"
 fi
 
@@ -114,9 +122,9 @@ dnl to prevent calling aclocal, automake and configure again
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
  rm .qmake.internal.cache */.qmake.internal.cache; \
  rm Makefile */Makefile; \
- echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" $cps_build_parser && \
+ echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" $cps_build_parser $cps_copasi_license && \
  $QTDIR/bin/qmake $cps_release $cps_thread \
-                  $cps_mkl_path $cps_clapack_path $cps_expat_path $cps_qwt_path $cps_sbml_path $cps_build_parser && \
+                  $cps_mkl_path $cps_clapack_path $cps_expat_path $cps_qwt_path $cps_sbml_path $cps_build_parser $cps_copasi_license && \
  cat Makefile | \
  sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
      -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
@@ -129,9 +137,9 @@ dnl to prevent calling aclocal, automake and configure again
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
  rm .qmake.internal.cache */.qmake.internal.cache; \
  rm Makefile */Makefile; \
- echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" $cps_build_parser && \
+ echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" $cps_build_parser $cps_copasi_license && \
  $QTDIR/bin/qmake $cps_release $cps_thread \
-                  $cps_mkl_path $cps_clapack_path $cps_expat_path $cps_qwt_path $cps_sbml_path $cps_build_parser && \
+                  $cps_mkl_path $cps_clapack_path $cps_expat_path $cps_qwt_path $cps_sbml_path $cps_build_parser $cps_copasi_license && \
  cat Makefile | \
  sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
      -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
