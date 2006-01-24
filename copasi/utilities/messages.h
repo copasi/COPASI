@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.51.2.2 $
+   $Revision: 1.51.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/12 14:30:00 $
+   $Date: 2006/01/24 20:34:31 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -165,6 +165,11 @@ const MESSAGES Messages[] =
 
     {MCSteadyState + 1, "CSteadyState (1): The model is explicitly time dependent. "
      "Therefore, the calculation of a steady state is not very meaning full."},
+
+    {MCFitting + 1, "CFitting (1): Failed to determine work area size for matrix inversion. "
+     "dsytrf returned with error '%d'."},
+    {MCFitting + 2, "CFitting (2): Failed to invert Fisher information matrix. "
+     "dsytrf returned with error '%d'."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}

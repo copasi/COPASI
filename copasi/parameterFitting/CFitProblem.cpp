@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.21.2.6 $
+   $Revision: 1.21.2.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/20 15:34:35 $
+   $Date: 2006/01/24 20:34:30 $
    End CVS Header */
 
 #include "copasi.h"
@@ -710,6 +710,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   if (info)
     {
       mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
+
       return false; // :TODO: create error message
     }
 
@@ -720,7 +722,9 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   if (info)
     {
       mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-      return false; // :TODO: create error message
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 2, info);
+
+      return false;
     }
 
   /* int dsytri_(char *uplo,
