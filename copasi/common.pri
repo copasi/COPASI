@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.46.2.2 $ $Author: shoops $ $Date: 2006/01/24 16:10:42 $  
+# $Revision: 1.46.2.3 $ $Author: shoops $ $Date: 2006/01/24 16:15:37 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -22,12 +22,9 @@ CONFIG += exceptions
 CONFIG += rtti
 
 # COPASI License to use
-isEmpty(USE_LICENSE){
-  DEFINES += COPASI_LICENSE_US
-} else {
-  contains(USE_LICENSE, DE) {
-    DEFINES += COPASI_LICENSE_DE
-  }
+DEFINES += COPASI_LICENSE_US
+contains(USE_LICENSE, DE) {
+  DEFINES += COPASI_LICENSE_DE
 }
 
 
