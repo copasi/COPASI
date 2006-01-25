@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/scrollzoomer.cpp,v $
-   $Revision: 1.1.2.1 $
+   $Revision: 1.1.2.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/01/25 11:48:07 $
+   $Date: 2006/01/25 14:49:59 $
    End CVS Header */
 
 #include <qevent.h>
@@ -17,6 +17,21 @@ LogPlotZoomer::LogPlotZoomer(QwtPlotCanvas *canvas):
     QwtPlotZoomer(canvas)
 {}
 
+/*void QwtPlotZoomer::move(double x, double y)
+{
+    x = qwtMax(x, zoomBase().left());
+    x = qwtMin(x, zoomBase().right() - zoomRect().width());
+ 
+    y = qwtMax(y, zoomBase().top());
+    y = qwtMin(y, zoomBase().bottom() - zoomRect().height());
+ 
+    if (x != zoomRect().left() || y != zoomRect().top())
+    {
+        d_data->zoomStack[d_data->zoomRectIndex].moveTo(x, y);
+        rescale();
+    }
+}*/
+
 void LogPlotZoomer::move(double x, double y)
 {
   //QwtPlotZoomer::move(x,y);
@@ -29,7 +44,8 @@ void LogPlotZoomer::move(double x, double y)
 
   if (x != zoomRect().left() || y != zoomRect().top())
     {
-      QwtDoubleRect & rect = zoomStack()[zoomRectIndex()];
+      //zoomStack()[zoomRectIndex()].moveTo(x, y);
+      QwtDoubleRect & rect = const_cast<QwtDoubleRect &>(zoomStack()[zoomRectIndex()]);
 
       //handle x axis
       const int xAxis = QwtPlotZoomer::xAxis();
@@ -492,7 +508,7 @@ void ScrollZoomer::layoutScrollBars(const QRect &rect)
       vScrollBar->setGeometry(x, y, vdim, h);
     }
   if (hScrollBar && hScrollBar->isVisible() &&
-       vScrollBar && vScrollBar->isVisible())
+      vScrollBar && vScrollBar->isVisible())
     {
       if (d_cornerWidget)
         {

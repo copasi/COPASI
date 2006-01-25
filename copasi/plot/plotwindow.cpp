@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwindow.cpp,v $
-   $Revision: 1.21.2.1 $
+   $Revision: 1.21.2.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/01/25 12:01:20 $
+   $Date: 2006/01/25 14:49:59 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -101,7 +101,7 @@ void PlotWindow::printPlot()
 {
   QPrinter printer;
 
-  QString docName = mpPlot->title();
+  QString docName = mpPlot->title().text();
   if (docName.isEmpty())
     {
       //docName.replace (QRegExp (QString::fromLatin1 ("\n")), tr (" -- "));
@@ -109,7 +109,7 @@ void PlotWindow::printPlot()
       printer.setDocName (docName);
     }
 
-  printer.setCreator(docName);
+  printer.setCreator("Copasi");
   printer.setOrientation(QPrinter::Landscape);
 
   if (printer.setup())
