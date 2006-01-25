@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.18.2.1 $
+   $Revision: 1.18.2.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/01/04 15:21:37 $
+   $Author: ssahle $ 
+   $Date: 2006/01/25 12:01:20 $
    End CVS Header */
 
 #include <limits>
@@ -91,6 +91,17 @@ bool CPlotSpec2Vector::updateAllPlots()
   for (it = windows.begin(); it != windows.end(); ++it)
     {
       (*it)->updatePlot();
+    }
+
+  return true;
+}
+
+bool CPlotSpec2Vector::finishAllPlots()
+{
+  std::vector<PlotWindow*>::const_iterator it;
+  for (it = windows.begin(); it != windows.end(); ++it)
+    {
+      (*it)->finishPlot();
     }
 
   return true;
@@ -197,7 +208,13 @@ bool CPlotSpec2Vector::doPlottingSeparator()
 
 bool CPlotSpec2Vector::finishPlotting()
 {
-  return updateAllPlots();
+  if (!updateAllPlots())
+    return false;
+
+  if (!finishAllPlots())
+    return false;
+
+  return true;
 }
 
 C_INT32 CPlotSpec2Vector::getIndexFromCN(const CCopasiObjectName & name)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.21.2.1 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/26 14:29:18 $
+   $Author: ssahle $ 
+   $Date: 2006/01/25 12:01:20 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -46,9 +46,9 @@ PlotWindow::PlotWindow(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec)
   QToolBar * plotTools = new QToolBar(this, "plot operations");
   plotTools->setLabel("Plot Operations");
 
-  zoomButton = new QToolButton(plotTools, "zoom");
-  zoomButton->setText("Zoom");
-  zoomButton->setTextLabel("Zoom");
+  //zoomButton = new QToolButton(plotTools, "zoom");
+  //zoomButton->setText("Zoom");
+  //zoomButton->setTextLabel("Zoom");
   //zoomButton->setToggleButton(true);
 
   printButton = new QToolButton(plotTools, "print plot");
@@ -62,12 +62,13 @@ PlotWindow::PlotWindow(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec)
   plotTools->setStretchableWidget(new QWidget(plotTools));
 
   mpPlot = new CopasiPlot(psv, ptrSpec, this);
+  std::cout << mpPlot-> mZoomer << std::endl;
   setCentralWidget(mpPlot);
 
-  connect(zoomButton, SIGNAL(clicked()), this, SLOT(enableZoom()));
+  //connect(zoomButton, SIGNAL(clicked()), this, SLOT(enableZoom()));
   connect(printButton, SIGNAL(clicked()), this, SLOT(printPlot()));
   connect(saveButton, SIGNAL(clicked()), this, SLOT(slotSaveData()));
-  connect(mpPlot, SIGNAL(plotMouseReleased(const QMouseEvent &)), this, SLOT(mouseReleased(const QMouseEvent&)));
+  //connect(mpPlot, SIGNAL(plotMouseReleased(const QMouseEvent &)), this, SLOT(mouseReleased(const QMouseEvent&)));
 }
 
 bool PlotWindow::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec)
@@ -78,21 +79,21 @@ bool PlotWindow::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
 
 //-----------------------------------------------------------------------------
 
-void PlotWindow::enableZoom()
+/*void PlotWindow::enableZoom()
 {
   zoomButton->setEnabled(false);
   mpPlot->enableZoom(true);
-}
+}*/
 
 //-----------------------------------------------------------------------------
 
-void PlotWindow::mouseReleased(const QMouseEvent &e)
+/*void PlotWindow::mouseReleased(const QMouseEvent &e)
 {
   //TODO: if midbutton is clicked and we're zoomed out completely, zoomButton need to be enabled as well
-
+ 
   if (e.button() == RightButton)
     zoomButton->setEnabled(true);
-}
+}*/
 
 //-----------------------------------------------------------------------------
 
@@ -164,3 +165,6 @@ void PlotWindow::takeData(const std::vector<C_FLOAT64> & data)
 
 void PlotWindow::updatePlot()
 {if (mpPlot) mpPlot->updatePlot();};
+
+void PlotWindow::finishPlot()
+{if (mpPlot) mpPlot->finishPlot();};

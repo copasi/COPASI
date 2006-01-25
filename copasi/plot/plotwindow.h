@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwindow.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.11.2.1 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/20 13:13:14 $
+   $Author: ssahle $ 
+   $Date: 2006/01/25 12:01:20 $
    End CVS Header */
 
 #include <fstream>
@@ -33,7 +33,7 @@ class PlotWindow : public QMainWindow
 
     bool initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec);
 
-    QToolButton * zoomButton;
+    //QToolButton * zoomButton;
     QToolButton * printButton;
     QToolButton * saveButton;
 
@@ -41,11 +41,12 @@ class PlotWindow : public QMainWindow
 
     void takeData(const std::vector<C_FLOAT64> & data);
     void updatePlot();
+    void finishPlot();
 
   private slots:
-    void enableZoom();
+    //void enableZoom();
 
-    void mouseReleased(const QMouseEvent &e);
+    //void mouseReleased(const QMouseEvent &e);
 
     // prints the plot (to printer or file)
     void printPlot();

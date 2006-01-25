@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.41.10.1 $
+   $Revision: 1.41.10.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/12/21 20:07:42 $
+   $Author: ssahle $ 
+   $Date: 2006/01/25 12:01:20 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.41.10.1 2005/12/21 20:07:42 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.41.10.2 2006/01/25 12:01:20 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -94,18 +94,18 @@ PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
 
   labelScale = new QLabel(this, "lableScale");
   labelScale->setText(tr("Axis scales"));
-  labelScale->setEnabled(FALSE);
+  //labelScale->setEnabled(FALSE);
   labelScale->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
   PlotWidget1Layout->addWidget(labelScale, 2, 0);
 
   checkLogX = new QCheckBox(this, "checkLogX");
   checkLogX->setText(tr("log X-axis"));
-  checkLogX->setEnabled(FALSE);
+  //checkLogX->setEnabled(FALSE);
   PlotWidget1Layout->addWidget(checkLogX, 2, 1);
 
   checkLogY = new QCheckBox(this, "checkLogY");
   checkLogY->setText(tr("log Y-axis"));
-  checkLogY->setEnabled(FALSE);
+  //checkLogY->setEnabled(FALSE);
   PlotWidget1Layout->addWidget(checkLogY, 3, 1);
 
   //*********** line *******************
@@ -490,6 +490,8 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
     {
     case CPlotItem::plot2d :
       comboType->setCurrentItem(0);
+      checkLogX->setChecked(pspec->isLogX());
+      checkLogY->setChecked(pspec->isLogY());
       break;
       break;
     default:
@@ -544,6 +546,10 @@ bool PlotWidget1::saveToPlotSpec()
 
   //active?
   pspec->setActive(activeCheckBox->isChecked());
+
+  //scales
+  pspec->setLogX(checkLogX->isChecked());
+  pspec->setLogY(checkLogY->isChecked());
 
   //curves
   CPlotItem* item;

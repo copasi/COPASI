@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.13.8.1 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/04/21 08:53:08 $
+   $Date: 2006/01/25 12:01:20 $
    End CVS Header */
 
 // the plot object for copasi
@@ -18,69 +18,41 @@
 #include <qmemarray.h>
 
 #include "copasi.h"
-#include "zoomplot.h"
 #include "CHistogram.h" 
 //#include "plotspec.h"
 
 #include <qpainter.h>
+#include <qwt_plot.h>
 #include <qwt_painter.h>
 #include <qwt_data.h>
+#include <qwt_plot_curve.h>
 
-class MyQwtCPointerData: public QwtData
-  {
-  public:
-    MyQwtCPointerData(const double *x, const double *y, size_t size);
-    MyQwtCPointerData &operator=(const MyQwtCPointerData &);
-    virtual QwtData *copy() const;
-
-    virtual size_t size() const;
-    virtual double x(size_t i) const;
-    virtual double y(size_t i) const;
-
-    virtual QwtDoubleRect boundingRect() const;
-
-  private:
-    const double *d_x;
-    const double *d_y;
-    size_t d_size;
-  };
-
+//nan in data splits curve
 class MyQwtPlotCurve : public QwtPlotCurve
   {
   public:
-    MyQwtPlotCurve (QwtPlot *parent, const QString &title = QString::null)
-        : QwtPlotCurve(parent, title)
+    MyQwtPlotCurve (const QString &title = QString::null)
+        : QwtPlotCurve(title)
     {}
-
-    virtual QwtDoubleRect boundingRect () const
-      {
-        if (enabled())
-          return QwtPlotCurve::boundingRect();
-        else
-          return QwtDoubleRect(2.0, 1.0, 0.0, 0.0); //invalid rectangle
-      }
 
   protected:
     void myDrawLines(QPainter *painter,
-                     const QwtDiMap &xMap, const QwtDiMap &yMap, int from, int to);
+                     const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+                     int from, int to) const;
 
-    virtual void MyQwtPlotCurve::drawCurve(QPainter *painter, int style,
-                                           const QwtDiMap &xMap, const QwtDiMap &yMap, int from, int to)
-    {
-      if (style == Lines)
-        myDrawLines(painter, xMap, yMap, from, to);
-      else
-        QwtCurve::drawCurve(painter, style, xMap, yMap, from, to);
-    }
+    //Reroute curve plotting to our own routine
+    virtual void drawCurve(QPainter *painter, int style,
+                           const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+                           int from, int to) const;
   };
 
-//*******************************************************
 //*******************************************************
 
 class CPlotSpec2Vector;
 class CPlotSpecification;
+class QwtPlotZoomer;
 
-class CopasiPlot : public ZoomPlot
+class CopasiPlot : public QwtPlot
   {
     Q_OBJECT
   public:
@@ -90,22 +62,21 @@ class CopasiPlot : public ZoomPlot
 
     ~CopasiPlot();
 
-    // paints only an interval of points that is
-    // essential for appending points. Using replot instead
-    // is simply to slow for curves with a lot of points.
-    void drawCurveInterval(long curveId, int from, int to);
-
     // decides whether zooming is enabled and sets flags accordingly
-    void enableZoom(bool enabled);
+    //void enableZoom(bool enabled);
 
     //public slots:
     // this method reads data to append to existing curves
-    void appendPlot();
+    //void appendPlot();
 
     void takeData(const std::vector<C_FLOAT64> & dataVector);
     void updatePlot();
+    void finishPlot();
 
     bool saveData(const std::string & filename);
+
+    QwtPlotZoomer* getZoomer()
+    {return mZoomer;}
 
   private:
     // tell the curves where the data is located. Is used before redraw
@@ -113,13 +84,7 @@ class CopasiPlot : public ZoomPlot
     void updateCurves(bool doHisto);
 
   private slots:
-    void mousePressed(const QMouseEvent &e);
-
-    void mouseReleased(const QMouseEvent &e);
-
-    // hides or redisplays the curve with the given key
-    //void redrawCurve(long key);
-    void toggleCurve(long curveId);
+    void showCurve(QwtPlotItem *item, bool on);
 
   private:
     // a vector that contains pointers to vectors of data in the selected columns
@@ -140,6 +105,9 @@ class CopasiPlot : public ZoomPlot
     //stores the type of each item (curve)
     std::vector<C_INT32> mItemTypes;
 
+    // stores the curves
+    std::vector<QwtPlotItem*> mQwtItems;
+
     //the histograms (if there are some)
     std::vector<CHistogram> mHistograms;
 
@@ -150,9 +118,12 @@ class CopasiPlot : public ZoomPlot
     void createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* pspec);
 
     // whether zooming is enabled
-    bool zoomOn;
+    //bool zoomOn;
 
-    QPoint cursorPos;
+    //QPoint cursorPos;
+
+  public:
+    QwtPlotZoomer * mZoomer;
   };
 
 #endif // COPASIPLOT_H

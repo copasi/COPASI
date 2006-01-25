@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.10.2.1 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/10/11 16:22:51 $
+   $Date: 2006/01/25 12:01:20 $
    End CVS Header */
 
 #if !defined PLOTSPECIFICATION_VECTOR
@@ -45,6 +45,7 @@ class CPlotSpec2Vector : public CCopasiObject
     bool initAllPlots();
     bool sendDataToAllPlots();
     bool updateAllPlots();
+    bool finishAllPlots();
 
     //this generates mObjects from mObjectNames
     bool compile();

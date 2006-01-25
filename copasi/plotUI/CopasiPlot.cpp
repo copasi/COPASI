@@ -1,147 +1,241 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.26.8.1 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/28 17:09:14 $
+   $Author: ssahle $ 
+   $Date: 2006/01/25 12:01:20 $
    End CVS Header */
 
-#include <qmemarray.h>
-#include <qevent.h>
 #include <qstring.h>
 #include <qcolor.h>   //might need to go to the header file
 
-#include <qpainter.h>
-#include <qwt_plot_canvas.h>
-#include <qwt_curve.h>
-#include <qwt_scale.h>
+#include <qwt_symbol.h>
+#include <qwt_legend.h>
+#include <qwt_legend_item.h>
+#include <qwt_scale_engine.h>
 
-#include <float.h>
+#include "scrollzoomer.h"
 
 #include "CopasiPlot.h"
 #include "CPlotSpec2Vector.h"
 #include "CPlotSpecification.h"
 #include "CopasiUI/qtUtilities.h"
 
-MyQwtCPointerData::MyQwtCPointerData(const double *x, const double *y,
-                                     size_t size):
-    d_x(x), d_y(y), d_size(size)
-{}
-
-MyQwtCPointerData& MyQwtCPointerData::operator=(const MyQwtCPointerData &data)
-{
-  if (this != &data)
-    {
-      d_x = data.d_x;
-      d_y = data.d_y;
-      d_size = data.d_size;
-    }
-  return *this;
-}
-
-size_t MyQwtCPointerData::size() const
-  {
-    return d_size;
-  }
-
-double MyQwtCPointerData::x(size_t i) const
-  {
-    return d_x[int(i)];
-  }
-
-double MyQwtCPointerData::y(size_t i) const
-  {
-    return d_y[int(i)];
-  }
-
-QwtData *MyQwtCPointerData::copy() const
-  {
-    return new MyQwtCPointerData(d_x, d_y, d_size);
-  }
-
-QwtDoubleRect MyQwtCPointerData::boundingRect() const
-  {
-    const size_t sz = size();
-
-    if (sz <= 0)
-      return QwtDoubleRect(1.0, -1.0, 1.0, -1.0); // invalid
-
-    double minX, maxX, minY, maxY;
-    const double *xIt = d_x;
-    const double *yIt = d_y;
-    const double *end = d_x + sz;
-
-  while (*xIt != *xIt) {xIt++; yIt++;}
-    minX = maxX = *xIt++;
-    minY = maxY = *yIt++;
-
-    while (xIt < end)
-      {
-        const double xv = *xIt++;
-        const double yv = *yIt++;
-
-        if (isnan(xv)) //NaN
-          continue;
-
-        if (xv < minX)
-          minX = xv;
-        if (xv > maxX)
-          maxX = xv;
-
-        if (yv < minY)
-          minY = yv;
-        if (yv > maxY)
-          maxY = yv;
-      }
-
-    //std::cout << minX <<" " <<maxX <<" " << minY<< "  " << maxY<<  std::endl;
-    return QwtDoubleRect(minX, maxX, minY, maxY);
-  }
+//********************  curve  ********************************************
 
 //draw the several curves, separated by NaNs.
 void MyQwtPlotCurve::myDrawLines(QPainter *painter,
-                                 const QwtDiMap &xMap, const QwtDiMap &yMap, int from, int to)
-{
-  int to2;
-  do
-    {
-      int i;
-      for (i = from; i <= to; ++i)
-        if (isnan(x(i))) //NaN
-          break;
+                                 const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+                                 int from, int to) const
+  {
+    int to2;
+    do
+      {
+        int i;
+        for (i = from; i <= to; ++i)
+          if (isnan(x(i))) //NaN
+            break;
 
-      if (i == from)
-        {
-          ++from;
-          continue;
-        }
+        if (i == from)
+          {
+            ++from;
+            continue;
+          }
 
-      to2 = i - 1;
+        to2 = i - 1;
 
-      QPointArray polyline(to2 - from + 1);
-      for (i = from; i <= to2; i++)
-        {
-          int xi = xMap.transform(x(i));
-          int yi = yMap.transform(y(i));
+        QwtPlotCurve::drawLines(painter, xMap, yMap, from, to2);
 
-          polyline.setPoint(i - from, xi, yi);
-        }
+        from = to2 + 2;
+      }
+    while (from < to);
+  }
 
-      QwtPainter::drawPolyline(painter, polyline);
-
-      if (painter->brush().style() != Qt::NoBrush)
-        {
-          closePolyline(xMap, yMap, polyline);
-          painter->setPen(QPen(Qt::NoPen));
-          QwtPainter::drawPolygon(painter, polyline);
-        }
-
-      from = to2 + 2;
-    }
-  while (from < to);
-}
+//virtual
+void MyQwtPlotCurve::drawCurve(QPainter *painter, int style,
+                               const QwtScaleMap &xMap, const QwtScaleMap &yMap,
+                               int from, int to) const
+  {
+    if (style == Lines)
+      myDrawLines(painter, xMap, yMap, from, to);
+    else
+      QwtPlotCurve::drawCurve(painter, style, xMap, yMap, from, to);
+  }
 
 //************************************
+
+CopasiPlot::CopasiPlot(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec, QWidget* parent)
+    : QwtPlot(parent),
+    mZoomer(NULL)
+{
+  QwtLegend *legend = new QwtLegend;
+  legend->setItemMode(QwtLegend::CheckableItem);
+  insertLegend(legend, QwtPlot::BottomLegend);
+
+  mZoomer = new ScrollZoomer(canvas());
+  mZoomer->setRubberBandPen(QColor(Qt::black));
+  mZoomer->setTrackerPen(QColor(Qt::black));
+
+  /*QwtPlotPicker * a_picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
+      QwtPicker::PointSelection | QwtPicker::DragSelection, 
+      QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn, 
+      canvas());
+  a_picker->setRubberBandPen(QColor(Qt::green));
+  a_picker->setTrackerPen(QColor(Qt::blue));*/
+
+  initFromSpec(psv, plotspec);
+
+  // white background better for printing...
+  setCanvasBackground(white);
+
+  //  setTitle(FROM_UTF8(plotspec->getTitle()));
+  setCanvasLineWidth(0);
+
+  // signal and slot connections
+  //connect(this, SIGNAL(plotMousePressed(const QMouseEvent &)),
+  //        SLOT(mousePressed(const QMouseEvent&)));
+  //connect(this, SIGNAL(plotMouseReleased(const QMouseEvent &)),
+  //        SLOT(mouseReleased(const QMouseEvent&)));
+  //connect(this, SIGNAL(legendClicked(long)),
+  //        SLOT(toggleCurve(long)));
+
+  canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, true);
+
+  const bool cacheMode =
+    canvas()->testPaintAttribute(QwtPlotCanvas::PaintCached);
+
+  //canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
+  //d_curve->draw(0, d_curve->dataSize() - 1);
+  //canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, cacheMode);
+
+  //setAxisScaleEngine(xBottom, new QwtLog10ScaleEngine());
+
+  connect(this, SIGNAL(legendChecked(QwtPlotItem *, bool)),
+          SLOT(showCurve(QwtPlotItem *, bool)));
+}
+
+bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec)
+{
+  mZoomer->setEnabled(false);
+
+  if (plotspec->isLogX())
+    setAxisScaleEngine(xBottom, new QwtLog10ScaleEngine());
+  else
+    setAxisScaleEngine(xBottom, new QwtLinearScaleEngine());
+
+  if (plotspec->isLogY())
+    setAxisScaleEngine(yLeft, new QwtLog10ScaleEngine());
+  else
+    setAxisScaleEngine(yLeft, new QwtLinearScaleEngine());
+
+  replot();
+
+  createIndices(psv, plotspec);
+
+  setTitle(FROM_UTF8(plotspec->getTitle()));
+
+  //removeCurves();
+  detachItems();
+  mHistograms.clear();
+  mHistoIndices.resize(plotspec->getItems().size());
+
+  //delete Buffers
+  while (data.size() > 0)
+    {
+      delete data[data.size() - 1];
+      data.pop_back();
+    }
+
+  //recreate buffers
+  for (unsigned int i = 0; i < indexTable.size(); i++)
+    {//TODO !!
+      QMemArray<double>* v = new QMemArray<double>(500);  // initial size = 500
+      data.push_back(v);
+    }
+  ndata = 0;
+
+  QColor curveColours[5] = {red, blue, green, cyan, magenta}; //TODO
+  CPlotItem::Type tmpType;
+  CPlotItem* pItem;
+  unsigned C_INT32 k;
+  for (k = 0; k < plotspec->getItems().size(); k++)
+    {
+      pItem = plotspec->getItems()[k];
+
+      // set up the curve
+      QwtPlotCurve* tmpCurve = new MyQwtPlotCurve(FROM_UTF8(pItem->getTitle()));
+      tmpCurve->setPen(curveColours[k % 5]);
+      tmpCurve->attach(this);
+      mQwtItems[k] = tmpCurve;
+
+      // activate the legend button
+      QwtLegendItem *li = dynamic_cast<QwtLegendItem*>(legend()->find(tmpCurve));
+      if (li) li->setChecked(true);
+
+      tmpType = (CPlotItem::Type)mItemTypes[k];
+
+      const void* tmp;
+      switch (tmpType)
+        {
+        case CPlotItem::curve2d :
+          unsigned C_INT32 tmpType;
+          if (!(tmp = pItem->getValue("Line type").pVOID))
+            tmpType = 0; //or error?
+          else
+            tmpType = *(const unsigned C_INT32*)tmp;
+          switch (tmpType)
+            {
+            case 0:          //curve
+              tmpCurve->setStyle(QwtPlotCurve::Lines);
+              break;
+            case 1:          //points
+              tmpCurve->setStyle(QwtPlotCurve::Dots);
+              break;
+            case 2:          //symbols
+              tmpCurve->setStyle(QwtPlotCurve::NoCurve);
+              const QColor &c = curveColours[k % 5];
+              tmpCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(c), QPen(c), QSize(5, 5)));
+              break;
+            }
+          break;
+
+        case CPlotItem::histoItem1d :
+          C_FLOAT64 tmpIncr;
+          if (!(tmp = pItem->getValue("increment").pVOID))
+            tmpIncr = 0.1; //or error?
+          else
+            tmpIncr = *(const C_FLOAT64*)tmp;
+
+          mHistograms.push_back(CHistogram(tmpIncr));
+          mHistoIndices[k] = mHistograms.size() - 1;
+
+          tmpCurve->setStyle(QwtPlotCurve::Steps);
+          tmpCurve->setYAxis(QwtPlot::yRight);
+          break;
+
+        default :
+          fatalError();
+        }
+    }
+
+  updateCurves(false);
+
+  if (plotspec->isLogX())
+    setAxisScaleEngine(xBottom, new QwtLog10ScaleEngine());
+  else
+    setAxisScaleEngine(xBottom, new QwtLinearScaleEngine());
+  setAxisAutoScale(xBottom);
+
+  if (plotspec->isLogY())
+    setAxisScaleEngine(yLeft, new QwtLog10ScaleEngine());
+  else
+    setAxisScaleEngine(yLeft, new QwtLinearScaleEngine());
+  setAxisAutoScale(yLeft);
+
+  replot();
+
+  return true; //TODO really check!
+}
 
 void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* pspec)
 {
@@ -157,6 +251,7 @@ void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* 
   C_INT32 i, imax = pspec->getItems().size();
   dataIndices.resize(imax);
   mItemTypes.resize(imax);
+  mQwtItems.resize(imax);
   for (i = 0; i < imax; ++i) //all curves
     {
       jjmax = pspec->getItems()[i]->getNumChannels();
@@ -225,131 +320,6 @@ void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* 
   //  histograms: points to an entry in the data vector
 }
 
-CopasiPlot::CopasiPlot(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec, QWidget* parent)
-    : ZoomPlot(parent), zoomOn(false)
-{
-  // set up legend
-  enableLegend(TRUE);
-  setAutoLegend(TRUE); //curves have to be inserted after this is set
-  setLegendPos(Qwt::Bottom);
-  //enableLegend(FALSE);
-  //setAutoLegend(FALSE); //curves have to be inserted after this is set
-
-  initFromSpec(psv, plotspec);
-
-  // white background better for printing...
-  setCanvasBackground(white);
-
-  //  setTitle(FROM_UTF8(plotspec->getTitle()));
-  setCanvasLineWidth(0);
-
-  // signal and slot connections
-  connect(this, SIGNAL(plotMousePressed(const QMouseEvent &)),
-          SLOT(mousePressed(const QMouseEvent&)));
-  connect(this, SIGNAL(plotMouseReleased(const QMouseEvent &)),
-          SLOT(mouseReleased(const QMouseEvent&)));
-  connect(this, SIGNAL(legendClicked(long)),
-          SLOT(toggleCurve(long)));
-}
-
-bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec)
-{
-  createIndices(psv, plotspec);
-
-  setTitle(FROM_UTF8(plotspec->getTitle()));
-
-  removeCurves();
-  mHistograms.clear();
-  mHistoIndices.resize(plotspec->getItems().size());
-
-  //delete Buffers
-  while (data.size() > 0)
-    {
-      delete data[data.size() - 1];
-      data.pop_back();
-    }
-
-  //recreate buffers
-  for (unsigned int i = 0; i < indexTable.size(); i++)
-    {//TODO !!
-      QMemArray<double>* v = new QMemArray<double>(500);  // initial size = 500
-      data.push_back(v);
-    }
-  ndata = 0;
-
-  QColor curveColours[5] = {red, blue, green, cyan, magenta}; //TODO
-  CPlotItem::Type tmpType;
-  CPlotItem* pItem;
-  unsigned C_INT32 k;
-  for (k = 0; k < plotspec->getItems().size(); k++)
-    {
-      pItem = plotspec->getItems()[k];
-
-      // set up the curve
-      QwtPlotCurve* tmpCurve = new MyQwtPlotCurve(this, FROM_UTF8(pItem->getTitle()));
-      long crv = insertCurve(tmpCurve);
-
-      setCurvePen(crv, QPen(curveColours[k % 5]));
-      //      setCurveXAxis(crv, plotspec->getItems()[k].xAxis);
-      //      setCurveYAxis(crv, plotspec->getItems()[k].yAxis);
-
-      QwtLegendButton* button = dynamic_cast<QwtLegendButton*>(legend()->findItem(crv));
-      if (button)
-        {
-          button->setToggleButton(true);
-          button->setOn(true);
-        }
-
-      tmpType = (CPlotItem::Type)mItemTypes[k];
-
-      const void* tmp;
-      switch (tmpType)
-        {
-        case CPlotItem::curve2d :
-          unsigned C_INT32 tmpType;
-          if (!(tmp = pItem->getValue("Line type").pVOID))
-            tmpType = 0; //or error?
-          else
-            tmpType = *(const unsigned C_INT32*)tmp;
-          switch (tmpType)
-            {
-            case 0:          //curve
-              setCurveStyle(crv, QwtCurve::Lines);
-              break;
-            case 1:          //points
-              setCurveStyle(crv, QwtCurve::Dots);
-              break;
-            case 2:          //symbols
-              setCurveStyle(crv, QwtCurve::NoCurve);
-              const QColor &c = curveColours[k % 5];
-              setCurveSymbol(crv, QwtSymbol(QwtSymbol::Cross, QBrush(c), QPen(c), QSize(5, 5)));
-              break;
-            }
-          break;
-
-        case CPlotItem::histoItem1d :
-          C_FLOAT64 tmpIncr;
-          if (!(tmp = pItem->getValue("increment").pVOID))
-            tmpIncr = 0.1; //or error?
-          else
-            tmpIncr = *(const C_FLOAT64*)tmp;
-
-          mHistograms.push_back(CHistogram(tmpIncr));
-          mHistoIndices[k] = mHistograms.size() - 1;
-
-          setCurveStyle(crv, QwtCurve::Steps);
-          setCurveYAxis(crv, QwtPlot::yRight);
-          break;
-
-        default :
-          fatalError();
-        }
-    }
-
-  //setAxisOptions(QwtPlot::yLeft,QwtAutoScale::Logarithmic);
-  return true; //TODO really check!
-}
-
 void CopasiPlot::takeData(const std::vector<C_FLOAT64> & dataVector)
 {
   unsigned C_INT32 i;
@@ -385,28 +355,37 @@ void CopasiPlot::takeData(const std::vector<C_FLOAT64> & dataVector)
 void CopasiPlot::updateCurves(bool doHisto)
 {
   // TODO: only do this once
-  QMemArray<long> crvKeys = curveKeys();
+
+  //QMemArray<long> crvKeys = curveKeys();
   CPlotItem::Type tmpType;
 
   unsigned C_INT32 k;
-  for (k = 0; k < crvKeys.size(); k++)
+  for (k = 0; k < mQwtItems.size(); k++)
     {
       tmpType = (CPlotItem::Type)mItemTypes[k];
       QwtData* tmpData;
+
+      QwtPlotCurve * tmpCurve;
       switch (tmpType)
         {
         case CPlotItem::curve2d :
-          tmpData = new MyQwtCPointerData(data[dataIndices[k][0]]->data(),
-                                          data[dataIndices[k][1]]->data(),
-                                          ndata);
-          curve(crvKeys.at(k))->setData(*tmpData);
+          tmpData = new /*My*/QwtCPointerData(data[dataIndices[k][0]]->data(),
+                                              data[dataIndices[k][1]]->data(),
+                                              ndata);
+          tmpCurve = dynamic_cast<QwtPlotCurve*>(mQwtItems[k]);
+          if (!tmpCurve) continue;
+          tmpCurve->setData(*tmpData);
           break;
 
         case CPlotItem::histoItem1d :
           if (doHisto)
-            curve(crvKeys.at(k))->setRawData(mHistograms[mHistoIndices[k]].getXArray(),
-                                             mHistograms[mHistoIndices[k]].getYArray(),
-                                             mHistograms[mHistoIndices[k]].size());
+            {
+              tmpCurve = dynamic_cast<QwtPlotCurve*>(mQwtItems[k]);
+              if (!tmpCurve) continue;
+              tmpCurve->setRawData(mHistograms[mHistoIndices[k]].getXArray(),
+                                   mHistograms[mHistoIndices[k]].getYArray(),
+                                   mHistograms[mHistoIndices[k]].size());
+            }
           break;
 
         default :
@@ -420,87 +399,30 @@ void CopasiPlot::updatePlot()
   updateCurves(true);
 
   replot();
+  //if (mZoomer)
+  //mZoomer->setZoomBase();
 }
 
-//-----------------------------------------------------------------------------
-
-/*void CopasiPlot::drawCurveInterval(long curveId, int from, int to)
+void CopasiPlot::finishPlot()
 {
-  // taken from the realtime_plot example from Qwt library...
-  QwtPlotCurve *curve = CopasiPlot::curve(curveId);
-  if (curve == 0)
-    return;
- 
-  QPainter p(canvas());
- 
-  p.setClipping(TRUE);
-  p.setClipRect(canvas()->rect());
- 
-  curve->draw(&p,
-              canvasMap(curve->xAxis()), canvasMap(curve->yAxis()),
-              from, to);
-}*/
-
+  if (mZoomer)
+    {
+      mZoomer->setEnabled(true);
+      mZoomer->setZoomBase();
+    }
+}
 //-----------------------------------------------------------------------------
 
-void CopasiPlot::enableZoom(bool enabled)
+/*void CopasiPlot::enableZoom(bool enabled)
 {
   zoomOn = enabled;
-}
-
-//-----------------------------------------------------------------------------
-
-void CopasiPlot::mousePressed(const QMouseEvent &e)
-{
-  if (zoomOn)
-    {
-      // zooming is now supported, so simply call the method in the base class
-      ZoomPlot::mousePressed(e);
-    }
-  else
-    {
-      setOutlineStyle(Qwt::Cross);
-      enableOutline(TRUE);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void CopasiPlot::mouseReleased(const QMouseEvent &e)
-{
-  if (!zoomOn)
-    return;
-
-  ZoomPlot::mouseReleased(e);
-
-  if (e.button() == RightButton)
-    zoomOn = false;
-}
-
-//-----------------------------------------------------------------------------
-
-void CopasiPlot::toggleCurve(long curveId)
-{
-  QwtPlotCurve *c = curve(curveId);
-  if (c)
-    {
-      c->setEnabled(!c->enabled());
-
-      /*
-      if (c->enabled())
-        c->setAxis(QwtPlot::xBottom, QwtPlot::yLeft);
-      else
-        c->setAxis(QwtPlot::xTop, QwtPlot::yRight);
-      */
-      replot();
-    }
-}
+}*/
 
 //-----------------------------------------------------------------------------
 
 CopasiPlot::~CopasiPlot()
 {
-  removeCurves();
+  //removeCurves();
   //delete pointers sourcefile and plotSpec?
 
   while (data.size() > 0)
@@ -562,4 +484,17 @@ bool CopasiPlot::saveData(const std::string & filename)
   if (!fs.good()) return false;
 
   return true;
+}
+
+void CopasiPlot::showCurve(QwtPlotItem *item, bool on)
+{
+  item->setVisible(on);
+  item->setItemAttribute(QwtPlotItem::AutoScale, on);
+  QWidget *w = legend()->find(item);
+  if (w && w->inherits("QwtLegendItem"))
+    ((QwtLegendItem *)w)->setChecked(on);
+
+  //mZoomer->setZoomBase();
+
+  replot();
 }
