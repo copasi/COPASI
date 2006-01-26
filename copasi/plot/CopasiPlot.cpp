@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.26.8.1 $
+   $Revision: 1.26.8.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/01/25 12:01:20 $
+   $Author: shoops $ 
+   $Date: 2006/01/26 14:12:48 $
    End CVS Header */
 
 #include <qstring.h>
@@ -13,6 +13,8 @@
 #include <qwt_legend.h>
 #include <qwt_legend_item.h>
 #include <qwt_scale_engine.h>
+
+#include <float.h>
 
 #include "scrollzoomer.h"
 
