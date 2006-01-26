@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.21.2.9 $
+   $Revision: 1.21.2.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/26 18:35:04 $
+   $Date: 2006/01/26 21:02:05 $
    End CVS Header */
 
 #include "copasi.h"
@@ -278,20 +278,31 @@ bool CFitProblem::calculate()
 
           kmax = pExp->getNumDataRows();
 
-          for (j = 0; j < kmax && Continue; j++) // For each data row;
+          switch (pExp->getExperimentType())
             {
-              switch (pExp->getExperimentType())
+            case CCopasiTask::steadyState:
+              // set independent data
+              for (j = 0; j < kmax && Continue; j++) // For each data row;
                 {
-                case CCopasiTask::steadyState:
-                  // set independent data
                   pExp->updateModelWithIndependentData(j);
                   Continue = mpSteadyState->process(true);
-                  break;
 
-                case CCopasiTask::timeCourse:
+                  if (!Continue)
+                    {
+                      mCalculateValue = DBL_MAX;
+                      break;
+                    }
+
+                  mCalculateValue += pExp->sumOfSquares(j, DependentValues, Residuals);
+                  if (mStoreResults) pExp->storeCalculatedValues(j);
+                }
+              break;
+
+            case CCopasiTask::timeCourse:
+              for (j = 0; j < kmax && Continue; j++) // For each data row;
+                {
                   if (j)
                     {
-                      //                      pProblem->setDuration(pExp->getTimeData()[j] - pExp->getTimeData()[j - 1]);
                       Continue = mpTrajectory->processStep(pExp->getTimeData()[j]);
                     }
                   else
@@ -300,28 +311,19 @@ bool CFitProblem::calculate()
                       pExp->updateModelWithIndependentData(j);
                       mpTrajectory->processStart(true);
 
-                      //                      mpModel->setState(&mpModel->getInitialState());
-
                       if (pExp->getTimeData()[0] != mpModel->getInitialTime())
                         {
-                          //                          pProblem->setDuration(pExp->getTimeData()[j] - mpModel->getInitialTime());
                           Continue = mpTrajectory->processStep(pExp->getTimeData()[0]);
                         }
                     }
-                  break;
 
-                default:
-                  break;
+                  mCalculateValue += pExp->sumOfSquares(j, DependentValues, Residuals);
+                  if (mStoreResults) pExp->storeCalculatedValues(j);
                 }
+              break;
 
-              if (!Continue)
-                {
-                  mCalculateValue = DBL_MAX;
-                  break;
-                }
-
-              mCalculateValue += pExp->sumOfSquares(j, DependentValues, Residuals);
-              if (mStoreResults) pExp->storeCalculatedValues(j);
+            default:
+              break;
             }
 
           // restore independent data
