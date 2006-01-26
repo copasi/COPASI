@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-   $Revision: 1.5.2.1 $
+   $Revision: 1.5.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/07 02:54:57 $
+   $Date: 2006/01/26 16:30:34 $
    End CVS Header */
 
 #ifndef COPASI_CFitItem
@@ -116,6 +116,19 @@ class CFitItem : public COptItem
     virtual const C_FLOAT64 * getObjectValue() const;
 
     /**
+     * Set the value to be saved for further calculation.
+     * @param const C_FLOAT64 & savedValue
+     * @retunr bool succes
+     */
+    bool setSavedValue(const C_FLOAT64 & value);
+
+    /**
+     * Retrieve the value of the optimization object.
+     * @return const C_FLOAT64 & savedValue
+     */
+    const C_FLOAT64 & getSavedValue() const;
+
+    /**
      * Add an experiment to the list of affected experiments.
      * @param const std::string & key
      * @return bool success
@@ -158,6 +171,11 @@ class CFitItem : public COptItem
 
   private:
     // Attributes
+    /**
+     * A pointer to the value of the CCopasiParameter holding the saved parameter value
+     */
+    C_FLOAT64 * mpParmSavedValue;
+
     /**
      * A pointer to the value of the CCopasiParameterGroup holding the 
      * list of AffectedExperiments

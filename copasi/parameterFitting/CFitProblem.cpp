@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.21.2.7 $
+   $Revision: 1.21.2.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/24 20:34:30 $
+   $Date: 2006/01/26 16:30:34 $
    End CVS Header */
 
 #include "copasi.h"
@@ -351,6 +351,22 @@ bool CFitProblem::calculate()
   if (mpCallBack) return mpCallBack->progress(mhCounter);
 
   return true;
+}
+
+bool CFitProblem::restore(const bool & updateModel)
+{
+  bool success = COptProblem::restore;
+
+  if (!updateModel) return success;
+
+  std::vector<COptItem * >::iterator it = mpOptItems->begin();
+  std::vector<COptItem * >::iterator end = mpOptItems->end();
+  C_FLOAT64 * pTmp = mSolutionVariables.array();
+
+  for (; it != end; ++it, pTmp++)
+    success &= static_cast<CFitItem *>(*it)->setSavedValue(*pTmp);
+
+  return success;
 }
 
 void CFitProblem::print(std::ostream * ostream) const
