@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.21.2.8 $
+   $Revision: 1.21.2.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/26 16:30:34 $
+   $Date: 2006/01/26 18:35:04 $
    End CVS Header */
 
 #include "copasi.h"
@@ -258,9 +258,7 @@ bool CFitProblem::calculate()
   unsigned kmax;
   mCalculateValue = 0.0;
 
-  CTrajectoryProblem * pProblem =
-    static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
-  CExperiment * pExp;
+  CExperiment * pExp = NULL;
 
   C_FLOAT64 * Residuals = mResiduals.array();
   C_FLOAT64 * DependentValues = mDependentValues.array();
@@ -338,6 +336,9 @@ bool CFitProblem::calculate()
             case CCopasiTask::timeCourse:
               mpTrajectory->restore();
               break;
+
+            default:
+              break;
             }
         }
     }
@@ -345,7 +346,7 @@ bool CFitProblem::calculate()
   catch (...)
     {
       mCalculateValue = DBL_MAX;
-      pExp->restoreModelIndependentData();
+      if (pExp) pExp->restoreModelIndependentData();
     }
 
   if (mpCallBack) return mpCallBack->progress(mhCounter);
@@ -355,7 +356,7 @@ bool CFitProblem::calculate()
 
 bool CFitProblem::restore(const bool & updateModel)
 {
-  bool success = COptProblem::restore;
+  bool success = COptProblem::restore(updateModel);
 
   if (!updateModel) return success;
 
@@ -507,7 +508,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   // Set the current values to the solution values.
   unsigned C_INT32 i, imax = mSolutionVariables.size();
   unsigned C_INT32 j, jmax = mDependentValues.size();
-  unsigned C_INT32 l, lmax = mSolutionVariables.size();
+  unsigned C_INT32 l;
   unsigned C_INT32 k, kmax = mpExperimentSet->size();
 
   for (i = 0; i < imax; i++)
@@ -731,7 +732,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       return false; // :TODO: create error message
     }
 
-  lwork = work[0];
+  lwork = (C_INT) work[0];
   work.resize(lwork);
 
   dsytrf_(&U, &N, mFisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
