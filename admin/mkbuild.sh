@@ -120,7 +120,7 @@ echo "Set the icon in the Info.plist file."
     cp ../README.$1 copasi/README
     chmod 644 copasi/README
 
-    cp COPASI_License_${license}.txt ${TMPDIR}/copasi/LICENSE.txt
+    cp ../COPASI_License_${license}.txt copasi/LICENSE.txt
     chmod 644 copasi/LICENSE.txt
 
     cp ../copasi/CopasiUI/CopasiUI  copasi/bin
