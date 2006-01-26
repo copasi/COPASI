@@ -82,6 +82,10 @@ echo "Set the icon in the Info.plist file."
     echo "Copying readme file."
     cp README_MAC.rtf ${TMPDIR}/copasi/COPASI-README.rtf
 
+# add the license to the image
+    echo "Copying license file."
+    cp COPASI_License_${license}.txt ${TMPDIR}/copasi/COPASI-LICENSE.txt
+
 # set the bundles flag with SetFile
     echo "Setting the bundle flag."
     ${SETFILE} -a b ${TMPDIR}/copasi/CopasiUI.app
@@ -115,6 +119,9 @@ echo "Set the icon in the Info.plist file."
 
     cp ../README.$1 copasi/README
     chmod 644 copasi/README
+
+    cp COPASI_License_${license}.txt ${TMPDIR}/copasi/LICENSE.txt
+    chmod 644 copasi/LICENSE.txt
 
     cp ../copasi/CopasiUI/CopasiUI  copasi/bin
     chmod 755 copasi/bin/CopasiUI
