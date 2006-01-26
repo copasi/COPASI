@@ -119,9 +119,8 @@ dnl to prevent calling aclocal, automake and configure again
 
  cd copasi && \
  echo executing in `pwd`: && \
- echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
- rm .qmake.internal.cache */.qmake.internal.cache; \
- rm Makefile */Makefile; \
+ rm -f .qmake.internal.cache */.qmake.internal.cache && \
+ rm -f Makefile */Makefile && \
  echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" $cps_build_parser $cps_copasi_license && \
  $QTDIR/bin/qmake $cps_release $cps_thread \
                   $cps_mkl_path $cps_clapack_path $cps_expat_path $cps_qwt_path $cps_sbml_path $cps_build_parser $cps_copasi_license && \
@@ -130,13 +129,14 @@ dnl to prevent calling aclocal, automake and configure again
      -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
  mv $$.tmp Makefile && \
  echo depend:  >> Makefile && \
- echo "	touch Makefile" >> Makefile 
+ echo "	touch Makefile" >> Makefile && \
+ rm -f CopasiSE/CopasiSE.o CopasiUI/main.o && \ 
  cd ..
  cd semantic-test-suite && \
  echo executing in `pwd`: && \
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
- rm .qmake.internal.cache */.qmake.internal.cache; \
- rm Makefile */Makefile; \
+ rm -f .qmake.internal.cache */.qmake.internal.cache && \
+ rm -f Makefile */Makefile && \
  echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" $cps_build_parser $cps_copasi_license && \
  $QTDIR/bin/qmake $cps_release $cps_thread \
                   $cps_mkl_path $cps_clapack_path $cps_expat_path $cps_qwt_path $cps_sbml_path $cps_build_parser $cps_copasi_license && \
@@ -145,7 +145,8 @@ dnl to prevent calling aclocal, automake and configure again
      -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
  mv $$.tmp Makefile && \
  echo depend:  >> Makefile && \
- echo "	touch Makefile" >> Makefile
+ echo "	touch Makefile" >> Makefile && \
+ cd ..
 )
 
 dnl add here all your Makefiles. These will be created by configure
