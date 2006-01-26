@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.26.8.2 $
+   $Revision: 1.26.8.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/01/26 14:12:48 $
+   $Author: ssahle $ 
+   $Date: 2006/01/26 16:32:57 $
    End CVS Header */
 
 #include <qstring.h>
@@ -77,6 +77,7 @@ CopasiPlot::CopasiPlot(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec
   mZoomer = new ScrollZoomer(canvas());
   mZoomer->setRubberBandPen(QColor(Qt::black));
   mZoomer->setTrackerPen(QColor(Qt::black));
+  mZoomer->setTrackerMode(QwtPicker::AlwaysOn);
 
   /*QwtPlotPicker * a_picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
       QwtPicker::PointSelection | QwtPicker::DragSelection, 
