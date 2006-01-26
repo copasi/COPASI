@@ -3,6 +3,7 @@ pushd ../..
 
 if [ x"$#" = x1 ]; then
   build=`gawk -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/copasiversion.h`
+  license=`gawk -- ' BEGIN {license = "US"} $0 ~ "--with-copasi-license=DE" {license = "DE"} END {print license} ' config.status`
 
   case x"$1" in 
   xWIN32)
@@ -150,7 +151,7 @@ echo "Set the icon in the Info.plist file."
   esac
 
   scp Copasi-$build-$1*.* \
-      calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/alpha-test/$1
+      calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/alpha-test/$1/$license
 #  rm Copasi-$build-$1*.*
 else
   echo usage: mkbuild.sh BUILD_OS
