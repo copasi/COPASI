@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/scrollzoomer.cpp,v $
-   $Revision: 1.1.2.2 $
+   $Revision: 1.1.2.3 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/01/25 14:49:59 $
+   $Date: 2006/01/27 14:59:42 $
    End CVS Header */
 
 #include <qevent.h>
@@ -16,6 +16,20 @@
 LogPlotZoomer::LogPlotZoomer(QwtPlotCanvas *canvas):
     QwtPlotZoomer(canvas)
 {}
+
+QwtText LogPlotZoomer::trackerText(const QwtDoublePoint &pos) const
+  {
+    switch (rubberBand())
+      {
+      case HLineRubberBand:
+        return QString().sprintf("%.4g", pos.y());
+      case VLineRubberBand:
+        return QString().sprintf("%.4g", pos.x());
+      default:
+        return QString().sprintf("%.4g, %.4g", pos.x(), pos.y());
+      }
+    return QwtText(); // make some dumb compilers happy
+  }
 
 /*void QwtPlotZoomer::move(double x, double y)
 {

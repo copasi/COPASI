@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/scrollzoomer.h,v $
-   $Revision: 1.1.2.1 $
+   $Revision: 1.1.2.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/01/25 11:48:07 $
+   $Date: 2006/01/27 14:59:42 $
    End CVS Header */
 
 #ifndef _SCROLLZOOMER_H
@@ -28,6 +28,9 @@ class LogPlotZoomer: public QwtPlotZoomer
   public slots:
     virtual
     void move(double x, double y);
+
+  protected:
+    virtual QwtText trackerText(const QwtDoublePoint &pos) const;
   };
 
 class ScrollZoomer: public LogPlotZoomer
