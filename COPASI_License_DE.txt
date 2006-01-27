@@ -1,20 +1,21 @@
-			Non-Commercial Purpose License
+                        Non-Commercial Purpose License
 
 
 Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-Properties, Inc. and EML Research. 
+Properties, Inc. and EML Research, gGmbH.
 All rights reserved.
 
-Virginia Tech Intellectual Properties, Inc (VTIP) and EML Research own
-the COPASI software and its associated documentation ("Software").
-You should carefully read the following terms and conditions before
-using this software.  Your use of this Software indicates your
-acceptance of this license agreement and all terms and conditions.
+Virginia Tech Intellectual Properties, Inc (VTIP) and and EML
+Research, gGmbH (EML) Research own the COPASI software and its
+associated documentation ("Software").  You should carefully read the
+following terms and conditions before using this software.  Your use
+of this Software indicates your acceptance of this license agreement
+and all terms and conditions.
 
-The main authors of COPASI are Pedro Mendes, Stefan Hoops, Sven Sahle, 
-and Ralph Gauges. This software has been made possible with the dedicated
-support of a large number of graduate students at VBI and EML
-Research.
+The main authors of COPASI are Pedro Mendes, Stefan Hoops, Sven Sahle,
+and Ralph Gauges. This software has been made possible with the
+dedicated support of a large number of graduate students at VBI and
+EML.
 
 You are hereby granted a non-exclusive and non-transferable license to
 use and distribute the Software in both source and binary form
@@ -51,13 +52,12 @@ be redistributed under this license.
 
     If you desire to use the software for profit-making or commercial
     purposes, you agree to negotiate in good faith a license with VTIP
-    and EML Research prior to such profit-making or commercial use.
-    VTIP and EML Research shall have no obligation to grant such
-    license to you, and may grant exclusive or non-exclusive licenses
-    to others. You agree to notify VTIP and EML Research of any
-    inquiries you have for commercial use of the Software and/or its
-    modifications. You may contact the following email to discuss
-    commercial use: license@copasi.org
+    and EML prior to such profit-making or commercial use.  VTIP and
+    EML shall have no obligation to grant such license to you, and may
+    grant exclusive or non-exclusive licenses to others. You agree to
+    notify VTIP and EML of any inquiries you have for commercial use
+    of the Software and/or its modifications. You may contact the
+    following email to discuss commercial use: license@copasi.org
 
 
 3) Governing Law
@@ -70,11 +70,11 @@ be redistributed under this license.
 4) Disclaimer of Warranty
 
     Because this software is licensed free of charge, there is no
-    warranty for the program.  VTIP and EML Research make no warranty
-    or representation that the operation of the software in this
-    compilation will be error-free, and VTIP and EML Research are
-    under no obligation to provide any services, by way of
-    maintenance, update, or otherwise.
+    warranty for the program.  VTIP and EML make no warranty or
+    representation that the operation of the software in this
+    compilation will be error-free, and VTIP and EML are under no
+    obligation to provide any services, by way of maintenance, update,
+    or otherwise.
 
     THIS SOFTWARE AND THE ACCOMPANYING FILES ARE LICENSED "AS IS" AND
     WITHOUT WARRANTIES AS TO PERFORMANCE OR MERCHANTABILITY OR ANY
@@ -98,29 +98,29 @@ be redistributed under this license.
     BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
     Termination
-	This agreement is effective until terminated.  You may
-	terminate this agreement at any time by destroying all copies
-	of the software and other associated materials (e.g.,
-	documentation) in your possession.  This agreement will
-	terminate immediately without notice from VTIP and EML
-	Research if you fail to comply with any of the terms and
-	conditions of this license.  Upon termination, you must
-	destroy all copies of the software and other associated
-	materials.  This agreement will also terminate immediately
-	with out notice from VTIP and EML Research if it is found to
-	implement patented algorithms or contain copyrighted code not
-	owned or licensed to VTIP and EML Research for the purpose of
-	its inclusion in the COPASI software.  This agreement cannot
-	be terminated by any other mechanism or for any other reason
-	than those stated herein.
+        This agreement is effective until terminated.  You may
+        terminate this agreement at any time by destroying all copies
+        of the software and other associated materials (e.g.,
+        documentation) in your possession.  This agreement will
+        terminate immediately without notice from VTIP and EML
+        Research if you fail to comply with any of the terms and
+        conditions of this license.  Upon termination, you must
+        destroy all copies of the software and other associated
+        materials.  This agreement will also terminate immediately
+        with out notice from VTIP and EML if it is found to implement
+        patented algorithms or contain copyrighted code not owned or
+        licensed to VTIP and EML for the purpose of its inclusion in
+        the COPASI software.  This agreement cannot be terminated by
+        any other mechanism or for any other reason than those stated
+        herein.
 
     Use of Names
-	Users will not use the name of the Virginia Polytechnic
-	Institute and State University, Virginia Bioinformatics
-	Institute, Virginia Tech Intellectual Properties, Inc., EML
-	Research, and COPASI nor any adaptation thereof in any
-	publicity or advertising, without the prior written consent
-	from VTIP and EML Research in each case.
+        Users will not use the name of the Virginia Polytechnic
+        Institute and State University, Virginia Bioinformatics
+        Institute, Virginia Tech Intellectual Properties, Inc., EML
+        Research, and COPASI nor any adaptation thereof in any
+        publicity or advertising, without the prior written consent
+        from VTIP and EML Research, gGmbH in each case.
 
 
 6) Place of Court
