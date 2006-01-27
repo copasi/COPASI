@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.120.2.7 $
+   $Revision: 1.120.2.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/11 19:06:37 $
+   $Date: 2006/01/27 19:04:45 $
    End CVS Header */
 
 /**
@@ -3763,6 +3763,8 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
 {
   mCurrentElement++; /* We should always be on hte next element */
   mpCurrentHandler = NULL;
+  mLineNumber = (unsigned int) - 1;
+
   const char * name;
   const char * sType;
   const char * active;
@@ -3787,6 +3789,7 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
     case Parameter:
       if (!strcmp(pszName, "Parameter"))
         {
+          mLineNumber = mParser.getCurrentLineNumber();
           if (!mpCurrentHandler)
             {
               mpCurrentHandler = new ParameterElement(mParser, mCommon);
@@ -3797,6 +3800,7 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
     case ParameterGroup:
       if (!strcmp(pszName, "ParameterGroup"))
         {
+          mLineNumber = mParser.getCurrentLineNumber();
           if (!mpCurrentHandler)
             {
               mpCurrentHandler = new ParameterGroupElement(mParser, mCommon);
@@ -3841,6 +3845,8 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
 
 void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
 {
+  CCopasiParameter* p;
+
   switch (mCurrentElement)
     {
     case PlotSpecification:
@@ -3855,6 +3861,70 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
     case Parameter:
       if (!strcmp(pszName, "Parameter"))
         {
+          p = mCommon.pCurrentPlot->getParameter(mCommon.pCurrentParameter->getObjectName());
+          if (p)
+            {
+              switch (mCommon.pCurrentParameter->getType())
+                {
+                case CCopasiParameter::INT:
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pINT);
+                  break;
+
+                case CCopasiParameter::UINT:
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pUINT);
+                  break;
+
+                case CCopasiParameter::DOUBLE:
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pDOUBLE);
+                  break;
+
+                case CCopasiParameter::UDOUBLE:
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pUDOUBLE);
+                  break;
+
+                case CCopasiParameter::BOOL:
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pBOOL);
+                  break;
+
+                case CCopasiParameter::STRING:
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pSTRING);
+                  break;
+
+                case CCopasiParameter::KEY:
+                  {
+                    CCopasiObject * pObject =
+                      mCommon.KeyMap.get(* mCommon.pCurrentParameter->getValue().pKEY);
+                    if (pObject)
+                      p->setValue(pObject->getKey());
+                    else
+                      p->setValue(std::string(""));
+                  }
+                  break;
+
+                case CCopasiParameter::FILE:
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pFILE);
+                  break;
+
+                case CCopasiParameter::CN:
+                  p->setValue(* mCommon.pCurrentParameter->getValue().pCN);
+                  break;
+
+                case CCopasiParameter::GROUP:
+                case CCopasiParameter::INVALID:
+                  break;
+
+                default:
+                  fatalError();
+                  break;
+                }
+            }
+          else
+            {
+              CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 4,
+                                     mCommon.pCurrentParameter->getObjectName().c_str(),
+                                     mLineNumber);
+            }
+          pdelete(mCommon.pCurrentParameter);
           mCurrentElement = PlotSpecification;
         }
       break;
@@ -3862,6 +3932,40 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
     case ParameterGroup:
       if (strcmp(pszName, "ParameterGroup"))
         {
+          p = mCommon.pCurrentPlot->getParameter(mCommon.pCurrentParameter->getObjectName());
+          if (p)
+            {
+              switch (mCommon.pCurrentParameter->getType())
+                {
+                case CCopasiParameter::GROUP:
+                  * (CCopasiParameterGroup *) p =
+                    * (CCopasiParameterGroup *) mCommon.pCurrentParameter;
+                  break;
+
+                case CCopasiParameter::INT:
+                case CCopasiParameter::UINT:
+                case CCopasiParameter::DOUBLE:
+                case CCopasiParameter::UDOUBLE:
+                case CCopasiParameter::BOOL:
+                case CCopasiParameter::STRING:
+                case CCopasiParameter::CN:
+                case CCopasiParameter::KEY:
+                case CCopasiParameter::FILE:
+                case CCopasiParameter::INVALID:
+                  break;
+
+                default:
+                  fatalError();
+                  break;
+                }
+            }
+          else
+            {
+              CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 4,
+                                     mCommon.pCurrentParameter->getObjectName().c_str(),
+                                     mLineNumber);
+            }
+          pdelete(mCommon.pCurrentParameter);
           mCurrentElement = PlotSpecification;
         }
       break;
@@ -3888,6 +3992,8 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
       fatalError();
       break;
     }
+
+  pdelete(mpCurrentHandler);
   return;
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.38.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/10 15:23:55 $
+   $Date: 2006/01/27 19:06:22 $
    End CVS Header */
 
 /**
@@ -1571,6 +1571,11 @@ class CCopasiXMLParser : public CExpat
           ListOfChannels,
           ListOfPlotItems
         };
+
+        /**
+         * The line number the unknown parameter was encountered.
+         */
+        unsigned C_INT32 mLineNumber;
 
         // Operations
       public:
