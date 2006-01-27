@@ -1,12 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-   $Revision: 1.9.2.3 $
+   $Revision: 1.9.2.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/01/27 13:49:56 $
+   $Author: ssahle $ 
+   $Date: 2006/01/27 14:12:59 $
    End CVS Header */
 
 #include <limits>
+#include <math.h>
 
 #include "copasi.h"
 
