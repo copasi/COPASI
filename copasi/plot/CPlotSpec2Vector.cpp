@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.18.2.2 $
+   $Revision: 1.18.2.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/01/25 12:01:20 $
+   $Author: shoops $ 
+   $Date: 2006/01/27 13:49:57 $
    End CVS Header */
 
 #include <limits>
@@ -153,7 +153,7 @@ bool CPlotSpec2Vector::doPlotting()
         {
           if (*it)
             {
-              if ((*it)->getActualize()) (*(*it)->getActualize())();
+              if ((*it)->getRefresh()) (*(*it)->getRefresh())();
 
               if ((*it)->isValueDbl())
                 data[i] = *(C_FLOAT64*)((*it)->getReference());

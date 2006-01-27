@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-   $Revision: 1.5.2.2 $
+   $Revision: 1.5.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/26 16:30:34 $
+   $Date: 2006/01/27 13:49:56 $
    End CVS Header */
 
 #ifndef COPASI_CFitItem
@@ -99,9 +99,8 @@ class CFitItem : public COptItem
     /**
      * Set the local value.
      * @param const C_FLOAT64 & value
-     * @return bool success
      */
-    bool setLocalValue(const C_FLOAT64 & value);
+    void setLocalValue(const C_FLOAT64 & value);
 
     /**
      * Retreive the local value.

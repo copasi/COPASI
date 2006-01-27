@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.41 $
+   $Revision: 1.41.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/12 22:09:17 $
+   $Date: 2006/01/27 13:49:55 $
    End CVS Header */
 
 /**
@@ -142,9 +142,9 @@ class CCompartment : public CModelEntity
      *  @return bool success
      *  @see mVolume
      */
-    inline bool setInitialVolume(const C_FLOAT64 & volume) {return setInitialValue(volume);};
+    inline void setInitialVolume(const C_FLOAT64 & volume) {setInitialValue(volume);};
 
-    virtual bool setInitialValue(const C_FLOAT64 & volume);
+    virtual void setInitialValue(const C_FLOAT64 & initialValue);
 
     /**
      *  Sets the volume of this compartment.
@@ -152,9 +152,9 @@ class CCompartment : public CModelEntity
      *  @return bool success
      *  @see mVolume
      */
-    inline bool setVolume(const C_FLOAT64 & volume) {return setValue(volume);};
+    inline void setVolume(const C_FLOAT64 & volume) {setValue(volume);};
 
-    virtual bool setValue(const C_FLOAT64 & volume);
+    virtual void setValue(const C_FLOAT64 & value);
 
     friend std::ostream & operator<<(std::ostream &os, const CCompartment & d);
 

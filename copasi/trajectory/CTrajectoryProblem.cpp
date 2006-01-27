@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.39.2.1 $
+   $Revision: 1.39.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/06 15:07:02 $
+   $Date: 2006/01/27 13:49:58 $
    End CVS Header */
 
 /**
@@ -97,7 +97,7 @@ void CTrajectoryProblem::initObjects()
   const_cast<CCopasiObject *>(getParameter("StepNumber")
                               ->getObject(CCopasiObjectName("Reference=Value")))
   ->setUpdateMethod(this,
-                    (bool (CTrajectoryProblem::*)(const C_INT32 &)) &CTrajectoryProblem::setStepNumber);
+                    (void (CTrajectoryProblem::*)(const C_INT32 &)) &CTrajectoryProblem::setStepNumber);
 
   const_cast<CCopasiObject *>(getParameter("StepSize")
                               ->getObject(CCopasiObjectName("Reference=Value")))
@@ -112,11 +112,13 @@ void CTrajectoryProblem::initObjects()
  * Set the number of time steps the trajectory method should integrate.
  * @param "const unsigned C_INT32 &" stepNumber
  */
-bool CTrajectoryProblem::setStepNumber(const unsigned C_INT32 & stepNumber)
+void CTrajectoryProblem::setStepNumber(const unsigned C_INT32 & stepNumber)
 {
   *mpStepNumber = stepNumber;
   mStepNumberSetLast = true;
-  return sync();
+  sync();
+
+  return;
 }
 
 /**
@@ -130,11 +132,13 @@ const unsigned C_INT32 & CTrajectoryProblem::getStepNumber() const
  * Set the size a integration step the trajectory method should do.
  * @param "const C_FLOAT64 &" stepSize
  */
-bool CTrajectoryProblem::setStepSize(const C_FLOAT64 & stepSize)
+void CTrajectoryProblem::setStepSize(const C_FLOAT64 & stepSize)
 {
   *mpStepSize = stepSize;
   mStepNumberSetLast = false;
-  return sync();
+  sync();
+
+  return;
 }
 
 /**
@@ -149,10 +153,12 @@ const C_FLOAT64 & CTrajectoryProblem::getStepSize() const
  * @param "const C_FLOAT64 &" duration
  * @parem bool success
  */
-bool CTrajectoryProblem::setDuration(const C_FLOAT64 & duration)
+void CTrajectoryProblem::setDuration(const C_FLOAT64 & duration)
 {
   *mpDuration = duration;
-  return sync();
+  sync();
+
+  return;
 }
 
 /**
@@ -259,6 +265,8 @@ bool CTrajectoryProblem::sync()
 
   *mpStepSize = StepSize;
   *mpStepNumber = (unsigned C_INT32) StepNumber;
+
+  if (!success) throw 1;
 
   return success;
 }

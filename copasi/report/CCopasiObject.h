@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.53 $
+   $Revision: 1.53.2.1 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/08/15 18:55:17 $
+   $Author: shoops $ 
+   $Date: 2006/01/27 13:49:55 $
    End CVS Header */
 
 /**
@@ -37,20 +37,20 @@ class UpdateMethod
 
     virtual ~UpdateMethod(){};
 
-    virtual bool operator()(const C_FLOAT64 & C_UNUSED(value))
-    {return false;}
+    virtual void operator()(const C_FLOAT64 & C_UNUSED(value))
+    {return;}
 
-    virtual bool operator()(const C_INT32 & C_UNUSED(value))
-    {return false;}
+    virtual void operator()(const C_INT32 & C_UNUSED(value))
+    {return;}
 
-    virtual bool operator()(const bool & C_UNUSED(value))
-    {return false;}
+    virtual void operator()(const bool & C_UNUSED(value))
+    {return;}
   };
 
 template <class CType, class VType> class SpecificUpdateMethod : public UpdateMethod
     {
     private:
-      bool (CType::*mMethod)(const VType &);   // pointer to member function
+      void (CType::*mMethod)(const VType &);   // pointer to member function
       CType * mpType;                                    // pointer to object
 
     public:
@@ -58,7 +58,7 @@ template <class CType, class VType> class SpecificUpdateMethod : public UpdateMe
       // constructor - takes pointer to an object and pointer to a member and stores
       // them in two private variables
       SpecificUpdateMethod(CType * pType,
-                           bool(CType::*method)(const VType &))
+                           void(CType::*method)(const VType &))
       {
         mpType = pType;
         mMethod = method;
@@ -67,41 +67,41 @@ template <class CType, class VType> class SpecificUpdateMethod : public UpdateMe
       virtual ~SpecificUpdateMethod(){};
 
       // override operator "()"
-      virtual bool operator()(const VType & value)
-      {return (*mpType.*mMethod)(value);}      ;              // execute member function
+      virtual void operator()(const VType & value)
+      {(*mpType.*mMethod)(value);}      ;              // execute member function
     };
 
-class Actualize
+class Refresh
   {
   public:
 
-    virtual bool operator()(void)
-    {return false;}
+    virtual void operator()(void)
+    {return;}
 
-    virtual ~Actualize(){};
+    virtual ~Refresh(){};
   };
 
-template <typename CType> class ActualizeTemplate : public Actualize
+template <typename CType> class RefreshTemplate : public Refresh
   {
   private:
     CType * mpType;                 // pointer to object
-    bool (CType::*mMethod)(void);   // pointer to member function
+    void (CType::*mMethod)(void);   // pointer to member function
 
   public:
 
     // constructor - takes pointer to an object and pointer to a member and stores
     // them in two private variables
-    ActualizeTemplate(CType * pType, bool(CType::*method)(void))
+    RefreshTemplate(CType * pType, void(CType::*method)(void))
     {
       mpType = pType;
       mMethod = method;
     };
 
-    virtual ~ActualizeTemplate(){};
+    virtual ~RefreshTemplate(){};
 
     // override operator "()"
-    virtual bool operator()(void)
-    {return (*mpType.*mMethod)();}    ;              // execute member function
+    virtual void operator()(void)
+    {(*mpType.*mMethod)();}    ;              // execute member function
   };
 
 class CRenameHandler;
@@ -147,7 +147,7 @@ class CCopasiObject
 
     UpdateMethod * mpUpdateMethod;
 
-    Actualize * mpActualize;
+    Refresh * mpRefresh;
 
   private:
     static const C_FLOAT64 DummyValue;
@@ -240,13 +240,13 @@ class CCopasiObject
 
     virtual const std::string & getKey() const;
 
-    bool setObjectValue(const C_FLOAT64 & value);
-    bool setObjectValue(const C_INT32 & value);
-    bool setObjectValue(const bool & value);
+    void setObjectValue(const C_FLOAT64 & value);
+    void setObjectValue(const C_INT32 & value);
+    void setObjectValue(const bool & value);
 
     template <class CType>
-    bool setUpdateMethod(CType * pType,
-                         bool (CType::*method)(const C_FLOAT64 &))
+    void setUpdateMethod(CType * pType,
+                         void (CType::*method)(const C_FLOAT64 &))
     {
       if (mpUpdateMethod != &mDefaultUpdateMethod)
         pdelete(mpUpdateMethod);
@@ -254,12 +254,12 @@ class CCopasiObject
       mpUpdateMethod =
         new SpecificUpdateMethod< CType, C_FLOAT64 >(pType, method);
 
-      return true;
+      return;
     }
 
     template <class CType>
-    bool setUpdateMethod(CType * pType,
-                         bool (CType::*method)(const C_INT32 &))
+    void setUpdateMethod(CType * pType,
+                         void (CType::*method)(const C_INT32 &))
     {
       if (mpUpdateMethod != &mDefaultUpdateMethod)
         pdelete(mpUpdateMethod);
@@ -267,12 +267,12 @@ class CCopasiObject
       mpUpdateMethod =
         new SpecificUpdateMethod< CType, C_INT32 >(pType, method);
 
-      return true;
+      return;
     }
 
     template <class CType>
-    bool setUpdateMethod(CType * pType,
-                         bool (CType::*method)(const bool &))
+    void setUpdateMethod(CType * pType,
+                         void (CType::*method)(const bool &))
     {
       if (mpUpdateMethod != &mDefaultUpdateMethod)
         pdelete(mpUpdateMethod);
@@ -280,24 +280,24 @@ class CCopasiObject
       mpUpdateMethod =
         new SpecificUpdateMethod< CType, bool >(pType, method);
 
-      return true;
+      return;
     }
 
     UpdateMethod * getUpdateMethod() const;
 
     template <class CType>
-    bool setActualize(CType * pType,
-                      bool (CType::*method)(void))
+    void setRefresh(CType * pType,
+                    void (CType::*method)(void))
     {
-      pdelete(mpActualize);
+      pdelete(mpRefresh);
 
-      mpActualize =
-        new ActualizeTemplate< CType >(pType, method);
+      mpRefresh =
+        new RefreshTemplate< CType >(pType, method);
 
-      return true;
+      return;
     }
 
-    Actualize * getActualize() const;
+    Refresh * getRefresh() const;
 
     static void setRenameHandler(CRenameHandler* rh)
     {smpRenameHandler = rh;}

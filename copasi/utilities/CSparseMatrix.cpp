@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSparseMatrix.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.2.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/12 20:19:46 $
+   $Date: 2006/01/27 13:49:57 $
    End CVS Header */
 
 ///////////////////////////////////////////////////////////
@@ -652,7 +652,7 @@ bool SparseMatrixTest(const unsigned C_INT32 & size,
           }
     }
 
-  CPU.actualize();
+  CPU.refresh();
   DebugFile << "Matrix * Matrix:\t";
   CPU.print(&DebugFile);
   DebugFile << std::endl;
@@ -709,7 +709,7 @@ bool SparseMatrixTest(const unsigned C_INT32 & size,
         }
     }
 
-  CPU.actualize();
+  CPU.refresh();
   DebugFile << "Sparse * Sparse:\t";
   CPU.print(&DebugFile);
   DebugFile << std::endl;
@@ -779,7 +779,7 @@ bool SparseMatrixTest(const unsigned C_INT32 & size,
       CR = TmpR;
     }
 
-  CPU.actualize();
+  CPU.refresh();
   DebugFile << "Compressed * Compressed:\t";
   CPU.print(&DebugFile);
   DebugFile << std::endl;

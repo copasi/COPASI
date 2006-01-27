@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.20.2.1 $
+   $Revision: 1.20.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/06 15:07:02 $
+   $Date: 2006/01/27 13:49:58 $
    End CVS Header */
 
 /**
@@ -100,7 +100,7 @@ class CTrajectoryProblem : public CCopasiProblem
      * @param "const unsigned C_INT32 &" stepNumber
      * @parem bool success
      */
-    bool setStepNumber(const unsigned C_INT32 & stepNumber);
+    void setStepNumber(const unsigned C_INT32 & stepNumber);
 
     /**
      * Retrieve the number of time steps the trajectory method should integrate.
@@ -113,7 +113,7 @@ class CTrajectoryProblem : public CCopasiProblem
      * @param "const C_FLOAT64 &" stepSize
      * @parem bool success
      */
-    bool setStepSize(const C_FLOAT64 & stepSize);
+    void setStepSize(const C_FLOAT64 & stepSize);
 
     /**
      * Retrieve the size a integration step the trajectory method should do.
@@ -126,7 +126,7 @@ class CTrajectoryProblem : public CCopasiProblem
      * @param "const C_FLOAT64 &" duration
      * @parem bool success
      */
-    bool setDuration(const C_FLOAT64 & duration);
+    void setDuration(const C_FLOAT64 & duration);
 
     /**
      * Retrieve the end time.

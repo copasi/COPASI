@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.19.2.1 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/10/06 20:10:09 $
+   $Author: shoops $ 
+   $Date: 2006/01/27 13:49:57 $
    End CVS Header */
 
 #include "copasi.h"
@@ -226,10 +226,25 @@ void CSlider::sync()
 
 void CSlider::writeToObject()
 {
-  if (!this->mpSliderObject) return;
-  if (mpSliderObject->setObjectValue(mValue)) return;
-  if (mpSliderObject->setObjectValue((C_INT32)floor(mValue + 0.5))) return;
-  if (mpSliderObject->setObjectValue(mValue != 0.0)) return;
+  if (!mpSliderObject) return;
+
+  if (mpSliderObject->isValueDbl())
+    {
+      mpSliderObject->setObjectValue(mValue);
+      return;
+    }
+
+  if (mpSliderObject->isValueInt())
+    {
+      mpSliderObject->setObjectValue((C_INT32) floor(mValue + 0.5));
+      return;
+    }
+
+  if (mpSliderObject->isValueBool())
+    {
+      mpSliderObject->setObjectValue(mValue != 0.0);
+      return;
+    }
 
   return;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-   $Revision: 1.9.2.2 $
+   $Revision: 1.9.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/26 16:30:34 $
+   $Date: 2006/01/27 13:49:56 $
    End CVS Header */
 
 #include <limits>
@@ -110,10 +110,10 @@ std::ostream &operator<<(std::ostream &os, const CFitItem & o)
   return os;
 }
 
-bool CFitItem::setLocalValue(const C_FLOAT64 & value)
+void CFitItem::setLocalValue(const C_FLOAT64 & value)
 {
   mLocalValue = value;
-  return true;
+  return;
 }
 
 const C_FLOAT64 & CFitItem::getLocalValue() const

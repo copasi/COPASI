@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.62.8.1 $
+   $Revision: 1.62.8.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/10 14:12:06 $
+   $Date: 2006/01/27 13:49:55 $
    End CVS Header */
 
 /**
@@ -201,7 +201,7 @@ class CMetab : public CModelEntity
      */
     inline void setNumber(const C_FLOAT64 number) {setValue(number);};
 
-    virtual void setValue(const C_FLOAT64 number);
+    virtual void setValue(const C_FLOAT64 & value);
 
     /**
      *
@@ -211,7 +211,7 @@ class CMetab : public CModelEntity
     /**
      *
      */
-    bool setInitialConcentration(const C_FLOAT64 & initialConcentration);
+    void setInitialConcentration(const C_FLOAT64 & initialConcentration);
 
     /**
      *
@@ -221,10 +221,10 @@ class CMetab : public CModelEntity
     /**
      *
      */
-    inline bool setInitialNumber(const C_FLOAT64 & initialNumber)
-    {return setInitialValue(initialNumber);};
+    inline void setInitialNumber(const C_FLOAT64 & initialNumber)
+    {setInitialValue(initialNumber);};
 
-    virtual bool setInitialValue(const C_FLOAT64 & initialNumber);
+    virtual void setInitialValue(const C_FLOAT64 & initialValue);
 
     /**
      *

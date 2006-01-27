@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.23.2.8 $
+   $Revision: 1.23.2.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/20 15:35:08 $
+   $Date: 2006/01/27 13:49:56 $
    End CVS Header */
 
 #include <fstream>
@@ -647,8 +647,7 @@ bool CExperiment::updateModelWithIndependentData(const unsigned C_INT32 & index)
   unsigned C_INT32 i, imax = mIndependentUpdateMethods.size();
 
   for (i = 0; i < imax; i++)
-    if (!(*mIndependentUpdateMethods[i])(mDataIndependent(index, i)))
-      return false;
+    (*mIndependentUpdateMethods[i])(mDataIndependent(index, i));
 
   return true;
 }
@@ -658,8 +657,7 @@ bool CExperiment::restoreModelIndependentData()
   unsigned C_INT32 i, imax = mIndependentUpdateMethods.size();
 
   for (i = 0; i < imax; i++)
-    if (!(*mIndependentUpdateMethods[i])(mIndependentValues[i]))
-      return false;
+    (*mIndependentUpdateMethods[i])(mIndependentValues[i]);
 
   return true;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.29.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/21 15:41:26 $
+   $Date: 2006/01/27 13:49:55 $
    End CVS Header */
 
 /****************************************************************************
@@ -41,9 +41,9 @@ class CReport : public CCopasiContainer
     std::vector< CCopasiObject * > mBodyObjectList;
     std::vector< CCopasiObject * > mHeaderObjectList;
 
-    std::vector< Actualize * > mFooterActualizeList;
-    std::vector< Actualize * > mBodyActualizeList;
-    std::vector< Actualize * > mHeaderActualizeList;
+    std::vector< Refresh * > mFooterRefreshList;
+    std::vector< Refresh * > mBodyRefreshList;
+    std::vector< Refresh * > mHeaderRefreshList;
 
   public:
     /**
@@ -107,7 +107,7 @@ class CReport : public CCopasiContainer
     void generateObjectsFromName(
       const std::vector< CCopasiContainer * > * pListOfContainer,
       std::vector< CCopasiObject * > & objectList,
-      std::vector< Actualize * > & actualizeList,
+      std::vector< Refresh * > & refreshList,
       const std::vector<CRegisteredObjectName>* nameVector);
 
     /**

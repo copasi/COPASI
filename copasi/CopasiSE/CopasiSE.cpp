@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.26.2.2 $
+   $Revision: 1.26.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/24 16:10:42 $
+   $Date: 2006/01/27 13:49:56 $
    End CVS Header */
 
 // Main
@@ -143,8 +143,8 @@ int main(int argc, char *argv[])
               pFunction->calcValue(Variables);
         }
 
-      pCPU->actualize();
-      pWall->actualize();
+      pCPU->refresh();
+      pWall->refresh();
 
       std::cout << "CPU time:  ";
       pCPU->print(&std::cout);

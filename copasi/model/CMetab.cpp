@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.91.2.1 $
+   $Revision: 1.91.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/10 14:12:06 $
+   $Date: 2006/01/27 13:49:55 $
    End CVS Header */
 
 #include <iostream>
@@ -162,9 +162,9 @@ void CMetab::setConcentration(const C_FLOAT64 concentration)
 #endif
 }
 
-bool CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
+void CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
 {
-  //if (mIConc == initialConcentration) return true;
+  if (mIConc == initialConcentration) return;
 
   mIConc = initialConcentration;
   mIValue = initialConcentration * mpCompartment->getVolume()
@@ -179,14 +179,14 @@ bool CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
   for (; it != end; ++it)
     (*it)->setInitialValue();
 
-  return true;
+  return;
 }
 
-void CMetab::setValue(const C_FLOAT64 number)
+void CMetab::setValue(const C_FLOAT64 & value)
 {
-  mConc = number * mpCompartment->getVolumeInv()
+  mConc = value * mpCompartment->getVolumeInv()
           * mpModel->getNumber2QuantityFactor();
-  mValue = number;
+  mValue = value;
 
 #ifdef COPASI_DEBUG
   //  if (mStatus == METAB_FIXED)
@@ -194,19 +194,17 @@ void CMetab::setValue(const C_FLOAT64 number)
 #endif
 }
 
-bool CMetab::setInitialValue(const C_FLOAT64 & initialNumber)
+void CMetab::setInitialValue(const C_FLOAT64 & initialValue)
 {
-  //if (mINumber == initialNumber) return true;
+  if (mIValue == initialValue) return;
 
-  if (initialNumber)
-    {
-      mIConc = initialNumber * mpCompartment->getVolumeInv() * mpModel->getNumber2QuantityFactor();
-    }
+  if (initialValue)
+    mIConc = initialValue * mpCompartment->getVolumeInv() * mpModel->getNumber2QuantityFactor();
 
-  mIValue = initialNumber;
+  mIValue = initialValue;
 
   if (mStatus == FIXED)
-    setNumber(initialNumber);
+    setNumber(initialValue);
 
   std::set< CMoiety * >::iterator it = mMoieties.begin();
   std::set< CMoiety * >::iterator end = mMoieties.end();
@@ -214,7 +212,7 @@ bool CMetab::setInitialValue(const C_FLOAT64 & initialNumber)
   for (; it != end; ++it)
     (*it)->setInitialValue();
 
-  return true;
+  return;
 }
 
 //  ******************

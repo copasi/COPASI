@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiTimer.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.5.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/21 15:33:58 $
+   $Date: 2006/01/27 13:49:55 $
    End CVS Header */
 
 #include "copasi.h"
@@ -22,7 +22,7 @@ CCopasiTimer::CCopasiTimer(const Type & type,
                CCopasiTimeVariable::getCPUTime()),
     mElapsedTime(0),
     mElapsedTimeSeconds(0)
-{setActualize(this, &CCopasiTimer::actualize);}
+{setRefresh(this, &CCopasiTimer::refresh);}
 
 CCopasiTimer::CCopasiTimer(const CCopasiTimer & src,
                            const CCopasiContainer * pParent):
@@ -31,7 +31,7 @@ mType(src.mType),
 mStartTime(src.mStartTime),
 mElapsedTime(src.mElapsedTime),
 mElapsedTimeSeconds(src.mElapsedTimeSeconds)
-{setActualize(this, &CCopasiTimer::actualize);}
+{setRefresh(this, &CCopasiTimer::refresh);}
 
 CCopasiTimer::~CCopasiTimer()
 {}
@@ -55,7 +55,7 @@ bool CCopasiTimer::start()
   return true;
 }
 
-bool CCopasiTimer::actualize()
+void CCopasiTimer::refresh()
 {
   switch (mType)
     {
@@ -71,12 +71,12 @@ bool CCopasiTimer::actualize()
   mElapsedTimeSeconds =
     (mElapsedTime.getMicroSeconds() * 1e-6);
 
-  return true;
+  return;
 }
 
 const CCopasiTimeVariable & CCopasiTimer::getElapsedTime()
 {
-  actualize();
+  refresh();
   return mElapsedTime;
 }
 

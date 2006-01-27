@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.121.2.1 $
+   $Revision: 1.121.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/21 19:54:09 $
+   $Date: 2006/01/27 13:49:58 $
    End CVS Header */
 
 /********************************************************
@@ -314,8 +314,11 @@ void TrajectoryWidget::StartTimeSlot()
 
 void TrajectoryWidget::DurationSlot()
 {
-  if (!mpProblem->setDuration(nDuration->text().toDouble()) &&
-      CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+  try
+    {
+      mpProblem->setDuration(nDuration->text().toDouble());
+    }
+  catch (...)
     {
       QMessageBox::warning(this, QString("File Warning"),
                            FROM_UTF8(CCopasiMessage::getAllMessageText()),
@@ -332,8 +335,12 @@ void TrajectoryWidget::DurationSlot()
 
 void TrajectoryWidget::StepsizeSlot()
 {
-  if (!mpProblem->setStepSize(nStepSize->text().toDouble()) &&
-      CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+  try
+    {
+      mpProblem->setStepSize(nStepSize->text().toDouble());
+    }
+
+  catch (...)
     {
       QMessageBox::warning(this, QString("File Warning"),
                            FROM_UTF8(CCopasiMessage::getAllMessageText()),
@@ -350,8 +357,11 @@ void TrajectoryWidget::StepsizeSlot()
 
 void TrajectoryWidget::NumStepsSlot()
 {
-  if (!mpProblem->setStepNumber(nStepNumber->text().toULong()) &&
-      CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+  try
+    {
+      mpProblem->setStepNumber(nStepNumber->text().toULong());
+    }
+  catch (...)
     {
       QMessageBox::warning(this, QString("File Warning"),
                            FROM_UTF8(CCopasiMessage::getAllMessageText()),

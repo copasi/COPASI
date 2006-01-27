@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiTimer.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.3.8.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/08 17:47:28 $
+   $Date: 2006/01/27 13:49:55 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiTimer
@@ -54,9 +54,8 @@ class CCopasiTimer: public CCopasiObject
 
     /**
      * Actualizes the timer.
-     * @return bool success
      */
-    bool actualize();
+    void refresh();
 
     /**
      * Retrieve the elapsed time.

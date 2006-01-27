@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.59.2.1 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/12/17 21:26:09 $
+   $Author: shoops $ 
+   $Date: 2006/01/27 13:49:55 $
    End CVS Header */
 
 // CCompartment
@@ -91,19 +91,22 @@ CCopasiVectorNS < CMetab > & CCompartment::getMetabolites()
 const CCopasiVectorNS < CMetab > & CCompartment::getMetabolites() const
   {return mMetabolites;}
 
-bool CCompartment::setInitialValue(const C_FLOAT64 & volume)
+void CCompartment::setInitialValue(const C_FLOAT64 & initialValue)
 {
+  if (initialValue == mIValue) return;
+
   C_FLOAT64 Factor = 0;
-  if (mIValue)
+  if (mIValue != 0.0)
     {
-      Factor = volume / mIValue;
+      Factor = initialValue / mIValue;
     }
 
-  mIValue = volume;
+  mIValue = initialValue;
 
   /* This assumes state==FIXED */
-  setValue(volume);
+  setValue(initialValue);
   C_INT32 i, imax = mMetabolites.size();
+
   for (i = 0; i < imax; ++i)
     {
       //update particle numbers
@@ -113,18 +116,28 @@ bool CCompartment::setInitialValue(const C_FLOAT64 & volume)
       mMetabolites[i]->setConcentration(mMetabolites[i]->getConcentration()); // a hack
     }
 
-  return true;
+  return;
 }
 
-bool CCompartment::setValue(const C_FLOAT64 & volume)
+#ifdef WIN32 
+// warning C4056: overflow in floating-point constant arithmetic
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
+#endif
+
+void CCompartment::setValue(const C_FLOAT64 & value)
 {
-  mValue = volume;
+  mValue = value;
 
-  if (volume != 0.0) mVolumeInv = 1.0 / volume;
-  else mVolumeInv = DBL_MAX;
+  if (value != 0.0) mVolumeInv = 1.0 / value;
+  else mVolumeInv = 2.0 * DBL_MAX;
 
-  return true;
+  return;
 }
+
+#ifdef WIN32
+# pragma warning (default: 4056 4756)
+#endif
 
 /* Note: the metabolite stored in mMetabolites has definetly mpCompartment set.
    In the case the compartment is part of a model also mpModel is set. */

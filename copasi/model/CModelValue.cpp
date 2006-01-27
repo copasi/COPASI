@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.9.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 21:47:55 $
+   $Date: 2006/01/27 13:49:55 $
    End CVS Header */
 
 #include <iostream>
@@ -82,9 +82,9 @@ const C_FLOAT64 & CModelEntity::getRate() const
 
 //***********
 
-void CModelEntity::setValue(const C_FLOAT64 v)
+void CModelEntity::setValue(const C_FLOAT64 & value)
 {
-  mValue = v;
+  mValue = value;
 
 #ifdef COPASI_DEBUG
   //if (mStatus == FIXED)
@@ -92,16 +92,14 @@ void CModelEntity::setValue(const C_FLOAT64 v)
 #endif
 }
 
-bool CModelEntity::setInitialValue(const C_FLOAT64 & iV)
+void CModelEntity::setInitialValue(const C_FLOAT64 & initialValue)
 {
-  //if (mIConc == initialConcentration) return true;
-
-  mIValue = iV;
+  mIValue = initialValue;
 
   if (mStatus == FIXED)
-    setValue(iV);
+    setValue(initialValue);
 
-  return true;
+  return;
 }
 
 void CModelEntity::setRate(const C_FLOAT64 & rate)
