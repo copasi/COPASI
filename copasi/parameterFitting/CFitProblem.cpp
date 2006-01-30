@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.21.2.11 $
+   $Revision: 1.21.2.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/30 14:02:16 $
+   $Date: 2006/01/30 14:55:34 $
    End CVS Header */
 
 #include "copasi.h"
@@ -262,6 +262,9 @@ bool CFitProblem::calculate()
 
   C_FLOAT64 * Residuals = mResiduals.array();
   C_FLOAT64 * DependentValues = mDependentValues.array();
+  UpdateMethod ** pUpdate = mExperimentUpdateMethods.array();
+  std::vector<COptItem *>::iterator itItem;
+  std::vector<COptItem *>::iterator endItem = mpOptItems->end();
 
   try
     {
@@ -272,9 +275,9 @@ bool CFitProblem::calculate()
           mpModel->setInitialState(mpInitialState);
 
           // set the global and experiment local fit item values.
-          for (j = 0; j < jmax; j++)
-            if (mExperimentUpdateMethods(i, j))
-              (*mExperimentUpdateMethods(i, j))(static_cast<CFitItem *>((*mpOptItems)[j])->getLocalValue());
+          for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
+            if (*pUpdate)
+              (**pUpdate)(static_cast<CFitItem *>(*itItem)->getLocalValue());
 
           kmax = pExp->getNumDataRows();
 
