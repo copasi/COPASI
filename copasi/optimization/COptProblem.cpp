@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.71.2.5 $
+   $Revision: 1.71.2.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/30 14:02:16 $
+   $Date: 2006/01/30 14:50:29 $
    End CVS Header */
 
 /**
@@ -269,6 +269,8 @@ bool COptProblem::initialize()
       mOriginalVariables[i] = *(*it)->COptItem::getObjectValue();
     }
 
+  mCPUTime.start();
+
   createObjectiveFunction();
 
   if (!mpFunction || !mpFunction->compile(ContainerList))
@@ -276,8 +278,6 @@ bool COptProblem::initialize()
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
       return false;
     }
-
-  mCPUTime.start();
 
   return true;
 }
