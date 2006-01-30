@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.71.2.4 $
+   $Revision: 1.71.2.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/20 15:34:35 $
+   $Date: 2006/01/30 14:02:16 $
    End CVS Header */
 
 /**
@@ -507,20 +507,22 @@ void COptProblem::print(std::ostream * ostream) const
 
 void COptProblem::printResult(std::ostream * ostream) const
   {
+    std::ostream & os = *ostream;
+
     if (mSolutionVariables.numSize() == 0)
       {
         return;
       }
-    *ostream << "    Objective Function Value:\t" << mSolutionValue << std::endl;
+    os << "    Objective Function Value:\t" << mSolutionValue << std::endl;
 
     CCopasiTimeVariable CPUTime = const_cast<COptProblem *>(this)->mCPUTime.getElapsedTime();
 
-    *ostream << "    Function Evaluations:\t" << mCounter << std::endl;
-    *ostream << "    CPU Time [s]:\t"
+    os << "    Function Evaluations:\t" << mCounter << std::endl;
+    os << "    CPU Time [s]:\t"
     << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
     << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
-    *ostream << "    Evaluations/Second [1/s]:\t" << (1000 * mCounter) / (C_FLOAT64) CPUTime.getMilliSeconds() << std::endl;
-    *ostream << std::endl;
+    os << "    Evaluations/Second [1/s]:\t" << mCounter / (C_FLOAT64) (CPUTime.getMilliSeconds() / 1e3) << std::endl;
+    os << std::endl;
 
     std::vector< COptItem * >::const_iterator itItem =
       mpOptItems->begin();
@@ -531,7 +533,7 @@ void COptProblem::printResult(std::ostream * ostream) const
 
     for (i = 0; itItem != endItem; ++itItem, i++)
       {
-        *ostream << "    " << (*itItem)->getObjectDisplayName() << ": "
+        os << "    " << (*itItem)->getObjectDisplayName() << ": "
         << mSolutionVariables[i] << std::endl;
       }
   }

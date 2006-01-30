@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.21.2.10 $
+   $Revision: 1.21.2.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/26 21:02:05 $
+   $Date: 2006/01/30 14:02:16 $
    End CVS Header */
 
 #include "copasi.h"
@@ -393,7 +393,7 @@ void CFitProblem::printResult(std::ostream * ostream) const
     os << "CPU Time [s]:\t"
     << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
     << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
-    os << "Evaluations/Second [1/s]:\t" << (1000 * mCounter) / (C_FLOAT64) CPUTime.getMilliSeconds() << std::endl;
+    os << "Evaluations/Second [1/s]:\t" << mCounter / (C_FLOAT64) (CPUTime.getMilliSeconds() / 1e3) << std::endl;
     os << std::endl;
 
     std::vector< COptItem * >::const_iterator itItem =
