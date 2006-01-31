@@ -3,12 +3,9 @@ pushd ../..
 
 if [ x"$#" = x1 ]; then
   build=`gawk -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/copasiversion.h`
-  license=`gawk -- ' BEGIN {license = "US"} $0 ~ "--with-copasi-license=DE" {license = "DE"} END {print license} ' config.status`
+  license=`gawk -- ' BEGIN {license = "US"} $0 ~ "USE_LICENSE=DE" {license = "DE"} END {print license} ' copasi/Makefile`
 
   case x"$1" in 
-  xWIN32)
-    zip CopasiUI-$build-$1.zip CopasiUI.exe 
-    ;;
 
   xDarwin)
     if otool -L ./copasi/CopasiUI/CopasiUI.app/Contents/MacOS/CopasiUI \
@@ -101,11 +98,17 @@ echo "Set the icon in the Info.plist file."
     rm -rf Copasi-tmp.dmg
     ;;
 
-  xLinux|xSunOS)
-    [ -e $build-$1 ] && rm -rf $build-$1
-    mkdir $build-$1
-    cd $build-$1
- 
+  xWIN32|xLinux|xSunOS)
+    if [ x"$1" != "xWIN32" ]; then
+      [ -e $build-$1 ] && rm -rf $build-$1
+      mkdir $build-$1
+      cd $build-$1
+    else
+      [ -e setup ] && rm -rf setup
+      mkdir setup
+      cd setup
+    fi
+
     mkdir copasi
     mkdir copasi/bin
     mkdir copasi/share
@@ -114,7 +117,9 @@ echo "Set the icon in the Info.plist file."
     mkdir copasi/share/copasi/doc/html
     mkdir copasi/share/copasi/doc/html/figures
     mkdir copasi/share/copasi/examples
-    mkdir copasi/share/copasi/icons
+    if [ x"$1" != "xWIN32" ]; then
+      mkdir copasi/share/copasi/icons
+    fi
     chmod -R 755 copasi
 
     cp ../README.$1 copasi/README
@@ -132,8 +137,10 @@ echo "Set the icon in the Info.plist file."
     cp ../TestSuite/distribution/* copasi/share/copasi/examples
     chmod 444 copasi/share/copasi/examples/*
 
-    cp ../copasi/CopasiUI/icons/Copasi??-Alpha.xpm copasi/share/copasi/icons
-    chmod 644 copasi/share/copasi/icons/*
+    if [ x"$1" != "xWIN32" ]; then
+      cp ../copasi/CopasiUI/icons/Copasi??-Alpha.xpm copasi/share/copasi/icons
+      chmod 644 copasi/share/copasi/icons/*
+    fi
 
     cp ../copasi/wizard/help_html/*.html copasi/share/copasi/doc/html
     chmod 644 copasi/share/copasi/doc/html/*.html
@@ -157,8 +164,11 @@ echo "Set the icon in the Info.plist file."
     ;;
   esac
 
-  scp Copasi-$build-$1*.* \
+  if [ x"$1" != "xWIN32" ]; then
+    scp Copasi-$build-$1*.* \
       calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/alpha-test/$1/$license
+  fi
+
 #  rm Copasi-$build-$1*.*
 else
   echo usage: mkbuild.sh BUILD_OS
