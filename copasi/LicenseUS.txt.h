@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/Attic/LicenseUS.txt.h,v $
-   $Revision: 1.1.2.2 $
+   $Revision: 1.1.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/27 13:47:38 $
+   $Date: 2006/01/31 20:07:34 $
    End CVS Header */
 
 extern const char * CopasiLicense =
@@ -23,9 +23,9 @@ extern const char * CopasiLicense =
     "and all terms and conditions.\n"
     "\n"
     "The main authors of COPASI are Pedro Mendes, Stefan Hoops, Sven Sahle,\n"
-    "and Ralph Gauges. This software has been made possible with the\n"
-    "dedicated support of a large number of graduate students at VBI and\n"
-    "EML.\n"
+    "Ralph Gauges, and Ursula Kummer. This software has been made possible\n"
+    "with the dedicated support of a large number of graduate students at\n"
+    "VBI and EML.\n"
     "\n"
     "You are hereby granted a non-exclusive and non-transferable license to\n"
     "use and distribute the Software in both source and binary form\n"
