@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.46.2.4 $ $Author: shoops $ $Date: 2006/01/26 16:54:12 $  
+# $Revision: 1.46.2.5 $ $Author: shoops $ $Date: 2006/01/31 23:25:02 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -29,12 +29,22 @@ contains(USE_LICENSE, DE) {
   DEFINES -= COPASI_LICENSE_US
 }
 
-
 debug {
   DEFINES += COPASI_DEBUG
 }
 
 !contains(BUILD_OS, WIN32) {
+  #Release code optimization
+  QMAKE_CFLAGS_RELEASE -= -O1
+  QMAKE_CFLAGS_RELEASE -= -O2
+  QMAKE_CFLAGS_RELEASE -= -O4
+  QMAKE_CFLAGS_RELEASE += -O3
+
+  QMAKE_CXXFLAGS_RELEASE -= -O1
+  QMAKE_CXXFLAGS_RELEASE -= -O2
+  QMAKE_CXXFLAGS_RELEASE -= -O4
+  QMAKE_CXXFLAGS_RELEASE += -O3
+
   QMAKE_QMAKE = $(QTDIR)/bin/qmake
   QMAKE_LEX = ../../admin/flex.sh
   QMAKE_YACC = ../../admin/yacc.sh
@@ -108,6 +118,13 @@ contains(BUILD_OS, WIN32) {
     QMAKE_LFLAGS_WINDOWS += /NODEFAULTLIB:"msvcrt.lib"
     QMAKE_LFLAGS_CONSOLE += /NODEFAULTLIB:"msvcrt.lib"
   }
+
+  #Release code optimization
+  QMAKE_CFLAGS_RELEASE -= -O1
+  QMAKE_CFLAGS_RELEASE += -O2
+
+  QMAKE_CXXFLAGS_RELEASE -= -O1
+  QMAKE_CXXFLAGS_RELEASE += -O2
 
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
