@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.12.2.1 $
+   $Revision: 1.12.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/22 16:01:06 $
+   $Date: 2006/01/31 20:00:36 $
    End CVS Header */
 
 #include "CCopasiSimpleSelectionTree.h"
@@ -31,9 +31,8 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
 #endif // COPASI_DEBUG
 
   this->modelValueSubtree = new QListViewItem(this, "global parameters");
-  //this->valueSubtree = new QListViewItem(this->modelValueSubtree, "transient values");
-  //this->initialValueSubtree = new QListViewItem(this->modelValueSubtree, "initial values");
-  this->valueSubtree = new QListViewItem(this->modelValueSubtree, "values");
+  this->valueSubtree = new QListViewItem(this->modelValueSubtree, "transient values");
+  this->initialValueSubtree = new QListViewItem(this->modelValueSubtree, "initial values");
 
   this->reactionSubtree = new QListViewItem(this, "reactions");
   this->particleFluxSubtree = new QListViewItem(this->reactionSubtree, "particle fluxes");
@@ -165,12 +164,12 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
       const CModelEntity* object = objects[counter - 1];
       std::string name = object->getObjectName();
 
-      //item = new QListViewItem(this->initialValueSubtree,
-      //                         FROM_UTF8((name + "(t=0)")));
-      //treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialValue"));
+      item = new QListViewItem(this->initialValueSubtree,
+                               FROM_UTF8((name + "(t=0)")));
+      treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialValue"));
 
       item = new QListViewItem(this->valueSubtree,
-                               FROM_UTF8(name /*+ "(t)"*/));
+                               FROM_UTF8(name + "(t)"));
       treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Value"));
 
       //item = new QListViewItem(this->valueRateSubtree,
