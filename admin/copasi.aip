@@ -101,6 +101,7 @@
     <ROW Environment="PATH" Name="=-*PATH" Value="[~];[bin_DIR]" Component_="CopasiSE.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
+    <ROW Name="SystemFolder_msiexec.exe" SourcePath="&lt;uninstall.ico&gt;" Index="0"/>
     <ROW Name="controlPanelIcon.exe" SourcePath="..\setup\copasi\share\copasi\icons\Copasi.ico" Index="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
@@ -135,6 +136,7 @@
     <ROW Shortcut="CopasiUI.exe" Directory_="SHORTCUTDIR" Name="CopasiUI" Component_="CopasiUI.exe" Target="[#CopasiUI.exe]" Description="CopasiUI.exe" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="bin_DIR"/>
     <ROW Shortcut="License" Directory_="SHORTCUTDIR" Name="License" Component_="LICENSE.txt" Target="[#LICENSE.txt]" Description="License" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="README" Directory_="SHORTCUTDIR" Name="README" Component_="README.txt" Target="[#README.txt]" Description="README" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="Uninstall" Directory_="SHORTCUTDIR" Name="Uninst~1|Uninstall" Component_="CopasiSE.exe" Target="[SystemFolder]msiexec.exe" Arguments="/x [ProductCode]" Hotkey="0" Icon_="SystemFolder_msiexec.exe" IconIndex="0" ShowCmd="1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
     <ROW UpgradeCode="UpgradeCode" VersionMax="ProductVersion" Attributes="1025"/>
