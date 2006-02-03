@@ -1483,7 +1483,7 @@ The results dialog is located directly below the time course branch in the objec
 </sect1>
 <sect1 id="calculatingMCA" xreflabel="Doing a Metabolic Control Analysis">
 <title>Doing a Metabolic Control Analysis (MCA)</title>
-<para>Starting with Build 11, Copasi can do the Metabolic Control Analysis (MCA) for your model. The MCA task is located under <guibutton>Tasks-&gt;Metabolic Control Analysis</guibutton>.</para>
+<para>Copasi can also do a Metabolic Control Analysis (MCA) for your model. The MCA task is located under <guibutton>Tasks-&gt;Metabolic Control Analysis</guibutton>.</para>
 <para>
 <screenshot>
 <screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
@@ -1807,7 +1807,7 @@ With the buttons on the left of each item other then the <guilabel>Task</guilabe
 What we have left out so far are the two checkboxes at the bottom of the <guilabel>Task</guilabel> widget. The first checkbox is labeled <guilabel>always use initial conditions</guilabel>. If this checkbox is checked, each task that is run runs with the same initial conditions. If the checkbox is not checked, only the first task that runs uses the initial conditions from the model, each subsequent task uses the conditions as they are after the preceding task has finished. 
 </para>
 <para>
-The second checkbox is labeled <guilabel>Output time series</guilabel> is it is checked, Copasi will plot the complete time series result each time a time series task runs. So if during your scan, 10 time series are calculated, all ten are overloaded in the same window. If the checkbox is unchecked, Copasi will only plot the end result,i.e. the concentrations after the last step, of each time series. Since this checkbox only makes sense for the time series task, it will be disabled if another task is chosen for the scan.
+The second checkbox is labeled <guilabel>Output time series</guilabel>. If it is checked, Copasi will plot the complete time series result each time a time series task runs. So if during your scan, 10 time series are calculated, all ten are overloaded in the same window. If the checkbox is unchecked, Copasi will only plot the end result,i.e. the concentrations after the last step, of each time series. This applies to reports correspondingly. Since this checkbox only makes sense for the time series task, it will be disabled if another task is chosen for the scan.
 </para>
 </sect1>
 
