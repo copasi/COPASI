@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.59.2.1 $
+   $Revision: 1.59.2.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/01/27 13:49:55 $
+   $Author: ssahle $ 
+   $Date: 2006/02/03 11:08:20 $
    End CVS Header */
 
 // CCompartment
@@ -74,11 +74,12 @@ C_INT32 CCompartment::load(CReadConfig & configbuffer)
     return Fail;
   setObjectName(tmp);
 
+  C_FLOAT64 tmpdbl;
   if ((Fail = configbuffer.getVariable("Volume", "C_FLOAT64",
-                                       (void *) & mIValue)))
+                                       (void *) & tmpdbl)))
     return Fail;
 
-  setInitialVolume(mIValue);
+  setInitialVolume(tmpdbl);
 
   return Fail;
 }
