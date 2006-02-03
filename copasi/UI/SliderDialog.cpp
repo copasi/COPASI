@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.58.2.1 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2005/10/31 14:16:37 $
+   $Date: 2006/02/03 12:28:22 $
    End CVS Header */
 
 #include <iostream>
@@ -169,7 +169,7 @@ CopasiSlider* SliderDialog::findCopasiSliderAtPosition(const QPoint& p)
 {
   QWidget* pWidget = this->childAt(p);
   CopasiSlider* pSlider = NULL;
-  while (pWidget != this && !pSlider)
+  while (pWidget && pWidget != this && !pSlider)
     {
       pSlider = dynamic_cast<CopasiSlider*>(pWidget);
       pWidget = (QWidget*)pWidget->parent();
