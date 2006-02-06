@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.121.2.2 $
+   $Revision: 1.121.2.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/27 13:49:58 $
+   $Date: 2006/02/06 14:14:23 $
    End CVS Header */
 
 /********************************************************
@@ -513,7 +513,7 @@ void TrajectoryWidget::ReportDefinitionClicked()
     dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(objKey));
   assert(trajectoryTask);
 
-  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(this /*pParent*/);
+  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pListView);
   pSelectDlg->setReport(&trajectoryTask->getReport());
   pSelectDlg->loadReportDefinitionVector();
   pSelectDlg->exec();
