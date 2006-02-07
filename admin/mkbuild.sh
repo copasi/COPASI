@@ -38,11 +38,11 @@ if [ x"$#" = x1 ]; then
     cp ../COPASI_License_${license}.txt copasi/LICENSE.txt
     chmod 644 copasi/LICENSE.txt
 
-    cp ../copasi/CopasiUI/CopasiUI  copasi/bin
-    chmod 755 copasi/bin/CopasiUI
+    cp ../copasi/CopasiUI/CopasiUI.exe  copasi/bin
+    chmod 755 copasi/bin/CopasiUI.exe
 
-    cp ../copasi/CopasiSE/CopasiSE  copasi/bin
-    chmod 755 copasi/bin/CopasiSE
+    cp ../copasi/CopasiSE/CopasiSE.exe  copasi/bin
+    chmod 755 copasi/bin/CopasiSE.exe
 
     cp ../TestSuite/distribution/* copasi/share/copasi/examples
     chmod 444 copasi/share/copasi/examples/*
@@ -240,7 +240,7 @@ echo "Set the icon in the Info.plist file."
   esac
 
   scp Copasi-$build-$1*.* \
-  calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/alpha-test/$1/$license
+    calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/alpha-test/$1/$license
 
 else
   echo usage: mkbuild.sh BUILD_OS
