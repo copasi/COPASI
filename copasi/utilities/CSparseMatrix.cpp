@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSparseMatrix.cpp,v $
-   $Revision: 1.2.2.1 $
+   $Revision: 1.2.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/27 13:49:57 $
+   $Date: 2006/02/09 20:40:16 $
    End CVS Header */
 
 ///////////////////////////////////////////////////////////
@@ -20,6 +20,8 @@
 
 #include "CSparseMatrix.h"
 #include "CMatrix.h"
+
+#include "blaswrap.h"
 
 // ---------- CSparseMatrixElement
 
@@ -575,7 +577,11 @@ CCompressedColumnFormat::const_row_iterator CCompressedColumnFormat::endRow(cons
 
 bool SparseMatrixTest(const unsigned C_INT32 & size,
                       const C_FLOAT64 & sparseness,
-                      const unsigned C_INT32 & seed)
+                      const unsigned C_INT32 & seed,
+                      const bool & RMP,
+                      const bool & DGEMM,
+                      const bool & SMP,
+                      const bool & CCMP)
 {
   unsigned C_INT32 i, j, l, loop = 1;
   CRandom * pRandom =
@@ -585,17 +591,22 @@ bool SparseMatrixTest(const unsigned C_INT32 & size,
   C_FLOAT64 Sparseness = sparseness;
   if (Sparseness == 0.0) Sparseness = 4.0 / size;
 
-  CMatrix< C_FLOAT64 > M(size, size);
-  CSparseMatrix S(size, size);
-  CMatrix< C_FLOAT64 > MM(size, size);
-  CSparseMatrix SS(size, size);
+  CMatrix< C_FLOAT64 > M(size - 3, size);
+  CSparseMatrix S(size - 3, size);
+  CMatrix< C_FLOAT64 > MM(size, size + 3);
+  CSparseMatrix SS(size, size + 3);
   C_FLOAT64 tmp;
 
-  for (i = 0; i < size; i++)
+  for (i = 0; i < size - 3; i++)
     for (j = 0; j < size; j++)
       {
         if (pRandom->getRandomCC() < Sparseness)
           S(i, j) = (pRandom->getRandomCC() - 0.5) * 100.0;
+      }
+
+  for (i = 0; i < size; i++)
+    for (j = 0; j < size + 3; j++)
+      {
         if (pRandom->getRandomCC() < Sparseness)
           SS(i, j) = (pRandom->getRandomCC() - 0.5) * 100.0;
       }
@@ -606,193 +617,251 @@ bool SparseMatrixTest(const unsigned C_INT32 & size,
   CCompressedColumnFormat C(S);
   CCompressedColumnFormat CC(SS);
 
-  DebugFile << "Memory requirements for sparseness:\t" << Sparseness << std::endl;
+  std::cout << "Memory requirements for sparseness:\t" << Sparseness << std::endl;
 
   tmp = sizeof(CMatrix< C_FLOAT64 >) + size * size * sizeof(C_FLOAT64);
-  DebugFile << "Matrix(" << size << "x" << size << "):\t" << tmp << std::endl;
+  std::cout << "Matrix(" << size << "x" << size << "):\t" << tmp << std::endl;
 
   C_FLOAT64 tmp2 = sizeof(CSparseMatrix)
                    + 2 * size * sizeof(std::vector<CSparseMatrixElement *>)
                    + 2 * size * sizeof(C_FLOAT64)
                    + S.numNonZeros() * sizeof(CSparseMatrixElement);
-  DebugFile << "Sparse(" << size << "x" << size << "):\t" << tmp2 << std::endl;
-  DebugFile << "Sparse/Matrix:\t" << tmp2 / tmp << std::endl;
+  std::cout << "Sparse(" << size << "x" << size << "):\t" << tmp2 << std::endl;
+  std::cout << "Sparse/Matrix:\t" << tmp2 / tmp << std::endl;
 
   tmp2 = sizeof(CCompressedColumnFormat)
          + 2 * C.numNonZeros() * sizeof(C_FLOAT64)
          + (size + 1) * sizeof(C_FLOAT64);
-  DebugFile << "CompressedColumnFormat(" << size << "x" << size << "):\t" << tmp2 << std::endl;
-  DebugFile << "CompressedColumnFormat/Matrix:\t" << tmp2 / tmp << std::endl << std::endl;
+  std::cout << "CompressedColumnFormat(" << size << "x" << size << "):\t" << tmp2 << std::endl;
+  std::cout << "CompressedColumnFormat/Matrix:\t" << tmp2 / tmp << std::endl << std::endl;
 
   CCopasiTimer CPU(CCopasiTimer::CPU);
+  CCopasiTimer WALL(CCopasiTimer::WALL);
 
-  // Regular Matrix Product
-  CPU.start();
-  for (l = 0; l < loop; l++)
+  if (RMP)
     {
-      CMatrix< C_FLOAT64 > MR(M.numRows(), MM.numCols());
-      const C_FLOAT64 *pTmp1, *pTmp2, *pTmp4, *pTmp5;
-      const C_FLOAT64 *pEnd1, *pEnd2, *pEnd4;
-      C_FLOAT64 *pTmp3;
+      // Regular Matrix Product
+      CPU.start();
+      WALL.start();
+      for (l = 0; l < loop; l++)
+        {
+          CMatrix< C_FLOAT64 > MR(M.numRows(), MM.numCols());
+          const C_FLOAT64 *pTmp1, *pTmp2, *pTmp4, *pTmp5;
+          const C_FLOAT64 *pEnd1, *pEnd2, *pEnd4;
+          C_FLOAT64 *pTmp3;
 
-      pTmp1 = M.array();
-      pEnd1 = pTmp1 + M.numRows() * M.numCols();
+          unsigned C_INT32 LDA = M.numCols();
+          unsigned C_INT32 LDB = MM.numCols();
 
-      pEnd2 = MM.array() + MM.numCols();
-      pTmp3 = MR.array();
+          pTmp1 = M.array();
+          pEnd1 = pTmp1 + M.numRows() * LDA;
 
-      for (; pTmp1 < pEnd1; pTmp1 += M.numRows())
-        for (pTmp2 = MM.array(); pTmp2 < pEnd2; pTmp2++, pTmp3++)
-          {
-            *pTmp3 = 0.0;
+          pEnd2 = MM.array() + LDB;
+          pTmp3 = MR.array();
 
-            for (pTmp4 = pTmp1, pTmp5 = pTmp2, pEnd4 = pTmp4 + M.numRows();
-                 pTmp4 < pEnd4; pTmp4++, pTmp5 += MM.numRows())
-              * pTmp3 += *pTmp4 * *pTmp5;
-          }
+          for (; pTmp1 < pEnd1; pTmp1 += LDA)
+            for (pTmp2 = MM.array(); pTmp2 < pEnd2; pTmp2++, pTmp3++)
+              {
+                *pTmp3 = 0.0;
+
+                for (pTmp4 = pTmp1, pTmp5 = pTmp2, pEnd4 = pTmp4 + LDA;
+                     pTmp4 < pEnd4; pTmp4++, pTmp5 += LDB)
+                  * pTmp3 += *pTmp4 * *pTmp5;
+              }
+        }
+
+      CPU.refresh();
+      WALL.refresh();
+      std::cout << "Matrix * Matrix:\t";
+      CPU.print(&std::cout);
+      std::cout << "\t";
+      WALL.print(&std::cout);
+      std::cout << std::endl;
     }
 
-  CPU.refresh();
-  DebugFile << "Matrix * Matrix:\t";
-  CPU.print(&DebugFile);
-  DebugFile << std::endl;
+  if (DGEMM)
+    {
+      CPU.start();
+      WALL.start();
+      for (l = 0; l < loop; l++)
+        {
+          CMatrix< C_FLOAT64 > dgemmR(M.numRows(), MM.numCols());
+          char T = 'N';
+
+          C_INT m = MM.numCols(); /* LDA, LDC */
+          C_INT n = M.numRows();
+          C_INT k = M.numCols();  /* LDB */
+
+          C_FLOAT64 Alpha = 1.0;
+          C_FLOAT64 Beta = 0.0;
+
+          dgemm_(&T, &T, &m, &n, &k, &Alpha, MM.array(), &m,
+                 M.array(), &k, &Beta, dgemmR.array(), &m);
+        }
+
+      /*
+        for (i = 0; i < MR.numRows(); i++)
+          for (j = 0; j < MR.numCols(); j++)
+            assert(fabs(MR(i, j) - dgemmR(i, j)) <= 100 * DBL_EPSILON * fabs(MR(i, j)));
+      */
+
+      CPU.refresh();
+      WALL.refresh();
+      std::cout << "dgemm(Matrix, Matrix):\t";
+      CPU.print(&std::cout);
+      std::cout << "\t";
+      WALL.print(&std::cout);
+      std::cout << std::endl;
+    }
 
   // Sparse Matrix Product
-
-  CPU.start();
-  for (l = 0; l < loop; l++)
+  if (SMP)
     {
-      CSparseMatrix SR(S.numRows(), SS.numCols());
-      C_FLOAT64 Tmp;
-      std::vector< std::vector< CSparseMatrixElement * > >::const_iterator itRow;
-      std::vector< std::vector< CSparseMatrixElement * > >::const_iterator endRow;
-      std::vector< CSparseMatrixElement * >::const_iterator itRowElement;
-      std::vector< CSparseMatrixElement * >::const_iterator endRowElement;
-      std::vector< std::vector< CSparseMatrixElement * > >::const_iterator itCol;
-      std::vector< std::vector< CSparseMatrixElement * > >::const_iterator endCol;
-      std::vector< CSparseMatrixElement * >::const_iterator itColElement;
-      std::vector< CSparseMatrixElement * >::const_iterator endColElement;
-
-      for (itRow = S.getRows().begin(), endRow = S.getRows().end(); itRow != endRow; ++itRow)
+      CPU.start();
+      WALL.start();
+      for (l = 0; l < loop; l++)
         {
-          endRowElement = itRow->end();
+          CSparseMatrix SR(S.numRows(), SS.numCols());
+          C_FLOAT64 Tmp;
+          std::vector< std::vector< CSparseMatrixElement * > >::const_iterator itRow;
+          std::vector< std::vector< CSparseMatrixElement * > >::const_iterator endRow;
+          std::vector< CSparseMatrixElement * >::const_iterator itRowElement;
+          std::vector< CSparseMatrixElement * >::const_iterator endRowElement;
+          std::vector< std::vector< CSparseMatrixElement * > >::const_iterator itCol;
+          std::vector< std::vector< CSparseMatrixElement * > >::const_iterator endCol;
+          std::vector< CSparseMatrixElement * >::const_iterator itColElement;
+          std::vector< CSparseMatrixElement * >::const_iterator endColElement;
 
-          for (itCol = SS.getColumns().begin(), endCol = SS.getColumns().end(); itCol != endCol; ++itCol)
+          for (itRow = S.getRows().begin(), endRow = S.getRows().end(); itRow != endRow; ++itRow)
             {
-              Tmp = 0;
-              itRowElement = itRow->begin();
-              itColElement = itCol->begin();
-              endColElement = itCol->end();
+              endRowElement = itRow->end();
 
-              while (itRowElement != endRowElement &&
-                     itColElement != endColElement)
+              for (itCol = SS.getColumns().begin(), endCol = SS.getColumns().end(); itCol != endCol; ++itCol)
                 {
+                  Tmp = 0;
+                  itRowElement = itRow->begin();
+                  itColElement = itCol->begin();
+                  endColElement = itCol->end();
+
                   while (itRowElement != endRowElement &&
-                         (*itRowElement)->col() < (*itColElement)->row()) ++itRowElement;
-                  if (itRowElement == endRowElement) break;
+                         itColElement != endColElement)
+                    {
+                      while (itRowElement != endRowElement &&
+                             (*itRowElement)->col() < (*itColElement)->row()) ++itRowElement;
+                      if (itRowElement == endRowElement) break;
 
-                  while (itColElement != endColElement &&
-                         (*itColElement)->row() < (*itRowElement)->col()) ++itColElement;
-                  if (itColElement == endColElement) break;
+                      while (itColElement != endColElement &&
+                             (*itColElement)->row() < (*itRowElement)->col()) ++itColElement;
+                      if (itColElement == endColElement) break;
 
-                  if ((*itRowElement)->col() != (*itColElement)->row()) continue;
+                      if ((*itRowElement)->col() != (*itColElement)->row()) continue;
 
-                  Tmp += **itRowElement * **itColElement;
-                  ++itRowElement;
-                  ++itColElement;
+                      Tmp += **itRowElement * **itColElement;
+                      ++itRowElement;
+                      ++itColElement;
+                    }
+
+                  if (fabs(Tmp) < SR.getTreshold()) continue;
+
+                  SR.insert((*itRow->begin())->row(), (*itCol->begin())->col(), Tmp);
                 }
-
-              if (fabs(Tmp) < SR.getTreshold()) continue;
-
-              SR.insert((*itRow->begin())->row(), (*itCol->begin())->col(), Tmp);
             }
         }
+
+      CPU.refresh();
+      WALL.refresh();
+      std::cout << "Sparse * Sparse:\t";
+      CPU.print(&std::cout);
+      std::cout << "\t";
+      WALL.print(&std::cout);
+      std::cout << std::endl;
+
+      /*
+        for (i = 0; i < MR.numRows(); i++)
+          for (j = 0; j < MR.numCols(); j++)
+            assert(fabs(MR(i, j) - SR(i, j)) < SR.getTreshold());
+      */
     }
 
-  CPU.refresh();
-  DebugFile << "Sparse * Sparse:\t";
-  CPU.print(&DebugFile);
-  DebugFile << std::endl;
-
-  /*
-  for (i = 0; i < size; i++)
-    for (j = 0; j < size; j++)
-      assert(fabs(MR(i, j) - SR(i, j)) < SR.getTreshold());
-  */
-
   // Compressed Column Format Product
-  CPU.start();
-  for (l = 0; l < loop; l++)
+  if (CCMP)
     {
-      CCompressedColumnFormat CR(C.numRows(), CC.numCols(), 0);
-      CSparseMatrix TmpR(C.numRows(), CC.numCols());
-      C_FLOAT64 Tmp;
-      unsigned C_INT32 imax = C.numRows();
-      unsigned C_INT32 jmax = C.numCols();
-      C_FLOAT64 * pColElement, * pEndColElement;
-      unsigned C_INT32 * pColElementRow, * pEndColElementRow;
-      unsigned C_INT32 * pColStart;
-      CCompressedColumnFormat::const_row_iterator itRowElement;
-      CCompressedColumnFormat::const_row_iterator endRowElement = C.endRow(0);
-
-      for (j = 0, pColStart = CC.getColumnStart(); j < jmax; j++, pColStart++)
+      CPU.start();
+      WALL.start();
+      for (l = 0; l < loop; l++)
         {
-          for (i = 0; i < imax; i++)
+          CSparseMatrix TmpR(C.numRows(), CC.numCols());
+          CCompressedColumnFormat CR(C.numRows(), CC.numCols(), 0);
+          C_FLOAT64 Tmp;
+          unsigned C_INT32 imax = CR.numRows();
+          unsigned C_INT32 jmax = CR.numCols();
+          C_FLOAT64 * pColElement, * pEndColElement;
+          unsigned C_INT32 * pColElementRow, * pEndColElementRow;
+          unsigned C_INT32 * pColStart;
+          CCompressedColumnFormat::const_row_iterator itRowElement;
+          CCompressedColumnFormat::const_row_iterator endRowElement = C.endRow(0);
+
+          for (j = 0, pColStart = CC.getColumnStart(); j < jmax; j++, pColStart++)
             {
-              Tmp = 0;
-
-              itRowElement = C.beginRow(i);
-              pColElement = CC.getValues() + *pColStart;
-              pEndColElement = CC.getValues() + *(pColStart + 1);
-              pColElementRow = CC.getRowIndex() + *pColStart;
-              pEndColElementRow = CC.getRowIndex() + *(pColStart + 1);
-
-              while (itRowElement != endRowElement &&
-                     pColElement != pEndColElement)
+              for (i = 0; i < imax; i++)
                 {
-                  while (itRowElement != endRowElement &&
-                         itRowElement.getColumnIndex() < *pColElementRow) ++itRowElement;
-                  if (!(itRowElement != endRowElement)) break;
+                  Tmp = 0;
 
-                  while (pColElement != pEndColElement &&
-                         *pColElementRow < itRowElement.getColumnIndex())
+                  itRowElement = C.beginRow(i);
+                  pColElement = CC.getValues() + *pColStart;
+                  pEndColElement = CC.getValues() + *(pColStart + 1);
+                  pColElementRow = CC.getRowIndex() + *pColStart;
+                  pEndColElementRow = CC.getRowIndex() + *(pColStart + 1);
+
+                  while (itRowElement != endRowElement &&
+                         pColElement != pEndColElement)
                     {
+                      while (itRowElement != endRowElement &&
+                             itRowElement.getColumnIndex() < *pColElementRow) ++itRowElement;
+                      if (!(itRowElement != endRowElement)) break;
+
+                      while (pColElement != pEndColElement &&
+                             *pColElementRow < itRowElement.getColumnIndex())
+                        {
+                          ++pColElement;
+                          ++pColElementRow;
+                        }
+                      if (pColElement == pEndColElement) break;
+
+                      if (itRowElement.getColumnIndex() != *pColElementRow) continue;
+
+                      Tmp += *itRowElement * *pColElement;
+                      ++itRowElement;
                       ++pColElement;
                       ++pColElementRow;
                     }
-                  if (pColElement == pEndColElement) break;
 
-                  if (itRowElement.getColumnIndex() != *pColElementRow) continue;
+                  if (fabs(Tmp) < TmpR.getTreshold()) continue;
 
-                  Tmp += *itRowElement * *pColElement;
-                  ++itRowElement;
-                  ++pColElement;
-                  ++pColElementRow;
+                  TmpR.insert(i, j, Tmp);
                 }
-
-              if (fabs(Tmp) < TmpR.getTreshold()) continue;
-
-              TmpR.insert(i, j, Tmp);
             }
+
+          CR = TmpR;
         }
 
-      CR = TmpR;
+      CPU.refresh();
+      WALL.refresh();
+      std::cout << "Compressed * Compressed:\t";
+      CPU.print(&std::cout);
+      std::cout << "\t";
+      WALL.print(&std::cout);
+      std::cout << std::endl;
+
+      /*
+        for (i = 0; i < MR.numRows(); i++)
+          for (j = 0; j < MR.numCols(); j++)
+            assert(fabs(MR(i, j) - TmpR(i, j)) < SR.getTreshold());
+      */
     }
 
-  CPU.refresh();
-  DebugFile << "Compressed * Compressed:\t";
-  CPU.print(&DebugFile);
-  DebugFile << std::endl;
-
-  /*
-    for (i = 0; i < size; i++)
-      for (j = 0; j < size; j++)
-        assert(fabs(MR(i, j) - TmpR(i, j)) < SR.getTreshold());
-  */ 
-  // Mixed Matrix Product
-
-  DebugFile << std::endl;
-  DebugFile << std::endl;
+  std::cout << std::endl;
+  std::cout << std::endl;
 
   return true;
 }

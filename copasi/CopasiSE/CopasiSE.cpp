@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.26.2.3 $
+   $Revision: 1.26.2.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/27 13:49:56 $
+   $Date: 2006/02/09 20:40:16 $
    End CVS Header */
 
 // Main
@@ -48,13 +48,15 @@ int main(int argc, char *argv[])
 
 #ifdef XXXX
   C_FLOAT64 sparseness = 0.00;
-  SparseMatrixTest(10, sparseness);
-  SparseMatrixTest(25, sparseness);
-  SparseMatrixTest(50, sparseness);
-  SparseMatrixTest(100, sparseness);
-  SparseMatrixTest(250, sparseness);
-  SparseMatrixTest(500, sparseness);
-  SparseMatrixTest(1000, sparseness);
+  SparseMatrixTest(10, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(25, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(50, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(100, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(250, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(500, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(1000, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(2500, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(5000, sparseness, 0, false, true, true, false);
 
   return 0;
 #endif // XXXX
