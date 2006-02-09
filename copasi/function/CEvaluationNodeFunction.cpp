@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/11/28 14:02:39 $
+   $Date: 2006/02/09 13:44:24 $
    End CVS Header */
 
 #include "copasi.h"
@@ -209,7 +209,190 @@ std::string CEvaluationNodeFunction::getDisplayString(const CEvaluationTree * pT
 std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree * pTree) const
   {
     if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
-      return mData + "(" + mpLeft->getDisplay_C_String(pTree) + ")";
+      {
+        std::string data = "";
+
+        switch ((SubType)CEvaluationNode::subType(this->getType()))
+          {
+          case LOG:
+            data = "log";
+            break;
+          case LOG10:
+            data = "log10";
+            break;
+          case EXP:
+            data = "exp";
+            break;
+          case SIN:
+            data = "sin";
+            break;
+          case COS:
+            data = "cos";
+            break;
+          case TAN:
+            data = "tan";
+            break;
+          case SINH:
+            data = "sinh";
+            break;
+          case COSH:
+            data = "cosh";
+            break;
+          case TANH:
+            data = "tanh";
+            break;
+          case ARCSIN:
+            data = "asin";
+            break;
+          case ARCCOS:
+            data = "acos";
+            break;
+          case ARCTAN:
+            data = "atan";
+            break;
+          case ARCSINH:
+            data = "asinh";
+            break;
+          case ARCCOSH:
+            data = "acosh";
+            break;
+          case ARCTANH:
+            data = "atanh";
+            break;
+          case SQRT:
+            data = "sqrt";
+            break;
+          case ABS:
+            data = "abs";
+            break;
+          case NOT:
+            data = "!";
+            break;
+          case MINUS:
+            data = "-";
+            break;
+          case PLUS:
+            break;
+          case SEC:
+            data = "sec";
+            break;
+          case CSC:
+            data = "csc";
+            break;
+          case COT:
+            data = "cot";
+            break;
+          case SECH:
+            data = "sech";
+            break;
+          case CSCH:
+            data = "csch";
+            break;
+          case COTH:
+            data = "coth";
+            break;
+          case ARCSEC:
+            data = "arcsec";
+            break;
+          case ARCCSC:
+            data = "arccsc";
+            break;
+          case ARCCOT:
+            data = "arccot";
+            break;
+          case ARCSECH:
+            data = "asech";
+            break;
+          case ARCCSCH:
+            data = "acsch";
+            break;
+          case ARCCOTH:
+            data = "acoth";
+            break;
+          case FLOOR:
+            data = "floor";
+            break;
+          case CEIL:
+            data = "ceil";
+            break;
+          case FACTORIAL:
+            data = "factorial";
+            break;
+          default:
+            data = "@";
+            break;
+          }
+
+        if ((SubType)CEvaluationNode::subType(this->getType()) == MINUS)
+          return "(" + data + "(" + mpLeft->getDisplay_C_String(pTree) + "))";
+        else
+          return data + "(" + mpLeft->getDisplay_C_String(pTree) + ")";
+      }
+    else
+      return "@";
+  }
+
+std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree * pTree) const
+  {
+    std::string data = "";
+
+    if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
+      {
+        data = mData;
+
+        switch ((SubType)CEvaluationNode::subType(this->getType()))
+          {
+          case LOG:
+          case LOG10:
+          case EXP:
+          case SIN:
+          case COS:
+          case TAN:
+          case SINH:
+          case COSH:
+          case TANH:
+          case ARCSIN:
+          case ARCCOS:
+          case ARCTAN:
+          case ARCSINH:
+          case ARCCOSH:
+          case ARCTANH:
+          case SQRT:
+          case ABS:
+          case NOT:
+          case MINUS:
+            break;
+          case PLUS:
+            data = "";
+            break;
+          default:
+            /*
+             * case SEC:
+             * case CSC:
+             * case COT:
+             * case SECH:
+             * case CSCH:
+             * case COTH:
+                    * case ARCSEC:
+                                  * case ARCCSC:
+                                  * case ARCCOT:
+                    * case ARCSECH:
+                                  * case ARCCSCH:
+                                  * case ARCCOTH:
+             * case FLOOR:
+             * case CEIL:
+                                  * case FACTORIAL:
+             */ 
+            //data = "@";
+            data = "ILLEGAL FUNCTION";
+            break;
+          }
+
+        if ((SubType)CEvaluationNode::subType(this->getType()) == MINUS)
+          return "(" + data + "(" + mpLeft->getDisplay_C_String(pTree) + "))";
+        else
+          return data + "(" + mpLeft->getDisplay_C_String(pTree) + ")";
+      }
     else
       return "@";
   }
@@ -537,7 +720,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(CEvaluationNode *child1, 
                       delete child1;
                       return newnode;
                     }
-                  default:   // cases POWER, MULTIPLY, MODULUS. don't expect MINUS to occur anymore
+                  default:    // cases POWER, MULTIPLY, MODULUS. don't expect MINUS to occur anymore
                     {
                       CEvaluationNode *newnode = copyNode(child1, child2);
                       return newnode;
@@ -564,7 +747,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(CEvaluationNode *child1, 
                 delete child1;
                 return newnode;
               }
-            default:    //cases VARIABLE, CONSTANT..
+            default:     //cases VARIABLE, CONSTANT..
               {
                 CEvaluationNode *newnode = copyNode(child1, child2);
                 return newnode;
