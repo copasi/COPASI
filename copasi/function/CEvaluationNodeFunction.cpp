@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.27.2.1 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2005/11/28 14:02:39 $
+   $Author: shoops $ 
+   $Date: 2006/02/09 18:33:17 $
    End CVS Header */
 
 #include "copasi.h"
@@ -193,7 +193,15 @@ bool CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
 std::string CEvaluationNodeFunction::getInfix() const
   {
     if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
-      return mData + "(" + mpLeft->getInfix() + ")";
+      switch (mType & 0x00FFFFFF)
+        {
+        case MINUS:
+        case PLUS:
+          return handleSign(mpLeft->getInfix());
+
+        default:
+          return mData + "(" + mpLeft->getInfix() + ")";
+        }
     else
       return "@";
   }
@@ -201,7 +209,15 @@ std::string CEvaluationNodeFunction::getInfix() const
 std::string CEvaluationNodeFunction::getDisplayString(const CEvaluationTree * pTree) const
   {
     if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
-      return mData + "(" + mpLeft->getDisplayString(pTree) + ")";
+      switch (mType & 0x00FFFFFF)
+        {
+        case MINUS:
+        case PLUS:
+          return handleSign(mpLeft->getDisplayString(pTree));
+
+        default:
+          return mData + "(" + mpLeft->getDisplayString(pTree) + ")";
+        }
     else
       return "@";
   }
@@ -209,7 +225,15 @@ std::string CEvaluationNodeFunction::getDisplayString(const CEvaluationTree * pT
 std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree * pTree) const
   {
     if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
-      return mData + "(" + mpLeft->getDisplay_C_String(pTree) + ")";
+      switch (mType & 0x00FFFFFF)
+        {
+        case MINUS:
+        case PLUS:
+          return handleSign(mpLeft->getDisplay_C_String(pTree));
+
+        default:
+          return mData + "(" + mpLeft->getDisplay_C_String(pTree) + ")";
+        }
     else
       return "@";
   }
@@ -537,7 +561,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(CEvaluationNode *child1, 
                       delete child1;
                       return newnode;
                     }
-                  default:   // cases POWER, MULTIPLY, MODULUS. don't expect MINUS to occur anymore
+                  default:    // cases POWER, MULTIPLY, MODULUS. don't expect MINUS to occur anymore
                     {
                       CEvaluationNode *newnode = copyNode(child1, child2);
                       return newnode;
@@ -564,7 +588,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(CEvaluationNode *child1, 
                 delete child1;
                 return newnode;
               }
-            default:    //cases VARIABLE, CONSTANT..
+            default:     //cases VARIABLE, CONSTANT..
               {
                 CEvaluationNode *newnode = copyNode(child1, child2);
                 return newnode;
@@ -585,4 +609,32 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(CEvaluationNode *child1, 
           return newnode;
         }
       }
+  }
+
+std::string CEvaluationNodeFunction::handleSign(const std::string & str) const
+  {
+    Data Result = mData;
+
+    Type T = mpLeft->getType();
+    if ((T & 0xFF000000) == OPERATOR &&
+        ((T & 0x00FFFFFF) == CEvaluationNodeOperator::MINUS ||
+         (T & 0x00FFFFFF) == CEvaluationNodeOperator::PLUS))
+      {
+        Result += "(" + str + ")";
+      }
+    else
+      Result += str;
+
+    const CEvaluationNode * pParent = static_cast<const CEvaluationNode *>(getParent());
+
+    if (!pParent) return Result;
+
+    T = pParent->getType();
+    if ((T & 0xFF000000) == OPERATOR &&
+        this == static_cast<const CEvaluationNode *>(pParent->getChild()->getSibling()))
+      {
+        Result = "(" + Result + ")";
+      }
+
+    return Result;
   }
