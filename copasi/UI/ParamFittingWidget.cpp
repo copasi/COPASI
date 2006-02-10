@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ParamFittingWidget.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.8.2.1 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/09/19 10:03:53 $
+   $Author: shoops $ 
+   $Date: 2006/02/10 19:08:09 $
    End CVS Header */
 
 /********************************************************
@@ -299,7 +299,7 @@ ParamFittingWidget::ParamFittingWidget(QWidget* parent, const char* name, WFlags
   divisionLine4->setFrameShape(QFrame::HLine);
   ParamFittingWidgetLayout->addMultiCellWidget(divisionLine4, 15, 15, 0, 4);
 
-  // 8th main gui line: this line shows the result after user Runs Parameter Fitting with selected parameters
+  // 8th main gui line: this line shows the result after user Runs Parameter Estimation with selected parameters
   //resultLayout = new QGridLayout(this,2,1,0,-1,"resultLayout");
   resultLabel = new QLabel(this, "resultLabel");
   resultLabel->setText(trUtf8("RESULTS"));

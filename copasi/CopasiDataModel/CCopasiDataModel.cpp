@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.55.2.4 $
+   $Revision: 1.55.2.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/12 17:21:11 $
+   $Date: 2006/02/10 19:08:07 $
    End CVS Header */
 
 #include "copasi.h"
@@ -636,7 +636,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       pReport->setSeparator(CCopasiReportSeparator("\t"));
 
       // Header
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Fitting],Object=Description"));
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Description"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Function Evaluations\\]"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Value\\]"));
@@ -644,15 +644,15 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Parameters\\]"));
 
       // Body
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Function Evaluations"));
+      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Function Evaluations"));
       pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Best Value"));
+      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Value"));
       pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Best Parameters"));
+      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Parameters"));
 
       // Footer
       pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Fitting],Object=Result"));
+      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
       break;
 
     case CCopasiTask::mca:

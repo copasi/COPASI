@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.37.2.1 $
+   $Revision: 1.37.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/03 17:40:39 $
+   $Date: 2006/02/10 19:08:08 $
    End CVS Header */
 
 /**
@@ -33,7 +33,7 @@ const std::string CCopasiTask::TypeName[] =
     "Scan",
     "Elementary Flux Modes",
     "Optimization",
-    "Parameter Fitting",
+    "Parameter Estimation",
     "Metabolic Control Analysis",
     "Time scale separation",
     "Sensitivities",

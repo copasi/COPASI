@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitMethod.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.2.2.1 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/19 21:12:54 $
+   $Date: 2006/02/10 19:08:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -79,7 +79,7 @@ bool CFitMethod::isValidProblem(const CCopasiProblem * pProblem)
   const CFitProblem * pTP = dynamic_cast<const CFitProblem *>(pProblem);
   if (!pTP)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a parameter fitting problem.");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Problem is not a parameter estimation problem.");
       return false;
     }
 

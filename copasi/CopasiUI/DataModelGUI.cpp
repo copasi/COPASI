@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.46.2.1 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/11 16:24:03 $
+   $Author: shoops $ 
+   $Date: 2006/02/10 19:08:09 $
    End CVS Header */
 
 #include "copasi.h"
@@ -63,7 +63,7 @@ void DataModelGUI::linkDataModelToGUI()
 
   // optimization
   (*CCopasiDataModel::Global->getTaskList())["Optimization"]->setOutputHandler(tmpHandler);
-  (*CCopasiDataModel::Global->getTaskList())["Parameter Fitting"]->setOutputHandler(tmpHandler);
+  (*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"]->setOutputHandler(tmpHandler);
 
   //math model
   pdelete(mpMathModel);
@@ -82,7 +82,7 @@ void DataModelGUI::linkDataModelToGUI()
 
   mTree.findNodeFromId(31)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
   mTree.findNodeFromId(32)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Optimization"]->getKey());
-  mTree.findNodeFromId(33)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Parameter Fitting"]->getKey());
+  mTree.findNodeFromId(33)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"]->getKey());
 
 #ifdef COPASI_SENS
   mTree.findNodeFromId(34)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Sensitivities"]->getKey());
