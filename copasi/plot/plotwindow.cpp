@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwindow.cpp,v $
-   $Revision: 1.21.2.2 $
+   $Revision: 1.21.2.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/01/25 14:49:59 $
+   $Author: shoops $ 
+   $Date: 2006/02/10 21:27:53 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -124,7 +124,7 @@ void PlotWindow::slotSaveData()
   while (Answer == QMessageBox::No)
     {
       fileName =
-        CopasiFileDialog::getSaveFileName(this, "Save File Dialog", QString::null, QString::null, "Save to");
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog", QString::null, "TEXT Files (*.txt);;All Files (*.*);;", "Save to");
 
       //std::cout << "fileName: " << fileName << std::endl;
       if (fileName == NULL) return;

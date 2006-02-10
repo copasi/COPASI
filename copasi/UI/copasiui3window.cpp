@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.163.2.1 $
+   $Revision: 1.163.2.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/01/23 16:12:59 $
+   $Date: 2006/02/10 21:27:52 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -180,7 +180,7 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
     {
       tmp =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          str, "COPASI Files (*cps);;All Files (*.*)",
+                                          str, "COPASI Files (*.cps);;All Files (*.*);;",
                                           "Choose a filename to save under.");
 
       if (!tmp) return;
@@ -751,7 +751,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
   if (file == "")
     SBMLFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                        QString::null, "XML Files (*.xml)",
+                                        QString::null, "XML Files (*.xml);;All Files (*.*);;",
                                         "Choose a file");
   else
     SBMLFile = file;
@@ -863,7 +863,7 @@ void CopasiUI3Window::slotExportSBML()
       tmp =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
                                           Default,
-                                          "XML Files (*.xml)",
+                                          "XML Files (*.xml);;All Files (*.*);;",
                                           "Choose a filename for SBML export.");
       if (!tmp) return;
 
@@ -916,7 +916,7 @@ void CopasiUI3Window::slotExportMathModel()
       tmp =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
                                           Default,
-                                          "ASCII Files (*.out)",
+                                          "ASCII Files (*.out);;All Files (*.*);;",
                                           "Choose a filename for MathModel export.");
 
       if (!tmp) return;
