@@ -20,6 +20,7 @@ If you use tcsh type (while replacing <copasi-path> with the directory where
 you installed COPASI):
 
 setenv COPASIDIR=<copasi-path>
+
 If you wish to associate an icons with COPASI you may find icons in the
 directory <copasi-path>/share/copasi/icons.
 
@@ -27,3 +28,11 @@ KNOWN PROBLEMS
 
 We built this as a statically linked binary. It should therefore run on most
 Solaris SPARC computers. 
+
+If you get the error:
+  fatal: libgcc_s.so.1: version `GCC_3.3' not found.
+
+You are missing libgcc_s.so.1 or have a version stemming from gcc
+prior to version 3.3. You have to install the new version of
+libgcc_s.so.1. Note, that it is possible to have multiple versions of
+gcc installed in parallel.
