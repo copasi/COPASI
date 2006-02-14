@@ -10,20 +10,26 @@ XHTML_STYLESHEET=copasi_xhtml.xsl
 
 PDF_STYLESHEET=/usr/share/xml/docbook/stylesheet/db2latex/latex/docbook.xsl
 
-JAVA=/usr/bin/java
+JAVA=/cygdrive/c/WINDOWS/system32/java
 
 # This is known to work with saxon 6.5.3, it is best to download the files from
 # the server since the debian packages seem to be broken.
-SAXON_JAR=/usr/share/java/saxon-6.5.4.jar
 #SAXON_JAR=/sw/share/java/saxon/saxon.jar
+SAXON_JAR=C:\\cygwin\\usr\\local\\saxon\\saxon.jar
+
 # This has been tested with the extensions included in the docbokk-xsl version
 # 1.69.1, again, it is best to download those from the server instead of using
 # the ones from the distribution.
 # SAXON_EXTENSIONS_JAR=/usr/share/java/docbook-xsl-saxon65.jar
-
 #SAXON_EXTENSIONS_JAR=/sw/share/xml/xsl/docbook-xsl/extensions/saxon653.jar
+SAXON_EXTENSIONS_JAR=C:\\cygwin\\usr\\share\\docbook-xsl\\extensions\\saxon653.jar
 
-XSLTPROC=$(JAVA) -classpath $(SAXON_JAR):$(SAXON_EXTENSIONS_JAR) com.icl.saxon.StyleSheet  
+# WIN32
+CLASSPATH=$(SAXON_JAR)\;$(SAXON_EXTENSIONS_JAR)
+# Other
+# CLASSPATH=$(SAXON_JAR):$(SAXON_EXTENSIONS_JAR)
+
+XSLTPROC=$(JAVA) -classpath $(CLASSPATH) com.icl.saxon.StyleSheet
 
 
 # The following variables need to be adjusted to suit your installation
@@ -101,15 +107,16 @@ IMAGES = images/Compartments_01.png \
 
 .PHONY: clean all
 
-all: copasi.pdf copasi.xhtml copasi.html
+all: copasi.pdf copasi.xhtml 
 
 copasi.tex: $(SOURCES)
 	SGML_CATALOG_FILES=$(DBLATEX_SGML_CATALOG_FILES) $(DBLATEX) -t tex copasi.xml
 
 copasi.pdf: copasi.tex $(IMAGES)
 	TEXINPUTS=$(DBLATEX_TEXINPUTS) $(PDFLATEX) $<
-#	TEXINPUTS=$(DBLATEX_TEXINPUTS) $(PDFLATEX) $<
-#	TEXINPUTS=$(DBLATEX_TEXINPUTS) $(PDFLATEX) $<
+	TEXINPUTS=$(DBLATEX_TEXINPUTS) $(PDFLATEX) $<
+	TEXINPUTS=$(DBLATEX_TEXINPUTS) $(PDFLATEX) $<
+	@chmod 755 $@
 
 #copasi.pdf: copasi.fo
 #	$(PDFXMLTEX) $<
@@ -120,7 +127,7 @@ copasi.html: $(SOURCES) $(IMAGES) $(HTML_STYLESHEET)
 	$(XSLTPROC) -o $@ $< $(HTML_STYLESHEET) 
 
 copasi.xhtml: $(SOURCES) $(IMAGES) $(XHTML_STYLESHEET)
-	$(XSLTPROC) -o $@ $< $(XHTML_STYLESHEET) 
+	$(XSLTPROC) -o $@ $< $(XHTML_STYLESHEET)
 
 copasi.fo: $(SOURCES) $(IMAGES) $(FO_STYLESHEET)
 	$(XSLTPROC) -o $@ $< $(FO_STYLESHEET)
@@ -129,6 +136,7 @@ clean:
 	rm -f copasi.tex
 	rm -f copasi.pdf
 	rm -f copasi.html
+	rm -f copasi.xhtml
 	rm -f copasi.out
 	rm -f copasi.idx
 	rm -f copasi.log

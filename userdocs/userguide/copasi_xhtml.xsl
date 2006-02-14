@@ -1,6 +1,7 @@
 <?xml version='1.0' ?>
 <xsl:stylesheet  
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+
 <!--
 <xsl:import href="/usr/share/xml/docbook/stylesheet/nwalsh/xhtml/profile-docbook.xsl"/>
 -->
@@ -8,7 +9,7 @@
 <xsl:import href="/sw/share/xml/xsl/docbook-xsl/xhtml/profile-docbook.xsl"/>
 -->
 
-<xsl:import href="/home/ralph/tools/docbook-xsl-1.69.1/xhtml/docbook.xsl" />
+<xsl:import href="file:///C:/cygwin/usr/share/docbook-xsl/xhtml/docbook.xsl"/>
 
 <xsl:param name="use.extensions" select="1" />
 <xsl:param name="tablecolumns.extension" select="1" />
