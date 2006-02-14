@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/21 17:05:52 $
+   $Date: 2006/02/14 14:35:33 $
    End CVS Header */
 
 /**
@@ -34,6 +34,7 @@ const std::string CCopasiParameter::TypeName[] =
     "string",
     "common name",
     "key",
+    "file",
     ""
   };
 
@@ -48,6 +49,7 @@ const char* CCopasiParameter::XMLType[] =
     "string",
     "cn",
     "key",
+    "file",
     NULL
   };
 
@@ -77,7 +79,7 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
                      CCopasiObject::Container |
                      ((type == DOUBLE || type == UDOUBLE) ? CCopasiObject::ValueDbl :
                       ((type == INT || type == UINT) ? CCopasiObject::ValueInt :
-                       ((type == STRING || type == CN || type == KEY) ? CCopasiObject::ValueString :
+                       ((type == STRING || type == CN || type == KEY || type == FILE) ? CCopasiObject::ValueString :
                         (type == BOOL) ? CCopasiObject::ValueBool : 0)))),
     mKey(GlobalKeys.add(objectType, this)),
     mType(type),
@@ -123,6 +125,7 @@ CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)
 
     case CCopasiParameter::STRING:
     case CCopasiParameter::KEY:
+    case CCopasiParameter::FILE:
       *mValue.pSTRING = *rhs.mValue.pSTRING;
       break;
 
@@ -188,7 +191,8 @@ bool CCopasiParameter::isValidValue(const std::string & value) const
     if (mType == CCopasiParameter::KEY)
       return CKeyFactory::isValidKey(value);
 
-    if (mType != CCopasiParameter::STRING) return false;
+    if (mType != CCopasiParameter::STRING &&
+        mType != CCopasiParameter::FILE) return false;
     return true;
   }
 
@@ -232,6 +236,7 @@ std::ostream &operator<<(std::ostream &os, const CCopasiParameter & o)
 
     case CCopasiParameter::STRING:
     case CCopasiParameter::KEY:
+    case CCopasiParameter::FILE:
       os << * o.mValue.pSTRING;
       break;
 
@@ -273,6 +278,7 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
 
     case CCopasiParameter::STRING:
     case CCopasiParameter::KEY:
+    case CCopasiParameter::FILE:
       return *lhs.mValue.pSTRING == *rhs.mValue.pSTRING;
       break;
 
@@ -330,6 +336,7 @@ CCopasiParameter::Value CCopasiParameter::createValue(const Value & value)
 
     case CCopasiParameter::STRING:
     case CCopasiParameter::KEY:
+    case CCopasiParameter::FILE:
       if (value.pSTRING)
         mValue.pSTRING = new std::string(* value.pSTRING);
       else
@@ -382,6 +389,7 @@ void CCopasiParameter::deleteValue()
 
     case CCopasiParameter::STRING:
     case CCopasiParameter::KEY:
+    case CCopasiParameter::FILE:
       delete mValue.pSTRING;
       break;
 

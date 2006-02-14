@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/20 13:18:34 $
+   $Date: 2006/02/14 14:35:21 $
    End CVS Header */
 
 /*******************************************************************
@@ -292,6 +292,7 @@ void CopasiTableWidget::slotDoubleClicked(int row, int C_UNUSED(col),
     }
 
   saveTable();
+  fillTable();
 
   if (flagNew)
     {

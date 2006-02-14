@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/11 17:46:17 $
+   $Date: 2006/02/14 14:35:30 $
    End CVS Header */
 
 /****************************************************************************
@@ -49,6 +49,7 @@ class CReportDefinition : public CCopasiObject
     CCopasiReportSeparator mSeparator;
     bool mTable;
     bool mbTitle;
+    unsigned C_INT32 mPrecision;
 
   public:
     /**
@@ -156,6 +157,18 @@ class CReportDefinition : public CCopasiObject
      *
      */
     void setIsTable(bool table);
+
+    /**
+     * Set the precsion for floating point numbers;
+     * @param const unsigned C_INT32 & precision
+     */
+    void setPrecision(const unsigned C_INT32 & precision);
+
+    /**
+     * Retrieve the precsion for floating point numbers;
+     * @return const unsigned C_INT32 & precision
+     */
+    const unsigned C_INT32 & getPrecision() const;
 
     /**
      *

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2005/11/28 14:02:39 $
+   $Author: shoops $ 
+   $Date: 2006/02/14 14:35:26 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
@@ -156,6 +156,8 @@ class CEvaluationNodeFunction : public CEvaluationNode
     virtual CEvaluationNode* simplifyNode(CEvaluationNode *child1, CEvaluationNode *child2) const;
 
   private:
+    std::string handleSign(const std::string & str) const;
+
     static inline C_FLOAT64 sec(C_FLOAT64 value)
     {return 1.0 / cos(value);}
 

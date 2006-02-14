@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:28:14 $
+   $Date: 2006/02/14 14:35:30 $
    End CVS Header */
 
 /**
@@ -142,7 +142,7 @@ const CCopasiParameterGroup* CScanProblem::getScanItem(unsigned C_INT32 index) c
     CCopasiParameter* tmp = mpScanItems->getParameter(index);
     if (tmp->getType() != CCopasiParameter::GROUP)
       {
-        std::cout << "ERROR: not a parameter group!!!" << std::endl;
+        //std::cout << "ERROR: not a parameter group!!!" << std::endl;
         return NULL;
       }
     return (CCopasiParameterGroup*)tmp;
@@ -153,7 +153,7 @@ CCopasiParameterGroup* CScanProblem::getScanItem(unsigned C_INT32 index)
   CCopasiParameter* tmp = mpScanItems->getParameter(index);
   if (tmp->getType() != CCopasiParameter::GROUP)
     {
-      std::cout << "ERROR: not a parameter group!!!" << std::endl;
+      //std::cout << "ERROR: not a parameter group!!!" << std::endl;
       return NULL;
     }
   return (CCopasiParameterGroup*)tmp;

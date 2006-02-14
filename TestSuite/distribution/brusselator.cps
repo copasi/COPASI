@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.0 Debug 14++ (http://www.copasi.org) at 2005-08-29 20:17:56 UTC -->
+<!-- generated with COPASI 4.0 Debug 17++ (http://www.copasi.org) at 2006-01-04 16:39:24 UTC -->
 <COPASI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://calvin.bioinformatics.vt.edu/copasi/schema/copasi.xsd" versionMajor="0" versionMinor="1">
   <ListOfFunctions>
     <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" positive="false">
@@ -9,14 +9,14 @@
         </Text>
       </MathML>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_75" name="k1" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_76" name="substrate" order="1" role="substrate" minOccurs="1" maxOccurs="unbounded"/>
+        <ParameterDescription key="FunctionParameter_81" name="k1" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_80" name="substrate" order="1" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
   </ListOfFunctions>
-  <Model key="Model_1" name="The Brusselator" timeUnit="s" volumeUnit="ml" quantityUnit="mMol" stateVariable="StateVariable_4">
+  <Model key="Model_1" name="The Brusselator" timeUnit="s" volumeUnit="ml" quantityUnit="mMol" stateVariable="StateVariable_3">
     <Comment>
-<body xmlns="http://www.w3.org/1999/xhtml">
+      <body xmlns="http://www.w3.org/1999/xhtml">
         The famous Brusselator model in which a chemical species X catalyses
 its own formation. In a certain region of parameter space the Brusselator
 can function in a limit cycle regime around an unstable steady state.
@@ -25,15 +25,15 @@ Run this simulation and then check the report file to see how Gepasi can find an
       </body>
     </Comment>
     <ListOfCompartments>
-      <Compartment key="Compartment_0" name="compartment" stateVariable="StateVariable_5"/>
+      <Compartment key="Compartment_0" name="compartment" stateVariable="StateVariable_4"/>
     </ListOfCompartments>
     <ListOfMetabolites>
-      <Metabolite key="Metabolite_0" name="X" compartment="Compartment_0" status="variable" stateVariable="StateVariable_6"/>
-      <Metabolite key="Metabolite_1" name="Y" compartment="Compartment_0" status="variable" stateVariable="StateVariable_7"/>
-      <Metabolite key="Metabolite_5" name="A" compartment="Compartment_0" status="fixed" stateVariable="StateVariable_8"/>
-      <Metabolite key="Metabolite_4" name="B" compartment="Compartment_0" status="fixed" stateVariable="StateVariable_9"/>
-      <Metabolite key="Metabolite_3" name="D" compartment="Compartment_0" status="fixed" stateVariable="StateVariable_10"/>
-      <Metabolite key="Metabolite_2" name="E" compartment="Compartment_0" status="fixed" stateVariable="StateVariable_11"/>
+      <Metabolite key="Metabolite_0" name="X" compartment="Compartment_0" status="variable" stateVariable="StateVariable_5"/>
+      <Metabolite key="Metabolite_1" name="Y" compartment="Compartment_0" status="variable" stateVariable="StateVariable_6"/>
+      <Metabolite key="Metabolite_5" name="A" compartment="Compartment_0" status="fixed" stateVariable="StateVariable_7"/>
+      <Metabolite key="Metabolite_4" name="B" compartment="Compartment_0" status="fixed" stateVariable="StateVariable_8"/>
+      <Metabolite key="Metabolite_3" name="D" compartment="Compartment_0" status="fixed" stateVariable="StateVariable_9"/>
+      <Metabolite key="Metabolite_2" name="E" compartment="Compartment_0" status="fixed" stateVariable="StateVariable_10"/>
     </ListOfMetabolites>
     <ListOfReactions>
       <Reaction key="Reaction_0" name="R1" reversible="false">
@@ -44,14 +44,14 @@ Run this simulation and then check the report file to see how Gepasi can find an
           <Product metabolite="Metabolite_0" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_37" name="k1" value="1"/>
+          <Constant key="Parameter_44" name="k1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_75">
-              <SourceParameter reference="Parameter_37"/>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_44"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_76">
+            <CallParameter functionParameter="FunctionParameter_80">
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -66,14 +66,14 @@ Run this simulation and then check the report file to see how Gepasi can find an
           <Product metabolite="Metabolite_0" stoichiometry="3"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_38" name="k1" value="1"/>
+          <Constant key="Parameter_45" name="k1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_75">
-              <SourceParameter reference="Parameter_38"/>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_45"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_76">
+            <CallParameter functionParameter="FunctionParameter_80">
               <SourceParameter reference="Metabolite_0"/>
               <SourceParameter reference="Metabolite_0"/>
               <SourceParameter reference="Metabolite_1"/>
@@ -91,14 +91,14 @@ Run this simulation and then check the report file to see how Gepasi can find an
           <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_39" name="k1" value="1"/>
+          <Constant key="Parameter_46" name="k1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_75">
-              <SourceParameter reference="Parameter_39"/>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_46"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_76">
+            <CallParameter functionParameter="FunctionParameter_80">
               <SourceParameter reference="Metabolite_0"/>
               <SourceParameter reference="Metabolite_4"/>
             </CallParameter>
@@ -113,14 +113,14 @@ Run this simulation and then check the report file to see how Gepasi can find an
           <Product metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_40" name="k1" value="1"/>
+          <Constant key="Parameter_47" name="k1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_75">
-              <SourceParameter reference="Parameter_40"/>
+            <CallParameter functionParameter="FunctionParameter_81">
+              <SourceParameter reference="Parameter_47"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_76">
+            <CallParameter functionParameter="FunctionParameter_80">
               <SourceParameter reference="Metabolite_0"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -128,21 +128,21 @@ Run this simulation and then check the report file to see how Gepasi can find an
       </Reaction>
     </ListOfReactions>
     <StateTemplate>
-      <StateTemplateVariable key="StateVariable_4" objectReference="Model_1"/>
-      <StateTemplateVariable key="StateVariable_5" objectReference="Compartment_0"/>
-      <StateTemplateVariable key="StateVariable_6" objectReference="Metabolite_0"/>
-      <StateTemplateVariable key="StateVariable_7" objectReference="Metabolite_1"/>
-      <StateTemplateVariable key="StateVariable_8" objectReference="Metabolite_5"/>
-      <StateTemplateVariable key="StateVariable_9" objectReference="Metabolite_4"/>
-      <StateTemplateVariable key="StateVariable_10" objectReference="Metabolite_3"/>
-      <StateTemplateVariable key="StateVariable_11" objectReference="Metabolite_2"/>
+      <StateTemplateVariable key="StateVariable_3" objectReference="Model_1"/>
+      <StateTemplateVariable key="StateVariable_4" objectReference="Compartment_0"/>
+      <StateTemplateVariable key="StateVariable_5" objectReference="Metabolite_0"/>
+      <StateTemplateVariable key="StateVariable_6" objectReference="Metabolite_1"/>
+      <StateTemplateVariable key="StateVariable_7" objectReference="Metabolite_5"/>
+      <StateTemplateVariable key="StateVariable_8" objectReference="Metabolite_4"/>
+      <StateTemplateVariable key="StateVariable_9" objectReference="Metabolite_3"/>
+      <StateTemplateVariable key="StateVariable_10" objectReference="Metabolite_2"/>
     </StateTemplate>
     <InitialState type="initialState">
       0 1 1.80664e+021 1.80664e+021 3.01107e+020 1.80664e+021 0 0
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_5" name="Steady-State" type="steadyState" scheduled="false">
+    <Task key="Task_6" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
@@ -162,32 +162,33 @@ Run this simulation and then check the report file to see how Gepasi can find an
         <Parameter name="Newton.LSODA.MaxStepsInternal" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_6" name="Time-Course" type="timeCourse" scheduled="false">
+    <Task key="Task_7" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="200"/>
         <Parameter name="StepSize" type="float" value="0.5"/>
-        <Parameter name="StartTime" type="float" value="0"/>
-        <Parameter name="EndTime" type="float" value="100"/>
+        <Parameter name="Duration" type="float" value="100"/>
         <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
         <Parameter name="OutputStartTime" type="float" value="0"/>
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
+        <Parameter name="Integrate Reduced Model" type="bool" value="1"/>
         <Parameter name="LSODA.RelativeTolerance" type="unsignedFloat" value="1e-006"/>
+        <Parameter name="Use Default Absolute Tolerance" type="bool" value="1"/>
         <Parameter name="LSODA.AbsoluteTolerance" type="unsignedFloat" value="1e-012"/>
         <Parameter name="LSODA.AdamsMaxOrder" type="unsignedInteger" value="12"/>
         <Parameter name="LSODA.BDFMaxOrder" type="unsignedInteger" value="5"/>
         <Parameter name="LSODA.MaxStepsInternal" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_7" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false">
+    <Task key="Task_8" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
       <Problem>
-        <Parameter name="SteadyStateRequested" type="bool" value="1"/>
+        <Parameter name="Steady-State" type="key" value="Task_6"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="MCA.ModulationFactor" type="unsignedFloat" value="1e-009"/>
       </Method>
     </Task>
-    <Task key="Task_4" name="Scan" type="scan" scheduled="false">
+    <Task key="Task_9" name="Scan" type="scan" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
@@ -198,7 +199,7 @@ Run this simulation and then check the report file to see how Gepasi can find an
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_3" name="Optimization" type="optimization" scheduled="false">
+    <Task key="Task_10" name="Optimization" type="optimization" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Steady-State" type="key" value=""/>
         <Parameter name="Time-Course" type="key" value=""/>
@@ -215,9 +216,27 @@ Run this simulation and then check the report file to see how Gepasi can find an
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
+    <Task key="Task_11" name="Parameter Fitting" type="parameterFitting" scheduled="false" updateModel="false">
+      <Problem>
+        <Parameter name="Steady-State" type="key" value="Task_6"/>
+        <Parameter name="Time-Course" type="key" value="Task_7"/>
+        <ParameterGroup name="OptimizationItemList">
+        </ParameterGroup>
+        <ParameterGroup name="OptimizationConstraintList">
+        </ParameterGroup>
+        <ParameterGroup name="Experiment Set">
+        </ParameterGroup>
+      </Problem>
+      <Method name="Evolutionary Program" type="EvolutionaryProgram">
+        <Parameter name="Number of Generations" type="unsignedInteger" value="200"/>
+        <Parameter name="Population Size" type="unsignedInteger" value="20"/>
+        <Parameter name="Random Number Generator" type="unsignedInteger" value="1"/>
+        <Parameter name="Seed" type="unsignedInteger" value="0"/>
+      </Method>
+    </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_0" name="Steady-State" taskType="steadyState" separator="&#x09;">
+    <Report key="Report_3" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -227,7 +246,7 @@ Run this simulation and then check the report file to see how Gepasi can find an
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_1" name="Optimization" taskType="optimization" separator="&#x09;">
+    <Report key="Report_4" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -251,6 +270,32 @@ Run this simulation and then check the report file to see how Gepasi can find an
       <Footer>
         <Object cn="String=&#x0a;"/>
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
+      </Footer>
+    </Report>
+    <Report key="Report_5" name="Parameter Fitting" taskType="parameterFitting" separator="&#x09;" precision="6">
+      <Comment>
+        <body xmlns="http://www.w3.org/1999/xhtml">
+          Automatically generated report.
+        </body>
+      </Comment>
+      <Header>
+        <Object cn="CN=Root,Vector=TaskList[Parameter Fitting],Object=Description"/>
+        <Object cn="String=\[Simulation Counter\]"/>
+        <Object cn="Separator=&#x09;"/>
+        <Object cn="String=\[Best Value\]"/>
+        <Object cn="Separator=&#x09;"/>
+        <Object cn="String=\[Best Parameters\]"/>
+      </Header>
+      <Body>
+        <Object cn="CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Simulation Counter"/>
+        <Object cn="Separator=&#x09;"/>
+        <Object cn="CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Best Value"/>
+        <Object cn="Separator=&#x09;"/>
+        <Object cn="CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Best Parameters"/>
+      </Body>
+      <Footer>
+        <Object cn="String=&#x0a;"/>
+        <Object cn="CN=Root,Vector=TaskList[Parameter Fitting],Object=Result"/>
       </Footer>
     </Report>
   </ListOfReports>
@@ -306,6 +351,4 @@ Run this simulation and then check the report file to see how Gepasi can find an
   </ListOfPlots>
   <GUI>
   </GUI>
-  <SBMLReference file="">
-  </SBMLReference>
 </COPASI>

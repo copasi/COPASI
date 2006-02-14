@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TaskWidget.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/15 17:00:49 $
+   $Date: 2006/02/14 14:35:22 $
    End CVS Header */
 
 #include <qcheckbox.h>
@@ -188,7 +188,7 @@ void TaskWidget::reportBtnClicked()
 {
   if (!mpTask) return;
 
-  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(this); //TODO parent?
+  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pListView);
   pSelectDlg->setReport(&mpTask->getReport());
   pSelectDlg->loadReportDefinitionVector();
   pSelectDlg->exec();

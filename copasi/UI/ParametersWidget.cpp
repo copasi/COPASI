@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/19 13:11:42 $
+   $Author: shoops $ 
+   $Date: 2006/02/14 14:35:22 $
    End CVS Header */
 
 #include "ParametersWidget.h"
@@ -215,8 +215,14 @@ bool ParametersWidget::loadFromModel()
   unsigned C_INT32 i, imax, j, jmax;
   QString unit;
 
+  //Time
+  mTimeItem = new CParameterListItem(listView, "Initial time");
+  unit = FROM_UTF8(model->getTimeUnitName());
+  new CParameterListItem(mTimeItem, "Model",
+                         model, model->getInitialTime(), unit);
+
   //Compartments
-  mCompItem = new CParameterListItem(listView, "Compartment volumes");
+  mCompItem = new CParameterListItem(listView, "Initial volumes");
   unit = FROM_UTF8(model->getVolumeUnitName());
   const CCopasiVector< CCompartment > & comps = model->getCompartments();
   imax = comps.size();
@@ -305,6 +311,15 @@ bool ParametersWidget::saveToModel() const
     bool changed = false;
 
     CParameterListItem * child;
+
+    //Time
+    child = (CParameterListItem *)mTimeItem->firstChild();
+    if (child->isChanged())
+      {
+        changed = true;
+        CModel* tmp = dynamic_cast<CModel*>(child->getObject());
+        if (tmp) tmp->setInitialTime(child->getValue());
+      }
 
     //Metabs
     child = (CParameterListItem *)mMetabItem->firstChild();

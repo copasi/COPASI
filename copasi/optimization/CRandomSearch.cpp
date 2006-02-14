@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/22 13:36:40 $
+   $Date: 2006/02/14 14:35:27 $
    End CVS Header */
 
 /***************************************************************************
@@ -109,6 +109,41 @@ bool CRandomSearch::optimise()
 
   C_FLOAT64 mn;
   C_FLOAT64 mx;
+
+  // initialise the population
+  // first individual is the initial guess
+  for (j = 0; j < mVariableSize; j++)
+    {
+      C_FLOAT64 & mut = mIndividual[j];
+      COptItem & OptItem = *(*mpOptItem)[j];
+
+      mut = * OptItem.getObjectValue();
+
+      // force it to be within the bounds
+      switch (OptItem.checkConstraint(mut))
+        {
+        case - 1:
+          mut = *OptItem.getLowerBoundValue();
+          break;
+
+        case 1:
+          mut = *OptItem.getUpperBoundValue();
+          break;
+        }
+
+      // We need to set the value here so that further checks take
+      // account of the value.
+      (*(*mpSetCalculateVariable)[j])(mut);
+    }
+
+  Continue = evaluate(mIndividual);
+  mBestValue = mValue;
+  mpOptProblem->setSolutionVariables(mIndividual);
+  Continue = mpOptProblem->setSolutionValue(mBestValue);
+
+  // We found a new best value lets report it.
+  //if (mpReport) mpReport->printBody();
+  mpParentTask->doOutput();
 
   for (mCurrentIteration = 0; mCurrentIteration < mIterations && Continue; mCurrentIteration++)
     {

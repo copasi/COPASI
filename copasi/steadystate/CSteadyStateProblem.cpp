@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:28:17 $
+   $Date: 2006/02/14 14:35:31 $
    End CVS Header */
 
 /**
@@ -17,10 +17,10 @@
 #include <string>
 
 #include "copasi.h"
-#include "CSteadyStateProblem.h" 
-//#include "model/CModel.h"
-//#include "model/CState.h"
+#include "CSteadyStateProblem.h"
+
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "model/CModel.h"
 
 /**
  *  Default constructor.
@@ -52,58 +52,18 @@ CSteadyStateProblem::CSteadyStateProblem(const CSteadyStateProblem & src,
 CSteadyStateProblem::~CSteadyStateProblem()
 {DESTRUCTOR_TRACE;}
 
-/**
- * Set the model the problem is dealing with.
- * @param "CModel *" pModel
- */ 
-/*bool CSteadyStateProblem::setModel(CModel * pModel)
+bool CSteadyStateProblem::initialize()
 {
-  mpModel = pModel;
-  //mInitialState.setModel(mpModel);
- 
+  if (!mpModel) return false;
+
+  if (!mpModel->isAutonomous())
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, MCSteadyState + 1);
+      return false;
+    }
+
   return true;
-}*/
-
-/**
- * Retrieve the model the problem is dealing with.
- * @return "CModel *" pModel
- */ 
-//CModel * CSteadyStateProblem::getModel() const {return mpModel;}
-
-/**
- * Set the initial state of the problem.
- * @param const CState & initialState
- */ 
-/*void CSteadyStateProblem::setInitialState(const CState & initialState)
-{
-  mInitialState = initialState;
-  mpModel = const_cast<CModel *>(mInitialState.getModel());
-  mHasInitialState = true;
-}*/
-
-/**
- * Set the initial state of the problem.
- * @param const CStateX & InitialState
- */ 
-/*void CSteadyStateProblem::setInitialState(const CStateX & initialState)
-{
-  mInitialState = initialState;
-  mpModel = const_cast<CModel *>(mInitialState.getModel());
-  mHasInitialState = true;
-}*/
-
-/**
- * Retrieve the initial state of the problem.
- * @return "const CState &" pInitialState
- */ 
-/*const CState & CSteadyStateProblem::getInitialState() const
-  {return mInitialState;}
- 
-bool CSteadyStateProblem::hasInitialState() const
-  {return mHasInitialState;}
- 
-void CSteadyStateProblem::clearInitialState()
-{mHasInitialState = false;}*/
+}
 
 /**
  * Set whether the jacobian is requested.
@@ -152,10 +112,3 @@ void CSteadyStateProblem::load(CReadConfig & configBuffer,
                * getValue("StabilityAnalysisRequested").pBOOL);
     }
 }
-
-/**
- * Save a steady state problem
- * @param "CWriteConfig &" configBuffer
- */ 
-/*void CSteadyStateProblem::save(CWriteConfig & C_UNUSED(configBuffer)) const
-  {fatalError();}*/

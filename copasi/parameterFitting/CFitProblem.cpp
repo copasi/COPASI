@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:25:04 $
+   $Date: 2006/02/14 14:35:28 $
    End CVS Header */
 
 #include "copasi.h"
@@ -17,7 +17,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CState.h"
-#include "optimization/COptItem.h"
+#include "report/CKeyFactory.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
@@ -258,12 +258,13 @@ bool CFitProblem::calculate()
   unsigned kmax;
   mCalculateValue = 0.0;
 
-  CTrajectoryProblem * pProblem =
-    static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
-  CExperiment * pExp;
+  CExperiment * pExp = NULL;
 
   C_FLOAT64 * Residuals = mResiduals.array();
   C_FLOAT64 * DependentValues = mDependentValues.array();
+  UpdateMethod ** pUpdate = mExperimentUpdateMethods.array();
+  std::vector<COptItem *>::iterator itItem;
+  std::vector<COptItem *>::iterator endItem = mpOptItems->end();
 
   try
     {
@@ -274,48 +275,58 @@ bool CFitProblem::calculate()
           mpModel->setInitialState(mpInitialState);
 
           // set the global and experiment local fit item values.
-          for (j = 0; j < jmax; j++)
-            if (mExperimentUpdateMethods(i, j))
-              (*mExperimentUpdateMethods(i, j))(static_cast<CFitItem *>((*mpOptItems)[j])->getLocalValue());
+          for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
+            if (*pUpdate)
+              (**pUpdate)(static_cast<CFitItem *>(*itItem)->getLocalValue());
 
           kmax = pExp->getNumDataRows();
 
-          for (j = 0; j < kmax && Continue; j++) // For each data row;
+          switch (pExp->getExperimentType())
             {
-              switch (pExp->getExperimentType())
+            case CCopasiTask::steadyState:
+              // set independent data
+              for (j = 0; j < kmax && Continue; j++) // For each data row;
                 {
-                case CCopasiTask::steadyState:
-                  // set independent data
                   pExp->updateModelWithIndependentData(j);
                   Continue = mpSteadyState->process(true);
-                  break;
 
-                case CCopasiTask::timeCourse:
+                  if (!Continue)
+                    {
+                      mCalculateValue = DBL_MAX;
+                      break;
+                    }
+
+                  mCalculateValue += pExp->sumOfSquares(j, DependentValues, Residuals);
+                  if (mStoreResults) pExp->storeCalculatedValues(j);
+                }
+              break;
+
+            case CCopasiTask::timeCourse:
+              for (j = 0; j < kmax && Continue; j++) // For each data row;
+                {
                   if (j)
                     {
-                      pProblem->setDuration(pExp->getTimeData()[j] - pExp->getTimeData()[j - 1]);
-                      Continue = mpTrajectory->process(false);
+                      Continue = mpTrajectory->processStep(pExp->getTimeData()[j]);
                     }
                   else
                     {
                       // set independent data
                       pExp->updateModelWithIndependentData(j);
-                      mpModel->setState(&mpModel->getInitialState());
+                      mpTrajectory->processStart(true);
+
+                      if (pExp->getTimeData()[0] != mpModel->getInitialTime())
+                        {
+                          Continue = mpTrajectory->processStep(pExp->getTimeData()[0]);
+                        }
                     }
-                  break;
 
-                default:
-                  break;
+                  mCalculateValue += pExp->sumOfSquares(j, DependentValues, Residuals);
+                  if (mStoreResults) pExp->storeCalculatedValues(j);
                 }
+              break;
 
-              if (!Continue)
-                {
-                  mCalculateValue = DBL_MAX;
-                  break;
-                }
-
-              mCalculateValue += pExp->sumOfSquares(j, DependentValues, Residuals);
-              if (mStoreResults) pExp->storeCalculatedValues(j);
+            default:
+              break;
             }
 
           // restore independent data
@@ -330,6 +341,9 @@ bool CFitProblem::calculate()
             case CCopasiTask::timeCourse:
               mpTrajectory->restore();
               break;
+
+            default:
+              break;
             }
         }
     }
@@ -337,7 +351,7 @@ bool CFitProblem::calculate()
   catch (...)
     {
       mCalculateValue = DBL_MAX;
-      pExp->restoreModelIndependentData();
+      if (pExp) pExp->restoreModelIndependentData();
     }
 
   if (mpCallBack) return mpCallBack->progress(mhCounter);
@@ -345,32 +359,97 @@ bool CFitProblem::calculate()
   return true;
 }
 
+bool CFitProblem::restore(const bool & updateModel)
+{
+  bool success = COptProblem::restore(updateModel);
+
+  if (!updateModel) return success;
+
+  std::vector<COptItem * >::iterator it = mpOptItems->begin();
+  std::vector<COptItem * >::iterator end = mpOptItems->end();
+  C_FLOAT64 * pTmp = mSolutionVariables.array();
+
+  for (; it != end; ++it, pTmp++)
+    success &= static_cast<CFitItem *>(*it)->setSavedValue(*pTmp);
+
+  return success;
+}
+
 void CFitProblem::print(std::ostream * ostream) const
 {*ostream << *this;}
 
 void CFitProblem::printResult(std::ostream * ostream) const
   {
-    COptProblem::printResult(ostream);
-
     std::ostream & os = *ostream;
 
+    if (mSolutionVariables.numSize() == 0)
+      {
+        return;
+      }
+
+    os << "Objective Function Value:\t" << mSolutionValue << std::endl;
+    os << "Standard Deviation:\t" << mSD << std::endl;
+
+    CCopasiTimeVariable CPUTime = const_cast<CFitProblem *>(this)->mCPUTime.getElapsedTime();
+
+    os << "Function Evaluations:\t" << mCounter << std::endl;
+    os << "CPU Time [s]:\t"
+    << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
+    << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
+    os << "Evaluations/Second [1/s]:\t" << mCounter / (C_FLOAT64) (CPUTime.getMilliSeconds() / 1e3) << std::endl;
     os << std::endl;
-    os << "Gradient:" << std::endl;
-    os << "  " << mGradient << std::endl;
 
-    os << "Standard Deviation:" << std::endl;
-    os << "  " << mSD << std::endl;
+    std::vector< COptItem * >::const_iterator itItem =
+      mpOptItems->begin();
+    std::vector< COptItem * >::const_iterator endItem =
+      mpOptItems->end();
 
-    os << "Parameter Standard Deviation:" << std::endl;
-    os << "  " << mParameterSD << std::endl;
+    CFitItem * pFitItem;
+    CExperiment * pExperiment;
 
-    os << "Parameter Dependence:" << std::endl;
+    unsigned C_INT32 i, j;
+
+    os << "\tParameter\tValue\tGradient\tStandard Deviation" << std::endl;
+    for (i = 0; itItem != endItem; ++itItem, i++)
+      {
+        os << "\t" << (*itItem)->getObjectDisplayName();
+        pFitItem = static_cast<CFitItem *>(*itItem);
+
+        if (pFitItem->getExperimentCount() != 0)
+          {
+            os << " (";
+
+            for (j = 0; j < pFitItem->getExperimentCount(); j++)
+              {
+                if (j) os << ", ";
+
+                pExperiment =
+                  dynamic_cast< CExperiment * >(GlobalKeys.get(pFitItem->getExperiment(j)));
+
+                if (pExperiment)
+                  os << pExperiment->getObjectName();
+              }
+
+            os << ")";
+          }
+
+        os << ":\t" << mSolutionVariables[i];
+        os << "\t" << mGradient[i];
+        os << "\t" << mParameterSD[i];
+        os << std::endl;
+      }
+
+    os << std::endl;
+    os << "Parameter Interdependence:" << std::endl;
     os << "  " << mFisher << std::endl;
 
     unsigned C_INT32 k, kmax = mpExperimentSet->size();
 
     for (k = 0; k < kmax; k++)
-      mpExperimentSet->getExperiment(k)->printResult(ostream);
+      {
+        mpExperimentSet->getExperiment(k)->printResult(ostream);
+        os << std::endl;
+      }
   }
 
 std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
@@ -434,7 +513,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   // Set the current values to the solution values.
   unsigned C_INT32 i, imax = mSolutionVariables.size();
   unsigned C_INT32 j, jmax = mDependentValues.size();
-  unsigned C_INT32 l, lmax = mSolutionVariables.size();
+  unsigned C_INT32 l;
   unsigned C_INT32 k, kmax = mpExperimentSet->size();
 
   for (i = 0; i < imax; i++)
@@ -451,10 +530,10 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   C_FLOAT64 SumOfSquares = mCalculateValue;
   CVector< C_FLOAT64 > DependentValues = mDependentValues;
 
-  mSD = 0.0;
+  mSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
   mParameterSD.resize(imax);
-  mParameterSD = 0.0;
+  mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
   if (jmax > imax)
     mSD = sqrt(SumOfSquares / jmax);
@@ -474,7 +553,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
     {
       Current = mSolutionVariables[i];
 
-      if (Current != 0.0)
+      if (fabs(Current) > resolution)
         {
           (*mUpdateMethods[i])(Current * (1.0 + factor));
           Delta = 1.0 / (Current * factor);
@@ -509,8 +588,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
         tmp *= 2.0;
 
-        if (l != i)
-          mFisher(l, i) = tmp;
+        //        if (l != i)
+        //          mFisher(l, i) = tmp;
       }
 
   /* We use dsytrf_ and dsytri_ to invert the symmetric fisher information matrix */
@@ -651,14 +730,24 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   dsytrf_(&U, &N, mFisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
   if (info)
-    return false; // :TODO: create error message
+    {
+      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
 
-  lwork = work[0];
+      return false; // :TODO: create error message
+    }
+
+  lwork = (C_INT) work[0];
   work.resize(lwork);
 
   dsytrf_(&U, &N, mFisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
   if (info)
-    return false; // :TODO: create error message
+    {
+      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 2, info);
+
+      return false;
+    }
 
   /* int dsytri_(char *uplo,
    *             integer *n, 

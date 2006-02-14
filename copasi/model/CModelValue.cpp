@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 21:47:55 $
+   $Date: 2006/02/14 14:35:26 $
    End CVS Header */
 
 #include <iostream>
@@ -82,9 +82,9 @@ const C_FLOAT64 & CModelEntity::getRate() const
 
 //***********
 
-void CModelEntity::setValue(const C_FLOAT64 v)
+void CModelEntity::setValue(const C_FLOAT64 & value)
 {
-  mValue = v;
+  mValue = value;
 
 #ifdef COPASI_DEBUG
   //if (mStatus == FIXED)
@@ -92,16 +92,14 @@ void CModelEntity::setValue(const C_FLOAT64 v)
 #endif
 }
 
-bool CModelEntity::setInitialValue(const C_FLOAT64 & iV)
+void CModelEntity::setInitialValue(const C_FLOAT64 & initialValue)
 {
-  //if (mIConc == initialConcentration) return true;
-
-  mIValue = iV;
+  mIValue = initialValue;
 
   if (mStatus == FIXED)
-    setValue(iV);
+    setValue(initialValue);
 
-  return true;
+  return;
 }
 
 void CModelEntity::setRate(const C_FLOAT64 & rate)
@@ -126,7 +124,9 @@ void * CModelEntity::getReference() const
 void CModelEntity::initObjects()
 {
   addObjectReference("Value", mValue, CCopasiObject::ValueDbl);
-  addObjectReference("InitialValue", mIValue, CCopasiObject::ValueDbl);
+  CCopasiObject * pObject =
+    addObjectReference("InitialValue", mIValue, CCopasiObject::ValueDbl);
+  pObject->setUpdateMethod(this, &CModelEntity::setInitialValue);
   addObjectReference("Rate", mRate, CCopasiObject::ValueDbl);
 }
 

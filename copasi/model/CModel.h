@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.109 $
+   $Revision: 1.110 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/15 15:36:12 $
+   $Author: shoops $ 
+   $Date: 2006/02/14 14:35:26 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -289,24 +289,9 @@ class CModel : public CCopasiContainer
     CCopasiVectorNS< CReaction > mSteps;
 
     /**
-     *  Vector of reference to reactions in reduced model representation.
-     */
-    /** @dia:route 154,33; h,177.081,90.7423,168.084,88.0337,159.088 */
-    CCopasiVectorN< CReaction > mStepsX;
-
-    /**
-     *  Vector of reference to independend reactions.
-     */
-    /** @dia:route 154,37; h,177.081,90.7423,168.084,89.6337,159.088 */
-    //CCopasiVectorN< CReaction > mStepsInd;
-
-    /**
      *  Vectors of fluxes of the reactions.
      */
-    CVector< const C_FLOAT64 * > mFluxes;
-    CVector< const C_FLOAT64 * > mFluxesX;
-    CVector< const C_FLOAT64 * > mParticleFluxes;
-    CVector< const C_FLOAT64 * > mParticleFluxesX;
+    CVector< C_FLOAT64 > mParticleFluxes;
 
     /**
      *  vector of non concentration values in the model
@@ -356,8 +341,8 @@ class CModel : public CCopasiContainer
 
     /**
      * Vector for storing the column interchanges during LU-Decomposition
-     */
-    CVector< unsigned C_INT32 > mColLU;
+     */ 
+    //    CVector< unsigned C_INT32 > mColLU;
 
     /**
      *   This matrix stores L
@@ -477,11 +462,13 @@ class CModel : public CCopasiContainer
      */
     void buildL(const CMatrix< C_FLOAT64 > & LU);
 
+#ifdef XXXX
     /**
      *  LU-Decomposition of the stoichiometry matrix
      *  @param CMatrix< C_FLOAT64 > & LU
      */
     void lUDecomposition(CMatrix< C_FLOAT64 > & LU);
+#endif // XXXX
 
     /**
      *  Set the status of the metabolites
@@ -498,12 +485,14 @@ class CModel : public CCopasiContainer
      */
     void buildMoieties();
 
+  private:
     /**
      *  compute the actual initial value of all moieties 
      *  (from the initial values of the metabolites).
      */
     void updateMoietyValues();
 
+  public:
     /**
      *  This calculate the right hand side (ydot) of the ODE for LSODA
      */ 
@@ -585,12 +574,14 @@ class CModel : public CCopasiContainer
 
     //********** TT *****************************
 
+  private:
     /**
      *  Set the transition times for all internal metabolites and the
      *  transistion time of the model.
      */
     void setTransitionTimes();
 
+  public:
     //********** Reactions *****************************
 
     /**
@@ -605,14 +596,6 @@ class CModel : public CCopasiContainer
      */
     const CCopasiVectorNS < CReaction > & getReactions() const;
 
-    /**
-     * Retreives the vector of steps in the order used by the reduced model.
-     * @return const CCopasiVectorN< CReaction > &
-     */
-    const CCopasiVectorN< CReaction > & getReactionsX() const;
-    CCopasiVectorN< CReaction > & getReactionsX();
-
-    // Added by Yongqun He
     /**
      * Get the total steps
      * @return unsigned C_INT32 total steps;
@@ -745,6 +728,12 @@ class CModel : public CCopasiContainer
     const CLinkMatrixView & getL() const;
 
     /**
+     * Get the relevant portion of the link matrix L.
+     * @return const CMatrix< C_FLOAT64 > & L0
+     */
+    const CMatrix< C_FLOAT64 > & getL0() const;
+
+    /**
      * initialize all values of the model with their initial values
      */
     void applyInitialValues();
@@ -807,9 +796,9 @@ class CModel : public CCopasiContainer
      * The parameter derivatives must at least provide space for
      * state->getVariableNumberSize() double
      * &param CState * state (input)
-     * &param CVector< C_FLOAT64 > & derivatives (output)
+     * &param C_FLOAT64 * derivatives (output)
      */
-    void getDerivatives_particles(const CState * state, CVector< C_FLOAT64 > & derivatives);
+    void getDerivatives_particles(const CState * state, C_FLOAT64 * derivatives);
 
     /**
      * Calculate the changes of particles numbers of the metabolites 
@@ -817,9 +806,9 @@ class CModel : public CCopasiContainer
      * The parameter derivatives must at least provide space for
      * state->getVariableNumberSize() double
      * &param CStateX * stateX (input)
-     * &param CVector< C_FLOAT64 > & derivatives (output)
+     * &param C_FLOAT64 * derivatives (output)
      */
-    void getDerivativesX_particles(const CStateX * state, CVector< C_FLOAT64 > & derivatives);
+    void getDerivativesX_particles(const CStateX * state, C_FLOAT64 * derivatives);
 
     /**
      * Set the unit for volumes. If copasi recognises 
@@ -1007,15 +996,8 @@ class CModel : public CCopasiContainer
     /**
      * Retrieve the reaction permutation vector
      * @return const CVector<unsigned C_INT32> & permutation
-     */
-    const CVector< unsigned C_INT32 > & getReactionPermutation() const;
-
-    /**
-     * Calculates the particle numbers of the dependent
-     * metabolites for the given reduced model stateX and updates the state
-     * @param CStateX & stateX
-     */
-    void updateDepMetabNumbers (const CStateX & stateX) const;
+     */ 
+    //    const CVector< unsigned C_INT32 > & getReactionPermutation() const;
 
     /**
      * Set the transient concentrations and volumes according to the
@@ -1060,6 +1042,12 @@ class CModel : public CCopasiContainer
      **/
     std::string suitableForStochasticSimulation() const;
 
+    /**
+     * Check whether the model is autonomous
+     * @return bool isAutonomous
+     */
+    bool isAutonomous() const;
+
   private:
 
     bool compile();
@@ -1070,6 +1058,11 @@ class CModel : public CCopasiContainer
      * @return bool found
      */
     bool handleUnusedMetabolites();
+
+    /**
+     * Calculates all reactions and updates the particle fluxes.
+     */
+    void calculateReactions();
 
     /**
      * Initialize the contained CCopasiObjects

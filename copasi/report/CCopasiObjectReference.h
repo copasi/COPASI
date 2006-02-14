@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/13 18:18:01 $
+   $Date: 2006/02/14 14:35:30 $
    End CVS Header */
 
 /**
@@ -34,11 +34,8 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
   private:
     CCopasiObjectReference() {};
 
-    bool updateMethod(const CType & value)
-    {
-      mReference = value;
-      return true;
-    }
+    void updateMethod(const CType & value)
+    {mReference = value;}
 
   public:
     CCopasiObjectReference(const std::string & name,

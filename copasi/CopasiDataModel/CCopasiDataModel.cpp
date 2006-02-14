@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 17:17:03 $
+   $Date: 2006/02/14 14:35:21 $
    End CVS Header */
 
 #include "copasi.h"
@@ -23,6 +23,7 @@
 #include "scan/CScanTask.h" 
 //#include "steadystate/CMCAMethod.h"
 #include "steadystate/CMCATask.h"
+#include "steadystate/CMCAProblem.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "tss/CTSSTask.h"
@@ -53,9 +54,9 @@ bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::strin
       {
         if (oldCN.compare(0, oldCN.size(), **it, 0, oldCN.size()) == 0)
           {
-            std::cout << "   match:   " << **it << std::endl;
+            //std::cout << "   match:   " << **it << std::endl;
             (**it).replace(0, oldCN.size(), newCN);
-            std::cout << "     -->    " << **it << std::endl;
+            //std::cout << "     -->    " << **it << std::endl;
           }
         else
           {
@@ -277,14 +278,8 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
 
   // We are first writing to a temporary stream to prevent accidental
   // destruction of an existing file in case the save command fails.
-  std::ostringstream tmp;
-  if (!XML.save(tmp)) return false;
 
-  std::ofstream os(FileName.c_str());
-  if (os.fail()) return false;
-
-  os << tmp.str();
-  if (os.fail()) return false;
+  if (!XML.CCopasiXMLInterface::save(FileName)) return false;
 
   if (!autoSave)
     {
@@ -484,8 +479,13 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, bool overwr
 
   MMASCIIExporter exporter;
 
-  return exporter.exportMathModel(mpModel, fileName.c_str(), overwriteFile);
+  // :TODO: Fix exportMathModel prototype conflict.
+  // return exporter.exportMathModel(mpModel, fileName.c_str(), overwriteFile);
+  fatalError();
+
+  return false;
 }
+
 CModel * CCopasiDataModel::getModel()
 {return mpModel;}
 
@@ -526,6 +526,7 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
 
     case CCopasiTask::mca:
       pTask = new CMCATask(mpTaskList);
+      static_cast< CMCAProblem * >(pTask->getProblem())->setSteadyStateRequested(true);
       break;
 
 #ifdef COPASI_TSS
@@ -613,14 +614,14 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
 
       // Header
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Object=Description"));
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Simulation Counter\\]"));
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Function Evaluations\\]"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Value\\]"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Parameters\\]"));
 
       // Body
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Simulation Counter"));
+      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations"));
       pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
       pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value"));
       pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
@@ -640,23 +641,23 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       pReport->setSeparator(CCopasiReportSeparator("\t"));
 
       // Header
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Fitting],Object=Description"));
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Simulation Counter\\]"));
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Description"));
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Function Evaluations\\]"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Value\\]"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Parameters\\]"));
 
       // Body
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Simulation Counter"));
+      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Function Evaluations"));
       pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Best Value"));
+      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Value"));
       pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Best Parameters"));
+      pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Parameters"));
 
       // Footer
       pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Fitting],Object=Result"));
+      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
       break;
 
     case CCopasiTask::mca:

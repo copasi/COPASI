@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.121 $
+   $Revision: 1.122 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:25:03 $
+   $Date: 2006/02/14 14:35:23 $
    End CVS Header */
 
 /********************************************************
@@ -314,8 +314,11 @@ void TrajectoryWidget::StartTimeSlot()
 
 void TrajectoryWidget::DurationSlot()
 {
-  if (!mpProblem->setDuration(nDuration->text().toDouble()) &&
-      CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+  try
+    {
+      mpProblem->setDuration(nDuration->text().toDouble());
+    }
+  catch (...)
     {
       QMessageBox::warning(this, QString("File Warning"),
                            FROM_UTF8(CCopasiMessage::getAllMessageText()),
@@ -332,8 +335,12 @@ void TrajectoryWidget::DurationSlot()
 
 void TrajectoryWidget::StepsizeSlot()
 {
-  if (!mpProblem->setStepSize(nStepSize->text().toDouble()) &&
-      CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+  try
+    {
+      mpProblem->setStepSize(nStepSize->text().toDouble());
+    }
+
+  catch (...)
     {
       QMessageBox::warning(this, QString("File Warning"),
                            FROM_UTF8(CCopasiMessage::getAllMessageText()),
@@ -350,8 +357,11 @@ void TrajectoryWidget::StepsizeSlot()
 
 void TrajectoryWidget::NumStepsSlot()
 {
-  if (!mpProblem->setStepNumber(nStepNumber->text().toULong()) &&
-      CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+  try
+    {
+      mpProblem->setStepNumber(nStepNumber->text().toULong());
+    }
+  catch (...)
     {
       QMessageBox::warning(this, QString("File Warning"),
                            FROM_UTF8(CCopasiMessage::getAllMessageText()),
@@ -397,6 +407,7 @@ void TrajectoryWidget::CommitChange()
 void TrajectoryWidget::runTrajectoryTask()
 {
   bool success = true;
+  CCopasiMessage::clearDeque();
 
   checkTimeSeries();
   saveTrajectoryTask();
@@ -502,7 +513,7 @@ void TrajectoryWidget::ReportDefinitionClicked()
     dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(objKey));
   assert(trajectoryTask);
 
-  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(this /*pParent*/);
+  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pListView);
   pSelectDlg->setReport(&trajectoryTask->getReport());
   pSelectDlg->loadReportDefinitionVector();
   pSelectDlg->exec();

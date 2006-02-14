@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.100 $
+   $Revision: 1.101 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/19 20:25:31 $
+   $Date: 2006/02/14 14:35:21 $
    End CVS Header */
 
 /*******************************************************************
@@ -138,7 +138,7 @@ CCopasiObject* CompartmentsWidget::createNewObject(const std::string & name)
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
-  std::cout << " *** created Compartment: " << nname << " : " << pCom->getKey() << std::endl;
+  //std::cout << " *** created Compartment: " << nname << " : " << pCom->getKey() << std::endl;
   return pCom;
 }
 

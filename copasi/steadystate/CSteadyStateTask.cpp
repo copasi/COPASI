@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/22 16:45:26 $
+   $Date: 2006/02/14 14:35:31 $
    End CVS Header */
 
 /**
@@ -115,10 +115,11 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
   bool success = true;
 
-  if (!CCopasiTask::initialize(of, pOstream)) success = false;
+  success &= CCopasiTask::initialize(of, pOstream);
 
   //init states
   if (!mpProblem->getModel()) return false;
+
   pdelete(mpSteadyState);
   mpSteadyState = new CState(mpProblem->getModel()->getInitialState());
   pdelete(mpSteadyStateX);
@@ -136,11 +137,13 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
     dynamic_cast<CSteadyStateProblem *>(mpProblem);
   assert(pProblem);
 
+  success &= pProblem->initialize();
+
   CSteadyStateMethod* pMethod =
     dynamic_cast<CSteadyStateMethod *>(mpMethod);
   assert(pMethod);
 
-  if (!pMethod->initialize(pProblem)) success = false;
+  success &= pMethod->initialize(pProblem);
 
   return success;
 }

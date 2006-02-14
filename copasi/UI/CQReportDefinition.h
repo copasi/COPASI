@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 18:08:27 $
+   $Date: 2006/02/14 14:35:21 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQReportDefinition.ui'
  **
- ** Created: Wed Dec 14 13:05:15 2005
- **      by: The User Interface Compiler ($Id: CQReportDefinition.h,v 1.5 2005/12/14 18:08:27 shoops Exp $)
+ ** Created: Fri Dec 23 12:49:03 2005
+ **      by: The User Interface Compiler ($Id: CQReportDefinition.h,v 1.6 2006/02/14 14:35:21 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -27,11 +27,11 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class QFrame;
-class QLabel;
 class QTextEdit;
 class QLineEdit;
 class QComboBox;
 class QCheckBox;
+class QLabel;
 class QPushButton;
 class QTabWidget;
 class QListBox;
@@ -47,15 +47,17 @@ class CQReportDefinition : public CopasiWidget
     ~CQReportDefinition();
 
     QFrame* mpReportFrame;
-    QLabel* mpSeparatorLabel;
-    QLabel* mpNameLabel;
-    QLabel* mpCommentLabel;
     QTextEdit* mpCommentEdit;
     QLineEdit* mpName;
     QComboBox* mpTaskBox;
     QLineEdit* mpSeparator;
     QCheckBox* mpTabCheck;
+    QLineEdit* mpPrecision;
+    QLabel* mpPrecisionLabel;
     QLabel* mpTaskLabel;
+    QLabel* mpSeparatorLabel;
+    QLabel* mpNameLabel;
+    QLabel* mpCommentLabel;
     QFrame* mpEditListsFrame;
     QPushButton* mpBtnAdvanced;
     QPushButton* mpBtnItem;
@@ -82,8 +84,9 @@ class CQReportDefinition : public CopasiWidget
   protected:
     QVBoxLayout* CQReportDefinitionLayout;
     QGridLayout* mpReportFrameLayout;
+    QHBoxLayout* mpSeparatorLayout;
     QHBoxLayout* mpEditListsFrameLayout;
-    QVBoxLayout* layout2;
+    QVBoxLayout* mpEditBtnLayout;
     QSpacerItem* mpSpacerBtnLayout;
     QHBoxLayout* mpBtnLayout;
 
@@ -107,6 +110,7 @@ class CQReportDefinition : public CopasiWidget
     void taskChanged(const QString & string);
     void commentChanged();
     void separatorChanged(const QString & string);
+    void precisionChanged(const QString & string);
     void chkTabClicked();
     void btnAdvancedClicked();
     void btnItemClicked();

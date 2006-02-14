@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:50 $
+   $Date: 2006/02/14 14:35:21 $
    End CVS Header */
 
 #include <qmessagebox.h>
@@ -29,6 +29,9 @@ void CQReportDefinition::commentChanged()
 {mChanged = true;}
 
 void CQReportDefinition::separatorChanged(const QString & /* string */)
+{mChanged = true;}
+
+void CQReportDefinition::precisionChanged(const QString & /* string */)
 {mChanged = true;}
 
 void CQReportDefinition::chkTabClicked()
@@ -317,6 +320,8 @@ void CQReportDefinition::btnDeleteReportClicked()
 
 void CQReportDefinition::btnNewReportClicked()
 {
+  btnCommitClicked();
+
   std::string Name = "report";
 
   int i = 0;
@@ -406,6 +411,8 @@ bool CQReportDefinition::load()
       mpSeparator->setText(FROM_UTF8(mpReportDefinition->getSeparator().getStaticString()));
     }
 
+  mpPrecision->setText(QString::number(mpReportDefinition->getPrecision()));
+
   std::vector< CRegisteredObjectName > * pList = NULL;
   std::vector< CRegisteredObjectName >::const_iterator it;
   std::vector< CRegisteredObjectName >::const_iterator end;
@@ -475,6 +482,8 @@ bool CQReportDefinition::save()
   else
     Separator = (const char *) mpSeparator->text().utf8();
   mpReportDefinition->setSeparator(Separator);
+
+  mpReportDefinition->setPrecision(mpPrecision->text().toULong());
 
   mpReportDefinition->getHeaderAddr()->clear();
   mpReportDefinition->getBodyAddr()->clear();

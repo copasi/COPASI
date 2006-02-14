@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.88 $
+   $Revision: 1.89 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/07 10:59:18 $
+   $Author: shoops $ 
+   $Date: 2006/02/14 14:35:26 $
    End CVS Header */
 
 /**
@@ -295,11 +295,24 @@ class CReaction : public CCopasiContainer
     void compile();
 
     /**
-     *  Calculate the kinetic function
-     *  @return C_FLOAT64 velocity
+     * Calculate the kinetic function and returns the flux
+     * @return const C_FLOAT64 & Flux
      */
-    C_FLOAT64 calculate();
+    const C_FLOAT64 & calculateFlux();
 
+    /**
+     * Calculates the kinetic function and returns the particle flux
+     * @return const C_FLOAT64 & ParticleFlux
+     */
+    const C_FLOAT64 & calculateParticleFlux();
+
+  private:
+    /**
+     * Calculate the kinetic function
+     */
+    void calculate();
+
+  public:
     /**
      * Calculate partial derivative of the flux 
      * @param C_FLOAT64 & xi

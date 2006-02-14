@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/15 17:00:49 $
+   $Date: 2006/02/14 14:35:21 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -293,7 +293,7 @@ void CQOptimizationWidget::slotExpression()
 
 void CQOptimizationWidget::init()
 {
-  mpHeaderWidget->setTaskName("Parameter Fitting");
+  mpHeaderWidget->setTaskName("Parameter Estimation");
 
   CQOptimizationWidgetLayout->insertWidget(0, mpHeaderWidget);
   CQOptimizationWidgetLayout->addWidget(mpBtnWidget);

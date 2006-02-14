@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 17:10:16 $
+   $Date: 2006/02/14 14:35:35 $
    End CVS Header */
 
 /**
@@ -165,10 +165,11 @@ std::string CCopasiXMLInterface::encode(const std::string & str, const EncodingT
   return xml.str();
 }
 
+/*
 std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
 {
   std::ostringstream value;
-
+ 
   if (isnan(dbl))
     value << "NaN";
   else if (finite(dbl))
@@ -177,8 +178,59 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
     value << "INF";
   else if (dbl < 0.0)
     value << "-INF";
-
+ 
   return value.str();
+}
+ */
+
+CCopasiXMLInterface::DBL::DBL(const C_FLOAT64 & value):
+    mValue(value)
+{}
+
+#ifdef WIN32 
+// warning C4056: overflow in floating-point constant arithmetic
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
+#endif
+
+CCopasiXMLInterface::DBL::DBL(const char * value):
+    mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN())
+{
+  if (!value || !*value) return;
+
+  char * Tail;
+  mValue = strtod(value, & Tail);
+
+  if (!*Tail) return;
+
+  if (!strcmp(value, "INF"))
+    mValue = DBL_MAX * 2;
+  else if (!strcmp(value, "-INF"))
+    mValue = - DBL_MAX * 2;
+  else mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+}
+
+#ifdef WIN32
+# pragma warning (default: 4056 4756)
+#endif
+
+CCopasiXMLInterface::DBL::~DBL() {}
+
+CCopasiXMLInterface::DBL::operator const C_FLOAT64 & () const
+  {return mValue;}
+
+std::ostream & operator << (std::ostream & os, const CCopasiXMLInterface::DBL & dbl)
+{
+  if (isnan(dbl.mValue))
+    os << "NaN";
+  else if (finite(dbl.mValue))
+    os << dbl.mValue;
+  else if (dbl.mValue > 0.0)
+    os << "INF";
+  else if (dbl.mValue < 0.0)
+    os << "-INF";
+
+  return os;
 }
 
 std::string CCopasiXMLInterface::utf8(const std::string & str)
@@ -224,16 +276,24 @@ bool CCopasiXMLInterface::load(const std::string & fileName)
   std::ifstream is(fileName.c_str());
 
   if (is.fail()) return false;
-  else return load(is);
+
+  return load(is);
 }
 
 bool CCopasiXMLInterface::save(const std::string & fileName)
 {
   mFilename = fileName;
-  std::ofstream os(fileName.c_str());
 
+  std::ostringstream tmp;
+  if (!save(tmp)) return false;
+
+  std::ofstream os(mFilename.c_str());
   if (os.fail()) return false;
-  else return save(os);
+
+  os << tmp.str();
+  if (os.fail()) return false;
+
+  return true;
 }
 
 bool CCopasiXMLInterface::setModel(const CModel & model)
@@ -445,7 +505,7 @@ unsigned C_INT32 CXMLAttributeList::size() {return mAttributeList.size() / 2;}
 bool CXMLAttributeList::add(const std::string & name, const C_FLOAT64 & value)
 {
   return add(name,
-             CCopasiXMLInterface::encodeDBL(value),
+             (CCopasiXMLInterface::DBL) value,
              CCopasiXMLInterface::attribute);
 }
 

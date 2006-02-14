@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:17:10 $
+   $Author: shoops $ 
+   $Date: 2006/02/14 14:35:31 $
    End CVS Header */
 
 /**
@@ -59,45 +59,11 @@ class CSteadyStateProblem: public CCopasiProblem
     virtual ~CSteadyStateProblem();
 
     /**
-     * Set the model of the problem
-     * @param CModel * pModel
+     * Do all neccessary initialization so that calls to caluclate will 
+     * be successful. This is called once from CCopasiTask::process()
      * @result bool succes
-     */ 
-    //virtual bool setModel(CModel * pModel);
-
-    /**
-     * Retrieve the model the problem is dealing with.
-     * @return "CModel *" pModel
-     */ 
-    //CModel * getModel() const;
-
-    /**
-     * Set the initial state of the problem.
-     * @param const CState & InitialState
-     */ 
-    //void setInitialState(const CState & initialState);
-
-    /**
-     * Set the initial state of the problem.
-     * @param const CStateX & InitialState
-     */ 
-    //void setInitialState(const CStateX & initialState);
-
-    /**
-     * Retrieve the initial state of the problem.
-     * @return "const CState &" pInitialState
-     */ 
-    //const CState & getInitialState() const;
-
-    /**
-     * was an initial state set?
-     */ 
-    //bool hasInitialState() const;
-
-    /**
-     * clear the initial state. The initial state of the model will be used
-     */ 
-    //void clearInitialState();
+     */
+    virtual bool initialize();
 
     /**
      * Set whether the jacobian is requested.
@@ -130,12 +96,6 @@ class CSteadyStateProblem: public CCopasiProblem
      */
     void load(CReadConfig & configBuffer,
               CReadConfig::Mode mode = CReadConfig::NEXT);
-
-  private:
-    /**
-     * This function synchronizes step size and number
-     */
-    void sync();
   };
 
 #endif // COPASI_CSteadyStateProblem

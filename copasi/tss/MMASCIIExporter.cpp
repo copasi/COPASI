@@ -1,11 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/01/24 13:00:25 $
+   $Author: shoops $ 
+   $Date: 2006/02/14 14:35:32 $
    End CVS Header */
 
+#include <locale>
 #include <math.h>
 #include "copasi.h"
 
@@ -47,6 +48,7 @@ MMASCIIExporter::MMASCIIExporter()
  */
 MMASCIIExporter::~MMASCIIExporter()
 {}
+
 /**
  **       This method tests if a string only consists of whitespace characters
  **/
@@ -54,6 +56,7 @@ bool MMASCIIExporter::isEmptyString(std::string & str)
 {
   return (str.find_first_not_of(" \n\t\r") == std::string::npos);
 }
+
 /**
  **        This method finds the metab by the name, returns an index
  **/
@@ -71,6 +74,7 @@ C_INT32 MMASCIIExporter::findMetabXByName(const CModel* copasiModel, const std::
     }
   return - 1;
 }
+
 /**
  **        This method finds the compartement by the name, returns an index
  **/
@@ -90,6 +94,7 @@ C_INT32 MMASCIIExporter::findCompByName(const CModel* copasiModel, const std::st
     }
   return - 1;
 }
+
 /**
  **        This method finds the global parameter by the name, returns an index   
  **/
@@ -108,6 +113,7 @@ C_INT32 MMASCIIExporter::findGlobalParamByName(const CModel* copasiModel, const 
     }
   return - 1;
 }
+
 /**
  **        This method finds the local reactions parameter by the name, returns an index  
  **/
@@ -126,6 +132,7 @@ C_INT32 MMASCIIExporter::findKinParamByName(const CReaction* reac, const std::st
     }
   return - 1;
 }
+
 /**
  **         This method assembles an expression sub tree for some internal call of Mass Action. 
  **         The sub tree has to be included in the tree of corresponding root kinetic function in order to    
@@ -177,6 +184,7 @@ void MMASCIIExporter::assembleSubTreeForMassAction(CEvaluationNode* newNode, CEv
           }
       } // END of this TODO. ****************************************************************************************************
 }
+
 /**
  **         This method exports the functions in C format     
  **/
@@ -349,6 +357,7 @@ void MMASCIIExporter::functionExportC(const CFunction *pFunc, std::set<std::stri
         }
     }
 }
+
 /**
  **         This method finds internal functions calls for export in C
  **/
@@ -386,6 +395,7 @@ void MMASCIIExporter::findFunctionsCallsC(const CEvaluationNode* pNode, std::set
  */
 std::string MMASCIIExporter::toMMDName(const std::string & realName)
 {
+  std::locale C("C");
   char ch;
   std::string newName;
   std::ostringstream tmpName;
@@ -394,7 +404,7 @@ std::string MMASCIIExporter::toMMDName(const std::string & realName)
 
   ch = realName[0];
 
-  if (!std::isalnum(ch)) tmpName << "A_";
+  if (!std::isalnum(ch, C)) tmpName << "A_";
 
   tmpName << ch;
 
@@ -402,17 +412,17 @@ std::string MMASCIIExporter::toMMDName(const std::string & realName)
     {
       ch = realName[i];
 
-      if (std::isalpha(ch))
+      if (std::isalpha(ch, C))
         {
-          if (std::isspace(realName[i - 1]) && std::islower(ch))
+          if (std::isspace(realName[i - 1], C) && std::islower(ch, C))
             tmpName << (char) toupper(ch);
           else
             tmpName << ch;
         }
 
-      if (std::isdigit(ch)) tmpName << ch;
+      if (std::isdigit(ch, C)) tmpName << ch;
 
-      if (std::ispunct(ch))
+      if (std::ispunct(ch, C))
         switch (ch)
           {
           case '_':
@@ -457,7 +467,10 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
 
   if (Filter == "Berkeley Madonna Files (*.mmd)")
     if (!exportMathModelInMMD(copasiModel, outFile)) return false;
+
+  return false;
 }
+
 bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstream & outFile)
 {
   outFile << "METHOD stiff" << std::endl;
@@ -580,9 +593,9 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
       << std::endl;
     }
 
-  unsigned C_INT32 reacs_size = copasiModel->getReactionsX().size();
+  unsigned C_INT32 reacs_size = copasiModel->getReactions().size();
 
-  const CCopasiVector< CReaction > & reacs = copasiModel->getReactionsX();
+  const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
   CReaction* reac;
 
   count = 0;
@@ -700,7 +713,9 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
               ++treeIt;
             }
 
-          outFile << tmpFunc->getRoot()->getDisplay_MMD_String(tmpFunc).c_str() << std::endl;
+          // :TODO: Fix me getDisplay_MMD_String(tmpFunc) is not defined
+          // outFile << tmpFunc->getRoot()->getDisplay_MMD_String(tmpFunc).c_str() << std::endl;
+          fatalError();
         }
       else
         {
@@ -825,6 +840,8 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
 
       outFile << equation.str() << std::endl;
     }
+
+  return true;
 }
 
 bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstream & outFile)
@@ -833,10 +850,10 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
   unsigned C_INT32 indep_size = copasiModel->getNumIndependentMetabs();
   unsigned C_INT32 comps_size = copasiModel->getCompartments().size();
   unsigned C_INT32 modvals_size = copasiModel->getModelValues().size();
-  unsigned C_INT32 reacs_size = copasiModel->getReactionsX().size();
+  unsigned C_INT32 reacs_size = copasiModel->getReactions().size();
 
   unsigned C_INT32 i, count;
-  const CCopasiVector< CReaction > & reacs = copasiModel->getReactionsX();
+  const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
   CReaction* reac;
 
   count = 0;

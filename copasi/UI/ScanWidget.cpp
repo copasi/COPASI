@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.cpp,v $
-   $Revision: 1.195 $
+   $Revision: 1.196 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/05 14:11:07 $
+   $Author: shoops $ 
+   $Date: 2006/02/14 14:35:22 $
    End CVS Header */
 
 //***  In this file I have put "//+++" in all places where something has to be added
@@ -232,13 +232,13 @@ void ScanWidget::runScanTask()
     }
   catch (CCopasiException Exception)
     {
-      std::cout << std::endl << "exception in scan task" << std::endl;
+      //std::cout << std::endl << "exception in scan task" << std::endl;
       //TODO: message box
     }
 
-  std::cout << "*************** The scan took "
-  << (CCopasiTimeVariable::getCurrentWallTime() - time).isoFormat()
-  << " ***************" << std::endl;
+  //std::cout << "*************** The scan took "
+  //<< (CCopasiTimeVariable::getCurrentWallTime() - time).isoFormat()
+  //<< " ***************" << std::endl;
 
   //should be renamed?
   scanTask->restore();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/15 23:15:04 $
+   $Date: 2006/02/14 14:35:28 $
    End CVS Header */
 
 #include <fstream>
@@ -16,9 +16,11 @@
 #include "CExperiment.h"
 #include "CExperimentObjectMap.h"
 
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CTableCell.h"
 #include "utilities/CSort.h"
+#include "utilities/CDirEntry.h"
 #include "utilities/utility.h"
 
 const std::string CExperiment::TypeName[] =
@@ -142,7 +144,7 @@ void CExperiment::initializeParameter()
   assertParameter("Key", CCopasiParameter::KEY, mKey)->setValue(mKey);
 
   mpFileName =
-    assertParameter("File Name", CCopasiParameter::STRING, std::string(""))->getValue().pSTRING;
+    assertParameter("File Name", CCopasiParameter::FILE, std::string(""))->getValue().pFILE;
   mpFirstRow =
     assertParameter("First Row", CCopasiParameter::UINT, (unsigned C_INT32) C_INVALID_INDEX)->getValue().pUINT;
   mpLastRow =
@@ -184,20 +186,25 @@ C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index,
     C_FLOAT64 Residual;
     C_FLOAT64 s = 0.0;
 
-    unsigned C_INT32 i , imax = mDataDependent.numCols();
+    C_FLOAT64 const * pDataDependent = mDataDependent[index];
+    C_FLOAT64 const * pEnd = pDataDependent + mDataDependent.numCols();
+    C_FLOAT64 * const * ppDependentValues = mDependentValues.array();
+    C_FLOAT64 const * pWeight = mWeight.array();
 
     if (residuals)
-      for (i = 0; i < imax; i++, dependentValues++, residuals++)
+      for (; pDataDependent != pEnd;
+           pDataDependent++, ppDependentValues++, pWeight++, dependentValues++, residuals++)
         {
-          *dependentValues = *mDependentValues[i];
-          *residuals = (mDataDependent(index, i) - *dependentValues) * mWeight[i];
+          *dependentValues = **ppDependentValues;
+          *residuals = (*pDataDependent - *dependentValues) * *pWeight;
           s += *residuals * *residuals;
         }
     else
-      for (i = 0; i < imax; i++, dependentValues++)
+      for (; pDataDependent != pEnd;
+           pDataDependent++, ppDependentValues++, pWeight++, dependentValues++)
         {
-          *dependentValues = *mDependentValues[i];
-          Residual = (mDataDependent(index, i) - *dependentValues) * mWeight[i];
+          *dependentValues = **ppDependentValues;
+          Residual = (*pDataDependent - *dependentValues) * *pWeight;
           s += Residual * Residual;
         }
 
@@ -206,10 +213,12 @@ C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index,
 
 void CExperiment::storeCalculatedValues(const unsigned C_INT32 & index)
 {
-  unsigned C_INT32 i , imax = mDataDependentCalculated.numCols();
+  C_FLOAT64 * pDataDependentCalculated = mDataDependentCalculated[index];
+  C_FLOAT64 * pEnd = pDataDependentCalculated + mDataDependentCalculated.numCols();
+  C_FLOAT64 * const * ppDependentValues = mDependentValues.array();
 
-  for (i = 0; i < imax; i++)
-    mDataDependentCalculated(index, i) = *mDependentValues[i];
+  for (; pDataDependentCalculated != pEnd; pDataDependentCalculated++, ppDependentValues++)
+    *pDataDependentCalculated = **ppDependentValues;
 
   return;
 }
@@ -587,7 +596,7 @@ bool CExperiment::readColumnNames()
 
   // Open the file
   std::ifstream in;
-  in.open(this->mpFileName->c_str(), std::ios::binary);
+  in.open(getFileName().c_str(), std::ios::binary);
   if (in.fail()) return false;
 
   // Forwind to header row.
@@ -613,7 +622,7 @@ unsigned C_INT32 CExperiment::guessColumnNumber() const
     unsigned C_INT32 tmp, count = 0;
 
     std::ifstream in;
-    in.open(this->mpFileName->c_str(), std::ios::binary);
+    in.open(getFileName().c_str(), std::ios::binary);
     if (in.fail()) return false;
 
     // Forwind to first row.
@@ -638,8 +647,7 @@ bool CExperiment::updateModelWithIndependentData(const unsigned C_INT32 & index)
   unsigned C_INT32 i, imax = mIndependentUpdateMethods.size();
 
   for (i = 0; i < imax; i++)
-    if (!(*mIndependentUpdateMethods[i])(mDataIndependent(index, i)))
-      return false;
+    (*mIndependentUpdateMethods[i])(mDataIndependent(index, i));
 
   return true;
 }
@@ -649,8 +657,7 @@ bool CExperiment::restoreModelIndependentData()
   unsigned C_INT32 i, imax = mIndependentUpdateMethods.size();
 
   for (i = 0; i < imax; i++)
-    if (!(*mIndependentUpdateMethods[i])(mIndependentValues[i]))
-      return false;
+    (*mIndependentUpdateMethods[i])(mIndependentValues[i]);
 
   return true;
 }
@@ -684,7 +691,16 @@ const CMatrix< C_FLOAT64 > & CExperiment::getDependentData() const
   {return mDataDependent;}
 
 const std::string & CExperiment::getFileName() const
-  {return *mpFileName;}
+  {
+    std::string * pFileName = const_cast<CExperiment *>(this)->mpFileName;
+
+    if (CDirEntry::isRelativePath(*pFileName) &&
+        !CDirEntry::makePathAbsolute(*pFileName,
+                                     CCopasiDataModel::Global->getFileName()))
+      *pFileName = CDirEntry::fileName(*pFileName);
+
+    return *mpFileName;
+  }
 
 bool CExperiment::setFileName(const std::string & fileName)
 {
@@ -833,7 +849,7 @@ void CExperiment::printResult(std::ostream * ostream) const
   {
     std::ostream & os = *ostream;
 
-    os << "File Name:\t" << *mpFileName << std::endl;
+    os << "File Name:\t" << getFileName() << std::endl;
     os << "Experiment:\t" << getObjectName() << std::endl;
 
     os << "Error Mean:\t" << mMean << std::endl;
@@ -847,12 +863,18 @@ void CExperiment::printResult(std::ostream * ostream) const
       mpObjectMap->getMappedObjects();
 
     os << "Row\t";
+    if (*mpTaskType == CCopasiTask::timeCourse)
+      os << "Time\t";
+
     for (k = 0; k < kmax; k++)
       if (getColumnType(k) == CExperiment::dependent)
         {
           if (Objects[k])
-            os << Objects[k]->getObjectDisplayName();
-
+            {
+              os << Objects[k]->getObjectDisplayName() << " [Data]\t";
+              os << Objects[k]->getObjectDisplayName() << " [Fit]\t";
+              os << Objects[k]->getObjectDisplayName() << " [Error]";
+            }
           os << "\t";
         }
     os << "Mean\tStandard Deviation" << std::endl << std::endl;
@@ -860,20 +882,37 @@ void CExperiment::printResult(std::ostream * ostream) const
     for (i = 0; i < imax; i++)
       {
         os << i + 1 << ".\t";
-        for (j = 0; j < jmax; j++)
-          os << mDataDependentCalculated(i, j) - mDataDependent(i, j) << "\t";
+        if (*mpTaskType == CCopasiTask::timeCourse)
+          os << mDataTime[i] << "\t";
 
+        for (j = 0; j < jmax; j++)
+          {
+            os << mDataDependent(i, j) << "\t";
+            os << mDataDependentCalculated(i, j) << "\t";
+            os << mDataDependentCalculated(i, j) - mDataDependent(i, j) << "\t";
+          }
         os << mRowMean[i] << "\t" << mRowSD[i] << std::endl;
       }
 
-    os << "Mean\t";
+    os << "Mean";
+    if (*mpTaskType == CCopasiTask::timeCourse)
+      os << "\t";
     for (j = 0; j < jmax; j++)
-      os << mColumnMean[j] << "\t";
+      os << "\t" << mMeans[j] << "\t\t" << mColumnMean[j];
     os << std::endl;
 
-    os << "Standard Deviation\t";
+    os << "Weight";
+    if (*mpTaskType == CCopasiTask::timeCourse)
+      os << "\t";
     for (j = 0; j < jmax; j++)
-      os << mColumnSD[j] << "\t";
+      os << "\t\t\t" << mWeight[j];
+    os << std::endl;
+
+    os << "Standard Deviation";
+    if (*mpTaskType == CCopasiTask::timeCourse)
+      os << "\t";
+    for (j = 0; j < jmax; j++)
+      os << "\t\t\t" << mColumnSD[j];
     os << std::endl;
 
     return;

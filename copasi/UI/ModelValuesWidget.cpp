@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/25 09:51:14 $
+   $Author: shoops $ 
+   $Date: 2006/02/14 14:35:22 $
    End CVS Header */
 
 #include "ModelValuesWidget.h"
@@ -38,8 +38,10 @@ std::vector<const CCopasiObject*> ModelValuesWidget::getObjects() const
 void ModelValuesWidget::init()
 {
   mOT = ListViews::MODELVALUE;
-  numCols = 3;
+  numCols = 4;
   table->setNumCols(numCols);
+  table->setColumnReadOnly (3, true);
+
   //table->QTable::setNumRows(1);
 
   //Setting table headers
@@ -47,7 +49,8 @@ void ModelValuesWidget::init()
 
   tableHeader->setLabel(0, "Status");
   tableHeader->setLabel(1, "Name");
-  tableHeader->setLabel(2, "Value");
+  tableHeader->setLabel(2, "Initial Value");
+  tableHeader->setLabel(3, "Transient Value");
 }
 
 void ModelValuesWidget::showHeaders()
@@ -68,7 +71,8 @@ void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   const CModelValue* pMV = dynamic_cast<const CModelValue*>(obj);
   if (!pMV) return;
   table->setText(row, 1, FROM_UTF8(pMV->getObjectName()));
-  table->setText(row, 2, QString::number(pMV->getValue()));
+  table->setText(row, 2, QString::number(pMV->getInitialValue()));
+  table->setText(row, 3, QString::number(pMV->getValue()));
   showHeaders();
 }
 
@@ -103,7 +107,7 @@ CCopasiObject* ModelValuesWidget::createNewObject(const std::string & name)
       nname = name + "_";
       nname += (const char *)QString::number(i).utf8();
     }
-  std::cout << " *** created non concentration value: " << nname << " : " << pMV->getKey() << std::endl;
+  //std::cout << " *** created non concentration value: " << nname << " : " << pMV->getKey() << std::endl;
   return pMV;
 }
 

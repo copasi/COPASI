@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/30 22:01:08 $
+   $Date: 2006/02/14 14:35:34 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -91,6 +91,8 @@ const MESSAGES Messages[] =
     {MCXML + 3, "XML (3): Unknown element '%s' encountered at line '%d'."},
     {MCXML + 4, "XML (4): Unknown parameter '%s' encountered at line '%d'."},
     {MCXML + 5, "XML (5): Unknown task type '%s' encountered at line '%d'."},
+    {MCXML + 6, "XML (6): Invalid function '%s' encountered at line '%d'."},
+    {MCXML + 7, "XML (7): Unknown function '%s' in reaction '%s' encountered at line '%d'."},
 
     // CCopasiMessage
     {MCCopasiMessage + 1, "Message (1): No more messages."},
@@ -160,6 +162,14 @@ const MESSAGES Messages[] =
     {MCCopasiTask + 4, "CCopasiTask (4): Error compiling Model '%s'."},
     {MCCopasiTask + 5, "CCopasiTask (5): No target defined for Report '%s'."},
     {MCCopasiTask + 6, "CCopasiTask (6): Problems compiling Report '%s'."},
+
+    {MCSteadyState + 1, "CSteadyState (1): The model is explicitly time dependent. "
+     "Therefore, the calculation of a steady state is not very meaning full."},
+
+    {MCFitting + 1, "CFitting (1): Failed to determine work area size for matrix inversion. "
+     "dsytrf returned with error '%d'."},
+    {MCFitting + 2, "CFitting (2): Failed to invert Fisher information matrix. "
+     "dsytrf returned with error '%d'."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}

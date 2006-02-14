@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/30 22:01:08 $
+   $Date: 2006/02/14 14:35:26 $
    End CVS Header */
 
 #include "copasi.h"
@@ -413,9 +413,14 @@ bool CEvaluationTree::completeEvaluationTreeList(CCopasiVectorN< CEvaluationTree
   unsigned Added = 0;
 
   unsigned C_INT32 i, imax = list.size();
+  unsigned C_INT32 Index;
+
   CEvaluationTree * pTree;
   std::vector< CEvaluationNode * >::const_iterator it;
   std::vector< CEvaluationNode * >::const_iterator end;
+
+  CCopasiVectorN< CEvaluationTree > & Functions =
+    CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
 
   for (i = (added) ? imax - added : 0; i < imax; i++)
     {
@@ -424,7 +429,8 @@ bool CEvaluationTree::completeEvaluationTreeList(CCopasiVectorN< CEvaluationTree
       for (it = pTree->getNodeList().begin(), end = pTree->getNodeList().end(); it != end; ++it)
         {
           if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
-              list.add(CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[(*it)->getData()]))
+              (Index = Functions.getIndex((*it)->getData())) != C_INVALID_INDEX &&
+              list.add(Functions[Index]))
             Added ++;
         }
     }

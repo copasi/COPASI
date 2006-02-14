@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/07/15 18:06:29 $
+   $Date: 2006/02/14 14:35:30 $
    End CVS Header */
 
 /**
@@ -33,7 +33,8 @@ CReportDefinition::CReportDefinition(const std::string & name,
     mTaskType(CCopasiTask::timeCourse),
     mSeparator("\t"),
     mTable(true),
-    mbTitle(true)
+    mbTitle(true),
+    mPrecision(6)
 {}
 
 CReportDefinition::CReportDefinition(const CReportDefinition & src,
@@ -44,7 +45,8 @@ CReportDefinition::CReportDefinition(const CReportDefinition & src,
     mTaskType(src.mTaskType),
     mSeparator(src.mSeparator),
     mTable(src.mTable),
-    mbTitle(src.mbTitle)
+    mbTitle(src.mbTitle),
+    mPrecision(src.mPrecision)
 {}
 
 CReportDefinition::~CReportDefinition()
@@ -112,6 +114,12 @@ bool CReportDefinition::isTable() const
 
 void CReportDefinition::setIsTable(bool table)
 {mTable = table;}
+
+void CReportDefinition::setPrecision(const unsigned C_INT32 & precision)
+{mPrecision = precision;}
+
+const unsigned C_INT32 & CReportDefinition::getPrecision() const
+  {return mPrecision;}
 
 const std::string & CReportDefinition::getKey() const
   {return mKey;}

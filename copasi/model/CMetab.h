@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/01 14:55:37 $
+   $Author: shoops $ 
+   $Date: 2006/02/14 14:35:26 $
    End CVS Header */
 
 /**
@@ -17,6 +17,7 @@
 
 #include <string>
 #include <iostream>
+#include <set>
 
 #include "model/CModelValue.h"
 
@@ -25,6 +26,7 @@ class CReadConfig;
 //class CWriteConfig;
 class CMetabOld;
 class CModel;
+class CMoiety;
 
 #define METAB_MOIETY 7
 
@@ -107,6 +109,11 @@ class CMetab : public CModelEntity
      */
     /** @dia:route 15,38; h,108.729,55.8961,170.684,44.1423,177.081 */
     const CModel * mpModel;
+
+    /**
+     * The set of moieties the metabolite is part of
+     */
+    std::set< CMoiety * > mMoieties;
 
     /**
      * This the default parent compartmnet used on creation
@@ -194,7 +201,7 @@ class CMetab : public CModelEntity
      */
     inline void setNumber(const C_FLOAT64 number) {setValue(number);};
 
-    virtual void setValue(const C_FLOAT64 number);
+    virtual void setValue(const C_FLOAT64 & value);
 
     /**
      *
@@ -204,7 +211,7 @@ class CMetab : public CModelEntity
     /**
      *
      */
-    bool setInitialConcentration(const C_FLOAT64 & initialConcentration);
+    void setInitialConcentration(const C_FLOAT64 & initialConcentration);
 
     /**
      *
@@ -214,10 +221,10 @@ class CMetab : public CModelEntity
     /**
      *
      */
-    inline bool setInitialNumber(const C_FLOAT64 & initialNumber)
-    {return setInitialValue(initialNumber);};
+    inline void setInitialNumber(const C_FLOAT64 & initialNumber)
+    {setInitialValue(initialNumber);};
 
-    virtual bool setInitialValue(const C_FLOAT64 & initialNumber);
+    virtual void setInitialValue(const C_FLOAT64 & initialValue);
 
     /**
      *
@@ -279,6 +286,17 @@ class CMetab : public CModelEntity
      * @param const CCompartment * parentCompartmnte
      */
     static void setParentCompartment(const CCompartment * parentCompartment);
+
+    /**
+     * Add a moiety to the list
+     * @param CMoiety * pMoiety
+     */
+    void addMoiety(CMoiety * pMoiety);
+
+    /**
+     * Clear the list of moieties
+     */
+    void clearMoieties();
 
   private:
     /**

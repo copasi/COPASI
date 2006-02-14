@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/12 17:15:07 $
+   $Date: 2006/02/14 14:35:33 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiVector
@@ -81,6 +81,18 @@ template < class CType > class CCopasiVector:
         this->cleanup();
         DESTRUCTOR_TRACE;
       }
+
+      iterator begin()
+      {return static_cast< std::vector< CType * > *>(this)->begin();}
+
+      const_iterator begin() const
+        {return static_cast<const std::vector< CType * > *>(this)->begin();}
+
+      iterator end()
+      {return static_cast< std::vector< CType * > *>(this)->end();}
+
+      const_iterator end() const
+        {return static_cast<const std::vector< CType * > *>(this)->end();}
 
       /**
        *  Cleanup
@@ -525,12 +537,14 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
           if (name.getObjectName() == "")
             return pObject; //cn contains no "="; type cannot be checked
 
+#ifdef COPASI_DEBUG
           std::cout << "CCopasiVector::getObject: Vector contains object of right name but wrong type" << std::endl;
           std::cout << "  CN            " << name << std::endl;
           std::cout << "  CN.getName(0) " << name.getElementName(0) << std::endl;
           std::cout << "  Index         " << Index << std::endl;
           std::cout << "  CN.getObjName " << name.getObjectName() << std::endl;
           std::cout << "  CN.getObjType " << name.getObjectType() << std::endl << std::endl;
+#endif // COPASI_DEBUG
 
           return NULL;
         }

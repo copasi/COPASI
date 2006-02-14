@@ -1,15 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitTask.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/19 17:17:20 $
+   $Date: 2006/02/14 14:35:28 $
    End CVS Header */
 
 /**
  * CFitTask class.
  *
- * This class implements a parameter fitting task which is comprised of a
+ * This class implements a parameter estimation task which is comprised of a
  * of a problem and a method.
  *  
  */

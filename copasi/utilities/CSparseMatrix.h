@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSparseMatrix.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/12 20:19:46 $
+   $Date: 2006/02/14 14:35:33 $
    End CVS Header */
 
 ///////////////////////////////////////////////////////////
@@ -230,7 +230,11 @@ class CCompressedColumnFormat
 #ifdef COPASI_DEBUG
 bool SparseMatrixTest(const unsigned C_INT32 & size,
                       const C_FLOAT64 & sparseness,
-                      const unsigned C_INT32 & seed = 0);
+                      const unsigned C_INT32 & seed = 0,
+                      const bool & RMP = true,
+                      const bool & DGEMM = true,
+                      const bool & SMP = true,
+                      const bool & CCMP = true);
 #endif
 
 #endif // COPASI_CSparseMatrix

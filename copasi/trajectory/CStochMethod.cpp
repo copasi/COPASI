@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:25:07 $
+   $Date: 2006/02/14 14:35:31 $
    End CVS Header */
 
 #ifdef WIN32
@@ -95,7 +95,7 @@ CStochMethod::~CStochMethod()
   mpRandomGenerator = NULL;
 }
 
-const double CStochMethod::step(const double & deltaT)
+void CStochMethod::step(const double & deltaT)
 {
   // write the current state to the model:
   //mpProblem->getModel()->setState(mpCurrentState); //?
@@ -134,11 +134,10 @@ const double CStochMethod::step(const double & deltaT)
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumber();
 
-  return deltaT;
+  return;
 }
 
-const double CStochMethod::step(const double & deltaT,
-                                const CState * initialState)
+void CStochMethod::start(const CState * initialState)
 {
   /* get configuration data */
   mMaxSteps = * getValue("STOCH.MaxSteps").pINT;
@@ -183,7 +182,7 @@ const double CStochMethod::step(const double & deltaT,
   initMethod(mpCurrentState->getTime());
 
   mMaxStepsReached = false;
-  return step(deltaT);
+  return;
 }
 
 C_INT32 CStochMethod::updatePropensities()
@@ -273,17 +272,18 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
   // rate_factor is the rate function divided by substrate_factor.
   // It would be more efficient if this was generated directly, since in effect we
   // are multiplying and then dividing by the same thing (substrate_factor)!
-  mpModel->getReactions()[index]->calculate();
+  C_FLOAT64 rate_factor = mpModel->getReactions()[index]->calculateParticleFlux();
 
   if (flag)
     {
-      C_FLOAT64 rate_factor = mpModel->getReactions()[index]->getParticleFlux() / substrate_factor;
       //cout << "Rate factor = " << rate_factor << endl;
-      amu *= rate_factor;
+      amu *= rate_factor / substrate_factor;
       mAmu[index] = amu;
     }
   else
-  {mAmu[index] = mpModel->getReactions()[index]->getParticleFlux();}
+    {
+      mAmu[index] = rate_factor;
+    }
 
   //std::cout << "Index = " << index << "  Amu = " << amu << std::endl;
   return 0;

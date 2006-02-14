@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.0 Debug 15++ (http://www.copasi.org) at 2005-12-14 17:05:56 UTC -->
+<!-- generated with COPASI 4.0 Debug 17++ (http://www.copasi.org) at 2006-01-03 16:16:19 UTC -->
 <COPASI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://calvin.bioinformatics.vt.edu/copasi/schema/copasi.xsd" versionMajor="0" versionMinor="1">
   <ListOfFunctions>
     <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" positive="false">
@@ -12,6 +12,13 @@
         <ParameterDescription key="FunctionParameter_81" name="k1" order="0" role="constant"/>
         <ParameterDescription key="FunctionParameter_80" name="substrate" order="1" role="substrate"/>
       </ListOfParameterDescriptions>
+    </Function>
+    <Function key="Function_37" name="Objective Function" type="Expression">
+      <MathML>
+        <Text>
+          &lt;CN=Root,Model=Test Model,Vector=Compartments[compartment],Vector=Metabolites[H2],Reference=Concentration&gt;*&lt;CN=Root,Model=Test Model,Vector=Compartments[compartment],Vector=Metabolites[H2],Reference=Concentration&gt;+&lt;CN=Root,Model=Test Model,Vector=Compartments[compartment],Vector=Metabolites[O2],Reference=Concentration&gt;*&lt;CN=Root,Model=Test Model,Vector=Compartments[compartment],Vector=Metabolites[O2],Reference=Concentration&gt;+&lt;CN=Root,Model=Test Model,Vector=Compartments[compartment],Vector=Metabolites[H2O],Reference=Concentration&gt;*&lt;CN=Root,Model=Test Model,Vector=Compartments[compartment],Vector=Metabolites[H2O],Reference=Concentration&gt;
+        </Text>
+      </MathML>
     </Function>
   </ListOfFunctions>
   <Model key="Model_1" name="The Brusselator" timeUnit="s" volumeUnit="ml" quantityUnit="mMol" stateVariable="StateVariable_3">
@@ -40,12 +47,12 @@
           <Product metabolite="Metabolite_0" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_45" name="k1" value="1"/>
+          <Constant key="Parameter_44" name="k1" value="6"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_45"/>
+              <SourceParameter reference="Parameter_44"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_80">
               <SourceParameter reference="Metabolite_2"/>
@@ -62,12 +69,12 @@
           <Product metabolite="Metabolite_0" stoichiometry="3"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_46" name="k1" value="1"/>
+          <Constant key="Parameter_45" name="k1" value="5"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_46"/>
+              <SourceParameter reference="Parameter_45"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_80">
               <SourceParameter reference="Metabolite_0"/>
@@ -87,12 +94,12 @@
           <Product metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_47" name="k1" value="1"/>
+          <Constant key="Parameter_46" name="k1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_47"/>
+              <SourceParameter reference="Parameter_46"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_80">
               <SourceParameter reference="Metabolite_0"/>
@@ -109,12 +116,12 @@
           <Product metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_48" name="k1" value="1"/>
+          <Constant key="Parameter_47" name="k1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_48"/>
+              <SourceParameter reference="Parameter_47"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_80">
               <SourceParameter reference="Metabolite_0"/>
@@ -144,7 +151,7 @@
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
       </Problem>
       <Method name="Enhanced Newton" type="EnhancedNewton">
-        <Parameter name="Newton.UseNewton" type="bool" value="0"/>
+        <Parameter name="Newton.UseNewton" type="bool" value="1"/>
         <Parameter name="Newton.UseIntegration" type="bool" value="0"/>
         <Parameter name="Newton.UseBackIntegration" type="bool" value="0"/>
         <Parameter name="Newton.acceptNegativeConcentrations" type="bool" value="0"/>
@@ -159,11 +166,11 @@
       </Method>
     </Task>
     <Task key="Task_7" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
+      <Report reference="Report_6" target="" append="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="200"/>
         <Parameter name="StepSize" type="float" value="0.5"/>
-        <Parameter name="StartTime" type="float" value="0"/>
-        <Parameter name="EndTime" type="float" value="100"/>
+        <Parameter name="Duration" type="float" value="100"/>
         <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
         <Parameter name="OutputStartTime" type="float" value="0"/>
       </Problem>
@@ -171,7 +178,7 @@
         <Parameter name="Integrate Reduced Model" type="bool" value="1"/>
         <Parameter name="LSODA.RelativeTolerance" type="unsignedFloat" value="1e-012"/>
         <Parameter name="Use Default Absolute Tolerance" type="bool" value="1"/>
-        <Parameter name="LSODA.AbsoluteTolerance" type="unsignedFloat" value="1e-006"/>
+        <Parameter name="LSODA.AbsoluteTolerance" type="unsignedFloat" value="6.02214e+008"/>
         <Parameter name="LSODA.AdamsMaxOrder" type="unsignedInteger" value="12"/>
         <Parameter name="LSODA.BDFMaxOrder" type="unsignedInteger" value="5"/>
         <Parameter name="LSODA.MaxStepsInternal" type="unsignedInteger" value="10000"/>
@@ -205,27 +212,75 @@
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_10" name="Parameter Fitting" type="parameterFitting" scheduled="false" updateModel="false">
+    <Task key="Task_10" name="Parameter Fitting" type="parameterFitting" scheduled="true" updateModel="true">
+      <Report reference="Report_5" target="brusselator-Fitting.txt" append="0"/>
       <Problem>
         <Parameter name="Steady-State" type="key" value="Task_6"/>
         <Parameter name="Time-Course" type="key" value="Task_7"/>
         <ParameterGroup name="OptimizationItemList">
+          <ParameterGroup name="FitItem">
+            <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=The Brusselator,Vector=Reactions[R1],ParameterGroup=Parameters,Parameter=k1,Reference=Value"/>
+            <Parameter name="LowerBound" type="cn" value=".1"/>
+            <Parameter name="UpperBound" type="cn" value="10"/>
+            <ParameterGroup name="Affected Experiments">
+            </ParameterGroup>
+          </ParameterGroup>
+          <ParameterGroup name="FitItem">
+            <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=The Brusselator,Vector=Reactions[R2],ParameterGroup=Parameters,Parameter=k1,Reference=Value"/>
+            <Parameter name="LowerBound" type="cn" value=".1"/>
+            <Parameter name="UpperBound" type="cn" value="10"/>
+            <ParameterGroup name="Affected Experiments">
+            </ParameterGroup>
+          </ParameterGroup>
+          <ParameterGroup name="FitItem">
+            <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=The Brusselator,Vector=Reactions[R3],ParameterGroup=Parameters,Parameter=k1,Reference=Value"/>
+            <Parameter name="LowerBound" type="cn" value=".1"/>
+            <Parameter name="UpperBound" type="cn" value="10"/>
+            <ParameterGroup name="Affected Experiments">
+            </ParameterGroup>
+          </ParameterGroup>
+          <ParameterGroup name="FitItem">
+            <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=The Brusselator,Vector=Reactions[R4],ParameterGroup=Parameters,Parameter=k1,Reference=Value"/>
+            <Parameter name="LowerBound" type="cn" value=".1"/>
+            <Parameter name="UpperBound" type="cn" value="10"/>
+            <ParameterGroup name="Affected Experiments">
+            </ParameterGroup>
+          </ParameterGroup>
         </ParameterGroup>
         <ParameterGroup name="OptimizationConstraintList">
         </ParameterGroup>
         <ParameterGroup name="Experiment Set">
+          <ParameterGroup name="Experiment">
+            <Parameter name="Key" type="key" value="Experiment_0"/>
+            <Parameter name="File Name" type="file" value="C:/cygwin/home/shoops/development/copasi_dev/gps/brusselator-TimeCourse.txt"/>
+            <Parameter name="First Row" type="unsignedInteger" value="1"/>
+            <Parameter name="Last Row" type="unsignedInteger" value="202"/>
+            <Parameter name="Experiment Type" type="unsignedInteger" value="1"/>
+            <Parameter name="Seperator" type="string" value="&#x09;"/>
+            <Parameter name="Data is Row Oriented" type="bool" value="1"/>
+            <Parameter name="Row containing Names" type="unsignedInteger" value="1"/>
+            <Parameter name="Number of Columns" type="unsignedInteger" value="3"/>
+            <ParameterGroup name="Column Role">
+              <Parameter name="0" type="unsignedInteger" value="3"/>
+              <Parameter name="1" type="unsignedInteger" value="2"/>
+              <Parameter name="2" type="unsignedInteger" value="2"/>
+            </ParameterGroup>
+            <ParameterGroup name="Object Map">
+              <Parameter name="1" type="cn" value="CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[X],Reference=Concentration"/>
+              <Parameter name="2" type="cn" value="CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[Y],Reference=Concentration"/>
+            </ParameterGroup>
+          </ParameterGroup>
         </ParameterGroup>
       </Problem>
-      <Method name="Evolutionary Program" type="EvolutionaryProgram">
-        <Parameter name="Number of Generations" type="unsignedInteger" value="200"/>
-        <Parameter name="Population Size" type="unsignedInteger" value="20"/>
-        <Parameter name="Random Number Generator" type="unsignedInteger" value="1"/>
-        <Parameter name="Seed" type="unsignedInteger" value="0"/>
+      <Method name="Hooke &amp; Jeeves" type="HookeJeeves">
+        <Parameter name="Iteration Limit" type="unsignedInteger" value="500"/>
+        <Parameter name="Tolerance" type="float" value="1e-009"/>
+        <Parameter name="Rho" type="float" value="0.9"/>
       </Method>
     </Task>
     <Task key="Task_11" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
       <Problem>
-        <Parameter name="SteadyStateRequested" type="bool" value="1"/>
+        <Parameter name="Steady-State" type="key" value="Task_6"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="MCA.ModulationFactor" type="unsignedFloat" value="1e-009"/>
@@ -233,7 +288,7 @@
     </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_3" name="Steady-State" taskType="steadyState" separator="&#x09;">
+    <Report key="Report_3" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -243,7 +298,7 @@
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_4" name="Optimization" taskType="optimization" separator="&#x09;">
+    <Report key="Report_4" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -269,11 +324,12 @@
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_5" name="Parameter Fitting" taskType="parameterFitting" separator="&#x09;">
+    <Report key="Report_5" name="Parameter Fitting" taskType="parameterFitting" separator="&#x09;" precision="15">
       <Comment>
-        <body xmlns="http://www.w3.org/1999/xhtml">
-          Automatically generated report.
-        </body>
+        <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-size:8pt;font-family:MS Shell Dlg">
+<p>Automatically generated report. </p>
+</body></html>
+
       </Comment>
       <Header>
         <Object cn="CN=Root,Vector=TaskList[Parameter Fitting],Object=Description"/>
@@ -294,6 +350,19 @@
         <Object cn="String=&#x0a;"/>
         <Object cn="CN=Root,Vector=TaskList[Parameter Fitting],Object=Result"/>
       </Footer>
+    </Report>
+    <Report key="Report_6" name="Concentrations table with time" taskType="timeCourse" separator="&#x09;" precision="6">
+      <Comment>
+        <body xmlns="http://www.w3.org/1999/xhtml">
+          A table of the variable metabolite concentrations and time.
+It does not contain the concentrations of fixed metabolites.
+        </body>
+      </Comment>
+      <Table printTitle="1">
+        <Object cn="CN=Root,Model=The Brusselator,Reference=Time"/>
+        <Object cn="CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[X],Reference=Concentration"/>
+        <Object cn="CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[Y],Reference=Concentration"/>
+      </Table>
     </Report>
   </ListOfReports>
   <ListOfPlots>
@@ -341,6 +410,19 @@
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=The Brusselator,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+      </ListOfPlotItems>
+    </PlotSpecification>
+    <PlotSpecification name="CPU Time" type="Plot2D" active="1">
+      <Parameter name="log X" type="bool" value="0"/>
+      <Parameter name="log Y" type="bool" value="0"/>
+      <ListOfPlotItems>
+        <PlotItem name="TaskList[Parameter Fitting].(Problem)Parameter Fitting.Best Value|(Timer)CPU Time" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Timer=CPU Time"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Best Value"/>
           </ListOfChannels>
         </PlotItem>
       </ListOfPlotItems>

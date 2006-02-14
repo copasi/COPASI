@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/30 13:25:00 $
+   $Author: shoops $ 
+   $Date: 2006/02/14 14:35:22 $
    End CVS Header */
 
 #ifndef PARAMETERSWIDGET_H
@@ -52,6 +52,7 @@ class ParametersWidget : public CopasiWidget
     QVBoxLayout* layoutLeft;
     QSpacerItem* spacer1;
 
+    CParameterListItem* mTimeItem;
     CParameterListItem* mCompItem;
     CParameterListItem* mReacItem;
     CParameterListItem* mMetabItem;

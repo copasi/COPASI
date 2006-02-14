@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:27:17 $
+   $Date: 2006/02/14 14:35:25 $
    End CVS Header */
 
 #include "copasi.h"
@@ -141,7 +141,7 @@ void COptions::init(C_INT argc, char *argv[])
 
   getValue("CopasiDir", CopasiDir);
 #ifdef Darwin
-  setValue("ExampleDir", CopasiDir + "/Contents/Resources/examples");
+  setValue("ExampleDir", CDirEntry::dirName(CopasiDir) + "/examples");
   setValue("WizardDir", CopasiDir + "/Contents/Resources/doc/html");
 #elif WIN32
   setValue("ExampleDir", CopasiDir + "\\share\\copasi\\examples");
@@ -157,6 +157,7 @@ void COptions::init(C_INT argc, char *argv[])
 
   if (Options.Tmp != "") setValue("Tmp", Options.Tmp);
   setValue("Verbose", Options.Verbose);
+  setValue("License", Options.License);
   setValue("Save", Options.Save);
   setValue("ImportSBML", Options.ImportSBML);
   setValue("ExportSBML", Options.ExportSBML);

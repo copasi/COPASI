@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.163 $
+   $Revision: 1.164 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 22:27:45 $
+   $Date: 2006/02/14 14:35:23 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -20,6 +20,8 @@
 #include <qtimer.h>
 
 #include <vector>
+
+extern const char * CopasiLicense;
 
 #include "AboutDialog.h"
 #include "CopasiFileDialog.h"
@@ -178,7 +180,7 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
     {
       tmp =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          str, "COPASI Files (*cps);;All Files (*.*)",
+                                          str, "COPASI Files (*.cps);;All Files (*.*);;",
                                           "Choose a filename to save under.");
 
       if (!tmp) return;
@@ -553,7 +555,14 @@ void CopasiUI3Window::slotFilePrint()
  *******************************************************************************************/
 void CopasiUI3Window::about()
 {
-  AboutDialog* aboutDialog = new AboutDialog(this);
+  AboutDialog* aboutDialog = new AboutDialog(this, AboutDialog::text, 76, 30);
+  aboutDialog->setCaption(FixedTitle);
+  aboutDialog->exec();
+}
+
+void CopasiUI3Window::license()
+{
+  AboutDialog* aboutDialog = new AboutDialog(this, CopasiLicense, 76, 30);
   aboutDialog->setCaption(FixedTitle);
   aboutDialog->exec();
 }
@@ -704,6 +713,7 @@ void CopasiUI3Window::createMenuBar()
   help->insertItem("Simple &Wizard", this, SLOT(slotTutorialWizard()));
   help->insertSeparator();
   help->insertItem("&About", this, SLOT(about()), Key_F1);
+  help->insertItem("&License", this, SLOT(license()));
   help->insertItem("About &Qt", this, SLOT(aboutQt()));
   help->insertSeparator();
   help->insertItem("What's &This", this, SLOT(whatsThis()), SHIFT + Key_F1);
@@ -741,7 +751,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
   if (file == "")
     SBMLFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog",
-                                        QString::null, "XML Files (*.xml)",
+                                        QString::null, "XML Files (*.xml);;All Files (*.*);;",
                                         "Choose a file");
   else
     SBMLFile = file;
@@ -853,7 +863,7 @@ void CopasiUI3Window::slotExportSBML()
       tmp =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
                                           Default,
-                                          "XML Files (*.xml)",
+                                          "XML Files (*.xml);;All Files (*.*);;",
                                           "Choose a filename for SBML export.");
       if (!tmp) return;
 
@@ -906,7 +916,7 @@ void CopasiUI3Window::slotExportMathModel()
       tmp =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
                                           Default,
-                                          "ASCII Files (*.out)",
+                                          "ASCII Files (*.out);;All Files (*.*);;",
                                           "Choose a filename for MathModel export.");
 
       if (!tmp) return;

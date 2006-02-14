@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/22 13:36:25 $
+   $Date: 2006/02/14 14:35:27 $
    End CVS Header */
 
 #include <float.h>
@@ -81,7 +81,7 @@ bool COptMethodGA::evaluate(const CVector< C_FLOAT64 > & /* individual */)
   // since the parameters are created within the bounds.
 
   // evaluate the fitness
-  Continue = mpOptProblem->calculate();
+  Continue &= mpOptProblem->calculate();
 
   // check wheter the functional constraints are fulfilled
   if (!mpOptProblem->checkFunctionalConstraints())
@@ -128,24 +128,10 @@ bool COptMethodGA::mutate(CVector< C_FLOAT64 > & individual)
         {
         case - 1:
           mut = *OptItem.getLowerBoundValue();
-          if (!OptItem.checkLowerBound(mut)) // Inequality
-            {
-              if (mut == 0.0)
-                mut = DBL_MIN;
-              else
-                mut += mut * DBL_EPSILON;
-            }
           break;
 
         case 1:
           mut = *OptItem.getUpperBoundValue();
-          if (!OptItem.checkUpperBound(mut)) // Inequality
-            {
-              if (mut == 0.0)
-                mut = -DBL_MIN;
-              else
-                mut -= mut * DBL_EPSILON;
-            }
           break;
         }
 
@@ -250,7 +236,7 @@ bool COptMethodGA::replicate()
   for (i = mPopulationSize; i < 2 * mPopulationSize && Continue; i++)
     {
       mutate(*mIndividual[i]);
-      Continue = evaluate(*mIndividual[i]);
+      Continue &= evaluate(*mIndividual[i]);
       mValue[i] = mEvaluationValue;
     }
 
@@ -362,24 +348,10 @@ bool COptMethodGA::creation(unsigned C_INT32 first,
             {
             case - 1:
               mut = *OptItem.getLowerBoundValue();
-              if (!OptItem.checkLowerBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = DBL_MIN;
-                  else
-                    mut += mut * DBL_EPSILON;
-                }
               break;
 
             case 1:
               mut = *OptItem.getUpperBoundValue();
-              if (!OptItem.checkUpperBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = - DBL_MIN;
-                  else
-                    mut -= mut * DBL_EPSILON;
-                }
               break;
             }
 
@@ -389,7 +361,7 @@ bool COptMethodGA::creation(unsigned C_INT32 first,
         }
 
       // calculate its fitness
-      Continue = evaluate(*mIndividual[i]);
+      Continue &= evaluate(*mIndividual[i]);
       mValue[i] = mEvaluationValue;
     }
 
@@ -400,6 +372,12 @@ void COptMethodGA::initObjects()
 {
   addObjectReference("Current Generation", mGeneration, CCopasiObject::ValueInt);
 }
+
+#ifdef WIN32 
+// warning C4056: overflow in floating-point constant arithmetic
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
+#endif
 
 bool COptMethodGA::initialize()
 {
@@ -436,6 +414,8 @@ bool COptMethodGA::initialize()
   mCrossOver.resize(mVariableSize);
 
   mValue.resize(2*mPopulationSize);
+  mValue = 2 * DBL_MAX;
+  mBestValue = 2 * DBL_MAX;
 
   mShuffle.resize(mPopulationSize);
   for (i = 0; i < mPopulationSize; i++)
@@ -448,6 +428,10 @@ bool COptMethodGA::initialize()
 
   return true;
 }
+
+#ifdef WIN32
+# pragma warning (default: 4056 4756)
+#endif
 
 bool COptMethodGA::cleanup()
 {
@@ -487,24 +471,10 @@ bool COptMethodGA::optimise()
         {
         case - 1:
           mut = *OptItem.getLowerBoundValue();
-          if (!OptItem.checkLowerBound(mut)) // Inequality
-            {
-              if (mut == 0.0)
-                mut = DBL_MIN;
-              else
-                mut += mut * DBL_EPSILON;
-            }
           break;
 
         case 1:
           mut = *OptItem.getUpperBoundValue();
-          if (!OptItem.checkUpperBound(mut)) // Inequality
-            {
-              if (mut == 0.0)
-                mut = - DBL_MIN;
-              else
-                mut -= mut * DBL_EPSILON;
-            }
           break;
         }
 
@@ -513,16 +483,28 @@ bool COptMethodGA::optimise()
       (*(*mpSetCalculateVariable)[i])(mut);
     }
 
-  Continue = evaluate(*mIndividual[0]);
+  Continue &= evaluate(*mIndividual[0]);
   mValue[0] = mEvaluationValue;
 
-  // the others are random
-  Continue = creation(1, mPopulationSize);
+  if (!isnan(mEvaluationValue))
+    {
+      // and store that value
+      mBestValue = mValue[0];
+      mpOptProblem->setSolutionVariables(*mIndividual[0]);
+      Continue &= mpOptProblem->setSolutionValue(mBestValue);
 
-  // get the index of the fittest
+      // We found a new best value lets report it.
+      mpParentTask->doOutput();
+    }
+
+  // the others are random
+  Continue &= creation(1, mPopulationSize);
+
+  Continue &= select();
   mBestIndex = fittest();
 
-  if (mBestIndex != C_INVALID_INDEX)
+  if (mBestIndex != C_INVALID_INDEX &&
+      mValue[mBestIndex] < mBestValue)
     {
       // and store that value
       mBestValue = mValue[mBestIndex];
@@ -547,28 +529,28 @@ bool COptMethodGA::optimise()
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
         {
-          Continue = creation((unsigned C_INT32) (mPopulationSize / 2),
-                              mPopulationSize);
+          Continue &= creation((unsigned C_INT32) (mPopulationSize / 2),
+                               mPopulationSize);
           Stalled10 = Stalled30 = Stalled50 = 0;
         }
       else if (Stalled > 30 && Stalled30 > 30)
         {
-          Continue = creation((unsigned C_INT32) (mPopulationSize * 0.7),
-                              mPopulationSize);
+          Continue &= creation((unsigned C_INT32) (mPopulationSize * 0.7),
+                               mPopulationSize);
           Stalled10 = Stalled30 = 0;
         }
       else if (Stalled > 10 && Stalled10 > 10)
         {
-          Continue = creation((unsigned C_INT32) (mPopulationSize * 0.9),
-                              mPopulationSize);
+          Continue &= creation((unsigned C_INT32) (mPopulationSize * 0.9),
+                               mPopulationSize);
           Stalled10 = 0;
         }
       // replicate the individuals
       else
-        Continue = replicate();
+        Continue &= replicate();
 
       // select the most fit
-      Continue = select();
+      Continue &= select();
 
       // get the index of the fittest
       mBestIndex = fittest();
@@ -579,7 +561,7 @@ bool COptMethodGA::optimise()
           mBestValue = mValue[mBestIndex];
 
           mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
-          Continue = mpOptProblem->setSolutionValue(mBestValue);
+          Continue &= mpOptProblem->setSolutionValue(mBestValue);
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();
@@ -587,7 +569,7 @@ bool COptMethodGA::optimise()
         }
 
       if (mpCallBack)
-        Continue = mpCallBack->progress(mhGenerations);
+        Continue &= mpCallBack->progress(mhGenerations);
     }
 
   cleanup();

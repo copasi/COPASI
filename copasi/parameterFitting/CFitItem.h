@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/11 13:34:30 $
+   $Date: 2006/02/14 14:35:28 $
    End CVS Header */
 
 #ifndef COPASI_CFitItem
@@ -82,6 +82,13 @@ class CFitItem : public COptItem
                            CCopasiContainer::EmptyList);
 
     /**
+     * This functions check whether the current value is within the limits
+     * of the optimization item.
+     * @return C_INT32 result (-1: to small, 0: within boundaries, 1 to large)
+     */
+    virtual C_INT32 checkConstraint() const;
+
+    /**
      * Output stream operator
      * @param ostream & os
      * @param const CFitItem & A
@@ -92,9 +99,8 @@ class CFitItem : public COptItem
     /**
      * Set the local value.
      * @param const C_FLOAT64 & value
-     * @return bool success
      */
-    bool setLocalValue(const C_FLOAT64 & value);
+    void setLocalValue(const C_FLOAT64 & value);
 
     /**
      * Retreive the local value.
@@ -107,6 +113,19 @@ class CFitItem : public COptItem
      * @return const C_FLOAT64 * objectValue
      */
     virtual const C_FLOAT64 * getObjectValue() const;
+
+    /**
+     * Set the value to be saved for further calculation.
+     * @param const C_FLOAT64 & savedValue
+     * @retunr bool succes
+     */
+    bool setSavedValue(const C_FLOAT64 & value);
+
+    /**
+     * Retrieve the value of the optimization object.
+     * @return const C_FLOAT64 & savedValue
+     */
+    const C_FLOAT64 & getSavedValue() const;
 
     /**
      * Add an experiment to the list of affected experiments.
@@ -151,6 +170,11 @@ class CFitItem : public COptItem
 
   private:
     // Attributes
+    /**
+     * A pointer to the value of the CCopasiParameter holding the saved parameter value
+     */
+    C_FLOAT64 * mpParmSavedValue;
+
     /**
      * A pointer to the value of the CCopasiParameterGroup holding the 
      * list of AffectedExperiments

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 00:11:53 $
+   $Date: 2006/02/14 14:35:30 $
    End CVS Header */
 
 #include "copasi.h"
@@ -31,9 +31,9 @@ CReport::CReport(const CCopasiContainer * pParent):
     mFooterObjectList(),
     mBodyObjectList(),
     mHeaderObjectList(),
-    mFooterActualizeList(),
-    mBodyActualizeList(),
-    mHeaderActualizeList()
+    mFooterRefreshList(),
+    mBodyRefreshList(),
+    mHeaderRefreshList()
 {}
 
 CReport::CReport(const CReport & src,
@@ -47,9 +47,9 @@ CReport::CReport(const CReport & src,
     mFooterObjectList(src.mFooterObjectList),
     mBodyObjectList(src.mBodyObjectList),
     mHeaderObjectList(src.mHeaderObjectList),
-    mFooterActualizeList(src.mFooterActualizeList),
-    mBodyActualizeList(src.mBodyActualizeList),
-    mHeaderActualizeList(src.mHeaderActualizeList)
+    mFooterRefreshList(src.mFooterRefreshList),
+    mBodyRefreshList(src.mBodyRefreshList),
+    mHeaderRefreshList(src.mHeaderRefreshList)
 {}
 
 CReport::~CReport()
@@ -61,9 +61,9 @@ void CReport::cleanup()
   mBodyObjectList.clear();
   mFooterObjectList.clear();
 
-  mHeaderActualizeList.clear();
-  mBodyActualizeList.clear();
-  mFooterActualizeList.clear();
+  mHeaderRefreshList.clear();
+  mBodyRefreshList.clear();
+  mFooterRefreshList.clear();
 
   close();
 }
@@ -90,8 +90,8 @@ void CReport::printHeader()
 {
   if (!mpOstream) return;
 
-  std::vector< Actualize * >::iterator itA = mHeaderActualizeList.begin();
-  std::vector< Actualize * >::iterator endA = mHeaderActualizeList.end();
+  std::vector< Refresh * >::iterator itA = mHeaderRefreshList.begin();
+  std::vector< Refresh * >::iterator endA = mHeaderRefreshList.end();
 
   for (; itA != endA; ++itA) (**itA)();
 
@@ -109,8 +109,8 @@ void CReport::printBody()
 {
   if (!mpOstream) return;
 
-  std::vector< Actualize * >::iterator itA = mBodyActualizeList.begin();
-  std::vector< Actualize * >::iterator endA = mBodyActualizeList.end();
+  std::vector< Refresh * >::iterator itA = mBodyRefreshList.begin();
+  std::vector< Refresh * >::iterator endA = mBodyRefreshList.end();
 
   for (; itA != endA; ++itA) (**itA)();
 
@@ -128,8 +128,8 @@ void CReport::printFooter()
 {
   if (!mpOstream) return;
 
-  std::vector< Actualize * >::iterator itA = mFooterActualizeList.begin();
-  std::vector< Actualize * >::iterator endA = mFooterActualizeList.end();
+  std::vector< Refresh * >::iterator itA = mFooterRefreshList.begin();
+  std::vector< Refresh * >::iterator endA = mFooterRefreshList.end();
 
   for (; itA != endA; ++itA) (**itA)();
 
@@ -160,9 +160,9 @@ bool CReport::compile(std::vector< CCopasiContainer * > listOfContainer)
   mBodyObjectList.clear();
   mFooterObjectList.clear();
 
-  mHeaderActualizeList.clear();
-  mBodyActualizeList.clear();
-  mFooterActualizeList.clear();
+  mHeaderRefreshList.clear();
+  mBodyRefreshList.clear();
+  mFooterRefreshList.clear();
 
   // check if there is a Report Definition Defined
   if (!mpReportDef) return false;
@@ -172,11 +172,11 @@ bool CReport::compile(std::vector< CCopasiContainer * > listOfContainer)
   if (mpReportDef->isTable())
     if (!mpReportDef->preCompileTable(listOfContainer)) success = false;
 
-  generateObjectsFromName(&listOfContainer, mHeaderObjectList, mHeaderActualizeList,
+  generateObjectsFromName(&listOfContainer, mHeaderObjectList, mHeaderRefreshList,
                           mpReportDef->getHeaderAddr());
-  generateObjectsFromName(&listOfContainer, mBodyObjectList, mBodyActualizeList,
+  generateObjectsFromName(&listOfContainer, mBodyObjectList, mBodyRefreshList,
                           mpReportDef->getBodyAddr());
-  generateObjectsFromName(&listOfContainer, mFooterObjectList, mFooterActualizeList,
+  generateObjectsFromName(&listOfContainer, mFooterObjectList, mFooterRefreshList,
                           mpReportDef->getFooterAddr());
 
   return success;
@@ -208,6 +208,8 @@ std::ostream * CReport::open(std::ostream * pOstream)
         open(mTarget.c_str(), std::ios_base::out);
 
       if (!((std::ofstream *) mpOstream)->is_open()) pdelete(mpOstream);
+
+      if (mpOstream) mpOstream->precision(mpReportDef->getPrecision());
     }
 
   return mpOstream;
@@ -232,7 +234,7 @@ std::ostream * CReport::getStream() const {return mpOstream;}
 // make to support parallel tasks
 void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * pListOfContainer,
                                       std::vector<CCopasiObject*> & objectList,
-                                      std::vector< Actualize * > & actualizeList,
+                                      std::vector< Refresh * > & refreshList,
                                       const std::vector<CRegisteredObjectName>* nameVector)
 {
   unsigned C_INT32 i;
@@ -246,12 +248,12 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
       if (pSelected)
         {
           objectList.push_back(pSelected);
-          if (pSelected->getActualize())
+          if (pSelected->getRefresh())
             {
               if (dynamic_cast<CCopasiTimer *>(pSelected))
                 dynamic_cast<CCopasiTimer *>(pSelected)->start();
 
-              actualizeList.push_back(pSelected->getActualize());
+              refreshList.push_back(pSelected->getRefresh());
             }
         }
     }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/11/24 21:36:21 $
+   $Author: shoops $ 
+   $Date: 2006/02/14 14:35:21 $
    End CVS Header */
 
 #include "CCopasiSimpleSelectionTree.h"
@@ -31,9 +31,8 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
 #endif // COPASI_DEBUG
 
   this->modelValueSubtree = new QListViewItem(this, "global parameters");
-  //this->valueSubtree = new QListViewItem(this->modelValueSubtree, "transient values");
-  //this->initialValueSubtree = new QListViewItem(this->modelValueSubtree, "initial values");
-  this->valueSubtree = new QListViewItem(this->modelValueSubtree, "values");
+  this->valueSubtree = new QListViewItem(this->modelValueSubtree, "transient values");
+  this->initialValueSubtree = new QListViewItem(this->modelValueSubtree, "initial values");
 
   this->reactionSubtree = new QListViewItem(this, "reactions");
   this->particleFluxSubtree = new QListViewItem(this->reactionSubtree, "particle fluxes");
@@ -76,13 +75,22 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
 {
   if (!model) return;
 
-  QListViewItem* item = new QListViewItem(this->timeSubtree, "simulation timestep");
-  this->treeItems[item] = (CCopasiObject*)model->getObject(CCopasiObjectName("Reference=Time"));
+  QListViewItem* item = new QListViewItem(this->timeSubtree, "Model Time");
+  this->treeItems[item] =
+    const_cast< CCopasiObject * >(model->getObject(CCopasiObjectName("Reference=Time")));
+
+  item = new QListViewItem(this->timeSubtree, "Model Initial Time");
+  this->treeItems[item] =
+    const_cast< CCopasiObject * >(model->getObject(CCopasiObjectName("Reference=Initial Time")));
+
   item = new QListViewItem(this->timeSubtree, "cpu time");
-  CCopasiObject* obj = (CCopasiObject*)CCopasiContainer::Root->getObject(CCopasiObjectName("Timer=CPU Time"));
+  CCopasiObject* obj =
+    const_cast< CCopasiObject * >(CCopasiContainer::Root->getObject(CCopasiObjectName("Timer=CPU Time")));
   this->treeItems[item] = obj;
+
   item = new QListViewItem(this->timeSubtree, "real time");
-  obj = (CCopasiObject*)CCopasiContainer::Root->getObject(CCopasiObjectName("Timer=Wall Clock Time"));
+  obj =
+    const_cast< CCopasiObject * >(CCopasiContainer::Root->getObject(CCopasiObjectName("Timer=Wall Clock Time")));
   this->treeItems[item] = obj;
 
   // find all metabolites and create items in the metabolite subtree
@@ -156,12 +164,12 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
       const CModelEntity* object = objects[counter - 1];
       std::string name = object->getObjectName();
 
-      //item = new QListViewItem(this->initialValueSubtree,
-      //                         FROM_UTF8((name + "(t=0)")));
-      //treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialValue"));
+      item = new QListViewItem(this->initialValueSubtree,
+                               FROM_UTF8((name + "(t=0)")));
+      treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialValue"));
 
       item = new QListViewItem(this->valueSubtree,
-                               FROM_UTF8(name /*+ "(t)"*/));
+                               FROM_UTF8(name + "(t)"));
       treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Value"));
 
       //item = new QListViewItem(this->valueRateSubtree,

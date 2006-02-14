@@ -1,15 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CProgressBar.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/15 18:45:24 $
+   $Date: 2006/02/14 14:35:21 $
    End CVS Header */
 
 #include <qprogressdialog.h>
 #include <qapplication.h>
 #include <qlayout.h>
 #include <qapplication.h>
+#include <qwaitcondition.h>
 
 #include "copasi.h"
 #include "qtUtilities.h"
@@ -103,6 +104,13 @@ bool CProgressBar::progress(const unsigned C_INT32 & handle)
       qApp->processEvents();
     }
 
+  while (mPause)
+    {
+      QWaitCondition Pause;
+      Pause.wait(500);
+      qApp->processEvents();
+    }
+
   return Proceed;
 }
 
@@ -134,6 +142,13 @@ bool CProgressBar::proceed()
   if (mNextEventProcessing < QTime::currentTime())
     {
       mNextEventProcessing = QTime::currentTime().addMSecs(1000);
+      qApp->processEvents();
+    }
+
+  while (mPause)
+    {
+      QWaitCondition Pause;
+      Pause.wait(500);
       qApp->processEvents();
     }
 

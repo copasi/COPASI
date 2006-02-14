@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CExpat.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:22:37 $
+   $Author: shoops $ 
+   $Date: 2006/02/14 14:35:35 $
    End CVS Header */
 
 /**
@@ -19,15 +19,8 @@
 
 #include <assert.h>
 #include <expat.h>
-#include <float.h>
 
 #include "utilities/CCopasiMessage.h"
-
-#ifdef WIN32 
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
 
 /**
  * CExpatTemplate class.
@@ -689,50 +682,6 @@ class CExpatTemplate
       return false;
     }
 
-    /**
-     * Convert an attribute to enum. If attribute is NULL
-     * or no matching name is found -1 is returned. Note: enumNames must be 
-     * zero terminated.
-     * @param const char * attribute
-     * @param const char ** enumNames 
-     * @return bool
-     */ 
-    //     static int toEnum(const char * attribute,
-    //                       const char ** enumNames)
-    //     {
-    //       if (!attribute) return - 1;
-    //
-    //       for (int i = 0; *enumNames; i++, enumNames++)
-    //         if (!strcmp(attribute, *enumNames)) return i;
-    //
-    //       return - 1;
-    //}
-
-    /**
-     * Convert an attribute to double. If attribute is NULL
-     * or cannot converted to a number NaN is returned. 
-     * @param const char * attribute
-     * @return double value
-     */
-    static double toDBL(const char * attribute)
-    {
-      if (!attribute)
-        return std::numeric_limits<C_FLOAT64>::quiet_NaN();
-
-      char * Tail;
-      double Value = strtod(attribute, & Tail);
-
-      if (!*Tail)
-        return Value;
-
-      if (!strcmp(attribute, "INF"))
-        return DBL_MAX * 2;
-      else if (!strcmp(attribute, "-INF"))
-        return - DBL_MAX * 2;
-      else
-        return std::numeric_limits<C_FLOAT64>::quiet_NaN();
-    }
-
   protected:
     /**
      * Handle any post creation
@@ -944,10 +893,6 @@ class CExpatTemplate
       pThis->onEndDoctypeDecl();
     }
   };
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif
 
 /**
  * CExpat class.

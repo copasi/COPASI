@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/15 16:57:10 $
+   $Date: 2006/02/14 14:35:31 $
    End CVS Header */
 
 /**
@@ -107,6 +107,8 @@ bool CMCATask::process(const bool & useInitialValues)
 
       pMethod->setSteadyStateStatus(pSubTask->getResult());
     }
+  else
+    pMethod->setSteadyStateStatus(CSteadyStateMethod::notFound);
 
   CCopasiTask::initOutput();
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:25:07 $
+   $Date: 2006/02/14 14:35:32 $
    End CVS Header */
 
 /**
@@ -34,9 +34,9 @@ class CTrajectoryTask : public CCopasiTask
   private:
 
     /**
-     * A pointer to the current state of the integration.
+     * whether the time series should be stored in mTimeSeries
      */
-    CState * mpState;
+    bool mTimeSeriesRequested;
 
     /**
      * the time series (if requested)
@@ -44,9 +44,24 @@ class CTrajectoryTask : public CCopasiTask
     CTimeSeries mTimeSeries;
 
     /**
-     * whether the time series should be stored in mTimeSeries
+     * A pointer to the trajectory Problem
      */
-    bool mTimeSeriesRequested;
+    CTrajectoryProblem * mpTrajectoryProblem;
+
+    /**
+     * A pointer to the trajectory method
+     */
+    CTrajectoryMethod * mpTrajectoryMethod;
+
+    /**
+     * A pointer to the current state of the integration.
+     */
+    CState * mpCurrentState;
+
+    /**
+     * A pointer to the current time of the integration.
+     */
+    const C_FLOAT64 * mpCurrentTime;
 
   public:
     /**
@@ -76,6 +91,19 @@ class CTrajectoryTask : public CCopasiTask
      * @return bool success
      */
     virtual bool process(const bool & useInitialValues);
+
+    /**
+     * Starts the process of integration by calling CTrajectoryMethod::start
+     * @param const bool & useInitialValues
+     */
+    void processStart(const bool & useInitialValues);
+
+    /**
+     * Integrates one step
+     * @param const C_FLOAT64 & nextTime
+     * @return bool success;
+     */
+    bool processStep(const C_FLOAT64 & nextTime);
 
     /**
      * Process the task without any output in as few steps as possible
@@ -114,9 +142,9 @@ class CTrajectoryTask : public CCopasiTask
      */
     const CTimeSeries & getTimeSeries() const;
 
-    bool initOutput();
-    bool doOutput();
-    bool finishOutput();
+    virtual bool initOutput();
+    virtual bool doOutput();
+    virtual bool finishOutput();
 
   private:
     /**

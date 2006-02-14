@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/15 01:51:49 $
+   $Date: 2006/02/14 14:35:27 $
    End CVS Header */
 
 /**
@@ -21,6 +21,8 @@
 
 #include <string>
 #include <vector>
+
+#include "report/CCopasiTimer.h"
 
 #include "utilities/CCopasiProblem.h"
 #include "utilities/CVector.h"
@@ -104,9 +106,10 @@ class COptProblem : public CCopasiProblem
     /**
      * Do all neccessary restore procedures so that the
      * model is in the same state as before
+     * @parem const bool & updateModel
      * @result bool succes
      */
-    virtual bool restore();
+    virtual bool restore(const bool & updateModel);
 
     /**
      * calculate function for optimization
@@ -352,12 +355,17 @@ class COptProblem : public CCopasiProblem
     unsigned C_INT32 mCounter;
 
     /**
+     * A CPU Timer 
+     */
+    CCopasiTimer mCPUTime;
+
+    /**
      * Handle of "Best Value" process report item
      */
     unsigned C_INT32 mhSolutionValue;
 
     /**
-     * Handle of "Simulation Counter" process report item
+     * Handle of "Function Evaluations" process report item
      */
     unsigned C_INT32 mhCounter;
   };

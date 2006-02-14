@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.174 $
+   $Revision: 1.175 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/09 14:58:16 $
+   $Author: shoops $ 
+   $Date: 2006/02/14 14:35:22 $
    End CVS Header */
 
 /*********************************************************************
@@ -326,6 +326,8 @@ void ReactionsWidget1::slotNameChanged()
 // added 5/19/04
 void ReactionsWidget1::slotBtnNewClicked()
 {
+  slotBtnOKClicked();
+
   std::string name = "reaction";
   int i = 0;
   while (!CCopasiDataModel::Global->getModel()->createReaction(name))
@@ -377,7 +379,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             break;
           }
 
-        default:                                                 // No or Escape
+        default:                                                    // No or Escape
           break;
         }
     }
@@ -385,7 +387,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 
 void ReactionsWidget1::FillWidgetFromRI()
 {
-  std::cout << "FillWidget " << std::endl;
+  //std::cout << "FillWidget " << std::endl;
   LineEdit1->setText(FROM_UTF8(mRi.getReactionName()));
 
   LineEdit2->setText(FROM_UTF8(mRi.getChemEqString()));
@@ -427,7 +429,7 @@ void ReactionsWidget1::FillWidgetFromRI()
 
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 {
-  std::cout << "slotValueChanged " << index << " " << sub << " " << newValue << std::endl;
+  //std::cout << "slotValueChanged " << index << " " << sub << " " << newValue << std::endl;
 
   // setValue
   if (mRi.getUsage(index) == CFunctionParameter::PARAMETER)

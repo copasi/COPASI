@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.133 $
+   $Revision: 1.134 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 20:57:07 $
+   $Date: 2006/02/14 14:35:22 $
    End CVS Header */
 
 /**********************************************************************
@@ -682,6 +682,7 @@ bool FunctionWidget1::saveToFunction()
     }
 
   func->compile();
+  // :TODO: Bug 404 Create a message that the function is not valid by itself.
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
   CCopasiDataModel::Global->changed();
@@ -701,7 +702,11 @@ void FunctionWidget1::slotFcnDescriptionChanged()
 
   try
     {
-      isValid = mpFunction->setInfix((const char *)textBrowser->text().utf8());
+      if (mpFunction->setInfix((const char *)textBrowser->text().utf8()) &&
+          mpFunction->compile())
+        isValid = true;
+      else
+        isValid = false;
     }
   catch (CCopasiException Exception)
     {
@@ -827,7 +832,8 @@ void FunctionWidget1::slotCommitButtonClicked()
 
 void FunctionWidget1::slotNewButtonClicked()
 {
-  //TODO: check if a commit is necessary here
+  slotCommitButtonClicked();
+
   std::string name = "function";
   int i = 0;
   CFunction* pFunc;

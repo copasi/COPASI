@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 00:06:52 $
+   $Date: 2006/02/14 14:35:27 $
    End CVS Header */
 
 // hoojee.cpp : optimisation by the method of Hooke and Jeeves
@@ -203,9 +203,16 @@ void COptMethodHookeJeeves::initObjects()
   addObjectReference("Current Iteration", mIteration, CCopasiObject::ValueInt);
 }
 
+#ifdef WIN32 
+// warning C4056: overflow in floating-point constant arithmetic
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
+#endif
+
 bool COptMethodHookeJeeves::initialize()
 {
   cleanup();
+
   if (!COptMethod::initialize()) return false;
 
   mIterationLimit = * getValue("Iteration Limit").pUINT;
@@ -227,8 +234,14 @@ bool COptMethodHookeJeeves::initialize()
   mNew.resize(mVariableSize);
   mDelta.resize(mVariableSize);
 
+  mBestValue = 2.0 * DBL_MAX;
+
   return true;
 }
+
+#ifdef WIN32
+# pragma warning (default: 4056 4756)
+#endif
 
 bool COptMethodHookeJeeves::cleanup()
 {

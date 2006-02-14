@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 16:37:24 $
+   $Date: 2006/02/14 14:35:19 $
    End CVS Header */
 
 // copasi.h
@@ -95,10 +95,10 @@
 #ifdef USE_MKL
 # define C_INT int
 #else
-# if (defined USE_CLAPACK || defined Darwin)
+# if (defined USE_CLAPACK || defined USE_LAPACK || defined Darwin)
 #  define C_INT long
 # else
-#  error Neither USE_CLAPACK or USE_MKL is defined!
+#  error Neither USE_CLAPACK, USE_LAPACK, or USE_MKL is defined!
 # endif
 #endif
 

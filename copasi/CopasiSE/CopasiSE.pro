@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.23 $ $Author: ssahle $ $Date: 2005/10/11 16:25:25 $  
+# $Revision: 1.24 $ $Author: shoops $ $Date: 2006/02/14 14:35:21 $  
 ######################################################################
 
 TEMPLATE = app
@@ -33,6 +33,8 @@ COPASI_LIBS = \
          utilities                   
 
 contains(BUILD_OS, WIN32) {
+  CONFIG += console
+
   LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
 
   TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)

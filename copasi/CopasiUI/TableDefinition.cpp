@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TableDefinition.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/05/17 15:49:31 $
+   $Date: 2006/02/14 14:35:22 $
    End CVS Header */
 
 #include "TableDefinition.h"
@@ -46,14 +46,14 @@ std::vector<const CCopasiObject*> TableDefinition::getObjects() const
 void TableDefinition::init()
 {
   mOT = ListViews::REPORT;
-  numCols = 3;
+  numCols = 2;
   table->setNumCols(numCols);
 
   //Setting table headers
   QHeader *tableHeader = table->horizontalHeader();
   tableHeader->setLabel(0, "Status");
   tableHeader->setLabel(1, "Name");
-  tableHeader->setLabel(2, "Comment");
+  //  tableHeader->setLabel(2, "Comment");
 }
 
 void TableDefinition::tableLineFromObject(const CCopasiObject* obj, unsigned C_INT32 row)
@@ -61,20 +61,20 @@ void TableDefinition::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
   if (!obj) return;
   const CReportDefinition* pRep = (const CReportDefinition*)obj;
   table->setText(row, 1, FROM_UTF8(pRep->getObjectName()));
-  table->setText(row, 2, FROM_UTF8(pRep->getComment()));
+  //  table->setText(row, 2, FROM_UTF8(pRep->getComment()));
 }
 
 void TableDefinition::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj)
 {
   if (!obj) return;
   CReportDefinition* pRep = (CReportDefinition*)obj;
-  pRep->setComment((const char *)table->text(row, 2).utf8());
+  //  pRep->setComment((const char *)table->text(row, 2).utf8());
 }
 
 void TableDefinition::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
-  if (exc != 2)
-    table->setText(row, 2, "");
+  //  if (exc != 2)
+  //    table->setText(row, 2, "");
 }
 
 QString TableDefinition::defaultObjectName() const
@@ -93,7 +93,7 @@ CCopasiObject* TableDefinition::createNewObject(const std::string & name)
       nname = name;
       nname += (const char *)QString::number(i).utf8();
     }
-  std::cout << " *** created ReportDefinition: " << nname << " : " << pRep->getKey() << std::endl;
+  //std::cout << " *** created ReportDefinition: " << nname << " : " << pRep->getKey() << std::endl;
   return pRep;
 }
 

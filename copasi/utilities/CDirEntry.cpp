@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/14 00:07:29 $
+   $Date: 2006/02/14 14:35:33 $
    End CVS Header */
 
 #include <sys/types.h>
@@ -110,6 +110,7 @@ std::string CDirEntry::fileName(const std::string & path)
 
 std::string CDirEntry::dirName(const std::string & path)
 {
+  if (path == "") return path;
 #ifdef WIN32 // WIN32 also understands '/' as the separator.
   std::string::size_type end = path.find_last_of(Separator + "/");
 #else
@@ -124,6 +125,8 @@ std::string CDirEntry::dirName(const std::string & path)
       end = path.find_last_of(Separator, end);
 #endif
     }
+
+  if (end == std::string::npos) return "";
 
   return path.substr(0, end);
 }
@@ -312,7 +315,7 @@ bool CDirEntry::makePathRelative(std::string & absolutePath,
     if (absolutePath[i] != RelativeTo[i]) break;
 
 #ifdef WIN32
-  if (i = 0) return false; // A different drive letter we cannot do anything
+  if (i == 0) return false; // A different drive letter we cannot do anything
 #endif
 
   RelativeTo = RelativeTo.substr(i);
@@ -324,7 +327,10 @@ bool CDirEntry::makePathRelative(std::string & absolutePath,
       RelativeTo = dirName(RelativeTo);
     }
 
-  absolutePath = relativePath + absolutePath.substr(i);
+  if (relativePath != "")
+    absolutePath = relativePath + absolutePath.substr(i);
+  else
+    absolutePath = absolutePath.substr(i + 1);
 
 #ifdef WIN32
   for (i = 0, imax = absolutePath.length(); i < imax; i++)

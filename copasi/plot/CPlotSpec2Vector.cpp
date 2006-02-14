@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/21 20:32:54 $
+   $Date: 2006/02/14 14:35:29 $
    End CVS Header */
 
 #include <limits>
@@ -48,7 +48,7 @@ bool CPlotSpec2Vector::initPlottingFromObjects()
 
   if (!mpPlotDefinitionList || mpPlotDefinitionList->size() == 0)
     {
-      std::cout << "plot: not plots defined" << std::endl;
+      //std::cout << "plot: not plots defined" << std::endl;
       return false;
     }
 
@@ -56,13 +56,13 @@ bool CPlotSpec2Vector::initPlottingFromObjects()
 
   if (!initAllPlots()) //create mObjectNames;
     {
-      std::cout << "plot: problem while creating indices" << std::endl;
+      //std::cout << "plot: problem while creating indices" << std::endl;
       return false;
     }
 
   if (mObjectNames.size() <= 0)
     {
-      std::cout << "plot: number of objects <=0" << std::endl;
+      //std::cout << "plot: number of objects <=0" << std::endl;
       return false;
     }
   data.resize(mObjectNames.size());
@@ -96,6 +96,17 @@ bool CPlotSpec2Vector::updateAllPlots()
   return true;
 }
 
+bool CPlotSpec2Vector::finishAllPlots()
+{
+  std::vector<PlotWindow*>::const_iterator it;
+  for (it = windows.begin(); it != windows.end(); ++it)
+    {
+      (*it)->finishPlot();
+    }
+
+  return true;
+}
+
 bool CPlotSpec2Vector::initAllPlots()
 {
   if (!mpPlotDefinitionList) return false;
@@ -112,7 +123,7 @@ bool CPlotSpec2Vector::initAllPlots()
       if ((*mpPlotDefinitionList)[i]->isActive())
         {
           key = (*mpPlotDefinitionList)[i]->CCopasiParameter::getKey();
-          std::cout << key << std::endl;
+          //std::cout << key << std::endl;
 
           if (windowMap[key] == NULL)
             {
@@ -142,7 +153,7 @@ bool CPlotSpec2Vector::doPlotting()
         {
           if (*it)
             {
-              if ((*it)->getActualize()) (*(*it)->getActualize())();
+              if ((*it)->getRefresh()) (*(*it)->getRefresh())();
 
               if ((*it)->isValueDbl())
                 data[i] = *(C_FLOAT64*)((*it)->getReference());
@@ -197,7 +208,13 @@ bool CPlotSpec2Vector::doPlottingSeparator()
 
 bool CPlotSpec2Vector::finishPlotting()
 {
-  return updateAllPlots();
+  if (!updateAllPlots())
+    return false;
+
+  if (!finishAllPlots())
+    return false;
+
+  return true;
 }
 
 C_INT32 CPlotSpec2Vector::getIndexFromCN(const CCopasiObjectName & name)

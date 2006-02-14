@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/15 19:25:34 $
+   $Date: 2006/02/14 14:35:27 $
    End CVS Header */
 
 /**
@@ -53,7 +53,16 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
     mpConstraintItems(NULL),
     mpSteadyState(NULL),
     mpTrajectory(NULL),
-    mpFunction(NULL)
+    mpFunction(NULL),
+    mUpdateMethods(),
+    mCalculateValue(0),
+    mSolutionVariables(),
+    mOriginalVariables(),
+    mSolutionValue(0),
+    mCounter(0),
+    mCPUTime(CCopasiTimer::CPU, this),
+    mhSolutionValue(C_INVALID_INDEX),
+    mhCounter(C_INVALID_INDEX)
 {
   initializeParameter();
   initObjects();
@@ -73,7 +82,16 @@ COptProblem::COptProblem(const COptProblem& src,
     mpConstraintItems(NULL),
     mpSteadyState(src.mpSteadyState),
     mpTrajectory(src.mpTrajectory),
-    mpFunction(NULL)
+    mpFunction(NULL),
+    mUpdateMethods(),
+    mCalculateValue(src.mCalculateValue),
+    mSolutionVariables(src.mSolutionVariables),
+    mOriginalVariables(src.mOriginalVariables),
+    mSolutionValue(src.mCalculateValue),
+    mCounter(0),
+    mCPUTime(CCopasiTimer::CPU, this),
+    mhSolutionValue(C_INVALID_INDEX),
+    mhCounter(C_INVALID_INDEX)
 {
   initializeParameter();
   initObjects();
@@ -156,18 +174,26 @@ bool COptProblem::setModel(CModel * pModel)
   return true;
 }
 
+#ifdef WIN32 
+// warning C4056: overflow in floating-point constant arithmetic
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
+#endif
+
 bool COptProblem::setCallBack(CProcessReport * pCallBack)
 {
   CCopasiProblem::setCallBack(pCallBack);
 
   if (pCallBack)
     {
+      mSolutionValue = DBL_MAX * 2;
       mhSolutionValue =
         mpCallBack->addItem("Best Value",
                             CCopasiParameter::DOUBLE,
                             & mSolutionValue);
+      mCounter = 0;
       mhCounter =
-        mpCallBack->addItem("Simulation Counter",
+        mpCallBack->addItem("Function Evaluations",
                             CCopasiParameter::UINT,
                             & mCounter);
     }
@@ -177,16 +203,10 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
 
 void COptProblem::initObjects()
 {
-  addObjectReference("Simulation Counter", mCounter, CCopasiObject::ValueInt);
+  addObjectReference("Function Evaluations", mCounter, CCopasiObject::ValueInt);
   addObjectReference("Best Value", mSolutionValue, CCopasiObject::ValueDbl);
   addVectorReference("Best Parameters", mSolutionVariables, CCopasiObject::ValueDbl);
 }
-
-#ifdef WIN32 
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
 
 bool COptProblem::initialize()
 {
@@ -249,6 +269,8 @@ bool COptProblem::initialize()
       mOriginalVariables[i] = *(*it)->COptItem::getObjectValue();
     }
 
+  mCPUTime.start();
+
   createObjectiveFunction();
 
   if (!mpFunction || !mpFunction->compile(ContainerList))
@@ -260,20 +282,23 @@ bool COptProblem::initialize()
   return true;
 }
 
-bool COptProblem::restore()
-{
-  unsigned C_INT32 i, imax = mpOptItems->size();
-
-  // set the original paramter values
-  for (i = 0; i < imax; i++)
-    (*(*mpOptItems)[i]->COptItem::getUpdateMethod())(mOriginalVariables[i]);
-
-  return true;
-}
-
 #ifdef WIN32
 # pragma warning (default: 4056 4756)
 #endif
+
+bool COptProblem::restore(const bool & updateModel)
+{
+  unsigned C_INT32 i, imax = mpOptItems->size();
+
+  if (updateModel)
+    for (i = 0; i < imax; i++)
+      (*(*mpOptItems)[i]->COptItem::getUpdateMethod())(mSolutionVariables[i]);
+  else
+    for (i = 0; i < imax; i++)
+      (*(*mpOptItems)[i]->COptItem::getUpdateMethod())(mOriginalVariables[i]);
+
+  return true;
+}
 
 bool COptProblem::checkParametricConstraints()
 {
@@ -482,12 +507,22 @@ void COptProblem::print(std::ostream * ostream) const
 
 void COptProblem::printResult(std::ostream * ostream) const
   {
+    std::ostream & os = *ostream;
+
     if (mSolutionVariables.numSize() == 0)
       {
         return;
       }
-    *ostream << "    Objective Function Value: " << mSolutionValue << std::endl;
-    *ostream << std::endl;
+    os << "    Objective Function Value:\t" << mSolutionValue << std::endl;
+
+    CCopasiTimeVariable CPUTime = const_cast<COptProblem *>(this)->mCPUTime.getElapsedTime();
+
+    os << "    Function Evaluations:\t" << mCounter << std::endl;
+    os << "    CPU Time [s]:\t"
+    << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
+    << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
+    os << "    Evaluations/Second [1/s]:\t" << mCounter / (C_FLOAT64) (CPUTime.getMilliSeconds() / 1e3) << std::endl;
+    os << std::endl;
 
     std::vector< COptItem * >::const_iterator itItem =
       mpOptItems->begin();
@@ -498,7 +533,7 @@ void COptProblem::printResult(std::ostream * ostream) const
 
     for (i = 0; itItem != endItem; ++itItem, i++)
       {
-        *ostream << "    " << (*itItem)->getObjectDisplayName() << ": "
+        os << "    " << (*itItem)->getObjectDisplayName() << ": "
         << mSolutionVariables[i] << std::endl;
       }
   }

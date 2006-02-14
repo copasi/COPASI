@@ -307,6 +307,7 @@
                   <xs:attribute name="name" type="cNAME" use="required"/>
                   <xs:attribute name="taskType" type="cTASK_TYPE" use="required"/>
                   <xs:attribute name="separator" type="xs:string" use="optional" default=" &#x09;"/>
+                  <xs:attribute name="precision" type="xs:unsignedInt" use="optional" default="6"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
@@ -576,6 +577,7 @@
           <xs:enumeration value="string"/>
           <xs:enumeration value="cn"/>
           <xs:enumeration value="key"/>
+          <xs:enumeration value="file"/>
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/19 17:17:20 $
+   $Date: 2006/02/14 14:35:28 $
    End CVS Header */
 
 #ifndef COPASI_CFitProblem
@@ -75,6 +75,14 @@ class CFitProblem : public COptProblem
      * @result bool continue
      */
     virtual bool calculate();
+
+    /**
+     * Do all neccessary restore procedures so that the
+     * model is in the same state as before
+     * @parem const bool & updateModel
+     * @result bool succes
+     */
+    virtual bool restore(const bool & updateModel);
 
     /**
      * This is the output method for any object. The default implementation

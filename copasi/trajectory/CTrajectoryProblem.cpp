@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:25:07 $
+   $Date: 2006/02/14 14:35:32 $
    End CVS Header */
 
 /**
@@ -29,6 +29,11 @@
  */
 CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
     CCopasiProblem(CCopasiTask::timeCourse, pParent),
+    mpDuration(NULL),
+    mpStepSize(NULL),
+    mpStepNumber(NULL),
+    mpTimeSeriesRequested(NULL),
+    mpOutputStartTime(NULL),
     mStepNumberSetLast(true)
 {
   addParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 100);
@@ -36,6 +41,12 @@ CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
   addParameter("Duration", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
   addParameter("TimeSeriesRequested", CCopasiParameter::BOOL, (bool) true);
   addParameter("OutputStartTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0);
+
+  mpStepNumber = getValue("StepNumber").pUINT;
+  mpStepSize = getValue("StepSize").pDOUBLE;
+  mpDuration = getValue("Duration").pDOUBLE;
+  mpTimeSeriesRequested = getValue("TimeSeriesRequested").pBOOL;
+  mpOutputStartTime = getValue("OutputStartTime").pDOUBLE;
 
   initObjects();
   CONSTRUCTOR_TRACE;
@@ -48,8 +59,19 @@ CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
 CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src,
                                        const CCopasiContainer * pParent):
     CCopasiProblem(src, pParent),
+    mpDuration(NULL),
+    mpStepSize(NULL),
+    mpStepNumber(NULL),
+    mpTimeSeriesRequested(NULL),
+    mpOutputStartTime(NULL),
     mStepNumberSetLast(src.mStepNumberSetLast)
 {
+  mpStepNumber = getValue("StepNumber").pUINT;
+  mpStepSize = getValue("StepSize").pDOUBLE;
+  mpDuration = getValue("Duration").pDOUBLE;
+  mpTimeSeriesRequested = getValue("TimeSeriesRequested").pBOOL;
+  mpOutputStartTime = getValue("OutputStartTime").pDOUBLE;
+
   initObjects();
   CONSTRUCTOR_TRACE;
 }
@@ -64,8 +86,8 @@ bool CTrajectoryProblem::elevateChildren()
 {
   // If we have an old COPASI file "Duration" is not set
   // but we can fix that.
-  if (getDuration() == 1.0) // the default
-    setDuration(getStepSize() * (C_FLOAT64) getStepNumber());
+  if (*mpDuration == 1.0) // the default
+    setDuration(*mpStepSize * (C_FLOAT64) *mpStepNumber);
 
   return true;
 }
@@ -75,7 +97,7 @@ void CTrajectoryProblem::initObjects()
   const_cast<CCopasiObject *>(getParameter("StepNumber")
                               ->getObject(CCopasiObjectName("Reference=Value")))
   ->setUpdateMethod(this,
-                    (bool (CTrajectoryProblem::*)(const C_INT32 &)) &CTrajectoryProblem::setStepNumber);
+                    (void (CTrajectoryProblem::*)(const C_INT32 &)) &CTrajectoryProblem::setStepNumber);
 
   const_cast<CCopasiObject *>(getParameter("StepSize")
                               ->getObject(CCopasiObjectName("Reference=Value")))
@@ -90,11 +112,13 @@ void CTrajectoryProblem::initObjects()
  * Set the number of time steps the trajectory method should integrate.
  * @param "const unsigned C_INT32 &" stepNumber
  */
-bool CTrajectoryProblem::setStepNumber(const unsigned C_INT32 & stepNumber)
+void CTrajectoryProblem::setStepNumber(const unsigned C_INT32 & stepNumber)
 {
-  setValue("StepNumber", stepNumber);
+  *mpStepNumber = stepNumber;
   mStepNumberSetLast = true;
-  return sync();
+  sync();
+
+  return;
 }
 
 /**
@@ -102,17 +126,19 @@ bool CTrajectoryProblem::setStepNumber(const unsigned C_INT32 & stepNumber)
  * @return "const unsigned C_INT32 &" stepNumber
  */
 const unsigned C_INT32 & CTrajectoryProblem::getStepNumber() const
-  {return * getValue("StepNumber").pUINT;}
+  {return *mpStepNumber;}
 
 /**
  * Set the size a integration step the trajectory method should do.
  * @param "const C_FLOAT64 &" stepSize
  */
-bool CTrajectoryProblem::setStepSize(const C_FLOAT64 & stepSize)
+void CTrajectoryProblem::setStepSize(const C_FLOAT64 & stepSize)
 {
-  setValue("StepSize", stepSize);
+  *mpStepSize = stepSize;
   mStepNumberSetLast = false;
-  return sync();
+  sync();
+
+  return;
 }
 
 /**
@@ -120,17 +146,19 @@ bool CTrajectoryProblem::setStepSize(const C_FLOAT64 & stepSize)
  * @return "const C_FLOAT64 &" stepSize
  */
 const C_FLOAT64 & CTrajectoryProblem::getStepSize() const
-  {return * getValue("StepSize").pDOUBLE;}
+  {return *mpStepSize;}
 
 /**
  * Set the end time.
  * @param "const C_FLOAT64 &" duration
  * @parem bool success
  */
-bool CTrajectoryProblem::setDuration(const C_FLOAT64 & duration)
+void CTrajectoryProblem::setDuration(const C_FLOAT64 & duration)
 {
-  setValue("Duration", duration);
-  return sync();
+  *mpDuration = duration;
+  sync();
+
+  return;
 }
 
 /**
@@ -138,23 +166,23 @@ bool CTrajectoryProblem::setDuration(const C_FLOAT64 & duration)
  * @return "const C_FLOAT64 &" duration
  */
 const C_FLOAT64 & CTrajectoryProblem::getDuration() const
-  {return * getValue("Duration").pDOUBLE;}
+  {return *mpDuration;}
 
 void CTrajectoryProblem::setOutputStartTime(const C_FLOAT64 & startTime)
 {
-  setValue("OutputStartTime", startTime);
+  *mpOutputStartTime = startTime;
 }
 
 const C_FLOAT64 & CTrajectoryProblem::getOutputStartTime() const
-  {return * getValue("OutputStartTime").pDOUBLE;}
+  {return *mpOutputStartTime;}
 
 void CTrajectoryProblem::setTimeSeriesRequested(bool flag)
 {
-  setValue("TimeSeriesRequested", flag);
+  *mpTimeSeriesRequested = flag;
 }
 
 bool CTrajectoryProblem::timeSeriesRequested() const
-  {return * getValue("TimeSeriesRequested").pBOOL;}
+  {return *mpTimeSeriesRequested;}
 
 /**
  * Load a trajectory problem
@@ -163,19 +191,14 @@ bool CTrajectoryProblem::timeSeriesRequested() const
 void CTrajectoryProblem::load(CReadConfig & configBuffer,
                               CReadConfig::Mode C_UNUSED(mode))
 {
-  C_FLOAT64 dbl;
-  unsigned C_INT32 uint;
-
   if (configBuffer.getVersion() < "4.0")
     {
       mpModel = CCopasiDataModel::Global->getModel();
       configBuffer.getVariable("EndTime", "C_FLOAT64",
-                               & dbl,
+                               mpDuration,
                                CReadConfig::LOOP);
-      setValue("Duration", dbl);
       configBuffer.getVariable("Points", "C_INT32",
-                               & uint);
-      setValue("StepNumber", uint);
+                               mpStepNumber);
       mStepNumberSetLast = true;
 
       sync();
@@ -189,21 +212,21 @@ bool CTrajectoryProblem::sync()
 {
   bool success = true;
 
-  C_FLOAT64 Tmp = getDuration();
-  C_FLOAT64 StepSize = getStepSize();
-  C_FLOAT64 StepNumber = (C_FLOAT64) getStepNumber();
+  C_FLOAT64 Tmp = *mpDuration;
+  C_FLOAT64 StepSize = *mpStepSize;
+  C_FLOAT64 StepNumber = (C_FLOAT64) * mpStepNumber;
 
   if (mStepNumberSetLast)
     {
-      StepSize = Tmp / (C_FLOAT64) getStepNumber();
+      StepSize = Tmp / (C_FLOAT64) * mpStepNumber;
 
       /* Assure that the step size is not to small for machine accuracy */
-      if (fabs(StepSize) < 100 * DBL_EPSILON * fabs(getDuration()))
+      if (fabs(StepSize) < 100 * DBL_EPSILON * fabs(*mpDuration))
         {
           CCopasiMessage(CCopasiMessage::WARNING,
                          MCTrajectoryProblem + 3, StepSize);
 
-          StepSize = 100 * DBL_EPSILON * fabs(getDuration());
+          StepSize = 100 * DBL_EPSILON * fabs(*mpDuration);
           /* Assure that the step size has the appropriate sign. */
           StepSize = (Tmp < 0.0) ? - fabs(StepSize) : fabs(StepSize);
           StepNumber = fabs(ceil(Tmp / StepSize));
@@ -211,12 +234,12 @@ bool CTrajectoryProblem::sync()
     }
   else
     {
-      if (fabs(StepSize) < 100 * DBL_EPSILON * fabs(getDuration()))
+      if (fabs(StepSize) < 100 * DBL_EPSILON * fabs(*mpDuration))
         {
           CCopasiMessage(CCopasiMessage::WARNING,
                          MCTrajectoryProblem + 3, StepSize);
 
-          StepSize = 100 * DBL_EPSILON * fabs(getDuration());
+          StepSize = 100 * DBL_EPSILON * fabs(*mpDuration);
 
           /* Assure that the step size has the appropriate sign. */
           StepSize = (Tmp < 0.0) ? - fabs(StepSize) : fabs(StepSize);
@@ -240,8 +263,10 @@ bool CTrajectoryProblem::sync()
       StepSize = (Tmp < 0.0) ? - fabs(StepSize) : fabs(StepSize);
     }
 
-  setValue("StepSize", StepSize);
-  setValue("StepNumber", (unsigned C_INT32) StepNumber);
+  *mpStepSize = StepSize;
+  *mpStepNumber = (unsigned C_INT32) StepNumber;
+
+  if (!success) throw 1;
 
   return success;
 }

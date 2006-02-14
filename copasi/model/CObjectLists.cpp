@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/05 14:04:44 $
+   $Author: shoops $ 
+   $Date: 2006/02/14 14:35:26 $
    End CVS Header */
 
 #include "CObjectLists.h"
@@ -142,9 +142,12 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
     }
 
   //debug output
+
+#ifdef COPASI_DEBUG
   std::vector<CCopasiObject*>::const_iterator it, itEnd = ret.end();
   for (it = ret.begin(); it != itEnd; ++it)
     std::cout << (*it)->getObjectName() << std::endl;
+#endif // COPASI_DEBUG
 
   return ret;
 }

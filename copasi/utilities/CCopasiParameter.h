@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 15:09:36 $
+   $Date: 2006/02/14 14:35:33 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -42,6 +42,7 @@ class CCopasiParameter: public CCopasiContainer
       STRING,
       CN,
       KEY,
+      FILE,
       INVALID
     };
 
@@ -56,6 +57,7 @@ class CCopasiParameter: public CCopasiContainer
         std::string * pSTRING;
         CRegisteredObjectName * pCN;
         std::string * pKEY;
+        std::string * pFILE;
         void * pVOID;
       };
 

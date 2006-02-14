@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:28:12 $
+   $Date: 2006/02/14 14:35:26 $
    End CVS Header */
 
 // CSate.cpp
@@ -12,10 +12,13 @@
 //
 
 #include "copasi.h"
+
 #include "CState.h"
 #include "CModel.h"
 #include "utilities/CVector.h"
 #include "utilities/utility.h"
+
+#include "blaswrap.h"
 
 /*************************/
 /* Code for class CState */
@@ -45,7 +48,6 @@ CState::~CState() {}
 CState & CState::operator =(const CStateX & stateX)
 {
 #ifdef COPASI_DEBUG
-  //this->check("operator= lhs");
   stateX.check("operator= rhs");
 #endif
 
@@ -59,34 +61,21 @@ CState & CState::operator =(const CStateX & stateX)
     {
       mVariableNumbers.resize(mpModel->getNumVariableMetabs());
 
-      unsigned C_INT32 i, iVariable, iTotal;
+      const unsigned C_INT32 * pPermutation =
+        mpModel->getMetabolitePermutation().array();
 
-      iVariable = stateX.mVariableNumbers.size();
-      iTotal = iVariable + stateX.mDependentNumbers.size();
-
-      if (mVariableNumbers.size() != iTotal)
-        {
-          std::cout << "In CState assignment: Inconsistent src state" << std::endl;
-          mVariableNumbers.resize(0);
-          return *this;
-        }
-
-      const CVector< unsigned C_INT32 > & Permutation =
-        mpModel->getMetabolitePermutation();
-
-      C_FLOAT64 * Dbl =
+      C_FLOAT64 * pTo =
         const_cast< C_FLOAT64 * >(mVariableNumbers.array());
 
-      for (i = 0; i < iVariable; i++)
-        {
-          *(Dbl + Permutation[i]) = stateX.mVariableNumbers[i];
-        }
+      const C_FLOAT64 * pIt = stateX.mVariableNumbers.array();
+      const C_FLOAT64 * pEnd = pIt + stateX.mVariableNumbers.size();
+      for (; pIt != pEnd; ++pIt, ++pPermutation)
+        *(pTo + *pPermutation) = *pIt;
 
-      for (; i < iTotal; i++)
-        {
-          *(Dbl + Permutation[i]) =
-            stateX.mDependentNumbers[i - iVariable]; //TODO use ptr increments
-        }
+      pIt = stateX.mDependentNumbers.array();
+      pEnd = pIt + stateX.mDependentNumbers.size();
+      for (; pIt != pEnd; ++pIt, ++pPermutation)
+        *(pTo + *pPermutation) = *pIt;
     }
   else
     {
@@ -99,7 +88,6 @@ CState & CState::operator =(const CStateX & stateX)
 CState & CState::operator =(const CState & state)
 {
 #ifdef COPASI_DEBUG
-  //this->check("operator= lhs");
   state.check("operator= rhs");
 #endif
 
@@ -203,76 +191,146 @@ void CState::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
 #ifdef COPASI_DEBUG
     this->check("calculate Jacobian");
 #endif
-    //std::cout << "calculateJacobian" << std::endl;
+    static CMatrix< C_FLOAT64 > E;
     const CMatrix< C_FLOAT64 > & Stoi = mpModel->getStoi();
-    unsigned C_INT32 mNo = Stoi.numRows();
-    unsigned C_INT32 rNo = Stoi.numCols();
 
-    CMatrix< C_FLOAT64 > E(rNo, mNo);
+    char T = 'N';
+    C_INT M = Stoi.numRows(); /* LDA, LDC, N */
+    C_INT K = Stoi.numCols(); /* LDB */
+
+    C_FLOAT64 Alpha = 1.0;
+    C_FLOAT64 Beta = 0.0;
+
+    E.resize(K, M);
+
     calculateElasticityMatrix(E, factor, resolution);
 
-    unsigned C_INT32 i, j, k;
-    C_FLOAT64 * sum;
-
-    for (i = 0; i < mNo; i++)
-      for (j = 0; j < mNo; j++)
-        {
-          sum = &jacobian(i, j);
-          *sum = 0.0;
-
-          for (k = 0; k < rNo; k++)
-            *sum += Stoi(i, k) * E(k, j);
-        }
+    /*     SUBROUTINE DGEMM (TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB,
+     *                        BETA, C, LDC)
+     *     .. Scalar Arguments ..
+     *     CHARACTER*1        TRANSA, TRANSB
+     *      INTEGER            M, N, K, LDA, LDB, LDC
+     *      DOUBLE PRECISION   ALPHA, BETA
+     *     .. Array Arguments ..
+     *      DOUBLE PRECISION   A(LDA, *), B(LDB, *), C(LDC, *)
+     *     ..
+     *
+     *  Purpose
+     *  =======
+     *
+     *  DGEMM  performs one of the matrix-matrix operations
+     *
+     *     C := alpha*op(A)*op(B) + beta*C,
+     *
+     *  where  op(X) is one of
+     *
+     *     op(X) = X   or   op(X) = X',
+     *
+     *  alpha and beta are scalars, and A, B and C are matrices, with op(A)
+     *  an m by k matrix,  op(B)  a  k by n matrix and  C an m by n matrix.
+     *
+     *  Parameters
+     *  ==========
+     *
+     *  TRANSA - CHARACTER*1.
+     *           On entry, TRANSA specifies the form of op(A) to be used in
+     *           the matrix multiplication as follows:
+     *
+     *              TRANSA = 'N' or 'n',  op(A) = A.
+     *
+     *              TRANSA = 'T' or 't',  op(A) = A'.
+     *
+     *              TRANSA = 'C' or 'c',  op(A) = A'.
+     *
+     *           Unchanged on exit.
+     *
+     *  TRANSB - CHARACTER*1.
+     *           On entry, TRANSB specifies the form of op(B) to be used in
+     *           the matrix multiplication as follows:
+     *
+     *              TRANSB = 'N' or 'n',  op(B) = B.
+     *
+     *              TRANSB = 'T' or 't',  op(B) = B'.
+     *
+     *              TRANSB = 'C' or 'c',  op(B) = B'.
+     *
+     *           Unchanged on exit.
+     *
+     *  M      - INTEGER.
+     *           On entry,  M  specifies  the number  of rows  of the  matrix
+     *           op(A)  and of the  matrix  C.  M  must  be at least  zero.
+     *           Unchanged on exit.
+     *
+     *  N      - INTEGER.
+     *           On entry,  N  specifies the number  of columns of the matrix
+     *           op(B) and the number of columns of the matrix C. N must be
+     *           at least zero.
+     *           Unchanged on exit.
+     *
+     *  K      - INTEGER.
+     *           On entry,  K  specifies  the number of columns of the matrix
+     *           op(A) and the number of rows of the matrix op(B). K must
+     *           be at least  zero.
+     *           Unchanged on exit.
+     *
+     *  ALPHA  - DOUBLE PRECISION.
+     *           On entry, ALPHA specifies the scalar alpha.
+     *           Unchanged on exit.
+     *
+     *  A      - DOUBLE PRECISION array of DIMENSION (LDA, ka), where ka is
+     *           k  when  TRANSA = 'N' or 'n',  and is  m  otherwise.
+     *           Before entry with  TRANSA = 'N' or 'n',  the leading  m by k
+     *           part of the array  A  must contain the matrix  A,  otherwise
+     *           the leading  k by m  part of the array  A  must contain  the
+     *           matrix A.
+     *           Unchanged on exit.
+     *
+     *  LDA    - INTEGER.
+     *           On entry, LDA specifies the first dimension of A as declared
+     *           in the calling (sub) program. When  TRANSA = 'N' or 'n' then
+     *           LDA must be at least  max(1, m), otherwise  LDA must be at
+     *           least  max(1, k).
+     *           Unchanged on exit.
+     *
+     *  B      - DOUBLE PRECISION array of DIMENSION (LDB, kb), where kb is
+     *           n  when  TRANSB = 'N' or 'n',  and is  k  otherwise.
+     *           Before entry with  TRANSB = 'N' or 'n',  the leading  k by n
+     *           part of the array  B  must contain the matrix  B,  otherwise
+     *           the leading  n by k  part of the array  B  must contain  the
+     *           matrix B.
+     *           Unchanged on exit.
+     *
+     *  LDB    - INTEGER.
+     *           On entry, LDB specifies the first dimension of B as declared
+     *           in the calling (sub) program. When  TRANSB = 'N' or 'n' then
+     *           LDB must be at least  max(1, k), otherwise  LDB must be at
+     *           least  max(1, n).
+     *           Unchanged on exit.
+     *
+     *  BETA   - DOUBLE PRECISION.
+     *           On entry,  BETA  specifies the scalar  beta.  When  BETA  is
+     *           supplied as zero then C need not be set on input.
+     *           Unchanged on exit.
+     *
+     *  C      - DOUBLE PRECISION array of DIMENSION (LDC, n).
+     *           Before entry, the leading  m by n  part of the array  C must
+     *           contain the matrix  C,  except when  beta  is zero, in which
+     *           case C need not be set on entry.
+     *           On exit, the array  C  is overwritten by the  m by n  matrix
+     *           (alpha*op(A)*op(B) + beta*C).
+     *
+     *  LDC    - INTEGER.
+     *           On entry, LDC specifies the first dimension of C as declared
+     *           in  the  calling  (sub)  program.   LDC  must  be  at  least
+     *           max(1, m).
+     *           Unchanged on exit.
+     *
+     *
+     *  Level 3 Blas routine.
+     */
+    dgemm_(&T, &T, &M, &M, &K, &Alpha, E.array(), &M,
+           const_cast<C_FLOAT64 *>(Stoi.array()), &K, &Beta, jacobian.array(), &M);
   }
-
-/*void CState::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
-                                  const C_FLOAT64 & factor,
-                                  const C_FLOAT64 & resolution)
-{
-  unsigned C_INT32 i, j, dim = mVariableNumbers.size();
-  C_FLOAT64 * x =
-    const_cast<C_FLOAT64 *>(mVariableNumbers.array());
-  jacobian.resize(dim, dim);
- 
-  // constants for differentiation by finite differences
-  C_FLOAT64 K1 = 1 + factor;
-  C_FLOAT64 K2 = 1 - factor;
-  C_FLOAT64 K3 = 2 * factor;
- 
-  C_FLOAT64 store, temp;
-  CVector< C_FLOAT64 > f1(dim);
-  CVector< C_FLOAT64 > f2(dim);
- 
-  for (i = 0; i < dim; i++)
-    {
-      // if y[i] is zero, the derivative will be calculated at a small
-      //  positive value (no point in considering negative values!).
-      //  let's stick with SSRes*(1.0+DerivFactor)
- 
-      store = x[i];
- 
-      if (store < resolution)
-        temp = resolution * K1;
-      else
-        temp = store;
- 
-      x[i] = temp * K1;
-      const_cast<CModel *>(mpModel)->getDerivatives(this, f1);
- 
-      x[i] = temp * K2;
-      const_cast<CModel *>(mpModel)->getDerivatives(this, f2);
- 
-      for (j = 0; j < dim; j++)
-        jacobian[j][i] = (f1[j] - f2[j]) / (temp * K3);
- 
-      x[i] = store;
-    }
- 
-  // We need this to reset the model (a bad hack)
-  const_cast<CModel *>(mpModel)->getDerivatives(this, f2);
- 
-  return;
-}*/
 
 void CState::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
                                        const C_FLOAT64 & factor,
@@ -282,24 +340,30 @@ void CState::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
     this->check("calculate Elasticity");
 #endif
     const_cast<CModel *>(mpModel)->setState(this);
-    const CCopasiVectorNS< CReaction > & Reactions = mpModel->getReactions();
-    unsigned C_INT32 i, imax = Reactions.size();
 
-    const CCopasiVector< CMetab > & Metabolites = mpModel->getMetabolites();
+    unsigned C_INT32 i;
+    const unsigned C_INT32 nCol = elasticityMatrix.numCols();
 
-    unsigned C_INT32 j, jmax = mpModel->getNumVariableMetabs();
+    C_FLOAT64 * itE;
+    C_FLOAT64 * startE = const_cast<C_FLOAT64 *>(elasticityMatrix.array());
 
-    C_FLOAT64 * x;
-    C_FLOAT64 invVolume;
+    CCopasiVector< CReaction >::const_iterator itReaction;
+    CCopasiVector< CReaction >::const_iterator startReaction = mpModel->getReactions().begin();
+    CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
 
-    for (j = 0; j < jmax; j++)
+    CCopasiVector< CMetab >::const_iterator itMetab;
+    CCopasiVector< CMetab >::const_iterator startMetab = mpModel->getMetabolites().begin();
+    CCopasiVector< CMetab >::const_iterator endMetab = startMetab + mpModel->getNumVariableMetabs();
+
+    for (itMetab = startMetab, i = 0; itMetab != endMetab; ++itMetab, i++)
       {
-        x = const_cast< C_FLOAT64 * >(&Metabolites[j]->getConcentration());
-        invVolume = Metabolites[j]->getCompartment()->getVolumeInv();
+        C_FLOAT64 & X = *const_cast<C_FLOAT64 *>(&(*itMetab)->getConcentration());
+        const C_FLOAT64 & invVolume = (*itMetab)->getCompartment()->getVolumeInv();
 
-        for (i = 0; i < imax; i++)
-          elasticityMatrix(i, j) = invVolume *    // * UnitFactor/UnitFactor
-                                   Reactions[i]->calculatePartialDerivative(*x, factor, resolution);
+        for (itReaction = startReaction, itE = startE + i;
+             itReaction != endReaction;
+             ++itReaction, itE += nCol)
+          * itE = invVolume * (*itReaction)->calculatePartialDerivative(X, factor, resolution);
       }
 
     return;
@@ -325,8 +389,6 @@ void CState::check(const std::string & m) const
         std::cout << "CState: " << m << ": mpModel==NULL" << std::endl;
         return;
       }
-
-    //mpModel->check();
 
     if (mFixedNumbers.size() != mpModel->getNumMetabs() - mpModel->getNumVariableMetabs())
     {std::cout << "CState: " << m << ": mismatch in fixedNumbers" << std::endl;}
@@ -361,9 +423,9 @@ CStateX::~CStateX(){}
 CStateX & CStateX::operator =(const CState & state)
 {
 #ifdef COPASI_DEBUG
-  //this->check("operator= lhs");
   state.check("operator= rhs");
 #endif
+
   mpModel = state.mpModel;
   mTime = state.mTime;
   mVolumes = state.mVolumes;
@@ -375,36 +437,21 @@ CStateX & CStateX::operator =(const CState & state)
       mVariableNumbers.resize(mpModel->getNumIndependentMetabs());
       mDependentNumbers.resize(mpModel->getNumDependentMetabs());
 
-      unsigned C_INT32 i, iVariable, iTotal;
+      const unsigned C_INT32 * pPermutation =
+        mpModel->getMetabolitePermutation().array();
 
-      iVariable = mVariableNumbers.size();
-      iTotal = iVariable + mDependentNumbers.size();
+      const C_FLOAT64 * pFrom =
+        const_cast< C_FLOAT64 * >(state.mVariableNumbers.array());
 
-      if (state.mVariableNumbers.size() != iTotal)
-        {
-          std::cout << "In CXState assignment: Inconsistent src state" << std::endl;
-          mVariableNumbers.resize(0);
-          mDependentNumbers.resize(0);
-          return *this;
-        }
+      C_FLOAT64 * pIt = const_cast< C_FLOAT64 * >(mVariableNumbers.array());
+      C_FLOAT64 * pEnd = pIt + mVariableNumbers.size();
+      for (; pIt != pEnd; ++pIt, ++pPermutation)
+        *pIt = *(pFrom + *pPermutation);
 
-      const CVector< unsigned C_INT32 > & Permutation =
-        mpModel->getMetabolitePermutation();
-
-      C_FLOAT64 * Dbl =
-        const_cast< C_FLOAT64 * >(mVariableNumbers.array());
-
-      for (i = 0; i < iVariable; i++, Dbl++)
-        {
-          *Dbl = state.mVariableNumbers[Permutation[i]];
-        }
-
-      Dbl = const_cast< C_FLOAT64 * >(mDependentNumbers.array());
-
-      for (i = iVariable; i < iTotal; i++, Dbl++)
-        {
-          *Dbl = state.mVariableNumbers[Permutation[i]];
-        }
+      pIt = const_cast< C_FLOAT64 * >(mDependentNumbers.array());
+      pEnd = pIt + mDependentNumbers.size();
+      for (; pIt != pEnd; ++pIt, ++pPermutation)
+        *pIt = *(pFrom + *pPermutation);
     }
   else
     {
@@ -418,9 +465,9 @@ CStateX & CStateX::operator =(const CState & state)
 CStateX & CStateX::operator =(const CStateX & stateX)
 {
 #ifdef COPASI_DEBUG
-  //this->check("operator= lhs");
   stateX.check("operator= rhs");
 #endif
+
   mpModel = stateX.mpModel;
   mTime = stateX.mTime;
   mVolumes = stateX.mVolumes;
@@ -471,41 +518,161 @@ void CStateX::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
 #ifdef COPASI_DEBUG
     this->check("calculate Jacobian");
 #endif
-    //std::cout << "calculateJacobianX" << std::endl;
-    const CModel::CLinkMatrixView & L = mpModel->getL();
-    unsigned C_INT32 mNo = L.numRows();
-    unsigned C_INT32 iNo = L.numCols();
+    static CMatrix< C_FLOAT64 > E;
+    static CMatrix< C_FLOAT64 > tmp;
 
+    const CMatrix< C_FLOAT64 > & L = mpModel->getL0();
     const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
-    unsigned C_INT32 rNo = redStoi.numCols();
 
-    CMatrix< C_FLOAT64 > E(rNo, mNo);
+    char T = 'N';
+    C_INT M = mpModel->getNumIndependentMetabs(); /* LDA, LDC */
+    C_INT N = redStoi.numCols();
+    C_INT K = mpModel->getNumDependentMetabs();
+    C_INT LD = mpModel->getNumVariableMetabs();
+
+    C_FLOAT64 Alpha = 1.0;
+    C_FLOAT64 Beta = 1.0;
+
+    E.resize(N, LD);
+    tmp.resize(N, LD);
+
     calculateElasticityMatrix(E, factor, resolution);
 
-    CMatrix< C_FLOAT64 > tmp(rNo, iNo);
+    memcpy(tmp.array(), E.array(), N * LD * sizeof(C_FLOAT64));
 
-    unsigned C_INT32 i, j, k;
-    C_FLOAT64 * sum;
+    /*     SUBROUTINE DGEMM (TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB,
+     *                        BETA, C, LDC)
+     *     .. Scalar Arguments ..
+     *     CHARACTER*1        TRANSA, TRANSB
+     *      INTEGER            M, N, K, LDA, LDB, LDC
+     *      DOUBLE PRECISION   ALPHA, BETA
+     *     .. Array Arguments ..
+     *      DOUBLE PRECISION   A(LDA, *), B(LDB, *), C(LDC, *)
+     *     ..
+     *
+     *  Purpose
+     *  =======
+     *
+     *  DGEMM  performs one of the matrix-matrix operations
+     *
+     *     C := alpha*op(A)*op(B) + beta*C,
+     *
+     *  where  op(X) is one of
+     *
+     *     op(X) = X   or   op(X) = X',
+     *
+     *  alpha and beta are scalars, and A, B and C are matrices, with op(A)
+     *  an m by k matrix,  op(B)  a  k by n matrix and  C an m by n matrix.
+     *
+     *  Parameters
+     *  ==========
+     *
+     *  TRANSA - CHARACTER*1.
+     *           On entry, TRANSA specifies the form of op(A) to be used in
+     *           the matrix multiplication as follows:
+     *
+     *              TRANSA = 'N' or 'n',  op(A) = A.
+     *
+     *              TRANSA = 'T' or 't',  op(A) = A'.
+     *
+     *              TRANSA = 'C' or 'c',  op(A) = A'.
+     *
+     *           Unchanged on exit.
+     *
+     *  TRANSB - CHARACTER*1.
+     *           On entry, TRANSB specifies the form of op(B) to be used in
+     *           the matrix multiplication as follows:
+     *
+     *              TRANSB = 'N' or 'n',  op(B) = B.
+     *
+     *              TRANSB = 'T' or 't',  op(B) = B'.
+     *
+     *              TRANSB = 'C' or 'c',  op(B) = B'.
+     *
+     *           Unchanged on exit.
+     *
+     *  M      - INTEGER.
+     *           On entry,  M  specifies  the number  of rows  of the  matrix
+     *           op(A)  and of the  matrix  C.  M  must  be at least  zero.
+     *           Unchanged on exit.
+     *
+     *  N      - INTEGER.
+     *           On entry,  N  specifies the number  of columns of the matrix
+     *           op(B) and the number of columns of the matrix C. N must be
+     *           at least zero.
+     *           Unchanged on exit.
+     *
+     *  K      - INTEGER.
+     *           On entry,  K  specifies  the number of columns of the matrix
+     *           op(A) and the number of rows of the matrix op(B). K must
+     *           be at least  zero.
+     *           Unchanged on exit.
+     *
+     *  ALPHA  - DOUBLE PRECISION.
+     *           On entry, ALPHA specifies the scalar alpha.
+     *           Unchanged on exit.
+     *
+     *  A      - DOUBLE PRECISION array of DIMENSION (LDA, ka), where ka is
+     *           k  when  TRANSA = 'N' or 'n',  and is  m  otherwise.
+     *           Before entry with  TRANSA = 'N' or 'n',  the leading  m by k
+     *           part of the array  A  must contain the matrix  A,  otherwise
+     *           the leading  k by m  part of the array  A  must contain  the
+     *           matrix A.
+     *           Unchanged on exit.
+     *
+     *  LDA    - INTEGER.
+     *           On entry, LDA specifies the first dimension of A as declared
+     *           in the calling (sub) program. When  TRANSA = 'N' or 'n' then
+     *           LDA must be at least  max(1, m), otherwise  LDA must be at
+     *           least  max(1, k).
+     *           Unchanged on exit.
+     *
+     *  B      - DOUBLE PRECISION array of DIMENSION (LDB, kb), where kb is
+     *           n  when  TRANSB = 'N' or 'n',  and is  k  otherwise.
+     *           Before entry with  TRANSB = 'N' or 'n',  the leading  k by n
+     *           part of the array  B  must contain the matrix  B,  otherwise
+     *           the leading  n by k  part of the array  B  must contain  the
+     *           matrix B.
+     *           Unchanged on exit.
+     *
+     *  LDB    - INTEGER.
+     *           On entry, LDB specifies the first dimension of B as declared
+     *           in the calling (sub) program. When  TRANSB = 'N' or 'n' then
+     *           LDB must be at least  max(1, k), otherwise  LDB must be at
+     *           least  max(1, n).
+     *           Unchanged on exit.
+     *
+     *  BETA   - DOUBLE PRECISION.
+     *           On entry,  BETA  specifies the scalar  beta.  When  BETA  is
+     *           supplied as zero then C need not be set on input.
+     *           Unchanged on exit.
+     *
+     *  C      - DOUBLE PRECISION array of DIMENSION (LDC, n).
+     *           Before entry, the leading  m by n  part of the array  C must
+     *           contain the matrix  C,  except when  beta  is zero, in which
+     *           case C need not be set on entry.
+     *           On exit, the array  C  is overwritten by the  m by n  matrix
+     *           (alpha*op(A)*op(B) + beta*C).
+     *
+     *  LDC    - INTEGER.
+     *           On entry, LDC specifies the first dimension of C as declared
+     *           in  the  calling  (sub)  program.   LDC  must  be  at  least
+     *           max(1, m).
+     *           Unchanged on exit.
+     *
+     *
+     *  Level 3 Blas routine.
+     */
 
-    for (i = 0; i < rNo; i++)
-      for (j = 0; j < iNo; j++)
-        {
-          sum = &tmp(i, j);
-          *sum = E(i, j);
+    // tmp = (E1, E2) (I, L0')' = E1 + E2 * L0
+    dgemm_(&T, &T, &M, &N, &K, &Alpha, const_cast<C_FLOAT64 *>(L.array()), &M,
+           E.array() + M, &LD, &Beta, tmp.array(), &LD);
 
-          for (k = iNo; k < mNo; k++)
-            *sum += E(i, k) * L(k, j);
-        }
+    Beta = 0.0;
 
-    for (i = 0; i < iNo; i++)
-      for (j = 0; j < iNo; j++)
-        {
-          sum = &jacobian(i, j);
-          *sum = 0.0;
-
-          for (k = 0; k < rNo; k++)
-            *sum += redStoi(i, k) * tmp(k, j);
-        }
+    // j = R * tmp
+    dgemm_(&T, &T, &M, &M, &N, &Alpha, tmp.array(), &LD,
+           const_cast<C_FLOAT64 *>(redStoi.array()), &N, &Beta, jacobian.array(), &M);
   }
 
 void CStateX::updateDependentNumbers()
@@ -514,56 +681,18 @@ void CStateX::updateDependentNumbers()
   this->check("update dependent numbers");
 #endif
 
-  mpModel->updateDepMetabNumbers(*this);
-}
+  const_cast<CModel *>(mpModel)->setStateX(this);
 
-/*void CStateX::getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
-                                   const C_FLOAT64 & factor,
-                                   const C_FLOAT64 & resolution)
-{
-  unsigned C_INT32 i, j, dim = mVariableNumbers.size();
-  C_FLOAT64 * x =
-    const_cast<C_FLOAT64 *>(mVariableNumbers.array());
-  jacobian.resize(dim, dim);
- 
-  // constants for differentiation by finite differences
-  C_FLOAT64 K1 = 1 + factor;
-  C_FLOAT64 K2 = 1 - factor;
-  C_FLOAT64 K3 = 2 * factor;
- 
-  C_FLOAT64 store, temp;
-  CVector< C_FLOAT64 > f1(dim);
-  CVector< C_FLOAT64 > f2(dim);
- 
-  for (i = 0; i < dim; i++)
-    {
-      // if x[i] is zero, the derivative will be calculated at a small
-      // positive value (no point in considering negative values!).
-      // let's stick with SSRes*(1.0+DerivFactor)
-      store = x[i];
- 
-      if (store < resolution)
-        temp = resolution * K1;
-      else
-        temp = store;
- 
-      x[i] = temp * K1;
-      const_cast<CModel *>(mpModel)->getDerivatives(this, f1);
- 
-      x[i] = temp * K2;
-      const_cast<CModel *>(mpModel)->getDerivatives(this, f2);
- 
-      for (j = 0; j < dim; j++)
-        jacobian[j][i] = (f1[j] - f2[j]) / (temp * K3);
- 
-      x[i] = store;
-    }
- 
-  // We need this to reset the model (a bad hack)
-  const_cast<CModel *>(mpModel)->getDerivatives(this, f2);
- 
-  return;
-}*/
+  C_FLOAT64 * Tmp = mDependentNumbers.array();
+
+  CCopasiVector< CMetab >::const_iterator it =
+    mpModel->getMetabolitesX().begin() + mpModel->getNumIndependentMetabs();
+  CCopasiVector< CMetab >::const_iterator end =
+    it + mpModel->getNumDependentMetabs();
+
+  for (; it != end; ++it, Tmp++)
+    *Tmp = (*it)->getValue();
+}
 
 void CStateX::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
                                         const C_FLOAT64 & factor,
@@ -572,29 +701,34 @@ void CStateX::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
 #ifdef COPASI_DEBUG
     this->check("calculate elasticities");
 #endif
+
     const_cast<CModel *>(mpModel)->setStateX(this);
-    const CCopasiVector< CReaction > & Reactions = mpModel->getReactionsX();
-    unsigned C_INT32 i, imax = Reactions.size();
 
-    const CCopasiVector< CMetab > & Metabolites = mpModel->getMetabolitesX();
-    unsigned C_INT32 j, jmax = mpModel->getNumVariableMetabs();
+    unsigned C_INT32 i;
+    const unsigned C_INT32 nCol = elasticityMatrix.numCols();
 
-    C_FLOAT64 * x;
-    C_FLOAT64 invVolume;
+    C_FLOAT64 * itE;
+    C_FLOAT64 * startE = const_cast<C_FLOAT64 *>(elasticityMatrix.array());
 
-    for (j = 0; j < jmax; j++)
+    CCopasiVector< CReaction >::const_iterator itReaction;
+    CCopasiVector< CReaction >::const_iterator startReaction = mpModel->getReactions().begin();
+    CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
+
+    CCopasiVector< CMetab >::const_iterator itMetab;
+    CCopasiVector< CMetab >::const_iterator startMetab = mpModel->getMetabolitesX().begin();
+    CCopasiVector< CMetab >::const_iterator endMetab = startMetab + mpModel->getNumVariableMetabs();
+
+    for (itMetab = startMetab, i = 0; itMetab != endMetab; ++itMetab, i++)
       {
-        x = const_cast< C_FLOAT64 * >(&Metabolites[j]->getConcentration());
-        invVolume = Metabolites[j]->getCompartment()->getVolumeInv();
+        C_FLOAT64 & X = *const_cast<C_FLOAT64 *>(&(*itMetab)->getConcentration());
+        const C_FLOAT64 & invVolume = (*itMetab)->getCompartment()->getVolumeInv();
 
-        for (i = 0; i < imax; i++)
-          {
-            elasticityMatrix(i, j) = invVolume *    // * UnitFactor/UnitFactor
-                                     Reactions[i]->calculatePartialDerivative(*x, factor, resolution);
-          }
+        for (itReaction = startReaction, itE = startE + i;
+             itReaction != endReaction;
+             ++itReaction, itE += nCol)
+          * itE = invVolume * (*itReaction)->calculatePartialDerivative(X, factor, resolution);
       }
 
-    //    DebugFile << "Elasiticity Matrix: " << elasticityMatrix << std::endl;
     return;
   }
 

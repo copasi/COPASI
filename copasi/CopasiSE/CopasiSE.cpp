@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:42:51 $
+   $Date: 2006/02/14 14:35:21 $
    End CVS Header */
 
 // Main
@@ -18,7 +18,11 @@
 
 #define COPASI_MAIN
 
+#include "copasilicense.h"
+#include "copasiversion.h"
+
 #include "copasi.h"
+
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
@@ -44,13 +48,15 @@ int main(int argc, char *argv[])
 
 #ifdef XXXX
   C_FLOAT64 sparseness = 0.00;
-  SparseMatrixTest(10, sparseness);
-  SparseMatrixTest(25, sparseness);
-  SparseMatrixTest(50, sparseness);
-  SparseMatrixTest(100, sparseness);
-  SparseMatrixTest(250, sparseness);
-  SparseMatrixTest(500, sparseness);
-  SparseMatrixTest(1000, sparseness);
+  SparseMatrixTest(10, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(25, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(50, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(100, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(250, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(500, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(1000, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(2500, sparseness, 0, false, true, true, false);
+  SparseMatrixTest(5000, sparseness, 0, false, true, true, false);
 
   return 0;
 #endif // XXXX
@@ -75,6 +81,15 @@ int main(int argc, char *argv[])
     {
       Error << CDirEntry::baseName(argv[0]) << ": " << e.what() << "\n";
       Error << e.get_help_comment() << std::endl;
+    }
+
+  bool License;
+  COptions::getValue("License", License);
+
+  if (License)
+    {
+      std::cout << CopasiLicense << std::endl;
+      return 0;
     }
 
   try
@@ -130,8 +145,8 @@ int main(int argc, char *argv[])
               pFunction->calcValue(Variables);
         }
 
-      pCPU->actualize();
-      pWall->actualize();
+      pCPU->refresh();
+      pWall->refresh();
 
       std::cout << "CPU time:  ";
       pCPU->print(&std::cout);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:25:04 $
+   $Date: 2006/02/14 14:35:31 $
    End CVS Header */
 
 #include <algorithm>
@@ -164,10 +164,15 @@ CNewtonMethod::processInternal()
   bool stepLimitReached = false;
   C_FLOAT64 Duration;
 
-  CTrajectoryProblem * pTrajectoryProblem =
-    dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
-  assert(pTrajectoryProblem);
-  pTrajectoryProblem->setStepNumber(1);
+  CTrajectoryProblem * pTrajectoryProblem;
+
+  if (mpTrajectory)
+    {
+      pTrajectoryProblem =
+        dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
+      assert(pTrajectoryProblem);
+      pTrajectoryProblem->setStepNumber(1);
+    }
 
   if (mUseIntegration)
     {
@@ -206,10 +211,10 @@ CNewtonMethod::processInternal()
           if (containsNaN())
             break;
 
-          if (!(allPositive() || mAcceptNegative))
+          if (!(mAcceptNegative || allPositive()))
             break;
 
-          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
+          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt.array());
 
           if (isSteadyState(targetFunction(mdxdt)))
             {
@@ -271,10 +276,10 @@ CNewtonMethod::processInternal()
           if (containsNaN())
             break;
 
-          if (!(allPositive() || mAcceptNegative))
+          if (!(mAcceptNegative || allPositive()))
             break;
 
-          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
+          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt.array());
           if (isSteadyState(targetFunction(mdxdt)))
             {
               *mpSteadyState = *mpSteadyStateX; //convert back to CState
@@ -312,7 +317,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
   C_INT32 i, j, k;
   C_FLOAT64 oldMaxRate, newMaxRate;
 
-  const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
+  const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt.array());
   oldMaxRate = targetFunction(mdxdt);
   if (isSteadyState(oldMaxRate))
     return returnNewton(CNewtonMethod::found);
@@ -475,20 +480,24 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
       newMaxRate = oldMaxRate * 1.001;
 
       // copy values of increment to h
-      for (i = 0; i < mDimension; i++)
-        mH[i] = mdxdt[i];
+      mH = mdxdt;
 
       //repeat till the new max rate is smaller than the old and all concentrations are positive.
       //max 32 times
-      for (i = 0; (i < 32) && !((newMaxRate < oldMaxRate) && (allPositive() || mAcceptNegative)); i++)
+      for (i = 0; (i < 32) && !((newMaxRate < oldMaxRate) && (mAcceptNegative || allPositive())); i++)
         {
-          for (j = 0; j < mDimension; j++)
+          C_FLOAT64 * pX = mX->array();
+          C_FLOAT64 * pXold = mXold.array();
+          C_FLOAT64 * pH = mH.array();
+          C_FLOAT64 * pEnd = pH + mDimension;
+
+          for (; pH != pEnd; ++pH, ++pX, ++pXold)
             {
-              (*mX)[j] = mXold[j] - mH[j];
-              mH[j] /= 2;
+              *pX = *pXold - *pH;
+              (*pH) *= 0.5;
             }
 
-          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
+          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt.array());
           newMaxRate = targetFunction(mdxdt);
 
           mpParentTask->doOutput();
@@ -504,10 +513,10 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
           //discard the step
           *mX = mXold; //memcpy(mX->array(), mXold.array(), mDimension * sizeof(C_FLOAT64));
 
-          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt);
+          const_cast<CModel *>(mpSteadyStateX->getModel())->getDerivativesX_particles(mpSteadyStateX, mdxdt.array());
           oldMaxRate = targetFunction(mdxdt);
 
-          if (isSteadyState(oldMaxRate))
+          if (isSteadyState(oldMaxRate) && (mAcceptNegative || allPositive()))
             ReturnCode = CNewtonMethod::found;
           else if (oldMaxRate < mScaledResolution)
             ReturnCode = CNewtonMethod::notFound;
@@ -524,8 +533,6 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
       oldMaxRate = newMaxRate;
     }
 
-  if (mpProgressHandler) mpProgressHandler->finish(hProcess);
-
   if (isSteadyState(oldMaxRate))
     ReturnCode = CNewtonMethod::found;
   else if (oldMaxRate < mScaledResolution)
@@ -537,21 +544,43 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
   return returnNewton(ReturnCode);
 }
 
-bool CNewtonMethod::allPositive() const
-  {
-    C_INT32 i, imax = mX->size();
-    for (i = 0; i < imax; ++i)
-      if ((*mX)[i] < 0) return false;
+bool CNewtonMethod::allPositive()
+{
+  C_FLOAT64 ParticleResolution =
+    - mResolution * mpSteadyStateX->getModel()->getQuantity2NumberFactor();
 
-    return true;
-  }
+  const C_FLOAT64 * pIt = mX->array();
+  const C_FLOAT64 * pEnd = pIt + mX->size();
+  CCopasiVector< CMetab >::const_iterator itMetab
+  = mpSteadyStateX->getModel()->getMetabolitesX().begin();
+
+  for (; pIt != pEnd; ++pIt, itMetab++)
+    if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getVolume())
+      return false;
+
+  // This is necessarry since the dependent numbers are ignored during calculation.
+  mpSteadyStateX->updateDependentNumbers();
+
+  pIt = mpSteadyStateX->getDependentNumberVector().array();
+  pEnd = pIt + mpSteadyStateX->getDependentNumberVector().size();
+
+  for (; pIt != pEnd; ++pIt, itMetab++)
+    if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getVolume())
+      return false;
+
+  return true;
+}
 
 bool CNewtonMethod::containsNaN() const
   {
     //checks for NaNs
+    const C_FLOAT64 * pIt = mX->array();
+    const C_FLOAT64 * pEnd = pIt + mX->size();
     C_INT32 i, imax = mX->size();
-    for (i = 0; i < imax; ++i)
-      if (isnan((*mX)[i])) return true;
+
+    for (; pIt != pEnd; ++pIt)
+      if (isnan(*pIt))
+        return true;
 
     return false;
   }
@@ -561,6 +590,9 @@ CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode)
 {
   mpProblem->getModel()->setStateX(mpSteadyStateX);
   mpProblem->getModel()->updateRates();
+
+  // This is necessarry since the dependent numbers are ignored during calculation.
+  mpSteadyStateX->updateDependentNumbers();
   *mpSteadyState = *mpSteadyStateX; //convert back to CState
 
   return returnCode;
@@ -568,10 +600,10 @@ CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode)
 
 bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
 {
-  if (containsNaN())
+  if (value > mScaledResolution)
     return false;
 
-  if (value > mScaledResolution)
+  if (containsNaN())
     return false;
 
   return true;
@@ -579,19 +611,22 @@ bool CNewtonMethod::isSteadyState(C_FLOAT64 value)
 
 C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particlefluxes) const
   {
-    const CCopasiVector<CMetab> & metabs = mpSteadyStateX->getModel()->getMetabolitesInd();
     const C_FLOAT64 & factor = mpSteadyStateX->getModel()->getNumber2QuantityFactor();
 
     C_FLOAT64 tmp, store = 0;
 
-    C_INT32 i, imax = metabs.size();
-    for (i = 0; i < imax; ++i)
+    const C_FLOAT64 * pIt = particlefluxes.array();
+    const C_FLOAT64 * pEnd = pIt + particlefluxes.size();
+    CCopasiVector< CMetab >::const_iterator itMetab
+    = mpSteadyStateX->getModel()->getMetabolitesX().begin();
+
+    for (; pIt != pEnd; ++pIt, itMetab++)
       {
-        tmp = fabs(/*mdxdt*/particlefluxes[i] * metabs[i]->getCompartment()->getVolumeInv() * factor);
+        tmp = fabs(*pIt * (*itMetab)->getCompartment()->getVolumeInv() * factor);
         if (tmp > store)
           store = tmp;
-        //std::cout << metabs[i]->getObjectName() << "  " << tmp << std::endl;
       }
+
     return store;
   }
 

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.47 $ $Author: nsimus $ $Date: 2006/01/24 12:42:32 $  
+# $Revision: 1.48 $ $Author: shoops $ $Date: 2006/02/14 14:35:19 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -21,12 +21,31 @@ DEFINES+=LIBSBML_STATIC
 CONFIG += exceptions
 CONFIG += rtti
 
+# COPASI License to use
+DEFINES += COPASI_LICENSE_US
+DEFINES -= COPASI_LICENSE_DE
+contains(USE_LICENSE, DE) {
+  DEFINES += COPASI_LICENSE_DE
+  DEFINES -= COPASI_LICENSE_US
+}
+
 debug {
   DEFINES += COPASI_DEBUG
   DEFINES += COPASI_TSS
 }
 
 !contains(BUILD_OS, WIN32) {
+  #Release code optimization
+  QMAKE_CFLAGS_RELEASE -= -O1
+  QMAKE_CFLAGS_RELEASE -= -O2
+  QMAKE_CFLAGS_RELEASE -= -O4
+  QMAKE_CFLAGS_RELEASE += -O3
+
+  QMAKE_CXXFLAGS_RELEASE -= -O1
+  QMAKE_CXXFLAGS_RELEASE -= -O2
+  QMAKE_CXXFLAGS_RELEASE -= -O4
+  QMAKE_CXXFLAGS_RELEASE += -O3
+
   QMAKE_QMAKE = $(QTDIR)/bin/qmake
   QMAKE_LEX = ../../admin/flex.sh
   QMAKE_YACC = ../../admin/yacc.sh
@@ -101,6 +120,13 @@ contains(BUILD_OS, WIN32) {
     QMAKE_LFLAGS_CONSOLE += /NODEFAULTLIB:"msvcrt.lib"
   }
 
+  #Release code optimization
+  QMAKE_CFLAGS_RELEASE -= -O1
+  QMAKE_CFLAGS_RELEASE += -O2
+
+  QMAKE_CXXFLAGS_RELEASE -= -O1
+  QMAKE_CXXFLAGS_RELEASE += -O2
+
   !isEmpty(MKL_PATH) {
     DEFINES += USE_MKL
     QMAKE_CXXFLAGS_DEBUG   += -I"$${MKL_PATH}\include"
@@ -166,7 +192,7 @@ contains(BUILD_OS, SunOS) {
   } else {
     !isEmpty(LAPACK_PATH) {
       message("Using lapack.")
-      DEFINES += USE_CLAPACK
+      DEFINES += USE_LAPACK
       INCLUDEPATH += $${LAPACK_PATH}/include
       LIBS += -llapack -lblas  -lg2c
       LIBS += -L$${LAPACK_PATH}/lib
@@ -233,7 +259,7 @@ contains(BUILD_OS, Linux) {
     } else {
       !isEmpty(LAPACK_PATH) {
         message("Using lapack.")
-        DEFINES += USE_CLAPACK
+        DEFINES += USE_LAPACK
         INCLUDEPATH += $${LAPACK_PATH}/include
         LIBS += -llapack -lblas  -lg2c
         LIBS += -L$${LAPACK_PATH}/lib

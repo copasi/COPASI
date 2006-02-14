@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/31 09:43:16 $
+   $Author: shoops $ 
+   $Date: 2006/02/14 14:35:29 $
    End CVS Header */
 
 #include "model/CModel.h"
@@ -39,6 +39,8 @@ void CPlotSpecification::initObjects()
   CCopasiContainer::addObjectReference("Active", mActive, CCopasiObject::ValueBool);
 }
 
+//*************************************
+
 void CPlotSpecification::setActive(bool act)
 {
   //std::cout << "plotspec::setActive " << act << std::endl;
@@ -50,6 +52,28 @@ bool CPlotSpecification::isActive() const
     //std::cout << "plotspec::getActive " << mActive << std::endl;
     return mActive;
   }
+
+bool CPlotSpecification::isLogX() const
+  {
+    return *getValue("log X").pBOOL;
+  }
+
+bool CPlotSpecification::isLogY() const
+  {
+    return *getValue("log Y").pBOOL;
+  }
+
+void CPlotSpecification::setLogX(bool l)
+{
+  setValue("log X", l);
+}
+
+void CPlotSpecification::setLogY(bool l)
+{
+  setValue("log Y", l);
+}
+
+//*************************************
 
 CPlotItem* CPlotSpecification::createItem(const std::string & name, CPlotItem::Type type)
 {
@@ -77,7 +101,7 @@ bool CPlotSpecification::createDefaultPlot(const CModel* model)
   const CCopasiObject * tmp;
 
   CPlotDataChannelSpec name1 = model->getObject(CCopasiObjectName("Reference=Time"))->getCN();
-  std::cout << name1 << std::endl;
+  //std::cout << name1 << std::endl;
 
   unsigned C_INT32 i, imax = model->getMetabolites().size();
   for (i = 0; i < imax; ++i)

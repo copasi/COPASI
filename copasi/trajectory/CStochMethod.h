@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:49 $
+   $Date: 2006/02/14 14:35:31 $
    End CVS Header */
 
 #ifndef COPASI_CStochMethod
@@ -187,21 +187,15 @@ class CStochMethod : public CTrajectoryMethod
      *  The new state (after deltaT) is expected in the current state.
      *  The return value is the actual timestep taken.
      *  @param "const double &" deltaT
-     *  @return "const double" actualDeltaT
      */
-    const double step(const double & deltaT);
+    virtual void step(const double & deltaT);
 
     /**
-     *  This instructs the method to calculate a time step of deltaT
+     *  This instructs the method to prepare for integration
      *  starting with the initialState given.
-     *  Also initialization of the method is done.
-     *  The new state (after deltaT) is expected in the current state.
-     *  The return value is the actual timestep taken.
-     *  @param "double &" deltaT
      *  @param "const CState *" initialState
-     *  @return "const double" actualDeltaT
      */
-    const double step(const double & deltaT, const CState * initialState);
+    virtual void start(const CState * initialState);
 
     /**
     * Check if the method is suitable for this problem

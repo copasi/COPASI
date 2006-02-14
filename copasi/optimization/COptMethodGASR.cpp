@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/22 13:36:25 $
+   $Date: 2006/02/14 14:35:27 $
    End CVS Header */
 
 #include <float.h>
@@ -281,28 +281,48 @@ bool COptMethodGASR::select()
   return true;
 }
 
-// evaluate the distance ofparameters to boundaries
+// evaluate the distance of parameters and constraints to boundaries
 C_FLOAT64 COptMethodGASR::phi(C_INT32 indivNum)
 {
   C_FLOAT64 phiVal = 0.0;
   C_FLOAT64 phiCalc;
-  unsigned C_INT32 i;
 
-  for (i = 0; i < mVariableSize; i++)
+  std::vector< COptItem * >::const_iterator it = mpOptItem->begin();
+  std::vector< COptItem * >::const_iterator end = mpOptItem->end();
+  C_FLOAT64 * pValue = mIndividual[indivNum]->array();
+
+  for (; it != end; ++it, pValue++)
     {
-      COptItem & OptItem = *(*mpOptItem)[i];
-      C_FLOAT64 & value = (*mIndividual[indivNum])[i];
-
-      if (!OptItem.checkLowerBound(value))
+      switch ((*it)->checkConstraint())
         {
-          phiCalc = *OptItem.getLowerBoundValue() - value;
+        case - 1:
+          phiCalc = *(*it)->getLowerBoundValue() - *pValue;
           phiVal += phiCalc * phiCalc;
+          break;
+
+        case 1:
+          phiCalc = *pValue - *(*it)->getUpperBoundValue();
+          phiVal += phiCalc * phiCalc;
+          break;
         }
+    }
 
-      if (!OptItem.checkUpperBound(value))
+  it = mpOptContraints->begin();
+  end = mpOptContraints->end();
+
+  for (; it != end; ++it)
+    {
+      switch ((*it)->checkConstraint())
         {
-          phiCalc = value - *OptItem.getUpperBoundValue();
+        case - 1:
+          phiCalc = *(*it)->getLowerBoundValue() - *(*it)->getObjectValue();
           phiVal += phiCalc * phiCalc;
+          break;
+
+        case 1:
+          phiCalc = *(*it)->getObjectValue() - *(*it)->getUpperBoundValue();
+          phiVal += phiCalc * phiCalc;
+          break;
         }
     }
 

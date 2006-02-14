@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/20 19:25:07 $
+   $Date: 2006/02/14 14:35:32 $
    End CVS Header */
 
 /**
@@ -26,6 +26,31 @@ class CTrajectoryProblem : public CCopasiProblem
   {
     // Attributes
   private:
+    /**
+     *
+     */
+    C_FLOAT64 * mpDuration;
+
+    /**
+     *
+     */
+    C_FLOAT64 * mpStepSize;
+
+    /**
+     *
+     */
+    unsigned C_INT32 * mpStepNumber;
+
+    /**
+     *
+     */
+    bool * mpTimeSeriesRequested;
+
+    /**
+     *
+     */
+    C_FLOAT64 * mpOutputStartTime;
+
     /**
      *  Indicate whether the step number or step size was set last.
      */
@@ -75,7 +100,7 @@ class CTrajectoryProblem : public CCopasiProblem
      * @param "const unsigned C_INT32 &" stepNumber
      * @parem bool success
      */
-    bool setStepNumber(const unsigned C_INT32 & stepNumber);
+    void setStepNumber(const unsigned C_INT32 & stepNumber);
 
     /**
      * Retrieve the number of time steps the trajectory method should integrate.
@@ -88,7 +113,7 @@ class CTrajectoryProblem : public CCopasiProblem
      * @param "const C_FLOAT64 &" stepSize
      * @parem bool success
      */
-    bool setStepSize(const C_FLOAT64 & stepSize);
+    void setStepSize(const C_FLOAT64 & stepSize);
 
     /**
      * Retrieve the size a integration step the trajectory method should do.
@@ -101,7 +126,7 @@ class CTrajectoryProblem : public CCopasiProblem
      * @param "const C_FLOAT64 &" duration
      * @parem bool success
      */
-    bool setDuration(const C_FLOAT64 & duration);
+    void setDuration(const C_FLOAT64 & duration);
 
     /**
      * Retrieve the end time.

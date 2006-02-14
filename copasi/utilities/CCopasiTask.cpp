@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/11 12:40:26 $
+   $Date: 2006/02/14 14:35:33 $
    End CVS Header */
 
 /**
@@ -33,7 +33,7 @@ const std::string CCopasiTask::TypeName[] =
     "Scan",
     "Elementary Flux Modes",
     "Optimization",
-    "Parameter Fitting",
+    "Parameter Estimation",
     "Metabolic Control Analysis",
     "Time scale separation",
     "Sensitivities",
@@ -240,9 +240,9 @@ bool CCopasiTask::restore()
     {
       if (mpInitialState)
         mpProblem->getModel()->setInitialState(mpInitialState);
-
-      mpProblem->restore();
     }
+
+  mpProblem->restore(mUpdateModel);
 
   return true;
 }

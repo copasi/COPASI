@@ -1,12 +1,95 @@
 #!/bin/bash
 pushd ../..
 
+AdvancedInstallerPath="/cygdrive/c/Program Files/Caphyon/Advanced Installer"
+
 if [ x"$#" = x1 ]; then
+  major=`gawk -- '$2 ~ "VERSION_MAJOR" {print $3}' copasi/copasiversion.h`
+  minor=`gawk -- '$2 ~ "VERSION_MINOR" {print $3}' copasi/copasiversion.h`
   build=`gawk -- '$2 ~ "VERSION_BUILD" {print $3}' copasi/copasiversion.h`
+
+  license=`gawk -- ' BEGIN {license = "US"} $0 ~ "USE_LICENSE=DE" {license = "DE"} END {print license} ' copasi/Makefile`
 
   case x"$1" in 
   xWIN32)
-    zip CopasiUI-$build-$1.zip CopasiUI.exe 
+    productcode=${major}${minor}${build}181D78B1
+    productcode=${productcode:0:8}
+
+    productversion=${major}.${minor}.${build}
+
+    [ -e setup ] && rm -rf setup
+    mkdir setup
+    cd setup
+
+    mkdir copasi
+    mkdir copasi/bin
+    mkdir copasi/share
+    mkdir copasi/share/copasi
+    mkdir copasi/share/copasi/doc
+    mkdir copasi/share/copasi/doc/html
+    mkdir copasi/share/copasi/doc/html/figures
+    mkdir copasi/share/copasi/examples
+    mkdir copasi/share/copasi/icons
+    chmod -R 755 copasi
+
+    cp ../README.$1 copasi/README.txt
+    chmod 644 copasi/README.txt
+
+    cp ../COPASI_License_${license}.txt copasi/LICENSE.txt
+    chmod 644 copasi/LICENSE.txt
+
+    cp ../copasi/CopasiUI/CopasiUI.exe  copasi/bin
+    chmod 755 copasi/bin/CopasiUI.exe
+
+    cp ../copasi/CopasiSE/CopasiSE.exe  copasi/bin
+    chmod 755 copasi/bin/CopasiSE.exe
+
+    cp ../TestSuite/distribution/* copasi/share/copasi/examples
+    chmod 444 copasi/share/copasi/examples/*
+
+    cp ../copasi/CopasiUI/icons/Copasi.ico copasi/share/copasi/icons
+    cp ../copasi/CopasiUI/icons/CopasiDoc.ico copasi/share/copasi/icons
+    chmod 644 copasi/share/copasi/icons/*
+
+    cp ../copasi/wizard/help_html/*.html copasi/share/copasi/doc/html
+    chmod 644 copasi/share/copasi/doc/html/*.html
+
+    cp ../copasi/wizard/help_html/figures/*.jpg \
+       copasi/share/copasi/doc/html/figures
+    chmod 644 copasi/share/copasi/doc/html/figures/*.jpg
+
+    cd ../admin
+
+#   replace defaults with COPASI bitmaps
+    mv -- \
+      "$AdvancedInstallerPath/resources/default-banner.bmp" \
+      "$AdvancedInstallerPath/resources/default-dialog.bmp" .
+    cp -- \
+       ../copasi/CopasiUI/icons/install_banner.bmp \
+       "$AdvancedInstallerPath/resources/default-banner.bmp"
+    cp -- \
+       ../copasi/CopasiUI/icons/install_dialog.bmp \
+       "$AdvancedInstallerPath/resources/default-dialog.bmp"
+
+#   modify product code, product version, and package name
+    sed -e '/ProductCode/s/{[0-9A-F]*/{'$productcode'/' \
+        -e '/ProductVersion/s/Value=".*"/Value="'$productversion'"/' \
+        -e '/PackageName/s/Copasi-.*-WIN32/Copasi-'$build'-'$1'/' \
+        copasi.aip > tmp.aip
+
+#   run Advanced Installer to create msi package
+    "$AdvancedInstallerPath/AdvancedInstaller" /build tmp.aip
+    rm tmp.aip
+
+#   restore defaults
+    mv -- \
+      default-banner.bmp default-dialog.bmp \
+      "$AdvancedInstallerPath/resources"
+
+#   assure proper access rights
+    chmod 644 ../Copasi-$build-$1.msi
+
+    cd ..
     ;;
 
   xDarwin)
@@ -81,6 +164,10 @@ echo "Set the icon in the Info.plist file."
     echo "Copying readme file."
     cp README_MAC.rtf ${TMPDIR}/copasi/COPASI-README.rtf
 
+# add the license to the image
+    echo "Copying license file."
+    cp COPASI_License_${license}.txt ${TMPDIR}/copasi/COPASI-LICENSE.txt
+
 # set the bundles flag with SetFile
     echo "Setting the bundle flag."
     ${SETFILE} -a b ${TMPDIR}/copasi/CopasiUI.app
@@ -100,7 +187,7 @@ echo "Set the icon in the Info.plist file."
     [ -e $build-$1 ] && rm -rf $build-$1
     mkdir $build-$1
     cd $build-$1
- 
+
     mkdir copasi
     mkdir copasi/bin
     mkdir copasi/share
@@ -115,6 +202,9 @@ echo "Set the icon in the Info.plist file."
     cp ../README.$1 copasi/README
     chmod 644 copasi/README
 
+    cp ../COPASI_License_${license}.txt copasi/LICENSE
+    chmod 644 copasi/LICENSE
+
     cp ../copasi/CopasiUI/CopasiUI  copasi/bin
     chmod 755 copasi/bin/CopasiUI
 
@@ -125,6 +215,7 @@ echo "Set the icon in the Info.plist file."
     chmod 444 copasi/share/copasi/examples/*
 
     cp ../copasi/CopasiUI/icons/Copasi??-Alpha.xpm copasi/share/copasi/icons
+    cp ../copasi/CopasiUI/icons/CopasiDoc??-Alpha.xpm copasi/share/copasi/icons
     chmod 644 copasi/share/copasi/icons/*
 
     cp ../copasi/wizard/help_html/*.html copasi/share/copasi/doc/html
@@ -145,13 +236,12 @@ echo "Set the icon in the Info.plist file."
     fi
 
     cd ..
-#    rm -rf $build-$1
     ;;
   esac
 
   scp Copasi-$build-$1*.* \
-      calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/alpha-test/$1
-#  rm Copasi-$build-$1*.*
+    calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/alpha-test/$1/$license
+
 else
   echo usage: mkbuild.sh BUILD_OS
 fi
