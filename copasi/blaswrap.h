@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/blaswrap.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:19 $
+   $Date: 2006/02/17 15:52:47 $
    End CVS Header */
 
 #ifndef __BLAS_H
@@ -25,7 +25,11 @@ extern "C"
 
 #if (defined USE_CLAPACK || defined USE_LAPACK)
 # ifdef USE_CLAPACK
+#  define daxpy_ f2c_daxpy
+#  define ddot_ f2c_ddot
 #  define dgemm_ f2c_dgemm
+#  define dscal_ f2c_dscal
+#  define idamax_ f2c_idamax
 # endif // USE_CLAPACK
 # include "f2c.h"
 # include "blas.h"
