@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Date: 2006/02/17 23:06:53 $
    End CVS Header */
 
 // CSate.cpp
@@ -518,8 +518,8 @@ void CStateX::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
 #ifdef COPASI_DEBUG
     this->check("calculate Jacobian");
 #endif
-    static CMatrix< C_FLOAT64 > E;
-    static CMatrix< C_FLOAT64 > tmp;
+    CMatrix< C_FLOAT64 > E;
+    CMatrix< C_FLOAT64 > tmp;
 
     const CMatrix< C_FLOAT64 > & L = mpModel->getL0();
     const CMatrix< C_FLOAT64 > & redStoi = mpModel->getRedStoi();
