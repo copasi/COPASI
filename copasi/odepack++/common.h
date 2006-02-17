@@ -1,0 +1,183 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/common.h,v $
+   $Revision: 1.1 $
+   $Name:  $
+   $Author: shoops $ 
+   $Date: 2006/02/17 15:18:55 $
+   End CVS Header */
+
+#ifndef ODEPACK_common
+ #define ODEPACK_common
+
+typedef void (*evalF)(C_INT*, double*, double*, double*);
+typedef void (*evalJ)(C_INT*, double*, double*, C_INT*,
+                      C_INT*, double*, C_INT*);
+
+union dls001 {
+    struct
+      {
+        double rowns[209], ccmax, el0, h__, hmin, hmxi, hu, rc, tn,
+        uround;
+        C_INT iownd[6], iowns[6], icf, ierpj, iersl, jcur, jstart, kflag, l,
+        lyh, lewt, lacor, lsavf, lwm, liwm, meth, miter, maxord,
+        maxcor, msbp, mxncf, n, nq, nst, nfe, nje, nqu;
+      }
+    _1;
+    struct
+      {
+        double rls[218];
+        C_INT ils[37];
+      }
+    _2;
+    struct
+      {
+        double conit, crate, el[13], elco[156] /* was [13][12] */,
+        hold, rmax, tesco[36] /* was [3][12] */, ccmax, el0, h__,
+        hmin, hmxi, hu, rc, tn, uround;
+        C_INT iownd[6], ialth, ipup, lmax, meo, nqnyh, nslp, icf, ierpj,
+        iersl, jcur, jstart, kflag, l, lyh, lewt, lacor, lsavf, lwm,
+        liwm, meth, miter, maxord, maxcor, msbp, mxncf, n, nq, nst,
+        nfe, nje, nqu;
+      }
+    _3;
+    struct
+      {
+        double rowns[209], ccmax, el0, h__, hmin, hmxi, hu, rc, tn, uround;
+        C_INT init, mxstep, mxhnil, nhnil, nslast, nyh, iowns[6], icf, ierpj,
+        iersl, jcur, jstart, kflag, l, lyh, lewt, lacor, lsavf, lwm, liwm,
+        meth, miter, maxord, maxcor, msbp, mxncf, n, nq, nst, nfe, nje,
+        nqu;
+      }
+    lsoda;
+  };
+
+union dlsa01 {
+    struct
+      {
+        double rownd2, cm1[12], cm2[5], pdest, pdlast, ratio, pdnorm;
+        C_INT iownd2[3], icount, irflag, jtyp, mused, mxordn, mxords;
+      }
+    _1;
+    struct
+      {
+        double rownd2, rowns2[20], pdnorm;
+        C_INT iownd2[3], iowns2[2], jtyp, mused, mxordn, mxords;
+      }
+    _2;
+    struct
+      {
+        double rlsa[22];
+        C_INT ilsa[9];
+      }
+    _3;
+    struct
+      {
+        double tsw, rowns2[20], pdnorm;
+        C_INT insufr, insufi, ixpr, iowns2[2], jtyp, mused, mxordn, mxords;
+      }
+    lsoda;
+  };
+
+class PJAC
+  {
+  public:
+    PJAC(C_INT (*pMethod)(C_INT *neq, double *y, double *yh,
+                          C_INT *nyh, double *ewt, double *ftem,
+                          double *savf, double *wm, C_INT *iwm,
+                          evalF f, evalJ jac));
+
+    virtual ~PJAC();
+
+    virtual C_INT operator() (C_INT *neq, double *y, double *yh,
+                              C_INT *nyh, double *ewt, double *ftem,
+                              double *savf, double *wm, C_INT *iwm,
+                              evalF f, evalJ jac);
+
+  protected:
+    PJAC();
+
+  private:
+    C_INT (*mpMethod)(C_INT *neq, double *y, double *yh,
+                      C_INT *nyh, double *ewt, double *ftem,
+                      double *savf, double *wm, C_INT *iwm,
+                      evalF f, evalJ jac);
+  };
+
+template <typename CType> class PJACFunctor : public PJAC
+  {
+  public:
+    PJACFunctor(CType * pType,
+                C_INT (CType::*pMethod)(C_INT *neq, double *y, double *yh,
+                                        C_INT *nyh, double *ewt, double *ftem,
+                                        double *savf, double *wm, C_INT *iwm,
+                                        evalF f, evalJ jac)):
+        PJAC(),
+        mpType(pType),
+        mpMethod(pMethod)
+    {}
+
+    virtual ~PJACFunctor() {}
+
+    virtual C_INT operator() (C_INT *neq, double *y, double *yh,
+                              C_INT *nyh, double *ewt, double *ftem,
+                              double *savf, double *wm, C_INT *iwm,
+                              evalF f, evalJ jac)
+    {
+      return (*mpType.*mpMethod)(neq, y, yh, nyh, ewt, ftem, savf, wm,
+                                 iwm, f, jac);
+    }
+
+  protected:
+    PJACFunctor() : PJAC(), mpType(NULL), mpMethod(NULL) {}
+
+  private:
+    CType * mpType;
+    C_INT (CType::*mpMethod)(C_INT *neq, double *y, double *yh,
+                             C_INT *nyh, double *ewt, double *ftem,
+                             double *savf, double *wm, C_INT *iwm,
+                             evalF f, evalJ jac);
+  };
+
+class SLVS
+  {
+  public:
+    SLVS(C_INT (*pMethod)(double *wm, C_INT *iwm, double *x, double *tem));
+
+    virtual ~SLVS();
+
+    virtual C_INT operator() (double *wm, C_INT *iwm, double *x, double *tem);
+
+  protected:
+    SLVS();
+
+  private:
+    C_INT (*mpMethod)(double *wm, C_INT *iwm, double *x, double *tem);
+  };
+
+template <typename CType> class SLVSFunctor : public SLVS
+  {
+  public:
+    SLVSFunctor(CType * pType,
+                C_INT (CType::*pMethod)(double *wm, C_INT *iwm, double *x,
+                                        double *tem)):
+        SLVS(),
+        mpType(pType),
+        mpMethod(pMethod)
+    {}
+
+    virtual ~SLVSFunctor() {}
+
+    virtual C_INT operator() (double *wm, C_INT *iwm, double *x,
+                              double *tem)
+    {return (*mpType.*mpMethod)(wm, iwm, x, tem);}
+
+  protected:
+    SLVSFunctor() : SLVS(), mpType(NULL), mpMethod(NULL) {}
+
+  private:
+    CType * mpType;
+    C_INT (CType::*mpMethod)(double *wm, C_INT *iwm, double *x,
+                             double *tem);
+  };
+
+#endif // ODEPACK_common
