@@ -1,31 +1,31 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODA.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/17 15:18:54 $
+   $Date: 2006/02/17 15:51:31 $
    End CVS Header */
 
 #include <math.h>
- #include <float.h>
+#include <float.h>
 
 #include <algorithm>
- #include <string>
+#include <string>
 
 #include "copasi.h"
 
 #include "CLSODA.h"
- #include "Cxerrwd.h"
- #include "CInternalSolver.h"
- #include "common.h"
+#include "Cxerrwd.h"
+#include "CInternalSolver.h"
+#include "common.h"
 
 double d_sign(const double & a, const double & b);
 
 #include "dmnorm.h"
- #include "dewset.h"
+#include "dewset.h"
 
 #define dls001_1 (mpdls001_->lsoda)
- #define dlsa01_1 (mpdlsa01_->lsoda)
+#define dlsa01_1 (mpdlsa01_->lsoda)
 
 static double c_b76 = 0.0;
 
@@ -101,8 +101,8 @@ CLSODA::CLSODA():
   mpdls001_ = new dls001;
   mpdlsa01_ = new dlsa01;
   mpS = new CInternalSolver(mpxerrwd, *mpdls001_, *mpdlsa01_);
-  mpPJAC = new PJACFunctor<CInternalSolver>(mpS, mpS->dprja_);
-  mpSLVS = new SLVSFunctor<CInternalSolver>(mpS, mpS->dsolsy_);
+  mpPJAC = new PJACFunctor<CInternalSolver>(mpS, &CInternalSolver::dprja_);
+  mpSLVS = new SLVSFunctor<CInternalSolver>(mpS, &CInternalSolver::dsolsy_);
 }
 
 CLSODA::~CLSODA()
