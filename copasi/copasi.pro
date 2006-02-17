@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.14 $ $Author: ssahle $ $Date: 2005/10/11 16:28:05 $  
+# $Revision: 1.15 $ $Author: shoops $ $Date: 2006/02/17 23:05:01 $  
 ######################################################################
 
 include(common.pri)
@@ -14,6 +14,7 @@ SUBDIRS += function
 SUBDIRS += mathmodel
 SUBDIRS += model
 SUBDIRS += mml
+SUBDIRS += odepack++
 SUBDIRS += optimization
 SUBDIRS += parameterFitting
 SUBDIRS += plot
