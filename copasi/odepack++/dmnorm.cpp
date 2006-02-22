@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dmnorm.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/17 15:18:55 $
+   $Date: 2006/02/22 15:09:28 $
    End CVS Header */
 
 #include <math.h>
@@ -13,6 +13,18 @@
 #include "copasi.h"
 
 /* DECK DMNORM */
+double dmnorm_(C_INT *n, double *v, double *w)
+{
+  double vm = 0.0, tmp;
+  double *tv = v, *tw = w, *end = tv + *n;
+
+  for (; tv != end; tv, tw)
+    if ((tmp = fabs(*tv++) * *tw++) > vm) vm = tmp;
+
+  return vm;
+}
+
+#ifdef XXXX
 double dmnorm_(C_INT *n, double *v, double *w)
 {
   /* System generated locals */
@@ -47,3 +59,4 @@ double dmnorm_(C_INT *n, double *v, double *w)
   return ret_val;
   /* ----------------------- End of Function DMNORM ------------------------ */
 } /* dmnorm_ */
+#endif // XXXX
