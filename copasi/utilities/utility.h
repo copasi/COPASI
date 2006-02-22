@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:22:36 $
+   $Author: shoops $ 
+   $Date: 2006/02/22 15:14:07 $
    End CVS Header */
 
 #ifndef COPASI_utilities
@@ -68,77 +68,6 @@ std::string unQuote(const std::string & name);
  */
 std::string quote(const std::string & name,
                   const std::string & additionalEscapes = "");
-
-/**
- *
- */
-void dgefa(C_FLOAT64 ** a,
-           C_INT32 n,
-           C_INT32 * ipvt,
-           C_INT32 * info);
-
-/**
- *  Returns index of the componen the maximum of the absolute values of 
- *  the components of the vector dx. The vector dx is incremented (n-1) 
- *  times by the incx.
- *  @param "C_INT32" n number of elements in the vector dx
- *  @param "C_FLOAT64 *" dx (fortran style vector)
- *  @param "C_INT32" incx increment stepsize
- *  @return "C_INT32" index of the component with maximum of absolute values
- */
-C_INT32 idamax(C_INT32 n,
-               C_FLOAT64 * dx,
-               C_INT32 incx);
-
-/**
- *  Returns the maximum of the absolute values of the components of 
- *  the vector dx. The vector dx is incremented (n-1) times by the incx.
- *  @param "C_INT32" n number of elements in the vector dx
- *  @param "C_FLOAT64 *" dx (fortran style vector)
- *  @param "C_INT32" incx increment stepsize
- *  @return "C_FLOAT64" maximum of absolute values
- */
-C_FLOAT64 xNorm(C_INT32 n,
-                C_FLOAT64 * dx,
-                C_INT32 incx);
-
-/**
- *
- */
-void dgesl(C_FLOAT64 ** a,
-           C_INT32 n,
-           C_INT32 * ipvt,
-           C_FLOAT64 * b,
-           C_INT32 job);
-
-/**
- *
- */
-void daxpy(C_INT32 n,
-           C_FLOAT64 da,
-           C_FLOAT64 * dx,
-           C_INT32 incx,
-           C_FLOAT64 * dy,
-           C_INT32 incy);
-
-#ifdef XXXX 
-/**
- *
- */
-void lsoda_dscal(C_INT32 n,
-                 C_FLOAT64 da,
-                 C_FLOAT64 * dx,
-                 C_INT32 incx);
-#endif // XXXX
-
-/**
- *
- */
-C_FLOAT64 ddot(C_INT32 n,
-               C_FLOAT64 * dx,
-               C_INT32 incx,
-               C_FLOAT64 * dy,
-               C_INT32 incy);
 
 /*
  * Fixes a string to be a SName element from SBML
