@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:34 $
+   $Date: 2006/02/22 15:13:30 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -77,7 +77,7 @@ const MESSAGES Messages[] =
      "applicable, since more than one compartment is involved."},
     {MCTrajectoryMethod + 4, "CTrajectoryMethod (4): mLowerStochLimit ('%.2f') is greater than mUpperStochLimit ('%.2f')."},
     {MCTrajectoryMethod + 6, "CTrajectoryMethod (6): Deterministic integration failed. "
-     "LSODA reported: %s \n\nPlease see result for indications of numerical instability."},
+     "LSODA reported:\n%s \n\nPlease see result for indications of numerical instability."},
     {MCTrajectoryMethod + 7, "CTrajectoryMethod (7): pProblem == NULL"},
     {MCTrajectoryMethod + 8, "CTrajectoryMethod (8): Problem is not a trajectory problem."},
     {MCTrajectoryMethod + 9, "CTrajectoryMethod (9): Negative time steps not possible with stochastic simulation."},
