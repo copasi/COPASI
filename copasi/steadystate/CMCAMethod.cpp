@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/17 23:08:28 $
+   $Date: 2006/02/22 15:11:11 $
    End CVS Header */
 
 #include <cmath>
@@ -201,49 +201,30 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 1.0;
 
-  //  mUnscaledElasticities.resize(N, LD);
   aux1.resize(N, LD);
 
   memcpy(aux1.array(), mUnscaledElasticities.array(), N * LD * sizeof(C_FLOAT64));
-
-  DebugFile << "mUnscaledElasticities" << std::endl;
-  DebugFile << mUnscaledElasticities << std::endl;
-
-  DebugFile << "L" << std::endl;
-  DebugFile << mpModel->getL() << std::endl;
 
   // aux1 = (E1, E2) (I, L0')' = E1 + E2 * L0
   dgemm_(&T, &T, &M, &N, &K, &Alpha, const_cast<C_FLOAT64 *>(L.array()), &M,
          mUnscaledElasticities.array() + M, &LD, &Beta, aux1.array(), &LD);
 
-  DebugFile << "aux1" << std::endl;
-  DebugFile << aux1 << std::endl;
-
   Beta = 0.0;
 
   aux2.resize(M, M);
-
-  DebugFile << "redStoi" << std::endl;
-  DebugFile << redStoi << std::endl;
 
   // aux2 = R * aux1
   dgemm_(&T, &T, &M, &M, &N, &Alpha, aux1.array(), &LD,
          const_cast<C_FLOAT64 *>(redStoi.array()), &N, &Beta, aux2.array(), &M);
 
-  DebugFile << "aux2" << std::endl;
-  DebugFile << aux2 << std::endl;
-
-  // LU decomposition of aux2 (for inversion)
   CVector<C_INT> Ipiv(M);
 
+  // LU decomposition of aux2 (for inversion)
   dgetrf_(&M, &M, aux2.array(), &M, Ipiv.array(), &info);
-
-  if (info != 0)
-    return MCA_SINGULAR;
+  if (info != 0) return MCA_SINGULAR;
 
   C_INT lwork = -1; // Instruct dgetri_ to determine work array size.
-  CVector< C_FLOAT64 > work;
-  work.resize(1);
+  CVector< C_FLOAT64 > work(1);
 
   dgetri_(&M, aux2.array(), &M, Ipiv.array(), work.array(), &lwork, &info);
 
@@ -255,13 +236,11 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
   if (info != 0)
     return MCA_SINGULAR;
 
-  DebugFile << "aux2^-1" << std::endl;
-  DebugFile << aux2 << std::endl;
-
   aux1.resize(mpModel->getNumVariableMetabs(), M);
   aux1 = 0.0;
 
-  // aux1 = - ml * aux2
+  // aux1 = - L * aux2 = (I, L0) * aux2 = (aux2, (L0 * aux2))
+  // :TODO: use memcpy and dgemm
   for (i = 0; i < M; i++)
     for (j = 0; j < M; j++)
       aux1[i][j] = - aux2[i][j];
@@ -274,20 +253,8 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
           aux1[i][j] -= (C_FLOAT64)mpModel->getL()(i, k) * aux2[k][j];
       }
 
-  DebugFile << "aux1" << std::endl;
-  DebugFile << aux1 << std::endl;
-
-  //debug
-  /*std::cout << "aux1 = -L * aux2" << std::endl;
-  for (i = 0; i < mpModel->getNumVariableMetabs(); i++)
-    {
-      for (j = 0; j < mpModel->getNumIndependentMetabs(); j++)
-        std::cout << "  " << aux1[i][j];
-      std::cout << std::endl;
-    }
-  std::cout << std::endl;*/
-
   // mGamma = aux1 * RedStoi
+  // :TODO: use dgemm
   mUnscaledConcCC.resize(mpModel->getNumVariableMetabs(), N);
   for (i = 0; i < mpModel->getNumVariableMetabs(); i++)
     for (j = 0; j < N; j++)
@@ -296,12 +263,6 @@ int CMCAMethod::calculateUnscaledConcentrationCC()
         for (k = 0; k < M; k++)
           mUnscaledConcCC[i][j] += aux1[i][k] * (C_FLOAT64) mpModel->getRedStoi()[k][j];
       }
-
-  DebugFile << "mUnscaledConcCC" << std::endl;
-  DebugFile << mUnscaledConcCC << std::endl;
-
-  //std::cout << "ConcCC  (= aux2*RedStoi = -L * redJac^-1 * redStoi)" << std::endl;
-  //std::cout << (CMatrix<C_FLOAT64>)mUnscaledConcCC << std::endl;
 
   //update annotations
   mUnscaledConcCCAnn->resize();
