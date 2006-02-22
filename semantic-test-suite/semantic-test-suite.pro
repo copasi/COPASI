@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.3 $ $Author: shoops $ $Date: 2005/10/05 18:19:32 $  
+# $Revision: 1.4 $ $Author: shoops $ $Date: 2006/02/22 15:52:56 $  
 ######################################################################
 
 TEMPLATE = app
@@ -20,6 +20,7 @@ COPASI_LIBS = \
          function \
          mathmodel \
          model \
+         odepack++ \
          optimization \
          plot \
          randomGenerator \
