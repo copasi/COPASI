@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dintdy.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/17 15:18:55 $
+   $Date: 2006/02/22 15:08:44 $
    End CVS Header */
 
 #include <math.h>
@@ -40,7 +40,7 @@ static C_INT c__60 = 60;
 
 /* DECK DINTDY */
 /* Subroutine */
-C_INT CInternalSolver::dintdy_(double *t, C_INT *k, double *yh,
+C_INT CInternalSolver::dintdy_(double *t, const C_INT *k, double *yh,
                                C_INT *nyh, double *dky, C_INT *iflag)
 {
   /* System generated locals */

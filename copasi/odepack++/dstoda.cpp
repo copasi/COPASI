@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dstoda.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/17 15:18:55 $
+   $Date: 2006/02/22 15:08:44 $
    End CVS Header */
 
 #include <math.h>
@@ -15,12 +15,12 @@
 #include "CInternalSolver.h"
 
 #define dls001_1 (mdls001_._1)
- #define dls001_2 (mdls001_._2)
- #define dls001_3 (mdls001_._3)
+#define dls001_2 (mdls001_._2)
+#define dls001_3 (mdls001_._3)
 
 #define dlsa01_1 (mdlsa01_._1)
- #define dlsa01_2 (mdlsa01_._2)
- #define dlsa01_3 (mdlsa01_._3)
+#define dlsa01_2 (mdlsa01_._2)
+#define dlsa01_3 (mdlsa01_._3)
 
 static C_INT c__1 = 1;
 static C_INT c__2 = 2;
@@ -28,7 +28,7 @@ static C_INT c__2 = 2;
 #define pow_dd(__x, __y) pow(*__x, *__y)
 
 #include "dcfode.h"
- #include "dmnorm.h"
+#include "dmnorm.h"
 
 /* DECK DSTODA */
 /* Subroutine */

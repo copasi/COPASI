@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/Cxerrwd.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/17 15:51:31 $
+   $Date: 2006/02/22 15:08:44 $
    End CVS Header */
 
 #include "copasi.h"
@@ -24,9 +24,9 @@ void Cxerrwd::setOstream(std::ostream & os)
 void Cxerrwd::enablePrint(const bool & print)
 {mPrint = print;}
 
-void Cxerrwd::operator() (const std::string & msg, C_INT *, C_INT *, C_INT
-                          *level, C_INT *ni, C_INT *i1, C_INT *i2, C_INT *nr,
-                          double *r1, double *r2, C_INT)
+void Cxerrwd::operator() (const std::string & msg, const C_INT *, const C_INT *, const C_INT
+                          *level, const C_INT *ni, const C_INT *i1, const C_INT *i2, const C_INT *nr,
+                          const double *r1, const double *r2, C_INT)
 {
   /* ***BEGIN PROLOGUE  XERRWD */
   /* ***SUBSIDIARY */

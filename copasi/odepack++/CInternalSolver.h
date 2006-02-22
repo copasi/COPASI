@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CInternalSolver.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/17 15:18:54 $
+   $Date: 2006/02/22 15:08:43 $
    End CVS Header */
 
 #ifndef ODEPACK_CInternalSolver
@@ -27,7 +27,7 @@ class CInternalSolver
         mdlsa01_(dlsa01_)
     {}
 
-    C_INT dintdy_(double *t, C_INT *k, double *yh,
+    C_INT dintdy_(double *t, const C_INT *k, double *yh,
                   C_INT *nyh, double *dky, C_INT *iflag);
 
     C_INT dprja_(C_INT *neq, double *y, double *yh,

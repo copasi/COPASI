@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODA.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/17 15:18:54 $
+   $Date: 2006/02/22 15:08:43 $
    End CVS Header */
 
 #ifndef ODEPACK_CLSODA
@@ -28,21 +28,21 @@ class CLSODA
     void enablePrint(const bool & print = true);
 
     C_INT operator() (evalF f,        // 1. evaluate f
-                      C_INT *neq,      // 2. number of equations
-                      double *y,       // 3. y
-                      double *t,       // 4. time
-                      double *tout,    // 5. end time
-                      C_INT *itol,     // 6. 1 common, 2 atol array, 3 rtol array, 4 both array
-                      double *rtol,    // 7. relative tolerance
-                      double *atol,    // 8. absolute tolerance
-                      C_INT *itask,    // 9. 1
-                      C_INT *istate,   // 10. status
-                      C_INT *iopt,     // 11. 0
-                      double *rwork,   // 12. work array 22 + neq * max(16, neq + 9)
-                      C_INT *lrw,      // 13. size of rwork
-                      C_INT *iwork,    // 14. work array 20 + neq
-                      C_INT *liw,      // 15. size of iwork
-                      evalJ jac,       // 16. evaluate j
+                      C_INT *neq,       // 2. number of equations
+                      double *y,        // 3. y
+                      double *t,        // 4. time
+                      double *tout,     // 5. end time
+                      C_INT *itol,      // 6. 1 common, 2 atol array, 3 rtol array, 4 both array
+                      double *rtol,     // 7. relative tolerance
+                      double *atol,     // 8. absolute tolerance
+                      C_INT *itask,     // 9. 1
+                      C_INT *istate,    // 10. status
+                      C_INT *iopt,      // 11. 0
+                      double *rwork,    // 12. work array 22 + neq * max(16, neq + 9)
+                      C_INT *lrw,       // 13. size of rwork
+                      C_INT *iwork,     // 14. work array 20 + neq
+                      C_INT *liw,       // 15. size of iwork
+                      evalJ jac,        // 16. evaluate j
                       C_INT *jt);     // 18. type of j evaluation 2 internal full matrix
 
   private:
@@ -54,10 +54,9 @@ class CLSODA
     PJAC * mpPJAC;
     SLVS * mpSLVS;
 
-    C_INT mxstp0;
-    C_INT mxhnl0;
-
-    static C_INT mord[2];
+    static const C_INT mxstp0;
+    static const C_INT mxhnl0;
+    static const C_INT mord[2];
   };
 
 #endif // ODEPACK_CLSODA

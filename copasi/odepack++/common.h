@@ -1,15 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/common.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/17 15:18:55 $
+   $Date: 2006/02/22 15:08:44 $
    End CVS Header */
 
 #ifndef ODEPACK_common
  #define ODEPACK_common
 
-typedef void (*evalF)(C_INT*, double*, double*, double*);
+typedef void (*evalF)(const C_INT*, const double*, const double*, double*);
 typedef void (*evalJ)(C_INT*, double*, double*, C_INT*,
                       C_INT*, double*, C_INT*);
 
