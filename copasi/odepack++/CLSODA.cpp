@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODA.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/22 15:08:43 $
+   $Date: 2006/02/22 15:52:10 $
    End CVS Header */
 
 #include <math.h>
@@ -27,57 +27,57 @@ double d_sign(const double & a, const double & b);
 #define dls001_1 (mpdls001_->lsoda)
 #define dlsa01_1 (mpdlsa01_->lsoda)
 
-const static double c_b76 = 0.0;
+static const double c_b76 = 0.0;
 
-const static C_INT c__0 = 0;
-const static C_INT c__1 = 1;
-const static C_INT c__2 = 2;
-const static C_INT c__3 = 3;
-const static C_INT c__4 = 4;
-const static C_INT c__5 = 5;
-const static C_INT c__6 = 6;
-const static C_INT c__7 = 7;
-const static C_INT c__8 = 8;
-const static C_INT c__9 = 9;
-const static C_INT c__10 = 10;
-const static C_INT c__11 = 11;
-const static C_INT c__12 = 12;
-const static C_INT c__13 = 13;
-const static C_INT c__14 = 14;
-const static C_INT c__15 = 15;
-const static C_INT c__16 = 16;
-const static C_INT c__17 = 17;
-const static C_INT c__18 = 18;
-const static C_INT c__19 = 19;
-const static C_INT c__20 = 20;
-const static C_INT c__21 = 21;
-const static C_INT c__22 = 22;
-const static C_INT c__23 = 23;
-const static C_INT c__24 = 24;
-const static C_INT c__25 = 25;
-const static C_INT c__26 = 26;
-const static C_INT c__27 = 27;
-const static C_INT c__28 = 28;
-const static C_INT c__29 = 29;
-const static C_INT c__30 = 30;
-const static C_INT c__40 = 40;
-const static C_INT c__50 = 50;
-const static C_INT c__60 = 60;
-const static C_INT c__101 = 101;
-const static C_INT c__102 = 102;
-const static C_INT c__103 = 103;
-const static C_INT c__104 = 104;
-const static C_INT c__105 = 105;
-const static C_INT c__106 = 106;
-const static C_INT c__107 = 107;
-const static C_INT c__201 = 201;
-const static C_INT c__202 = 202;
-const static C_INT c__203 = 203;
-const static C_INT c__204 = 204;
-const static C_INT c__205 = 205;
-const static C_INT c__206 = 206;
-const static C_INT c__207 = 207;
-const static C_INT c__303 = 303;
+static const C_INT c__0 = 0;
+static const C_INT c__1 = 1;
+static const C_INT c__2 = 2;
+static const C_INT c__3 = 3;
+static const C_INT c__4 = 4;
+static const C_INT c__5 = 5;
+static const C_INT c__6 = 6;
+static const C_INT c__7 = 7;
+static const C_INT c__8 = 8;
+static const C_INT c__9 = 9;
+static const C_INT c__10 = 10;
+static const C_INT c__11 = 11;
+static const C_INT c__12 = 12;
+static const C_INT c__13 = 13;
+static const C_INT c__14 = 14;
+static const C_INT c__15 = 15;
+static const C_INT c__16 = 16;
+static const C_INT c__17 = 17;
+static const C_INT c__18 = 18;
+static const C_INT c__19 = 19;
+static const C_INT c__20 = 20;
+static const C_INT c__21 = 21;
+static const C_INT c__22 = 22;
+static const C_INT c__23 = 23;
+static const C_INT c__24 = 24;
+static const C_INT c__25 = 25;
+static const C_INT c__26 = 26;
+static const C_INT c__27 = 27;
+static const C_INT c__28 = 28;
+static const C_INT c__29 = 29;
+static const C_INT c__30 = 30;
+static const C_INT c__40 = 40;
+static const C_INT c__50 = 50;
+static const C_INT c__60 = 60;
+static const C_INT c__101 = 101;
+static const C_INT c__102 = 102;
+static const C_INT c__103 = 103;
+static const C_INT c__104 = 104;
+static const C_INT c__105 = 105;
+static const C_INT c__106 = 106;
+static const C_INT c__107 = 107;
+static const C_INT c__201 = 201;
+static const C_INT c__202 = 202;
+static const C_INT c__203 = 203;
+static const C_INT c__204 = 204;
+static const C_INT c__205 = 205;
+static const C_INT c__206 = 206;
+static const C_INT c__207 = 207;
+static const C_INT c__303 = 303;
 
 const C_INT CLSODA::mxstp0 = 500;
 const C_INT CLSODA::mxhnl0 = 10;
