@@ -32,7 +32,7 @@
                       <xs:complexType>
                         <xs:attribute name="key" type="cCOMPARTMENT_KEY" use="required" id="copasi.Model.Compartment.key"/>
                         <xs:attribute name="name" type="cNAME" use="required" id="copasi.Model.Compartment.name"/>
-                        <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="required" id="copasi.Model.Compartment.stateVariable"/>
+                        <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="optional" id="copasi.Model.Compartment.stateVariable"/>
                         <xs:attribute name="sbmlid" type="xs:string" use="optional" id="copasi.Model.Compartment.sbmlid"/>
                       </xs:complexType>
                     </xs:element>
@@ -59,7 +59,7 @@
                             </xs:restriction>
                           </xs:simpleType>
                         </xs:attribute>
-                        <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="required" id="copasi.Model.Metabolite.stateVariable"/>
+                        <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="optional" id="copasi.Model.Metabolite.stateVariable"/>
                         <xs:attribute name="sbmlid" type="xs:string" use="optional" id="copasi.Model.Metabolite.sbmlid"/>
                       </xs:complexType>
                     </xs:element>
@@ -86,7 +86,7 @@
                             </xs:restriction>
                           </xs:simpleType>
                         </xs:attribute>
-                        <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="required" id="copasi.Model.ModelValue.stateVariable"/>
+                        <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="optional" id="copasi.Model.ModelValue.stateVariable"/>
                         <xs:attribute name="sbmlid" type="xs:string" use="optional" id="copasi.Model.ModelValue.sbmlid"/>
                       </xs:complexType>
                     </xs:element>
@@ -169,7 +169,7 @@
                   <xs:sequence>
                     <xs:element name="StateTemplateVariable" id="copasi.STATE_TEMPLATE.StateTemplateVariable" minOccurs="0" maxOccurs="unbounded">
                       <xs:complexType>
-                        <xs:attribute name="key" type="cSTATE_VARIABLE_KEY" use="required" id="copasi.STATE_TEMPLATE.StateTemplateVariable.key"/>
+                        <xs:attribute name="key" type="cSTATE_VARIABLE_KEY" use="optional" id="copasi.STATE_TEMPLATE.StateTemplateVariable.key"/>
                         <xs:attribute name="objectReference" type="cKEYREF" use="required" id="copasi.STATE_TEMPLATE.StateTemplateVariable.objectReference"/>
                       </xs:complexType>
                     </xs:element>
@@ -231,7 +231,7 @@
                 </xs:restriction>
               </xs:simpleType>
             </xs:attribute>
-            <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="required" id="copasi.Model.stateVariable"/>
+            <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="optional" id="copasi.Model.stateVariable"/>
           </xs:complexType>
         </xs:element>
         <xs:element name="ListOfTasks" minOccurs="0">
