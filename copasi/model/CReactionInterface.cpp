@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.16.2.1 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/15 15:37:04 $
+   $Date: 2006/02/28 14:35:33 $
    End CVS Header */
 
 #include <string>
@@ -194,6 +194,12 @@ void CReactionInterface::setFunction(const std::string & fn, bool force)
           else mValues[i] = oldValues[j];
 
           mIsLocal[i] = true;
+          //TODO: also keep global parameters
+        }
+      else
+        {
+          //all other things are always global
+          mIsLocal[i] = false;
         }
     }
 
