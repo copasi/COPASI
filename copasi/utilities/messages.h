@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/22 15:13:30 $
+   $Author: gauges $ 
+   $Date: 2006/03/01 20:42:13 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -129,8 +129,12 @@ const MESSAGES Messages[] =
     {MCSBML + 15, "SBML (15): Could not find function with id \"%s\"."},
     {MCSBML + 16, "SBML (16): Loop found in function. That means a function calls itself either directly or indirectly."},
     {MCSBML + 17, "SBML (17): Single compartment reaction found where the kinetic law does not include a multiplication by the volume."},
-    {MCSBML + 18, "SBML (18): hasOnlySubstanceUnit flag on species %s ignored."},
+    {MCSBML + 18, "SBML (18): Support for \"hasOnlySubstanceUnit\" flag on species %s is experimental."},
     {MCSBML + 19, "SBML (19): spatialSizeUnits on species %s ignored."},
+    {MCSBML + 20, "SBML (20): Setting an initial concentration on species %s which has the \"hasOnlySubstanceUnits\" flag set is not allowed."},
+    {MCSBML + 21, "SBML (21): Setting an initial concentration on species \"%s\" which is in a compartment with spatial dimensions 0 is not allowed."},
+    {MCSBML + 22, "SBML (22): Current versions of Copasi only supports three dimensional compartments. \"%s\" will be converted to three dimensions."},
+    {MCSBML + 23, "SBML (23): Unable to handle compartment \"%s\" which has spatial dimensions of 0."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/22 15:22:22 $
+   $Author: gauges $ 
+   $Date: 2006/03/01 20:42:14 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -49,6 +49,7 @@ class SBMLImporter
     unsigned C_INT32 mImportStep;
     unsigned C_INT32 mhImportStep;
     unsigned C_INT32 mTotalSteps;
+    std::map<Species*, Compartment*> mSubstanceOnlySpecies;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
@@ -114,6 +115,12 @@ class SBMLImporter
      * with the AST_POWER node.
      */
     void replacePowerFunctionNodes(ASTNode* node);
+
+    /**
+     * This functions replaces all species nodes for species that are in the substanceOnlySpeciesVector.
+     * With the node multiplied by the volume of the species compartment.
+     */
+    void replaceSubstanceOnlySpeciesNodes(ConverterASTNode* node, const std::map<Species*, Compartment*>& substanceOnlySpecies);
 
     /**
      * Returns the copasi VolumeUnit corresponding to the given SBML Volume

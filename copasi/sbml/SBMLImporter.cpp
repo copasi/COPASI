@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.112 $
+   $Revision: 1.113 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/07 11:02:52 $
+   $Author: gauges $ 
+   $Date: 2006/03/01 20:42:14 $
    End CVS Header */
 
 #include "copasi.h"
@@ -440,8 +440,18 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       else if (cU == "area" || cU == "length")
         {
           /* !!!! create a warning that the units will be ignored. */
+          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 22, sbmlCompartment->getId().c_str());
         }
     }
+  if (sbmlCompartment->getSpatialDimensions() == 0)
+    {
+      CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCSBML + 23, sbmlCompartment->getId().c_str());
+    }
+  if (sbmlCompartment->getSpatialDimensions() != 3)
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 22, sbmlCompartment->getId().c_str());
+    }
+
   std::string name = sbmlCompartment->getName();
   if (name == "")
     {
@@ -512,9 +522,16 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
           CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 19, sbmlSpecies->getId().c_str());
         }
     }
+  std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.find(copasiCompartment);
+  if (it != copasi2sbmlmap.end())
+    {
+      fatalError();
+    }
+  Compartment* pSBMLCompartment = (Compartment*)it->second;
   if (sbmlSpecies->getHasOnlySubstanceUnits() == true)
     {
       CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 18, sbmlSpecies->getId().c_str());
+      this->mSubstanceOnlySpecies.insert(std::make_pair(const_cast<Species*>(sbmlSpecies), pSBMLCompartment));
     }
   std::string name = sbmlSpecies->getName();
   if (name == "")
@@ -546,12 +563,27 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     {
       copasiMetabolite->setStatus(CModelEntity::REACTIONS);
     }
+  // also check if the compartment has a spatialSize of 0 because this also implies hasOnlySubstanceUnits for the species in this compartment
+  if (pSBMLCompartment->getSpatialDimensions() == 0)
+    {
+      this->mSubstanceOnlySpecies.insert(std::make_pair(const_cast<Species*>(sbmlSpecies), pSBMLCompartment));
+    }
   if (sbmlSpecies->isSetInitialAmount())
     {
       copasiMetabolite->setInitialNumber(sbmlSpecies->getInitialAmount()*copasiModel->getQuantity2NumberFactor()); // CHECK UNITS !!!
     }
   else if (sbmlSpecies->isSetInitialConcentration())
     {
+      if (sbmlSpecies->getHasOnlySubstanceUnits())
+        {
+          pdelete(copasiMetabolite);
+          CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCSBML + 20, sbmlSpecies->getId().c_str());
+        }
+      if (pSBMLCompartment->getSpatialDimensions() == 0)
+        {
+          pdelete(copasiMetabolite);
+          CCopasiMessage Message(CCopasiMessage::EXCEPTION, MCSBML + 21, sbmlSpecies->getId().c_str());
+        }
       copasiMetabolite->setInitialConcentration(sbmlSpecies->getInitialConcentration());      // CHECK UNITS !!!
     }
   else
@@ -748,7 +780,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
         {
           kLaw->setMathFromFormula();
         }
-
       for (counter = 0; counter < kLaw->getNumParameters();++counter)
         {
           Parameter* pSBMLParameter = kLaw->getParameter(counter);
@@ -780,6 +811,15 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       this->replacePowerFunctionNodes(node);
       this->replaceLog((ConverterASTNode*)node);
       this->replaceRoot((ConverterASTNode*)node);
+      this->replaceSubstanceOnlySpeciesNodes((ConverterASTNode*)node, mSubstanceOnlySpecies);
+
+      std::map<Species*, Compartment*>::iterator it = mSubstanceOnlySpecies.begin();
+      std::map<Species*, Compartment*>::iterator endIt = mSubstanceOnlySpecies.end();
+      while (it != endIt)
+        {
+          it->first->setHasOnlySubstanceUnits(false);
+          ++it;
+        }
       /* if it is a single compartment reaction, we have to divide the whole kinetic
       ** equation by the compartment because copasi expects
       ** kinetic laws that specify concentration/time for single compartment
@@ -1085,6 +1125,44 @@ SBMLImporter::SBMLImporter()
  */
 SBMLImporter::~SBMLImporter()
 {}
+
+/**
+ * This functions replaces all species nodes for species that are in the substanceOnlySpeciesVector.
+ * With the node multiplied by the volume of the species compartment.
+ */
+void SBMLImporter::replaceSubstanceOnlySpeciesNodes(ConverterASTNode* node, const std::map<Species*, Compartment*>& substanceOnlySpecies)
+{
+  if (node != NULL)
+    {
+      if (node->getType() == AST_NAME)
+        {
+          std::map<Species*, Compartment*>::const_iterator it = substanceOnlySpecies.begin();
+          std::map<Species*, Compartment*>::const_iterator endIt = substanceOnlySpecies.end();
+          while (it != endIt)
+            {
+              if (it->first->getId() == node->getName())
+                {
+                  // replace node
+                  List* l = new List();
+                  ConverterASTNode* child1 = new ConverterASTNode(*node);
+                  ConverterASTNode* child2 = new ConverterASTNode(AST_NAME);
+                  child2->setName(it->second->getId().c_str());
+                  l->add(child1);
+                  l->add(child2);
+                  node->setChildren(l);
+                  node->setType(AST_TIMES);
+                  break;
+                }
+              ++it;
+            }
+        }
+      unsigned int counter;
+      for (counter = 0;counter < node->getNumChildren();counter++)
+        {
+          this->replaceSubstanceOnlySpeciesNodes((ConverterASTNode*)node->getChild(counter), substanceOnlySpecies);
+        }
+    }
+}
 
 /**
  * This function replaces the AST_FUNCTION_POWER ASTNodes in a ASTNode tree
