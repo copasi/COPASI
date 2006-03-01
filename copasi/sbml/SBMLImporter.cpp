@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.113 $
+   $Revision: 1.114 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2006/03/01 20:42:14 $
+   $Date: 2006/03/01 20:46:04 $
    End CVS Header */
 
 #include "copasi.h"
@@ -320,6 +320,15 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
 
   this->removeUnusedFunctions(pTmpFunctionDB);
+
+  // unset the hasOnlySubstanceUnits flag on all such species
+  std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
+  std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
+  while (it != endIt)
+    {
+      it->first->setHasOnlySubstanceUnits(false);
+      ++it;
+    }
 
   delete pTmpFunctionDB;
 
@@ -813,13 +822,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       this->replaceRoot((ConverterASTNode*)node);
       this->replaceSubstanceOnlySpeciesNodes((ConverterASTNode*)node, mSubstanceOnlySpecies);
 
-      std::map<Species*, Compartment*>::iterator it = mSubstanceOnlySpecies.begin();
-      std::map<Species*, Compartment*>::iterator endIt = mSubstanceOnlySpecies.end();
-      while (it != endIt)
-        {
-          it->first->setHasOnlySubstanceUnits(false);
-          ++it;
-        }
       /* if it is a single compartment reaction, we have to divide the whole kinetic
       ** equation by the compartment because copasi expects
       ** kinetic laws that specify concentration/time for single compartment
