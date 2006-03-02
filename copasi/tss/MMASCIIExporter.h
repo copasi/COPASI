@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2006/01/24 13:00:25 $
+   $Date: 2006/03/02 13:29:14 $
    End CVS Header */
 
 #ifndef MMASCIIExpoter_H__
@@ -73,23 +73,19 @@ class MMASCIIExporter
      **/
     void functionExportC(const CFunction* pFunc, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction, std::ostringstream & outFunctionHeader);
     /**
-     **   This method adapt names for Berkeley Madonna syntax 
-     **/
-    std::string MMASCIIExporter::toMMDName(const std::string & name);
-    /**
-     **   This method finds internal functions calls for export in Berkeley Madonna format 
-     **/ 
-    //  void findFunctionsCallsMMD(const CEvaluationNode* pNode);
-    /**
      **    This method exports the functions in Berkeley Madonna format 
-     **/ 
-    //void functionExportMMD(const CFunction* pFunc);
+     **/
+    void MMASCIIExporter::functionExportMMD (CEvaluationNode* pNode, std::ofstream & outFile, unsigned C_INT32 &findex, std::map< std::string, std::string > &functionNameMap);
     /**
      **      This method assembles an expression sub tree for some internal call of Mass Action.
      **      The sub tree has to be included in the tree of corresponding root kinetic function in order to
      **      export this function in the C format whithout the user defined internall Mass Action calls
      **/
-    void MMASCIIExporter::assembleSubTreeForMassAction(CEvaluationNode* newNode, CEvaluationNode* child1, CEvaluationNode* child2);
+    void assembleSubTreeForMassAction(CEvaluationNode* newNode, CEvaluationNode* child1, CEvaluationNode* child2);
+    /**
+     **         This method modifies the export tree of the function for internal calls of Mass Action
+     **/
+    void modifyTreeForMassAction(CFunction* tmpFunc);
   };
 
 #endif

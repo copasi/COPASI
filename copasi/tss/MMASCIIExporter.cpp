@@ -1,12 +1,11 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:32 $
+   $Author: nsimus $ 
+   $Date: 2006/03/02 13:29:14 $
    End CVS Header */
 
-#include <locale>
 #include <math.h>
 #include "copasi.h"
 
@@ -134,9 +133,67 @@ C_INT32 MMASCIIExporter::findKinParamByName(const CReaction* reac, const std::st
 }
 
 /**
+ **         This method modifies the export tree of the function for internal calls of Mass Action 
+ **/
+void MMASCIIExporter::modifyTreeForMassAction(CFunction* tmpFunc)
+{
+  CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+
+  CCopasiTree< CEvaluationNode>::iterator treeIt = tmpFunc->getRoot();
+
+  while (treeIt != NULL)
+    {
+      if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
+        {
+          const CFunction* callFunc;
+          callFunc = static_cast<CFunction*> (pFunctionDB->findFunction((*treeIt).getData()));
+
+          if (callFunc->getType() == CEvaluationTree::MassAction)
+            {
+              CEvaluationNode* parent = dynamic_cast<CEvaluationNode*>(treeIt->getParent());
+              CEvaluationNode* child1 = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
+              CEvaluationNode* child2 = dynamic_cast<CEvaluationNode*>((treeIt->getChild())->getSibling());
+
+              CEvaluationNode* newNode;
+              CEvaluationNode* newNode1 = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MULTIPLY), "*");
+
+              assembleSubTreeForMassAction(newNode1, child1, child2);
+
+              if (callFunc->getObjectName() == "Mass action (irreversible)") newNode = newNode1;
+
+              if (callFunc->getObjectName() == "Mass action (reversible)")
+                {
+                  newNode = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MINUS), "-");
+                  newNode->addChild(newNode1, NULL);
+
+                  CEvaluationNode* newNode2 = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MULTIPLY), "*");
+                  CEvaluationNode* child3 = dynamic_cast<CEvaluationNode*>((child2)->getSibling());
+                  CEvaluationNode* child4 = dynamic_cast<CEvaluationNode*>((child3)->getSibling());
+
+                  assembleSubTreeForMassAction(newNode2, child3, child4);
+
+                  newNode->addChild(newNode2, newNode1);
+                }
+
+              if (parent)
+                {
+                  parent->addChild(newNode, &(*treeIt));
+                  parent->removeChild(&(*treeIt));
+                }
+
+              delete &(*treeIt);
+              treeIt = newNode;
+            }
+        }
+
+      ++treeIt;
+    }
+}
+
+/**
  **         This method assembles an expression sub tree for some internal call of Mass Action. 
  **         The sub tree has to be included in the tree of corresponding root kinetic function in order to    
- **         export this function in the C format whithout the user defined internall Mass Action calls  
+ **         export this function  whithout the user defined internall Mass Action calls  
  **/
 void MMASCIIExporter::assembleSubTreeForMassAction(CEvaluationNode* newNode, CEvaluationNode* child1, CEvaluationNode* child2)
 {
@@ -238,63 +295,7 @@ void MMASCIIExporter::functionExportC(const CFunction *pFunc, std::set<std::stri
             }
         }
 
-      /********** The part bellow take care of the possible internal Mass Action calls *********/
-
-      /* if (tmpFunc->getRoot())
-        tmpFunc->getRoot()->printRecursively(std::cout); */
-
-      while (treeIt != NULL)
-        {
-          if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
-            {
-              const CFunction* callFunc;
-              callFunc = static_cast<CFunction*> (pFunctionDB->findFunction((*treeIt).getData()));
-
-              if (callFunc->getType() == CEvaluationTree::MassAction)
-                {
-                  CEvaluationNode* parent = dynamic_cast<CEvaluationNode*>(treeIt->getParent());
-                  CEvaluationNode* child1 = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
-                  CEvaluationNode* child2 = dynamic_cast<CEvaluationNode*>((treeIt->getChild())->getSibling());
-
-                  CEvaluationNode* newNode;
-                  CEvaluationNode* newNode1 = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MULTIPLY), "*");
-
-                  assembleSubTreeForMassAction(newNode1, child1, child2);
-
-                  if (callFunc->getObjectName() == "Mass action (irreversible)") newNode = newNode1;
-
-                  if (callFunc->getObjectName() == "Mass action (reversible)")
-                    {
-                      newNode = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MINUS), "-");
-                      newNode->addChild(newNode1, NULL);
-
-                      CEvaluationNode* newNode2 = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MULTIPLY), "*");
-                      CEvaluationNode* child3 = dynamic_cast<CEvaluationNode*>((child2)->getSibling());
-                      CEvaluationNode* child4 = dynamic_cast<CEvaluationNode*>((child3)->getSibling());
-
-                      assembleSubTreeForMassAction(newNode2, child3, child4);
-
-                      newNode->addChild(newNode2, newNode1);
-                    }
-
-                  if (parent)
-                    {
-                      parent->addChild(newNode, &(*treeIt));
-                      parent->removeChild(&(*treeIt));
-                    }
-
-                  delete &(*treeIt);
-                  treeIt = newNode;
-                }
-            }
-
-          ++treeIt;
-        }
-
-      /* if (tmpFunc->getRoot())
-        tmpFunc->getRoot()->printRecursively(std::cout); */
-
-      /***************************************************************************/
+      modifyTreeForMassAction(tmpFunc);
 
       while (newIt != NULL)
         {
@@ -387,64 +388,83 @@ void MMASCIIExporter::findFunctionsCallsC(const CEvaluationNode* pNode, std::set
 }
 
 /**
- ** This method takes some of the copasi CModel objects 
- ** and writes them in the ASCII format in an output file.    
- ** The filename is given as the second
- ** argument to the function. The function return "true" on success and
- ** "false" on failure.
- */
-std::string MMASCIIExporter::toMMDName(const std::string & realName)
+ **         This method exports the  functions in Berkeley Madonna format     
+ **/
+void MMASCIIExporter::functionExportMMD (CEvaluationNode* pNode, std::ofstream & outFile, unsigned C_INT32 &findex, std::map< std::string, std::string > &functionNameMap)
 {
-  std::locale C("C");
-  char ch;
-  std::string newName;
-  std::ostringstream tmpName;
-  unsigned C_INT32 realName_size = realName.size();
-  unsigned C_INT32 i;
-
-  ch = realName[0];
-
-  if (!std::isalnum(ch, C)) tmpName << "A_";
-
-  tmpName << ch;
-
-  for (i = 1; i < realName_size; i++)
+  if (pNode)
     {
-      ch = realName[i];
+      CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+      CCopasiTree<CEvaluationNode>::iterator treeIt = pNode;
 
-      if (std::isalpha(ch, C))
+      while (treeIt != NULL)
         {
-          if (std::isspace(realName[i - 1], C) && std::islower(ch, C))
-            tmpName << (char) toupper(ch);
-          else
-            tmpName << ch;
+          if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
+            {
+              const CFunction* Func;
+              Func = static_cast<CFunction*> (pFunctionDB->findFunction((*treeIt).getData()));
+
+              CFunction* tmpFunc = NULL;
+              tmpFunc = new CFunction(*Func);
+
+              std::ostringstream tmpName;
+              tmpName << "function_" << findex << "_";
+              functionNameMap[Func->getObjectName()] = tmpName.str();
+              findex++;
+
+              treeIt->setData(functionNameMap[Func->getObjectName()]);
+
+              modifyTreeForMassAction(tmpFunc);
+
+              unsigned C_INT32 i, vindex;
+              CEvaluationNode* tmproot = tmpFunc->getRoot();
+              CCopasiTree<CEvaluationNode>::iterator iIt, newIt = tmproot;
+              CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
+
+              while (newIt != NULL)
+                {
+                  if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
+                    {
+                      vindex = tmpFunc->getVariableIndex((*newIt).getData());
+
+                      CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
+
+                      for (i = 0; i < vindex ; i++)
+                        child = dynamic_cast<CEvaluationNode*>((child)->getSibling());
+
+                      CEvaluationNode* parent = dynamic_cast<CEvaluationNode*>(newIt->getParent());
+                      CEvaluationNode* newnode = child->copyBranch();
+
+                      iIt = newIt;
+
+                      ++newIt;
+
+                      if (parent)
+                        {
+                          parent->addChild(newnode, &(*iIt));
+                          parent->removeChild(&(*iIt));
+                        }
+
+                      delete &(*iIt);
+                    }
+                  else
+                    ++newIt;
+                }
+
+              functionExportMMD(tmproot, outFile, findex, functionNameMap);
+
+              outFile << functionNameMap[Func->getObjectName()] << " = ";
+              outFile << tmproot->getDisplay_MMD_String(tmpFunc).c_str() << std::endl;
+            }
+
+          ++treeIt;
         }
-
-      if (std::isdigit(ch, C)) tmpName << ch;
-
-      if (std::ispunct(ch, C))
-        switch (ch)
-          {
-          case '_':
-            tmpName << ch;
-            break;
-          case '-':
-            tmpName << "_";
-            break;
-          case '{':
-            tmpName << "_";
-            break;
-          case '}':
-            tmpName << "_";
-            break;
-          default:
-            break;
-          }
     }
-
-  return tmpName.str();
 }
 
+/*
+ **
+ */
 bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mmasciiFilename, std::string Filter, bool overwriteFile)
 {
   /* check if the file already exisits.
@@ -471,6 +491,9 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
   return false;
 }
 
+/*
+ **
+ */
 bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstream & outFile)
 {
   outFile << "METHOD stiff" << std::endl;
@@ -616,6 +639,8 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
         }
     }
 
+  unsigned C_INT32 findex = 0;
+
   for (i = 0; i < reacs_size; ++i)
     {
       unsigned C_INT32 params_size;
@@ -641,24 +666,22 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
         }
 
       const CFunction* pFunc = &(reac->getFunction());
-
-      std::ostringstream tmpName;
-      tmpName << "KinFunction_" << i;
-      newNameMap[tmpName.str()] = reac->getFunction().getObjectName(); // TODO
+      std::map< std::string, std::string > functionNameMap;
 
       outFile << std::endl;
       outFile << "; \'" << reac->getFunction().getObjectName() << "\' :";
       outFile << std::endl;
-      outFile << tmpName.str() << " = ";
 
       if (pFunc->getType() != CEvaluationTree::MassAction)
         {
-          CFunction* tmpFunc = NULL;
+          CFunction* tmpFunc;
           tmpFunc = new CFunction(*pFunc);
 
-          //const CFunctionParameters & params = reac->getFunctionParameters();
+          CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
           const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
           CCopasiTree< CEvaluationNode>::iterator treeIt = tmpFunc->getRoot();
+
+          modifyTreeForMassAction(tmpFunc);
 
           while (treeIt != NULL)
             {
@@ -713,9 +736,11 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
               ++treeIt;
             }
 
-          // :TODO: Fix me getDisplay_MMD_String(tmpFunc) is not defined
-          // outFile << tmpFunc->getRoot()->getDisplay_MMD_String(tmpFunc).c_str() << std::endl;
-          fatalError();
+          // unsigned C_INT32 findex = 0;
+          functionExportMMD(tmpFunc->getRoot(), outFile, findex, functionNameMap);
+
+          outFile << "KinFunction_" << i << " = ";
+          outFile << tmpFunc->getRoot()->getDisplay_MMD_String(tmpFunc).c_str() << std::endl;
         }
       else
         {
@@ -734,6 +759,7 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
 
           const CMassAction cMassAction = static_cast<const CMassAction>(reac->getFunction());
 
+          outFile << "KinFunction_" << i << " = ";
           outFile << "(";
 
           tmp = GlobalKeys.get(keyMap[0][0]);
@@ -806,11 +832,7 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
   for (i = 0; i < indep_size; ++i)
     {
       std::ostringstream equation;
-      std::ostringstream functions;
       std::string tmpstr;
-
-      std::map< std::string, std::string > newFuncNameMap;
-      std::set<std::string> newFuncNameSet;
 
       const CCompartment* compartment = metabs[i]->getCompartment();
 
