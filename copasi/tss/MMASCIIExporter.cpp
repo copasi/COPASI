@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/02 13:29:14 $
+   $Author: shoops $ 
+   $Date: 2006/03/02 14:07:59 $
    End CVS Header */
 
 #include <math.h>
@@ -454,7 +454,9 @@ void MMASCIIExporter::functionExportMMD (CEvaluationNode* pNode, std::ofstream &
               functionExportMMD(tmproot, outFile, findex, functionNameMap);
 
               outFile << functionNameMap[Func->getObjectName()] << " = ";
+#ifdef XXXX
               outFile << tmproot->getDisplay_MMD_String(tmpFunc).c_str() << std::endl;
+#endif // XXXX
             }
 
           ++treeIt;
@@ -740,7 +742,9 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
           functionExportMMD(tmpFunc->getRoot(), outFile, findex, functionNameMap);
 
           outFile << "KinFunction_" << i << " = ";
+#ifdef XXXX
           outFile << tmpFunc->getRoot()->getDisplay_MMD_String(tmpFunc).c_str() << std::endl;
+#endif // XXXX
         }
       else
         {
