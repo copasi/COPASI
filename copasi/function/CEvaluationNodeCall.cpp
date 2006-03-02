@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/30 22:01:08 $
+   $Author: nsimus $ 
+   $Date: 2006/03/02 13:26:08 $
    End CVS Header */
 
 #include <sbml/math/ASTNode.h>
@@ -206,6 +206,13 @@ std::string CEvaluationNodeCall::getDisplay_C_String(const CEvaluationTree * pTr
         break;
       }
     return DisplayString + ")";
+  }
+
+std::string CEvaluationNodeCall::getDisplay_MMD_String(const CEvaluationTree * pTree) const
+  {
+    std::string DisplayString = mData;
+
+    return DisplayString;
   }
 
 CEvaluationNode* CEvaluationNodeCall::createNodeFromASTTree(const ASTNode& node)
