@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.114 $
+   $Revision: 1.115 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2006/03/01 20:46:04 $
+   $Date: 2006/03/02 10:22:04 $
    End CVS Header */
 
 #include "copasi.h"
@@ -532,7 +532,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
         }
     }
   std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.find(copasiCompartment);
-  if (it != copasi2sbmlmap.end())
+  if (it == copasi2sbmlmap.end())
     {
       fatalError();
     }
@@ -1146,7 +1146,8 @@ void SBMLImporter::replaceSubstanceOnlySpeciesNodes(ConverterASTNode* node, cons
                 {
                   // replace node
                   List* l = new List();
-                  ConverterASTNode* child1 = new ConverterASTNode(*node);
+                  ConverterASTNode* child1 = new ConverterASTNode(AST_NAME);
+                  child1->setName(node->getName());
                   ConverterASTNode* child2 = new ConverterASTNode(AST_NAME);
                   child2->setName(it->second->getId().c_str());
                   l->add(child1);
@@ -1158,10 +1159,13 @@ void SBMLImporter::replaceSubstanceOnlySpeciesNodes(ConverterASTNode* node, cons
               ++it;
             }
         }
-      unsigned int counter;
-      for (counter = 0;counter < node->getNumChildren();counter++)
+      else
         {
-          this->replaceSubstanceOnlySpeciesNodes((ConverterASTNode*)node->getChild(counter), substanceOnlySpecies);
+          unsigned int counter;
+          for (counter = 0;counter < node->getNumChildren();counter++)
+            {
+              this->replaceSubstanceOnlySpeciesNodes((ConverterASTNode*)node->getChild(counter), substanceOnlySpecies);
+            }
         }
     }
 }
