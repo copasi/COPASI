@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/15 18:45:25 $
+   $Date: 2006/03/02 02:23:08 $
    End CVS Header */
 
 /**
@@ -39,11 +39,6 @@ class CSteadyStateTask : public CCopasiTask
      * A pointer to the found steady state.
      */
     CState * mpSteadyState;
-
-    /**
-     * A pointer to the found steady state.
-     */
-    CStateX * mpSteadyStateX;
 
     /**
      * The jacobian of the steady state.

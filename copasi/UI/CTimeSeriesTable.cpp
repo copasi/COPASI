@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTimeSeriesTable.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/07 16:58:39 $
+   $Author: shoops $ 
+   $Date: 2006/03/02 02:21:43 $
    End CVS Header */
 
 #include "CTimeSeriesTable.h"
@@ -20,7 +20,7 @@ void CTimeSeriesTable::setTimeSeries(const CTimeSeries & ts)
   for (i = 0; i < imax; ++i)
     tableHeader->setLabel(i, FROM_UTF8(mTS->getTitle(i)));
 
-  //TODO save old current cell and set afterwards
+  // :TODO: save old current cell and set afterwards
 }
 
 QString CTimeSeriesTable::textForCell(unsigned int row, unsigned int col)

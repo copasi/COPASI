@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.245 $
+   $Revision: 1.246 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Date: 2006/03/02 02:22:53 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -11,6 +11,7 @@
 // model.cpp : interface of the CModel class
 //
 /////////////////////////////////////////////////////////////////////////////
+
 #ifdef SunOS
 # include <ieeefp.h>
 #else
@@ -66,8 +67,10 @@ const char * CModel::QuantityUnitNames[] =
   {"Mol", "mMol", "\xc2\xb5Mol", "nMol", "pMol", "fMol", "#", NULL};
 
 CModel::CModel():
-    CCopasiContainer("New Model", &RootContainer, "Model"),
-    mKey(GlobalKeys.add("Model", this)),
+    CModelEntity("New Model", &RootContainer, "Model"),
+    mInitialState(),
+    mCurrentState(),
+    mStateTemplate(this->mInitialState, this->mCurrentState),
     mComments(),
     mVolumeUnit(ml),
     mTimeUnit(s),
@@ -80,8 +83,6 @@ CModel::CModel():
     mSteps("Reactions", this),
     mParticleFluxes(),
     mValues("Values", this),
-    mInitialTime(0),
-    mTime(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mTransitionTime(0),
     mMoieties("Moieties", this),
     mStoi(),
@@ -90,10 +91,14 @@ CModel::CModel():
     mLView(mL, mMetabolitesInd),
     mQuantity2NumberFactor(1.0),
     mNumber2QuantityFactor(1.0),
-    mStateTemplate(),
     mpCompileHandler(NULL)
 {
   initObjects();
+
+  setStatus(TIME);
+
+  *mpIValue = 0.0;
+  *mpValueAccess = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
   unsigned C_INT32 i, imax = mSteps.size();
 
@@ -114,8 +119,10 @@ CModel::CModel():
 }
 
 CModel::CModel(const CModel & src):
-    CCopasiContainer(src),
-    mKey(GlobalKeys.add("Model", this)),
+    CModelEntity(src),
+    mInitialState(),
+    mCurrentState(),
+    mStateTemplate(this->mInitialState, this->mCurrentState),
     mComments(src.mComments),
     mVolumeUnit(src.mVolumeUnit),
     mTimeUnit(src.mTimeUnit),
@@ -128,8 +135,6 @@ CModel::CModel(const CModel & src):
     mSteps(src.mSteps, this),
     mParticleFluxes(src.mParticleFluxes),
     mValues(src.mValues, this),
-    mInitialTime(src.mInitialTime),
-    mTime(src.mTime),
     mTransitionTime(src.mTransitionTime),
     mMoieties(src.mMoieties, this),
     mStoi(src.mStoi),
@@ -138,10 +143,10 @@ CModel::CModel(const CModel & src):
     mLView(mL, mMetabolitesInd),
     mQuantity2NumberFactor(src.mQuantity2NumberFactor),
     mNumber2QuantityFactor(src.mNumber2QuantityFactor),
-    mStateTemplate(),
     mpCompileHandler(NULL)
 {
   CONSTRUCTOR_TRACE;
+  initObjects();
 
   unsigned C_INT32 i, imax = mSteps.size();
 
@@ -151,11 +156,13 @@ CModel::CModel(const CModel & src):
   initializeMetabolites();
 
   forceCompile();
-  initObjects();
 }
 
 CModel::~CModel()
 {
+  mpIValue = NULL;
+  mpValueData = NULL;
+
   GlobalKeys.remove(mKey);
   //cleanup();
   DESTRUCTOR_TRACE;
@@ -257,7 +264,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   setVolumeUnit(tmp); // set the factors
 
-  mInitialTime = 0;
+  *mpIValue = 0;
 
   if ((Fail = configBuffer.getVariable("TotalCompartments", "C_INT32", &Size,
                                        CReadConfig::LOOP)))
@@ -318,9 +325,6 @@ bool CModel::compile()
                      & CompileStep,
                      &totalSteps);
     }
-  unsigned C_INT32 i, imax = mSteps.size();
-  for (i = 0; i < imax; i++)
-    mSteps[i]->compile(/*mCompartments*/);
 
   CompileStep = 1;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
@@ -333,12 +337,6 @@ bool CModel::compile()
   CompileStep = 3;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
-  /*
-    lUDecomposition(LU);
-    CompileStep = 2;
-    if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
-  */
-
   buildRedStoi();
   CompileStep = 4;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
@@ -347,12 +345,6 @@ bool CModel::compile()
   CompileStep = 5;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
-  /*
-    buildL(LU);
-    CompileStep = 5;
-    if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
-  */
-
   buildMoieties();
   CompileStep = 6;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
@@ -360,6 +352,10 @@ bool CModel::compile()
   buildStateTemplate();
   CompileStep = 7;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+
+  unsigned C_INT32 i, imax = mSteps.size();
+  for (i = 0; i < imax; i++)
+    mSteps[i]->compile(/*mCompartments*/);
 
   if (mpCompileHandler) mpCompileHandler->finish(hCompileStep);
 
@@ -536,6 +532,9 @@ void CModel::calculateReactions()
 
   for (;it != end; ++it, ++pFlux)
     *pFlux = (*it)->calculateParticleFlux();
+
+  // DebugFile << "CModel::calculateReactions()" << std::endl;
+  // DebugFile << mParticleFluxes << std::endl;
 }
 
 void CModel::setMetabolitesStatus()
@@ -549,6 +548,7 @@ void CModel::setMetabolitesStatus()
   mMetabolitesInd.resize(iIndependent, false);
   mMetabolitesVar.resize(iVariable, false);
 
+  // :TODO: use iterator
   for (i = 0; i < iIndependent; i++)
     {
       mMetabolitesX[i]->setStatus(CModelEntity::REACTIONS);
@@ -922,7 +922,7 @@ const std::string & CModel::getKey() const
   {return mKey;}
 
 void * CModel::getReference() const
-  {return const_cast<C_FLOAT64 *>(&mTime);}
+  {return const_cast<C_FLOAT64 *>(mpValueAccess);}
 
 CCopasiVectorNS < CCompartment > & CModel::getCompartments()
 {return mCompartments;}
@@ -951,8 +951,8 @@ const CModel::CLinkMatrixView & CModel::getL() const
 const CMatrix< C_FLOAT64 > & CModel::getL0() const
   {return mL;}
 
-const CModel::CStateTemplate & CModel::getStateTemplate() const
-  {CCHECK return mStateTemplate;}
+CStateTemplate & CModel::getStateTemplate()
+{CCHECK return mStateTemplate;}
 
 bool CModel::setTitle(const std::string &title)
 {
@@ -965,16 +965,16 @@ void CModel::setComments(const std::string &comments)
 {mComments = comments;}
 
 void CModel::setInitialTime(const C_FLOAT64 & time)
-{mInitialTime = time;}
+{*mpIValue = time;}
 
 const C_FLOAT64 & CModel::getInitialTime() const
-  {return mInitialTime;}
+  {return *mpIValue;}
 
 void CModel::setTime(const C_FLOAT64 & time)
-{mTime = time;}
+{*mpValueAccess = time;}
 
 const C_FLOAT64 & CModel::getTime() const
-  {return mTime;}
+  {return *mpValueAccess;}
 
 const CVector<unsigned C_INT32> & CModel::getMetabolitePermutation() const
   {CCHECK return mRowLU;}
@@ -1021,329 +1021,52 @@ C_INT32 CModel::findMoiety(std::string &Target) const
 
 void CModel::applyInitialValues()
 {
-  mTime = mInitialTime;
-
-  /* Set the volumes */
-  CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
-  CCopasiVector< CCompartment >::iterator endCompartment = itCompartment + mCompartments.size();
-  for (; itCompartment != endCompartment; ++itCompartment)
-    (*itCompartment)->setValue((*itCompartment)->getInitialValue());
-
-  /* Set the metabolites */
-  CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
-  CCopasiVector< CMetab >::iterator endMetab = itMetab + getNumMetabs();
-  for (; itMetab != endMetab; ++itMetab)
-    (*itMetab)->setValue((*itMetab)->getInitialValue());
-
-  /* Set the global parameters */
-  CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
-  CCopasiVector< CModelValue >::iterator endValue = itValue + mValues.size();
-  for (; itValue != endValue; ++itValue)
-    (*itValue)->setValue((*itValue)->getInitialValue());
+  setState(mInitialState);
+  refreshConcentrations();
 }
 
 bool CModel::buildStateTemplate()
 {
-  bool success = false;
+  CVector<CModelEntity *> Entities(mMetabolitesX.size() + mCompartments.size() + mValues.size());
+  CModelEntity ** pEntity = Entities.array();
 
-  mStateTemplate.cleanup();
+  unsigned C_INT32 i;
 
-  mStateTemplate.add(getKey()); // Time
+  for (i = 0; i < mMetabolitesX.size(); i++)
+    *pEntity++ = mMetabolitesX[i];
 
-  unsigned C_INT32 i, imax;
+  for (i = 0; i < mCompartments.size(); i++)
+    *pEntity++ = mCompartments[i];
 
-  for (i = 0, imax = mCompartments.size(); i < imax; i++)
-    mStateTemplate.add(mCompartments[i]->getKey());
+  for (i = 0; i < mValues.size(); i++)
+    *pEntity++ = mValues[i];
 
-  for (i = 0, imax = mMetabolites.size(); i < imax; i++)
-    mStateTemplate.add(mMetabolites[i]->getKey());
+  mStateTemplate.reorder(Entities);
 
-  for (i = 0, imax = mValues.size(); i < imax; i++)
-    mStateTemplate.add(mValues[i]->getKey());
+  pEntity = Entities.array();
 
-  return success;
-}
+  for (i = 0; i < mMetabolites.size(); i++)
+    *pEntity++ = mMetabolites[i];
 
-CState CModel::getState() const
-  {
-    CState s(this);
+  for (i = 0; i < mCompartments.size(); i++)
+    *pEntity++ = mCompartments[i];
 
-    /* Set the time */
-    s.setTime(mTime);
+  for (i = 0; i < mValues.size(); i++)
+    *pEntity++ = mValues[i];
 
-    /* Set the volumes */
-    C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(s.getVolumeVector().array());
-    CCopasiVector< CCompartment >::const_iterator itCompartment = mCompartments.begin();
-    CCopasiVector< CCompartment >::const_iterator endCompartment = itCompartment + mCompartments.size();
-    for (; itCompartment != endCompartment; ++itCompartment, Dbl++)
-      *Dbl = (*itCompartment)->getValue();
+  mStateTemplate.setUserOrder(Entities);
 
-    /* Set the variable metabolites */
-    Dbl = const_cast<C_FLOAT64 *>(s.getVariableNumberVector().array());
-    CCopasiVector< CMetab >::const_iterator itMetab = mMetabolites.begin();
-    CCopasiVector< CMetab >::const_iterator endMetab = itMetab + getNumVariableMetabs();
-    for (; itMetab != endMetab; ++itMetab, Dbl++)
-      *Dbl = (*itMetab)->getValue();
+  // :TODO: Instead of the number of steps we need the number of ODEs.
+  mElasticities.resize(mSteps.size(), mStateTemplate.getNumVariable());
 
-    /* Set the fixed Metabolites */
-    Dbl = const_cast<C_FLOAT64 *>(s.getFixedNumberVector().array());
-    endMetab = mMetabolites.begin() + getNumMetabs();
-    for (; itMetab != endMetab; ++itMetab, Dbl++)
-      *Dbl = (*itMetab)->getValue();
-
-    /* Set the global parameters */
-    Dbl = const_cast<C_FLOAT64 *>(s.getGlobalParameterVector().array());
-    CCopasiVector< CModelValue >::const_iterator itValue = mValues.begin();
-    CCopasiVector< CModelValue >::const_iterator endValue = itValue + mValues.size();
-    for (; itValue != endValue; ++itValue, Dbl++)
-      *Dbl = (*itValue)->getValue();
-
-    return s;
-  }
-
-CState CModel::getInitialState() const
-  {
-    CState s(this);
-
-    /* Set the time */
-    s.setTime(mInitialTime);
-
-    /* Set the volumes */
-    C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(s.getVolumeVector().array());
-    CCopasiVector< CCompartment >::const_iterator itCompartment = mCompartments.begin();
-    CCopasiVector< CCompartment >::const_iterator endCompartment = itCompartment + mCompartments.size();
-    for (; itCompartment != endCompartment; ++itCompartment, Dbl++)
-      *Dbl = (*itCompartment)->getInitialValue();
-
-    /* Set the variable metabolites */
-    Dbl = const_cast<C_FLOAT64 *>(s.getVariableNumberVector().array());
-    CCopasiVector< CMetab >::const_iterator itMetab = mMetabolites.begin();
-    CCopasiVector< CMetab >::const_iterator endMetab = itMetab + getNumVariableMetabs();
-    for (; itMetab != endMetab; ++itMetab, Dbl++)
-      *Dbl = (*itMetab)->getInitialValue();
-
-    /* Set the fixed Metabolites */
-    Dbl = const_cast<C_FLOAT64 *>(s.getFixedNumberVector().array());
-    endMetab = mMetabolites.begin() + getNumMetabs();
-    for (; itMetab != endMetab; ++itMetab, Dbl++)
-      *Dbl = (*itMetab)->getInitialValue();
-
-    /* Set the global parameters */
-    Dbl = const_cast<C_FLOAT64 *>(s.getGlobalParameterVector().array());
-    CCopasiVector< CModelValue >::const_iterator itValue = mValues.begin();
-    CCopasiVector< CModelValue >::const_iterator endValue = itValue + mValues.size();
-    for (; itValue != endValue; ++itValue, Dbl++)
-      *Dbl = (*itValue)->getInitialValue();
-
-    return s;
-  }
-
-CStateX CModel::getInitialStateX() const
-  {
-    CCHECK
-    unsigned C_INT32 i, imax;
-    CStateX s(this);
-
-    /* Set the time */
-    s.setTime(mInitialTime);
-
-    /* Set the volumes */
-    C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(s.getVolumeVector().array());
-    CCopasiVector< CCompartment >::const_iterator itCompartment = mCompartments.begin();
-    CCopasiVector< CCompartment >::const_iterator endCompartment = itCompartment + mCompartments.size();
-    for (; itCompartment != endCompartment; ++itCompartment, Dbl++)
-      *Dbl = (*itCompartment)->getInitialValue();
-
-    /* Set the independent variable Metabolites */
-    Dbl = const_cast<C_FLOAT64 *>(s.getVariableNumberVector().array());
-    CCopasiVector< CMetab >::const_iterator itMetab = mMetabolitesX.begin();
-    CCopasiVector< CMetab >::const_iterator endMetab = itMetab + getNumIndependentMetabs();
-    for (; itMetab != endMetab; ++itMetab, Dbl++)
-      *Dbl = (*itMetab)->getInitialValue();
-
-    /* Set the dependent variable Metabolites */
-    Dbl = const_cast<C_FLOAT64 *>(s.getDependentNumberVector().array());
-    endMetab = mMetabolitesX.begin() + getNumVariableMetabs();
-    for (; itMetab != endMetab; ++itMetab, Dbl++)
-      *Dbl = (*itMetab)->getInitialValue();
-
-    /* Set the fixed Metabolites */
-    Dbl = const_cast<C_FLOAT64 *>(s.getFixedNumberVector().array());
-    endMetab = mMetabolitesX.begin() + getNumMetabs();
-    for (; itMetab != endMetab; ++itMetab, Dbl++)
-      *Dbl = (*itMetab)->getInitialValue();
-
-    /* Set the global parameters */
-    Dbl = const_cast<C_FLOAT64 *>(s.getGlobalParameterVector().array());
-    CCopasiVector< CModelValue >::const_iterator itValue = mValues.begin();
-    CCopasiVector< CModelValue >::const_iterator endValue = itValue + mValues.size();
-    for (; itValue != endValue; ++itValue, Dbl++)
-      *Dbl = (*itValue)->getInitialValue();
-
-    return s;
-  }
-
-void CModel::setInitialState(const CState * state)
-{
-#ifdef COPASI_DEBUG
-  state->check("CModel::setInitialState()");
-#endif
-
-  /* Set the time */
-  mInitialTime = state->getTime();
-
-  /* Set the volumes */
-  const C_FLOAT64 * Dbl = state->getVolumeVector().array();
-  CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
-  CCopasiVector< CCompartment >::iterator endCompartment = itCompartment + mCompartments.size();
-
-  for (; itCompartment != endCompartment; ++itCompartment, Dbl++)
-    (*itCompartment)->setInitialValue(*Dbl);
-
-  /* Set the variable metabolites */
-  Dbl = state->getVariableNumberVector().array();
-  CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
-  CCopasiVector< CMetab >::iterator endMetab = itMetab + getNumVariableMetabs();
-
-  for (; itMetab != endMetab; ++itMetab, Dbl++)
-    (*itMetab)->setInitialValue(*Dbl);
-
-  /* Set the fixed metabolites */
-  Dbl = state->getFixedNumberVector().array();
-  endMetab = mMetabolites.begin() + getNumMetabs();
-
-  for (; itMetab != endMetab; ++itMetab, Dbl++)
-    (*itMetab)->setInitialValue(*Dbl);
-
-  /* Set the global parameters */
-  Dbl = state->getGlobalParameterVector().array();
-  CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
-  CCopasiVector< CModelValue >::iterator endValue = itValue + mValues.size();
-  for (; itValue != endValue; ++itValue, Dbl++)
-    (*itValue)->setInitialValue(*Dbl);
-
-  return;
-}
-
-void CModel::setInitialStateX(const CStateX * state)
-{
-  CCHECK
-
-  /* Set the time */
-  mInitialTime = state->getTime();
-
-  /* Set the volumes */
-  const C_FLOAT64 * Dbl = state->getVolumeVector().array();
-  CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
-  CCopasiVector< CCompartment >::iterator endCompartment = itCompartment + mCompartments.size();
-
-  for (; itCompartment != endCompartment; ++itCompartment, Dbl++)
-    (*itCompartment)->setInitialValue(*Dbl);
-
-  /* Set the variable metabolites */
-  Dbl = state->getVariableNumberVector().array();
-  CCopasiVector< CMetab >::iterator itMetab = mMetabolitesX.begin();
-  CCopasiVector< CMetab >::iterator endMetab = itMetab + getNumIndependentMetabs();
-
-  for (; itMetab != endMetab; ++itMetab, Dbl++)
-    (*itMetab)->setInitialValue(*Dbl);
-
-  /* Set the dependent variable metabolites */
-  Dbl = state->getDependentNumberVector().array();
-  endMetab = mMetabolitesX.begin() + getNumVariableMetabs();
-
-  for (; itMetab != endMetab; ++itMetab, Dbl++)
-    (*itMetab)->setInitialValue(*Dbl);
-
-  /* Set the fixed metabolites */
-  Dbl = state->getFixedNumberVector().array();
-  endMetab = mMetabolitesX.begin() + getNumMetabs();
-
-  for (; itMetab != endMetab; ++itMetab, Dbl++)
-    (*itMetab)->setInitialValue(*Dbl);
-
-  /* Set the global parameters */
-  Dbl = state->getGlobalParameterVector().array();
-  CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
-  CCopasiVector< CModelValue >::iterator endValue = itValue + mValues.size();
-  for (; itValue != endValue; ++itValue, Dbl++)
-    (*itValue)->setInitialValue(*Dbl);
-
-  return;
-}
-
-void CModel::setState(const CState * state)
-{
-#ifdef COPASI_DEBUG
-  state->check("CModel::setState()");
-#endif
-  unsigned C_INT32 i, imax;
-  const C_FLOAT64 * Dbl;
-
-  mTime = state->getTime();
-
-#ifdef XXXX // This gets enabled when we have dynamic volume changes
-  /* Set the volumes */
-  const C_FLOAT64 * Dbl = state->getVolumeVector().array();
-  CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
-  CCopasiVector< CCompartment >::iterator endCompartment = itCompartment + mCompartments.size();
-
-  for (; itCompartment != endCompartment; ++itCompartment, Dbl++)
-    (*itCompartment)->setValue(*Dbl);
-#endif // XXXX
-
-  /* Set the variable metabolites */
-  Dbl = state->getVariableNumberVector().array();
-  CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
-  CCopasiVector< CMetab >::iterator endMetab = itMetab + getNumVariableMetabs();
-
-  for (; itMetab != endMetab; ++itMetab, Dbl++)
-    (*itMetab)->setValue(*Dbl);
-
-  return;
-}
-
-void CModel::setStateX(const CStateX * state)
-{
-  CCHECK
-  const C_FLOAT64 * Dbl;
-
-  mTime = state->getTime();
-
-#ifdef XXXX // This gets enabled when we have dynamic volume changes
-  /* Set the volumes */
-  const C_FLOAT64 * Dbl = state->getVolumeVector().array();
-  CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
-  CCopasiVector< CCompartment >::iterator endCompartment = itCompartment + mCompartments.size();
-
-  for (; itCompartment != endCompartment; ++itCompartment, Dbl++)
-    (*itCompartment)->setValue(*Dbl);
-#endif // XXXX
-
-  /* Set the independent variable metabolites */
-  Dbl = state->getVariableNumberVector().array();
-  CCopasiVector< CMetab >::iterator itMetab = mMetabolitesX.begin();
-  CCopasiVector< CMetab >::iterator endMetab = itMetab + getNumIndependentMetabs();
-
-  for (; itMetab != endMetab; ++itMetab, Dbl++)
-    (*itMetab)->setValue(*Dbl);
-
-  /* We need to update the dependent metabolites by using moieties */
-  /* This changes need to be reflected in the current state */
-  C_FLOAT64 NumberDbl;
-  CCopasiVector< CMoiety >::iterator itMoiety = mMoieties.begin();
-  CCopasiVector< CMoiety >::iterator endMoiety = mMoieties.end();
-
-  for (; itMoiety != endMoiety; ++itMoiety, ++itMetab)
-    (*itMetab)->setValue((*itMoiety)->dependentNumber());
-
-  return;
+  return true;
 }
 
 void CModel::updateRates()
 {
-  CCHECK
+  //  assert (false); // :TODO:
 
+  CCHECK
   calculateReactions();
 
   // Calculate ydot = Stoi * v
@@ -1362,12 +1085,72 @@ void CModel::updateRates()
   setTransitionTimes();
 }
 
-void CModel::getDerivatives_particles(const CState * state, C_FLOAT64 * derivatives)
+const CState & CModel::getInitialState() const
+{return mInitialState;}
+
+const CState & CModel::getState() const
+  {return mCurrentState;}
+
+void CModel::setInitialState(const CState & state)
 {
-  setState(state);
+  mInitialState = state;
 
+  // We have to update the moieties
+  CCopasiVector< CMoiety >::iterator itMoiety = mMoieties.begin();
+  CCopasiVector< CMoiety >::iterator endMoiety = mMoieties.end();
+
+  for (; itMoiety != endMoiety; ++itMoiety)
+    (*itMoiety)->setInitialValue();
+
+  // The concentrations for the metabolites need to be updated
+  CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
+  CCopasiVector< CMetab >::iterator endMetab = mMetabolites.end();
+
+  for (; itMetab != endMetab; ++itMetab)
+    (*itMetab)->refreshInitialConcentration();
+
+  return;
+}
+
+void CModel::setState(const CState & state)
+{
+  mCurrentState = state;
+
+  return;
+}
+
+void CModel::refreshConcentrations()
+{
+  // The particle numbers for moiety dependent metabolites need to
+  // be calculated if needed.
+  if (mCurrentState.isUpdateDependentRequired())
+    {
+      C_FLOAT64 * pDependent = mCurrentState.beginDependent();
+      CCopasiVector< CMoiety >::iterator itMoiety = mMoieties.begin();
+      CCopasiVector< CMoiety >::iterator endMoiety = mMoieties.end();
+
+      for (; itMoiety != endMoiety; ++itMoiety, ++pDependent)
+        *pDependent = (*itMoiety)->dependentNumber();
+    }
+
+  // The concentrations for the metabolites need to be updated.
+  CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
+  CCopasiVector< CMetab >::iterator endMetab = mMetabolites.end();
+
+  for (; itMetab != endMetab; ++itMetab)
+    (*itMetab)->refreshConcentration();
+}
+
+void CModel::applyAssignments(void)
+{
+  refreshConcentrations();
+
+  // caluculate the fluxes
   calculateReactions();
+}
 
+void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
+{
   char T = 'N';
   C_INT M = 1;
   C_INT N = getNumVariableMetabs();
@@ -1379,12 +1162,8 @@ void CModel::getDerivatives_particles(const CState * state, C_FLOAT64 * derivati
          mStoi.array(), &K, &Beta, derivatives, &M);
 }
 
-void CModel::getDerivativesX_particles(const CStateX * state, C_FLOAT64 * derivatives)
+void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
 {
-  setStateX(state);
-
-  calculateReactions();
-
   char T = 'N';
   C_INT M = 1;
   C_INT N = getNumIndependentMetabs();
@@ -1393,8 +1172,125 @@ void CModel::getDerivativesX_particles(const CStateX * state, C_FLOAT64 * deriva
   C_FLOAT64 Beta = 0.0;
 
   dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
-         mRedStoi.array(), &K, &Beta, derivatives, &M);
+         mRedStoi.array(), &K, &Beta, derivativesX, &M);
 }
+
+void CModel::calculateElasticityMatrix(const C_FLOAT64 & factor,
+                                       const C_FLOAT64 & resolution)
+{
+  unsigned C_INT32 Col;
+  unsigned C_INT32 nCol = mElasticities.numCols();
+
+  C_FLOAT64 * itE;
+  C_FLOAT64 * beginE = mElasticities.array();
+
+  CCopasiVector< CReaction >::const_iterator itReaction;
+  CCopasiVector< CReaction >::const_iterator beginReaction = mSteps.begin();
+  CCopasiVector< CReaction >::const_iterator endReaction = mSteps.end();
+
+  CModelEntity ** itEntity;
+  CModelEntity ** beginEntity = mStateTemplate.beginIndependent();
+  CModelEntity ** endEntity = mStateTemplate.endDependent();
+
+  for (itEntity = beginEntity, Col = 0; itEntity != endEntity; ++itEntity, ++Col)
+    {
+      // :TODO: This only works for entities of type metabolites.
+      //        The scaling factor for other entites should be 1.
+      const C_FLOAT64 invVolume =
+        1.0 / static_cast<CMetab *>(*itEntity)->getCompartment()->getVolume();
+      C_FLOAT64 * pX =
+        const_cast<C_FLOAT64 *>(&static_cast<CMetab *>(*itEntity)->getConcentration());
+
+      for (itReaction = beginReaction, itE = beginE + Col;
+           itReaction != endReaction;
+           ++itReaction, itE += nCol)
+        * itE = invVolume * (*itReaction)->calculatePartialDerivative(pX, factor, resolution);
+    }
+
+  // DebugFile << "CModel::calculateElasticityMatrix()" << std::endl;
+  // DebugFile << mElasticities << std::endl;
+
+  return;
+}
+
+void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian) const
+  {
+    // :TODO: This needs to be revisited when user defined ODEs are introduced.
+    char T = 'N';
+    C_INT M = mStoi.numRows(); /* LDA, LDC, N */
+    C_INT K = mStoi.numCols(); /* LDB */
+
+    C_FLOAT64 Alpha = 1.0;
+    C_FLOAT64 Beta = 0.0;
+
+    // Assure that the jacobian has the correct size.
+    jacobian.resize(M, M);
+    CMatrix<C_FLOAT64> Jacobian(M, M);
+
+    // DebugFile << "CModel::calculateJacobian" << std::endl;
+    // DebugFile << mElasticities << std::endl;
+    // DebugFile << mStoi << std::endl;
+
+    // For documentation of DGEMM see:
+    // http://calvin.bioinformatics.vt.edu/copasi
+
+    dgemm_(&T, &T, &M, &M, &K, &Alpha, const_cast<C_FLOAT64 *>(mElasticities.array()), &M,
+           const_cast<C_FLOAT64 *>(mStoi.array()), &K, &Beta, Jacobian.array(), &M);
+
+    // We have to swap columns in the Jacobian since the elasticities
+    // are calculated in the order given by the state template.
+    C_FLOAT64 * pTo, * pFrom, * pEnd = Jacobian.array() + M * M;;
+    unsigned C_INT32 i;
+
+    // DebugFile << Jacobian << std::endl;
+    // DebugFile << mRowLU << std::endl;
+
+    for (i = 0; i < M; ++i)
+      for (pTo = jacobian.array() + mRowLU[i], pFrom = Jacobian.array() + i;
+           pFrom < pEnd; pTo += M, pFrom += M)
+        * pTo = *pFrom;
+
+    // DebugFile << jacobian << std::endl;
+  }
+
+void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX) const
+  {
+    // :TODO: This needs to be revisited when user defined ODEs are introduced.
+    CMatrix< C_FLOAT64 > tmp;
+
+    char T = 'N';
+    C_INT M = mStateTemplate.getNumIndependent(); /* LDA, LDC */
+    C_INT N = mRedStoi.numCols();
+    C_INT K = mStateTemplate.getNumDependent();
+    C_INT LD = mStateTemplate.getNumVariable();
+
+    C_FLOAT64 Alpha = 1.0;
+    C_FLOAT64 Beta = 1.0;
+
+    tmp.resize(N, LD);
+
+    // Assure that the jacobian has the correct size.
+    jacobianX.resize(M, M);
+
+    memcpy(tmp.array(), mElasticities.array(), N * LD * sizeof(C_FLOAT64));
+
+    // For documentation of DGEMM see:
+    // http://calvin.bioinformatics.vt.edu/copasi
+
+    // tmp = (E1, E2) (I, L0')' = E1 + E2 * L0
+    dgemm_(&T, &T, &M, &N, &K, &Alpha, const_cast<C_FLOAT64 *>(mL.array()), &M,
+           const_cast<C_FLOAT64 *>(mElasticities.array()) + M, &LD, &Beta, tmp.array(), &LD);
+
+    // DebugFile << "CModel::calculateJacobianX" << std::endl;
+    // DebugFile << tmp << std::endl;
+
+    Beta = 0.0;
+
+    // j = R * tmp
+    dgemm_(&T, &T, &M, &M, &N, &Alpha, tmp.array(), &LD,
+           const_cast<C_FLOAT64 *>(mRedStoi.array()), &N, &Beta, jacobianX.array(), &M);
+    // DebugFile << jacobianX << std::endl;
+  }
 
 bool CModel::setVolumeUnit(const std::string & name)
 {
@@ -1742,9 +1638,6 @@ CCompartment* CModel::createCompartment(const std::string & name,
       return NULL;
     }
 
-  //compile();
-  mStateTemplate.add(cpt->getKey());
-
   return cpt;
 }
 
@@ -1846,7 +1739,7 @@ CModelValue* CModel::createModelValue(const std::string & name,
     }
 
   //compile();
-  mStateTemplate.add(cmv->getKey());
+  mStateTemplate.add(cmv);
 
   return cmv;
 }
@@ -1977,8 +1870,21 @@ bool CModel::convert2NonReversible()
 
 void CModel::initObjects()
 {
-  addObjectReference("Initial Time", mInitialTime, CCopasiObject::ValueDbl);
-  addObjectReference("Time", mTime, CCopasiObject::ValueDbl);
+  mKey = GlobalKeys.add("Model", this);
+
+  // The regular CModelEntity mechanism does not work since
+  // CModel is created before mStateTemplate :(
+  C_FLOAT64 InitialValue = *mpIValue;
+  C_FLOAT64 Value = *mpValueAccess;
+  pdelete(mpIValue);
+  pdelete(mpValueData);
+  mStateTemplate.add(this);
+  *mpIValue = InitialValue;
+  *mpValueAccess = Value;
+
+  mpIValueReference->setObjectName("Initial Time");
+  mpValueReference->setObjectName("Time");
+
   addObjectReference("Comments", mComments);
 
   // These are broken since they contain pointers to values :(
@@ -2077,68 +1983,6 @@ std::ostream &operator<<(std::ostream &os,
     }
   return os;
 }
-
-//**********************************************************************
-//          CStateTemplate
-//**********************************************************************
-
-CModel::CStateTemplate::CStateTemplate() :
-    mList(),
-    mKeyMap(),
-    mObjectMap()
-{}
-
-CModel::CStateTemplate::~CStateTemplate() {cleanup();}
-
-bool CModel::CStateTemplate::cleanup()
-{
-  std::vector< std::pair< std::string, std::string > * >::iterator it =
-    mList.begin();
-  std::vector< std::pair< std::string, std::string > * >::iterator End =
-    mList.end();
-
-  for (; it != End; ++it)
-    if (*it)
-      {
-        GlobalKeys.remove((*it)->first);
-        delete *it;
-        *it = NULL;
-      }
-
-  mList.clear();
-  mKeyMap.clear();
-  mObjectMap.clear();
-
-  return true;
-}
-
-bool CModel::CStateTemplate::add(const std::string & objectKey)
-{
-  std::pair< std::string, std::string > * pAdd =
-    new std::pair< std::string, std::string >
-    (GlobalKeys.add("StateVariable", NULL), objectKey);
-
-  mList.push_back(pAdd);
-
-  mKeyMap[pAdd->first] = &objectKey;
-  mObjectMap[objectKey] = &pAdd->first;
-
-  return true;
-}
-
-std::string CModel::CStateTemplate::getObjectKey(const std::string & key) const
-  {return *(*const_cast<std::map< std::string, const std::string * > *>(&mKeyMap))[key];}
-
-std::string CModel::CStateTemplate::getKey(const std::string & objectKey) const
-  {return *(*const_cast<std::map< std::string, const std::string * > *>(&mObjectMap))[objectKey];}
-
-unsigned C_INT32 CModel::CStateTemplate::size() const {return mList.size();}
-
-std::pair< std::string, std::string >
-CModel::CStateTemplate::operator[](const unsigned C_INT32 & index) const
-  {
-    return * mList[index];
-  }
 
 std::string CModel::suitableForStochasticSimulation() const
   {
@@ -2406,6 +2250,7 @@ void CModel::buildLinkZero()
   unsigned C_INT32 j, k;
 
   // Compute Link_0 = inverse(R_1,1) * R_1,2
+  // :TODO: Use dgemm
   C_FLOAT64 * pTmp1 = &mL(0, 0);
   C_FLOAT64 * pTmp2;
   C_FLOAT64 * pTmp3;

@@ -1,16 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CTimeSeriesTable.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/07 16:58:39 $
+   $Author: shoops $ 
+   $Date: 2006/03/02 02:21:43 $
    End CVS Header */
 
 #ifndef CTSTABLE
 #define CTSTABLE
 
-#include <qtable.h> 
-//#include <iostream>
+#include <qtable.h>
+
+#include "copasi.h"
 
 #include "trajectory/CTimeSeries.h"
 

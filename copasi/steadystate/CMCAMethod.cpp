@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/22 15:11:11 $
+   $Date: 2006/03/02 02:23:07 $
    End CVS Header */
 
 #include <cmath>
@@ -321,25 +321,28 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
 
   // Scale Elasticities
   mScaledElasticities.resize(mUnscaledElasticities.numRows(), mUnscaledElasticities.numCols());
-  for (i = 0; i < mpModel->getTotSteps(); i++)
-    for (j = 0; j < mpModel->getNumMetabs(); j++)
-      {
-        // change the use of Col[] and Row[] to mSteps and mMetabolites
-        // change the use of ICol[] and IRow[] to mStepsX and mMetabolitesX
+  for (j = 0; j < mpModel->getNumMetabs(); j++)
+    {
+      C_FLOAT64 VolumeInv = 1.0 / mpModel->getMetabolitesX()[j]->getCompartment()->getVolume();
+      C_FLOAT64 Number = mpModel->getMetabolitesX()[j]->getNumber();
 
-        if (fabs(mpModel->getReactions()[i]->getFlux()
-                 *mpModel->getMetabolitesX()[j]->getCompartment()->getVolumeInv()) >= res)
-          {
-            mScaledElasticities[i][j] = mUnscaledElasticities[i][j]
-                                        * mpModel->getMetabolitesX()[j]->getNumber()
-                                        / mpModel->getReactions()[i]->getParticleFlux();
-            //                                        * mpModel->getMetabolites()[j]->getConcentration()
-            //                                        * mpModel->getMetabolites()[j]->getCompartment()->getVolume()
-            //                                        / mpModel->getReactions()[i]->getFlux();
-          }
-        else
-          mScaledElasticities[i][j] = ((mpModel->getReactions()[i]->getFlux() < 0.0) ? -2.0 : 2.0) * DBL_MAX;
-      }
+      for (i = 0; i < mpModel->getTotSteps(); i++)
+        {
+          // change the use of Col[] and Row[] to mSteps and mMetabolites
+          // change the use of ICol[] and IRow[] to mStepsX and mMetabolitesX
+
+          if (fabs(mpModel->getReactions()[i]->getFlux() * VolumeInv) >= res)
+            {
+              mScaledElasticities[i][j] = mUnscaledElasticities[i][j] * Number
+                                          / mpModel->getReactions()[i]->getParticleFlux();
+              //                                        * mpModel->getMetabolites()[j]->getConcentration()
+              //                                        * mpModel->getMetabolites()[j]->getCompartment()->getVolume()
+              //                                        / mpModel->getReactions()[i]->getFlux();
+            }
+          else
+            mScaledElasticities[i][j] = ((mpModel->getReactions()[i]->getFlux() < 0.0) ? -2.0 : 2.0) * DBL_MAX;
+        }
+    }
 
   //update annotated matrix
   mScaledElasticitiesAnn->resize();
@@ -378,7 +381,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   for (i = 0; i < mpModel->getTotSteps(); i++)
     for (j = 0; j < mpModel->getTotSteps(); j++)
       {
-        C_FLOAT64 tmp = mpModel->getReactions()[i]->getLargestCompartment().getVolumeInv();
+        C_FLOAT64 tmp = 1.0 / mpModel->getReactions()[i]->getLargestCompartment().getVolume();
 
         if (fabs(mpModel->getReactions()[i]->getFlux()*tmp) >= res)
           mScaledFluxCC[i][j] = mUnscaledFluxCC[i][j]

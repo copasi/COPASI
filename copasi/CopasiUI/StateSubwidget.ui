@@ -46,19 +46,19 @@
                 <attribute name="title">
                     <string>OptimizationResult</string>
                 </attribute>
-		<vbox>
-		<property name="name">
-                        <cstring>unnamed</cstring>
-                </property>
-                <widget class="QTextEdit">
+                <vbox>
                     <property name="name">
-                        <cstring>optimizationResultText</cstring>
+                        <cstring>unnamed</cstring>
                     </property>
-                    <property name="readOnly">
-			<bool>true</bool>
-                    </property>
-                </widget>
-		</vbox>
+                    <widget class="QTextEdit">
+                        <property name="name">
+                            <cstring>optimizationResultText</cstring>
+                        </property>
+                        <property name="readOnly">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                </vbox>
             </widget>
             <widget class="QWidget">
                 <property name="name">
@@ -489,12 +489,6 @@
         </widget>
     </vbox>
 </widget>
-<includes>
-    <include location="local" impldecl="in declaration">model/CState.h</include>
-    <include location="local" impldecl="in implementation">model/CModel.h</include>
-    <include location="local" impldecl="in implementation">model/CMetabNameInterface.h</include>
-    <include location="local" impldecl="in implementation">steadystate/CSteadyStateTask.h</include>
-</includes>
 <forwards>
     <forward>class CModel;</forward>
     <forward>class CSteadyStateTask;</forward>
@@ -505,10 +499,10 @@
     <slot>showUnits()</slot>
 </slots>
 <functions>
+    <function specifier="non virtual">displayOptimizationTab( bool display )</function>
     <function returnType="bool">loadMetabolites( const CModel * model )</function>
     <function returnType="bool">loadReactions( const CModel * model )</function>
     <function returnType="bool">loadAll( const CSteadyStateTask * task )</function>
-    <function specifier="non virtual">displayOptimizationTab( bool display )</function>
     <function specifier="non virtual" returnType="bool">clear()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>

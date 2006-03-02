@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.92 $
+   $Revision: 1.93 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Date: 2006/03/02 02:22:53 $
    End CVS Header */
 
 #include <iostream>
@@ -23,11 +23,11 @@
 #include "CMetabNameInterface.h"
 
 //static
-const CCompartment * CMetab::mpParentCompartment = NULL;
+//const CCompartment * CMetab::mpParentCompartment = NULL;
 
 //static
-void CMetab::setParentCompartment(const CCompartment * parentCompartment)
-{mpParentCompartment = parentCompartment;}
+//void CMetab::setParentCompartment(const CCompartment * parentCompartment)
+//{mpParentCompartment = parentCompartment;}
 
 //static
 C_FLOAT64 CMetab::convertToNumber(const C_FLOAT64 & concentration,
@@ -39,7 +39,7 @@ C_FLOAT64 CMetab::convertToNumber(const C_FLOAT64 & concentration,
 C_FLOAT64 CMetab::convertToConcentration(const C_FLOAT64 & number,
     const CCompartment & compartment,
     const CModel & model)
-{return number * compartment.getVolumeInv() * model.getNumber2QuantityFactor();}
+{return number / compartment.getVolume() * model.getNumber2QuantityFactor();}
 
 CMetab::CMetab(const std::string & name,
                const CCopasiContainer * pParent):
@@ -49,11 +49,13 @@ CMetab::CMetab(const std::string & name,
     mIConc(0.0),
     mTT(0.0),
     mpCompartment(NULL),
-    mpModel(NULL),
     mMoieties()
 {
   mKey = GlobalKeys.add("Metabolite", this);
-  mStatus = REACTIONS;
+  initObjects();
+
+  setStatus(REACTIONS);
+
   if (getObjectParent())
     {
       initModel();
@@ -63,7 +65,6 @@ CMetab::CMetab(const std::string & name,
       setConcentration(1.0);
     }
 
-  initObjects();
   CONSTRUCTOR_TRACE;
 }
 
@@ -74,13 +75,14 @@ CMetab::CMetab(const CMetab & src,
     mIConc(src.mIConc),
     mTT(src.mTT),
     mpCompartment(NULL),
-    mpModel(NULL),
     mMoieties()
 {
   mKey = GlobalKeys.add("Metabolite", this);
+
+  initObjects();
+
   initModel();
   initCompartment(src.mpCompartment);
-  initObjects();
   CONSTRUCTOR_TRACE;
 }
 
@@ -88,12 +90,13 @@ CMetab &CMetab::operator=(const CMetabOld &RHS)
 {
   setObjectName(RHS.getObjectName());
 
+  setStatus(RHS.mStatus);
+
   setInitialConcentration(RHS.mIConc);
   setConcentration(RHS.mIConc);
 
   mRate = 0.0;
   mTT = 0.0;
-  mStatus = RHS.mStatus;
 
   return *this;  // Assignment operator returns left side.
 }
@@ -108,15 +111,15 @@ void CMetab::cleanup() {}
 
 void CMetab::initModel()
 {
-  mpModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
-  if (!mpModel && CCopasiDataModel::Global) mpModel = CCopasiDataModel::Global->getModel();
+  //  mpModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
+  //  if (!mpModel && CCopasiDataModel::Global) mpModel = CCopasiDataModel::Global->getModel();
 }
 
 void CMetab::initCompartment(const CCompartment * pCompartment)
 {
   mpCompartment = (const CCompartment *) getObjectAncestor("Compartment");
   if (!mpCompartment) mpCompartment = pCompartment;
-  if (!mpCompartment) mpCompartment = mpParentCompartment;
+  //  if (!mpCompartment) mpCompartment = mpParentCompartment;
 }
 
 const C_FLOAT64 & CMetab::getConcentration() const {return mConc;}
@@ -140,7 +143,7 @@ const C_FLOAT64 & CMetab::getTransitionTime() const {return mTT;}
 
 bool CMetab::setObjectParent(const CCopasiContainer * pParent)
 {
-  CCopasiObject::setObjectParent(pParent);
+  CModelEntity::setObjectParent(pParent);
 
   initCompartment(NULL);
   initModel();
@@ -152,9 +155,11 @@ bool CMetab::setObjectParent(const CCopasiContainer * pParent)
 
 void CMetab::setConcentration(const C_FLOAT64 concentration)
 {
+  if (isFixed()) return;
+
   mConc = concentration;
-  mValue = concentration * mpCompartment->getVolume()
-           * mpModel->getQuantity2NumberFactor();
+  *mpValueData = concentration * mpCompartment->getVolume()
+                 * mpModel->getQuantity2NumberFactor();
 
 #ifdef COPASI_DEBUG
   //if (mStatus == METAB_FIXED)
@@ -164,14 +169,13 @@ void CMetab::setConcentration(const C_FLOAT64 concentration)
 
 void CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
 {
-  if (mIConc == initialConcentration) return;
-
   mIConc = initialConcentration;
-  mIValue = initialConcentration * mpCompartment->getVolume()
-            * mpModel->getQuantity2NumberFactor();
+  *mpIValue = initialConcentration * mpCompartment->getVolume()
+              * mpModel->getQuantity2NumberFactor();
 
-  if (mStatus == FIXED)
-    setConcentration(initialConcentration);
+  // This is obsolete.
+  // if (isFixed())
+  //   setConcentration(initialConcentration);
 
   std::set< CMoiety * >::iterator it = mMoieties.begin();
   std::set< CMoiety * >::iterator end = mMoieties.end();
@@ -184,9 +188,11 @@ void CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
 
 void CMetab::setValue(const C_FLOAT64 & value)
 {
-  mConc = value * mpCompartment->getVolumeInv()
+  if (isFixed()) return;
+
+  mConc = value / mpCompartment->getVolume()
           * mpModel->getNumber2QuantityFactor();
-  mValue = value;
+  *mpValueAccess = value;
 
 #ifdef COPASI_DEBUG
   //  if (mStatus == METAB_FIXED)
@@ -196,15 +202,16 @@ void CMetab::setValue(const C_FLOAT64 & value)
 
 void CMetab::setInitialValue(const C_FLOAT64 & initialValue)
 {
-  if (mIValue == initialValue) return;
+  if (*mpIValue == initialValue) return;
 
   if (initialValue)
-    mIConc = initialValue * mpCompartment->getVolumeInv() * mpModel->getNumber2QuantityFactor();
+    mIConc = initialValue / mpCompartment->getVolume() * mpModel->getNumber2QuantityFactor();
 
-  mIValue = initialValue;
+  *mpIValue = initialValue;
 
-  if (mStatus == FIXED)
-    setNumber(initialValue);
+  // This is obsolete.
+  // if (isFixed())
+  //   setNumber(initialValue);
 
   std::set< CMoiety * >::iterator it = mMoieties.begin();
   std::set< CMoiety * >::iterator end = mMoieties.end();
@@ -215,16 +222,23 @@ void CMetab::setInitialValue(const C_FLOAT64 & initialValue)
   return;
 }
 
-//  ******************
-
-void CMetab::setStatus(const CMetab::Status & status)
+void CMetab::refreshInitialConcentration()
 {
-  mStatus = status;
-  if (mStatus == FIXED)
-    {
-      if (mpCompartment && mpModel)
-        setNumber(getInitialNumber());
-    }
+  mIConc = *mpIValue / mpCompartment->getVolume() * mpModel->getNumber2QuantityFactor();
+
+  if (isFixed()) mConc = mIConc;
+}
+
+void CMetab::refreshConcentration()
+{
+  mConc = *mpValueAccess / mpCompartment->getVolume() * mpModel->getNumber2QuantityFactor();
+}
+
+void CMetab::setStatus(const CModelEntity::Status & status)
+{
+  CModelEntity::setStatus(status);
+
+  if (mpModel && mpCompartment) refreshConcentration();
 }
 
 //void CMetab::setCompartment(const CCompartment * compartment)
@@ -236,12 +250,16 @@ void CMetab::initObjects()
 {
   CCopasiObject * pObject;
 
-  addObjectReference("Concentration", mConc, CCopasiObject::ValueDbl);
+  pObject = addObjectReference("Concentration", mConc, CCopasiObject::ValueDbl);
+  // pObject->setRefresh(this, &CMetab::refreshConcentration);
   pObject = addObjectReference("InitialConcentration", mIConc, CCopasiObject::ValueDbl);
   pObject->setUpdateMethod(this, &CMetab::setInitialConcentration);
-  addObjectReference("ParticleNumber", mValue, CCopasiObject::ValueDbl);
-  pObject = addObjectReference("InitialParticleNumber", mIValue, CCopasiObject::ValueDbl);
-  pObject->setUpdateMethod(this, &CMetab::setInitialNumber);
+  // pObject->setRefresh(this, &CMetab::refreshInitialConcentration);
+
+  mpValueReference->setObjectName("ParticleNumber");
+  mpIValueReference->setObjectName("InitialParticleNumber");
+  mpIValueReference->setUpdateMethod(this, &CMetab::setInitialNumber);
+
   addObjectReference("TransitionTime", mTT, CCopasiObject::ValueDbl);
 }
 
@@ -269,7 +287,7 @@ void CMetab::initObjects()
 
 C_FLOAT64 CMetab::getConcentrationRate() const
   {
-    return mRate * getCompartment()->getVolumeInv()
+    return mRate / getCompartment()->getVolume()
     * mpModel->getNumber2QuantityFactor();
   }
 
@@ -292,8 +310,8 @@ std::ostream & operator<<(std::ostream &os, const CMetab & d)
 {
   os << "    ++++CMetab: " << d.getObjectName() << std::endl;
   os << "        mConc " << d.mConc << " mIConc " << d.mIConc << std::endl;
-  os << "        mValue (particle number) " << d.mValue << " mIValue " << d.mIValue << std::endl;
-  os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.mStatus << std::endl;
+  os << "        mValue (particle number) " << *d.mpValueAccess << " mIValue " << *d.mpIValue << std::endl;
+  os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.getStatus() << std::endl;
 
   if (d.mpCompartment)
     os << "        mpCompartment == " << d.mpCompartment << std::endl;
@@ -329,24 +347,27 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
   setInitialConcentration(mIConc);
   setConcentration(mIConc);
 
+  Status GepasiStatus;
   Fail = configbuffer.getVariable("Type", "C_INT16",
-                                  (void *) & mStatus);
+                                  (void *) & GepasiStatus);
 
   if (Fail)
     return Fail;
 
+  setStatus(GepasiStatus);
+
   // sanity check
-  if ((mStatus < 0) || (mStatus > 7))
+  if ((GepasiStatus < 0) || (GepasiStatus > 7))
     {
       CCopasiMessage(CCopasiMessage::WARNING,
                      "The file specifies a non-existing type "
                      "for '%s'.\nReset to internal metabolite.",
                      getObjectName().c_str());
-      mStatus = CMetab::REACTIONS;
+      setStatus(REACTIONS);
     }
 
   // sanity check
-  if ((mStatus != METAB_MOIETY) && (mIConc < 0.0))
+  if ((GepasiStatus != METAB_MOIETY) && (mIConc < 0.0))
     {
       CCopasiMessage(CCopasiMessage::WARNING,
                      "The file specifies a negative concentration "

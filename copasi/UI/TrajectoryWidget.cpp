@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.122 $
+   $Revision: 1.123 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:23 $
+   $Date: 2006/03/02 02:21:43 $
    End CVS Header */
 
 /********************************************************
@@ -474,7 +474,7 @@ void TrajectoryWidget::runTrajectoryTask()
             {
               const CState *currentState = tt->getState();
               if (currentState)
-                (CCopasiDataModel::Global->getModel())->setInitialState(currentState);
+                (CCopasiDataModel::Global->getModel())->setInitialState(*currentState);
             }
         }
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)

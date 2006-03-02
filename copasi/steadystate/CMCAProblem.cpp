@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:31 $
+   $Date: 2006/03/02 02:23:08 $
    End CVS Header */
 
 /**
@@ -88,9 +88,9 @@ void CMCAProblem::load(CReadConfig & configBuffer,
 void CMCAProblem::setInitialState(const CState & initialState)
 {
   mInitialState = initialState;
-  mpModel = const_cast<CModel *>(mInitialState.getModel());
 }
 
+#ifdef XXXX 
 /**
  * Set the initial state of the problem.
  * @param const CStateX & InitialState
@@ -107,6 +107,7 @@ void CMCAProblem::setInitialState(const CStateX & initialState)
  */
 const CState & CMCAProblem::getInitialState() const
   {return mInitialState;}
+#endif // XXXX
 
 /**
  * Set whether the steady state analysis is requested.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:32 $
+   $Date: 2006/03/02 02:23:30 $
    End CVS Header */
 
 /**
@@ -210,8 +210,8 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   catch (CCopasiException Exception)
     {
-      mpTrajectoryProblem->getModel()->setState(mpCurrentState);
-      mpTrajectoryProblem->getModel()->updateRates();
+      mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
+      mpTrajectoryProblem->getModel()->refreshConcentrations();
 
       if ((*LE)(outputStartTime, *mpCurrentTime))
         {
@@ -223,99 +223,6 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
       throw CCopasiException(Exception.getMessage());
     }
-
-#ifdef XXXX
-  try
-    {
-      mpTrajectoryMethod->step(StepSize);
-    }
-  catch (CCopasiException Exception)
-    {
-      if (mpCallBack) mpCallBack->finish(hProcess);
-      throw CCopasiException(Exception.getMessage());
-    }
-
-  if (mpCallBack)
-    {
-      Percentage = (*mpCurrentTime - StartTime) * handlerFactor;
-      flagProceed = mpCallBack->progress(hProcess);
-    }
-
-  if ((*LE)(outputStartTime, *mpCurrentTime) &&
-      !(*L)(*mpCurrentTime, NextTimeToReport * (1 - 100 * DBL_EPSILON)))
-    {
-      doOutput();
-    }
-
-  if ((*L)(*mpCurrentTime, NextTimeToReport * (1 - 100 * DBL_EPSILON)))
-    {
-      /* Here we will do conditional event processing */
-      FailCounter++;
-      StepSize = NextTimeToReport - *mpCurrentTime;
-      if (mpCallBack)
-        flagProceed = mpCallBack->proceed();
-    }
-  else
-    {
-      FailCounter = 0;
-      // This is numerically more stable then adding mpTrajectoryProblem->getStepSize().
-      NextTimeToReport = StartTime + (EndTime - StartTime) * StepCounter++ / StepNumber;
-      // Make sure that we do not overstep
-      if ((*L)(EndTime, NextTimeToReport)) NextTimeToReport = EndTime;
-      StepSize = NextTimeToReport - *mpCurrentTime;
-    }
-
-  while ((*L)(*mpCurrentTime, EndTime * (1 - 100 * DBL_EPSILON)) && flagProceed)
-    {
-      try
-        {
-          mpTrajectoryMethod->step(StepSize);
-        }
-      catch (CCopasiException Exception)
-        {
-          if (mpCallBack) mpCallBack->finish(hProcess);
-          throw CCopasiException(Exception.getMessage());
-        }
-
-      //std::cout << EndTime << "  " << *mpCurrentTime << "  " << EndTime-*mpCurrentTime << std::endl;
-
-      if (mpCallBack)
-        {
-          Percentage = (*mpCurrentTime - StartTime) * handlerFactor;
-          flagProceed = mpCallBack->progress(hProcess);
-        }
-
-      if ((*LE)(outputStartTime, *mpCurrentTime) &&
-          !(*L)(*mpCurrentTime, NextTimeToReport * (1 - 100 * DBL_EPSILON)))
-        {
-          doOutput();
-        }
-
-      if ((*L)(*mpCurrentTime, NextTimeToReport * (1 - 100 * DBL_EPSILON)))
-        {
-          /* Here we will do conditional event processing */
-
-          FailCounter++;
-          if (FailCounter > 0) // Currently this is correct since no events are processed.
-            CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 12);
-
-          StepSize = NextTimeToReport - *mpCurrentTime;
-          if (mpCallBack)
-            flagProceed = mpCallBack->proceed();
-        }
-      else
-        {
-          FailCounter = 0;
-          // This is numerically more stable then adding mpTrajectoryProblem->getStepSize().
-          NextTimeToReport = StartTime + (EndTime - StartTime) * StepCounter++ / StepNumber;
-          // Make sure that we do not overstep
-          if ((*L)(EndTime, NextTimeToReport)) NextTimeToReport = EndTime;
-          StepSize = NextTimeToReport - *mpCurrentTime;
-        }
-    }
-
-  //mpTrajectoryProblem->setEndState(new CState(*mpCurrentState));
-#endif // XXXX
 
   if (mpCallBack) mpCallBack->finish(hProcess);
 
@@ -356,8 +263,8 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & nextTime)
         }
       while (true);
 
-      mpTrajectoryProblem->getModel()->setState(mpCurrentState);
-      mpTrajectoryProblem->getModel()->updateRates();
+      mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
+      mpTrajectoryProblem->getModel()->refreshConcentrations();
 
       return true;
     }
@@ -378,8 +285,8 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & nextTime)
         }
       while (true);
 
-      mpTrajectoryProblem->getModel()->setState(mpCurrentState);
-      mpTrajectoryProblem->getModel()->updateRates();
+      mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
+      mpTrajectoryProblem->getModel()->refreshConcentrations();
 
       return true;
     }
@@ -419,7 +326,7 @@ bool CTrajectoryTask::initOutput()
   if (mDoOutput == OUTPUT_COMPLETE)
     {
       if (mTimeSeriesRequested)
-        mTimeSeries.init(mpTrajectoryProblem->getStepNumber(), mpCurrentState);
+        mTimeSeries.init(mpTrajectoryProblem->getStepNumber(), mpProblem->getModel(), mpCurrentState);
     }
   return true;
 }

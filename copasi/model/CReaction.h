@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.89 $
+   $Revision: 1.90 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Date: 2006/03/02 02:22:53 $
    End CVS Header */
 
 /**
@@ -70,7 +70,7 @@ class CReaction : public CCopasiContainer
     C_FLOAT64 mParticleFlux;
 
     /**
-     *  A Pointer to the scaling factor for the flux to calculate the particle number
+     *  A pointer to the scaling factor for the flux to calculate the particle number
      *  changes. For a single compartment reaction this is the volume of
      *  the compartment
      */
@@ -315,12 +315,12 @@ class CReaction : public CCopasiContainer
   public:
     /**
      * Calculate partial derivative of the flux 
-     * @param C_FLOAT64 & xi
+     * @param C_FLOAT64 * pXi
      * @param const C_FLOAT64 & derivationFactor
      * @param const C_FLOAT64 & resolution (unscaled resolution)
      * @return C_FLOAT64 partial 
      */
-    C_FLOAT64 calculatePartialDerivative(C_FLOAT64 & xi,
+    C_FLOAT64 calculatePartialDerivative(C_FLOAT64 * pXi,
                                          const C_FLOAT64 & derivationFactor,
                                          const C_FLOAT64 & resolution);
 

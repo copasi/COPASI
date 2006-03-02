@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAResultSubwidget.ui.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:21 $
+   $Date: 2006/03/02 02:21:43 $
    End CVS Header */
 
 /****************************************************************************
@@ -18,7 +18,12 @@
  ** destructor.
  *****************************************************************************/
 
+#include "copasi.h"
+
 #include "qtUtilities.h"
+
+#include "model/CModel.h"
+#include "steadystate/CMCAMethod.h"
 #include "utilities/CAnnotatedMatrix.h"
 
 void CMCAResultSubwidget::init()

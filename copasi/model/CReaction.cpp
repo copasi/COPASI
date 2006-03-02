@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.149 $
+   $Revision: 1.150 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Date: 2006/03/02 02:22:53 $
    End CVS Header */
 
 // CReaction
@@ -577,24 +577,24 @@ void CReaction::calculate()
   return;
 }
 
-C_FLOAT64 CReaction::calculatePartialDerivative(C_FLOAT64 & xi,
+C_FLOAT64 CReaction::calculatePartialDerivative(C_FLOAT64 * pXi,
     const C_FLOAT64 & derivationFactor,
     const C_FLOAT64 & resolution)
 {
-  if (mpFunction->dependsOn(&xi, mMap.getPointers()))
+  if (mpFunction->dependsOn(pXi, mMap.getPointers()))
     {
-      C_FLOAT64 store = xi;
+      C_FLOAT64 store = *pXi;
       C_FLOAT64 f1, f2;
       C_FLOAT64 tmp =
         (store < resolution) ? resolution * (1.0 + derivationFactor) : store; //TODO: why assymmetric?
 
-      xi = tmp * (1.0 + derivationFactor);
+      *pXi = tmp * (1.0 + derivationFactor);
       f1 = mpFunction->calcValue(mMap.getPointers());
 
-      xi = tmp * (1.0 - derivationFactor);
+      *pXi = tmp * (1.0 - derivationFactor);
       f2 = mpFunction->calcValue(mMap.getPointers());
 
-      xi = store;
+      *pXi = store;
 
       return *mScalingFactor * (f1 - f2) / (2.0 * tmp * derivationFactor);
       //this is d(flow)/d(concentration)
@@ -615,7 +615,8 @@ const CCompartment & CReaction::getLargestCompartment() const
 void CReaction::setScalingFactor()
 {
   if (1 == getCompartmentNumber())
-    mScalingFactor = & mChemEq.getBalances()[0]->getMetabolite().getCompartment()->getVolume();
+    mScalingFactor =
+      (C_FLOAT64 *) mChemEq.getBalances()[0]->getMetabolite().getCompartment()->getReference();
   else
     mScalingFactor = &mDefaultScalingFactor;
 

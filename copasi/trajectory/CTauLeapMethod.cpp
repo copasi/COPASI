@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:32 $
+   $Date: 2006/03/02 02:23:30 $
    End CVS Header */
 
 /**
@@ -85,13 +85,13 @@ CTauLeapMethod *CTauLeapMethod::createTauLeapMethod(CTrajectoryProblem * C_UNUSE
   switch (result)
     {
       // Error: TauLeap simulation impossible
-      /*    case - 3:         // non-integer stoichometry
+      /*    case - 3:        // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:         // reversible reaction exists
+      case - 2:        // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
-      case - 1:         // more than one compartment involved
+      case - 1:        // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/ 
       // Everything alright: Hybrid simulation possible
@@ -132,7 +132,7 @@ void CTauLeapMethod::step(const double & deltaT)
   // get back the particle numbers
 
   /* Set the variable metabolites */
-  C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(mpCurrentState->getVariableNumberVector().array());
+  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumber();
 
@@ -144,7 +144,7 @@ void CTauLeapMethod::start(const CState * initialState)
   *mpCurrentState = *initialState;
 
   mpModel = mpProblem->getModel();
-  mpProblem->getModel()->setState(mpCurrentState);
+  mpModel->setState(*mpCurrentState);
 
   // call init of the simulation method, can be overloaded in derived classes
   initMethod();
@@ -191,17 +191,21 @@ void CTauLeapMethod::initMethod()
   mK.clear();
   mK.resize(mpReactions->size());
 
-  mNumNumbers = mpCurrentState->getVariableNumberSize();
+  mNumNumbers = mpCurrentState->getNumVariable();
   mNumbers.clear();
   mNumbers.resize(mNumNumbers);
-  for (i = 0; i < mNumNumbers; ++i) mNumbers[i] = (C_INT64)mpCurrentState->getVariableNumber(i);
 
-  for (i = 0; i < mNumNumbers; ++i)
-    mpCurrentState->setVariableNumber(i, floor(mpCurrentState->getVariableNumber(i)));
+  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
+  for (i = 0; i < mNumNumbers; ++i, Dbl++)
+    {
+      mNumbers[i] = (C_INT64) * Dbl;
+      *Dbl = floor(*Dbl);
+    }
+  //TODO also put fixed variables here
 
-  imax = mpCurrentState->getFixedNumberSize();
-  for (i = 0; i < imax; ++i)
-    mpCurrentState->setFixedNumber(i, floor(mpCurrentState->getFixedNumber(i)));
+  imax = mpCurrentState->getNumFixed();
+  for (i = 0; i < imax; ++i, Dbl++)
+    *Dbl = floor(*Dbl);
 
   /* get configuration data */
   mTau = * getValue("TAULEAP.Tau").pDOUBLE;

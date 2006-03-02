@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Date: 2006/03/02 02:22:53 $
    End CVS Header */
 
 // CCompartment
@@ -27,33 +27,27 @@
 CCompartment::CCompartment(const std::string & name,
                            const CCopasiContainer * pParent):
     CModelEntity(name, pParent, "Compartment"),
-    //mKey(GlobalKeys.add("Compartment", this)),
-    //mInitialVolume(1.0),
-    //mVolume(1.0),
-    mVolumeInv(1.0),
     mMetabolites("Metabolites", this)
 {
-  mKey = GlobalKeys.add("Compartment", this);
-  mStatus = FIXED;
   initObjects();
-  setValue(1.0);
+
+  mKey = GlobalKeys.add("Compartment", this);
+
+  setStatus(FIXED);
+
+  *mpIValue = 1.0;
+
   CONSTRUCTOR_TRACE;
 }
 
 CCompartment::CCompartment(const CCompartment & src,
                            const CCopasiContainer * pParent):
     CModelEntity(src, pParent),
-    //mKey(GlobalKeys.add("Compartment", this)),
-    //mInitialVolume(src.mInitialVolume),
-    //mVolume(src.mVolume),
-    mVolumeInv(src.mVolumeInv),
     mMetabolites(src.mMetabolites, this)
 {
   mKey = GlobalKeys.add("Compartment", this);
   CONSTRUCTOR_TRACE;
   initObjects();
-  //  for (unsigned C_INT32 i = 0; i < mMetabolites.size(); i++)
-  //    mMetabolites[i]->setCompartment(this);
 }
 
 CCompartment::~CCompartment()
@@ -84,8 +78,6 @@ C_INT32 CCompartment::load(CReadConfig & configbuffer)
   return Fail;
 }
 
-const C_FLOAT64 & CCompartment::getVolumeInv() const {return mVolumeInv;}
-
 CCopasiVectorNS < CMetab > & CCompartment::getMetabolites()
 {return mMetabolites;}
 
@@ -94,25 +86,16 @@ const CCopasiVectorNS < CMetab > & CCompartment::getMetabolites() const
 
 void CCompartment::setInitialValue(const C_FLOAT64 & initialValue)
 {
-  if (initialValue == mIValue) return;
+  if (initialValue == *mpIValue) return;
 
-  C_FLOAT64 Factor = 0;
-  if (mIValue != 0.0)
-    {
-      Factor = initialValue / mIValue;
-    }
+  *mpIValue = initialValue;
 
-  mIValue = initialValue;
-
-  /* This assumes state==FIXED */
-  setValue(initialValue);
   C_INT32 i, imax = mMetabolites.size();
-
   for (i = 0; i < imax; ++i)
     {
-      //update particle numbers
-      mMetabolites[i]->setInitialNumber(mMetabolites[i]->getInitialNumber() * Factor);
-      mMetabolites[i]->setNumber(mMetabolites[i]->getNumber() * Factor);
+      //update particle numbers is not necessary as concentration changes fix this
+      //mMetabolites[i]->setInitialNumber(mMetabolites[i]->getInitialNumber() * Factor);
+      //mMetabolites[i]->setNumber(mMetabolites[i]->getNumber() * Factor);
       mMetabolites[i]->setInitialConcentration(mMetabolites[i]->getInitialConcentration()); // a hack
       mMetabolites[i]->setConcentration(mMetabolites[i]->getConcentration()); // a hack
     }
@@ -128,10 +111,12 @@ void CCompartment::setInitialValue(const C_FLOAT64 & initialValue)
 
 void CCompartment::setValue(const C_FLOAT64 & value)
 {
-  mValue = value;
+  // :TODO: This should never be called as long the volume is fixed.
+  assert (false);
 
-  if (value != 0.0) mVolumeInv = 1.0 / value;
-  else mVolumeInv = 2.0 * DBL_MAX;
+  if (isFixed()) return;
+
+  *mpValueAccess = value;
 
   return;
 }
@@ -157,9 +142,9 @@ bool CCompartment::addMetabolite(CMetab * pMetabolite)
   //update particle number in metab
   if (success)
     {
-      pMetabolite->setParentCompartment(this);
-      pMetabolite->setInitialConcentration(pMetabolite->getInitialConcentration()); // a hack
-      pMetabolite->setConcentration(pMetabolite->getConcentration()); // a hack
+      //      pMetabolite->setParentCompartment(this);
+      //      pMetabolite->setInitialConcentration(pMetabolite->getInitialConcentration()); // a hack
+      //      pMetabolite->setConcentration(pMetabolite->getConcentration()); // a hack
     }
 
   return success;
@@ -181,10 +166,10 @@ bool CCompartment::removeMetabolite(CMetab * pMetabolite)
 
 void CCompartment::initObjects()
 {
-  CCopasiObject * pObject;
-  addObjectReference("InitialVolume", mIValue, CCopasiObject::ValueDbl);
-  pObject = addObjectReference("Volume", mValue, CCopasiObject::ValueDbl);
-  pObject->setUpdateMethod(this, &CCompartment::setInitialValue);
+  mpIValueReference->setObjectName("InitialVolume");
+
+  mpValueReference->setObjectName("Volume");
+  mpValueReference->setUpdateMethod(this, &CCompartment::setInitialValue);
 
   //  Volume is currently constant, i.e., we only can modify the initial volume.
   //  To avoid confusion we call it volume :)
@@ -192,15 +177,9 @@ void CCompartment::initObjects()
   //  pObject->setUpdateMethod(this, &CCompartment::setVolume);
 }
 
-/*void * CCompartment::getVolumeAddr()
-{
-  return &mVolume;
-}*/
-
 std::ostream & operator<<(std::ostream &os, const CCompartment & d)
 {
-  os << "++++CCompartment: " << d.getObjectName() << " mValue " << d.mValue
-  << " mVolumeInv " << d.mVolumeInv << std::endl;
+  os << "++++CCompartment: " << d.getObjectName() << " mValue " << *d.mpValueAccess;
   os << "    CCompartment.mMetabolites " << std::endl << d.mMetabolites;
   os << "----CCompartment " << std::endl;
 

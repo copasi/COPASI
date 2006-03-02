@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/22 15:12:21 $
+   $Date: 2006/03/02 02:23:29 $
    End CVS Header */
 
 #ifndef COPASI_CLsodaMethod
@@ -16,7 +16,6 @@
 
 class CModel;
 class CState;
-class CStateX;
 
 class CLsodaMethod : public CTrajectoryMethod
   {
@@ -29,17 +28,7 @@ class CLsodaMethod : public CTrajectoryMethod
     /**
      *  A pointer to the current state in complete model view.
      */
-    CState * mpStateC;
-
-    /**
-     *  A pointer to the current state in reduced model view.
-     */
-    CStateX * mpStateR;
-
-    /**
-     * A pointer to the evaluation function to be used during integration
-     */
-    void (CLsodaMethod::*mpEval)(const C_FLOAT64 t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+    CState * mpState;
 
     /**
      * mDim[0] is the dimension of the ODE system.
@@ -165,23 +154,11 @@ class CLsodaMethod : public CTrajectoryMethod
      */
     C_FLOAT64 getDefaultAtol(const CModel * pModel) const;
 
-    void evalF(const double * t, const double * y, double * ydot);
+    static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
 
-    static void EvalF(const C_INT * n, const double * t, const double * y, double * ydot);
-
-  private:
     /**
      *  This evaluates the derivatives for the complete model
      */
-    void evalC(const C_FLOAT64 t,
-               const C_FLOAT64 * y,
-               C_FLOAT64 * ydot);
-
-    /**
-     *  This evaluates the derivatives for the reduced model
-     */
-    void evalR(const C_FLOAT64 t,
-               const C_FLOAT64 * y,
-               C_FLOAT64 * ydot);
+    void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
   };
 #endif // COPASI_CLsodaMethod

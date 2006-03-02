@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/10/26 15:43:18 $
+   $Author: shoops $ 
+   $Date: 2006/03/02 02:21:43 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Mon Oct 24 12:17:46 2005
- **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.8 2005/10/26 15:43:18 stupe Exp $)
+ ** Created: Thu Feb 23 13:39:08 2006
+ **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.9 2006/03/02 02:21:43 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -27,9 +27,6 @@
  #include <qlayout.h>
  #include <qtooltip.h>
  #include <qwhatsthis.h>
- #include "model/CModel.h"
- #include "model/CMetabNameInterface.h"
- #include "steadystate/CSteadyStateTask.h"
  #include "StateSubwidget.ui.h"
 
 /*

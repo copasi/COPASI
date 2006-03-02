@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:21 $
+   $Date: 2006/03/02 02:22:52 $
    End CVS Header */
 
 #include "copasi.h"
@@ -94,7 +94,7 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
 
   mpUndefined = new CFunction("undefined");
   GlobalKeys.remove(mpUndefined->getKey());
-  GlobalKeys.addFix("UndefinedFunction", mpUndefined);
+  GlobalKeys.addFix("UndefinedFunction_0", mpUndefined);
 
   mpFunctionList->load();
   newModel();

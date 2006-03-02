@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:35 $
+   $Date: 2006/03/02 02:23:30 $
    End CVS Header */
 
 /**
@@ -177,8 +177,9 @@ bool CCopasiXML::saveModel()
   Attributes.add("timeUnit", mpModel->getTimeUnitName());
   Attributes.add("volumeUnit", mpModel->getVolumeUnitName());
   Attributes.add("quantityUnit", mpModel->getQuantityUnitName());
-  Attributes.add("stateVariable",
-                 mpModel->getStateTemplate().getKey(mpModel->getKey()));
+  // This is now optional
+  // Attributes.add("stateVariable",
+  //                mpModel->getStateTemplate().getKey(mpModel->getKey()));
 
   startSaveElement("Model", Attributes);
 
@@ -195,7 +196,8 @@ bool CCopasiXML::saveModel()
       Attributes.erase();
       Attributes.add("key", "");
       Attributes.add("name", "");
-      Attributes.add("stateVariable", "");
+      // This is now optional.
+      // Attributes.add("stateVariable", "");
 
       unsigned C_INT32 i, imax = mpModel->getCompartments().size();
       for (i = 0; i < imax; i++)
@@ -204,8 +206,8 @@ bool CCopasiXML::saveModel()
 
           Attributes.setValue(0, pComp->getKey());
           Attributes.setValue(1, pComp->getObjectName());
-          Attributes.setValue(2,
-                              mpModel->getStateTemplate().getKey(pComp->getKey()));
+          // Attributes.setValue(2,
+          //                     mpModel->getStateTemplate().getKey(pComp->getKey()));
           if (pComp->getSBMLId() != "")
             mSBMLReference[pComp->getSBMLId()] = pComp->getKey();
 
@@ -224,7 +226,8 @@ bool CCopasiXML::saveModel()
       Attributes.add("name", "");
       Attributes.add("compartment", "");
       Attributes.add("status", "");
-      Attributes.add("stateVariable", "");
+      // This is now optional.
+      // Attributes.add("stateVariable", "");
 
       for (i = 0; i < imax; i++)
         {
@@ -234,8 +237,8 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(1, pMetab->getObjectName());
           Attributes.setValue(2, pMetab->getCompartment()->getKey());
           Attributes.setValue(3, CMetab::XMLStatus[pMetab->getStatus()]);
-          Attributes.setValue(4,
-                              mpModel->getStateTemplate().getKey(pMetab->getKey()));
+          // Attributes.setValue(4,
+          //                     mpModel->getStateTemplate().getKey(pMetab->getKey()));
 
           if (pMetab->getSBMLId() != "")
             mSBMLReference[pMetab->getSBMLId()] = pMetab->getKey();
@@ -254,6 +257,7 @@ bool CCopasiXML::saveModel()
       Attributes.add("key", "");
       Attributes.add("name", "");
       Attributes.add("status", "");
+      // This is now optional.
       Attributes.add("stateVariable", "");
 
       for (i = 0; i < imax; i++)
@@ -263,7 +267,7 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(0, pMV->getKey());
           Attributes.setValue(1, pMV->getObjectName());
           Attributes.setValue(2, CModelValue::XMLStatus[pMV->getStatus()]);
-          Attributes.setValue(3, mpModel->getStateTemplate().getKey(pMV->getKey()));
+          // Attributes.setValue(3, mpModel->getStateTemplate().getKey(pMV->getKey()));
           if (pMV->getSBMLId() != "")
             mSBMLReference[pMV->getSBMLId()] = pMV->getKey();
 
@@ -386,7 +390,7 @@ bool CCopasiXML::saveModel()
             }
 
           if (&pReaction->getFunction() !=
-              dynamic_cast<CFunction *>(GlobalKeys.get("UndefinedFunction")))
+              dynamic_cast<CFunction *>(GlobalKeys.get("UndefinedFunction_0")))
             {
               Attr.erase();
               Attr.add("function", pReaction->getFunction().getKey());
@@ -428,15 +432,15 @@ bool CCopasiXML::saveModel()
   startSaveElement("StateTemplate");
 
   Attributes.erase();
-  Attributes.add("key", "");
+  // This is now optional.
+  // Attributes.add("key", "");
   Attributes.add("objectReference", "");
   std::pair< std::string, std::string > Variable;
 
-  for (i = 0, imax = mpModel->getStateTemplate().size(); i < imax; i++)
+  CModelEntity **Entity = mpModel->getStateTemplate().getEntities();
+  for (i = 0, imax = mpModel->getStateTemplate().size(); i < imax; i++, ++Entity)
     {
-      Variable = mpModel->getStateTemplate()[i];
-      Attributes.setValue(0, Variable.first);
-      Attributes.setValue(1, Variable.second);
+      Attributes.setValue(0, (*Entity)->getKey());
 
       saveElement("StateTemplateVariable", Attributes);
     }
@@ -451,17 +455,11 @@ bool CCopasiXML::saveModel()
   *mpOstream << mIndent;
 
   *mpOstream << (DBL) InitialState.getTime();
-  for (i = 0, imax = InitialState.getVolumeSize(); i < imax; i++)
-    *mpOstream << " " << (DBL) InitialState.getVolume(i);
+  C_FLOAT64 * it = InitialState.beginIndependent();
+  C_FLOAT64 * end = InitialState.endFixed();
 
-  for (i = 0, imax = InitialState.getVariableNumberSize(); i < imax; i++)
-    *mpOstream << " " << (DBL) InitialState.getVariableNumber(i);
-
-  for (i = 0, imax = InitialState.getFixedNumberSize(); i < imax; i++)
-    *mpOstream << " " << (DBL) InitialState.getFixedNumber(i);
-
-  for (i = 0, imax = InitialState.getGlobalParameterSize(); i < imax; i++)
-    *mpOstream << " " << (DBL) InitialState.getGlobalParameter(i);
+  for (;it != end; ++it)
+    *mpOstream << " " << (DBL) *it;
 
   *mpOstream << std::endl;
 
@@ -1002,7 +1000,7 @@ bool CCopasiXML::buildFunctionList()
       pFunction =
         const_cast< CFunction * >(&mpModel->getReactions()[i]->getFunction());
       if (pFunction &&
-          pFunction != GlobalKeys.get("UndefinedFunction"))
+          pFunction != GlobalKeys.get("UndefinedFunction_0"))
         FunctionMap[pFunction->getKey()] = pFunction;
     }
 

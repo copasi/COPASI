@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:31 $
+   $Date: 2006/03/02 02:23:08 $
    End CVS Header */
 
 /**
@@ -50,7 +50,7 @@ class CNewtonMethod : public CSteadyStateMethod
     C_FLOAT64 mScaledResolution;
     C_INT mDimension;
     //C_FLOAT64 mMaxrate;
-    CVector< C_FLOAT64 > * mX;
+    C_FLOAT64 * mX;
     CVector< C_FLOAT64 > mH;
     CVector< C_FLOAT64 > mXold;
     CVector< C_FLOAT64 > mdxdt;
@@ -134,6 +134,9 @@ class CNewtonMethod : public CSteadyStateMethod
      * @return CNewtonMethod::NewtonReturnCode newtonReturnCode
      */
     CNewtonMethod::NewtonReturnCode processNewton();
+
+    void calculateDerivativesX();
+    void calculateJacobianX(const C_FLOAT64 & oldMaxRate);
 
     bool allPositive();
     bool containsNaN() const;

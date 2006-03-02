@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:31 $
+   $Date: 2006/03/02 02:23:30 $
    End CVS Header */
 
 #ifndef COPASI_CStochMethod
@@ -213,7 +213,7 @@ class CStochMethod : public CTrajectoryMethod
     /**
      * A pointer to the instance of CModel being used.
      */
-    const CModel *mpModel;
+    CModel *mpModel;
 
     /**
      * The graph of reactions and their dependent reactions. When a reaction is

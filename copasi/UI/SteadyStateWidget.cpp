@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.104 $
+   $Revision: 1.105 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:22 $
+   $Date: 2006/03/02 02:21:43 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -191,7 +191,7 @@ bool SteadyStateWidget::runTask()
         {
           const CState *currentState = mSteadyStateTask->getState();
           if (currentState)
-            (CCopasiDataModel::Global->getModel())->setInitialState(currentState);
+            (CCopasiDataModel::Global->getModel())->setInitialState(*currentState);
         }
     }
 

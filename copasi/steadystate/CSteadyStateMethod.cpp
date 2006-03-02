@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:28:16 $
+   $Date: 2006/03/02 02:23:08 $
    End CVS Header */
 
 /**
@@ -91,7 +91,6 @@ CSteadyStateMethod::~CSteadyStateMethod()
  */
 CSteadyStateMethod::ReturnCode
 CSteadyStateMethod::process(CState * pState,
-                            CStateX * pStateX,
                             CMatrix< C_FLOAT64 > & jacobian,
                             CMatrix< C_FLOAT64 > & jacobianX,
                             CEigen & EigenValues,
@@ -102,7 +101,6 @@ CSteadyStateMethod::process(CState * pState,
   assert(mpParentTask);
 
   mpSteadyState = pState;
-  mpSteadyStateX = pStateX;
   mpJacobian = & jacobian;
   mpJacobianX = & jacobianX;
   mpEigenValues = & EigenValues;
@@ -130,8 +128,12 @@ CSteadyStateMethod::returnProcess(bool steadyStateFound,
   if (mpProblem->isJacobianRequested() ||
       mpProblem->isStabilityAnalysisRequested())
     {
-      mpSteadyState->calculateJacobian(*mpJacobian, factor, resolution);
-      mpSteadyStateX->calculateJacobian(*mpJacobianX, factor, resolution);
+      mpModel->setState(*mpSteadyState);
+      mpModel->applyAssignments();
+      mpModel->calculateElasticityMatrix(factor, resolution);
+
+      mpModel->calculateJacobian(*mpJacobian);
+      mpModel->calculateJacobianX(*mpJacobianX);
     }
 
   //mpProblem->getModel()->setState(mpSteadyState);
@@ -173,7 +175,7 @@ bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution) const
     unsigned C_INT32 i, imax = Reaction.size();
 
     for (i = 0; i < imax; i++)
-      if (Reaction[i]->getFlux() * Reaction[i]->getLargestCompartment().getVolumeInv() > resolution)
+      if (Reaction[i]->getFlux() / Reaction[i]->getLargestCompartment().getVolume() > resolution)
         return false; //TODO: smallest or largest ?
 
     return true;
@@ -211,6 +213,7 @@ bool CSteadyStateMethod::isValidProblem(const CCopasiProblem * pProblem)
 bool CSteadyStateMethod::initialize(const CSteadyStateProblem * pProblem)
 {
   mpProblem = pProblem;
+  mpModel = mpProblem->getModel();
 
   return true;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:31 $
+   $Date: 2006/03/02 02:23:08 $
    End CVS Header */
 
 /**
@@ -68,12 +68,6 @@ class CMCAProblem: public CCopasiProblem
      * @param const CState & InitialState
      */
     void setInitialState(const CState & initialState);
-
-    /**
-     * Set the initial state of the problem.
-     * @param const CStateX & InitialState
-     */
-    void setInitialState(const CStateX & initialState);
 
     /**
      * Retrieve the initial state of the problem.

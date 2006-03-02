@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:35:34 $
+   $Author: shoops $ 
+   $Date: 2006/03/02 02:21:43 $
    End CVS Header */
 
 /****************************************************************************
@@ -18,13 +18,19 @@
  ** destructor.
  *****************************************************************************/
 
-#include "StateSubwidget.h"
-#include "model/CChemEqInterface.h"
+#include <sstream>
+
+#include "copasi.h"
+
 #include "qtUtilities.h"
+#include "listviews.h"
+
+#include "model/CChemEqInterface.h"
+#include "model/CModel.h"
+#include "model/CMetabNameInterface.h"
+#include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 #include "steadystate/CEigen.h"
-#include <sstream>
-#include "listviews.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "optimization/COptProblem.h"
 #include "optimization/COptTask.h"
@@ -198,10 +204,11 @@ void StateSubwidget::showUnits()
 
 bool StateSubwidget::loadAll(const CSteadyStateTask * task)
 {
-  const CState * pState = task->getState();
+  CState * pState = const_cast<CState *>(task->getState());
+  CModel * pModel = task->getProblem()->getModel();
 
-  const_cast<CModel *>(pState->getModel())->setState(pState);
-  const_cast<CModel *>(pState->getModel())->updateRates();
+  pModel->setState(*pState);
+  pModel->updateRates();
 
   // editing units here
 
@@ -217,8 +224,8 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
   else
     topLabel->setText("A steady state with given resolution couldn't be found.");
 
-  if (!loadMetabolites(pState->getModel())) return false;
-  if (!loadReactions(pState->getModel())) return false;
+  if (!loadMetabolites(pModel)) return false;
+  if (!loadReactions(pModel)) return false;
 
   const CSteadyStateProblem* pProblem =
     dynamic_cast<const CSteadyStateProblem *>(task->getProblem());

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/OptimizationResultWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/10/26 15:43:18 $
+   $Author: shoops $ 
+   $Date: 2006/03/02 02:21:43 $
    End CVS Header */
 
 #include <qpushbutton.h>
@@ -12,7 +12,7 @@
  #include "copasi.h"
 
 #include "OptimizationResultWidget.h"
- #include "StateSubwidget.h"
+ #include "StateSubwidget.h" 
 //#include "OptimizationWidget.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
  #include "report/CKeyFactory.h"
@@ -139,7 +139,7 @@ void OptimizationResultWidget::runSetInitialState()
     dynamic_cast<CSteadyStateTask *>(GlobalKeys.get("Task_2"));
   const CState *currentState = mSteadyStateTask->getState();
   if (currentState)
-    CCopasiDataModel::Global->getModel()->setInitialState(currentState);
+    CCopasiDataModel::Global->getModel()->setInitialState(*currentState);
 }
 
 /*
@@ -149,12 +149,12 @@ bool TimeSeriesWidget::loadFromBackend()
   mCentralWidget->table()->setTimeSeries(dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"])->getTimeSeries());
   return true;
 }
-
+ 
 bool TimeSeriesWidget::saveToBackend()
 {
   return true;
 }
-
+ 
 bool TimeSeriesWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   if (this->isShown())
@@ -162,12 +162,12 @@ bool TimeSeriesWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListVi
   else
     return true;
 }
-
+ 
 bool TimeSeriesWidget::leave()
 {
   return true;
 }
-
+ 
 bool TimeSeriesWidget::enter(const std::string & C_UNUSED(key))
 {
   return loadFromBackend();

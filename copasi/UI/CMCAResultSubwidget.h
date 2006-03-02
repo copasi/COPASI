@@ -1,26 +1,25 @@
 /* Begin CVS Header
-   $Source: /home/cvs/copasi_dev/copasi/CopasiUI/CMCAResultSubwidget.h,v $
-   $Revision: 1.5.2.1 $
+   $Source: /home/cvs/copasi_dev/cvs_admin/c++style,v $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/23 14:39:54 $
+   $Date: 2005/08/30 16:36:51 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CMCAResultSubwidget.ui'
  **
- ** Created: Mo Apr 25 16:46:35 2005
- **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.h,v 1.5.2.1 2005/08/23 14:39:54 shoops Exp $)
+ ** Created: Thu Feb 23 13:33:29 2006
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.3   edited Nov 24 2003 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef CMCARESULTSUBWIDGET_H
-#define CMCARESULTSUBWIDGET_H
+ #define CMCARESULTSUBWIDGET_H
 
 #include <qvariant.h>
-#include <qwidget.h>
-#include "model/CState.h"
+ #include <qwidget.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -31,8 +30,6 @@ class QComboBox;
 class QPushButton;
 class QTabWidget;
 class QTable;
-class CModel;
-class CMCATask;
 class CMCAMethod;
 
 class CMCAResultSubwidget : public QWidget

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.121 $
+   $Revision: 1.122 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:35 $
+   $Date: 2006/03/02 02:23:30 $
    End CVS Header */
 
 /**
@@ -1086,7 +1086,7 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         (CModel::QuantityUnit) toEnum(quantityUnit, CModel::QuantityUnitNames);
       if (QuantityUnit == -1) fatalError();
 
-      StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs);
+      StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs, "");
 
       if (!mCommon.pModel) mCommon.pModel = new CModel();
       mCommon.KeyMap.addFix(Key, mCommon.pModel);
@@ -1422,7 +1422,7 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
 
       Key = mParser.getAttributeValue("key", papszAttrs);
       Name = mParser.getAttributeValue("name", papszAttrs);
-      StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs);
+      StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs, "");
 
       pCompartment = new CCompartment();
       mCommon.KeyMap.addFix(Key, pCompartment);
@@ -1581,7 +1581,7 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
       Compartment = mParser.getAttributeValue("compartment", papszAttrs);
       status = mParser.getAttributeValue("status", papszAttrs);
       Status = (CMetab::Status) toEnum(status, CMetab::XMLStatus);
-      StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs);
+      StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs, "");
 
       pMetabolite = new CMetab();
       mCommon.KeyMap.addFix(Key, pMetabolite);
@@ -1745,7 +1745,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
       Name = mParser.getAttributeValue("name", papszAttrs);
       status = mParser.getAttributeValue("status", papszAttrs);
       Status = (CMetab::Status) toEnum(status, CModelEntity::XMLStatus);
-      StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs);
+      StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs, "");
 
       pMV = new CModelValue();
       mCommon.KeyMap.addFix(Key, pMV);
@@ -3073,7 +3073,7 @@ CCopasiXMLParser::StateTemplateVariableElement::~StateTemplateVariableElement()
 void CCopasiXMLParser::StateTemplateVariableElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
-  const char * Key;
+  // const char * Key;
   const char * ObjectReference;
   CCopasiObject * pObject;
   //CMetab * pMetabolite;
@@ -3092,7 +3092,8 @@ void CCopasiXMLParser::StateTemplateVariableElement::start(const XML_Char *pszNa
     case StateTemplateVariable:
       if (strcmp(pszName, "StateTemplateVariable")) fatalError();
 
-      Key = mParser.getAttributeValue("key", papszAttrs);
+      // This is now optional.
+      // Key = mParser.getAttributeValue("key", papszAttrs);
       ObjectReference = mParser.getAttributeValue("objectReference",
                         papszAttrs);
 
@@ -3198,8 +3199,12 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
   std::vector< std::string >::iterator it;
   std::vector< std::string >::iterator end;
   double Value;
-  CModel * pModel;
   CModelEntity * pME;
+
+  const CStateTemplate & Template = mCommon.pModel->getStateTemplate();
+  CState IState = mCommon.pModel->getInitialState();
+  C_FLOAT64 * pValues = IState.beginIndependent() - 1;
+  unsigned C_INT32 Index;
 
   switch (mCurrentElement)
     {
@@ -3217,19 +3222,12 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
 
           Value = CCopasiXMLInterface::DBL(StringValue.c_str());
 
-          //handles compartments, metabs, and model values
           pME = dynamic_cast< CModelEntity* >(GlobalKeys.get(*it));
-          if (pME)
-            {
-              pME->setInitialValue(Value);
-              //              pME->setValue(Value);
-              continue;
-            }
+          Index = Template.getIndex(pME);
 
-          pModel = dynamic_cast< CModel* >(GlobalKeys.get(*it));
-          if (pModel)
+          if (pME && Index != C_INVALID_INDEX)
             {
-              pModel->setInitialTime(Value);
+              pValues[Index] = Value;
               continue;
             }
 
@@ -3238,6 +3236,8 @@ void CCopasiXMLParser::InitialStateElement::end(const XML_Char *pszName)
 
       if (it != end || !Values.fail() || !Values.eof())
         fatalError();
+
+      mCommon.pModel->setInitialState(IState);
 
       mParser.popElementHandler();
       mCurrentElement = START_ELEMENT;

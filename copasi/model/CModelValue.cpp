@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Date: 2006/03/02 02:22:53 $
    End CVS Header */
 
 #include <iostream>
@@ -35,13 +35,18 @@ CModelEntity::CModelEntity(const std::string & name,
                            const unsigned C_INT32 & flag):
     CCopasiContainer(name, pParent, type, flag),
     mKey(""),
-    mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-    mIValue(0.0),
+    mpValueAccess(NULL),
+    mpValueData(NULL),
+    mpIValue(NULL),
     mRate(0.0),
-    //    mTT(0.0),
-    mStatus(FIXED)
+    mStatus(FIXED),
+    mpModel(NULL)
 {
   initObjects();
+
+  *mpIValue = 1.0;
+  *mpValueData = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
   CONSTRUCTOR_TRACE;
 }
 
@@ -49,26 +54,39 @@ CModelEntity::CModelEntity(const CModelEntity & src,
                            const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mKey(""),
-    mValue(src.mValue),
-    mIValue(src.mIValue),
+    mpValueAccess(NULL),
+    mpValueData(NULL),
+    mpIValue(NULL),
     mRate(src.mRate),
-    //    mTT(src.mTT),
-    mStatus(src.mStatus)
+    mStatus(),
+    mpModel(NULL)
 {
   initObjects();
+
+  setStatus(src.mStatus);
+
+  *mpValueData = *src.mpValueData;
+  *mpIValue = *src.mpIValue;
+
   CONSTRUCTOR_TRACE;
 }
 
 CModelEntity::~CModelEntity()
 {
+  if (!mpModel)
+    {
+      pdelete(mpValueData);
+      pdelete(mpIValue);
+    }
+
   DESTRUCTOR_TRACE;
 }
 
 const std::string & CModelEntity::getKey() const {return mKey;}
 
-const C_FLOAT64 & CModelEntity::getValue() const {return mValue;}
+const C_FLOAT64 & CModelEntity::getValue() const {return *mpValueAccess;}
 
-const C_FLOAT64 & CModelEntity::getInitialValue() const {return mIValue;}
+const C_FLOAT64 & CModelEntity::getInitialValue() const {return *mpIValue;}
 
 const CModelEntity::Status & CModelEntity::getStatus() const {return mStatus;}
 
@@ -84,7 +102,9 @@ const C_FLOAT64 & CModelEntity::getRate() const
 
 void CModelEntity::setValue(const C_FLOAT64 & value)
 {
-  mValue = value;
+  if (mStatus == FIXED) return;
+
+  *mpValueData = value;
 
 #ifdef COPASI_DEBUG
   //if (mStatus == FIXED)
@@ -94,12 +114,9 @@ void CModelEntity::setValue(const C_FLOAT64 & value)
 
 void CModelEntity::setInitialValue(const C_FLOAT64 & initialValue)
 {
-  mIValue = initialValue;
+  *mpIValue = initialValue;
 
-  if (mStatus == FIXED)
-    setValue(initialValue);
-
-  return;
+  if (mStatus != FIXED) return;
 }
 
 void CModelEntity::setRate(const C_FLOAT64 & rate)
@@ -109,25 +126,95 @@ void CModelEntity::setRate(const C_FLOAT64 & rate)
 
 //  ******************
 
-void CModelEntity::setStatus(const CModelValue::Status & status)
+void CModelEntity::setStatus(const CModelEntity::Status & status)
 {
-  mStatus = status;
-  if (mStatus == FIXED)
+  if (mStatus != status)
     {
-      setValue(getInitialValue());
+      mStatus = status;
+      this->setValuePtr(mpValueData);
     }
 }
 
 void * CModelEntity::getReference() const
-  {return const_cast<C_FLOAT64 *>(&mValue);}
+  {return const_cast<C_FLOAT64 *>(mpValueAccess);}
 
 void CModelEntity::initObjects()
 {
-  addObjectReference("Value", mValue, CCopasiObject::ValueDbl);
-  CCopasiObject * pObject =
-    addObjectReference("InitialValue", mIValue, CCopasiObject::ValueDbl);
-  pObject->setUpdateMethod(this, &CModelEntity::setInitialValue);
+  mpModel = static_cast<CModel *>(getObjectAncestor("Model"));
+
+  if (mpModel)
+    mpModel->getStateTemplate().add(this);
+  else
+    {
+      mpValueData = new C_FLOAT64;
+      mpIValue = new C_FLOAT64;
+    }
+
+  mpValueAccess = mpIValue;
+
+  mpValueReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Value",
+        *mpValueAccess,
+        CCopasiObject::ValueDbl));
+  mpIValueReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("InitialValue",
+        *mpIValue,
+        CCopasiObject::ValueDbl));
+
   addObjectReference("Rate", mRate, CCopasiObject::ValueDbl);
+}
+
+void CModelEntity::setInitialValuePtr(C_FLOAT64 * pInitialValue)
+{
+  mpIValue = pInitialValue;
+  if (!mpIValue) mpIValue = new C_FLOAT64;
+  mpIValueReference->setReference(*mpIValue);
+}
+
+void CModelEntity::setValuePtr(C_FLOAT64 * pValue)
+{
+  mpValueData = pValue;
+  if (!mpValueData) mpValueData = new C_FLOAT64;
+
+  if (mStatus == FIXED)
+    mpValueAccess = mpIValue;
+  else
+    mpValueAccess = mpValueData;
+
+  mpValueReference->setReference(*mpValueAccess);
+}
+
+bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
+{
+  CCopasiContainer::setObjectParent(pParent);
+  CModel * pNewModel = static_cast<CModel *>(getObjectAncestor("Model"));
+
+  if (mpModel == pNewModel) return true;
+
+  C_FLOAT64 InitialValue = *mpIValue;
+  C_FLOAT64 Value = *mpValueData;
+
+  if (mpModel)
+    mpModel->getStateTemplate().remove(this);
+  else
+    {
+      pdelete(mpIValue);
+      pdelete(mpValueData);
+    }
+
+  if (pNewModel)
+    pNewModel->getStateTemplate().add(this);
+  else
+    {
+      mpValueData = new C_FLOAT64;
+      mpIValue = new C_FLOAT64;
+    }
+
+  mpModel = pNewModel;
+  *mpIValue = InitialValue;
+  *mpValueData = Value;
+
+  return true;
 }
 
 void CModelEntity::setSBMLId(const std::string& id)
@@ -146,8 +233,8 @@ CModelValue::CModelValue(const std::string & name,
     CModelEntity(name, pParent, "ModelValue")
 {
   mKey = GlobalKeys.add("ModelValue", this);
-  mStatus = FIXED;
   initObjects();
+
   CONSTRUCTOR_TRACE;
 }
 
@@ -167,20 +254,13 @@ CModelValue::~CModelValue()
 }
 
 void CModelValue::initObjects()
-{
-  //CCopasiObject * pObject;
-
-  //addObjectReference("Value", mValue, CCopasiObject::ValueDbl);
-  //pObject = addObjectReference("InitialValue", mIValue, CCopasiObject::ValueDbl);
-  //pObject->setUpdateMethod(this, &CModelValue::setInitialConcentration);
-  //addObjectReference("TransitionTime", mTT, CCopasiObject::ValueDbl);
-}
+{}
 
 std::ostream & operator<<(std::ostream &os, const CModelValue & d)
 {
   os << "    ++++CModelValue: " << d.getObjectName() << std::endl;
-  os << "        mValue " << d.mValue << " mIValue " << d.mIValue << std::endl;
-  os << "        mRate " << d.mRate << " mStatus " << d.mStatus << std::endl;
+  os << "        mValue " << *d.mpValueAccess << " mIValue " << *d.mpIValue << std::endl;
+  os << "        mRate " << d.mRate << " mStatus " << d.getStatus() << std::endl;
   os << "    ----CModelValue " << std::endl;
 
   return os;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.124 $
+   $Revision: 1.125 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:22 $
+   $Date: 2006/03/02 02:21:43 $
    End CVS Header */
 
 /*******************************************************************
@@ -598,7 +598,7 @@ void MetabolitesWidget1::slotNumberChanged()
 
   C_FLOAT64 tmp = mEditInitNumber->text().toDouble();
   mEditInitConcentration->setText(QString::number(tmp
-                                  * mpMetab->getCompartment()->getVolumeInv()
+                                  / mpMetab->getCompartment()->getVolume()
                                   * CCopasiDataModel::Global->getModel()->getNumber2QuantityFactor(), 'g', 10));
 }
 

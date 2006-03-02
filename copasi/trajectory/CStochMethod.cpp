@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:31 $
+   $Date: 2006/03/02 02:23:29 $
    End CVS Header */
 
 #ifdef WIN32
@@ -130,7 +130,7 @@ void CStochMethod::step(const double & deltaT)
   // get back the particle numbers:
 
   /* Set the variable Metabolites */
-  C_FLOAT64 * Dbl = const_cast<C_FLOAT64 *>(mpCurrentState->getVariableNumberVector().array());
+  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
     *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumber();
 
@@ -150,20 +150,22 @@ void CStochMethod::start(const CState * initialState)
 
   unsigned C_INT32 i, imax;
 
-  mNumNumbers = mpCurrentState->getVariableNumberSize();
+  mNumNumbers = mpCurrentState->getNumVariable();
   mNumbers.resize(mNumNumbers);
-  for (i = 0; i < mNumNumbers; ++i) mNumbers[i] = (C_INT64)mpCurrentState->getVariableNumber(i);
-  //TODO also put fixes variables here
+  C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
+  for (i = 0; i < mNumNumbers; ++i, Dbl++)
+    {
+      mNumbers[i] = (C_INT64) * Dbl;
+      *Dbl = floor(*Dbl);
+    }
+  //TODO also put fixed variables here
 
-  for (i = 0; i < mNumNumbers; ++i)
-    mpCurrentState->setVariableNumber(i, floor(mpCurrentState->getVariableNumber(i)));
-
-  imax = mpCurrentState->getFixedNumberSize();
-  for (i = 0; i < imax; ++i)
-    mpCurrentState->setFixedNumber(i, floor(mpCurrentState->getFixedNumber(i)));
+  imax = mpCurrentState->getNumFixed();
+  for (i = 0; i < imax; ++i, Dbl++)
+    *Dbl = floor(*Dbl);
 
   mpModel = mpProblem->getModel();
-  mpProblem->getModel()->setState(mpCurrentState);
+  mpModel->setState(*mpCurrentState);
 
   mNumReactions = mpModel->getReactions().size();
 

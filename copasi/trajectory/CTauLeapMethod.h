@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:32 $
+   $Date: 2006/03/02 02:23:30 $
    End CVS Header */
 
 /**
@@ -159,7 +159,7 @@ class CTauLeapMethod : public CTrajectoryMethod
     /**
      *   Pointer to the model.
      */
-    const CModel * mpModel;
+    CModel * mpModel;
 
     /**
      *   A pointer to the reactions of the model.

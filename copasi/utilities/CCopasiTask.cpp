@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:33 $
+   $Date: 2006/03/02 02:23:30 $
    End CVS Header */
 
 /**
@@ -239,7 +239,7 @@ bool CCopasiTask::restore()
   if (!mUpdateModel)
     {
       if (mpInitialState)
-        mpProblem->getModel()->setInitialState(mpInitialState);
+        mpProblem->getModel()->setInitialState(*mpInitialState);
     }
 
   mpProblem->restore(mUpdateModel);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Date: 2006/03/02 02:22:53 $
    End CVS Header */
 
 /**
@@ -104,13 +104,6 @@ class CMetab : public CModelEntity
     const CCompartment * mpCompartment;
 
     /**
-     *  pointer to the model the metabolite is located in.
-     *  The metab needs to know about the unit for concentrations.
-     */
-    /** @dia:route 15,38; h,108.729,55.8961,170.684,44.1423,177.081 */
-    const CModel * mpModel;
-
-    /**
      * The set of moieties the metabolite is part of
      */
     std::set< CMoiety * > mMoieties;
@@ -119,7 +112,7 @@ class CMetab : public CModelEntity
      * This the default parent compartmnet used on creation
      */
     /** @dia:route 13,13; h,155.606,38.203,162.634,55.0961,108.729 */
-    static const CCompartment *mpParentCompartment;
+    // static const CCompartment *mpParentCompartment;
 
     // Operations
   public:
@@ -179,7 +172,7 @@ class CMetab : public CModelEntity
     /**
      *
      */
-    void setStatus(const CMetab::Status & status);
+    virtual void setStatus(const CModelEntity::Status & status);
 
     /**
      *
@@ -231,10 +224,9 @@ class CMetab : public CModelEntity
      */
     inline const C_FLOAT64 & getInitialNumber() const {return getInitialValue();};
 
-    /**
-     *
-     */ 
-    //void setCompartment(const CCompartment * compartment);
+    void refreshInitialConcentration();
+
+    void refreshConcentration();
 
     /**
      *
@@ -284,8 +276,8 @@ class CMetab : public CModelEntity
     /**
      * Set the default parent compartment
      * @param const CCompartment * parentCompartmnte
-     */
-    static void setParentCompartment(const CCompartment * parentCompartment);
+     */ 
+    // static void setParentCompartment(const CCompartment * parentCompartment);
 
     /**
      * Add a moiety to the list

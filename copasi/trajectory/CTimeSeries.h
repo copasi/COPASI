@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/10/07 16:56:47 $
+   $Author: shoops $ 
+   $Date: 2006/03/02 02:23:30 $
    End CVS Header */
 
 #ifndef TIMESERIES_H
 #define TIMESERIES_H
 
 #include <vector>
+
 #include "model/CState.h"
+#include "utilities/CVector.h"
+
+class CModel;
 
 class CTimeSeries : private std::vector<CState>
   {
@@ -26,7 +30,7 @@ class CTimeSeries : private std::vector<CState>
      * @param pState the CState from which the date should be taken
      * @return success 
      */
-    bool init(C_INT32 n, CState * pState);
+    bool init(C_INT32 n, CModel * pModel, CState * pState);
 
     bool add();
 
@@ -49,6 +53,7 @@ class CTimeSeries : private std::vector<CState>
     CState * mpState;
     std::vector<std::string> mTitles;
     std::vector<C_FLOAT64> mFactors;
+    CVector<unsigned C_INT32> mPivot;
     std::string mDummyString;
     C_FLOAT64 mDummyFloat;
   };

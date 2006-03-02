@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.110 $
+   $Revision: 1.111 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Date: 2006/03/02 02:22:53 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -15,25 +15,20 @@
 #include <string>
 
 #include "copasi.h"
+#include "CState.h"
 #include "CReaction.h"
 #include "CMoiety.h"
+#include "CModelValue.h"
+
 #include "utilities/CVector.h"
 #include "utilities/CMatrix.h"
 #include "report/CCopasiContainer.h"
 
 class CCompartment;
-class CState;
-class CStateX;
 class CProcessReport;
 
-#ifdef WIN32
-# include "model/CModelValue.h"
-#else
-class CModelValue;
-#endif // WIN32
-
 /** @dia:pos 177.081,30.2423 */
-class CModel : public CCopasiContainer
+class CModel : public CModelEntity
   {
   public:
     /**
@@ -142,84 +137,17 @@ class CModel : public CCopasiContainer
       };
 
     /** @dia:pos 25.9437,20.8602 */
-    class CStateTemplate
-      {
-        // Attributes
-      private:
-        /**
-         * The list of template variables.
-         */
-        std::vector< std::pair< std::string, std::string > * > mList;
-
-        /**
-         * A map to allow finding the object a state variable relates to.
-         */
-        std::map< std::string, const std::string * > mKeyMap;
-
-        /**
-         * A map to allow finding the state variable which represents the 
-         * object. 
-         */
-        std::map< std::string, const std::string * > mObjectMap;
-
-        // Operations
-      public:
-        /**
-         * Constructor
-         */
-        CStateTemplate();
-
-        /**
-         * Destructor
-         */
-        ~CStateTemplate();
-
-        /**
-         * Cleanup
-         */
-        bool cleanup();
-
-        /**
-         * Add a state variable representing an object to the state template.
-         * @param const std::string & objectKey
-         * @return bool success
-         */
-        bool add(const std::string & objectKey);
-
-        /**
-         * Retrieve the object key the state variable 'key' refers to.
-         * @param const std::string & key
-         * @return std::string objectKey
-         */
-        std::string getObjectKey(const std::string & key) const;
-
-        /**
-         * Retrieve the state variables key which helds the objects state.
-         * @param const std::string & objectKey
-         * @return std::string key
-         */
-        std::string getKey(const std::string & objectKey) const;
-
-        /**
-         * Retrieve the size of the state template.
-         * @return  unsigned C_INT32 size
-         */
-        unsigned C_INT32 size() const;
-
-        /**
-         * Retreive a state variable descriptions
-         * @param const unsigned C_INT32 & index
-         * @return std::pair< std::string,std::string >
-         */
-        std::pair< std::string, std::string >
-        operator[](const unsigned C_INT32 & index) const;
-      };
 
   private:
+    CState mInitialState;
+
+    CState mCurrentState;
+
     /**
-     *  key of the model
+     * The state template for the model
      */
-    std::string mKey;
+    /** @dia:route 12,2; h,177.081,33.7423,112.487,20.8602,47.8937 */
+    CStateTemplate mStateTemplate;
 
     /**
      *  Comments
@@ -299,16 +227,6 @@ class CModel : public CCopasiContainer
     CCopasiVectorN< CModelValue > mValues;
 
     /**
-     * The initial time for modeling (default = 0)
-     */
-    C_FLOAT64 mInitialTime;
-
-    /**
-     * The actual time for modeling (default = 0)
-     */
-    C_FLOAT64 mTime;
-
-    /**
      *  Transition time 
      */
     C_FLOAT64 mTransitionTime;
@@ -330,9 +248,9 @@ class CModel : public CCopasiContainer
     CMatrix< C_FLOAT64 > mRedStoi;
 
     /**
-     *   The Matrix which stores the LU-Decomposition
-     */ 
-    // CMatrix< C_FLOAT64 > mLU;
+     * The elasticity matrix d(Flux_i)/dx_j
+     */
+    CMatrix< C_FLOAT64 > mElasticities;
 
     /**
      * Vector for storing the row interchanges during LU-Decomposition
@@ -366,12 +284,6 @@ class CModel : public CCopasiContainer
      *  taking into account the unit for substance quantities
      */
     C_FLOAT64 mNumber2QuantityFactor;
-
-    /**
-     * The state template for the model
-     */
-    /** @dia:route 12,2; h,177.081,33.7423,112.487,20.8602,47.8937 */
-    CStateTemplate mStateTemplate;
 
     /**
      * indicates whether a recalculation of the stoichiometry matrix decomposition is 
@@ -739,76 +651,92 @@ class CModel : public CCopasiContainer
     void applyInitialValues();
 
     /**
-     * Get the  state of the model, i.e., concentrations 
-     * and volumes.
-     * @return CState state
+     * Get the current state of the model, i.e., all current model
+     * quantities.
+     * @return const CState & initialState
      */
-    CState getState() const;
+    const CState & getInitialState() const;
 
     /**
-     * Get the initial state of the model, i.e., initial concentrations 
-     * and volumes.
-     * @return CState initialState
+     * Get the current state of the model, i.e., all current model
+     * quantities.
+     * @return const CState & currentState
      */
-    CState getInitialState() const;
+    const CState & getState() const;
 
     /**
-     * Get the initial state of the model, i.e., initial concentrations 
-     * and volumes in reduced model representation.
-     * @return CStateX initialStateX
+     * Set all initial model quantities to the one given by the state and
+     * updates moieties and metabolite concentrations.
+     * @param const CState & state
      */
-    CStateX getInitialStateX() const;
+    void setInitialState(const CState & state);
 
     /**
-     * Set the initial state of the model, i.e., initial concentrations 
-     * and volumes.
-     * @param const CState * initialState
+     * Set all independent current model quantities to the one given by the
+     * state.
+     * @param const CState & state
      */
-    void setInitialState(const CState * state);
+    void setState(const CState & state);
 
     /**
-     * Set the initial state of the model, i.e., initial concentrations 
-     * and volumes in reduced model representation.
-     * @param const CStateX * initialStateX
+     * This method refreshes all metabolite concentrations.
      */
-    void setInitialStateX (const CStateX * state);
+    void refreshConcentrations();
 
     /**
-     * Calculate the rates of the reaction in the given state.
-     * The parameter rates must at least provide space mSteps.size() double
-     * &param CState * state (input)
-     * &param  C_FLOAT64 * rates (output)
-     */ 
-    //void getRates(const CState * state, C_FLOAT64 * rates);
+     * This method applies all assignments, which currently includes:
+     * i) calculating and assigning the particle numbers for dependent 
+     *    metabolites (only if updateDependent is set in current state)
+     * ii) updating all concentrations
+     * iii) calculating the reaction fluxes
+     */
+    void applyAssignments(void);
 
     /**
-     * Calculate the rates of the reaction in the given state in 
-     * reduced model representation.
-     * The parameter rates must at least provide space mStepsX.size() double
-     * &param CStateX * stateX (input)
-     * &param  C_FLOAT64 * rates (output)
-     */ 
-    //void getRatesX(const CStateX * state, C_FLOAT64 * rates);
-
-    /**
-     * Calculate the changes of particles numbers of the metabolites 
-     * in the given state.
+     * Calculate the changes of all model quantities determined by ODEs
+     * for the model in the current state.
      * The parameter derivatives must at least provide space for
      * state->getVariableNumberSize() double
-     * &param CState * state (input)
      * &param C_FLOAT64 * derivatives (output)
      */
-    void getDerivatives_particles(const CState * state, C_FLOAT64 * derivatives);
+    void calculateDerivatives(C_FLOAT64 * derivatives);
 
     /**
-     * Calculate the changes of particles numbers of the metabolites 
-     * in the given state in reduced model representation.
+     * Calculate the changes of all model quantities determined by ODEs
+     * for the reduced model in the current state.
      * The parameter derivatives must at least provide space for
-     * state->getVariableNumberSize() double
-     * &param CStateX * stateX (input)
+     * state->getDependentNumberSize() double
      * &param C_FLOAT64 * derivatives (output)
      */
-    void getDerivativesX_particles(const CStateX * state, C_FLOAT64 * derivatives);
+    void calculateDerivativesX(C_FLOAT64 * derivativesX);
+
+    /**
+     * Calculates the elasticity matrix of the model for the current
+     * state and stores it in the provided matrix.
+     * @param CMatrix< C_FLOAT64 > & elasticityMatrix
+     * @param const C_FLOAT64 & factor,
+     * @param const C_FLOAT64 & resolution
+     */
+    void calculateElasticityMatrix(const C_FLOAT64 & factor,
+                                   const C_FLOAT64 & resolution);
+
+    /**
+     * Calculates the jacobian of the full model for the current state
+     * and stores it in the provided matrix.
+     * @param CMatrix< C_FLOAT64 > & jacobian
+     * @param const C_FLOAT64 & factor,
+     * @param const C_FLOAT64 & resolution
+     */
+    void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian) const;
+
+    /**
+     * Calculates the jacobian of the reduced model for the current
+     * state and stores it in the provided matrix.
+     * @param CMatrix< C_FLOAT64 > & jacobianX
+     * @param const C_FLOAT64 & factor,
+     * @param const C_FLOAT64 & resolution
+     */
+    void calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX) const;
 
     /**
      * Set the unit for volumes. If copasi recognises 
@@ -994,26 +922,6 @@ class CModel : public CCopasiContainer
     const CVector< unsigned C_INT32 > & getMetabolitePermutation() const;
 
     /**
-     * Retrieve the reaction permutation vector
-     * @return const CVector<unsigned C_INT32> & permutation
-     */ 
-    //    const CVector< unsigned C_INT32 > & getReactionPermutation() const;
-
-    /**
-     * Set the transient concentrations and volumes according to the
-     * given state.
-     * @param const CState * state
-     */
-    void setState(const CState * state);
-
-    /**
-     * Set the transient concentrations and volumes according to the
-     * given stateX in reduced model representation.
-     * @param const CState * stateX
-     */
-    void setStateX(const CStateX * state);
-
-    /**
      * calculate rates, fluxes, and transition times.
      * this can be called after setState() / setStateX()
      */
@@ -1023,7 +931,7 @@ class CModel : public CCopasiContainer
      * Retreive the state template
      * @return const CModel::CStateTemplate & stateTemplate
      */
-    const CModel::CStateTemplate & getStateTemplate() const;
+    CModel::CStateTemplate & getStateTemplate();
 
     bool hasReversibleReaction() const;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/29 17:28:15 $
+   $Date: 2006/03/02 02:23:07 $
    End CVS Header */
 
 /**
@@ -321,18 +321,18 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
    */
   dgees_(&mJobvs,
          &mSort,
-         NULL,                // mSelect,           //NULL,
-         &mN,                               //&n,
+         NULL,                 // mSelect,           //NULL,
+         &mN,                                //&n,
          mA.array(),
          & mLDA,
-         & mSdim,                       // output
+         & mSdim,                        // output
          mR.array(),
          mI.array(),
          mpVS,
          & mLdvs,
          mpWork,
          & mLWork,
-         mpBWork,                         //NULL
+         mpBWork,                          //NULL
          &mInfo);            //output
 
   if (mInfo) fatalError();
@@ -378,12 +378,14 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
             }
           else
             {
+              mI[i] = 0.0;
               // pure real
               mNreal++;
             }
         }
       else
         {
+          mR[i] = 0.0;
           if (fabs(mI[i]) > resolution)
             {
               // pure imaginary
@@ -391,6 +393,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
             }
           else
             {
+              mI[i] = 0.0;
               // zero
               mNzero++;
             }

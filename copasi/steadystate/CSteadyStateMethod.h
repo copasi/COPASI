@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/22 16:45:26 $
+   $Date: 2006/03/02 02:23:08 $
    End CVS Header */
 
 /**
@@ -26,9 +26,9 @@
 class CSteadyStateProblem;
 class CSteadyStateTask;
 class CState;
-class CStateX;
 class CEigen;
 class CProcessReport;
+class CModel;
 
 class CSteadyStateMethod : public CCopasiMethod
   {
@@ -48,6 +48,11 @@ class CSteadyStateMethod : public CCopasiMethod
     const CSteadyStateProblem * mpProblem;
 
     /**
+     *  A pointer to the model.
+     */
+    CModel * mpModel;
+
+    /**
      *  A pointer to the task.
      */
     CSteadyStateTask * mpParentTask;
@@ -56,11 +61,6 @@ class CSteadyStateMethod : public CCopasiMethod
      * A pointer to the steady state
      */
     CState * mpSteadyState;
-
-    /**
-     * A pointer to the steady state
-     */
-    CStateX * mpSteadyStateX;
 
     /**
      * The jacobian of the steadystate
@@ -137,8 +137,6 @@ class CSteadyStateMethod : public CCopasiMethod
      * starting with the initialState given.
      * The steady state is returned in the object pointed to by steadyState.
      * @param CState * steadyState
-     * @param const CState * initialState
-     * @param const CSteadyStateProblem * pProblem
      * @param CMatrix< C_FLOAT64 > & jacobian
      * @param CMatrix< C_FLOAT64 > & jacobianX
      * @param CEigen & EigenValues
@@ -147,7 +145,6 @@ class CSteadyStateMethod : public CCopasiMethod
      * @return CSteadyStateMethod::ReturnCode returnCode
      */
     CSteadyStateMethod::ReturnCode process(CState * pState,
-                                           CStateX * pStateX,
                                            CMatrix< C_FLOAT64 > & jacobian,
                                            CMatrix< C_FLOAT64 > & jacobianX,
                                            CEigen & EigenValues,

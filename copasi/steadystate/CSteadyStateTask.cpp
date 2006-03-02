@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:31 $
+   $Date: 2006/03/02 02:23:08 $
    End CVS Header */
 
 /**
@@ -32,7 +32,6 @@
 CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::steadyState, pParent),
     mpSteadyState(NULL),
-    mpSteadyStateX(NULL),
     mJacobian(),
     mJacobianX(),
     mEigenValues("Eigenvalues of Jacobian", this),
@@ -50,7 +49,6 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
                                    const CCopasiContainer * pParent):
     CCopasiTask(src, pParent),
     mpSteadyState(src.mpSteadyState),
-    mpSteadyStateX(src.mpSteadyStateX),
     mJacobian(src.mJacobian),
     mJacobianX(src.mJacobianX),
     mEigenValues(src.mEigenValues, this),
@@ -68,7 +66,6 @@ CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
 CSteadyStateTask::~CSteadyStateTask()
 {
   pdelete(mpSteadyState);
-  pdelete(mpSteadyStateX);
 }
 
 void CSteadyStateTask::cleanup()
@@ -122,16 +119,14 @@ bool CSteadyStateTask::initialize(const OutputFlag & of,
 
   pdelete(mpSteadyState);
   mpSteadyState = new CState(mpProblem->getModel()->getInitialState());
-  pdelete(mpSteadyStateX);
-  mpSteadyStateX = new CStateX(mpProblem->getModel()->getInitialStateX());
 
   mCalculateReducedSystem = (mpProblem->getModel()->getNumDependentMetabs() != 0);
 
   //init jacobians
-  mJacobian.resize(mpSteadyState->getVariableNumberSize(),
-                   mpSteadyState->getVariableNumberSize());
-  mJacobianX.resize(mpSteadyStateX->getVariableNumberSize(),
-                    mpSteadyStateX->getVariableNumberSize());
+  unsigned C_INT32 size = mpSteadyState->getNumIndependent();
+  mJacobianX.resize(size, size);
+  size += mpSteadyState->getNumDependent();
+  mJacobian.resize(size, size);
 
   CSteadyStateProblem* pProblem =
     dynamic_cast<CSteadyStateProblem *>(mpProblem);
@@ -156,7 +151,6 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
     }
 
   *mpSteadyState = mpProblem->getModel()->getState();
-  *mpSteadyStateX = *mpSteadyState;
 
   CSteadyStateMethod* pMethod =
     dynamic_cast<CSteadyStateMethod *>(mpMethod);
@@ -166,7 +160,6 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
   doOutput();
 
   mResult = pMethod->process(mpSteadyState,
-                             mpSteadyStateX,
                              mJacobian,
                              mJacobianX,
                              mEigenValues,
@@ -202,12 +195,12 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << std::endl;
 
   // Update all necessary values.
-  const CState * pState = A.getState();
+  CState * pState = const_cast<CState *>(A.getState());
   if (!pState) return os;
-  CModel * pModel = const_cast<CModel *>(pState->getModel());
+  CModel * pModel = A.mpProblem->getModel();
   if (!pModel) return os;
 
-  pModel->setState(pState);
+  pModel->setState(*pState);
   pModel->updateRates();
 
   // Metabolite Info: Name, Concentration, Concentration Rate, Particle Number, Particle Rate, Transition Time

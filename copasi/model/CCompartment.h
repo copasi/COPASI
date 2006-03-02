@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Date: 2006/03/02 02:22:53 $
    End CVS Header */
 
 /**
@@ -29,21 +29,6 @@ class CReadConfig;
 class CCompartment : public CModelEntity
   {
   private:
-    /**
-     *  The initial volume of the compartment.
-     */ 
-    //C_FLOAT64 mInitialVolume; replaced by CModelEntity::mIValue
-
-    /**
-     *  Volume of the compartment.
-     */ 
-    //C_FLOAT64 mVolume; replaced by CModelEntity::mValue
-
-    /**
-     *  1/Volume of the compartment.
-     */
-    C_FLOAT64 mVolumeInv;
-
     /**
      *  Metabolites located in the compartment.
      *  @supplierCardinality 0..*
@@ -102,13 +87,6 @@ class CCompartment : public CModelEntity
      *  @see mVolume
      */
     inline const C_FLOAT64 & getVolume() const {return getValue();};
-
-    /**
-     *  Returns a C_FLOAT64 with the 1/volume of this compartment.
-     *  @return mVolumeInv
-     *  @see mVolumeInv
-     */
-    const C_FLOAT64 & getVolumeInv() const;
 
     /**
      *

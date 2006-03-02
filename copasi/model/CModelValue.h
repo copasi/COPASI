@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Date: 2006/03/02 02:22:53 $
    End CVS Header */
 
 #ifndef COPASI_CModelValue
@@ -44,12 +44,13 @@ class CModelEntity : public CCopasiContainer
      */
     enum Status
     {
-      FIXED = 0,       //the entity is constant (for metabs even if they are part of a reaction)
-      REACTIONS,       //applies only for metabs, the metab concentration is changed by reactions
-      DEPENDENT,       //applies only for metabs, the metab concentration is determined by conservation rules
+      FIXED = 0,        //the entity is constant (for metabs even if they are part of a reaction)
+      REACTIONS,        //applies only for metabs, the metab concentration is changed by reactions
+      DEPENDENT,        //applies only for metabs, the metab concentration is determined by conservation rules
       UNUSED,
-      ODE,             //the entity is changed by an ordinary differential equation
-      ASSIGNMENT  //the entity is changed by an assignment rule
+      ODE,              //the entity is changed by an ordinary differential equation
+      ASSIGNMENT,       //the entity is changed by an assignment rule
+      TIME
     };
 
     /**
@@ -95,6 +96,8 @@ class CModelEntity : public CCopasiContainer
      *
      */
     const CModelEntity::Status & getStatus() const;
+
+    inline bool isFixed() const {return mStatus == FIXED;}
 
     /**
      *
@@ -144,16 +147,26 @@ class CModelEntity : public CCopasiContainer
      */
     const std::string& getSBMLId() const;
 
+    void setInitialValuePtr(C_FLOAT64 * pInitialValue);
+    void setValuePtr(C_FLOAT64 * pValue);
+    virtual bool setObjectParent(const CCopasiContainer * pParent);
+
   protected:
     /**
-     *  Concentration of the metabolite as double.
+     * Pointer to the value of the model entity.
      */
-    C_FLOAT64 mValue;
+    C_FLOAT64 * mpValueData;
 
     /**
-     *  Initial concentration of the metabolite as double
+     * Pointer to access the data value of the model entity..
+     * This is mpIValue for fixed and mpValueData otherwise.
      */
-    C_FLOAT64 mIValue;
+    C_FLOAT64 * mpValueAccess;
+
+    /**
+     * Pointer to the initial value of the model entity.
+     */
+    C_FLOAT64 * mpIValue;
 
     /**
      *  Rate of production of this metabolite
@@ -164,7 +177,13 @@ class CModelEntity : public CCopasiContainer
     /**
      *  Status of the model entity.  
      */
+  private:
     Status mStatus;
+
+  protected:
+    CCopasiObjectReference<C_FLOAT64> *mpIValueReference;
+    CCopasiObjectReference<C_FLOAT64> *mpValueReference;
+    CModel * mpModel;
 
   private:
     /**

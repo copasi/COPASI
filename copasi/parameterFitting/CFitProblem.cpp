@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:28 $
+   $Date: 2006/03/02 02:22:54 $
    End CVS Header */
 
 #include "copasi.h"
@@ -272,7 +272,7 @@ bool CFitProblem::calculate()
         {
           pExp = mpExperimentSet->getExperiment(i);
 
-          mpModel->setInitialState(mpInitialState);
+          mpModel->setInitialState(*mpInitialState);
 
           // set the global and experiment local fit item values.
           for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)

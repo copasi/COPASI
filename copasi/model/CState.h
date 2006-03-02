@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/06/01 14:54:06 $
+   $Author: shoops $ 
+   $Date: 2006/03/02 02:22:53 $
    End CVS Header */
 
 /**
@@ -21,350 +21,176 @@
 #ifndef COPASI_CState
 #define COPASI_CState
 
+#include <map>
+
 #include "utilities/CVector.h"
 
-class CModel;
-class CStateX;
-
-template <class CType> class CMatrix;
+class CState;
+class CModelEntity;
 
 /** @dia:pos 127.851,-24.3708 */
+class CStateTemplate
+  {
+    // Operations
+  private:
+    CStateTemplate();
+
+  public:
+    CStateTemplate(CState & initialState,
+                   CState & currentState);
+    ~CStateTemplate();
+
+    void add(CModelEntity * entity);
+    void remove(CModelEntity * entity);
+    unsigned C_INT32 getIndex(CModelEntity * entity) const;
+    void reorder(const CVector< CModelEntity * > & entitiesX);
+    void setUserOrder(const CVector< CModelEntity * > & entities);
+    const CVector<unsigned C_INT32> & getUserOrder() const;
+
+    CModelEntity ** getEntities();
+    CModelEntity ** CStateTemplate::beginIndependent();
+    CModelEntity ** CStateTemplate::endIndependent();
+    CModelEntity ** CStateTemplate::beginDependent();
+    CModelEntity ** CStateTemplate::endDependent();
+    CModelEntity ** CStateTemplate::beginFixed();
+    CModelEntity ** CStateTemplate::endFixed();
+
+    CModelEntity **const CStateTemplate::beginIndependent() const;
+    CModelEntity **const CStateTemplate::endIndependent() const;
+    CModelEntity **const CStateTemplate::beginDependent() const;
+    CModelEntity **const CStateTemplate::endDependent() const;
+    CModelEntity **const CStateTemplate::beginFixed() const;
+    CModelEntity **const CStateTemplate::endFixed() const;
+
+    unsigned C_INT32 CStateTemplate::getNumIndependent() const;
+    unsigned C_INT32 CStateTemplate::getNumDependent() const;
+    unsigned C_INT32 CStateTemplate::getNumVariable() const;
+    unsigned C_INT32 CStateTemplate::getNumFixed() const;
+
+    const unsigned C_INT32 & size() const;
+
+  protected:
+    void resize();
+
+    // Attributes
+  private:
+    CState & mInitialState;
+    CState & mCurrentState;
+    CModelEntity ** mpEntities;
+    unsigned C_INT32 mSize;
+    CModelEntity ** mpBeginIndependent;
+    CModelEntity ** mpBeginDependent;
+    CModelEntity ** mpBeginFixed;
+    CModelEntity ** mpEnd;
+    unsigned C_INT32 mInsert;
+    std::map< CModelEntity *, unsigned C_INT32 > mIndexMap;
+    CVector<unsigned C_INT32> mUserOrder;
+    C_FLOAT64 * mpInitialValues;
+    C_FLOAT64 * mpCurrentValues;
+  };
+
 class CState
   {
-    friend class CStateX;
-
-  protected:
-    // Attributes
-    /**
-     *
-     */
-    /** @dia:route 0,2; h,177.081,30.2423,166.416,-24.3708,155.751 */
-    const CModel * mpModel;
-
-    /**
-     *
-     */
-    C_FLOAT64 mTime;
-
-    /**
-     *
-     */
-    CVector< C_FLOAT64 > mVolumes;
-
-    /**
-     *
-     */
-    /** @dia:route 2,0; h,107.298,-19.4621,117.574,-24.3708,127.851 */
-    CVector< C_FLOAT64 > mFixedNumbers;
-
-    /**
-     *
-     */
-    /** @dia:route 9,0; h,107.298,-17.5621,117.574,-24.3708,127.851 */
-    CVector< C_FLOAT64 > mVariableNumbers;
-
-    CVector< C_FLOAT64 > mGlobalParameters;
-
-    // Operations
   public:
-    /**
-     *
-     */
-    CState(const CModel * pModel = NULL);
+    CState();
+    CState(const CState & src);
+    ~CState();
 
-    /**
-     *
-     */
-    CState(const CState & state);
+    CState & operator=(const CState & rhs);
 
-    /**
-     *
-     */
-    CState(const CStateX & stateX);
-
-    /**
-     *
-     */
-    virtual ~CState();
-
-    /**
-     *
-     */
-    CState & operator =(const CState & state);
-
-    /**
-     *
-     */
-    CState & operator =(const CStateX & stateX);
-
-    /**
-     *
-     */
-    virtual void setModel(const CModel * pModel);
-
-    /**
-     *
-     */
-    const CModel * getModel() const;
-
-    /**
-     *
-     */
+    const C_FLOAT64 & getTime() const;
     void setTime(const C_FLOAT64 & time);
 
-    /**
-     *
-     */
-    const C_FLOAT64 & getTime() const;
+    C_FLOAT64 * beginIndependent();
+    C_FLOAT64 * endIndependent();
+    C_FLOAT64 * beginDependent();
+    C_FLOAT64 * endDependent();
+    C_FLOAT64 * beginFixed();
+    C_FLOAT64 * endFixed();
 
-    /**
-     *
-     */
-    const CVector< C_FLOAT64 > & getFixedNumberVector() const;
+    const C_FLOAT64 * beginIndependent() const;
+    const C_FLOAT64 * endIndependent() const;
+    const C_FLOAT64 * beginDependent() const;
+    const C_FLOAT64 * endDependent() const;
+    const C_FLOAT64 * beginFixed() const;
+    const C_FLOAT64 * endFixed() const;
 
-    /**
-     *
-     */
-    const C_FLOAT64 & getFixedNumber(const unsigned C_INT32 & index) const;
+    unsigned C_INT32 getNumIndependent() const;
+    unsigned C_INT32 getNumDependent() const;
+    unsigned C_INT32 getNumVariable() const;
+    unsigned C_INT32 getNumFixed() const;
 
-    /**
-     *
-     */
-    unsigned C_INT32 getFixedNumberSize() const;
-
-    /**
-     *
-     */
-    const CVector< C_FLOAT64 > & getVariableNumberVector() const;
-
-    /**
-     *
-     */
-    const C_FLOAT64 & getVariableNumber(const unsigned C_INT32 & index) const;
-
-    /**
-     *
-     */
-    unsigned C_INT32 getVariableNumberSize() const;
-
-    /**
-     *
-     */
-    const C_FLOAT64 & getVolume(const unsigned C_INT32 & index) const;
-
-    /**
-     *
-     */
-    const CVector< C_FLOAT64 > & getVolumeVector() const;
-
-    /**
-     *
-     */
-    unsigned C_INT32 getVolumeSize() const;
-
-    /**
-     *
-     */
-    void setFixedNumber(const unsigned C_INT32 & index, const C_FLOAT64 & value);
-
-    /**
-     *
-     */
-    void setFixedNumberVector(const CVector< C_FLOAT64 > & vektor);
-
-    /**
-     *
-     */
-    void setVariableNumber(const unsigned C_INT32 & index, const C_FLOAT64 & value);
-
-    /**
-     *
-     */
-    void setVariableNumberVector(const CVector< C_FLOAT64 > & vektor);
-
-    /**
-     *
-     */
-    void setVolume(const unsigned C_INT32 & index, const C_FLOAT64 & value);
-
-    /**
-     *
-     */
-    void setVolumeVector(const CVector< C_FLOAT64 > & vektor);
-
-    const CVector< C_FLOAT64 > & getGlobalParameterVector() const;
-
-    const C_FLOAT64 & getGlobalParameter(const unsigned C_INT32 & index) const;
-
-    unsigned C_INT32 getGlobalParameterSize() const;
-
-    void setGlobalParameter(const unsigned C_INT32 & index, const C_FLOAT64 & value);
-
-    void setGlobalParameterVector(const CVector< C_FLOAT64 > & vektor);
-
-    /**
-     * Calculates the jacobian of the state and stores it in the provided 
-     * matrix.
-     * @param CMatrix< C_FLOAT64 > & jacobian
-     * @param const C_FLOAT64 & factor,
-     * @param const C_FLOAT64 & resolution
-     */
-    virtual void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
-                                   const C_FLOAT64 & factor,
-                                   const C_FLOAT64 & resolution) const;
-
-    /**
-     * Calculates the elasticity Matrix of the state and stores it in the 
-     * provided matrix.
-     * @param CMatrix< C_FLOAT64 > & elasticityMatrix
-     * @param const C_FLOAT64 & factor,
-     * @param const C_FLOAT64 & resolution
-     */
-    virtual void calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
-                                           const C_FLOAT64 & factor,
-                                           const C_FLOAT64 & resolution) const;
-
-    friend std::ostream & operator << (std::ostream & os, const CState & A);
+    void setUpdateDependentRequired(const bool & required);
+    const bool & isUpdateDependentRequired() const;
 
   protected:
-    /**
-     * Calculate the jacobian of the state and store it in the provided matrix.
-     * @param CMatrix< C_FLOAT64 > & jacobian
-     * @param const C_FLOAT64 & factor,
-     * @param const C_FLOAT64 & resolution
-     */
-    /* virtual void getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
+    // These methods are only accessible from CStateTemplate
+    friend class CStateTemplate;
+    C_FLOAT64 * resize(const unsigned C_INT32 & size);
+    void updateIterator(const unsigned C_INT32 & numIndependent,
+                        const unsigned C_INT32 & numDependent,
+                        const unsigned C_INT32 & numFixed);
+
+  private:
+    C_FLOAT64 * mpValues;
+    unsigned C_INT32 mSize;
+    C_FLOAT64 * mpBeginIndependent;
+    C_FLOAT64 * mpBeginDependent;
+    C_FLOAT64 * mpBeginFixed;
+    C_FLOAT64 * mpEnd;
+    bool mUpdateDependentRequired;
+
+#ifdef COPASI_DEBUG
+  public:
+    void check(const std::string & m = "") const;
+#endif
+  };
+
+#ifdef XXXX
+
+/**
+ * Calculates the jacobian of the state and stores it in the provided 
+ * matrix.
+ * @param CMatrix< C_FLOAT64 > & jacobian
+ * @param const C_FLOAT64 & factor,
+ * @param const C_FLOAT64 & resolution
+ */
+virtual void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
+                               const C_FLOAT64 & factor,
+                               const C_FLOAT64 & resolution) const;
+
+/**
+ * Calculates the elasticity Matrix of the state and stores it in the 
+ * provided matrix.
+ * @param CMatrix< C_FLOAT64 > & elasticityMatrix
+ * @param const C_FLOAT64 & factor,
+ * @param const C_FLOAT64 & resolution
+ */
+virtual void calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
                                        const C_FLOAT64 & factor,
-                                       const C_FLOAT64 & resolution);*/
+                                       const C_FLOAT64 & resolution) const;
 
-#ifdef COPASI_DEBUG
-  public:
-    void check(const std::string & m = "") const;
-#endif
-  };
+/**
+ * Calculate the jacobian of the state and store it in the provided matrix.
+ * @param C_FLOAT64 * jacobian
+ * @param const C_FLOAT64 & factor,
+ * @param const C_FLOAT64 & resolution
+ */
+virtual void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
+                               const C_FLOAT64 & factor,
+                               const C_FLOAT64 & resolution) const;
 
-//**********************************************************************************************************
+/**
+ * Calculates the elasticity Matrix of the state and stores it in the 
+ * provided matrix.
+ * @param CMatrix< C_FLOAT64 > & elasticityMatrix
+ * @param const C_FLOAT64 & factor,
+ * @param const C_FLOAT64 & resolution
+ */
+virtual void calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
+                                       const C_FLOAT64 & factor,
+                                       const C_FLOAT64 & resolution) const;
 
-/** @dia:pos 127.956,11.9075 */
-class CStateX: public CState
-  {
-    friend class CState;
-
-  protected:
-    // Attributes
-
-    /**
-     *
-     */
-    /** @dia:route 13,0; h,107.298,-15.9621,117.627,11.9075,127.956 */
-    CVector< C_FLOAT64 > mDependentNumbers;
-
-    // Operations
-  public:
-    /**
-     *
-     */
-    CStateX(const CModel * pModel = NULL);
-
-    /**
-     *
-     */
-    CStateX(const CState & state);
-
-    /**
-     *
-     */
-    CStateX(const CStateX & stateX);
-
-    /**
-     *
-     */
-    virtual ~CStateX();
-
-    /**
-     *
-     */
-    CStateX & operator =(const CState & state);
-
-    /**
-     *
-     */
-    CStateX & operator =(const CStateX & stateX);
-
-    /**
-     *
-     */
-    virtual void setModel(const CModel * pModel);
-
-    /**
-     *
-     */
-    const CVector< C_FLOAT64 > & getDependentNumberVector() const;
-
-    /**
-     *
-     */
-    const C_FLOAT64 & getDependentNumber(const unsigned C_INT32 & index) const;
-
-    /**
-     *
-     */
-    unsigned C_INT32 getDependentNumberSize()const;
-
-    /**
-     *
-     */
-    void setDependentNumber(const unsigned C_INT32 & index,
-                            const C_FLOAT64 & value);
-
-    /**
-     *
-     */
-    void setDependentNumberVector(const CVector< C_FLOAT64 > & vektor);
-
-    /**
-     *
-     */
-    void updateDependentNumbers();
-
-    /**
-     * Calculate the jacobian of the state and store it in the provided matrix.
-     * @param C_FLOAT64 * jacobian
-     * @param const C_FLOAT64 & factor,
-     * @param const C_FLOAT64 & resolution
-     */
-    virtual void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
-                                   const C_FLOAT64 & factor,
-                                   const C_FLOAT64 & resolution) const;
-
-    /**
-     * Calculates the elasticity Matrix of the state and stores it in the 
-     * provided matrix.
-     * @param CMatrix< C_FLOAT64 > & elasticityMatrix
-     * @param const C_FLOAT64 & factor,
-     * @param const C_FLOAT64 & resolution
-     */
-    virtual void calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
-                                           const C_FLOAT64 & factor,
-                                           const C_FLOAT64 & resolution) const;
-
-    friend std::ostream & operator << (std::ostream & os, const CStateX & A);
-
-  protected:
-    /**
-     * Calculate the jacobian of the state and store it in the provided matrix.
-     * @param C_FLOAT64 * jacobian
-     * @param const C_FLOAT64 & factor,
-     * @param const C_FLOAT64 & resolution
-     */
-    /*virtual void getJacobianProtected(CMatrix< C_FLOAT64 > & jacobian,
-                                      const C_FLOAT64 & factor,
-                                      const C_FLOAT64 & resolution);*/
-
-#ifdef COPASI_DEBUG
-  public:
-    void check(const std::string & m = "") const;
-#endif
-  };
+#endif // XXXX
 
 #endif

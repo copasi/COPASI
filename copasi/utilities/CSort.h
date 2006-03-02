@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSort.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 14:06:49 $
+   $Date: 2006/03/02 02:23:30 $
    End CVS Header */
 
 #ifndef COPASI_CSort
@@ -294,8 +294,11 @@ class FSwapBase
      * @param IndexType from
      * @return ReturnType
      */
-    virtual ReturnType operator() (IndexType to, IndexType from)
-    {return (*mpSwap)(to, from);}
+    virtual void operator() (IndexType to, IndexType from)
+    {
+      (*mpSwap)(to, from);
+      return;
+    }
 
   private:
     /**
@@ -335,8 +338,11 @@ class FSwapClass : public FSwapBase<IndexType, ReturnType>
      * @param IndexType from
      * @return ReturnType
      */
-    virtual ReturnType operator() (IndexType to, IndexType from)
-    {return (*mpType.*mpSwap)(to, from);}
+    virtual void operator() (IndexType to, IndexType from)
+    {
+      (*mpType.*mpSwap)(to, from);
+      return;
+    }
 
   private:
     /**
