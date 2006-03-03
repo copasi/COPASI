@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>398</width>
-            <height>377</height>
+            <width>533</width>
+            <height>378</height>
         </rect>
     </property>
     <property name="caption">
@@ -81,7 +81,13 @@
                     <property name="minimumSize">
                         <size>
                             <width>0</width>
-                            <height>60</height>
+                            <height>80</height>
+                        </size>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>32767</width>
+                            <height>80</height>
                         </size>
                     </property>
                 </widget>
@@ -156,7 +162,13 @@
                     <property name="minimumSize">
                         <size>
                             <width>0</width>
-                            <height>60</height>
+                            <height>80</height>
+                        </size>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>32767</width>
+                            <height>80</height>
                         </size>
                     </property>
                 </widget>
@@ -172,68 +184,68 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>mpLayoutExperiment</cstring>
+                <cstring>layout4</cstring>
             </property>
             <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>3</number>
-                </property>
-                <widget class="QToolButton" row="1" column="5">
+                <widget class="QLabel" row="2" column="7">
                     <property name="name">
-                        <cstring>mpBtnLast</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>1</hsizetype>
-                            <vsizetype>1</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
+                        <cstring>mpLblHeader</cstring>
                     </property>
                     <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>image2</iconset>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="3">
-                    <property name="name">
-                        <cstring>mpLblLast</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Last Row</string>
+                        <string>Header</string>
                     </property>
                     <property name="alignment">
                         <set>AlignVCenter|AlignRight</set>
                     </property>
                 </widget>
-                <widget class="QCheckBox" row="1" column="2">
+                <widget class="QCheckBox" row="2" column="1">
                     <property name="name">
-                        <cstring>mpCheckTab</cstring>
+                        <cstring>mpCheckFrom</cstring>
                     </property>
                     <property name="text">
-                        <string>&lt;tab&gt;</string>
-                    </property>
-                    <property name="checked">
-                        <bool>true</bool>
+                        <string>from previous</string>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="0" column="4">
+                <spacer row="2" column="2">
                     <property name="name">
-                        <cstring>mpEditFirst</cstring>
+                        <cstring>mpSpacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>42</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <spacer row="3" column="2">
+                    <property name="name">
+                        <cstring>mpSpacer3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>42</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLineEdit" row="0" column="8">
+                    <property name="name">
+                        <cstring>mpEditLast</cstring>
                     </property>
                     <property name="frameShape">
                         <enum>LineEditPanel</enum>
@@ -242,73 +254,13 @@
                         <enum>Sunken</enum>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="2" column="4">
-                    <property name="name">
-                        <cstring>mpEditHeader</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>mpLblName</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Name</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignVCenter|AlignRight</set>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="1" column="1">
-                    <property name="name">
-                        <cstring>mpEditSeparator</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                </widget>
-                <widget class="QToolButton" row="0" column="5">
-                    <property name="name">
-                        <cstring>mpBtnFirst</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>1</hsizetype>
-                            <vsizetype>1</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="iconSet">
-                        <iconset>image2</iconset>
-                    </property>
-                </widget>
-                <widget class="QButtonGroup" row="0" column="7" rowspan="3" colspan="1">
+                <widget class="QButtonGroup" row="3" column="3" rowspan="1" colspan="3">
                     <property name="name">
                         <cstring>mpBtnGroup</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
-                            <hsizetype>5</hsizetype>
+                            <hsizetype>0</hsizetype>
                             <vsizetype>4</vsizetype>
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
@@ -318,12 +270,12 @@
                         <enum>NoFrame</enum>
                     </property>
                     <property name="title">
-                        <string>Experiment Type</string>
+                        <string></string>
                     </property>
                     <property name="alignment">
                         <set>AlignTop</set>
                     </property>
-                    <vbox>
+                    <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
@@ -349,39 +301,122 @@
                                 <string>Time Course</string>
                             </property>
                         </widget>
-                    </vbox>
+                    </hbox>
                 </widget>
-                <widget class="QToolButton" row="2" column="5">
+                <widget class="QCheckBox" row="3" column="1">
                     <property name="name">
-                        <cstring>mpBtnHeader</cstring>
+                        <cstring>mpCheckTo</cstring>
+                    </property>
+                    <property name="text">
+                        <string>to next</string>
+                    </property>
+                </widget>
+                <spacer row="2" column="5" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>mpSpacer2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>139</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLineEdit" row="3" column="8">
+                    <property name="name">
+                        <cstring>mpEditSeparator</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
-                            <hsizetype>1</hsizetype>
-                            <vsizetype>1</vsizetype>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>0</vsizetype>
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
                         </sizepolicy>
                     </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="5">
+                    <property name="name">
+                        <cstring>mpLblFirst</cstring>
                     </property>
                     <property name="text">
-                        <string></string>
+                        <string>First Row</string>
                     </property>
-                    <property name="iconSet">
-                        <iconset>image2</iconset>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="1" column="4">
+                <widget class="QLineEdit" row="0" column="6">
                     <property name="name">
-                        <cstring>mpEditLast</cstring>
+                        <cstring>mpEditFirst</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
                     </property>
                 </widget>
-                <widget class="QLabel" row="1" column="0">
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>mpLblName</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Name</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>mpLblCopy</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Copy</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="3">
+                    <property name="name">
+                        <cstring>mpLblExperimentType</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Experiment Type</string>
+                    </property>
+                </widget>
+                <widget class="Line" row="1" column="0" rowspan="1" colspan="10">
+                    <property name="name">
+                        <cstring>line1</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="7">
                     <property name="name">
                         <cstring>mpLblSeperator</cstring>
                     </property>
@@ -398,7 +433,43 @@
                         <set>AlignVCenter|AlignRight</set>
                     </property>
                 </widget>
-                <widget class="QCheckBox" row="2" column="6">
+                <widget class="QLabel" row="0" column="7">
+                    <property name="name">
+                        <cstring>mpLblLast</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Last Row</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignVCenter|AlignRight</set>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="2" column="8">
+                    <property name="name">
+                        <cstring>mpEditHeader</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+                <spacer row="0" column="4">
+                    <property name="name">
+                        <cstring>mpSpacer4</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>41</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QCheckBox" row="2" column="9">
                     <property name="name">
                         <cstring>mpCheckHeader</cstring>
                     </property>
@@ -406,31 +477,34 @@
                         <string></string>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="2">
+                <widget class="QCheckBox" row="3" column="9">
+                    <property name="name">
+                        <cstring>mpCheckTab</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&lt;tab&gt;</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="0" column="1" rowspan="1" colspan="3">
                     <property name="name">
                         <cstring>mpEditName</cstring>
                     </property>
-                </widget>
-                <widget class="QLabel" row="0" column="3">
-                    <property name="name">
-                        <cstring>mpLblFirst</cstring>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
                     </property>
-                    <property name="text">
-                        <string>First Row</string>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
                     </property>
-                    <property name="alignment">
-                        <set>AlignVCenter|AlignRight</set>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="3">
-                    <property name="name">
-                        <cstring>mpLblHeader</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Header</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignVCenter|AlignRight</set>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
                     </property>
                 </widget>
             </grid>
@@ -537,29 +611,8 @@
     <image name="image1">
         <data format="PNG" length="693">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000027c49444154789c7d935d688e6118c77ff7fd3cf7f3ce5e6663be45beb248c9811449420e70b413078e2825ca2849511ccc4739211f712039516a25c5941d88b196cd47bec6369fb37937dbfbb18777eff33cf7e5c0fbda8be5aaabae83ebfadfff8f6ed5d8fcb2afbc6c74cc8a50282b90cd0e11e402fafa533a0cec4032e5afdfba65dd73feae474fda7f586ba5b8a32812ff4720e94c208f9f75cadb8e6ea96f68edbd78e5d62a11a1b8f53f8880520aad41698b763493a754b26af9a2caaa79336f5fadbb575dbc3b2280000af03c9777ef3fd1d4d44acbd3978441d6cba493d70e1e395bf35f0000a5155ac184ca71e4ace26b4f8af68e4f78251e99c1646d61cf1df118d04a1106218b165791cb06f46586e8efeec6188fe6a6c61124d8085e35435b0b160805426318ecec449fd88369a8c394c6f13c83e338bfcf86197c7e030febc14f221f3bf15754231fdaa838758058433da3663c2058b8143d711a4a3102c0943930733edca9c369bb44fc5123babd1d73ef2ec1d4d90cec3c8c533909a36c5e6401203f67b58b5a598dfa3e84b97a9ed88b1b90182058b098fe4367086655e10c0ee2b82eaa88825b30218c4019075797a0ba12f0a5173259e8fa86b20ae5191c058e2a049d37d1169c0f7278574e133bbe1f7a53444b9661e3e3312daf19bf612db19b37605469fef56106bf5370efd763ce1c839e3e729bb792b97c1bffe405a46c2c4e2241f9de5de8440f62bc3f221f96b074356af52664fa5c72db6a1011828d1b495ebb4ee9beddf8db7760c78cc509c23f24b8363fc72bcae0e839043040148108446b56927bdc8a0a84b89fc3750dc539baa974daaf3d7e3ad4fa57a28245a111b18880e47f868880084a69fc7466a800f013f0322279635ab76f0000000049454e44ae426082</data>
     </image>
-    <image name="image2">
-        <data format="PNG" length="200">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000008f49444154789ca5524912c020088b4e1fc6d37c1a3fb3076d599aee78104258265a008599e03ace262880a225529b276242793512b622758d843432ac620f3c91f9feb6fc32a6695af929e6d6fd7a9f88c804e32246c7f9474c29afc695d89a716ac616ebe8893267e4e2ccd3a1412c7c17170087a7e13f916370e274003d097683c1bef2577322b692934fb15fb6026f3b535771e668df0000000049454e44ae426082</data>
-    </image>
 </images>
 <connections>
-    <connection>
-        <sender>mpBtnFirst</sender>
-        <signal>clicked()</signal>
-        <receiver>CQExperimentData</receiver>
-        <slot>slotFirst()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnLast</sender>
-        <signal>clicked()</signal>
-        <receiver>CQExperimentData</receiver>
-        <slot>slotLast()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtnHeader</sender>
-        <signal>clicked()</signal>
-        <receiver>CQExperimentData</receiver>
-        <slot>slotHeader()</slot>
-    </connection>
     <connection>
         <sender>mpCheckHeader</sender>
         <signal>toggled(bool)</signal>
@@ -644,7 +697,37 @@
         <receiver>CQExperimentData</receiver>
         <slot>slotSeparator()</slot>
     </connection>
+    <connection>
+        <sender>mpCheckFrom</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>CQExperimentData</receiver>
+        <slot>slotCheckFrom(bool)</slot>
+    </connection>
+    <connection>
+        <sender>mpCheckTo</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>CQExperimentData</receiver>
+        <slot>slotCheckTo(bool)</slot>
+    </connection>
 </connections>
+<tabstops>
+    <tabstop>mpBoxFile</tabstop>
+    <tabstop>mpBoxExperiment</tabstop>
+    <tabstop>mpEditName</tabstop>
+    <tabstop>mpEditFirst</tabstop>
+    <tabstop>mpEditLast</tabstop>
+    <tabstop>mpCheckFrom</tabstop>
+    <tabstop>mpCheckTo</tabstop>
+    <tabstop>mpBtnSteadystate</tabstop>
+    <tabstop>mpEditHeader</tabstop>
+    <tabstop>mpCheckHeader</tabstop>
+    <tabstop>mpEditSeparator</tabstop>
+    <tabstop>mpCheckTab</tabstop>
+    <tabstop>mpTable</tabstop>
+    <tabstop>mpBtnOK</tabstop>
+    <tabstop>mpBtnRevert</tabstop>
+    <tabstop>mpBtnCancel</tabstop>
+</tabstops>
 <includes>
     <include location="global" impldecl="in declaration">string</include>
     <include location="global" impldecl="in declaration">map</include>
@@ -658,27 +741,28 @@
     <forward>class QSignalMapper</forward>
 </forwards>
 <variables>
-    <variable>QSignalMapper * mpBtnMap;</variable>
-    <variable>CQExperimentDataValidator * mpValidatorHeader;</variable>
-    <variable>CQExperimentDataValidator * mpValidatorLast;</variable>
-    <variable>CExperiment * mpExperiment;</variable>
-    <variable>CExperimentFileInfo * mpFileInfo;</variable>
-    <variable>CExperimentSet * mpExperimentSet;</variable>
-    <variable>CExperimentSet * mpExperimentSetCopy;</variable>
-    <variable>std::map&lt;std::string, std::string&gt; mKeyMap;</variable>
-    <variable>std::map&lt;std::string, std::string&gt; mFileMap;</variable>
-    <variable access="public">friend class CQExperimentDataValidator;</variable>
-    <variable>CQExperimentDataValidator * mpValidatorFirst;</variable>
-    <variable>unsigned int mShown;</variable>
-    <variable>CQExperimentDataValidator * mpValidatorName;</variable>
     <variable>QSignalMapper * mpComboMap;</variable>
+    <variable>CQExperimentDataValidator * mpValidatorName;</variable>
+    <variable>unsigned int mShown;</variable>
+    <variable>CQExperimentDataValidator * mpValidatorFirst;</variable>
+    <variable access="public">friend class CQExperimentDataValidator;</variable>
+    <variable>std::map&lt;std::string, std::string&gt; mFileMap;</variable>
+    <variable>std::map&lt;std::string, std::string&gt; mKeyMap;</variable>
+    <variable>CExperimentSet * mpExperimentSetCopy;</variable>
+    <variable>CExperimentSet * mpExperimentSet;</variable>
+    <variable>CExperimentFileInfo * mpFileInfo;</variable>
+    <variable>CExperiment * mpExperiment;</variable>
+    <variable>CQExperimentDataValidator * mpValidatorLast;</variable>
+    <variable>CQExperimentDataValidator * mpValidatorHeader;</variable>
+    <variable>QSignalMapper * mpBtnMap;</variable>
+    <variable>QPixmap mDots;</variable>
 </variables>
 <slots>
     <slot access="protected" specifier="non virtual">slotRevert()</slot>
     <slot access="protected" specifier="non virtual">slotFirst()</slot>
     <slot access="protected" specifier="non virtual">slotLast()</slot>
     <slot access="protected" specifier="non virtual">slotHeader()</slot>
-    <slot access="protected" specifier="non virtual">slotExprimentType( bool )</slot>
+    <slot access="protected" specifier="non virtual">slotExprimentType( bool isSteadyState )</slot>
     <slot access="protected" specifier="non virtual">slotCheckTab( bool checked )</slot>
     <slot access="protected" specifier="non virtual">slotCheckHeader( bool checked )</slot>
     <slot access="protected" specifier="non virtual">slotExperimentAdd()</slot>
@@ -691,18 +775,22 @@
     <slot access="protected" specifier="non virtual">slotOK()</slot>
     <slot access="protected" specifier="non virtual">slotUpdateTable()</slot>
     <slot access="protected" specifier="non virtual">slotModelObject( int row )</slot>
+    <slot>loadTable( CExperiment * pExperiment, const bool &amp; guess )</slot>
     <slot access="protected" specifier="non virtual">slotTypeChanged( int row )</slot>
     <slot access="protected" specifier="non virtual">slotSeparator()</slot>
+    <slot access="protected" specifier="non virtual">slotCheckFrom( bool checked )</slot>
+    <slot access="protected" specifier="non virtual">slotCheckTo( bool checked )</slot>
 </slots>
 <functions>
     <function specifier="non virtual" returnType="bool">load( CExperimentSet * &amp; pExperimentSet )</function>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
-    <function access="protected" specifier="non virtual" returnType="bool">loadExperiment( const CExperiment * pExperiment )</function>
-    <function access="protected" specifier="non virtual" returnType="bool">saveExperiment( CExperiment * pExperiment )</function>
+    <function access="protected" returnType="bool">loadExperiment( CExperiment * pExperiment )</function>
+    <function access="protected" specifier="non virtual" returnType="bool">saveExperiment( CExperiment * pExperiment, const bool &amp; full )</function>
     <function access="protected" specifier="non virtual">syncExperiments()</function>
-    <function access="protected" specifier="non virtual">loadTable( const bool &amp; guess )</function>
-    <function access="protected" specifier="non virtual" returnType="bool">saveTable()</function>
+    <function access="protected" specifier="non virtual" returnType="bool">saveTable( CExperiment * pExperiment )</function>
+    <function access="protected" specifier="non virtual" returnType="bool">isLikePreviousExperiment( CExperiment * pExperiment )</function>
+    <function access="protected" specifier="non virtual">enableEdit( const bool &amp; enable )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

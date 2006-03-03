@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/15 23:15:44 $
+   $Date: 2006/03/03 02:50:01 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Tue Nov 15 18:09:18 2005
- **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.6 2005/11/15 23:15:44 shoops Exp $)
+ ** Created: Thu Mar 2 21:02:06 2006
+ **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.7 2006/03/03 02:50:01 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -36,6 +36,7 @@ class QCheckBox;
 class QLineEdit;
 class QButtonGroup;
 class QRadioButton;
+class QFrame;
 class QTable;
 class QPushButton;
 class CExperimentSet;
@@ -60,24 +61,26 @@ class CQExperimentData : public QDialog
     QToolButton* mpBtnExperimentAdd;
     QListBox* mpBoxExperiment;
     QLabel* mpLblExperiment;
-    QToolButton* mpBtnLast;
-    QLabel* mpLblLast;
-    QCheckBox* mpCheckTab;
-    QLineEdit* mpEditFirst;
-    QLineEdit* mpEditHeader;
-    QLabel* mpLblName;
-    QLineEdit* mpEditSeparator;
-    QToolButton* mpBtnFirst;
+    QLabel* mpLblHeader;
+    QCheckBox* mpCheckFrom;
+    QLineEdit* mpEditLast;
     QButtonGroup* mpBtnGroup;
     QRadioButton* mpBtnSteadystate;
     QRadioButton* mpBtnTimeCourse;
-    QToolButton* mpBtnHeader;
-    QLineEdit* mpEditLast;
-    QLabel* mpLblSeperator;
-    QCheckBox* mpCheckHeader;
-    QLineEdit* mpEditName;
+    QCheckBox* mpCheckTo;
+    QLineEdit* mpEditSeparator;
     QLabel* mpLblFirst;
-    QLabel* mpLblHeader;
+    QLineEdit* mpEditFirst;
+    QLabel* mpLblName;
+    QLabel* mpLblCopy;
+    QLabel* mpLblExperimentType;
+    QFrame* line1;
+    QLabel* mpLblSeperator;
+    QLabel* mpLblLast;
+    QLineEdit* mpEditHeader;
+    QCheckBox* mpCheckHeader;
+    QCheckBox* mpCheckTab;
+    QLineEdit* mpEditName;
     QTable* mpTable;
     QPushButton* mpBtnOK;
     QPushButton* mpBtnRevert;
@@ -87,31 +90,40 @@ class CQExperimentData : public QDialog
 
     bool load(CExperimentSet * & pExperimentSet);
 
-  protected:
-    QSignalMapper * mpBtnMap;
-    CQExperimentDataValidator * mpValidatorHeader;
-    CQExperimentDataValidator * mpValidatorLast;
-    CExperiment * mpExperiment;
-    CExperimentFileInfo * mpFileInfo;
-    CExperimentSet * mpExperimentSet;
-    CExperimentSet * mpExperimentSetCopy;
-    std::map<std::string, std::string> mKeyMap;
-    std::map<std::string, std::string> mFileMap;
-    CQExperimentDataValidator * mpValidatorFirst;
-    unsigned int mShown;
-    CQExperimentDataValidator * mpValidatorName;
-    QSignalMapper * mpComboMap;
+  public slots:
+    virtual void loadTable(CExperiment * pExperiment, const bool & guess);
 
-    bool loadExperiment(const CExperiment * pExperiment);
-    bool saveExperiment(CExperiment * pExperiment);
+  protected:
+    QSignalMapper * mpComboMap;
+    CQExperimentDataValidator * mpValidatorName;
+    unsigned int mShown;
+    CQExperimentDataValidator * mpValidatorFirst;
+    std::map<std::string, std::string> mFileMap;
+    std::map<std::string, std::string> mKeyMap;
+    CExperimentSet * mpExperimentSetCopy;
+    CExperimentSet * mpExperimentSet;
+    CExperimentFileInfo * mpFileInfo;
+    CExperiment * mpExperiment;
+    CQExperimentDataValidator * mpValidatorLast;
+    CQExperimentDataValidator * mpValidatorHeader;
+    QSignalMapper * mpBtnMap;
+    QPixmap mDots;
+
+    virtual bool loadExperiment(CExperiment * pExperiment);
+    bool saveExperiment(CExperiment * pExperiment, const bool & full);
     void syncExperiments();
-    void loadTable(const bool & guess);
-    bool saveTable();
+    bool saveTable(CExperiment * pExperiment);
+    bool isLikePreviousExperiment(CExperiment * pExperiment);
+    void enableEdit(const bool & enable);
 
     QVBoxLayout* CQExperimentDataLayout;
     QGridLayout* mpLayoutFile;
-    QGridLayout* mpLayoutExperiment;
-    QVBoxLayout* mpBtnGroupLayout;
+    QGridLayout* layout4;
+    QSpacerItem* mpSpacer1;
+    QSpacerItem* mpSpacer3;
+    QSpacerItem* mpSpacer2;
+    QSpacerItem* mpSpacer4;
+    QHBoxLayout* mpBtnGroupLayout;
     QHBoxLayout* mpLayoutButton;
 
   protected slots:
@@ -121,7 +133,7 @@ class CQExperimentData : public QDialog
     void slotFirst();
     void slotLast();
     void slotHeader();
-    void slotExprimentType(bool);
+    void slotExprimentType(bool isSteadyState);
     void slotCheckTab(bool checked);
     void slotCheckHeader(bool checked);
     void slotExperimentAdd();
@@ -136,11 +148,12 @@ class CQExperimentData : public QDialog
     void slotModelObject(int row);
     void slotTypeChanged(int row);
     void slotSeparator();
+    void slotCheckFrom(bool checked);
+    void slotCheckTo(bool checked);
 
   private:
     QPixmap image0;
     QPixmap image1;
-    QPixmap image2;
 
     void init();
     void destroy();

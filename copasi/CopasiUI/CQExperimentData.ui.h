@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/15 23:15:44 $
+   $Date: 2006/03/03 02:50:01 $
    End CVS Header */
 
 #include <algorithm>
@@ -33,6 +33,27 @@
 #define COL_BTN 3
 #define COL_OBJECT 4
 #define COL_OBJECT_HIDDEN 5
+
+static const unsigned char dots_data[] =
+  {
+    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
+    0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10,
+    0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0xf3, 0xff, 0x61, 0x00, 0x00, 0x00,
+    0x8f, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0xa5, 0x52, 0x49, 0x12, 0xc0,
+    0x20, 0x08, 0x8b, 0x4e, 0x1f, 0xc6, 0xd3, 0x7c, 0x1a, 0x3f, 0xb3, 0x07,
+    0x6d, 0x59, 0x9a, 0xee, 0x78, 0x10, 0x42, 0x58, 0x26, 0x5a, 0x00, 0x85,
+    0x99, 0xe0, 0x3a, 0xce, 0x26, 0x28, 0x80, 0xa2, 0x25, 0x52, 0x9b, 0x27,
+    0x62, 0x42, 0x79, 0x35, 0x12, 0xb6, 0x22, 0x75, 0x8d, 0x84, 0x34, 0x32,
+    0xac, 0x62, 0x0f, 0x3c, 0x91, 0xf9, 0xfe, 0xb6, 0xfc, 0x32, 0xa6, 0x69,
+    0x5a, 0xf9, 0x29, 0xe6, 0xd6, 0xfd, 0x7a, 0x9f, 0x88, 0xc8, 0x04, 0xe3,
+    0x22, 0x46, 0xc7, 0xf9, 0x47, 0x4c, 0x29, 0xaf, 0xc6, 0x95, 0xd8, 0x9a,
+    0x71, 0x6a, 0xc6, 0x16, 0xeb, 0xe8, 0x89, 0x32, 0x67, 0xe4, 0xe2, 0xcc,
+    0xd3, 0xa1, 0x41, 0x2c, 0x7c, 0x17, 0x17, 0x00, 0x87, 0xa7, 0xe1, 0x3f,
+    0x91, 0x63, 0x70, 0xe2, 0x74, 0x00, 0x3d, 0x09, 0x76, 0x83, 0xc1, 0xbe,
+    0xf2, 0x57, 0x73, 0x22, 0xb6, 0x92, 0x93, 0x4f, 0xb1, 0x5f, 0xb6, 0x02,
+    0x6f, 0x3b, 0x53, 0x57, 0x71, 0xe6, 0x68, 0xdf, 0x00, 0x00, 0x00, 0x00,
+    0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82
+  };
 
 class CQExperimentDataValidator: public CQValidatorNotEmpty
   {
@@ -219,7 +240,7 @@ void CQExperimentData::slotExprimentType(bool isSteadyState)
 {
   if (!mpExperiment) return;
 
-  saveTable();
+  saveTable(mpExperiment);
 
   unsigned C_INT32 i, imax = mpTable->numRows();
   if (isSteadyState)
@@ -232,7 +253,7 @@ void CQExperimentData::slotExprimentType(bool isSteadyState)
           mpExperiment->removeColumnType(i);
       };
 
-  loadTable(true);
+  loadTable(mpExperiment, true);
   return;
 }
 
@@ -278,7 +299,7 @@ void CQExperimentData::slotExperimentChanged(QListBoxItem * pItem)
   if (pItem)
     Name = (const char *) pItem->text().utf8();
 
-  saveExperiment(mpExperiment);
+  saveExperiment(mpExperiment, true);
 
   if (pItem)
     {
@@ -292,6 +313,8 @@ void CQExperimentData::slotExperimentChanged(QListBoxItem * pItem)
     }
 
   loadExperiment(mpExperiment);
+
+  enableEdit(!mpCheckFrom->isChecked());
 }
 
 void CQExperimentData::slotExperimentDelete()
@@ -320,6 +343,25 @@ void CQExperimentData::slotExperimentDelete()
 
   unsigned C_INT32 First, Last;
   mpBtnExperimentAdd->setEnabled(mpFileInfo->getFirstUnusedSection(First, Last));
+
+  // We need to correct mpCheckFrom and mpCheckTo since the removal of the experiment
+  // may have changed their status.
+  disconnect(mpCheckTo, SIGNAL(toggled(bool)), this, SLOT(slotCheckTo(bool)));
+  disconnect(mpCheckFrom, SIGNAL(toggled(bool)), this, SLOT(slotCheckFrom(bool)));
+
+  mpCheckFrom->setChecked(isLikePreviousExperiment(mpExperiment));
+  enableEdit(!mpCheckFrom->isChecked());
+
+  if (mpExperiment)
+    {
+      unsigned C_INT32 Next =
+        mpExperimentSetCopy->keyToIndex(mpExperiment->CCopasiParameter::getKey()) + 1;
+
+      mpCheckTo->setChecked(isLikePreviousExperiment(mpExperimentSetCopy->getExperiment(Next)));
+    }
+
+  connect(mpCheckFrom, SIGNAL(toggled(bool)), this, SLOT(slotCheckFrom(bool)));
+  connect(mpCheckTo, SIGNAL(toggled(bool)), this, SLOT(slotCheckTo(bool)));
 }
 
 void CQExperimentData::slotFileAdd()
@@ -524,6 +566,10 @@ bool CQExperimentData::load(CExperimentSet *& pExperimentSet)
 
 void CQExperimentData::init()
 {
+  QImage dots;
+  dots.loadFromData(dots_data, sizeof(dots_data), "PNG");
+  mDots = dots;
+
   mpComboMap = NULL;
   mpBtnMap = NULL;
 
@@ -560,9 +606,13 @@ void CQExperimentData::destroy()
   pdelete(mpFileInfo);
 }
 
-bool CQExperimentData::loadExperiment(const CExperiment * pExperiment)
+bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
 {
+  // Temporarily diconnect signals
+  disconnect(mpCheckTo, SIGNAL(toggled(bool)), this, SLOT(slotCheckTo(bool)));
+  disconnect(mpCheckFrom, SIGNAL(toggled(bool)), this, SLOT(slotCheckFrom(bool)));
   disconnect(mpBtnSteadystate, SIGNAL(toggled(bool)), this, SLOT(slotExprimentType(bool)));
+
   if (!pExperiment)
     {
       mpEditName->setText("");
@@ -573,6 +623,8 @@ bool CQExperimentData::loadExperiment(const CExperiment * pExperiment)
       mpEditHeader->setText("");
       mpCheckHeader->setChecked(false);
       mpBtnTimeCourse->setChecked(true);
+      mpCheckFrom->setChecked(false);
+      mpCheckTo->setChecked(false);
     }
   else
     {
@@ -610,6 +662,16 @@ bool CQExperimentData::loadExperiment(const CExperiment * pExperiment)
         mpBtnTimeCourse->setChecked(true);
       else
         mpBtnSteadystate->setChecked(true);
+
+      unsigned C_INT32 Next =
+        mpExperimentSetCopy->keyToIndex(pExperiment->CCopasiParameter::getKey()) + 1;
+
+      mpCheckFrom->setChecked(isLikePreviousExperiment(pExperiment));
+
+      if (Next < mpExperimentSetCopy->size())
+        mpCheckTo->setChecked(isLikePreviousExperiment(mpExperimentSetCopy->getExperiment(Next)));
+      else
+        mpCheckTo->setChecked(false);
     }
 
   mpValidatorName->saved();
@@ -617,20 +679,37 @@ bool CQExperimentData::loadExperiment(const CExperiment * pExperiment)
   mpValidatorLast->saved();
   mpValidatorHeader->saved();
 
-  loadTable(false);
+  loadTable(pExperiment, false);
 
+  // Reconnect signals
   connect(mpBtnSteadystate, SIGNAL(toggled(bool)), this, SLOT(slotExprimentType(bool)));
+  connect(mpCheckFrom, SIGNAL(toggled(bool)), this, SLOT(slotCheckFrom(bool)));
+  connect(mpCheckTo, SIGNAL(toggled(bool)), this, SLOT(slotCheckTo(bool)));
+
   return true;
 }
 
-bool CQExperimentData::saveExperiment(CExperiment * pExperiment)
+bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & full)
 {
   if (!pExperiment) return false;
+  bool success = true;
+
+  unsigned C_INT32 Next =
+    mpExperimentSetCopy->keyToIndex(pExperiment->CCopasiParameter::getKey()) + 1;
+
+  if (Next < mpExperimentSetCopy->size() && mpCheckTo->isChecked())
+    {
+      CExperiment * pNext = mpExperimentSetCopy->getExperiment(Next);
+
+      if (isLikePreviousExperiment(pNext))
+        success &= saveExperiment(pNext, false);
+    }
 
   QString value = mpEditName->text();
   int pos = value.length();
 
-  if (pExperiment->getObjectName() != (const char *) value &&
+  if (full &&
+      pExperiment->getObjectName() != (const char *) value &&
       mpValidatorName->validate(value, pos) == QValidator::Acceptable)
     {
       int current = mpBoxExperiment->currentItem();
@@ -650,12 +729,14 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment)
 
   value = mpEditFirst->text();
   pos = value.length();
-  if (mpValidatorFirst->validate(value, pos) == QValidator::Acceptable)
+  if (full &&
+      mpValidatorFirst->validate(value, pos) == QValidator::Acceptable)
     pExperiment->setFirstRow(value.toULong());
 
   value = mpEditLast->text();
   pos = value.length();
-  if (mpValidatorLast->validate(value, pos) == QValidator::Acceptable)
+  if (full &&
+      mpValidatorLast->validate(value, pos) == QValidator::Acceptable)
     pExperiment->setLastRow(value.toULong());
 
   value = mpEditHeader->text();
@@ -684,9 +765,9 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment)
   mpValidatorLast->saved();
   mpValidatorHeader->saved();
 
-  saveTable();
+  saveTable(pExperiment);
 
-  return true;
+  return success;
 }
 
 void CQExperimentData::syncExperiments()
@@ -723,7 +804,7 @@ void CQExperimentData::syncExperiments()
 }
 
 void CQExperimentData::slotUpdateTable()
-{loadTable(true);}
+{loadTable(mpExperiment, true);}
 
 void CQExperimentData::slotModelObject(int row)
 {
@@ -738,9 +819,9 @@ void CQExperimentData::slotModelObject(int row)
     }
 }
 
-void CQExperimentData::loadTable(const bool & guess)
+void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 {
-  if (!mpExperiment)
+  if (!pExperiment)
     {
       mpTable->setNumRows(0);
       mpTable->setNumRows(3);
@@ -761,8 +842,8 @@ void CQExperimentData::loadTable(const bool & guess)
   mpBtnMap = new QSignalMapper(this);
   connect(mpBtnMap, SIGNAL(mapped(int)), this, SLOT(slotModelObject(int)));
 
-  mpExperiment->readColumnNames();
-  const std::vector<std::string> & ColumnNames = mpExperiment->getColumnNames();
+  pExperiment->readColumnNames();
+  const std::vector<std::string> & ColumnNames = pExperiment->getColumnNames();
 
   QStringList ColumnTypes;
   const std::string * pTmp = CExperiment::TypeName;
@@ -779,7 +860,7 @@ void CQExperimentData::loadTable(const bool & guess)
   unsigned C_INT32 i, imax = ColumnNames.size();
   mpTable->setNumRows(imax);
 
-  CExperimentObjectMap & ObjectMap = mpExperiment->getObjectMap();
+  CExperimentObjectMap & ObjectMap = pExperiment->getObjectMap();
 
   QComboBox * pComboBox;
   QToolButton* pBtn;
@@ -798,9 +879,9 @@ void CQExperimentData::loadTable(const bool & guess)
       if (guess && TimeRow == C_INVALID_INDEX &&
           mpBtnTimeCourse->isChecked() &&
           mpTable->text(i, COL_NAME).contains("time", false))
-        mpExperiment->setColumnType(i, CExperiment::time);
+        pExperiment->setColumnType(i, CExperiment::time);
 
-      Type = mpExperiment->getColumnType(i);
+      Type = pExperiment->getColumnType(i);
       if (Type == CExperiment::time) TimeRow = i;
       pComboBox->setCurrentItem(Type);
 
@@ -816,7 +897,7 @@ void CQExperimentData::loadTable(const bool & guess)
       pBtn = new QToolButton(mpTable);
       pBtn->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)1, 0, 0, pBtn->sizePolicy().hasHeightForWidth()));
       pBtn->setMaximumSize(QSize(20, 20));
-      pBtn->setIconSet(QIconSet(image2));
+      pBtn->setIconSet(QIconSet(mDots));
 
       if (Type == CExperiment::ignore || Type == CExperiment::time)
         pBtn->setEnabled(false);
@@ -910,7 +991,7 @@ void CQExperimentData::slotSeparator()
 {
   if (!mpExperiment) return;
 
-  saveTable();
+  saveTable(mpExperiment);
 
   if (mpCheckTab->isChecked())
     mpExperiment->setSeparator("\t");
@@ -920,23 +1001,135 @@ void CQExperimentData::slotSeparator()
   mpExperiment->setNumColumns(mpExperiment->guessColumnNumber());
   mpExperiment->readColumnNames();
 
-  loadTable(true);
+  loadTable(mpExperiment, true);
 }
 
-bool CQExperimentData::saveTable()
+bool CQExperimentData::saveTable(CExperiment * pExperiment)
 {
-  CExperimentObjectMap & ObjectMap = mpExperiment->getObjectMap();
+  CExperimentObjectMap & ObjectMap = pExperiment->getObjectMap();
   unsigned C_INT32 i, imax = mpTable->numRows();
   for (i = 0; i < imax; i++)
     {
       CExperiment::Type Type =
         static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->currentItem());
-      if (mpExperiment->getColumnType(i) != Type)
-        mpExperiment->setColumnType(i, Type);
+      if (pExperiment->getColumnType(i) != Type)
+        pExperiment->setColumnType(i, Type);
 
       if (ObjectMap.getObjectCN(i) != (const char *) mpTable->text(i, COL_OBJECT_HIDDEN).utf8())
         ObjectMap.setObjectCN(i, (const char *) mpTable->text(i, COL_OBJECT_HIDDEN).utf8());
     }
 
   return true;
+}
+
+void CQExperimentData::slotCheckFrom(bool checked)
+{
+  C_INT32 Current = this->mpBoxExperiment->currentItem();
+
+  if (checked && Current)
+    {
+      // Load the information from the previous experiment
+      CExperiment * pPrevious =
+        mpFileInfo->getExperiment((const char *) mpBoxExperiment->text(Current - 1).utf8());
+
+      loadExperiment(pPrevious);
+
+      // Load the experiment individual information.
+      mpEditName->setText(FROM_UTF8(mpExperiment->getObjectName()));
+      QString Row = (mpExperiment->getFirstRow() == C_INVALID_INDEX) ?
+                    "" : QString::number(mpExperiment->getFirstRow());
+      mpEditFirst->setText(Row);
+      Row = (mpExperiment->getLastRow() == C_INVALID_INDEX) ?
+            "" : QString::number(mpExperiment->getLastRow());
+      mpEditLast->setText(Row);
+
+      mpValidatorName->saved();
+      mpValidatorFirst->saved();
+      mpValidatorLast->saved();
+    }
+  else
+    {
+      loadExperiment(mpExperiment);
+    }
+
+  // loadExperiment determines the status of mpCheckFrom and may have overwritten
+  // the desired setting. We correct that here.
+  disconnect(mpCheckFrom, SIGNAL(toggled(bool)), this, SLOT(slotCheckFrom(bool)));
+  mpCheckFrom->setChecked(checked);
+  connect(mpCheckFrom, SIGNAL(toggled(bool)), this, SLOT(slotCheckFrom(bool)));
+
+  enableEdit(!checked);
+}
+
+bool CQExperimentData::isLikePreviousExperiment(CExperiment * pExperiment)
+{
+  if (!pExperiment) return false;
+
+  unsigned C_INT32 Previous =
+    mpExperimentSetCopy->keyToIndex(pExperiment->CCopasiParameter::getKey()) - 1;
+
+  if (Previous == C_INVALID_INDEX) return false;
+
+  CExperiment * pPrevious = mpExperimentSetCopy->getExperiment(Previous);
+
+  if (pExperiment->getSeparator() != pPrevious->getSeparator()) return false;
+  if (pExperiment->getHeaderRow() != pPrevious->getHeaderRow()) return false;
+  if (pExperiment->getExperimentType() != pPrevious->getExperimentType()) return false;
+  if (!(pExperiment->getObjectMap() == pPrevious->getObjectMap())) return false;
+  if (!(*pExperiment->getGroup("Column Role") == *pPrevious->getGroup("Column Role"))) return false;
+
+  return true;
+}
+
+void CQExperimentData::slotCheckTo(bool checked)
+{
+  if (!checked || !mpExperiment) return;
+
+  unsigned C_INT32 Next =
+    mpExperimentSetCopy->keyToIndex(mpExperiment->CCopasiParameter::getKey()) + 1;
+
+  if (Next < mpExperimentSetCopy->size())
+    saveExperiment(mpExperimentSetCopy->getExperiment(Next), false);
+}
+
+void CQExperimentData::enableEdit(const bool & enable)
+{
+  if (enable)
+    {
+      mpBtnSteadystate->setEnabled(true);
+      mpBtnTimeCourse->setEnabled(true);
+      if (mpCheckHeader->isChecked()) mpEditHeader->setEnabled(true);
+      mpCheckHeader->setEnabled(true);
+      if (!mpCheckTab->isChecked()) mpEditSeparator->setEnabled(true);
+      mpCheckTab->setEnabled(true);
+      mpTable->setEnabled(true);
+
+      // We need to enable all items in COL_TYPE and some in COL_BTN
+      // Disable is inheritted but enable not.
+      if (mpExperiment)
+        {
+          unsigned C_INT32 i, imax = mpTable->numRows();
+          for (i = 0; i < imax; i++)
+            {
+              mpTable->cellWidget(i, COL_TYPE)->setEnabled(true);
+
+              CExperiment::Type Type =
+                static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->currentItem());
+
+              if (Type == CExperiment::ignore || Type == CExperiment::time) continue;
+
+              mpTable->cellWidget(i, COL_BTN)->setEnabled(true);
+            }
+        }
+    }
+  else
+    {
+      mpBtnSteadystate->setEnabled(false);
+      mpBtnTimeCourse->setEnabled(false);
+      mpEditHeader->setEnabled(false);
+      mpCheckHeader->setEnabled(false);
+      mpEditSeparator->setEnabled(false);
+      mpCheckTab->setEnabled(false);
+      mpTable->setEnabled(false);
+    }
 }
