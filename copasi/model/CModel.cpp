@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.246 $
+   $Revision: 1.247 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:22:53 $
+   $Author: ssahle $ 
+   $Date: 2006/03/06 21:55:03 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1630,7 +1630,7 @@ CCompartment* CModel::createCompartment(const std::string & name,
   CCompartment * cpt = new CCompartment(name);
 
   cpt->setInitialVolume(volume);
-  cpt->setVolume(volume);
+  //cpt->setVolume(volume);
 
   if (!mCompartments.add(cpt, true))
     {
