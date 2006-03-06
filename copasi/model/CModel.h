@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.111 $
+   $Revision: 1.112 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:22:53 $
+   $Author: ssahle $ 
+   $Date: 2006/03/06 14:04:19 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -931,7 +931,7 @@ class CModel : public CModelEntity
      * Retreive the state template
      * @return const CModel::CStateTemplate & stateTemplate
      */
-    CModel::CStateTemplate & getStateTemplate();
+    CStateTemplate & getStateTemplate();
 
     bool hasReversibleReaction() const;
 
