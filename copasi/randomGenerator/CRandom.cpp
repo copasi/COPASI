@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2005/02/02 15:12:14 $
+   $Author: shoops $ 
+   $Date: 2006/03/06 18:14:29 $
    End CVS Header */
 
 #include <time.h>
@@ -149,9 +149,9 @@ void CRandom::setModulus(const unsigned C_INT32 & modulus)
  *                                     mach_timespec_t *cur_time);
  */
 
-void ftime(timeb * pTime);
+int void ftime(struct timeb * pTime);
 
-void ftime(timeb * pTime)
+int void ftime(struct timeb * pTime)
 {
   mach_port_t host = mach_host_self();
   clock_serv_t clock_serv;
@@ -163,7 +163,7 @@ void ftime(timeb * pTime)
   pTime->time = time.tv_sec;
   pTime->millitm = time.tv_nsec / 1000;
 
-  return;
+  return 0;
 }
 #endif // __MacOsX__
 
