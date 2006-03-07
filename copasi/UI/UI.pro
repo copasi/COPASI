@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.117 $ $Author: shoops $ $Date: 2006/02/22 15:14:39 $  
+# $Revision: 1.118 $ $Author: gauges $ $Date: 2006/03/07 13:56:03 $  
 ######################################################################
 
 TEMPLATE = app
@@ -19,7 +19,6 @@ COPASI_LIBS = \
          mathmodel \
          mml \
          model \
-         odepack++ \
          optimization \
          plot \
          randomGenerator \
@@ -31,6 +30,7 @@ COPASI_LIBS = \
          trajectory \
          tss \
          utilities \
+         odepack++ \
          wizard
 
 contains(BUILD_OS, WIN32) {
