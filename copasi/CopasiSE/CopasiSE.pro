@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.25 $ $Author: shoops $ $Date: 2006/02/22 15:14:39 $  
+# $Revision: 1.26 $ $Author: gauges $ $Date: 2006/03/07 13:52:59 $  
 ######################################################################
 
 TEMPLATE = app
@@ -20,7 +20,6 @@ COPASI_LIBS = \
          function \
          mathmodel \
          model \
-         odepack++ \
          optimization \
          plot \
          randomGenerator \
@@ -31,6 +30,7 @@ COPASI_LIBS = \
          steadystate \
          trajectory \
          tss \
+         odepack++ \
          utilities                   
 
 contains(BUILD_OS, WIN32) {
@@ -90,6 +90,8 @@ contains(BUILD_OS, Darwin){
   
   LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
          $${LIBS}
+
+  LIBS += -L/sw/lib/ 
   
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }
