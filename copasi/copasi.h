@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:19 $
+   $Author: ssahle $ 
+   $Date: 2006/03/07 16:02:45 $
    End CVS Header */
 
 // copasi.h
@@ -169,6 +169,7 @@ extern std::ofstream DebugFile;
 // protected free
 #define pfree(p) {if (p) {free(p); p = NULL;}}
 #define pdelete(p) {if (p) {delete p; p = NULL;}}
+#define pdeletev(p) {if (p) {delete[] p; p = NULL;}}
 #define pcleanup(p) {if (p) {p->cleanup(); delete p; p = NULL;}}
 
 // suppress unused parameter warnings
