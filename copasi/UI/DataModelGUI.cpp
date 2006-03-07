@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:22 $
+   $Author: nsimus $ 
+   $Date: 2006/03/07 12:34:58 $
    End CVS Header */
 
 #include "copasi.h"
@@ -364,12 +364,12 @@ bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile)
   return result;
 }
 
-bool DataModelGUI::exportMathModel(const std::string & fileName, bool overwriteFile)
+bool DataModelGUI::exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile)
 {
   assert(mPlotDefinitionList.getPlotDefinitionList() ==
          CCopasiDataModel::Global->getPlotDefinitionList());
 
-  return CCopasiDataModel::Global->exportMathModel(fileName, overwriteFile);
+  return CCopasiDataModel::Global->exportMathModel(fileName, filter, overwriteFile);
 }
 
 CPlotSpec2Vector & DataModelGUI::getPlotDefinitionList()

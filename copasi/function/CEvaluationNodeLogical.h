@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/11/28 14:02:39 $
+   $Date: 2006/03/07 12:37:08 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeLogical
@@ -142,6 +142,13 @@ class CEvaluationNodeLogical : public CEvaluationNode
      * @return const Data & value
      */
     virtual std::string getDisplay_C_String(const CEvaluationTree * pTree) const;
+
+    /**
+     * Retrieve the display string of the node and its eventual child nodes 
+     * in Berkeley Madonna format.
+     * @return const Data & value
+     */
+    virtual std::string getDisplay_MMD_String(const CEvaluationTree * pTree) const;
 
     /**
      * Create a new operator node from an ASTNode tree.

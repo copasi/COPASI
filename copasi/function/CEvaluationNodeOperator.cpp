@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/11/28 14:03:06 $
+   $Date: 2006/03/07 12:37:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -117,45 +117,73 @@ std::string CEvaluationNodeOperator::getDisplayString(const CEvaluationTree * pT
     else
       return "@";
   }
-
 std::string CEvaluationNodeOperator::getDisplay_C_String(const CEvaluationTree * pTree) const
   {
     if (const_cast<CEvaluationNodeOperator *>(this)->compile(NULL))
       {
         Data DisplayString;
+        SubType subType = (SubType)CEvaluationNode::subType(this->getType());
 
-        if ((SubType)CEvaluationNode::subType(this->getType()) == POWER)
-          {
-            DisplayString += "pow(";
+        if (subType == POWER)
+          DisplayString = "pow(";
+        if (subType == MODULUS)
+          DisplayString = "(int)";
 
-            if (*mpLeft < *(CEvaluationNode *)this)
-              DisplayString += "(" + mpLeft->getDisplay_C_String(pTree) + ")";
-            else
-              DisplayString += mpLeft->getDisplay_C_String(pTree);
-
-            DisplayString += ",";
-
-            if (!(*(CEvaluationNode *)this < *mpRight))
-              DisplayString += "(" + mpRight->getDisplay_C_String(pTree) + ")";
-            else
-              DisplayString += mpRight->getDisplay_C_String(pTree);
-
-            DisplayString += ")";
-          }
+        if (*mpLeft < *(CEvaluationNode *)this)
+          DisplayString += "(" + mpLeft->getDisplay_C_String(pTree) + ")";
         else
+          DisplayString += mpLeft->getDisplay_C_String(pTree);
+
+        switch (subType)
           {
-            if (*mpLeft < *(CEvaluationNode *)this)
-              DisplayString = "(" + mpLeft->getDisplay_C_String(pTree) + ")";
-            else
-              DisplayString = mpLeft->getDisplay_C_String(pTree);
-
+          case POWER:
+            DisplayString += ",";
+            break;
+          case MODULUS:
+            DisplayString += "%(int)";
+            break;
+          default:
             DisplayString += mData;
-
-            if (!(*(CEvaluationNode *)this < *mpRight))
-              DisplayString += "(" + mpRight->getDisplay_C_String(pTree) + ")";
-            else
-              DisplayString += mpRight->getDisplay_C_String(pTree);
+            break;
           }
+        if (!(*(CEvaluationNode *)this < *mpRight))
+          DisplayString += "(" + mpRight->getDisplay_C_String(pTree) + ")";
+        else
+          DisplayString += mpRight->getDisplay_C_String(pTree);
+
+        if (subType == POWER)
+          DisplayString += ")";
+
+        return DisplayString;
+      }
+    else
+      return "@";
+  }
+
+std::string CEvaluationNodeOperator::getDisplay_MMD_String(const CEvaluationTree * pTree) const
+  {
+    if (const_cast<CEvaluationNodeOperator *>(this)->compile(NULL))
+      {
+        std::string mdata = "";
+
+        /* if ((SubType)CEvaluationNode::subType(this->getType()) == MODULUS)
+        mdata = "@";
+        else  */
+        mdata = mData;
+
+        Data DisplayString;
+
+        if (*mpLeft < *(CEvaluationNode *)this)
+          DisplayString = "(" + mpLeft->getDisplay_MMD_String(pTree) + ")";
+        else
+          DisplayString = mpLeft->getDisplay_MMD_String(pTree);
+
+        DisplayString += mdata;
+
+        if (!(*(CEvaluationNode *)this < *mpRight))
+          DisplayString += "(" + mpRight->getDisplay_MMD_String(pTree) + ")";
+        else
+          DisplayString += mpRight->getDisplay_MMD_String(pTree);
 
         return DisplayString;
       }
@@ -852,7 +880,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(CEvaluationNode *child1, 
           newchild2->addChild(child2, NULL);
           return newnode;
         }
-      default:   //case MODULUS
+      default:    //case MODULUS
         {
           CEvaluationNode *newnode = copyNode(child1, child2);
           return newnode;

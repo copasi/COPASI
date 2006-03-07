@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 14:04:02 $
+   $Author: nsimus $ 
+   $Date: 2006/03/07 12:37:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -353,7 +353,6 @@ std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree *
       return "@";
   }
 
-#ifdef XXXX
 std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree * pTree) const
   {
     std::string data = "";
@@ -423,7 +422,6 @@ std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree
     else
       return "@";
   }
-#endif // XXXX
 
 CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& node)
 {
@@ -748,7 +746,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(CEvaluationNode *child1, 
                       delete child1;
                       return newnode;
                     }
-                  default:       // cases POWER, MULTIPLY, MODULUS. don't expect MINUS to occur anymore
+                  default:        // cases POWER, MULTIPLY, MODULUS. don't expect MINUS to occur anymore
                     {
                       CEvaluationNode *newnode = copyNode(child1, child2);
                       return newnode;
@@ -775,7 +773,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(CEvaluationNode *child1, 
                 delete child1;
                 return newnode;
               }
-            default:        //cases VARIABLE, CONSTANT..
+            default:         //cases VARIABLE, CONSTANT..
               {
                 CEvaluationNode *newnode = copyNode(child1, child2);
                 return newnode;

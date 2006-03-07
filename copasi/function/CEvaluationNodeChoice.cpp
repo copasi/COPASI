@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/11/28 14:02:07 $
+   $Date: 2006/03/07 12:37:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -87,7 +87,15 @@ std::string CEvaluationNodeChoice::getDisplayString(const CEvaluationTree * pTre
 std::string CEvaluationNodeChoice::getDisplay_C_String(const CEvaluationTree * pTree) const
   {
     if (const_cast<CEvaluationNodeChoice *>(this)->compile(NULL))
-      return mData + "(" + mpIf->getDisplay_C_String(pTree) + "," + mpTrue->getDisplay_C_String(pTree) + "," + mpFalse->getDisplay_C_String(pTree) + ")";
+      return "(" + mpIf->getDisplay_C_String(pTree) + " ? " + mpTrue->getDisplay_C_String(pTree) + " : " + mpFalse->getDisplay_C_String(pTree) + ")";
+    else
+      return "@";
+  }
+
+std::string CEvaluationNodeChoice::getDisplay_MMD_String(const CEvaluationTree * pTree) const
+  {
+    if (const_cast<CEvaluationNodeChoice *>(this)->compile(NULL))
+      return "(" "if " + mpIf->getDisplay_MMD_String(pTree) + " then " + mpTrue->getDisplay_MMD_String(pTree) + " else " + mpFalse->getDisplay_MMD_String(pTree) + ")";
     else
       return "@";
   }

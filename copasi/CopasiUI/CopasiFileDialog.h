@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiFileDialog.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/26 14:28:24 $
+   $Author: nsimus $ 
+   $Date: 2006/03/07 12:35:33 $
    End CVS Header */
 
 #ifndef COPASI_FILE_DIALOG
@@ -51,6 +51,14 @@ class CopasiFileDialog : public QFileDialog
                                    const QString & filter = QString::null,
                                    const QString & caption = QString::null,
                                    QString selectedFilter = QString::null);
+
+    static QString getSaveFileNameAndFilter(QString & newFilter,
+                                            QWidget * parent = 0,
+                                            const char * name = 0,
+                                            const QString & startWith = QString::null,
+                                            const QString & filter = QString::null,
+                                            const QString & caption = QString::null,
+                                            QString selectedFilter = QString::null);
 
   public slots:
     virtual void slotExampleDir();

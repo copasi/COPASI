@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.164 $
+   $Revision: 1.165 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:23 $
+   $Author: nsimus $ 
+   $Date: 2006/03/07 12:34:39 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -94,7 +94,7 @@ CopasiUI3Window::CopasiUI3Window():
   mpFileMenu->setItemEnabled(nexport_menu_MathModel, false);
 
   //disable menu option
-  mpFileMenu->setItemVisible(nexport_menu_MathModel, false);
+  //mpFileMenu->setItemVisible(nexport_menu_MathModel, false);
 
   mpFileMenu->setItemEnabled(nsave_menu_id, false);
   mpFileMenu->setItemEnabled(nsaveas_menu_id, false);
@@ -661,10 +661,10 @@ void CopasiUI3Window::createMenuBar()
 
   toolTip[7] = "Click this button to export the Mathematical Model. "
                "You will be prompted for a file name.\n"
-               "You can also select the <b>Export MathModel</b> command "
+               "You can also select the <b>Export </b> command "
                "from the <b>File</b> menu.</p>";
 
-  const char* iconName[7] = {"&New", "&Open", "&Save", "Save&As", "&Import SBML", "&Export SBML", "&Export MathModel"};
+  const char* iconName[7] = {"&New", "&Open", "&Save", "Save&As", "&Import SBML", "&Export SBML", "&Export"};
   const char* slotFileName[7] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()), SLOT(slotImportSBML()), SLOT(slotExportSBML()), SLOT(slotExportMathModel())};
   QKeySequence hotKey[7] = {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_I, CTRL + Key_E, CTRL + Key_M};
   int fileSeparator[7] = {0, 0, 0, 0, 0, 0, 0};
@@ -902,6 +902,7 @@ void CopasiUI3Window::slotExportMathModel()
 
   C_INT32 Answer = QMessageBox::No;
   QString tmp;
+  QString newFilter;
 
   while (Answer == QMessageBox::No)
     {
@@ -910,21 +911,29 @@ void CopasiUI3Window::slotExportMathModel()
         Default
         = FROM_UTF8(CDirEntry::dirName(CCopasiDataModel::Global->getFileName())
                     + CDirEntry::Separator
-                    + CDirEntry::baseName(CCopasiDataModel::Global->getFileName())
-                    + ".out");
+                    + CDirEntry::baseName(CCopasiDataModel::Global->getFileName()));
+      //+ ".c");
 
+      // QString newFilter;
       tmp =
-        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
-                                          Default,
-                                          "ASCII Files (*.out);;All Files (*.*);;",
-                                          "Choose a filename for MathModel export.");
+        CopasiFileDialog::getSaveFileNameAndFilter(newFilter,
+            this, "Save File Dialog",
+            Default,
+            "C Files (*.c);;Berkeley Madonna Files (*.mmd)",
+            "Choose an export format.");
 
       if (!tmp) return;
 
-      if (!tmp.endsWith(".cps") && !tmp.endsWith("."))
-        tmp += ".out";
-
       tmp = tmp.remove(QRegExp("\\.$"));
+
+      if (!tmp.endsWith(".c") && !tmp.endsWith(".") && !tmp.endsWith(".mmd"))
+        if (newFilter == "C Files (*.c)")
+          tmp += ".c";
+        else
+          tmp += ".mmd";
+
+      if (tmp.endsWith(".c") && newFilter != "C Files (*.c)") newFilter = "C Files (*.c)";
+      if (tmp.endsWith(".mmd") && newFilter != "Berkeley Madonna Files (*.mmd)") newFilter = "Berkeley Madonna Files (*.mmd)";
 
       Answer = checkSelection(tmp);
 
@@ -935,7 +944,7 @@ void CopasiUI3Window::slotExportMathModel()
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-      if (!dataModel->exportMathModel((const char *) tmp.utf8(), true))
+      if (!dataModel->exportMathModel((const char *) tmp.utf8(), (const char *) newFilter.utf8(), true))
         {
           if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
             {

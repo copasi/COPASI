@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:04 $
+   $Author: nsimus $ 
+   $Date: 2006/03/07 12:37:08 $
    End CVS Header */
 
 #include <string>
@@ -72,6 +72,66 @@ CEvaluationNodeConstant::CEvaluationNodeConstant(const CEvaluationNodeConstant &
 {}
 
 CEvaluationNodeConstant::~CEvaluationNodeConstant() {}
+
+std::string CEvaluationNodeConstant::getDisplay_C_String(const CEvaluationTree * pTree) const
+  {
+    std::string data = "";
+
+    SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+
+    switch (subType)
+      {
+      case PI:
+        data = "PI";
+        break;
+      case EXPONENTIALE:
+        data = "EXPONENTIALE";
+        break;
+      case TRUE:
+        data = "TRUE";
+        break;
+      case FALSE:
+        data = "FALSE";
+        break;
+      case _INFINITY:
+        data = "INFINITY";
+        break;
+      case _NaN:
+        data = "@";
+        break;
+      default:
+        data = "@";
+        break;
+      }
+    return data;
+  }
+
+std::string CEvaluationNodeConstant::getDisplay_MMD_String(const CEvaluationTree * pTree) const
+  {
+    std::ostringstream DisplayString;
+    std::string data = "";
+
+    SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+
+    switch (subType)
+      {
+      case PI:
+        data = "PI";
+        break;
+      case EXPONENTIALE:
+      case TRUE:
+      case FALSE:
+      case _INFINITY:
+      case _NaN:
+        DisplayString << mValue;
+        data = DisplayString.str();
+        break;
+      default:
+        data = "@";
+        break;
+      }
+    return data;
+  }
 
 CEvaluationNode* CEvaluationNodeConstant::createNodeFromASTTree(const ASTNode& node)
 {

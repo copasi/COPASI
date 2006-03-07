@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/11/28 14:02:39 $
+   $Date: 2006/03/07 12:37:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -132,18 +132,111 @@ std::string CEvaluationNodeLogical::getDisplay_C_String(const CEvaluationTree * 
     if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
       {
         Data DisplayString;
+        Data data;
+
+        switch ((SubType)CEvaluationNode::subType(this->getType()))
+          {
+          case AND:
+            data = "&&";
+            break;
+          case OR:
+            data = "||";
+            break;
+          case EQ:
+            data = "==";
+            break;
+          case GE:
+            data = ">=";
+            break;
+          case GT:
+            data = ">";
+            break;
+          case LE:
+            data = "<=";
+            break;
+          case LT:
+            data = "<";
+            break;
+          case NE:
+            data = "!=";
+            break;
+          default:
+            /*
+             * case XOR:
+             */
+            data = "@";
+            break;
+          }
 
         if (*mpLeft < *(CEvaluationNode *)this)
           DisplayString = "(" + mpLeft->getDisplay_C_String(pTree) + ")";
         else
           DisplayString = mpLeft->getDisplay_C_String(pTree) + " ";
 
-        DisplayString += mData;
+        DisplayString += data;
 
         if (!(*(CEvaluationNode *)this < *mpRight))
           DisplayString += "(" + mpRight->getDisplay_C_String(pTree) + ")";
         else
           DisplayString += " " + mpRight->getDisplay_C_String(pTree);
+
+        return DisplayString;
+      }
+    else
+      return "@";
+  }
+
+std::string CEvaluationNodeLogical::getDisplay_MMD_String(const CEvaluationTree * pTree) const
+  {
+    if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+      {
+        Data DisplayString;
+        Data data;
+
+        switch ((SubType)CEvaluationNode::subType(this->getType()))
+          {
+          case AND:
+            data = "AND";
+            break;
+          case OR:
+            data = "OR";
+            break;
+            /* case XOR:
+               break; */
+          case EQ:
+            data = "=";
+            break;
+          case GE:
+            data = ">=";
+            break;
+          case GT:
+            data = ">";
+            break;
+          case LE:
+            data = "<=";
+            break;
+          case LT:
+            data = "<";
+            break;
+          case NE:
+            data = "<>";
+            break;
+          default:
+            data = "@";
+            break;
+          }
+
+        if (*mpLeft < *(CEvaluationNode *)this)
+          DisplayString = "(" + mpLeft->getDisplay_MMD_String(pTree) + ")";
+        else
+          DisplayString = mpLeft->getDisplay_MMD_String(pTree) + " ";
+
+        DisplayString += data;
+
+        if (!(*(CEvaluationNode *)this < *mpRight))
+          DisplayString += "(" + mpRight->getDisplay_MMD_String(pTree) + ")";
+        else
+          DisplayString += " " + mpRight->getDisplay_MMD_String(pTree);
 
         return DisplayString;
       }

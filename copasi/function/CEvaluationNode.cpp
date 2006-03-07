@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Author: nsimus $ 
+   $Date: 2006/03/07 12:37:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -147,6 +147,9 @@ std::string CEvaluationNode::getDisplayString(const CEvaluationTree * /* pTree *
   {return mData;}
 
 std::string CEvaluationNode::getDisplay_C_String(const CEvaluationTree * /* pTree */) const
+  {return mData;}
+
+std::string CEvaluationNode::getDisplay_MMD_String(const CEvaluationTree * /* pTree */) const
   {return mData;}
 
 const CEvaluationNode::Type & CEvaluationNode::getType() const

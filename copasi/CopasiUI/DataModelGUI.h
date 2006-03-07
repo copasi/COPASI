@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/19 21:00:53 $
+   $Author: nsimus $ 
+   $Date: 2006/03/07 12:34:59 $
    End CVS Header */
 
 #ifndef DATAMODELGUI_H
@@ -54,7 +54,7 @@ class DataModelGUI
 
     bool importSBML(const std::string & fileName);
     bool exportSBML(const std::string & fileName, bool overwriteFile = false);
-    bool exportMathModel(const std::string & fileName, bool overwriteFile = false);
+    bool exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
 
     CPlotSpec2Vector & getPlotDefinitionList();
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:22:52 $
+   $Author: nsimus $ 
+   $Date: 2006/03/07 12:33:35 $
    End CVS Header */
 
 #include "copasi.h"
@@ -454,7 +454,7 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
   return true;
 }
 
-bool CCopasiDataModel::exportMathModel(const std::string & fileName, bool overwriteFile)
+bool CCopasiDataModel::exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile)
 {
   if (fileName == "") return false;
 
@@ -478,12 +478,9 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, bool overwr
     }
 
   MMASCIIExporter exporter;
+  if (!(mpModel->compileIfNecessary())) return false;
 
-  // :TODO: Fix exportMathModel prototype conflict.
-  // return exporter.exportMathModel(mpModel, fileName.c_str(), overwriteFile);
-  fatalError();
-
-  return false;
+  return exporter.exportMathModel(mpModel, fileName.c_str(), filter.c_str(), overwriteFile);
 }
 
 CModel * CCopasiDataModel::getModel()

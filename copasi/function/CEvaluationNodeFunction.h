@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Author: nsimus $ 
+   $Date: 2006/03/07 12:37:08 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeFunction
@@ -134,6 +134,13 @@ class CEvaluationNodeFunction : public CEvaluationNode
      * @return const Data & value
      */
     virtual std::string getDisplay_C_String(const CEvaluationTree * pTree) const;
+
+    /**
+     * Retrieve the display string of the node and its eventual child nodes 
+     * in Berkeley Madonna format.
+     * @return const Data & value
+     */
+    virtual std::string getDisplay_MMD_String(const CEvaluationTree * pTree) const;
 
     /**
      * Creates a new CEvaluationNodeFunction from an ASTNode.

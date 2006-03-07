@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVector.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2005/11/28 14:03:40 $
+   $Date: 2006/03/07 12:37:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -87,17 +87,12 @@ std::string CEvaluationNodeVector::getDisplayString(const CEvaluationTree * pTre
 
 std::string CEvaluationNodeVector::getDisplay_C_String(const CEvaluationTree * pTree) const
   {
-    std::string DisplayString = "{";
+    return "@";
+  }
 
-    std::vector< CEvaluationNode * >::const_iterator it = mVector.begin();
-    std::vector< CEvaluationNode * >::const_iterator end = mVector.end();
-
-    if (it != end) DisplayString += (*it++)->getDisplay_C_String(pTree);
-
-    for (; it != end; ++it)
-      DisplayString += "," + (*it)->getDisplay_C_String(pTree);
-
-    return DisplayString + "}";
+std::string CEvaluationNodeVector::getDisplay_MMD_String(const CEvaluationTree * pTree) const
+  {
+    return "@";
   }
 
 CEvaluationNode* CEvaluationNodeVector::createNodeFromASTTree(const ASTNode& node)

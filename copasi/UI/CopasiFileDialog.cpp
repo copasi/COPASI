@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiFileDialog.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/10/26 15:43:18 $
+   $Author: nsimus $ 
+   $Date: 2006/03/07 12:35:33 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -144,6 +144,24 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
   CopasiFileDialog * pDialog = new CopasiFileDialog(parent, name, true);
 
   QString File = pDialog->getSaveFileName(startWith, filter, caption, selectedFilter);
+  delete pDialog;
+
+  return File;
+}
+
+QString CopasiFileDialog::getSaveFileNameAndFilter(QString & newFilter,
+    QWidget * parent,
+    const char * name,
+    const QString & startWith,
+    const QString & filter,
+    const QString & caption,
+    QString selectedFilter)
+{
+  CopasiFileDialog * pDialog = new CopasiFileDialog(parent, name, true);
+
+  QString File = pDialog->getSaveFileName(startWith, filter, caption, selectedFilter);
+  newFilter = pDialog->selectedFilter();
+
   delete pDialog;
 
   return File;
