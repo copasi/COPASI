@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.187 $
+   $Revision: 1.188 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/12/17 21:26:09 $
+   $Author: ssahle $ 
+   $Date: 2006/03/07 16:30:36 $
    End CVS Header */
 
 /****************************************************************************
@@ -716,12 +716,16 @@ bool ListViews::updateAllListviews(C_INT32 id) //static
 
   for (; it != ende; ++it)
     {
+      (*it)->blockSignals(true);
+
       item = (*it)->findListViewItem(id, "");
 
       item->deleteSubFolders();
       item->setFolder(dataModel->getNode(id));
 
       item->createSubFolders();
+
+      (*it)->blockSignals(false);
     }
   return true;
 }
