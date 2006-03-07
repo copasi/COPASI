@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:22:53 $
+   $Author: ssahle $ 
+   $Date: 2006/03/07 16:03:21 $
    End CVS Header */
 
 // CSate.cpp
@@ -254,7 +254,7 @@ CState::CState(const CState & src):
   memcpy(mpValues, src.mpValues, sizeof(C_FLOAT64) * mSize);
 }
 
-CState::~CState() {pdelete(mpValues);}
+CState::~CState() {pdeletev(mpValues);}
 
 CState & CState::operator=(const CState & rhs)
 {
