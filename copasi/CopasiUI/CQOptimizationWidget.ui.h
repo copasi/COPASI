@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQOptimizationWidget.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 20:13:21 $
+   $Date: 2006/03/08 20:32:29 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -203,8 +203,14 @@ void CQOptimizationWidget::slotObjectSelect()
 
   if (pBrowseDialog->exec () == QDialog::Accepted && Selection.size() != 0)
     {
-      assert (false);
-      // :TODO: Implement insertion of the object Selection[0].
+      CCopasiObject * pObject = Selection[0];
+
+      if (pObject)
+        {
+          mpParseList->push_back(pObject);
+          std::string Insert = "<" + pObject->getObjectDisplayName() + ">";
+          mpEditExpression->insert(FROM_UTF8(Insert));
+        }
     }
 }
 
