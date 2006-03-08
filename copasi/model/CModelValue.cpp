@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:22:53 $
+   $Date: 2006/03/08 13:06:32 $
    End CVS Header */
 
 #include <iostream>
@@ -140,26 +140,27 @@ void * CModelEntity::getReference() const
 
 void CModelEntity::initObjects()
 {
+  C_FLOAT64 Dummy;
+
+  mpValueReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Value",
+        Dummy,
+        CCopasiObject::ValueDbl));
+  mpIValueReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("InitialValue",
+        Dummy,
+        CCopasiObject::ValueDbl));
+
   mpModel = static_cast<CModel *>(getObjectAncestor("Model"));
 
   if (mpModel)
     mpModel->getStateTemplate().add(this);
   else
     {
-      mpValueData = new C_FLOAT64;
-      mpIValue = new C_FLOAT64;
+      // This creates the needed values.
+      setInitialValuePtr(NULL);
+      setValuePtr(NULL);
     }
-
-  mpValueAccess = mpIValue;
-
-  mpValueReference =
-    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Value",
-        *mpValueAccess,
-        CCopasiObject::ValueDbl));
-  mpIValueReference =
-    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("InitialValue",
-        *mpIValue,
-        CCopasiObject::ValueDbl));
 
   addObjectReference("Rate", mRate, CCopasiObject::ValueDbl);
 }
