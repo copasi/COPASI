@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/03 02:50:01 $
+   $Date: 2006/03/08 18:50:55 $
    End CVS Header */
 
 #include <algorithm>
@@ -489,6 +489,7 @@ void CQExperimentData::slotOK()
   slotExperimentChanged(NULL);
 
   CExperiment * pExperiment;
+
   unsigned C_INT32 i = mpExperimentSet->size() - 1;
   for (; i < C_INVALID_INDEX; i--)
     {
@@ -502,6 +503,8 @@ void CQExperimentData::slotOK()
       else
         mpExperimentSet->removeParameter(i);
     }
+
+  emit experimentChanged();
 
   for (i = 0; i < mpExperimentSetCopy->size(); i++)
     mpExperimentSet->addExperiment(*mpExperimentSetCopy->getExperiment(i));

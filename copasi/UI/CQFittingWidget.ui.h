@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:21 $
+   $Date: 2006/03/08 18:50:55 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -92,116 +92,8 @@ bool CQFittingWidget::saveTask()
   for (; it != end; ++it)
     KeyMap[it->second] = it->first;
 
-  // Save parameters
-  CCopasiParameterGroup * pGroup = pProblem->getGroup("OptimizationItemList");
-
-  std::vector< CFitItem * > * pVector =
-    static_cast<std::vector< CFitItem * > *>(pGroup->CCopasiParameter::getValue().pVOID);
-
-  // Change the affected experiments keys
-  std::vector<CCopasiParameter *> * pExp;
-  std::vector<CCopasiParameter *>::iterator itExp;
-  std::vector<CCopasiParameter *>::iterator endExp;
-
-  imax = std::min<unsigned C_INT32>(pVector->size(), mpParameters->numRows());
-  for (i = 0; i < imax; i++)
-    {
-      pExp = (*pVector)[i]->getGroup("Affected Experiments")->CCopasiParameter::getValue().pGROUP;
-
-      for (itExp = pExp->begin(), endExp = pExp->end(); itExp != endExp; ++itExp)
-        (*itExp)->setValue(mKeyMap[*(*itExp)->getValue().pKEY]);
-
-      if (static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->save(*(*pVector)[i]))
-        mChanged = true;
-    }
-
-  // Remove exceeding parameters
-  imax = pVector->size();
-  if (i < imax)
-    {
-      mChanged = true;
-
-      for (; i < imax; i++)
-        pGroup->removeParameter(i);
-    }
-
-  // Add missing parameters
-  imax = mpParameters->numRows();
-  if (i < imax)
-    {
-      mChanged = true;
-
-      CFitItem * pFitItem;
-
-      for (; i < imax; i++)
-        {
-          pFitItem = new CFitItem();
-          static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->save(*pFitItem);
-          pGroup->addParameter(pFitItem);
-        }
-    }
-
-  for (i = 0, imax = pGroup->size(); i < imax; i++)
-    {
-      pExp = (*pVector)[i]->getGroup("Affected Experiments")->CCopasiParameter::getValue().pGROUP;
-
-      for (itExp = pExp->begin(), endExp = pExp->end(); itExp != endExp; ++itExp)
-        (*itExp)->setValue(KeyMap[*(*itExp)->getValue().pKEY]);
-    }
-
-  // Save constraints
-  pGroup = pProblem->getGroup("OptimizationConstraintList");
-  pVector =
-    static_cast<std::vector< CFitItem * > *>(pGroup->CCopasiParameter::getValue().pVOID);
-
-  imax =
-    std::min<unsigned C_INT32>(pVector->size(), mpConstraints->numRows());
-
-  for (i = 0; i < imax; i++)
-    {
-      pExp = (*pVector)[i]->getGroup("Affected Experiments")->CCopasiParameter::getValue().pGROUP;
-
-      for (itExp = pExp->begin(), endExp = pExp->end(); itExp != endExp; ++itExp)
-        (*itExp)->setValue(mKeyMap[*(*itExp)->getValue().pKEY]);
-
-      if (static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->save(*(*pVector)[i]))
-        mChanged = true;
-    }
-
-  // Remove exceeding constraints
-  imax = pVector->size();
-  if (i < imax)
-    {
-      mChanged = true;
-
-      for (; i < imax; i++)
-        pGroup->removeParameter(i);
-    }
-
-  // Add missing constraints
-  imax = mpConstraints->numRows();
-  if (i < imax)
-    {
-      mChanged = true;
-
-      CFitItem * pFitItem;
-
-      for (; i < imax; i++)
-        {
-          pFitItem = new CFitItem();
-          static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->save(*pFitItem);
-          pGroup->addParameter(pFitItem);
-        }
-    }
-
-  // Change the affected experiments keys
-  for (i = 0, imax = pGroup->size(); i < imax; i++)
-    {
-      pExp = (*pVector)[i]->getGroup("Affected Experiments")->CCopasiParameter::getValue().pGROUP;
-
-      for (itExp = pExp->begin(), endExp = pExp->end(); itExp != endExp; ++itExp)
-        (*itExp)->setValue(KeyMap[*(*itExp)->getValue().pKEY]);
-    }
+  mChanged |= mpParameters->save(&KeyMap);
+  mChanged |= mpConstraints->save(&KeyMap);
 
   if (mChanged) CCopasiDataModel::Global->changed();
 
@@ -234,41 +126,11 @@ bool CQFittingWidget::loadTask()
     mKeyMap[pExperimentSet->getExperiment(i)->CCopasiParameter::getKey()] =
       mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey();
 
-  CQFittingItemWidget * pFitItemWidget;
+  mpParameters->load(pProblem->getGroup("OptimizationItemList"), &mKeyMap);
+  mpParameters->setExperimentSet(const_cast<const CExperimentSet *&>(mpExperimentSet));
 
-  std::vector< COptItem * >::const_iterator it =
-    pProblem->getOptItemList().begin();
-  std::vector< COptItem * >::const_iterator end =
-    pProblem->getOptItemList().end();
-
-  mpParameters->clearWidgetList();
-  for (; it != end; ++it)
-    {
-      pFitItemWidget = new CQFittingItemWidget(mpParameters);
-      pFitItemWidget->enableFitItem(true);
-      pFitItemWidget->setExperimentSet(const_cast<const CExperimentSet *&>(mpExperimentSet));
-      pFitItemWidget->load(*static_cast<const CFitItem *>(*it));
-      mpParameters->addWidget(pFitItemWidget);
-    }
-
-  QString TabLabel = "Parameters (" + QString::number(mpParameters->numRows()) + ")";
-  mpTabWidget->setTabLabel(mpParametersPage, TabLabel);
-
-  it = pProblem->getConstraintList().begin();
-  end = pProblem->getConstraintList().end();
-
-  mpConstraints->clearWidgetList();
-  for (; it != end; ++it)
-    {
-      pFitItemWidget = new CQFittingItemWidget(mpConstraints);
-      pFitItemWidget->enableFitItem(true);
-      pFitItemWidget->setExperimentSet(const_cast<const CExperimentSet *&>(mpExperimentSet));
-      pFitItemWidget->load(*static_cast<const CFitItem *>(*it));
-      mpConstraints->addWidget(pFitItemWidget);
-    }
-
-  TabLabel = "Constraints (" + QString::number(mpConstraints->numRows()) + ")";
-  mpTabWidget->setTabLabel(mpConstraintsPage, TabLabel);
+  mpConstraints->load(pProblem->getGroup("OptimizationConstraintList"), &mKeyMap);
+  mpConstraints->setExperimentSet(const_cast<const CExperimentSet *&>(mpExperimentSet));
 
   mChanged = false;
 
@@ -312,39 +174,15 @@ bool CQFittingWidget::runTask()
   return true;
 }
 
-void CQFittingWidget::slotBtnAdd()
-{
-  CQFittingItemWidget * tmp = new CQFittingItemWidget(mpCurrentList);
-  tmp->enableFitItem(true);
-  tmp->setExperimentSet(const_cast<const CExperimentSet *&>(mpExperimentSet));
-  mpCurrentList->addWidget(tmp);
-
-  int totalRows = mpCurrentList->numRows();
-  mpCurrentList->ensureCellVisible(totalRows - 1, 0);
-  tmp->mpBtnObject->setFocus();
-
-  QString TabLabel = mpTabWidget->tabLabel(mpTabWidget->currentPage());
-  TabLabel.replace(QString::number(totalRows - 1), QString::number(totalRows));
-  mpTabWidget->setTabLabel(mpTabWidget->currentPage(), TabLabel);
-
-  return;
-}
-
 void CQFittingWidget::slotExperimentData()
 {
   CQExperimentData * pDialog = new CQExperimentData(this);
   pDialog->load(mpExperimentSet);
 
-  if (pDialog->exec () == QDialog::Accepted)
-    {
-      unsigned C_INT32 i, imax;
+  connect(pDialog, SIGNAL(experimentChanged()), mpParameters, SLOT(slotExperimentChanged()));
+  connect(pDialog, SIGNAL(experimentChanged()), mpConstraints, SLOT(slotExperimentChanged()));
 
-      for (i = 0, imax = mpParameters->numRows(); i < imax; i++)
-        static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->update();
-
-      for (i = 0, imax = mpConstraints->numRows(); i < imax; i++)
-        static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->update();
-    }
+  pDialog->exec();
 
   pdelete(pDialog);
 }
@@ -352,40 +190,9 @@ void CQFittingWidget::slotExperimentData()
 void CQFittingWidget::slotPageChange(QWidget * currentPage)
 {
   if (mpTabWidget->tabLabel(currentPage).contains("Parameters", true))
-    {
-      mpBtnAdd->setText("Add Parameter");
-      mpCurrentList = mpParameters;
-    }
+    mpCurrentList = mpParameters;
   else
-    {
-      mpBtnAdd->setText("Add Constraint");
-      mpCurrentList = mpConstraints;
-    }
-}
-
-void CQFittingWidget::slotItemDeleted()
-{
-  int totalRows = mpCurrentList->numRows();
-
-  QString TabLabel = mpTabWidget->tabLabel(mpTabWidget->currentPage());
-  TabLabel.replace(QString::number(totalRows + 1), QString::number(totalRows));
-  mpTabWidget->setTabLabel(mpTabWidget->currentPage(), TabLabel);
-}
-
-void CQFittingWidget::slotCopyItemWidget(int index)
-{
-  CQFittingItemWidget * tmp =
-    static_cast<CQFittingItemWidget *>(mpCurrentList->getWidgetList()[index])->copy();
-
-  mpCurrentList->insertWidget(tmp, index + 1);
-
-  int totalRows = mpCurrentList->numRows();
-  mpCurrentList->ensureCellVisible(index + 1, 0);
-  tmp->mpBtnObject->setFocus();
-
-  QString TabLabel = mpTabWidget->tabLabel(mpTabWidget->currentPage());
-  TabLabel.replace(QString::number(totalRows - 1), QString::number(totalRows));
-  mpTabWidget->setTabLabel(mpTabWidget->currentPage(), TabLabel);
+    mpCurrentList = mpConstraints;
 }
 
 void CQFittingWidget::init()
@@ -399,19 +206,34 @@ void CQFittingWidget::init()
   addMethodParameterTable();
 
   mpParameterPageLayout = new QHBoxLayout(mpParametersPage, 0, 6, "mpParameterPageLayout");
-  mpParameters = new CScanContainerWidget(mpParametersPage);
-  mpParameters->enableCopy(true);
+  mpParameters = new CQFittingItemWidget(mpParametersPage);
+  mpParameters->enableFitItem(true);
   mpParameterPageLayout->addWidget(mpParameters);
-  connect(mpParameters, SIGNAL(itemDeleted()), this, SLOT(slotItemDeleted()));
-  connect(mpParameters, SIGNAL(copyWidget(int)), this, SLOT(slotCopyItemWidget(int)));
+  connect(mpParameters, SIGNAL(numberChanged(int)), this, SLOT(slotParameterNumberChanged(int)));
 
   mpConstraintPageLayout = new QHBoxLayout(mpConstraintsPage, 0, 6, "mpConstraintsPageLayout");
-  mpConstraints = new CScanContainerWidget(mpConstraintsPage);
-  mpConstraints->enableCopy(true);
+  mpConstraints = new CQFittingItemWidget(mpConstraintsPage);
+  mpConstraints->enableFitItem(true);
   mpConstraintPageLayout->addWidget(mpConstraints);
-  connect(mpConstraints, SIGNAL(itemDeleted()), this, SLOT(slotItemDeleted()));
-  connect(mpConstraints, SIGNAL(copyWidget(int)), this, SLOT(slotCopyItemWidget(int)));
+  connect(mpConstraints, SIGNAL(numberChanged(int)), this, SLOT(slotConstraintNumberChanged(int)));
 
   mpCurrentList = mpParameters;
   mpExperimentSet = NULL;
+}
+
+void CQFittingWidget::slotParameterNumberChanged(int number)
+{
+  QString TabLabel = "Parameters (" + QString::number(number) + ")";
+  mpTabWidget->setTabLabel(mpParametersPage, TabLabel);
+}
+
+void CQFittingWidget::slotConstraintNumberChanged(int number)
+{
+  QString TabLabel = "Constraints (" + QString::number(number) + ")";
+  mpTabWidget->setTabLabel(mpConstraintsPage, TabLabel);
+}
+
+void CQFittingWidget::destroy()
+{
+  pdelete(mpExperimentSet);
 }

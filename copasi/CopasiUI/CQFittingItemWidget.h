@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 15:47:22 $
+   $Date: 2006/03/08 18:50:55 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Wed Nov 2 10:40:16 2005
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.8 2005/11/02 15:47:22 shoops Exp $)
+ ** Created: Tue Mar 7 21:46:59 2006
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.9 2006/03/08 18:50:55 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -21,18 +21,19 @@
 #include <qvariant.h>
  #include <qpixmap.h>
  #include <qwidget.h>
- #include <string>
- #include <map>
+ #include "TaskWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
-class QLabel;
+class QTable;
+class QPushButton;
 class QCheckBox;
-class QLineEdit;
+class QLabel;
 class QToolButton;
 class QComboBox;
+class QLineEdit;
 class CCopasiSelectionDialog;
 class COptItem;
 class CFitItem;
@@ -42,6 +43,7 @@ class CQValidatorBound;
 class CQValidatorNotEmpty;
 class QColor;
 class CExperimentSet;
+class CCopasiParameterGroup;
 
 class CQFittingItemWidget : public QWidget
   {
@@ -51,31 +53,39 @@ class CQFittingItemWidget : public QWidget
     CQFittingItemWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
     ~CQFittingItemWidget();
 
-    QLabel* mpLblLower;
-    QCheckBox* mpLowerInf;
-    QLineEdit* mpEditLower;
-    QToolButton* mpBtnLowerEdit;
-    QLabel* mpLblUpper;
-    QLineEdit* mpEditUpper;
-    QToolButton* mpBtnUpperEdit;
-    QCheckBox* mpUpperInf;
+    QTable* mpTable;
+    QPushButton* mpBtnPerExperiment;
+    QCheckBox* mpCheckLowerInf;
     QLabel* mpLblExperiments;
+    QToolButton* mpBtnNew;
+    QToolButton* mpBtnDown;
+    QToolButton* mpBtnDel;
+    QToolButton* mpBtnCopy;
+    QToolButton* mpBtnUp;
+    QCheckBox* mpCheckAll;
     QComboBox* mpBoxExperiments;
     QToolButton* mpBtnExperiments;
     QLabel* mpLblObject;
+    QLabel* mpLblUpper;
+    QCheckBox* mpCheckUpperInf;
+    QLabel* mpLblLower;
+    QLineEdit* mpEditLower;
+    QToolButton* mpBtnLowerEdit;
+    QLineEdit* mpEditUpper;
+    QToolButton* mpBtnUpperEdit;
     QLineEdit* mpEditObject;
     QToolButton* mpBtnObject;
 
-    CQFittingItemWidget * copy();
-    virtual bool load(const CFitItem & item);
-    bool load(const COptItem & item);
-    bool save(CFitItem & item);
-    bool save(COptItem & item);
+    virtual bool load(CCopasiParameterGroup * pItems, const std::map<std::string, std::string> * pKeyMap);
+    virtual bool save(const std::map<std::string, std::string> * pKeyMap);
     void enableFitItem(const bool & enable);
-    virtual bool update();
     void setExperimentSet(const CExperimentSet * & pExperimentSet);
 
+  signals:
+    void numberChanged(int);
+
   protected:
+    CCopasiParameterGroup * mpItems;
     const CExperimentSet ** mppSet;
     COptItem * mpItem;
     CCopasiObjectName* mpObjectCN;
@@ -89,15 +99,17 @@ class CQFittingItemWidget : public QWidget
     QColor mSavedColor;
     QColor mChangedColor;
     bool mIsFitItem;
+    std::vector< COptItem * > * mpItemsCopy;
 
-    bool loadCommon(const COptItem & item);
-    bool saveCommon(COptItem & item);
-
-    QGridLayout* CQFittingItemWidgetLayout;
+    QVBoxLayout* CQFittingItemWidgetLayout;
+    QGridLayout* mpLayout;
+    QSpacerItem* mpSpacer1;
     QSpacerItem* mpSpacerLeft;
+    QSpacerItem* mpSpacer2;
+    QSpacerItem* mpSpacer3;
+    QHBoxLayout* mpLayoutExperiments;
     QHBoxLayout* mpLayoutLower;
     QHBoxLayout* mpLayoutUpper;
-    QHBoxLayout* mpLayoutExperiments;
     QHBoxLayout* mpLayoutObject;
 
   protected slots:
@@ -105,17 +117,35 @@ class CQFittingItemWidget : public QWidget
 
   private:
     QPixmap image0;
+    QPixmap image1;
+    QPixmap image2;
+    QPixmap image3;
+    QPixmap image4;
+    QPixmap image5;
+    QPixmap image6;
 
     void init();
     void destroy();
+    bool loadItem(COptItem * pItem);
+    void saveItem();
+    void setTableText(const int & row, const COptItem * pItem);
 
   private slots:
-    void slotNegativeInfinity();
-    void slotPositiveInfinity();
+    void slotCheckLowerInf(bool checked);
+    void slotCheckUpperInf(bool checked);
     void slotLowerEdit();
     void slotUpperEdit();
     void slotParamEdit();
     void slotExperiments();
+    void slotExperimentChanged();
+    void slotCheckAll(bool checked);
+    void slotDelete();
+    void slotCopy();
+    void slotUp();
+    void slotDown();
+    void slotDuplicatePerExperiment();
+    void slotNew();
+    void slotItemChanged(int row, int col);
   };
 
 #endif // CQFITTINGITEMWIDGET_H

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 16:01:45 $
+   $Date: 2006/03/08 18:50:55 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingWidget.ui'
  **
- ** Created: Fri Oct 28 12:00:59 2005
- **      by: The User Interface Compiler ($Id: CQFittingWidget.cpp,v 1.7 2005/10/28 16:01:45 shoops Exp $)
+ ** Created: Wed Mar 8 13:45:32 2006
+ **      by: The User Interface Compiler ($Id: CQFittingWidget.cpp,v 1.8 2006/03/08 18:50:55 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -45,11 +45,7 @@ CQFittingWidget::CQFittingWidget(QWidget* parent, const char* name)
   mpBtnExperiment = new QPushButton(this, "mpBtnExperiment");
 
   mpGridLayout->addWidget(mpBtnExperiment, 0, 2);
-
-  mpBtnAdd = new QPushButton(this, "mpBtnAdd");
-
-  mpGridLayout->addWidget(mpBtnAdd, 0, 0);
-  mpSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  mpSpacer = new QSpacerItem(311, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
   mpGridLayout->addItem(mpSpacer, 0, 1);
 
   mpTabWidget = new QTabWidget(this, "mpTabWidget");
@@ -63,11 +59,10 @@ CQFittingWidget::CQFittingWidget(QWidget* parent, const char* name)
   mpGridLayout->addMultiCellWidget(mpTabWidget, 1, 1, 0, 2);
   CQFittingWidgetLayout->addLayout(mpGridLayout);
   languageChange();
-  resize(QSize(523, 352).expandedTo(minimumSizeHint()));
+  resize(QSize(319, 116).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
-  connect(mpBtnAdd, SIGNAL(clicked()), this, SLOT(slotBtnAdd()));
   connect(mpBtnExperiment, SIGNAL(clicked()), this, SLOT(slotExperimentData()));
   connect(mpTabWidget, SIGNAL(currentChanged(QWidget*)), this, SLOT(slotPageChange(QWidget*)));
   init();
@@ -78,6 +73,7 @@ CQFittingWidget::CQFittingWidget(QWidget* parent, const char* name)
  */
 CQFittingWidget::~CQFittingWidget()
 {
+  destroy();
   // no need to delete child widgets, Qt does it all for us
 }
 
@@ -89,7 +85,6 @@ void CQFittingWidget::languageChange()
 {
   setCaption(tr("Fitting"));
   mpBtnExperiment->setText(tr("Experimental Data"));
-  mpBtnAdd->setText(tr("Add Parameter"));
   mpTabWidget->changeTab(mpParametersPage, tr("Parameters (0)"));
   mpTabWidget->changeTab(mpConstraintsPage, tr("Constraints (0)"));
 }

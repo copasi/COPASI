@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingWidget.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/28 15:38:20 $
+   $Date: 2006/03/08 18:50:55 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingWidget.ui'
  **
- ** Created: Wed Oct 26 13:41:56 2005
- **      by: The User Interface Compiler ($Id: CQFittingWidget.h,v 1.6 2005/10/28 15:38:20 shoops Exp $)
+ ** Created: Wed Mar 8 13:45:31 2006
+ **      by: The User Interface Compiler ($Id: CQFittingWidget.h,v 1.7 2006/03/08 18:50:55 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -21,7 +21,6 @@
 #include <qvariant.h>
  #include <qpixmap.h>
  #include "TaskWidget.h"
- #include "CScanContainerWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -31,6 +30,7 @@ class QPushButton;
 class QTabWidget;
 class QWidget;
 class CExperimentSet;
+class CQFittingItemWidget;
 
 class CQFittingWidget : public TaskWidget
   {
@@ -41,24 +41,27 @@ class CQFittingWidget : public TaskWidget
     ~CQFittingWidget();
 
     QPushButton* mpBtnExperiment;
-    QPushButton* mpBtnAdd;
     QTabWidget* mpTabWidget;
     QWidget* mpParametersPage;
     QWidget* mpConstraintsPage;
 
     virtual bool runTask();
 
-  protected:
-    std::map<std::string, std::string> mKeyMap;
-    CExperimentSet * mpExperimentSet;
-    QHBoxLayout * mpConstraintPageLayout;
-    CScanContainerWidget * mpParameters;
-    QHBoxLayout * mpParameterPageLayout;
-    CScanContainerWidget * mpConstraints;
-    CScanContainerWidget * mpCurrentList;
+  public slots:
+    void slotParameterNumberChanged(int number);
+    void slotConstraintNumberChanged(int number);
 
-    virtual bool loadTask();
+  protected:
+    CQFittingItemWidget * mpCurrentList;
+    CQFittingItemWidget * mpConstraints;
+    QHBoxLayout * mpParameterPageLayout;
+    CQFittingItemWidget * mpParameters;
+    QHBoxLayout * mpConstraintPageLayout;
+    CExperimentSet * mpExperimentSet;
+    std::map<std::string, std::string> mKeyMap;
+
     virtual bool saveTask();
+    virtual bool loadTask();
     virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
 
     QVBoxLayout* CQFittingWidgetLayout;
@@ -68,16 +71,14 @@ class CQFittingWidget : public TaskWidget
   protected slots:
     virtual void languageChange();
 
-    void slotBtnAdd();
     void slotExperimentData();
     void slotPageChange(QWidget * currentPage);
-    void slotItemDeleted();
-    void slotCopyItemWidget(int);
 
   private:
     QPixmap image0;
 
     void init();
+    void destroy();
   };
 
 #endif // CQFITTINGWIDGET_H

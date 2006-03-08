@@ -757,6 +757,9 @@
     <variable>QSignalMapper * mpBtnMap;</variable>
     <variable>QPixmap mDots;</variable>
 </variables>
+<signals>
+    <signal>experimentChanged()</signal>
+</signals>
 <slots>
     <slot access="protected" specifier="non virtual">slotRevert()</slot>
     <slot access="protected" specifier="non virtual">slotFirst()</slot>

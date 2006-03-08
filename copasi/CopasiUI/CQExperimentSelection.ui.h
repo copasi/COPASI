@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentSelection.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/02 15:47:39 $
+   $Date: 2006/03/08 18:50:55 $
    End CVS Header */
 
 #include <qcombobox.h>
@@ -36,10 +36,7 @@ void CQExperimentSelection::slotBtnOK()
     }
 
   if (AllChecked || NoneChecked)
-    {
-      mpBox->clear();
-      mpBox->insertItem("All");
-    }
+    mpBox->clear();
 
   accept();
 }
@@ -75,8 +72,7 @@ void CQExperimentSelection::load(QComboBox * pBox, const CExperimentSet * pExper
   unsigned C_INT32 i, imax = pExperimentSet->size();
   unsigned C_INT32 j, jmax = mpBox->count();
   mpTable->setNumRows(imax);
-  bool All = (jmax == 0 ||
-              (jmax == 1 && mpBox->text(0) == "All"));
+  bool All = (jmax == 0);
 
   for (i = 0; i < imax; i++)
     {
