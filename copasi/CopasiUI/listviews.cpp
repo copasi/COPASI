@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.189 $
+   $Revision: 1.190 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/07 17:07:27 $
+   $Author: shoops $ 
+   $Date: 2006/03/08 20:32:54 $
    End CVS Header */
 
 /****************************************************************************
@@ -47,7 +47,7 @@
 #include "StateWidget.h"
 #include "ScanWidget.h"
 #include "SensitivitiesWidget.h"
-#include "OptimizationWidget.h"
+#include "CQOptimizationWidget.h"
 #include "OptimizationResultWidget.h"
 #include "TableDefinition.h"
 #include "TableDefinition1.h"
@@ -369,7 +369,7 @@ void ListViews::ConstructNodeWidgets()
   if (!mpCMCAWidget) mpCMCAWidget = new CMCAWidget(this);
   mpCMCAWidget->hide();
 
-  if (!optimizationWidget) optimizationWidget = new OptimizationWidget(this);
+  if (!optimizationWidget) optimizationWidget = new CQOptimizationWidget(this);
   optimizationWidget->hide();
 
   if (!optResultWidgetS) optResultWidgetS = new OptimizationResultWidget(this);
@@ -515,7 +515,7 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         return optimizationWidget;
         break;
       case 321:
-        if (optimizationWidget->isSteadyStateChecked())
+        if (optimizationWidget->isSteadyState())
           return optResultWidgetS;
         else
           return optResultWidgetT;
