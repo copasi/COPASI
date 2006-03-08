@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 18:50:55 $
+   $Date: 2006/03/08 19:03:07 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -365,7 +365,7 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pKeyMa
     static_cast<std::vector< COptItem * > *>(mpItems->CCopasiParameter::getValue().pVOID)->end();
 
   unsigned C_INT32 i;
-  unsigned C_INT32 imax = std::max(mpItemsCopy->size(), mpItems->size());
+  unsigned C_INT32 imax = std::max<unsigned C_INT32>(mpItemsCopy->size(), mpItems->size());
 
   for (i = 0; it != end && target != targetEnd; ++it, ++target, ++i)
     {
@@ -774,7 +774,7 @@ void CQFittingItemWidget::slotNew()
   emit numberChanged(mpItemsCopy->size());
 }
 
-void CQFittingItemWidget::slotItemChanged(int row, int col)
+void CQFittingItemWidget::slotItemChanged(int row, int /* col */)
 {
   saveItem();
 
