@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 19:03:07 $
+   $Date: 2006/03/08 20:12:22 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -522,6 +522,7 @@ void CQFittingItemWidget::enableFitItem(const bool & enable)
       mpCheckAll->show();
       mpBoxExperiments->show();
       mpBtnExperiments->show();
+      mpBtnPerExperiment->show();
     }
   else
     {
@@ -529,6 +530,7 @@ void CQFittingItemWidget::enableFitItem(const bool & enable)
       mpCheckAll->hide();
       mpBoxExperiments->hide();
       mpBtnExperiments->hide();
+      mpBtnPerExperiment->hide();
     }
 
   qApp->processEvents();
