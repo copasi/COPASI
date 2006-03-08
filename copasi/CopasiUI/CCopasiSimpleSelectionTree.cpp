@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:21 $
+   $Date: 2006/03/08 15:54:07 $
    End CVS Header */
 
 #include "CCopasiSimpleSelectionTree.h"
@@ -276,15 +276,25 @@ std::vector<CCopasiObject*>* CCopasiSimpleSelectionTree::getTreeSelection()
                 {
                   QListViewItemIterator it2(currentItem);
                   QListViewItem* tmpItem = it2.current();
+                  QListViewItem* Ancestor;
+
                   while (tmpItem)
                     {
-                      if ((tmpItem->childCount() == 0) && (this->treeItems.find(tmpItem) != this->treeItems.end()))
+                      if ((tmpItem->childCount() == 0) &&
+                          (this->treeItems.find(tmpItem) != this->treeItems.end()))
                         {
                           selection->push_back(this->treeItems[tmpItem]);
                         }
                       ++it2;
                       tmpItem = it2.current();
-                      if ((tmpItem == currentItem->nextSibling()) || (tmpItem == currentItem->parent()->nextSibling())) break;
+
+                      // We continue as long as the current item is an
+                      // ancestor of the tmp item, i.e., it is in the branch
+                      // originating from current item.
+                      for (Ancestor = tmpItem->parent();
+                           Ancestor != currentItem && Ancestor;
+                           Ancestor = Ancestor->parent());
+                      if (!Ancestor) break;
                     }
                 }
             }
