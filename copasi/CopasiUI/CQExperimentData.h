@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 18:50:55 $
+   $Date: 2006/03/08 20:11:23 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Tue Mar 7 17:55:08 2006
- **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.8 2006/03/08 18:50:55 shoops Exp $)
+ ** Created: Wed Mar 8 14:51:48 2006
+ **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.9 2006/03/08 20:11:23 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

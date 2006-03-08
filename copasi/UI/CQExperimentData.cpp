@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 18:50:55 $
+   $Date: 2006/03/08 20:11:23 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Tue Mar 7 17:55:08 2006
- **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.8 2006/03/08 18:50:55 shoops Exp $)
+ ** Created: Wed Mar 8 14:51:48 2006
+ **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.9 2006/03/08 20:11:23 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -239,7 +239,7 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpBtnGroup = new QButtonGroup(this, "mpBtnGroup");
   mpBtnGroup->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)4, 0, 0, mpBtnGroup->sizePolicy().hasHeightForWidth()));
   mpBtnGroup->setFrameShape(QButtonGroup::NoFrame);
-  mpBtnGroup->setAlignment(int(QButtonGroup::AlignTop));
+  mpBtnGroup->setAlignment(int(QButtonGroup::WordBreak | QButtonGroup::AlignJustify | QButtonGroup::AlignCenter | QButtonGroup::AlignBottom | QButtonGroup::AlignTop | QButtonGroup::AlignRight | QButtonGroup::AlignLeft));
   mpBtnGroup->setColumnLayout(0, Qt::Vertical);
   mpBtnGroup->layout()->setSpacing(6);
   mpBtnGroup->layout()->setMargin(0);
@@ -366,7 +366,7 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpLayoutButton->addWidget(mpBtnCancel);
   CQExperimentDataLayout->addLayout(mpLayoutButton);
   languageChange();
-  resize(QSize(533, 378).expandedTo(minimumSizeHint()));
+  resize(QSize(501, 378).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections

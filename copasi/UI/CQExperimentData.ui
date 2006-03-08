@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>533</width>
+            <width>501</width>
             <height>378</height>
         </rect>
     </property>
@@ -273,7 +273,7 @@
                         <string></string>
                     </property>
                     <property name="alignment">
-                        <set>AlignTop</set>
+                        <set>WordBreak|AlignJustify|AlignCenter|AlignBottom|AlignTop|AlignRight|AlignLeft</set>
                     </property>
                     <hbox>
                         <property name="name">
