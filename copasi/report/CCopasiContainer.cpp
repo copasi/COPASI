@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/08 17:21:17 $
+   $Date: 2006/03/08 02:48:28 $
    End CVS Header */
 
 /**
@@ -112,7 +112,12 @@ const std::string CCopasiContainer::getObjectUniqueName() const
 const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) const
   {
     if (cn == "")
-      return this;
+      {
+        if (this != Root)
+          return this;
+        else
+          return NULL;
+      }
 
     std::string Name = cn.getObjectName();
     std::string Type = cn.getObjectType();
@@ -171,7 +176,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
         if (cn.getElementName(0, false) == "")
           return it->second;
 
-        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +               //TODO really?
+        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +                //TODO really?
                                         "[" + cn.getElementName(1, false) + "]");
 
         if (it->second->getObjectType() == "Reference" || !pObject)
