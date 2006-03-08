@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 19:01:10 $
+   $Date: 2006/03/08 20:13:21 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -15,6 +15,7 @@
 #include "CQFittingItemWidget.h"
 #include "CProgressBar.h"
 #include "CCopasiSelectionDialog.h"
+#include "qtUtilities.h"
 
 #include "report/CKeyFactory.h"
 #include "optimization/COptTask.h"
@@ -37,90 +38,32 @@ bool CQOptimizationWidget::saveTask()
     dynamic_cast<COptProblem *>(mpTask->getProblem());
   if (!pProblem) return false;
 
-  // Save parameters
-  CCopasiParameterGroup * pGroup = pProblem->getGroup("OptimizationItemList");
+  mChanged |= saveExpression();
 
-  std::vector< COptItem * > * pVector =
-    static_cast<std::vector< COptItem * > *>(pGroup->CCopasiParameter::getValue().pVOID);
-
-  assert (false); // :TODO: Fixme
-
-#ifdef XXXX
-  unsigned C_INT32 i, imax =
-    std::min<unsigned C_INT32>(pVector->size(), mpParameters->numRows());
-
-  for (i = 0; i < imax; i++)
-    if (static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->saveItem(*(*pVector)[i]))
-      mChanged = true;
-
-  // Remove exceeding parameters
-  imax = pVector->size();
-  if (i < imax)
+  if (mpBtnSteadystate->isChecked() &&
+      *pProblem->getValue("Steady-State").pSTRING == "")
     {
       mChanged = true;
 
-      for (imax--; i <= imax && imax != C_INVALID_INDEX; imax--)
-        pGroup->removeParameter(imax);
+      pProblem->setValue("Time-Course", std::string(""));
+      pProblem->setValue("Steady-State", (*CCopasiDataModel::Global->getTaskList())["Steady-State"]->getKey());
     }
-
-  // Add missing parameters
-  imax = mpParameters->numRows();
-  if (i < imax)
+  else if (mpBtnTimeCourse->isChecked() &&
+           *pProblem->getValue("Time-Course").pSTRING == "")
     {
       mChanged = true;
 
-      COptItem * pFitItem;
-
-      for (; i < imax; i++)
-        {
-          pFitItem = new COptItem();
-          static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->saveItem(*pFitItem);
-          pGroup->addParameter(pFitItem);
-        }
+      pProblem->setValue("Time-Course", (*CCopasiDataModel::Global->getTaskList())["Time-Course"]->getKey());
+      pProblem->setValue("Steady-State", std::string(""));
     }
 
-  // Save constraints
-  pGroup = pProblem->getGroup("OptimizationConstraintList");
-  pVector =
-    static_cast<std::vector< COptItem * > *>(pGroup->CCopasiParameter::getValue().pVOID);
-
-  imax =
-    std::min<unsigned C_INT32>(pVector->size(), mpConstraints->numRows());
-
-  for (i = 0; i < imax; i++)
-    if (static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->saveItem(*(*pVector)[i]))
-      mChanged = true;
-
-  // Remove exceeding constraints starting from the last.
-  imax = pVector->size();
-  if (i < imax)
-    {
-      mChanged = true;
-
-      for (imax--; i <= imax && imax != C_INVALID_INDEX; imax--)
-        pGroup->removeParameter(imax);
-    }
-
-  // Add missing constraints
-  imax = mpConstraints->numRows();
-  if (i < imax)
-    {
-      mChanged = true;
-
-      COptItem * pFitItem;
-
-      for (; i < imax; i++)
-        {
-          pFitItem = new COptItem();
-          static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->saveItem(*pFitItem);
-          pGroup->addParameter(pFitItem);
-        }
-    }
-#endif // XXXX
+  mChanged |= mpParameters->save(NULL);
+  mChanged |= mpConstraints->save(NULL);
 
   if (mChanged) CCopasiDataModel::Global->changed();
 
   mChanged = false;
+
   return true;
 }
 
@@ -137,10 +80,18 @@ bool CQOptimizationWidget::loadTask()
     dynamic_cast<COptProblem *>(mpTask->getProblem());
   if (!pProblem) return false;
 
+  loadExpression();
+
   if (*pProblem->getValue("Steady-State").pSTRING != "")
-    mpBtnSteadystate->setChecked(true);
+    {
+      mpBtnSteadystate->setChecked(true);
+      mpBtnTimeCourse->setChecked(false);
+    }
   else
-    mpBtnSteadystate->setChecked(false);
+    {
+      mpBtnSteadystate->setChecked(false);
+      mpBtnTimeCourse->setChecked(true);
+    }
 
   mpParameters->load(pProblem->getGroup("OptimizationItemList"), NULL);
 
@@ -159,17 +110,17 @@ bool CQOptimizationWidget::runTask()
 
   if (!commonBeforeRunTask()) return false;
 
-  pTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
-
   try
     {
+      if (!pTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL))
+        throw CCopasiException(CCopasiMessage::peekLastMessage());
+
       if (!pTask->process(true))
         throw CCopasiException(CCopasiMessage::peekLastMessage());
     }
 
   catch (CCopasiException Exception)
     {
-      mProgressBar->finish();
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
           mProgressBar->finish();
@@ -193,35 +144,8 @@ void CQOptimizationWidget::slotPageChange(QWidget * currentPage)
     mpCurrentList = mpConstraints;
 }
 
-void CQOptimizationWidget::slotTypeChanged(bool steadystate)
-{
-  mTypeChanged = !mTypeChanged;
-
-  if (!mTypeChanged)
-    {
-      mpBtnSteadystate->setPaletteBackgroundColor(mSavedColor);
-      mpBtnTimeCourse->setPaletteBackgroundColor(mSavedColor);
-    }
-  else if (steadystate & mTypeChanged)
-    mpBtnSteadystate->setPaletteBackgroundColor(mChangedColor);
-  else
-    mpBtnTimeCourse->setPaletteBackgroundColor(mChangedColor);
-}
-
 void CQOptimizationWidget::slotExpression()
-{
-  std::vector<CCopasiObject*> Selection;
-
-  CCopasiSelectionDialog * pBrowseDialog = new CCopasiSelectionDialog(this);
-  pBrowseDialog->setModel(CCopasiDataModel::Global->getModel());
-  pBrowseDialog->setSingleSelection(true);
-  pBrowseDialog->setOutputVector(&Selection);
-
-  if (pBrowseDialog->exec () == QDialog::Accepted && Selection.size() != 0)
-    {
-      // :TODO: Implement insertion of the object Selection[0].
-    }
-}
+{}
 
 CCopasiMethod * CQOptimizationWidget::createMethod(const CCopasiMethod::SubType & type)
 {return COptMethod::createMethod(type);}
@@ -252,13 +176,11 @@ void CQOptimizationWidget::init()
 
   mpParameterPageLayout = new QHBoxLayout(mpParametersPage, 0, 6, "mpParameterPageLayout");
   mpParameters = new CQFittingItemWidget(mpParametersPage);
-  mpParameters->enableFitItem(true);
   mpParameterPageLayout->addWidget(mpParameters);
   connect(mpParameters, SIGNAL(numberChanged(int)), this, SLOT(slotParameterNumberChanged(int)));
 
   mpConstraintPageLayout = new QHBoxLayout(mpConstraintsPage, 0, 6, "mpConstraintsPageLayout");
   mpConstraints = new CQFittingItemWidget(mpConstraintsPage);
-  mpConstraints->enableFitItem(true);
   mpConstraintPageLayout->addWidget(mpConstraints);
   connect(mpConstraints, SIGNAL(numberChanged(int)), this, SLOT(slotConstraintNumberChanged(int)));
 
@@ -272,6 +194,18 @@ void CQOptimizationWidget::destroy()
 
 void CQOptimizationWidget::slotObjectSelect()
 {
+  std::vector<CCopasiObject*> Selection;
+
+  CCopasiSelectionDialog * pBrowseDialog = new CCopasiSelectionDialog(this);
+  pBrowseDialog->setModel(CCopasiDataModel::Global->getModel());
+  pBrowseDialog->setSingleSelection(true);
+  pBrowseDialog->setOutputVector(&Selection);
+
+  if (pBrowseDialog->exec () == QDialog::Accepted && Selection.size() != 0)
+    {
+      assert (false);
+      // :TODO: Implement insertion of the object Selection[0].
+    }
 }
 
 bool CQOptimizationWidget::saveExpression()
@@ -324,12 +258,78 @@ bool CQOptimizationWidget::saveExpression()
         }
     }
 
-  if (!pProblem->setObjectiveFunction(InfixCN))
+  bool changed = false;
+
+  if (pProblem->getObjectiveFunction() != InfixCN)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
-      return false;
+      if (!pProblem->setObjectiveFunction(InfixCN))
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
+          return false;
+        }
+
+      changed = true;
     }
 
   // :TODO: need to handle errors.
+
+  return changed;
+}
+
+// load the expression
+
+bool CQOptimizationWidget::loadExpression()
+{
+  COptProblem * pProblem =
+    dynamic_cast<COptProblem *>(mpTask->getProblem());
+  if (!pProblem) return false;
+
+  std::string objFunc = pProblem->getObjectiveFunction();
+
+  unsigned C_INT32 i = 0;
+  mpParseList->clear();
+
+  std::string out_str = "";
+  while (i < objFunc.length())
+    {
+      if (objFunc[i] == '<')
+        {
+          i++;
+          std::string objectName = "";
+
+          while (objFunc[i] != '>' && i < objFunc.length())
+            {
+              if (objFunc[i] == '\\')
+                objectName += objFunc[i++];
+
+              objectName += objFunc[i];
+              i++;
+            }
+
+          CCopasiObjectName temp_CN(objectName);
+          CCopasiObject * temp_object = const_cast<CCopasiObject *>(RootContainer.getObject(temp_CN));
+          out_str += "<" + temp_object->getObjectDisplayName() + ">";
+          mpParseList->push_back(temp_object);
+          continue;
+        }
+
+      else if (objFunc[i] == '>')
+        {
+          //do nothing
+        }
+
+      else
+        {
+          out_str += objFunc[i];
+        }
+
+      i++;
+    }
+
+  mpEditExpression->setText(FROM_UTF8(out_str));
+
   return true;
 }
+
+bool CQOptimizationWidget::isSteadyState()
+{return mpBtnSteadystate->isChecked();}

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 19:01:10 $
+   $Date: 2006/03/08 20:13:21 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQOptimizationWidget.ui'
  **
- ** Created: Wed Mar 8 13:42:29 2006
- **      by: The User Interface Compiler ($Id: CQOptimizationWidget.cpp,v 1.2 2006/03/08 19:01:10 shoops Exp $)
+ ** Created: Wed Mar 8 14:55:19 2006
+ **      by: The User Interface Compiler ($Id: CQOptimizationWidget.cpp,v 1.3 2006/03/08 20:13:21 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -145,6 +145,7 @@ CQOptimizationWidget::CQOptimizationWidget(QWidget* parent, const char* name)
   mpLayoutGrid->addWidget(mpBtnGroup, 2, 1);
 
   mpLblType = new QLabel(this, "mpLblType");
+  mpLblType->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)5, 0, 0, mpLblType->sizePolicy().hasHeightForWidth()));
   mpLblType->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
 
   mpLayoutGrid->addWidget(mpLblType, 2, 0);
@@ -152,6 +153,7 @@ CQOptimizationWidget::CQOptimizationWidget(QWidget* parent, const char* name)
   mpLayoutGrid->addMultiCell(mpSpacer2, 2, 2, 2, 3);
 
   mpLblExpression = new QLabel(this, "mpLblExpression");
+  mpLblExpression->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)5, 0, 0, mpLblExpression->sizePolicy().hasHeightForWidth()));
   mpLblExpression->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
 
   mpLayoutGrid->addWidget(mpLblExpression, 0, 0);
@@ -172,7 +174,6 @@ CQOptimizationWidget::CQOptimizationWidget(QWidget* parent, const char* name)
 
   // signals and slots connections
   connect(mpTabWidget, SIGNAL(currentChanged(QWidget*)), this, SLOT(slotPageChange(QWidget*)));
-  connect(mpBtnSteadystate, SIGNAL(toggled(bool)), this, SLOT(slotTypeChanged(bool)));
   connect(mpBtnObject, SIGNAL(clicked()), this, SLOT(slotObjectSelect()));
   init();
 }

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 19:01:10 $
+   $Date: 2006/03/08 20:13:21 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQOptimizationWidget.ui'
  **
- ** Created: Wed Mar 8 13:42:29 2006
- **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.2 2006/03/08 19:01:10 shoops Exp $)
+ ** Created: Wed Mar 8 14:55:19 2006
+ **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.3 2006/03/08 20:13:21 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -56,6 +56,8 @@ class CQOptimizationWidget : public TaskWidget
 
     virtual bool runTask();
     virtual bool saveExpression();
+    virtual bool loadExpression();
+    bool isSteadyState();
 
   public slots:
     void slotParameterNumberChanged(int number);
@@ -86,7 +88,6 @@ class CQOptimizationWidget : public TaskWidget
     virtual void languageChange();
 
     void slotPageChange(QWidget * currentPage);
-    void slotTypeChanged(bool steadystate);
     void slotExpression();
     void slotObjectSelect();
 

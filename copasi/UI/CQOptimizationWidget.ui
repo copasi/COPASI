@@ -150,6 +150,14 @@
                     <property name="name">
                         <cstring>mpLblType</cstring>
                     </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
                     <property name="text">
                         <string>Experiment Type</string>
                     </property>
@@ -177,6 +185,14 @@
                 <widget class="QLabel" row="0" column="0">
                     <property name="name">
                         <cstring>mpLblExpression</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
                     </property>
                     <property name="text">
                         <string>Expression</string>
@@ -252,12 +268,6 @@
         <slot>slotPageChange(QWidget*)</slot>
     </connection>
     <connection>
-        <sender>mpBtnSteadystate</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>CQOptimizationWidget</receiver>
-        <slot>slotTypeChanged(bool)</slot>
-    </connection>
-    <connection>
         <sender>mpBtnObject</sender>
         <signal>clicked()</signal>
         <receiver>CQOptimizationWidget</receiver>
@@ -284,7 +294,6 @@
 </variables>
 <slots>
     <slot access="protected" specifier="non virtual">slotPageChange( QWidget * currentPage )</slot>
-    <slot access="protected" specifier="non virtual">slotTypeChanged( bool steadystate )</slot>
     <slot access="protected" specifier="non virtual">slotExpression()</slot>
     <slot specifier="non virtual">slotParameterNumberChanged( int number )</slot>
     <slot specifier="non virtual">slotConstraintNumberChanged( int number )</slot>
@@ -298,6 +307,8 @@
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
     <function returnType="bool">saveExpression()</function>
+    <function returnType="bool">loadExpression()</function>
+    <function specifier="non virtual" returnType="bool">isSteadyState()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
