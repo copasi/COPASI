@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:21 $
+   $Date: 2006/03/08 19:01:10 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -43,11 +43,14 @@ bool CQOptimizationWidget::saveTask()
   std::vector< COptItem * > * pVector =
     static_cast<std::vector< COptItem * > *>(pGroup->CCopasiParameter::getValue().pVOID);
 
+  assert (false); // :TODO: Fixme
+
+#ifdef XXXX
   unsigned C_INT32 i, imax =
     std::min<unsigned C_INT32>(pVector->size(), mpParameters->numRows());
 
   for (i = 0; i < imax; i++)
-    if (static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->save(*(*pVector)[i]))
+    if (static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->saveItem(*(*pVector)[i]))
       mChanged = true;
 
   // Remove exceeding parameters
@@ -56,8 +59,8 @@ bool CQOptimizationWidget::saveTask()
     {
       mChanged = true;
 
-      for (; i < imax; i++)
-        pGroup->removeParameter(i);
+      for (imax--; i <= imax && imax != C_INVALID_INDEX; imax--)
+        pGroup->removeParameter(imax);
     }
 
   // Add missing parameters
@@ -71,7 +74,7 @@ bool CQOptimizationWidget::saveTask()
       for (; i < imax; i++)
         {
           pFitItem = new COptItem();
-          static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->save(*pFitItem);
+          static_cast<CQFittingItemWidget *>(mpParameters->getWidgetList()[i])->saveItem(*pFitItem);
           pGroup->addParameter(pFitItem);
         }
     }
@@ -85,17 +88,17 @@ bool CQOptimizationWidget::saveTask()
     std::min<unsigned C_INT32>(pVector->size(), mpConstraints->numRows());
 
   for (i = 0; i < imax; i++)
-    if (static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->save(*(*pVector)[i]))
+    if (static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->saveItem(*(*pVector)[i]))
       mChanged = true;
 
-  // Remove exceeding constraints
+  // Remove exceeding constraints starting from the last.
   imax = pVector->size();
   if (i < imax)
     {
       mChanged = true;
 
-      for (; i < imax; i++)
-        pGroup->removeParameter(i);
+      for (imax--; i <= imax && imax != C_INVALID_INDEX; imax--)
+        pGroup->removeParameter(imax);
     }
 
   // Add missing constraints
@@ -109,10 +112,11 @@ bool CQOptimizationWidget::saveTask()
       for (; i < imax; i++)
         {
           pFitItem = new COptItem();
-          static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->save(*pFitItem);
+          static_cast<CQFittingItemWidget *>(mpConstraints->getWidgetList()[i])->saveItem(*pFitItem);
           pGroup->addParameter(pFitItem);
         }
     }
+#endif // XXXX
 
   if (mChanged) CCopasiDataModel::Global->changed();
 
@@ -133,44 +137,19 @@ bool CQOptimizationWidget::loadTask()
     dynamic_cast<COptProblem *>(mpTask->getProblem());
   if (!pProblem) return false;
 
-  CQFittingItemWidget * pFitItemWidget;
+  if (*pProblem->getValue("Steady-State").pSTRING != "")
+    mpBtnSteadystate->setChecked(true);
+  else
+    mpBtnSteadystate->setChecked(false);
 
-  std::vector< COptItem * >::const_iterator it =
-    pProblem->getOptItemList().begin();
-  std::vector< COptItem * >::const_iterator end =
-    pProblem->getOptItemList().end();
+  mpParameters->load(pProblem->getGroup("OptimizationItemList"), NULL);
 
-  mpParameters->clearWidgetList();
-  for (; it != end; ++it)
-    {
-      pFitItemWidget = new CQFittingItemWidget(mpParameters);
-      pFitItemWidget->load(*static_cast<const COptItem *>(*it));
-      mpParameters->addWidget(pFitItemWidget);
-    }
-
-  QString TabLabel = "Parameters (" + QString::number(mpParameters->numRows()) + ")";
-  mpTabWidget->setTabLabel(mpParametersPage, TabLabel);
-
-  it = pProblem->getConstraintList().begin();
-  end = pProblem->getConstraintList().end();
-
-  mpConstraints->clearWidgetList();
-  for (; it != end; ++it)
-    {
-      pFitItemWidget = new CQFittingItemWidget(mpConstraints);
-      pFitItemWidget->load(*static_cast<const COptItem *>(*it));
-      mpConstraints->addWidget(pFitItemWidget);
-    }
-
-  TabLabel = "Constraints (" + QString::number(mpConstraints->numRows()) + ")";
-  mpTabWidget->setTabLabel(mpConstraintsPage, TabLabel);
+  mpConstraints->load(pProblem->getGroup("OptimizationConstraintList"), NULL);
 
   mChanged = false;
+
   return true;
 }
-
-CCopasiMethod * CQOptimizationWidget::createMethod(const CCopasiMethod::SubType & type)
-{return COptMethod::createMethod(type);}
 
 bool CQOptimizationWidget::runTask()
 {
@@ -206,59 +185,12 @@ bool CQOptimizationWidget::runTask()
   return true;
 }
 
-void CQOptimizationWidget::slotBtnAdd()
-{
-  CQFittingItemWidget * tmp = new CQFittingItemWidget(mpCurrentList);
-  mpCurrentList->addWidget(tmp);
-
-  int totalRows = mpCurrentList->numRows();
-  mpCurrentList->ensureCellVisible(totalRows - 1, 0);
-  tmp->mpBtnObject->setFocus();
-
-  QString TabLabel = mpTabWidget->tabLabel(mpTabWidget->currentPage());
-  TabLabel.replace(QString::number(totalRows - 1), QString::number(totalRows));
-  mpTabWidget->setTabLabel(mpTabWidget->currentPage(), TabLabel);
-
-  return;
-}
-
-void CQOptimizationWidget::slotItemDeleted()
-{
-  int totalRows = mpCurrentList->numRows();
-
-  QString TabLabel = mpTabWidget->tabLabel(mpTabWidget->currentPage());
-  TabLabel.replace(QString::number(totalRows + 1), QString::number(totalRows));
-  mpTabWidget->setTabLabel(mpTabWidget->currentPage(), TabLabel);
-}
-
 void CQOptimizationWidget::slotPageChange(QWidget * currentPage)
 {
   if (mpTabWidget->tabLabel(currentPage).contains("Parameters", true))
-    {
-      mpBtnAdd->setText("Add Parameter");
-      mpCurrentList = mpParameters;
-    }
+    mpCurrentList = mpParameters;
   else
-    {
-      mpBtnAdd->setText("Add Constraint");
-      mpCurrentList = mpConstraints;
-    }
-}
-
-void CQOptimizationWidget::slotCopyItemWidget(int index)
-{
-  CQFittingItemWidget * tmp =
-    static_cast<CQFittingItemWidget *>(mpCurrentList->getWidgetList()[index])->copy();
-
-  mpCurrentList->insertWidget(tmp, index + 1);
-
-  int totalRows = mpCurrentList->numRows();
-  mpCurrentList->ensureCellVisible(index + 1, 0);
-  tmp->mpBtnObject->setFocus();
-
-  QString TabLabel = mpTabWidget->tabLabel(mpTabWidget->currentPage());
-  TabLabel.replace(QString::number(totalRows - 1), QString::number(totalRows));
-  mpTabWidget->setTabLabel(mpTabWidget->currentPage(), TabLabel);
+    mpCurrentList = mpConstraints;
 }
 
 void CQOptimizationWidget::slotTypeChanged(bool steadystate)
@@ -291,9 +223,26 @@ void CQOptimizationWidget::slotExpression()
     }
 }
 
+CCopasiMethod * CQOptimizationWidget::createMethod(const CCopasiMethod::SubType & type)
+{return COptMethod::createMethod(type);}
+
+void CQOptimizationWidget::slotParameterNumberChanged(int number)
+{
+  QString TabLabel = "Parameters (" + QString::number(number) + ")";
+  mpTabWidget->setTabLabel(mpParametersPage, TabLabel);
+}
+
+void CQOptimizationWidget::slotConstraintNumberChanged(int number)
+{
+  QString TabLabel = "Constraints (" + QString::number(number) + ")";
+  mpTabWidget->setTabLabel(mpConstraintsPage, TabLabel);
+}
+
 void CQOptimizationWidget::init()
 {
-  mpHeaderWidget->setTaskName("Parameter Estimation");
+  mpParseList = new std::vector< CCopasiObject * >;
+
+  mpHeaderWidget->setTaskName("Optimization");
 
   CQOptimizationWidgetLayout->insertWidget(0, mpHeaderWidget);
   CQOptimizationWidgetLayout->addWidget(mpBtnWidget);
@@ -302,29 +251,85 @@ void CQOptimizationWidget::init()
   addMethodParameterTable();
 
   mpParameterPageLayout = new QHBoxLayout(mpParametersPage, 0, 6, "mpParameterPageLayout");
-  mpParameters = new CScanContainerWidget(mpParametersPage);
-  mpParameters->enableCopy(true);
+  mpParameters = new CQFittingItemWidget(mpParametersPage);
+  mpParameters->enableFitItem(true);
   mpParameterPageLayout->addWidget(mpParameters);
-  connect(mpParameters, SIGNAL(itemDeleted()), this, SLOT(slotItemDeleted()));
-  connect(mpParameters, SIGNAL(copyWidget(int)), this, SLOT(slotCopyItemWidget(int)));
+  connect(mpParameters, SIGNAL(numberChanged(int)), this, SLOT(slotParameterNumberChanged(int)));
 
   mpConstraintPageLayout = new QHBoxLayout(mpConstraintsPage, 0, 6, "mpConstraintsPageLayout");
-  mpConstraints = new CScanContainerWidget(mpConstraintsPage);
-  mpConstraints->enableCopy(true);
+  mpConstraints = new CQFittingItemWidget(mpConstraintsPage);
+  mpConstraints->enableFitItem(true);
   mpConstraintPageLayout->addWidget(mpConstraints);
-  connect(mpConstraints, SIGNAL(itemDeleted()), this, SLOT(slotItemDeleted()));
-  connect(mpConstraints, SIGNAL(copyWidget(int)), this, SLOT(slotCopyItemWidget(int)));
+  connect(mpConstraints, SIGNAL(numberChanged(int)), this, SLOT(slotConstraintNumberChanged(int)));
 
   mpCurrentList = mpParameters;
+}
 
-  int h, s, v;
+void CQOptimizationWidget::destroy()
+{
+  pdelete(mpParseList);
+}
 
-  mSavedColor = paletteBackgroundColor();
-  mSavedColor.getHsv(&h, &s, &v);
+void CQOptimizationWidget::slotObjectSelect()
+{
+}
 
-  if (s < 20) s = 20;
-  mChangedColor.setHsv(240, s, v);
+bool CQOptimizationWidget::saveExpression()
+{
+  COptProblem * pProblem =
+    dynamic_cast<COptProblem *>(mpTask->getProblem());
+  if (!pProblem) return false;
 
-  mpBtnSteadystate->setChecked(true);
-  mTypeChanged = false;
+  std::string DisplayName = "";
+  std::string InfixCN = "";
+
+  std::string InfixDispayName = (const char *)mpEditExpression->text().utf8();
+  std::vector<CCopasiObject *>::iterator it = mpParseList->begin();
+
+  for (unsigned int i = 0; i < InfixDispayName.length(); i++)
+    {
+      InfixCN += InfixDispayName[i];
+      DisplayName = "";
+
+      if (InfixDispayName[i] == '<')
+        {
+          i++;
+          while (i < InfixDispayName.length() && InfixDispayName[i] != '>')
+            {
+              if (InfixDispayName[i] == '\\') // '\' is an escape character.
+                DisplayName += InfixDispayName[i++];
+
+              DisplayName += InfixDispayName[i++];
+            }
+
+          it = mpParseList->begin();
+          while (it < mpParseList->end())
+            {
+              if ((*it)->getObjectDisplayName() == DisplayName)
+                {
+                  InfixCN += (*it)->getCN();
+                  break;
+                }
+
+              it++;
+            }
+
+          if (it == mpParseList->end())
+            {
+              CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
+              return false;
+            }
+
+          InfixCN += ">";
+        }
+    }
+
+  if (!pProblem->setObjectiveFunction(InfixCN))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
+      return false;
+    }
+
+  // :TODO: need to handle errors.
+  return true;
 }

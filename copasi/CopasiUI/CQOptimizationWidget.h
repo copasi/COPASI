@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQOptimizationWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/14 16:27:00 $
+   $Date: 2006/03/08 19:01:10 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQOptimizationWidget.ui'
  **
- ** Created: Fri Oct 14 08:43:07 2005
- **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.1 2005/10/14 16:27:00 shoops Exp $)
+ ** Created: Wed Mar 8 13:42:29 2006
+ **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.2 2006/03/08 19:01:10 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -21,20 +21,19 @@
 #include <qvariant.h>
  #include <qpixmap.h>
  #include "TaskWidget.h"
- #include "CScanContainerWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
-class QToolButton;
-class QLabel;
 class QTextEdit;
+class QToolButton;
 class QButtonGroup;
 class QRadioButton;
-class QPushButton;
+class QLabel;
 class QTabWidget;
 class QWidget;
+class CQFittingItemWidget;
 
 class CQOptimizationWidget : public TaskWidget
   {
@@ -44,52 +43,59 @@ class CQOptimizationWidget : public TaskWidget
     CQOptimizationWidget(QWidget* parent = 0, const char* name = 0);
     ~CQOptimizationWidget();
 
-    QToolButton* mpBtnObject;
-    QLabel* mpLblExpression;
     QTextEdit* mpEditExpression;
+    QToolButton* mpBtnObject;
     QButtonGroup* mpBtnGroup;
     QRadioButton* mpBtnSteadystate;
     QRadioButton* mpBtnTimeCourse;
-    QPushButton* mpBtnAdd;
+    QLabel* mpLblType;
+    QLabel* mpLblExpression;
     QTabWidget* mpTabWidget;
     QWidget* mpParametersPage;
     QWidget* mpConstraintsPage;
 
     virtual bool runTask();
+    virtual bool saveExpression();
+
+  public slots:
+    void slotParameterNumberChanged(int number);
+    void slotConstraintNumberChanged(int number);
 
   protected:
-    CScanContainerWidget * mpCurrentList;
-    CScanContainerWidget * mpConstraints;
-    QHBoxLayout * mpParameterPageLayout;
-    CScanContainerWidget * mpParameters;
-    QHBoxLayout * mpConstraintPageLayout;
+    CQFittingItemWidget * mpCurrentList;
+    CQFittingItemWidget * mpConstraints;
+    CQFittingItemWidget * mpParameters;
     QColor mChangedColor;
     QColor mSavedColor;
     bool mTypeChanged;
+    QHBoxLayout * mpConstraintPageLayout;
+    QHBoxLayout * mpParameterPageLayout;
+    std::vector<CCopasiObject *> * mpParseList;
 
-    virtual bool loadTask();
     virtual bool saveTask();
+    virtual bool loadTask();
     virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
 
     QVBoxLayout* CQOptimizationWidgetLayout;
-    QGridLayout* mpGridLayout;
+    QGridLayout* mpLayoutGrid;
     QSpacerItem* mpSpacer;
-    QVBoxLayout* mpBtnGroupLayout;
+    QSpacerItem* mpSpacer2;
+    QHBoxLayout* mpBtnGroupLayout;
 
   protected slots:
     virtual void languageChange();
 
-    void slotBtnAdd();
     void slotPageChange(QWidget * currentPage);
-    void slotItemDeleted();
-    void slotCopyItemWidget(int);
-    void slotTypeChanged(bool);
+    void slotTypeChanged(bool steadystate);
     void slotExpression();
+    void slotObjectSelect();
 
   private:
     QPixmap image0;
+    QPixmap image1;
 
     void init();
+    void destroy();
   };
 
 #endif // CQOPTIMIZATIONWIDGET_H
