@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:23:30 $
+   $Date: 2006/03/09 15:53:52 $
    End CVS Header */
 
 #ifndef TIMESERIES_H
@@ -30,7 +30,7 @@ class CTimeSeries : private std::vector<CState>
      * @param pState the CState from which the date should be taken
      * @return success 
      */
-    bool init(C_INT32 n, CModel * pModel, CState * pState);
+    bool init(C_INT32 n, CModel * pModel);
 
     bool add();
 
@@ -50,7 +50,7 @@ class CTimeSeries : private std::vector<CState>
     //C_INT32 mN;
     //C_INT32 mCounter;
     std::vector<CState>::iterator mIt;
-    CState * mpState;
+    const CState * mpState;
     std::vector<std::string> mTitles;
     std::vector<C_FLOAT64> mFactors;
     CVector<unsigned C_INT32> mPivot;

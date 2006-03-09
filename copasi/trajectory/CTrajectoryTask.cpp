@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:23:30 $
+   $Date: 2006/03/09 15:53:52 $
    End CVS Header */
 
 /**
@@ -326,7 +326,7 @@ bool CTrajectoryTask::initOutput()
   if (mDoOutput == OUTPUT_COMPLETE)
     {
       if (mTimeSeriesRequested)
-        mTimeSeries.init(mpTrajectoryProblem->getStepNumber(), mpProblem->getModel(), mpCurrentState);
+        mTimeSeries.init(mpTrajectoryProblem->getStepNumber(), mpProblem->getModel());
     }
   return true;
 }

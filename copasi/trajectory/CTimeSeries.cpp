@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:23:30 $
+   $Date: 2006/03/09 15:53:52 $
    End CVS Header */
 
 #include "copasi.h"
@@ -20,10 +20,10 @@ CTimeSeries::CTimeSeries()
     mDummyFloat(0)
 {}
 
-bool CTimeSeries::init(C_INT32 n, CModel * pModel, CState * pState)
+bool CTimeSeries::init(C_INT32 n, CModel * pModel)
 {
   //std::cout << n << std::endl;
-  mpState = pState;
+  mpState = & pModel->getState();
 
   CStateTemplate & Template = pModel->getStateTemplate();
 
@@ -46,7 +46,7 @@ bool CTimeSeries::init(C_INT32 n, CModel * pModel, CState * pState)
         {
           mTitles[i] = CMetabNameInterface::getDisplayName(pModel, *pMetab);
           mFactors[i] =
-            1.0 / Number2QuantityFactor * pMetab->getCompartment()->getVolume();
+            Number2QuantityFactor / pMetab->getCompartment()->getVolume();
         }
       else
         {
