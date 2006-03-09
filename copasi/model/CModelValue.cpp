@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 13:06:32 $
+   $Date: 2006/03/09 17:41:25 $
    End CVS Header */
 
 #include <iostream>
@@ -73,11 +73,14 @@ CModelEntity::CModelEntity(const CModelEntity & src,
 
 CModelEntity::~CModelEntity()
 {
-  if (!mpModel)
-    {
-      pdelete(mpValueData);
-      pdelete(mpIValue);
-    }
+  if (mpModel)
+    mpModel->getStateTemplate().remove(this);
+
+  // After the above call we definitely own the data and
+  // therfore must destroy them.
+
+  pdelete(mpValueData);
+  pdelete(mpIValue);
 
   DESTRUCTOR_TRACE;
 }
