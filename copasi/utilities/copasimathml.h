@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/copasimathml.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/09 12:59:18 $
+   $Date: 2006/03/09 20:52:13 $
    End CVS Header */
 
 #ifndef COPASI_MATHML
@@ -17,7 +17,7 @@ class CMathMl
 
     static std::string fixName(const std::string & name)
     {
-      if (name.find_first_of(" ()") == std::string::npos)
+      if (name.find_first_of(" ()*+-") == std::string::npos)
         return name;
       else
         return "\"" + name + "\"";
