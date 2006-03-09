@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/07/02 15:24:04 $
+   $Date: 2006/03/09 12:55:32 $
    End CVS Header */
 
 /****************************************************************************
@@ -15,19 +15,27 @@
 
 #ifndef DIFFERENTIAL_EQUATIONS_H
 #define DIFFERENTIAL_EQUATIONS_H
-#include <qpushbutton.h>
-#include <qtextbrowser.h>
+#include <qpushbutton.h> 
+//#include <qtextbrowser.h>
 
 #include "copasi.h"
-#include "copasiWidget.h"
-class CMathModel;
+#include "copasiWidget.h" 
+//class CMathModel;
+class CModel;
+class CMetab;
+class CReaction;
+class QtMmlWidget;
+class QScrollView;
 
 class DifferentialEquations : public CopasiWidget
   {
     Q_OBJECT
 
   protected:
-    QTextBrowser *textBrowser;
+    //QTextBrowser *textBrowser;
+    QScrollView* mScrollView;
+    QtMmlWidget* mMmlWidget;
+
     //QPushButton *btnOK;
     //QPushButton *btnCancel;
 
@@ -38,11 +46,16 @@ class DifferentialEquations : public CopasiWidget
     virtual bool enter(const std::string & key = "");
 
   protected slots:
-    virtual void slotBtnOKClicked();
-    virtual void slotBtnCancelClicked();
+    //virtual void slotBtnOKClicked();
+    //virtual void slotBtnCancelClicked();
 
   private:
-    void loadDifferentialEquations(CMathModel * mathModel);
+    void loadDifferentialEquations(CModel * model);
+
+    void writeLHS(std::ostream & out, const std::string & metabName,
+                  const std::string & compName, unsigned C_INT32 l);
+
+    void writeRHS(std::ostream & out, const CMetab* pMetab, const CReaction* pReac, unsigned C_INT32 l);
   };
 
 #endif
