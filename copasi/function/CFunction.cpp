@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/12/08 15:20:14 $
+   $Author: ssahle $ 
+   $Date: 2006/03/09 12:54:46 $
    End CVS Header */
 
 #include "copasi.h"
@@ -202,3 +202,25 @@ bool CFunction::isSuitable(const unsigned C_INT32 noSubstrates,
 
   return true;
 }
+
+#include "utilities/copasimathml.h"
+
+void CFunction::writeMathML(std::ostream & out, unsigned C_INT32 l) const
+  {
+    //out << "<math>" << std::endl;
+
+    out << SPC(l) << "<mrow>" << std::endl;
+    out << SPC(l + 1) << CMathMl::fixName(getObjectName()) << std::endl;
+    out << SPC(l + 1) << "<mfenced>" << std::endl;
+
+    unsigned C_INT32 i, imax = getVariables().size();
+    for (i = 0; i < imax; ++i)
+      {
+        out << SPC(l + 2) << "<mi>" << getVariables()[i]->getObjectName() << "</mi>" << std::endl;
+      }
+
+    out << SPC(l + 1) << "</mfenced>" << std::endl;
+    out << SPC(l) << "</mrow>" << std::endl;
+
+    //out << "</math>" << std::endl;
+  }

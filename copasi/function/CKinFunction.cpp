@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/07 10:55:59 $
+   $Date: 2006/03/09 12:54:46 $
    End CVS Header */
 
 /**
@@ -198,11 +198,11 @@ void CKinFunction::cleanupNodes()
   return;
 }
 
-void CKinFunction::writeMathML(std::ostream & out) const
+/*void CKinFunction::writeMathML(std::ostream & out) const
   {
-    if (!mNodes[0]->isLeftValid()) return;
-
+    //if (!mNodes[0]->isLeftValid()) return;
+ 
     out << "<math>" << std::endl;
-    mNodes[0]->getLeft().writeMathML(out, 0);
+    //mNodes[0]->getLeft().writeMathML(out, 0);
     out << "</math>" << std::endl;
-  }
+  }*/

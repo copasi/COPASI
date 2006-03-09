@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/07 10:55:59 $
+   $Date: 2006/03/09 12:54:46 $
    End CVS Header */
 
 #ifndef COPASI_CFunction
@@ -159,6 +159,9 @@ class CFunction:
      *  Whether the function is reversible
      */
     TriLogic mReversible;
+
+  public:
+    virtual void writeMathML(std::ostream & out, unsigned C_INT32 l = 0) const;
   };
 
 #include "CKinFunction.h"

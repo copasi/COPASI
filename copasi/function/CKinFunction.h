@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/07 10:55:59 $
+   $Date: 2006/03/09 12:54:46 $
    End CVS Header */
 
 /**
@@ -83,7 +83,7 @@ class CKinFunction : public CFunction
      */
     void cleanup();
 
-    virtual void writeMathML(std::ostream & out) const;
+    //virtual void writeMathML(std::ostream & out) const;
 
     /**
      *  Retreives the nodes of the function
