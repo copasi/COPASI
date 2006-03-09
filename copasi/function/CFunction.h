@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/09 12:54:46 $
+   $Date: 2006/03/09 20:43:50 $
    End CVS Header */
 
 #ifndef COPASI_CFunction
@@ -162,6 +162,11 @@ class CFunction:
 
   public:
     virtual void writeMathML(std::ostream & out, unsigned C_INT32 l = 0) const;
+
+    virtual void writeMathML(std::ostream & out,
+                             const std::vector<std::vector<std::string> > & env,
+                             bool expand = true, bool fullExpand = true,
+                             unsigned C_INT32 l = 0) const;
   };
 
 #include "CKinFunction.h"

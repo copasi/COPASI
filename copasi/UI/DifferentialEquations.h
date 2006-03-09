@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/09 12:55:32 $
+   $Date: 2006/03/09 20:47:31 $
    End CVS Header */
 
 /****************************************************************************
@@ -52,10 +52,18 @@ class DifferentialEquations : public CopasiWidget
   private:
     void loadDifferentialEquations(CModel * model);
 
-    void writeLHS(std::ostream & out, const std::string & metabName,
-                  const std::string & compName, unsigned C_INT32 l);
+    static void writeLHS(std::ostream & out, const std::string & metabName,
+                         const std::string & compName, unsigned C_INT32 l);
 
-    void writeRHS(std::ostream & out, const CMetab* pMetab, const CReaction* pReac, unsigned C_INT32 l);
+    static void writeRHS(std::ostream & out, const CMetab* pMetab, const CReaction* pReac,
+                         unsigned C_INT32 l);
+
+    //list keys of all reactions that have the metab in their balances
+    static std::set<std::string> listReactionsForMetab(const CModel* model,
+        const std::string & key);
+
+    static void createParameterMapping(const CReaction* pReac,
+                                       std::vector<std::vector<std::string> > & params);
   };
 
 #endif

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/09 12:54:46 $
+   $Date: 2006/03/09 20:43:50 $
    End CVS Header */
 
 #include "copasi.h"
@@ -204,6 +204,26 @@ bool CFunction::isSuitable(const unsigned C_INT32 noSubstrates,
 }
 
 #include "utilities/copasimathml.h"
+
+void CFunction::writeMathML(std::ostream & out,
+                            const std::vector<std::vector<std::string> > & env,
+                            bool expand, bool fullExpand,
+                            unsigned C_INT32 l) const
+  {
+    out << SPC(l) << "<mrow>" << std::endl;
+    out << SPC(l + 1) << CMathMl::fixName(getObjectName()) << std::endl;
+    out << SPC(l + 1) << "<mfenced>" << std::endl;
+
+    unsigned C_INT32 i, imax = getVariables().size();
+    for (i = 0; i < imax; ++i)
+      {
+        //out << SPC(l + 2) << "<mi>" << getVariables()[i]->getObjectName() << "</mi>" << std::endl;
+        out << SPC(l + 2) << env[i][0] << std::endl;
+      }
+
+    out << SPC(l + 1) << "</mfenced>" << std::endl;
+    out << SPC(l) << "</mrow>" << std::endl;
+  }
 
 void CFunction::writeMathML(std::ostream & out, unsigned C_INT32 l) const
   {

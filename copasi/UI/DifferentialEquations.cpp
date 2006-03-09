@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/09 12:55:32 $
+   $Date: 2006/03/09 20:47:31 $
    End CVS Header */
 
 /*******************************************************************
@@ -119,7 +119,8 @@ void DifferentialEquations::writeLHS(std::ostream & out,
   out << SPC(l + 2) << "<mi>d</mi>" << std::endl;
   out << SPC(l + 2) << "<mfenced>" << std::endl;
   out << SPC(l + 3) << "<mrow>" << std::endl;
-  out << SPC(l + 4) << "<mi>" << CMathMl::fixName(metabName) << "</mi>" << std::endl;
+  //out << SPC(l + 4) << "<mi>" << CMathMl::fixName(metabName) << "</mi>" << std::endl;
+  out << SPC(l + 4) << "<mi>[" << metabName << "]</mi>" << std::endl;
   out << SPC(l + 4) << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
   out << SPC(l + 4) << "<msub><mi>V</mi><mi>" << CMathMl::fixName(compName) << "</mi></msub>" << std::endl;
 
@@ -193,9 +194,85 @@ void DifferentialEquations::writeRHS(std::ostream & out,
 
   //kinetic function
   if (&pReac->getFunction())
-    pReac->getFunction().writeMathML(out, l + 1);
+    {
+      std::vector<std::vector<std::string> > params;
+      createParameterMapping(pReac, params);
+      pReac->getFunction().writeMathML(out, params, false, false, l + 1);
+    }
 
   out << SPC(l + 0) << "</mrow>" << std::endl;
+}
+
+void DifferentialEquations::createParameterMapping(const CReaction* pReac,
+    std::vector<std::vector<std::string> > & params)
+{
+  assert(pReac);
+  assert(&pReac->getFunction());
+
+  const CFunctionParameters & functionParams = pReac->getFunctionParameters();
+  unsigned C_INT32 j, jmax;
+  unsigned C_INT32 i, imax = functionParams.size();
+  params.resize(imax);
+  for (i = 0; i < imax; ++i)
+    {
+      params[i].resize(1);
+
+      std::string name;
+      //std::ostringstream number;
+      switch (functionParams[i]->getUsage())
+        {
+        case CFunctionParameter::SUBSTRATE:
+        case CFunctionParameter::PRODUCT:
+        case CFunctionParameter::MODIFIER:
+          if (functionParams[i]->getType() == CFunctionParameter::FLOAT64)
+            {
+              name = GlobalKeys.get(pReac->getParameterMappings()[i][0])->getObjectName();
+              //params[i][0] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
+              params[i][0] = "<mi>[" + name + "]</mi>";
+            }
+          else if (functionParams[i]->getType() == CFunctionParameter::VFLOAT64)
+            {
+              jmax = pReac->getParameterMappings()[i].size();
+              params[i].resize(jmax);
+              for (j = 0; j < jmax; ++j)
+                {
+                  name = GlobalKeys.get(pReac->getParameterMappings()[i][j])->getObjectName();
+                  //params[i][j] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
+                  params[i][j] = "<mi>[" + name + "]</mi>";
+                }
+            }
+          else assert(false);
+          break;
+
+        case CFunctionParameter::PARAMETER:
+          if (pReac->isLocalParameter(i))
+            {
+              std::ostringstream number;
+              number << pReac->getParameterValue(functionParams[i]->getObjectName());
+              params[i][0] = "<mn>" + number.str() + "</mn>";
+            }
+          else
+            {
+              name = GlobalKeys.get(pReac->getParameterMappings()[i][0])->getObjectName();
+              params[i][0] = "<mi>" + CMathMl::fixName(name) + "</mi>";
+              //params[i][0] = "<mi>ggg</mi>";
+            }
+          break;
+
+        case CFunctionParameter::VOLUME:
+          name = GlobalKeys.get(pReac->getParameterMappings()[i][0])->getObjectName();
+          params[i][0] = "<msub><mi>V</mi><mi>" + CMathMl::fixName(name)
+                         + "</mi></msub>";
+          break;
+
+        case CFunctionParameter::TIME:
+          params[i][0] = "<mi>time</mi>";
+          break;
+
+        default:
+          break;
+        }
+    }
 }
 
 void DifferentialEquations::loadDifferentialEquations(CModel * model)
@@ -208,7 +285,7 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
   C_INT32 i, imax = model->getMetabolites().size();
   for (i = 0; i < imax; i++)
     {
-      std::set<std::string> reacKeys = model->listReactionsDependentOnMetab(model->getMetabolites()[i]->getKey());
+      std::set<std::string> reacKeys = listReactionsForMetab(model, model->getMetabolites()[i]->getKey());
       std::set<std::string>::const_iterator it, itEnd = reacKeys.end();
       for (it = reacKeys.begin(); it != itEnd; ++it)
         {
@@ -240,6 +317,29 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
   mml << SPC(l) << "</mtable>" << std::endl;
 
   mMmlWidget->setContent(FROM_UTF8(mml.str()));
+  //std::cout << mml.str() << std::endl;
+}
+
+std::set<std::string> DifferentialEquations::listReactionsForMetab(const CModel* model,
+    const std::string & key)
+{
+  std::set<std::string> Keys;
+  const CCopasiVectorN<CReaction> & Reactions = model->getReactions();
+  C_INT32 j, jmax = Reactions.size();
+
+  for (j = 0; j < jmax; j++)
+    {
+      const CCopasiVector <CChemEqElement> &Balances = Reactions[j]->getChemEq().getBalances();
+      C_INT32 i, imax = Balances.size();
+      for (i = 0; i < imax; i++)
+        if (key == Balances[i]->getMetaboliteKey())
+          {
+            Keys.insert(Reactions[j]->getKey());
+            break;
+          }
+    }
+
+  return Keys;
 }
 
 //void DifferentialEquations::slotBtnOKClicked()

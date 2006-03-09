@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/07 10:55:59 $
+   $Date: 2006/03/09 20:43:50 $
    End CVS Header */
 
 /**
@@ -137,3 +137,47 @@ bool CMassAction::dependsOn(const C_FLOAT64 * parameter,
   }
 
 bool CMassAction::compile() {return true;}
+
+#include "utilities/copasimathml.h"
+
+void CMassAction::writeMathML(std::ostream & out,
+                              const std::vector<std::vector<std::string> > & env,
+                              bool expand, bool fullExpand,
+                              unsigned C_INT32 l) const
+  {
+    bool rev = (isReversible() == TriTrue);
+
+    if (rev)
+      out << SPC(l) << "<mfenced>" << std::endl;
+
+    out << SPC(l) << "<mrow>" << std::endl;
+
+    out << SPC(l + 1) << env[0][0] << std::endl;
+
+    unsigned i, imax = env[1].size();
+    for (i = 0; i < imax; ++i)
+      {
+        out << SPC(l + 1) << "<mo>&CenterDot;</mo>" << std::endl;
+        out << SPC(l + 1) << env[1][i] << std::endl;
+      }
+
+    if (rev)
+      {
+        out << SPC(l + 1) << "<mo>-</mo>" << std::endl;
+        out << SPC(l + 1) << env[2][0] << std::endl;
+
+        unsigned i, imax = env[3].size();
+        for (i = 0; i < imax; ++i)
+          {
+            out << SPC(l + 1) << "<mo>&CenterDot;</mo>" << std::endl;
+            out << SPC(l + 1) << env[3][i] << std::endl;
+          }
+      }
+
+    out << SPC(l) << "</mrow>" << std::endl;
+
+    if (rev)
+      out << SPC(l) << "</mfenced>" << std::endl;
+
+    //TODO reversible
+  }

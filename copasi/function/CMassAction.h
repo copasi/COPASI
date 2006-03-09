@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/29 18:47:03 $
+   $Author: ssahle $ 
+   $Date: 2006/03/09 20:43:50 $
    End CVS Header */
 
 /**
@@ -76,6 +76,11 @@ class CMassAction : public CFunction
      * Compile the function.
      */
     virtual bool compile();
+
+    virtual void writeMathML(std::ostream & out,
+                             const std::vector<std::vector<std::string> > & env,
+                             bool expand = true, bool fullExpand = true,
+                             unsigned C_INT32 l = 0) const;
   };
 
 #endif // COPASI_CMassAction
