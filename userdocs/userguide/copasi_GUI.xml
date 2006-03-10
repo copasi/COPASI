@@ -1202,7 +1202,7 @@ In addition to defining "normal" functions, Copasi allows the definition of piec
       <mml:mo> ( </mml:mo>
       <mml:mrow>
         <mml:mi> x </mml:mi>
-        <mml:mo> &lt; </mml:mo>
+        <mml:mi> lt </mml:mi>
         <mml:mn> 0.0 </mml:mn>
       </mml:mrow>
       <mml:mo> , </mml:mo>
@@ -1213,7 +1213,7 @@ In addition to defining "normal" functions, Copasi allows the definition of piec
       <mml:mo> ( </mml:mo>
       <mml:mrow>
          <mml:mi> x </mml:mi>
-         <mml:mo> &gt; </mml:mo>
+         <mml:mi> gt</mml:mi>
          <mml:mn> 0.0 </mml:mn>
       </mml:mrow>
       <mml:mo> , </mml:mo>
