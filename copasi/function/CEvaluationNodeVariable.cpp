@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVariable.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/13 22:47:14 $
+   $Author: ssahle $ 
+   $Date: 2006/03/10 09:58:42 $
    End CVS Header */
 
 #include "copasi.h"
@@ -52,4 +52,15 @@ ASTNode* CEvaluationNodeVariable::toAST() const
     node->setType(AST_NAME);
     node->setName(this->getData().c_str());
     return node;
+  }
+
+#include "utilities/copasimathml.h"
+
+void CEvaluationNodeVariable::writeMathML(std::ostream & out,
+    const std::vector<std::vector<std::string> > & env,
+    bool expand,
+    unsigned C_INT32 l) const
+  {
+    if ((mIndex < env.size()) && (mIndex >= 0))
+      out << SPC(l) << env[mIndex][0] << std::endl;
   }

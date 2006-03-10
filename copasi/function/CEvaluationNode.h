@@ -1,15 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/07 12:37:08 $
+   $Author: ssahle $ 
+   $Date: 2006/03/10 09:58:33 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNode
 #define COPASI_CEvaluationNode
 
 #include <iostream>
+#include <vector>
 
 #include "copasi.h"
 #include "utilities/CCopasiNode.h"
@@ -194,6 +195,14 @@ class CEvaluationNode : public CCopasiNode< std::string >
      * @return const C_FLOAT64 * pValue
      */
     const C_FLOAT64 * getValuePointer() const;
+
+    /**
+     * generate display MathML recursively
+     */
+    virtual void writeMathML(std::ostream & out,
+                             const std::vector<std::vector<std::string> > & env,
+                             bool expand = true,
+                             unsigned C_INT32 l = 0) const;
 
     void printRecursively(std::ostream & os = std::cout, int indent = 0) const;
 

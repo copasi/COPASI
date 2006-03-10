@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/07 12:37:08 $
+   $Author: ssahle $ 
+   $Date: 2006/03/10 09:58:33 $
    End CVS Header */
 
 #include "copasi.h"
@@ -205,6 +205,12 @@ ASTNode* CEvaluationNode::toAST() const
 
 const C_FLOAT64 * CEvaluationNode::getValuePointer() const
   {return &mValue;}
+
+void CEvaluationNode::writeMathML(std::ostream & out,
+                                  const std::vector<std::vector<std::string> > & env,
+                                  bool expand,
+                                  unsigned C_INT32 l) const
+  {}
 
 void CEvaluationNode::printRecursively(std::ostream & os, int indent) const
   {

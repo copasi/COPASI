@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVariable.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/03 10:24:36 $
+   $Author: ssahle $ 
+   $Date: 2006/03/10 09:58:43 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeVariable
@@ -72,6 +72,14 @@ class CEvaluationNodeVariable : public CEvaluationNode
      * @return ASTNode* the resulting ASTNode.
      */
     virtual ASTNode* toAST() const;
+
+    /**
+     * generate display MathML recursively
+     */
+    virtual void writeMathML(std::ostream & out,
+                             const std::vector<std::vector<std::string> > & env,
+                             bool expand = true,
+                             unsigned C_INT32 l = 0) const;
 
     //Attributes
   private:
