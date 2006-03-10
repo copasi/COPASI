@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/02 13:26:08 $
+   $Author: shoops $ 
+   $Date: 2006/03/10 20:23:45 $
    End CVS Header */
 
 #include <sbml/math/ASTNode.h>
@@ -100,8 +100,20 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
     case EXPRESSION:
       mpExpression =
         dynamic_cast<CExpression *>(CCopasiDataModel::Global->getFunctionList()->findFunction(mData));
-      if (!mpExpression) return false;
-      if (!mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer())) return false;
+      if (!mpExpression)
+        {
+          // We may have a function with no arguments
+          mpFunction =
+            dynamic_cast<CFunction *>(CCopasiDataModel::Global->getFunctionList()->findFunction(mData));
+          if (!mpFunction) return false;
+
+          mType = (CEvaluationNode::Type) (CEvaluationNode::CALL | FUNCTION);
+
+          success = compile(pTree);
+        }
+      else if (!mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer()))
+        success = false;
+
       break;
 
     default:
