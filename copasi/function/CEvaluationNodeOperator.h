@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/07 12:37:08 $
+   $Author: ssahle $ 
+   $Date: 2006/03/10 15:09:43 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeOperator
@@ -161,8 +161,15 @@ class CEvaluationNodeOperator : public CEvaluationNode
      * @param const ASTNode* pASTNode the root node for the SBML math expression
      * @return bool which is true on sucessfull conversion.
      */
-
     bool createModuloTree(const CEvaluationNodeOperator* pNode, ASTNode* pASTNode) const;
+
+    /**
+     * generate display MathML recursively
+     */
+    virtual void writeMathML(std::ostream & out,
+                             const std::vector<std::vector<std::string> > & env,
+                             bool expand = true,
+                             unsigned C_INT32 l = 0) const;
 
     // Attributes
   private:

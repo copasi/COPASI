@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:05 $
+   $Author: ssahle $ 
+   $Date: 2006/03/10 15:09:43 $
    End CVS Header */
 
 #include "copasi.h"
@@ -156,4 +156,15 @@ ASTNode* CEvaluationNodeNumber::toAST() const
         break;
       }
     return node;
+  }
+
+#include "utilities/copasimathml.h"
+
+void CEvaluationNodeNumber::writeMathML(std::ostream & out,
+                                        const std::vector<std::vector<std::string> > & env,
+                                        bool expand,
+                                        unsigned C_INT32 l) const
+  {
+    out << SPC(l) << "<mn>" << mData << "</mn>" << std::endl;
+    //or use mValue instead?
   }

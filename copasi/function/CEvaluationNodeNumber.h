@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/03 10:24:36 $
+   $Author: ssahle $ 
+   $Date: 2006/03/10 15:09:43 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeNumber
@@ -66,6 +66,14 @@ class CEvaluationNodeNumber : public CEvaluationNode
      * @return ASTNode* return a pointer to the newly created node;
      */
     ASTNode* toAST() const;
+
+    /**
+     * generate display MathML recursively
+     */
+    virtual void writeMathML(std::ostream & out,
+                             const std::vector<std::vector<std::string> > & env,
+                             bool expand = true,
+                             unsigned C_INT32 l = 0) const;
   };
 
 #endif // COPASI_CEvaluationNodeNumber

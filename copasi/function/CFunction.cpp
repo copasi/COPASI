@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/10 09:59:16 $
+   $Date: 2006/03/10 15:10:47 $
    End CVS Header */
 
 #include "copasi.h"
@@ -212,7 +212,10 @@ void CFunction::writeMathML(std::ostream & out,
   {
     if (expand)
       {
-        mpRoot->writeMathML(out, env, fullExpand, l);
+        bool flag = true; //TODO include check if parantheses are necessary
+        if (flag) out << SPC(l) << "<mfenced>" << std::endl;
+        mpRoot->writeMathML(out, env, fullExpand, l + 1);
+        if (flag) out << SPC(l) << "</mfenced>" << std::endl;
       }
     else //no expand
       {
