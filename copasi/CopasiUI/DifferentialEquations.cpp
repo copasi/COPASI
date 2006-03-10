@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/09 20:47:31 $
+   $Date: 2006/03/10 09:57:41 $
    End CVS Header */
 
 /*******************************************************************
@@ -116,7 +116,7 @@ void DifferentialEquations::writeLHS(std::ostream & out,
 {
   out << SPC(l + 0) << "<mfrac>" << std::endl;
   out << SPC(l + 1) << "<mrow>" << std::endl;
-  out << SPC(l + 2) << "<mi>d</mi>" << std::endl;
+  out << SPC(l + 2) << "<mo>d</mo>" << std::endl;
   out << SPC(l + 2) << "<mfenced>" << std::endl;
   out << SPC(l + 3) << "<mrow>" << std::endl;
   //out << SPC(l + 4) << "<mi>" << CMathMl::fixName(metabName) << "</mi>" << std::endl;
@@ -128,12 +128,15 @@ void DifferentialEquations::writeLHS(std::ostream & out,
 
   out << SPC(l + 2) << "</mfenced>" << std::endl;
   out << SPC(l + 1) << "</mrow>" << std::endl;
-  out << SPC(l + 1) << "<mi>dt</mi>" << std::endl;
+  out << SPC(l + 1) << "<mrow>" << std::endl;
+  out << SPC(l + 2) << "<mo>d</mo><mi>t</mi>" << std::endl;
+  out << SPC(l + 1) << "</mrow>" << std::endl;
   out << SPC(l + 0) << "</mfrac>" << std::endl;
 }
 
 void DifferentialEquations::writeRHS(std::ostream & out,
                                      const CMetab* pMetab, const CReaction* pReac,
+                                     bool expand, bool expandFull,
                                      unsigned C_INT32 l)
 {
   if (!pMetab)
@@ -197,7 +200,7 @@ void DifferentialEquations::writeRHS(std::ostream & out,
     {
       std::vector<std::vector<std::string> > params;
       createParameterMapping(pReac, params);
-      pReac->getFunction().writeMathML(out, params, false, false, l + 1);
+      pReac->getFunction().writeMathML(out, params, expand, expandFull, l + 1);
     }
 
   out << SPC(l + 0) << "</mrow>" << std::endl;
@@ -226,7 +229,7 @@ void DifferentialEquations::createParameterMapping(const CReaction* pReac,
         case CFunctionParameter::MODIFIER:
           if (functionParams[i]->getType() == CFunctionParameter::FLOAT64)
             {
-              name = GlobalKeys.get(pReac->getParameterMappings()[i][0])->getObjectName();
+              name = GlobalKeys.get(pReac->getParameterMappings()[i][0])->getObjectDisplayName();
               //params[i][0] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
               params[i][0] = "<mi>[" + name + "]</mi>";
             }
@@ -236,7 +239,7 @@ void DifferentialEquations::createParameterMapping(const CReaction* pReac,
               params[i].resize(jmax);
               for (j = 0; j < jmax; ++j)
                 {
-                  name = GlobalKeys.get(pReac->getParameterMappings()[i][j])->getObjectName();
+                  name = GlobalKeys.get(pReac->getParameterMappings()[i][j])->getObjectDisplayName();
                   //params[i][j] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
                   params[i][j] = "<mi>[" + name + "]</mi>";
                 }
@@ -294,20 +297,21 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
           //first column (lhs)
           mml << SPC(l + 2) << "<mtd>" << std::endl;
           if (it == reacKeys.begin())
-            writeLHS(mml, model->getMetabolites()[i]->getObjectName(),
+            writeLHS(mml, model->getMetabolites()[i]->getObjectDisplayName(),
                      model->getMetabolites()[i]->getCompartment()->getObjectName(), l + 3);
           mml << SPC(l + 2) << "</mtd>" << std::endl;
 
           //second column ("=")
           mml << SPC(l + 2) << "<mtd>" << std::endl;
           if (it == reacKeys.begin())
-            mml << SPC(l + 3) << "=" << std::endl;
+            mml << SPC(l + 3) << "<mo>=</mo>" << std::endl;
           mml << SPC(l + 2) << "</mtd>" << std::endl;
 
           //third column (rhs)
           mml << SPC(l + 2) << "<mtd columnalign='left'>" << std::endl;
           writeRHS(mml, model->getMetabolites()[i],
-                   dynamic_cast<CReaction*>(GlobalKeys.get(*it)) , l + 3);
+                   dynamic_cast<CReaction*>(GlobalKeys.get(*it)) ,
+                   true, false, l + 3); //TODO make configurable
           mml << SPC(l + 2) << "</mtd>" << std::endl;
 
           mml << SPC(l + 1) << "</mtr>" << std::endl;

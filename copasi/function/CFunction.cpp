@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/09 20:43:50 $
+   $Date: 2006/03/10 09:59:16 $
    End CVS Header */
 
 #include "copasi.h"
@@ -210,19 +210,25 @@ void CFunction::writeMathML(std::ostream & out,
                             bool expand, bool fullExpand,
                             unsigned C_INT32 l) const
   {
-    out << SPC(l) << "<mrow>" << std::endl;
-    out << SPC(l + 1) << CMathMl::fixName(getObjectName()) << std::endl;
-    out << SPC(l + 1) << "<mfenced>" << std::endl;
-
-    unsigned C_INT32 i, imax = getVariables().size();
-    for (i = 0; i < imax; ++i)
+    if (expand)
       {
-        //out << SPC(l + 2) << "<mi>" << getVariables()[i]->getObjectName() << "</mi>" << std::endl;
-        out << SPC(l + 2) << env[i][0] << std::endl;
+        mpRoot->writeMathML(out, env, fullExpand, l);
       }
+    else //no expand
+      {
+        out << SPC(l) << "<mrow>" << std::endl;
+        out << SPC(l + 1) << CMathMl::fixName(getObjectName()) << std::endl;
+        out << SPC(l + 1) << "<mfenced>" << std::endl;
 
-    out << SPC(l + 1) << "</mfenced>" << std::endl;
-    out << SPC(l) << "</mrow>" << std::endl;
+        unsigned C_INT32 i, imax = getVariables().size();
+        for (i = 0; i < imax; ++i)
+          {
+            out << SPC(l + 2) << env[i][0] << std::endl;
+          }
+
+        out << SPC(l + 1) << "</mfenced>" << std::endl;
+        out << SPC(l) << "</mrow>" << std::endl;
+      }
   }
 
 void CFunction::writeMathML(std::ostream & out, unsigned C_INT32 l) const

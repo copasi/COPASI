@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/09 20:43:50 $
+   $Date: 2006/03/10 09:59:16 $
    End CVS Header */
 
 /**
@@ -178,6 +178,4 @@ void CMassAction::writeMathML(std::ostream & out,
 
     if (rev)
       out << SPC(l) << "</mfenced>" << std::endl;
-
-    //TODO reversible
   }

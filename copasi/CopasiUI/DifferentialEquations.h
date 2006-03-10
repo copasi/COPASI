@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/09 20:47:31 $
+   $Date: 2006/03/10 09:57:42 $
    End CVS Header */
 
 /****************************************************************************
@@ -56,6 +56,7 @@ class DifferentialEquations : public CopasiWidget
                          const std::string & compName, unsigned C_INT32 l);
 
     static void writeRHS(std::ostream & out, const CMetab* pMetab, const CReaction* pReac,
+                         bool expand, bool expandFull,
                          unsigned C_INT32 l);
 
     //list keys of all reactions that have the metab in their balances
