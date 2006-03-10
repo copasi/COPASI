@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:27 $
+   $Date: 2006/03/10 15:00:21 $
    End CVS Header */
 
 /**
@@ -269,9 +269,15 @@ bool COptProblem::initialize()
       mOriginalVariables[i] = *(*it)->COptItem::getObjectValue();
     }
 
-  mCPUTime.start();
+  it = mpConstraintItems->begin();
+  end = mpConstraintItems->end();
+
+  for (i = 0; it != end; ++it, i++)
+    if (!(*it)->compile(ContainerList)) return false;
 
   createObjectiveFunction();
+
+  mCPUTime.start();
 
   if (!mpFunction || !mpFunction->compile(ContainerList))
     {
@@ -313,7 +319,13 @@ bool COptProblem::checkParametricConstraints()
 
 bool COptProblem::checkFunctionalConstraints()
 {
-  return true; // :TODO:
+  std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
+  std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
+
+  for (; it != end; ++it)
+    if ((*it)->checkConstraint()) return false;
+
+  return true;
 }
 
 /**

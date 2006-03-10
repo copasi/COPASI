@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/12 17:54:58 $
+   $Date: 2006/03/10 15:00:21 $
    End CVS Header */
 
 #include <float.h>
@@ -229,6 +229,12 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
   if (!mpUpperBound)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 3, Bound.c_str());
+      return false;
+    }
+
+  if (!mpUpperObject && !mpLowerObject && *mpUpperBound < *mpLowerBound)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 4, *mpLowerBound, *mpUpperBound);
       return false;
     }
 

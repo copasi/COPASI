@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2006/03/01 20:42:13 $
+   $Author: shoops $ 
+   $Date: 2006/03/10 15:00:21 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -107,7 +107,7 @@ const MESSAGES Messages[] =
     {MCOptimization + 1, "Optimization (1): Object '%s' not found."},
     {MCOptimization + 2, "Optimization (2): Lower Bound '%s' not found."},
     {MCOptimization + 3, "Optimization (3): Upper Bound '%s' not found."},
-    {MCOptimization + 4, "Optimization (4): Invalid Relationship: '%s'."},
+    {MCOptimization + 4, "Optimization (4): Empty Interval ('%f', '%f') specified."},
     {MCOptimization + 5, "Optimization (5): Invalid Objective Functions."},
     {MCOptimization + 6, "Optimization (6): No adjustable Parameters specified."},
 
