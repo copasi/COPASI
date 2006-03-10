@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/02 13:26:08 $
+   $Author: shoops $ 
+   $Date: 2006/03/10 21:55:32 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeCall
@@ -18,6 +18,7 @@
 
 class CFunction;
 class CExpression;
+class CFunctionParameters;
 
 /**
  * This is the class for nodes presenting opertors used in an evaluation trees.
@@ -153,6 +154,16 @@ class CEvaluationNodeCall : public CEvaluationNode
     static void
     clearParameters(CCallParameters< C_FLOAT64 > * pCallParameters,
                     const std::vector<CEvaluationNode *> & vector);
+
+    /**
+     * Verifies that the parameters match the function parameters.
+     * @param const std::vector<CEvaluationNode *> & vector
+     * @param const CFunctionParameters & functionParameters
+     * @return bool verified
+     */
+    static bool
+    verifyParameters(const std::vector<CEvaluationNode *> & vector,
+                     const CFunctionParameters &functionParameters);
 
     // Attributes
   private:

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/10 20:23:45 $
+   $Date: 2006/03/10 21:55:32 $
    End CVS Header */
 
 #include <sbml/math/ASTNode.h>
@@ -93,8 +93,14 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
       mpFunction =
         dynamic_cast<CFunction *>(CCopasiDataModel::Global->getFunctionList()->findFunction(mData));
       if (!mpFunction) return false;
+
+      // We need to check whether the provided arguments match the on needed by the
+      // function;
+      if (!verifyParameters(mCallNodes, mpFunction->getVariables())) return false;
+
       clearParameters(mpCallParameters, mCallNodes);
       mpCallParameters = buildParameters(mCallNodes);
+
       break;
 
     case EXPRESSION:
@@ -111,8 +117,8 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
           success = compile(pTree);
         }
-      else if (!mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer()))
-        success = false;
+      else
+        success = mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer());
 
       break;
 
@@ -296,8 +302,7 @@ CEvaluationNodeCall::buildParameters(const std::vector<CEvaluationNode *> & vect
   for (i = 0; it != end; ++it, i++)
     {
       if (type((*it)->getType()) == CEvaluationNode::VECTOR)
-        (*pCallParameters)[i].vector =
-          buildParameters(static_cast<const CEvaluationNodeVector *>(*it)->getVector());
+        (*pCallParameters)[i].vector = buildParameters(static_cast<const CEvaluationNodeVector *>(*it)->getVector());
       else
         (*pCallParameters)[i].value = (*it)->getValuePointer();
     }
@@ -324,4 +329,26 @@ CEvaluationNodeCall::clearParameters(CCallParameters< C_FLOAT64 > * pCallParamet
 
   delete pCallParameters;
   return;
+}
+
+bool
+CEvaluationNodeCall::verifyParameters(const std::vector<CEvaluationNode *> & vector,
+                                      const CFunctionParameters & functionParameters)
+{
+  if (vector.size() != functionParameters.size()) return false;
+
+  std::vector<CEvaluationNode *>::const_iterator it = vector.begin();
+  std::vector<CEvaluationNode *>::const_iterator end = vector.end();
+
+  unsigned C_INT32 i;
+
+  for (i = 0; it != end; ++it, i++)
+    {
+      if ((type((*it)->getType()) == CEvaluationNode::VECTOR &&
+           functionParameters[i]->getType() != CFunctionParameter::VFLOAT64) ||
+          functionParameters[i]->getType() == CFunctionParameter::VFLOAT64)
+        return false;
+    }
+
+  return true;
 }
