@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/07 20:38:34 $
+   $Date: 2006/03/10 14:59:48 $
    End CVS Header */
 
 #ifndef COPASI_CTableCell
@@ -135,6 +135,13 @@ class CTableRow
     const unsigned C_INT32 size() const;
 
     /**
+     * Retrieve the index of the last non empty cell
+     * in the last read operation.
+     * @const unsigned C_INT32 & lastFilledCell
+     */
+    const unsigned C_INT32 & getLastFilledCell() const;
+
+    /**
      * Try to guess the number of columns
      * in the current line
      * @param std::istream &is
@@ -165,6 +172,8 @@ class CTableRow
     char mSeparator;
 
     bool mIsEmpty;
+
+    unsigned C_INT32 mLastFilledCell;
   };
 
 #endif // COPASI_CTableCell

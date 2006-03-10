@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/15 23:14:32 $
+   $Date: 2006/03/10 14:59:48 $
    End CVS Header */
 
 #include <limits>
@@ -157,6 +157,9 @@ bool CTableRow::resize(const unsigned C_INT32 & size)
 const unsigned C_INT32 CTableRow::size() const
 {return mCells.size();}
 
+const unsigned C_INT32 & CTableRow::getLastFilledCell() const
+  {return mLastFilledCell;}
+
 unsigned C_INT32 CTableRow::guessColumnNumber(std::istream &is,
     const bool & rewind)
 {
@@ -190,13 +193,20 @@ std::istream & operator >> (std::istream &is, CTableRow & row)
   is.ignore(1);
 
   row.mIsEmpty = true;
+  row.mLastFilledCell = C_INVALID_INDEX;
+
   std::vector< CTableCell >::iterator it = row.mCells.begin();
   std::vector< CTableCell >::iterator end = row.mCells.end();
 
-  for (; it != end && !line.fail(); ++it)
+  unsigned C_INT count;
+  for (count = 0; it != end && !line.fail(); ++it, ++count)
     {
       line >> *it;
-      if (!it->isEmpty()) row.mIsEmpty = false;
+      if (!it->isEmpty())
+        {
+          row.mIsEmpty = false;
+          row.mLastFilledCell = count;
+        }
     }
 
   CTableCell Unread(row.mSeparator);
@@ -204,7 +214,12 @@ std::istream & operator >> (std::istream &is, CTableRow & row)
     {
       row.mCells.push_back(Unread);
       line >> row.mCells.back();
-      if (!row.mCells.back().isEmpty()) row.mIsEmpty = false;
+      if (!row.mCells.back().isEmpty())
+        {
+          row.mIsEmpty = false;
+          row.mLastFilledCell = count;
+        }
+      count++;
     }
 
   if (it == end) return is;
