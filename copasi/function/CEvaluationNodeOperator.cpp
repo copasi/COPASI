@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/10 15:09:43 $
+   $Date: 2006/03/12 00:06:37 $
    End CVS Header */
 
 #include "copasi.h"
@@ -880,7 +880,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(CEvaluationNode *child1, 
           newchild2->addChild(child2, NULL);
           return newnode;
         }
-      default:     //case MODULUS
+      default:      //case MODULUS
         {
           CEvaluationNode *newnode = copyNode(child1, child2);
           return newnode;
@@ -926,8 +926,7 @@ void CEvaluationNodeOperator::writeMathML(std::ostream & out,
     bool expand,
     unsigned C_INT32 l) const
   {
-    //  if ((mIndex < env.size()) && (mIndex >= 0))
-    //    out << SPC(l) << env[mIndex][0] << std::endl;
+    bool flag;
     switch (mType & 0x00FFFFFF)
       {
       case PLUS:
@@ -937,103 +936,98 @@ void CEvaluationNodeOperator::writeMathML(std::ostream & out,
         mpRight->writeMathML(out, env, expand, l + 1);
         out << SPC(l) << "</mrow>" << std::endl;
         break;
+
+      case MINUS:
+        out << SPC(l) << "<mrow>" << std::endl;
+        mpLeft->writeMathML(out, env, expand, l + 1);
+        out << SPC(l + 1) << "<mo>" << "-" << "</mo>" << std::endl;
+
+        flag = ((mpRight->getType() == (CEvaluationNode::OPERATOR | PLUS))
+                 || (mpRight->getType() == (CEvaluationNode::OPERATOR | MINUS))
+                 || ((mpRight->getType() & 0xFF000000 == CEvaluationNode::CALL) && expand)
+);
+        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        mpRight->writeMathML(out, env, expand, l + 1);
+        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        out << SPC(l) << "</mrow>" << std::endl;
+        break;
+
+      case MULTIPLY:
+        out << SPC(l) << "<mrow>" << std::endl;
+
+        //do we need "()" ?
+        flag = ((mpLeft->getType() == (CEvaluationNode::OPERATOR | PLUS))
+                 || (mpLeft->getType() == (CEvaluationNode::OPERATOR | MINUS))
+                 || ((mpLeft->getType() & 0xFF000000 == CEvaluationNode::CALL) && expand)
+);
+        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        mpLeft->writeMathML(out, env, expand, l + 1);
+        if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+
+        out << SPC(l + 1) << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
+
+        flag = ((mpRight->getType() == (CEvaluationNode::OPERATOR | PLUS))
+                 || (mpRight->getType() == (CEvaluationNode::OPERATOR | MINUS))
+                 || ((mpRight->getType() & 0xFF000000 == CEvaluationNode::CALL) && expand)
+);
+        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        mpRight->writeMathML(out, env, expand, l + 1);
+        if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+        out << SPC(l) << "</mrow>" << std::endl;
+        break;
+
+      case DIVIDE:
+        out << SPC(l) << "<mfrac>" << std::endl;
+
+        //out << SPC(l + 1) << "<mrow>" << std::endl;
+        mpLeft->writeMathML(out, env, expand, l + 1);
+        //out << SPC(level + 1) << "</mrow>" << std::endl;
+
+        //out << SPC(l + 1) << "<mrow>" << std::endl;
+        mpRight->writeMathML(out, env, expand, l + 1);
+        //out << SPC(l + 1) << "</mrow>" << std::endl;
+
+        out << SPC(l) << "</mfrac>" << std::endl;
+        break;
+
+      case POWER:
+        out << SPC(l) << "<msup>" << std::endl;
+
+        //do we need "()" ?
+        flag = ((mpLeft->getType() == (CEvaluationNode::OPERATOR | PLUS))
+                 || (mpLeft->getType() == (CEvaluationNode::OPERATOR | MINUS))
+                 || (mpLeft->getType() == (CEvaluationNode::OPERATOR | MULTIPLY))
+                 || (mpLeft->getType() == (CEvaluationNode::OPERATOR | DIVIDE))
+                 || (mpLeft->getType() == (CEvaluationNode::OPERATOR | POWER))
+                 || ((mpLeft->getType() & 0xFF000000 == CEvaluationNode::CALL) && expand)
+);
+        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        mpLeft->writeMathML(out, env, expand, l + 2);
+        if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+
+        out << SPC(l + 1) << "<mrow>" << std::endl;
+        mpRight->writeMathML(out, env, expand, l + 2);
+        out << SPC(l + 1) << "</mrow>" << std::endl;
+
+        out << SPC(l) << "</msup>" << std::endl;
+        break;
+
+      case MODULUS:
+        out << SPC(l) << "<mrow>" << std::endl;
+
+        //do we need "()" ?
+        flag = true;
+        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        mpLeft->writeMathML(out, env, expand, l + 1);
+        if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+
+        out << SPC(l + 1) << "<mo>" << "%" << "</mo>" << std::endl;
+
+        flag = true;
+        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        mpRight->writeMathML(out, env, expand, l + 1);
+        if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+        out << SPC(l) << "</mrow>" << std::endl;
+        break;
       }
   }
-
-#ifdef XXXX
-
-case N_OPERATOR:
-switch (mSubtype)
-  {
-  case '+':
-    out << SPC(level) << "<mrow>" << std::endl;
-    mLeft->writeMathML(out, level + 1);
-    out << SPC(level + 1) << "<mo>" << "+" << "</mo>" << std::endl;
-    mRight->writeMathML(out, level + 1);
-    out << SPC(level) << "</mrow>" << std::endl;
-    break;
-  case '-':
-    out << SPC(level) << "<mrow>" << std::endl;
-    mLeft->writeMathML(out, level + 1);
-    out << SPC(level + 1) << "<mo>" << "-" << "</mo>" << std::endl;
-
-    //do we need "()" ?
-    flag = (mRight->mType == N_OPERATOR) && ((mRight->mSubtype == '-') || (mRight->mSubtype == '+'));
-    if (flag)
-      {
-        out << SPC(level + 1) << "<mfenced>" << std::endl;
-      }
-    mRight->writeMathML(out, level + 1);
-    if (flag)
-      {
-        out << SPC(level + 1) << "</mfenced>" << std::endl;
-      }
-    out << SPC(level) << "</mrow>" << std::endl;
-    break;
-  case '*':
-    out << SPC(level) << "<mrow>" << std::endl;
-
-    //do we need "()" ?
-    flag = (mLeft->mType == N_OPERATOR) && ((mLeft->mSubtype == '-') || (mLeft->mSubtype == '+'));
-    if (flag)
-      {
-        out << SPC(level + 1) << "<mfenced>" << std::endl;
-      }
-    mLeft->writeMathML(out, level + 1);
-    if (flag)
-      {
-        out << SPC(level + 1) << "</mfenced>" << std::endl;
-      }
-    out << SPC(level + 1) << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
-    flag = (mRight->mType == N_OPERATOR) && ((mRight->mSubtype == '-') || (mRight->mSubtype == '+'));
-    if (flag)
-      {
-        out << SPC(level) << "<mfenced>" << std::endl;
-      }
-    mRight->writeMathML(out, level + 1);
-    if (flag)
-      {
-        out << SPC(level + 1) << "</mfenced>" << std::endl;
-      }
-    out << SPC(level) << "</mrow>" << std::endl;
-    break;
-  case '^':
-    out << SPC(level) << "<msup>" << std::endl;
-
-    //do we need "()" ?
-    flag = (mLeft->mType == N_OPERATOR) && ((mLeft->mSubtype == '-') || (mLeft->mSubtype == '+')
-                                            || (mLeft->mSubtype == '*') || (mLeft->mSubtype == '/')
-                                            || (mLeft->mSubtype == '^'));
-    if (flag)
-      {
-        out << SPC(level + 1) << "<mfenced>" << std::endl;
-      }
-    mLeft->writeMathML(out, level + 2);
-    if (flag)
-      {
-        out << SPC(level + 1) << "</mfenced>" << std::endl;
-      }
-
-    out << SPC(level + 1) << "<mrow>" << std::endl;
-    mRight->writeMathML(out, level + 2);
-    out << SPC(level + 1) << "</mrow>" << std::endl;
-
-    out << SPC(level) << "</msup>" << std::endl;
-    break;
-  case '/':
-    out << SPC(level) << "<mfrac>" << std::endl;
-
-    out << SPC(level + 1) << "<mrow>" << std::endl;
-    mLeft->writeMathML(out, level + 2);
-    out << SPC(level + 1) << "</mrow>" << std::endl;
-
-    out << SPC(level + 1) << "<mrow>" << std::endl;
-    mRight->writeMathML(out, level + 2);
-    out << SPC(level + 1) << "</mrow>" << std::endl;
-
-    out << SPC(level) << "</mfrac>" << std::endl;
-    break;
-  }
-break;
-
-#endif
