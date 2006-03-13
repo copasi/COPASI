@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/copasi_wrapper.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2006/03/13 14:19:47 $
+   $Date: 2006/03/13 14:24:42 $
    End CVS Header */
 
 #define COPASI_MAIN
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
   {}
   if (argc < 5)
     {
-      std::cout << "Usage: semantic-test-suite SBMLFILENAME ENDTIME STEPNUMBER OUTFILENAME" << std::endl;
+      std::cout << "Usage: semantic-test-suite SBMLFILENAME ENDTIME STEPNUMBER OUTFILENAME TMPDIR SPECIESID1 SPECIESID2 ..." << std::endl;
       exit(1);
     }
   char* pSBMLFilename = argv[1];
