@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/07 16:03:21 $
+   $Author: shoops $ 
+   $Date: 2006/03/13 20:11:33 $
    End CVS Header */
 
 // CSate.cpp
@@ -15,12 +15,14 @@
 
 #include "CState.h"
 #include "CModelValue.h"
+#include "CModel.h"
 
 //**********************************************************************
 //          CStateTemplate
 //**********************************************************************
 
-CStateTemplate::CStateTemplate(CState & initialState, CState & currentState):
+CStateTemplate::CStateTemplate(CModel & model, CState & initialState, CState & currentState):
+    mModel(model),
     mInitialState(initialState),
     mCurrentState(currentState),
     mpEntities(NULL),
@@ -52,7 +54,7 @@ void CStateTemplate::add(CModelEntity * entity)
 
   mIndexMap[entity] = mInsert++;
 
-  return;
+  mModel.setCompileFlag(true);
 }
 
 void CStateTemplate::remove(CModelEntity * entity)
@@ -67,6 +69,8 @@ void CStateTemplate::remove(CModelEntity * entity)
   entity->setValuePtr(NULL);
 
   mIndexMap.erase(entity);
+
+  mModel.setCompileFlag(true);
 }
 
 void CStateTemplate::reorder(const CVector< CModelEntity * > & entitiesX)

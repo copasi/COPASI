@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:22:53 $
+   $Date: 2006/03/13 20:11:33 $
    End CVS Header */
 
 /**
@@ -26,6 +26,7 @@
 #include "utilities/CVector.h"
 
 class CState;
+class CModel;
 class CModelEntity;
 
 /** @dia:pos 127.851,-24.3708 */
@@ -36,7 +37,8 @@ class CStateTemplate
     CStateTemplate();
 
   public:
-    CStateTemplate(CState & initialState,
+    CStateTemplate(CModel & model,
+                   CState & initialState,
                    CState & currentState);
     ~CStateTemplate();
 
@@ -74,6 +76,7 @@ class CStateTemplate
 
     // Attributes
   private:
+    CModel & mModel;
     CState & mInitialState;
     CState & mCurrentState;
     CModelEntity ** mpEntities;
@@ -145,52 +148,5 @@ class CState
     void check(const std::string & m = "") const;
 #endif
   };
-
-#ifdef XXXX
-
-/**
- * Calculates the jacobian of the state and stores it in the provided 
- * matrix.
- * @param CMatrix< C_FLOAT64 > & jacobian
- * @param const C_FLOAT64 & factor,
- * @param const C_FLOAT64 & resolution
- */
-virtual void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
-                               const C_FLOAT64 & factor,
-                               const C_FLOAT64 & resolution) const;
-
-/**
- * Calculates the elasticity Matrix of the state and stores it in the 
- * provided matrix.
- * @param CMatrix< C_FLOAT64 > & elasticityMatrix
- * @param const C_FLOAT64 & factor,
- * @param const C_FLOAT64 & resolution
- */
-virtual void calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
-                                       const C_FLOAT64 & factor,
-                                       const C_FLOAT64 & resolution) const;
-
-/**
- * Calculate the jacobian of the state and store it in the provided matrix.
- * @param C_FLOAT64 * jacobian
- * @param const C_FLOAT64 & factor,
- * @param const C_FLOAT64 & resolution
- */
-virtual void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
-                               const C_FLOAT64 & factor,
-                               const C_FLOAT64 & resolution) const;
-
-/**
- * Calculates the elasticity Matrix of the state and stores it in the 
- * provided matrix.
- * @param CMatrix< C_FLOAT64 > & elasticityMatrix
- * @param const C_FLOAT64 & factor,
- * @param const C_FLOAT64 & resolution
- */
-virtual void calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
-                                       const C_FLOAT64 & factor,
-                                       const C_FLOAT64 & resolution) const;
-
-#endif // XXXX
 
 #endif
