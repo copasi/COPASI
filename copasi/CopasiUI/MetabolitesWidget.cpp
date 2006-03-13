@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.126 $
+   $Revision: 1.127 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:22 $
+   $Date: 2006/03/13 20:13:51 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -235,6 +235,7 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
         {
           pMetab->setStatus(CModelEntity::FIXED);
           CCopasiDataModel::Global->getModel()->setCompileFlag();
+          CCopasiDataModel::Global->getModel()->initializeMetabolites();
         }
     }
   else
@@ -243,10 +244,9 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
         {
           pMetab->setStatus(CModelEntity::REACTIONS);
           CCopasiDataModel::Global->getModel()->setCompileFlag();
+          CCopasiDataModel::Global->getModel()->initializeMetabolites();
         }
     }
-
-  //CCopasiDataModel::Global->getModel()->setCompileFlag();
 }
 
 void MetabolitesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)

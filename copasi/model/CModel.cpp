@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.247 $
+   $Revision: 1.248 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/06 21:55:03 $
+   $Author: shoops $ 
+   $Date: 2006/03/13 20:13:52 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ CModel::CModel():
     CModelEntity("New Model", &RootContainer, "Model"),
     mInitialState(),
     mCurrentState(),
-    mStateTemplate(this->mInitialState, this->mCurrentState),
+    mStateTemplate(*this, this->mInitialState, this->mCurrentState),
     mComments(),
     mVolumeUnit(ml),
     mTimeUnit(s),
@@ -122,7 +122,7 @@ CModel::CModel(const CModel & src):
     CModelEntity(src),
     mInitialState(),
     mCurrentState(),
-    mStateTemplate(this->mInitialState, this->mCurrentState),
+    mStateTemplate(*this, this->mInitialState, this->mCurrentState),
     mComments(src.mComments),
     mVolumeUnit(src.mVolumeUnit),
     mTimeUnit(src.mTimeUnit),
@@ -368,7 +368,8 @@ void CModel::setCompileFlag(bool flag)
   mCompileIsNecessary = flag;
   //if (flag) std::cout << "* model dirty flag set. " << std::endl;
 
-  if (flag) initializeMetabolites();
+  // We need to move this and do not do this automatically
+  // if (flag) initializeMetabolites();
 }
 
 bool CModel::compileIfNecessary()

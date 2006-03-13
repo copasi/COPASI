@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.125 $
+   $Revision: 1.126 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:21:43 $
+   $Date: 2006/03/13 20:13:51 $
    End CVS Header */
 
 /*******************************************************************
@@ -396,6 +396,7 @@ bool MetabolitesWidget1::saveToMetabolite()
           mpMetab->setStatus(CModelEntity::FIXED);
           protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
           CCopasiDataModel::Global->getModel()->setCompileFlag();
+          CCopasiDataModel::Global->getModel()->initializeMetabolites();
         }
     }
 
@@ -406,6 +407,7 @@ bool MetabolitesWidget1::saveToMetabolite()
           mpMetab->setStatus(CModelEntity::REACTIONS);
           protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, objKey);
           CCopasiDataModel::Global->getModel()->setCompileFlag();
+          CCopasiDataModel::Global->getModel()->initializeMetabolites();
         }
     }
 
