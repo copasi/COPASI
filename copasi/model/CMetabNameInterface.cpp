@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetabNameInterface.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/05/13 13:15:45 $
+   $Author: shoops $ 
+   $Date: 2006/03/13 20:12:43 $
    End CVS Header */
 
 //
@@ -155,12 +155,12 @@ std::string CMetabNameInterface::extractCompartmentName(const CModel* model, con
     }
   else
     {
-      CCopasiVector< CMetab > metabs = model->getMetabolites();
+      const CCopasiVector< CMetab > & metabs = model->getMetabolites();
       C_INT32 index = model->findMetabByName(name);
 
       if (index < 0)  // the metabolite doesn't exist, so return the first compartment of the model
         {
-          CCopasiVectorNS< CCompartment > comps = model->getCompartments();
+          const CCopasiVectorNS< CCompartment > & comps = model->getCompartments();
 
           if (comps.size() == 0)
             return "compartment";  // default compartment name if none existed
@@ -170,7 +170,7 @@ std::string CMetabNameInterface::extractCompartmentName(const CModel* model, con
         }
       else  //return the first compartment where the metabolite is present
         {
-          CMetab *metb = metabs[index];
+          const CMetab *metb = metabs[index];
           comp = metb->getCompartment();
           return comp->getObjectName();
         }
