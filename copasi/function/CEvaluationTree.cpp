@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Date: 2006/03/13 18:50:54 $
    End CVS Header */
 
 #include "copasi.h"
@@ -446,6 +446,21 @@ bool CEvaluationTree::hasCircularDependency() const
     std::set< std::string > List;
 
     return calls(List);
+  }
+
+bool CEvaluationTree::dependsOnTree(const std::string & name) const
+  {
+    if (!mpNodeList) return false;
+
+    std::vector< CEvaluationNode * >::const_iterator it = mpNodeList->begin();
+    std::vector< CEvaluationNode * >::const_iterator end = mpNodeList->end();
+
+    for (; it != end; ++it)
+      if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
+          (*it)->getData() == name)
+        return true;
+
+    return false;
   }
 
 bool CEvaluationTree::calls(std::set< std::string > & list) const

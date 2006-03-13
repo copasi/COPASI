@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/07 15:42:55 $
+   $Author: shoops $ 
+   $Date: 2006/03/13 18:50:54 $
    End CVS Header */
 
 /**
@@ -158,6 +158,14 @@ class CFunctionDB : public CCopasiContainer
     suitableFunctions(const unsigned C_INT32 noSubstrates,
                       const unsigned C_INT32 noProducts,
                       const TriLogic reversibility);
+
+    /**
+     * Retrieve a list of evaluation trees depending on the tree with the
+     * given name.
+     * @param const std::string & name
+     * @return std::set<std::string> list
+     */
+    std::set<std::string> listDependentTrees(const std::string & name) const;
   };
 
 #endif // COPASI_CFunctionDB

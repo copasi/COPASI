@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.134 $
+   $Revision: 1.135 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:22 $
+   $Date: 2006/03/13 18:50:53 $
    End CVS Header */
 
 /**********************************************************************
@@ -637,6 +637,37 @@ bool FunctionWidget1::saveToFunction()
   QString name(LineEdit1->text());
   if (func->getObjectName() != (const char *)name.utf8())
     {
+      // We need to check whether other trees call the current one.
+      std::set<std::string> dependentTrees;
+      if (dataModel && CCopasiDataModel::Global->getModel())
+        {
+          dependentTrees =
+            CCopasiDataModel::Global->getFunctionList()->listDependentTrees(func->getObjectName());
+        }
+
+      if (dependentTrees.size() > 0)
+        {
+          std::set<std::string>::iterator it = dependentTrees.begin();
+          std::set<std::string>::iterator end = dependentTrees.end();
+
+          QString trees;
+          for (; it != end; it++)
+            {
+              trees.append(FROM_UTF8(*it));
+              trees.append(" ---> ");
+              trees.append(FROM_UTF8(mpFunction->getObjectName()));
+              trees.append("\n");
+            }
+
+          QString msg1 = "Cannot change Function. ";
+          msg1.append("Following dependencies with listed Function(s) exist:\n");
+          msg1.append(trees);
+
+          QMessageBox::warning(this, "Sorry, Cannot Change",
+                               msg1, "OK", 0, 0, 0, 1);
+          return false;
+        }
+
       if (!func->setObjectName((const char *)name.utf8()))
         {
           QString msg;
@@ -777,14 +808,19 @@ void FunctionWidget1::slotCancelButtonClicked()
 void FunctionWidget1::slotCommitButtonClicked()
 {
   // :TODO: We should check what changes have been done to the function //
+  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(GlobalKeys.get(objKey));
+  if (pFunction == NULL) return;
 
   if (functionParametersChanged())
     {
       std::set<std::string> dependentReactions;
+      std::set<std::string> dependentTrees;
       if (dataModel && CCopasiDataModel::Global->getModel())
         {
           dependentReactions =
             CCopasiDataModel::Global->getModel()->listReactionsDependentOnFunction(objKey);
+          dependentTrees =
+            CCopasiDataModel::Global->getFunctionList()->listDependentTrees(pFunction->getObjectName());
         }
       else
         return;
@@ -800,11 +836,38 @@ void FunctionWidget1::slotCommitButtonClicked()
           reactions.append("\n");
         }
 
+      QString trees;
+      it = dependentTrees.begin();
+      end = dependentTrees.end();
+      for (; it != end; it++)
+        {
+          trees.append(FROM_UTF8(*it));
+          trees.append(" ---> ");
+          trees.append(FROM_UTF8(mpFunction->getObjectName()));
+          trees.append("\n");
+        }
+
+      QString msg1;
       if (dependentReactions.size() > 0)
         {
-          QString msg1 = "Cannot change Function. ";
+          msg1 = "Cannot change Function. ";
           msg1.append("Following dependencies with listed Reaction(s) exist:\n");
           msg1.append(reactions);
+        }
+
+      if (dependentTrees.size() > 0)
+        {
+          if (msg1 == "")
+            msg1 = "Cannot change Function. ";
+          else
+            msg1.append("\n");
+
+          msg1.append("Following dependencies with listed Function(s) exist:\n");
+          msg1.append(trees);
+        }
+
+      if (msg1 != "")
+        {
           QMessageBox::warning(this, "Sorry, Cannot Change",
                                msg1,
                                "OK", 0, 0, 0, 1);
@@ -855,45 +918,75 @@ void FunctionWidget1::slotNewButtonClicked()
 
 void FunctionWidget1::slotDeleteButtonClicked()
 {
-  std::set<std::string> dependentReactions;
+  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(GlobalKeys.get(objKey));
+  if (pFunction == NULL) return;
 
+  std::set<std::string> dependentReactions;
+  std::set<std::string> dependentTrees;
   if (dataModel && CCopasiDataModel::Global->getModel())
     {
       dependentReactions =
         CCopasiDataModel::Global->getModel()->listReactionsDependentOnFunction(objKey);
-    }
-
-  QString msg1 = "Cannot delete Function(s). ";
-  msg1.append("Following dependencies with listed Reaction(s) exist:\n");
-  QString msg2 = "Are you sure to delete listed Function(s)?\n";
-  int msg1Empty = 1;
-  int msg2Empty = 1;
-
-  std::set<std::string>::iterator it = dependentReactions.begin();
-  std::set<std::string>::iterator end = dependentReactions.end();
-
-  int reacFound = (it != end) ? 1 : 0;
-
-  if (reacFound)
-    {
-      msg1Empty = 0;
-
-      for (; it != end; it++)
-        {
-          msg1.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
-          msg1.append(" ---> ");
-          msg1.append(FROM_UTF8(mpFunction->getObjectName()));
-          msg1.append("\n");
-        }
+      dependentTrees =
+        CCopasiDataModel::Global->getFunctionList()->listDependentTrees(pFunction->getObjectName());
     }
   else
+    return;
+
+  QString reactions;
+  std::set<std::string>::iterator it = dependentReactions.begin();
+  std::set<std::string>::iterator end = dependentReactions.end();
+  for (; it != end; it++)
     {
-      msg2.append(FROM_UTF8(mpFunction->getObjectName()));
-      msg2.append("\n");
-      msg2Empty = 0;
+      reactions.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
+      reactions.append(" ---> ");
+      reactions.append(FROM_UTF8(mpFunction->getObjectName()));
+      reactions.append("\n");
     }
 
-  if (msg2Empty == 0)
+  QString trees;
+  it = dependentTrees.begin();
+  end = dependentTrees.end();
+  for (; it != end; it++)
+    {
+      trees.append(FROM_UTF8(*it));
+      trees.append(" ---> ");
+      trees.append(FROM_UTF8(mpFunction->getObjectName()));
+      trees.append("\n");
+    }
+
+  QString Reason;
+  if (dependentReactions.size() > 0)
+    {
+      Reason = "Cannot delete Function. ";
+      Reason.append("Following dependencies with listed Reaction(s) exist:\n");
+      Reason.append(reactions);
+    }
+
+  if (dependentTrees.size() > 0)
+    {
+      if (Reason == "")
+        Reason = "Cannot delete Function. ";
+      else
+        Reason.append("\n");
+
+      Reason.append("Following dependencies with listed Function(s) exist:\n");
+      Reason.append(trees);
+    }
+
+  if (Reason != "")
+    {
+      QMessageBox::warning(this, "Sorry, Cannot Delete",
+                           Reason, "OK", 0, 0, 0, 1);
+
+      return;
+    }
+
+  QString msg2 = "Are you sure to delete listed Function(s)?\n";
+  msg2.append(FROM_UTF8(mpFunction->getObjectName()));
+  msg2.append("\n");
+
+  if (msg2 != "")
     {
       int choice = QMessageBox::warning(this,
                                         "CONFIRM DELETE",
@@ -905,18 +998,14 @@ void FunctionWidget1::slotDeleteButtonClicked()
         {
         case 0:                                                    // Yes or Enter
           {
-            if (reacFound == 0)
-              {
-                unsigned C_INT32 size = CCopasiDataModel::Global->getFunctionList()->loadedFunctions().size();
-                unsigned C_INT32 index = CCopasiDataModel::Global->getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());
+            protectedNotify(ListViews::FUNCTION, ListViews::DELETE, objKey);
 
-                CCopasiDataModel::Global->getFunctionList()->removeFunction(objKey);
+            unsigned C_INT32 size = CCopasiDataModel::Global->getFunctionList()->loadedFunctions().size();
+            unsigned C_INT32 index = CCopasiDataModel::Global->getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());
 
-                enter(CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[std::min(index, size - 2)]->getKey());
-              }
+            CCopasiDataModel::Global->getFunctionList()->removeFunction(objKey);
 
-            if (reacFound == 0) //changed from "=" to "=="
-              protectedNotify(ListViews::FUNCTION, ListViews::DELETE, objKey);
+            enter(CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[std::min(index, size - 2)]->getKey());
 
             break;
           }
@@ -924,11 +1013,6 @@ void FunctionWidget1::slotDeleteButtonClicked()
           break;
         }
     }
-
-  if (msg1Empty == 0)
-    QMessageBox::warning(this, "Sorry, Cannot Delete",
-                         msg1,
-                         "OK", 0, 0, 0, 1);
 }
 
 //************************  standard interface to copasi widgets ******************

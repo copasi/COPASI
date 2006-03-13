@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/07 15:42:55 $
+   $Author: shoops $ 
+   $Date: 2006/03/13 18:50:54 $
    End CVS Header */
 
 /**
@@ -300,3 +300,18 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
 
   return ret;
 }
+
+std::set<std::string>
+CFunctionDB::listDependentTrees(const std::string & name) const
+  {
+    std::set<std::string> List;
+
+    CCopasiVectorN < CEvaluationTree >::const_iterator it = mLoadedFunctions.begin();
+    CCopasiVectorN < CEvaluationTree >::const_iterator end = mLoadedFunctions.end();
+
+    for (; it != end; ++it)
+      if ((*it)->dependsOnTree(name))
+        List.insert((*it)->getObjectName());
+
+    return List;
+  }
