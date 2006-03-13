@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/12 00:06:37 $
+   $Date: 2006/03/13 09:25:32 $
    End CVS Header */
 
 #include "copasi.h"
@@ -880,7 +880,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(CEvaluationNode *child1, 
           newchild2->addChild(child2, NULL);
           return newnode;
         }
-      default:      //case MODULUS
+      default:       //case MODULUS
         {
           CEvaluationNode *newnode = copyNode(child1, child2);
           return newnode;
@@ -919,6 +919,15 @@ bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pN
     return result;
   }
 
+CEvaluationNode * CEvaluationNodeOperator::getLeft()
+{return mpLeft;}
+const CEvaluationNode * CEvaluationNodeOperator::getLeft() const
+  {return mpLeft;}
+CEvaluationNode * CEvaluationNodeOperator::getRight()
+{return mpRight;}
+const CEvaluationNode * CEvaluationNodeOperator::getRight() const
+  {return mpRight;}
+
 #include "utilities/copasimathml.h"
 
 void CEvaluationNodeOperator::writeMathML(std::ostream & out,
@@ -943,8 +952,8 @@ void CEvaluationNodeOperator::writeMathML(std::ostream & out,
         out << SPC(l + 1) << "<mo>" << "-" << "</mo>" << std::endl;
 
         flag = ((mpRight->getType() == (CEvaluationNode::OPERATOR | PLUS))
-                 || (mpRight->getType() == (CEvaluationNode::OPERATOR | MINUS))
-                 || ((mpRight->getType() & 0xFF000000 == CEvaluationNode::CALL) && expand)
+                || (mpRight->getType() == (CEvaluationNode::OPERATOR | MINUS))
+                || ((mpRight->getType() & 0xFF000000 == CEvaluationNode::CALL) && expand)
 );
         if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
         mpRight->writeMathML(out, env, expand, l + 1);
@@ -957,8 +966,8 @@ void CEvaluationNodeOperator::writeMathML(std::ostream & out,
 
         //do we need "()" ?
         flag = ((mpLeft->getType() == (CEvaluationNode::OPERATOR | PLUS))
-                 || (mpLeft->getType() == (CEvaluationNode::OPERATOR | MINUS))
-                 || ((mpLeft->getType() & 0xFF000000 == CEvaluationNode::CALL) && expand)
+                || (mpLeft->getType() == (CEvaluationNode::OPERATOR | MINUS))
+                || ((mpLeft->getType() & 0xFF000000 == CEvaluationNode::CALL) && expand)
 );
         if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
         mpLeft->writeMathML(out, env, expand, l + 1);
@@ -967,8 +976,8 @@ void CEvaluationNodeOperator::writeMathML(std::ostream & out,
         out << SPC(l + 1) << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
 
         flag = ((mpRight->getType() == (CEvaluationNode::OPERATOR | PLUS))
-                 || (mpRight->getType() == (CEvaluationNode::OPERATOR | MINUS))
-                 || ((mpRight->getType() & 0xFF000000 == CEvaluationNode::CALL) && expand)
+                || (mpRight->getType() == (CEvaluationNode::OPERATOR | MINUS))
+                || ((mpRight->getType() & 0xFF000000 == CEvaluationNode::CALL) && expand)
 );
         if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
         mpRight->writeMathML(out, env, expand, l + 1);
@@ -995,11 +1004,11 @@ void CEvaluationNodeOperator::writeMathML(std::ostream & out,
 
         //do we need "()" ?
         flag = ((mpLeft->getType() == (CEvaluationNode::OPERATOR | PLUS))
-                 || (mpLeft->getType() == (CEvaluationNode::OPERATOR | MINUS))
-                 || (mpLeft->getType() == (CEvaluationNode::OPERATOR | MULTIPLY))
-                 || (mpLeft->getType() == (CEvaluationNode::OPERATOR | DIVIDE))
-                 || (mpLeft->getType() == (CEvaluationNode::OPERATOR | POWER))
-                 || ((mpLeft->getType() & 0xFF000000 == CEvaluationNode::CALL) && expand)
+                || (mpLeft->getType() == (CEvaluationNode::OPERATOR | MINUS))
+                || (mpLeft->getType() == (CEvaluationNode::OPERATOR | MULTIPLY))
+                || (mpLeft->getType() == (CEvaluationNode::OPERATOR | DIVIDE))
+                || (mpLeft->getType() == (CEvaluationNode::OPERATOR | POWER))
+                || ((mpLeft->getType() & 0xFF000000 == CEvaluationNode::CALL) && expand)
 );
         if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
         mpLeft->writeMathML(out, env, expand, l + 2);

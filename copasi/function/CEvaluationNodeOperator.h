@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/10 15:09:43 $
+   $Date: 2006/03/13 09:25:33 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeOperator
@@ -132,7 +132,6 @@ class CEvaluationNodeOperator : public CEvaluationNode
      * in Berkeley Madonna format.
      * @return const Data & value
      */
-
     virtual std::string getDisplay_MMD_String(const CEvaluationTree * pTree) const;
     /**
      * Create a new operator node from an ASTNode tree.
@@ -170,6 +169,11 @@ class CEvaluationNodeOperator : public CEvaluationNode
                              const std::vector<std::vector<std::string> > & env,
                              bool expand = true,
                              unsigned C_INT32 l = 0) const;
+
+    CEvaluationNode * getLeft();
+    const CEvaluationNode * getLeft() const;
+    CEvaluationNode * getRight();
+    const CEvaluationNode * getRight() const;
 
     // Attributes
   private:

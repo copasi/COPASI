@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVariable.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/10 09:58:43 $
+   $Date: 2006/03/13 09:25:33 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeVariable
@@ -80,6 +80,11 @@ class CEvaluationNodeVariable : public CEvaluationNode
                              const std::vector<std::vector<std::string> > & env,
                              bool expand = true,
                              unsigned C_INT32 l = 0) const;
+
+    /**
+     * generate display MathML recursively
+     */
+    unsigned C_INT32 getIndex() const;
 
     //Attributes
   private:
