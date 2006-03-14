@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 20:12:22 $
+   $Date: 2006/03/14 16:30:16 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -27,7 +27,7 @@ void CQFittingItemWidget::init()
   mppSet = NULL;
   mpItemsCopy = new std::vector<COptItem *>;
 
-  enableFitItem(false);
+  setItemType(OPT_ITEM);
 
   mLowerInfChanged = false;
   mUpperInfChanged = false;
@@ -168,7 +168,7 @@ void CQFittingItemWidget::slotParamEdit()
 
 void CQFittingItemWidget::slotExperiments()
 {
-  if (mIsFitItem)
+  if (mItemType)
     {
       CQExperimentSelection * pDialog = new CQExperimentSelection(this);
       pDialog->load(mpBoxExperiments, * mppSet);
@@ -219,11 +219,22 @@ bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems,
   unsigned C_INT32 i;
   for (i = 0; it != end; ++it, ++src, ++i)
     {
-      if (mIsFitItem)
+      switch (mItemType)
+        {
+        case OPT_ITEM:
+          *it = new COptItem(**src);
+          break;
+        case FIT_ITEM:
+          *it = new CFitItem(**src);
+          break;
+        case FIT_CONSTRAINT:
+          *it = new CFitConstraint(**src);
+          break;
+        }
+
+      if (mItemType)
         {
           if (!pKeyMap) return false;
-
-          *it = new CFitItem(**src);
 
           // Change the key to reflect the local copy *mppSet
           unsigned C_INT32 j, jmax = static_cast<CFitItem *>(*it)->getExperimentCount();
@@ -235,8 +246,6 @@ bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems,
               Key = pKeyMap->find(Key)->second;
             }
         }
-      else
-        *it = new COptItem(**src);
 
       setTableText(i, *it);
     }
@@ -320,7 +329,7 @@ bool CQFittingItemWidget::loadItem(COptItem * pItem)
       mpEditUpper->setText(Value);
       mpCheckUpperInf->setChecked(Value == "inf");
 
-      if (mIsFitItem)
+      if (mItemType)
         {
           mpBoxExperiments->clear();
 
@@ -388,7 +397,7 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pKeyMa
           (*target)->setUpperBound((*it)->getUpperBound());
         }
 
-      if (mIsFitItem)
+      if (mItemType)
         {
           if (!pKeyMap) return false;
 
@@ -446,11 +455,22 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pKeyMa
 
       COptItem * pItem;
 
-      if (mIsFitItem)
+      switch (mItemType)
+        {
+        case OPT_ITEM:
+          pItem = new COptItem(**it);
+          break;
+        case FIT_ITEM:
+          pItem = new CFitItem(**it);
+          break;
+        case FIT_CONSTRAINT:
+          pItem = new CFitConstraint(**it);
+          break;
+        }
+
+      if (mItemType)
         {
           if (!pKeyMap) return false;
-
-          pItem = new CFitItem(**it);
 
           unsigned C_INT32 j, jmax =
             static_cast<CFitItem *>(pItem)->getExperimentCount();
@@ -466,8 +486,6 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pKeyMa
               Target = Source;
             }
         }
-      else
-        pItem = new COptItem(**it);
 
       mpItems->addParameter(pItem);
     }
@@ -511,12 +529,12 @@ void CQFittingItemWidget::saveItem()
   return;
 }
 
-void CQFittingItemWidget::enableFitItem(const bool & enable)
+void CQFittingItemWidget::setItemType(const ItemType & type)
 {
-  mIsFitItem = enable;
+  mItemType = type;
   pdelete(mpItem);
 
-  if (mIsFitItem)
+  if (mItemType)
     {
       mpLblExperiments->show();
       mpCheckAll->show();
@@ -538,7 +556,7 @@ void CQFittingItemWidget::enableFitItem(const bool & enable)
 
 void CQFittingItemWidget::slotExperimentChanged()
 {
-  if (!mIsFitItem) return;
+  if (!mItemType) return;
 
   // Remove all references to deleted experiments.
   std::vector< COptItem * >::iterator it = mpItemsCopy->begin();
@@ -612,10 +630,18 @@ void CQFittingItemWidget::slotCopy()
   // Create the new item.
   COptItem * pItem;
 
-  if (mIsFitItem)
-    pItem = new CFitItem(*mpItem);
-  else
-    pItem = new COptItem(*mpItem);
+  switch (mItemType)
+    {
+    case OPT_ITEM:
+      pItem = new COptItem(*mpItem);
+      break;
+    case FIT_ITEM:
+      pItem = new CFitItem(*mpItem);
+      break;
+    case FIT_CONSTRAINT:
+      pItem = new CFitConstraint(*mpItem);
+      break;
+    }
 
   unsigned C_INT32 row = mpTable->currentRow() + 1;
   mpItemsCopy->insert(mpItemsCopy->begin() + row, pItem);
@@ -673,7 +699,7 @@ void CQFittingItemWidget::slotDown()
 
 void CQFittingItemWidget::slotDuplicatePerExperiment()
 {
-  if (!mpItem || !mIsFitItem) return;
+  if (!mpItem || !mItemType) return;
 
   disconnect(mpTable, SIGNAL(currentChanged(int, int)), this, SLOT(slotItemChanged(int, int)));
 
@@ -688,7 +714,15 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
   if (imax)
     {
       // We have a list of experiments
-      pTemplate = new CFitItem(*mpItem);
+      switch (mItemType)
+        {
+        case FIT_ITEM:
+          pTemplate = new CFitItem(*mpItem);
+          break;
+        case FIT_CONSTRAINT:
+          pTemplate = new CFitConstraint(*mpItem);
+          break;
+        }
 
       // Remove all experiments from the template
       for (i = imax - 1; i != C_INVALID_INDEX; i--)
@@ -696,7 +730,16 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
 
       for (i = imax - 1; i != 0; i--)
         {
-          pItem = new CFitItem(*pTemplate);
+          switch (mItemType)
+            {
+            case FIT_ITEM:
+              pItem = new CFitItem(*pTemplate);
+              break;
+            case FIT_CONSTRAINT:
+              pItem = new CFitConstraint(*pTemplate);
+              break;
+            }
+
           pItem->addExperiment(static_cast<CFitItem *>(mpItem)->getExperiment(i));
 
           static_cast<CFitItem *>(mpItem)->removeExperiment(i);
@@ -752,10 +795,18 @@ void CQFittingItemWidget::slotNew()
   // Create the new item.
   COptItem * pItem;
 
-  if (mIsFitItem)
-    pItem = new CFitItem();
-  else
-    pItem = new COptItem();
+  switch (mItemType)
+    {
+    case OPT_ITEM:
+      pItem = new COptItem();
+      break;
+    case FIT_ITEM:
+      pItem = new CFitItem();
+      break;
+    case FIT_CONSTRAINT:
+      pItem = new CFitConstraint();
+      break;
+    }
 
   mpItemsCopy->push_back(pItem);
 

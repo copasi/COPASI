@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 20:12:22 $
+   $Date: 2006/03/14 16:30:16 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Wed Mar 8 14:31:59 2006
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.10 2006/03/08 20:12:22 shoops Exp $)
+ ** Created: Tue Mar 14 09:38:07 2006
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.11 2006/03/14 16:30:16 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -382,8 +382,6 @@ CQFittingItemWidget::CQFittingItemWidget(QWidget* parent, const char* name, WFla
   CQFittingItemWidgetLayout = new QVBoxLayout(this, 1, 6, "CQFittingItemWidgetLayout");
 
   mpTable = new QTable(this, "mpTable");
-  mpTable->setNumCols(mpTable->numCols() + 1);
-  mpTable->horizontalHeader()->setLabel(mpTable->numCols() - 1, tr("1"));
   mpTable->setNumRows(0);
   mpTable->setNumCols(1);
   mpTable->setShowGrid(FALSE);
@@ -563,7 +561,6 @@ CQFittingItemWidget::~CQFittingItemWidget()
 void CQFittingItemWidget::languageChange()
 {
   setCaption(tr("CQFittingItemWidget"));
-  mpTable->horizontalHeader()->setLabel(0, tr("1"));
   mpBtnPerExperiment->setText(tr("Duplicate for each Experiment"));
   mpCheckLowerInf->setText(tr("- Infinity"));
   mpLblExperiments->setText(tr("Affected Experiments"));

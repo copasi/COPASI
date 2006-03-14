@@ -31,14 +31,6 @@
             <number>1</number>
         </property>
         <widget class="QTable">
-            <column>
-                <property name="text">
-                    <string>1</string>
-                </property>
-                <property name="pixmap">
-                    <pixmap></pixmap>
-                </property>
-            </column>
             <property name="name">
                 <cstring>mpTable</cstring>
             </property>
@@ -608,7 +600,6 @@
 <forwards>
     <forward>class CCopasiSelectionDialog</forward>
     <forward>class COptItem</forward>
-    <forward>class CFitItem</forward>
     <forward>class CCopasiObject</forward>
     <forward>class CCopasiObjectName</forward>
     <forward>class CQValidatorBound</forward>
@@ -616,6 +607,7 @@
     <forward>class QColor</forward>
     <forward>class CExperimentSet</forward>
     <forward>class CCopasiParameterGroup</forward>
+    <forward>enum ItemType {OPT_ITEM =  0, FIT_ITEM, FIT_CONSTRAINT}</forward>
 </forwards>
 <variables>
     <variable>CCopasiParameterGroup * mpItems;</variable>
@@ -631,7 +623,7 @@
     <variable>bool mUpperInfChanged;</variable>
     <variable>QColor mSavedColor;</variable>
     <variable>QColor mChangedColor;</variable>
-    <variable>bool mIsFitItem;</variable>
+    <variable>ItemType mItemType;</variable>
     <variable>std::vector&lt; COptItem * &gt; * mpItemsCopy;</variable>
 </variables>
 <signals>
@@ -652,7 +644,7 @@
     <slot access="private" specifier="non virtual">slotDown()</slot>
     <slot access="private" specifier="non virtual">slotDuplicatePerExperiment()</slot>
     <slot access="private" specifier="non virtual">slotNew()</slot>
-    <slot access="private" specifier="non virtual">slotItemChanged( int row, int col )</slot>
+    <slot access="private" specifier="non virtual">slotItemChanged( int row, int )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
@@ -661,7 +653,7 @@
     <function access="private" specifier="non virtual" returnType="bool">loadItem( COptItem * pItem )</function>
     <function returnType="bool">save( const std::map&lt;std::string, std::string&gt; * pKeyMap )</function>
     <function access="private" specifier="non virtual">saveItem()</function>
-    <function specifier="non virtual">enableFitItem( const bool &amp; enable )</function>
+    <function specifier="non virtual">setItemType( const ItemType &amp; type )</function>
     <function specifier="non virtual">setExperimentSet( const CExperimentSet * &amp; pExperimentSet )</function>
     <function access="private" specifier="non virtual">setTableText( const int &amp; row, const COptItem * pItem )</function>
 </functions>

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 18:50:55 $
+   $Date: 2006/03/14 16:30:16 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -207,13 +207,13 @@ void CQFittingWidget::init()
 
   mpParameterPageLayout = new QHBoxLayout(mpParametersPage, 0, 6, "mpParameterPageLayout");
   mpParameters = new CQFittingItemWidget(mpParametersPage);
-  mpParameters->enableFitItem(true);
+  mpParameters->setItemType(FIT_ITEM);
   mpParameterPageLayout->addWidget(mpParameters);
   connect(mpParameters, SIGNAL(numberChanged(int)), this, SLOT(slotParameterNumberChanged(int)));
 
   mpConstraintPageLayout = new QHBoxLayout(mpConstraintsPage, 0, 6, "mpConstraintsPageLayout");
   mpConstraints = new CQFittingItemWidget(mpConstraintsPage);
-  mpConstraints->enableFitItem(true);
+  mpConstraints->setItemType(FIT_CONSTRAINT);
   mpConstraintPageLayout->addWidget(mpConstraints);
   connect(mpConstraints, SIGNAL(numberChanged(int)), this, SLOT(slotConstraintNumberChanged(int)));
 

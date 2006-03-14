@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 20:12:22 $
+   $Date: 2006/03/14 16:30:16 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Wed Mar 8 14:31:58 2006
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.10 2006/03/08 20:12:22 shoops Exp $)
+ ** Created: Tue Mar 14 09:38:07 2006
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.11 2006/03/14 16:30:16 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -36,7 +36,6 @@ class QComboBox;
 class QLineEdit;
 class CCopasiSelectionDialog;
 class COptItem;
-class CFitItem;
 class CCopasiObject;
 class CCopasiObjectName;
 class CQValidatorBound;
@@ -44,6 +43,7 @@ class CQValidatorNotEmpty;
 class QColor;
 class CExperimentSet;
 class CCopasiParameterGroup;
+enum ItemType {OPT_ITEM = 0, FIT_ITEM, FIT_CONSTRAINT};
 
 class CQFittingItemWidget : public QWidget
   {
@@ -78,7 +78,7 @@ class CQFittingItemWidget : public QWidget
 
     virtual bool load(CCopasiParameterGroup * pItems, const std::map<std::string, std::string> * pKeyMap);
     virtual bool save(const std::map<std::string, std::string> * pKeyMap);
-    void enableFitItem(const bool & enable);
+    void setItemType(const ItemType & type);
     void setExperimentSet(const CExperimentSet * & pExperimentSet);
 
   signals:
@@ -98,7 +98,7 @@ class CQFittingItemWidget : public QWidget
     bool mUpperInfChanged;
     QColor mSavedColor;
     QColor mChangedColor;
-    bool mIsFitItem;
+    ItemType mItemType;
     std::vector< COptItem * > * mpItemsCopy;
 
     QVBoxLayout* CQFittingItemWidgetLayout;
@@ -145,7 +145,7 @@ class CQFittingItemWidget : public QWidget
     void slotDown();
     void slotDuplicatePerExperiment();
     void slotNew();
-    void slotItemChanged(int row, int col);
+    void slotItemChanged(int row, int);
   };
 
 #endif // CQFITTINGITEMWIDGET_H
