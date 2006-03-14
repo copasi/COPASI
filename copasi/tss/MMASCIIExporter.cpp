@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2006/03/07 12:38:38 $
+   $Date: 2006/03/14 13:21:10 $
    End CVS Header */
 
 #include <math.h>
@@ -1131,16 +1131,16 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
 
                           metab = dynamic_cast< CMetab * >(tmp);
 
-                          if (metab->getStatus() == CModelEntity::FIXED)
+                          /* TO REMOVE : if (metab->getStatus() == CModelEntity::FIXED)
                             {
                               equation << metab->getInitialConcentration();
                             }
                           else
-                            {
-                              name = metab ->getObjectName();
-                              index = findMetabXByName(copasiModel, name);
-                              equation << "y[" << index << "]";
-                            }
+                            {*/
+                          name = metab ->getObjectName();
+                          index = findMetabXByName(copasiModel, name);
+                          equation << "y[" << index << "]";
+                          /* } */
                         }
                       if (usage == CFunctionParameter::PARAMETER)
                         if (!(reac->isLocalParameter(k)))
@@ -1233,7 +1233,7 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
                       substr = substrs[k];
                       mult = substr->getMultiplicity();
 
-                      if (substr->getMetabolite().getStatus() == CModelEntity::FIXED)
+                      /* TO REMOVE : if (substr->getMetabolite().getStatus() == CModelEntity::FIXED)
                         {
                           massaction << " * " << substr->getMetabolite().getInitialConcentration();
 
@@ -1242,15 +1242,15 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
                               massaction << " * " << substr->getMetabolite().getInitialConcentration();
                         }
                       else
-                        {
-                          name = substr->getMetabolite().getObjectName();
-                          index = findMetabXByName(copasiModel, name);
-                          massaction << " * y[" << index << "]";
+                        {*/
+                      name = substr->getMetabolite().getObjectName();
+                      index = findMetabXByName(copasiModel, name);
+                      massaction << " * y[" << index << "]";
 
-                          if (mult > 1)
-                            for (m = 1; m < mult; ++m)
-                              massaction << " * y[" << index << "]";
-                        }
+                      if (mult > 1)
+                        for (m = 1; m < mult; ++m)
+                          massaction << " * y[" << index << "]";
+                      /* } */
                     }
 
                   if (cMassAction.isReversible() == TriTrue)
@@ -1282,7 +1282,7 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
                           prod = prods[k];
                           mult = prod->getMultiplicity();
 
-                          if (prod->getMetabolite().getStatus() == CModelEntity::FIXED)
+                          /* TO REMOVE: if (prod->getMetabolite().getStatus() == CModelEntity::FIXED)
                             {
                               massaction << " * " << prod->getMetabolite().getInitialConcentration();
 
@@ -1291,15 +1291,15 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
                                   massaction << " * " << prod->getMetabolite().getInitialConcentration();
                             }
                           else
-                            {
-                              name = metab->getObjectName();
-                              index = findMetabXByName(copasiModel, name);
-                              massaction << " * y[" << index << "]";
+                            {*/
+                          name = metab->getObjectName();
+                          index = findMetabXByName(copasiModel, name);
+                          massaction << " * y[" << index << "]";
 
-                              if (mult > 1)
-                                for (m = 1; m < mult; ++m)
-                                  massaction << " * y[" << index << "]";
-                            }
+                          if (mult > 1)
+                            for (m = 1; m < mult; ++m)
+                              massaction << " * y[" << index << "]";
+                          /* } */
                         }
                     }
                   massaction << ") ";
