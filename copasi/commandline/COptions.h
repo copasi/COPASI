@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/22 14:06:33 $
+   $Author: gauges $ 
+   $Date: 2006/03/14 07:34:24 $
    End CVS Header */
 
 /**
@@ -123,6 +123,8 @@ class COptions
 
     static std::string getEnvironmentVariable(const std::string & name);
 
+    static std::string getPWD(void);
+
   private:
     template< class CType > static void setValue(const std::string & name,
               const CType & value)
@@ -136,8 +138,6 @@ class COptions
       }
 
     static std::string getCopasiDir(void);
-
-    static std::string getPWD(void);
 
     static std::string getHome(void);
     static std::string getTemp(void);
