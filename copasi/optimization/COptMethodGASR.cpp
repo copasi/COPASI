@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:27 $
+   $Date: 2006/03/14 16:29:42 $
    End CVS Header */
 
 #include <float.h>
@@ -315,13 +315,12 @@ C_FLOAT64 COptMethodGASR::phi(C_INT32 indivNum)
       switch ((*it)->checkConstraint())
         {
         case - 1:
-          phiCalc = *(*it)->getLowerBoundValue() - *(*it)->getObjectValue();
+        case 1:
+          phiCalc = (*it)->getConstraintViolation();
           phiVal += phiCalc * phiCalc;
           break;
 
-        case 1:
-          phiCalc = *(*it)->getObjectValue() - *(*it)->getUpperBoundValue();
-          phiVal += phiCalc * phiCalc;
+        default:
           break;
         }
     }

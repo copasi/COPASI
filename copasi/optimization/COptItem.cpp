@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/10 15:00:21 $
+   $Date: 2006/03/14 16:29:42 $
    End CVS Header */
 
 #include <float.h>
@@ -246,6 +246,24 @@ C_INT32 COptItem::checkConstraint() const
     if (*mpLowerBound > *mpObjectValue) return - 1;
     if (*mpObjectValue > *mpUpperBound) return 1;
     return 0;
+  }
+
+C_FLOAT64 COptItem::getConstraintViolation() const
+  {
+    switch (checkConstraint())
+      {
+      case - 1:
+        return *mpLowerBound - *mpObjectValue;
+        break;
+
+      case 1:
+        return *mpObjectValue - *mpUpperBound;
+        break;
+
+      default:
+        return 0.0;
+        break;
+      }
   }
 
 C_INT32 COptItem::checkConstraint(const C_FLOAT64 & value) const

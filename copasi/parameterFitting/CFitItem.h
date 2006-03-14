@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:28 $
+   $Date: 2006/03/14 16:29:42 $
    End CVS Header */
 
 #ifndef COPASI_CFitItem
@@ -168,7 +168,7 @@ class CFitItem : public COptItem
      */
     void initializeParameter();
 
-  private:
+  protected:
     // Attributes
     /**
      * A pointer to the value of the CCopasiParameter holding the saved parameter value
@@ -190,6 +190,56 @@ class CFitItem : public COptItem
      * A pointer to the local update method
      */
     UpdateMethod * mpLocalMethod;
+  };
+
+class CFitConstraint : public CFitItem
+  {
+    //Operations
+  public:
+    /**
+     * Default constructor
+     * @param const std::string & name (default: FitItem)
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CFitConstraint(const std::string & name = "FitItem",
+                   const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Copy constructor
+     * @param const CFitConstraint & src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CFitConstraint(const CFitConstraint & src,
+                   const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Specific constructor used for reading copasi files
+     * @param const CCopasiParameterGroup & group
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CFitConstraint(const CCopasiParameterGroup & group,
+                   const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Destructor
+     */
+    virtual ~CFitConstraint();
+
+    /**
+     * This functions check whether the current value is within the limits
+     * of the optimization item.
+     * @return C_INT32 result (-1: to small, 0: within boundaries, 1 to large)
+     */
+    virtual C_INT32 checkConstraint() const;
+
+    /**
+     * Retrieve the magnitude of the constraint violation
+     * This is a negative number if the lower bound is violated,
+     * a positive number if the upper bound is violated and 0
+     * otherwise.
+     * @return C_FLOAT64 constraintViolation;
+     */
+    virtual C_FLOAT64 getConstraintViolation() const;
   };
 
 #endif // COPASI_CFitItem

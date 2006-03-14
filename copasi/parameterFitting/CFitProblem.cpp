@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:22:54 $
+   $Date: 2006/03/14 16:29:42 $
    End CVS Header */
 
 #include "copasi.h"
@@ -144,7 +144,7 @@ bool CFitProblem::elevateChildren()
 
   for (; it != end; ++it)
     {
-      if (!((*it) = elevate<CFitItem, COptItem>(*it)))
+      if (!((*it) = elevate<CFitConstraint, COptItem>(*it)))
         return false;
 
       pExperiments =
@@ -223,6 +223,37 @@ bool CFitProblem::initialize()
         }
     }
 
+  // Build a matrix of experiment and constraint items;
+  mExperimentConstraints.resize(mpExperimentSet->size(),
+                                mpConstraintItems->size());
+  mExperimentConstraints = NULL;
+
+  it = mpConstraintItems->begin();
+  end = mpConstraintItems->end();
+
+  CFitConstraint * pConstraint;
+
+  for (j = 0; it != end; ++it, j++)
+    {
+      pConstraint = static_cast<CFitConstraint *>(*it);
+
+      imax = pConstraint->getExperimentCount();
+      if (imax == 0)
+        {
+          for (i = 0, imax = mpExperimentSet->size(); i < imax; i++)
+            mExperimentConstraints(i, j) = pConstraint;
+        }
+      else
+        {
+          for (i = 0; i < imax; i++)
+            {
+              if ((Index = mpExperimentSet->keyToIndex(pConstraint->getExperiment(i))) == C_INVALID_INDEX)
+                return false;
+              mExperimentConstraints(Index, j) = pConstraint;
+            };
+        }
+    }
+
   pdelete(mpTrajectoryProblem);
   mpTrajectoryProblem =
     new CTrajectoryProblem(*static_cast<CTrajectoryProblem *>(mpTrajectory->getProblem()));
@@ -248,6 +279,18 @@ bool CFitProblem::restoreTrajectoryProblem()
   return true;
 }
 
+bool CFitProblem::checkFunctionalConstraints()
+{
+  std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
+  std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
+
+  for (; it != end; ++it)
+    if (static_cast<CFitConstraint *>(*it)->getConstraintViolation() != 0.0)
+      return false;
+
+  return true;
+}
+
 bool CFitProblem::calculate()
 {
   mCounter += 1;
@@ -265,6 +308,15 @@ bool CFitProblem::calculate()
   UpdateMethod ** pUpdate = mExperimentUpdateMethods.array();
   std::vector<COptItem *>::iterator itItem;
   std::vector<COptItem *>::iterator endItem = mpOptItems->end();
+  std::vector<COptItem *>::iterator itConstraint;
+  std::vector<COptItem *>::iterator endConstraint = mpConstraintItems->end();
+
+  // Reset the constraints memory
+  for (itConstraint = mpConstraintItems->begin(); itConstraint != endConstraint; ++itConstraint)
+    static_cast<CFitConstraint *>(*itConstraint)->setLocalValue(0.0);
+
+  CFitConstraint **ppConstraint = mExperimentConstraints.array();
+  CFitConstraint **ppConstraintEnd;
 
   try
     {
@@ -296,6 +348,12 @@ bool CFitProblem::calculate()
                       break;
                     }
 
+                  // We check after each simulation whether the constraints are violated.
+                  ppConstraint = mExperimentConstraints[i];
+                  ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
+                  for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
+                    if (*ppConstraint) (*ppConstraint)->checkConstraint();
+
                   mCalculateValue += pExp->sumOfSquares(j, DependentValues, Residuals);
                   if (mStoreResults) pExp->storeCalculatedValues(j);
                 }
@@ -323,6 +381,11 @@ bool CFitProblem::calculate()
                   mCalculateValue += pExp->sumOfSquares(j, DependentValues, Residuals);
                   if (mStoreResults) pExp->storeCalculatedValues(j);
                 }
+
+              // We check after each simulation whether the constraints are violated.
+              ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
+              for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
+                if (*ppConstraint) (*ppConstraint)->checkConstraint();
               break;
 
             default:

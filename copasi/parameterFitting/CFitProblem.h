@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:28 $
+   $Date: 2006/03/14 16:29:42 $
    End CVS Header */
 
 #ifndef COPASI_CFitProblem
@@ -15,6 +15,7 @@
 class CExperimentSet;
 class CTrajectoryProblem;
 class CState;
+class CFitConstraint;
 
 class CFitProblem : public COptProblem
   {
@@ -83,6 +84,12 @@ class CFitProblem : public COptProblem
      * @result bool succes
      */
     virtual bool restore(const bool & updateModel);
+
+    /**
+     * Check whether all functional constraints are fullfilled. 
+     * @result bool fullfilled
+     */
+    virtual bool checkFunctionalConstraints();
 
     /**
      * This is the output method for any object. The default implementation
@@ -162,6 +169,11 @@ class CFitProblem : public COptProblem
      * Matrix of update methods for items for each experiment.
      */
     CMatrix< UpdateMethod * > mExperimentUpdateMethods;
+
+    /**
+     * Matrix of constraints for each experiment.
+     */
+    CMatrix< CFitConstraint * > mExperimentConstraints;
 
     /**
      * Copy of the trajectory problem so that we can restore the defaults

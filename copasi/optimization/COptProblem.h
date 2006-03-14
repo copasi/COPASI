@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:27 $
+   $Date: 2006/03/14 16:29:42 $
    End CVS Header */
 
 /**
@@ -112,13 +112,13 @@ class COptProblem : public CCopasiProblem
     virtual bool restore(const bool & updateModel);
 
     /**
-     * calculate function for optimization
-     * @result bool fullfilled
+     * Check whether all parameters are within their boundaries.  
+     * @result bool within
      */
     virtual bool checkParametricConstraints();
 
     /**
-     * calculate function for optimization
+     * Check whether all functional constraints are fullfilled. 
      * @result bool fullfilled
      */
     virtual bool checkFunctionalConstraints();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:27 $
+   $Date: 2006/03/14 16:29:42 $
    End CVS Header */
 
 #ifndef COPASI_COptItem
@@ -147,6 +147,13 @@ class COptItem: public CCopasiParameterGroup
      * @return C_INT32 result (-1: to small, 0: within boundaries, 1 to large)
      */
     virtual C_INT32 checkConstraint() const;
+
+    /**
+     * Retrieve the magnitude of the constraint violation
+     * This is always a positive number
+     * @return C_FLOAT64 constraintViolation;
+     */
+    virtual C_FLOAT64 getConstraintViolation() const;
 
     /**
      * This functions check whether the value is within the limits

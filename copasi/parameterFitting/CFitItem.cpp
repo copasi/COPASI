@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:28 $
+   $Date: 2006/03/14 16:29:42 $
    End CVS Header */
 
 #include <limits>
@@ -169,3 +169,46 @@ bool CFitItem::updateBounds(std::vector<COptItem * >::iterator it)
 
   return true;
 }
+
+CFitConstraint::CFitConstraint(const std::string & name,
+                               const CCopasiContainer * pParent):
+    CFitItem(name, pParent)
+{}
+
+CFitConstraint::CFitConstraint(const CFitConstraint & src,
+                               const CCopasiContainer * pParent):
+    CFitItem(src, pParent)
+{}
+
+CFitConstraint::CFitConstraint(const CCopasiParameterGroup & group,
+                               const CCopasiContainer * pParent):
+    CFitItem(group, pParent)
+{}
+
+CFitConstraint::~CFitConstraint() {}
+
+C_INT32 CFitConstraint::checkConstraint() const
+  {
+    if (*mpLowerBound > *mpObjectValue)
+      {
+        C_FLOAT64 Delta = *mpLowerBound - *mpObjectValue;
+        if (fabs(mLocalValue) < Delta)
+          const_cast<CFitConstraint *>(this)->mLocalValue = -Delta;
+
+        return - 1;
+      }
+
+    if (*mpObjectValue > *mpUpperBound)
+      {
+        C_FLOAT64 Delta = *mpObjectValue - *mpUpperBound;
+        if (fabs(mLocalValue) < Delta)
+          const_cast<CFitConstraint *>(this)->mLocalValue = Delta;
+
+        return 1;
+      }
+
+    return 0;
+  }
+
+C_FLOAT64 CFitConstraint::getConstraintViolation() const
+{return mLocalValue;}
