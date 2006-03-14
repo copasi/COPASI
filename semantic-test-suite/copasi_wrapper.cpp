@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/copasi_wrapper.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2006/03/13 14:24:42 $
+   $Date: 2006/03/14 07:35:05 $
    End CVS Header */
 
 #define COPASI_MAIN
@@ -62,6 +62,7 @@ int main(int argc, char *argv[])
   unsigned int i, iMax = argc;
   CTrajectoryTask* pTrajectoryTask = NULL;
 
+  std::string CWD = COptions::getPWD();
   double endTime = strtod(pEndTime, &pEndTime);
   double stepNumber = strtod(pStepNumber, &pStepNumber);
   if (endTime == 0.0)
@@ -131,7 +132,7 @@ int main(int argc, char *argv[])
       pTrajectoryTask->setScheduled(true);
 
       pTrajectoryTask->getReport().setReportDefinition(pReport);
-      pTrajectoryTask->getReport().setTarget(pOutputFilename);
+      pTrajectoryTask->getReport().setTarget(CWD + "/" + pOutputFilename);
       pTrajectoryTask->getReport().setAppend(false);
 
       CTrajectoryProblem* pProblem = dynamic_cast<CTrajectoryProblem*>(pTrajectoryTask->getProblem());
@@ -160,7 +161,7 @@ int main(int argc, char *argv[])
       // create another report that will write to the directory where the input file came from
       // this can be used for debugging
       // create a trajectory task
-      pTrajectoryTask->getReport().setTarget(saveFilename + std::string(".CSV"));
+      pTrajectoryTask->getReport().setTarget(pOutputFilename);
 
       pTrajectoryTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
       pTrajectoryTask->process(true);
