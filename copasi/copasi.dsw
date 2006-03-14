@@ -360,6 +360,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "semanticTestSuite"="..\SEMANTIC-TEST-SUITE\semanticTestSuite.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "sensitivities"=.\sensitivities\sensitivities.dsp - Package Owner=<4>
 
 Package=<5>
