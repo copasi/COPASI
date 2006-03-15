@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/15 13:47:41 $
+   $Date: 2006/03/15 23:35:43 $
    End CVS Header */
 
 #include <sstream>
@@ -187,6 +187,11 @@ CFindDimensions::CFindDimensions(const CFunction* function)
     mRootDimension(),
     mUseHeuristics(false)
 {
+  setupDimensions();
+}
+
+void CFindDimensions::setupDimensions()
+{
   if (!mpFunction) return;
 
   mDimensions.resize(mpFunction->getVariables().size());
@@ -243,6 +248,30 @@ void CFindDimensions::findDimensions(bool isMulticompartment)
   findDimensions();
 }
 
+std::vector<std::string> CFindDimensions::findDimensionsBoth()
+{
+  //first for single compartment
+  findDimensions(false);
+  std::vector<CDimension> store = mDimensions;
+
+  //next for multiple compartments
+  setupDimensions();
+  findDimensions(true);
+
+  //compare...
+  std::vector<std::string> ret;
+  std::vector<CDimension>::const_iterator it1, it2, it1end = store.end();
+  for (it1 = store.begin(), it2 = mDimensions.begin(); it1 != it1end; ++it1, ++it2)
+    {
+      if (*it1 == *it2)
+        ret.push_back(it1->getDisplayString());
+      else
+        ret.push_back(it1->getDisplayString() + " or " + it2->getDisplayString());
+    }
+
+  return ret;
+}
+
 void CFindDimensions::findDimensions()
 {
   if (!mpFunction) return;
@@ -250,6 +279,8 @@ void CFindDimensions::findDimensions()
   for (i = 0; i < imax; ++i)
     if (mDimensions[i].isUnknown())
       findDimension(i);
+
+  //TODO: conistency check for known dimensions?
 }
 
 //find dim for one parameter
