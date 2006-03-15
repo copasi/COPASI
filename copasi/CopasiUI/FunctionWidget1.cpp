@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.135 $
+   $Revision: 1.136 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/13 18:50:53 $
+   $Date: 2006/03/15 18:41:20 $
    End CVS Header */
 
 /**********************************************************************
@@ -286,7 +286,7 @@ FunctionWidget1::~FunctionWidget1()
   pdelete(mpFunction);
 }
 
-bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
+bool FunctionWidget1::loadParameterTable()
 {
   QColor subsColor(255, 210, 210);
   QColor prodColor(210, 255, 210);
@@ -297,6 +297,7 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
   QColor color;
 
   unsigned C_INT32 i, j;
+  CFunctionParameters & params = mpFunction->getVariables();
 
   // list of usages for combobox
   QStringList Usages;
@@ -321,6 +322,13 @@ bool FunctionWidget1::loadParameterTable(const CFunctionParameters & params)
   for (j = 0; j < params.size(); j++)
     {
       usage = params[j]->getUsage();
+      if (usage == CFunctionParameter::VARIABLE &&
+          dynamic_cast<CKinFunction *>(mpFunction))
+        {
+          usage = CFunctionParameter::PARAMETER;
+          params[j]->setUsage(usage);
+        }
+
       qUsage = FROM_UTF8(CFunctionParameter::RoleNameDisplay[usage]);
 
       switch (usage)
@@ -484,12 +492,9 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   else if (!mpFunction)
     return false;
 
-  // use a const pointer to work with
-  const CFunction* pFunction = mpFunction;
-
   // make dialogue read only for predefined functions
-  if (pFunction->getType() == CFunction::MassAction ||
-      pFunction->getType() == CFunction::PreDefined)
+  if (mpFunction->getType() == CFunction::MassAction ||
+      mpFunction->getType() == CFunction::PreDefined)
     {
       flagRO = true;
       RadioButton1->setEnabled(false);
@@ -519,10 +524,10 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
     }
 
   // function name
-  LineEdit1->setText(FROM_UTF8(pFunction->getObjectName()));
+  LineEdit1->setText(FROM_UTF8(mpFunction->getObjectName()));
 
   /* Insert line breaks in the function description */
-  std::string desc = pFunction->getInfix();
+  std::string desc = mpFunction->getInfix();
   int l = 0;
   int n = 0;
   int len = desc.length();
@@ -544,10 +549,10 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   connect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
 
   //radio buttons
-  loadReversibility(pFunction->isReversible());
+  loadReversibility(mpFunction->isReversible());
 
   //parameter table
-  loadParameterTable(pFunction->getVariables());
+  loadParameterTable();
 
   // application table
   loadUsageTable(/*pFunction->getVariables().getUsageRanges()*/);
@@ -763,7 +768,7 @@ void FunctionWidget1::slotFcnDescriptionChanged()
     }
 
   //parameter table
-  loadParameterTable(mpFunction->getVariables());
+  loadParameterTable();
 
   // application table
   //updateApplication();
@@ -789,7 +794,7 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
     }
 
   //update tables
-  loadParameterTable(mpFunction->getVariables());
+  loadParameterTable();
   loadUsageTable();
 }
 
