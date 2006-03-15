@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/15 18:18:39 $
+   $Author: gauges $ 
+   $Date: 2006/03/15 20:09:34 $
    End CVS Header */
 
 #include "copasi.h"
@@ -146,8 +146,8 @@ bool CFunction::initVariables()
     }
   else
     {
-      it = NULL;
-      end = NULL;
+      it = mpNodeList->end();
+      end = mpNodeList->end();
     }
 
   CFunctionParameters NewVariables;
