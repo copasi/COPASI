@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/15 15:38:58 $
+   $Date: 2006/03/15 13:50:06 $
    End CVS Header */
 
 #include <qstringlist.h>
@@ -17,6 +17,7 @@
 #include "model/CModel.h"
 #include "model/CMetabNameInterface.h"
 #include "qtUtilities.h"
+#include "utilities/CDimension.h"
 
 #include "./icons/product.xpm"
 #include "./icons/substrate.xpm"
@@ -60,15 +61,17 @@ void ParameterTable::initTable()
   //setFocusStyle(QTable::FollowStyle);
 
   setNumRows(3);
-  setNumCols(4);
+  setNumCols(5);
   horizontalHeader()->setLabel(0, "Description");
   horizontalHeader()->setLabel(1, "Name");
   horizontalHeader()->setLabel(2, "");
   horizontalHeader()->setLabel(3, "Value");
-  setColumnStretchable(0, true);
+  horizontalHeader()->setLabel(4, "Unit");
+  setColumnStretchable(0, false);
   setColumnStretchable(1, true);
   setColumnStretchable(2, false);
   setColumnStretchable(3, true);
+  setColumnStretchable(4, false);
 
   setShowGrid(false);
 }
@@ -161,6 +164,11 @@ QStringList ParameterTable::getListOfAllCompartmentNames(const CModel & model)
 
 void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & model)
 {
+  //first get the units strings
+  CFindDimensions units(ri.getFunction());
+  units.setUseHeuristics(true);
+  units.findDimensions(ri.isMulticompartment(model));
+
   C_INT32 i, imax = ri.size();
   C_INT32 j, jmax;
   C_INT32 rowCounter = 0;
@@ -255,7 +263,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
         }
       setItem(rowCounter, 1, item);
 
-      // add  column
+      // add third column
       if (usage == CFunctionParameter::PARAMETER)
         {
           item = new ColorCheckTableItem(this, color, "global");
@@ -266,6 +274,11 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
           item = new ColorTableItem(this, QTableItem::Never, color, "");
         }
       setItem(rowCounter, 2, item);
+
+      // add units column
+      item = new ColorTableItem(this, QTableItem::Never, color,
+                                FROM_UTF8(" " + units.getDimensions()[i].getDisplayString()));
+      setItem(rowCounter, 4, item);
 
       // add a line for a metabolite Parameter
       if ((usage == CFunctionParameter::SUBSTRATE)
@@ -366,7 +379,9 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
 
       ++rowCounter;
     }
+  adjustColumn(0);
   adjustColumn(2);
+  adjustColumn(4);
 }
 
 void ParameterTable::handleCurrentCell(int row, int col)
