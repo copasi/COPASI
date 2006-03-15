@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2005/12/15 15:37:04 $
+   $Date: 2006/03/15 13:44:14 $
    End CVS Header */
 
 #ifndef CREACTIONINTERFACE_H
@@ -92,6 +92,14 @@ class CReactionInterface
     bool isReversible() const {return mChemEqI.getReversibility();};
 
     /**
+     * this method tries to find out if the REACTION involves several compartments 
+     * It only takes into account the metabs that 
+     * actually exist in the model. A non existing metabolite is assumed 
+     * not to be in a different compartment
+     */
+    bool isMulticompartment(const CModel & model) const;
+
+    /**
      * set the reversibility.
      * newFunction suggests a new kinetic function which is only used if adequate.
      */
@@ -122,10 +130,13 @@ class CReactionInterface
     const std::string & getFunctionDescription() const
     {if (mpFunction) return mpFunction->getInfix(); else return emptyString;};
 
+    const CFunction * getFunction() const
+    {return mpFunction;}
+
     std::vector< std::string > getListOfPossibleFunctions() const;
 
     C_INT32 size() const
-    {if (mpFunction) return mpParameters->size(); else return 0;};
+      {if (mpFunction) return mpParameters->size(); else return 0;};
 
     bool isVector(unsigned C_INT32 index) const
       {

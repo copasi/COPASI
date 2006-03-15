@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Author: ssahle $ 
+   $Date: 2006/03/15 13:43:28 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -144,21 +144,40 @@ bool CChemEqInterface::loadFromChemEq(const CModel * model, const CChemEq & ce)
 bool CChemEqInterface::writeToChemEq(const CModel * model, CChemEq & ce) const
   {
     bool ret = true;
+    std::string metabkey;
     C_INT32 i, imax;
 
     ce.cleanup();
 
     imax = mSubstrateNames.size();
     for (i = 0; i < imax; ++i)
-      ce.addMetabolite(CMetabNameInterface::getMetaboliteKey(model, mSubstrateNames[i]), mSubstrateMult[i], CChemEq::SUBSTRATE);
+      {
+        metabkey = CMetabNameInterface::getMetaboliteKey(model, mSubstrateNames[i]);
+        if (metabkey.empty())
+          ret = false;
+        else
+          ce.addMetabolite(metabkey, mSubstrateMult[i], CChemEq::SUBSTRATE);
+      }
 
     imax = mProductNames.size();
     for (i = 0; i < imax; ++i)
-      ce.addMetabolite(CMetabNameInterface::getMetaboliteKey(model, mProductNames[i]), mProductMult[i], CChemEq::PRODUCT);
+      {
+        metabkey = CMetabNameInterface::getMetaboliteKey(model, mProductNames[i]);
+        if (metabkey.empty())
+          ret = false;
+        else
+          ce.addMetabolite(metabkey, mProductMult[i], CChemEq::PRODUCT);
+      }
 
     imax = mModifierNames.size();
     for (i = 0; i < imax; ++i)
-      ce.addMetabolite(CMetabNameInterface::getMetaboliteKey(model, mModifierNames[i]), mModifierMult[i], CChemEq::MODIFIER);
+      {
+        metabkey = CMetabNameInterface::getMetaboliteKey(model, mModifierNames[i]);
+        if (metabkey.empty())
+          ret = false;
+        else
+          ce.addMetabolite(metabkey, mModifierMult[i], CChemEq::MODIFIER);
+      }
 
     ce.setReversibility(mReversibility);
 
@@ -324,6 +343,13 @@ bool CChemEqInterface::createNonExistingMetabs(CModel * model) const
       }
 
     return ret;
+  }
+
+bool CChemEqInterface::isMulticompartment(const CModel * model) const
+  {
+    CChemEq ce;
+    writeToChemEq(model, ce);
+    return (ce.getCompartmentNumber() > 1);
   }
 
 /*static*/

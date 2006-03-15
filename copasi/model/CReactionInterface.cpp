@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/06 21:47:38 $
+   $Date: 2006/03/15 13:44:13 $
    End CVS Header */
 
 #include <string>
@@ -544,6 +544,11 @@ void CReactionInterface::loadNameMap(const CModel & model, const CReaction & rea
 bool CReactionInterface::createMetabolites(CModel & model) const
   {
     return mChemEqI.createNonExistingMetabs(&model);
+  }
+
+bool CReactionInterface::isMulticompartment(const CModel & model) const
+  {
+    return mChemEqI.isMulticompartment(&model);
   }
 
 bool CReactionInterface::isValid() const
