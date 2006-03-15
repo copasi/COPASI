@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.136 $
+   $Revision: 1.137 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/15 18:41:20 $
+   $Author: ssahle $ 
+   $Date: 2006/03/15 23:39:26 $
    End CVS Header */
 
 /**********************************************************************
@@ -55,10 +55,15 @@
 #include "function/CFunctionDB.h"
 #include "function/CKinFunction.h"
 #include "report/CKeyFactory.h"
+#include "utilities/CDimension.h"
 
 //#include "./icons/product.xpm"
 //#include "./icons/substrate.xpm"
 //#include "./icons/modifier.xpm"
+
+#define COL_NAME 0
+#define COL_USAGE 1
+#define COL_UNIT 2
 
 /*
  *  Constructs a FunctionWidget1 which is a child of 'parent', with the 
@@ -162,16 +167,16 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   //FunctionWidget1Layout->addItem(spacer_2, 6, 0);
 
   Table1 = new QTable(this, "Table1");
-  Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Name"));
-  Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Data Type"));
-  Table1->setNumCols(Table1->numCols() + 1); Table1->horizontalHeader()->setLabel(Table1->numCols() - 1, trUtf8("Description"));
-  Table1->setNumRows(3);
   Table1->setNumCols(3);
-  Table1->setColumnReadOnly (0, true);
-  Table1->setColumnReadOnly (1, true);
+  Table1->horizontalHeader()->setLabel(COL_NAME, trUtf8("Name"));
+  Table1->horizontalHeader()->setLabel(COL_USAGE, trUtf8("Description"));
+  Table1->horizontalHeader()->setLabel(COL_UNIT, trUtf8("Unit"));
+  Table1->setNumRows(3);
+  Table1->setColumnReadOnly (COL_NAME, true);
+  Table1->setColumnReadOnly (COL_UNIT, true);
   Table1->verticalHeader()->hide();
   Table1->setLeftMargin(0);
-  Table1->setColumnStretchable(0, true);
+  Table1->setColumnStretchable(COL_NAME, true);
   Table1->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
   FunctionWidget1Layout->addMultiCellWidget(Table1, 5, 5, 1, 1);
 
@@ -313,6 +318,11 @@ bool FunctionWidget1::loadParameterTable()
   for (i = 0; CFunctionParameter::DataTypeName[i] != ""; i++)
     functionType += (FROM_UTF8(CFunctionParameter::DataTypeName[i]));
 
+  //find parameter units
+  CFindDimensions ddd(mpFunction);
+  ddd.setUseHeuristics(true);
+  std::vector<std::string> units = ddd.findDimensionsBoth();
+
   CFunctionParameter::Role usage;
   QString qUsage;
 
@@ -360,20 +370,25 @@ bool FunctionWidget1::loadParameterTable()
         }
 
       // col. 0
-      Table1->setItem(j, 0, new ColorTableItem(Table1, QTableItem::WhenCurrent, color,
+      Table1->setItem(j, COL_NAME, new ColorTableItem(Table1, QTableItem::WhenCurrent, color,
                       FROM_UTF8(params[j]->getObjectName())));
 
       // col. 1
-      QString temp = FROM_UTF8(CFunctionParameter::DataTypeName[params[j]->getType()]);
-      ComboItem * item = new ComboItem(Table1, QTableItem::WhenCurrent, color, functionType);
-      Table1->setItem(j, 1, item);
-      item->setText(temp);
+      //QString temp = FROM_UTF8(CFunctionParameter::DataTypeName[params[j]->getType()]);
+      //ComboItem * item = new ComboItem(Table1, QTableItem::WhenCurrent, color, functionType);
+      //Table1->setItem(j, 1, item);
+      //item->setText(temp);
 
-      // col. 2
+      // col. 1
       QComboTableItem * item2 = new QComboTableItem(Table1, Usages);
       item2->setCurrentItem(qUsage);
-      Table1->setItem(j, 2, item2);
+      Table1->setItem(j, COL_USAGE, item2);
+
+      //col. 2 (units)
+      Table1->setItem(j, COL_UNIT, new ColorTableItem(Table1, QTableItem::WhenCurrent, color,
+                      FROM_UTF8(units[j])));
     }
+  Table1->adjustColumn(COL_UNIT);
   return true;
 }
 
@@ -784,7 +799,7 @@ void FunctionWidget1::slotTableValueChanged(int row, int col)
 
   CFunctionParameters &functParam = mpFunction->getVariables();
 
-  if (col == 2) //Usage
+  if (col == COL_USAGE) //Usage
     {
       QComboTableItem * tmpItem = dynamic_cast<QComboTableItem *>(Table1->item(row, col));
       if (!tmpItem) fatalError();
@@ -1054,6 +1069,19 @@ bool FunctionWidget1::enter(const std::string & key)
 
   //debug
   //func->writeMathML(std::cout);
+  //CFindDimensions ddd(func);
+  //std::cout << "Before: ";
+  //ddd.printDebugOutput();
+  //CDimension dim; dim.setDimension(1, -1, -1); // conc/time
+  //ddd.findDimensions(dim);
+  //std::cout << "After: ";
+  //ddd.printDebugOutput();
+
+  //ddd.setUseHeuristics(true);
+  //ddd.findDimensions(dim);
+  //std::cout << "After2: ";
+  //ddd.printDebugOutput();
+  //ddd.findDimensionsBoth();
 
   if (func) return loadFromFunction(func);
   else return false;
