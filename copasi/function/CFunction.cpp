@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/15 20:51:36 $
+   $Date: 2006/03/15 20:59:04 $
    End CVS Header */
 
 #include "copasi.h"
@@ -135,26 +135,25 @@ bool CFunction::initVariables()
 {
   if (mpNodeList == NULL && mInfix != "") return false;
 
-  //first add all variables to the existing list
-  std::vector< CEvaluationNode * >::iterator it;
-  std::vector< CEvaluationNode * >::iterator end;
+  CFunctionParameters NewVariables;
 
   if (mInfix != "")
     {
-      it = mpNodeList->begin();
-      end = mpNodeList->end();
+      //first add all variables to the existing list
+      std::vector< CEvaluationNode * >::iterator it = mpNodeList->begin();
+      std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
+
+      for (; it != end; ++it)
+        if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::VARIABLE)
+          {
+            mVariables.add((*it)->getData(),
+                           CFunctionParameter::FLOAT64,
+                           CFunctionParameter::VARIABLE);
+            NewVariables.add((*it)->getData(),
+                             CFunctionParameter::FLOAT64,
+                             CFunctionParameter::VARIABLE);
+          }
     }
-  else
-    it = end;
-
-  CFunctionParameters NewVariables;
-
-  for (; it != end; ++it)
-    if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::VARIABLE)
-      {
-        mVariables.add((*it)->getData(), CFunctionParameter::FLOAT64, CFunctionParameter::VARIABLE);
-        NewVariables.add((*it)->getData(), CFunctionParameter::FLOAT64, CFunctionParameter::VARIABLE);
-      }
 
   //now remove all variables that are not in the tree anymore
   CFunctionParameter::DataType Type;
