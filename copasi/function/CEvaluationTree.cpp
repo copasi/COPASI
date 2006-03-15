@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/13 18:50:54 $
+   $Date: 2006/03/15 18:18:39 $
    End CVS Header */
 
 #include "copasi.h"
@@ -211,6 +211,7 @@ bool CEvaluationTree::parse()
 
 bool CEvaluationTree::compileNodes()
 {
+  if (mInfix == "") return true;
   if (mpNodeList == NULL) return false;
 
   bool success = true;

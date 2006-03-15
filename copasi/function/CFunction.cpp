@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/10 15:10:47 $
+   $Author: shoops $ 
+   $Date: 2006/03/15 18:18:39 $
    End CVS Header */
 
 #include "copasi.h"
@@ -32,7 +32,7 @@ CFunction::~CFunction()
 
 bool CFunction::setInfix(const std::string & infix)
 {
-  if (!CEvaluationTree::setInfix(infix)) return false;
+  if (!CEvaluationTree::setInfix(infix) && infix != "") return false;
   if (!initVariables()) return false;
 
   return true;
@@ -133,13 +133,22 @@ void CFunction::load(CReadConfig & configBuffer,
 
 bool CFunction::initVariables()
 {
-  if (mpNodeList == NULL) return false;
+  if (mpNodeList == NULL && mInfix != "") return false;
 
   //first add all variables to the existing list
-  std::vector< CEvaluationNode * >::iterator it
-  = mpNodeList->begin();
-  std::vector< CEvaluationNode * >::iterator end
-  = mpNodeList->end();
+  std::vector< CEvaluationNode * >::iterator it;
+  std::vector< CEvaluationNode * >::iterator end;
+
+  if (mInfix != "")
+    {
+      it = mpNodeList->begin();
+      end = mpNodeList->end();
+    }
+  else
+    {
+      it = NULL;
+      end = NULL;
+    }
 
   CFunctionParameters NewVariables;
 
