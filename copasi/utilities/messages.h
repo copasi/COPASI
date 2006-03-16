@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/10 15:00:21 $
+   $Author: gauges $ 
+   $Date: 2006/03/16 16:40:25 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -135,6 +135,9 @@ const MESSAGES Messages[] =
     {MCSBML + 21, "SBML (21): Setting an initial concentration on species \"%s\" which is in a compartment with spatial dimensions 0 is not allowed."},
     {MCSBML + 22, "SBML (22): Current versions of Copasi only supports three dimensional compartments. \"%s\" will be converted to three dimensions."},
     {MCSBML + 23, "SBML (23): Unable to handle compartment \"%s\" which has spatial dimensions of 0."},
+    {MCSBML + 24, "SBML (24): Units for compartment \"%s\" ignored."},
+    {MCSBML + 25, "SBML (25): Units for species \"%s\" ignored."},
+    {MCSBML + 26, "SBML (26): Units for parameter \"%s\" ignored."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

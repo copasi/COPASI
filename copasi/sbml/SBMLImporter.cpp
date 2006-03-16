@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.115 $
+   $Revision: 1.116 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2006/03/02 10:22:04 $
+   $Date: 2006/03/16 16:40:25 $
    End CVS Header */
 
 #include "copasi.h"
@@ -442,15 +442,17 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
   if (sbmlCompartment->isSetUnits())
     {
       std::string cU = sbmlCompartment->getUnits();
-      if (cU != "volume" && cU != "area" && cU != "length")
+      if (cU != "volume" /* && cU != "area" && cU != "length" */)
         {
-          fatalError();
+          //fatalError();
+          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 24, sbmlCompartment->getId().c_str());
+          const_cast<Compartment*>(sbmlCompartment)->unsetUnits();
         }
-      else if (cU == "area" || cU == "length")
-        {
-          /* !!!! create a warning that the units will be ignored. */
-          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 22, sbmlCompartment->getId().c_str());
-        }
+      //else if (cU == "area" || cU == "length")
+      //  {
+      //    /* !!!! create a warning that the units will be ignored. */
+      //    CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 22, sbmlCompartment->getId().c_str());
+      //}
     }
   if (sbmlCompartment->getSpatialDimensions() == 0)
     {
@@ -519,7 +521,9 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
       std::string cU = sbmlSpecies->getSubstanceUnits();
       if (cU != "substance")
         {
-          fatalError();
+          //fatalError();
+          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 25, sbmlSpecies->getId().c_str());
+          const_cast<Species*>(sbmlSpecies)->unsetUnits();
         }
     }
   if (sbmlSpecies->isSetSpatialSizeUnits())
@@ -1602,15 +1606,9 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
 {
   if (sbmlParameter->isSetUnits())
     {
-      std::string cU = sbmlParameter->getUnits();
-      if (cU != "volume" && cU != "area" && cU != "length")
-        {
-          fatalError();
-        }
-      else if (cU == "area" || cU == "length")
-        {
-          /* !!!! create a warning that the units will be ignored. */
-        }
+      /* !!!! create a warning that the units will be ignored. */
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 26, sbmlParameter->getId().c_str());
+      const_cast<Parameter*>(sbmlParameter)->unsetUnits();
     }
   std::string name = sbmlParameter->getName();
   if (!sbmlParameter->isSetName())
