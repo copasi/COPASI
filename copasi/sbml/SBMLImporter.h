@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2006/03/01 20:42:14 $
+   $Date: 2006/03/16 18:01:50 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -175,11 +175,11 @@ class SBMLImporter
      */
     bool SBMLImporter::areEqualSubtrees(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2);
 
-    std::vector<CEvaluationNodeObject*> isMassAction(const CEvaluationTree* pTree, const CChemEq& chemicalEquation, const CEvaluationNodeCall* pCallNode = NULL);
+    std::vector<CEvaluationNodeObject*>* isMassAction(const CEvaluationTree* pTree, const CChemEq& chemicalEquation, const CEvaluationNodeCall* pCallNode = NULL);
 
-    std::vector<CEvaluationNodeObject*> isMassActionExpression(const CEvaluationNode* pRootNode, const CChemEq& chemicalEquation);
+    std::vector<CEvaluationNodeObject*>* isMassActionExpression(const CEvaluationNode* pRootNode, const CChemEq& chemicalEquation);
 
-    std::vector<CEvaluationNodeObject*> isMassActionFunction(const CFunction* pFun, const CChemEq& chemicalEquation, const std::vector<std::vector< std::string > >& functionArgumentCNs);
+    std::vector<CEvaluationNodeObject*>* isMassActionFunction(const CFunction* pFun, const CChemEq& chemicalEquation, const std::vector<std::vector< std::string > >& functionArgumentCNs);
 
     /**
      * This function takes a node and tries to find out wether the tree under this node consists
