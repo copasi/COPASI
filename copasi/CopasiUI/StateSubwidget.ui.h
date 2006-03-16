@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:21:43 $
+   $Date: 2006/03/16 18:29:38 $
    End CVS Header */
 
 /****************************************************************************
@@ -208,6 +208,7 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
   CModel * pModel = task->getProblem()->getModel();
 
   pModel->setState(*pState);
+  pModel->applyAssignments();
   pModel->updateRates();
 
   // editing units here
