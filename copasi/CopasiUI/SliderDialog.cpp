@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/16 12:05:33 $
+   $Author: gauges $ 
+   $Date: 2006/03/16 13:27:17 $
    End CVS Header */
 
 #include <iostream>
@@ -641,14 +641,13 @@ std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject
     for (i = iMax;i > 0;--i)
       {
         CSlider* pSlider = (*pSliderList)[i - 1];
-        if (this->sliderObjectChanged(pSlider->getSliderObject(), pSlider->getSliderObjectCN()))
+        if (this->sliderObjectChanged(pSlider))
           {
             if (!sliderDeleted)
               {
                 QMessageBox::information(NULL, "Missing slider objects", "One or more objects that had\nsliders defined have been\ndeleted. Sliders will therefore\nbe deleted as well.", QMessageBox::Ok | QMessageBox::Default);
               }
             pSliderList->remove(i - 1);
-            //pdelete(pSlider);
             sliderDeleted = true;
           }
         else
@@ -709,11 +708,10 @@ void SliderDialog::setDefault()
   this->currSlider->setOriginalValue(this->currSlider->value());
 }
 
-bool SliderDialog::sliderObjectChanged(const CCopasiObject* pObject, const CCopasiObjectName& cn) const
+bool SliderDialog::sliderObjectChanged(CSlider* pSlider) const
   {
     CModel* pModel = CCopasiDataModel::Global->getModel();
     std::vector<CCopasiContainer*> listOfContainers;
     listOfContainers.push_back(pModel);
-    const CCopasiObject* newObject = CCopasiContainer::ObjectFromName(listOfContainers, cn);
-    return pObject != newObject;
+    return !pSlider->compile(listOfContainers);
   }

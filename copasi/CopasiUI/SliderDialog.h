@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:35:14 $
+   $Author: gauges $ 
+   $Date: 2006/03/16 13:27:17 $
    End CVS Header */
 
 #ifndef SLIDER_DIALOG_H__
@@ -85,7 +85,7 @@ class SliderDialog: public QDialog
     CopasiSlider* findCopasiSliderAtPosition(const QPoint& p);
     void setCurrentSlider(CopasiSlider* pSlider);
     virtual bool SliderDialog::eventFilter(QObject*, QEvent* event);
-    bool sliderObjectChanged(const CCopasiObject* pObject, const CCopasiObjectName& cn) const;
+    bool sliderObjectChanged(CSlider* pSlider) const;
 
   protected slots:
     void removeSlider(CopasiSlider* slider);
