@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.48 $ $Author: shoops $ $Date: 2006/02/14 14:35:19 $  
+# $Revision: 1.49 $ $Author: shoops $ $Date: 2006/03/16 18:53:02 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -20,6 +20,7 @@ DEFINES+=LIBSBML_STATIC
 # Common configuration settings
 CONFIG += exceptions
 CONFIG += rtti
+CONFIG += thread
 
 # COPASI License to use
 DEFINES += COPASI_LICENSE_US
@@ -228,8 +229,10 @@ contains(BUILD_OS, Linux) {
       QMAKE_POST_LINK = strip $(TARGET)
     }
   }
- 
-  #QMAKE_LFLAGS += -static
+
+  contains(STATIC_LINKAGE, yes) {
+    QMAKE_LFLAGS += -static
+  }
 
   !isEmpty(SBML_PATH){
     LIBS+=  -L$${SBML_PATH}/lib

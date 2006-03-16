@@ -786,6 +786,14 @@ if test -n "$ac_init_help"; then
 
   cat <<\_ACEOF
 
+Optional Features:
+  --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
+  --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+  --enable-debug          enable debug build (default: enabled)
+  --enable-release        enable release build (disables debug, default:
+                          disabled)
+  --enable-static         enable static linkage (default: disabled)
+
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
@@ -1709,6 +1717,30 @@ am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
 
 
 
+# Check whether --enable-debug or --disable-debug was given.
+if test "${enable_debug+set}" = set; then
+  enableval="$enable_debug"
+  ENABLE_DEBUG=$enable_debug
+else
+  ENABLE_DEBUG="no"
+fi;
+
+# Check whether --enable-release or --disable-release was given.
+if test "${enable_release+set}" = set; then
+  enableval="$enable_release"
+  ENABLE_RELEASE=$enable_release
+else
+  ENABLE_RELEASE="no"
+fi;
+
+# Check whether --enable-static or --disable-static was given.
+if test "${enable_static+set}" = set; then
+  enableval="$enable_static"
+  ENABLE_STATIC=$enable_static
+else
+  ENABLE_STATIC="no"
+fi;
+
 
 # Check whether --with-expat or --without-expat was given.
 if test "${with_expat+set}" = set; then
@@ -1766,53 +1798,56 @@ if test "${with_build_parser+set}" = set; then
   BUILD_PARSER=$withval
 fi;
 
+QMAKE_ARG=""
+
 if test "x$prefix" = "xNONE"; then
   prefix=$ac_default_prefix
   ac_configure_args="$ac_configure_args --prefix $prefix"
 fi
 
 if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US"; then
-  cps_copasi_license="USE_LICENSE=$COPASI_LICENSE"
+  QMAKE_ARG="USE_LICENSE=$COPASI_LICENSE"
 fi
 
 if test x"$BUILD_PARSER" = x"yes"; then
-  cps_build_parser="BUILD_PARSER=yes"
+  QMAKE_ARG="$QMAKE_ARG BUILD_PARSER=yes"
 fi
 
-if test x"${enable_release}" != x"yes" -a x"${enable_debug}" != x"no"; then
-  cps_release="CONFIG+=debug CONFIG-=release"
+if test x"${ENABLE_RELEASE}" != x"yes" -a x"${ENABLE_DEBUG}" != x"no"; then
+  QMAKE_ARG="$QMAKE_ARG CONFIG+=debug CONFIG-=release"
 else
-  cps_release="CONFIG+=release CONFIG-=debug"
+  QMAKE_ARG="$QMAKE_ARG CONFIG+=release CONFIG-=debug"
 fi
 
-if test x"${enable_thread}" != x"no"; then
-  cps_thread="CONFIG+=thread"
+if test x"${ENABLE_STATIC}" != x"yes"; then
+  QMAKE_ARG="$QMAKE_ARG STATIC_LINKAGE=no"
 else
-  cps_thread="CONFIG-=thread"
+  QMAKE_ARG="$QMAKE_ARG STATIC_LINKAGE=yes"
 fi
+
 
 if test x"${MKL_PATH}" != x""; then
-  cps_mkl_path="MKL_PATH=$MKL_PATH"
+  QMAKE_ARG="$QMAKE_ARG MKL_PATH=$MKL_PATH"
 fi
 
 if test x"${CLAPACK_PATH}" != x""; then
-  cps_clapack_path="CLAPACK_PATH=$CLAPACK_PATH"
+  QMAKE_ARG="$QMAKE_ARG CLAPACK_PATH=$CLAPACK_PATH"
 fi
 
 if test x"${LAPACK_PATH}" != x""; then
-  cps_clapack_path="LAPACK_PATH=$LAPACK_PATH"
+  QMAKE_ARG="$QMAKE_ARG LAPACK_PATH=$LAPACK_PATH"
 fi
 
 if test x"${EXPAT_PATH}" != x""; then
-  cps_expat_path="EXPAT_PATH=$EXPAT_PATH"
+  QMAKE_ARG="$QMAKE_ARG EXPAT_PATH=$EXPAT_PATH"
 fi
 
 if test x"${QWT_PATH}" != x""; then
-  cps_qwt_path="QWT_PATH=$QWT_PATH"
+  QMAKE_ARG="$QMAKE_ARG QWT_PATH=$QWT_PATH"
 fi
 
 if test x"${SBML_PATH}" != x""; then
-  cps_sbml_path="SBML_PATH=$SBML_PATH"
+  QMAKE_ARG="$QMAKE_ARG SBML_PATH=$SBML_PATH"
 fi
 
 
@@ -1826,9 +1861,8 @@ fi
  echo executing in `pwd`: && \
  rm -f .qmake.internal.cache */.qmake.internal.cache && \
  rm -f Makefile */Makefile && \
- echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" $cps_build_parser $cps_copasi_license && \
- $QTDIR/bin/qmake $cps_release $cps_thread \
-                  $cps_mkl_path $cps_clapack_path $cps_expat_path $cps_qwt_path $cps_sbml_path $cps_build_parser $cps_copasi_license && \
+ echo "  qmake $QMAKE_ARG" && \
+ $QTDIR/bin/qmake $QMAKE_ARG && \
  cat Makefile | \
  sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
      -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
@@ -1842,9 +1876,8 @@ fi
  echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
  rm -f .qmake.internal.cache */.qmake.internal.cache && \
  rm -f Makefile */Makefile && \
- echo "  qmake $cps_release $cps_mkl_path $cps_thread $cps_clapack_path $cps_expat_path" $cps_build_parser $cps_copasi_license && \
- $QTDIR/bin/qmake $cps_release $cps_thread \
-                  $cps_mkl_path $cps_clapack_path $cps_expat_path $cps_qwt_path $cps_sbml_path $cps_build_parser $cps_copasi_license && \
+ echo "  qmake $QMAKE_ARG" && \
+ $QTDIR/bin/qmake $QMAKE_ARG && \
  cat Makefile | \
  sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
      -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
