@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/14 13:21:10 $
+   $Author: ssahle $ 
+   $Date: 2006/03/17 13:55:21 $
    End CVS Header */
 
 #include <math.h>
@@ -666,11 +666,11 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
           << std::endl;
         }
 
-      const CFunction* pFunc = &(reac->getFunction());
+      const CFunction* pFunc = (reac->getFunction());
       std::map< std::string, std::string > functionNameMap;
 
       outFile << std::endl;
-      outFile << "; \'" << reac->getFunction().getObjectName() << "\' :";
+      outFile << "; \'" << reac->getFunction()->getObjectName() << "\' :";
       outFile << std::endl;
 
       if (pFunc->getType() != CEvaluationTree::MassAction)
@@ -758,7 +758,7 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
           CChemEqElement* substr;
           CChemEqElement* prod;
 
-          const CMassAction cMassAction = static_cast<const CMassAction>(reac->getFunction());
+          const CMassAction cMassAction = *static_cast<const CMassAction*>(reac->getFunction());
 
           outFile << "KinFunction_" << i << " = ";
           outFile << "(";
@@ -1051,7 +1051,7 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
     {
       reac = reacs[i];
 
-      const CFunction* pFunc = &(reac->getFunction());
+      const CFunction* pFunc = (reac->getFunction());
 
       if (pFunc->getRoot())
         findFunctionsCallsC(pFunc->getRoot(), exportedFunctionSet, functionNameMap, functionNameSet, findex, outFunction, outFunctionHeader);
@@ -1105,14 +1105,14 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
 
               if (fabs(redStoi[i][j]) != 1.0) equation << fabs(redStoi[i][j]) << " * ";
 
-              if (reac->getFunction().getType() != CEvaluationTree::MassAction)
+              if (reac->getFunction()->getType() != CEvaluationTree::MassAction)
                 {
                   const CFunctionParameters & params = reac->getFunctionParameters();
                   unsigned C_INT32 params_size = params.size();
                   const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
 
                   equation
-                  << functionNameMap[reac->getFunction().getObjectName()]
+                  << functionNameMap[reac->getFunction()->getObjectName()]
                   << "(";
 
                   for (k = 0; k < params_size; ++k)
@@ -1204,7 +1204,7 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
                   CChemEqElement* substr;
                   CChemEqElement* prod;
 
-                  const CMassAction cMassAction = static_cast<const CMassAction>(reac->getFunction());
+                  const CMassAction cMassAction = *static_cast<const CMassAction*>(reac->getFunction());
 
                   massaction << "(";
 
