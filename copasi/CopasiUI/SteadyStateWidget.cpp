@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.105 $
+   $Revision: 1.106 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:21:43 $
+   $Date: 2006/03/17 16:05:08 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -176,23 +176,7 @@ bool SteadyStateWidget::runTask()
   try
     {
       if (!mSteadyStateTask->process(true))
-        {
-          success = false;
-
-          mProgressBar->finish();
-          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-            {
-              mProgressBar->finish();
-              QMessageBox::warning(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-              CCopasiMessage::clearDeque();
-            }
-        }
-      else if (mpHeaderWidget->mpUpdateModel->isChecked()) // this should be handled in restore()
-        {
-          const CState *currentState = mSteadyStateTask->getState();
-          if (currentState)
-            (CCopasiDataModel::Global->getModel())->setInitialState(*currentState);
-        }
+        throw CCopasiException(CCopasiMessage::peekLastMessage());
     }
 
   catch (CCopasiException Exception)

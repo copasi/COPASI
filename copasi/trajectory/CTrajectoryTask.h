@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:32 $
+   $Date: 2006/03/17 16:05:09 $
    End CVS Header */
 
 /**
@@ -106,15 +106,9 @@ class CTrajectoryTask : public CCopasiTask
     bool processStep(const C_FLOAT64 & nextTime);
 
     /**
-     * Process the task without any output in as few steps as possible
-     * 
-     */ 
-    // virtual bool processSimple(bool singleStep = false);
-
-    /**
-     * Process the task (called by Scan task)
-     */ 
-    //virtual bool processForScan(bool useInitialConditions, bool doOutput);
+     * Perform neccessary cleaup procedures
+     */
+    virtual bool restore();
 
     /**
      * Set the method type applied to solve the task

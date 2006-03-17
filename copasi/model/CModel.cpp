@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.249 $
+   $Revision: 1.250 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/17 13:45:07 $
+   $Author: shoops $ 
+   $Date: 2006/03/17 16:05:09 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1066,9 +1066,10 @@ bool CModel::buildStateTemplate()
 void CModel::updateRates()
 {
   //  assert (false); // :TODO:
-
+  // A call to applyAssignments must have bee made prior to
+  // a call to updateRates
   CCHECK
-  calculateReactions();
+  // calculateReactions();
 
   // Calculate ydot = Stoi * v
   unsigned C_INT32 i, imax = mStoi.numRows();
@@ -1094,6 +1095,19 @@ const CState & CModel::getState() const
 
 void CModel::setInitialState(const CState & state)
 {
+  // The situation where the state has the updateDependentRequired flag
+  // set is currently not handled.
+
+  assert (!state.isUpdateDependentRequired());
+
+  // To prevent triggering the above assertion please use:
+  //   setState(state);
+  //   applyAssignements();
+  //   setInititalState(getState());
+  //
+  // This is not done automatically since it changes the current state of
+  // the model.
+
   mInitialState = state;
 
   // We have to update the moieties
@@ -1132,6 +1146,8 @@ void CModel::refreshConcentrations()
 
       for (; itMoiety != endMoiety; ++itMoiety, ++pDependent)
         *pDependent = (*itMoiety)->dependentNumber();
+
+      mCurrentState.setUpdateDependentRequired(false);
     }
 
   // The concentrations for the metabolites need to be updated.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:23:08 $
+   $Date: 2006/03/17 16:05:09 $
    End CVS Header */
 
 /**
@@ -109,6 +109,11 @@ class CSteadyStateTask : public CCopasiTask
      * @return bool success
      */
     virtual bool process(const bool & useInitialValues);
+
+    /**
+     * Perform neccessary cleaup procedures
+     */
+    virtual bool restore();
 
     /**
      * This is the output method for any object. The default implementation

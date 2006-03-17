@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.123 $
+   $Revision: 1.124 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:21:43 $
+   $Date: 2006/03/17 16:05:08 $
    End CVS Header */
 
 /********************************************************
@@ -468,24 +468,14 @@ void TrajectoryWidget::runTrajectoryTask()
 
   try
     {
-      if (tt->process(true))
-        {
-          if (setInitialState->isChecked())
-            {
-              const CState *currentState = tt->getState();
-              if (currentState)
-                (CCopasiDataModel::Global->getModel())->setInitialState(*currentState);
-            }
-        }
-      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-        {
-          tmpBar->finish();
-          QMessageBox::warning(this, "Simulation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-          CCopasiMessage::clearDeque();
-        }
+      if (!tt->process(true))
+        throw CCopasiException(CCopasiMessage::peekLastMessage());
     }
+
   catch (CCopasiException Exception)
     {
+      success = false;
+
       if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         {
           tmpBar->finish();
@@ -551,6 +541,7 @@ void TrajectoryWidget::loadTrajectoryTask()
   assert(tt);
 
   bExecutable->setChecked(tt->isScheduled());
+  setInitialState->setChecked(tt->isUpdateModel());
 
   CTrajectoryProblem* trajectoryproblem =
     dynamic_cast<CTrajectoryProblem *>(tt->getProblem());
@@ -634,6 +625,7 @@ void TrajectoryWidget::saveTrajectoryTask()
 
   bool bScheduled = bExecutable->isChecked();
   tt->setScheduled(bScheduled);
+  tt->setUpdateModel(setInitialState->isChecked());
 
   CTrajectoryProblem* trajectoryproblem =
     dynamic_cast<CTrajectoryProblem *>(tt->getProblem());

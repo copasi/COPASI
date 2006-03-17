@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/16 18:29:39 $
+   $Date: 2006/03/17 16:05:09 $
    End CVS Header */
 
 /**
@@ -169,6 +169,22 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
   finishOutput();
 
   return (mResult != CSteadyStateMethod::notFound);
+}
+
+bool CSteadyStateTask::restore()
+{
+  bool success = CCopasiTask::restore();
+
+  if (mUpdateModel)
+    {
+      CModel * pModel = mpProblem->getModel();
+
+      pModel->setState(*mpSteadyState);
+      pModel->applyAssignments();
+      pModel->setInitialState(pModel->getState());
+    }
+
+  return success;
 }
 
 std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)

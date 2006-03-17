@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/09 15:53:52 $
+   $Date: 2006/03/17 16:05:09 $
    End CVS Header */
 
 /**
@@ -293,6 +293,22 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & nextTime)
 
   // Current time is approximately nextTime;
   return false;
+}
+
+bool CTrajectoryTask::restore()
+{
+  bool success = CCopasiTask::restore();
+
+  if (mUpdateModel)
+    {
+      CModel * pModel = mpProblem->getModel();
+
+      pModel->setState(*mpCurrentState);
+      pModel->applyAssignments();
+      pModel->setInitialState(pModel->getState());
+    }
+
+  return success;
 }
 
 bool CTrajectoryTask::setMethodType(const int & type)
