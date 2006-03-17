@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:22 $
+   $Author: ssahle $ 
+   $Date: 2006/03/17 13:43:02 $
    End CVS Header */
 
 #include "ReactionsWidget.h"
@@ -73,9 +73,9 @@ void ReactionsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C_I
 
   table->setText(row, 2, FROM_UTF8(CChemEqInterface::getChemEqString(CCopasiDataModel::Global->getModel(), *pRea, false)));
 
-  if (&(pRea->getFunction()))
+  if (pRea->getFunction())
     {
-      table->setText(row, 3, FROM_UTF8(pRea->getFunction().getObjectName()));
+      table->setText(row, 3, FROM_UTF8(pRea->getFunction()->getObjectName()));
     }
 
   table->setText(row, 4, QString::number(pRea->getFlux()));

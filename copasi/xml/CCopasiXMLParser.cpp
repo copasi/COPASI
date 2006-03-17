@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.122 $
+   $Revision: 1.123 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:23:30 $
+   $Author: ssahle $ 
+   $Date: 2006/03/17 13:49:56 $
    End CVS Header */
 
 /**
@@ -2682,7 +2682,7 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
     case ListOfCallParameters:
       if (strcmp(pszName, "ListOfCallParameters")) fatalError();
 
-      if (&mCommon.pReaction->getFunction() == CCopasiDataModel::Global->mpUndefined)
+      if (mCommon.pReaction->getFunction() == CCopasiDataModel::Global->mpUndefined)
         mParser.onStartElement(pszName, papszAttrs);
 
       /* If we do not have a etc element handler we create one. */
@@ -2724,7 +2724,7 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
       break;
 
     case UNKNOWN_ELEMENT:
-      if (&mCommon.pReaction->getFunction() == CCopasiDataModel::Global->mpUndefined)
+      if (mCommon.pReaction->getFunction() == CCopasiDataModel::Global->mpUndefined)
         mCurrentElement = KineticLaw;
       else
         mCurrentElement = mLastKnownElement;

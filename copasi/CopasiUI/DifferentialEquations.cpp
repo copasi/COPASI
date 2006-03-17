@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/10 10:04:54 $
+   $Date: 2006/03/17 13:42:15 $
    End CVS Header */
 
 /*******************************************************************
@@ -196,11 +196,11 @@ void DifferentialEquations::writeRHS(std::ostream & out,
     }
 
   //kinetic function
-  if (&pReac->getFunction())
+  if (pReac->getFunction())
     {
       std::vector<std::vector<std::string> > params;
       createParameterMapping(pReac, params);
-      pReac->getFunction().writeMathML(out, params, expand, expandFull, l + 1);
+      pReac->getFunction()->writeMathML(out, params, expand, expandFull, l + 1);
     }
 
   out << SPC(l + 0) << "</mrow>" << std::endl;
@@ -210,7 +210,7 @@ void DifferentialEquations::createParameterMapping(const CReaction* pReac,
     std::vector<std::vector<std::string> > & params)
 {
   assert(pReac);
-  assert(&pReac->getFunction());
+  assert(pReac->getFunction());
 
   const CFunctionParameters & functionParams = pReac->getFunctionParameters();
   unsigned C_INT32 j, jmax;
@@ -311,7 +311,7 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
           mml << SPC(l + 2) << "<mtd columnalign='left'>" << std::endl;
           writeRHS(mml, model->getMetabolites()[i],
                    dynamic_cast<CReaction*>(GlobalKeys.get(*it)) ,
-                   false, false, l + 3); //TODO make configurable
+                   true, false, l + 3); //TODO make configurable
           mml << SPC(l + 2) << "</mtd>" << std::endl;
 
           mml << SPC(l + 1) << "</mtr>" << std::endl;

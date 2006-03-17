@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.248 $
+   $Revision: 1.249 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/13 20:13:52 $
+   $Author: ssahle $ 
+   $Date: 2006/03/17 13:45:07 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1515,7 +1515,7 @@ std::set<std::string> CModel::listReactionsDependentOnFunction(const std::string
 
   for (j = 0; j < jmax; j++)
     {
-      if (key == Reactions[j]->getFunction().getKey())
+      if (key == Reactions[j]->getFunction()->getKey())
         reacKeys.insert(Reactions[j]->getKey());
     }
 
@@ -1818,7 +1818,7 @@ bool CModel::convert2NonReversible()
         ri2.setReactionName(rn2);
 
         //set the new function
-        fn = reac0->getFunction().getObjectName();
+        fn = reac0->getFunction()->getObjectName();
         //std::cout << fn << "  " << std::endl;
 
         if (fn == "Mass action (reversible)")
@@ -2293,7 +2293,7 @@ bool CModel::isAutonomous() const
 
     for (; it != end; ++it)
       if ((pFunction =
-             dynamic_cast<const CKinFunction * >(&(*it)->getFunction())) != NULL &&
+             dynamic_cast<const CKinFunction * >((*it)->getFunction())) != NULL &&
           pFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::TIME))
         {
           return false;

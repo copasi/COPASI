@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.150 $
+   $Revision: 1.151 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:22:53 $
+   $Author: ssahle $ 
+   $Date: 2006/03/17 13:48:38 $
    End CVS Header */
 
 // CReaction
@@ -171,8 +171,8 @@ void CReaction::setReversible(bool reversible)
 
 //****************************************
 
-const CFunction & CReaction::getFunction() const
-  {return *mpFunction;}
+const CFunction * CReaction::getFunction() const
+  {return mpFunction;}
 
 bool CReaction::setFunction(const std::string & functionName)
 {
@@ -750,6 +750,9 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                                 }
                               if (!found)
                                 {
+                                  //found = true;
+                                  //usage = CFunctionParameter::MODIFIER;
+                                  //CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCReaction + 7, id.c_str(), this->getSBMLId().c_str());
                                   delete pVariableNode;
                                   pVariableNode = NULL;
                                   CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 7, id.c_str(), this->getSBMLId().c_str());
@@ -1166,7 +1169,7 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
   CEvaluationNodeObject* pObjectNode = NULL;
   const std::string paraName = static_cast<const std::string>(pVariableNode->getData());
   CFunctionParameter::DataType type;
-  unsigned C_INT32 index = this->getFunction().getVariables().findParameterByName(paraName, type);
+  unsigned C_INT32 index = this->getFunction()->getVariables().findParameterByName(paraName, type);
 
   if (index == C_INVALID_INDEX)
     {
@@ -1188,7 +1191,7 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
 
 CEvaluationNode* CReaction::getExpressionTree()
 {
-  return this->variables2objects(const_cast<CFunction&>(this->getFunction()).getRoot());
+  return this->variables2objects(const_cast<CFunction*>(this->getFunction())->getRoot());
 }
 
 void CReaction::setSBMLId(const std::string& id)

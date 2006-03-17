@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ParametersWidget.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:22 $
+   $Author: ssahle $ 
+   $Date: 2006/03/17 13:43:02 $
    End CVS Header */
 
 #include "ParametersWidget.h"
@@ -25,6 +25,7 @@
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
 #include "DataModelGUI.h"
+#include "utilities/CDimension.h"
 
 #define COL_NAME 0
 #define COL_STATUS 1
@@ -248,6 +249,7 @@ bool ParametersWidget::loadFromModel()
   for (i = 0; i < imax; ++i)
     {
       reac = reacs[i];
+      CFindDimensions units(reac->getFunction());
       tmp = new CParameterListItem(mReacItem, FROM_UTF8(reac->getObjectName()));
 
       const CFunctionParameters & params = reac->getFunctionParameters();

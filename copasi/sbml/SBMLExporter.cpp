@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2006/03/16 16:35:55 $
+   $Author: ssahle $ 
+   $Date: 2006/03/17 13:49:28 $
    End CVS Header */
 
 #include <math.h>
@@ -757,7 +757,7 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
     }
   /* create the kinetic law */
   /* if there is one on copasi */
-  if ((&copasiReaction->getFunction()) != CCopasiDataModel::Global->mpUndefined)
+  if ((copasiReaction->getFunction()) != CCopasiDataModel::Global->mpUndefined)
     {
       KineticLaw* kLaw = this->createSBMLKineticLawFromCReaction(copasiReaction);
       sbmlReaction->setKineticLaw(*kLaw);
@@ -796,9 +796,9 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
     }
   /* if the copasi CFunction specifies a mass-action kinetic */
   ASTNode* node = NULL;
-  if (copasiReaction->getFunction().getType() == CFunction::MassAction)
+  if (copasiReaction->getFunction()->getType() == CFunction::MassAction)
     {
-      const CMassAction cMassAction = static_cast<const CMassAction>(copasiReaction->getFunction());
+      const CMassAction cMassAction = *static_cast<const CMassAction*>(copasiReaction->getFunction());
       /* create the ASTNode that multiplies all substrates with the first
       ** kinetic constant.
       */
@@ -859,7 +859,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
       if (!this->mExportExpressions)
         {
           CEvaluationTree* pTree = new CEvaluationTree("NoName", NULL, CEvaluationTree::Expression);
-          CEvaluationNodeCall* pTmpRoot = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, copasiReaction->getFunction().getObjectName());
+          CEvaluationNodeCall* pTmpRoot = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, copasiReaction->getFunction()->getObjectName());
           const std::vector< std::vector<std::string> >& parameterMappings = copasiReaction->getParameterMappings();
           unsigned int i, iMax = parameterMappings.size();
           for (i = 0;i < iMax;++i)
@@ -876,7 +876,7 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
         }
       else
         {
-          CEvaluationNode* pExpressionRoot = this->createExpressionTree(&copasiReaction->getFunction(), copasiReaction->getParameterMappings());
+          CEvaluationNode* pExpressionRoot = this->createExpressionTree(copasiReaction->getFunction(), copasiReaction->getParameterMappings());
           if (!pExpressionRoot) fatalError();
           node = pExpressionRoot->toAST();
           if (!node) fatalError();

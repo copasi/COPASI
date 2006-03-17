@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:23:30 $
+   $Author: ssahle $ 
+   $Date: 2006/03/17 13:49:56 $
    End CVS Header */
 
 /**
@@ -389,11 +389,11 @@ bool CCopasiXML::saveModel()
               endSaveElement("ListOfConstants");
             }
 
-          if (&pReaction->getFunction() !=
+          if (pReaction->getFunction() !=
               dynamic_cast<CFunction *>(GlobalKeys.get("UndefinedFunction_0")))
             {
               Attr.erase();
-              Attr.add("function", pReaction->getFunction().getKey());
+              Attr.add("function", pReaction->getFunction()->getKey());
               startSaveElement("KineticLaw", Attr);
               if ((jmax = pReaction->getFunctionParameters().size()))
                 {
@@ -406,7 +406,7 @@ bool CCopasiXML::saveModel()
                       Attr.erase();
                       Attr.add("functionParameter",
                                pReaction->
-                               getFunction().getVariables()[j]->getKey());
+                               getFunction()->getVariables()[j]->getKey());
 
                       startSaveElement("CallParameter", Attr);
 
@@ -998,7 +998,7 @@ bool CCopasiXML::buildFunctionList()
   for (i = 0; i < imax; i++)
     {
       pFunction =
-        const_cast< CFunction * >(&mpModel->getReactions()[i]->getFunction());
+        const_cast< CFunction * >(mpModel->getReactions()[i]->getFunction());
       if (pFunction &&
           pFunction != GlobalKeys.get("UndefinedFunction_0"))
         FunctionMap[pFunction->getKey()] = pFunction;

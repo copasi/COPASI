@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.118 $
+   $Revision: 1.119 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2006/03/17 09:37:40 $
+   $Author: ssahle $ 
+   $Date: 2006/03/17 13:49:28 $
    End CVS Header */
 
 #include "copasi.h"
@@ -958,10 +958,10 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                       pTmpTree2->setRoot(pTmpExpression);
                       copasiReaction->setFunctionFromExpressionTree(pTmpTree2, copasi2sbmlmap, this->functionDB);
                       delete pTmpTree2;
-                      if (copasiReaction->getFunction().getType() == CEvaluationTree::UserDefined)
+                      if (copasiReaction->getFunction()->getType() == CEvaluationTree::UserDefined)
                         {
-                          pTmpFunctionDB->add(&const_cast<CFunction&>(copasiReaction->getFunction()), false);
-                          this->mUsedFunctions.insert(copasiReaction->getFunction().getObjectName());
+                          pTmpFunctionDB->add(const_cast<CFunction*>(copasiReaction->getFunction()), false);
+                          this->mUsedFunctions.insert(copasiReaction->getFunction()->getObjectName());
                         }
                     }
                 }
@@ -1011,10 +1011,10 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                     }
                   else
                     {
-                      if (copasiReaction->getFunction().getType() == CEvaluationTree::UserDefined)
+                      if (copasiReaction->getFunction()->getType() == CEvaluationTree::UserDefined)
                         {
-                          pTmpFunctionDB->add(&const_cast<CFunction&>(copasiReaction->getFunction()), false);
-                          this->mUsedFunctions.insert(copasiReaction->getFunction().getObjectName());
+                          pTmpFunctionDB->add(const_cast<CFunction*>(copasiReaction->getFunction()), false);
+                          this->mUsedFunctions.insert(copasiReaction->getFunction()->getObjectName());
                         }
                     }
                 }
@@ -2260,7 +2260,7 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
         {
           fatalError();
         }
-      CFunctionParameter* pFunParam = const_cast<CFunctionParameter*>(pCopasiReaction->getFunction().getVariables()[parameterIndex]);
+      CFunctionParameter* pFunParam = const_cast<CFunctionParameter*>(pCopasiReaction->getFunction()->getVariables()[parameterIndex]);
 
       if (dynamic_cast<const CCopasiObjectReference<C_FLOAT64>*>(object))
         {
@@ -2335,7 +2335,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
     }
   std::vector<CCopasiContainer*> listOfContainers;
   listOfContainers.push_back(this->mpCopasiModel);
-  if (dynamic_cast<const CMassAction*>(&pCopasiReaction->getFunction()))
+  if (dynamic_cast<const CMassAction*>(pCopasiReaction->getFunction()))
     {
       const CEvaluationNodeObject* pChild = dynamic_cast<const CEvaluationNodeObject*>(pCallNode->getChild());
       std::string objectCN = pChild->getData();
@@ -2380,7 +2380,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
     }
   else
     {
-      unsigned int i, iMax = pCopasiReaction->getFunction().getVariables().size();
+      unsigned int i, iMax = pCopasiReaction->getFunction()->getVariables().size();
       const CEvaluationNodeObject* pChild = dynamic_cast<const CEvaluationNodeObject*>(pCallNode->getChild());
       for (i = 0; i < iMax;++i)
         {
@@ -2580,7 +2580,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB)
       std::set<std::string> functionNameSet;
       for (i = 0;i < iMax;++i)
         {
-          const CEvaluationTree* pTree = &this->mpCopasiModel->getReactions()[i]->getFunction();
+          const CEvaluationTree* pTree = this->mpCopasiModel->getReactions()[i]->getFunction();
           if (functionNameSet.find(pTree->getObjectName()) == functionNameSet.end())
             {
               functionNameSet.insert(pTree->getObjectName());

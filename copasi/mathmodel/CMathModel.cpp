@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathModel.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/14 17:43:06 $
+   $Author: ssahle $ 
+   $Date: 2006/03/17 13:43:57 $
    End CVS Header */
 
 /**
@@ -233,7 +233,7 @@ bool CMathModel::buildFunctionList()
 
   for (i = 0; i < imax; i++)
     {
-      pFunction = &List[i]->getFunction();
+      pFunction = List[i]->getFunction();
       if (pFunction && !CMathSymbol::find(pFunction))
         {
           p = new CMathSymbol(pFunction);
@@ -417,7 +417,7 @@ bool CMathModel::buildEqList()
 CMathNodeFunction * CMathModel::createFunction(const CReaction * pReaction)
 {
   CMathNodeFunction * pF =
-    new CMathNodeFunction(CMathSymbol::find(&pReaction->getFunction()));
+    new CMathNodeFunction(CMathSymbol::find(pReaction->getFunction()));
 
   CMathNodeList * pL = new CMathNodeList();
   CMathNodeList * pV;
@@ -425,7 +425,7 @@ CMathNodeFunction * CMathModel::createFunction(const CReaction * pReaction)
   pF->addChild(pL);
 
   const CFunctionParameters & Description =
-    pReaction->getFunction().getVariables();
+    pReaction->getFunction()->getVariables();
   const std::vector<std::vector<std::string> > & keyMap = pReaction->getParameterMappings();
 
   unsigned C_INT32 i, imax = Description.size();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/15 13:44:13 $
+   $Date: 2006/03/17 13:45:07 $
    End CVS Header */
 
 #include <string>
@@ -69,9 +69,9 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
 
   //mNameMap.clear();
 
-  if (&(rea->getFunction()))
+  if (rea->getFunction())
     {
-      mpFunction = &(rea->getFunction());
+      mpFunction = rea->getFunction();
       pdelete(mpParameters)
       mpParameters = new CFunctionParameters(mpFunction->getVariables());
       loadNameMap(model, *rea);

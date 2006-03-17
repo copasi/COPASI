@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.90 $
+   $Revision: 1.91 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:22:53 $
+   $Author: ssahle $ 
+   $Date: 2006/03/17 13:45:07 $
    End CVS Header */
 
 /**
@@ -161,7 +161,7 @@ class CReaction : public CCopasiContainer
      *  Retrieves the rate function of the reaction
      *  @return "CBaseFunction &"
      */
-    const CFunction & getFunction() const;
+    const CFunction * getFunction() const;
 
     /**
      *  Retrieves the flux of the reaction
