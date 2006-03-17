@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.117 $
+   $Revision: 1.118 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2006/03/16 18:01:50 $
+   $Date: 2006/03/17 09:37:40 $
    End CVS Header */
 
 #include "copasi.h"
@@ -417,7 +417,11 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
                 }
             }
           pFun->updateTree();
-          pFun->compile();
+          if (!pFun->compile())
+            {
+              delete pFun;
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 28, pSBMLFunction->getId().c_str());
+            }
           if (pFun->getRoot() == NULL)
             {
               delete pFun;

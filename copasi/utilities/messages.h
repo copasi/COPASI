@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2006/03/16 17:59:40 $
+   $Date: 2006/03/17 09:37:39 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -139,6 +139,7 @@ const MESSAGES Messages[] =
     {MCSBML + 25, "SBML (25): Units for species \"%s\" ignored."},
     {MCSBML + 26, "SBML (26): Units for parameter \"%s\" ignored."},
     {MCSBML + 27, "SBML (27): Error in kinetic law for reaction \"%s\"."},
+    {MCSBML + 28, "SBML (28): Error in function definition with id \"%s\"."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
