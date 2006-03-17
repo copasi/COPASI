@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/07 11:02:42 $
+   $Author: gauges $ 
+   $Date: 2006/03/17 21:39:16 $
    End CVS Header */
 
 #ifndef SBMLExpoter_H__
@@ -55,7 +55,7 @@ class SBMLExporter
 
     CModel* mpCopasiModel;
 
-    std::list<const CEvaluationTree*> mUsedFunctions;
+    std::list<const CEvaluationTree*>* mpUsedFunctions;
 
     CProcessReport* mpExportHandler;
 
@@ -186,12 +186,12 @@ class SBMLExporter
      * This also covers function called by function call etc.
      * If a loop is encountered this throws an exception.
      */
-    void findUsedFunctions(CEvaluationNode* pNode, std::list<const CEvaluationTree*>& usedFunctionList);
+    void findUsedFunctions(CEvaluationNode* pNode, std::list<const CEvaluationTree*>* usedFunctionList);
 
     /**
      * Check if some CEvaluationTree is already in a list.
      */
-    bool existsInList(CEvaluationTree* tree, const std::list<const CEvaluationTree*>& list);
+    bool existsInList(CEvaluationTree* tree, const std::list<const CEvaluationTree*>* list);
 
     /**
      * Checks if the given string is a valid SBMLId.
@@ -271,7 +271,7 @@ class SBMLExporter
 
     void setExportExpressions(bool value);
     bool isSetExportExpressions() const;
-    const std::list<const CEvaluationTree*>& getUsedFunctionList() const;
+    const std::list<const CEvaluationTree*>* getUsedFunctionList() const;
   };
 
 #endif
