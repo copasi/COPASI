@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/14 16:30:16 $
+   $Date: 2006/03/20 18:50:45 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -151,18 +151,74 @@ void CQFittingItemWidget::slotParamEdit()
 
   CCopasiSelectionDialog * pBrowseDialog = new CCopasiSelectionDialog(this);
   pBrowseDialog->setModel(CCopasiDataModel::Global->getModel());
-  pBrowseDialog->setSingleSelection(true);
+  pBrowseDialog->setSingleSelection(false);
   pBrowseDialog->setOutputVector(&Selection);
 
   if (pBrowseDialog->exec () == QDialog::Accepted && Selection.size() != 0)
     {
-      if (!mpItem) slotNew();
+      // We need to loop through the selection.
+      disconnect(mpTable, SIGNAL(currentChanged(int, int)), this, SLOT(slotItemChanged(int, int)));
+
+      if (!mpItem)
+        {
+          switch (mItemType)
+            {
+            case OPT_ITEM:
+              mpItem = new COptItem();
+              break;
+            case FIT_ITEM:
+              mpItem = new CFitItem();
+              break;
+            case FIT_CONSTRAINT:
+              mpItem = new CFitConstraint();
+              break;
+            }
+
+          mpItemsCopy->push_back(mpItem);
+          mpTable->insertRows(0);
+          setTableText(0, mpItem);
+        }
 
       mpItem->setObjectCN(Selection[0]->getCN());
+      saveItem();
 
-      QString Value = FROM_UTF8(Selection[0]->getObjectDisplayName());
-      mpObjectValidator->force(Value);
-      mpEditObject->setText(Value);
+      unsigned C_INT32 current = mpTable->currentRow();
+      unsigned C_INT32 i, imax = Selection.size();
+
+      for (i = 1; i != imax; i++)
+        {
+          COptItem * pItem;
+
+          switch (mItemType)
+            {
+            case OPT_ITEM:
+              pItem = new COptItem(*mpItem);
+              break;
+            case FIT_ITEM:
+              pItem = new CFitItem(*mpItem);
+              break;
+            case FIT_CONSTRAINT:
+              pItem = new CFitConstraint(*mpItem);
+              break;
+            }
+
+          pItem->setObjectCN(Selection[i]->getCN());
+
+          // Add the new item to the list.
+          mpItemsCopy->insert(mpItemsCopy->begin() + current + i, pItem);
+
+          // Update the table
+          mpTable->insertRows(current + i);
+          setTableText(current + i, pItem);
+        }
+
+      // Update the table
+      mpTable->adjustColumn(0);
+      mpTable->selectRow(current);
+      connect(mpTable, SIGNAL(currentChanged(int, int)), this, SLOT(slotItemChanged(int, int)));
+
+      loadItem(mpItem);
+      emit numberChanged(mpItemsCopy->size());
     }
 }
 
@@ -856,6 +912,14 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
     Item += FROM_UTF8(pObject->getObjectDisplayName());
   else
     Item += "Not found: " + FROM_UTF8(pItem->getObjectCN());
+
+  if (mItemType)
+    {
+      QString Experiments =
+        FROM_UTF8(static_cast<const CFitItem *>(pItem)->getExperiments());
+      if (Experiments != "")
+        Item += "; {" + Experiments + "}";
+    }
 
   Item += " < ";
 
