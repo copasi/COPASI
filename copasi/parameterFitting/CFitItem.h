@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/14 16:29:42 $
+   $Date: 2006/03/20 19:14:45 $
    End CVS Header */
 
 #ifndef COPASI_CFitItem
@@ -153,6 +153,12 @@ class CFitItem : public COptItem
      * @return unsigned C_INT32 size
      */
     unsigned C_INT32 getExperimentCount() const;
+
+    /**
+     * Retrieve a string listing all experiments the item applies to
+     * @return std::string experiments
+     */
+    std::string getExperiments() const;
 
     /**
      * Update bounds

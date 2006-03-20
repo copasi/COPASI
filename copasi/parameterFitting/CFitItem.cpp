@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/14 16:29:42 $
+   $Date: 2006/03/20 19:14:45 $
    End CVS Header */
 
 #include <limits>
@@ -13,6 +13,7 @@
 
 #include "CFitItem.h"
 
+#include "report/CKeyFactory.h"
 #include "utilities/CCopasiParameterGroup.h"
 
 CFitItem::CFitItem(const std::string & name,
@@ -153,6 +154,25 @@ bool CFitItem::removeExperiment(const unsigned C_INT32 & index)
 
 unsigned C_INT32 CFitItem::getExperimentCount() const
   {return mpGrpAffectedExperiments->size();}
+
+std::string CFitItem::getExperiments() const
+  {
+    std::string Experiments;
+    unsigned C_INT32 i, imax = mpGrpAffectedExperiments->size();
+    const CCopasiObject * pObject;
+
+    for (i = 0; i < imax; i++)
+      {
+        pObject = GlobalKeys.get(*mpGrpAffectedExperiments->getValue(i).pKEY);
+
+        if (i && pObject)
+          Experiments += ", ";
+
+        Experiments += pObject->getObjectName();
+      }
+
+    return Experiments;
+  }
 
 bool CFitItem::updateBounds(std::vector<COptItem * >::iterator it)
 {
