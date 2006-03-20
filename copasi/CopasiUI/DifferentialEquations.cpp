@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/17 13:42:15 $
+   $Date: 2006/03/20 13:03:42 $
    End CVS Header */
 
 /*******************************************************************
@@ -321,6 +321,7 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
   mml << SPC(l) << "</mtable>" << std::endl;
 
   mMmlWidget->setContent(FROM_UTF8(mml.str()));
+  mScrollView->resizeContents(mMmlWidget->sizeHint().width(), mMmlWidget->sizeHint().height());
   //std::cout << mml.str() << std::endl;
 }
 
