@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.112 $
+   $Revision: 1.113 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/06 14:04:19 $
+   $Author: shoops $ 
+   $Date: 2006/03/20 18:28:23 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -241,6 +241,11 @@ class CModel : public CModelEntity
      *   Stoichiometry Matrix
      */
     CMatrix< C_FLOAT64 > mStoi;
+
+    /**
+     *   Stoichiometry Matrix
+     */
+    CMatrix< C_FLOAT64 > mStoiReordered;
 
     /**
      *   Reduced Stoichiometry Matrix

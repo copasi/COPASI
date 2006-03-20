@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.250 $
+   $Revision: 1.251 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/17 16:05:09 $
+   $Date: 2006/03/20 18:28:23 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -86,6 +86,7 @@ CModel::CModel():
     mTransitionTime(0),
     mMoieties("Moieties", this),
     mStoi(),
+    mStoiReordered(),
     mRedStoi(),
     mL(),
     mLView(mL, mMetabolitesInd),
@@ -138,6 +139,7 @@ CModel::CModel(const CModel & src):
     mTransitionTime(src.mTransitionTime),
     mMoieties(src.mMoieties, this),
     mStoi(src.mStoi),
+    mStoiReordered(src.mStoiReordered),
     mRedStoi(src.mRedStoi),
     mL(src.mL),
     mLView(mL, mMetabolitesInd),
@@ -572,11 +574,16 @@ void CModel::buildRedStoi()
   C_INT32 j, jmax = mStoi.numCols();
 
   mRedStoi.resize(imax, jmax);
+  mStoiReordered.resize(mStoi.numRows(), jmax);
 
   /* just have to swap rows and colums */
   for (i = 0; i < imax; i++)
     for (j = 0; j < jmax; j++)
-      mRedStoi(i, j) = mStoi(mRowLU[i], j);
+      mStoiReordered(i, j) = mRedStoi(i, j) = mStoi(mRowLU[i], j);
+
+  for (; i < mStoi.numRows(); i++)
+    for (j = 0; j < jmax; j++)
+      mStoiReordered(i, j) = mStoi(mRowLU[i], j);
 
   for (i = 0, imax = mStoi.numRows(); i < imax; i++)
     mMetabolitesX[i] = mMetabolites[mRowLU[i]];
@@ -1176,7 +1183,7 @@ void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
   C_FLOAT64 Beta = 0.0;
 
   dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
-         mStoi.array(), &K, &Beta, derivatives, &M);
+         mStoiReordered.array(), &K, &Beta, derivatives, &M);
 }
 
 void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
