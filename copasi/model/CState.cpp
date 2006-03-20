@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/13 20:11:33 $
+   $Author: ssahle $ 
+   $Date: 2006/03/20 12:51:00 $
    End CVS Header */
 
 // CSate.cpp
@@ -216,7 +216,7 @@ void CStateTemplate::resize()
   CModelEntity ** pTmp = mpEntities;
   mpEntities = new CModelEntity * [mSize];
   memcpy(mpEntities, pTmp, sizeof(CModelEntity *) * OldSize);
-  pdelete(pTmp);
+  pdeletev(pTmp);
 
   // Resize the states
   C_FLOAT64 * pInitialValues = mpInitialValues = mInitialState.resize(mSize);
@@ -327,7 +327,7 @@ C_FLOAT64 * CState::resize(const unsigned C_INT32 & size)
       else
         mpValues = NULL;
 
-      pdelete(pTmp);
+      pdeletev(pTmp);
       mSize = size;
     }
 
