@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.120 $
+   $Revision: 1.121 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2006/03/20 12:49:20 $
+   $Date: 2006/03/20 13:56:04 $
    End CVS Header */
 
 #include "copasi.h"
@@ -2012,6 +2012,10 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                     }
                 }
             }
+        }
+      else
+        {
+          v = new std::vector<CEvaluationNodeObject*>;
         }
     }
   else
