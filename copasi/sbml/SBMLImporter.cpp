@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.119 $
+   $Revision: 1.120 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/17 13:49:28 $
+   $Author: gauges $ 
+   $Date: 2006/03/20 12:49:20 $
    End CVS Header */
 
 #include "copasi.h"
@@ -1918,7 +1918,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassAction(const CEvaluatio
   std::vector< std::vector< std::string > > functionArgumentCNs;
   const CEvaluationNode* pChildNode = NULL;
   std::string str;
-  std::vector<CEvaluationNodeObject*>* result;
+  std::vector<CEvaluationNodeObject*>* result = NULL;
   switch (type)
     {
     case CEvaluationTree::Function:
@@ -1953,7 +1953,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassAction(const CEvaluatio
 std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const CEvaluationNode* pRootNode, const CChemEq& chemicalEquation)
 {
   bool result = true;
-  std::vector<CEvaluationNodeObject*>* v;
+  std::vector<CEvaluationNodeObject*>* v = NULL;
   if (chemicalEquation.getReversibility())
     {
       // the root node must be a minus operator
