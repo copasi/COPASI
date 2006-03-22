@@ -148,7 +148,4 @@
     <function returnType="bool">enter( const std::string &amp; key )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>copasiwidget.h</includehint>
-</includehints>
 </UI>

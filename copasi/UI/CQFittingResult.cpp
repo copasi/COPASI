@@ -9,7 +9,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingResult.ui'
  **
- ** Created: Wed Mar 22 11:31:15 2006
+ ** Created: Wed Mar 22 12:21:31 2006
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.6   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -25,7 +25,6 @@
  #include <qlayout.h>
  #include <qtooltip.h>
  #include <qwhatsthis.h>
- #include "copasiwidget.h"
  #include "CQFittingResult.ui.h"
 
 /*
