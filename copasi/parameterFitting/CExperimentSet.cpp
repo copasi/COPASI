@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/22 17:00:59 $
+   $Date: 2006/03/22 17:04:35 $
    End CVS Header */
 
 #include <algorithm>
@@ -155,7 +155,7 @@ bool CExperimentSet::calculateStatistics()
               Tmp = (*it)->getRMS(*ppObject);
               mDependentRMS[i] += Tmp * Tmp * Count;
 
-              mDependentErrorMean[i] += (*it)->getErrorMean(*ppObject) * Count;
+              mDependentErrorMean[i] += (*it)->getErrorMean(*ppObject);
 
               mDependentDataCount[i] += Count;
             }
