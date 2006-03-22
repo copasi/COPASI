@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/11 13:32:43 $
+   $Date: 2006/03/22 16:52:17 $
    End CVS Header */
 
 #ifndef COPASI_CExperimentSet
@@ -64,6 +64,12 @@ class CExperimentSet: public CCopasiParameterGroup
      */
     bool compile(const std::vector< CCopasiContainer * > listOfContainer =
                    CCopasiContainer::EmptyList);
+
+    /**
+     * Calculate statistics across all experiments.
+     * @return bool success
+     */
+    bool calculateStatistics();
 
     /**
      * Add an experiment
@@ -144,6 +150,36 @@ class CExperimentSet: public CCopasiParameterGroup
      */
     unsigned C_INT32 getDataPointCount() const;
 
+    /**
+     * Retrieve the list of dependent data objects
+     * @return const std::vector< CCopasiObject * > & dependentObjects
+     */
+    const CVector< CCopasiObject * > & getDependentObjects() const;
+
+    /**
+     * Retrieve all dependent data objective values.
+     * @return const CVector< C_FLOAT64 > & dependentObjectiveValues
+     */
+    const CVector< C_FLOAT64 > & getDependentObjectiveValues() const;
+
+    /**
+     * Retrieve all dependent data objective values.
+     * @return const CVector< C_FLOAT64 > & dependentRMS
+     */
+    const CVector< C_FLOAT64 > & getDependentRMS() const;
+
+    /**
+     * Retrieve all dependent data error mean values.
+     * @return const CVector< C_FLOAT64 > & dependentErrorMean
+     */
+    const CVector< C_FLOAT64 > & getDependentErrorMean() const;
+
+    /**
+     * Retrieve all dependent data error mean std. deviations.
+     * @return const CVector< C_FLOAT64 > & dependentErrorMeanSD
+     */
+    const CVector< C_FLOAT64 > & getDependentErrorMeanSD() const;
+
   private:
     /**
      * Allocates all group parameters and assures that they are 
@@ -157,6 +193,36 @@ class CExperimentSet: public CCopasiParameterGroup
      * This is realized a CCopasiParameter type GROUP
      */
     std::vector< CExperiment * > * mpExperiments;
+
+    /**
+     * A set of all dependent data objects;
+     */
+    CVector< CCopasiObject * > mDependentObjects;
+
+    /**
+     * A list of all dependent data objective values;
+     */
+    CVector< C_FLOAT64 > mDependentObjectiveValues;
+
+    /**
+     * A list of all dependent data objective values;
+     */
+    CVector< C_FLOAT64 > mDependentRMS;
+
+    /**
+     * A list of all dependent data error mean values;
+     */
+    CVector< C_FLOAT64 > mDependentErrorMean;
+
+    /**
+     * A list of all dependent data error mean std. deviations;
+     */
+    CVector< C_FLOAT64 > mDependentErrorMeanSD;
+
+    /**
+     * A list of the number of data points for each dependent object;
+     */
+    CVector< unsigned C_INT32 > mDependentDataCount;
   };
 
 #endif // COPASI_CExperimentSet

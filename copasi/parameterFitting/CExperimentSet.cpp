@@ -1,12 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/11 13:32:43 $
+   $Date: 2006/03/22 16:52:17 $
    End CVS Header */
 
 #include <algorithm>
+#include <limits>
 
 #include "copasi.h"
 
@@ -62,6 +63,8 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
   // file reading.
   sort();
 
+  std::set< CCopasiObject * > DependentObjects;
+
   std::ifstream in;
   std::string CurrentFileName("");
   unsigned C_INT32 CurrentLineNumber = 1;
@@ -87,10 +90,139 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
 
       if (!(*it)->read(in, CurrentLineNumber)) return false;
       if (!(*it)->compile(listOfContainer)) return false;
+
+      const std::map< CCopasiObject *, unsigned C_INT32 > & ExpDependentObjects
+      = (*it)->getDependentObjects();
+      std::map< CCopasiObject *, unsigned C_INT32 >::const_iterator itObject
+      = ExpDependentObjects.begin();
+      std::map< CCopasiObject *, unsigned C_INT32 >::const_iterator endObject
+      = ExpDependentObjects.end();
+
+      for (; itObject != endObject; ++itObject)
+        DependentObjects.insert(itObject->first);
     }
+
+  mDependentObjects.resize(DependentObjects.size());
+  CCopasiObject ** ppInsert = mDependentObjects.array();
+  std::set< CCopasiObject * >::const_iterator itObject = DependentObjects.begin();
+  std::set< CCopasiObject * >::const_iterator endObject = DependentObjects.end();
+
+  for (; itObject != endObject; ++itObject, ++ppInsert)
+    *ppInsert = *itObject;
 
   return success;
 }
+
+bool CExperimentSet::calculateStatistics()
+{
+  mDependentObjectiveValues.resize(mDependentObjects.size());
+  mDependentObjectiveValues = 0.0;
+
+  mDependentRMS.resize(mDependentObjects.size());
+  mDependentRMS = 0.0;
+
+  mDependentErrorMean.resize(mDependentObjects.size());
+  mDependentErrorMean = 0.0;
+
+  mDependentErrorMeanSD.resize(mDependentObjects.size());
+  mDependentErrorMeanSD = 0.0;
+
+  mDependentDataCount.resize(mDependentObjects.size());
+  mDependentDataCount = 0;
+
+  // calclate the per experiment and per dependent value statistics.
+  std::vector< CExperiment * >::iterator it = mpExperiments->begin();
+  std::vector< CExperiment * >::iterator end = mpExperiments->end();
+
+  unsigned C_INT32 i, Count;
+  C_FLOAT64 Tmp;
+  for (; it != end; ++it)
+    {
+      (*it)->calculateStatistics();
+
+      CCopasiObject *const* ppObject = mDependentObjects.array();
+      CCopasiObject *const* ppEnd = ppObject + mDependentObjects.size();
+
+      for (i = 0; ppObject != ppEnd; ++ppObject, ++i)
+        {
+          Count = (*it)->getCount(*ppObject);
+
+          if (Count)
+            {
+              mDependentObjectiveValues[i] += (*it)->getObjectiveValue(*ppObject);
+
+              Tmp = (*it)->getRMS(*ppObject);
+              mDependentRMS[i] += Tmp * Tmp * Count;
+
+              mDependentErrorMean[i] += (*it)->getErrorMean(*ppObject) * Count;
+
+              mDependentDataCount[i] += Count;
+            }
+        }
+    }
+
+  unsigned C_INT32 imax = mDependentObjects.size();
+  for (i = 0; i != imax; i++)
+    {
+      Count = mDependentDataCount[i];
+
+      if (Count)
+        {
+          mDependentRMS[i] = sqrt(mDependentRMS[i] / Count);
+          mDependentErrorMean[i] /= Count;
+        }
+      else
+        {
+          mDependentRMS[i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+          mDependentErrorMean[i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+        }
+    }
+
+  it = mpExperiments->begin();
+
+  // We need to loop again to calculate the std. deviation.
+  for (; it != end; ++it)
+    {
+      CCopasiObject *const* ppObject = mDependentObjects.array();
+      CCopasiObject *const* ppEnd = ppObject + mDependentObjects.size();
+
+      for (i = 0; ppObject != ppEnd; ++ppObject, ++i)
+        {
+          Count = (*it)->getCount(*ppObject);
+
+          if (Count)
+            mDependentErrorMeanSD[i] +=
+              (*it)->getErrorMeanSD(*ppObject, mDependentErrorMean[i]);
+        }
+    }
+
+  for (i = 0; i != imax; i++)
+    {
+      Count = mDependentDataCount[i];
+
+      if (Count)
+        mDependentErrorMeanSD[i] = sqrt(mDependentErrorMeanSD[i] / Count);
+      else
+        mDependentErrorMeanSD[i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+    }
+
+  return true;
+}
+
+const CVector< CCopasiObject * > & CExperimentSet::getDependentObjects() const
+{return mDependentObjects;}
+
+const CVector< C_FLOAT64 > & CExperimentSet::getDependentObjectiveValues() const
+  {return mDependentObjectiveValues;}
+
+const CVector< C_FLOAT64 > & CExperimentSet::getDependentRMS() const
+  {return mDependentRMS;}
+
+const CVector< C_FLOAT64 > & CExperimentSet::getDependentErrorMean() const
+  {return mDependentErrorMean;}
+
+const CVector< C_FLOAT64 > & CExperimentSet::getDependentErrorMeanSD() const
+  {return mDependentErrorMeanSD;}
 
 CExperiment * CExperimentSet::addExperiment(const CExperiment & experiment)
 {

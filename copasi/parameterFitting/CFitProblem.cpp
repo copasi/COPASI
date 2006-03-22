@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/14 16:29:42 $
+   $Date: 2006/03/22 16:52:17 $
    End CVS Header */
 
 #include "copasi.h"
@@ -34,7 +34,12 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
     mpInitialState(NULL),
     mDependentValues(0),
     mResiduals(0),
-    mStoreResults(false)
+    mStoreResults(false),
+    mGradient(0),
+    mRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+    mSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+    mParameterSD(0),
+    mFisher(0, 0)
 {initializeParameter();}
 
 // copy constructor
@@ -46,7 +51,12 @@ CFitProblem::CFitProblem(const CFitProblem& src,
     mpInitialState(NULL),
     mDependentValues(src.mDependentValues),
     mResiduals(src.mResiduals),
-    mStoreResults(src.mStoreResults)
+    mStoreResults(src.mStoreResults),
+    mGradient(src.mGradient),
+    mRMS(src.mRMS),
+    mSD(src.mSD),
+    mParameterSD(src.mParameterSD),
+    mFisher(src.mFisher)
 {initializeParameter();}
 
 // Destructor
@@ -354,8 +364,10 @@ bool CFitProblem::calculate()
                   for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
                     if (*ppConstraint) (*ppConstraint)->checkConstraint();
 
-                  mCalculateValue += pExp->sumOfSquares(j, DependentValues, Residuals);
-                  if (mStoreResults) pExp->storeCalculatedValues(j);
+                  if (mStoreResults)
+                    mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
+                  else
+                    mCalculateValue += pExp->sumOfSquares(j, Residuals);
                 }
               break;
 
@@ -378,8 +390,10 @@ bool CFitProblem::calculate()
                         }
                     }
 
-                  mCalculateValue += pExp->sumOfSquares(j, DependentValues, Residuals);
-                  if (mStoreResults) pExp->storeCalculatedValues(j);
+                  if (mStoreResults)
+                    mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
+                  else
+                    mCalculateValue += pExp->sumOfSquares(j, Residuals);
                 }
 
               // We check after each simulation whether the constraints are violated.
@@ -584,22 +598,26 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   mStoreResults = true;
   calculate();
-  mStoreResults = false;
-
-  for (k = 0; k < kmax; k++)
-    mpExperimentSet->getExperiment(k)->calculateStatistics();
 
   // Keep the results
-  C_FLOAT64 SumOfSquares = mCalculateValue;
+  mSolutionValue = mCalculateValue;
   CVector< C_FLOAT64 > DependentValues = mDependentValues;
 
-  mSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  // The statistics need to be calculated for the result, i.e., now.
+  mpExperimentSet->calculateStatistics();
+
+  if (jmax)
+    mRMS = sqrt(mSolutionValue / jmax);
+  else
+    mRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  if (jmax > imax)
+    mSD = sqrt(mSolutionValue / (jmax - imax));
+  else
+    mSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
   mParameterSD.resize(imax);
   mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-
-  if (jmax > imax)
-    mSD = sqrt(SumOfSquares / jmax);
 
   mFisher.resize(imax, imax);
 
@@ -629,7 +647,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       calculate();
 
-      mGradient[i] = (mCalculateValue - SumOfSquares) * Delta;
+      mGradient[i] = (mCalculateValue - mSolutionValue) * Delta;
 
       for (j = 0; j < jmax; j++)
         dyp(i, j) = (mDependentValues[j] - DependentValues[j]) * Delta;
@@ -637,6 +655,10 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       // Restore the value
       (*mUpdateMethods[i])(Current);
     }
+
+  // This is necessary so that CExperiment::printResult shows the correct data.
+  calculate();
+  mStoreResults = false;
 
   // Construct the fisher information matrix
   for (i = 0; i < imax; i++)
@@ -894,5 +916,26 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   for (i = 0; i < imax; i++)
     mFisher(i, i) = 1.0;
 
+  // Make sure the timer is acurate.
+  (*mCPUTime.getRefresh())();
+
   return true;
 }
+
+const C_FLOAT64 & CFitProblem::getRMS() const
+{return mRMS;}
+
+const C_FLOAT64 & CFitProblem::getStdDeviation() const
+  {return mSD;}
+
+const CVector< C_FLOAT64 > & CFitProblem::getVariableGradients() const
+  {return mGradient;}
+
+const CVector< C_FLOAT64 > & CFitProblem::getVariableStdDeviations() const
+  {return mParameterSD;}
+
+const CMatrix< C_FLOAT64 > & CFitProblem::getVariableCorrelations() const
+  {return mFisher;}
+
+const CExperimentSet & CFitProblem::getExperiementSet() const
+  {return *mpExperimentSet;}

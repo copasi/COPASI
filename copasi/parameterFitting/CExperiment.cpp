@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:28 $
+   $Date: 2006/03/22 16:52:17 $
    End CVS Header */
 
 #include <fstream>
@@ -65,7 +65,8 @@ CExperiment::CExperiment(const std::string & name,
     mIndependentUpdateMethods(0),
     mIndependentValues(0),
     mNumDataRows(0),
-    mDataDependentCalculated(0)
+    mpDataDependentCalculated(NULL),
+    mDependentObjects()
 {initializeParameter();}
 
 CExperiment::CExperiment(const CExperiment & src,
@@ -92,7 +93,8 @@ CExperiment::CExperiment(const CExperiment & src,
     mIndependentUpdateMethods(src.mIndependentUpdateMethods),
     mIndependentValues(src.mIndependentValues),
     mNumDataRows(src.mNumDataRows),
-    mDataDependentCalculated(src.mDataDependentCalculated)
+    mpDataDependentCalculated(src.mpDataDependentCalculated),
+    mDependentObjects(src.mDependentObjects)
 {initializeParameter();}
 
 CExperiment::CExperiment(const CCopasiParameterGroup & group,
@@ -119,7 +121,8 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
     mIndependentUpdateMethods(0),
     mIndependentValues(0),
     mNumDataRows(0),
-    mDataDependentCalculated(0)
+    mpDataDependentCalculated(NULL),
+    mDependentObjects()
 {initializeParameter();}
 
 CExperiment::~CExperiment() {}
@@ -180,7 +183,6 @@ bool CExperiment::elevateChildren()
 }
 
 C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index,
-                                    C_FLOAT64 *& dependentValues,
                                     C_FLOAT64 *& residuals) const
   {
     C_FLOAT64 Residual;
@@ -193,34 +195,45 @@ C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index,
 
     if (residuals)
       for (; pDataDependent != pEnd;
-           pDataDependent++, ppDependentValues++, pWeight++, dependentValues++, residuals++)
+           pDataDependent++, ppDependentValues++, pWeight++, residuals++)
         {
-          *dependentValues = **ppDependentValues;
-          *residuals = (*pDataDependent - *dependentValues) * *pWeight;
+          *residuals = (*pDataDependent - **ppDependentValues) * *pWeight;
           s += *residuals * *residuals;
         }
     else
       for (; pDataDependent != pEnd;
-           pDataDependent++, ppDependentValues++, pWeight++, dependentValues++)
+           pDataDependent++, ppDependentValues++, pWeight++)
         {
-          *dependentValues = **ppDependentValues;
-          Residual = (*pDataDependent - *dependentValues) * *pWeight;
+          Residual = (*pDataDependent - **ppDependentValues) * *pWeight;
           s += Residual * Residual;
         }
 
     return s;
   }
 
-void CExperiment::storeCalculatedValues(const unsigned C_INT32 & index)
+C_FLOAT64 CExperiment::sumOfSquaresStore(const unsigned C_INT32 & index,
+    C_FLOAT64 *& dependentValues)
 {
-  C_FLOAT64 * pDataDependentCalculated = mDataDependentCalculated[index];
-  C_FLOAT64 * pEnd = pDataDependentCalculated + mDataDependentCalculated.numCols();
+  if (index == 0)
+    mpDataDependentCalculated = dependentValues;
+
+  C_FLOAT64 Residual;
+  C_FLOAT64 s = 0.0;
+
+  C_FLOAT64 const * pDataDependent = mDataDependent[index];
+  C_FLOAT64 const * pEnd = pDataDependent + mDataDependent.numCols();
   C_FLOAT64 * const * ppDependentValues = mDependentValues.array();
+  C_FLOAT64 const * pWeight = mWeight.array();
 
-  for (; pDataDependentCalculated != pEnd; pDataDependentCalculated++, ppDependentValues++)
-    *pDataDependentCalculated = **ppDependentValues;
+  for (; pDataDependent != pEnd;
+       pDataDependent++, ppDependentValues++, pWeight++, dependentValues++)
+    {
+      *dependentValues = **ppDependentValues;
+      Residual = (*pDataDependent - *dependentValues) * *pWeight;
+      s += Residual * Residual;
+    }
 
-  return;
+  return s;
 }
 
 bool CExperiment::calculateStatistics()
@@ -230,104 +243,105 @@ bool CExperiment::calculateStatistics()
 
   // Overall statistic;
   mMean = 0.0;
-  mSD = 0.0;
+  mMeanSD = 0.0;
+  mObjectiveValue = 0.0;
+  mRMS = 0.0;
   unsigned C_INT32 Count = 0;
 
   // per row statistic;
-  mRowMean.resize(numRows);
-  mRowMean = 0.0;
-  mRowSD.resize(numRows);
-  mRowSD = 0.0;
+  mRowObjectiveValue.resize(numRows);
+  mRowObjectiveValue = 0.0;
+  mRowRMS.resize(numRows);
+  mRowRMS = 0.0;
   CVector< unsigned C_INT32 > RowCount;
   RowCount.resize(numRows);
   RowCount = 0;
 
   // per column statistic;
-  mColumnMean.resize(numCols);
-  mColumnMean = 0.0;
-  mColumnSD.resize(numCols);
-  mColumnSD = 0.0;
-  CVector< unsigned C_INT32 > ColumnCount;
-  ColumnCount.resize(numCols);
-  ColumnCount = 0;
+  mColumnObjectiveValue.resize(numCols);
+  mColumnObjectiveValue = 0.0;
+  mColumnRMS.resize(numCols);
+  mColumnRMS = 0.0;
+  mColumnCount.resize(numCols);
+  mColumnCount = 0;
 
   unsigned C_INT32 i, j;
   C_FLOAT64 Residual;
 
+  C_FLOAT64 * pDataDependentCalculated = mpDataDependentCalculated;
+  C_FLOAT64 * pDataDependent = mDataDependent.array();
+
   for (i = 0; i < numRows; i++)
     {
-      for (j = 0; j < numCols; j++)
+      for (j = 0; j < numCols; j++, pDataDependentCalculated++, pDataDependent++)
         {
-          Residual = mDataDependentCalculated(i, j) - mDataDependent(i, j);
+          Residual = mWeight[j] * (*pDataDependentCalculated - *pDataDependent);
 
           if (isnan(Residual)) continue;
 
           mMean += Residual;
+
+          Residual = Residual * Residual;
+
+          mObjectiveValue += Residual;
           Count++;
 
-          mRowMean[i] += Residual;
+          mRowObjectiveValue[i] += Residual;
           RowCount[i]++;
 
-          mColumnMean[j] += Residual;
-          ColumnCount[j]++;
+          mColumnObjectiveValue[j] += Residual;
+          mColumnCount[j]++;
         }
     }
 
   if (Count)
-    mMean /= Count;
+    {
+      mMean /= Count;
+      mRMS = sqrt(mObjectiveValue / Count);
+    }
   else
-    mMean = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+    {
+      mMean = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+    }
 
   for (i = 0; i < numRows; i++)
     {
       if (RowCount[i])
-        mRowMean[i] /= RowCount[i];
+        mRowRMS[i] = sqrt(mRowObjectiveValue[i] / RowCount[i]);
       else
-        mRowMean[i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+        mRowRMS[i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
 
   for (j = 0; j < numCols; j++)
     {
-      if (ColumnCount[j])
-        mColumnMean[j] /= ColumnCount[j];
+      if (mColumnCount[j])
+        mColumnRMS[j] = sqrt(mColumnObjectiveValue[j] / mColumnCount[j]);
       else
-        mColumnMean[j] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+        mColumnRMS[j] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
 
-  for (i = 0; i < numRows; i++)
+  pDataDependentCalculated = mpDataDependentCalculated;
+  pDataDependent = mDataDependent.array();
+
+  for (i = 0, Count = 0; i < numRows; i++)
     {
-      for (j = 0; j < numCols; j++)
+      for (j = 0; j < numCols; j++, pDataDependentCalculated++, pDataDependent++)
         {
-          Residual = mDataDependentCalculated(i, j) - mDataDependent(i, j);
+          Residual = mMean - mWeight[j] * (*pDataDependentCalculated - *pDataDependent);
 
           if (isnan(Residual)) continue;
 
-          mSD += (Residual - mMean) * (Residual - mMean);
-          mRowSD[i] += (Residual - mRowMean[i]) * (Residual - mRowMean[i]);
-          mColumnSD[j] += (Residual - mColumnMean[j]) * (Residual - mColumnMean[j]);
+          mMeanSD += Residual * Residual;
+
+          Count++;
         }
     }
 
   if (Count)
-    mSD = sqrt(mSD / Count);
+    mMeanSD = sqrt(mMeanSD / Count);
   else
-    mSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-
-  for (i = 0; i < numRows; i++)
-    {
-      if (RowCount[i])
-        mRowSD[i] = sqrt(mRowSD[i] / RowCount[i]);
-      else
-        mRowSD[i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-    }
-
-  for (j = 0; j < numCols; j++)
-    {
-      if (ColumnCount[j])
-        mColumnSD[j] = sqrt(mColumnSD[j] / ColumnCount[j]);
-      else
-        mColumnSD[j] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-    }
+    mMeanSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
   return true;
 }
@@ -355,6 +369,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   mDependentValues.resize(DependentCount);
   mIndependentUpdateMethods.resize(IndependentCount);
   mIndependentValues.resize(IndependentCount);
+  mDependentObjects.clear();
 
   IndependentCount = 0;
   DependentCount = 0;
@@ -379,8 +394,9 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
       case dependent:
         if (!Objects[i]) // Object not found
           return false;  // :TODO: create error message The column must be mapped
-        mDependentValues[DependentCount++] =
+        mDependentValues[DependentCount] =
           (C_FLOAT64 *) Objects[i]->getReference();
+        mDependentObjects[Objects[i]] = DependentCount++;
         break;
 
       case time:
@@ -434,7 +450,7 @@ bool CExperiment::read(std::istream & in,
   mDataTime.resize(TimeCount ? mNumDataRows : 0);
   mDataIndependent.resize(mNumDataRows, IndependentCount);
   mDataDependent.resize(mNumDataRows, DependentCount);
-  mDataDependentCalculated.resize(mNumDataRows, DependentCount);
+  mpDataDependentCalculated = NULL;
   mColumnName.resize(IndependentCount + DependentCount + TimeCount);
 
   CTableRow Row(*mpNumColumns, (*mpSeparator)[0]);
@@ -587,6 +603,9 @@ bool CExperiment::read(std::istream & in,
 
   return true;
 }
+
+const std::map< CCopasiObject *, unsigned C_INT32 > & CExperiment::getDependentObjects() const
+{return mDependentObjects;}
 
 bool CExperiment::readColumnNames()
 {
@@ -852,8 +871,9 @@ void CExperiment::printResult(std::ostream * ostream) const
     os << "File Name:\t" << getFileName() << std::endl;
     os << "Experiment:\t" << getObjectName() << std::endl;
 
-    os << "Error Mean:\t" << mMean << std::endl;
-    os << "Error Standard Deviation:\t" << mSD << std::endl;
+    os << "Mean:\t" << mMean << std::endl;
+    os << "Objective Value:\t" << mObjectiveValue << std::endl;
+    os << "Root Mean Square:\t" << mRMS << std::endl;
 
     unsigned i, imax = mNumDataRows;
     unsigned j, jmax = mDataDependent.numCols();
@@ -877,28 +897,50 @@ void CExperiment::printResult(std::ostream * ostream) const
             }
           os << "\t";
         }
-    os << "Mean\tStandard Deviation" << std::endl << std::endl;
+    os << "Objective Value\tRoot Mean Square" << std::endl << std::endl;
 
-    for (i = 0; i < imax; i++)
-      {
-        os << i + 1 << ".\t";
-        if (*mpTaskType == CCopasiTask::timeCourse)
-          os << mDataTime[i] << "\t";
+    C_FLOAT64 * pDataDependentCalculated = mpDataDependentCalculated;
+    if (pDataDependentCalculated)
+      for (i = 0; i < imax; i++)
+        {
+          os << i + 1 << ".\t";
+          if (*mpTaskType == CCopasiTask::timeCourse)
+            os << mDataTime[i] << "\t";
 
-        for (j = 0; j < jmax; j++)
-          {
-            os << mDataDependent(i, j) << "\t";
-            os << mDataDependentCalculated(i, j) << "\t";
-            os << mDataDependentCalculated(i, j) - mDataDependent(i, j) << "\t";
-          }
-        os << mRowMean[i] << "\t" << mRowSD[i] << std::endl;
-      }
+          for (j = 0; j < jmax; j++, pDataDependentCalculated++)
+            {
+              os << mDataDependent(i, j) << "\t";
+              os << *pDataDependentCalculated << "\t";
+              os << *pDataDependentCalculated - mDataDependent(i, j) << "\t";
+            }
+          os << mRowObjectiveValue[i] << "\t" << mRowRMS[i] << std::endl;
+        }
+    else
+      for (i = 0; i < imax; i++)
+        {
+          os << i + 1 << ".\t";
+          if (*mpTaskType == CCopasiTask::timeCourse)
+            os << mDataTime[i] << "\t";
 
-    os << "Mean";
+          for (j = 0; j < jmax; j++)
+            {
+              os << mDataDependent(i, j) << "\t";
+            }
+          os << mRowObjectiveValue[i] << "\t" << mRowRMS[i] << std::endl;
+        }
+
+    os << "Objective Value";
     if (*mpTaskType == CCopasiTask::timeCourse)
       os << "\t";
     for (j = 0; j < jmax; j++)
-      os << "\t" << mMeans[j] << "\t\t" << mColumnMean[j];
+      os << "\t\t\t" << mColumnObjectiveValue[j];
+    os << std::endl;
+
+    os << "Root Mean Square";
+    if (*mpTaskType == CCopasiTask::timeCourse)
+      os << "\t";
+    for (j = 0; j < jmax; j++)
+      os << "\t\t\t" << mColumnRMS[j];
     os << std::endl;
 
     os << "Weight";
@@ -908,12 +950,109 @@ void CExperiment::printResult(std::ostream * ostream) const
       os << "\t\t\t" << mWeight[j];
     os << std::endl;
 
-    os << "Standard Deviation";
-    if (*mpTaskType == CCopasiTask::timeCourse)
-      os << "\t";
-    for (j = 0; j < jmax; j++)
-      os << "\t\t\t" << mColumnSD[j];
-    os << std::endl;
-
     return;
+  }
+
+const C_FLOAT64 & CExperiment::getObjectiveValue() const
+{return mObjectiveValue;}
+
+const C_FLOAT64 & CExperiment::getRMS() const
+  {return mRMS;}
+
+const C_FLOAT64 & CExperiment::getErrorMean() const
+  {return mMean;}
+
+const C_FLOAT64 & CExperiment::getErrorMeanSD() const
+  {return mMeanSD;}
+
+C_FLOAT64 CExperiment::getObjectiveValue(CCopasiObject *const& pObject) const
+  {
+    std::map< CCopasiObject *, unsigned C_INT32 >::const_iterator it
+    = mDependentObjects.find(pObject);
+
+    if (it != mDependentObjects.end())
+      return mColumnObjectiveValue[it->second];
+    else
+      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  }
+
+C_FLOAT64 CExperiment::getRMS(CCopasiObject *const& pObject) const
+  {
+    std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
+    = mDependentObjects.find(pObject);
+
+    if (it != mDependentObjects.end())
+      return mColumnRMS[it->second];
+    else
+      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  }
+
+C_FLOAT64 CExperiment::getErrorMean(CCopasiObject *const& pObject) const
+  {
+    std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
+    = mDependentObjects.find(pObject);
+
+    if (it == mDependentObjects.end())
+      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+    C_FLOAT64 Mean = 0;
+    C_FLOAT64 Residual;
+    unsigned C_INT32 numRows = mDataDependent.numRows();
+    unsigned C_INT32 numCols = mDataDependent.numCols();
+
+    const C_FLOAT64 *pDataDependentCalculated = mpDataDependentCalculated + it->second;
+    const C_FLOAT64 *pEnd = pDataDependentCalculated + numRows * numCols;
+    const C_FLOAT64 *pDataDependent = mDataDependent.array() + it->second;
+    const C_FLOAT64 & Weight = mWeight[it->second];
+
+    for (; pDataDependentCalculated != pEnd;
+         pDataDependentCalculated += numCols, pDataDependent += numCols)
+      {
+        Residual = Weight * (*pDataDependentCalculated - *pDataDependent);
+        if (isnan(Residual)) continue;
+        Mean += Residual;
+      }
+
+    return Mean;
+  }
+
+C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
+                                      const C_FLOAT64 & errorMean) const
+  {
+    std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
+    = mDependentObjects.find(pObject);
+
+    if (it == mDependentObjects.end())
+      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+    C_FLOAT64 MeanSD = 0;
+    C_FLOAT64 Residual;
+    unsigned C_INT32 numRows = mDataDependent.numRows();
+    unsigned C_INT32 numCols = mDataDependent.numCols();
+
+    const C_FLOAT64 *pDataDependentCalculated = mpDataDependentCalculated + it->second;
+    const C_FLOAT64 *pEnd = pDataDependentCalculated + numRows * numCols;
+    const C_FLOAT64 *pDataDependent = mDataDependent.array() + it->second;
+    const C_FLOAT64 & Weight = mWeight[it->second];
+
+    for (; pDataDependentCalculated != pEnd;
+         pDataDependentCalculated += numCols, pDataDependent += numCols)
+      {
+        Residual = errorMean - Weight * (*pDataDependentCalculated - *pDataDependent);
+        if (isnan(Residual)) continue;
+        MeanSD += Residual * Residual;
+      }
+
+    return MeanSD;
+  }
+
+unsigned C_INT32 CExperiment::getCount(CCopasiObject *const& pObject) const
+  {
+    std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
+    = mDependentObjects.find(pObject);
+
+    if (it != mDependentObjects.end())
+      return mColumnCount[it->second];
+    else
+      return 0;
   }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitMethod.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:28 $
+   $Date: 2006/03/22 16:52:17 $
    End CVS Header */
 
 #include "copasi.h"
@@ -23,17 +23,20 @@ COptMethod * CFitMethod::createMethod(CCopasiMethod::SubType subType)
 {
   COptMethod * pMethod = NULL;
 
+  /*
   switch (subType)
     {
-      /*
-          case GeneticAlgorithmSR:
-            pMethod = new COptMethodGASR();
-            break;
-      */
+    case GeneticAlgorithmSR:
+      pMethod = new COptMethodGASR();
+     break;
 
     default:
-      pMethod = COptMethod::createMethod(subType);
+  */
+  pMethod = COptMethod::createMethod(subType);
+  /*
+      break;
     }
+  */
 
   return pMethod;
 }

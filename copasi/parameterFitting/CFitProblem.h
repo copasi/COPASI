@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/14 16:29:42 $
+   $Date: 2006/03/22 16:52:17 $
    End CVS Header */
 
 #ifndef COPASI_CFitProblem
@@ -140,8 +140,44 @@ class CFitProblem : public COptProblem
      * @param const C_FLOAT64 & factor (Default: 1.0e-003)
      * @param const C_FLOAT64 & resolution (Default: 1.0e-009)
      */
-    bool calculateStatistics(const C_FLOAT64 & factor = 1.0e-003,
-                             const C_FLOAT64 & resolution = 1.0e-009);
+    virtual bool calculateStatistics(const C_FLOAT64 & factor = 1.0e-003,
+                                     const C_FLOAT64 & resolution = 1.0e-009);
+
+    /**
+     * Retreive the root mean square of the objective value.
+     * @return const C_FLOAT64 & RMS
+     */
+    const C_FLOAT64 & getRMS() const;
+
+    /**
+     * Retreive the std. deviation of the objective value.
+     * @return const C_FLOAT64 & stdDeviation
+     */
+    const C_FLOAT64 & getStdDeviation() const;
+
+    /**
+     * Retreive the gradients for each solution variable.
+     * @return const CVector< C_FLOAT64 > & variableGradients
+     */
+    const CVector< C_FLOAT64 > & getVariableGradients() const;
+
+    /**
+     * Retreive the std. deviation  for each solution variable.
+     * @return const CVector< C_FLOAT64 > & variableStdDeviations
+     */
+    const CVector< C_FLOAT64 > & getVariableStdDeviations() const;
+
+    /**
+     * Retreive the  correlations of the solution variables.
+     * @return const CMatrix< C_FLOAT64 > & variableCorrelations
+     */
+    const CMatrix< C_FLOAT64 > & getVariableCorrelations() const;
+
+    /**
+     * Retreive the experiment set.
+     * @return const CExperimentSet & experiementSet
+     */
+    const CExperimentSet & getExperiementSet() const;
 
     /**
      * Restore the trajectory problem
@@ -202,6 +238,8 @@ class CFitProblem : public COptProblem
     bool mStoreResults;
 
     CVector< C_FLOAT64 > mGradient;
+
+    C_FLOAT64 mRMS;
 
     C_FLOAT64 mSD;
 

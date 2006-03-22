@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/15 01:52:38 $
+   $Date: 2006/03/22 16:52:17 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -104,24 +104,33 @@ class CExperiment: public CCopasiParameterGroup
     bool read(std::istream & in, unsigned C_INT32 & currentLine);
 
     /**
+     * Retrieve the list of dependent data objects
+     * @return const std::map< CCopasiObject *, unsigned C_INT32 > & dependentObjects
+     */
+    const std::map< CCopasiObject *, unsigned C_INT32 > & getDependentObjects() const;
+
+    /**
+     * Calculate the sum of squares for the indexed row of the experiment.
+     * If residuals is not NULL residuals will contain the differences 
+     * between the calculated and the experiment values.
+     * @param const unsigned C_INT32 & index
+     * @param C_FLOAT64 *& residuals (may be NULL)
+     * @return C_FLOAT64 sumOfSquares
+     */
+    C_FLOAT64 sumOfSquares(const unsigned C_INT32 & index,
+                           C_FLOAT64 *& residuals) const;
+
+    /**
      * Calculate the sum of squares for the indexed row of the experiment.
      * On return dependentValues contains the calculated values. If
      * residuals is not NULL residuals will contain the differences 
      * between the calculated and the experiment values.
      * @param const unsigned C_INT32 & index
      * @param C_FLOAT64 *& dependentValues (must not be NULL)
-     * @param C_FLOAT64 *& residuals (may be NULL)
      * @return C_FLOAT64 sumOfSquares
      */
-    C_FLOAT64 sumOfSquares(const unsigned C_INT32 & index,
-                           C_FLOAT64 *& dependentValues,
-                           C_FLOAT64 *& residuals) const;
-
-    /**
-     * Store the calculated values for the indexed row
-     * @param const unsigned C_INT32 & index
-     */
-    void storeCalculatedValues(const unsigned C_INT32 & index);
+    C_FLOAT64 sumOfSquaresStore(const unsigned C_INT32 & index,
+                                C_FLOAT64 *& dependentValues);
 
     /**
      * Calculate statistics by comparing the stored calculated values
@@ -358,6 +367,67 @@ class CExperiment: public CCopasiParameterGroup
      */
     virtual void printResult(std::ostream * ostream) const;
 
+    /**
+     * Retrieve the value of the objective function
+     * @param const C_FLOAT64 & errorMean
+     */
+    const C_FLOAT64 & getObjectiveValue() const;
+
+    /**
+     * Retrieve the RMS
+     * @param const C_FLOAT64 & RMS
+     */
+    const C_FLOAT64 & getRMS() const;
+
+    /**
+     * Retrieve the mean of the error
+     * @param const C_FLOAT64 & errorMean
+     */
+    const C_FLOAT64 & getErrorMean() const;
+
+    /**
+     * Retrieve the std. deviation of the error
+     * @param const C_FLOAT64 & errorMeanSD
+     */
+    const C_FLOAT64 & getErrorMeanSD() const;
+
+    /**
+     * Retrieve the objective valu&e for the object.
+     * @param CCopasiObject *const& pObject
+     * @return C_FLOAT64 objectiveValue
+     */
+    C_FLOAT64 getObjectiveValue(CCopasiObject * const& pObject) const;
+
+    /**
+     * Retrieve the RMS for the object.
+     * @param CCopasiObject *const& pObject
+     * @return C_FLOAT64 RMS
+     */
+    C_FLOAT64 getRMS(CCopasiObject *const& pObject) const;
+
+    /**
+     * Retrieve the error mean for the object.
+     * @param CCopasiObject *const& pObject
+     * @return C_FLOAT64 errorMean
+     */
+    C_FLOAT64 getErrorMean(CCopasiObject *const& pObject) const;
+
+    /**
+     * Retrieve the error mean std. deviations for the object.
+     * @param CCopasiObject *const& pObject 
+     * @param C_FLOAT64 errorMean
+     * @return C_FLOAT64 errorMeanSD
+     */
+    C_FLOAT64 getErrorMeanSD(CCopasiObject *const& pObject,
+                             const C_FLOAT64 & errorMean) const;
+
+    /**
+     * Retrieve the data point caount for the object.
+     * @param CCopasiObject *const& pObject
+     * @return unsigned C_INT32 count
+     */
+    unsigned C_INT32 getCount(CCopasiObject *const& pObject) const;
+
   private:
     /**
      * Allocates all group parameters and assures that they are 
@@ -460,16 +530,24 @@ class CExperiment: public CCopasiParameterGroup
     /**
      * The relevant dependent experimental data after reading a file
      */
-    CMatrix< C_FLOAT64 > mDataDependentCalculated;
+    C_FLOAT64 * mpDataDependentCalculated;
 
     C_FLOAT64 mMean;
-    C_FLOAT64 mSD;
+    C_FLOAT64 mMeanSD;
+    C_FLOAT64 mObjectiveValue;
+    C_FLOAT64 mRMS;
 
-    CVector< C_FLOAT64 > mRowMean;
-    CVector< C_FLOAT64 > mRowSD;
+    CVector< C_FLOAT64 > mRowObjectiveValue;
+    CVector< C_FLOAT64 > mRowRMS;
 
-    CVector< C_FLOAT64 > mColumnMean;
-    CVector< C_FLOAT64 > mColumnSD;
+    CVector< C_FLOAT64 > mColumnObjectiveValue;
+    CVector< C_FLOAT64 > mColumnRMS;
+    CVector< unsigned C_INT32 > mColumnCount;
+
+    /**
+     * A map of all dependent data objects to dependent data columns;
+     */
+    std::map< CCopasiObject *, unsigned C_INT32 > mDependentObjects;
   };
 
 #endif // COPASI_CExperiment
