@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingResult.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/22 16:52:55 $
+   $Date: 2006/03/22 17:25:21 $
    End CVS Header */
 
 /****************************************************************************
@@ -22,12 +22,12 @@
 
 #include "qheader.h"
 
-#include "copasiDataModel/CCopasiDataModel.h"
- #include "parameterFitting/CFitTask.h"
- #include "parameterFitting/CFitProblem.h"
- #include "parameterFitting/CFitItem.h"
- #include "parameterFitting/CExperimentSet.h"
- #include "parameterFitting/CExperiment.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "parameterFitting/CFitTask.h"
+#include "parameterFitting/CFitProblem.h"
+#include "parameterFitting/CFitItem.h"
+#include "parameterFitting/CExperimentSet.h"
+#include "parameterFitting/CExperiment.h"
 
 #include "qtUtilities.h"
 
