@@ -1,0 +1,154 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>CQFittingResult</class>
+<widget class="CopasiWidget">
+    <property name="name">
+        <cstring>CQFittingResult</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>401</width>
+            <height>253</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Fitting Result</string>
+    </property>
+    <grid>
+    <widget class="QTabWidget" row="1" column="0" rowspan="1" colspan="2">
+        <property name="name">
+            <cstring>mpTabWidget</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>50</y>
+                <width>380</width>
+                <height>190</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizepolicy>
+                <hsizetype>5</hsizetype>
+                <vsizetype>5</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+            </sizepolicy>
+        </property>
+        <property name="minimumSize">
+            <size>
+                <width>210</width>
+                <height>180</height>
+            </size>
+        </property>
+        <widget class="CQFittingResultTab1">
+            <property name="name">
+                <cstring>mpMain</cstring>
+            </property>
+            <attribute name="title">
+                <string>Main</string>
+            </attribute>
+        </widget>
+        <widget class="QTable">
+            <property name="name">
+                <cstring>mpParameters</cstring>
+            </property>
+            <attribute name="title">
+                <string>Parameters</string>
+            </attribute>
+        </widget>
+        <widget class="QTable">
+            <property name="name">
+                <cstring>mpExperiments</cstring>
+            </property>
+            <attribute name="title">
+                <string>Experiments</string>
+            </attribute>
+        </widget>
+        <widget class="QTable">
+            <property name="name">
+                <cstring>mpValues</cstring>
+            </property>
+            <attribute name="title">
+                <string>Fitted Values</string>
+            </attribute>
+        </widget>
+        <widget class="QTable">
+            <property name="name">
+                <cstring>mpCorrelations</cstring>
+            </property>
+            <attribute name="title">
+                <string>Correlation Matrix</string>
+            </attribute>
+        </widget>
+    </widget>
+    <widget class="QPushButton" row="0" column="1">
+        <property name="name">
+            <cstring>mpBtnSave</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>290</x>
+                <y>10</y>
+                <width>101</width>
+                <height>31</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>save data</string>
+        </property>
+    </widget>
+    <widget class="QLabel" row="0" column="0">
+        <property name="name">
+            <cstring>mpLblResult</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>260</width>
+                <height>31</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizepolicy>
+                <hsizetype>3</hsizetype>
+                <vsizetype>5</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+            </sizepolicy>
+        </property>
+        <property name="text">
+            <string>&lt;h2&gt;Parameter Estimation Result&lt;/h2&gt;</string>
+        </property>
+    </widget>
+    </grid>
+</widget>
+<includes>
+    <include location="local" impldecl="in declaration">copasiWidget.h</include>
+    <include location="local" impldecl="in declaration">CQFittingResultTab1.h</include>
+    <include location="local" impldecl="in implementation">CQFittingResult.ui.h</include>
+</includes>
+<forwards>
+    <forward>class CFitTask</forward>
+    <forward>class CFitProblem</forward>
+</forwards>
+<variables>
+    <variable access="private">const CFitTask * mpTask;</variable>
+    <variable access="private">const CFitProblem * mpProblem;</variable>
+</variables>
+<slots>
+    <slot access="private" specifier="non virtual">slotSave()</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function returnType="bool">update( ListViews::ObjectType objectType, ListViews::Action action, const std::string &amp; key )</function>
+    <function returnType="bool">leave()</function>
+    <function returnType="bool">enter( const std::string &amp; key )</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>copasiwidget.h</includehint>
+</includehints>
+</UI>

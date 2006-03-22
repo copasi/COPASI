@@ -154,6 +154,14 @@ SOURCE=.\CQFittingItemWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQFittingResult.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQFittingResultTab1.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQFittingWidget.cpp
 # End Source File
 # Begin Source File
@@ -587,6 +595,22 @@ SOURCE=.\CQFittingItemWidget.h
 # Begin Source File
 
 SOURCE=.\CQFittingItemWidget.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQFittingResult.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQFittingResult.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQFittingResultTab1.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQFittingResultTab1.ui.h
 # End Source File
 # Begin Source File
 
@@ -1032,6 +1056,14 @@ SOURCE=.\CQFileDialogBtnGrp.ui
 # Begin Source File
 
 SOURCE=.\CQFittingItemWidget.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQFittingResult.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQFittingResultTab1.ui
 # End Source File
 # Begin Source File
 

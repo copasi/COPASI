@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.190 $
+   $Revision: 1.191 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 20:32:54 $
+   $Date: 2006/03/22 16:53:05 $
    End CVS Header */
 
 /****************************************************************************
@@ -63,6 +63,7 @@
 #include "listviews.h"
 #include "qtUtilities.h"
 #include "CQFittingWidget.h"
+#include "CQFittingResult.h"
 #include "CMCAWidget.h"
 #include "CMCAResultWidget.h"
 #include "CQReportDefinition.h"
@@ -209,6 +210,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     optResultWidgetS(NULL),
     optResultWidgetT(NULL),
     paramFittingWidget(NULL),
+    mpFittingResultWidget(NULL),
     parametersWidget(NULL),
     plotWidget(NULL),
     plotWidget1(NULL),
@@ -381,6 +383,9 @@ void ListViews::ConstructNodeWidgets()
   if (!paramFittingWidget) paramFittingWidget = new CQFittingWidget(this);
   paramFittingWidget->hide();
 
+  if (!mpFittingResultWidget) mpFittingResultWidget = new CQFittingResult(this);
+  mpFittingResultWidget->hide();
+
   if (!plotWidget) plotWidget = new PlotWidget(this);
   plotWidget->hide();
 
@@ -522,6 +527,9 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         break;
       case 33:
         return paramFittingWidget;
+        break;
+      case 331:
+        return mpFittingResultWidget;
         break;
 #ifdef COPASI_SENS
       case 34:

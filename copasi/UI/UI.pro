@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.118 $ $Author: gauges $ $Date: 2006/03/07 13:56:03 $  
+# $Revision: 1.119 $ $Author: shoops $ $Date: 2006/03/22 16:52:54 $  
 ######################################################################
 
 TEMPLATE = app
@@ -289,6 +289,8 @@ SOURCES += \
 # FORMS += CQExperimentData.ui
 # FORMS += CQExperimentSelection.ui
 # FORMS += CQFileDialogBtnGrp.ui
+# FORMS += CQFittingResultTab1.ui
+# FORMS += CQFittingResult.ui
 # FORMS += CQFittingItemWidget.ui
 # FORMS += CQFittingWidget.ui
 # FORMS += CQOptimizationWidget.ui
@@ -306,6 +308,10 @@ HEADERS += \
            CQExperimentSelection.ui.h \
            CQFittingItemWidget.h \
            CQFittingItemWidget.ui.h \
+           CQFittingResult.h \
+           CQFittingResult.ui.h \
+           CQFittingResultTab1.h \
+           CQFittingResultTab1.ui.h \
            CQFittingWidget.h \
            CQFittingWidget.ui.h \
            CQOptimizationWidget.h \
@@ -346,6 +352,8 @@ SOURCES += \
            CQExperimentSelection.cpp \
            CQFileDialogBtnGrp.cpp \
            CQFittingItemWidget.cpp \
+           CQFittingResult.cpp \
+           CQFittingResultTab1.cpp \
            CQFittingWidget.cpp \
            CQOptimizationWidget.cpp \
            CQProgressItem.cpp \
