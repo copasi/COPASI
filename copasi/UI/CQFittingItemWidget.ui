@@ -47,7 +47,7 @@
                 <bool>true</bool>
             </property>
             <property name="selectionMode">
-                <enum>SingleRow</enum>
+                <enum>MultiRow</enum>
             </property>
             <property name="focusStyle">
                 <enum>FollowStyle</enum>
@@ -588,9 +588,9 @@
     </connection>
     <connection>
         <sender>mpTable</sender>
-        <signal>currentChanged(int,int)</signal>
+        <signal>selectionChanged()</signal>
         <receiver>CQFittingItemWidget</receiver>
-        <slot>slotItemChanged(int,int)</slot>
+        <slot>slotSelectionChanged()</slot>
     </connection>
 </connections>
 <includes>
@@ -625,6 +625,8 @@
     <variable>QColor mChangedColor;</variable>
     <variable>ItemType mItemType;</variable>
     <variable>std::vector&lt; COptItem * &gt; * mpItemsCopy;</variable>
+    <variable>unsigned int mCurrentRow;</variable>
+    <variable>std::set&lt; unsigned int &gt; mSelection;</variable>
 </variables>
 <signals>
     <signal>numberChanged( int )</signal>
@@ -644,7 +646,7 @@
     <slot access="private" specifier="non virtual">slotDown()</slot>
     <slot access="private" specifier="non virtual">slotDuplicatePerExperiment()</slot>
     <slot access="private" specifier="non virtual">slotNew()</slot>
-    <slot access="private" specifier="non virtual">slotItemChanged( int row, int )</slot>
+    <slot access="private" specifier="non virtual">slotSelectionChanged()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
@@ -656,6 +658,10 @@
     <function specifier="non virtual">setItemType( const ItemType &amp; type )</function>
     <function specifier="non virtual">setExperimentSet( const CExperimentSet * &amp; pExperimentSet )</function>
     <function access="private" specifier="non virtual">setTableText( const int &amp; row, const COptItem * pItem )</function>
+    <function access="private" specifier="non virtual" returnType="unsigned int">currentRow()</function>
+    <function access="private" specifier="non virtual">selectRow( const unsigned int &amp; row )</function>
+    <function access="private" specifier="non virtual">loadSelection()</function>
+    <function access="private" specifier="non virtual">saveSelection()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/14 18:19:59 $
+   $Date: 2006/03/22 01:41:08 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Tue Mar 14 13:11:37 2006
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.12 2006/03/14 18:19:59 shoops Exp $)
+ ** Created: Tue Mar 21 14:12:46 2006
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.13 2006/03/22 01:41:08 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -100,6 +100,8 @@ class CQFittingItemWidget : public QWidget
     QColor mChangedColor;
     ItemType mItemType;
     std::vector< COptItem * > * mpItemsCopy;
+    unsigned int mCurrentRow;
+    std::set< unsigned int > mSelection;
 
     QVBoxLayout* CQFittingItemWidgetLayout;
     QGridLayout* mpLayout;
@@ -129,6 +131,10 @@ class CQFittingItemWidget : public QWidget
     bool loadItem(COptItem * pItem);
     void saveItem();
     void setTableText(const int & row, const COptItem * pItem);
+    unsigned int currentRow();
+    void selectRow(const unsigned int & row);
+    void loadSelection();
+    void saveSelection();
 
   private slots:
     void slotCheckLowerInf(bool checked);
@@ -145,7 +151,7 @@ class CQFittingItemWidget : public QWidget
     void slotDown();
     void slotDuplicatePerExperiment();
     void slotNew();
-    void slotItemChanged(int row, int);
+    void slotSelectionChanged();
   };
 
 #endif // CQFITTINGITEMWIDGET_H

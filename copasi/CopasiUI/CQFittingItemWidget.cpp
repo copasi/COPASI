@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/14 18:19:59 $
+   $Date: 2006/03/22 01:41:08 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Tue Mar 14 13:11:37 2006
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.12 2006/03/14 18:19:59 shoops Exp $)
+ ** Created: Tue Mar 21 15:22:52 2006
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.13 2006/03/22 01:41:08 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -455,7 +455,7 @@ CQFittingItemWidget::CQFittingItemWidget(QWidget* parent, const char* name, WFla
   mpTable->setNumCols(1);
   mpTable->setShowGrid(FALSE);
   mpTable->setReadOnly(TRUE);
-  mpTable->setSelectionMode(QTable::SingleRow);
+  mpTable->setSelectionMode(QTable::MultiRow);
   mpTable->setFocusStyle(QTable::FollowStyle);
   CQFittingItemWidgetLayout->addWidget(mpTable);
 
@@ -610,7 +610,7 @@ CQFittingItemWidget::CQFittingItemWidget(QWidget* parent, const char* name, WFla
   connect(mpBtnUp, SIGNAL(clicked()), this, SLOT(slotUp()));
   connect(mpBtnCopy, SIGNAL(clicked()), this, SLOT(slotCopy()));
   connect(mpBtnNew, SIGNAL(clicked()), this, SLOT(slotNew()));
-  connect(mpTable, SIGNAL(currentChanged(int, int)), this, SLOT(slotItemChanged(int, int)));
+  connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
   init();
 }
 
