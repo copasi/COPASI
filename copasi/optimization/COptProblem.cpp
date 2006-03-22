@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.73 $
+   $Revision: 1.74 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/10 15:00:21 $
+   $Date: 2006/03/22 14:08:36 $
    End CVS Header */
 
 /**
@@ -371,8 +371,57 @@ bool COptProblem::calculate()
   return true;
 }
 
+bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
+                                      const C_FLOAT64 & resolution)
+{
+#ifdef XXXX // The gradient is also meanigful for optimization.
+  unsigned C_INT32 i, imax = mSolutionVariables.size();
+  mGradient.resize(imax);
+
+  for (i = 0; i < imax; i++)
+    (*mUpdateMethods[i])(mSolutionVariables[i]);
+
+  calculate();
+
+  // Keep the results
+  mSolutionValue = mCalculateValue;
+
+  C_FLOAT64 Current;
+  C_FLOAT64 Delta;
+
+  // Calculate the gradient
+  for (i = 0; i < imax; i++)
+    {
+      Current = mSolutionVariables[i];
+
+      if (fabs(Current) > resolution)
+        {
+          (*mUpdateMethods[i])(Current * (1.0 + factor));
+          Delta = 1.0 / (Current * factor);
+        }
+      else
+        {
+          (*mUpdateMethods[i])(resolution);
+          Delta = 1.0 / resolution;
+        }
+
+      calculate();
+
+      mGradient[i] = (mCalculateValue - mSolutionValue) * Delta;
+
+      // Restore the value
+      (*mUpdateMethods[i])(Current);
+    }
+#endif // XXXX
+
+  // Make sure the timer is acurate.
+  (*mCPUTime.getRefresh())();
+
+  return true;
+}
+
 const C_FLOAT64 & COptProblem::getCalculateValue() const
-{return mCalculateValue;}
+  {return mCalculateValue;}
 
 void COptProblem::setSolutionVariables(const CVector< C_FLOAT64 > & variables)
 {mSolutionVariables = variables;}
@@ -488,34 +537,14 @@ bool COptProblem::createObjectiveFunction()
   return true;
 }
 
-#ifdef XXXX
-bool COptProblem::buildOptItemListFromParameterGroup()
-{
-  bool success = true;
+const unsigned C_INT32 & COptProblem::getFunctionEvaluations() const
+{return mCounter;}
 
-  std::vector< COptItem * >::iterator it = mpOptItems->begin();
-  std::vector< COptItem * >::iterator end = mpOptItems->end();
-
-  for (; it != end; ++it)
-    pdelete(*it);
-
-  unsigned i, imax = getOptItemSize();
-  mpOptItems->resize(imax);
-
-  std::vector<CCopasiParameter *> & List = *getValue("OptimizationItemList").pGROUP;
-
-  for (i = 0; i < imax; i++)
-    {
-      mOptItemList[i] = new COptItem(* (CCopasiParameterGroup *) List[i]);
-      if (!mOptItemList[i]->isValid()) success = false;
-    }
-
-  return true;
-}
-#endif // XXXX
+const C_FLOAT64 & COptProblem::getExecutionTime() const
+  {return * (C_FLOAT64 *) mCPUTime.getReference();}
 
 void COptProblem::print(std::ostream * ostream) const
-{*ostream << *this;}
+  {*ostream << *this;}
 
 void COptProblem::printResult(std::ostream * ostream) const
   {

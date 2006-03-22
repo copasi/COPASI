@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/14 16:29:42 $
+   $Date: 2006/03/22 14:08:36 $
    End CVS Header */
 
 /**
@@ -124,6 +124,14 @@ class COptProblem : public CCopasiProblem
     virtual bool checkFunctionalConstraints();
 
     /**
+     * Calculate the statistics for the problem
+     * @param const C_FLOAT64 & factor (Default: 1.0e-003)
+     * @param const C_FLOAT64 & resolution (Default: 1.0e-009)
+     */
+    virtual bool calculateStatistics(const C_FLOAT64 & factor = 1.0e-003,
+                                     const C_FLOAT64 & resolution = 1.0e-009);
+
+    /**
      * Retrieve the size of the variable vectors.
      * @result unsigned C_INT32 VariableSize
      */
@@ -229,6 +237,18 @@ class COptProblem : public CCopasiProblem
      * @return const std::string infix.
      */
     const std::string getObjectiveFunction();
+
+    /**
+     * Retrieve the objective function.
+     * @return const unsigned C_INT32 & functionEvaluations
+     */
+    const unsigned C_INT32 & getFunctionEvaluations() const;
+
+    /**
+     * Retrieve the objective function.
+     * @return const C_FLOAT64 & executionTime
+     */
+    const C_FLOAT64 & getExecutionTime() const;
 
     /**
      * This is the output method for any object. The default implementation
