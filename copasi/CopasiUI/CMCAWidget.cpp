@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:21 $
+   $Date: 2006/03/23 01:13:19 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -374,10 +374,12 @@ bool CMCAWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UN
     case ListViews::FUNCTION:
       break;
     case ListViews::MODEL:
+      /* The button is no longet part of the widget.
       CReportDefinitionVector* pReportDefinitionVector;
       pReportDefinitionVector = CCopasiDataModel::Global->getReportDefinitionList();
       if (pReportDefinitionVector)
         reportDefinitionButton->setEnabled(true);
+      */
       break;
     default:
       break;
