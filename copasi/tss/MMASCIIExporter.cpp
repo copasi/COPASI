@@ -1,11 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/17 13:55:21 $
+   $Author: nsimus $ 
+   $Date: 2006/03/23 13:11:56 $
    End CVS Header */
 
+#include <locale>
 #include <math.h>
 #include "copasi.h"
 
@@ -131,6 +132,107 @@ C_INT32 MMASCIIExporter::findKinParamByName(const CReaction* reac, const std::st
         return tmp_k;
     }
   return - 1;
+}
+
+/**
+ **      This method adapt names for Berkeley Madonna syntax
+ **/
+std::string MMASCIIExporter::toMMDName(const std::string & realName, std::set<std::string> & NameSet,
+                                       std::map< std::string, unsigned C_INT32 > & EncounterNumber)
+{
+  std::locale C("C");
+  char ch;
+
+  std::string newName;
+  std::ostringstream tmpName;
+
+  unsigned C_INT32 realName_size = realName.size();
+  unsigned C_INT32 i;
+
+  ch = realName[0];
+
+  if (!std::isalpha(ch, C))
+    {
+      tmpName << "_";
+      if (std::isdigit(ch, C)) tmpName << ch;
+    }
+  else tmpName << ch;
+
+  for (i = 1; i < realName_size; i++)
+    {
+      ch = realName[i];
+
+      if (std::isalpha(ch, C))
+        {
+          if (std::isspace(realName[i - 1], C) && std::islower(ch, C))
+            tmpName << (char) toupper(ch);
+          else
+            tmpName << ch;
+        }
+
+      if (std::isdigit(ch, C)) tmpName << ch;
+      if (std::ispunct(ch, C))
+        switch (ch)
+          {
+          case '_':
+            tmpName << ch;
+            break;
+          case '-':
+            tmpName << "_";
+            break;
+          case '{':
+            tmpName << "_";
+            break;
+          case '}':
+            tmpName << "_";
+            break;
+          default:
+            break;
+          }
+    }
+
+  newName = tmpName.str();
+
+  return testMMDName(newName, NameSet, EncounterNumber);
+}
+/**
+ **      This method investigates whether the given name already assigned,
+ **      put the new name (in cappital letters) in the set of assigned names 
+ **      or  modify the name according to encounter number      
+ **/
+std::string MMASCIIExporter::testMMDName(const std::string & name, std::set<std::string> & NameSet,
+    std::map< std::string, unsigned C_INT32 > & EncounterNumber)
+{
+  std::locale C("C");
+  char ch;
+
+  std::ostringstream newname, tmp;
+
+  unsigned C_INT32 name_size = name.size();
+  unsigned C_INT32 i;
+
+  for (i = 0; i < name_size; i++)
+    {
+      ch = name[i];
+      if (std::isalpha(ch, C) && std::islower(ch, C))
+        tmp << (char) toupper(ch);
+      else
+        tmp << ch;
+    }
+
+  if (NameSet.find(tmp.str()) == NameSet.end())
+    {
+      NameSet.insert(tmp.str());
+      EncounterNumber[tmp.str()] = 0;
+
+      return name;
+    }
+  else
+    {
+      EncounterNumber[tmp.str()]++;
+      newname << name << "_" << EncounterNumber[tmp.str()];
+      return newname.str();
+    }
 }
 
 /**
@@ -420,7 +522,7 @@ void MMASCIIExporter::functionExportMMD (CEvaluationNode* pNode, std::ofstream &
               unsigned C_INT32 i, vindex;
               CEvaluationNode* tmproot = tmpFunc->getRoot();
               CCopasiTree<CEvaluationNode>::iterator iIt, newIt = tmproot;
-              CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
+              //CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
 
               while (newIt != NULL)
                 {
@@ -497,6 +599,8 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
  */
 bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstream & outFile)
 {
+  // TODO : the order of metabolites and the equations will be changed in the next Copasi version
+
   outFile << "METHOD stiff" << std::endl;
   outFile << std::endl;
   outFile << "STARTTIME = 0" << std::endl;
@@ -512,6 +616,8 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
 
   unsigned C_INT32 i, j;
   std::map< std::string, std::string > newNameMap;
+  std::set<std::string> NameSet;
+  std::map< std::string, unsigned C_INT32 > EncounterNumber;
   CMetab* metab;
   const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
   unsigned C_INT32 metabs_size = metabs.size();
@@ -556,17 +662,14 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
       std::string name = metab->getObjectName();
       std::string newName;
 
-      std::ostringstream tmpName;
-
-      tmpName << "metab_" << ++count;
-      newName = tmpName.str();
+      newName = toMMDName(name, NameSet, EncounterNumber);
 
       newNameMap[metab->getKey()] = newName;
 
       outFile << newName
       << " = "
       << Value << description.str()
-      << '\t' << '\t' << "; metabolite \'" << name << "\': " << CModelEntity::StatusName[metab->getStatus()]
+      << '\t' << '\t' << "; metabolite \'" << CMetabNameInterface::getDisplayName(copasiModel, *metab) << "\': " << CModelEntity::StatusName[metab->getStatus()]
       << std::endl;
     }
 
@@ -866,9 +969,10 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
 
   return true;
 }
-
 bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstream & outFile)
 {
+  // TODO : the order of metabolites and the equations will be changed in the next Copasi version
+
   unsigned C_INT32 metab_size = copasiModel->getMetabolitesX().size();
   unsigned C_INT32 indep_size = copasiModel->getNumIndependentMetabs();
   unsigned C_INT32 comps_size = copasiModel->getCompartments().size();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: nsimus $ 
-   $Date: 2006/03/02 13:29:14 $
+   $Date: 2006/03/23 13:11:56 $
    End CVS Header */
 
 #ifndef MMASCIIExpoter_H__
@@ -73,9 +73,19 @@ class MMASCIIExporter
      **/
     void functionExportC(const CFunction* pFunc, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction, std::ostringstream & outFunctionHeader);
     /**
+     **      This method adapt names for Berkeley Madonna syntax
+     **/
+    std::string toMMDName(const std::string & name, std::set<std::string> & NameSet, std::map< std::string, unsigned C_INT32 > & EncounterNumber);
+    /**
+     **      This method investigates whether the given name already assigned,
+     **      put the new name (in cappital letters) in the set of assigned names
+     **      or  modify the name according to encounter number
+     **/
+    std::string testMMDName(const std::string & name, std::set<std::string> & NameSet, std::map< std::string, unsigned C_INT32 > & EncounterNumber);
+    /**
      **    This method exports the functions in Berkeley Madonna format 
      **/
-    void MMASCIIExporter::functionExportMMD (CEvaluationNode* pNode, std::ofstream & outFile, unsigned C_INT32 &findex, std::map< std::string, std::string > &functionNameMap);
+    void functionExportMMD (CEvaluationNode* pNode, std::ofstream & outFile, unsigned C_INT32 &findex, std::map< std::string, std::string > &functionNameMap);
     /**
      **      This method assembles an expression sub tree for some internal call of Mass Action.
      **      The sub tree has to be included in the tree of corresponding root kinetic function in order to
