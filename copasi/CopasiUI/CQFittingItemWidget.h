@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/22 01:41:08 $
+   $Date: 2006/03/24 22:14:42 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Tue Mar 21 14:12:46 2006
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.13 2006/03/22 01:41:08 shoops Exp $)
+ ** Created: Fri Mar 24 15:50:16 2006
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.14 2006/03/24 22:14:42 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -87,7 +87,6 @@ class CQFittingItemWidget : public QWidget
   protected:
     CCopasiParameterGroup * mpItems;
     const CExperimentSet ** mppSet;
-    COptItem * mpItem;
     CCopasiObjectName* mpObjectCN;
     const CCopasiObject* mpLowerObject;
     const CCopasiObject* mpUpperObject;
@@ -128,13 +127,12 @@ class CQFittingItemWidget : public QWidget
 
     void init();
     void destroy();
-    bool loadItem(COptItem * pItem);
-    void saveItem();
     void setTableText(const int & row, const COptItem * pItem);
     unsigned int currentRow();
     void selectRow(const unsigned int & row);
     void loadSelection();
     void saveSelection();
+    void setSelection(const std::set< unsigned int > & selection);
 
   private slots:
     void slotCheckLowerInf(bool checked);

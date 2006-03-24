@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/22 01:41:08 $
+   $Date: 2006/03/24 22:14:42 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -23,7 +23,6 @@
 
 void CQFittingItemWidget::init()
 {
-  mpItem = NULL;
   mppSet = NULL;
   mpItemsCopy = new std::vector<COptItem *>;
   mCurrentRow = C_INVALID_INDEX;
@@ -112,20 +111,19 @@ void CQFittingItemWidget::slotLowerEdit()
       mpCheckLowerInf->setChecked(false);
       mpEditLower->setEnabled(true);
 
-      if (mSelection.size())
-        {
-          std::set< unsigned int >::const_iterator it = mSelection.begin();
-          std::set< unsigned int >::const_iterator end = mSelection.end();
+      if (!mSelection.size())
+        slotNew();
 
-          for (; it != end; ++it)
-            (*mpItemsCopy)[*it]->setLowerBound(Selection[0]->getCN());
-        }
-      else
-        {
-          if (!mpItem) slotNew();
+      std::set< unsigned int >::const_iterator it = mSelection.begin();
+      std::set< unsigned int >::const_iterator end = mSelection.end();
 
-          mpItem->setLowerBound(Selection[0]->getCN());
+      for (; it != end; ++it)
+        {
+          (*mpItemsCopy)[*it]->setLowerBound(Selection[0]->getCN());
+          setTableText(*it, (*mpItemsCopy)[*it]);
         }
+
+      mpTable->adjustColumn(0);
 
       QString Value = FROM_UTF8(Selection[0]->getObjectDisplayName());
       mpLowerValidator->force(Value);
@@ -147,20 +145,19 @@ void CQFittingItemWidget::slotUpperEdit()
       mpCheckUpperInf->setChecked(false);
       mpEditUpper->setEnabled(true);
 
-      if (mSelection.size())
-        {
-          std::set< unsigned int >::const_iterator it = mSelection.begin();
-          std::set< unsigned int >::const_iterator end = mSelection.end();
+      if (!mSelection.size())
+        slotNew();
 
-          for (; it != end; ++it)
-            (*mpItemsCopy)[*it]->setUpperBound(Selection[0]->getCN());
-        }
-      else
-        {
-          if (!mpItem) slotNew();
+      std::set< unsigned int >::const_iterator it = mSelection.begin();
+      std::set< unsigned int >::const_iterator end = mSelection.end();
 
-          mpItem->setUpperBound(Selection[0]->getCN());
+      for (; it != end; ++it)
+        {
+          (*mpItemsCopy)[*it]->setUpperBound(Selection[0]->getCN());
+          setTableText(*it, (*mpItemsCopy)[*it]);
         }
+
+      mpTable->adjustColumn(0);
 
       QString Value = FROM_UTF8(Selection[0]->getObjectDisplayName());
       mpUpperValidator->force(Value);
@@ -174,45 +171,59 @@ void CQFittingItemWidget::slotParamEdit()
 
   CCopasiSelectionDialog * pBrowseDialog = new CCopasiSelectionDialog(this);
   pBrowseDialog->setModel(CCopasiDataModel::Global->getModel());
-  pBrowseDialog->setSingleSelection(false);
+  pBrowseDialog->setSingleSelection(mSelection.size() > 1);
   pBrowseDialog->setOutputVector(&Selection);
 
   if (pBrowseDialog->exec () == QDialog::Accepted && Selection.size() != 0)
     {
       // We need to loop through the selection.
-      unsigned C_INT32 current = mCurrentRow;
+      unsigned C_INT32 current = currentRow();
 
       // We must not trigger slotSelectionChanged!
       disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
 
-      if (!mpItem)
+      // If no item is selected create one.
+      if (!mSelection.size())
         {
+          COptItem * pItem;
+
           switch (mItemType)
             {
             case OPT_ITEM:
-              mpItem = new COptItem();
+              pItem = new COptItem();
               break;
             case FIT_ITEM:
-              mpItem = new CFitItem();
+              pItem = new CFitItem();
               break;
             case FIT_CONSTRAINT:
-              mpItem = new CFitConstraint();
+              pItem = new CFitConstraint();
               break;
             }
 
-          mpItemsCopy->push_back(mpItem);
-
+          mpItemsCopy->push_back(pItem);
           current = mpTable->numRows();
-
+          mSelection.insert(current);
           mpTable->insertRows(current);
-
-          setTableText(current, mpItem);
+          setTableText(current, pItem);
         }
 
-      mpItem->setObjectCN(Selection[0]->getCN());
-      saveItem();
+      // Update the selected items
+      std::set< unsigned int >::const_iterator it = mSelection.begin();
+      std::set< unsigned int >::const_iterator end = mSelection.end();
 
+      for (; it != end; ++it)
+        {
+          (*mpItemsCopy)[*it]->setObjectCN(Selection[0]->getCN());
+          setTableText(*it, (*mpItemsCopy)[*it]);
+        }
+
+      saveSelection();
+
+      // If one item is selected we may have no several objects
+      // and must create the appropriate items
       unsigned C_INT32 i, imax = Selection.size();
+
+      COptItem * pSrc = (*mpItemsCopy)[*mSelection.begin()];
 
       for (i = 1; i != imax; i++)
         {
@@ -221,13 +232,13 @@ void CQFittingItemWidget::slotParamEdit()
           switch (mItemType)
             {
             case OPT_ITEM:
-              pItem = new COptItem(*mpItem);
+              pItem = new COptItem(*pSrc);
               break;
             case FIT_ITEM:
-              pItem = new CFitItem(*mpItem);
+              pItem = new CFitItem(*pSrc);
               break;
             case FIT_CONSTRAINT:
-              pItem = new CFitConstraint(*mpItem);
+              pItem = new CFitConstraint(*pSrc);
               break;
             }
 
@@ -246,7 +257,11 @@ void CQFittingItemWidget::slotParamEdit()
       mpTable->adjustColumn(0);
 
       // Update the selection;
-      selectRow(current);
+      if (current != C_INVALID_INDEX)
+        selectRow(current);
+      else
+        loadSelection();
+
       emit numberChanged(mpItemsCopy->size());
     }
 }
@@ -257,19 +272,30 @@ void CQFittingItemWidget::slotExperiments()
     {
       CQExperimentSelection * pDialog = new CQExperimentSelection(this);
       pDialog->load(mpBoxExperiments, * mppSet);
+
       if (pDialog->exec() == QDialog::Accepted)
         {
-          if (!mpItem) slotNew();
+          if (!mSelection.size())
+            slotNew();
 
-          mpItem->getGroup("Affected Experiments")->clear();
-          unsigned C_INT32 i, imax = mpBoxExperiments->count();
+          std::set< unsigned int >::const_iterator it = mSelection.begin();
+          std::set< unsigned int >::const_iterator end = mSelection.end();
 
-          for (i = 0; i < imax && imax < (*mppSet)->size(); i++)
-            static_cast<CFitItem *>(mpItem)->addExperiment((*mppSet)->getExperiment((const char *) mpBoxExperiments->text(i).utf8())->CCopasiParameter::getKey());
+          for (; it != end; ++it)
+            {
+              (*mpItemsCopy)[*it]->getGroup("Affected Experiments")->clear();
+              unsigned C_INT32 i, imax = mpBoxExperiments->count();
+
+              for (i = 0; i < imax && imax < (*mppSet)->size(); i++)
+                static_cast<CFitItem *>((*mpItemsCopy)[*it])->addExperiment((*mppSet)->getExperiment((const char *) mpBoxExperiments->text(i).utf8())->CCopasiParameter::getKey());
+
+              setTableText(*it, (*mpItemsCopy)[*it]);
+            }
+
+          mpTable->adjustColumn(0);
         }
 
-      mpCheckAll->setChecked(!static_cast<CFitItem *>(mpItem)->getExperimentCount());
-      mpBoxExperiments->setEnabled(static_cast<CFitItem *>(mpItem)->getExperimentCount());
+      loadSelection();
 
       delete pDialog;
     }
@@ -279,7 +305,7 @@ bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems,
                                const std::map<std::string, std::string> * pKeyMap)
 {
   mpItems = pItems;
-  mpItem = NULL;
+  mSelection.clear();
 
   std::vector< COptItem * >::iterator it = mpItemsCopy->begin();
   std::vector< COptItem * >::iterator end = mpItemsCopy->end();
@@ -335,12 +361,10 @@ bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems,
       setTableText(i, *it);
     }
 
-  mpTable->clearSelection();
   if (mpItemsCopy->size())
     selectRow(0);
   else
-    loadItem(NULL);
-  mpTable->repaintSelections();
+    selectRow(C_INVALID_INDEX);
 
   mpTable->adjustColumn(0);
 
@@ -349,112 +373,10 @@ bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems,
   return true;
 }
 
-bool CQFittingItemWidget::loadItem(COptItem * pItem)
-{
-  mpBtnObject->setEnabled(true);
-  mpBtnUp->setEnabled(true);
-  mpBtnDown->setEnabled(true);
-  mpBtnCopy->setEnabled(true);
-  mpBtnPerExperiment->setEnabled(true);
-
-  mpItem = pItem;
-
-  if (!pItem)
-    {
-      mpEditObject->setText("");
-
-      mpEditLower->setText("");
-      mpCheckLowerInf->setChecked(true);
-
-      mpEditUpper->setText("");
-      mpCheckUpperInf->setChecked(true);
-
-      mpCheckAll->setChecked(true);
-      mpBoxExperiments->setEnabled(false);
-
-      QString Empty("");
-      int Pos = 0;
-      mpObjectValidator->validate(Empty, Pos);
-    }
-  else
-    {
-      QString Value;
-
-      const CCopasiObject *pObject = RootContainer.getObject(mpItem->getObjectCN());
-      if (pObject)
-        {
-          Value = FROM_UTF8(pObject->getObjectDisplayName());
-          mpEditObject->setText(Value);
-          mpObjectValidator->saved();
-        }
-      else
-        {
-          if (mpItem->getObjectCN() != "")
-            Value = "Not found: " + FROM_UTF8(mpItem->getObjectCN());
-          else
-            Value = "";
-
-          mpEditObject->setText(Value);
-
-          int Pos = 0;
-          mpObjectValidator->validate(Value, Pos);
-        }
-
-      if (mpItem->getLowerBound() == "-inf" ||
-          isNumber(mpItem->getLowerBound()))
-        Value = FROM_UTF8(mpItem->getLowerBound());
-      else if ((pObject = RootContainer.getObject(mpItem->getLowerBound())))
-        Value = FROM_UTF8(pObject->getObjectDisplayName());
-      else
-        Value = "Not found: " + FROM_UTF8(mpItem->getLowerBound());
-
-      mpEditLower->setText(Value);
-      mpCheckLowerInf->setChecked(Value == "-inf");
-
-      if (mpItem->getUpperBound() == "inf" ||
-          isNumber(mpItem->getUpperBound()))
-        Value = FROM_UTF8(mpItem->getUpperBound());
-      else if ((pObject = RootContainer.getObject(mpItem->getUpperBound())))
-        Value = FROM_UTF8(pObject->getObjectDisplayName());
-      else
-        Value = "Not found: " + FROM_UTF8(mpItem->getUpperBound());
-
-      mpEditUpper->setText(Value);
-      mpCheckUpperInf->setChecked(Value == "inf");
-
-      if (mItemType)
-        {
-          mpBoxExperiments->clear();
-
-          unsigned C_INT32 i, imax = static_cast<CFitItem *>(mpItem)->getExperimentCount();
-          for (i = 0; i < imax; i++)
-            {
-              const CCopasiObject * pObject =
-                GlobalKeys.get(static_cast<CFitItem *>(mpItem)->getExperiment(i));
-
-              if (pObject)
-                mpBoxExperiments->insertItem(FROM_UTF8(pObject->getObjectName()));
-            }
-
-          mpCheckAll->setChecked(!static_cast<CFitItem *>(mpItem)->getExperimentCount());
-          mpBoxExperiments->setEnabled(static_cast<CFitItem *>(mpItem)->getExperimentCount());
-        }
-    }
-
-  mpLowerValidator->saved();
-  mpUpperValidator->saved();
-  mpCheckLowerInf->setPaletteBackgroundColor(mSavedColor);
-  mLowerInfChanged = false;
-  mpCheckUpperInf->setPaletteBackgroundColor(mSavedColor);
-  mUpperInfChanged = false;
-
-  return true;
-}
-
 bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pKeyMap)
 {
   // Make sure that the current items is saved.
-  saveItem();
+  saveSelection();
 
   bool changed = false;
 
@@ -586,46 +508,9 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pKeyMa
   return changed;
 }
 
-void CQFittingItemWidget::saveItem()
-{
-  if (!mpItem) return;
-
-  if (mpCheckLowerInf->isChecked())
-    mpItem->setLowerBound(CCopasiObjectName("-inf"));
-  else if (isNumber((const char *) mpEditLower->text().utf8()))
-    mpItem->setLowerBound(CCopasiObjectName((const char *) mpEditLower->text().utf8()));
-
-  if (mpCheckUpperInf->isChecked())
-    mpItem->setUpperBound(CCopasiObjectName("inf"));
-  else if (isNumber((const char *) mpEditUpper->text().utf8()))
-    mpItem->setUpperBound(CCopasiObjectName((const char *) mpEditUpper->text().utf8()));
-
-  mpCheckLowerInf->setPaletteBackgroundColor(mSavedColor);
-  mLowerInfChanged = false;
-  mpCheckUpperInf->setPaletteBackgroundColor(mSavedColor);
-  mUpperInfChanged = false;
-  mpObjectValidator->saved();
-  mpLowerValidator->saved();
-  mpUpperValidator->saved();
-
-  unsigned C_INT32 row;
-
-  std::vector< COptItem * >::const_iterator it = mpItemsCopy->begin();
-  std::vector< COptItem * >::const_iterator end = mpItemsCopy->end();
-
-  for (row = 0; it != end; ++it, ++row)
-    if (*it == mpItem) break;
-
-  setTableText(row, mpItem);
-  mpTable->adjustColumn(0);
-
-  return;
-}
-
 void CQFittingItemWidget::setItemType(const ItemType & type)
 {
   mItemType = type;
-  pdelete(mpItem);
 
   if (mItemType)
     {
@@ -649,21 +534,31 @@ void CQFittingItemWidget::setItemType(const ItemType & type)
 
 void CQFittingItemWidget::slotExperimentChanged()
 {
+  // This slot is trigered when an experiment is deleted or changed,
+  // but before new experiments are created.
+
   if (!mItemType) return;
 
   // Remove all references to deleted experiments.
   std::vector< COptItem * >::iterator it = mpItemsCopy->begin();
   std::vector< COptItem * >::iterator end = mpItemsCopy->end();
-  unsigned C_INT32 i, imax;
 
-  // :TODO: If an experiment is deleted and another created they may have the same keys.
-  for (; it != end; ++it)
-    for (i = 0, imax = static_cast<CFitItem *>(*it)->getExperimentCount(); i < imax; ++i)
-      if (!GlobalKeys.get(static_cast<CFitItem *>(*it)->getExperiment(i)))
-        static_cast<CFitItem *>(*it)->removeExperiment(i);
+  unsigned C_INT32 i, imax;
+  unsigned C_INT32 Row;
+
+  for (Row = 0; it != end; ++it, ++Row)
+    {
+      for (i = 0, imax = static_cast<CFitItem *>(*it)->getExperimentCount(); i < imax; ++i)
+        if (!GlobalKeys.get(static_cast<CFitItem *>(*it)->getExperiment(i)))
+          static_cast<CFitItem *>(*it)->removeExperiment(i);
+
+      setTableText(Row, *it);
+    }
+
+  mpTable->adjustColumn(0);
 
   // Reload the current item.
-  loadItem(mpItem);
+  loadSelection();
 
   return;
 }
@@ -673,10 +568,25 @@ void CQFittingItemWidget::setExperimentSet(const CExperimentSet * & pExperimentS
 
 void CQFittingItemWidget::slotCheckAll(bool checked)
 {
+  if (!mItemType) return;
+
   if (!checked && mpBoxExperiments->count() == 0)
     slotExperiments();
+  else if (checked)
+    {
+      std::set< unsigned int >::const_iterator it = mSelection.begin();
+      std::set< unsigned int >::const_iterator end = mSelection.end();
 
-  mpBoxExperiments->setEnabled(!checked);
+      for (; it != end; ++it)
+        {
+          (*mpItemsCopy)[*it]->getGroup("Affected Experiments")->clear();
+          setTableText(*it, (*mpItemsCopy)[*it]);
+        }
+    }
+
+  mpTable->adjustColumn(0);
+
+  loadSelection();
 }
 
 void CQFittingItemWidget::slotDelete()
@@ -684,68 +594,44 @@ void CQFittingItemWidget::slotDelete()
   unsigned C_INT32 row = mCurrentRow;
 
   COptItem * pItem;
-  if (mSelection.size())
+
+  std::set< unsigned int >::const_iterator it = mSelection.begin();
+  std::set< unsigned int >::const_iterator end = mSelection.end();
+
+  // We must not trigger slotSelectionChanged!
+  disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+
+  unsigned int Deleted = 0;
+  for (; it != end; ++it, ++Deleted)
     {
-      std::set< unsigned int >::const_iterator it = mSelection.begin();
-      std::set< unsigned int >::const_iterator end = mSelection.end();
+      row = *it - Deleted;
 
-      // We must not trigger slotSelectionChanged!
-      disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
-
-      unsigned int Deleted = 0;
-      for (; it != end; ++it, ++Deleted)
-        {
-          row = *it - Deleted;
-
-          pItem = (*mpItemsCopy)[row];
-
-          // Erase the item from the vector.
-          mpItemsCopy->erase(mpItemsCopy->begin() + row);
-          // Update the table
-          mpTable->removeRow(row);
-          pdelete(pItem);
-        }
-
-      mpTable->clearSelection();
-      connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
-
-      mSelection.clear();
-    }
-  else if (row >= mpItemsCopy->size())
-    return;
-  else
-    {
-      pItem = mpItem;
+      pItem = (*mpItemsCopy)[row];
 
       // Erase the item from the vector.
       mpItemsCopy->erase(mpItemsCopy->begin() + row);
-
       // Update the table
-      // We must not trigger slotSelectionChanged!
-      disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
       mpTable->removeRow(row);
-      mpTable->clearSelection();
-      connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
-
-      mCurrentRow = C_INVALID_INDEX;
-
       pdelete(pItem);
     }
 
-  // Change the selection
-  if (row == mpItemsCopy->size()) row--;
+  mpTable->clearSelection();
+  mSelection.clear();
 
-  if (row != C_INVALID_INDEX)
-    selectRow(row);
-  else
-    loadItem(NULL);
+  connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+
+  // Change the selection
+  if (row >= mpItemsCopy->size())
+    row = mpItemsCopy->size() - 1;
+
+  selectRow(row);
 
   emit numberChanged(mpItemsCopy->size());
 }
 
 void CQFittingItemWidget::slotCopy()
 {
-  if (!mpItem)
+  if (!mSelection.size())
     {
       // We have nothing to copy, therefore we create a new item.
       slotNew();
@@ -753,21 +639,22 @@ void CQFittingItemWidget::slotCopy()
     }
 
   // Save the changes to  the current items
-  saveItem();
+  saveSelection();
 
   // Create the new item.
   COptItem * pItem;
+  COptItem * pSrc = (*mpItemsCopy)[*mSelection.begin()];
 
   switch (mItemType)
     {
     case OPT_ITEM:
-      pItem = new COptItem(*mpItem);
+      pItem = new COptItem(*pSrc);
       break;
     case FIT_ITEM:
-      pItem = new CFitItem(*mpItem);
+      pItem = new CFitItem(*pSrc);
       break;
     case FIT_CONSTRAINT:
-      pItem = new CFitConstraint(*mpItem);
+      pItem = new CFitConstraint(*pSrc);
       break;
     }
 
@@ -780,7 +667,7 @@ void CQFittingItemWidget::slotCopy()
   mpTable->insertRows(row);
   connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
 
-  setTableText(row, mpItem);
+  setTableText(row, pItem);
   mpTable->adjustColumn(0);
 
   // Update the selection
@@ -791,52 +678,82 @@ void CQFittingItemWidget::slotCopy()
 
 void CQFittingItemWidget::slotUp()
 {
-  unsigned C_INT32 row = mCurrentRow;
+  if (!mSelection.size()) return; // Nothing to move.
 
-  if (row == C_INVALID_INDEX || row == 0) return;
+  saveSelection();
 
-  // Swap the items
-  (*mpItemsCopy)[row] = (*mpItemsCopy)[row - 1];
-  (*mpItemsCopy)[row - 1] = mpItem;
+  std::set< unsigned int > NewSelection;
+  std::set< unsigned int >::const_iterator it = mSelection.begin();
+  std::set< unsigned int >::const_iterator end = mSelection.end();
+  COptItem * pItem;
 
-  // Swap the table rows
-  QString tmp = mpTable->text(row, 0);
-  mpTable->setText(row, 0, mpTable->text(row - 1, 0));
-  mpTable->setText(row - 1, 0, tmp);
+  if (*it == 0) ++it; // The first row can not be moved up.
 
-  // Update the selection
-  selectRow(row - 1);
+  for (; it != end; ++it)
+    {
+      NewSelection.insert(*it - 1);
+
+      // Swap the items
+      pItem = (*mpItemsCopy)[*it];
+      (*mpItemsCopy)[*it] = (*mpItemsCopy)[*it - 1];
+      (*mpItemsCopy)[*it - 1] = pItem;
+
+      // Swap the table rows
+      mpTable->swapRows(*it, *it - 1);
+    }
+
+  mpTable->updateContents();
+
+  setSelection(NewSelection);
+  loadSelection();
 }
 
 void CQFittingItemWidget::slotDown()
 {
-  unsigned C_INT32 row = mCurrentRow;
+  if (!mSelection.size()) return; // Nothing to move.
 
-  if (row >= mpItemsCopy->size() - 1) return;
+  saveSelection();
 
-  // Swap the items
-  (*mpItemsCopy)[row] = (*mpItemsCopy)[row + 1];
-  (*mpItemsCopy)[row + 1] = mpItem;
+  std::set< unsigned int > NewSelection;
+  std::set< unsigned int >::reverse_iterator it = mSelection.rbegin();
+  std::set< unsigned int >::reverse_iterator end = mSelection.rend();
+  COptItem * pItem;
 
-  // Swap the table rows
-  QString tmp = mpTable->text(row, 0);
-  mpTable->setText(row, 0, mpTable->text(row + 1, 0));
-  mpTable->setText(row + 1, 0, tmp);
+  if (*it == mpTable->numRows() - 1)
+    ++it; // The last row can not be moved down.
 
-  // Update the selection
-  selectRow(row + 1);
+  for (; it != end; ++it)
+    {
+      NewSelection.insert(*it + 1);
+
+      // Swap the items
+      pItem = (*mpItemsCopy)[*it];
+      (*mpItemsCopy)[*it] = (*mpItemsCopy)[*it + 1];
+      (*mpItemsCopy)[*it + 1] = pItem;
+
+      // Swap the table rows
+      mpTable->swapRows(*it, *it + 1);
+    }
+
+  mpTable->updateContents();
+
+  setSelection(NewSelection);
+  loadSelection();
 }
 
 void CQFittingItemWidget::slotDuplicatePerExperiment()
 {
-  if (!mpItem || !mItemType) return;
+  if (!mItemType) return;
 
   // Save the changes to  the current items
-  saveItem();
+  saveSelection();
+
+  if (!mSelection.size())
+    slotNew();
 
   unsigned C_INT32 row = mCurrentRow + 1;
   unsigned C_INT32 i, imax =
-    static_cast<CFitItem *>(mpItem)->getExperimentCount();
+    static_cast<CFitItem *>((*mpItemsCopy)[*mSelection.begin()])->getExperimentCount();
 
   CFitItem * pItem, * pTemplate;
 
@@ -849,10 +766,10 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
       switch (mItemType)
         {
         case FIT_ITEM:
-          pTemplate = new CFitItem(*mpItem);
+          pTemplate = new CFitItem(*(*mpItemsCopy)[*mSelection.begin()]);
           break;
         case FIT_CONSTRAINT:
-          pTemplate = new CFitConstraint(*mpItem);
+          pTemplate = new CFitConstraint(*(*mpItemsCopy)[*mSelection.begin()]);
           break;
         }
 
@@ -872,9 +789,9 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
               break;
             }
 
-          pItem->addExperiment(static_cast<CFitItem *>(mpItem)->getExperiment(i));
+          pItem->addExperiment(static_cast<CFitItem *>((*mpItemsCopy)[*mSelection.begin()])->getExperiment(i));
 
-          static_cast<CFitItem *>(mpItem)->removeExperiment(i);
+          static_cast<CFitItem *>((*mpItemsCopy)[*mSelection.begin()])->removeExperiment(i);
 
           mpItemsCopy->insert(mpItemsCopy->begin() + row, pItem);
 
@@ -889,7 +806,7 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
       imax = (*mppSet)->size();
       for (i = imax - 1; i != 0; i--)
         {
-          pItem = new CFitItem(*mpItem);
+          pItem = new CFitItem(*(*mpItemsCopy)[*mSelection.begin()]);
           pItem->addExperiment((*mppSet)->getExperiment(i)->CCopasiParameter::getKey());
 
           mpItemsCopy->insert(mpItemsCopy->begin() + row, pItem);
@@ -901,13 +818,13 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
 
       // Update the current item only when we have more than one experiment.
       if (imax > 1)
-        static_cast<CFitItem *>(mpItem)->addExperiment((*mppSet)->getExperiment(0)->CCopasiParameter::getKey());
+        static_cast<CFitItem *>((*mpItemsCopy)[*mSelection.begin()])->addExperiment((*mppSet)->getExperiment(0)->CCopasiParameter::getKey());
     }
 
   connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
 
   // Update the current item
-  setTableText(row - 1, mpItem);
+  setTableText(row - 1, (*mpItemsCopy)[*mSelection.begin()]);
 
   // Update the selection
   selectRow(row - 1);
@@ -920,7 +837,7 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
 void CQFittingItemWidget::slotNew()
 {
   // Save the changes to  the current items
-  saveItem();
+  saveSelection();
 
   // Create the new item.
   COptItem * pItem;
@@ -1001,160 +918,82 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
 
 unsigned int CQFittingItemWidget::currentRow()
 {
-  unsigned int Selections = mpTable->numSelections();
-  if (Selections != 1)
+  if (mSelection.size() != 1)
     return C_INVALID_INDEX;
 
-  QTableSelection Selection = mpTable->selection(0);
-
-  if (Selection.numRows() > 1)
-    return C_INVALID_INDEX;
-
-  return Selection.topRow();
+  return *mSelection.begin();
 }
 
 void CQFittingItemWidget::slotSelectionChanged()
 {
-  if (mSelection.size())
-    saveSelection();
-  else if (mCurrentRow != C_INVALID_INDEX)
-    saveItem();
+  saveSelection();
+
+  unsigned int i, imax = mpTable->numRows();
+
+  // Update mSelection;
+  for (i = 0; i != imax; i++)
+    if (mpTable->isRowSelected(i))
+      mSelection.insert(i);
+    else
+      mSelection.erase(i);
 
   mCurrentRow = currentRow();
 
-  if (mCurrentRow == C_INVALID_INDEX)
-    {
-      unsigned int i, imax = mpTable->numRows();
-
-      // Update mSelection;
-      for (i = 0; i != imax; i++)
-        if (mpTable->isRowSelected(i))
-          mSelection.insert(i);
-        else
-          mSelection.erase(i);
-
-      if (mSelection.size())
-        loadSelection();
-      else
-        loadItem(NULL);
-    }
-  else
-    {
-      mSelection.clear();
-      loadItem((*mpItemsCopy)[mCurrentRow]);
-    }
-}
-
-void CQFittingItemWidget::selectRow(const unsigned int & row)
-{
-  // This sets the focus and creates a selection
-  mpTable->setCurrentCell(row, 0);
-
-  // We must not trigger slotSelectionChanged!
-  disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
-  mpTable->clearSelection();
-  connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
-
-  mpTable->selectRow(row);
+  loadSelection();
 }
 
 void CQFittingItemWidget::loadSelection()
 {
-  mpBtnObject->setEnabled(false);
-  mpBtnUp->setEnabled(false);
-  mpBtnDown->setEnabled(false);
-  mpBtnCopy->setEnabled(false);
-  mpBtnPerExperiment->setEnabled(false);
+  bool Enabled = (mSelection.size() <= 1);
+
+  mpBtnCopy->setEnabled(Enabled);
+  mpBtnPerExperiment->setEnabled(Enabled);
 
   std::set< unsigned int >::const_iterator it = mSelection.begin();
   std::set< unsigned int >::const_iterator end = mSelection.end();
 
-  QString Value;
-
-  COptItem * pItem = (*mpItemsCopy)[*it];
-
-  const CCopasiObject *pObject = RootContainer.getObject(pItem->getObjectCN());
-  if (pObject)
+  if (it == end)
     {
-      Value = FROM_UTF8(pObject->getObjectDisplayName());
-      mpEditObject->setText(Value);
-      mpObjectValidator->saved();
-    }
-  else
-    {
-      if (pItem->getObjectCN() != "")
-        Value = "Not found: " + FROM_UTF8(pItem->getObjectCN());
-      else
-        Value = "";
+      mpEditObject->setText("");
 
-      mpEditObject->setText(Value);
+      mpEditLower->setText("");
+      mpCheckLowerInf->setChecked(true);
 
+      mpEditUpper->setText("");
+      mpCheckUpperInf->setChecked(true);
+
+      mpCheckAll->setChecked(true);
+      mpBoxExperiments->setEnabled(false);
+
+      QString Empty("");
       int Pos = 0;
-      mpObjectValidator->validate(Value, Pos);
+      mpObjectValidator->validate(Empty, Pos);
     }
-
-  if (pItem->getLowerBound() == "-inf" ||
-      isNumber(pItem->getLowerBound()))
-    Value = FROM_UTF8(pItem->getLowerBound());
-  else if ((pObject = RootContainer.getObject(pItem->getLowerBound())))
-    Value = FROM_UTF8(pObject->getObjectDisplayName());
   else
-    Value = "Not found: " + FROM_UTF8(pItem->getLowerBound());
-
-  mpEditLower->setText(Value);
-  mpCheckLowerInf->setChecked(Value == "-inf");
-
-  if (pItem->getUpperBound() == "inf" ||
-      isNumber(pItem->getUpperBound()))
-    Value = FROM_UTF8(pItem->getUpperBound());
-  else if ((pObject = RootContainer.getObject(pItem->getUpperBound())))
-    Value = FROM_UTF8(pObject->getObjectDisplayName());
-  else
-    Value = "Not found: " + FROM_UTF8(pItem->getUpperBound());
-
-  mpEditUpper->setText(Value);
-  mpCheckUpperInf->setChecked(Value == "inf");
-
-  std::string Experiments;
-  if (mItemType)
     {
-      Experiments = static_cast<CFitItem *>(pItem)->getExperiments();
+      disconnect(mpCheckAll, SIGNAL(toggled(bool)), this, SLOT(slotCheckAll(bool)));
+      QString Value;
 
-      mpBoxExperiments->clear();
-
-      unsigned C_INT32 i, imax = static_cast<CFitItem *>(pItem)->getExperimentCount();
-      for (i = 0; i < imax; i++)
-        {
-          const CCopasiObject * pObject =
-            GlobalKeys.get(static_cast<CFitItem *>(pItem)->getExperiment(i));
-
-          if (pObject)
-            mpBoxExperiments->insertItem(FROM_UTF8(pObject->getObjectName()));
-        }
-
-      mpCheckAll->setChecked(!static_cast<CFitItem *>(pItem)->getExperimentCount());
-      mpBoxExperiments->setEnabled(static_cast<CFitItem *>(pItem)->getExperimentCount());
-    }
-
-  for (++it; it != end; ++it)
-    {
-      pItem = (*mpItemsCopy)[*it];
+      COptItem * pItem = (*mpItemsCopy)[*it];
 
       const CCopasiObject *pObject = RootContainer.getObject(pItem->getObjectCN());
       if (pObject)
-        Value = FROM_UTF8(pObject->getObjectDisplayName());
+        {
+          Value = FROM_UTF8(pObject->getObjectDisplayName());
+          mpEditObject->setText(Value);
+          mpObjectValidator->saved();
+        }
       else
         {
           if (pItem->getObjectCN() != "")
             Value = "Not found: " + FROM_UTF8(pItem->getObjectCN());
           else
             Value = "";
-        }
 
-      if (Value != mpEditObject->text())
-        {
-          mpEditObject->setText("");
-          mpObjectValidator->saved();
+          mpEditObject->setText(Value);
+
+          int Pos = 0;
+          mpObjectValidator->validate(Value, Pos);
         }
 
       if (pItem->getLowerBound() == "-inf" ||
@@ -1165,11 +1004,8 @@ void CQFittingItemWidget::loadSelection()
       else
         Value = "Not found: " + FROM_UTF8(pItem->getLowerBound());
 
-      if (Value != mpEditLower->text())
-        {
-          mpEditLower->setText("");
-          mpCheckLowerInf->setChecked(false);
-        }
+      mpEditLower->setText(Value);
+      mpCheckLowerInf->setChecked(Value == "-inf");
 
       if (pItem->getUpperBound() == "inf" ||
           isNumber(pItem->getUpperBound()))
@@ -1179,19 +1015,96 @@ void CQFittingItemWidget::loadSelection()
       else
         Value = "Not found: " + FROM_UTF8(pItem->getUpperBound());
 
-      if (Value != mpEditUpper->text())
+      mpEditUpper->setText(Value);
+      mpCheckUpperInf->setChecked(Value == "inf");
+
+      std::string Experiments;
+      if (mItemType)
         {
-          mpEditUpper->setText("");
-          mpCheckUpperInf->setChecked(false);
+          Experiments = static_cast<CFitItem *>(pItem)->getExperiments();
+
+          mpBoxExperiments->clear();
+
+          unsigned C_INT32 i, imax = static_cast<CFitItem *>(pItem)->getExperimentCount();
+          for (i = 0; i < imax; i++)
+            {
+              const CCopasiObject * pObject =
+                GlobalKeys.get(static_cast<CFitItem *>(pItem)->getExperiment(i));
+
+              if (pObject)
+                mpBoxExperiments->insertItem(FROM_UTF8(pObject->getObjectName()));
+            }
+
+          mpCheckAll->setChecked(!static_cast<CFitItem *>(pItem)->getExperimentCount());
+          mpBoxExperiments->setEnabled(static_cast<CFitItem *>(pItem)->getExperimentCount());
         }
 
-      if (mItemType &&
-          Experiments != static_cast<CFitItem *>(pItem)->getExperiments())
+      for (++it; it != end; ++it)
         {
-          mpCheckAll->setChecked(false);
-          mpBoxExperiments->setEnabled(false);
+          pItem = (*mpItemsCopy)[*it];
+
+          const CCopasiObject *pObject = RootContainer.getObject(pItem->getObjectCN());
+          if (pObject)
+            Value = FROM_UTF8(pObject->getObjectDisplayName());
+          else
+            {
+              if (pItem->getObjectCN() != "")
+                Value = "Not found: " + FROM_UTF8(pItem->getObjectCN());
+              else
+                Value = "";
+            }
+
+          if (Value != mpEditObject->text())
+            {
+              mpEditObject->setText("");
+              mpObjectValidator->saved();
+            }
+
+          if (pItem->getLowerBound() == "-inf" ||
+              isNumber(pItem->getLowerBound()))
+            Value = FROM_UTF8(pItem->getLowerBound());
+          else if ((pObject = RootContainer.getObject(pItem->getLowerBound())))
+            Value = FROM_UTF8(pObject->getObjectDisplayName());
+          else
+            Value = "Not found: " + FROM_UTF8(pItem->getLowerBound());
+
+          if (Value != mpEditLower->text())
+            {
+              mpEditLower->setText("");
+              mpCheckLowerInf->setChecked(false);
+            }
+
+          if (pItem->getUpperBound() == "inf" ||
+              isNumber(pItem->getUpperBound()))
+            Value = FROM_UTF8(pItem->getUpperBound());
+          else if ((pObject = RootContainer.getObject(pItem->getUpperBound())))
+            Value = FROM_UTF8(pObject->getObjectDisplayName());
+          else
+            Value = "Not found: " + FROM_UTF8(pItem->getUpperBound());
+
+          if (Value != mpEditUpper->text())
+            {
+              mpEditUpper->setText("");
+              mpCheckUpperInf->setChecked(false);
+            }
+
+          if (mItemType &&
+              Experiments != static_cast<CFitItem *>(pItem)->getExperiments())
+            {
+              mpCheckAll->setChecked(false);
+              mpBoxExperiments->setEnabled(false);
+            }
         }
+
+      connect(mpCheckAll, SIGNAL(toggled(bool)), this, SLOT(slotCheckAll(bool)));
     }
+
+  mpLowerValidator->saved();
+  mpUpperValidator->saved();
+  mpCheckLowerInf->setPaletteBackgroundColor(mSavedColor);
+  mLowerInfChanged = false;
+  mpCheckUpperInf->setPaletteBackgroundColor(mSavedColor);
+  mUpperInfChanged = false;
 }
 
 void CQFittingItemWidget::saveSelection()
@@ -1223,6 +1136,44 @@ void CQFittingItemWidget::saveSelection()
       mpUpperValidator->saved();
 
       setTableText(*it, pItem);
-      mpTable->adjustColumn(0);
     }
+
+  mpTable->adjustColumn(0);
+}
+
+void CQFittingItemWidget::selectRow(const unsigned int & row)
+{
+  // This sets the focus and creates a selection
+  mpTable->setCurrentCell(row, 0);
+
+  // We must not trigger slotSelectionChanged!
+  disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  mpTable->clearSelection();
+  connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+
+  mpTable->selectRow(row);
+}
+
+void CQFittingItemWidget::setSelection(const std::set< unsigned int > & selection)
+{
+  mSelection = selection;
+
+  std::set< unsigned int >::const_iterator it = selection.begin();
+  std::set< unsigned int >::const_iterator end = selection.end();
+
+  // This sets the focus and creates a selection
+  if (it != end)
+    mpTable->setCurrentCell(*it, 0);
+  else
+    mpTable->setCurrentCell(C_INVALID_INDEX, 0);
+
+  // We must not trigger slotSelectionChanged!
+  disconnect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+
+  // Update selection
+  mpTable->clearSelection();
+  for (; it != end; ++it)
+    mpTable->addSelection(QTableSelection(*it, 0, *it, 0));
+
+  connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
 }

@@ -612,7 +612,6 @@
 <variables>
     <variable>CCopasiParameterGroup * mpItems;</variable>
     <variable>const CExperimentSet ** mppSet;</variable>
-    <variable>COptItem * mpItem;</variable>
     <variable>CCopasiObjectName* mpObjectCN;</variable>
     <variable>const CCopasiObject* mpLowerObject;</variable>
     <variable>const CCopasiObject* mpUpperObject;</variable>
@@ -652,16 +651,15 @@
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
     <function returnType="bool">load( CCopasiParameterGroup * pItems, const std::map&lt;std::string, std::string&gt; * pKeyMap )</function>
-    <function access="private" specifier="non virtual" returnType="bool">loadItem( COptItem * pItem )</function>
     <function returnType="bool">save( const std::map&lt;std::string, std::string&gt; * pKeyMap )</function>
-    <function access="private" specifier="non virtual">saveItem()</function>
     <function specifier="non virtual">setItemType( const ItemType &amp; type )</function>
     <function specifier="non virtual">setExperimentSet( const CExperimentSet * &amp; pExperimentSet )</function>
     <function access="private" specifier="non virtual">setTableText( const int &amp; row, const COptItem * pItem )</function>
     <function access="private" specifier="non virtual" returnType="unsigned int">currentRow()</function>
     <function access="private" specifier="non virtual">selectRow( const unsigned int &amp; row )</function>
     <function access="private" specifier="non virtual">loadSelection()</function>
-    <function access="private" specifier="non virtual">saveSelection()</function>
+    <function access="private" specifier="non virtual">saveSelection()</function>    <function access="private" specifier="non virtual">setSelection( const std::set&lt; unsigned int &gt; &amp; selection )</function>
+
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
