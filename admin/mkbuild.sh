@@ -105,8 +105,8 @@ if [ x"$#" = x1 ]; then
     SETFILE=/Developer/Tools/SetFile
 
 # Create temporary package image drive
-    hdiutil create Copasi-tmp.dmg -megabytes 400 -volname Copasi-$build-$1 -fs HFS+ \
-      -layout NONE
+    hdiutil create Copasi-tmp.dmg -megabytes 400 -volname Copasi-$build-$1 \
+      -fs HFS+ -layout NONE
 
 # Mount temporary package image drive
     drive=`hdid Copasi-tmp.dmg | gawk -- '{print $1}'`
@@ -177,7 +177,8 @@ echo "Set the icon in the Info.plist file."
     chmod 444 ${TMPDIR}/copasi/examples/*.*
 
 # Unmount temporary image
-    hdiutil eject ${drive}
+    sleep 10
+    hdiutil eject ${drive} || (sleep 10; hdiutil eject ${drive} -force)
 
     hdiutil convert -format UDCO Copasi-tmp.dmg -o Copasi-$build-$1.dmg
     rm -rf Copasi-tmp.dmg
