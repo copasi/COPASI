@@ -12,8 +12,8 @@ if [ x"$#" = x1 ]; then
 
   case x"$1" in 
   xWIN32)
-    productcode=${major}${minor}${build}181D78B1
-    productcode=${productcode:0:8}
+    productcode=${build}{$minor}${major}32DDC6BEE41C
+    productcode=${productcode:0:12}
 
     productversion=${major}.${minor}.${build}
 
@@ -72,7 +72,7 @@ if [ x"$#" = x1 ]; then
        "$AdvancedInstallerPath/resources/default-dialog.bmp"
 
 #   modify product code, product version, and package name
-    sed -e '/ProductCode/s/{[0-9A-F]*/{'$productcode'/' \
+    sed -e '/ProductCode/s/[0-9A-F]*}/'$productcode'}/' \
         -e '/ProductVersion/s/Value=".*"/Value="'$productversion'"/' \
         -e '/PackageName/s/Copasi-.*-WIN32/Copasi-'$build'-'$1'/' \
         copasi.aip > tmp.aip
