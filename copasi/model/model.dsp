@@ -107,6 +107,10 @@ SOURCE=.\CMoiety.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CObjectLists.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CParticleNumberList.cpp
 # End Source File
 # Begin Source File
@@ -184,6 +188,10 @@ SOURCE=.\CModelValue.h
 # Begin Source File
 
 SOURCE=.\CMoiety.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CObjectLists.h
 # End Source File
 # Begin Source File
 
