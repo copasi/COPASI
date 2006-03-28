@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:29 $
+   $Date: 2006/03/28 23:13:49 $
    End CVS Header */
 
 /**
@@ -21,6 +21,7 @@
 #include "CCopasiObject.h"
 #include "CCopasiContainer.h"
 #include "CRenameHandler.h"
+#include "utilities/CCopasiVector.h"
 
 //static
 const C_FLOAT64 CCopasiObject::DummyValue = 0.0;
@@ -90,7 +91,7 @@ CCopasiObjectName CCopasiObject::getCN() const
         if (mpObjectParent->isNameVector())
           tmp << "[" << CCopasiObjectName::escape(mObjectName) << "]";
         else if (mpObjectParent->isVector())
-          tmp << "[" << mpObjectParent->getIndex(this) << "]";
+          tmp << "[" << static_cast<const CCopasiVector< CCopasiObject > *>(mpObjectParent)->getIndex(this) << "]";
         else
           tmp << "," << CCopasiObjectName::escape(mObjectType)
           << "=" << CCopasiObjectName::escape(mObjectName);
@@ -222,13 +223,67 @@ CCopasiObject::getObjectAncestor(const std::string & type) const
     return NULL;
   }
 
-unsigned C_INT32
-CCopasiObject::getIndex(const CCopasiObject * C_UNUSED(pObject)) const
-{return C_INVALID_INDEX;}
+const std::set< CCopasiObject * > & CCopasiObject::getDirectDependencies() const
+{return mDependencies;}
 
-unsigned C_INT32
-CCopasiObject::getIndex(const std::string & C_UNUSED(name)) const
-  {return C_INVALID_INDEX;}
+void CCopasiObject::getAllDependencies(std::set< CCopasiObject * > & dependencies) const
+  {
+    std::set< CCopasiObject * >::const_iterator it = mDependencies.begin();
+    std::set< CCopasiObject * >::const_iterator end = mDependencies.end();
+
+    std::pair<std::set< CCopasiObject * >::iterator, bool> Inserted;
+
+    for (it; it != end; ++it)
+      {
+        // Dual purpose insert
+        Inserted = dependencies.insert(*it);
+
+        // The direct dependency *it was among the dependencies
+        // we assume also its dependencies have been added already.
+        if (!Inserted.second) continue;
+
+        // Add all the dependencies of the direct dependency *it.
+        (*it)->getAllDependencies(dependencies);
+      }
+  }
+
+bool CCopasiObject::hasCircularDependencies(std::set<const CCopasiObject * > & candidates) const
+  {
+    std::set< CCopasiObject * >::const_iterator it = mDependencies.begin();
+    std::set< CCopasiObject * >::const_iterator end = mDependencies.end();
+
+    std::pair<std::set< const CCopasiObject * >::iterator, bool> Inserted;
+
+    // Dual purpose insert
+    Inserted = candidates.insert(this);
+
+    // Check whether the insert was successfull, if not
+    // the object this was among the candidates. Thus we have a dedected
+    // a circular dependency
+    if (!Inserted.second) return true;
+
+    for (it; it != end; ++it)
+      // Check whether the dependency *it depends on the candidates or this
+      if ((*it)->hasCircularDependencies(candidates)) return true;
+
+    // Remove the inserted object this from the candidates.
+    candidates.erase(Inserted.first);
+
+    return false;
+  }
+
+bool CCopasiObject::operator < (const CCopasiObject * rhs) const
+  {
+    if (this != rhs)
+      {
+        std::set< const CCopasiObject * > Candidates;
+        Candidates.insert(this);
+
+        return rhs->hasCircularDependencies(Candidates);
+      }
+
+    return false;
+  }
 
 void * CCopasiObject::getReference() const
   {return const_cast<CCopasiObject *>(this);}

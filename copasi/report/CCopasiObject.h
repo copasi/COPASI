@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:29 $
+   $Date: 2006/03/28 23:13:49 $
    End CVS Header */
 
 /**
@@ -19,7 +19,7 @@
 
 #include <string>
 #include <iostream>
-#include "copasi.h"
+#include <set>
 
 class CCopasiObjectName;
 class CCopasiContainer;
@@ -145,6 +145,12 @@ class CCopasiObject
 
     unsigned C_INT32 mObjectFlag;
 
+    /**
+     * A list of all objects the object depends on directly, i.e, the 
+     * objects which are used to calculate the object.
+     */
+    std::set< CCopasiObject * > mDependencies;
+
     UpdateMethod * mpUpdateMethod;
 
     Refresh * mpRefresh;
@@ -207,11 +213,41 @@ class CCopasiObject
 
     virtual CCopasiObjectName getCN() const;
 
-    virtual unsigned C_INT32 getIndex(const CCopasiObject * pObject) const;
-
-    virtual unsigned C_INT32 getIndex(const std::string & name) const;
-
     virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
+
+    /**
+     * Retrieve the list of direct dependencies
+     * @return const std::set< CCopasiObject * > & directDependencies
+     */
+    const std::set< CCopasiObject * > & getDirectDependencies() const;
+
+    /**
+     * If called with an empty set of dependencies it retrieves the complete list
+     * of all dependencies (including all indirect) of the current object.
+     * If called with a non empty set it will only add any dependency and all its
+     * dependencies to the list if the dependency is not already among the dependencies
+     * @param std::set< CCopasiObject * > & dependencies
+     */
+    void getAllDependencies(std::set< CCopasiObject * > & dependencies) const;
+
+    /**
+     * If called with an empty set it will check whether the current object and all its
+     * dependendies (including all indirect) form a circular dependency.
+     * If called with a non empty set it check whether the candidates plus the current object
+     * and all its dependencies form a circular dependency.
+     * @param std::set< const CCopasiObject * > & dependencies
+     * @return bool hasCircularDependencies
+     */
+    bool hasCircularDependencies(std::set< const CCopasiObject * > & candidates) const;
+
+    /**
+     * Comparison operator which can be used to sort objects based on their dependencies
+     * If the current object is a dependency of rhs and must be evaluated first the operator
+     * return true.
+     * @param const CCopasiObject * rhs
+     * @return bool isLess 
+     */
+    bool operator < (const CCopasiObject * rhs) const;
 
     template <class CType> CType * getReference(CType * reference)
     {return reference = (CType *) getReference();}
