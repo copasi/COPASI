@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/10/10 17:06:58 $
+   $Author: shoops $ 
+   $Date: 2006/03/28 23:09:58 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'SliderSettingsDialog.ui'
  **
- ** Created: Mon Oct 10 18:51:11 2005
- **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.9 2005/10/10 17:06:58 gauges Exp $)
+ ** Created: Tue Mar 28 14:42:13 2006
+ **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.10 2006/03/28 23:09:58 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -21,9 +21,6 @@
 #include <qvariant.h>
  #include <qdialog.h>
  #include <vector>
- #include <string>
- #include "utilities/CSlider.h"
- #include "copasi.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -35,6 +32,7 @@ class QPushButton;
 class QCheckBox;
 class QFrame;
 class CModel;
+class CSlider;
 
 class SliderSettingsDialog : public QDialog
   {
@@ -81,19 +79,19 @@ class SliderSettingsDialog : public QDialog
     void sliderChanged(CSlider* slider);
 
   protected:
-    bool mChanged;
-    double mMinorTickSize;
-    double mMaxValue;
-    double mMinValue;
-    double mValue;
-    double mOriginalValue;
-    unsigned int mMinorMajorFactor;
-    unsigned int mNumMinorTicks;
-    std::vector< CSlider* > mDefinedSliders;
-    CSlider* mpSlider;
-    C_INT32 mCurrentTaskId;
+    int mScaling;
     CModel* mpModel;
-    CSlider::Scale mScaling;
+    int mCurrentTaskId;
+    CSlider* mpSlider;
+    std::vector< CSlider* > mDefinedSliders;
+    unsigned int mNumMinorTicks;
+    unsigned int mMinorMajorFactor;
+    double mOriginalValue;
+    double mValue;
+    double mMinValue;
+    double mMaxValue;
+    double mMinorTickSize;
+    bool mChanged;
 
     virtual void updateInputFieldsValues();
     virtual void updateInputFields();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetTask.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:21 $
+   $Date: 2006/03/28 23:09:05 $
    End CVS Header */
 
 /****************************************************************************
@@ -19,7 +19,13 @@
  *****************************************************************************/
 
 #include <qvalidator.h>
-#include <CCopasiSelectionDialog.h>
+
+#include "copasi.h"
+
+#include "CCopasiSelectionDialog.h"
+
+#include "utilities/CCopasiParameterGroup.h"
+#include "scan/CScanProblem.h"
 
 void CScanWidgetTask::init()
 {

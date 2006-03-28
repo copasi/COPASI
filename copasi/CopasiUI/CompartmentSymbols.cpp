@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentSymbols.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:28:58 $
+   $Author: shoops $ 
+   $Date: 2006/03/28 23:06:47 $
    End CVS Header */
 
 /*******************************************************************
@@ -18,6 +18,8 @@
 #include <qwidget.h>
 #include <qmessagebox.h>
 #include <qfont.h>
+
+#include "copasi.h"
 
 #include "qtUtilities.h"
 #include "CompartmentSymbols.h"

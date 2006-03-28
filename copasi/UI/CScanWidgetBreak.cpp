@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetBreak.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/17 15:21:20 $
+   $Author: shoops $ 
+   $Date: 2006/03/28 23:09:04 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CScanWidgetBreak.ui'
  **
- ** Created: Do Mär 17 16:10:04 2005
- **      by: The User Interface Compiler ($Id: CScanWidgetBreak.cpp,v 1.2 2005/03/17 15:21:20 ssahle Exp $)
+ ** Created: Tue Mar 28 14:23:46 2006
+ **      by: The User Interface Compiler ($Id: CScanWidgetBreak.cpp,v 1.3 2006/03/28 23:09:04 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,13 +18,13 @@
 #include "CScanWidgetBreak.h"
 
 #include <qvariant.h>
-#include <qframe.h>
-#include <qcombobox.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include "CScanWidgetBreak.ui.h"
+ #include <qframe.h>
+ #include <qcombobox.h>
+ #include <qlabel.h>
+ #include <qlayout.h>
+ #include <qtooltip.h>
+ #include <qwhatsthis.h>
+ #include "CScanWidgetBreak.ui.h"
 
 /*
  *  Constructs a CScanWidgetBreak as a child of 'parent', with the

@@ -1,19 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetTask.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:50 $
+   $Date: 2006/03/28 23:09:05 $
    End CVS Header */
 
 /****************************************************************************
-  ** Form implementation generated from reading ui file 'CScanWidgetTask.ui'
-  **
-  ** Created: Mi Aug 17 11:04:05 2005
-  **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.5 2005/08/30 15:39:50 shoops Exp $)
-  **
-  ** WARNING! All changes made in this file will be lost!
-  ****************************************************************************/
+ ** Form implementation generated from reading ui file 'CScanWidgetTask.ui'
+ **
+ ** Created: Tue Mar 28 14:28:52 2006
+ **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.6 2006/03/28 23:09:05 shoops Exp $)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
 
 #include "CScanWidgetTask.h"
 

@@ -1,16 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserDialog.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2004/12/02 08:03:32 $
+   $Author: shoops $ 
+   $Date: 2006/03/28 23:09:45 $
    End CVS Header */
 
 #include "ObjectBrowserDialog.h"
 #include "qpushbutton.h"
 #include "qlayout.h"
-#include "qframe.h" 
-//#include "copasi.h"
+#include "qframe.h"
+
+#include "copasi.h"
+
 #include "copasiui3window.h"
 #include "report/CCopasiObject.h"
 #include "ObjectBrowserWidget.h" 

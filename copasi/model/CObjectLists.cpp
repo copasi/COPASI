@@ -1,14 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Date: 2006/03/28 23:10:31 $
    End CVS Header */
 
+#include "copasi.h"
+
 #include "CObjectLists.h"
- #include "report/CCopasiObject.h"
- #include "model/CModel.h"
+#include "report/CCopasiObject.h"
+#include "model/CModel.h"
 
 //static
 std::vector<const CCopasiObject*>

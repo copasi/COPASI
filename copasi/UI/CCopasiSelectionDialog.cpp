@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:20:10 $
+   $Date: 2006/03/28 23:06:47 $
    End CVS Header */
 
 #include "qpushbutton.h"
@@ -14,6 +14,8 @@
 
 #include "CCopasiSelectionDialog.h"
 #include "CCopasiSelectionWidget.h"
+
+#include "copasi.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 

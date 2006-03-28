@@ -1,14 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetBreak.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 20:07:42 $
+   $Date: 2006/03/28 23:09:04 $
    End CVS Header */
 
 #include <qvalidator.h>
-#include <CCopasiSelectionDialog.h>
+
+#include "copasi.h"
+
 #include "qtUtilities.h"
+
+#include "CCopasiSelectionDialog.h"
+
+#include "utilities/CCopasiParameterGroup.h"
+#include "scan/CScanProblem.h"
 
 void CScanWidgetBreak::init()
 {}

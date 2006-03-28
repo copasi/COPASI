@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/10/11 09:34:41 $
+   $Author: shoops $ 
+   $Date: 2006/03/28 23:09:58 $
    End CVS Header */
 
 /****************************************************************************
@@ -18,8 +18,17 @@
  ** destructor.
  *****************************************************************************/
 
+#include <qmessagebox.h>
+#include <qvalidator.h>
+
 #include <math.h>
-#include "qmessagebox.h"
+
+#include "copasi.h"
+
+#include "qtUtilities.h"
+#include "CCopasiSelectionDialog.h"
+
+#include "utilities/CSlider.h"
 
 CSlider* SliderSettingsDialog::getSlider()
 {
@@ -422,7 +431,7 @@ void SliderSettingsDialog::updateSlider()
       this->mpSlider->setSliderValue(this->mValue);
       this->mpSlider->setTickNumber(this->mNumMinorTicks);
       this->mpSlider->setTickFactor(this->mMinorMajorFactor);
-      this->mpSlider->setScaling(this->mScaling);
+      this->mpSlider->setScaling((CSlider::Scale)this->mScaling);
       this->mpSlider->setOriginalValue(this->mOriginalValue);
     }
 }

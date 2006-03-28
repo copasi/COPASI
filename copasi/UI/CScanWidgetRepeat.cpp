@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetRepeat.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/27 20:27:39 $
+   $Author: shoops $ 
+   $Date: 2006/03/28 23:09:04 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CScanWidgetRepeat.ui'
  **
- ** Created: Do Feb 24 23:25:19 2005
- **      by: The User Interface Compiler ($Id: CScanWidgetRepeat.cpp,v 1.1 2005/02/27 20:27:39 ssahle Exp $)
+ ** Created: Tue Mar 28 14:26:26 2006
+ **      by: The User Interface Compiler ($Id: CScanWidgetRepeat.cpp,v 1.2 2006/03/28 23:09:04 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,13 +18,13 @@
 #include "CScanWidgetRepeat.h"
 
 #include <qvariant.h>
-#include <qframe.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include "CScanWidgetRepeat.ui.h"
+ #include <qframe.h>
+ #include <qlabel.h>
+ #include <qlineedit.h>
+ #include <qlayout.h>
+ #include <qtooltip.h>
+ #include <qwhatsthis.h>
+ #include "CScanWidgetRepeat.ui.h"
 
 /*
  *  Constructs a CScanWidgetRepeat as a child of 'parent', with the

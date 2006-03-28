@@ -1,27 +1,25 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetBreak.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/17 15:21:20 $
+   $Author: shoops $ 
+   $Date: 2006/03/28 23:09:04 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CScanWidgetBreak.ui'
  **
- ** Created: Do Mär 17 16:09:57 2005
- **      by: The User Interface Compiler ($Id: CScanWidgetBreak.h,v 1.2 2005/03/17 15:21:20 ssahle Exp $)
+ ** Created: Tue Mar 28 14:23:44 2006
+ **      by: The User Interface Compiler ($Id: CScanWidgetBreak.h,v 1.3 2006/03/28 23:09:04 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef CSCANWIDGETBREAK_H
-#define CSCANWIDGETBREAK_H
+ #define CSCANWIDGETBREAK_H
 
 #include <qvariant.h>
-#include <qwidget.h>
-#include "utilities/CCopasiParameterGroup.h"
-#include "scan/CScanProblem.h"
+ #include <qwidget.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -30,6 +28,8 @@ class QSpacerItem;
 class QFrame;
 class QComboBox;
 class QLabel;
+class CCopasiParameterGroup;
+class CScanProblem;
 
 class CScanWidgetBreak : public QWidget
   {

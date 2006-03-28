@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/10 09:33:59 $
+   $Author: shoops $ 
+   $Date: 2006/03/28 23:09:45 $
    End CVS Header */
 
 /****************************************************************************
@@ -15,8 +15,10 @@
  ** place of a destructor.
  *****************************************************************************/
 
-#include "qtUtilities.h" 
-// #include "utilities/CCopasiVector.h"
+#include "copasi.h"
+
+#include "qtUtilities.h"
+
 #include "report/CCopasiObject.h"
 #include "report/CCopasiContainer.h"
 #include "report/CCopasiObjectName.h"

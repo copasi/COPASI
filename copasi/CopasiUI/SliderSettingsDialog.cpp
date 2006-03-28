@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/10/10 17:06:58 $
+   $Author: shoops $ 
+   $Date: 2006/03/28 23:09:57 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'SliderSettingsDialog.ui'
  **
- ** Created: Mon Oct 10 18:51:16 2005
- **      by: The User Interface Compiler ($Id: SliderSettingsDialog.cpp,v 1.10 2005/10/10 17:06:58 gauges Exp $)
+ ** Created: Tue Mar 28 14:44:29 2006
+ **      by: The User Interface Compiler ($Id: SliderSettingsDialog.cpp,v 1.11 2006/03/28 23:09:57 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -26,14 +26,6 @@
  #include <qlayout.h>
  #include <qtooltip.h>
  #include <qwhatsthis.h>
- #include "qtUtilities.h"
- #include "qlistbox.h"
- #include "qvalidator.h"
- #include "qregexp.h"
- #include "CCopasiSelectionDialog.h"
- #include "report/CCopasiObject.h"
- #include "report/CCopasiObjectName.h"
- #include "model/CModel.h"
  #include "SliderSettingsDialog.ui.h"
 
 /*

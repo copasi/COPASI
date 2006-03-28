@@ -1,27 +1,25 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetRandom.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/03/04 15:18:06 $
+   $Author: shoops $ 
+   $Date: 2006/03/28 23:09:04 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CScanWidgetRandom.ui'
  **
- ** Created: Fr Mär 4 11:19:13 2005
- **      by: The User Interface Compiler ($Id: CScanWidgetRandom.h,v 1.2 2005/03/04 15:18:06 ssahle Exp $)
+ ** Created: Tue Mar 28 14:23:45 2006
+ **      by: The User Interface Compiler ($Id: CScanWidgetRandom.h,v 1.3 2006/03/28 23:09:04 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef CSCANWIDGETRANDOM_H
-#define CSCANWIDGETRANDOM_H
+ #define CSCANWIDGETRANDOM_H
 
 #include <qvariant.h>
-#include <qwidget.h>
-#include "utilities/CCopasiParameterGroup.h"
-#include "scan/CScanProblem.h"
+ #include <qwidget.h>
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -33,6 +31,10 @@ class QLineEdit;
 class QToolButton;
 class QComboBox;
 class QCheckBox;
+class CCopasiParameterGroup;
+class CCopasiObject;
+class CScanProblem;
+class CModel;
 
 class CScanWidgetRandom : public QWidget
   {

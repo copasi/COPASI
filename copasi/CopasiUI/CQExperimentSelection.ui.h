@@ -1,18 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentSelection.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 18:50:55 $
+   $Date: 2006/03/28 23:08:22 $
    End CVS Header */
 
 #include <qcombobox.h>
- #include <qcheckbox.h>
+#include <qcheckbox.h>
+
+#include "copasi.h"
 
 #include "qtUtilities.h"
 
 #include "parameterFitting/CExperimentSet.h"
- #include "parameterFitting/CExperiment.h"
+#include "parameterFitting/CExperiment.h"
 
 void CQExperimentSelection::slotBtnOK()
 {

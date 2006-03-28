@@ -1,16 +1,22 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetRandom.ui.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/28 20:32:36 $
+   $Date: 2006/03/28 23:09:04 $
    End CVS Header */
 
 //comboBoxType linear| normal
 
 #include <qvalidator.h>
-#include <CCopasiSelectionDialog.h>
+
+#include "copasi.h"
+
 #include "qtUtilities.h"
+#include "CCopasiSelectionDialog.h"
+
+#include "utilities/CCopasiParameterGroup.h"
+#include "scan/CScanProblem.h"
 
 void CScanWidgetRandom::init()
 {

@@ -1,15 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CopasiSlider.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/10/06 20:12:40 $
+   $Author: shoops $ 
+   $Date: 2006/03/28 23:07:25 $
    End CVS Header */
 
 #ifndef CopasiSlider_H__
 #define CopasiSlider_H__
 
-#include "qhbox.h"
+#include <qhbox.h>
+
+#include "copasi.h"
+
 #include "utilities/CCopasiParameter.h"
 #include "utilities/CSlider.h"
 

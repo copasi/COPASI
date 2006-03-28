@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetScan.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/27 20:22:57 $
+   $Author: shoops $ 
+   $Date: 2006/03/28 23:09:05 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CScanWidgetScan.ui'
  **
- ** Created: Do Feb 24 23:25:21 2005
- **      by: The User Interface Compiler ($Id: CScanWidgetScan.cpp,v 1.3 2005/02/27 20:22:57 ssahle Exp $)
+ ** Created: Tue Mar 28 14:27:58 2006
+ **      by: The User Interface Compiler ($Id: CScanWidgetScan.cpp,v 1.4 2006/03/28 23:09:05 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,16 +18,16 @@
 #include "CScanWidgetScan.h"
 
 #include <qvariant.h>
-#include <qpushbutton.h>
-#include <qframe.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qtoolbutton.h>
-#include <qcheckbox.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include "CScanWidgetScan.ui.h"
+ #include <qpushbutton.h>
+ #include <qframe.h>
+ #include <qlabel.h>
+ #include <qlineedit.h>
+ #include <qtoolbutton.h>
+ #include <qcheckbox.h>
+ #include <qlayout.h>
+ #include <qtooltip.h>
+ #include <qwhatsthis.h>
+ #include "CScanWidgetScan.ui.h"
 
 /*
  *  Constructs a CScanWidgetScan as a child of 'parent', with the

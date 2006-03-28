@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/23 01:13:19 $
+   $Date: 2006/03/28 23:06:47 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -20,6 +20,8 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qmessagebox.h>
+
+#include "copasi.h"
 
 #include "qtUtilities.h"
 

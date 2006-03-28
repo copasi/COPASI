@@ -650,35 +650,25 @@ when setting the "Number of Minor Ticks".</string>
 </tabstops>
 <includes>
     <include location="global" impldecl="in declaration">vector</include>
-    <include location="local" impldecl="in declaration">utilities/CSlider.h</include>
-    <include location="local" impldecl="in declaration">copasi.h</include>
-    <include location="global" impldecl="in declaration">string</include>
-    <include location="local" impldecl="in implementation">qtUtilities.h</include>
-    <include location="local" impldecl="in implementation">qlistbox.h</include>
-    <include location="local" impldecl="in implementation">qvalidator.h</include>
-    <include location="local" impldecl="in implementation">qregexp.h</include>
-    <include location="local" impldecl="in implementation">CCopasiSelectionDialog.h</include>
-    <include location="local" impldecl="in implementation">report/CCopasiObject.h</include>
-    <include location="local" impldecl="in implementation">report/CCopasiObjectName.h</include>
-    <include location="local" impldecl="in implementation">model/CModel.h</include>
 </includes>
 <forwards>
     <forward>class CModel;</forward>
+    <forward>class CSlider;</forward>
 </forwards>
 <variables>
-    <variable>bool mChanged;</variable>
-    <variable>double mMinorTickSize;</variable>
-    <variable>double mMaxValue;</variable>
-    <variable>double mMinValue;</variable>
-    <variable>double mValue;</variable>
-    <variable>double mOriginalValue;</variable>
-    <variable>unsigned int mMinorMajorFactor;</variable>
-    <variable>unsigned int mNumMinorTicks;</variable>
-    <variable>std::vector&lt; CSlider* &gt; mDefinedSliders;</variable>
-    <variable>CSlider* mpSlider;</variable>
-    <variable>C_INT32 mCurrentTaskId;</variable>
+    <variable>int mScaling;</variable>
     <variable>CModel* mpModel;</variable>
-    <variable>CSlider::Scale mScaling;</variable>
+    <variable>int mCurrentTaskId;</variable>
+    <variable>CSlider* mpSlider;</variable>
+    <variable>std::vector&lt; CSlider* &gt; mDefinedSliders;</variable>
+    <variable>unsigned int mNumMinorTicks;</variable>
+    <variable>unsigned int mMinorMajorFactor;</variable>
+    <variable>double mOriginalValue;</variable>
+    <variable>double mValue;</variable>
+    <variable>double mMinValue;</variable>
+    <variable>double mMaxValue;</variable>
+    <variable>double mMinorTickSize;</variable>
+    <variable>bool mChanged;</variable>
 </variables>
 <signals>
     <signal>sliderChanged(CSlider* slider)</signal>

@@ -1,27 +1,25 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:39:50 $
+   $Date: 2006/03/28 23:09:05 $
    End CVS Header */
 
 /****************************************************************************
-  ** Form interface generated from reading ui file 'CScanWidgetTask.ui'
-  **
-  ** Created: Mi Aug 17 11:03:44 2005
-  **      by: The User Interface Compiler ($Id: CScanWidgetTask.h,v 1.5 2005/08/30 15:39:50 shoops Exp $)
-  **
-  ** WARNING! All changes made in this file will be lost!
-  ****************************************************************************/
+ ** Form interface generated from reading ui file 'CScanWidgetTask.ui'
+ **
+ ** Created: Tue Mar 28 14:23:46 2006
+ **      by: The User Interface Compiler ($Id: CScanWidgetTask.h,v 1.6 2006/03/28 23:09:05 shoops Exp $)
+ **
+ ** WARNING! All changes made in this file will be lost!
+ ****************************************************************************/
 
 #ifndef CSCANWIDGETTASK_H
  #define CSCANWIDGETTASK_H
 
 #include <qvariant.h>
  #include <qwidget.h>
- #include "utilities/CCopasiParameterGroup.h"
- #include "scan/CScanProblem.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -32,6 +30,9 @@ class QLabel;
 class QComboBox;
 class QToolButton;
 class QCheckBox;
+class CModel;
+class CCopasiObject;
+class CScanProblem;
 
 class CScanWidgetTask : public QWidget
   {

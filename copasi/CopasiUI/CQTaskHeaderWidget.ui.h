@@ -1,10 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQTaskHeaderWidget.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/10/10 18:50:57 $
+   $Date: 2006/03/28 23:08:45 $
    End CVS Header */
+
+#include "copasi.h"
 
 #include "qtUtilities.h"
 
