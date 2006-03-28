@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.119 $ $Author: shoops $ $Date: 2006/03/22 16:52:54 $  
+# $Revision: 1.120 $ $Author: shoops $ $Date: 2006/03/28 20:01:31 $  
 ######################################################################
 
 TEMPLATE = app
@@ -171,7 +171,6 @@ HEADERS += \
            ObjectBrowserDialog.h \
            ObjectBrowserItem.h \
            ObjectBrowserWidget.h \
-           OptimizationWidget.h \
            ParametersWidget.h \
            ParamFittingItemWidget.h \
            ParamFittingWidget.h \
@@ -243,7 +242,6 @@ SOURCES += \
            ObjectBrowserDialog.cpp \
            ObjectBrowserItem.cpp \
            ObjectBrowserWidget.cpp \
-           OptimizationWidget.cpp \
            ParametersWidget.cpp \
            ParamFittingItemWidget.cpp \
            ParamFittingWidget.cpp \
@@ -296,7 +294,6 @@ SOURCES += \
 # FORMS += CQOptimizationWidget.ui
 # FORMS += CQTaskHeaderWidget.ui
 # FORMS += CQTaskBtnWidget.ui
-# FORMS += OptimizationItemWidget.ui
 
 # headers generated from .ui files   
 HEADERS += \
@@ -339,8 +336,6 @@ HEADERS += \
            CScanWidgetTask.h  \ 
            DefaultplotDialog.h \
            objectdebug.h \
-           OptimizationItemWidget.h \
-           OptimizationItemWidget.ui.h \
            SliderSettingsDialog.h \
            StateSubwidget.h \
            TimeSeriesSubwidget.h 
@@ -372,7 +367,6 @@ SOURCES += \
            CScanWidgetTask.cpp \  
            DefaultplotDialog.cpp \
            objectdebug.cpp \
-           OptimizationItemWidget.cpp \
            SliderSettingsDialog.cpp \
            StateSubwidget.cpp \
            TimeSeriesSubwidget.cpp 

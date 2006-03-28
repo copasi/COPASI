@@ -146,6 +146,10 @@ SOURCE=.\CQExperimentData.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQExperimentSelection.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQFileDialogBtnGrp.cpp
 # End Source File
 # Begin Source File
@@ -358,15 +362,7 @@ SOURCE=.\Observer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\OptimizationItemWidget.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\OptimizationResultWidget.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\OptimizationWidget.cpp
 # End Source File
 # Begin Source File
 
@@ -583,6 +579,14 @@ SOURCE=.\CQExperimentData.h
 # Begin Source File
 
 SOURCE=.\CQExperimentData.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQExperimentSelection.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQExperimentSelection.ui.h
 # End Source File
 # Begin Source File
 
@@ -886,19 +890,7 @@ SOURCE=.\Observer.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\OptimizationItemWidget.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\OptimizationItemWidget.ui.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\OptimizationResultWidget.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\OptimizationWidget.h
 # End Source File
 # Begin Source File
 
