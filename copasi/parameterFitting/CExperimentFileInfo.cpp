@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/15 18:47:00 $
+   $Date: 2006/03/29 13:48:33 $
    End CVS Header */
 
 #include <sstream>
@@ -237,7 +237,10 @@ bool CExperimentFileInfo::adjustForEmptyLines(unsigned C_INT32 & First,
   std::vector<unsigned C_INT32>::const_iterator it = mEmptyLines.begin();
   std::vector<unsigned C_INT32>::const_iterator end = mEmptyLines.end();
 
-  while (*it < First && it != end) ++it;
+  while (it != end && *it < First) ++it;
+
+  if (it == end)
+    return true;
 
   if (it != end && *it == First)
     {
