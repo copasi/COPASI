@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2006/03/16 13:27:17 $
+   $Author: shoops $ 
+   $Date: 2006/03/29 17:25:00 $
    End CVS Header */
 
 #include <iostream>
@@ -55,7 +55,8 @@ C_INT32 SliderDialog::numKnownTasks = 4;
 C_INT32 SliderDialog::knownTaskIDs[] = {21, 23, 24, 31};
 char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course", "MCA" , "Scan"};
 
-SliderDialog::SliderDialog(QWidget* parent): QDialog(parent),
+SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, WFlags fl):
+    QDialog(parent, name, modal, fl),
     runTaskButton(NULL),
     newSliderButton(NULL),
     autoRunCheckBox(NULL),
