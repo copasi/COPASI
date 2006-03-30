@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:23:30 $
+   $Date: 2006/03/30 19:07:26 $
    End CVS Header */
 
 /**
@@ -85,13 +85,13 @@ CTauLeapMethod *CTauLeapMethod::createTauLeapMethod(CTrajectoryProblem * C_UNUSE
   switch (result)
     {
       // Error: TauLeap simulation impossible
-      /*    case - 3:        // non-integer stoichometry
+      /*    case - 3:       // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:        // reversible reaction exists
+      case - 2:       // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
-      case - 1:        // more than one compartment involved
+      case - 1:       // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/ 
       // Everything alright: Hybrid simulation possible
@@ -134,7 +134,7 @@ void CTauLeapMethod::step(const double & deltaT)
   /* Set the variable metabolites */
   C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
-    *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumber();
+    *Dbl = mpProblem->getModel()->getMetabolites()[i]->getValue();
 
   return;
 }
@@ -464,7 +464,7 @@ void CTauLeapMethod::updateSystem()
       mNumbers[it->mIndex] += mK[i] * (C_INT64)(it->mMultiplicity);
 
   for (i = 0; i < mNumNumbers; i++)
-    mpModel->getMetabolites()[i]->setNumber(mNumbers[i]);
+    mpModel->getMetabolites()[i]->setValue(mNumbers[i]);
   return;
 }
 

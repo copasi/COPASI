@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathConstant.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:34:08 $
+   $Date: 2006/03/30 19:05:54 $
    End CVS Header */
 
 /**
@@ -62,12 +62,12 @@ const C_FLOAT64 & CMathConstantMetab::getConcentration() const
 
 bool CMathConstantMetab::setParticleNumber(const C_FLOAT64 & particleNumber)
 {
-  ((CMetab *) mpObject)->setInitialNumber(particleNumber);
+  ((CMetab *) mpObject)->setInitialValue(particleNumber);
   return true;
 }
 
 C_FLOAT64 CMathConstantMetab::getParticleNumber() const
-  {return ((CMetab *) mpObject)->getInitialNumber();}
+  {return ((CMetab *) mpObject)->getInitialValue();}
 
 bool CMathConstantMetab::compile()
 {

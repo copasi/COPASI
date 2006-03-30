@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:23:29 $
+   $Date: 2006/03/30 19:07:26 $
    End CVS Header */
 
 /**
@@ -75,14 +75,14 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * C_UNUSED(p
 
   switch (result)
     {
-      /*    case - 3:            // non-integer stoichometry
+      /*    case - 3:           // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:            // reversible reaction exists
+      case - 2:           // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
 
-      case - 1:            // more than one compartment involved
+      case - 1:           // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/
     case 1:
@@ -105,7 +105,7 @@ void CHybridMethod::step(const double & deltaT)
   unsigned C_INT32 imax;
 
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++)
-    if (mpProblem->getModel()->getMetabolites()[i]->getNumber() >= mMaxIntBeforeStep)
+    if (mpProblem->getModel()->getMetabolites()[i]->getValue() >= mMaxIntBeforeStep)
       {
         // throw exception or something like that
       }
@@ -125,7 +125,7 @@ void CHybridMethod::step(const double & deltaT)
   /* Set the variable metabolites */
   C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
-    *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumber();
+    *Dbl = mpProblem->getModel()->getMetabolites()[i]->getValue();
 
   return;
 }
@@ -440,7 +440,7 @@ void CHybridMethod::getState(std::vector <C_FLOAT64> & target)
 
   for (i = 0; i < mNumVariableMetabs; i++)
     {
-      target[i] = (*mpMetabolites)[i]->getNumber();
+      target[i] = (*mpMetabolites)[i]->getValue();
     }
   return;
 }
@@ -459,7 +459,7 @@ void CHybridMethod::setState(std::vector <C_FLOAT64> & source)
 
   for (i = 0; i < mNumVariableMetabs; i++)
     {
-      (*mpMetabolites)[i]->setNumber(source[i]);
+      (*mpMetabolites)[i]->setValue(source[i]);
     }
   return;
 }
@@ -503,9 +503,9 @@ void CHybridMethod::fireReaction(C_INT32 rIndex)
 
   for (i = 0; i < mLocalBalances[rIndex].size(); i++)
     {
-      number = mLocalBalances[rIndex][i].mpMetabolite->getNumber();
+      number = mLocalBalances[rIndex][i].mpMetabolite->getValue();
       newNumber = number + mLocalBalances[rIndex][i].mMultiplicity;
-      mLocalBalances[rIndex][i].mpMetabolite->setNumber(newNumber);
+      mLocalBalances[rIndex][i].mpMetabolite->setValue(newNumber);
     }
 
   // insert all dependent reactions into the mUpdateSet
@@ -589,7 +589,7 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
       //std::cout << "Num ident = " << num_ident << std::endl;
       //total_substrates += num_ident;
 
-      number = static_cast<C_INT32>((*mpMetabolites)[substrates[i].mIndex]->getNumber());
+      number = static_cast<C_INT32>((*mpMetabolites)[substrates[i].mIndex]->getValue());
       lower_bound = number - num_ident;
       //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
       substrate_factor = substrate_factor * pow((double) number, (int) num_ident);
@@ -925,10 +925,10 @@ void CHybridMethod::setupPartition()
   mMetabFlags.resize(mNumVariableMetabs);
   for (i = 0; i < mMetabFlags.size(); i++)
     {
-      if ((*mpMetabolites)[i]->getNumber() < averageStochLimit)
+      if ((*mpMetabolites)[i]->getValue() < averageStochLimit)
         {
           mMetabFlags[i] = LOW;
-          (*mpMetabolites)[i]->setNumber(floor((*mpMetabolites)[i]->getNumber()));
+          (*mpMetabolites)[i]->setValue(floor((*mpMetabolites)[i]->getValue()));
         }
       else
         mMetabFlags[i] = HIGH;
@@ -1023,7 +1023,7 @@ void CHybridMethod::partitionSystem()
 
   for (i = 0; i < mNumVariableMetabs; i++)
     {
-      if ((mMetabFlags[i] == LOW) && ((*mpMetabolites)[i]->getNumber() >= mUpperStochLimit))
+      if ((mMetabFlags[i] == LOW) && ((*mpMetabolites)[i]->getValue() >= mUpperStochLimit))
         {
           mMetabFlags[i] = HIGH;
           // go through all corresponding reactions and update flags
@@ -1040,10 +1040,10 @@ void CHybridMethod::partitionSystem()
                 }
             }
         }
-      if ((mMetabFlags[i] == HIGH) && ((*mpMetabolites)[i]->getNumber() < mLowerStochLimit))
+      if ((mMetabFlags[i] == HIGH) && ((*mpMetabolites)[i]->getValue() < mLowerStochLimit))
         {
           mMetabFlags[i] = LOW;
-          (*mpMetabolites)[i]->setNumber(floor((*mpMetabolites)[i]->getNumber()));
+          (*mpMetabolites)[i]->setValue(floor((*mpMetabolites)[i]->getValue()));
           // go through all corresponding reactions and update flags
           for (iter = mMetab2React[i].begin(), iterEnd = mMetab2React[i].end(); iter != iterEnd; iter++)
             {
@@ -1254,7 +1254,7 @@ void CHybridMethod::outputData(std::ostream & os, C_INT32 mode)
           os << mpCurrentState->getTime() << " : ";
           for (i = 0; i < mpMetabolites->size(); i++)
             {
-              os << (*mpMetabolites)[i]->getNumber() << " ";
+              os << (*mpMetabolites)[i]->getValue() << " ";
             }
           os << std::endl;
         }
@@ -1263,7 +1263,7 @@ void CHybridMethod::outputData(std::ostream & os, C_INT32 mode)
       os << mpCurrentState->getTime() << " : ";
       for (i = 0; i < mpMetabolites->size(); i++)
         {
-          os << (*mpMetabolites)[i]->getNumber() << " ";
+          os << (*mpMetabolites)[i]->getValue() << " ";
         }
       os << std::endl;
       break;
@@ -1390,7 +1390,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << "Particle numbers: " << std::endl;
       for (i = 0; i < mpMetabolites->size(); i++)
         {
-          os << (*mpMetabolites)[i]->getNumber() << " ";
+          os << (*mpMetabolites)[i]->getValue() << " ";
         }
       os << std::endl;
       break;
@@ -1470,7 +1470,7 @@ void CHybridMethod::outputDebug(std::ostream & os, C_INT32 level)
       os << "Particle numbers: " << std::endl;
       for (i = 0; i < mpMetabolites->size(); i++)
         {
-          os << (*mpMetabolites)[i]->getNumber() << " ";
+          os << (*mpMetabolites)[i]->getValue() << " ";
         }
       os << std::endl;
       break;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Date: 2006/03/30 19:11:05 $
    End CVS Header */
 
 #include <stdio.h>
@@ -25,7 +25,7 @@
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Moiety"),
-    mKey(GlobalKeys.add("Moiety", this)),                  //By G
+    mKey(GlobalKeys.add("Moiety", this)),                   //By G
     mNumber(0),
     mINumber(0),
     mEquation()
@@ -37,7 +37,7 @@ CMoiety::CMoiety(const std::string & name,
 CMoiety::CMoiety(const CMoiety & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
-    mKey(GlobalKeys.add("Moiety", this)),                  //By G
+    mKey(GlobalKeys.add("Moiety", this)),                   //By G
     mNumber(src.mNumber),
     mINumber(src.mINumber),
     mEquation(src.mEquation)
@@ -79,7 +79,7 @@ bool CMoiety::refreshDependentNumber()
   std::vector< std::pair< C_FLOAT64, CMetab * > >::iterator it = mEquation.begin() + 1;
   std::vector< std::pair< C_FLOAT64, CMetab * > >::iterator end = mEquation.end();
   for (; it != end; ++it)
-    mNumber -= it->first * it->second->getNumber();
+    mNumber -= it->first * it->second->getValue();
 
   return true;
 }
@@ -128,7 +128,7 @@ void CMoiety::setInitialValue()
   std::vector< std::pair< C_FLOAT64, CMetab * > >::iterator it = mEquation.begin();
   std::vector< std::pair< C_FLOAT64, CMetab * > >::iterator end = mEquation.end();
   for (; it != end; ++it)
-    mINumber += it->first * it->second->getInitialNumber();
+    mINumber += it->first * it->second->getInitialValue();
 
   return;
 }

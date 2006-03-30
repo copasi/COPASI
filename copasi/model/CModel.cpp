@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.251 $
+   $Revision: 1.252 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/20 18:28:23 $
+   $Date: 2006/03/30 19:11:05 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -807,7 +807,7 @@ void CModel::setTransitionTimes()
           if (min_flux == 0.0)
             TransitionTime = 2 * DBL_MAX;
           else
-            TransitionTime = mMetabolites[i]->getNumber() / min_flux;
+            TransitionTime = mMetabolites[i]->getValue() / min_flux;
 
           mMetabolites[i]->setTransitionTime(TransitionTime);
           //mMetabolites[i]->setNumberRate(TotalFlux);
@@ -1088,7 +1088,8 @@ void CModel::updateRates()
       tmp = 0.0;
       for (j = 0; j < jmax; ++j)
         tmp += mStoi(i, j) * mParticleFluxes[j];
-      mMetabolites[i]->setNumberRate(tmp);
+
+      mMetabolites[i]->setRate(tmp);
     }
 
   setTransitionTimes();
@@ -2040,7 +2041,7 @@ std::string CModel::suitableForStochasticSimulation() const
 
     for (i = 0; i < mMetabolites.size(); ++i)
       {
-        if (mMetabolites[i]->getInitialNumber() > LLONG_MAX)
+        if (mMetabolites[i]->getInitialValue() > LLONG_MAX)
           return "At least one particle number in the inial state is too big.";
       }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:23:29 $
+   $Date: 2006/03/30 19:07:26 $
    End CVS Header */
 
 #ifdef WIN32
@@ -105,7 +105,7 @@ void CStochMethod::step(const double & deltaT)
   unsigned C_INT32 imax;
 
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++)
-    if (mpProblem->getModel()->getMetabolites()[i]->getNumber() >= mMaxIntBeforeStep)
+    if (mpProblem->getModel()->getMetabolites()[i]->getValue() >= mMaxIntBeforeStep)
       {
         CCopasiMessage(CCopasiMessage::EXCEPTION, "at least one particle number got to big.");
         // TODO:throw exception or something like that
@@ -132,7 +132,7 @@ void CStochMethod::step(const double & deltaT)
   /* Set the variable Metabolites */
   C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
-    *Dbl = mpProblem->getModel()->getMetabolites()[i]->getNumber();
+    *Dbl = mpProblem->getModel()->getMetabolites()[i]->getValue();
 
   return;
 }
@@ -308,7 +308,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
   for (bi = bals.begin(); bi != bals.end(); bi++)
     {
       mNumbers[bi->mIndex] = mNumbers[bi->mIndex] + bi->mMultiplicity;
-      mpModel->getMetabolites()[bi->mIndex]->setNumber(mNumbers[bi->mIndex]);
+      mpModel->getMetabolites()[bi->mIndex]->setValue(mNumbers[bi->mIndex]);
     }
 
   const std::set<C_INT32> & dep_nodes = mDG.getDependents(rxn);

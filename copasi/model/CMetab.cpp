@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.93 $
+   $Revision: 1.94 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:22:53 $
+   $Date: 2006/03/30 19:11:05 $
    End CVS Header */
 
 #include <iostream>
@@ -258,7 +258,7 @@ void CMetab::initObjects()
 
   mpValueReference->setObjectName("ParticleNumber");
   mpIValueReference->setObjectName("InitialParticleNumber");
-  mpIValueReference->setUpdateMethod(this, &CMetab::setInitialNumber);
+  mpIValueReference->setUpdateMethod(this, &CMetab::setInitialValue);
 
   addObjectReference("TransitionTime", mTT, CCopasiObject::ValueDbl);
 }

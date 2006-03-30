@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:22:53 $
+   $Date: 2006/03/30 19:11:05 $
    End CVS Header */
 
 /**
@@ -192,14 +192,7 @@ class CMetab : public CModelEntity
     /**
      *
      */
-    inline void setNumber(const C_FLOAT64 number) {setValue(number);};
-
     virtual void setValue(const C_FLOAT64 & value);
-
-    /**
-     *
-     */
-    inline const C_FLOAT64 & getNumber() const {return getValue();};
 
     /**
      *
@@ -214,15 +207,7 @@ class CMetab : public CModelEntity
     /**
      *
      */
-    inline void setInitialNumber(const C_FLOAT64 & initialNumber)
-    {setInitialValue(initialNumber);};
-
     virtual void setInitialValue(const C_FLOAT64 & initialValue);
-
-    /**
-     *
-     */
-    inline const C_FLOAT64 & getInitialNumber() const {return getInitialValue();};
 
     void refreshInitialConcentration();
 
@@ -259,14 +244,6 @@ class CMetab : public CModelEntity
      * Return rate of production of this metaboLite
      */
     C_FLOAT64 getConcentrationRate() const;
-
-    inline const C_FLOAT64 & getNumberRate() const {return getRate();};
-
-    /**
-     *  Set the rate (dmConc/dt)
-     *  @param "const C_FLOAT64 &" rate (unit: particle/time)
-     */
-    inline void setNumberRate(const C_FLOAT64 & rate) {setRate(rate);};
 
     /**
      * insert operator

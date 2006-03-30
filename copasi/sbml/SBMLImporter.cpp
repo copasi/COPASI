@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.121 $
+   $Revision: 1.122 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2006/03/20 13:56:04 $
+   $Author: shoops $ 
+   $Date: 2006/03/30 19:09:16 $
    End CVS Header */
 
 #include "copasi.h"
@@ -587,7 +587,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     }
   if (sbmlSpecies->isSetInitialAmount())
     {
-      copasiMetabolite->setInitialNumber(sbmlSpecies->getInitialAmount()*copasiModel->getQuantity2NumberFactor()); // CHECK UNITS !!!
+      copasiMetabolite->setInitialValue(sbmlSpecies->getInitialAmount()*copasiModel->getQuantity2NumberFactor()); // CHECK UNITS !!!
     }
   else if (sbmlSpecies->isSetInitialConcentration())
     {

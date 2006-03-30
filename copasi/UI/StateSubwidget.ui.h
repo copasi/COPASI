@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/16 18:29:38 $
+   $Date: 2006/03/30 19:05:29 $
    End CVS Header */
 
 /****************************************************************************
@@ -72,8 +72,8 @@ bool StateSubwidget::loadMetabolites(const CModel* model)
       concentrationsTable->setText(i, 3, QString::number(metabs[i]->getTransitionTime()));
 
       numbersTable->setText(i, 0, name);
-      numbersTable->setText(i, 1, QString::number(metabs[i]->getNumber()));
-      numbersTable->setText(i, 2, QString::number(metabs[i]->getNumberRate()));
+      numbersTable->setText(i, 1, QString::number(metabs[i]->getValue()));
+      numbersTable->setText(i, 2, QString::number(metabs[i]->getRate()));
       numbersTable->setText(i, 3, QString::number(metabs[i]->getTransitionTime()));
     }
 

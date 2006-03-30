@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:23:07 $
+   $Date: 2006/03/30 19:08:35 $
    End CVS Header */
 
 #include <cmath>
@@ -142,7 +142,7 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 res)
        * positive value (no point in considering negative values!).
        * let's stick with res*K1 (SSRes)
        */
-      store = metabs[j]->getNumber();
+      store = metabs[j]->getValue();
 
       if (store < res)
         temp = res * K1;
@@ -150,14 +150,14 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 res)
         temp = store;
 
       // let's take X_dx
-      metabs[j]->setNumber(temp * K1);
+      metabs[j]->setValue(temp * K1);
 
       // Calculate the fluxes
       for (i = 0; i < numReacs; i++)
         f1[i] = reacs[i]->calculateParticleFlux();
 
       // now X-dx
-      metabs[j]->setNumber(temp * K2);
+      metabs[j]->setValue(temp * K2);
 
       // calculate the fluxes
       for (i = 0; i < numReacs; i++)
@@ -168,7 +168,7 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 res)
         mUnscaledElasticities[i][j] = (f1[i] - f2[i]) / (temp * K3); //TODO optimize
 
       // restore the value of (src[i])ss_x[i]
-      metabs[j]->setNumber(store);
+      metabs[j]->setValue(store);
     }
 
   // make shure the fluxes are correct afterwords (needed for scaling of the MCA results)
@@ -324,7 +324,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   for (j = 0; j < mpModel->getNumMetabs(); j++)
     {
       C_FLOAT64 VolumeInv = 1.0 / mpModel->getMetabolitesX()[j]->getCompartment()->getVolume();
-      C_FLOAT64 Number = mpModel->getMetabolitesX()[j]->getNumber();
+      C_FLOAT64 Number = mpModel->getMetabolitesX()[j]->getValue();
 
       for (i = 0; i < mpModel->getTotSteps(); i++)
         {
@@ -361,7 +361,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
         if (fabs(mpModel->getMetabolitesX()[i]->getConcentration()) >= res)
           mScaledConcCC[i][j] = mUnscaledConcCC[i][j]
                                 * mpModel->getReactions()[j]->getParticleFlux()
-                                / mpModel->getMetabolitesX()[i]->getNumber();
+                                / mpModel->getMetabolitesX()[i]->getValue();
         //                                * mpModel->getReactions()[j]->getFlux()
         //                                / (mpModel->getMetabolites()[i]->getConcentration()
         //                                   *mpModel->getMetabolites()[j]->getCompartment()->getVolume());

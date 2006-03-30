@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/17 16:05:09 $
+   $Date: 2006/03/30 19:08:35 $
    End CVS Header */
 
 /**
@@ -239,8 +239,8 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
       os << CMetabNameInterface::getDisplayName(pModel, *pMetab) << "\t";
       os << pMetab->getConcentration() << "\t";
       os << pMetab->getConcentrationRate() << "\t";
-      os << pMetab->getNumber() << "\t";
-      os << pMetab->getNumberRate() << "\t";
+      os << pMetab->getValue() << "\t";
+      os << pMetab->getRate() << "\t";
       os << pMetab->getTransitionTime() << std::endl;
     }
   os << std::endl;

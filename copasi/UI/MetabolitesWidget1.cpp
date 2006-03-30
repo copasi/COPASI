@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.126 $
+   $Revision: 1.127 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/13 20:13:51 $
+   $Date: 2006/03/30 19:05:29 $
    End CVS Header */
 
 /*******************************************************************
@@ -283,10 +283,10 @@ bool MetabolitesWidget1::loadFromMetabolite()
   mEditConcentration->setText(QString::number(mpMetab->getConcentration(), 'g', 10));
   mEditConcentration->setReadOnly(true);
 
-  mEditNumber->setText(QString::number(mpMetab->getNumber(), 'g', 10));
+  mEditNumber->setText(QString::number(mpMetab->getValue(), 'g', 10));
   mEditNumber->setReadOnly(true);
 
-  mEditInitNumber->setText(QString::number(mpMetab->getInitialNumber(), 'g', 10));
+  mEditInitNumber->setText(QString::number(mpMetab->getInitialValue(), 'g', 10));
 
   mEditTransitionTime->setText(QString::number(mpMetab->getTransitionTime()));
   mEditTransitionTime->setReadOnly(true);

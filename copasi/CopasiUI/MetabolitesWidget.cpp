@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.127 $
+   $Revision: 1.128 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/13 20:13:51 $
+   $Date: 2006/03/30 19:05:29 $
    End CVS Header */
 
 #include "MetabolitesWidget.h"
@@ -141,10 +141,10 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
 
   table->setText(row, COL_ICONCENTRATION, QString::number(pMetab->getInitialConcentration()));
 
-  table->setText(row, COL_INUMBER, QString::number(pMetab->getInitialNumber()));
+  table->setText(row, COL_INUMBER, QString::number(pMetab->getInitialValue()));
 
   table->setText(row, COL_CONCENTRATION, QString::number(pMetab->getConcentration()));
-  table->setText(row, COL_NUMBER, QString::number(pMetab->getNumber()));
+  table->setText(row, COL_NUMBER, QString::number(pMetab->getValue()));
 
   //4: Fixed
   QCheckTableItem * fixedCB;
@@ -168,7 +168,7 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
                  FROM_UTF8(pMetab->getCompartment()->getObjectName()));
 
   table->setText(row, COL_CRATE, QString::number(pMetab->getConcentrationRate()));
-  table->setText(row, COL_NRATE, QString::number(pMetab->getNumberRate()));
+  table->setText(row, COL_NRATE, QString::number(pMetab->getRate()));
 
   showHeaders();
 }
@@ -225,7 +225,7 @@ void MetabolitesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
   if (mFlagConc)
     pMetab->setInitialConcentration(table->text(row, COL_ICONCENTRATION).toDouble());
   else
-    pMetab->setInitialNumber(table->text(row, COL_INUMBER).toDouble());
+    pMetab->setInitialValue(table->text(row, COL_INUMBER).toDouble());
 
   //fixed? //TODO
   bool fixed = ((QCheckTableItem*)(table->item(row, COL_FIXED)))->isChecked();
