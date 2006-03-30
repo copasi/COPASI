@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.120 $ $Author: shoops $ $Date: 2006/03/28 20:01:31 $  
+# $Revision: 1.121 $ $Author: ssahle $ $Date: 2006/03/30 14:15:59 $  
 ######################################################################
 
 TEMPLATE = app
@@ -147,6 +147,7 @@ HEADERS += \
            copasiWidget.h \
            copasiui3window.h \
            CProgressBar.h \
+           CQExpressionWidget.h \
            CQReportListItem.h \
            CQValidator.h \
            CScanContainerWidget.h \
@@ -217,6 +218,7 @@ SOURCES += \
            copasiui3window.cpp \
            CProgressBar.cpp \
            OptimizationResultWidget.cpp \
+           CQExpressionWidget.cpp \
            CQReportListItem.cpp \
            CQValidator.cpp \
            CScanContainerWidget.cpp \
