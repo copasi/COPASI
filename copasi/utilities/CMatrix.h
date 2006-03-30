@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/02 19:07:24 $
+   $Date: 2006/03/30 17:11:37 $
    End CVS Header */
 
 #ifndef COPASI_CMatrix
@@ -302,22 +302,27 @@ class CMatrix
       unsigned C_INT32 to;
       unsigned C_INT32 from;
 
-      for (i = 0; i < mCols; i++)
+      for (i = 0; i < mRows; i++)
         if (!Applied[i])
           {
-            memcpy(pTmp, mArray + i, mCols * sizeof(CType));
             to = i;
             from = pivot[i];
 
-            while (from != i)
+            if (to != from)
               {
-                memcpy(mArray + to, mArray + from, mCols * sizeof(CType));
-                Applied[to] = true;
+                memcpy(pTmp, mArray + i, mCols * sizeof(CType));
 
-                to = from;
+                while (from != i)
+                  {
+                    memcpy(mArray + to, mArray + from, mCols * sizeof(CType));
+                    Applied[to] = true;
+
+                    to = from;
+                  }
+
+                memcpy(mArray + to, pTmp, mCols * sizeof(CType));
               }
 
-            memcpy(mArray + to, pTmp, mCols * sizeof(CType));
             Applied[to] = true;
           }
 
