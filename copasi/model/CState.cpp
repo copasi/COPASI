@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/20 12:51:00 $
+   $Author: shoops $ 
+   $Date: 2006/03/30 19:11:20 $
    End CVS Header */
 
 // CSate.cpp
@@ -345,89 +345,3 @@ void CState::updateIterator(const unsigned C_INT32 & numIndependent,
   mpBeginFixed = mpBeginDependent + numDependent;
   mpEnd = mpBeginFixed + numFixed;
 }
-
-#ifdef XXXX
-void CState::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
-                               const C_FLOAT64 & factor,
-                               const C_FLOAT64 & resolution) const
-
-void CState::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
-                                       const C_FLOAT64 & factor,
-                                       const C_FLOAT64 & resolution) const
-  {
-#ifdef COPASI_DEBUG
-    this->check("calculate Elasticity");
-#endif
-    const_cast<CModel *>(mpModel)->setState(this);
-
-    unsigned C_INT32 i;
-    const unsigned C_INT32 nCol = elasticityMatrix.numCols();
-
-    C_FLOAT64 * itE;
-    C_FLOAT64 * startE = const_cast<C_FLOAT64 *>(elasticityMatrix.array());
-
-    CCopasiVector< CReaction >::const_iterator itReaction;
-    CCopasiVector< CReaction >::const_iterator startReaction = mpModel->getReactions().begin();
-    CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
-
-    CCopasiVector< CMetab >::const_iterator itMetab;
-    CCopasiVector< CMetab >::const_iterator startMetab = mpModel->getMetabolites().begin();
-    CCopasiVector< CMetab >::const_iterator endMetab = startMetab + mpModel->getNumVariableMetabs();
-
-    for (itMetab = startMetab, i = 0; itMetab != endMetab; ++itMetab, i++)
-      {
-        C_FLOAT64 & X = *const_cast<C_FLOAT64 *>(&(*itMetab)->getConcentration());
-        const C_FLOAT64 invVolume = 1.0 / (*itMetab)->getCompartment()->getVolume();
-
-        for (itReaction = startReaction, itE = startE + i;
-             itReaction != endReaction;
-             ++itReaction, itE += nCol)
-          * itE = invVolume * (*itReaction)->calculatePartialDerivative(X, factor, resolution);
-      }
-
-    return;
-  }
-
-void CStateX::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
-                                const C_FLOAT64 & factor,
-                                const C_FLOAT64 & resolution) const
-
-void CStateX::calculateElasticityMatrix(CMatrix< C_FLOAT64 > & elasticityMatrix,
-                                        const C_FLOAT64 & factor,
-                                        const C_FLOAT64 & resolution) const
-  {
-#ifdef COPASI_DEBUG
-    this->check("calculate elasticities");
-#endif
-
-    const_cast<CModel *>(mpModel)->setStateX(this);
-
-    unsigned C_INT32 i;
-    const unsigned C_INT32 nCol = elasticityMatrix.numCols();
-
-    C_FLOAT64 * itE;
-    C_FLOAT64 * startE = const_cast<C_FLOAT64 *>(elasticityMatrix.array());
-
-    CCopasiVector< CReaction >::const_iterator itReaction;
-    CCopasiVector< CReaction >::const_iterator startReaction = mpModel->getReactions().begin();
-    CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
-
-    CCopasiVector< CMetab >::const_iterator itMetab;
-    CCopasiVector< CMetab >::const_iterator startMetab = mpModel->getMetabolitesX().begin();
-    CCopasiVector< CMetab >::const_iterator endMetab = startMetab + mpModel->getNumVariableMetabs();
-
-    for (itMetab = startMetab, i = 0; itMetab != endMetab; ++itMetab, i++)
-      {
-        C_FLOAT64 & X = *const_cast<C_FLOAT64 *>(&(*itMetab)->getConcentration());
-        const C_FLOAT64 invVolume = 1.0 / (*itMetab)->getCompartment()->getVolume();
-
-        for (itReaction = startReaction, itE = startE + i;
-             itReaction != endReaction;
-             ++itReaction, itE += nCol)
-          * itE = invVolume * (*itReaction)->calculatePartialDerivative(X, factor, resolution);
-      }
-
-    return;
-  }
-
-#endif // XXXX
