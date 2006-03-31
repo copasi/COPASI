@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/30 17:11:37 $
+   $Date: 2006/03/31 13:30:43 $
    End CVS Header */
 
 #ifndef COPASI_CMatrix
@@ -318,6 +318,7 @@ class CMatrix
                     Applied[to] = true;
 
                     to = from;
+                    from = pivot[to];
                   }
 
                 memcpy(mArray + to, pTmp, mCols * sizeof(CType));

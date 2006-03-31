@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:23:30 $
+   $Date: 2006/03/31 13:30:43 $
    End CVS Header */
 
 #ifndef COPASI_CVector
@@ -208,19 +208,25 @@ template <class CType> class CVector
       for (i = 0; i < mSize; i++)
         if (!Applied[i])
           {
-            tmp = mVector[i];
             to = i;
             from = pivot[i];
 
-            while (from != i)
+            if (to != from)
               {
-                mVector[to] = mVector[from];
-                Applied[to] = true;
+                tmp = mVector[i];
 
-                to = from;
+                while (from != i)
+                  {
+                    mVector[to] = mVector[from];
+                    Applied[to] = true;
+
+                    to = from;
+                    from = pivot[to];
+                  }
+
+                mVector[to] = tmp;
               }
 
-            mVector[to] = tmp;
             Applied[to] = true;
           }
 
