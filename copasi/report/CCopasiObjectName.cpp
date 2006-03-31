@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectName.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/01 15:58:13 $
+   $Date: 2006/03/31 14:52:46 $
    End CVS Header */
 
 /**
@@ -68,7 +68,7 @@ std::string CCopasiObjectName::getObjectType() const
 std::string CCopasiObjectName::getObjectName() const
   {
     CCopasiObjectName Primary = getPrimary();
-    std::string::size_type pos = findEx("=");
+    std::string::size_type pos = Primary.findEx("=");
 
     if (pos == std::string::npos) return "";
 
