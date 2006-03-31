@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/08 18:50:55 $
+   $Date: 2006/03/31 14:14:21 $
    End CVS Header */
 
 #include <algorithm>
@@ -1011,15 +1011,31 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
 {
   CExperimentObjectMap & ObjectMap = pExperiment->getObjectMap();
   unsigned C_INT32 i, imax = mpTable->numRows();
+  bool FoundTime = false;
+
   for (i = 0; i < imax; i++)
     {
       CExperiment::Type Type =
         static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->currentItem());
+      if (Type == CExperiment::time)
+        FoundTime = true;
+
       if (pExperiment->getColumnType(i) != Type)
         pExperiment->setColumnType(i, Type);
 
       if (ObjectMap.getObjectCN(i) != (const char *) mpTable->text(i, COL_OBJECT_HIDDEN).utf8())
         ObjectMap.setObjectCN(i, (const char *) mpTable->text(i, COL_OBJECT_HIDDEN).utf8());
+    }
+
+  pExperiment->updateFittedPoints();
+
+  if (!FoundTime &&
+      pExperiment->getExperimentType() == CCopasiTask::timeCourse)
+    {
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 3);
+
+      QMessageBox::warning(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
     }
 
   return true;

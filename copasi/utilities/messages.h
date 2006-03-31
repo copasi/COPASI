@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2006/03/17 09:37:39 $
+   $Author: shoops $ 
+   $Date: 2006/03/31 14:14:20 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -179,6 +179,7 @@ const MESSAGES Messages[] =
      "dsytrf returned with error '%d'."},
     {MCFitting + 2, "CFitting (2): Failed to invert Fisher information matrix. "
      "dsytrf returned with error '%d'."},
+    {MCFitting + 3, "CFitting (3); No column with type 'Time' specified for a time course experiment."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/22 16:52:17 $
+   $Date: 2006/03/31 14:14:21 $
    End CVS Header */
 
 #include <fstream>
@@ -15,8 +15,11 @@
 
 #include "CExperiment.h"
 #include "CExperimentObjectMap.h"
+#include "CFitTask.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "model/CModel.h"
+#include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CTableCell.h"
 #include "utilities/CSort.h"
@@ -66,7 +69,8 @@ CExperiment::CExperiment(const std::string & name,
     mIndependentValues(0),
     mNumDataRows(0),
     mpDataDependentCalculated(NULL),
-    mDependentObjects()
+    mDependentObjects(),
+    mFittingPoints("Fitted Points", this)
 {initializeParameter();}
 
 CExperiment::CExperiment(const CExperiment & src,
@@ -94,7 +98,8 @@ CExperiment::CExperiment(const CExperiment & src,
     mIndependentValues(src.mIndependentValues),
     mNumDataRows(src.mNumDataRows),
     mpDataDependentCalculated(src.mpDataDependentCalculated),
-    mDependentObjects(src.mDependentObjects)
+    mDependentObjects(src.mDependentObjects),
+    mFittingPoints(src.mFittingPoints)
 {initializeParameter();}
 
 CExperiment::CExperiment(const CCopasiParameterGroup & group,
@@ -122,7 +127,8 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
     mIndependentValues(0),
     mNumDataRows(0),
     mpDataDependentCalculated(NULL),
-    mDependentObjects()
+    mDependentObjects(),
+    mFittingPoints("Fitted Points", this)
 {initializeParameter();}
 
 CExperiment::~CExperiment() {}
@@ -179,7 +185,24 @@ bool CExperiment::elevateChildren()
     elevate<CExperimentObjectMap, CCopasiParameterGroup>(getGroup("Object Map"));
   if (!mpObjectMap) return false;
 
+  updateFittedPoints();
+
   return true;
+}
+
+void CExperiment::updateFittedPoints()
+{
+  unsigned C_INT32 i, imax = mpColumnType->size();
+
+  mFittingPoints.resize(0);
+  CFittingPoint * pPoint;
+
+  for (i = 0; i < imax; i++)
+    if (getColumnType(i) == dependent)
+      {
+        pPoint = new CFittingPoint(mpObjectMap->getObjectCN(i));
+        mFittingPoints.add(pPoint, true);
+      }
 }
 
 C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index,
@@ -238,6 +261,17 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const unsigned C_INT32 & index,
 
 bool CExperiment::calculateStatistics()
 {
+  CFitTask * pTask =
+    dynamic_cast<CFitTask *>(getObjectAncestor("Task"));
+
+  C_FLOAT64 * pTime;
+  C_FLOAT64 SavedTime;
+  if (*mpTaskType == CCopasiTask::timeCourse)
+    {
+      pTime = const_cast<C_FLOAT64 *>(&CCopasiDataModel::Global->getModel()->getTime());
+      SavedTime = *pTime;
+    }
+
   unsigned C_INT32 numRows = mDataDependent.numRows();
   unsigned C_INT32 numCols = mDataDependent.numCols();
 
@@ -273,11 +307,18 @@ bool CExperiment::calculateStatistics()
 
   for (i = 0; i < numRows; i++)
     {
+      if (*mpTaskType == CCopasiTask::timeCourse) *pTime = mDataTime[i];
+
       for (j = 0; j < numCols; j++, pDataDependentCalculated++, pDataDependent++)
         {
           Residual = mWeight[j] * (*pDataDependentCalculated - *pDataDependent);
 
           if (isnan(Residual)) continue;
+
+          if (pTask)
+            mFittingPoints[j]->setValues(*pDataDependentCalculated,
+                                         *pDataDependent,
+                                         Residual);
 
           mMean += Residual;
 
@@ -292,6 +333,8 @@ bool CExperiment::calculateStatistics()
           mColumnObjectiveValue[j] += Residual;
           mColumnCount[j]++;
         }
+
+      if (pTask) pTask->doOutput();
     }
 
   if (Count)
@@ -342,6 +385,8 @@ bool CExperiment::calculateStatistics()
     mMeanSD = sqrt(mMeanSD / Count);
   else
     mMeanSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  if (*mpTaskType == CCopasiTask::timeCourse) *pTime = SavedTime;
 
   return true;
 }
@@ -443,6 +488,12 @@ bool CExperiment::read(std::istream & in,
         TimeCount++;
         break;
       }
+
+  if (!TimeCount && *mpTaskType == CCopasiTask::timeCourse)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 3);
+      return false;
+    }
 
   mNumDataRows = *mpLastRow - *mpFirstRow +
                  ((*mpHeaderRow < *mpFirstRow || *mpLastRow < *mpHeaderRow) ? 1 : 0);
@@ -1056,3 +1107,39 @@ unsigned C_INT32 CExperiment::getCount(CCopasiObject *const& pObject) const
     else
       return 0;
   }
+
+/* CFittingPoint Implementation */
+
+CFittingPoint::CFittingPoint(const std::string & name,
+                             const CCopasiContainer * pParent):
+    CCopasiContainer(name, pParent, "Fitted Point"),
+    mMeasuredValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+    mFittedValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+    mWeightedError(std::numeric_limits<C_FLOAT64>::quiet_NaN())
+{initObjects();}
+
+CFittingPoint::CFittingPoint(const CFittingPoint & src,
+                             const CCopasiContainer * pParent):
+    CCopasiContainer(src, pParent),
+    mMeasuredValue(src.mMeasuredValue),
+    mFittedValue(src.mFittedValue),
+    mWeightedError(src.mWeightedError)
+{initObjects();}
+
+CFittingPoint::~CFittingPoint() {}
+
+void CFittingPoint::setValues(const C_FLOAT64 & measured,
+                              const C_FLOAT64 & fitted,
+                              const C_FLOAT64 & weightedError)
+{
+  mMeasuredValue = measured;
+  mFittedValue = fitted;
+  mWeightedError = weightedError;
+}
+
+void CFittingPoint::initObjects()
+{
+  addObjectReference("Measured Value", mMeasuredValue, CCopasiObject::ValueDbl);
+  addObjectReference("Fitted Value", mFittedValue, CCopasiObject::ValueDbl);
+  addObjectReference("Weighted Error", mWeightedError, CCopasiObject::ValueDbl);
+}

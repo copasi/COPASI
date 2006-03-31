@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/22 16:52:17 $
+   $Date: 2006/03/31 14:14:21 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -11,12 +11,39 @@
 
 #include <string>
 
+#include "utilities/CCopasiVector.h"
 #include "utilities/CCopasiParameterGroup.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CMatrix.h"
 #include "utilities/CVector.h"
 
 class CExperimentObjectMap;
+
+class CFittingPoint: public CCopasiContainer
+  {
+    // Operations
+  public:
+    CFittingPoint(const std::string & name = "unknown",
+                  const CCopasiContainer * pParent = NULL);
+
+    CFittingPoint(const CFittingPoint & src,
+                  const CCopasiContainer * pParent = NULL);
+
+    ~CFittingPoint();
+
+    void setValues(const C_FLOAT64 & measured,
+                   const C_FLOAT64 & fitted,
+                   const C_FLOAT64 & weightedError);
+
+  private:
+    void initObjects();
+
+    // Attributes
+  private:
+    C_FLOAT64 mMeasuredValue;
+    C_FLOAT64 mFittedValue;
+    C_FLOAT64 mWeightedError;
+  };
 
 class CExperiment: public CCopasiParameterGroup
   {
@@ -219,6 +246,12 @@ class CExperiment: public CCopasiParameterGroup
      * @return CExperimentObjectMap & mpObjectMap
      */
     CExperimentObjectMap & getObjectMap();
+
+    /**
+     * This method needs to be called whenever the Object Map
+     * is changed
+     */
+    void updateFittedPoints();
 
     /**
      * Retrieve the type fo the indexed column.
@@ -548,6 +581,8 @@ class CExperiment: public CCopasiParameterGroup
      * A map of all dependent data objects to dependent data columns;
      */
     std::map< CCopasiObject *, unsigned C_INT32 > mDependentObjects;
+
+    CCopasiVector< CFittingPoint > mFittingPoints;
   };
 
 #endif // COPASI_CExperiment
