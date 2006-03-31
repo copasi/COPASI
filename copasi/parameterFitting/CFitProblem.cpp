@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/22 16:52:17 $
+   $Date: 2006/03/31 15:41:57 $
    End CVS Header */
 
 #include "copasi.h"
@@ -593,6 +593,17 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   unsigned C_INT32 l;
   unsigned C_INT32 k, kmax = mpExperimentSet->size();
 
+  mRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  mSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  mParameterSD.resize(imax);
+  mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  mFisher.resize(imax, imax);
+  mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  mGradient.resize(imax);
+  mGradient = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
   for (i = 0; i < imax; i++)
     (*mUpdateMethods[i])(mSolutionVariables[i]);
 
@@ -603,25 +614,17 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   mSolutionValue = mCalculateValue;
   CVector< C_FLOAT64 > DependentValues = mDependentValues;
 
+  if (mSolutionValue == DBL_MAX)
+    return false;
+
   // The statistics need to be calculated for the result, i.e., now.
   mpExperimentSet->calculateStatistics();
 
   if (jmax)
     mRMS = sqrt(mSolutionValue / jmax);
-  else
-    mRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
   if (jmax > imax)
     mSD = sqrt(mSolutionValue / (jmax - imax));
-  else
-    mSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-
-  mParameterSD.resize(imax);
-  mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-
-  mFisher.resize(imax, imax);
-
-  mGradient.resize(imax);
 
   CMatrix< C_FLOAT64 > dyp;
   dyp.resize(imax, jmax);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/22 17:04:35 $
+   $Date: 2006/03/31 15:41:57 $
    End CVS Header */
 
 #include <algorithm>
@@ -110,6 +110,22 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
 
   for (; itObject != endObject; ++itObject, ++ppInsert)
     *ppInsert = *itObject;
+
+  // Allocation and initialization of statistical information
+  mDependentObjectiveValues.resize(mDependentObjects.size());
+  mDependentObjectiveValues = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  mDependentRMS.resize(mDependentObjects.size());
+  mDependentRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  mDependentErrorMean.resize(mDependentObjects.size());
+  mDependentErrorMean = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  mDependentErrorMeanSD.resize(mDependentObjects.size());
+  mDependentErrorMeanSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  mDependentDataCount.resize(mDependentObjects.size());
+  mDependentDataCount = std::numeric_limits<unsigned C_INT32>::quiet_NaN();
 
   return success;
 }

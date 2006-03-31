@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/31 14:14:21 $
+   $Date: 2006/03/31 15:41:57 $
    End CVS Header */
 
 #include <fstream>
@@ -452,6 +452,30 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   /* We need to check whether a column is mapped to time */
   if (!TimeFound && *mpTaskType == CCopasiTask::timeCourse)
     success = false;
+
+  // Allocation and initialization of statistical information
+  unsigned C_INT32 numRows = mDataDependent.numRows();
+  unsigned C_INT32 numCols = mDataDependent.numCols();
+
+  // Overall statistic;
+  mMean = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  mMeanSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  mObjectiveValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  mRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  // per row statistic;
+  mRowObjectiveValue.resize(numRows);
+  mRowObjectiveValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  mRowRMS.resize(numRows);
+  mRowRMS = std::numeric_limits<unsigned C_INT32>::quiet_NaN();
+
+  // per column statistic;
+  mColumnObjectiveValue.resize(numCols);
+  mColumnObjectiveValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  mColumnRMS.resize(numCols);
+  mColumnRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  mColumnCount.resize(numCols);
+  mColumnCount = std::numeric_limits<unsigned C_INT32>::quiet_NaN();
 
   return success;
 }
