@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:27 $
+   $Date: 2006/04/03 18:51:14 $
    End CVS Header */
 
 /**
@@ -19,21 +19,8 @@
 
 #include "COptTask.h"
 #include "COptMethod.h"
-#include "COptProblem.h" 
-/*
-const std::string COptMethod::TypeName[] =
-  {
-    "EvolutionaryProgram",
-    "GeneticAlgorithm",
-    "GeneticAlgorithmSR",
-//    "HybridGASA",
-    "RandomSearch",
-//    "RandomSearchMaster",
-//    "SimulatedAnnealing",
-    "SteepestDescent"
-    ""
-  };
- */
+#include "COptProblem.h"
+
 COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
 {
   COptMethod * pMethod = NULL;
@@ -54,6 +41,10 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
 
     case HookeJeeves:
       pMethod = new COptMethodHookeJeeves();
+      break;
+
+    case LevenbergMarquardt:
+      pMethod = new COptMethodLevenbergMarquardt();
       break;
 
     case RandomSearch:

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/06 20:03:11 $
+   $Date: 2006/04/03 18:51:13 $
    End CVS Header */
 
 /**
@@ -43,6 +43,7 @@ class CCopasiMethod : public CCopasiParameterGroup
       HybridGASA,
       GeneticAlgorithmSR,
       HookeJeeves,
+      LevenbergMarquardt,
       Newton,
       deterministic,
       stochastic,

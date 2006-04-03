@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.18 $ $Author: shoops $ $Date: 2005/12/06 20:03:11 $  
+# $Revision: 1.19 $ $Author: shoops $ $Date: 2006/04/03 18:51:39 $  
 ######################################################################
 
 LIB = optimization
@@ -17,6 +17,7 @@ HEADERS += COptMethod.h \
            COptProblem.h \
            CRandomSearch.h \
            COptMethodGASR.h \
+           COptMethodLevenbergMarquardt.h \
            COptMethodSteepestDescent.h \
 		       COptMethodEP.h \
 #           CRandomSearchMaster.h \
@@ -35,6 +36,7 @@ SOURCES += COptMethod.cpp \
            COptProblem.cpp \
            CRandomSearch.cpp \
            COptMethodGASR.cpp \
+           COptMethodLevenbergMarquardt.cpp \
            COptMethodSteepestDescent.cpp \
 		       COptMethodEP.cpp \
 #           CRandomSearchMaster.cpp \
