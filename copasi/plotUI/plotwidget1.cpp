@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:29 $
+   $Date: 2006/04/03 16:45:52 $
    End CVS Header */
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.42 2006/02/14 14:35:29 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.43 2006/04/03 16:45:52 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -386,24 +386,22 @@ void PlotWidget1::startPlot()
 
 void PlotWidget1::deletePlot()
 {
+  unsigned C_INT32 Index, Size;
+
   if (!CCopasiDataModel::Global->getModel())
     return;
 
-  //dataModel->getPlotDefinitionList().removePlotSpec(objKey);
+  CPlotSpecification * pspec = dynamic_cast< CPlotSpecification * >(GlobalKeys.get(objKey));
+  if (!pspec) return;
+
+  Index =
+    CCopasiDataModel::Global->getPlotDefinitionList()->CCopasiVector<CPlotSpecification>::getIndex(pspec);
   CCopasiDataModel::Global->getPlotDefinitionList()->removePlotSpec(objKey);
 
-  C_INT32 size = CCopasiDataModel::Global->getPlotDefinitionList()->size();
+  Size = CCopasiDataModel::Global->getPlotDefinitionList()->size();
 
-  if (size >= 1)
-    {
-      CCopasiVectorN<CPlotSpecification>* obj = ((CCopasiDataModel::Global)->getPlotDefinitionList());
-      enter((*obj)[size - 1]->CCopasiParameter::getKey());
-    }
-
-  else
-    {
-      enter("");
-    }
+  if (Size > 0)
+    enter((*CCopasiDataModel::Global->getPlotDefinitionList())[std::min(Index, Size - 1)]->CCopasiParameter::getKey());
 
   //ListViews::
   protectedNotify(ListViews::PLOT, ListViews::DELETE, objKey);
@@ -533,7 +531,7 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
 bool PlotWidget1::saveToPlotSpec()
 {
   CPlotSpecification* pspec = dynamic_cast< CPlotSpecification * >(GlobalKeys.get(objKey));
-  if (!pspec) return false;
+  if (!pspec) return true;
 
   pspec->cleanup();
 
