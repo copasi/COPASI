@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingResult.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/22 17:25:21 $
+   $Date: 2006/04/03 19:26:09 $
    End CVS Header */
 
 /****************************************************************************
@@ -41,9 +41,9 @@ void CQFittingResult::init()
   mpParameters->setNumCols(mpParameters->numCols() + 1);
   mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Value"));
   mpParameters->setNumCols(mpParameters->numCols() + 1);
-  mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Relative Error [%]"));
-  mpParameters->setNumCols(mpParameters->numCols() + 1);
   mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Std. Deviation"));
+  mpParameters->setNumCols(mpParameters->numCols() + 1);
+  mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Variation Coefficient [%]"));
   mpParameters->setNumCols(mpParameters->numCols() + 1);
   mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Gradient"));
   mpParameters->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpParameters->sizePolicy().hasHeightForWidth()));
@@ -151,8 +151,8 @@ bool CQFittingResult::enter(const std::string & /* key */)
       const C_FLOAT64 & Solution = Solutions[i];
       mpParameters->setText(i, 1, QString::number(Solution));
       const C_FLOAT64 & StdDeviation = StdDeviations[i];
-      mpParameters->setText(i, 2, QString::number(fabs(100.0 * StdDeviation / Solution)));
-      mpParameters->setText(i, 3, QString::number(StdDeviation));
+      mpParameters->setText(i, 2, QString::number(StdDeviation));
+      mpParameters->setText(i, 3, QString::number(fabs(100.0 * StdDeviation / Solution)));
       mpParameters->setText(i, 4, QString::number(Gradients[i]));
     }
 
