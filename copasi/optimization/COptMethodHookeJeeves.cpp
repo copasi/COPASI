@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:27 $
+   $Author: mendes $ 
+   $Date: 2006/04/04 03:02:17 $
    End CVS Header */
 
 // hoojee.cpp : optimisation by the method of Hooke and Jeeves
@@ -59,8 +59,7 @@ bool COptMethodHookeJeeves::optimise()
   // initial point is first guess
   unsigned C_INT32 i;
 
-  // initialise the population
-  // first individual is the initial guess
+  // initialise the guess vector
   for (i = 0; i < mVariableSize; i++)
     {
       C_FLOAT64 & mut = mIndividual[i];
@@ -266,6 +265,7 @@ bool COptMethodHookeJeeves::evaluate()
   if (!mpOptProblem->checkFunctionalConstraints())
     mEvaluationValue = DBL_MAX;
   else
+    // get the value of the objective function
     mEvaluationValue = mpOptProblem->getCalculateValue();
 
   return mContinue;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:18 $
+   $Author: mendes $ 
+   $Date: 2006/04/04 03:02:17 $
    End CVS Header */
 
 #ifndef COPASI_COptMethodSteepestDescent
@@ -120,7 +120,7 @@ class COptMethodSteepestDescent: public COptMethod
     CVector < C_FLOAT64 > mIndividual;
 
     /**
-     * A vector of parameters of the current individual
+     * The gradient vector for the objective function
      */
     CVector < C_FLOAT64 > mGradient;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/12/14 00:06:52 $
+   $Author: mendes $ 
+   $Date: 2006/04/04 03:02:17 $
    End CVS Header */
 
 /**
@@ -100,7 +100,7 @@ class COptMethodHookeJeeves : public COptMethod
     C_FLOAT64 mRho;
 
     /**
-     * The maximum number of iterations
+     * The number of iterations
      */
     unsigned C_INT32 mIteration;
 
