@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/31 14:14:20 $
+   $Date: 2006/04/04 22:24:15 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -110,6 +110,7 @@ const MESSAGES Messages[] =
     {MCOptimization + 4, "Optimization (4): Empty Interval ('%f', '%f') specified."},
     {MCOptimization + 5, "Optimization (5): Invalid Objective Functions."},
     {MCOptimization + 6, "Optimization (6): No adjustable Parameters specified."},
+    {MCOptimization + 7, "Optimization (7): No Task Type specified."},
 
     // SBML
     // {MCSBML + 1, "SBML (1): Available"},
@@ -171,6 +172,7 @@ const MESSAGES Messages[] =
     {MCCopasiTask + 4, "CCopasiTask (4): Error compiling Model '%s'."},
     {MCCopasiTask + 5, "CCopasiTask (5): No target defined for Report '%s'."},
     {MCCopasiTask + 6, "CCopasiTask (6): Problems compiling Report '%s'."},
+    {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling Plots."},
 
     {MCSteadyState + 1, "CSteadyState (1): The model is explicitly time dependent. "
      "Therefore, the calculation of a steady state is not very meaning full."},

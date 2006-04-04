@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/22 14:08:36 $
+   $Date: 2006/04/04 22:24:14 $
    End CVS Header */
 
 /**
@@ -213,6 +213,8 @@ bool COptProblem::initialize()
   if (!mpModel) return false;
   mpModel->compileIfNecessary();
 
+  bool success = true;
+
   mpReport = NULL;
   mCounter = 0;
   mSolutionValue = DBL_MAX * 2;
@@ -233,8 +235,11 @@ bool COptProblem::initialize()
   mpTrajectory =
     dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(* getValue("Time-Course").pKEY));
 
-  if (!mpSteadyState && !mpTrajectory) return false;
-
+  if (!mpSteadyState && !mpTrajectory)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 7);
+      success = false;
+    }
   if (mpSteadyState)
     {
       mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL);
@@ -285,7 +290,7 @@ bool COptProblem::initialize()
       return false;
     }
 
-  return true;
+  return success;
 }
 
 #ifdef WIN32
@@ -378,13 +383,14 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
   unsigned C_INT32 i, imax = mSolutionVariables.size();
   mGradient.resize(imax);
 
+  // Recalcuate the best solution.
   for (i = 0; i < imax; i++)
     (*mUpdateMethods[i])(mSolutionVariables[i]);
 
   calculate();
 
   // Keep the results
-  mSolutionValue = mCalculateValue;
+  assert (mSolutionValue == mCalculateValue);
 
   C_FLOAT64 Current;
   C_FLOAT64 Delta;

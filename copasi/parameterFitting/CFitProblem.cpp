@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/31 15:41:57 $
+   $Date: 2006/04/04 22:24:14 $
    End CVS Header */
 
 #include "copasi.h"
@@ -177,10 +177,24 @@ bool CFitProblem::initialize()
 {
   if (!COptProblem::initialize())
     {
-      if (CCopasiMessage::peekLastMessage().getNumber() != MCOptimization + 5)
+      while (CCopasiMessage::peekLastMessage().getNumber() == MCOptimization + 5 ||
+             CCopasiMessage::peekLastMessage().getNumber() == MCOptimization + 7)
+        {
+          if (CCopasiMessage::peekLastMessage().getNumber() == MCOptimization + 7)
+            {
+              mpSteadyState =
+                static_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+              mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL);
+              mpTrajectory =
+                static_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+              mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL);
+            }
+
+          CCopasiMessage::getLastMessage();
+        }
+
+      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         return false;
-      else
-        CCopasiMessage::getLastMessage();
     }
 
   std::vector< CCopasiContainer * > ContainerList;
@@ -604,6 +618,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   mGradient.resize(imax);
   mGradient = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
+  // Recalcuate the best solution.
   for (i = 0; i < imax; i++)
     (*mUpdateMethods[i])(mSolutionVariables[i]);
 
@@ -611,7 +626,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   calculate();
 
   // Keep the results
-  mSolutionValue = mCalculateValue;
+  assert (mSolutionValue == mCalculateValue);
   CVector< C_FLOAT64 > DependentValues = mDependentValues;
 
   if (mSolutionValue == DBL_MAX)
