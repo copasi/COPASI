@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/blaswrap.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/17 15:52:47 $
+   $Author: mendes $ 
+   $Date: 2006/04/04 18:24:22 $
    End CVS Header */
 
 #ifndef __BLAS_H
@@ -20,7 +20,12 @@
 extern "C"
   {
 #ifdef USE_MKL
-# include "mkl_lapack.h"
+# include "mkl_blas.h"
+#  define daxpy_ daxpy
+#  define ddot_ ddot
+#  define dgemm_ dgemm
+#  define dscal_ dscal
+#  define idamax_ idamax
 #endif // USE_MKL
 
 #if (defined USE_CLAPACK || defined USE_LAPACK)
