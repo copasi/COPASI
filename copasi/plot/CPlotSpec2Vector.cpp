@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:29 $
+   $Date: 2006/04/05 16:03:51 $
    End CVS Header */
 
 #include <limits>
@@ -42,76 +42,55 @@ bool CPlotSpec2Vector::setPlotDefinitionList(COutputDefinitionVector * pPlotDefi
 CCopasiVectorN< CPlotSpecification> * CPlotSpec2Vector::getPlotDefinitionList()
 {return mpPlotDefinitionList;}
 
-bool CPlotSpec2Vector::initPlottingFromObjects()
+void CPlotSpec2Vector::initPlotting()
 {
-  inputFlag = NO_INPUT;
+  std::vector<PlotWindow*>::const_iterator it = mActivePlots.begin();
+  std::vector<PlotWindow*>::const_iterator end = mActivePlots.end();
 
-  if (!mpPlotDefinitionList || mpPlotDefinitionList->size() == 0)
-    {
-      //std::cout << "plot: not plots defined" << std::endl;
-      return false;
-    }
+  for (; it != end; ++it)
+    (*it)->initPlot();
 
-  mObjectNames.clear();
-
-  if (!initAllPlots()) //create mObjectNames;
-    {
-      //std::cout << "plot: problem while creating indices" << std::endl;
-      return false;
-    }
-
-  if (mObjectNames.size() <= 0)
-    {
-      //std::cout << "plot: number of objects <=0" << std::endl;
-      return false;
-    }
-  data.resize(mObjectNames.size());
-
-  inputFlag = FROM_OBJECTS;
-
-  mTime = CCopasiTimeVariable::getCurrentWallTime();
-
-  return compile(); //create mObjects
+  return;
 }
 
-bool CPlotSpec2Vector::sendDataToAllPlots()
+void CPlotSpec2Vector::sendDataToAllPlots()
 {
-  std::vector<PlotWindow*>::const_iterator it;
-  for (it = windows.begin(); it != windows.end(); ++it)
-    {
-      (*it)->takeData(data);
-    }
+  std::vector<PlotWindow*>::const_iterator it = mActivePlots.begin();
+  std::vector<PlotWindow*>::const_iterator end = mActivePlots.end();
 
-  return true;
+  for (; it != end; ++it)
+    (*it)->takeData();
+
+  return;
 }
 
-bool CPlotSpec2Vector::updateAllPlots()
+void CPlotSpec2Vector::updateAllPlots()
 {
-  std::vector<PlotWindow*>::const_iterator it;
-  for (it = windows.begin(); it != windows.end(); ++it)
-    {
-      (*it)->updatePlot();
-    }
+  std::vector<PlotWindow*>::const_iterator it = mActivePlots.begin();
+  std::vector<PlotWindow*>::const_iterator end = mActivePlots.end();
 
-  return true;
+  for (; it != end; ++it)
+    (*it)->updatePlot();
+
+  return;
 }
 
-bool CPlotSpec2Vector::finishAllPlots()
+void CPlotSpec2Vector::finishAllPlots()
 {
-  std::vector<PlotWindow*>::const_iterator it;
-  for (it = windows.begin(); it != windows.end(); ++it)
-    {
-      (*it)->finishPlot();
-    }
+  std::vector<PlotWindow*>::const_iterator it = mActivePlots.begin();
+  std::vector<PlotWindow*>::const_iterator end = mActivePlots.end();
 
-  return true;
+  for (; it != end; ++it)
+    (*it)->finishPlot();
+
+  return;
 }
 
 bool CPlotSpec2Vector::initAllPlots()
 {
   if (!mpPlotDefinitionList) return false;
 
-  windows.clear();
+  mActivePlots.clear();
 
   //step through the vector of specifications and create the plot windows
   std::string key;
@@ -125,98 +104,66 @@ bool CPlotSpec2Vector::initAllPlots()
           key = (*mpPlotDefinitionList)[i]->CCopasiParameter::getKey();
           //std::cout << key << std::endl;
 
-          if (windowMap[key] == NULL)
+          if (mPlotMap[key] == NULL)
             {
-              windowMap[key] = new PlotWindow(this, (*mpPlotDefinitionList)[i]);
+              mPlotMap[key] = new PlotWindow(this, (*mpPlotDefinitionList)[i]);
             }
           else
             {
-              windowMap[key]->initFromSpec(this, (*mpPlotDefinitionList)[i]);
+              mPlotMap[key]->initFromSpec((*mpPlotDefinitionList)[i]);
             }
-          windowMap[key]->show();
+          mPlotMap[key]->show();
 
-          windows.push_back(windowMap[key]);
+          mActivePlots.push_back(mPlotMap[key]);
         }
     }
+
   return true;
 }
 
-bool CPlotSpec2Vector::doPlotting()
+void CPlotSpec2Vector::doPlotting()
 {
-  bool success = true;
+  sendDataToAllPlots();
 
-  if (inputFlag == FROM_OBJECTS)
-    {
-      unsigned C_INT32 i = 0;
-      std::vector<CCopasiObject*>::const_iterator it = mObjects.begin();
-      for (; it != mObjects.end(); ++it, ++i)
-        {
-          if (*it)
-            {
-              if ((*it)->getRefresh()) (*(*it)->getRefresh())();
-
-              if ((*it)->isValueDbl())
-                data[i] = *(C_FLOAT64*)((*it)->getReference());
-              else if ((*it)->isValueInt())
-                data[i] = *(C_INT32*)((*it)->getReference());
-              else data[i] = 0;
-            }
-          //data[i] = *(C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)(*it))->getReference());
-          else
-            data[i] = 0;
-          //std::cout << "debug1: " <<  *(C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)(*it))->getReference())<< std::endl;
-          //std::cout << "debug2: " <<   data[i] << std::endl;
-          //(*it)->print(&std::cout);
-        }
-      sendDataToAllPlots();
-    }
-  else
-    {
-      //std::cout << "doPlotting: no input method" << std::endl;
-      return false;
-    }
-
-  /*  if (mTime + LLONG_CONST(200000) < CCopasiTimeVariable::getCurrentWallTime())
-      {
-        updateAllPlots();
-        mTime = CCopasiTimeVariable::getCurrentWallTime();
-      }*/
   if (mTime + LLONG_CONST(200000) < CCopasiTimeVariable::getCurrentWallTime())
     {
       CCopasiTimeVariable oldTime = CCopasiTimeVariable::getCurrentWallTime();
       updateAllPlots();
       mTime = CCopasiTimeVariable::getCurrentWallTime();
       CCopasiTimeVariable timeDiff = mTime - oldTime;
-      //std::cout << timeDiff.getMicroSeconds() << std::endl;
       mTime = mTime + timeDiff + timeDiff + timeDiff;
     }
 
-  return success;
+  return;
 }
 
-bool CPlotSpec2Vector::doPlottingSeparator()
+void CPlotSpec2Vector::doSeparator()
 {
-  unsigned C_INT32 i = 0;
-  std::vector<CCopasiObject*>::const_iterator it = mObjects.begin();
-  for (; it != mObjects.end(); ++it, ++i)
+  std::vector<PlotWindow*>::const_iterator it = mActivePlots.begin();
+  std::vector<PlotWindow*>::const_iterator end = mActivePlots.end();
+
+  for (; it != end; ++it)
+    (*it)->doSeparator();
+
+  if (mTime + LLONG_CONST(200000) < CCopasiTimeVariable::getCurrentWallTime())
     {
-      data[i] = std::numeric_limits<C_FLOAT64>::quiet_NaN(); //0/0;
+      CCopasiTimeVariable oldTime = CCopasiTimeVariable::getCurrentWallTime();
+      updateAllPlots();
+      mTime = CCopasiTimeVariable::getCurrentWallTime();
+      CCopasiTimeVariable timeDiff = mTime - oldTime;
+      mTime = mTime + timeDiff + timeDiff + timeDiff;
     }
-  sendDataToAllPlots();
-  return true;
+
+  return;
 }
 
-bool CPlotSpec2Vector::finishPlotting()
+void CPlotSpec2Vector::finishPlotting()
 {
-  if (!updateAllPlots())
-    return false;
-
-  if (!finishAllPlots())
-    return false;
-
-  return true;
+  updateAllPlots();
+  finishAllPlots();
 }
 
+#ifdef XXXX
 C_INT32 CPlotSpec2Vector::getIndexFromCN(const CCopasiObjectName & name)
 {
   //first look up the name in the vector
@@ -235,33 +182,19 @@ C_INT32 CPlotSpec2Vector::getIndexFromCN(const CCopasiObjectName & name)
   //std::cout << "CPlotSpec2Vector::getIndexFromCN; new object: " << name << std::endl;
   return mObjectNames.size() - 1;
 }
+#endif // XXXX
 
-bool CPlotSpec2Vector::compile()
+bool CPlotSpec2Vector::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
-  mObjects.clear();
+  // build the vector of active plots
+  if (!initAllPlots()) return false;
 
-  CCopasiObject* pSelected;
+  bool success = true;
 
-  std::vector<CCopasiObjectName>::const_iterator it;
-  for (it = mObjectNames.begin(); it != mObjectNames.end(); ++it)
-    {
-      //std::cout << "CPlotSpecVector::compile  " << *it << std::endl;
-      pSelected = CCopasiContainer::ObjectFromName(*it);
-      if (!pSelected)
-        {
-          std::cout << "Object not found!" << std::endl;
-          mObjects.push_back(NULL);
-          //return false;
-        }
-      else
-        {
-          //TODO check hasValue()
-          //std::cout << "    compile: " << pSelected->getObjectName() << std::endl;
-          mObjects.push_back(pSelected);
+  std::vector<PlotWindow *>::iterator it = mActivePlots.begin();
+  std::vector<PlotWindow *>::iterator end = mActivePlots.end();
+  for (; it != end; ++it)
+    success &= (*it)->compile(listOfContainer);
 
-          if (dynamic_cast<CCopasiTimer *>(pSelected))
-            dynamic_cast<CCopasiTimer *>(pSelected)->start();
-        }
-    }
-  return true; //success;
+  return success;
 }

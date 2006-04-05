@@ -1,17 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/COutputHandlerPlot.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/27 20:09:01 $
+   $Author: shoops $ 
+   $Date: 2006/04/05 16:03:51 $
    End CVS Header */
 
-#if !defined OUTPUT_HANDLER_PLOT
+#ifndef OUTPUT_HANDLER_PLOT
 #define OUTPUT_HANDLER_PLOT
+
+#include <vector>
 
 #include "utilities/COutputHandler.h"
 
 class CPlotSpec2Vector;
+class CCopasiContainer;
 
 /**
  *  This is used to call the plotting routines from the tasks
@@ -23,11 +26,21 @@ class COutputHandlerPlot : public CCallbackHandler
     //   COutputHandlerPlot();
     virtual ~COutputHandlerPlot() {};
 
-    virtual bool init();
-    virtual bool doOutput();
-    virtual bool finish();
+    /**
+     * compile the object list from name vector
+     * @param std::vector< CCopasiContainer * > listOfContainer
+     * (default: CCopasiContainer::EmptyList)
+     * @return bool success
+     */
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer =
+                           std::vector< CCopasiContainer * >());
 
-    virtual bool doSeparator();
+    void takeData();
+    virtual void init();
+    virtual void doOutput();
+    virtual void finish();
+
+    virtual void doSeparator();
 
     void setPlotSpecVectorAddress(CPlotSpec2Vector* ppp);
 

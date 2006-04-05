@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:29 $
+   $Date: 2006/04/05 16:03:51 $
    End CVS Header */
 
 // the plot object for copasi
@@ -17,15 +17,20 @@
 #include <iostream>
 #include <qmemarray.h>
 
-#include "copasi.h"
-#include "CHistogram.h" 
-//#include "plotspec.h"
-
 #include <qpainter.h>
 #include <qwt_plot.h>
 #include <qwt_painter.h>
 #include <qwt_data.h>
 #include <qwt_plot_curve.h>
+
+#include "copasi.h"
+#include "CHistogram.h" 
+//#include "plotspec.h"
+
+#include "report/CCopasiObject.h"
+
+class CCopasiContainer;
+class CCopasiObjectName;
 
 //nan in data splits curve
 class MyQwtPlotCurve : public QwtPlotCurve
@@ -56,9 +61,9 @@ class CopasiPlot : public QwtPlot
   {
     Q_OBJECT
   public:
-    CopasiPlot(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec, QWidget* parent = 0);
+    CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent = 0);
 
-    bool initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec);
+    bool initFromSpec(const CPlotSpecification* plotspec);
 
     ~CopasiPlot();
 
@@ -69,7 +74,19 @@ class CopasiPlot : public QwtPlot
     // this method reads data to append to existing curves
     //void appendPlot();
 
-    void takeData(const std::vector<C_FLOAT64> & dataVector);
+    /**
+     * compile the object list from name vector
+     * @param std::vector< CCopasiContainer * > listOfContainer
+     * (default: CCopasiContainer::EmptyList)
+     * @return bool success
+     */
+    bool compile(std::vector< CCopasiContainer * > listOfContainer =
+                   std::vector< CCopasiContainer * >());
+
+    void takeData();
+    void doSeparator();
+
+    void initPlot();
     void updatePlot();
     void finishPlot();
 
@@ -93,11 +110,16 @@ class CopasiPlot : public QwtPlot
     //number of data lines in the local buffer
     unsigned C_INT32 ndata;
 
+    std::vector<const C_FLOAT64 *> mObjectValues;
+
+    std::vector< Refresh * > mObjectRefreshes;
+
     // holds column indices
-    std::vector<C_INT32> indexTable;
+    //    std::vector<C_INT32> indexTable;
+    unsigned C_INT32 mItemCount;
 
     // holds the corresponding display names
-    std::vector<std::string> indexTableNames;
+    std::vector<std::string> mObjectNames;
 
     // for each channel in each curve tells where the data is stored
     std::vector<std::vector<C_INT32> > dataIndices;
@@ -115,12 +137,9 @@ class CopasiPlot : public QwtPlot
     std::vector<C_INT32> mHistoIndices;
 
     // populate indexTable and dataIndices
-    void createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* pspec);
+    void createIndices(const CPlotSpecification* pspec);
 
-    // whether zooming is enabled
-    //bool zoomOn;
-
-    //QPoint cursorPos;
+    const CPlotSpecification * mpPlotSpecification;
 
   public:
     QwtPlotZoomer * mZoomer;

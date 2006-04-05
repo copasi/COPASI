@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:29 $
+   $Date: 2006/04/05 16:03:51 $
    End CVS Header */
 
 #if !defined PLOTSPECIFICATION_VECTOR
@@ -23,9 +23,6 @@ class CPlotSpec2Vector : public CCopasiObject
   private:
     //std::string mKey;
 
-    std::vector<CCopasiObjectName> mObjectNames;
-    std::vector<CCopasiObject*> mObjects;
-
     std::vector<C_FLOAT64> data;
 
     //CCopasiVectorN<CPlotSpecification> * mpPlotDefinitionList;
@@ -35,20 +32,17 @@ class CPlotSpec2Vector : public CCopasiObject
     inputType inputFlag;
 
     //this maps the key of a plot spec to a plot window
-    std::map<std::string, PlotWindow*> windowMap;
+    std::map<std::string, PlotWindow*> mPlotMap;
 
     //this is a list of active windows for a specific run
-    std::vector<PlotWindow*> windows;
+    std::vector< PlotWindow * > mActivePlots;
 
     CCopasiTimeVariable mTime;
 
     bool initAllPlots();
-    bool sendDataToAllPlots();
-    bool updateAllPlots();
-    bool finishAllPlots();
-
-    //this generates mObjects from mObjectNames
-    bool compile();
+    void sendDataToAllPlots();
+    void updateAllPlots();
+    void finishAllPlots();
 
   public:
     CPlotSpec2Vector(const std::string & name = "PlotSpecifications");
@@ -63,13 +57,22 @@ class CPlotSpec2Vector : public CCopasiObject
 
     //look up on which column in the data stream a specific object is
     //also adds the object to the data stream if necessary
-    C_INT32 getIndexFromCN(const CCopasiObjectName & name);
+    // C_INT32 getIndexFromCN(const CCopasiObjectName & name);
 
-    bool initPlottingFromObjects();
-    bool doPlotting();
-    bool finishPlotting();
+    /**
+     * compile the object list from name vector
+     * @param std::vector< CCopasiContainer * > listOfContainer
+     * (default: CCopasiContainer::EmptyList)
+     * @return bool success
+     */
+    bool compile(std::vector< CCopasiContainer * > listOfContainer =
+                   CCopasiContainer::EmptyList);
 
-    bool doPlottingSeparator();
+    void initPlotting();
+    void doPlotting();
+    void finishPlotting();
+
+    void doSeparator();
 
     void cleanup();
 

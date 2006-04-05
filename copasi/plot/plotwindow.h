@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwindow.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:29 $
+   $Date: 2006/04/05 16:03:51 $
    End CVS Header */
 
 #include <fstream>
@@ -18,6 +18,7 @@
 class CopasiPlot;
 class CPlotSpecification;
 class CPlotSpec2Vector;
+class CCopasiContainer;
 
 class PlotWindow : public QMainWindow
   {
@@ -31,7 +32,7 @@ class PlotWindow : public QMainWindow
   public:
     PlotWindow(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec);
 
-    bool initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec);
+    bool initFromSpec(const CPlotSpecification* ptrSpec);
 
     //QToolButton * zoomButton;
     QToolButton * printButton;
@@ -39,8 +40,19 @@ class PlotWindow : public QMainWindow
 
     ~PlotWindow();
 
-    void takeData(const std::vector<C_FLOAT64> & data);
+    /**
+     * compile the object list from name vector
+     * @param std::vector< CCopasiContainer * > listOfContainer
+     * (default: CCopasiContainer::EmptyList)
+     * @return bool success
+     */
+    bool compile(std::vector< CCopasiContainer * > listOfContainer =
+                   std::vector< CCopasiContainer * >());
+
+    void takeData();
     void updatePlot();
+    void doSeparator();
+    void initPlot();
     void finishPlot();
 
   private slots:

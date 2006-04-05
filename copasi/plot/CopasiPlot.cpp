@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:29 $
+   $Date: 2006/04/05 16:03:51 $
    End CVS Header */
 
 #include <qstring.h>
@@ -15,6 +15,7 @@
 #include <qwt_scale_engine.h>
 
 #include <float.h>
+#include <limits>
 
 #include "scrollzoomer.h"
 
@@ -22,6 +23,8 @@
 #include "CPlotSpec2Vector.h"
 #include "CPlotSpecification.h"
 #include "CopasiUI/qtUtilities.h"
+
+C_FLOAT64 DummyValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
 //********************  curve  ********************************************
 
@@ -66,8 +69,9 @@ void MyQwtPlotCurve::drawCurve(QPainter *painter, int style,
 
 //************************************
 
-CopasiPlot::CopasiPlot(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec, QWidget* parent)
+CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent)
     : QwtPlot(parent),
+    mpPlotSpecification(NULL),
     mZoomer(NULL)
 {
   QwtLegend *legend = new QwtLegend;
@@ -86,7 +90,7 @@ CopasiPlot::CopasiPlot(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec
   a_picker->setRubberBandPen(QColor(Qt::green));
   a_picker->setTrackerPen(QColor(Qt::blue));*/
 
-  initFromSpec(psv, plotspec);
+  initFromSpec(plotspec);
 
   // white background better for printing...
   setCanvasBackground(white);
@@ -117,8 +121,10 @@ CopasiPlot::CopasiPlot(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec
           SLOT(showCurve(QwtPlotItem *, bool)));
 }
 
-bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* plotspec)
+bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 {
+  mpPlotSpecification = plotspec;
+
   mZoomer->setEnabled(false);
 
   if (plotspec->isLogX())
@@ -133,7 +139,7 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
 
   replot();
 
-  createIndices(psv, plotspec);
+  createIndices(plotspec);
 
   setTitle(FROM_UTF8(plotspec->getTitle()));
 
@@ -142,26 +148,15 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
   mHistograms.clear();
   mHistoIndices.resize(plotspec->getItems().size());
 
-  //delete Buffers
-  while (data.size() > 0)
-    {
-      delete data[data.size() - 1];
-      data.pop_back();
-    }
-
-  //recreate buffers
-  for (unsigned int i = 0; i < indexTable.size(); i++)
-    {//TODO !!
-      QMemArray<double>* v = new QMemArray<double>(500);  // initial size = 500
-      data.push_back(v);
-    }
-  ndata = 0;
-
-  QColor curveColours[5] = {red, blue, green, cyan, magenta}; //TODO
+  QColor curveColours[5] = {red, blue, green, cyan, magenta}                           ; //TODO
   CPlotItem::Type tmpType;
   CPlotItem* pItem;
-  unsigned C_INT32 k;
-  for (k = 0; k < plotspec->getItems().size(); k++)
+  unsigned C_INT32 k, kmax = plotspec->getItems().size();
+
+  mQwtItems.resize(kmax);
+  mItemTypes.resize(kmax);
+
+  for (k = 0; k < kmax; k++)
     {
       pItem = plotspec->getItems()[k];
 
@@ -175,7 +170,8 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
       QwtLegendItem *li = dynamic_cast<QwtLegendItem*>(legend()->find(tmpCurve));
       if (li) li->setChecked(true);
 
-      tmpType = (CPlotItem::Type)mItemTypes[k];
+      tmpType = pItem->getType();
+      mItemTypes[k] = (C_INT32) tmpType;
 
       const void* tmp;
       switch (tmpType)
@@ -221,8 +217,6 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
         }
     }
 
-  updateCurves(false);
-
   if (plotspec->isLogX())
     setAxisScaleEngine(xBottom, new QwtLog10ScaleEngine());
   else
@@ -240,19 +234,41 @@ bool CopasiPlot::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* p
   return true; //TODO really check!
 }
 
-void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* pspec)
+void CopasiPlot::createIndices(const CPlotSpecification* pspec)
 {
-  indexTable.clear();
-  indexTableNames.clear();
+  std::map<CCopasiObjectName, unsigned C_INT32> ObjectIndex;
+  std::pair<std::map<CCopasiObjectName, unsigned C_INT32>::iterator, bool> Inserted;
 
+  mItemCount = 0;
+  mObjectNames.clear();
+
+  C_INT32 i, imax = pspec->getItems().size();
+  dataIndices.resize(imax);
+
+  C_INT32 jj, jjmax;
+  for (i = 0; i < imax; ++i) //all curves
+    {
+      jjmax = pspec->getItems()[i]->getNumChannels();
+      dataIndices[i].resize(jjmax);
+
+      for (jj = 0; jj < jjmax; ++jj) //all Channels
+        {
+          Inserted =
+            ObjectIndex.insert(std::pair<CCopasiObjectName, unsigned C_INT32>(pspec->getItems()[i]->getChannels()[jj], mItemCount));
+
+          if (Inserted.second) mItemCount++;
+
+          dataIndices[i][jj] = Inserted.first->second;
+        }
+    }
+
+#ifdef XXXX
   C_INT32 jj, jjmax;
   C_INT32 index;
   std::vector<C_INT32>::iterator it; // iterator for indexTable
   C_INT32 iterindex;
   CPlotItem::Type tmpType;
 
-  C_INT32 i, imax = pspec->getItems().size();
-  dataIndices.resize(imax);
   mItemTypes.resize(imax);
   mQwtItems.resize(imax);
   for (i = 0; i < imax; ++i) //all curves
@@ -280,9 +296,9 @@ void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* 
                   CCopasiObject* tmpObj =
                     CCopasiContainer::ObjectFromName(pspec->getItems()[i]->getChannels()[jj]);
                   if (tmpObj)
-                    indexTableNames.push_back(tmpObj->getObjectDisplayName());
+                    mObjectNames.push_back(tmpObj->getObjectDisplayName());
                   else
-                    indexTableNames.push_back("?");
+                    mObjectNames.push_back("?");
                 }
               dataIndices[i][jj] = iterindex;
             }
@@ -301,29 +317,96 @@ void CopasiPlot::createIndices(CPlotSpec2Vector* psv, const CPlotSpecification* 
           fatalError();
         }
     }
-
-  /*int j;
-  std::cout << "****** create indices **********" << std::endl;  
-  std::cout << "       indexTable: " << indexTable.size() <<  std::endl;  
-  for (i=0; i<indexTable.size();   ++i)
-    std::cout << "         : " << indexTable[i] <<  std::endl;  
-  std::cout << "       dataIndices: " << dataIndices.size() <<  std::endl;  
-  for (i=0; i<dataIndices.size();   ++i)
-    for (j=0; j<dataIndices[i].size();   ++j)
-      std::cout << "         : " << i << " : " << dataIndices[i][j] <<  std::endl;  
-  */
-
-  //the indexTable now has a list of all the indices of the channels that need to be stored
-  //internally in the copasiPlot (the channels that are needed for curves, not histograms).
-
-  //indexTableNames contains the corresponding display names (not yet implemented)
-
-  //the meaning of the dataIndices[][] differs for curves/histograms:
-  //  curves: points to an entry in indexTable (stored channels)
-  //  histograms: points to an entry in the data vector
+#endif // XXXX
 }
 
-void CopasiPlot::takeData(const std::vector<C_FLOAT64> & dataVector)
+bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
+{
+  std::set<CCopasiObject *> Objects;
+  std::pair<std::set<CCopasiObject *>::iterator, bool> Inserted;
+
+  mObjectNames.clear();
+  mObjectValues.clear();
+
+  C_INT32 i, imax = mpPlotSpecification->getItems().size();
+  C_INT32 jj, jjmax;
+
+  for (i = 0; i < imax; ++i) //all curves
+    {
+      jjmax = mpPlotSpecification->getItems()[i]->getNumChannels();
+
+      for (jj = 0; jj < jjmax; ++jj) //all Channels
+        {
+          CCopasiObject* tmpObj =
+            CCopasiContainer::ObjectFromName(listOfContainer, mpPlotSpecification->getItems()[i]->getChannels()[jj]);
+
+          Inserted =
+            Objects.insert(tmpObj);
+
+          if (Inserted.second)
+            {
+              if (tmpObj)
+                {
+                  mObjectNames.push_back(tmpObj->getObjectDisplayName());
+                  mObjectValues.push_back((C_FLOAT64 *)tmpObj->getReference());
+
+                  if (tmpObj->getRefresh())
+                    mObjectRefreshes.push_back(tmpObj->getRefresh());
+                }
+              else
+                {
+                  mObjectNames.push_back("Not Found");
+                  mObjectValues.push_back(&DummyValue);
+                }
+            }
+        }
+    }
+
+  assert (mObjectNames.size() == mItemCount);
+
+  return true;
+}
+
+void CopasiPlot::takeData()
+{
+  unsigned C_INT32 i;
+
+  std::vector< Refresh * >::iterator it = mObjectRefreshes.begin();
+  std::vector< Refresh * >::iterator end = mObjectRefreshes.end();
+
+  for (;it != end; ++it)
+    (**it)();
+
+  if (data.size() != 0)
+    {
+      if (ndata >= data[0]->size())
+        {
+          unsigned C_INT32 newSize = data[0]->size() + 1000;
+          for (i = 0; i < data.size(); i++)
+            data[i]->resize(newSize);
+          updateCurves(false); //tell the curves that the location of the data has changed
+          //otherwise repaint events could crash
+        }
+
+      //the data that needs to be stored internally:
+      for (i = 0; i < mItemCount; ++i)
+        {
+          data[i]->at(ndata) = *mObjectValues[i];
+        }
+      ++ndata;
+    }
+
+  //the data that is used immediately:
+  for (i = 0; i < mItemTypes.size(); ++i)
+    {
+      if ((CPlotItem::Type) mItemTypes[i] == CPlotItem::histoItem1d)
+        {
+          mHistograms[mHistoIndices[i]].addValue(*mObjectValues[dataIndices[i][0]]);
+        }
+    }
+}
+
+void CopasiPlot::doSeparator()
 {
   unsigned C_INT32 i;
 
@@ -339,20 +422,44 @@ void CopasiPlot::takeData(const std::vector<C_FLOAT64> & dataVector)
         }
 
       //the data that needs to be stored internally:
-      for (i = 0; i < indexTable.size(); ++i)
+      for (i = 0; i < mItemCount; ++i)
         {
-          data[i]->at(ndata) = dataVector[indexTable[i]];
+          data[i]->at(ndata) = DummyValue;
         }
       ++ndata;
     }
+
   //the data that is used immediately:
   for (i = 0; i < mItemTypes.size(); ++i)
     {
-      if ((CPlotItem::Type)mItemTypes[i] == CPlotItem::histoItem1d)
+      if ((CPlotItem::Type) mItemTypes[i] == CPlotItem::histoItem1d)
         {
-          mHistograms[mHistoIndices[i]].addValue(dataVector[dataIndices[i][0]]);
+          mHistograms[mHistoIndices[i]].addValue(DummyValue);
         }
     }
+  return;
+}
+
+void CopasiPlot::initPlot()
+{
+  //delete Buffers
+  while (data.size() > 0)
+    {
+      delete data[data.size() - 1];
+      data.pop_back();
+    }
+
+  //recreate buffers
+  for (unsigned int i = 0; i < mItemCount; i++)
+    {//TODO !!
+      QMemArray<double>* v = new QMemArray<double>(500);  // initial size = 500
+      data.push_back(v);
+    }
+  ndata = 0;
+
+  updateCurves(false);
+
+  return;
 }
 
 void CopasiPlot::updateCurves(bool doHisto)
@@ -440,13 +547,13 @@ bool CopasiPlot::saveData(const std::string & filename)
   std::ofstream fs(filename.c_str());
   if (!fs.good()) return false;
 
-  if (indexTable.size() && ndata) //we have curves
+  if (mItemCount && ndata) //we have curves
     {
       //first the names
       fs << "# ";
-      unsigned C_INT32 i, imax = indexTable.size();
-      for (i = 0; i < imax; ++i)
-        fs << indexTableNames[i] << "\t";
+      unsigned C_INT32 i;
+      for (i = 0; i < mItemCount; ++i)
+        fs << mObjectNames[i] << "\t";
       fs << "\n";
 
       //now the data
@@ -455,7 +562,7 @@ bool CopasiPlot::saveData(const std::string & filename)
         {
           if (!isnan(data[0]->at(j))) // not NaN
             {
-              for (i = 0; i < imax; ++i)
+              for (i = 0; i < mItemCount; ++i)
                 fs << data[i]->at(j) << "\t";
             }
           fs << "\n";

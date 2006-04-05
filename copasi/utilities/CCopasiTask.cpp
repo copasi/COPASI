@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:23:30 $
+   $Date: 2006/04/05 16:03:52 $
    End CVS Header */
 
 /**
@@ -216,7 +216,12 @@ bool CCopasiTask::initialize(const OutputFlag & of,
       CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, mReport.getObjectName().c_str());
       success = false;
     }
-
+  if (mpOutputHandler && !mpOutputHandler->compile())
+    {
+      // Warning
+      CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 7);
+      success = false;
+    }
   if (!mUpdateModel)
     {
       pdelete(mpInitialState);

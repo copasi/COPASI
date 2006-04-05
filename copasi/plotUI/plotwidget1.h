@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/14 13:43:31 $
+   $Author: shoops $ 
+   $Date: 2006/04/05 16:03:51 $
    End CVS Header */
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Mon Sep 29 10:43:24 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.13 2005/02/14 13:43:31 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.14 2006/04/05 16:03:51 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -44,18 +44,6 @@ class PlotWindow;
 class Curve2DWidget;
 
 #include <qtabwidget.h>
-class MyQTabWidget : public QTabWidget
-  {
-    Q_OBJECT
-
-  public:
-    MyQTabWidget(QWidget * parent = 0, const char * name = 0, WFlags f = 0)
-        : QTabWidget(parent, name, f)
-    {
-      ((QWidget*)(this->tabBar()))->setStyle("platinum");
-    };
-  };
-
 class PlotWidget1 : public CopasiWidget
   {
     Q_OBJECT
@@ -112,9 +100,6 @@ class PlotWidget1 : public CopasiWidget
     QPushButton* deletePlotButton;
     QPushButton* addPlotButton;
     QPushButton* resetButton;
-
-    //MyQTabWidget* tabs;
-    //QTabWidget* tabs;
 
   protected slots:
 

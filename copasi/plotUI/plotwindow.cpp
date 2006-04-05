@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:29 $
+   $Date: 2006/04/05 16:03:51 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -61,7 +61,7 @@ PlotWindow::PlotWindow(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec)
 
   plotTools->setStretchableWidget(new QWidget(plotTools));
 
-  mpPlot = new CopasiPlot(psv, ptrSpec, this);
+  mpPlot = new CopasiPlot(ptrSpec, this);
   std::cout << mpPlot-> mZoomer << std::endl;
   setCentralWidget(mpPlot);
 
@@ -71,10 +71,10 @@ PlotWindow::PlotWindow(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec)
   //connect(mpPlot, SIGNAL(plotMouseReleased(const QMouseEvent &)), this, SLOT(mouseReleased(const QMouseEvent&)));
 }
 
-bool PlotWindow::initFromSpec(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec)
+bool PlotWindow::initFromSpec(const CPlotSpecification* ptrSpec)
 {
   this->setCaption(("Copasi Plot: " + ptrSpec->getTitle()).c_str());
-  return mpPlot->initFromSpec(psv, ptrSpec);
+  return mpPlot->initFromSpec(ptrSpec);
 }
 
 //-----------------------------------------------------------------------------
@@ -160,11 +160,25 @@ void PlotWindow::slotSaveData()
 PlotWindow::~PlotWindow()
 {}
 
-void PlotWindow::takeData(const std::vector<C_FLOAT64> & data)
-{if (mpPlot) mpPlot->takeData(data);};
+bool PlotWindow::compile(std::vector< CCopasiContainer * > listOfContainer)
+{
+  if (mpPlot)
+    return mpPlot->compile(listOfContainer);
+  else
+    return true;
+};
+
+void PlotWindow::takeData()
+{if (mpPlot) mpPlot->takeData();};
+
+void PlotWindow::doSeparator()
+{if (mpPlot) mpPlot->doSeparator();};
 
 void PlotWindow::updatePlot()
 {if (mpPlot) mpPlot->updatePlot();};
+
+void PlotWindow::initPlot()
+{if (mpPlot) mpPlot->initPlot();};
 
 void PlotWindow::finishPlot()
 {if (mpPlot) mpPlot->finishPlot();};

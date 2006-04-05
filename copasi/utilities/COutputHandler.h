@@ -1,13 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/11 16:19:59 $
+   $Author: shoops $ 
+   $Date: 2006/04/05 16:03:52 $
    End CVS Header */
 
-#if !defined OUTPUT_HANDLER
+#ifndef OUTPUT_HANDLER
 #define OUTPUT_HANDLER
+
+#include <vector>
+
+class CCopasiContainer;
 
 /**
  *  This is just a wrapper class that is used to call the plotting classes.
@@ -19,18 +23,21 @@ class CCallbackHandler
 
     virtual ~CCallbackHandler() {};
 
+    /**
+     * compile the object list from name vector
+     * @param std::vector< CCopasiContainer * > listOfContainer
+     * (default: CCopasiContainer::EmptyList)
+     * @return bool success
+     */
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer =
+                           std::vector< CCopasiContainer * >());
+
     //for output handler
-    virtual bool init();
-    virtual bool doOutput();
-    virtual bool finish();
+    virtual void init();
+    virtual void doOutput();
+    virtual void finish();
 
-    virtual bool doSeparator();
-
-    //for progress bar
-    virtual bool init(C_INT32 maxSteps, const std::string & text, bool cancelButton = false);
-    virtual bool reInit(C_INT32 maxSteps, const std::string & text);
-    virtual bool progress(C_INT32 steps);
-    //finish() also works for progress bars
+    virtual void doSeparator();
   };
 
 #endif

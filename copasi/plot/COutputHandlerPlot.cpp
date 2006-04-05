@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/COutputHandlerPlot.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/27 20:09:01 $
+   $Author: shoops $ 
+   $Date: 2006/04/05 16:03:51 $
    End CVS Header */
 
 #include "copasi.h"
@@ -14,33 +14,23 @@
 //    mpPlotSpecVector(NULL)
 //{};
 
-bool COutputHandlerPlot::init()
+bool COutputHandlerPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
   if (!mpPlotSpecVector) return false;
-  return mpPlotSpecVector->initPlottingFromObjects();
+  return mpPlotSpecVector->compile(listOfContainer);
 }
 
-bool COutputHandlerPlot::doOutput()
-{
-  //std::cout << "OutputHandlerPlot: do" << std::endl;
-  if (!mpPlotSpecVector) return false;
-  return mpPlotSpecVector->doPlotting();
-  //return true;
-}
+void COutputHandlerPlot::init()
+{if (mpPlotSpecVector) mpPlotSpecVector->initPlotting();}
 
-bool COutputHandlerPlot::finish()
-{
-  //std::cout << "OutputHandlerPlot: finish" << std::endl;
-  if (!mpPlotSpecVector) return false;
+void COutputHandlerPlot::doOutput()
+{if (mpPlotSpecVector) mpPlotSpecVector->doPlotting();}
 
-  return mpPlotSpecVector->finishPlotting();
-}
+void COutputHandlerPlot::finish()
+{if (mpPlotSpecVector) mpPlotSpecVector->finishPlotting();}
 
-bool COutputHandlerPlot::doSeparator()
-{
-  if (!mpPlotSpecVector) return false;
-  return mpPlotSpecVector->doPlottingSeparator();
-}
+void COutputHandlerPlot::doSeparator()
+{if (mpPlotSpecVector) mpPlotSpecVector->doSeparator();}
 
 void COutputHandlerPlot::setPlotSpecVectorAddress(CPlotSpec2Vector* ppp)
 {mpPlotSpecVector = ppp;}
