@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/14 16:30:16 $
+   $Date: 2006/04/05 16:05:32 $
    End CVS Header */
 
 #include <qlabel.h>
@@ -167,7 +167,12 @@ bool CQFittingWidget::runTask()
         }
     }
 
-  pTask->restore();
+  try
+    {
+      pTask->restore();
+    }
+
+  catch (...) {}
 
   commonAfterRunTask();
 
