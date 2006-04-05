@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/31 15:41:57 $
+   $Date: 2006/04/05 16:04:30 $
    End CVS Header */
 
 #include <fstream>
@@ -316,8 +316,8 @@ bool CExperiment::calculateStatistics()
           if (isnan(Residual)) continue;
 
           if (pTask)
-            mFittingPoints[j]->setValues(*pDataDependentCalculated,
-                                         *pDataDependent,
+            mFittingPoints[j]->setValues(*pDataDependent,
+                                         *pDataDependentCalculated,
                                          Residual);
 
           mMean += Residual;
@@ -638,7 +638,7 @@ bool CExperiment::read(std::istream & in,
               if (WeightSquare < MinWeight) MinWeight = WeightSquare;
             }
           else
-            WeightSquare = -Count; // All values where equal to the mean
+            WeightSquare = -1.0 * Count; // All values where equal to the mean
         }
       else
         WeightSquare = -1.0; // Zero values
