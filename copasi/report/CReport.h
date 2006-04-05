@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:30 $
+   $Date: 2006/04/05 16:06:36 $
    End CVS Header */
 
 /****************************************************************************
@@ -29,6 +29,23 @@ class CReportTable;
 
 class CReport : public CCopasiContainer
   {
+    /**
+     * Enumeration of the report states.
+     */
+    enum State
+    {
+      Compiled = 0,
+      HeaderHeader,
+      HeaderBody,
+      HeaderFooter,
+      BodyHeader,
+      BodyBody,
+      BodyFooter,
+      FooterHeader,
+      FooterBody,
+      FooterFooter,
+    };
+
   private:
     std::ostream * mpOstream;
     bool mStreamOwner;
@@ -44,6 +61,12 @@ class CReport : public CCopasiContainer
     std::vector< Refresh * > mFooterRefreshList;
     std::vector< Refresh * > mBodyRefreshList;
     std::vector< Refresh * > mHeaderRefreshList;
+
+    CReport * mpHeader;
+    CReport * mpBody;
+    CReport * mpFooter;
+
+    State mState;
 
   public:
     /**
@@ -108,6 +131,7 @@ class CReport : public CCopasiContainer
       const std::vector< CCopasiContainer * > * pListOfContainer,
       std::vector< CCopasiObject * > & objectList,
       std::vector< Refresh * > & refreshList,
+      CReport *& pReport,
       const std::vector<CRegisteredObjectName>* nameVector);
 
     /**
