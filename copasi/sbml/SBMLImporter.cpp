@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.122 $
+   $Revision: 1.123 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/30 19:09:16 $
+   $Author: gauges $ 
+   $Date: 2006/04/07 18:48:14 $
    End CVS Header */
 
 #include "copasi.h"
@@ -661,6 +661,15 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
     {
       fatalError();
     }
+  if (sbmlReaction->isSetFast())
+    {
+      const_cast<Reaction*>(sbmlReaction)->setFast(false);
+      if (!this->mFastReactionsEncountered)
+        {
+          this->mFastReactionsEncountered = true;
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 29);
+        }
+    }
   /* Add all substrates to the reaction */
   unsigned int num = sbmlReaction->getNumReactants();
   bool singleCompartment = true;
@@ -1138,6 +1147,7 @@ SBMLImporter::SBMLImporter()
   this->mIncompleteModel = false;
   this->mDivisionByCompartmentWarning = false;
   this->mpImportHandler = NULL;
+  this->mFastReactionsEncountered = false;
 }
 
 /**
@@ -1217,6 +1227,7 @@ void SBMLImporter::replacePowerFunctionNodes(ASTNode* node)
 CModel*
 SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument *& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
+  this->mFastReactionsEncountered = false;
   this->mpCopasiModel = NULL;
   if (funDB != NULL)
     {

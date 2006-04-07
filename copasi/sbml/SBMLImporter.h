@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2006/03/16 18:01:50 $
+   $Date: 2006/04/07 18:48:14 $
    End CVS Header */
 
 #ifndef SBMLIMPORTER_H__
@@ -50,6 +50,7 @@ class SBMLImporter
     unsigned C_INT32 mhImportStep;
     unsigned C_INT32 mTotalSteps;
     std::map<Species*, Compartment*> mSubstanceOnlySpecies;
+    bool mFastReactionsEncountered;
 
     /**
      * Creates and returns a Copasi CModel from the SBMLDocument given as argument.
