@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/30 19:07:26 $
+   $Author: ssahle $ 
+   $Date: 2006/04/10 13:19:53 $
    End CVS Header */
 
 #ifdef WIN32
@@ -132,7 +132,7 @@ void CStochMethod::step(const double & deltaT)
   /* Set the variable Metabolites */
   C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
-    *Dbl = mpProblem->getModel()->getMetabolites()[i]->getValue();
+    *Dbl = mpProblem->getModel()->getMetabolitesX()[i]->getValue();
 
   return;
 }
