@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/15 13:43:28 $
+   $Date: 2006/04/11 22:19:48 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -206,8 +206,16 @@ const std::vector<C_FLOAT64> & CChemEqInterface::getListOfMultiplicities(CFuncti
 
 void CChemEqInterface::addModifier(const std::string & name)
 {
-  mModifierNames.push_back(name);
-  mModifierMult.push_back(1.0);
+  //is the name already in the list
+  std::vector< std::string >::const_iterator it, itEnd = mModifierNames.end();
+  for (it = mModifierNames.begin(); it != itEnd; ++it)
+    if (name == *it) break;
+
+  if (it == itEnd)
+    {
+      mModifierNames.push_back(name);
+      mModifierMult.push_back(1.0);
+    }
 }
 
 void CChemEqInterface::clearModifiers()
@@ -350,6 +358,27 @@ bool CChemEqInterface::isMulticompartment(const CModel * model) const
     CChemEq ce;
     writeToChemEq(model, ce);
     return (ce.getCompartmentNumber() > 1);
+  }
+
+const CCompartment * CChemEqInterface::getCompartment(const CModel * model) const
+  {
+    CChemEq ce;
+    writeToChemEq(model, ce);
+    if (ce.getCompartmentNumber() > 1)
+      return NULL;
+    else
+      {
+        const CMetab * metab = NULL;
+        if (ce.getSubstrates().size())
+          metab = &ce.getSubstrates()[0]->getMetabolite();
+        else if (ce.getProducts().size())
+          metab = &ce.getProducts()[0]->getMetabolite();
+
+        if (metab)
+          return metab->getCompartment();
+        else
+          return NULL;
+      }
   }
 
 /*static*/

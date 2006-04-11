@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/15 13:43:28 $
+   $Date: 2006/04/11 22:19:48 $
    End CVS Header */
 
 #ifndef CCHEMEQINTERFACE_H
@@ -18,6 +18,7 @@
 class CChemEq;
 class CModel;
 class CReaction;
+class CCompartment;
 
 /**
  * This class describes a chemical equation based on metabolite names
@@ -53,7 +54,9 @@ class CChemEqInterface
     const std::vector<std::string> & getListOfNames(CFunctionParameter::Role role) const;
     const std::vector<C_FLOAT64> & getListOfMultiplicities(CFunctionParameter::Role role) const;
 
-    //right now only modifiers can be added to the ChemEq without entering them into the CHemEq string
+    /**
+     * add a modifier to the chemical equation. It is only added if it is not alreay in there.
+     */
     void addModifier(const std::string & name);
     void clearModifiers();
 
@@ -67,6 +70,12 @@ class CChemEqInterface
      * not to be in a different compartment
      */
     bool isMulticompartment(const CModel * model) const;
+
+    /**
+     * convenience method. If the reaction is single compartment the 
+     * compartment is returned, else NULL.
+     */
+    const CCompartment * getCompartment(const CModel * model) const;
 
     void reverse();
 
