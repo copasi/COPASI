@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.121 $ $Author: ssahle $ $Date: 2006/03/30 14:15:59 $  
+# $Revision: 1.122 $ $Author: ssahle $ $Date: 2006/04/11 15:07:20 $  
 ######################################################################
 
 TEMPLATE = app
@@ -173,8 +173,6 @@ HEADERS += \
            ObjectBrowserItem.h \
            ObjectBrowserWidget.h \
            ParametersWidget.h \
-           ParamFittingItemWidget.h \
-           ParamFittingWidget.h \
            parametertable.h \
            PlotWidget.h \
            qtUtilities.h \
@@ -245,8 +243,6 @@ SOURCES += \
            ObjectBrowserItem.cpp \
            ObjectBrowserWidget.cpp \
            ParametersWidget.cpp \
-           ParamFittingItemWidget.cpp \
-           ParamFittingWidget.cpp \
            parametertable.cpp \
            PlotWidget.cpp \
            qtUtilities.cpp \
