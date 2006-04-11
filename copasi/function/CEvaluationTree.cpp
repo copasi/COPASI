@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/15 18:18:39 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 12:00:54 $
    End CVS Header */
 
 #include "copasi.h"
@@ -166,9 +166,6 @@ const C_FLOAT64 & CEvaluationTree::getVariableValue(const unsigned C_INT32 & /*i
     static C_FLOAT64 Value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
     return Value;
   }
-
-const CCopasiObject * CEvaluationTree::getObject(const CCopasiObjectName & /*CN*/) const
-  {return NULL;}
 
 bool CEvaluationTree::parse()
 {

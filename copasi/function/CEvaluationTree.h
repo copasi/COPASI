@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/13 18:50:54 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 12:00:54 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationTree
@@ -178,13 +178,6 @@ class CEvaluationTree:
      * @return const C_FLOAT64 & variableValue
      */
     virtual const C_FLOAT64 & getVariableValue(const unsigned C_INT32 & index) const;
-
-    /**
-     * Retrieve a pointer to the object define dby CN.
-     * @param const CCopasiObjectName & CN
-     * @return const CCopasiObject * value
-     */
-    virtual const CCopasiObject * getObject(const CCopasiObjectName & CN) const;
 
     /**
      * Returns the root node of the tree.
