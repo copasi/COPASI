@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/05 16:04:30 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 22:03:25 $
    End CVS Header */
 
 #include <fstream>
@@ -430,17 +430,23 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
       case independent:
         if (!Objects[i]) // Object not found
           return false;  // :TODO: create error message The column must be mapped
+        if (!Objects[i]->isValueDbl())
+          return false;  // TODO: is this a fatal error?
         mIndependentUpdateMethods[IndependentCount] =
           Objects[i]->getUpdateMethod();
         mIndependentValues[IndependentCount++] =
-          *(C_FLOAT64 *)Objects[i]->getReference();
+          *(C_FLOAT64 *)Objects[i]->getValuePointer();
+        //TODO: do we have to check if getValuePointer() return a valid pointer?
         break;
 
       case dependent:
         if (!Objects[i]) // Object not found
           return false;  // :TODO: create error message The column must be mapped
+        if (!Objects[i]->isValueDbl())
+          return false;  // TODO: is this a fatal error?
         mDependentValues[DependentCount] =
-          (C_FLOAT64 *) Objects[i]->getReference();
+          (C_FLOAT64 *) Objects[i]->getValuePointer();
+        //TODO: do we have to check if getValuePointer() return a valid pointer?
         mDependentObjects[Objects[i]] = DependentCount++;
         break;
 

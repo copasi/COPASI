@@ -1,18 +1,13 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/16 18:29:38 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 22:08:24 $
    End CVS Header */
 
 /**
  *  CSensMethod class.
- *  This class describes the interface to all steady state methods.
- *  The variaous method like Newton have to be derived from
- *  this class.
- *  
- *  Created for Copasi by Stefan Hoops 2002
  */
 
 #include "copasi.h"
@@ -187,7 +182,8 @@ bool CSensMethod::storeTargetValues(CCopasiArray & target)
   for (it = mTargetObjects[0].begin(), i = 0; it != itEnd; ++it, ++i)
     {
       mVariableIndex[0] = i;
-      mResult[mVariableIndex] = *(C_FLOAT64*)((*it)->getReference());
+      mResult[mVariableIndex] = *(C_FLOAT64*)((*it)->getValuePointer());
+      //TODO: check if it is a valid double value
     }
   return true;
 }

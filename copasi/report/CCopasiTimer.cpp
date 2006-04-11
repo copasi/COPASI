@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiTimer.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:30 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 22:06:54 $
    End CVS Header */
 
 #include "copasi.h"
@@ -83,5 +83,5 @@ const CCopasiTimeVariable & CCopasiTimer::getElapsedTime()
 void CCopasiTimer::print(std::ostream * ostream) const
   {(*ostream) << mElapsedTimeSeconds;}
 
-void * CCopasiTimer::getReference() const
+void * CCopasiTimer::getValuePointer() const
   {return & const_cast<CCopasiTimer *>(this)->mElapsedTimeSeconds;}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/04 22:24:14 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 22:02:30 $
    End CVS Header */
 
 /**
@@ -547,7 +547,7 @@ const unsigned C_INT32 & COptProblem::getFunctionEvaluations() const
 {return mCounter;}
 
 const C_FLOAT64 & COptProblem::getExecutionTime() const
-  {return * (C_FLOAT64 *) mCPUTime.getReference();}
+  {return * (C_FLOAT64 *) mCPUTime.getValuePointer();}
 
 void COptProblem::print(std::ostream * ostream) const
   {*ostream << *this;}

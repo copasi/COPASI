@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetRandom.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/28 23:09:04 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 22:11:38 $
    End CVS Header */
 
 //comboBoxType linear| normal
@@ -53,7 +53,7 @@ void CScanWidgetRandom::slotChooseObject()
               //TODO: init min and max
               if (mpObject->isValueDbl())
                 {
-                  C_FLOAT64 value = *(C_FLOAT64*)mpObject->getReference();
+                  C_FLOAT64 value = *(C_FLOAT64*)mpObject->getValuePointer();
                   lineEditMin->setText(QString::number(value*0.5));
                   lineEditMax->setText(QString::number(value*2));
                 }

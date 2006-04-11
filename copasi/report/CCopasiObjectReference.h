@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:22:54 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 22:06:54 $
    End CVS Header */
 
 /**
@@ -20,8 +20,6 @@
 #include "CCopasiObject.h"
 #include "CCopasiObjectName.h"
 
-/** @dia:pos 64.092,27.0418 */
-/** @dia:route CCopasiObject; v,60.054,22.7537,25.1206,81.8072,27.0418 */
 template <class CType> class CCopasiObjectReference: public CCopasiObject
   {
     typedef CType referenceType;
@@ -56,7 +54,8 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
 
     virtual ~CCopasiObjectReference() {}
 
-    virtual void * getReference() const {return mpReference;}
+    virtual void * getValuePointer() const {return mpReference;}
+
     virtual void setReference(referenceType & reference)
     {mpReference = &reference;}
 
@@ -146,8 +145,6 @@ CCopasiObjectReference<bool>::CCopasiObjectReference(const std::string & name,
   setUpdateMethod(this, &CCopasiObjectReference<bool>::updateMethod);
 }
 
-/** @dia:pos 64.092,38.1129 */
-/** @dia:route CCopasiObject; v,60.054,22.7537,36.0826,82.52,38.1129 */
 template <class CType> class CCopasiVectorReference: public CCopasiObject
   {
     typedef CType referenceType;
@@ -195,7 +192,7 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
 );
     }
 
-    virtual void * getReference() const {return &mReference;}
+    virtual void * getValuePointer() const {return &mReference;}
 
     /**
      * This is the output method for any object. The default implementation
@@ -208,8 +205,6 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
       {*ostream << mReference;}
   };
 
-/** @dia:pos 64.092,50.0714 */
-/** @dia:route CCopasiObject; v,60.054,22.7537,47.8736,82.52,50.0714 */
 template <class CType> class CCopasiMatrixReference: public CCopasiObject
   {
     typedef CType referenceType;
@@ -257,6 +252,6 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
        isValueDbl() ? CCopasiObject::ValueDbl : (CCopasiObject::Flag) 0);
     }
 
-    virtual void * getReference() const {return &mReference;}
+    virtual void * getValuePointer() const {return &mReference;}
   };
 #endif // COPASI_CCopasiObjectReference

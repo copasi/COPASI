@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.151 $
+   $Revision: 1.152 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/17 13:48:38 $
+   $Date: 2006/04/11 22:01:17 $
    End CVS Header */
 
 // CReaction
@@ -616,7 +616,7 @@ void CReaction::setScalingFactor()
 {
   if (1 == getCompartmentNumber())
     mScalingFactor =
-      (C_FLOAT64 *) mChemEq.getBalances()[0]->getMetabolite().getCompartment()->getReference();
+      (C_FLOAT64 *) mChemEq.getBalances()[0]->getMetabolite().getCompartment()->getValuePointer();
   else
     mScalingFactor = &mDefaultScalingFactor;
 

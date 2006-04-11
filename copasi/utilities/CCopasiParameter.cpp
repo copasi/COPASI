@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:33 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 22:09:55 $
    End CVS Header */
 
 /**
@@ -298,7 +298,7 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
     }
 }
 
-void * CCopasiParameter::getReference() const
+void * CCopasiParameter::getValuePointer() const
 {return const_cast<void *>(mValue.pVOID);}
 
 CCopasiParameter::Value CCopasiParameter::createValue(const Value & value)

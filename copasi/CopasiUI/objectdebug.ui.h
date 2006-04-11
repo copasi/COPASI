@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/04/11 15:18:42 $
+   $Date: 2006/04/11 22:12:41 $
    End CVS Header */
 
 /****************************************************************************
@@ -53,6 +53,11 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
   CCopasiObject* obj = (CCopasiObject*)ptr;
   QListViewItem * element;
 
+  /*if(obj->getObjectType()=="Function")
+   {
+    std::cout << " xxxx" << std::endl;
+   }*/
+
   std::string cn = obj->getCN();
   CCopasiObject* testObj = CCopasiContainer::ObjectFromName(cn);
 
@@ -74,14 +79,14 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
 
   QString value;
   if (obj->isValueDbl())
-    value = QString::number(*(C_FLOAT64*)obj->getReference());
+    value = QString::number(*(C_FLOAT64*)obj->getValuePointer());
   else if (obj->isValueInt())
-    value = QString::number(*(C_INT32*)obj->getReference());
+    value = QString::number(*(C_INT32*)obj->getValuePointer());
   else if (obj->isValueString())
-    value = FROM_UTF8(*(std::string*)obj->getReference());
+    value = FROM_UTF8(*(std::string*)obj->getValuePointer());
   else if (obj->isValueBool())
     {
-      if (*(bool*)obj->getReference()) value = "true"; else value = "false";
+      if (*(bool*)obj->getValuePointer()) value = "true"; else value = "false";
     }
   else
     value = "";

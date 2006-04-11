@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:33 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 22:09:55 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiParameter
@@ -18,7 +18,6 @@
 class CCopasiParameterGroup;
 
 class CReadConfig;
-//class CWriteConfig;
 
 /**
  *  CCopasiParameter class.
@@ -145,18 +144,6 @@ class CCopasiParameter: public CCopasiContainer
     virtual const std::string & getKey() const;
 
     /**
-     * Set name of the parameter
-     * @param const string & name
-     */ 
-    //bool setName(const std::string & name);
-
-    /**
-     * Retrieve the name of the parameter
-     * @return const string & mName
-     */ 
-    //const std::string & getName() const;
-
-    /**
      * Set the value of the parameter
      * @param const unsigned C_INT32 & value
      * @return bool isValidValue
@@ -181,15 +168,13 @@ class CCopasiParameter: public CCopasiContainer
     /**
      * Retrieve the private value of the parameter.
      * @return const CCopasiParameter::Value & Value
-     */ 
-    // const void * getValue() const;
+     */
     const Value & getValue() const;
 
     /**
      * Retrieve the private value of the parameter.
      * @return CCopasiParameter::Value & Value
-     */ 
-    // void * getValue();
+     */
     Value & getValue();
 
     /**
@@ -272,7 +257,7 @@ class CCopasiParameter: public CCopasiContainer
      */
     friend bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs);
 
-    virtual void * getReference() const;
+    virtual void * getValuePointer() const;
 
   private:
     /**

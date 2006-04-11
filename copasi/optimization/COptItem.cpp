@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/14 16:29:42 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 22:02:30 $
    End CVS Header */
 
 #include <float.h>
@@ -176,7 +176,7 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
          CCopasiContainer::ObjectFromName(listOfContainer,
                                           getObjectCN())) != NULL &&
       mpObject->isValueDbl())
-    mpObjectValue = (C_FLOAT64 *) mpObject->getReference();
+    mpObjectValue = (C_FLOAT64 *) mpObject->getValuePointer();
   if (!mpObjectValue)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 1, getObjectCN().c_str());
@@ -201,7 +201,7 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
               CCopasiContainer::ObjectFromName(listOfContainer,
                                                Bound)) != NULL &&
            mpLowerObject->isValueDbl())
-    mpLowerBound = (C_FLOAT64 *) mpLowerObject->getReference();
+    mpLowerBound = (C_FLOAT64 *) mpLowerObject->getValuePointer();
   if (!mpLowerBound)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 2, Bound.c_str());
@@ -225,7 +225,7 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
               CCopasiContainer::ObjectFromName(listOfContainer,
                                                Bound)) != NULL &&
            mpUpperObject->isValueDbl())
-    mpUpperBound = (C_FLOAT64 *) mpUpperObject->getReference();
+    mpUpperBound = (C_FLOAT64 *) mpUpperObject->getValuePointer();
   if (!mpUpperBound)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 3, Bound.c_str());

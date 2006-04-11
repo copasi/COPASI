@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathConstant.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/30 19:05:54 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 22:10:32 $
    End CVS Header */
 
 /**
@@ -94,12 +94,12 @@ CMathConstantReference::~CMathConstantReference() {}
 
 bool CMathConstantReference::setValue(const C_FLOAT64 & value)
 {
-  *(C_FLOAT64 *)mpObject->getReference() = value;
+  *(C_FLOAT64 *)mpObject->getValuePointer() = value;
   return true;
 }
 
 const C_FLOAT64 & CMathConstantReference::getValue() const
-  {return *(C_FLOAT64 *)mpObject->getReference();}
+  {return *(C_FLOAT64 *)mpObject->getValuePointer();}
 
 /* Parameter */
 std::map< std::string, CCopasiObject * > CMathConstantParameter::mSelection;

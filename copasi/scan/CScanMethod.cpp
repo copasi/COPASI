@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/29 17:28:14 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 22:07:56 $
    End CVS Header */
 
 /**
@@ -87,7 +87,13 @@ void CScanItem::restoreValue() const
   };
 
 void CScanItem::storeValue()
-{if (mpValue) mStoreValue = * (C_FLOAT64 *) mpValue->getReference();};
+{
+  if (mpValue)
+    {
+      assert(mpValue->isValueDbl());
+      mStoreValue = * (C_FLOAT64 *) mpValue->getValuePointer();
+    }
+};
 
 void CScanItem::reset()
 {
