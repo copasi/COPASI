@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/05 16:06:04 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 15:17:51 $
    End CVS Header */
 
 /**
@@ -171,8 +171,6 @@ class CCopasiObject
                   const std::string & type = "CN",
                   const unsigned C_INT32 & flag = 0);
 
-    virtual const std::string getObjectUniqueNameEx(const bool & isParent = true) const;
-
   public:
     CCopasiObject(const CCopasiObject & src,
                   const CCopasiContainer * pParent = NULL);
@@ -198,8 +196,6 @@ class CCopasiObject
     bool setObjectName(const std::string & name);
 
     const std::string & getObjectName() const;
-
-    virtual const std::string getObjectUniqueName() const;
 
     virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
 

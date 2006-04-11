@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:29 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 15:17:51 $
    End CVS Header */
 
 /**
@@ -23,8 +23,6 @@
 
 #include "CCopasiObject.h"
 
-/** @dia:pos 23.7081,50.8343 */
-/** @dia:route CCopasiObject; v,60.054,22.7537,47.9048,40.5521,50.8343 */
 class CCopasiContainer: public CCopasiObject
   {
     //Attributes
@@ -35,14 +33,8 @@ class CCopasiContainer: public CCopasiObject
 
     typedef std::multimap< const std::string, CCopasiObject * > objectMap;
 
-    typedef std::map < const CCopasiObject *,
-    bool (CCopasiContainer::*)(const C_FLOAT64 & value) > updateMap;
-
   protected:
-    /** @dia:route 0,8; h,23.7081,50.8343,19.6311,4.45372,40.5964 */
     objectMap mObjects;
-
-    updateMap mUpdates;
 
     // Operations
   private:
@@ -71,8 +63,6 @@ class CCopasiContainer: public CCopasiObject
 
     virtual ~CCopasiContainer();
 
-    virtual const std::string getObjectUniqueName() const;
-
     static void init();
 
     virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
@@ -80,9 +70,6 @@ class CCopasiContainer: public CCopasiObject
     virtual const objectMap & getObjects() const;
 
     virtual bool add(CCopasiObject * pObject, const bool & adopt = true);
-
-    virtual bool addUpdateMethod(const CCopasiObject * pObject,
-                                 bool (CCopasiContainer::*updateMethod)(const C_FLOAT64 & value));
 
     virtual bool remove(CCopasiObject * pObject);
 
@@ -104,27 +91,6 @@ class CCopasiContainer: public CCopasiObject
         const unsigned C_INT32 & flag = 0)
     {return createMatrixReference(name, this, reference, flag);}
   };
-
-#ifdef XXXX 
-/** @dia:pos 33.0468,37.5833 */
-class CRootContainer
-      /** @dia:pos 23.7081,60.7007 */
-  {
-    // Attributes
-  private:
-    /** @dia:route 14,0; h,23.7081,55.5343,20.3803,60.7007,23.7081 */
-    static CCopasiContainer mRoot;
-
-    // Operations
-  private:
-    CRootContainer();
-
-  public:
-    ~CRootContainer();
-
-    static CCopasiContainer & ref();
-  };
-#endif // XXXX
 
 #define RootContainer (*CCopasiContainer::Root)
 

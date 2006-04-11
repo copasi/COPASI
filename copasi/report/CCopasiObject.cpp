@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/28 23:13:49 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 15:17:51 $
    End CVS Header */
 
 /**
@@ -110,21 +110,6 @@ CCopasiObjectName CCopasiObject::getCN() const
 const CCopasiObject *
 CCopasiObject::getObject(const CCopasiObjectName & C_UNUSED(cn)) const
   {return NULL;}
-
-const std::string
-CCopasiObject::getObjectUniqueNameEx(const bool & isParent) const
-  {
-    if (isParent && isVector())
-      return mpObjectParent->getObjectUniqueNameEx();
-
-    if (mpObjectParent && 0 < (mObjectFlag & NonUniqueName))
-      return mObjectName + "{" + mpObjectParent->getObjectUniqueNameEx() + "}";
-
-    return mObjectName;
-  }
-
-const std::string CCopasiObject::getObjectUniqueName() const
-{return getObjectUniqueNameEx(false);}
 
 bool CCopasiObject::setObjectName(const std::string & name)
 {
@@ -233,7 +218,7 @@ void CCopasiObject::getAllDependencies(std::set< CCopasiObject * > & dependencie
 
     std::pair<std::set< CCopasiObject * >::iterator, bool> Inserted;
 
-    for (it; it != end; ++it)
+    for (; it != end; ++it)
       {
         // Dual purpose insert
         Inserted = dependencies.insert(*it);
@@ -262,7 +247,7 @@ bool CCopasiObject::hasCircularDependencies(std::set<const CCopasiObject * > & c
     // a circular dependency
     if (!Inserted.second) return true;
 
-    for (it; it != end; ++it)
+    for (; it != end; ++it)
       // Check whether the dependency *it depends on the candidates or this
       if ((*it)->hasCircularDependencies(candidates)) return true;
 
