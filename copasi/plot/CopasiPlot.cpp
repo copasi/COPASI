@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/05 16:03:51 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 22:45:27 $
    End CVS Header */
 
 #include <qstring.h>
@@ -348,7 +348,9 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
               if (tmpObj)
                 {
                   mObjectNames.push_back(tmpObj->getObjectDisplayName());
-                  mObjectValues.push_back((C_FLOAT64 *)tmpObj->getReference());
+                  mObjectValues.push_back((C_FLOAT64 *)tmpObj->getValuePointer());
+                  //TODO: handle also integer values or at least check if it is a dbl
+                  //TODO: check if value pointer is != NULL
 
                   if (tmpObj->getRefresh())
                     mObjectRefreshes.push_back(tmpObj->getRefresh());
