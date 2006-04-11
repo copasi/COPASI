@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.252 $
+   $Revision: 1.253 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/30 19:11:05 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 21:59:19 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -929,8 +929,8 @@ const std::string & CModel::getComments() const
 const std::string & CModel::getKey() const
   {return mKey;}
 
-void * CModel::getReference() const
-  {return const_cast<C_FLOAT64 *>(mpValueAccess);}
+//void * CModel::getValuePointer() const
+//  {return const_cast<C_FLOAT64 *>(mpValueAccess);}
 
 CCopasiVectorNS < CCompartment > & CModel::getCompartments()
 {return mCompartments;}

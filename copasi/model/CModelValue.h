@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:22:53 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 21:59:19 $
    End CVS Header */
 
 #ifndef COPASI_CModelValue
@@ -44,12 +44,12 @@ class CModelEntity : public CCopasiContainer
      */
     enum Status
     {
-      FIXED = 0,        //the entity is constant (for metabs even if they are part of a reaction)
-      REACTIONS,        //applies only for metabs, the metab concentration is changed by reactions
-      DEPENDENT,        //applies only for metabs, the metab concentration is determined by conservation rules
+      FIXED = 0,         //the entity is constant (for metabs even if they are part of a reaction)
+      REACTIONS,         //applies only for metabs, the metab concentration is changed by reactions
+      DEPENDENT,         //applies only for metabs, the metab concentration is determined by conservation rules
       UNUSED,
-      ODE,              //the entity is changed by an ordinary differential equation
-      ASSIGNMENT,       //the entity is changed by an assignment rule
+      ODE,               //the entity is changed by an ordinary differential equation
+      ASSIGNMENT,        //the entity is changed by an assignment rule
       TIME
     };
 
@@ -135,7 +135,7 @@ class CModelEntity : public CCopasiContainer
      */
     void setRate(const C_FLOAT64 & rate);
 
-    virtual void * getReference() const;
+    virtual void * getValuePointer() const;
 
     /**
      * Sets the SBMLId.
@@ -223,6 +223,10 @@ DEPENDENT               -
 ODE                     not implemented       constant=false, rate rule
 ASSIGNMENT              not implemented       constant=false, rate rule
   
+  
+CModel:
+ 
+...
  */
 
 /**

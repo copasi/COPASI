@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.113 $
+   $Revision: 1.114 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/20 18:28:23 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 21:59:19 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -27,7 +27,6 @@
 class CCompartment;
 class CProcessReport;
 
-/** @dia:pos 177.081,30.2423 */
 class CModel : public CModelEntity
   {
   public:
@@ -63,7 +62,6 @@ class CModel : public CModelEntity
 
     //Attributes
   public:
-    /** @dia:pos 129.758,65.0298 */
     class CLinkMatrixView
       {
       public:
@@ -71,7 +69,6 @@ class CModel : public CModelEntity
 
       private:
         const CMatrix< C_FLOAT64 > & mA;
-        /** @dia:route 39,3; h,108.729,65.6961,119.243,65.7298,129.758 */
         const CCopasiVector< CMetab > & mIndependent;
         static const elementType mZero;
         static const elementType mUnit;
@@ -136,8 +133,6 @@ class CModel : public CModelEntity
                                         const CLinkMatrixView & A);
       };
 
-    /** @dia:pos 25.9437,20.8602 */
-
   private:
     CState mInitialState;
 
@@ -146,7 +141,6 @@ class CModel : public CModelEntity
     /**
      * The state template for the model
      */
-    /** @dia:route 12,2; h,177.081,33.7423,112.487,20.8602,47.8937 */
     CStateTemplate mStateTemplate;
 
     /**
@@ -156,20 +150,17 @@ class CModel : public CModelEntity
 
     /**
      * The volume unit used in the Model
-     */ 
-    //std::string mVolumeUnit;
+     */
     VolumeUnit mVolumeUnit;
 
     /**
      * The time unit used in the Model
-     */ 
-    //std::string mTimeUnit;
+     */
     TimeUnit mTimeUnit;
 
     /**
      * The quantity unit used in the Model
-     */ 
-    //std::string mQuantityUnit;
+     */
     QuantityUnit mQuantityUnit;
 
     /**
@@ -177,43 +168,31 @@ class CModel : public CModelEntity
      *  @supplierCardinality 0..*
      *  @associates <{CCompartment}>
      */
-    /** @dia:route 2,18; h,155.606,34.703,166.344,36.1423,177.081 */
     CCopasiVectorNS < CCompartment > mCompartments;
 
     /**
      *  Vector of reference to metabolites
      */
-    /** @dia:route 29,44; h,108.729,61.6961,172.66,46.7423,177.081 */
     CCopasiVector< CMetab > mMetabolites;
 
     /**
      *  Vector of reference to metabolites in reduced model representation
      */
-    /** @dia:route 17,44; h,108.729,56.6961,172.66,46.7423,177.081 */
     CCopasiVector< CMetab > mMetabolitesX;
 
     /**
      *  Vector of reference to independent metabolites
      */
-    /** @dia:route 21,44; h,108.729,58.2961,172.66,46.7423,177.081 */
     CCopasiVector< CMetab > mMetabolitesInd;
 
     /**
      *  Vector of reference to dependent metabolites
      */
-    /** @dia:route 25,44; h,108.729,59.8961,172.66,46.7423,177.081 */
-    //CCopasiVector< CMetab > mMetabolitesDep;
-
-    /**
-     *  Vector of reference to dependent metabolites
-     */
-    /** @dia:route 25,44; h,108.729,59.8961,172.66,46.7423,177.081 */
     CCopasiVector< CMetab > mMetabolitesVar;
 
     /**
      *  for array of steps
      */
-    /** @dia:route 154,29; h,177.081,90.7423,168.084,86.4337,159.088 */
     CCopasiVectorNS< CReaction > mSteps;
 
     /**
@@ -234,7 +213,6 @@ class CModel : public CModelEntity
     /**
      *  for array of conserved moieties
      */
-    /** @dia:route 178,7; h,177.081,100.342,168.006,136.562,80.2566 */
     CCopasiVector< CMoiety > mMoieties;
 
     /**
@@ -275,7 +253,6 @@ class CModel : public CModelEntity
     /**
      *   This is used to return a view to L
      */
-    /** @dia:route 98,2; h,177.081,68.3423,163.695,65.0298,150.308 */
     CLinkMatrixView mLView;
 
     /**
@@ -438,12 +415,6 @@ class CModel : public CModelEntity
     const CCopasiVector< CMetab > & getMetabolitesInd() const;
 
     /**
-     * Retrieves the vector of dependent metabolites.
-     * @return vector < CMetab * > metabolites
-     */ 
-    //CCopasiVector< CMetab > & getMetabolitesDep();
-
-    /**
      * Retrieves the vector of variable metabolites.
      * This is a subset of MetabolitesX
      * @return vector < CMetab * > metabolites
@@ -520,12 +491,6 @@ class CModel : public CModelEntity
     unsigned C_INT32 getTotSteps() const;
 
     /**
-     *  Get the dimension of the reduced problem
-     *  @return unsigned C_INT32 dimension
-     */ 
-    //unsigned C_INT32 getDimension() const;
-
-    /**
      * Return the comments of this model Wei Sun 
      * @return string
      */
@@ -539,14 +504,8 @@ class CModel : public CModelEntity
 
     /**
      * Return a pointer to the current time
-     */
-    virtual void * getReference() const;
-
-    /**
-     * Return the title of this model
-     * @return string
      */ 
-    //std::string getTitle() const;
+    //virtual void * getValuePointer() const;
 
     /**
      * Set the title of this model
@@ -625,12 +584,6 @@ class CModel : public CModelEntity
      * Returns the index of the Moiety
      */
     C_INT32 findMoiety(std::string &Target) const;
-
-    /**
-     * Returns the mStepsX of this model
-     * @return const CCopasiVectorN< CReaction > & 
-     */ 
-    //const CCopasiVectorN< CReaction > & getStepsX() const;
 
     /**
      * Get the LU decomposition matrix of this model
@@ -981,17 +934,6 @@ class CModel : public CModelEntity
      * Initialize the contained CCopasiObjects
      */
     void initObjects();
-
-    /**
-     * Find the unit the string refers to.
-     * @param const std::string & name 
-     * @param const char ** units (list of valid units)
-     * @param const unsigned C_INT32 unique (minimum characters being unique)
-     * @return unsigned C_INT32 unit
-     */ 
-    //static unsigned C_INT32 unitCompare(const std::string & name,
-    //                                    const char ** units
-    //                                    /*const unsigned C_INT32 unique*/);
 
     /**
      * Build the state template for the model.

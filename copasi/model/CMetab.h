@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/30 19:11:05 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 21:57:26 $
    End CVS Header */
 
 /**
@@ -70,49 +70,20 @@ class CMetab : public CModelEntity
     C_FLOAT64 mIConc;
 
     /**
-     *  Concentration of the metabolite as long.
-     */ 
-    //C_FLOAT64 mNumber;  replaced by CModelEntity::mValue
-
-    /**
-     * Initial concentration of the metabolite as long.
-     */ 
-    //C_FLOAT64 mINumber;  replaced by CModelEntity::mIValue
-
-    /**
-     *  Rate of production of this metabolite
-     *  (concentration/time).
-     */ 
-    //C_FLOAT64 mRate;    replaced by CModelEntity::mRate
-
-    /**
      *  Transition time of the metabolite
      */
     C_FLOAT64 mTT;
 
     /**
-     *  Status of the metabolite.  
-     *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
-     */ 
-    //Status mStatus;   replaced by CModelEntity::mStatus
-
-    /**
      *  pointer to the compartment the metabolite is located in.
      *  The metab needs to know about volumes.
      */
-    /** @dia:route 15,11; h,155.606,39.003,162.634,54.2961,108.729 */
     const CCompartment * mpCompartment;
 
     /**
      * The set of moieties the metabolite is part of
      */
     std::set< CMoiety * > mMoieties;
-
-    /**
-     * This the default parent compartmnet used on creation
-     */
-    /** @dia:route 13,13; h,155.606,38.203,162.634,55.0961,108.729 */
-    // static const CCompartment *mpParentCompartment;
 
     // Operations
   public:
@@ -137,7 +108,7 @@ class CMetab : public CModelEntity
      */
     ~CMetab();
 
-    virtual void * getReference() const;
+    virtual void * getValuePointer() const;
     //TODO: discuss if it should be concentration or particle number...
 
     virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
@@ -173,11 +144,6 @@ class CMetab : public CModelEntity
      *
      */
     virtual void setStatus(const CModelEntity::Status & status);
-
-    /**
-     *
-     */ 
-    //const CMetab::Status & getStatus() const;
 
     /**
      *
@@ -220,11 +186,6 @@ class CMetab : public CModelEntity
 
     /**
      *
-     */ 
-    //void setModel(CModel * model);
-
-    /**
-     *
      */
     const CModel * getModel() const;
 
@@ -251,12 +212,6 @@ class CMetab : public CModelEntity
     friend std::ostream & operator<<(std::ostream &os, const CMetab & d);
 
     /**
-     * Set the default parent compartment
-     * @param const CCompartment * parentCompartmnte
-     */ 
-    // static void setParentCompartment(const CCompartment * parentCompartment);
-
-    /**
      * Add a moiety to the list
      * @param CMoiety * pMoiety
      */
@@ -274,7 +229,6 @@ class CMetab : public CModelEntity
     void initObjects();
   };
 
-/** @dia:pos 50.0045,52.5004 */
 class CMetabOld : public CCopasiContainer
   {
     friend class CMetab;
@@ -335,21 +289,7 @@ class CMetabOld : public CCopasiContainer
      */
     C_INT32 load(CReadConfig & configbuffer);
 
-    /**
-     *  This function is only defined for completeness. We really never going 
-     *  to save objects of class CMetabOld.
-     */ 
-    //    C_INT32 save(CWriteConfig & configbuffer);
-
     C_INT32 getIndex() const;
-
-    //    const std::string & getName() const;
   };
-
-/**
- * Non member less than operator. This is needed, for example, when searching for an 
- * instance CMetab in a set of CMetab.
- */ 
-//bool operator< (const CMetab &lhs, const CMetab &rhs);
 
 #endif // COPASI_CMetab

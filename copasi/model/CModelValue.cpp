@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/11 13:57:52 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 21:59:19 $
    End CVS Header */
 
 #include <iostream>
@@ -138,7 +138,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
     }
 }
 
-void * CModelEntity::getReference() const
+void * CModelEntity::getValuePointer() const
   {return const_cast<C_FLOAT64 *>(mpValueAccess);}
 
 void CModelEntity::initObjects()
