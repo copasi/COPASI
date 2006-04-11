@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/07 12:37:08 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 21:55:11 $
    End CVS Header */
 
 #include "copasi.h"
@@ -50,11 +50,12 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
     pTree->getObject(mRegisteredObjectCN);
 
   if (pObject)
-    mpValue = (C_FLOAT64 *) pTree->getObject(mRegisteredObjectCN)->getReference();
+    mpValue = (C_FLOAT64 *) pObject->getValuePointer();
   else
     mpValue = NULL;
 
   if (mpValue == NULL) return false;
+  if (!pObject->isValueDbl()) return false;
 
   return (getChild() == NULL); // We must not have any children.
 }
