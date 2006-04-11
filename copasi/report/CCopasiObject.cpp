@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/04/11 15:17:51 $
+   $Date: 2006/04/11 22:06:02 $
    End CVS Header */
 
 /**
@@ -270,8 +270,11 @@ bool CCopasiObject::operator < (const CCopasiObject * rhs) const
     return false;
   }
 
-void * CCopasiObject::getReference() const
-  {return const_cast<CCopasiObject *>(this);}
+void * CCopasiObject::getValuePointer() const
+  {
+    //return const_cast<CCopasiObject *>(this);
+    return NULL;
+  }
 
 bool CCopasiObject::isContainer() const
   {return (0 < (mObjectFlag & Container));}

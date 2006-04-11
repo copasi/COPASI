@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/04/11 15:17:51 $
+   $Date: 2006/04/11 22:06:02 $
    End CVS Header */
 
 /**
@@ -106,7 +106,8 @@ template <typename CType> class RefreshTemplate : public Refresh
 
 class CRenameHandler;
 
-/** @dia:pos 40.5964,2.55372 */
+//********************************************************************************
+
 class CCopasiObject
   {
 #ifdef WIN32
@@ -138,9 +139,6 @@ class CCopasiObject
 
     std::string mObjectType;
 
-    // std::string mUniqueName;
-
-    /** @dia:route 8,0; h,23.7081,53.1343,15.3196,2.55372,40.5964 */
     CCopasiContainer * mpObjectParent;
 
     unsigned C_INT32 mObjectFlag;
@@ -245,8 +243,8 @@ class CCopasiObject
      */
     bool operator < (const CCopasiObject * rhs) const;
 
-    template <class CType> CType * getReference(CType * reference)
-    {return reference = (CType *) getReference();}
+    //template <class CType> CType * getReference(CType * reference)
+    //{return reference = (CType *) getReference();}
 
     bool isContainer() const;
 
@@ -266,7 +264,7 @@ class CCopasiObject
     bool isValueString() const;
     bool isSeparator() const;
 
-    virtual void * getReference() const;
+    virtual void * getValuePointer() const;
 
     friend std::ostream &operator<<(std::ostream &os, const CCopasiObject & o);
 
