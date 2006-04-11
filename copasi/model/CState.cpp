@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/30 19:11:20 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 08:03:24 $
    End CVS Header */
 
 // CSate.cpp
@@ -266,7 +266,7 @@ CState & CState::operator=(const CState & rhs)
     {
       if (mSize != rhs.mSize)
         {
-          pdelete(mpValues);
+          pdeletev(mpValues);
           mpValues = new C_FLOAT64[rhs.mSize];
           mSize = rhs.mSize;
         }
