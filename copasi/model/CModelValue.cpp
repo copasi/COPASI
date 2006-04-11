@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/09 17:41:25 $
+   $Date: 2006/04/11 13:57:52 $
    End CVS Header */
 
 #include <iostream>
@@ -33,7 +33,7 @@ CModelEntity::CModelEntity(const std::string & name,
                            const CCopasiContainer * pParent,
                            const std::string & type,
                            const unsigned C_INT32 & flag):
-    CCopasiContainer(name, pParent, type, flag),
+    CCopasiContainer(name, pParent, type, (flag | CCopasiObject::Container | CCopasiObject::ValueDbl)),
     mKey(""),
     mpValueAccess(NULL),
     mpValueData(NULL),
