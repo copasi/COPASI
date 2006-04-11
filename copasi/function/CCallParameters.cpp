@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/13 22:48:35 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 21:54:23 $
    End CVS Header */
 
 #include "copasi.h"
@@ -127,7 +127,9 @@ void CFunctionParameterMap::setCallParameter(const std::string paramName, const 
   // TODO: check type of object
   mObjects[index].value = obj;
 
-  mPointers[index].value = (const C_FLOAT64*) obj->getReference();
+  assert(obj->getValuePointer());
+  assert(obj->isValueDbl());
+  mPointers[index].value = (const C_FLOAT64*) obj->getValuePointer();
 }
 
 void CFunctionParameterMap::addCallParameter(const std::string paramName, const CCopasiObject* obj)
@@ -137,8 +139,11 @@ void CFunctionParameterMap::addCallParameter(const std::string paramName, const 
 
   if (type < CFunctionParameter::VINT32) fatalError(); // is not a vector
 
+  assert(obj->getValuePointer());
+  assert(obj->isValueDbl());
+
   mObjects[index].vector->push_back(obj);
-  mPointers[index].vector->push_back((const C_FLOAT64*) obj->getReference());
+  mPointers[index].vector->push_back((const C_FLOAT64*) obj->getValuePointer());
 }
 
 void CFunctionParameterMap::clearCallParameter(const std::string paramName)
