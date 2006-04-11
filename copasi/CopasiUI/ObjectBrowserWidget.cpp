@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowserWidget.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/29 21:22:41 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 15:16:06 $
    End CVS Header */
 
 /********************************************************
@@ -269,7 +269,7 @@ void ObjectBrowserWidget::updateSelectedItemsView()
       //     ObjectItemText->setColor(blue);
       if ((*outputVector)[i])
         {
-          ObjectItemText->insertParagraph(FROM_UTF8((*outputVector)[i]->getObjectUniqueName()), -1);
+          ObjectItemText->insertParagraph(FROM_UTF8((*outputVector)[i]->getObjectDisplayName()), -1);
           //ObjectItemText->insertParagraph(pHead->pItem->getObject()->pCopasiObject->getCN()., -1);
           //ObjectItemText->insertParagraph(FROM_UTF8((*outputVector)[i]->getObjectType()), -1);
         }

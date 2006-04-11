@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/28 23:09:45 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 15:18:42 $
    End CVS Header */
 
 /****************************************************************************
@@ -92,8 +92,7 @@ void ObjectDebug::addObjectRecursive(QWidget * parent, void * ptr)
                                       flags,
                                       value,
                                       FROM_UTF8(obj->getObjectDisplayName()),
-                                      FROM_UTF8(obj->getCN()),
-                                      FROM_UTF8(obj->getObjectUniqueName()));
+                                      FROM_UTF8(obj->getCN()));
 
   //std::cout << obj->getName()<< "   " << obj->getObjectType() << std::endl;
 
