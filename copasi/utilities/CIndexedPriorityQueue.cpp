@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CIndexedPriorityQueue.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/29 17:28:23 $
+   $Author: ssahle $ 
+   $Date: 2006/04/11 08:23:15 $
    End CVS Header */
 
 #include "copasi.h"
@@ -183,8 +183,8 @@ void CIndexedPriorityQueue::updateAux(const C_INT32 pos)
           min = mHeap[left].mKey;
           min_pos = left;
         }
-      C_FLOAT64 val = mHeap[right].mKey;
-      if ((static_cast<unsigned int>(right) < mHeap.size()) && (val < min))
+      C_FLOAT64 val; // = mHeap[right].mKey; //!!!
+      if ((static_cast<unsigned int>(right) < mHeap.size()) && ((val = mHeap[right].mKey) < min))
         {
           min = val;
           min_pos = right;
