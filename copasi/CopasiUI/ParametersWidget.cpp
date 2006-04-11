@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ParametersWidget.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/17 13:43:02 $
+   $Date: 2006/04/11 22:14:54 $
    End CVS Header */
 
 #include "ParametersWidget.h"
@@ -249,7 +249,12 @@ bool ParametersWidget::loadFromModel()
   for (i = 0; i < imax; ++i)
     {
       reac = reacs[i];
+
+      //calculate units
       CFindDimensions units(reac->getFunction());
+      units.setUseHeuristics(true);
+      units.findDimensions(reac->getCompartmentNumber() > 1);
+
       tmp = new CParameterListItem(mReacItem, FROM_UTF8(reac->getObjectName()));
 
       const CFunctionParameters & params = reac->getFunctionParameters();
@@ -265,14 +270,16 @@ bool ParametersWidget::loadFromModel()
                 CCopasiParameter * par = dynamic_cast<CCopasiParameter*>(obj); //must be a CCopasiParameter
                 if (!par) continue; //or rather fatal error?
                 new CParameterListItem(tmp, FROM_UTF8(params[j]->getObjectName()), par,
-                                       * par->getValue().pDOUBLE, "");
+                                       * par->getValue().pDOUBLE,
+                                       FROM_UTF8(units.getDimensions()[j].getDisplayString()));
               }
             else
               {
                 CModelValue * par = dynamic_cast<CModelValue*>(obj); //must be a CModelValue
                 if (!par) continue; //or rather fatal error?
                 new CParameterListItem(tmp, FROM_UTF8(params[j]->getObjectName()), par,
-                                       FROM_UTF8("-> " + par->getObjectName()), "");
+                                       FROM_UTF8("-> " + par->getObjectName()),
+                                       FROM_UTF8(units.getDimensions()[j].getDisplayString()));
               }
           }
 
