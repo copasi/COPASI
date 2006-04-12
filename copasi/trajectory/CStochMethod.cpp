@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/04/10 13:19:53 $
+   $Date: 2006/04/12 13:05:11 $
    End CVS Header */
 
 #ifdef WIN32
@@ -105,7 +105,7 @@ void CStochMethod::step(const double & deltaT)
   unsigned C_INT32 imax;
 
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++)
-    if (mpProblem->getModel()->getMetabolites()[i]->getValue() >= mMaxIntBeforeStep)
+    if (mpProblem->getModel()->getMetabolitesX()[i]->getValue() >= mMaxIntBeforeStep)
       {
         CCopasiMessage(CCopasiMessage::EXCEPTION, "at least one particle number got to big.");
         // TODO:throw exception or something like that
@@ -308,7 +308,7 @@ C_INT32 CStochMethod::updateSystemState(C_INT32 rxn)
   for (bi = bals.begin(); bi != bals.end(); bi++)
     {
       mNumbers[bi->mIndex] = mNumbers[bi->mIndex] + bi->mMultiplicity;
-      mpModel->getMetabolites()[bi->mIndex]->setValue(mNumbers[bi->mIndex]);
+      mpModel->getMetabolitesX()[bi->mIndex]->setValue(mNumbers[bi->mIndex]);
     }
 
   const std::set<C_INT32> & dep_nodes = mDG.getDependents(rxn);
@@ -427,7 +427,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
         {
           //bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getObjectName(());
           //bb.mIndex = mpModel->findMetabByKey((*bbb)[j]->getMetaboliteKey());
-          bb.mIndex = mpModel->getMetabolites().getIndex(&(*bbb)[j]->getMetabolite());
+          bb.mIndex = mpModel->getMetabolitesX().getIndex(&(*bbb)[j]->getMetabolite());
           bb.mMultiplicity = static_cast<C_INT32>(floor((*bbb)[j]->getMultiplicity() + 0.5));
 
           if (((*bbb)[j]->getMetabolite().getStatus()) != CModelEntity::FIXED)
@@ -444,7 +444,7 @@ void CStochMethod::setupDependencyGraphAndBalances()
         {
           //bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getObjectName(());
           //bb.mIndex = mpModel->findMetabByKey((*bbb)[j]->getMetaboliteKey());
-          bb.mIndex = mpModel->getMetabolites().getIndex(&(*bbb)[j]->getMetabolite());
+          bb.mIndex = mpModel->getMetabolitesX().getIndex(&(*bbb)[j]->getMetabolite());
           bb.mMultiplicity = static_cast<C_INT32>(floor((*bbb)[j]->getMultiplicity() + 0.5));
 
           if (1)
