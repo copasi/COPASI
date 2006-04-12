@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-   $Revision: 1.102 $
+   $Revision: 1.103 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/22 16:53:05 $
+   $Author: ssahle $ 
+   $Date: 2006/04/12 12:33:55 $
    End CVS Header */
 
 /****************************************************************************
@@ -25,17 +25,17 @@ class DataModelGUI;
 //class CSteadyStateTask;
 //class CTrajectoryTask;
 
-class CompartmentSymbols;
+//class CompartmentSymbols;
+//class ConstantSymbols;
+//class FixedMetaboliteSymbols;
+//class MetaboliteSymbols;
 class CompartmentsWidget1;
 class CompartmentsWidget;
-class ConstantSymbols;
 class DifferentialEquations;
-class FixedMetaboliteSymbols;
 class FunctionSymbols;
 class FunctionWidget1;
 class FunctionWidget;
 class CMathModel;
-class MetaboliteSymbols;
 class MetabolitesWidget1;
 class MetabolitesWidget;
 class ModesWidget;
@@ -149,19 +149,19 @@ class ListViews : public QSplitter
     //the widgets
     QListView *folders;
 
+    //    CompartmentSymbols *compartmentSymbols;
+    //    MetaboliteSymbols *metaboliteSymbols;
+    //    ConstantSymbols *constantSymbols;
+    //    FixedMetaboliteSymbols *fixedMetaboliteSymbols;
     CMCAResultWidget* mpCMCAResultWidget;
     CMCAWidget* mpCMCAWidget;
-    CompartmentSymbols *compartmentSymbols;
     CompartmentsWidget *compartmentsWidget;
     CompartmentsWidget1 *compartmentsWidget1;
-    ConstantSymbols *constantSymbols;
     CopasiDefaultWidget *defaultWidget;
     DifferentialEquations *differentialEquations;
-    FixedMetaboliteSymbols *fixedMetaboliteSymbols;
     FunctionSymbols *functionSymbols;
     FunctionWidget *functionWidget;
     FunctionWidget1 *functionWidget1;
-    MetaboliteSymbols *metaboliteSymbols;
     MetabolitesWidget *metabolitesWidget;
     MetabolitesWidget1 *metabolitesWidget1;
     ModelWidget *modelWidget;

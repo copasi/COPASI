@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/07 12:34:58 $
+   $Author: ssahle $ 
+   $Date: 2006/04/12 12:32:31 $
    End CVS Header */
 
 #include "copasi.h"
@@ -15,8 +15,8 @@
 #include "CProgressBar.h"
 #include "listviews.h"
 
-#include "function/CFunctionDB.h"
-#include "mathmodel/CMathModel.h"
+#include "function/CFunctionDB.h" 
+//#include "mathmodel/CMathModel.h"
 #include "model/CModel.h"
 #include "model/CModelValue.h"
 #include "model/CMetabNameInterface.h"
@@ -40,8 +40,8 @@ DataModelGUI::DataModelGUI():
     mPlotDefinitionList()
 {
   this->populateData();
-  mpMathModel = NULL;
-  mMathModelUpdateScheduled = false;
+  //mpMathModel = NULL;
+  //mMathModelUpdateScheduled = false;
 }
 
 //************************************************************
@@ -66,9 +66,9 @@ void DataModelGUI::linkDataModelToGUI()
   (*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"]->setOutputHandler(tmpHandler);
 
   //math model
-  pdelete(mpMathModel);
-  mpMathModel = new CMathModel();
-  mpMathModel->setModel(CCopasiDataModel::Global->getModel());
+  //pdelete(mpMathModel);
+  //mpMathModel = new CMathModel();
+  //mpMathModel->setModel(CCopasiDataModel::Global->getModel());
 
   //connect the folder tree with the backend objects
   mTree.findNodeFromId(1)->setObjectKey(CCopasiDataModel::Global->getModel()->getKey());
@@ -377,19 +377,19 @@ CPlotSpec2Vector & DataModelGUI::getPlotDefinitionList()
 
 //************** Math model ***********************************************
 
-bool DataModelGUI::updateMathModel()
-{
-  if (mMathModelUpdateScheduled) mpMathModel->setModel(CCopasiDataModel::Global->getModel());
-
-  mMathModelUpdateScheduled = false;
-  return true;
-}
-
-bool DataModelGUI::scheduleMathModelUpdate(const bool & update)
-{
-  mMathModelUpdateScheduled = update;
-  return true;
-}
+// bool DataModelGUI::updateMathModel()
+// {
+//   if (mMathModelUpdateScheduled) mpMathModel->setModel(CCopasiDataModel::Global->getModel());
+//
+//   mMathModelUpdateScheduled = false;
+//   return true;
+//}
+//
+// bool DataModelGUI::scheduleMathModelUpdate(const bool & update)
+// {
+//   mMathModelUpdateScheduled = update;
+//   return true;
+//}
 
 //************** QApplication ***********************************************
 

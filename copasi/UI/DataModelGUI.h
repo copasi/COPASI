@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/07 12:34:59 $
+   $Author: ssahle $ 
+   $Date: 2006/04/12 12:32:31 $
    End CVS Header */
 
 #ifndef DATAMODELGUI_H
@@ -14,7 +14,7 @@
 #include "Tree.h"
 #include "plot/CPlotSpec2Vector.h"
 
-class CMathModel;
+//class CMathModel;
 class QTimer;
 
 class DataModelGUI
@@ -22,8 +22,8 @@ class DataModelGUI
   private:
     IndexedTree mTree; // create the  object of the tree
 
-    CMathModel * mpMathModel;
-    bool mMathModelUpdateScheduled;
+    //CMathModel * mpMathModel;
+    //bool mMathModelUpdateScheduled;
 
     QApplication *mpApp;
 
@@ -58,9 +58,9 @@ class DataModelGUI
 
     CPlotSpec2Vector & getPlotDefinitionList();
 
-    CMathModel * getMathModel() {return mpMathModel;}
-    bool updateMathModel();
-    bool scheduleMathModelUpdate(const bool & update = true);
+    //CMathModel * getMathModel() {return mpMathModel;}
+    //bool updateMathModel();
+    //bool scheduleMathModelUpdate(const bool & update = true);
 
     void setQApp(QApplication* app);
     QApplication* getQApp() const;

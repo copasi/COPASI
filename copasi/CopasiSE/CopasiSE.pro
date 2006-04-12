@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.26 $ $Author: gauges $ $Date: 2006/03/07 13:52:59 $  
+# $Revision: 1.27 $ $Author: ssahle $ $Date: 2006/04/12 12:29:50 $  
 ######################################################################
 
 TEMPLATE = app
@@ -18,7 +18,7 @@ COPASI_LIBS = \
          elementaryFluxModes \
          fitting \
          function \
-         mathmodel \
+#         mathmodel \
          model \
          optimization \
          plot \
@@ -46,7 +46,8 @@ contains(BUILD_OS, Linux) {
          -Wl,--start-group \
          $$join(COPASI_LIBS, " -l", -l) \
          -Wl,--end-group \
-         $${LIBS}
+         $${LIBS} \
+         -lexpat
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 

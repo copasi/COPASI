@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.122 $ $Author: ssahle $ $Date: 2006/04/11 15:07:20 $  
+# $Revision: 1.123 $ $Author: ssahle $ $Date: 2006/04/12 12:30:47 $  
 ######################################################################
 
 TEMPLATE = app
@@ -16,7 +16,7 @@ COPASI_LIBS = \
          elementaryFluxModes \
          fitting \
          function \
-         mathmodel \
+#         mathmodel \
          mml \
          model \
          optimization \
@@ -136,10 +136,10 @@ HEADERS += \
            CMCAWidget.h \
            CMCAResultWidget.h \
            CReportDefinitionSelect.h \
-           CompartmentSymbols.h \
+#           CompartmentSymbols.h \
            CompartmentsWidget.h \
            CompartmentsWidget1.h \
-           ConstantSymbols.h \
+#           ConstantSymbols.h \
            CopasiDefaultWidget.h \
            CopasiFileDialog.h \
            CopasiSlider.h \
@@ -154,12 +154,12 @@ HEADERS += \
            CTimeSeriesTable.h \
            DataModelGUI.h \
            DifferentialEquations.h \
-           FixedMetaboliteSymbols.h \
+#           FixedMetaboliteSymbols.h \
            FunctionItemWidget.h \
            FunctionSymbols.h \
            FunctionWidget.h \
            FunctionWidget1.h \
-           MetaboliteSymbols.h \
+#           MetaboliteSymbols.h \
            MetabolitesWidget.h \
            MetabolitesWidget1.h \
            ModelWidget.h \
@@ -204,10 +204,10 @@ SOURCES += \
            CMCAWidget.cpp \
            CMCAResultWidget.cpp \
            CReportDefinitionSelect.cpp \
-           CompartmentSymbols.cpp \
+#           CompartmentSymbols.cpp \
            CompartmentsWidget.cpp \
            CompartmentsWidget1.cpp \
-           ConstantSymbols.cpp \
+#           ConstantSymbols.cpp \
            CopasiDefaultWidget.cpp \
            CopasiFileDialog.cpp \
            CopasiSlider.cpp \
@@ -223,14 +223,14 @@ SOURCES += \
            CTimeSeriesTable.cpp \
            DataModelGUI.cpp \
            DifferentialEquations.cpp \
-           FixedMetaboliteSymbols.cpp \
+#           FixedMetaboliteSymbols.cpp \
            FunctionItemWidget.cpp \
            FunctionSymbols.cpp \
            FunctionWidget.cpp \
            FunctionWidget1.cpp \
            listviews.cpp \
            main.cpp \
-           MetaboliteSymbols.cpp \
+#           MetaboliteSymbols.cpp \
            MetabolitesWidget.cpp \
            MetabolitesWidget1.cpp \
            ModelValuesWidget.cpp \

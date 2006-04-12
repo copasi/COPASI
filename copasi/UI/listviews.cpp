@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.191 $
+   $Revision: 1.192 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/22 16:53:05 $
+   $Author: ssahle $ 
+   $Date: 2006/04/12 12:33:55 $
    End CVS Header */
 
 /****************************************************************************
@@ -21,18 +21,18 @@
 #include <qobjectlist.h>
 #include <qimage.h>
 
+//#include "CompartmentSymbols.h"
+//#include "ConstantSymbols.h"
+//#include "FixedMetaboliteSymbols.h"
+//#include "MetaboliteSymbols.h"
 #include "DataModelGUI.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
-#include "CompartmentSymbols.h"
 #include "CompartmentsWidget.h"
 #include "CompartmentsWidget1.h"
-#include "ConstantSymbols.h"
-#include "FixedMetaboliteSymbols.h"
 #include "FunctionSymbols.h"
 #include "FunctionWidget.h"
 #include "FunctionWidget1.h"
 #include "DifferentialEquations.h"
-#include "MetaboliteSymbols.h"
 #include "MetabolitesWidget.h"
 #include "MetabolitesWidget1.h"
 #include "ModelWidget.h"
@@ -58,8 +58,8 @@
 #include "CopasiDefaultWidget.h"
 #include "TrajectoryWidget.h"
 #include "TimeSeriesWidget.h"
-#include "TSSWidget.h"
-#include "mathmodel/CMathModel.h"
+#include "TSSWidget.h" 
+//#include "mathmodel/CMathModel.h"
 #include "listviews.h"
 #include "qtUtilities.h"
 #include "CQFittingWidget.h"
@@ -188,17 +188,17 @@ ListViews::ListViews(QWidget *parent, const char *name):
     mpMathModel(NULL),
     mpCMCAResultWidget(NULL),
     mpCMCAWidget(NULL),
-    compartmentSymbols(NULL),
+    //    compartmentSymbols(NULL),
     compartmentsWidget(NULL),
     compartmentsWidget1(NULL),
-    constantSymbols(NULL),
+    //    constantSymbols(NULL),
     defaultWidget(NULL),
     differentialEquations(NULL),
-    fixedMetaboliteSymbols(NULL),
+    //    fixedMetaboliteSymbols(NULL),
     functionSymbols(NULL),
     functionWidget(NULL),
     functionWidget1(NULL),
-    metaboliteSymbols(NULL),
+    //    metaboliteSymbols(NULL),
     metabolitesWidget(NULL),
     metabolitesWidget1(NULL),
     modelWidget(NULL),
@@ -311,8 +311,8 @@ void ListViews::setupFolders()
 void ListViews::ConstructNodeWidgets()
 {
   // create the model widgets
-  if (!compartmentSymbols) compartmentSymbols = new CompartmentSymbols(this);
-  compartmentSymbols->hide();
+  //  if (!compartmentSymbols) compartmentSymbols = new CompartmentSymbols(this);
+  //  compartmentSymbols->hide();
 
   if (!compartmentsWidget) compartmentsWidget = new CompartmentsWidget(this);
   compartmentsWidget->hide();
@@ -320,14 +320,14 @@ void ListViews::ConstructNodeWidgets()
   if (!compartmentsWidget1) compartmentsWidget1 = new CompartmentsWidget1(this);
   compartmentsWidget1->hide();
 
-  if (!constantSymbols) constantSymbols = new ConstantSymbols(this);
-  constantSymbols->hide();
+  //  if (!constantSymbols) constantSymbols = new ConstantSymbols(this);
+  //  constantSymbols->hide();
 
   if (!differentialEquations) differentialEquations = new DifferentialEquations(this);
   differentialEquations->hide();
 
-  if (!fixedMetaboliteSymbols) fixedMetaboliteSymbols = new FixedMetaboliteSymbols(this);
-  fixedMetaboliteSymbols->hide();
+  //  if (!fixedMetaboliteSymbols) fixedMetaboliteSymbols = new FixedMetaboliteSymbols(this);
+  //  fixedMetaboliteSymbols->hide();
 
   if (!functionSymbols) functionSymbols = new FunctionSymbols(this);
   functionSymbols->hide();
@@ -338,8 +338,8 @@ void ListViews::ConstructNodeWidgets()
   if (!functionWidget1) functionWidget1 = new FunctionWidget1(this);
   functionWidget1->hide();
 
-  if (!metaboliteSymbols) metaboliteSymbols = new MetaboliteSymbols(this);
-  metaboliteSymbols->hide();
+  //  if (!metaboliteSymbols) metaboliteSymbols = new MetaboliteSymbols(this);
+  //  metaboliteSymbols->hide();
 
   if (!metabolitesWidget) metabolitesWidget = new MetabolitesWidget(this);
   metabolitesWidget->hide();
@@ -466,21 +466,21 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 116:
         return parametersWidget;
         break;
-      case 121:
-        return compartmentSymbols;
-        break;
+        /*      case 121:
+                return compartmentSymbols;
+                break;*/
       case 122:
         return functionSymbols;
         break;
-      case 123:
-        return constantSymbols;
-        break;
-      case 124:
-        return fixedMetaboliteSymbols;
-        break;
-      case 125:
-        return metaboliteSymbols;
-        break;
+        /*      case 123:
+                return constantSymbols;
+                break;*/ 
+        /*      case 124:
+                return fixedMetaboliteSymbols;
+                break;*/ 
+        /*      case 125:
+                return metaboliteSymbols;
+                break;*/
       case 126:
         return differentialEquations;
         break;
@@ -789,18 +789,18 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
   bool success = true;
 
   //update math model
-  switch (objectType)
-    {
-    case ListViews::MODEL:
-    case ListViews::STATE:
-    case ListViews::COMPARTMENT:
-    case ListViews::METABOLITE:
-    case ListViews::REACTION:
-    case ListViews::MODELVALUE:
-      dataModel->scheduleMathModelUpdate();
-      break;
-    default:;
-    }
+  //   switch (objectType)
+  //     {
+  //     case ListViews::MODEL:
+  //     case ListViews::STATE:
+  //     case ListViews::COMPARTMENT:
+  //     case ListViews::METABOLITE:
+  //     case ListViews::REACTION:
+  //     case ListViews::MODELVALUE:
+  //       dataModel->scheduleMathModelUpdate();
+  //       break;
+  //     default:;
+  //}
 
   //maintain the "changed" flag
   switch (objectType)
