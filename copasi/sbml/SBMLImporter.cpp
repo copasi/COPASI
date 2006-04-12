@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.123 $
+   $Revision: 1.124 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2006/04/07 18:48:14 $
+   $Author: ssahle $ 
+   $Date: 2006/04/12 14:34:41 $
    End CVS Header */
 
 #include "copasi.h"
@@ -2142,7 +2142,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
           unsigned i, iMax = substrates.size();
           for (i = 0;i < iMax && result;++i)
             {
-              if (fabs(multiplicityMap[&substrates[i]->getMetabolite()] - substrates[i]->getMultiplicity()) >= 0.01)
+              if (fabs(multiplicityMap[substrates[i]->getMetabolite()] - substrates[i]->getMultiplicity()) >= 0.01)
                 {
                   result = false;
                   break;

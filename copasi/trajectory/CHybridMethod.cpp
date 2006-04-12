@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/30 19:07:26 $
+   $Author: ssahle $ 
+   $Date: 2006/04/12 14:35:01 $
    End CVS Header */
 
 /**
@@ -75,14 +75,14 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * C_UNUSED(p
 
   switch (result)
     {
-      /*    case - 3:           // non-integer stoichometry
+      /*    case - 3:          // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:           // reversible reaction exists
+      case - 2:          // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
 
-      case - 1:           // more than one compartment involved
+      case - 1:          // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/
     case 1:
@@ -733,7 +733,7 @@ void CHybridMethod::setupBalances()
         &(*mpReactions)[i]->getChemEq().getBalances();
       for (j = 0; j < balances->size(); j++)
         {
-          newElement.mpMetabolite = const_cast < CMetab* > (& (*balances)[j]->getMetabolite());
+          newElement.mpMetabolite = const_cast < CMetab* > ((*balances)[j]->getMetabolite());
           newElement.mIndex = mpModel->getMetabolites().getIndex(newElement.mpMetabolite);
           // + 0.5 to get a rounding out of the static_cast to C_INT32!
           newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));
@@ -747,7 +747,7 @@ void CHybridMethod::setupBalances()
       balances = &(*mpReactions)[i]->getChemEq().getSubstrates();
       for (j = 0; j < balances->size(); j++)
         {
-          newElement.mpMetabolite = const_cast < CMetab* > (& (*balances)[j]->getMetabolite());
+          newElement.mpMetabolite = const_cast < CMetab* > ((*balances)[j]->getMetabolite());
           newElement.mIndex = mpModel->getMetabolites().getIndex(newElement.mpMetabolite);
           // + 0.5 to get a rounding out of the static_cast to C_INT32!
           newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));

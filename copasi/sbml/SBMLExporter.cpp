@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2006/03/17 20:46:01 $
+   $Author: ssahle $ 
+   $Date: 2006/04/12 14:34:41 $
    End CVS Header */
 
 #include <math.h>
@@ -689,13 +689,13 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
   for (counter = 0; counter < chemicalEquation.getSubstrates().size(); counter++)
     {
       CChemEqElement* element = chemicalEquation.getSubstrates()[counter];
-      const CMetab& metabolite = element->getMetabolite();
+      const CMetab* pMetabolite = element->getMetabolite(); assert(pMetabolite);
       SpeciesReference* sRef = NULL;
-      if (!(sRef = sbmlReaction->getReactant(metabolite.getSBMLId())))
+      if (!(sRef = sbmlReaction->getReactant(pMetabolite->getSBMLId())))
         {
           sRef = new SpeciesReference();
           sbmlReaction->addReactant(*sRef);
-          sRef->setSpecies(metabolite.getSBMLId().c_str());
+          sRef->setSpecies(pMetabolite->getSBMLId().c_str());
         }
       sRef->setStoichiometry(element->getMultiplicity());
       sRef->setDenominator(1);
@@ -714,12 +714,12 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
   for (counter = 0; counter < chemicalEquation.getProducts().size(); counter++)
     {
       CChemEqElement* element = chemicalEquation.getProducts()[counter];
-      const CMetab& metabolite = element->getMetabolite();
+      const CMetab* pMetabolite = element->getMetabolite(); assert(pMetabolite);
       SpeciesReference* sRef = NULL;
-      if (!(sRef = sbmlReaction->getProduct(metabolite.getSBMLId())))
+      if (!(sRef = sbmlReaction->getProduct(pMetabolite->getSBMLId())))
         {
           sRef = new SpeciesReference();
-          sRef->setSpecies(metabolite.getSBMLId().c_str());
+          sRef->setSpecies(pMetabolite->getSBMLId().c_str());
           sbmlReaction->addProduct(*sRef);
         }
       sRef->setStoichiometry(element->getMultiplicity());
@@ -739,12 +739,12 @@ Reaction* SBMLExporter::createSBMLReactionFromCReaction(CReaction* copasiReactio
   for (counter = 0; counter < chemicalEquation.getModifiers().size(); counter++)
     {
       CChemEqElement* element = chemicalEquation.getModifiers()[counter];
-      const CMetab& metabolite = element->getMetabolite();
+      const CMetab* pMetabolite = element->getMetabolite(); assert(pMetabolite);
       ModifierSpeciesReference* sRef = NULL;
-      if (!(sRef = sbmlReaction->getModifier(metabolite.getSBMLId())))
+      if (!(sRef = sbmlReaction->getModifier(pMetabolite->getSBMLId())))
         {
           sRef = new ModifierSpeciesReference();
-          sRef->setSpecies(metabolite.getSBMLId().c_str());
+          sRef->setSpecies(pMetabolite->getSBMLId().c_str());
           sbmlReaction->addModifier(*sRef);
         }
       usedReferences.insert(sRef->getSpecies());
@@ -893,15 +893,21 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
    */
   if (copasiReaction->getCompartmentNumber() == 1)
     {
+      //TODO: the whole next paragraph (finding the compartment)
+      //should rather be a method of CReaction (or CChemEq)
       const CCompartment* compartment = NULL;
       if (copasiReaction->getChemEq().getSubstrates().size() != 0)
         {
-          compartment = copasiReaction->getChemEq().getSubstrates()[0]->getMetabolite().getCompartment();
+          assert(copasiReaction->getChemEq().getSubstrates()[0]->getMetabolite());
+          compartment = copasiReaction->getChemEq().getSubstrates()[0]->getMetabolite()->getCompartment();
         }
       else
         {
-          compartment = copasiReaction->getChemEq().getProducts()[0]->getMetabolite().getCompartment();
+          assert(copasiReaction->getChemEq().getProducts().size());
+          assert(copasiReaction->getChemEq().getProducts()[0]->getMetabolite());
+          compartment = copasiReaction->getChemEq().getProducts()[0]->getMetabolite()->getCompartment();
         }
+
       // check if the importer has added a division by the volume
       // if so remove it instead of multiplying again
       ASTNode* tNode = this->isDividedByVolume(node, compartment->getSBMLId());
@@ -979,9 +985,10 @@ ASTNode* SBMLExporter::createTimesTree(const CCopasiVector<CChemEqElement >& vec
   if (pos == vect.size() - 1)
     {
       node = new ASTNode(AST_NAME);
-      const CMetab& pMetab = vect[pos]->getMetabolite();
+      const CMetab* pMetab = vect[pos]->getMetabolite();
+      assert(pMetab);
 
-      node->setName(pMetab.getSBMLId().c_str());
+      node->setName(pMetab->getSBMLId().c_str());
       /* if the stoichiometry is not 1.0, we have to add it to the exponent */
       if (multiplicity != 1.0)
         {
@@ -997,9 +1004,10 @@ ASTNode* SBMLExporter::createTimesTree(const CCopasiVector<CChemEqElement >& vec
     {
       node = new ASTNode(AST_TIMES);
       ASTNode* child = new ASTNode(AST_NAME);
-      const CMetab& pMetab = vect[pos]->getMetabolite();
+      const CMetab* pMetab = vect[pos]->getMetabolite();
+      assert(pMetab);
 
-      child->setName(pMetab.getSBMLId().c_str());
+      child->setName(pMetab->getSBMLId().c_str());
 
       /* if the stoichiometry is not 1.0, we have to add it to the exponent */
       if (multiplicity != 1.0)

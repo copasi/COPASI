@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/04/12 13:05:11 $
+   $Date: 2006/04/12 14:35:01 $
    End CVS Header */
 
 #ifdef WIN32
@@ -427,10 +427,11 @@ void CStochMethod::setupDependencyGraphAndBalances()
         {
           //bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getObjectName(());
           //bb.mIndex = mpModel->findMetabByKey((*bbb)[j]->getMetaboliteKey());
-          bb.mIndex = mpModel->getMetabolitesX().getIndex(&(*bbb)[j]->getMetabolite());
+          assert((*bbb)[j]->getMetabolite());
+          bb.mIndex = mpModel->getMetabolitesX().getIndex((*bbb)[j]->getMetabolite());
           bb.mMultiplicity = static_cast<C_INT32>(floor((*bbb)[j]->getMultiplicity() + 0.5));
 
-          if (((*bbb)[j]->getMetabolite().getStatus()) != CModelEntity::FIXED)
+          if (((*bbb)[j]->getMetabolite()->getStatus()) != CModelEntity::FIXED)
             {
               if (bb.mMultiplicity > maxBalance) maxBalance = bb.mMultiplicity;
               mLocalBalances[i].push_back(bb);
@@ -444,7 +445,8 @@ void CStochMethod::setupDependencyGraphAndBalances()
         {
           //bb.mIndex = mpModel->getMetabolites().getIndex((*bbb)[j]->getMetabolite().getObjectName(());
           //bb.mIndex = mpModel->findMetabByKey((*bbb)[j]->getMetaboliteKey());
-          bb.mIndex = mpModel->getMetabolitesX().getIndex(&(*bbb)[j]->getMetabolite());
+          assert((*bbb)[j]->getMetabolite());
+          bb.mIndex = mpModel->getMetabolitesX().getIndex((*bbb)[j]->getMetabolite());
           bb.mMultiplicity = static_cast<C_INT32>(floor((*bbb)[j]->getMultiplicity() + 0.5));
 
           if (1)
@@ -508,10 +510,11 @@ std::set<std::string> *CStochMethod::getAffects(C_INT32 reaction_index)
 
   for (unsigned C_INT32 i = 0; i < balances.size(); i++)
     {
+      if (!balances[i]->getMetabolite()) continue;
       if (fabs(balances[i]->getMultiplicity()) >= 0.1)
-        if (balances[i]->getMetabolite().getStatus() != CModelEntity::FIXED)
+        if (balances[i]->getMetabolite()->getStatus() != CModelEntity::FIXED)
           {
-            retset->insert(balances[i]->getMetabolite().getKey());
+            retset->insert(balances[i]->getMetabolite()->getKey());
             //std::cout << " " << balances[i]->getMetabolite().getObjectName() << ":" << balances[i]->getMetabolite().getKey();
           }
     }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/23 13:11:56 $
+   $Author: ssahle $ 
+   $Date: 2006/04/12 14:35:23 $
    End CVS Header */
 
 #include <locale>
@@ -886,11 +886,13 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
               substr = substrs[k];
               mult = substr->getMultiplicity();
 
-              outFile << " * " << newNameMap[substr->getMetabolite().getKey()];
+              //outFile << " * " << newNameMap[substr->getMetabolite().getKey()];
+              outFile << " * " << newNameMap[substr->getMetaboliteKey()];
 
               if (mult > 1)
                 for (m = 1; m < mult; ++m)
-                  outFile << " * " << newNameMap[substr->getMetabolite().getKey()];
+                  //outFile << " * " << newNameMap[substr->getMetabolite().getKey()];
+                  outFile << " * " << newNameMap[substr->getMetaboliteKey()];
             }
 
           if (cMassAction.isReversible() == TriTrue)
@@ -917,11 +919,13 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
                   prod = prods[k];
                   mult = prod->getMultiplicity();
 
-                  outFile << " * " << newNameMap[prod->getMetabolite().getKey()];
+                  //outFile << " * " << newNameMap[prod->getMetabolite().getKey()];
+                  outFile << " * " << newNameMap[prod->getMetaboliteKey()];
 
                   if (mult > 1)
                     for (m = 1; m < mult; ++m)
-                      outFile << " * " << newNameMap[prod->getMetabolite().getKey()];
+                      //outFile << " * " << newNameMap[prod->getMetabolite().getKey()];
+                      outFile << " * " << newNameMap[prod->getMetaboliteKey()];
                 }
             }
           outFile << ")";
@@ -1347,7 +1351,8 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
                         }
                       else
                         {*/
-                      name = substr->getMetabolite().getObjectName();
+                      assert(substr->getMetabolite());
+                      name = substr->getMetabolite()->getObjectName();
                       index = findMetabXByName(copasiModel, name);
                       massaction << " * y[" << index << "]";
 

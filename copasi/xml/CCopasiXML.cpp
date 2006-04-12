@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/17 13:49:56 $
+   $Date: 2006/04/12 14:35:50 $
    End CVS Header */
 
 /**
@@ -321,8 +321,7 @@ bool CCopasiXML::saveModel()
 
               for (j = 0; j < jmax; j++)
                 {
-                  Attr.setValue(0,
-                                (*pReactantList)[j]->getMetabolite().getKey());
+                  Attr.setValue(0, (*pReactantList)[j]->getMetaboliteKey());
                   Attr.setValue(1, (*pReactantList)[j]->getMultiplicity());
 
                   saveElement("Substrate", Attr);
@@ -339,10 +338,8 @@ bool CCopasiXML::saveModel()
 
               for (j = 0; j < jmax; j++)
                 {
-                  Attr.setValue(0,
-                                (*pReactantList)[j]->getMetabolite().getKey());
-                  Attr.setValue(1,
-                                (*pReactantList)[j]->getMultiplicity());
+                  Attr.setValue(0, (*pReactantList)[j]->getMetaboliteKey());
+                  Attr.setValue(1, (*pReactantList)[j]->getMultiplicity());
 
                   saveElement("Product", Attr);
                 }
@@ -357,7 +354,7 @@ bool CCopasiXML::saveModel()
 
               for (j = 0, jmax = pReactantList->size(); j < jmax; j++)
                 {
-                  Attr.setValue(0, (*pReactantList)[j]->getMetabolite().getKey());
+                  Attr.setValue(0, (*pReactantList)[j]->getMetaboliteKey());
                   Attr.setValue(1, (*pReactantList)[j]->getMultiplicity());
 
                   saveElement("Modifier", Attr);
