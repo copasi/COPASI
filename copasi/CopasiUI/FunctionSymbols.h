@@ -1,17 +1,10 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionSymbols.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: anuragr $ 
-   $Date: 2004/11/11 21:14:07 $
+   $Author: ssahle $ 
+   $Date: 2006/04/12 12:33:16 $
    End CVS Header */
-
-/****************************************************************************
- **  $ CopasiUI/FunctionSymbols.h               
- **  $ Author  : Mudita Singhal
- **  
- ** This is the header file for the Function Symbols
- *****************************************************************************/
 
 #ifndef FUNCTION_SYMBOLS_H
 #define FUNCTION_SYMBOLS_H
@@ -23,24 +16,24 @@
 #include "copasi.h"
 #include "copasiWidget.h"
 
-class CMathModel;
+//class CMathModel;
 
 class FunctionSymbols : public CopasiWidget
   {
     Q_OBJECT
 
   protected:
-    CMathModel * mModel;
+    //    CMathModel * mModel;
     QTable * table;
     //QPushButton *btnOK;
     //QPushButton *btnCancel;
 
   signals:
-    void name(const QString &);
+    //    void name(const QString &);
 
   public:
     FunctionSymbols (QWidget *parent, const char * name = 0, WFlags f = 0);
-    void resizeEvent(QResizeEvent * re);
+    //    void resizeEvent(QResizeEvent * re);
 
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool enter(const std::string & key = "");
@@ -51,7 +44,7 @@ class FunctionSymbols : public CopasiWidget
     virtual void slotTableSelectionChanged();
 
   private:
-    void loadFunctionSymbols(CMathModel *model);
+    void loadFunctionSymbols(/*CMathModel *model*/);
   };
 
 #endif

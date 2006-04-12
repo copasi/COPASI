@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/21 11:40:10 $
+   $Author: ssahle $ 
+   $Date: 2006/04/12 12:33:16 $
    End CVS Header */
 
 /*******************************************************************
@@ -19,9 +19,9 @@
 #include <qmessagebox.h>
 #include <qfont.h>
 
-#include "FunctionSymbols.h"
-#include "mathmodel/CMathModel.h"
-#include "mathmodel/CMathSymbol.h"
+#include "FunctionSymbols.h" 
+//#include "mathmodel/CMathModel.h"
+//#include "mathmodel/CMathSymbol.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "listviews.h"
 #include "DataModelGUI.h"
@@ -47,7 +47,7 @@
 FunctionSymbols::FunctionSymbols(QWidget *parent, const char * name, WFlags f)
     : CopasiWidget(parent, name, f)
 {
-  mModel = NULL;
+  //mModel = NULL;
   table = new QTable(this, "tblFunctionSymbols");
   table->setNumCols(3);
   table->setNumRows(-1);
@@ -90,44 +90,44 @@ FunctionSymbols::FunctionSymbols(QWidget *parent, const char * name, WFlags f)
   table->setReadOnly(1);
 }
 
-void FunctionSymbols::loadFunctionSymbols(CMathModel *model)
+void FunctionSymbols::loadFunctionSymbols(/*CMathModel *model*/)
 {
-  dataModel->updateMathModel();
-
-  if (model != NULL)
-    {
-      mModel = model;
-
-      //Emptying the table
-      table->setNumRows(0);
-
-      CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
-
-      std::map< std::string, CMathSymbol * > functionList = mModel->getFunctionList();
-      std::map<std::string, CMathSymbol * >::iterator it;
-      CMathSymbol * mathSymbol;
-
-      table->setNumRows(functionList.size());
-      int index = 0;
-      for (it = functionList.begin(); it != functionList.end();++it)
-        {
-          mathSymbol = it->second;
-          table->setText(index, 0, FROM_UTF8(it->first));
-
-          CFunction *metabObject = (CFunction *)mathSymbol->getObject();
-          table->setText(index, 1, FROM_UTF8(metabObject->getObjectName()));
-          QStringList functionType;
-          CFunctionParameters &functParam = metabObject->getVariables();
-          for (unsigned C_INT32 j = 0; j < functParam.size(); j++)
-            {
-              functionType.push_back(FROM_UTF8(functParam[j]->getObjectName()));
-            }
-          QComboTableItem * item = new QComboTableItem(table, functionType, false);
-          table->setItem(index, 2, item);
-          //item->setCurrentItem(temp);
-          index++;
-        }
-    }
+  /*  dataModel->updateMathModel();
+   
+    if (model != NULL)
+      {
+        mModel = model;
+   
+        //Emptying the table
+        table->setNumRows(0);
+   
+        CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
+   
+        std::map< std::string, CMathSymbol * > functionList = mModel->getFunctionList();
+        std::map<std::string, CMathSymbol * >::iterator it;
+        CMathSymbol * mathSymbol;
+   
+        table->setNumRows(functionList.size());
+        int index = 0;
+        for (it = functionList.begin(); it != functionList.end();++it)
+          {
+            mathSymbol = it->second;
+            table->setText(index, 0, FROM_UTF8(it->first));
+   
+            CFunction *metabObject = (CFunction *)mathSymbol->getObject();
+            table->setText(index, 1, FROM_UTF8(metabObject->getObjectName()));
+            QStringList functionType;
+            CFunctionParameters &functParam = metabObject->getVariables();
+            for (unsigned C_INT32 j = 0; j < functParam.size(); j++)
+              {
+                functionType.push_back(FROM_UTF8(functParam[j]->getObjectName()));
+              }
+            QComboTableItem * item = new QComboTableItem(table, functionType, false);
+            table->setItem(index, 2, item);
+            //item->setCurrentItem(temp);
+            index++;
+          }
+      }*/
 }
 
 void FunctionSymbols::slotTableSelectionChanged()
@@ -144,24 +144,24 @@ void FunctionSymbols::slotBtnOKClicked()
 void FunctionSymbols::slotBtnCancelClicked()
 {}
 
-void FunctionSymbols::resizeEvent(QResizeEvent * re)
-{
-  if (isVisible())
-    {
-      int newWidth = re->size().width();
-      newWidth -= 35; //Accounting for the left (vertical) header width.
-      float weight0 = 4.0, weight1 = 3.0, weight2 = 3.0;
-      float weightSum = weight0 + weight1 + weight2;
-      int w0, w1, w2;
-      w0 = (int) (newWidth * (weight0 / weightSum));
-      w1 = (int) (newWidth * (weight1 / weightSum));
-      w2 = newWidth - w0 - w1 - table->verticalScrollBar()->width();
-      table->setColumnWidth(0, w0);
-      table->setColumnWidth(1, w1);
-      table->setColumnWidth(2, w2);
-    }
-  CopasiWidget::resizeEvent(re);
-}
+// void FunctionSymbols::resizeEvent(QResizeEvent * re)
+// {
+//   if (isVisible())
+//     {
+//       int newWidth = re->size().width();
+//       newWidth -= 35; //Accounting for the left (vertical) header width.
+//       float weight0 = 4.0, weight1 = 3.0, weight2 = 3.0;
+//       float weightSum = weight0 + weight1 + weight2;
+//       int w0, w1, w2;
+//       w0 = (int) (newWidth * (weight0 / weightSum));
+//       w1 = (int) (newWidth * (weight1 / weightSum));
+//       w2 = newWidth - w0 - w1 - table->verticalScrollBar()->width();
+//       table->setColumnWidth(0, w0);
+//       table->setColumnWidth(1, w1);
+//       table->setColumnWidth(2, w2);
+//}
+//   CopasiWidget::resizeEvent(re);
+//}
 
 bool FunctionSymbols::update(ListViews::ObjectType objectType,
                              ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
@@ -173,7 +173,7 @@ bool FunctionSymbols::update(ListViews::ObjectType objectType,
     case ListViews::MODEL:
     case ListViews::REACTION:
     case ListViews::FUNCTION:
-      loadFunctionSymbols(dataModel->getMathModel());
+      loadFunctionSymbols(/*dataModel->getMathModel()*/);
       break;
 
     default:
@@ -184,6 +184,6 @@ bool FunctionSymbols::update(ListViews::ObjectType objectType,
 
 bool FunctionSymbols::enter(const std::string & C_UNUSED(key))
 {
-  loadFunctionSymbols(dataModel->getMathModel());
+  loadFunctionSymbols(/*dataModel->getMathModel()*/);
   return true;
 }
