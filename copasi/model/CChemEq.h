@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2004/12/20 17:42:38 $
+   $Author: ssahle $ 
+   $Date: 2006/04/12 14:33:27 $
    End CVS Header */
 
 /**
@@ -22,7 +22,6 @@
 #include "CChemEqElement.h"
 #include "utilities/CCopasiVector.h"
 
-/** @dia:pos 52.1128,98.3144 */
 class CChemEq : public CCopasiContainer
   {
   public:
@@ -47,7 +46,6 @@ class CChemEq : public CCopasiContainer
      * @supplierCardinality 0..*
      * @label Substrates
      */
-    /** @dia:route 3,17; h,52.1128,99.0144,46.5733,102.331,41.0337 */
     CCopasiVector < CChemEqElement > mSubstrates;
 
     /**
@@ -55,13 +53,11 @@ class CChemEq : public CCopasiContainer
      * @supplierCardinality 0..*
      * @label Products
      */
-    /** @dia:route 3,21; h,52.1128,99.0144,46.5733,103.931,41.0337 */
     CCopasiVector < CChemEqElement > mProducts;
 
     /**
      *  A vector of modifiers in the chemical reaction. 
      */
-    /** @dia:route 3,13; h,52.1128,99.0144,46.5733,100.731,41.0337 */
     CCopasiVector < CChemEqElement > mModifiers;
 
     /**
@@ -69,7 +65,6 @@ class CChemEq : public CCopasiContainer
      * @supplierCardinality 0..*
      * @label Stoichiometry
      */
-    /** @dia:route 3,25; h,52.1128,99.0144,46.5733,105.531,41.0337 */
     CCopasiVector < CChemEqElement > mBalances;
 
     // Operations
@@ -151,8 +146,8 @@ class CChemEq : public CCopasiContainer
      *  returned. If there are no substrates and there are Products and all Products are in the
      *  same compartment this compartment will be returned, else an exception
      *  will be thrown.
-     */
-    const CCompartment* CheckAndGetFunctionCompartment() const;
+     */ 
+    //const CCompartment* CheckAndGetFunctionCompartment() const;
 
     /**
      *  exchanges products and substrates

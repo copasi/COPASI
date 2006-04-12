@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:26 $
+   $Author: ssahle $ 
+   $Date: 2006/04/12 14:33:27 $
    End CVS Header */
 
 // CChemEqElement
@@ -98,14 +98,17 @@ unsigned C_INT32 CChemEq::getCompartmentNumber() const
 
     for (i = 0, Number = 0; i < imax; i++)
       {
+        if (!mBalances[i]->getMetabolite())
+          continue;
+
         for (j = 0, jmax = Compartments.size(); j < jmax; j++)
-          if (Compartments[j] == mBalances[i]->getMetabolite().getCompartment())
+          if (Compartments[j] == mBalances[i]->getMetabolite()->getCompartment())
             break;
 
         if (j == jmax)
           {
             Number ++;
-            Compartments.push_back(mBalances[i]->getMetabolite().getCompartment());
+            Compartments.push_back(mBalances[i]->getMetabolite()->getCompartment());
           }
       }
 
@@ -122,7 +125,9 @@ const CCompartment & CChemEq::getLargestCompartment() const
 
     for (i = 0, imax = mSubstrates.size(); i < imax; i++)
       {
-        tmp = mSubstrates[i]->getMetabolite().getCompartment()->getVolume();
+        if (!mSubstrates[i]->getMetabolite()) continue;
+
+        tmp = mSubstrates[i]->getMetabolite()->getCompartment()->getVolume();
 
         if (tmp > maxVol)
           {
@@ -133,7 +138,9 @@ const CCompartment & CChemEq::getLargestCompartment() const
 
     for (i = 0, imax = mProducts.size(); i < imax; i++)
       {
-        tmp = mProducts[i]->getMetabolite().getCompartment()->getVolume();
+        if (!mProducts[i]->getMetabolite()) continue;
+
+        tmp = mProducts[i]->getMetabolite()->getCompartment()->getVolume();
 
         if (tmp > maxVol)
           {
@@ -143,14 +150,14 @@ const CCompartment & CChemEq::getLargestCompartment() const
       }
 
     if (indexProducts != C_INVALID_INDEX)
-      return *mProducts[indexProducts]->getMetabolite().getCompartment();
+      return *mProducts[indexProducts]->getMetabolite()->getCompartment();
 
     if (indexSubstrates != C_INVALID_INDEX)
-      return *mSubstrates[indexSubstrates]->getMetabolite().getCompartment();
+      return *mSubstrates[indexSubstrates]->getMetabolite()->getCompartment();
 
     fatalError();
 
-    return *mSubstrates[indexSubstrates]->getMetabolite().getCompartment();
+    return *mSubstrates[indexSubstrates]->getMetabolite()->getCompartment();
   }
 
 /*const CCompartment & CChemEq::getSmallestCompartment() const
@@ -187,37 +194,37 @@ void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
     structure[i]->addToMultiplicity(element.getMultiplicity());
 }
 
-const CCompartment* CChemEq::CheckAndGetFunctionCompartment() const
-  {
-    // check initialized() and compiled
-
-    const CCompartment* comp = NULL;
-    unsigned C_INT32 i, imax;
-
-    if (mSubstrates.size() > 0)
-      {
-        comp = mSubstrates[0]->getMetabolite().getCompartment();
-        imax = mSubstrates.size();
-        for (i = 1; i < imax; i++)
-          if (comp != mSubstrates[i]->getMetabolite().getCompartment())
-          {CCopasiMessage(CCopasiMessage::ERROR, MCChemEq + 2);} // substs in different compartments
-        return comp; // all substrates are in the same compartment
-      }
-    else if (mProducts.size() > 0)
-      {
-        comp = mProducts[0]->getMetabolite().getCompartment();
-        imax = mProducts.size();
-        for (i = 1; i < imax; i++)
-          if (comp != mProducts[i]->getMetabolite().getCompartment())
-          {CCopasiMessage(CCopasiMessage::ERROR, MCChemEq + 3);}  // products in different compartments
-        return comp; // all products are in the same compartment
-      }
-    else
-      {
-        CCopasiMessage(CCopasiMessage::ERROR, MCChemEq + 1); // error: no subs. and no product
-        return NULL;
-      }
-  }
+// const CCompartment* CChemEq::CheckAndGetFunctionCompartment() const
+//   {
+//     // check initialized() and compiled
+//
+//     const CCompartment* comp = NULL;
+//     unsigned C_INT32 i, imax;
+//
+//     if (mSubstrates.size() > 0)
+//       {
+//         comp = mSubstrates[0]->getMetabolite().getCompartment();
+//         imax = mSubstrates.size();
+//         for (i = 1; i < imax; i++)
+//           if (comp != mSubstrates[i]->getMetabolite().getCompartment())
+//           {CCopasiMessage(CCopasiMessage::ERROR, MCChemEq + 2);} // substs in different compartments
+//         return comp; // all substrates are in the same compartment
+//}
+//     else if (mProducts.size() > 0)
+//       {
+//         comp = mProducts[0]->getMetabolite().getCompartment();
+//         imax = mProducts.size();
+//         for (i = 1; i < imax; i++)
+//           if (comp != mProducts[i]->getMetabolite().getCompartment())
+//           {CCopasiMessage(CCopasiMessage::ERROR, MCChemEq + 3);}  // products in different compartments
+//         return comp; // all products are in the same compartment
+//}
+//     else
+//       {
+//         CCopasiMessage(CCopasiMessage::ERROR, MCChemEq + 1); // error: no subs. and no product
+//         return NULL;
+//}
+//}
 
 #ifdef xxxx
 void CChemEq::reverse()

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/04/11 22:19:48 $
+   $Date: 2006/04/12 14:33:27 $
    End CVS Header */
 
 #include "mathematics.h"
@@ -370,9 +370,9 @@ const CCompartment * CChemEqInterface::getCompartment(const CModel * model) cons
       {
         const CMetab * metab = NULL;
         if (ce.getSubstrates().size())
-          metab = &ce.getSubstrates()[0]->getMetabolite();
+          metab = ce.getSubstrates()[0]->getMetabolite();
         else if (ce.getProducts().size())
-          metab = &ce.getProducts()[0]->getMetabolite();
+          metab = ce.getProducts()[0]->getMetabolite();
 
         if (metab)
           return metab->getCompartment();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqElement.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2004/06/30 15:18:43 $
+   $Date: 2006/04/12 14:33:27 $
    End CVS Header */
 
 /**
@@ -21,7 +21,6 @@
 
 template <class CType> class CCopasiVectorN;
 
-/** @dia:pos 12.7837,97.0309 */
 class CChemEqElement : public CCopasiContainer
   {
     //  Attributes
@@ -85,15 +84,14 @@ class CChemEqElement : public CCopasiContainer
     /**
      *  Set the metabolite of the element.
      *  @param CMetab * metabolite
-     */ 
-    //void setMetabolite(CMetab * metabolite);
+     */
     void setMetabolite(const std::string & key);
 
     /**
      *  Retrieves the metabolite of the element.
-     *  @return "CMetab &" metabolite
+     *  @return "CMetab *" metabolite
      */
-    const CMetab & getMetabolite() const;
+    const CMetab * getMetabolite() const;
 
     const std::string & getMetaboliteKey() const;
 

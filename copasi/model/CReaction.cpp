@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.152 $
+   $Revision: 1.153 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/04/11 22:01:17 $
+   $Date: 2006/04/12 14:33:27 $
    End CVS Header */
 
 // CReaction
@@ -615,8 +615,11 @@ const CCompartment & CReaction::getLargestCompartment() const
 void CReaction::setScalingFactor()
 {
   if (1 == getCompartmentNumber())
-    mScalingFactor =
-      (C_FLOAT64 *) mChemEq.getBalances()[0]->getMetabolite().getCompartment()->getValuePointer();
+    {
+      assert(mChemEq.getBalances()[0]->getMetabolite());
+      mScalingFactor =
+        (C_FLOAT64 *) mChemEq.getBalances()[0]->getMetabolite()->getCompartment()->getValuePointer();
+    }
   else
     mScalingFactor = &mDefaultScalingFactor;
 
@@ -717,7 +720,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                       CFunctionParameter::Role usage;
                       for (i = 0; i < v->size();++i)
                         {
-                          if ((&((*v)[i]->getMetabolite())) == static_cast<CMetab *>(object))
+                          if (((*v)[i]->getMetabolite()) == static_cast<CMetab *>(object))
                             {
                               found = true;
                               usage = CFunctionParameter::SUBSTRATE;
@@ -729,7 +732,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                           v = &this->getChemEq().getProducts();
                           for (i = 0; i < v->size();++i)
                             {
-                              if ((&((*v)[i]->getMetabolite())) == static_cast<CMetab *>(object))
+                              if (((*v)[i]->getMetabolite()) == static_cast<CMetab *>(object))
                                 {
                                   found = true;
                                   usage = CFunctionParameter::PRODUCT;
@@ -741,7 +744,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
                               v = &this->getChemEq().getModifiers();
                               for (i = 0; i < v->size();++i)
                                 {
-                                  if ((&((*v)[i]->getMetabolite())) == static_cast<CMetab *>(object))
+                                  if (((*v)[i]->getMetabolite()) == static_cast<CMetab *>(object))
                                     {
                                       found = true;
                                       usage = CFunctionParameter::MODIFIER;
