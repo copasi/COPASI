@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/10 14:59:48 $
+   $Date: 2006/04/13 22:40:05 $
    End CVS Header */
 
 #include <limits>
@@ -180,17 +180,30 @@ unsigned C_INT32 CTableRow::guessColumnNumber(std::istream &is,
 
 const bool & CTableRow::isEmpty() const {return mIsEmpty;}
 
+std::istream & CTableRow::getLine(std::istream & is, std::stringstream & line)
+{
+  // Clear the line;
+  line.str("");
+
+  char c;
+  for (is.get(c); c != 0x0a && c != 0x0d; is.get(c))
+    {
+      if (is.fail() || is.eof()) return is;
+      line.put(c);
+    }
+
+  // Eat additional line break characters only appearing on dos text format;
+  if ((c == 0x0d && is.peek() == 0x0a))
+    is.get(c);
+
+  return is;
+}
+
 std::istream & operator >> (std::istream &is, CTableRow & row)
 {
   std::stringstream line;
 
-  is.get(*line.rdbuf(), '\x0a');
-
-  // std::istream::get sets the failbit if it does not extract anything.
-  // We expect empty lines and have to correct for it.
-  if (is.fail() && !is.eof()) is.clear();
-
-  is.ignore(1);
+  is = row.getLine(is, line);
 
   row.mIsEmpty = true;
   row.mLastFilledCell = C_INVALID_INDEX;

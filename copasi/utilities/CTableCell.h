@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/10 14:59:48 $
+   $Date: 2006/04/13 22:40:05 $
    End CVS Header */
 
 #ifndef COPASI_CTableCell
@@ -164,6 +164,12 @@ class CTableRow
      */
     friend
     std::istream & operator >> (std::istream &is, CTableRow & cell);
+
+  private:
+    /**
+     * Fill the stream buffer with data until end_of_line is encountered. 
+     */
+    std::istream & getLine(std::istream & is, std::stringstream & line);
 
     // Attributes
   private:
