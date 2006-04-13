@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathModel.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/17 13:43:57 $
+   $Author: shoops $ 
+   $Date: 2006/04/13 14:25:12 $
    End CVS Header */
 
 /**
@@ -383,7 +383,7 @@ bool CMathModel::buildEqList()
       unsigned C_INT32 j, jmax;
       for (j = 0, jmax = ChemEq->size(); j < jmax; j++)
         {
-          const CMetab * pMetab = &(*ChemEq)[j]->getMetabolite();
+          const CMetab * pMetab = (*ChemEq)[j]->getMetabolite();
 
           /* skip fixed metabolites */
           if (pMetab->getStatus() == CModelEntity::FIXED) continue;
@@ -480,7 +480,7 @@ CMathNode * CMathModel::createScalingFactor(const CReaction * pReaction)
       pS->addChild(new CMathNodeSymbol(mpConversionFactor));
 
       const CCopasiObject * pObject =
-        pReaction->getChemEq().getBalances()[0]->getMetabolite().getCompartment();
+        pReaction->getChemEq().getBalances()[0]->getMetabolite()->getCompartment();
 
       pS->addChild(new CMathNodeSymbol(CMathSymbol::find(pObject)));
     }
