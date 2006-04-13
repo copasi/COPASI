@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODA.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/22 15:52:10 $
+   $Date: 2006/04/13 14:32:05 $
    End CVS Header */
 
 #include <math.h>
@@ -107,12 +107,12 @@ CLSODA::CLSODA():
 
 CLSODA::~CLSODA()
 {
-  if (mpxerrwd) {delete mpxerrwd; mpxerrwd = NULL;}
-  if (mpdls001_) {delete mpdls001_; mpdls001_ = NULL;}
-  if (mpdlsa01_) {delete mpdlsa01_; mpdlsa01_ = NULL;}
-  if (mpS) {delete mpS; mpS = NULL;}
-  if (mpPJAC) {delete mpPJAC; mpPJAC = NULL;}
-  if (mpSLVS) {delete mpSLVS; mpSLVS = NULL;}
+  if (mpxerrwd != NULL) {delete mpxerrwd; mpxerrwd = NULL;}
+  if (mpdls001_ != NULL) {delete mpdls001_; mpdls001_ = NULL;}
+  if (mpdlsa01_ != NULL) {delete mpdlsa01_; mpdlsa01_ = NULL;}
+  if (mpS != NULL) {delete mpS; mpS = NULL;}
+  if (mpPJAC != NULL) {delete mpPJAC; mpPJAC = NULL;}
+  if (mpSLVS != NULL) {delete mpSLVS; mpSLVS = NULL;}
 }
 
 /* DECK DLSODA */
