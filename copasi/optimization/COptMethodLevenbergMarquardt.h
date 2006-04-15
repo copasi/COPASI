@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: mendes $ 
-   $Date: 2006/04/05 12:15:07 $
+   $Author: shoops $ 
+   $Date: 2006/04/15 01:49:11 $
    End CVS Header */
 
 /**
@@ -74,7 +74,7 @@ class COptMethodLevenbergMarquardt : public COptMethod
      * Evaluate the objective function
      * @return bool continue
      */
-    bool evaluate();
+    const C_FLOAT64 & evaluate();
 
     /**
      * Calculate the gradient of the objective at the current parameters
@@ -82,14 +82,9 @@ class COptMethodLevenbergMarquardt : public COptMethod
     void gradient();
 
     /**
-     * Calculate the gradient of the objective at the point p
+     * Calculate the Hessian of the objective at the current point
      */
-    void gradientP(const CVector< C_FLOAT64 > &point);
-
-    /**
-     * Calculate the Hessian of the objective at the point p
-     */
-    void hessian(CVector< C_FLOAT64 > &point);
+    void hessian();
 
     // Attributes
   private:
@@ -127,7 +122,7 @@ class COptMethodLevenbergMarquardt : public COptMethod
     /**
      * The last individual
      */
-    CVector< C_FLOAT64 > mOld;
+    CVector< C_FLOAT64 > mBest;
 
     /**
      * The gradient
@@ -145,14 +140,14 @@ class COptMethodLevenbergMarquardt : public COptMethod
     CMatrix<C_FLOAT64> mHessian;
 
     /**
+     * The Hessian matrix modified according to Levenberg-Marquardt
+     */
+    CMatrix<C_FLOAT64> mHessianLM;
+
+    /**
      * Vector for temporary values
      */
     CVector< C_FLOAT64 > mTemp;
-
-    /**
-     * The last best value
-     */
-    C_FLOAT64 mOldValue;
 
     /**
      * The best value found so far
@@ -168,6 +163,17 @@ class COptMethodLevenbergMarquardt : public COptMethod
      * Flag indicating whether the computation shall continue
      */
     bool mContinue;
+
+    /**
+     * Indicate whether we have access to the residuals, i.e., it is a 
+     * fitting problem we are working on.
+     */
+    bool mHaveResiduals;
+
+    /**
+     * The transpose jacobian of the residuals.
+     */
+    CMatrix< C_FLOAT64 > mResidualJacobianT;
   };
 
 #endif  // COPASI_COptMethodLevenbergMarquardt

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: mendes $ 
-   $Date: 2006/04/05 12:15:06 $
+   $Author: shoops $ 
+   $Date: 2006/04/15 01:49:11 $
    End CVS Header */
 
 // adapted by Pedro Mendes, April 2005, from the original Gepasi file
@@ -16,8 +16,11 @@
 #include "COptItem.h"
 #include "COptTask.h"
 
+#include "parameterFitting/CFitProblem.h"
 #include "report/CCopasiObjectReference.h"
+
 #include "clapackwrap.h"
+#include "blaswrap.h"
 
 #define LAMBDA_MAX 1e80
 
@@ -54,10 +57,26 @@ bool COptMethodLevenbergMarquardt::optimise()
   if (!initialize()) return false;
 
   C_INT dim, starts, info, nrhs;
+  C_INT one = 1;
+
   unsigned C_INT32 i;
   C_FLOAT64 tmp, LM_lambda, nu, convp, convx;
   bool calc_grad, calc_hess;
   nrhs = 1;
+
+  dim = (C_INT) mVariableSize;
+
+#ifdef XXXX
+  CVector< C_INT > Pivot(dim);
+  CVector< C_FLOAT64 > Work(1);
+  C_INT LWork = -1;
+
+  //  SUBROUTINE DSYTRF(UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO)
+  dsytrf_("L", &dim, mHessianLM.array(), &dim, Pivot.array(),
+          Work.array(), &LWork, &info);
+  LWork = Work[0];
+  Work.resize(LWork);
+#endif // XXXX
 
   // initial point is first guess but we have to make sure that we
   // are within the parameter domain
@@ -79,16 +98,27 @@ bool COptMethodLevenbergMarquardt::optimise()
           mCurrent[i] = *OptItem.getObjectValue();
           break;
         }
-      // keep this value for later comparisons
-      mOld[i] = mCurrent[i];
 
       (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
     }
-  mContinue = evaluate();
-  mOldValue = mBestValue = mEvaluationValue;
-  // signal the best result so far
-  mpOptProblem->setSolutionVariables(mCurrent);
-  mContinue = mpOptProblem->setSolutionValue(mBestValue);
+
+  // keep the current parameter for later
+  mBest = mCurrent;
+
+  DebugFile << "mCurrent" << std::endl;
+  DebugFile << mCurrent << std::endl;
+  evaluate();
+
+  if (!isnan(mEvaluationValue))
+    {
+      // and store that value
+      mBestValue = mEvaluationValue;
+      mpOptProblem->setSolutionVariables(mBest);
+      mContinue &= mpOptProblem->setSolutionValue(mBestValue);
+
+      // We found a new best value lets report it.
+      mpParentTask->doOutput();
+    }
 
   // initialise LM_lambda
   LM_lambda = 1.0;
@@ -96,63 +126,127 @@ bool COptMethodLevenbergMarquardt::optimise()
   calc_hess = true;
   starts = 1;
 
-  for (mIteration = 0; (mIteration < mIterationLimit) && (nu != 0.0) ; mIteration++)
+  for (mIteration = 0; (mIteration < mIterationLimit) && (nu != 0.0) && mContinue; mIteration++)
     {
       // calculate gradient and hessian
-      if (calc_hess) hessian(mCurrent);
+      if (calc_hess) hessian();
+
       calc_hess = true;
-      // put gradient in h
-      mStep = mGradient;
-      // add Marquardt lambda to Hessian
-      for (i = 0; i <= mVariableSize; i++)
-        mHessian[i][i] *= 1.0 + LM_lambda;
+
       // Cholesky decomposition of Hessian
-      dim = (C_INT) mVariableSize;
-      //  SUBROUTINE DPOTRF(UPLO, N, A, LDA, INFO)
-      dpotrf_("L", &dim, mHessian.array(), &dim, &info);
-      // if Hessian is positive definite solve Hess * h = -grad
-      //  SUBROUTINE DPOTRS(UPLO, N, NRHS, A, LDA, B, LDB, INFO)
-      if (info == 0) dpotrs_("L", &dim, &nrhs, mHessian.array(), &dim, mStep.array(), &dim, &info);
-      // advance
-      convp = 0.0;
+      mHessianLM = mHessian;
+      // add Marquardt lambda to Hessian
+      // put -gradient in h
       for (i = 0; i < mVariableSize; i++)
         {
-          mCurrent[i] = mOld[i] + mStep[i];
-          const COptItem & OptItem = *(*mpOptItem)[i];
-
-          switch (OptItem.checkConstraint())
-            {
-            case - 1:
-              mCurrent[i] = *OptItem.getLowerBoundValue();
-              break;
-
-            case 1:
-              mCurrent[i] = *OptItem.getUpperBoundValue();
-              break;
-
-            case 0:
-              mCurrent[i] = *OptItem.getObjectValue();
-              break;
-            }
-          convp += fabs((mCurrent[i] - mOld[i]) / mOld[i]);
-
-          (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+          mHessianLM[i][i] *= 1.0 + LM_lambda; // Improved
+          // mHessianLM[i][i] += LM_lambda; // Orginal
+          mStep[i] = - mGradient[i];
         }
-      // calculate the objective function value
-      mContinue = evaluate();
-      mBestValue = mEvaluationValue;
-      // set the convergence check amplitudes
-      convx = (mOldValue - mBestValue) / mOldValue;
-      convp /= mVariableSize;
-      if (LM_lambda * mBestValue <= LM_lambda * mOldValue)
+
+      DebugFile << "mHessianLM" << std::endl;
+      DebugFile << mHessianLM << std::endl;
+      DebugFile << "mStep" << std::endl;
+      DebugFile << mStep << std::endl;
+
+      // SUBROUTINE DSYTRF(UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO)
+      // dsytrf_("L", &dim, mHessianLM.array(), &dim, Pivot.array(),
+      //         Work.array(), &LWork, &info);
+
+      // SUBROUTINE DPOTRF(UPLO, N, A, LDA, INFO)
+      dpotrf_("L", &dim, mHessianLM.array(), &dim, &info);
+
+      DebugFile << "mHessianLM" << std::endl;
+      DebugFile << mHessianLM << std::endl;
+      // if Hessian is positive definite solve Hess * h = -grad
+      if (info == 0)
         {
+          // SUBROUTINE DPOTRS(UPLO, N, NRHS, A, LDA, B, LDB, INFO)
+          dpotrs_("L", &dim, &one, mHessianLM.array(), &dim, mStep.array(), &dim, &info);
+
+          // SUBROUTINE DSYTRS(UPLO, N, NRHS, A, LDA, IPIV, B, LDB, INFO);
+          // dsytrs_("L", &dim, &one, mHessianLM.array(), &dim, Pivot.array(), mStep.array(),
+          //         &dim, &info);
+          DebugFile << "mStep" << std::endl;
+          DebugFile << mStep << std::endl;
+        }
+
+      // Assure that the step will stay within the bounds but is
+      // in its original direction.
+      C_FLOAT64 Factor = 1.0;
+      while (true)
+        {
+          convp = 0.0;
+
+          for (i = 0; i < mVariableSize; i++)
+            {
+              mStep[i] *= Factor;
+              mCurrent[i] = mBest[i] + mStep[i];
+            }
+
+          Factor = 1.0;
+
+          for (i = 0; i < mVariableSize; i++)
+            {
+              const COptItem & OptItem = *(*mpOptItem)[i];
+
+              switch (OptItem.checkConstraint(mCurrent[i]))
+                {
+                case - 1:
+                  Factor =
+                    std::min(Factor, (*OptItem.getLowerBoundValue() - mBest[i]) / mStep[i]);
+                  break;
+
+                case 1:
+                  Factor =
+                    std::min(Factor, (*OptItem.getUpperBoundValue() - mBest[i]) / mStep[i]);
+                  break;
+
+                case 0:
+                  break;
+                }
+            }
+
+          if (Factor == 1.0) break;
+        }
+
+      for (i = 0; i < mVariableSize; i++)
+        {
+          (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+          convp += fabs((mCurrent[i] - mBest[i]) / mBest[i]);
+        }
+
+      DebugFile << "mStep" << std::endl;
+      DebugFile << mStep << std::endl;
+      DebugFile << "mCurrent" << std::endl;
+      DebugFile << mCurrent << std::endl;
+
+      // calculate the objective function value
+      evaluate();
+
+      // set the convergence check amplitudes
+      convx = (mBestValue - mEvaluationValue) / mBestValue;
+      convp /= mVariableSize;
+
+      if (mEvaluationValue < mBestValue)
+        {
+          // keep this value
+          mBestValue = mEvaluationValue;
+
+          // store the new parameter set
+          mBest = mCurrent;
+
+          // Inform the problem about the new solution.
+          mpOptProblem->setSolutionVariables(mBest);
+          mContinue &= mpOptProblem->setSolutionValue(mBestValue);
+
+          // We found a new best value lets report it.
+          mpParentTask->doOutput();
+
           // decrease LM_lambda
           LM_lambda /= nu;
-          // keep this value
-          mOldValue = mBestValue;
-          // store the new parameter set
-          mOld = mCurrent;
-          if ((convp <= mTolerance) && (convx <= mTolerance))
+
+          if ((convp < mTolerance) && (convx < mTolerance))
             {
               if (starts < 3)
                 {
@@ -168,8 +262,10 @@ bool COptMethodLevenbergMarquardt::optimise()
       else
         {
           // restore the old parameter values
-          mCurrent = mOld;
-          mBestValue = mOldValue;
+          mCurrent = mBest;
+          for (i = 0; i < mVariableSize; i++)
+            (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+
           // if lambda too high terminate
           if (LM_lambda > LAMBDA_MAX) nu = 0.0;
           else
@@ -181,13 +277,7 @@ bool COptMethodLevenbergMarquardt::optimise()
               // correct the number of iterations
               mIteration--;
             }
-          continue;
         }
-      mpOptProblem->setSolutionVariables(mCurrent);
-      mContinue = mpOptProblem->setSolutionValue(mBestValue);
-      // We found a new best value lets report it.
-      //if (mpReport) mpReport->printBody();
-      mpParentTask->doOutput();
 
       if (mpCallBack)
         mContinue &= mpCallBack->progress(mhIteration);
@@ -200,28 +290,23 @@ bool COptMethodLevenbergMarquardt::cleanup()
   return true;
 }
 
-bool COptMethodLevenbergMarquardt::evaluate()
+const C_FLOAT64 & COptMethodLevenbergMarquardt::evaluate()
 {
   // We do not need to check whether the parametric constraints are fulfilled
   // since the parameters are created within the bounds.
 
-  // evaluate the fitness
-  if (!mpOptProblem->checkParametricConstraints())
-    {
-      mEvaluationValue = DBL_MAX;
-      return mContinue;
-    }
-
   mContinue &= mpOptProblem->calculate();
+  mEvaluationValue = mpOptProblem->getCalculateValue();
 
-  // check wheter the functional constraints are fulfilled
-  if (!mpOptProblem->checkFunctionalConstraints())
-    mEvaluationValue = DBL_MAX;
-  else
-    // get the value of the objective function
-    mEvaluationValue = mpOptProblem->getCalculateValue();
+  // when we leave the either the parameter or functional domain
+  // we penalize the objective value by forcing it to be larger
+  // than the best value recorded so far.
+  if (mEvaluationValue < mBestValue &&
+      (!mpOptProblem->checkParametricConstraints() ||
+       !mpOptProblem->checkFunctionalConstraints()))
+    mEvaluationValue = mBestValue + mBestValue - mEvaluationValue;
 
-  return mContinue;
+  return mEvaluationValue;
 }
 
 bool COptMethodLevenbergMarquardt::initialize()
@@ -244,12 +329,25 @@ bool COptMethodLevenbergMarquardt::initialize()
   mVariableSize = mpOptItem->size();
 
   mCurrent.resize(mVariableSize);
-  mOld.resize(mVariableSize);
+  mBest.resize(mVariableSize);
   mStep.resize(mVariableSize);
   mGradient.resize(mVariableSize);
   mHessian.resize(mVariableSize, mVariableSize);
 
   mBestValue = 2.0 * DBL_MAX;
+
+  mContinue = true;
+
+  CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(mpOptProblem);
+  if (pFitProblem != NULL)
+    // if (false)
+    {
+      mHaveResiduals = true;
+      pFitProblem->setResidualsRequired(true);
+      mResidualJacobianT.resize(mVariableSize, pFitProblem->getResiduals().size());
+    }
+  else
+    mHaveResiduals = false;
 
   return true;
 }
@@ -270,48 +368,16 @@ void COptMethodLevenbergMarquardt::gradient()
 
   for (i = 0; i < mVariableSize && mContinue; i++)
     {
-      if ((x = *(*mpOptItem)[i]->getObjectValue()) != 0.0)
+      if ((x = mCurrent[i]) != 0.0)
         {
           (*(*mpSetCalculateVariable)[i])(x * 1.001);
-          mGradient[i] = (y - evaluate()) / (x * 0.001);
+          mGradient[i] = (evaluate() - y) / (x * 0.001);
         }
 
       else
         {
           (*(*mpSetCalculateVariable)[i])(1e-7);
-          mGradient[i] = (y - evaluate()) / 1e-7;
-        }
-
-      (*(*mpSetCalculateVariable)[i])(x);
-    }
-}
-
-// evaluate the value of the gradient by forward differences
-void COptMethodLevenbergMarquardt::gradientP(const CVector< C_FLOAT64 > &point)
-{
-  unsigned C_INT32 i;
-
-  C_FLOAT64 y;
-  C_FLOAT64 x;
-
-  y = evaluate();
-  for (i = 0; i < mVariableSize && mContinue; i++)
-    {
-      (*(*mpSetCalculateVariable)[i])(point[i]);
-    }
-
-  for (i = 0; i < mVariableSize && mContinue; i++)
-    {
-      if ((x = point[i]) != 0.0)
-        {
-          (*(*mpSetCalculateVariable)[i])(x * 1.001);
-          mGradient[i] = (y - evaluate()) / (x * 0.001);
-        }
-
-      else
-        {
-          (*(*mpSetCalculateVariable)[i])(1e-7);
-          mGradient[i] = (y - evaluate()) / 1e-7;
+          mGradient[i] = (evaluate() - y) / 1e-7;
         }
 
       (*(*mpSetCalculateVariable)[i])(x);
@@ -319,39 +385,156 @@ void COptMethodLevenbergMarquardt::gradientP(const CVector< C_FLOAT64 > &point)
 }
 
 //evaluate the Hessian
-void COptMethodLevenbergMarquardt::hessian(CVector< C_FLOAT64 > &point)
+void COptMethodLevenbergMarquardt::hessian()
 {
   unsigned C_INT32 i, j;
-  C_FLOAT64 x;
 
-  // calculate the gradient
-  gradientP(point);
-  // and store it
-  mTemp = mGradient;
-
-  // calculate rows of the Hessian
-  for (i = 0; i < mVariableSize; i++)
+  if (mHaveResiduals)
     {
-      if ((x = point[i]) != 0.0)
+      evaluate();
+
+      const CVector< C_FLOAT64 > & Residuals =
+        static_cast<CFitProblem *>(mpOptProblem)->getResiduals();
+
+      const CVector< C_FLOAT64 > CurrentResiduals = Residuals;
+
+      unsigned C_INT32 ResidualSize = Residuals.size();
+
+      C_FLOAT64 * pJacobianT = mResidualJacobianT.array();
+
+      const C_FLOAT64 * pCurrentResiduals;
+      const C_FLOAT64 * pEnd = CurrentResiduals.array() + ResidualSize;
+      const C_FLOAT64 * pResiduals;
+
+      C_FLOAT64 Delta;
+      C_FLOAT64 x;
+
+      for (i = 0; i < mVariableSize && mContinue; i++)
         {
-          point[i] = x * 1.001;
-          gradientP(point);
-          for (j = 0; j < i; j++)
-            mHessian[i][j] = (mGradient[j] - mTemp[j]) / (point[i] * 0.001);
+          if ((x = mCurrent[i]) != 0.0)
+            {
+              Delta = 1.0 / (x * 0.001);
+              (*(*mpSetCalculateVariable)[i])(x * 1.001);
+            }
+
+          else
+            {
+              Delta = 1e7;
+              (*(*mpSetCalculateVariable)[i])(1e-7);
+            }
+
+          // evaluate another column of the jacobian
+          evaluate();
+          pCurrentResiduals = CurrentResiduals.array();
+          pResiduals = Residuals.array();
+
+          for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pResiduals++, pJacobianT++)
+            *pJacobianT = (*pResiduals - *pCurrentResiduals) * Delta;
+
+          (*(*mpSetCalculateVariable)[i])(x);
         }
-      else
+
+#ifdef XXXX
+      // calculate the gradient
+      C_INT m = 1;
+      C_INT n = mGradient.size();
+      C_INT k = mResidualJacobianT.numCols(); /* == CurrentResiduals.size() */
+
+      char op = 'N';
+
+      C_FLOAT64 Alpha = 1.0;
+      C_FLOAT64 Beta = 0.0;
+
+      DebugFile << "mResidualJacobianT" << std::endl;
+      DebugFile << mResidualJacobianT << std::endl;
+      DebugFile << "CurrentResiduals" << std::endl;
+      DebugFile << CurrentResiduals << std::endl;
+
+      dgemm_("N", "T", &m, &n, &k, &Alpha,
+             const_cast<C_FLOAT64 *>(CurrentResiduals.array()), &m,
+             mResidualJacobianT.array(), &n, &Beta,
+             const_cast<C_FLOAT64 *>(mGradient.array()), &m);
+#endif //XXXX
+
+      C_FLOAT64 * pGradient = mGradient.array();
+      pJacobianT = mResidualJacobianT.array();
+
+      for (i = 0; i < mVariableSize; i++, pGradient++)
         {
-          point[i] = 1e-7;
-          for (j = 0; j < i; j++)
-            mHessian[i][j] = (mGradient[j] - mTemp[j]) * 1e7;
+          *pGradient = 0.0;
+          pCurrentResiduals = CurrentResiduals.array();
+
+          for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pJacobianT++)
+            *pGradient += *pJacobianT * *pCurrentResiduals;
+
+          *pGradient *= 2;
         }
-      // restore the original parameter value
-      point[i] = x;
+
+      DebugFile << "mGradient" << std::endl;
+      DebugFile << mGradient << std::endl;
+
+      // calculate the Hessian
+      C_FLOAT64 * pHessian;
+      C_FLOAT64 * pJacobian;
+
+      for (i = 0; i < mVariableSize; i++)
+        {
+          pHessian = mHessian[i];
+          for (j = 0; j <= i; j++, pHessian++)
+            {
+              *pHessian = 0.0;
+              pJacobianT = mResidualJacobianT[i];
+              pEnd = pJacobianT + ResidualSize;
+              pJacobian = mResidualJacobianT[j];
+
+              for (; pJacobianT != pEnd; pJacobianT++, pJacobian++)
+                *pHessian += *pJacobianT * *pJacobian;
+            }
+        }
     }
+  else
+    {
+      C_FLOAT64 Delta;
+      C_FLOAT64 x;
+
+      // calculate the gradient
+      gradient();
+
+      // and store it
+      mTemp = mGradient;
+
+      // calculate rows of the Hessian
+      for (i = 0; i < mVariableSize; i++)
+        {
+          if ((x = mCurrent[i]) != 0.0)
+            {
+              mCurrent[i] = x * 1.001;
+              Delta = 1.0 / (x * 0.001);
+            }
+          else
+            {
+              mCurrent[i] = 1e-7;
+              Delta = 1e7;
+            }
+
+          (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+          gradient();
+
+          for (j = 0; j <= i; j++)
+            mHessian[i][j] = (mGradient[j] - mTemp[j]) * Delta;
+
+          // restore the original parameter value
+          mCurrent[i] = x;
+          (*(*mpSetCalculateVariable)[i])(x);
+        }
+
+      // restore the gradient
+      mGradient = mTemp;
+    }
+
   // make the matrix symetric
+  // not realy necessary
   for (i = 0; i < mVariableSize; i++)
     for (j = i + 1; j < mVariableSize; j++)
       mHessian[i][j] = mHessian[j][i];
-  // restore the gradient
-  mGradient = mTemp;
 }
