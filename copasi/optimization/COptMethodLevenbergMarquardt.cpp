@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/15 01:49:11 $
+   $Date: 2006/04/15 15:14:54 $
    End CVS Header */
 
 // adapted by Pedro Mendes, April 2005, from the original Gepasi file
@@ -467,7 +467,8 @@ void COptMethodLevenbergMarquardt::hessian()
           for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pJacobianT++)
             *pGradient += *pJacobianT * *pCurrentResiduals;
 
-          *pGradient *= 2;
+          // This is formally correct but cancels out with factor 2 below
+          // *pGradient *= 2.0;
         }
 
       DebugFile << "mGradient" << std::endl;
@@ -489,6 +490,9 @@ void COptMethodLevenbergMarquardt::hessian()
 
               for (; pJacobianT != pEnd; pJacobianT++, pJacobian++)
                 *pHessian += *pJacobianT * *pJacobian;
+
+              // This is formally correct but cancels out with factor 2 above
+              // *pHessian *= 2.0;
             }
         }
     }
