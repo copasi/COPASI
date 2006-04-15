@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.95 $
+   $Revision: 1.96 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 21:57:26 $
+   $Author: shoops $ 
+   $Date: 2006/04/15 17:21:17 $
    End CVS Header */
 
 #include <iostream>
@@ -86,7 +86,7 @@ CMetab &CMetab::operator=(const CMetabOld &RHS)
   setStatus(RHS.mStatus);
 
   setInitialConcentration(RHS.mIConc);
-  setConcentration(RHS.mIConc);
+  refreshInitialConcentration();
 
   mRate = 0.0;
   mTT = 0.0;
