@@ -79,7 +79,15 @@ SOURCE=.\CPlotSpecVector.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\curve2dwidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\doublerect.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\HistoWidget.cpp
 # End Source File
 # Begin Source File
 
@@ -131,6 +139,10 @@ SOURCE=.\crvspecscrlview.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\curve2dwidget.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\curve2dwidget.ui.h
 # End Source File
 # Begin Source File
@@ -140,6 +152,14 @@ SOURCE=.\curvegroupbox.h
 # Begin Source File
 
 SOURCE=.\doublerect.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\HistoWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\HistoWidget.ui.h
 # End Source File
 # Begin Source File
 
@@ -165,6 +185,14 @@ SOURCE=.\zoomplot.h
 # Begin Source File
 
 SOURCE=..\common.pri
+# End Source File
+# Begin Source File
+
+SOURCE=.\curve2dwidget.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\HistoWidget.ui
 # End Source File
 # Begin Source File
 
