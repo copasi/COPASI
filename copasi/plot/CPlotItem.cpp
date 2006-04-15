@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 20:35:51 $
+   $Date: 2006/04/15 16:18:32 $
    End CVS Header */
 
 #include "CPlotItem.h"
@@ -31,6 +31,28 @@ const char* CPlotItem::XMLType[] =
     NULL
   };
 
+const std::string CPlotItem::RecordingActivityName[] =
+  {
+    "",
+    "Before",
+    "During",
+    "",
+    "After"
+  };
+
+const char* CPlotItem::XMLRecordingActivity[] =
+  {
+    "NotSet",
+    "before",
+    "during",
+    "before&during",
+    "after",
+    "before&after",
+    "during&after",
+    "before&during&after",
+    NULL
+  };
+
 CPlotItem::Type CPlotItem::TypeNameToEnum(const std::string & typeName) //static
 {
   unsigned C_INT32 i = 0;
@@ -44,6 +66,8 @@ CPlotItem::CPlotItem(const std::string & name,
                      const CCopasiContainer * pParent,
                      const CPlotItem::Type & type):
     CCopasiParameterGroup(TypeName[type], pParent, "PlotItem"),
+    mActivity(),
+    mpXMLActivity(NULL),
     mType(unset)
 {
   //setObjectName(TypeName[mType]); //TODO
@@ -54,7 +78,9 @@ CPlotItem::CPlotItem(const std::string & name,
 CPlotItem::CPlotItem(const CPlotItem & src,
                      const CCopasiContainer * pParent):
     CCopasiParameterGroup(src, pParent),
-    mType(src.mType),
+    mType(unset),
+    mActivity(),
+    mpXMLActivity(NULL),
     channels(src.getChannels())
 {
   /*
@@ -68,30 +94,50 @@ CPlotItem::CPlotItem(const CPlotItem & src,
      std::cout << "New Channel " << counter << ": " << this->getChannels()[counter] << std::endl;
   } 
   */
+  setType(src.mType);
 }
 
 void CPlotItem::setType(CPlotItem::Type type)
 {
   if (type == mType) return;
+  if (mType != unset) clear();
 
   mType = type;
-  clear();
 
   //create parameters
   if (type == curve2d)
     {
-      addParameter("Line type", CCopasiParameter::UINT, (unsigned C_INT32)0);
-    }
-
-  if (type == plot2d)
-    {
-      addParameter("log X", CCopasiParameter::BOOL, false);
-      addParameter("log Y", CCopasiParameter::BOOL, false);
+      assertParameter("Line type", CCopasiParameter::UINT, (unsigned C_INT32) 0);
     }
 
   if (type == histoItem1d)
     {
-      addParameter("increment", CCopasiParameter::DOUBLE, (C_FLOAT64)0.1);
+      assertParameter("increment", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.1);
+    }
+
+  if (type == curve2d || type == histoItem1d)
+    {
+      mpXMLActivity =
+        assertParameter("Recording Activity", CCopasiParameter::STRING, std::string("during"))->getValue().pSTRING;
+
+      const char ** pActivity = XMLRecordingActivity;
+      while (*pActivity && mpXMLActivity->compare(*pActivity))
+        pActivity++;
+      mActivity = (RecordingActivity) (pActivity - XMLRecordingActivity);
+
+      if (mActivity < BEFORE || (BEFORE | DURING | AFTER) < mActivity)
+        {
+          mActivity = DURING;
+          * mpXMLActivity = XMLRecordingActivity[mActivity];
+        }
+    }
+
+  if (type == plot2d)
+    {
+      assertParameter("log X", CCopasiParameter::BOOL, false);
+      assertParameter("log Y", CCopasiParameter::BOOL, false);
+      mpXMLActivity = NULL;
+      mActivity = (RecordingActivity) 0;
     }
 }
 
@@ -108,6 +154,58 @@ void CPlotItem::initObjects()
 
 const CPlotItem::Type & CPlotItem::getType() const
   {return mType;}
+
+void CPlotItem::setActivity(const CPlotItem::RecordingActivity & activity)
+{
+  switch (mType)
+    {
+    case curve2d:
+    case histoItem1d:
+      mActivity = activity;
+      assert (BEFORE <= mActivity && mActivity <= (BEFORE | DURING | AFTER));
+      * mpXMLActivity = XMLRecordingActivity[mActivity];
+      break;
+
+    default:
+      mActivity = (RecordingActivity) 0;
+      break;
+    }
+}
+
+const CPlotItem::RecordingActivity & CPlotItem::getActivity() const
+  {
+    const char ** pActivity = XMLRecordingActivity;
+    RecordingActivity Activity;
+
+    switch (mType)
+      {
+      case curve2d:
+      case histoItem1d:
+        if (!mpXMLActivity)
+          const_cast<CPlotItem *>(this)->mpXMLActivity =
+            getParameter("Recording Activity")->getValue().pSTRING;
+
+        while (*pActivity && mpXMLActivity->compare(*pActivity)) pActivity++;
+
+        Activity =
+          (RecordingActivity) (pActivity - XMLRecordingActivity);
+
+        if (Activity < BEFORE || (BEFORE | DURING | AFTER) < Activity)
+          {
+            Activity = DURING;
+            * mpXMLActivity = XMLRecordingActivity[Activity];
+          }
+
+        const_cast<CPlotItem *>(this)->mActivity = Activity;
+
+        break;
+
+      default:
+        break;
+      }
+
+    return mActivity;
+  }
 
 std::vector<CPlotDataChannelSpec> & CPlotItem::getChannels()
 {return channels;}

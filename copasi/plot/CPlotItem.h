@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/11 20:35:51 $
+   $Date: 2006/04/15 16:18:32 $
    End CVS Header */
 
 /**
@@ -74,12 +74,12 @@ class CPlotItem : public CCopasiParameterGroup
      */
     enum Type
     {
-      unset = 0, curve2d, histoItem1d,          //for plot items
+      unset = 0, curve2d, histoItem1d,           //for plot items
       plot2d, simWiz   //for plot specifications
     };
 
     /**
-     * String literals for the GUI to display sub type names of methods known
+     * String literals for the GUI to display plot item names of methods known
      * to COPASI.
      */
     static const std::string TypeName[];
@@ -89,6 +89,24 @@ class CPlotItem : public CCopasiParameterGroup
      */
     static const char * XMLType[];
 
+    enum RecordingActivity
+    {
+      BEFORE = 0x01,
+      DURING = 0x02,
+      AFTER = 0x04
+    };
+
+    /**
+     * String literals for the GUI to display recording activity names of plots known
+     * to COPASI.
+     */
+    static const std::string RecordingActivityName[];
+
+    /**
+     * XML recording activity names of plots known to COPASI.
+     */
+    static const char* XMLRecordingActivity[];
+
     // Attributes
   private:
 
@@ -96,6 +114,16 @@ class CPlotItem : public CCopasiParameterGroup
      * The type of the method
      */
     Type mType;
+
+    /**
+     * The recording activity for items of type curve2d and histoItem1d
+     */
+    RecordingActivity mActivity;
+
+    /**
+     * A pointer to the string containing the XML representation of the activity
+     */
+    std::string * mpXMLActivity;
 
     std::vector<CPlotDataChannelSpec> channels;
 
@@ -145,6 +173,10 @@ class CPlotItem : public CCopasiParameterGroup
     const CPlotItem::Type & getType() const;
 
     void setType(CPlotItem::Type type);
+
+    void setActivity(const CPlotItem::RecordingActivity & activity);
+
+    const CPlotItem::RecordingActivity & getActivity() const;
 
     const std::string & getTitle() const; //TODO later replace with something more generic
     void setTitle(const std::string & title);
