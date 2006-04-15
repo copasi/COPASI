@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/13 22:40:05 $
+   $Date: 2006/04/15 15:30:40 $
    End CVS Header */
 
 #include <limits>
@@ -53,7 +53,7 @@ const C_FLOAT64 & CTableCell::getValue() const {return mValue;}
 // warning C4056: overflow in floating-point constant arithmetic
 // warning C4756: overflow in constant arithmetic
 # pragma warning (disable: 4056 4756)
- #endif
+#endif
 
 std::istream & operator >> (std::istream &is, CTableCell & cell)
 {
@@ -76,21 +76,19 @@ std::istream & operator >> (std::istream &is, CTableCell & cell)
       cell.mName = "";
       cell.mIsValue = false;
       cell.mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-
       cell.mIsEmpty = true;
+
       return is;
     }
+
+  std::string::size_type end = cell.mName.find_last_not_of("\x20\x09\x0d\x0a");
+
+  if (end == std::string::npos)
+    cell.mName = cell.mName.substr(begin);
   else
-    {
-      std::string::size_type end = cell.mName.find_last_not_of("\x20\x09\x0d\x0a");
+    cell.mName = cell.mName.substr(begin, end - begin + 1);
 
-      if (end == std::string::npos)
-        cell.mName = cell.mName.substr(begin);
-      else
-        cell.mName = cell.mName.substr(begin, end - begin + 1);
-
-      cell.mIsEmpty = false;
-    }
+  cell.mIsEmpty = false;
 
   /* Try to convert the string into a number */
   char * Tail;
@@ -120,8 +118,8 @@ std::istream & operator >> (std::istream &is, CTableCell & cell)
 }
 
 #ifdef WIN32
- # pragma warning (default: 4056 4756)
- #endif
+# pragma warning (default: 4056 4756)
+#endif
 
 CTableRow::CTableRow(const unsigned C_INT32 & size,
                      const char & separator):
@@ -180,10 +178,10 @@ unsigned C_INT32 CTableRow::guessColumnNumber(std::istream &is,
 
 const bool & CTableRow::isEmpty() const {return mIsEmpty;}
 
-std::istream & CTableRow::getLine(std::istream & is, std::stringstream & line)
+std::istream & CTableRow::readLine(std::istream & is)
 {
   // Clear the line;
-  line.str("");
+  std::stringstream line;
 
   char c;
   for (is.get(c); c != 0x0a && c != 0x0d; is.get(c))
@@ -194,22 +192,13 @@ std::istream & CTableRow::getLine(std::istream & is, std::stringstream & line)
 
   // Eat additional line break characters only appearing on dos text format;
   if ((c == 0x0d && is.peek() == 0x0a))
-    is.get(c);
+    is.ignore(1);
 
-  return is;
-}
+  mIsEmpty = true;
+  mLastFilledCell = C_INVALID_INDEX;
 
-std::istream & operator >> (std::istream &is, CTableRow & row)
-{
-  std::stringstream line;
-
-  is = row.getLine(is, line);
-
-  row.mIsEmpty = true;
-  row.mLastFilledCell = C_INVALID_INDEX;
-
-  std::vector< CTableCell >::iterator it = row.mCells.begin();
-  std::vector< CTableCell >::iterator end = row.mCells.end();
+  std::vector< CTableCell >::iterator it = mCells.begin();
+  std::vector< CTableCell >::iterator end = mCells.end();
 
   unsigned C_INT count;
   for (count = 0; it != end && !line.fail(); ++it, ++count)
@@ -217,20 +206,20 @@ std::istream & operator >> (std::istream &is, CTableRow & row)
       line >> *it;
       if (!it->isEmpty())
         {
-          row.mIsEmpty = false;
-          row.mLastFilledCell = count;
+          mIsEmpty = false;
+          mLastFilledCell = count;
         }
     }
 
-  CTableCell Unread(row.mSeparator);
+  CTableCell Unread(mSeparator);
   while (!line.fail() && !line.eof())
     {
-      row.mCells.push_back(Unread);
-      line >> row.mCells.back();
-      if (!row.mCells.back().isEmpty())
+      mCells.push_back(Unread);
+      line >> mCells.back();
+      if (!mCells.back().isEmpty())
         {
-          row.mIsEmpty = false;
-          row.mLastFilledCell = count;
+          mIsEmpty = false;
+          mLastFilledCell = count;
         }
       count++;
     }
@@ -240,6 +229,8 @@ std::istream & operator >> (std::istream &is, CTableRow & row)
   // Missing columns are filled with default
   for (; it != end; ++it)
     *it = Unread;
-
   return is;
 }
+
+std::istream & operator >> (std::istream &is, CTableRow & row)
+{return row.readLine(is);}
