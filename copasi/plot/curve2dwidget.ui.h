@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:34:38 $
+   $Date: 2006/04/15 16:23:30 $
    End CVS Header */
 
 /****************************************************************************
@@ -19,7 +19,7 @@
 #include "CopasiUI/CCopasiSelectionDialog.h"
 #include "CopasiUI/qtUtilities.h"
 
-// comboBoxType lines|points|symbols
+// mpBoxType lines|points|symbols
 
 bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
 {
@@ -28,7 +28,7 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   if (curve->getType() != CPlotItem::curve2d) return false;
   //if (curve->getChannels().getSize != 2) return false;
 
-  lineEditTitle->setText(FROM_UTF8(curve->getTitle()));
+  mpEditTitle->setText(FROM_UTF8(curve->getTitle()));
 
   //TODO: check if objects exist....
 
@@ -39,14 +39,18 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
     mpObjectY = CCopasiContainer::ObjectFromName(curve->getChannels()[1]);
 
   if (mpObjectX)
-    lineEditXName->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
+    mpEditX->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
   if (mpObjectY)
-    lineEditYName->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
+    mpEditY->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
 
   const void* tmp;
 
   if (!(tmp = curve->getValue("Line type").pVOID)) return false;
-  comboBoxType->setCurrentItem(*(unsigned C_INT32*)tmp);
+  mpBoxType->setCurrentItem(*(unsigned C_INT32*)tmp);
+
+  mpCheckBefore->setChecked(curve->getActivity() & CPlotItem::BEFORE);
+  mpCheckDuring->setChecked(curve->getActivity() & CPlotItem::DURING);
+  mpCheckAfter->setChecked(curve->getActivity() & CPlotItem::AFTER);
 
   //for debugging:
   //  std::cout << "Curve2DWidget::LoadFromCurveSpec:" << std::endl;
@@ -64,14 +68,20 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
     //if (!(mpObjectX && mpObjectY)) return false;
 
     //title
-    curve->setTitle((const char*)lineEditTitle->text().utf8());
+    curve->setTitle((const char*)mpEditTitle->text().utf8());
 
     //channels
     curve->getChannels().clear();
     curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
     curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectY ? mpObjectY->getCN() : CCopasiObjectName("")));
 
-    curve->setValue("Line type", (unsigned C_INT32)comboBoxType->currentItem());
+    curve->setValue("Line type", (unsigned C_INT32)mpBoxType->currentItem());
+
+    C_INT32 Activity = 0;
+    if (mpCheckBefore->isChecked()) Activity += CPlotItem::BEFORE;
+    if (mpCheckDuring->isChecked()) Activity += CPlotItem::DURING;
+    if (mpCheckAfter->isChecked()) Activity += CPlotItem::AFTER;
+    curve->setActivity((CPlotItem::RecordingActivity) Activity);
 
     return true;
   }
@@ -92,14 +102,14 @@ void Curve2DWidget::buttonPressedX()
       if (mpObjectX == selection->at(0)) return; //nothing to be done
       mpObjectX = selection->at(0);
       if (mpObjectX)
-        lineEditXName->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
+        mpEditX->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
       else
-        lineEditXName->setText("");
+        mpEditX->setText("");
 
       if (mpObjectX && mpObjectY)
-        lineEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
-                                         + "|"
-                                         + mpObjectX->getObjectDisplayName()));
+        mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
+                                       + "|"
+                                       + mpObjectX->getObjectDisplayName()));
       //TODO update tab title
     }
 }
@@ -120,14 +130,14 @@ void Curve2DWidget::buttonPressedY()
       if (mpObjectY == selection->at(0)) return; //nothing to be done
       mpObjectY = selection->at(0);
       if (mpObjectY)
-        lineEditYName->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
+        mpEditY->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()));
       else
-        lineEditYName->setText("");
+        mpEditY->setText("");
 
       if (mpObjectX && mpObjectY)
-        lineEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
-                                         + "|"
-                                         + mpObjectX->getObjectDisplayName()));
+        mpEditTitle->setText(FROM_UTF8(mpObjectY->getObjectDisplayName()
+                                       + "|"
+                                       + mpObjectX->getObjectDisplayName()));
       //TODO update tab title
     }
 }

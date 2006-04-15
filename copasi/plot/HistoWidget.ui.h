@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/HistoWidget.ui.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/06/21 20:34:38 $
+   $Date: 2006/04/15 16:23:30 $
    End CVS Header */
 
 /****************************************************************************
@@ -37,15 +37,17 @@ void HistoWidget::buttonPressedX()
     {
       if (mpObjectX == selection->at(0)) return; //nothing to be done
       mpObjectX = selection->at(0);
-      if (mpObjectX)
-        lineEditXName->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
-      else
-        lineEditXName->setText("");
 
       if (mpObjectX)
-        lineEditTitle->setText("Histogram: " + FROM_UTF8(mpObjectX->getObjectDisplayName()));
+        {
+          lineEditXName->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
+          lineEditTitle->setText("Histogram: " + FROM_UTF8(mpObjectX->getObjectDisplayName()));
+        }
       else
-        lineEditTitle->setText("Histogram");
+        {
+          lineEditXName->setText("");
+          lineEditTitle->setText("Histogram");
+        }
 
       //TODO update tab title
     }
@@ -62,32 +64,43 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
   lineEditTitle->setText(FROM_UTF8(curve->getTitle()));
 
   //variable
-  mpObjectX = CCopasiContainer::ObjectFromName(curve->getChannels()[0]);
-  if (!mpObjectX) return false;
+  mpObjectX = NULL;
 
-  lineEditXName->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
+  if (curve->getChannels().size() >= 1)
+    mpObjectX = CCopasiContainer::ObjectFromName(curve->getChannels()[0]);
+
+  if (mpObjectX)
+    lineEditXName->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
 
   //other parameters:
   const void* tmp;
   if (!(tmp = curve->getValue("increment").pVOID)) return false;
   lineEditInc->setText(QString::number(*(const C_FLOAT64*)tmp));
 
+  mpCheckBefore->setChecked(curve->getActivity() & CPlotItem::BEFORE);
+  mpCheckDuring->setChecked(curve->getActivity() & CPlotItem::DURING);
+  mpCheckAfter->setChecked(curve->getActivity() & CPlotItem::AFTER);
+
   return true; //TODO
 }
 
 bool HistoWidget::SaveToCurveSpec(CPlotItem * curve) const
   {
-    if (!mpObjectX) return false;
-
     //title
     curve->setTitle((const char*)lineEditTitle->text().utf8());
 
     //channels
     curve->getChannels().clear();
-    curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX->getCN()));
+    curve->getChannels().push_back(CPlotDataChannelSpec(mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("")));
 
     //other parameters: TODO
     curve->setValue("increment", lineEditInc->text().toDouble());
+
+    C_INT32 Activity = 0;
+    if (mpCheckBefore->isChecked()) Activity += CPlotItem::BEFORE;
+    if (mpCheckDuring->isChecked()) Activity += CPlotItem::DURING;
+    if (mpCheckAfter->isChecked()) Activity += CPlotItem::AFTER;
+    curve->setActivity((CPlotItem::RecordingActivity) Activity);
 
     return true;
   }
