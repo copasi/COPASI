@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 22:03:25 $
+   $Author: shoops $ 
+   $Date: 2006/04/15 01:50:57 $
    End CVS Header */
 
 #include <fstream>
@@ -970,13 +970,15 @@ void CExperiment::printResult(std::ostream * ostream) const
     for (k = 0; k < kmax; k++)
       if (getColumnType(k) == CExperiment::dependent)
         {
+          std::string Name;
           if (Objects[k])
-            {
-              os << Objects[k]->getObjectDisplayName() << " [Data]\t";
-              os << Objects[k]->getObjectDisplayName() << " [Fit]\t";
-              os << Objects[k]->getObjectDisplayName() << " [Error]";
-            }
-          os << "\t";
+            Name = Objects[k]->getObjectDisplayName();
+          else
+            Name = "unknown";
+
+          os << Name << "(Data)\t";
+          os << Name << "(Fit)\t";
+          os << Name << "(Weighted Error)\t";
         }
     os << "Objective Value\tRoot Mean Square" << std::endl << std::endl;
 
@@ -992,8 +994,9 @@ void CExperiment::printResult(std::ostream * ostream) const
             {
               os << mDataDependent(i, j) << "\t";
               os << *pDataDependentCalculated << "\t";
-              os << *pDataDependentCalculated - mDataDependent(i, j) << "\t";
+              os << mWeight[j] * (*pDataDependentCalculated - mDataDependent(i, j)) << "\t";
             }
+
           os << mRowObjectiveValue[i] << "\t" << mRowRMS[i] << std::endl;
         }
     else
@@ -1005,7 +1008,7 @@ void CExperiment::printResult(std::ostream * ostream) const
 
           for (j = 0; j < jmax; j++)
             {
-              os << mDataDependent(i, j) << "\t";
+              os << mDataDependent(i, j) << "\tNaN\tNaN\t";
             }
           os << mRowObjectiveValue[i] << "\t" << mRowRMS[i] << std::endl;
         }
