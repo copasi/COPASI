@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/05 16:06:36 $
+   $Date: 2006/04/15 15:29:07 $
    End CVS Header */
 
 #include "copasi.h"
@@ -33,7 +33,11 @@ CReport::CReport(const CCopasiContainer * pParent):
     mHeaderObjectList(),
     mFooterRefreshList(),
     mBodyRefreshList(),
-    mHeaderRefreshList()
+    mHeaderRefreshList(),
+    mpHeader(NULL),
+    mpBody(NULL),
+    mpFooter(NULL)
+
 {}
 
 CReport::CReport(const CReport & src,
@@ -49,7 +53,10 @@ CReport::CReport(const CReport & src,
     mHeaderObjectList(src.mHeaderObjectList),
     mFooterRefreshList(src.mFooterRefreshList),
     mBodyRefreshList(src.mBodyRefreshList),
-    mHeaderRefreshList(src.mHeaderRefreshList)
+    mHeaderRefreshList(src.mHeaderRefreshList),
+    mpHeader(src.mpHeader),
+    mpBody(src.mpBody),
+    mpFooter(src.mpFooter)
 {}
 
 CReport::~CReport()
