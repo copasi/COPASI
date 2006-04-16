@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/05 16:03:51 $
+   $Date: 2006/04/16 17:43:46 $
    End CVS Header */
 
 #include <limits>
@@ -17,6 +17,7 @@
 #include "model/CModel.h"
 #include "plotwindow.h"
 
+#ifdef XXXX
 CPlotSpec2Vector::CPlotSpec2Vector(const std::string & name):
     CCopasiObject(name),
     //    CCopasiVectorN<CPlotSpecification>(name, pParent),
@@ -198,3 +199,5 @@ bool CPlotSpec2Vector::compile(std::vector< CCopasiContainer * > listOfContainer
 
   return success;
 }
+
+#endif // XXXX

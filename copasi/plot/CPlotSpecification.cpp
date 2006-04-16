@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:29 $
+   $Date: 2006/04/16 17:43:46 $
    End CVS Header */
 
 #include "model/CModel.h"
@@ -36,22 +36,16 @@ void CPlotSpecification::cleanup()
 
 void CPlotSpecification::initObjects()
 {
-  CCopasiContainer::addObjectReference("Active", mActive, CCopasiObject::ValueBool);
+  //  CCopasiContainer::addObjectReference("Active", mActive, CCopasiObject::ValueBool);
 }
 
 //*************************************
 
-void CPlotSpecification::setActive(bool act)
-{
-  //std::cout << "plotspec::setActive " << act << std::endl;
-  mActive = act;
-}
+void CPlotSpecification::setActive(const bool & active)
+{mActive = active;}
 
-bool CPlotSpecification::isActive() const
-  {
-    //std::cout << "plotspec::getActive " << mActive << std::endl;
-    return mActive;
-  }
+const bool & CPlotSpecification::isActive() const
+  {return mActive;}
 
 bool CPlotSpecification::isLogX() const
   {

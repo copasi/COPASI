@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/15 16:23:30 $
+   $Date: 2006/04/16 17:43:46 $
    End CVS Header */
 
 /****************************************************************************
@@ -48,9 +48,9 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   if (!(tmp = curve->getValue("Line type").pVOID)) return false;
   mpBoxType->setCurrentItem(*(unsigned C_INT32*)tmp);
 
-  mpCheckBefore->setChecked(curve->getActivity() & CPlotItem::BEFORE);
-  mpCheckDuring->setChecked(curve->getActivity() & CPlotItem::DURING);
-  mpCheckAfter->setChecked(curve->getActivity() & CPlotItem::AFTER);
+  mpCheckBefore->setChecked(curve->getActivity() & COutputInterface::BEFORE);
+  mpCheckDuring->setChecked(curve->getActivity() & COutputInterface::DURING);
+  mpCheckAfter->setChecked(curve->getActivity() & COutputInterface::AFTER);
 
   //for debugging:
   //  std::cout << "Curve2DWidget::LoadFromCurveSpec:" << std::endl;
@@ -78,10 +78,10 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve) const
     curve->setValue("Line type", (unsigned C_INT32)mpBoxType->currentItem());
 
     C_INT32 Activity = 0;
-    if (mpCheckBefore->isChecked()) Activity += CPlotItem::BEFORE;
-    if (mpCheckDuring->isChecked()) Activity += CPlotItem::DURING;
-    if (mpCheckAfter->isChecked()) Activity += CPlotItem::AFTER;
-    curve->setActivity((CPlotItem::RecordingActivity) Activity);
+    if (mpCheckBefore->isChecked()) Activity += COutputInterface::BEFORE;
+    if (mpCheckDuring->isChecked()) Activity += COutputInterface::DURING;
+    if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
+    curve->setActivity((COutputInterface::Activity) Activity);
 
     return true;
   }

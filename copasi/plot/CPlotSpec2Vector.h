@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CPlotSpec2Vector.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/05 16:03:51 $
+   $Date: 2006/04/16 17:43:46 $
    End CVS Header */
 
 #if !defined PLOTSPECIFICATION_VECTOR
@@ -15,6 +15,8 @@
 #include "utilities/CopasiTime.h"
 #include "report/CCopasiObject.h"
 #include "COutputDefinitionVector.h"
+
+#ifdef XXXX
 
 class PlotWindow;
 
@@ -36,6 +38,21 @@ class CPlotSpec2Vector : public CCopasiObject
 
     //this is a list of active windows for a specific run
     std::vector< PlotWindow * > mActivePlots;
+
+    /**
+     * List of plots generated prior to execution
+     */
+    std::vector< PlotWindow * > mHeaderPlots;
+
+    /**
+     * List of plots generated during to execution
+     */
+    std::vector< PlotWindow * > mBodyPlots;
+
+    /**
+     * List of plots generated after execution
+     */
+    std::vector< PlotWindow * > mFooterPlots;
 
     CCopasiTimeVariable mTime;
 
@@ -81,5 +98,6 @@ class CPlotSpec2Vector : public CCopasiObject
     bool setPlotDefinitionList(COutputDefinitionVector * pPlotDefinitionList);
     CCopasiVectorN< CPlotSpecification > * getPlotDefinitionList();
   };
+#endif // XXXX
 
 #endif

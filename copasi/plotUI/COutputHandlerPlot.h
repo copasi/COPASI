@@ -1,54 +1,70 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/05 16:03:51 $
+   $Date: 2006/04/16 17:43:46 $
    End CVS Header */
 
 #ifndef OUTPUT_HANDLER_PLOT
 #define OUTPUT_HANDLER_PLOT
 
-#include <vector>
+#include <map>
 
 #include "utilities/COutputHandler.h"
 
-class CPlotSpec2Vector;
-class CCopasiContainer;
+class COutputDefinitionVector;
+class PlotWindow;
 
 /**
  *  This is used to call the plotting routines from the tasks
  *  We do not want to call gui stuff directly from the trajectory task. 
  */
-class COutputHandlerPlot : public CCallbackHandler
+class COutputHandlerPlot : public COutputHandler
   {
   public:
-    //   COutputHandlerPlot();
-    virtual ~COutputHandlerPlot() {};
+    /**
+     * Destructor
+     */
+    virtual ~COutputHandlerPlot();
 
     /**
      * compile the object list from name vector
-     * @param std::vector< CCopasiContainer * > listOfContainer
-     * (default: CCopasiContainer::EmptyList)
+     * @param std::vector< CCopasiContainer * > listOfContainer (default: empty list)
      * @return bool success
      */
     virtual bool compile(std::vector< CCopasiContainer * > listOfContainer =
                            std::vector< CCopasiContainer * >());
 
-    void takeData();
-    virtual void init();
-    virtual void doOutput();
-    virtual void finish();
+    /**
+     * Perform an output event for the current activity
+     * @param const Activity & activity
+     */ 
+    // virtual void output(const Activity & activity);
 
-    virtual void doSeparator();
+    /**
+     * Introduce an additional seperator into the ouput
+     * @param const Activity & activity
+     */ 
+    // virtual void separate(const Activity & activity);
 
-    void setPlotSpecVectorAddress(CPlotSpec2Vector* ppp);
+    /**
+     * Finsh the output
+     */ 
+    // virtual void finish();
+
+    void setOutputDefinitionVector(COutputDefinitionVector * pDefinitionVector);
 
   private:
-    CPlotSpec2Vector * mpPlotSpecVector;
+    /**
+     * The plot definitiona
+     */
+    COutputDefinitionVector * mpDefinitionVector;
 
-    //for testing only
-    std::ifstream datafile;
+    /**
+     * This maps the key of a plot spec to a plot window
+     */
+    std::map<std::string, PlotWindow*> mPlotMap;
   };
 
 #endif

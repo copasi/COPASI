@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/15 16:18:32 $
+   $Date: 2006/04/16 17:43:46 $
    End CVS Header */
 
 #include "CPlotItem.h"
@@ -123,11 +123,12 @@ void CPlotItem::setType(CPlotItem::Type type)
       const char ** pActivity = XMLRecordingActivity;
       while (*pActivity && mpXMLActivity->compare(*pActivity))
         pActivity++;
-      mActivity = (RecordingActivity) (pActivity - XMLRecordingActivity);
+      mActivity = (COutputInterface::Activity) (pActivity - XMLRecordingActivity);
 
-      if (mActivity < BEFORE || (BEFORE | DURING | AFTER) < mActivity)
+      if (mActivity < COutputInterface::BEFORE ||
+          (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER) < mActivity)
         {
-          mActivity = DURING;
+          mActivity = COutputInterface:: DURING;
           * mpXMLActivity = XMLRecordingActivity[mActivity];
         }
     }
@@ -137,7 +138,7 @@ void CPlotItem::setType(CPlotItem::Type type)
       assertParameter("log X", CCopasiParameter::BOOL, false);
       assertParameter("log Y", CCopasiParameter::BOOL, false);
       mpXMLActivity = NULL;
-      mActivity = (RecordingActivity) 0;
+      mActivity = (COutputInterface::Activity) 0;
     }
 }
 
@@ -155,27 +156,28 @@ void CPlotItem::initObjects()
 const CPlotItem::Type & CPlotItem::getType() const
   {return mType;}
 
-void CPlotItem::setActivity(const CPlotItem::RecordingActivity & activity)
+void CPlotItem::setActivity(const COutputInterface::Activity & activity)
 {
   switch (mType)
     {
     case curve2d:
     case histoItem1d:
       mActivity = activity;
-      assert (BEFORE <= mActivity && mActivity <= (BEFORE | DURING | AFTER));
+      assert (COutputInterface::BEFORE <= mActivity &&
+              mActivity <= (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER));
       * mpXMLActivity = XMLRecordingActivity[mActivity];
       break;
 
     default:
-      mActivity = (RecordingActivity) 0;
+      mActivity = (COutputInterface::Activity) 0;
       break;
     }
 }
 
-const CPlotItem::RecordingActivity & CPlotItem::getActivity() const
+const COutputInterface::Activity & CPlotItem::getActivity() const
   {
     const char ** pActivity = XMLRecordingActivity;
-    RecordingActivity Activity;
+    COutputInterface::Activity Activity;
 
     switch (mType)
       {
@@ -188,11 +190,12 @@ const CPlotItem::RecordingActivity & CPlotItem::getActivity() const
         while (*pActivity && mpXMLActivity->compare(*pActivity)) pActivity++;
 
         Activity =
-          (RecordingActivity) (pActivity - XMLRecordingActivity);
+          (COutputInterface::Activity) (pActivity - XMLRecordingActivity);
 
-        if (Activity < BEFORE || (BEFORE | DURING | AFTER) < Activity)
+        if (Activity < COutputInterface::BEFORE ||
+            (COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER) < Activity)
           {
-            Activity = DURING;
+            Activity = COutputInterface::DURING;
             * mpXMLActivity = XMLRecordingActivity[Activity];
           }
 

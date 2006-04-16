@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:29 $
+   $Date: 2006/04/16 17:43:46 $
    End CVS Header */
 
 /**
@@ -53,9 +53,9 @@ class CPlotSpecification : public CPlotItem
 
     bool createDefaultPlot(const CModel* model);
 
-    void setActive(bool act);
+    void setActive(const bool & active);
 
-    bool isActive() const;
+    const bool & isActive() const;
 
     bool isLogX() const;
     bool isLogY() const;

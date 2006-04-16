@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/15 16:18:32 $
+   $Date: 2006/04/16 17:43:46 $
    End CVS Header */
 
 /**
@@ -18,8 +18,8 @@
 #include "copasi.h"
 
 #include "utilities/CCopasiParameterGroup.h"
-#include "report/CCopasiObjectName.h" 
-//#include "utilities/CCopasiVector.h"
+#include "report/CCopasiObjectName.h"
+#include "utilities/COutputHandler.h"
 
 class CPlotDataChannelSpec : public CRegisteredObjectName
   {
@@ -74,7 +74,7 @@ class CPlotItem : public CCopasiParameterGroup
      */
     enum Type
     {
-      unset = 0, curve2d, histoItem1d,           //for plot items
+      unset = 0, curve2d, histoItem1d,            //for plot items
       plot2d, simWiz   //for plot specifications
     };
 
@@ -88,13 +88,6 @@ class CPlotItem : public CCopasiParameterGroup
      * XML sub type names of methods known to COPASI.
      */
     static const char * XMLType[];
-
-    enum RecordingActivity
-    {
-      BEFORE = 0x01,
-      DURING = 0x02,
-      AFTER = 0x04
-    };
 
     /**
      * String literals for the GUI to display recording activity names of plots known
@@ -118,7 +111,7 @@ class CPlotItem : public CCopasiParameterGroup
     /**
      * The recording activity for items of type curve2d and histoItem1d
      */
-    RecordingActivity mActivity;
+    COutputInterface::Activity mActivity;
 
     /**
      * A pointer to the string containing the XML representation of the activity
@@ -174,9 +167,9 @@ class CPlotItem : public CCopasiParameterGroup
 
     void setType(CPlotItem::Type type);
 
-    void setActivity(const CPlotItem::RecordingActivity & activity);
+    void setActivity(const COutputInterface::Activity & activity);
 
-    const CPlotItem::RecordingActivity & getActivity() const;
+    const COutputInterface::Activity & getActivity() const;
 
     const std::string & getTitle() const; //TODO later replace with something more generic
     void setTitle(const std::string & title);
