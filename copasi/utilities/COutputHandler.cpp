@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 17:40:37 $
+   $Date: 2006/04/16 18:36:28 $
    End CVS Header */
 
 #include "copasi.h"
@@ -25,10 +25,20 @@ bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer)
   std::set< COutputInterface *>::iterator it = mInterfaces.begin();
   std::set< COutputInterface *>::iterator end = mInterfaces.end();
 
+  std::set< CCopasiObject * >::const_iterator itObj;
+  std::set< CCopasiObject * >::const_iterator endObj;
+
   if (mpTask) listOfContainer.push_back(mpTask);
 
   for (; it != end; ++it)
-    success &= (*it)->compile(listOfContainer);
+    {
+      success &= (*it)->compile(listOfContainer);
+
+      // Collect the list of objects
+      const std::set< CCopasiObject * > & Objects = (*it)->getObjects();
+      for (itObj = Objects.begin(), endObj = Objects.end(); itObj != endObj; ++itObj)
+        mObjects.insert(*itObj);
+    }
 
   return success;
 }
