@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 18:36:28 $
+   $Date: 2006/04/16 21:05:31 $
    End CVS Header */
 
 #include "copasi.h"
@@ -13,7 +13,8 @@
 
 COutputHandler::COutputHandler(CCopasiTask * pTask):
     mpTask(pTask),
-    mInterfaces()
+    mInterfaces(),
+    mIsMaster(false)
 {}
 
 COutputHandler::~COutputHandler() {};
@@ -40,11 +41,15 @@ bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer)
         mObjects.insert(*itObj);
     }
 
+  if (mIsMaster) success &= compileRefresh();
+
   return success;
 }
 
 void COutputHandler::output(const Activity & activity)
 {
+  if (mIsMaster) refresh();
+
   std::set< COutputInterface *>::iterator it = mInterfaces.begin();
   std::set< COutputInterface *>::iterator end = mInterfaces.end();
 
@@ -81,3 +86,31 @@ void COutputHandler::addInterface(COutputInterface * pInterface)
 
 void COutputHandler::removeInterface(COutputInterface * pInterface)
 {mInterfaces.erase(pInterface);}
+
+void COutputHandler::setMaster(const bool & isMaster)
+{mIsMaster = isMaster;}
+
+const bool & COutputHandler::isMaster() const
+  {return mIsMaster;}
+
+void COutputHandler::refresh()
+{
+  std::vector< Refresh * >::iterator it = mObjectRefreshes.begin();
+  std::vector< Refresh * >::iterator end = mObjectRefreshes.end();
+
+  for (;it != end; ++it) (**it)();
+}
+
+bool COutputHandler::compileRefresh()
+{
+  mObjectRefreshes.clear();
+
+  std::set< CCopasiObject * >::const_iterator it = mObjects.begin();
+  std::set< CCopasiObject * >::const_iterator end = mObjects.end();
+
+  for (; it != end; ++it)
+    if ((*it)->getRefresh())
+      mObjectRefreshes.push_back((*it)->getRefresh());
+
+  return true;
+}

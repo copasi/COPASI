@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 17:43:46 $
+   $Date: 2006/04/16 21:05:31 $
    End CVS Header */
 
 #include <qstring.h>
@@ -243,13 +243,7 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
             CCopasiContainer::ObjectFromName(listOfContainer, pItem->getChannels()[j]);
 
           if (pObj)
-            {
-              mObjects.insert(pObj);
-
-              // :TODO: This will move to the handler.
-              if (pObj->getRefresh())
-                mObjectRefreshes.insert(pObj->getRefresh());
-            }
+            mObjects.insert(pObj);
 
           Inserted = ActivityObjects[ItemActivity].insert(pObj);
 
@@ -296,11 +290,6 @@ void CopasiPlot::output(const Activity & activity)
 {
   unsigned C_INT32 i, imax;
   C_INT32 ItemActivity;
-
-  // :TODO: This will move to the handler.
-  std::set< Refresh * >::iterator it = mObjectRefreshes.begin();
-  std::set< Refresh * >::iterator end = mObjectRefreshes.end();
-  for (;it != end; ++it) (**it)();
 
   if (mHaveBefore && (activity == COutputInterface::BEFORE)) mDataBefore++;
   if (mHaveDuring && (activity == COutputInterface::DURING)) mDataDuring++;
@@ -712,7 +701,4 @@ void CopasiPlot::clearBuffers()
   mHaveBefore = false;
   mHaveDuring = false;
   mHaveAfter = false;
-
-  // :TODO: This will move to the handler.
-  mObjectRefreshes.clear();
 }

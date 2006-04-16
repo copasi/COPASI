@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 18:18:29 $
+   $Date: 2006/04/16 21:05:31 $
    End CVS Header */
 
 #include "copasi.h"
@@ -67,6 +67,22 @@ void COutputHandlerPlot::finish()
 void COutputHandlerPlot::doSeparator()
 {if (mpPlotSpecVector) mpPlotSpecVector->doSeparator();}
 #endif // XXXX
+
+void COutputHandlerPlot::removeInterface(COutputInterface * pInterface)
+{
+  std::map<std::string, PlotWindow*>::iterator it = mPlotMap.begin();
+  std::map<std::string, PlotWindow*>::iterator end = mPlotMap.end();
+
+  for (; it != end; ++it)
+    if (it->second == pInterface)
+      {
+        mPlotMap.erase(it);
+        return;
+      }
+
+  COutputHandler::removeInterface(pInterface);
+  return;
+}
 
 void COutputHandlerPlot::setOutputDefinitionVector(COutputDefinitionVector * pDefinitionVector)
 {mpDefinitionVector = pDefinitionVector;}

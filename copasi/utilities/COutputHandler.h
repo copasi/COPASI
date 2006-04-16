@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 18:35:38 $
+   $Date: 2006/04/16 21:05:31 $
    End CVS Header */
 
 #ifndef OUTPUT_HANDLER
@@ -15,6 +15,7 @@
 class CCopasiObject;
 class CCopasiContainer;
 class CCopasiTask;
+class Refresh;
 
 /**
  *  This is just the interface that is used to all output provided by COPASI.
@@ -68,7 +69,7 @@ class COutputInterface
      * Retreive the list of objects handled by the interface
      * @return const std::set< CCopasiObject * > & objects
      */
-    const std::set< CCopasiObject * > & getObjects() const
+    virtual const std::set< CCopasiObject * > & getObjects() const
       {return mObjects;}
 
     // Attributes
@@ -127,13 +128,36 @@ class COutputHandler: public COutputInterface
      * Add an interface
      * @param COutputInterface * pInterface;
      */
-    void addInterface(COutputInterface * pInterface);
+    virtual void addInterface(COutputInterface * pInterface);
 
     /**
      * Remove an interface
      * @param COutputInterface * pInterface;
      */
-    void removeInterface(COutputInterface * pInterface);
+    virtual void removeInterface(COutputInterface * pInterface);
+
+    /**
+     * Set whether the handler is the master handler
+     * @param const bool & isMaster
+     */
+    void setMaster(const bool & isMaster);
+
+    /**
+     * Check whether the handler is a master
+     * @return const bool & isMaster
+     */
+    const bool & isMaster() const;
+
+  protected:
+    /**
+     * Refresh all objects
+     */
+    void refresh();
+
+    /**
+     * Compile the object refresh list
+     */
+    bool compileRefresh();
 
     // Attributes
   protected:
@@ -146,5 +170,16 @@ class COutputHandler: public COutputInterface
      * A list of all active output interfaces.
      */
     std::set<COutputInterface *> mInterfaces;
+
+    /**
+     * Indicates whether the handler is the master handler. The master
+     * handler is reponsible for the object updates.
+     */
+    bool mIsMaster;
+
+    /**
+     * An ordered list of refresh methods needed by the master
+     */
+    std::vector< Refresh * > mObjectRefreshes;
   };
 #endif

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 17:57:07 $
+   $Date: 2006/04/16 21:05:31 $
    End CVS Header */
 
 /**
@@ -177,6 +177,8 @@ CProcessReport * CCopasiTask::getCallBack() const
 bool CCopasiTask::initialize(const OutputFlag & of,
                              std::ostream * pOstream)
 {
+  mOutputHandler.setMaster(pOstream == NULL && of != NO_OUTPUT);
+
   bool success = true;
 
   if (!mpProblem)

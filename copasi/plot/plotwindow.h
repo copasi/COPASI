@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwindow.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 17:51:38 $
+   $Date: 2006/04/16 21:05:53 $
    End CVS Header */
 
 #include <fstream>
@@ -66,6 +66,12 @@ class PlotWindow : public QMainWindow, public COutputInterface
      * Finsh the output
      */
     virtual void finish();
+
+    /**
+     * Retreive the list of objects handled by the interface
+     * @return const std::set< CCopasiObject * > & objects
+     */
+    virtual const std::set< CCopasiObject * > & getObjects() const;
 
   private slots:
     //void enableZoom();

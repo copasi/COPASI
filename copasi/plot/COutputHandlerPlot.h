@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/COutputHandlerPlot.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 18:18:51 $
+   $Date: 2006/04/16 21:05:31 $
    End CVS Header */
 
 #ifndef OUTPUT_HANDLER_PLOT
@@ -57,6 +57,12 @@ class COutputHandlerPlot : public COutputHandler
      * Finsh the output
      */ 
     // virtual void finish();
+
+    /**
+     * Remove an interface
+     * @param COutputInterface * pInterface;
+     */
+    virtual void removeInterface(COutputInterface * pInterface);
 
     void setOutputDefinitionVector(COutputDefinitionVector * pDefinitionVector);
 

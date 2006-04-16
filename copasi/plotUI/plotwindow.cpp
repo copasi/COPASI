@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 17:51:38 $
+   $Date: 2006/04/16 21:05:53 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -164,10 +164,13 @@ PlotWindow::~PlotWindow()
 
 bool PlotWindow::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
+  mObjects.clear();
+  bool success = true;
+
   if (mpPlot)
-    return mpPlot->compile(listOfContainer);
-  else
-    return true;
+    success = mpPlot->compile(listOfContainer);
+
+  return success;
 };
 
 void PlotWindow::output(const Activity & activity)
@@ -178,3 +181,11 @@ void PlotWindow::separate(const Activity & activity)
 
 void PlotWindow::finish()
 {if (mpPlot) mpPlot->finish();};
+
+const std::set< CCopasiObject * > & PlotWindow::getObjects() const
+  {
+    if (mpPlot)
+      return mpPlot->getObjects();
+
+    return mObjects;
+  }

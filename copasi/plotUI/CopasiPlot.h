@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 17:43:46 $
+   $Date: 2006/04/16 21:05:31 $
    End CVS Header */
 
 // the plot object for copasi
@@ -124,8 +124,6 @@ class CopasiPlot : public QwtPlot, public COutputInterface
 
     // for each activity and object tells where the data is stored
     std::map< Activity, std::map< CCopasiObject *, unsigned C_INT32 > > mObjectIndex;
-
-    std::set< Refresh * > mObjectRefreshes;
 
     // stores the curves
     std::vector<QwtPlotCurve*> mCurves;
