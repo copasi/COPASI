@@ -1,43 +1,150 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/05 16:03:52 $
+   $Date: 2006/04/16 17:40:37 $
    End CVS Header */
 
 #ifndef OUTPUT_HANDLER
 #define OUTPUT_HANDLER
 
 #include <vector>
+#include <set>
 
+class CCopasiObject;
 class CCopasiContainer;
+class CCopasiTask;
 
 /**
- *  This is just a wrapper class that is used to call the plotting classes.
- *  We do not want to call gui stuff directly from the trajectory task. 
+ *  This is just the interface that is used to all output provided by COPASI.
  */
-class CCallbackHandler
+class COutputInterface
   {
   public:
+    /**
+     * The output activity, indicating the status of the current operations
+     * performed by a task.
+     */
+    enum Activity
+    {
+      BEFORE = 0x01,
+      DURING = 0x02,
+      AFTER = 0x04
+    };
 
-    virtual ~CCallbackHandler() {};
+    /**
+     * Destructor
+     */
+    virtual ~COutputInterface() {};
 
     /**
      * compile the object list from name vector
-     * @param std::vector< CCopasiContainer * > listOfContainer
-     * (default: CCopasiContainer::EmptyList)
+     * @param std::vector< CCopasiContainer * > listOfContainer (default: empty list)
+     * @return bool success
+     */
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer =
+                           std::vector< CCopasiContainer * >())
+    {return false;};
+
+    /**
+     * Perform an output event for the current activity
+     * @param const Activity & activity
+     */
+    virtual void output(const Activity & activity) {};
+
+    /**
+     * Introduce an additional seperator into the ouput
+     * @param const Activity & activity
+     */
+    virtual void separate(const Activity & activity) {};
+
+    /**
+     * Finsh the output
+     */
+    virtual void finish() {};
+
+    /**
+     * Retreive the list of objects handled by the interface
+     * @return const std::set< CCopasiObject * > & objects
+     */
+    const std::set< CCopasiObject * > & getObjects() const
+      {return mObjects;}
+
+    // Attributes
+  protected:
+    /**
+     * All the objects which are output.
+     */
+    std::set< CCopasiObject * > mObjects;
+  };
+
+/**
+ *  This is the lass which drives all otuput of COPASI.
+ */
+class COutputHandler: public COutputInterface
+  {
+    // Operations
+
+  public:
+    /**
+     * Default Constructor
+     * @param CCopasiTask * pTask (default: NULL)
+     */
+    COutputHandler(CCopasiTask * pTask = NULL);
+
+    /**
+     * Destructor
+     */
+    virtual ~COutputHandler();
+
+    /**
+     * compile the object list from name vector
+     * @param std::vector< CCopasiContainer * > listOfContainer (default: empty list)
      * @return bool success
      */
     virtual bool compile(std::vector< CCopasiContainer * > listOfContainer =
                            std::vector< CCopasiContainer * >());
 
-    //for output handler
-    virtual void init();
-    virtual void doOutput();
+    /**
+     * Perform an output event for the current activity
+     * @param const Activity & activity
+     */
+    virtual void output(const Activity & activity);
+
+    /**
+     * Introduce an additional seperator into the ouput
+     * @param const Activity & activity
+     */
+    virtual void separate(const Activity & activity);
+
+    /**
+     * Finsh the output
+     */
     virtual void finish();
 
-    virtual void doSeparator();
-  };
+    /**
+     * Add an interface
+     * @param COutputInterface * pInterface;
+     */
+    void addInterface(COutputInterface * pInterface);
 
+    /**
+     * Remove an interface
+     * @param COutputInterface * pInterface;
+     */
+    void removeInterface(COutputInterface * pInterface);
+
+    // Attributes
+  protected:
+    /**
+     * The main operating task
+     */
+    CCopasiTask * mpTask;
+
+    /**
+     * A list of all active output interfaces.
+     */
+    std::set<COutputInterface *> mInterfaces;
+  };
 #endif

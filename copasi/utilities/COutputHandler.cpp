@@ -1,46 +1,73 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/05 16:03:52 $
+   $Date: 2006/04/16 17:40:37 $
    End CVS Header */
 
-#include <iostream>
 #include "copasi.h"
+
 #include "COutputHandler.h"
+#include "CCopasiTask.h"
 
-bool CCallbackHandler::compile(std::vector< CCopasiContainer * > listOfContainer)
-{return true;}
+COutputHandler::COutputHandler(CCopasiTask * pTask):
+    mpTask(pTask),
+    mInterfaces()
+{}
 
-void CCallbackHandler::init()
+COutputHandler::~COutputHandler() {};
+
+bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
-#ifdef COPASI_DEBUG
-  std::cout << "CallbackHandler: init" << std::endl;
-#endif // COPASI_DEBUG
+  bool success = true;
+
+  std::set< COutputInterface *>::iterator it = mInterfaces.begin();
+  std::set< COutputInterface *>::iterator end = mInterfaces.end();
+
+  if (mpTask) listOfContainer.push_back(mpTask);
+
+  for (; it != end; ++it)
+    success &= (*it)->compile(listOfContainer);
+
+  return success;
+}
+
+void COutputHandler::output(const Activity & activity)
+{
+  std::set< COutputInterface *>::iterator it = mInterfaces.begin();
+  std::set< COutputInterface *>::iterator end = mInterfaces.end();
+
+  for (; it != end; ++it)
+    (*it)->output(activity);
+
   return;
 }
 
-void CCallbackHandler::doOutput()
+void COutputHandler::separate(const Activity & activity)
 {
-#ifdef COPASI_DEBUG
-  std::cout << "CallbackHandler: do" << std::endl;
-#endif // COPASI_DEBUG
+  std::set< COutputInterface *>::iterator it = mInterfaces.begin();
+  std::set< COutputInterface *>::iterator end = mInterfaces.end();
+
+  for (; it != end; ++it)
+    (*it)->separate(activity);
+
   return;
 }
 
-void CCallbackHandler::finish()
+void COutputHandler::finish()
 {
-#ifdef COPASI_DEBUG
-  std::cout << "CallbackHandler: finish" << std::endl;
-#endif // COPASI_DEBUG
+  std::set< COutputInterface *>::iterator it = mInterfaces.begin();
+  std::set< COutputInterface *>::iterator end = mInterfaces.end();
+
+  for (; it != end; ++it)
+    (*it)->finish();
+
   return;
 }
 
-void CCallbackHandler::doSeparator()
-{
-#ifdef COPASI_DEBUG
-  std::cout << "CallbackHandler: separator" << std::endl;
-#endif // COPASI_DEBUG
-  return;
-}
+void COutputHandler::addInterface(COutputInterface * pInterface)
+{mInterfaces.insert(pInterface);}
+
+void COutputHandler::removeInterface(COutputInterface * pInterface)
+{mInterfaces.erase(pInterface);}
