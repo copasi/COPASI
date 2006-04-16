@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 17:40:37 $
+   $Date: 2006/04/16 18:35:38 $
    End CVS Header */
 
 #ifndef OUTPUT_HANDLER
@@ -43,7 +43,7 @@ class COutputInterface
      * @param std::vector< CCopasiContainer * > listOfContainer (default: empty list)
      * @return bool success
      */
-    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer =
+    virtual bool compile(std::vector< CCopasiContainer * > /* listOfContainer */ =
                            std::vector< CCopasiContainer * >())
     {return false;};
 
@@ -51,13 +51,13 @@ class COutputInterface
      * Perform an output event for the current activity
      * @param const Activity & activity
      */
-    virtual void output(const Activity & activity) {};
+    virtual void output(const Activity & /* activity */) {};
 
     /**
      * Introduce an additional seperator into the ouput
      * @param const Activity & activity
      */
-    virtual void separate(const Activity & activity) {};
+    virtual void separate(const Activity & /* activity */) {};
 
     /**
      * Finsh the output
