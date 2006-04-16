@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/12 12:32:31 $
+   $Author: shoops $ 
+   $Date: 2006/04/16 18:06:52 $
    End CVS Header */
 
 #include "copasi.h"
@@ -37,7 +37,7 @@
 //*****************************************************************************
 
 DataModelGUI::DataModelGUI():
-    mPlotDefinitionList()
+    mOutputHandlerPlot()
 {
   this->populateData();
   //mpMathModel = NULL;
@@ -55,15 +55,13 @@ void DataModelGUI::linkDataModelToGUI()
   CCopasiDataModel::Global->getModel()->setCompileHandler(tmpBar);
 
   //output handler
-  COutputHandlerPlot* tmpHandler = new COutputHandlerPlot();
-  tmpHandler->setPlotSpecVectorAddress(& mPlotDefinitionList);
-  (*CCopasiDataModel::Global->getTaskList())["Time-Course"]->setOutputHandler(tmpHandler);
-  (*CCopasiDataModel::Global->getTaskList())["Scan"]->setOutputHandler(tmpHandler);
-  (*CCopasiDataModel::Global->getTaskList())["Steady-State"]->setOutputHandler(tmpHandler);
+  (*CCopasiDataModel::Global->getTaskList())["Time-Course"]->addOutputInterface(&mOutputHandlerPlot);
+  (*CCopasiDataModel::Global->getTaskList())["Scan"]->addOutputInterface(&mOutputHandlerPlot);
+  (*CCopasiDataModel::Global->getTaskList())["Steady-State"]->addOutputInterface(&mOutputHandlerPlot);
 
   // optimization
-  (*CCopasiDataModel::Global->getTaskList())["Optimization"]->setOutputHandler(tmpHandler);
-  (*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"]->setOutputHandler(tmpHandler);
+  (*CCopasiDataModel::Global->getTaskList())["Optimization"]->addOutputInterface(&mOutputHandlerPlot);
+  (*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"]->addOutputInterface(&mOutputHandlerPlot);
 
   //math model
   //pdelete(mpMathModel);
@@ -297,7 +295,7 @@ bool DataModelGUI::createModel()
 {
   if (!CCopasiDataModel::Global->newModel()) return false;
 
-  mPlotDefinitionList.setPlotDefinitionList(CCopasiDataModel::Global->getPlotDefinitionList());
+  mOutputHandlerPlot.setOutputDefinitionVector(CCopasiDataModel::Global->getPlotDefinitionList());
 
   linkDataModelToGUI();
   return true;
@@ -308,7 +306,7 @@ bool DataModelGUI::loadModel(const std::string & fileName)
   if (!CCopasiDataModel::Global->loadModel(fileName)) return false;
 
   // getModel()->setCompileFlag();
-  mPlotDefinitionList.setPlotDefinitionList(CCopasiDataModel::Global->getPlotDefinitionList());
+  mOutputHandlerPlot.setOutputDefinitionVector(CCopasiDataModel::Global->getPlotDefinitionList());
 
   linkDataModelToGUI();
   return true;
@@ -316,9 +314,6 @@ bool DataModelGUI::loadModel(const std::string & fileName)
 
 bool DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
 {
-  assert(mPlotDefinitionList.getPlotDefinitionList() ==
-         CCopasiDataModel::Global->getPlotDefinitionList());
-
   return CCopasiDataModel::Global->saveModel(fileName, overwriteFile);
 }
 
@@ -336,7 +331,7 @@ bool DataModelGUI::importSBML(const std::string & fileName)
       throw except;
     }
 
-  mPlotDefinitionList.setPlotDefinitionList(CCopasiDataModel::Global->getPlotDefinitionList());
+  mOutputHandlerPlot.setOutputDefinitionVector(CCopasiDataModel::Global->getPlotDefinitionList());
 
   pdelete(tmpBar);
 
@@ -346,9 +341,6 @@ bool DataModelGUI::importSBML(const std::string & fileName)
 
 bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile)
 {
-  assert(mPlotDefinitionList.getPlotDefinitionList() ==
-         CCopasiDataModel::Global->getPlotDefinitionList());
-
   CProgressBar* tmpBar = new CProgressBar();
   bool result = false;
   try
@@ -366,14 +358,8 @@ bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile)
 
 bool DataModelGUI::exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile)
 {
-  assert(mPlotDefinitionList.getPlotDefinitionList() ==
-         CCopasiDataModel::Global->getPlotDefinitionList());
-
   return CCopasiDataModel::Global->exportMathModel(fileName, filter, overwriteFile);
 }
-
-CPlotSpec2Vector & DataModelGUI::getPlotDefinitionList()
-{return mPlotDefinitionList;}
 
 //************** Math model ***********************************************
 

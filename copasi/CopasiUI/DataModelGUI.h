@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/12 12:32:31 $
+   $Author: shoops $ 
+   $Date: 2006/04/16 18:06:52 $
    End CVS Header */
 
 #ifndef DATAMODELGUI_H
@@ -12,7 +12,7 @@
 #include <qobject.h>
 
 #include "Tree.h"
-#include "plot/CPlotSpec2Vector.h"
+#include "plot/COutputHandlerPlot.h"
 
 //class CMathModel;
 class QTimer;
@@ -29,7 +29,7 @@ class DataModelGUI
 
     void linkDataModelToGUI();
 
-    CPlotSpec2Vector mPlotDefinitionList;
+    COutputHandlerPlot mOutputHandlerPlot;
 
   public:
     DataModelGUI();
@@ -56,7 +56,7 @@ class DataModelGUI
     bool exportSBML(const std::string & fileName, bool overwriteFile = false);
     bool exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
 
-    CPlotSpec2Vector & getPlotDefinitionList();
+    COutputDefinitionVector & getPlotDefinitionList();
 
     //CMathModel * getMathModel() {return mpMathModel;}
     //bool updateMathModel();
