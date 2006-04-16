@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/04/18 09:30:53 $
+   $Author: shoops $ 
+   $Date: 2006/04/16 21:26:32 $
    End CVS Header */
 
 #include "PlotWidget.h"
@@ -22,7 +22,8 @@
 //#include "report/CReportDefinition.h"
 #include "report/CCopasiStaticString.h"
 #include "qtUtilities.h"
-#include "plot/CPlotSpec2Vector.h"
+#include "plot/CPlotSpecification.h"
+#include "plot/COutputDefinitionVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "DataModelGUI.h"
 

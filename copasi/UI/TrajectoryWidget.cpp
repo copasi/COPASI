@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.124 $
+   $Revision: 1.125 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/17 16:05:08 $
+   $Date: 2006/04/16 21:26:32 $
    End CVS Header */
 
 /********************************************************
@@ -46,7 +46,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "MyLineEdit.h"
 #include "utilities/CCopasiException.h"
 #include "CProgressBar.h"
-#include "plot/CPlotSpec2Vector.h"
+#include "plot/COutputDefinitionVector.h"
 
 #include "copasiui3window.h"
 #include "DefaultplotDialog.h"

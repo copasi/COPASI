@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.0 Debug 17++ (http://www.copasi.org) at 2006-01-03 16:16:19 UTC -->
+<!-- generated with COPASI 4.0 Debug 17++ (http://www.copasi.org) at 2006-04-10 15:18:04 UTC -->
 <COPASI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://calvin.bioinformatics.vt.edu/copasi/schema/copasi.xsd" versionMajor="0" versionMinor="1">
   <ListOfFunctions>
     <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" positive="false">
@@ -21,22 +21,22 @@
       </MathML>
     </Function>
   </ListOfFunctions>
-  <Model key="Model_1" name="The Brusselator" timeUnit="s" volumeUnit="ml" quantityUnit="mMol" stateVariable="StateVariable_3">
+  <Model key="Model_1" name="The Brusselator" timeUnit="s" volumeUnit="ml" quantityUnit="mMol">
     <Comment>
       <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1"></meta></head><body style="font-size:8pt;font-family:MS Shell Dlg">
 <p>The famous Brusselator model in which a chemical species X catalyses its own formation. In a certain region of parameter space the Brusselator can function in a limit cycle regime around an unstable steady state. Run this simulation and then check the report file to see how Gepasi can find an unstable steady state, and calculate the eigenvalues of the Jacobian matrix.</p>
 </body></html>
     </Comment>
     <ListOfCompartments>
-      <Compartment key="Compartment_0" name="compartment" stateVariable="StateVariable_4"/>
+      <Compartment key="Compartment_0" name="compartment"/>
     </ListOfCompartments>
     <ListOfMetabolites>
-      <Metabolite key="Metabolite_0" name="X" compartment="Compartment_0" status="variable" stateVariable="StateVariable_5"/>
-      <Metabolite key="Metabolite_1" name="Y" compartment="Compartment_0" status="variable" stateVariable="StateVariable_6"/>
-      <Metabolite key="Metabolite_5" name="E" compartment="Compartment_0" status="fixed" stateVariable="StateVariable_7"/>
-      <Metabolite key="Metabolite_4" name="D" compartment="Compartment_0" status="fixed" stateVariable="StateVariable_8"/>
-      <Metabolite key="Metabolite_3" name="B" compartment="Compartment_0" status="fixed" stateVariable="StateVariable_9"/>
-      <Metabolite key="Metabolite_2" name="A" compartment="Compartment_0" status="fixed" stateVariable="StateVariable_10"/>
+      <Metabolite key="Metabolite_0" name="X" compartment="Compartment_0" status="variable"/>
+      <Metabolite key="Metabolite_1" name="Y" compartment="Compartment_0" status="variable"/>
+      <Metabolite key="Metabolite_5" name="E" compartment="Compartment_0" status="fixed"/>
+      <Metabolite key="Metabolite_4" name="D" compartment="Compartment_0" status="fixed"/>
+      <Metabolite key="Metabolite_3" name="B" compartment="Compartment_0" status="fixed"/>
+      <Metabolite key="Metabolite_2" name="A" compartment="Compartment_0" status="fixed"/>
     </ListOfMetabolites>
     <ListOfReactions>
       <Reaction key="Reaction_0" name="R1" reversible="false">
@@ -131,21 +131,21 @@
       </Reaction>
     </ListOfReactions>
     <StateTemplate>
-      <StateTemplateVariable key="StateVariable_3" objectReference="Model_1"/>
-      <StateTemplateVariable key="StateVariable_4" objectReference="Compartment_0"/>
-      <StateTemplateVariable key="StateVariable_5" objectReference="Metabolite_0"/>
-      <StateTemplateVariable key="StateVariable_6" objectReference="Metabolite_1"/>
-      <StateTemplateVariable key="StateVariable_7" objectReference="Metabolite_5"/>
-      <StateTemplateVariable key="StateVariable_8" objectReference="Metabolite_4"/>
-      <StateTemplateVariable key="StateVariable_9" objectReference="Metabolite_3"/>
-      <StateTemplateVariable key="StateVariable_10" objectReference="Metabolite_2"/>
+      <StateTemplateVariable objectReference="Model_1"/>
+      <StateTemplateVariable objectReference="Metabolite_0"/>
+      <StateTemplateVariable objectReference="Metabolite_1"/>
+      <StateTemplateVariable objectReference="Metabolite_5"/>
+      <StateTemplateVariable objectReference="Metabolite_4"/>
+      <StateTemplateVariable objectReference="Metabolite_3"/>
+      <StateTemplateVariable objectReference="Metabolite_2"/>
+      <StateTemplateVariable objectReference="Compartment_0"/>
     </StateTemplate>
     <InitialState type="initialState">
-      0 1 1.80664e+021 1.80664e+021 0 0 1.80664e+021 3.01107e+020
+      0 1.80664e+021 1.80664e+021 0 0 1.80664e+021 3.01107e+020 1
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_6" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+    <Task key="Task_7" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
@@ -165,8 +165,8 @@
         <Parameter name="Newton.LSODA.MaxStepsInternal" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_7" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
-      <Report reference="Report_6" target="" append="0"/>
+    <Task key="Task_8" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
+      <Report reference="Report_5" target="" append="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="200"/>
         <Parameter name="StepSize" type="float" value="0.5"/>
@@ -184,7 +184,7 @@
         <Parameter name="LSODA.MaxStepsInternal" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_8" name="Scan" type="scan" scheduled="false" updateModel="false">
+    <Task key="Task_9" name="Scan" type="scan" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
@@ -195,7 +195,7 @@
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_9" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+    <Task key="Task_10" name="Optimization" type="optimization" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Steady-State" type="key" value=""/>
         <Parameter name="Time-Course" type="key" value=""/>
@@ -212,11 +212,11 @@
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_10" name="Parameter Fitting" type="parameterFitting" scheduled="true" updateModel="true">
-      <Report reference="Report_5" target="brusselator-Fitting.txt" append="0"/>
+    <Task key="Task_11" name="Parameter Estimation" type="parameterFitting" scheduled="true" updateModel="false">
+      <Report reference="Report_6" target="brusselator-Fitting.txt" append="0"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_6"/>
-        <Parameter name="Time-Course" type="key" value="Task_7"/>
+        <Parameter name="Steady-State" type="key" value="Task_7"/>
+        <Parameter name="Time-Course" type="key" value="Task_8"/>
         <ParameterGroup name="OptimizationItemList">
           <ParameterGroup name="FitItem">
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=The Brusselator,Vector=Reactions[R1],ParameterGroup=Parameters,Parameter=k1,Reference=Value"/>
@@ -224,6 +224,7 @@
             <Parameter name="UpperBound" type="cn" value="10"/>
             <ParameterGroup name="Affected Experiments">
             </ParameterGroup>
+            <Parameter name="SavedValue" type="float" value="0.1"/>
           </ParameterGroup>
           <ParameterGroup name="FitItem">
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=The Brusselator,Vector=Reactions[R2],ParameterGroup=Parameters,Parameter=k1,Reference=Value"/>
@@ -231,6 +232,7 @@
             <Parameter name="UpperBound" type="cn" value="10"/>
             <ParameterGroup name="Affected Experiments">
             </ParameterGroup>
+            <Parameter name="SavedValue" type="float" value="0.1"/>
           </ParameterGroup>
           <ParameterGroup name="FitItem">
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=The Brusselator,Vector=Reactions[R3],ParameterGroup=Parameters,Parameter=k1,Reference=Value"/>
@@ -238,6 +240,7 @@
             <Parameter name="UpperBound" type="cn" value="10"/>
             <ParameterGroup name="Affected Experiments">
             </ParameterGroup>
+            <Parameter name="SavedValue" type="float" value="0.267768"/>
           </ParameterGroup>
           <ParameterGroup name="FitItem">
             <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=The Brusselator,Vector=Reactions[R4],ParameterGroup=Parameters,Parameter=k1,Reference=Value"/>
@@ -245,6 +248,7 @@
             <Parameter name="UpperBound" type="cn" value="10"/>
             <ParameterGroup name="Affected Experiments">
             </ParameterGroup>
+            <Parameter name="SavedValue" type="float" value="0.656681"/>
           </ParameterGroup>
         </ParameterGroup>
         <ParameterGroup name="OptimizationConstraintList">
@@ -252,7 +256,7 @@
         <ParameterGroup name="Experiment Set">
           <ParameterGroup name="Experiment">
             <Parameter name="Key" type="key" value="Experiment_0"/>
-            <Parameter name="File Name" type="file" value="C:/cygwin/home/shoops/development/copasi_dev/gps/brusselator-TimeCourse.txt"/>
+            <Parameter name="File Name" type="file" value="brusselator-TimeCourse.txt"/>
             <Parameter name="First Row" type="unsignedInteger" value="1"/>
             <Parameter name="Last Row" type="unsignedInteger" value="202"/>
             <Parameter name="Experiment Type" type="unsignedInteger" value="1"/>
@@ -274,16 +278,22 @@
       </Problem>
       <Method name="Hooke &amp; Jeeves" type="HookeJeeves">
         <Parameter name="Iteration Limit" type="unsignedInteger" value="500"/>
-        <Parameter name="Tolerance" type="float" value="1e-009"/>
+        <Parameter name="Tolerance" type="float" value="9.99998e-010"/>
         <Parameter name="Rho" type="float" value="0.9"/>
       </Method>
     </Task>
-    <Task key="Task_11" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+    <Task key="Task_12" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_6"/>
+        <Parameter name="Steady-State" type="key" value="Task_7"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="MCA.ModulationFactor" type="unsignedFloat" value="1e-009"/>
+      </Method>
+    </Task>
+    <Task key="Task_6" name="Time scale separation" type="timeScaleSeparation" scheduled="false" updateModel="false">
+      <Problem>
+      </Problem>
+      <Method name="Time scale separation Method" type="TimeScaleSeparationMethod">
       </Method>
     </Task>
   </ListOfTasks>
@@ -324,34 +334,7 @@
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_5" name="Parameter Fitting" taskType="parameterFitting" separator="&#x09;" precision="15">
-      <Comment>
-        <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-size:8pt;font-family:MS Shell Dlg">
-<p>Automatically generated report. </p>
-</body></html>
-
-      </Comment>
-      <Header>
-        <Object cn="CN=Root,Vector=TaskList[Parameter Fitting],Object=Description"/>
-        <Object cn="String=\[Simulation Counter\]"/>
-        <Object cn="Separator=&#x09;"/>
-        <Object cn="String=\[Best Value\]"/>
-        <Object cn="Separator=&#x09;"/>
-        <Object cn="String=\[Best Parameters\]"/>
-      </Header>
-      <Body>
-        <Object cn="CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Simulation Counter"/>
-        <Object cn="Separator=&#x09;"/>
-        <Object cn="CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Best Value"/>
-        <Object cn="Separator=&#x09;"/>
-        <Object cn="CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Best Parameters"/>
-      </Body>
-      <Footer>
-        <Object cn="String=&#x0a;"/>
-        <Object cn="CN=Root,Vector=TaskList[Parameter Fitting],Object=Result"/>
-      </Footer>
-    </Report>
-    <Report key="Report_6" name="Concentrations table with time" taskType="timeCourse" separator="&#x09;" precision="6">
+    <Report key="Report_5" name="Concentrations table with time" taskType="timeCourse" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           A table of the variable metabolite concentrations and time.
@@ -364,6 +347,32 @@ It does not contain the concentrations of fixed metabolites.
         <Object cn="CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[Y],Reference=Concentration"/>
       </Table>
     </Report>
+    <Report key="Report_6" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+      <Comment>
+        <body xmlns="http://www.w3.org/1999/xhtml">
+          Automatically generated report.
+        </body>
+      </Comment>
+      <Header>
+        <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Description"/>
+        <Object cn="String=\[Function Evaluations\]"/>
+        <Object cn="Separator=&#x09;"/>
+        <Object cn="String=\[Best Value\]"/>
+        <Object cn="Separator=&#x09;"/>
+        <Object cn="String=\[Best Parameters\]"/>
+      </Header>
+      <Body>
+        <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Function Evaluations"/>
+        <Object cn="Separator=&#x09;"/>
+        <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Value"/>
+        <Object cn="Separator=&#x09;"/>
+        <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Parameters"/>
+      </Body>
+      <Footer>
+        <Object cn="String=&#x0a;"/>
+        <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
+      </Footer>
+    </Report>
   </ListOfReports>
   <ListOfPlots>
     <PlotSpecification name="ConcentrationPlot" type="Plot2D" active="0">
@@ -372,6 +381,7 @@ It does not contain the concentrations of fixed metabolites.
       <ListOfPlotItems>
         <PlotItem name="X" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=The Brusselator,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[X],Reference=Concentration"/>
@@ -379,6 +389,7 @@ It does not contain the concentrations of fixed metabolites.
         </PlotItem>
         <PlotItem name="Y" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=The Brusselator,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[Y],Reference=Concentration"/>
@@ -386,6 +397,7 @@ It does not contain the concentrations of fixed metabolites.
         </PlotItem>
         <PlotItem name="E" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=The Brusselator,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[E],Reference=Concentration"/>
@@ -393,6 +405,7 @@ It does not contain the concentrations of fixed metabolites.
         </PlotItem>
         <PlotItem name="D" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=The Brusselator,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[D],Reference=Concentration"/>
@@ -400,6 +413,7 @@ It does not contain the concentrations of fixed metabolites.
         </PlotItem>
         <PlotItem name="B" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=The Brusselator,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[B],Reference=Concentration"/>
@@ -407,6 +421,7 @@ It does not contain the concentrations of fixed metabolites.
         </PlotItem>
         <PlotItem name="A" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=The Brusselator,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=Concentration"/>
@@ -418,11 +433,34 @@ It does not contain the concentrations of fixed metabolites.
       <Parameter name="log X" type="bool" value="0"/>
       <Parameter name="log Y" type="bool" value="0"/>
       <ListOfPlotItems>
-        <PlotItem name="TaskList[Parameter Fitting].(Problem)Parameter Fitting.Best Value|(Timer)CPU Time" type="Curve2D">
+        <PlotItem name="TaskList[Parameter Estimation].(Problem)Parameter Estimation.Best Value|(Timer)CPU Time" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Timer=CPU Time"/>
-            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Fitting],Problem=Parameter Fitting,Reference=Best Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Value"/>
+          </ListOfChannels>
+        </PlotItem>
+      </ListOfPlotItems>
+    </PlotSpecification>
+    <PlotSpecification name="Parameter Estimation Errors" type="Plot2D" active="1">
+      <Parameter name="log X" type="bool" value="0"/>
+      <Parameter name="log Y" type="bool" value="0"/>
+      <ListOfPlotItems>
+        <PlotItem name="Metabolites[X].Weighted Error|M.Time" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="2"/>
+          <Parameter name="Recording Activity" type="string" value="after"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=The Brusselator,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=Experiment,Vector=Fitted Points[0],Reference=Weighted Error"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Metabolites[Y].Weighted Error|M.Time" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="2"/>
+          <Parameter name="Recording Activity" type="string" value="after"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=The Brusselator,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=Experiment,Vector=Fitted Points[1],Reference=Weighted Error"/>
           </ListOfChannels>
         </PlotItem>
       </ListOfPlotItems>

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:22 $
+   $Date: 2006/04/16 21:26:32 $
    End CVS Header */
 
 #include <qcheckbox.h>
@@ -34,7 +34,6 @@
 #include "MyLineEdit.h"
 #include "utilities/CCopasiException.h"
 #include "CProgressBar.h"
-#include "plot/CPlotSpec2Vector.h"
 #include "copasiui3window.h"
 #include "CReportDefinitionSelect.h"
 #include "DefaultplotDialog.h"
