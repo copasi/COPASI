@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/HistoWidget.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/15 16:23:30 $
+   $Date: 2006/04/16 17:55:46 $
    End CVS Header */
 
 /****************************************************************************
@@ -77,9 +77,9 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
   if (!(tmp = curve->getValue("increment").pVOID)) return false;
   lineEditInc->setText(QString::number(*(const C_FLOAT64*)tmp));
 
-  mpCheckBefore->setChecked(curve->getActivity() & CPlotItem::BEFORE);
-  mpCheckDuring->setChecked(curve->getActivity() & CPlotItem::DURING);
-  mpCheckAfter->setChecked(curve->getActivity() & CPlotItem::AFTER);
+  mpCheckBefore->setChecked(curve->getActivity() & COutputInterface::BEFORE);
+  mpCheckDuring->setChecked(curve->getActivity() & COutputInterface::DURING);
+  mpCheckAfter->setChecked(curve->getActivity() & COutputInterface::AFTER);
 
   return true; //TODO
 }
@@ -97,10 +97,10 @@ bool HistoWidget::SaveToCurveSpec(CPlotItem * curve) const
     curve->setValue("increment", lineEditInc->text().toDouble());
 
     C_INT32 Activity = 0;
-    if (mpCheckBefore->isChecked()) Activity += CPlotItem::BEFORE;
-    if (mpCheckDuring->isChecked()) Activity += CPlotItem::DURING;
-    if (mpCheckAfter->isChecked()) Activity += CPlotItem::AFTER;
-    curve->setActivity((CPlotItem::RecordingActivity) Activity);
+    if (mpCheckBefore->isChecked()) Activity += COutputInterface::BEFORE;
+    if (mpCheckDuring->isChecked()) Activity += COutputInterface::DURING;
+    if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
+    curve->setActivity((COutputInterface::Activity) Activity);
 
     return true;
   }

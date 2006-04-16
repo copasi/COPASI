@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwindow.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/05 16:03:51 $
+   $Date: 2006/04/16 17:51:38 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -37,7 +37,9 @@ class PrintFilter: public QwtPlotPrintFilter
 
 //-----------------------------------------------------------------------------
 
-PlotWindow::PlotWindow(CPlotSpec2Vector* psv, const CPlotSpecification* ptrSpec)
+PlotWindow::PlotWindow(COutputHandler * pHandler, const CPlotSpecification* ptrSpec):
+    mpPlot(NULL),
+    mpHandler(pHandler)
 {
   this->resize(640, 480);
   this->setCaption(("Copasi Plot: " + ptrSpec->getTitle()).c_str());
@@ -158,7 +160,7 @@ void PlotWindow::slotSaveData()
 //-----------------------------------------------------------------------------
 
 PlotWindow::~PlotWindow()
-{}
+{if (mpHandler) mpHandler->removeInterface(this);}
 
 bool PlotWindow::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
@@ -168,17 +170,11 @@ bool PlotWindow::compile(std::vector< CCopasiContainer * > listOfContainer)
     return true;
 };
 
-void PlotWindow::takeData()
-{if (mpPlot) mpPlot->takeData();};
+void PlotWindow::output(const Activity & activity)
+{if (mpPlot) mpPlot->output(activity);}
 
-void PlotWindow::doSeparator()
-{if (mpPlot) mpPlot->doSeparator();};
+void PlotWindow::separate(const Activity & activity)
+{if (mpPlot) mpPlot->separate(activity);};
 
-void PlotWindow::updatePlot()
-{if (mpPlot) mpPlot->updatePlot();};
-
-void PlotWindow::initPlot()
-{if (mpPlot) mpPlot->initPlot();};
-
-void PlotWindow::finishPlot()
-{if (mpPlot) mpPlot->finishPlot();};
+void PlotWindow::finish()
+{if (mpPlot) mpPlot->finish();};
