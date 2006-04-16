@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:23:08 $
+   $Date: 2006/04/16 17:57:06 $
    End CVS Header */
 
 #include <algorithm>
@@ -156,7 +156,7 @@ CNewtonMethod::processInternal()
   if (mUseNewton)
     {
       returnCode = processNewton();
-      mpParentTask->separatorOutput();
+      mpParentTask->separatorOutput(COutputInterface::DURING);
 
       if (returnCode == CNewtonMethod::found)
         return returnProcess(true, mFactor, mResolution);
@@ -225,7 +225,7 @@ CNewtonMethod::processInternal()
           if (mUseNewton)
             {
               returnCode = processNewton();
-              mpParentTask->separatorOutput();
+              mpParentTask->separatorOutput(COutputInterface::DURING);
 
               if (returnCode == CNewtonMethod::found)
               {return returnProcess(true, mFactor, mResolution);}
@@ -290,7 +290,7 @@ CNewtonMethod::processInternal()
           if (mUseNewton)
             {
               returnCode = processNewton();
-              mpParentTask->separatorOutput();
+              mpParentTask->separatorOutput(COutputInterface::DURING);
 
               if (returnCode == CNewtonMethod::found)
               {return returnProcess(true, mFactor, mResolution);}

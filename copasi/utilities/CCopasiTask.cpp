@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/05 16:03:52 $
+   $Date: 2006/04/16 17:57:07 $
    End CVS Header */
 
 /**
@@ -84,7 +84,7 @@ CCopasiTask::CCopasiTask(const std::string & name,
     mpMethod(NULL),
     mReport(),
     mpCurrentReport(&mReport),
-    mpOutputHandler(NULL),
+    mOutputHandler(this),
     mpCallBack(NULL),
     mpSliders(NULL),
     mDoOutput(OUTPUT_COMPLETE),
@@ -106,7 +106,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
     mpMethod(NULL),
     mReport(),
     mpCurrentReport(&mReport),
-    mpOutputHandler(NULL),
+    mOutputHandler(this),
     mpCallBack(NULL),
     mpSliders(NULL),
     mDoOutput(OUTPUT_COMPLETE),
@@ -127,7 +127,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
     mpMethod(NULL),
     mReport(src.mReport),
     mpCurrentReport(src.mpCurrentReport),
-    mpOutputHandler(NULL),
+    mOutputHandler(this),
     mpCallBack(NULL),
     mpSliders(NULL),
     mDoOutput(OUTPUT_COMPLETE),
@@ -216,7 +216,7 @@ bool CCopasiTask::initialize(const OutputFlag & of,
       CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, mReport.getObjectName().c_str());
       success = false;
     }
-  if (mpOutputHandler && !mpOutputHandler->compile())
+  if (!mOutputHandler.compile())
     {
       // Warning
       CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 7);
@@ -249,6 +249,9 @@ bool CCopasiTask::restore()
 
   mpProblem->restore(mUpdateModel);
 
+  mReport.close();
+  mOutputHandler.finish();
+
   return true;
 }
 
@@ -273,11 +276,16 @@ const CCopasiTask::CResult & CCopasiTask::getResult() const
 
 void CCopasiTask::cleanup() {}
 
-void CCopasiTask::setOutputHandler(CCallbackHandler* pHandler)
-{mpOutputHandler = pHandler;}
+void CCopasiTask::addOutputInterface(COutputInterface* pInterface)
+{mOutputHandler.addInterface(pInterface);}
 
-CCallbackHandler* CCopasiTask::getOutputHandlerAddr()
-{return mpOutputHandler;}
+void CCopasiTask::removeOutputInterface(COutputInterface* pInterface)
+{mOutputHandler.removeInterface(pInterface);}
+
+/*
+COutputHandler* CCopasiTask::getOutputHandlerAddr()
+{return mOutputHandler;}
+ */
 
 /*
 void CCopasiTask::setProgressHandler(CProcessReport * pHandler)
@@ -296,7 +304,7 @@ bool CCopasiTask::initOutput()
   if (mDoOutput == OUTPUT_COMPLETE)
     {
       if (mpCurrentReport) mpCurrentReport->printHeader();
-      if (mpOutputHandler) mpOutputHandler->init();
+      mOutputHandler.output(COutputInterface::BEFORE);
     }
   return true;
 }
@@ -306,7 +314,7 @@ bool CCopasiTask::doOutput()
   if (mDoOutput)
     {
       if (mpCurrentReport) mpCurrentReport->printBody();
-      if (mpOutputHandler) mpOutputHandler->doOutput();
+      mOutputHandler.output(COutputInterface::DURING);
     }
   ++mOutputCounter;
   return true;
@@ -321,17 +329,17 @@ bool CCopasiTask::finishOutput()
           mpCurrentReport->printFooter();
           mpCurrentReport->close();
         }
-      if (mpOutputHandler) mpOutputHandler->finish();
+      mOutputHandler.output(COutputInterface::AFTER);
     }
   return true;
 }
 
-bool CCopasiTask::separatorOutput()
+bool CCopasiTask::separatorOutput(const COutputInterface::Activity & activity)
 {
   if (mDoOutput == OUTPUT_COMPLETE)
     {
       if (mpCurrentReport) mpCurrentReport->printEmptyLine();
-      if (mpOutputHandler) mpOutputHandler->doSeparator();
+      mOutputHandler.separate(activity);
     }
   return true;
 }

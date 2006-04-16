@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.106 $
+   $Revision: 1.107 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/17 16:05:08 $
+   $Date: 2006/04/16 17:57:31 $
    End CVS Header */
 
 #include <qfiledialog.h>
@@ -23,24 +23,27 @@
 //#include <qapplication.h>
 
 #include "DataModelGUI.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "qtUtilities.h"
 
 #include "SteadyStateWidget.h"
+#include "listviews.h"
+#include "CQTaskBtnWidget.h"
+#include "CQTaskHeaderWidget.h"
+#include "CProgressBar.h" 
+//#include "copasiui3window.h"
+
+#include "copasi.h"
+#include "qtUtilities.h"
+
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 #include "model/CModel.h"
-#include "listviews.h"
 #include "utilities/CCopasiException.h"
-#include "report/CKeyFactory.h"
-#include "CQTaskBtnWidget.h"
-#include "CQTaskHeaderWidget.h" 
+#include "report/CKeyFactory.h" 
 //#include "report/CReportDefinitionVector.h"
 //#include "report/CReport.h"
 //#include "report/CReportDefinition.h"
 //#include "CReportDefinitionSelect.h"
-#include "CProgressBar.h" 
-//#include "copasiui3window.h"
 
 /**
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the 

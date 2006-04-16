@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 14:30:10 $
+   $Date: 2006/04/16 17:57:07 $
    End CVS Header */
 
 /**
@@ -19,12 +19,13 @@
 
 #include <string>
 
+#include "COutputHandler.h"
+
 #include "report/CCopasiContainer.h"
 #include "report/CReport.h"
 
 class CCopasiProblem;
 class CCopasiMethod;
-class CCallbackHandler;
 class CCopasiParameterGroup;
 class CProcessReport;
 class CState;
@@ -67,8 +68,8 @@ class CCopasiTask : public CCopasiContainer
 
     enum OutputFlag
     {
-      NO_OUTPUT = 0,                     //do no output
-      OUTPUT,                            //do output, but do not initialize/finish
+      NO_OUTPUT = 0,                      //do no output
+      OUTPUT,                             //do output, but do not initialize/finish
       OUTPUT_COMPLETE          //do output, including initialization and closing
     };
 
@@ -211,9 +212,9 @@ class CCopasiTask : public CCopasiContainer
     CReport* mpCurrentReport;
 
     /**
-     * The output handler (at this time only for plotting)
+     * The output handler for all output from the task;
      */
-    CCallbackHandler * mpOutputHandler;
+    COutputHandler mOutputHandler;
 
     /**
      * progress bar handler 
@@ -403,16 +404,21 @@ class CCopasiTask : public CCopasiContainer
     void cleanup();
 
     /**
-     * set Output handler
+     * Add an output interface
      **/
-    void setOutputHandler(CCallbackHandler* pHandler);
+    void addOutputInterface(COutputInterface * pInterface);
 
+    /**
+     * Remove an output interface
+     **/
+    void removeOutputInterface(COutputInterface * pInterface);
+
+#ifdef XXXX
     /**
      * get address of output handler
      **/
-    CCallbackHandler* getOutputHandlerAddr();
+    COutputHandler* getOutputHandlerAddr();
 
-#ifdef XXXX
     /**
      * set Output handler
      **/
@@ -431,7 +437,7 @@ class CCopasiTask : public CCopasiContainer
     virtual bool initOutput();
     virtual bool doOutput();
     virtual bool finishOutput();
-    virtual bool separatorOutput();
+    virtual bool separatorOutput(const COutputInterface::Activity & activity);
 
     inline const OutputFlag & getOutputMode() const
       {return mDoOutput;};

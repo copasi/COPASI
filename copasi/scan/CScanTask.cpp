@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/09/15 18:45:26 $
+   $Date: 2006/04/16 17:57:06 $
    End CVS Header */
 
 /**
@@ -182,7 +182,7 @@ bool CScanTask::processCallback()
 bool CScanTask::outputSeparatorCallback(bool isLast)
 {
   if ((!isLast) || mOutputInSubtask)
-    return separatorOutput();
+    return separatorOutput(COutputInterface::DURING);
   //if (mpOutputHandler) return mpOutputHandler->doSeparator();
   return true;
 }
