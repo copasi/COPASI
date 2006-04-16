@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.15 $ $Author: shoops $ $Date: 2006/02/14 14:35:29 $  
+# $Revision: 1.16 $ $Author: shoops $ $Date: 2006/04/16 21:04:15 $  
 ######################################################################
 
 LIB = plot
@@ -15,12 +15,10 @@ HEADERS += CHistogram.h \
            COutputHandlerPlot.h \
            CPlotItem.h \
            CPlotSpecification.h \
-           CPlotSpec2Vector.h \
            COutputDefinitionVector.h \
            plotwindow.h \
            scrollbar.h \
            scrollzoomer.h
-#           curve2dwidget.h
 
 SOURCES += CHistogram.cpp \
            CopasiPlot.cpp \
@@ -29,11 +27,9 @@ SOURCES += CHistogram.cpp \
            COutputHandlerPlot.cpp \
            CPlotItem.cpp \
            CPlotSpecification.cpp \
-           CPlotSpec2Vector.cpp \
            COutputDefinitionVector.cpp \
            scrollbar.cpp \
            scrollzoomer.cpp
-#           curve2dwidget.cpp
 
 FORMS +=  curve2dwidget.ui
 FORMS +=  HistoWidget.ui
