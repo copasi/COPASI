@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/COutputHandlerPlot.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 17:43:46 $
+   $Date: 2006/04/16 18:18:51 $
    End CVS Header */
 
 #ifndef OUTPUT_HANDLER_PLOT
@@ -23,6 +23,11 @@ class PlotWindow;
 class COutputHandlerPlot : public COutputHandler
   {
   public:
+    /**
+     * Default constructor
+     */
+    COutputHandlerPlot();
+
     /**
      * Destructor
      */

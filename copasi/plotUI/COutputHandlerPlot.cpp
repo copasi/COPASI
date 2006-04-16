@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 18:14:35 $
+   $Date: 2006/04/16 18:18:29 $
    End CVS Header */
 
 #include "copasi.h"
@@ -12,9 +12,10 @@
 #include "COutputDefinitionVector.h"
 #include "plotwindow.h"
 
-//COutputHandlerPlot::COutputHandlerPlot():
-//    mpPlotSpecVector(NULL)
-//{};
+COutputHandlerPlot::COutputHandlerPlot():
+    COutputHandler(NULL),
+    mpDefinitionVector(NULL)
+{};
 
 COutputHandlerPlot::~COutputHandlerPlot()
 {}
