@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.192 $
+   $Revision: 1.193 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/12 12:33:55 $
+   $Author: shoops $ 
+   $Date: 2006/04/16 18:06:22 $
    End CVS Header */
 
 /****************************************************************************
@@ -26,7 +26,6 @@
 //#include "FixedMetaboliteSymbols.h"
 //#include "MetaboliteSymbols.h"
 #include "DataModelGUI.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
 #include "CompartmentsWidget.h"
 #include "CompartmentsWidget1.h"
 #include "FunctionSymbols.h"
@@ -51,15 +50,10 @@
 #include "OptimizationResultWidget.h"
 #include "TableDefinition.h"
 #include "TableDefinition1.h"
-#include "report/CReportDefinitionVector.h"
-#include "plot/COutputDefinitionVector.h"
-#include "plot/plotwidget1.h"
-#include "PlotWidget.h"
 #include "CopasiDefaultWidget.h"
 #include "TrajectoryWidget.h"
 #include "TimeSeriesWidget.h"
-#include "TSSWidget.h" 
-//#include "mathmodel/CMathModel.h"
+#include "TSSWidget.h"
 #include "listviews.h"
 #include "qtUtilities.h"
 #include "CQFittingWidget.h"
@@ -67,6 +61,15 @@
 #include "CMCAWidget.h"
 #include "CMCAResultWidget.h"
 #include "CQReportDefinition.h"
+#include "PlotWidget.h"
+
+#include "copasi.h"
+
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CReportDefinitionVector.h"
+#include "plot/COutputDefinitionVector.h"
+#include "plot/plotwidget1.h" 
+//#include "mathmodel/CMathModel.h"
 
 //QPixmap *folderLocked = 0;   // to store the image of locked icon folder
 //QPixmap *folderClosed = 0;   // to store the image of closed icon folder
@@ -474,10 +477,10 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         break;
         /*      case 123:
                 return constantSymbols;
-                break;*/ 
+                break;*/
         /*      case 124:
                 return fixedMetaboliteSymbols;
-                break;*/ 
+                break;*/
         /*      case 125:
                 return metaboliteSymbols;
                 break;*/
