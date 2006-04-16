@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 21:05:31 $
+   $Date: 2006/04/16 21:18:47 $
    End CVS Header */
 
 #include <qstring.h>
@@ -20,7 +20,6 @@
 #include "scrollzoomer.h"
 
 #include "CopasiPlot.h"
-#include "CPlotSpec2Vector.h"
 #include "CPlotSpecification.h"
 #include "CopasiUI/qtUtilities.h"
 

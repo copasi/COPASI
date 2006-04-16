@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/HistoWidget.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 17:55:46 $
+   $Date: 2006/04/16 21:18:47 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,6 +17,10 @@
  ** These will automatically be called by the form's constructor and
  ** destructor.
  *****************************************************************************/
+
+#include "copasi.h"
+
+#include "CPlotItem.h"
 
 #include "report/CCopasiContainer.h"
 #include "CopasiUI/CCopasiSelectionDialog.h"

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/curve2dwidget.ui.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 17:43:46 $
+   $Date: 2006/04/16 21:18:47 $
    End CVS Header */
 
 /****************************************************************************
@@ -14,6 +14,9 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
+#include "copasi.h"
+
+#include "CPlotItem.h"
 
 #include "report/CCopasiContainer.h"
 #include "CopasiUI/CCopasiSelectionDialog.h"
