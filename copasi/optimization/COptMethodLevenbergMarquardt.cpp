@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/15 15:14:54 $
+   $Date: 2006/04/16 18:22:13 $
    End CVS Header */
 
 // adapted by Pedro Mendes, April 2005, from the original Gepasi file
@@ -105,8 +105,6 @@ bool COptMethodLevenbergMarquardt::optimise()
   // keep the current parameter for later
   mBest = mCurrent;
 
-  DebugFile << "mCurrent" << std::endl;
-  DebugFile << mCurrent << std::endl;
   evaluate();
 
   if (!isnan(mEvaluationValue))
@@ -144,11 +142,6 @@ bool COptMethodLevenbergMarquardt::optimise()
           mStep[i] = - mGradient[i];
         }
 
-      DebugFile << "mHessianLM" << std::endl;
-      DebugFile << mHessianLM << std::endl;
-      DebugFile << "mStep" << std::endl;
-      DebugFile << mStep << std::endl;
-
       // SUBROUTINE DSYTRF(UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO)
       // dsytrf_("L", &dim, mHessianLM.array(), &dim, Pivot.array(),
       //         Work.array(), &LWork, &info);
@@ -156,8 +149,6 @@ bool COptMethodLevenbergMarquardt::optimise()
       // SUBROUTINE DPOTRF(UPLO, N, A, LDA, INFO)
       dpotrf_("L", &dim, mHessianLM.array(), &dim, &info);
 
-      DebugFile << "mHessianLM" << std::endl;
-      DebugFile << mHessianLM << std::endl;
       // if Hessian is positive definite solve Hess * h = -grad
       if (info == 0)
         {
@@ -167,8 +158,6 @@ bool COptMethodLevenbergMarquardt::optimise()
           // SUBROUTINE DSYTRS(UPLO, N, NRHS, A, LDA, IPIV, B, LDB, INFO);
           // dsytrs_("L", &dim, &one, mHessianLM.array(), &dim, Pivot.array(), mStep.array(),
           //         &dim, &info);
-          DebugFile << "mStep" << std::endl;
-          DebugFile << mStep << std::endl;
         }
 
       // Assure that the step will stay within the bounds but is
@@ -215,11 +204,6 @@ bool COptMethodLevenbergMarquardt::optimise()
           (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
           convp += fabs((mCurrent[i] - mBest[i]) / mBest[i]);
         }
-
-      DebugFile << "mStep" << std::endl;
-      DebugFile << mStep << std::endl;
-      DebugFile << "mCurrent" << std::endl;
-      DebugFile << mCurrent << std::endl;
 
       // calculate the objective function value
       evaluate();
@@ -445,11 +429,6 @@ void COptMethodLevenbergMarquardt::hessian()
       C_FLOAT64 Alpha = 1.0;
       C_FLOAT64 Beta = 0.0;
 
-      DebugFile << "mResidualJacobianT" << std::endl;
-      DebugFile << mResidualJacobianT << std::endl;
-      DebugFile << "CurrentResiduals" << std::endl;
-      DebugFile << CurrentResiduals << std::endl;
-
       dgemm_("N", "T", &m, &n, &k, &Alpha,
              const_cast<C_FLOAT64 *>(CurrentResiduals.array()), &m,
              mResidualJacobianT.array(), &n, &Beta,
@@ -470,9 +449,6 @@ void COptMethodLevenbergMarquardt::hessian()
           // This is formally correct but cancels out with factor 2 below
           // *pGradient *= 2.0;
         }
-
-      DebugFile << "mGradient" << std::endl;
-      DebugFile << mGradient << std::endl;
 
       // calculate the Hessian
       C_FLOAT64 * pHessian;
