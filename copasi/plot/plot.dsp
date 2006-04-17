@@ -55,7 +55,15 @@ CFG=plot - Win32 Build
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\CHistogram.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CopasiPlot.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\COutputDefinitionVector.cpp
 # End Source File
 # Begin Source File
 
@@ -99,6 +107,14 @@ SOURCE=.\plotwindow.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\scrollbar.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\scrollzoomer.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\zoomplot.cpp
 # End Source File
 # End Group
@@ -107,7 +123,15 @@ SOURCE=.\zoomplot.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=.\CHistogram.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CopasiPlot.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COutputDefinitionVector.h
 # End Source File
 # Begin Source File
 
@@ -172,6 +196,14 @@ SOURCE=.\plotwidget1.h
 # Begin Source File
 
 SOURCE=.\plotwindow.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scrollbar.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\scrollzoomer.h
 # End Source File
 # Begin Source File
 
