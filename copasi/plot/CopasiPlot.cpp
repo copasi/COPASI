@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 21:18:47 $
+   $Date: 2006/04/17 01:36:25 $
    End CVS Header */
 
 #include <qstring.h>
@@ -69,21 +69,26 @@ void MyQwtPlotCurve::drawCurve(QPainter *painter, int style,
   }
 
 //************************************
-
-CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent)
-    : QwtPlot(parent),
+CopasiPlot::CopasiPlot(QWidget* parent):
+    QwtPlot(parent),
     mpPlotSpecification(NULL),
-    mZoomer(NULL)
+    mpZoomer(NULL)
+{}
+
+CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
+    QwtPlot(parent),
+    mpPlotSpecification(NULL),
+    mpZoomer(NULL)
 {
   QwtLegend *legend = new QwtLegend;
   legend->setItemMode(QwtLegend::CheckableItem);
   insertLegend(legend, QwtPlot::BottomLegend);
 
   // Set up the zoom facility
-  mZoomer = new ScrollZoomer(canvas());
-  mZoomer->setRubberBandPen(QColor(Qt::black));
-  mZoomer->setTrackerPen(QColor(Qt::black));
-  mZoomer->setTrackerMode(QwtPicker::AlwaysOn);
+  mpZoomer = new ScrollZoomer(canvas());
+  mpZoomer->setRubberBandPen(QColor(Qt::black));
+  mpZoomer->setTrackerPen(QColor(Qt::black));
+  mpZoomer->setTrackerMode(QwtPicker::AlwaysOn);
 
   // white background better for printing...
   setCanvasBackground(white);
@@ -110,7 +115,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 {
   mpPlotSpecification = plotspec;
 
-  mZoomer->setEnabled(false);
+  mpZoomer->setEnabled(false);
 
   if (plotspec->isLogX())
     setAxisScaleEngine(xBottom, new QwtLog10ScaleEngine());
@@ -291,8 +296,8 @@ void CopasiPlot::output(const Activity & activity)
   C_INT32 ItemActivity;
 
   if (mHaveBefore && (activity == COutputInterface::BEFORE)) mDataBefore++;
-  if (mHaveDuring && (activity == COutputInterface::DURING)) mDataDuring++;
-  if (mHaveAfter && (activity == COutputInterface::AFTER)) mDataAfter++;
+  else if (mHaveDuring && (activity == COutputInterface::DURING)) mDataDuring++;
+  else if (mHaveAfter && (activity == COutputInterface::AFTER)) mDataAfter++;
 
   for (ItemActivity = 0; ItemActivity < ActivitySize; ItemActivity++)
     if (ItemActivity & activity && mData[ItemActivity].size())
@@ -322,7 +327,7 @@ void CopasiPlot::output(const Activity & activity)
       }
 
   // Deal with the histograms.
-  for (i = 0; i < mCurves.size(); ++i)
+  for (i = 0, imax = mCurves.size(); i < imax; ++i)
     if (mCurveTypes[i] == CPlotItem::histoItem1d &&
         mCurveActivities[i] & activity)
       {
@@ -368,7 +373,7 @@ void CopasiPlot::separate(const Activity & activity)
       }
 
   // Deal with the histograms.
-  for (i = 0; i < mCurves.size(); ++i)
+  for (i = 0, imax = mCurves.size(); i < imax; ++i)
     if (mCurveTypes[i] == CPlotItem::histoItem1d &&
         mCurveActivities[i] & activity)
       mHistograms[mHistoIndices[i]].addValue(DummyValue);
@@ -382,10 +387,10 @@ void CopasiPlot::finish()
 
   replot();
 
-  if (mZoomer)
+  if (mpZoomer)
     {
-      mZoomer->setEnabled(true);
-      mZoomer->setZoomBase();
+      mpZoomer->setEnabled(true);
+      mpZoomer->setZoomBase();
     }
 }
 
@@ -663,8 +668,6 @@ void CopasiPlot::showCurve(QwtPlotItem *item, bool on)
   QWidget *w = legend()->find(item);
   if (w && w->inherits("QwtLegendItem"))
     ((QwtLegendItem *)w)->setChecked(on);
-
-  //mZoomer->setZoomBase();
 
   replot();
 }
