@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 21:05:53 $
+   $Date: 2006/04/17 01:37:49 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -64,7 +64,6 @@ PlotWindow::PlotWindow(COutputHandler * pHandler, const CPlotSpecification* ptrS
   plotTools->setStretchableWidget(new QWidget(plotTools));
 
   mpPlot = new CopasiPlot(ptrSpec, this);
-  std::cout << mpPlot-> mZoomer << std::endl;
   setCentralWidget(mpPlot);
 
   //connect(zoomButton, SIGNAL(clicked()), this, SLOT(enableZoom()));
