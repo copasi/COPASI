@@ -1,19 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/scrollzoomer.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:29 $
+   $Date: 2006/04/17 01:14:29 $
    End CVS Header */
 
 #ifndef _SCROLLZOOMER_H
- #define _SCROLLZOOMER_H
+#define _SCROLLZOOMER_H
 
 #include <qglobal.h>
- #if QT_VERSION < 0x040000
- #include <qscrollview.h>
- #endif
- #include <qwt_plot_zoomer.h>
+
+#if QT_VERSION < 0x040000
+# include <qscrollview.h>
+#endif
+
+#include <qwt_plot_zoomer.h>
 
 class ScrollData;
 class ScrollBar;
