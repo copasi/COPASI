@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 21:05:31 $
+   $Date: 2006/04/17 01:36:10 $
    End CVS Header */
 
 // the plot object for copasi
@@ -59,9 +59,25 @@ class QwtPlotZoomer;
 class CopasiPlot : public QwtPlot, public COutputInterface
   {
     Q_OBJECT
-  public:
-    CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent = 0);
+  private:
+    /**
+     * Default constructor which may never be called.
+     * @param QWidget* parent (default: NULL)
+     */
+    CopasiPlot(QWidget* parent = NULL);
 
+  public:
+    /**
+     * Specific constructor
+     * @param const CPlotSpecification* plotspec
+     * @param QWidget* parent (default: NULL)
+     */
+    CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent = NULL);
+
+    /**
+     * Initialize the the plot from the specification
+     * @param const CPlotSpecification* plotspec
+     */
     bool initFromSpec(const CPlotSpecification* plotspec);
 
     /**
@@ -94,64 +110,128 @@ class CopasiPlot : public QwtPlot, public COutputInterface
      */
     virtual void finish();
 
+    /**
+     * Save tab delimeted data to file
+     * @param const std::string & filename
+     * @return bool success
+     */
     bool saveData(const std::string & filename);
 
   private:
-    QwtPlotZoomer* getZoomer()
-    {return mZoomer;}
-
-    // tell the curves where the data is located. Is used before redraw
-    // and after reallocating the memory for the curve data
+    /**
+     * Tell the curves where the data is located. It must be called 
+     * after reallocating the memory for the curve data.
+     */
     void updateCurves(const unsigned C_INT32 & activity, const bool & doHisto);
 
+    /**
+     * Clear all allocate buffers and set reset values
+     */
     void clearBuffers();
 
   private slots:
+    /**
+     * Slot used to turn curves on and of through the legend buttons.
+     * @param QwtPlotItem *item
+     * @param bool on
+     */
     void showCurve(QwtPlotItem *item, bool on);
 
   private:
-    // a vector that contains pointers to vectors of data in the selected columns
+    /**
+     * Vector that contains pointers to vectors of data in the selected columns.
+     */
     std::vector< std::vector< QMemArray< double > * > > mData;
 
-    // holds pointer to the current object values
+    /**
+     * Vector of pointers to the current object values
+     */
     std::vector< std::vector< const C_FLOAT64 * > > mObjectValues;
 
-    // number of actual data lines in the local buffer
+    /**
+     * Vector of actual data lines in the local buffers
+     */
     std::vector< unsigned C_INT32 > mDataSize;
 
-    // for each curve and each channel tells where the data is stored
+    /**
+     * Map curve and channel to index pair indicating where the data is stored.
+     */
     std::vector< std::vector< std::pair < Activity, unsigned C_INT32 > > > mDataIndex;
 
-    // for each activity and object tells where the data is stored
+    /**
+     * Map activity and object to index indicating where data is stored within
+     * the current activity.
+     */
     std::map< Activity, std::map< CCopasiObject *, unsigned C_INT32 > > mObjectIndex;
 
-    // stores the curves
+    /**
+     * The list of curves
+     */
     std::vector<QwtPlotCurve*> mCurves;
 
-    //stores the type of each item (curve)
+    /**
+     * Vector of type of each item (curve)
+     */
     std::vector<CPlotItem::Type> mCurveTypes;
 
-    //stores the activity of each item (curve)
+    /**
+     * Vector of the activity of each item (curve)
+     */
     std::vector<Activity> mCurveActivities;
 
-    //the histograms (if there are some)
+    /**
+     * List of the histograms (if there are some)
+     */
     std::vector<CHistogram> mHistograms;
 
-    //points from the item index to the histogram index
+    /**
+     * Map of curve to the index to the corresponding histogram.
+     */
     std::vector<C_INT32> mHistoIndices;
 
+    /**
+     * Count af data lines recorded during activity BEFORE.
+     */
     unsigned C_INT32 mDataBefore;
+
+    /**
+     * Count af data lines recorded during activity DURING.
+     */
     unsigned C_INT32 mDataDuring;
+
+    /**
+     * Count af data lines recorded during activity AFTER.
+     */
     unsigned C_INT32 mDataAfter;
 
+    /**
+     * Flag indicating whether there are any curves recording
+     * data during activity BEFORE.
+     */
     bool mHaveBefore;
+
+    /**
+     * Flag indicating whether there are any curves recording
+     * data during activity DURING.
+     */
     bool mHaveDuring;
+
+    /**
+     * Flag indicating whether there are any curves recording
+     * data during activity AFTER.
+     */
     bool mHaveAfter;
 
+    /**
+     * Pointer to the specification for the plot.
+     */
     const CPlotSpecification * mpPlotSpecification;
 
   public:
-    QwtPlotZoomer * mZoomer;
+    /**
+     * Pointer to the zooming engine for the plot.
+     */
+    QwtPlotZoomer * mpZoomer;
   };
 
 #endif // COPASIPLOT_H
