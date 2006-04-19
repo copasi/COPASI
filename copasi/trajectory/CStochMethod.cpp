@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/04/12 14:35:01 $
+   $Date: 2006/04/19 07:55:11 $
    End CVS Header */
 
 #ifdef WIN32
@@ -148,23 +148,30 @@ void CStochMethod::start(const CState * initialState)
 
   *mpCurrentState = *initialState; //TODO seem to be identical
 
+  mpModel = mpProblem->getModel();
+
   unsigned C_INT32 i, imax;
 
   mNumNumbers = mpCurrentState->getNumVariable();
   mNumbers.resize(mNumNumbers);
   C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
-  for (i = 0; i < mNumNumbers; ++i, Dbl++)
+  CModelEntity*const* obj = mpModel->getStateTemplate().beginIndependent();
+  for (i = 0; i < mNumNumbers; ++i, Dbl++, ++obj)
     {
       mNumbers[i] = (C_INT64) * Dbl;
       *Dbl = floor(*Dbl);
+      //std::cout << (*obj)->getObjectName() << std::endl;
+      //obj can later be used to handle variables differently
     }
-  //TODO also put fixed variables here
 
   imax = mpCurrentState->getNumFixed();
-  for (i = 0; i < imax; ++i, Dbl++)
-    *Dbl = floor(*Dbl);
+  for (i = 0; i < imax; ++i, Dbl++, ++obj)
+    {
+      //std::cout << (*obj)->getObjectName() << std::endl;
+      if (dynamic_cast<const CMetab*>(*obj))
+        *Dbl = floor(*Dbl);
+    }
 
-  mpModel = mpProblem->getModel();
   mpModel->setState(*mpCurrentState);
 
   mNumReactions = mpModel->getReactions().size();
