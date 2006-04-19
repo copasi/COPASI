@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/15 15:29:07 $
+   $Date: 2006/04/19 18:36:58 $
    End CVS Header */
 
 #include "copasi.h"
@@ -23,6 +23,7 @@
 //////////////////////////////////////////////////
 CReport::CReport(const CCopasiContainer * pParent):
     CCopasiContainer("Report", pParent, "Report"),
+    COutputInterface(),
     mpOstream(NULL),
     mStreamOwner(false),
     mpReportDef(NULL),
@@ -31,9 +32,6 @@ CReport::CReport(const CCopasiContainer * pParent):
     mFooterObjectList(),
     mBodyObjectList(),
     mHeaderObjectList(),
-    mFooterRefreshList(),
-    mBodyRefreshList(),
-    mHeaderRefreshList(),
     mpHeader(NULL),
     mpBody(NULL),
     mpFooter(NULL)
@@ -43,6 +41,7 @@ CReport::CReport(const CCopasiContainer * pParent):
 CReport::CReport(const CReport & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer("Report", pParent, "Report"),
+    COutputInterface(),
     mpOstream(src.mpOstream),
     mStreamOwner(false),
     mpReportDef(src.mpReportDef),
@@ -51,9 +50,6 @@ CReport::CReport(const CReport & src,
     mFooterObjectList(src.mFooterObjectList),
     mBodyObjectList(src.mBodyObjectList),
     mHeaderObjectList(src.mHeaderObjectList),
-    mFooterRefreshList(src.mFooterRefreshList),
-    mBodyRefreshList(src.mBodyRefreshList),
-    mHeaderRefreshList(src.mHeaderRefreshList),
     mpHeader(src.mpHeader),
     mpBody(src.mpBody),
     mpFooter(src.mpFooter)
@@ -68,11 +64,7 @@ void CReport::cleanup()
   mBodyObjectList.clear();
   mFooterObjectList.clear();
 
-  mHeaderRefreshList.clear();
-  mBodyRefreshList.clear();
-  mFooterRefreshList.clear();
-
-  close();
+  finish();
 }
 
 CReportDefinition* CReport::getReportDefinition()
@@ -92,6 +84,40 @@ bool CReport::append() const
 
 void CReport::setAppend(bool append)
 {mAppend = append;}
+
+void CReport::output(const Activity & activity)
+{
+  switch (activity)
+    {
+    case COutputInterface::BEFORE:
+      printHeader();
+      break;
+
+    case COutputInterface::DURING:
+      printBody();
+      break;
+
+    case COutputInterface::AFTER:
+      printFooter();
+      break;
+    }
+}
+
+void CReport::separate(const Activity & activity)
+{
+  if (!mpOstream) return;
+  (*mpOstream) << std::endl;
+}
+
+void CReport::finish()
+{
+  if (mState < FooterFooter) printFooter();
+
+  if (mStreamOwner) pdelete(mpOstream);
+
+  mpOstream = NULL;
+  mStreamOwner = false;
+}
 
 void CReport::printHeader()
 {
@@ -124,11 +150,6 @@ void CReport::printHeader()
 
   if (mState == HeaderFooter) return;
   mState = HeaderFooter;
-
-  std::vector< Refresh * >::iterator itA = mHeaderRefreshList.begin();
-  std::vector< Refresh * >::iterator endA = mHeaderRefreshList.end();
-
-  for (; itA != endA; ++itA) (**itA)();
 
   std::vector< CCopasiObject * >::iterator it = mHeaderObjectList.begin();
   std::vector< CCopasiObject * >::iterator end = mHeaderObjectList.end();
@@ -180,11 +201,6 @@ void CReport::printBody()
 
   mState = BodyBody;
 
-  std::vector< Refresh * >::iterator itA = mBodyRefreshList.begin();
-  std::vector< Refresh * >::iterator endA = mBodyRefreshList.end();
-
-  for (; itA != endA; ++itA) (**itA)();
-
   std::vector< CCopasiObject * >::iterator it = mBodyObjectList.begin();
   std::vector< CCopasiObject * >::iterator end = mBodyObjectList.end();
 
@@ -234,11 +250,6 @@ void CReport::printFooter()
   if (mState == FooterFooter) return;
   mState = FooterFooter;
 
-  std::vector< Refresh * >::iterator itA = mFooterRefreshList.begin();
-  std::vector< Refresh * >::iterator endA = mFooterRefreshList.end();
-
-  for (; itA != endA; ++itA) (**itA)();
-
   std::vector< CCopasiObject * >::iterator it = mFooterObjectList.begin();
   std::vector< CCopasiObject * >::iterator end = mFooterObjectList.end();
 
@@ -246,12 +257,6 @@ void CReport::printFooter()
 
   for (; it != end; ++it) (*it)->print(mpOstream);
 
-  (*mpOstream) << std::endl;
-}
-
-void CReport::printEmptyLine()
-{
-  if (!mpOstream) return;
   (*mpOstream) << std::endl;
 }
 
@@ -270,17 +275,20 @@ bool CReport::compile(std::vector< CCopasiContainer * > listOfContainer)
   if (mpReportDef->isTable())
     if (!mpReportDef->preCompileTable(listOfContainer)) success = false;
 
-  generateObjectsFromName(&listOfContainer, mHeaderObjectList, mHeaderRefreshList, mpHeader,
+  generateObjectsFromName(&listOfContainer, mHeaderObjectList, mpHeader,
                           mpReportDef->getHeaderAddr());
-  if (mpHeader) success &= mpHeader->compile(listOfContainer);
+  if (mpHeader)
+    success &= compileChildReport(mpHeader, listOfContainer);
 
-  generateObjectsFromName(&listOfContainer, mBodyObjectList, mBodyRefreshList, mpBody,
+  generateObjectsFromName(&listOfContainer, mBodyObjectList, mpBody,
                           mpReportDef->getBodyAddr());
-  if (mpBody) success &= mpBody->compile(listOfContainer);
+  if (mpBody)
+    success &= compileChildReport(mpBody, listOfContainer);
 
-  generateObjectsFromName(&listOfContainer, mFooterObjectList, mFooterRefreshList, mpFooter,
+  generateObjectsFromName(&listOfContainer, mFooterObjectList, mpFooter,
                           mpReportDef->getFooterAddr());
-  if (mpFooter) success &= mpFooter->compile(listOfContainer);
+  if (mpFooter)
+    success &= compileChildReport(mpFooter, listOfContainer);
 
   mState = Compiled;
 
@@ -320,27 +328,15 @@ std::ostream * CReport::open(std::ostream * pOstream)
   return mpOstream;
 }
 
-void CReport::close()
-{
-  if (mState < FooterFooter) printFooter();
-
-  if (mStreamOwner) pdelete(mpOstream);
-
-  mpOstream = NULL;
-  mStreamOwner = false;
-}
-
 std::ostream * CReport::getStream() const {return mpOstream;}
 
 // make to support parallel tasks
 void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * pListOfContainer,
                                       std::vector<CCopasiObject*> & objectList,
-                                      std::vector< Refresh * > & refreshList,
                                       CReport *& pReport,
                                       const std::vector<CRegisteredObjectName>* nameVector)
 {
   objectList.clear();
-  refreshList.clear();
 
   unsigned C_INT32 i;
   CCopasiObject* pSelected;
@@ -355,14 +351,23 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
 
       if (pSelected)
         {
-          objectList.push_back(pSelected);
-          if (pSelected->getRefresh())
-            {
-              if (dynamic_cast<CCopasiTimer *>(pSelected))
-                dynamic_cast<CCopasiTimer *>(pSelected)->start();
+          COutputInterface::mObjects.insert(pSelected);
 
-              refreshList.push_back(pSelected->getRefresh());
-            }
+          objectList.push_back(pSelected);
         }
     }
+}
+
+bool CReport::compileChildReport(CReport * pReport, std::vector< CCopasiContainer * > listOfContainer)
+{
+  bool success = pReport->compile(listOfContainer);
+
+  const std::set< CCopasiObject * > & Objects = pReport->COutputInterface::getObjects();
+  std::set< CCopasiObject * >::const_iterator it = Objects.begin();
+  std::set< CCopasiObject * >::const_iterator end = Objects.end();
+
+  for (; it != end; ++it)
+    COutputInterface::mObjects.insert(*it);
+
+  return success;
 }

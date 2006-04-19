@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: mendes $ 
-   $Date: 2006/04/04 03:02:17 $
+   $Author: shoops $ 
+   $Date: 2006/04/19 18:36:57 $
    End CVS Header */
 
 // hoojee.cpp : optimisation by the method of Hooke and Jeeves
@@ -90,7 +90,7 @@ bool COptMethodHookeJeeves::optimise()
   mBestValue = mEvaluationValue;
   mpOptProblem->setSolutionVariables(mIndividual);
   mpOptProblem->setSolutionValue(mBestValue);
-  mpParentTask->doOutput();
+  mpParentTask->output(COutputInterface::DURING);
 
   if (!mContinue)
     {
@@ -132,7 +132,7 @@ bool COptMethodHookeJeeves::optimise()
           mBestValue = newf;
           mpOptProblem->setSolutionVariables(mNew);
           mpOptProblem->setSolutionValue(mBestValue);
-          mpParentTask->doOutput();
+          mpParentTask->output(COutputInterface::DURING);
 
           iadj = 0;
           for (i = 0; i < mVariableSize; i++)

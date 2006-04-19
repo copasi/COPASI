@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:16:27 $
+   $Date: 2006/04/19 18:36:57 $
    End CVS Header */
 
 #include "copasi.h"
@@ -80,7 +80,7 @@ bool COptMethodEP::optimise()
       Continue = mpOptProblem->setSolutionValue(mBestValue);
 
       // We found a new best value lets report it.
-      mpParentTask->doOutput();
+      mpParentTask->output(COutputInterface::DURING);
     }
 
   if (!Continue)
@@ -111,7 +111,7 @@ bool COptMethodEP::optimise()
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();
-          mpParentTask->doOutput();
+          mpParentTask->output(COutputInterface::DURING);
         }
 
       if (mpCallBack)

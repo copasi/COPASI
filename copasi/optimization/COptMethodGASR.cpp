@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/14 16:29:42 $
+   $Date: 2006/04/19 18:36:57 $
    End CVS Header */
 
 #include <float.h>
@@ -524,7 +524,7 @@ bool COptMethodGASR::optimise()
       Continue = mpOptProblem->setSolutionValue(mBestValue);
 
       // We found a new best value lets report it.
-      mpParentTask->doOutput();
+      mpParentTask->output(COutputInterface::DURING);
     }
 
   if (!Continue)
@@ -577,7 +577,7 @@ bool COptMethodGASR::optimise()
           Continue = mpOptProblem->setSolutionValue(mBestValue);
 
           // We found a new best value lets report it.
-          mpParentTask->doOutput();
+          mpParentTask->output(COutputInterface::DURING);
         }
 
       if (mpCallBack)

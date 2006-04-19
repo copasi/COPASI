@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 21:26:32 $
+   $Date: 2006/04/19 18:36:56 $
    End CVS Header */
 
 #include "copasi.h"
@@ -39,6 +39,8 @@ DataModelGUI::DataModelGUI():
     mOutputHandlerPlot()
 {
   this->populateData();
+  CCopasiDataModel::Global->addInterface(&mOutputHandlerPlot);
+
   //mpMathModel = NULL;
   //mMathModelUpdateScheduled = false;
 }
@@ -52,15 +54,6 @@ void DataModelGUI::linkDataModelToGUI()
   CProgressBar* tmpBar = new CProgressBar();
 
   CCopasiDataModel::Global->getModel()->setCompileHandler(tmpBar);
-
-  //output handler
-  (*CCopasiDataModel::Global->getTaskList())["Time-Course"]->addOutputInterface(&mOutputHandlerPlot);
-  (*CCopasiDataModel::Global->getTaskList())["Scan"]->addOutputInterface(&mOutputHandlerPlot);
-  (*CCopasiDataModel::Global->getTaskList())["Steady-State"]->addOutputInterface(&mOutputHandlerPlot);
-
-  // optimization
-  (*CCopasiDataModel::Global->getTaskList())["Optimization"]->addOutputInterface(&mOutputHandlerPlot);
-  (*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"]->addOutputInterface(&mOutputHandlerPlot);
 
   //math model
   //pdelete(mpMathModel);

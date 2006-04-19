@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:31 $
+   $Date: 2006/04/19 18:36:59 $
    End CVS Header */
 
 /**
@@ -23,6 +23,7 @@
 #include "CMCAMethod.h"
 #include "CSteadyStateTask.h"
 
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "report/CKeyFactory.h"
@@ -80,6 +81,7 @@ bool CMCATask::initialize(const OutputFlag & of,
   if (!pProblem->getModel()->compileIfNecessary()) success = false;
 
   CSteadyStateTask *pSubTask = pProblem->getSubTask();
+
   if (pSubTask)
     success = pSubTask->initialize(of, mReport.getStream());
 
@@ -110,12 +112,12 @@ bool CMCATask::process(const bool & useInitialValues)
   else
     pMethod->setSteadyStateStatus(CSteadyStateMethod::notFound);
 
-  CCopasiTask::initOutput();
+  CCopasiTask::output(COutputInterface::BEFORE);
 
   pMethod->process();
 
-  CCopasiTask::doOutput();
-  CCopasiTask::finishOutput();
+  CCopasiTask::output(COutputInterface::DURING);
+  CCopasiTask::output(COutputInterface::AFTER);
 
   return true;
 }

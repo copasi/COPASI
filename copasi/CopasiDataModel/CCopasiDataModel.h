@@ -1,35 +1,35 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/07 12:33:35 $
+   $Author: shoops $ 
+   $Date: 2006/04/19 18:36:56 $
    End CVS Header */
 
 #ifndef COPASI_CCopasiDataModel
 #define COPASI_CCopasiDataModel
 
+#include <map>
+
+#include "utilities/COutputHandler.h"
+#include "utilities/CCopasiTask.h"
+
 class CVersion;
 class CModel;
 class CReportDefinitionVector;
 class COutputDefinitionVector;
-//class CPlotSpecification;
 class CFunctionDB;
 class CFunction;
 class SCopasiXMLGUI;
 class SBMLDocument;
 class SBase;
-class CProcessHandler;
+class CProcessReport;
 
 // :TODO: remove
 class CMetabOld;
+
 template <class CType> class CCopasiVectorS;
-
 template <class CType> class CCopasiVectorN;
-
-#include <map>
-
-#include "utilities/CCopasiTask.h"
 
 //******************************************************************************
 
@@ -51,7 +51,7 @@ class CDataModelRenameHandler : public CRenameHandler
 
 //******************************************************************************
 
-class CCopasiDataModel
+class CCopasiDataModel: public COutputHandler
   {
     // Operations
   public:

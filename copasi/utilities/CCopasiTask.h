@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 17:57:07 $
+   $Date: 2006/04/19 18:37:00 $
    End CVS Header */
 
 /**
@@ -68,8 +68,8 @@ class CCopasiTask : public CCopasiContainer
 
     enum OutputFlag
     {
-      NO_OUTPUT = 0,                      //do no output
-      OUTPUT,                             //do output, but do not initialize/finish
+      NO_OUTPUT = 0,                       //do no output
+      OUTPUT,                              //do output, but do not initialize/finish
       OUTPUT_COMPLETE          //do output, including initialization and closing
     };
 
@@ -206,17 +206,6 @@ class CCopasiTask : public CCopasiContainer
     CReport mReport;
 
     /**
-     * The report actually used to track results.
-     * May be an external report from some parent task
-     */
-    CReport* mpCurrentReport;
-
-    /**
-     * The output handler for all output from the task;
-     */
-    COutputHandler mOutputHandler;
-
-    /**
      * progress bar handler 
      */
     CProcessReport * mpCallBack;
@@ -347,11 +336,6 @@ class CCopasiTask : public CCopasiContainer
     virtual bool process(const bool & useInitialValues);
 
     /**
-     * Process the task. This is called by the scan task.
-     */ 
-    //virtual bool processForScan(bool useInitialConditions, bool doOutput);
-
-    /**
      * Perform neccessary cleaup procedures
      */
     virtual bool restore();
@@ -404,28 +388,6 @@ class CCopasiTask : public CCopasiContainer
     void cleanup();
 
     /**
-     * Add an output interface
-     **/
-    void addOutputInterface(COutputInterface * pInterface);
-
-    /**
-     * Remove an output interface
-     **/
-    void removeOutputInterface(COutputInterface * pInterface);
-
-#ifdef XXXX
-    /**
-     * get address of output handler
-     **/
-    COutputHandler* getOutputHandlerAddr();
-
-    /**
-     * set Output handler
-     **/
-    void setProgressHandler(CProcessReport * pHandler);
-#endif // XXXX
-
-    /**
      * Retrieve a pointer to the group of sliders.
      * @return CCopasiParameterGroup * pSliders
      */
@@ -434,10 +396,17 @@ class CCopasiTask : public CCopasiContainer
     //the following methods are wrappers for doing output. They are intended
     //to hide the fact that output is done using different mechanisms, e.g. reports and plots
 
-    virtual bool initOutput();
-    virtual bool doOutput();
-    virtual bool finishOutput();
-    virtual bool separatorOutput(const COutputInterface::Activity & activity);
+    /**
+     * Perform an output event for the current activity
+     * @param const Activity & activity
+     */
+    virtual void output(const COutputInterface::Activity & activity);
+
+    /**
+     * Introduce an additional seperator into the ouput
+     * @param const Activity & activity
+     */
+    virtual void separate(const COutputInterface::Activity & activity);
 
     inline const OutputFlag & getOutputMode() const
       {return mDoOutput;};

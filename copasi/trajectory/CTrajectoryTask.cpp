@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/17 16:05:09 $
+   $Date: 2006/04/19 18:37:00 $
    End CVS Header */
 
 /**
@@ -26,10 +26,10 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "report/CKeyFactory.h"
-#include "report/CReport.h" 
-//#include "utilities/COutputHandler.h"
+#include "report/CReport.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
+#include  "CopasiDataModel/CCopasiDataModel.h"
 
 #define XXXX_Reporting
 
@@ -117,8 +117,6 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
   if (!CCopasiTask::initialize(of, pOstream)) success = false;
   mTimeSeriesRequested = mpTrajectoryProblem->timeSeriesRequested();
 
-  mpCurrentReport = &mReport;
-
   return success;
 }
 
@@ -163,7 +161,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
       return false;
     }
 
-  initOutput();
+  output(COutputInterface::BEFORE);
 
   bool flagProceed = true;
   C_FLOAT64 handlerFactor = 100.0 / mpTrajectoryProblem->getDuration();
@@ -181,7 +179,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
                                      &hundred);
     }
 
-  if ((*LE)(outputStartTime, *mpCurrentTime)) doOutput();
+  if ((*LE)(outputStartTime, *mpCurrentTime)) output(COutputInterface::DURING);
 
   try
     {
@@ -202,7 +200,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
           if ((*LE)(outputStartTime, *mpCurrentTime))
             {
-              doOutput();
+              output(COutputInterface::DURING);
             }
         }
       while ((*L)(*mpCurrentTime, EndTime) && flagProceed);
@@ -215,18 +213,18 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
       if ((*LE)(outputStartTime, *mpCurrentTime))
         {
-          doOutput();
+          output(COutputInterface::DURING);
         }
 
       if (mpCallBack) mpCallBack->finish(hProcess);
-      finishOutput();
+      output(COutputInterface::AFTER);
 
       throw CCopasiException(Exception.getMessage());
     }
 
   if (mpCallBack) mpCallBack->finish(hProcess);
 
-  finishOutput();
+  output(COutputInterface::AFTER);
 
   return true;
 }
@@ -334,39 +332,23 @@ CState * CTrajectoryTask::getState()
 const CTimeSeries & CTrajectoryTask::getTimeSeries() const
   {return mTimeSeries;}
 
-bool CTrajectoryTask::initOutput()
+void CTrajectoryTask::output(const COutputInterface::Activity & activity)
 {
-  CCopasiTask::initOutput();
+  CCopasiDataModel::Global->output(activity);
 
-  //time series
-  if (mDoOutput == OUTPUT_COMPLETE)
-    {
-      if (mTimeSeriesRequested)
+  if (mTimeSeriesRequested && mDoOutput == OUTPUT_COMPLETE)
+    switch (activity)
+      {
+      case COutputInterface::BEFORE:
         mTimeSeries.init(mpTrajectoryProblem->getStepNumber(), mpProblem->getModel());
-    }
-  return true;
-}
+        break;
 
-bool CTrajectoryTask::doOutput()
-{
-  CCopasiTask::doOutput();
+      case COutputInterface::DURING:
+        mTimeSeries.add();
+        break;
 
-  //time series
-  if (mDoOutput == OUTPUT_COMPLETE)
-    {
-      if (mTimeSeriesRequested) mTimeSeries.add();
-    }
-  return true;
-}
-
-bool CTrajectoryTask::finishOutput()
-{
-  CCopasiTask::finishOutput();
-
-  //time series
-  if (mDoOutput == OUTPUT_COMPLETE)
-    {
-      if (mTimeSeriesRequested) mTimeSeries.finish();
-    }
-  return true;
+      case COutputInterface::AFTER:
+        mTimeSeries.finish();
+        break;
+      }
 }

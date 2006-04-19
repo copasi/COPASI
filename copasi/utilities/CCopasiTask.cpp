@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 21:05:31 $
+   $Date: 2006/04/19 18:37:00 $
    End CVS Header */
 
 /**
@@ -25,6 +25,7 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "report/CCopasiObjectReference.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 
 const std::string CCopasiTask::TypeName[] =
   {
@@ -83,8 +84,6 @@ CCopasiTask::CCopasiTask(const std::string & name,
     mpProblem(NULL),
     mpMethod(NULL),
     mReport(),
-    mpCurrentReport(&mReport),
-    mOutputHandler(this),
     mpCallBack(NULL),
     mpSliders(NULL),
     mDoOutput(OUTPUT_COMPLETE),
@@ -105,8 +104,6 @@ CCopasiTask::CCopasiTask(const CCopasiTask::Type & taskType,
     mpProblem(NULL),
     mpMethod(NULL),
     mReport(),
-    mpCurrentReport(&mReport),
-    mOutputHandler(this),
     mpCallBack(NULL),
     mpSliders(NULL),
     mDoOutput(OUTPUT_COMPLETE),
@@ -126,8 +123,6 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
     mpProblem(NULL),
     mpMethod(NULL),
     mReport(src.mReport),
-    mpCurrentReport(src.mpCurrentReport),
-    mOutputHandler(this),
     mpCallBack(NULL),
     mpSliders(NULL),
     mDoOutput(OUTPUT_COMPLETE),
@@ -177,8 +172,6 @@ CProcessReport * CCopasiTask::getCallBack() const
 bool CCopasiTask::initialize(const OutputFlag & of,
                              std::ostream * pOstream)
 {
-  mOutputHandler.setMaster(pOstream == NULL && of != NO_OUTPUT);
-
   bool success = true;
 
   if (!mpProblem)
@@ -203,8 +196,16 @@ bool CCopasiTask::initialize(const OutputFlag & of,
       return false;
     }
 
+  if (!mUpdateModel)
+    {
+      pdelete(mpInitialState);
+      mpInitialState = new CState(mpProblem->getModel()->getInitialState());
+    }
+
   mDoOutput = of;
   if (mDoOutput == NO_OUTPUT) return true;
+
+  mOutputCounter = 0;
 
   if (!mReport.open(pOstream))
     {
@@ -212,22 +213,17 @@ bool CCopasiTask::initialize(const OutputFlag & of,
       CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 5, mReport.getObjectName().c_str());
       success = false;
     }
-  if (!mReport.compile())
-    {
-      // Warning
-      CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 6, mReport.getObjectName().c_str());
-      success = false;
-    }
-  if (!mOutputHandler.compile())
+
+  if (success) CCopasiDataModel::Global->addInterface(&mReport);
+
+  std::vector< CCopasiContainer * > ListOfContainer;
+  ListOfContainer.push_back(this);
+
+  if (!CCopasiDataModel::Global->compile(ListOfContainer))
     {
       // Warning
       CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 7);
       success = false;
-    }
-  if (!mUpdateModel)
-    {
-      pdelete(mpInitialState);
-      mpInitialState = new CState(mpProblem->getModel()->getInitialState());
     }
 
   return success;
@@ -235,8 +231,6 @@ bool CCopasiTask::initialize(const OutputFlag & of,
 
 bool CCopasiTask::process(const bool &)
 {return false;}
-
-//bool CCopasiTask::processForScan(bool C_UNUSED(useInitialConditions), bool C_UNUSED(doOutput)) {return false;}
 
 bool CCopasiTask::restore()
 {
@@ -251,9 +245,9 @@ bool CCopasiTask::restore()
 
   mpProblem->restore(mUpdateModel);
 
-  mReport.close();
-  mOutputHandler.finish();
-
+  mReport.finish();
+  CCopasiDataModel::Global->finish();
+  CCopasiDataModel::Global->removeInterface(&mReport);
   return true;
 }
 
@@ -278,72 +272,43 @@ const CCopasiTask::CResult & CCopasiTask::getResult() const
 
 void CCopasiTask::cleanup() {}
 
-void CCopasiTask::addOutputInterface(COutputInterface* pInterface)
-{mOutputHandler.addInterface(pInterface);}
-
-void CCopasiTask::removeOutputInterface(COutputInterface* pInterface)
-{mOutputHandler.removeInterface(pInterface);}
-
-/*
-COutputHandler* CCopasiTask::getOutputHandlerAddr()
-{return mOutputHandler;}
- */
-
-/*
-void CCopasiTask::setProgressHandler(CProcessReport * pHandler)
-{mpCallBack = pHandler;}
- */
-
 CCopasiParameterGroup * CCopasiTask::getSliders()
 {return mpSliders;}
 
 // output stuff
 
-bool CCopasiTask::initOutput()
+void CCopasiTask::output(const COutputInterface::Activity & activity)
 {
-  mOutputCounter = 0;
-
-  if (mDoOutput == OUTPUT_COMPLETE)
+  switch (activity)
     {
-      if (mpCurrentReport) mpCurrentReport->printHeader();
-      mOutputHandler.output(COutputInterface::BEFORE);
+    case COutputInterface::DURING:
+        if (mDoOutput)
+          CCopasiDataModel::Global->output(activity);
+      break;
+
+    case COutputInterface::BEFORE:
+    case COutputInterface::AFTER:
+      if (mDoOutput == OUTPUT_COMPLETE)
+        CCopasiDataModel::Global->output(activity);
+      break;
     }
-  return true;
 }
 
-bool CCopasiTask::doOutput()
+void CCopasiTask::separate(const COutputInterface::Activity & activity)
 {
-  if (mDoOutput)
+  switch (activity)
     {
-      if (mpCurrentReport) mpCurrentReport->printBody();
-      mOutputHandler.output(COutputInterface::DURING);
-    }
-  ++mOutputCounter;
-  return true;
-}
+    case COutputInterface::DURING:
+      if (mDoOutput)
+        CCopasiDataModel::Global->separate(activity);
+      break;
 
-bool CCopasiTask::finishOutput()
-{
-  if (mDoOutput == OUTPUT_COMPLETE)
-    {
-      if (mpCurrentReport)
-        {
-          mpCurrentReport->printFooter();
-          mpCurrentReport->close();
-        }
-      mOutputHandler.output(COutputInterface::AFTER);
+    case COutputInterface::BEFORE:
+    case COutputInterface::AFTER:
+      if (mDoOutput == OUTPUT_COMPLETE)
+        CCopasiDataModel::Global->separate(activity);
+      break;
     }
-  return true;
-}
-
-bool CCopasiTask::separatorOutput(const COutputInterface::Activity & activity)
-{
-  if (mDoOutput == OUTPUT_COMPLETE)
-    {
-      if (mpCurrentReport) mpCurrentReport->printEmptyLine();
-      mOutputHandler.separate(activity);
-    }
-  return true;
 }
 
 void CCopasiTask::initObjects()
@@ -352,7 +317,7 @@ void CCopasiTask::initObjects()
 }
 
 CCopasiTask::CDescription::CDescription(const CCopasiContainer * pParent):
-CCopasiObject("Description", pParent, "Object")
+    CCopasiObject("Description", pParent, "Object")
 {}
 
 CCopasiTask::CDescription::CDescription(const CCopasiTask::CDescription & src,

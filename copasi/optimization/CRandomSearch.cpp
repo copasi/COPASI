@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:27 $
+   $Date: 2006/04/19 18:36:57 $
    End CVS Header */
 
 /***************************************************************************
@@ -143,7 +143,7 @@ bool CRandomSearch::optimise()
 
   // We found a new best value lets report it.
   //if (mpReport) mpReport->printBody();
-  mpParentTask->doOutput();
+  mpParentTask->output(COutputInterface::DURING);
 
   for (mCurrentIteration = 0; mCurrentIteration < mIterations && Continue; mCurrentIteration++)
     {
@@ -219,7 +219,7 @@ bool CRandomSearch::optimise()
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();
-          mpParentTask->doOutput();
+          mpParentTask->output(COutputInterface::DURING);
         }
     }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/17 01:36:10 $
+   $Date: 2006/04/19 18:36:57 $
    End CVS Header */
 
 // the plot object for copasi
@@ -28,6 +28,7 @@
 
 #include "report/CCopasiObject.h"
 #include "utilities/COutputHandler.h"
+#include "utilities/CopasiTime.h"
 
 class CCopasiObjectName;
 
@@ -123,6 +124,11 @@ class CopasiPlot : public QwtPlot, public COutputInterface
      * after reallocating the memory for the curve data.
      */
     void updateCurves(const unsigned C_INT32 & activity, const bool & doHisto);
+
+    /**
+     * Redraw the plot
+     */
+    void CopasiPlot::updatePlot();
 
     /**
      * Clear all allocate buffers and set reset values
@@ -226,6 +232,11 @@ class CopasiPlot : public QwtPlot, public COutputInterface
      * Pointer to the specification for the plot.
      */
     const CPlotSpecification * mpPlotSpecification;
+
+    /**
+     * The next time a plot update is performed
+     */
+    CCopasiTimeVariable mNextPlotTime;
 
   public:
     /**

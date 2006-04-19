@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 17:57:06 $
+   $Date: 2006/04/19 18:36:58 $
    End CVS Header */
 
 /**
@@ -144,7 +144,7 @@ bool CScanTask::process(const bool & /* useInitialValues */)
 
   //init output handler (plotting)
   //if (mpOutputHandler) mpOutputHandler->init();
-  initOutput();
+  output(COutputInterface::BEFORE);
 
   //calling the scanner, output is done in the callback
   if (!pMethod->scan()) success = false;
@@ -152,7 +152,7 @@ bool CScanTask::process(const bool & /* useInitialValues */)
   //finishing progress bar and output
   if (mpCallBack) mpCallBack->finish();
   //if (mpOutputHandler) mpOutputHandler->finish();
-  finishOutput();
+  output(COutputInterface::AFTER);
 
   return success;
 }
@@ -170,7 +170,7 @@ bool CScanTask::processCallback()
 
   //do output
   //if (mpOutputHandler && (!mOutputInSubtask)) mpOutputHandler->doOutput();
-  if (!mOutputInSubtask) doOutput();
+  if (!mOutputInSubtask) output(COutputInterface::DURING);
 
   //do progress bar
   ++mProgress;
@@ -182,8 +182,8 @@ bool CScanTask::processCallback()
 bool CScanTask::outputSeparatorCallback(bool isLast)
 {
   if ((!isLast) || mOutputInSubtask)
-    return separatorOutput(COutputInterface::DURING);
-  //if (mpOutputHandler) return mpOutputHandler->doSeparator();
+    separate(COutputInterface::DURING);
+
   return true;
 }
 

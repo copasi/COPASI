@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 21:05:31 $
+   $Date: 2006/04/19 18:37:00 $
    End CVS Header */
 
 #ifndef OUTPUT_HANDLER
@@ -101,11 +101,10 @@ class COutputHandler: public COutputInterface
 
     /**
      * compile the object list from name vector
-     * @param std::vector< CCopasiContainer * > listOfContainer (default: empty list)
+     * @param std::vector< CCopasiContainer * > listOfContainer
      * @return bool success
      */
-    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer =
-                           std::vector< CCopasiContainer * >());
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer);
 
     /**
      * Perform an output event for the current activity
@@ -138,15 +137,15 @@ class COutputHandler: public COutputInterface
 
     /**
      * Set whether the handler is the master handler
-     * @param const bool & isMaster
+     * @param COutputHandler * pMaster
      */
-    void setMaster(const bool & isMaster);
+    void setMaster(COutputHandler * pMaster);
 
     /**
      * Check whether the handler is a master
-     * @return const bool & isMaster
+     * @return const bool isMaster
      */
-    const bool & isMaster() const;
+    const bool isMaster() const;
 
   protected:
     /**
@@ -162,20 +161,15 @@ class COutputHandler: public COutputInterface
     // Attributes
   protected:
     /**
-     * The main operating task
-     */
-    CCopasiTask * mpTask;
-
-    /**
      * A list of all active output interfaces.
      */
     std::set<COutputInterface *> mInterfaces;
 
     /**
-     * Indicates whether the handler is the master handler. The master
-     * handler is reponsible for the object updates.
+     * Points to the master handler. The master handler is reponsible for the
+     * and object updates and all the output.
      */
-    bool mIsMaster;
+    COutputHandler * mpMaster;
 
     /**
      * An ordered list of refresh methods needed by the master

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/30 19:08:35 $
+   $Date: 2006/04/19 18:36:59 $
    End CVS Header */
 
 /**
@@ -156,8 +156,8 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
     dynamic_cast<CSteadyStateMethod *>(mpMethod);
   assert(pMethod);
 
-  initOutput();
-  doOutput();
+  output(COutputInterface::BEFORE);
+  output(COutputInterface::DURING);
 
   mResult = pMethod->process(mpSteadyState,
                              mJacobian,
@@ -166,7 +166,7 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
                              mEigenValuesX,
                              mpCallBack);
 
-  finishOutput();
+  output(COutputInterface::AFTER);
 
   return (mResult != CSteadyStateMethod::notFound);
 }

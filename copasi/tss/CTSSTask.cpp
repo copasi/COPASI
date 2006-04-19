@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSTask.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:49 $
+   $Date: 2006/04/19 18:37:00 $
    End CVS Header */
 
 /**
@@ -86,12 +86,12 @@ bool CTSSTask::process(const bool & /* useInitialValues */)
     dynamic_cast<CTSSMethod *>(mpMethod);
   assert(pMethod);
 
-  mReport.printHeader();
+  mReport.output(COutputInterface::BEFORE);
 
   bool success = pMethod->process(mpCallBack);
 
-  mReport.printBody();
-  mReport.printFooter();
+  mReport.output(COutputInterface::DURING);
+  mReport.output(COutputInterface::AFTER);
 
   return (success);
 }

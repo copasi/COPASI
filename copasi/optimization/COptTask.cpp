@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/03 18:51:32 $
+   $Date: 2006/04/19 18:36:57 $
    End CVS Header */
 
 /**
@@ -114,11 +114,11 @@ bool COptTask::process(const bool & /* useInitialValues */)
 
   mpMethod->isValidProblem(mpProblem);
 
-  initOutput();
+  output(COutputInterface::BEFORE);
 
   bool success = pMethod->optimise();
 
-  finishOutput();
+  output(COutputInterface::AFTER);
 
   mSolutionVariables = pProblem->getSolutionVariables();
   mUpdateMethods = pProblem->getCalculateVariableUpdateMethods();

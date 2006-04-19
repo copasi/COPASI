@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/11 16:21:49 $
+   $Author: shoops $ 
+   $Date: 2006/04/19 18:36:59 $
    End CVS Header */
 
 /**
@@ -86,12 +86,12 @@ bool CSensTask::process(const bool & /* useInitialValues */)
     dynamic_cast<CSensMethod *>(mpMethod);
   assert(pMethod);
 
-  mReport.printHeader();
+  mReport.output(COutputInterface::BEFORE);
 
   bool success = pMethod->process(mpCallBack);
 
-  mReport.printBody();
-  mReport.printFooter();
+  mReport.output(COutputInterface::DURING);
+  mReport.output(COutputInterface::AFTER);
 
   return (success);
 }

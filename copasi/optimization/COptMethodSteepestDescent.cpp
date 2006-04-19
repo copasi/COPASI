@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/11/06 22:17:03 $
+   $Date: 2006/04/19 18:36:57 $
    End CVS Header */
 
 #include "copasi.h"
@@ -76,7 +76,7 @@ bool COptMethodSteepestDescent::optimise()
 
   // We found a new best value lets report it.
   //if (mpReport) mpReport->printBody();
-  mpParentTask->doOutput();
+  mpParentTask->output(COutputInterface::DURING);
 
   bool SolutionFound = false;
 
@@ -165,7 +165,7 @@ bool COptMethodSteepestDescent::optimise()
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();
-          mpParentTask->doOutput();
+          mpParentTask->output(COutputInterface::DURING);
         }
     }
 

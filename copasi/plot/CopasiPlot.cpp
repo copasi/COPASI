@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/17 01:36:25 $
+   $Date: 2006/04/19 18:36:57 $
    End CVS Header */
 
 #include <qstring.h>
@@ -117,18 +117,6 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
   mpZoomer->setEnabled(false);
 
-  if (plotspec->isLogX())
-    setAxisScaleEngine(xBottom, new QwtLog10ScaleEngine());
-  else
-    setAxisScaleEngine(xBottom, new QwtLinearScaleEngine());
-
-  if (plotspec->isLogY())
-    setAxisScaleEngine(yLeft, new QwtLog10ScaleEngine());
-  else
-    setAxisScaleEngine(yLeft, new QwtLinearScaleEngine());
-
-  replot();
-
   //removeCurves();
   detachItems();
   mHistograms.clear();
@@ -140,7 +128,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   setTitle(FROM_UTF8(mpPlotSpecification->getTitle()));
 
   CPlotItem* pItem;
-  QColor curveColours[5] = {red, blue, green, cyan, magenta}                           ; //TODO
+  QColor curveColours[5] = {red, blue, green, cyan, magenta} ; //TODO
 
   mCurves.resize(kmax);
   mCurveTypes.resize(kmax);
@@ -287,6 +275,8 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
 
   updateCurves(C_INVALID_INDEX, false);
 
+  mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime();
+
   return true;
 }
 
@@ -334,6 +324,8 @@ void CopasiPlot::output(const Activity & activity)
         std::pair< Activity, unsigned C_INT32 > * pDataIndex = &mDataIndex[i][0];
         mHistograms[mHistoIndices[i]].addValue(*mObjectValues[pDataIndex->first][pDataIndex->second]);
       }
+
+  updatePlot();
 }
 
 void CopasiPlot::separate(const Activity & activity)
@@ -377,6 +369,8 @@ void CopasiPlot::separate(const Activity & activity)
     if (mCurveTypes[i] == CPlotItem::histoItem1d &&
         mCurveActivities[i] & activity)
       mHistograms[mHistoIndices[i]].addValue(DummyValue);
+
+  updatePlot();
 
   return;
 }
@@ -435,6 +429,20 @@ void CopasiPlot::updateCurves(const unsigned C_INT32 & activity, const bool & do
             fatalError();
           }
       }
+}
+
+void CopasiPlot::updatePlot()
+{
+  if (mNextPlotTime < CCopasiTimeVariable::getCurrentWallTime())
+    {
+      CCopasiTimeVariable Delta = CCopasiTimeVariable::getCurrentWallTime();
+
+      updateCurves(C_INVALID_INDEX, true);
+      replot();
+
+      Delta = CCopasiTimeVariable::getCurrentWallTime() - Delta;
+      mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime() + Delta + Delta + Delta;
+    }
 }
 
 //-----------------------------------------------------------------------------

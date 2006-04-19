@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/05 16:06:36 $
+   $Date: 2006/04/19 18:36:58 $
    End CVS Header */
 
 /****************************************************************************
@@ -17,17 +17,19 @@
 #ifndef COPASI_CReport
 #define COPASI_CReport
 
-#include "CCopasiContainer.h"
-#include "CCopasiObjectName.h"
 #include <string>
 #include <vector>
 #include <iostream>
 
+#include "CCopasiContainer.h"
+#include "CCopasiObjectName.h"
+
+#include "utilities/COutputHandler.h"
+
 class CReportDefinition;
-//class CBody;
 class CReportTable;
 
-class CReport : public CCopasiContainer
+class CReport : public CCopasiContainer, public COutputInterface
   {
     /**
      * Enumeration of the report states.
@@ -57,10 +59,6 @@ class CReport : public CCopasiContainer
     std::vector< CCopasiObject * > mFooterObjectList;
     std::vector< CCopasiObject * > mBodyObjectList;
     std::vector< CCopasiObject * > mHeaderObjectList;
-
-    std::vector< Refresh * > mFooterRefreshList;
-    std::vector< Refresh * > mBodyRefreshList;
-    std::vector< Refresh * > mHeaderRefreshList;
 
     CReport * mpHeader;
     CReport * mpBody;
@@ -93,18 +91,34 @@ class CReport : public CCopasiContainer
     ~CReport();
 
     /**
+     * compile the object list from name vector
+     * @param std::vector< CCopasiContainer * > listOfContainer (default: empty list)
+     * @return bool success
+     */
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer =
+                           std::vector< CCopasiContainer * >());
+
+    /**
+     * Perform an output event for the current activity
+     * @param const Activity & activity
+     */
+    virtual void output(const Activity & activity);
+
+    /**
+     * Introduce an additional seperator into the ouput
+     * @param const Activity & activity
+     */
+    virtual void separate(const Activity & /* activity */);
+
+    /**
+     * Finsh the output
+     */
+    virtual void finish();
+
+    /**
      * returns the reference of the Report Tag
      */
     CReportDefinition* getReportDefinition();
-
-    /**
-     * compile the object list from name vector
-     * @param std::vector< CCopasiContainer * > listOfContainer
-     * (default: CCopasiContainer::EmptyList)
-     * @return bool success
-     */
-    bool compile(std::vector< CCopasiContainer * > listOfContainer =
-                   CCopasiContainer::EmptyList);
 
     /**
      * Open the defined target stream or use the given argument
@@ -118,21 +132,6 @@ class CReport : public CCopasiContainer
      * @return std::ostream * pOstream
      */
     std::ostream * CReport::getStream() const;
-
-    /**
-     * Close the stream if the report own the stream
-     */
-    void close();
-
-    /**
-     * transfer every individual object list from name vector
-     */
-    void generateObjectsFromName(
-      const std::vector< CCopasiContainer * > * pListOfContainer,
-      std::vector< CCopasiObject * > & objectList,
-      std::vector< Refresh * > & refreshList,
-      CReport *& pReport,
-      const std::vector<CRegisteredObjectName>* nameVector);
 
     /**
      * sets the reference to the report
@@ -159,6 +158,7 @@ class CReport : public CCopasiContainer
      */
     void setAppend(bool append);
 
+  private:
     /**
      * to print header
      */
@@ -175,14 +175,21 @@ class CReport : public CCopasiContainer
     void printFooter();
 
     /**
-     * to print an empty line
+     * transfer every individual object list from name vector
      */
-    void printEmptyLine();
+    void generateObjectsFromName(
+      const std::vector< CCopasiContainer * > * pListOfContainer,
+      std::vector< CCopasiObject * > & objectList,
+      CReport *& pReport,
+      const std::vector<CRegisteredObjectName>* nameVector);
 
     /**
-     *  to print body
-     */ 
-    //static void printBody(CReport * pReport);
+     * Compile the child report
+     * @param CReport * pReport
+     * @param std::vector< CCopasiContainer * > listOfContainer
+     * @return bool success
+     */
+    bool compileChildReport(CReport * pReport, std::vector< CCopasiContainer * > listOfContainer);
   };
 
 #endif

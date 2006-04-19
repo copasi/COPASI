@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/17 16:05:09 $
+   $Date: 2006/04/19 18:37:00 $
    End CVS Header */
 
 /**
@@ -136,9 +136,11 @@ class CTrajectoryTask : public CCopasiTask
      */
     const CTimeSeries & getTimeSeries() const;
 
-    virtual bool initOutput();
-    virtual bool doOutput();
-    virtual bool finishOutput();
+    /**
+     * Perform an output event for the current activity
+     * @param const Activity & activity
+     */
+    virtual void output(const COutputInterface::Activity & activity);
 
   private:
     /**
