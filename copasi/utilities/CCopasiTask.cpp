@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/19 18:37:00 $
+   $Date: 2006/04/20 15:26:27 $
    End CVS Header */
 
 /**
@@ -245,9 +245,6 @@ bool CCopasiTask::restore()
 
   mpProblem->restore(mUpdateModel);
 
-  mReport.finish();
-  CCopasiDataModel::Global->finish();
-  CCopasiDataModel::Global->removeInterface(&mReport);
   return true;
 }
 
