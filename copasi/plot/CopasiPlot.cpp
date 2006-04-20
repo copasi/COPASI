@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/20 00:36:59 $
+   $Date: 2006/04/20 15:51:36 $
    End CVS Header */
 
 #include <qstring.h>
@@ -158,7 +158,7 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
   mData.resize(ActivitySize);
   mObjectValues.resize(ActivitySize);
   mDataSize.resize(ActivitySize);
-  mDataIndex.resize(ActivitySize);
+  mDataIndex.clear();
 
   // Initialize from the plot specification
   initFromSpec(plotspec);
@@ -271,6 +271,7 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
 
   // Loop over all curves.
   imax = mpPlotSpecification->getItems().size();
+  mDataIndex.resize(imax);
 
   for (i = 0; i < imax; ++i)
     {
@@ -280,7 +281,7 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
 
       // Loop over all channels
       jmax = pItem->getNumChannels();
-      mDataIndex[ItemActivity].resize(jmax);
+      mDataIndex[i].resize(jmax);
 
       for (j = 0; j < jmax; ++j)
         {
@@ -750,9 +751,9 @@ void CopasiPlot::clearBuffers()
 
       mObjectValues[Activity].clear();
       mDataSize[Activity] = 0;
-      mDataIndex[Activity].clear();
     }
 
+  mDataIndex.clear();
   mObjectIndex.clear();
 
   mDataBefore = 0;
