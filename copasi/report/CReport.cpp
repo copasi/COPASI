@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/19 18:36:58 $
+   $Date: 2006/04/20 15:27:06 $
    End CVS Header */
 
 #include "copasi.h"
@@ -111,8 +111,6 @@ void CReport::separate(const Activity & activity)
 
 void CReport::finish()
 {
-  if (mState < FooterFooter) printFooter();
-
   if (mStreamOwner) pdelete(mpOstream);
 
   mpOstream = NULL;
