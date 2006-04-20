@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/19 18:36:57 $
+   $Date: 2006/04/20 15:28:42 $
    End CVS Header */
 
 #include <fstream>
@@ -205,6 +205,48 @@ void CExperiment::updateFittedPoints()
       }
 }
 
+void CExperiment::updateFittedPointValues(const unsigned C_INT32 & index)
+{
+  CCopasiVector< CFittingPoint >::iterator it = mFittingPoints.begin();
+  CCopasiVector< CFittingPoint >::iterator end = mFittingPoints.end();
+
+  if (index >= mNumDataRows)
+    {
+      for (; it != end; ++it)
+        (*it)->setValues(std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                         std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                         std::numeric_limits<C_FLOAT64>::quiet_NaN(),
+                         std::numeric_limits<C_FLOAT64>::quiet_NaN());
+
+      return;
+    }
+
+  C_FLOAT64 Independent;
+
+  if (*mpTaskType == CCopasiTask::timeCourse)
+    Independent = mDataTime[index];
+  else
+    Independent = index;
+
+  C_FLOAT64 Residual;
+
+  C_FLOAT64 * pDataDependentCalculated =
+    mpDataDependentCalculated + mDataDependent.numCols() * index;
+  C_FLOAT64 * pDataDependent = mDataDependent[index];
+  C_FLOAT64 * pWeight = mWeight.array();
+
+  for (; it != end; ++it, ++pWeight, ++pDataDependentCalculated, ++pDataDependent)
+    {
+      Residual = *pWeight * (*pDataDependentCalculated - *pDataDependent);
+      (*it)->setValues(Independent,
+                       *pDataDependent,
+                       *pDataDependentCalculated,
+                       Residual);
+    }
+
+  return;
+}
+
 C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index,
                                     C_FLOAT64 *& residuals) const
   {
@@ -307,18 +349,11 @@ bool CExperiment::calculateStatistics()
 
   for (i = 0; i < numRows; i++)
     {
-      if (*mpTaskType == CCopasiTask::timeCourse) *pTime = mDataTime[i];
-
       for (j = 0; j < numCols; j++, pDataDependentCalculated++, pDataDependent++)
         {
           Residual = mWeight[j] * (*pDataDependentCalculated - *pDataDependent);
 
           if (isnan(Residual)) continue;
-
-          if (pTask)
-            mFittingPoints[j]->setValues(*pDataDependent,
-                                         *pDataDependentCalculated,
-                                         Residual);
 
           mMean += Residual;
 
@@ -333,8 +368,6 @@ bool CExperiment::calculateStatistics()
           mColumnObjectiveValue[j] += Residual;
           mColumnCount[j]++;
         }
-
-      if (pTask) pTask->output(COutputInterface::AFTER);
     }
 
   if (Count)
@@ -1146,6 +1179,7 @@ unsigned C_INT32 CExperiment::getCount(CCopasiObject *const& pObject) const
 CFittingPoint::CFittingPoint(const std::string & name,
                              const CCopasiContainer * pParent):
     CCopasiContainer(name, pParent, "Fitted Point"),
+    mIndependentValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mMeasuredValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mFittedValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mWeightedError(std::numeric_limits<C_FLOAT64>::quiet_NaN())
@@ -1154,6 +1188,7 @@ CFittingPoint::CFittingPoint(const std::string & name,
 CFittingPoint::CFittingPoint(const CFittingPoint & src,
                              const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
+    mIndependentValue(src.mIndependentValue),
     mMeasuredValue(src.mMeasuredValue),
     mFittedValue(src.mFittedValue),
     mWeightedError(src.mWeightedError)
@@ -1161,10 +1196,12 @@ CFittingPoint::CFittingPoint(const CFittingPoint & src,
 
 CFittingPoint::~CFittingPoint() {}
 
-void CFittingPoint::setValues(const C_FLOAT64 & measured,
+void CFittingPoint::setValues(const C_FLOAT64 & independent,
+                              const C_FLOAT64 & measured,
                               const C_FLOAT64 & fitted,
                               const C_FLOAT64 & weightedError)
 {
+  mIndependentValue = independent;
   mMeasuredValue = measured;
   mFittedValue = fitted;
   mWeightedError = weightedError;
@@ -1172,6 +1209,7 @@ void CFittingPoint::setValues(const C_FLOAT64 & measured,
 
 void CFittingPoint::initObjects()
 {
+  addObjectReference("Independent Value", mIndependentValue, CCopasiObject::ValueDbl);
   addObjectReference("Measured Value", mMeasuredValue, CCopasiObject::ValueDbl);
   addObjectReference("Fitted Value", mFittedValue, CCopasiObject::ValueDbl);
   addObjectReference("Weighted Error", mWeightedError, CCopasiObject::ValueDbl);

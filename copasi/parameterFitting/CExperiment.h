@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/31 14:14:21 $
+   $Date: 2006/04/20 15:28:42 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -31,7 +31,8 @@ class CFittingPoint: public CCopasiContainer
 
     ~CFittingPoint();
 
-    void setValues(const C_FLOAT64 & measured,
+    void setValues(const C_FLOAT64 & independent,
+                   const C_FLOAT64 & measured,
                    const C_FLOAT64 & fitted,
                    const C_FLOAT64 & weightedError);
 
@@ -40,6 +41,7 @@ class CFittingPoint: public CCopasiContainer
 
     // Attributes
   private:
+    C_FLOAT64 mIndependentValue;
     C_FLOAT64 mMeasuredValue;
     C_FLOAT64 mFittedValue;
     C_FLOAT64 mWeightedError;
@@ -252,6 +254,13 @@ class CExperiment: public CCopasiParameterGroup
      * is changed
      */
     void updateFittedPoints();
+
+    /**
+     * This method is used for output to fill the fitted points
+     * with the values of the index data record. If index exceedds the
+     * number of data records all values are set to NaN.
+     */
+    void updateFittedPointValues(const unsigned C_INT32 & index);
 
     /**
      * Retrieve the type fo the indexed column.
