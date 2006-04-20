@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.125 $
+   $Revision: 1.126 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 21:26:32 $
+   $Date: 2006/04/20 15:28:06 $
    End CVS Header */
 
 /********************************************************
@@ -488,6 +488,7 @@ void TrajectoryWidget::runTrajectoryTask()
 
   tt->setCallBack(NULL);
   tmpBar->finish(); pdelete(tmpBar);
+  CCopasiDataModel::Global->finish();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 
   protectedNotify(ListViews::STATE, ListViews::CHANGE,

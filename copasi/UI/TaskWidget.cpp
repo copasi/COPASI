@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 21:26:32 $
+   $Date: 2006/04/20 15:28:06 $
    End CVS Header */
 
 #include <qcheckbox.h>
@@ -371,9 +371,13 @@ bool TaskWidget::commonAfterRunTask()
   if (!mpTask) return false;
 
   if (mProgressBar)
-  {mProgressBar->finish(); pdelete(mProgressBar);}
+    {
+      mProgressBar->finish();
+      pdelete(mProgressBar);
+    }
   mpTask->setCallBack(NULL);
 
+  CCopasiDataModel::Global->finish();
   protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
   unsetCursor();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);

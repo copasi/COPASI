@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:21 $
+   $Date: 2006/04/20 15:28:05 $
    End CVS Header */
 
 // Main
@@ -258,6 +258,7 @@ int main(int argc, char *argv[])
                     TaskList[i]->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
                     TaskList[i]->process(true);
                     TaskList[i]->restore();
+                    CCopasiDataModel::Global->finish();
                   }
 
               // Check whether a file for saving the resulting model is given
