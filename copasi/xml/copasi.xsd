@@ -782,6 +782,7 @@
       <xs:enumeration value="optimization"/>
       <xs:enumeration value="parameterFitting"/>
       <xs:enumeration value="metabolicControlAnalysis"/>
+      <xs:enumeration value="timeScaleSeparation"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="cNAME" id="copasi.NAME">
