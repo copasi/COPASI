@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/19 18:36:59 $
+   $Date: 2006/04/20 18:22:09 $
    End CVS Header */
 
 /**
@@ -157,7 +157,6 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
   assert(pMethod);
 
   output(COutputInterface::BEFORE);
-  output(COutputInterface::DURING);
 
   mResult = pMethod->process(mpSteadyState,
                              mJacobian,
