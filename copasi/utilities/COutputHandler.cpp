@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/20 15:25:04 $
+   $Date: 2006/04/20 18:19:42 $
    End CVS Header */
 
 #include "copasi.h"
@@ -76,18 +76,26 @@ void COutputHandler::separate(const Activity & activity)
 
 void COutputHandler::finish()
 {
-  std::set< COutputInterface *>::reverse_iterator it = mInterfaces.rbegin();
-  std::set< COutputInterface *>::reverse_iterator end = mInterfaces.rend();
+  std::set< COutputInterface *>::iterator it = mInterfaces.begin();
+  std::set< COutputInterface *>::iterator end = mInterfaces.end();
 
-  CReport * pReport;
+  // This hack is necessary as the reverse iterator behaves strangely
+  // under Visual C++ 6.0, i.e., removing an object advances the iterator.
+  std::vector< COutputInterface * > ToBeRemoved;
 
   for (; it != end; ++it)
     {
       (*it)->finish();
 
-      if ((pReport = dynamic_cast< CReport * >(*it)) != NULL)
-        removeInterface(*it);
+      if (dynamic_cast< CReport * >(*it) != NULL)
+        ToBeRemoved.push_back(*it);
     }
+
+  std::vector< COutputInterface * >::iterator itRemove = ToBeRemoved.begin();
+  std::vector< COutputInterface * >::iterator endRemove = ToBeRemoved.end();
+
+  for (; itRemove != endRemove; ++itRemove)
+    removeInterface(*itRemove);
 
   return;
 }
@@ -134,7 +142,7 @@ bool COutputHandler::compileRefresh()
   Refresh * pRefresh;
 
   for (; it != end; ++it)
-    if ((pRefresh = (*it)->getRefresh()))
+    if ((pRefresh = (*it)->getRefresh()) != NULL)
       {
         mObjectRefreshes.push_back(pRefresh);
 
