@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/19 18:36:57 $
+   $Date: 2006/04/20 00:36:59 $
    End CVS Header */
 
 // the plot object for copasi
@@ -31,6 +31,19 @@
 #include "utilities/CopasiTime.h"
 
 class CCopasiObjectName;
+
+// nan are ignored bounding rectangle
+class MyQwtCPointerData : public QwtCPointerData
+  {
+  public:
+    MyQwtCPointerData(const double *x, const double *y, size_t size);
+
+    MyQwtCPointerData &operator=(const MyQwtCPointerData & rhs);
+
+    virtual QwtData *copy() const;
+
+    virtual QwtDoubleRect boundingRect() const;
+  };
 
 //nan in data splits curve
 class MyQwtPlotCurve : public QwtPlotCurve

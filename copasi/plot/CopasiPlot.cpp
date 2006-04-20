@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/19 18:36:57 $
+   $Date: 2006/04/20 00:36:59 $
    End CVS Header */
 
 #include <qstring.h>
@@ -27,6 +27,59 @@
 
 C_FLOAT64 DummyValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
+//********************  data  *********************************************
+MyQwtCPointerData::MyQwtCPointerData(const double *x, const double *y, size_t size):
+    QwtCPointerData(x, y, size)
+{}
+
+MyQwtCPointerData & MyQwtCPointerData::operator=(const MyQwtCPointerData & rhs)
+{
+  *static_cast<QwtCPointerData *>(this) = *static_cast<const QwtCPointerData *>(&rhs);
+  return * this;
+}
+
+QwtData * MyQwtCPointerData::copy() const
+  {return new MyQwtCPointerData(xData(), yData(), size());}
+
+QwtDoubleRect MyQwtCPointerData::boundingRect() const
+  {
+    const size_t sz = size();
+
+    if (sz <= 0)
+      return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
+
+    double minX, maxX, minY, maxY;
+
+    const double *xIt = xData();
+    const double *yIt = yData();
+    const double *end = xIt + sz;
+
+    minX = maxX = *xIt++;
+    minY = maxY = *yIt++;
+
+    while (xIt < end)
+      {
+        const double xv = *xIt++;
+        if (!isnan(xv))
+          {
+            if (xv < minX)
+              minX = xv;
+            if (xv > maxX)
+              maxX = xv;
+          }
+
+        const double yv = *yIt++;
+        if (!isnan(yv))
+          {
+            if (yv < minY)
+              minY = yv;
+            if (yv > maxY)
+              maxY = yv;
+          }
+      }
+
+    return QwtDoubleRect(minX, minY, maxX - minX, maxY - minY);
+  }
 //********************  curve  ********************************************
 
 //draw the several curves, separated by NaNs.
@@ -115,7 +168,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 {
   mpPlotSpecification = plotspec;
 
-  mpZoomer->setEnabled(false);
+  if (mpZoomer) mpZoomer->setEnabled(false);
 
   //removeCurves();
   detachItems();
@@ -405,17 +458,15 @@ void CopasiPlot::updateCurves(const unsigned C_INT32 & activity, const bool & do
   for (k = 0; k < kmax; k++)
     if (mCurveActivities[k] == activity)
       {
-        QwtData* tmpData;
         std::vector< QMemArray< double > * > & data = mData[activity];
         unsigned C_INT32 & ndata = mDataSize[activity];
 
         switch (mCurveTypes[k])
           {
           case CPlotItem::curve2d :
-            tmpData = new QwtCPointerData(data[mDataIndex[k][0].second]->data(),
-                                          data[mDataIndex[k][1].second]->data(),
-                                          ndata);
-            mCurves[k]->setData(*tmpData);
+            mCurves[k]->setData(MyQwtCPointerData(data[mDataIndex[k][0].second]->data(),
+                                                  data[mDataIndex[k][1].second]->data(),
+                                                  ndata));
             break;
 
           case CPlotItem::histoItem1d :
