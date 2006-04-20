@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.165 $
+   $Revision: 1.166 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/07 12:34:39 $
+   $Author: shoops $ 
+   $Date: 2006/04/20 18:59:38 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -633,7 +633,7 @@ void CopasiUI3Window::createMenuBar()
                "You can also select the <b>New</b> command "
                "from the <b>File</b> menu.</p>";
 
-  toolTip[1] = "Click this button to open a <em>new file</em>. <br>"
+  toolTip[1] = "Click this button to open a <em>file</em>. <br>"
                "You can also select the <b>Open</b> command "
                "from the <b>File</b> menu.</p>";
 
@@ -641,9 +641,10 @@ void CopasiUI3Window::createMenuBar()
                "are editing. You will be prompted for a file name.\n"
                "You can also select the <b>Save</b> command "
                "from the <b>File</b> menu.</p>";
-  toolTip[3] = "<p>Click this button to save the file you "
-               "are editing. You will be prompted for a file name.\n"
-               "You can also select the <b>Save</b> command "
+
+  toolTip[3] = "<p>Click this button to save the file you are editing "
+               "under a new name. You will be prompted for a file name.\n"
+               "You can also select the <b>Save As</b> command "
                "from the <b>File</b> menu.</p>";
 
   toolTip[4] = "Click this button to import a SBML file you "
@@ -656,20 +657,24 @@ void CopasiUI3Window::createMenuBar()
                "You can also select the <b>Export SBML</b> command "
                "from the <b>File</b> menu.</p>";
 
-  toolTip[6] = "Click this button to select the output objects "
-               ".\n You can also select the only numeric value ";
-
-  toolTip[7] = "Click this button to export the Mathematical Model. "
+  toolTip[7] = "Click this button to export the ODEs of the Mathematical Model. "
                "You will be prompted for a file name.\n"
                "You can also select the <b>Export </b> command "
                "from the <b>File</b> menu.</p>";
 
-  const char* iconName[7] = {"&New", "&Open", "&Save", "Save&As", "&Import SBML", "&Export SBML", "&Export"};
-  const char* slotFileName[7] = {SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()), SLOT(slotImportSBML()), SLOT(slotExportSBML()), SLOT(slotExportMathModel())};
-  QKeySequence hotKey[7] = {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_I, CTRL + Key_E, CTRL + Key_M};
-  int fileSeparator[7] = {0, 0, 0, 0, 0, 0, 0};
+  const char* iconName[7] =
+    {"&New", "&Open", "&Save", "Save&As", "&Import SBML", "&Export SBML", "&Export ODEs"};
+  const char* slotFileName[7] =
+    {
+      SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()),
+      SLOT(slotImportSBML()), SLOT(slotExportSBML()), SLOT(slotExportMathModel())
+    };
+  QKeySequence hotKey[7] =
+    {CTRL + Key_N, CTRL + Key_O, CTRL + Key_S, CTRL + Key_A, CTRL + Key_I, CTRL + Key_E, CTRL + Key_M};
+  int fileSeparator[7] = {0, 0, 0, 0, 1, 0, 0};
 
   mpFileMenu = new QPopupMenu(this);
+
   menuBar()->insertItem("&File", mpFileMenu);
   int j;
   for (j = 0; j < 7; j++)
@@ -693,7 +698,7 @@ void CopasiUI3Window::createMenuBar()
         nexport_menu_MathModel = id;
     }
   mpFileMenu->insertSeparator();
-  mpFileMenu->insertItem("&Close", this, SLOT(newDoc()), CTRL + Key_W);
+
   mpFileMenu->insertItem("&Quit", this, SLOT(slotQuit()), CTRL + Key_Q);
 
   tools = new QPopupMenu(this);
