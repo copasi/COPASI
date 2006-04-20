@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/12 14:35:50 $
+   $Author: shoops $ 
+   $Date: 2006/04/20 19:19:40 $
    End CVS Header */
 
 /**
@@ -74,7 +74,7 @@ bool CCopasiXML::save(std::ostream & os)
   CXMLAttributeList Attributes;
   Attributes.add("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
   Attributes.add("xsi:noNamespaceSchemaLocation",
-                 "http://calvin.bioinformatics.vt.edu/copasi/schema/copasi.xsd");
+                 "http://www.copasi.org/static/schema.xsd");
   Attributes.add("versionMajor", mVersion.getVersionMajor());
   Attributes.add("versionMinor", mVersion.getVersionMinor());
 
