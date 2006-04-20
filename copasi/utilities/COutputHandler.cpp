@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/19 18:37:00 $
+   $Date: 2006/04/20 15:25:04 $
    End CVS Header */
 
 #include "copasi.h"
@@ -76,11 +76,18 @@ void COutputHandler::separate(const Activity & activity)
 
 void COutputHandler::finish()
 {
-  std::set< COutputInterface *>::iterator it = mInterfaces.begin();
-  std::set< COutputInterface *>::iterator end = mInterfaces.end();
+  std::set< COutputInterface *>::reverse_iterator it = mInterfaces.rbegin();
+  std::set< COutputInterface *>::reverse_iterator end = mInterfaces.rend();
+
+  CReport * pReport;
 
   for (; it != end; ++it)
-    (*it)->finish();
+    {
+      (*it)->finish();
+
+      if ((pReport = dynamic_cast< CReport * >(*it)) != NULL)
+        removeInterface(*it);
+    }
 
   return;
 }
