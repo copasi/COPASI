@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/19 18:36:58 $
+   $Date: 2006/04/20 15:49:31 $
    End CVS Header */
 
 /****************************************************************************
@@ -36,6 +36,7 @@ class CReport : public CCopasiContainer, public COutputInterface
      */
     enum State
     {
+      Invalid = -1,
       Compiled = 0,
       HeaderHeader,
       HeaderBody,
