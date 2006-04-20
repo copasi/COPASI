@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/19 18:36:59 $
+   $Date: 2006/04/20 18:21:12 $
    End CVS Header */
 
 #include <algorithm>
@@ -156,7 +156,7 @@ CNewtonMethod::processInternal()
   if (mUseNewton)
     {
       returnCode = processNewton();
-      mpParentTask->separate(COutputInterface::DURING);
+      // mpParentTask->separate(COutputInterface::DURING);
 
       if (returnCode == CNewtonMethod::found)
         return returnProcess(true, mFactor, mResolution);
@@ -205,7 +205,7 @@ CNewtonMethod::processInternal()
               break;
             }
 
-          mpParentTask->output(COutputInterface::DURING);
+          // mpParentTask->output(COutputInterface::DURING);
 
           *mpSteadyState = *mpTrajectory->getState();
 
@@ -225,7 +225,7 @@ CNewtonMethod::processInternal()
           if (mUseNewton)
             {
               returnCode = processNewton();
-              mpParentTask->separate(COutputInterface::DURING);
+              // mpParentTask->separate(COutputInterface::DURING);
 
               if (returnCode == CNewtonMethod::found)
               {return returnProcess(true, mFactor, mResolution);}
@@ -269,7 +269,7 @@ CNewtonMethod::processInternal()
               break;
             }
 
-          mpParentTask->output(COutputInterface::DURING);
+          // mpParentTask->output(COutputInterface::DURING);
 
           *mpSteadyState = *mpTrajectory->getState();
 
@@ -290,7 +290,7 @@ CNewtonMethod::processInternal()
           if (mUseNewton)
             {
               returnCode = processNewton();
-              mpParentTask->separate(COutputInterface::DURING);
+              // mpParentTask->separate(COutputInterface::DURING);
 
               if (returnCode == CNewtonMethod::found)
               {return returnProcess(true, mFactor, mResolution);}
@@ -496,7 +496,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
           calculateDerivativesX();
           newMaxRate = targetFunction(mdxdt);
 
-          mpParentTask->output(COutputInterface::DURING);
+          // mpParentTask->output(COutputInterface::DURING);
           //std::cout << "k: " << k << " i: " << i << " target: " << newMaxRate << std::endl;
         }
 
