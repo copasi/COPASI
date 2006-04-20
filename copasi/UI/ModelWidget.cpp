@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/12/19 19:41:00 $
+   $Date: 2006/04/20 20:21:54 $
    End CVS Header */
 
 /*******************************************************************
@@ -108,24 +108,23 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
   Line1->setFrameShape(QFrame::HLine);
   ModelWidgetLayout->addMultiCellWidget(Line1, 7, 7, 0, 2);
 
-  textBrowser = new QTextBrowser (this, "Text Browser");
-  ModelWidgetLayout->addMultiCellWidget(textBrowser, 8, 8, 1, 2);
+  // textBrowser = new QTextBrowser (this, "Text Browser");
+  // ModelWidgetLayout->addMultiCellWidget(textBrowser, 8, 8, 1, 2);
 
-  editComments = new QTextEdit(this, "Edit Comments");
-  editComments->setTextFormat(Qt::PlainText);
-  ModelWidgetLayout->addMultiCellWidget(editComments, 9, 9, 1, 2);
-  editComments->setText("");
-  editComments->hide();
+  mpEditComment = new QTextEdit(this, "Edit Comment");
+  mpEditComment->setTextFormat(Qt::RichText);
+  ModelWidgetLayout->addMultiCellWidget(mpEditComment, 8, 8, 1, 2);
+  mpEditComment->setText("");
+  // editComments->hide();
 
-  showDescription = new QPushButton(this, "Description");
-  showDescription->setText(trUtf8("Show Markup"));
-  connect(showDescription, SIGNAL(clicked()), this, SLOT(toggleEditorBox()));
+  mpToggleMarkup = new QPushButton(this, "ToggleMarkup");
+  mpToggleMarkup->setText(trUtf8("Show Markup"));
 
   //********* buttons ***********
 
   showMarkupLayout = new QVBoxLayout(0, 0, 6, "MarkupLayout");
   spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Minimum);
-  showMarkupLayout->addWidget(showDescription);
+  showMarkupLayout->addWidget(mpToggleMarkup);
   showMarkupLayout->addItem(spacer);
   ModelWidgetLayout->addLayout(showMarkupLayout, 8, 0);
 
@@ -144,24 +143,27 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
   ModelWidgetLayout->addMultiCellLayout(Layout5, 10, 10, 0, 2);
 
   // signals and slots connections
+  connect(mpToggleMarkup, SIGNAL(clicked()), this, SLOT(toggleEditorBox()));
   connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
   connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
 }
 
 void ModelWidget::toggleEditorBox()
 {
-  if (editComments->isShown())
+  QString Comment = mpEditComment->text();
+
+  if (mpToggleMarkup->text() == "Show Markup")
     {
-      editComments->hide();
-      showDescription->setText(trUtf8("Show Markup"));
-      textBrowser->setText(editComments->text());
+      mpToggleMarkup->setText("Hide Markup");
+      mpEditComment->setTextFormat(Qt::PlainText);
     }
   else
     {
-      editComments->setText(textBrowser->text());
-      editComments->show();
-      showDescription->setText(trUtf8("Hide Markup"));
+      mpToggleMarkup->setText("Show Markup");
+      mpEditComment->setTextFormat(Qt::RichText);
     }
+
+  mpEditComment->setText(Comment);
 }
 
 /*
@@ -178,9 +180,14 @@ bool ModelWidget::loadModel(CModel *model)
   bool ret = true;
 
   LineEdit->setText(FROM_UTF8(model->getObjectName()));
-  textBrowser->setText(FROM_UTF8(model->getComments()));
-  editComments->setText(FROM_UTF8(model->getComments()));
-  textBrowser->setReadOnly(FALSE);
+  // textBrowser->setText(FROM_UTF8(model->getComments()));
+
+  if (mpToggleMarkup->text() != "Show Markup")
+    toggleEditorBox();
+
+  mpEditComment->setText(FROM_UTF8(model->getComments()));
+
+  // textBrowser->setReadOnly(FALSE);
   ComboBox1->clear();
   ComboBox2->clear();
   ComboBox3->clear();
@@ -232,9 +239,9 @@ bool ModelWidget::saveToModel()
       protectedNotify(ListViews::MODEL, ListViews::RENAME, objKey);
     }
 
-  if (textBrowser->isModified())
+  if (mpEditComment->text() != FROM_UTF8(model->getComments()))
     {
-      model->setComments((const char *)textBrowser->text().utf8());
+      model->setComments((const char *)mpEditComment->text().utf8());
       protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
     }
 
