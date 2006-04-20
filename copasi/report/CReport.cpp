@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/20 15:50:23 $
+   $Date: 2006/04/20 18:20:31 $
    End CVS Header */
 
 #include "copasi.h"
@@ -116,6 +116,11 @@ void CReport::finish()
 
   mpOstream = NULL;
   mStreamOwner = false;
+
+  pdelete(mpHeader);
+  pdelete(mpBody);
+  pdelete(mpFooter);
+
   mState = Invalid;
 }
 
@@ -340,14 +345,20 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
 
   unsigned C_INT32 i;
   CCopasiObject* pSelected;
+  CReportDefinition * pReportDefinition;
 
   for (i = 0; i < nameVector->size(); i++)
     {
       pSelected = CCopasiContainer::ObjectFromName(*pListOfContainer,
                   (*nameVector)[i]);
 
-      if (!i && (pReport = dynamic_cast< CReport * >(pSelected)))
-        return;
+      if (!i && (pReportDefinition = dynamic_cast< CReportDefinition * >(pSelected)) != NULL)
+        {
+          pReport = new CReport();
+          pReport->setReportDefinition(pReportDefinition);
+
+          return;
+        }
 
       if (pSelected)
         {
@@ -360,6 +371,7 @@ void CReport::generateObjectsFromName(const std::vector< CCopasiContainer * > * 
 
 bool CReport::compileChildReport(CReport * pReport, std::vector< CCopasiContainer * > listOfContainer)
 {
+  pReport->open(mpOstream);
   bool success = pReport->compile(listOfContainer);
 
   const std::set< CCopasiObject * > & Objects = pReport->COutputInterface::getObjects();
