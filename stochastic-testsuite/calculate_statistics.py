@@ -58,7 +58,7 @@ for X in range(0,NUM_REPEATS):
 MEANOUT=file(MEAN_OUTFILE,"w")   
 MEANOUT.write(HEADER)
 for X in range(0,NUM_STEPS+1):
-    line=string.join(str(X),",")
+    line=string.join([str(X)],",")
     for Y in range(0,NUMCOLUMNS-1):
         MEAN[X][Y]=MEAN[X][Y]/NUM_REPEATS
         line=string.join([line,str(MEAN[X][Y])],",")
@@ -82,7 +82,7 @@ for X in range(0,NUM_REPEATS):
 SDOUT=file(SD_OUTFILE,"w")   
 SDOUT.write(HEADER)
 for X in range(0,NUM_STEPS+1):
-    line=string.join(str(X),",")
+    line=string.join([str(X)],",")
     for Y in range(0,NUMCOLUMNS-1):
         SD[X][Y]=math.sqrt(SD[X][Y]/NUM_REPEATS)
         line=string.join([line,str(SD[X][Y])],",")
