@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DefaultplotDialog.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/05 13:56:52 $
+   $Author: shoops $ 
+   $Date: 2006/04/21 17:12:01 $
    End CVS Header */
 
 /****************************************************************************
@@ -46,7 +46,10 @@ void DefaultPlotDialog::setTask(CCopasiTask * t)
   std::vector<C_INT32>::const_iterator it, itEnd = mList.end();
   for (it = mList.begin(); it != itEnd; ++it)
     {
-      listBox->insertItem(FROM_UTF8(COutputAssistant::getItemName(*it)));
+      QString Name = FROM_UTF8(COutputAssistant::getItemName(*it));
+      if (!Name.startsWith("--")) Name = "   " + Name;
+
+      listBox->insertItem(Name);
     }
   listBox->setSelected(0, true);
 }
