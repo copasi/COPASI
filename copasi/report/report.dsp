@@ -79,6 +79,10 @@ SOURCE=.\CKeyFactory.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\COutputAssistant.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CReport.cpp
 # End Source File
 # Begin Source File
@@ -124,6 +128,10 @@ SOURCE=.\CCopasiTimer.h
 # Begin Source File
 
 SOURCE=.\CKeyFactory.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COutputAssistant.h
 # End Source File
 # Begin Source File
 
