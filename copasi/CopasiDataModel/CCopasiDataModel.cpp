@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/29 17:29:45 $
+   $Date: 2006/04/21 19:16:31 $
    End CVS Header */
 
 #include "copasi.h"
@@ -73,6 +73,7 @@ bool CDataModelRenameHandler::handle(const std::string & oldCN, const std::strin
 CCopasiDataModel * CCopasiDataModel::Global = NULL;
 
 CCopasiDataModel::CCopasiDataModel(const bool withGUI):
+    COutputHandler(),
     mpVersion(new CVersion),
     mpFunctionList(new CFunctionDB),
     mpModel(NULL),
