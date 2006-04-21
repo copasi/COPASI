@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/20 18:20:31 $
+   $Date: 2006/04/21 19:17:39 $
    End CVS Header */
 
 #include "copasi.h"
@@ -41,7 +41,7 @@ CReport::CReport(const CCopasiContainer * pParent):
 CReport::CReport(const CReport & src,
                  const CCopasiContainer * pParent):
     CCopasiContainer("Report", pParent, "Report"),
-    COutputInterface(),
+    COutputInterface(src),
     mpOstream(src.mpOstream),
     mStreamOwner(false),
     mpReportDef(src.mpReportDef),
