@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/COutputHandlerPlot.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/21 19:15:25 $
+   $Date: 2006/04/21 20:11:19 $
    End CVS Header */
 
 #ifndef OUTPUT_HANDLER_PLOT
@@ -44,8 +44,7 @@ class COutputHandlerPlot : public COutputHandler
      * @param std::vector< CCopasiContainer * > listOfContainer (default: empty list)
      * @return bool success
      */
-    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer =
-                           std::vector< CCopasiContainer * >());
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer);
 
     /**
      * Perform an output event for the current activity

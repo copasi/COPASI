@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/20 00:36:59 $
+   $Date: 2006/04/21 20:11:19 $
    End CVS Header */
 
 // the plot object for copasi
@@ -101,11 +101,10 @@ class CopasiPlot : public QwtPlot, public COutputInterface
 
     /**
      * compile the object list from name vector
-     * @param std::vector< CCopasiContainer * > listOfContainer (default: empty list)
+     * @param std::vector< CCopasiContainer * > listOfContainer
      * @return bool success
      */
-    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer =
-                           std::vector< CCopasiContainer * >());
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer);
 
     /**
      * Perform an output event for the current activity
