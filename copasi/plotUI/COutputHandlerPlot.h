@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/COutputHandlerPlot.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 21:05:31 $
+   $Date: 2006/04/21 19:15:25 $
    End CVS Header */
 
 #ifndef OUTPUT_HANDLER_PLOT
@@ -27,6 +27,12 @@ class COutputHandlerPlot : public COutputHandler
      * Default constructor
      */
     COutputHandlerPlot();
+
+    /**
+     * Copy constructor
+     * @param const COutputHandlerPlot & src
+     */
+    COutputHandlerPlot(const COutputHandlerPlot & src);
 
     /**
      * Destructor
