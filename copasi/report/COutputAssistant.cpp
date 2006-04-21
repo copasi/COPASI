@@ -1,13 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/02/14 14:35:30 $
+   $Date: 2006/04/21 17:13:10 $
    End CVS Header */
 
 #include "COutputAssistant.h"
-#include "report/CCopasiObject.h"
+#include "CCopasiObject.h"
+#include "CReportDefinition.h"
+#include "CReportDefinitionVector.h"
+
 #include "utilities/CCopasiProblem.h"
 #include "utilities/CCopasiTask.h"
 #include "trajectory/CTrajectoryProblem.h"
@@ -16,8 +19,9 @@
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "plot/COutputDefinitionVector.h"
-#include "report/CReportDefinition.h"
-#include "report/CReportDefinitionVector.h"
+#include "parameterFitting/CFitProblem.h"
+#include "parameterFitting/CExperimentSet.h"
+#include "parameterFitting/CExperiment.h"
 
 //******* COutputAssistant **********************************
 
@@ -95,18 +99,23 @@ bool COutputAssistant::initialize()
   std::pair<C_INT32, CDefaultOutputDescription> tmp;
 
   //first the plots
+  tmp.first = -1;
+  tmp.second.name = "-- Plots";
+  tmp.second.description = "";
+  tmp.second.isPlot = true;
+  mMap.insert(tmp);
 
   //concentrations plot
   tmp.first = 0;
   tmp.second.name = "Concentrations plot";
-  tmp.second.description = "A plot of the variable metabolite concentrations vs. time.\nIt does not contain the concentrations of fixed metabolites.";
+  tmp.second.description = "A plot of the variable metabolite concentrations vs. time. It does not contain the concentrations of fixed metabolites.";
   tmp.second.isPlot = true;
   mMap.insert(tmp);
 
   //particle numbers plot
   tmp.first = 1;
   tmp.second.name = "Particle numbers plot";
-  tmp.second.description = "A plot of the variable metabolite particle numbers vs. time.\nIt does not contain the particle numbers of fixed metabolites.";
+  tmp.second.description = "A plot of the variable metabolite particle numbers vs. time. It does not contain the particle numbers of fixed metabolites.";
   tmp.second.isPlot = true;
   mMap.insert(tmp);
 
@@ -127,14 +136,14 @@ bool COutputAssistant::initialize()
   //concentration rate plot
   tmp.first = 4;
   tmp.second.name = "Concentration rates plot";
-  tmp.second.description = "A plot of the rate of change of all variable metabolite concentrations vs. time.\nIt does not contain the rates of fixed metabolites.";
+  tmp.second.description = "A plot of the rate of change of all variable metabolite concentrations vs. time. It does not contain the rates of fixed metabolites.";
   tmp.second.isPlot = true;
   mMap.insert(tmp); //not possible at the moment
 
   //particle rate plot
   tmp.first = 5;
   tmp.second.name = "Particle number rates plot";
-  tmp.second.description = "A plot of the rate of change of all variable metabolite particle numbers vs. time.\nIt does not contain the rates of fixed metabolites.";
+  tmp.second.description = "A plot of the rate of change of all variable metabolite particle numbers vs. time. It does not contain the rates of fixed metabolites.";
   tmp.second.isPlot = true;
   mMap.insert(tmp);
 
@@ -152,25 +161,37 @@ bool COutputAssistant::initialize()
   tmp.second.isPlot = true;
   mMap.insert(tmp);
 
+  //fitting result plots
+  tmp.first = 10;
+  tmp.second.name = "Plots of parameter estimation results";
+  tmp.second.description = "For each experiment of the parameter estimation a plot is created. Each plot contains the experimental data, the fitted curve, and the weighted error for each dependent vale.";
+  tmp.second.isPlot = true;
+  mMap.insert(tmp);
+
   //empty plot
-  tmp.first = 999;
+  tmp.first = 99;
   tmp.second.name = "Empty plot";
   tmp.second.description = "A plot with nothing in it.";
   tmp.second.isPlot = true;
   mMap.insert(tmp);
 
   //now the reports
+  tmp.first = 999;
+  tmp.second.name = "-- Reports";
+  tmp.second.description = "";
+  tmp.second.isPlot = true;
+  mMap.insert(tmp);
 
   //concentrations report
   tmp.first = 1000;
   tmp.second.name = "Concentrations table with time";
-  tmp.second.description = "A table of the variable metabolite concentrations and time.\nIt does not contain the concentrations of fixed metabolites.";
+  tmp.second.description = "A table of the variable metabolite concentrations and time. It does not contain the concentrations of fixed metabolites.";
   tmp.second.isPlot = false; //report
   mMap.insert(tmp);
 
   tmp.first = 1001;
   tmp.second.name = "Particle numbers table with time";
-  tmp.second.description = "A table of the variable metabolite particle numbers and time.\nIt does not contain the particle numbers of fixed metabolites.";
+  tmp.second.description = "A table of the variable metabolite particle numbers and time. It does not contain the particle numbers of fixed metabolites.";
   tmp.second.isPlot = false; //report
   mMap.insert(tmp);
 
@@ -188,13 +209,13 @@ bool COutputAssistant::initialize()
 
   tmp.first = 1004;
   tmp.second.name = "Concentration rates table with time";
-  tmp.second.description = "A table of the rate of change of all variable metabolite concentrations and time.\nIt does not contain the rates of fixed metabolites.";
+  tmp.second.description = "A table of the rate of change of all variable metabolite concentrations and time. It does not contain the rates of fixed metabolites.";
   tmp.second.isPlot = false; //report
   mMap.insert(tmp);  //not possible at the moment
 
   tmp.first = 1005;
   tmp.second.name = "Particle number rates table with time";
-  tmp.second.description = "A table of the rate of change of all variable metabolite particle numbers and time.\nIt does not contain the rates of fixed metabolites.";
+  tmp.second.description = "A table of the rate of change of all variable metabolite particle numbers and time. It does not contain the rates of fixed metabolites.";
   tmp.second.isPlot = false; //report
   mMap.insert(tmp);
 
@@ -295,6 +316,69 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
       data1 = CObjectLists::getListOfConstObjects(CObjectLists::NON_CONST_METAB_NUMBERS, pModel);
       tmpdata = CObjectLists::getListOfConstObjects(CObjectLists::REACTION_PART_FLUXES, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
+      break;
+
+    case 10:
+      CPlotSpecification * pPlotSpecification = NULL;
+      CCopasiTask * pTask = (*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"];
+      if (pTask == NULL) return NULL;
+
+      CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pTask->getProblem());
+      if (pFitProblem == NULL) return NULL;
+
+      const CExperimentSet & ExperimentSet = pFitProblem->getExperiementSet();
+      unsigned C_INT32 i, imax = ExperimentSet.size();
+
+      for (i = 0; i < imax; i++)
+        {
+          const CExperiment * pExperiment = ExperimentSet.getExperiment(i);
+          const CCopasiVector< CFittingPoint > & FittingPoints = pExperiment->getFittingPoints();
+
+          CCopasiVector< CFittingPoint >::const_iterator it = FittingPoints.begin();
+          CCopasiVector< CFittingPoint >::const_iterator end = FittingPoints.end();
+
+          if (it == end) continue;
+
+          data2 = (*it)->getObject(CCopasiObjectName("Reference=Independent Value"));
+          data1.clear();
+
+          for (; it != end; ++it)
+            {
+              data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Measured Value")));
+              data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Fitted Value")));
+              data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Weighted Error")));
+            }
+
+          pPlotSpecification =
+            createPlot(pExperiment->getObjectName(), data2, data1);
+
+          const CCopasiVector< CPlotItem > & Items = pPlotSpecification->getItems();
+          CCopasiVector< CPlotItem >::const_iterator itItem = Items.begin();
+          CCopasiVector< CPlotItem >::const_iterator endItem = Items.end();
+          it = FittingPoints.begin();
+
+          while (itItem != endItem)
+            {
+              std::string Name = (*it++)->getObjectName();
+              CCopasiObject * pObject = CCopasiContainer::ObjectFromName(Name);
+              if (pObject != NULL)
+                Name = pObject->getObjectDisplayName();
+
+              const_cast< CPlotItem *>(*itItem)->setTitle(Name + "(Measured Value)");
+              const_cast< CPlotItem *>(*itItem)->setActivity(COutputInterface::AFTER);
+              const_cast< CPlotItem *>(*itItem++)->setValue("Line type", (unsigned C_INT32) 2);
+
+              const_cast< CPlotItem *>(*itItem)->setTitle(Name + "(Fitted Value)");
+              const_cast< CPlotItem *>(*itItem)->setActivity(COutputInterface::AFTER);
+              const_cast< CPlotItem *>(*itItem++)->setValue("Line type", (unsigned C_INT32) 0);
+
+              const_cast< CPlotItem *>(*itItem)->setTitle(Name + "(Weighted Error)");
+              const_cast< CPlotItem *>(*itItem)->setActivity(COutputInterface::AFTER);
+              const_cast< CPlotItem *>(*itItem++)->setValue("Line type", (unsigned C_INT32) 2);
+            }
+        }
+
+      return pPlotSpecification;
       break;
     }
 
