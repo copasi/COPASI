@@ -1885,6 +1885,20 @@ fi
  echo depend:  >> Makefile && \
  echo "	touch Makefile" >> Makefile && \
  cd ..
+ cd stochastic-testsuite && \
+ echo executing in `pwd`: && \
+ echo "  rm .qmake.internal.cache */.qmake.internal.cache" && \
+ rm -f .qmake.internal.cache */.qmake.internal.cache && \
+ rm -f Makefile */Makefile && \
+ echo "  qmake $QMAKE_ARG" && \
+ $QTDIR/bin/qmake $QMAKE_ARG && \
+ cat Makefile | \
+ sed -e 's/(MAKEFILE): *$/(MAKEFILE): Makefile/' \
+     -e 'sxQMAKE.*=.*qmakexQMAKE = \$(QTDIR)/bin/qmakex'> $$.tmp && \
+ mv $$.tmp Makefile && \
+ echo depend:  >> Makefile && \
+ echo "	touch Makefile" >> Makefile && \
+ cd ..
 )
 
           ac_config_files="$ac_config_files Makefile"
