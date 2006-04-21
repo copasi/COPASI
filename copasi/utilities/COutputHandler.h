@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/19 18:37:00 $
+   $Date: 2006/04/21 19:13:25 $
    End CVS Header */
 
 #ifndef OUTPUT_HANDLER
@@ -33,6 +33,21 @@ class COutputInterface
       DURING = 0x02,
       AFTER = 0x04
     };
+
+    /**
+     * Default constructor
+     */
+    COutputInterface():
+        mObjects()
+    {};
+
+    /**
+     * Copy constructor
+     * @param const COutputInterface & src
+     */
+    COutputInterface(const COutputInterface & src):
+        mObjects(src.mObjects)
+    {};
 
     /**
      * Destructor
@@ -90,9 +105,14 @@ class COutputHandler: public COutputInterface
   public:
     /**
      * Default Constructor
-     * @param CCopasiTask * pTask (default: NULL)
      */
-    COutputHandler(CCopasiTask * pTask = NULL);
+    COutputHandler();
+
+    /**
+     * Copy constructor
+     * @param const COutputInterface & src
+     */
+    COutputHandler(const COutputHandler & src);
 
     /**
      * Destructor

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/20 18:19:42 $
+   $Date: 2006/04/21 19:13:25 $
    End CVS Header */
 
 #include "copasi.h"
@@ -12,9 +12,18 @@
 #include "CCopasiTask.h"
 #include "report/CCopasiTimer.h"
 
-COutputHandler::COutputHandler(CCopasiTask * pTask):
+COutputHandler::COutputHandler():
+    COutputInterface(),
     mInterfaces(),
-    mpMaster(NULL)
+    mpMaster(NULL),
+    mObjectRefreshes()
+{}
+
+COutputHandler::COutputHandler(const COutputHandler & src):
+    COutputInterface(src),
+    mInterfaces(src.mInterfaces),
+    mpMaster(src.mpMaster),
+    mObjectRefreshes(src.mObjectRefreshes)
 {}
 
 COutputHandler::~COutputHandler() {};
@@ -22,6 +31,7 @@ COutputHandler::~COutputHandler() {};
 bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
   bool success = true;
+  mObjects.clear();
 
   std::set< COutputInterface *>::iterator it = mInterfaces.begin();
   std::set< COutputInterface *>::iterator end = mInterfaces.end();
