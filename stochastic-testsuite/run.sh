@@ -1,6 +1,5 @@
 
 NUM_REPEATS=10000
-RELATIVE_TOLERANCE=0.001   # 0.1%
 
 HEAD=/usr/bin/head
 CUT=/usr/bin/cut
@@ -30,7 +29,7 @@ for MODEL in $MODELS;do
   # calculate mean and standard deviation
   echo "./calculate_statistics.py $OUTFILE $MEAN_OUTFILE $SD_OUTFILE $STEPNUMBER $NUM_REPEATS"
   # compare results
-  echo "./compare_results.sh ${MODEL}-mean.csv ${MODEL}-mean.RESULT $RELATIVE_TOLERANCE"
-  echo "./compare_results.sh ${MODEL}-sd.csv ${MODEL}-sd.RESULT $RELATIVE_TOLERANCE"
+  echo "./compare_mean.sh ${MODEL}-mean.csv ${MODEL}-mean.RESULT
+  echo "./compare_sd.sh ${MODEL}-sd.csv ${MODEL}-sd.RESULT 
 
 done
