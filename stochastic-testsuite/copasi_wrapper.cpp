@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2006/04/21 12:26:01 $
+   $Date: 2006/04/21 14:05:23 $
    End CVS Header */
 
 #define COPASI_MAIN
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
   char* pRepeats = argv[4];
   char* pOutputFilename = argv[5];
   //char* pTmpDirectory=argv[5];
-  char** pSBMLSpeciesIds = new char * [argc - 7];
+  char** pSBMLSpeciesIds = new char * [argc - 6];
   unsigned int i, iMax = argc;
   CTrajectoryTask* pTrajectoryTask = NULL;
   CScanTask* pScanTask = NULL;
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
       exit(1);
     }
 
-  for (i = 6; i < iMax;++i)
+  for (i = 5; i < iMax;++i)
     {
       pSBMLSpeciesIds[i - 6] = argv[i];
       //std::cout << "Copying pointer to " <<  argv[i]  << "." << std::endl;
@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
       pReport->setIsTable(true);
 
       std::vector<CRegisteredObjectName>* pTable = pReport->getTableAddr();
-      pTable->push_back(CCopasiObjectName("CN=Root,Model=" + CCopasiDataModel::Global->getModel()->getObjectName() + ",Reference=Time"));
+      pTable->push_back(CCopasiObjectName(CCopasiDataModel::Global->getModel()->getCN() + ",Reference=Time"));
       iMax = iMax - 6;
       const CCopasiVector<CMetab>& metabolites = CCopasiDataModel::Global->getModel()->getMetabolites();
       for (i = 0; i < iMax;++i)
@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
       pProblem->setTimeSeriesRequested(true);
       //pProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
-      CLsodaMethod* pMethod = dynamic_cast<CLsodaMethod*>(pTrajectoryTask->getMethod());
+      CStochMethod* pMethod = dynamic_cast<CStochMethod*>(pTrajectoryTask->getMethod());
 
       pMethod->getParameter("STOCH.UseRandomSeed")->setValue(false);
 
@@ -173,6 +173,9 @@ int main(int argc, char *argv[])
       pScanProblem->createScanItem(CScanProblem::SCAN_REPEAT, repeats);
       pScanProblem->setOutputInSubtask(true);
       pScanProblem->setAdjustInitialConditions(false);
+
+      TaskList.remove("Scan");
+      TaskList.add(pScanTask, true);
 
       // save the file for control purposes
       std::string saveFilename = pSBMLFilename;

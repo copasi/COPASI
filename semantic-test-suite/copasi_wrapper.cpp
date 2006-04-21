@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/copasi_wrapper.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2006/03/14 16:19:49 $
+   $Date: 2006/04/21 14:05:23 $
    End CVS Header */
 
 #define COPASI_MAIN
@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
       pReport->setIsTable(true);
 
       std::vector<CRegisteredObjectName>* pTable = pReport->getTableAddr();
-      pTable->push_back(CCopasiObjectName("CN=Root,Model=" + CCopasiDataModel::Global->getModel()->getObjectName() + ",Reference=Time"));
+      pTable->push_back(CCopasiObjectName(CCopasiDataModel::Global->getModel()->getCN() + ",Reference=Time"));
       iMax = iMax - 6;
       const CCopasiVector<CMetab>& metabolites = CCopasiDataModel::Global->getModel()->getMetabolites();
       for (i = 0; i < iMax;++i)
