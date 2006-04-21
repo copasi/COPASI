@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/31 13:30:43 $
+   $Date: 2006/04/21 13:18:24 $
    End CVS Header */
 
 #ifndef COPASI_CVector
@@ -78,12 +78,6 @@ template <class CType> class CVector
      * @return unsigned C_INT32 size
      */
     unsigned C_INT32 size() const {return mSize;}
-
-    /**
-     * The number of size of the vector.
-     * @return unsigned C_INT32 size
-     */
-    unsigned C_INT32 numSize() const {return mSize;}
 
     /**
      * Resize the vector. The previous content is lost

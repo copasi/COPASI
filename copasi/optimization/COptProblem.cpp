@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 22:02:30 $
+   $Author: shoops $ 
+   $Date: 2006/04/21 13:18:24 $
    End CVS Header */
 
 /**
@@ -556,7 +556,7 @@ void COptProblem::printResult(std::ostream * ostream) const
   {
     std::ostream & os = *ostream;
 
-    if (mSolutionVariables.numSize() == 0)
+    if (mSolutionVariables.size() == 0)
       {
         return;
       }

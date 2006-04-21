@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/15 01:50:40 $
+   $Date: 2006/04/21 13:18:24 $
    End CVS Header */
 
 #include "copasi.h"
@@ -478,7 +478,7 @@ void CFitProblem::printResult(std::ostream * ostream) const
   {
     std::ostream & os = *ostream;
 
-    if (mSolutionVariables.numSize() == 0)
+    if (mSolutionVariables.size() == 0)
       {
         return;
       }
