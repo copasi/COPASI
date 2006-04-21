@@ -1,25 +1,26 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/17 01:37:49 $
+   $Date: 2006/04/21 19:14:43 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
 
 #include <qtoolbar.h>
 #include <qprinter.h>
-
-#include "plotwindow.h"
-#include "CopasiPlot.h"
-#include "CPlotSpecification.h"
-
-#include "CopasiUI/qtUtilities.h"
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qcursor.h>
 #include <qregexp.h>
+
+#include "plotwindow.h"
+#include "CopasiPlot.h"
+#include "CPlotSpecification.h"
+#include "COutputHandlerPlot.h"
+
+#include "CopasiUI/qtUtilities.h"
 
 // taken from qwt examples/bode
 class PrintFilter: public QwtPlotPrintFilter
@@ -37,7 +38,7 @@ class PrintFilter: public QwtPlotPrintFilter
 
 //-----------------------------------------------------------------------------
 
-PlotWindow::PlotWindow(COutputHandler * pHandler, const CPlotSpecification* ptrSpec):
+PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* ptrSpec):
     mpPlot(NULL),
     mpHandler(pHandler)
 {

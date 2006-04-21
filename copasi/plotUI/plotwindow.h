@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/16 21:05:53 $
+   $Date: 2006/04/21 19:14:43 $
    End CVS Header */
 
 #include <fstream>
@@ -20,6 +20,7 @@ class CopasiPlot;
 class CPlotSpecification;
 class CPlotSpec2Vector;
 class CCopasiContainer;
+class COutputHandlerPlot;
 
 class PlotWindow : public QMainWindow, public COutputInterface
   {
@@ -29,10 +30,10 @@ class PlotWindow : public QMainWindow, public COutputInterface
 
     // points to the plot instance inside this window
     CopasiPlot *mpPlot;
-    COutputHandler *mpHandler;
+    COutputHandlerPlot *mpHandler;
 
   public:
-    PlotWindow(COutputHandler * pHandler, const CPlotSpecification* ptrSpec);
+    PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* ptrSpec);
 
     bool initFromSpec(const CPlotSpecification* ptrSpec);
 
