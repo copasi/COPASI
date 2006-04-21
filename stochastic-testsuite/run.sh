@@ -25,7 +25,7 @@ for MODEL in $MODELS;do
   SD_OUTFILE=${MODEL}-sd.RESULT
   SPECIESLIST=`getSpecies tests/${MODEL}-mean.csv`
   # run simulation 
-  echo "$WRAPPER $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $SPECIESLIST"
+  echo "$WRAPPER $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $OUTFILE $SPECIESLIST"
   # calculate mean and standard deviation
   echo "./calculate_statistics.py $OUTFILE $MEAN_OUTFILE $SD_OUTFILE $STEPNUMBER $NUM_REPEATS"
   # compare results
