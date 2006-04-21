@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/20 15:28:42 $
+   $Date: 2006/04/21 17:10:56 $
    End CVS Header */
 
 #include <fstream>
@@ -843,6 +843,9 @@ bool CExperiment::setFileName(const std::string & fileName)
 
 CExperimentObjectMap & CExperiment::getObjectMap()
 {return * mpObjectMap;}
+
+const CCopasiVector< CFittingPoint > & CExperiment::getFittingPoints() const
+  {return mFittingPoints;}
 
 const unsigned C_INT32 & CExperiment::getFirstRow() const
   {return *mpFirstRow;}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/20 15:28:42 $
+   $Date: 2006/04/21 17:10:56 $
    End CVS Header */
 
 #ifndef COPASI_CExperiment
@@ -248,6 +248,12 @@ class CExperiment: public CCopasiParameterGroup
      * @return CExperimentObjectMap & mpObjectMap
      */
     CExperimentObjectMap & getObjectMap();
+
+    /**
+     * Retrieve the list of fitting points
+     * @return const CCopasiVector< CFittingPoint > & fittingPoints
+     */
+    const CCopasiVector< CFittingPoint > & getFittingPoints() const;
 
     /**
      * This method needs to be called whenever the Object Map
