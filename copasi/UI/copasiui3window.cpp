@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.166 $
+   $Revision: 1.167 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/20 18:59:38 $
+   $Author: ssahle $ 
+   $Date: 2006/04/21 11:18:45 $
    End CVS Header */
 
 #include <qapplication.h>
@@ -647,17 +647,17 @@ void CopasiUI3Window::createMenuBar()
                "You can also select the <b>Save As</b> command "
                "from the <b>File</b> menu.</p>";
 
-  toolTip[4] = "Click this button to import a SBML file you "
+  toolTip[4] = "<p>Click this button to import a SBML file you "
                "are editing. You will be prompted for a file name.\n"
                "You can also select the <b>Import SBML</b> command "
                "from the <b>File</b> menu.</p>";
 
-  toolTip[5] = "Click this button to export a SBML file you "
+  toolTip[5] = "<p>Click this button to export a SBML file you "
                "are editing. You will be prompted for a file name.\n"
                "You can also select the <b>Export SBML</b> command "
                "from the <b>File</b> menu.</p>";
 
-  toolTip[7] = "Click this button to export the ODEs of the Mathematical Model. "
+  toolTip[6] = "<p>Click this button to export the ODEs of the Mathematical Model. "
                "You will be prompted for a file name.\n"
                "You can also select the <b>Export </b> command "
                "from the <b>File</b> menu.</p>";
