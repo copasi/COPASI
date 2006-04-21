@@ -25,11 +25,10 @@ for MODEL in $MODELS;do
   SD_OUTFILE=${MODEL}-sd.RESULT
   SPECIESLIST=`getSpecies tests/${MODEL}-mean.csv`
   # run simulation 
-  echo "$WRAPPER $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $OUTFILE $SPECIESLIST"
+  $WRAPPER $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $OUTFILE $SPECIESLIST
   # calculate mean and standard deviation
-  echo "./calculate_statistics.py $OUTFILE $MEAN_OUTFILE $SD_OUTFILE $STEPNUMBER $NUM_REPEATS"
+  ./calculate_statistics.py $OUTFILE $MEAN_OUTFILE $SD_OUTFILE $STEPNUMBER $NUM_REPEATS
   # compare results
-  echo "./compare_mean.sh ${MODEL}-mean.csv ${MODEL}-mean.RESULT
-  echo "./compare_sd.sh ${MODEL}-sd.csv ${MODEL}-sd.RESULT 
-
+  ./compare_mean.py ${MODEL}-mean.RESULT$ ${MODEL}-mean.csv ${MODEL}-sd.csv $NUM_REPEATS ${MODEL}-mean-compare.RESULT 
+  ./compare_sd.py ${MODEL}-sd.RESULT$ {MODEL}-sd.csv $NUM_REPEATS ${MODEL}-sd-compare.RESULT
 done
