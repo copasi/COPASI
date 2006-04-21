@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/20 15:28:42 $
+   $Date: 2006/04/21 19:15:56 $
    End CVS Header */
 
 #include <algorithm>
@@ -224,7 +224,7 @@ bool CExperimentSet::calculateStatistics()
         mDependentErrorMeanSD[i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
 
-  // :TODO: This is the time to call the output handler to plot the fitted points.
+  // This is the time to call the output handler to plot the fitted points.
   for (it = mpExperiments->begin(), imax = 0; it != end; ++it)
     imax = std::max(imax, (*it)->getDependentData().numRows());
 
