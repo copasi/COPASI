@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/21 17:13:10 $
+   $Date: 2006/04/21 19:17:16 $
    End CVS Header */
 
 #include "COutputAssistant.h"
@@ -357,6 +357,12 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
           CCopasiVector< CPlotItem >::const_iterator endItem = Items.end();
           it = FittingPoints.begin();
 
+          unsigned C_INT32 LineType;
+          if (pExperiment->getExperimentType() == CCopasiTask::timeCourse)
+            LineType = 0;
+          else
+            LineType = 2;
+
           while (itItem != endItem)
             {
               std::string Name = (*it++)->getObjectName();
@@ -370,7 +376,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
               const_cast< CPlotItem *>(*itItem)->setTitle(Name + "(Fitted Value)");
               const_cast< CPlotItem *>(*itItem)->setActivity(COutputInterface::AFTER);
-              const_cast< CPlotItem *>(*itItem++)->setValue("Line type", (unsigned C_INT32) 0);
+              const_cast< CPlotItem *>(*itItem++)->setValue("Line type", (unsigned C_INT32) LineType);
 
               const_cast< CPlotItem *>(*itItem)->setTitle(Name + "(Weighted Error)");
               const_cast< CPlotItem *>(*itItem)->setActivity(COutputInterface::AFTER);
