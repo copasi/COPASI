@@ -1,28 +1,30 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/OptimizationResultWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/02 02:21:43 $
+   $Date: 2006/04/21 13:34:32 $
    End CVS Header */
 
 #include <qpushbutton.h>
- #include <qlayout.h>
- #include <qtextedit.h>
- #include "copasi.h"
+#include <qlayout.h>
+#include <qtextedit.h>
+#include <qlabel.h>
+
+#include "copasi.h"
 
 #include "OptimizationResultWidget.h"
- #include "StateSubwidget.h" 
-//#include "OptimizationWidget.h"
+#include "StateSubwidget.h"
+#include "CTimeSeriesTable.h"
+#include "qtUtilities.h"
+
 #include "CopasiDataModel/CCopasiDataModel.h"
- #include "report/CKeyFactory.h"
- #include "steadystate/CSteadyStateTask.h"
- #include "model/CModel.h"
- #include "trajectory/CTrajectoryTask.h"
- #include "CTimeSeriesTable.h"
+#include "report/CKeyFactory.h"
+#include "steadystate/CSteadyStateTask.h"
+#include "model/CModel.h"
+#include "trajectory/CTrajectoryTask.h"
 
 //#include "report/CKeyFactory.h"
-#include "qtUtilities.h"
 
 /*
  *  Constructs a OptimizationResultWidget which is a child of 'parent', with the 
@@ -64,43 +66,73 @@ OptimizationResultWidget::OptimizationResultWidget(QWidget* parent, const char* 
 OptimizationResultWidget::~OptimizationResultWidget()
 {}
 
-/* This function loads the compartments widget when its name is
+/* This function loads the optimization result widget when its name is
   clicked in the tree   */
 bool OptimizationResultWidget::loadFromBackend()
 {
+  bool success = true;
   std::ostringstream os;
-  const COptProblem *opt;
 
-  CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();
+  CCopasiTask * pTask = (*CCopasiDataModel::Global->getTaskList())["Optimization"];
+  if (!pTask) return false;
 
-  unsigned C_INT32 p, pmax = TaskList.size();
-  for (p = 0; p < pmax; p++)
+  COptProblem * pProblem = dynamic_cast< COptProblem * >(pTask->getProblem());
+  if (!pProblem) return false;
+
+  // We need to use the solution and run Steady-State or Time-Course.
+  const CVector< C_FLOAT64 > & Solution = pProblem->getSolutionVariables();
+  const std::vector< UpdateMethod * > & SetCalculateVariable =
+    pProblem->getCalculateVariableUpdateMethods();
+
+  const C_FLOAT64 * pIt = Solution.array();
+  const C_FLOAT64 * pEnd = pIt + Solution.size();
+  std::vector< UpdateMethod * >::const_iterator itUpdate = SetCalculateVariable.begin();
+
+  success = (pIt != pEnd);
+
+  for (; pIt != pEnd; ++pIt, ++itUpdate) (**itUpdate)(*pIt);
+
+  if (success)
     {
-      opt = dynamic_cast< COptProblem *>(TaskList[ p ]->getProblem());
-      if (!opt) continue;
-      {
-        TaskList[ p ]->getProblem()->printResult(&os);
-        break;
-      }
+      pProblem->calculate();
+      success = (pProblem->getCalculateValue() != DBL_MAX);
     }
+
+  if (success)
+    pProblem->printResult(&os);
+  else
+    os << "<h2>No result available, please execute the optimization task.</h2>";
 
   if (mCentralWidgetSteady == NULL)
     {
       mCentralWidgetTime->table()->setTimeSeries(dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"])->getTimeSeries());
       mCentralWidgetTime->optimizationResultText->setText(FROM_UTF8(os.str()));
-      return true;
     }
   else
     {
-      CSteadyStateTask * pSteadyStateTask = dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
-      //mCentralWidgetSteady->loadAll(pSteadyStateTask);
-      mCentralWidgetSteady->showUnits();
+      CSteadyStateTask * pSteadyStateTask =
+        dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
 
-      if (!pSteadyStateTask) return false;
-      if (!pSteadyStateTask->getState()) return mCentralWidgetSteady->clear();
+      mCentralWidgetSteady->showUnits();
       mCentralWidgetSteady->optimizationResultText->setText(FROM_UTF8(os.str()));
-      return mCentralWidgetSteady->loadAll(pSteadyStateTask);
+
+      if (!pSteadyStateTask || !success || !pSteadyStateTask->getState())
+        {
+          mCentralWidgetSteady->clear();
+          success = false;
+        }
+      else
+        success = mCentralWidgetSteady->loadAll(pSteadyStateTask);
     }
+
+  try
+    {
+      if (Solution.size()) pProblem->restore(pTask->isUpdateModel());
+    }
+
+catch (...) {}
+
+  return success;
 }
 
 bool OptimizationResultWidget::saveToBackend()
@@ -141,34 +173,3 @@ void OptimizationResultWidget::runSetInitialState()
   if (currentState)
     CCopasiDataModel::Global->getModel()->setInitialState(*currentState);
 }
-
-/*
-//========================
-bool TimeSeriesWidget::loadFromBackend()
-{
-  mCentralWidget->table()->setTimeSeries(dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"])->getTimeSeries());
-  return true;
-}
- 
-bool TimeSeriesWidget::saveToBackend()
-{
-  return true;
-}
- 
-bool TimeSeriesWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
-{
-  if (this->isShown())
-    return loadFromBackend();
-  else
-    return true;
-}
- 
-bool TimeSeriesWidget::leave()
-{
-  return true;
-}
- 
-bool TimeSeriesWidget::enter(const std::string & C_UNUSED(key))
-{
-  return loadFromBackend();
-}*/

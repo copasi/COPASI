@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/30 19:05:29 $
+   $Date: 2006/04/21 13:34:32 $
    End CVS Header */
 
 /****************************************************************************
@@ -232,20 +232,22 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
     dynamic_cast<const CSteadyStateProblem *>(task->getProblem());
   assert(pProblem);
 
+  int Last = tabWidget->count() - 1;
+
   if (pProblem->isJacobianRequested() ||
       pProblem->isStabilityAnalysisRequested())
     {
-      tabWidget->setTabEnabled(tabWidget->page(3), true);
-      tabWidget->setTabEnabled(tabWidget->page(4), true);
-      tabWidget->setTabEnabled(tabWidget->page(5), true);
+      tabWidget->setTabEnabled(tabWidget->page(Last - 2), true);
+      tabWidget->setTabEnabled(tabWidget->page(Last - 1), true);
+      tabWidget->setTabEnabled(tabWidget->page(Last), true);
       loadJacobian(task);
     }
 
   else
     {
-      tabWidget->setTabEnabled(tabWidget->page(3), false);
-      tabWidget->setTabEnabled(tabWidget->page(4), false);
-      tabWidget->setTabEnabled(tabWidget->page(5), false);
+      tabWidget->setTabEnabled(tabWidget->page(Last - 2), false);
+      tabWidget->setTabEnabled(tabWidget->page(Last - 1), false);
+      tabWidget->setTabEnabled(tabWidget->page(Last), false);
     }
 
   return true;
