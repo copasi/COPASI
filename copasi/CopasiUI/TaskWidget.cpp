@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TaskWidget.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/20 15:28:06 $
+   $Date: 2006/04/21 14:27:39 $
    End CVS Header */
 
 #include <qcheckbox.h>
@@ -376,6 +376,8 @@ bool TaskWidget::commonAfterRunTask()
       pdelete(mProgressBar);
     }
   mpTask->setCallBack(NULL);
+
+  CCopasiMessage::clearDeque();
 
   CCopasiDataModel::Global->finish();
   protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
