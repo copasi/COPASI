@@ -33,7 +33,9 @@ for X in range(2,len(MEAN)):
         sys.exit(1)
     RESULT=str(X-1)+","
     for Y in range(0,NUMCOLUMNS-1):
-       v=(float(MEAN_COLS[Y])-float(REF_MEAN_COLS[Y]))/float(REF_SD_COLS[Y])*math.sqrt(REPEATS) 
+       v=0.0
+       if(REF_SD_COLS[Y]!=0.0):
+         v=((float(MEAN_COLS[Y])-float(REF_MEAN_COLS[Y]))/float(REF_SD_COLS[Y]))*math.sqrt(REPEATS) 
        if(math.fabs(v)>=3.0):
           print "ERROR: Value of %f to hight at %s line %d."%(v,MEAN_FILE,X) 
           EXIT_STATUS=1
