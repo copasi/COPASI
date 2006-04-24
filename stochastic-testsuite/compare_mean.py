@@ -14,8 +14,10 @@ MEAN=file(MEAN_FILE,"r").readlines()
 REFERENCE_MEAN=file(REFERENCE_MEAN_FILE,"r").readlines()
 REFERENCE_SD=file(REFERENCE_SD_FILE,"r").readlines()
 
+EXIT_STATUS=0
+
 if(len(REFERENCE_MEAN)!=len(REFERENCE_SD) or len(MEAN) != len(REFERENCE_MEAN)):
-    print "Error. The input files don't have the same number of lines."
+    print "ERROR: The input files don't have the same number of lines."
     sys.exit(1)
 
 NUMCOLUMNS=len(string.split(MEAN[1],","))
@@ -26,15 +28,17 @@ for X in range(2,len(MEAN)):
     REF_SD_COLS=string.split(REFERENCE_SD[X],",")[1:]
     MEAN_COLS=string.split(MEAN[X],",")[1:]
     if(len(REF_MEAN_COLS)!=len(REF_SD_COLS) or len(MEAN_COLS) != len(REF_MEAN_COLS)):
-        print "Error. Number of columns differs between files at line",Y
+        print "ERROR: Number of columns differs between files at line",Y
         OUT.close()
         sys.exit(1)
     RESULT=str(X-1)+","
     for Y in range(0,NUMCOLUMNS-1):
        v=(float(MEAN_COLS[Y])-float(REF_MEAN_COLS[Y]))/float(REF_SD_COLS[Y])*math.sqrt(REPEATS) 
        if(math.fabs(v)>=3.0):
-          print "Warning. Value to hight at %s line %d."%(MEAN_FILE,X) 
+          print "ERROR: Value of %f to hight at %s line %d."%(v,MEAN_FILE,X) 
+          EXIT_STATUS=1
        RESULT=string.join([RESULT,str(v)],",")
     RESULT=RESULT+"\n"
     OUT.write(RESULT)   
 OUT.close()    
+sys.exit(EXIT_STATUS)

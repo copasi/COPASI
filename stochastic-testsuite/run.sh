@@ -3,17 +3,17 @@
 
 TESTSDIR=./tests
 
-#HEAD=/usr/bin/head
-#CUT=/usr/bin/cut
-#SED=/usr/bin/sed
+HEAD=/usr/bin/head
+CUT=/usr/bin/cut
+SED=/bin/sed
 
-HEAD=/sw/bin/head
-CUT=/sw/bin/cut
-SED=/sw/bin/sed
+#HEAD=/sw/bin/head
+#CUT=/sw/bin/cut
+#SED=/sw/bin/sed
 
-#WRAPPER=./stochastic-testsuite
+WRAPPER=./stochastic-testsuite
 
-WRAPPER=`pwd`/stochastic-testsuite.app/Contents/MacOS/stochastic-testsuite
+#WRAPPER=`pwd`/stochastic-testsuite.app/Contents/MacOS/stochastic-testsuite
 
 # go over all models in tests/model-list
 #MODELS=`cat tests/model-list`
