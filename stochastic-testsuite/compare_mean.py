@@ -35,9 +35,12 @@ for X in range(2,len(MEAN)):
     for Y in range(0,NUMCOLUMNS-1):
        v=0.0
        if(REF_SD_COLS[Y]!=0.0):
-         v=((float(MEAN_COLS[Y])-float(REF_MEAN_COLS[Y]))/float(REF_SD_COLS[Y]))*math.sqrt(REPEATS) 
+         try:
+           v=((float(MEAN_COLS[Y])-float(REF_MEAN_COLS[Y]))/float(REF_SD_COLS[Y]))*math.sqrt(REPEATS) 
+         except:
+           print "EXCEPTION: MEAN_COLS[Y]=%f REF_MEAN_COLS[Y]=%f REF_SD_COLS[Y]=%f REPEATS=%d"%(MEAN_COLS[Y],REF_MEAN_COLS[Y],REF_SD_COLS[Y],REPEATS)
        if(math.fabs(v)>=3.0):
-          print "ERROR: Value of %f to hight at %s line %d."%(v,MEAN_FILE,X) 
+          print "ERROR: Value of %f to high at %s line %d."%(v,MEAN_FILE,X) 
           EXIT_STATUS=1
        RESULT=string.join([RESULT,str(v)],",")
     RESULT=RESULT+"\n"

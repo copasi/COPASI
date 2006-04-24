@@ -32,9 +32,12 @@ for X in range(2,len(SD)):
     for Y in range(0,NUMCOLUMNS-1):
        v=0.0
        if(REF_SD_COLS[Y]!=0.0):
-         v=(math.pow(float(SD_COLS[Y]),2)/math.pow(float(REF_SD_COLS[Y]),2)-1.0)*math.sqrt(REPEATS/2.0)
+         try:
+           v=(math.pow(float(SD_COLS[Y]),2)/math.pow(float(REF_SD_COLS[Y]),2)-1.0)*math.sqrt(REPEATS/2.0)
+         except:
+           print "EXCEPTION: SD_COLS[Y]=%f REF_SD_COLS[Y]=%f REPEATS=%d"%(SD_COLS[Y],REF_SD_COLS[Y],REPEATS)
        if(math.fabs(v)>=5.0):
-          print "ERROR: Value of %f to hight at %s line %d."%(v,SD_FILE,X) 
+          print "ERROR: Value of %f to high at %s line %d."%(v,SD_FILE,X) 
           EXIT_STATUS=1
        RESULT=string.join([RESULT,str(v)],",")
     RESULT=RESULT+"\n"
