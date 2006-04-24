@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: gauges $ 
-   $Date: 2006/04/21 14:05:23 $
+   $Date: 2006/04/24 14:18:25 $
    End CVS Header */
 
 #define COPASI_MAIN
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
   {}
   if (argc < 5)
     {
-      std::cout << "Usage: semantic-test-suite SBMLFILENAME ENDTIME STEPNUMBER OUTFILENAME TMPDIR SPECIESID1 SPECIESID2 ..." << std::endl;
+      std::cout << "Usage: stochastic-testsuite SBMLFILENAME ENDTIME STEPNUMBER REPEATS OUTFILENAME SPECIESID1 SPECIESID2 ..." << std::endl;
       exit(1);
     }
   char* pSBMLFilename = argv[1];
@@ -60,8 +60,15 @@ int main(int argc, char *argv[])
   char* pStepNumber = argv[3];
   char* pRepeats = argv[4];
   char* pOutputFilename = argv[5];
-  //char* pTmpDirectory=argv[5];
-  char** pSBMLSpeciesIds = new char * [argc - 6];
+  unsigned int NUMARGS = 6;
+  /*
+  std::cout << "Input : " << pSBMLFilename << std::endl;
+  std::cout << "Endtime : " << pEndTime << std::endl;
+  std::cout << "Stepnumber: " << pStepNumber << std::endl;
+  std::cout << "Repeats : " << pRepeats << std::endl;
+  std::cout << "Output file: " << pOutputFilename << std::endl;
+  */
+  char** pSBMLSpeciesIds = new char * [argc - NUMARGS];
   unsigned int i, iMax = argc;
   CTrajectoryTask* pTrajectoryTask = NULL;
   CScanTask* pScanTask = NULL;
@@ -81,9 +88,9 @@ int main(int argc, char *argv[])
       exit(1);
     }
 
-  for (i = 5; i < iMax;++i)
+  for (i = NUMARGS; i < iMax;++i)
     {
-      pSBMLSpeciesIds[i - 6] = argv[i];
+      pSBMLSpeciesIds[i - NUMARGS] = argv[i];
       //std::cout << "Copying pointer to " <<  argv[i]  << "." << std::endl;
     }
 
@@ -109,7 +116,7 @@ int main(int argc, char *argv[])
 
       std::vector<CRegisteredObjectName>* pTable = pReport->getTableAddr();
       pTable->push_back(CCopasiObjectName(CCopasiDataModel::Global->getModel()->getCN() + ",Reference=Time"));
-      iMax = iMax - 6;
+      iMax = iMax - NUMARGS;
       const CCopasiVector<CMetab>& metabolites = CCopasiDataModel::Global->getModel()->getMetabolites();
       for (i = 0; i < iMax;++i)
         {
@@ -125,7 +132,7 @@ int main(int argc, char *argv[])
             }
           if (j == jMax)
             {
-              std::cerr << "Could not find a metabolite for the SBML id " << pSBMLSpeciesIds[i] << std::endl;
+              std::cerr << "Could not find a metabolite for the SBML id \"" << pSBMLSpeciesIds[i] << "\"" << std::endl;
               exit(1);
             }
         }
