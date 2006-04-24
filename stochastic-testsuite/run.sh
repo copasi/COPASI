@@ -50,15 +50,23 @@ for MODEL in $MODELS;do
   # run simulation 
   if [ -e $INFILE ] ; then
     #echo "$WRAPPER $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $OUTFILE $SPECIESLIST"
+    rm -f $OUTFILE
     $WRAPPER $INFILE $ENDTIME $STEPNUMBER $NUM_REPEATS $OUTFILE $SPECIESLIST || RESULT="failed" ;
+    if [ "e$RESULT" == "efailed" ] ; then
+      echo "ERROR: Simulation failed.";
+      rm -f $OUTFILE;
+    fi  
     if [ -e $OUTFILE ] ; then
       # calculate mean and standard deviation
+      rm -f $MEAN_OUTFILE $SD_OUTFILE
       ./calculate_statistics.py $OUTFILE $MEAN_OUTFILE $SD_OUTFILE $STEPNUMBER $NUM_REPEATS || RESULT="failed" ;
       # compare results
       if [ -e ${MEAN_OUTFILE} ] ; then
         if [ -e ${SD_REFERENCE_FILE} ] ; then 
           if [ -e ${MEAN_REFERENCE_FILE} ] ; then
+             rm -f ${TESTSDIR}/${MODEL}-mean-compare.RESULT 
              ./compare_mean.py ${MEAN_OUTFILE} ${MEAN_REFERENCE_FILE} ${SD_REFERENCE_FILE} $NUM_REPEATS ${TESTSDIR}/${MODEL}-mean-compare.RESULT || RESULT="failed"; 
+             rm -f ${TESTSDIR}/${MODEL}-sd-compare.RESULT 
              ./compare_sd.py ${SD_OUTFILE} ${TESTSDIR}/${MODEL}-sd.csv $NUM_REPEATS ${TESTSDIR}/${MODEL}-sd-compare.RESULT || RESULT="failed";
           else
             echo "Error. Could not find file \"${MEAN_REFERENCE_FILE}\"";
