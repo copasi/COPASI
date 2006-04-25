@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/12 14:35:01 $
+   $Author: jpahle $ 
+   $Date: 2006/04/25 08:46:04 $
    End CVS Header */
 
 /**
@@ -75,14 +75,14 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * C_UNUSED(p
 
   switch (result)
     {
-      /*    case - 3:          // non-integer stoichometry
+      /*    case - 3:         // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:          // reversible reaction exists
+      case - 2:         // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
 
-      case - 1:          // more than one compartment involved
+      case - 1:         // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/
     case 1:
@@ -105,7 +105,7 @@ void CHybridMethod::step(const double & deltaT)
   unsigned C_INT32 imax;
 
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++)
-    if (mpProblem->getModel()->getMetabolites()[i]->getValue() >= mMaxIntBeforeStep)
+    if (mpProblem->getModel()->getMetabolitesX()[i]->getValue() >= mMaxIntBeforeStep)
       {
         // throw exception or something like that
       }
@@ -125,7 +125,7 @@ void CHybridMethod::step(const double & deltaT)
   /* Set the variable metabolites */
   C_FLOAT64 * Dbl = mpCurrentState->beginIndependent();
   for (i = 0, imax = mpProblem->getModel()->getNumVariableMetabs(); i < imax; i++, Dbl++)
-    *Dbl = mpProblem->getModel()->getMetabolites()[i]->getValue();
+    *Dbl = mpProblem->getModel()->getMetabolitesX()[i]->getValue();
 
   return;
 }
@@ -187,7 +187,7 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   mAmu.resize(mpReactions->size());
   mAmuOld.clear();
   mAmuOld.resize(mpReactions->size());
-  mpMetabolites = &(const_cast < CCopasiVector < CMetab > & > (mpModel->getMetabolites()));
+  mpMetabolites = &(const_cast < CCopasiVector < CMetab > & > (mpModel->getMetabolitesX()));
   mNumVariableMetabs = mpModel->getNumVariableMetabs(); // ind + dep metabs, without fixed metabs
 
   temp.clear();
@@ -220,7 +220,7 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   mRandomSeed = * getValue("HYBRID.RandomSeed").pUINT;
   //std::cout << "HYBRID.RandomSeed: " << mRandomSeed << std::endl;
   if (mUseRandomSeed) mpRandomGenerator->initialize(mRandomSeed);
-  mStoi = mpModel->getStoi();
+  mStoi = mpModel->getStoiReordered();
   mStepsAfterPartitionSystem = 0;
   mUpdateSet.clear();
 
@@ -680,7 +680,7 @@ void CHybridMethod::updateTauMu(C_INT32 rIndex, C_FLOAT64 time)
 C_INT32 CHybridMethod::checkModel(CModel * model)
 {
   CCopasiVectorNS <CReaction> * mpReactions = &model->getReactions();
-  CMatrix <C_FLOAT64> mStoi = model->getStoi();
+  CMatrix <C_FLOAT64> mStoi = model->getStoiReordered();
   C_INT32 i, multInt, numReactions = mpReactions->size();
   unsigned C_INT32 j;
   C_FLOAT64 multFloat;
