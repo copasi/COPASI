@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.116 $
+   $Revision: 1.117 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/25 13:20:34 $
+   $Date: 2006/04/25 17:50:40 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -887,12 +887,6 @@ class CModel : public CModelEntity
      * @return CVector< unsigned C_INT32 > & permutation
      */
     const CVector< unsigned C_INT32 > & getMetabolitePermutation() const;
-
-    /**
-     * calculate rates, fluxes, and transition times.
-     * this can be called after setState() / setStateX()
-     */
-    void updateRates();
 
     /**
      * Retreive the state template

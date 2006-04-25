@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/20 15:26:27 $
+   $Date: 2006/04/25 17:50:41 $
    End CVS Header */
 
 /**
@@ -279,7 +279,7 @@ void CCopasiTask::output(const COutputInterface::Activity & activity)
   switch (activity)
     {
     case COutputInterface::DURING:
-        if (mDoOutput)
+        if (mDoOutput != NO_OUTPUT)
           CCopasiDataModel::Global->output(activity);
       break;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.255 $
+   $Revision: 1.256 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/25 13:20:34 $
+   $Date: 2006/04/25 17:50:40 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1074,31 +1074,6 @@ bool CModel::buildStateTemplate()
   mElasticities.resize(mSteps.size(), mStateTemplate.getNumVariable());
 
   return true;
-}
-
-void CModel::updateRates()
-{
-  //  assert (false); // :TODO:
-  // A call to applyAssignments must have bee made prior to
-  // a call to updateRates
-  CCHECK
-  // calculateReactions();
-
-  // Calculate ydot = Stoi * v
-  unsigned C_INT32 i, imax = mStoi.numRows();
-  unsigned C_INT32 j, jmax = mStoi.numCols();
-  C_FLOAT64 tmp;
-
-  for (i = 0; i < imax; ++i)
-    {
-      tmp = 0.0;
-      for (j = 0; j < jmax; ++j)
-        tmp += mStoi(i, j) * mParticleFluxes[j];
-
-      mMetabolites[i]->setRate(tmp);
-    }
-
-  setTransitionTimes();
 }
 
 const CState & CModel::getInitialState() const

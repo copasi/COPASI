@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 22:08:24 $
+   $Author: shoops $ 
+   $Date: 2006/04/25 17:50:40 $
    End CVS Header */
 
 /**
@@ -162,7 +162,7 @@ bool CSensMethod::doOneCalculation()
   if (true)
     {
       mpProblem->getModel()->applyAssignments();
-      mpProblem->getModel()->updateRates();
+      mpProblem->getModel()->refreshRates();
     }
 
   //subtask

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/20 18:22:09 $
+   $Date: 2006/04/25 17:50:40 $
    End CVS Header */
 
 /**
@@ -217,7 +217,8 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
 
   pModel->setState(*pState);
   pModel->applyAssignments();
-  pModel->updateRates();
+  pModel->refreshRates();
+  pModel->setTransitionTimes();
 
   // Metabolite Info: Name, Concentration, Concentration Rate, Particle Number, Particle Rate, Transition Time
   const CCopasiVector<CMetab> & Metabolites = pModel->getMetabolites();

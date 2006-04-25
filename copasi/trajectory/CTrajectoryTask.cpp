@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/21 19:12:32 $
+   $Date: 2006/04/25 17:50:41 $
    End CVS Header */
 
 /**
@@ -334,8 +334,7 @@ const CTimeSeries & CTrajectoryTask::getTimeSeries() const
 
 void CTrajectoryTask::output(const COutputInterface::Activity & activity)
 {
-  if (mDoOutput != NO_OUTPUT)
-    CCopasiDataModel::Global->output(activity);
+  CCopasiDataModel::Global->output(activity);
 
   if (mTimeSeriesRequested && mDoOutput == OUTPUT_COMPLETE)
     switch (activity)
