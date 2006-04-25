@@ -16,19 +16,22 @@ BEGIN {
     if ($0 !~ ".*Begin CVS Header.*") {
       printf "/* Begin CVS Header\n"
       printf "    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/c++style,v $\n"
-      printf "    $Revision: 1.19 $\n"
+      printf "    $Revision: 1.20 $\n"
       printf "    $Name:  $\n"
       printf "    $Author: shoops $ \n"
-      printf "    $Date: 2005/08/30 16:36:51 $\n"
+      printf "    $Date: 2006/04/25 20:51:05 $\n"
       printf "    End CVS Header */\n\n"
+      printf " Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual\n"
+      printf " Properties, Inc. and EML Research, gGmbH.\n"
+      printf " All rights reserved.\n\n"
       print $0
     } else {
       print $0
     } 
     CheckCVSHeader = 2
   } else if (CheckCVSHeader == 2) {
-    if ($0 ~ "End CVS Header.*") {
-      printf "    End CVS Header */\n\n"
+    if ($0 ~ " All rights reserved") {
+      printf " All rights reserved.\n"
       CheckCVSHeader = 0
     } else {
       printf " %s\n", $0
