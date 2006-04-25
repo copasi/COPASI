@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/07 12:37:08 $
+   $Author: shoops $ 
+   $Date: 2006/04/25 16:04:01 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeObject
@@ -121,6 +121,12 @@ class CEvaluationNodeObject : public CEvaluationNode
      * @return ASTNode the resulting ASTNode.
      */
     virtual ASTNode* toAST() const;
+
+    /**
+     * Retreive the CN of the referred object.
+     * @return const CRegisteredObjectName & objectCN
+     */
+    const CRegisteredObjectName & getObjectCN() const;
 
     //Attributes
   private:

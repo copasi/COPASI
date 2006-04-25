@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/25 12:43:28 $
+   $Date: 2006/04/25 16:04:01 $
    End CVS Header */
 
 #include "copasi.h"
@@ -164,3 +164,6 @@ ASTNode* CEvaluationNodeObject::toAST() const
       }
     return node;
   }
+
+const CRegisteredObjectName & CEvaluationNodeObject::getObjectCN() const
+  {return mRegisteredObjectCN;}

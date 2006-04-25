@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/10 21:55:32 $
+   $Date: 2006/04/25 16:04:01 $
    End CVS Header */
 
 #ifndef COPASI_CEvaluationNodeCall
@@ -139,6 +139,12 @@ class CEvaluationNodeCall : public CEvaluationNode
      * @return bool Success
      */
     virtual bool removeChild(CCopasiNode< Data > * pChild);
+
+    /**
+     * Retreive the tree which is called from this node
+     * @return const CEvaluationTree * calledTree
+     */
+    const CEvaluationTree * getCalledTree() const;
 
   private:
     /**

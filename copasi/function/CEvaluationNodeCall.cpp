@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/10 21:55:32 $
+   $Date: 2006/04/25 16:04:01 $
    End CVS Header */
 
 #include <sbml/math/ASTNode.h>
@@ -108,7 +108,8 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
         dynamic_cast<CExpression *>(CCopasiDataModel::Global->getFunctionList()->findFunction(mData));
       if (!mpExpression)
         {
-          // We may have a function with no arguments
+          // We may have a function with no arguments the parser is not able to destinguish
+          // between that and an expression.
           mpFunction =
             dynamic_cast<CFunction *>(CCopasiDataModel::Global->getFunctionList()->findFunction(mData));
           if (!mpFunction) return false;
@@ -352,3 +353,18 @@ CEvaluationNodeCall::verifyParameters(const std::vector<CEvaluationNode *> & vec
 
   return true;
 }
+
+const CEvaluationTree * CEvaluationNodeCall::getCalledTree() const
+  {
+    switch (mType & 0x00FFFFFF)
+      {
+      case FUNCTION:
+        return mpFunction;
+
+      case EXPRESSION:
+        return mpExpression;
+
+      default:
+        return NULL;
+      }
+  }

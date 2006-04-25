@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/22 14:08:36 $
+   $Date: 2006/04/25 16:04:02 $
    End CVS Header */
 
 /**
@@ -347,7 +347,16 @@ class COptProblem : public CCopasiProblem
      */
     CExpression * mpFunction;
 
+    /**
+     * A vector of update method to the values of the optimization items.
+     */
     std::vector< UpdateMethod * > mUpdateMethods;
+
+    /**
+     * A vector of refresh methods which need to be called retreive the value
+     * of the objective function.
+     */
+    std::vector< Refresh * > mRefreshMethods;
 
     /**
      * A vector of results for calculate

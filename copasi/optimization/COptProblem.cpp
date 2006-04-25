@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/21 13:18:24 $
+   $Date: 2006/04/25 16:04:02 $
    End CVS Header */
 
 /**
@@ -55,6 +55,7 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
     mpTrajectory(NULL),
     mpFunction(NULL),
     mUpdateMethods(),
+    mRefreshMethods(),
     mCalculateValue(0),
     mSolutionVariables(),
     mOriginalVariables(),
@@ -84,6 +85,7 @@ COptProblem::COptProblem(const COptProblem& src,
     mpTrajectory(src.mpTrajectory),
     mpFunction(NULL),
     mUpdateMethods(),
+    mRefreshMethods(),
     mCalculateValue(src.mCalculateValue),
     mSolutionVariables(src.mSolutionVariables),
     mOriginalVariables(src.mOriginalVariables),
@@ -286,9 +288,12 @@ bool COptProblem::initialize()
 
   if (!mpFunction || !mpFunction->compile(ContainerList))
     {
+      mRefreshMethods.clear();
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
       return false;
     }
+
+  mRefreshMethods = CCopasiObject::buildUpdateSequence(mpFunction->getDirectDependencies());
 
   return success;
 }
@@ -360,6 +365,11 @@ bool COptProblem::calculate()
           //setInitialState(mpTrajectory->getProblem()->getModel()->getInitialState());
           success = mpTrajectory->process(true);
         }
+
+      std::vector< Refresh *>::const_iterator it = mRefreshMethods.begin();
+      std::vector< Refresh *>::const_iterator end = mRefreshMethods.end();
+      for (; it != end; ++it)
+        (**it)();
 
       mCalculateValue = mpFunction->calcValue();
     }
