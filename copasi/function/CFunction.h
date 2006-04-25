@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: ssahle $ 
-   $Date: 2006/03/09 20:43:50 $
+   $Date: 2006/04/25 12:33:08 $
    End CVS Header */
 
 #ifndef COPASI_CFunction
@@ -167,6 +167,12 @@ class CFunction:
                              const std::vector<std::vector<std::string> > & env,
                              bool expand = true, bool fullExpand = true,
                              unsigned C_INT32 l = 0) const;
+
+    /**
+     *  create a list of the names of the function parameters in mathml format.
+     *  this list can be passed as the env argument to the writeMathML() method
+     */
+    void createListOfParametersForMathML(std::vector<std::vector<std::string> > & env);
   };
 
 #include "CKinFunction.h"

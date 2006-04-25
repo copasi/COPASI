@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/15 20:59:04 $
+   $Author: ssahle $ 
+   $Date: 2006/04/25 12:33:08 $
    End CVS Header */
 
 #include "copasi.h"
@@ -209,6 +209,19 @@ bool CFunction::isSuitable(const unsigned C_INT32 noSubstrates,
 }
 
 #include "utilities/copasimathml.h"
+
+void CFunction::createListOfParametersForMathML(std::vector<std::vector<std::string> > & env)
+{
+  unsigned C_INT32 i, imax = getVariables().size();
+
+  env.clear();
+  env.resize(imax);
+
+  for (i = 0; i < imax; ++i)
+    {
+      env[i].push_back("<mi>" + getVariables()[i]->getObjectName() + "</mi>");
+    }
+}
 
 void CFunction::writeMathML(std::ostream & out,
                             const std::vector<std::vector<std::string> > & env,
