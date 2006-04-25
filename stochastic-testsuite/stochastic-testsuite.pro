@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.1 $ $Author: gauges $ $Date: 2006/04/21 12:26:01 $  
+# $Revision: 1.2 $ $Author: ssahle $ $Date: 2006/04/25 11:56:31 $  
 ######################################################################
 
 TEMPLATE = app
@@ -18,7 +18,6 @@ COPASI_LIBS = \
          elementaryFluxModes \
          fitting \
          function \
-         mathmodel \
          model \
          optimization \
          plot \
