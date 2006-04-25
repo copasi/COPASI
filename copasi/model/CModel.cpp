@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.253 $
+   $Revision: 1.254 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 21:59:19 $
+   $Author: jpahle $ 
+   $Date: 2006/04/25 08:46:56 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -949,6 +949,12 @@ const CMatrix < C_FLOAT64 >& CModel::getRedStoi() const
  */
 const CMatrix < C_FLOAT64 >& CModel::getStoi() const
   {CCHECK return mStoi;}
+
+/**
+ *  Get the reordered stoichiometry matrix of this model
+ */
+const CMatrix < C_FLOAT64 >& CModel::getStoiReordered() const
+  {CCHECK return mStoiReordered;}
 
 const CCopasiVector < CMoiety > & CModel::getMoieties() const
   {return mMoieties;}
