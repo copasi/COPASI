@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 22:06:02 $
+   $Author: shoops $ 
+   $Date: 2006/04/25 13:20:35 $
    End CVS Header */
 
 /**
@@ -15,6 +15,7 @@
  */
 
 #include <sstream>
+#include <algorithm>
 
 #include "copasi.h"
 #include "CCopasiObjectName.h"
@@ -208,15 +209,18 @@ CCopasiObject::getObjectAncestor(const std::string & type) const
     return NULL;
   }
 
-const std::set< CCopasiObject * > & CCopasiObject::getDirectDependencies() const
-{return mDependencies;}
+void CCopasiObject::setDirectDependencies(const std::set< const CCopasiObject * > & directDependencies)
+{mDependencies = directDependencies;}
 
-void CCopasiObject::getAllDependencies(std::set< CCopasiObject * > & dependencies) const
+const std::set< const CCopasiObject * > & CCopasiObject::getDirectDependencies() const
+  {return mDependencies;}
+
+void CCopasiObject::getAllDependencies(std::set< const CCopasiObject * > & dependencies) const
   {
-    std::set< CCopasiObject * >::const_iterator it = mDependencies.begin();
-    std::set< CCopasiObject * >::const_iterator end = mDependencies.end();
+    std::set< const CCopasiObject * >::const_iterator it = mDependencies.begin();
+    std::set< const CCopasiObject * >::const_iterator end = mDependencies.end();
 
-    std::pair<std::set< CCopasiObject * >::iterator, bool> Inserted;
+    std::pair<std::set< const CCopasiObject * >::iterator, bool> Inserted;
 
     for (; it != end; ++it)
       {
@@ -234,8 +238,8 @@ void CCopasiObject::getAllDependencies(std::set< CCopasiObject * > & dependencie
 
 bool CCopasiObject::hasCircularDependencies(std::set<const CCopasiObject * > & candidates) const
   {
-    std::set< CCopasiObject * >::const_iterator it = mDependencies.begin();
-    std::set< CCopasiObject * >::const_iterator end = mDependencies.end();
+    std::set< const CCopasiObject * >::const_iterator it = mDependencies.begin();
+    std::set< const CCopasiObject * >::const_iterator end = mDependencies.end();
 
     std::pair<std::set< const CCopasiObject * >::iterator, bool> Inserted;
 
@@ -243,7 +247,7 @@ bool CCopasiObject::hasCircularDependencies(std::set<const CCopasiObject * > & c
     Inserted = candidates.insert(this);
 
     // Check whether the insert was successfull, if not
-    // the object this was among the candidates. Thus we have a dedected
+    // the object "this" was among the candidates. Thus we have a dedected
     // a circular dependency
     if (!Inserted.second) return true;
 
@@ -257,18 +261,83 @@ bool CCopasiObject::hasCircularDependencies(std::set<const CCopasiObject * > & c
     return false;
   }
 
-bool CCopasiObject::operator < (const CCopasiObject * rhs) const
-  {
-    if (this != rhs)
-      {
-        std::set< const CCopasiObject * > Candidates;
-        Candidates.insert(this);
+//static
+std::vector< Refresh * >
+CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & objects)
+{
+  std::set< const CCopasiObject * > DependencySet;
 
-        return rhs->hasCircularDependencies(Candidates);
+  std::set< const CCopasiObject * >::const_iterator itSet;
+  std::set< const CCopasiObject * >::const_iterator endSet = objects.end();
+  std::pair<std::set< const CCopasiObject * >::iterator, bool> InsertedObject;
+
+  // Check whether we have any circular dependencies
+  for (itSet = objects.begin(); itSet != endSet; ++itSet)
+    if ((*itSet)->hasCircularDependencies(DependencySet))
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCObject + 1, (*itSet)->getCN().c_str());
+
+  // Build the complete set of dependencies
+  for (itSet = objects.begin(); itSet != endSet; ++itSet)
+    {
+      // At least the object itself needs to be up to date.
+      InsertedObject = DependencySet.insert(*itSet);
+
+      // Add all its dependencies
+      if (InsertedObject.second)
+        (*itSet)->getAllDependencies(DependencySet);
+    }
+
+  // The following fails to compile under Visual C++ 6.0 though
+  // it is according to the stl specifications.
+  // std::vector< const CCopasiObject * > DependencyVector(DependencySet.begin(), DependencySet.end());
+
+  std::vector< const CCopasiObject * > DependencyVector(DependencySet.size());
+  std::vector< const CCopasiObject * >::iterator itVector = DependencyVector.begin();
+  std::vector< const CCopasiObject * >::iterator endVector = DependencyVector.end();
+
+  itSet = DependencySet.begin();
+  endSet = DependencySet.end();
+  for (; itSet != endSet; ++itSet, ++itVector)
+    *itVector = *itSet;
+
+  std::sort(DependencyVector.begin(), DependencyVector.end(), CCopasiObject::compare);
+
+  Refresh * pRefresh;
+  std::vector< Refresh * > UpdateVector;
+  std::vector< Refresh * >::const_iterator itUpdate;
+  std::vector< Refresh * >::const_iterator endUpdate;
+
+  for (itVector = DependencyVector.begin(); itVector != endVector; ++itVector)
+    if ((pRefresh = (*itVector)->getRefresh()) != NULL)
+      {
+        itUpdate = UpdateVector.begin();
+        endUpdate = UpdateVector.end();
+
+        while (itUpdate != endUpdate && !(*itUpdate)->isEqual(pRefresh)) ++itUpdate;
+
+        if (itUpdate == endUpdate)
+          UpdateVector.push_back(pRefresh);
       }
 
-    return false;
-  }
+  return UpdateVector;
+}
+
+// static
+bool CCopasiObject::compare(const CCopasiObject * lhs, const CCopasiObject * rhs)
+{
+  if (lhs != rhs)
+    {
+      std::set< const CCopasiObject * > Candidates;
+      Candidates.insert(lhs);
+
+      if (rhs->hasCircularDependencies(Candidates))
+        return true;
+
+      return ((void *) lhs < (void *) rhs);
+    }
+
+  return false;
+}
 
 void * CCopasiObject::getValuePointer() const
   {
@@ -330,6 +399,9 @@ void CCopasiObject::setObjectValue(const bool & value)
 
 UpdateMethod * CCopasiObject::getUpdateMethod() const
   {return mpUpdateMethod;}
+
+void CCopasiObject::clearRefresh()
+{pdelete(mpRefresh);}
 
 Refresh * CCopasiObject::getRefresh() const
   {return mpRefresh;}

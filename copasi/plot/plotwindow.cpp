@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/plotwindow.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/21 19:14:43 $
+   $Date: 2006/04/25 13:20:34 $
    End CVS Header */
 
 // the window containing the plot and buttons for supported operations
@@ -182,7 +182,7 @@ void PlotWindow::separate(const Activity & activity)
 void PlotWindow::finish()
 {if (mpPlot) mpPlot->finish();};
 
-const std::set< CCopasiObject * > & PlotWindow::getObjects() const
+const std::set< const CCopasiObject * > & PlotWindow::getObjects() const
   {
     if (mpPlot)
       return mpPlot->getObjects();

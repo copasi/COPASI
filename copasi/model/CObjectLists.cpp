@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/03/28 23:10:31 $
+   $Date: 2006/04/25 13:20:34 $
    End CVS Header */
 
 #include "copasi.h"
@@ -74,13 +74,17 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
       break;
 
     case NON_CONST_METAB_CONC_RATES:
+      for (i = 0; i < imax; ++i)
+        if (metabs[i]->getStatus() != CModelEntity::FIXED)
+          ret.push_back(const_cast<CCopasiObject*>
+                        (metabs[i]->getObject(CCopasiObjectName("Reference=Rate"))));
       break; //not possible at the moment
 
     case NON_CONST_METAB_PART_RATES:
       for (i = 0; i < imax; ++i)
         if (metabs[i]->getStatus() != CModelEntity::FIXED)
           ret.push_back(const_cast<CCopasiObject*>
-                        (metabs[i]->getObject(CCopasiObjectName("Reference=Rate"))));
+                        (metabs[i]->getObject(CCopasiObjectName("Reference=ParticleNumberRate"))));
       break;
 
     case ALL_METAB_INITIAL_CONCENTRATIONS:

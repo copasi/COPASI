@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/21 19:17:39 $
+   $Date: 2006/04/25 13:20:35 $
    End CVS Header */
 
 #include "copasi.h"
@@ -374,9 +374,9 @@ bool CReport::compileChildReport(CReport * pReport, std::vector< CCopasiContaine
   pReport->open(mpOstream);
   bool success = pReport->compile(listOfContainer);
 
-  const std::set< CCopasiObject * > & Objects = pReport->COutputInterface::getObjects();
-  std::set< CCopasiObject * >::const_iterator it = Objects.begin();
-  std::set< CCopasiObject * >::const_iterator end = Objects.end();
+  const std::set< const CCopasiObject * > & Objects = pReport->COutputInterface::getObjects();
+  std::set< const CCopasiObject * >::const_iterator it = Objects.begin();
+  std::set< const CCopasiObject * >::const_iterator end = Objects.end();
 
   for (; it != end; ++it)
     COutputInterface::mObjects.insert(*it);

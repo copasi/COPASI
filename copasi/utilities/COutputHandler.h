@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/21 20:11:19 $
+   $Date: 2006/04/25 13:20:35 $
    End CVS Header */
 
 #ifndef OUTPUT_HANDLER
@@ -81,9 +81,9 @@ class COutputInterface
 
     /**
      * Retreive the list of objects handled by the interface
-     * @return const std::set< CCopasiObject * > & objects
+     * @return const std::set< const CCopasiObject * > & objects
      */
-    virtual const std::set< CCopasiObject * > & getObjects() const
+    virtual const std::set< const CCopasiObject * > & getObjects() const
       {return mObjects;}
 
     // Attributes
@@ -91,7 +91,7 @@ class COutputInterface
     /**
      * All the objects which are output.
      */
-    std::set< CCopasiObject * > mObjects;
+    std::set< const CCopasiObject * > mObjects;
   };
 
 /**

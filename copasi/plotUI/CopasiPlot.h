@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/21 20:11:19 $
+   $Date: 2006/04/25 13:20:34 $
    End CVS Header */
 
 // the plot object for copasi
@@ -180,7 +180,7 @@ class CopasiPlot : public QwtPlot, public COutputInterface
      * Map activity and object to index indicating where data is stored within
      * the current activity.
      */
-    std::map< Activity, std::map< CCopasiObject *, unsigned C_INT32 > > mObjectIndex;
+    std::map< Activity, std::map< const CCopasiObject *, unsigned C_INT32 > > mObjectIndex;
 
     /**
      * The list of curves

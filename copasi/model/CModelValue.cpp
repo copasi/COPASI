@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/12 14:32:14 $
+   $Author: shoops $ 
+   $Date: 2006/04/25 13:20:34 $
    End CVS Header */
 
 #include <iostream>
@@ -154,20 +154,30 @@ void CModelEntity::initObjects()
         Dummy,
         CCopasiObject::ValueDbl));
 
+  mpRateReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Rate", mRate, CCopasiObject::ValueDbl));
+
+  std::set< const CCopasiObject * > Dependencies;
+  Dependencies.insert(mpValueReference);
+  mpRateReference->setDirectDependencies(Dependencies);
+
+  addObjectReference("SBMLId", mSBMLId, CCopasiObject::ValueString);
+
   mpModel = static_cast<CModel *>(getObjectAncestor("Model"));
 
   if (mpModel)
-    mpModel->getStateTemplate().add(this);
+    {
+      mpModel->getStateTemplate().add(this);
+
+      mpValueReference->setRefresh(mpModel, &CModel::applyAssignments);
+      mpRateReference->setRefresh(mpModel, &CModel::refreshRates);
+    }
   else
     {
       // This creates the needed values.
       setInitialValuePtr(NULL);
       setValuePtr(NULL);
     }
-
-  addObjectReference("Rate", mRate, CCopasiObject::ValueDbl);
-
-  addObjectReference("SBMLId", mSBMLId, CCopasiObject::ValueString);
 }
 
 void CModelEntity::setInitialValuePtr(C_FLOAT64 * pInitialValue)
@@ -201,7 +211,11 @@ bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
   C_FLOAT64 Value = *mpValueData;
 
   if (mpModel)
-    mpModel->getStateTemplate().remove(this);
+    {
+      mpModel->getStateTemplate().remove(this);
+      mpValueReference->clearRefresh();
+      mpRateReference->clearRefresh();
+    }
   else
     {
       pdelete(mpIValue);
@@ -209,7 +223,11 @@ bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
     }
 
   if (pNewModel)
-    pNewModel->getStateTemplate().add(this);
+    {
+      pNewModel->getStateTemplate().add(this);
+      mpValueReference->setRefresh(pNewModel, &CModel::applyAssignments);
+      mpRateReference->setRefresh(pNewModel, &CModel::refreshRates);
+    }
   else
     {
       mpValueData = new C_FLOAT64;

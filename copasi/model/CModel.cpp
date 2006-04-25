@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.254 $
+   $Revision: 1.255 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2006/04/25 08:46:56 $
+   $Author: shoops $ 
+   $Date: 2006/04/25 13:20:34 $
    End CVS Header */
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1204,6 +1204,20 @@ void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
 
   dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
          mRedStoi.array(), &K, &Beta, derivativesX, &M);
+}
+
+void CModel::refreshRates()
+{
+  CVector< C_FLOAT64 > Rates(getNumVariableMetabs());
+  C_FLOAT64 * pRate = Rates.array();
+  calculateDerivatives(pRate);
+
+  // The offset 1 is for the model time which is always the first
+  // state variable.
+  CModelEntity ** ppIt = mStateTemplate.getEntities() + 1;
+  CModelEntity ** ppEnd = ppIt + Rates.size();
+  for (; ppIt != ppEnd; ++ppIt, ++pRate)
+    (*ppIt)->setRate(*pRate);
 }
 
 void CModel::calculateElasticityMatrix(const C_FLOAT64 & factor,

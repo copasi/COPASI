@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.91 $
+   $Revision: 1.92 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/17 13:45:07 $
+   $Author: shoops $ 
+   $Date: 2006/04/25 13:20:34 $
    End CVS Header */
 
 /**
@@ -144,6 +144,13 @@ class CReaction : public CCopasiContainer
      *  @see mFail
      */
     C_INT32 load(CReadConfig & configbuffer);
+
+    /**
+     * Sets the parent of the metabolite;
+     * @param const CCopasiContainer * pParent
+     * @return bool success
+     */
+    virtual bool setObjectParent(const CCopasiContainer * pParent);
 
     /**
      *  Retrieves the key of the reaction

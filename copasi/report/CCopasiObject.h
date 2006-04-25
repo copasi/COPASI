@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 22:06:02 $
+   $Author: shoops $ 
+   $Date: 2006/04/25 13:20:35 $
    End CVS Header */
 
 /**
@@ -19,6 +19,7 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 #include <set>
 
 class CCopasiObjectName;
@@ -73,35 +74,57 @@ template <class CType, class VType> class SpecificUpdateMethod : public UpdateMe
 
 class Refresh
   {
+  protected:
+    Refresh()
+    {}
+
   public:
+    virtual ~Refresh(){}
 
     virtual void operator()(void)
     {return;}
 
-    virtual ~Refresh(){};
+    virtual bool isEqual(Refresh *const rhs) const
+      {return (this == rhs);}
   };
 
-template <typename CType> class RefreshTemplate : public Refresh
+template <typename CClass> class RefreshTemplate : public Refresh
   {
   private:
-    CType * mpType;                 // pointer to object
-    void (CType::*mMethod)(void);   // pointer to member function
+    CClass * mpInstance;             // pointer to object
+    void (CClass::*mMethod)(void);   // pointer to member function
+
+  private:
+    RefreshTemplate():
+        Refresh(),
+        mpInstance(NULL),
+        mMethod(NULL)
+    {}
 
   public:
-
     // constructor - takes pointer to an object and pointer to a member and stores
     // them in two private variables
-    RefreshTemplate(CType * pType, void(CType::*method)(void))
-    {
-      mpType = pType;
-      mMethod = method;
-    };
+    RefreshTemplate(CClass * pInstance, void (CClass::*method)(void)):
+        Refresh(),
+        mpInstance(pInstance),
+        mMethod(method)
+    {}
 
     virtual ~RefreshTemplate(){};
 
     // override operator "()"
     virtual void operator()(void)
-    {(*mpType.*mMethod)();}    ;              // execute member function
+    {(*mpInstance.*mMethod)();}  // execute member function
+
+    virtual bool isEqual(Refresh *const rhs) const
+      {
+        const RefreshTemplate< CClass > * pRhs =
+          dynamic_cast< RefreshTemplate< CClass > * >(rhs);
+
+        if (!pRhs) return false;
+
+        return (mpInstance == pRhs->mpInstance && mMethod == pRhs->mMethod);
+      }
   };
 
 class CRenameHandler;
@@ -147,7 +170,7 @@ class CCopasiObject
      * A list of all objects the object depends on directly, i.e, the 
      * objects which are used to calculate the object.
      */
-    std::set< CCopasiObject * > mDependencies;
+    std::set< const CCopasiObject * > mDependencies;
 
     UpdateMethod * mpUpdateMethod;
 
@@ -210,19 +233,25 @@ class CCopasiObject
     virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
 
     /**
-     * Retrieve the list of direct dependencies
-     * @return const std::set< CCopasiObject * > & directDependencies
+     * Set the direct dependencies
+     * @param const std::set< const CCopasiObject * > & directDependencies
      */
-    const std::set< CCopasiObject * > & getDirectDependencies() const;
+    void setDirectDependencies(const std::set< const CCopasiObject * > & directDependencies);
+
+    /**
+     * Retrieve the list of direct dependencies
+     * @return const std::set< const CCopasiObject * > & directDependencies
+     */
+    const std::set< const CCopasiObject * > & getDirectDependencies() const;
 
     /**
      * If called with an empty set of dependencies it retrieves the complete list
      * of all dependencies (including all indirect) of the current object.
      * If called with a non empty set it will only add any dependency and all its
      * dependencies to the list if the dependency is not already among the dependencies
-     * @param std::set< CCopasiObject * > & dependencies
+     * @param std::set< const CCopasiObject * > & dependencies
      */
-    void getAllDependencies(std::set< CCopasiObject * > & dependencies) const;
+    void getAllDependencies(std::set< const CCopasiObject * > & dependencies) const;
 
     /**
      * If called with an empty set it will check whether the current object and all its
@@ -235,16 +264,24 @@ class CCopasiObject
     bool hasCircularDependencies(std::set< const CCopasiObject * > & candidates) const;
 
     /**
+     * Build the update sequence for the given list of objects. The resulting sequence
+     * takes the dependencies of the objects in consideration. If circular dependencies 
+     * are detected an exception is thrown
+     * @param const std::set< const CCopasiObject * > & objects
+     * @return std::vector< Refresh * > updateSequence
+     */
+    static std::vector< Refresh * > buildUpdateSequence(const std::set< const CCopasiObject * > & objects);
+
+    /**
      * Comparison operator which can be used to sort objects based on their dependencies
-     * If the current object is a dependency of rhs and must be evaluated first the operator
+     * If the object *lhs is a dependency of *rhs and must be evaluated first the operator
      * return true.
+     * @param const CCopasiObject * lhs
      * @param const CCopasiObject * rhs
      * @return bool isLess 
      */
-    bool operator < (const CCopasiObject * rhs) const;
-
-    //template <class CType> CType * getReference(CType * reference)
-    //{return reference = (CType *) getReference();}
+    static
+    bool compare(const CCopasiObject * lhs, const CCopasiObject * rhs);
 
     bool isContainer() const;
 
@@ -326,6 +363,8 @@ class CCopasiObject
 
       return;
     }
+
+    void clearRefresh();
 
     Refresh * getRefresh() const;
 

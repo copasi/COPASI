@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 21:57:26 $
+   $Author: shoops $ 
+   $Date: 2006/04/25 13:20:34 $
    End CVS Header */
 
 /**
@@ -68,6 +68,11 @@ class CMetab : public CModelEntity
      *  Initial concentration of the metabolite as double
      */
     C_FLOAT64 mIConc;
+
+    /**
+     * The rate of concentration change
+     */
+    C_FLOAT64 mConcRate;
 
     /**
      *  Transition time of the metabolite
@@ -205,6 +210,11 @@ class CMetab : public CModelEntity
      * Return rate of production of this metaboLite
      */
     C_FLOAT64 getConcentrationRate() const;
+
+    /**
+     * Calculate the conctration rate.
+     */
+    void refreshRate();
 
     /**
      * insert operator

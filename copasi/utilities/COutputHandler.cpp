@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/21 19:13:25 $
+   $Date: 2006/04/25 13:20:35 $
    End CVS Header */
 
 #include "copasi.h"
@@ -36,8 +36,8 @@ bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer)
   std::set< COutputInterface *>::iterator it = mInterfaces.begin();
   std::set< COutputInterface *>::iterator end = mInterfaces.end();
 
-  std::set< CCopasiObject * >::const_iterator itObj;
-  std::set< CCopasiObject * >::const_iterator endObj;
+  std::set< const CCopasiObject * >::const_iterator itObj;
+  std::set< const CCopasiObject * >::const_iterator endObj;
 
   for (; it != end; ++it)
     {
@@ -48,7 +48,7 @@ bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer)
       if (pHandler != NULL) pHandler->setMaster(this);
 
       // Collect the list of objects
-      const std::set< CCopasiObject * > & Objects = (*it)->getObjects();
+      const std::set< const CCopasiObject * > & Objects = (*it)->getObjects();
       for (itObj = Objects.begin(), endObj = Objects.end(); itObj != endObj; ++itObj)
         mObjects.insert(*itObj);
     }
@@ -144,22 +144,15 @@ void COutputHandler::refresh()
 
 bool COutputHandler::compileRefresh()
 {
-  mObjectRefreshes.clear();
+  mObjectRefreshes = CCopasiObject::buildUpdateSequence(mObjects);
 
-  std::set< CCopasiObject * >::const_iterator it = mObjects.begin();
-  std::set< CCopasiObject * >::const_iterator end = mObjects.end();
+  std::set< const CCopasiObject * >::const_iterator it = mObjects.begin();
+  std::set< const CCopasiObject * >::const_iterator end = mObjects.end();
 
-  Refresh * pRefresh;
-
+  // Timers are treated differently they are started during compilation.
   for (; it != end; ++it)
-    if ((pRefresh = (*it)->getRefresh()) != NULL)
-      {
-        mObjectRefreshes.push_back(pRefresh);
-
-        // Timers are treated differently they are started during compilation.
-        if (dynamic_cast< CCopasiTimer * >(*it))
-          dynamic_cast< CCopasiTimer * >(*it)->start();
-      }
+    if (dynamic_cast< const CCopasiTimer * >(*it))
+      const_cast< CCopasiTimer * >(static_cast< const CCopasiTimer * >(*it))->start();
 
   return true;
 }

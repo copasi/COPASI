@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/20 15:51:36 $
+   $Date: 2006/04/25 13:20:34 $
    End CVS Header */
 
 #include <qstring.h>
@@ -531,8 +531,8 @@ bool CopasiPlot::saveData(const std::string & filename)
   // Write the table header
   fs << "# ";
 
-  std::set< CCopasiObject * >::iterator it = mObjects.begin();
-  std::set< CCopasiObject * >::iterator end = mObjects.end();
+  std::set< const CCopasiObject * >::iterator it = mObjects.begin();
+  std::set< const CCopasiObject * >::iterator end = mObjects.end();
 
   for (; it != end; ++it)
     fs << (*it)->getObjectDisplayName() << "\t";
@@ -551,8 +551,8 @@ bool CopasiPlot::saveData(const std::string & filename)
 
   Offset.resize(imax);
 
-  std::map< Activity, std::map< CCopasiObject *, unsigned C_INT32 > >::iterator itActivity;
-  std::map< CCopasiObject *, unsigned C_INT32 >::iterator itObject;
+  std::map< Activity, std::map< const CCopasiObject *, unsigned C_INT32 > >::iterator itActivity;
+  std::map< const CCopasiObject *, unsigned C_INT32 >::iterator itObject;
 
   if (mDataBefore)
     {

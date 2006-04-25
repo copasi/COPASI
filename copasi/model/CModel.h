@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.115 $
+   $Revision: 1.116 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2006/04/25 08:46:56 $
+   $Author: shoops $ 
+   $Date: 2006/04/25 13:20:34 $
    End CVS Header */
 
 #ifndef COPASI_CModel
@@ -462,7 +462,6 @@ class CModel : public CModelEntity
 
     //********** TT *****************************
 
-  private:
     /**
      *  Set the transition times for all internal metabolites and the
      *  transistion time of the model.
@@ -672,6 +671,11 @@ class CModel : public CModelEntity
      * &param C_FLOAT64 * derivatives (output)
      */
     void calculateDerivativesX(C_FLOAT64 * derivativesX);
+
+    /**
+     * Calculates and assignes the rates for all model entitities if possible
+     */
+    void refreshRates();
 
     /**
      * Calculates the elasticity matrix of the model for the current

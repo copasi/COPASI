@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.153 $
+   $Revision: 1.154 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/12 14:33:27 $
+   $Author: shoops $ 
+   $Date: 2006/04/25 13:20:34 $
    End CVS Header */
 
 // CReaction
@@ -91,6 +91,30 @@ void CReaction::cleanup()
 {
   // TODO: mMap.cleanup();
   //mParameterDescription.cleanup();
+}
+
+bool CReaction::setObjectParent(const CCopasiContainer * pParent)
+{
+  bool success = CCopasiContainer::setObjectParent(pParent);
+
+  CModel * pModel = (CModel *) getObjectAncestor("Model");
+  CCopasiObject * pObject;
+
+  pObject =
+    const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=Flux")));
+  if (pModel)
+    pObject->setRefresh(pModel, &CModel::applyAssignments);
+  else
+    pObject->clearRefresh();
+
+  pObject =
+    const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=ParticleFlux")));
+  if (pModel)
+    pObject->setRefresh(pModel, &CModel::applyAssignments);
+  else
+    pObject->clearRefresh();
+
+  return success;
 }
 
 C_INT32 CReaction::load(CReadConfig & configbuffer)
@@ -654,10 +678,14 @@ void CReaction::setScalingFactor()
 
 void CReaction::initObjects()
 {
-  addObjectReference("Flux", mFlux, CCopasiObject::ValueDbl);
-  addObjectReference("ParticleFlux", mParticleFlux, CCopasiObject::ValueDbl);
-  //add(&mParameters);
-  //add(&mMap);
+  CModel * pModel = (CModel *) getObjectAncestor("Model");
+  CCopasiObject * pObject;
+
+  pObject = addObjectReference("Flux", mFlux, CCopasiObject::ValueDbl);
+  if (pModel) pObject->setRefresh(pModel, &CModel::applyAssignments);
+
+  pObject = addObjectReference("ParticleFlux", mParticleFlux, CCopasiObject::ValueDbl);
+  if (pModel) pObject->setRefresh(pModel, &CModel::applyAssignments);
 }
 
 std::ostream & operator<<(std::ostream &os, const CReaction & d)

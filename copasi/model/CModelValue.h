@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 21:59:19 $
+   $Author: shoops $ 
+   $Date: 2006/04/25 13:20:34 $
    End CVS Header */
 
 #ifndef COPASI_CModelValue
@@ -44,12 +44,12 @@ class CModelEntity : public CCopasiContainer
      */
     enum Status
     {
-      FIXED = 0,         //the entity is constant (for metabs even if they are part of a reaction)
-      REACTIONS,         //applies only for metabs, the metab concentration is changed by reactions
-      DEPENDENT,         //applies only for metabs, the metab concentration is determined by conservation rules
+      FIXED = 0,          //the entity is constant (for metabs even if they are part of a reaction)
+      REACTIONS,          //applies only for metabs, the metab concentration is changed by reactions
+      DEPENDENT,          //applies only for metabs, the metab concentration is determined by conservation rules
       UNUSED,
-      ODE,               //the entity is changed by an ordinary differential equation
-      ASSIGNMENT,        //the entity is changed by an assignment rule
+      ODE,                //the entity is changed by an ordinary differential equation
+      ASSIGNMENT,         //the entity is changed by an assignment rule
       TIME
     };
 
@@ -183,6 +183,7 @@ class CModelEntity : public CCopasiContainer
   protected:
     CCopasiObjectReference<C_FLOAT64> *mpIValueReference;
     CCopasiObjectReference<C_FLOAT64> *mpValueReference;
+    CCopasiObjectReference<C_FLOAT64> *mpRateReference;
     CModel * mpModel;
 
   private:
