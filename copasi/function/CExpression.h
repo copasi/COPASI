@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:05 $
+   $Date: 2006/04/25 12:43:28 $
    End CVS Header */
 
 #ifndef COPASI_CExpression
@@ -39,6 +39,13 @@ class CExpression:
      */
     virtual ~CExpression();
 
+  private:
+    /**
+     * Initialize the contained CCopasiObjects
+     */
+    void initObjects();
+
+  public:
     /**
      * Compile the function.
      * @param std::vector< CCopasiContainer * > listOfContainer (Default: CCopasiContainer::EmptyList)
@@ -54,11 +61,16 @@ class CExpression:
     virtual const C_FLOAT64 & calcValue();
 
     /**
-     * Retrieve a pointer to the object define dby CN.
+     * Refresh the value of the expression
+     */
+    void refresh();
+
+    /**
+     * Retrieve a pointer to the object define by CN.
      * @param const CCopasiObjectName & CN
      * @return const CCopasiObject * value
      */
-    virtual const CCopasiObject * getObject(const CCopasiObjectName & CN) const;
+    virtual const CCopasiObject * getNodeObject(const CCopasiObjectName & CN) const;
 
     /**
      * Retrieve the list of container used for compile

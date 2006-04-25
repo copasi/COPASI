@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2005/08/30 15:40:05 $
+   $Date: 2006/04/25 12:43:28 $
    End CVS Header */
 
 #include "copasi.h"
@@ -29,6 +29,15 @@ CExpression::CExpression(const CExpression & src,
 
 CExpression::~CExpression() {}
 
+void CExpression::initObjects()
+{
+  CCopasiObject * pObject =
+    const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=Value")));
+  assert (pObject != NULL);
+
+  pObject->setRefresh(this, &CExpression::refresh);
+}
+
 bool CExpression::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
   mpListOfContainer = & listOfContainer;
@@ -38,7 +47,25 @@ bool CExpression::compile(std::vector< CCopasiContainer * > listOfContainer)
   else
     mDisplayString = "";
 
-  return compileNodes();
+  bool success = compileNodes();
+
+  if (success)
+    {
+      const CCopasiObject * pObject;
+      std::set< const CCopasiObject * > Dependencies;
+
+      std::vector< CEvaluationNode * >::const_iterator it = mpNodeList->begin();
+      std::vector< CEvaluationNode * >::const_iterator end = mpNodeList->end();
+
+      for (; it != end; ++it)
+        if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
+            (pObject = getNodeObject((*it)->getData())) != NULL)
+          Dependencies.insert(pObject);
+
+      const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=Value")))->setDirectDependencies(Dependencies);
+    }
+
+  return success;
 }
 
 const C_FLOAT64 & CExpression::calcValue()
@@ -53,7 +80,10 @@ const C_FLOAT64 & CExpression::calcValue()
     }
 }
 
-const CCopasiObject * CExpression::getObject(const CCopasiObjectName & CN) const
+void CExpression::refresh()
+{calcValue();}
+
+const CCopasiObject * CExpression::getNodeObject(const CCopasiObjectName & CN) const
   {return CCopasiContainer::ObjectFromName(*mpListOfContainer, CN);}
 
 const std::vector< CCopasiContainer * > & CExpression::getListOfContainer() const

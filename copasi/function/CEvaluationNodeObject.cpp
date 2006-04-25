@@ -1,14 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 21:55:11 $
+   $Author: shoops $ 
+   $Date: 2006/04/25 12:43:28 $
    End CVS Header */
 
 #include "copasi.h"
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
+#include "CExpression.h"
 #include "report/CCopasiObjectName.h"
 #include "report/CCopasiObject.h"
 #include "report/CCopasiContainer.h"
@@ -46,8 +47,11 @@ CEvaluationNodeObject::~CEvaluationNodeObject() {}
 
 bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 {
+  const CExpression * pExpression = dynamic_cast< const CExpression * >(pTree);
+  if (!pExpression) return false;
+
   const CCopasiObject * pObject =
-    pTree->getObject(mRegisteredObjectCN);
+    pExpression->getNodeObject(mRegisteredObjectCN);
 
   if (pObject)
     mpValue = (C_FLOAT64 *) pObject->getValuePointer();
@@ -76,8 +80,11 @@ std::string CEvaluationNodeObject::getInfix() const
 
 std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTree) const
   {
+    const CExpression * pExpression = dynamic_cast< const CExpression * >(pTree);
+    if (!pExpression) return false;
+
     const CCopasiObject * pObject =
-      pTree->getObject(mRegisteredObjectCN);
+      pExpression->getNodeObject(mRegisteredObjectCN);
 
     if (pObject == NULL) return "<" + mRegisteredObjectCN + ">";
 
