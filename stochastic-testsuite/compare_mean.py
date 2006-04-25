@@ -31,14 +31,17 @@ for X in range(2,len(MEAN)):
         print "ERROR: Number of columns differs between files at line",Y
         OUT.close()
         sys.exit(1)
-    RESULT=str(X-1)+","
+    RESULT=str(X-1)
     for Y in range(0,NUMCOLUMNS-1):
+       MEAN_VALUE=float(MEAN_COLS[Y])
+       REF_SD_VALUE=float(REF_SD_COLS[Y])
+       REF_MEAN_VALUE=float(REF_MEAN_COLS[Y])  
        v=0.0
-       if(REF_SD_COLS[Y]!=0.0):
-         try:
-           v=((float(MEAN_COLS[Y])-float(REF_MEAN_COLS[Y]))/float(REF_SD_COLS[Y]))*math.sqrt(REPEATS) 
-         except:
-           print "EXCEPTION: MEAN_COLS[Y]=%f REF_MEAN_COLS[Y]=%f REF_SD_COLS[Y]=%f REPEATS=%d"%(MEAN_COLS[Y],REF_MEAN_COLS[Y],REF_SD_COLS[Y],REPEATS)
+       if(REF_SD_VALUE!=0.0):
+           v=((MEAN_VALUE - REF_MEAN_VALUE)/REF_SD_VALUE)*math.sqrt(REPEATS) 
+       else:
+           if((MEAN_VALUE - REF_MEAN_VALUE)!=0.0):
+               print "ERROR. Mean values not the same, although standard deviation is 0.0 at line %d column %d."%(X,Y)
        if(math.fabs(v)>=3.0):
           print "ERROR: Value of %f to high at %s line %d."%(v,MEAN_FILE,X) 
           EXIT_STATUS=1

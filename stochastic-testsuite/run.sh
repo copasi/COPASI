@@ -60,6 +60,10 @@ for MODEL in $MODELS;do
       # calculate mean and standard deviation
       rm -f $MEAN_OUTFILE $SD_OUTFILE
       ./calculate_statistics.py $OUTFILE $MEAN_OUTFILE $SD_OUTFILE $STEPNUMBER $NUM_REPEATS || RESULT="failed" ;
+      if [ "e$RESULT" == "efailed" ] ; then
+        echo "ERROR: Statistical calculation failed.";
+        rm -f $MEAN_OUTFILE $SD_OUTFILE;
+      fi  
       # compare results
       if [ -e ${MEAN_OUTFILE} ] ; then
         if [ -e ${SD_REFERENCE_FILE} ] ; then 
