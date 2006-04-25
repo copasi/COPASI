@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2006/04/07 18:48:13 $
+   $Author: shoops $ 
+   $Date: 2006/04/25 13:01:22 $
    End CVS Header */
 
 const MESSAGES Messages[] =
@@ -183,6 +183,9 @@ const MESSAGES Messages[] =
     {MCFitting + 2, "CFitting (2): Failed to invert Fisher information matrix. "
      "dsytrf returned with error '%d'."},
     {MCFitting + 3, "CFitting (3); No column with type 'Time' specified for a time course experiment."},
+
+    // CCopasiObject
+    {MCObject + 1, "CObject (1): Circular dependencies detected for object '%s'."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
