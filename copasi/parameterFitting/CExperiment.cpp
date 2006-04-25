@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $ 
-   $Date: 2006/04/21 17:10:56 $
+   $Date: 2006/04/25 16:27:26 $
    End CVS Header */
 
 #include <fstream>
@@ -66,6 +66,7 @@ CExperiment::CExperiment(const std::string & name,
     mWeightSquare(0),
     mDependentValues(0),
     mIndependentUpdateMethods(0),
+    mRefreshMethods(),
     mIndependentValues(0),
     mNumDataRows(0),
     mpDataDependentCalculated(NULL),
@@ -95,6 +96,7 @@ CExperiment::CExperiment(const CExperiment & src,
     mWeightSquare(src.mWeightSquare),
     mDependentValues(src.mDependentValues),
     mIndependentUpdateMethods(src.mIndependentUpdateMethods),
+    mRefreshMethods(src.mRefreshMethods),
     mIndependentValues(src.mIndependentValues),
     mNumDataRows(src.mNumDataRows),
     mpDataDependentCalculated(src.mpDataDependentCalculated),
@@ -124,6 +126,7 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
     mWeightSquare(0),
     mDependentValues(0),
     mIndependentUpdateMethods(0),
+    mRefreshMethods(),
     mIndependentValues(0),
     mNumDataRows(0),
     mpDataDependentCalculated(NULL),
@@ -258,6 +261,12 @@ C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index,
     C_FLOAT64 * const * ppDependentValues = mDependentValues.array();
     C_FLOAT64 const * pWeight = mWeight.array();
 
+    std::vector< Refresh * >::const_iterator it = mRefreshMethods.begin();
+    std::vector< Refresh * >::const_iterator end = mRefreshMethods.end();
+
+    for (; it != end; ++it)
+      (**it)();
+
     if (residuals)
       for (; pDataDependent != pEnd;
            pDataDependent++, ppDependentValues++, pWeight++, residuals++)
@@ -289,6 +298,12 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const unsigned C_INT32 & index,
   C_FLOAT64 const * pEnd = pDataDependent + mDataDependent.numCols();
   C_FLOAT64 * const * ppDependentValues = mDependentValues.array();
   C_FLOAT64 const * pWeight = mWeight.array();
+
+  std::vector< Refresh * >::const_iterator it = mRefreshMethods.begin();
+  std::vector< Refresh * >::const_iterator end = mRefreshMethods.end();
+
+  for (; it != end; ++it)
+    (**it)();
 
   for (; pDataDependent != pEnd;
        pDataDependent++, ppDependentValues++, pWeight++, dependentValues++)
@@ -448,6 +463,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   mIndependentUpdateMethods.resize(IndependentCount);
   mIndependentValues.resize(IndependentCount);
   mDependentObjects.clear();
+  std::set< const CCopasiObject * > Dependencies;
 
   IndependentCount = 0;
   DependentCount = 0;
@@ -481,6 +497,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
           (C_FLOAT64 *) Objects[i]->getValuePointer();
         //TODO: do we have to check if getValuePointer() return a valid pointer?
         mDependentObjects[Objects[i]] = DependentCount++;
+        Dependencies.insert(Objects[i]);
         break;
 
       case time:
@@ -515,6 +532,8 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   mColumnRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mColumnCount.resize(numCols);
   mColumnCount = std::numeric_limits<unsigned C_INT32>::quiet_NaN();
+
+  mRefreshMethods = CCopasiObject::buildUpdateSequence(Dependencies);
 
   return success;
 }
