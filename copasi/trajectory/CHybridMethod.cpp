@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: jpahle $ 
-   $Date: 2006/04/25 08:46:04 $
+   $Date: 2006/04/26 09:52:35 $
    End CVS Header */
 
 /**
@@ -24,29 +24,29 @@
 /* DEFINE ********************************************************************/
 
 #ifdef WIN32
-#define min _cpp_min
-#define max _cpp_max
-#endif // WIN32
+ #define min _cpp_min
+ #define max _cpp_max
+ #endif // WIN32
 
 #include "mathematics.h" // pow(), floor()
 
 #include "copasi.h"
 
 #include "CHybridMethod.h"
-#include "CTrajectoryProblem.h"
-#include "model/CModel.h"
-#include "model/CMetab.h"
-#include "model/CReaction.h"
-#include "model/CState.h"
-#include "model/CChemEq.h"
-#include "model/CChemEqElement.h"
-#include "model/CCompartment.h"
-#include "utilities/CVersion.h"
-#include "utilities/CCopasiVector.h"
-#include "utilities/CMatrix.h"
-#include "utilities/CDependencyGraph.h"
-#include "utilities/CIndexedPriorityQueue.h"
-#include "randomGenerator/CRandom.h"
+ #include "CTrajectoryProblem.h"
+ #include "model/CModel.h"
+ #include "model/CMetab.h"
+ #include "model/CReaction.h"
+ #include "model/CState.h"
+ #include "model/CChemEq.h"
+ #include "model/CChemEqElement.h"
+ #include "model/CCompartment.h"
+ #include "utilities/CVersion.h"
+ #include "utilities/CCopasiVector.h"
+ #include "utilities/CMatrix.h"
+ #include "utilities/CDependencyGraph.h"
+ #include "utilities/CIndexedPriorityQueue.h"
+ #include "randomGenerator/CRandom.h"
 
 /* PUBLIC METHODS ************************************************************/
 
@@ -75,14 +75,14 @@ CHybridMethod *CHybridMethod::createHybridMethod(CTrajectoryProblem * C_UNUSED(p
 
   switch (result)
     {
-      /*    case - 3:         // non-integer stoichometry
+      /*    case - 3:        // non-integer stoichometry
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 1);
       break;
-      case - 2:         // reversible reaction exists
+      case - 2:        // reversible reaction exists
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 2);
       break;
 
-      case - 1:         // more than one compartment involved
+      case - 1:        // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
       break;*/
     case 1:
@@ -734,7 +734,7 @@ void CHybridMethod::setupBalances()
       for (j = 0; j < balances->size(); j++)
         {
           newElement.mpMetabolite = const_cast < CMetab* > ((*balances)[j]->getMetabolite());
-          newElement.mIndex = mpModel->getMetabolites().getIndex(newElement.mpMetabolite);
+          newElement.mIndex = mpModel->getMetabolitesX().getIndex(newElement.mpMetabolite);
           // + 0.5 to get a rounding out of the static_cast to C_INT32!
           newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));
           if ((newElement.mpMetabolite->getStatus()) != CModelEntity::FIXED)
@@ -748,7 +748,7 @@ void CHybridMethod::setupBalances()
       for (j = 0; j < balances->size(); j++)
         {
           newElement.mpMetabolite = const_cast < CMetab* > ((*balances)[j]->getMetabolite());
-          newElement.mIndex = mpModel->getMetabolites().getIndex(newElement.mpMetabolite);
+          newElement.mIndex = mpModel->getMetabolitesX().getIndex(newElement.mpMetabolite);
           // + 0.5 to get a rounding out of the static_cast to C_INT32!
           newElement.mMultiplicity = static_cast<C_INT32>(floor((*balances)[j]->getMultiplicity() + 0.5));
 
