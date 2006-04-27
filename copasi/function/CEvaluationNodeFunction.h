@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Author: nsimus $
+   $Date: 2006/04/27 12:28:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -165,6 +165,19 @@ class CEvaluationNodeFunction : public CEvaluationNode
      * @return CEvaluationNode* return a pointer to the simplified node;
      */
     virtual CEvaluationNode* simplifyNode(CEvaluationNode *child1, CEvaluationNode *child2) const;
+
+#if 1
+    /**
+     *  generate display MathML recursively
+     **/
+
+    virtual void writeMathML(std::ostream & out,
+                             const std::vector<std::vector<std::string> > & env,
+                             bool expand = true, unsigned C_INT32 l = 0) const;
+
+    CEvaluationNode * getLeft();
+    const CEvaluationNode * getLeft() const;
+#endif
 
   private:
     std::string handleSign(const std::string & str) const;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Author: nsimus $
+   $Date: 2006/04/27 12:28:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,7 @@
 
 #include "mathematics.h"
 #include "CEvaluationNode.h"
+#include <sstream>
 #include "CEvaluationTree.h"
 
 #include "sbml/math/ASTNode.h"
@@ -827,3 +828,247 @@ std::string CEvaluationNodeFunction::handleSign(const std::string & str) const
 
     return Result;
   }
+
+#if 1
+CEvaluationNode * CEvaluationNodeFunction::getLeft()
+{return mpLeft;}
+const CEvaluationNode * CEvaluationNodeFunction::getLeft() const
+  {return mpLeft;}
+
+#include "utilities/copasimathml.h"
+
+void CEvaluationNodeFunction::writeMathML(std::ostream & out,
+    const std::vector<std::vector<std::string> > & env,
+    bool expand,
+    unsigned C_INT32 l) const
+  {
+    std::string data = "";
+    std::string ldata = "";
+    std::string rdata = "";
+    bool flag = false;
+    bool flag1 = false;
+
+    switch (mType & 0x00FFFFFF)
+      {
+      case INVALID:
+        data = "@";
+        break;
+      case LOG:
+        data = "ln";
+        break;
+      case LOG10:
+        break;
+      case EXP:
+        break;
+      case SIN:
+        data = "sin";
+        break;
+      case COS:
+        data = "cos";
+        break;
+      case TAN:
+        data = "tan";
+        break;
+      case SEC:
+        data = "sec";
+        break;
+      case CSC:
+        data = "csc";
+        break;
+      case COT:
+        data = "cot";
+        break;
+      case SINH:
+        data = "sinh";
+        break;
+      case COSH:
+        data = "cosh";
+        break;
+      case TANH:
+        data = "tanh";
+        break;
+      case SECH:
+        data = "sech";
+        break;
+      case CSCH:
+        data = "csch";
+        break;
+      case COTH:
+        data = "coth";
+        break;
+      case ARCSIN:
+        data = "arcsin";
+        break;
+      case ARCCOS:
+        data = "arccos";
+        break;
+      case ARCTAN:
+        data = "arctan";
+        break;
+      case ARCSEC:
+        data = "arcsec";
+        break;
+      case ARCCSC:
+        data = "arccsc";
+        break;
+      case ARCCOT:
+        data = "arccot";
+        break;
+      case ARCSINH:
+        data = "arcsinh";
+        break;
+      case ARCCOSH:
+        data = "arccosh";
+        break;
+      case ARCTANH:
+        data = "arctanh";
+        break;
+      case ARCSECH:
+        data = "arcsech";
+        break;
+      case ARCCSCH:
+        data = "arccsch";
+        break;
+      case ARCCOTH:
+        data = "arccoth";
+        break;
+      case SQRT:
+        ldata = "<msqrt>";
+        rdata = "</msqrt>";
+        break;
+      case ABS:
+        ldata = "|";
+        rdata = "|";
+        break;
+      case CEIL:
+        data = "ceil";
+        break;
+      case FLOOR:
+        data = "floor";
+        break;
+      case FACTORIAL:
+        break;
+      case MINUS:
+        break;
+      case PLUS:
+        break;
+      case NOT:
+        data = "!";
+        break;
+      }
+
+    const CEvaluationNode * pParent = static_cast<const CEvaluationNode *>(getParent());
+
+    flag = ((mpLeft->getType() == (CEvaluationNode::NUMBER))
+            || (mpLeft->getType() == (CEvaluationNode::VARIABLE))
+            || (mpLeft->getType() == (CEvaluationNode::CONSTANT)
+));
+
+    out << SPC(l) << "<mrow>" << std::endl;
+
+    switch (mType & 0x00FFFFFF)
+      {
+      case PLUS:
+
+        flag = ((mpLeft->getType() == (CEvaluationNode::OPERATOR | PLUS))
+                || (mpLeft->getType() == (CEvaluationNode::OPERATOR | MINUS))
+                || ((mpLeft->getType() & 0xFF000000 == CEvaluationNode::CALL) && expand));
+
+        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+
+        mpLeft->writeMathML(out, env, expand, l + 1);
+
+        if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+
+        break;
+
+      case MINUS:
+
+        if (pParent != 0)
+          {
+            Type T = pParent->getType();
+
+            flag1 = ((T & 0xFF000000) == OPERATOR &&
+                     this == static_cast<const CEvaluationNode *>(pParent->getChild()->getSibling()));
+            if (flag1) out << SPC(l + 1) << "<mfenced>" << std::endl;
+          }
+
+        out << SPC(l + 1) << "<mo>" << "-" << "</mo>" << std::endl;
+
+        if (!flag) out << SPC(l + 2) << "<mfenced>" << std::endl;
+
+        mpLeft->writeMathML(out, env, expand, l + 2);
+
+        if (!flag) out << SPC(l + 2) << "</mfenced>" << std::endl;
+
+        if (flag1) out << SPC(l + 1) << "</mfenced>" << std::endl;
+
+        break;
+
+      case FACTORIAL:
+
+        if (!flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+
+        mpLeft->writeMathML(out, env, expand, l + 1);
+
+        if (!flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+
+        out << SPC(l + 1) << "<mo>" << "!" << "</mo>" << std::endl;
+
+        break;
+
+      case SQRT:
+      case ABS:
+
+        out << SPC(l + 1) << ldata << std::endl;
+
+        mpLeft->writeMathML(out, env, expand, l + 1);
+
+        out << SPC(l + 1) << rdata << std::endl;
+
+        break;
+
+      case EXP:
+
+        out << SPC(l + 1) << "<msup>" << std::endl;
+        out << SPC(l + 2) << "<mo> e  </mo>" << std::endl;
+
+        mpLeft->writeMathML(out, env, expand, l + 2);
+
+        out << SPC(l + 1) << "</msup>" << std::endl;
+
+        break;
+
+      case LOG10:
+
+        out << SPC(l + 1) << "<msub>" << std::endl;
+        out << SPC(l + 2) << "<mo>" << "log" << "</mo>" << std::endl;
+        out << SPC(l + 2) << "<mn>" << "10" << "</mn>" << std::endl;
+
+        out << SPC(l + 1) << "</msub>" << std::endl;
+        if (!flag) out << SPC(l + 2) << "<mfenced>" << std::endl;
+
+        mpLeft->writeMathML(out, env, expand, l + 2);
+
+        if (!flag) out << SPC(l + 2) << "</mfenced>" << std::endl;
+
+        break;
+
+      default:
+
+        out << SPC(l + 1) << "<mi> " << data << " </mi>" << std::endl;
+
+        if (!flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+
+        mpLeft->writeMathML(out, env, expand, l + 1);
+
+        if (!flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+
+        break;
+      }
+
+    out << SPC(l) << "</mrow>" << std::endl;
+
+    return;
+  }
+#endif
