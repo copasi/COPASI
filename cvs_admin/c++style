@@ -8,34 +8,49 @@ MV=/bin/mv
 
 $GAWK -- '
 BEGIN {
-  CheckCVSHeader = 1
+  CVSHeader = 0
+  Copyright = 0
 }
 
 {
-  if (CheckCVSHeader == 1) {
+  if (CVSHeader == 0) {
     if ($0 !~ ".*Begin CVS Header.*") {
       printf "/* Begin CVS Header\n"
       printf "    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/cvs_admin/c++style,v $\n"
-      printf "    $Revision: 1.21 $\n"
+      printf "    $Revision: 1.22 $\n"
       printf "    $Name:  $\n"
       printf "    $Author: shoops $ \n"
-      printf "    $Date: 2006/04/25 21:56:46 $\n"
-      printf "    End CVS Header */\n\n"
+      printf "    $Date: 2006/04/27 00:50:09 $\n"
+      printf "    End CVS Header */\n"
+      printf "\n"
       printf "// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual\n"
       printf "// Properties, Inc. and EML Research, gGmbH.\n"
-      printf "// All rights reserved.\n\n"
-      print $0
+      printf "// All rights reserved.\n"
+      if ($0 !~ "^$") {
+        printf "\n"
+      }
+      CVSHeader = 2
+      Copyright = 2
     } else {
-      print $0
-    } 
-    CheckCVSHeader = 2
-  } else if (CheckCVSHeader == 2) {
-    if ($0 ~ " All rights reserved") {
-      printf " All rights reserved.\n"
-      CheckCVSHeader = 0
-    } else {
-      printf " %s\n", $0
+      CVSHeader = 1
     }
+    printf "%s\n", $0
+  } else if (CVSHeader == 1) {
+    if ($0 ~ ".* End CVS Header.*") {
+      CVSHeader = 2
+    }
+    printf " %s\n", $0
+  } else if (Copyright == 0) {
+    if ($0 ~ "// Copyright") {
+      Copyright = 2
+    } else if ($0 !~ "^$") {
+      printf "// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual\n"
+      printf "// Properties, Inc. and EML Research, gGmbH.\n"
+      printf "// All rights reserved.\n"
+      printf "\n"
+      Copyright = 2
+    }      
+    print $0
   } else {
     print $0
   }
@@ -62,10 +77,10 @@ END {
   }
 }
 
-$0 ~ "^$" {
-  if (lastOpenBracket == 0) {
+$0 ~ "^ *$" {
+#  if (lastOpenBracket == 0) {
     lastEmpty = 1
-  }
+#  }
 }
 
 $0 !~ "^$" {
@@ -79,14 +94,25 @@ $0 !~ "^$" {
     lastClosingBracket = 0
   }
 
+  gsub(/ +$/, "")
   gsub(/\( +/, "(")
   gsub(/ +)/, ")")
   gsub(/\{ +/, "{")
   gsub(/^\*/, " *")
-        
+  gsub(/; +}/, ";}")
+  gsub(/^ +#/, "#")
+
+  $0 = gensub(/([,&+]) ( +\/)/, "\\1\\2", 1)
+  $0 = gensub(/(C_INT operator\(\) \(evalF f,)/, "\\1 ", 1)
+ 
   $0 = gensub(/ +;$/, ";", "g")
   $0 = gensub(/([^ ]) +}$/, "\\1}", "g")
-  $0 = gensub(/case (.*) *: /, "case \\1:", "g")
+  
+  $0 = gensub(/case *([^ ]*) +:/, "case \\1:", "g")
+  $0 = gensub(/^( *[^ ]+): ( +\/)/, "\\1:\\2", "g")
+  $0 = gensub(/(case [0-9]+): ( +)/, "\\1:\\2", "g")
+  $0 = gensub(/(case .\\..): ( +)/, "\\1:\\2", "g")
+  $0 = gensub(/(case [^ ]+::[^ ]+): ( +)/, "\\1:\\2", "g")
   $0 = gensub(/if (.*\|\| +) \//, "if \\1/", "g")
   $0 = gensub(/(.*)=( +) \//, "\\1=\\2/", "g")
   
@@ -99,8 +125,11 @@ $0 !~ "^$" {
     printf "%s\n", $0
   }
 
-  if ($0 ~ "{$") lastOpenBracket = 1
-  else lastOpenBracket = 0
+  if ($0 ~ "{$") {
+    lastOpenBracket = 1
+  } else {
+    lastOpenBracket = 0
+  }
 }
 ' > $1.tmp && \
 $MV -f $1.tmp $1
