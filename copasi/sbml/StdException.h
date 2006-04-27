@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/StdException.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2004/06/21 09:49:29 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:21 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef STDEXCEPTION_H__
 #define STDEXCEPTION_H__

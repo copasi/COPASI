@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:18 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:53 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * COptMethodGASR class
@@ -38,8 +42,8 @@ class COptMethodGASR : public COptMethod
     virtual ~COptMethodGASR();
 
     /**
-     * Execute the optimization algorithm calling simulation routine 
-     * when needed. It is noted that this procedure can give feedback 
+     * Execute the optimization algorithm calling simulation routine
+     * when needed. It is noted that this procedure can give feedback
      * of its progress by the callback function set with SetCallback.
      * @ return success;
      */

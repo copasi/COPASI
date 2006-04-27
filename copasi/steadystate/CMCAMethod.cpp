@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/30 19:08:35 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:49 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <cmath>
 #include <limits.h>
@@ -304,7 +308,7 @@ void CMCAMethod::calculateUnscaledFluxCC(int condition)
   mUnscaledFluxCCAnn->createAnnotationsFromCopasiVector(1, &mpModel->getReactions());
 }
 
-#ifdef WIN32 
+#ifdef WIN32
 // warning C4056: overflow in floating-point constant arithmetic
 // warning C4756: overflow in constant arithmetic
 # pragma warning (disable: 4056 4756)

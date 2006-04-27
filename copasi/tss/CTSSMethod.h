@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSMethod.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/22 15:42:42 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:27 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CTSSMethod
 #define COPASI_CTSSMethod
@@ -42,7 +46,7 @@ class CTSSMethod : public CCopasiMethod
   protected:
     /**
      * Specific constructor.
-     * @param CCopasiMethod::SubType subType 
+     * @param CCopasiMethod::SubType subType
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CTSSMethod(CCopasiMethod::SubType subType,
@@ -72,9 +76,9 @@ class CTSSMethod : public CCopasiMethod
 
     /**
      *  Set a pointer to the problem.
-     *  This method is used by CSteadyState 
+     *  This method is used by CSteadyState
      *  @param "CSteadyStateProblem *" problem
-     */ 
+     */
     //void setProblem(CSteadyStateProblem * problem);
 
     /**

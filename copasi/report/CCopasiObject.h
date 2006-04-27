@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 13:20:35 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:09 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * Class CCopasiObject
@@ -167,7 +171,7 @@ class CCopasiObject
     unsigned C_INT32 mObjectFlag;
 
     /**
-     * A list of all objects the object depends on directly, i.e, the 
+     * A list of all objects the object depends on directly, i.e, the
      * objects which are used to calculate the object.
      */
     std::set< const CCopasiObject * > mDependencies;
@@ -208,8 +212,8 @@ class CCopasiObject
     virtual void print(std::ostream * ostream) const;
 
     /**
-     * Set the name of the object. 
-     * Note: An attempt set the name to "" results in the name 
+     * Set the name of the object.
+     * Note: An attempt set the name to "" results in the name
      *       being set to "No Name".
      * @param const std::string & name
      * @return success
@@ -265,7 +269,7 @@ class CCopasiObject
 
     /**
      * Build the update sequence for the given list of objects. The resulting sequence
-     * takes the dependencies of the objects in consideration. If circular dependencies 
+     * takes the dependencies of the objects in consideration. If circular dependencies
      * are detected an exception is thrown
      * @param const std::set< const CCopasiObject * > & objects
      * @return std::vector< Refresh * > updateSequence
@@ -278,7 +282,7 @@ class CCopasiObject
      * return true.
      * @param const CCopasiObject * lhs
      * @param const CCopasiObject * rhs
-     * @return bool isLess 
+     * @return bool isLess
      */
     static
     bool compare(const CCopasiObject * lhs, const CCopasiObject * rhs);

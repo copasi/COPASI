@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/03 18:51:14 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:53 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  COptMethod class
  *  This class describes the interface to all optimization methods.
  *  The various method like RandomSearch or GA have to be derived from
  *  this class.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2002
  */
 

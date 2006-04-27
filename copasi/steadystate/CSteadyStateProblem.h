@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:31 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:49 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CSteadyStateProblem class.
  *  This class describes the steady state problem, i.e., it allows to specify
  *  for example initial conditions.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2002
  */
 
@@ -28,12 +32,12 @@ class CSteadyStateProblem: public CCopasiProblem
   private:
     /**
      *  The initial state, i.e., the starting conditions of the trajectroy.
-     */ 
+     */
     //CState mInitialState;
 
     /**
      *  was a initial state set?
-     */ 
+     */
     //bool mHasInitialState;
 
   public:
@@ -59,7 +63,7 @@ class CSteadyStateProblem: public CCopasiProblem
     virtual ~CSteadyStateProblem();
 
     /**
-     * Do all neccessary initialization so that calls to caluclate will 
+     * Do all neccessary initialization so that calls to caluclate will
      * be successful. This is called once from CCopasiTask::process()
      * @result bool succes
      */

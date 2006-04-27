@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSTask.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/19 18:37:00 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:27 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CTSSTask class.
@@ -17,7 +21,7 @@
 #include "CTSSProblem.h"
 #include "CTSSMethod.h"
 #include "model/CModel.h"
-#include "model/CState.h" 
+#include "model/CState.h"
 //#include "model/CMetabNameInterface.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"

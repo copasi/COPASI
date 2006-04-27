@@ -1,20 +1,24 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:30 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:30 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CScanProblem class.
- *  
+ *
  */
 
 #include <string>
 
 #include "copasi.h"
-#include "CScanProblem.h" 
+#include "CScanProblem.h"
 //#include "model/CModel.h"
 //#include "model/CState.h"
 
@@ -58,7 +62,7 @@ CScanProblem::~CScanProblem()
 /**
  * Set the model the problem is dealing with.
  * @param "CModel *" pModel
- */ 
+ */
 /*bool CScanProblem::setModel(CModel * pModel)
 {
   mpModel = pModel;
@@ -101,7 +105,7 @@ const bool & CScanProblem::getAdjustInitialConditions() const
 /**
  * Set the initial state of the problem.
  * @param "const CState &" initialState
- */ 
+ */
 /*void CScanProblem::setInitialState(const CState & initialState)
 {
   mInitialState = initialState;
@@ -111,7 +115,7 @@ const bool & CScanProblem::getAdjustInitialConditions() const
 /**
  * Set the initial state of the problem.
  * @param "const CStateX &" initialState
- */ 
+ */
 /*void CScanProblem::setInitialState(const CStateX & initialState)
 {
   mInitialState = initialState;
@@ -120,7 +124,7 @@ const bool & CScanProblem::getAdjustInitialConditions() const
 /**
  * Retrieve the initial state of the problem.
  * @return "const CState *" pInitialState
- */ 
+ */
 /*const CState & CScanProblem::getInitialState() const
   {return mInitialState;}*/
 
@@ -206,15 +210,19 @@ void CScanProblem::clearScanItems()
 /*void CScanProblem::createDebugScan(CModel* model)
 {
   if (model->getReactions().size() == 0) return;
- 
+
+
   clearScanItems();
   setModel(model);
- 
+
+
   //TODO: use the value instead of the parameter itself
- 
+
+
   CCopasiParameterGroup* tmp = createScanItem(SCAN_LINEAR, 15, model->getReactions()[0]->getParameters().getParameter(0));
   tmp->setValue("Minimum", 0.34);
   tmp->setValue("Maximum", 0.78);
- 
+
+
   // createScanItem(SCAN_REPEAT, 3);
 }*/

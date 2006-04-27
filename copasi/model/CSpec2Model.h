@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:36 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:22 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_Spec2Model
 #define COPASI_Spec2Model
@@ -14,7 +18,7 @@
 #include <list>
 
 #include "CSpecLine.h"
-#include "CDeTerm.h" 
+#include "CDeTerm.h"
 /**
  * CSpec2Model
  *
@@ -50,7 +54,7 @@ class CSpec2Model
 
     /**
      * The named constructor.  This constructs a CSpec2Model which
-     * will read the contents of the specified file.  
+     * will read the contents of the specified file.
      * @param filename The name of the spec file to process.
      */
     CSpec2Model(std::string filename);
@@ -142,7 +146,7 @@ class CSpec2Model
      */
     const CMetab *getLHSMetab(const CBaseEqn &) const;
     /**
-     * 
+     *
      */
     void processDeTerms();
     /**
@@ -202,7 +206,7 @@ class CSpec2Model
     /** @dia:route 2,40; h,73.0862,25.6516,80.4777,12.9811,87.8692 */
     std::vector< CNameVal> mConstVector;
     /**
-     * The rate constants, used later to create reactions and 
+     * The rate constants, used later to create reactions and
      * to parse the differential equations.
      */
     /** @dia:route 9,40; h,73.0862,27.5516,80.4777,12.9811,87.8692 */

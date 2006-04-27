@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mml/Attic/qtmmlwidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/12/22 12:34:50 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:04 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /***************************************************************************
  **
@@ -37,7 +41,7 @@ class QtMmlWidget : public QFrame
   {
   public:
     enum MmlFont {NormalFont, FrakturFont, SansSerifFont, ScriptFont,
-                   MonospaceFont, DoublestruckFont};
+                  MonospaceFont, DoublestruckFont};
 
     QtMmlWidget(QWidget *parent = 0, const char *name = 0);
     ~QtMmlWidget();

@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridNextReactionRKMethod.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/12/17 12:31:54 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:16 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *   CHybridNextReactionRKMethod
@@ -30,7 +34,7 @@ CHybridNextReactionRKMethod::CHybridNextReactionRKMethod(const CCopasiContainer 
 {}
 
 /**
- *  Simulates the system over the next interval of time. The new time after 
+ *  Simulates the system over the next interval of time. The new time after
  *  this step is returned.
  *
  *  @param  currentTime A C_FLOAT64 specifying the current time

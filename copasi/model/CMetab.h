@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 13:20:34 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:21 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CMetab class.
@@ -252,7 +256,7 @@ class CMetabOld : public CCopasiContainer
     C_FLOAT64 mIConc;
 
     /**
-     *  Status of the metabolite.  
+     *  Status of the metabolite.
      *  One of (METAB_FIXED, METAB_VARIABLE, METAB_DEPENDENT, METAB_MOIETY).
      */
     CMetab::Status mStatus;

@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:23:08 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:49 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CNewtonMethod class.
  *  This class implements the enhanced Newton method which attempts to find the
  *  the steady state.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2002
  */
 
@@ -105,7 +109,7 @@ class CNewtonMethod : public CSteadyStateMethod
     bool isSteadyState(C_FLOAT64 value);
 
     /**
-     * This is the function that is supposed to be near zero if a steady 
+     * This is the function that is supposed to be near zero if a steady
      * state is detected.
      * @param const CVector< C_FLOAT64 > & particlefluxes
      */

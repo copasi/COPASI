@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQOptimizationWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/08 20:13:21 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:41 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQOptimizationWidget.ui'
  **
  ** Created: Wed Mar 8 14:55:19 2006
- **      by: The User Interface Compiler ($Id: CQOptimizationWidget.cpp,v 1.3 2006/03/08 20:13:21 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQOptimizationWidget.cpp,v 1.4 2006/04/27 01:27:41 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,21 +22,21 @@
 #include "CQOptimizationWidget.h"
 
 #include <qvariant.h>
- #include <qtextedit.h>
- #include <qtoolbutton.h>
- #include <qbuttongroup.h>
- #include <qradiobutton.h>
- #include <qlabel.h>
- #include <qtabwidget.h>
- #include <qwidget.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include <qimage.h>
- #include <qpixmap.h>
+#include <qtextedit.h>
+#include <qtoolbutton.h>
+#include <qbuttongroup.h>
+#include <qradiobutton.h>
+#include <qlabel.h>
+#include <qtabwidget.h>
+#include <qwidget.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include <qimage.h>
+#include <qpixmap.h>
 
 #include "TaskWidget.h"
- #include "CQOptimizationWidget.ui.h"
+#include "CQOptimizationWidget.ui.h"
 static const unsigned char image0_data[] =
   {
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
@@ -95,7 +99,7 @@ static const unsigned char image0_data[] =
 
 /*
  *  Constructs a CQOptimizationWidget which is a child of 'parent', with the
- *  name 'name'.' 
+ *  name 'name'.'
  */
 CQOptimizationWidget::CQOptimizationWidget(QWidget* parent, const char* name)
     : TaskWidget(parent, name)

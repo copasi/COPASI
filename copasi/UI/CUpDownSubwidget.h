@@ -1,26 +1,30 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CUpDownSubwidget.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/12 20:22:03 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CUpDownSubwidget.ui'
  **
  ** Created: Wed Oct 12 15:58:53 2005
- **      by: The User Interface Compiler ($Id: CUpDownSubwidget.h,v 1.6 2005/10/12 20:22:03 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CUpDownSubwidget.h,v 1.7 2006/04/27 01:27:42 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef CUPDOWNSUBWIDGET_H
- #define CUPDOWNSUBWIDGET_H
+#define CUPDOWNSUBWIDGET_H
 
 #include <qvariant.h>
- #include <qpixmap.h>
- #include <qwidget.h>
+#include <qpixmap.h>
+#include <qwidget.h>
 
 class QVBoxLayout;
 class QHBoxLayout;

@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 22:09:55 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CCopasiParameter class.
  *  This class is used to describe method paramters. This class is intended
  *  to be used with integration or optimization methods.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2002
  */
 

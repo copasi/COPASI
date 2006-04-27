@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpecLine.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/05 14:36:36 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:22 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef Copasi_SpecLine
 #define Copasi_SpecLine
@@ -20,10 +24,10 @@ class CDeTerm;
 
 /**
  * CSpecLine
- * 
+ *
  * This class represents a line of input from the spec file. It contains
  * a type identifier and a string, representing the actual input.
- */ 
+ */
 /** @dia:pos 57.4987,10.7701 */
 class CSpecLine
   {
@@ -73,15 +77,15 @@ class CSpecLine
     std::string &getString() {return mContents;}
 
     /**
-     * Extract and return the left hand side of the contents string. 
-     * If the left hand side is preceded by a compartment specifier, 
+     * Extract and return the left hand side of the contents string.
+     * If the left hand side is preceded by a compartment specifier,
      * this is stripped from the returned string.
      * @return The (stripped) left hand side string
     */
     std::string extractLeft();
 
     /**
-     * Extract and return the right hand side of the contents string. 
+     * Extract and return the right hand side of the contents string.
      * @return The right hand side string
     */
     std::string extractRight();
@@ -107,7 +111,7 @@ class CSpecLine
   };
 
 /**
- * The CBaseEqn class holds basic information about an equation, 
+ * The CBaseEqn class holds basic information about an equation,
  * and is used as an intermediate in processing the spec input.
  * It stores the LHS metabolite, the compartment this is in, and the RHS string.
  */

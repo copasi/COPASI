@@ -1,25 +1,29 @@
 /* Begin CVS Header
-   $Source: /home/cvs/copasi_dev/cvs_admin/c++style,v $
-   $Revision: 1.19 $
+   $Source: /home/cvs/copasi_dev/copasi/CopasiUI/CMCAResultSubwidget.h,v $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 16:36:51 $
+   $Author: shoops $
+   $Date: 2006/03/02 02:21:43 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CMCAResultSubwidget.ui'
  **
  ** Created: Thu Feb 23 13:33:29 2006
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.3   edited Nov 24 2003 $)
+ **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.h,v 1.7 2006/03/02 02:21:43 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef CMCARESULTSUBWIDGET_H
- #define CMCARESULTSUBWIDGET_H
+#define CMCARESULTSUBWIDGET_H
 
 #include <qvariant.h>
- #include <qwidget.h>
+#include <qwidget.h>
 
 class QVBoxLayout;
 class QHBoxLayout;

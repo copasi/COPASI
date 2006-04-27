@@ -1,27 +1,31 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesSubwidget.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/10/26 15:43:18 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:46 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
  ** Created: Mon Oct 24 12:45:56 2005
- **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.h,v 1.8 2005/10/26 15:43:18 stupe Exp $)
+ **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.h,v 1.9 2006/04/27 01:27:46 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef TIMESERIESSUBWIDGET_H
- #define TIMESERIESSUBWIDGET_H
+#define TIMESERIESSUBWIDGET_H
 
 #include <qvariant.h>
- #include <qpixmap.h>
- #include <qwidget.h>
- #include "copasi.h"
+#include <qpixmap.h>
+#include <qwidget.h>
+#include "copasi.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

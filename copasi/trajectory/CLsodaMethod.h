@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:23:29 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:16 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CLsodaMethod
 #define COPASI_CLsodaMethod
@@ -84,17 +88,17 @@ class CLsodaMethod : public CTrajectoryMethod
 
     /**
      *  Maximum order for BDF method.
-     */ 
+     */
     //    C_INT32 mBDF;
 
     /**
      *  Maximum order for Adams method.
-     */ 
+     */
     //    C_INT32 mAdams;
 
     /**
      *  Maximum number of steps for one call of lsoda.
-     */ 
+     */
     //    C_INT32 mMaxSteps;
 
     /**

@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dstoda.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/22 15:08:44 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:35 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <math.h>
 
@@ -267,9 +271,9 @@ L150:
   dls001_3.conit = .5 / (dls001_3.nq + 2);
   switch (iret)
     {
-    case 1:goto L160;
-    case 2:goto L170;
-    case 3:goto L200;
+    case 1: goto L160;
+    case 2: goto L170;
+    case 3: goto L200;
     }
   /* ----------------------------------------------------------------------- */
   /* If H is being changed, the H ratio RH is checked against */

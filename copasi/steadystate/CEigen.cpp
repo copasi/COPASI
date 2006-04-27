@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:23:07 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:49 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  File name: CEigen.cpp
@@ -128,7 +132,7 @@ void CEigen::initObjects()
 
 /**
  * return the matrix
- */ 
+ */
 //TNT::Matrix < C_FLOAT64 > CEigen::getMatrix()
 //{
 //  return mMatrix;
@@ -136,7 +140,7 @@ void CEigen::initObjects()
 
 /**
  * Set the Matrix
- */ 
+ */
 //void CEigen::setMatrix(C_INT32 rows, C_INT32 cols)
 //{
 //  mMatrix.newsize(rows, cols);
@@ -211,18 +215,18 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
   /* int dgees_(char *jobvs,
    *             char *sort,
    *            L_fp select,
-   *            integer *n, 
+   *            integer *n,
    *            doublereal *a,
    *            integer *lda,
    *            integer *sdim,
-   *            doublereal *wr, 
+   *            doublereal *wr,
    *            doublereal *wi,
    *            doublereal *vs,
    *            integer *ldvs,
-   *            doublereal *work, 
-   *            integer *lwork, 
+   *            doublereal *work,
+   *            integer *lwork,
    *            logical *bwork,
-   *            integer *info); 
+   *            integer *info);
    *  Arguments
    *  =========
    *
@@ -321,7 +325,7 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
    */
   dgees_(&mJobvs,
          &mSort,
-         NULL,                 // mSelect,           //NULL,
+         NULL,                 // mSelect,          //NULL,
          &mN,                                //&n,
          mA.array(),
          & mLDA,

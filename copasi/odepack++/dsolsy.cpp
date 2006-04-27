@@ -1,30 +1,34 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dsolsy.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/17 15:18:55 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:35 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 #include <math.h>
- #include <algorithm>
+#include <algorithm>
 
 #include "copasi.h"
 
 #include "CInternalSolver.h"
 
 #define dls001_1 (mdls001_._1)
- #define dls001_2 (mdls001_._2)
- #define dls001_3 (mdls001_._3)
+#define dls001_2 (mdls001_._2)
+#define dls001_3 (mdls001_._3)
 
 #define dlsa01_1 (mdlsa01_._1)
- #define dlsa01_2 (mdlsa01_._2)
- #define dlsa01_3 (mdlsa01_._3)
+#define dlsa01_2 (mdlsa01_._2)
+#define dlsa01_3 (mdlsa01_._3)
 
 static C_INT c__0 = 0;
 
 #include "dgbsl.h"
- #include "dgesl.h"
+#include "dgesl.h"
 
 #include "clapackwrap.h"
 
@@ -98,11 +102,11 @@ C_INT CInternalSolver::dsolsy_(double *wm, C_INT *iwm, double *x,
   dls001_1.iersl = 0;
   switch (dls001_1.miter)
     {
-    case 1:goto L100;
-    case 2:goto L100;
-    case 3:goto L300;
-    case 4:goto L400;
-    case 5:goto L400;
+    case 1: goto L100;
+    case 2: goto L100;
+    case 3: goto L300;
+    case 4: goto L400;
+    case 5: goto L400;
     }
 L100:
   dgesl_(&wm[3], &dls001_1.n, &dls001_1.n, &iwm[21], &x[1], &c__0);

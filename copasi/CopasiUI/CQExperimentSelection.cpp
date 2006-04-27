@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentSelection.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/02 15:47:39 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:41 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQExperimentSelection.ui'
  **
  ** Created: Mon Oct 31 11:07:46 2005
- **      by: The User Interface Compiler ($Id: CQExperimentSelection.cpp,v 1.1 2005/11/02 15:47:39 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQExperimentSelection.cpp,v 1.2 2006/04/27 01:27:41 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,13 +22,13 @@
 #include "CQExperimentSelection.h"
 
 #include <qvariant.h>
- #include <qpushbutton.h>
- #include <qtable.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include <qimage.h>
- #include <qpixmap.h>
+#include <qpushbutton.h>
+#include <qtable.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include <qimage.h>
+#include <qpixmap.h>
 
 #include "CQExperimentSelection.ui.h"
 

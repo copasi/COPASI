@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVector.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/07 12:37:08 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:26 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CEvaluationNodeVector
 #define COPASI_CEvaluationNodeVector
@@ -80,7 +84,7 @@ class CEvaluationNodeVector : public CEvaluationNode
     virtual std::string getDisplay_C_String(const CEvaluationTree * pTree) const;
 
     /**
-     * Retrieve the display string of the node and its eventual child nodes 
+     * Retrieve the display string of the node and its eventual child nodes
      * in Berkeley Madonna format.
      * @return const Data & value
      */
@@ -104,7 +108,7 @@ class CEvaluationNodeVector : public CEvaluationNode
      * If pAfter == this the child will be inserted at the fornt of the list
      * of children.
      * @param CCopasiNode< Data > * pChild
-     * @param CCopasiNode< Data > * pAfter 
+     * @param CCopasiNode< Data > * pAfter
      *        (default: NULL appended to the list of children)
      * @return bool Success
      */

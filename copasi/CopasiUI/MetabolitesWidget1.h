@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/19 18:15:04 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:44 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /****************************************************************************
- **  $ CopasiUI/MetaboliteWidget.h               
+ **  $ CopasiUI/MetaboliteWidget.h
  **  $ Author  : Mudita Singhal
- **  
- ** This is the header file for the Metabolite Widget, i.e the second level 
+ **
+ ** This is the header file for the Metabolite Widget, i.e the second level
  ** of Metabolites.
  *****************************************************************************/
 #ifndef METABOLITESWIDGET1_H

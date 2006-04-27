@@ -1,25 +1,29 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:21:43 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:46 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'StateSubwidget.ui'
  **
  ** Created: Thu Feb 23 13:39:08 2006
- **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.9 2006/03/02 02:21:43 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.10 2006/04/27 01:27:46 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef STATESUBWIDGET_H
- #define STATESUBWIDGET_H
+#define STATESUBWIDGET_H
 
 #include <qvariant.h>
- #include <qwidget.h>
+#include <qwidget.h>
 
 class QVBoxLayout;
 class QHBoxLayout;

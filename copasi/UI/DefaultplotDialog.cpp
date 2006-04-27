@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DefaultplotDialog.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/05 14:08:20 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:43 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'DefaultplotDialog.ui'
  **
  ** Created: Wed Oct 5 15:59:11 2005
- **      by: The User Interface Compiler ($Id: DefaultplotDialog.cpp,v 1.2 2005/10/05 14:08:20 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: DefaultplotDialog.cpp,v 1.3 2006/04/27 01:27:43 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,15 +22,15 @@
 #include "DefaultplotDialog.h"
 
 #include <qvariant.h>
- #include <qlistbox.h>
- #include <qlabel.h>
- #include <qlineedit.h>
- #include <qtextedit.h>
- #include <qpushbutton.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include "DefaultplotDialog.ui.h"
+#include <qlistbox.h>
+#include <qlabel.h>
+#include <qlineedit.h>
+#include <qtextedit.h>
+#include <qpushbutton.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include "DefaultplotDialog.ui.h"
 
 /*
  *  Constructs a DefaultPlotDialog as a child of 'parent', with the

@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mml/Attic/qtmmlwidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/15 17:10:37 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:04 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /***************************************************************************
  **
@@ -5294,12 +5298,15 @@ QRect MmlMpaddedNode::symbolRect() const
 
 /*!
     \class QtMmlWidget
- 
+
+
     \brief The QtMmlWidget class renders mathematical formulas written in MathML 2.0.
- 
+
+
     QtMmlWidget implements the Presentation Markup subset of the
     MathML 2.0 specification, with a few \link overview.html exceptions\endlink.
- 
+
+
     \code
     QtMmlWidget *mmlWidget = new QtMmlWidget(this);
     QString errorMsg;
@@ -5311,34 +5318,43 @@ QRect MmlMpaddedNode::symbolRect() const
    errorMsg.latin1(), errorLine, errorColumn);
     }
     \endcode
- 
+
+
  */
 
 /*!
     \enum QtMmlWidget::MmlFont
- 
+
+
     This ennumerated type is used in fontName() and setFontName() to
     specify a font type.
- 
+
+
     \value NormalFont The default font type, used to render
     expressions for which no mathvariant or fontfamily is specified,
     or for which the "normal" mathvariant is specified.
- 
+
+
     \value FrakturFont The font type used to render expressions for
     which the "fraktur" mathvariant is specified.
- 
+
+
     \value SansSerifFont    The font type used to render expressions
     for which the "sans-serif" mathvariant is specified.
- 
+
+
     \value ScriptFont     The font type used to render expressions
     for which the "script" mathvariant is specified.
- 
+
+
     \value MonospaceFont    The font type used to render expressions
     for which the "monospace" mathvariant is specified.
- 
+
+
     \value DoublestruckFont The font type used to render expressions
     for which the "doublestruck" mathvariant is specified.
- 
+
+
     \sa setFontName() fontName() setBaseFontPointSize() baseFontPointSize()
  */
 
@@ -5364,7 +5380,8 @@ QtMmlWidget::~QtMmlWidget()
 
 /*!
     Returns the name of the font used to render the font \a type.
- 
+
+
     \sa setFontName()  setBaseFontPointSize() baseFontPointSize() QtMmlWidget::MmlFont
  */
 
@@ -5375,7 +5392,8 @@ QString QtMmlWidget::fontName(MmlFont type) const
 
 /*!
     Sets the name of the font used to render the font \a type to \a name.
- 
+
+
     \sa fontName() setBaseFontPointSize() baseFontPointSize() QtMmlWidget::MmlFont
  */
 
@@ -5390,7 +5408,8 @@ void QtMmlWidget::setFontName(MmlFont type, const QString &name)
     If \a b is true, draws a red bounding rectangle around each
     expression; if \a b is false, no such rectangle is drawn.
     This is mostly useful for debugging MathML expressions.
- 
+
+
     \sa drawFrames()
  */
 
@@ -5404,7 +5423,8 @@ void QtMmlWidget::setDrawFrames(bool b)
     Returns true if each expression should be drawn with a red
     bounding rectangle; otherwise returns false.
     This is mostly useful for debugging MathML expressions.
- 
+
+
     \sa setDrawFrames()
  */
 
@@ -5424,7 +5444,8 @@ void QtMmlWidget::clear()
 /*!
     Returns the point size of the font used to render expressions
     whose scriptlevel is 0.
- 
+
+
     \sa setBaseFontPointSize() fontName() setFontName()
  */
 
@@ -5436,7 +5457,8 @@ int QtMmlWidget::baseFontPointSize() const
 /*!
     Sets the point \a size of the font used to render expressions
     whose scriptlevel is 0.
- 
+
+
     \sa baseFontPointSize() fontName() setFontName()
  */
 
@@ -5470,8 +5492,9 @@ QSize QtMmlWidget::sizeHint() const
     errorLine and \a errorColumn contain the location of the error.
     Any of \a errorMsg, \a errorLine and \a errorColumn may be 0,
     in which case they are not set.
-    
-    \a text should contain MathML 2.0 presentation markup elements enclosed 
+
+
+    \a text should contain MathML 2.0 presentation markup elements enclosed
     in a <math> element.
  */
 
@@ -6015,12 +6038,13 @@ static OperSpecSearchResult _mmlFindOperSpec(const QStringList &name_list, Mml::
     text is a string between <mo> and </mo>. It can be a character ('+'), an
     entity reference ("&infin;") or a character reference ("&#x0221E"). Our
     job is to find an operator spec in the operator dictionary (g_oper_spec_data)
-    that matches text. Things are further complicated by the fact, that many 
+    that matches text. Things are further complicated by the fact, that many
     operators come in several forms (prefix, infix, postfix).
- 
+
+
     If available, this function returns an operator spec matching text in the specified
     form. If such operator is not available, returns an operator spec that matches
-    text, but of some other form in the preference order specified by the MathML spec. 
+    text, but of some other form in the preference order specified by the MathML spec.
     If that's not available either, returns the default operator spec.
  */
 static const OperSpec *mmlFindOperSpec(const QString &text, Mml::FormType form)

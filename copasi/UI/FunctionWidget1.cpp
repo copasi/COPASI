@@ -1,18 +1,23 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.137 $
+   $Revision: 1.138 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/15 23:39:26 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:43 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**********************************************************************
  **  $ CopasiUI/FunctionWidget1.cpp
  **  $ Author  : Mrinmayee Kulkarni
- 
+
+
  ** This file creates the GUI for the  information about an individual
- ** function obtained from the functions database.It is the second level 
- ** widget for functions.  
+ ** function obtained from the functions database.It is the second level
+ ** widget for functions.
  ***********************************************************************/
 
 #include <qvariant.h>
@@ -66,7 +71,7 @@
 #define COL_UNIT 2
 
 /*
- *  Constructs a FunctionWidget1 which is a child of 'parent', with the 
+ *  Constructs a FunctionWidget1 which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
@@ -343,25 +348,25 @@ bool FunctionWidget1::loadParameterTable()
 
       switch (usage)
         {
-        case CFunctionParameter::SUBSTRATE :
+        case CFunctionParameter::SUBSTRATE:
           color = subsColor;
           break;
-        case CFunctionParameter::PRODUCT :
+        case CFunctionParameter::PRODUCT:
           color = prodColor;
           break;
-        case CFunctionParameter::MODIFIER :
+        case CFunctionParameter::MODIFIER:
           color = modiColor;
           break;
-        case CFunctionParameter::PARAMETER :
+        case CFunctionParameter::PARAMETER:
           color = paraColor;
           break;
-        case CFunctionParameter::VOLUME :
+        case CFunctionParameter::VOLUME:
           color = volColor;
           break;
-        case CFunctionParameter::TIME :
+        case CFunctionParameter::TIME:
           color = timeColor;
           break;
-        case CFunctionParameter::VARIABLE :
+        case CFunctionParameter::VARIABLE:
           color = QColor(250, 250, 250);
           break;
         default :

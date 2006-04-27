@@ -1,14 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/02 13:42:41 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:43 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CVersion
- * 
+ *
  * (C) Pedro Mendes 2001
  */
 
@@ -53,49 +57,49 @@ class CVersion
 
   public:
     /**
-     *  Default consructor. 
+     *  Default consructor.
      *  This creates a version object without any version info.
      */
     CVersion();
 
     /**
-     *  Destructor. 
+     *  Destructor.
      */
     ~CVersion();
 
     /**
      *  Returns the major version number.
      *  @return mMajor
-     *  @see mMajor  
+     *  @see mMajor
      */
     C_INT32 getVersionMajor() const;
 
     /**
      *  Returns the minor version number.
      *  @return mMinor
-     *  @see mMinor  
+     *  @see mMinor
      */
     C_INT32 getVersionMinor() const;
 
     /**
      *  Returns the development version number.
      *  @return mDevel
-     *  @see mDevel  
+     *  @see mDevel
      */
     C_INT32 getVersionDevel() const;
 
     /**
      *  Returns a string with the full version number.
      *  @return mVersion
-     *  @see mVersion  
+     *  @see mVersion
      */
     const std::string & getVersion() const;
 
     /**
-     *  Sets a version number 
-     *  @param major major version number. 
-     *  @param minor minor version number. 
-     *  @param devel development version number. 
+     *  Sets a version number
+     *  @param major major version number.
+     *  @param minor minor version number.
+     *  @param devel development version number.
      */
     void setVersion(C_INT32 major, C_INT32 minor, C_INT32 devel);
 

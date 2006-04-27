@@ -1,25 +1,29 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetScan.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/28 23:09:05 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CScanWidgetScan.ui'
  **
  ** Created: Tue Mar 28 14:27:57 2006
- **      by: The User Interface Compiler ($Id: CScanWidgetScan.h,v 1.4 2006/03/28 23:09:05 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CScanWidgetScan.h,v 1.5 2006/04/27 01:27:42 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef CSCANWIDGETSCAN_H
- #define CSCANWIDGETSCAN_H
+#define CSCANWIDGETSCAN_H
 
 #include <qvariant.h>
- #include <qwidget.h>
+#include <qwidget.h>
 
 class QVBoxLayout;
 class QHBoxLayout;

@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 17:50:41 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CCopasiTask class.
- *  This class is used to describe a task in COPASI. This class is 
+ *  This class is used to describe a task in COPASI. This class is
  *  intended to be used as the parent class for all tasks whithin COPASI.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2003
  */
 

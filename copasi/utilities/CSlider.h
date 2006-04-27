@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/10/06 20:10:09 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:43 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CSlider
 #define COPASI_CSlider
@@ -229,12 +233,12 @@ class CSlider : public CCopasiContainer
     void resetRange();
 
     /**
-     * Sets wether the value is to be kept in sync the the objects value.  
+     * Sets wether the value is to be kept in sync the the objects value.
      */
     void setSynced(bool synced);
 
     /**
-     * Returns wether the value is to be kept in sync the the objects value.  
+     * Returns wether the value is to be kept in sync the the objects value.
      * @return bool isSynced.
      */
     bool getSynced() const;
@@ -251,13 +255,13 @@ class CSlider : public CCopasiContainer
 
     /**
      * Converts the scaling name to the corresponding enum.
-     * @return CSlider::Scale 
+     * @return CSlider::Scale
      */
     Scale convertScaleNameToScale(const char* scaleName);
 
     /**
      * Converts the scaling name to the corresponding enum.
-     * @return const char* scaleName 
+     * @return const char* scaleName
      */
     const char* convertScaleToScaleName(Scale scale);
 

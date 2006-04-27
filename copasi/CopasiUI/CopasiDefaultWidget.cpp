@@ -1,43 +1,47 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiDefaultWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/12/20 22:27:45 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:43 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /*******************************************************************
- **  $ CopasiUI/CopasiDefaultWidget.cpp                 
+ **  $ CopasiUI/CopasiDefaultWidget.cpp
  **  $ Author  : Mudita Singhal
  **
- ** This file is used to create the GUI FrontPage for the  information 
- ** obtained from the data model about the Moiety----It is 
+ ** This file is used to create the GUI FrontPage for the  information
+ ** obtained from the data model about the Moiety----It is
  ** the Second level of Moieties.
  ********************************************************************/
-#include <qlabel.h> 
+#include <qlabel.h>
 //#include <qlistbox.h>
 //#include <qlineedit.h>
 //#include <qpushbutton.h>
-#include <qlayout.h> 
+#include <qlayout.h>
 //#include <qtoolbar.h>
-#include <qwidget.h> 
+#include <qwidget.h>
 //#include <qframe.h>
 #include <qpixmap.h>
 
-#include "copasi.h" 
+#include "copasi.h"
 //#include "utilities/CCopasiVector.h"
-#include "CopasiDefaultWidget.h" 
+#include "CopasiDefaultWidget.h"
 //#include "model/CModel.h"
 //#include "model/CMoiety.h"
 //#include "listviews.h"
 //#include "DataModelGUI.h"
-#include "qtUtilities.h" 
+#include "qtUtilities.h"
 //#include "report/CKeyFactory.h"
 
 #include "./icons/copasi_rc.xpm"
 
 /*
- *  Constructs a MoietyWidget which is a child of 'parent', with the 
+ *  Constructs a MoietyWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  *
  */

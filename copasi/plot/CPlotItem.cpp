@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/16 17:43:46 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:41 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "CPlotItem.h"
 #include "report/CKeyFactory.h"
@@ -88,11 +92,11 @@ CPlotItem::CPlotItem(const CPlotItem & src,
   for(unsigned int counter=0; counter < src.getChannels().size(); counter++)
   {
      std::cout << "Channel " << counter << ": " << src.getChannels()[counter] << std::endl;
-  } 
+  }
   for(unsigned int counter=0; counter < this->getChannels().size(); counter++)
   {
      std::cout << "New Channel " << counter << ": " << this->getChannels()[counter] << std::endl;
-  } 
+  }
   */
   setType(src.mType);
 }

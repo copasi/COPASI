@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/FminBrent.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/20 16:16:52 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:53 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COAPSI_FminBrent
 #define COAPSI_FminBrent
@@ -12,7 +16,7 @@
 /**
  *
  * Adapted by Pedro Mendes to suit Gepasi's optimisation framework
- * 9 Aug 1997 
+ * 9 Aug 1997
  *
  **ORIGINAL**in**netlib**********************************************
  *        C math library
@@ -61,7 +65,7 @@
  *      interpolating parabola whose minimum will be treated as a new
  *      approximation to the minimum location if the former falls within
  *      [a,b] and reduces the range enveloping minimum more efficient than
- *      the gold section procedure. 
+ *      the gold section procedure.
  *      When f(x) has a second derivative positive at the minimum location
  *      (not coinciding with a or b) the procedure converges superlinearly
  *      at a rate order about 1.324
@@ -96,7 +100,7 @@ template <class CType> class FDescentTemplate : public FDescent
 
     // override operator "()"
     virtual const C_FLOAT64 operator()(const C_FLOAT64 & value)
-    {return (*mpType.*mMethod)(value);};              // execute member function
+    {return (*mpType.*mMethod)(value);}    ;              // execute member function
   };
 
 int FminBrent(double a,                /* Left border      */

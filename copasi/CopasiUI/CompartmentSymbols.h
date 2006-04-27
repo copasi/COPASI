@@ -1,15 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentSymbols.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/02 15:23:48 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:42 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /****************************************************************************
- **  $ CopasiUI/CompartmentSymbols.h               
+ **  $ CopasiUI/CompartmentSymbols.h
  **  $ Author  : Mudita Singhal
- **  
+ **
  ** This is the header file for the Compartment Symbols
  *****************************************************************************/
 

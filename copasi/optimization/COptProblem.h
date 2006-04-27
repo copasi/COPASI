@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 16:04:02 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:53 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  File name: COptProblem.h
@@ -90,7 +94,7 @@ class COptProblem : public CCopasiProblem
     virtual bool setCallBack(CProcessReport * pCallBack);
 
     /**
-     * Do all neccessary initialization so that calls to caluclate will 
+     * Do all neccessary initialization so that calls to caluclate will
      * be successful. This is called once from CCopasiTask::process()
      * @result bool succes
      */
@@ -98,7 +102,7 @@ class COptProblem : public CCopasiProblem
 
     /**
      * Do the calculatting based on CalculateVariables and fill
-     * CalculateResults with the results. 
+     * CalculateResults with the results.
      * @result bool continue
      */
     virtual bool calculate();
@@ -112,13 +116,13 @@ class COptProblem : public CCopasiProblem
     virtual bool restore(const bool & updateModel);
 
     /**
-     * Check whether all parameters are within their boundaries.  
+     * Check whether all parameters are within their boundaries.
      * @result bool within
      */
     virtual bool checkParametricConstraints();
 
     /**
-     * Check whether all functional constraints are fullfilled. 
+     * Check whether all functional constraints are fullfilled.
      * @result bool fullfilled
      */
     virtual bool checkFunctionalConstraints();
@@ -226,7 +230,7 @@ class COptProblem : public CCopasiProblem
                      const unsigned C_INT32 & iTo);
 
     /**
-     * Set optimization function 
+     * Set optimization function
      * @param const std::string & infix
      * @return bool sccuess
      */
@@ -277,7 +281,7 @@ class COptProblem : public CCopasiProblem
 
   private:
     /**
-     * Allocates all group parameters and assures that they are 
+     * Allocates all group parameters and assures that they are
      * properly initialized.
      */
     void initializeParameter();
@@ -321,7 +325,7 @@ class COptProblem : public CCopasiProblem
     CCopasiParameterGroup * mpGrpConstraints;
 
     /**
-     * A pointer to the vector of optimization items 
+     * A pointer to the vector of optimization items
      */
     std::vector<COptItem *> * mpOptItems;
 
@@ -384,7 +388,7 @@ class COptProblem : public CCopasiProblem
     unsigned C_INT32 mCounter;
 
     /**
-     * A CPU Timer 
+     * A CPU Timer
      */
     CCopasiTimer mCPUTime;
 

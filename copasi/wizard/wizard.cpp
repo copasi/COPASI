@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/09/30 13:49:56 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:54 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'wizard.ui'
  **
  ** Created: Tue Sep 28 23:32:28 2004
- **      by: The User Interface Compiler ($Id: wizard.cpp,v 1.8 2004/09/30 13:49:56 jpahle Exp $)
+ **      by: The User Interface Compiler ($Id: wizard.cpp,v 1.9 2006/04/27 01:32:54 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

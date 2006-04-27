@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathModel.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/24 13:04:19 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:50 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CMathModel class.
@@ -273,12 +277,12 @@ class CMathModel
 
     /**
      *
-     */ 
+     */
     //static bool addParameterSymbols(const CCopasiVector< CReaction::CId2Param > & parameters);
 
     /**
      *
-     */ 
+     */
     //static bool deleteParameterSymbols(const CCopasiVector< CReaction::CId2Param > & parameters);
   };
 

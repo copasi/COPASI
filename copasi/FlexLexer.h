@@ -1,12 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/FlexLexer.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/27 18:06:28 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:34:21 $
    End CVS Header */
 
-// $Header: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/FlexLexer.h,v 1.6 2005/05/27 18:06:28 shoops Exp $
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
+// $Header: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/FlexLexer.h,v 1.7 2006/04/27 01:34:21 shoops Exp $
 
 // FlexLexer.h -- define interfaces for lexical analyzer classes generated
 //    by flex
@@ -49,7 +53,7 @@
 // #include <FlexLexer.h>
 // ...
 
-#ifndef __FLEX_LEXER_H 
+#ifndef __FLEX_LEXER_H
 // Never included before - need to define base class.
 #define __FLEX_LEXER_H
 

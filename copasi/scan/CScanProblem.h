@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:36:49 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:30 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CScanProblem class.
@@ -16,7 +20,7 @@
 #include <string>
 
 #include "utilities/CCopasiProblem.h"
-#include "utilities/CReadConfig.h" 
+#include "utilities/CReadConfig.h"
 //#include "model/CState.h"
 
 //class CModel;
@@ -40,7 +44,7 @@ class CScanProblem : public CCopasiProblem
 
     /**
      *  The initial state, i.e., the starting conditions of the trajectroy/SS.
-     */ 
+     */
     //CState mInitialState;
 
     /**
@@ -72,7 +76,7 @@ class CScanProblem : public CCopasiProblem
     /**
      * Set the moddel the problem is dealing with.
      * @param "CModel *" pModel
-     */ 
+     */
     //virtual bool setModel(CModel * pModel);
 
     /**
@@ -108,19 +112,19 @@ class CScanProblem : public CCopasiProblem
     /**
      * Set the initial state of the problem.
      * @param "const CState &" initialState
-     */ 
+     */
     //void setInitialState(const CState & initialState);
 
     /**
      * Set the initial state of the problem.
      * @param "const CStateX &" initialState
-     */ 
+     */
     //void setInitialState(const CStateX & initialState);
 
     /**
      * Retrieve the initial state of the problem.
      * @return "const CState &" pInitialState
-     */ 
+     */
     //const CState & getInitialState() const;
 
     unsigned C_INT32 getNumberOfScanItems() const;

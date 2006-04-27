@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/13 20:11:33 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:22 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CState class.
- *  The class CState stores the state in time of a model. The state 
+ *  The class CState stores the state in time of a model. The state
  *  is described for the full model, i.e., updates of all internal
  *  metabolites is expected. The order of metabolites is as in the vector
- *  retrieved by CModel::getMetabolites. 
+ *  retrieved by CModel::getMetabolites.
  *  The information is intended to be used with integration routines,
  *  but is not restricted to those.
  *

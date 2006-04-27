@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/FminBrent.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/20 16:16:52 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:53 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <math.h>
 #include <float.h>
@@ -40,7 +44,7 @@ int FminBrent(double a,                 /* Left border      */
     {
       double range = b - a;             /* Range over which the minimum is */
       double middle_range = (a + b) / 2;  /* seeked       */
-      double tol_act =                  /* Actual tolerance     */
+      double tol_act =                 /* Actual tolerance     */
         SQRT_EPSILON * fabs(x) + tol / 3;
       double new_step;                /* Step at this iteration   */
 
@@ -70,8 +74,8 @@ int FminBrent(double a,                 /* Left border      */
           else                        /* and assign possible minus to  */
             q = -q;                   /* p        */
 
-          if (fabs(p) < fabs(new_step*q) &&   /* If x+p/q falls in [a,b]   */
-              p > q*(a - x + 2*tol_act) &&        /* not too close to a and   */
+          if (fabs(p) < fabs(new_step*q) &&    /* If x+p/q falls in [a,b]   */
+              p > q*(a - x + 2*tol_act) &&         /* not too close to a and   */
               p < q*(b - x - 2*tol_act))      /* b, and isn't too large   */
             new_step = p / q;                 /* it is accepted     */
           /* If p/q is too large then the  */

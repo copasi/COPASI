@@ -1,13 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.h,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:30 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:10 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /****************************************************************************
- * 
+ *
  * Created: Tue Aug 11 2003
  *      by: Liang Xu
  *
@@ -76,7 +80,7 @@ class CReportDefinition : public CCopasiObject
 
     /**
      * Convert the table list into a header and body list.
-     * @param const std::vector< CCopasiContainer * > & listOfContainer 
+     * @param const std::vector< CCopasiContainer * > & listOfContainer
      * (default: CCopasiContainer::EmptyList)
      * @return bool success
      */
@@ -177,7 +181,7 @@ class CReportDefinition : public CCopasiObject
 
   private:
     /**
-     * This adds header and body entries for one table element 
+     * This adds header and body entries for one table element
      * (including separator if necessary)
      * @param const CCopasiObject * pObject
      * @return bool success

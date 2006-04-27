@@ -1,15 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.h,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:39:51 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:45 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /****************************************************************************
- **  $ CopasiUI/ScanWidget.h               
+ **  $ CopasiUI/ScanWidget.h
  **  $ Author  : Liang Xu
- **  
+ **
  ** This is the header file for the Scan Widget
  *****************************************************************************/
 #ifndef SCANWIDGET_H

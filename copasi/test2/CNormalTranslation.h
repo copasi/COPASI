@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test2/CNormalTranslation.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/31 14:26:54 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:06 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 // Main
 //
@@ -23,7 +27,7 @@
 #include "copasi.h"
 
 #include "function/CEvaluationTree.h"
-#include "function/CEvaluationNode.h" 
+#include "function/CEvaluationNode.h"
 //#include "function/CEvaluationNodeOperator.h"
 //#include "function/CEvaluationNodeFunction.h"
 //#include "function/CEvaluationNode.h"
@@ -51,7 +55,7 @@ class CNormalTranslation
 
     /**
      * Creating a simplified tree by calling simplifyTree repeatedly until it cannot be simplified further.
-     * The tree itself is actually not created! 
+     * The tree itself is actually not created!
      * @return CEvaluationNode*, pointer to root node of the newly created tree.
      */
     static CEvaluationNode * simplifyTreeReptdly(const CEvaluationNode* root0);

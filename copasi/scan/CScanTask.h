@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:40:33 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:30 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CScanTask class.
  *
  * This class implements a scan task which is comprised of a
  * of a problem and a method.
- *  
+ *
  */
 
 #ifndef COPASI_CScanTask
@@ -64,7 +68,7 @@ class CScanTask : public CCopasiTask
     /**
      * Copy constructor
      * @param const CScanTask & src
-     */ 
+     */
     //-CScanTask(const CScanTask & src);
     CScanTask(const CScanTask & src, const CCopasiContainer * pParent = NULL);
 
@@ -80,7 +84,7 @@ class CScanTask : public CCopasiTask
 
     /**
      * Initialize the task. If an ostream is given this ostream is used
-     * instead of the target specified in the report. This allows nested 
+     * instead of the target specified in the report. This allows nested
      * tasks to share the same output device.
      * @param const OutputFlag & of
      * @param std::ostream * pOstream (default: NULL)

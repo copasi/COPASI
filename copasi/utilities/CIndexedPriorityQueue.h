@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CIndexedPriorityQueue.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/03 20:47:32 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:43 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CPriorityQueue
 #define COPASI_CPriorityQueue
@@ -15,7 +19,7 @@
 class CIndexedPriorityQueue;
 
 /**
- * The PQNode class contains two members, an integer to represent the index, 
+ * The PQNode class contains two members, an integer to represent the index,
  * and a double to represent the key.
  * The heap structure of the indexed priority queue class is implemented as
  * a vector of PQNode.
@@ -54,14 +58,14 @@ class PQNode
  * Each element consistes of a pair of values, a key and an index.
  *
  * The elements in the queue are ordered according to the value of their key.
- * Since for stochastic simulations the minimum time is required, the queue is 
- * ordered so that the element with the minimum key value is at the top. This is 
+ * Since for stochastic simulations the minimum time is required, the queue is
+ * ordered so that the element with the minimum key value is at the top. This is
  * the opposite of the normal ordering of priority queues.
- * 
- * The index can be used to access elements from positions other than at 
- * the front of the queue. 
  *
- * The indexed priority queue as applied to stochastic simulations is described in 
+ * The index can be used to access elements from positions other than at
+ * the front of the queue.
+ *
+ * The indexed priority queue as applied to stochastic simulations is described in
  * "Efficient Exact Stochastic Simulation of Chemical Systems with Many Species
  * and Many Channels", Gibson and Bruck, J. Phys. Chem. A 104 (2000) 1876-1889
  */
@@ -94,7 +98,7 @@ class CIndexedPriorityQueue
     C_FLOAT64 topKey() const;
 
     /**
-     * Deletes the node in the tree with the given index. The pointer 
+     * Deletes the node in the tree with the given index. The pointer
      * in the index array is removed.
      *
      * added by juergen 26 July, 2002
@@ -138,10 +142,10 @@ class CIndexedPriorityQueue
     void buildHeap();
 
     /**
-     * Update the key value of a node at a given index. This 
+     * Update the key value of a node at a given index. This
      * also moves the node to the correct position if neccessary.
      * @param index The index used to access the node
-     * @param key The key value used to determine the priority     
+     * @param key The key value used to determine the priority
      */
     void updateNode(const C_INT32 index, const C_FLOAT64 key);
 

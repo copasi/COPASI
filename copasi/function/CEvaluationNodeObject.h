@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 16:04:01 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:26 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CEvaluationNodeObject
 #define COPASI_CEvaluationNodeObject
@@ -103,7 +107,7 @@ class CEvaluationNodeObject : public CEvaluationNode
     virtual std::string getDisplay_C_String(const CEvaluationTree * pTree) const;
 
     /**
-     * Retrieve the display string of the node and its eventual child nodes in 
+     * Retrieve the display string of the node and its eventual child nodes in
      * Berkeley Madonna format.
      * @return const Data & value
      */

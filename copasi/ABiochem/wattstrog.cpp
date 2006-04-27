@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/ABiochem/wattstrog.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:19:26 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:33:58 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  ABiochem  -  wattstrog
  *
- *  A program to generate random gene networks 
+ *  A program to generate random gene networks
  *  following an Watts-Stroganz small-world topology
- *  
+ *
  *  writen by Pedro Mendes, September 2002
  *  Biochemical Networks Modeling Group
  *  Virginia Bioinformatics Institute

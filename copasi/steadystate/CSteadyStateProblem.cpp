@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:31 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:49 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CSteadyStateProblem class.
  *  This class describes the steady state problem, i.e., it allows to specify
  *  for example initial conditions.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2002
  */
 

@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/20 18:21:12 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:49 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <algorithm>
 #include <cmath>
@@ -354,8 +358,8 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
          mJacobian * b = mH for b (the result is in mdxdt) */
 
       /* int dgetrf_(integer *m,
-       *             integer *n, 
-       *             doublereal *a, 
+       *             integer *n,
+       *             doublereal *a,
        *             integer * lda,
        *             integer *ipiv,
        *             integer *info)
@@ -420,7 +424,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 
       /* int dgetrs_(char *trans,
        *             integer *n,
-       *             integer *nrhs, 
+       *             integer *nrhs,
        *             doublereal *a,
        *             integer *lda,
        *             integer *ipiv,
@@ -464,7 +468,7 @@ CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
        *  info    (output) INTEGER
        *          = 0:  successful exit
        *          < 0:  if info = -i, the i-th argument had an illegal value
-       */ 
+       */
       //std::cout << "b: " << mdxdt << std::endl;
       dgetrs_(&T, &mDimension, &one, mpJacobianX->array(),
               &mDimension, mIpiv, mdxdt.array(), &mDimension, &info);
@@ -704,7 +708,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   mIpiv = new C_INT [mDimension];
 
   /*
-    if (mpProgressHandler) 
+    if (mpProgressHandler)
       mpProgressHandler->init(0, "performing steady state calculation...", true);
   */
 

@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/ABiochem/CGene.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:19:27 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:33:58 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CGene class.
  *  Written by Pedro Mendes September 2002.
- *  
- *  For representing a gene and all the elements needed for COPASI 
+ *
+ *  For representing a gene and all the elements needed for COPASI
  *  to represent it in a model
  */
 

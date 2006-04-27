@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/08 20:11:23 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:40 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQExperimentData.ui'
  **
  ** Created: Wed Mar 8 14:51:48 2006
- **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.9 2006/03/08 20:11:23 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.10 2006/04/27 01:27:40 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,21 +22,21 @@
 #include "CQExperimentData.h"
 
 #include <qvariant.h>
- #include <qpushbutton.h>
- #include <qtoolbutton.h>
- #include <qlabel.h>
- #include <qlistbox.h>
- #include <qcheckbox.h>
- #include <qlineedit.h>
- #include <qbuttongroup.h>
- #include <qradiobutton.h>
- #include <qframe.h>
- #include <qtable.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include <qimage.h>
- #include <qpixmap.h>
+#include <qpushbutton.h>
+#include <qtoolbutton.h>
+#include <qlabel.h>
+#include <qlistbox.h>
+#include <qcheckbox.h>
+#include <qlineedit.h>
+#include <qbuttongroup.h>
+#include <qradiobutton.h>
+#include <qframe.h>
+#include <qtable.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include <qimage.h>
+#include <qpixmap.h>
 
 #include "CQExperimentData.ui.h"
 static const unsigned char image0_data[] =

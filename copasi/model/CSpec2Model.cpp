@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/29 17:28:12 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:22 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #undef yyFlexLexer
 #define yyFlexLexer CScanInputFlexLexer

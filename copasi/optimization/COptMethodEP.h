@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/22 13:35:54 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:53 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_COptMethodEP
 #define COPASI_COptMethodEP
@@ -100,8 +104,8 @@ class COptMethodEP: public COptMethod
     virtual ~COptMethodEP();
 
     /**
-     * Execute the optimization algorithm calling simulation routine 
-     * when needed. It is noted that this procedure can give feedback 
+     * Execute the optimization algorithm calling simulation routine
+     * when needed. It is noted that this procedure can give feedback
      * of its progress by the callback function set with SetCallback.
      */
     virtual bool optimise();

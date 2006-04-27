@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQProgressItem.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/25 18:13:22 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:41 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQProgressItem.ui'
  **
  ** Created: Thu Apr 21 13:02:55 2005
- **      by: The User Interface Compiler ($Id: CQProgressItem.h,v 1.1 2005/04/25 18:13:22 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQProgressItem.h,v 1.2 2006/04/27 01:27:41 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

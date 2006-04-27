@@ -1,34 +1,38 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/someAdditionalDefinitions.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/20 08:54:35 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:27 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 #ifndef DBL_MAX
- #define DBL_MAX  1e+308
- #endif
+#define DBL_MAX  1e+308
+#endif
 
 #ifndef PI
- #define PI           3.14159265358979323846
- #endif
+#define PI           3.14159265358979323846
+#endif
 
 #ifndef EXPONENTIALE
- #define EXPONENTIALE          2.7182818284590452354   /* e */
- #endif
+#define EXPONENTIALE          2.7182818284590452354   /* e */
+#endif
 
 #ifndef INFINITY
- #define INFINITY              (2 * 1e+308)
- #endif
+#define INFINITY              (2 * 1e+308)
+#endif
 
 #ifndef TRUE
- #define TRUE                 1
- #endif
+#define TRUE                 1
+#endif
 
 #ifndef FALSE
- #define FALSE                0
- #endif
+#define FALSE                0
+#endif
 
 #ifdef SOME_C_FUNCTIONS //These are not part of ANSI C and Visual C++ 6.0 misses them.
 

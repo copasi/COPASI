@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dewset.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/17 15:18:55 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:35 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <math.h>
 
@@ -56,10 +60,10 @@ C_INT dewset_(C_INT *n, C_INT *itol, double *rtol,
   /* Function Body */
   switch (*itol)
     {
-    case 1:goto L10;
-    case 2:goto L20;
-    case 3:goto L30;
-    case 4:goto L40;
+    case 1: goto L10;
+    case 2: goto L20;
+    case 3: goto L30;
+    case 4: goto L40;
     }
 L10:
   i__1 = *n;

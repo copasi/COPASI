@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/19 18:37:00 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CCopasiTask class.
- *  This class is used to describe a task in COPASI. This class is 
+ *  This class is used to describe a task in COPASI. This class is
  *  intended to be used as the parent class for all tasks whithin COPASI.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2003
  */
 
@@ -206,7 +210,7 @@ class CCopasiTask : public CCopasiContainer
     CReport mReport;
 
     /**
-     * progress bar handler 
+     * progress bar handler
      */
     CProcessReport * mpCallBack;
 
@@ -249,7 +253,7 @@ class CCopasiTask : public CCopasiContainer
     /**
      * Retrieve the name of the task
      * @return " const string &" name
-     */ 
+     */
     //    const std::string & getName() const;
 
     /**
@@ -320,7 +324,7 @@ class CCopasiTask : public CCopasiContainer
 
     /**
      * Initialize the task. If an ostream is given this ostream is used
-     * instead of the target specified in the report. This allows nested 
+     * instead of the target specified in the report. This allows nested
      * tasks to share the same output device.
      * @param const OutputFlag & of
      * @param std::ostream * pOstream (default: NULL)

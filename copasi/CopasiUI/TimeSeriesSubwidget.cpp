@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesSubwidget.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/10/26 15:43:18 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:46 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
  ** Created: Mon Oct 24 12:45:57 2005
- **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.cpp,v 1.8 2005/10/26 15:43:18 stupe Exp $)
+ **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.cpp,v 1.9 2006/04/27 01:27:46 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,18 +22,18 @@
 #include "TimeSeriesSubwidget.h"
 
 #include <qvariant.h>
- #include <qregexp.h>
- #include <qpushbutton.h>
- #include <qcombobox.h>
- #include <qtabwidget.h>
- #include <qtextedit.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include "qmessagebox.h"
- #include "qfiledialog.h"
- #include "CTimeSeriesTable.h"
- #include "TimeSeriesSubwidget.ui.h"
+#include <qregexp.h>
+#include <qpushbutton.h>
+#include <qcombobox.h>
+#include <qtabwidget.h>
+#include <qtextedit.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include "qmessagebox.h"
+#include "qfiledialog.h"
+#include "CTimeSeriesTable.h"
+#include "TimeSeriesSubwidget.ui.h"
 
 /*
  *  Constructs a TimeSeriesSubWidget as a child of 'parent', with the

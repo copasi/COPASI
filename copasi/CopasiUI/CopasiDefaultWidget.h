@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiDefaultWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/07/04 15:48:27 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:43 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASIDEFAULTW_H
 #define COPASIDEFAULTW_H
@@ -12,7 +16,7 @@
 //#include <qvariant.h>
 //#include <qwidget.h>
 //#include <qtextbrowser.h>
-#include "copasiWidget.h" 
+#include "copasiWidget.h"
 //class QVBoxLayout;
 //class QHBoxLayout;
 class QGridLayout;

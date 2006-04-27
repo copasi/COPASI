@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingWidget.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/08 18:50:55 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:41 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingWidget.ui'
  **
  ** Created: Wed Mar 8 13:45:32 2006
- **      by: The User Interface Compiler ($Id: CQFittingWidget.cpp,v 1.8 2006/03/08 18:50:55 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQFittingWidget.cpp,v 1.9 2006/04/27 01:27:41 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,18 +22,18 @@
 #include "CQFittingWidget.h"
 
 #include <qvariant.h>
- #include <qpushbutton.h>
- #include <qtabwidget.h>
- #include <qwidget.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include "TaskWidget.h"
- #include "CQFittingWidget.ui.h"
+#include <qpushbutton.h>
+#include <qtabwidget.h>
+#include <qwidget.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include "TaskWidget.h"
+#include "CQFittingWidget.ui.h"
 
 /*
  *  Constructs a CQFittingWidget which is a child of 'parent', with the
- *  name 'name'.' 
+ *  name 'name'.'
  */
 CQFittingWidget::CQFittingWidget(QWidget* parent, const char* name)
     : TaskWidget(parent, name)

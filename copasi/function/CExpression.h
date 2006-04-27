@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 12:43:28 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:26 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CExpression
 #define COPASI_CExpression
@@ -74,7 +78,7 @@ class CExpression:
 
     /**
      * Retrieve the list of container used for compile
-     * @return const std::vector< CCopasiContainer * > & listOfContainer 
+     * @return const std::vector< CCopasiContainer * > & listOfContainer
      */
     const std::vector< CCopasiContainer * > & getListOfContainer() const;
 

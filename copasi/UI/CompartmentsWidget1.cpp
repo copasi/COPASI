@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.87 $
+   $Revision: 1.88 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:21 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:43 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /*******************************************************************
- **  $ CopasiUI/CompartmentsWidget1.cpp                 
+ **  $ CopasiUI/CompartmentsWidget1.cpp
  **  $ Author  : Mudita Singhal
  **
- ** This file is used to create the GUI FrontPage for the 
+ ** This file is used to create the GUI FrontPage for the
  ** information obtained from the data model about the individual
  ** Compartments----It is the second level of Compartments
  ********************************************************************/
@@ -38,7 +42,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 
 /*
- *  Constructs a CompartmentsWidget1 which is a child of 'parent', with the 
+ *  Constructs a CompartmentsWidget1 which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 CompartmentsWidget1::CompartmentsWidget1(QWidget* parent, const char* name, WFlags fl)

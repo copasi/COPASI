@@ -1,19 +1,26 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHGASA.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/03/18 02:58:23 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:53 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /***************************************************************************
                     COptMethodHGASA.cpp  - Hybrid GA/SA  Optimizer
                     -------------------------------------------------
-                       
+
+
          Implemented by Dingjun Chen
-        
-                       Starting Date: Mar. 2004 
-   
+
+
+                       Starting Date: Mar. 2004
+
+
                        COPASI project group
  ***************************************************************************/
 
@@ -509,8 +516,9 @@ double COptMethodHGASA::evaluate(int i)
  bool outside_range = FALSE;
  double fitness;
  double fitness0;
- double tmp; 
- 
+ double tmp;
+
+
  // evaluate the fitness
  try
  {
@@ -526,7 +534,8 @@ double COptMethodHGASA::evaluate(int i)
  {
   fitness = DBL_MAX;
  }
- 
+
+
  return fitness;
 }
  */

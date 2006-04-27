@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiException.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/19 15:17:13 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CCopasiException class. A more elaborate class description.
@@ -22,7 +26,7 @@ class CCopasiException
   {
   private:
     /**
-     * Default consructor. 
+     * Default consructor.
      */
     CCopasiException();
 
@@ -34,7 +38,7 @@ class CCopasiException
     CCopasiException(const CCopasiMessage & message);
 
     /**
-     * Destructor. 
+     * Destructor.
      */
     ~CCopasiException();
 

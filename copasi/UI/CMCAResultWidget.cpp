@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CMCAResultWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/11 10:04:21 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:40 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <qlayout.h>
 #include "copasi.h"
@@ -18,7 +22,7 @@
 #include "utilities/CCopasiVector.h"
 
 /*
- *  Constructs a CMCAResultWidget which is a child of 'parent', with the 
+ *  Constructs a CMCAResultWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 CMCAResultWidget::CMCAResultWidget(QWidget* parent, const char* name, WFlags fl)

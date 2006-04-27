@@ -1,18 +1,22 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/19 18:36:59 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:49 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CMCATask class.
  *
  * This class implements a metabolic control analysis task which is comprised of a
- * problem and a method. Additionally calls to the reporting 
+ * problem and a method. Additionally calls to the reporting
  * methods are done when initialized.
- *  
+ *
  * Created for Copasi by Ralph Gauges 2004
  */
 

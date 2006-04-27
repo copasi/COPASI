@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2006/03/07 09:06:54 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:59 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <time.h>
 #include <sys/timeb.h>
@@ -122,7 +126,7 @@ void CRandom::setModulus(const unsigned C_INT32 & modulus)
 }
 
 #ifdef Darwin
-#include <mach/mach_init.h> 
+#include <mach/mach_init.h>
 /*
  * References to host objects are returned by:
  *      mach_host_self() - trap
@@ -130,7 +134,7 @@ void CRandom::setModulus(const unsigned C_INT32 & modulus)
  * extern mach_port_t mach_host_self(void);
  */
 
-#include <mach/mach_host.h> 
+#include <mach/mach_host.h>
 /*
  *      Get service port for a processor set.
  *      Available to all.
@@ -140,7 +144,7 @@ void CRandom::setModulus(const unsigned C_INT32 & modulus)
  *                                             clock_serv_t *clock_serv);
  */
 
-#include <mach/clock.h> 
+#include <mach/clock.h>
 /**
  *      Get the clock time.
  *      Available to all.

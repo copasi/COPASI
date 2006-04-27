@@ -1,14 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CRange.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/24 14:51:29 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:27 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CRange
- * 
+ *
  * Created for Copasi by Stefan Hoops
  * (C) Stefan Hoops 2001
  */
@@ -21,7 +25,7 @@
 
 /**
  *
- */ 
+ */
 /** @dia:pos -40.594,3.88725 */
 class CRange : public CCopasiContainer
   {
@@ -85,11 +89,11 @@ class CRange : public CCopasiContainer
     virtual ~CRange();
 
     /**
-     *  Loads an object with data coming from a CReadConfig object. 
+     *  Loads an object with data coming from a CReadConfig object.
      *  (CReadConfig object reads an input stream)
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail
-     */ 
+     */
     //virtual void load(CReadConfig & configbuffer,
     //                  CReadConfig::Mode mode = CReadConfig::NEXT);
 

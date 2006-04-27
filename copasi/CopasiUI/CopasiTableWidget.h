@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/15 18:45:24 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:43 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /****************************************************************************
- **  $ CopasiUI/CompartmentsWidget.h               
+ **  $ CopasiUI/CompartmentsWidget.h
  **  $ Author  : Mudita Singhal
- **  
- ** This is the header file for the Compartments Widget, i.e the First level 
+ **
+ ** This is the header file for the Compartments Widget, i.e the First level
  ** of Compartments.
  *****************************************************************************/
 
@@ -88,14 +92,14 @@ class CopasiTableWidget : public CopasiWidget
     ListViews::ObjectType mOT;
 
     /**
-     The flag to be set if columns in the table need to be justified 
+     The flag to be set if columns in the table need to be justified
     */
     bool flagtoAdjust;
 
     //These are the methods that need to be implemented by specialized widgets:
 
     /**
-     * This initializes the widget 
+     * This initializes the widget
      */
     virtual void init();
 
@@ -145,7 +149,7 @@ class CopasiTableWidget : public CopasiWidget
     {return;}
 
     /**
-     * to catch the delKeyEvent 
+     * to catch the delKeyEvent
      */
     virtual void keyPressEvent (QKeyEvent * e);
   signals:

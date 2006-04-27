@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/17 16:03:41 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:44 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef MODELVALUES_WIDGET_H
 #define MODELVALUES_WIDGET_H
@@ -25,7 +29,7 @@ class ModelValuesWidget : public CopasiTableWidget
     /* updates the headers with unit info */
 
     /**
-     * This initializes the widget 
+     * This initializes the widget
      */
     virtual void init();
 

@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/03 22:35:12 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:30 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CScanMethod class.
@@ -155,12 +159,12 @@ class CScanMethod : public CCopasiMethod
 
     /**
      *
-     */ 
+     */
     //unsigned C_INT32 mVariableSize;
 
     /**
      *
-     */ 
+     */
     //C_FLOAT64 * mpVariables;
 
     // Operations
@@ -173,7 +177,7 @@ class CScanMethod : public CCopasiMethod
   protected:
     /**
      * Specific constructor.
-     * @param CCopasiMethod::SubType subType 
+     * @param CCopasiMethod::SubType subType
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CScanMethod(CCopasiMethod::SubType subType,
@@ -190,7 +194,7 @@ class CScanMethod : public CCopasiMethod
     /**
      *  Copy constructor.
      *  @param "const CTrajectoryMethod &" src
-     */ 
+     */
     //CScanMethod(const CScanMethod & src,
     //            const CCopasiContainer * pParent = NULL);
 
@@ -214,7 +218,7 @@ class CScanMethod : public CCopasiMethod
 
     /**
      *  The main scan method.
-     */ 
+     */
     //void scan(unsigned C_INT32 s, bool C_UNUSED(nl), void (*pCallback)(CReport *), CReport *pReport);
 
     /**
@@ -236,7 +240,7 @@ class CScanMethod : public CCopasiMethod
      *  @param unsigned C_INT32 i where to start in the distribution
      *  @param unsigned C_INT32 first first parameter in the set of Master/Slaves
      *  @param unsigned C_INT32 last last parameter in the set of Master/Slaves
-     */ 
+     */
     //void setScanParameterValue(unsigned C_INT32 i,
     //                           unsigned C_INT32 first,
     //                           unsigned C_INT32 last);

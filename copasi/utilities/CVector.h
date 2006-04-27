@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVector.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/21 13:18:24 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:43 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CVector
 #define COPASI_CVector
@@ -21,7 +25,7 @@ std::ostream &operator<<(std::ostream &os, const CVector< CType > & A);
 /**
  * Template class CVector < class CType >
  * This template class is a simple vector class  allowing standard
- * C-style and fortran style access to the elements. It also supplies 
+ * C-style and fortran style access to the elements. It also supplies
  * an ostream operator.
  */
 template <class CType> class CVector

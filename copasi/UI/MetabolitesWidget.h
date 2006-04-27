@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/17 16:03:41 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:44 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /****************************************************************************
- **  $ CopasiUI/CompartmentsWidget.h               
+ **  $ CopasiUI/CompartmentsWidget.h
  **  $ Author  : Mudita Singhal
- **  
- ** This is the header file for the Compartments Widget, i.e the First level 
+ **
+ ** This is the header file for the Compartments Widget, i.e the First level
  ** of Compartments.
  *****************************************************************************/
 
@@ -39,12 +43,12 @@ class MetabolitesWidget : public CopasiTableWidget
     QPushButton* btnToggle;
 
     /**
-     * This initializes the widget 
+     * This initializes the widget
      */
     virtual void init();
 
     /**
-     * shows units for the quantities 
+     * shows units for the quantities
      */
     void showHeaders();
 

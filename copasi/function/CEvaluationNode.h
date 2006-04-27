@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/10 09:58:33 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:25 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CEvaluationNode
 #define COPASI_CEvaluationNode
@@ -142,7 +146,7 @@ class CEvaluationNode : public CCopasiNode< std::string >
     virtual std::string getDisplay_C_String(const CEvaluationTree * pTree) const;
 
     /**
-     * Retrieve the display string of the node and its eventual child nodes 
+     * Retrieve the display string of the node and its eventual child nodes
      * in Berkeley Madonna format.
      * @return const Data & value
      */
@@ -151,14 +155,14 @@ class CEvaluationNode : public CCopasiNode< std::string >
     /**
      * Retrieve the type of the node.
      * Note the type combines type and subType information. To
-     * Retrieve the type use type(getType()) and to retrieve the 
+     * Retrieve the type use type(getType()) and to retrieve the
      * subType use subType(getType()).
      * @return const Type & type.
      */
     const Type & getType() const;
 
     /**
-     * Create a new invalid ASTNode. 
+     * Create a new invalid ASTNode.
      * @return ASTNode* return a pointer to the newly created node;
      */
     virtual ASTNode* toAST() const;
@@ -236,42 +240,42 @@ class CEvaluationNode : public CCopasiNode< std::string >
      * as can be found for the operator '^' means evaluation
      * proceeds from right to left.
      *
-     *  left precedence |              | right precedence 
+     *  left precedence |              | right precedence
      * -----------------+--------------+------------------
-     *                  | LOGIC:       |                  
-     *   3              |  .not.       |  2                
-     *   4              |  .or.        |  5                
-     *   6              |  .xor.       |  7               
-     *   8              |  .and.       |  9               
-     *  10              |  .eq.        | 11               
-     *  12              |  .ne.        | 13               
-     *  14              |  .gt.        | 15               
-     *  16              |  .ge.        | 17               
-     *  18              |  .lt.        | 19               
-     *  20              |  .le.        | 21               
+     *                  | LOGIC:       |
+     *   3              |  .not.       |  2
+     *   4              |  .or.        |  5
+     *   6              |  .xor.       |  7
+     *   8              |  .and.       |  9
+     *  10              |  .eq.        | 11
+     *  12              |  .ne.        | 13
+     *  14              |  .gt.        | 15
+     *  16              |  .ge.        | 17
+     *  18              |  .lt.        | 19
+     *  20              |  .le.        | 21
      * -----------------+--------------+------------------
-     *                  | OPERATOR:    |                  
-     *  22              |  -           | 23               
-     *  22              |  +           | 23               
-     *  26              |  %           | 27               
-     *  28              |  /           | 29               
-     *  28              |  *           | 29               
-     *  33              |  ^           | 32               
+     *                  | OPERATOR:    |
+     *  22              |  -           | 23
+     *  22              |  +           | 23
+     *  26              |  %           | 27
+     *  28              |  /           | 29
+     *  28              |  *           | 29
+     *  33              |  ^           | 32
      * -----------------+--------------+------------------
-     *  35              | FUNCTION     | 34               
-     *  35              | MV_FUNCTION  | 34               
-     *  35              | CALL         | 34               
-     *  35              | CHOICE       | 34               
+     *  35              | FUNCTION     | 34
+     *  35              | MV_FUNCTION  | 34
+     *  35              | CALL         | 34
+     *  35              | CHOICE       | 34
      * -----------------+--------------+------------------
-     *  36              | NUMBER       | 37               
-     *  36              | CONSTANT     | 37               
-     *  36              | OBJECT       | 37               
-     *  36              | VARIABLE     | 37               
+     *  36              | NUMBER       | 37
+     *  36              | CONSTANT     | 37
+     *  36              | OBJECT       | 37
+     *  36              | VARIABLE     | 37
      * -----------------+--------------+------------------
-     *                  | STRUCTURE:   |                  
-     *  ULONG_MAX       |  (| 1                
-     *  0               |  ,           | 1                
-     *  0               |)           | ULONG_MAX       
+     *                  | STRUCTURE:   |
+     *  ULONG_MAX       |  (| 1
+     *  0               |  ,           | 1
+     *  0               |)           | ULONG_MAX
      */
     class CPrecedence
       {

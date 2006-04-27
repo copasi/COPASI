@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetTask.ui.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/28 23:09:05 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** ui.h extension file, included from the uic-generated form implementation.
@@ -43,13 +47,13 @@ bool CScanWidgetTask::initFromScanProblem(CScanProblem * pg, const CModel* model
   int n;
   switch (type)
     {
-    case CCopasiTask::steadyState :
+    case CCopasiTask::steadyState:
       n = 0;
       break;
-    case CCopasiTask::timeCourse :
+    case CCopasiTask::timeCourse:
       n = 1;
       break;
-      //case CCopasiTask::mca :
+      //case CCopasiTask::mca:
       //  n = 2;
       //  break;
     default :
@@ -71,13 +75,13 @@ bool CScanWidgetTask::saveToScanProblem(CScanProblem * pg) const
     int type = comboType->currentItem();
     switch (type)
       {
-      case 0 :
+      case 0:
         pg->setSubtask(CCopasiTask::steadyState);
         break;
-      case 1 :
+      case 1:
         pg->setSubtask(CCopasiTask::timeCourse);
         break;
-        //case 2 :
+        //case 2:
         //  pg->setSubtask(CCopasiTask::mca);
         //  break;
       default :

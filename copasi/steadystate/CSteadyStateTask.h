@@ -1,18 +1,22 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/17 16:05:09 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:49 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CSteadyStateTask class.
  *
  * This class implements a steady state task which is comprised of a
- * of a problem and a method. Additionally calls to the reporting 
+ * of a problem and a method. Additionally calls to the reporting
  * methods are done when initialized.
- *  
+ *
  * Created for Copasi by Stefan Hoops 2002
  */
 
@@ -51,7 +55,7 @@ class CSteadyStateTask : public CCopasiTask
     CMatrix< C_FLOAT64 > mJacobianX;
 
     /**
-     * Whether the model is actually reducable and calculating 
+     * Whether the model is actually reducable and calculating
      * stability of the reduced steady states makes sense
      */
     bool mCalculateReducedSystem;
@@ -95,7 +99,7 @@ class CSteadyStateTask : public CCopasiTask
 
     /**
      * Initialize the task. If an ostream is given this ostream is used
-     * instead of the target specified in the report. This allows nested 
+     * instead of the target specified in the report. This allows nested
      * tasks to share the same output device.
      * @param const OutputFlag & of
      * @param std::ostream * pOstream (default: NULL)
@@ -134,7 +138,7 @@ class CSteadyStateTask : public CCopasiTask
     /**
      * Retrieves a pointer to steady state.
      * @return CState * pSteadyState
-     */ 
+     */
     //CState * getState();
     const CState * getState() const;
 

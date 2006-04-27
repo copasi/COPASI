@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.167 $
+   $Revision: 1.168 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/21 11:18:45 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:46 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <qapplication.h>
 #include <qlayout.h>
@@ -53,14 +57,14 @@ extern const char * CopasiLicense;
 #define AutoSaveInterval 10*60*1000
 
 /**
- *  Constructs a CopasiUI window which is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f'.  
+ *  Constructs a CopasiUI window which is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
  *  @param parent The widget which this window is a child of.
- *  @param name The object name is a text that can be used to identify 
+ *  @param name The object name is a text that can be used to identify
  *  this QObject. It's particularly useful in conjunction with the Qt Designer.
- *  You can find an object by name (and type) using child(), and more than one 
- *  using queryList(). 
- *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation 
+ *  You can find an object by name (and type) using child(), and more than one
+ *  using queryList().
+ *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation
  *  for more information about these flags.
  */
 CopasiUI3Window::CopasiUI3Window():
@@ -165,8 +169,8 @@ CopasiUI3Window::~CopasiUI3Window()
  **
  ** Parameters:- Void
  ** Returns  :- void
- ** Descripton:- This method is called when the users clicks on the save as 
- **              option in the menu File 
+ ** Descripton:- This method is called when the users clicks on the save as
+ **              option in the menu File
  *******************************************************************************************/
 void CopasiUI3Window::slotFileSaveAs(QString str)
 {
@@ -224,8 +228,8 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
  **
  ** Parameters:- Void
  ** Returns  :- void
- ** Descripton:- This method is called when the users clicks on the new as 
- **              option in the menu File 
+ ** Descripton:- This method is called when the users clicks on the new as
+ **              option in the menu File
  **
  *******************************************************************************************/
 void CopasiUI3Window::newDoc()
@@ -276,8 +280,8 @@ void CopasiUI3Window::newDoc()
  **
  ** Parameters:- Void
  ** Returns  :- void
- ** Descripton:- This method is called when the users clicks on Open 
- **              option in the menu File 
+ ** Descripton:- This method is called when the users clicks on Open
+ **              option in the menu File
  *******************************************************************************************/
 void CopasiUI3Window::slotFileOpen(QString file)
 {
@@ -404,7 +408,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
  **
  ** Parameters:- Void
  ** Returns  :- void
- ** Descripton:- This method is called when the users clicks on the save as 
+ ** Descripton:- This method is called when the users clicks on the save as
  **              option in the menu File and it is used to save the document information
  *******************************************************************************************/
 void CopasiUI3Window::slotFileSave()
@@ -538,10 +542,11 @@ void CopasiUI3Window::CleanUp()
  **
  ** Parameters:- Void
  ** Returns  :- void
- ** Descripton:- This method is called when the users clicks on the print as 
+ ** Descripton:- This method is called when the users clicks on the print as
  **              option in the menu File and is used to send the document ro
  **              printing
- 
+
+
  *******************************************************************************************/
 void CopasiUI3Window::slotFilePrint()
 {}
@@ -822,7 +827,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
         }
 
       /* still check for warnings.
-       * Maybe events or rules were ignored while reading 
+       * Maybe events or rules were ignored while reading
        * the file.
        */
       if (success)

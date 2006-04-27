@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/14 16:29:42 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:52 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_COptItem
 #define COPASI_COptItem
@@ -133,7 +137,7 @@ class COptItem: public CCopasiParameterGroup
     static bool isValid(CCopasiParameterGroup & group);
 
     /**
-     * Compile the optimization item. This function must be called 
+     * Compile the optimization item. This function must be called
      * before any of the check functions are called.
      * @param const std::vector< CCopasiContainer * > listOfContainer
      * @return bool success
@@ -207,7 +211,7 @@ class COptItem: public CCopasiParameterGroup
 
   private:
     /**
-     * Allocates all group parameters and assures that they are 
+     * Allocates all group parameters and assures that they are
      * properly initialized.
      */
     void initializeParameter();
@@ -255,7 +259,7 @@ class COptItem: public CCopasiParameterGroup
     const C_FLOAT64 * mpLowerBound;
 
     /**
-     * The value of the lower bound (only if not on object) 
+     * The value of the lower bound (only if not on object)
      */
     C_FLOAT64 mLowerBound;
 
@@ -270,7 +274,7 @@ class COptItem: public CCopasiParameterGroup
     const C_FLOAT64 * mpUpperBound;
 
     /**
-     * The value of the upper bound (only if not on object) 
+     * The value of the upper bound (only if not on object)
      */
     C_FLOAT64 mUpperBound;
   };

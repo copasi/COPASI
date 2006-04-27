@@ -1,14 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/09 12:54:46 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:26 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CKinFunction
- * 
+ *
  * Created for Copasi by Stefan Hoops
  * (C) Stefan Hoops 2002
  */
@@ -94,35 +98,35 @@ class CKinFunction : public CFunction
 
     /**
         *  This function indentify the object from name
-        */ 
+        */
     //bool createObjList();
 
     /**
         *  This  connects the nodes to build the binary function tree
-        */ 
+        */
     //C_INT32 connectNodes();
 
     /**
      * This function is part of the algorithm that builds the binary tree.
      * The expression to the right of the current node (mNidx) is parsed until
-     * an operand with a left priority <= the argument (right priority) 
+     * an operand with a left priority <= the argument (right priority)
      * is encounterd. The pointer to the top node of the parsed expression is
      * returned.
      * @param C_INT16 priority
      * @return CNodeK *
-     */ 
+     */
     //CNodeK * parseExpression(C_INT16 priority);
 
     /**
      * This function is part of the algorithm that builds the binary tree.
-     * It returns a pointer to next primary node. Here next is with repect 
+     * It returns a pointer to next primary node. Here next is with repect
      * to the internal counter mNidx. If the node is a dead end, i.e., any contant
      * a pointer the node is returned. If then node is '(' the expression between
      * the node and the matching ')' is parsed and a pointer to the resulting top
      * node is returned. If the node is a function or a unary minus the argument is
-     * parsed and a pointer to the function node is returned. 
+     * parsed and a pointer to the function node is returned.
      * @return CNodeK *
-     */ 
+     */
     //CNodeK * parsePrimary();
 
     /**

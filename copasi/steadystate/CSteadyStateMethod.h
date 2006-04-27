@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:23:08 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:49 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CSteadyStateMethod class.
  *  This class describes the interface to all steady state methods.
  *  The variaous method like Netwon have to be derived from
  *  this class.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2002
  */
 
@@ -97,7 +101,7 @@ class CSteadyStateMethod : public CCopasiMethod
   protected:
     /**
      * Specific constructor.
-     * @param CCopasiMethod::SubType subType 
+     * @param CCopasiMethod::SubType subType
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CSteadyStateMethod(CCopasiMethod::SubType subType,
@@ -127,9 +131,9 @@ class CSteadyStateMethod : public CCopasiMethod
 
     /**
      *  Set a pointer to the problem.
-     *  This method is used by CSteadyState 
+     *  This method is used by CSteadyState
      *  @param "CSteadyStateProblem *" problem
-     */ 
+     */
     //void setProblem(CSteadyStateProblem * problem);
 
     /**

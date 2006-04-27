@@ -1,15 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CReportDefinitionSelect.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/09/19 09:44:12 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /********************************************************
 Author: Liang Xu
 Version : 1.xx  <first>
-Description: 
+Description:
 Date: 08/15
 Comment : CReportDefinitionSelect to select the report definition for one task
 Contact: Please contact lixu1@vt.edu.

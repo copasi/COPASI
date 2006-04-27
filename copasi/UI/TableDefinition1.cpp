@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.cpp,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/17 17:50:40 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:46 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file '.\TableDefinition1.ui'
  **
  ** Created: Wed Aug 6 22:43:06 2003
- **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.50 2005/05/17 17:50:40 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: TableDefinition1.cpp,v 1.51 2006/04/27 01:27:46 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -48,7 +52,7 @@
 #include "./icons/scanwidgetbuttonicon.xpm"
 
 /*
- *  Constructs a TableDefinition1 as a child of 'parent', with the 
+ *  Constructs a TableDefinition1 as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 TableDefinition1::TableDefinition1(QWidget* parent, const char* name, WFlags fl)

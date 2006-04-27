@@ -1,19 +1,23 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/Tree.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/15 18:45:24 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:46 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  **  $ CopasiUI/Tree.h                 Modified on : 8th March, 2002
  **  $ Author  : Ankur Gupta
- **  
+ **
  **  This file is a template code for tree generation.
  **  The tree that is generated through this code is a general tree with any numbers of
  **  childrens for a given node at any level.
- ** 
+ **
  **
  *****************************************************************************/
 
@@ -21,8 +25,8 @@
 #define TREE_H
 
 /*********************************************************
- ** This class is a template class for the node that will 
- ** hold informations such as the information and the 
+ ** This class is a template class for the node that will
+ ** hold informations such as the information and the
  ** links to its child,sibling and parent
  **
  ** The information can be in turn any object that the user

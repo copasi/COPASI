@@ -1,14 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/Cmt19937.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:30:27 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:00 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * Cmt19937 class implementing the Mersenne Twister random number generator,
- * 
+ *
  * Created for Copasi by Stefan Hoops
  *
  * A C-program for MT19937, with initialization improved 2002/2/10.
@@ -16,11 +20,11 @@
  * This is a faster version by taking Shawn Cokus's optimization,
  * Matthe Bellew's simplification, Isaku Wada's real version.
  *
- * Before using, initialize the state by using init_genrand(seed) 
+ * Before using, initialize the state by using init_genrand(seed)
  * or init_by_array(init_key, key_length).
  *
  * Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura,
- * All rights reserved.                          
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,8 +37,8 @@
  *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
  *
- *   3. The names of its contributors may not be used to endorse or promote 
- *      products derived from this software without specific prior written 
+ *   3. The names of its contributors may not be used to endorse or promote
+ *      products derived from this software without specific prior written
  *      permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -78,7 +82,7 @@ class Cmt19937 : private CRandom
     /**
      * Default/Named constructor.
      * Seeds the random number generator with the given seed.
-     * @param C_INT32 seed 
+     * @param C_INT32 seed
      */
     Cmt19937(unsigned C_INT32 seed);
 
@@ -91,7 +95,7 @@ class Cmt19937 : private CRandom
     ~Cmt19937();
 
     /**
-     * Initialize or reinitialize the random number generator with 
+     * Initialize or reinitialize the random number generator with
      * the given seed.
      * @param unsigned C_INT32 seed (default system seed)
      */

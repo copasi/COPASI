@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.256 $
+   $Revision: 1.257 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 17:50:40 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:21 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /////////////////////////////////////////////////////////////////////////////
 // CModel
@@ -624,11 +628,11 @@ void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
   char cU = 'U'; /* 1 in the diaogonal of R */
 
   /* int dtrtri_(char *uplo,
-   *             char *diag, 
-   *             integer *n, 
+   *             char *diag,
+   *             integer *n,
    *             doublereal * A,
-   *             integer *lda, 
-   *             integer *info);   
+   *             integer *lda,
+   *             integer *info);
    *  -- LAPACK routine (version 3.0) --
    *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
    *     Courant Institute, Argonne National Lab, and Rice University
@@ -754,7 +758,7 @@ void CModel::buildMoieties()
   return;
 }
 
-#ifdef WIN32 
+#ifdef WIN32
 // warning C4056: overflow in floating-point constant arithmetic
 // warning C4756: overflow in constant arithmetic
 # pragma warning (disable: 4056 4756)
@@ -1709,10 +1713,12 @@ CReaction* CModel::createReaction(const std::string & name)
 {
   if (mSteps.getIndex(reaction.getObjectName()) != C_INVALID_INDEX)
     return false;
- 
+
+
   mSteps.add(reaction);
   mSteps[reaction.getObjectName()]->compile();
- 
+
+
   setCompileFlag();
   return true;
 }*/
@@ -2205,11 +2211,11 @@ void CModel::buildLinkZero()
   // Calculate Row Echelon form of R.
   // First invert R_1,1
   /* int dtrtri_(char *uplo,
-   *             char *diag, 
-   *             integer *n, 
+   *             char *diag,
+   *             integer *n,
    *             doublereal * A,
-   *             integer *lda, 
-   *             integer *info);   
+   *             integer *lda,
+   *             integer *info);
    *  -- LAPACK routine (version 3.0) --
    *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
    *     Courant Institute, Argonne National Lab, and Rice University

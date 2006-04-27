@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dcfode.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/17 15:18:55 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:35 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "copasi.h"
 
@@ -75,8 +79,8 @@ C_INT dcfode_(C_INT *meth, double *elco, double * tesco)
   /* Function Body */
   switch (*meth)
     {
-    case 1:goto L100;
-    case 2:goto L200;
+    case 1: goto L100;
+    case 2: goto L200;
     }
 
 L100:

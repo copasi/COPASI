@@ -1,15 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReportDefinitionSelect.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:21 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /********************************************************
 Author: Liang Xu
 Version : 1.xx  <first>
-Description: 
+Description:
 Date: 08/15
 Comment : CReportDefinitionSelect to select the report definition for one task
 Contact: Please contact lixu1@vt.edu.
@@ -38,7 +42,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "report/CReport.h"
 
 /*
- *  Constructs a CReportDefinitionSelect as a child of 'parent', with the 
+ *  Constructs a CReportDefinitionSelect as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 

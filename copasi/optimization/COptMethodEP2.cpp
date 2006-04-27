@@ -1,19 +1,26 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP2.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/04/19 11:43:41 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:53 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /***************************************************************************
                     COptMethodEP2.cpp  - Evolutionary Program  Optimizer
                     -------------------------------------------------
-                       
+
+
          Implemented by Dingjun Chen
-        
-                       Starting Date: Dec. 2003 
-   
+
+
+                       Starting Date: Dec. 2003
+
+
                        COPASI project group
  ***************************************************************************/
 
@@ -152,7 +159,7 @@ C_INT32 COptMethodEP2::optimise()
    {
     CandidateValueRate[i]=1-q*pow((1-q),i);
    }
-  */ 
+  */
   // get the index of the fittest
   BestFoundSoFar = fittest();
 

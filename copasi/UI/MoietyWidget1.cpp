@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MoietyWidget1.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/24 16:38:24 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:44 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /*******************************************************************
- **  $ CopasiUI/MoietyWidget1.cpp                 
+ **  $ CopasiUI/MoietyWidget1.cpp
  **  $ Author  : Mudita Singhal
  **
- ** This file is used to create the GUI FrontPage for the  information 
- ** obtained from the data model about the Moiety----It is 
+ ** This file is used to create the GUI FrontPage for the  information
+ ** obtained from the data model about the Moiety----It is
  ** the Second level of Moieties.
  ********************************************************************/
 #include <qlabel.h>
@@ -34,7 +38,7 @@
 #include "report/CKeyFactory.h"
 
 /*
- *  Constructs a MoietyWidget which is a child of 'parent', with the 
+ *  Constructs a MoietyWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  *
  */

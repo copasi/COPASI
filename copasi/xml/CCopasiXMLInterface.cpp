@@ -1,14 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:35 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:33:05 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CCopasiXMLInterface class.
- * The class CCopasiXMLInterface is the interface to various XML document 
+ * The class CCopasiXMLInterface is the interface to various XML document
  * containing Copasi relevant informtion.
  *
  * Created for Copasi by Stefan Hoops 2003
@@ -96,11 +100,11 @@ void encodeATTRIBUTE(const char & chr, std::ostringstream & xml)
       xml << "&quot;";
       break;
 
-    case '\t':           // Without this <tab> is converted to <space>
+    case '\t':            // Without this <tab> is converted to <space>
       xml << "&#x09;";
       break;
 
-    case '\n':           // Without this linebreak is converted to <space>
+    case '\n':            // Without this linebreak is converted to <space>
       xml << "&#x0a;";
       break;
 
@@ -169,7 +173,8 @@ std::string CCopasiXMLInterface::encode(const std::string & str, const EncodingT
 std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
 {
   std::ostringstream value;
- 
+
+
   if (isnan(dbl))
     value << "NaN";
   else if (finite(dbl))
@@ -178,7 +183,8 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
     value << "INF";
   else if (dbl < 0.0)
     value << "-INF";
- 
+
+
   return value.str();
 }
  */
@@ -187,7 +193,7 @@ CCopasiXMLInterface::DBL::DBL(const C_FLOAT64 & value):
     mValue(value)
 {}
 
-#ifdef WIN32 
+#ifdef WIN32
 // warning C4056: overflow in floating-point constant arithmetic
 // warning C4756: overflow in constant arithmetic
 # pragma warning (disable: 4056 4756)

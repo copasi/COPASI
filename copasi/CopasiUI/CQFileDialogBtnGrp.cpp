@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFileDialogBtnGrp.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/01 17:02:40 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:41 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFileDialogBtnGrp.ui'
  **
  ** Created: Thu Sep 1 12:31:22 2005
- **      by: The User Interface Compiler ($Id: CQFileDialogBtnGrp.cpp,v 1.1 2005/09/01 17:02:40 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQFileDialogBtnGrp.cpp,v 1.2 2006/04/27 01:27:41 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,12 +22,12 @@
 #include "CQFileDialogBtnGrp.h"
 
 #include <qvariant.h>
- #include <qtoolbutton.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include <qimage.h>
- #include <qpixmap.h>
+#include <qtoolbutton.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include <qimage.h>
+#include <qpixmap.h>
 
 static const unsigned char image0_data[] =
   {

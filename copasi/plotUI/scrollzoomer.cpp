@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/scrollzoomer.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:29 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:41 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 #include <qevent.h>
- #include <qwt_plot_canvas.h>
- #include <qwt_plot_layout.h>
- #include <qwt_scale_engine.h>
- #include "scrollbar.h"
- #include "scrollzoomer.h"
+#include <qwt_plot_canvas.h>
+#include <qwt_plot_layout.h>
+#include <qwt_scale_engine.h>
+#include "scrollbar.h"
+#include "scrollzoomer.h"
 
 LogPlotZoomer::LogPlotZoomer(QwtPlotCanvas *canvas):
     QwtPlotZoomer(canvas)
@@ -35,10 +39,12 @@ QwtText LogPlotZoomer::trackerText(const QwtDoublePoint &pos) const
 {
     x = qwtMax(x, zoomBase().left());
     x = qwtMin(x, zoomBase().right() - zoomRect().width());
- 
+
+
     y = qwtMax(y, zoomBase().top());
     y = qwtMin(y, zoomBase().bottom() - zoomRect().height());
- 
+
+
     if (x != zoomRect().left() || y != zoomRect().top())
     {
         d_data->zoomStack[d_data->zoomRectIndex].moveTo(x, y);

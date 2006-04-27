@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test2/CNormalItemPower.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/31 14:26:54 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:06 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CNormalItemPower
 #define COPASI_CNormalItemPower
@@ -99,72 +103,84 @@ class CNormalPower
    *
   CNormalSum mBase;
   CNormalProduct mExp;  //factor of mExp is in (0,1], otherwise could expand (base : sum)^int !!
- 
+
+
   public:
   **
    * Default constructor
    *
   CNormalPower();
- 
+
+
   **
    * Copy Constructor
    *
   CNormalPower(const CNormalPower& src);
-  
+
+
   **
    * Data constructor
    *
   CNormalPower(const CNormalSum& sum, const CNormalProduct& product);
- 
+
+
   **
    * Set the base of this power.
    * @return true.
    *
   bool setBase(const CNormalSum& sum);
- 
+
+
   **
    * Set the exponent of this power
    * @return true
    *
   bool setExp(const CNormalProduct& product);
-  
+
+
   **
    * Set the factor of the exponent of this power
    * @return true.
    *
   bool setExpFactor(const C_FLOAT64 & factor);
- 
+
+
   **
    * Multiply this power with another power.
    * Only execute if powers have the same base and the same power list in the exponent.
    * @return true
    *
   bool multiply(const CNormalPower& power);
-    
+
+
   **
    * Retrieve the base of this power
    * @return mBase
    *
   const CNormalSum& getBase() const;
- 
+
+
   **
    * Retrieve the exponent of this power
    * @return mExp
    *
   const CNormalProduct& getExp() const;
-        
+
+
   **
    * Examine equality of two powers.
    * @return bool.
    *
   bool operator==(const CNormalPower & rhs) const;
- 
+
+
   **
    * Examine inequality of two powers.
    * @return bool.
    *
   bool operator<(const CNormalPower & rhs) const;
-    
+
+
   friend std::ostream & operator<<(std::ostream &os,
                                      const CNormalPower & d);
 };

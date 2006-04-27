@@ -1,23 +1,28 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/03 18:51:14 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:53 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  File name: COptMethod.h
  *
- *  Programmer: Yongqun He 
+ *  Programmer: Yongqun He
  *  Contact email: yohe@vt.edu
- *  Purpose: This is the interface (.h file) of the COptMethod class. 
+ *  Purpose: This is the interface (.h file) of the COptMethod class.
  *           It contains the designed abstract interaction between a simulation
  *           subsystem and optimization algorithms. This base class defines
- *           methods by which the simulation subsystem accesses several 
+ *           methods by which the simulation subsystem accesses several
  *           optimization algorithms.
  *  Note: This is an abstract class
- 
+
+
  ****** Modified by Liang Xu
  */
 
@@ -109,15 +114,15 @@ class COptMethod : public CCopasiMethod
     virtual ~COptMethod();
 
     /**
-     * Execute the optimization algorithm calling simulation routine 
-     * when needed. It is noted that this procedure can give feedback 
+     * Execute the optimization algorithm calling simulation routine
+     * when needed. It is noted that this procedure can give feedback
      * of its progress by the callback function set with SetCallback.
      * @ return success;
      */
     virtual bool optimise();
 
     /**
-     * Returns True if this method is capable of handling adjustable parameter 
+     * Returns True if this method is capable of handling adjustable parameter
      * boundary constraints, False otherwise
      */
     bool isBounded(void);
@@ -148,7 +153,7 @@ class COptMethod : public CCopasiMethod
     virtual bool cleanup();
   };
 
-#include "CRandomSearch.h" 
+#include "CRandomSearch.h"
 // #include "CRandomSearchMaster.h"
 // #include "COptMethodSA.h"
 #include "COptMethodGA.h"
@@ -156,7 +161,7 @@ class COptMethod : public CCopasiMethod
 #include "COptMethodHookeJeeves.h"
 #include "COptMethodLevenbergMarquardt.h"
 #include "COptMethodSteepestDescent.h"
-#include "COptMethodEP.h" 
+#include "COptMethodEP.h"
 // #include "COptMethodHGASA.h"
 
 #endif  // COPASI_COptMethod

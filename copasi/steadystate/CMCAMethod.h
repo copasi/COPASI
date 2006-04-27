@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/11/11 10:06:34 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:49 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CMCAMethod_H__
 #define COPASI_CMCAMethod_H__
@@ -78,7 +82,7 @@ class CMCAMethod: public CCopasiMethod
     /**
      * User defined constructor
      * @param refer to Model and factor
-     */ 
+     */
     //    CMCAMethod(CModel & model, C_FLOAT64 factor, const CCopasiContainer* pParent);
 
     /**
@@ -134,7 +138,7 @@ class CMCAMethod: public CCopasiMethod
     int CalculateMCA(CSteadyStateMethod::ReturnCode status, C_FLOAT64 res);
 
     /**
-     * 
+     *
      */
     virtual bool process();
 

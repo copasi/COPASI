@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSMethod.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/29 17:28:21 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:27 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CTSSMethod class.
  *  This class describes the interface to all steady state methods.
  *  The variaous method like Newton have to be derived from
  *  this class.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2002
  */
 
@@ -70,9 +74,9 @@ CTSSMethod::~CTSSMethod()
 
 /**
  *  Set a pointer to the problem.
- *  This method is used by CSteadyState 
+ *  This method is used by CSteadyState
  *  @param "CSteadyStateProblem *" problem
- */ 
+ */
 //void CTSSMethod::setProblem(CSteadyStateProblem * problem)
 //{mpProblem = problem;}
 

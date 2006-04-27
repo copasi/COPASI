@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:21 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQReportDefinition.ui'
  **
  ** Created: Fri Dec 23 12:49:03 2005
- **      by: The User Interface Compiler ($Id: CQReportDefinition.cpp,v 1.5 2006/02/14 14:35:21 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQReportDefinition.cpp,v 1.6 2006/04/27 01:27:42 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,23 +22,23 @@
 #include "CQReportDefinition.h"
 
 #include <qvariant.h>
- #include <qpushbutton.h>
- #include <qframe.h>
- #include <qtextedit.h>
- #include <qlineedit.h>
- #include <qcombobox.h>
- #include <qcheckbox.h>
- #include <qlabel.h>
- #include <qtabwidget.h>
- #include <qlistbox.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include "CQReportDefinition.ui.h"
+#include <qpushbutton.h>
+#include <qframe.h>
+#include <qtextedit.h>
+#include <qlineedit.h>
+#include <qcombobox.h>
+#include <qcheckbox.h>
+#include <qlabel.h>
+#include <qtabwidget.h>
+#include <qlistbox.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include "CQReportDefinition.ui.h"
 
 /*
  *  Constructs a CQReportDefinition which is a child of 'parent', with the
- *  name 'name'.' 
+ *  name 'name'.'
  */
 CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
     : CopasiWidget(parent, name)

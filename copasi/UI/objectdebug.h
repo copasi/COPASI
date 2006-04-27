@@ -1,25 +1,29 @@
 /* Begin CVS Header
-   $Source: /home/cvs/copasi_dev/cvs_admin/c++style,v $
-   $Revision: 1.19 $
+   $Source: /home/cvs/copasi_dev/copasi/CopasiUI/objectdebug.h,v $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 16:36:51 $
+   $Author: ssahle $
+   $Date: 2005/11/10 09:33:59 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'objectdebug.ui'
  **
  ** Created: Mi Nov 9 01:31:48 2005
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.5   edited Aug 31 12:13 $)
+ **      by: The User Interface Compiler ($Id: objectdebug.h,v 1.5 2005/11/10 09:33:59 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef OBJECTDEBUG_H
- #define OBJECTDEBUG_H
+#define OBJECTDEBUG_H
 
 #include <qvariant.h>
- #include <qdialog.h>
+#include <qdialog.h>
 
 class QVBoxLayout;
 class QHBoxLayout;

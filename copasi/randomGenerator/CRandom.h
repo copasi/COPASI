@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/02/03 23:08:18 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:59 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CRandom
 #define COPASI_CRandom
@@ -136,7 +140,7 @@ class CRandom
     static unsigned C_INT32 getSystemSeed();
 
     /**
-     * Create a Generator. 
+     * Create a Generator.
      * Note: the returned object has to be released after use with delete
      * @param CRandom::Type type (default Mersenne Twister)
      * @param const C_INT32 & seed (default system generated seed)
@@ -163,7 +167,7 @@ class CRandom
     const unsigned C_INT32 & getModulus() const;
 
     /**
-     * Initialize or reinitialize the random number generator with 
+     * Initialize or reinitialize the random number generator with
      * the given seed.
      * @param unsigned C_INT32 seed (default system seed)
      */
@@ -250,7 +254,7 @@ class CRandom
                                          const C_FLOAT64 & sd);
 
     /**
-        * Produces a Poisson distributed random number with Mean=mean 
+        * Produces a Poisson distributed random number with Mean=mean
      * @param const C_FLOAT64 & mean
         * @return C_FLOAT64 random
         */
@@ -263,7 +267,7 @@ class CRandom
 
     /**
         * Set the Modulus
-        * @param 
+        * @param
         */
 
     void setModulus(const unsigned C_INT32 & modulus);

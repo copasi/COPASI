@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSort.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:23:30 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:43 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CSort
 #define COPASI_CSort
@@ -15,8 +19,8 @@
 #include "CVector.h"
 
 /**
- * The base functor providing the default compare method for the 
- * sorting methods. This default comparison is done with the 
+ * The base functor providing the default compare method for the
+ * sorting methods. This default comparison is done with the
  * operator <. to mimic the behaviour of STL sor algorithms
  */
 template <typename RandomAccessIterator>
@@ -40,8 +44,8 @@ class FCompareBase
   };
 
 /**
- * This functor providing the means to specify acompare method 
- * for the sorting methods. 
+ * This functor providing the means to specify acompare method
+ * for the sorting methods.
  */
 template <typename RandomAccessIterator , typename LessThanCompare>
 class FCompare : FCompareBase<RandomAccessIterator>
@@ -170,7 +174,7 @@ void __sortWithPivot(RandomAccessIterator first,
 }
 
 /**
- * Partial sorting method returning a pivot vector instead of performing 
+ * Partial sorting method returning a pivot vector instead of performing
  * the sort. The underlying sorting method is std::partial sort with the
  * operator < used for * comparison .
  * @param RandomAccessIterator first
@@ -192,7 +196,7 @@ void partialSortWithPivot(RandomAccessIterator first,
 }
 
 /**
- * Partial sorting method returning a pivot vector instead of performing the 
+ * Partial sorting method returning a pivot vector instead of performing the
  * sort. The underlying sorting method is std::partial_sort with the specified
  * compare method used for comparison .
  * @param RandomAccessIterator first

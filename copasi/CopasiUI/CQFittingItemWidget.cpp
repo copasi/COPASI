@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/24 22:14:42 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:41 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingItemWidget.ui'
  **
  ** Created: Fri Mar 24 17:13:54 2006
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.14 2006/03/24 22:14:42 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.15 2006/04/27 01:27:41 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,18 +22,18 @@
 #include "CQFittingItemWidget.h"
 
 #include <qvariant.h>
- #include <qpushbutton.h>
- #include <qtable.h>
- #include <qcheckbox.h>
- #include <qlabel.h>
- #include <qtoolbutton.h>
- #include <qcombobox.h>
- #include <qlineedit.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include <qimage.h>
- #include <qpixmap.h>
+#include <qpushbutton.h>
+#include <qtable.h>
+#include <qcheckbox.h>
+#include <qlabel.h>
+#include <qtoolbutton.h>
+#include <qcombobox.h>
+#include <qlineedit.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include <qimage.h>
+#include <qpixmap.h>
 
 #include "CQFittingItemWidget.ui.h"
 static const unsigned char image0_data[] =

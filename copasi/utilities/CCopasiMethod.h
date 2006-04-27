@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/03 18:51:13 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CCopasiMethod class.
- *  This class is used to describe a method in COPASI. This class is 
+ *  This class is used to describe a method in COPASI. This class is
  *  intended to be used as the parent class for all methods whithin COPASI.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2003
  */
 
@@ -80,13 +84,13 @@ class CCopasiMethod : public CCopasiParameterGroup
 
   protected:
     /**
-     * a pointer to the callback 
+     * a pointer to the callback
      */
     CProcessReport * mpCallBack;
 
     /**
-     * A pointer to the report 
-     */ 
+     * A pointer to the report
+     */
     //CReport * mpReport;
 
     // Operations

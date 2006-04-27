@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/06/07 14:02:34 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:43 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CReadConfig class. A more elaborate class description.
@@ -42,7 +46,7 @@ class CReadConfig
     /**
      *  Initializes the input buffer for reading.
      *  @return mFail
-     *  @see mFail  
+     *  @see mFail
      */
     C_INT32 initInputBuffer();
 
@@ -85,22 +89,22 @@ class CReadConfig
 
   public:
     /**
-     *  Default consructor. 
-     *  This creates a configuration buffer for input assigning a filename. 
+     *  Default consructor.
+     *  This creates a configuration buffer for input assigning a filename.
      *  It is currently useless.
      */
     CReadConfig();
 
     /**
-     *  Specified constructor. 
-     *  This opens the configuration file using the filename specified 
+     *  Specified constructor.
+     *  This opens the configuration file using the filename specified
      *  as the argument.
-     *  @param name name of the confguration file. 
+     *  @param name name of the confguration file.
      */
     CReadConfig(const std::string& name);
 
     /**
-     *  Destructor. 
+     *  Destructor.
      *  The destructor calls the method free().
      */
     ~CReadConfig();
@@ -118,7 +122,7 @@ class CReadConfig
     /**
      *  Returns the failure status.
      *  @return mFail
-     *  @see mFail  
+     *  @see mFail
      */
     C_INT32 fail();
 
@@ -126,10 +130,10 @@ class CReadConfig
      *  Retrieves a variable from the input file.
      *  @param name name of the variable to be retrieved.
      *  @param type type of the variable to be retrieved.
-     *  @param *pout pointer to the location where the retrieved variable 
+     *  @param *pout pointer to the location where the retrieved variable
      *               is stored.
      *  @return mFail
-     *  @see mFail  
+     *  @see mFail
      */
     C_INT32 getVariable(const std::string& name,
                         const std::string& type,
@@ -140,12 +144,12 @@ class CReadConfig
      *  Retrieves a variable from the input file.
      *  @param name name of the variable to be retrieved.
      *  @param type type of the variable to be retrieved.
-     *  @param *pout1 pointer to the location where the first part of the 
+     *  @param *pout1 pointer to the location where the first part of the
      *                retrieved variable is stored.
-     *  @param *pout2 pointer to the location where the second part of the 
+     *  @param *pout2 pointer to the location where the second part of the
      *                retrieved variable is stored.
      *  @return mFail
-     *  @see mFail  
+     *  @see mFail
      */
     C_INT32 getVariable(const std::string& name,
                         const std::string& type,

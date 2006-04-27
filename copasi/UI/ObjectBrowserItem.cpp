@@ -1,25 +1,30 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserItem.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/10/08 07:11:24 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:44 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /********************************************************
 Author: Liang Xu
 Version : 1.xx  <first>
-Description: 
-Date: 04/03 
+Description:
+Date: 04/03
 Comment : Copasi Object Browser including:
- 
+
+
 CBrowserObject: A complex structure uiniquely map to a CopasiObject
 ObjectBrowserItem: A wraper to a broserObject,
 there may exist multiply wrappers to one CBrowserObject
 ObjectListItem
-ObjectList: A queue for all element: 
+ObjectList: A queue for all element:
 The reason I dont use std:vector is
-for efficiency requirement for all 
+for efficiency requirement for all
 object browser item update
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/

@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 12:00:54 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:26 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CEvaluationTree
 #define COPASI_CEvaluationTree
@@ -55,7 +59,7 @@ class CEvaluationTree:
     /**
      * Create an EvaluationTree of the specified type.
      * Note: the returned object has to be released after use with delete.
-     * @param CEvaluationTree::Type type 
+     * @param CEvaluationTree::Type type
      * @return EvaluationTree * pEvaluationTree
      */
     static CEvaluationTree *
@@ -127,7 +131,7 @@ class CEvaluationTree:
 
     /**
      * Converts an SBML ASTNode to the corresponding
-     * CEvaluationNode tree. 
+     * CEvaluationNode tree.
      * @param const ASTNode& node
      * @return CEvaluationNode*
      */

@@ -1,14 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:35 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:33:05 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CCopasiXMLInterface class.
- * The class CCopasiXMLInterface is the interface to various XML document 
+ * The class CCopasiXMLInterface is the interface to various XML document
  * containing Copasi relevant informtion.
  *
  * Created for Copasi by Stefan Hoops 2003
@@ -358,7 +362,7 @@ class CCopasiXMLInterface
      * Encode a given string to a valid XML string
      * @param const C_FLOAT64 & dbl
      * @return std::string encoded
-     */ 
+     */
     //    static std::string encodeDBL(const C_FLOAT64 & dbl);
 
     /**

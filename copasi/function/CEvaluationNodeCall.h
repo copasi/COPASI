@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 16:04:01 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:25 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CEvaluationNodeCall
 #define COPASI_CEvaluationNodeCall
@@ -102,7 +106,7 @@ class CEvaluationNodeCall : public CEvaluationNode
     virtual std::string getDisplay_C_String(const CEvaluationTree * pTree) const;
 
     /**
-     * Retrieve the display string of the node and its eventual child nodes 
+     * Retrieve the display string of the node and its eventual child nodes
      * in Berkeley Madonna format.
      * @return const Data & value
      */
@@ -126,7 +130,7 @@ class CEvaluationNodeCall : public CEvaluationNode
      * If pAfter == this the child will be inserted at the front of the list
      * of children.
      * @param CCopasiNode< Data > * pChild
-     * @param CCopasiNode< Data > * pAfter 
+     * @param CCopasiNode< Data > * pAfter
      *        (default: NULL appended to the list of children)
      * @return bool Success
      */

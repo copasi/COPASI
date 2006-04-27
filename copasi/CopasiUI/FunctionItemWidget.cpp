@@ -1,15 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionItemWidget.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2004/10/06 16:29:21 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:43 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /********************************************************
 Author: Liang Xu
 Version : 1.xx  <first>
-Description: 
+Description:
 Date: 09/29
 Comment : FunctionItemWidget for editing of the optimization function
 Contact: Please contact lixu1@vt.edu.
@@ -34,7 +38,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "qtUtilities.h"
 
 /*
- *  Constructs a FunctionItemWidget as a child of 'parent', with the 
+ *  Constructs a FunctionItemWidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
@@ -518,7 +522,8 @@ void FunctionItemWidget::slotButtonSign()
   /* here is the sign function that makes to change only the first sign of the function;
       like a -> +a
        +/-a -> -/+a
-   
+
+
     if (((textFunction->text().utf8())[0] != '+') && ((textFunction->text().utf8())[0] != '-'))
       // add a '+' or a '-' in front of the expression
       {

@@ -1,15 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:31 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:16 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *   CHybridMethod
  *
- *   This class implements an hybrid algorithm to simulate a biochemical 
+ *   This class implements an hybrid algorithm to simulate a biochemical
  *   system over time.
  *
  *   File name: CHybridMethod.h
@@ -19,7 +23,7 @@
  *   Last change: 15, December 2004
  *
  *   (C) European Media Lab 2003.
- */ 
+ */
 /**
  *   Partition the system into a deterministic part and a stochastic part.
  *   That is, every reaction is either classified deterministic or
@@ -218,7 +222,7 @@ class CHybridMethod : public CTrajectoryMethod
      *   Calculates the derivative of the system and writes it into the vector
      *   deriv. Length of deriv must be mNumVariableMetabs.
      *   CAUTION: Only deterministic reactions are taken into account. That is,
-     *   this is only the derivative of the deterministic part of the system.  
+     *   this is only the derivative of the deterministic part of the system.
      *
      *   @param deriv A vector reference of length mNumVariableMetabs, into
      *                which the derivative is written
@@ -230,7 +234,7 @@ class CHybridMethod : public CTrajectoryMethod
      *   should be used for this. Length of the array target must be
      *   mNumVariableMetabs.
      *
-     *   @param target A vector reference of length mNumVariableMetabs, into 
+     *   @param target A vector reference of length mNumVariableMetabs, into
      *                 which the state of the system is written
      */
     void getState(std::vector <C_FLOAT64> & target);
@@ -261,7 +265,7 @@ class CHybridMethod : public CTrajectoryMethod
     /**
      *   Executes the specified reaction in the system once.
      *
-     *   @param rIndex A C_INT32 specifying the index of the reaction, which 
+     *   @param rIndex A C_INT32 specifying the index of the reaction, which
      *                 will be fired.
      */
     void fireReaction(C_INT32 rIndex);
@@ -290,7 +294,7 @@ class CHybridMethod : public CTrajectoryMethod
     void calculateAmu(C_INT32 rIndex);
 
     /**
-     *   Updates the putative reaction time of a stochastic reaction in the 
+     *   Updates the putative reaction time of a stochastic reaction in the
      *   priority queue. The corresponding amu and amu_old must be set prior to
      *   the call of this method.
      *
@@ -327,25 +331,25 @@ class CHybridMethod : public CTrajectoryMethod
     /**
      *   Creates for each metabolite a set of reaction indices. If the
      *   metabolite participates in a reaction as substrate or product this
-     *   reaction is added to the corresponding set. 
+     *   reaction is added to the corresponding set.
      */
     void setupMetab2React();
 
     /**
      *   Creates for each metabolite a set of reaction indices. If the
      *   metabolite participates in a reaction as substrate, product or
-     *   modifier this reaction is added to the corresponding set. 
+     *   modifier this reaction is added to the corresponding set.
      */
     void setupMetab2ReactPlusModifier();
 
     /**
      *   Creates for each metabolite a set of reaction indices. Each reaction
-     *   is dependent on each metabolite resulting in a complete switch. 
+     *   is dependent on each metabolite resulting in a complete switch.
      */
     void setupMetab2ReactComplete();
 
     /**
-     *   Creates an initial partitioning of the system. Deterministic and 
+     *   Creates an initial partitioning of the system. Deterministic and
      *   stochastic reactions are determined. The array mStochReactions is
      *   initialized.
      */

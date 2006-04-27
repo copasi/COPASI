@@ -1,13 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/20 19:14:45 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:29 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 #ifndef COPASI_CFitItem
- #define COPASI_CFitItem
+#define COPASI_CFitItem
 
 #include "optimization/COptItem.h"
 
@@ -73,7 +77,7 @@ class CFitItem : public COptItem
     static bool isValid(CCopasiParameterGroup & group);
 
     /**
-     * Compile the optimization item. This function must be called 
+     * Compile the optimization item. This function must be called
      * before any of the check functions are called.
      * @param const std::vector< CCopasiContainer * > listOfContainer
      * @return bool success
@@ -169,7 +173,7 @@ class CFitItem : public COptItem
 
   private:
     /**
-     * Allocates all group parameters and assures that they are 
+     * Allocates all group parameters and assures that they are
      * properly initialized.
      */
     void initializeParameter();
@@ -182,7 +186,7 @@ class CFitItem : public COptItem
     C_FLOAT64 * mpParmSavedValue;
 
     /**
-     * A pointer to the value of the CCopasiParameterGroup holding the 
+     * A pointer to the value of the CCopasiParameterGroup holding the
      * list of AffectedExperiments
      */
     CCopasiParameterGroup * mpGrpAffectedExperiments;

@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2006/03/14 07:34:24 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:25:12 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  COptions class.
  *  The class retrieves the options from the commandline and various files.
  *  The options as well as their type can be retreived by name.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2002
  */
 

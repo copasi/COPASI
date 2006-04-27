@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathSymbol.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/05/31 09:30:19 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:50 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CMathSymbol class.
@@ -65,14 +69,14 @@ class CMathSymbol
     CMathSymbol(std::string & name);
 
     /**
-     * Copy constructor. 
+     * Copy constructor.
      * The name of the copied symbol is alternateName("copy of " + src.mName)
      * @param const CMathSymbol & src
      */
     CMathSymbol(const CMathSymbol & src);
 
     /**
-     * A function to find an alternate name for a symbol in case the name is 
+     * A function to find an alternate name for a symbol in case the name is
      * not unique. The alternate name is constructed by appending _n, where n
      * is the lowest positive integer generating a unique name.
      * Note: on return name is the found unique name
@@ -119,7 +123,7 @@ class CMathSymbol
     const std::string & getName() const;
 
     /**
-     * Set the common name of the symbol. This method also attempts to find 
+     * Set the common name of the symbol. This method also attempts to find
      * the object relativly to the given container.
      * @param const CCopasiObjectName & cn
      * @param const CCopasiContainer * pContainer (default: RootContainer)

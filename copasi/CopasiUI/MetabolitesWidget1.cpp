@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.127 $
+   $Revision: 1.128 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/30 19:05:29 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:44 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /*******************************************************************
- **  $ CopasiUI/MetaboliteWidget1.cpp                 
+ **  $ CopasiUI/MetaboliteWidget1.cpp
  **  $ Author  : Mudita Singhal
  **
- ** This file is used to create the GUI FrontPage for the 
+ ** This file is used to create the GUI FrontPage for the
  ** information obtained from the data model about the individual
  ** Metabolites----It is the second level of Metabolites
  ********************************************************************/
@@ -44,7 +48,7 @@
 #include "MyLineEdit.h"
 
 /*
- *  Constructs a MetabolitesWidget1 which is a child of 'parent', with the 
+ *  Constructs a MetabolitesWidget1 which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags fl)

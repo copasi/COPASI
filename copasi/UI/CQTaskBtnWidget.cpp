@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTaskBtnWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/07 18:41:23 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTaskBtnWidget.ui'
  **
  ** Created: Fri Oct 7 14:23:55 2005
- **      by: The User Interface Compiler ($Id: CQTaskBtnWidget.cpp,v 1.4 2005/10/07 18:41:23 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQTaskBtnWidget.cpp,v 1.5 2006/04/27 01:27:42 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,10 +22,10 @@
 #include "CQTaskBtnWidget.h"
 
 #include <qvariant.h>
- #include <qpushbutton.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
+#include <qpushbutton.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
 
 /*
  *  Constructs a CQTaskBtnWidget as a child of 'parent', with the

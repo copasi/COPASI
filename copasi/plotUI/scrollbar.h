@@ -1,13 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/scrollbar.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:29 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:41 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 #ifndef _SCROLLBAR_H
- #define _SCROLLBAR_H 1
+#define _SCROLLBAR_H 1
 
 #include <qscrollbar.h>
 

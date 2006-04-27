@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/Attic/CElementaryFluxModes.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/09/26 21:48:35 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:09 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CElementaryFluxModes class.
@@ -89,7 +93,7 @@ class CElementaryFluxModes
      * Get one of the flux modes
      * @param unsigned C_INT32 index
      * @return reference to flux mode
-     */ 
+     */
     //const CFluxMode & getFluxMode(unsigned C_INT32 index) const;
 
     /**

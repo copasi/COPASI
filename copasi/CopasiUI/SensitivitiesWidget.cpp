@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SensitivitiesWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/12/15 17:00:49 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:45 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <qfiledialog.h>
 
@@ -38,7 +42,7 @@
 #include "report/CKeyFactory.h"
 
 /**
- *  Constructs a SensitivitiesWidget which is a child of 'parent', with the 
+ *  Constructs a SensitivitiesWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFlags fl)

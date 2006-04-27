@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CScanWidgetRandom.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/28 23:09:04 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CScanWidgetRandom.ui'
  **
  ** Created: Tue Mar 28 14:25:58 2006
- **      by: The User Interface Compiler ($Id: CScanWidgetRandom.cpp,v 1.3 2006/03/28 23:09:04 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CScanWidgetRandom.cpp,v 1.4 2006/04/27 01:27:42 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,17 +22,17 @@
 #include "CScanWidgetRandom.h"
 
 #include <qvariant.h>
- #include <qpushbutton.h>
- #include <qframe.h>
- #include <qlabel.h>
- #include <qlineedit.h>
- #include <qtoolbutton.h>
- #include <qcombobox.h>
- #include <qcheckbox.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include "CScanWidgetRandom.ui.h"
+#include <qpushbutton.h>
+#include <qframe.h>
+#include <qlabel.h>
+#include <qlineedit.h>
+#include <qtoolbutton.h>
+#include <qcombobox.h>
+#include <qcheckbox.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include "CScanWidgetRandom.ui.h"
 
 /*
  *  Constructs a CScanWidgetRandom as a child of 'parent', with the

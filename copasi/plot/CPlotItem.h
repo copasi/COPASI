@@ -1,13 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotItem.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/16 17:43:46 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:41 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /**
- *  
+ *
  */
 
 #ifndef COPASI_PLOT_ITEM
@@ -154,7 +158,7 @@ class CPlotItem : public CCopasiParameterGroup
      * Returns CCopasiMethod::unset if no match is found.
      * @param (const char * xmlTypeName)
      * @return CCopasiMethod::SubType type
-     */ 
+     */
     //static
     //CPlotItem::Type XMLNameToEnum(const char * xmlTypeName);
     static

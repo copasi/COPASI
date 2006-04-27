@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/12/14 00:07:29 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:43 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CDirEntry
 #define COPASI_CDirEntry
@@ -64,7 +68,7 @@ class CDirEntry
     static bool isWritable(const std::string & path);
 
     /**
-     * Returns the base name, i.e., the directory path and the 
+     * Returns the base name, i.e., the directory path and the
      * the suffix are removed from 'path'.
      * @param const std::string & path
      * @return std::string baseName
@@ -79,7 +83,7 @@ class CDirEntry
     static std::string fileName(const std::string & path);
 
     /**
-     * Returns the directory path to the parent directoryu, i.e., 
+     * Returns the directory path to the parent directoryu, i.e.,
      * the file name or directory name are removed from 'path'.
      * @param const std::string & path
      * @return std::string dirName
@@ -87,7 +91,7 @@ class CDirEntry
     static std::string dirName(const std::string & path);
 
     /**
-     * Returns the suffix, i.e., the directory path and the 
+     * Returns the suffix, i.e., the directory path and the
      * the base name are removed from 'path'.
      * @param const std::string & path
      * @return std::string basename
@@ -121,16 +125,16 @@ class CDirEntry
 
     /**
      * Compiles the pattern to a patternList. Valid wildcards in the pattern are:
-     * '*' matches any number of characters and '?' matches exactly one character. 
+     * '*' matches any number of characters and '?' matches exactly one character.
      * @param const std::string & pattern
-     * @return std::vector< std::string > patternList 
+     * @return std::vector< std::string > patternList
      */
     static std::vector< std::string > compilePattern(const std::string & pattern);
 
     /**
-     * Compare the name against the pattern list and returns whether the 
-     * name matches. The patternList can be created from a pattern by the 
-     * compilePattern method. 
+     * Compare the name against the pattern list and returns whether the
+     * name matches. The patternList can be created from a pattern by the
+     * compilePattern method.
      * @param const std::string & name
      * @param const std::vector< std::string > & patternList
      * @return bool match
@@ -165,8 +169,8 @@ class CDirEntry
   private:
     /**
      * This private methods checks whether the active section matches the
-     * secified patter. The section is automatically advanced to allow 
-     * repeated calls. On the first call 'at' must be 0. The parameters 
+     * secified patter. The section is automatically advanced to allow
+     * repeated calls. On the first call 'at' must be 0. The parameters
      * 'at' and 'after' must not be changed outside this method.
      * @param const std::string & name
      * @param const std::string pattern

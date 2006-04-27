@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/15 18:41:20 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:44 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /****************************************************************************
- **  $ CopasiUI/FunctionWidget1.h               
+ **  $ CopasiUI/FunctionWidget1.h
  **  $ Author  : Mrinmayee Kulkarni
- **  
- ** This is the header file for Function Widget1, i.e the Second  level 
+ **
+ ** This is the header file for Function Widget1, i.e the Second  level
  ** widget which shows detailed description of an individual function
  *****************************************************************************/
 #ifndef FUNCTION_WIDGET1_H

@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDependencyGraph.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/02 11:52:02 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CDependencyGraph
 #define COPASI_CDependencyGraph
@@ -30,7 +34,7 @@ class CDependencyGraphNode
     ~CDependencyGraphNode();
 
     /**
-     * Add a dependent to the given node, represented by its node number. 
+     * Add a dependent to the given node, represented by its node number.
      * This then represents an edge in the graph.
      * @param node_num The dependency, the node to which the edge connects.
      */
@@ -51,7 +55,7 @@ class CDependencyGraphNode
 
   private:
     /**
-     * A vector containing the edges for this node. An edge is 
+     * A vector containing the edges for this node. An edge is
      * specified by the remote node to which it connects.
      */
 

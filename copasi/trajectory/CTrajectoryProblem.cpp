@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:32 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:17 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CTrajectoryProblem class.
  *  This class describes the trajectory problem, i.e., it allows to specify
  *  for example initial conditions and number of steps.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2002
  */
 
@@ -19,7 +23,7 @@
 
 #include "copasi.h"
 #include "CTrajectoryProblem.h"
-#include "model/CModel.h" 
+#include "model/CModel.h"
 //#include "model/CState.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 

@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.92 $
+   $Revision: 1.93 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 13:20:34 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:22 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CReaction class.
@@ -77,7 +81,7 @@ class CReaction : public CCopasiContainer
     const C_FLOAT64 * mScalingFactor;
 
     /**
-     *  The unit conversion factor 
+     *  The unit conversion factor
      */
     const C_FLOAT64 * mUnitScalingFactor;
 
@@ -233,10 +237,10 @@ class CReaction : public CCopasiContainer
 
     /**
      *  Sets a parameter value
-     *  if updateStatus==true the status is also updated to make shure 
-     *  the value is actually used (instead of a global value that may 
-     *  have been used before). 
-     *  if updateStatus==false only the value of the local parameter is 
+     *  if updateStatus==true the status is also updated to make shure
+     *  the value is actually used (instead of a global value that may
+     *  have been used before).
+     *  if updateStatus==false only the value of the local parameter is
      *  set, even if it is not used
      */
     void setParameterValue(const std::string & parameterName, C_FLOAT64 value,
@@ -321,11 +325,11 @@ class CReaction : public CCopasiContainer
 
   public:
     /**
-     * Calculate partial derivative of the flux 
+     * Calculate partial derivative of the flux
      * @param C_FLOAT64 * pXi
      * @param const C_FLOAT64 & derivationFactor
      * @param const C_FLOAT64 & resolution (unscaled resolution)
-     * @return C_FLOAT64 partial 
+     * @return C_FLOAT64 partial
      */
     C_FLOAT64 calculatePartialDerivative(C_FLOAT64 * pXi,
                                          const C_FLOAT64 & derivationFactor,
@@ -351,7 +355,7 @@ class CReaction : public CCopasiContainer
 
     /**
      * Converts the function tree into the corresponding expression tree.
-     * All variable nodes are replaced by object nodes. 
+     * All variable nodes are replaced by object nodes.
      */
     CEvaluationNode* getExpressionTree();
 
@@ -413,7 +417,7 @@ class CReaction : public CCopasiContainer
                                         std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
-     * Converts a single object node to a variable node. 
+     * Converts a single object node to a variable node.
      * The usage term of the variable nodes is recorded in terms
      * of CFunctionParameters that are stored in the replacementMap.
      * On failure a NULL pointer is returned.
@@ -429,7 +433,7 @@ class CReaction : public CCopasiContainer
     CEvaluationNode* variables2objects (CEvaluationNode* expression);
 
     /**
-     * Converts a single variable node to an object node. 
+     * Converts a single variable node to an object node.
      * On failure a NULL pointer is returned.
      */
     CEvaluationNodeObject* variable2object(CEvaluationNodeVariable* pVariableNode);

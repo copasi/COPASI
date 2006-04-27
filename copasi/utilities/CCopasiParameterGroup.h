@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/02 15:08:58 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CCopasiParameterGroup
 #define COPASI_CCopasiParameterGroup
@@ -19,7 +23,7 @@
  *  CCopasiParameterGroup class.
  *  This class is used to describe parameters. This class is intended
  *  to be used with integration or optimization methods or reactions.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2002
  */
 class CCopasiParameterGroup: public CCopasiParameter
@@ -333,7 +337,7 @@ class CCopasiParameterGroup: public CCopasiParameter
      * Retreive the name of a parameter or subgroup
      * @param const unsigned C_INT32 & index
      * @return std::string name
-     * 
+     *
      */
     const std::string & getName(const unsigned C_INT32 & index) const;
 
@@ -378,7 +382,7 @@ class CCopasiParameterGroup: public CCopasiParameter
      * Note: This has effect on the index_iterator and index access methods.
      * @param const unsigned C_INT32 & iFrom
      * @param const unsigned C_INT32 & iTo
-     * @return bool success 
+     * @return bool success
      */
     bool swap(const unsigned C_INT32 & iFrom,
               const unsigned C_INT32 & iTo);
@@ -388,7 +392,7 @@ class CCopasiParameterGroup: public CCopasiParameter
      * Note: This has effect on the iterator and index access methods.
      * @param index_iterator & from
      * @param index_iterator & to
-     * @return bool success 
+     * @return bool success
      */
     bool swap(index_iterator & from,
               index_iterator & to);

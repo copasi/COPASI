@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test2/CNormalFraction.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/31 14:26:54 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:06 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 //#include "CNormalItem.h"
 #include "CNormalProduct.h"
@@ -67,9 +71,9 @@ bool CNormalFraction::setDenominator(const CNormalSum& denominator)
 bool CNormalFraction::checkDenominatorOne() const
   {
     if ((mDenominator.getProducts().size() == 1)
-         && (mDenominator.getFractions().size() == 0)
-         && ((*mDenominator.getProducts().begin())->getItemPowers().size() == 0)
-         && (fabs((*mDenominator.getProducts().begin())->getFactor() - 1.0) < 1.E-100)
+        && (mDenominator.getFractions().size() == 0)
+        && ((*mDenominator.getProducts().begin())->getItemPowers().size() == 0)
+        && (fabs((*mDenominator.getProducts().begin())->getFactor() - 1.0) < 1.E-100)
 )
       {
         return true;
@@ -264,7 +268,8 @@ std::ostream & operator<<(std::ostream &os, const CNormalFraction & d)
 {
   return &mNumerator;
 }
- 
+
+
 bool CNormalFraction::multiply(const CNormalSum& sum)
 {
   if (mDenominator == sum)
@@ -276,7 +281,8 @@ bool CNormalFraction::multiply(const CNormalSum& sum)
   cancel();
   return true;
 }
- 
+
+
 bool CNormalFraction::multiply(const CNormalFraction& fraction)
 {
   CNormalFraction* tmp1 = new CNormalFraction();
@@ -294,7 +300,8 @@ bool CNormalFraction::multiply(const CNormalFraction& fraction)
   delete tmp2;
   return true;
 }
- 
+
+
 bool CNormalFraction::divide(const CNormalFraction& fraction)
 {
   CNormalFraction* tmp = new CNormalFraction();
@@ -304,7 +311,8 @@ bool CNormalFraction::divide(const CNormalFraction& fraction)
   delete tmp;
   return true;
 }
- 
+
+
 bool CNormalFraction::checkEqual(const CNormalFraction& fraction) const
 {
   CNormalFraction* tmp1 = new CNormalFraction(*this);

@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CGA.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:25:22 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:52 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  File name: CGA.cpp
  *
- *  Programmer: Yongqun He 
+ *  Programmer: Yongqun He
  *  Contact email: yohe@vt.edu
- *  Purpose: This is the implementation (.cpp file) of the CGA class. 
+ *  Purpose: This is the implementation (.cpp file) of the CGA class.
  *           It is to implement the genetic algorithm for COPASI optimization
  *  Note: Modified from Gepasi and Dingjun Chen's implementation
  */
@@ -700,7 +704,7 @@ int CGA::optimise()
   initOptRandom();
 
   /*
-  //YOHE: new 
+  //YOHE: new
 
   std::vector <COptAlgorithmParameter> *AlgmParams = getMethodParameters();
 
@@ -712,7 +716,7 @@ int CGA::optimise()
   mGener =  (*AlgmParams)[i].getValue();
   else if ((*AlgmParams)[i].getName() == "Mutation Variance")
   mMutVar = (*AlgmParams)[i].getValue();
-  }  
+  }
   */
 
   // initialise the variance for mutations

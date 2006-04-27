@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiVector.h,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:33 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CCopasiVector
 #define COPASI_CCopasiVector
@@ -247,7 +251,7 @@ template < class CType > class CCopasiVector:
       /**
        *  Resizes the vector
        *  @param "unsigned C_INT32" size
-       *  @param 
+       *  @param
        */
       virtual void resize(unsigned C_INT32 size,
                           const bool & allocate = true)

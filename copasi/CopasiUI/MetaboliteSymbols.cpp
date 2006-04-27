@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetaboliteSymbols.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/26 18:30:41 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:44 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /*******************************************************************
- **  $ CopasiUI/MetaboliteSymbols.cpp                 
+ **  $ CopasiUI/MetaboliteSymbols.cpp
  **  $ Author  : Mudita Singhal
  **
- ** This file is used to create the GUI FrontPage for the 
- ** information obtained from the data model about the 
+ ** This file is used to create the GUI FrontPage for the
+ ** information obtained from the data model about the
  ** Metabolite Symbols
  ********************************************************************/
 #include <qlayout.h>
@@ -29,18 +33,18 @@
 #include "qtUtilities.h"
 
 /**
- *  Constructs a Widget for the Metabolites subsection of the tree for 
+ *  Constructs a Widget for the Metabolites subsection of the tree for
  *  displaying the Metabolites in model 'model'.
- *  This widget is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f'. 
- *  @param model The CModel class which contains the metabolites 
+ *  This widget is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ *  @param model The CModel class which contains the metabolites
  *  to be displayed.
  *  @param parent The widget which this widget is a child of.
- *  @param name The object name is a text that can be used to identify 
+ *  @param name The object name is a text that can be used to identify
  *  this QObject. It's particularly useful in conjunction with the Qt Designer.
- *  You can find an object by name (and type) using child(), and more than one 
- *  using queryList(). 
- *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation 
+ *  You can find an object by name (and type) using child(), and more than one
+ *  using queryList().
+ *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation
  *  for more information about these flags.
  */
 MetaboliteSymbols::MetaboliteSymbols(QWidget *parent, const char * name, WFlags f)
@@ -137,7 +141,8 @@ void MetaboliteSymbols::loadMetaboliteSymbols(CMathModel *model)
            const CMetab *metab;
         for (i = 0; i < k; i++)
              {
-               
+
+
                metab = metabolite[i];
                table->setText(i, 0, metab->getName().);
          table->setText(i, 2, QString::number(metab->getInitialConcentration()));

@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.175 $
+   $Revision: 1.176 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:22 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:45 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /*********************************************************************
- **  $ CopasiUI/ReactionsWidget1.cpp                 
+ **  $ CopasiUI/ReactionsWidget1.cpp
  **  $ Author  : Mudita Singhal
  **
- ** This file is used to create the GUI FrontPage for the  information 
- ** obtained from the data model about the Recations----It is Basically 
+ ** This file is used to create the GUI FrontPage for the  information
+ ** obtained from the data model about the Recations----It is Basically
  ** the Second level of Reactions.
  **********************************************************************/
 
@@ -47,7 +51,7 @@
 #include "FunctionWidget1.h"
 
 /*
- *  Constructs a ReactionsWidget which is a child of 'parent', with the 
+ *  Constructs a ReactionsWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  *
  */

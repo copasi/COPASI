@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CProgressBar.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/15 18:45:24 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:40 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #if !defined HANDLER_PROGRESS_BAR
 #define HANDLER_PROGRESS_BAR
@@ -19,7 +23,7 @@ class CQProgressItem;
 
 /**
  *  This is used to call the progress bar code
- *  We do not want to call gui stuff directly from the CModel. 
+ *  We do not want to call gui stuff directly from the CModel.
  */
 class CProgressBar : public CProcessReport, public CQProgressDialog
   {
@@ -32,8 +36,8 @@ class CProgressBar : public CProcessReport, public CQProgressDialog
     virtual ~CProgressBar();
 
     /**
-     * Add a process report item to to the list of reporting items. 
-     * The return value is the handle of the item and can be used to 
+     * Add a process report item to to the list of reporting items.
+     * The return value is the handle of the item and can be used to
      * indicate process, finsh, or reset the item. If the method fails
      * C_INVALID_INDEX is returned.
      * @param const std::string & name
@@ -48,7 +52,7 @@ class CProgressBar : public CProcessReport, public CQProgressDialog
                                      const void * pEndValue = NULL);
 
     /**
-     * Report process on item handle. If the return value is false the calling 
+     * Report process on item handle. If the return value is false the calling
      * process must halt execution and return.
      * @param const unsigned C_INT32 & handle
      * @param bool continue
@@ -56,9 +60,9 @@ class CProgressBar : public CProcessReport, public CQProgressDialog
     virtual bool progress(const unsigned C_INT32 & handle);
 
     /**
-     * Check whether processing shall proceed. If the return value is false 
-     * the calling process must halt execution and return. This method is 
-     * provided so that lenghty processing without advances in any of the 
+     * Check whether processing shall proceed. If the return value is false
+     * the calling process must halt execution and return. This method is
+     * provided so that lenghty processing without advances in any of the
      * reporting items can check whether continuation is requested.
      * @param bool continue
      */
@@ -67,7 +71,7 @@ class CProgressBar : public CProcessReport, public CQProgressDialog
     /**
      * Reset item handle. This means that the value of the item has changed
      * but not as part of a continous process. If you run multiple processes
-     * call reset beween them. If the return value is false the calling 
+     * call reset beween them. If the return value is false the calling
      * process must halt execution and return.
      * @param const unsigned C_INT32 & handle
      * @param bool continue
@@ -76,15 +80,15 @@ class CProgressBar : public CProcessReport, public CQProgressDialog
 
     /**
      * Indicate that all items are finished reporting. All item handles loose
-     * their validity. If the return value is false the calling 
+     * their validity. If the return value is false the calling
      * process must halt execution and return.
      * @param bool continue
      */
     virtual bool finish();
 
     /**
-     * Indicate that item handle is finished reporting. The handle of that 
-     * item is no longer valid after the call. If the return value is false 
+     * Indicate that item handle is finished reporting. The handle of that
+     * item is no longer valid after the call. If the return value is false
      * the calling process must halt execution and return.
      * @param const unsigned C_INT32 & handle
      * @param bool continue

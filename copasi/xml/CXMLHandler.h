@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CXMLHandler.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:41:11 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:33:05 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CXMLHandler class.
@@ -43,7 +47,7 @@ template<class CType, class CCommon>
       C_INT32 mCurrentElement;
 
       /**
-       * 
+       *
        */
       CXMLElementHandler * mpCurrentHandler;
 

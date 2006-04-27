@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesWidget.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/10/26 15:43:18 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:46 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 //#include <qpushbutton.h>
 #include <qlayout.h>
@@ -20,7 +24,7 @@
 #include "qtUtilities.h"
 
 /*
- *  Constructs a TimeSeriesWidget which is a child of 'parent', with the 
+ *  Constructs a TimeSeriesWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 TimeSeriesWidget::TimeSeriesWidget(QWidget* parent, const char* name, WFlags fl)

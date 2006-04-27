@@ -1,8 +1,20 @@
+/* Begin CVS Header
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLReference.h,v $
+   $Revision: 1.2 $
+   $Name:  $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:21 $
+   End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 #ifndef COPASI_SBMLReference
- #define COPASI_SBMLReference
+#define COPASI_SBMLReference
 
 #include <string>
- #include <map>
+#include <map>
 
 class SBMLReference
   {
@@ -27,7 +39,7 @@ class SBMLReference
 
     /**
      * Set URL of the refernced SBML file.
-     * @param const std::string & id 
+     * @param const std::string & id
      * @return bool success
      */
     bool setURL(const std::string & url);
@@ -54,7 +66,7 @@ class SBMLReference
 
     /**
      * Add an associated SBMLid, COPASIkey pair to the references.
-     * @param const std::string & id 
+     * @param const std::string & id
      * @param const std::string & key
      * @return bool success
      */
@@ -62,14 +74,14 @@ class SBMLReference
 
     /**
      * Remove the reference of the given id
-     * @param const std::string & id 
+     * @param const std::string & id
      * @return bool success
      */
     bool removeSBMLid(const std::string & id);
 
     /**
      * Remove the reference of the given key
-     * @param const std::string & key 
+     * @param const std::string & key
      * @return bool success
      */
     bool removeCOPASIkey(const std::string & key);

@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.101 $
+   $Revision: 1.102 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:21 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:42 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /*******************************************************************
- **  $ CopasiUI/CompartmentsWidget.cpp                 
+ **  $ CopasiUI/CompartmentsWidget.cpp
  **  $ Author  : Mudita Singhal
  **
- ** This file is used to create the GUI FrontPage for the 
- ** information obtained from the data model about the 
+ ** This file is used to create the GUI FrontPage for the
+ ** information obtained from the data model about the
  ** Compartments----It is Basically the First level of Compartments
  ********************************************************************/
 #include "CompartmentsWidget.h"

@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/23 13:11:56 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:27 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef MMASCIIExpoter_H__
 #define MMASCIIExpoter_H__
@@ -17,7 +21,7 @@ class MMASCIIExporter
   {
   protected:
     /*
-    **  
+    **
     */
   public:
 
@@ -53,11 +57,11 @@ class MMASCIIExporter
      **/
     C_INT32 findMetabXByName(const CModel* copasiModel, const std::string & Target);
     /**
-     **  This method finds the compartement by the name, returns an index 
+     **  This method finds the compartement by the name, returns an index
      **/
     C_INT32 findCompByName(const CModel* copasiModel, const std::string & Target);
     /**
-     ** This method finds the global parameter by the name, returns an index 
+     ** This method finds the global parameter by the name, returns an index
      **/
     C_INT32 findGlobalParamByName(const CModel* copasiModel, const std::string & Target);
     /**
@@ -69,7 +73,7 @@ class MMASCIIExporter
      **/
     void findFunctionsCallsC(const CEvaluationNode* pNode, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction, std::ostringstream & outFunctionHeader);
     /**
-     **    This method exports the functions in C format 
+     **    This method exports the functions in C format
      **/
     void functionExportC(const CFunction* pFunc, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction, std::ostringstream & outFunctionHeader);
     /**
@@ -83,7 +87,7 @@ class MMASCIIExporter
      **/
     std::string testMMDName(const std::string & name, std::set<std::string> & NameSet, std::map< std::string, unsigned C_INT32 > & EncounterNumber);
     /**
-     **    This method exports the functions in Berkeley Madonna format 
+     **    This method exports the functions in Berkeley Madonna format
      **/
     void functionExportMMD (CEvaluationNode* pNode, std::ofstream & outFile, unsigned C_INT32 &findex, std::map< std::string, std::string > &functionNameMap);
     /**

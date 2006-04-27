@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: stupe $ 
-   $Date: 2005/03/14 04:49:00 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:43 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /****************************************************************************
- **  $ CopasiUI/CompartmentsWidget1.h               
+ **  $ CopasiUI/CompartmentsWidget1.h
  **  $ Author  : Mudita Singhal
- **  
- ** This is the header file for the Compartments Widget1, i.e the second level 
+ **
+ ** This is the header file for the Compartments Widget1, i.e the second level
  ** of Compartments.
  *****************************************************************************/
 #ifndef COMPARTMENTSWIDGET1_H

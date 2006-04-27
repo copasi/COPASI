@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test2/CNormalFraction.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/31 14:26:54 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:06 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CNormalFraction
 #define COPASI_CNormalFraction
@@ -14,7 +18,7 @@
 
 //#include "CNormalItem.h"
 //#include "CNormalProduct.h"
-#include "CNormalSum.h" 
+#include "CNormalSum.h"
 //#include "CNormalLcm.h"
 
 class CNormalProduct;
@@ -96,7 +100,7 @@ class CNormalFraction
     bool expand(const CNormalLcm& lcm);
 
     /**
-     * Cancel common items of mNumerator and mDenominator. 
+     * Cancel common items of mNumerator and mDenominator.
      * @return true.
      */
     bool cancel();
@@ -161,7 +165,7 @@ class CNormalFraction
     bool divide(const CNormalFraction& fraction);*/
 
     /*
-     * Check whether this fraction equals another fraction. 
+     * Check whether this fraction equals another fraction.
      *  @return bool
      *
     bool checkEqual(const CNormalFraction& fraction) const;*/

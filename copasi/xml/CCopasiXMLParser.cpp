@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.123 $
+   $Revision: 1.124 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/17 13:49:56 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:33:05 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CCopasiXMLParser class.

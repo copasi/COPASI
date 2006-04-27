@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/04 12:48:18 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:29 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 #ifndef COPASI_CExperimentObjectMap
- #define COPASI_CExperimentObjectMap
+#define COPASI_CExperimentObjectMap
 
 #include "utilities/CCopasiParameterGroup.h"
- #include "utilities/CVector.h"
+#include "utilities/CVector.h"
 
 class CExperimentObjectMap: public CCopasiParameterGroup
   {
@@ -76,7 +80,7 @@ class CExperimentObjectMap: public CCopasiParameterGroup
     std::string getObjectCN(const unsigned C_INT32 & index) const;
 
     /**
-     * Compile the map. This function must be called 
+     * Compile the map. This function must be called
      * before any operations can be performed.
      * @param const std::vector< CCopasiContainer * > listOfContainer
      * @return bool success
@@ -99,8 +103,8 @@ class CExperimentObjectMap: public CCopasiParameterGroup
   private:
     // Attributes:
     /**
-     * A vector of pointer to the  objects corresponding 
-     * to the data column. 
+     * A vector of pointer to the  objects corresponding
+     * to the data column.
      */
     CVector<CCopasiObject *> mObjects;
 

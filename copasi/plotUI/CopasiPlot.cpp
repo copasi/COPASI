@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 13:20:34 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:41 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <qstring.h>
 #include <qcolor.h>   //might need to go to the header file
@@ -208,7 +212,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
       switch (mCurveTypes[k])
         {
-        case CPlotItem::curve2d :
+        case CPlotItem::curve2d:
           switch (*pItem->getValue("Line type").pUINT)
             {
             case 0:          //curve
@@ -225,7 +229,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
             }
           break;
 
-        case CPlotItem::histoItem1d :
+        case CPlotItem::histoItem1d:
           // Store the index of the histogram to be created
           mHistoIndices[k] = mHistograms.size();
           mHistograms.push_back(CHistogram(*pItem->getValue("increment").pDOUBLE));
@@ -464,13 +468,13 @@ void CopasiPlot::updateCurves(const unsigned C_INT32 & activity, const bool & do
 
         switch (mCurveTypes[k])
           {
-          case CPlotItem::curve2d :
+          case CPlotItem::curve2d:
             mCurves[k]->setData(MyQwtCPointerData(data[mDataIndex[k][0].second]->data(),
                                                   data[mDataIndex[k][1].second]->data(),
                                                   ndata));
             break;
 
-          case CPlotItem::histoItem1d :
+          case CPlotItem::histoItem1d:
             if (doHisto)
               mCurves[k]->setRawData(mHistograms[mHistoIndices[k]].getXArray(),
                                      mHistograms[mHistoIndices[k]].getYArray(),

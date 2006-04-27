@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/09 12:54:46 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:26 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CKinFunction
@@ -201,7 +205,8 @@ void CKinFunction::cleanupNodes()
 /*void CKinFunction::writeMathML(std::ostream & out) const
   {
     //if (!mNodes[0]->isLeftValid()) return;
- 
+
+
     out << "<math>" << std::endl;
     //mNodes[0]->getLeft().writeMathML(out, 0);
     out << "</math>" << std::endl;

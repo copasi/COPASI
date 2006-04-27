@@ -1,28 +1,32 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/08 20:11:23 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:41 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQExperimentData.ui'
  **
  ** Created: Wed Mar 8 14:51:48 2006
- **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.9 2006/03/08 20:11:23 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.10 2006/04/27 01:27:41 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef CQEXPERIMENTDATA_H
- #define CQEXPERIMENTDATA_H
+#define CQEXPERIMENTDATA_H
 
 #include <qvariant.h>
- #include <qpixmap.h>
- #include <qdialog.h>
- #include <string>
- #include <map>
+#include <qpixmap.h>
+#include <qdialog.h>
+#include <string>
+#include <map>
 
 class QVBoxLayout;
 class QHBoxLayout;

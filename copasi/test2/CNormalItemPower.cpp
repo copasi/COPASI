@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test2/CNormalItemPower.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/08/31 14:26:54 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:06 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "CNormalItemPower.h"
 #include "function/CEvaluationNode.h"
@@ -84,21 +88,25 @@ std::ostream & operator<<(std::ostream &os, const CNormalItemPower & d)
 /*
 CNormalPower::CNormalPower()
 {}
- 
+
+
 CNormalPower::CNormalPower(const CNormalPower& src)
     : mBase(src.mBase), mExp(src.mExp)
 {}
- 
+
+
 CNormalPower::CNormalPower(const CNormalSum& sum, const CNormalProduct& product)
     : mBase(sum), mExp(product)
 {}
- 
+
+
 bool CNormalPower::setBase(const CNormalSum& sum)
 {
   mBase = sum;
   return true;
 }
- 
+
+
 bool CNormalPower::setExp(const CNormalProduct& product)
 {
   if (product.getFactor() < 1.0E-100)
@@ -106,7 +114,8 @@ bool CNormalPower::setExp(const CNormalProduct& product)
   mExp = product;
   return true;
 }
- 
+
+
 bool CNormalPower::setExpFactor(const C_FLOAT64 & factor)
 {
   if (factor < 1.0E-100)
@@ -114,7 +123,8 @@ bool CNormalPower::setExpFactor(const C_FLOAT64 & factor)
   mExp.setFactor(factor);
   return true;
 }
- 
+
+
 bool CNormalPower::multiply(const CNormalPower& power)
 {
   if (mExp == power.mExp)
@@ -124,17 +134,20 @@ bool CNormalPower::multiply(const CNormalPower& power)
   }
   return false;
 }
- 
+
+
 const CNormalSum& CNormalPower::getBase() const
 {
   return mBase;
 }
- 
+
+
 const CNormalProduct& CNormalPower::getExp() const
 {
   return mExp;
 }
- 
+
+
 bool CNormalPower::operator==(const CNormalPower & rhs) const
 {
   if ((mBase == rhs.mBase) && (mExp == rhs.mExp))
@@ -142,14 +155,16 @@ bool CNormalPower::operator==(const CNormalPower & rhs) const
   else
     return false;
 }
- 
+
+
 bool CNormalPower::operator<(const CNormalPower & rhs) const
 {
   if (mExp < rhs.mExp) return true;
   if (rhs.mExp < mExp) return false;
   return (rhs.mExp.getFactor() < mExp.getFactor());
 }
- 
+
+
 std::ostream & operator<<(std::ostream &os, const CNormalPower & d)
 {
   //if ((d.mBase.getProducts().size() == 1)
@@ -160,9 +175,11 @@ std::ostream & operator<<(std::ostream &os, const CNormalPower & d)
   //os << "^";
   //if (d.mExp)
   //os << "(" << d.mExp << ")";
- 
+
+
   os << "(" << d.mBase << ")^(" << d.mExp << ")";
   return os;
 }
- 
+
+
  */

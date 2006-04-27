@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:23:30 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:17 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CStochMethod
 #define COPASI_CStochMethod
@@ -55,7 +59,7 @@ class CStochMethod : public CTrajectoryMethod
 
     /**
      * The sum of the propensities before the last update
-     */ 
+     */
     //C_FLOAT64 mA0Old;
 
     /**

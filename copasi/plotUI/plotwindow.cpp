@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 13:20:34 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:41 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 // the window containing the plot and buttons for supported operations
 
@@ -92,7 +96,8 @@ bool PlotWindow::initFromSpec(const CPlotSpecification* ptrSpec)
 /*void PlotWindow::mouseReleased(const QMouseEvent &e)
 {
   //TODO: if midbutton is clicked and we're zoomed out completely, zoomButton need to be enabled as well
- 
+
+
   if (e.button() == RightButton)
     zoomButton->setEnabled(true);
 }*/

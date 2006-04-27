@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/12 14:35:01 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:17 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *   CTauLeapMethod
@@ -93,7 +97,7 @@ CTauLeapMethod *CTauLeapMethod::createTauLeapMethod(CTrajectoryProblem * C_UNUSE
       break;
       case - 1:      // more than one compartment involved
       CCopasiMessage(CCopasiMessage::ERROR, MCTrajectoryMethod + 3);
-      break;*/ 
+      break;*/
       // Everything alright: Hybrid simulation possible
     case 1:
     default:
@@ -177,7 +181,7 @@ CTauLeapMethod::CTauLeapMethod(const CCopasiContainer * pParent):
 /**
  *  Initializes the solver and sets the model to be used.
  *
- *  @param model A reference to an instance of a CModel 
+ *  @param model A reference to an instance of a CModel
  */
 void CTauLeapMethod::initMethod()
 {

@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiWidget.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2004/10/07 14:22:06 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:46 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /********************************************************
  Author: Liang Xu
  Version : 1.xx  <first>
- Description: 
- Date: 04/03 
+ Description:
+ Date: 04/03
  Comment : CopasiWidget: Provide base class for all widget: for resizable/minimize
  Contact: Please contact lixu1@vt.edu.
  *********************************************************/

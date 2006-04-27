@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:21 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:43 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /*******************************************************************
- **  $ CopasiUI/CopasiTableWidget.cpp                 
+ **  $ CopasiUI/CopasiTableWidget.cpp
  **  $ Author  : Mudita Singhal
  **
- ** This file is used to create the GUI FrontPage for the 
- ** information obtained from the data model about the 
+ ** This file is used to create the GUI FrontPage for the
+ ** information obtained from the data model about the
  ** Compartments----It is Basically the First level of Compartments
  ********************************************************************/
 #include "CopasiTableWidget.h"
@@ -161,7 +165,7 @@ void CopasiTableWidget::fillTable()
     }
 
   /* The following logic ensures that width is justified on basis of
-   * first feed of the equation either through manual entry or file load 
+   * first feed of the equation either through manual entry or file load
    */
   if (table->numRows() > 2)
     flagtoAdjust = false;

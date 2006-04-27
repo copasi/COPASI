@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CGA.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:25:24 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:52 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  File name: CGA.h
  *
- *  Programmer: Yongqun He 
+ *  Programmer: Yongqun He
  *  Contact email: yohe@vt.edu
- *  Purpose: This is the interface (.h file) of the CGA class. 
+ *  Purpose: This is the interface (.h file) of the CGA class.
  *           It is to implement the genetic algorithm for COPASI optimization
  */
 
@@ -60,8 +64,8 @@ class CGA : public COptAlgorithm
     CGA();
 
     /**
-     * constructor for initializing population 
-     */ 
+     * constructor for initializing population
+     */
     //CGA(int psize,int num,int param);
 
     /**
@@ -93,7 +97,7 @@ class CGA : public COptAlgorithm
     void initFirstGeneration();
 
     /**
-     * clean up 
+     * clean up
      */
     int cleanup();
 

@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 15:41:10 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:33:05 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CCopasiXML class.
@@ -54,7 +58,7 @@ class CCopasiXML : public CCopasiXMLInterface
     virtual bool load(std::istream & is);
 
     /**
-     * Retrieve the version of the current XML file. 
+     * Retrieve the version of the current XML file.
      * Before any load operation this contains the COPASI schema version supported by
      * the writer. After load it contains the schema version of the loaded file.
      * @return const CVersion & version

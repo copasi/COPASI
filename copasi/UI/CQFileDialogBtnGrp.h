@@ -1,26 +1,30 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFileDialogBtnGrp.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/01 17:02:40 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:41 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFileDialogBtnGrp.ui'
  **
  ** Created: Thu Sep 1 12:31:22 2005
- **      by: The User Interface Compiler ($Id: CQFileDialogBtnGrp.h,v 1.1 2005/09/01 17:02:40 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQFileDialogBtnGrp.h,v 1.2 2006/04/27 01:27:41 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef CQFILEDIALOGBTNGRP_H
- #define CQFILEDIALOGBTNGRP_H
+#define CQFILEDIALOGBTNGRP_H
 
 #include <qvariant.h>
- #include <qpixmap.h>
- #include <qwidget.h>
+#include <qpixmap.h>
+#include <qwidget.h>
 
 class QVBoxLayout;
 class QHBoxLayout;

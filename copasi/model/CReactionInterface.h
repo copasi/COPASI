@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/15 13:44:14 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:22 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef CREACTIONINTERFACE_H
 #define CREACTIONINTERFACE_H
 
 #include <vector>
 #include <string>
-#include "copasi.h" 
+#include "copasi.h"
 //#include "model/CChemEq.h"
 #include "model/CReaction.h"
 #include "model/CChemEqInterface.h"
@@ -41,7 +45,7 @@ class CReactionInterface
 
     /**
      * A copy of the chemical equation of the reaction
-     */ 
+     */
     //CChemEq *mpChemEq;
     CChemEqInterface mChemEqI;
 
@@ -72,7 +76,7 @@ class CReactionInterface
 
     /**
      * is the reaction valid?
-     */ 
+     */
     //bool mValid;
 
   public:
@@ -92,9 +96,9 @@ class CReactionInterface
     bool isReversible() const {return mChemEqI.getReversibility();};
 
     /**
-     * this method tries to find out if the REACTION involves several compartments 
-     * It only takes into account the metabs that 
-     * actually exist in the model. A non existing metabolite is assumed 
+     * this method tries to find out if the REACTION involves several compartments
+     * It only takes into account the metabs that
+     * actually exist in the model. A non existing metabolite is assumed
      * not to be in a different compartment
      */
     bool isMulticompartment(const CModel & model) const;
@@ -179,7 +183,7 @@ class CReactionInterface
     bool isLocalValue(unsigned C_INT32 index) const {return mIsLocal[index];};
 
     /**
-     *  associate the function parameter referenced by "index" with the global  
+     *  associate the function parameter referenced by "index" with the global
      *  parameter named pn. Only valid if the role for this function parameter is "PARAMETER".
      *  returns success
      */

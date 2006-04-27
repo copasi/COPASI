@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/19 18:36:59 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:39 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CSensTask class.
@@ -17,7 +21,7 @@
 #include "CSensProblem.h"
 #include "CSensMethod.h"
 #include "model/CModel.h"
-#include "model/CState.h" 
+#include "model/CState.h"
 //#include "model/CMetabNameInterface.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"

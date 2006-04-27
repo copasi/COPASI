@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/09 16:31:49 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:27 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /*  CNodeK
- *  
+ *
  *  CNodeK.cpp based on UDKType.cpp from
  *  (C) Pedro Mendes 1995-2000
- * 
+ *
  *  Created for Copasi by Stefan Hoops
  *  (C) Stefan Hoops 2001
  */
@@ -21,7 +25,7 @@
 #include <string>
 #include <vector>
 
-#include "utilities/CReadConfig.h" 
+#include "utilities/CReadConfig.h"
 //#include "utilities/CWriteConfig.h"
 #include "CCallParameters.h"
 
@@ -134,7 +138,7 @@ class CNodeK
     int attribute1;
 
     /**
-     *  The explicit function string 
+     *  The explicit function string
      */
     std::string mExplicitFunction;
 
@@ -298,7 +302,7 @@ class CNodeK
     void setIndex(C_INT32 index);
 
     /**
-     * Setting the old index 
+     * Setting the old index
     * (Gepasi format, each type is indexed separately)
      * @param C_INT32 &index
      */

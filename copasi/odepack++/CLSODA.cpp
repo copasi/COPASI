@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODA.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/13 14:32:05 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:35 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <math.h>
 #include <float.h>
@@ -1652,11 +1656,11 @@ L200:
   dls001_1.nslast = dls001_1.nst;
   switch (*itask)
     {
-    case 1:goto L210;
-    case 2:goto L250;
-    case 3:goto L220;
-    case 4:goto L230;
-    case 5:goto L240;
+    case 1: goto L210;
+    case 2: goto L250;
+    case 3: goto L220;
+    case 4: goto L230;
+    case 5: goto L240;
     }
 L210:
   if ((dls001_1.tn - *tout) * dls001_1.h__ < 0.)
@@ -1824,9 +1828,9 @@ L290:
   kgo = 1 - dls001_1.kflag;
   switch (kgo)
     {
-    case 1:goto L300;
-    case 2:goto L530;
-    case 3:goto L540;
+    case 1: goto L300;
+    case 2: goto L530;
+    case 3: goto L540;
     }
   /* ----------------------------------------------------------------------- */
   /* Block F. */
@@ -1878,11 +1882,11 @@ L300:
 L310:
   switch (*itask)
     {
-    case 1:goto L320;
-    case 2:goto L400;
-    case 3:goto L330;
-    case 4:goto L340;
-    case 5:goto L350;
+    case 1: goto L320;
+    case 2: goto L400;
+    case 3: goto L330;
+    case 4: goto L340;
+    case 5: goto L350;
     }
   /* ITASK = 1.  If TOUT has been reached, interpolate. ------------------- */
 L320:

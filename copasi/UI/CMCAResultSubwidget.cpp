@@ -1,16 +1,20 @@
 /* Begin CVS Header
-   $Source: /home/cvs/copasi_dev/cvs_admin/c++style,v $
-   $Revision: 1.19 $
+   $Source: /home/cvs/copasi_dev/copasi/CopasiUI/CMCAResultSubwidget.cpp,v $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/30 16:36:51 $
+   $Author: shoops $
+   $Date: 2006/03/02 02:21:43 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CMCAResultSubwidget.ui'
  **
  ** Created: Thu Feb 23 13:33:29 2006
- **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.3   edited Nov 24 2003 $)
+ **      by: The User Interface Compiler ($Id: CMCAResultSubwidget.cpp,v 1.6 2006/03/02 02:21:43 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,15 +22,15 @@
 #include "CMCAResultSubwidget.h"
 
 #include <qvariant.h>
- #include <qpushbutton.h>
- #include <qlabel.h>
- #include <qcombobox.h>
- #include <qtabwidget.h>
- #include <qtable.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include "CMCAResultSubwidget.ui.h"
+#include <qpushbutton.h>
+#include <qlabel.h>
+#include <qcombobox.h>
+#include <qtabwidget.h>
+#include <qtable.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include "CMCAResultSubwidget.ui.h"
 
 /*
  *  Constructs a CMCAResultSubwidget as a child of 'parent', with the

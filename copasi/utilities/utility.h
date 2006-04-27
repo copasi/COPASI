@@ -1,15 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/22 15:14:07 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:44 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_utilities
 #define COPASI_utilities
 
-#include <string> 
+#include <string>
 // #include <stdio.h>
 #include <stdarg.h>
 
@@ -43,7 +47,7 @@ bool isNumber(const std::string & str);
  *  sprintf like function for strings
  *  @param "const char *" format sprintf like format string
  *  @param ...
- *  @return "string" 
+ *  @return "string"
  */
 std::string StringPrint(const char * format, ...);
 
@@ -60,7 +64,7 @@ std::string unQuote(const std::string & name);
  * Surround a name with quotes if the name contains a space or
  * double quote else the name is returned unmodified. In the
  * quoted name " and \ are escaped. The parameter additionalEscapes
- * forces quotes around names containing any of the character in the 
+ * forces quotes around names containing any of the character in the
  * parameter.
  * @param const std::string & name
  * @param const std::string & additionalEscapes (default: "")
@@ -85,10 +89,10 @@ void FixXHTML(const std::string &original, std::string &fixed)
 
 /**
   * Convert an attribute to enum. If attribute is NULL
-  * or no matching name is found -1 is returned. Note: enumNames must be 
+  * or no matching name is found -1 is returned. Note: enumNames must be
   * zero terminated.
   * @param const char * attribute
-  * @param const char ** enumNames 
+  * @param const char ** enumNames
   * @return bool
   */
 int toEnum(const char * attribute,

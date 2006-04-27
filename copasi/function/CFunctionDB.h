@@ -1,14 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/13 18:50:54 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:26 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CFunctionDB
- * 
+ *
  * Created for Copasi by Stefan Hoops
  * (C) Stefan Hoops 2001
  */
@@ -119,7 +123,7 @@ class CFunctionDB : public CCopasiContainer
      *  Delete the function functionName from the database
      *  @param "const string" &functionName
      *  @return C_INT32 Fail
-     */ 
+     */
     //void dBDelete(const std::string & functionName);
 
     /**
@@ -132,7 +136,7 @@ class CFunctionDB : public CCopasiContainer
 
     /**
      *  Search for a function among the loaded functions. If no
-     *  function is found the database is searched and the apropriate 
+     *  function is found the database is searched and the apropriate
      *  function is loaded.
      *  @param "const string" &functionName
      *  @return CEvaluationTree * function (NULL if function is not found)

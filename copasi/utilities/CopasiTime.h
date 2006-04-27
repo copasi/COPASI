@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CopasiTime.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/13 20:09:46 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:44 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_time
 #define COPASI_time
@@ -12,7 +16,7 @@
 #include "copasi.h"
 
 /**
- * This class is for handling execution time related values. 
+ * This class is for handling execution time related values.
  * static methods for retreiving wall clock and CPU time are
  * provided.
  */
@@ -83,7 +87,7 @@ class CCopasiTimeVariable
     std::string isoFormat() const;
 
     /**
-     * Retrieve the time in micro seconds. If bounded is true  
+     * Retrieve the time in micro seconds. If bounded is true
      * 0 <= microSeconds  < 1000
      * @param const bool & bounded (default: false)
      * @return C_INT64 microSeconds
@@ -91,7 +95,7 @@ class CCopasiTimeVariable
     C_INT64 getMicroSeconds(const bool & bounded = false) const;
 
     /**
-     * Retrieve the time in milli seconds. If bounded is true  
+     * Retrieve the time in milli seconds. If bounded is true
      * 0 <= milliSeconds  < 1000
      * @param const bool & bounded (default: false)
      * @return C_INT64 milliSeconds
@@ -99,7 +103,7 @@ class CCopasiTimeVariable
     C_INT64 getMilliSeconds(const bool & bounded = false) const;
 
     /**
-     * Retrieve the time in seconds. If bounded is true  
+     * Retrieve the time in seconds. If bounded is true
      * 0 <= seconds  < 60
      * @param const bool & bounded (default: false)
      * @return C_INT64 seconds
@@ -107,7 +111,7 @@ class CCopasiTimeVariable
     C_INT64 getSeconds(const bool & bounded = false) const;
 
     /**
-     * Retrieve the time in minutes. If bounded is true  
+     * Retrieve the time in minutes. If bounded is true
      * 0 <= minutes  < 60
      * @param const bool & bounded (default: false)
      * @return C_INT64 minutes
@@ -115,7 +119,7 @@ class CCopasiTimeVariable
     C_INT64 getMinutes(const bool & bounded = false) const;
 
     /**
-     * Retrieve the time in hours. If bounded is true  
+     * Retrieve the time in hours. If bounded is true
      * 0 <= hours  < 24
      * @param const bool & bounded (default: false)
      * @return C_INT64 hours
@@ -144,7 +148,7 @@ class CCopasiTimeVariable
 
     /**
      * Helper function to convert a C_INT32 to a std::string.
-     * If the number of digits is non zero the value is padded with 
+     * If the number of digits is non zero the value is padded with
      * zeros.
      * @param const C_INT64 & value
      * @param const C_INT32 & digits (default: 0)

@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/qtUtilities.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/05/17 18:11:02 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:47 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_qtUtilities
 #define COPASI_qtUtilities
@@ -67,7 +71,7 @@ bool setParameterValue(CCopasiParameterGroup * group,
 
 /**
  * Checks whether the file exists. If the file exist the user
- * is prompted whether to overwrite the file. The return value is 
+ * is prompted whether to overwrite the file. The return value is
  * one of QMessageBox::Yes, QMessageBox::No, or QMessageBox::Cancel.
  * If the file does not exist QMessageBox::Yes is returned.
  * param const QString & file

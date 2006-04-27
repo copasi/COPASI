@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 13:01:22 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CCopasiMessage class.
@@ -98,7 +102,7 @@ class CCopasiMessage
     unsigned C_INT32 mNumber;
 
     /**
-     * The stack of messages. Each message created with one of 
+     * The stack of messages. Each message created with one of
      * the specific constructors is automically added to the stack.
      */
     static std::deque< CCopasiMessage > mMessageDeque;
@@ -108,7 +112,7 @@ class CCopasiMessage
   public:
     /**
      * This function peeks at the first message created in COPASI.
-     * If no more messages are in the deque the message 
+     * If no more messages are in the deque the message
      * (MCCopasiMessage + 1, "Message (1): No more messages." is returned.
      * @return const CCopasiMessage & message
      */
@@ -116,7 +120,7 @@ class CCopasiMessage
 
     /**
      * This function peeks at the last message created in COPASI.
-     * If no more messages are in the deque the message 
+     * If no more messages are in the deque the message
      * (MCCopasiMessage + 1, "Message (1): No more messages." is returned.
      * @return const CCopasiMessage & message
      */
@@ -124,9 +128,9 @@ class CCopasiMessage
 
     /**
      * This function retrieves the first message created in COPASI.
-     * Consecutive calls allow for the retrieval of all generated 
+     * Consecutive calls allow for the retrieval of all generated
      * messages in chronological order. If no more messages are in
-     * the deque the message (MCCopasiMessage + 1, "Message (1): 
+     * the deque the message (MCCopasiMessage + 1, "Message (1):
      * No more messages." is returned.
      * @return CCopasiMessage  message
      */
@@ -134,8 +138,8 @@ class CCopasiMessage
 
     /**
      * This function retrieves the last message created in COPASI.
-     * Consecutive calls allow for the retrieval of all generated 
-     * messages in reverse chronological order. If no more messages 
+     * Consecutive calls allow for the retrieval of all generated
+     * messages in reverse chronological order. If no more messages
      * are in the deque the message (MCCopasiMessage + 1, "Message
      * (1): No more messages." is returned.
      * @return CCopasiMessage message
@@ -162,19 +166,19 @@ class CCopasiMessage
     static CCopasiMessage::Type getHighestSeverity();
 
     /**
-     *  Default consructor. 
+     *  Default consructor.
      *  This creates a default error messages, which actually does nothing.
      */
     CCopasiMessage();
 
     /**
-     *  Copy consructor. 
+     *  Copy consructor.
      *  @param const CCopasiMessage & src
      */
     CCopasiMessage(const CCopasiMessage & src);
 
     /**
-     *  Specified consructor. 
+     *  Specified consructor.
      *  This creates a formated message.
      *  @param CCopasiMessage::Type type (RAW|TRACE|WARNING|ERROR)
      *  @param const char * format (printf like format string)
@@ -183,7 +187,7 @@ class CCopasiMessage
     CCopasiMessage(Type type, const char *format, ...);
 
     /**
-     *  Specified consructor. 
+     *  Specified consructor.
      *  This creates a formated message.
      *  @param CCopasiMessage::Type type (RAW|TRACE|WARNING|ERROR)
      *  @param unsigned C_INT32 number (message number see message.h)
@@ -192,12 +196,12 @@ class CCopasiMessage
     CCopasiMessage(Type type, unsigned C_INT32 number, ...);
 
     /**
-     *  Destructor. 
+     *  Destructor.
      */
     ~CCopasiMessage();
 
     /**
-     *  Assignement operator. 
+     *  Assignement operator.
      */
     CCopasiMessage &operator=(const CCopasiMessage & RHS);
 

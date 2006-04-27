@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/20 20:21:54 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:44 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /*******************************************************************
- **  $ CopasiUI/ModelWidget.cpp                 
+ **  $ CopasiUI/ModelWidget.cpp
  **  $ Author  : Mudita Singhal
  **
- ** This file is used to create the GUI FrontPage for the 
+ ** This file is used to create the GUI FrontPage for the
  ** information obtained from the data model about the Model
  ********************************************************************/
 #include <qlabel.h>
@@ -33,7 +37,7 @@
 #include "qtUtilities.h"
 
 /*
- *  Constructs a ModelWidget which is a child of 'parent', with the 
+ *  Constructs a ModelWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)

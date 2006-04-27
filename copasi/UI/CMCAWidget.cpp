@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/28 23:06:47 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:40 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <qfiledialog.h>
 
@@ -48,7 +52,7 @@
 #include "qapplication.h"
 
 /**
- *  Constructs a CMCAWidget which is a child of 'parent', with the 
+ *  Constructs a CMCAWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 CMCAWidget::CMCAWidget(QWidget* parent, const char* name, WFlags fl)
@@ -419,9 +423,9 @@ void CMCAWidget::taskSteadyStateToggled()
   CMCATask* mcaTask =
    dynamic_cast<CMCATask *>(GlobalKeys.get(objKey));
   assert(mcaTask);
-  CMCAProblem* mcaProblem=dynamic_cast<CMCAProblem*>(mcaTask->getProblem()); 
-  assert(mcaProblem); 
-  mcaProblem->setSteadyStateRequested(taskSteadyState->isChecked());  
+  CMCAProblem* mcaProblem=dynamic_cast<CMCAProblem*>(mcaTask->getProblem());
+  assert(mcaProblem);
+  mcaProblem->setSteadyStateRequested(taskSteadyState->isChecked());
   */
   this->initParameterTable();
 }

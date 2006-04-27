@@ -1,14 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/07 10:55:59 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:26 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CFunctionParameters
- * 
+ *
  * Created for Copasi by Stefan Hoops
  * (C) Stefan Hoops 2001
  */
@@ -119,9 +123,9 @@ class CFunctionParameters : public CCopasiContainer
 
     /**
      *  Retrieves the first parameter with the specified usage after pos
-     *  In a normal situation pos is set to 0 for the first call. 
+     *  In a normal situation pos is set to 0 for the first call.
      *  It is increment by the method to allow subsequent searches to start
-     *  after the last found item. This is usefull if several parameters 
+     *  after the last found item. This is usefull if several parameters
      *  with the same usage exist.
      *  @param "const string &" usage
      *  @param "unsigned C_INT32 &" pos (first call should be with 0)

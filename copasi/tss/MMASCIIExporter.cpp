@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/12 14:35:23 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:27 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <locale>
 #include <math.h>
@@ -97,7 +101,7 @@ C_INT32 MMASCIIExporter::findCompByName(const CModel* copasiModel, const std::st
 }
 
 /**
- **        This method finds the global parameter by the name, returns an index   
+ **        This method finds the global parameter by the name, returns an index
  **/
 C_INT32 MMASCIIExporter::findGlobalParamByName(const CModel* copasiModel, const std::string & Target)
 {
@@ -116,7 +120,7 @@ C_INT32 MMASCIIExporter::findGlobalParamByName(const CModel* copasiModel, const 
 }
 
 /**
- **        This method finds the local reactions parameter by the name, returns an index  
+ **        This method finds the local reactions parameter by the name, returns an index
  **/
 C_INT32 MMASCIIExporter::findKinParamByName(const CReaction* reac, const std::string & Target)
 {
@@ -197,8 +201,8 @@ std::string MMASCIIExporter::toMMDName(const std::string & realName, std::set<st
 }
 /**
  **      This method investigates whether the given name already assigned,
- **      put the new name (in cappital letters) in the set of assigned names 
- **      or  modify the name according to encounter number      
+ **      put the new name (in cappital letters) in the set of assigned names
+ **      or  modify the name according to encounter number
  **/
 std::string MMASCIIExporter::testMMDName(const std::string & name, std::set<std::string> & NameSet,
     std::map< std::string, unsigned C_INT32 > & EncounterNumber)
@@ -236,7 +240,7 @@ std::string MMASCIIExporter::testMMDName(const std::string & name, std::set<std:
 }
 
 /**
- **         This method modifies the export tree of the function for internal calls of Mass Action 
+ **         This method modifies the export tree of the function for internal calls of Mass Action
  **/
 void MMASCIIExporter::modifyTreeForMassAction(CFunction* tmpFunc)
 {
@@ -294,9 +298,9 @@ void MMASCIIExporter::modifyTreeForMassAction(CFunction* tmpFunc)
 }
 
 /**
- **         This method assembles an expression sub tree for some internal call of Mass Action. 
- **         The sub tree has to be included in the tree of corresponding root kinetic function in order to    
- **         export this function  whithout the user defined internall Mass Action calls  
+ **         This method assembles an expression sub tree for some internal call of Mass Action.
+ **         The sub tree has to be included in the tree of corresponding root kinetic function in order to
+ **         export this function  whithout the user defined internall Mass Action calls
  **/
 void MMASCIIExporter::assembleSubTreeForMassAction(CEvaluationNode* newNode, CEvaluationNode* child1, CEvaluationNode* child2)
 {
@@ -346,7 +350,7 @@ void MMASCIIExporter::assembleSubTreeForMassAction(CEvaluationNode* newNode, CEv
 }
 
 /**
- **         This method exports the functions in C format     
+ **         This method exports the functions in C format
  **/
 void MMASCIIExporter::functionExportC(const CFunction *pFunc, std::set<std::string>& exportedFunctionSet, std::map< std::string, std::string > &functionNameMap, std::set<std::string> &functionNameSet, unsigned C_INT32 &findex, std::ostringstream & outFunction, std::ostringstream & outFunctionHeader)
 {
@@ -452,8 +456,8 @@ void MMASCIIExporter::functionExportC(const CFunction *pFunc, std::set<std::stri
 
           outFunction << ") ";
           outFunction << '\t' << "//" << name << std::endl;
-          //outFunction << "{return  " << tmpFunc->getInfix().c_str() << "; } " << std::endl;
-          outFunction << "{return  " << tmpFunc->getRoot()->getDisplay_C_String(tmpFunc).c_str() << "; } " << std::endl;
+          //outFunction << "{return  " << tmpFunc->getInfix().c_str() << ";} " << std::endl;
+          outFunction << "{return  " << tmpFunc->getRoot()->getDisplay_C_String(tmpFunc).c_str() << ";} " << std::endl;
 
           outFunctionHeader << "); ";
 
@@ -491,7 +495,7 @@ void MMASCIIExporter::findFunctionsCallsC(const CEvaluationNode* pNode, std::set
 }
 
 /**
- **         This method exports the  functions in Berkeley Madonna format     
+ **         This method exports the  functions in Berkeley Madonna format
  **/
 void MMASCIIExporter::functionExportMMD (CEvaluationNode* pNode, std::ofstream & outFile, unsigned C_INT32 &findex, std::map< std::string, std::string > &functionNameMap)
 {
@@ -571,7 +575,7 @@ void MMASCIIExporter::functionExportMMD (CEvaluationNode* pNode, std::ofstream &
 bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mmasciiFilename, std::string Filter, bool overwriteFile)
 {
   /* check if the file already exisits.
-          If yes, write if overwrite is true, 
+          If yes, write if overwrite is true,
           else create an appropriate  CCopasiMessage. */
 
   std::ifstream testInfile(mmasciiFilename.c_str(), std::ios::in);

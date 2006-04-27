@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ObjectBrowserDialog.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/28 23:09:45 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:44 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "ObjectBrowserDialog.h"
 #include "qpushbutton.h"
@@ -15,11 +19,11 @@
 
 #include "copasiui3window.h"
 #include "report/CCopasiObject.h"
-#include "ObjectBrowserWidget.h" 
+#include "ObjectBrowserWidget.h"
 //#include "qtUtilities.h"
 
 /*
- *  Constructs a ObjectBrowserDialog which is a child of 'parent', with the 
+ *  Constructs a ObjectBrowserDialog which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool modal, int state)

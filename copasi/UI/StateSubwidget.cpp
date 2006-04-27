@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/StateSubwidget.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:21:43 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:46 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'StateSubwidget.ui'
  **
  ** Created: Thu Feb 23 13:39:08 2006
- **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.9 2006/03/02 02:21:43 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.10 2006/04/27 01:27:46 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,16 +22,16 @@
 #include "StateSubwidget.h"
 
 #include <qvariant.h>
- #include <qpushbutton.h>
- #include <qlabel.h>
- #include <qtabwidget.h>
- #include <qtextedit.h>
- #include <qtable.h>
- #include <qsplitter.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include "StateSubwidget.ui.h"
+#include <qpushbutton.h>
+#include <qlabel.h>
+#include <qtabwidget.h>
+#include <qtextedit.h>
+#include <qtable.h>
+#include <qsplitter.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include "StateSubwidget.ui.h"
 
 /*
  *  Constructs a StateSubwidget as a child of 'parent', with the

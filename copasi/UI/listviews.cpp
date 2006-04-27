@@ -1,19 +1,23 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.193 $
+   $Revision: 1.194 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/16 18:06:22 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:46 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  **  $ CopasiUI/listviews.cpp                 Modified on : 18th March, 2002
  **  $ Author  : Ankur Gupta
  **  $ Author  : Mudita Singhal
  **  $ Author  : Mrinmayee Kulkarni           Modified on : 17th Sept ,2002
- **  
+ **
  ** This file contains the defination of the routines declared in listviews.h header
- ** file. 
+ ** file.
  **
  ** This file is used to create the visual tree based on the information obtained from the data
  ** model about the tree
@@ -68,7 +72,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CReportDefinitionVector.h"
 #include "plot/COutputDefinitionVector.h"
-#include "plot/plotwidget1.h" 
+#include "plot/plotwidget1.h"
 //#include "mathmodel/CMathModel.h"
 
 //QPixmap *folderLocked = 0;   // to store the image of locked icon folder
@@ -86,9 +90,9 @@
  **
  ** Returns  :- This is constructor so it does not return any thing
  ** Descripton:- This is a 2 argument constructor with one argument for the base class
- **             This method creates a QListViewItem which the graphical display of the 
+ **             This method creates a QListViewItem which the graphical display of the
  **             node of the tree with the name as specified in the name of the Folder
- **             and icon as per req..i.e whether its closed /locked..depending on 
+ **             and icon as per req..i.e whether its closed /locked..depending on
  **             whether the node has any childrens or not..
  *******************************************************************************************/
 FolderListItem::FolderListItem(QListView *parent, const IndexedNode *f, bool recurs):
@@ -109,9 +113,9 @@ FolderListItem::FolderListItem(QListView *parent, const IndexedNode *f, bool rec
  **
  ** Returns  :- This is constructor so it does not return any thing
  ** Descripton:- This is a 2 argument constructor with one argument for the base class
- **             This method creates a QListViewItem which the graphical display of the 
+ **             This method creates a QListViewItem which the graphical display of the
  **             node of the tree with the name as specified in the name of the Folder
- **             and icon as per req..i.e whether its closed /locked..depending on 
+ **             and icon as per req..i.e whether its closed /locked..depending on
  **             whether the node has any childrens or not..
  *******************************************************************************************/
 FolderListItem::FolderListItem(FolderListItem *parent, const IndexedNode *f, bool recurs):
@@ -167,7 +171,7 @@ QString FolderListItem::key(int, bool) const
   {
     /*    if (mpFolder)
           return mpFolder->getSortKey();
-        else 
+        else
           return "";*/
     return mSortKey;
   }
@@ -182,8 +186,8 @@ QString FolderListItem::key(int, bool) const
  ** Parameters:- 1. QWidget* :- The parameter needed by the base class i.e QSplitter
  **              2. char* :- The name parameter needed by the base class ie QSplitter
  ** Returns  :-  It does not return anything sice its 2 argument constructor
- ** Descripton:-  This is the constructor of the ListViews and is used to 
- **               set up all the requirement and intialization of the 
+ ** Descripton:-  This is the constructor of the ListViews and is used to
+ **               set up all the requirement and intialization of the
  **               components in the code.
  ************************************************************/
 ListViews::ListViews(QWidget *parent, const char *name):
@@ -627,7 +631,7 @@ FolderListItem* ListViews::findListViewItem(int id, std::string key) //should al
 /************************ListViews::slotFolderChanged(QListViewItem *i)----------->
  **
  ** Parameters:- QListViewItem* :- pointer to the node that was selected by the user
- **                                                    
+ **
  ** Returns  :-  void(Nothing)
  ** Description:-This method is called whenever the user clicks on one of the
  ** tree view items...

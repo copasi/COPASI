@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:35 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:33:05 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CCopasiXMLParser class.
@@ -93,7 +97,7 @@ struct SCopasiXMLParserCommon
 
     /**
      * A map relating CopasiXML function keys with internal keys
-     */ 
+     */
     //    std::map< std::string, std::string > KeyMap;
     CKeyFactory KeyMap;
 
@@ -136,7 +140,7 @@ struct SCopasiXMLParserCommon
     CCopasiParameter* pCurrentParameter;
 
     /**
-     * Stack of parameter groups which is needed since nesting 
+     * Stack of parameter groups which is needed since nesting
      * of groups is possible.
      */
     std::stack< CCopasiParameterGroup * > ParameterGroupStack;
@@ -1391,7 +1395,7 @@ class CCopasiXMLParser : public CExpat
         // Attributes
       private:
         /**
-         * 
+         *
          */
         enum Element
         {
@@ -1431,7 +1435,7 @@ class CCopasiXMLParser : public CExpat
         // Attributes
       private:
         /**
-         * 
+         *
          */
         enum Element
         {
@@ -1479,7 +1483,7 @@ class CCopasiXMLParser : public CExpat
         // Attributes
       private:
         /**
-         * 
+         *
          */
         enum Element
         {
@@ -1520,7 +1524,7 @@ class CCopasiXMLParser : public CExpat
         // Attributes
       private:
         /**
-         * 
+         *
          */
         enum Element
         {
@@ -1561,7 +1565,7 @@ class CCopasiXMLParser : public CExpat
         // Attributes
       private:
         /**
-         * 
+         *
          */
         enum Element
         {
@@ -1610,7 +1614,7 @@ class CCopasiXMLParser : public CExpat
         // Attributes
       private:
         /**
-         * 
+         *
          */
         enum Element
         {
@@ -1651,7 +1655,7 @@ class CCopasiXMLParser : public CExpat
         // Attributes
       private:
         /**
-         * 
+         *
          */
         enum Element
         {
@@ -2015,7 +2019,7 @@ class CCopasiXMLParser : public CExpat
         // Attributes
       private:
         /**
-         * 
+         *
          */
         enum Element
         {
@@ -2418,14 +2422,14 @@ class CCopasiXMLParser : public CExpat
       };
 
     /**
-        * 
+        *
         */
   class COPASIElement : public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
         // Attributes
       private:
         /**
-         * 
+         *
          */
         enum Element
         {
@@ -2472,7 +2476,7 @@ class CCopasiXMLParser : public CExpat
         // Attributes
       private:
         /**
-         * 
+         *
          */
         enum Element
         {
@@ -2554,7 +2558,7 @@ class CCopasiXMLParser : public CExpat
         // Attributes
       private:
         /**
-         * 
+         *
          */
         enum Element
         {
@@ -2604,7 +2608,7 @@ class CCopasiXMLParser : public CExpat
         // Attributes
       private:
         /**
-         * 
+         *
          */
         enum Element
         {
@@ -2645,7 +2649,7 @@ class CCopasiXMLParser : public CExpat
         // Attributes
       private:
         /**
-         * 
+         *
          */
         enum Element
         {
@@ -2655,12 +2659,12 @@ class CCopasiXMLParser : public CExpat
         };
 
         /**
-         * 
+         *
          */
         MathMLElement * mpMathMLElement;
 
         /**
-         * 
+         *
          */
         ListOfParameterDescriptionsElement * mpListOfParameterDescriptionsElement;
 
@@ -2958,7 +2962,7 @@ class CCopasiXMLParser : public CExpat
     virtual void onCharacterData(const XML_Char *pszData,
                                  int nLength);
     /**
-     * Retrieve the data. 
+     * Retrieve the data.
      * Any sequence of toBeStripped characters is replaced by a single
      * join character. The default is no stripping.
      * @param const std::string & toBeStripped (default: "")

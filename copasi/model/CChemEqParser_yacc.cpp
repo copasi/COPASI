@@ -1,80 +1,84 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqParser_yacc.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/15 14:33:52 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:21 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef lint
 static char const
 yyrcsid[] = "$FreeBSD: src/usr.bin/yacc/skeleton.c,v 1.28 2000/01/17 02:04:06 bde Exp $";
 #endif
- #include <stdlib.h>
- #define YYBYACC 1
- #define YYMAJOR 1
- #define YYMINOR 9
- #define YYLEX yylex()
- #define YYEMPTY -1
- #define yyclearin (yychar=(YYEMPTY))
- #define yyerrok (yyerrflag=0)
- #define YYRECOVERING() (yyerrflag!=0)
+#include <stdlib.h>
+#define YYBYACC 1
+#define YYMAJOR 1
+#define YYMINOR 9
+#define YYLEX yylex()
+#define YYEMPTY -1
+#define yyclearin (yychar=(YYEMPTY))
+#define yyerrok (yyerrflag=0)
+#define YYRECOVERING() (yyerrflag!=0)
 static int yygrowstack();
 #define yyparse CChemEqParserBase::yyparse
- #define yyerror CChemEqParsererror
- #define yychar CChemEqParserchar
- #define yyval CChemEqParserval
- #define yylval CChemEqParserlval
- #define yydebug CChemEqParserdebug
- #define yynerrs CChemEqParsernerrs
- #define yyerrflag CChemEqParsererrflag
- #define yyss CChemEqParserss
- #define yyssp CChemEqParserssp
- #define yyvs CChemEqParservs
- #define yyvsp CChemEqParservsp
- #define yylhs CChemEqParserlhs
- #define yylen CChemEqParserlen
- #define yydefred CChemEqParserdefred
- #define yydgoto CChemEqParserdgoto
- #define yysindex CChemEqParsersindex
- #define yyrindex CChemEqParserrindex
- #define yygindex CChemEqParsergindex
- #define yytable CChemEqParsertable
- #define yycheck CChemEqParsercheck
- #define yyname CChemEqParsername
- #define yyrule CChemEqParserrule
- #define yysslim CChemEqParsersslim
- #define yystacksize CChemEqParserstacksize
- #define YYPREFIX "CChemEqParser"
- #line 5 "CChemEqParser.ypp"
+#define yyerror CChemEqParsererror
+#define yychar CChemEqParserchar
+#define yyval CChemEqParserval
+#define yylval CChemEqParserlval
+#define yydebug CChemEqParserdebug
+#define yynerrs CChemEqParsernerrs
+#define yyerrflag CChemEqParsererrflag
+#define yyss CChemEqParserss
+#define yyssp CChemEqParserssp
+#define yyvs CChemEqParservs
+#define yyvsp CChemEqParservsp
+#define yylhs CChemEqParserlhs
+#define yylen CChemEqParserlen
+#define yydefred CChemEqParserdefred
+#define yydgoto CChemEqParserdgoto
+#define yysindex CChemEqParsersindex
+#define yyrindex CChemEqParserrindex
+#define yygindex CChemEqParsergindex
+#define yytable CChemEqParsertable
+#define yycheck CChemEqParsercheck
+#define yyname CChemEqParsername
+#define yyrule CChemEqParserrule
+#define yysslim CChemEqParsersslim
+#define yystacksize CChemEqParserstacksize
+#define YYPREFIX "CChemEqParser"
+#line 5 "CChemEqParser.ypp"
 
 #define YYSTYPE CChemEqParserBase::Data *
 
 #ifdef yylval
- # undef yylval
- #endif
- #define yylval mpData
+# undef yylval
+#endif
+#define yylval mpData
 
 #ifdef yyerror
- # undef yyerror
- #endif
- #define yyerror(__str) \
+# undef yyerror
+#endif
+#define yyerror(__str) \
    if (yychar != YYERRCODE) correctErrorPosition(); \
    CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
 
 #include "copasi.h"
- #include "CChemEqParser.h"
+#include "CChemEqParser.h"
 
 #include "utilities/CCopasiMessage.h"
 
 #line 64 "CChemEqParser_yacc.cpp"
- #define YYERRCODE 256
- #define TOKEN_NUMBER 257
- #define TOKEN_MULTIPLY 258
- #define TOKEN_PLUS 259
- #define TOKEN_METABOLITE 260
- #define TOKEN_BEGIN_PRODUCTS 261
- #define TOKEN_BEGIN_MODIFIERS 262
+#define YYERRCODE 256
+#define TOKEN_NUMBER 257
+#define TOKEN_MULTIPLY 258
+#define TOKEN_PLUS 259
+#define TOKEN_METABOLITE 260
+#define TOKEN_BEGIN_PRODUCTS 261
+#define TOKEN_BEGIN_MODIFIERS 262
 const short CChemEqParserlhs[] =
   {
     -1,
@@ -134,11 +138,11 @@ const short CChemEqParsercheck[] =
     259, 0, 261, 12, 13, 0, 0, 0, 5,
   };
 #define YYFINAL 4
- #ifndef YYDEBUG
- #define YYDEBUG 1
- #endif
- #define YYMAXTOKEN 262
- #if YYDEBUG
+#ifndef YYDEBUG
+#define YYDEBUG 1
+#endif
+#define YYMAXTOKEN 262
+#if YYDEBUG
 const char * const CChemEqParsername[] =
   {
     "end-of-file", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -170,24 +174,24 @@ const char * const CChemEqParserrule[] =
     "reactant : TOKEN_NUMBER TOKEN_MULTIPLY TOKEN_METABOLITE",
   };
 #endif
- #ifndef YYSTYPE
+#ifndef YYSTYPE
 typedef int YYSTYPE;
 #endif
- #if YYDEBUG
- #include <stdio.h>
- #endif
- #ifdef YYSTACKSIZE
- #undef YYMAXDEPTH
- #define YYMAXDEPTH YYSTACKSIZE
- #else
- #ifdef YYMAXDEPTH
- #define YYSTACKSIZE YYMAXDEPTH
- #else
- #define YYSTACKSIZE 10000
- #define YYMAXDEPTH 10000
- #endif
- #endif
- #define YYINITSTACKSIZE 200
+#if YYDEBUG
+#include <stdio.h>
+#endif
+#ifdef YYSTACKSIZE
+#undef YYMAXDEPTH
+#define YYMAXDEPTH YYSTACKSIZE
+#else
+#ifdef YYMAXDEPTH
+#define YYSTACKSIZE YYMAXDEPTH
+#else
+#define YYSTACKSIZE 10000
+#define YYMAXDEPTH 10000
+#endif
+#endif
+#define YYINITSTACKSIZE 200
 int yydebug = YYDEBUG;
 int yynerrs;
 int yyerrflag;
@@ -235,30 +239,30 @@ static int yygrowstack()
 }
 
 #define YYABORT goto yyabort
- #define YYREJECT goto yyabort
- #define YYACCEPT goto yyaccept
- #define YYERROR goto yyerrlab
+#define YYREJECT goto yyabort
+#define YYACCEPT goto yyaccept
+#define YYERROR goto yyerrlab
 
 #ifndef YYPARSE_PARAM
- #if defined(__cplusplus) || __STDC__
- #define YYPARSE_PARAM_ARG void
- #define YYPARSE_PARAM_DECL
- #else /* ! ANSI-C/C++ */
- #define YYPARSE_PARAM_ARG
- #define YYPARSE_PARAM_DECL
- #endif /* ANSI-C/C++ */
- #else /* YYPARSE_PARAM */
- #ifndef YYPARSE_PARAM_TYPE
- #define YYPARSE_PARAM_TYPE void *
- #endif
- #if defined(__cplusplus) || __STDC__
- #define YYPARSE_PARAM_ARG YYPARSE_PARAM_TYPE YYPARSE_PARAM
- #define YYPARSE_PARAM_DECL
- #else /* ! ANSI-C/C++ */
- #define YYPARSE_PARAM_ARG YYPARSE_PARAM
- #define YYPARSE_PARAM_DECL YYPARSE_PARAM_TYPE YYPARSE_PARAM;
- #endif /* ANSI-C/C++ */
- #endif /* ! YYPARSE_PARAM */
+#if defined(__cplusplus) || __STDC__
+#define YYPARSE_PARAM_ARG void
+#define YYPARSE_PARAM_DECL
+#else /* ! ANSI-C/C++ */
+#define YYPARSE_PARAM_ARG
+#define YYPARSE_PARAM_DECL
+#endif /* ANSI-C/C++ */
+#else /* YYPARSE_PARAM */
+#ifndef YYPARSE_PARAM_TYPE
+#define YYPARSE_PARAM_TYPE void *
+#endif
+#if defined(__cplusplus) || __STDC__
+#define YYPARSE_PARAM_ARG YYPARSE_PARAM_TYPE YYPARSE_PARAM
+#define YYPARSE_PARAM_DECL
+#else /* ! ANSI-C/C++ */
+#define YYPARSE_PARAM_ARG YYPARSE_PARAM
+#define YYPARSE_PARAM_DECL YYPARSE_PARAM_TYPE YYPARSE_PARAM;
+#endif /* ANSI-C/C++ */
+#endif /* ! YYPARSE_PARAM */
 
 int
 yyparse (YYPARSE_PARAM_ARG)

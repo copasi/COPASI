@@ -1,15 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/15 23:35:43 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:43 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 #include <sstream>
- #include "CDimension.h"
- #include "CopasiDataModel/CCopasiDataModel.h"
- #include "model/CModel.h"
+#include "CDimension.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "model/CModel.h"
 
 CDimension::CDimension()
     : mD1(0), mD2(0), mD3(0),
@@ -387,9 +391,9 @@ CDimension CFindDimensions::findDimension(const CEvaluationNode * node,
               result = r1;
             else if (r1.isUnknown())
               result = r2;
-            else if (r2.isUnknown()) 
+            else if (r2.isUnknown())
               result =r1;
-            else 
+            else
               result.setContradiction();*/
             result = r1.compare(r2);
           }

@@ -1,14 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/12/15 15:25:59 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:26 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CFunctionParameter
- * 
+ *
  * Created for Copasi by Stefan Hoops
  * (C) Stefan Hoops 2001
  */
@@ -67,14 +71,14 @@ class CFunctionParameter : public CCopasiContainer
     std::string mKey;
 
     /**
-     *  The data type of the parameter this may be one of INT16, INT32, 
+     *  The data type of the parameter this may be one of INT16, INT32,
      *  UINT16, UINT32, FLOAT32, FLOAT64, VINT16, VINT32, VUINT16, VUINT32,
      *  VFLOAT32, VFLOAT64
      */
     CFunctionParameter::DataType mType;
 
     /**
-     *  The usage or meaning of the parameter. This has no functional 
+     *  The usage or meaning of the parameter. This has no functional
      *  implication for CFunction but it might be used in derived classes.
      *  Possible usage is SUBSTRATE, PRODUCT, MODIFIER, or PARAMETER
      */
@@ -82,7 +86,7 @@ class CFunctionParameter : public CCopasiContainer
 
   public:
     /**
-     * Default constructor 
+     * Default constructor
      * @param const std::string & name (default: "NoName")
      * @param const CCopasiContainer * pParent (default: NULL)
      */
@@ -120,7 +124,7 @@ class CFunctionParameter : public CCopasiContainer
     void cleanup();
 
     /**
-     *  Loads an object with data coming from a CReadConfig object. 
+     *  Loads an object with data coming from a CReadConfig object.
      *  (CReadConfig object reads an input stream)
      *  @param pconfigbuffer reference to a CReadConfig object.
      *  @return Fail

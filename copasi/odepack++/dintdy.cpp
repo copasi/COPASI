@@ -1,28 +1,32 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dintdy.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/22 15:08:44 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:35 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 #include <math.h>
- #include <string>
+#include <string>
 
 #include <algorithm>
 
 #include "copasi.h"
 
 #include "CInternalSolver.h"
- #include "Cxerrwd.h"
+#include "Cxerrwd.h"
 
 #define dls001_1 (mdls001_._1)
- #define dls001_2 (mdls001_._2)
- #define dls001_3 (mdls001_._3)
+#define dls001_2 (mdls001_._2)
+#define dls001_3 (mdls001_._3)
 
 #define dlsa01_1 (mdlsa01_._1)
- #define dlsa01_2 (mdlsa01_._2)
- #define dlsa01_3 (mdlsa01_._3)
+#define dlsa01_2 (mdlsa01_._2)
+#define dlsa01_3 (mdlsa01_._3)
 
 double d_sign(const double & a, const double & b);
 

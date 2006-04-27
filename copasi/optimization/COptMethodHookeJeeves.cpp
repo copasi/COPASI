@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/19 18:36:57 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:53 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 // hoojee.cpp : optimisation by the method of Hooke and Jeeves
 //
@@ -17,12 +21,12 @@
 #include <float.h>
 
 #include "copasi.h"
- #include "mathematics.h"
+#include "mathematics.h"
 
 #include "COptMethod.h"
- #include "COptProblem.h"
- #include "COptItem.h"
- #include "COptTask.h"
+#include "COptProblem.h"
+#include "COptItem.h"
+#include "COptTask.h"
 
 #include "report/CCopasiObjectReference.h"
 
@@ -202,7 +206,7 @@ void COptMethodHookeJeeves::initObjects()
   addObjectReference("Current Iteration", mIteration, CCopasiObject::ValueInt);
 }
 
-#ifdef WIN32 
+#ifdef WIN32
 // warning C4056: overflow in floating-point constant arithmetic
 // warning C4756: overflow in constant arithmetic
 # pragma warning (disable: 4056 4756)

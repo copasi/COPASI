@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/FunctionDB.xml.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/08 19:47:52 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:27 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 static char FunctionDBxml[] =
   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

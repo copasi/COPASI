@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathVariable.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/03/17 08:56:19 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:50 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CMathVariable class.
@@ -105,7 +109,7 @@ class CMathVariable: public CMathSymbol
     CMathEq * getEq();
 
     /**
-     * 
+     *
      */
     CMathVariable::Type getType() const;
   };
@@ -113,7 +117,7 @@ class CMathVariable: public CMathSymbol
 /**
  * The class CMathVariableMetab associates a symbol with a metabolite
  * that is a variable in the system of ODEs
- */ 
+ */
 /** @dia:pos 54.9742,19.8639 */
 /** @dia:route CMathVariable; v,47.1654,7.19173,18.7388,72.0954,19.8639 */
 class CMathVariableMetab : public CMathVariable
@@ -206,9 +210,9 @@ class CMathVariableMetab : public CMathVariable
   };
 
 /**
- * The class CMathVariableVolume associates a symbol with a compartment 
+ * The class CMathVariableVolume associates a symbol with a compartment
  * volume which is a variable in the system of ODEs
- */ 
+ */
 /** @dia:pos 54.9742,10.1749 */
 /** @dia:route CMathVariable; v,47.1654,7.19173,8.89254,69.5214,10.1749 */
 class CMathVariableVolume : public CMathVariable
@@ -255,7 +259,7 @@ class CMathVariableVolume : public CMathVariable
 /**
  * The class CMathVariableTime associates a symbol with the model time
  * which is a variable in the system of ODEs
- */ 
+ */
 /** @dia:pos 54.9742,35.5887 */
 /** @dia:route CMathVariable; v,47.1654,7.19173,34.543,69.4554,35.5887 */
 class CMathVariableTime : public CMathVariable

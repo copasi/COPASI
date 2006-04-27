@@ -1,26 +1,30 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderSettingsDialog.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/28 23:09:58 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:46 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'SliderSettingsDialog.ui'
  **
  ** Created: Tue Mar 28 14:42:13 2006
- **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.10 2006/03/28 23:09:58 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.11 2006/04/27 01:27:46 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef SLIDERSETTINGSDIALOG_H
- #define SLIDERSETTINGSDIALOG_H
+#define SLIDERSETTINGSDIALOG_H
 
 #include <qvariant.h>
- #include <qdialog.h>
- #include <vector>
+#include <qdialog.h>
+#include <vector>
 
 class QVBoxLayout;
 class QHBoxLayout;

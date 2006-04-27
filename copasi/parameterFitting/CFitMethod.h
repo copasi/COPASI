@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitMethod.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/09/16 19:08:34 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:29 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CFitMethod
 #define COPASI_CFitMethod
@@ -17,7 +21,7 @@ class CFitProblem;
 class CFitTask;
 
 /**
- * The CFitMehod class contains optimization methods which can utilize 
+ * The CFitMehod class contains optimization methods which can utilize
  * special properties of the objective function for fitting.
  */
 class CFitMethod : public COptMethod

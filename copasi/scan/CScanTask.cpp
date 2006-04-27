@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/19 18:36:58 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:30 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CScanTask class.
  *
  * This class implements a scan task which is comprised of a
  * of a problem and a method.
- *  
+ *
  */
 #include "copasi.h"
 #include "CScanTask.h"
@@ -125,7 +129,7 @@ bool CScanTask::process(const bool & /* useInitialValues */)
   //init progress bar
   mProgress = 0;
   /*
-    if (mpCallBack) 
+    if (mpCallBack)
       mpCallBack->init(pMethod->getTotalNumberOfSteps(),
                        "performing parameter scan...",
                        true);

@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/UnitConversionFactory.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2005/07/04 15:26:44 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:21 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 class UnitDefinition;
 
@@ -216,7 +220,7 @@ UnitDefinition* UnitConversionFactory::convertAmpereToSI(const Unit& unit)
 
 /*
  * Converts a frequency Unit into the corresponding UnitDefinition
- * consisting only of SI units. This could be e.g. a Hertz or Bequerel unit. 
+ * consisting only of SI units. This could be e.g. a Hertz or Bequerel unit.
  * If the given unit does not have the correct kind, a NULL pointer is
  * returned.
  * It is up to the receiver to free the memory of the returned
@@ -1152,7 +1156,7 @@ UnitDefinition* UnitConversionFactory::convertToSI(const UnitDefinition& uDef)
 /*
  * Checks if two UnitDefinitions are equivalent, i.e. wether they are
  * interconvertible.
- * This is the case if they consist of the same set of units 
+ * This is the case if they consist of the same set of units
  * with the same exponents after being
  * converted to SI units. The scales of the equivalent units may differ.
  * If the offset of two equivalent units differ, false is returned.
@@ -1206,7 +1210,7 @@ bool UnitConversionFactory::areEquivalent(const UnitDefinition& uDef1, const Uni
 
 /*
  * Checks if two UnitDefinitions are equal.
- * This is the case if they consist of the same set of units with the same scale and exponent 
+ * This is the case if they consist of the same set of units with the same scale and exponent
  * after being converted to SI units.
  * If the offset of two equivalent units differ, false is returned.
  * @param const UnitDefinition& uDef1

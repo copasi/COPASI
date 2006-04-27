@@ -1,14 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/29 22:01:45 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:21 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CMoiety
- *  
+ *
  *  New class created for Copasi by Stefan Hoops
  *  (C) Stefan Hoops 2001
  */
@@ -79,7 +83,7 @@ class CMoiety : public CCopasiContainer
      *  This saves the data in Gepasi 3.21 file format
      *  @param pconfigbuffer reference to a CWriteConfig object.
      *  @return Fail
-     */ 
+     */
     //    C_INT32 saveOld(CWriteConfig & configBuffer);
 
     /**

@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingResultTab1.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/22 16:52:55 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:41 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingResultTab1.ui'
  **
  ** Created: Tue Mar 21 11:12:51 2006
- **      by: The User Interface Compiler ($Id: CQFittingResultTab1.cpp,v 1.1 2006/03/22 16:52:55 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQFittingResultTab1.cpp,v 1.2 2006/04/27 01:27:41 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,12 +22,12 @@
 #include "CQFittingResultTab1.h"
 
 #include <qvariant.h>
- #include <qlabel.h>
- #include <qlineedit.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include "CQFittingResultTab1.ui.h"
+#include <qlabel.h>
+#include <qlineedit.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include "CQFittingResultTab1.ui.h"
 
 /*
  *  Constructs a CQFittingResultTab1 as a child of 'parent', with the

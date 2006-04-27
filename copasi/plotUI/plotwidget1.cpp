@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/16 17:51:38 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:41 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.44 2006/04/16 17:51:38 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.45 2006/04/27 01:30:41 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -27,7 +31,7 @@
 #include <qtabwidget.h>
 #include <qwidget.h>
 #include <qtoolbutton.h>
-#include <qlayout.h> 
+#include <qlayout.h>
 //#include <qtooltip.h>
 //#include <qwhatsthis.h>
 
@@ -48,7 +52,7 @@
 //-----------------------------------------------------------------------------
 
 /*
- *  Constructs a PlotWidget1 as a child of 'parent', with the 
+ *  Constructs a PlotWidget1 as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 PlotWidget1::PlotWidget1(QWidget* parent, const char* name, WFlags fl)
@@ -453,7 +457,7 @@ void PlotWidget1::typeChanged()
 
   switch (comboType->currentItem())
     {
-    case 0 :
+    case 0:
       newType = CPlotItem::plot2d;
       break;
     default :
@@ -487,7 +491,7 @@ bool PlotWidget1::loadFromPlotSpec(const CPlotSpecification *pspec)
   mType = pspec->getType();
   switch (mType)
     {
-    case CPlotItem::plot2d :
+    case CPlotItem::plot2d:
       comboType->setCurrentItem(0);
       checkLogX->setChecked(pspec->isLogX());
       checkLogY->setChecked(pspec->isLogY());

@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanWidget.cpp,v $
-   $Revision: 1.197 $
+   $Revision: 1.198 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/20 15:28:06 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:45 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 //***  In this file I have put "//+++" in all places where something has to be added
 //***  if a new scan item is introduced.
@@ -44,7 +48,7 @@
 //#include "steadystate/CSteadyStateTask.h"
 //#include "steadystate/CSteadyStateProblem.h"
 
-#include "report/CKeyFactory.h" 
+#include "report/CKeyFactory.h"
 //#include "CReportDefinitionSelect.h"
 #include "qtUtilities.h"
 #include "CProgressBar.h"
@@ -289,25 +293,25 @@ bool ScanWidget::loadScan()
       switch (type)
         {
           //+++
-        case CScanProblem::SCAN_LINEAR :
+        case CScanProblem::SCAN_LINEAR:
           tmp1 = new CScanWidgetScan(scrollview);
           tmp1->initFromScanItem(scanProblem->getScanItem(i), CCopasiDataModel::Global->getModel());
           scrollview->addWidget(tmp1);
           break;
 
-        case CScanProblem::SCAN_REPEAT :
+        case CScanProblem::SCAN_REPEAT:
           tmp2 = new CScanWidgetRepeat(scrollview);
           tmp2->initFromScanItem(scanProblem->getScanItem(i));
           scrollview->addWidget(tmp2);
           break;
 
-        case CScanProblem::SCAN_RANDOM :
+        case CScanProblem::SCAN_RANDOM:
           tmp3 = new CScanWidgetRandom(scrollview);
           tmp3->initFromScanItem(scanProblem->getScanItem(i), CCopasiDataModel::Global->getModel());
           scrollview->addWidget(tmp3);
           break;
 
-          /*case CScanProblem::SCAN_BREAK :
+          /*case CScanProblem::SCAN_BREAK:
             tmp4 = new CScanWidgetBreak(scrollview);
             tmp4->initFromScanItem(scanProblem->getScanItem(i));
             scrollview->addWidget(tmp4);
@@ -364,7 +368,7 @@ bool ScanWidget::slotAddItem()
   switch (type)
     {
       //+++
-    case CScanProblem::SCAN_LINEAR :
+    case CScanProblem::SCAN_LINEAR:
       tmp1 = new CScanWidgetScan(scrollview);
       tmp1->initFromScanItem(tmpItem, CCopasiDataModel::Global->getModel());
       scrollview->insertWidget(tmp1);
@@ -373,7 +377,7 @@ bool ScanWidget::slotAddItem()
       tmp1->lineEditMin->setFocus();
       break;
 
-    case CScanProblem::SCAN_REPEAT :
+    case CScanProblem::SCAN_REPEAT:
       tmp2 = new CScanWidgetRepeat(scrollview);
       tmp2->initFromScanItem(tmpItem);
       scrollview->insertWidget(tmp2);
@@ -382,7 +386,7 @@ bool ScanWidget::slotAddItem()
       tmp2->lineEditNumber->setFocus();
       break;
 
-    case CScanProblem::SCAN_RANDOM :
+    case CScanProblem::SCAN_RANDOM:
       tmp3 = new CScanWidgetRandom(scrollview);
       tmp3->initFromScanItem(tmpItem, CCopasiDataModel::Global->getModel());
       scrollview->insertWidget(tmp3);
@@ -391,7 +395,7 @@ bool ScanWidget::slotAddItem()
       tmp3->lineEditMin->setFocus();
       break;
 
-      /*case CScanProblem::SCAN_BREAK :
+      /*case CScanProblem::SCAN_BREAK:
         tmp4 = new CScanWidgetBreak(scrollview);
         tmp4->initFromScanItem(tmpItem);
         scrollview->insertWidget(tmp4);

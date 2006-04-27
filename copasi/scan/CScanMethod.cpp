@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 22:07:56 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:30 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CScanMethod class.
@@ -20,7 +24,7 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "utilities/CReadConfig.h"
-#include "randomGenerator/CRandom.h" 
+#include "randomGenerator/CRandom.h"
 //#include "utilities/CWriteConfig.h"
 #include "CScanProblem.h"
 #include "CScanMethod.h"
@@ -231,7 +235,8 @@ void CScanItemRandom::step()
   mST = st;
   mNumSteps = 0;
 }
- 
+
+
 void CScanItemBreak::step()
 {
   //the index
@@ -242,7 +247,8 @@ void CScanItemBreak::step()
       //TODO: tell the task what exactly to do...
       mST->outputSeparatorCallback();
     }
- 
+
+
   ++mIndex;
 }*/
 

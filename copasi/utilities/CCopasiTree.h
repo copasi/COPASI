@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTree.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/17 12:05:48 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CCopasiTree class.
@@ -30,7 +34,7 @@ std::ostream & operator<< (std::ostream & os, const CCopasiTree< _Node > & A);
  * a tree with four simple methods. It assures that each node in the
  * tree is unique.
  *
- * In addition it provides a forward iterator usefull to traverse the 
+ * In addition it provides a forward iterator usefull to traverse the
  * tree.
  *
  * Note: The tree takes ownership of all nodes. Therefore, you must not use
@@ -77,7 +81,7 @@ template < class _Node > class CCopasiTree
         public:
           /**
            * Default constructor.
-           * Note: When no argument is given the iterator points to the end of 
+           * Note: When no argument is given the iterator points to the end of
            *       the tree.
            * @param Node * begin (default NULL)
            */
@@ -162,7 +166,7 @@ template < class _Node > class CCopasiTree
         public:
           /**
            * Default constructor.
-           * Note: When no argument is given the iterator points to the end of 
+           * Note: When no argument is given the iterator points to the end of
            *       the tree.
            * @param Node * begin (default NULL)
            */
@@ -269,7 +273,7 @@ template < class _Node > class CCopasiTree
       /**
        * Attach a Node to the tree
        * Note: If pAfterChild == pParent then the child will be inserted as
-       *       the first child 
+       *       the first child
        * @param Node * pNode
        * @param Node * pParent (default: NULL euivalent to the root of the tree)
        * @param Node * pAfterChild (default: NULL at the end of the children)

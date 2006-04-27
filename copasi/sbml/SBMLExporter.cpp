@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/12 14:34:41 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:21 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <math.h>
 #include <list>
@@ -83,7 +87,7 @@ bool SBMLExporter::exportSBML(CModel* copasiModel, std::string sbmlFilename, boo
       writer->setProgramVersion(CCopasiDataModel::Global->getVersion()->getVersion().c_str());
 
       /* check if the file already exisits.
-         If yes, write if overwrite is true, 
+         If yes, write if overwrite is true,
          else create an appropriate  CCopasiMessage. */
       std::ifstream testInfile(sbmlFilename.c_str(), std::ios::in);
       if (testInfile && !overwriteFile)
@@ -553,7 +557,7 @@ Compartment* SBMLExporter::createSBMLCompartmentFromCCompartment(CCompartment* c
 }
 
 /**
- ** This method takes a pointer to a copasi CMetab object and creates a SBML 
+ ** This method takes a pointer to a copasi CMetab object and creates a SBML
  ** Species object. The pointer to the species object is returned.
  */
 Species* SBMLExporter::createSBMLSpeciesFromCMetab(CMetab* copasiMetabolite)
@@ -609,7 +613,7 @@ Species* SBMLExporter::createSBMLSpeciesFromCMetab(CMetab* copasiMetabolite)
 }
 
 /**
- ** This method takes a pointer to a copasi CModelValue object and creates a SBML 
+ ** This method takes a pointer to a copasi CModelValue object and creates a SBML
  ** Parameter object. The pointer to the parameter object is returned.
  */
 Parameter* SBMLExporter::createSBMLParameterFromCModelValue(CModelValue* pModelValue)
@@ -781,8 +785,8 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
   KineticLaw* kLaw = NULL;
   /*
    * This code can not be activated yet since roundtripping of kinetcs is not so trivial.
-   *   
-  std::map<CCopasiObject*,SBase*>& copasi2sbmlmap=CCopasiDataModel::Global->getCopasi2SBMLMap();   
+   *
+  std::map<CCopasiObject*,SBase*>& copasi2sbmlmap=CCopasiDataModel::Global->getCopasi2SBMLMap();
   std::map<CCopasiObject*,SBase*>::iterator pos=copasi2sbmlmap.find(copasiReaction);
   if(pos!=copasi2sbmlmap.end())
   {

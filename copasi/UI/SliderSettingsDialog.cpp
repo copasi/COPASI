@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2006/04/07 07:19:46 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:46 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'SliderSettingsDialog.ui'
  **
  ** Created: Fri Apr 7 09:15:40 2006
- **      by: The User Interface Compiler ($Id: SliderSettingsDialog.cpp,v 1.12 2006/04/07 07:19:46 gauges Exp $)
+ **      by: The User Interface Compiler ($Id: SliderSettingsDialog.cpp,v 1.13 2006/04/27 01:27:46 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,15 +22,15 @@
 #include "SliderSettingsDialog.h"
 
 #include <qvariant.h>
- #include <qpushbutton.h>
- #include <qlabel.h>
- #include <qlineedit.h>
- #include <qcheckbox.h>
- #include <qframe.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include "SliderSettingsDialog.ui.h"
+#include <qpushbutton.h>
+#include <qlabel.h>
+#include <qlineedit.h>
+#include <qcheckbox.h>
+#include <qframe.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include "SliderSettingsDialog.ui.h"
 
 /*
  *  Constructs a SliderSettingsDialog as a child of 'parent', with the
@@ -225,66 +229,66 @@ void SliderSettingsDialog::languageChange()
   mpObjectBrowseButton->setText(tr("choose object"));
   QToolTip::add(mpObjectBrowseButton, tr("Select an object for the slider"));
   QWhatsThis::add(mpObjectBrowseButton, tr("Clicking this button opens a dialog that\n"
-                   "lets the user choose the object that the \n"
-                   "slider will manipulate. The object has to \n"
-                   "represent either an integer value or a float\n"
-                   "value."));
+                  "lets the user choose the object that the \n"
+                  "slider will manipulate. The object has to \n"
+                  "represent either an integer value or a float\n"
+                  "value."));
   mpMinValueLabel->setText(tr("Minimum Value:"));
   QToolTip::add(mpMinValueLabel, tr("Lowest value the slider can have"));
   QWhatsThis::add(mpMinValueLabel, tr("Here the user can enter the lowest value the slider will take.\n"
-                                        "For logarithmic sliders this has to be a positive value greater\n"
-                                        "than 0.0."));
+                                      "For logarithmic sliders this has to be a positive value greater\n"
+                                      "than 0.0."));
   mpMinValueEdit->setText(tr("0.0"));
   mpMaxValueLabel->setText(tr("Maximum Value:"));
   QToolTip::add(mpMaxValueLabel, tr("Maximum value the slider will take."));
   QWhatsThis::add(mpMaxValueLabel, tr("Here the user can enter the maximal value that\n"
-                                        "the slider will take."));
+                                      "the slider will take."));
   mpMaxValueEdit->setText(tr("100.0"));
   QWhatsThis::add(mpMaxValueEdit, QString::null);
   mpLogCheckBox->setText(tr("logarithmic"));
   QToolTip::add(mpLogCheckBox, tr("Wether slider has logarithmic scale."));
   QWhatsThis::add(mpLogCheckBox, tr("If checked, the slider will have a \n"
-                                      "logarithmic scale. Minimum\n"
-                                      "and maximum value must be \n"
-                                      "greater than 0.0."));
+                                    "logarithmic scale. Minimum\n"
+                                    "and maximum value must be \n"
+                                    "greater than 0.0."));
   mpExtendedOptionsButton->setText(tr("more options"));
   QToolTip::add(mpExtendedOptionsButton, tr("Displays or hides an extended set of options."));
   QWhatsThis::add(mpExtendedOptionsButton, tr("Clicking this button either displays or hides\n"
-                   "some more less often needed options."));
+                  "some more less often needed options."));
   mpNumMinorTicksLabel->setText(tr("Number of Minor Ticks:"));
   QToolTip::add(mpNumMinorTicksLabel, tr("Number of steps for the slider."));
   QWhatsThis::add(mpNumMinorTicksLabel, tr("This value determines how many steps\n"
-                   "the slider makes from minimum to \n"
-                   "maximum value."));
+                  "the slider makes from minimum to \n"
+                  "maximum value."));
   mpMinorMajorFactorLabel->setText(tr("Ticksize factor:"));
   QToolTip::add(mpMinorMajorFactorLabel, tr("how many minor ticks make a major tick"));
   QWhatsThis::add(mpMinorMajorFactorLabel, tr("This value determines how many minor \n"
-                   "ticks make up a major tick. Minor ticks\n"
-                   "are small steps on the slider whereas major\n"
-                   "ticks are larger steps.\n"
-                   "The user can make a minor step via the cursor\n"
-                   "keys and a major step via the page up/down keys."));
+                  "ticks make up a major tick. Minor ticks\n"
+                  "are small steps on the slider whereas major\n"
+                  "ticks are larger steps.\n"
+                  "The user can make a minor step via the cursor\n"
+                  "keys and a major step via the page up/down keys."));
   mpObjectValueLabel->setText(tr("Object Value:"));
   QToolTip::add(mpObjectValueLabel, tr("The value of the underlying object."));
   QWhatsThis::add(mpObjectValueLabel, tr("Here the user can change the actual value of the object\n"
-                   "when editing or creating a slider."));
+                                         "when editing or creating a slider."));
   mpNumMinorTicksEdit->setText(tr("10.0"));
   mpObjectValueEdit->setText(tr("50.0"));
   mpMinorMajorFactorEdit->setText(tr("10.0"));
   mpMinorTickSizeLabel->setText(tr("Minor Ticksize:"));
   QToolTip::add(mpMinorTickSizeLabel, tr("Value change corresponding to a minor step"));
   QWhatsThis::add(mpMinorTickSizeLabel, tr("This value signifies the value change that\n"
-                   "corresponds to one minor step on the slider.\n"
-                   "The user can either set this directly or indirectly\n"
-                   "when setting the \"Number of Minor Ticks\"."));
+                  "corresponds to one minor step on the slider.\n"
+                  "The user can either set this directly or indirectly\n"
+                  "when setting the \"Number of Minor Ticks\"."));
   mpOriginalValueEdit->setText(tr("1.0"));
   mpMinorTickSizeEdit->setText(tr("1.0"));
   mpOriginalValueLabel->setText(tr("Original Value"));
   QToolTip::add(mpOriginalValueLabel, tr("Value change corresponding to a minor step"));
   QWhatsThis::add(mpOriginalValueLabel, tr("This value signifies the value change that\n"
-                   "corresponds to one minor step on the slider.\n"
-                   "The user can either set this directly or indirectly\n"
-                   "when setting the \"Number of Minor Ticks\"."));
+                  "corresponds to one minor step on the slider.\n"
+                  "The user can either set this directly or indirectly\n"
+                  "when setting the \"Number of Minor Ticks\"."));
   mpOkButton->setText(tr("OK"));
   mpCancelButton->setText(tr("Cancel"));
 }

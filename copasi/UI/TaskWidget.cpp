@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/21 14:27:39 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:46 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <qcheckbox.h>
 #include <qframe.h>
@@ -41,7 +45,7 @@
 #include "CQTaskBtnWidget.h"
 
 /*
- *  Constructs a TaskWidget which is a child of 'parent', with the 
+ *  Constructs a TaskWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 TaskWidget::TaskWidget(QWidget* parent, const char* name, WFlags fl)

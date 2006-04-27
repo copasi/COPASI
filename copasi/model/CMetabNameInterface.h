@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetabNameInterface.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/11/04 20:30:04 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:21 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 //
 //
@@ -27,7 +31,7 @@ class CModel;
 class CMetab;
 
 /**
- * This class handels the display names of metabolites. It converts "Metabolite" to 
+ * This class handels the display names of metabolites. It converts "Metabolite" to
  * "Metabolite {Compartment}" if the metabolite name is not unique. If it is unique
  * (that means it occurs in only one compartment) then the "{Compartment}" is not added.
  */
@@ -54,15 +58,15 @@ class CMetabNameInterface
     static std::string getDisplayName(const CModel* model, const CMetab & metab);
 
     /**
-    * This tries to find the metabolite with the given name. If the name is not unique and 
-    * is given without a compartment then the first occurence of a metabolite with this name 
+    * This tries to find the metabolite with the given name. If the name is not unique and
+    * is given without a compartment then the first occurence of a metabolite with this name
     * is returned.
     */
     static std::string getMetaboliteKey(const CModel* model, const std::string & name);
     static CMetab * getMetabolite(const CModel* model, const std::string & name);
 
     /**
-    * This returns whether the metabolite name is unique. 
+    * This returns whether the metabolite name is unique.
     */
     static bool isUnique(const CModel* model, const std::string & name);
 
@@ -74,15 +78,15 @@ class CMetabNameInterface
     static bool doesExist(const CModel* model, const std::string & name);
 
     /**
-    * This extracts the compartment name from the given metabolite display name. If no compartment name is 
-    * present in the given metabolite name then the name of the (first) compartment the metabolite is really 
+    * This extracts the compartment name from the given metabolite display name. If no compartment name is
+    * present in the given metabolite name then the name of the (first) compartment the metabolite is really
     * in is given. If the metabolite does not exist and the name does not contain a compartment
     * then the name of the first compatmnet in the model is returned.
     */
     static std::string extractCompartmentName(const CModel* model, const std::string & name);
 
     /**
-    * This extracts the metabolite name from the given metabolite display name. 
+    * This extracts the metabolite name from the given metabolite display name.
     */
     static std::string extractMetabName(const CModel* model, const std::string & name);
 

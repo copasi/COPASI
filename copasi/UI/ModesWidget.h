@@ -1,28 +1,32 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModesWidget.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/02/17 14:49:12 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:44 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /****************************************************************************
- **  $ CopasiUI/ModesWidget.h               
+ **  $ CopasiUI/ModesWidget.h
  **  $ Author  : Mudita Singhal
- **  
+ **
  ** This is the header file for the Elementary Modes Widget
- *****************************************************************************/ 
+ *****************************************************************************/
 /*
- resizeEvent functions modified 
+ resizeEvent functions modified
  Goal: to memorize the user change and expand according
- comments: Liang Xu 
+ comments: Liang Xu
  */
 #ifndef MODES_WIDGET_H
 #define MODES_WIDGET_H
 
 #include <qtable.h>
 #include <qlistview.h>
-#include <qpushbutton.h> 
+#include <qpushbutton.h>
 //#include "MyTable.h"
 #include "copasi.h"
 #include "copasiWidget.h"

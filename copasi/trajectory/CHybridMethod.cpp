@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: jpahle $ 
-   $Date: 2006/04/26 09:52:35 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:16 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *   CHybridMethod
@@ -24,29 +28,29 @@
 /* DEFINE ********************************************************************/
 
 #ifdef WIN32
- #define min _cpp_min
- #define max _cpp_max
- #endif // WIN32
+#define min _cpp_min
+#define max _cpp_max
+#endif // WIN32
 
 #include "mathematics.h" // pow(), floor()
 
 #include "copasi.h"
 
 #include "CHybridMethod.h"
- #include "CTrajectoryProblem.h"
- #include "model/CModel.h"
- #include "model/CMetab.h"
- #include "model/CReaction.h"
- #include "model/CState.h"
- #include "model/CChemEq.h"
- #include "model/CChemEqElement.h"
- #include "model/CCompartment.h"
- #include "utilities/CVersion.h"
- #include "utilities/CCopasiVector.h"
- #include "utilities/CMatrix.h"
- #include "utilities/CDependencyGraph.h"
- #include "utilities/CIndexedPriorityQueue.h"
- #include "randomGenerator/CRandom.h"
+#include "CTrajectoryProblem.h"
+#include "model/CModel.h"
+#include "model/CMetab.h"
+#include "model/CReaction.h"
+#include "model/CState.h"
+#include "model/CChemEq.h"
+#include "model/CChemEqElement.h"
+#include "model/CCompartment.h"
+#include "utilities/CVersion.h"
+#include "utilities/CCopasiVector.h"
+#include "utilities/CMatrix.h"
+#include "utilities/CDependencyGraph.h"
+#include "utilities/CIndexedPriorityQueue.h"
+#include "randomGenerator/CRandom.h"
 
 /* PUBLIC METHODS ************************************************************/
 
@@ -178,7 +182,7 @@ CHybridMethod::CHybridMethod(const CCopasiContainer * pParent):
 /**
  *  Initializes the solver and sets the model to be used.
  *
- *  @param model A reference to an instance of a CModel 
+ *  @param model A reference to an instance of a CModel
  */
 void CHybridMethod::initMethod(C_FLOAT64 start_time)
 {
@@ -252,7 +256,7 @@ void CHybridMethod::cleanup()
 /* DETERMINISTIC STUFF *******************************************************/
 
 /**
- *   Integrates the deterministic reactions of the system over the specified 
+ *   Integrates the deterministic reactions of the system over the specified
  *   time interval.
  *
  *   @param ds A C_FLOAT64 specifying the stepsize.
@@ -282,7 +286,7 @@ void CHybridMethod::integrateDeterministicPart(C_FLOAT64 dt)
 }
 
 /**
- *   Integrates the deterministic reactions of the system over the specified 
+ *   Integrates the deterministic reactions of the system over the specified
  *   time interval.
  *
  *   @param ds A C_FLOAT64 specifying the stepsize.
@@ -391,7 +395,7 @@ void CHybridMethod::rungeKutta(C_FLOAT64 dt)
  *   Calculates the derivative of the system and writes it into the vector
  *   deriv. Length of deriv must be mNumVariableMetabs.
  *   CAUTION: Only deterministic reactions are taken into account. That is,
- *   this is only the derivative of the deterministic part of the system.  
+ *   this is only the derivative of the deterministic part of the system.
  *
  *   @param deriv A vector reference of length mNumVariableMetabs, into
  *                which the derivative is written
@@ -485,7 +489,7 @@ void CHybridMethod::getStochTimeAndIndex(C_FLOAT64 & ds, C_INT32 & rIndex)
 /**
  *   Executes the specified reaction in the system once.
  *
- *   @param rIndex A C_INT32 specifying the index of the reaction, which 
+ *   @param rIndex A C_INT32 specifying the index of the reaction, which
  *                 will be fired.
  *   @param time   The current time
  */
@@ -640,11 +644,11 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
 }
 
 /**
- *   Updates the putative reaction time of a stochastic reaction in the 
+ *   Updates the putative reaction time of a stochastic reaction in the
  *   priority queue. The corresponding amu and amu_old must be set prior to
  *   the call of this method.
  *
- *   @param rIndex A C_INT32 specifying the index of the reaction 
+ *   @param rIndex A C_INT32 specifying the index of the reaction
  */
 void CHybridMethod::updateTauMu(C_INT32 rIndex, C_FLOAT64 time)
 {
@@ -825,7 +829,7 @@ void CHybridMethod::setupDependencyGraph()
 /**
  *   Creates for each metabolite a set of reaction indices. If the metabolite
  *   participates in a reaction as substrate or product (that means:
- *   balance != 0) this reaction is added to the corresponding set. 
+ *   balance != 0) this reaction is added to the corresponding set.
  */
 void CHybridMethod::setupMetab2React()
 {
@@ -853,7 +857,7 @@ void CHybridMethod::setupMetab2React()
 /**
  *   Creates for each metabolite a set of reaction indices. If the metabolite
  *   participates in a reaction as substrate, product or modifier this
- *   reaction is added to the corresponding set. 
+ *   reaction is added to the corresponding set.
  */
 void CHybridMethod::setupMetab2ReactPlusModifier()
 {
@@ -888,7 +892,7 @@ void CHybridMethod::setupMetab2ReactPlusModifier()
 
 /**
  *   Creates for each metabolite a set of reaction indices. Each reaction is
- *   dependent on each metabolite resulting in a complete switch. 
+ *   dependent on each metabolite resulting in a complete switch.
  */
 void CHybridMethod::setupMetab2ReactComplete()
 {
@@ -910,7 +914,7 @@ void CHybridMethod::setupMetab2ReactComplete()
 }
 
 /**
- *   Creates an initial partitioning of the system. Deterministic and 
+ *   Creates an initial partitioning of the system. Deterministic and
  *   stochastic reactions are determined. The vector mReactionFlags and
  *   the vector mMetabFlags are initialized.
  */

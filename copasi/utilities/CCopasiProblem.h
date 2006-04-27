@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiProblem.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:33 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CCopasiProblem class.
- *  This class is used to describe a problem in COPASI. This class is 
+ *  This class is used to describe a problem in COPASI. This class is
  *  intended to be used as the parent class for all problems whithin COPASI.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2003
  */
 
@@ -21,7 +25,7 @@
 
 #include "CCopasiParameterGroup.h"
 #include "CVector.h"
-#include "CCopasiTask.h" 
+#include "CCopasiTask.h"
 //#include "model/CState.h"
 
 class CModel;
@@ -44,12 +48,12 @@ class CCopasiProblem : public CCopasiParameterGroup
     CModel * mpModel;
 
     /**
-     * a pointer to the callback 
+     * a pointer to the callback
      */
     CProcessReport * mpCallBack;
 
     /**
-     * A pointer to the report 
+     * A pointer to the report
      */
     CReport * mpReport;
 
@@ -134,13 +138,13 @@ class CCopasiProblem : public CCopasiParameterGroup
 
     /**
      * Sets the initial value (in case this applies to the specific problem)
-     */ 
+     */
     //virtual void setInitialState(const CState & initialState);
 
     // propably for optimization only
 
     /**
-     * Do all neccessary initialization so that calls to caluclate will 
+     * Do all neccessary initialization so that calls to caluclate will
      * be successful. This is called once from CCopasiTask::process()
      * @result bool succes
      */
@@ -148,7 +152,7 @@ class CCopasiProblem : public CCopasiParameterGroup
 
     /**
      * Do the calculatting based on CalculateVariables and fill
-     * CalculateResults with the results. 
+     * CalculateResults with the results.
      * @result bool succes
      */
     virtual bool calculate();

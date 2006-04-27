@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpecLine.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/14 17:43:06 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:22 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <iostream>
 #include <sstream>
@@ -350,14 +354,16 @@ void CTempReaction::compile(CModel *model,
     int index;
     //CReaction::CId2Param *id2Param;
     CReaction::CId2Metab *id2Metab;
-   
+
+
     std::set<std::string>::const_iterator it = mIdentifiers.begin();
     for (; it != mIdentifiers.end(); it++)
       {
         //pName = &mIdentifiers[i];
         name = *it;
         index = model->findMetab(name);
-   
+
+
         if (-1 == index) // A parameter
           {
             //id2Param = new CReaction::CId2Param();
@@ -372,7 +378,8 @@ void CTempReaction::compile(CModel *model,
             id2Metab->setIdentifierName(name);
             id2Metab->setMetaboliteName(model->getMetabolites()[index]->getObjectName());
             id2Metab->setCompartmentName(model->getMetabolites()[index]->getCompartment()->getObjectName());
-   
+
+
             if (isIn(mSubstrates, name))
               {
                 Parameters.add(name, CFunctionParameter::FLOAT64, "SUBSTRATE");

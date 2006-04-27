@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TrajectoryWidget.cpp,v $
-   $Revision: 1.126 $
+   $Revision: 1.127 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/20 15:28:06 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:46 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /********************************************************
 Author: Liang Xu
 Version : 1.xx  <first>
-Description: 
-Date: 02/03 
+Description:
+Date: 02/03
 Comment : TrajectoryWidget
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
@@ -52,7 +56,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "DefaultplotDialog.h"
 
 /*
- *  Constructs a TrajectoryWidget which is a child of 'parent', with the 
+ *  Constructs a TrajectoryWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
@@ -79,7 +83,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget* parent, const char* name, WFlags fl)
   bExecutable = new QCheckBox(this, "bExecutable");
   bExecutable->setText(trUtf8("Task Executable "));
   TrajectoryWidgetLayout->addWidget(bExecutable, 0, 3);
-  */ 
+  */
   //
   QHBoxLayout* tmpLayout = new QHBoxLayout();
 

@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CEvaluationFunction.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/10 17:50:36 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:25 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CEvaluationFunction
 #define COPASI_CEvaluationFunction
@@ -127,7 +131,7 @@ class CEvaluationFunction:
     const CFunctionVariables & getVariables() const;
 
     /**
-     * Adds the description of a variable. 
+     * Adds the description of a variable.
      * @param const string & name
      * @param const string & usage (Default: VARIABLE)
      * @param const CFunctionVariables::DataType & type (Default: value)
@@ -189,7 +193,7 @@ class CEvaluationFunction:
     CFunctionVariables mVariables;
 
     /**
-     *  A vector of usages ranges describing the condition under which a 
+     *  A vector of usages ranges describing the condition under which a
      *  function may be used.
      *  Specifically it describes what number of substrates and products a
      *  reaction may have to be able to use this function as its rate function.

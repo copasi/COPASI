@@ -1,18 +1,22 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/11/06 22:19:49 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:29 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 #include <vector>
- #include <limits>
+#include <limits>
 
 #include "copasi.h"
 
 #include "CExperimentObjectMap.h"
- #include "utilities/utility.h"
+#include "utilities/utility.h"
 
 CExperimentObjectMap::CExperimentObjectMap(const std::string & name,
     const CCopasiContainer * pParent):

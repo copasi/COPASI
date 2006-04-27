@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.117 $
+   $Revision: 1.118 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 17:50:40 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:21 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CModel
 #define COPASI_CModel
@@ -206,7 +210,7 @@ class CModel : public CModelEntity
     CCopasiVectorN< CModelValue > mValues;
 
     /**
-     *  Transition time 
+     *  Transition time
      */
     C_FLOAT64 mTransitionTime;
 
@@ -242,7 +246,7 @@ class CModel : public CModelEntity
 
     /**
      * Vector for storing the column interchanges during LU-Decomposition
-     */ 
+     */
     //    CVector< unsigned C_INT32 > mColLU;
 
     /**
@@ -268,7 +272,7 @@ class CModel : public CModelEntity
     C_FLOAT64 mNumber2QuantityFactor;
 
     /**
-     * indicates whether a recalculation of the stoichiometry matrix decomposition is 
+     * indicates whether a recalculation of the stoichiometry matrix decomposition is
      * necessary
      */
     bool mCompileIsNecessary;
@@ -298,7 +302,7 @@ class CModel : public CModelEntity
     ~CModel();        // destructor (deallocation code here)
 
     /**
-     * Cleanup 
+     * Cleanup
      */
     void cleanup();
 
@@ -381,7 +385,7 @@ class CModel : public CModelEntity
 
   private:
     /**
-     *  compute the actual initial value of all moieties 
+     *  compute the actual initial value of all moieties
      *  (from the initial values of the metabolites).
      */
     void updateMoietyValues();
@@ -389,7 +393,7 @@ class CModel : public CModelEntity
   public:
     /**
      *  This calculate the right hand side (ydot) of the ODE for LSODA
-     */ 
+     */
     //void lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot);
 
     //********** Metabs *****************************
@@ -456,7 +460,7 @@ class CModel : public CModelEntity
 
     /**
      *  Get the number of non concentration values
-     *  @return C_INT32 
+     *  @return C_INT32
      */
     unsigned C_INT32 getNumModelValues() const;
 
@@ -490,7 +494,7 @@ class CModel : public CModelEntity
     unsigned C_INT32 getTotSteps() const;
 
     /**
-     * Return the comments of this model Wei Sun 
+     * Return the comments of this model Wei Sun
      * @return string
      */
     const std::string & getComments() const;
@@ -503,7 +507,7 @@ class CModel : public CModelEntity
 
     /**
      * Return a pointer to the current time
-     */ 
+     */
     //virtual void * getValuePointer() const;
 
     /**
@@ -574,8 +578,8 @@ class CModel : public CModelEntity
     const CMatrix < C_FLOAT64 >& getStoiReordered() const;
 
     /**
-     * Return the mMoieties of this model 
-     * @return CCopasiVectorN < CMoiety > & 
+     * Return the mMoieties of this model
+     * @return CCopasiVectorN < CMoiety > &
      */
     const CCopasiVector < CMoiety > & getMoieties() const;
 
@@ -592,7 +596,7 @@ class CModel : public CModelEntity
     /**
      * Get the LU decomposition matrix of this model
      * @return const TNT::Matrix < C_FLOAT64 > & LU
-     */ 
+     */
     //    const CMatrix < C_FLOAT64 > & getmLU() const;
 
     /**
@@ -647,7 +651,7 @@ class CModel : public CModelEntity
 
     /**
      * This method applies all assignments, which currently includes:
-     * i) calculating and assigning the particle numbers for dependent 
+     * i) calculating and assigning the particle numbers for dependent
      *    metabolites (only if updateDependent is set in current state)
      * ii) updating all concentrations
      * iii) calculating the reaction fluxes
@@ -706,8 +710,8 @@ class CModel : public CModelEntity
     void calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX) const;
 
     /**
-     * Set the unit for volumes. If copasi recognises 
-     * the unit the conversion factors are set accordingly 
+     * Set the unit for volumes. If copasi recognises
+     * the unit the conversion factors are set accordingly
      * and true is returned.
      * @param const std::string & name
      * @return bool success
@@ -715,8 +719,8 @@ class CModel : public CModelEntity
     bool setVolumeUnit(const std::string & name);
 
     /**
-     * Set the unit for volumes. If copasi recognises 
-     * the unit the conversion factors are set accordingly 
+     * Set the unit for volumes. If copasi recognises
+     * the unit the conversion factors are set accordingly
      * and true is returned.
      * @param const CModel::VolumeUnit & unit
      * @return bool success
@@ -736,8 +740,8 @@ class CModel : public CModelEntity
     CModel::VolumeUnit getVolumeUnitEnum() const;
 
     /**
-     * Set the unit for time. If copasi recognises 
-     * the unit the conversion factors are set accordingly 
+     * Set the unit for time. If copasi recognises
+     * the unit the conversion factors are set accordingly
      * and true is returned.
      * @param const std::string & name
      * @return bool success
@@ -745,8 +749,8 @@ class CModel : public CModelEntity
     bool setTimeUnit(const std::string & name);
 
     /**
-     * Set the unit for time. If copasi recognises 
-     * the unit the conversion factors are set accordingly 
+     * Set the unit for time. If copasi recognises
+     * the unit the conversion factors are set accordingly
      * and true is returned.
      * @param const const CModel::TimeUnit & unit
      * @return bool success
@@ -766,8 +770,8 @@ class CModel : public CModelEntity
     CModel::TimeUnit getTimeUnitEnum() const;
 
     /**
-     * Set the unit for quantities. If copasi recognises 
-     * the unit the conversion factors are set accordingly 
+     * Set the unit for quantities. If copasi recognises
+     * the unit the conversion factors are set accordingly
      * and true is returned.
      * @param const std::string & name
      * @return bool success
@@ -775,8 +779,8 @@ class CModel : public CModelEntity
     bool setQuantityUnit(const std::string & name);
 
     /**
-     * Set the unit for quantities. If copasi recognises 
-     * the unit the conversion factors are set accordingly 
+     * Set the unit for quantities. If copasi recognises
+     * the unit the conversion factors are set accordingly
      * and true is returned.
      * @param const CModel::QuantityUnit & unit
      * @return bool success
@@ -815,7 +819,7 @@ class CModel : public CModelEntity
     /**
      * Add a metabolite to the model
      * @param const std::string & name
-     * @param const std::string & compartment 
+     * @param const std::string & compartment
      * @param const C_FLOAT64 & iconc (default 1.0)
      * @param const CMetab::Status & status (default CMetab::METAB_VARIABL)
      * @return bool success (false if failed)
@@ -864,7 +868,7 @@ class CModel : public CModelEntity
      * Add a new rection to the model
      * @param const CReaction & reaction
      * @return bool success (false if failed)
-     */ 
+     */
     //bool addReaction(const CReaction & reaction);
 
     /* Remove a reaction from the model*/

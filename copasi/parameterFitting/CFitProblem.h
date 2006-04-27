@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/22 16:52:17 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:29 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CFitProblem
 #define COPASI_CFitProblem
@@ -64,7 +68,7 @@ class CFitProblem : public COptProblem
     virtual bool setCallBack(CProcessReport * pCallBack);
 
     /**
-     * Do all neccessary initialization so that calls to caluclate will 
+     * Do all neccessary initialization so that calls to caluclate will
      * be successful. This is called once from CCopasiTask::process()
      * @result bool succes
      */
@@ -72,7 +76,7 @@ class CFitProblem : public COptProblem
 
     /**
      * Do the calculatting based on CalculateVariables and fill
-     * CalculateResults with the results. 
+     * CalculateResults with the results.
      * @result bool continue
      */
     virtual bool calculate();
@@ -86,7 +90,7 @@ class CFitProblem : public COptProblem
     virtual bool restore(const bool & updateModel);
 
     /**
-     * Check whether all functional constraints are fullfilled. 
+     * Check whether all functional constraints are fullfilled.
      * @result bool fullfilled
      */
     virtual bool checkFunctionalConstraints();
@@ -187,7 +191,7 @@ class CFitProblem : public COptProblem
 
   private:
     /**
-     * Allocates all group parameters and assures that they are 
+     * Allocates all group parameters and assures that they are
      * properly initialized.
      */
     void initializeParameter();

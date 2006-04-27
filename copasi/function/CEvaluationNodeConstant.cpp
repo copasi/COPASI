@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: nsimus $ 
-   $Date: 2006/03/07 12:37:08 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:25 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <string>
 
@@ -19,7 +23,7 @@ CEvaluationNodeConstant::CEvaluationNodeConstant():
     CEvaluationNode(CEvaluationNode::INVALID, "")
 {mPrecedence = PRECEDENCE_NUMBER;}
 
-#ifdef WIN32 
+#ifdef WIN32
 // warning C4056: overflow in floating-point constant arithmetic
 // warning C4756: overflow in constant arithmetic
 # pragma warning (disable: 4056 4756)
@@ -163,7 +167,7 @@ CEvaluationNode* CEvaluationNodeConstant::createNodeFromASTTree(const ASTNode& n
   return new CEvaluationNodeConstant(subType, data);
 }
 
-#ifdef WIN32 
+#ifdef WIN32
 // warning C4056: overflow in floating-point constant arithmetic
 // warning C4756: overflow in constant arithmetic
 # pragma warning (disable: 4056 4756)

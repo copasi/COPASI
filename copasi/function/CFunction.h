@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.h,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/25 12:33:08 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:26 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CFunction
 #define COPASI_CFunction
@@ -109,7 +113,7 @@ class CFunction:
     const CFunctionParameters & getVariables() const;
 
     /**
-     * Adds the description of a variable. 
+     * Adds the description of a variable.
      * @param const string & name
      * @param const string & usage (Default: VARIABLE)
      * @param const CFunctionParameters::DataType & type (Default: value)

@@ -1,15 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 15:17:51 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:09 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * Class CCopasiContainer
  *
- * This class is the is used to group CCopasiObjects logically. It inself is 
+ * This class is the is used to group CCopasiObjects logically. It inself is
  * an object. Contained objects are still globally accessible.
  *
  * Copyright Stefan Hoops 2002

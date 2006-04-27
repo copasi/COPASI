@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/21 13:18:24 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:29 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "copasi.h"
 
@@ -703,12 +707,12 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   /* We use dsytrf_ and dsytri_ to invert the symmetric fisher information matrix */
 
   /* int dsytrf_(char *uplo,
-   *             integer *n, 
-   *             doublereal *a, 
-   *             integer * lda, 
-   *             integer *ipiv, 
-   *             doublereal *work, 
-   *             integer *lwork, 
+   *             integer *n,
+   *             doublereal *a,
+   *             integer * lda,
+   *             integer *ipiv,
+   *             doublereal *work,
+   *             integer *lwork,
    *             integer *info);
    *
    *  -- LAPACK routine (version 3.0) --
@@ -858,7 +862,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
     }
 
   /* int dsytri_(char *uplo,
-   *             integer *n, 
+   *             integer *n,
    *             doublereal *a,
    *             integer * lda,
    *             integer *ipiv,

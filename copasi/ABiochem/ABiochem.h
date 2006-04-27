@@ -1,15 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/ABiochem/ABiochem.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2003/10/16 16:19:26 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:33:58 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  ABiochem
  *
- *  A system to construct random biochemical networks 
+ *  A system to construct random biochemical networks
  *  with various topologies and kinetics
  *
  *  writen by Pedro Mendes, September 2002

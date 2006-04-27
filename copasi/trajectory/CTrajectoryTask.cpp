@@ -1,18 +1,22 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.73 $
+   $Revision: 1.74 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 17:50:41 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:17 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CTrajectoryTask class.
  *
  * This class implements a trajectory task which is comprised of a
- * of a problem and a method. Additionally calls to the reporting 
+ * of a problem and a method. Additionally calls to the reporting
  * methods are done when initialized.
- *  
+ *
  * Created for Copasi by Stefan Hoops 2002
  */
 

@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/15 01:49:11 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:53 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
   * COptMethodLevenbergMarquardt class
   */
 
 #ifndef COPASI_COptMethodLevenbergMarquardt
- #define COPASI_COptMethodLevenbergMarquardt
+#define COPASI_COptMethodLevenbergMarquardt
 
 #include <vector>
 #include "utilities/CMatrix.h"
@@ -39,8 +43,8 @@ class COptMethodLevenbergMarquardt : public COptMethod
     virtual ~COptMethodLevenbergMarquardt();
 
     /**
-     * Execute the optimization algorithm calling simulation routine 
-     * when needed. It is noted that this procedure can give feedback 
+     * Execute the optimization algorithm calling simulation routine
+     * when needed. It is noted that this procedure can give feedback
      * of its progress by the callback function set with SetCallback.
      * @ return success;
      */
@@ -165,7 +169,7 @@ class COptMethodLevenbergMarquardt : public COptMethod
     bool mContinue;
 
     /**
-     * Indicate whether we have access to the residuals, i.e., it is a 
+     * Indicate whether we have access to the residuals, i.e., it is a
      * fitting problem we are working on.
      */
     bool mHaveResiduals;

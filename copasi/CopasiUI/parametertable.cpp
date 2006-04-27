@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/15 13:50:06 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:47 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <qstringlist.h>
 #include <qheader.h>
@@ -220,25 +224,25 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
 
       switch (usage)
         {
-        case CFunctionParameter::SUBSTRATE :
+        case CFunctionParameter::SUBSTRATE:
           color = subsColor;
           break;
-        case CFunctionParameter::PRODUCT :
+        case CFunctionParameter::PRODUCT:
           color = prodColor;
           break;
-        case CFunctionParameter::MODIFIER :
+        case CFunctionParameter::MODIFIER:
           color = modiColor;
           break;
-        case CFunctionParameter::PARAMETER :
+        case CFunctionParameter::PARAMETER:
           color = paraColor;
           break;
-        case CFunctionParameter::VOLUME :
+        case CFunctionParameter::VOLUME:
           color = volColor;
           break;
-        case CFunctionParameter::TIME :
+        case CFunctionParameter::TIME:
           color = timeColor;
           break;
-        case CFunctionParameter::VARIABLE :
+        case CFunctionParameter::VARIABLE:
           color = QColor(255, 20, 20);
           break;
         default :

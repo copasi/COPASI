@@ -1,20 +1,26 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ScanItemWidget.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/06/21 20:33:59 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:45 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /********************************************************
 Author: Liang Xu
 Version : 1.xx  <first>
-Description: 
-Date: 06/03 
+Description:
+Date: 06/03
 Comment : Copasi ScanItemWidget including:
- 
+
+
 Contains: the sub scrollable widget inside the scanwidget
- 
+
+
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 
@@ -33,7 +39,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "scan/CScanProblem.h"
 
 /*
- *  Constructs a ScanItemWidget which is a child of 'parent', with the 
+ *  Constructs a ScanItemWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 

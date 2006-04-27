@@ -1,19 +1,23 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/22 16:52:17 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:29 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 #ifndef COPASI_CExperimentSet
- #define COPASI_CExperimentSet
+#define COPASI_CExperimentSet
 
 #include <string>
 
 #include "utilities/CCopasiParameterGroup.h"
- #include "utilities/CCopasiTask.h"
- #include "utilities/CMatrix.h"
+#include "utilities/CCopasiTask.h"
+#include "utilities/CMatrix.h"
 
 class CExperiment;
 
@@ -57,7 +61,7 @@ class CExperimentSet: public CCopasiParameterGroup
     virtual bool elevateChildren();
 
     /**
-     * Compile the experiment set. This function must be called 
+     * Compile the experiment set. This function must be called
      * before any evaluations can be performed.
      * @param const std::vector< CCopasiContainer * > listOfContainer
      * @return bool success
@@ -182,7 +186,7 @@ class CExperimentSet: public CCopasiParameterGroup
 
   private:
     /**
-     * Allocates all group parameters and assures that they are 
+     * Allocates all group parameters and assures that they are
      * properly initialized.
      */
     void initializeParameter();

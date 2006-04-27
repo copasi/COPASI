@@ -1,23 +1,27 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitTask.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/19 18:36:57 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:29 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
   * CFitTask class.
   *
   * This class implements a parameter estimation task which is comprised of a
   * of a problem and a method.
-  *  
+  *
   */
 #include "copasi.h"
 
 #include "CFitTask.h"
- #include "CFitProblem.h"
- #include "CFitMethod.h"
+#include "CFitProblem.h"
+#include "CFitMethod.h"
 
 #include "utilities/CCopasiMethod.h"
 

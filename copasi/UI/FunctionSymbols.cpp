@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/FunctionSymbols.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/12 12:33:16 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:43 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /*******************************************************************
- **  $ CopasiUI/FunctionSymbols.cpp                 
+ **  $ CopasiUI/FunctionSymbols.cpp
  **  $ Author  : Mudita Singhal
  **
- ** This file is used to create the GUI FrontPage for the 
- ** information obtained from the data model about the 
+ ** This file is used to create the GUI FrontPage for the
+ ** information obtained from the data model about the
  ** Function Symbols
  ********************************************************************/
 #include <qlayout.h>
@@ -19,7 +23,7 @@
 #include <qmessagebox.h>
 #include <qfont.h>
 
-#include "FunctionSymbols.h" 
+#include "FunctionSymbols.h"
 //#include "mathmodel/CMathModel.h"
 //#include "mathmodel/CMathSymbol.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -30,18 +34,18 @@
 #include "qtUtilities.h"
 
 /**
- *  Constructs a Widget for the Metabolites subsection of the tree for 
+ *  Constructs a Widget for the Metabolites subsection of the tree for
  *  displaying the Metabolites in model 'model'.
- *  This widget is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f'. 
- *  @param model The CModel class which contains the metabolites 
+ *  This widget is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ *  @param model The CModel class which contains the metabolites
  *  to be displayed.
  *  @param parent The widget which this widget is a child of.
- *  @param name The object name is a text that can be used to identify 
+ *  @param name The object name is a text that can be used to identify
  *  this QObject. It's particularly useful in conjunction with the Qt Designer.
- *  You can find an object by name (and type) using child(), and more than one 
- *  using queryList(). 
- *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation 
+ *  You can find an object by name (and type) using child(), and more than one
+ *  using queryList().
+ *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation
  *  for more information about these flags.
  */
 FunctionSymbols::FunctionSymbols(QWidget *parent, const char * name, WFlags f)
@@ -93,27 +97,33 @@ FunctionSymbols::FunctionSymbols(QWidget *parent, const char * name, WFlags f)
 void FunctionSymbols::loadFunctionSymbols(/*CMathModel *model*/)
 {
   /*  dataModel->updateMathModel();
-   
+
+
     if (model != NULL)
       {
         mModel = model;
-   
+
+
         //Emptying the table
         table->setNumRows(0);
-   
+
+
         CCopasiDataModel::Global->getFunctionList()->loadedFunctions();
-   
+
+
         std::map< std::string, CMathSymbol * > functionList = mModel->getFunctionList();
         std::map<std::string, CMathSymbol * >::iterator it;
         CMathSymbol * mathSymbol;
-   
+
+
         table->setNumRows(functionList.size());
         int index = 0;
         for (it = functionList.begin(); it != functionList.end();++it)
           {
             mathSymbol = it->second;
             table->setText(index, 0, FROM_UTF8(it->first));
-   
+
+
             CFunction *metabObject = (CFunction *)mathSymbol->getObject();
             table->setText(index, 1, FROM_UTF8(metabObject->getObjectName()));
             QStringList functionType;

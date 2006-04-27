@@ -1,14 +1,18 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/13 22:48:35 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:25 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CFunctionParameterMap
- * 
+ *
  * Created for Copasi by Stefan Hoops
  * (C) Stefan Hoops 2002
  */
@@ -90,7 +94,7 @@ class CCallParameters : private std::vector<void *>
   };
 
 /**
- * CFunctionParameterMap         
+ * CFunctionParameterMap
  *
  * This class describes how a reaction fills the call parameters of a function.
  * It is generated from a CFunctionParameters object.

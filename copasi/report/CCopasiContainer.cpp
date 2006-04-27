@@ -1,15 +1,19 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/20 18:18:54 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:09 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * Class CCopasiContainer
  *
- * This class is the is used to group CCopasiObjects logically. It inself is 
+ * This class is the is used to group CCopasiObjects logically. It inself is
  * an object. Contained objects are still globally accessible.
  *
  * Copyright Stefan Hoops 2002
@@ -169,7 +173,7 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
         if (cn.getElementName(0, false) == "")
           return it->second;
 
-        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +                  //TODO really?
+        pObject = it->second->getObject("[" + cn.getElementName(0, false) + "]" +                   //TODO really?
                                         "[" + cn.getElementName(1, false) + "]");
 
         if (it->second->getObjectType() == "Reference" || !pObject)

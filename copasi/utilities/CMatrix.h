@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/31 13:30:43 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:43 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CMatrix
 #define COPASI_CMatrix
@@ -49,7 +53,7 @@ std::ostream &operator << (std::ostream &os, const CUnitLowerTriangularView< Mat
 /**
  * Template class CMatrix < class CType >
  * This template class is a simple matrix class  allowing standard
- * C-style and fortran style access to the elements. It also supplies 
+ * C-style and fortran style access to the elements. It also supplies
  * an ostream operator.
  */
 template <class CType>

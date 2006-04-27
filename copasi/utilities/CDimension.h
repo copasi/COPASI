@@ -1,25 +1,29 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/03/15 23:35:43 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:43 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 #ifndef COPASI_DIMENSION
- #define COPASI_DIMENSION
+#define COPASI_DIMENSION
 
 #include <string>
- #include <vector>
- #include "copasi.h"
+#include <vector>
+#include "copasi.h"
 
 /**
  * CDimension class.
  * The class describes the dimension of a value, usually a CFunctionParameter.
- * 
+ *
  * The dimension is given as a triple of real numbers: (amount of substance, volume, time).
- * It can also be "unknown" or "contradiction". The actual unit can be constructed from the 
- * dimension and the three basic units from the CModel class (which is done in the 
+ * It can also be "unknown" or "contradiction". The actual unit can be constructed from the
+ * dimension and the three basic units from the CModel class (which is done in the
  * getDisplayString() method).
  */
 class CDimension
@@ -69,12 +73,12 @@ class CEvaluationNode;
 
 /**
  * CFindDimensions class.
- * The class tries to find the dimensions of the "PARAMETER" variable nodes 
+ * The class tries to find the dimensions of the "PARAMETER" variable nodes
  * in a function tree.
- * 
+ *
  * The function is specified in the constructor. After that the dimension of the root node
- * has to be specified. This can be done with either of the two public findDimensions() 
- * methods. 
+ * has to be specified. This can be done with either of the two public findDimensions()
+ * methods.
  * The result can be retrieved using the getDimensions() method.
  */
 class CFindDimensions
@@ -87,7 +91,7 @@ class CFindDimensions
     CFindDimensions(const CFunction* function);
 
     /**
-     * initialize the known dimensions (from the parameter roles) and 
+     * initialize the known dimensions (from the parameter roles) and
      * set the others to "unknown". This is called by the constructor.
      */
     void setupDimensions();
@@ -100,7 +104,7 @@ class CFindDimensions
     /**
      * find the dimensions for a function that is used in a reaction
      * the dimension of the root node depends on the number of compartments
-     * that are involved in the reaction 
+     * that are involved in the reaction
      */
     void findDimensions(bool isMulticompartment);
 

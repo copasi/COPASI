@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 16:04:02 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:53 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  File name: COptProblem.cpp
@@ -176,7 +180,7 @@ bool COptProblem::setModel(CModel * pModel)
   return true;
 }
 
-#ifdef WIN32 
+#ifdef WIN32
 // warning C4056: overflow in floating-point constant arithmetic
 // warning C4756: overflow in constant arithmetic
 # pragma warning (disable: 4056 4756)
@@ -341,7 +345,7 @@ bool COptProblem::checkFunctionalConstraints()
 /**
  * calculate() decides whether the problem is a steady state problem or a
  * trajectory problem based on whether the pointer to that type of problem
- * is null or not.  It then calls the process() method for that type of 
+ * is null or not.  It then calls the process() method for that type of
  * problem.  Currently process takes ofstream& as a parameter but it will
  * change so that process() takes no parameters.
  */

@@ -1,16 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingResult.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/22 17:22:56 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:41 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingResult.ui'
  **
  ** Created: Wed Mar 22 12:21:31 2006
- **      by: The User Interface Compiler ($Id: CQFittingResult.cpp,v 1.2 2006/03/22 17:22:56 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQFittingResult.cpp,v 1.3 2006/04/27 01:27:41 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -18,18 +22,18 @@
 #include "CQFittingResult.h"
 
 #include <qvariant.h>
- #include <qtabwidget.h>
- #include <qtable.h>
- #include <qpushbutton.h>
- #include <qlabel.h>
- #include <qlayout.h>
- #include <qtooltip.h>
- #include <qwhatsthis.h>
- #include "CQFittingResult.ui.h"
+#include <qtabwidget.h>
+#include <qtable.h>
+#include <qpushbutton.h>
+#include <qlabel.h>
+#include <qlayout.h>
+#include <qtooltip.h>
+#include <qwhatsthis.h>
+#include "CQFittingResult.ui.h"
 
 /*
  *  Constructs a CQFittingResult which is a child of 'parent', with the
- *  name 'name'.' 
+ *  name 'name'.'
  */
 CQFittingResult::CQFittingResult(QWidget* parent, const char* name)
     : CopasiWidget(parent, name)

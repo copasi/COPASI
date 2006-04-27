@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/03/02 02:22:53 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:21 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CCompartment
- * 
+ *
  * Derived from Gepasi's ccompart.cpp
  * (C) Pedro Mendes 1995-2000
- * 
+ *
  *  Converted for Copasi by Pedro Mendes
  */
 #ifndef COPASI_CCompartment
@@ -39,7 +43,7 @@ class CCompartment : public CModelEntity
 
   public:
     /**
-     * Default constructor. 
+     * Default constructor.
      * @param const std::string & name (default: "NoName")
      * @param const CCopasiContainer * pParent (default: NULL)
      */
@@ -55,7 +59,7 @@ class CCompartment : public CModelEntity
                  const CCopasiContainer * pParent = NULL);
 
     /**
-     *  Destructor. 
+     *  Destructor.
      *  The destructor does nothing.
      */
     ~CCompartment();
@@ -140,7 +144,7 @@ class CCompartment : public CModelEntity
 
     /**
      *  Check whether the name is valid.
-     */ 
+     */
     //bool isValidName(const std::string & name) const;
 
     /**

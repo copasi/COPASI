@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2006/03/17 21:39:16 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:21 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef SBMLExpoter_H__
 #define SBMLExpoter_H__
@@ -15,7 +19,7 @@
 #include "model/CModel.h"
 #include "model/CCompartment.h"
 #include "model/CMetab.h"
-#include "model/CReaction.h" 
+#include "model/CReaction.h"
 //#include "function/CKinFunction.h"
 
 #include "sbml/SBMLDocument.h"
@@ -33,12 +37,12 @@ class SBMLExporter
   {
   protected:
     /* HTML header that will be prepended to the comments of CModel to generate
-    ** a valid SBML note. 
+    ** a valid SBML note.
     */
     static const char* HTML_HEADER;
 
     /* HTML header that will be appended to the comments of CModel to generate
-    ** a valid SBML note. 
+    ** a valid SBML note.
     */
     static const char* HTML_FOOTER;
 
@@ -46,7 +50,7 @@ class SBMLExporter
     SBMLDocument* sbmlDocument;
 
     /* A vector that holds the objects that have been handled during export.
-     * This is needed to be able to delete objects that are no longer there 
+     * This is needed to be able to delete objects that are no longer there
      * from the sbml model.
      */
     std::vector<SBase*> mHandledSBMLObjects;
@@ -94,13 +98,13 @@ class SBMLExporter
     FunctionDefinition* createSBMLFunctionDefinitionFromCEvaluationTree(const CEvaluationTree* tree);
 
     /**
-     ** This method takes a pointer to a copasi CMetab object and creates a SBML 
+     ** This method takes a pointer to a copasi CMetab object and creates a SBML
      ** Species object. The pointer to the species object is returned.
      */
     Species* createSBMLSpeciesFromCMetab(CMetab* copasiMetabolite);
 
     /**
-     ** This method takes a pointer to a copasi CModelValue object and creates a SBML 
+     ** This method takes a pointer to a copasi CModelValue object and creates a SBML
      ** Parameter object. The pointer to the parameter object is returned.
      */
     Parameter* createSBMLParameterFromCModelValue(CModelValue* pModelValue);
@@ -156,7 +160,7 @@ class SBMLExporter
      * Remove all compartments, species, parameters and reactions
      * that did not end up in mHandledSBMLObjects during an export.
      * Additionally remove all function definitions and all unit
-     * definitions that have not been used in the file.   
+     * definitions that have not been used in the file.
      */
     void removeUnusedObjects();
 

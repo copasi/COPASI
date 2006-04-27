@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/10/28 17:56:23 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:42 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 #ifndef COPASI_CQValidator
- #define COPASI_CQValidator
+#define COPASI_CQValidator
 
 #include <qvalidator.h>
- #include <qcolor.h>
- #include <qlineedit.h>
+#include <qcolor.h>
+#include <qlineedit.h>
 
 class CQValidator : public QValidator
   {

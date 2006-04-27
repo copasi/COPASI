@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.107 $
+   $Revision: 1.108 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/16 17:57:31 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:46 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <qfiledialog.h>
 
@@ -14,12 +18,12 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
-#include <qradiobutton.h> 
+#include <qradiobutton.h>
 //#include <qtable.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
-#include <qmessagebox.h> 
+#include <qmessagebox.h>
 //#include <qapplication.h>
 
 #include "DataModelGUI.h"
@@ -28,7 +32,7 @@
 #include "listviews.h"
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
-#include "CProgressBar.h" 
+#include "CProgressBar.h"
 //#include "copasiui3window.h"
 
 #include "copasi.h"
@@ -39,14 +43,14 @@
 #include "steadystate/CSteadyStateProblem.h"
 #include "model/CModel.h"
 #include "utilities/CCopasiException.h"
-#include "report/CKeyFactory.h" 
+#include "report/CKeyFactory.h"
 //#include "report/CReportDefinitionVector.h"
 //#include "report/CReport.h"
 //#include "report/CReportDefinition.h"
 //#include "CReportDefinitionSelect.h"
 
 /**
- *  Constructs a SteadyStateWidget which is a child of 'parent', with the 
+ *  Constructs a SteadyStateWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags fl)
@@ -273,7 +277,8 @@ bool SteadyStateWidget::saveTask()
                                const std::string & C_UNUSED(key))
 {
   if (mIgnoreUpdates) return true;
- 
+
+
   switch (objectType)
     {
     case ListViews::FUNCTION:

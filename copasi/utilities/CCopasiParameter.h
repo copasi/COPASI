@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameter.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 22:09:55 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CCopasiParameter
 #define COPASI_CCopasiParameter
@@ -23,7 +27,7 @@ class CReadConfig;
  *  CCopasiParameter class.
  *  This class is used to describe parameters. This class is intended
  *  to be used with integration or optimization methods or reactions.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2002
  */
 class CCopasiParameter: public CCopasiContainer

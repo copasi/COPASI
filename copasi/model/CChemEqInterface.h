@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 22:19:48 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:21 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef CCHEMEQINTERFACE_H
 #define CCHEMEQINTERFACE_H
@@ -23,7 +27,7 @@ class CCompartment;
 /**
  * This class describes a chemical equation based on metabolite names
  * It supports parsing and generating string representations.
- * Note that this class handles only metab names without caring about whether 
+ * Note that this class handles only metab names without caring about whether
  * these metabs exist in the model. There is however a method to create
  * the missing metabs.
  */
@@ -64,15 +68,15 @@ class CChemEqInterface
     void setReversibility(bool rev) {mReversibility = rev;};
 
     /**
-     * this method tries to find out if the chemical equation involves several compartments 
-     * in a given model. It only takes into account the metabs that 
-     * actually exist in the model. A non existing metabolite is assumed 
+     * this method tries to find out if the chemical equation involves several compartments
+     * in a given model. It only takes into account the metabs that
+     * actually exist in the model. A non existing metabolite is assumed
      * not to be in a different compartment
      */
     bool isMulticompartment(const CModel * model) const;
 
     /**
-     * convenience method. If the reaction is single compartment the 
+     * convenience method. If the reaction is single compartment the
      * compartment is returned, else NULL.
      */
     const CCompartment * getCompartment(const CModel * model) const;

@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/11 16:22:28 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:39 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CSensTask class.
@@ -50,7 +54,7 @@ class CSensTask : public CCopasiTask
 
     /**
      * Initialize the task. If an ostream is given this ostream is used
-     * instead of the target specified in the report. This allows nested 
+     * instead of the target specified in the report. This allows nested
      * tasks to share the same output device.
      * @param const OutputFlag & of
      * @param std::ostream * pOstream (default: NULL)

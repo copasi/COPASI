@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.124 $
+   $Revision: 1.125 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/12 14:34:41 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:31:21 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "copasi.h"
 
@@ -22,7 +26,7 @@
 #include "model/CReaction.h"
 #include "model/CModelValue.h"
 #include "copasi.h"
-#include "function/CNodeK.h" 
+#include "function/CNodeK.h"
 //#include "function/CKinFunction.h"
 #include "function/CFunctionDB.h"
 #include "function/CEvaluationTree.h"
@@ -94,7 +98,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
             {
               /* Dont' throw an exception any more because individual objects
               ** are tested for unit usage and warning will be created there.
-              */ 
+              */
               //throw StdException("Error. SBML Units other than \"substance\", \"time\" and \"volume\" not implemented.");
             }
         }
@@ -778,7 +782,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
     }
 
   /* in the newly created CFunction set the types for all parameters and
-   * either a mapping or a value 
+   * either a mapping or a value
    */
   KineticLaw* kLaw = sbmlReaction->getKineticLaw();
   if (kLaw != NULL)
@@ -1151,7 +1155,7 @@ SBMLImporter::SBMLImporter()
 }
 
 /**
- * Destructor that does nothing. 
+ * Destructor that does nothing.
  */
 SBMLImporter::~SBMLImporter()
 {}

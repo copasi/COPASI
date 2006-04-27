@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/12 14:33:27 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:29:21 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CChemEq class.
@@ -56,7 +60,7 @@ class CChemEq : public CCopasiContainer
     CCopasiVector < CChemEqElement > mProducts;
 
     /**
-     *  A vector of modifiers in the chemical reaction. 
+     *  A vector of modifiers in the chemical reaction.
      */
     CCopasiVector < CChemEqElement > mModifiers;
 
@@ -102,14 +106,14 @@ class CChemEq : public CCopasiContainer
     bool addMetabolite(const std::string & key, const C_FLOAT64 mult, const MetaboliteRole role);
 
     /**
-     *  Retrieves the vector of substrates and their multiplicity 
+     *  Retrieves the vector of substrates and their multiplicity
      *  in the chemical reaction.
      *  @return "vector < CChemEqElement * > &" substrates
      */
     const CCopasiVector < CChemEqElement > & getSubstrates() const;
 
     /**
-     *  Retrieves the vector of products and their multiplicity 
+     *  Retrieves the vector of products and their multiplicity
      *  in the chemical reaction.
      *  @return "vector < CChemEqElement * > &" products
      */
@@ -129,7 +133,7 @@ class CChemEq : public CCopasiContainer
 
     /**
      * Returns the number of comparments the chemical equation is associated
-     * with. 
+     * with.
      */
     unsigned C_INT32 getCompartmentNumber() const;
 
@@ -146,7 +150,7 @@ class CChemEq : public CCopasiContainer
      *  returned. If there are no substrates and there are Products and all Products are in the
      *  same compartment this compartment will be returned, else an exception
      *  will be thrown.
-     */ 
+     */
     //const CCompartment* CheckAndGetFunctionCompartment() const;
 
     /**

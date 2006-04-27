@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiNode.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/08/12 17:14:37 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:42 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CCopasiNode class.
@@ -18,8 +22,8 @@
 
 /**
  * The class CCopasiNode is the interface used by the template class
- * CCopasiTree< class Node> to manage the nodes of a tree. Actual 
- * implementation of nodes must be dereived from CCopasiNode for the tree 
+ * CCopasiTree< class Node> to manage the nodes of a tree. Actual
+ * implementation of nodes must be dereived from CCopasiNode for the tree
  * to operate properly.
  */
 template < class _Data > class CCopasiNode
@@ -118,7 +122,7 @@ template < class _Data > class CCopasiNode
        * If pAfter == this the child will be inserted at the front of the list
        * of children.
        * @param CCopasiNode< Data > * pChild
-       * @param CCopasiNode< Data > * pAfter 
+       * @param CCopasiNode< Data > * pAfter
        *        (default: NULL appended to the list of children)
        * @return bool Success
        */
@@ -178,7 +182,7 @@ template < class _Data > class CCopasiNode
        * If pAfter == this the sibling will be inserted at the front of the list
        * of siblings.
        * @param CCopasiNode< Data > * pSibling
-       * @param CCopasiNode< Data > * pAfter 
+       * @param CCopasiNode< Data > * pAfter
        *        (default: NULL appended to the list of siblings)
        * @return bool Success
        */
@@ -256,7 +260,7 @@ template < class _Data > class CCopasiNode
        * Retreive a pointer to the next node, which is either a
        * child, a sibling, or an ancestor. The nodes are evaluated
        * in that order and the first non NULL pointer is returned.
-       * If all evaluate to NULL, NULL will be returned. 
+       * If all evaluate to NULL, NULL will be returned.
        * @return CCopasiNode< Data > * pNext
        */
       CCopasiNode< Data > * getNext()
@@ -270,7 +274,7 @@ template < class _Data > class CCopasiNode
        * Retreive a pointer to the next node, which is either a
        * child, a sibling, or an ancestor. The nodes are evaluated
        * in that order and the first non NULL pointer is returned.
-       * If all evaluate to NULL, NULL will be returned. 
+       * If all evaluate to NULL, NULL will be returned.
        * @return const CCopasiNode< Data > * pNext
        */
       const CCopasiNode< Data > * getNext() const
@@ -284,7 +288,7 @@ template < class _Data > class CCopasiNode
        * Retreive a pointer to the next node, which is not a child node
        * This is either a sibling or an ancestor. The nodes are evaluated
        * in that order and the first non NULL pointer is returned.
-       * If all evaluate to NULL, NULL will be returned. 
+       * If all evaluate to NULL, NULL will be returned.
        * @return CCopasiNode< Data > * pNextNonChild
        */
       CCopasiNode< Data > * getNextNonChild()
@@ -299,7 +303,7 @@ template < class _Data > class CCopasiNode
        * Retreive a pointer to the next node, which is not a child node
        * This is either a sibling or an ancestor. The nodes are evaluated
        * in that order and the first non NULL pointer is returned.
-       * If all evaluate to NULL, NULL will be returned. 
+       * If all evaluate to NULL, NULL will be returned.
        * @return const CCopasiNode< Data > * pNextNonChild
        */
       const CCopasiNode< Data > * getNextNonChild() const
@@ -334,7 +338,7 @@ template < class _Data > class CCopasiNode
       }
       /**
        * Set the sibling of a node.
-       * @param CCopasiNode< Data > * pSibling                     
+       * @param CCopasiNode< Data > * pSibling
        * @return bool Success
        */
       bool setSibling(CCopasiNode< Data > * pSibling)

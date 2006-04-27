@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ConstantSymbols.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2005/07/21 11:40:10 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:43 $
    End CVS Header */
 
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
+
 /*******************************************************************
- **  $ CopasiUI/ConstantSymbols.cpp                 
+ **  $ CopasiUI/ConstantSymbols.cpp
  **  $ Author  : Mudita Singhal
  **
- ** This file is used to create the GUI FrontPage for the 
- ** information obtained from the data model about the 
+ ** This file is used to create the GUI FrontPage for the
+ ** information obtained from the data model about the
  ** Constant Symbols
  ********************************************************************/
 #include <qlayout.h>
@@ -27,18 +31,18 @@
 #include "DataModelGUI.h"
 
 /**
- *  Constructs a Widget for the Metabolites subsection of the tree for 
+ *  Constructs a Widget for the Metabolites subsection of the tree for
  *  displaying the Metabolites in model 'model'.
- *  This widget is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f'. 
- *  @param model The CModel class which contains the metabolites 
+ *  This widget is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ *  @param model The CModel class which contains the metabolites
  *  to be displayed.
  *  @param parent The widget which this widget is a child of.
- *  @param name The object name is a text that can be used to identify 
+ *  @param name The object name is a text that can be used to identify
  *  this QObject. It's particularly useful in conjunction with the Qt Designer.
- *  You can find an object by name (and type) using child(), and more than one 
- *  using queryList(). 
- *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation 
+ *  You can find an object by name (and type) using child(), and more than one
+ *  using queryList().
+ *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation
  *  for more information about these flags.
  */
 ConstantSymbols::ConstantSymbols(QWidget *parent, const char * name, WFlags f)

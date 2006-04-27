@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 21:56:06 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:28:26 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 // CNodeK.cpp : classes for function tree
 //
@@ -528,7 +532,7 @@ C_FLOAT64 CNodeK::value(const CCallParameters<C_FLOAT64> & callParameters) const
       case N_OBJECT:
         return *(double*)((CCopasiObject*)mLeft)->getValuePointer();
         break;
-      case N_IDENTIFIER :
+      case N_IDENTIFIER:
         return * callParameters[mIndex].value;
         break;
       case N_OPERATOR:
@@ -562,68 +566,78 @@ C_FLOAT64 CNodeK::value(const CCallParameters<C_FLOAT64> & callParameters) const
             return log(mLeft->value(callParameters));
           case N_LOG10:
             return log10(mLeft->value(callParameters));
- 
+
+
           case N_SIN:
             return sin(mLeft->value(callParameters));
           case N_COS:
             return cos(mLeft->value(callParameters));
           case N_TAN:
             return tan(mLeft->value(callParameters));
- 
+
+
           case N_SEC:
             return 1 / cos(mLeft->value(callParameters));
           case N_CSC:
             return 1 / sin(mLeft->value(callParameters));
           case N_COT:
             return 1 / tan(mLeft->value(callParameters));
- 
+
+
           case N_SINH:
             return sinh(mLeft->value(callParameters));
           case N_COSH:
             return cosh(mLeft->value(callParameters));
           case N_TANH:
             return tanh(mLeft->value(callParameters));
- 
+
+
           case N_SECH:
             return 1 / cosh(mLeft->value(callParameters));
           case N_CSCH:
             return 1 / sinh(mLeft->value(callParameters));
           case N_COTH:
             return 1 / tanh(mLeft->value(callParameters));
- 
+
+
           case N_ARCSIN:
             return asin(mLeft->value(callParameters));
           case N_ARCCOS:
             return acos(mLeft->value(callParameters));
           case N_ARCTAN:
             return atan(mLeft->value(callParameters));
- 
+
+
           case N_ARCSEC:   //TODO
             return acos(1 / mLeft->value(callParameters));
           case N_ARCCSC:   //TODO
             return asin(1 / mLeft->value(callParameters));
           case N_ARCCOT:   //TODO
             return atan(1 / mLeft->value(callParameters));
- 
+
+
           case N_ARCSINH:
             return asinh(mLeft->value(callParameters));
           case N_ARCCOSH:
             return acosh(mLeft->value(callParameters));
           case N_ARCTANH:
             return atanh(mLeft->value(callParameters));
- 
+
+
           case N_ARCSECH:
             return acosh(1 / mLeft->value(callParameters));
           case N_ARCCSCH:
             return asinh(1 / mLeft->value(callParameters));
           case N_ARCCOTH:
             return atanh(1 / mLeft->value(callParameters));
- 
+
+
           case N_ABS:
             return fabs(mLeft->value(callParameters));
           case N_SQRT:
             return sqrt(mLeft->value(callParameters));
- 
+
+
           default:
             fatalError();   // THROW EXCEPTION
             return 0.0;
@@ -640,11 +654,13 @@ C_FLOAT64 CNodeK::value(const CCallParameters<C_FLOAT64> & callParameters) const
 
 /*
 #define SPC(level) std::string(level, ' ')
- 
+
+
 void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
   {
     bool flag = false;
- 
+
+
     switch (mType)
       {
       case N_NUMBER:
@@ -653,7 +669,7 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
         //    case N_OBJECT:
         //      return *(double*)((CCopasiObject*)mLeft)->getReference();
         //      break;
-      case N_IDENTIFIER :       //do some heuristics for indentifiers starting with "K" or "V"
+      case N_IDENTIFIER:       //do some heuristics for indentifiers starting with "K" or "V"
         out << SPC(level);
         if (mName.substr(0, 1) == "K")
           out << "<msub><mi>K</mi><mi>" << mName.substr(1) << "</mi></msub>" << std::endl;
@@ -676,7 +692,8 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
             out << SPC(level) << "<mrow>" << std::endl;
             mLeft->writeMathML(out, level + 1);
             out << SPC(level + 1) << "<mo>" << "-" << "</mo>" << std::endl;
- 
+
+
             //do we need "()" ?
             flag = (mRight->mType == N_OPERATOR) && ((mRight->mSubtype == '-') || (mRight->mSubtype == '+'));
             if (flag)
@@ -692,7 +709,8 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
             break;
           case '*':
             out << SPC(level) << "<mrow>" << std::endl;
- 
+
+
             //do we need "()" ?
             flag = (mLeft->mType == N_OPERATOR) && ((mLeft->mSubtype == '-') || (mLeft->mSubtype == '+'));
             if (flag)
@@ -719,7 +737,8 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
             break;
           case '^':
             out << SPC(level) << "<msup>" << std::endl;
- 
+
+
             //do we need "()" ?
             flag = (mLeft->mType == N_OPERATOR) && ((mLeft->mSubtype == '-') || (mLeft->mSubtype == '+')
                                                     || (mLeft->mSubtype == '*') || (mLeft->mSubtype == '/')
@@ -733,24 +752,29 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
               {
                 out << SPC(level + 1) << "</mfenced>" << std::endl;
               }
- 
+
+
             out << SPC(level + 1) << "<mrow>" << std::endl;
             mRight->writeMathML(out, level + 2);
             out << SPC(level + 1) << "</mrow>" << std::endl;
- 
+
+
             out << SPC(level) << "</msup>" << std::endl;
             break;
           case '/':
             out << SPC(level) << "<mfrac>" << std::endl;
- 
+
+
             out << SPC(level + 1) << "<mrow>" << std::endl;
             mLeft->writeMathML(out, level + 2);
             out << SPC(level + 1) << "</mrow>" << std::endl;
- 
+
+
             out << SPC(level + 1) << "<mrow>" << std::endl;
             mRight->writeMathML(out, level + 2);
             out << SPC(level + 1) << "</mrow>" << std::endl;
- 
+
+
             out << SPC(level) << "</mfrac>" << std::endl;
             break;
           }
@@ -764,7 +788,8 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
           case '-':
             out << SPC(level) << "<mrow>" << std::endl;
             out << SPC(level + 1) << "<mo>" << "-" << "</mo>" << std::endl;
- 
+
+
             //do we need "()" ?
             flag = (mLeft->mType == N_OPERATOR) && ((mLeft->mSubtype == '-') || (mLeft->mSubtype == '+'));
             if (flag)
@@ -801,6 +826,7 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
         //return 0.0;
       }
   }
- 
+
+
 #undef SPC
  */

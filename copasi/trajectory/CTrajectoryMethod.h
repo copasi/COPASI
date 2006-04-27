@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/02/14 14:35:32 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:32:17 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CTrajectoryMethod class.
  *  This class describes the interface to all integration methods.
  *  The variaous method like LSODA or Gillespie have to be derived from
  *  this class.
- *  
+ *
  *  Created for Copasi by Stefan Hoops 2002
  */
 
@@ -79,7 +83,7 @@ class CTrajectoryMethod : public CCopasiMethod
   protected:
     /**
      * Default constructor.
-     * @param const CCopasiMethod::SubType & subType 
+     * @param const CCopasiMethod::SubType & subType
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CTrajectoryMethod(const CCopasiMethod::SubType & subType,
@@ -121,7 +125,7 @@ class CTrajectoryMethod : public CCopasiMethod
 
     /**
      *  Set a pointer to the problem.
-     *  This method is used by CTrajectory 
+     *  This method is used by CTrajectory
      *  @param "CTrajectoryProblem *" problem
      */
     void setProblem(CTrajectoryProblem * problem);

@@ -1,17 +1,21 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ObjectBrowserWidget.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2006/04/11 15:16:06 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:45 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /********************************************************
 Author: Liang Xu
 Version : 1.xx  <first>
-Description: 
-Date: 04/03 
-Comment : Copasi Object Browser: 
+Description:
+Date: 04/03
+Comment : Copasi Object Browser:
 Contact: Please contact lixu1@vt.edu.
  *********************************************************/
 #include "ObjectBrowserWidget.h"
@@ -50,7 +54,7 @@ QPixmap *pObjectParts = 0;
 QPixmap *pObjectNone = 0;
 
 /*
- *  Constructs a ObjectBrowser which is a child of 'parent', with the 
+ *  Constructs a ObjectBrowser which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
 ObjectBrowserWidget::ObjectBrowserWidget(QWidget* parent, const char* name, WFlags fl, int state)

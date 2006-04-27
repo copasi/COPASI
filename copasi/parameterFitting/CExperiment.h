@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $ 
-   $Date: 2006/04/25 16:27:26 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:30:29 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CExperiment
 #define COPASI_CExperiment
@@ -116,7 +120,7 @@ class CExperiment: public CCopasiParameterGroup
     virtual bool elevateChildren();
 
     /**
-     * Compile the experiment. This function must be called 
+     * Compile the experiment. This function must be called
      * before any evaluations can be performed.
      * @param const std::vector< CCopasiContainer * > listOfContainer
      * @return bool success
@@ -140,7 +144,7 @@ class CExperiment: public CCopasiParameterGroup
 
     /**
      * Calculate the sum of squares for the indexed row of the experiment.
-     * If residuals is not NULL residuals will contain the differences 
+     * If residuals is not NULL residuals will contain the differences
      * between the calculated and the experiment values.
      * @param const unsigned C_INT32 & index
      * @param C_FLOAT64 *& residuals (may be NULL)
@@ -152,7 +156,7 @@ class CExperiment: public CCopasiParameterGroup
     /**
      * Calculate the sum of squares for the indexed row of the experiment.
      * On return dependentValues contains the calculated values. If
-     * residuals is not NULL residuals will contain the differences 
+     * residuals is not NULL residuals will contain the differences
      * between the calculated and the experiment values.
      * @param const unsigned C_INT32 & index
      * @param C_FLOAT64 *& dependentValues (must not be NULL)
@@ -462,7 +466,7 @@ class CExperiment: public CCopasiParameterGroup
 
     /**
      * Retrieve the error mean std. deviations for the object.
-     * @param CCopasiObject *const& pObject 
+     * @param CCopasiObject *const& pObject
      * @param C_FLOAT64 errorMean
      * @return C_FLOAT64 errorMeanSD
      */
@@ -478,7 +482,7 @@ class CExperiment: public CCopasiParameterGroup
 
   private:
     /**
-     * Allocates all group parameters and assures that they are 
+     * Allocates all group parameters and assures that they are
      * properly initialized.
      */
     void initializeParameter();
@@ -488,7 +492,7 @@ class CExperiment: public CCopasiParameterGroup
 
     /**
      * The key of the experiment
-     */ 
+     */
     //    const std::string mKey;
 
     /**

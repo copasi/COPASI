@@ -1,27 +1,31 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DefaultplotDialog.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: ssahle $ 
-   $Date: 2005/10/05 14:08:20 $
+   $Author: shoops $
+   $Date: 2006/04/27 01:27:43 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'DefaultplotDialog.ui'
  **
  ** Created: Wed Oct 5 15:59:05 2005
- **      by: The User Interface Compiler ($Id: DefaultplotDialog.h,v 1.2 2005/10/05 14:08:20 ssahle Exp $)
+ **      by: The User Interface Compiler ($Id: DefaultplotDialog.h,v 1.3 2006/04/27 01:27:43 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
 
 #ifndef DEFAULTPLOTDIALOG_H
- #define DEFAULTPLOTDIALOG_H
+#define DEFAULTPLOTDIALOG_H
 
 #include <qvariant.h>
- #include <qdialog.h>
- #include <vector>
- #include "copasi.h"
+#include <qdialog.h>
+#include <vector>
+#include "copasi.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
