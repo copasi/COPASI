@@ -74,6 +74,18 @@
      Enable output of messages during runtime to std::error.
     </comment>
    </option>
+   <option id="License"
+           type="flag"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           default="false"
+           hidden="no">
+    <name>license</name>
+    <comment>
+     Display the license.
+    </comment>
+   </option>
 <!--
    <option id="SystemFunctionDB"
            type="string"
