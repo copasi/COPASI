@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.168 $
+   $Revision: 1.169 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Date: 2006/04/27 21:07:41 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -172,9 +172,9 @@ CopasiUI3Window::~CopasiUI3Window()
  ** Descripton:- This method is called when the users clicks on the save as
  **              option in the menu File
  *******************************************************************************************/
-void CopasiUI3Window::slotFileSaveAs(QString str)
+bool CopasiUI3Window::slotFileSaveAs(QString str)
 {
-  bool mSuccess;
+  bool success;
   ListViews::commit();
 
   C_INT32 Answer = QMessageBox::No;
@@ -187,7 +187,7 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
                                           str, "COPASI Files (*.cps);;All Files (*.*);;",
                                           "Choose a filename to save under.");
 
-      if (!tmp) return;
+      if (!tmp) return false;
 
       if (!tmp.endsWith(".cps") &&
           !tmp.endsWith(".")) tmp += ".cps";
@@ -195,14 +195,14 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
 
       Answer = checkSelection(tmp);
 
-      if (Answer == QMessageBox::Cancel) return;
+      if (Answer == QMessageBox::Cancel) return false;
     }
 
   if (dataModel && tmp)
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-      if (mSuccess = dataModel->saveModel((const char *) tmp.utf8(), true))
+      if (success = dataModel->saveModel((const char *) tmp.utf8(), true))
         {
           CCopasiDataModel::Global->changed(false);
           updateTitle();
@@ -222,6 +222,8 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
     }
 
   mSaveAsRequired = false;
+
+  return success;
 }
 
 /***************CopasiUI3Window::newDoc()******
@@ -411,14 +413,13 @@ void CopasiUI3Window::slotFileOpen(QString file)
  ** Descripton:- This method is called when the users clicks on the save as
  **              option in the menu File and it is used to save the document information
  *******************************************************************************************/
-void CopasiUI3Window::slotFileSave()
+bool CopasiUI3Window::slotFileSave()
 {
   ListViews::commit();
   std::string FileName = CCopasiDataModel::Global->getFileName();
   if (mSaveAsRequired || FileName == "")
     {
-      slotFileSaveAs(FROM_UTF8(FileName));
-      return;
+      return slotFileSaveAs(FROM_UTF8(FileName));
     }
 
   std::ifstream File(FileName.c_str());
@@ -442,17 +443,17 @@ void CopasiUI3Window::slotFileSave()
 
       if (!choice)
         {
-          slotFileSaveAs(FROM_UTF8(FileName));
-          return;
+          return slotFileSaveAs(FROM_UTF8(FileName));
         }
     }
 
+  bool success = true;
+
   if (dataModel)
     {
-      bool mSuccess;
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-      if (mSuccess = dataModel->saveModel(FileName, true))
+      if (success = dataModel->saveModel(FileName, true))
         {
           CCopasiDataModel::Global->changed(false);
         }
@@ -469,10 +470,14 @@ void CopasiUI3Window::slotFileSave()
         }
       setCursor(oldCursor);
     }
+
+  return success;
 }
 
 void CopasiUI3Window::slotQuit()
 {
+  bool success = true;
+
   ListViews::commit();
 
   if (dataModel && CCopasiDataModel::Global->isChanged())
@@ -483,24 +488,30 @@ void CopasiUI3Window::slotQuit()
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
         case 0:  // Save clicked or Alt+S pressed or Enter pressed.
-          slotFileSave();
+          success = slotFileSave();
           break;
 
         case 1:  // Discard clicked or Alt+D pressed
+          success = true;
           break;
 
         case 2:  // Cancel clicked or Escape pressed
-          return;
+          success = false;
           break;
         }
     }
 
-  CleanUp();
-  qApp->quit();
+  if (success)
+    {
+      CleanUp();
+      qApp->quit();
+    }
 }
 
 void CopasiUI3Window::closeEvent(QCloseEvent* ce)
 {
+  bool success = true;
+
   ListViews::commit();
 
   if (dataModel && CCopasiDataModel::Global->isChanged())
@@ -511,21 +522,26 @@ void CopasiUI3Window::closeEvent(QCloseEvent* ce)
                                        "&Save", "&Discard", "Cancel", 0, 2))
         {
         case 0:  // Save clicked or Alt+S pressed or Enter pressed.
-          slotFileSave();
+          success = slotFileSave();
           break;
 
         case 1:  // Discard clicked or Alt+D pressed
+          success = true;
           break;
 
         case 2:  // Cancel clicked or Escape pressed
-          ce->ignore();
-          return;
+          success = false;
           break;
         }
     }
 
-  CleanUp();
-  ce->accept();
+  if (success)
+    {
+      CleanUp();
+      ce->accept();
+    }
+  else
+    ce->ignore();
 }
 
 // Cleanup all the temp .cps files created at runtime.
@@ -545,6 +561,8 @@ void CopasiUI3Window::CleanUp()
  ** Descripton:- This method is called when the users clicks on the print as
  **              option in the menu File and is used to send the document ro
  **              printing
+
+
 
 
  *******************************************************************************************/
