@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:33:05 $
+   $Date: 2006/04/28 13:10:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,8 @@ class CReportDefinitionVector;
 class CXMLAttributeList;
 class COutputDefinitionVector;
 class CSlider;
+class CCopasiParameter;
+class CCopasiParameterGroup;
 
 /**
  * The class CCopasiXMLInterface specifies an interface to various XML formats
@@ -106,42 +108,6 @@ class CCopasiXMLInterface
     // Attributes
   protected:
     /**
-     * Pointer to a model which has been loaded or is to be saved.
-     * The ownership is handed to the user.
-     */
-    CModel * mpModel;
-
-    /**
-     * Pointer to a vector of functions which has been loaded or is to be saved.
-     * The ownership is handed to the user.
-     */
-    CCopasiVectorN< CEvaluationTree > * mpFunctionList;
-
-    /**
-     * Pointer to a vector of tasks which has been loaded or is to be saved.
-     * The ownership is handed to the user.
-     */
-    CCopasiVectorN< CCopasiTask > * mpTaskList;
-
-    /**
-     * Pointer to a vector of reports which has been loaded or is to be saved.
-     * The ownership is handed to the user.
-     */
-    CReportDefinitionVector * mpReportList;
-
-    /**
-     * Pointer to a vector of plots which has been loaded or is to be saved.
-     * The ownership is handed to the user.
-     */
-    COutputDefinitionVector * mpPlotList;
-
-    /**
-     * Pointer to a GUI related information, which has been loaded or is to be saved.
-     * The ownership is handed to the user.
-     */
-    SCopasiXMLGUI * mpGUI;
-
-    /**
      * A pointer to the input stream
      */
     std::istream *mpIstream;
@@ -200,156 +166,6 @@ class CCopasiXMLInterface
      * @return bool success
      */
     bool save(const std::string & fileName);
-
-    /**
-     * Set the model.
-     * @param const CModel & model
-     * @return bool success
-     */
-    bool setModel(const CModel & model);
-
-    /**
-     * Retreive the model.
-     * @return CModel * pModel
-     */
-    CModel * getModel() const;
-
-    /**
-     * Retreive whether the XML contains a model.
-     * @return bool have Model
-     */
-    bool haveModel() const;
-
-    /**
-     * Free the model.
-     * @return bool success
-     */
-    bool freeModel();
-
-    /**
-     * Set the function list.
-     * @param const CCopasiVectorN< CEvaluationTree > & functionList
-     * @return bool success
-     */
-    bool setFunctionList(const CCopasiVectorN< CEvaluationTree > & functionList);
-
-    /**
-     * Retreive the function list.
-     * @return CCopasiVectorN< CEvaluationTree > * functionList
-     */
-    CCopasiVectorN< CEvaluationTree > * getFunctionList() const;
-
-    /**
-     * Retreive whether the XML contains a function list.
-     * @return bool haveFunctionList
-     */
-    bool haveFunctionList() const;
-
-    /**
-     * Free the function list.
-     * @return bool success
-     */
-    bool freeFunctionList();
-
-    /**
-     * Set the task list.
-     * @param const CCopasiVectorN< CCopasiTask > & taskList
-     * @return bool success
-     */
-    bool setTaskList(const CCopasiVectorN< CCopasiTask > & taskList);
-
-    /**
-     * Retreive the task list.
-     * @return CCopasiVectorN< CCopasiTask > * taskList
-     */
-    CCopasiVectorN< CCopasiTask > * getTaskList() const;
-
-    /**
-     * Retreive whether the XML contains a task list.
-     * @return bool haveTaskList
-     */
-    bool haveTaskList() const;
-
-    /**
-     * Free the task list.
-     * @return bool success
-     */
-    bool freeTaskList();
-
-    /**
-     * Set the plot list.
-     * @param const COutputDefinitionVector & plotList
-     * @return bool success
-     */
-    bool setPlotList(const COutputDefinitionVector & plotList);
-
-    /**
-     * Retreive the plot list.
-     * @return COutputDefinitionVector * plotList
-     */
-    COutputDefinitionVector * getPlotList() const;
-
-    /**
-     * Retreive whether the XML contains a plot list.
-     * @return bool havePlotList
-     */
-    bool havePlotList() const;
-
-    /**
-     * Free the plot list.
-     * @return bool success
-     */
-    bool freePlotList();
-
-    /**
-     * Set the report list.
-     * @param const CReportDefinitionVector & reportList
-     * @return bool success
-     */
-    bool setReportList(const CReportDefinitionVector & reportList);
-
-    /**
-     * Retreive the report list.
-     * @return CReportDefinitionVector * reportList
-     */
-    CReportDefinitionVector * getReportList() const;
-
-    /**
-     * Retreive whether the XML contains a report list.
-     * @return bool haveReportList
-     */
-    bool haveReportList() const;
-
-    /**
-     * Free the report list.
-     * @return bool success
-     */
-    bool freeReportList();
-
-    /**
-     * Set the GUI.
-     * @param const SCopasiXMLGUI & GUI
-     * @return bool success
-     */
-    bool setGUI(const SCopasiXMLGUI & GUI);
-
-    /**
-     * Retreive the SCopasiXMLGUI.
-     * @return SCopasiXMLGUI * pGUI
-     */
-    SCopasiXMLGUI * getGUI() const;
-
-    /**
-     * Retreive whether the XML contains a GUI.
-     * @return bool have GUI
-     */
-    bool haveGUI() const;
-
-    /**
-     * Free the GUI.
-     * @return bool success
-     */
-    bool freeGUI();
 
     /**
      * Encode a given string to a valid XML string
@@ -420,6 +236,20 @@ class CCopasiXMLInterface
      * @return bool success
      */
     bool endSaveElement(const std::string & name);
+
+    /**
+     * Save a Parameter.
+     * @param const CCopasiParameter & parameter
+     * @return bool success
+     */
+    bool saveParameter(const CCopasiParameter & parameter);
+
+    /**
+     * Save a Parameter Group.
+     * @param const CCopasiParameterGroup::parameterGroup & group
+     * @return bool success
+     */
+    bool saveParameterGroup(const std::vector< CCopasiParameter * > & group);
   };
 
 /**

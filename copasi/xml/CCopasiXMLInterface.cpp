@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:33:05 $
+   $Date: 2006/04/28 13:10:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,7 @@
 #include "CCopasiXMLParser.h"
 #include "utilities/CCopasiVector.h"
 #include "utilities/CSlider.h"
+#include "utilities/CDirEntry.h"
 
 SCopasiXMLGUI::SCopasiXMLGUI():
     pSliderList(new CCopasiVector<CSlider>)
@@ -175,6 +176,8 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
   std::ostringstream value;
 
 
+
+
   if (isnan(dbl))
     value << "NaN";
   else if (finite(dbl))
@@ -183,6 +186,8 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
     value << "INF";
   else if (dbl < 0.0)
     value << "-INF";
+
+
 
 
   return value.str();
@@ -263,12 +268,6 @@ std::string CCopasiXMLInterface::utf8(const std::string & str)
 }
 
 CCopasiXMLInterface::CCopasiXMLInterface():
-    mpModel(NULL),
-    mpFunctionList(NULL),
-    mpTaskList(NULL),
-    mpReportList(NULL),
-    mpPlotList(NULL),
-    mpGUI(NULL),
     mpIstream(NULL),
     mpOstream(NULL),
     mIndent()
@@ -299,110 +298,6 @@ bool CCopasiXMLInterface::save(const std::string & fileName)
   os << tmp.str();
   if (os.fail()) return false;
 
-  return true;
-}
-
-bool CCopasiXMLInterface::setModel(const CModel & model)
-{
-  mpModel = const_cast<CModel *>(&model);
-  return true;
-}
-
-CModel * CCopasiXMLInterface::getModel() const {return mpModel;}
-
-bool CCopasiXMLInterface::haveModel() const {return mpModel != NULL;}
-
-bool CCopasiXMLInterface::freeModel()
-{
-  pdelete(mpModel);
-  return true;
-}
-
-bool CCopasiXMLInterface::setFunctionList(const CCopasiVectorN< CEvaluationTree > & functionList)
-{
-  mpFunctionList = const_cast<CCopasiVectorN< CEvaluationTree > *>(&functionList);
-  return true;
-}
-
-CCopasiVectorN< CEvaluationTree > * CCopasiXMLInterface::getFunctionList() const
-  {return mpFunctionList;}
-
-bool CCopasiXMLInterface::haveFunctionList() const
-  {return mpFunctionList != NULL;}
-
-bool CCopasiXMLInterface::freeFunctionList()
-{
-  pdelete(mpFunctionList);
-  return true;
-}
-
-bool CCopasiXMLInterface::setTaskList(const CCopasiVectorN< CCopasiTask > & taskList)
-{
-  mpTaskList = const_cast<CCopasiVectorN< CCopasiTask > *>(&taskList);
-  return true;
-}
-
-CCopasiVectorN< CCopasiTask > * CCopasiXMLInterface::getTaskList() const
-  {return mpTaskList;}
-
-bool CCopasiXMLInterface::haveTaskList() const
-  {return mpTaskList != NULL;}
-
-bool CCopasiXMLInterface::freeTaskList()
-{
-  pdelete(mpTaskList);
-  return true;
-}
-
-bool CCopasiXMLInterface::setPlotList(const COutputDefinitionVector & plotList)
-{
-  mpPlotList = const_cast<COutputDefinitionVector *>(&plotList);
-  return true;
-}
-
-COutputDefinitionVector * CCopasiXMLInterface::getPlotList() const
-  {return mpPlotList;}
-
-bool CCopasiXMLInterface::havePlotList() const
-  {return mpPlotList != NULL;}
-
-bool CCopasiXMLInterface::freePlotList()
-{
-  pdelete(mpPlotList);
-  return true;
-}
-
-bool CCopasiXMLInterface::setReportList(const CReportDefinitionVector & reportList)
-{
-  mpReportList = const_cast<CReportDefinitionVector *>(&reportList);
-  return true;
-}
-
-CReportDefinitionVector * CCopasiXMLInterface::getReportList() const
-  {return mpReportList;}
-
-bool CCopasiXMLInterface::haveReportList() const
-  {return mpReportList != NULL;}
-
-bool CCopasiXMLInterface::freeReportList()
-{
-  pdelete(mpReportList);
-  return true;
-}
-
-bool CCopasiXMLInterface::setGUI(const SCopasiXMLGUI & GUI)
-{
-  mpGUI = const_cast<SCopasiXMLGUI *>(&GUI);
-  return true;
-}
-
-SCopasiXMLGUI * CCopasiXMLInterface::getGUI() const {return mpGUI;}
-
-bool CCopasiXMLInterface::haveGUI() const {return mpGUI != NULL;}
-
-bool CCopasiXMLInterface::freeGUI()
-{
-  pdelete(mpGUI);
   return true;
 }
 
@@ -484,6 +379,98 @@ bool CCopasiXMLInterface::endSaveElement(const std::string & name)
   *mpOstream << mIndent << "</" << name << ">" << std::endl;
 
   return true;
+}
+
+bool CCopasiXMLInterface::saveParameter(const CCopasiParameter & parameter)
+{
+  bool success = true;
+
+  CXMLAttributeList Attributes;
+  std::string File;
+
+  Attributes.add("name", parameter.getObjectName());
+
+  CCopasiParameter::Type Type = parameter.getType();
+  Attributes.add("type", CCopasiParameter::XMLType[Type]);
+
+  switch (parameter.getType())
+    {
+    case CCopasiParameter::DOUBLE:
+      Attributes.add("value", * parameter.getValue().pDOUBLE);
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
+    case CCopasiParameter::UDOUBLE:
+      Attributes.add("value", * parameter.getValue().pUDOUBLE);
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
+    case CCopasiParameter::INT:
+      Attributes.add("value", * parameter.getValue().pINT);
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
+    case CCopasiParameter::UINT:
+      Attributes.add("value", * parameter.getValue().pUINT);
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
+    case CCopasiParameter::BOOL:
+      Attributes.add("value", * parameter.getValue().pBOOL);
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
+    case CCopasiParameter::STRING:
+      Attributes.add("value", * parameter.getValue().pSTRING);
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
+    case CCopasiParameter::KEY:
+      Attributes.add("value", * parameter.getValue().pKEY);
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
+    case CCopasiParameter::FILE:
+      File = * parameter.getValue().pFILE;
+      if (!CDirEntry::isRelativePath(File) &&
+          !CDirEntry::makePathRelative(File, mFilename))
+        File = CDirEntry::fileName(File);
+      Attributes.add("value", File);
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
+    case CCopasiParameter::CN:
+      Attributes.add("value", * parameter.getValue().pCN);
+      if (!saveElement("Parameter", Attributes)) success = false;
+      break;
+
+    case CCopasiParameter::GROUP:
+      Attributes.skip(1);
+      if (!startSaveElement("ParameterGroup", Attributes)) success = false;
+      if (!saveParameterGroup(* parameter.getValue().pGROUP)) success = false;
+      if (!endSaveElement("ParameterGroup")) success = false;
+      break;
+
+    case CCopasiParameter::INVALID:
+    default:
+      success = false;
+      break;
+    }
+
+  return success;
+}
+
+bool CCopasiXMLInterface::saveParameterGroup(const std::vector< CCopasiParameter * > & group)
+{
+  bool success = true;
+
+  std::vector< CCopasiParameter * >::const_iterator it = group.begin();
+  std::vector< CCopasiParameter * >::const_iterator end = group.end();
+
+  for (; it != end; ++it)
+    if (!saveParameter(**it)) success = false;
+
+  return success;
 }
 
 CXMLAttributeList::CXMLAttributeList():

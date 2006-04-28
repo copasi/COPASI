@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.82 $
+   $Revision: 1.83 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:33:05 $
+   $Date: 2006/04/28 13:10:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,13 @@
 // class CCopasiReport;
 
 CCopasiXML::CCopasiXML():
-    CCopasiXMLInterface()
+    CCopasiXMLInterface(),
+    mpModel(NULL),
+    mpFunctionList(NULL),
+    mpTaskList(NULL),
+    mpReportList(NULL),
+    mpPlotList(NULL),
+    mpGUI(NULL)
 {
   mVersion.setVersion(COPASI_XML_VERSION_MAJOR,
                       COPASI_XML_VERSION_MINOR,
@@ -169,6 +175,110 @@ bool CCopasiXML::load(std::istream & is)
 
 const CVersion & CCopasiXML::getVersion() const
   {return mVersion;}
+
+bool CCopasiXML::setModel(const CModel & model)
+{
+  mpModel = const_cast<CModel *>(&model);
+  return true;
+}
+
+CModel * CCopasiXML::getModel() const {return mpModel;}
+
+bool CCopasiXML::haveModel() const {return mpModel != NULL;}
+
+bool CCopasiXML::freeModel()
+{
+  pdelete(mpModel);
+  return true;
+}
+
+bool CCopasiXML::setFunctionList(const CCopasiVectorN< CEvaluationTree > & functionList)
+{
+  mpFunctionList = const_cast<CCopasiVectorN< CEvaluationTree > *>(&functionList);
+  return true;
+}
+
+CCopasiVectorN< CEvaluationTree > * CCopasiXML::getFunctionList() const
+  {return mpFunctionList;}
+
+bool CCopasiXML::haveFunctionList() const
+  {return mpFunctionList != NULL;}
+
+bool CCopasiXML::freeFunctionList()
+{
+  pdelete(mpFunctionList);
+  return true;
+}
+
+bool CCopasiXML::setTaskList(const CCopasiVectorN< CCopasiTask > & taskList)
+{
+  mpTaskList = const_cast<CCopasiVectorN< CCopasiTask > *>(&taskList);
+  return true;
+}
+
+CCopasiVectorN< CCopasiTask > * CCopasiXML::getTaskList() const
+  {return mpTaskList;}
+
+bool CCopasiXML::haveTaskList() const
+  {return mpTaskList != NULL;}
+
+bool CCopasiXML::freeTaskList()
+{
+  pdelete(mpTaskList);
+  return true;
+}
+
+bool CCopasiXML::setPlotList(const COutputDefinitionVector & plotList)
+{
+  mpPlotList = const_cast<COutputDefinitionVector *>(&plotList);
+  return true;
+}
+
+COutputDefinitionVector * CCopasiXML::getPlotList() const
+  {return mpPlotList;}
+
+bool CCopasiXML::havePlotList() const
+  {return mpPlotList != NULL;}
+
+bool CCopasiXML::freePlotList()
+{
+  pdelete(mpPlotList);
+  return true;
+}
+
+bool CCopasiXML::setReportList(const CReportDefinitionVector & reportList)
+{
+  mpReportList = const_cast<CReportDefinitionVector *>(&reportList);
+  return true;
+}
+
+CReportDefinitionVector * CCopasiXML::getReportList() const
+  {return mpReportList;}
+
+bool CCopasiXML::haveReportList() const
+  {return mpReportList != NULL;}
+
+bool CCopasiXML::freeReportList()
+{
+  pdelete(mpReportList);
+  return true;
+}
+
+bool CCopasiXML::setGUI(const SCopasiXMLGUI & GUI)
+{
+  mpGUI = const_cast<SCopasiXMLGUI *>(&GUI);
+  return true;
+}
+
+SCopasiXMLGUI * CCopasiXML::getGUI() const {return mpGUI;}
+
+bool CCopasiXML::haveGUI() const {return mpGUI != NULL;}
+
+bool CCopasiXML::freeGUI()
+{
+  pdelete(mpGUI);
+  return true;
+}
 
 bool CCopasiXML::saveModel()
 {
@@ -701,98 +811,6 @@ bool CCopasiXML::saveTaskList()
     }
 
   endSaveElement("ListOfTasks");
-
-  return success;
-}
-
-bool CCopasiXML::saveParameter(const CCopasiParameter & parameter)
-{
-  bool success = true;
-
-  CXMLAttributeList Attributes;
-  std::string File;
-
-  Attributes.add("name", parameter.getObjectName());
-
-  CCopasiParameter::Type Type = parameter.getType();
-  Attributes.add("type", CCopasiParameter::XMLType[Type]);
-
-  switch (parameter.getType())
-    {
-    case CCopasiParameter::DOUBLE:
-      Attributes.add("value", * parameter.getValue().pDOUBLE);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
-
-    case CCopasiParameter::UDOUBLE:
-      Attributes.add("value", * parameter.getValue().pUDOUBLE);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
-
-    case CCopasiParameter::INT:
-      Attributes.add("value", * parameter.getValue().pINT);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
-
-    case CCopasiParameter::UINT:
-      Attributes.add("value", * parameter.getValue().pUINT);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
-
-    case CCopasiParameter::BOOL:
-      Attributes.add("value", * parameter.getValue().pBOOL);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
-
-    case CCopasiParameter::STRING:
-      Attributes.add("value", * parameter.getValue().pSTRING);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
-
-    case CCopasiParameter::KEY:
-      Attributes.add("value", * parameter.getValue().pKEY);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
-
-    case CCopasiParameter::FILE:
-      File = * parameter.getValue().pFILE;
-      if (!CDirEntry::isRelativePath(File) &&
-          !CDirEntry::makePathRelative(File, mFilename))
-        File = CDirEntry::fileName(File);
-      Attributes.add("value", File);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
-
-    case CCopasiParameter::CN:
-      Attributes.add("value", * parameter.getValue().pCN);
-      if (!saveElement("Parameter", Attributes)) success = false;
-      break;
-
-    case CCopasiParameter::GROUP:
-      Attributes.skip(1);
-      if (!startSaveElement("ParameterGroup", Attributes)) success = false;
-      if (!saveParameterGroup(* parameter.getValue().pGROUP)) success = false;
-      if (!endSaveElement("ParameterGroup")) success = false;
-      break;
-
-    case CCopasiParameter::INVALID:
-    default:
-      success = false;
-      break;
-    }
-
-  return success;
-}
-
-bool CCopasiXML::saveParameterGroup(const std::vector< CCopasiParameter * > & group)
-{
-  bool success = true;
-
-  std::vector< CCopasiParameter * >::const_iterator it = group.begin();
-  std::vector< CCopasiParameter * >::const_iterator end = group.end();
-
-  for (; it != end; ++it)
-    if (!saveParameter(**it)) success = false;
 
   return success;
 }
