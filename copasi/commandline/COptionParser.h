@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/28 14:25:44 $
+   $Date: 2006/04/28 14:40:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,6 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <map>
 
 /// the namespace can be controlled using the cxx_namespace variable
 namespace copasi
@@ -60,7 +59,6 @@ namespace copasi
       std::string ConfigDir;
       std::string ConfigFile;
       std::string CopasiDir;
-      std::map<std::string, std::string> Default;
       std::string ExportBerkeleyMadonna;
       std::string ExportC;
       std::string ExportSBML;
@@ -82,7 +80,6 @@ namespace copasi
       size_type ConfigDir;
       size_type ConfigFile;
       size_type CopasiDir;
-      size_type Default;
       size_type ExportBerkeleyMadonna;
       size_type ExportC;
       size_type ExportSBML;
@@ -177,8 +174,7 @@ namespace copasi
         option_ImportSBML,
         option_ExportSBML,
         option_ExportBerkeleyMadonna,
-        option_ExportC,
-        option_Default
+        option_ExportC
       } openum_;
 
       enum parser_state {state_option, state_value, state_consume } state_;

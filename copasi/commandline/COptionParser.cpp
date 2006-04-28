@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/28 14:25:44 $
+   $Date: 2006/04/28 14:40:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -180,8 +180,6 @@ void copasi::COptionParser::finalize (void)
           throw option_error("missing value for 'configfile' option");
         case option_CopasiDir:
           throw option_error("missing value for 'copasidir' option");
-        case option_Default:
-          throw option_error("missing value for 'default' option");
         case option_ExportBerkeleyMadonna:
           throw option_error("missing value for 'exportBerkeleyMadonna' option");
         case option_ExportC:
@@ -290,12 +288,6 @@ void copasi::COptionParser::parse_short_option (char option, int position, opsou
       state_ = state_value;
       locations_.CopasiDir = position;
       return;
-    case 'd':
-      source = source; // kill compiler unused variable warning
-      openum_ = option_Default;
-      state_ = state_value;
-      locations_.Default = position;
-      return;
     case 'e':
       if (source != source_cl) throw option_error("the 'exportSBML' option can only be used on the command line");
       if (locations_.ExportSBML)
@@ -385,14 +377,6 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
         }
       openum_ = option_CopasiDir;
       locations_.CopasiDir = position;
-      state_ = state_value;
-      return;
-    }
-  else if (strcmp(option, "default") == 0)
-    {
-      source = source; // kill compiler unused variable warning
-      openum_ = option_Default;
-      locations_.Default = position;
       state_ = state_value;
       return;
     }
@@ -532,32 +516,6 @@ void copasi::COptionParser::parse_value (const char *value)
         options_.CopasiDir = value;
       }
       break;
-    case option_Default:
-      {
-        std::string svalue(value);
-        std::string::size_type eqpos = svalue.find('=');
-        if (eqpos == std::string::npos)
-          {
-            throw option_error("invalid key=value pair for the 'default' option");
-          }
-
-        std::string k(svalue.substr(0, eqpos));
-        k.erase(0, k.find_first_not_of(' '));
-        k.erase(k.find_last_not_of(' ') + 1);
-
-        std::string v;
-        if (eqpos != std::string::npos) // We have a '='
-          {
-            v = svalue.substr(eqpos + 1);
-            v.erase(0, v.find_first_not_of(' '));
-            v.erase(v.find_last_not_of(' ') + 1);
-          }
-        else
-          v = "";
-
-        options_.Default[k] = v;
-      }
-      break;
     case option_ExportBerkeleyMadonna:
       {
         options_.ExportBerkeleyMadonna = value;
@@ -620,9 +578,6 @@ namespace
 
     if (name_size <= 9 && name.compare("copasidir") == 0)
       matches.push_back("copasidir");
-
-    if (name_size <= 7 && name.compare("default") == 0)
-      matches.push_back("default");
 
     if (name_size <= 21 && name.compare("exportBerkeleyMadonna") == 0)
       matches.push_back("exportBerkeleyMadonna");

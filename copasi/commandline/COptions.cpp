@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:25:12 $
+   $Date: 2006/04/28 14:40:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,7 +138,6 @@ void COptions::init(C_INT argc, char *argv[])
   mNonOptions = Parser->get_non_options();
 
   const copasi::options &Options = Parser->get_options();
-  mDefaults = Options.Default;
 
   /* The values for ExampleDir and WizardDir are dependent on CopasiDir
      and on the OS. */

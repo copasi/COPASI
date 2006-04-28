@@ -185,6 +185,7 @@
     <name>exportC</name>
     <comment>The C code file to export.</comment>
    </option>
+<!--
    <option id="Default"
            type="string"
            mandatory="no"
@@ -195,5 +196,6 @@
     <name>d</name>
     <comment>Default settings.</comment>
    </option>
+-->
  </options>
 </cloxx>
