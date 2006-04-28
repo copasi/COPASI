@@ -15,16 +15,28 @@
    <variable name="cxx_source_file" value="COptionParser.cpp"></variable>
  </config>
  <options>
+   <option id="ConfigDir"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="no">
+    <name>configdir</name>
+    <comment>
+     The configuration directory for copasi. The default is .copasi in the
+     home directory.
+    </comment>
+   </option>
    <option id="ConfigFile"
            type="string"
            mandatory="no"
            strict="yes"
            location="commandline"
            hidden="no">
-    <name>rc</name>
+    <name>configfile</name>
     <comment>
-     The configuration file for copasi. The default is .copasirc in the
-     home directory.
+     The configuration file for copasi. The default is copasi in the
+     ConfigDir.
     </comment>
    </option>
    <option id="CopasiDir"
@@ -154,6 +166,24 @@
     <name>exportSBML</name>
     <name>e</name>
     <comment>The SBML file to export.</comment>
+   </option>
+   <option id="ExportBerkeleyMadonna"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="no">
+    <name>exportBerkeleyMadonna</name>
+    <comment>The Berkeley Madonna file to export.</comment>
+   </option>
+   <option id="ExportC"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="no">
+    <name>exportC</name>
+    <comment>The C code file to export.</comment>
    </option>
    <option id="Default"
            type="string"
