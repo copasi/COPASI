@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Date: 2006/05/01 18:02:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,35 +47,13 @@ CMassAction::CMassAction(const TriLogic & reversible,
     CCopasiMessage(CCopasiMessage::ERROR, MCMassAction + 1);
 
   setType(CFunction::MassAction);
-  setReversible(reversible);
 
-  getVariables().add("k1",
-                     CFunctionParameter::FLOAT64,
-                     CFunctionParameter::PARAMETER);
-  getVariables().add("substrate",
-                     CFunctionParameter::VFLOAT64,
-                     CFunctionParameter::SUBSTRATE);
-  //addUsage("SUBSTRATE", 1, CRange::Infinity);
-
-  if (isReversible() == TriTrue)
-    {
-      // setName("Mass action (reversible)");
-      setInfix("k1 * PRODUCT <substrate_i> "
-               "- k2 * PRODUCT <product_j>");
-      getVariables().add("k2",
-                         CFunctionParameter::FLOAT64,
-                         CFunctionParameter::PARAMETER);
-      getVariables().add("product",
-                         CFunctionParameter::VFLOAT64,
-                         CFunctionParameter::PRODUCT);
-      //addUsage("PRODUCT", 1, CRange::Infinity);
-    }
+  if (reversible == TriTrue)
+    setInfix("k1*PRODUCT<substrate_i>-k2*PRODUCT<product_j>");
   else
-    {
-      // setName("Mass action (irreversible)");
-      setInfix("k1 * PRODUCT <substrate_i>");
-    }
+    setInfix("k1*PRODUCT<substrate_i>");
 }
+
 CMassAction::~CMassAction(){DESTRUCTOR_TRACE;}
 
 const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & callParameters)
@@ -139,6 +117,38 @@ bool CMassAction::dependsOn(const C_FLOAT64 * parameter,
 
     return false;
   }
+
+bool CMassAction::setInfix(const std::string & infix)
+{
+  if (infix == "k1*PRODUCT<substrate_i>-k2*PRODUCT<product_j>")
+    setReversible(TriTrue);
+  else if (infix == "k1*PRODUCT<substrate_i>")
+    setReversible(TriFalse);
+  else
+    return false;
+
+  CFunction::setInfix(infix);
+  getVariables().cleanup();
+
+  getVariables().add("k1",
+                     CFunctionParameter::FLOAT64,
+                     CFunctionParameter::PARAMETER);
+  getVariables().add("substrate",
+                     CFunctionParameter::VFLOAT64,
+                     CFunctionParameter::SUBSTRATE);
+
+  if (isReversible() == TriTrue)
+    {
+      getVariables().add("k2",
+                         CFunctionParameter::FLOAT64,
+                         CFunctionParameter::PARAMETER);
+      getVariables().add("product",
+                         CFunctionParameter::VFLOAT64,
+                         CFunctionParameter::PRODUCT);
+    }
+
+  return true;
+}
 
 bool CMassAction::compile() {return true;}
 

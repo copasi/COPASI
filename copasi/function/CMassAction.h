@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Date: 2006/05/01 18:02:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,6 +75,13 @@ class CMassAction : public CFunction
      */
     virtual bool dependsOn(const C_FLOAT64 * parameter,
                            const CCallParameters<C_FLOAT64> & callParameters) const;
+
+    /**
+     * Set the infix description of the tree and compile it.
+     * @param const std::string & infix
+     * @return bool success
+     */
+    virtual bool setInfix(const std::string & infix);
 
     /**
      * Compile the function.
