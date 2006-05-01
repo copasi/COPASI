@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:47 $
+   $Date: 2006/05/01 14:22:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,12 +32,6 @@
 
 int main(int argc, char **argv)
 {
-  // Create the root container.
-  CCopasiContainer::init();
-
-  // Create the global data model.
-  CCopasiDataModel::Global = new CCopasiDataModel(true);
-
   // Parse the commandline options
   try
     {
@@ -48,6 +42,12 @@ int main(int argc, char **argv)
       std::cout << msg.what() << std::endl;
       return 1;
     }
+
+  // Create the root container.
+  CCopasiContainer::init();
+
+  // Create the global data model.
+  CCopasiDataModel::Global = new CCopasiDataModel(true);
 
   QApplication a(argc, argv);
 
