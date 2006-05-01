@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Date: 2006/05/01 16:12:25 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,7 +90,7 @@ void CKinFunction::cleanup()
   cleanupNodes();
 }
 
-// This is used when reading Gepasi Files
+// This is only used when reading Gepasi Files
 void CKinFunction::createParameters()
 {
   CCopasiVectorN < CFunctionParameter > Substrates;
@@ -107,8 +107,38 @@ void CKinFunction::createParameters()
     {
       if (mNodes[i]->getType() == N_IDENTIFIER)
         {
-          pParameter = new CFunctionParameter(mNodes[i]->getName());
-          //          Parameter.setName(mNodes[i]->getObjectName());
+          // We need to check that we have no reserved name.
+          const char *Reserved[] =
+            {"pi", "exponentiale", "true", "false", "infinity",
+             "PI", "EXPONENTIALE", "TRUE", "FALSE", "INFINITY"
+            };
+
+          std::string Name = mNodes[i]->getName();
+          unsigned C_INT32 j, jmax = 10;
+          for (j = 0; j < 10; j++)
+            if (Name == Reserved[j]) break;
+
+          if (j != jmax)
+            {
+              // It is save to prepend the identifyer with '_' since this is not allowed in
+              // Gepasi but within COPASI.
+              std::string OldName = Name;
+              Name = "_" + Name;
+
+              // We have to replace the corresponding CEvaluationNodes to reflect the change.
+              std::vector< CEvaluationNode * >::iterator it = mpNodeList->begin();
+              std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
+
+              for (; it != end; ++it)
+                if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CONSTANT &&
+                    (*it)->getData() == OldName)
+                  (*it)->setData(Name);
+
+              // The Infix has changed we need to update it.
+              setInfix(mpRoot->getInfix());
+            }
+
+          pParameter = new CFunctionParameter(Name);
           pParameter->setType(CFunctionParameter::FLOAT64);
 
           switch (mNodes[i]->getSubtype())
@@ -205,6 +235,8 @@ void CKinFunction::cleanupNodes()
 /*void CKinFunction::writeMathML(std::ostream & out) const
   {
     //if (!mNodes[0]->isLeftValid()) return;
+
+
 
 
     out << "<math>" << std::endl;
