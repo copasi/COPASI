@@ -436,7 +436,19 @@
   </xs:complexType>
   <xs:complexType name="cFUNCTION" id="copasi.FUNCTION">
     <xs:sequence>
-      <xs:element name="MathML" type="cMATH" id="copasi.FUNCTION.MathML"/>
+      <xs:element name="MathML">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Text">
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:whiteSpace value="collapse"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="ListOfParameterDescriptions" id="copasi.FUNCTION.ListOfParameterDescriptions" minOccurs="0">
         <xs:complexType mixed="true">
           <xs:sequence>
@@ -538,9 +550,6 @@
   </xs:complexType>
   <xs:complexType name="cMATH">
     <xs:choice>
-      <xs:sequence>
-        <xs:any namespace="http://www.w3.org/Math/XMLSchema" processContents="skip" maxOccurs="unbounded"/>
-      </xs:sequence>
       <xs:element name="Text">
         <xs:simpleType>
           <xs:restriction base="xs:string">
@@ -548,6 +557,9 @@
           </xs:restriction>
         </xs:simpleType>
       </xs:element>
+      <xs:sequence>
+        <xs:any namespace="http://www.w3.org/Math/XMLSchema" processContents="skip" maxOccurs="unbounded"/>
+      </xs:sequence>
     </xs:choice>
   </xs:complexType>
   <xs:complexType name="cOBJECT">
