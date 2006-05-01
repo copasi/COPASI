@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:33:05 $
+   $Date: 2006/05/01 14:23:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -3055,6 +3055,12 @@ class CCopasiXMLParser : public CExpat
      * @return SCopasiXMLGUI * pGUI
      */
     SCopasiXMLGUI * getGUI() const;
+
+    /**
+     * Retreive a pointer to the current group if available
+     * @return const CCopasiParameterGroup * currentGroup
+     */
+    const CCopasiParameterGroup * getCurrentGroup() const;
 
     /**
      * Retrieve an object by its CN within the context of the parser

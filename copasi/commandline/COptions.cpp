@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/28 14:40:33 $
+   $Date: 2006/05/01 14:28:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,6 @@
 #include "COptions.h"
 
 COptions::optionType COptions::mOptions;
-COptions::defaultType COptions::mDefaults;
 COptions::nonOptionType COptions::mNonOptions;
 
 COptions::COptions()
@@ -70,7 +69,13 @@ void COptions::init(C_INT argc, char *argv[])
     if (compareValue("Tmp", (std::string) ""))
       setValue("Tmp", getTemp());
 
+    setValue("ConfigDir", PreOptions.ConfigDir);
+    if (compareValue("ConfigDir", (std::string) ""))
+      setValue("ConfigDir", getConfigDir());
+
     setValue("ConfigFile", PreOptions.ConfigFile);
+    if (compareValue("ConfigFile", (std::string) ""))
+      setValue("ConfigFile", getConfigFile());
 
     delete pPreParser;
   }
@@ -81,59 +86,6 @@ void COptions::init(C_INT argc, char *argv[])
   getValue("CopasiDir", CopasiDir);
   std::string Home;
   getValue("Home", Home);
-
-  /* Parse the system wide configuration file */
-  std::string ConfigFile(CopasiDir + "/etc/copasi.conf");
-  try
-    {
-      Parser->parse(ConfigFile.c_str());
-    }
-
-  catch (copasi::option_error &e)
-    {
-      if (errno != ENOENT) throw(e);
-
-#ifdef XXXX
-      /* This is currently not needed since a system wide configuration
-         is not supported */
-      std::ostringstream error;
-      error << std::endl
-      << "file '" << ConfigFile << "' does not exist." << std::endl
-      << "  use -c COPASIDIR or --copasidir COPASIDIR" << std::endl
-      << "  or set the environment variable COPASIDIR" << std::endl
-      << "  to point to the Copasi installation directory" << std::endl;
-
-      throw copasi::option_error(error.str());
-#endif // XXXX
-    }
-
-  /* Parse the user's configuration file */
-  ConfigFile = Home + "/.copasirc";
-  try
-    {
-      Parser->parse(ConfigFile.c_str());
-    }
-
-  catch (copasi::option_error &e)
-    {
-      if (errno != ENOENT) throw(e);
-
-#ifdef XXXX
-      /* Make sure that the user's configuration file exists in the future */
-      /* :TODO: we should create a template that will be copied */
-      std::ofstream f(ConfigFile.c_str());
-#endif // XXXX
-    }
-
-  /* Parse the commandline specified file */
-  if (!compareValue("ConfigFile", (std::string) ""))
-    {
-      getValue("ConfigFile", ConfigFile);
-      Parser->parse(ConfigFile.c_str());
-    }
-
-  /* Parse the commandline arguments */
-  Parser->parse(argc, argv);
 
   mNonOptions = Parser->get_non_options();
 
@@ -174,14 +126,6 @@ void COptions::cleanup()
   optionType::iterator end = mOptions.end();
 
   for (; begin != end; begin++) pdelete(begin->second);
-}
-
-std::string COptions::getDefault(const std::string & name)
-{
-  defaultType::iterator found = mDefaults.find(name);
-
-  if (found == mDefaults.end()) return "<unset>";
-  else return found->second;
 }
 
 const COptions::nonOptionType & COptions::getNonOptions() {return mNonOptions;}
@@ -333,4 +277,24 @@ std::string COptions::getTemp(void)
 
   Temp = CreateUserDir;
   return Temp;
+}
+
+std::string COptions::getConfigDir(void)
+{
+  std::string Home;
+
+  getValue("Home", Home);
+  if (!CDirEntry::createDir(".copasi", Home))
+    return Home;
+
+  return Home + CDirEntry::Separator + ".copasi";
+}
+
+std::string COptions::getConfigFile(void)
+{
+  std::string ConfigDir;
+
+  getValue("ConfigDir", ConfigDir);
+
+  return ConfigDir + CDirEntry::Separator + "copasi";
 }

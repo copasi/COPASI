@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.7 $ $Author: shoops $ $Date: 2005/02/08 16:33:04 $  
+# $Revision: 1.8 $ $Author: shoops $ $Date: 2006/05/01 14:24:06 $  
 ######################################################################
 
 LIB = commandline
@@ -8,10 +8,12 @@ include(../lib.pri)
 include(../common.pri)
 
 #Input
-HEADERS += COptionParser.h \
+HEADERS += CConfigurationFile.h \
+           COptionParser.h \
            COptions.h
 
-SOURCES += COptionParser.cpp \
+SOURCES += CConfigurationFile.cpp \
+           COptionParser.cpp \
            COptions.cpp
 
 !contains(BUILD_OS, WIN32) {

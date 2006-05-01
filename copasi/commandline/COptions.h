@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:25:12 $
+   $Date: 2006/05/01 14:28:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,7 +99,6 @@ class COptions
     //Attributes
   private:
     static optionType mOptions;
-    static defaultType mDefaults;
     static nonOptionType mNonOptions;
 
     //Operations
@@ -120,8 +119,6 @@ class COptions
     static void init(C_INT argc, char *argv[]);
 
     static void cleanup();
-
-    static std::string getDefault(const std::string & name);
 
     static const nonOptionType & getNonOptions();
 
@@ -145,6 +142,9 @@ class COptions
 
     static std::string getHome(void);
     static std::string getTemp(void);
+
+    static std::string getConfigDir(void);
+    static std::string getConfigFile(void);
   };
 
 #endif // COPASI_COptions

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.124 $
+   $Revision: 1.125 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:33:05 $
+   $Date: 2006/05/01 14:23:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -135,7 +135,14 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
 {
   create();
 
-  mElementHandlerStack.push(new COPASIElement(*this, mCommon));
+  if (version.getVersionMajor() == 0 &&
+      version.getVersionMinor() == 0 &&
+      version.getVersionDevel() == 0)
+    // We read the configuration file.
+    mElementHandlerStack.push(new ParameterGroupElement(*this, mCommon));
+  else
+    mElementHandlerStack.push(new COPASIElement(*this, mCommon));
+
   //  mCommon.pParser = this;
   mCommon.pVersion = & version;
   mCommon.pModel = NULL;
@@ -160,8 +167,10 @@ void CCopasiXMLParser::onStartElement(const XML_Char *pszName,
 
 void CCopasiXMLParser::onEndElement(const XML_Char *pszName)
 {
-  assert(mElementHandlerStack.size() != 0);
-  mElementHandlerStack.top()->end(pszName);
+  if (mElementHandlerStack.size() != 0)
+    mElementHandlerStack.top()->end(pszName);
+  else
+    return;
 }
 
 #ifdef XXXX
@@ -260,6 +269,9 @@ void CCopasiXMLParser::setGUI(SCopasiXMLGUI * pGUI)
 
 SCopasiXMLGUI * CCopasiXMLParser::getGUI() const
   {return mCommon.pGUI;}
+
+const CCopasiParameterGroup * CCopasiXMLParser::getCurrentGroup() const
+  {return dynamic_cast< const CCopasiParameterGroup * >(mCommon.pCurrentParameter);}
 
 const CCopasiObject * CCopasiXMLParser::getObjectFromName(const std::string & cn) const
   {
