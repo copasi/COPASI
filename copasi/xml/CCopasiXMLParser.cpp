@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.125 $
+   $Revision: 1.126 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/01 14:23:35 $
+   $Date: 2006/05/01 18:04:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -687,8 +687,6 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
     {
     case Function:
       if (strcmp(pszName, "Function")) fatalError();
-      if (!mCommon.mExistingFunction)
-        mCommon.pFunction->setInfix(mCommon.FunctionDescription);
 
       mCurrentElement = START_ELEMENT;
       mParser.popElementHandler();
@@ -699,6 +697,9 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
 
     case MathML:
       if (strcmp(pszName, "MathML")) fatalError();
+      if (!mCommon.mExistingFunction)
+        mCommon.pFunction->setInfix(mCommon.FunctionDescription);
+
       break;
 
     case ListOfParameterDescriptions:
@@ -995,7 +996,18 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
         }
       else
         {
-          pParm = new CFunctionParameter();
+          // If we are here we have a user defined function.
+          // We need to check whether the variable exists within the function.
+          CFunctionParameter::DataType DataType;
+          unsigned C_INT32 Index =
+            pFunction->getVariables().findParameterByName(Name, DataType);
+
+          if (Index == C_INVALID_INDEX)
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 8, Name,
+                           pFunction->getObjectName().c_str(),
+                           mParser.getCurrentLineNumber());
+
+          pParm = pFunction->getVariables()[Index];
           pParm->setObjectName(Name);
           pParm->setUsage(Role);
 
@@ -1004,7 +1016,6 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
           else
             pParm->setType(CFunctionParameter::VFLOAT64);
 
-          pFunction->getVariables().add(pParm, true);
           mCommon.KeyMap.addFix(Key, pParm);
         }
       break;

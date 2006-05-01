@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:44 $
+   $Date: 2006/05/01 18:04:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,6 +97,8 @@ const MESSAGES Messages[] =
     {MCXML + 5, "XML (5): Unknown task type '%s' encountered at line '%d'."},
     {MCXML + 6, "XML (6): Invalid function '%s' encountered at line '%d'."},
     {MCXML + 7, "XML (7): Unknown function '%s' in reaction '%s' encountered at line '%d'."},
+    {MCXML + 8, "XML (8): Unknown variable '%s' in function '%s' encountered at line '%d'. "
+     "A possible reason is that the variable is a reserved string within the function description."},
 
     // CCopasiMessage
     {MCCopasiMessage + 1, "Message (1): No more messages."},
