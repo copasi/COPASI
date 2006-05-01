@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetRandom.ui.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
+   $Date: 2006/05/01 20:14:47 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,8 +58,25 @@ void CScanWidgetRandom::slotChooseObject()
               if (mpObject->isValueDbl())
                 {
                   C_FLOAT64 value = *(C_FLOAT64*)mpObject->getValuePointer();
-                  lineEditMin->setText(QString::number(value*0.5));
-                  lineEditMax->setText(QString::number(value*2));
+                  C_INT32 type = comboBoxType->currentItem();
+
+                  if (type == 0) //uniform
+                    {
+                      lineEditMin->setText(QString::number(value*0.5));
+                      lineEditMax->setText(QString::number(value*2));
+                    }
+
+                  if (type == 1) //normal
+                    {
+                      lineEditMin->setText(QString::number(value));
+                      lineEditMax->setText(QString::number(value*0.1));
+                    }
+
+                  if (type == 2) //poisson
+                    {
+                      lineEditMin->setText(QString::number(value));
+                      lineEditMax->setText("");
+                    }
                 }
             }
         }
@@ -94,10 +111,11 @@ bool CScanWidgetRandom::initFromScanItem(CCopasiParameterGroup * pg, const CMode
     lineEditObject->setText("");
 
   if (!(tmp = pg->getValue("Distribution type").pUINT)) return false;
+
   comboBoxType->setCurrentItem(*tmp);
+  changeType();
 
   lineEditMin->setText(getParameterValue(pg, "Minimum"));
-
   lineEditMax->setText(getParameterValue(pg, "Maximum"));
 
   bool * pBool;
@@ -127,6 +145,10 @@ bool CScanWidgetRandom::saveToScanItem(CScanProblem * pg) const
 void CScanWidgetRandom::changeType()
 {
   C_INT32 type = comboBoxType->currentItem();
+  C_FLOAT64 value;
+
+  if (mpObject != NULL)
+    value = *(C_FLOAT64*)mpObject->getValuePointer();
 
   if (type == 0) //uniform
     {
@@ -135,6 +157,17 @@ void CScanWidgetRandom::changeType()
 
       labelMin->setText("min");
       labelMax->setText("max");
+
+      if (mpObject != NULL)
+        {
+          lineEditMin->setText(QString::number(value*0.5));
+          lineEditMax->setText(QString::number(value*2));
+        }
+      else
+        {
+          lineEditMin->setText("");
+          lineEditMax->setText("");
+        }
     }
 
   if (type == 1) //normal
@@ -144,6 +177,17 @@ void CScanWidgetRandom::changeType()
 
       labelMin->setText("mean");
       labelMax->setText("standard deviation");
+
+      if (mpObject != NULL)
+        {
+          lineEditMin->setText(QString::number(value));
+          lineEditMax->setText(QString::number(value*0.1));
+        }
+      else
+        {
+          lineEditMin->setText("");
+          lineEditMax->setText("");
+        }
     }
 
   if (type == 2) //poisson
@@ -153,6 +197,13 @@ void CScanWidgetRandom::changeType()
 
       labelMin->setText("mean");
       labelMax->setText("");
+
+      if (mpObject != NULL)
+        lineEditMin->setText(QString::number(value));
+      else
+        lineEditMin->setText("");
+
+      lineEditMax->setText("");
     }
 
   //TODO: handle log: rename standard deviation -> sd factor,
