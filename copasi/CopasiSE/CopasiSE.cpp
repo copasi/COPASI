@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:14 $
+   $Date: 2006/05/01 19:25:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,9 +47,6 @@
 
 int main(int argc, char *argv[])
 {
-  std::stringstream Out;
-  std::stringstream Error;
-
 #ifdef XXXX
   C_FLOAT64 sparseness = 0.00;
   SparseMatrixTest(10, sparseness, 0, false, true, true, false);
@@ -65,6 +62,15 @@ int main(int argc, char *argv[])
   return 0;
 #endif // XXXX
 
+  CVersion Version;
+  Version.setVersion(COPASI_VERSION_MAJOR,
+                     COPASI_VERSION_MINOR,
+                     COPASI_VERSION_BUILD);
+
+  std::cout << "COPASI Version "
+  << Version.getVersion()
+  << std::endl << std::endl;
+
   try
     {
       // Parse the commandline options
@@ -76,15 +82,19 @@ int main(int argc, char *argv[])
       switch (e.get_autothrow_id())
         {
         case copasi::autothrow_help:
-          Out << "Usage: " << CDirEntry::baseName(argv[0]) << " [options] [file]\n";
-          Out << e.what();
+          std::cout << "Usage: " << CDirEntry::baseName(argv[0]) << " [options] [file]\n";
+          std::cout << e.what();
         }
+
+      return 0;
     }
 
   catch (copasi::option_error &e)
     {
-      Error << CDirEntry::baseName(argv[0]) << ": " << e.what() << "\n";
-      Error << e.get_help_comment() << std::endl;
+      std::cerr << CDirEntry::baseName(argv[0]) << ": " << e.what() << "\n";
+      std::cerr << e.get_help_comment() << std::endl;
+
+      return 1;
     }
 
   bool License;
@@ -103,22 +113,6 @@ int main(int argc, char *argv[])
 
       // Create the global data model.
       CCopasiDataModel::Global = new CCopasiDataModel;
-
-      std::cout << "COPASI Version "
-      << CCopasiDataModel::Global->getVersion()->getVersion()
-      << std::endl << std::endl;
-
-      if (Out.str() != "")
-        {
-          std::cout << Out.str();
-          return 1;
-        }
-
-      if (Error.str() != "")
-        {
-          std::cerr << Error.str();
-          return 1;
-        }
 
 #ifdef XXXX
       CCallParameters<C_FLOAT64> Variables(20);
@@ -245,6 +239,32 @@ int main(int argc, char *argv[])
                   std::string ExportSBML;
                   COptions::getValue("ExportSBML", ExportSBML);
                   CCopasiDataModel::Global->exportSBML(ExportSBML, true);
+
+                  // Since only one export file name can be specified we
+                  // stop execution.
+                  break;
+                }
+
+              // Check whether exporting to C code is requested.
+              if (!COptions::compareValue("ExportC", std::string("")))
+                {
+                  // Export the C code File
+                  std::string ExportC;
+                  COptions::getValue("ExportC", ExportC);
+                  CCopasiDataModel::Global->exportMathModel(ExportC, "C Files (*.c)", true);
+
+                  // Since only one export file name can be specified we
+                  // stop execution.
+                  break;
+                }
+
+              // Check whether exporting to Berkeley Madonna is requested.
+              if (!COptions::compareValue("ExportBerkeleyMadonna", std::string("")))
+                {
+                  // Export the Berkeley Madonna File
+                  std::string ExportBerkeleyMadonna;
+                  COptions::getValue("ExportBerkeleyMadonna", ExportBerkeleyMadonna);
+                  CCopasiDataModel::Global->exportMathModel(ExportBerkeleyMadonna, "Berkeley Madonna Files (*.mmd)", true);
 
                   // Since only one export file name can be specified we
                   // stop execution.

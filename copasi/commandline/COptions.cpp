@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/01 14:28:29 $
+   $Date: 2006/05/01 19:25:38 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,47 +49,41 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("Self", (std::string) argv[0]);
   setValue("PWD", getPWD());
 
-  {
-    copasi::COptionParser * pPreParser = new copasi::COptionParser;
-    pPreParser->parse(argc, argv);
+  copasi::COptionParser * pPreParser = new copasi::COptionParser;
+  pPreParser->parse(argc, argv);
 
-    const copasi::options &PreOptions = pPreParser->get_options();
+  const copasi::options &PreOptions = pPreParser->get_options();
 
-    setValue("CopasiDir", PreOptions.CopasiDir);
-    if (compareValue("CopasiDir", (std::string) ""))
-      {
-        setValue("CopasiDir", getCopasiDir());
-      }
+  setValue("CopasiDir", PreOptions.CopasiDir);
+  if (compareValue("CopasiDir", (std::string) ""))
+    {
+      setValue("CopasiDir", getCopasiDir());
+    }
 
-    setValue("Home", PreOptions.Home);
-    if (compareValue("Home", (std::string) ""))
-      setValue("Home", getHome());
+  setValue("Home", PreOptions.Home);
+  if (compareValue("Home", (std::string) ""))
+    setValue("Home", getHome());
 
-    setValue("Tmp", PreOptions.Tmp);
-    if (compareValue("Tmp", (std::string) ""))
-      setValue("Tmp", getTemp());
+  setValue("Tmp", PreOptions.Tmp);
+  if (compareValue("Tmp", (std::string) ""))
+    setValue("Tmp", getTemp());
 
-    setValue("ConfigDir", PreOptions.ConfigDir);
-    if (compareValue("ConfigDir", (std::string) ""))
-      setValue("ConfigDir", getConfigDir());
+  setValue("ConfigDir", PreOptions.ConfigDir);
+  if (compareValue("ConfigDir", (std::string) ""))
+    setValue("ConfigDir", getConfigDir());
 
-    setValue("ConfigFile", PreOptions.ConfigFile);
-    if (compareValue("ConfigFile", (std::string) ""))
-      setValue("ConfigFile", getConfigFile());
+  setValue("ConfigFile", PreOptions.ConfigFile);
+  if (compareValue("ConfigFile", (std::string) ""))
+    setValue("ConfigFile", getConfigFile());
 
-    delete pPreParser;
-  }
+  mNonOptions = pPreParser->get_non_options();
 
-  copasi::COptionParser * Parser = new copasi::COptionParser;
+  const copasi::options &Options = pPreParser->get_options();
 
   std::string CopasiDir;
   getValue("CopasiDir", CopasiDir);
   std::string Home;
   getValue("Home", Home);
-
-  mNonOptions = Parser->get_non_options();
-
-  const copasi::options &Options = Parser->get_options();
 
   /* The values for ExampleDir and WizardDir are dependent on CopasiDir
      and on the OS. */
@@ -116,8 +110,10 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("Save", Options.Save);
   setValue("ImportSBML", Options.ImportSBML);
   setValue("ExportSBML", Options.ExportSBML);
+  setValue("ExportC", Options.ExportC);
+  setValue("ExportBerkeleyMadonna", Options.ExportBerkeleyMadonna);
 
-  delete Parser;
+  delete pPreParser;
 }
 
 void COptions::cleanup()
