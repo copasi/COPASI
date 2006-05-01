@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:01 $
+   $Date: 2006/05/01 14:32:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,7 @@ class SCopasiXMLGUI;
 class SBMLDocument;
 class SBase;
 class CProcessReport;
+class CConfigurationFile;
 
 // :TODO: remove
 class CMetabOld;
@@ -88,6 +89,7 @@ class CCopasiDataModel: public COutputHandler
 
     CFunctionDB * getFunctionList();
     SCopasiXMLGUI * getGUI();
+    CConfigurationFile * getConfiguration();
     CVersion * getVersion();
     const std::string & getFileName() const;
 
@@ -113,6 +115,7 @@ class CCopasiDataModel: public COutputHandler
 
     bool mWithGUI;
     SCopasiXMLGUI * mpGUI;
+    CConfigurationFile * mpConfiguration;
 
     std::string mSaveFileName;
     bool mChanged;
@@ -142,7 +145,7 @@ class CCopasiDataModel: public COutputHandler
     CFunction * mpUndefined;
 
     /**
-     *  This is a hack at the moment to be able to read old configuration files
+     *  This is a hack at the moment to be able to read Gepasi model files
      */
     CCopasiVectorS < CMetabOld > * pOldMetabolites;
 

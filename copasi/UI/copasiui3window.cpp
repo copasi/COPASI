@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.169 $
+   $Revision: 1.170 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 21:07:41 $
+   $Date: 2006/05/01 14:32:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,19 +33,19 @@ extern const char * CopasiLicense;
 #include "listviews.h"
 #include "DataModelGUI.h"
 #include "ObjectBrowserDialog.h"
+#include "qtUtilities.h"
+#include "SliderDialog.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CVersion.h"
-
 #include "utilities/CCopasiException.h"
 #include "utilities/CDirEntry.h"
 #include "model/CModel.h"
 #include "commandline/COptionParser.h"
 #include "commandline/COptions.h"
-#include "qtUtilities.h"
+#include "commandline/CConfigurationFile.h"
 #include "wizard/wizard.h"
 #include "report/CKeyFactory.h"
-#include "SliderDialog.h"
 
 #include "./icons/filenew.xpm"
 #include "./icons/fileopen.xpm"
@@ -79,7 +79,9 @@ CopasiUI3Window::CopasiUI3Window():
     mpToggleSliderDialogButton(NULL),
     mSaveAsRequired(true),
     mpAutoSaveTimer(NULL),
-    mSuspendAutoSave(false)
+    mSuspendAutoSave(false),
+    mpMenuRecentFiles(NULL),
+    mpMenuRecentSBMLFiles(NULL)
 {
   setIcon(QPixmap((const char **) Copasi16_Alpha_xpm));
 
@@ -219,6 +221,7 @@ bool CopasiUI3Window::slotFileSaveAs(QString str)
             }
         }
       setCursor(oldCursor);
+      refreshRecentFileMenu();
     }
 
   mSaveAsRequired = false;
@@ -403,6 +406,8 @@ void CopasiUI3Window::slotFileOpen(QString file)
       mpFileMenu->setItemEnabled(nsave_menu_id, true);
       updateTitle();
       ListViews::switchAllListViewsToWidget(1, "");
+
+      refreshRecentFileMenu();
     }
 }
 
@@ -471,6 +476,7 @@ bool CopasiUI3Window::slotFileSave()
       setCursor(oldCursor);
     }
 
+  refreshRecentFileMenu();
   return success;
 }
 
@@ -565,6 +571,10 @@ void CopasiUI3Window::CleanUp()
 
 
 
+
+
+
+
  *******************************************************************************************/
 void CopasiUI3Window::slotFilePrint()
 {}
@@ -649,8 +659,8 @@ void CopasiUI3Window::createToolBar()
 void CopasiUI3Window::createMenuBar()
 {
   //modified on 5th feb : Ankur (left for further modification...later
-  QPixmap icon[8] = {filenew, fileopen, filesave, filesave, fileopen, filesave, filesave, fileopen};
-  const char* toolTip[9];
+  QPixmap icon[7] = {filenew, fileopen, filesave, filesave, fileopen, filesave, filesave};
+  const char* toolTip[7];
 
   toolTip[0] = "Click this button to create a <em>new file</em>. <br>"
                "You can also select the <b>New</b> command "
@@ -685,8 +695,13 @@ void CopasiUI3Window::createMenuBar()
                "You can also select the <b>Export </b> command "
                "from the <b>File</b> menu.</p>";
 
+  // toolTip[7] = "<p>Click this button to to see the list of recently accessed files.</p>";
+
+  // toolTip[8] = "<p>Click this button to to see the list of recently accessed SBML files.</p>";
+
   const char* iconName[7] =
     {"&New", "&Open", "&Save", "Save&As", "&Import SBML", "&Export SBML", "&Export ODEs"};
+
   const char* slotFileName[7] =
     {
       SLOT(newDoc()), SLOT(slotFileOpen()), SLOT(slotFileSave()), SLOT(slotFileSaveAs()),
@@ -720,6 +735,16 @@ void CopasiUI3Window::createMenuBar()
       if (j == 6)
         nexport_menu_MathModel = id;
     }
+  mpFileMenu->insertSeparator();
+
+  mpMenuRecentFiles = new QPopupMenu(this);
+  mpFileMenu->insertItem("Recent Files", mpMenuRecentFiles);
+  refreshRecentFileMenu();
+
+  mpMenuRecentSBMLFiles = new QPopupMenu(this);
+  mpFileMenu->insertItem("Recent SBML Files", mpMenuRecentSBMLFiles);
+  refreshRecentSBMLFileMenu();
+
   mpFileMenu->insertSeparator();
 
   mpFileMenu->insertItem("&Quit", this, SLOT(slotQuit()), CTRL + Key_Q);
@@ -865,6 +890,8 @@ void CopasiUI3Window::slotImportSBML(QString file)
       mpFileMenu->setItemEnabled(nsave_menu_id, true);
 
       ListViews::switchAllListViewsToWidget(1, "");
+
+      refreshRecentSBMLFileMenu();
     }
   updateTitle();
 
@@ -921,6 +948,7 @@ void CopasiUI3Window::slotExportSBML()
             }
         }
       setCursor(oldCursor);
+      refreshRecentSBMLFileMenu();
     }
 }
 
@@ -1107,4 +1135,56 @@ void CopasiUI3Window::suspendAutoSave(const bool & suspend)
   mSuspendAutoSave = suspend;
   if (!mSuspendAutoSave)
     mpAutoSaveTimer->changeInterval(AutoSaveInterval); // restart the timer
+}
+
+void CopasiUI3Window::slotOpenRecentFile(int index)
+{
+  std::string FileName =
+    *CCopasiDataModel::Global->getConfiguration()->getRecentFiles().getGroup("Recent Files")->getValue(index).pSTRING;
+
+  slotFileOpen(FROM_UTF8(FileName));
+}
+
+void CopasiUI3Window::slotOpenRecentSBMLFile(int index)
+{
+  std::string FileName =
+    *CCopasiDataModel::Global->getConfiguration()->getRecentSBMLFiles().getGroup("Recent Files")->getValue(index).pSTRING;
+
+  slotImportSBML(FROM_UTF8(FileName));
+}
+
+void CopasiUI3Window::refreshRecentFileMenu()
+{
+  mpMenuRecentFiles->clear();
+
+  CCopasiParameterGroup::index_iterator it =
+    CCopasiDataModel::Global->getConfiguration()->getRecentFiles().getGroup("Recent Files")->beginIndex();
+  CCopasiParameterGroup::index_iterator end =
+    CCopasiDataModel::Global->getConfiguration()->getRecentFiles().getGroup("Recent Files")->endIndex();
+
+  C_INT Index = 0;
+  for (; it != end; ++it, ++Index)
+    mpMenuRecentFiles->insertItem(FROM_UTF8(*(*it)->getValue().pSTRING),
+                                  this,
+                                  SLOT(slotOpenRecentFile(int)),
+                                  0,
+                                  Index);
+}
+
+void CopasiUI3Window::refreshRecentSBMLFileMenu()
+{
+  mpMenuRecentSBMLFiles->clear();
+
+  CCopasiParameterGroup::index_iterator it =
+    CCopasiDataModel::Global->getConfiguration()->getRecentSBMLFiles().getGroup("Recent Files")->beginIndex();
+  CCopasiParameterGroup::index_iterator end =
+    CCopasiDataModel::Global->getConfiguration()->getRecentSBMLFiles().getGroup("Recent Files")->endIndex();
+
+  C_INT Index = 0;
+  for (; it != end; ++it, ++Index)
+    mpMenuRecentSBMLFiles->insertItem(FROM_UTF8(*(*it)->getValue().pSTRING),
+                                      this,
+                                      SLOT(slotOpenRecentSBMLFile(int)),
+                                      0,
+                                      Index);
 }

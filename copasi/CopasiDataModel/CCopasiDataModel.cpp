@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:01 $
+   $Date: 2006/05/01 14:32:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,7 @@
 #include "CCopasiDataModel.h"
 
 #include "commandline/COptions.h"
+#include "commandline/CConfigurationFile.h"
 #include "function/CFunctionDB.h"
 #include "model/CModel.h"
 #include "optimization/COptTask.h"
@@ -86,6 +87,7 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
     mpPlotDefinitionList(NULL),
     mWithGUI(withGUI),
     mpGUI(NULL),
+    mpConfiguration(new CConfigurationFile),
     mChanged(false),
     mAutoSaveNeeded(false),
     mRenameHandler(this),
@@ -104,10 +106,16 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
   mpFunctionList->load();
   newModel();
   CCopasiObject::setRenameHandler(&mRenameHandler); //TODO where in the contructor should this be called?
+
+  mpConfiguration->load();
 }
 
 CCopasiDataModel::~CCopasiDataModel()
 {
+  if (mpConfiguration != NULL)
+    mpConfiguration->save();
+  pdelete(mpConfiguration);
+
   pdelete(mpVersion);
   pdelete(mpFunctionList);
   pdelete(mpModel);
@@ -124,19 +132,19 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
   std::string PWD;
   COptions::getValue("PWD", PWD);
 
-  std::string Filename = fileName;
+  std::string FileName = fileName;
 
-  if (CDirEntry::isRelativePath(Filename) &&
-      !CDirEntry::makePathAbsolute(Filename, PWD))
-    Filename = CDirEntry::fileName(Filename);
+  if (CDirEntry::isRelativePath(FileName) &&
+      !CDirEntry::makePathAbsolute(FileName, PWD))
+    FileName = CDirEntry::fileName(FileName);
 
-  std::ifstream File(Filename.c_str());
+  std::ifstream File(FileName.c_str());
 
   if (File.fail())
     {
       CCopasiMessage Message(CCopasiMessage::RAW,
                              "File error when opening '%s'.",
-                             Filename.c_str());
+                             FileName.c_str());
       return false;
     }
 
@@ -146,7 +154,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
   if (!Line.compare(0, 8, "Version="))
     {
       File.close();
-      CReadConfig inbuf(Filename.c_str());
+      CReadConfig inbuf(FileName.c_str());
       if (inbuf.getVersion() >= "4")
         {
           CCopasiMessage(CCopasiMessage::ERROR,
@@ -160,11 +168,11 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
       dynamic_cast<CSteadyStateTask *>((*mpTaskList)["Steady-State"])->load(inbuf);
       dynamic_cast<CTrajectoryTask *>((*mpTaskList)["Time-Course"])->load(inbuf);
 
-      mSaveFileName = CDirEntry::dirName(Filename)
+      mSaveFileName = CDirEntry::dirName(FileName)
                       + CDirEntry::Separator
-                      + CDirEntry::baseName(Filename);
+                      + CDirEntry::baseName(FileName);
 
-      std::string Suffix = CDirEntry::suffix(Filename);
+      std::string Suffix = CDirEntry::suffix(FileName);
       if (strcasecmp(Suffix.c_str(), ".gps") != 0)
         mSaveFileName += Suffix;
 
@@ -181,7 +189,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
       XML.setFunctionList(mpFunctionList->loadedFunctions());
 
       SCopasiXMLGUI *pGUI = NULL;
-      std::string SBMLFilenameBkp = mSBMLFileName;
+      std::string SBMLFileNameBkp = mSBMLFileName;
 
       if (mWithGUI)
         {
@@ -197,7 +205,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
           XML.freePlotList();
           XML.freeGUI();
 
-          mSBMLFileName = SBMLFilenameBkp;
+          mSBMLFileName = SBMLFileNameBkp;
           return false;
         }
 
@@ -231,11 +239,10 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
           mpGUI = pGUI;
         }
 
-      mSaveFileName = Filename;
+      mSaveFileName = FileName;
     }
 
   if (mpModel) mpModel->setCompileFlag();
-
   changed(false);
   return true;
 }
@@ -373,11 +380,11 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
   std::string PWD;
   COptions::getValue("PWD", PWD);
 
-  std::string Filename = fileName;
+  std::string FileName = fileName;
 
-  if (CDirEntry::isRelativePath(Filename) &&
-      !CDirEntry::makePathAbsolute(Filename, PWD))
-    Filename = CDirEntry::fileName(Filename);
+  if (CDirEntry::isRelativePath(FileName) &&
+      !CDirEntry::makePathAbsolute(FileName, PWD))
+    FileName = CDirEntry::fileName(FileName);
 
   SBMLImporter importer;
   importer.setImportHandler(pImportHandler);
@@ -389,7 +396,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
 
   try
     {
-      pModel = importer.readSBML(Filename, mpFunctionList, pSBMLDocument, Copasi2SBMLMap);
+      pModel = importer.readSBML(FileName, mpFunctionList, pSBMLDocument, Copasi2SBMLMap);
     }
   catch (CCopasiException except)
     {
@@ -403,16 +410,16 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
       return false;
     }
 
-  mSaveFileName = CDirEntry::dirName(Filename)
+  mSaveFileName = CDirEntry::dirName(FileName)
                   + CDirEntry::Separator
-                  + CDirEntry::baseName(Filename);
+                  + CDirEntry::baseName(FileName);
 
-  std::string Suffix = CDirEntry::suffix(Filename);
+  std::string Suffix = CDirEntry::suffix(FileName);
   if (strcasecmp(Suffix.c_str(), ".xml") != 0)
     mSaveFileName += Suffix;
 
   mSaveFileName += ".cps";
-  mSBMLFileName = Filename;
+  mSBMLFileName = FileName;
 
   pdelete(mpCurrentSBMLDocument);
 
@@ -429,40 +436,40 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
   std::string PWD;
   COptions::getValue("PWD", PWD);
 
-  std::string Filename = fileName;
+  std::string FileName = fileName;
 
-  if (CDirEntry::isRelativePath(Filename) &&
-      !CDirEntry::makePathAbsolute(Filename, PWD))
-    Filename = CDirEntry::fileName(Filename);
+  if (CDirEntry::isRelativePath(FileName) &&
+      !CDirEntry::makePathAbsolute(FileName, PWD))
+    FileName = CDirEntry::fileName(FileName);
 
-  if (CDirEntry::exist(Filename))
+  if (CDirEntry::exist(FileName))
     {
       if (!overwriteFile)
         {
           CCopasiMessage(CCopasiMessage::ERROR,
                          MCDirEntry + 1,
-                         Filename.c_str());
+                         FileName.c_str());
           return false;
         }
 
-      if (!CDirEntry::isWritable(Filename))
+      if (!CDirEntry::isWritable(FileName))
         {
           CCopasiMessage(CCopasiMessage::ERROR,
                          MCDirEntry + 2,
-                         Filename.c_str());
+                         FileName.c_str());
           return false;
         }
     }
 
   SBMLExporter exporter;
   exporter.setExportHandler(pExportHandler);
-  if (!exporter.exportSBML(mpModel, Filename.c_str(), overwriteFile)) return false;
+  if (!exporter.exportSBML(mpModel, FileName.c_str(), overwriteFile)) return false;
 
   if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
     pdelete(mpCurrentSBMLDocument);
 
   mpCurrentSBMLDocument = exporter.getSBMLDocument();
-  mSBMLFileName = Filename;
+  mSBMLFileName = FileName;
 
   return true;
 }
@@ -704,6 +711,9 @@ CFunctionDB * CCopasiDataModel::getFunctionList()
 
 SCopasiXMLGUI * CCopasiDataModel::getGUI()
 {return mpGUI;}
+
+CConfigurationFile * CCopasiDataModel::getConfiguration()
+{return mpConfiguration;}
 
 CVersion * CCopasiDataModel::getVersion()
 {return mpVersion;}

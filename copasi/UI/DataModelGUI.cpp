@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:43 $
+   $Date: 2006/05/01 14:32:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,6 +34,7 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiException.h"
+#include "commandline/CConfigurationFile.h"
 
 //int Folder::smModifier = 0;
 
@@ -301,16 +302,23 @@ bool DataModelGUI::loadModel(const std::string & fileName)
 {
   if (!CCopasiDataModel::Global->loadModel(fileName)) return false;
 
+  CCopasiDataModel::Global->getConfiguration()->getRecentFiles().addFile(fileName);
+
   // getModel()->setCompileFlag();
   mOutputHandlerPlot.setOutputDefinitionVector(CCopasiDataModel::Global->getPlotDefinitionList());
 
   linkDataModelToGUI();
+
   return true;
 }
 
 bool DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
 {
-  return CCopasiDataModel::Global->saveModel(fileName, overwriteFile);
+  if (!CCopasiDataModel::Global->saveModel(fileName, overwriteFile)) return false;
+
+  CCopasiDataModel::Global->getConfiguration()->getRecentFiles().addFile(fileName);
+
+  return true;
 }
 
 bool DataModelGUI::importSBML(const std::string & fileName)
@@ -327,6 +335,8 @@ bool DataModelGUI::importSBML(const std::string & fileName)
       throw except;
     }
 
+  if (success) CCopasiDataModel::Global->getConfiguration()->getRecentSBMLFiles().addFile(fileName);
+
   mOutputHandlerPlot.setOutputDefinitionVector(CCopasiDataModel::Global->getPlotDefinitionList());
 
   pdelete(tmpBar);
@@ -338,18 +348,22 @@ bool DataModelGUI::importSBML(const std::string & fileName)
 bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile)
 {
   CProgressBar* tmpBar = new CProgressBar();
-  bool result = false;
+  bool success = false;
   try
     {
-      result = CCopasiDataModel::Global->exportSBML(fileName, overwriteFile, tmpBar);
+      success = CCopasiDataModel::Global->exportSBML(fileName, overwriteFile, tmpBar);
     }
   catch (CCopasiException except)
     {
       pdelete(tmpBar);
       throw except;
     }
+
+  if (success) CCopasiDataModel::Global->getConfiguration()->getRecentSBMLFiles().addFile(fileName);
+
   pdelete(tmpBar);
-  return result;
+
+  return success;
 }
 
 bool DataModelGUI::exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile)
