@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:25 $
+   $Author: nsimus $
+   $Date: 2006/05/02 13:05:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -137,4 +137,48 @@ ASTNode* CEvaluationNodeChoice::toAST() const
     node->addChild(child1->toAST());
     node->addChild(child2->toAST());
     return node;
+  }
+
+#include "utilities/copasimathml.h"
+
+void CEvaluationNodeChoice::writeMathML(std::ostream & out,
+                                        const std::vector<std::vector<std::string> > & env,
+                                        bool expand,
+                                        unsigned C_INT32 l) const
+  {
+    if (const_cast<CEvaluationNodeChoice *>(this)->compile(NULL))
+      {
+        out << SPC(l) << "<mrow>" << std::endl;
+        out << SPC(l + 1) << "<mo> {</mo>" << std::endl;
+        out << SPC(l + 1) << "<mtable>" << std::endl;
+
+        out << SPC(l + 2) << "<mtr>" << std::endl;
+
+        out << SPC(l + 3) << "<mtd>" << std::endl;
+        mpTrue->writeMathML(out, env, expand, l + 3);
+        out << SPC(l + 3) << "<mo> , </mo>" << std::endl;
+        out << SPC(l + 3) << "</mtd>" << std::endl;
+
+        out << SPC(l + 3) << "<mtd>" << std::endl;
+        mpIf->writeMathML(out, env, expand, l + 3);
+        out << SPC(l + 3) << "</mtd>" << std::endl;
+
+        out << SPC(l + 2) << "</mtr>" << std::endl;
+
+        out << SPC(l + 2) << "<mtr>" << std::endl;
+
+        out << SPC(l + 3) << "<mtd>" << std::endl;
+        mpFalse->writeMathML(out, env, expand, l + 3);
+        out << SPC(l + 3) << "<mo> , </mo>" << std::endl;
+
+        out << SPC(l + 3) << "</mtd>" << std::endl;
+        out << SPC(l + 3) << "<mtd>" << std::endl;
+        out << SPC(l + 3) << "<mo> else </mo>" << std::endl;
+        out << SPC(l + 3) << "</mtd>" << std::endl;
+
+        out << SPC(l + 2) << "</mtr>" << std::endl;
+
+        out << SPC(l + 1) << "</mtable>" << std::endl;
+        out << SPC(l) << "</mrow>" << std::endl;
+      }
   }
