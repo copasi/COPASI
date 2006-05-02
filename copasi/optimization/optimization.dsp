@@ -99,6 +99,10 @@ SOURCE=.\COptMethodSA.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\COptMethodSRES.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\COptMethodSteepestDescent.cpp
 # End Source File
 # Begin Source File
@@ -172,6 +176,10 @@ SOURCE=.\COptMethodLevenbergMarquardt.h
 # Begin Source File
 
 SOURCE=.\COptMethodSA.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COptMethodSRES.h
 # End Source File
 # Begin Source File
 

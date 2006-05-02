@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:42 $
+   $Date: 2006/05/02 20:32:32 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@ class CCopasiMethod : public CCopasiParameterGroup
       GeneticAlgorithmSR,
       HookeJeeves,
       LevenbergMarquardt,
+      SRES,
       Newton,
       deterministic,
       stochastic,

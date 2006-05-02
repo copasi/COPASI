@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:42 $
+   $Date: 2006/05/02 20:32:32 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,7 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Genetic Algorithm SR",
     "Hooke & Jeeves",
     "Levenberg - Marquardt",
+    "Evolutionary Strategy (SR)",
     "Enhanced Newton",
     "Deterministic (LSODA)",
     "Stochastic",
@@ -61,6 +62,7 @@ const char* CCopasiMethod::XMLSubType[] =
     "GeneticAlgorithmSR",
     "HookeJeeves",
     "LevenbergMarquardt",
+    "EvolutionaryStrategySR",
     "EnhancedNewton",
     "Deterministic(LSODA)",
     "Stochastic",
