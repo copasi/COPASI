@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Author: nsimus $
+   $Date: 2006/05/02 13:07:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -353,4 +353,69 @@ ASTNode* CEvaluationNodeLogical::toAST() const
       }
 
     return node;
+  }
+
+#include "utilities/copasimathml.h"
+
+void CEvaluationNodeLogical::writeMathML(std::ostream & out,
+    const std::vector<std::vector<std::string> > & env,
+    bool expand,
+    unsigned C_INT32 l) const
+  {
+    if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+      {
+        std::string data = "";
+        bool flag = false;
+
+        switch ((SubType)CEvaluationNode::subType(this->getType()))
+          {
+          case AND:
+            data = "&&";
+            break;
+          case OR:
+            data = "||";
+            break;
+          case EQ:
+            data = "=";
+            break;
+          case GE:
+            data = ">=";
+            break;
+          case GT:
+            data = ">";
+            break;
+          case LE:
+            data = "<=";
+            break;
+          case LT:
+            data = "<";
+            break;
+          case NE:
+            data = "!=";
+            break;
+          default:
+            /*
+             * case XOR:
+             */
+            data = "@";
+            break;
+          }
+
+        out << SPC(l) << "<mrow>" << std::endl;
+
+        flag = ((*mpLeft < *(CEvaluationNode *)this));
+
+        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        mpLeft->writeMathML(out, env, expand, l + 1);
+        if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+
+        out << SPC(l + 1) << "<mo>" << data << "</mo>" << std::endl;
+
+        flag = ((*(CEvaluationNode *)this < *mpRight));
+        if (!flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        mpRight->writeMathML(out, env, expand, l + 1);
+        if (!flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
+
+        out << SPC(l) << "</mrow>" << std::endl;
+      }
   }

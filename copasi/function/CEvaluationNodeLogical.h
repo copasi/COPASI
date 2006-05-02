@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Author: nsimus $
+   $Date: 2006/05/02 13:07:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -166,6 +166,12 @@ class CEvaluationNodeLogical : public CEvaluationNode
      * @return ASTNode* return a pointer to the newly created node;
      */
     virtual ASTNode* toAST() const;
+
+    /**
+     *  generate display MathML recursively
+     **/
+
+    virtual void writeMathML(std::ostream & out, const std::vector<std::vector<std::string> > & env, bool expand = true, unsigned C_INT32 l = 0) const;
 
     // Attributes
   private:
