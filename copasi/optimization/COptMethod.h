@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:53 $
+   $Date: 2006/05/02 19:30:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,8 @@
  *           methods by which the simulation subsystem accesses several
  *           optimization algorithms.
  *  Note: This is an abstract class
+
+
 
 
  ****** Modified by Liang Xu
@@ -152,16 +154,5 @@ class COptMethod : public CCopasiMethod
      */
     virtual bool cleanup();
   };
-
-#include "CRandomSearch.h"
-// #include "CRandomSearchMaster.h"
-// #include "COptMethodSA.h"
-#include "COptMethodGA.h"
-#include "COptMethodGASR.h"
-#include "COptMethodHookeJeeves.h"
-#include "COptMethodLevenbergMarquardt.h"
-#include "COptMethodSteepestDescent.h"
-#include "COptMethodEP.h"
-// #include "COptMethodHGASA.h"
 
 #endif  // COPASI_COptMethod

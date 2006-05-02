@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:53 $
+   $Date: 2006/05/02 19:30:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,8 @@
 
 #include "copasi.h"
 #include "mathematics.h"
-#include "COptMethod.h"
+
+#include "COptMethodGASR.h"
 #include "COptProblem.h"
 #include "COptItem.h"
 #include "COptTask.h"
@@ -476,7 +477,7 @@ bool COptMethodGASR::cleanup()
   unsigned C_INT32 i;
 
   pdelete(mpRandom);
-  for (i = 0; i < 2*mPopulationSize; i++)
+  for (i = 0; i < mIndividual.size(); i++)
     pdelete(mIndividual[i]);
 
   return true;

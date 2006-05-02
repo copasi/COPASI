@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:53 $
+   $Date: 2006/05/02 19:30:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,12 @@
 #ifndef COPASI_COptMethodEP
 #define COPASI_COptMethodEP
 
+#include "COptMethod.h"
+
+#include "utilities/CVector.h"
+
 class CRandom;
+
 class COptMethodEP: public COptMethod
   {
     friend COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType);
