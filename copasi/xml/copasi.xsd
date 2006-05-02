@@ -231,7 +231,19 @@
                 </xs:restriction>
               </xs:simpleType>
             </xs:attribute>
-            <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="optional" id="copasi.Model.stateVariable"/>
+            <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="optional" id="copasi.Model.stateVariable">
+              <xs:annotation>
+                <xs:documentation>This attribute is deprecated and no longer used. It will be removed in future schema versions.</xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="type" use="optional" default="deterministic">
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:enumeration value="deterministic"/>
+                  <xs:enumeration value="stochastic"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
           </xs:complexType>
         </xs:element>
         <xs:element name="ListOfTasks" minOccurs="0">
@@ -260,7 +272,7 @@
                         <xs:complexContent>
                           <xs:extension base="cPARAMETER_LIST">
                             <xs:attribute name="name" type="cNAME" use="required"/>
-                            <xs:attribute name="type" type="xs:string" use="optional" default="default"/>
+                            <xs:attribute name="type" type="xs:string" use="required"/>
                           </xs:extension>
                         </xs:complexContent>
                       </xs:complexType>
