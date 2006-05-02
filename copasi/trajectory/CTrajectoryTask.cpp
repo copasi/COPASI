@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:17 $
+   $Date: 2006/05/02 20:20:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -338,7 +338,7 @@ const CTimeSeries & CTrajectoryTask::getTimeSeries() const
 
 void CTrajectoryTask::output(const COutputInterface::Activity & activity)
 {
-  CCopasiDataModel::Global->output(activity);
+  CCopasiTask::output(activity);
 
   if (mTimeSeriesRequested && mDoOutput == OUTPUT_COMPLETE)
     switch (activity)
