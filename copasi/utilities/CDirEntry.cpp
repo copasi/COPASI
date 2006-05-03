@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Date: 2006/05/03 15:06:43 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -169,7 +169,9 @@ bool CDirEntry::createDir(const std::string & dir,
 #ifdef WIN32
   return (mkdir(Dir.c_str()) == 0);
 #else
-  return (mkdir(Dir.c_str(), 0) == 0);
+  mode_t Mask = umask();
+  umask(Mask);
+  return (mkdir(Dir.c_str(), Mask) == 0);
 #endif
 }
 
