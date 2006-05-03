@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.138 $
+   $Revision: 1.139 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:43 $
+   $Author: tjohann $
+   $Date: 2006/05/03 14:18:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,8 @@
 /**********************************************************************
  **  $ CopasiUI/FunctionWidget1.cpp
  **  $ Author  : Mrinmayee Kulkarni
+
+
 
 
  ** This file creates the GUI for the  information about an individual
@@ -39,6 +41,7 @@
 #include <qtextbrowser.h>
 #include <qmessagebox.h>
 #include <qwidgetstack.h>
+#include <qvbox.h>
 
 #include <sstream>
 #include <stdlib.h>
@@ -111,19 +114,31 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   textBrowser->setTextFormat(PlainText);
   mStack->addWidget(textBrowser, 0);
 
-  mScrollView = new QScrollView(mStack, "mmlScrollView");
-  mStack->addWidget(mScrollView, 1);
+  // A box which contains the MathML ScrollView with the Formula,
+  //  and - if not ReadOnly -
+  //   a button to switch to (editable) plain text view.
+  mMmlViewBox = new QVBox(mStack, "Formula View");
+
+  mScrollView = new QScrollView(mMmlViewBox, "mmlScrollView");
+
+  mStack->addWidget(mMmlViewBox, 1);
 
   mMmlWidget = new QtMmlWidget(mScrollView->viewport());
   mMmlWidget->setBaseFontPointSize(this->fontInfo().pointSize());
   mMmlWidget->setFontName(QtMmlWidget::NormalFont, this->fontInfo().family());
 
   mScrollView->addChild(mMmlWidget);
-  mScrollView->setResizePolicy(QScrollView::AutoOne);
+
+  mScrollView->setResizePolicy(QScrollView::AutoOneFit);
   //mScrollView->show();
 
+  // raise mScrollView with mMmmlWidget:
+  mStack->raiseWidget(1);
+
+  mFormulaEditToggleButton = new QPushButton("Edit", mMmlViewBox, "Formula Edit Toggle Button");
+  //mMmlViewBox->insertChild(mFormulaEditToggleButton);
+
   FunctionWidget1Layout->addWidget(mStack, 1, 1);
-  mStack->raiseWidget(0);
 
   //********************
 
@@ -286,6 +301,8 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   connect(RadioButton2, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
   connect(RadioButton3, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
 
+  connect(mFormulaEditToggleButton, SIGNAL(clicked()), this,
+          SLOT(slotToggleFcnDescriptionEdit()));
   connect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
 }
 
@@ -581,9 +598,7 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   flagChanged = false;
 
   //MathML widget
-  //std::ostringstream mml;
-  //pFunction->writeMathML(mml);
-  //mMmlWidget->setContent(FROM_UTF8(mml.str()));
+  updateMmlWidget();
 
   return true;
 }
@@ -903,6 +918,7 @@ void FunctionWidget1::slotCommitButtonClicked()
   if (isValid)
     saveToFunction();
 
+  updateMmlWidget();
   //update pFunction values
 
   /* Remove line breaks from the function description */
@@ -1023,8 +1039,6 @@ void FunctionWidget1::slotDeleteButtonClicked()
         {
         case 0:                                                    // Yes or Enter
           {
-            protectedNotify(ListViews::FUNCTION, ListViews::DELETE, objKey);
-
             unsigned C_INT32 size = CCopasiDataModel::Global->getFunctionList()->loadedFunctions().size();
             unsigned C_INT32 index = CCopasiDataModel::Global->getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());
 
@@ -1032,12 +1046,43 @@ void FunctionWidget1::slotDeleteButtonClicked()
 
             enter(CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[std::min(index, size - 2)]->getKey());
 
+            protectedNotify(ListViews::FUNCTION, ListViews::DELETE, objKey);
+
             break;
           }
         case 1:                                                    // No or Escape
           break;
         }
     }
+}
+
+//***********  slot for editing requests on the function formula (mMmlWidget) *****
+void FunctionWidget1::slotToggleFcnDescriptionEdit()
+{
+  mStack->raiseWidget(textBrowser);
+}
+
+void FunctionWidget1::updateMmlWidget()
+{
+  std::ostringstream mml;
+  std::vector<std::vector<std::string> > params;
+
+  if (textBrowser->isReadOnly())
+    mFormulaEditToggleButton->hide();
+  else
+    mFormulaEditToggleButton->show();
+
+  mStack->raiseWidget(mMmlViewBox);
+
+  mpFunction->createListOfParametersForMathML(params);
+  if (params.empty())
+    mStack->raiseWidget(textBrowser);
+  else
+    mpFunction->writeMathML(mml, params, true, false, 0);
+
+  mMmlWidget->setContent(FROM_UTF8(mml.str()));
+
+  mScrollView->resizeContents(mMmlWidget->sizeHint().width(), mMmlWidget->sizeHint().height());
 }
 
 //************************  standard interface to copasi widgets ******************

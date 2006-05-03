@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
+   $Author: tjohann $
+   $Date: 2006/05/03 14:18:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 
 #include "copasiWidget.h"
 
+class QVBox;
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
@@ -63,6 +64,7 @@ class FunctionWidget1 : public CopasiWidget
     virtual void slotDeleteButtonClicked();
     virtual void slotTableValueChanged(int row, int col);
     //virtual void slotAppTableValueChanged(int row, int col);
+    virtual void slotToggleFcnDescriptionEdit();
     virtual void slotFcnDescriptionChanged();
     virtual void slotReversibilityChanged();
 
@@ -75,6 +77,7 @@ class FunctionWidget1 : public CopasiWidget
     bool saveToFunction();
     bool copyFunctionContentsToFunction(const CFunction* src, CFunction* target);
     bool functionParametersChanged();
+    void updateMmlWidget();
 
     std::string objKey;
     bool flagRO;
@@ -109,8 +112,10 @@ class FunctionWidget1 : public CopasiWidget
     QFrame* Line1;
 
     QWidgetStack* mStack;
-    QtMmlWidget* mMmlWidget;
+    QVBox* mMmlViewBox;
+    QPushButton* mFormulaEditToggleButton;
     QScrollView* mScrollView;
+    QtMmlWidget* mMmlWidget;
 
     CFunction * mpFunction;
   };
