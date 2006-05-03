@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:16 $
+   $Date: 2006/05/03 20:17:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,7 +90,7 @@ CStochMethod::CStochMethod(const CCopasiContainer * pParent):
   addParameter("STOCH.RandomSeed",
                CCopasiParameter::UINT, (unsigned C_INT32) 1);
 
-  mpRandomGenerator = CRandom::createGenerator(CRandom::r250);
+  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
 }
 
 CStochMethod::~CStochMethod()
