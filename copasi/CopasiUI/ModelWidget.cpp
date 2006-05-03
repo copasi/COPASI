@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
+   $Date: 2006/05/03 17:22:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,7 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
   if (!name)
     setName("ModelWidget");
   setCaption(trUtf8("ModelWidget"));
-  ModelWidgetLayout = new QGridLayout(this, 1, 1, 11, 5, "ModelWidgetLayout");
+  ModelWidgetLayout = new QGridLayout(this, 1, 1, 11, 4, "ModelWidgetLayout");
 
   TextLabel1 = new QLabel(this, "TextLabel1");
   TextLabel1->setText(trUtf8("Model name"));
@@ -54,7 +54,7 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
                                | QLabel::AlignRight));
   ModelWidgetLayout->addWidget(TextLabel1, 0, 0);
   LineEdit = new QLineEdit(this, "LineEdit");
-  ModelWidgetLayout->addMultiCellWidget(LineEdit, 0, 0, 1, 2);
+  ModelWidgetLayout->addMultiCellWidget(LineEdit, 0, 0, 1, 3);
 
   QSpacerItem* spacer2 = new QSpacerItem(0, 6, QSizePolicy::Minimum, QSizePolicy::Fixed);
   ModelWidgetLayout->addItem(spacer2, 1, 1);
@@ -65,7 +65,7 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
                                | QLabel::AlignRight));
   ModelWidgetLayout->addWidget(TextLabel2, 2, 0);
   ComboBox1 = new QComboBox(FALSE, this, "ComboBox1");
-  //ComboBox1->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  ComboBox1->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, ComboBox1->sizePolicy().hasHeightForWidth()));
   ModelWidgetLayout->addWidget(ComboBox1, 2, 1);
 
   TextLabel3 = new QLabel(this, "TextLabel3");
@@ -74,7 +74,7 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
                                | QLabel::AlignRight));
   ModelWidgetLayout->addWidget(TextLabel3, 3, 0);
   ComboBox2 = new QComboBox(FALSE, this, "ComboBox2");
-  //ComboBox2->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  ComboBox2->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, ComboBox2->sizePolicy().hasHeightForWidth()));
   ModelWidgetLayout->addWidget(ComboBox2, 3, 1);
 
   TextLabel4 = new QLabel(this, "TextLabel4");
@@ -83,8 +83,17 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
                                | QLabel::AlignRight));
   ModelWidgetLayout->addWidget(TextLabel4, 4, 0);
   ComboBox3 = new QComboBox(FALSE, this, "ComboBox3");
-  //ComboBox3->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  ComboBox3->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, ComboBox3->sizePolicy().hasHeightForWidth()));
   ModelWidgetLayout->addWidget(ComboBox3, 4, 1);
+
+  mpLblModelType = new QLabel(this, "mpLblModelType");
+  mpLblModelType->setText(trUtf8("Model Type"));
+  mpLblModelType->setAlignment(int(QLabel::AlignVCenter
+                                   | QLabel::AlignRight));
+  ModelWidgetLayout->addWidget(mpLblModelType, 2, 2);
+  mpBoxModelType = new QComboBox(FALSE, this, "mpBoxModelType");
+  mpBoxModelType->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, mpBoxModelType->sizePolicy().hasHeightForWidth()));
+  ModelWidgetLayout->addWidget(mpBoxModelType, 2, 3);
 
   mpLblInitial = new QLabel(this, "mpLblInitial");
   mpLblInitial->setText("Initial");
@@ -106,18 +115,18 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
 
   mpCurrentTime = new QLineEdit(this, "mpCurrentTime");
   mpCurrentTime->setEnabled(false);
-  ModelWidgetLayout->addWidget(mpCurrentTime, 6, 2);
+  ModelWidgetLayout->addMultiCellWidget(mpCurrentTime, 6, 6, 2, 3);
 
   QFrame * Line1 = new QFrame(this, "Line1");
   Line1->setFrameShape(QFrame::HLine);
-  ModelWidgetLayout->addMultiCellWidget(Line1, 7, 7, 0, 2);
+  ModelWidgetLayout->addMultiCellWidget(Line1, 7, 7, 0, 3);
 
   // textBrowser = new QTextBrowser (this, "Text Browser");
   // ModelWidgetLayout->addMultiCellWidget(textBrowser, 8, 8, 1, 2);
 
   mpEditComment = new QTextEdit(this, "Edit Comment");
   mpEditComment->setTextFormat(Qt::RichText);
-  ModelWidgetLayout->addMultiCellWidget(mpEditComment, 8, 8, 1, 2);
+  ModelWidgetLayout->addMultiCellWidget(mpEditComment, 8, 8, 1, 3);
   mpEditComment->setText("");
   // editComments->hide();
 
@@ -144,7 +153,7 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
 
   // preliminary
 
-  ModelWidgetLayout->addMultiCellLayout(Layout5, 10, 10, 0, 2);
+  ModelWidgetLayout->addMultiCellLayout(Layout5, 10, 10, 0, 3);
 
   // signals and slots connections
   connect(mpToggleMarkup, SIGNAL(clicked()), this, SLOT(toggleEditorBox()));
@@ -195,6 +204,7 @@ bool ModelWidget::loadModel(CModel *model)
   ComboBox1->clear();
   ComboBox2->clear();
   ComboBox3->clear();
+  mpBoxModelType->clear();
   QStringList comboEntries;
 
   unsigned int temp1;
@@ -223,6 +233,14 @@ bool ModelWidget::loadModel(CModel *model)
   ComboBox3->insertStringList(comboEntries2, -1);
   ComboBox3->setCurrentText(FROM_UTF8(model->getQuantityUnitName()));
 
+  QStringList ModelTypes;
+  for (temp1 = 0; CModel::ModelTypeNames[temp1] /*!= ""*/; temp1++)
+    {
+      ModelTypes.push_back(QString::fromUtf8(CModel::ModelTypeNames[temp1]));
+    }
+  mpBoxModelType->insertStringList(ModelTypes, -1);
+  mpBoxModelType->setCurrentItem(model->getModelType());
+
   mpInitialTime->setText(QString::number(model->getInitialTime()));
   mpCurrentTime->setText(QString::number(model->getTime()));
 
@@ -235,44 +253,57 @@ bool ModelWidget::saveToModel()
 
   if (!model) return false;
 
+  bool changed = false;
+
   bool success = true;
 
   if ((const char *)LineEdit->text().utf8() != model->getObjectName())
     {
       model->setTitle((const char *)LineEdit->text().utf8());
-      protectedNotify(ListViews::MODEL, ListViews::RENAME, objKey);
+      changed = true;
     }
 
   if (mpEditComment->text() != FROM_UTF8(model->getComments()))
     {
       model->setComments((const char *)mpEditComment->text().utf8());
-      protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
+      changed = true;
     }
 
   if ((const char *)ComboBox1->currentText().utf8() != model->getTimeUnitName())
     {
       model->setTimeUnit((const char *)ComboBox1->currentText().utf8());
-      protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
+      changed = true;
     }
 
   if ((const char *)ComboBox2->currentText().utf8() != model->getVolumeUnitName())
     {
       model->setVolumeUnit((const char *)ComboBox2->currentText().utf8());
-      protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
+      changed = true;
     }
 
   if ((const char *)ComboBox3->currentText().utf8() != model->getQuantityUnitName())
     {
       model->setQuantityUnit((const char *)ComboBox3->currentText().utf8());
-      protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
+      changed = true;
+    }
+
+  if ((CModel::ModelType) mpBoxModelType->currentItem() != model->getModelType())
+    {
+      model->setModelType((CModel::ModelType) mpBoxModelType->currentItem());
+      changed = true;
     }
 
   if (mpInitialTime->text() != QString::number(model->getInitialTime()))
     {
       model->setInitialTime(mpInitialTime->text().toDouble());
-      protectedNotify(ListViews::MODEL, ListViews::CHANGE, objKey);
+      changed = true;
     }
-  // :TODO Bug 322: This should only be called when actual changes have been saved.
+
+  if (changed)
+    {
+      protectedNotify(ListViews::MODEL, ListViews::RENAME, objKey);
+      CCopasiDataModel::Global->changed(true);
+    }
 
   return success;
 }

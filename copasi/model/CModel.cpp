@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.257 $
+   $Revision: 1.258 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Date: 2006/05/03 17:22:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,9 @@ const char * CModel::TimeUnitNames[] =
 const char * CModel::QuantityUnitNames[] =
   {"Mol", "mMol", "\xc2\xb5Mol", "nMol", "pMol", "fMol", "#", NULL};
 
+const char * CModel::ModelTypeNames[] =
+  {"deterministic", "stochastic", NULL};
+
 CModel::CModel():
     CModelEntity("New Model", &RootContainer, "Model"),
     mInitialState(),
@@ -79,6 +82,7 @@ CModel::CModel():
     mVolumeUnit(ml),
     mTimeUnit(s),
     mQuantityUnit(mMol),
+    mType(deterministic),
     mCompartments("Compartments", this),
     mMetabolites("Metabolites", this),
     mMetabolitesX("Reduced Model Metabolites", this),
@@ -132,6 +136,7 @@ CModel::CModel(const CModel & src):
     mVolumeUnit(src.mVolumeUnit),
     mTimeUnit(src.mTimeUnit),
     mQuantityUnit(src.mQuantityUnit),
+    mType(src.mType),
     mCompartments(src.mCompartments, this),
     mMetabolites(src.mMetabolites, this),
     mMetabolitesX(src.mMetabolitesX, this),
@@ -1447,6 +1452,12 @@ CModel::QuantityUnit CModel::getQuantityUnitEnum() const
     return mQuantityUnit;
   }
 
+void CModel::setModelType(const CModel::ModelType & modelType)
+{mType = modelType;}
+
+const CModel::ModelType & CModel::getModelType() const
+  {return mType;}
+
 const C_FLOAT64 & CModel::getQuantity2NumberFactor() const
   {return mQuantity2NumberFactor;}
 
@@ -1715,8 +1726,12 @@ CReaction* CModel::createReaction(const std::string & name)
     return false;
 
 
+
+
   mSteps.add(reaction);
   mSteps[reaction.getObjectName()]->compile();
+
+
 
 
   setCompileFlag();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.126 $
+   $Revision: 1.127 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/01 18:04:04 $
+   $Date: 2006/05/03 17:22:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1081,7 +1081,7 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
   const char * quantityUnit;
   CModel::QuantityUnit QuantityUnit;
   const char * StateVariable;
-
+  CModel::ModelType ModelType;
   mCurrentElement++; /* We should always be on the next element */
 
   switch (mCurrentElement)
@@ -1113,6 +1113,10 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         (CModel::QuantityUnit) toEnum(quantityUnit, CModel::QuantityUnitNames);
       if (QuantityUnit == -1) fatalError();
 
+      ModelType = (CModel::ModelType)
+                  toEnum(mParser.getAttributeValue("type", papszAttrs, "deterministic"), CModel::ModelTypeNames);
+      if (ModelType == -1) fatalError();
+
       StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs, "");
 
       if (!mCommon.pModel) mCommon.pModel = new CModel();
@@ -1121,6 +1125,7 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
       mCommon.pModel->setTimeUnit(TimeUnit);
       mCommon.pModel->setVolumeUnit(VolumeUnit);
       mCommon.pModel->setQuantityUnit(QuantityUnit);
+      mCommon.pModel->setModelType(ModelType);
       return;
       break;
 

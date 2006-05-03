@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/28 13:10:45 $
+   $Date: 2006/05/03 17:22:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -291,6 +291,8 @@ bool CCopasiXML::saveModel()
   Attributes.add("timeUnit", mpModel->getTimeUnitName());
   Attributes.add("volumeUnit", mpModel->getVolumeUnitName());
   Attributes.add("quantityUnit", mpModel->getQuantityUnitName());
+  Attributes.add("type", CModel::ModelTypeNames[mpModel->getModelType()]);
+
   // This is now optional
   // Attributes.add("stateVariable",
   //                mpModel->getStateTemplate().getKey(mpModel->getKey()));

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
+   $Date: 2006/05/03 17:22:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,7 @@ class ModelWidget : public CopasiWidget
     QLabel* TextLabel2;
     QLabel* TextLabel3;
     QLabel* TextLabel4;
-    QLabel* TextLabel5;
+    QLabel* mpLblModelType;
     QLabel* mpLblInitial;
     QLabel* mpLblCurrent;
     QLabel* mpLblTime;
@@ -80,6 +80,7 @@ class ModelWidget : public CopasiWidget
     QComboBox* ComboBox1;
     QComboBox* ComboBox2;
     QComboBox* ComboBox3;
+    QComboBox* mpBoxModelType;
 
     QPushButton* commitChanges;
     QPushButton* cancelChanges;

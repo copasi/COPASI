@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.118 $
+   $Revision: 1.119 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Date: 2006/05/03 17:22:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,6 +63,16 @@ class CModel : public CModelEntity
      * String representation of valid quantity units
      */
     static const char * QuantityUnitNames[];
+
+    /**
+     * Enum of valid model types.
+     */
+    enum ModelType {deterministic, stochastic};
+
+    /**
+     * String representation of the valid model types.
+     */
+    static const char * ModelTypeNames[];
 
     //Attributes
   public:
@@ -166,6 +176,11 @@ class CModel : public CModelEntity
      * The quantity unit used in the Model
      */
     QuantityUnit mQuantityUnit;
+
+    /**
+     * The type of the model
+     */
+    ModelType mType;
 
     /**
      *  for array of compartments
@@ -798,6 +813,18 @@ class CModel : public CModelEntity
      * @return CModel::QuantityUnit quantityUnit
      */
     CModel::QuantityUnit getQuantityUnitEnum() const;
+
+    /**
+     * Set the type of the model
+     * @param const ModelType & modelType
+     */
+    void setModelType(const ModelType & modelType);
+
+    /**
+     * Retreive the type of the model.
+     * @return const ModelType & modelType
+     */
+    const ModelType & getModelType() const;
 
     /**
      *  Get the conversion factor quantity -> number
