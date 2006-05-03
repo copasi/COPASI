@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/01 14:24:06 $
+   $Date: 2006/05/03 15:42:58 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -221,7 +221,15 @@ bool CConfigurationFile::CXML::load(std::istream & is)
       mpIstream->get(pBuffer, BUFFER_SIZE, 0);
 
       if (mpIstream->eof()) done = true;
-      if (mpIstream->fail() && !done) fatalError();
+      if (mpIstream->fail() && !done)
+        {
+          std::string ConfigFile;
+          COptions::getValue("ConfigFile", ConfigFile);
+          CCopasiMessage Message(CCopasiMessage::WARNING, MCConfiguration + 2, ConfigFile.c_str());
+
+          done = true;
+          success = false;
+        }
 
       if (!Parser.parse(pBuffer, -1, done))
         {
