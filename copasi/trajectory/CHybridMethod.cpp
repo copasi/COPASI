@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:16 $
+   $Author: ssahle $
+   $Date: 2006/05/03 13:23:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -173,8 +173,10 @@ CHybridMethod::CHybridMethod(const CCopasiContainer * pParent):
   addParameter("HYBRID.RandomSeed",
                CCopasiParameter::UINT, (unsigned C_INT32) RANDOM_SEED);
 
-  if ((bool) USE_RANDOM_SEED) mpRandomGenerator = CRandom::createGenerator(CRandom::r250, mRandomSeed);
-  else mpRandomGenerator = CRandom::createGenerator(CRandom::r250);
+  if ((bool) USE_RANDOM_SEED)
+    mpRandomGenerator = CRandom::createGenerator(CRandom::r250, (unsigned C_INT32) RANDOM_SEED);
+  else
+    mpRandomGenerator = CRandom::createGenerator(CRandom::r250);
 
   CONSTRUCTOR_TRACE;
 }
