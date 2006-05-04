@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.128 $
+   $Revision: 1.129 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/04 10:56:22 $
+   $Author: shoops $
+   $Date: 2006/05/04 14:40:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -4267,6 +4267,7 @@ void CCopasiXMLParser::TaskElement::end(const XML_Char *pszName)
 
     case Method:
       if (strcmp(pszName, "Method")) fatalError();
+      mCommon.pCurrentTask->getMethod()->elevateChildren();
       mCurrentElement = Task;
       break;
 
