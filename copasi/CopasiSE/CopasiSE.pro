@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.27 $ $Author: ssahle $ $Date: 2006/04/12 12:29:50 $  
+# $Revision: 1.28 $ $Author: ssahle $ $Date: 2006/05/04 11:01:20 $  
 ######################################################################
 
 TEMPLATE = app
@@ -18,6 +18,7 @@ COPASI_LIBS = \
          elementaryFluxModes \
          fitting \
          function \
+         lyap \
 #         mathmodel \
          model \
          optimization \

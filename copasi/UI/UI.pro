@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.123 $ $Author: ssahle $ $Date: 2006/04/12 12:30:47 $  
+# $Revision: 1.124 $ $Author: ssahle $ $Date: 2006/05/04 10:58:53 $  
 ######################################################################
 
 TEMPLATE = app
@@ -16,6 +16,7 @@ COPASI_LIBS = \
          elementaryFluxModes \
          fitting \
          function \
+         lyap \
 #         mathmodel \
          mml \
          model \
@@ -148,6 +149,7 @@ HEADERS += \
            copasiui3window.h \
            CProgressBar.h \
            CQExpressionWidget.h \
+           CQLyapWidget.h \
            CQReportListItem.h \
            CQValidator.h \
            CScanContainerWidget.h \
@@ -217,6 +219,7 @@ SOURCES += \
            CProgressBar.cpp \
            OptimizationResultWidget.cpp \
            CQExpressionWidget.cpp \
+           CQLyapWidget.cpp \
            CQReportListItem.cpp \
            CQValidator.cpp \
            CScanContainerWidget.cpp \

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.194 $
+   $Revision: 1.195 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Author: ssahle $
+   $Date: 2006/05/04 10:59:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,7 @@
 #include "FunctionWidget.h"
 #include "FunctionWidget1.h"
 #include "DifferentialEquations.h"
+#include "CQLyapWidget.h"
 #include "MetabolitesWidget.h"
 #include "MetabolitesWidget1.h"
 #include "ModelWidget.h"
@@ -205,6 +206,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     functionSymbols(NULL),
     functionWidget(NULL),
     functionWidget1(NULL),
+    lyapWidget(NULL),
     //    metaboliteSymbols(NULL),
     metabolitesWidget(NULL),
     metabolitesWidget1(NULL),
@@ -344,6 +346,9 @@ void ListViews::ConstructNodeWidgets()
 
   if (!functionWidget1) functionWidget1 = new FunctionWidget1(this);
   functionWidget1->hide();
+
+  if (!lyapWidget) lyapWidget = new CQLyapWidget(this);
+  lyapWidget->hide();
 
   //  if (!metaboliteSymbols) metaboliteSymbols = new MetaboliteSymbols(this);
   //  metaboliteSymbols->hide();
@@ -520,6 +525,9 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         return tssWidget;
         break;
 #endif
+      case 26:
+        return lyapWidget;
+        break;
       case 31:
         return scanWidget;
         break;

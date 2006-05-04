@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.16 $ $Author: ssahle $ $Date: 2006/04/12 12:36:41 $  
+# $Revision: 1.17 $ $Author: ssahle $ $Date: 2006/05/04 11:02:19 $  
 ######################################################################
 
 include(common.pri)
@@ -11,6 +11,7 @@ SUBDIRS =  commandline
 SUBDIRS += CopasiDataModel
 SUBDIRS += elementaryFluxModes
 SUBDIRS += function
+SUBDIRS += lyap
 #SUBDIRS += mathmodel
 SUBDIRS += model
 SUBDIRS += mml

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/01 14:32:09 $
+   $Author: ssahle $
+   $Date: 2006/05/04 11:01:49 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,7 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "tss/CTSSTask.h"
 #include "sensitivities/CSensTask.h"
+#include "lyap/CLyapTask.h"
 #include "tss/MMASCIIExporter.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/CCopasiProblem.h"
@@ -557,6 +558,10 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
       pTask = new CSensTask(mpTaskList);
       break;
 #endif
+
+    case CCopasiTask::lyap:
+      pTask = new CLyapTask(mpTaskList);
+      break;
 
     default:
       return pTask;

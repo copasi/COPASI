@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/01 14:32:09 $
+   $Author: ssahle $
+   $Date: 2006/05/04 10:59:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -74,6 +74,7 @@ void DataModelGUI::linkDataModelToGUI()
 #ifdef COPASI_TSS
   mTree.findNodeFromId(25)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Time scale separation"]->getKey());
 #endif
+  mTree.findNodeFromId(26)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Lyapunov exponents"]->getKey());
 
   mTree.findNodeFromId(31)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
   mTree.findNodeFromId(32)->setObjectKey((*CCopasiDataModel::Global->getTaskList())["Optimization"]->getKey());
