@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:30 $
+   $Date: 2006/05/04 19:17:47 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@ class CScanProblem;
 class CScanTask;
 class CSteadyStateTask;
 class CTrajectory;
+class CRandom;
 
 class CScanItem
   {
