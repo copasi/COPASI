@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:42 $
+   $Author: ssahle $
+   $Date: 2006/05/04 10:55:43 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,7 @@ class CCopasiTask : public CCopasiContainer
       optimization,
       parameterFitting,
       mca,
+      lyap,
       tss,
       sens,
       unset,
@@ -260,7 +261,7 @@ class CCopasiTask : public CCopasiContainer
      * Set the name of the task
      * @param "const string &" name
      */
-    bool setName(const std::string & name);
+    //bool setName(const std::string & name);
 
     /**
      * Retrieve the type of the task

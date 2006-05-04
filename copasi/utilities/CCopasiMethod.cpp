@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/02 20:32:32 $
+   $Author: ssahle $
+   $Date: 2006/05/04 10:55:43 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,6 +45,7 @@ const std::string CCopasiMethod::SubTypeName[] =
     "tau-Leap",
     "MCA Method (Reder)",
     "Scan Framework",
+    "Wolf method",
     "Time scale separation Method",
     "Sensitivities Method"
   };
@@ -70,6 +71,7 @@ const char* CCopasiMethod::XMLSubType[] =
     "TauLeap",
     "MCAMethod(Reder)",
     "ScanFramework",
+    "WolfMethod",
     "TimeScaleSeparationMethod",
     "SensitivitiesMethod",
     NULL
