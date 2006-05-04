@@ -53,14 +53,50 @@ CFG=lyaponov - Win32 Build
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=.\CLyapMethod.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CLyapProblem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CLyapTask.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CLyapWolfMethod.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\CLyapMethod.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CLyapProblem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CLyapTask.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CLyapWolfMethod.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=.\lyap.pro
+# End Source File
 # End Target
 # End Project
