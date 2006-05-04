@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesWidget.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Date: 2006/05/04 19:13:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,7 @@
 #include "TimeSeriesWidget.h"
 #include "TimeSeriesSubwidget.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "utilities/CCopasiVector.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "CTimeSeriesTable.h"
 
