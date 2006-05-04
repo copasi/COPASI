@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:17 $
+   $Date: 2006/05/04 20:56:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,6 +44,9 @@ class CTrajectoryProblem;
 class CState;
 class CReaction;
 class CHybridBalance;
+class CModel;
+class CMetab;
+class CRandom;
 
 class CTauLeapMethod : public CTrajectoryMethod
   {
@@ -55,15 +58,24 @@ class CTauLeapMethod : public CTrajectoryMethod
 
   public:
     /**
-     *   Copy constructor
-     *   @param "const CTauLeapMethod &" src
+     * Copy constructor
+     * @param const CTauLeapMethod & src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CTauLeapMethod(const CTauLeapMethod & src);
+    CTauLeapMethod(const CTauLeapMethod & src,
+                   const CCopasiContainer * pParent = NULL);
 
     /**
      *   Destructor.
      */
     ~CTauLeapMethod();
+
+    /**
+     * This methods must be called to elevate subgroups to
+     * derived objects. The default implementation does nothing.
+     * @return bool success
+     */
+    virtual bool elevateChildren();
 
     /**
      *   Creates a CTauLeapMethod adequate for the problem.
@@ -157,6 +169,12 @@ class CTauLeapMethod : public CTrajectoryMethod
     void updateSystem();
 
     /* VARIABLES *****************************************************************/
+
+  private:
+    /**
+     * Intialize the method parameter
+     */
+    void initializeParameter();
 
   protected:
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/03 20:17:15 $
+   $Date: 2006/05/04 20:56:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,28 +50,7 @@
 #include "utilities/CIndexedPriorityQueue.h"
 #include "randomGenerator/CRandom.h"
 
-/* needed for the poisson random generator in Numerical Recipes */
-const C_FLOAT64 CTauLeapMethod::cof[6] =
-  {
-    76.18009172947146,
-    -86.50532032941677,
-    24.01409824083091,
-    -1.231739572450155,
-    0.1208650973866179e-2,
-    -0.5395239384953e-5
-  };
-
 /* PUBLIC METHODS ************************************************************/
-
-/**
- *   Destructor.
- */
-CTauLeapMethod::~CTauLeapMethod()
-{
-  //std::cout << "~CTauLeapMethod() " << CCopasiParameter::getObjectName() << std::endl;
-  cleanup();
-  DESTRUCTOR_TRACE;
-}
 
 /**
  *   Creates a TauLeapMethod adequate for the problem.
@@ -105,6 +84,68 @@ CTauLeapMethod *CTauLeapMethod::createTauLeapMethod(CTrajectoryProblem * C_UNUSE
       break;
     }
   return method;
+}
+
+/**
+ *   Default constructor.
+ */
+CTauLeapMethod::CTauLeapMethod(const CCopasiContainer * pParent):
+    CTrajectoryMethod(CCopasiMethod::tauLeap, pParent)
+{
+  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
+  initializeParameter();
+}
+
+CTauLeapMethod::CTauLeapMethod(const CTauLeapMethod & src,
+                               const CCopasiContainer * pParent):
+    CTrajectoryMethod(src, pParent)
+{
+  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
+  initializeParameter();
+}
+
+/**
+ *   Destructor.
+ */
+CTauLeapMethod::~CTauLeapMethod()
+{
+  //std::cout << "~CTauLeapMethod() " << CCopasiParameter::getObjectName() << std::endl;
+  cleanup();
+  DESTRUCTOR_TRACE;
+}
+
+void CTauLeapMethod::initializeParameter()
+{
+  CCopasiParameter *pParm;
+
+  assertParameter("Tau", CCopasiParameter::DOUBLE, (C_FLOAT64) TAU);
+  assertParameter("Use Random Seed", CCopasiParameter::BOOL, false);
+  assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) 1);
+
+  // Check whether we have a method with the old parameter names
+  if ((pParm = getParameter("TAULEAP.Tau")) != NULL)
+    {
+      setValue("Tau", *pParm->getValue().pDOUBLE);
+      removeParameter("TAULEAP.Tau");
+
+      if ((pParm = getParameter("TAULEAP.UseRandomSeed")) != NULL)
+        {
+          setValue("Use Random Seed", *pParm->getValue().pBOOL);
+          removeParameter("TAULEAP.UseRandomSeed");
+        }
+
+      if ((pParm = getParameter("TAULEAP.RandomSeed")) != NULL)
+        {
+          setValue("Random Seed", *pParm->getValue().pUINT);
+          removeParameter("TAULEAP.RandomSeed");
+        }
+    }
+}
+
+bool CTauLeapMethod::elevateChildren()
+{
+  initializeParameter();
+  return true;
 }
 
 void CTauLeapMethod::step(const double & deltaT)
@@ -159,25 +200,6 @@ void CTauLeapMethod::start(const CState * initialState)
 /* PROTECTED METHODS *********************************************************/
 
 /**
- *   Default constructor.
- */
-CTauLeapMethod::CTauLeapMethod(const CCopasiContainer * pParent):
-    CTrajectoryMethod(CCopasiMethod::tauLeap, pParent)
-{
-  // default tau value
-  addParameter("TAULEAP.Tau",
-               CCopasiParameter::DOUBLE, (C_FLOAT64) TAU);
-  addParameter("TAULEAP.UseRandomSeed",
-               CCopasiParameter::BOOL, (bool) USE_RANDOM_SEED);
-  addParameter("TAULEAP.RandomSeed",
-               CCopasiParameter::UINT, (unsigned C_INT32) RANDOM_SEED);
-
-  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
-
-  CONSTRUCTOR_TRACE;
-}
-
-/**
  *  Initializes the solver and sets the model to be used.
  *
  *  @param model A reference to an instance of a CModel
@@ -211,11 +233,11 @@ void CTauLeapMethod::initMethod()
     *Dbl = floor(*Dbl);
 
   /* get configuration data */
-  mTau = * getValue("TAULEAP.Tau").pDOUBLE;
+  mTau = * getValue("Tau").pDOUBLE;
   //std::cout << "TAULEAP.Tau: " << mTau << std::endl;
-  mUseRandomSeed = * getValue("TAULEAP.UseRandomSeed").pBOOL;
+  mUseRandomSeed = * getValue("Use Random Seed").pBOOL;
   //std::cout << "TAULEAP.UseRandomSeed: " << mUseRandomSeed << std::endl;
-  mRandomSeed = * getValue("TAULEAP.RandomSeed").pUINT;
+  mRandomSeed = * getValue("Random Seed").pUINT;
   //std::cout << "TAULEAP.RandomSeed: " << mRandomSeed << std::endl;
   if (mUseRandomSeed) mpRandomGenerator->initialize(mRandomSeed);
 
@@ -495,7 +517,7 @@ bool CTauLeapMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  mTau = * getValue("TAULEAP.Tau").pDOUBLE;
+  mTau = * getValue("Tau").pDOUBLE;
   if (mTau <= 0.0)
     {
       // tau-value is not positive

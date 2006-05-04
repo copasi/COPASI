@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:17 $
+   $Date: 2006/05/04 20:56:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,22 +161,31 @@ class CStochMethod : public CTrajectoryMethod
 
   protected:
     /**
-     *  Default constructor.
+     * Default constructor.
      * @param const CCopasiContainer * pParent (default: NULL)
      */
     CStochMethod(const CCopasiContainer * pParent = NULL);
 
   public:
     /**
-     *  Copy constructor.
-     *  @param "const CStochMethod &" src
+     * Copy constructor.
+     * @param const CStochMethod & src,
+     * @param const CCopasiContainer * pParent (Default: NULL)
      */
-    CStochMethod(const CStochMethod & src);
+    CStochMethod(const CStochMethod & src,
+                 const CCopasiContainer * pParent = NULL);
 
     /**
      *  Destructor.
      */
     ~CStochMethod();
+
+    /**
+     * This methods must be called to elevate subgroups to
+     * derived objects. The default implementation does nothing.
+     * @return bool success
+     */
+    virtual bool elevateChildren();
 
     /**
      *  Chooses a stochastic method adequate for the problem
@@ -206,6 +215,12 @@ class CStochMethod : public CTrajectoryMethod
     * @return bool suitability of the method
     */
     virtual bool isValidProblem(const CCopasiProblem * pProblem);
+
+  private:
+    /**
+     * Intialize the method parameter
+     */
+    void initializeParameter();
 
   protected:
 

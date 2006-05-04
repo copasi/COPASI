@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/03 20:17:15 $
+   $Date: 2006/05/04 20:56:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,18 +78,15 @@ CStochMethod::createStochMethod(CTrajectoryProblem * pProblem)
 CStochMethod::CStochMethod(const CCopasiContainer * pParent):
     CTrajectoryMethod(CCopasiMethod::stochastic, pParent)
 {
-  // Max number of doSingleStep() per step()
-  addParameter("STOCH.MaxSteps",
-               CCopasiParameter::INT, (C_INT32) 1000000);
-  // 0: default; 1: direct method; 2: next reaction method
-  addParameter("STOCH.Subtype",
-               CCopasiParameter::UINT, (unsigned C_INT32) 2);
+  initializeParameter();
+  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
+}
 
-  addParameter("STOCH.UseRandomSeed",
-               CCopasiParameter::BOOL, false);
-  addParameter("STOCH.RandomSeed",
-               CCopasiParameter::UINT, (unsigned C_INT32) 1);
-
+CStochMethod::CStochMethod(const CStochMethod & src,
+                           const CCopasiContainer * pParent):
+    CTrajectoryMethod(src, pParent)
+{
+  initializeParameter();
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
 }
 
@@ -97,6 +94,47 @@ CStochMethod::~CStochMethod()
 {
   delete mpRandomGenerator;
   mpRandomGenerator = NULL;
+}
+
+void CStochMethod::initializeParameter()
+{
+  CCopasiParameter *pParm;
+
+  assertParameter("Max Internal Steps", CCopasiParameter::INT, (C_INT32) 1000000);
+  assertParameter("Subtype", CCopasiParameter::UINT, (unsigned C_INT32) 2);
+  assertParameter("Use Random Seed", CCopasiParameter::BOOL, false);
+  assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) 1);
+
+  // Check whether we have a method with the old parameter names
+  if ((pParm = getParameter("STOCH.MaxSteps")) != NULL)
+    {
+      setValue("Max Internal Steps", *pParm->getValue().pINT);
+      removeParameter("STOCH.MaxSteps");
+
+      if ((pParm = getParameter("STOCH.Subtype")) != NULL)
+        {
+          setValue("Subtype", *pParm->getValue().pUINT);
+          removeParameter("STOCH.Subtype");
+        }
+
+      if ((pParm = getParameter("STOCH.UseRandomSeed")) != NULL)
+        {
+          setValue("Use Random Seed", *pParm->getValue().pBOOL);
+          removeParameter("STOCH.UseRandomSeed");
+        }
+
+      if ((pParm = getParameter("STOCH.RandomSeed")) != NULL)
+        {
+          setValue("Random Seed", *pParm->getValue().pUINT);
+          removeParameter("STOCH.RandomSeed");
+        }
+    }
+}
+
+bool CStochMethod::elevateChildren()
+{
+  initializeParameter();
+  return true;
 }
 
 void CStochMethod::step(const double & deltaT)
@@ -144,10 +182,10 @@ void CStochMethod::step(const double & deltaT)
 void CStochMethod::start(const CState * initialState)
 {
   /* get configuration data */
-  mMaxSteps = * getValue("STOCH.MaxSteps").pINT;
+  mMaxSteps = * getValue("Max Internal Steps").pINT;
 
-  bool useRandomSeed = * getValue("STOCH.UseRandomSeed").pBOOL;
-  unsigned C_INT32 randomSeed = * getValue("STOCH.RandomSeed").pUINT;
+  bool useRandomSeed = * getValue("Use Random Seed").pBOOL;
+  unsigned C_INT32 randomSeed = * getValue("Random Seed").pUINT;
   if (useRandomSeed) mpRandomGenerator->initialize(randomSeed);
 
   *mpCurrentState = *initialState; //TODO seem to be identical
@@ -558,7 +596,7 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  if (* getValue("STOCH.MaxSteps").pINT <= 0)
+  if (* getValue("Max Internal Steps").pINT <= 0)
     {
       //max steps should be at least 1
       CCopasiMessage(CCopasiMessage::EXCEPTION, "MaxSteps needs to be positive.");

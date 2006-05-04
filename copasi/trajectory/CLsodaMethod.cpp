@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:16 $
+   $Date: 2006/05/04 20:56:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,7 +12,7 @@
 
 #include "copasi.h"
 
-#include "CTrajectoryMethod.h"
+#include "CLsodaMethod.h"
 #include "CTrajectoryProblem.h"
 #include "model/CModel.h"
 #include "model/CState.h"
@@ -23,21 +23,7 @@ CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent):
     mY(NULL)
 {
   mDim[1] = (C_INT) (void *) this;
-
-  addParameter("Integrate Reduced Model",
-               CCopasiParameter::BOOL, (bool) true);
-  addParameter("LSODA.RelativeTolerance",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
-  addParameter("Use Default Absolute Tolerance",
-               CCopasiParameter::BOOL, (bool) true);
-  addParameter("LSODA.AbsoluteTolerance",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e009);
-  addParameter("LSODA.AdamsMaxOrder",
-               CCopasiParameter::UINT, (unsigned C_INT32) 12);
-  addParameter("LSODA.BDFMaxOrder",
-               CCopasiParameter::UINT, (unsigned C_INT32) 5);
-  addParameter("LSODA.MaxStepsInternal",
-               CCopasiParameter::UINT, (unsigned C_INT32) 10000);
+  initializeParameter();
 }
 
 CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
@@ -45,11 +31,64 @@ CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
     CTrajectoryMethod(src, pParent),
     mpState(NULL),
     mY(NULL)
-{}
+{
+  mDim[1] = (C_INT) (void *) this;
+  initializeParameter();
+}
 
 CLsodaMethod::~CLsodaMethod()
 {
   pdelete(mpState);
+}
+
+void CLsodaMethod::initializeParameter()
+{
+  CCopasiParameter *pParm;
+
+  assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) true);
+  assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
+  assertParameter("Use Default Absolute Tolerance", CCopasiParameter::BOOL, (bool) true);
+  assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e009);
+  assertParameter("Adams Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 12);
+  assertParameter("BDF Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 5);
+  assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000);
+
+  // Check whether we have a method with the old parameter names
+  if ((pParm = getParameter("LSODA.RelativeTolerance")) != NULL)
+    {
+      setValue("Relative Tolerance", *pParm->getValue().pUDOUBLE);
+      removeParameter("LSODA.RelativeTolerance");
+
+      if ((pParm = getParameter("LSODA.AbsoluteTolerance")) != NULL)
+        {
+          setValue("Absolute Tolerance", *pParm->getValue().pUDOUBLE);
+          removeParameter("LSODA.AbsoluteTolerance");
+        }
+
+      if ((pParm = getParameter("LSODA.AdamsMaxOrder")) != NULL)
+        {
+          setValue("Adams Max Order", *pParm->getValue().pUINT);
+          removeParameter("LSODA.AdamsMaxOrder");
+        }
+
+      if ((pParm = getParameter("LSODA.BDFMaxOrder")) != NULL)
+        {
+          setValue("BDF Max Order", *pParm->getValue().pUINT);
+          removeParameter("LSODA.BDFMaxOrder");
+        }
+
+      if ((pParm = getParameter("LSODA.MaxStepsInternal")) != NULL)
+        {
+          setValue("Max Internal Steps", *pParm->getValue().pUINT);
+          removeParameter("LSODA.MaxStepsInternal");
+        }
+    }
+}
+
+bool CLsodaMethod::elevateChildren()
+{
+  initializeParameter();
+  return true;
 }
 
 void CLsodaMethod::step(const double & deltaT)
@@ -129,24 +168,24 @@ void CLsodaMethod::start(const CState * initialState)
   mYdot.resize(mDim[0]);
 
   /* Configure lsoda */
-  mRtol = * getValue("LSODA.RelativeTolerance").pUDOUBLE;
+  mRtol = * getValue("Relative Tolerance").pUDOUBLE;
   mDefaultAtol = * getValue("Use Default Absolute Tolerance").pBOOL;
   if (mDefaultAtol)
     {
       mAtol = getDefaultAtol(mpProblem->getModel());
-      setValue("LSODA.AbsoluteTolerance", mAtol);
+      setValue("Absolute Tolerance", mAtol);
     }
   else
-    mAtol = * getValue("LSODA.AbsoluteTolerance").pUDOUBLE;
+    mAtol = * getValue("Absolute Tolerance").pUDOUBLE;
 
   mDWork.resize(22 + mDim[0] * std::max<C_INT>(16, mDim[0] + 9));
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
   mIWork.resize(20 + mDim[0]);
   mIWork[4] = mIWork[6] = mIWork[9] = 0;
 
-  mIWork[5] = * getValue("LSODA.MaxStepsInternal").pUINT;
-  mIWork[7] = * getValue("LSODA.AdamsMaxOrder").pUINT;
-  mIWork[8] = * getValue("LSODA.BDFMaxOrder").pUINT;
+  mIWork[5] = * getValue("Max Internal Steps").pUINT;
+  mIWork[7] = * getValue("Adams Max Order").pUINT;
+  mIWork[8] = * getValue("BDF Max Order").pUINT;
 
   return;
 }

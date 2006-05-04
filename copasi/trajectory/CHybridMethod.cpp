@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/03 20:17:15 $
+   $Date: 2006/05/04 20:56:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,16 +52,97 @@
 #include "utilities/CIndexedPriorityQueue.h"
 #include "randomGenerator/CRandom.h"
 
-/* PUBLIC METHODS ************************************************************/
+/**
+ *   Default constructor.
+ */
+CHybridMethod::CHybridMethod(const CCopasiContainer * pParent):
+    CTrajectoryMethod(CCopasiMethod::hybrid, pParent)
+{
+  /* Set version number */
+  mVersion.setVersion(1, 0, 102);
+  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
+  initializeParameter();
+}
+
+CHybridMethod::CHybridMethod(const CHybridMethod & src,
+                             const CCopasiContainer * pParent):
+    CTrajectoryMethod(src, pParent)
+{
+  /* Set version number */
+  mVersion.setVersion(1, 0, 102);
+  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
+  initializeParameter();
+}
 
 /**
  *   Destructor.
  */
 CHybridMethod::~CHybridMethod()
 {
-  //std::cout << "~CHybridMethod() " << CCopasiParameter::getObjectName() << std::endl;
   cleanup();
   DESTRUCTOR_TRACE;
+}
+
+void CHybridMethod::initializeParameter()
+{
+  CCopasiParameter *pParm;
+
+  assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) MAX_STEPS);
+  assertParameter("Lower Limit", CCopasiParameter::DOUBLE, (C_FLOAT64) LOWER_STOCH_LIMIT);
+  assertParameter("Upper Limit", CCopasiParameter::DOUBLE, (C_FLOAT64) UPPER_STOCH_LIMIT);
+  assertParameter("Runge Kutta Stepsize", CCopasiParameter::DOUBLE, (C_FLOAT64) RUNGE_KUTTA_STEPSIZE);
+  assertParameter("Partitioning Interval", CCopasiParameter::UINT, (unsigned C_INT32) PARTITIONING_INTERVAL);
+  assertParameter("Use Random Seed", CCopasiParameter::BOOL, (bool) USE_RANDOM_SEED);
+  assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) RANDOM_SEED);
+
+  // Check whether we have a method with the old parameter names
+  if ((pParm = getParameter("HYBRID.MaxSteps")) != NULL)
+    {
+      setValue("Max Internal Steps", *pParm->getValue().pUINT);
+      removeParameter("HYBRID.MaxSteps");
+
+      if ((pParm = getParameter("HYBRID.LowerStochLimit")) != NULL)
+        {
+          setValue("Lower Limit", *pParm->getValue().pDOUBLE);
+          removeParameter("HYBRID.LowerStochLimit");
+        }
+
+      if ((pParm = getParameter("HYBRID.UpperStochLimit")) != NULL)
+        {
+          setValue("Upper Limit", *pParm->getValue().pDOUBLE);
+          removeParameter("HYBRID.UpperStochLimit");
+        }
+
+      if ((pParm = getParameter("HYBRID.RungeKuttaStepsize")) != NULL)
+        {
+          setValue("Runge Kutta Stepsize", *pParm->getValue().pDOUBLE);
+          removeParameter("HYBRID.RungeKuttaStepsize");
+        }
+
+      if ((pParm = getParameter("HYBRID.PartitioningInterval")) != NULL)
+        {
+          setValue("Partitioning Interval", *pParm->getValue().pUINT);
+          removeParameter("HYBRID.PartitioningInterval");
+        }
+
+      if ((pParm = getParameter("UseRandomSeed")) != NULL)
+        {
+          setValue("Use Random Seed", *pParm->getValue().pBOOL);
+          removeParameter("UseRandomSeed");
+        }
+
+      if ((pParm = getParameter("")) != NULL)
+        {
+          setValue("Random Seed", *pParm->getValue().pUINT);
+          removeParameter("");
+        }
+    }
+}
+
+bool CHybridMethod::elevateChildren()
+{
+  initializeParameter();
+  return true;
 }
 
 /**
@@ -150,35 +231,6 @@ void CHybridMethod::start(const CState * initialState)
 /* PROTECTED METHODS *********************************************************/
 
 /**
- *   Default constructor.
- */
-CHybridMethod::CHybridMethod(const CCopasiContainer * pParent):
-    CTrajectoryMethod(CCopasiMethod::hybrid, pParent)
-{
-  /* Set version number */
-  mVersion.setVersion(1, 0, 102);
-
-  addParameter("HYBRID.MaxSteps",
-               CCopasiParameter::UINT, (unsigned C_INT32) MAX_STEPS);
-  addParameter("HYBRID.LowerStochLimit",
-               CCopasiParameter::DOUBLE, (C_FLOAT64) LOWER_STOCH_LIMIT);
-  addParameter("HYBRID.UpperStochLimit",
-               CCopasiParameter::DOUBLE, (C_FLOAT64) UPPER_STOCH_LIMIT);
-  addParameter("HYBRID.RungeKuttaStepsize",
-               CCopasiParameter::DOUBLE, (C_FLOAT64) RUNGE_KUTTA_STEPSIZE);
-  addParameter("HYBRID.PartitioningInterval",
-               CCopasiParameter::UINT, (unsigned C_INT32) PARTITIONING_INTERVAL);
-  addParameter("HYBRID.UseRandomSeed",
-               CCopasiParameter::BOOL, (bool) USE_RANDOM_SEED);
-  addParameter("HYBRID.RandomSeed",
-               CCopasiParameter::UINT, (unsigned C_INT32) RANDOM_SEED);
-
-  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
-
-  CONSTRUCTOR_TRACE;
-}
-
-/**
  *  Initializes the solver and sets the model to be used.
  *
  *  @param model A reference to an instance of a CModel
@@ -208,19 +260,19 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   k4.resize(mNumVariableMetabs);
 
   /* get configuration data */
-  mMaxSteps = * getValue("HYBRID.MaxSteps").pUINT;
+  mMaxSteps = * getValue("Max Internal Steps").pUINT;
   //std::cout << "HYBRID.MaxSteps: " << mMaxSteps << std::endl;
-  mLowerStochLimit = * getValue("HYBRID.LowerStochLimit").pDOUBLE;
+  mLowerStochLimit = * getValue("Lower Limit").pDOUBLE;
   //std::cout << "HYBRID.LowerStochLimit: " << mLowerStochLimit << std::endl;
-  mUpperStochLimit = * getValue("HYBRID.UpperStochLimit").pDOUBLE;
+  mUpperStochLimit = * getValue("Upper Limit").pDOUBLE;
   //std::cout << "HYBRID.UpperStochLimit: " << mUpperStochLimit << std::endl;
-  mStepsize = * getValue("HYBRID.RungeKuttaStepsize").pDOUBLE;
+  mStepsize = * getValue("Runge Kutta Stepsize").pDOUBLE;
   //std::cout << "HYBRID.RungeKuttaStepsize: " << mStepsize << std::endl;
-  mPartitioningInterval = * getValue("HYBRID.PartitioningInterval").pUINT;
+  mPartitioningInterval = * getValue("Partitioning Interval").pUINT;
   //std::cout << "HYBRID.PartitioningInterval: " << mPartitioningInterval << std::endl;
-  mUseRandomSeed = * getValue("HYBRID.UseRandomSeed").pBOOL;
+  mUseRandomSeed = * getValue("Use Random Seed").pBOOL;
   //std::cout << "HYBRID.UseRandomSeed: " << mUseRandomSeed << std::endl;
-  mRandomSeed = * getValue("HYBRID.RandomSeed").pUINT;
+  mRandomSeed = * getValue("Random Seed").pUINT;
   //std::cout << "HYBRID.RandomSeed: " << mRandomSeed << std::endl;
   if (mUseRandomSeed) mpRandomGenerator->initialize(mRandomSeed);
   mStoi = mpModel->getStoiReordered();
@@ -1546,8 +1598,8 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  mLowerStochLimit = * getValue("HYBRID.LowerStochLimit").pDOUBLE;
-  mUpperStochLimit = * getValue("HYBRID.UpperStochLimit").pDOUBLE;
+  mLowerStochLimit = * getValue("Lower Limit").pDOUBLE;
+  mUpperStochLimit = * getValue("Upper Limit").pDOUBLE;
   if (mLowerStochLimit > mUpperStochLimit)
     CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 4, mLowerStochLimit, mUpperStochLimit);
 

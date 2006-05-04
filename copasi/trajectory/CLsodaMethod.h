@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:16 $
+   $Date: 2006/05/04 20:56:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,8 @@
 
 #include <sstream>
 #include "utilities/CVector.h"
+
+#include "CTrajectoryMethod.h"
 
 #include "odepack++/CLSODA.h"
 
@@ -135,6 +137,13 @@ class CLsodaMethod : public CTrajectoryMethod
     ~CLsodaMethod();
 
     /**
+     * This methods must be called to elevate subgroups to
+     * derived objects. The default implementation does nothing.
+     * @return bool success
+     */
+    virtual bool elevateChildren();
+
+    /**
      *  This instructs the method to calculate a time step of deltaT
      *  starting with the current state, i.e., the result of the previous
      *  step.
@@ -164,5 +173,11 @@ class CLsodaMethod : public CTrajectoryMethod
      *  This evaluates the derivatives for the complete model
      */
     void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+
+  private:
+    /**
+     * Intialize the method parameter
+     */
+    void initializeParameter();
   };
 #endif // COPASI_CLsodaMethod

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:16 $
+   $Date: 2006/05/04 20:56:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -118,15 +118,24 @@ class CHybridMethod : public CTrajectoryMethod
 
   public:
     /**
-     *   Copy constructor
-     *   @param "const CHybridMethod &" src
+     * Copy constructor
+     * @param const CHybridMethod & src
+     * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CHybridMethod(const CHybridMethod & src);
+    CHybridMethod(const CHybridMethod & src,
+                  const CCopasiContainer * pParent = NULL);
 
     /**
      *   Destructor.
      */
     ~CHybridMethod();
+
+    /**
+     * This methods must be called to elevate subgroups to
+     * derived objects. The default implementation does nothing.
+     * @return bool success
+     */
+    virtual bool elevateChildren();
 
     /**
      *  Creates a HybridMethod adequate for the problem.
@@ -425,6 +434,12 @@ class CHybridMethod : public CTrajectoryMethod
     void outputDebug(std::ostream & os, C_INT32 level);
 
     /* PRIVATE METHODS *********************************************************/
+
+  private:
+    /**
+     * Intialize the method parameter
+     */
+    void initializeParameter();
 
   private:
 
