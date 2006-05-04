@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/28 13:10:45 $
+   $Date: 2006/05/04 19:15:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -178,6 +178,10 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
 
 
 
+
+
+
+
   if (isnan(dbl))
     value << "NaN";
   else if (finite(dbl))
@@ -190,13 +194,20 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
 
 
 
+
+
+
+
   return value.str();
 }
  */
 
 CCopasiXMLInterface::DBL::DBL(const C_FLOAT64 & value):
     mValue(value)
-{}
+{
+  if (-mValue < DBL_MIN && mValue < DBL_MIN)
+    mValue = 0.0;
+}
 
 #ifdef WIN32
 // warning C4056: overflow in floating-point constant arithmetic
@@ -211,6 +222,9 @@ CCopasiXMLInterface::DBL::DBL(const char * value):
 
   char * Tail;
   mValue = strtod(value, & Tail);
+
+  if (-mValue < DBL_MIN && mValue < DBL_MIN)
+    mValue = 0.0;
 
   if (!*Tail) return;
 
