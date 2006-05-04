@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:17 $
+   $Date: 2006/05/04 20:56:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,18 +40,7 @@ CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
     mpOutputStartTime(NULL),
     mStepNumberSetLast(true)
 {
-  addParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 100);
-  addParameter("StepSize", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.01);
-  addParameter("Duration", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
-  addParameter("TimeSeriesRequested", CCopasiParameter::BOOL, (bool) true);
-  addParameter("OutputStartTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0);
-
-  mpStepNumber = getValue("StepNumber").pUINT;
-  mpStepSize = getValue("StepSize").pDOUBLE;
-  mpDuration = getValue("Duration").pDOUBLE;
-  mpTimeSeriesRequested = getValue("TimeSeriesRequested").pBOOL;
-  mpOutputStartTime = getValue("OutputStartTime").pDOUBLE;
-
+  initializeParameter();
   initObjects();
   CONSTRUCTOR_TRACE;
 }
@@ -70,12 +59,7 @@ CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src,
     mpOutputStartTime(NULL),
     mStepNumberSetLast(src.mStepNumberSetLast)
 {
-  mpStepNumber = getValue("StepNumber").pUINT;
-  mpStepSize = getValue("StepSize").pDOUBLE;
-  mpDuration = getValue("Duration").pDOUBLE;
-  mpTimeSeriesRequested = getValue("TimeSeriesRequested").pBOOL;
-  mpOutputStartTime = getValue("OutputStartTime").pDOUBLE;
-
+  initializeParameter();
   initObjects();
   CONSTRUCTOR_TRACE;
 }
@@ -85,6 +69,20 @@ CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src,
  */
 CTrajectoryProblem::~CTrajectoryProblem()
 {DESTRUCTOR_TRACE;}
+
+void CTrajectoryProblem::initializeParameter()
+{
+  mpStepNumber =
+    assertParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 100)->getValue().pUINT;
+  mpStepSize =
+    assertParameter("StepSize", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.01)->getValue().pDOUBLE;;
+  mpDuration =
+    assertParameter("Duration", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0)->getValue().pDOUBLE;;
+  mpTimeSeriesRequested =
+    assertParameter("TimeSeriesRequested", CCopasiParameter::BOOL, (bool) true)->getValue().pBOOL;
+  mpOutputStartTime =
+    assertParameter("OutputStartTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0)->getValue().pDOUBLE;;
+}
 
 bool CTrajectoryProblem::elevateChildren()
 {

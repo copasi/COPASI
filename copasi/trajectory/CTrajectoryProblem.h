@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:17 $
+   $Date: 2006/05/04 20:56:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -169,6 +169,11 @@ class CTrajectoryProblem : public CCopasiProblem
               CReadConfig::Mode mode = CReadConfig::NEXT);
 
   private:
+    /**
+     * Intialize the method parameter
+     */
+    void initializeParameter();
+
     /**
      * This function synchronizes step size and number
      * @parem bool success
