@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.129 $
+   $Revision: 1.130 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 14:40:13 $
+   $Date: 2006/05/04 19:16:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 #include "report/CReportDefinitionVector.h"
 #include "report/CReportDefinition.h"
 
+#include "utilities/CVersion.h"
 #include "utilities/CCopasiParameter.h"
 #include "utilities/CCopasiParameterGroup.h"
 #include "utilities/CSlider.h"
@@ -5016,10 +5017,9 @@ void CCopasiXMLParser::MethodElement::end(const XML_Char *pszName)
         }
       else
         {
-          CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 4,
-                                 mCommon.pCurrentParameter->getObjectName().c_str(),
-                                 mLineNumber);
+          mCommon.pCurrentTask->getMethod()->addParameter(*mCommon.pCurrentParameter);
         }
+
       pdelete(mCommon.pCurrentParameter);
       mCurrentElement = Method;
       break;
