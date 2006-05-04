@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 19:20:15 $
+   $Date: 2006/05/04 21:00:36 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,60 +54,57 @@ CNewtonMethod::~CNewtonMethod()
 void CNewtonMethod::initializeParameter()
 {
   CCopasiParameter *pParm;
-  bool OldNames = false;
 
   assertParameter("Use Newton", CCopasiParameter::BOOL, true);
+  assertParameter("Use Integration", CCopasiParameter::BOOL, true);
+  assertParameter("Use Back Integration", CCopasiParameter::BOOL, true);
+  assertParameter("Accept Negative Concentrations", CCopasiParameter::BOOL, false);
+  assertParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
+  assertParameter("Derivation Factor", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-003);
+  assertParameter("Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
+
+  // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("Newton.UseNewton")) != NULL)
     {
-      OldNames = true;
       setValue("Use Newton", *pParm->getValue().pBOOL);
       removeParameter("Newton.UseNewton");
-    }
 
-  assertParameter("Use Integration", CCopasiParameter::BOOL, true);
-  if (OldNames && (pParm = getParameter("Newton.UseIntegration")) != NULL)
-    {
-      setValue("Use Integration", *pParm->getValue().pBOOL);
-      removeParameter("Newton.UseIntegration");
-    }
+      if ((pParm = getParameter("Newton.UseIntegration")) != NULL)
+        {
+          setValue("Use Integration", *pParm->getValue().pBOOL);
+          removeParameter("Newton.UseIntegration");
+        }
 
-  assertParameter("Use Back Integration", CCopasiParameter::BOOL, true);
-  if (OldNames && (pParm = getParameter("Newton.UseBackIntegration")) != NULL)
-    {
-      setValue("Use Back Integration", *pParm->getValue().pBOOL);
-      removeParameter("Newton.UseBackIntegration");
-    }
+      if ((pParm = getParameter("Newton.UseBackIntegration")) != NULL)
+        {
+          setValue("Use Back Integration", *pParm->getValue().pBOOL);
+          removeParameter("Newton.UseBackIntegration");
+        }
 
-  assertParameter("Accept Negative Concentrations", CCopasiParameter::BOOL, false);
-  if (OldNames && (pParm = getParameter("Newton.acceptNegativeConcentrations")) != NULL)
-    {
-      setValue("Accept Negative Concentrations", *pParm->getValue().pBOOL);
-      removeParameter("Newton.acceptNegativeConcentrations");
-    }
+      if ((pParm = getParameter("Newton.acceptNegativeConcentrations")) != NULL)
+        {
+          setValue("Accept Negative Concentrations", *pParm->getValue().pBOOL);
+          removeParameter("Newton.acceptNegativeConcentrations");
+        }
 
-  assertParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
-  if (OldNames && (pParm = getParameter("Newton.IterationLimit")) != NULL)
-    {
-      setValue("Iteration Limit", *pParm->getValue().pUINT);
-      removeParameter("Newton.IterationLimit");
-    }
+      if ((pParm = getParameter("Newton.IterationLimit")) != NULL)
+        {
+          setValue("Iteration Limit", *pParm->getValue().pUINT);
+          removeParameter("Newton.IterationLimit");
+        }
 
-  assertParameter("Derivation Factor", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-003);
-  if (OldNames && (pParm = getParameter("Newton.DerivationFactor")) != NULL)
-    {
-      setValue("Derivation Factor", *pParm->getValue().pUDOUBLE);
-      removeParameter("Newton.DerivationFactor");
-    }
+      if ((pParm = getParameter("Newton.DerivationFactor")) != NULL)
+        {
+          setValue("Derivation Factor", *pParm->getValue().pUDOUBLE);
+          removeParameter("Newton.DerivationFactor");
+        }
 
-  assertParameter("Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
-  if (OldNames && (pParm = getParameter("Newton.Resolution")) != NULL)
-    {
-      setValue("Resolution", *pParm->getValue().pUDOUBLE);
-      removeParameter("Newton.Resolution");
-    }
+      if ((pParm = getParameter("Newton.Resolution")) != NULL)
+        {
+          setValue("Resolution", *pParm->getValue().pUDOUBLE);
+          removeParameter("Newton.Resolution");
+        }
 
-  if (OldNames)
-    {
       removeParameter("Newton.LSODA.RelativeTolerance");
       removeParameter("Newton.LSODA.AbsoluteTolerance");
       removeParameter("Newton.LSODA.AdamsMaxOrder");
