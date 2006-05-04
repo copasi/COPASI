@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/02 20:20:22 $
+   $Date: 2006/05/04 20:55:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,12 +66,27 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
   //mpMethod->setObjectParent(this);
 }
 
-/*CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
+CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
                                  const CCopasiContainer * pParent):
     CCopasiTask(src, pParent),
-    mpCurrentState(src.mpCurrentState),
-    mTimeSeriesRequested(src.mTimeSeriesRequested)
-{fatalError();}*/
+    mTimeSeriesRequested(src.mTimeSeriesRequested),
+    mTimeSeries(),
+    mpTrajectoryProblem(NULL),
+    mpTrajectoryMethod(NULL),
+    mpCurrentState(NULL),
+    mpCurrentTime(NULL)
+{
+  mpProblem =
+    new CTrajectoryProblem(*static_cast< CTrajectoryProblem * >(src.mpProblem), this);
+
+  mpMethod =
+    CTrajectoryMethod::createTrajectoryMethod(src.mpMethod->getSubType(),
+        static_cast< CTrajectoryProblem *>(mpProblem));
+  * mpMethod = * src.mpMethod;
+  mpMethod->elevateChildren();
+
+  this->add(mpMethod, true);
+}
 
 CTrajectoryTask::~CTrajectoryTask()
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:17 $
+   $Date: 2006/05/04 20:55:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,15 @@ class CTrajectoryTask : public CCopasiTask
      * Default constructor
      * @param const CCopasiContainer * pParent (default: NULL)
      */
-    CTrajectoryTask(const CCopasiContainer * pParent = & RootContainer);
+    CTrajectoryTask(const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Copy constructor
+     * @param const CTrajectoryTask & src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CTrajectoryTask(const CTrajectoryTask & src,
+                    const CCopasiContainer * pParent = NULL);
 
     /**
      * Destructor
