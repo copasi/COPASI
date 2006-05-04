@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:17 $
+   $Date: 2006/05/04 20:55:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,13 @@
  */
 
 #include "copasi.h"
+
 #include "CTrajectoryMethod.h"
+#include "CLsodaMethod.h"
+#include "CStochMethod.h"
+#include "CHybridMethod.h"
+#include "CTauLeapMethod.h"
+
 #include "CTrajectoryProblem.h"
 #include "model/CState.h"
 #include "model/CCompartment.h"
