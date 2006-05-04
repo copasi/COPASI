@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/04 10:54:43 $
+   $Author: shoops $
+   $Date: 2006/05/04 19:12:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,17 +32,17 @@ CLyapWolfMethod::CLyapWolfMethod(const CCopasiContainer * pParent):
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1000.0);
   addParameter("Integrate Reduced Model",
                CCopasiParameter::BOOL, (bool) true);
-  addParameter("LSODA.RelativeTolerance",
+  addParameter("Relative Tolerance",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
   addParameter("Use Default Absolute Tolerance",
                CCopasiParameter::BOOL, (bool) true);
-  addParameter("LSODA.AbsoluteTolerance",
+  addParameter("Absolute Tolerance",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e009);
-  addParameter("LSODA.AdamsMaxOrder",
+  addParameter("Adams Max Order",
                CCopasiParameter::UINT, (unsigned C_INT32) 12);
-  addParameter("LSODA.BDFMaxOrder",
+  addParameter("BDF Max Order",
                CCopasiParameter::UINT, (unsigned C_INT32) 5);
-  addParameter("LSODA.MaxStepsInternal",
+  addParameter("Max Internal Steps",
                CCopasiParameter::UINT, (unsigned C_INT32) 10000);
 }
 
@@ -167,24 +167,24 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
     }
 
   /* Configure lsoda */
-  mRtol = * getValue("LSODA.RelativeTolerance").pUDOUBLE;
+  mRtol = * getValue("Relative Tolerance").pUDOUBLE;
   mDefaultAtol = * getValue("Use Default Absolute Tolerance").pBOOL;
   if (mDefaultAtol)
     {
       mAtol = getDefaultAtol(mpProblem->getModel());
-      setValue("LSODA.AbsoluteTolerance", mAtol);
+      setValue("Absolute Tolerance", mAtol);
     }
   else
-    mAtol = * getValue("LSODA.AbsoluteTolerance").pUDOUBLE;
+    mAtol = * getValue("Absolute Tolerance").pUDOUBLE;
 
   mDWork.resize(22 + mDim[0] * std::max<C_INT>(16, mDim[0] + 9));
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
   mIWork.resize(20 + mDim[0]);
   mIWork[4] = mIWork[6] = mIWork[9] = 0;
 
-  mIWork[5] = * getValue("LSODA.MaxStepsInternal").pUINT;
-  mIWork[7] = * getValue("LSODA.AdamsMaxOrder").pUINT;
-  mIWork[8] = * getValue("LSODA.BDFMaxOrder").pUINT;
+  mIWork[5] = * getValue("Max Internal Steps").pUINT;
+  mIWork[7] = * getValue("Adams Max Order").pUINT;
+  mIWork[8] = * getValue("BDF Max Order").pUINT;
 
   return;
 }
@@ -278,7 +278,6 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
     for (cdbl = y + mSystemSize; cdbl != cdblEnd; ++cdbl)
       std::cout << *cdbl << " ";
     std::cout << std::endl;
-
 
     std::cout << "ydot: ";
     dblEnd = ydot + 2*mSystemSize;
