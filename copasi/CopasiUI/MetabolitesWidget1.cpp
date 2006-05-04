@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.128 $
+   $Revision: 1.129 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
+   $Date: 2006/05/04 14:21:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -326,7 +326,7 @@ bool MetabolitesWidget1::loadFromMetabolite()
 bool MetabolitesWidget1::saveToMetabolite()
 {
   //find pointer to metab from key
-  if (!mpMetab) return false;
+  if (!mpMetab) return true;
 
   //name
   QString name(mEditName->text());
@@ -506,6 +506,10 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
   if (!CCopasiDataModel::Global->getModel())
     return;
 
+  CMetab * pMetab =
+    dynamic_cast< CMetab * >(GlobalKeys.get(objKey));
+  if (pMetab == NULL) return;
+
   QString metabList = "Are you sure you want to delete listed METABOLITE(S) ?\n";
   QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
   int reacFound = 0;
@@ -514,7 +518,8 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
   //for (i = 0; i < imax; i++)
   //  {
   //metabList.append(FROM_UTF8(GlobalKeys.get(keys[i])->getObjectName()));
-  metabList.append(FROM_UTF8(GlobalKeys.get(objKey)->getObjectName()));
+
+  metabList.append(FROM_UTF8(pMetab->getObjectName()));
   metabList.append(", ");
 
   //CMetab* metab =

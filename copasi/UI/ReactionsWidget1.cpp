@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.176 $
+   $Revision: 1.177 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:45 $
+   $Date: 2006/05/04 14:21:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -224,6 +224,9 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 
 bool ReactionsWidget1::saveToReaction()
 {
+  CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
+  if (reac == NULL) return true;
+
   LineEdit2->slotForceUpdate();
   //std::cout << "SaveToReaction " << std::endl;
   if (!mRi.isValid()) return false;

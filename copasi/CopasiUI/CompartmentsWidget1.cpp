@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.88 $
+   $Revision: 1.89 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:43 $
+   $Date: 2006/05/04 14:21:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -218,6 +218,9 @@ void CompartmentsWidget1::slotListBoxCurrentChanged(const QString & C_UNUSED(m))
 
 bool CompartmentsWidget1::saveToCompartment()
 {
+  CCompartment* comp = dynamic_cast< CCompartment * >(GlobalKeys.get(objKey));
+  if (!comp) return true;
+
   int cursor = 0;
   QString tmpstring = LineEdit3->text();
   if (LineEdit3->validator()->validate(tmpstring, cursor) == QValidator::Intermediate)
@@ -226,9 +229,6 @@ bool CompartmentsWidget1::saveToCompartment()
                            QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
       return false;
     }
-
-  CCompartment* comp = dynamic_cast< CCompartment * >(GlobalKeys.get(objKey));
-  if (!comp) return false;
 
   //name
   QString name(LineEdit1->text());
@@ -301,6 +301,7 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
     return;
 
   CCompartment* comp = dynamic_cast< CCompartment *>(GlobalKeys.get(objKey));
+  if (comp == NULL) return;
 
   QString compartmentList = "Are you sure you want to delete listed COMPARTMENT?\n";
   QString effectedMetabList = "Following METABOLITE(S) reference above COMPARTMENT(S) and will be deleted -\n";
@@ -308,13 +309,8 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
   int metabFound = 0;
   int reacFound = 0;
 
-  //unsigned C_INT32 i, imax = keys.size();
-  //for (i = 0; i < imax; i++) //all compartments
-  //{
   compartmentList.append(FROM_UTF8(comp->getObjectName()));
   compartmentList.append(", ");
-
-  //CCompartment* comp = dynamic_cast< CCompartment *>(GlobalKeys.get(keys[i]));
 
   const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
   unsigned C_INT32 noOfMetabs = Metabs.size();
@@ -351,7 +347,6 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
           effectedReacList.append("\n");
         }
     }
-  //}
 
   compartmentList.remove(compartmentList.length() - 2, 2);
 
@@ -380,19 +375,18 @@ void CompartmentsWidget1::slotBtnDeleteClicked()
     {
     case 0:                                 // Yes or Enter
       {
-        unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getCompartments().size();
-        unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->getCompartments().getIndex(comp->getObjectName());
-        /*for (i = 0; i < imax; i++)
-          {
-            CCopasiDataModel::Global->getModel()->removeCompartment(keys[i]);
-          }*/
+        unsigned C_INT32 Index =
+          CCopasiDataModel::Global->getModel()->getCompartments().getIndex(comp->getObjectName());
         CCopasiDataModel::Global->getModel()->removeCompartment(objKey);
-        //for (i = 0; i < imax; i++)
-        if (size > 1)
-          {
-            enter(CCopasiDataModel::Global->getModel()->getCompartments()[std::min(index, size - 2)]->getKey());
-          }
+
+        unsigned C_INT32 Size =
+          CCopasiDataModel::Global->getModel()->getCompartments().size();
+
+        if (Size > 0)
+          enter(CCopasiDataModel::Global->getModel()->getCompartments()[std::min(Index, Size - 1)]->getKey());
+
         protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, objKey);
+
         //TODO notify about metabs and reactions
         break;
       }
