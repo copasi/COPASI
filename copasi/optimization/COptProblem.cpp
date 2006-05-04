@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:53 $
+   $Date: 2006/05/04 19:17:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -236,16 +236,33 @@ bool COptProblem::initialize()
       if (!mpReport->getStream()) mpReport = NULL;
     }
 
+  // This is extemely vulnerable to human COPASI file manipulations
   mpSteadyState =
-    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(* getValue("Steady-State").pKEY));
+    dynamic_cast< CSteadyStateTask * >(GlobalKeys.get(* getValue("Steady-State").pKEY));
+  if (!mpSteadyState && * getValue("Steady-State").pKEY != "")
+    {
+      mpSteadyState =
+        dynamic_cast< CSteadyStateTask * >((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+
+      if (mpSteadyState != NULL) setValue("Steady-State", mpSteadyState->getKey());
+    }
+
   mpTrajectory =
-    dynamic_cast<CTrajectoryTask *>(GlobalKeys.get(* getValue("Time-Course").pKEY));
+    dynamic_cast< CTrajectoryTask * >(GlobalKeys.get(* getValue("Time-Course").pKEY));
+  if (!mpTrajectory && * getValue("Time-Course").pKEY != "")
+    {
+      mpTrajectory =
+        dynamic_cast< CTrajectoryTask * >((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+
+      if (mpTrajectory != NULL) setValue("Time-Course", mpTrajectory->getKey());
+    }
 
   if (!mpSteadyState && !mpTrajectory)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 7);
       success = false;
     }
+
   if (mpSteadyState)
     {
       mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL);

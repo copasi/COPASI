@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:29 $
+   $Date: 2006/05/04 19:17:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -280,6 +280,30 @@ bool CFitProblem::initialize()
               mExperimentConstraints(Index, j) = pConstraint;
             };
         }
+    }
+
+  if (!mpSteadyState)
+    {
+      mpSteadyState =
+        dynamic_cast< CSteadyStateTask * >((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+
+      if (mpSteadyState == NULL) fatalError();
+
+      setValue("Steady-State", mpSteadyState->getKey());
+      mpSteadyState->initialize(CCopasiTask::NO_OUTPUT, NULL);
+      ContainerList.push_back(mpSteadyState);
+    }
+
+  if (!mpTrajectory)
+    {
+      mpTrajectory =
+        dynamic_cast< CTrajectoryTask * >((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+
+      if (mpTrajectory == NULL) fatalError();
+
+      setValue("Time-Course", mpTrajectory->getKey());
+      mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL);
+      ContainerList.push_back(mpTrajectory);
     }
 
   pdelete(mpTrajectoryProblem);
