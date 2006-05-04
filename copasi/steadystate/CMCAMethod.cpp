@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Date: 2006/05/04 19:20:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,13 +35,24 @@ CMCAMethod::CMCAMethod(const CCopasiContainer* pParent):
     CCopasiMethod(CCopasiTask::mca, CCopasiMethod::mcaMethodReder, pParent),
     mpModel(NULL)
 {
-  CONSTRUCTOR_TRACE;
-  addParameter("MCA.ModulationFactor",
-               CCopasiParameter::UDOUBLE, 1.0e-009);
   mFactor = 1.0e-9;
   mSSStatus = CSteadyStateMethod::notFound;
   mSteadyStateResolution = mFactor;
 
+  initializeParameter();
+  initObjects();
+}
+
+CMCAMethod::CMCAMethod(const CMCAMethod & src,
+                       const CCopasiContainer * pParent):
+    CCopasiMethod(CCopasiTask::mca, CCopasiMethod::mcaMethodReder, pParent),
+    mpModel(NULL)
+{
+  mFactor = 1.0e-9;
+  mSSStatus = CSteadyStateMethod::notFound;
+  mSteadyStateResolution = mFactor;
+
+  initializeParameter();
   initObjects();
 }
 
@@ -104,6 +115,24 @@ CMCAMethod::~CMCAMethod()
 {
   DESTRUCTOR_TRACE;
   //delSsipvt();
+}
+
+void CMCAMethod::initializeParameter()
+{
+  CCopasiParameter *pParm;
+
+  assertParameter("Modulation Factor", CCopasiParameter::UDOUBLE, 1.0e-009);
+  if ((pParm = getParameter("MCA.ModulationFactor")) != NULL)
+    {
+      setValue("Modulation Factor", *pParm->getValue().pUDOUBLE);
+      removeParameter("MCA.ModulationFactor");
+    }
+}
+
+bool CMCAMethod::elevateChildren()
+{
+  initializeParameter();
+  return true;
 }
 
 //that caclulates the elasticities as d(particle flux)/d(particle number)

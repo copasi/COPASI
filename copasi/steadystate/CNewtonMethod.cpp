@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Date: 2006/05/04 19:20:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,48 +19,24 @@
 #include "CSteadyStateProblem.h"
 #include "CSteadyStateTask.h"
 
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CState.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
-
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
 #include "trajectory/CTrajectoryMethod.h"
 #include "utilities/CCopasiException.h"
-
-#include "clapackwrap.h"        //use CLAPACK
 #include "utilities/utility.h"
 #include "utilities/CProcessReport.h"
 
+#include "clapackwrap.h"        //use CLAPACK
 CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent):
     CSteadyStateMethod(CCopasiMethod::Newton, pParent),
     mIpiv(NULL),
     mpTrajectory(NULL)
 {
-  addParameter("Newton.UseNewton",
-               CCopasiParameter::BOOL, true);
-  addParameter("Newton.UseIntegration",
-               CCopasiParameter::BOOL, true);
-  addParameter("Newton.UseBackIntegration",
-               CCopasiParameter::BOOL, true);
-  addParameter("Newton.acceptNegativeConcentrations",
-               CCopasiParameter::BOOL, false);
-  addParameter("Newton.IterationLimit",
-               CCopasiParameter::UINT, (unsigned C_INT32) 50);
-  addParameter("Newton.DerivationFactor",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-003);
-  addParameter("Newton.Resolution",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
-  addParameter("Newton.LSODA.RelativeTolerance",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
-  addParameter("Newton.LSODA.AbsoluteTolerance",
-               CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e009);
-  addParameter("Newton.LSODA.AdamsMaxOrder",
-               CCopasiParameter::UINT, (unsigned C_INT32) 12);
-  addParameter("Newton.LSODA.BDFMaxOrder",
-               CCopasiParameter::UINT, (unsigned C_INT32) 5);
-  addParameter("Newton.LSODA.MaxStepsInternal",
-               CCopasiParameter::UINT, (unsigned C_INT32) 10000);
+  initializeParameter();
 }
 
 CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
@@ -68,10 +44,83 @@ CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
     CSteadyStateMethod(src, pParent),
     mIpiv(NULL),
     mpTrajectory(NULL)
-{}
+{
+  initializeParameter();
+}
 
 CNewtonMethod::~CNewtonMethod()
 {cleanup();}
+
+void CNewtonMethod::initializeParameter()
+{
+  CCopasiParameter *pParm;
+  bool OldNames = false;
+
+  assertParameter("Use Newton", CCopasiParameter::BOOL, true);
+  if ((pParm = getParameter("Newton.UseNewton")) != NULL)
+    {
+      OldNames = true;
+      setValue("Use Newton", *pParm->getValue().pBOOL);
+      removeParameter("Newton.UseNewton");
+    }
+
+  assertParameter("Use Integration", CCopasiParameter::BOOL, true);
+  if (OldNames && (pParm = getParameter("Newton.UseIntegration")) != NULL)
+    {
+      setValue("Use Integration", *pParm->getValue().pBOOL);
+      removeParameter("Newton.UseIntegration");
+    }
+
+  assertParameter("Use Back Integration", CCopasiParameter::BOOL, true);
+  if (OldNames && (pParm = getParameter("Newton.UseBackIntegration")) != NULL)
+    {
+      setValue("Use Back Integration", *pParm->getValue().pBOOL);
+      removeParameter("Newton.UseBackIntegration");
+    }
+
+  assertParameter("Accept Negative Concentrations", CCopasiParameter::BOOL, false);
+  if (OldNames && (pParm = getParameter("Newton.acceptNegativeConcentrations")) != NULL)
+    {
+      setValue("Accept Negative Concentrations", *pParm->getValue().pBOOL);
+      removeParameter("Newton.acceptNegativeConcentrations");
+    }
+
+  assertParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
+  if (OldNames && (pParm = getParameter("Newton.IterationLimit")) != NULL)
+    {
+      setValue("Iteration Limit", *pParm->getValue().pUINT);
+      removeParameter("Newton.IterationLimit");
+    }
+
+  assertParameter("Derivation Factor", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-003);
+  if (OldNames && (pParm = getParameter("Newton.DerivationFactor")) != NULL)
+    {
+      setValue("Derivation Factor", *pParm->getValue().pUDOUBLE);
+      removeParameter("Newton.DerivationFactor");
+    }
+
+  assertParameter("Resolution", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-009);
+  if (OldNames && (pParm = getParameter("Newton.Resolution")) != NULL)
+    {
+      setValue("Resolution", *pParm->getValue().pUDOUBLE);
+      removeParameter("Newton.Resolution");
+    }
+
+  if (OldNames)
+    {
+      removeParameter("Newton.LSODA.RelativeTolerance");
+      removeParameter("Newton.LSODA.AbsoluteTolerance");
+      removeParameter("Newton.LSODA.AdamsMaxOrder");
+      removeParameter("Newton.LSODA.BDFMaxOrder");
+      removeParameter("Newton.LSODA.MaxStepsInternal");
+    }
+}
+
+bool CNewtonMethod::elevateChildren()
+{
+  initializeParameter();
+  return true;
+}
 
 void CNewtonMethod::cleanup()
 {
@@ -93,27 +142,27 @@ void CNewtonMethod::load(CReadConfig & configBuffer,
       switch (Int)
         {
         case 0:
-          setValue("Newton.UseNewton", true);
-          setValue("Newton.UseIntegration", true);
-          setValue("Newton.UseBackIntegration", false);
+          setValue("Use Newton", true);
+          setValue("Use Integration", true);
+          setValue("Use Back Integration", false);
           break;
 
         case 1:
-          setValue("Newton.UseNewton", false);
-          setValue("Newton.UseIntegration", true);
-          setValue("Newton.UseBackIntegration", false);
+          setValue("Use Newton", false);
+          setValue("Use Integration", true);
+          setValue("Use Back Integration", false);
           break;
 
         case 2:
-          setValue("Newton.UseNewton", true);
-          setValue("Newton.UseIntegration", false);
-          setValue("Newton.UseBackIntegration", false);
+          setValue("Use Newton", true);
+          setValue("Use Integration", false);
+          setValue("Use Back Integration", false);
           break;
 
         case 3:
-          setValue("Newton.UseNewton", false);
-          setValue("Newton.UseIntegration", false);
-          setValue("Newton.UseBackIntegration", true);
+          setValue("Use Newton", false);
+          setValue("Use Integration", false);
+          setValue("Use Back Integration", true);
           break;
 
         default:
@@ -121,29 +170,14 @@ void CNewtonMethod::load(CReadConfig & configBuffer,
         }
 
       configBuffer.getVariable("SSBackIntegration", "bool", &Bool);
-      setValue("Newton.UseBackIntegration", Bool);
+      setValue("Use Back Integration", Bool);
 
       configBuffer.getVariable("NewtonLimit", "C_INT32", &Int,
                                CReadConfig::SEARCH);
-      setValue("Newton.IterationLimit", Int);
+      setValue("Iteration Limit", Int);
 
       configBuffer.getVariable("SSResoltion", "C_FLOAT64", &Dbl); //typo is necessary!!
-      setValue("Newton.Resolution", Dbl);
-
-      configBuffer.getVariable("RelativeTolerance", "C_FLOAT64", &Dbl);
-      setValue("Newton.LSODA.RelativeTolerance", Dbl);
-
-      configBuffer.getVariable("AbsoluteTolerance", "C_FLOAT64", &Dbl);
-      setValue("Newton.LSODA.AbsoluteTolerance", Dbl);
-
-      configBuffer.getVariable("AdamsMaxOrder", "C_INT32", &Int);
-      setValue("Newton.LSODA.AdamsMaxOrder", Int);
-
-      configBuffer.getVariable("BDFMaxOrder", "C_INT32", &Int);
-      setValue("Newton.LSODA.BDFMaxOrder", Int);
-
-      configBuffer.getVariable("DerivationFactor", "C_FLOAT64", &Dbl);
-      setValue("Newton.DerivationFactor", Dbl);
+      setValue("Resolution", Dbl);
     }
 }
 
@@ -655,9 +689,9 @@ bool CNewtonMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   //const CSteadyStateProblem * pP = dynamic_cast<const CSteadyStateProblem *>(pProblem);
 
-  if (!((* getValue("Newton.UseNewton").pBOOL)
-        || (* getValue("Newton.UseIntegration").pBOOL)
-        || (* getValue("Newton.UseBackIntegration").pBOOL)))
+  if (!((* getValue("Use Newton").pBOOL)
+        || (* getValue("Use Integration").pBOOL)
+        || (* getValue("Use Back Integration").pBOOL)))
     {
       //would do nothing
       CCopasiMessage(CCopasiMessage::EXCEPTION, "At least one of the features \n   - UseNewton\n   - UseIntegration\n   - UseBackIntegration\nmust be activated.");
@@ -679,18 +713,18 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   /* Configure Newton */
   mUseNewton = mUseIntegration = mUseBackIntegration = mAcceptNegative = false;
 
-  if (* getValue("Newton.UseNewton").pBOOL)
+  if (* getValue("Use Newton").pBOOL)
     mUseNewton = true;
-  if (* getValue("Newton.UseIntegration").pBOOL)
+  if (* getValue("Use Integration").pBOOL)
     mUseIntegration = true;
-  if (* getValue("Newton.UseBackIntegration").pBOOL)
+  if (* getValue("Use Back Integration").pBOOL)
     mUseBackIntegration = true;
-  if (* getValue("Newton.acceptNegativeConcentrations").pBOOL)
+  if (* getValue("Accept Negative Concentrations").pBOOL)
     mAcceptNegative = true;
 
-  mIterationLimit = * getValue("Newton.IterationLimit").pUINT;
-  mFactor = * getValue("Newton.DerivationFactor").pUDOUBLE;
-  mResolution = * getValue("Newton.Resolution").pUDOUBLE;
+  mIterationLimit = * getValue("Iteration Limit").pUINT;
+  mFactor = * getValue("Derivation Factor").pUDOUBLE;
+  mResolution = * getValue("Resolution").pUDOUBLE;
   mScaledResolution =
     mResolution; // * initialState.getModel()->getQuantity2NumberFactor();
   //TODO discuss scaling
@@ -704,22 +738,25 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   mH.resize(mDimension);
   mXold.resize(mDimension);
   mdxdt.resize(mDimension);
-  //mJacobianX.resize(mDimension, mDimension);
   mIpiv = new C_INT [mDimension];
-
-  /*
-    if (mpProgressHandler)
-      mpProgressHandler->init(0, "performing steady state calculation...", true);
-  */
 
   if (mUseIntegration || mUseBackIntegration)
     {
       // create an appropriate trajectory task
-      mpTrajectory = new CTrajectoryTask(this);
+      CTrajectoryTask * pSrc =
+        dynamic_cast< CTrajectoryTask * >((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+
+      if (pSrc)
+        mpTrajectory = new CTrajectoryTask(*pSrc, this);
+      else
+        mpTrajectory = new CTrajectoryTask(this);
 
       pTrajectoryProblem =
         dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
       assert(pTrajectoryProblem);
+
+      if (mpTrajectory->getMethod()->getSubType() != CCopasiMethod::deterministic)
+        mpTrajectory->setMethodType(CCopasiMethod::deterministic);
 
       pTrajectoryMethod =
         dynamic_cast<CTrajectoryMethod *>(mpTrajectory->getMethod());
@@ -727,17 +764,6 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
 
       pTrajectoryProblem->setModel(mpProblem->getModel());
       pTrajectoryProblem->setStepNumber(1);
-
-      pTrajectoryMethod->setValue("LSODA.RelativeTolerance",
-                                  * getValue("Newton.LSODA.RelativeTolerance").pUDOUBLE);
-      pTrajectoryMethod->setValue("LSODA.AbsoluteTolerance",
-                                  * getValue("Newton.LSODA.AbsoluteTolerance").pUDOUBLE);
-      pTrajectoryMethod->setValue("LSODA.AdamsMaxOrder",
-                                  * getValue("Newton.LSODA.AdamsMaxOrder").pUINT);
-      pTrajectoryMethod->setValue("LSODA.BDFMaxOrder",
-                                  * getValue("Newton.LSODA.BDFMaxOrder").pUINT);
-      pTrajectoryMethod->setValue("LSODA.MaxStepsInternal",
-                                  * getValue("Newton.LSODA.MaxStepsInternal").pUINT);
 
       mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL);
     }

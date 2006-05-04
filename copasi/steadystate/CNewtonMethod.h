@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Date: 2006/05/04 19:20:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,6 +89,13 @@ class CNewtonMethod : public CSteadyStateMethod
     ~CNewtonMethod();
 
     /**
+     * This methods must be called to elevate subgroups to
+     * derived objects. The default implementation does nothing.
+     * @return bool success
+     */
+    virtual bool elevateChildren();
+
+    /**
      * Load a list of parameters
      * @param "CReadConfig &" configBuffer
      * @param "CReadConfig::Mode" mode Default(CReadConfig::SEARCH)
@@ -129,6 +136,11 @@ class CNewtonMethod : public CSteadyStateMethod
     virtual bool initialize(const CSteadyStateProblem * pProblem);
 
   private:
+    /**
+     * Intialize the method parameter
+     */
+    void initializeParameter();
+
     /**
      * This instructs the method to calculate a the steady state
      * starting with the initialState given.

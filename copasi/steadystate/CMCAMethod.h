@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Date: 2006/05/04 19:20:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,8 +76,17 @@ class CMCAMethod: public CCopasiMethod
   public:
     /**
      * Default constructor
+     * @param const CCopasiContainer * pParent (Defailt: NULL)
      */
-    CMCAMethod(const CCopasiContainer* pParent);
+    CMCAMethod(const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Copy constructor
+     * @param const CMCAMethod & src
+     * @param const CCopasiContainer * pParent (Defailt: NULL)
+     */
+    CMCAMethod(const CMCAMethod & src,
+               const CCopasiContainer * pParent = NULL);
 
     /**
      * User defined constructor
@@ -88,8 +97,14 @@ class CMCAMethod: public CCopasiMethod
     /**
      * Deconstructor
      */
-
     virtual ~CMCAMethod();
+
+    /**
+     * This methods must be called to elevate subgroups to
+     * derived objects. The default implementation does nothing.
+     * @return bool success
+     */
+    virtual bool elevateChildren();
 
     const CMatrix<C_FLOAT64> & getUnscaledElasticities() const
       {return mUnscaledElasticities;}
@@ -161,5 +176,11 @@ class CMCAMethod: public CCopasiMethod
      * @return bool suitability of the method
      */
     virtual bool isValidProblem(const CCopasiProblem * pProblem);
+
+  private:
+    /**
+     * Intialize the method parameter
+     */
+    void initializeParameter();
   };
 #endif // COPASI_CMca
