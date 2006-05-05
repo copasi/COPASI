@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TaskWidget.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Date: 2006/05/05 19:18:07 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -350,10 +350,10 @@ bool TaskWidget::commonBeforeRunTask()
       QMessageBox::warning(this, "Simulation Error",
                            CCopasiMessage::getAllMessageText().c_str(),
                            QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-      CCopasiMessage::clearDeque();
       return false;
     }
 
+  CCopasiMessage::clearDeque();
   if (!mpTask) return false;
 
   //set mouse cursor
