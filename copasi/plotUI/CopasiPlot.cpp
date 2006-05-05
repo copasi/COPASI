@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:41 $
+   $Date: 2006/05/05 14:06:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,6 +81,9 @@ QwtDoubleRect MyQwtCPointerData::boundingRect() const
               maxY = yv;
           }
       }
+
+    if (isnan(minX + maxX + minY + maxY))
+      return QwtDoubleRect(1.0, 1.0, -2.0, -2.0); // invalid
 
     return QwtDoubleRect(minX, minY, maxX - minX, maxY - minY);
   }
