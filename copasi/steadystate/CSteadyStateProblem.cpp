@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateProblem.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Date: 2006/05/05 13:39:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,10 +61,7 @@ bool CSteadyStateProblem::initialize()
   if (!mpModel) return false;
 
   if (!mpModel->isAutonomous())
-    {
-      CCopasiMessage(CCopasiMessage::WARNING, MCSteadyState + 1);
-      return false;
-    }
+    CCopasiMessage(CCopasiMessage::WARNING, MCSteadyState + 1);
 
   return true;
 }
