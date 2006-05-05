@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: nsimus $
-   $Date: 2006/04/27 12:28:00 $
+   $Date: 2006/05/05 12:45:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -829,7 +829,6 @@ std::string CEvaluationNodeFunction::handleSign(const std::string & str) const
     return Result;
   }
 
-#if 1
 CEvaluationNode * CEvaluationNodeFunction::getLeft()
 {return mpLeft;}
 const CEvaluationNode * CEvaluationNodeFunction::getLeft() const
@@ -991,6 +990,7 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
             flag1 = ((T & 0xFF000000) == OPERATOR &&
                      this == static_cast<const CEvaluationNode *>(pParent->getChild()->getSibling()));
             if (flag1) out << SPC(l + 1) << "<mfenced>" << std::endl;
+            if (flag1) out << SPC(l + 1) << "<mrow>" << std::endl;
           }
 
         out << SPC(l + 1) << "<mo>" << "-" << "</mo>" << std::endl;
@@ -1001,6 +1001,7 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
 
         if (!flag) out << SPC(l + 2) << "</mfenced>" << std::endl;
 
+        if (flag1) out << SPC(l + 1) << "</mrow>" << std::endl;
         if (flag1) out << SPC(l + 1) << "</mfenced>" << std::endl;
 
         break;
@@ -1071,4 +1072,3 @@ void CEvaluationNodeFunction::writeMathML(std::ostream & out,
 
     return;
   }
-#endif

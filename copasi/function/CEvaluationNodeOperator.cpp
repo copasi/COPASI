@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Author: nsimus $
+   $Date: 2006/05/05 12:46:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -943,6 +943,7 @@ void CEvaluationNodeOperator::writeMathML(std::ostream & out,
     switch (mType & 0x00FFFFFF)
       {
       case PLUS:
+
         out << SPC(l) << "<mrow>" << std::endl;
         mpLeft->writeMathML(out, env, expand, l + 1);
         out << SPC(l + 1) << "<mo>" << "+" << "</mo>" << std::endl;
@@ -961,7 +962,7 @@ void CEvaluationNodeOperator::writeMathML(std::ostream & out,
 );
         if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
         mpRight->writeMathML(out, env, expand, l + 1);
-        if (flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
+        if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl; // ???
         out << SPC(l) << "</mrow>" << std::endl;
         break;
 
@@ -987,6 +988,7 @@ void CEvaluationNodeOperator::writeMathML(std::ostream & out,
         mpRight->writeMathML(out, env, expand, l + 1);
         if (flag) out << SPC(l + 1) << "</mfenced>" << std::endl;
         out << SPC(l) << "</mrow>" << std::endl;
+
         break;
 
       case DIVIDE:

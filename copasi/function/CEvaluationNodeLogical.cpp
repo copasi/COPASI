@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: nsimus $
-   $Date: 2006/05/02 13:07:59 $
+   $Date: 2006/05/05 12:45:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -370,32 +370,35 @@ void CEvaluationNodeLogical::writeMathML(std::ostream & out,
         switch ((SubType)CEvaluationNode::subType(this->getType()))
           {
           case AND:
-            data = "&&";
+            data = " and ";
             break;
           case OR:
-            data = "||";
+            data = " or ";
+            break;
+          case XOR:
+            data = " xor ";
             break;
           case EQ:
             data = "=";
             break;
           case GE:
-            data = ">=";
+            data = "&gt;=";
             break;
           case GT:
-            data = ">";
+            data = "&gt;";
             break;
           case LE:
-            data = "<=";
+            data = "&lt;=";
             break;
           case LT:
-            data = "<";
+            data = "&lt;";
             break;
           case NE:
-            data = "!=";
+            data = "&NotEqual;";
             break;
           default:
             /*
-             * case XOR:
+             *
              */
             data = "@";
             break;
@@ -412,6 +415,7 @@ void CEvaluationNodeLogical::writeMathML(std::ostream & out,
         out << SPC(l + 1) << "<mo>" << data << "</mo>" << std::endl;
 
         flag = ((*(CEvaluationNode *)this < *mpRight));
+
         if (!flag) out << SPC(l + 1) << "<mfenced>" << std::endl;
         mpRight->writeMathML(out, env, expand, l + 1);
         if (!flag) out << SPC(l + 1) << "</mfenced>" << std::endl;

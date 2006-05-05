@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeChoice.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: nsimus $
-   $Date: 2006/05/02 13:05:50 $
+   $Date: 2006/05/05 12:45:07 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,6 +161,7 @@ void CEvaluationNodeChoice::writeMathML(std::ostream & out,
 
         out << SPC(l + 3) << "<mtd>" << std::endl;
         mpIf->writeMathML(out, env, expand, l + 3);
+
         out << SPC(l + 3) << "</mtd>" << std::endl;
 
         out << SPC(l + 2) << "</mtr>" << std::endl;
