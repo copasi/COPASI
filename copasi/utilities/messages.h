@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/03 15:41:44 $
+   $Date: 2006/05/05 16:24:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,6 +190,9 @@ const MESSAGES Messages[] =
     {MCFitting + 2, "CFitting (2): Failed to invert Fisher information matrix. "
      "dsytrf returned with error '%d'."},
     {MCFitting + 3, "CFitting (3); No column with type 'Time' specified for a time course experiment."},
+    {MCFitting + 4, "CFitting (4); Insufficient experimental data (columns requested '%d', columns found '%d')."},
+    {MCFitting + 5, "CFitting (5); Incomplete data mapping, column '%d' must be mapped."},
+    {MCFitting + 6, "CFitting (6); Object '%s' in column '%d' has no numeric value."},
 
     // CCopasiObject
     {MCObject + 1, "CObject (1): Circular dependencies detected for object '%s'."},
