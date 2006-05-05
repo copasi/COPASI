@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:29 $
+   $Date: 2006/05/05 16:25:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,11 +78,18 @@ bool CExperimentObjectMap::compile(const std::vector< CCopasiContainer * > listO
   unsigned C_INT32 Column;
 
   // We need to find out the size of the object map
-  for (i = 0; i < imax; i++)
+  if (imax == 0)
+    mLastColumn = C_INVALID_INDEX;
+  else
     {
-      Column = strtoul(getName(i).c_str(), NULL, 0);
-      if (mLastColumn < Column)
-        mLastColumn = Column;
+      mLastColumn = strtoul(getName(0).c_str(), NULL, 0);
+
+      for (i = 1; i < imax; i++)
+        {
+          Column = strtoul(getName(i).c_str(), NULL, 0);
+          if (mLastColumn < Column)
+            mLastColumn = Column;
+        }
     }
 
   mObjects.resize(mLastColumn + 1);
