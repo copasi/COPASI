@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/04 10:55:43 $
+   $Author: shoops $
+   $Date: 2006/05/05 16:27:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -213,14 +213,10 @@ bool CCopasiTask::initialize(const OutputFlag & of,
 
   mOutputCounter = 0;
 
-  if (!mReport.open(pOstream))
-    {
-      // Warning
-      CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 5, mReport.getObjectName().c_str());
-      success = false;
-    }
-
-  if (success) CCopasiDataModel::Global->addInterface(&mReport);
+  if (mReport.open(pOstream))
+    CCopasiDataModel::Global->addInterface(&mReport);
+  else
+    CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 5, mReport.getObjectName().c_str());
 
   std::vector< CCopasiContainer * > ListOfContainer;
   ListOfContainer.push_back(this);
