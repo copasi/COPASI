@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/04 20:56:50 $
+   $Author: jpahle $
+   $Date: 2006/05/05 17:44:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -220,6 +220,13 @@ void CHybridMethod::start(const CState * initialState)
   *mpCurrentState = *initialState;
 
   mpModel = mpProblem->getModel();
+  assert(mpModel);
+
+  if (mpModel->getModelType() == CModel::deterministic)
+    mDoCorrection = true;
+  else
+    mDoCorrection = false;
+
   mpProblem->getModel()->setState(*mpCurrentState);
 
   // call init of the simulation method, can be overloaded in derived classes
@@ -621,6 +628,12 @@ C_FLOAT64 CHybridMethod::generateReactionTime(C_INT32 rIndex)
  */
 void CHybridMethod::calculateAmu(C_INT32 rIndex)
 {
+  if (!mDoCorrection)
+    {
+      mAmu[rIndex] = (*mpReactions)[rIndex]->calculateParticleFlux();
+      return;
+    }
+
   // We need the product of the cmu and hmu for this step.
   // We calculate this in one go, as there are fewer steps to
   // perform and we eliminate some possible rounding errors.
@@ -638,22 +651,29 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
   // Iterate through each substrate in the reaction
   const std::vector<CHybridBalance> & substrates = mLocalSubstrates[rIndex];
 
+  int flag = 0;
+
   for (unsigned C_INT32 i = 0; i < substrates.size(); i++)
     {
       num_ident = substrates[i].mMultiplicity;
       //std::cout << "Num ident = " << num_ident << std::endl;
       //total_substrates += num_ident;
 
-      number = static_cast<C_INT32>((*mpMetabolites)[substrates[i].mIndex]->getValue());
-      lower_bound = number - num_ident;
-      //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
-      substrate_factor = substrate_factor * pow((double) number, (int) num_ident);
-      //std::cout << "Substrate factor = " << substrate_factor << std::endl;
-
-      while (number > lower_bound)
+      if (num_ident > 1)
         {
-          amu *= number;
-          number--;
+          flag = 1;
+          number = static_cast<C_INT32>((*mpMetabolites)[substrates[i].mIndex]->getValue());
+          lower_bound = number - num_ident;
+          //std::cout << "Number = " << number << "  Lower bound = " << lower_bound << std::endl;
+          substrate_factor = substrate_factor * pow((double) number, (int) num_ident - 1); //optimization
+          //std::cout << "Substrate factor = " << substrate_factor << std::endl;
+
+          number--; // optimization
+          while (number > lower_bound)
+            {
+              amu *= number;
+              number--;
+            }
         }
     }
 
@@ -663,31 +683,22 @@ void CHybridMethod::calculateAmu(C_INT32 rIndex)
       return;
     }
 
-  // We assume that all substrates are in the same compartment.
-  // If there are no substrates, then volume is irrelevant. Otherwise,
-  // we can use the volume of the compartment for the first substrate.
-  //if (substrates.size() > 0) //check again!!
-  /*if (total_substrates > 1) //check again!!
-    {
-      C_FLOAT64 invvolumefactor =
-  pow((double)
-     (substrates[0]->getMetabolite().getCompartment()->getVolumeInv()
-      * substrates[0]->getMetabolite().getModel()->getNumber2QuantityFactor()),
-     (int) total_substrates - 1);
-      amu *= invvolumefactor;
-      substrate_factor *= invvolumefactor;
-    }*/
-
   // rate_factor is the rate function divided by substrate_factor.
   // It would be more efficient if this was generated directly, since in effect we
   // are multiplying and then dividing by the same thing (substrate_factor)!
-  //  mpModel->getReactions()[rIndex]->calculate();
-  //  C_FLOAT64 rate_factor = mpModel->getReactions()[rIndex]->getParticleFlux() / substrate_factor;
+  C_FLOAT64 rate_factor = (*mpReactions)[rIndex]->calculateParticleFlux();
 
-  C_FLOAT64 rate_factor = (*mpReactions)[rIndex]->calculateParticleFlux() / substrate_factor;
-  //std::cout << "Rate factor = " << rate_factor << std::endl;
-  amu *= rate_factor;
-  mAmu[rIndex] = amu;
+  if (flag)
+    {
+      //std::cout << "Rate factor = " << rate_factor << std::endl;
+      amu *= rate_factor / substrate_factor;;
+      mAmu[rIndex] = amu;
+    }
+  else
+    {
+      mAmu[rIndex] = rate_factor;
+    }
+
   //std::cout << "Index = " << rIndex << "  Amu = " << amu << std::endl;
   return;
 

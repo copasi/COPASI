@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/04 20:56:50 $
+   $Author: jpahle $
+   $Date: 2006/05/05 17:44:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -494,6 +494,11 @@ class CHybridMethod : public CTrajectoryMethod
      * This is set to maxint - mMaxSteps*mMaxBalance
      */
     C_INT32 mMaxIntBeforeStep;
+
+    /**
+     * indicates if the correction N^2 -> N*(N-1) should be performed
+     */
+    bool mDoCorrection;
 
     /**
      *   A pointer to the reactions of the model.
