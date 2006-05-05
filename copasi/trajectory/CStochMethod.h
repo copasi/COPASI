@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/04 20:56:51 $
+   $Author: ssahle $
+   $Date: 2006/05/05 15:06:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,9 +58,9 @@ class CStochMethod : public CTrajectoryMethod
     std::vector<C_FLOAT64> mAmuOld;
 
     /**
-     * The sum of the propensities before the last update
+     * indicates if the correction N^2 -> N*(N-1) should be performed
      */
-    //C_FLOAT64 mA0Old;
+    bool mDoCorrection;
 
     /**
      * Initialization.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/04 20:56:51 $
+   $Author: ssahle $
+   $Date: 2006/05/05 15:06:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -191,6 +191,12 @@ void CStochMethod::start(const CState * initialState)
   *mpCurrentState = *initialState; //TODO seem to be identical
 
   mpModel = mpProblem->getModel();
+  assert(mpModel);
+
+  if (mpModel->getModelType() == CModel::deterministic)
+    mDoCorrection = true;
+  else
+    mDoCorrection = false;
 
   unsigned C_INT32 i, imax;
 
@@ -256,6 +262,12 @@ C_INT32 CStochMethod::updatePropensities()
 
 C_INT32 CStochMethod::calculateAmu(C_INT32 index)
 {
+  if (!mDoCorrection)
+    {
+      mAmu[index] = mpModel->getReactions()[index]->calculateParticleFlux();
+      return 0;
+    }
+
   // We need the product of the cmu and hmu for this step.
   // We calculate this in one go, as there are fewer steps to
   // perform and we eliminate some possible rounding errors.
@@ -304,21 +316,6 @@ C_INT32 CStochMethod::calculateAmu(C_INT32 index)
       mAmu[index] = 0;
       return 0;
     }
-
-  // We assume that all substrates are in the same compartment.
-  // If there are no substrates, then volume is irrelevant. Otherwise,
-  // we can use the volume of the compartment for the first substrate.
-  //if (substrates.size() > 0) //check again!!
-  /*if (total_substrates > 1) //check again!!
-    {
-      C_FLOAT64 invvolumefactor =
-        pow((double)
-            (substrates[0]->getMetabolite().getCompartment()->getVolumeInv()
-             * substrates[0]->getMetabolite().getModel()->getNumber2QuantityFactor()),
-            (int) total_substrates - 1);
-      amu *= invvolumefactor;
-      substrate_factor *= invvolumefactor;
-    }*/
 
   // rate_factor is the rate function divided by substrate_factor.
   // It would be more efficient if this was generated directly, since in effect we
