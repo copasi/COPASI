@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryProblem.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/04 20:56:39 $
+   $Author: ssahle $
+   $Date: 2006/05/05 23:44:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,7 +29,6 @@
 
 /**
  *  Default constructor.
- *  @param "CModel *" pModel
  */
 CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
     CCopasiProblem(CCopasiTask::timeCourse, pParent),
