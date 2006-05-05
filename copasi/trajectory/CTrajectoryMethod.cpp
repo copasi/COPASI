@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/04 20:55:04 $
+   $Author: jpahle $
+   $Date: 2006/05/05 13:25:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,8 +36,8 @@ CTrajectoryValidSubTypes::CTrajectoryValidSubTypes():
 {
   push_back(CCopasiMethod::deterministic);
   push_back(CCopasiMethod::stochastic);
-#ifdef COPASI_DEBUG
   push_back(CCopasiMethod::hybrid);
+#ifdef COPASI_DEBUG
   push_back(CCopasiMethod::tauLeap);
 #endif // COPASI_DEBUG
 }
