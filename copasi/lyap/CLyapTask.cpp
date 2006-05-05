@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/05 15:14:52 $
+   $Date: 2006/05/05 23:19:20 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,11 @@
 #include  "CopasiDataModel/CCopasiDataModel.h"
 
 #define XXXX_Reporting
+
+//this is about the preliminary reporting. The first LYAP_NUM_REF exponents
+//get an individual object reference. This will be obsolete when we have
+//working annotated vectors
+#define LYAP_NUM_REF 10
 
 CLyapTask::CLyapTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::lyap, pParent),
@@ -60,27 +65,28 @@ void CLyapTask::cleanup()
 
 void CLyapTask::initObjects()
 {
-  mExponents.resize(3);
-  mExpRef1 = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
-             (addObjectReference("Exp1", mExponents.array()[0], CCopasiObject::ValueDbl));
-  assert(mExpRef1);
-  mExpRef2 = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
-             (addObjectReference("Exp2", mExponents.array()[1], CCopasiObject::ValueDbl));
-  assert(mExpRef2);
-  mExpRef3 = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
-             (addObjectReference("Exp3", mExponents.array()[2], CCopasiObject::ValueDbl));
-  assert(mExpRef3);
+  unsigned C_INT32 i;
 
-  mLocalExponents.resize(3);
-  mLocExpRef1 = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
-                (addObjectReference("LocExp1", mLocalExponents.array()[0], CCopasiObject::ValueDbl));
-  assert(mLocExpRef1);
-  mLocExpRef2 = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
-                (addObjectReference("LocExp2", mLocalExponents.array()[1], CCopasiObject::ValueDbl));
-  assert(mLocExpRef2);
-  mLocExpRef3 = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
-                (addObjectReference("LocExp3", mLocalExponents.array()[2], CCopasiObject::ValueDbl));
-  assert(mLocExpRef3);
+  mExponents.resize(LYAP_NUM_REF);
+  mvExpRef.resize(LYAP_NUM_REF);
+
+  mLocalExponents.resize(LYAP_NUM_REF);
+  mvLocExpRef.resize(LYAP_NUM_REF);
+
+  for (i = 0; i < LYAP_NUM_REF; ++i)
+    {
+      std::ostringstream sss;
+      sss << "Exponent " << i + 1;
+      mvExpRef[i] = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
+                    (addObjectReference(sss.str(), mExponents.array()[i], CCopasiObject::ValueDbl));
+      assert(mvExpRef[i]);
+
+      std::ostringstream sss2;
+      sss2 << "Local exponent " << i + 1;
+      mvLocExpRef[i] = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
+                       (addObjectReference(sss2.str(), mLocalExponents.array()[i], CCopasiObject::ValueDbl));
+      assert(mvLocExpRef[i]);
+    }
 }
 
 bool CLyapTask::initialize(const OutputFlag & of,
@@ -98,11 +104,23 @@ bool CLyapTask::initialize(const OutputFlag & of,
 
   bool success = mpMethod->isValidProblem(mpProblem);
 
-  mLocalExponents.resize(mpLyapProblem->getExponentNumber());
-  mExponents.resize(mpLyapProblem->getExponentNumber());
-  //TODO: set reference
-  mExpRef1->setReference(mExponents.array()[0]);
-  mLocExpRef1->setReference(mLocalExponents.array()[0]);
+  unsigned C_INT32 nnn;
+  if (mpLyapProblem->getExponentNumber() > LYAP_NUM_REF)
+    nnn = mpLyapProblem->getExponentNumber();
+  else
+    nnn = LYAP_NUM_REF;
+
+  mLocalExponents.resize(nnn);
+  mExponents.resize(nnn);
+
+  //update object references because the object may have been
+  //moved by the resize above
+  unsigned C_INT32 i;
+  for (i = 0; i < LYAP_NUM_REF; ++i)
+    {
+      mvExpRef[i]->setReference(mExponents.array()[i]);
+      mvLocExpRef[i]->setReference(mLocalExponents.array()[i]);
+    }
 
   if (!CCopasiTask::initialize(of, pOstream)) success = false;
   mTimeSeriesRequested = mpLyapProblem->timeSeriesRequested();

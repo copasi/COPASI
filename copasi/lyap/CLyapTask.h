@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/05 15:14:52 $
+   $Date: 2006/05/05 23:19:20 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,12 +64,8 @@ class CLyapTask : public CCopasiTask
     unsigned C_INT32 mhProcess;
 
     //for updating the references
-    CCopasiObjectReference<C_FLOAT64> * mExpRef1;
-    CCopasiObjectReference<C_FLOAT64> * mLocExpRef1;
-    CCopasiObjectReference<C_FLOAT64> * mExpRef2;
-    CCopasiObjectReference<C_FLOAT64> * mLocExpRef2;
-    CCopasiObjectReference<C_FLOAT64> * mExpRef3;
-    CCopasiObjectReference<C_FLOAT64> * mLocExpRef3;
+    std::vector<CCopasiObjectReference<C_FLOAT64> *> mvExpRef;
+    std::vector<CCopasiObjectReference<C_FLOAT64> *> mvLocExpRef;
 
   public:
     /**
