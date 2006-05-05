@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapProblem.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/04 10:54:43 $
+   $Date: 2006/05/05 23:45:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,16 +35,10 @@ CLyapProblem::CLyapProblem(const CCopasiContainer * pParent):
     mpTimeSeriesRequested(NULL),
     mpTransientTime(NULL)
 {
-  //addParameter("StepNumber", CCopasiParameter::UINT, (unsigned C_INT32) 100);
-  //addParameter("StepSize", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.01);
-  //addParameter("Duration", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
   addParameter("ExponentNumber", CCopasiParameter::UINT, (unsigned C_INT32) 3);
   addParameter("TimeSeriesRequested", CCopasiParameter::BOOL, (bool) true);
   addParameter("TransientTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0);
 
-  //mpStepNumber = getValue("StepNumber").pUINT;
-  //mpStepSize = getValue("StepSize").pDOUBLE;
-  //mpDuration = getValue("Duration").pDOUBLE;
   mpExponentNumber = getValue("ExponentNumber").pUINT;
   mpTimeSeriesRequested = getValue("TimeSeriesRequested").pBOOL;
   mpTransientTime = getValue("TransientTime").pDOUBLE;
@@ -60,17 +54,10 @@ CLyapProblem::CLyapProblem(const CCopasiContainer * pParent):
 CLyapProblem::CLyapProblem(const CLyapProblem & src,
                            const CCopasiContainer * pParent):
     CCopasiProblem(src, pParent),
-    //mpDuration(NULL),
-    //mpStepSize(NULL),
-    //mpStepNumber(NULL),
     mpExponentNumber(NULL),
     mpTimeSeriesRequested(NULL),
     mpTransientTime(NULL)
-    //mStepNumberSetLast(src.mStepNumberSetLast)
 {
-  //mpStepNumber = getValue("StepNumber").pUINT;
-  //mpStepSize = getValue("StepSize").pDOUBLE;
-  //mpDuration = getValue("Duration").pDOUBLE;
   mpExponentNumber = getValue("ExponentNumber").pUINT;
   mpTimeSeriesRequested = getValue("TimeSeriesRequested").pBOOL;
   mpTransientTime = getValue("TransientTime").pDOUBLE;
@@ -100,7 +87,6 @@ void CLyapProblem::initObjects()
   /*  const_cast<CCopasiObject *>(getParameter("StepSize")
                                 ->getObject(CCopasiObjectName("Reference=Value")))
     ->setUpdateMethod(this, &CLyapProblem::setStepSize);
-
 
     const_cast<CCopasiObject *>(getParameter("Duration")
                                 ->getObject(CCopasiObjectName("Reference=Value")))

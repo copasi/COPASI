@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapProblem.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/04 10:54:43 $
+   $Date: 2006/05/05 23:45:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,18 +26,6 @@ class CLyapProblem : public CCopasiProblem
   {
     // Attributes
   private:
-    //C_FLOAT64 * mpDuration;
-
-    /**
-     *
-     */
-    //C_FLOAT64 * mpStepSize;
-
-    /**
-     *
-     */
-    //unsigned C_INT32 * mpStepNumber;
-
     /**
      *  Number of exponents to calculate. 0 means all.
      */
@@ -53,11 +41,6 @@ class CLyapProblem : public CCopasiProblem
      *  should be started.
      */
     C_FLOAT64 * mpTransientTime;
-
-    /**
-     *  Indicate whether the step number or step size was set last.
-     */
-    //bool mStepNumberSetLast;
 
   public:
     // Operations
@@ -101,32 +84,6 @@ class CLyapProblem : public CCopasiProblem
     const unsigned C_INT32 & getExponentNumber() const;
 
     /**
-     * Set the size a integration step the trajectory method should do.
-     * @param "const C_FLOAT64 &" stepSize
-     * @parem bool success
-     */
-    //void setStepSize(const C_FLOAT64 & stepSize);
-
-    /**
-     * Retrieve the size a integration step the trajectory method should do.
-     * @return "const C_FLOAT64 &" stepSize
-     */
-    //const C_FLOAT64 & getStepSize() const;
-
-    /**
-     * Set the end time.
-     * @param "const C_FLOAT64 &" duration
-     * @parem bool success
-     */
-    //void setDuration(const C_FLOAT64 & duration);
-
-    /**
-     * Retrieve the end time.
-     * @return "const C_FLOAT64 &" duration
-     */
-    //const C_FLOAT64 & getDuration() const;
-
-    /**
      * Set the end time.
      * @param "const C_FLOAT64 &" endTime
      */
@@ -157,13 +114,8 @@ class CLyapProblem : public CCopasiProblem
     //              CReadConfig::Mode mode = CReadConfig::NEXT);
 
   private:
-    /**
-     * This function synchronizes step size and number
-     * @parem bool success
-     */
-    //bool sync();
 
     void initObjects();
   };
 
-#endif // COPASI_CTrajectoryProblem
+#endif
