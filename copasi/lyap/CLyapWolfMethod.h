@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/04 10:54:43 $
+   $Date: 2006/05/05 15:14:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,7 @@ class CLyapWolfMethod : public CLyapMethod
     /**
      *  Number of exponents to calculate
      */
-    C_INT32 mNumExp;
+    unsigned C_INT32 mNumExp;
 
     CMatrix<C_FLOAT64> mJacobian;
 
@@ -201,5 +201,12 @@ class CLyapWolfMethod : public CLyapMethod
 
   private:
     void orthonormalize();
+
+    static C_FLOAT64 norm(const C_FLOAT64* dbl1, const C_FLOAT64 * dbl2);
+    static void scalarmult(C_FLOAT64* dbl1, const C_FLOAT64* dbl2, const C_FLOAT64 & f);
+    static C_FLOAT64 product(const C_FLOAT64* dbl1, const C_FLOAT64* dbl1End,
+                             const C_FLOAT64* dbl2);
+    static void CLyapWolfMethod::add(C_FLOAT64* dbl1, const C_FLOAT64* dbl1End,
+                                     const C_FLOAT64 & f, const C_FLOAT64* dbl2);
   };
 #endif // COPASI_CLsodaMethod

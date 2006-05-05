@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/04 19:12:33 $
+   $Author: ssahle $
+   $Date: 2006/05/05 15:14:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,11 +144,13 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   mVariables.resize(mDim[0]);
   memcpy(mVariables.array(), mpState->beginIndependent(), mSystemSize * sizeof(C_FLOAT64));
 
-  //TODO: generalize for several exponents
-  C_FLOAT64 *dbl, *dblEnd = mVariables.array() + 2 * mSystemSize;
+  //generate base vectors; first fill the array with 0
+  C_FLOAT64 *dbl, *dblEnd = mVariables.array() + mDim[0];
   for (dbl = mVariables.array() + mSystemSize; dbl != dblEnd; ++dbl)
-    *dbl = 0;
-  *(mVariables.array() + mSystemSize) = 1.0;
+    *dbl = 0.0;
+  //now add 1.0
+  for (dbl = mVariables.array() + mSystemSize; dbl < dblEnd; dbl += (mSystemSize + 1))
+    * dbl = 1.0;
 
   //reserve space for jacobian
   mJacobian.resize(mSystemSize, mSystemSize);
@@ -259,16 +261,22 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
   const C_FLOAT64 *dbl2, *dbl3, *dbl1end, *dbl3end;
 
   dbl1 = ydot + mSystemSize;
-  dbl1end = dbl1 + mSystemSize;
-  dbl2 = mJacobian.array();
-  for (; dbl1 != dbl1end; ++dbl1)
-    {
-      *dbl1 = 0.0;
 
-      dbl3 = y + mSystemSize;
-      dbl3end = dbl3 + mSystemSize;
-      for (; dbl3 != dbl3end; ++dbl3, ++dbl2)
-        *dbl1 += *dbl2 * *dbl3;
+  unsigned C_INT32 i;
+  for (i = 1; i <= mNumExp; ++i)
+    {
+      //dbl1 += mSystemSize;
+      dbl1end = dbl1 + mSystemSize;
+      dbl2 = mJacobian.array();
+      for (; dbl1 != dbl1end; ++dbl1)
+        {
+          *dbl1 = 0.0;
+
+          dbl3 = y + i * mSystemSize;
+          dbl3end = dbl3 + mSystemSize;
+          for (; dbl3 != dbl3end; ++dbl3, ++dbl2)
+            *dbl1 += *dbl2 * *dbl3;
+        }
     }
 
   //debug output
@@ -349,16 +357,23 @@ bool CLyapWolfMethod::calculate()
   orthonormalize();
   mLsodaStatus = 1; //the state has changed, we need to restart lsoda
 
+  unsigned C_INT32 i;
+
   do
     {
       step(stepSize);
 
       orthonormalize();
       mLsodaStatus = 1; //the state has changed, we need to restart lsoda
-      mpTask->mLocalExponents[0] = log(mNorms[0]);
-      mSumExponents[0] += mpTask->mLocalExponents[0];
-      mpTask->mLocalExponents[0] = mpTask->mLocalExponents[0] / stepSize;
-      mpTask->mExponents[0] = mSumExponents[0] / (mTime - startTime);
+
+      //process results of orthonormalisation
+      for (i = 0; i < mNumExp; ++i)
+        {
+          mpTask->mLocalExponents[i] = log(mNorms[i]);
+          mSumExponents[i] += mpTask->mLocalExponents[i];
+          mpTask->mLocalExponents[i] = mpTask->mLocalExponents[i] / stepSize;
+          mpTask->mExponents[i] = mSumExponents[i] / (mTime - startTime);
+        }
 
       //       std::cout << mTime << " "
       //               << mpTask->mLocalExponents[0] << " " << mSumExponents[0]
@@ -380,15 +395,73 @@ bool CLyapWolfMethod::calculate()
 void CLyapWolfMethod::orthonormalize()
 {
   //TODO generalize
+  C_FLOAT64 *dbl, *dblEnd;
 
-  C_FLOAT64 norm = 0;
-  C_FLOAT64 *dbl, *dblEnd = mVariables.array() + 2 * mSystemSize;
-  for (dbl = mVariables.array() + mSystemSize; dbl != dblEnd; ++dbl)
-    norm += *dbl * *dbl;
-  mNorms[0] = sqrt(norm);
+  dbl = mVariables.array() + mSystemSize;
+  dblEnd = dbl + mSystemSize;
+  mNorms[0] = norm(dbl, dblEnd);
+  scalarmult(dbl, dblEnd, 1 / mNorms[0]);
 
-  //std::cout << mNorms[0] << std::endl;
+  unsigned C_INT32 i, j;
+  for (i = 1; i < mNumExp; ++i)
+    {
+      /*      C_FLOAT64 norm = 0;
+            C_FLOAT64 *dbl, *dblEnd = mVariables.array() + (i+2) * mSystemSize;
+            for (dbl = mVariables.array() + (i+1)*mSystemSize; dbl != dblEnd; ++dbl)
+              norm += *dbl * *dbl;
+            mNorms[i] = sqrt(norm);
+            std::cout << mNorms[0] << std::endl;
+            for (dbl = mVariables.array() + (i+1)*mSystemSize; dbl != dblEnd; ++dbl)
+              *dbl /= mNorms[i];*/
+      dbl += mSystemSize;
+      dblEnd = dbl + mSystemSize;
 
-  for (dbl = mVariables.array() + mSystemSize; dbl != dblEnd; ++dbl)
-    *dbl /= mNorms[0];
+      //orthogonalisation
+      for (j = 0; j < i; ++j)
+        {
+          add(dbl, dblEnd,
+              -product(dbl, dblEnd, mVariables.array() + (j + 1)*mSystemSize),
+              mVariables.array() + (j + 1)*mSystemSize);
+        }
+
+      //normalisation
+      mNorms[i] = norm(dbl, dblEnd);
+      scalarmult(dbl, dblEnd, 1 / mNorms[i]);
+    }
+}
+
+//static
+C_FLOAT64 CLyapWolfMethod::norm(const C_FLOAT64* dbl1, const C_FLOAT64 * dbl2)
+{
+  C_FLOAT64 sum = 0;
+  for (; dbl1 != dbl2; ++dbl1)
+    sum += *dbl1 * *dbl1;
+  return sqrt(sum);
+}
+
+//static
+void CLyapWolfMethod::scalarmult(C_FLOAT64* dbl1, const C_FLOAT64* dbl2,
+                                 const C_FLOAT64 & f)
+{
+  for (; dbl1 != dbl2; ++dbl1)
+    *dbl1 *= f;
+}
+
+//static
+C_FLOAT64 CLyapWolfMethod::product(const C_FLOAT64* dbl1, const C_FLOAT64* dbl1End,
+                                   const C_FLOAT64* dbl2)
+{
+  C_FLOAT64 sum = 0;
+  for (; dbl1 != dbl1End; ++dbl1, ++dbl2)
+    sum += *dbl1 * *dbl2;
+  return sum;
+}
+
+//static
+void CLyapWolfMethod::add(C_FLOAT64* dbl1, const C_FLOAT64* dbl1End,
+                          const C_FLOAT64 & f, const C_FLOAT64* dbl2)
+{
+  //calculate v1 = v1 + f * v2
+  for (; dbl1 != dbl1End; ++dbl1, ++dbl2)
+    *dbl1 += f * *dbl2;
 }

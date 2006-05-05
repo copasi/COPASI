@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/04 10:54:43 $
+   $Date: 2006/05/05 15:14:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,11 +64,23 @@ void CLyapTask::initObjects()
   mExpRef1 = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
              (addObjectReference("Exp1", mExponents.array()[0], CCopasiObject::ValueDbl));
   assert(mExpRef1);
+  mExpRef2 = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
+             (addObjectReference("Exp2", mExponents.array()[1], CCopasiObject::ValueDbl));
+  assert(mExpRef2);
+  mExpRef3 = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
+             (addObjectReference("Exp3", mExponents.array()[2], CCopasiObject::ValueDbl));
+  assert(mExpRef3);
 
   mLocalExponents.resize(3);
   mLocExpRef1 = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
                 (addObjectReference("LocExp1", mLocalExponents.array()[0], CCopasiObject::ValueDbl));
   assert(mLocExpRef1);
+  mLocExpRef2 = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
+                (addObjectReference("LocExp2", mLocalExponents.array()[1], CCopasiObject::ValueDbl));
+  assert(mLocExpRef2);
+  mLocExpRef3 = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
+                (addObjectReference("LocExp3", mLocalExponents.array()[2], CCopasiObject::ValueDbl));
+  assert(mLocExpRef3);
 }
 
 bool CLyapTask::initialize(const OutputFlag & of,
