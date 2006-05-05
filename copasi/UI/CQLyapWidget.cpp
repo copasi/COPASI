@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/04 11:00:50 $
+   $Date: 2006/05/05 23:46:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,16 +88,15 @@ CQLyapWidget::CQLyapWidget(QWidget* parent, const char* name, WFlags fl)
   CQLyapWidgetLayout->addItem(spacer2, 1, 1);
 
   //****
-  /*
-  nDuration = new MyLineEdit(this, "nDuration");
-  //nDuration->setText(trUtf8(""));
-  nDuration->setValidator(new QDoubleValidator(nDuration));
-  CQLyapWidgetLayout->addWidget(nDuration, 2, 1);
 
-  TextLabel1_2_2 = new QLabel(this, "TextLabel1_2_2");
-  TextLabel1_2_2->setText(trUtf8("Duration"));
-  TextLabel1_2_2->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
-  CQLyapWidgetLayout->addWidget(TextLabel1_2_2, 2, 0);*/
+  lineNum = new MyLineEdit(this, "lineNum");
+  lineNum->setValidator(new QIntValidator(1, 50, lineNum));
+  CQLyapWidgetLayout->addWidget(lineNum, 2, 1);
+
+  TextLabelNum = new QLabel(this, "TextLabelNum");
+  TextLabelNum->setText("Number of exponents");
+  TextLabelNum->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  CQLyapWidgetLayout->addWidget(TextLabelNum, 2, 0);
 
   //***********************
 
@@ -273,7 +272,11 @@ CQLyapWidget::~CQLyapWidget()
     }
 
 
+
+
   nStepSize->setText(QString::number(mpProblem->getStepSize()));
+
+
 
 
   checkTimeSeries();
@@ -282,6 +285,8 @@ CQLyapWidget::~CQLyapWidget()
 /*void CQLyapWidget::checkTimeSeries()
 {
   //std::cout << "checkTimeSeries() " << nStepNumber->text().toLong() << " " << CCopasiDataModel::Global->getModel()->getIntMetab() << std::endl;
+
+
 
 
   if (nStepNumber->text().toLong() * CCopasiDataModel::Global->getModel()->getNumVariableMetabs() > TSMAX)
@@ -453,22 +458,17 @@ void CQLyapWidget::loadLyapTask()
     dynamic_cast<CLyapProblem *>(tt->getProblem());
   assert(problem);
 
-  //pdelete(mpProblem);
-  //mpProblem = new CLyapProblem(*trajectoryproblem);
-
   CLyapMethod* method =
     dynamic_cast<CLyapMethod *>(tt->getMethod());
   assert(method);
-
-  //name
-  //taskName->setText(tr("Lyap Task"));
-  //taskName->setEnabled(false);
 
   //numbers
   //nStepSize->setText(QString::number(trajectoryproblem->getStepSize()));
   //nStepNumber->setText(QString::number(trajectoryproblem->getStepNumber()));
   //  nStartTime->setText(QString::number(trajectoryproblem->getStartTime()));
   //nDuration->setText(QString::number(problem->getDuration()));
+
+  lineNum->setText(QString::number(problem->getExponentNumber()));
 
   bool tmpflag (CCopasiDataModel::Global->getModel()->getInitialTime()
                 == problem->getTransientTime());
@@ -533,13 +533,13 @@ void CQLyapWidget::saveLyapTask()
   tt->setScheduled(bScheduled);
   tt->setUpdateModel(setInitialState->isChecked());
 
-  CLyapProblem* trajectoryproblem =
+  CLyapProblem* problem =
     dynamic_cast<CLyapProblem *>(tt->getProblem());
-  assert(trajectoryproblem);
+  assert(problem);
 
-  CLyapMethod* trajectorymethod =
+  CLyapMethod* method =
     dynamic_cast<CLyapMethod *>(tt->getMethod());
-  assert(trajectorymethod);
+  assert(method);
 
   //numbers
   //if (trajectoryproblem->getStepSize() != nStepSize->text().toDouble())
@@ -549,19 +549,21 @@ void CQLyapWidget::saveLyapTask()
   //  trajectoryproblem->setStartTime(nStartTime->text().toDouble());
   //trajectoryproblem->setDuration(nDuration->text().toDouble());
 
-  if (mCheckBoxStartOutput->isChecked())
-    trajectoryproblem->setTransientTime(mLineEditStartOutput->text().toDouble());
-  else
-    trajectoryproblem->setTransientTime(CCopasiDataModel::Global->getModel()->getInitialTime());
+  problem->setExponentNumber(lineNum->text().toInt());
 
-  trajectoryproblem->setTimeSeriesRequested(bStoreTimeSeries->isChecked());
+  if (mCheckBoxStartOutput->isChecked())
+    problem->setTransientTime(mLineEditStartOutput->text().toDouble());
+  else
+    problem->setTransientTime(CCopasiDataModel::Global->getModel()->getInitialTime());
+
+  problem->setTimeSeriesRequested(bStoreTimeSeries->isChecked());
 
   //set initial state
   CCopasiDataModel::Global->getModel()->compileIfNecessary();
   //trajectoryproblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
   //method
-  if (CCopasiMethod::SubTypeName[trajectorymethod->getSubType()] !=
+  if (CCopasiMethod::SubTypeName[method->getSubType()] !=
       (const char *)ComboBox1->currentText().utf8())
     UpdateMethod(false);
 
@@ -570,11 +572,11 @@ void CQLyapWidget::saveLyapTask()
   QString strname;
 
   unsigned C_INT32 i;
-  for (i = 0; i < trajectorymethod->size(); i++)
+  for (i = 0; i < method->size(); i++)
     {
       pItem = parameterTable->item(i, 0);
       value = pItem->text();
-      setParameterValue(trajectorymethod, i, value);
+      setParameterValue(method, i, value);
     }
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
