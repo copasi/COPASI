@@ -20,12 +20,12 @@ NUM_REPEATS=int(sys.argv[5])
 
 INPUT=file(INPUTFILE,"r").readlines()
 
-if(len(INPUT) != (NUM_REPEATS * (NUM_STEPS + 3))):
+if(len(INPUT) != (NUM_REPEATS * (NUM_STEPS + 2) + 1)):
     print "Wrong number of data points."
     sys.exit(1)
 
 DATA=[]
-LINENUMBER=0
+LINENUMBER=1
 NUMCOLUMNS=len(string.split(INPUT[1]))
 MEAN=[]
 
@@ -37,7 +37,6 @@ for X in range(0,NUM_STEPS+1):
         MEAN[X].append(0)
 
 for X in range(0,NUM_REPEATS):
-   LINENUMBER=LINENUMBER+1 # skip the header
    SET=[]
    for Y in range(0, NUM_STEPS+1):
      LINE=INPUT[LINENUMBER]
