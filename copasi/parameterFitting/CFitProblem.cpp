@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 19:17:14 $
+   $Date: 2006/05/05 16:26:47 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -197,7 +197,8 @@ bool CFitProblem::initialize()
           CCopasiMessage::getLastMessage();
         }
 
-      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+      if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::WARNING &&
+          CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
         return false;
     }
 
