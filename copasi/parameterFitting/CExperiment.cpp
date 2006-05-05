@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:29 $
+   $Date: 2006/05/05 16:24:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -455,10 +455,16 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
 
   unsigned C_INT32 i, imax = getLastNotIgnoredColumn();
   if (*mpNumColumns <= imax)
-    success = false; // More column types specified than we have data columns
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 4, imax + 1, *mpNumColumns + 1);
+      return false; // More column types specified than we have data columns
+    }
 
-  if (LastMappedColumn < imax)
-    success = false; // More column types specified than we have mapped columns
+  if (LastMappedColumn < imax || LastMappedColumn == C_INVALID_INDEX)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 5, imax + 1);
+      return false; // More column types specified than we have mapped columns
+    }
 
   unsigned C_INT32 IndependentCount = mDataIndependent.numCols();
   unsigned C_INT32 DependentCount = mDataDependent.numCols();
@@ -482,9 +488,15 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
 
       case independent:
         if (!Objects[i]) // Object not found
-          return false;  // :TODO: create error message The column must be mapped
+          {
+            CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 5, i + 1);
+            return false;
+          }
         if (!Objects[i]->isValueDbl())
-          return false;  // TODO: is this a fatal error?
+          {
+            CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
+            return false;
+          }
         mIndependentUpdateMethods[IndependentCount] =
           Objects[i]->getUpdateMethod();
         mIndependentValues[IndependentCount++] =
@@ -494,9 +506,15 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
 
       case dependent:
         if (!Objects[i]) // Object not found
-          return false;  // :TODO: create error message The column must be mapped
+          {
+            CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 5, i + 1);
+            return false;
+          }
         if (!Objects[i]->isValueDbl())
-          return false;  // TODO: is this a fatal error?
+          {
+            CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, Objects[i]->getObjectDisplayName().c_str(), i + 1);
+            return false;
+          }
         mDependentValues[DependentCount] =
           (C_FLOAT64 *) Objects[i]->getValuePointer();
         //TODO: do we have to check if getValuePointer() return a valid pointer?
@@ -548,7 +566,10 @@ bool CExperiment::read(std::istream & in,
   // Allocate for reading
   unsigned C_INT32 i, imax = mpColumnType->size();
   if (*mpNumColumns < imax)
-    return false; // More column types specified than we have data columns
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 4, imax, *mpNumColumns);
+      return false; // More column types specified than we have data columns
+    }
 
   unsigned C_INT32 IndependentCount = 0;
   unsigned C_INT32 DependentCount = 0;
