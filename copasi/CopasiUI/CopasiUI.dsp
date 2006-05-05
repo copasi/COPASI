@@ -170,6 +170,10 @@ SOURCE=.\CQFittingWidget.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQLyapWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQOptimizationWidget.cpp
 # End Source File
 # Begin Source File
@@ -615,6 +619,10 @@ SOURCE=.\CQFittingWidget.h
 # Begin Source File
 
 SOURCE=.\CQFittingWidget.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQLyapWidget.h
 # End Source File
 # Begin Source File
 
