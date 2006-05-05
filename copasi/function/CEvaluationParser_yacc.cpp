@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationParser_yacc.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Date: 2006/05/05 17:08:36 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,8 +62,8 @@ static int yygrowstack();
 # undef yyerror
 #endif
 #define yyerror(__str) \
-   if (yychar != YYERRCODE) correctErrorPosition(); \
-   CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
+  if (yychar != YYERRCODE) correctErrorPosition(); \
+  CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 1, mPosition)
 
 #include "copasi.h"
 #include "CEvaluationNode.h"
@@ -138,9 +138,9 @@ const short CEvaluationParsersindex[] =
     -155,
     0, 0, -274, -225, -155, -194, -155, -4, 0, -180,
     0, -155, 0, -216, -123, -155, -155, -155, -155, -191,
-    -143, -261, -280, -119, 0, -216, -216, -92, 97, 0,
+    -143, -261, -280, -119, 0, -216, -216, -92, 100, 0,
     -186, -186, -202, -131, 0, -4, 0, 0, 0, 0,
-    0, -180, 0, 0, 102, -147, -19, -216, -216, -155,
+    0, -180, 0, 0, -226, -147, -19, -216, -216, -155,
     -155, -155, -155, -216, -216, -216, -216, -216, -155, -4,
     0, 0, -87, -184, -71, 0, -4, -4, -4, -4,
     -163, -116, -226, -87, -184, -71, 0, -111, -155, -115,
@@ -153,10 +153,10 @@ const short CEvaluationParserrindex[] =
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     1, 21, 35, 49, 0, -270, 0, 0, 0, 0,
-    0, 0, 0, 0, -145, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 84, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, -248,
     0, 0, -198, 63, -73, 0, -60, -55, -42, -37,
-    -252, -266, 84, 67, 80, -24, 0, 0, 0, 0,
+    -252, -266, 87, 67, 80, -24, 0, 0, 0, 0,
     0,
   };
 const short CEvaluationParsergindex[] =
@@ -164,7 +164,7 @@ const short CEvaluationParsergindex[] =
     6,
     -18, 0, -15, 0, 0,
   };
-#define YYTABLESIZE 377
+#define YYTABLESIZE 380
 const short CEvaluationParsertable[] =
   {
     42,
@@ -181,7 +181,7 @@ const short CEvaluationParsertable[] =
     39, 1, 2, 3, 4, 5, 55, 56, 57, 58,
     6, 0, 39, 39, 16, 17, 18, 19, 16, 17,
     18, 19, 7, 0, 48, 49, 50, 51, 52, 53,
-    16, 17, 18, 30, 29, 29, 38, 39, 16, 17,
+    16, 17, 18, 30, 0, 0, 38, 39, 16, 17,
     18, 19, 16, 17, 18, 19, 16, 17, 18, 19,
     16, 17, 18, 19, 56, 57, 58, 30, 0, 0,
     0, 44, 0, 0, 0, 81, 0, 0, 79, 16,
@@ -203,9 +203,9 @@ const short CEvaluationParsertable[] =
     3, 3, 3, 3, 3, 3, 0, 0, 3, 3,
     3, 14, 14, 14, 14, 15, 15, 15, 15, 0,
     0, 0, 14, 14, 0, 0, 15, 15, 16, 16,
-    16, 16, 27, 27, 27, 0, 0, 0, 0, 16,
-    16, 0, 0, 27, 27, 54, 55, 56, 57, 58,
-    54, 55, 56, 57, 58, 0, 59,
+    16, 16, 29, 29, 29, 27, 27, 27, 0, 16,
+    16, 0, 0, 29, 29, 0, 27, 27, 54, 55,
+    56, 57, 58, 0, 0, 0, 0, 0, 0, 59,
   };
 const short CEvaluationParsercheck[] =
   {
@@ -223,7 +223,7 @@ const short CEvaluationParsercheck[] =
     266, 257, 258, 259, 260, 261, 270, 271, 272, 273,
     266, -1, 278, 279, 262, 263, 264, 265, 262, 263,
     264, 265, 278, -1, 272, 273, 274, 275, 276, 277,
-    262, 263, 264, 281, 280, 281, 280, 281, 262, 263,
+    262, 263, 264, 281, -1, -1, 280, 281, 262, 263,
     264, 265, 262, 263, 264, 265, 262, 263, 264, 265,
     262, 263, 264, 265, 271, 272, 273, 281, -1, -1,
     -1, 281, -1, -1, -1, 281, -1, -1, 280, 262,
@@ -245,9 +245,9 @@ const short CEvaluationParsercheck[] =
     272, 273, 274, 275, 276, 277, -1, -1, 280, 281,
     282, 269, 270, 271, 272, 269, 270, 271, 272, -1,
     -1, -1, 280, 281, -1, -1, 280, 281, 269, 270,
-    271, 272, 269, 270, 271, -1, -1, -1, -1, 280,
-    281, -1, -1, 280, 281, 269, 270, 271, 272, 273,
-    269, 270, 271, 272, 273, -1, 280,
+    271, 272, 269, 270, 271, 269, 270, 271, -1, 280,
+    281, -1, -1, 280, 281, -1, 280, 281, 269, 270,
+    271, 272, 273, -1, -1, -1, -1, -1, -1, 280,
   };
 #define YYFINAL 8
 #ifndef YYDEBUG
@@ -348,7 +348,7 @@ short *yyss;
 short *yysslim;
 YYSTYPE *yyvs;
 int yystacksize;
-#line 335 "CEvaluationParser.ypp"
+#line 332 "CEvaluationParser.ypp"
 
 #line 323 "CEvaluationParser_yacc.cpp"
 /* allocate initial stack or double stack size, up to YYMAXDEPTH */
@@ -546,19 +546,19 @@ YYPARSE_PARAM_DECL
   switch (yyn)
     {
     case 1:
-#line 84 "CEvaluationParser.ypp"
+#line 81 "CEvaluationParser.ypp"
       {
         mpRootNode = yyvsp[0];
         }
         break;
       case 2:
-#line 88 "CEvaluationParser.ypp"
+#line 85 "CEvaluationParser.ypp"
         {
           mpRootNode = yyvsp[0];
         }
         break;
       case 3:
-#line 92 "CEvaluationParser.ypp"
+#line 89 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -567,7 +567,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 4:
-#line 99 "CEvaluationParser.ypp"
+#line 96 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -576,7 +576,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 5:
-#line 106 "CEvaluationParser.ypp"
+#line 103 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -585,7 +585,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 6:
-#line 113 "CEvaluationParser.ypp"
+#line 110 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -594,14 +594,14 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 7:
-#line 120 "CEvaluationParser.ypp"
+#line 117 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           mpRootNode = yyval;
         }
         break;
       case 8:
-#line 125 "CEvaluationParser.ypp"
+#line 122 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -3];
           yyval->addChild(yyvsp[ -1]);
@@ -609,7 +609,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 9:
-#line 131 "CEvaluationParser.ypp"
+#line 128 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[0]);
@@ -617,7 +617,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 10:
-#line 137 "CEvaluationParser.ypp"
+#line 134 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -7];
           yyval->addChild(yyvsp[ -5]);
@@ -627,20 +627,20 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 11:
-#line 145 "CEvaluationParser.ypp"
+#line 142 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[0];
           mpRootNode = yyval;
         }
         break;
       case 12:
-#line 151 "CEvaluationParser.ypp"
+#line 148 "CEvaluationParser.ypp"
         {
           mpRootNode = yyvsp[0];
         }
         break;
       case 13:
-#line 155 "CEvaluationParser.ypp"
+#line 152 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -649,7 +649,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 14:
-#line 162 "CEvaluationParser.ypp"
+#line 159 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -658,7 +658,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 15:
-#line 169 "CEvaluationParser.ypp"
+#line 166 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -667,7 +667,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 16:
-#line 176 "CEvaluationParser.ypp"
+#line 173 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -676,7 +676,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 17:
-#line 183 "CEvaluationParser.ypp"
+#line 180 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -685,7 +685,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 18:
-#line 190 "CEvaluationParser.ypp"
+#line 187 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -694,7 +694,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 19:
-#line 197 "CEvaluationParser.ypp"
+#line 194 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -703,7 +703,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 20:
-#line 204 "CEvaluationParser.ypp"
+#line 201 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -712,7 +712,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 21:
-#line 211 "CEvaluationParser.ypp"
+#line 208 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -721,7 +721,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 22:
-#line 218 "CEvaluationParser.ypp"
+#line 215 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -730,7 +730,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 23:
-#line 225 "CEvaluationParser.ypp"
+#line 222 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -739,7 +739,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 24:
-#line 232 "CEvaluationParser.ypp"
+#line 229 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -748,7 +748,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 25:
-#line 239 "CEvaluationParser.ypp"
+#line 236 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -757,7 +757,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 26:
-#line 246 "CEvaluationParser.ypp"
+#line 243 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -766,7 +766,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 27:
-#line 253 "CEvaluationParser.ypp"
+#line 250 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[ -2]);
@@ -775,14 +775,14 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 28:
-#line 260 "CEvaluationParser.ypp"
+#line 257 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           mpRootNode = yyval;
         }
         break;
       case 29:
-#line 265 "CEvaluationParser.ypp"
+#line 262 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
           yyval->addChild(yyvsp[0]);
@@ -790,20 +790,20 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 30:
-#line 272 "CEvaluationParser.ypp"
+#line 269 "CEvaluationParser.ypp"
         {
           yyval = new CEvaluationNodeVector();
           mpNodeList->push_back(yyval);
         }
         break;
       case 31:
-#line 277 "CEvaluationParser.ypp"
+#line 274 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
         }
         break;
       case 32:
-#line 283 "CEvaluationParser.ypp"
+#line 280 "CEvaluationParser.ypp"
         {
           yyval = new CEvaluationNodeVector();
           mpNodeList->push_back(yyval);
@@ -811,7 +811,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 33:
-#line 289 "CEvaluationParser.ypp"
+#line 286 "CEvaluationParser.ypp"
         {
           yyval = new CEvaluationNodeVector();
           mpNodeList->push_back(yyval);
@@ -819,52 +819,52 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 34:
-#line 295 "CEvaluationParser.ypp"
+#line 292 "CEvaluationParser.ypp"
         {
           yyval->addChild(yyvsp[0]);
         }
         break;
       case 35:
-#line 299 "CEvaluationParser.ypp"
+#line 296 "CEvaluationParser.ypp"
         {
           yyval->addChild(yyvsp[0]);
         }
         break;
       case 36:
-#line 304 "CEvaluationParser.ypp"
+#line 301 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -1];
         }
         break;
       case 37:
-#line 308 "CEvaluationParser.ypp"
+#line 305 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -2];
           yyval->addChild(yyvsp[ -1]);
         }
         break;
       case 38:
-#line 313 "CEvaluationParser.ypp"
+#line 310 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -2];
           yyval->addChild(yyvsp[ -1]);
         }
         break;
       case 39:
-#line 319 "CEvaluationParser.ypp"
+#line 316 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[0];
         }
         break;
       case 40:
-#line 323 "CEvaluationParser.ypp"
+#line 320 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -2];
           yyval->addChild(yyvsp[ -1]);
         }
         break;
       case 41:
-#line 328 "CEvaluationParser.ypp"
+#line 325 "CEvaluationParser.ypp"
         {
           yyval = yyvsp[ -2];
           yyval->addChild(yyvsp[ -1]);
