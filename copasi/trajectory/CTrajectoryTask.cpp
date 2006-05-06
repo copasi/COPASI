@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 20:55:42 $
+   $Date: 2006/05/06 03:10:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,17 @@ bool ble(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 
 bool bl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 {return (d1 > d2);}
+
+const unsigned C_INT32 CTrajectoryTask::ValidMethods[] =
+  {
+    CCopasiMethod::deterministic,
+    CCopasiMethod::stochastic,
+    CCopasiMethod::hybrid,
+#ifdef COPASI_DEBUG
+    CCopasiMethod::tauLeap,
+#endif // COPASI_DEBUG
+    CCopasiMethod::unset
+  };
 
 CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::timeCourse, pParent),
@@ -172,7 +183,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   unsigned C_INT32 StepCounter = 1;
 
-  C_FLOAT64 outputStartTime = mpTrajectoryProblem->getOutputStartTime();
+  C_FLOAT64 outputStartTime = *mpCurrentTime + mpTrajectoryProblem->getOutputStartTime();
 
   if (StepSize == 0.0 && mpTrajectoryProblem->getDuration() != 0.0)
     {
@@ -332,7 +343,7 @@ bool CTrajectoryTask::setMethodType(const int & type)
 {
   CCopasiMethod::SubType Type = (CCopasiMethod::SubType) type;
 
-  if (!CTrajectoryMethod::isValidSubType(Type)) return false;
+  if (!isValidMethod(Type, ValidMethods)) return false;
   if (mpMethod->getSubType() == Type) return true;
 
   pdelete (mpMethod);

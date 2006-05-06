@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.124 $ $Author: ssahle $ $Date: 2006/05/04 10:58:53 $  
+# $Revision: 1.125 $ $Author: shoops $ $Date: 2006/05/06 03:10:22 $  
 ######################################################################
 
 TEMPLATE = app
@@ -192,7 +192,6 @@ HEADERS += \
            OptimizationResultWidget.h \
            TaskWidget.h \
            TimeSeriesWidget.h \
-           TrajectoryWidget.h \
            Tree.h \
            TSSWidget.h
 
@@ -262,7 +261,6 @@ SOURCES += \
            TableDefinition1.cpp \
            TaskWidget.cpp \
            TimeSeriesWidget.cpp \
-           TrajectoryWidget.cpp \
            Tree.cpp \
            TSSWidget.cpp
 
@@ -295,6 +293,7 @@ SOURCES += \
 # FORMS += CQOptimizationWidget.ui
 # FORMS += CQTaskHeaderWidget.ui
 # FORMS += CQTaskBtnWidget.ui
+# FORMS += CQTrajectoryWidget.ui
 
 # headers generated from .ui files   
 HEADERS += \
@@ -329,6 +328,8 @@ HEADERS += \
            CQTaskHeaderWidget.ui.h \
            CQTextDialog.h \
            CQTextDialog.ui.h \
+           CQTrajectoryWidget.h \
+           CQTrajectoryWidget.ui.h \
            CUpDownSubwidget.h \
            CScanWidgetBreak.h \
            CScanWidgetRandom.h \
@@ -359,6 +360,7 @@ SOURCES += \
            CQReportDefinition.cpp \
            CQTaskBtnWidget.cpp \
            CQTaskHeaderWidget.cpp \
+           CQTrajectoryWidget.cpp \
            CQTextDialog.cpp \
            CUpDownSubwidget.cpp \
            CScanWidgetBreak.cpp \

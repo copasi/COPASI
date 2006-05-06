@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.105 $
+   $Revision: 1.106 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/04 10:59:57 $
+   $Author: shoops $
+   $Date: 2006/05/06 03:10:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,7 +54,7 @@ class SteadyStateWidget;
 class ScanWidget;
 class SensitivitiesWidget;
 class StateWidget;
-class TrajectoryWidget;
+class CQTrajectoryWidget;
 class TableDefinition;
 class TableDefinition1;
 class TSSWidget;
@@ -193,7 +193,7 @@ class ListViews : public QSplitter
     CQReportDefinition *tableDefinition1;
     TSSWidget *tssWidget;
     TimeSeriesWidget *timeSeriesWidget;
-    TrajectoryWidget *trajectoryWidget;
+    CQTrajectoryWidget *trajectoryWidget;
   };
 
 #endif

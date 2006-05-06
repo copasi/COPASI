@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Date: 2006/05/06 03:10:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,7 @@
 
 #include "SliderDialog.h"
 #include "copasiui3window.h"
-#include "TrajectoryWidget.h"
+#include "CQTrajectoryWidget.h"
 #include "SteadyStateWidget.h"
 #include "ScanWidget.h"
 #include "SliderSettingsDialog.h"
@@ -546,7 +546,7 @@ void SliderDialog::runTimeCourse()
   if (p)
     {
       p->getTrajectoryWidget()->enter((*CCopasiDataModel::Global->getTaskList())["Time-Course"]->getKey());
-      p->getTrajectoryWidget()->runTrajectoryTask();
+      p->getTrajectoryWidget()->runTask();
     }
 }
 

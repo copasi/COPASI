@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.170 $
+   $Revision: 1.171 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/01 14:32:09 $
+   $Date: 2006/05/06 03:10:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -575,6 +575,14 @@ void CopasiUI3Window::CleanUp()
 
 
 
+
+
+
+
+
+
+
+
  *******************************************************************************************/
 void CopasiUI3Window::slotFilePrint()
 {}
@@ -1061,7 +1069,7 @@ void CopasiUI3Window::saveFile()
   this->slotFileSave();
 }
 
-TrajectoryWidget* CopasiUI3Window::getTrajectoryWidget()
+CQTrajectoryWidget* CopasiUI3Window::getTrajectoryWidget()
 {
   return listViews->trajectoryWidget;
 }

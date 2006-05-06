@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: jpahle $
-   $Date: 2006/05/05 13:25:04 $
+   $Author: shoops $
+   $Date: 2006/05/06 03:10:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,43 +30,6 @@
 #include "CTrajectoryProblem.h"
 #include "model/CState.h"
 #include "model/CCompartment.h"
-
-CTrajectoryValidSubTypes::CTrajectoryValidSubTypes():
-    std::vector< CCopasiMethod::SubType >()
-{
-  push_back(CCopasiMethod::deterministic);
-  push_back(CCopasiMethod::stochastic);
-  push_back(CCopasiMethod::hybrid);
-#ifdef COPASI_DEBUG
-  push_back(CCopasiMethod::tauLeap);
-#endif // COPASI_DEBUG
-}
-
-/**
- * Destructor.
- */
-CTrajectoryValidSubTypes::~CTrajectoryValidSubTypes() {}
-
-const CTrajectoryValidSubTypes CTrajectoryMethod::ValidSubTypes;
-
-#ifdef XXXX
-const CVector< CCopasiMethod::SubType >
-CTrajectoryMethod::ValidSubTypes(4,
-                                 CCopasiMethod::deterministic,
-                                 CCopasiMethod::stochastic,
-                                 CCopasiMethod::hybrid.
-                                 CCopasiMethod::tauLeap);
-#endif // XXXX
-
-bool CTrajectoryMethod::isValidSubType(const CCopasiMethod::SubType & subType)
-{
-  unsigned C_INT32 i, imax = CTrajectoryMethod::ValidSubTypes.size();
-
-  for (i = 0; i < imax; i++)
-    if (CTrajectoryMethod::ValidSubTypes[i] == subType) return true;
-
-  return false;
-}
 
 CTrajectoryMethod *
 CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,

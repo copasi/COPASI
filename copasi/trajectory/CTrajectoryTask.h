@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 20:55:42 $
+   $Date: 2006/05/06 03:10:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,12 @@ class CState;
 class CTrajectoryTask : public CCopasiTask
   {
     //Attributes
+  public:
+    /**
+     * The methods which can be selected for preforming this task.
+     */
+    static const unsigned C_INT32 ValidMethods[];
+
   private:
 
     /**

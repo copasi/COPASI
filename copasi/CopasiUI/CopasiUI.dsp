@@ -214,6 +214,10 @@ SOURCE=.\CQTextDialog.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQTrajectoryWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQValidator.cpp
 # End Source File
 # Begin Source File
@@ -462,10 +466,6 @@ SOURCE=.\TimeSeriesWidget.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\TrajectoryWidget.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\Tree.cpp
 # End Source File
 # Begin Source File
@@ -695,6 +695,14 @@ SOURCE=.\CQTextDialog.h
 # Begin Source File
 
 SOURCE=.\CQTextDialog.ui.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQTrajectoryWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQTrajectoryWidget.ui.h
 # End Source File
 # Begin Source File
 
@@ -998,10 +1006,6 @@ SOURCE=.\TimeSeriesWidget.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\TrajectoryWidget.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Tree.h
 # End Source File
 # Begin Source File
@@ -1080,6 +1084,10 @@ SOURCE=.\CQTaskHeaderWidget.ui
 # Begin Source File
 
 SOURCE=.\CQTextDialog.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQTrajectoryWidget.ui
 # End Source File
 # Begin Source File
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/01 14:32:09 $
+   $Date: 2006/05/06 03:10:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@ class QListViewItem;
 class ListViews;
 class DataModelGUI;
 class SliderDialog;
-class TrajectoryWidget;
+class CQTrajectoryWidget;
 class SteadyStateWidget;
 class ScanWidget;
 
@@ -34,7 +34,7 @@ class CopasiUI3Window : public QMainWindow
     void disable_object_browser_menu();
     DataModelGUI* getDataModel();
     void saveFile();
-    TrajectoryWidget* getTrajectoryWidget();
+    CQTrajectoryWidget* getTrajectoryWidget();
     SteadyStateWidget* getSteadyStateWidget();
     ScanWidget* getScanWidget();
     void checkPendingMessages();

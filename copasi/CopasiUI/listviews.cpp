@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.195 $
+   $Revision: 1.196 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/04 10:59:57 $
+   $Author: shoops $
+   $Date: 2006/05/06 03:10:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,7 @@
 #include "TableDefinition.h"
 #include "TableDefinition1.h"
 #include "CopasiDefaultWidget.h"
-#include "TrajectoryWidget.h"
+#include "CQTrajectoryWidget.h"
 #include "TimeSeriesWidget.h"
 #include "TSSWidget.h"
 #include "listviews.h"
@@ -438,7 +438,7 @@ void ListViews::ConstructNodeWidgets()
   if (!timeSeriesWidget) timeSeriesWidget = new TimeSeriesWidget(this);
   timeSeriesWidget->hide();
 
-  if (!trajectoryWidget) trajectoryWidget = new TrajectoryWidget(this);
+  if (!trajectoryWidget) trajectoryWidget = new CQTrajectoryWidget(this);
   trajectoryWidget->hide();
 }
 

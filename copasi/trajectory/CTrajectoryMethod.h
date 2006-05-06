@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 20:55:04 $
+   $Date: 2006/05/06 03:10:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,35 +30,8 @@
 class CTrajectoryProblem;
 class CState;
 
-class CTrajectoryValidSubTypes : public std::vector< CCopasiMethod::SubType >
-  {
-  public:
-    /**
-     * Default constructor.
-     */
-    CTrajectoryValidSubTypes();
-
-    /**
-     * Destructor.
-     */
-    ~CTrajectoryValidSubTypes();
-  };
-
 class CTrajectoryMethod : public CCopasiMethod
   {
-  public:
-    /**
-     *  A list of valid trajectory method types;
-     */
-    static const CTrajectoryValidSubTypes ValidSubTypes;
-
-    /**
-     * Checks whether the given sub type is a valid method
-     * @param const CCopasiMethod::SubType & subType
-     * @return bool isValidSubType
-     */
-    static bool isValidSubType(const CCopasiMethod::SubType & subType);
-
   protected:
     /**
      *  A pointer to the current state. This is set from outside
