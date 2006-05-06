@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/05 16:27:53 $
+   $Date: 2006/05/06 00:49:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,16 @@ const unsigned C_INT32 CCopasiTask::ValidMethods[] =
   {
     CCopasiMethod::unset
   };
+
+bool CCopasiTask::isValidMethod(const unsigned C_INT32 & method,
+                                const unsigned C_INT32 * validMethods)
+{
+  unsigned C_INT32 i;
+  for (i = 0; validMethods[i] != CCopasiMethod::unset; i++)
+    if (method == validMethods[i]) return true;
+
+  return false;
+}
 
 //static
 CCopasiTask::Type CCopasiTask::XMLNameToEnum(const char * xmlTypeName)

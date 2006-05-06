@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/04 10:55:43 $
+   $Author: shoops $
+   $Date: 2006/05/06 00:49:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,16 @@ class CCopasiTask : public CCopasiContainer
      * The methods which can be selected for performing this task.
      */
     static const unsigned C_INT32 ValidMethods[];
+
+    /**
+     * Check whether the given method is in the list of valid methods
+     * This list must end with CCopasiMethod::unset
+     * @param const unsigned C_INT32 & method
+     * @param const unsigned C_INT32 * validMethods
+     * @return bool isValid
+     */
+    static bool isValidMethod(const unsigned C_INT32 & method,
+                              const unsigned C_INT32 * validMethods);
 
     enum OutputFlag
     {
