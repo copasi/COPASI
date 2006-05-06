@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQValidator.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
+   $Date: 2006/05/06 03:07:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,9 +44,10 @@ QValidator::State CQValidator::validate(QString & input, int & /* pos */) const
 
 QValidator::State CQValidator::revalidate()
 {
-  int pos = mLastAccepted.length();
+  QString Input = mpLineEdit->text();
+  int Pos = Input.length();
 
-  return validate(mLastAccepted, pos);
+  return validate(Input, Pos);
 }
 
 void CQValidator::saved() const
@@ -109,3 +110,37 @@ void CQValidatorBound::force(const QString & input) const
 
     CQValidator::force(input);
   }
+
+CQValidatorDouble::CQValidatorDouble(QLineEdit * parent, const char * name):
+    CQValidator(parent, name),
+    mpDoubleValidator(new QDoubleValidator(-DBL_MAX, DBL_MAX, DBL_DIG, this))
+{}
+
+QValidator::State CQValidatorDouble::validate(QString & input, int & pos) const
+  {
+    if (mpDoubleValidator->validate(input, pos) == Acceptable)
+      return CQValidator::validate(input, pos);
+
+    setColor(Invalid);
+    return Intermediate;
+  }
+
+void CQValidatorDouble::setRange(const C_FLOAT64 & lowerBound, const C_FLOAT64 & upperBound)
+{mpDoubleValidator->setRange(lowerBound, upperBound, DBL_DIG);}
+
+CQValidatorInt::CQValidatorInt(QLineEdit * parent, const char * name):
+    CQValidator(parent, name),
+    mpIntValidator(new QIntValidator(-LONG_MAX, LONG_MAX, this))
+{}
+
+QValidator::State CQValidatorInt::validate(QString & input, int & pos) const
+  {
+    if (mpIntValidator->validate(input, pos) == Acceptable)
+      return CQValidator::validate(input, pos);
+
+    setColor(Invalid);
+    return Intermediate;
+  }
+
+void CQValidatorInt::setRange(const C_INT32 & lowerBound, const C_INT32 & upperBound)
+{mpIntValidator->setRange(lowerBound, upperBound);}

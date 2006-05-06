@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
+   $Date: 2006/05/06 03:07:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,6 +16,8 @@
 #include <qvalidator.h>
 #include <qcolor.h>
 #include <qlineedit.h>
+
+#include "copasi.h"
 
 class CQValidator : public QValidator
   {
@@ -71,6 +73,36 @@ class CQValidatorBound : public CQValidator
     QDoubleValidator * mpDoubleValidator;
 
     QString mValidBound;
+  };
+
+class CQValidatorDouble : public CQValidator
+  {
+    // Operations
+  public:
+    CQValidatorDouble(QLineEdit * parent, const char * name = 0);
+
+    virtual State validate(QString & input, int & pos) const;
+
+    void setRange(const C_FLOAT64 & lowerBound, const C_FLOAT64 & upperBound);
+
+    //Attributes
+  protected:
+    QDoubleValidator * mpDoubleValidator;
+  };
+
+class CQValidatorInt : public CQValidator
+  {
+    // Operations
+  public:
+    CQValidatorInt(QLineEdit * parent, const char * name = 0);
+
+    virtual State validate(QString & input, int & pos) const;
+
+    void setRange(const C_INT32 & lowerBound, const C_INT32 & upperBound);
+
+    //Attributes
+  protected:
+    QIntValidator * mpIntValidator;
   };
 
 #endif // COPASI_CQValidator
