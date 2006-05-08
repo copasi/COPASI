@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/05 16:26:47 $
+   $Date: 2006/05/08 15:58:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
 #include "utilities/CProcessReport.h"
+#include "utilities/CCopasiException.h"
 
 #include "clapackwrap.h"        //use CLAPACK
 
@@ -468,8 +469,19 @@ bool CFitProblem::calculate()
         }
     }
 
+  catch (CCopasiException)
+    {
+      // We do not want to clog the message cue.
+      CCopasiMessage::getLastMessage();
+
+      mFailedCounter++;
+      mCalculateValue = DBL_MAX;
+      if (pExp) pExp->restoreModelIndependentData();
+    }
+
   catch (...)
     {
+      mFailedCounter++;
       mCalculateValue = DBL_MAX;
       if (pExp) pExp->restoreModelIndependentData();
     }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 19:17:13 $
+   $Date: 2006/05/08 15:58:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,7 @@
 #include "report/CKeyFactory.h"
 
 #include "utilities/CProcessReport.h"
+#include "utilities/CCopasiException.h"
 
 //  Default constructor
 COptProblem::COptProblem(const CCopasiTask::Type & type,
@@ -65,6 +66,7 @@ COptProblem::COptProblem(const CCopasiTask::Type & type,
     mOriginalVariables(),
     mSolutionValue(0),
     mCounter(0),
+    mFailedCounter(0),
     mCPUTime(CCopasiTimer::CPU, this),
     mhSolutionValue(C_INVALID_INDEX),
     mhCounter(C_INVALID_INDEX)
@@ -95,6 +97,7 @@ COptProblem::COptProblem(const COptProblem& src,
     mOriginalVariables(src.mOriginalVariables),
     mSolutionValue(src.mCalculateValue),
     mCounter(0),
+    mFailedCounter(0),
     mCPUTime(CCopasiTimer::CPU, this),
     mhSolutionValue(C_INVALID_INDEX),
     mhCounter(C_INVALID_INDEX)
@@ -223,6 +226,7 @@ bool COptProblem::initialize()
 
   mpReport = NULL;
   mCounter = 0;
+  mFailedCounter = 0;
   mSolutionValue = DBL_MAX * 2;
 
   std::vector< CCopasiContainer * > ContainerList;
@@ -334,6 +338,9 @@ bool COptProblem::restore(const bool & updateModel)
     for (i = 0; i < imax; i++)
       (*(*mpOptItems)[i]->COptItem::getUpdateMethod())(mOriginalVariables[i]);
 
+  if (mFailedCounter != 0)
+    CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 8, mFailedCounter, mCounter);
+
   return true;
 }
 
@@ -395,8 +402,18 @@ bool COptProblem::calculate()
       mCalculateValue = mpFunction->calcValue();
     }
 
+  catch (CCopasiException)
+    {
+      // We do not want to clog the message cue.
+      CCopasiMessage::getLastMessage();
+
+      mFailedCounter++;
+      success = false;
+    }
+
   catch (...)
     {
+      mFailedCounter++;
       success = false;
     }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:53 $
+   $Date: 2006/05/08 15:58:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -386,6 +386,11 @@ class COptProblem : public CCopasiProblem
      * Counter of evaluations
      */
     unsigned C_INT32 mCounter;
+
+    /**
+     * Counter of evaluations
+     */
+    unsigned C_INT32 mFailedCounter;
 
     /**
      * A CPU Timer
