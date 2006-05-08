@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:41 $
+   $Date: 2006/05/08 21:59:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -114,6 +114,35 @@ class CQExperimentDataValidator: public CQValidatorNotEmpty
               case FirstRow:
                 if (!mpContext->mpFileInfo->validateFirst(mpContext->mShown, input.toULong()))
                   {
+                    unsigned C_INT32 NewFirst = input.toULong();
+
+                    mpContext->mpFileInfo->getFirstUnusedSection(First, Last);
+
+                    while (NewFirst > Last)
+                      mpContext->mpFileInfo->getNextUnusedSection(First, Last);
+
+                    if (First <= NewFirst && NewFirst <= Last)
+                      {
+                        if (First > mpContext->mpExperiment->getLastRow())
+                          {
+                            mpContext->mpExperiment->setLastRow(Last);
+                            mpContext->mpExperiment->setFirstRow(First);
+                          }
+                        else
+                          {
+                            mpContext->mpExperiment->setFirstRow(First);
+                            mpContext->mpExperiment->setLastRow(Last);
+                          }
+
+                        mpContext->syncExperiments();
+
+                        mpContext->mpEditFirst->setText(QString::number(First));
+                        mpContext->mpEditLast->setText(QString::number(Last));
+                        mpContext->mpValidatorLast->revalidate();
+
+                        return validate(input, pos);
+                      }
+
                     setColor(Invalid);
                     return Intermediate;
                   }
