@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingResult.ui.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:41 $
+   $Date: 2006/05/08 13:27:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,7 @@ void CQFittingResult::init()
   mpParameters->setNumCols(mpParameters->numCols() + 1);
   mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Std. Deviation"));
   mpParameters->setNumCols(mpParameters->numCols() + 1);
-  mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Variation Coefficient [%]"));
+  mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Coeff. of Variation [%]"));
   mpParameters->setNumCols(mpParameters->numCols() + 1);
   mpParameters->horizontalHeader()->setLabel(mpParameters->numCols() - 1, tr("Gradient"));
   mpParameters->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpParameters->sizePolicy().hasHeightForWidth()));
