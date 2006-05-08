@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/05 19:18:07 $
+   $Date: 2006/05/08 18:39:11 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -130,6 +130,8 @@ bool CQOptimizationWidget::runTask()
                                 CCopasiMessage::getAllMessageText().c_str(),
                                 QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
           CCopasiMessage::clearDeque();
+
+          goto finish;
         }
     }
 
@@ -160,6 +162,15 @@ bool CQOptimizationWidget::runTask()
           QMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
           CCopasiMessage::clearDeque();
         }
+    }
+
+  if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+    {
+      C_INT Result =
+        QMessageBox::warning(this, "Calculation Warning",
+                             CCopasiMessage::getAllMessageText().c_str(),
+                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
     }
 
 finish:
