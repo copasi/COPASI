@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/05 16:24:15 $
+   $Date: 2006/05/08 15:55:36 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -667,9 +667,17 @@ bool CExperiment::read(std::istream & in,
         }
     }
 
-  // :TODO: write proper error message
-  if ((in.fail() && !in.eof()) ||
-      j != mNumDataRows) return false;
+  if ((in.fail() && !in.eof()))
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 8, mpFileName->c_str());
+      return false;
+    }
+
+  if (j != mNumDataRows)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 7, mNumDataRows, j - 1);
+      return false;
+    }
 
   // We need to calculate the means and the weights
   mMeans.resize(DependentCount);
