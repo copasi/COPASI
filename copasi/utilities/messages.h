@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/05 16:24:33 $
+   $Date: 2006/05/08 15:55:11 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -118,6 +118,7 @@ const MESSAGES Messages[] =
     {MCOptimization + 5, "Optimization (5): Invalid Objective Functions."},
     {MCOptimization + 6, "Optimization (6): No adjustable Parameters specified."},
     {MCOptimization + 7, "Optimization (7): No Task Type specified."},
+    {MCOptimization + 8, "Optimization (8): '%d' Function Evaluation out of '%d' failed."},
 
     // SBML
     // {MCSBML + 1, "SBML (1): Available"},
@@ -193,6 +194,8 @@ const MESSAGES Messages[] =
     {MCFitting + 4, "CFitting (4); Insufficient experimental data (columns requested '%d', columns found '%d')."},
     {MCFitting + 5, "CFitting (5); Incomplete data mapping, column '%d' must be mapped."},
     {MCFitting + 6, "CFitting (6); Object '%s' in column '%d' has no numeric value."},
+    {MCFitting + 7, "CFitting (7); Insufficient experimental data (rows requested '%d', rows found '%d')."},
+    {MCFitting + 8, "CFitting (8); Failure reading file '%s'."},
 
     // CCopasiObject
     {MCObject + 1, "CObject (1): Circular dependencies detected for object '%s'."},
