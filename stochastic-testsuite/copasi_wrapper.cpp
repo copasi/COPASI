@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/09 12:13:51 $
+   $Date: 2006/05/09 12:25:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
 
       CTrajectoryMethod* pMethod = dynamic_cast<CTrajectoryMethod*>(pTrajectoryTask->getMethod());
 
-      pMethod->getParameter("STOCH.UseRandomSeed")->setValue(false);
+      pMethod->getParameter("Use Random Seed")->setValue(false);
 
       CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();
 

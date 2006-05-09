@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/copasi_wrapper.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/09 12:10:48 $
+   $Date: 2006/05/09 12:25:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
       CTrajectoryMethod* pMethod = dynamic_cast<CTrajectoryMethod*>(pTrajectoryTask->getMethod());
 
       pMethod->getParameter("Use Default Absolute Tolerance")->setValue(false);
-      pMethod->getParameter("LSODA.AbsoluteTolerance")->setValue(1000.0);
+      pMethod->getParameter("Absolute Tolerance")->setValue(1000.0);
 
       CCopasiVectorN< CCopasiTask > & TaskList = * CCopasiDataModel::Global->getTaskList();
 
