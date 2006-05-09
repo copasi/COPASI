@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/semantic-test-suite/copasi_wrapper.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2006/04/21 14:05:23 $
+   $Author: shoops $
+   $Date: 2006/05/09 12:10:48 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #define COPASI_MAIN
 
@@ -142,7 +146,7 @@ int main(int argc, char *argv[])
       pProblem->setTimeSeriesRequested(true);
       //pProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
-      CLsodaMethod* pMethod = dynamic_cast<CLsodaMethod*>(pTrajectoryTask->getMethod());
+      CTrajectoryMethod* pMethod = dynamic_cast<CTrajectoryMethod*>(pTrajectoryTask->getMethod());
 
       pMethod->getParameter("Use Default Absolute Tolerance")->setValue(false);
       pMethod->getParameter("LSODA.AbsoluteTolerance")->setValue(1000.0);
