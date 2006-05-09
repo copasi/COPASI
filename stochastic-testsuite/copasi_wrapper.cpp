@@ -1,10 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/stochastic-testsuite/copasi_wrapper.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: gauges $ 
-   $Date: 2006/04/24 14:18:25 $
+   $Author: shoops $
+   $Date: 2006/05/09 12:13:51 $
    End CVS Header */
+
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #define COPASI_MAIN
 
@@ -155,7 +159,7 @@ int main(int argc, char *argv[])
       pProblem->setTimeSeriesRequested(true);
       //pProblem->setInitialState(CCopasiDataModel::Global->getModel()->getInitialState());
 
-      CStochMethod* pMethod = dynamic_cast<CStochMethod*>(pTrajectoryTask->getMethod());
+      CTrajectoryMethod* pMethod = dynamic_cast<CTrajectoryMethod*>(pTrajectoryTask->getMethod());
 
       pMethod->getParameter("STOCH.UseRandomSeed")->setValue(false);
 
