@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/04 10:55:43 $
+   $Date: 2006/05/09 13:08:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,7 +47,8 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Scan Framework",
     "Wolf method",
     "Time scale separation Method",
-    "Sensitivities Method"
+    "Sensitivities Method",
+    ""
   };
 
 const char* CCopasiMethod::XMLSubType[] =
