@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.126 $
+   $Revision: 1.127 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/05/10 10:56:59 $
+   $Date: 2006/05/10 14:30:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,7 +105,14 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
 
   std::string title, comment;
-
+  if (this->isStochasticModel(sbmlModel))
+    {
+      this->mpCopasiModel->setModelType(CModel::stochastic);
+    }
+  else
+    {
+      this->mpCopasiModel->setModelType(CModel::deterministic);
+    }
   comment = sbmlModel->getNotes();
 
   this->mpCopasiModel->setComments(comment);
@@ -2677,4 +2684,20 @@ void SBMLImporter::findFunctionCalls(const CEvaluationNode* pNode, std::set<std:
           ++treeIt;
         }
     }
+}
+
+bool SBMLImporter::isStochasticModel(const Model* pSBMLModel)
+{
+  bool stochastic = true;
+  unsigned int i;
+  const UnitDefinition* pUD = pSBMLModel->getUnitDefinition("substance");
+  if (pUD)
+    {
+      stochastic = (pUD->getNumUnits() == 1 && pUD->getUnit(0)->getKind() == UNIT_KIND_ITEM);
+      for (i = 0;(stochastic == true) && (i < pSBMLModel->getNumReactions());++i)
+        {
+          stochastic = !pSBMLModel->getReaction(i)->getReversible();
+        }
+    }
+  return stochastic;
 }

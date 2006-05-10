@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:21 $
+   $Author: gauges $
+   $Date: 2006/05/10 14:30:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -226,6 +226,13 @@ class SBMLImporter
      * tree.
      */
     void findFunctionCalls(const CEvaluationNode* pNode, std::set<std::string>& functionNameSet);
+
+    /**
+     * Heuristically checks wether a model was meant to be simulated stochastically.
+     * If the substance units are set to items and all reaction are irreversible this function
+     * will return true;
+     */
+    bool isStochasticModel(const Model* pSBMLModel);
 
   public:
     SBMLImporter();
