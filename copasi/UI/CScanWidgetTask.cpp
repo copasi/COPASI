@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetTask.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
+   $Author: ssahle $
+   $Date: 2006/05/10 21:49:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CScanWidgetTask.ui'
  **
- ** Created: Tue Mar 28 14:28:52 2006
- **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.7 2006/04/27 01:27:42 shoops Exp $)
+ ** Created: Mi Mai 10 22:10:35 2006
+ **      by: The User Interface Compiler ($Id: CScanWidgetTask.cpp,v 1.8 2006/05/10 21:49:31 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -111,6 +111,7 @@ void CScanWidgetTask::languageChange()
   comboType->clear();
   comboType->insertItem(tr("Steady State"));
   comboType->insertItem(tr("Time course"));
+  comboType->insertItem(tr("Lyapunov exponents"));
   comboType->setCurrentItem(1);
   buttonEdit->setText(tr("..."));
   checkInitialConditions->setText(tr("always use initial conditions"));
