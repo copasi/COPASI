@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/10 11:56:35 $
+   $Author: shoops $
+   $Date: 2006/05/10 13:16:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -148,13 +148,10 @@ bool CQExpressionWidget::isInObject()
   /*  //the following code assumes the presence of the syntax highlighter
     if (color() == QColor(0,0,0)) return false;
 
-
     if (pos==0) return false;
-
 
     QString t = text(para);
     if (t[pos-1] == '>') return false;
-
 
     return true;*/
 }
@@ -174,7 +171,7 @@ bool CQExpressionWidget::isInObject(int par, int pos)
   lc = tmp.findRev('>', pos - 1);
   //std::cout << "left:"  << lo << " " << lc  << std::endl;
 
-  if ((lo == -1) and (lc == -1))
+  if ((lo == -1) && (lc == -1))
     result = false;
   else if (lc == -1)
     result = true;
