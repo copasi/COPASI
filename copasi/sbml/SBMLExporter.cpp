@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/05/10 10:56:59 $
+   $Date: 2006/05/10 11:39:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -165,21 +165,22 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
   Model* sbmlModel = NULL;
   std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = CCopasiDataModel::Global->getCopasi2SBMLMap();
   std::map<CCopasiObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(copasiModel);
+  if (this->mpIdSet) pdelete(this->mpIdSet);
   if (pos != copasi2sbmlmap.end())
     {
       sbmlModel = dynamic_cast<Model*>(pos->second);
       assert(sbmlModel);
+      this->mpIdSet = SBMLExporter::createIdSet(sbmlModel);
     }
   else
     {
       /* create a new model object */
+      this->mpIdSet = SBMLExporter::createIdSet(sbmlModel);
       sbmlModel = new Model();
       copasi2sbmlmap[copasiModel] = sbmlModel;
       sbmlModel->setId(copasiModel->getKey().c_str());
     }
   this->mHandledSBMLObjects.push_back(sbmlModel);
-  if (this->mpIdSet) pdelete(this->mpIdSet);
-  this->mpIdSet = SBMLExporter::createIdSet(sbmlModel);
   if (!copasiModel->getObjectName().empty())
     {
       sbmlModel->setName(copasiModel->getObjectName().c_str());
