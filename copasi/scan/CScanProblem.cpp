@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:30 $
+   $Author: ssahle $
+   $Date: 2006/05/10 21:50:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,8 +28,6 @@
  */
 CScanProblem::CScanProblem(const CCopasiContainer * pParent):
     CCopasiProblem(CCopasiTask::scan, pParent)
-    //mInitialState()
-    //mEndState()
 {
   addParameter("Subtask", CCopasiParameter::UINT, (unsigned C_INT32) CCopasiTask::timeCourse);
 
@@ -49,8 +47,6 @@ CScanProblem::CScanProblem(const CCopasiContainer * pParent):
 CScanProblem::CScanProblem(const CScanProblem & src,
                            const CCopasiContainer * pParent):
     CCopasiProblem(src, pParent)
-    //mInitialState(src.mInitialState)
-    //mEndState(src.mEndState)
 {CONSTRUCTOR_TRACE;}
 
 /**
@@ -58,17 +54,6 @@ CScanProblem::CScanProblem(const CScanProblem & src,
  */
 CScanProblem::~CScanProblem()
 {DESTRUCTOR_TRACE;}
-
-/**
- * Set the model the problem is dealing with.
- * @param "CModel *" pModel
- */
-/*bool CScanProblem::setModel(CModel * pModel)
-{
-  mpModel = pModel;
-  mInitialState.setModel(mpModel);
-  return true;
-}*/
 
 //***********************************
 
@@ -102,36 +87,6 @@ const bool & CScanProblem::getAdjustInitialConditions() const
 
 //************************************
 
-/**
- * Set the initial state of the problem.
- * @param "const CState &" initialState
- */
-/*void CScanProblem::setInitialState(const CState & initialState)
-{
-  mInitialState = initialState;
-  mpModel = const_cast<CModel*>(mInitialState.getModel());
-}*/
-
-/**
- * Set the initial state of the problem.
- * @param "const CStateX &" initialState
- */
-/*void CScanProblem::setInitialState(const CStateX & initialState)
-{
-  mInitialState = initialState;
-}*/
-
-/**
- * Retrieve the initial state of the problem.
- * @return "const CState *" pInitialState
- */
-/*const CState & CScanProblem::getInitialState() const
-  {return mInitialState;}*/
-
-/**
- * Load a trajectory problem
- * @param "CReadConfig &" configBuffer
- */
 void CScanProblem::load(CReadConfig & C_UNUSED(configBuffer),
                         CReadConfig::Mode C_UNUSED(mode))
 {}
@@ -212,16 +167,24 @@ void CScanProblem::clearScanItems()
   if (model->getReactions().size() == 0) return;
 
 
+
+
   clearScanItems();
   setModel(model);
+
+
 
 
   //TODO: use the value instead of the parameter itself
 
 
+
+
   CCopasiParameterGroup* tmp = createScanItem(SCAN_LINEAR, 15, model->getReactions()[0]->getParameters().getParameter(0));
   tmp->setValue("Minimum", 0.34);
   tmp->setValue("Maximum", 0.78);
+
+
 
 
   // createScanItem(SCAN_REPEAT, 3);
