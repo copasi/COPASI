@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.78 $
+   $Revision: 1.79 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:21 $
+   $Author: gauges $
+   $Date: 2006/05/10 10:56:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -463,7 +463,7 @@ UnitDefinition* SBMLExporter::createSBMLSubstanceUnitDefinitionFromCopasiQuantit
       unit = new Unit(UNIT_KIND_MOLE, 1, -15);
       break;
     case CModel::number:
-      unit = new Unit(UNIT_KIND_ITEM, 1, 1);
+      unit = new Unit(UNIT_KIND_ITEM, 1, 0);
       break;
     default:
       CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, "SBMLExporter Error: Unknown copasi quantity unit.");

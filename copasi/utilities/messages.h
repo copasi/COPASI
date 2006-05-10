@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/08 15:55:11 $
+   $Author: gauges $
+   $Date: 2006/05/10 10:56:58 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -150,6 +150,7 @@ const MESSAGES Messages[] =
     {MCSBML + 27, "SBML (27): Error in kinetic law for reaction \"%s\"."},
     {MCSBML + 28, "SBML (28): Error in function definition with id \"%s\"."},
     {MCSBML + 29, "SBML (29): Unable to handle reactions with the \"fast\" flag set.\nThe flag has been set to false."},
+    {MCSBML + 30, "SBML (30): Can't handle units of type item with scale set to 1.\n If this file was created with COPASI RC1 or older please see the COPASI FAQ."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

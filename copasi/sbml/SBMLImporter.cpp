@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.125 $
+   $Revision: 1.126 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:21 $
+   $Author: gauges $
+   $Date: 2006/05/10 10:56:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1375,9 +1375,16 @@ SBMLImporter::handleSubstanceUnit(const UnitDefinition* uDef)
         }
       else if ((u->getKind() == UNIT_KIND_ITEM))
         {
-          if ((u->getExponent() == 1) && (u->getMultiplier() == 1) && (u->getScale() == 0))
+          if ((u->getExponent() == 1) && (u->getMultiplier() == 1) && (u->getScale() == 0 || u->getScale() == 1))
             {
-              qUnit = CModel::number;
+              if (u->getScale() == 1)
+                {
+                  CCopasiMessage Message(CCopasiMessage::ERROR, MCSBML + 30);
+                }
+              else
+                {
+                  qUnit = CModel::number;
+                }
             }
           else
             {
