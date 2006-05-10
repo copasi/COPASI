@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:41 $
+   $Author: ssahle $
+   $Date: 2006/05/10 12:45:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQOptimizationWidget.ui'
  **
- ** Created: Wed Mar 8 14:55:19 2006
- **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.4 2006/04/27 01:27:41 shoops Exp $)
+ ** Created: Mi Mai 10 14:16:13 2006
+ **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.5 2006/05/10 12:45:27 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -30,11 +30,11 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
-class QTextEdit;
+class CQExpressionWidget;
 class QToolButton;
+class QLabel;
 class QButtonGroup;
 class QRadioButton;
-class QLabel;
 class QTabWidget;
 class QWidget;
 class CQFittingItemWidget;
@@ -47,13 +47,13 @@ class CQOptimizationWidget : public TaskWidget
     CQOptimizationWidget(QWidget* parent = 0, const char* name = 0);
     ~CQOptimizationWidget();
 
-    QTextEdit* mpEditExpression;
+    CQExpressionWidget* mpEditExpression;
     QToolButton* mpBtnObject;
+    QLabel* mpLblType;
+    QLabel* mpLblExpression;
     QButtonGroup* mpBtnGroup;
     QRadioButton* mpBtnSteadystate;
     QRadioButton* mpBtnTimeCourse;
-    QLabel* mpLblType;
-    QLabel* mpLblExpression;
     QTabWidget* mpTabWidget;
     QWidget* mpParametersPage;
     QWidget* mpConstraintsPage;
@@ -83,9 +83,9 @@ class CQOptimizationWidget : public TaskWidget
     virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
 
     QVBoxLayout* CQOptimizationWidgetLayout;
-    QGridLayout* mpLayoutGrid;
-    QSpacerItem* mpSpacer;
+    QGridLayout* layout2;
     QSpacerItem* mpSpacer2;
+    QSpacerItem* mpSpacer;
     QHBoxLayout* mpBtnGroupLayout;
 
   protected slots:
@@ -98,6 +98,7 @@ class CQOptimizationWidget : public TaskWidget
   private:
     QPixmap image0;
     QPixmap image1;
+    QPixmap image2;
 
     void init();
     void destroy();
