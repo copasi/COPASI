@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExpressionWidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:41 $
+   $Author: ssahle $
+   $Date: 2006/05/10 11:56:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,17 +37,15 @@ class CQExpressionWidget: public QTextEdit
   protected:
     int mOldPar;
     int mOldPos;
-    //QColor mOldColor;
-    //QColor mNewColor;
-    //QColor mErrorColor;
 
-    //void process();
-    //void setupWidget();
-
-    //virtual void updateColor();
+    int mOldPar1;
+    int mOldPos1;
+    int mOldPar2;
+    int mOldPos2;
     virtual void keyPressEvent (QKeyEvent * e);
 
     bool isInObject();
+    bool isInObject(int par, int pos);
 
     /**
      * returns true if (par/pos) is right of (parold/posold)
