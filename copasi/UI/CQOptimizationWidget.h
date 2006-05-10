@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/10 12:45:27 $
+   $Date: 2006/05/10 13:06:38 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQOptimizationWidget.ui'
  **
- ** Created: Mi Mai 10 14:16:13 2006
- **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.5 2006/05/10 12:45:27 ssahle Exp $)
+ ** Created: Mi Mai 10 15:05:11 2006
+ **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.6 2006/05/10 13:06:38 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

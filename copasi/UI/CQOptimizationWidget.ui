@@ -239,7 +239,7 @@
     </customwidget>
     <customwidget>
         <class>CQExpressionWidget</class>
-        <header location="global">/home/sven/copasi/copasi_head/copasi/CopasiUI/CQExpressionWidget.h</header>
+        <header location="local">CQExpressionWidget.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQOptimizationWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/10 12:45:27 $
+   $Date: 2006/05/10 13:06:38 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQOptimizationWidget.ui'
  **
- ** Created: Mi Mai 10 14:16:15 2006
- **      by: The User Interface Compiler ($Id: CQOptimizationWidget.cpp,v 1.5 2006/05/10 12:45:27 ssahle Exp $)
+ ** Created: Mi Mai 10 15:05:12 2006
+ **      by: The User Interface Compiler ($Id: CQOptimizationWidget.cpp,v 1.6 2006/05/10 13:06:38 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -22,7 +22,6 @@
 #include "CQOptimizationWidget.h"
 
 #include <qvariant.h>
-#include </home/sven/copasi/copasi_head/copasi/CopasiUI/CQExpressionWidget.h>
 #include <qtoolbutton.h>
 #include <qlabel.h>
 #include <qbuttongroup.h>
@@ -36,6 +35,7 @@
 #include <qpixmap.h>
 
 #include "TaskWidget.h"
+#include "CQExpressionWidget.h"
 #include "CQOptimizationWidget.ui.h"
 static const unsigned char image0_data[] =
   {
