@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQLyapWidget.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/05 23:46:29 $
+   $Date: 2006/05/10 21:49:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -274,7 +274,15 @@ CQLyapWidget::~CQLyapWidget()
 
 
 
+
+
+
+
   nStepSize->setText(QString::number(mpProblem->getStepSize()));
+
+
+
+
 
 
 
@@ -285,6 +293,10 @@ CQLyapWidget::~CQLyapWidget()
 /*void CQLyapWidget::checkTimeSeries()
 {
   //std::cout << "checkTimeSeries() " << nStepNumber->text().toLong() << " " << CCopasiDataModel::Global->getModel()->getIntMetab() << std::endl;
+
+
+
+
 
 
 
@@ -549,7 +561,9 @@ void CQLyapWidget::saveLyapTask()
   //  trajectoryproblem->setStartTime(nStartTime->text().toDouble());
   //trajectoryproblem->setDuration(nDuration->text().toDouble());
 
-  problem->setExponentNumber(lineNum->text().toInt());
+  C_INT32 tmpint = lineNum->text().toInt();
+  if (tmpint <= 0) tmpint = 1;
+  problem->setExponentNumber(tmpint);
 
   if (mCheckBoxStartOutput->isChecked())
     problem->setTransientTime(mLineEditStartOutput->text().toDouble());
