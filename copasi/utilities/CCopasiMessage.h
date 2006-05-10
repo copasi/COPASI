@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:42 $
+   $Date: 2006/05/10 16:24:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,6 +68,7 @@ class CCopasiMessage
     {
       RAW = 0,
       TRACE,
+      COMMANDLINE,
       WARNING,
       // In the case that ERROR is defined we have to remove its definition
       // temporarely.

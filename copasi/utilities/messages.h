@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/05/10 10:56:58 $
+   $Author: shoops $
+   $Date: 2006/05/10 16:24:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -180,7 +180,7 @@ const MESSAGES Messages[] =
     {MCCopasiTask + 2, "CCopasiTask (2): No model associated for Task '%s'."},
     {MCCopasiTask + 3, "CCopasiTask (3): No method defined for Task '%s'."},
     {MCCopasiTask + 4, "CCopasiTask (4): Error compiling Model '%s'."},
-    {MCCopasiTask + 5, "CCopasiTask (5): No target defined for Report '%s'."},
+    {MCCopasiTask + 5, "CCopasiTask (5): No output file defined for report."},
     {MCCopasiTask + 6, "CCopasiTask (6): Problems compiling Report '%s'."},
     {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling Plots."},
 

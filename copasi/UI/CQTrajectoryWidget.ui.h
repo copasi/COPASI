@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTrajectoryWidget.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/08 18:39:11 $
+   $Date: 2006/05/10 16:24:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -277,7 +277,7 @@ bool CQTrajectoryWidget::runTask()
         }
     }
 
-  if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
     {
       C_INT Result =
         QMessageBox::warning(this, "Initialization Warning",
@@ -306,7 +306,7 @@ bool CQTrajectoryWidget::runTask()
         }
     }
 
-  if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
     {
       C_INT Result =
         QMessageBox::warning(this, "Calculation Warning",

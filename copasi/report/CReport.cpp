@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:10 $
+   $Date: 2006/05/10 16:24:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -308,9 +308,10 @@ std::ostream * CReport::open(std::ostream * pOstream)
 {
   if (mStreamOwner) pdelete(mpOstream);
 
+  mpOstream = pOstream;
+
   if (pOstream)
     {
-      mpOstream = pOstream;
       mStreamOwner = false;
     }
   else if (mTarget != "")
