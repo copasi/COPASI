@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:45 $
+   $Date: 2006/05/10 15:37:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,10 +48,6 @@ std::vector<const CCopasiObject*> PlotWidget::getObjects() const
 void PlotWidget::init()
 {
   mExtraLayout->addStretch();
-  btnDefaultPlot = new QPushButton("Add default plot", this);
-  mExtraLayout->addWidget(btnDefaultPlot);
-  connect(btnDefaultPlot, SIGNAL(clicked ()), this,
-          SLOT(slotBtnDefaultClicked()));
 
   mOT = ListViews::PLOT;
   numCols = 4;
@@ -149,25 +145,4 @@ void PlotWidget::deleteObjects(const std::vector<std::string> & keys)
       CCopasiDataModel::Global->getPlotDefinitionList()->removePlotSpec(keys[i]);
       ListViews::notify(ListViews::PLOT, ListViews::DELETE, keys[i]);
     }
-}
-
-void PlotWidget::slotBtnDefaultClicked()
-{
-  saveTable(); //commit changes
-
-  std::string nname = "ConcentrationPlot";
-  int i = 0;
-  CPlotSpecification* pPl;
-  while (!(pPl = CCopasiDataModel::Global->getPlotDefinitionList()->createPlotSpec(nname, CPlotItem::plot2d)))
-    {
-      i++;
-      nname = "ConcentrationPlot";
-      nname += (const char *)QString::number(i).utf8();
-    }
-
-  pPl->createDefaultPlot(CCopasiDataModel::Global->getModel());
-  ListViews::notify(ListViews::PLOT, ListViews::ADD, pPl->CCopasiParameter::getKey());
-
-  //std::cout << " *** created PlotSpecification: " << nname << " : " << pPl->CCopasiParameter::getKey() << std::endl;
-  fillTable();
 }

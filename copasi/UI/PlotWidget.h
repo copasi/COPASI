@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/PlotWidget.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:45 $
+   $Date: 2006/05/10 15:37:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,11 +33,8 @@ class PlotWidget : public CopasiTableWidget
     {init();}
 
   protected slots:
-    virtual void slotBtnDefaultClicked();
 
   protected:
-    QPushButton* btnDefaultPlot;
-
     /**
      * This initializes the widget
      */
