@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/05 23:19:20 $
+   $Date: 2006/05/10 21:46:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,6 +58,9 @@ class CLyapTask : public CCopasiTask
      */
     CVector<C_FLOAT64> mLocalExponents;
     CVector<C_FLOAT64> mExponents;
+
+    C_FLOAT64 mSumOfExponents;
+    C_FLOAT64 mSumOfLocalExponents;
 
     //for the progress bar
     C_FLOAT64 mPercentage;
@@ -142,5 +145,11 @@ class CLyapTask : public CCopasiTask
     void cleanup();
 
     void initObjects();
+
+    /**
+     * this does calculations that need to be done before output:
+     * sum of exponents, divergence, ...
+     */
+    void calculationsBeforeOutput();
   };
 #endif // COPASI_CLyapTask

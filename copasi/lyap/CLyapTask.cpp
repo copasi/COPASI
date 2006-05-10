@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/05 23:19:20 $
+   $Date: 2006/05/10 21:46:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,6 +87,9 @@ void CLyapTask::initObjects()
                        (addObjectReference(sss2.str(), mLocalExponents.array()[i], CCopasiObject::ValueDbl));
       assert(mvLocExpRef[i]);
     }
+
+  addObjectReference("Sum of exponents", mSumOfExponents, CCopasiObject::ValueDbl);
+  addObjectReference("Sum of local exponents", mSumOfLocalExponents, CCopasiObject::ValueDbl);
 }
 
 bool CLyapTask::initialize(const OutputFlag & of,
@@ -157,6 +160,7 @@ bool CLyapTask::process(const bool & useInitialValues)
       //mpLyapProblem->getModel()->setState(*mpCurrentState);
       mpLyapProblem->getModel()->refreshConcentrations();
 
+      calculationsBeforeOutput();
       output(COutputInterface::DURING);
 
       if (mpCallBack) mpCallBack->finish(mhProcess);
@@ -167,6 +171,7 @@ bool CLyapTask::process(const bool & useInitialValues)
 
   if (mpCallBack) mpCallBack->finish(mhProcess);
 
+  calculationsBeforeOutput();
   output(COutputInterface::AFTER);
 
   return true;
@@ -233,6 +238,7 @@ void CLyapTask::output(const COutputInterface::Activity & activity)
 
 bool CLyapTask::methodCallback(const C_FLOAT64 & percentage)
 {
+  calculationsBeforeOutput();
   output(COutputInterface::DURING);
 
   mPercentage = percentage;
@@ -241,4 +247,17 @@ bool CLyapTask::methodCallback(const C_FLOAT64 & percentage)
       return mpCallBack->progress(mhProcess);
     }
   return true;
+}
+
+void CLyapTask::calculationsBeforeOutput()
+{
+  mSumOfExponents = 0;
+  mSumOfLocalExponents = 0;
+
+  C_INT32 i, imax = mpLyapProblem->getExponentNumber();
+  for (i = 0; i < imax; ++i)
+    {
+      mSumOfExponents += mExponents[i];
+      mSumOfLocalExponents += mLocalExponents[i];
+    }
 }
