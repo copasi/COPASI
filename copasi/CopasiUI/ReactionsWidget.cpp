@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.88 $
+   $Revision: 1.89 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:45 $
+   $Date: 2006/05/11 14:37:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,7 @@ void ReactionsWidget::init()
   tableHeader->setLabel(0, "Status");
   tableHeader->setLabel(1, "Name");
   tableHeader->setLabel(2, "Equation");
-  tableHeader->setLabel(3, "Kinetics");
+  tableHeader->setLabel(3, "Rate Law");
   tableHeader->setLabel(4, "Flux");
 
   //this restricts users from editing function names

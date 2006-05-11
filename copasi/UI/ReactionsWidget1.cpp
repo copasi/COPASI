@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.177 $
+   $Revision: 1.178 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 14:21:42 $
+   $Date: 2006/05/11 14:37:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -122,7 +122,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
 
   // kinetics line
   TextLabel6 = new QLabel(this, "TextLabel6");
-  TextLabel6->setText(trUtf8("Kinetics"));
+  TextLabel6->setText(trUtf8("Rate Law"));
   TextLabel6->setAlignment(int(QLabel::AlignVCenter
                                | QLabel::AlignRight));
   ReactionsWidget1Layout->addWidget(TextLabel6, 4, 0);
@@ -131,7 +131,7 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
   ReactionsWidget1Layout->addMultiCellWidget(ComboBox1, 4, 4, 1, 2);
 
   newKinetics = new QPushButton(this, "newKinetics");
-  newKinetics->setText(trUtf8("&New Kinetics"));
+  newKinetics->setText(trUtf8("&New Rate Law"));
   ReactionsWidget1Layout->addWidget(newKinetics, 4, 3);
 
   TextLabel8 = new QLabel(this, "TextLabel8");
@@ -488,7 +488,7 @@ void ReactionsWidget1::slotNewFunction()
   // fw->show();
   // TODO: we could think about calling the function widget as a dialogue here...
 
-  std::string name = std::string("Kinetics_for_") + (const char *)LineEdit1->text().utf8();
+  std::string name = std::string("Rate Law for ") + (const char *)LineEdit1->text().utf8();
   std::string nname = name;
   int i = 0;
   CCopasiVectorN<CEvaluationTree>& FunctionList
