@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.3 $ $Author: ssahle $ $Date: 2006/05/04 12:02:05 $  
+# $Revision: 1.4 $ $Author: shoops $ $Date: 2006/05/11 17:01:06 $  
 ######################################################################
 
 TEMPLATE = app
@@ -12,9 +12,9 @@ DEPENDPATH += ../copasi/
 INCLUDEPATH += ../copasi/
 
 COPASI_LIBS = \
-         commandline \
          copasiDM \
          copasiXML \
+         commandline \
          elementaryFluxModes \
          fitting \
          function \

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.28 $ $Author: ssahle $ $Date: 2006/05/04 11:01:20 $  
+# $Revision: 1.29 $ $Author: shoops $ $Date: 2006/05/11 17:01:05 $  
 ######################################################################
 
 TEMPLATE = app
@@ -12,9 +12,9 @@ DEPENDPATH += ..
 INCLUDEPATH += ..
 
 COPASI_LIBS = \
-         commandline \
          copasiDM \
          copasiXML \
+         commandline \
          elementaryFluxModes \
          fitting \
          function \
@@ -93,8 +93,6 @@ contains(BUILD_OS, Darwin){
   LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
          $${LIBS}
 
-  LIBS += -L/sw/lib/ 
-  
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 }
 
