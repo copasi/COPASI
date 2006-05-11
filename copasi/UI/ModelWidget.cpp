@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/03 17:22:14 $
+   $Date: 2006/05/11 14:36:58 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,7 +87,7 @@ ModelWidget::ModelWidget(QWidget* parent, const char* name, WFlags fl)
   ModelWidgetLayout->addWidget(ComboBox3, 4, 1);
 
   mpLblModelType = new QLabel(this, "mpLblModelType");
-  mpLblModelType->setText(trUtf8("Model Type"));
+  mpLblModelType->setText(trUtf8("Rate Law Interpretation"));
   mpLblModelType->setAlignment(int(QLabel::AlignVCenter
                                    | QLabel::AlignRight));
   ModelWidgetLayout->addWidget(mpLblModelType, 2, 2);
