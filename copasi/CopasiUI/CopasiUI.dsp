@@ -910,6 +910,10 @@ SOURCE=.\parametertable.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\PlotWidget.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\qtUtilities.h
 # End Source File
 # Begin Source File
