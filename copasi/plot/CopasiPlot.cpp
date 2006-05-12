@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/05 14:06:13 $
+   $Author: ssahle $
+   $Date: 2006/05/12 13:16:49 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,7 @@
 
 #include <qstring.h>
 #include <qcolor.h>   //might need to go to the header file
+#include <qcursor.h>
 
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
@@ -149,6 +150,7 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
   mpZoomer->setRubberBandPen(QColor(Qt::black));
   mpZoomer->setTrackerPen(QColor(Qt::black));
   mpZoomer->setTrackerMode(QwtPicker::AlwaysOn);
+  mpZoomer->setTrackerFont(this->font());
 
   // white background better for printing...
   setCanvasBackground(white);
@@ -166,6 +168,8 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
   mObjectValues.resize(ActivitySize);
   mDataSize.resize(ActivitySize);
   mDataIndex.clear();
+
+  //setCursor(Qt::CrossCursor);
 
   // Initialize from the plot specification
   initFromSpec(plotspec);
