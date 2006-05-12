@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapProblem.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/05 23:45:31 $
+   $Date: 2006/05/12 13:59:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 
 #include "copasi.h"
 #include "CLyapProblem.h"
+#include "CLyapTask.h"
 #include "model/CModel.h"
 //#include "model/CState.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -116,3 +117,11 @@ void CLyapProblem::setTimeSeriesRequested(bool flag)
 
 bool CLyapProblem::timeSeriesRequested() const
   {return *mpTimeSeriesRequested;}
+
+void CLyapProblem::printResult(std::ostream * ostream) const
+  {
+    CLyapTask* parent = dynamic_cast<CLyapTask*>(getObjectParent());
+    if (!parent) return;
+
+    parent->printResult(ostream);
+  }

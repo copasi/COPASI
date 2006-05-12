@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/04 11:01:49 $
+   $Date: 2006/05/12 13:58:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -654,6 +654,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
       break;
 
+      //**************************************************************************
     case CCopasiTask::parameterFitting:
       pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
       pReport->setTaskType(taskType);
@@ -682,6 +683,36 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
       break;
 
+      //**************************************************************************
+    case CCopasiTask::lyap:
+      pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+      pReport->setTaskType(taskType);
+      pReport->setComment("Automatically generated report.");
+      pReport->setIsTable(false);
+      pReport->setTitle(false);
+      pReport->setSeparator(CCopasiReportSeparator("\t"));
+
+      // Header
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov exponents],Object=Description"));
+      //pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Function Evaluations\\]"));
+      //pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
+      //pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Value\\]"));
+      //pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
+      //pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Parameters\\]"));
+
+      // Body
+      //pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Function Evaluations"));
+      //pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
+      //pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Value"));
+      //pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
+      //pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Parameters"));
+
+      // Footer
+      pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
+      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov exponents],Object=Result"));
+      break;
+
+      //**************************************************************************
     case CCopasiTask::mca:
       // :TODO: implement default report for MCA
       break;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/10 21:46:53 $
+   $Date: 2006/05/12 13:59:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
 #include  "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiTimer.h"
 
 #define XXXX_Reporting
 
@@ -73,6 +74,9 @@ void CLyapTask::initObjects()
   mLocalExponents.resize(LYAP_NUM_REF);
   mvLocExpRef.resize(LYAP_NUM_REF);
 
+  addVectorReference("Exponents", mExponents, CCopasiObject::ValueDbl);
+  addVectorReference("Local exponents", mLocalExponents, CCopasiObject::ValueDbl);
+
   for (i = 0; i < LYAP_NUM_REF; ++i)
     {
       std::ostringstream sss;
@@ -90,6 +94,7 @@ void CLyapTask::initObjects()
 
   addObjectReference("Sum of exponents", mSumOfExponents, CCopasiObject::ValueDbl);
   addObjectReference("Sum of local exponents", mSumOfLocalExponents, CCopasiObject::ValueDbl);
+  addObjectReference("Divergence", mDivergence, CCopasiObject::ValueDbl);
 }
 
 bool CLyapTask::initialize(const OutputFlag & of,
@@ -260,4 +265,57 @@ void CLyapTask::calculationsBeforeOutput()
       mSumOfExponents += mExponents[i];
       mSumOfLocalExponents += mLocalExponents[i];
     }
+
+  //calculate divergence
+  CModel * pModel = mpLyapProblem->getModel();
+  CMatrix<C_FLOAT64> jacobian;
+  pModel->calculateElasticityMatrix(1e-6, 1e-12); //TODO configure parameters
+  pModel->calculateJacobianX(jacobian);
+  C_FLOAT64 sum = 0;
+  imax = jacobian.numRows();
+  for (i = 0; i < imax; ++i)
+    sum += jacobian(i, i);
+  //std::cout << sum << std::endl;
+  mDivergence = sum;
 }
+
+void CLyapTask::printResult(std::ostream * ostream) const
+  {
+    std::ostream & os = *ostream;
+
+    //     CCopasiTimeVariable CPUTime = const_cast<COptProblem *>(this)->mCPUTime.getElapsedTime();
+    //     os << "    CPU Time [s]:\t"
+    //     << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
+    //     << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
+
+    os << "Lyapunov exponents:" << std::endl;
+
+    unsigned C_INT32 i, imax = mpLyapProblem->getExponentNumber();
+    for (i = 0; i < imax; ++i)
+      os << mExponents[i] << " ";
+    os << std::endl;
+
+    /*    if (mSolutionVariables.size() == 0)
+          {
+            return;
+          }
+        os << "    Objective Function Value:\t" << mSolutionValue << std::endl;
+
+
+
+
+        std::vector< COptItem * >::const_iterator itItem =
+          mpOptItems->begin();
+        std::vector< COptItem * >::const_iterator endItem =
+          mpOptItems->end();
+
+
+        unsigned C_INT32 i;
+
+
+        for (i = 0; itItem != endItem; ++itItem, i++)
+          {
+            os << "    " << (*itItem)->getObjectDisplayName() << ": "
+            << mSolutionVariables[i] << std::endl;
+          }*/
+  }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapProblem.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/05 23:45:31 $
+   $Date: 2006/05/12 13:59:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,6 +104,14 @@ class CLyapProblem : public CCopasiProblem
      *
      */
     bool timeSeriesRequested() const;
+
+    /**
+     * This is the output method for any result of a problem. The default implementation
+     * provided with CCopasiProblem. Does only print "Not implmented." To overide this
+     * default behaviour one needs to reimplement the virtual printResult function.
+     * @param std::ostream * ostream
+     */
+    virtual void printResult(std::ostream * ostream) const;
 
     /**
      * Load a trajectory problem

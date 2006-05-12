@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/10 21:46:53 $
+   $Date: 2006/05/12 13:59:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,6 +61,8 @@ class CLyapTask : public CCopasiTask
 
     C_FLOAT64 mSumOfExponents;
     C_FLOAT64 mSumOfLocalExponents;
+
+    C_FLOAT64 mDivergence;
 
     //for the progress bar
     C_FLOAT64 mPercentage;
@@ -137,6 +139,12 @@ class CLyapTask : public CCopasiTask
      * determines if the calculation will be stopped).
      */
     bool methodCallback(const C_FLOAT64 & percentage);
+
+    /**
+     * This functionality is expected from CLyapProblem but has to be implmented
+     * here for the moment. This is called from the corresponding method of the problem
+     */
+    void printResult(std::ostream * ostream) const;
 
   private:
     /**
