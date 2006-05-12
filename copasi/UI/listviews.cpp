@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.196 $
+   $Revision: 1.197 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/06 03:10:23 $
+   $Author: ssahle $
+   $Date: 2006/05/12 13:48:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,7 @@
 #include "FunctionWidget1.h"
 #include "DifferentialEquations.h"
 #include "CQLyapWidget.h"
+#include "CQLyapResultWidget.h"
 #include "MetabolitesWidget.h"
 #include "MetabolitesWidget1.h"
 #include "ModelWidget.h"
@@ -196,18 +197,15 @@ ListViews::ListViews(QWidget *parent, const char *name):
     mpMathModel(NULL),
     mpCMCAResultWidget(NULL),
     mpCMCAWidget(NULL),
-    //    compartmentSymbols(NULL),
     compartmentsWidget(NULL),
     compartmentsWidget1(NULL),
-    //    constantSymbols(NULL),
     defaultWidget(NULL),
     differentialEquations(NULL),
-    //    fixedMetaboliteSymbols(NULL),
     functionSymbols(NULL),
     functionWidget(NULL),
     functionWidget1(NULL),
     lyapWidget(NULL),
-    //    metaboliteSymbols(NULL),
+    lyapResultWidget(NULL),
     metabolitesWidget(NULL),
     metabolitesWidget1(NULL),
     modelWidget(NULL),
@@ -349,6 +347,9 @@ void ListViews::ConstructNodeWidgets()
 
   if (!lyapWidget) lyapWidget = new CQLyapWidget(this);
   lyapWidget->hide();
+
+  if (!lyapResultWidget) lyapResultWidget = new CQLyapResultWidget(this);
+  lyapResultWidget->hide();
 
   //  if (!metaboliteSymbols) metaboliteSymbols = new MetaboliteSymbols(this);
   //  metaboliteSymbols->hide();
@@ -527,6 +528,9 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
 #endif
       case 26:
         return lyapWidget;
+        break;
+      case 261:
+        return lyapResultWidget;
         break;
       case 31:
         return scanWidget;

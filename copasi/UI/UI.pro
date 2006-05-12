@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.126 $ $Author: shoops $ $Date: 2006/05/11 17:01:05 $  
+# $Revision: 1.127 $ $Author: ssahle $ $Date: 2006/05/12 13:47:31 $  
 ######################################################################
 
 TEMPLATE = app
@@ -17,7 +17,6 @@ COPASI_LIBS = \
          fitting \
          function \
          lyap \
-#         mathmodel \
          mml \
          model \
          optimization \
@@ -137,10 +136,8 @@ HEADERS += \
            CMCAWidget.h \
            CMCAResultWidget.h \
            CReportDefinitionSelect.h \
-#           CompartmentSymbols.h \
            CompartmentsWidget.h \
            CompartmentsWidget1.h \
-#           ConstantSymbols.h \
            CopasiDefaultWidget.h \
            CopasiFileDialog.h \
            CopasiSlider.h \
@@ -150,18 +147,17 @@ HEADERS += \
            CProgressBar.h \
            CQExpressionWidget.h \
            CQLyapWidget.h \
+           CQLyapResultWidget.h \
            CQReportListItem.h \
            CQValidator.h \
            CScanContainerWidget.h \
            CTimeSeriesTable.h \
            DataModelGUI.h \
            DifferentialEquations.h \
-#           FixedMetaboliteSymbols.h \
            FunctionItemWidget.h \
            FunctionSymbols.h \
            FunctionWidget.h \
            FunctionWidget1.h \
-#           MetaboliteSymbols.h \
            MetabolitesWidget.h \
            MetabolitesWidget1.h \
            ModelWidget.h \
@@ -205,10 +201,8 @@ SOURCES += \
            CMCAWidget.cpp \
            CMCAResultWidget.cpp \
            CReportDefinitionSelect.cpp \
-#           CompartmentSymbols.cpp \
            CompartmentsWidget.cpp \
            CompartmentsWidget1.cpp \
-#           ConstantSymbols.cpp \
            CopasiDefaultWidget.cpp \
            CopasiFileDialog.cpp \
            CopasiSlider.cpp \
@@ -219,20 +213,19 @@ SOURCES += \
            OptimizationResultWidget.cpp \
            CQExpressionWidget.cpp \
            CQLyapWidget.cpp \
+           CQLyapResultWidget.cpp \
            CQReportListItem.cpp \
            CQValidator.cpp \
            CScanContainerWidget.cpp \
            CTimeSeriesTable.cpp \
            DataModelGUI.cpp \
            DifferentialEquations.cpp \
-#           FixedMetaboliteSymbols.cpp \
            FunctionItemWidget.cpp \
            FunctionSymbols.cpp \
            FunctionWidget.cpp \
            FunctionWidget1.cpp \
            listviews.cpp \
            main.cpp \
-#           MetaboliteSymbols.cpp \
            MetabolitesWidget.cpp \
            MetabolitesWidget1.cpp \
            ModelValuesWidget.cpp \
