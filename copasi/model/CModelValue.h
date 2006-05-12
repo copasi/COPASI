@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Author: ssahle $
+   $Date: 2006/05/12 13:51:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,16 +201,22 @@ class CModelEntity : public CCopasiContainer
 Table of possible CModelEntity objects with different Status
 
 
+
+
                         current status        corresponding sbml object
 -------------------------------------------------------------------------------------------------
 CMetab:                                       Species
 
 
+
+
 FIXED                   implemented           constant=true
+UNUSED                  implemented           ?
 SUBJECT_TO_REACTION     implemented           constant=false, boundaryCondition=false
 DEPENDENT               implemented           constant=false, boundaryCondition=false
 ODE                     not implemented       constant=false, boundaryCondition=true, rate rule
 ASSIGNMENT              not implemented       constant=false, boundaryCondition=true, assignment rule
+TIME                    -
 
 
 
@@ -218,11 +224,15 @@ ASSIGNMENT              not implemented       constant=false, boundaryCondition=
 CCompartment:                                 Compartment
 
 
+
+
 FIXED                   implemented           constant=true
+UNUSED                  not implemented
 SUBJECT_TO_REACTION     -
 DEPENDENT               -
 ODE                     not implemented       constant=false, rate rule
 ASSIGNMENT              not implemented       constant=false, assignment rule
+TIME                    -
 
 
 
@@ -230,24 +240,34 @@ ASSIGNMENT              not implemented       constant=false, assignment rule
 CModelValue:                                  Parameter
 
 
-FIXED                   in progress           constant=true
+FIXED                   implemented           constant=true
+UNUSED                  not implemented
 SUBJECT_TO_REACTION     -
 DEPENDENT               -
 ODE                     not implemented       constant=false, rate rule
 ASSIGNMENT              not implemented       constant=false, rate rule
+TIME                    -
 
 
 
 
-CModel:
+CModel:                                       implicitly represented in sbml file
 
 
-...
+FIXED                   -
+UNUSED                  -
+SUBJECT_TO_REACTION     -
+DEPENDENT               -
+ODE                     -
+ASSIGNMENT              -
+TIME                    implemented
+
+
  */
 
 /**
- * CModelValue represents an entity in the model that has a value but is not a concentration (like species)
- * or a volume (like compartments).
+ * CModelValue represents an entity in the model that has a value but is
+ * not a concentration (like species) or a volume (like compartments).
  * It correspondents to global parameters in sbml
  */
 class CModelValue : public CModelEntity
