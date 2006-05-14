@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:22 $
+   $Author: ssahle $
+   $Date: 2006/05/14 13:33:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,42 +65,106 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
 
   const CReaction *rea;
   rea = dynamic_cast< CReaction *>(GlobalKeys.get(key));
+  assert(rea);
 
+  //name
   mReactionName = rea->getObjectName();
 
-  //pdelete(mpChemEq);
+  //chemical equation
   mChemEqI.loadFromChemEq(&model, rea->getChemEq());
 
-  //mNameMap.clear();
-
-  if (rea->getFunction())
+  if (rea->getFunction() && (rea->getFunction() != CCopasiDataModel::Global->mpUndefined))
     {
+      //function
       mpFunction = rea->getFunction();
       pdelete(mpParameters)
       mpParameters = new CFunctionParameters(mpFunction->getVariables());
-      loadNameMap(model, *rea);
 
-      C_INT32 i, imax = size();
-
-      mValues.resize(imax);
-      mIsLocal.resize(imax);
-      for (i = 0; i < imax; ++i)
-        if (getUsage(i) == CFunctionParameter::PARAMETER)
-          {
-            mIsLocal[i] = rea->isLocalParameter(i);
-            //std::cout << "isLocal" << i << " " << mIsLocal[i] << std::endl;
-            mValues[i] = rea->getParameterValue(getParameterName(i));
-          }
-        else
-          mIsLocal[i] = false;
-
-      //mValid = true; //assume a reaction is valid before editing
+      //mapping
+      loadMappingAndValues(model, *rea);
     }
   else
     {
-      setFunction("");
-      //mValid = false;
+      setFunctionWithEmptyMapping("");
     }
+  printDebug();
+}
+
+bool CReactionInterface::loadMappingAndValues(const CModel & model, const CReaction & rea)
+{
+  bool success = true;
+  std::vector< std::vector<std::string> >::const_iterator it;
+  std::vector< std::vector<std::string> >::const_iterator iEnd;
+  std::vector<std::string>::const_iterator jt;
+  std::vector<std::string>::const_iterator jEnd;
+  unsigned C_INT32 i;
+
+  std::string metabName;
+  const CModelEntity* pObj;
+  std::vector<std::string> SubList;
+
+  mNameMap.clear();
+  mValues.resize(size(), 0.1);
+  mIsLocal.resize(size(), false);
+
+  it = rea.getParameterMappings().begin();
+  iEnd = rea.getParameterMappings().end();
+  for (i = 0; it != iEnd; ++it, ++i)
+    {
+      if (isVector(i))
+        {
+          assert((getUsage(i) == CFunctionParameter::SUBSTRATE)
+                 || (getUsage(i) == CFunctionParameter::PRODUCT)
+                 || (getUsage(i) == CFunctionParameter::MODIFIER));
+
+          SubList.clear();
+          for (jt = it->begin(), jEnd = it->end(); jt != jEnd; ++jt)
+            {
+              metabName = CMetabNameInterface::getDisplayName(&model, *jt);
+              assert(metabName != "");
+              SubList.push_back(metabName);
+            }
+        }
+      else
+        {
+          assert (it->size() == 1);
+          SubList.resize(1); SubList[0] = "unknown";
+
+          switch (getUsage(i))
+            {
+            case CFunctionParameter::SUBSTRATE:
+            case CFunctionParameter::PRODUCT:
+            case CFunctionParameter::MODIFIER:
+              metabName = CMetabNameInterface::getDisplayName(&model, *(it->begin()));
+              assert(metabName != "");
+              SubList[0] = metabName;
+              //TODO: check if the metabolite is in the chemical equation with the correct rule
+              break;
+
+            case CFunctionParameter::VOLUME:
+              pObj = dynamic_cast<const CCompartment*>(GlobalKeys.get(*(it->begin())));
+              assert(pObj);
+              SubList[0] = pObj->getObjectName();
+              break;
+
+            case CFunctionParameter::TIME:
+              pObj = dynamic_cast<const CModel*>(GlobalKeys.get(*(it->begin())));
+              assert(pObj);
+              SubList[0] = pObj->getObjectName();
+              break;
+
+            case CFunctionParameter::PARAMETER:
+              mIsLocal[i] = rea.isLocalParameter(i);
+              mValues[i] = rea.getParameterValue(getParameterName(i));
+              pObj = dynamic_cast<const CModelValue*>(GlobalKeys.get(*(it->begin())));
+              //assert(pObj);
+              if (pObj) SubList[0] = pObj->getObjectName();
+              break;
+            }
+        }
+      mNameMap.push_back(SubList);
+    }
+  return success;
 }
 
 bool CReactionInterface::writeBackToReaction(CReaction * rea, CModel & model) const
@@ -124,11 +188,11 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea, CModel & model) co
 
     unsigned C_INT32 j, jmax;
     unsigned C_INT32 i, imax = size();
-
     for (i = 0; i < imax; ++i)
       {
-        if (getUsage(i) == CFunctionParameter::PARAMETER)
+        switch (getUsage(i))
           {
+          case CFunctionParameter::PARAMETER:
             if (mIsLocal[i])
               rea->setParameterValue(getParameterName(i), mValues[i]);
             else
@@ -136,17 +200,19 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea, CModel & model) co
                 rea->setParameterValue(getParameterName(i), mValues[i], false);
                 rea->setParameterMapping(i, model.getModelValues()[mNameMap[i][0]]->getKey());
               }
-          }
-        else if (getUsage(i) == CFunctionParameter::VOLUME)
-          {
+            break;
+
+          case CFunctionParameter::VOLUME:
             rea->setParameterMapping(i, model.getCompartments()[mNameMap[i][0]]->getKey());
-          }
-        else if (getUsage(i) == CFunctionParameter::TIME)
-          {
+            break;
+
+          case CFunctionParameter::TIME:
             rea->setParameterMapping(i, model.getKey()); //time is the value of the model
-          }
-        else
-          {
+            break;
+
+          case CFunctionParameter::SUBSTRATE:
+          case CFunctionParameter::PRODUCT:
+          case CFunctionParameter::MODIFIER:
             if (isVector(i))
               {
                 rea->clearParameterMapping(i);
@@ -156,75 +222,17 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea, CModel & model) co
               }
             else
               rea->setParameterMapping(i, CMetabNameInterface::getMetaboliteKey(&model, mNameMap[i][0]));
+            break;
+
+          default:
+            break;
           }
       }
-
     rea->compile();
     model.setCompileFlag(); //TODO: check if really necessary
 
     return success;
   }
-
-void CReactionInterface::setFunction(const std::string & fn, bool force)
-{
-  if (fn == "") {clearFunction(); return;}
-
-  //do nothing if the function is the same as before
-  if ((getFunctionName() == fn) && (!force)) return;
-
-  // save the old parameter names
-  CFunctionParameters *oldParameters = mpParameters;
-
-  //get the function
-  mpFunction = dynamic_cast<CFunction *>(CCopasiDataModel::Global->getFunctionList()->findLoadFunction(fn));
-  if (!mpFunction) fatalError();
-  mpParameters = new CFunctionParameters(mpFunction->getVariables());
-
-  //initialize mValues[]
-  //try to keep old values if the name is the same
-  std::vector<C_FLOAT64> oldValues = mValues;
-  unsigned C_INT32 j, jmax = oldValues.size();
-  unsigned C_INT32 i, imax = size();
-  mValues.resize(imax);
-  mIsLocal.resize(imax);
-  for (i = 0; i < imax; ++i)
-    {
-      if (getUsage(i) == CFunctionParameter::PARAMETER)
-        {
-          for (j = 0; j < jmax; ++j)
-            if ((*oldParameters)[j]->getObjectName() == getParameterName(i)) break;
-
-          if (j == jmax) mValues[i] = 0.1;
-          else mValues[i] = oldValues[j];
-
-          mIsLocal[i] = true;
-          //TODO: also keep global parameters
-        }
-      else
-        {
-          //all other things are always global
-          mIsLocal[i] = false;
-        }
-    }
-
-  //initialize mNameMap[]
-  mNameMap.clear();
-  mNameMap.resize(imax);
-  for (i = 0; i < imax; ++i)
-    {
-      if (!isVector(i)) mNameMap[i].resize(1);
-    }
-
-  //guess initial connections between metabs and function parameters
-  //mValid = true;
-  connectFromScratch(CFunctionParameter::SUBSTRATE, true);
-  connectFromScratch(CFunctionParameter::PRODUCT, true);
-  connectFromScratch(CFunctionParameter::MODIFIER, false); // we can not be pedantic about modifiers
-  // because modifiers are not taken into acount
-  // when looking for suitable functions
-
-  pdelete(oldParameters);
-}
 
 void CReactionInterface::clearFunction()
 {
@@ -236,75 +244,81 @@ void CReactionInterface::clearFunction()
   mNameMap.clear();
 }
 
-void CReactionInterface::setChemEqString(const std::string & eq, const std::string & newFunction)
+void CReactionInterface::setChemEqString(const std::string & eq, const std::string & newFunction,
+    const CModel& model)
 {
   //std::cout << "setChemEqString: " << eq << std::endl;
   mChemEqI.setChemEqString(eq);
-  findAndSetFunction(newFunction);
+  findAndSetFunction(newFunction, model);
 }
 
-void CReactionInterface::setReversibility(bool rev, const std::string & newFunction)
+void CReactionInterface::setReversibility(bool rev, const std::string & newFunction,
+    const CModel& model)
 {
   mChemEqI.setReversibility(rev);
-  findAndSetFunction(newFunction);
+  findAndSetFunction(newFunction, model);
 }
 
-void CReactionInterface::reverse(bool rev, const std::string & newFunction)
+void CReactionInterface::reverse(bool rev, const std::string & newFunction,
+                                 const CModel& model)
 {
   mChemEqI.setReversibility(rev);
   mChemEqI.reverse();
-  findAndSetFunction(newFunction);
+  findAndSetFunction(newFunction, model);
 }
 
-void CReactionInterface::findAndSetFunction(const std::string & newFunction)
+void CReactionInterface::findAndSetFunction(const std::string & newFunction,
+    const CModel& model)
 {
-  // get list of possible functions and check if the current function
-  // or the newFunction is in it.
   std::vector<std::string> fl = getListOfPossibleFunctions();
-
   unsigned C_INT32 i, imax = fl.size();
-  std::string currentFunction = getFunctionName(), s = "";
-  C_INT32 findresult = -1;
 
+  //no valid function?
   if (imax == 0)
     {
-      setFunction("", true);
+      setFunctionAndDoMapping("", model);
       return;
     }
 
-  if (newFunction == "")
+  //first try the function provided as argument
+  if (newFunction != "")
     {
       for (i = 0; i < imax; ++i)
-        if (fl[i] == currentFunction)
+        if (fl[i] == newFunction)
           {
-            setFunction(fl[i], true);  //change function - brute force
+            setFunctionAndDoMapping(fl[i], model);
             return;
           }
     }
-  else
+
+  //next try if the current function works
+  std::string currentFunctionName = getFunctionName();
+  if ("" != currentFunctionName)
     {
-      for (i = 0; i < imax; i++)
-        if (fl[i] == newFunction)
+      for (i = 0; i < imax; ++i)
+        if (fl[i] == currentFunctionName)
           {
-            setFunction(fl[i], true);  //change function - brute force
+            setFunctionAndDoMapping(fl[i], model);
             return;
           }
     }
 
   // if not found then see if there is a best match in the list (i.e. a corresponding rev/irrev function).
-
   //if there is a current function try to find a related new function
-  if (currentFunction != "")
+  std::string s;
+  if (currentFunctionName != "")
     {
-      s = currentFunction.substr(0, currentFunction.find ('(') - 1);     //'-1' so as to strip off the white space before '('
+      s = currentFunctionName.substr(0, currentFunctionName.find ('(') - 1);
+      //'-1' so as to strip off the white space before '('
+      //This is purely heuristics
       for (i = 0; i < imax; i++)
         {
-          findresult = fl[i].find(s);
+          C_INT32 findresult = fl[i].find(s);
 
           if (findresult >= 0)    // if find succeeds, the return value is likely to be 0
             //if (fl[i].find(s) >= 0) - for some reason this doesn't work
             {
-              setFunction(fl[i], true);  //change function - brute force
+              setFunctionAndDoMapping(fl[i], model);
               return;
             }
         }
@@ -314,19 +328,19 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction)
   s = "Mass action";
   for (i = 0; i < imax; i++)
     {
-      findresult = fl[i].find(s);
+      C_INT32 findresult = fl[i].find(s);
 
       if (findresult >= 0)    // if find succeeds, the return value is likely to be 0
         //if (fl[i].find(s) >= 0) - for some reason this doesn't work
         {
-          setFunction(fl[i], true);  //change function - brute force
+          setFunctionAndDoMapping(fl[i], model);
           return;
         }
     }
 
   //if everything else fails just take the first function from the list
   //this should not be reached since mass action is a valid kinetic function for every reaction
-  setFunction(fl[0], true);  //brute force
+  setFunctionAndDoMapping(fl[0], model);
 }
 
 void CReactionInterface::connectFromScratch(CFunctionParameter::Role role, bool pedantic)
@@ -369,130 +383,274 @@ void CReactionInterface::connectFromScratch(CFunctionParameter::Role role, bool 
   else fatalError();
 }
 
-bool CReactionInterface::isLocked(unsigned C_INT32 index) const
-{return isLocked(getUsage(index));}
+bool CReactionInterface::isLocked(unsigned C_INT32 index, const CModel & model) const
+{return isLocked(getUsage(index), model);}
 
-bool CReactionInterface::isLocked(CFunctionParameter::Role usage) const
+bool CReactionInterface::isLocked(CFunctionParameter::Role usage, const CModel & model) const
   {
-    // get number of metabs in chemEq
-    unsigned C_INT32 listSize;
-    if ((usage == CFunctionParameter::PARAMETER)
-        || (usage == CFunctionParameter::MODIFIER)
-        || (usage == CFunctionParameter::VOLUME)
-        || (usage == CFunctionParameter::TIME))
-      return false; //modifiers are never locked!
-    else
-      listSize = mChemEqI.getListOfNames(usage).size();
-
-    // get number of parameters
-    unsigned C_INT32 paramSize = mpParameters->getNumberOfParametersByUsage(usage);
-
-    // get index of first parameter
-    unsigned C_INT32 pos = 0;
-    mpParameters->getParameterByUsage(usage, pos); --pos;
-
-    // decide
-    if (isVector(pos))
+    switch (usage)
       {
-        if (paramSize != 1) fatalError();
+      case CFunctionParameter::MODIFIER:
+        return false;
+        break;
+
+      case CFunctionParameter::TIME:
         return true;
+        break;
+
+      case CFunctionParameter::SUBSTRATE:
+      case CFunctionParameter::PRODUCT:
+        {
+          // get number of parameters
+          unsigned C_INT32 paramSize = mpParameters->getNumberOfParametersByUsage(usage);
+          if (paramSize == 0)
+            return true;
+
+          // get index of first parameter
+          unsigned C_INT32 pos = 0;
+          mpParameters->getParameterByUsage(usage, pos); --pos;
+          if (isVector(pos))
+            {
+              assert(paramSize == 1);
+              return true;
+            }
+          else
+            {
+              return (mChemEqI.getListOfNames(usage).size() == 1);
+            }
+        }
+        break;
+
+      case CFunctionParameter::PARAMETER:
+        return model.getModelValues().size() <= 1;
+        break;
+
+      case CFunctionParameter::VOLUME:
+        return model.getCompartments().size() <= 1;
+        break;
       }
-    else
-      {
-        if (listSize <= 1) return true; else return false;
-      }
+    return false;
   }
 
-void CReactionInterface::setMetab(unsigned C_INT32 index, std::string mn)
+void CReactionInterface::initMapping()
 {
-  CFunctionParameter::Role usage = getUsage(index);
-  unsigned C_INT32 listSize;
-  if ((usage == CFunctionParameter::PARAMETER) || (usage == CFunctionParameter::VOLUME))
-    return;
-  else
-    listSize = mChemEqI.getListOfNames(usage).size();
-
-  if (isVector(index)) mNameMap[index].push_back(mn);
-  else
+  mpParameters = new CFunctionParameters(mpFunction->getVariables());
+  //make sure mpParameters is deleted! (e.g. in copyMapping())
+  mNameMap.resize(size());
+  mValues.resize(size(), 0.1);
+  mIsLocal.resize(size(), false);
+  C_INT32 i, imax = size();
+  for (i = 0; i < imax; ++i)
     {
-      mNameMap[index][0] = mn;
-
-      //check if the new modifier is already in the ChemEq
-      if (usage == CFunctionParameter::MODIFIER)
+      if (isVector(i))
+        mNameMap[i].resize(0);
+      else
         {
-          mChemEqI.clearModifiers();
-          unsigned C_INT j, jmax = size();
-          for (j = 0; j < jmax; ++j)
-            if (getUsage(j) == CFunctionParameter::MODIFIER) //all the modifiers in the table
-              {
-                std::vector<std::string> ml = getListOfMetabs(usage);
-                std::vector<std::string>::const_iterator it;
-                for (it = ml.begin(); it != ml.end(); ++it) //search in the ChemEqI
-                  if (getMetabs(j)[0] == *it) break;
-                if (it == ml.end()) //the modifier is not in the ChemEqI
-                  {
-                    mChemEqI.addModifier(getMetabs(j)[0]);
-                  }
-              }
-        } // this adds the modifier to the ChemEq if necessary. TODO: remove modifier from ChemEq if it is replaced by this one!
+          mNameMap[i].resize(1);
+          mNameMap[i][0] = "unknown";
+        }
 
-      // if we have two parameters of this usage change the other one.
-      if ((listSize == 2) && (mpParameters->getNumberOfParametersByUsage(usage) == 2))
+      if (getUsage(i) == CFunctionParameter::PARAMETER)
+        mIsLocal[i] = true;
+    }
+}
+
+void CReactionInterface::copyMapping()
+{
+  if (!mpParameters) //nothing to copy
+    {
+      initMapping();
+      return;
+    }
+
+  // save the old information
+  CFunctionParameters *oldParameters = mpParameters;
+  std::vector<std::vector<std::string> > oldMap = mNameMap;
+  std::vector<C_FLOAT64> oldValues = mValues;
+  std::vector<bool> oldIsLocal = mIsLocal;
+
+  //create new mapping
+  initMapping();
+
+  //try to preserve as much information from the old mapping as possible
+  C_INT32 j, jmax = oldParameters->size();
+  C_INT32 i, imax = size();
+  for (i = 0; i < imax; ++i)
+    {
+      //find parameter with same name in old parameters
+      for (j = 0; j < jmax; ++j)
+        if ((*oldParameters)[j]->getObjectName() == getParameterName(i)) break;
+      if (j == jmax) continue;
+
+      //see if usage matches
+      if (getUsage(i) != (*oldParameters)[j]->getUsage()) continue;
+
+      //see if vector property matches
+      if (isVector(i) != ((*oldParameters)[j]->getType() == CFunctionParameter::VFLOAT64))
+        continue;
+
+      mIsLocal[i] = oldIsLocal[j];
+      mValues[i] = oldValues[j];
+
+      switch (getUsage(i))
         {
-          // get index of other parameter
-          unsigned C_INT32 pos = 0;
-          mpParameters->getParameterByUsage(usage, pos);
-          if ((pos - 1) == index) mpParameters->getParameterByUsage(usage, pos);
-          --pos;
+        case CFunctionParameter::SUBSTRATE:
+        case CFunctionParameter::PRODUCT:
+          //TODO: check with chemeq
+          mNameMap[i] = oldMap[j];
+          break;
 
-          // get name if other metab
-          std::vector<std::string> ml = getListOfMetabs(usage);
-          std::string otherMetab;
-          if (ml[0] == mn) otherMetab = ml[1]; else otherMetab = ml[0];
+        case CFunctionParameter::MODIFIER:
+          //TODO: check existence?
+          mNameMap[i] = oldMap[j];
+          //TODO: add to chemeq
+          break;
 
-          // set other parameter
-          mNameMap[pos][0] = otherMetab;
+        case CFunctionParameter::PARAMETER:
+        case CFunctionParameter::VOLUME:
+        case CFunctionParameter::TIME:
+          //TODO: check existence?
+          mNameMap[i] = oldMap[j];
+          break;
+        }
+    }
+
+  pdelete(oldParameters);
+}
+
+void CReactionInterface::connectNonMetabolites(const CModel & model)
+{
+  C_INT32 i, imax = size();
+  for (i = 0; i < imax; ++i)
+    {
+      //only do something if the current mapping is "unknown"
+      if (mNameMap[i].size())
+        if (mNameMap[i][0] != "unknown")
+          continue;
+
+      if (isLocalValue(i))
+        continue;
+
+      switch (getUsage(i))
+        {
+        case CFunctionParameter::SUBSTRATE:
+        case CFunctionParameter::PRODUCT:
+        case CFunctionParameter::MODIFIER:
+          break;
+
+        case CFunctionParameter::PARAMETER:
+          if (model.getModelValues().size() == 1)
+            mNameMap[i][0] = model.getModelValues()[0]->getObjectName();
+          break;
+
+        case CFunctionParameter::VOLUME:
+          //if (model.getCompartments().size()==1)
+          //  mNameMap[i][0] = model.getCompartments()[0]->getObjectName();
+          {
+            const CCompartment* comp = mChemEqI.getCompartment(&model);
+            if (comp)
+              mNameMap[i][0] = comp->getObjectName();
+          }
+          break;
+
+        case CFunctionParameter::TIME:
+          mNameMap[i][0] = model.getObjectName();
+          break;
         }
     }
 }
 
-bool CReactionInterface::setGlobalParameter(unsigned C_INT32 index, std::string pn)
+void CReactionInterface::setFunctionWithEmptyMapping(const std::string & fn)
 {
-  if (getUsage(index) != CFunctionParameter::PARAMETER)
-    return false;
+  if (fn == "") {clearFunction(); return;}
+  //get the function
+  mpFunction = dynamic_cast<CFunction *>
+               (CCopasiDataModel::Global->getFunctionList()->findLoadFunction(fn));
+  if (!mpFunction) fatalError();
 
-  mIsLocal[index] = false;
-
-  mNameMap[index][0] = pn;
-
-  return true;
+  pdelete(mpParameters);
+  initMapping(); //empty mapping
 }
 
-const std::string & CReactionInterface::getGlobalParameter(unsigned C_INT32 index) const
-  {
-    assert(getUsage(index) == CFunctionParameter::PARAMETER);
-    assert(mNameMap[index].size() == 1);
-    return mNameMap[index][0];
-  }
-
-bool CReactionInterface::setCompartment(unsigned C_INT32 index, std::string pn)
+void CReactionInterface::setFunctionAndDoMapping(const std::string & fn, const CModel & model)
 {
-  if (getUsage(index) != CFunctionParameter::VOLUME)
-    return false;
+  if (fn == "") {clearFunction(); return;}
 
-  mIsLocal[index] = false;
+  //get the function
+  mpFunction = dynamic_cast<CFunction *>
+               (CCopasiDataModel::Global->getFunctionList()->findLoadFunction(fn));
+  if (!mpFunction) fatalError();
 
-  mNameMap[index][0] = pn;
+  copyMapping();
+  connectNonMetabolites(model);
 
-  return true;
+  //guess initial connections between metabs and function parameters
+  connectFromScratch(CFunctionParameter::SUBSTRATE, true);
+  connectFromScratch(CFunctionParameter::PRODUCT, true);
+  connectFromScratch(CFunctionParameter::MODIFIER, false); // we can not be pedantic about modifiers
+  // because modifiers are not taken into acount
+  // when looking for suitable functions
 }
 
-const std::string & CReactionInterface::getCompartment(unsigned C_INT32 index) const
-  {
-    assert(getUsage(index) == CFunctionParameter::VOLUME);
-    assert(mNameMap[index].size() == 1);
-    return mNameMap[index][0];
-  }
+void CReactionInterface::updateModifiersInChemEq()
+{
+  mChemEqI.clearModifiers();
+  unsigned C_INT32 j, jmax = size();
+  for (j = 0; j < jmax; ++j)
+    if (getUsage(j) == CFunctionParameter::MODIFIER) //all the modifiers in the table
+      if (getMapping(j) != "unknown")
+        mChemEqI.addModifier(getMapping(j));
+}
+
+void CReactionInterface::setMapping(unsigned C_INT32 index, std::string mn)
+{
+  mIsLocal[index] = false;
+  switch (getUsage(index))
+    {
+    case CFunctionParameter::VOLUME:
+    case CFunctionParameter::PARAMETER:
+    case CFunctionParameter::TIME:
+      assert(!isVector(index));
+      mNameMap[index][0] = mn;
+      break;
+
+    case CFunctionParameter::SUBSTRATE:
+    case CFunctionParameter::PRODUCT:
+      if (isVector(index))
+        mNameMap[index].push_back(mn);
+      else
+        {
+          mNameMap[index][0] = mn;
+
+          //TODO: check the following
+          // if we have two parameters of this usage change the other one.
+          unsigned C_INT32 listSize = mChemEqI.getListOfNames(getUsage(index)).size();
+          if ((listSize == 2) && (mpParameters->getNumberOfParametersByUsage(getUsage(index)) == 2))
+            {
+              // get index of other parameter
+              unsigned C_INT32 pos = 0;
+              mpParameters->getParameterByUsage(getUsage(index), pos);
+              if ((pos - 1) == index) mpParameters->getParameterByUsage(getUsage(index), pos);
+              --pos;
+
+              // get name if other metab
+              std::vector<std::string> ml = getListOfMetabs(getUsage(index));
+              std::string otherMetab;
+              if (ml[0] == mn) otherMetab = ml[1]; else otherMetab = ml[0];
+
+              // set other parameter
+              mNameMap[pos][0] = otherMetab;
+            }
+        }
+      break;
+
+    case CFunctionParameter::MODIFIER:
+      assert(!isVector(index));
+      mNameMap[index][0] = mn;
+      updateModifiersInChemEq();
+      break;
+    }
+}
 
 std::vector<std::string> CReactionInterface::getExpandedMetabList(CFunctionParameter::Role role) const
   {
@@ -515,39 +673,38 @@ std::vector<std::string> CReactionInterface::getExpandedMetabList(CFunctionParam
     return ret;
   }
 
-void CReactionInterface::loadNameMap(const CModel & model, const CReaction & rea)
-{
-  std::vector< std::vector<std::string> >::const_iterator it;
-  std::vector< std::vector<std::string> >::const_iterator iEnd;
-  std::vector<std::string>::const_iterator jt;
-  std::vector<std::string>::const_iterator jEnd;
-
-  std::string metabName;
-  std::vector<std::string> SubList;
-
-  mNameMap.clear();
-
-  it = rea.getParameterMappings().begin();
-  iEnd = rea.getParameterMappings().end();
-  for (; it != iEnd; ++it)
-    {
-      SubList.clear();
-      for (jt = it->begin(), jEnd = it->end(); jt != jEnd; ++jt)
-        {
-          //std::cout <<*jt << std::endl;
-          metabName = CMetabNameInterface::getDisplayName(&model, *jt);
-          if (metabName != "")
-            SubList.push_back(metabName);
-          else //it's no metab
-            SubList.push_back(GlobalKeys.get(*jt)->getObjectName());
-        }
-      mNameMap.push_back(SubList);
-    }
-}
-
 bool CReactionInterface::createMetabolites(CModel & model) const
   {
     return mChemEqI.createNonExistingMetabs(&model);
+  }
+
+bool CReactionInterface::createOtherObjects(CModel & model) const
+  {
+    bool ret = false;
+
+    unsigned C_INT32 i, imax = size();
+    for (i = 0; i < imax; ++i)
+      {
+        switch (getUsage(i))
+          {
+          case CFunctionParameter::VOLUME:
+            if (mNameMap[i][0] == "unknown" || mNameMap[i][0] == "") break;
+            if (model.createCompartment(mNameMap[i][0], 1.0))
+              ret = true;
+            break;
+
+          case CFunctionParameter::PARAMETER:
+            if (mNameMap[i][0] == "unknown" || mNameMap[i][0] == "") break;
+            if (!isLocalValue(i))
+              if (model.createModelValue(mNameMap[i][0], 1.0))
+                ret = true;
+            break;
+
+          default:
+            break;
+          }
+      }
+    return ret;
   }
 
 bool CReactionInterface::isMulticompartment(const CModel & model) const
@@ -558,6 +715,7 @@ bool CReactionInterface::isMulticompartment(const CModel & model) const
 bool CReactionInterface::isValid() const
   {
     if (!mpFunction) return false;
+    if (mpFunction->getObjectName() == "undefined") return false;
 
     //A reaction is invalid if it has a metab, a global parameter, or a compartment "unknown"
     unsigned C_INT j, jmax = size();
@@ -566,4 +724,23 @@ bool CReactionInterface::isValid() const
         return false;
 
     return true;
+  }
+
+void CReactionInterface::printDebug() const
+  {
+    std::cout << "Reaction:   " << getReactionName() << std::endl;
+    std::cout << "  Function: " << getFunctionName() << std::endl;
+    std::cout << "  ChemEq:   " << getChemEqString() << std::endl;
+
+    unsigned C_INT32 i, imax = size();
+    for (i = 0; i < imax; ++i)
+      {
+        std::cout << "    ---  " << i << ": " << getParameterName(i)
+        << ", " << isVector(i) << " " << isLocalValue(i)
+        << ", " << mValues[i] << std::endl;
+
+        unsigned C_INT32 j, jmax = mNameMap[i].size();
+        for (j = 0; j < jmax; ++j)
+          std::cout << "            " << mNameMap[i][j] << std::endl;
+      }
   }

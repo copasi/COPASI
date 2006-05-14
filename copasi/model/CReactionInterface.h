@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:22 $
+   $Author: ssahle $
+   $Date: 2006/05/14 13:33:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,19 @@
 class CModel;
 
 /**
- * This class provides an interface between a reaction and the gui.
+ * This class provides an interface for dealing with reactions.
+ * For representing the parameter mappings it uses object names.
+ * A CReactionInterface allows editing a reaction while trying to
+ * keep everything consistent.
+ *
+ * Note: Many of the methods need to be provided with a model.
+ * While handling of the metabolites is completely independent of the
+ * model (they are handled by name, and they don't need to exist),
+ * the mapping of Compartments and global parameters is done with
+ * the entities that exist in the model. This may seem inconsistent,
+ * but the idea is that metabolites can be created from the gui by entering
+ * them into the reaction equation. Compartments and global parameters
+ * can only be chosen from the list of existing objects.
  */
 class CReactionInterface
   {
@@ -46,7 +58,6 @@ class CReactionInterface
     /**
      * A copy of the chemical equation of the reaction
      */
-    //CChemEq *mpChemEq;
     CChemEqInterface mChemEqI;
 
     /**
@@ -74,11 +85,6 @@ class CReactionInterface
      */
     std::vector<bool> mIsLocal;
 
-    /**
-     * is the reaction valid?
-     */
-    //bool mValid;
-
   public:
     CReactionInterface();
     ~CReactionInterface();
@@ -90,7 +96,9 @@ class CReactionInterface
      * set a new chemical equation.
      * newFunction suggests a new kinetic function which is only used if adequate.
      */
-    void setChemEqString(const std::string & eq, const std::string & newFunction = "");
+    void setChemEqString(const std::string & eq, const std::string & newFunction,
+                         const CModel& model);
+
     std::string getChemEqString() const {return mChemEqI.getChemEqString(false);};
 
     bool isReversible() const {return mChemEqI.getReversibility();};
@@ -107,13 +115,15 @@ class CReactionInterface
      * set the reversibility.
      * newFunction suggests a new kinetic function which is only used if adequate.
      */
-    void setReversibility(bool rev, const std::string & newFunction = "");
+    void setReversibility(bool rev, const std::string & newFunction,
+                          const CModel& model);
 
     /**
      * reverse the reaction and set the reversibility.
      * newFunction suggests a new kinetic function which is only used if adequate.
      */
-    void reverse(bool rev, const std::string & newFunction = "");
+    void reverse(bool rev, const std::string & newFunction,
+                 const CModel& model);
 
     /**
      * This produces a list of metab names (from the chem eq) for use in
@@ -122,11 +132,17 @@ class CReactionInterface
     const std::vector<std::string> & getListOfMetabs(CFunctionParameter::Role role) const;
 
     /**
-     * set the function.
-     * "force" tells whether a remapping from scratch of the parameters is also
-     * enforced when the function is the same as before
+     * set the function. an empty mapping is created
      */
-    void setFunction(const std::string & fn, bool force = false);
+    void setFunctionWithEmptyMapping(const std::string & fn);
+
+    /**
+     * set the function.
+     * a new mapping is created that tries to preserve as much information as
+     * possible from the old mapping. Then a default mapping is set from
+     * the chemical equation and the model (if possible).
+     */
+    void setFunctionAndDoMapping(const std::string & fn, const CModel & model);
 
     const std::string & getFunctionName() const
       {if (mpFunction) return mpFunction->getObjectName(); else return emptyString;};
@@ -138,6 +154,8 @@ class CReactionInterface
     {return mpFunction;}
 
     std::vector< std::string > getListOfPossibleFunctions() const;
+
+    //query information about the function variables
 
     C_INT32 size() const
       {if (mpFunction) return mpParameters->size(); else return 0;};
@@ -160,25 +178,33 @@ class CReactionInterface
         else return emptyString;
       }
 
-    void setMetab(unsigned C_INT32 index, std::string mn);
+    // set/get the mapping
 
-    void removeMetab(unsigned C_INT32 index, std::string mn);
+    void setMapping(unsigned C_INT32 index, std::string mn);
 
-    const std::vector< std::string > & getMetabs(unsigned C_INT32 index) const
+    void removeMapping(unsigned C_INT32 index, std::string mn);
+
+    const std::vector< std::string > & getMappings(unsigned C_INT32 index) const
     {return mNameMap[index];}
 
-    void setValue(unsigned C_INT32 index, C_FLOAT64 value)
+    const std::string & getMapping(unsigned C_INT32 index) const
+      {
+        assert(!isVector(index));
+        return mNameMap[index][0];
+      }
+
+    void setLocalValue(unsigned C_INT32 index, C_FLOAT64 value)
     {
       mValues[index] = value;
       mIsLocal[index] = true;
     }
 
-    void setValue(unsigned C_INT32 index)
+    void setLocal(unsigned C_INT32 index)
     {
       mIsLocal[index] = true;
     }
 
-    const C_FLOAT64 & getValue(unsigned C_INT32 index) const {return mValues[index];}
+    const C_FLOAT64 & getLocalValue(unsigned C_INT32 index) const {return mValues[index];}
 
     bool isLocalValue(unsigned C_INT32 index) const {return mIsLocal[index];};
 
@@ -187,34 +213,85 @@ class CReactionInterface
      *  parameter named pn. Only valid if the role for this function parameter is "PARAMETER".
      *  returns success
      */
-    bool setGlobalParameter(unsigned C_INT32 index, std::string pn);
+    //bool setGlobalParameter(unsigned C_INT32 index, std::string pn);
 
-    const std::string & getGlobalParameter(unsigned C_INT32 index) const;
+    //const std::string & getGlobalParameter(unsigned C_INT32 index) const;
 
-    bool setCompartment(unsigned C_INT32 index, std::string pn);
+    //bool setCompartment(unsigned C_INT32 index, std::string pn);
 
-    const std::string & getCompartment(unsigned C_INT32 index) const;
+    //const std::string & getCompartment(unsigned C_INT32 index) const;
 
     void initFromReaction(const CModel & model, const std::string & key);
 
+    /**
+     * writes the information back to a CReaction.
+     * createMetabolites() and createOtherObjects() should be called before.
+     */
     bool writeBackToReaction(CReaction * rea, CModel & model) const;
 
+    /**
+     * create all metabolites that are needed by the reaction but do
+     * not exist in the model yet.
+     */
     bool createMetabolites(CModel & model) const;
+
+    /**
+     * create all other objects that are needed by the reaction but do
+     * not exist in the model yet.
+     */
+    bool createOtherObjects(CModel & model) const;
 
     bool isValid() const;
 
     /**
-     * is the mapping of this parameter locked?
+     * Is the mapping of this parameter locked?
+     * The bahaviour of this method is different for different roles:
+     * SUBSTRATE, PRODUCT: according to the chemical equation
+     * MODIFIER: always unlocked
+     * TIME: always locked
+     * VOLUME, PARAMETER: according to the model
+     *
+     * The idea is that in the reaction GUI new species can be entered
+     * in the chemical equation that are then created automatically.
+     * Compartments and global parameters can only be chosen from those
+     * existing in the model.
      */
-    bool isLocked(unsigned C_INT32 index) const;
-    bool isLocked(CFunctionParameter::Role usage) const;
+    bool isLocked(unsigned C_INT32 index, const CModel & model) const;
+    bool isLocked(CFunctionParameter::Role usage, const CModel & model) const;
+
+    void printDebug() const;
 
   private:
+
+    /**
+     * initialize mapping (resize vectors and set names to "unknown").
+     * Also initializes mpParameters but doesn't delete the old mpParameters.
+     */
+    void initMapping();
+
+    /**
+     * create new mapping, try to keep as much information from the current
+     * mapping. Calls initMapping().
+     */
+    void copyMapping();
 
     /**
      * guesses how to connect metabs with parameters for a specific usage
      */
     void connectFromScratch(CFunctionParameter::Role role, bool pedantic);
+
+    /**
+     * tries to determine the mapping for PARAMETER, VOLUME, TIME
+     * only if the current mapping is "unknown".
+     * Is typically called after initMapping() and copyMapping()
+     */
+    void connectNonMetabolites(const CModel & model);
+
+    /**
+     * updates the modifiers in the chemical equation according to
+     * the parameter mapping
+     */
+    void updateModifiersInChemEq();
 
     void clearFunction();
 
@@ -222,7 +299,8 @@ class CReactionInterface
      * checks if newFunction is an valid function for the reaction.
      * If it is not or if newFunction="" another function is chosen.
      */
-    void findAndSetFunction(const std::string & newFunction = "");
+    void findAndSetFunction(const std::string & newFunction,
+                            const CModel & model);
 
     /**
      * returns a list of metabolites (from the chemical equation). Species can occur
@@ -230,7 +308,7 @@ class CReactionInterface
      */
     std::vector<std::string> getExpandedMetabList(CFunctionParameter::Role role) const;
 
-    void loadNameMap(const CModel & model, const CReaction & rea);
+    bool loadMappingAndValues(const CModel & model, const CReaction & rea);
   };
 
 #endif
