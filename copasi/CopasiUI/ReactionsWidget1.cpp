@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.179 $
+   $Revision: 1.180 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/14 13:28:28 $
+   $Date: 2006/05/14 18:24:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -537,7 +537,9 @@ bool ReactionsWidget1::update(ListViews::ObjectType objectType,
 
 bool ReactionsWidget1::leave()
 {
-  return saveToReaction();
+  saveToReaction();
+  return true; //always return true. That means that the widget can be
+  //left without saving
 }
 
 bool ReactionsWidget1::enter(const std::string & key)
