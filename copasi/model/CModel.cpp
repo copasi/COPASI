@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.258 $
+   $Revision: 1.259 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/03 17:22:14 $
+   $Author: ssahle $
+   $Date: 2006/05/14 13:32:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1321,6 +1321,11 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX) const
     // DebugFile << jacobianX << std::endl;
   }
 
+C_FLOAT64 CModel::calculateDivergence() const
+  {
+    fatalError(); //not yet implemented
+  }
+
 bool CModel::setVolumeUnit(const std::string & name)
 {
   int unit = toEnum(name.c_str(), VolumeUnitNames);
@@ -1728,8 +1733,16 @@ CReaction* CModel::createReaction(const std::string & name)
 
 
 
+
+
+
+
   mSteps.add(reaction);
   mSteps[reaction.getObjectName()]->compile();
+
+
+
+
 
 
 
@@ -1863,18 +1876,18 @@ bool CModel::convert2NonReversible()
 
         if (fn == "Mass action (reversible)")
           {
-            ri1.setReversibility(false, "Mass action (irreversible)");
-            ri2.reverse(false, "Mass action (irreversible)");
+            ri1.setReversibility(false, "Mass action (irreversible)", *this);
+            ri2.reverse(false, "Mass action (irreversible)", *this);
           }
         else if (fn == "Constant flux (reversible)")
           {
-            ri1.setReversibility(false, "Constant flux (irreversible)");
-            ri2.reverse(false, "Constant flux (irreversible)");
+            ri1.setReversibility(false, "Constant flux (irreversible)", *this);
+            ri2.reverse(false, "Constant flux (irreversible)", *this);
           }
         else
           {
             //ri1.setReversibility(false);
-            ri2.reverse(false, "Mass action (irreversible)");
+            ri2.reverse(false, "Mass action (irreversible)", *this);
           }
 
         ri1.writeBackToReaction(reac1, *this);

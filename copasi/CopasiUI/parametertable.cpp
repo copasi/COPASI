@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:47 $
+   $Author: ssahle $
+   $Date: 2006/05/14 13:28:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -263,7 +263,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
           && (usage != CFunctionParameter::VOLUME)
           && (usage != CFunctionParameter::TIME))
         {
-          if (ri.isLocked(i)) item->setPixmap(*pLocked); else item->setPixmap(*pUnlocked);
+          if (ri.isLocked(i, model)) item->setPixmap(*pLocked); else item->setPixmap(*pUnlocked);
         }
       setItem(rowCounter, 1, item);
 
@@ -294,15 +294,15 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
             vectorOfStrings2QStringList(getListOfAllMetabNames(model, ri), qsl);
           else //only get the modifiers from the ChemEq
             {
-              if (!ri.isLocked(i))
+              if (!ri.isLocked(i, model))
                 vectorOfStrings2QStringList(ri.getListOfMetabs(usage), qsl);
             }
 
-          metabNames = &(ri.getMetabs(i));
+          metabNames = &(ri.getMappings(i));
 
           if (!ri.isVector(i))
             {
-              if (ri.isLocked(i))
+              if (ri.isLocked(i, model))
                 {
                   item = new ColorTableItem(this, QTableItem::Never, color, FROM_UTF8((*metabNames)[0]));
                   setItem(rowCounter, 3, item);
@@ -318,7 +318,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
             }
           else
             {
-              if (ri.isLocked(i))
+              if (ri.isLocked(i, model))
                 {
                   item = new ColorTableItem(this, QTableItem::Never, color, "");
                   setItem(rowCounter, 3, item);
@@ -347,13 +347,13 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
         {
           if (ri.isLocalValue(i))
             {
-              item = new ColorTableItem(this, QTableItem::OnTyping, color, QString::number(ri.getValue(i)));
+              item = new ColorTableItem(this, QTableItem::OnTyping, color, QString::number(ri.getLocalValue(i)));
               setItem(rowCounter, 3, item);
             }
           else //global parameter
             {
               combo = new QComboTableItem(this, getListOfAllGlobalParameterNames(model));
-              combo->setCurrentItem(FROM_UTF8(ri.getGlobalParameter(i)));
+              combo->setCurrentItem(FROM_UTF8(ri.getMapping(i)));
               setItem(rowCounter, 3, combo);
             }
         }
@@ -361,7 +361,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
       else if (usage == CFunctionParameter::VOLUME)
         {
           combo = new QComboTableItem(this, getListOfAllCompartmentNames(model));
-          combo->setCurrentItem(FROM_UTF8(ri.getCompartment(i)));
+          combo->setCurrentItem(FROM_UTF8(ri.getMapping(i)));
           setItem(rowCounter, 3, combo);
         }
       // add a line for time
@@ -373,7 +373,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
       // add a line for an unknown role
       else
         {
-          item = new ColorTableItem(this, QTableItem::OnTyping, color, QString::number(ri.getValue(i)));
+          item = new ColorTableItem(this, QTableItem::OnTyping, color, QString::number(ri.getLocalValue(i)));
           setItem(rowCounter, 3, item);
         }
 

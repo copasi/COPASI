@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.89 $
+   $Revision: 1.90 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/11 14:37:21 $
+   $Author: ssahle $
+   $Date: 2006/05/14 13:28:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,17 +106,25 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
       else
         {
           //tell the reaction interface
-          ri.setChemEqString((const char *)equation.utf8());
+          ri.setChemEqString((const char *)equation.utf8(), "",
+                             *(CCopasiDataModel::Global->getModel()));
         }
     }
 
   //first check if new metabolites need to be created
   bool createdMetabs = ri.createMetabolites(*(CCopasiDataModel::Global->getModel()));
+  bool createdObjects = ri.createOtherObjects(*(CCopasiDataModel::Global->getModel()));
   //this writes all changes to the reaction
   ri.writeBackToReaction(NULL, *(CCopasiDataModel::Global->getModel()));
   //CCopasiDataModel::Global->getModel()->compile();
   //this tells the gui what it needs to know.
-  if (createdMetabs) ListViews::notify(ListViews::METABOLITE, ListViews::ADD, "");
+  if (createdObjects)
+    protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
+  else
+    {
+      if (createdMetabs) protectedNotify(ListViews::METABOLITE, ListViews::ADD, "");
+      protectedNotify(ListViews::REACTION, ListViews::CHANGE, "");
+    }
 }
 
 void ReactionsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)

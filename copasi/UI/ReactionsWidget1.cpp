@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.178 $
+   $Revision: 1.179 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/11 14:37:21 $
+   $Author: ssahle $
+   $Date: 2006/05/14 13:28:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -233,6 +233,7 @@ bool ReactionsWidget1::saveToReaction()
 
   //first check if new metabolites need to be created
   bool createdMetabs = mRi.createMetabolites(*(CCopasiDataModel::Global->getModel()));
+  bool createdObjects = mRi.createOtherObjects(*(CCopasiDataModel::Global->getModel()));
 
   mRi.setReactionName((const char *)LineEdit1->text().utf8());
 
@@ -259,8 +260,13 @@ bool ReactionsWidget1::saveToReaction()
   //CCopasiDataModel::Global->getModel()->compile();
 
   //this tells the gui what it needs to know.
-  if (createdMetabs) protectedNotify(ListViews::METABOLITE, ListViews::ADD, "");
-  protectedNotify(ListViews::REACTION, ListViews::CHANGE, objKey);
+  if (createdObjects)
+    protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
+  else
+    {
+      if (createdMetabs) protectedNotify(ListViews::METABOLITE, ListViews::ADD, "");
+      protectedNotify(ListViews::REACTION, ListViews::CHANGE, objKey);
+    }
 
   //TODO: detect rename events (mRi.writeBackToReaction has to do this)
 
@@ -284,7 +290,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
   LineEdit2->slotForceUpdate();
 
   // tell the reaction interface
-  mRi.setReversibility(CheckBox->isChecked());
+  mRi.setReversibility(CheckBox->isChecked(), "", *(CCopasiDataModel::Global->getModel()));
 
   // update the widget
   FillWidgetFromRI();
@@ -294,7 +300,8 @@ void ReactionsWidget1::slotCheckBoxClicked()
 void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 {
   // tell the reaction interface
-  mRi.setFunction((const char *)p2.utf8());
+  mRi.setFunctionAndDoMapping((const char *)p2.utf8(),
+                              *CCopasiDataModel::Global->getModel());
 
   // update the widget
   FillWidgetFromRI();
@@ -318,7 +325,7 @@ void ReactionsWidget1::slotLineEditChanged()
   // tell the reaction interface
   //mRi.setReactionName(rName);
 
-  mRi.setChemEqString(eq);
+  mRi.setChemEqString(eq, "", *(CCopasiDataModel::Global->getModel()));
 
   // update the widget
   FillWidgetFromRI();
@@ -375,7 +382,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             // this invalidates the reaction interface
             // so that the writeBackToReactionFunction is not called
             // after deleting a reaction.
-            mRi.setFunction("", true);
+            mRi.setFunctionWithEmptyMapping("");
             if (size > 1)
               {
                 enter(CCopasiDataModel::Global->getModel()->getReactions()[std::min(index, size - 2)]->getKey());
@@ -444,20 +451,20 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
       if (sub != 0) return;
 
       if (mRi.isLocalValue(index))
-        mRi.setValue(index, newValue.toDouble()); // TODO: check
+        mRi.setLocalValue(index, newValue.toDouble()); // TODO: check
       else
-        mRi.setGlobalParameter(index, (const char *)newValue.utf8());
+        mRi.setMapping(index, (const char *)newValue.utf8());
     }
   else if (mRi.getUsage(index) == CFunctionParameter::VOLUME)
     {
       if (sub != 0) return;
-      mRi.setCompartment(index, (const char *)newValue.utf8());
+      mRi.setMapping(index, (const char *)newValue.utf8());
     }
   else
     {
       if (sub == 0) //here we assume that vector parameters cannot be edited
         {
-          mRi.setMetab(index, (const char *)table->text(table->mIndex2Line[index], 3).utf8());
+          mRi.setMapping(index, (const char *)table->text(table->mIndex2Line[index], 3).utf8());
         }
     }
 
@@ -471,9 +478,9 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
 {
   if (local)
-    mRi.setValue(index /*, 0.1*/);
+    mRi.setLocal(index);
   else
-    mRi.setGlobalParameter(index, "unknown");
+    mRi.setMapping(index, "unknown"); //TODO keep global parameter
 
   // update the widget
   int rrr = table->currentRow();

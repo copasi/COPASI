@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.119 $
+   $Revision: 1.120 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/03 17:22:14 $
+   $Author: ssahle $
+   $Date: 2006/05/14 13:32:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -708,21 +708,28 @@ class CModel : public CModelEntity
 
     /**
      * Calculates the jacobian of the full model for the current state
-     * and stores it in the provided matrix.
+     * and stores it in the provided matrix. calculateElasticityMatrix()
+     * needs to be called before.
      * @param CMatrix< C_FLOAT64 > & jacobian
-     * @param const C_FLOAT64 & factor,
-     * @param const C_FLOAT64 & resolution
      */
     void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian) const;
 
     /**
      * Calculates the jacobian of the reduced model for the current
-     * state and stores it in the provided matrix.
+     * state and stores it in the provided matrix. calculateElasticityMatrix()
+     * needs to be called before.
      * @param CMatrix< C_FLOAT64 > & jacobianX
-     * @param const C_FLOAT64 & factor,
-     * @param const C_FLOAT64 & resolution
      */
     void calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX) const;
+
+    /**
+     * Calculates the divergence for the current state.
+     * calculateElasticityMatrix() needs to be called before.
+     * It makes only sense to use this method if the joacobian
+     * is not also calculated. In this case it would be more
+     * efficient to use the trace of the jacobian
+     */
+    C_FLOAT64 calculateDivergence() const;
 
     /**
      * Set the unit for volumes. If copasi recognises
