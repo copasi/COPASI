@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/05 15:14:52 $
+   $Date: 2006/05/14 13:38:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,7 +136,7 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   mNumExp = mpProblem->getExponentNumber();
 
   //calculate the number of variables for lsoda integration
-  mDim[0] = mSystemSize * (1 + mNumExp);
+  mDim[0] = mSystemSize * (1 + mNumExp) + 1;
 
   //std::cout << "lyap: " << mSystemSize << " " << mNumExp << " " << mDim[0] << std::endl;
 
@@ -167,6 +167,9 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
       mSumExponents[i] = 0;
       mpTask->mExponents[i] = 0;
     }
+  mpTask->mIntervalDivergence = 0;
+  mSumDivergence = 0;
+  mpTask->mAverageDivergence = 0;
 
   /* Configure lsoda */
   mRtol = * getValue("Relative Tolerance").pUDOUBLE;
@@ -237,11 +240,10 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
   pModel->calculateJacobianX(mJacobian);
 
   //empty dummy entries... to be removed later
-  C_FLOAT64 *dbl, *dblEnd = ydot + mDim[0];
-  for (dbl = ydot + mSystemSize; dbl != dblEnd; ++dbl)
-    *dbl = 0;
+  //C_FLOAT64 *dbl, *dblEnd = ydot + mDim[0];
+  //for (dbl = ydot + mSystemSize; dbl != dblEnd; ++dbl)
+  //  *dbl = 0;
 
-  //
   //   char T = 'N';
   //   C_INT M = mSystemSize;
   //   C_INT N = mSystemSize;
@@ -278,6 +280,12 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
             *dbl1 += *dbl2 * *dbl3;
         }
     }
+
+  //divergence; trace of jacobian
+  *dbl1 = 0;
+  dbl2 = mJacobian.array();
+  for (i = 0; i < mSystemSize; ++i, dbl2 += (mSystemSize + 1))
+    * dbl1 += *dbl2;
 
   //debug output
   /*  std::cout << mJacobian;
@@ -374,6 +382,12 @@ bool CLyapWolfMethod::calculate()
           mpTask->mLocalExponents[i] = mpTask->mLocalExponents[i] / stepSize;
           mpTask->mExponents[i] = mSumExponents[i] / (mTime - startTime);
         }
+
+      //process result of divergence integration(common_0)
+      mSumDivergence += *(mVariables.array() + mVariables.size() - 1);
+      mpTask->mIntervalDivergence = *(mVariables.array() + mVariables.size() - 1) / stepSize;
+      *(mVariables.array() + mVariables.size() - 1) = 0;
+      mpTask->mAverageDivergence = mSumDivergence / (mTime - startTime);
 
       //       std::cout << mTime << " "
       //               << mpTask->mLocalExponents[0] << " " << mSumExponents[0]

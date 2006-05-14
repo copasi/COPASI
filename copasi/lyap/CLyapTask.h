@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/12 13:59:17 $
+   $Date: 2006/05/14 13:38:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,20 @@ class CLyapTask : public CCopasiTask
     C_FLOAT64 mSumOfExponents;
     C_FLOAT64 mSumOfLocalExponents;
 
+    /**
+     *  Divergence at the point of time of the reporting
+     */
     C_FLOAT64 mDivergence;
+
+    /**
+     *  Divergence averaged over the last orthonormalization interval
+     */
+    C_FLOAT64 mIntervalDivergence;
+
+    /**
+     *  Divergence averaged over the whole integration time
+     */
+    C_FLOAT64 mAverageDivergence;
 
     //for the progress bar
     C_FLOAT64 mPercentage;

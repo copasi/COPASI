@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/12 13:59:17 $
+   $Date: 2006/05/14 13:38:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -94,7 +94,9 @@ void CLyapTask::initObjects()
 
   addObjectReference("Sum of exponents", mSumOfExponents, CCopasiObject::ValueDbl);
   addObjectReference("Sum of local exponents", mSumOfLocalExponents, CCopasiObject::ValueDbl);
-  addObjectReference("Divergence", mDivergence, CCopasiObject::ValueDbl);
+  addObjectReference("Local divergence", mDivergence, CCopasiObject::ValueDbl);
+  addObjectReference("Interval divergence", mIntervalDivergence, CCopasiObject::ValueDbl);
+  addObjectReference("Average divergence", mAverageDivergence, CCopasiObject::ValueDbl);
 }
 
 bool CLyapTask::initialize(const OutputFlag & of,
@@ -301,17 +303,12 @@ void CLyapTask::printResult(std::ostream * ostream) const
           }
         os << "    Objective Function Value:\t" << mSolutionValue << std::endl;
 
-
-
-
         std::vector< COptItem * >::const_iterator itItem =
           mpOptItems->begin();
         std::vector< COptItem * >::const_iterator endItem =
           mpOptItems->end();
 
-
         unsigned C_INT32 i;
-
 
         for (i = 0; itItem != endItem; ++itItem, i++)
           {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/05 15:14:52 $
+   $Date: 2006/05/14 13:38:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,11 @@ class CLyapWolfMethod : public CLyapMethod
     CVector<C_FLOAT64> mSumExponents;
     //CVector<C_FLOAT64> mExponents;
     CVector<C_FLOAT64> mNorms;
+
+    /**
+     *  integrated divergence
+     */
+    C_FLOAT64 mSumDivergence;
 
     /**
      *  Pointer to the array with left hand side values.
