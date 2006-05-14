@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/10 21:49:00 $
+   $Date: 2006/05/14 16:53:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,9 +119,14 @@ CQLyapWidget::CQLyapWidget(QWidget* parent, const char* name, WFlags fl)
   //*******************
 
   //
-  bStoreTimeSeries = new QCheckBox(this, "bStoreTimeSeries");
-  bStoreTimeSeries->setText(trUtf8("store time series in memory "));
-  CQLyapWidgetLayout->addMultiCellWidget(bStoreTimeSeries, 5, 5, 1, 3);
+  //bStoreTimeSeries = new QCheckBox(this, "bStoreTimeSeries");
+  //bStoreTimeSeries->setText(trUtf8("store time series in memory "));
+  //CQLyapWidgetLayout->addMultiCellWidget(bStoreTimeSeries, 5, 5, 1, 3);
+
+  //
+  bDivergence = new QCheckBox(this, "bDivergence");
+  bDivergence->setText(trUtf8("calculate Divergence "));
+  CQLyapWidgetLayout->addMultiCellWidget(bDivergence, 5, 5, 1, 3);
 
   //
   setInitialState = new QCheckBox(this, "setInitialState");
@@ -278,7 +283,23 @@ CQLyapWidget::~CQLyapWidget()
 
 
 
+
+
+
+
+
+
+
+
   nStepSize->setText(QString::number(mpProblem->getStepSize()));
+
+
+
+
+
+
+
+
 
 
 
@@ -293,6 +314,14 @@ CQLyapWidget::~CQLyapWidget()
 /*void CQLyapWidget::checkTimeSeries()
 {
   //std::cout << "checkTimeSeries() " << nStepNumber->text().toLong() << " " << CCopasiDataModel::Global->getModel()->getIntMetab() << std::endl;
+
+
+
+
+
+
+
+
 
 
 
@@ -371,7 +400,7 @@ void CQLyapWidget::runLyapTask()
 
   if ((!tt->getReport().getStream())
       && (CCopasiDataModel::Global->getPlotDefinitionList()->size() == 0)
-      && (!trajectoryproblem->timeSeriesRequested()))
+      /*&& (!trajectoryproblem->timeSeriesRequested())*/)
     {
       QMessageBox::information (NULL, "No output specified",
                                 "No output would be generated from this simulation. \nSpecify a report, a plot, or activate the \"Store time series in memory\" checkbox.");
@@ -489,8 +518,11 @@ void CQLyapWidget::loadLyapTask()
   mLineEditStartOutput->setText(QString::number(problem->getTransientTime()));
 
   //store time series checkbox
-  bStoreTimeSeries->setChecked(problem->timeSeriesRequested());
+  //bStoreTimeSeries->setChecked(problem->timeSeriesRequested());
   //checkTimeSeries();
+
+  //divergence
+  bDivergence->setChecked(problem->divergenceRequested());
 
   //method parameters
   loadMethodParameters();
@@ -570,7 +602,9 @@ void CQLyapWidget::saveLyapTask()
   else
     problem->setTransientTime(CCopasiDataModel::Global->getModel()->getInitialTime());
 
-  problem->setTimeSeriesRequested(bStoreTimeSeries->isChecked());
+  //problem->setTimeSeriesRequested(bStoreTimeSeries->isChecked());
+
+  problem->setDivergenceRequested(bDivergence->isChecked());
 
   //set initial state
   CCopasiDataModel::Global->getModel()->compileIfNecessary();

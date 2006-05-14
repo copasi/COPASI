@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapProblem.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/12 13:59:17 $
+   $Date: 2006/05/14 16:52:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,19 +29,19 @@
  */
 CLyapProblem::CLyapProblem(const CCopasiContainer * pParent):
     CCopasiProblem(CCopasiTask::lyap, pParent),
-    //mpDuration(NULL),
-    //mpStepSize(NULL),
-    //mpStepNumber(NULL),
     mpExponentNumber(NULL),
-    mpTimeSeriesRequested(NULL),
+    //mpTimeSeriesRequested(NULL),
+    mpDivergenceRequested(NULL),
     mpTransientTime(NULL)
 {
   addParameter("ExponentNumber", CCopasiParameter::UINT, (unsigned C_INT32) 3);
-  addParameter("TimeSeriesRequested", CCopasiParameter::BOOL, (bool) true);
+  //addParameter("TimeSeriesRequested", CCopasiParameter::BOOL, (bool) true);
+  addParameter("DivergenceRequested", CCopasiParameter::BOOL, (bool) true);
   addParameter("TransientTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0);
 
   mpExponentNumber = getValue("ExponentNumber").pUINT;
-  mpTimeSeriesRequested = getValue("TimeSeriesRequested").pBOOL;
+  //mpTimeSeriesRequested = getValue("TimeSeriesRequested").pBOOL;
+  mpDivergenceRequested = getValue("DivergenceRequested").pBOOL;
   mpTransientTime = getValue("TransientTime").pDOUBLE;
 
   initObjects();
@@ -56,11 +56,13 @@ CLyapProblem::CLyapProblem(const CLyapProblem & src,
                            const CCopasiContainer * pParent):
     CCopasiProblem(src, pParent),
     mpExponentNumber(NULL),
-    mpTimeSeriesRequested(NULL),
+    //mpTimeSeriesRequested(NULL),
+    mpDivergenceRequested(NULL),
     mpTransientTime(NULL)
 {
   mpExponentNumber = getValue("ExponentNumber").pUINT;
-  mpTimeSeriesRequested = getValue("TimeSeriesRequested").pBOOL;
+  //mpTimeSeriesRequested = getValue("TimeSeriesRequested").pBOOL;
+  mpDivergenceRequested = getValue("DivergenceRequested").pBOOL;
   mpTransientTime = getValue("TransientTime").pDOUBLE;
 
   initObjects();
@@ -110,13 +112,23 @@ void CLyapProblem::setTransientTime(const C_FLOAT64 & startTime)
 const C_FLOAT64 & CLyapProblem::getTransientTime() const
   {return *mpTransientTime;}
 
-void CLyapProblem::setTimeSeriesRequested(bool flag)
+/*void CLyapProblem::setTimeSeriesRequested(bool flag)
 {
   *mpTimeSeriesRequested = flag;
 }
 
+
 bool CLyapProblem::timeSeriesRequested() const
   {return *mpTimeSeriesRequested;}
+ */
+
+void CLyapProblem::setDivergenceRequested(bool flag)
+{
+  *mpDivergenceRequested = flag;
+}
+
+bool CLyapProblem::divergenceRequested() const
+  {return *mpDivergenceRequested;}
 
 void CLyapProblem::printResult(std::ostream * ostream) const
   {

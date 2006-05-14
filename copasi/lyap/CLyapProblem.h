@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapProblem.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/12 13:59:17 $
+   $Date: 2006/05/14 16:52:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,10 +34,15 @@ class CLyapProblem : public CCopasiProblem
     /**
      *
      */
-    bool * mpTimeSeriesRequested;
+    //bool * mpTimeSeriesRequested;
 
     /**
-     *  Indicates how at which point of time the calculation of exponents
+     * whether the divergence should also be calculated
+     */
+    bool * mpDivergenceRequested;
+
+    /**
+     *  Indicates at which point of time the calculation of exponents
      *  should be started.
      */
     C_FLOAT64 * mpTransientTime;
@@ -98,12 +103,22 @@ class CLyapProblem : public CCopasiProblem
     /**
      *.
      */
-    void setTimeSeriesRequested(bool flag);
+    //void setTimeSeriesRequested(bool flag);
 
     /**
      *
      */
-    bool timeSeriesRequested() const;
+    //bool timeSeriesRequested() const;
+
+    /**
+     *.
+     */
+    void setDivergenceRequested(bool flag);
+
+    /**
+     *
+     */
+    bool divergenceRequested() const;
 
     /**
      * This is the output method for any result of a problem. The default implementation

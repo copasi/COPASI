@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/14 13:38:53 $
+   $Date: 2006/05/14 16:52:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 #include "CLyapMethod.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CReadConfig.h"
-#include "trajectory/CTimeSeries.h"
+//#include "trajectory/CTimeSeries.h"
 
 class CLyapProblem;
 class CLyapMethod;
@@ -36,12 +36,12 @@ class CLyapTask : public CCopasiTask
     /**
      * whether the time series should be stored in mTimeSeries
      */
-    bool mTimeSeriesRequested;
+    //bool mTimeSeriesRequested;
 
     /**
      * the time series (if requested)
      */
-    CTimeSeries mTimeSeries;
+    //CTimeSeries mTimeSeries;
 
     /**
      * A pointer to the trajectory Problem
@@ -65,7 +65,7 @@ class CLyapTask : public CCopasiTask
     /**
      *  Divergence at the point of time of the reporting
      */
-    C_FLOAT64 mDivergence;
+    //C_FLOAT64 mDivergence;
 
     /**
      *  Divergence averaged over the last orthonormalization interval
@@ -137,7 +137,7 @@ class CLyapTask : public CCopasiTask
      * gets a reference to the time series
      * @return time series
      */
-    const CTimeSeries & getTimeSeries() const;
+    //const CTimeSeries & getTimeSeries() const;
 
     /**
      * Perform an output event for the current activity

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/14 13:38:53 $
+   $Date: 2006/05/14 16:52:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,8 +40,8 @@
 
 CLyapTask::CLyapTask(const CCopasiContainer * pParent):
     CCopasiTask(CCopasiTask::lyap, pParent),
-    mTimeSeriesRequested(true),
-    mTimeSeries(),
+    //mTimeSeriesRequested(true),
+    //mTimeSeries(),
     mpLyapProblem(NULL),
     mpLyapMethod(NULL),
     mLocalExponents(),
@@ -94,7 +94,7 @@ void CLyapTask::initObjects()
 
   addObjectReference("Sum of exponents", mSumOfExponents, CCopasiObject::ValueDbl);
   addObjectReference("Sum of local exponents", mSumOfLocalExponents, CCopasiObject::ValueDbl);
-  addObjectReference("Local divergence", mDivergence, CCopasiObject::ValueDbl);
+  //addObjectReference("Local divergence", mDivergence, CCopasiObject::ValueDbl);
   addObjectReference("Interval divergence", mIntervalDivergence, CCopasiObject::ValueDbl);
   addObjectReference("Average divergence", mAverageDivergence, CCopasiObject::ValueDbl);
 }
@@ -133,7 +133,7 @@ bool CLyapTask::initialize(const OutputFlag & of,
     }
 
   if (!CCopasiTask::initialize(of, pOstream)) success = false;
-  mTimeSeriesRequested = mpLyapProblem->timeSeriesRequested();
+  //mTimeSeriesRequested = mpLyapProblem->timeSeriesRequested();
 
   return success;
 }
@@ -217,20 +217,20 @@ bool CLyapTask::setMethodType(const int & type)
   return true;
 }
 
-const CTimeSeries & CLyapTask::getTimeSeries() const
-{return mTimeSeries;}
+//const CTimeSeries & CLyapTask::getTimeSeries() const
+//{return mTimeSeries;}
 
 void CLyapTask::output(const COutputInterface::Activity & activity)
 {
   if (mDoOutput != NO_OUTPUT)
     CCopasiDataModel::Global->output(activity);
 
-  if (mTimeSeriesRequested && mDoOutput == OUTPUT_COMPLETE)
+  /*if (mTimeSeriesRequested && mDoOutput == OUTPUT_COMPLETE)
     switch (activity)
       {
       case COutputInterface::BEFORE:
         //TODO
-        mTimeSeries.init(10 /*mpLyapProblem->getStepNumber()*/, mpProblem->getModel());
+        mTimeSeries.init(mpLyapProblem->getStepNumber(), mpProblem->getModel());
         break;
 
       case COutputInterface::DURING:
@@ -240,7 +240,7 @@ void CLyapTask::output(const COutputInterface::Activity & activity)
       case COutputInterface::AFTER:
         mTimeSeries.finish();
         break;
-      }
+      }*/
 }
 
 bool CLyapTask::methodCallback(const C_FLOAT64 & percentage)
@@ -269,6 +269,7 @@ void CLyapTask::calculationsBeforeOutput()
     }
 
   //calculate divergence
+  /*
   CModel * pModel = mpLyapProblem->getModel();
   CMatrix<C_FLOAT64> jacobian;
   pModel->calculateElasticityMatrix(1e-6, 1e-12); //TODO configure parameters
@@ -279,6 +280,7 @@ void CLyapTask::calculationsBeforeOutput()
     sum += jacobian(i, i);
   //std::cout << sum << std::endl;
   mDivergence = sum;
+  */
 }
 
 void CLyapTask::printResult(std::ostream * ostream) const
@@ -297,6 +299,8 @@ void CLyapTask::printResult(std::ostream * ostream) const
       os << mExponents[i] << " ";
     os << std::endl;
 
+    if (mpLyapProblem->divergenceRequested())
+      os << std::endl << "Average divergence: " << mAverageDivergence << std::endl;
     /*    if (mSolutionVariables.size() == 0)
           {
             return;

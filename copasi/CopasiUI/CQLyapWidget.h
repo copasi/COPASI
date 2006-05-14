@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQLyapWidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/05 23:46:29 $
+   $Date: 2006/05/14 16:53:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,7 +81,8 @@ class CQLyapWidget : public CopasiWidget
     QFrame* line7_2;
     QComboBox* ComboBox1;
     QCheckBox* bExecutable, *setInitialState;
-    QCheckBox* bStoreTimeSeries;
+    //QCheckBox* bStoreTimeSeries;
+    QCheckBox* bDivergence;
     QLabel* parameterValueLabel;
     QLabel* TextLabel1;
     QLabel* TextLabel1_3_2;

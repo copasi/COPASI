@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/14 13:38:53 $
+   $Date: 2006/05/14 16:52:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,8 +30,8 @@ CLyapWolfMethod::CLyapWolfMethod(const CCopasiContainer * pParent):
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
   addParameter("Overall time",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1000.0);
-  addParameter("Integrate Reduced Model",
-               CCopasiParameter::BOOL, (bool) true);
+  //addParameter("Integrate Reduced Model",
+  //             CCopasiParameter::BOOL, (bool) true);
   addParameter("Relative Tolerance",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
   addParameter("Use Default Absolute Tolerance",
@@ -121,7 +121,7 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
   //mY = mpState->beginIndependent();
   mTime = mpState->getTime();
 
-  mReducedModel = * getValue("Integrate Reduced Model").pBOOL;
+  mReducedModel = true; /* *getValue("Integrate Reduced Model").pBOOL;*/
   if (mReducedModel)
     {
       mpState->setUpdateDependentRequired(true);
@@ -134,9 +134,13 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
     }
 
   mNumExp = mpProblem->getExponentNumber();
+  mDoDivergence = mpProblem->divergenceRequested();
 
   //calculate the number of variables for lsoda integration
-  mDim[0] = mSystemSize * (1 + mNumExp) + 1;
+  if (mDoDivergence)
+    mDim[0] = mSystemSize * (1 + mNumExp) + 1;
+  else
+    mDim[0] = mSystemSize * (1 + mNumExp);
 
   //std::cout << "lyap: " << mSystemSize << " " << mNumExp << " " << mDim[0] << std::endl;
 
@@ -281,6 +285,8 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
         }
     }
 
+  if (!mDoDivergence) return;
+
   //divergence; trace of jacobian
   *dbl1 = 0;
   dbl2 = mJacobian.array();
@@ -383,11 +389,14 @@ bool CLyapWolfMethod::calculate()
           mpTask->mExponents[i] = mSumExponents[i] / (mTime - startTime);
         }
 
-      //process result of divergence integration(common_0)
-      mSumDivergence += *(mVariables.array() + mVariables.size() - 1);
-      mpTask->mIntervalDivergence = *(mVariables.array() + mVariables.size() - 1) / stepSize;
-      *(mVariables.array() + mVariables.size() - 1) = 0;
-      mpTask->mAverageDivergence = mSumDivergence / (mTime - startTime);
+      //process result of divergence integration
+      if (mDoDivergence)
+        {
+          mSumDivergence += *(mVariables.array() + mVariables.size() - 1);
+          mpTask->mIntervalDivergence = *(mVariables.array() + mVariables.size() - 1) / stepSize;
+          *(mVariables.array() + mVariables.size() - 1) = 0;
+          mpTask->mAverageDivergence = mSumDivergence / (mTime - startTime);
+        }
 
       //       std::cout << mTime << " "
       //               << mpTask->mLocalExponents[0] << " " << mSumExponents[0]
