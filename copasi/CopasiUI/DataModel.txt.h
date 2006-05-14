@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.txt.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/12 13:48:47 $
+   $Date: 2006/05/14 21:20:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,11 +20,7 @@ static char DataModeltxt[] =
   "11:115:Global parameters\n"
   "11:116:Parameter overview\n"
   "1:12:Mathematical\n"
-  //  "12:121:Compartment Symbols\n"
-  "12:122:Used Functions\n"
-  //  "12:123:Constant Symbols\n"
-  //  "12:124:Fixed Metabolite Symbols\n"
-  //  "12:125:Metabolite Symbols\n"
+  //"12:122:Used Functions\n"
   "12:126:Differential Equations\n"
   "0:2:Tasks\n"
   "2:21:Steady-State\n"
