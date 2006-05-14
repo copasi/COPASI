@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/05/05 12:48:23 $
+   $Author: ssahle $
+   $Date: 2006/05/14 13:29:32 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -232,7 +232,7 @@ void CFunction::writeMathML(std::ostream & out,
                             bool expand, bool fullExpand,
                             unsigned C_INT32 l) const
   {
-    if (expand)
+    if (expand && mpRoot)
       {
         bool flag = false; //TODO include check if parantheses are necessary
         if (flag) out << SPC(l) << "<mfenced>" << std::endl;
