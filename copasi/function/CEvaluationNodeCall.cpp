@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:25 $
+   $Author: nsimus $
+   $Date: 2006/05/15 12:44:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -371,4 +371,50 @@ const CEvaluationTree * CEvaluationNodeCall::getCalledTree() const
       default:
         return NULL;
       }
+  }
+
+#include "utilities/copasimathml.h"
+
+void CEvaluationNodeCall::writeMathML(std::ostream & out,
+                                      const std::vector<std::vector<std::string> > & env,
+                                      bool expand,
+                                      unsigned C_INT32 l) const
+  {
+    switch (mType & 0x00FFFFFF)
+      {
+      case FUNCTION:
+        {
+
+          if (!expand)
+            {
+
+              out << SPC(l) << "<mrow>" << std::endl;
+
+              out << SPC(l + 1) << "<mfunc>" << mData << "</mfunc>" << std::endl;
+              out << SPC(l + 1) << "<mfenced>" << std::endl;
+
+              std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
+              std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
+
+              for (; it != end; ++it)
+                {
+                  (*it)->writeMathML(out, env, expand, l + 2);
+                }
+
+              out << SPC(l + 1) << "</mfenced>" << std::endl;
+              out << SPC(l) << "</mrow>" << std::endl;
+            }
+          //else  :TODO
+        }
+
+        break;
+
+      case EXPRESSION:
+        break;
+
+      default:
+        break;
+      }
+
+    return;
   }

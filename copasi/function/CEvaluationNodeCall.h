@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:25 $
+   $Author: nsimus $
+   $Date: 2006/05/15 12:44:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -150,6 +150,13 @@ class CEvaluationNodeCall : public CEvaluationNode
      */
     const CEvaluationTree * getCalledTree() const;
 
+    /**
+     *  generate display MathML recursively
+     */
+
+    virtual void writeMathML(std::ostream & out,
+                             const std::vector<std::vector<std::string> > & env,
+                             bool expand = true, unsigned C_INT32 l = 0) const;
   private:
     /**
      * Build the list of call parameters which correspond to
