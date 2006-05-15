@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/06 03:10:23 $
+   $Author: nsimus $
+   $Date: 2006/05/15 12:38:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@
 #include "CLsodaMethod.h"
 #include "CStochMethod.h"
 #include "CHybridMethod.h"
+#include "CHybridMethodLSODA.h"
 #include "CTauLeapMethod.h"
 
 #include "CTrajectoryProblem.h"
@@ -50,6 +51,10 @@ CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
 
     case hybrid:
       pMethod = CHybridMethod::createHybridMethod(pProblem);
+      break;
+
+    case hybridLSODA:
+      pMethod = CHybridMethodLSODA::createHybridMethodLSODA(pProblem);
       break;
 
     case tauLeap:
