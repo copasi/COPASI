@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.259 $
+   $Revision: 1.260 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/14 13:32:35 $
+   $Author: shoops $
+   $Date: 2006/05/15 15:10:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1324,6 +1324,7 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX) const
 C_FLOAT64 CModel::calculateDivergence() const
   {
     fatalError(); //not yet implemented
+    return 0.0;
   }
 
 bool CModel::setVolumeUnit(const std::string & name)
@@ -1737,8 +1738,24 @@ CReaction* CModel::createReaction(const std::string & name)
 
 
 
+
+
+
+
+
+
+
+
   mSteps.add(reaction);
   mSteps[reaction.getObjectName()]->compile();
+
+
+
+
+
+
+
+
 
 
 
