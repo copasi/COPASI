@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.3.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:10 $
+   $Date: 2006/05/15 20:55:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,8 @@
 #include <map>
 #include "copasi.h"
 
-class CCopasiTask;
+#include "utilities/CCopasiTask.h"
+
 class CCopasiProblem;
 class CPlotSpecification;
 class CReportDefinition;
@@ -29,12 +30,13 @@ class CDefaultOutputDescription
   public:
 
     CDefaultOutputDescription()
-        : name(""), description(""), isPlot(true) {}
+        : name(""), description(""), isPlot(true), mTaskType(CCopasiTask::steadyState) {}
 
     //C_INT32 id;
     std::string name;
     std::string description;
     bool isPlot;
+    CCopasiTask::Type mTaskType;
   };
 
 class COutputAssistant
@@ -82,12 +84,14 @@ class COutputAssistant
     static
     CPlotSpecification* createPlot(const std::string & name,
                                    const CCopasiObject* x,
-                                   const std::vector<const CCopasiObject*> & y);
+                                   const std::vector<const CCopasiObject*> & y,
+                                   const CCopasiTask::Type & taskType);
 
     static
     CReportDefinition* createTable(const std::string & name,
                                    const std::vector<const CCopasiObject*> & d,
-                                   const std::string & comment);
+                                   const std::string & comment,
+                                   const CCopasiTask::Type & taskType);
 
     static const std::string emptyString;
     static const CDefaultOutputDescription emptyItem;
