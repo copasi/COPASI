@@ -22,6 +22,9 @@
           </xs:unique>
         </xs:element>
         <xs:element name="Model" id="copasi.Model" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>The model displayed, editied and used when loading this file. Note, this element may not be present as it is perfectly valid to save just a list of functions. </xs:documentation>
+          </xs:annotation>
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Comment" type="cCOMMENT" id="copasi.Model.Comment" minOccurs="0"/>
@@ -293,6 +296,9 @@
           </xs:complexType>
         </xs:element>
         <xs:element name="ListOfReports" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>The list of reports defined for  the current model. If there are no reports defined this element must not occur.</xs:documentation>
+          </xs:annotation>
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Report" maxOccurs="unbounded">
@@ -330,6 +336,9 @@
           </xs:unique>
         </xs:element>
         <xs:element name="ListOfPlots" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>The list of plots defined for  the current model. If there are no plots defined this element must not occur.</xs:documentation>
+          </xs:annotation>
           <xs:complexType>
             <xs:sequence>
               <xs:element name="PlotSpecification" maxOccurs="unbounded">
@@ -363,6 +372,9 @@
           </xs:complexType>
         </xs:element>
         <xs:element name="GUI" id="copasi.GUI" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>GUI information associated with the model.</xs:documentation>
+          </xs:annotation>
           <xs:complexType>
             <xs:sequence>
               <xs:element name="ListOfSliders" id="copasi.GUI.ListOfSliders" minOccurs="0">
@@ -411,6 +423,9 @@
           </xs:complexType>
         </xs:element>
         <xs:element name="SBMLReference" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>The list of refernced SBML IDs defined for  the current model. If there are no IDs defined this element must not occur.</xs:documentation>
+          </xs:annotation>
           <xs:complexType>
             <xs:sequence>
               <xs:element name="SBMLMap" maxOccurs="unbounded">
@@ -424,8 +439,8 @@
           </xs:complexType>
         </xs:element>
       </xs:sequence>
-      <xs:attribute name="versionMajor" type="xs:integer"/>
-      <xs:attribute name="versionMinor" type="xs:integer"/>
+      <xs:attribute name="versionMajor" type="xs:integer" use="required"/>
+      <xs:attribute name="versionMinor" type="xs:integer" use="required"/>
     </xs:complexType>
     <xs:unique name="ModelStateVariableReference">
       <xs:selector xpath="Model| Model/*/*"/>
