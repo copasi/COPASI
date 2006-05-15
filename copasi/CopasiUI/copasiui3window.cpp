@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.171 $
+   $Revision: 1.171.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/06 03:10:22 $
+   $Date: 2006/05/15 16:39:37 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,7 +89,7 @@ CopasiUI3Window::CopasiUI3Window():
   newFlag = 0;
   FixedTitle = "COPASI (";
   FixedTitle += FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion());
-  FixedTitle += " RC 1) ";
+  FixedTitle += ") ";
   updateTitle();
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
@@ -567,6 +567,22 @@ void CopasiUI3Window::CleanUp()
  ** Descripton:- This method is called when the users clicks on the print as
  **              option in the menu File and is used to send the document ro
  **              printing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
