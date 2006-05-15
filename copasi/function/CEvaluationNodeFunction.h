@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: nsimus $
-   $Date: 2006/04/27 12:28:00 $
+   $Date: 2006/05/15 12:45:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -166,7 +166,6 @@ class CEvaluationNodeFunction : public CEvaluationNode
      */
     virtual CEvaluationNode* simplifyNode(CEvaluationNode *child1, CEvaluationNode *child2) const;
 
-#if 1
     /**
      *  generate display MathML recursively
      **/
@@ -177,7 +176,6 @@ class CEvaluationNodeFunction : public CEvaluationNode
 
     CEvaluationNode * getLeft();
     const CEvaluationNode * getLeft() const;
-#endif
 
   private:
     std::string handleSign(const std::string & str) const;
