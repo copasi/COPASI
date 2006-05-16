@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.20 $ $Author: ssahle $ $Date: 2005/12/07 10:55:59 $  
+# $Revision: 1.20.4.1 $ $Author: shoops $ $Date: 2006/05/16 20:45:22 $  
 ######################################################################
 
 LIB = function
@@ -8,7 +8,8 @@ include(../lib.pri)
 include(../common.pri)
 
 # Input
-HEADERS += CCallParameters.h \
+HEADERS += \
+           CCallParameters.h \
            CEvaluationLexer.h \
            CEvaluationNode.h \
            CEvaluationNodeCall.h \
@@ -27,15 +28,15 @@ HEADERS += CCallParameters.h \
            CExpression.h \
            CFunction.h \
            CFunctionDB.h \
+           FunctionDB.xml.h \
            CFunctionParameter.h \
            CFunctionParameters.h \
            CKinFunction.h \
            CMassAction.h \
            CNodeK.h 
-        #   CRange.h \
-        #   CUsageRange.h
 
-SOURCES += CCallParameters.cpp \
+SOURCES += \
+           CCallParameters.cpp \
            CEvaluationNode.cpp \
            CEvaluationNodeCall.cpp \
            CEvaluationNodeChoice.cpp \
@@ -56,11 +57,8 @@ SOURCES += CCallParameters.cpp \
            CFunctionParameter.cpp \
            CFunctionParameters.cpp \
            CKinFunction.cpp \
-           CKinFunctionFlexLexer.cpp \
            CMassAction.cpp \
            CNodeK.cpp 
-        #   CRange.cpp \
-        #   CUsageRange.cpp
 
 contains(BUILD_PARSER, yes) {
   YACCSOURCES += CEvaluationParser.ypp
@@ -68,14 +66,17 @@ contains(BUILD_PARSER, yes) {
 }
 else {
   HEADERS += CEvaluationParser_yacc.h
-  SOURCES += CEvaluationParser_yacc.cpp \
-             CEvaluationLexer_lex.cpp
+  SOURCES += CEvaluationLexer_lex.cpp \
+             CEvaluationParser_yacc.cpp
 }
 
+DISTFILES += \
+             function.dsp \
+             CEvaluationParser.ypp \
+             CEvaluationLexer.lpp
 
-1.target   = CKinFunctionFlexLexer.cpp
-1.depends  = CKinFunctionFlexLexer.lpp 
-1.commands = $$myLex
-QMAKE_EXTRA_UNIX_TARGETS += 1
+src_distribution.depends = function  
+src_distribution.commands = $$COPY_SRC
 
+QMAKE_EXTRA_UNIX_TARGETS += src_distribution
 

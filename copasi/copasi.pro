@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.17 $ $Author: ssahle $ $Date: 2006/05/04 11:02:19 $  
+# $Revision: 1.17.2.1 $ $Author: shoops $ $Date: 2006/05/16 20:44:57 $  
 ######################################################################
 
 include(common.pri)
@@ -36,3 +36,9 @@ SUBDIRS += CopasiSE
 SUBDIRS += CopasiUI
 #SUBDIRS += test2
 #SUBDIRS += test
+
+
+src_distribution.commands = \
+  $$join(SUBDIRS, "; make src_distribution; cd ..; cd ", "cd ", "; make src_distribution; cd ..;")
+
+QMAKE_EXTRA_UNIX_TARGETS += src_distribution
