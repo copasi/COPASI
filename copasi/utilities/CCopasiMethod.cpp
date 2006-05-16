@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.28.2.2 $
+   $Revision: 1.28.2.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/16 16:30:32 $
+   $Date: 2006/05/16 17:25:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,10 +40,10 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Evolutionary Strategy (SR)",
     "Enhanced Newton",
     "Deterministic (LSODA)",
-    "Stochastic",
+    "Stochastic (Gibson + Bruck)",
     "Hybrid",
     "Hybrid (LSODA)",
-    "tau-Leap",
+    "Stochastic (\xcf\x84-Leap)",
     "MCA Method (Reder)",
     "Scan Framework",
     "Wolf Method",
