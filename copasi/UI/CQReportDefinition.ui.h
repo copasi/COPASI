@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.12.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
+   $Date: 2006/05/16 12:39:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -368,12 +368,14 @@ void CQReportDefinition::init()
 void CQReportDefinition::destroy()
 {}
 
-bool CQReportDefinition::update(ListViews::ObjectType C_UNUSED(objectType),
+bool CQReportDefinition::update(ListViews::ObjectType objectType,
                                 ListViews::Action action,
                                 const std::string & key)
 {
-  if (key != mKey &&
-      action != ListViews::RENAME) return true;
+
+  if (objectType != ListViews::REPORT ||
+      key != mKey ||
+      (key == mKey && action == ListViews::RENAME)) return true;
   return load();
 }
 
