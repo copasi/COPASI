@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.49 $ $Author: shoops $ $Date: 2006/03/16 18:53:02 $  
+# $Revision: 1.49.2.1 $ $Author: shoops $ $Date: 2006/05/16 20:44:11 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -34,6 +34,13 @@ debug {
   DEFINES += COPASI_DEBUG
   DEFINES += COPASI_TSS
 }
+
+COPY_SRC =  \
+  [ -d ../../copasi_src ] || $(MKDIR) ../../copasi_src; \
+  [ -d ../../copasi_src/copasi ] || $(MKDIR) ../../copasi_src/copasi; \
+  [ -d ../../copasi_src/copasi/$< ] || $(MKDIR) ../../copasi_src/copasi/$<; \
+  $(COPY_FILE) --parents $(SOURCES) $(HEADERS) $(FORMS) $(DIST) \
+    ../../copasi_src/copasi/$</
 
 !contains(BUILD_OS, WIN32) {
   #Release code optimization
