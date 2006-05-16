@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.29.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:53 $
+   $Date: 2006/05/16 17:34:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,8 @@
 /***************************************************************************
                   CRandomSearch.cpp  -  Random Optimizer
                      -------------------
+
+
 
 
 Programmer           : Rohan Luktuke
@@ -115,6 +117,7 @@ bool CRandomSearch::optimise()
   C_FLOAT64 mn;
   C_FLOAT64 mx;
 
+#ifdef XXXX // Random search is currently used to ranomize the model
   // initialise the population
   // first individual is the initial guess
   for (j = 0; j < mVariableSize; j++)
@@ -149,6 +152,7 @@ bool CRandomSearch::optimise()
   // We found a new best value lets report it.
   //if (mpReport) mpReport->printBody();
   mpParentTask->output(COutputInterface::DURING);
+#endif // XXXX
 
   for (mCurrentIteration = 0; mCurrentIteration < mIterations && Continue; mCurrentIteration++)
     {
