@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.19.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:25 $
+   $Author: nsimus $
+   $Date: 2006/05/16 09:58:07 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,6 +202,45 @@ ASTNode* CEvaluationNodeConstant::toAST() const
         break;
       }
     return node;
+  }
+
+#include "utilities/copasimathml.h"
+
+void CEvaluationNodeConstant::writeMathML(std::ostream & out,
+    const std::vector<std::vector<std::string> > & env,
+    bool expand,
+    unsigned C_INT32 l) const
+  {
+    SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+
+    std::string data = "";
+
+    switch (subType)
+      {
+      case PI:
+        data = "&pi;";
+        break;
+      case EXPONENTIALE:
+        data = "e";
+        break;
+      case TRUE:
+        data = "true";
+        break;
+      case FALSE:
+        data = "false";
+        break;
+      case _INFINITY:
+        data = "&infin;";
+        break;
+      case _NaN:
+        data = "NaN";
+        break;
+      default:
+        data = "@";
+        break;
+      }
+
+    out << SPC(1) << "<mi>" << data << "</mi>" << std::endl;
   }
 
 #ifdef WIN32
