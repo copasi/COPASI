@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.13.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:42 $
+   $Date: 2006/05/16 16:30:32 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,8 +11,10 @@
 // All rights reserved.
 
 #include "CAnnotatedMatrix.h"
-#include "report/CKeyFactory.h"
 #include "CCopasiVector.h"
+
+#include "report/CKeyFactory.h"
+#include "report/CCopasiObjectReference.h"
 
 CCopasiArray::CCopasiArray()
     : mDim(0) {}
@@ -89,6 +91,8 @@ CArrayAnnotation::CArrayAnnotation(const std::string & name,
   assert(mArray);
 
   resizeAnnotations();
+
+  addObjectReference("Annotated Matrix", *this, CCopasiObject::ValueDbl);
 }
 
 unsigned int CArrayAnnotation::dimensionality() const
@@ -162,7 +166,9 @@ void CArrayAnnotation::setDimensionDescription(unsigned int d, const std::string
 void CArrayAnnotation::setCopasiVector(unsigned int d, const CCopasiContainer* v)
 {
   assert(d < mCopasiVectors.size());
+
   mCopasiVectors[d] = v;
+  createAnnotationsFromCopasiVector(d, v);
 }
 
 const std::string & CArrayAnnotation::getDescription() const
@@ -231,6 +237,48 @@ void CArrayAnnotation::resize(/*const CCopasiAbstractArray::index_type & sizes*/
   assert(mArray);
   //mArray->resize(sizes);
   resizeAnnotations();
+}
+
+void CArrayAnnotation::print(std::ostream * ostream) const
+  {*ostream << *this;}
+
+std::ostream &operator<<(std::ostream &os, const CArrayAnnotation & o)
+{
+  if (o.mOnTheFly)
+    const_cast<CArrayAnnotation*>(&o)->updateAnnotations();
+
+  if (o.dimensionality() != 2) return os;
+
+  os << o.mDescription << std::endl;
+
+  CCopasiAbstractArray::index_type Index;
+  Index.resize(2);
+
+  unsigned C_INT32 imax = o.mAnnotations[0].size();
+  unsigned C_INT32 jmax = o.mAnnotations[1].size();
+
+  const CCopasiVector< CCopasiObject > & VectorI =
+    * reinterpret_cast<const CCopasiVector< CCopasiObject > * >(o.mCopasiVectors[0]);
+
+  const CCopasiVector< CCopasiObject > & VectorJ =
+    * reinterpret_cast<const CCopasiVector< CCopasiObject > * >(o.mCopasiVectors[1]);
+
+  for (Index[1] = 0; Index[1] < jmax; ++Index[1])
+    os << "\t" << VectorJ[Index[1]]->getObjectDisplayName();
+
+  os << std::endl;
+
+  for (Index[0] = 0; Index[0] < imax; ++Index[0])
+    {
+      os << VectorI[Index[0]]->getObjectDisplayName();
+
+      for (Index[1] = 0; Index[1] < jmax; ++Index[1])
+        os << "\t" << (*o.mArray)[Index];
+
+      os << std::endl;
+    }
+
+  return os;
 }
 
 void CArrayAnnotation::printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const

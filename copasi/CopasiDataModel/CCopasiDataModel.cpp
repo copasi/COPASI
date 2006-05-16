@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.64.2.1 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/12 13:58:13 $
+   $Author: shoops $
+   $Date: 2006/05/16 16:30:30 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -693,7 +693,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       pReport->setSeparator(CCopasiReportSeparator("\t"));
 
       // Header
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov exponents],Object=Description"));
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Description"));
       //pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Function Evaluations\\]"));
       //pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
       //pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Value\\]"));
@@ -709,7 +709,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
 
       // Footer
       pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov exponents],Object=Result"));
+      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
       break;
 
       //**************************************************************************

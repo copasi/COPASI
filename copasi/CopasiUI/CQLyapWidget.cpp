@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQLyapWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.4.2.1 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/14 16:53:00 $
+   $Author: shoops $
+   $Date: 2006/05/16 16:30:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,7 +65,7 @@ CQLyapWidget::CQLyapWidget(QWidget* parent, const char* name, WFlags fl)
 
   taskNameLabel = new QLabel(this, "taskNameLabel");
   //taskNameLabel->setText(trUtf8("Task Name"));
-  taskNameLabel->setText(trUtf8("<h2>Lyapunov exponents</h2>"));
+  taskNameLabel->setText(trUtf8("<h2>Lyapunov Exponents</h2>"));
   taskNameLabel->setAlignment(int(QLabel::AlignVCenter
                                   | QLabel::AlignLeft));
   //SteadyStateWidgetLayout->addWidget(taskNameLabel, 0, 0);
@@ -291,7 +291,39 @@ CQLyapWidget::~CQLyapWidget()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   nStepSize->setText(QString::number(mpProblem->getStepSize()));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -314,6 +346,22 @@ CQLyapWidget::~CQLyapWidget()
 /*void CQLyapWidget::checkTimeSeries()
 {
   //std::cout << "checkTimeSeries() " << nStepNumber->text().toLong() << " " << CCopasiDataModel::Global->getModel()->getIntMetab() << std::endl;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

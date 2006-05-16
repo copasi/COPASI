@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.7.2.1 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/14 16:52:24 $
+   $Author: shoops $
+   $Date: 2006/05/16 16:30:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -292,7 +292,7 @@ void CLyapTask::printResult(std::ostream * ostream) const
     //     << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
     //     << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
 
-    os << "Lyapunov exponents:" << std::endl;
+    os << "Lyapunov Exponents:" << std::endl;
 
     unsigned C_INT32 i, imax = mpLyapProblem->getExponentNumber();
     for (i = 0; i < imax; ++i)
