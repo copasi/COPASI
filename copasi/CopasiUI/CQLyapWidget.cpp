@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQLyapWidget.cpp,v $
-   $Revision: 1.4.2.1 $
+   $Revision: 1.4.2.2 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/16 16:30:31 $
+   $Author: ssahle $
+   $Date: 2006/05/17 12:14:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -254,142 +254,6 @@ CQLyapWidget::~CQLyapWidget()
 {
   //pdelete(mpProblem);
 }
-
-//**********************************************************
-
-#define TSMAX 10000000
-
-//this is left here for the case that I will enable the checkTimeseries later
-
-/*void CQLyapWidget::NumStepsSlot()
-{
-  try
-    {
-      mpProblem->setStepNumber(nStepNumber->text().toULong());
-    }
-  catch (...)
-    {
-      QMessageBox::warning(this, QString("File Warning"),
-                           FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                           QMessageBox::Ok,
-                           QMessageBox::NoButton,
-                           QMessageBox::NoButton);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  nStepSize->setText(QString::number(mpProblem->getStepSize()));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  checkTimeSeries();
-}*/
-
-/*void CQLyapWidget::checkTimeSeries()
-{
-  //std::cout << "checkTimeSeries() " << nStepNumber->text().toLong() << " " << CCopasiDataModel::Global->getModel()->getIntMetab() << std::endl;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  if (nStepNumber->text().toLong() * CCopasiDataModel::Global->getModel()->getNumVariableMetabs() > TSMAX)
-    {
-      bStoreTimeSeries->setChecked(false);
-      bStoreTimeSeries->setEnabled(false);
-    }
-  else
-    {
-      bStoreTimeSeries->setEnabled(true);
-    }
-}*/
-
-#undef TSMAX
 
 //************************************************************
 
