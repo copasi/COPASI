@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.21.2.1 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/14 13:33:45 $
+   $Date: 2006/05/17 12:16:37 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -437,8 +437,8 @@ void CReactionInterface::initMapping()
   mpParameters = new CFunctionParameters(mpFunction->getVariables());
   //make sure mpParameters is deleted! (e.g. in copyMapping())
   mNameMap.resize(size());
-  mValues.resize(size(), 0.1);
-  mIsLocal.resize(size(), false);
+  mValues.resize(size());
+  mIsLocal.resize(size());
   C_INT32 i, imax = size();
   for (i = 0; i < imax; ++i)
     {
@@ -452,6 +452,10 @@ void CReactionInterface::initMapping()
 
       if (getUsage(i) == CFunctionParameter::PARAMETER)
         mIsLocal[i] = true;
+      else
+        mIsLocal[i] = false;
+
+      mValues[i] = 0.1;
     }
 }
 
