@@ -1,8 +1,10 @@
 ######################################################################
-# $Revision: 1.127 $ $Author: ssahle $ $Date: 2006/05/12 13:47:31 $  
+# $Revision: 1.127.2.1 $ $Author: shoops $ $Date: 2006/05/18 15:43:51 $  
 ######################################################################
 
 TEMPLATE = app
+
+SRC_TARGET = CopasiUI
 
 include(../common.pri)
 
@@ -153,6 +155,7 @@ HEADERS += \
            CScanContainerWidget.h \
            CTimeSeriesTable.h \
            DataModelGUI.h \
+           DataModel.txt.h \
            DifferentialEquations.h \
            FunctionItemWidget.h \
            FunctionSymbols.h \
@@ -291,11 +294,12 @@ SOURCES += \
 # headers generated from .ui files   
 HEADERS += \
            CMCAResultSubwidget.h \
-           CQFileDialogBtnGrp.h \
+           CMCAResultSubwidget.ui.h \
            CQExperimentData.h \
            CQExperimentData.ui.h \
            CQExperimentSelection.h \
            CQExperimentSelection.ui.h \
+           CQFileDialogBtnGrp.h \
            CQFittingItemWidget.h \
            CQFittingItemWidget.ui.h \
            CQFittingResult.h \
@@ -306,14 +310,14 @@ HEADERS += \
            CQFittingWidget.ui.h \
            CQOptimizationWidget.h \
            CQOptimizationWidget.ui.h \
-           CQProgressItem.h \
-           CQProgressItem.ui.h \
-           CQProgressItemBar.ui.h \
-           CQProgressItemBar.h \
-           CQProgressItemText.h \
-           CQProgressItemText.ui.h \
            CQProgressDialog.h \
            CQProgressDialog.ui.h \
+           CQProgressItem.h \
+           CQProgressItem.ui.h \
+           CQProgressItemBar.h \
+           CQProgressItemBar.ui.h \
+           CQProgressItemText.h \
+           CQProgressItemText.ui.h \
            CQReportDefinition.h \
            CQReportDefinition.ui.h \
            CQTaskBtnWidget.h \
@@ -323,17 +327,28 @@ HEADERS += \
            CQTextDialog.ui.h \
            CQTrajectoryWidget.h \
            CQTrajectoryWidget.ui.h \
-           CUpDownSubwidget.h \
            CScanWidgetBreak.h \
+           CScanWidgetBreak.ui.h \
            CScanWidgetRandom.h \
+           CScanWidgetRandom.ui.h \
            CScanWidgetRepeat.h \
+           CScanWidgetRepeat.ui.h \
            CScanWidgetScan.h \
+           CScanWidgetScan.ui.h \
            CScanWidgetTask.h  \ 
+           CScanWidgetTask.ui.h  \ 
+           CUpDownSubwidget.h \
+           CUpDownSubwidget.ui.h \
            DefaultplotDialog.h \
-           objectdebug.h \
+           DefaultplotDialog.ui.h \
            SliderSettingsDialog.h \
+           SliderSettingsDialog.ui.h \
            StateSubwidget.h \
-           TimeSeriesSubwidget.h 
+           StateSubwidget.ui.h \
+           TimeSeriesSubwidget.h \
+           TimeSeriesSubwidget.ui.h \
+           objectdebug.h \
+           objectdebug.ui.h
 
 # sources generated from .ui files   
 SOURCES += \
@@ -373,3 +388,29 @@ release {
 
   INSTALLS += distribution
 }
+
+DISTFILES += CopasiUI.dsp \
+             CopasiUI.rc \
+             icons/Copasi.ico \
+             icons/Copasi??-Alpha.xpm \
+             icons/CopasiDoc.ico \
+             icons/CopasiDoc??-Alpha.xpm \
+             icons/closeSlider.xpm \
+             icons/copasi_beta_background.xpm \
+             icons/copasi_rc.xpm \
+             icons/editSlider.xpm \
+             icons/filenew.xpm \
+             icons/fileopen.xpm \
+             icons/fileprint.xpm \
+             icons/filesave.xpm \
+             icons/locked.xpm \
+             icons/modifier.xpm \
+             icons/objectAll.xpm \
+             icons/objectNone.xpm \
+             icons/objectParts.xpm \
+             icons/product.xpm \
+             icons/scanwidgetbuttonicon.xpm \
+             icons/showSliders.xpm \
+             icons/substrate.xpm \
+             icons/unlocked.xpm \
+

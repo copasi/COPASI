@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.5 $ $Author: shoops $ $Date: 2004/11/04 01:01:43 $  
+# $Revision: 1.5.16.1 $ $Author: shoops $ $Date: 2006/05/18 15:43:50 $  
 ######################################################################
 
 TEMPLATE = lib
@@ -12,3 +12,8 @@ INCLUDEPATH += ..
 OBJECTS_DIR = .
 DESTDIR = ../lib
 TARGET = $$LIB
+
+isEmpty(SRC_TARGET) {
+  SRC_TARGET = $$LIB
+}
+

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.4 $ $Author: shoops $ $Date: 2005/02/08 16:33:04 $  
+# $Revision: 1.4.12.1 $ $Author: shoops $ $Date: 2006/05/18 15:43:56 $  
 ######################################################################
 
 LIB = randomGenerator
@@ -15,3 +15,5 @@ HEADERS += Cmt19937.h \
 SOURCES += Cmt19937.cpp \
            Cr250.cpp \
            CRandom.cpp
+
+DISTFILES += randomGenerator.dsp

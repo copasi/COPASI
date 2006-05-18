@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.38.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:10 $
+   $Date: 2006/05/18 15:43:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,6 @@
 
 #include "CKeyFactory.h"
 #include "CReportDefinition.h"
-#include "CReportBody.h"
 #include "CReport.h"
 
 //////////////////////////////////////////////////

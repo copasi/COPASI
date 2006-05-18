@@ -43,3 +43,4 @@ SOURCES += dmnorm.cpp
 HEADERS += Cxerrwd.h
 SOURCES += Cxerrwd.cpp
 
+DISTFILES += odepack.dsp

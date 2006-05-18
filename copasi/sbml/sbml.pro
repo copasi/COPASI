@@ -1,5 +1,6 @@
 
 LIB = sbmlimport
+SRC_TARGET = sbml
 
 include(../lib.pri)
 include(../common.pri)
@@ -25,4 +26,5 @@ SOURCES += StdException.cpp \
            SBMLReference.cpp \
            UnitConversionFactory.cpp
 
+DISTFILES += sbml.dsp
 

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.16 $ $Author: shoops $ $Date: 2006/04/16 21:04:15 $  
+# $Revision: 1.16.2.1 $ $Author: shoops $ $Date: 2006/05/18 15:43:55 $  
 ######################################################################
 
 LIB = plot
@@ -34,4 +34,9 @@ SOURCES += CHistogram.cpp \
 FORMS +=  curve2dwidget.ui
 FORMS +=  HistoWidget.ui
 
+HEADERS += curve2dwidget.ui.h
+HEADERS +=  HistoWidget.ui.h
+
 INCLUDEPATH += $${QWT_PATH}/include
+
+DISTFILES += plot.dsp

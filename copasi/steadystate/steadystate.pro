@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.6 $ $Author: shoops $ $Date: 2005/02/08 16:33:05 $  
+# $Revision: 1.6.12.1 $ $Author: shoops $ $Date: 2006/05/18 15:43:58 $  
 ######################################################################
 
 LIB = steadystate
@@ -25,3 +25,5 @@ SOURCES += CEigen.cpp \
            CSteadyStateMethod.cpp \
            CSteadyStateProblem.cpp \
            CSteadyStateTask.cpp
+
+DISTFILES +=steadystate.dsp

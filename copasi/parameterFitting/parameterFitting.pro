@@ -1,8 +1,9 @@
 ######################################################################
-# $Revision: 1.3 $ $Author: shoops $ $Date: 2005/10/25 17:00:56 $  
+# $Revision: 1.3.4.1 $ $Author: shoops $ $Date: 2006/05/18 15:43:55 $  
 ######################################################################
 
 LIB = fitting
+SRC_TARGET = parameterFitting
 
 include(../lib.pri)
 include(../common.pri)
@@ -25,3 +26,5 @@ SOURCES += CExperiment.cpp \
            CFitMethod.cpp \
            CFitProblem.cpp \
            CFitTask.cpp
+
+DISTFILES += fitting.dsp

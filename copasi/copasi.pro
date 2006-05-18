@@ -1,10 +1,10 @@
 ######################################################################
-# $Revision: 1.17.2.1 $ $Author: shoops $ $Date: 2006/05/16 20:44:57 $  
+# $Revision: 1.17.2.2 $ $Author: shoops $ $Date: 2006/05/18 15:43:50 $  
 ######################################################################
 
-include(common.pri)
-
 TEMPLATE = subdirs
+
+include(common.pri)
 
 # First build the libs
 SUBDIRS =  commandline
@@ -12,7 +12,6 @@ SUBDIRS += CopasiDataModel
 SUBDIRS += elementaryFluxModes
 SUBDIRS += function
 SUBDIRS += lyap
-#SUBDIRS += mathmodel
 SUBDIRS += model
 SUBDIRS += mml
 SUBDIRS += odepack++
@@ -34,11 +33,29 @@ SUBDIRS += wizard
 # Now the excecutables
 SUBDIRS += CopasiSE
 SUBDIRS += CopasiUI
-#SUBDIRS += test2
-#SUBDIRS += test
 
+DISTFILES += \
+        1_configure.dsp \
+        FlexLexer.h \
+        LicenseUS.txt.h \
+        LicenseDE.txt.h \
+        blas.h \
+        blaswrap.h \
+        clapackwrap.h \
+        copasi.dsp \
+        copasi.dsw \
+        copasi.h \
+        copasilicense.h \
+        copasiversion.h \
+        copasi.pro \
+        lapack.h \
+        mathematics.h
 
 src_distribution.commands = \
-  $$join(SUBDIRS, "; make src_distribution; cd ..; cd ", "cd ", "; make src_distribution; cd ..;")
+  rm -rf ../copasi_src/copasi; \
+  $(CHK_DIR_EXISTS) ../copasi_src || $(MKDIR) ../copasi_src; \
+  $(CHK_DIR_EXISTS) ../copasi_src/copasi || $(MKDIR) ../copasi_src/copasi; \
+  cp $$DISTFILES ../copasi_src/copasi/; \
+  $$join(SUBDIRS, "; $(MAKE) -f $(MAKEFILE) $@; cd ..; cd ", "cd ", "; $(MAKE) -f $(MAKEFILE) $@; cd ..;")
 
 QMAKE_EXTRA_UNIX_TARGETS += src_distribution

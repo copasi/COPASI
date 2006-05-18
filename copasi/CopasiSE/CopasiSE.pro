@@ -1,8 +1,10 @@
 ######################################################################
-# $Revision: 1.29 $ $Author: shoops $ $Date: 2006/05/11 17:01:05 $  
+# $Revision: 1.29.2.1 $ $Author: shoops $ $Date: 2006/05/18 15:43:51 $  
 ######################################################################
 
 TEMPLATE = app
+
+SRC_TARGET = CopasiSE
 
 # CONFIG -= qt
 
@@ -19,7 +21,6 @@ COPASI_LIBS = \
          fitting \
          function \
          lyap \
-#         mathmodel \
          model \
          optimization \
          plot \
@@ -108,3 +109,5 @@ release {
 
   INSTALLS += distribution
 }
+
+DISTFILES += CopasiSE.dsp

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.20.4.1 $ $Author: shoops $ $Date: 2006/05/16 20:45:22 $  
+# $Revision: 1.20.4.2 $ $Author: shoops $ $Date: 2006/05/18 15:43:52 $  
 ######################################################################
 
 LIB = function
@@ -70,13 +70,6 @@ else {
              CEvaluationParser_yacc.cpp
 }
 
-DISTFILES += \
-             function.dsp \
+DISTFILES += function.dsp \
              CEvaluationParser.ypp \
              CEvaluationLexer.lpp
-
-src_distribution.depends = function  
-src_distribution.commands = $$COPY_SRC
-
-QMAKE_EXTRA_UNIX_TARGETS += src_distribution
-

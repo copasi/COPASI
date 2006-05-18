@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.14 $ $Author: ssahle $ $Date: 2005/10/26 18:28:06 $  
+# $Revision: 1.14.4.1 $ $Author: shoops $ $Date: 2006/05/18 15:43:54 $  
 ######################################################################
 
 LIB = model
@@ -13,7 +13,6 @@ HEADERS += CChemEq.h \
            CChemEqInterface.h \
            CChemEqParser.h \
            CCompartment.h \
- #          CDeTerm.h \
            CMetab.h \
            CMetabNameInterface.h \
            CModel.h \
@@ -22,9 +21,7 @@ HEADERS += CChemEq.h \
            CObjectLists.h \
            CReaction.h \
            CReactionInterface.h \
-           CScanInputFlexLexer.h \
-#           CSpec2Model.h \
-#           CSpecLine.h \
+#           CScanInputFlexLexer.h \
            CState.h \
            model.h
            
@@ -33,7 +30,6 @@ SOURCES += CChemEq.cpp \
            CChemEqInterface.cpp \
            CChemEqParser.cpp \
            CCompartment.cpp \
-#           CDeTerm.cpp \
            CMetab.cpp \
            CMetabNameInterface.cpp \
            CModel.cpp \
@@ -42,9 +38,7 @@ SOURCES += CChemEq.cpp \
            CObjectLists.cpp \
            CReaction.cpp \
            CReactionInterface.cpp \
-           CScanInputFlexLexer.cpp \
-#           CSpec2Model.cpp \
-#           CSpecLine.cpp \
+#           CScanInputFlexLexer.cpp \
            CState.cpp
 
 contains(BUILD_PARSER, yes) {
@@ -57,7 +51,11 @@ else {
              CChemEqParser_lex.cpp
 }
 
-1.target = CScanInputFlexLexer.cpp
-1.depends = CScanInputFlexLexer.lpp 
-1.commands = $$myLex
-QMAKE_EXTRA_UNIX_TARGETS += 1
+# 1.target = CScanInputFlexLexer.cpp
+# 1.depends = CScanInputFlexLexer.lpp 
+# 1.commands = $$myLex
+# QMAKE_EXTRA_UNIX_TARGETS += 1
+
+DISTFILES += model.dsp \
+             CChemEqParser_lex.cpp \
+             CChemEqParser_yacc.cpp

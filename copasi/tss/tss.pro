@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.4 $ $Author: nsimus $ $Date: 2005/07/14 10:57:26 $  
+# $Revision: 1.4.10.1 $ $Author: shoops $ $Date: 2006/05/18 15:43:58 $  
 ######################################################################
 
 LIB = tss
@@ -17,3 +17,5 @@ SOURCES += CTSSMethod.cpp \
            CTSSProblem.cpp \
            CTSSTask.cpp \
 	   MMASCIIExporter.cpp
+
+DISTFILES += tss.dsp

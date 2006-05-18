@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.49.2.1 $ $Author: shoops $ $Date: 2006/05/16 20:44:11 $  
+# $Revision: 1.49.2.2 $ $Author: shoops $ $Date: 2006/05/18 15:43:50 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -34,13 +34,6 @@ debug {
   DEFINES += COPASI_DEBUG
   DEFINES += COPASI_TSS
 }
-
-COPY_SRC =  \
-  [ -d ../../copasi_src ] || $(MKDIR) ../../copasi_src; \
-  [ -d ../../copasi_src/copasi ] || $(MKDIR) ../../copasi_src/copasi; \
-  [ -d ../../copasi_src/copasi/$< ] || $(MKDIR) ../../copasi_src/copasi/$<; \
-  $(COPY_FILE) --parents $(SOURCES) $(HEADERS) $(FORMS) $(DIST) \
-    ../../copasi_src/copasi/$</
 
 !contains(BUILD_OS, WIN32) {
   #Release code optimization
@@ -292,3 +285,18 @@ DEP1.target   = depend
 DEP1.depends  = qmake
 
 QMAKE_EXTRA_UNIX_TARGETS += DEP1
+
+!equals(TEMPLATE, subdirs) {
+  # Copy the sources for the tar ball
+  src_distribution.depends = Makefile
+  src_distribution.commands =   \
+    $(CHK_DIR_EXISTS) ../../copasi_src || $(MKDIR) ../../copasi_src; \
+    $(CHK_DIR_EXISTS) ../../copasi_src/copasi || \
+      $(MKDIR) ../../copasi_src/copasi; \
+    $(CHK_DIR_EXISTS) ../../copasi_src/copasi/$$SRC_TARGET || \
+      $(MKDIR) ../../copasi_src/copasi/$$SRC_TARGET; \
+    $(COPY_FILE) --parents $(SOURCES) $(HEADERS) $(FORMS) $(DIST) \
+      ../../copasi_src/copasi/$$SRC_TARGET/
+
+  QMAKE_EXTRA_UNIX_TARGETS += src_distribution
+}

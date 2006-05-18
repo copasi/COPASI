@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.6 $ $Author: nsimus $ $Date: 2006/05/15 12:39:47 $  
+# $Revision: 1.6.2.1 $ $Author: shoops $ $Date: 2006/05/18 15:43:58 $  
 ######################################################################
 
 LIB = trajectory
@@ -35,3 +35,5 @@ SOURCES += CHybridMethod.cpp \
            CTrajectoryMethod.cpp \
            CTrajectoryProblem.cpp \
            CTrajectoryTask.cpp
+
+DISTFILES += trajectory.dsp
