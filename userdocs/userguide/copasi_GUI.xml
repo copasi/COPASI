@@ -188,7 +188,7 @@ Copasi internally represents amounts of species by particle numbers. If a concen
 <screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Compartments_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Compartments_01.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/Compartments_01.ps" format="EPS" scale="30" align="center" />
@@ -214,7 +214,7 @@ If you start with a new model and you select the <guibutton>Compartments</guibut
 <screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Compartments_02.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Compartments_02.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/Compartments_02.ps" format="EPS" scale="30" align="center" />
@@ -239,7 +239,7 @@ A status of new means that the compartment has been created, but is has not been
 <screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Compartments_03.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Compartments_03.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/Compartments_03.ps" format="EPS" scale="30" align="center" />
@@ -266,7 +266,7 @@ If you have already committed the compartment, you can delete it by selecting th
 <screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Compartments_04.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Compartments_04.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/Compartments_04.ps" format="EPS" scale="30" align="center" />
@@ -356,7 +356,7 @@ The list at the bottom of the metabolite widget shows the reactions in which thi
 <screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Reactions_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Reactions_01.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/Reactions_01.ps" format="EPS" scale="30" align="center" />
@@ -388,7 +388,7 @@ When typing reaction equations you should keep in mind that metabolite names in 
 <screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Reactions_02.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Reactions_02.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/Reactions_02.ps" format="EPS" scale="30" align="center" />
@@ -857,7 +857,7 @@ You have to specify the correct argument types to the function call. I.e. if you
 </listitem>
 <listitem>
 <para>
-Which brings me to the last point. The build in function names in Copasi often use characters list "-" or even spaces, so if you want to call one of those functions, you have to quote this function name. So calling "Henry-Michalis-Menten (irreversible)" from another function would look like this:
+Which brings me to the last point. The build in function names in Copasi often use characters list "-" or even spaces, so if you want to call one of those functions, you have to quote this function name. So calling "Henry-Michaelis-Menten (irreversible)" from another function would look like this:
 </para>
 <para>
 <mml:math>
@@ -1213,7 +1213,7 @@ In addition to defining "normal" functions, Copasi allows the definition of piec
       <mml:mo> ( </mml:mo>
       <mml:mrow>
          <mml:mi> x </mml:mi>
-         <mml:mi> gt</mml:mi>
+         <mml:mi> gt </mml:mi>
          <mml:mn> 0.0 </mml:mn>
       </mml:mrow>
       <mml:mo> , </mml:mo>
