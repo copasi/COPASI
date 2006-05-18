@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.127.2.1 $ $Author: shoops $ $Date: 2006/05/18 15:43:51 $  
+# $Revision: 1.127.2.2 $ $Author: shoops $ $Date: 2006/05/18 15:55:30 $  
 ######################################################################
 
 TEMPLATE = app
@@ -37,7 +37,7 @@ COPASI_LIBS = \
 
 contains(BUILD_OS, WIN32) {
   RC_FILE = CopasiUI.rc
-
+  
   LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
 
   TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
@@ -391,6 +391,7 @@ release {
 
 DISTFILES += CopasiUI.dsp \
              CopasiUI.rc \
+             resource.h \
              icons/Copasi.ico \
              icons/Copasi??-Alpha.xpm \
              icons/CopasiDoc.ico \
