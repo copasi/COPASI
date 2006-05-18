@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.127 $
+   $Revision: 1.127.2.1 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/05/10 14:30:04 $
+   $Author: ssahle $
+   $Date: 2006/05/18 12:47:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -389,7 +389,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
           // get the number of children.
           // the first n-1 children are the parameters for the function
           // the last child is the actual function
-          pFun = new CFunction();
+          pFun = new CKinFunction();
           unsigned int i, iMax = root->getNumChildren() - 1;
           for (i = 0; i < iMax;++i)
             {
