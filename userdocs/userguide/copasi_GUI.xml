@@ -100,10 +100,10 @@ This option can be used to specify a temporary directory where Copasi will autos
     The Copasi graphical user interface essentially consists of four elements.</para>
   <para>  
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Layout_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Layout_01.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/Layout_01.ps" format="EPS" scale="30" align="center" />
@@ -185,7 +185,7 @@ Copasi internally represents amounts of species by particle numbers. If a concen
 <para>There are three methods to add a new compartment to a model, but for all three, we have to navigate to the <guibutton>Compartments</guibutton> branch of the object tree which is located under the <guibutton>Model-&gt;Biochemical</guibutton> branch. So first open the <guibutton>Model</guibutton> branch and there open the <guibutton>Biochemical</guibutton> branch by clicking on the expansion sign in front of the branch name, or by double clicking on the branch name. </para>
 <para>  
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on WIN32 on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Compartments_01.png" format="PNG" scale="60" align="center" />
@@ -211,7 +211,7 @@ If you start with a new model and you select the <guibutton>Compartments</guibut
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on Windows on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Compartments_02.png" format="PNG" scale="60" align="center" />
@@ -236,7 +236,7 @@ A status of new means that the compartment has been created, but is has not been
 <para>While the status of a compartment is shown as <emphasis>new</emphasis>, you can remove the compartment from the table by clicking the <guibutton>revert</guibutton> button which will cancel all modifications you made to the compartments that have not been committed yet.</para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on Windows on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Compartments_03.png" format="PNG" scale="60" align="center" />
@@ -263,7 +263,7 @@ If you have already committed the compartment, you can delete it by selecting th
 <para>The third way to add a new compartment is to double click on an empty row in the table. This is essentially the same as clicking the <guibutton>new</guibutton> button and double clicking on the newly added compartment entry.</para>
 <para>    
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on Windows on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Compartments_04.png" format="PNG" scale="60" align="center" />
@@ -295,10 +295,10 @@ Double clicking on any compartment entry in the table will bring you to another 
     Adding new species works exactly the same as adding new compartment, so I suggest reading the <xref linkend="addingCompartments" /> section if you haven't already done so. Here we will just cover the differences between adding a compartment and adding a species.</para>
 <para>    
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Metabolites_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Metabolites_01.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/Metabolites_01.ps" format="EPS" scale="30" align="center" />
@@ -307,10 +307,10 @@ Double clicking on any compartment entry in the table will bring you to another 
   <imagedata fileref="images/Metabolites_01.gif" format="GIF">
  </imageobject> -->
  <textobject>
-   <phrase>empty metabolites table</phrase>
+   <phrase>metabolites table</phrase>
  </textobject>
  <caption>
-  <para>metabolites table without entries</para>
+  <para>metabolites table with one entries</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -321,10 +321,10 @@ First of all in order to add a new species or metabolite, as it is called in Cop
 <para>To add a new metabolite you have the same three ways as for adding compartments and if you are not familiar with those, I recommend reading the <xref linkend="addingCompartments" /> section.</para> 
 <para>    
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Metabolites_02.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Metabolites_02.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/Metabolites_02.ps" format="EPS" scale="30" align="center" />
@@ -353,7 +353,7 @@ The list at the bottom of the metabolite widget shows the reactions in which thi
    </para>
 <para>    
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on Darwin on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Reactions_01.png" format="PNG" scale="60" align="center" />
@@ -385,7 +385,7 @@ When typing reaction equations you should keep in mind that metabolite names in 
     Each new reaction gets a default kinetic which is irreversible mass action for reactions that contain a substrate. For reaction that only have a product (e.g. influx into a system) a constant flux kinetic is chosen.</para>  
 <para>    
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on Darwin on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Reactions_02.png" format="PNG" scale="60" align="center" />
@@ -467,19 +467,19 @@ Creating an instance of the selected output objects is as easy a clicking on the
 <title>Defining Reports</title>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 14 on Linux on 22/08/2005</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Reports_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Reports_01.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/Reports_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>report table without entries</phrase>
+   <phrase>report table with default reports</phrase>
  </textobject>
  <caption>
-  <para>empty report table</para>
+  <para>Report Table with default Reports</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -492,10 +492,10 @@ Let's discuss how to define a report definition with table layout first since th
 To add a new object to the report definition, you have to click on the button labeled <guibutton>item</guibutton>. This will open the object browser dialog.</para>  
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on WIN32 on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Reports_02.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Reports_02.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/Reports_02.ps" format="EPS" scale="30" align="center" />
@@ -504,10 +504,10 @@ To add a new object to the report definition, you have to click on the button la
   <imagedata fileref="images/Reports_02.gif" format="GIF">
  </imageobject> -->
  <textobject>
-   <phrase>object browser dialog with no selection</phrase>
+   <phrase>object browser dialog</phrase>
  </textobject>
  <caption>
-  <para>object browser dialog without selection</para>
+  <para>object browser dialog</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -516,10 +516,10 @@ To add a new object to the report definition, you have to click on the button la
 The object browser dialog shows a tree of all the objects that are known to Copasi. The objects that belong to your model are located in the branch that corresponds to the name of your model. The position of that branch varies since the branches are sorted alphabetically. Each branch and leaf in the object browser has a check box in front of its name. This checkbox can have three states. The unchecked state means that no object in this subtree are selected. A checkmark on a black background means that the whole subtree is selected, i.e. all objects in this subtree are selected. A checkmark on a gray background means that part of the subtree is selected.</para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on WIN32 on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Reports_03.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Reports_03.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/Reports_03.ps" format="EPS" scale="30" align="center" />
@@ -528,10 +528,10 @@ The object browser dialog shows a tree of all the objects that are known to Copa
   <imagedata fileref="images/Reports_03.gif" format="GIF">
  </imageobject> -->
  <textobject>
-   <phrase>object browser dialog with some selection</phrase>
+   <phrase>object browser dialog expert mode</phrase>
  </textobject>
  <caption>
-  <para>object browser dialog with selection</para>
+  <para>object browser dialog expert mode</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -542,10 +542,10 @@ Due to the model structure, most objects appear more than once in the tree. So i
 Let's assume you want to define the report for a trajectory task. In this case, you will probably want the time and some or all of the transient concentration of the metabolites in your report. The time for the time course is the last item in the model branch, you select it by clicking on the check box in front of the name. If you want to add the concentrations of all metabolites, you open the <guibutton>Metabolites</guibutton> sub-branch in the <guibutton>Model</guibutton> branch and open the <guibutton>Select by attribute</guibutton> branch. There you can select the <guibutton>Concentration</guibutton> attribute. Selecting the <guibutton>Concentration</guibutton> attribute will select the concentrations for all metabolites. If you only want to have some of the metabolites in your report, you open the sub-branches of the metabolites you want in the <guibutton>Metabolites</guibutton> branch and select the <guibutton>Concentration</guibutton> attribute only for those metabolites. If your model contains many metabolites and you want to have all but one or in your report, it is often easier to first select all concentrations via the <guibutton>Select by attribute</guibutton> branch and then deselect the ones you don't want, rather then selecting the individual concentration you want. Once you are finished with selecting the objects for your report, you confirm the selection by clicking the <guibutton>OK</guibutton> button in the object browser. The objects you selected will now appear in the listbox of the report definition dialog. </para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Reports_04.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Reports_04.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/Reports_04.ps" format="EPS" scale="30" align="center" />
@@ -564,10 +564,10 @@ The only thing that is now left is to connect this report to a file. This has to
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 14 on Linux on 22/08/2005</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Reports_05.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Reports_05.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/Reports_05.ps" format="EPS" scale="30" align="center" />
@@ -1290,10 +1290,10 @@ If you want to have output from the Steady State Task, you have to create an out
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ElementaryModesTask_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/ElementaryModesTask_01.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
   <imagedata fileref="images/ElementaryModesTask_01.ps" format="EPS" scale="30" align="center" />
@@ -1882,13 +1882,13 @@ Once you have set up all the parameters, you are ready to run the optimization t
 </para>
 
 </sect1>
-<sect1 id="parameterFitting" xreflabel="Parameter Fitting">
-<title>Parameter Fitting</title>
+<sect1 id="parameterEstimation" xreflabel="Parameter Estimation">
+<title>Parameter Estimation</title>
 <para>
-Parameter fitting is the process of trying to calculate model parameter based on a dataset. This dataset can e.g. be the result kinetic measurements or output from a trajectory from some simulation software (e.g. Copasi). Copasi reads one or more such data sets and tries to fit one or more parameters that are specified by the user to thos datasets. The methods Copasi uses to come up with good parameter values are the same as in the optimization task. For a description of the different methods, you should read the methods section of this document.
+Parameter estimation is the process of trying to calculate model parameter based on a dataset. This dataset can e.g. be the result kinetic measurements or output from a trajectory from some simulation software (e.g. Copasi). Copasi reads one or more such data sets and tries to fit one or more parameters that are specified by the user to thos datasets. The methods Copasi uses to come up with good parameter values are the same as in the optimization task. For a description of the different methods, you should read the methods section of this document.
 </para>
 <para>
-The dialog for the parameter fitting task can be activated by selecting the branch called <guilabel>Parameter Fitting</guilabel> under the <guilabel>Multiple Tasks</guilabel> branch of the tree view on the left side of the user interface.
+The dialog for the parameter estimation task can be activated by selecting the branch called <guilabel>Parameter Estimation</guilabel> under the <guilabel>Multiple Tasks</guilabel> branch of the tree view on the left side of the user interface.
 First you can define which parameters Copasi shall try to fit. Each parameter to be fitted can be added by clicking on the <guibutton>Add Parameter</guibutton> button at the top of the dialog. Each time you click on this button, a new widget appears in the dialog. In this widget you can specify the parameter in the line labeled <guilabel>Object</guilabel>. To do this, click on the button beside the lineedit, this will open a selection dialog where you can choose the parameter. Additionally you can specify an upper and a lower bound for the parameter. Copasi will only try to fit the parameter within those bounds. Per default, the upper and lower bound are + und - infinity respectively.
 If you want to set your own bounds, disable the checkboxes and enter your own value in the edit field. The value for the lower bound goes into the correspondingly labeled edit field, likewise for the upper bound.
 <!-- What are the Constraints -->
@@ -1923,10 +1923,10 @@ This column type is only available for time course experiments. Obviously only o
 </variablelist>
 </para>
 <para>
-If you don't want Copasi to use the whole dataset of an experiment, but only a subset, you can specify the start and end line for this subset. You also may deleteexperiments completely. If you do so, you may notice that the <guibutton>New Document</guibutton> will be enabled. Pressing it will add the first not used experiment of the currently active file. If you have more then one file, you can load additional data files and process them in the same manner. Once you are finished defining your data sets for the fitting, you close the data dialog with the <guibutton>OK</guibutton> button. Before you can start the parameter fitting process, you have to choose the method by which the fitting will be done and maybe set some method parameters. Most of the time, the default parameter values should do. The method choosing is done at the bottom of the dialog by selecting the method from the dropdown list. For an explanation of the individual methods, please consult the methods section.
+If you don't want Copasi to use the whole dataset of an experiment, but only a subset, you can specify the start and end line for this subset. You also may deleteexperiments completely. If you do so, you may notice that the <guibutton>New Document</guibutton> will be enabled. Pressing it will add the first not used experiment of the currently active file. If you have more then one file, you can load additional data files and process them in the same manner. Once you are finished defining your data sets for the fitting, you close the data dialog with the <guibutton>OK</guibutton> button. Before you can start the parameter estimation process, you have to choose the method by which the fitting will be done and maybe set some method parameters. Most of the time, the default parameter values should do. The method choosing is done at the bottom of the dialog by selecting the method from the dropdown list. For an explanation of the individual methods, please consult the methods section.
 </para>
 <para>
-If you want to have output from the parameter fitting task, you have to create an output definition as described in the <xref linkend="outputDefinitions" /> section. The easiest way is probably to use the output assistant which you activate via the <guibutton>Output Assistant</guibutton> button. This is described in the <xref linkend="outputAssistant" /> section. All that is left to do in order to write the output to a specific file is to connect an output definition  with a file. This can be achieved by clicking on the <guibutton>Report</guibutton> button. This opens a dialog that lets you connect the report for a specific task to a file on your harddisk. First we choose a report that is suitable for the parameter fitting task from the dropdown list at the top of the dialog. Next, we specify a file that will be used to store the report by clicking on the <guibutton>browse</guibutton> button and selection the destination in the file dialog that opens. Per default, Copasi creates a new file if the file does not exist, or asks wether the file should be overwritten. Alternatively, you can tell Copasi to append the report to the end of an existing file by selecting the corresponding check box labeled <guilabel>Append</guilabel> at the bottom of the dialog. Once you are finished, you click on the <guilabel>Confirm</guilabel> button. If you now run the task, Copasi will write the output to the file you specified. 
+If you want to have output from the parameter estimation task, you have to create an output definition as described in the <xref linkend="outputDefinitions" /> section. The easiest way is probably to use the output assistant which you activate via the <guibutton>Output Assistant</guibutton> button. This is described in the <xref linkend="outputAssistant" /> section. All that is left to do in order to write the output to a specific file is to connect an output definition  with a file. This can be achieved by clicking on the <guibutton>Report</guibutton> button. This opens a dialog that lets you connect the report for a specific task to a file on your harddisk. First we choose a report that is suitable for the parameter estimation task from the dropdown list at the top of the dialog. Next, we specify a file that will be used to store the report by clicking on the <guibutton>browse</guibutton> button and selection the destination in the file dialog that opens. Per default, Copasi creates a new file if the file does not exist, or asks wether the file should be overwritten. Alternatively, you can tell Copasi to append the report to the end of an existing file by selecting the corresponding check box labeled <guilabel>Append</guilabel> at the bottom of the dialog. Once you are finished, you click on the <guilabel>Confirm</guilabel> button. If you now run the task, Copasi will write the output to the file you specified. 
 </para>
 </sect1>
 
