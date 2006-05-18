@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.29.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:43 $
+   $Author: nsimus $
+   $Date: 2006/05/18 10:04:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -204,7 +204,9 @@ void DifferentialEquations::writeRHS(std::ostream & out,
     {
       std::vector<std::vector<std::string> > params;
       createParameterMapping(pReac, params);
+      if (expand) out << SPC(l + 1) << "<mfenced>" << std::endl;
       pReac->getFunction()->writeMathML(out, params, expand, expandFull, l + 1);
+      if (expand) out << SPC(l + 1) << "</mfenced>" << std::endl;
     }
 
   out << SPC(l + 0) << "</mrow>" << std::endl;
