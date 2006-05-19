@@ -1,9 +1,9 @@
 /* Begin CVS Header
-   $Source: /home/cvs/copasi_dev/copasi/CopasiUI/TimeSeriesSubwidget.h,v $
-   $Revision: 1.8 $
+   $Source: /home/cvs/copasi_dev/cvs_admin/c++style,v $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: stupe $
-   $Date: 2005/10/26 15:43:18 $
+   $Author: shoops $
+   $Date: 2006/04/27 00:50:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
- ** Created: Mon Oct 24 12:45:56 2005
- **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.h,v 1.8 2005/10/26 15:43:18 stupe Exp $)
+ ** Created: Fr Mai 19 14:37:08 2006
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.5   edited Aug 31 12:13 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -53,8 +53,8 @@ class TimeSeriesSubWidget : public QWidget
     QWidget* tab_2;
     CTimeSeriesTable* dataTable;
 
-    bool clear();
     void displayOptimizationTab(bool displayOptTab);
+    bool clear();
 
   public slots:
     virtual CTimeSeriesTable * table();
