@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesSubwidget.h,v $
-   $Revision: 1.9.2.1 $
+   $Revision: 1.9.2.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/19 12:41:42 $
+   $Date: 2006/05/19 13:28:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
- ** Created: Fr Mai 19 14:37:08 2006
- **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.h,v 1.9.2.1 2006/05/19 12:41:42 ssahle Exp $)
+ ** Created: Fr Mai 19 15:21:07 2006
+ **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.h,v 1.9.2.2 2006/05/19 13:28:34 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

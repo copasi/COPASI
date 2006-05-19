@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TimeSeriesSubwidget.cpp,v $
-   $Revision: 1.9.2.1 $
+   $Revision: 1.9.2.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/19 12:41:42 $
+   $Date: 2006/05/19 13:28:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
- ** Created: Fr Mai 19 14:37:19 2006
- **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.cpp,v 1.9.2.1 2006/05/19 12:41:42 ssahle Exp $)
+ ** Created: Fr Mai 19 15:21:10 2006
+ **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.cpp,v 1.9.2.2 2006/05/19 13:28:34 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -50,15 +50,13 @@ TimeSeriesSubWidget::TimeSeriesSubWidget(QWidget* parent, const char* name, WFla
   toplayout = new QHBoxLayout(0, 1, 1, "toplayout");
 
   comboBox = new QComboBox(FALSE, this, "comboBox");
-  comboBox->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)5, 0, 0, comboBox->sizePolicy().hasHeightForWidth()));
-  comboBox->setMinimumSize(QSize(0, 20));
+  comboBox->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, comboBox->sizePolicy().hasHeightForWidth()));
   toplayout->addWidget(comboBox);
   spacer = new QSpacerItem(170, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
   toplayout->addItem(spacer);
 
   ButtonSaveData = new QPushButton(this, "ButtonSaveData");
-  ButtonSaveData->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)5, 0, 0, ButtonSaveData->sizePolicy().hasHeightForWidth()));
-  ButtonSaveData->setMinimumSize(QSize(0, 20));
+  ButtonSaveData->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, ButtonSaveData->sizePolicy().hasHeightForWidth()));
   toplayout->addWidget(ButtonSaveData);
   TimeSeriesSubWidgetLayout->addLayout(toplayout);
 
@@ -80,7 +78,7 @@ TimeSeriesSubWidget::TimeSeriesSubWidget(QWidget* parent, const char* name, WFla
   tabWidget2->insertTab(tab_2, QString::fromLatin1(""));
   TimeSeriesSubWidgetLayout->addWidget(tabWidget2);
   languageChange();
-  resize(QSize(600, 497).expandedTo(minimumSizeHint()));
+  resize(QSize(600, 382).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
