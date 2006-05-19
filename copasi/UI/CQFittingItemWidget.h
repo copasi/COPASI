@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.15.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:41 $
+   $Date: 2006/05/19 16:49:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Fri Mar 24 15:50:16 2006
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.15 2006/04/27 01:27:41 shoops Exp $)
+ ** Created: Fri May 19 12:46:20 2006
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.15.2.1 2006/05/19 16:49:46 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -133,10 +133,10 @@ class CQFittingItemWidget : public QWidget
     void destroy();
     void setTableText(const int & row, const COptItem * pItem);
     unsigned int currentRow();
-    void selectRow(const unsigned int & row);
     void loadSelection();
     void saveSelection();
-    void setSelection(const std::set< unsigned int > & selection);
+    void selectRow(const unsigned int & row);
+    void setItemSelection(const std::set<unsigned int> & selection);
 
   private slots:
     void slotCheckLowerInf(bool checked);
@@ -154,6 +154,8 @@ class CQFittingItemWidget : public QWidget
     void slotDuplicatePerExperiment();
     void slotNew();
     void slotSelectionChanged();
+    void slotLowerLostFocus();
+    void slotUpperLostFocus();
   };
 
 #endif // CQFITTINGITEMWIDGET_H

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.16.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:41 $
+   $Date: 2006/05/19 16:49:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,6 +84,25 @@ void CQFittingItemWidget::slotCheckLowerInf(bool checked)
     }
   else
     mpCheckLowerInf->setPaletteBackgroundColor(mSavedColor);
+
+  std::string Number;
+
+  if (checked)
+    Number = "-inf";
+  else if (isNumber((const char *) mpEditLower->text().utf8()))
+    Number = (const char *) mpEditLower->text().utf8();
+  else if (mpLowerObject)
+    Number = mpLowerObject->getCN();
+  else return;
+
+  std::set< unsigned int >::const_iterator it = mSelection.begin();
+  std::set< unsigned int >::const_iterator end = mSelection.end();
+
+  for (; it != end; ++it)
+    {
+      (*mpItemsCopy)[*it]->setLowerBound(Number);
+      setTableText(*it, (*mpItemsCopy)[*it]);
+    }
 }
 
 void CQFittingItemWidget::slotCheckUpperInf(bool checked)
@@ -99,6 +118,25 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
     }
   else
     mpCheckUpperInf->setPaletteBackgroundColor(mSavedColor);
+
+  std::string Number;
+
+  if (checked)
+    Number = "inf";
+  else if (isNumber((const char *) mpEditUpper->text().utf8()))
+    Number = (const char *) mpEditUpper->text().utf8();
+  else if (mpUpperObject)
+    Number = mpUpperObject->getCN();
+  else return;
+
+  std::set< unsigned int >::const_iterator it = mSelection.begin();
+  std::set< unsigned int >::const_iterator end = mSelection.end();
+
+  for (; it != end; ++it)
+    {
+      (*mpItemsCopy)[*it]->setUpperBound(Number);
+      setTableText(*it, (*mpItemsCopy)[*it]);
+    }
 }
 
 void CQFittingItemWidget::slotLowerEdit()
@@ -121,9 +159,12 @@ void CQFittingItemWidget::slotLowerEdit()
       std::set< unsigned int >::const_iterator it = mSelection.begin();
       std::set< unsigned int >::const_iterator end = mSelection.end();
 
+      mpLowerObject = Selection[0];
+      CCopasiObjectName CN = mpLowerObject->getCN();
+
       for (; it != end; ++it)
         {
-          (*mpItemsCopy)[*it]->setLowerBound(Selection[0]->getCN());
+          (*mpItemsCopy)[*it]->setLowerBound(CN);
           setTableText(*it, (*mpItemsCopy)[*it]);
         }
 
@@ -155,9 +196,12 @@ void CQFittingItemWidget::slotUpperEdit()
       std::set< unsigned int >::const_iterator it = mSelection.begin();
       std::set< unsigned int >::const_iterator end = mSelection.end();
 
+      mpUpperObject = Selection[0];
+      CCopasiObjectName CN = mpUpperObject->getCN();
+
       for (; it != end; ++it)
         {
-          (*mpItemsCopy)[*it]->setUpperBound(Selection[0]->getCN());
+          (*mpItemsCopy)[*it]->setUpperBound(CN);
           setTableText(*it, (*mpItemsCopy)[*it]);
         }
 
@@ -708,7 +752,7 @@ void CQFittingItemWidget::slotUp()
 
   mpTable->updateContents();
 
-  setSelection(NewSelection);
+  setItemSelection(NewSelection);
   loadSelection();
 }
 
@@ -741,7 +785,7 @@ void CQFittingItemWidget::slotDown()
 
   mpTable->updateContents();
 
-  setSelection(NewSelection);
+  setItemSelection(NewSelection);
   loadSelection();
 }
 
@@ -962,9 +1006,11 @@ void CQFittingItemWidget::loadSelection()
 
       mpEditLower->setText("");
       mpCheckLowerInf->setChecked(true);
+      mpLowerObject = NULL;
 
       mpEditUpper->setText("");
       mpCheckUpperInf->setChecked(true);
+      mpUpperObject = NULL;
 
       mpCheckAll->setChecked(true);
       mpBoxExperiments->setEnabled(false);
@@ -1000,22 +1046,24 @@ void CQFittingItemWidget::loadSelection()
           mpObjectValidator->validate(Value, Pos);
         }
 
+      mpLowerObject = NULL;
       if (pItem->getLowerBound() == "-inf" ||
           isNumber(pItem->getLowerBound()))
         Value = FROM_UTF8(pItem->getLowerBound());
-      else if ((pObject = RootContainer.getObject(pItem->getLowerBound())))
-        Value = FROM_UTF8(pObject->getObjectDisplayName());
+      else if ((mpLowerObject = RootContainer.getObject(pItem->getLowerBound())))
+        Value = FROM_UTF8(mpLowerObject->getObjectDisplayName());
       else
         Value = "Not found: " + FROM_UTF8(pItem->getLowerBound());
 
       mpEditLower->setText(Value);
       mpCheckLowerInf->setChecked(Value == "-inf");
 
+      mpUpperObject = NULL;
       if (pItem->getUpperBound() == "inf" ||
           isNumber(pItem->getUpperBound()))
         Value = FROM_UTF8(pItem->getUpperBound());
-      else if ((pObject = RootContainer.getObject(pItem->getUpperBound())))
-        Value = FROM_UTF8(pObject->getObjectDisplayName());
+      else if ((mpUpperObject = RootContainer.getObject(pItem->getUpperBound())))
+        Value = FROM_UTF8(mpUpperObject->getObjectDisplayName());
       else
         Value = "Not found: " + FROM_UTF8(pItem->getUpperBound());
 
@@ -1158,7 +1206,7 @@ void CQFittingItemWidget::selectRow(const unsigned int & row)
   mpTable->selectRow(row);
 }
 
-void CQFittingItemWidget::setSelection(const std::set< unsigned int > & selection)
+void CQFittingItemWidget::setItemSelection(const std::set< unsigned int > & selection)
 {
   mSelection = selection;
 
@@ -1180,4 +1228,38 @@ void CQFittingItemWidget::setSelection(const std::set< unsigned int > & selectio
     mpTable->addSelection(QTableSelection(*it, 0, *it, 0));
 
   connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+}
+
+void CQFittingItemWidget::slotLowerLostFocus()
+{
+  if (!isNumber((const char *) mpEditLower->text().utf8())) return;
+
+  mpLowerObject = NULL;
+  std::string Number = (const char *) mpEditLower->text().utf8();
+
+  std::set< unsigned int >::const_iterator it = mSelection.begin();
+  std::set< unsigned int >::const_iterator end = mSelection.end();
+
+  for (; it != end; ++it)
+    {
+      (*mpItemsCopy)[*it]->setLowerBound(Number);
+      setTableText(*it, (*mpItemsCopy)[*it]);
+    }
+}
+
+void CQFittingItemWidget::slotUpperLostFocus()
+{
+  if (!isNumber((const char *) mpEditUpper->text().utf8())) return;
+
+  mpUpperObject = NULL;
+  std::string Number = (const char *) mpEditUpper->text().utf8();
+
+  std::set< unsigned int >::const_iterator it = mSelection.begin();
+  std::set< unsigned int >::const_iterator end = mSelection.end();
+
+  for (; it != end; ++it)
+    {
+      (*mpItemsCopy)[*it]->setUpperBound(Number);
+      setTableText(*it, (*mpItemsCopy)[*it]);
+    }
 }
