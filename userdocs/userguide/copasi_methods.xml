@@ -8,41 +8,55 @@
 <sect2 id="DeterministicSimulation" xreflabel="DeterministicSimulation">
 <title>Deterministic Simulation</title>
 <sect3 id="LSODA" xreflabel="LSODA">
-<title>LSODA</title>
+<title>Deterministic (LSODA)</title>
 <para>
 To be written.
 </para>
 
 <variablelist><title>Options for LSODA</title>
-<varlistentry><term>LSODA.RelativeTolerance</term>
+<varlistentry><term>Integrate Reduced Model</term>
 <listitem>
 <para>
 To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>LSODA.AbsoluteTolerance</term>
+<varlistentry><term>Relative Tolerance</term>
 <listitem>
 <para>
 To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>LSODA.AdamsMaxOrder</term>
+<varlistentry><term>Use Default Absolute Tolerance</term>
 <listitem>
 <para>
 To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>LSODA.BDFMaxOrder</term>
+<varlistentry><term>Absolute Tolerance</term>
 <listitem>
 <para>
 To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>LSODA.MaxStepsInternal</term>
+<varlistentry><term>Adams Max Order</term>
+<listitem>
+<para>
+To be written
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>BDF Max Order</term>
+<listitem>
+<para>
+To be written
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Max Internal Steps</term>
 <listitem>
 <para>
 To be written
@@ -61,8 +75,8 @@ To be written
 To be written.
 </para>
 
-<variablelist><title>Options for Next Reaction Method (stochastic)</title>
-<varlistentry><term>MaxSteps</term>
+<variablelist><title>Srochastic (Gibson + Bruck)</title>
+<varlistentry><term>Max Internal Steps</term>
 <listitem>
 <para>
 To be written
@@ -76,14 +90,14 @@ To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>UseRandomSeed</term>
+<varlistentry><term>Use Random Seed</term>
 <listitem>
 <para>
 To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>RandomSeed</term>
+<varlistentry><term>Random Seed</term>
 <listitem>
 <para>
 To be written
@@ -94,7 +108,7 @@ To be written
 
 </sect3>
 <sect3 id="TauLeap" xreflabel="Tau Leap">
-<title>The Tau-Leap-Method</title>
+<title>Stochastic (Tau-Leap)</title>
 <para>
 To be written.
 </para>
@@ -132,21 +146,21 @@ To be written
 <para>To be written</para>
 
 <variablelist><title>Options for Juergens Hybrid</title>
-<varlistentry><term>HYBRID.MaxSteps</term>
+<varlistentry><term>Max Internal Steps</term>
 <listitem>
 <para>
 To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>HYBRID.LowerStochLimit</term>
+<varlistentry><term>Lower Limit</term>
 <listitem>
 <para>
 To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>HYBRID.UpperStochLimit</term>
+<varlistentry><term>Upper Limit</term>
 <listitem>
 <para>
 To be written
@@ -160,21 +174,21 @@ To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>HYBRID.PartitioningInterval</term>
+<varlistentry><term>Partitioning Interval</term>
 <listitem>
 <para>
 To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>HYBRID.UseRandomSeed</term>
+<varlistentry><term>Use Random Seed</term>
 <listitem>
 <para>
 To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>HYBRID.RandomSeed</term>
+<varlistentry><term>Random Seed</term>
 <listitem>
 <para>
 To be written
@@ -190,21 +204,21 @@ To be written
 <title>Steady State Calculation</title>
 <para>To be written.</para>
 <variablelist><title>Options for Steady State Analysis</title>
-<varlistentry><term>Newton.UseNewton</term>
+<varlistentry><term>Use Newton</term>
 <listitem>
 <para>
 To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>Newton.UseIntegration</term>
+<varlistentry><term>Use Integration</term>
 <listitem>
 <para>
 To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>Newton.UseBackIntegration</term>
+<varlistentry><term>Use Back Integration</term>
 <listitem>
 <para>
 To be written
@@ -218,21 +232,21 @@ To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>Newton.IterationLimit</term>
+<varlistentry><term>Iteration Limit</term>
 <listitem>
 <para>
 To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>Newton.DerivationFactor</term>
+<varlistentry><term>Derivation Factor</term>
 <listitem>
 <para>
 To be written
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>Newton.Resolution</term>
+<varlistentry><term>Resolution</term>
 <listitem>
 <para>
 To be written
@@ -249,7 +263,7 @@ To be written
 <para>To be written.</para>
 
 <variablelist><title>Options for MCA</title>
-<varlistentry><term>MCA.ModulationFactor</term>
+<varlistentry><term>Modulation Factor</term>
 <listitem>
 <para>
 To be written

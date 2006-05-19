@@ -2,7 +2,8 @@
 <title>Graphical User Interface</title>
 <sect1 id="introduction" xreflabel="introduction"><title>Introduction</title>
     <para>The Copasi graphical user interface has been written using the <ulink url="http://www.trolltech.com">Qt toolkit</ulink>. This allows us to release Copasi on all platforms that Qt supports.</para>
-    <para>
+<!-- Unneccesary screenshot.
+<para>
 <screenshot>
 <screeninfo>Produced with Copasi Build 11 on 12/02/2004</screeninfo>
 <mediaobject>
@@ -21,6 +22,7 @@
 </mediaobject>
 </screenshot>
 </para>
+-->
 <para>
 It also has the advantage that Copasi essentially behaves the same on all platforms supported, while still showing platform specific behavior. E.g. on a Mac OS X computer, the user will have the menu at the top of the screen and the menu entry for the about dialog will appear in the Copasi menu rather then the help menu.</para>
 <para>In the following sections, we will explain how to use the graphical user interface of Copasi. Everything should be applicable to all supported platforms. If there is a difference for some platforms we will try to point that out explicitly.    
@@ -108,9 +110,6 @@ This option can be used to specify a temporary directory where Copasi will autos
  <imageobject>
   <imagedata fileref="images/Layout_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Layout_01.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>Copasi GUI elements.</phrase>
  </textobject>
@@ -134,7 +133,7 @@ On the top of the main window, you have the menubar (on the Mac, the menubar is 
 </para>
 <para>   
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/General_01.png" format="PNG" scale="30" align="center" />
@@ -142,9 +141,6 @@ On the top of the main window, you have the menubar (on the Mac, the menubar is 
  <imageobject>
   <imagedata fileref="images/General_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/General_01.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>Dialog for general model settings</phrase>
  </textobject>
@@ -193,9 +189,6 @@ Copasi internally represents amounts of species by particle numbers. If a concen
  <imageobject>
   <imagedata fileref="images/Compartments_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Compartments_01.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>compartment table without entries</phrase>
  </textobject>
@@ -219,9 +212,6 @@ If you start with a new model and you select the <guibutton>Compartments</guibut
  <imageobject>
   <imagedata fileref="images/Compartments_02.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Compartments_02.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>compartment table with newly added compartment</phrase>
  </textobject>
@@ -271,9 +261,6 @@ If you have already committed the compartment, you can delete it by selecting th
  <imageobject>
   <imagedata fileref="images/Compartments_04.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Compartments_04.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog for changing compartment parameters</phrase>
  </textobject>
@@ -327,11 +314,8 @@ First of all in order to add a new species or metabolite, as it is called in Cop
   <imagedata fileref="images/Metabolites_02.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Metabolites_02.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Metabolites_02.ps" format="EPS" scale="45" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Metabolites_02.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog for changing metabolite parameters</phrase>
  </textobject>
@@ -393,9 +377,6 @@ When typing reaction equations you should keep in mind that metabolite names in 
  <imageobject>
   <imagedata fileref="images/Reactions_02.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Reactions_02.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog for changing reaction parameters</phrase>
  </textobject>
@@ -424,10 +405,10 @@ When typing reaction equations you should keep in mind that metabolite names in 
 <screeninfo>Produced with Copasi CVS on Mac OS X on 03/31/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Parameters_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Parameters_01.png" format="PNG" scale="45" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Parameters_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Parameters_01.ps" format="EPS" scale="45" align="center" />
  </imageobject> 
  <!-- <imageobject>
   <imagedata fileref="images/Parameters_01.gif" format="GIF">
@@ -458,6 +439,25 @@ Copasi already has a list of predefined output definitions. These should already
 <title>Using the Output Assistant</title>
 <para>
 Each task dialog in Copasi has a button at the lower right that is labeled <guibutton>Output Assistant</guibutton>. If you click on this button, a new dialog will open that presents you with a list of predefined output definitions on the left. If you select one of the output definitions from the list, you will get a short description of what the output does on the right side of the dialog. Above the description is the title of the output definition. This title can be changed in order to be able to identify the different output definitions in case yu are plannning on creating more then one output definition of a certain type.
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/OutputAssistant_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/OutputAssistant_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Output Assistant Window</phrase>
+ </textobject>
+ <caption>
+  <para>output assistant selection dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
 Creating an instance of the selected output objects is as easy a clicking on the <guibutton>Create</guibutton> at the bottom of the dialog. Once you clicked the this button, a new report or plot will appear in the corresponding branch of the <guilabel>Output</guilabel> section in the model tree which is located below all the task sections. The name of the output definitions will be the title of the object which you selected from the list. If another output definition in this section already has the same name, a postfix will be appended to the name. The so created output can now be edited or deleted. How output definitions are created, edit and delted manually is described below.
 </para>
 </sect2>
@@ -498,11 +498,8 @@ To add a new object to the report definition, you have to click on the button la
   <imagedata fileref="images/Reports_02.png" format="PNG" scale="60" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Reports_02.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Report_SimpleSelectionDialog.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Reports_02.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>object browser dialog</phrase>
  </textobject>
@@ -524,9 +521,6 @@ The object browser dialog shows a tree of all the objects that are known to Copa
  <imageobject>
   <imagedata fileref="images/Reports_03.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Reports_03.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>object browser dialog expert mode</phrase>
  </textobject>
@@ -589,8 +583,11 @@ If you write your own advanced report definition, you are responsible to add sep
 <title>Defining Plots</title>
 <para>Plotting is another form of output that Copasi can do. Most of the time, you probably want to plot some or all of the metabolites concentrations during a time course simulation. </para>
 <para>
+To define a plot, you open the plot definition dialog which you reach by selecting the <guibutton>Output-&gt;Plots</guibutton> branch in the object tree. If you intend to plot all or most of the metabolites concentrations against the time, the easiest way to define this plot is to click on the <guibutton>Add default plot</guibutton> button on the bottom of the dialog. This creates a plot with all concentrations against the time. If this is OK, you are done. If you want to remove some of the concentrations, you edit the plot by double clicking on the plot entry in the table, or by selecting the new plot definition in the object tree. A plot in Copasi is made up of a number of curve objects. For each curve, there is a tab in the plot definition dialog. To remove one of the curves, you have to select the tab that corresponds to the curve you want to remove and then click on the <guibutton>Delete Curve</guibutton> button. The next time you do a <link linkend="calculatingTrajectory">time course simulation</link>, each plot that is marked as active will be plotted automatically. How you define a plot as being active will be explained in the next paragraph.
+If you want to plot something other then the concentrations of the metabolites, e.g. the particle numbers against the time, you have to define your own plot. To do this, double click on an empty row in the plot table. (You get to the plot table by selecting the <guibutton>Output-&gt;Plots</guibutton> branch in the object browser.) </para>
+<para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on Mac OS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Plots_01.png" format="PNG" scale="30" align="center" />
@@ -599,38 +596,13 @@ If you write your own advanced report definition, you are responsible to add sep
   <imagedata fileref="images/Plots_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
  <!-- <imageobject>
-  <imagedata fileref="images/Plots_01.gif" format="GIF">
- </imageobject> -->
- <textobject>
-   <phrase>plot table with no entries</phrase>
- </textobject>
- <caption>
-  <para>empty plot table</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
-To define a plot, you open the plot definition dialog which you reach by selecting the <guibutton>Output-&gt;Plots</guibutton> branch in the object tree. If you intend to plot all or most of the metabolites concentrations against the time, the easiest way to define this plot is to click on the <guibutton>Add default plot</guibutton> button on the bottom of the dialog. This creates a plot with all concentrations against the time. If this is OK, you are done. If you want to remove some of the concentrations, you edit the plot by double clicking on the plot entry in the table, or by selecting the new plot definition in the object tree. A plot in Copasi is made up of a number of curve objects. For each curve, there is a tab in the plot definition dialog. To remove one of the curves, you have to select the tab that corresponds to the curve you want to remove and then click on the <guibutton>Delete Curve</guibutton> button. The next time you do a <link linkend="calculatingTrajectory">time course simulation</link>, each plot that is marked as active will be plotted automatically. How you define a plot as being active will be explained in the next paragraph.
-If you want to plot something other then the concentrations of the metabolites, e.g. the particle numbers against the time, you have to define your own plot. To do this, double click on an empty row in the plot table. (You get to the plot table by selecting the <guibutton>Output-&gt;Plots</guibutton> branch in the object browser.) </para>
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Plots_02.png" format="PNG" scale="30" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Plots_02.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <!-- <imageobject>
   <imagedata fileref="images/Plots_02.gif" format="GIF">
  </imageobject> -->
  <textobject>
-   <phrase>simple selection dialog for curves</phrase>
+   <phrase>empty plot widget</phrase>
  </textobject>
  <caption>
-  <para>simple curve object selection dialog</para>
+  <para>empty plot widget</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -639,7 +611,7 @@ If you want to plot something other then the concentrations of the metabolites, 
 This opens a plot definition dialog that contains no curves. If you want to add a curve, you click on the <guibutton>New Curve</guibutton> button. A selection dialog opens that lets you choose an object for the x axis and one or more objects for the y axis. The tree on the left is a single selection tree which lets you choose the object that defines the x axis of the plot. Most often this will be the time. So if you want the time to be drawn on the x axis, select the time leave in the <guibutton>Time</guibutton> branch. The right tree is a multi selection tree where you can choose one or more elements to be drawn on the y axis. There you could e.g. choose all transient particle numbers.</para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on Mac OS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Plots_03.png" format="PNG" scale="30" align="center" />
@@ -647,9 +619,6 @@ This opens a plot definition dialog that contains no curves. If you want to add 
  <imageobject>
   <imagedata fileref="images/Plots_03.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Plots_03.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>selection dialog with some items selected</phrase>
  </textobject>
@@ -660,8 +629,10 @@ This opens a plot definition dialog that contains no curves. If you want to add 
 </screenshot>
 </para>
 <para>
+In order to select objects in the multi selection tree, you select them in the tree and push the add button on the right of the selection dialog. The selected objects will show up in the listbox beside the tree. If you want to select more objects, select them in the tree and push the <guibutton>Add</guibutton> button again. You can do this as often as you like, but each object can only be selected once. All objects that are already marked as selected, i.e. that appear in the listbox, are disabled in the tree and can not be added a second time. On the other hand, if you want to remove some of the objects that you have selected, select them in the list and push the <guibutton>Delete</guibutton> button. You can also reorder the items in the list with the <guibutton>Move Up</guibutton> and <guibutton>Move Down</guibutton> buttons. (This is not needed for plots!) The trees in this dialog only have a limited set of the total objects that you e.g. see in the <link linkend="reportDefinitions">object browser</link>. If the object you want to plot is not in this simplified tree, you can check the <guilabel>Expert Mode</guilabel> checkbox on the bottom of the dialog. This will give you two full <link linkend="reportDefinitions">object browser</link> trees from which you can select objects.</para>
+<para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Plots_04.png" format="PNG" scale="30" align="center" />
@@ -669,33 +640,6 @@ This opens a plot definition dialog that contains no curves. If you want to add 
  <imageobject>
   <imagedata fileref="images/Plots_04.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Plots_04.gif" format="GIF">
- </imageobject> -->
- <textobject>
-   <phrase>selection dialog after clicking the add button</phrase>
- </textobject>
- <caption>
-  <para>selection dialog with entries in selection list</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
-In order to select objects in the multi selection tree, you select them in the tree and push the add button on the right of the selection dialog. The selected objects will show up in the listbox beside the tree. If you want to select more objects, select them in the tree and push the <guibutton>Add</guibutton> button again. You can do this as often as you like, but each object can only be selected once. All objects that are already marked as selected, i.e. that appear in the listbox, are disabled in the tree and can not be added a second time. On the other hand, if you want to remove some of the objects that you have selected, select them in the list and push the <guibutton>Delete</guibutton> button. You can also reorder the items in the list with the <guibutton>Move Up</guibutton> and <guibutton>Move Down</guibutton> buttons. (This is not needed for plots!) The trees in this dialog only have a limited set of the total objects that you e.g. see in the <link linkend="reportDefinitions">object browser</link>. If the object you want to plot is not in this simplified tree, you can check the <guilabel>Expert Mode</guilabel> checkbox on the bottom of the dialog. This will give you two full <link linkend="reportDefinitions">object browser</link> trees from which you can select objects.</para>
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Plots_05.png" format="PNG" scale="30" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Plots_05.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Plots_05.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>expert selection dialog for curve objects</phrase>
  </textobject>
@@ -721,7 +665,7 @@ Copasi now creates a curve object for each object you selected for the y axis an
 <para>Copasi already defines a rather large set of common kinetic functions to choose from. Nevertheless sometimes you will have to define your own kinetic function to solve a specific problem. The list of defined functions is located as the last branch in the object tree.</para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Functions_01.png" format="PNG" scale="30" align="center" />
@@ -729,21 +673,18 @@ Copasi now creates a curve object for each object you selected for the y axis an
  <imageobject>
   <imagedata fileref="images/Functions_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Functions_01.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>function table with predefined functions</phrase>
  </textobject>
  <caption>
-  <para>function table with many functions</para>
+  <para>function table</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Functions_02.png" format="PNG" scale="30" align="center" />
@@ -751,14 +692,30 @@ Copasi now creates a curve object for each object you selected for the y axis an
  <imageobject>
   <imagedata fileref="images/Functions_02.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Functions_02.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog for the definition of functions</phrase>
  </textobject>
  <caption>
   <para>function definition dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Functions_03.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Functions_03.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>function definition dialog with commited function</phrase>
+ </textobject>
+ <caption>
+  <para>function definition dialog with graphical display of the function</para>
  </caption> 
 </mediaobject>
 </screenshot>
@@ -1231,7 +1188,7 @@ In addition to defining "normal" functions, Copasi allows the definition of piec
 <para>In order to run a steady state analysis, you have to navigate to the <guibutton>Task-&gt;Steady-State</guibutton> branch in the object tree.</para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/SteadyStateTask_01.png" format="PNG" scale="30" align="center" />
@@ -1239,9 +1196,6 @@ In addition to defining "normal" functions, Copasi allows the definition of piec
  <imageobject>
   <imagedata fileref="images/SteadyStateTask_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/SteadyStateTask_01.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog for doing calculating a stability analysis</phrase>
  </textobject>
@@ -1255,7 +1209,7 @@ In the dialog that appears there, you can make several settings that influence t
 To finally run the steady state calculation, click on the <guibutton>run</guibutton> button at the bottom of the screen. After the calculation, Copasi will jump to the results widget.</para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/SteadyStateTask_02.png" format="PNG" scale="30" align="center" />
@@ -1263,9 +1217,6 @@ To finally run the steady state calculation, click on the <guibutton>run</guibut
  <imageobject>
   <imagedata fileref="images/SteadyStateTask_02.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/SteadyStateTask_02.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog that displays the results of the stability analysis</phrase>
  </textobject>
@@ -1298,9 +1249,6 @@ If you want to have output from the Steady State Task, you have to create an out
  <imageobject>
   <imagedata fileref="images/ElementaryModesTask_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/ElementaryModesTask_01.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog showing the calculated elementary modes for a model</phrase>
  </textobject>
@@ -1322,7 +1270,7 @@ If you want to have output from the Elementary Mode calculation, you have to cre
 <para>Calculating mass conservations in Copasi is also very easy. Navigate to the <guibutton>Tasks-&gt;Stoichiometry-&gt;Mass Conservation</guibutton> branch in the object tree and click on the <guibutton>recalculate</guibutton> button.</para>  
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MassConservationTask_01.png" format="PNG" scale="30" align="center" />
@@ -1330,9 +1278,6 @@ If you want to have output from the Elementary Mode calculation, you have to cre
  <imageobject>
   <imagedata fileref="images/MassConservationTask_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/MassConservationTask_01.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog showing the results of a mass conservation calculation</phrase>
  </textobject>
@@ -1346,7 +1291,7 @@ If you want to have output from the Elementary Mode calculation, you have to cre
 If the model contains any mass conservation relations they will be listed in a table directly in this dialog. </para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MassConservationTask_02.png" format="PNG" scale="30" align="center" />
@@ -1376,7 +1321,7 @@ Every mass conservation relation also has a separate leave in the object tree be
 <para>To do a time course simulation, you have to navigate to the corresponding task branch in the object tree which is located at <guibutton>Tasks-&gt;Time Course</guibutton>.</para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/TimeCourseTask_01.png" format="PNG" scale="30" align="center" />
@@ -1402,7 +1347,7 @@ The dialog should be more or less self explaining. You can change several parame
 <para>In case you <link linkend="reportDefinitions">defined a report definition</link>, you have to associate this report definition with a file for Copasi to be able to write the results to that file. To do that, you click on the <guibutton>Report Definition</guibutton> button. If no report definition had been defined, Copasi informs you that it created a new one and asks you if you want to edit it. If you don't know how to define a report definition, please go back to the <xref linkend="reportDefinitions" /> section. Since the report definition Copasi created automatically will be empty, it is recommended that you edit it in order to get some output. Once you are finished creating the report definition go back to the time course dialog and click on the <guibutton>Report Definition</guibutton> button again.</para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/TimeCourseTask_02.png" format="PNG" scale="30" align="center" />
@@ -1427,7 +1372,7 @@ The dialog that pops up will let you choose the report you want to use (in case 
 <para>Once you made all the desired changes to the parameters, you can start the time course simulation by clicking on the run button. Copasi will show a progressbar while running the simulation, which might take some time depending on several factors like the hardware you are using, the simulation method you chose and/or the size of your model. Once Copasi finishes the calculation, you will find the results in the report file you defined and/or in a separate result dialog if you told Copasi to keep the results in memory.</para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/TimeCourseTask_03.png" format="PNG" scale="30" align="center" />
@@ -1435,9 +1380,6 @@ The dialog that pops up will let you choose the report you want to use (in case 
  <imageobject>
   <imagedata fileref="images/TimeCourseTask_03.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/TimeCourseTask_03.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog that shows the results of the trajectory task</phrase>
  </textobject>
@@ -1459,7 +1401,7 @@ The results dialog is located directly below the time course branch in the objec
 <caution><para>The qwt plot widget has some problems under Mac OS X. Especially zooming often leads to strange artifacts.</para></caution>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/PlotWindow_01.png" format="PNG" scale="30" align="center" />
@@ -1467,9 +1409,6 @@ The results dialog is located directly below the time course branch in the objec
  <imageobject>
   <imagedata fileref="images/PlotWindow_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/PlotWindow_01.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog window showing a plot</phrase>
  </textobject>
@@ -1486,7 +1425,7 @@ The results dialog is located directly below the time course branch in the objec
 <para>Copasi can also do a Metabolic Control Analysis (MCA) for your model. The MCA task is located under <guibutton>Tasks-&gt;Metabolic Control Analysis</guibutton>.</para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MCATask_01.png" format="PNG" scale="30" align="center" />
@@ -1494,9 +1433,6 @@ The results dialog is located directly below the time course branch in the objec
  <imageobject>
   <imagedata fileref="images/MCATask_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/MCATask_01.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog for running a metabolic control analysis</phrase>
  </textobject>
@@ -1510,7 +1446,7 @@ The results dialog is located directly below the time course branch in the objec
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MCATask_02.png" format="PNG" scale="30" align="center" />
@@ -1518,9 +1454,6 @@ The results dialog is located directly below the time course branch in the objec
  <imageobject>
   <imagedata fileref="images/MCATask_02.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/MCATask_02.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog showing the results of the metabolic control analysis</phrase>
  </textobject>
@@ -1534,7 +1467,7 @@ The results dialog is located directly below the time course branch in the objec
 To start the calculation, you click the <guibutton>run</guibutton> button. After the calculation is finished, Copasi will automatically switch to the results dialog. The results dialog shows three tabs that contain the results for the elasticities, flux control coefficients and concentration control coefficients.</para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/MCATask_03.png" format="PNG" scale="30" align="center" />
@@ -1542,9 +1475,6 @@ To start the calculation, you click the <guibutton>run</guibutton> button. After
  <imageobject>
   <imagedata fileref="images/MCATask_03.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/MCATask_03.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog showing the results of the MCA after no steady state was found</phrase>
  </textobject>
@@ -1569,10 +1499,10 @@ If you want to have output from the MCA, you have to create an output definition
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_01.png" format="PNG" scale="45" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_01.ps" format="EPS" scale="45" align="center" />
  </imageobject> 
  <!-- <imageobject>
   <imagedata fileref="images/ParameterScan_01.gif" format="GIF">
@@ -1593,10 +1523,10 @@ If you want to have output from the MCA, you have to create an output definition
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_02.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_02.png" format="PNG" scale="45" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_02.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_02.ps" format="EPS" scale="45" align="center" />
  </imageobject> 
  <!-- <imageobject>
   <imagedata fileref="images/ParameterScan_02.gif" format="GIF">
@@ -1611,7 +1541,7 @@ If you want to have output from the MCA, you have to create an output definition
 </screenshot>
 </para>
 <para>
-First thing you have to do is select the parameter for the scan. You do this by clicking on the <guibutton>...</guibutton> button and selecting some parameter from the selection dialog that appears. Once you are finished with your selection and pressed the <guibutton>OK</guibutton> button, the name of the object you chose will appear in the lineedit field beside the <guibutton>...</guibutton> button. In the lineedit fields below you can now specify the minimal value the parameter will have during the scan as well as the maximal value. After choosing the object, these values will be set to half the objects value for the minimum and double the objects value for the maximum. In the <guilabel>Interval</guilabel> you can specify how many intervals Copasi uses during the scan to raise the value from minimum to maximum. Last but not least, the <guilabel>logarithmic</guilabel> checkbox determines welter the value is raised in linear steps if the box is unchecked or in logarithmic steps if the box is checked.  Now you are set to run your first simple scan by clicking on the <guibutton>Run</guibutton> at the bottom of the dialog. In order to actually see some result, you have to have some kind of output defined. The scan task can not do reports yet, but if a plot is defined, the scan task will do plotting while running the scan. If you did not change the number of intervals from the default, the scan task will run 10 time course simulations each with a different value for the chosen parameter and in turn you will see 10 plots overlaid in one plot window.
+The first thing you have to do is select the parameter for the scan. You do this by clicking on the <guibutton>...</guibutton> button and selecting some parameter from the selection dialog that appears. Once you are finished with your selection and pressed the <guibutton>OK</guibutton> button, the name of the object you chose will appear in the lineedit field beside the <guibutton>...</guibutton> button. In the lineedit fields below you can now specify the minimal value the parameter will have during the scan as well as the maximal value. After choosing the object, these values will be set to half the objects value for the minimum and double the objects value for the maximum. In the <guilabel>Interval</guilabel> you can specify how many intervals Copasi uses during the scan to raise the value from minimum to maximum. Last but not least, the <guilabel>logarithmic</guilabel> checkbox determines welter the value is raised in linear steps if the box is unchecked or in logarithmic steps if the box is checked.  Now you are set to run your first simple scan by clicking on the <guibutton>Run</guibutton> at the bottom of the dialog. In order to actually see some result, you have to have some kind of output defined. The scan task can not do reports yet, but if a plot is defined, the scan task will do plotting while running the scan. If you did not change the number of intervals from the default, the scan task will run 10 time course simulations each with a different value for the chosen parameter and in turn you will see 10 plots overlaid in one plot window.
 </para>
 <para>
 If you want to have output from the parameter scan, you have to create an output definition as described in the <xref linkend="outputDefinitions" /> section. The easiest way is probably to use the output assistant which you activate via the <guibutton>Output Assistant</guibutton> button. This is described in the <xref linkend="outputAssistant" /> section. All that is left to do in order to write the output to a specific file is to connect an output definition  with a file. This can be achieved by clicking on the <guibutton>Report</guibutton> button. This opens a dialog that lets you connect the report for a specific task to a file on your harddisk. First we choose a report that is suitable for the parameter scan task from the dropdown list at the top of the dialog. Next, we specify a file that will be used to store the report by clicking on the <guibutton>browse</guibutton> button and selection the destination in the file dialog that opens. Per default, Copasi creates a new file if the file does not exist, or asks wether the file should be overwritten. Alternatively, you can tell Copasi to append the report to the end of an existing file by selecting the corresponding check box labeled <guilabel>Append</guilabel> at the bottom of the dialog. Once you are finished, you click on the <guilabel>Confirm</guilabel> button. If you now run the task, Copasi will write the output to the file you specified. 
@@ -1623,14 +1553,11 @@ If you want to have output from the parameter scan, you have to create an output
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_03.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_03.png" format="PNG" scale="45" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_03.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_03.ps" format="EPS" scale="45" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/ParameterScan_03.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog showing scan task dialog with two Parameter Scan items</phrase>
  </textobject>
@@ -1648,14 +1575,11 @@ After adjusting the minimum and maximum as well as the number of intervals, you 
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_04.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_04.png" format="PNG" scale="45" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_04.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_04.ps" format="EPS" scale="45" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/ParameterScan_04.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog showing scan task dialog with a Random distribution item</phrase>
  </textobject>
@@ -1673,14 +1597,11 @@ After adjusting the minimum and maximum as well as the number of intervals, you 
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_05.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_05.png" format="PNG" scale="45" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_05.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_05.ps" format="EPS" scale="45" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/ParameterScan_05.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog showing scan task dialog with a Random distribution and Repeat item</phrase>
  </textobject>
@@ -1698,14 +1619,11 @@ After adjusting the minimum and maximum as well as the number of intervals, you 
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_06.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_06.png" format="PNG" scale="45" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_06.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_06.ps" format="EPS" scale="45" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/ParameterScan_06.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog showing scan task dialog with a more complex combination of actions</phrase>
  </textobject>
@@ -1731,9 +1649,6 @@ With the buttons on the left of each item other then the <guilabel>Task</guilabe
  <imageobject>
   <imagedata fileref="images/ParameterScan_07.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/ParameterScan_07.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog showing scan task dialog with a repeated random distribution</phrase>
  </textobject>
@@ -1751,9 +1666,6 @@ With the buttons on the left of each item other then the <guilabel>Task</guilabe
  <imageobject>
   <imagedata fileref="images/ParameterScan_08.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/ParameterScan_08.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>plot with 10 different curves</phrase>
  </textobject>
@@ -1771,9 +1683,6 @@ With the buttons on the left of each item other then the <guilabel>Task</guilabe
  <imageobject>
   <imagedata fileref="images/ParameterScan_09.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/ParameterScan_09.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>dialog showing scan task dialog with a random distribution where the time course task is repeated</phrase>
  </textobject>
@@ -1791,9 +1700,6 @@ With the buttons on the left of each item other then the <guilabel>Task</guilabe
  <imageobject>
   <imagedata fileref="images/ParameterScan_10.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/ParameterScan_10.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>plot with 10 times the same curve</phrase>
  </textobject>
@@ -1823,7 +1729,7 @@ We assume you have a model that consists of several reactions and two of those r
 
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 15 on Linux on 09/16/2005</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Optimization_01.png" format="PNG" scale="30" align="center" />
@@ -1859,7 +1765,7 @@ The only thing we have not done yet is to tell Copasi which parameter(s) it shou
 
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 15 on Linux on 09/16/2005</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Optimization_02.png" format="PNG" scale="30" align="center" />
@@ -1936,7 +1842,7 @@ If you want to have output from the parameter estimation task, you have to creat
 <para>Per default, the slider dialog is hidden, if you want it to be displayed, you have to activate it by toggling the corresponding menu entry in the <guimenu>tools</guimenu> menu or through the slider button in the toolbar. Depending on what element is selected in the object tree, the dialog will be disabled and a text will be displayed within the dialog that tells you so. If you select a task (or an element below the task) that supports sliders, the dialog will be enabled and the sliders that are defined for this task will be displayed.</para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Sliders_01.png" format="PNG" scale="30" align="center" />
@@ -1944,9 +1850,6 @@ If you want to have output from the parameter estimation task, you have to creat
  <imageobject>
   <imagedata fileref="images/Sliders_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Sliders_01.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>linux screenshot that shows Copasi with a plot window and the slider dialog</phrase>
  </textobject>
@@ -1956,13 +1859,14 @@ If you want to have output from the parameter estimation task, you have to creat
 </mediaobject>
 </screenshot>
 </para>
-<caution><para>On Mac OS X the slider dialog interferes with file dialogs and other similar dialogs. So before opening a file dialog for loading or saving or similar, either move the slider dialog out of the way, or hide it altogether. If you forget to do so, the slider dialog will probably block the other dialog and you will not be able to make any input.</para></caution>
+<!-- Could not reproduce that with the current version
+<caution><para>On Mac OS X the slider dialog interferes with file dialogs and other similar dialogs. So before opening a file dialog for loading or saving or similar, either move the slider dialog out of the way, or hide it altogether. If you forget to do so, the slider dialog will probably block the other dialog and you will not be able to make any input.</para></caution>-->
 <para>
 Once the slider dialog has been activated, you can add new sliders with the <guibutton>new slider</guibutton> button at the top of the slider dialog. To edit the parameters of an already defined slider, just click on the <guibutton>edit</guibutton> button, which is located on the right side of the slider towards the bottom. If you no longer need a slider you have defined, you can close it by clicking on the <guibutton>close</guibutton> button which is the top button on the right side of the slider. 
 Alternatively you can now add and modify existing sliders via a context menu. The context menu can be activated with the right mouse button (CTRL + Mouse button for single button mice on Macs!). If you right click on an existing slider, the menu will offer the possibilities to <guisubmenu>delete</guisubmenu> this slider or to <guisubmenu>edit</guisubmenu> it. If you right click into the dialog window where there is no slider, you will be offered the possibility to define a new slider.</para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi CVS on Mac OS X on 03/31/2005</screeninfo>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Sliders_02.png" format="PNG" scale="30" align="center" />
@@ -1970,9 +1874,6 @@ Alternatively you can now add and modify existing sliders via a context menu. Th
  <imageobject>
   <imagedata fileref="images/Sliders_02.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Sliders_02.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>basic dialog for the definition of a slider</phrase>
  </textobject>
@@ -1987,7 +1888,7 @@ Once you are in the dialog for the definition of a new slider, you have to choos
 <para>After you have selected an object, you can set the parameters for the slider. You specify the range the slider has to cover in the <guilabel>Minimum Value</guilabel> and <guilabel>Maximum Value</guilabel> fields. Additionally you can specify if the slider shall have a logarithmic or a linear scale<!-- and if the slider should be used for all tasks that support sliders or only for the task the slider was defined in-->. Per default sliders have a linear scale<!-- and are only defined for the task in which the you create them-->. Normally a slider will be available for all tasks that support sliders. An exception to this are slider for objects that are directly associated with a specific task, e.g. the number of steps in a time series, if you choose such an object for a slider, the slider will only be available for this task.  
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi CVS on Mac OS X on 03/31/2005</screeninfo>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Sliders_03.png" format="PNG" scale="30" align="center" />
@@ -1995,9 +1896,6 @@ Once you are in the dialog for the definition of a new slider, you have to choos
  <imageobject>
   <imagedata fileref="images/Sliders_03.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Sliders_03.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>extended dialog for the definition of a slider</phrase>
  </textobject>
@@ -2034,17 +1932,14 @@ Once you have made all the settings, you confirm the slider definition with the 
 </para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi CVS on Mac OS X on 03/31/2005</screeninfo>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Sliders_04.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Sliders_04.png" format="PNG" scale="45" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Sliders_04.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Sliders_04.ps" format="EPS" scale="45" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Sliders_04.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>slider dialog with three sliders</phrase>
  </textobject>
@@ -2071,7 +1966,7 @@ Most people will probably use the sliders in combination with the mouse, draggin
 <para>Copasi also includes a short tutorial on how you create a model and run a time course simulation with plotting. You can start the wizard from the <guimenu>help</guimenu> menu. The corresponding menu entry is called <guimenuitem>Simple Wizard</guimenuitem>.</para>
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi Build 11 on Linux on 12/02/2004</screeninfo>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Wizard_01.png" format="PNG" scale="30" align="center" />
@@ -2079,9 +1974,6 @@ Most people will probably use the sliders in combination with the mouse, draggin
  <imageobject>
   <imagedata fileref="images/Wizard_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Wizard_01.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>tutorial wizard dialog screenshot</phrase>
  </textobject>
