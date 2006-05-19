@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-   $Revision: 1.7.2.1 $
+   $Revision: 1.7.2.2 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/16 16:30:31 $
+   $Author: ssahle $
+   $Date: 2006/05/19 12:33:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,7 +45,11 @@ CLyapTask::CLyapTask(const CCopasiContainer * pParent):
     mpLyapProblem(NULL),
     mpLyapMethod(NULL),
     mLocalExponents(),
-    mExponents()
+    mExponents(),
+    mSumOfExponents(0.0),
+    mSumOfLocalExponents(0.0),
+    mIntervalDivergence(0.0),
+    mAverageDivergence(0.0)
 {
   mpProblem = new CLyapProblem(this);
   mpMethod =
@@ -69,9 +73,11 @@ void CLyapTask::initObjects()
   unsigned C_INT32 i;
 
   mExponents.resize(LYAP_NUM_REF);
+  for (i = 0; i < LYAP_NUM_REF; ++i) mExponents[i] = 0.0;
   mvExpRef.resize(LYAP_NUM_REF);
 
   mLocalExponents.resize(LYAP_NUM_REF);
+  for (i = 0; i < LYAP_NUM_REF; ++i) mLocalExponents[i] = 0.0;
   mvLocExpRef.resize(LYAP_NUM_REF);
 
   addVectorReference("Exponents", mExponents, CCopasiObject::ValueDbl);
