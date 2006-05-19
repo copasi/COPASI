@@ -55,13 +55,22 @@ This can be used to tell Copasi where your home directory is located. Normally y
 </listitem>
 </varlistentry>
 
-<varlistentry><term>--rc</term>
+<varlistentry><term>--configdir</term>
 <listitem>
 <para>
-This can be used to specify the location of the configuration file for Copasi. Normally this is called .copasirc and is located in the users home directory. But if you want Copasi to use a different one, you can specify it with this switch.   
+This can be used to specify the directory where Copasi stores its configuration files. Normally this is called .copasi and is located in the users home directory. But if you want Copasi to use a different one, you can specify it with this switch.   
 </para>
 </listitem>
 </varlistentry>
+
+<varlistentry><term>--configfile</term>
+<listitem>
+<para>
+This can be used to specify the filename where Copasi loads and stores its configuration. Normally this is called copasi and is located in the directory specified with --configdir. But if you want Copasi to use a different filename, you can specify it with this switch.   
+</para>
+</listitem>
+</varlistentry>
+
 
 <varlistentry><term>-c</term><term>--copasidir</term>
 <listitem>
@@ -69,9 +78,27 @@ This can be used to specify the location of the configuration file for Copasi. N
 </listitem>
 </varlistentry>
 
+<varlistentry><term>--exportBerkeleyMadonna</term>
+<listitem>
+<para>With this option you can specify a name for the Berkeley Madonna file Copasi should export. This is useful if you want to export some Copasi files to Berkeley Madonna file format in a batch job. This only makes sense for the commandline version and it will be ignored by the GUI version.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>--exportC</term>
+<listitem>
+<para>With this option you can specify a name for the C source file Copasi should export. This is useful if you want to export some Copasi files to C sourcecode in a batch job. This only makes sense for the commandline version and it will be ignored by the GUI version.</para>
+</listitem>
+</varlistentry>
+
 <varlistentry><term>-e</term><term>--exportSBML</term>
 <listitem>
 <para>With this option you can specify a name for the SBML file Copasi should export. This is useful if you want to export some Copasi files to SBML in a batch job. This only makes sense for the commandline version and it will be ignored by the GUI version.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>--license</term>
+<listitem>
+<para>With this commandline option, Copasi will print its license and exit.</para>
 </listitem>
 </varlistentry>
 
@@ -88,6 +115,13 @@ This can be used to specify the location of the configuration file for Copasi. N
 </varlistentry>
 <varlistentry><term>-t</term><term>--tmp</term>
 <listitem>
+
+<varlistentry><term>--verbose</term>
+<listitem>
+<para>This commandline option tells Copasi to print more output on what it is doing to stdout</para>
+</listitem>
+</varlistentry>
+
 <para>
 This option can be used to specify a temporary directory where Copasi will autosave some data periodically. Normally Copasi uses the systems temporary directory (e.g. /tmp/ under Linux).
 </para>
@@ -120,9 +154,9 @@ This option can be used to specify a temporary directory where Copasi will autos
 </screenshot>
 </para>
 <para>
-On the top of the main window, you have the menubar (on the Mac, the menubar is on the top of the screen), below that, you have a toolbar with some common tasks like opening a file or saving a file. The rest of the window is vertically divided into two parts by a slider. The size of the two elements can be adjusted by moving the bar that separates them. The left element is called the object tree and it shows your current model and the tasks that you can perform on this model. Depending on the element that is selected in the object tree, the view on the right will change in order to enable you to edit the model or run and modify the task you selected in the object tree.</para>
-<para>If you start Copasi without any command line argument, Copasi will start with a new model. The root of the object tree will be selected and on the right side of the main window, you will see the Copasi logo.</para> 
-<para>The object tree has four branches below the root element. The first one contains all objects that belong to the current model. The second one contains all tasks that Copasi can execute, the third one contains the different output objects Copasi can handle and the last branch contains all the (kinetic) functions that are defined. These include the build in functions as well as functions defined by the user.</para>
+On the top of the main window, you have the menubar (on the Mac, the menubar is on the top of the screen), below that, you have a toolbar with some common tasks like opening a file or saving a file. The rest of the window is vertically divided into two parts. The size of the two elements can be adjusted by moving the bar that separates them. The left element is called the object tree and it shows your current model and the tasks that you can perform on this model. Depending on the element that is selected in the object tree, the view on the right will change in order to enable you to edit the model or run and modify the task you selected in the object tree.</para>
+<para>If you start Copasi without any commandline argument, Copasi will start with a new model. The root of the object tree will be selected and on the right side of the main window, you will see the Copasi logo.</para> 
+<para>The object tree has five branches below the root element. The first one contains all objects that belong to the current model. The second one contains all tasks that Copasi can execute, the third one contains some of the more complex task as for example parameter scans and parameter fitting. The fourth branch contains the different output objects Copasi can handle and the last branch contains a variety of (kinetic) functions. These include the build in functions as well as functions defined by the user.</para>
 <para>If you now click on the <guibutton>Model</guibutton> branch, the view to the right of the object tree will change and you will see a screen that allows you to make <xref linkend="generalSettings" />. In the following sections, we will describe the individual dialogs that you can open by selecting different branches in the object tree. During this explanation, you will learn how to create a model in Copasi and run different tasks on this model like calculating a trajectory.
 </para>
 </sect1>
@@ -170,6 +204,13 @@ Copasi internally represents amounts of species by particle numbers. If a concen
   </mml:mfrac>
 </mml:math>
 . Since the default substance unit is set to nMole instead of Mole we have to multiply the result by <mml:math><mml:mrow><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>9</mml:mn></mml:msup></mml:mrow></mml:math>. So copasi would display a concentration of <mml:math><mml:mn>1.661</mml:mn><mml:mrow><mml:mi> </mml:mi><mml:mfrac><mml:mi>nMole</mml:mi><mml:mi>fl</mml:mi></mml:mfrac></mml:mrow></mml:math>.       
+</para>
+<para>
+With the dropdown list labeled <guilabel>Rate Law Interpretation</guilabel> you can specify how Copasi should interpret the kinetic rate laws you specify for your reactions. Per default, Copasi will interpret all rate laws as deterministic rate laws. Since Copasi allows the user to simulate a model either deterministically or stochastically, Copasi has to make some corrections to determinisitic rate laws when using them for a stochastic simulation. This functionality sometimes interferes with rate laws that have been written for stochastic simulation and where the before mentioned corrections have already been made by the modeler. So if you have a model with rate laws that have been written be used in a stochastic simulation, you have to specify this by selecting stochastic from this dropdown list. If you do this, Copasi will not apply any corrections to the rate laws specified in the model when doing stochastic simulation. For a new more detailed discussion of this correction mechanism see <xref linkend="stochasticCorrectionMechanism" />
+</para>
+<para>
+With the edit field labeled <guilabel>Initial Time</guilabel> the user can tell Copasi to take the given value as the initial time for tasks like time course. For example if you already have run a time course simulation for 1000 seconds in another program and your model values reflect the state of the model after those 1000 seconds of simulation, you can continue your simulation at that timepoint by setting the initial time to 1000. (This assumes that the models time units in the same widget are set to seconds.)
+If you run a time course simulation and check the <guilabel>update model</guilabel> box there, Copasi will automatically set the intial time to the endtime of the time course simulation after running it. For more information on running time course simulation is Copasi see <xref link="calculatingTrajectory" />
 </para>
 </sect1>
 <sect1 id="addingCompartments" xreflabel="Adding and Editing Compartments">
@@ -222,8 +263,8 @@ If you start with a new model and you select the <guibutton>Compartments</guibut
 </screenshot>
 </para>
 <para>
-A status of new means that the compartment has been created, but is has not been added to the model yet. It will get added to the model if you either click on the <guibutton>commit</guibutton> button on the bottom of the screen, if you selected another element in the object tree on the left, or if you double click on the table. Lets assume you clicked on the <guibutton>commit</guibutton> button, you will notice that the status of the new compartment is no longer defined as new since it has been added to the model.</para> 
-<para>While the status of a compartment is shown as <emphasis>new</emphasis>, you can remove the compartment from the table by clicking the <guibutton>revert</guibutton> button which will cancel all modifications you made to the compartments that have not been committed yet.</para>
+A status of new means that the compartment has been created, but is has not been added to the model yet. It will get added to the model if you either click on the <guibutton>Commit</guibutton> button on the bottom of the screen, if you selected another element in the object tree on the left, or if you double click on the table. Lets assume you clicked on the <guibutton>Commit</guibutton> button, you will notice that the status of the new compartment is no longer defined as new since it has been added to the model.</para> 
+<para>While the status of a compartment is shown as <emphasis>new</emphasis>, you can remove the compartment from the table by clicking the <guibutton>Revert</guibutton> button which will cancel all modifications you made to the compartments that have not been committed yet.</para>
 <para>
 <screenshot>
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
@@ -247,10 +288,10 @@ A status of new means that the compartment has been created, but is has not been
 </screenshot>
 </para>
 <para>
-If you have already committed the compartment, you can delete it by selecting the table row (or one cell of the table row) that contains the compartment you want to delete and clicking the <guibutton>delete</guibutton> button. You will notice that the compartment does not get deleted at once, but rather the status changes to <emphasis>deleted</emphasis>. You can still undo the delete by clicking the <guibutton>revert</guibutton> button or the <guibutton>delete/undelete</guibutton> button, or you can finalize the delete action by clicking on the <guibutton>commit</guibutton> button. Again leaving this dialog by selecting another object in the object tree or double clicking on the table has the same effect as clicking on the <guibutton>commit</guibutton> button.</para>
-<para>The <guibutton>clear</guibutton> button is just a convenience function to delete all compartments. If you click on it, the status of all compartments in the table will be changed to <emphasis>deleted</emphasis> and a subsequent <guibutton>commit</guibutton> will remove the compartments from the model.</para>
+If you have already committed the compartment, you can delete it by selecting the table row (or one cell of the table row) that contains the compartment you want to delete and clicking the <guibutton>Delete/Undelete</guibutton> button. You will notice that the compartment does not get deleted at once, but rather the status changes to <emphasis>deleted</emphasis>. You can still undo the delete by clicking the <guibutton>Revert</guibutton> button or the <guibutton>Delete/Undelete</guibutton> button, or you can finalize the delete action by clicking on the <guibutton>Commit</guibutton> button. Again leaving this dialog by selecting another object in the object tree or double clicking on the table has the same effect as clicking on the <guibutton>Commit</guibutton> button.</para>
+<para>The <guibutton>Clear</guibutton> button is just a convenience function to delete all compartments. If you click on it, the status of all compartments in the table will be changed to <emphasis>deleted</emphasis> and a subsequent <guibutton>Commit</guibutton> will remove the compartments from the model.</para>
 <para>The most convenient way to add a compartment is to just click on an empty name cell in the table and type the name of the compartment. Once you leave the cell by either hitting the return or the tab key or by clicking somewhere else, the compartment appears in the table with a status of <emphasis>new</emphasis>. Actually hitting the return key after typing the name brings you directly into the next row and you can continue adding compartments until all compartments are defined. You now only have to commit your changes in one of the ways mentioned above and all the compartments get added to the model.</para>
-<para>The third way to add a new compartment is to double click on an empty row in the table. This is essentially the same as clicking the <guibutton>new</guibutton> button and double clicking on the newly added compartment entry.</para>
+<para>The third way to add a new compartment is to double click on an empty row in the table. This is essentially the same as clicking the <guibutton>New</guibutton> button and double clicking on the newly added compartment entry.</para>
 <para>    
 <screenshot>
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
@@ -273,6 +314,7 @@ If you have already committed the compartment, you can delete it by selecting th
 <para>
 Double clicking on any compartment entry in the table will bring you to another input dialog that lets you specify the parameters of the compartment. For a compartment, there are only two parameters that the user can change. One is the name of the compartment and the other is the volume.</para>
 <para>If there are already species defined that are part of the compartment being edited, they are listed in the text widget at the bottom of the dialog called "Metabolite Name".</para>
+<para>The field labeled <guilabel>Transient Volume</guilabel> specifies the volume the compartment has right now, e.g. during or at the end of a simulation. Since the current version of Copasi does not support variable compartment volumes yet, this will always be the same as the initial volume.</para>
 <para>As you might already have noticed, this dialog for changing compartment parameters is associated with the individual compartment leaves in the object tree. So if you want to change the parameters of a compartment, you can also navigate to the leave in the object tree that represents the compartment you want to change instead of double clicking on an entry in the compartment table.
 </para>
 </sect1>
@@ -290,9 +332,6 @@ Double clicking on any compartment entry in the table will bring you to another 
  <imageobject>
   <imagedata fileref="images/Metabolites_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Metabolites_01.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>metabolites table</phrase>
  </textobject>
@@ -303,8 +342,8 @@ Double clicking on any compartment entry in the table will bring you to another 
 </screenshot>
 </para>
 <para>
-First of all in order to add a new species or metabolite, as it is called in Copasi, you have to navigate to the <guibutton>Metabolites</guibutton> branch of the object tree which is located in the <guibutton>Model-&gt;Biochemical</guibutton> branch directly below the <guibutton>Compartments</guibutton> branch. Here again you see a table, but this table consists of eight columns. This is due to the fact that a metabolite has more parameters than a compartment. The <guilabel>Status</guilabel> and <guilabel>Name</guilabel> columns should already be familiar from the compartments table. The other six columns specify the initial concentration of the metabolite, the transient concentration and if the metabolite is fixed (i.e. its concentration does not change during the course of a simulation). The second <guilabel>Status</guilabel> column might be a little confusing, but it indicates whether the metabolite is an independent or a dependent metabolite as opposed to the first <guilabel>Status</guilabel> column that indicates whether a metabolite has been added to the model yet or is about to be deleted from the model as described in the <xref linkend="addingCompartments" /> section. The column named <guilabel>Compartment</guilabel> shows the name of the compartment the metabolite belongs to and the <guilabel>Rate</guilabel> column shows the reaction rate of the metabolite. For newly created metabolites the rate will be empty since it needs to be calculated first, e.g. during a <link linkend="calculatingTrajectory">time course simulation</link>.</para>
-<para>When a metabolite is added and the model does not contain a compartment yet, Copasi will automatically add a new compartment to the model and the metabolite will be added to this compartment. If there already is one or more compartments, the metabolite will be added to the first compartment in the list. This can be changed later.</para>
+First of all in order to add a new species or metabolite, as it is called in Copasi, you have to navigate to the <guibutton>Metabolites</guibutton> branch of the object tree which is located in the <guibutton>Model-&gt;Biochemical</guibutton> branch directly below the <guibutton>Compartments</guibutton> branch. Here again you see a table, but this table consists of eight columns. This is due to the fact that a metabolite has more parameters than a compartment. The <guilabel>Status</guilabel> and <guilabel>Name</guilabel> columns should already be familiar from the compartments table. The other six columns specify the initial concentration of the metabolite, the transient concentration and wether the metabolite is fixed (i.e. its concentration does not change during the course of a simulation). The second <guilabel>Status</guilabel> column might be a little confusing, but it indicates whether the metabolite is an independent or a dependent metabolite as opposed to the first <guilabel>Status</guilabel> column that indicates whether a metabolite has been added to the model yet or is about to be deleted from the model as described in the <xref linkend="addingCompartments" /> section. The column named <guilabel>Compartment</guilabel> shows the name of the compartment the metabolite belongs to and the <guilabel>Rate</guilabel> column shows the reaction rate of the metabolite. For newly created metabolites the rate will be 0.</para>
+<para>When a metabolite is added and the model does not contain a compartment yet, Copasi will automatically add a new compartment with unit volume to the model and the metabolite will be added to this compartment. If there already is one or more compartments, the metabolite will be added to the first compartment in the list. The compartment of the metabolite can be changed in the metabolite dialog which we will cover shortly.</para>
 <para>To add a new metabolite you have the same three ways as for adding compartments and if you are not familiar with those, I recommend reading the <xref linkend="addingCompartments" /> section.</para> 
 <para>    
 <screenshot>
@@ -327,7 +366,7 @@ First of all in order to add a new species or metabolite, as it is called in Cop
 </para>
 <para>
     Editing the parameters of a metabolite also works exactly the way it does for compartments. Either you double click on a metabolite entry in the table, or you use the object tree to navigate to the metabolite leaf you intend to edit. Some of the parameters of a metabolite like the <guilabel>Model Status</guilabel> are calculated automatically and can not be changed by the user. The parameters that you can change are the <guilabel>Name</guilabel> of the metabolite, the <guilabel>Compartment</guilabel> it belongs to, whether it is a fixed metabolite and its <guilabel>initial concentration</guilabel>. Instead of changing the <guilabel>initial concentration</guilabel>, you can also change the <guilabel>initial particle number</guilabel>. If you change one of those two, the other will be updated automatically. The volume to calculate particle numbers from concentration and vice versa comes from the compartment associated with the metabolite.
-The list at the bottom of the metabolite widget shows the reactions in which this metabolite participates.
+The list at the bottom of the metabolite widget shows the reactions in which this metabolite participates. If the metabolite is not part of any reaction, the list will display the word <emphasis>non</emphasis> instead.
 </para>
 </sect1>
 <sect1 id="addingReactions" xreflabel="Adding and Editing Reactions">
@@ -345,9 +384,6 @@ The list at the bottom of the metabolite widget shows the reactions in which thi
  <imageobject>
   <imagedata fileref="images/Reactions_01.ps" format="EPS" scale="30" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Reactions_01.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>reaction table without entries</phrase>
  </textobject>
@@ -358,7 +394,7 @@ The list at the bottom of the metabolite widget shows the reactions in which thi
 </screenshot>
 </para>
 <para>
-    The easiest way to add a reaction is to type the chemical equation into an empty equation cell in the table. After you typed the equation, you hit the return key and automatically land in the next row where you can type the next reaction equation. This way you can enter all the reactions that make up your model. When you are finished with typing the reaction equations, you commit all the reactions. If any of the reactions contain metabolites that are not already present in the model, they are added automatically. If there was no compartment before, a compartment is also added and all new metabolites get added to this compartment. If there is already one or more compartment, all new metabolites get added to the first compartment that is listed in the object tree.
+    The easiest way to add a reaction is to type the chemical equation into an empty equation cell in the table. After you typed the equation, you hit the return key and you are automatically transfered to the next row where you can type the next reaction equation. This way you can enter all the reactions that make up your model. When you are finished with typing the reaction equations, you commit all the reactions. If any of the reactions contain metabolites that are not already present in the model, they are added automatically. If there was no compartment before, a compartment is also added and all new metabolites get added to this compartment. If there already are one or more compartments, all new metabolites get added to the first compartment that is listed in the object tree.
 </para>
 <caution>
 <para>
@@ -366,7 +402,7 @@ When typing reaction equations you should keep in mind that metabolite names in 
 </para>
 </caution>
 <para>
-    Each new reaction gets a default kinetic which is irreversible mass action for reactions that contain a substrate. For reaction that only have a product (e.g. influx into a system) a constant flux kinetic is chosen.</para>  
+    Each new reaction gets a default rate law which is irreversible mass action for reactions that contain a substrate and are irreversible. For reaction that only have a product (e.g. influx into a system) a constant flux rate law is chosen. And for reversible reactions, the default rate law is reversible mass action.</para>  
 <para>    
 <screenshot>
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
@@ -387,16 +423,36 @@ When typing reaction equations you should keep in mind that metabolite names in 
 </screenshot>
 </para>
 <para>
-    Double clicking on an entry in the table will bring you to another dialog that lets you change certain parameters of the reaction. You can change the name of the reaction, the chemical equation and whether the reaction is reversible or not. Changing the chemical equation and the reversibility of a reaction influences the type of kinetics you can choose for the reaction. Each kinetic function defines how many substrates, products and modifiers it expects. Additionally it defines whether it can be used for reversible or irreversible reactions only or if it can be used on either. So depending on how many substrates, products and modifiers your kinetic equation has and whether it is reversible or not, only a subset of the defined kinetic functions will be available in the <guilabel>Kinetics</guilabel> combobox.
-    If the kinetic function you want to assign to the reaction is not available yet, you can add it by clicking on the <guibutton>New Kinetics</guibutton> button (see also <xref linkend="addingFunctions" />). 
+    Double clicking on an entry in the table will bring you to another dialog that lets you change certain parameters of the reaction. You can change the name of the reaction, the chemical equation and whether the reaction is reversible or not. Changing the chemical equation and the reversibility of a reaction influences the type of kinetics you can choose for the reaction. Each kinetic function defines how many substrates, products and modifiers it expects. Additionally it defines whether it can be used for reversible or irreversible reactions only or if it can be used on either. So depending on how many substrates, products and modifiers your kinetic equation has and whether it is reversible or not, only a subset of the defined kinetic functions will be available from the <guilabel>Rate Law</guilabel> dropdown list.
+    If the kinetic function you want to assign to the reaction is not available yet, you can add it by clicking on the <guibutton>New  Rate Law</guibutton> button. For further information on how to add user defined kinetic functions see <xref linkend="addingFunctions" />. 
     Depending on the kinetic function you chose, you get a selection of parameters in the table named <guilabel>Symbol Definition</guilabel>, all functions parameters get a default value of 0.1 which can be changed by clicking into the corresponding cell and typing a new value.</para>
-<para>So far we did not go into the details of how chemical equations are to be specified. Chemical equations have a simple schema. First you state all the substrates separated by  "+" characters. Please make sure that you separate the name of the substrate and the "+" character by at least one space character, otherwise Copasi will interpret the "+" sign as belonging to the metabolites name. (Having the "+" character as part of a metabolites name is allowed in Copasi!) after the list of substrates, you specify either an equals ("=") character if the reaction is reversible or the character combination "-&gt;" if the reaction is irreversible. This is followed by the list of products which must also be separated by the "+" character. Again make sure you have spaces around the separating "+" characters. Optionally this term can be followed by a semicolon and a list of modifiers which are separated by spaces. Either the list of substrates or the list of products may also be empty, but at least one of them must be present. Lets look at two examples:
+<para>Per default all parameters to a kinetic function are local parameters and they exist only in the scope of the rate law of one reaction. Sometimes it is of advantage to use the same parameter in the rate laws for several reactions. This way if you want to change to value of this parameter, you only have to change it in once insted of having to change it in every reaction it occurs in individually. Parameters that can be used in more then one reaction are called global parameters in Copasi. How you add a global parameter to your model is described in the section called <xref link="globalParameters" />. Let us for the moment assume you already added such a global parameter to your model and now want to use it in a rate law. Each parameter in the <guilabel>Symbol Definition</guilabel> table has a checkbox labeled <guilabel>global</guilabel>. When you check this box, Copasi knows that the parameter that belongs to it is a global parameter and lets you select a global parameter from a list of global parameters that have been defined in the model. If none have been defined yet, the list contains only an entry termed <guilabel>unknown</guilabel>. In this case, you will have to define one or more global parameters first and then come back to the reaction where you want to use it. If the name of the global parameter is set to the <emphasis>unknown</emphasis> term, Copasi will reset the type of parameter to local if you leave the reaction widget.</para>
+<para>So far we did not go into the details of how chemical equations have to be specified. Chemical equations have a simple schema: First you state all the substrates separated by  "+" characters. Please make sure that you separate the name of the substrate and the "+" character by at least one space character, otherwise Copasi will interpret the "+" sign as belonging to the metabolites name. (Having the "+" character as part of a metabolites name is allowed in Copasi!) after the list of substrates, you specify either an equals ("=") character if the reaction is reversible or the character combination "-&gt;" if the reaction is irreversible. This is followed by the list of products which must also be separated by the "+" character. Again make sure you have spaces around the separating "+" characters. Optionally this term can be followed by a semicolon and a list of modifiers which are separated by spaces. Either the list of substrates or the list of products may also be empty, but at least one of them must be present. Lets look at two examples:
 <orderedlist numeration="loweralpha" >
 <listitem><para>Metabolite A is irreversibly converted into Metabolite B. The chemical equation you would type is "A -&gt; B".</para></listitem>
-<listitem><para>Metabolite A and B are reversibly converted to Metabolite C, the reaction has to modifiers C and D. The chemical equation for this in Copasi would be: "A + B = C; C D"</para><para>Note that one of the modifiers is the product!</para></listitem>  
+<listitem><para>Metabolite A and B are reversibly converted to Metabolite C, the reaction has to modifiers C and D. The chemical equation for this in Copasi would be: "A + B = C; C D"</para><para>Note that in this example the product is also a modifier of the reaction!</para></listitem>  
 </orderedlist>   
 </para>
-<caution><para>If the reaction takes place in one compartment, the reaction kinetic specifies a rate of concentration change, whereas if the reaction takes place in several compartments, the kinetic specifies the amount of substance change over time.</para><para>E.g. in the reaction A -> B, if A and B are in the same compartment, the kinetic function for the reaction returns its result in Mol/(l*s). If A and B reside in different compartments, the result is returned in Mol/s. (This assumes that your default units are set to Mol, l and s.)</para></caution>
+<caution>
+<para>If the reaction takes place in one compartment, the reaction kinetic specifies a rate of concentration change, whereas if the reaction takes place in several compartments, the kinetic specifies the amount of substance change over time.</para>
+<para>E.g. in the reaction A -> B, if A and B are in the same compartment, the kinetic function for the reaction returns its result in Mol/(l*s). If A and B reside in different compartments, the result is returned in Mol/s. (This assumes that your default units are set to Mol, l and s.)</para>
+</caution>
+
+</sect1>
+<sect1 id="globalParameters" xreflabel="Global Parameters">
+<title>Global Parameters</title>
+<para>
+In the model tree right below the <guibutton>Reaction</guibutton> branch is the <guibutton>Global paramters</guibutton> branch. If you select this branch, you see a table with all the global parameters that have been defined in your model. When you start a new model this table, just like all the others so far, is empty. The table has four columns and the ones named <guilabel>Status</guilabel> and <guilabel>Name</guilabel> should by now be already familiar.
+</para>
+<para>
+As with all other model elements, you can choose how you want to add a global parameter. The most convenient way is to just enter a name in an empty cell of the column termed <guilabel>Name</guilabel>.
+</para>
+<para>
+<!-- We need a screenshot here -->
+</pra>
+<para>
+Contrary to all other model elements we have created so far, selecting the newly created global parameter in the tree view will not open a new widget. You can set all attributes of the global parameter directly in the table. And the only two attributes that can be changed are the name and the initial value of the parameter. For future version of Copasi it is planned to support parameters that change during a time course simulation, but for now the transient value of a parameter will always be identical to the initial value. 
+</para>
 </sect1>
 <sect1 id="parameterView" xreflabel="Parameter View">
 <title>Parameter View</title>
@@ -410,9 +466,6 @@ When typing reaction equations you should keep in mind that metabolite names in 
  <imageobject>
   <imagedata fileref="images/Parameters_01.ps" format="EPS" scale="45" align="center" />
  </imageobject> 
- <!-- <imageobject>
-  <imagedata fileref="images/Parameters_01.gif" format="GIF">
- </imageobject> -->
  <textobject>
    <phrase>Parameter View</phrase>
  </textobject>
@@ -423,11 +476,13 @@ When typing reaction equations you should keep in mind that metabolite names in 
 </screenshot>
 </para>
 <para>
-    The parameter view widget can be displayed by selecting the leaf called <guilabel>Parameters</guilabel> on the Model branch which is located right underneath the <guilabel>Reactions</guilabel> leaf. This widget allows you to view and edit all parameters of the model in one place. This saves you from moving around the model tree if you e.g. first have to edit the initial concentrations for some metabolites and afterward parameters of one or more reactions.
-    The view shows you the initial concentrations for the metabolites at the top followed by the kinetic parameters of all reactions and at the bottom the volumes of all the compartments.
-    In order to change some value, you double click on which lets you input a new value. On hitting the return key or clicking somewhere else, the new value is not written to the object directly, but a '*' character appears in front of the name of the changed parameter. If you now leave this widget or press the commit button at the bottom of the dialog, the new value is written to the corresponding object in the model.
+    The parameter view widget can be displayed by selecting the leaf called <guilabel>Parameter overview</guilabel> on the Model branch which is located right underneath the <guilabel>Global parameters</guilabel> leaf. This widget allows you to view and edit all parameters of the model in one place. This saves you from moving around the model tree if you e.g. first have to edit the initial concentrations for some metabolites and afterward parameters of one or more reactions.
+    The view shows you the values for the global parameters folowed by the initial concentrations for the metabolites. Next comes the initial time which is again followed by the initial volumes of the compartments, and last but not least the kinetic parameters of all reactions.
+    In order to change some value, you click on it which lets you input a new value. On hitting the return key or clicking somewhere else, the new value is not written to the object directly, but a '*' character appears in front of the name of the changed parameter. If you now leave this widget or press the <guibutton>Commit</guibutton> button at the bottom of the dialog, the new value is written to the corresponding object in the model. As in the other dialogs, you can cancel all channges that have not been committed yet by clicking on the <guibutton>Revert</guibutton>. 
 </para>
 </sect1>
+
+
 <sect1 id="outputDefinitions" xreflabel="Defining Output">
 <title>Defining Output</title>
 <para>After you have <link linkend="addingReactions">defined all reactions</link> that make up your model, you could go ahead and do some calculations with your model. For some of the task this is fine since they show you the results in a separate results dialog and it might not be necessary to store those into a file. For other tasks, like e.g. a time course, it is very likely that you would like to store the resulting trajectory in some file or plot the result for visual inspection. So if you want Copasi to store the results or do a plot of them, you have to define either a report and associate it with a file or define a plot. (In the <xref linkend="calculatingTrajectory" /> section we will also offer an alternative, albeit less flexible, way for storing the results of a time course simulation.)
@@ -2001,6 +2056,11 @@ Upon import of an SBML file, Copasi tries to identify the function calls it read
 <para>
 This is still very rudimentary and we hope to improve this function recognition in the future so that also functions exported from other programs can be recognized.
 </para>
+</sect1>
+
+<!-- This belongs somewhere else -->
+<sect1 id="stochasticCorrectionMechanism" xreflabel="Rate Law Modifications for Stochastic Simulations">
+<title>Stochastic Simulation of "Deterministic" Models</title>
 </sect1>
 </chapter>  
 
