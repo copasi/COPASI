@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.10.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Date: 2006/05/19 17:56:40 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,12 +109,22 @@ bool CMCATask::process(const bool & useInitialValues)
       pSubTask->setCallBack(mpCallBack);
       success &= pSubTask->process(useInitialValues);
 
-      if (!success) return false;
+      if (!success && useInitialValues)
+        {
+          mpProblem->getModel()->applyInitialValues();
+        }
 
       pMethod->setSteadyStateStatus(pSubTask->getResult());
     }
   else
-    pMethod->setSteadyStateStatus(CSteadyStateMethod::notFound);
+    {
+      pMethod->setSteadyStateStatus(CSteadyStateMethod::notFound);
+
+      if (useInitialValues)
+        {
+          mpProblem->getModel()->applyInitialValues();
+        }
+    }
 
   CCopasiTask::output(COutputInterface::BEFORE);
 
