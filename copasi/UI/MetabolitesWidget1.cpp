@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.129 $
+   $Revision: 1.129.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 14:21:42 $
+   $Date: 2006/05/19 12:16:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -188,7 +188,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   //mReactionsTable->horizontalHeader()->setLabel(0, "Name");
   //mReactionsTable->horizontalHeader()->setLabel(1, "chemical equation");
   mReactionsTable->setReadOnly(true);
-  mReactionsTable->setSizePolicy(QSizePolicy::Maximum /*Preferred*/, QSizePolicy::Maximum);
+  mReactionsTable->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Maximum);
   MetabolitesWidget1Layout->addMultiCellWidget(mReactionsTable, 11, 11, 1, 2);
 
   QSpacerItem* spacer_3 = new QSpacerItem(470, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
