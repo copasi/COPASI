@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.5.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:40 $
+   $Date: 2006/05/19 12:55:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,7 @@ class CCopasiSelectionDialog: public QDialog
     QPushButton* mpOKButton;
     QPushButton* mpCancelButton;
     QCheckBox* mpModeCheckBox;
-    QHBox* mpButtonBox;
+    QHBoxLayout* mpButtonBox;
     QWidget* mpMainWidget;
     CCopasiSelectionWidget* mpSelectionWidget;
     QVBoxLayout* mpMainLayout;

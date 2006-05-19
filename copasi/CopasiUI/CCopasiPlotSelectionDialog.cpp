@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiPlotSelectionDialog.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.4.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:40 $
+   $Date: 2006/05/19 12:55:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,81 +43,63 @@ CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const ch
     , mpXAxisOutputVector(NULL)
     , mpYAxisOutputVector(NULL)
 {
-  this->mpMainLayout = new QVBoxLayout(this);
-  this->mpMainLayout->setAutoAdd(true);
+  mpMainLayout = new QVBoxLayout(this);
 
-  this->mpSplitter = new QSplitter(this);
-  this->mpSplitter->setOrientation(Qt::Horizontal);
+  mpSplitter = new QSplitter(this);
+  mpSplitter->setOrientation(Qt::Horizontal);
+  mpMainLayout->addWidget(mpSplitter);
 
-  this->mpButtonBox = new QHBox(this);
-  this->mpButtonBox->layout()->setAutoAdd(false);
+  mpButtonBox = new QHBoxLayout(mpMainLayout);
 
-  ((QHBoxLayout*)this->mpButtonBox->layout())->addStretch();
+  mpOKButton = new QPushButton(this);
+  mpOKButton->setText("OK");
+  mpOKButton->setDefault(true);
+  mpButtonBox->add(mpOKButton);
 
-  this->mpOKButton = new QPushButton(this->mpButtonBox);
-  this->mpOKButton->setText("OK");
-  this->mpOKButton->setDefault(true);
-  this->mpButtonBox->layout()->add(this->mpOKButton);
+  mpCancelButton = new QPushButton(this);
+  mpCancelButton->setText("Cancel");
+  mpButtonBox->add(mpCancelButton);
 
-  this->mpCancelButton = new QPushButton(this->mpButtonBox);
-  this->mpCancelButton->setText("Cancel");
-  this->mpButtonBox->layout()->add(this->mpCancelButton);
+  mpExpertCheckBox = new QCheckBox(this);
+  mpExpertCheckBox->setText("Expert Mode");
+  mpExpertCheckBox->setChecked(false);
+  mpButtonBox->add(mpExpertCheckBox);
 
-  this->mpExpertCheckBox = new QCheckBox(this->mpButtonBox);
-  this->mpExpertCheckBox->setText("Expert Mode");
-  this->mpExpertCheckBox->setChecked(false);
-  this->mpButtonBox->layout()->add(this->mpExpertCheckBox);
+  mpXAxisSelectionBox = new QVBox(mpSplitter);
+  mpXAxisSelectionBox->layout()->setMargin(5);
+  mpXAxisSelectionBox->layout()->setAutoAdd(false);
 
-  ((QHBoxLayout*)this->mpButtonBox->layout())->addStretch();
+  mpYAxisSelectionBox = new QVBox(mpSplitter);
+  mpYAxisSelectionBox->layout()->setMargin(5);
+  mpYAxisSelectionBox->layout()->setAutoAdd(false);
 
-  this->mpXAxisSelectionBox = new QVBox(this->mpSplitter);
-  this->mpXAxisSelectionBox->layout()->setMargin(5);
-  this->mpXAxisSelectionBox->layout()->setAutoAdd(false);
+  mpXAxisLabel = new QLabel("X-Axis:", mpXAxisSelectionBox);
+  mpXAxisLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+  mpXAxisSelectionBox->layout()->add(mpXAxisLabel);
 
-  this->mpYAxisSelectionBox = new QVBox(this->mpSplitter);
-  this->mpYAxisSelectionBox->layout()->setMargin(5);
-  this->mpYAxisSelectionBox->layout()->setAutoAdd(false);
+  mpYAxisLabel = new QLabel("Y-Axis:", mpYAxisSelectionBox);
+  mpYAxisLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+  mpYAxisSelectionBox->layout()->add(mpYAxisLabel);
 
-  this->mpXAxisLabel = new QLabel("X-Axis:", this->mpXAxisSelectionBox);
-  this->mpXAxisLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-  this->mpXAxisSelectionBox->layout()->add(this->mpXAxisLabel);
+  mpXAxisSelectionWidget = new CCopasiSelectionWidget(mpXAxisSelectionBox);
+  mpXAxisSelectionWidget->setSingleSelection(true);
+  mpXAxisSelectionWidget->setOutputVector(mpXAxisOutputVector);
+  mpXAxisSelectionBox->layout()->add(mpXAxisSelectionWidget);
 
-  this->mpYAxisLabel = new QLabel("Y-Axis:", this->mpYAxisSelectionBox);
-  this->mpYAxisLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-  this->mpYAxisSelectionBox->layout()->add(this->mpYAxisLabel);
+  mpYAxisSelectionWidget = new CCopasiSelectionWidget(mpYAxisSelectionBox);
+  mpYAxisSelectionWidget->setSingleSelection(false);
+  mpYAxisSelectionWidget->setOutputVector(mpYAxisOutputVector);
+  mpYAxisSelectionBox->layout()->add(mpYAxisSelectionWidget);
 
-  this->mpXAxisSelectionWidget = new CCopasiSelectionWidget(this->mpXAxisSelectionBox);
-  this->mpXAxisSelectionWidget->setSingleSelection(true);
-  this->mpXAxisSelectionWidget->setOutputVector(this->mpXAxisOutputVector);
-  this->mpXAxisSelectionBox->layout()->add(this->mpXAxisSelectionWidget);
+  connect(mpOKButton, SIGNAL(clicked()), this, SLOT(slotOKButtonClicked()));
+  connect(mpCancelButton, SIGNAL(clicked()), this, SLOT(slotCancelButtonClicked()));
+  connect(mpExpertCheckBox, SIGNAL(toggled(bool)), this, SLOT(slotExpertCheckBoxToggled(bool)));
 
-  this->mpYAxisSelectionWidget = new CCopasiSelectionWidget(this->mpYAxisSelectionBox);
-  this->mpYAxisSelectionWidget->setSingleSelection(false);
-  this->mpYAxisSelectionWidget->setOutputVector(this->mpYAxisOutputVector);
-  this->mpYAxisSelectionBox->layout()->add(this->mpYAxisSelectionWidget);
-
-  connect(this->mpOKButton, SIGNAL(clicked()), this, SLOT(slotOKButtonClicked()));
-  connect(this->mpCancelButton, SIGNAL(clicked()), this, SLOT(slotCancelButtonClicked()));
-  connect(this->mpExpertCheckBox, SIGNAL(toggled(bool)), this, SLOT(slotExpertCheckBoxToggled(bool)));
-
-  this->setTabOrder();
+  setTabOrder();
 }
 
 CCopasiPlotSelectionDialog::~CCopasiPlotSelectionDialog()
-{
-  pdelete(this->mpOKButton);
-  pdelete(this->mpCancelButton);
-  pdelete(this->mpExpertCheckBox);
-  pdelete(this->mpXAxisLabel);
-  pdelete(this->mpYAxisLabel);
-  pdelete(this->mpXAxisSelectionWidget);
-  pdelete(this->mpYAxisSelectionWidget);
-  pdelete(this->mpXAxisSelectionBox);
-  pdelete(this->mpYAxisSelectionBox);
-  pdelete(this->mpSplitter);
-  pdelete(this->mpButtonBox);
-  pdelete(this->mpMainLayout);
-}
+{}
 
 void CCopasiPlotSelectionDialog::setTabOrder()
 {

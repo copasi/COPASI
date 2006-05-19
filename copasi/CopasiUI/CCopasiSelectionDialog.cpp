@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSelectionDialog.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.7.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:40 $
+   $Date: 2006/05/19 12:55:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,26 +36,30 @@ CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * n
     mExpertMode(false),
     mExpertModeEnabled(true)
 {
-  this->setWFlags(this->getWFlags() | Qt::WDestructiveClose);
-  this->mpMainLayout = new QVBoxLayout(this);
-  this->mpMainLayout->setAutoAdd(true);
-  this->mpSelectionWidget = new CCopasiSelectionWidget(this);
-  this->mpButtonBox = new QHBox(this);
-  this->mpButtonBox->layout()->setAutoAdd(false);
-  ((QBoxLayout*)this->mpButtonBox->layout())->addStretch();
-  this->mpOKButton = new QPushButton(this->mpButtonBox, "OK");
-  ((QBoxLayout*)this->mpButtonBox->layout())->addWidget(this->mpOKButton);
-  this->mpOKButton->setText("OK");
-  this->mpOKButton->setDefault(true);
-  this->mpOKButton->setAutoDefault(true);
-  this->mpCancelButton = new QPushButton(this->mpButtonBox, "Cancel");
-  ((QBoxLayout*)this->mpButtonBox->layout())->addWidget(this->mpCancelButton);
-  this->mpCancelButton->setText("Cancel");
-  this->mpModeCheckBox = new QCheckBox("expert mode", this->mpButtonBox, "expertMode");
-  ((QBoxLayout*)this->mpButtonBox->layout())->addWidget(this->mpModeCheckBox);
-  this->mpModeCheckBox->setChecked(false);
-  ((QBoxLayout*)this->mpButtonBox->layout())->addSpacing(20);
-  ((QBoxLayout*)this->mpButtonBox->layout())->addStretch();
+  setWFlags(this->getWFlags() | Qt::WDestructiveClose);
+  mpMainLayout = new QVBoxLayout(this);
+
+  mpSelectionWidget = new CCopasiSelectionWidget(this);
+  mpMainLayout->addWidget(mpSelectionWidget);
+
+  mpButtonBox = new QHBoxLayout(mpMainLayout);
+
+  mpOKButton = new QPushButton(this, "OK");
+  mpOKButton->setText("OK");
+  mpOKButton->setDefault(true);
+  mpOKButton->setAutoDefault(true);
+  mpButtonBox->addWidget(mpOKButton);
+
+  mpCancelButton = new QPushButton(this, "Cancel");
+  mpCancelButton->setText("Cancel");
+  mpButtonBox->addWidget(mpCancelButton);
+
+  mpModeCheckBox = new QCheckBox("expert mode", this, "expertMode");
+  mpModeCheckBox->setChecked(false);
+  mpButtonBox->addWidget(mpModeCheckBox);
+
+  // this->mpButtonBox->addSpacing(20);
+  // this->mpButtonBox->addStretch();
 
   connect(this->mpOKButton, SIGNAL(clicked()), this, SLOT(okButton_clicked()));
   connect(this->mpCancelButton, SIGNAL(clicked()), this, SLOT(cancelButton_clicked()));
