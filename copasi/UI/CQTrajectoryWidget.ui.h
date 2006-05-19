@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTrajectoryWidget.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.3.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/10 16:24:13 $
+   $Date: 2006/05/19 13:43:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,7 @@ void CQTrajectoryWidget::init()
   CQTrajectoryWidgetLayout->addWidget(mpBtnWidget);
 
   addMethodSelectionBox(CTrajectoryTask::ValidMethods);
-  addMethodParameterTable();
+  addMethodParameterTable(0);
 
   slotOutputDelay(false);
 
