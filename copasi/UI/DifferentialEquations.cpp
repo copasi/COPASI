@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.29.2.1 $
+   $Revision: 1.29.2.2 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/05/18 10:04:13 $
+   $Author: tjohann $
+   $Date: 2006/05/19 10:06:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,8 @@
 #include "qtUtilities.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
+
+#include "CopasiFileDialog.h"
 
 #include "mml/qtmmlwidget.h"
 
@@ -93,6 +95,11 @@ DifferentialEquations::DifferentialEquations(QWidget *parent, const char * name,
   mMmlWidget->setFontName(QtMmlWidget::NormalFont, this->fontInfo().family());
 
   mScrollView->addChild(mMmlWidget);
+
+  btnSaveToFile = new QPushButton("Save to File", this);
+  connect(btnSaveToFile, SIGNAL(clicked()),
+          this, SLOT(saveToFileClicked()));
+  layout->addWidget(btnSaveToFile, 1, 0);
 
   //btnOK = new QPushButton("&OK", this);
   //btnCancel = new QPushButton("&Cancel", this);
@@ -286,7 +293,10 @@ void DifferentialEquations::createParameterMapping(const CReaction* pReac,
 
 void DifferentialEquations::loadDifferentialEquations(CModel * model)
 {
-  std::ostringstream mml;
+  //std::ostringstream mml;
+
+  mml.str("");
+
   unsigned C_INT32 l = 0;
   //pFunction->writeMathML(mml);
   mml << SPC(l) << "<mtable>" << std::endl;
@@ -329,6 +339,13 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
   mMmlWidget->setContent(FROM_UTF8(mml.str()));
   mScrollView->resizeContents(mMmlWidget->sizeHint().width(), mMmlWidget->sizeHint().height());
   //std::cout << mml.str() << std::endl;
+
+  bool hasContents = true;
+  if (model->getReactions().size() == 0)
+    {
+      hasContents = false;
+    }
+  btnSaveToFile->setEnabled(hasContents);
 }
 
 std::set<std::string> DifferentialEquations::listReactionsForMetab(const CModel* model,
@@ -384,4 +401,33 @@ bool DifferentialEquations::enter(const std::string & C_UNUSED(key))
 {
   loadDifferentialEquations(CCopasiDataModel::Global->getModel());
   return true;
+}
+
+void DifferentialEquations::saveToFileClicked()
+{
+  QString outfilename;
+
+  C_INT32 Answer = QMessageBox::No;
+
+  while (Answer == QMessageBox::No)
+    {
+      outfilename =
+        CopasiFileDialog::getSaveFileName(this,
+                                           "Save File Dialog",
+                                           QString::null,
+                                           "All Files (*);;",
+                                           "Save Differential Equations to MathML File"
+);
+
+      Answer = checkSelection(outfilename);
+
+      if (Answer == QMessageBox::Cancel)
+        return;
+    }
+
+  std::ofstream ofile;
+  ofile.open(outfilename.ascii(), std::ios::trunc);
+  ofile << mml.str();
+
+  ofile.close();
 }

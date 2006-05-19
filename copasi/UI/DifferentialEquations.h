@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.14.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:43 $
+   $Author: tjohann $
+   $Date: 2006/05/19 10:06:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,9 @@
 
 #ifndef DIFFERENTIAL_EQUATIONS_H
 #define DIFFERENTIAL_EQUATIONS_H
+
+#include <sstream>
+
 #include <qpushbutton.h>
 //#include <qtextbrowser.h>
 
@@ -40,6 +43,7 @@ class DifferentialEquations : public CopasiWidget
     QScrollView* mScrollView;
     QtMmlWidget* mMmlWidget;
 
+    QPushButton *btnSaveToFile;
     //QPushButton *btnOK;
     //QPushButton *btnCancel;
 
@@ -50,6 +54,7 @@ class DifferentialEquations : public CopasiWidget
     virtual bool enter(const std::string & key = "");
 
   protected slots:
+    virtual void saveToFileClicked();
     //virtual void slotBtnOKClicked();
     //virtual void slotBtnCancelClicked();
 
@@ -69,6 +74,8 @@ class DifferentialEquations : public CopasiWidget
 
     static void createParameterMapping(const CReaction* pReac,
                                        std::vector<std::vector<std::string> > & params);
+
+    std::ostringstream mml;
   };
 
 #endif
