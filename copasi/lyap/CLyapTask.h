@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.8.2.1 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/14 16:52:24 $
+   $Date: 2006/05/20 01:42:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -118,6 +118,18 @@ class CLyapTask : public CCopasiTask
      * Perform neccessary cleaup procedures
      */
     virtual bool restore();
+
+    const CVector<C_FLOAT64> & exponents() const
+      {return mExponents;}
+
+    //const CVector<C_FLOAT64> & localExponents() const
+    //{return mLocalExponents;}
+
+    const C_FLOAT64 & sumOfExponents() const
+      {return mSumOfExponents;}
+
+    const C_FLOAT64 & averageDivergence() const
+      {return mAverageDivergence;}
 
     /**
      * Set the method type applied to solve the task
