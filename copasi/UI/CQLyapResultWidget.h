@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapResultWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.2.1 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/12 13:49:16 $
+   $Date: 2006/05/20 01:41:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,13 +16,10 @@
 #include "copasiWidget.h"
 //#include "CopasiDataModel/CCopasiDataModel.h"
 
-class QVBoxLayout;
-class QHBoxLayout;
 class QGridLayout;
-class QPushButton;
-class QHBoxLayout;
-class QVBoxLayout;
-class QTextEdit;
+class QLineEdit;
+class QLabel;
+class QTable;
 
 class CQLyapResultWidget : public CopasiWidget
   {
@@ -40,14 +37,17 @@ class CQLyapResultWidget : public CopasiWidget
 
   protected:
     bool loadFromBackend();
-    //bool saveToBackend();
-    //std::string objKey;
 
-    //QGridLayout* mWidgetLayout;
-    //QHBoxLayout* stateLayout;
-    QVBoxLayout* parentLayout;
-    //    StateSubwidget* mCentralWidgetSteady;
-    //    TimeSeriesSubWidget* mCentralWidgetTime;
+    QGridLayout* mWidgetLayout;
+
+    QLabel* mLabelExponents;
+    QLabel* mLabelSum;
+    QLabel* mLabelDivergence;
+    QLabel* mLabelComment;
+
+    QTable* mTableExponents;
+    QLineEdit* mLineEditSum;
+    QLineEdit* mLineEditDivergence;
   };
 
 #endif

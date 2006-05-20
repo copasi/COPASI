@@ -1,19 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapResultWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.2.1 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/12 13:49:16 $
+   $Date: 2006/05/20 01:41:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <qpushbutton.h>
+//#include <qpushbutton.h>
 #include <qlayout.h>
-#include <qtextedit.h>
+#include <qlineedit.h>
 #include <qlabel.h>
+#include <qtable.h>
 
 #include "copasi.h"
 
@@ -26,6 +27,7 @@
 #include "report/CKeyFactory.h"
 #include "model/CModel.h"
 #include "lyap/CLyapTask.h"
+#include "lyap/CLyapProblem.h"
 
 //#include "report/CKeyFactory.h"
 
@@ -35,34 +37,61 @@
  */
 CQLyapResultWidget::CQLyapResultWidget(QWidget* parent, const char* name, WFlags fl)
     : CopasiWidget(parent, name, fl)
-    //objKey("")
 {
   if (!name)
     setName("CQLyapResultWidget");
   setCaption("CQLyapResultWidget");
 
-  //parentLayout = new QVBoxLayout(this, 0, 0, "parentLayout");
+  mWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "LyapResultWidgetLayout");
 
-  //stateLayout = new QHBoxLayout(0, 0 , 6, "StateLayout");
-  //mWidgetLayout = new QGridLayout(NULL, 1, 1, 0, -1, "Layout");
+  // **********  Exponents **************
+  mLabelExponents = new QLabel(this, "ExponentsLabel");
+  mLabelExponents->setText(trUtf8("Lyapunov Exponents"));
+  mLabelExponents->setAlignment(int(QLabel::AlignVCenter
+                                    | QLabel::AlignRight));
+  mWidgetLayout->addWidget(mLabelExponents, 4, 0);
 
-  //   if (comingFrom == 0)
-  //     {
-  //       mCentralWidgetTime = NULL;
-  //       mCentralWidgetSteady = new StateSubwidget(this, "StateSubwidget", 0);
-  //       mWidgetLayout->addWidget(mCentralWidgetSteady, 0, 0);
-  //       mCentralWidgetSteady->displayOptimizationTab(true);
-  //}
-  //   else
-  //     {
-  //       mCentralWidgetSteady = NULL;
-  //       mCentralWidgetTime = new TimeSeriesSubWidget(this, "TimeSeriesSubWidget", 0);
-  //       mWidgetLayout->addWidget(mCentralWidgetTime, 0, 0);
-  //       mCentralWidgetTime->displayOptimizationTab(true);
-  //}
+  QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  mWidgetLayout->addItem(spacer, 5, 0);
 
-  //parentLayout->addLayout(stateLayout);
-  //parentLayout->addLayout(mWidgetLayout);
+  mTableExponents = new QTable(this, "mTableExponents");
+  mWidgetLayout->addMultiCellWidget(mTableExponents, 4, 5, 1, 2);
+  mTableExponents->setNumRows(0);
+  mTableExponents->setNumCols(1);
+  QHeader *colHeader = mTableExponents->horizontalHeader();
+  colHeader->setLabel(0, tr("Exponent"));
+  mTableExponents->setColumnStretchable(0, true);
+  mTableExponents->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+  // ********** Sum *********************
+  mLabelSum = new QLabel(this, "SumLabel");
+  mLabelSum->setText(trUtf8("Sum of Lyapunov Exponents"));
+  mLabelSum->setAlignment(int(QLabel::AlignVCenter
+                              | QLabel::AlignRight));
+  mWidgetLayout->addWidget(mLabelSum, 6, 0);
+
+  mLineEditSum = new QLineEdit(this, "mLineEditSum");
+  mLineEditSum->setReadOnly(true);
+  mWidgetLayout->addWidget(mLineEditSum, 6, 1);
+
+  // ************* Divergence **************
+  mLabelDivergence = new QLabel(this, "mLabelDivergence");
+  mLabelDivergence->setText(trUtf8("Divergence"));
+  mLabelDivergence->setAlignment(int(QLabel::AlignVCenter
+                                     | QLabel::AlignRight));
+  mWidgetLayout->addWidget(mLabelDivergence, 7, 0);
+
+  mLineEditDivergence = new QLineEdit(this, "mLineEditDivergence");
+  mLineEditDivergence->setReadOnly(true);
+  mWidgetLayout->addWidget(mLineEditDivergence, 7, 1);
+
+  // ************* comment ******************
+  mLabelComment = new QLabel(this, "mLabelComment");
+  mLabelComment->setText("");
+  mWidgetLayout->addWidget(mLabelComment, 8, 1);
+
+  spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  mWidgetLayout->addItem(spacer, 9, 0);
 }
 
 /*
@@ -76,15 +105,21 @@ CQLyapResultWidget::~CQLyapResultWidget()
 bool CQLyapResultWidget::loadFromBackend()
 {
   bool success = true;
-  std::ostringstream os;
+  //std::ostringstream os;
 
-  /*
-  CCopasiTask * pTask = (*CCopasiDataModel::Global->getTaskList())["Optimization"];
+  CLyapTask * pTask = dynamic_cast<CLyapTask*>((*CCopasiDataModel::Global->getTaskList())["Lyapunov Exponents"]);
   if (!pTask) return false;
 
-  COptProblem * pProblem = dynamic_cast< COptProblem * >(pTask->getProblem());
+  CLyapProblem * pProblem = dynamic_cast< CLyapProblem * >(pTask->getProblem());
   if (!pProblem) return false;
 
+  unsigned C_INT32 i, imax = pProblem->getExponentNumber();
+
+  mTableExponents->setNumRows(imax);
+  for (i = 0; i < imax; ++i)
+    mTableExponents->setText(i, 0, QString::number(pTask->exponents()[i]));
+
+  /*
   // We need to use the solution and run Steady-State or Time-Course.
   const CVector< C_FLOAT64 > & Solution = pProblem->getSolutionVariables();
   const std::vector< UpdateMethod * > & SetCalculateVariable =
