@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.4.2.1 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/14 16:52:24 $
+   $Date: 2006/05/20 01:43:40 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,7 @@ class CLyapWolfMethod : public CLyapMethod
     /**
      *  Number of variables in the model
      */
-    C_INT32 mSystemSize;
+    unsigned C_INT32 mSystemSize;
 
     /**
      *  Number of exponents to calculate

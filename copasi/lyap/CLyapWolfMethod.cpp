@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.5.2.1 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/14 16:52:24 $
+   $Date: 2006/05/20 01:43:40 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -369,6 +369,7 @@ bool CLyapWolfMethod::calculate()
   //********
 
   orthonormalize();
+  *(mVariables.array() + mVariables.size() - 1) = 0; //divergence
   mLsodaStatus = 1; //the state has changed, we need to restart lsoda
 
   unsigned C_INT32 i;
@@ -386,7 +387,7 @@ bool CLyapWolfMethod::calculate()
           mpTask->mLocalExponents[i] = log(mNorms[i]);
           mSumExponents[i] += mpTask->mLocalExponents[i];
           mpTask->mLocalExponents[i] = mpTask->mLocalExponents[i] / stepSize;
-          mpTask->mExponents[i] = mSumExponents[i] / (mTime - startTime);
+          mpTask->mExponents[i] = mSumExponents[i] / (mTime - transientTime);
         }
 
       //process result of divergence integration
@@ -395,7 +396,7 @@ bool CLyapWolfMethod::calculate()
           mSumDivergence += *(mVariables.array() + mVariables.size() - 1);
           mpTask->mIntervalDivergence = *(mVariables.array() + mVariables.size() - 1) / stepSize;
           *(mVariables.array() + mVariables.size() - 1) = 0;
-          mpTask->mAverageDivergence = mSumDivergence / (mTime - startTime);
+          mpTask->mAverageDivergence = mSumDivergence / (mTime - transientTime);
         }
 
       //       std::cout << mTime << " "
