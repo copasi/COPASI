@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQLyapWidget.cpp,v $
-   $Revision: 1.4.2.2 $
+   $Revision: 1.4.2.3 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/17 12:14:34 $
+   $Date: 2006/05/20 15:54:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,7 +104,7 @@ CQLyapWidget::CQLyapWidget(QWidget* parent, const char* name, WFlags fl)
   //QHBox* tmpBox = new QHBox(this);
 
   mCheckBoxStartOutput = new QCheckBox(this);
-  mCheckBoxStartOutput->setText(trUtf8("Start output after t="));
+  mCheckBoxStartOutput->setText(trUtf8("Start averaging after t="));
   tmpLayout->addWidget(mCheckBoxStartOutput);
 
   mLineEditStartOutput = new QLineEdit(this);
@@ -359,6 +359,8 @@ void CQLyapWidget::runLyapTask()
 
   loadLyapTask();
   unsetCursor();
+
+  if (success) pListView->switchToOtherWidget(261, ""); //change to the results window
 }
 
 void CQLyapWidget::ReportDefinitionClicked()
