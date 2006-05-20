@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.127.2.2 $ $Author: shoops $ $Date: 2006/05/18 15:55:30 $  
+# $Revision: 1.127.2.3 $ $Author: ssahle $ $Date: 2006/05/20 01:39:52 $  
 ######################################################################
 
 TEMPLATE = app
@@ -180,7 +180,6 @@ HEADERS += \
            ReactionsWidget.h \
            ReactionsWidget1.h \
            ScanItemWidget.h \
-           ScanScrollView.h \
            ScanWidget.h \
            SensitivitiesWidget.h \
            SliderDialog.h \
@@ -247,7 +246,6 @@ SOURCES += \
            ReactionsWidget.cpp \
            ReactionsWidget1.cpp \
            ScanItemWidget.cpp \
-           ScanScrollView.cpp \
            ScanWidget.cpp \
            SensitivitiesWidget.cpp \
            SliderDialog.cpp \
