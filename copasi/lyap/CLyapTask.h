@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.h,v $
-   $Revision: 1.8.2.1 $
+   $Revision: 1.8.2.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/20 01:42:18 $
+   $Date: 2006/05/20 15:53:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -85,6 +85,11 @@ class CLyapTask : public CCopasiTask
     std::vector<CCopasiObjectReference<C_FLOAT64> *> mvExpRef;
     std::vector<CCopasiObjectReference<C_FLOAT64> *> mvLocExpRef;
 
+    bool mResultAvailable;
+    bool mResultHasDivergence;
+    unsigned C_INT32 mModelVariablesInResult;
+    unsigned C_INT32 mNumExponentsCalculated;
+
   public:
     /**
      * Default constructor
@@ -119,6 +124,8 @@ class CLyapTask : public CCopasiTask
      */
     virtual bool restore();
 
+    //methods needed by the result widget
+
     const CVector<C_FLOAT64> & exponents() const
       {return mExponents;}
 
@@ -130,6 +137,24 @@ class CLyapTask : public CCopasiTask
 
     const C_FLOAT64 & averageDivergence() const
       {return mAverageDivergence;}
+
+    /**
+     *
+     */
+    bool resultAvailable() const;
+
+    /**
+     * was divergence requested for the last calculation?
+     */
+    bool resultHasDivergence() const;
+
+    /**
+     * how many independent variables had the model at the time of the
+     * last calculation?
+     */
+    unsigned C_INT32 modelVariablesInResult() const;
+
+    unsigned C_INT32 numberOfExponentsCalculated() const;
 
     /**
      * Set the method type applied to solve the task

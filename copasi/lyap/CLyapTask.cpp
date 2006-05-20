@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-   $Revision: 1.7.2.2 $
+   $Revision: 1.7.2.3 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/19 12:33:57 $
+   $Date: 2006/05/20 15:53:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,7 +49,10 @@ CLyapTask::CLyapTask(const CCopasiContainer * pParent):
     mSumOfExponents(0.0),
     mSumOfLocalExponents(0.0),
     mIntervalDivergence(0.0),
-    mAverageDivergence(0.0)
+    mAverageDivergence(0.0),
+    mResultAvailable(false),
+    mResultHasDivergence(false),
+    mModelVariablesInResult(0)
 {
   mpProblem = new CLyapProblem(this);
   mpMethod =
@@ -186,6 +189,11 @@ bool CLyapTask::process(const bool & useInitialValues)
 
   calculationsBeforeOutput();
   output(COutputInterface::AFTER);
+
+  mResultAvailable = true;
+  mResultHasDivergence = mpLyapProblem->divergenceRequested();
+  mModelVariablesInResult = mpLyapProblem->getModel()->getState().getNumIndependent();
+  mNumExponentsCalculated = mpLyapProblem->getExponentNumber();
 
   return true;
 }
@@ -325,4 +333,24 @@ void CLyapTask::printResult(std::ostream * ostream) const
             os << "    " << (*itItem)->getObjectDisplayName() << ": "
             << mSolutionVariables[i] << std::endl;
           }*/
+  }
+
+bool CLyapTask::resultAvailable() const
+  {
+    return mResultAvailable;
+  }
+
+bool CLyapTask::resultHasDivergence() const
+  {
+    return mResultHasDivergence;
+  }
+
+unsigned C_INT32 CLyapTask::modelVariablesInResult() const
+  {
+    return mModelVariablesInResult;
+  }
+
+unsigned C_INT32 CLyapTask::numberOfExponentsCalculated() const
+  {
+    return mNumExponentsCalculated;
   }
