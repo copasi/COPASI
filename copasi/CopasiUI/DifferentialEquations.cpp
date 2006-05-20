@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.29.2.2 $
+   $Revision: 1.29.2.3 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/05/19 10:06:51 $
+   $Author: ssahle $
+   $Date: 2006/05/20 22:24:40 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@
 #include <qscrollview.h>
 #include <qmessagebox.h>
 #include <qlayout.h>
+#include <qcursor.h>
 
 #include <sstream>
 
@@ -336,9 +337,14 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
 
   mml << SPC(l) << "</mtable>" << std::endl;
 
+  QWidget* tmp = dynamic_cast<QWidget*>(parent());
+  if (tmp) tmp->setCursor(Qt::WaitCursor);
+
   mMmlWidget->setContent(FROM_UTF8(mml.str()));
   mScrollView->resizeContents(mMmlWidget->sizeHint().width(), mMmlWidget->sizeHint().height());
   //std::cout << mml.str() << std::endl;
+
+  if (tmp) tmp->unsetCursor();
 
   bool hasContents = true;
   if (model->getReactions().size() == 0)
@@ -413,10 +419,10 @@ void DifferentialEquations::saveToFileClicked()
     {
       outfilename =
         CopasiFileDialog::getSaveFileName(this,
-                                           "Save File Dialog",
-                                           QString::null,
-                                           "All Files (*);;",
-                                           "Save Differential Equations to MathML File"
+                                          "Save File Dialog",
+                                          QString::null,
+                                          "All Files (*);;",
+                                          "Save Differential Equations to MathML File"
 );
 
       Answer = checkSelection(outfilename);
