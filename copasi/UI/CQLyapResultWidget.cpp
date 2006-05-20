@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapResultWidget.cpp,v $
-   $Revision: 1.1.2.1 $
+   $Revision: 1.1.2.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/20 01:41:35 $
+   $Date: 2006/05/20 15:55:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,7 +87,9 @@ CQLyapResultWidget::CQLyapResultWidget(QWidget* parent, const char* name, WFlags
 
   // ************* comment ******************
   mLabelComment = new QLabel(this, "mLabelComment");
+  mLabelComment->setAlignment(int(QLabel::WordBreak));
   mLabelComment->setText("");
+
   mWidgetLayout->addWidget(mLabelComment, 8, 1);
 
   spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -104,7 +106,7 @@ CQLyapResultWidget::~CQLyapResultWidget()
   clicked in the tree   */
 bool CQLyapResultWidget::loadFromBackend()
 {
-  bool success = true;
+  //bool success = true;
   //std::ostringstream os;
 
   CLyapTask * pTask = dynamic_cast<CLyapTask*>((*CCopasiDataModel::Global->getTaskList())["Lyapunov Exponents"]);
@@ -113,11 +115,50 @@ bool CQLyapResultWidget::loadFromBackend()
   CLyapProblem * pProblem = dynamic_cast< CLyapProblem * >(pTask->getProblem());
   if (!pProblem) return false;
 
+  if (!pTask->resultAvailable())
+    {
+      mTableExponents->setEnabled(false);
+      mLineEditSum->setEnabled(false);
+      mLineEditDivergence->setEnabled(false);
+      mLabelComment->setText("No result available.");
+      return false;
+    }
+
+  mTableExponents->setEnabled(true);
+  mLineEditSum->setEnabled(true);
+  mLineEditDivergence->setEnabled(true);
+
   unsigned C_INT32 i, imax = pProblem->getExponentNumber();
 
   mTableExponents->setNumRows(imax);
   for (i = 0; i < imax; ++i)
     mTableExponents->setText(i, 0, QString::number(pTask->exponents()[i]));
+
+  mLineEditSum->setText(QString::number(pTask->sumOfExponents()));
+
+  if (pTask->resultHasDivergence())
+    {
+      mLineEditDivergence->setEnabled(true);
+      mLineEditDivergence->setText(QString::number(pTask->averageDivergence()));
+    }
+  else
+    {
+      mLineEditDivergence->setEnabled(false);
+      mLineEditDivergence->setText("");
+    }
+
+  //comment
+  mLabelComment->setText("");
+  if (pTask->resultHasDivergence()
+      && (pTask->modelVariablesInResult() == pTask->numberOfExponentsCalculated()))
+    {
+      if ((pTask->sumOfExponents() < 0.0) && (pTask->averageDivergence() < 0.0))
+        {
+          C_FLOAT64 factor = pTask->averageDivergence() / pTask->sumOfExponents();
+          if (factor > 1.01)
+            mLabelComment->setText("Warning: Divergence differs from sum of exponents. This may indicate that the strongly negative exponents are calculated inaccuratly.");
+        }
+    }
 
   /*
   // We need to use the solution and run Steady-State or Time-Course.
@@ -173,7 +214,7 @@ bool CQLyapResultWidget::loadFromBackend()
 
   catch (...) {}
   */
-  return success;
+  return true;
 }
 
 bool CQLyapResultWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action
