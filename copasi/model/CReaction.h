@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.93 $
+   $Revision: 1.93.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:22 $
+   $Author: ssahle $
+   $Date: 2006/05/20 23:43:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -271,6 +271,8 @@ class CReaction : public CCopasiContainer
     const std::vector< std::vector<std::string> > & getParameterMappings() const
       {return mMetabKeyMap;}
 
+    const std::vector<std::string> & getParameterMapping(const std::string & parameterName) const;
+
     /**
      *  Gets the list of kinetic parameter objects of the reaction/function
      */
@@ -282,6 +284,7 @@ class CReaction : public CCopasiContainer
     CCopasiParameterGroup & getParameters();
 
     bool isLocalParameter(C_INT32 index) const;
+    bool isLocalParameter(const std::string & parameterName) const;
 
     //***********************
 

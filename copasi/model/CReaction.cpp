@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.155 $
+   $Revision: 1.155.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:22 $
+   $Author: ssahle $
+   $Date: 2006/05/20 23:43:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -337,6 +337,17 @@ void CReaction::clearParameterMapping(C_INT32 index)
   //mMap.clearCallParameter(parameterName);
 }
 
+const std::vector<std::string> & CReaction::getParameterMapping(const std::string & parameterName) const
+  {
+    if (!mpFunction) fatalError();
+    CFunctionParameter::DataType type;
+    unsigned C_INT32 index;
+    index = mMap.findParameterByName(parameterName, type);
+    //if (type != CFunctionParameter::FLOAT64) fatalError();
+
+    return mMetabKeyMap[index];
+  }
+
 bool CReaction::isLocalParameter(C_INT32 index) const
   {
     unsigned C_INT32 i, imax = mParameters.size();
@@ -348,6 +359,16 @@ bool CReaction::isLocalParameter(C_INT32 index) const
     return false;
   }
 
+bool CReaction::isLocalParameter(const std::string & parameterName) const
+  {
+    if (!mpFunction) fatalError();
+    CFunctionParameter::DataType type;
+    unsigned C_INT32 index;
+    index = mMap.findParameterByName(parameterName, type);
+    if (type != CFunctionParameter::FLOAT64) fatalError();
+
+    return isLocalParameter(index);
+  }
 //***********************************************************************************************
 
 void CReaction::initializeParameters()
