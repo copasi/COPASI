@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.180 $
+   $Revision: 1.180.2.1 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/14 18:24:12 $
+   $Date: 2006/05/21 20:43:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -435,7 +435,11 @@ void ReactionsWidget1::FillWidgetFromRI()
       table->updateTable(mRi, *CCopasiDataModel::Global->getModel());
     }
   else
-    table->initTable();
+    {
+      ComboBox1->insertItem("undefined");
+      ComboBox1->setCurrentText("undefined");
+      table->initTable();
+    }
 
   //TODO isValid()
   commitChanges->setEnabled(mRi.isValid());

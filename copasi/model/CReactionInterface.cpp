@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.21.2.1 $
+   $Revision: 1.21.2.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/17 12:16:37 $
+   $Date: 2006/05/21 20:45:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -566,7 +566,8 @@ void CReactionInterface::connectNonMetabolites(const CModel & model)
 
 void CReactionInterface::setFunctionWithEmptyMapping(const std::string & fn)
 {
-  if (fn == "") {clearFunction(); return;}
+  if ((fn == "") || (fn == "undefined"))
+  {clearFunction(); return;}
   //get the function
   mpFunction = dynamic_cast<CFunction *>
                (CCopasiDataModel::Global->getFunctionList()->findLoadFunction(fn));
@@ -578,7 +579,8 @@ void CReactionInterface::setFunctionWithEmptyMapping(const std::string & fn)
 
 void CReactionInterface::setFunctionAndDoMapping(const std::string & fn, const CModel & model)
 {
-  if (fn == "") {clearFunction(); return;}
+  if ((fn == "") || (fn == "undefined"))
+  {clearFunction(); return;}
 
   //get the function
   mpFunction = dynamic_cast<CFunction *>
