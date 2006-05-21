@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQLyapResultWidget.cpp,v $
-   $Revision: 1.1.2.2 $
+   $Revision: 1.1.2.3 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/20 15:55:31 $
+   $Date: 2006/05/21 12:09:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,8 +28,6 @@
 #include "model/CModel.h"
 #include "lyap/CLyapTask.h"
 #include "lyap/CLyapProblem.h"
-
-//#include "report/CKeyFactory.h"
 
 /*
  *  Constructs a CQLyapResultWidget which is a child of 'parent', with the
@@ -160,60 +158,6 @@ bool CQLyapResultWidget::loadFromBackend()
         }
     }
 
-  /*
-  // We need to use the solution and run Steady-State or Time-Course.
-  const CVector< C_FLOAT64 > & Solution = pProblem->getSolutionVariables();
-  const std::vector< UpdateMethod * > & SetCalculateVariable =
-    pProblem->getCalculateVariableUpdateMethods();
-
-  const C_FLOAT64 * pIt = Solution.array();
-  const C_FLOAT64 * pEnd = pIt + Solution.size();
-  std::vector< UpdateMethod * >::const_iterator itUpdate = SetCalculateVariable.begin();
-
-  success = (pIt != pEnd);
-
-  for (; pIt != pEnd; ++pIt, ++itUpdate) (**itUpdate)(*pIt);
-
-  if (success)
-    {
-      pProblem->calculate();
-      success = (pProblem->getCalculateValue() != DBL_MAX);
-    }
-
-  if (success)
-    pProblem->printResult(&os);
-  else
-    os << "<h2>No result available, please execute the optimization task.</h2>";
-
-  if (mCentralWidgetSteady == NULL)
-    {
-      mCentralWidgetTime->table()->setTimeSeries(dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"])->getTimeSeries());
-      mCentralWidgetTime->optimizationResultText->setText(FROM_UTF8(os.str()));
-    }
-  else
-    {
-      CSteadyStateTask * pSteadyStateTask =
-        dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
-
-      mCentralWidgetSteady->showUnits();
-      mCentralWidgetSteady->optimizationResultText->setText(FROM_UTF8(os.str()));
-
-      if (!pSteadyStateTask || !success || !pSteadyStateTask->getState())
-        {
-          mCentralWidgetSteady->clear();
-          success = false;
-        }
-      else
-        success = mCentralWidgetSteady->loadAll(pSteadyStateTask);
-    }
-
-  try
-    {
-      if (Solution.size()) pProblem->restore(pTask->isUpdateModel());
-    }
-
-  catch (...) {}
-  */
   return true;
 }
 
@@ -228,16 +172,10 @@ bool CQLyapResultWidget::update(ListViews::ObjectType C_UNUSED(objectType), List
 
 bool CQLyapResultWidget::leave()
 {
-  //return saveToCompartment();
   return true;
 }
 
 bool CQLyapResultWidget::enter(const std::string & C_UNUSED(key))
 {
-  //objKey = key;
   return loadFromBackend();
-  /*CCompartment* comp = dynamic_cast< CCompartment * >(GlobalKeys.get(key));
-
-  if (comp) return loadFromCompartment(comp);
-  else return false;*/
 }
