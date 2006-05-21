@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-   $Revision: 1.5.2.2 $
+   $Revision: 1.5.2.3 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/20 15:53:53 $
+   $Date: 2006/05/21 12:10:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@ CLyapWolfMethod::CLyapWolfMethod(const CCopasiContainer * pParent):
 {
   mDim[1] = (C_INT) (void *) this;
 
-  addParameter("Orthonormalize Intervall",
+  addParameter("Orthonormalization Interval",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
   addParameter("Overall time",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1000.0);
@@ -320,7 +320,7 @@ bool CLyapWolfMethod::calculate()
   //initialize LSODA
   start();
 
-  C_FLOAT64 stepSize = *getValue("Orthonormalize Intervall").pUDOUBLE;
+  C_FLOAT64 stepSize = *getValue("Orthonormalization Interval").pUDOUBLE;
   C_FLOAT64 transientTime = mpProblem->getTransientTime() + mTime;
   C_FLOAT64 endTime = mTime + *getValue("Overall time").pUDOUBLE;
   C_FLOAT64 startTime = mTime;
@@ -489,4 +489,33 @@ void CLyapWolfMethod::add(C_FLOAT64* dbl1, const C_FLOAT64* dbl1End,
   //calculate v1 = v1 + f * v2
   for (; dbl1 != dbl1End; ++dbl1, ++dbl2)
     *dbl1 += f * *dbl2;
+}
+
+//virtual
+bool CLyapWolfMethod::isValidProblem(const CCopasiProblem * pProblem)
+{
+  if (!CLyapMethod::isValidProblem(pProblem)) return false;
+
+  const CLyapProblem * pLP = dynamic_cast<const CLyapProblem *>(pProblem);
+  assert (pLP);
+
+  C_FLOAT64 stepSize = *getValue("Orthonormalization Interval").pUDOUBLE;
+  C_FLOAT64 transientTime = pLP->getTransientTime();
+  C_FLOAT64 endTime = *getValue("Overall time").pUDOUBLE;
+
+  if (transientTime >= endTime)
+    {
+      //
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCLyap + 4);
+      return false;
+    }
+
+  if (stepSize > (endTime - transientTime))
+    {
+      //
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCLyap + 5);
+      return false;
+    }
+
+  return true;
 }

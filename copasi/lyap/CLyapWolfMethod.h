@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.h,v $
-   $Revision: 1.4.2.1 $
+   $Revision: 1.4.2.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/20 01:43:40 $
+   $Date: 2006/05/21 12:10:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -205,6 +205,12 @@ class CLyapWolfMethod : public CLyapMethod
      *  This evaluates the derivatives for the complete model
      */
     void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+
+    /**
+     * Check if the method is suitable for this problem
+     * @return bool suitability of the method
+     */
+    virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
   private:
     void orthonormalize();
