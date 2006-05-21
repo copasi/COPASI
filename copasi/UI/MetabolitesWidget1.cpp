@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.129.2.1 $
+   $Revision: 1.129.2.2 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/19 12:16:12 $
+   $Author: ssahle $
+   $Date: 2006/05/21 21:50:54 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -384,7 +384,8 @@ bool MetabolitesWidget1::saveToMetabolite()
   QString initialConcentration(mEditInitConcentration->text());
   double temp1;
   temp1 = initialConcentration.toDouble();
-  if (fabs(temp1 - mpMetab->getInitialConcentration()) > 1e-40)
+  if ((fabs(temp1 - mpMetab->getInitialConcentration()) > 1e-40)
+      || isnan(mpMetab->getInitialConcentration()))
     {
       mpMetab->setInitialConcentration(temp1);
       //mpMetab->setConcentration(temp1);
