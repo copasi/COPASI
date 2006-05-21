@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.18.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Author: ssahle $
+   $Date: 2006/05/21 21:59:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,7 @@
 
 //static
 const std::string CModelEntity::StatusName[] =
-  {"fixed", "independent variable modified by reactions", "determined by moieties", "unused", "ode", "assignment", ""};
+  {"fixed", "independent variable modified by reactions", "determined by mass conservation", "unused", "ode", "assignment", ""};
 
 //static
 const char * CModelEntity::XMLStatus[] =
