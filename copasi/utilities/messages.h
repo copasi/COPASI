@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.69 $
+   $Revision: 1.69.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/10 16:24:14 $
+   $Author: ssahle $
+   $Date: 2006/05/21 11:19:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -200,6 +200,11 @@ const MESSAGES Messages[] =
 
     // CCopasiObject
     {MCObject + 1, "CObject (1): Circular dependencies detected for object '%s'."},
+
+    // Lyapunov exponents
+    {MCLyap + 1, "CLyapMethod (1): Problem is not a lyapunov exponent problem."},
+    {MCLyap + 2, "CLyapMethod (2): Number of exponents needs to be at least one."},
+    {MCLyap + 3, "CLyapMethod (3): Only %d exponents can be calculated for this model because the model has only %d independent variables."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
