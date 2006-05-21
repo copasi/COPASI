@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.18.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Author: ssahle $
+   $Date: 2006/05/21 21:09:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,16 +82,16 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
       subType = DOUBLE;
       if (node.getReal() == (2*DBL_MAX))
         {
-          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, data);
+          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY");
         }
       else if (node.getReal() == (-2*DBL_MAX))
         {
           pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
-          pNode->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, ""));
+          pNode->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY"));
         }
       else if (isnan(node.getReal()))
         {
-          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, data);
+          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
         }
       else
         {
