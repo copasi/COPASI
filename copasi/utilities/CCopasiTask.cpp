@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.50.2.1 $
+   $Revision: 1.50.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/16 16:30:32 $
+   $Date: 2006/05/22 13:28:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,8 +41,10 @@ const std::string CCopasiTask::TypeName[] =
     "Parameter Estimation",
     "Metabolic Control Analysis",
     "Lyapunov Exponents",
+#ifdef COPASI_DEBUG
     "Time Scale Separation",
     "Sensitivities",
+#endif // COPASI_DEBUG
     ""
   };
 
@@ -56,8 +58,10 @@ const char* CCopasiTask::XMLType[] =
     "parameterFitting",
     "metabolicControlAnalysis",
     "lyapunovExponents",
+#ifdef COPASI_DEBUG
     "timeScaleSeparation",
     "sensitivities",
+#endif // COPASI_DEBUG
     NULL
   };
 

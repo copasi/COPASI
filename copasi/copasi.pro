@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.17.2.2 $ $Author: shoops $ $Date: 2006/05/18 15:43:50 $  
+# $Revision: 1.17.2.3 $ $Author: shoops $ $Date: 2006/05/22 13:28:33 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -22,7 +22,9 @@ SUBDIRS += randomGenerator
 SUBDIRS += report
 SUBDIRS += sbml
 SUBDIRS += scan
-SUBDIRS += sensitivities
+debug {
+  SUBDIRS += sensitivities
+}
 SUBDIRS += steadystate
 SUBDIRS += trajectory
 SUBDIRS += tss

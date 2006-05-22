@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.127.2.3 $ $Author: ssahle $ $Date: 2006/05/20 01:39:52 $  
+# $Revision: 1.127.2.4 $ $Author: shoops $ $Date: 2006/05/22 13:28:33 $  
 ######################################################################
 
 TEMPLATE = app
@@ -11,29 +11,30 @@ include(../common.pri)
 DEPENDPATH += .. 
 INCLUDEPATH += ..
 
-COPASI_LIBS = \
-         copasiDM \
-         copasiXML \
-         commandline \
-         elementaryFluxModes \
-         fitting \
-         function \
-         lyap \
-         mml \
-         model \
-         optimization \
-         plot \
-         randomGenerator \
-         report \
-         sbmlimport \
-         scan \
-         sensitivities \
-         steadystate \
-         trajectory \
-         tss \
-         utilities \
-         odepack++ \
-         wizard
+COPASI_LIBS += copasiDM
+COPASI_LIBS += copasiXML
+COPASI_LIBS += commandline
+COPASI_LIBS += elementaryFluxModes
+COPASI_LIBS += fitting
+COPASI_LIBS += function
+COPASI_LIBS += lyap
+COPASI_LIBS += mml
+COPASI_LIBS += model
+COPASI_LIBS += optimization
+COPASI_LIBS += plot
+COPASI_LIBS += randomGenerator
+COPASI_LIBS += report
+COPASI_LIBS += sbmlimport
+COPASI_LIBS += scan
+debug { 
+  COPASI_LIBS += sensitivities
+}
+COPASI_LIBS += steadystate
+COPASI_LIBS += trajectory
+COPASI_LIBS += tss
+COPASI_LIBS += utilities
+COPASI_LIBS += odepack++
+COPASI_LIBS += wizard
 
 contains(BUILD_OS, WIN32) {
   RC_FILE = CopasiUI.rc
@@ -385,7 +386,17 @@ release {
   distribution.file = CopasiUI
 
   INSTALLS += distribution
+
+release {
+  HEADERS -= \
+           SensitivitiesWidget.h \
+           TSSWidget.h
+
+  SOURCES -= \
+           SensitivitiesWidget.cpp \
+           TSSWidget.cpp
 }
+
 
 DISTFILES += CopasiUI.dsp \
              CopasiUI.rc \

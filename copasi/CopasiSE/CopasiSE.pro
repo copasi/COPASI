@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.29.2.1 $ $Author: shoops $ $Date: 2006/05/18 15:43:51 $  
+# $Revision: 1.29.2.2 $ $Author: shoops $ $Date: 2006/05/22 13:28:33 $  
 ######################################################################
 
 TEMPLATE = app
@@ -13,27 +13,28 @@ include(../common.pri)
 DEPENDPATH += .. 
 INCLUDEPATH += ..
 
-COPASI_LIBS = \
-         copasiDM \
-         copasiXML \
-         commandline \
-         elementaryFluxModes \
-         fitting \
-         function \
-         lyap \
-         model \
-         optimization \
-         plot \
-         randomGenerator \
-         report \
-         sbmlimport \
-         scan \
-         sensitivities \
-         steadystate \
-         trajectory \
-         tss \
-         odepack++ \
-         utilities                   
+COPASI_LIBS += copasiDM
+COPASI_LIBS += copasiXML
+COPASI_LIBS += commandline
+COPASI_LIBS += elementaryFluxModes
+COPASI_LIBS += fitting
+COPASI_LIBS += function
+COPASI_LIBS += lyap
+COPASI_LIBS += model
+COPASI_LIBS += optimization
+COPASI_LIBS += plot
+COPASI_LIBS += randomGenerator
+COPASI_LIBS += report
+COPASI_LIBS += sbmlimport
+COPASI_LIBS += scan
+debug {
+  COPASI_LIBS += sensitivities
+}
+COPASI_LIBS += steadystate
+COPASI_LIBS += trajectory
+COPASI_LIBS += tss
+COPASI_LIBS += odepack++
+COPASI_LIBS += utilities                   
 
 contains(BUILD_OS, WIN32) {
   CONFIG += console

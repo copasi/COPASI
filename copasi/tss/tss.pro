@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.4.10.1 $ $Author: shoops $ $Date: 2006/05/18 15:43:58 $  
+# $Revision: 1.4.10.2 $ $Author: shoops $ $Date: 2006/05/22 13:28:34 $  
 ######################################################################
 
 LIB = tss
@@ -8,14 +8,18 @@ include(../lib.pri)
 include(../common.pri)
 
 # Input
-HEADERS += CTSSMethod.h \
-           CTSSProblem.h \
-           CTSSTask.h \
-	   MMASCIIExporter.h
+debug {
+  HEADERS += CTSSMethod.h
+  HEADERS += CTSSProblem.h
+  HEADERS += CTSSTask.h
+}
+HEADERS += MMASCIIExporter.h
 
-SOURCES += CTSSMethod.cpp \
-           CTSSProblem.cpp \
-           CTSSTask.cpp \
-	   MMASCIIExporter.cpp
+debug {
+  SOURCES += CTSSMethod.cpp
+  SOURCES += CTSSProblem.cpp
+  SOURCES += CTSSTask.cpp
+}
+SOURCES += MMASCIIExporter.cpp
 
 DISTFILES += tss.dsp
