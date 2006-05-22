@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/AboutDialog.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.8.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:40 $
+   $Date: 2006/05/22 15:03:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,7 @@ const char* AboutDialog::text =
   "COPASI is a simulator for biochemical networks. It is a joint project\n"
   "by the Mendes and Kummer groups at VBI and EML Research, respectively.\n"
   "\n"
-  "This version of COPASI is the release candidate 1. Please check for\n"
+  "This is COPASI version 4.0 (Build 18). Please check for\n"
   "new release at http://www.copasi.org where new releases will be made\n"
   "available for download.\n"
   "\n"
@@ -40,11 +40,10 @@ const char* AboutDialog::text =
   "\n"
   "The following software and algorithms are being used by Copasi:\n"
   "  - Qt3 GUI framework\n"
-  "  - QWT 4.2.0 plotting framework\n"
+  "  - QWT 5.0 Beta (Snapshot 2006-01-25)\n"
   "  - Expat 1.95.7 XML parser\n"
   "  - libsbml 2.3.2\n"
-  "  - CLAPACK 3.0 or LAPACK 3.0\n"
-  "  - Intel Math Kernel Library\n"
+  "  - CLAPACK 3.0, LAPACK 3.0, or Intel Math Kernel Library\n"
   "  - LSODA from ODEPACK\n"
   "  - Mersenne Twister random number generator,\n"
   "    Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura\n"

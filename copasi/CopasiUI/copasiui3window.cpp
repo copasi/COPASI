@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.171.2.1 $
+   $Revision: 1.171.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/15 16:39:37 $
+   $Date: 2006/05/22 15:03:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,9 +87,8 @@ CopasiUI3Window::CopasiUI3Window():
 
   // Set the window caption/title
   newFlag = 0;
-  FixedTitle = "COPASI (";
+  FixedTitle = "COPASI ";
   FixedTitle += FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion());
-  FixedTitle += ") ";
   updateTitle();
   createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
@@ -567,6 +566,38 @@ void CopasiUI3Window::CleanUp()
  ** Descripton:- This method is called when the users clicks on the print as
  **              option in the menu File and is used to send the document ro
  **              printing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1139,7 +1170,11 @@ void CopasiUI3Window::updateTitle()
       FileName = mask.cap(1) + "..." + mask.cap(3);
     }
 
-  setCaption(FixedTitle + FileName);
+  std::string BaseName;
+  if (!FileName.isEmpty())
+    BaseName = CDirEntry::baseName((const char *) FileName.utf8()) + " - ";
+
+  setCaption(FROM_UTF8(BaseName) + FixedTitle + " " + FileName);
 }
 
 void CopasiUI3Window::autoSave()
