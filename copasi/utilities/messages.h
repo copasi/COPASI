@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.69.2.2 $
+   $Revision: 1.69.2.3 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/21 12:11:11 $
+   $Author: gauges $
+   $Date: 2006/05/22 19:45:07 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -191,12 +191,12 @@ const MESSAGES Messages[] =
      "dsytrf returned with error '%d'."},
     {MCFitting + 2, "CFitting (2): Failed to invert Fisher information matrix. "
      "dsytrf returned with error '%d'."},
-    {MCFitting + 3, "CFitting (3); No column with type 'Time' specified for a time course experiment."},
-    {MCFitting + 4, "CFitting (4); Insufficient experimental data (columns requested '%d', columns found '%d')."},
-    {MCFitting + 5, "CFitting (5); Incomplete data mapping, column '%d' must be mapped."},
-    {MCFitting + 6, "CFitting (6); Object '%s' in column '%d' has no numeric value."},
-    {MCFitting + 7, "CFitting (7); Insufficient experimental data (rows requested '%d', rows found '%d')."},
-    {MCFitting + 8, "CFitting (8); Failure reading file '%s'."},
+    {MCFitting + 3, "CFitting (3): No column with type 'Time' specified for a time course experiment."},
+    {MCFitting + 4, "CFitting (4): Insufficient experimental data (columns requested '%d', columns found '%d')."},
+    {MCFitting + 5, "CFitting (5): Incomplete data mapping, column '%d' must be mapped."},
+    {MCFitting + 6, "CFitting (6): Object '%s' in column '%d' has no numeric value."},
+    {MCFitting + 7, "CFitting (7): Insufficient experimental data (rows requested '%d', rows found '%d')."},
+    {MCFitting + 8, "CFitting (8): Failure reading file '%s'."},
 
     // CCopasiObject
     {MCObject + 1, "CObject (1): Circular dependencies detected for object '%s'."},
