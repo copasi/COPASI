@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-   $Revision: 1.5.2.3 $
+   $Revision: 1.5.2.4 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/21 12:10:45 $
+   $Date: 2006/05/22 20:39:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,6 +71,7 @@ void CLyapWolfMethod::step(const double & deltaT)
 
   C_FLOAT64 EndTime = mTime + deltaT;
   C_INT one = 1;
+  C_INT two = 2;
   C_INT DSize = mDWork.size();
   C_INT ISize = mIWork.size();
 
@@ -79,9 +80,9 @@ void CLyapWolfMethod::step(const double & deltaT)
          mVariables.array(), //  3. the array of current concentrations
          &mTime ,          //  4. the current time
          &EndTime ,        //  5. the final time
-         &one ,            //  6. scalar error control
+         &two ,            //  6. vector absolute error, scalar relative error
          &mRtol ,          //  7. relative tolerance array
-         &mAtol ,          //  8. absolute tolerance array
+         mAtol.array() ,          //  8. absolute tolerance array
          &mState ,         //  9. output by overshoot & interpolatation
          &mLsodaStatus ,   // 10. the state control variable
          &one ,            // 11. futher options (one)
@@ -177,14 +178,22 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
 
   /* Configure lsoda */
   mRtol = * getValue("Relative Tolerance").pUDOUBLE;
+
   mDefaultAtol = * getValue("Use Default Absolute Tolerance").pBOOL;
+  C_FLOAT64 tmpATol;
   if (mDefaultAtol)
     {
-      mAtol = getDefaultAtol(mpProblem->getModel());
-      setValue("Absolute Tolerance", mAtol);
+      tmpATol = getDefaultAtol(mpProblem->getModel());
+      setValue("Absolute Tolerance", tmpATol);
     }
   else
-    mAtol = * getValue("Absolute Tolerance").pUDOUBLE;
+    tmpATol = * getValue("Absolute Tolerance").pUDOUBLE;
+
+  mAtol.resize(mDim[0]);
+  for (i = 0; i < mSystemSize; ++i)
+    mAtol[i] = tmpATol;
+  for (; i < mDim[0]; ++i)
+    mAtol[i] = 1e-25;
 
   mDWork.resize(22 + mDim[0] * std::max<C_INT>(16, mDim[0] + 9));
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;

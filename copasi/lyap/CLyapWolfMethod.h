@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.h,v $
-   $Revision: 1.4.2.2 $
+   $Revision: 1.4.2.3 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/21 12:10:45 $
+   $Date: 2006/05/22 20:39:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,7 +117,8 @@ class CLyapWolfMethod : public CLyapMethod
     /**
      *  Absolute tolerance.
      */
-    C_FLOAT64 mAtol;
+    //C_FLOAT64 mAtol;
+    CVector<C_FLOAT64> mAtol;
 
     /**
      *  Maximum order for BDF method.
