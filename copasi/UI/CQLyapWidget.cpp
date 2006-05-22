@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.cpp,v $
-   $Revision: 1.4.2.3 $
+   $Revision: 1.4.2.4 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/20 15:54:55 $
+   $Date: 2006/05/22 20:38:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -309,16 +309,6 @@ void CQLyapWidget::runLyapTask()
   CLyapProblem* trajectoryproblem =
     dynamic_cast<CLyapProblem *>(tt->getProblem());
   assert(trajectoryproblem);
-
-  if ((!tt->getReport().getStream())
-      && (CCopasiDataModel::Global->getPlotDefinitionList()->size() == 0)
-      /*&& (!trajectoryproblem->timeSeriesRequested())*/)
-    {
-      QMessageBox::information (NULL, "No output specified",
-                                "No output would be generated from this simulation. \nSpecify a report, a plot, or activate the \"Store time series in memory\" checkbox.");
-      //                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
-      return;
-    }
 
   CLyapMethod* trajectorymethod =
     dynamic_cast<CLyapMethod *>(tt->getMethod());
