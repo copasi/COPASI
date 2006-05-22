@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.cpp,v $
-   $Revision: 1.3.2.1 $
+   $Revision: 1.3.2.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/22 14:52:14 $
+   $Date: 2006/05/22 22:36:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -204,7 +204,7 @@ CFindDimensions::CFindDimensions(const CFunction* function)
     : mpFunction(function),
     mRootDimension(),
     mUseHeuristics(false),
-    mM1(0.0), mM2(0.0)
+    mM1(-1.0), mM2(-1.0)
 {
   setupDimensions();
 }
@@ -305,6 +305,12 @@ void CFindDimensions::findDimensions()
   for (i = 0; i < imax; ++i)
     if (mDimensions[i].isUnknown())
       findDimension(i);
+  for (i = 0; i < imax; ++i)
+    if (mDimensions[i].isUnknown())
+      findDimension(i);
+  for (i = 0; i < imax; ++i)
+    if (mDimensions[i].isUnknown())
+      findDimension(i);
 
   //TODO: conistency check for known dimensions?
 }
@@ -328,6 +334,8 @@ void CFindDimensions::setMolecularitiesForMassAction(const C_FLOAT64 & m1, const
 
 void CFindDimensions::findDimensionsMassAction()
 {
+  if (mM1 < 0) return;
+
   //std::cout << "findDimensionsMassAction" << std::endl;
   CDimension conc; conc.setDimension(1.0, -1.0, 0.0);
 
