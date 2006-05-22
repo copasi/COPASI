@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.40.2.1 $
+   $Revision: 1.40.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/22 13:59:20 $
+   $Date: 2006/05/22 17:26:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,8 +29,6 @@
 #include "CopasiUI/qtUtilities.h"
 
 #define ActivitySize 8
-
-C_FLOAT64 DummyValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
 //********************  data  *********************************************
 MyQwtCPointerData::MyQwtCPointerData(const double *x, const double *y, size_t size):
@@ -130,6 +128,8 @@ void MyQwtPlotCurve::drawCurve(QPainter *painter, int style,
   }
 
 //************************************
+C_FLOAT64 CopasiPlot::MissingValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
 CopasiPlot::CopasiPlot(QWidget* parent):
     QwtPlot(parent),
     mpPlotSpecification(NULL),
@@ -318,14 +318,14 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
               mData[ItemActivity].push_back(new QMemArray<double>(500));
 
               // Store the pointer to the current object value.
-              if (pObj)
+              if (pObj && (pObj->isValueInt() || pObj->isValueDbl()))
                 {
                   mObjectValues[ItemActivity].push_back((C_FLOAT64 *) pObj->getValuePointer());
                   mObjectInteger[ItemActivity].push_back(pObj->isValueInt());
                 }
               else
                 {
-                  mObjectValues[ItemActivity].push_back(&DummyValue);
+                  mObjectValues[ItemActivity].push_back(&MissingValue);
                   mObjectInteger[ItemActivity].push_back(false);
                 }
 
@@ -436,7 +436,7 @@ void CopasiPlot::separate(const Activity & activity)
 
             //the data that needs to be stored internally:
             for (i = 0; i < imax; ++i)
-              data[i]->at(ndata) = DummyValue;
+              data[i]->at(ndata) = MissingValue;
 
             ++ndata;
           }
@@ -446,7 +446,7 @@ void CopasiPlot::separate(const Activity & activity)
   for (i = 0, imax = mCurves.size(); i < imax; ++i)
     if (mCurveTypes[i] == CPlotItem::histoItem1d &&
         mCurveActivities[i] & activity)
-      mHistograms[mHistoIndices[i]].addValue(DummyValue);
+      mHistograms[mHistoIndices[i]].addValue(MissingValue);
 
   updatePlot();
 
@@ -615,7 +615,7 @@ bool CopasiPlot::saveData(const std::string & filename)
           for (itData = Data.begin(); itData != endData; ++itData)
             {
               if (*itData) fs << (*itData)->at(i);
-              else fs << DummyValue;
+              else fs << MissingValue;
               fs << "\t";
             }
           fs << std::endl;
@@ -663,7 +663,7 @@ bool CopasiPlot::saveData(const std::string & filename)
           for (itData = Data.begin(), itOffset = Offset.begin(); itData != endData; ++itData)
             {
               if (*itData) fs << (*itData)->at(i + *itOffset);
-              else fs << DummyValue;
+              else fs << MissingValue;
               fs << "\t";
             }
           fs << std::endl;
@@ -711,7 +711,7 @@ bool CopasiPlot::saveData(const std::string & filename)
           for (itData = Data.begin(), itOffset = Offset.begin(); itData != endData; ++itData)
             {
               if (*itData) fs << (*itData)->at(i + *itOffset);
-              else fs << DummyValue;
+              else fs << MissingValue;
               fs << "\t";
             }
           fs << std::endl;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.h,v $
-   $Revision: 1.23.2.1 $
+   $Revision: 1.23.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/22 13:59:20 $
+   $Date: 2006/05/22 17:26:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -160,6 +160,11 @@ class CopasiPlot : public QwtPlot, public COutputInterface
     void showCurve(QwtPlotItem *item, bool on);
 
   private:
+    /**
+     * The value for missing objects
+     */
+    static C_FLOAT64 MissingValue;
+
     /**
      * Vector that contains pointers to vectors of data in the selected columns.
      */
