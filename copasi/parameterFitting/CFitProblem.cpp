@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.33.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/08 15:58:29 $
+   $Date: 2006/05/22 15:25:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -485,6 +485,8 @@ bool CFitProblem::calculate()
       mCalculateValue = DBL_MAX;
       if (pExp) pExp->restoreModelIndependentData();
     }
+
+  if (isnan(mCalculateValue)) mCalculateValue = DBL_MAX;
 
   if (mpCallBack) return mpCallBack->progress(mhCounter);
 
