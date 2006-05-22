@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.20.2.1 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/14 13:28:28 $
+   $Date: 2006/05/22 14:55:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,6 +171,8 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   //first get the units strings
   CFindDimensions units(ri.getFunction());
   units.setUseHeuristics(true);
+  units.setMolecularitiesForMassAction(ri.getChemEqInterface().getMolecularity(CFunctionParameter::SUBSTRATE),
+                                       ri.getChemEqInterface().getMolecularity(CFunctionParameter::PRODUCT));
   units.findDimensions(ri.isMulticompartment(model));
 
   C_INT32 i, imax = ri.size();
