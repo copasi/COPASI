@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.64.2.2 $
+   $Revision: 1.64.2.3 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/21 20:41:24 $
+   $Author: shoops $
+   $Date: 2006/05/22 15:31:11 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -132,6 +132,8 @@ CCopasiDataModel::~CCopasiDataModel()
 
 bool CCopasiDataModel::loadModel(const std::string & fileName)
 {
+  CCopasiMessage::clearDeque();
+
   std::string PWD;
   COptions::getValue("PWD", PWD);
 
@@ -253,6 +255,8 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
 bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFile,
                                  const bool & autoSave)
 {
+  CCopasiMessage::clearDeque();
+
   std::string FileName = (fileName != "") ? fileName : mSaveFileName;
 
   std::string PWD;
@@ -339,6 +343,8 @@ bool CCopasiDataModel::autoSave()
 
 bool CCopasiDataModel::newModel(CModel * pModel)
 {
+  CCopasiMessage::clearDeque();
+
   pdelete(mpModel);
 
   if (pModel)
@@ -380,6 +386,8 @@ bool CCopasiDataModel::newModel(CModel * pModel)
 
 bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* pImportHandler)
 {
+  CCopasiMessage::clearDeque();
+
   std::string PWD;
   COptions::getValue("PWD", PWD);
 
@@ -434,6 +442,8 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
 
 bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFile, CProcessReport* pExportHandler)
 {
+  CCopasiMessage::clearDeque();
+
   if (fileName == "") return false;
 
   std::string PWD;
@@ -479,6 +489,8 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
 
 bool CCopasiDataModel::exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile)
 {
+  CCopasiMessage::clearDeque();
+
   if (fileName == "") return false;
 
   if (CDirEntry::exist(fileName))
