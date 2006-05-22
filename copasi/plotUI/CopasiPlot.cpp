@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.40.2.1 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/12 13:16:49 $
+   $Author: shoops $
+   $Date: 2006/05/22 13:59:20 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -166,6 +166,7 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
   // Size the vectors to be able to store information for all activities.
   mData.resize(ActivitySize);
   mObjectValues.resize(ActivitySize);
+  mObjectInteger.resize(ActivitySize);
   mDataSize.resize(ActivitySize);
   mDataIndex.clear();
 
@@ -318,9 +319,15 @@ bool CopasiPlot::compile(std::vector< CCopasiContainer * > listOfContainer)
 
               // Store the pointer to the current object value.
               if (pObj)
-                mObjectValues[ItemActivity].push_back((C_FLOAT64 *) pObj->getValuePointer());
+                {
+                  mObjectValues[ItemActivity].push_back((C_FLOAT64 *) pObj->getValuePointer());
+                  mObjectInteger[ItemActivity].push_back(pObj->isValueInt());
+                }
               else
-                mObjectValues[ItemActivity].push_back(&DummyValue);
+                {
+                  mObjectValues[ItemActivity].push_back(&DummyValue);
+                  mObjectInteger[ItemActivity].push_back(false);
+                }
 
               // Store [curve][channel] to data index
               mDataIndex[i][j] = DataIndex;
@@ -375,7 +382,10 @@ void CopasiPlot::output(const Activity & activity)
 
             //the data that needs to be stored internally:
             for (i = 0; i < imax; ++i)
-              data[i]->at(ndata) = *mObjectValues[ItemActivity][i];
+              if (mObjectInteger[ItemActivity][i])
+                data[i]->at(ndata) = *(C_INT32 *)mObjectValues[ItemActivity][i];
+              else
+                data[i]->at(ndata) = *mObjectValues[ItemActivity][i];
 
             ++ndata;
           }
@@ -387,7 +397,10 @@ void CopasiPlot::output(const Activity & activity)
         mCurveActivities[i] & activity)
       {
         std::pair< Activity, unsigned C_INT32 > * pDataIndex = &mDataIndex[i][0];
-        mHistograms[mHistoIndices[i]].addValue(*mObjectValues[pDataIndex->first][pDataIndex->second]);
+        if (mObjectInteger[pDataIndex->first][pDataIndex->second])
+          mHistograms[mHistoIndices[i]].addValue(*(C_INT32 *)mObjectValues[pDataIndex->first][pDataIndex->second]);
+        else
+          mHistograms[mHistoIndices[i]].addValue(*mObjectValues[pDataIndex->first][pDataIndex->second]);
       }
 
   updatePlot();
@@ -761,6 +774,7 @@ void CopasiPlot::clearBuffers()
       data.clear();
 
       mObjectValues[Activity].clear();
+      mObjectInteger[Activity].clear();
       mDataSize[Activity] = 0;
     }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.23.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:41 $
+   $Date: 2006/05/22 13:59:20 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -169,6 +169,11 @@ class CopasiPlot : public QwtPlot, public COutputInterface
      * Vector of pointers to the current object values
      */
     std::vector< std::vector< const C_FLOAT64 * > > mObjectValues;
+
+    /**
+     * Vector of bool indicating whether the current object value is integer
+     */
+    std::vector< std::vector< bool > > mObjectInteger;
 
     /**
      * Vector of actual data lines in the local buffers
