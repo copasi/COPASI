@@ -1,5 +1,5 @@
-<chapter id="graphicalUserInterface" xreflabel="graphical user interface">
-<title>Graphical User Interface</title>
+<chapter id="modelCreation" xreflabel="Model Creation">
+<title>Model Creation</title>
 <sect1 id="introduction" xreflabel="introduction"><title>Introduction</title>
     <para>The Copasi graphical user interface has been written using the <ulink url="http://www.trolltech.com">Qt toolkit</ulink>. This allows us to release Copasi on all platforms that Qt supports.</para>
 <!-- Unneccesary screenshot.
@@ -24,7 +24,7 @@
 </para>
 -->
 <para>
-It also has the advantage that Copasi essentially behaves the same on all platforms supported, while still showing platform specific behavior. E.g. on a Mac OS X computer, the user will have the menu at the top of the screen and the menu entry for the about dialog will appear in the Copasi menu rather then the help menu.</para>
+It also has the advantage that Copasi essentially behaves the same on all platforms supported, while still showing platform specific behavior. E.g. on a computer running Mac OS X<!--&trade;-->, the user will have the menu at the top of the screen and the menu entry for the about dialog will appear in the Copasi menu rather then the help menu.</para>
 <para>In the following sections, we will explain how to use the graphical user interface of Copasi. Everything should be applicable to all supported platforms. If there is a difference for some platforms we will try to point that out explicitly.    
 </para>
 </sect1>
@@ -416,247 +416,7 @@ When typing reaction equations you should keep in mind that metabolite names in 
     In order to change some value, you double click on which lets you input a new value. On hitting the return key or clicking somewhere else, the new value is not written to the object directly, but a '*' character appears in front of the name of the changed parameter. If you now leave this widget or press the commit button at the bottom of the dialog, the new value is written to the corresponding object in the model.
 </para>
 </sect1>
-<sect1 id="outputDefinitions" xreflabel="Defining Output">
-<title>Defining Output</title>
-<para>After you have <link linkend="addingReactions">defined all reactions</link> that make up your model, you could go ahead and do some calculations with your model. For some of the task this is fine since they show you the results in a separate results dialog and it might not be necessary to store those results into a file. For other tasks, like e.g. a time course, it is very likely that you want to store the resulting trajectory in a file or plot the result for visual inspection. So if you want Copasi to store the results or do a plot of them, you have to define either a report and associate it with a file or define a plot. (In the <xref linkend="calculatingTrajectory" /> section we will also offer an alternative, albeit less flexible, way for storing the results of a time course simulation.)
-</para>
-<para>
-Copasi already has a list of predefined output definitions. These should already cover most of the day to day output needs. But in case those predefined output definitions do not include the output you would like, there is always the possibility do define your output manually as described in the <xref linkend="manualOutputDefinitions" /> section. But first we will discuss how you can generate output from a task with one of the predefined output targets.
-</para>
-<sect2 id="outputAssistant" xreflabel="Output Assistant">
-<title>Using the Output Assistant</title>
-<para>
-Almost all task dialogs in Copasi have a button at the lower right that is labeled <guibutton>Output Assistant</guibutton>. If you click on this button, a new dialog will open that presents you with a list of predefined output definitions on the left. If you select one of the output definitions from the list, you will get a short description of what the output does on the right side of the dialog. Above the description is the title of the output definition. This title can be changed in order to be able to identify the different output definitions in case you are plannning on creating more then one output definition of a certain type.
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/OutputAssistant_01.png" format="PNG" scale="30" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/OutputAssistant_01.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>Output Assistant Window</phrase>
- </textobject>
- <caption>
-  <para>output assistant selection dialog</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-Creating an instance of the selected output objects is as easy a clicking on the <guibutton>Create!</guibutton> at the bottom of the dialog. Once you clicked the this button, a new report or plot, depending on what you selected in the dialog, will appear in the corresponding branch of the <guilabel>Output</guilabel> section of the model tree. The Output branch is the second to last branch in the tree on the left. The name of the output definitions will be the title of the object which you selected from the list. If another output definition in this section already has the same name, a postfix will be appended to the name. The so created output can now be edited or deleted. How output definitions are created, edit and delted manually is the topic of the next section.
-</para>
-</sect2>
-<sect2 id="manualOutputDefinitions" xreflabel="Defining Output Manually">
-<title>Defining Output Manually</title>
-<sect3 id="reportDefinitions" xreflabel="Defining Reports">
-<title>Defining Reports</title>
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Reports_01.png" format="PNG" scale="60" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Reports_01.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>report table with default reports</phrase>
- </textobject>
- <caption>
-  <para>Report Table with default Reports</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
-The dialog for defining report definitions is located under the <guibutton>Output-&gt;Reports</guibutton> branch in the object tree. Double clicking on an empty row in the table creates a new report object and opens the dialog for modifying the report definition. In this dialog, you can specify a name for the report in the <guilabel>Name</guilabel> field. From the <guilabel>Task</guilabel> dropdown list, you can choose for which kind of task this report should be written, so if you want to store the result of a time course, you choose <emphasis>Time-Course</emphasis> here. The report usually stores the results of its task as a table; the standard separator character for elements in this table is the tab character (\t). If you want to have another character as the separator field, you have to uncheck the <guilabel>&lt;tab&gt;</guilabel> checkbox and specify the separator character or string you want in the <guilabel>Separator</guilabel> field.
-<para>Beside the <guilabel>&lt;tab&gt;</guilabel> checkbox there is another input field labeled <guilabel>Precision</guilabel> with this field you can specify how many significant digits are used for numerical output. The default value is 6.
-</para>
-<para>
-If you want to, you can also add a comment for the report, e.g. you could state what this report is supposed to represent.  
-</para>
-Next you have to define the objects that you want to appear in the report. There are two modes to define a report definition. Per default, the report is laid out as a table. E.g. the report for a time course simulation will write one line per timestep and each line will typically contain the time followed by one or more metabolite concentrations. In the advanced mode, which you enter by clicking on the button labeled <guibutton>Advanced</guibutton>, the report is split up into three sections, a header, a body and a footer. You can define the output for each of the sections separately by clicking on the corresponding tab. In order to get back to the standard table layout, you have to click on the <guibutton>Advanced</guibutton> again. Copasi will warn you that you might loose some information by converting from the advanced report definition format to the table format.
-</para>
-<para>
-Let's discuss how to define a report definition with table layout first since you will probably use this most of the time.
-To add a new object to the report definition, you have to click on the button labeled <guibutton>item</guibutton>. This will open the object browser dialog.</para>  
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi Build 18 on WIN32 on 05/18/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Reports_02.png" format="PNG" scale="60" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Report_SimpleSelectionDialog.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>simple selection dialog</phrase>
- </textobject>
- <caption>
-  <para>simple selection dialog</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
-The selection dialog shows a tree that contains what we think are the objects that would be most commonly used in generating report, plots, sliders etc. You select objects by clicking on the corresponding leave in the selection dialogs tree view. For plots and report, the simple selection dialog will allow you to select several objects at once. To select a continuous range of objects, you select the first object of the range, then you press and hold the SHIFT button and select the last object in the range. You can also make non-continous selection by hloding down the CTRL key while clicking on the object to select/deselect. Also selecting a whole branch in the selection dialog will select all the leaves under that branch.
-</para>
-<!-- multi selection on the Mac !!! -->
-<para>
-If this simple selection dialog does not contain the object that you want to include in your report, you can activate an extended selection tree by activating the <guibutton>expert mode</guibutton> checkbox. The tree you now see contains all objects Copasi knows about. In this tree, the objects that belong to your model are located in the branch that corresponds to the name of your model. The position of that branch varies since the branches are sorted alphabetically. The selection you might already might have made in the simple selection tree should be preserved and vice versa, any selection you make in the full tree is preserved when you switch back to the simple tree. Each branch of the full tree has a checkbox up front which can assume three states. The unchecked state means that no object in this subtree are selected. A checkmark on a black background means that the whole subtree is selected, i.e. all objects in this subtree are selected. A checkmark on a gray background means that part of the subtree is selected.</para>
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi Build 18 on WIN32 on 05/18/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Reports_03.png" format="PNG" scale="60" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Reports_03.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>object browser dialog expert mode</phrase>
- </textobject>
- <caption>
-  <para>object browser dialog expert mode</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
-Due to the model structure, most objects appear more than once in the tree. So if you select some object, you should not be surprised, if more than the selected object suddenly change their selection state. E.g. if you select the whole <guibutton>Compartments</guibutton> subtree of your model, all the metabolites which are part of the compartments get selected as well which means that on selecting the <guibutton>Compartments</guibutton> branch, the whole <guibutton>Metabolites</guibutton> branch changes its state to selected.</para>
-<para>
-Let's assume you want to define the report for a trajectory task. In this case, you will probably want the time and some or all of the transient concentration of the metabolites in your report. The time for the time course is the last item in the model branch, you select it by clicking on the check box in front of the name. If you want to add the concentrations of all metabolites, you open the <guibutton>Metabolites</guibutton> sub-branch in the <guibutton>Model</guibutton> branch and open the <guibutton>Select by attribute</guibutton> branch. There you can select the <guibutton>Concentration</guibutton> attribute. Selecting the <guibutton>Concentration</guibutton> attribute will select the concentrations for all metabolites. If you only want to have some of the metabolites in your report, you open the sub-branches of the metabolites you want in the <guibutton>Metabolites</guibutton> branch and select the <guibutton>Concentration</guibutton> attribute only for those metabolites. If your model contains many metabolites and you want to have all but one or in your report, it is often easier to first select all concentrations via the <guibutton>Select by attribute</guibutton> branch and then deselect the ones you don't want, rather then selecting the individual concentration you want. Once you are finished with selecting the objects for your report, you confirm the selection by clicking the <guibutton>OK</guibutton> button in the selection dialog. The objects you selected will now appear in the listbox of the report definition dialog. </para>
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Reports_04.png" format="PNG" scale="60" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Reports_04.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>report definition dialog</phrase>
- </textobject>
- <caption>
-  <para>report definition dialog</para>
- </caption> 
-</mediaobject>
-</screenshot></para>
-<para>
-They will appear in the report in the same order as they appear in this list. To reorder the entries in the list, you can select individual entries and move them up and down in the list with the according buttons to the left of the list. For example it might be a good idea to move the time object to the top of the list so that it will appear as the first table column in the file since this is the way most programs would expect it. Also in order to delete unnecessary items, you just select them and click on the <guibutton>Delete</guibutton> button. 
-The only thing that is now left is to connect this report to a file. This has to be done in the dialog for the specific task and we will cover this when we explain how to run the individual tasks.
-</para>
-<para>
-The report we just defined will be written in the form of a table. So if this was a report for a time course simulation, the final output would have one line per time step of the simulation and in each line, each object that is in the list would be written one separated by whatever you defined as your separation character. (Normally this would be the &lt;TAB&gt; character.
-</para>
-<para>
-Per default, the checkbox labeled <guilabel>Ttitle Row</guilabel> is activated which means that Copasi will write a header line before the table with the names of the objects that make up the individual coulmns. If you don't want such a header in the output you have to deactivate this checkbox.
-</para>
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Reports_05.png" format="PNG" scale="60" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Reports_05.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>advanced report definition dialog</phrase>
- </textobject>
- <caption>
-  <para>advanced report definition</para>
- </caption> 
-</mediaobject>
-</screenshot></para>
-<para>
-As stated above, the advanced report definition allows you to define the output for the three parts of the report separately. The header part of the report is written once before the corresponding task, the output of the body elements occurs once per step of the corresponding task, e.g. for the time course once every timestep and the footer is written once after the task has finished. In this sense, the standard table report definition is nothing but an advanced report definition with a title header and a body that consists of the time and some metabolite concentrations separated by separator items. The footer is empty.
-If you write your own advanced report definition, you are responsible to add separator tags where appropriate. An advantage to the standard report definition is that you can add arbitrary text to any of the three sections. Everything else works as described for the standard report definition, you can add and delete items by selecting them from the object browser dialog. And just like in the standard report definition, you can move these items up and down by selecting them and clicking on the <guibutton>up</guibutton> or <guibutton>down</guibutton> button. Separator items can be added by clicking on the <guibutton>Separator</guibutton> button. The symbol or text that makes up the separator item is again defined by the checkbox and the adjacent input field towards the top of the report definition dialog.  
-</para>
-</sect3>
-<sect3 id="plotDefinitions" xreflabel="Defining Plots">
-<title>Defining Plots</title>
-<para>Plotting is another form of output that Copasi can do. Most of the time, you probably want to plot some or all of the metabolites concentrations during a time course simulation and as described above, this is easiest done by choosing that predefined plot template from the <link linkend="outputAssistant">Output Assistant</link>. But since the output assistant can not cover all possible plots and sometimes you will have to define your own plots.</para>
-<para>
-Currently, Copasi only supports two dimensional plotting. To define a plot, you open the plot definition dialog which you reach by selecting the <guibutton>Output-&gt;Plots</guibutton> branch in the object tree. A plot in Copasi is made up of a number of curve or histogram objects. In order to add a new curve object you click on the <guibutton>New curve...</guibutton> button. A selection dialog similar to the one described for the <link linkend="reportDefinitions">creation of reports</link> will appear. The major difference is that you now have two tree side by side instead of one as for the report definitions. The left tree is a single selection dialog and it lets you specify the object that is to be drawn along the x axis. For a plot of concentration against time this would be the simulation time. The right tree is again a multi-selection tree that lets you specify what is to be drawn along the y-axis. Again for a plot of concentrations against time this would be one or more concentrations of metabolites. Just as described for the report definitions, you can switch between a simple tree and the full tree, but for most plots the simple tree will be enough.</para>
-<para>Once you have finished your selection, you click on the <guibutton>Ok</guibutton> button which will take you back to the curve definition dialog. For each object selected in the right tree, you will now see one tab which represent the corresponding curve object for the plot. To remove one of the curves, you have to select the tab that corresponds to the curve you want to remove and then click on the <guibutton>Delete curve</guibutton> button. The next time you do a <link linkend="calculatingTrajectory">time course simulation</link>, each plot that is marked as active will be plotted automatically. How you define a plot as being active will be explained in the next paragraph.</para>
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi Build 18 on Mac OS X on 05/19/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Plots_01.png" format="PNG" scale="30" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Plots_01.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>empty plot widget</phrase>
- </textobject>
- <caption>
-  <para>empty plot widget</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi Build 18 on Mac OS X on 05/19/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Plots_03.png" format="PNG" scale="30" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Plots_03.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>selection dialog with some items selected</phrase>
- </textobject>
- <caption>
-  <para>simple selection dialog with selected items</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Plots_04.png" format="PNG" scale="30" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Plots_04.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>expert selection dialog for curve objects</phrase>
- </textobject>
- <caption>
-  <para>selection dialog in expert mode</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
-Each curve object has a title, and the information what will be drawn on the x- and y-axis. Additionally you can specify whether the curve should be drawn as a line, as points or as symbols. This has to be specified for each curve separately. You can also specify if the plot should be drawn with a logarithmic scale for one or both of the axis. <!-- What is this Capture Data thing? !!! -->
-<caution><para>On Mac OS X, the tab widget does not handle very wide tabs or many tabs well. This problem will be dealt with in upcoming versions of Copasi.</para></caution></para>
-<para>In the plot definition dialog, in addition to adding and removing curve objects, you can specify a name for the plot definition and you can specify whether the plot should be active or not with the <guilabel>active</guilabel> checkbox. (Only plots that are active are drawn when a <link linkend="calculatingTrajectory">time course simulation</link> is run!)</para>
-<para>Another way to specify whether a plot is active or not is in the plot table where all the plots are listed. Each row in the table contains a column named <guilabel>active</guilabel> that contains a checkbox with which you can toggle the state of a plot. If you changed the state of one or more plots, you have to commit these changes either by clicking the <guibutton>Commit</guibutton> button or any other action that is equivalent to pressing the <guibutton>Commit</guibutton> button (see <xref linkend="addingCompartments" /> section).
-</para>
-<para>In addition to curves, you can also tell Copasi to draw a histogram of the data generated during a time course simulation (see <xref linkend="calculatingTrajectory" />) or a parameter scan (see <xref linkend="parameterScan" />). A histogram draws a bar graph that shows how often the parameter took a certain value. To define a histogram instead of a curve you click on the <guibutton>New Histogram...</guibutton> button in the plot definition dialog. For the new histogram you can specify a title, the variable for which the histogram should be drawn and the increment of the value. The increment parameter tells Copasi how wide the individual bars of the histogram are going to be. Let's say the value of the parameter was in the range of 3 to 8 and you set the increment to 0.1, Copasi will draw a histogram with 50 bars, each bar representing a value range of 0.1 units. Curves and histograms can be combined in a single plot.
-</para>
-</sect3>
-</sect2>
-</sect1>
+
 <sect1 id="addingFunctions" xreflabel="Adding and Editing User Defined Functions">
 <title>Adding and Editing User Defined Functions</title>
 <para>Copasi already defines a large set of commonly used kinetic functions to choose from. Nevertheless sometimes you will have to define your own kinetic function to solve a specific problem. The list of defined functions is located as the last branch in the object tree.</para>
@@ -1180,7 +940,407 @@ In addition to defining "normal" functions, Copasi allows the definition of piec
 </para>
 </sect1>
 
+<sect1 id="usingSliders" xreflabel="Defining and Using Sliders">
+<title>Defining and Using Sliders</title>
+<para>Sliders are user interace elements that let the user change model values without having to go to the corresponding dialog first. This way the user can change certain model values and immediately see the result this has on e.g. a time course simulation. The use of sliders is not limited to the tme course task but they can also be used for the steady state task and the metabolic control analysis.</para>
+<para>Per default, the slider dialog is hidden, if you want it to be displayed, you have to activate it by toggling the corresponding menu entry in the <guimenu>tools</guimenu> menu or through the slider button in the toolbar. Depending on what element is selected in the object tree, the dialog will be disabled and a text will be displayed within the dialog that tells you so. If you select a task (or an element below the task) that supports sliders, the sliders dialog will be enabled.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Sliders_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Sliders_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>linux screenshot that shows Copasi with a plot window and the slider dialog</phrase>
+ </textobject>
+ <caption>
+  <para>Copasi with plot window and sliders</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<!-- Could not reproduce that with the current version
+<caution><para>On Mac OS X the slider dialog interferes with file dialogs and other similar dialogs. So before opening a file dialog for loading or saving or similar, either move the slider dialog out of the way, or hide it altogether. If you forget to do so, the slider dialog will probably block the other dialog and you will not be able to make any input.</para></caution>-->
+<para>
+Once the slider dialog has been activated, you can add new sliders with the <guibutton>new slider</guibutton> button at the top of the slider dialog. To edit the parameters of an already defined slider, just click on the <guibutton>edit</guibutton> button, which is located on the right side of the slider towards the bottom. If you no longer need a slider you have defined, you can close it by clicking on the <guibutton>close</guibutton> button which is the top button on the right side of the slider. 
+Alternatively you can now add and modify existing sliders via a context menu. The context menu can be activated with the right mouse button (CTRL + Mouse button for single button mice on Macs!). If you right click on an existing slider, the menu will offer the possibilities to <guisubmenu>delete</guisubmenu> this slider or to <guisubmenu>edit</guisubmenu> it. If you right click into the dialog window where there is no slider, you will be offered the possibility to define a new slider.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 05/19/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Sliders_02.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Sliders_02.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>basic dialog for the definition of a slider</phrase>
+ </textobject>
+ <caption>
+  <para>basic slider definition dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+Once you are in the dialog for the definition of a new slider, you have to choose an object to manipulate via the slider. This object can be selected from the selection dialog that pops up when you click on the <guibutton>choose object</guibutton> button. The selection tree is the same as the ones you get when <link linkend="plotDefinitions">selecting objects for a report definition</link>. The selection dialog also offers an expert mode in case the object you want to manipulate with the slider is not present in the simplified tree. Usually the objects that you want to modify in  the time course simulation are one or several of the reaction parameters. This way you can interactively see how the behavior of your model changes when you change a specific parameter. In combination with plots this is a very powerful way to examine the behavior of your model.</para>
+<para>After you have selected an object, you can set the parameters for the slider. You specify the range the slider has to cover in the <guilabel>Minimum Value</guilabel> and <guilabel>Maximum Value</guilabel> fields. Additionally you can specify if the slider shall have a logarithmic or a linear scale<!-- and if the slider should be used for all tasks that support sliders or only for the task the slider was defined in-->. Per default sliders have a linear scale<!-- and are only defined for the task in which the you create them-->. Normally a slider will be available for all tasks that support sliders. An exception to this are slider for objects that are directly associated with a specific task, e.g. the number of steps in a time series, if you choose such an object for a slider, the slider will only be available for this task.  
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 05/19/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Sliders_03.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Sliders_03.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>extended dialog for the definition of a slider</phrase>
+ </textobject>
+ <caption>
+  <para>extended slider definition dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+At the bottom of the dialog there is a button labeled <guilabel>Advanced</guilabel>. If you click on this button more options that influence the sliders behavior will show up. Clicking the button a second time will hide these options again.
+The advanced options contain mostly fields that let you modify how many steps the slider has (see explanation below).
+The <guilabel>Object Value</guilabel> field determines the current value of the object that is associated with the slider. In the <guilabel>Number of minor ticks</guilabel> field you specify how many minor ticks your slider will have. And in the <guilabel>Ticksize factor</guilabel> field you specify how many minor ticks make a major tick. Major ticks can be used to coarsely go through the range of the slider whereas minor ticks allow you to step through the range in a more fine grained fashion. Instead of specifying the number of minor ticks, you can specify the size of a minor tick. If you change either of those two values, the other one will be adjusted accordingly. The formula is <!-- <phrase role="math">(Maximum Value - Minimum Value) / number of minor ticks = minor tick size</phrase> -->
+<!-- <inlineequation> -->
+  <mml:math>
+    <mml:mrow>
+      <mml:mi>minor tick size</mml:mi>
+      <mml:mo>=</mml:mo>
+      <mml:mrow>
+        <mml:mo>(</mml:mo>
+          <mml:mrow>
+            <mml:mi>Maximum Value</mml:mi>
+            <mml:mo>-</mml:mo>
+            <mml:mi>Minimum Value</mml:mi>
+          </mml:mrow>      
+        <mml:mo>)</mml:mo>
+        <mml:mo>/</mml:mo>
+        <mml:mi>number of minor ticks</mml:mi>
+      </mml:mrow>
+    </mml:mrow>
+  </mml:math>
+<!-- </inlineequation> -->
+.
+Once you have made all the settings, you confirm the slider definition with the <guibutton>OK</guibutton> button. A new slider will appear in the slider dialog.
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi CVS on Mac OS X on 05/19/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Sliders_04.png" format="PNG" scale="45" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Sliders_04.ps" format="EPS" scale="45" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>slider dialog with three sliders</phrase>
+ </textobject>
+ <caption>
+  <para>slider dialog with three sliders</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+Each slider shows the name of the object, the current value and the range in its label. If the current value of the slider is outside of the defined range, a corresponding warning will be shown.
+The slider dialog has a checkbox called <guilabel>update automatically</guilabel> if this box is checked, Copasi will run the corresponding task each time you release a slider handle after moving it. If you don't want Copasi to automatically run the task each time you change a sliders value, you can uncheck this box and run the task manually by clicking on the <guibutton>run task</guibutton> button.</para>
+If the value of an object for which a slider has been defined changes when a task is run, the slider will automatically show the new value. If the checkbox called <guilabel>update ranges</guilabel> is checked, the sliders will automatically adjust their range if the value falls outside of the defined range. If the new value is larger than the old maximum value, the new maximum will be set to twice the new value. Likewise if the new value falls below the old minimum value, the new minimum will be set to half the current value.
+<para>Modifying a slider is essentially the same as defining a slider. The only difference being that you can not change the object the slider is connected to. In order to do that, you have to delete the slider and define a new slider for the new object.
+</para>
+<para>
+Most people will probably use the sliders in combination with the mouse, dragging the sliders pointer to the desired new value. Since this way of using a slider is rather coarse, especially if the slider contains a large number of steps, you can also use the keyboard to change a sliders value. In order to do this, the slider you want to manipulate needs to have the keyboard focus. To give the keyboard focus, you have to hit the TAB key several times until the slider is surrounded by a small frame. Once the slider has this frame, you can increment and decrement the sliders value via the cursor and the page up/down keys on the keyboard. The cursor keys are used to change the value in small steps, the page up/down keys can be used to change the value in larger steps (see the explanation for major and minor keys above). 
+</para>
+</sect1>
 
+<sect1 id="tutorialWizard" xreflabel="Using the Tutorial Wizard">
+<title>Using the Tutorial Wizard</title>
+<para>Copasi also includes a short tutorial on how you create a model and run a time course simulation with plotting. You can start the wizard from the <guimenu>help</guimenu> menu. The corresponding menu entry is called <guimenuitem>Simple Wizard</guimenuitem>.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Wizard_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Wizard_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>tutorial wizard dialog screenshot</phrase>
+ </textobject>
+ <caption>
+  <para>tutorial wizard</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+The wizard leads you in six steps from creating a model to doing a time course simulation of the model and plotting the results of the time course.</para>
+<para>On the left side of the wizard there are six buttons that correspond to the six steps. When you first open the wizard, step one is selected and the widget on the right shows some documentation that you should read and possibly repeat the steps explained. Once you are finished with step 1, you can either click directly on the button that corresponds to step 2, or you can click the <guibutton>forward</guibutton> button which will always bring you to the next step. If you would like to reread something from an earlier step, you can move to the specific step with the buttons or use the <guibutton>forward</guibutton> and <guibutton>backward</guibutton> buttons to navigate.
+</para>
+</sect1>
+</chapter>
+
+
+<chapter id="outputGeneration" xreflabel="Generating Output">
+<title>Generating Output</title>
+<!--<sect1 id="outputIntroduction" xreflabel="Output Introduction">-->
+<!--<title>Introduction</title>-->
+<para>After you have <link linkend="addingReactions">defined all reactions</link> that make up your model, you could go ahead and do some calculations with your model. For some of the task this is fine since they show you the results in a separate results dialog and it might not be necessary to store those results into a file. For other tasks, like e.g. a time course, it is very likely that you want to store the resulting trajectory in a file or plot the result for visual inspection. So if you want Copasi to store the results or do a plot of them, you have to define either a report and associate it with a file or define a plot. (In the <xref linkend="calculatingTrajectory" /> section we will also offer an alternative, albeit less flexible, way for storing the results of a time course simulation.)
+</para>
+<para>
+Copasi already has a list of predefined output definitions. These should already cover most of the day to day output needs. But in case those predefined output definitions do not include the output you would like, there is always the possibility do define your output manually as described in the <xref linkend="manualOutputDefinitions" /> section. But first we will discuss how you can generate output from a task with one of the predefined output targets.
+</para>
+<sect1 id="outputAssistant" xreflabel="Output Assistant">
+<title>Using the Output Assistant</title>
+<para>
+Almost all task dialogs in Copasi have a button at the lower right that is labeled <guibutton>Output Assistant</guibutton>. If you click on this button, a new dialog will open that presents you with a list of predefined output definitions on the left. If you select one of the output definitions from the list, you will get a short description of what the output does on the right side of the dialog. Above the description is the title of the output definition. This title can be changed in order to be able to identify the different output definitions in case you are plannning on creating more then one output definition of a certain type.
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/OutputAssistant_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/OutputAssistant_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Output Assistant Window</phrase>
+ </textobject>
+ <caption>
+  <para>output assistant selection dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+Creating an instance of the selected output objects is as easy a clicking on the <guibutton>Create!</guibutton> at the bottom of the dialog. Once you clicked the this button, a new report or plot, depending on what you selected in the dialog, will appear in the corresponding branch of the <guilabel>Output</guilabel> section of the model tree. The Output branch is the second to last branch in the tree on the left. The name of the output definitions will be the title of the object which you selected from the list. If another output definition in this section already has the same name, a postfix will be appended to the name. The so created output can now be edited or deleted. How output definitions are created, edit and delted manually is the topic of the next section.
+</para>
+</sect1>
+<sect1 id="manualOutputDefinitions" xreflabel="Defining Output Manually">
+<title>Defining Output Manually</title>
+<sect2 id="reportDefinitions" xreflabel="Defining Reports">
+<title>Defining Reports</title>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Reports_01.png" format="PNG" scale="60" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Reports_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>report table with default reports</phrase>
+ </textobject>
+ <caption>
+  <para>Report Table with default Reports</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+The dialog for defining report definitions is located under the <guibutton>Output-&gt;Reports</guibutton> branch in the object tree. Double clicking on an empty row in the table creates a new report object and opens the dialog for modifying the report definition. In this dialog, you can specify a name for the report in the <guilabel>Name</guilabel> field. From the <guilabel>Task</guilabel> dropdown list, you can choose for which kind of task this report should be written, so if you want to store the result of a time course, you choose <emphasis>Time-Course</emphasis> here. The report usually stores the results of its task as a table; the standard separator character for elements in this table is the tab character (\t). If you want to have another character as the separator field, you have to uncheck the <guilabel>&lt;tab&gt;</guilabel> checkbox and specify the separator character or string you want in the <guilabel>Separator</guilabel> field.
+<para>Beside the <guilabel>&lt;tab&gt;</guilabel> checkbox there is another input field labeled <guilabel>Precision</guilabel> with this field you can specify how many significant digits are used for numerical output. The default value is 6.
+</para>
+<para>
+If you want to, you can also add a comment for the report, e.g. you could state what this report is supposed to represent.  
+</para>
+Next you have to define the objects that you want to appear in the report. There are two modes to define a report definition. Per default, the report is laid out as a table. E.g. the report for a time course simulation will write one line per timestep and each line will typically contain the time followed by one or more metabolite concentrations. In the advanced mode, which you enter by clicking on the button labeled <guibutton>Advanced</guibutton>, the report is split up into three sections, a header, a body and a footer. You can define the output for each of the sections separately by clicking on the corresponding tab. In order to get back to the standard table layout, you have to click on the <guibutton>Advanced</guibutton> again. Copasi will warn you that you might loose some information by converting from the advanced report definition format to the table format.
+</para>
+<para>
+Let's discuss how to define a report definition with table layout first since you will probably use this most of the time.
+To add a new object to the report definition, you have to click on the button labeled <guibutton>item</guibutton>. This will open the object browser dialog.</para>  
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 18 on WIN32 on 05/18/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Reports_02.png" format="PNG" scale="60" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Report_SimpleSelectionDialog.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>simple selection dialog</phrase>
+ </textobject>
+ <caption>
+  <para>simple selection dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+The selection dialog shows a tree that contains what we think are the objects that would be most commonly used in generating report, plots, sliders etc. You select objects by clicking on the corresponding leave in the selection dialogs tree view. For plots and report, the simple selection dialog will allow you to select several objects at once. To select a continuous range of objects, you select the first object of the range, then you press and hold the SHIFT button and select the last object in the range. You can also make non-continous selection by hloding down the CTRL key while clicking on the object to select/deselect. Also selecting a whole branch in the selection dialog will select all the leaves under that branch.
+</para>
+<!-- multi selection on the Mac !!! -->
+<para>
+If this simple selection dialog does not contain the object that you want to include in your report, you can activate an extended selection tree by activating the <guibutton>expert mode</guibutton> checkbox. The tree you now see contains all objects Copasi knows about. In this tree, the objects that belong to your model are located in the branch that corresponds to the name of your model. The position of that branch varies since the branches are sorted alphabetically. The selection you might already might have made in the simple selection tree should be preserved and vice versa, any selection you make in the full tree is preserved when you switch back to the simple tree. Each branch of the full tree has a checkbox up front which can assume three states. The unchecked state means that no object in this subtree are selected. A checkmark on a black background means that the whole subtree is selected, i.e. all objects in this subtree are selected. A checkmark on a gray background means that part of the subtree is selected.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 18 on WIN32 on 05/18/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Reports_03.png" format="PNG" scale="60" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Reports_03.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>object browser dialog expert mode</phrase>
+ </textobject>
+ <caption>
+  <para>object browser dialog expert mode</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+Due to the model structure, most objects appear more than once in the tree. So if you select some object, you should not be surprised, if more than the selected object suddenly change their selection state. E.g. if you select the whole <guibutton>Compartments</guibutton> subtree of your model, all the metabolites which are part of the compartments get selected as well which means that on selecting the <guibutton>Compartments</guibutton> branch, the whole <guibutton>Metabolites</guibutton> branch changes its state to selected.</para>
+<para>
+Let's assume you want to define the report for a trajectory task. In this case, you will probably want the time and some or all of the transient concentration of the metabolites in your report. The time for the time course is the last item in the model branch, you select it by clicking on the check box in front of the name. If you want to add the concentrations of all metabolites, you open the <guibutton>Metabolites</guibutton> sub-branch in the <guibutton>Model</guibutton> branch and open the <guibutton>Select by attribute</guibutton> branch. There you can select the <guibutton>Concentration</guibutton> attribute. Selecting the <guibutton>Concentration</guibutton> attribute will select the concentrations for all metabolites. If you only want to have some of the metabolites in your report, you open the sub-branches of the metabolites you want in the <guibutton>Metabolites</guibutton> branch and select the <guibutton>Concentration</guibutton> attribute only for those metabolites. If your model contains many metabolites and you want to have all but one or in your report, it is often easier to first select all concentrations via the <guibutton>Select by attribute</guibutton> branch and then deselect the ones you don't want, rather then selecting the individual concentration you want. Once you are finished with selecting the objects for your report, you confirm the selection by clicking the <guibutton>OK</guibutton> button in the selection dialog. The objects you selected will now appear in the listbox of the report definition dialog. </para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Reports_04.png" format="PNG" scale="60" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Reports_04.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>report definition dialog</phrase>
+ </textobject>
+ <caption>
+  <para>report definition dialog</para>
+ </caption> 
+</mediaobject>
+</screenshot></para>
+<para>
+They will appear in the report in the same order as they appear in this list. To reorder the entries in the list, you can select individual entries and move them up and down in the list with the according buttons to the left of the list. For example it might be a good idea to move the time object to the top of the list so that it will appear as the first table column in the file since this is the way most programs would expect it. Also in order to delete unnecessary items, you just select them and click on the <guibutton>Delete</guibutton> button. 
+The only thing that is now left is to connect this report to a file. This has to be done in the dialog for the specific task and we will cover this when we explain how to run the individual tasks.
+</para>
+<para>
+The report we just defined will be written in the form of a table. So if this was a report for a time course simulation, the final output would have one line per time step of the simulation and in each line, each object that is in the list would be written one separated by whatever you defined as your separation character. (Normally this would be the &lt;TAB&gt; character.
+</para>
+<para>
+Per default, the checkbox labeled <guilabel>Ttitle Row</guilabel> is activated which means that Copasi will write a header line before the table with the names of the objects that make up the individual coulmns. If you don't want such a header in the output you have to deactivate this checkbox.
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Reports_05.png" format="PNG" scale="60" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Reports_05.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>advanced report definition dialog</phrase>
+ </textobject>
+ <caption>
+  <para>advanced report definition</para>
+ </caption> 
+</mediaobject>
+</screenshot></para>
+<para>
+As stated above, the advanced report definition allows you to define the output for the three parts of the report separately. The header part of the report is written once before the corresponding task, the output of the body elements occurs once per step of the corresponding task, e.g. for the time course once every timestep and the footer is written once after the task has finished. In this sense, the standard table report definition is nothing but an advanced report definition with a title header and a body that consists of the time and some metabolite concentrations separated by separator items. The footer is empty.
+If you write your own advanced report definition, you are responsible to add separator tags where appropriate. An advantage to the standard report definition is that you can add arbitrary text to any of the three sections. Everything else works as described for the standard report definition, you can add and delete items by selecting them from the object browser dialog. And just like in the standard report definition, you can move these items up and down by selecting them and clicking on the <guibutton>up</guibutton> or <guibutton>down</guibutton> button. Separator items can be added by clicking on the <guibutton>Separator</guibutton> button. The symbol or text that makes up the separator item is again defined by the checkbox and the adjacent input field towards the top of the report definition dialog.  
+</para>
+</sect2>
+<sect2 id="plotDefinitions" xreflabel="Defining Plots">
+<title>Defining Plots</title>
+<para>Plotting is another form of output that Copasi can do. Most of the time, you probably want to plot some or all of the metabolites concentrations during a time course simulation and as described above, this is easiest done by choosing that predefined plot template from the <link linkend="outputAssistant">Output Assistant</link>. But since the output assistant can not cover all possible plots and sometimes you will have to define your own plots.</para>
+<para>
+Currently, Copasi only supports two dimensional plotting. To define a plot, you open the plot definition dialog which you reach by selecting the <guibutton>Output-&gt;Plots</guibutton> branch in the object tree. A plot in Copasi is made up of a number of curve or histogram objects. In order to add a new curve object you click on the <guibutton>New curve...</guibutton> button. A selection dialog similar to the one described for the <link linkend="reportDefinitions">creation of reports</link> will appear. The major difference is that you now have two tree side by side instead of one as for the report definitions. The left tree is a single selection dialog and it lets you specify the object that is to be drawn along the x axis. For a plot of concentration against time this would be the simulation time. The right tree is again a multi-selection tree that lets you specify what is to be drawn along the y-axis. Again for a plot of concentrations against time this would be one or more concentrations of metabolites. Just as described for the report definitions, you can switch between a simple tree and the full tree, but for most plots the simple tree will be enough.</para>
+<para>Once you have finished your selection, you click on the <guibutton>Ok</guibutton> button which will take you back to the curve definition dialog. For each object selected in the right tree, you will now see one tab which represent the corresponding curve object for the plot. To remove one of the curves, you have to select the tab that corresponds to the curve you want to remove and then click on the <guibutton>Delete curve</guibutton> button. The next time you do a <link linkend="calculatingTrajectory">time course simulation</link>, each plot that is marked as active will be plotted automatically. How you define a plot as being active will be explained in the next paragraph.</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 18 on Mac OS X on 05/19/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Plots_01.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Plots_01.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>empty plot widget</phrase>
+ </textobject>
+ <caption>
+  <para>empty plot widget</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 18 on Mac OS X on 05/19/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Plots_03.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Plots_03.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>selection dialog with some items selected</phrase>
+ </textobject>
+ <caption>
+  <para>simple selection dialog with selected items</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Plots_04.png" format="PNG" scale="30" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Plots_04.ps" format="EPS" scale="30" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>expert selection dialog for curve objects</phrase>
+ </textobject>
+ <caption>
+  <para>selection dialog in expert mode</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+Each curve object has a title, and the information what will be drawn on the x- and y-axis. Additionally you can specify whether the curve should be drawn as a line, as points or as symbols. This has to be specified for each curve separately. You can also specify if the plot should be drawn with a logarithmic scale for one or both of the axis. <!-- What is this Capture Data thing? !!! -->
+<caution><para>On Mac OS X, the tab widget does not handle very wide tabs or many tabs well. This problem will be dealt with in upcoming versions of Copasi.</para></caution></para>
+<para>In the plot definition dialog, in addition to adding and removing curve objects, you can specify a name for the plot definition and you can specify whether the plot should be active or not with the <guilabel>active</guilabel> checkbox. (Only plots that are active are drawn when a <link linkend="calculatingTrajectory">time course simulation</link> is run!)</para>
+<para>Another way to specify whether a plot is active or not is in the plot table where all the plots are listed. Each row in the table contains a column named <guilabel>active</guilabel> that contains a checkbox with which you can toggle the state of a plot. If you changed the state of one or more plots, you have to commit these changes either by clicking the <guibutton>Commit</guibutton> button or any other action that is equivalent to pressing the <guibutton>Commit</guibutton> button (see <xref linkend="addingCompartments" /> section).
+</para>
+<para>In addition to curves, you can also tell Copasi to draw a histogram of the data generated during a time course simulation (see <xref linkend="calculatingTrajectory" />) or a parameter scan (see <xref linkend="parameterScan" />). A histogram draws a bar graph that shows how often the parameter took a certain value. To define a histogram instead of a curve you click on the <guibutton>New Histogram...</guibutton> button in the plot definition dialog. For the new histogram you can specify a title, the variable for which the histogram should be drawn and the increment of the value. The increment parameter tells Copasi how wide the individual bars of the histogram are going to be. Let's say the value of the parameter was in the range of 3 to 8 and you set the increment to 0.1, Copasi will draw a histogram with 50 bars, each bar representing a value range of 0.1 units. Curves and histograms can be combined in a single plot.
+</para>
+</sect2>
+</sect1>
+</chapter>
+
+
+<chapter id="simpleTasks" xreflabel="Simple Tasks">
+<title>Simple Tasks</title>
 <sect1 id="steadyStateAnalysis" xreflabel="Doing a Steady State Analysis">
 <title>Doing a Steady State Analysis</title>
 <para>In order to run a steady state analysis, you have to navigate to the <guibutton>Task-&gt;Steady-State</guibutton> branch in the object tree.</para>
@@ -1487,10 +1647,9 @@ If you want to have output from the MCA, you have to create an output definition
 
 <sect1 id="lyapunovExponents" xrefLabel="Calculating Lyapunov Exponents">
 <title>Calculating Lyapunov Exponents</title>
-<!-- Widget is not finished yet -->
 <para>
 <screenshot>
-<screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
+<screeninfo>Produced with Copasi Build-18 on Mac OS X on 05/22/2006</screeninfo>
 <mediaobject>
  <imageobject>
   <imagedata fileref="images/Lyapunov_01.png" format="PNG" scale="45" align="center" />
@@ -1499,17 +1658,38 @@ If you want to have output from the MCA, you have to create an output definition
   <imagedata fileref="images/Lyapunov_01.ps" format="EPS" scale="45" align="center" />
  </imageobject> 
  <textobject>
-   <phrase>dialog showing scan task dialog when first opened</phrase>
+   <phrase>Lyapunov task widget</phrase>
  </textobject>
  <caption>
-  <para>Initial scan task dialog</para>
+  <para>Lyapunov task widget</para>
+ </caption> 
+</mediaobject>
+</screenshot>
+</para>
+<para>
+<screenshot>
+<screeninfo>Produced with Copasi Build-18 on Mac OS X on 05/22/2006</screeninfo>
+<mediaobject>
+ <imageobject>
+  <imagedata fileref="images/Lyapunov_02.png" format="PNG" scale="45" align="center" />
+ </imageobject> 
+ <imageobject>
+  <imagedata fileref="images/Lyapunov_02.ps" format="EPS" scale="45" align="center" />
+ </imageobject> 
+ <textobject>
+   <phrase>Results window for the Lyapunov Exponent calculation.</phrase>
+ </textobject>
+ <caption>
+  <para>Results from a Lyapunov Exponent calculation.</para>
  </caption> 
 </mediaobject>
 </screenshot>
 </para>
 </sect1>
+</chapter>
 
-
+<chapter id="complexTasks" xreflabel="Complex Tasks" >
+<title>Complex Tasks</title>
 <sect1 id="parameterScan" xreflabel="Doing a Parameter Scan">
 <title>Doing a Parameter Scan</title>
 <para>The leaf for parameter scans in the object tree is located under <guibutton>Multiple Tasks -> Parameter Scan</guibutton>. At the top the dialog displays a box called <guilabel>New scan item</guilabel> together with a <guibutton>create...</guibutton>. and when the dialog is opened for the first time, the only item in the widget below is a green box called <guilabel>Task</guilabel>. This widget contains a dropdown list with all the tasks that can be used in a scan. Additionally there is a checkbox called <guilabel>use initial conditions</guilabel> and a checkbox called <guilabel>do output during task</guilabel>.</para>
@@ -1848,165 +2028,13 @@ If you don't want Copasi to use the whole dataset of an experiment, but only a s
 If you want to have output from the parameter estimation task, you have to create an output definition as described in the <xref linkend="outputDefinitions" /> section. The easiest way is probably to use the output assistant which you activate via the <guibutton>Output Assistant</guibutton> button. This is described in the <xref linkend="outputAssistant" /> section. All that is left to do in order to write the output to a specific file is to connect an output definition  with a file. This can be achieved by clicking on the <guibutton>Report</guibutton> button. This opens a dialog that lets you connect the report for a specific task to a file on your harddisk. First we choose a report that is suitable for the parameter estimation task from the dropdown list at the top of the dialog. Next, we specify a file that will be used to store the report by clicking on the <guibutton>browse</guibutton> button and selection the destination in the file dialog that opens. Per default, Copasi creates a new file if the file does not exist, or asks wether the file should be overwritten. Alternatively, you can tell Copasi to append the report to the end of an existing file by selecting the corresponding check box labeled <guilabel>Append</guilabel> at the bottom of the dialog. Once you are finished, you click on the <guilabel>Confirm</guilabel> button. If you now run the task, Copasi will write the output to the file you specified. 
 </para>
 </sect1>
+</chapter>
 
-<sect1 id="usingSliders" xreflabel="Defining and Using Sliders">
-<title>Defining and Using Sliders</title>
-<para>Sliders are user interace elements that let the user change model values without having to go to the corresponding dialog first. This way the user can change certain model values and immediately see the result this has on e.g. a time course simulation. The use of sliders is not limited to the tme course task but they can also be used for the steady state task and the metabolic control analysis.</para>
-<para>Per default, the slider dialog is hidden, if you want it to be displayed, you have to activate it by toggling the corresponding menu entry in the <guimenu>tools</guimenu> menu or through the slider button in the toolbar. Depending on what element is selected in the object tree, the dialog will be disabled and a text will be displayed within the dialog that tells you so. If you select a task (or an element below the task) that supports sliders, the sliders dialog will be enabled.</para>
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Sliders_01.png" format="PNG" scale="30" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Sliders_01.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>linux screenshot that shows Copasi with a plot window and the slider dialog</phrase>
- </textobject>
- <caption>
-  <para>Copasi with plot window and sliders</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<!-- Could not reproduce that with the current version
-<caution><para>On Mac OS X the slider dialog interferes with file dialogs and other similar dialogs. So before opening a file dialog for loading or saving or similar, either move the slider dialog out of the way, or hide it altogether. If you forget to do so, the slider dialog will probably block the other dialog and you will not be able to make any input.</para></caution>-->
-<para>
-Once the slider dialog has been activated, you can add new sliders with the <guibutton>new slider</guibutton> button at the top of the slider dialog. To edit the parameters of an already defined slider, just click on the <guibutton>edit</guibutton> button, which is located on the right side of the slider towards the bottom. If you no longer need a slider you have defined, you can close it by clicking on the <guibutton>close</guibutton> button which is the top button on the right side of the slider. 
-Alternatively you can now add and modify existing sliders via a context menu. The context menu can be activated with the right mouse button (CTRL + Mouse button for single button mice on Macs!). If you right click on an existing slider, the menu will offer the possibilities to <guisubmenu>delete</guisubmenu> this slider or to <guisubmenu>edit</guisubmenu> it. If you right click into the dialog window where there is no slider, you will be offered the possibility to define a new slider.</para>
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi CVS on Mac OS X on 05/19/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Sliders_02.png" format="PNG" scale="30" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Sliders_02.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>basic dialog for the definition of a slider</phrase>
- </textobject>
- <caption>
-  <para>basic slider definition dialog</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
-Once you are in the dialog for the definition of a new slider, you have to choose an object to manipulate via the slider. This object can be selected from the selection dialog that pops up when you click on the <guibutton>choose object</guibutton> button. The selection tree is the same as the ones you get when <link linkend="plotDefinitions">selecting objects for a report definition</link>. The selection dialog also offers an expert mode in case the object you want to manipulate with the slider is not present in the simplified tree. Usually the objects that you want to modify in  the time course simulation are one or several of the reaction parameters. This way you can interactively see how the behavior of your model changes when you change a specific parameter. In combination with plots this is a very powerful way to examine the behavior of your model.</para>
-<para>After you have selected an object, you can set the parameters for the slider. You specify the range the slider has to cover in the <guilabel>Minimum Value</guilabel> and <guilabel>Maximum Value</guilabel> fields. Additionally you can specify if the slider shall have a logarithmic or a linear scale<!-- and if the slider should be used for all tasks that support sliders or only for the task the slider was defined in-->. Per default sliders have a linear scale<!-- and are only defined for the task in which the you create them-->. Normally a slider will be available for all tasks that support sliders. An exception to this are slider for objects that are directly associated with a specific task, e.g. the number of steps in a time series, if you choose such an object for a slider, the slider will only be available for this task.  
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi CVS on Mac OS X on 05/19/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Sliders_03.png" format="PNG" scale="30" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Sliders_03.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>extended dialog for the definition of a slider</phrase>
- </textobject>
- <caption>
-  <para>extended slider definition dialog</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-At the bottom of the dialog there is a button labeled <guilabel>Advanced</guilabel>. If you click on this button more options that influence the sliders behavior will show up. Clicking the button a second time will hide these options again.
-The advanced options contain mostly fields that let you modify how many steps the slider has (see explanation below).
-The <guilabel>Object Value</guilabel> field determines the current value of the object that is associated with the slider. In the <guilabel>Number of minor ticks</guilabel> field you specify how many minor ticks your slider will have. And in the <guilabel>Ticksize factor</guilabel> field you specify how many minor ticks make a major tick. Major ticks can be used to coarsely go through the range of the slider whereas minor ticks allow you to step through the range in a more fine grained fashion. Instead of specifying the number of minor ticks, you can specify the size of a minor tick. If you change either of those two values, the other one will be adjusted accordingly. The formula is <!-- <phrase role="math">(Maximum Value - Minimum Value) / number of minor ticks = minor tick size</phrase> -->
-<!-- <inlineequation> -->
-  <mml:math>
-    <mml:mrow>
-      <mml:mi>minor tick size</mml:mi>
-      <mml:mo>=</mml:mo>
-      <mml:mrow>
-        <mml:mo>(</mml:mo>
-          <mml:mrow>
-            <mml:mi>Maximum Value</mml:mi>
-            <mml:mo>-</mml:mo>
-            <mml:mi>Minimum Value</mml:mi>
-          </mml:mrow>      
-        <mml:mo>)</mml:mo>
-        <mml:mo>/</mml:mo>
-        <mml:mi>number of minor ticks</mml:mi>
-      </mml:mrow>
-    </mml:mrow>
-  </mml:math>
-<!-- </inlineequation> -->
-.
-Once you have made all the settings, you confirm the slider definition with the <guibutton>OK</guibutton> button. A new slider will appear in the slider dialog.
-</para>
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi CVS on Mac OS X on 05/19/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Sliders_04.png" format="PNG" scale="45" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Sliders_04.ps" format="EPS" scale="45" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>slider dialog with three sliders</phrase>
- </textobject>
- <caption>
-  <para>slider dialog with three sliders</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
-Each slider shows the name of the object, the current value and the range in its label. If the current value of the slider is outside of the defined range, a corresponding warning will be shown.
-The slider dialog has a checkbox called <guilabel>update automatically</guilabel> if this box is checked, Copasi will run the corresponding task each time you release a slider handle after moving it. If you don't want Copasi to automatically run the task each time you change a sliders value, you can uncheck this box and run the task manually by clicking on the <guibutton>run task</guibutton> button.</para>
-If the value of an object for which a slider has been defined changes when a task is run, the slider will automatically show the new value. If the checkbox called <guilabel>update ranges</guilabel> is checked, the sliders will automatically adjust their range if the value falls outside of the defined range. If the new value is larger than the old maximum value, the new maximum will be set to twice the new value. Likewise if the new value falls below the old minimum value, the new minimum will be set to half the current value.
-<para>Modifying a slider is essentially the same as defining a slider. The only difference being that you can not change the object the slider is connected to. In order to do that, you have to delete the slider and define a new slider for the new object.
-</para>
-<para>
-Most people will probably use the sliders in combination with the mouse, dragging the sliders pointer to the desired new value. Since this way of using a slider is rather coarse, especially if the slider contains a large number of steps, you can also use the keyboard to change a sliders value. In order to do this, the slider you want to manipulate needs to have the keyboard focus. To give the keyboard focus, you have to hit the TAB key several times until the slider is surrounded by a small frame. Once the slider has this frame, you can increment and decrement the sliders value via the cursor and the page up/down keys on the keyboard. The cursor keys are used to change the value in small steps, the page up/down keys can be used to change the value in larger steps (see the explanation for major and minor keys above). 
-</para>
-<!-- What is this doing here?
-<caution><para>On Mac OS X, the tab widget does not handle very wide tabs or many tabs well. This problem will be dealt with in upcoming versions of Copasi.</para></caution>
--->
-</sect1>
-<sect1 id="tutorialWizard" xreflabel="Using the Tutorial Wizard">
-<title>Using the Tutorial Wizard</title>
-<para>Copasi also includes a short tutorial on how you create a model and run a time course simulation with plotting. You can start the wizard from the <guimenu>help</guimenu> menu. The corresponding menu entry is called <guimenuitem>Simple Wizard</guimenuitem>.</para>
-<para>
-<screenshot>
-<screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
-<mediaobject>
- <imageobject>
-  <imagedata fileref="images/Wizard_01.png" format="PNG" scale="30" align="center" />
- </imageobject> 
- <imageobject>
-  <imagedata fileref="images/Wizard_01.ps" format="EPS" scale="30" align="center" />
- </imageobject> 
- <textobject>
-   <phrase>tutorial wizard dialog screenshot</phrase>
- </textobject>
- <caption>
-  <para>tutorial wizard</para>
- </caption> 
-</mediaobject>
-</screenshot>
-</para>
-<para>
-The wizard leads you in six steps from creating a model to doing a time course simulation of the model and plotting the results of the time course.</para>
-<para>On the left side of the wizard there are six buttons that correspond to the six steps. When you first open the wizard, step one is selected and the widget on the right shows some documentation that you should read and possibly repeat the steps explained. Once you are finished with step 1, you can either click directly on the button that corresponds to step 2, or you can click the <guibutton>forward</guibutton> button which will always bring you to the next step. If you would like to reread something from an earlier step, you can move to the specific step with the buttons or use the <guibutton>forward</guibutton> and <guibutton>backward</guibutton> buttons to navigate.
-</para>
-</sect1>
-<sect1 id="importExport" xreflabel="Importing and Exporting">
-<title>Import and Export</title>
+<chapter id="importExport" xreflabel="Import/Export">
+<title>Importing and Exporting models</title>
 <para>Copasi is one modeling and simulation tool among many and often people use more than one tool to create, investigate and simulate their models. In order to make it easier to exchange model files with other programs, Copasi support reading and writing of several model file formats. Naturally Copasi can read and write it's own file format and it can read Gepasi files just as well although it will not write Gepasi files.
 </para>
-<sect2 id="sbmlImportExport" xrefLabel="Importing and Exporting SBML files">
+<sect1 id="sbmlImportExport" xrefLabel="Importing and Exporting SBML files">
 <para>
 In addition to those two file formats, Copasi can import SBML Level 1 and 2 files and it can export models as SBML Level 2 files as well as C source code or Berkeley Madonna files.</para>
 <para>We hope that we will be able to support even more different file formats in the future.</para>
@@ -2025,11 +2053,11 @@ Upon import of an SBML file, Copasi tries to identify the function calls it read
 <para>
 This is still very rudimentary and we hope to improve this function recognition in the future so that also functions exported from other programs can be recognized.
 </para>
-</sect2>
-<sect2 id="cExport" xreflabel="Exporting C Source files">
+</sect1>
+<sect1 id="cExport" xreflabel="Exporting C Source files">
 <title>Exporting C Source files</title>
 <para>
-Sometimes it is of advantage to have the differential equations that make up your model in the form of source code for some programming language. This allows you to integrate your model into some experimental analysis software that you might have written, or some analysis software that expect the input as C source code like <link linkend="http://sourceforge.net/projects/auto2000/">Auto2000</link>.
+Sometimes it is of advantage to have the differential equations that make up your model in the form of source code for some programming language. This allows you to integrate your model into some experimental analysis software that you might have written, or some analysis software that expect the input as C source code like <ulink url="http://sourceforge.net/projects/auto2000/">Auto2000</ulink>.
 </para>
 <para>
 So far Copasi only supports the export of C source code, source code for other programming languages might follow if there is need for it.
@@ -2093,15 +2121,14 @@ The C source file Copasi exports is split into several smaller parts which are e
 </para>
 <para>
 In order to export the set of differential equations to a C source code file, you select the <guisubmenu>Export ODEs</guisubmenu> menu entry from Copasis <guimenu>File</guimenu> menu. In the save dialog that shows up, you select <emphasis>C Files (*.c)</emphasis> from the <guilabel>File type</guilabel> dropdown and specify the name of the save you want to write the ODEs to. After clicking on the <guibutton>Save</guibutton> the ODEs will be saved to the specified file.</para>
-</sect2>
+</sect1>
 
-<sect2 id="madonnaExport" xreflabel="Exporting Berkeley Madonna files">
-<title>Exporting Berkeley Madonna files</title>
-<para><link linkend="http://www.berkeleymadonna.com/">Berkeley Madonna</link> is a widely used commercial modeling and simulation tool for the Windows and Mac OS X operating systems. The input to Berkeley Madonna is a file that basically consists of a set of parameters, initial values, function definitions and ordinary differential equations. Copasi can generate these ordinary differential equations from the reactions of the model and export them together with the needed parameters in a format suitable to be read into Berkeley Madonna.</para>
-<para>Since the way ordinary differential equations are specified is similar between different programs that take such input, it should be rather easy to adjust the exported file for import in other programs as for example the free <link linkend="http://www.math.pitt.edu/~bard/xpp/xpp.html">xppaut</link> programm or even <link linkend="http://www.wolfram.com/">mathematica</link>.</para>
+<sect1 id="madonnaExport" xreflabel="Exporting Berkeley Madonna files">
+<title>Exporting Berkeley Madonna<!--&trade;--> files</title>
+<para><ulink url="http://www.berkeleymadonna.com/">Berkeley Madonna<!--&trade;--></ulink> is a widely used commercial modeling and simulation tool for the Windows<!--&trade;--> and Mac OS X<!--&trade;--> operating systems. The input to Berkeley Madonna<!--&trade;--> is a file that basically consists of a set of parameters, initial values, function definitions and ordinary differential equations. Copasi can generate these ordinary differential equations from the reactions of the model and export them together with the needed parameters in a format suitable to be read into Berkeley Madonna<!--&trade;-->.</para>
+<para>Since the way ordinary differential equations are specified is similar between different programs that take such input, it should be rather easy to adjust the exported file for import in other programs as for example the free <ulink url="http://www.math.pitt.edu/~bard/xpp/xpp.html">xppaut</ulink> programm or even <ulink url="http://www.wolfram.com/">Mathematica<!--&trade;--></ulink>.</para>
 <para>
-In order to export the set of differential equations to a Berkeley Madonna file, you select the <guisubmenu>Export ODEs</guisubmenu> menu entry from Copasis <guimenu>File</guimenu> menu. In the save dialog that shows up, you select <emphasis>Berkeley Madonna Files (*.mmd)</emphasis> from the <guilabel>File type</guilabel> dropdown and specify the name of the save you want to write the ODEs to. After clicking on the <guibutton>Save</guibutton> the ODEs will be saved to the specified file.</para>
-</sect2>
+In order to export the set of differential equations to a Berkeley Madonna<!--&trade;--> file, you select the <guisubmenu>Export ODEs</guisubmenu> menu entry from Copasis <guimenu>File</guimenu> menu. In the save dialog that shows up, you select <emphasis>Berkeley Madonna Files (*.mmd)</emphasis> from the <guilabel>File type</guilabel> dropdown and specify the name of the save you want to write the ODEs to. After clicking on the <guibutton>Save</guibutton> the ODEs will be saved to the specified file.</para>
 </sect1>
 </chapter>  
 
