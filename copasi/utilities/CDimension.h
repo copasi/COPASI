@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.3.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Author: ssahle $
+   $Date: 2006/05/22 14:52:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,6 +46,8 @@ class CDimension
     bool operator==(const CDimension & rhs) const;
     CDimension operator+(const CDimension & rhs) const;
     CDimension operator-(const CDimension & rhs) const;
+    CDimension operator*(const C_FLOAT64 & rhs) const;
+
     CDimension compare(const CDimension & rhs) const;
 
     /**
@@ -70,6 +72,7 @@ class CDimension
 class CFunction;
 class CReaction;
 class CEvaluationNode;
+class CChemEq;
 
 /**
  * CFindDimensions class.
@@ -120,15 +123,30 @@ class CFindDimensions
 
     void setUseHeuristics(bool flag);
 
+    /**
+     * tell about chemical equation. This is needed only for mass action kinetics.
+     * It is ignored otherwise.
+     */
+    void setChemicalEquation(const CChemEq* eq);
+
+    void setMolecularitiesForMassAction(const C_FLOAT64 & m1, const C_FLOAT64 & m2);
+
   private:
 
     const CFunction * mpFunction;
     std::vector<CDimension> mDimensions;
     CDimension mRootDimension;
     bool mUseHeuristics;
+    //const CChemEq* mpChemEq;
+    C_FLOAT64 mM1;
+    C_FLOAT64 mM2;
 
     //find dim for all parameters
     void findDimensions();
+
+    //determine dimensions for mass action kinetics
+    //chemical equation needs to be known
+    void findDimensionsMassAction();
 
     //find dim for one parameter
     void findDimension(unsigned C_INT32 index);

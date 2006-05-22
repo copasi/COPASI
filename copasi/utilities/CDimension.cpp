@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.3.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Author: ssahle $
+   $Date: 2006/05/22 14:52:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,7 @@
 #include "CDimension.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
+#include "model/CChemEq.h"
 
 CDimension::CDimension()
     : mD1(0), mD2(0), mD3(0),
@@ -149,6 +150,19 @@ CDimension CDimension::operator-(const CDimension & rhs) const
     return result;
   }
 
+CDimension CDimension::operator*(const C_FLOAT64 & rhs) const
+  {
+    CDimension result;
+    if (isContradiction())
+      result.setContradiction();
+    else if (isUnknown())
+      result.setUnknown();
+    else
+      result.setDimension(mD1 * rhs, mD2 * rhs, mD3 * rhs);
+
+    return result;
+  }
+
 CDimension CDimension::compare(const CDimension & rhs) const
   {
     CDimension result;
@@ -189,7 +203,8 @@ std::ostream & operator<<(std::ostream &os, const CDimension & d)
 CFindDimensions::CFindDimensions(const CFunction* function)
     : mpFunction(function),
     mRootDimension(),
-    mUseHeuristics(false)
+    mUseHeuristics(false),
+    mM1(0.0), mM2(0.0)
 {
   setupDimensions();
 }
@@ -279,12 +294,54 @@ std::vector<std::string> CFindDimensions::findDimensionsBoth()
 void CFindDimensions::findDimensions()
 {
   if (!mpFunction) return;
+
+  if (dynamic_cast<const CMassAction*>(mpFunction))
+    {
+      findDimensionsMassAction();
+      return;
+    }
+
   unsigned C_INT32 i, imax = mpFunction->getVariables().size();
   for (i = 0; i < imax; ++i)
     if (mDimensions[i].isUnknown())
       findDimension(i);
 
   //TODO: conistency check for known dimensions?
+}
+
+void CFindDimensions::setChemicalEquation(const CChemEq* eq)
+{
+  //mpChemEq = eq;
+  if (!eq)
+    {
+      mM1 = 0.0; mM2 = 0.0;
+      return;
+    }
+  mM1 = eq->getMolecularity(CChemEq::SUBSTRATE);
+  mM2 = eq->getMolecularity(CChemEq::PRODUCT);
+}
+
+void CFindDimensions::setMolecularitiesForMassAction(const C_FLOAT64 & m1, const C_FLOAT64 & m2)
+{
+  mM1 = m1; mM2 = m2;
+}
+
+void CFindDimensions::findDimensionsMassAction()
+{
+  //std::cout << "findDimensionsMassAction" << std::endl;
+  CDimension conc; conc.setDimension(1.0, -1.0, 0.0);
+
+  if (mDimensions[0].isUnknown())
+    {
+      mDimensions[0] = mRootDimension - conc * mM1;
+    }
+
+  if (mDimensions.size() == 2) return; //irreversible
+
+  if (mDimensions[2].isUnknown())
+    {
+      mDimensions[2] = mRootDimension - conc * mM2;
+    }
 }
 
 //find dim for one parameter
