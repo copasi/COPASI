@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.21.2.2 $
+   $Revision: 1.21.2.3 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/21 20:45:21 $
+   $Date: 2006/05/22 14:53:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
