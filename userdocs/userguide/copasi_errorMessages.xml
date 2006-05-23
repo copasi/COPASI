@@ -1,7 +1,7 @@
 <!-- Please don't remove, I want to use this to easily be able to check if messages has been changed in order to be able to update this file. -->
 <!--
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_errorMessages.xml,v $
-   $Revision: 1.1.2.1 $
+   $Revision: 1.1.2.2 $
 -->
 
 <chapter id="errorMessages" xreflabel="Error Messages">
@@ -540,119 +540,119 @@ Also keep in mind that the vast majority of error messages listed here are inter
 <tbody>
  <row>
    <entry>SBML (2): The SBML document contains no model.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>This error occurs if you try to load an SBML file that does not contain a model.</entry>
  </row>
  <row>
    <entry>SBML (3): The SBML document contains rules that were ignored.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Copasi does not support SBML rules yet, so if you load an SBML file that contains rules, Copasi will warn you that the rules have been ignored. Please be aware that this will very likely change simulation results.</entry>
  </row>
  <row>
    <entry>SBML (4): The SBML document contains events that were ignored.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Copasi does not support SBML events yet, so if you load an SBML file that contains events, Copasi will warn you that the events have been ignored. Please be aware that this will very likely change simulation results.</entry>
  </row>
  <row>
-   <entry>SBML (5): Compartment %s referenced by species %s does not exist.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (5): Compartment COMPARTMENTID referenced by species SPECIESID does not exist.</entry>
+   <entry>In the SBML file a the species with id SPECIESID references the compartment with id COMPARTMENTID, but a compartment with this id does not exist.</entry>
  </row>
  <row>
-   <entry>SBML (6): Annotations in SBase element of SBML Level 1 files, this is invalid and has been ignored.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (6): Annotations in SBML element of SBML Level 1 files, this is invalid and has been ignored.</entry>
+   <entry>Some programs add annotations to the SBML element of the file which is incorrect. Since it doesn't affect the mode, Copasi reads the model anyway but ignores the annotation. If you want to keep the annotation please open the SBML file in a text editor and move it to e.g. the model element.</entry>
  </row>
  <row>
    <entry>SBML (7): One or more model values have not been set.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>In order to simulate a model in Copasi it has to be complete, meaning all initial values and parameter values have to be set. SBML allows the user to specify incomplete models. This warning tells the user that some values in the model have not been set and that the model is incomplete. Most tasks in Copasi will not work with this model until all values have been set. Unset values will be shown as NaN in Copasi graphical user interface. The fastest way to find unset values is to use the <link likend="parameterView">parameter view</link>.</entry>
  </row>
  <row>
-   <entry>SBML (8): Expression tree for kinetic of reaction '%s' could not be converted.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (8): Expression tree for kinetic of reaction 'REACTIONID' could not be converted.</entry>
+   <entry>The kinetic formula for the reaction with id REACTIONID could not be converted into Copasis internal function representation. If you think the formula is correct, please send as a bug report with the SBML file included so we can have a look at it.</entry>
  </row>
  <row>
-   <entry>SBML (9): Could not set function from expression in reaction '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (9): Could not set function from expression in reaction 'REACTIONID'.</entry>
+   <entry>Somehow Copasi was able to generate in internal representation for a function formula, but could not use it with a reaction. If you get such an error, please send as a bug report with the SBML file so we can look at it.</entry>
  </row>
  <row>
    <entry>SBML (10): Copasi does not support stoichiometric expressions yet.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Although Copasi does support fractional stoichiometries, arbitrary stoichiometric expressions are not supported yet. If such a stoichiometry is encountered, Copasi will not read the file.</entry>
  </row>
  <row>
-   <entry>SBML (11): Function \"%s\" does not start with a Lambda element.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (11): Function \"FUNCTIONID\" does not start with a Lambda element.</entry>
+   <entry>Function definitions in MathML have to start with a Lambda element. If you see this error, the function with the id FUNCTIONID is very likely incorrect MathML because it is missing this element.</entry>
  </row>
  <row>
-   <entry>SBML (12): Function \"%s\" contains invalid parameter list.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (12): Function \"FUNCTIONID\" contains invalid parameter list.</entry>
+   <entry>The error message means that the parameter list for the function definition wih id FUNCTIONID contains an invalid type, e.g. a number instead of a parameter name.</entry>
  </row>
  <row>
-   <entry>SBML (13): Could not read function definition for function \"%s\".</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (13): Could not read function definition for function \"FUNCTIONID\".</entry>
+   <entry>Copasi could not read the function definition with id FUNCTIONID. If you think this function definition is correct, please send us a bug report and include the SBML file.</entry>
  </row>
  <row>
    <entry>SBML (14): Could not import function with id \"%s\".</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>This error message is very similar to the one above but the error here already occured in libsbml while reading the function definition.</entry>
  </row>
  <row>
-   <entry>SBML (15): Could not find function with id \"%s\".</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (15): Could not find function with id \"ID\".</entry>
+   <entry>Copasi could not find the function with id ID while exporting a model to SBML. If you get this error message please save the model as a Copasi file and send us a bug report with this file.</entry>
  </row>
  <row>
    <entry>SBML (16): Loop found in function. That means a function calls itself either directly or indirectly.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Copasi has found a loop in a function call while exporting your model to SBML. THis should never happen so if you see this error message please save the model as a Copasi file and send us a bug report with this file.</entry>
  </row>
  <row>
    <entry>SBML (17): Single compartment reaction found where the kinetic law does not include a multiplication by the volume.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>This is a warning only. Please see the Copasi FAQ question \"Why are some rate laws in SBML files exported by COPASI multiplied by the compartment volume?\" at <ulink url="http://www.copasi.org">http://www.copasi.org/</ulink>.</entry>
  </row>
  <row>
    <entry>SBML (18): Support for \"hasOnlySubstanceUnit\" flag on species %s is experimental.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>The latest versions of Copasi support the hasOnlySubstanceUnits flag on species in SBML files. It should work just fine, but it has not been heavily tested yet.</entry>
  </row>
  <row>
-   <entry>SBML (19): spatialSizeUnits on species %s ignored.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (19): spatialSizeUnits on species SPECIESID ignored.</entry>
+   <entry>Copasi does not support the spatialSizeUnits attribute for species. The species with id SPECIESID in the current file seems to use this attribute however.</entry>
  </row>
  <row>
-   <entry>SBML (20): Setting an initial concentration on species %s which has the \"hasOnlySubstanceUnits\" flag set is not allowed.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (20): Setting an initial concentration on species SPECIESID which has the \"hasOnlySubstanceUnits\" flag set is not allowed.</entry>
+   <entry>The SBML file seems to contain a species with id SPECIESID that has the hasOnlySubstanceUnits flag set to true but also has an initialConcentration set. This is incorrect, please specify an initial amount instead.</entry>
  </row>
  <row>
-   <entry>SBML (21): Setting an initial concentration on species \"%s\" which is in a compartment with spatial dimensions 0 is not allowed.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (21): Setting an initial concentration on species \"SPECIESID\" which is in a compartment with spatial dimensions 0 is not allowed.</entry>
+   <entry>Having a compartment with a spatial dimension of 0 implies that all species within this compartment have the hasOnlySubstanceUnits flag set to true. Therefore it is incorrect to specify an initial concentration for those species. Specify an initial amount instead. Current version of Copasi refuse to read models with compartments that have their spatial size units set to 0 so this error message will never appear.</entry>
  </row>
  <row>
-   <entry>SBML (22): Current versions of Copasi only supports three dimensional compartments. \"%s\" will be converted to three dimensions.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (22): Current versions of Copasi only supports three dimensional compartments. \"COMPARTMENTID\" will be converted to three dimensions.</entry>
+   <entry>Copasi only supports three dimensional compartments so far, so all compartments are converted to three dimensions no matter what is specified in the SBML file. Independent of this is the handling of spatial dimensions that are set to 0 in the SBML file (see error SBML (21) above). Current version of Copasi refuse to read models with compartments that have their spatial size units set to 0 so this error message will never appear.</entry>
  </row>
  <row>
-   <entry>SBML (23): Unable to handle compartment \"%s\" which has spatial dimensions of 0.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (23): Unable to handle compartment \"COMPARTMENTID\" which has spatial dimensions of 0.</entry>
+   <entry>Copasi does not handle models that include compartments with spatial dimensions set to 0. This might change in future versions.</entry>
  </row>
  <row>
-   <entry>SBML (24): Units for compartment \"%s\" ignored.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (24): Units for compartment \"COMPARTMENTID\" ignored.</entry>
+   <entry>Copasi refuses to read models where units other than \"volume\" are specified for a compartment since Copasi can not convert units yet.</entry>
  </row>
  <row>
-   <entry>SBML (25): Units for species \"%s\" ignored.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (25): Units for species \"SPECIESID\" ignored.</entry>
+   <entry>Copasi refuses to read models where units other than \"substance\" are specified for a species since Copasi can not convert units yet.</entry>
  </row>
  <row>
-   <entry>SBML (26): Units for parameter \"%s\" ignored.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (26): Units for parameter \"PARAMETERID\" ignored.</entry>
+   <entry>Copasi ignores units set on individual compartments since unit cnversion is not supported in Copasi yet. Please be aware that depending on the units results generated from such a model might be incorrect.</entry>
  </row>
  <row>
-   <entry>SBML (27): Error in kinetic law for reaction \"%s\".</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (27): Error in kinetic law for reaction \"REACTIONID\".</entry>
+   <entry>Some error occured while creating the kinetic law for the reaction with id REACTIONID. If you think the kinetic law in the SBML file is OK, please send a bug report and include the SBML file so that we can have a look at it.</entry>
  </row>
  <row>
-   <entry>SBML (28): Error in function definition with id \"%s\".</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>SBML (28): Error in function definition with id \"ID\".</entry>
+   <entry>Somehow Copasi was not able to convert the function definition with id ID into it's internal format. If you think the function definition is correct, please send a bug report and include the SBML file.</entry>
  </row>
  <row>
    <entry>SBML (29): Unable to handle reactions with the \"fast\" flag set.\nThe flag has been set to false.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Copasi is not yet able to handle reactions that are set to fast correctly the flag will be automatically set to false on import. In some cases simulation results for these models can be incorrect.</entry>
  </row>
  <row>
    <entry>SBML (30): Can't handle units of type item with scale set to 1.\n If this file was created with COPASI RC1 or older please see the COPASI FAQ.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Copasi pior to and including RC1 had a bug in the SBML exporter. If the default concentration units were set to itmes, Copasi would set the scale to 1 instead of 0 on the exported substance unit definition. You can correct those files by opening them in a text editor and setting the scale for the substance units to 0. If the file was not created with Copasi, the scale was probalbly meant to be 1 and Copasi can not import it since it does not do unit conversion yet.</entry>
  </row>
 </tbody>
 </tgroup>
