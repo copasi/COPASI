@@ -1,9 +1,9 @@
 /* Begin CVS Header
-   $Source: /home/cvs/copasi_dev/copasi/CopasiUI/CQFittingResult.cpp,v $
-   $Revision: 1.2 $
+   $Source: /home/cvs/copasi_dev/cvs_admin/c++style,v $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/03/22 17:22:56 $
+   $Date: 2006/04/27 00:50:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingResult.ui'
  **
- ** Created: Wed Mar 22 12:21:31 2006
- **      by: The User Interface Compiler ($Id: CQFittingResult.cpp,v 1.2 2006/03/22 17:22:56 shoops Exp $)
+ ** Created: Tue May 23 12:44:20 2006
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.6   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -77,6 +77,9 @@ CQFittingResult::CQFittingResult(QWidget* parent, const char* name)
   languageChange();
   resize(QSize(401, 253).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
+
+  // signals and slots connections
+  connect(mpBtnSave, SIGNAL(clicked()), this, SLOT(slotSave()));
   init();
 }
 
