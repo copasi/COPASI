@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.29.2.1 $
+   $Revision: 1.29.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/16 17:34:18 $
+   $Date: 2006/05/23 14:47:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,10 @@
 /***************************************************************************
                   CRandomSearch.cpp  -  Random Optimizer
                      -------------------
+
+
+
+
 
 
 
@@ -86,7 +90,7 @@ bool CRandomSearch::initialize()
   mpRandom = CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
                                       * getValue("Seed").pUINT);
 
-  mBestValue = DBL_MAX * 2.0;
+  mBestValue = mpOptProblem->getSolutionValue();
 
   mVariableSize = mpOptItem->size();
   mIndividual.resize(mVariableSize);

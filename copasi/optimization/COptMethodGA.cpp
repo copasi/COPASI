@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.43.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/02 19:30:19 $
+   $Date: 2006/05/23 14:47:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -418,8 +418,8 @@ bool COptMethodGA::initialize()
   mCrossOver.resize(mVariableSize);
 
   mValue.resize(2*mPopulationSize);
-  mValue = 2 * DBL_MAX;
-  mBestValue = 2 * DBL_MAX;
+  mValue = mpOptProblem->getSolutionValue();
+  mBestValue = mpOptProblem->getSolutionValue();
 
   mShuffle.resize(mPopulationSize);
   for (i = 0; i < mPopulationSize; i++)
