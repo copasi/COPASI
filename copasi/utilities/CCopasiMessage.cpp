@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.31.2.1 $
+   $Revision: 1.31.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/17 19:03:59 $
+   $Date: 2006/05/23 14:43:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -234,6 +234,11 @@ void CCopasiMessage::handler(const bool & /* _throw */)
   mText += Text;
 
   if (mType != RAW) lineBreak();
+
+  // Remove the message: No more messages.
+  if (mMessageDeque.size() == 1 &&
+      mMessageDeque.back().getNumber() == MCCopasiMessage + 1)
+    getLastMessage();
 
   mMessageDeque.push_back(*this);
 
