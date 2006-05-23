@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.64.2.3 $
+   $Revision: 1.64.2.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/22 15:31:11 $
+   $Date: 2006/05/23 15:57:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,8 +101,9 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
                         COPASI_VERSION_BUILD);
 
   mpUndefined = new CFunction("undefined");
-  mpUndefined->setInfix("0/0");
+  mpUndefined->setInfix("nan");
   mpUndefined->compile();
+
   GlobalKeys.remove(mpUndefined->getKey());
   GlobalKeys.addFix("UndefinedFunction_0", mpUndefined);
 

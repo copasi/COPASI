@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.139 $
+   $Revision: 1.139.2.1 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/05/03 14:18:18 $
+   $Author: shoops $
+   $Date: 2006/05/23 15:57:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,10 @@
 /**********************************************************************
  **  $ CopasiUI/FunctionWidget1.cpp
  **  $ Author  : Mrinmayee Kulkarni
+
+
+
+
 
 
 
@@ -1075,7 +1079,8 @@ void FunctionWidget1::updateMmlWidget()
   mStack->raiseWidget(mMmlViewBox);
 
   mpFunction->createListOfParametersForMathML(params);
-  if (params.empty())
+
+  if (textBrowser->text().isEmpty())
     mStack->raiseWidget(textBrowser);
   else
     mpFunction->writeMathML(mml, params, true, false, 0);
