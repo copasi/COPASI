@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.33.2.2 $
+   $Revision: 1.33.2.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/22 18:23:57 $
+   $Date: 2006/05/23 14:46:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -398,7 +398,7 @@ bool CFitProblem::calculate()
 
                   if (!Continue)
                     {
-                      mCalculateValue = DBL_MAX;
+                      mCalculateValue = mInfinity;
                       break;
                     }
 
@@ -475,18 +475,19 @@ bool CFitProblem::calculate()
       CCopasiMessage::getLastMessage();
 
       mFailedCounter++;
-      mCalculateValue = DBL_MAX;
+      mCalculateValue = mInfinity;
       if (pExp) pExp->restoreModelIndependentData();
     }
 
   catch (...)
     {
       mFailedCounter++;
-      mCalculateValue = DBL_MAX;
+      mCalculateValue = mInfinity;
       if (pExp) pExp->restoreModelIndependentData();
     }
 
-  if (isnan(mCalculateValue)) mCalculateValue = DBL_MAX;
+  if (isnan(mCalculateValue))
+    mCalculateValue = mInfinity;
 
   if (mpCallBack) return mpCallBack->progress(mhCounter);
 
@@ -646,12 +647,6 @@ bool CFitProblem::setResidualsRequired(const bool & required)
 const CVector< C_FLOAT64 > & CFitProblem::getResiduals() const
 {return mResiduals;}
 
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
-
 bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
                                       const C_FLOAT64 & resolution)
 {
@@ -682,7 +677,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   // Keep the results
   CVector< C_FLOAT64 > DependentValues = mDependentValues;
 
-  if (mSolutionValue == DBL_MAX)
+  if (mSolutionValue == mInfinity)
     return false;
 
   // The statistics need to be calculated for the result, i.e., now.
@@ -992,10 +987,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   return true;
 }
-
-#ifdef WIN32
-# pragma warning (default: 4056 4756)
-#endif
 
 const C_FLOAT64 & CFitProblem::getRMS() const
 {return mRMS;}
