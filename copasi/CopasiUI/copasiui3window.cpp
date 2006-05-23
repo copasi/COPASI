@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.171.2.2 $
+   $Revision: 1.171.2.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/22 15:03:23 $
+   $Date: 2006/05/23 16:14:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -347,9 +347,6 @@ void CopasiUI3Window::slotFileOpen(QString file)
       catch (CCopasiException except)
         {
           success = false;
-          setCursor(oldCursor);
-          QMessageBox::critical(this, QString("File Error"), QString("Error while loading file ") + newFile + QString("!"), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-          dataModel->createModel();
         }
       setCursor(oldCursor);
 
@@ -360,6 +357,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
 
           QMessageBox::critical(this, QString("File Error"), Message,
                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          dataModel->createModel();
         }
 
       CCopasiMessage msg = CCopasiMessage::getLastMessage();
@@ -566,6 +564,70 @@ void CopasiUI3Window::CleanUp()
  ** Descripton:- This method is called when the users clicks on the print as
  **              option in the menu File and is used to send the document ro
  **              printing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
