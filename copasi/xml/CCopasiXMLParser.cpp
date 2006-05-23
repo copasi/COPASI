@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.130 $
+   $Revision: 1.130.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 19:16:14 $
+   $Date: 2006/05/23 16:15:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2049,6 +2049,9 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::ReactionElement::end(const XML_Char *pszName)
 {
+  if (!strcmp(pszName, "Reaction"))
+    mCurrentElement = Reaction;
+
   switch (mCurrentElement)
     {
     case Reaction:
