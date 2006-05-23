@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.cpp,v $
-   $Revision: 1.4.2.4 $
+   $Revision: 1.4.2.5 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/22 20:38:06 $
+   $Author: shoops $
+   $Date: 2006/05/23 12:28:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -284,40 +284,49 @@ void CQLyapWidget::runLyapTask()
 
   CCopasiMessage::clearDeque();
 
-  try
-    {
-      success = tt->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
-    }
-  catch (CCopasiException)
-    {
-      success = false;
-    }
-
-  if (!success &&
-      CCopasiMessage::getHighestSeverity() > CCopasiMessage::WARNING)
-    {
-      QMessageBox::warning(this, "Simulation Error",
-                           CCopasiMessage::getAllMessageText().c_str(),
-                           QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-
-      return;
-    }
-
-  CCopasiMessage::clearDeque();
-  success = true;
-
-  CLyapProblem* trajectoryproblem =
-    dynamic_cast<CLyapProblem *>(tt->getProblem());
-  assert(trajectoryproblem);
-
-  CLyapMethod* trajectorymethod =
-    dynamic_cast<CLyapMethod *>(tt->getMethod());
-  assert(trajectorymethod);
-
   setCursor(Qt::WaitCursor);
   CCopasiMessage::clearDeque();
   CProgressBar * tmpBar = new CProgressBar();
   tt->setCallBack(tmpBar);
+
+  try
+    {
+      if (!tt->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL))
+        throw CCopasiException(CCopasiMessage::peekLastMessage());
+    }
+
+  catch (CCopasiException Exception)
+    {
+      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+        {
+          tmpBar->finish();
+          QMessageBox::critical(this, "Initialization Error",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+
+          success = false;
+          goto finish;
+        }
+    }
+
+  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
+    {
+      C_INT Result =
+        QMessageBox::warning(this, "Initialization Warning",
+                             CCopasiMessage::getAllMessageText().c_str(),
+                             QMessageBox::Ignore | QMessageBox::Default,
+                             QMessageBox::Abort);
+      CCopasiMessage::clearDeque();
+
+      if (Result == QMessageBox::Abort)
+        {
+          success = false;
+          goto finish;
+        }
+    }
+
+  CCopasiMessage::clearDeque();
 
   try
     {
@@ -337,6 +346,7 @@ void CQLyapWidget::runLyapTask()
         }
     }
 
+finish:
   tt->restore();
 
   tt->setCallBack(NULL);
