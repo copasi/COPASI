@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.155.2.1 $
+   $Revision: 1.155.2.2 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/20 23:43:13 $
+   $Author: shoops $
+   $Date: 2006/05/24 02:26:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1002,7 +1002,7 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
       CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
       break;
     case CEvaluationNode::INVALID:
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 2);
+      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
       // create an error message
       break;
     default:
@@ -1211,7 +1211,7 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
       CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
       break;
     case CEvaluationNode::INVALID:
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 2);
+      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
       // create an error message
       break;
     default:
@@ -1229,17 +1229,17 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
 
   if (index == C_INVALID_INDEX)
     {
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 8, (static_cast<std::string>(pVariableNode->getData())).c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 8, (static_cast<std::string>(pVariableNode->getData())).c_str());
     }
   if (type == CFunctionParameter::VFLOAT64 || type == CFunctionParameter::VINT32)
     {
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 10, (static_cast<std::string>(pVariableNode->getData())).c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 10, (static_cast<std::string>(pVariableNode->getData())).c_str());
     }
   const std::string& key = this->getParameterMappings()[index][0];
   CCopasiObject* pObject = GlobalKeys.get(key);
   if (!pObject)
     {
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9 , key.c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9 , key.c_str());
     }
   pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ">");
   return pObjectNode;
