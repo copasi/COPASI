@@ -1,65 +1,143 @@
 <chapter id="methods" xreflabel="Methods">
 <title>Methods</title>
+
 <sect1 id="methodTimeCourse" xreflabel="Time Course">
 <title>Time Course Calculation</title>
-<para>With the time course simulation, you can calculate the trajectory for the species in your model over a given time interval. There are different methods to calculate such trajectories and depending on your model, one or several of them may be appropriate to do a time course simulation of your model.</para>
-<para>Copasi supports three different methodologies to calculate a trajectory. The first method is to do a deterministic time course simulation of your model using the LSODA algorithm. For systems with small particle numbers, it is sometimes better to do a stochastic simulation rather then a deterministic one. Copasi supports two methods for the stochastic calculation of time series, one is called <guilabel>stochastic</guilabel> and uses the next reaction method described by ???. The other method for stochastic simulation is the Tau-Leap method described in ???.</para>
-<para>Since the deterministic simulation is inappropriate for some systems but on the other hand, the stochastic simulation is too time consuming, there are some methods that try to combine the advantages of both deterministic and stochastic simulation. Most of those methods are termed hybrid methods. Copasi also includes such a hybrid method which in some systems where deterministic simulation would lead to incorrect results will give the correct time series but is still computationally less demanding than a pure stochastic simulation.</para>
+
+<para>
+With the time course simulation, you can calculate the trajectory for
+the species in your model over a given time interval. There are
+different methods to calculate such trajectories and depending on your
+model, one or several of them may be appropriate to do a time course
+simulation of your model.
+</para>
+
+<para>
+COPASI supports three different methodologies to calculate a
+trajectory. The first method is to do a deterministic time course
+simulation of your model using the LSODA algorithm. For systems with
+small particle numbers, it is sometimes better to do a stochastic
+simulation rather then a deterministic one. COPASI supports two
+methods for the stochastic calculation of time series, one is called
+<guilabel>stochastic</guilabel> and uses the next reaction method
+described by ???. The other method for stochastic simulation is the
+Tau-Leap method described in ???.
+</para>
+
+<para>Since the deterministic simulation is inappropriate for some
+systems but on the other hand, the stochastic simulation is too time
+consuming, there are some methods that try to combine the advantages
+of both deterministic and stochastic simulation. Most of those methods
+are termed hybrid methods. COPASI also includes such a hybrid method
+which in some systems where deterministic simulation would lead to
+incorrect results will give the correct time series but is still
+computationally less demanding than a pure stochastic simulation.
+</para>
+
 <sect2 id="DeterministicSimulation" xreflabel="DeterministicSimulation">
 <title>Deterministic Simulation</title>
+
 <sect3 id="LSODA" xreflabel="LSODA">
 <title>Deterministic (LSODA)</title>
 <para>
-To be written.
-</para>
+The default method in COPASI to calculate a time course is
+LSODA. LSODA is part of the <ulink
+url="http://www.netlib.org/odepack/opkd-sum">ODEPACK </ulink>
+library. LSODA was written by Linda R. Petzold and Alan C. Hindmarsh.
+<!--
+	Computing and Mathematics Research Division,
+	Lawrence Livermore National Laboratory,
+	Livermore, CA 94550, U.S.A.
+-->
+It solves systems <mml:math><mml:mi>dy</mml:mi><mml:mo>/</mml:mo>
+<mml:mi>dt</mml:mi><mml:mo> = </mml:mo><mml:mi>f </mml:mi></mml:math> 
+with a dense or banded Jacobian when the problem is stiff, but it
+automatically selects between non-stiff (Adams) and stiff (BDF)
+methods.  It uses the non-stiff method initially, and dynamically
+monitors data in order to decide which method to use.
+ </para>
 
 <variablelist><title>Options for LSODA</title>
 <varlistentry><term>Integrate Reduced Model</term>
 <listitem>
 <para>
-To be written
+This parameter is a boolean value to determine whether the integration
+shall be performed using the mass conservation laws, i.e., reducing
+the number of system variables or to use the complete model. A value of
+'1' (the default) instructs COPASI to make use of the mass
+conservation laws, where as a value of '0' instructs COPASI to
+determine all variables through ODEs. 
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Relative Tolerance</term>
 <listitem>
 <para>
-To be written
+This parameter is a numeric value specifying the desired relative
+tolerance the user wants to achieve. A smaller value means that the
+trajectory is calculated more accurate. The default value is
+<mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>-6</mml:mn></mml:msup></mml:math>.
+Please note that best achievable relative tolerance is approximately 
+<mml:math><mml:mn>2.22</mml:mn><mml:mo>*</mml:mo>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>-16</mml:mn></mml:msup></mml:math>.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Use Default Absolute Tolerance</term>
 <listitem>
 <para>
-To be written
+This parameter is a boolean value to determine whether COPASI shall
+make a guess for the absolute tolerance. The absolute tolerance
+determines whether numbers are considered to be zero during
+calculation. Numbers with an absolute values less than the absolute
+tolerance are treated as zero. A value of '1' (the default) instructs
+COPASI to make a guess which can be found in the Absolute Tolerance
+parameter after calculation. When specifying a value of '0' one needs
+also to provide a value for the absolute tolerance.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Absolute Tolerance</term>
 <listitem>
 <para>
-To be written
+This parameter is a numeric value specifying the desired absolute
+tolerance the user wants to achieve or if Use Default Absolute
+Tolerance parameter is set '1' the value COPASI selected. Please note
+that COPASI internally calculates with particle numbers which might be
+quite large (<mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>23</mml:mn></mml:msup></mml:math>)
+and therefore an absolute tolerance of 
+<mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>9</mml:mn></mml:msup></mml:math>
+is already small.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Adams Max Order</term>
 <listitem>
 <para>
-To be written
+This parameter is a positive integer value specifying the maximal
+order the non-stiff Adams integration method shall attempt before
+switching to the stiff BDF method. The default and maximal order is '12'.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>BDF Max Order</term>
 <listitem>
 <para>
-To be written
+This parameter is a positive integer value specifying the maximal
+order the stiff BDF integration method shall attempt before switching
+to smaller internal stepsizes. The default and maximal order is '5'.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Max Internal Steps</term>
 <listitem>
 <para>
-To be written
+This parameter is a positive integer value specifying the maximal
+number of internal steps the integrator is allowed to take before the
+next desired reporting time. The default value is '10000'. 
 </para>
 </listitem>
 </varlistentry>
@@ -68,14 +146,14 @@ To be written
 </sect3>
 </sect2>
 <sect2 id="StochasticSimulation" xreflabel="Stochastic Simulation">
-<title>Deterministic Simulation</title>
+<title>Stochastic Simulation</title>
 <sect3 id="NextReactionMethod" xreflabel="Next Reaction Method">
 <title>The Next-Reaction-Method</title>
 <para>
 To be written.
 </para>
 
-<variablelist><title>Srochastic (Gibson + Bruck)</title>
+<variablelist><title>Stochastic (Gibson + Bruck)</title>
 <varlistentry><term>Max Internal Steps</term>
 <listitem>
 <para>
@@ -279,7 +357,7 @@ To be written
 
 <sect1 id="optimizationMethod" xreflabel="Optimization Method">
 <title>Optimization Methods</title>
-<para>The optimization method as described in <xref linkend="optimization">this chapter</xref> tries to minimize a given objective function. There are several ways to do this and copasi supports 5 different methods for the minimization of an objective function.</para>
+<para>The optimization method as described in <xref linkend="optimization">this chapter</xref> tries to minimize a given objective function. There are several ways to do this and COPASI supports 5 different methods for the minimization of an objective function.</para>
 <sect2 id="RandomSearch" xreflabel="Random Search">
 <title>Random Search</title>
 <para>To be written.</para>
