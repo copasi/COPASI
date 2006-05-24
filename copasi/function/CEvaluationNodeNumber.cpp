@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.18.2.1 $
+   $Revision: 1.18.2.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/21 21:09:33 $
+   $Date: 2006/05/24 09:03:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,7 +91,7 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
         }
       else if (isnan(node.getReal()))
         {
-          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NaN");
+          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
         }
       else
         {
