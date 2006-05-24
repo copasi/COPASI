@@ -1,7 +1,7 @@
 <!-- Please don't remove, I want to use this to easily be able to check if messages has been changed in order to be able to update this file. -->
 <!--
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_errorMessages.xml,v $
-   $Revision: 1.1.2.2 $
+   $Revision: 1.1.2.3 $
 -->
 
 <chapter id="errorMessages" xreflabel="Error Messages">
@@ -10,48 +10,13 @@
 This section contains a list of Copasi error messages and an explanation when and/or why this error might have occured. This is work in progress and not all error messages might have been fully documented here yet.
 </para>
 <para>
-Also keep in mind that the vast majority of error messages listed here are internal to Copasi and users will probably never see them at all. If you see one of those, you know that there is a bug in Copasi and you should provide a bug report that is as detailed as possible. At the very least, the bug report should include a description of what you did when the bug occured, the operating system you are running Copasi on and the version of Copasi you were using. Naturally, if possible, we would also like to have some file that shows the error reproducibly since this makes finding bugs a lot easier for us. Error messages that you should never encounter will be marked INTERNAL in the description. So if you encounter any error message marked as INTERNAL please provide as with a bug report so we can fix it.
+Also keep in mind that the vast majority of error messages listed here are internal to Copasi and users will probably never see them at all. If you see one of those, you know that there is a bug in Copasi and you should provide a bug report that is as detailed as possible. At the very least, the bug report should include a description of what you did when the bug occured, the operating system you are running Copasi on and the version of Copasi you were using. Naturally, if possible, we would also like to have some file that shows the error reproducibly since this makes finding bugs a lot easier for us. Error messages that you should never encounter will be marked INTERNAL in the description. So if you encounter any error message marked as INTERNAL please provide as with a bug report so we can fix it. There are two ways to provide a bug report. The first one is to go to Copasis <ulink url="http://calvin.bioinformatics.vt.edu/bugzilla/createaccount.cgi">bugzilla webpage</ulink> and create a new account if you don't already have one and enter a full bug report into the bugzilla database. The other way to report is bug is to send an email to bugs@copasi.org with the information mentioned above. 
 </para>
 <sect1 id="configReaderErrors" xreflabel="Configuration Readers Error Messages">
 <title>Configuration Reader Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CReadConfig (1): Variable '%s' not found in '%s(%d)'.</entry>
-   <entry>TO BE WRITTEN</entry>
- </row>
- <row>
-   <entry>CReadConfig (2): Cannot open file '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
- </row>
- <row>
-   <entry>CReadConfig (3): Cannot read file '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
- </row>
- <row>
-   <entry>CReadConfig (4): Cannot close file '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
- </row>
- <row>
-   <entry>CReadConfig (5): Invalid type '%s' for  Variable '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+The CReadConfig mesages report problems when reading a Gepasi file. 
 </para>
-</sect1>
-
-<sect1 id="kinFunctionErrors" xreflabel="Kinetic Function Error Messages">
-<title>Kinetic Function Error Messages</title>
 <para>
 <table frame="all">
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
@@ -63,34 +28,28 @@ Also keep in mind that the vast majority of error messages listed here are inter
 </thead>
 <tbody>
  <row>
-   <entry>CKinFunction (1): Cannot find identifier '%s' in function '%s'</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CReadConfig (1): Variable 'VARIABLENAME' not found in 'FILENAME(LINENUMBER)'.</entry>
+   <entry>COPASI expects the variable VARIABLENAME in the file FILENAME at line
+LINENUMBER. Often LINENUMBER will be the last line of the file as COPASI
+searches for the variable.</entry>
  </row>
  <row>
-   <entry>CKinFunction (2): Missing operant in function '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CReadConfig (2): Cannot open file 'FILENAME'.</entry>
+   <entry>COPASI cannot open the file FILENAME.</entry>
  </row>
-</tbody>
-</tgroup>
-</table>
-</para>
-</sect1>
-
-<sect1 id="rangeErrors" xreflabel="Range Error Messages">
-<title>Range Error Messages</title>
-<para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
  <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
+   <entry>CReadConfig (3): Cannot read file 'FILENAME'.</entry>
+   <entry>COPASI cannot read the file FILENAME.</entry>
  </row>
-</thead>
-<tbody>
  <row>
-   <entry>CRange (1): Invalid range ('%d', '%d').</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CReadConfig (4): Cannot close file 'FILENAME'.</entry>
+   <entry>COPASI cannot close the file FILENAME.</entry>
+ </row>
+ <row>
+   <entry>CReadConfig (5): Invalid type 'TYPE' for  Variable 'VARIABLENAME'.</entry>
+   <entry>COPASI expects the variable VARIABLENAME to be of 
+a different type than TYPE.
+</entry>
  </row>
 </tbody>
 </tgroup>
@@ -112,12 +71,12 @@ Also keep in mind that the vast majority of error messages listed here are inter
 </thead>
 <tbody>
  <row>
-   <entry>CCopasiVector (1): Object '%s' not found.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CCopasiVector (1): Object 'OBJECTNAME' not found.</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
-   <entry>CCopasiVector (2): Object '%s' already exists.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CCopasiVector (2): Object 'OBJECTNAME' already exists.</entry>
+   <entry>INTERNAL</entry>
  </row>
 </tbody>
 </tgroup>
@@ -138,12 +97,8 @@ Also keep in mind that the vast majority of error messages listed here are inter
 </thead>
 <tbody>
  <row>
-   <entry>CFunctionParameters (1): The usage '%s' is not unique for a vector type parameter ('%d').</entry>
-   <entry>TO BE WRITTEN</entry>
- </row>
- <row>
-   <entry>CFunctionParameters (2): No parameter with usage '%s' with index >= '%ld'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CFunctionParameters (2): No parameter with usage 'TYPE' with index >= 'INDEX'.</entry>
+   <entry>INTERNAL</entry>
  </row>
 </tbody>
 </tgroup>
@@ -165,7 +120,7 @@ Also keep in mind that the vast majority of error messages listed here are inter
 <tbody>
  <row>
    <entry>CMassAction (1): The function Mass Action reversibility must be either TRUE or FALSE.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
 </tbody>
 </tgroup>
@@ -187,16 +142,12 @@ Also keep in mind that the vast majority of error messages listed here are inter
 </thead>
 <tbody>
  <row>
-   <entry>CCopasiMethod (1): No parameter list found for name '%s' and type '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
- </row>
- <row>
    <entry>CCopasiMethod (2): pProblem == NULL</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
    <entry>CCopasiMethod (3): Model is not set in problem</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
 </tbody>
 </tgroup>
@@ -222,11 +173,7 @@ Also keep in mind that the vast majority of error messages listed here are inter
    <entry>TO BE WRITTEN</entry>
  </row>
  <row>
-   <entry>CReaction (2): In Reaction '%s' the compartment could not be guessed.</entry>
-   <entry>TO BE WRITTEN</entry>
- </row>
- <row>
-   <entry>CReaction (3): Reaction '%s' has no substrates and no products.</entry>
+   <entry>CReaction (3): Reaction 'REACTIONNAME' has no substrates and no products.</entry>
    <entry>TO BE WRITTEN</entry>
  </row>
  <row>
@@ -263,36 +210,49 @@ Also keep in mind that the vast majority of error messages listed here are inter
 </para>
 </sect1>
 
+<!--
+CReaction
+CReaction (1): Function '$name' not found:
+A funtion with the name is not found.
 
-<sect1 id="chemicalEquationErrors" xreflabel="Chemical Equation Error Messages">
-<title>Chemical Equation Error Messages</title>
-<para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CChemEq (1): No Substrates and no Products.</entry>
-   <entry>TO BE WRITTEN</entry>
- </row>
- <row>
-   <entry>CChemEq (2): Substrates in different Compartments.</entry>
-   <entry>TO BE WRITTEN</entry>
- </row>
- <row>
-   <entry>CChemEq (3): No Substrates and Products are in different compartments.</entry>
-   <entry>TO BE WRITTEN</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
-</para>
-</sect1>
+CReaction (3): Reaction '$name' has no substrates and no products:
+Selfexplanatory :)
+
+CReaction (4): Only Metabolites, Compartments, or Parameter object
+nodes are allowed in kinetic functions: 
+Selfexplanatory :) However this might be a bug as we should also
+support model, i.e., time. Ralph can you check as this is SBML
+related. A better class wold be "SBML" since this is related to
+import/export. 
+
+"CReaction (5): Nodes of type '$type' are not implemented yet
+Nodes:
+Selfexplanatory :) A better class wold be "SBML" since this is related to
+import/export. 
+
+CReaction (6): Nodes of type VARIABLE must not appear in an
+expression:
+An expression does not have variables, i.e., nodes of this type must
+not appear. A better class wold be "SBML" since this is related to
+import/export. 
+ 
+CReaction (7): CMetab object '$name' is neither substrate, product nor
+modifier to reaction '%s' but it is used in the kinetic law:
+Selfexplanatory :) A better class wold be "SBML" since this is related to
+import/export. 
+
+CReaction (8): Could not find variable with name '$name':
+Selfexplanatory :) A better class wold be "SBML" since this is related to
+import/export. 
+
+CReaction (9): Could not find object for key '$key':
+Selfexplanatory :) A better class wold be "SBML" since this is related to
+import/export. 
+
+CReaction (10): Parameter '$name' is a vector:
+Selfexplanatory :) A better class wold be "SBML" since this is related to
+import/export. 
+-->
 
 
 <sect1 id="parameterErrors" xreflabel="Parameter Error Messages">
@@ -308,24 +268,20 @@ Also keep in mind that the vast majority of error messages listed here are inter
 </thead>
 <tbody>
  <row>
-   <entry>CCopasiParameter (1): Invalid value '%f' for '%s' which is of type '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
- </row>
- <row>
    <entry>CCopasiParameter (2): Elevation failed, since no parameter is provided.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
    <entry>CCopasiParameter (3): Elevation failed, since the parameter is not of the required source type.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
    <entry>CCopasiParameter (4): Elevation failed, since elevation of children failed.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
    <entry>CCopasiParameter (5): Elevation failed, since the parameter is not member of this group.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
 </tbody>
 </tgroup>
@@ -363,16 +319,19 @@ Also keep in mind that the vast majority of error messages listed here are inter
    <entry>TO BE WRITTEN</entry>
  </row>
  <row>
-   <entry>CTrajectoryMethod (6): Deterministic integration failed. LSODA reported:\n%s \n\nPlease see result for indications of numerical instability.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CTrajectoryMethod (6): Deterministic integration failed. LSODA reported:LSODA_ERROR_MESSAGE Please see result for indications of numerical instability.</entry>
+   <entry>The deterministic integration failed. This is a strong indication of
+numerical problems. A look at the time series calculated up to the
+point the problem occured is often helpful in resolving the problem.
+</entry>
  </row>
  <row>
    <entry>CTrajectoryMethod (7): pProblem == NULL</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
    <entry>CTrajectoryMethod (8): Problem is not a trajectory problem.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
    <entry>CTrajectoryMethod (9): Negative time steps not possible with stochastic simulation.</entry>
@@ -395,7 +354,43 @@ Also keep in mind that the vast majority of error messages listed here are inter
 </table>
 </para>
 </sect1>
+               
+<!--               
+CTrajectoryMethod
+CTrajectoryMethod (1): Hybrid simulation not applicable, since the
+stoichiometry contains a non-integer:
+Selfexplanatory :)
 
+CTrajectoryMethod (2): Hybrid simulation not applicable, since
+reversible reactions exists:
+Selfexplanatory :)
+
+CTrajectoryMethod (3): Hybrid simulation not applicable, since more
+than one compartment is involved:
+Selfexplanatory :)
+
+CTrajectoryMethod (4): Lower Limit '$lower' is greater than Upper
+Limit '$upper':
+Selfexplanatory :)
+
+CTrajectoryMethod (9): Negative time steps not possible with
+stochastic simulation:
+Selfexplanatory :)
+
+CTrajectoryMethod (10): The tau-Leap Method encountered numerical
+problems. You can try to reduce the tau-value:
+Selfexplanatory :)
+
+CTrajectoryMethod (11): Invalid tau-value ('$value'). Tau must have a
+positive value:
+Selfexplanatory :)
+
+CTrajectoryMethod (12): Internal step limit exceeded:
+The internal step limit is exceeded. Reducing the accuracy
+requirements or inccreasing the step limit may resolve the problem.
+-->
+
+ 
 
 <sect1 id="xmlReaderErrors" xreflabel="XML Reader Error Messages">
 <title>XML Reader Error Messages</title>
@@ -448,6 +443,43 @@ Also keep in mind that the vast majority of error messages listed here are inter
 </sect1>
 
 
+
+<!--                                                                   
+XML Package
+XML (1): Required attribute '$name' not found (line: '$line'):
+The required atribute $name is missing at line $line. Please check the
+XML file.
+
+XML (2): XML error (line: '$line', column: '$character'): '$message':
+Incorrect XML encountered at line $line and character
+$character. The message gives further details about the error.
+
+XML (3): Unknown element '$name' encountered at line '$line':
+The XML contained an unknown element $name at line $line. This element
+is ignored.
+ 
+XML (4): Unknown parameter '$name' encountered at line '$line':
+The XML contained an unknown parameter $name at line $line. This parameter
+is ignored.
+
+XML (5): Unknown task type '$tasktype' encountered at line '$line':
+The XML contained an unknown task of type $tasktype at line
+$line. This task is ignored.
+
+XML (6): Invalid function '$name' encountered at line '$line':
+The XML contains an invalid function $name at line $line.
+
+XML (7): Unknown function '$name' in reaction '$reaction' encountered
+at line '$line':
+The kinetic law $name for reaction $reaction in line $line is unknown.
+ 
+XML (8): Unknown variable '$variable' in function '$name' encountered
+at line '$line'. A possible reason is that the variable is a reserved
+string within the function description.:
+Selfexplanatory :)
+-->
+
+
 <sect1 id="configurationErrors" xreflabel="Configuration Error Messages">
 <title>Configuration Function Error Messages</title>
 <para>
@@ -462,11 +494,11 @@ Also keep in mind that the vast majority of error messages listed here are inter
 <tbody>
  <row>
    <entry>Configuration (1): COPASI directory is not set. Some features might not be working correctly. Please set the environment variable COPASIDIR or use the commandline options -c COPASIDIR or --copasidir COPASIDIR to point to the COPASI installation directory.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>self explanatory</entry>
  </row>
  <row>
-   <entry>Configuration (2): Configuration file '%s' found but is not readable.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Configuration (2): Configuration file 'FILENAME' found but is not readable.</entry>
+   <entry>Copasi found the configuration file but could not read it. Please check if you have sufficient permissions on the file FILENAME.</entry>
  </row>
 </tbody>
 </tgroup>
@@ -526,8 +558,55 @@ Also keep in mind that the vast majority of error messages listed here are inter
 </sect1>
 
 
+<!--                  
+Optimization
+Optimization (1): Object '$CN' not found:
+The object specified by $CN can not be found. This normally indicates
+that the model was changed and the parameters or constraints must be
+adjusted. 
+
+Optimization (2): Lower Bound '$CN' not found:
+The lower bound specified by $CN can not be found. This normally indicates
+that the model was changed and the parameters or constraints must be
+adjusted. 
+
+Optimization (3): Upper Bound '$CN' not found:
+The upper bound specified by $CN can not be found. This normally indicates
+that the model was changed and the parameters or constraints must be
+adjusted. 
+
+Optimization (4): Empty Interval ('$lower', '$upper') specified:
+The interal is invalid as the lower bound is larger than the upper
+bound. Please correct the problem.
+ 
+Optimization (5): Invalid Objective Functions:
+The objective function is invalid, i.e, COPASI can not interpret
+it. Pleasse correct the problem.
+
+Optimization (6): No adjustable Parameters specified.
+Since no parameter are specified no optimization can be performed.
+
+Optimization (7): No Task Type specified
+The optimization task type is not specified. Supporte types are
+currently time course and steady state.
+
+Optimization (8): '$failed' Function Evaluation out of '$tried'
+failed:
+A high percentage of failed function evaluation indicates that the
+parameter range is not appropriate or the objective function is ill
+defined. For parameter estimation problems please check also whther
+the eperimental data is correctly specified in accordance with
+provided data files.  
+-->
+
+
+
+
 <sect1 id="sbmlErrors" xreflabel="SBML Error Messages">
 <title>SBML Error Messages</title>
+<para>
+The following errors are generated by the SBML importer and exporter.
+</para>
 <para>
 <table frame="all">
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
@@ -674,16 +753,22 @@ Also keep in mind that the vast majority of error messages listed here are inter
 </thead>
 <tbody>
  <row>
-   <entry>CTrajectoryProblem (1): Invalid step size = '%f'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CTrajectoryProblem (1): Invalid step size = 'VALUE'.</entry>
+   <entry>Normally this occurs when the step size is 0 which obviously is not
+meaningfull.
+</entry>
  </row>
  <row>
-   <entry>CTrajectoryProblem (2): The step number '%f' exceeds the limit. The step number and step size have been adjusted to avoid over flow.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CTrajectoryProblem (2): The step number 'VALUE' exceeds the limit. The step number and step size have been adjusted to avoid over flow.</entry>
+   <entry>The step number exceed the limit supported by COPASI. It has been
+adjusted to the maximal accceptable value.
+</entry>
  </row>
  <row>
-   <entry>CTrajectoryProblem (3): The step size '%f' is to small for the machine accuracy. The step number and step size have been adjusted.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CTrajectoryProblem (3): The step size 'VALUE' is to small for the machine accuracy. The step number and step size have been adjusted.</entry>
+   <entry>The step size is so small that the step number exceeds the limit supported by COPASI. It has been
+adjusted to the maximal accceptable value.
+</entry>
  </row>
 </tbody>
 </tgroup>
@@ -717,6 +802,14 @@ Also keep in mind that the vast majority of error messages listed here are inter
 </table>
 </para>
 </sect1>
+<!--
+DirEntry
+DirEntry (1): Directory entry '$dir' already exists:
+Selfexplanatory :)
+
+DirEntry (2): Directory entry '$dir' is read-only:
+Selfexplanatory :)
+-->
 
 
 <sect1 id="mathMLErrors" xreflabel="MathML Error Messages">
@@ -753,10 +846,24 @@ Also keep in mind that the vast majority of error messages listed here are inter
 </para>
 </sect1>
 
+<!--
+MathML
+Again Ralph this is your domain.
+MathML (1): Unsupported element '$name':
+
+MathML (2): Unknown element in MathML expression:
+
+MathML (3): MINUS operator can only have one or two arguments:
+
+MathML (4): DIVIDE and POWER operator can only have 2 arguments:
+-->
 
 <sect1 id="functionErrors" xreflabel="Function Error Messages">
 <title>Function Error Messages</title>
 <para>
+<para>
+<!-- Add  some explanation about the parser and the lexer. -->
+</para>
 <table frame="all">
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <thead>
@@ -767,20 +874,24 @@ Also keep in mind that the vast majority of error messages listed here are inter
 </thead>
 <tbody>
  <row>
-   <entry>Function (1): Parser error after position: '%d'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Function (1): Parser error after position: 'POSITION'.</entry>
+   <entry>The gramatical function parser encountered an error parsing the function
+description after character POSITION..</entry>
  </row>
  <row>
-   <entry>Function (2): Lexer error after position: '%d'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Function (2): Lexer error after position: 'POSITION'.</entry>
+   <entry>The lexical function parser encountered an error parsing the function
+description after character POSITION.</entry>
  </row>
  <row>
-   <entry>Function (3): Compile error after position: '%d'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Function (3): Compile error after position: 'POSITION'.</entry>
+   <entry>A function compile failed  after character POSITION.</entry>
  </row>
  <row>
    <entry>Function (4): Circular dependency detected.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>The function definition results in circular dependencies and thus are
+invalid. This may happen if the function call another function.
+</entry>
  </row>
 </tbody>
 </tgroup>
@@ -811,6 +922,15 @@ Also keep in mind that the vast majority of error messages listed here are inter
 </para>
 </sect1>
 
+<!--
+CEvaluationNoeObject
+CEvaluationNodeObject (1): Only references to compartment, species,
+parameters and reaction are allowed in expression:
+Selfexplanatory :)
+-->
+
+
+        
 
 <sect1 id="copasiTaskErrors" xreflabel="Copasi Task Error Messages">
 <title>Copasi Task Error Messages</title>
@@ -826,31 +946,38 @@ Also keep in mind that the vast majority of error messages listed here are inter
 <tbody>
  <row>
    <entry>CCopasiTask (1): No problem defined for Task '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
    <entry>CCopasiTask (2): No model associated for Task '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
    <entry>CCopasiTask (3): No method defined for Task '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
-   <entry>CCopasiTask (4): Error compiling Model '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CCopasiTask (4): Error compiling Model 'MODELNAME'.</entry>
+   <entry>This indicates a serious problem with the model. Please check your
+model. If you think your model is OK, please send a bug report.
+</entry>
  </row>
  <row>
    <entry>CCopasiTask (5): No output file defined for report.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>This means that there is a report but that Copasi does not know where to write it to since this has not been specified. All data from this report will be lost.</entry>
  </row>
  <row>
    <entry>CCopasiTask (6): Problems compiling Report '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>At least one of the objets used in the report could not be found. The
+report will generated despite the problem but might not be what you
+exected. This usually happens if you change the model after you defined the plots. 
+</entry>
  </row>
  <row>
    <entry>CCopasiTask (7): Problems compiling Plots.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>At least one of the objets used in the plots could not be found. The
+plots will generated despite the problem but some cureves will be empty. This usually happens if you change the model after you defined the plots. 
+</entry>
  </row>
 </tbody>
 </tgroup>
@@ -873,7 +1000,7 @@ Also keep in mind that the vast majority of error messages listed here are inter
 <tbody>
  <row>
    <entry>CSteadyState (1): The model is explicitly time dependent. Therefore, the calculation of a steady state is not very meaning full.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>One or more of the kinetic laws used in the model is explicitely time dependent a steady state can therefore not be calculated by Copasi (<xlink linkend="">see steady state method</xlink>.</entry>
  </row>
 </tbody>
 </tgroup>
@@ -896,7 +1023,7 @@ Also keep in mind that the vast majority of error messages listed here are inter
 <tbody>
  <row>
    <entry>CFitting (1): Failed to determine work area size for matrix inversion.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
    <entry>CFitting (2): Failed to invert Fisher information matrix.</entry>
@@ -932,6 +1059,44 @@ Also keep in mind that the vast majority of error messages listed here are inter
 </para>
 </sect1>
 
+<!--
+                  
+CFitting (2): Failed to invert Fisher information matrix. dsytrf
+returned with error '%d':
+This reports that the Fisher information matrix could not be inverted
+due to singularity or numerical problems. The parameter statistics
+will be incomplete.
+ 
+CFitting (3): No column with type 'Time' specified for a time course
+experiment:
+For a time course exactly on column of the data file must be mapped to
+the model time.
+
+CFitting (4): Insufficient experimental data (columns requested '%d',
+columns found '%d'):
+The data specification contains more columns than the file
+provides. Calculation is stopped and the problem must be fixed first.
+
+CFitting (5): Incomplete data mapping, column '%d' must be mapped:
+A column which is not ignored is not mapped to an object
+within COPASI. Calculation is stopped and the problem must be fixed
+first. 
+
+CFitting (6): Object '%s' in column '%d' has no numeric value:
+The object must represent a numerical value. Currently this must be a
+floating point. This object can currently not be ued in parameter fitting. 
+
+CFitting (7): Insufficient experimental data (rows requested '%d',
+rows found '%d'):
+The data specification describes nare data rows than the experimental
+data provides.  Calculation is stopped and the problem must be fixed
+first. 
+CFitting (8): Failure reading file '%s':
+The file cannot be read. Calculation is stopped and the problem must be fixed
+first. 
+-->
+
+        
 <sect1 id="copasiObjectErrors" xreflabel="Copasi Object Error Messages">
 <title>Copasi Object Error Messages</title>
 <para>
@@ -946,7 +1111,7 @@ Also keep in mind that the vast majority of error messages listed here are inter
 <tbody>
  <row>
    <entry>CObject (1): Circular dependencies detected for object '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
 </tbody>
 </tgroup>
@@ -968,23 +1133,23 @@ Also keep in mind that the vast majority of error messages listed here are inter
 <tbody>
  <row>
    <entry>CLyapMethod (1): Problem is not a lyapunov exponent problem.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
-   <entry>TO BE WRITTEN</entry>
    <entry>CLyapMethod (2): Number of exponents needs to be at least one.</entry>
+   <entry>This means that probably 0 was entered as the number of lyapunov exponents to be calculated.</entry>
  </row>
  <row>
    <entry>CLyapMethod (3): Only %d exponents can be calculated for this model because the model has only %d independent variables.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>The maximal number of exponents that can be calculated for a given model is the number of independent variables (that is the number of variables in the model minus the number of conservation relations <xlink linkend="massConservation">see section about mass conservation</xlink>). </entry>
  </row>
  <row>
    <entry>CLyapMethod (4): Transient time is larger than overall time.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>The lyapunov exponent calculation starts after the transient time. The calculation stops after overall  time. Therefore overall time should have a bigger value than transient time.</entry>
  </row>
  <row>
    <entry>CLyapMethod (5): Orthonormalization interval is larger than overall time.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>If the orthonormalization time step is larger than the complete calculation time not a single step can be performed.</entry>
  </row>
 </tbody>
 </tgroup>
