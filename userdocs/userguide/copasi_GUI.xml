@@ -2070,7 +2070,16 @@ Sometimes it is of advantage to have the differential equations that make up you
 So far Copasi only supports the export of C source code, source code for other programming languages might follow if there is need for it.
 </para>
 <para>
-The C source file Copasi exports is split into several smaller parts which are encapsulated in #ifdef structures for the C preprocessor. The file consists of ten such sections which can be included in other files by defining the corresponding preprocessor constants at the place of inclusion. The file contains the following sections: 
+The C source file Copasi exports is split into several smaller parts which are encapsulated in #ifdef structures for the C preprocessor. The file consists of ten such sections which can be included in other files by defining the corresponding preprocessor constants at the place of inclusion. Example:</para> 
+<para>
+<programlisting>
+#define SIZE_DEFINITIONS
+#include "SOURCE FILE"
+#undef SIZE_DEFINITIONS
+</programlisting>
+</para>
+<para>
+The file contains the following sections: 
 </para>
 <para>
 <table frame="all"><title>Preprocessor defines</title>
@@ -2126,6 +2135,11 @@ The C source file Copasi exports is split into several smaller parts which are e
 </tgroup>
 </table>
 </para>
+<caution>
+<para>
+Some models may contains constants or functions that are not included in the ANSI C standard. In order to be able to use exported C source code files with those constants and functions, the user has to provide them, e.g. by including a separate header file that defines those constants and/or functions. Currently those are the constants for pi, eulers number, TRUE, FALSE and infinity as well as the functions "asinh", "acosh", "atanh", "sec", "csc", "cot", "sech", "csch", "coth", "arcsec", "arccsc",  "arccot", "asech", "acsch", "acoth", "factorial" and logical "xor".
+</para>
+</caution>
 <para>
 In order to export the set of differential equations to a C source code file, you select the <guisubmenu>Export ODEs</guisubmenu> menu entry from Copasis <guimenu>File</guimenu> menu. In the save dialog that shows up, you select <emphasis>C Files (*.c)</emphasis> from the <guilabel>File type</guilabel> dropdown and specify the name of the save you want to write the ODEs to. After clicking on the <guibutton>Save</guibutton> the ODEs will be saved to the specified file.</para>
 </sect1>
@@ -2134,6 +2148,15 @@ In order to export the set of differential equations to a C source code file, yo
 <title>Exporting Berkeley Madonna<!--&trade;--> files</title>
 <para><ulink url="http://www.berkeleymadonna.com/">Berkeley Madonna<!--&trade;--></ulink> is a widely used commercial modeling and simulation tool for the Windows<!--&trade;--> and Mac OS X<!--&trade;--> operating systems. The input to Berkeley Madonna<!--&trade;--> is a file that basically consists of a set of parameters, initial values, function definitions and ordinary differential equations. Copasi can generate these ordinary differential equations from the reactions of the model and export them together with the needed parameters in a format suitable to be read into Berkeley Madonna<!--&trade;-->.</para>
 <para>Since the way ordinary differential equations are specified is similar between different programs that take such input, it should be rather easy to adjust the exported file for import in other programs as for example the free <ulink url="http://www.math.pitt.edu/~bard/xpp/xpp.html">xppaut</ulink> programm or even <ulink url="http://www.wolfram.com/">Mathematica<!--&trade;--></ulink>.</para>
+<para>Names of model elements are replaced by generic names on export, future version of Copasi will try to keep the element names if possible.
+</para>
+<caution>
+<para>Berkeley Madonna does not support all mathematical functions available in Copasi if such a function is used in a model, Copasi will write the string "ILLEGAL FUNCTION" to the exported file instead of the name of the function. Naturally this will lead to an error message when one tries to load the file in Berkeley Madonna. Functions currently not supported by Berkeley Madonna are: sec, csc, cot, sech, csch, coth, arcsec, arccsc, arccot, arcsech, arccsch, arccoth, floor, ceil, factorial, modulus and logical xor 
+</para>
+<para>
+The Constants for TRUE, FALSE, and eulers number will be exported as numerical values where FALSE will be exported as 0 and TRUE will be exported as 1. Likewise infinity and "not a number" are exported as the strings "inf" and "nan" respectively.
+</para>
+</caution>
 <para>
 In order to export the set of differential equations to a Berkeley Madonna<!--&trade;--> file, you select the <guisubmenu>Export ODEs</guisubmenu> menu entry from Copasis <guimenu>File</guimenu> menu. In the save dialog that shows up, you select <emphasis>Berkeley Madonna Files (*.mmd)</emphasis> from the <guilabel>File type</guilabel> dropdown and specify the name of the save you want to write the ODEs to. After clicking on the <guibutton>Save</guibutton> the ODEs will be saved to the specified file.</para>
 </sect1>
