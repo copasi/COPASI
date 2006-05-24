@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.49.2.2 $ $Author: shoops $ $Date: 2006/05/18 15:43:50 $  
+# $Revision: 1.49.2.3 $ $Author: shoops $ $Date: 2006/05/24 16:03:59 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -14,8 +14,6 @@ DEFINES += $$BUILD_OS
 message("Configuring for $${BUILD_OS}.")
 
 TARGETDEPS += Makefile
-DEFINES+=XML_STATIC
-DEFINES+=LIBSBML_STATIC
 
 # Common configuration settings
 CONFIG += exceptions
@@ -33,6 +31,11 @@ contains(USE_LICENSE, DE) {
 debug {
   DEFINES += COPASI_DEBUG
   DEFINES += COPASI_TSS
+}
+
+contains(STATIC_LINKAGE, yes) {
+  DEFINES+=XML_STATIC
+  DEFINES+=LIBSBML_STATIC
 }
 
 !contains(BUILD_OS, WIN32) {
@@ -175,8 +178,10 @@ contains(BUILD_OS, WIN32) {
 } 
 
 contains(BUILD_OS, SunOS) {
+contains(STATIC_LINKAGE, yes) {
 # :TODO: This should be set through configure.
   LIBS += -L/export/home/shoops/copasi/gcc/lib
+}
 
   release { 
     contains(TEMPLATE, app) {
