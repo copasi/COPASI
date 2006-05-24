@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExpressionWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.4.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/10 13:16:53 $
+   $Author: ssahle $
+   $Date: 2006/05/24 14:38:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -213,15 +213,30 @@ void CQExpressionWidget::doKeyboardAction(QTextEdit::KeyboardAction action)
       if (pos == 0) return;
       if (text(para)[pos - 1] == '>')
         {
-          std::cout << "Backspace into object." << std::endl;
-          //TODO
+          //std::cout << "Backspace into object." << std::endl;
+          QString tmp = text(para);
+          int left = tmp.findRev('<', pos);
+          setSelection(para, left, para, pos);
+          removeSelectedText();
+          //std::cout << pos << " " << left << std::endl;
         }
       else
         QTextEdit::doKeyboardAction(action);
       break;
 
     case QTextEdit::ActionDelete:
-      //TODO
+      if (pos == text().length()) return;
+      if (text(para)[pos] == '<')
+        {
+          //std::cout << "Delete into object." << std::endl;
+          QString tmp = text(para);
+          int right = tmp.find('>', pos);
+          setSelection(para, pos, para, right + 1);
+          removeSelectedText();
+          //std::cout << pos << " " << right << std::endl;
+        }
+      else
+        QTextEdit::doKeyboardAction(action);
       break;
 
     default:
