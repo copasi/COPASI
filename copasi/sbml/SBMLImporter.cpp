@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.127.2.2 $
+   $Revision: 1.127.2.3 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/05/24 11:19:17 $
+   $Date: 2006/05/25 07:11:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -495,19 +495,26 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       appendix = numberStream.str();
     }
   double value;
-  if (sbmlCompartment->isSetSize())
+  if (mLevel == 1)
     {
-      value = sbmlCompartment->getSize();
+      value = sbmlCompartment->getVolume();
     }
   else
     {
-      // Set value to NaN and create a warning if it is the first time
-      // this happend
-      value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-      if (!this->mIncompleteModel)
+      if (sbmlCompartment->isSetSize())
         {
-          this->mIncompleteModel = true;
-          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
+          value = sbmlCompartment->getSize();
+        }
+      else
+        {
+          // Set value to NaN and create a warning if it is the first time
+          // this happend
+          value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+          if (!this->mIncompleteModel)
+            {
+              this->mIncompleteModel = true;
+              CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
+            }
         }
     }
 
@@ -1324,6 +1331,12 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument *&
       this->mLevel = pSBMLDocument->getLevel();
       if (mLevel == 1)
         {
+          unsigned int i, iMax = pSBMLDocument->getModel()->getNumCompartments();
+          for (i = 0;i < iMax;++i)
+            {
+              Compartment* pCompartment = pSBMLDocument->getModel()->getCompartment(i);
+              pCompartment->setSize(pCompartment->getVolume());
+            }
           pSBMLDocument->setLevel(2);
           mLevel = pSBMLDocument->getLevel();
         }
