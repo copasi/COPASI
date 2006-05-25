@@ -1,19 +1,20 @@
-<bibliography><title>References</title>
-
-<biblioentry id="gillespie_76" xreflabel="gillespie_76">
-    <artheader>
-    <!-- <authorgroup> -->
-      <author><firstname>D.T.</firstname><surname>Gillespie</surname></author>
-      <!-- <author><firstname>Mark</firstname><surname>Shwarek</surname></author> -->
-    <!-- </authorgroup> -->
-    <citetitle pubwork="artcile">A General Method for Numerically Simulating the Stochastic Time Evolution of Coupled Chemical Reactions</citetitle>
-    <citetitle pubwork="journal">J. Comp. Phys.</citetitle>
-    <volumenum>22</volumenum>
-    <artpagenums>403-434</artpagenums>
-    <pubdate>1976</pubdate>
-  </artheader>
-</biblioentry>
-
-
+<bibliography>
+ <title>Bibliography</title>
+ <bibliodiv>
+  <title>References </title>
+  <biblioentry id="gillespie_76" xreflabel="gillespie_76">
+   <author>
+    <firstname>D.T.</firstname>
+    <surname>Gillespie</surname>
+   </author>
+   <title>
+    A General Method for Numerically Simulating the Stochastic Time
+ Evolution of Coupled Chemical Reactions
+   </title>
+   <publisher>J. Comp. Phys.</publisher>
+   <pagenums>403-434</pagenums>
+   <volumenum>22</volumenum>
+   <pubdate>1976</pubdate>
+  </biblioentry>
+ </bibliodiv>
 </bibliography>
-
