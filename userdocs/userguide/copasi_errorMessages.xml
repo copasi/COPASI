@@ -1,7 +1,7 @@
 <!-- Please don't remove, I want to use this to easily be able to check if messages has been changed in order to be able to update this file. -->
 <!--
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_errorMessages.xml,v $
-   $Revision: 1.1.2.4 $
+   $Revision: 1.1.2.5 $
 -->
 
 <chapter id="errorMessages" xreflabel="Error Messages">
@@ -159,6 +159,9 @@ a different type than TYPE.
 <sect1 id="reactionErrors" xreflabel="Reaction Error Messages">
 <title>Reaction Error Messages</title>
 <para>
+Many of the error messages in the class are related to SBML import/export.
+</para>
+<para>
 <table frame="all">
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
 <thead>
@@ -169,40 +172,40 @@ a different type than TYPE.
 </thead>
 <tbody>
  <row>
-   <entry>CReaction (1): Function '%s' not found.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CReaction (1): Function 'FUNCTIONNAME' not found.</entry>
+   <entry>INTERNAL. A reaction tries to use a function as a kinetic law that is unknown.</entry>
  </row>
  <row>
    <entry>CReaction (3): Reaction 'REACTIONNAME' has no substrates and no products.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Copasi found a reaction with neither substrates nor products. A reaction needs to have at least one substrate or one product.</entry>
  </row>
  <row>
    <entry>CReaction (4): Only Metabolites, Compartments or Parameter object nodes are allowed in kinetic functions.</entry>
    <entry>TO BE WRITTEN</entry>
  </row>
  <row>
-   <entry>CReaction (5): Nodes of type %s are not implemented yet.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CReaction (5): Nodes of type TYPENAME are not implemented yet.</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
    <entry>CReaction (6): Nodes of type VARIABLE must not appear in an expression.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
-   <entry>CReaction (7): CMetab object '%s' is neither substrate, product nor modifier to reaction '%s' but it is used in the kinetic law.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CReaction (7): CMetab object 'OBJECTNAME' is neither substrate, product nor modifier to reaction 'REACTIONNAME' but it is used in the kinetic law.</entry>
+   <entry>During SBML import Copasi found a name in a kinetic law that is neither a parameter, a substrate, product or modifier to the reaction. The most likely cause for this that a modifier hs not been declared in the listOfModifiers of the reaction.</entry>
  </row>
  <row>
-   <entry>CReaction (8): Could not find variable with name '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CReaction (8): Could not find variable with name 'VARIABLENAME'.</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
    <entry>CReaction (9): Could not find object for key '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
  <row>
    <entry>CReaction (10): Parameter '%s' is a vector.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL</entry>
  </row>
 </tbody>
 </tgroup>
@@ -211,13 +214,6 @@ a different type than TYPE.
 </sect1>
 
 <!--
-CReaction
-CReaction (1): Function '$name' not found:
-A funtion with the name is not found.
-
-CReaction (3): Reaction '$name' has no substrates and no products:
-Selfexplanatory :)
-
 CReaction (4): Only Metabolites, Compartments, or Parameter object
 nodes are allowed in kinetic functions: 
 Selfexplanatory :) However this might be a bug as we should also
@@ -225,33 +221,7 @@ support model, i.e., time. Ralph can you check as this is SBML
 related. A better class wold be "SBML" since this is related to
 import/export. 
 
-"CReaction (5): Nodes of type '$type' are not implemented yet
-Nodes:
-Selfexplanatory :) A better class wold be "SBML" since this is related to
-import/export. 
 
-CReaction (6): Nodes of type VARIABLE must not appear in an
-expression:
-An expression does not have variables, i.e., nodes of this type must
-not appear. A better class wold be "SBML" since this is related to
-import/export. 
- 
-CReaction (7): CMetab object '$name' is neither substrate, product nor
-modifier to reaction '%s' but it is used in the kinetic law:
-Selfexplanatory :) A better class wold be "SBML" since this is related to
-import/export. 
-
-CReaction (8): Could not find variable with name '$name':
-Selfexplanatory :) A better class wold be "SBML" since this is related to
-import/export. 
-
-CReaction (9): Could not find object for key '$key':
-Selfexplanatory :) A better class wold be "SBML" since this is related to
-import/export. 
-
-CReaction (10): Parameter '$name' is a vector:
-Selfexplanatory :) A better class wold be "SBML" since this is related to
-import/export. 
 -->
 
 
@@ -304,19 +274,19 @@ import/export.
 <tbody>
  <row>
    <entry>CTrajectoryMethod (1): Hybrid simulation not applicable, since the stoichiometry contains a non-integer.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Hybrid simulations can not be run on models that contain reactions with non integer stoichiometries.</entry>
  </row>
  <row>
    <entry>CTrajectoryMethod (2): Hybrid simulation not applicable, since reversible reactions exists.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Hybrid simulations can not be run on models with reversible reactions. You can try to convert all reactions to irreversible reactions via the "Convert to irreversible" menu item in the tools menu.</entry>
  </row>
  <row>
    <entry>CTrajectoryMethod (3): Hybrid simulation not applicable, since more than one compartment is involved.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Hybrid simulations only work on single compartment models.</entry>
  </row>
  <row>
    <entry>CTrajectoryMethod (4): mLowerStochLimit ('%.2f') is greater than mUpperStochLimit ('%.2f').</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Check the limits for the hybrid method. The "Lower limit" parameter has to be smaller than the "Upper limit" parameter.</entry>
  </row>
  <row>
    <entry>CTrajectoryMethod (6): Deterministic integration failed. LSODA reported:LSODA_ERROR_MESSAGE Please see result for indications of numerical instability.</entry>
@@ -335,19 +305,19 @@ point the problem occured is often helpful in resolving the problem.
  </row>
  <row>
    <entry>CTrajectoryMethod (9): Negative time steps not possible with stochastic simulation.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>TO BE WRITTEN</entry><!-- How do I get this error? -->
  </row>
  <row>
-   <entry>CTrajectoryMethod (10): The tau-Leap Method encountered numerical problems.\nYou can try to reduce the tau-value.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CTrajectoryMethod (10): The tau-Leap Method encountered numerical problems. You can try to reduce the tau-value.</entry>
+   <entry>Choose a lower value for tau and rerun the time course task.</entry>
  </row>
  <row>
    <entry>CTrajectoryMethod (11): Invalid tau-value ('%.2f'). Tau must have a positive value.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Values for tau must be positive numbers.</entry>
  </row>
  <row>
    <entry>CTrajectoryMethod (12): Internal step limit exceeded.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>The internal step limit is exceeded. Reducing the accuracy requirements or inccreasing the step limit may resolve the problem.</entry>
  </row>
 </tbody>
 </tgroup>
@@ -355,45 +325,13 @@ point the problem occured is often helpful in resolving the problem.
 </para>
 </sect1>
                
-<!--               
-CTrajectoryMethod
-CTrajectoryMethod (1): Hybrid simulation not applicable, since the
-stoichiometry contains a non-integer:
-Selfexplanatory :)
 
-CTrajectoryMethod (2): Hybrid simulation not applicable, since
-reversible reactions exists:
-Selfexplanatory :)
-
-CTrajectoryMethod (3): Hybrid simulation not applicable, since more
-than one compartment is involved:
-Selfexplanatory :)
-
-CTrajectoryMethod (4): Lower Limit '$lower' is greater than Upper
-Limit '$upper':
-Selfexplanatory :)
-
-CTrajectoryMethod (9): Negative time steps not possible with
-stochastic simulation:
-Selfexplanatory :)
-
-CTrajectoryMethod (10): The tau-Leap Method encountered numerical
-problems. You can try to reduce the tau-value:
-Selfexplanatory :)
-
-CTrajectoryMethod (11): Invalid tau-value ('$value'). Tau must have a
-positive value:
-Selfexplanatory :)
-
-CTrajectoryMethod (12): Internal step limit exceeded:
-The internal step limit is exceeded. Reducing the accuracy
-requirements or inccreasing the step limit may resolve the problem.
--->
-
- 
 
 <sect1 id="xmlReaderErrors" xreflabel="XML Reader Error Messages">
 <title>XML Reader Error Messages</title>
+<para>
+Many of the error messages of the XML file reader are not serious. Since the Copasi file format has changed during developement, current versions of Copasi might not recognize some elements used in older versions of the file format. And vice versa if you try to read a Copasi file generated with a version newer than the one you are currently using, the file might contain new elements unknown to the older version of Copasi. In the worst case some task settings might be lost.
+</para>
 <para>
 <table frame="all">
 <tgroup cols="2" align="left" colsep="1" rowsep="1">
@@ -405,79 +343,47 @@ requirements or inccreasing the step limit may resolve the problem.
 </thead>
 <tbody>
  <row>
-   <entry>XML (1): Required attribute '%s' not found (line: '%d').</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>XML (1): Required attribute 'ATTRIBUTENAME' not found (line: 'LINENUMBER').</entry>
+   <entry>The required atribute ATTRIBUTENAME is missing at line LINENUMBER. Please check the
+XML file.</entry>
  </row>
  <row>
-   <entry>XML (2): XML error (line: '%d', column: '%d'): '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>XML (2): XML error (line: 'LINENUMBER', column: 'POSITION'): 'MESSAGE'.</entry>
+   <entry>Incorrect XML encountered at line LINENUMBER and character
+POSITION. The message gives further details about the error. This error is also shown when libsbml finds an error in an SBML file.</entry>
  </row>
  <row>
-   <entry>XML (3): Unknown element '%s' encountered at line '%d'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>XML (3): Unknown element 'ELEMENTNAME' encountered at line 'LINENUMBER'.</entry>
+   <entry>The XML contained an unknown element ELEMENTNAME at line LINENUMBER. This element
+is ignored. </entry>
  </row>
  <row>
-   <entry>XML (4): Unknown parameter '%s' encountered at line '%d'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>XML (4): Unknown parameter 'PARAMETERNAME' encountered at line 'LINENUMBER'.</entry>
+   <entry>The XML contained an unknown parameter PRAMETERNAME at line LINENUMBER. This parameter
+is ignored.</entry>
  </row>
  <row>
-   <entry>XML (5): Unknown task type '%s' encountered at line '%d'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>XML (5): Unknown task type 'TASKTYPE' encountered at line 'LINENUMBER'.</entry>
+   <entry>The XML contained an unknown task of type TASKTYPE at line
+LINENUMBER. This task is ignored.</entry>
  </row>
  <row>
-   <entry>XML (6): Invalid function '%s' encountered at line '%d'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>XML (6): Invalid function 'FUNCTIONNAME' encountered at line 'LINENUMBER'.</entry>
+   <entry>The XML contains an invalid function FUNCTIONNAME at line LINENUMBER. This error should never occur, if it occurs with a file gnerated by Copasi, please send a bug report.</entry>
  </row>
  <row>
-   <entry>XML (7): Unknown function '%s' in reaction '%s' encountered at line '%d'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>XML (7): Unknown function 'FUNCTIONNAME' in reaction 'REACTIONNAME' encountered at line 'LINENUMBER'.</entry>
+   <entry>The reaction REACTIONAME uses a call to an unknown function named FUNCTIONNAME in line LINENUMBER. Please check the XML file.</entry>
  </row>
  <row>
-   <entry>XML (8): Unknown variable '%s' in function '%s' encountered at line '%d'. A possible reason is that the variable is a reserved string within the function description.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>XML (8): Unknown variable 'VARIABLENAME' in function 'FUNCTIONNAME' encountered at line 'LINENUMBER'. A possible reason is that the variable is a reserved string within the function description.</entry>
+   <entry>Please check the file if a variable of the function FUNCTIONNAME at line LINENUMBER is a reserved keyword. For a list of reserved keywords see the section on <xlink linkend="addingFunctions">function definitions</xlink></entry>
  </row>
 </tbody>
 </tgroup>
 </table>
 </para>
 </sect1>
-
-
-
-<!--                                                                   
-XML Package
-XML (1): Required attribute '$name' not found (line: '$line'):
-The required atribute $name is missing at line $line. Please check the
-XML file.
-
-XML (2): XML error (line: '$line', column: '$character'): '$message':
-Incorrect XML encountered at line $line and character
-$character. The message gives further details about the error.
-
-XML (3): Unknown element '$name' encountered at line '$line':
-The XML contained an unknown element $name at line $line. This element
-is ignored.
- 
-XML (4): Unknown parameter '$name' encountered at line '$line':
-The XML contained an unknown parameter $name at line $line. This parameter
-is ignored.
-
-XML (5): Unknown task type '$tasktype' encountered at line '$line':
-The XML contained an unknown task of type $tasktype at line
-$line. This task is ignored.
-
-XML (6): Invalid function '$name' encountered at line '$line':
-The XML contains an invalid function $name at line $line.
-
-XML (7): Unknown function '$name' in reaction '$reaction' encountered
-at line '$line':
-The kinetic law $name for reaction $reaction in line $line is unknown.
- 
-XML (8): Unknown variable '$variable' in function '$name' encountered
-at line '$line'. A possible reason is that the variable is a reserved
-string within the function description.:
-Selfexplanatory :)
--->
 
 
 <sect1 id="configurationErrors" xreflabel="Configuration Error Messages">
@@ -520,36 +426,50 @@ Selfexplanatory :)
 </thead>
 <tbody>
  <row>
-   <entry>Optimization (1): Object '%s' not found.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Optimization (1): Object 'OBJECTNAME' not found.</entry>
+   <entry>The object specified by OBJECTNAME can not be found. This normally indicates
+that the model was changed and the parameters or constraints must be
+adjusted.</entry>
  </row>
  <row>
-   <entry>Optimization (2): Lower Bound '%s' not found.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Optimization (2): Lower Bound 'OBJECTNAME' not found.</entry>
+   <entry>The lower bound specified by OBJECTNAME can not be found. This normally indicates
+that the model was changed and the parameters or constraints must be
+adjusted.</entry>
  </row>
  <row>
-   <entry>Optimization (3): Upper Bound '%s' not found.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Optimization (3): Upper Bound 'OBJECTNAME' not found.</entry>
+   <entry>The upper bound specified by OBJECTNAME can not be found. This normally indicates
+that the model was changed and the parameters or constraints must be
+adjusted.</entry>
  </row>
  <row>
    <entry>Optimization (4): Empty Interval ('%f', '%f') specified.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>The interal is invalid as the lower bound is larger than the upper
+bound. Please correct the problem.</entry>
  </row>
  <row>
    <entry>Optimization (5): Invalid Objective Functions.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>The objective function is invalid, i.e, COPASI can not interpret
+it. Please correct the problem.</entry>
  </row>
  <row>
    <entry>Optimization (6): No adjustable Parameters specified.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Since no parameter are specified no optimization can be performed.</entry>
  </row>
  <row>
    <entry>Optimization (7): No Task Type specified.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>The optimization task type is not specified. Supporte types are
+currently time course and steady state.
+</entry>
  </row>
  <row>
    <entry>Optimization (8): '%d' Function Evaluation out of '%d' failed.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>A high percentage of failed function evaluation indicates that the
+parameter range is not appropriate or the objective function is ill
+defined. For parameter estimation problems please check also whther
+the eperimental data is correctly specified in accordance with
+provided data files.</entry>
  </row>
 </tbody>
 </tgroup>
@@ -558,54 +478,12 @@ Selfexplanatory :)
 </sect1>
 
 
-<!--                  
-Optimization
-Optimization (1): Object '$CN' not found:
-The object specified by $CN can not be found. This normally indicates
-that the model was changed and the parameters or constraints must be
-adjusted. 
-
-Optimization (2): Lower Bound '$CN' not found:
-The lower bound specified by $CN can not be found. This normally indicates
-that the model was changed and the parameters or constraints must be
-adjusted. 
-
-Optimization (3): Upper Bound '$CN' not found:
-The upper bound specified by $CN can not be found. This normally indicates
-that the model was changed and the parameters or constraints must be
-adjusted. 
-
-Optimization (4): Empty Interval ('$lower', '$upper') specified:
-The interal is invalid as the lower bound is larger than the upper
-bound. Please correct the problem.
- 
-Optimization (5): Invalid Objective Functions:
-The objective function is invalid, i.e, COPASI can not interpret
-it. Pleasse correct the problem.
-
-Optimization (6): No adjustable Parameters specified.
-Since no parameter are specified no optimization can be performed.
-
-Optimization (7): No Task Type specified
-The optimization task type is not specified. Supporte types are
-currently time course and steady state.
-
-Optimization (8): '$failed' Function Evaluation out of '$tried'
-failed:
-A high percentage of failed function evaluation indicates that the
-parameter range is not appropriate or the objective function is ill
-defined. For parameter estimation problems please check also whther
-the eperimental data is correctly specified in accordance with
-provided data files.  
--->
-
-
 
 
 <sect1 id="sbmlErrors" xreflabel="SBML Error Messages">
 <title>SBML Error Messages</title>
 <para>
-The following errors are generated by the SBML importer and exporter.
+The following errors are generated by the SBML importer and exporter. If you encounter errors related to SBML import, please check your SBML file with the SBML Online Validator at <ulink url="http://sbml.org/tools/htdocs/sbmltools.php">http://sbml.org/tools/htdocs/sbmltools.php</ulink> before you file a bug report.
 </para>
 <para>
 <table frame="all">
@@ -791,26 +669,17 @@ adjusted to the maximal accceptable value.
 <tbody>
  <row>
    <entry>DirEntry (1): Directory entry '%s' already exists.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>A directory Copasi tried to create already exists.</entry>
  </row>
  <row>
    <entry>DirEntry (2): Directory entry '%s' is read-only.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Copasi tried to write to a directory where it does not have writing permissions. Please check the permissions.</entry>
  </row>
 </tbody>
 </tgroup>
 </table>
 </para>
 </sect1>
-<!--
-DirEntry
-DirEntry (1): Directory entry '$dir' already exists:
-Selfexplanatory :)
-
-DirEntry (2): Directory entry '$dir' is read-only:
-Selfexplanatory :)
--->
-
 
 <sect1 id="mathMLErrors" xreflabel="MathML Error Messages">
 <title>MathML Error Messages</title>
@@ -826,37 +695,25 @@ Selfexplanatory :)
 <tbody>
  <row>
    <entry>MathML (1): Unsupported element '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>Copasi does not support all MathML elements allowed in SBML files yet. E.g. the delay function is currently not supported.</entry>
  </row>
  <row>
    <entry>MathML (2): Unknown element in MathML expression.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>During SBML import an unknown MathML element was encountered. Please check the MathML expressions in the SBML file.</entry>
  </row>
  <row>
    <entry>MathML (3): MINUS operator can only have one or two arguments.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>During SBML import, Copasi has encountered a MathML expression where a minus operator has 0 or more than 2 arguments. Please check the MathML in the SBML file.</entry>
  </row>
  <row>
    <entry>MathML (4): DIVIDE and POWER operator can only have 2 arguments.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>The divide and the power operator in MathML must have exactly two arguments. During SBML import Copasi has found a MathML expresion where this is not the case. Pleae check the MathML in the SBML file.</entry>
  </row>
 </tbody>
 </tgroup>
 </table>
 </para>
 </sect1>
-
-<!--
-MathML
-Again Ralph this is your domain.
-MathML (1): Unsupported element '$name':
-
-MathML (2): Unknown element in MathML expression:
-
-MathML (3): MINUS operator can only have one or two arguments:
-
-MathML (4): DIVIDE and POWER operator can only have 2 arguments:
--->
 
 <sect1 id="functionErrors" xreflabel="Function Error Messages">
 <title>Function Error Messages</title>
@@ -914,20 +771,13 @@ invalid. This may happen if the function call another function.
 <tbody>
  <row>
    <entry>CEvaluationNodeObject (1): Only references to compartment, species, parameters and reaction are allowed in expression.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>INTERNAL. During export to SBML Copasi has found a reference in a kinetic law that is neither a reference to the time, a species, a compartment, a parameter or a reaction.</entry>
  </row>
 </tbody>
 </tgroup>
 </table>
 </para>
 </sect1>
-
-<!--
-CEvaluationNoeObject
-CEvaluationNodeObject (1): Only references to compartment, species,
-parameters and reaction are allowed in expression:
-Selfexplanatory :)
--->
 
 
         
@@ -1027,74 +877,47 @@ plots will generated despite the problem but some cureves will be empty. This us
  </row>
  <row>
    <entry>CFitting (2): Failed to invert Fisher information matrix.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>This reports that the Fisher information matrix could not be inverted
+due to singularity or numerical problems. The parameter statistics
+will be incomplete.</entry>
  </row>
  <row>
    <entry>CFitting (3): No column with type 'Time' specified for a time course experiment.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>For a time course exactly on column of the data file must be mapped to
+the model time.</entry>
  </row>
  <row>
-   <entry>CFitting (4): Insufficient experimental data (columns requested '%d', columns found '%d').</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CFitting (4): Insufficient experimental data (columns requested 'COLUMNNUMBER', columns found 'COLUMNNUMBER').</entry>
+   <entry>The data specification contains more columns than the file
+provides. Calculation is stopped and the problem must be fixed first.</entry>
  </row>
  <row>
-   <entry>CFitting (5): Incomplete data mapping, column '%d' must be mapped.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CFitting (5): Incomplete data mapping, column 'COLUMNINDEX' must be mapped.</entry>
+   <entry>A column which is not ignored is not mapped to an object
+within COPASI. Calculation is stopped and the problem must be fixed
+first.</entry>
  </row>
  <row>
-   <entry>CFitting (6): Object '%s' in column '%d' has no numeric value.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CFitting (6): Object 'OBJECTNAME' in column 'COLUMNNINDEX' has no numeric value.</entry>
+   <entry>The object must represent a numerical value. Currently this must be a
+floating point. This object can currently not be ued in parameter fitting.</entry>
  </row>
  <row>
-   <entry>CFitting (7): Insufficient experimental data (rows requested '%d', rows found '%d').</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>CFitting (7): Insufficient experimental data (rows requested 'ROWNUMBER', rows found 'ROWNUMBER').</entry>
+   <entry>The data specification describes nare data rows than the experimental
+data provides.  Calculation is stopped and the problem must be fixed
+first.</entry>
  </row>
  <row>
    <entry>CFitting (8): Failure reading file '%s'.</entry>
-   <entry>TO BE WRITTEN</entry>
+   <entry>The file cannot be read. Calculation is stopped and the problem must be fixed
+first. Make sure all data files specified for the fitting are there and readable.</entry>
  </row>
 </tbody>
 </tgroup>
 </table>
 </para>
 </sect1>
-
-<!--
-                  
-CFitting (2): Failed to invert Fisher information matrix. dsytrf
-returned with error '%d':
-This reports that the Fisher information matrix could not be inverted
-due to singularity or numerical problems. The parameter statistics
-will be incomplete.
- 
-CFitting (3): No column with type 'Time' specified for a time course
-experiment:
-For a time course exactly on column of the data file must be mapped to
-the model time.
-
-CFitting (4): Insufficient experimental data (columns requested '%d',
-columns found '%d'):
-The data specification contains more columns than the file
-provides. Calculation is stopped and the problem must be fixed first.
-
-CFitting (5): Incomplete data mapping, column '%d' must be mapped:
-A column which is not ignored is not mapped to an object
-within COPASI. Calculation is stopped and the problem must be fixed
-first. 
-
-CFitting (6): Object '%s' in column '%d' has no numeric value:
-The object must represent a numerical value. Currently this must be a
-floating point. This object can currently not be ued in parameter fitting. 
-
-CFitting (7): Insufficient experimental data (rows requested '%d',
-rows found '%d'):
-The data specification describes nare data rows than the experimental
-data provides.  Calculation is stopped and the problem must be fixed
-first. 
-CFitting (8): Failure reading file '%s':
-The file cannot be read. Calculation is stopped and the problem must be fixed
-first. 
--->
 
         
 <sect1 id="copasiObjectErrors" xreflabel="Copasi Object Error Messages">
