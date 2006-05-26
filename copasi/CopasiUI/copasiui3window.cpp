@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.171.2.3 $
+   $Revision: 1.171.2.4 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/23 16:14:23 $
+   $Author: gauges $
+   $Date: 2006/05/26 13:38:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -692,6 +692,134 @@ void CopasiUI3Window::CleanUp()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  *******************************************************************************************/
 void CopasiUI3Window::slotFilePrint()
 {}
@@ -1053,18 +1181,30 @@ void CopasiUI3Window::slotExportSBML()
     {
       QCursor oldCursor = cursor();
       setCursor(Qt::WaitCursor);
-      if (!dataModel->exportSBML((const char *) tmp.utf8(), true))
+      bool success = false;
+      try
         {
-          if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-            {
-              QMessageBox::critical(this, "Export Error",
-                                    CCopasiMessage::getAllMessageText().c_str(),
-                                    QMessageBox::Ok | QMessageBox::Default,
-                                    QMessageBox::NoButton);
-              CCopasiMessage::clearDeque();
-            }
+          success = dataModel->exportSBML((const char *) tmp.utf8(), true);
         }
+      catch (CCopasiException except)
+        {
+          success = false;
+          setCursor(oldCursor);
+          QMessageBox::critical(this, QString("File Error"), QString("Error. Could not export file ") + tmp + QString("!"), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        }
+
       setCursor(oldCursor);
+
+      if (!success)
+        {
+          QString Message = "Error while saving file " + tmp + QString("!\n\n");
+          Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
+
+          QMessageBox::critical(this, QString("File Error"), Message,
+                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+        }
+
       refreshRecentSBMLFileMenu();
     }
 }
