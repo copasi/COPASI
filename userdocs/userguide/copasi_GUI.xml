@@ -105,10 +105,10 @@ This option can be used to specify a temporary directory where Copasi will autos
 <screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Layout_01.png" format="PNG" scale="60" align="center" />
+  <imagedata fileref="images/Layout_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Layout_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Layout_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Copasi GUI elements.</phrase>
@@ -136,10 +136,10 @@ On the top of the main window, you have the menubar (on the Mac, the menubar is 
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/General_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/General_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/General_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/General_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Dialog for general model settings</phrase>
@@ -184,10 +184,10 @@ Copasi internally represents amounts of species by particle numbers. If a concen
 <screeninfo>Produced with Copasi Build 18 on WIN32 on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Compartments_01.png" format="PNG" scale="60" align="center" />
+  <imagedata fileref="images/Compartments_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Compartments_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Compartments_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>compartment table without entries</phrase>
@@ -207,10 +207,10 @@ If you start with a new model and you select the <guibutton>Compartments</guibut
 <screeninfo>Produced with Copasi Build 18 on Windows on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Compartments_02.png" format="PNG" scale="60" align="center" />
+  <imagedata fileref="images/Compartments_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Compartments_02.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Compartments_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>compartment table with newly added compartment</phrase>
@@ -229,10 +229,10 @@ A status of new means that the compartment has been created, but is has not been
 <screeninfo>Produced with Copasi Build 18 on Windows on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Compartments_03.png" format="PNG" scale="60" align="center" />
+  <imagedata fileref="images/Compartments_03.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Compartments_03.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Compartments_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>compartment table with deleted compartment entry</phrase>
@@ -253,10 +253,10 @@ If you have already committed the compartment, you can delete it by selecting th
 <screeninfo>Produced with Copasi Build 18 on Windows on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Compartments_04.png" format="PNG" scale="60" align="center" />
+  <imagedata fileref="images/Compartments_04.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Compartments_04.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Compartments_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog for changing compartment parameters</phrase>
@@ -282,10 +282,10 @@ Double clicking on any compartment entry in the table will bring you to another 
 <screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Metabolites_01.png" format="PNG" scale="60" align="center" />
+  <imagedata fileref="images/Metabolites_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Metabolites_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Metabolites_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>metabolites table</phrase>
@@ -305,10 +305,10 @@ First of all in order to add a new species or metabolite, as it is called in Cop
 <screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Metabolites_02.png" format="PNG" scale="60" align="center" />
+  <imagedata fileref="images/Metabolites_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Metabolites_02.ps" format="EPS" scale="45" align="center" />
+  <imagedata fileref="images/Metabolites_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog for changing metabolite parameters</phrase>
@@ -334,10 +334,10 @@ The list at the bottom of the metabolite widget shows the reactions in which thi
 <screeninfo>Produced with Copasi Build 18 on Darwin on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Reactions_01.png" format="PNG" scale="60" align="center" />
+  <imagedata fileref="images/Reactions_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Reactions_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Reactions_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>reaction table without entries</phrase>
@@ -363,10 +363,10 @@ When typing reaction equations you should keep in mind that metabolite names in 
 <screeninfo>Produced with Copasi Build 18 on Darwin on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Reactions_02.png" format="PNG" scale="60" align="center" />
+  <imagedata fileref="images/Reactions_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Reactions_02.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Reactions_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog for changing reaction parameters</phrase>
@@ -396,10 +396,10 @@ When typing reaction equations you should keep in mind that metabolite names in 
 <screeninfo>Produced with Copasi CVS on Mac OS X on 03/31/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Parameters_01.png" format="PNG" scale="45" align="center" />
+  <imagedata fileref="images/Parameters_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Parameters_01.ps" format="EPS" scale="45" align="center" />
+  <imagedata fileref="images/Parameters_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Parameter View</phrase>
@@ -425,10 +425,10 @@ When typing reaction equations you should keep in mind that metabolite names in 
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Functions_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Functions_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Functions_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Functions_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>function table with predefined functions</phrase>
@@ -444,10 +444,10 @@ When typing reaction equations you should keep in mind that metabolite names in 
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Functions_02.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Functions_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Functions_02.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Functions_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog for the definition of functions</phrase>
@@ -463,10 +463,10 @@ When typing reaction equations you should keep in mind that metabolite names in 
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Functions_03.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Functions_03.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Functions_03.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Functions_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>function definition dialog with commited function</phrase>
@@ -973,10 +973,10 @@ Alternatively you can now add and modify existing sliders via a context menu. Th
 <screeninfo>Produced with Copasi CVS on Mac OS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Sliders_02.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Sliders_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Sliders_02.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Sliders_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>basic dialog for the definition of a slider</phrase>
@@ -995,10 +995,10 @@ Once you are in the dialog for the definition of a new slider, you have to choos
 <screeninfo>Produced with Copasi CVS on Mac OS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Sliders_03.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Sliders_03.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Sliders_03.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Sliders_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>extended dialog for the definition of a slider</phrase>
@@ -1039,10 +1039,10 @@ Once you have made all the settings, you confirm the slider definition with the 
 <screeninfo>Produced with Copasi CVS on Mac OS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Sliders_04.png" format="PNG" scale="45" align="center" />
+  <imagedata fileref="images/Sliders_04.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Sliders_04.ps" format="EPS" scale="45" align="center" />
+  <imagedata fileref="images/Sliders_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>slider dialog with three sliders</phrase>
@@ -1072,10 +1072,10 @@ Most people will probably use the sliders in combination with the mouse, draggin
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Wizard_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Wizard_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Wizard_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Wizard_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>tutorial wizard dialog screenshot</phrase>
@@ -1112,10 +1112,10 @@ Almost all task dialogs in Copasi have a button at the lower right that is label
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/OutputAssistant_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/OutputAssistant_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/OutputAssistant_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/OutputAssistant_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Output Assistant Window</phrase>
@@ -1138,10 +1138,10 @@ Creating an instance of the selected output objects is as easy a clicking on the
 <screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Reports_01.png" format="PNG" scale="60" align="center" />
+  <imagedata fileref="images/Reports_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Reports_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Reports_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>report table with default reports</phrase>
@@ -1169,10 +1169,10 @@ To add a new object to the report definition, you have to click on the button la
 <screeninfo>Produced with Copasi Build 18 on WIN32 on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Reports_02.png" format="PNG" scale="60" align="center" />
+  <imagedata fileref="images/Reports_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Report_SimpleSelectionDialog.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Report_SimpleSelectionDialog.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>simple selection dialog</phrase>
@@ -1194,10 +1194,10 @@ If this simple selection dialog does not contain the object that you want to inc
 <screeninfo>Produced with Copasi Build 18 on WIN32 on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Reports_03.png" format="PNG" scale="60" align="center" />
+  <imagedata fileref="images/Reports_03.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Reports_03.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Reports_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>object browser dialog expert mode</phrase>
@@ -1217,10 +1217,10 @@ Let's assume you want to define the report for a trajectory task. In this case, 
 <screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Reports_04.png" format="PNG" scale="60" align="center" />
+  <imagedata fileref="images/Reports_04.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Reports_04.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Reports_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>report definition dialog</phrase>
@@ -1245,10 +1245,10 @@ Per default, the checkbox labeled <guilabel>Ttitle Row</guilabel> is activated w
 <screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Reports_05.png" format="PNG" scale="60" align="center" />
+  <imagedata fileref="images/Reports_05.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Reports_05.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Reports_05.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>advanced report definition dialog</phrase>
@@ -1274,10 +1274,10 @@ Currently, Copasi only supports two dimensional plotting. To define a plot, you 
 <screeninfo>Produced with Copasi Build 18 on Mac OS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Plots_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Plots_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Plots_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Plots_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>empty plot widget</phrase>
@@ -1293,10 +1293,10 @@ Currently, Copasi only supports two dimensional plotting. To define a plot, you 
 <screeninfo>Produced with Copasi Build 18 on Mac OS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Plots_03.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Plots_03.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Plots_03.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Plots_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>selection dialog with some items selected</phrase>
@@ -1312,10 +1312,10 @@ Currently, Copasi only supports two dimensional plotting. To define a plot, you 
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Plots_04.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Plots_04.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Plots_04.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Plots_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>expert selection dialog for curve objects</phrase>
@@ -1349,10 +1349,10 @@ Each curve object has a title, and the information what will be drawn on the x- 
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/SteadyStateTask_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/SteadyStateTask_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/SteadyStateTask_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/SteadyStateTask_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog for doing calculating a stability analysis</phrase>
@@ -1370,10 +1370,10 @@ To finally run the steady state calculation, click on the <guibutton>Run</guibut
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/SteadyStateTask_02.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/SteadyStateTask_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/SteadyStateTask_02.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/SteadyStateTask_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog that displays the results of the stability analysis</phrase>
@@ -1402,10 +1402,10 @@ If you want to have output from the Steady State Task, you have to create an out
 <screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ElementaryModesTask_01.png" format="PNG" scale="60" align="center" />
+  <imagedata fileref="images/ElementaryModesTask_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ElementaryModesTask_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/ElementaryModesTask_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog showing the calculated elementary modes for a model</phrase>
@@ -1431,10 +1431,10 @@ If you want to have output from the Elementary Mode calculation, you have to cre
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/MassConservationTask_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/MassConservationTask_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/MassConservationTask_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/MassConservationTask_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog showing the results of a mass conservation calculation</phrase>
@@ -1452,10 +1452,10 @@ If the model contains any mass conservation relations they will be listed in a t
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/MassConservationTask_02.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/MassConservationTask_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/MassConservationTask_02.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/MassConservationTask_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog that shows one single mass conservation relation</phrase>
@@ -1479,10 +1479,10 @@ Every mass conservation relation also has a separate leave in the object tree be
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/TimeCourseTask_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/TimeCourseTask_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/TimeCourseTask_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/TimeCourseTask_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog for calculating a trajectory</phrase>
@@ -1506,10 +1506,10 @@ In the Time-Course widget You can change several parameters for the time course,
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/TimeCourseTask_02.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/TimeCourseTask_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/TimeCourseTask_02.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/TimeCourseTask_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog to associate a report with a file</phrase>
@@ -1528,10 +1528,10 @@ The dialog that pops up will let you choose the report you want to use (in case 
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/TimeCourseTask_03.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/TimeCourseTask_03.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/TimeCourseTask_03.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/TimeCourseTask_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog that shows the results of the trajectory task</phrase>
@@ -1556,10 +1556,10 @@ The results dialog is located directly below the time course branch in the objec
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/PlotWindow_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/PlotWindow_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/PlotWindow_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/PlotWindow_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog window showing a plot</phrase>
@@ -1580,10 +1580,10 @@ The results dialog is located directly below the time course branch in the objec
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/MCATask_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/MCATask_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/MCATask_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/MCATask_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog for running a metabolic control analysis</phrase>
@@ -1601,10 +1601,10 @@ The results dialog is located directly below the time course branch in the objec
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/MCATask_02.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/MCATask_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/MCATask_02.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/MCATask_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog showing the results of the metabolic control analysis</phrase>
@@ -1622,10 +1622,10 @@ To start the calculation, you click the <guibutton>Run</guibutton> button. After
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/MCATask_03.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/MCATask_03.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/MCATask_03.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/MCATask_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog showing the results of the MCA after no steady state was found</phrase>
@@ -1656,10 +1656,10 @@ If you want to have output from the MCA, you have to create an output definition
 <screeninfo>Produced with Copasi Build-18 on Mac OS X on 05/22/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Lyapunov_01.png" format="PNG" scale="45" align="center" />
+  <imagedata fileref="images/Lyapunov_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Lyapunov_01.ps" format="EPS" scale="45" align="center" />
+  <imagedata fileref="images/Lyapunov_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Lyapunov task widget</phrase>
@@ -1676,10 +1676,10 @@ If you want to have output from the MCA, you have to create an output definition
 <screeninfo>Produced with Copasi Build-18 on Mac OS X on 05/22/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Lyapunov_02.png" format="PNG" scale="45" align="center" />
+  <imagedata fileref="images/Lyapunov_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Lyapunov_02.ps" format="EPS" scale="45" align="center" />
+  <imagedata fileref="images/Lyapunov_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>Results window for the Lyapunov Exponent calculation.</phrase>
@@ -1704,10 +1704,10 @@ If you want to have output from the MCA, you have to create an output definition
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_01.png" format="PNG" scale="45" align="center" />
+  <imagedata fileref="images/ParameterScan_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_01.ps" format="EPS" scale="45" align="center" />
+  <imagedata fileref="images/ParameterScan_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog showing scan task dialog when first opened</phrase>
@@ -1725,10 +1725,10 @@ If you want to have output from the MCA, you have to create an output definition
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_02.png" format="PNG" scale="45" align="center" />
+  <imagedata fileref="images/ParameterScan_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_02.ps" format="EPS" scale="45" align="center" />
+  <imagedata fileref="images/ParameterScan_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog showing scan task dialog with a Parameter Scan item</phrase>
@@ -1752,10 +1752,10 @@ If you want to have output from the parameter scan, you have to create an output
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_03.png" format="PNG" scale="45" align="center" />
+  <imagedata fileref="images/ParameterScan_03.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_03.ps" format="EPS" scale="45" align="center" />
+  <imagedata fileref="images/ParameterScan_03.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog showing scan task dialog with two Parameter Scan items</phrase>
@@ -1774,10 +1774,10 @@ After adjusting the minimum and maximum as well as the number of intervals, you 
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_04.png" format="PNG" scale="45" align="center" />
+  <imagedata fileref="images/ParameterScan_04.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_04.ps" format="EPS" scale="45" align="center" />
+  <imagedata fileref="images/ParameterScan_04.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog showing scan task dialog with a Random distribution item</phrase>
@@ -1796,10 +1796,10 @@ After adjusting the minimum and maximum as well as the number of intervals, you 
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_05.png" format="PNG" scale="45" align="center" />
+  <imagedata fileref="images/ParameterScan_05.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_05.ps" format="EPS" scale="45" align="center" />
+  <imagedata fileref="images/ParameterScan_05.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog showing scan task dialog with a Random distribution and Repeat item</phrase>
@@ -1818,10 +1818,10 @@ After adjusting the minimum and maximum as well as the number of intervals, you 
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_06.png" format="PNG" scale="45" align="center" />
+  <imagedata fileref="images/ParameterScan_06.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_06.ps" format="EPS" scale="45" align="center" />
+  <imagedata fileref="images/ParameterScan_06.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog showing scan task dialog with a more complex combination of actions</phrase>
@@ -1843,10 +1843,10 @@ With the buttons on the left of each item other then the <guilabel>Task</guilabe
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_07.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_07.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_07.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_07.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog showing scan task dialog with a repeated random distribution</phrase>
@@ -1860,10 +1860,10 @@ With the buttons on the left of each item other then the <guilabel>Task</guilabe
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_08.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_08.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_08.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_08.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>plot with 10 different curves</phrase>
@@ -1877,10 +1877,10 @@ With the buttons on the left of each item other then the <guilabel>Task</guilabe
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_09.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_09.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_09.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_09.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>dialog showing scan task dialog with a random distribution where the time course task is repeated</phrase>
@@ -1894,10 +1894,10 @@ With the buttons on the left of each item other then the <guilabel>Task</guilabe
 <screeninfo>Produced with Copasi CVS on Mac OS X on 04/06/2005</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/ParameterScan_10.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_10.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/ParameterScan_10.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/ParameterScan_10.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>plot with 10 times the same curve</phrase>
@@ -1932,10 +1932,10 @@ We assume you have a model that consists of several reactions and two of those r
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Optimization_01.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Optimization_01.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Optimization_01.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Optimization_01.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>linux screenshot that shows Copasi optimization dialog</phrase>
@@ -1968,10 +1968,10 @@ The only thing we have not done yet is to tell Copasi which parameter(s) it shou
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
 <mediaobject>
  <imageobject>
-  <imagedata fileref="images/Optimization_02.png" format="PNG" scale="30" align="center" />
+  <imagedata fileref="images/Optimization_02.png" format="PNG" scale="50" align="center" />
  </imageobject> 
  <imageobject>
-  <imagedata fileref="images/Optimization_02.ps" format="EPS" scale="30" align="center" />
+  <imagedata fileref="images/Optimization_02.ps" format="EPS" scale="50" align="center" />
  </imageobject> 
  <textobject>
    <phrase>linux screenshot that shows the progress dialog during an optimization task run </phrase>
