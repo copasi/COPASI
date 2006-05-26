@@ -8,6 +8,7 @@
  <!ENTITY copasi_methods SYSTEM "copasi_methods.xml" >  
  <!ENTITY fileFormats SYSTEM "copasi_fileFormats.xml" >  
  <!ENTITY bibliography SYSTEM "copasi_bibliography.xml" >  
+ <!ENTITY errors SYSTEM "copasi_errorMessages.xml" >  
 ]> 
 
 <book id="book" xmlns:mml="http://www.w3.org/1998/Math/MathML">
@@ -29,6 +30,9 @@
 <!-- &fileFormats; -->
 
 <!-- &bibliography; -->
+
+&errors;
+
 </book>
 
 

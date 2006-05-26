@@ -1,10 +1,10 @@
 <!-- Please don't remove, I want to use this to easily be able to check if messages has been changed in order to be able to update this file. -->
 <!--
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_errorMessages.xml,v $
-   $Revision: 1.1.2.6 $
+   $Revision: 1.1.2.7 $
 -->
 
-<chapter id="errorMessages" xreflabel="Error Messages">
+<appendix id="errorMessages" xreflabel="Error Messages">
 <title>Error Messages</title>
 <para>
 This section contains a list of COPASI error messages and an explanation when and/or why this error might have occurred. This is work in progress and not all error messages might have been fully documented here yet.
@@ -12,48 +12,35 @@ This section contains a list of COPASI error messages and an explanation when an
 <para>
 Also keep in mind that the vast majority of error messages listed here are internal to COPASI and users will probably never see them at all. If you see one of those, you know that there is a bug in COPASI and you should provide a bug report that is as detailed as possible. At the very least, the bug report should include a description of what you did when the bug occurred, the operating system you are running COPASI on and the version of COPASI you were using. Naturally, if possible, we would also like to have some file that shows the error reproducibly since this makes finding bugs a lot easier for us. Error messages that you should never encounter will be marked INTERNAL in the description. So if you encounter any error message marked as INTERNAL please provide as with a bug report so we can fix it. There are two ways to provide a bug report. The first one is to go to COPASI's <ulink url="http://calvin.bioinformatics.vt.edu/bugzilla/createaccount.cgi">bugzilla web-page</ulink> and create a new account if you don't already have one and enter a full bug report into the bugzilla database. The other way to report is bug is to send an email to bugs@copasi.org with the information mentioned above. 
 </para>
-<sect1 id="configReaderErrors" xreflabel="Configuration Readers Error Messages">
-<title>Configuration Reader Error Messages</title>
+<sect1 id="configReaderErrors" xreflabel="Gepasi File Reader Error Messages">
+<title>Gepasi File Reader Error Messages</title>
 <para>
 The CReadConfig messages report problems when reading a Gepasi file. 
 </para>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CReadConfig (1): Variable 'VARIABLENAME' not found in 'FILENAME(LINENUMBER)'.</entry>
-   <entry>COPASI expects the variable VARIABLENAME in the file FILENAME at line
-LINENUMBER. Often LINENUMBER will be the last line of the file as COPASI
-searches for the variable.</entry>
- </row>
- <row>
-   <entry>CReadConfig (2): Cannot open file 'FILENAME'.</entry>
-   <entry>COPASI cannot open the file FILENAME.</entry>
- </row>
- <row>
-   <entry>CReadConfig (3): Cannot read file 'FILENAME'.</entry>
-   <entry>COPASI cannot read the file FILENAME.</entry>
- </row>
- <row>
-   <entry>CReadConfig (4): Cannot close file 'FILENAME'.</entry>
-   <entry>COPASI cannot close the file FILENAME.</entry>
- </row>
- <row>
-   <entry>CReadConfig (5): Invalid type 'TYPE' for  Variable 'VARIABLENAME'.</entry>
-   <entry>COPASI expects the variable VARIABLENAME to be of 
-a different type than TYPE.
-</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CReadConfig (1): Variable 'VARIABLENAME' not found in 'FILENAME(LINENUMBER)'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI expects the variable VARIABLENAME in the file FILENAME at line LINENUMBER. Often LINENUMBER will be the last line of the file as COPASI searches for the variable.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CReadConfig (2): Cannot open file 'FILENAME'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI cannot open the file FILENAME.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CReadConfig (3): Cannot read file 'FILENAME'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI cannot read the file FILENAME.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CReadConfig (4): Cannot close file 'FILENAME'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI cannot close the file FILENAME.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CReadConfig (5): Invalid type 'TYPE' for  Variable 'VARIABLENAME'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI expects the variable VARIABLENAME to be of a different type than TYPE.</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -61,70 +48,44 @@ a different type than TYPE.
 <sect1 id="copasiVectorErrors" xreflabel="Copasi Vector Error Messages">
 <title>COPASI Vector Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CCopasiVector (1): Object 'OBJECTNAME' not found.</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CCopasiVector (2): Object 'OBJECTNAME' already exists.</entry>
-   <entry>INTERNAL</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CCopasiVector (1): Object 'OBJECTNAME' not found.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CCopasiVector (2): Object 'OBJECTNAME' already exists.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
 <sect1 id="functionParameterErrors" xreflabel="Function Parameter Error Messages">
 <title>Function Parameter Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CFunctionParameters (2): No parameter with usage 'TYPE' with index >= 'INDEX'.</entry>
-   <entry>INTERNAL</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CFunctionParameters (2): No parameter with usage 'TYPE' with index >= 'INDEX'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
 <sect1 id="massActionErrors" xreflabel="Mass Action Error Messages">
 <title>Mass Action Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CMassAction (1): The function Mass Action reversibility must be either TRUE or FALSE.</entry>
-   <entry>INTERNAL</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CMassAction (1): The function Mass Action reversibility must be either TRUE or FALSE.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -132,26 +93,18 @@ a different type than TYPE.
 <sect1 id="copasiMethodErrors" xreflabel="Copasi Method Error Messages">
 <title>COPASI Method Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CCopasiMethod (2): pProblem == NULL</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CCopasiMethod (3): Model is not set in problem</entry>
-   <entry>INTERNAL</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CCopasiMethod (2): pProblem == NULL</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CCopasiMethod (3): Model is not set in problem</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -162,54 +115,47 @@ a different type than TYPE.
 Many of the error messages in the class are related to SBML import/export.
 </para>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CReaction (1): Function 'FUNCTIONNAME' not found.</entry>
-   <entry>INTERNAL. A reaction tries to use a function as a kinetic law that is unknown.</entry>
- </row>
- <row>
-   <entry>CReaction (3): Reaction 'REACTIONNAME' has no substrates and no products.</entry>
-   <entry>COPASI found a reaction with neither substrates nor products. A reaction needs to have at least one substrate or one product.</entry>
- </row>
- <row>
-   <entry>CReaction (4): Only Metabolites, Compartments or Parameter object nodes are allowed in kinetic functions.</entry>
-   <entry>TO BE WRITTEN</entry>
- </row>
- <row>
-   <entry>CReaction (5): Nodes of type TYPENAME are not implemented yet.</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CReaction (6): Nodes of type VARIABLE must not appear in an expression.</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CReaction (7): CMetab object 'OBJECTNAME' is neither substrate, product nor modifier to reaction 'REACTIONNAME' but it is used in the kinetic law.</entry>
-   <entry>During SBML import COPASI found a name in a kinetic law that is neither a parameter, a substrate, product or modifier to the reaction. The most likely cause for this that a modifier has not been declared in the listOfModifiers of the reaction.</entry>
- </row>
- <row>
-   <entry>CReaction (8): Could not find variable with name 'VARIABLENAME'.</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CReaction (9): Could not find object for key '%s'.</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CReaction (10): Parameter '%s' is a vector.</entry>
-   <entry>INTERNAL</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CReaction (1): Function 'FUNCTIONNAME' not found.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL. A reaction tries to use a function as a kinetic law that is unknown.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CReaction (3): Reaction 'REACTIONNAME' has no substrates and no products.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI found a reaction with neither substrates nor products. A reaction needs to have at least one substrate or one product.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CReaction (4): Only Metabolites, Compartments or Parameter object nodes are allowed in kinetic functions.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>TO BE WRITTEN</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CReaction (5): Nodes of type TYPENAME are not implemented yet.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CReaction (6): Nodes of type VARIABLE must not appear in an expression.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CReaction (7): CMetab object 'OBJECTNAME' is neither substrate, product nor modifier to reaction 'REACTIONNAME' but it is used in the kinetic law.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>During SBML import COPASI found a name in a kinetic law that is neither a parameter, a substrate, product or modifier to the reaction. The most likely cause for this that a modifier has not been declared in the listOfModifiers of the reaction.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CReaction (8): Could not find variable with name 'VARIABLENAME'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CReaction (9): Could not find object for key '%s'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CReaction (10): Parameter '%s' is a vector.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -228,34 +174,26 @@ import/export.
 <sect1 id="parameterErrors" xreflabel="Parameter Error Messages">
 <title>Parameter Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CCopasiParameter (2): Elevation failed, since no parameter is provided.</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CCopasiParameter (3): Elevation failed, since the parameter is not of the required source type.</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CCopasiParameter (4): Elevation failed, since elevation of children failed.</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CCopasiParameter (5): Elevation failed, since the parameter is not member of this group.</entry>
-   <entry>INTERNAL</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CCopasiParameter (2): Elevation failed, since no parameter is provided.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CCopasiParameter (3): Elevation failed, since the parameter is not of the required source type.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CCopasiParameter (4): Elevation failed, since elevation of children failed.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CCopasiParameter (5): Elevation failed, since the parameter is not member of this group.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -263,65 +201,53 @@ import/export.
 <sect1 id="trajectoryMethodErrors" xreflabel="Trajectory Method Error Messages">
 <title>Trajectory Method Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CTrajectoryMethod (1): Hybrid simulation not applicable, since the stoichiometry contains a non-integer.</entry>
-   <entry>Hybrid simulations can not be run on models that contain reactions with non integer stoichiometries.</entry>
- </row>
- <row>
-   <entry>CTrajectoryMethod (2): Hybrid simulation not applicable, since reversible reactions exists.</entry>
-   <entry>Hybrid simulations can not be run on models with reversible reactions. You can try to convert all reactions to irreversible reactions via the "Convert to irreversible" menu item in the tools menu.</entry>
- </row>
- <row>
-   <entry>CTrajectoryMethod (3): Hybrid simulation not applicable, since more than one compartment is involved.</entry>
-   <entry>Hybrid simulations only work on single compartment models.</entry>
- </row>
- <row>
-   <entry>CTrajectoryMethod (4): mLowerStochLimit ('%.2f') is greater than mUpperStochLimit ('%.2f').</entry>
-   <entry>Check the limits for the hybrid method. The "Lower limit" parameter has to be smaller than the "Upper limit" parameter.</entry>
- </row>
- <row>
-   <entry>CTrajectoryMethod (6): Deterministic integration failed. LSODA reported:LSODA_ERROR_MESSAGE Please see result for indications of numerical instability.</entry>
-   <entry>The deterministic integration failed. This is a strong indication of
-numerical problems. A look at the time series calculated up to the
-point the problem occurred is often helpful in resolving the problem.
-</entry>
- </row>
- <row>
-   <entry>CTrajectoryMethod (7): pProblem == NULL</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CTrajectoryMethod (8): Problem is not a trajectory problem.</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CTrajectoryMethod (9): Negative time steps not possible with stochastic simulation.</entry>
-   <entry>TO BE WRITTEN</entry><!-- How do I get this error? -->
- </row>
- <row>
-   <entry>CTrajectoryMethod (10): The tau-Leap Method encountered numerical problems. You can try to reduce the tau-value.</entry>
-   <entry>Choose a lower value for tau and rerun the time course task.</entry>
- </row>
- <row>
-   <entry>CTrajectoryMethod (11): Invalid tau-value ('%.2f'). Tau must have a positive value.</entry>
-   <entry>Values for tau must be positive numbers.</entry>
- </row>
- <row>
-   <entry>CTrajectoryMethod (12): Internal step limit exceeded.</entry>
-   <entry>The internal step limit is exceeded. Reducing the accuracy requirements or increasing the step limit may resolve the problem.</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CTrajectoryMethod (1): Hybrid simulation not applicable, since the stoichiometry contains a non-integer.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Hybrid simulations can not be run on models that contain reactions with non integer stoichiometries.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CTrajectoryMethod (2): Hybrid simulation not applicable, since reversible reactions exists.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Hybrid simulations can not be run on models with reversible reactions. You can try to convert all reactions to irreversible reactions via the "Convert to irreversible" menu item in the tools menu.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CTrajectoryMethod (3): Hybrid simulation not applicable, since more than one compartment is involved.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Hybrid simulations only work on single compartment models.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CTrajectoryMethod (4): mLowerStochLimit ('%.2f') is greater than mUpperStochLimit ('%.2f').</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Check the limits for the hybrid method. The "Lower limit" parameter has to be smaller than the "Upper limit" parameter.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CTrajectoryMethod (6): Deterministic integration failed. LSODA reported:LSODA_ERROR_MESSAGE Please see result for indications of numerical instability.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The deterministic integration failed. This is a strong indication of numerical problems. A look at the time series calculated up to the point the problem occurred is often helpful in resolving the problem.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CTrajectoryMethod (7): pProblem == NULL</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CTrajectoryMethod (8): Problem is not a trajectory problem.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CTrajectoryMethod (9): Negative time steps not possible with stochastic simulation.</listitem></varlistentry>
+   <listitem>TO BE WRITTEN</listitem><!-- How do I get this error? -->
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CTrajectoryMethod (10): The tau-Leap Method encountered numerical problems. You can try to reduce the tau-value.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Choose a lower value for tau and rerun the time course task.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CTrajectoryMethod (11): Invalid tau-value ('%.2f'). Tau must have a positive value.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Values for tau must be positive numbers.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CTrajectoryMethod (12): Internal step limit exceeded.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The internal step limit is exceeded. Reducing the accuracy requirements or increasing the step limit may resolve the problem.</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
                
@@ -333,55 +259,42 @@ point the problem occurred is often helpful in resolving the problem.
 Many of the error messages of the XML file reader are not serious. Since the COPASI file format has changed during development, current versions of COPASI might not recognize some elements used in older versions of the file format. And vice versa if you try to read a COPASI file generated with a version newer than the one you are currently using, the file might contain new elements unknown to the older version of COPASI. In the worst case some task settings might be lost.
 </para>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>XML (1): Required attribute 'ATTRIBUTENAME' not found (line: 'LINENUMBER').</entry>
-   <entry>The required attribute ATTRIBUTENAME is missing at line LINENUMBER. Please check the
-XML file.</entry>
- </row>
- <row>
-   <entry>XML (2): XML error (line: 'LINENUMBER', column: 'POSITION'): 'MESSAGE'.</entry>
-   <entry>Incorrect XML encountered at line LINENUMBER and character
-POSITION. The message gives further details about the error. This error is also shown when libsbml finds an error in an SBML file.</entry>
- </row>
- <row>
-   <entry>XML (3): Unknown element 'ELEMENTNAME' encountered at line 'LINENUMBER'.</entry>
-   <entry>The XML contained an unknown element ELEMENTNAME at line LINENUMBER. This element
-is ignored. </entry>
- </row>
- <row>
-   <entry>XML (4): Unknown parameter 'PARAMETERNAME' encountered at line 'LINENUMBER'.</entry>
-   <entry>The XML contained an unknown parameter PRAMETERNAME at line LINENUMBER. This parameter
-is ignored.</entry>
- </row>
- <row>
-   <entry>XML (5): Unknown task type 'TASKTYPE' encountered at line 'LINENUMBER'.</entry>
-   <entry>The XML contained an unknown task of type TASKTYPE at line
-LINENUMBER. This task is ignored.</entry>
- </row>
- <row>
-   <entry>XML (6): Invalid function 'FUNCTIONNAME' encountered at line 'LINENUMBER'.</entry>
-   <entry>The XML contains an invalid function FUNCTIONNAME at line LINENUMBER. This error should never occur, if it occurs with a file generated by COPASI, please send a bug report.</entry>
- </row>
- <row>
-   <entry>XML (7): Unknown function 'FUNCTIONNAME' in reaction 'REACTIONNAME' encountered at line 'LINENUMBER'.</entry>
-   <entry>The reaction REACTIONAME uses a call to an unknown function named FUNCTIONNAME in line LINENUMBER. Please check the XML file.</entry>
- </row>
- <row>
-   <entry>XML (8): Unknown variable 'VARIABLENAME' in function 'FUNCTIONNAME' encountered at line 'LINENUMBER'. A possible reason is that the variable is a reserved string within the function description.</entry>
-   <entry>Please check the file if a variable of the function FUNCTIONNAME at line LINENUMBER is a reserved keyword. For a list of reserved keywords see the section on <xref linkend="addingFunctions">function definitions</xref></entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>XML (1): Required attribute 'ATTRIBUTENAME' not found (line: 'LINENUMBER').</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The required attribute ATTRIBUTENAME is missing at line LINENUMBER. Please check the XML file.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>XML (2): XML error (line: 'LINENUMBER', column: 'POSITION'): 'MESSAGE'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Incorrect XML encountered at line LINENUMBER and character POSITION. The message gives further details about the error. This error is also shown when libsbml finds an error in an SBML file.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>XML (3): Unknown element 'ELEMENTNAME' encountered at line 'LINENUMBER'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The XML contained an unknown element ELEMENTNAME at line LINENUMBER. This element is ignored. </listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>XML (4): Unknown parameter 'PARAMETERNAME' encountered at line 'LINENUMBER'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The XML contained an unknown parameter PRAMETERNAME at line LINENUMBER. This parameter is ignored.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>XML (5): Unknown task type 'TASKTYPE' encountered at line 'LINENUMBER'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The XML contained an unknown task of type TASKTYPE at line LINENUMBER. This task is ignored.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>XML (6): Invalid function 'FUNCTIONNAME' encountered at line 'LINENUMBER'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The XML contains an invalid function FUNCTIONNAME at line LINENUMBER. This error should never occur, if it occurs with a file generated by COPASI, please send a bug report.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>XML (7): Unknown function 'FUNCTIONNAME' in reaction 'REACTIONNAME' encountered at line 'LINENUMBER'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The reaction REACTIONAME uses a call to an unknown function named FUNCTIONNAME in line LINENUMBER. Please check the XML file.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>XML (8): Unknown variable 'VARIABLENAME' in function 'FUNCTIONNAME' encountered at line 'LINENUMBER'. A possible reason is that the variable is a reserved string within the function description.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Please check the file if a variable of the function FUNCTIONNAME at line LINENUMBER is a reserved keyword. For a list of reserved keywords see the section on <xref linkend="addingFunctions">function definitions</xref></listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -389,26 +302,18 @@ LINENUMBER. This task is ignored.</entry>
 <sect1 id="configurationErrors" xreflabel="Configuration Error Messages">
 <title>Configuration Function Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>Configuration (1): COPASI directory is not set. Some features might not be working correctly. Please set the environment variable COPASIDIR or use the command line options -c COPASIDIR or --copasidir COPASIDIR to point to the COPASI installation directory.</entry>
-   <entry>self explanatory</entry>
- </row>
- <row>
-   <entry>Configuration (2): Configuration file 'FILENAME' found but is not readable.</entry>
-   <entry>COPASI found the configuration file but could not read it. Please check if you have sufficient permissions on the file FILENAME.</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>Configuration (1): COPASI directory is not set. Some features might not be working correctly. Please set the environment variable COPASIDIR or use the command line options -c COPASIDIR or --copasidir COPASIDIR to point to the COPASI installation directory.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>self explanatory</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>Configuration (2): Configuration file 'FILENAME' found but is not readable.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI found the configuration file but could not read it. Please check if you have sufficient permissions on the file FILENAME.</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -416,64 +321,42 @@ LINENUMBER. This task is ignored.</entry>
 <sect1 id="optimizationTaskErrors" xreflabel="Optimization Task Error Messages">
 <title>Optimization Task Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>Optimization (1): Object 'OBJECTNAME' not found.</entry>
-   <entry>The object specified by OBJECTNAME can not be found. This normally indicates
-that the model was changed and the parameters or constraints must be
-adjusted.</entry>
- </row>
- <row>
-   <entry>Optimization (2): Lower Bound 'OBJECTNAME' not found.</entry>
-   <entry>The lower bound specified by OBJECTNAME can not be found. This normally indicates
-that the model was changed and the parameters or constraints must be
-adjusted.</entry>
- </row>
- <row>
-   <entry>Optimization (3): Upper Bound 'OBJECTNAME' not found.</entry>
-   <entry>The upper bound specified by OBJECTNAME can not be found. This normally indicates
-that the model was changed and the parameters or constraints must be
-adjusted.</entry>
- </row>
- <row>
-   <entry>Optimization (4): Empty Interval ('%f', '%f') specified.</entry>
-   <entry>The interval is invalid as the lower bound is larger than the upper
-bound. Please correct the problem.</entry>
- </row>
- <row>
-   <entry>Optimization (5): Invalid Objective Functions.</entry>
-   <entry>The objective function is invalid, i.e, COPASI can not interpret
-it. Please correct the problem.</entry>
- </row>
- <row>
-   <entry>Optimization (6): No adjustable Parameters specified.</entry>
-   <entry>Since no parameter are specified no optimization can be performed.</entry>
- </row>
- <row>
-   <entry>Optimization (7): No Task Type specified.</entry>
-   <entry>The optimization task type is not specified. Supported types are
-currently time course and steady state.
-</entry>
- </row>
- <row>
-   <entry>Optimization (8): '%d' Function Evaluation out of '%d' failed.</entry>
-   <entry>A high percentage of failed function evaluation indicates that the
-parameter range is not appropriate or the objective function is ill
-defined. For parameter estimation problems please check also whether
-the experimental data is correctly specified in accordance with
-provided data files.</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>Optimization (1): Object 'OBJECTNAME' not found.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The object specified by OBJECTNAME can not be found. This normally indicates that the model was changed and the parameters or constraints must be adjusted.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>Optimization (2): Lower Bound 'OBJECTNAME' not found.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The lower bound specified by OBJECTNAME can not be found. This normally indicates that the model was changed and the parameters or constraints must be adjusted.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>Optimization (3): Upper Bound 'OBJECTNAME' not found.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The upper bound specified by OBJECTNAME can not be found. This normally indicates that the model was changed and the parameters or constraints must be adjusted.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>Optimization (4): Empty Interval ('%f', '%f') specified.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The interval is invalid as the lower bound is larger than the upper bound. Please correct the problem.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>Optimization (5): Invalid Objective Functions.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The objective function is invalid, i.e, COPASI can not interpret it. Please correct the problem.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>Optimization (6): No adjustable Parameters specified.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Since no parameter are specified no optimization can be performed.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>Optimization (7): No Task Type specified.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The optimization task type is not specified. Supported types are currently time course and steady state.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>Optimization (8): '%d' Function Evaluation out of '%d' failed.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>A high percentage of failed function evaluation indicates that the parameter range is not appropriate or the objective function is ill defined. For parameter estimation problems please check also whether the experimental data is correctly specified in accordance with provided data files.</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -486,134 +369,126 @@ provided data files.</entry>
 The following errors are generated by the SBML importer and exporter. If you encounter errors related to SBML import, please check your SBML file with the SBML On-line Validator at <ulink url="http://sbml.org/tools/htdocs/sbmltools.php">http://sbml.org/tools/htdocs/sbmltools.php</ulink> before you file a bug report.
 </para>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>SBML (2): The SBML document contains no model.</entry>
-   <entry>This error occurs if you try to load an SBML file that does not contain a model.</entry>
- </row>
- <row>
-   <entry>SBML (3): The SBML document contains rules that were ignored.</entry>
-   <entry>COPASI does not support SBML rules yet, so if you load an SBML file that contains rules, COPASI will warn you that the rules have been ignored. Please be aware that this will very likely change simulation results.</entry>
- </row>
- <row>
-   <entry>SBML (4): The SBML document contains events that were ignored.</entry>
-   <entry>COPASI does not support SBML events yet, so if you load an SBML file that contains events, COPASI will warn you that the events have been ignored. Please be aware that this will very likely change simulation results.</entry>
- </row>
- <row>
-   <entry>SBML (5): Compartment COMPARTMENTID referenced by species SPECIESID does not exist.</entry>
-   <entry>In the SBML file a the species with id SPECIESID references the compartment with id COMPARTMENTID, but a compartment with this id does not exist.</entry>
- </row>
- <row>
-   <entry>SBML (6): Annotations in SBML element of SBML Level 1 files, this is invalid and has been ignored.</entry>
-   <entry>Some programs add annotations to the SBML element of the file which is incorrect. Since it doesn't affect the mode, COPASI reads the model anyway but ignores the annotation. If you want to keep the annotation please open the SBML file in a text editor and move it to e.g. the model element.</entry>
- </row>
- <row>
-   <entry>SBML (7): One or more model values have not been set.</entry>
-   <entry>In order to simulate a model in COPASI it has to be complete, meaning all initial values and parameter values have to be set. SBML allows the user to specify incomplete models. This warning tells the user that some values in the model have not been set and that the model is incomplete. Most tasks in COPASI will not work with this model until all values have been set. Unset values will be shown as NaN in COPASI graphical user interface. The fastest way to find unset values is to use the <link likend="parameterView">parameter view</link>.</entry>
- </row>
- <row>
-   <entry>SBML (8): Expression tree for kinetic of reaction 'REACTIONID' could not be converted.</entry>
-   <entry>The kinetic formula for the reaction with id REACTIONID could not be converted into COPASI's internal function representation. If you think the formula is correct, please send as a bug report with the SBML file included so we can have a look at it.</entry>
- </row>
- <row>
-   <entry>SBML (9): Could not set function from expression in reaction 'REACTIONID'.</entry>
-   <entry>Somehow COPASI was able to generate in internal representation for a function formula, but could not use it with a reaction. If you get such an error, please send as a bug report with the SBML file so we can look at it.</entry>
- </row>
- <row>
-   <entry>SBML (10): COPASI does not support stoichiometric expressions yet.</entry>
-   <entry>Although COPASI does support fractional stoichiometries, arbitrary stoichiometric expressions are not supported yet. If such a stoichiometry is encountered, COPASI will not read the file.</entry>
- </row>
- <row>
-   <entry>SBML (11): Function 'FUNCTIONID' does not start with a Lambda element.</entry>
-   <entry>Function definitions in MathML have to start with a Lambda element. If you see this error, the function with the id FUNCTIONID is very likely incorrect MathML because it is missing this element.</entry>
- </row>
- <row>
-   <entry>SBML (12): Function 'FUNCTIONID' contains invalid parameter list.</entry>
-   <entry>The error message means that the parameter list for the function definition with id FUNCTIONID contains an invalid type, e.g. a number instead of a parameter name.</entry>
- </row>
- <row>
-   <entry>SBML (13): Could not read function definition for function 'FUNCTIONID'.</entry>
-   <entry>COPASI could not read the function definition with id FUNCTIONID. If you think this function definition is correct, please send us a bug report and include the SBML file.</entry>
- </row>
- <row>
-   <entry>SBML (14): Could not import function with id '%s'.</entry>
-   <entry>This error message is very similar to the one above but the error here already occurred in libsbml while reading the function definition.</entry>
- </row>
- <row>
-   <entry>SBML (15): Could not find function with id 'ID'.</entry>
-   <entry>COPASI could not find the function with id ID while exporting a model to SBML. If you get this error message please save the model as a COPASI file and send us a bug report with this file.</entry>
- </row>
- <row>
-   <entry>SBML (16): Loop found in function. That means a function calls itself either directly or indirectly.</entry>
-   <entry>COPASI has found a loop in a function call while exporting your model to SBML. This should never happen so if you see this error message please save the model as a COPASI file and send us a bug report with this file.</entry>
- </row>
- <row>
-   <entry>SBML (17): Single compartment reaction found where the kinetic law does not include a multiplication by the volume.</entry>
-   <entry>This is a warning only. Please see the COPASI FAQ question 'Why are some rate laws in SBML files exported by COPASI multiplied by the compartment volume?' at <ulink url="http://www.copasi.org">http://www.copasi.org/</ulink>.</entry>
- </row>
- <row>
-   <entry>SBML (18): Support for 'hasOnlySubstanceUnit' flag on species %s is experimental.</entry>
-   <entry>The latest versions of COPASI support the hasOnlySubstanceUnits flag on species in SBML files. It should work just fine, but it has not been heavily tested yet.</entry>
- </row>
- <row>
-   <entry>SBML (19): spatialSizeUnits on species SPECIESID ignored.</entry>
-   <entry>COPASI does not support the spatialSizeUnits attribute for species. The species with id SPECIESID in the current file seems to use this attribute however.</entry>
- </row>
- <row>
-   <entry>SBML (20): Setting an initial concentration on species SPECIESID which has the 'hasOnlySubstanceUnits' flag set is not allowed.</entry>
-   <entry>The SBML file seems to contain a species with id SPECIESID that has the hasOnlySubstanceUnits flag set to true but also has an initialConcentration set. This is incorrect, please specify an initial amount instead.</entry>
- </row>
- <row>
-   <entry>SBML (21): Setting an initial concentration on species 'SPECIESID' which is in a compartment with spatial dimensions 0 is not allowed.</entry>
-   <entry>Having a compartment with a spatial dimension of 0 implies that all species within this compartment have the hasOnlySubstanceUnits flag set to true. Therefore it is incorrect to specify an initial concentration for those species. Specify an initial amount instead. Current version of COPASI refuse to read models with compartments that have their spatial size units set to 0 so this error message will never appear.</entry>
- </row>
- <row>
-   <entry>SBML (22): Current versions of COPASI only supports three dimensional compartments. 'COMPARTMENTID' will be converted to three dimensions.</entry>
-   <entry>COPASI only supports three dimensional compartments so far, so all compartments are converted to three dimensions no matter what is specified in the SBML file. Independent of this is the handling of spatial dimensions that are set to 0 in the SBML file (see error SBML (21) above). Current version of COPASI refuse to read models with compartments that have their spatial size units set to 0 so this error message will never appear.</entry>
- </row>
- <row>
-   <entry>SBML (23): Unable to handle compartment 'COMPARTMENTID' which has spatial dimensions of 0.</entry>
-   <entry>COPASI does not handle models that include compartments with spatial dimensions set to 0. This might change in future versions.</entry>
- </row>
- <row>
-   <entry>SBML (24): Units for compartment 'COMPARTMENTID' ignored.</entry>
-   <entry>COPASI refuses to read models where units other than 'volume' are specified for a compartment since COPASI can not convert units yet.</entry>
- </row>
- <row>
-   <entry>SBML (25): Units for species 'SPECIESID' ignored.</entry>
-   <entry>COPASI refuses to read models where units other than 'substance' are specified for a species since COPASI can not convert units yet.</entry>
- </row>
- <row>
-   <entry>SBML (26): Units for parameter 'PARAMETERID' ignored.</entry>
-   <entry>COPASI ignores units set on individual compartments since unit conversion is not supported in COPASI yet. Please be aware that depending on the units results generated from such a model might be incorrect.</entry>
- </row>
- <row>
-   <entry>SBML (27): Error in kinetic law for reaction 'REACTIONID'.</entry>
-   <entry>Some error occurred while creating the kinetic law for the reaction with id REACTIONID. If you think the kinetic law in the SBML file is OK, please send a bug report and include the SBML file so that we can have a look at it.</entry>
- </row>
- <row>
-   <entry>SBML (28): Error in function definition with id 'ID'.</entry>
-   <entry>Somehow COPASI was not able to convert the function definition with id ID into it's internal format. If you think the function definition is correct, please send a bug report and include the SBML file.</entry>
- </row>
- <row>
-   <entry>SBML (29): Unable to handle reactions with the 'fast' flag set.\The flag has been set to false.</entry>
-   <entry>COPASI is not yet able to handle reactions that are set to fast correctly the flag will be automatically set to false on import. In some cases simulation results for these models can be incorrect.</entry>
- </row>
- <row>
-   <entry>SBML (30): Can't handle units of type item with scale set to 1.\n If this file was created with COPASI RC1 or older please see the COPASI FAQ.</entry>
-   <entry>COPASI prior to and including RC1 had a bug in the SBML exporter. If the default concentration units were set to items, COPASI would set the scale to 1 instead of 0 on the exported substance unit definition. You can correct those files by opening them in a text editor and setting the scale for the substance units to 0. If the file was not created with COPASI, the scale was probably meant to be 1 and COPASI can not import it since it does not do unit conversion yet.</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (2): The SBML document contains no model.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>This error occurs if you try to load an SBML file that does not contain a model.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (3): The SBML document contains rules that were ignored.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI does not support SBML rules yet, so if you load an SBML file that contains rules, COPASI will warn you that the rules have been ignored. Please be aware that this will very likely change simulation results.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (4): The SBML document contains events that were ignored.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI does not support SBML events yet, so if you load an SBML file that contains events, COPASI will warn you that the events have been ignored. Please be aware that this will very likely change simulation results.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (5): Compartment COMPARTMENTID referenced by species SPECIESID does not exist.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>In the SBML file a the species with id SPECIESID references the compartment with id COMPARTMENTID, but a compartment with this id does not exist.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (6): Annotations in SBML element of SBML Level 1 files, this is invalid and has been ignored.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Some programs add annotations to the SBML element of the file which is incorrect. Since it doesn't affect the mode, COPASI reads the model anyway but ignores the annotation. If you want to keep the annotation please open the SBML file in a text editor and move it to e.g. the model element.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (7): One or more model values have not been set.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>In order to simulate a model in COPASI it has to be complete, meaning all initial values and parameter values have to be set. SBML allows the user to specify incomplete models. This warning tells the user that some values in the model have not been set and that the model is incomplete. Most tasks in COPASI will not work with this model until all values have been set. Unset values will be shown as NaN in COPASI graphical user interface. The fastest way to find unset values is to use the <link likend="parameterView">parameter view</link>.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (8): Expression tree for kinetic of reaction 'REACTIONID' could not be converted.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The kinetic formula for the reaction with id REACTIONID could not be converted into COPASI's internal function representation. If you think the formula is correct, please send as a bug report with the SBML file included so we can have a look at it.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (9): Could not set function from expression in reaction 'REACTIONID'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Somehow COPASI was able to generate in internal representation for a function formula, but could not use it with a reaction. If you get such an error, please send as a bug report with the SBML file so we can look at it.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (10): COPASI does not support stoichiometric expressions yet.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Although COPASI does support fractional stoichiometries, arbitrary stoichiometric expressions are not supported yet. If such a stoichiometry is encountered, COPASI will not read the file.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (11): Function 'FUNCTIONID' does not start with a Lambda element.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Function definitions in MathML have to start with a Lambda element. If you see this error, the function with the id FUNCTIONID is very likely incorrect MathML because it is missing this element.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (12): Function 'FUNCTIONID' contains invalid parameter list.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The error message means that the parameter list for the function definition with id FUNCTIONID contains an invalid type, e.g. a number instead of a parameter name.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (13): Could not read function definition for function 'FUNCTIONID'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI could not read the function definition with id FUNCTIONID. If you think this function definition is correct, please send us a bug report and include the SBML file.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (14): Could not import function with id '%s'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>This error message is very similar to the one above but the error here already occurred in libsbml while reading the function definition.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (15): Could not find function with id 'ID'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI could not find the function with id ID while exporting a model to SBML. If you get this error message please save the model as a COPASI file and send us a bug report with this file.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (16): Loop found in function. That means a function calls itself either directly or indirectly.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI has found a loop in a function call while exporting your model to SBML. This should never happen so if you see this error message please save the model as a COPASI file and send us a bug report with this file.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (17): Single compartment reaction found where the kinetic law does not include a multiplication by the volume.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>This is a warning only. Please see the COPASI FAQ question 'Why are some rate laws in SBML files exported by COPASI multiplied by the compartment volume?' at <ulink url="http://www.copasi.org">http://www.copasi.org/</ulink>.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (18): Support for 'hasOnlySubstanceUnit' flag on species %s is experimental.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The latest versions of COPASI support the hasOnlySubstanceUnits flag on species in SBML files. It should work just fine, but it has not been heavily tested yet.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (19): spatialSizeUnits on species SPECIESID ignored.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI does not support the spatialSizeUnits attribute for species. The species with id SPECIESID in the current file seems to use this attribute however.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (20): Setting an initial concentration on species SPECIESID which has the 'hasOnlySubstanceUnits' flag set is not allowed.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The SBML file seems to contain a species with id SPECIESID that has the hasOnlySubstanceUnits flag set to true but also has an initialConcentration set. This is incorrect, please specify an initial amount instead.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (21): Setting an initial concentration on species 'SPECIESID' which is in a compartment with spatial dimensions 0 is not allowed.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Having a compartment with a spatial dimension of 0 implies that all species within this compartment have the hasOnlySubstanceUnits flag set to true. Therefore it is incorrect to specify an initial concentration for those species. Specify an initial amount instead. Current version of COPASI refuse to read models with compartments that have their spatial size units set to 0 so this error message will never appear.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (22): Current versions of COPASI only supports three dimensional compartments. 'COMPARTMENTID' will be converted to three dimensions.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI only supports three dimensional compartments so far, so all compartments are converted to three dimensions no matter what is specified in the SBML file. Independent of this is the handling of spatial dimensions that are set to 0 in the SBML file (see error SBML (21) above). Current version of COPASI refuse to read models with compartments that have their spatial size units set to 0 so this error message will never appear.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (23): Unable to handle compartment 'COMPARTMENTID' which has spatial dimensions of 0.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI does not handle models that include compartments with spatial dimensions set to 0. This might change in future versions.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (24): Units for compartment 'COMPARTMENTID' ignored.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI refuses to read models where units other than 'volume' are specified for a compartment since COPASI can not convert units yet.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (25): Units for species 'SPECIESID' ignored.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI refuses to read models where units other than 'substance' are specified for a species since COPASI can not convert units yet.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (26): Units for parameter 'PARAMETERID' ignored.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI ignores units set on individual compartments since unit conversion is not supported in COPASI yet. Please be aware that depending on the units results generated from such a model might be incorrect.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (27): Error in kinetic law for reaction 'REACTIONID'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Some error occurred while creating the kinetic law for the reaction with id REACTIONID. If you think the kinetic law in the SBML file is OK, please send a bug report and include the SBML file so that we can have a look at it.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (28): Error in function definition with id 'ID'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Somehow COPASI was not able to convert the function definition with id ID into it's internal format. If you think the function definition is correct, please send a bug report and include the SBML file.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (29): Unable to handle reactions with the 'fast' flag set.\The flag has been set to false.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI is not yet able to handle reactions that are set to fast correctly the flag will be automatically set to false on import. In some cases simulation results for these models can be incorrect.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>SBML (30): Can't handle units of type item with scale set to 1.\n If this file was created with COPASI RC1 or older please see the COPASI FAQ.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI prior to and including RC1 had a bug in the SBML exporter. If the default concentration units were set to items, COPASI would set the scale to 1 instead of 0 on the exported substance unit definition. You can correct those files by opening them in a text editor and setting the scale for the substance units to 0. If the file was not created with COPASI, the scale was probably meant to be 1 and COPASI can not import it since it does not do unit conversion yet.</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -621,36 +496,22 @@ The following errors are generated by the SBML importer and exporter. If you enc
 <sect1 id="trajectoryTaskErrors" xreflabel="Trajectory Task Error Messages">
 <title>Trajectory Task Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CTrajectoryProblem (1): Invalid step size = 'VALUE'.</entry>
-   <entry>Normally this occurs when the step size is 0 which obviously is not
-meaningful.
-</entry>
- </row>
- <row>
-   <entry>CTrajectoryProblem (2): The step number 'VALUE' exceeds the limit. The step number and step size have been adjusted to avoid over flow.</entry>
-   <entry>The step number exceed the limit supported by COPASI. It has been
-adjusted to the maximal acceptable value.
-</entry>
- </row>
- <row>
-   <entry>CTrajectoryProblem (3): The step size 'VALUE' is to small for the machine accuracy. The step number and step size have been adjusted.</entry>
-   <entry>The step size is so small that the step number exceeds the limit supported by COPASI. It has been
-adjusted to the maximal acceptable value.
-</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CTrajectoryProblem (1): Invalid step size = 'VALUE'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>Normally this occurs when the step size is 0 which obviously is not meaningful.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CTrajectoryProblem (2): The step number 'VALUE' exceeds the limit. The step number and step size have been adjusted to avoid over flow.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The step number exceed the limit supported by COPASI. It has been adjusted to the maximal acceptable value.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CTrajectoryProblem (3): The step size 'VALUE' is to small for the machine accuracy. The step number and step size have been adjusted.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The step size is so small that the step number exceeds the limit supported by COPASI. It has been adjusted to the maximal acceptable value.</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -658,60 +519,44 @@ adjusted to the maximal acceptable value.
 <sect1 id="dirEntryErrors" xreflabel="Directory Entry Error Messages">
 <title>Directory Entry Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>DirEntry (1): Directory entry '%s' already exists.</entry>
-   <entry>A directory COPASI tried to create already exists.</entry>
- </row>
- <row>
-   <entry>DirEntry (2): Directory entry '%s' is read-only.</entry>
-   <entry>COPASI tried to write to a directory where it does not have writing permissions. Please check the permissions.</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>DirEntry (1): Directory entry '%s' already exists.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>A directory COPASI tried to create already exists.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>DirEntry (2): Directory entry '%s' is read-only.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI tried to write to a directory where it does not have writing permissions. Please check the permissions.</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
 <sect1 id="mathMLErrors" xreflabel="MathML Error Messages">
 <title>MathML Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>MathML (1): Unsupported element '%s'.</entry>
-   <entry>COPASI does not support all MathML elements allowed in SBML files yet. E.g. the delay function is currently not supported.</entry>
- </row>
- <row>
-   <entry>MathML (2): Unknown element in MathML expression.</entry>
-   <entry>During SBML import an unknown MathML element was encountered. Please check the MathML expressions in the SBML file.</entry>
- </row>
- <row>
-   <entry>MathML (3): MINUS operator can only have one or two arguments.</entry>
-   <entry>During SBML import, COPASI has encountered a MathML expression where a minus operator has 0 or more than 2 arguments. Please check the MathML in the SBML file.</entry>
- </row>
- <row>
-   <entry>MathML (4): DIVIDE and POWER operator can only have 2 arguments.</entry>
-   <entry>The divide and the power operator in MathML must have exactly two arguments. During SBML import COPASI has found a MathML expression where this is not the case. Please check the MathML in the SBML file.</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>MathML (1): Unsupported element '%s'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>COPASI does not support all MathML elements allowed in SBML files yet. E.g. the delay function is currently not supported.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>MathML (2): Unknown element in MathML expression.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>During SBML import an unknown MathML element was encountered. Please check the MathML expressions in the SBML file.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>MathML (3): MINUS operator can only have one or two arguments.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>During SBML import, COPASI has encountered a MathML expression where a minus operator has 0 or more than 2 arguments. Please check the MathML in the SBML file.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>MathML (4): DIVIDE and POWER operator can only have 2 arguments.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The divide and the power operator in MathML must have exactly two arguments. During SBML import COPASI has found a MathML expression where this is not the case. Please check the MathML in the SBML file.</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -721,38 +566,27 @@ adjusted to the maximal acceptable value.
 <para>
 <!-- Add  some explanation about the parser and the lexer. -->
 </para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>Function (1): Parser error after position: 'POSITION'.</entry>
-   <entry>The grammatical function parser encountered an error parsing the function
-description after character POSITION..</entry>
- </row>
- <row>
-   <entry>Function (2): Lexer error after position: 'POSITION'.</entry>
-   <entry>The lexical function parser encountered an error parsing the function
-description after character POSITION.</entry>
- </row>
- <row>
-   <entry>Function (3): Compile error after position: 'POSITION'.</entry>
-   <entry>A function compile failed  after character POSITION.</entry>
- </row>
- <row>
-   <entry>Function (4): Circular dependency detected.</entry>
-   <entry>The function definition results in circular dependencies and thus are
-invalid. This may happen if the function call another function.
-</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>Function (1): Parser error after position: 'POSITION'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The grammatical function parser encountered an error parsing the function description after character POSITION.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>Function (2): Lexer error after position: 'POSITION'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The lexical function parser encountered an error parsing the function description after character POSITION.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>Function (3): Compile error after position: 'POSITION'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>A function compile failed  after character POSITION.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>Function (4): Circular dependency detected.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The function definition results in circular dependencies and thus are invalid. This may happen if the function call another function.</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -760,22 +594,14 @@ invalid. This may happen if the function call another function.
 <sect1 id="evaluationNodeErrors" xreflabel="Evaluation Node Error Messages">
 <title>Evaluation Node Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CEvaluationNodeObject (1): Only references to compartment, species, parameters and reaction are allowed in expression.</entry>
-   <entry>INTERNAL. During export to SBML COPASI has found a reference in a kinetic law that is neither a reference to the time, a species, a compartment, a parameter or a reaction.</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CEvaluationNodeObject (1): Only references to compartment, species, parameters and reaction are allowed in expression.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL. During export to SBML COPASI has found a reference in a kinetic law that is neither a reference to the time, a species, a compartment, a parameter or a reaction.</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -785,53 +611,38 @@ invalid. This may happen if the function call another function.
 <sect1 id="copasiTaskErrors" xreflabel="Copasi Task Error Messages">
 <title>COPASI Task Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CCopasiTask (1): No problem defined for Task '%s'.</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CCopasiTask (2): No model associated for Task '%s'.</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CCopasiTask (3): No method defined for Task '%s'.</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CCopasiTask (4): Error compiling Model 'MODELNAME'.</entry>
-   <entry>This indicates a serious problem with the model. Please check your
-model. If you think your model is OK, please send a bug report.
-</entry>
- </row>
- <row>
-   <entry>CCopasiTask (5): No output file defined for report.</entry>
-   <entry>This means that there is a report but that COPASI does not know where to write it to since this has not been specified. All data from this report will be lost.</entry>
- </row>
- <row>
-   <entry>CCopasiTask (6): Problems compiling Report '%s'.</entry>
-   <entry>At least one of the objects used in the report could not be found. The
-report will generated despite the problem but might not be what you
-expected. This usually happens if you change the model after you defined the plots. 
-</entry>
- </row>
- <row>
-   <entry>CCopasiTask (7): Problems compiling Plots.</entry>
-   <entry>At least one of the ob jets used in the plots could not be found. The
-plots will generated despite the problem but some curves will be empty. This usually happens if you change the model after you defined the plots. 
-</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CCopasiTask (1): No problem defined for Task '%s'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CCopasiTask (2): No model associated for Task '%s'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CCopasiTask (3): No method defined for Task '%s'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CCopasiTask (4): Error compiling Model 'MODELNAME'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>This indicates a serious problem with the model. Please check your model. If you think your model is OK, please send a bug report.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CCopasiTask (5): No output file defined for report.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>This means that there is a report but that COPASI does not know where to write it to since this has not been specified. All data from this report will be lost.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CCopasiTask (6): Problems compiling Report '%s'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>At least one of the objects used in the report could not be found. The report will generated despite the problem but might not be what you expected. This usually happens if you change the model after you defined the plots.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CCopasiTask (7): Problems compiling Plots.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>At least one of the ob jets used in the plots could not be found. The plots will generated despite the problem but some curves will be empty. This usually happens if you change the model after you defined the plots.</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -839,22 +650,15 @@ plots will generated despite the problem but some curves will be empty. This usu
 <sect1 id="steadyStateErrors" xreflabel="Steady State Calculation Error Messages">
 <title>Steady State Calculation Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CSteadyState (1): The model is explicitly time dependent. Therefore, the calculation of a steady state is not very meaning full.</entry>
-   <entry>One or more of the kinetic laws used in the model is explicitly time dependent a steady state can therefore not be calculated by COPASI (<xref linkend="">see steady state method</xref>.</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CSteadyState (1): The model is explicitly time dependent. Therefore, the calculation of a steady state is not very meaning full.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>One or more of the kinetic laws used in the model is explicitly time dependent a steady state can therefore not be calculated by COPASI (<xref linkend="">see steady state method</xref>.</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -862,60 +666,42 @@ plots will generated despite the problem but some curves will be empty. This usu
 <sect1 id="parameterFittingErrors" xreflabel="Parameter Fitting Error Messages">
 <title>Parameter Fitting Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CFitting (1): Failed to determine work area size for matrix inversion.</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CFitting (2): Failed to invert Fisher information matrix.</entry>
-   <entry>This reports that the Fisher information matrix could not be inverted
-due to singularity or numerical problems. The parameter statistics
-will be incomplete.</entry>
- </row>
- <row>
-   <entry>CFitting (3): No column with type 'Time' specified for a time course experiment.</entry>
-   <entry>For a time course exactly on column of the data file must be mapped to
-the model time.</entry>
- </row>
- <row>
-   <entry>CFitting (4): Insufficient experimental data (columns requested 'COLUMNNUMBER', columns found 'COLUMNNUMBER').</entry>
-   <entry>The data specification contains more columns than the file
-provides. Calculation is stopped and the problem must be fixed first.</entry>
- </row>
- <row>
-   <entry>CFitting (5): Incomplete data mapping, column 'COLUMNINDEX' must be mapped.</entry>
-   <entry>A column which is not ignored is not mapped to an object
-within COPASI. Calculation is stopped and the problem must be fixed
-first.</entry>
- </row>
- <row>
-   <entry>CFitting (6): Object 'OBJECTNAME' in column 'COLUMNNINDEX' has no numeric value.</entry>
-   <entry>The object must represent a numerical value. Currently this must be a
-floating point. This object can currently not be used in parameter fitting.</entry>
- </row>
- <row>
-   <entry>CFitting (7): Insufficient experimental data (rows requested 'ROWNUMBER', rows found 'ROWNUMBER').</entry>
-   <entry>The data specification describes more data rows than the experimental
-data provides.  Calculation is stopped and the problem must be fixed
-first.</entry>
- </row>
- <row>
-   <entry>CFitting (8): Failure reading file '%s'.</entry>
-   <entry>The file cannot be read. Calculation is stopped and the problem must be fixed
-first. Make sure all data files specified for the fitting are there and readable.</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CFitting (1): Failed to determine work area size for matrix inversion.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CFitting (2): Failed to invert Fisher information matrix.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>This reports that the Fisher information matrix could not be inverted due to singularity or numerical problems. The parameter statistics will be incomplete.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CFitting (3): No column with type 'Time' specified for a time course experiment.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>For a time course exactly on column of the data file must be mapped to the model time.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CFitting (4): Insufficient experimental data (columns requested 'COLUMNNUMBER', columns found 'COLUMNNUMBER').</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The data specification contains more columns than the file provides. Calculation is stopped and the problem must be fixed first.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CFitting (5): Incomplete data mapping, column 'COLUMNINDEX' must be mapped.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>A column which is not ignored is not mapped to an object within COPASI. Calculation is stopped and the problem must be fixed first.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CFitting (6): Object 'OBJECTNAME' in column 'COLUMNNINDEX' has no numeric value.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The object must represent a numerical value. Currently this must be a floating point. This object can currently not be used in parameter fitting.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CFitting (7): Insufficient experimental data (rows requested 'ROWNUMBER', rows found 'ROWNUMBER').</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The data specification describes more data rows than the experimental data provides.  Calculation is stopped and the problem must be fixed first.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CFitting (8): Failure reading file '%s'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The file cannot be read. Calculation is stopped and the problem must be fixed first. Make sure all data files specified for the fitting are there and readable.</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
@@ -923,64 +709,51 @@ first. Make sure all data files specified for the fitting are there and readable
 <sect1 id="copasiObjectErrors" xreflabel="Copasi Object Error Messages">
 <title>COPASI Object Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CObject (1): Circular dependencies detected for object '%s'.</entry>
-   <entry>INTERNAL</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CObject (1): Circular dependencies detected for object '%s'.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
 <sect1 id="lyapunovErrors" xreflabel="Lyapunoc Expoent Calculation Error Messages">
 <title>Lyapunov Exponent Calculation Error Messages</title>
 <para>
-<table frame="all">
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<thead>
- <row>
-   <entry>Error Message</entry>
-   <entry>Description</entry>
- </row>
-</thead>
-<tbody>
- <row>
-   <entry>CLyapMethod (1): Problem is not a Lyapunov exponent problem.</entry>
-   <entry>INTERNAL</entry>
- </row>
- <row>
-   <entry>CLyapMethod (2): Number of exponents needs to be at least one.</entry>
-   <entry>This means that probably 0 was entered as the number of Lyapunov exponents to be calculated.</entry>
- </row>
- <row>
-   <entry>CLyapMethod (3): Only %d exponents can be calculated for this model because the model has only %d independent variables.</entry>
-   <entry>The maximal number of exponents that can be calculated for a given model is the number of independent variables (that is the number of variables in the model minus the number of conservation relations <xref linkend="massConservation">see section about mass conservation</xref>). </entry>
- </row>
- <row>
-   <entry>CLyapMethod (4): Transient time is larger than overall time.</entry>
-   <entry>The Lyapunov exponent calculation starts after the transient time. The calculation stops after overall  time. Therefore overall time should have a bigger value than transient time.</entry>
- </row>
- <row>
-   <entry>CLyapMethod (5): Orthonormalization interval is larger than overall time.</entry>
-   <entry>If the orthonormalization time step is larger than the complete calculation time not a single step can be performed.</entry>
- </row>
-</tbody>
-</tgroup>
-</table>
+
+
+
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CLyapMethod (1): Problem is not a Lyapunov exponent problem.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>INTERNAL</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CLyapMethod (2): Number of exponents needs to be at least one.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>This means that probably 0 was entered as the number of Lyapunov exponents to be calculated.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CLyapMethod (3): Only %d exponents can be calculated for this model because the model has only %d independent variables.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The maximal number of exponents that can be calculated for a given model is the number of independent variables (that is the number of variables in the model minus the number of conservation relations <xref linkend="massConservation">see section about mass conservation</xref>).</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CLyapMethod (4): Transient time is larger than overall time.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>The Lyapunov exponent calculation starts after the transient time. The calculation stops after overall  time. Therefore overall time should have a bigger value than transient time.</listitem></varlistentry>
+ </variablelist>
+ <variablelist>
+   <varlistentry><term>Error Message:</term><listitem>CLyapMethod (5): Orthonormalization interval is larger than overall time.</listitem></varlistentry>
+   <varlistentry><term>Description:</term><listitem>If the orthonormalization time step is larger than the complete calculation time not a single step can be performed.</listitem></varlistentry>
+ </variablelist>
+
+
+
 </para>
 </sect1>
 
 
-</chapter>
+</appendix>
 
 
