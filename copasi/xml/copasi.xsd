@@ -505,7 +505,7 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
-    <xs:attribute name="positive" use="optional">
+    <xs:attribute name="reversible" use="optional" default="unspecified">
       <xs:simpleType>
         <xs:restriction base="xs:string">
           <xs:enumeration value="true"/>
