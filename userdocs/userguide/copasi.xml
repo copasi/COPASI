@@ -14,7 +14,7 @@
 <book id="book" xmlns:mml="http://www.w3.org/1998/Math/MathML">
 <bookinfo>
   <title>COPASI Documentation</title>
-  <subtitle>Release 4.0 (Build 18)</subtitle>
+  <subtitle>Version 4.0 (Build 18)</subtitle>
   <author>
     <firstname>Ralph</firstname>
     <surname>Gauges</surname>
@@ -29,9 +29,9 @@
 
 <!-- &fileFormats; -->
 
-<!-- &bibliography; -->
-
 &errors;
+
+&bibliography;
 
 </book>
 
