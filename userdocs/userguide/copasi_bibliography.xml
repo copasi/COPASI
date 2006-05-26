@@ -1,8 +1,20 @@
+<!--
+The biblioentry attributes id and xreflabel are the surname of the 
+first author immediately followed by the last two numbers of the
+publishing year. If this leads to non-unique ids a lower case letter
+is appended in alphabetical order starting with the second id.
+
+Supported elements are:
+authorgroup, author, title, subtitle, volumenum, edition, copyright,
+publisher, pubdate, pagenums, isbn, issn, pubsnumber
+-->
+
 <bibliography>
  <title>Bibliography</title>
  <bibliodiv>
   <title>References </title>
-  <biblioentry id="gillespie_76" xreflabel="gillespie_76">
+
+  <biblioentry id="Gillespie76" xreflabel="Gillespie76">
    <author>
     <firstname>D.T.</firstname>
     <surname>Gillespie</surname>
@@ -11,10 +23,47 @@
     A General Method for Numerically Simulating the Stochastic Time
  Evolution of Coupled Chemical Reactions
    </title>
-   <publisher>J. Comp. Phys.</publisher>
-   <pagenums>403-434</pagenums>
+   <publisher>J. Comp. Phys. </publisher>
    <volumenum>22</volumenum>
+   <pagenums>403-434</pagenums>
    <pubdate>1976</pubdate>
   </biblioentry>
+
+  <biblioentry id="Maier91" xreflabel="Maier91">
+   <author>
+    <firstname>W.L.</firstname>
+    <surname>Maier</surname>
+   </author>
+   <title>
+    A Fast Pseudo Random Number Generator
+   </title>
+   <publisher>Dr. Dobb's Journal </publisher>
+   <volumenum>May</volumenum>
+   <pagenums>152 - 157</pagenums>
+   <pubdate>1991</pubdate>
+  </biblioentry>
+
+  <biblioentry id="Matsumoto98" xreflabel="Matsumoto98">
+   <authorgroup>
+    <author>
+     <firstname>M.</firstname>
+     <surname>Matsumoto</surname>
+    </author>
+    <author>
+     <firstname>T.</firstname>
+     <surname>Nishimura</surname>
+    </author>
+   </authorgroup>
+   <title>
+    Mersenne twister: A 623-dimensionally equidistributed uniform
+     pseudorandom number generator
+   </title>
+   <publisher>ACM Trans. on Modeling and Computer Simulations </publisher>
+   <volumenum>8</volumenum>
+   <pagenums>3 - 30</pagenums>
+   <pubdate>1998</pubdate>
+  </biblioentry>
+
+  
  </bibliodiv>
 </bibliography>
