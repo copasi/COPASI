@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.19.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Author: gauges $
+   $Date: 2006/05/27 09:22:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,45 +126,51 @@ CEvaluationNode* CEvaluationNodeObject::createNodeFromASTTree(const ASTNode& nod
 ASTNode* CEvaluationNodeObject::toAST() const
   {
     ASTNode* node = new ASTNode();
-    if (this->getData() == "<Reference=Time>")
+    node->setType(AST_NAME);
+    // since I can not get the model in which this node is located, I just
+    // assume that it will always be the current global model.
+    CCopasiObject* object = CCopasiContainer::ObjectFromName(mRegisteredObjectCN);
+    assert(object);
+    // actually we need to get the name from the key of the copasi object
+    SBase* pSBase = CCopasiDataModel::Global->getCopasi2SBMLMap()[object];
+    CModel* pModel = NULL;
+    if (pSBase)
       {
-        node->setType(AST_NAME_TIME);
+        switch (pSBase->getTypeCode())
+          {
+          case SBML_COMPARTMENT:
+            node->setName(dynamic_cast<Compartment*>(pSBase)->getId().c_str());
+            break;
+          case SBML_SPECIES:
+            node->setName(dynamic_cast<Species*>(pSBase)->getId().c_str());
+            break;
+          case SBML_PARAMETER:
+            node->setName(dynamic_cast<Parameter*>(pSBase)->getId().c_str());
+            break;
+          case SBML_REACTION:
+            node->setName(dynamic_cast<Reaction*>(pSBase)->getId().c_str());
+            break;
+          case SBML_MODEL:
+            node->setType(AST_NAME_TIME);
+            pModel = dynamic_cast<CModel*>(object);
+            if (pModel == NULL)
+              {
+                fatalError();
+              }
+            if (pModel->getInitialTime() != 0.0)
+              {
+                CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 1);
+              }
+            break;
+          default:
+            CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCEvaluationNodeObject + 1);
+            break;
+          }
       }
     else
       {
-        node->setType(AST_NAME);
-        // since I can not get the model in which this node is located, I just
-        // assume that it will always be the current global model.
-        CCopasiObject* object = CCopasiContainer::ObjectFromName(mRegisteredObjectCN);
-        assert(object);
-        // actually we need to get the name from the key of the copasi object
-        SBase* pSBase = CCopasiDataModel::Global->getCopasi2SBMLMap()[object];
-        if (pSBase)
-          {
-            switch (pSBase->getTypeCode())
-              {
-              case SBML_COMPARTMENT:
-                node->setName(dynamic_cast<Compartment*>(pSBase)->getId().c_str());
-                break;
-              case SBML_SPECIES:
-                node->setName(dynamic_cast<Species*>(pSBase)->getId().c_str());
-                break;
-              case SBML_PARAMETER:
-                node->setName(dynamic_cast<Parameter*>(pSBase)->getId().c_str());
-                break;
-              case SBML_REACTION:
-                node->setName(dynamic_cast<Reaction*>(pSBase)->getId().c_str());
-                break;
-              default:
-                CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCEvaluationNodeObject + 1);
-                break;
-              }
-          }
-        else
-          {
-            // it must be a local parameter
-            node->setName(object->getObjectName().c_str());
-          }
+        // it must be a local parameter
+        node->setName(object->getObjectName().c_str());
       }
     return node;
   }

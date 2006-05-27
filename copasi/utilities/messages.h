@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.69.2.4 $
+   $Revision: 1.69.2.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/24 02:26:15 $
+   $Author: gauges $
+   $Date: 2006/05/27 09:22:03 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -121,7 +121,7 @@ const MESSAGES Messages[] =
     {MCOptimization + 8, "Optimization (8): '%d' Function Evaluation out of '%d' failed."},
 
     // SBML
-    // {MCSBML + 1, "SBML (1): Available"},
+    {MCSBML + 1, "SBML (1): SBML Level2 Version1 does not support initial times different from 0. This information will be lost in the exported file."},
     {MCSBML + 2, "SBML (2): The SBML document contains no model."},
     {MCSBML + 3, "SBML (3): The SBML document contains rules that were ignored."},
     {MCSBML + 4, "SBML (4): The SBML document contains events that were ignored."},
