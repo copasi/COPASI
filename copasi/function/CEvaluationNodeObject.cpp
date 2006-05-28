@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.19.2.1 $
+   $Revision: 1.19.2.2 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/05/27 09:22:04 $
+   $Date: 2006/05/28 18:48:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -152,6 +152,7 @@ ASTNode* CEvaluationNodeObject::toAST() const
             break;
           case SBML_MODEL:
             node->setType(AST_NAME_TIME);
+            node->setName("time");
             pModel = dynamic_cast<CModel*>(object);
             if (pModel == NULL)
               {
