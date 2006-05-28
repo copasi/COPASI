@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.155.2.2 $
+   $Revision: 1.155.2.3 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/24 02:26:15 $
+   $Author: gauges $
+   $Date: 2006/05/28 20:51:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -861,6 +861,18 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
             {
               CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
                                               CFunctionParameter::PARAMETER);
+              replacementMap[id] = std::make_pair(object, pFunParam);
+            }
+        }
+      else if (dynamic_cast<CModel*>(object))
+        {
+          // usage = "TIME"
+          id = object->getObjectName();
+          pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+          if (replacementMap.find(id) == replacementMap.end())
+            {
+              CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
+                                              CFunctionParameter::TIME);
               replacementMap[id] = std::make_pair(object, pFunParam);
             }
         }

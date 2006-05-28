@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.127.2.3 $
+   $Revision: 1.127.2.4 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/05/25 07:11:50 $
+   $Date: 2006/05/28 20:51:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -183,6 +183,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   for (counter = 0; counter < num; ++counter)
     {
       this->replaceCallNodeNames((*functions)[counter]->getRoot());
+      this->replaceTimeNodeNames((*functions)[counter]->getRoot());
       (*functions)[counter]->updateTree();
       ++step;
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
@@ -927,6 +928,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (!sbmlId2CopasiCN(node, copasi2sbmlmap, copasiReaction->getParameters())) fatalError();
       CEvaluationNode* pExpressionTreeRoot = CEvaluationTree::convertASTNode(*node);
       this->replaceCallNodeNames(pExpressionTreeRoot);
+      this->replaceTimeNodeNames(pExpressionTreeRoot);
       if (pExpressionTreeRoot)
         {
           CEvaluationTree* pTmpTree = CEvaluationTree::create(CEvaluationTree::Expression);
@@ -1864,6 +1866,27 @@ void SBMLImporter::restoreFunctionDB()
       assert(pTree);
       this->functionDB->removeFunction(pTree->getKey());
       ++it2;
+    }
+}
+
+void SBMLImporter::replaceTimeNodeNames(CEvaluationNode* node)
+{
+  if (node)
+    {
+      CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(node);
+      if (pObjectNode)
+        {
+          if (pObjectNode->getData() == "<Reference=Time>")
+            {
+              pObjectNode->setData(std::string("<") + this->mpCopasiModel->getCN() + std::string(">"));
+            }
+        }
+      CEvaluationNode* pChildNode = static_cast<CEvaluationNode*>(node->getChild());
+      while (pChildNode)
+        {
+          this->replaceTimeNodeNames(pChildNode);
+          pChildNode = static_cast<CEvaluationNode*>(pChildNode->getSibling());
+        }
     }
 }
 
