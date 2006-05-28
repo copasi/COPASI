@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.127.2.4 $
+   $Revision: 1.127.2.5 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/05/28 20:51:14 $
+   $Date: 2006/05/28 21:52:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -402,7 +402,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
                 }
               pFun->addVariable(pVarNode->getName());
             }
-          pFun->setTree(*root->getRightChild());
+          pFun->setTree(*root->getChild(iMax));
           CCopasiTree<CEvaluationNode>::iterator treeIt = pFun->getRoot();
           // if the root node already is an object node, this has to be dealt with separately
           if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
