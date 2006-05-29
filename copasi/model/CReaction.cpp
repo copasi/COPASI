@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.155.2.3 $
+   $Revision: 1.155.2.4 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/05/28 20:51:14 $
+   $Date: 2006/05/29 19:46:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -856,6 +856,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
       else if (dynamic_cast<CCopasiParameter*>(object))
         {
           id = object->getObjectName();
+          id = this->escapeId(id);
           pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
           if (replacementMap.find(id) == replacementMap.end())
             {
@@ -868,6 +869,7 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
         {
           // usage = "TIME"
           id = object->getObjectName();
+          id = this->escapeId(id);
           pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
           if (replacementMap.find(id) == replacementMap.end())
             {
@@ -1079,6 +1081,8 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
           while (it != endIt)
             {
               CFunctionParameter* pFunPar = it->second.second;
+              CCopasiObject* pObject = it->second.first;
+              std::string id = it->first;
               this->setParameterMapping(pFunPar->getObjectName(), it->second.first->getKey());
               delete pFunPar;
               ++it;
@@ -1271,3 +1275,27 @@ const std::string& CReaction::getSBMLId() const
   {
     return this->mSBMLId;
   }
+
+std::string CReaction::escapeId(const std::string& id)
+{
+  std::string s = id;
+  std::string::size_type idx = s.find('\\');
+  while (idx != std::string::npos)
+    {
+      s.insert(idx, "\\");
+      ++idx;
+      idx = s.find('\\', ++idx);
+    }
+  idx = s.find('"');
+  while (idx != std::string::npos)
+    {
+      s.insert(idx - 1, "\\");
+      ++idx;
+      idx = s.find('"', ++idx);
+    }
+  if (s.find(' ') != std::string::npos || s.find('\t') != std::string::npos)
+    {
+      s = std::string("\"") + s + std::string("\"");
+    }
+  return s;
+}

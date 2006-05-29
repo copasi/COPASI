@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.93.2.1 $
+   $Revision: 1.93.2.2 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/20 23:43:13 $
+   $Author: gauges $
+   $Date: 2006/05/29 19:46:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -440,6 +440,12 @@ class CReaction : public CCopasiContainer
      * On failure a NULL pointer is returned.
      */
     CEvaluationNodeObject* variable2object(CEvaluationNodeVariable* pVariableNode);
+
+    /**
+     * Escapes double quotes and backslashes in a string and puts strings with
+     * tabs and spaces in double quotes.
+     */
+    std::string escapeId(const std::string& id);
   };
 
 #endif // COPASI_CReaction
