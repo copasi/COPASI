@@ -568,7 +568,7 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   return TOKEN_STRUCTURE_VECTOR_CLOSE;
 %}
 
-<INITIAL,sSIGN,sID>{ID}  %{
+<INITIAL,sSIGN,sID>(\"([^\\\"]|\\.)*\"|{ID})  %{
   BEGIN(sOPERATOR); 
   mpNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY,
                                        yytext);
