@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.155.2.4 $
+   $Revision: 1.155.2.5 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/05/29 19:46:21 $
+   $Date: 2006/05/29 19:54:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1289,7 +1289,7 @@ std::string CReaction::escapeId(const std::string& id)
   idx = s.find('"');
   while (idx != std::string::npos)
     {
-      s.insert(idx - 1, "\\");
+      s.insert(idx, "\\");
       ++idx;
       idx = s.find('"', ++idx);
     }
