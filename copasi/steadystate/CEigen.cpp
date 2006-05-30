@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.37.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Date: 2006/05/30 13:30:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -531,7 +531,7 @@ std::ostream &operator<<(std::ostream &os, const CEigen &A)
   os << "of the Jacobian matrix is only valid for steady states." << std::endl;
   os << std::endl;
   os << "Summary:" << std::endl;
-  os << "This steady state ";
+  os << "This state ";
 
   // Output statistics
 
@@ -540,7 +540,7 @@ std::ostream &operator<<(std::ostream &os, const CEigen &A)
   else if (A.mMaxrealpart < -A.mResolution)
     os << "is asymptotically stable";
   else
-    os << "stability is undetermined";
+    os << "'s stability is undetermined";
 
   if (A.mMaximagpart > A.mResolution)
     {
@@ -548,7 +548,7 @@ std::ostream &operator<<(std::ostream &os, const CEigen &A)
       os << "transient states in its vicinity have oscillatory components";
     }
 
-  os << std::endl;
+  os << "." << std::endl;
   os << std::endl;
 
   os << "Eigenvalue statistics:" << std::endl;
