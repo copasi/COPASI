@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.29.2.3 $
+   $Revision: 1.29.2.4 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/20 22:24:40 $
+   $Author: shoops $
+   $Date: 2006/05/30 13:04:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@
 #include <qmessagebox.h>
 #include <qlayout.h>
 #include <qcursor.h>
+#include <qregexp.h>
 
 #include <sstream>
 
@@ -97,7 +98,7 @@ DifferentialEquations::DifferentialEquations(QWidget *parent, const char * name,
 
   mScrollView->addChild(mMmlWidget);
 
-  btnSaveToFile = new QPushButton("Save to File", this);
+  btnSaveToFile = new QPushButton("Save (MathML Presentation Markup)", this);
   connect(btnSaveToFile, SIGNAL(clicked()),
           this, SLOT(saveToFileClicked()));
   layout->addWidget(btnSaveToFile, 1, 0);
@@ -421,9 +422,17 @@ void DifferentialEquations::saveToFileClicked()
         CopasiFileDialog::getSaveFileName(this,
                                           "Save File Dialog",
                                           QString::null,
-                                          "All Files (*);;",
-                                          "Save Differential Equations to MathML File"
-);
+                                          "MathML (*.mml);;XML (*.xml);;All Files (*);;",
+                                          "Save Differential Equations to MathML File");
+
+      if (!outfilename) return;
+
+      if (!outfilename.endsWith(".mml") &&
+          !outfilename.endsWith(".xml") &&
+          !outfilename.endsWith("."))
+        outfilename += ".mml";
+
+      outfilename = outfilename.remove(QRegExp("\\.$"));
 
       Answer = checkSelection(outfilename);
 
