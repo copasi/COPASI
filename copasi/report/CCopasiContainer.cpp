@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.41.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:09 $
+   $Date: 2006/05/30 17:19:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,11 +57,7 @@ CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiConta
     {
       pContainer = listOfContainer[containerIndex];
 
-      Name = objName;
-
-      pObject = pContainer->getObject(Name);
-
-      for (; Name.getRemainder() != "" && !pObject; Name = Name.getRemainder())
+      for (Name = objName; Name != "" && !pObject; Name = Name.getRemainder())
         pObject = pContainer->getObject(Name);
     }
 
