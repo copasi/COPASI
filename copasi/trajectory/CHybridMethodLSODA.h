@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.1.2.1 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/05/15 12:38:23 $
+   $Author: shoops $
+   $Date: 2006/05/30 19:24:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,7 +63,7 @@
 #define OUTPUT_COUNTER               100
 #define DEFAULT_OUTPUT_FILE          "hybridLSODA.output"
 #define SUBTYPE                      1
-#define USE_RANDOM_SEED              1
+#define USE_RANDOM_SEED              false
 #define RANDOM_SEED                  1
 
 /* CLASSES *******************************************************************/

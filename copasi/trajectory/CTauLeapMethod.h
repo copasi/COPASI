@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTauLeapMethod.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.8.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 20:56:51 $
+   $Date: 2006/05/30 19:24:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,7 @@
 
 /* DEFINE ********************************************************************/
 #define TAU                    0.01
-#define USE_RANDOM_SEED        1
+#define USE_RANDOM_SEED        false
 #define RANDOM_SEED            1
 #define INT_EPSILON            0.1
 

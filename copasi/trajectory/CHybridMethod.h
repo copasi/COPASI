@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.21.2.1 $
    $Name:  $
-   $Author: jpahle $
-   $Date: 2006/05/05 17:44:02 $
+   $Author: shoops $
+   $Date: 2006/05/30 19:24:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,7 @@
 #define OUTPUT_COUNTER               100
 #define DEFAULT_OUTPUT_FILE          "hybrid.output"
 #define SUBTYPE                      1
-#define USE_RANDOM_SEED              1
+#define USE_RANDOM_SEED              false
 #define RANDOM_SEED                  1
 
 /* CLASSES *******************************************************************/
