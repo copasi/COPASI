@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.69.2.5 $
+   $Revision: 1.69.2.6 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/05/27 09:22:03 $
+   $Author: jpahle $
+   $Date: 2006/05/30 11:57:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,6 +88,9 @@ const MESSAGES Messages[] =
     {MCTrajectoryMethod + 10, "CTrajectoryMethod (10): The tau-Leap Method encountered numerical problems.\nYou can try to reduce the tau-value."},
     {MCTrajectoryMethod + 11, "CTrajectoryMethod (11): Invalid tau-value ('%.2f'). Tau must have a positive value."},
     {MCTrajectoryMethod + 12, "CTrajectoryMethod (12): Internal step limit exceeded."},
+    {MCTrajectoryMethod + 13, "CTrajectoryMethod (13): Runge Kutta Stepsize must be positive in hybrid method."},
+    {MCTrajectoryMethod + 14, "CTrajectoryMethod (14): Use Random Seed should be 0 or 1 since it is a boolean parameter."},
+    {MCTrajectoryMethod + 15, "CTrajectoryMethod (15): Max Internal Steps needs to be positive."},
 
     // XML Package
     {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},
