@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.0 (Build 18) (http://www.copasi.org) at 2006-05-24 15:22:21 UTC -->
+<!-- generated with COPASI 4.0 (Build 18) (http://www.copasi.org) at 2006-05-30 17:22:49 UTC -->
 <COPASI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.copasi.org/static/schema.xsd" versionMajor="0" versionMinor="1">
   <ListOfFunctions>
-    <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" positive="false">
+    <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" reversible="false">
       <MathML>
         <Text>
           k1*PRODUCT&lt;substrate_i&gt;
@@ -13,7 +13,7 @@
         <ParameterDescription key="FunctionParameter_79" name="substrate" order="1" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_38" name="Objective Function 1" type="Expression">
+    <Function key="Function_37" name="Objective Function 1" type="Expression">
       <MathML>
         <Text>
           
@@ -34,15 +34,15 @@
     <ListOfMetabolites>
       <Metabolite key="Metabolite_0" name="X" compartment="Compartment_0" status="variable"/>
       <Metabolite key="Metabolite_1" name="Y" compartment="Compartment_0" status="variable"/>
-      <Metabolite key="Metabolite_5" name="E" compartment="Compartment_0" status="fixed"/>
-      <Metabolite key="Metabolite_4" name="D" compartment="Compartment_0" status="fixed"/>
-      <Metabolite key="Metabolite_3" name="B" compartment="Compartment_0" status="fixed"/>
-      <Metabolite key="Metabolite_2" name="A" compartment="Compartment_0" status="fixed"/>
+      <Metabolite key="Metabolite_5" name="A" compartment="Compartment_0" status="fixed"/>
+      <Metabolite key="Metabolite_4" name="B" compartment="Compartment_0" status="fixed"/>
+      <Metabolite key="Metabolite_3" name="D" compartment="Compartment_0" status="fixed"/>
+      <Metabolite key="Metabolite_2" name="E" compartment="Compartment_0" status="fixed"/>
     </ListOfMetabolites>
     <ListOfReactions>
       <Reaction key="Reaction_0" name="R1" reversible="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_2" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
           <Product metabolite="Metabolite_0" stoichiometry="1"/>
@@ -56,7 +56,7 @@
               <SourceParameter reference="Parameter_75"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_2"/>
+              <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -88,11 +88,11 @@
       <Reaction key="Reaction_2" name="R3" reversible="false">
         <ListOfSubstrates>
           <Substrate metabolite="Metabolite_0" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
           <Product metabolite="Metabolite_1" stoichiometry="1"/>
-          <Product metabolite="Metabolite_4" stoichiometry="1"/>
+          <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
           <Constant key="Parameter_73" name="k1" value="1"/>
@@ -104,7 +104,7 @@
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_0"/>
-              <SourceParameter reference="Metabolite_3"/>
+              <SourceParameter reference="Metabolite_4"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -114,7 +114,7 @@
           <Substrate metabolite="Metabolite_0" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_5" stoichiometry="1"/>
+          <Product metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
           <Constant key="Parameter_72" name="k1" value="1"/>
@@ -142,7 +142,7 @@
       <StateTemplateVariable objectReference="Compartment_0"/>
     </StateTemplate>
     <InitialState type="initialState">
-      0 1.80664e+021 1.80664e+021 0 0 1.80664e+021 3.01107e+020 1
+      0 1.80664e+021 1.80664e+021 3.01107e+020 1.80664e+021 0 0 1
     </InitialState>
   </Model>
   <ListOfTasks>
@@ -202,7 +202,7 @@
       <Problem>
         <Parameter name="Steady-State" type="key" value=""/>
         <Parameter name="Time-Course" type="key" value="Task_8"/>
-        <Parameter name="ObjectiveFunction" type="key" value="Function_38"/>
+        <Parameter name="ObjectiveFunction" type="key" value="Function_37"/>
         <Parameter name="Maximize" type="bool" value="0"/>
         <ParameterGroup name="OptimizationItemList">
         </ParameterGroup>
@@ -240,7 +240,7 @@
         <Parameter name="TransientTime" type="float" value="0"/>
       </Problem>
       <Method name="Wolf Method" type="WolfMethod">
-        <Parameter name="Orthonormalize Intervall" type="unsignedFloat" value="1"/>
+        <Parameter name="Orthonormalization Interval" type="unsignedFloat" value="1"/>
         <Parameter name="Overall time" type="unsignedFloat" value="1000"/>
         <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-006"/>
         <Parameter name="Use Default Absolute Tolerance" type="bool" value="1"/>
@@ -248,11 +248,12 @@
         <Parameter name="Adams Max Order" type="unsignedInteger" value="12"/>
         <Parameter name="BDF Max Order" type="unsignedInteger" value="5"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+        <Parameter name="Orthonormalize Intervall" type="unsignedFloat" value="1"/>
       </Method>
     </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_0" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_4" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -262,7 +263,7 @@
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_1" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_5" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -288,7 +289,7 @@
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_2" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_6" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -314,7 +315,7 @@
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_3" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_7" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.

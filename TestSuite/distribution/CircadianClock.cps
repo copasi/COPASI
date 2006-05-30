@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.0 (Build 18) (http://www.copasi.org) at 2006-05-24 15:28:48 UTC -->
+<!-- generated with COPASI 4.0 (Build 18) (http://www.copasi.org) at 2006-05-30 17:23:19 UTC -->
 <COPASI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.copasi.org/static/schema.xsd" versionMajor="0" versionMinor="1">
   <ListOfFunctions>
-    <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" positive="false">
+    <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" reversible="false">
       <MathML>
         <Text>
           k1*PRODUCT&lt;substrate_i&gt;
@@ -13,14 +13,14 @@
         <ParameterDescription key="FunctionParameter_79" name="substrate" order="1" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_38" name="Objective Function" type="Expression">
+    <Function key="Function_37" name="Objective Function" type="Expression">
       <MathML>
         <Text>
           
         </Text>
       </MathML>
     </Function>
-    <Function key="Function_39" name="Transcription" type="UserDefined" positive="false">
+    <Function key="Function_38" name="Transcription" type="UserDefined" reversible="false">
       <MathML>
         <Text>
           V*K^n/(K^n+modifier^n)
@@ -33,7 +33,7 @@
         <ParameterDescription key="FunctionParameter_261" name="modifier" order="3" role="modifier"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_40" name="linear activation" type="UserDefined" positive="false">
+    <Function key="Function_39" name="linear activation" type="UserDefined" reversible="false">
       <MathML>
         <Text>
           k*modifier
@@ -44,7 +44,7 @@
         <ParameterDescription key="FunctionParameter_246" name="modifier" order="1" role="modifier"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_8" name="Henri-Michaelis-Menten (irreversible)" type="PreDefined" positive="false">
+    <Function key="Function_8" name="Henri-Michaelis-Menten (irreversible)" type="PreDefined" reversible="false">
       <MathML>
         <Text>
           V*substrate/(Km+substrate)
@@ -90,7 +90,7 @@
         <ListOfConstants>
           <Constant key="Parameter_75" name="k" value="0.9"/>
         </ListOfConstants>
-        <KineticLaw function="Function_40">
+        <KineticLaw function="Function_39">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_262">
               <SourceParameter reference="Parameter_75"/>
@@ -113,7 +113,7 @@
           <Constant key="Parameter_73" name="K" value="0.9"/>
           <Constant key="Parameter_72" name="n" value="4"/>
         </ListOfConstants>
-        <KineticLaw function="Function_39">
+        <KineticLaw function="Function_38">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_260">
               <SourceParameter reference="Parameter_74"/>
@@ -164,7 +164,7 @@
           <Constant key="Parameter_62" name="K" value="0.9"/>
           <Constant key="Parameter_65" name="n" value="4"/>
         </ListOfConstants>
-        <KineticLaw function="Function_39">
+        <KineticLaw function="Function_38">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_260">
               <SourceParameter reference="Parameter_61"/>
@@ -213,7 +213,7 @@
         <ListOfConstants>
           <Constant key="Parameter_68" name="k" value="0.9"/>
         </ListOfConstants>
-        <KineticLaw function="Function_40">
+        <KineticLaw function="Function_39">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_262">
               <SourceParameter reference="Parameter_68"/>
@@ -855,7 +855,7 @@
       <Problem>
         <Parameter name="Steady-State" type="key" value=""/>
         <Parameter name="Time-Course" type="key" value="Task_8"/>
-        <Parameter name="ObjectiveFunction" type="key" value="Function_38"/>
+        <Parameter name="ObjectiveFunction" type="key" value="Function_37"/>
         <Parameter name="Maximize" type="bool" value="0"/>
         <ParameterGroup name="OptimizationItemList">
         </ParameterGroup>
@@ -893,7 +893,7 @@
         <Parameter name="TransientTime" type="float" value="0"/>
       </Problem>
       <Method name="Wolf Method" type="WolfMethod">
-        <Parameter name="Orthonormalize Intervall" type="unsignedFloat" value="1"/>
+        <Parameter name="Orthonormalization Interval" type="unsignedFloat" value="1"/>
         <Parameter name="Overall time" type="unsignedFloat" value="1000"/>
         <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-006"/>
         <Parameter name="Use Default Absolute Tolerance" type="bool" value="1"/>
@@ -901,6 +901,7 @@
         <Parameter name="Adams Max Order" type="unsignedInteger" value="12"/>
         <Parameter name="BDF Max Order" type="unsignedInteger" value="5"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+        <Parameter name="Orthonormalize Intervall" type="unsignedFloat" value="1"/>
       </Method>
     </Task>
   </ListOfTasks>
