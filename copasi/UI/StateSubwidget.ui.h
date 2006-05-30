@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.23.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Date: 2006/05/30 13:40:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,6 +116,9 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
         tableJacobian->setText(i, j, QString::number(jacobian(i, j)));
       }
 
+  for (j = 0; j < jmax; ++j)
+    tableJacobian->adjustColumn(j);
+
   QString name;
   const CCopasiVector<CMetab>& metabs = task->getProblem()->getModel()->getMetabolites();
   for (i = 0; i < imax; ++i)
@@ -136,6 +139,9 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
       tableEigenValues->setText(i, 0, QString::number(eigen_r[i]));
       tableEigenValues->setText(i, 1, QString::number(eigen_i[i]));
     }
+
+  for (j = 0; j < 2; ++j)
+    tableEigenValues->adjustColumn(j);
 
   //JacobianX
   const CMatrix< C_FLOAT64 > & jacobianX = task->getJacobianReduced();
@@ -159,6 +165,9 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
       tableJacobianX->verticalHeader()->setLabel(i, name);
     }
 
+  for (j = 0; j < jmax; ++j)
+    tableJacobianX->adjustColumn(j);
+
   //Eigenvalues...
   const CVector< C_FLOAT64 > & eigen_iX = task->getEigenValuesReduced().getI();
   const CVector< C_FLOAT64 > & eigen_rX = task->getEigenValuesReduced().getR();
@@ -170,6 +179,9 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
       tableEigenValuesX->setText(i, 0, QString::number(eigen_rX[i]));
       tableEigenValuesX->setText(i, 1, QString::number(eigen_iX[i]));
     }
+
+  for (j = 0; j < 2; ++j)
+    tableEigenValuesX->adjustColumn(j);
 
   //stability report
   stabilityTextEdit->setReadOnly(true);
