@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.127.2.5 $
+   $Revision: 1.127.2.6 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/05/28 21:52:46 $
+   $Author: shoops $
+   $Date: 2006/05/31 00:58:58 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2174,7 +2174,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                         {
                           pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
                           assert(pChildNode);
-                          if (pChildNode->getType() == CEvaluationNode::NUMBER)
+                          if (CEvaluationNode::type(pChildNode->getType()) == CEvaluationNode::NUMBER)
                             {
                               const CMetab* pMetab = static_cast<const CMetab*>(pObject);
                               if (multiplicityMap.find(pMetab) != multiplicityMap.end())
