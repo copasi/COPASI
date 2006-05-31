@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.127.2.7 $
+   $Revision: 1.127.2.8 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/31 01:21:28 $
+   $Author: ssahle $
+   $Date: 2006/05/31 23:48:20 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1901,7 +1901,9 @@ void SBMLImporter::replaceCallNodeNames(CEvaluationNode* node)
 
           if (pos == this->mFunctionNameMapping.end())
             {
-              fatalError();
+              //TODO: implement a specific check for "delay"
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION,
+                                             "An undefined function was used in a MathML expression. This could also mean \nthat the SBML model contains delay terms which copasi doesn't support yet.");
             }
           std::string newName = pos->second;
           pCallNode->setData(newName);
