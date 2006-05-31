@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.127.2.6 $
+   $Revision: 1.127.2.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/31 00:58:58 $
+   $Date: 2006/05/31 01:21:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2436,10 +2436,10 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
       pCopasiReaction->setParameterMapping("k1", objectKey);
       const CCopasiVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getSubstrates();
       unsigned int i, iMax = metabolites->size();
-      for (i = 0;i < iMax;++i)
-        {
+      unsigned int j, jMax;
+      for (i = 0; i < iMax; ++i)
+        for (j = 0, jMax = fabs((*metabolites)[i]->getMultiplicity()); j < jMax; j++)
           pCopasiReaction->addParameterMapping("substrate", (*metabolites)[i]->getMetaboliteKey());
-        }
 
       if (pCopasiReaction->isReversible())
         {
@@ -2457,10 +2457,9 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           pCopasiReaction->setParameterMapping("k2", objectKey);
           const CCopasiVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getProducts();
           iMax = metabolites->size();
-          for (i = 0;i < iMax;++i)
-            {
+          for (i = 0; i < iMax; ++i)
+            for (j = 0, jMax = fabs((*metabolites)[i]->getMultiplicity()); j < jMax; j++)
               pCopasiReaction->addParameterMapping("product", (*metabolites)[i]->getMetaboliteKey());
-            }
         }
     }
   else
