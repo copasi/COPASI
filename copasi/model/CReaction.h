@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.93.2.2 $
+   $Revision: 1.93.2.3 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/05/29 19:46:21 $
+   $Author: ssahle $
+   $Date: 2006/05/31 14:28:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,7 +37,6 @@ class CReadConfig;
 class SBase;
 class CFunctionDB;
 
-/** @dia:pos 129.788,76.3337 */
 class CReaction : public CCopasiContainer
   {
     // Attributes
@@ -55,7 +54,6 @@ class CReaction : public CCopasiContainer
     /**
      *  The chemical equation
      */
-    /** @dia:route 4,92; h,80.3628,99.0144,105.075,112.034,129.788 */
     CChemEq mChemEq;
 
     /**
@@ -376,6 +374,8 @@ class CReaction : public CCopasiContainer
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CReaction & d);
+
+    void printDebug() const;
 
   private:
 

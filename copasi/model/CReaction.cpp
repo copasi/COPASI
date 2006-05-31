@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.155.2.5 $
+   $Revision: 1.155.2.6 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/05/29 19:54:46 $
+   $Author: ssahle $
+   $Date: 2006/05/31 14:28:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -716,6 +716,7 @@ void CReaction::initObjects()
 std::ostream & operator<<(std::ostream &os, const CReaction & d)
 {
   os << "CReaction:  " << d.getObjectName() << std::endl;
+  os << "   sbml id:  " << d.mSBMLId << std::endl;
 
   os << "   mChemEq " << std::endl;
   os << d.mChemEq;
@@ -731,9 +732,26 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
   if (d.mScalingFactor)
     os << "   *mScalingFactor " << *(d.mScalingFactor) << std::endl;
   else
-    os << "   mScalingFactor == 0 " << std::endl;
+    os << "   mScalingFactor == NULL " << std::endl;
 
-  os << "   mUnitScalingFactor: " << d.mUnitScalingFactor << std::endl;
+  if (d.mUnitScalingFactor)
+    os << "   *mUnitScalingFactor " << *(d.mUnitScalingFactor) << std::endl;
+  else
+    os << "   mUnitScalingFactor == NULL " << std::endl;
+
+  os << "   parameter group:" << std::endl;
+  os << d.mParameters;
+
+  os << "   key map:" << std::endl;
+  unsigned C_INT32 i, j;
+  for (i = 0; i < d.mMetabKeyMap.size(); ++i)
+    {
+      os << i << ": ";
+      for (j = 0; j < d.mMetabKeyMap[i].size(); ++j)
+        os << d.mMetabKeyMap[i][j] << ", ";
+      os << std::endl;
+    }
+
   os << "----CReaction" << std::endl;
 
   return os;
@@ -1299,3 +1317,6 @@ std::string CReaction::escapeId(const std::string& id)
     }
   return s;
 }
+
+void CReaction::printDebug() const
+  {std::cout << *this;}

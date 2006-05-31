@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.21.2.3 $
+   $Revision: 1.21.2.4 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/22 14:53:22 $
+   $Date: 2006/05/31 14:28:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -734,7 +734,8 @@ bool CReactionInterface::isValid() const
 
 void CReactionInterface::printDebug() const
   {
-    std::cout << "Reaction:   " << getReactionName() << std::endl;
+    std::cout << "Reaction interface   " << std::endl;
+    std::cout << " Reaction:   " << getReactionName() << std::endl;
     std::cout << "  Function: " << getFunctionName() << std::endl;
     std::cout << "  ChemEq:   " << getChemEqString() << std::endl;
 
@@ -742,11 +743,12 @@ void CReactionInterface::printDebug() const
     for (i = 0; i < imax; ++i)
       {
         std::cout << "    ---  " << i << ": " << getParameterName(i)
-        << ", " << isVector(i) << " " << isLocalValue(i)
-        << ", " << mValues[i] << std::endl;
+        << ", vector: " << isVector(i) << " local: " << isLocalValue(i)
+        << ", value: " << mValues[i] << std::endl;
 
         unsigned C_INT32 j, jmax = mNameMap[i].size();
         for (j = 0; j < jmax; ++j)
           std::cout << "            " << mNameMap[i][j] << std::endl;
       }
+    std::cout << std::endl;
   }
