@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.260.2.1 $
+   $Revision: 1.260.2.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/20 23:43:13 $
+   $Date: 2006/05/31 14:27:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1756,8 +1756,72 @@ CReaction* CModel::createReaction(const std::string & name)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   mSteps.add(reaction);
   mSteps[reaction.getObjectName()]->compile();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1897,15 +1961,17 @@ bool CModel::convert2NonReversible()
         //std::cout << i << "  ";
 
         //create the two new reactions
-        reac1 = new CReaction(/* *reac0, &steps*/);
         rn1 = reac0->getObjectName() + " (forward)";
-        reac1->setObjectName(rn1);
-        steps.add(reac1);
+        reac1 = createReaction(rn1);
+        //reac1 = new CReaction(/* *reac0, &steps*/);
+        //reac1->setObjectName(rn1);
+        //steps.add(reac1);
 
-        reac2 = new CReaction(/* *reac0, &steps*/);
         rn2 = reac0->getObjectName() + " (backward)";
-        reac2->setObjectName(rn2);
-        steps.add(reac2);
+        reac2 = createReaction(rn2);
+        //reac2 = new CReaction(/* *reac0, &steps*/);
+        //reac2->setObjectName(rn2);
+        //steps.add(reac2);
 
         ri1.initFromReaction(*this, reac0->getKey());
         ri1.setReactionName(rn1);
