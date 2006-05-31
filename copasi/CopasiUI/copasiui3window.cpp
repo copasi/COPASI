@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.171.2.4 $
+   $Revision: 1.171.2.5 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/05/26 13:38:04 $
+   $Author: shoops $
+   $Date: 2006/05/31 02:29:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -820,6 +820,262 @@ void CopasiUI3Window::CleanUp()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  *******************************************************************************************/
 void CopasiUI3Window::slotFilePrint()
 {}
@@ -1097,9 +1353,6 @@ void CopasiUI3Window::slotImportSBML(QString file)
       catch (CCopasiException except)
         {
           success = false;
-          setCursor(oldCursor);
-          QMessageBox::critical(this, QString("File Error"), QString("Error. Could not import file ") + SBMLFile + QString("!"), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
-          dataModel->createModel();
         }
 
       setCursor(oldCursor);
@@ -1112,6 +1365,8 @@ void CopasiUI3Window::slotImportSBML(QString file)
           QMessageBox::critical(this, QString("File Error"), Message,
                                 QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
           CCopasiMessage::clearDeque();
+
+          dataModel->createModel();
         }
 
       /* still check for warnings.
