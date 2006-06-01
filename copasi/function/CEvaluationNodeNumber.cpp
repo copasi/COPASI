@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.18.2.2 $
+   $Revision: 1.18.2.3 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/24 09:03:31 $
+   $Author: shoops $
+   $Date: 2006/06/01 19:49:25 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,6 +76,10 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
       subType = INTEGER;
       ss << node.getInteger();
       data = ss.str();
+
+      if (node.getInteger() < 0)
+        data = "(" + data + ")";
+
       pNode = new CEvaluationNodeNumber(subType, data);
       break;
     case AST_REAL:
@@ -97,6 +101,10 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
         {
           ss << node.getReal();
           data = ss.str();
+
+          if (node.getReal() < 0)
+            data = "(" + data + ")";
+
           pNode = new CEvaluationNodeNumber(subType, data);
         }
       break;
@@ -104,6 +112,10 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
       subType = ENOTATION;
       ss << node.getReal();
       data = ss.str();
+
+      if (node.getReal() < 0)
+        data = "(" + data + ")";
+
       pNode = new CEvaluationNodeNumber(subType, data);
       break;
     case AST_RATIONAL:
