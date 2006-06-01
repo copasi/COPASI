@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.64.2.4 $
+   $Revision: 1.64.2.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/23 15:57:00 $
+   $Date: 2006/06/01 23:24:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -344,14 +344,14 @@ bool CCopasiDataModel::autoSave()
 
 bool CCopasiDataModel::newModel(CModel * pModel)
 {
-  CCopasiMessage::clearDeque();
-
   pdelete(mpModel);
 
   if (pModel)
     mpModel = pModel;
   else
     {
+      CCopasiMessage::clearDeque();
+
       mpModel = new CModel();
       mSaveFileName = "";
       mSBMLFileName = "";
