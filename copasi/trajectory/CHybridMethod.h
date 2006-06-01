@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.h,v $
-   $Revision: 1.21.2.1 $
+   $Revision: 1.21.2.2 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/30 19:24:53 $
+   $Author: ssahle $
+   $Date: 2006/06/01 12:22:58 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,7 +53,7 @@
 #include "utilities/CCopasiVector.h"
 
 /* DEFINE ********************************************************************/
-#define MAX_STEPS                    10000
+#define MAX_STEPS                    1000000
 #define INT_EPSILON                  0.1
 #define LOWER_STOCH_LIMIT            800 //800
 #define UPPER_STOCH_LIMIT            1000 //1000
