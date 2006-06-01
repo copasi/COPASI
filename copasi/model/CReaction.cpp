@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.155.2.6 $
+   $Revision: 1.155.2.7 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/31 14:28:24 $
+   $Author: shoops $
+   $Date: 2006/06/01 19:47:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -780,6 +780,20 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
               if (dynamic_cast<CMetab*>(object))
                 {
                   id = dynamic_cast<Species*>(pos->second)->getId();
+
+                  // We need to check that we have no reserved name.
+                  const char *Reserved[] =
+                    {"pi", "exponentiale", "true", "false", "infinity", "nan",
+                     "PI", "EXPONENTIALE", "TRUE", "FALSE", "INFINITY", "NAN"
+                    };
+
+                  unsigned C_INT32 j, jmax = 12;
+                  for (j = 0; j < jmax; j++)
+                    if (id == Reserved[j]) break;
+
+                  if (j != jmax)
+                    id = "\"" + id + "\"";
+
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
                   if (replacementMap.find(id) == replacementMap.end())
                     {
@@ -1081,6 +1095,7 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
           pFun->setType(CFunction::UserDefined);
           pFun->setRoot(pFunctionTree);
           pFun->setReversible(this->isReversible() ? TriTrue : TriFalse);
+
           pFunctionDB->add(pFun, true);
           // add the variables
           // and do the mapping
