@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.260.2.2 $
+   $Revision: 1.260.2.3 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/31 14:27:24 $
+   $Date: 2006/06/01 13:39:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1719,144 +1719,6 @@ CReaction* CModel::createReaction(const std::string & name)
   setCompileFlag();
   return pReaction;
 }
-
-/*bool CModel::addReaction(const CReaction & reaction)
-{
-  if (mSteps.getIndex(reaction.getObjectName()) != C_INVALID_INDEX)
-    return false;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  mSteps.add(reaction);
-  mSteps[reaction.getObjectName()]->compile();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  setCompileFlag();
-  return true;
-}*/
 
 bool CModel::removeReaction(const std::string & key)
 {
