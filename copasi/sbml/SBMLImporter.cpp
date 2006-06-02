@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.127.2.8 $
+   $Revision: 1.127.2.9 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/31 23:48:20 $
+   $Author: shoops $
+   $Date: 2006/06/02 00:27:25 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2741,13 +2741,15 @@ void SBMLImporter::findFunctionCalls(const CEvaluationNode* pNode, std::set<std:
 
 bool SBMLImporter::isStochasticModel(const Model* pSBMLModel)
 {
-  bool stochastic = true;
+  bool stochastic = false;
   unsigned int i;
   const UnitDefinition* pUD = pSBMLModel->getUnitDefinition("substance");
   if (pUD)
     {
-      stochastic = (pUD->getNumUnits() == 1 && pUD->getUnit(0)->getKind() == UNIT_KIND_ITEM);
-      for (i = 0;(stochastic == true) && (i < pSBMLModel->getNumReactions());++i)
+      stochastic = (pUD->getNumUnits() == 1 &&
+                    pUD->getUnit(0)->getKind() == UNIT_KIND_ITEM);
+
+      for (i = 0; (stochastic == true) && (i < pSBMLModel->getNumReactions()); ++i)
         {
           stochastic = !pSBMLModel->getReaction(i)->getReversible();
         }
