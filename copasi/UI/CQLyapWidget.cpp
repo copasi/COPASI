@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.cpp,v $
-   $Revision: 1.4.2.5 $
+   $Revision: 1.4.2.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/23 12:28:24 $
+   $Date: 2006/06/02 20:07:54 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -351,6 +351,7 @@ finish:
 
   tt->setCallBack(NULL);
   tmpBar->finish(); pdelete(tmpBar);
+  CCopasiMessage::clearDeque();
   CCopasiDataModel::Global->finish();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 

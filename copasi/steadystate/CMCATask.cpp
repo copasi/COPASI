@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.10.2.1 $
+   $Revision: 1.10.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/19 17:56:40 $
+   $Date: 2006/06/02 20:07:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,14 +138,13 @@ bool CMCATask::process(const bool & useInitialValues)
 
 bool CMCATask::restore()
 {
-  bool success = true;
+  bool success = CCopasiTask::restore();
 
   CSteadyStateTask *pSubTask =
     dynamic_cast<CMCAProblem *>(mpProblem)->getSubTask();
+
   if (pSubTask)
     success &= pSubTask->restore();
-
-  success &= CCopasiTask::restore();
 
   return success;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.29.2.1 $
+   $Revision: 1.29.2.2 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/02 18:53:44 $
+   $Author: shoops $
+   $Date: 2006/06/02 20:07:54 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -260,6 +260,8 @@ void CMCAWidget::runMCATask()
 
   mcaTask->restore();
 
+  CCopasiMessage::clearDeque();
+  CCopasiDataModel::Global->finish();
   protectedNotify(ListViews::STATE, ListViews::CHANGE, CCopasiDataModel::Global->getModel()->getKey());
   unsetCursor();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
