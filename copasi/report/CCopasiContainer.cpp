@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.41.2.1 $
+   $Revision: 1.41.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/30 17:19:04 $
+   $Date: 2006/06/02 16:49:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,15 +40,16 @@ void CCopasiContainer::init()
 }
 
 CCopasiObject * CCopasiContainer::ObjectFromName(const CCopasiObjectName & objName)
-{return CCopasiContainer::ObjectFromName(EmptyList, objName);}
+{return const_cast<CCopasiObject *>(CCopasiContainer::Root->getObject(objName));}
 
 CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiContainer * > & listOfContainer,
     const CCopasiObjectName & objName)
 {
   const CCopasiObject * pObject = NULL;
   CCopasiContainer* pContainer;
-  CCopasiObjectName Name;
+  CCopasiObjectName ContainerName;
   unsigned C_INT32 containerIndex;
+  std::string::size_type pos;
 
   //favor to search the list of container first
   for (containerIndex = 0;
@@ -56,9 +57,18 @@ CCopasiObject * CCopasiContainer::ObjectFromName(const std::vector< CCopasiConta
        containerIndex++)
     {
       pContainer = listOfContainer[containerIndex];
+      ContainerName = pContainer->getCN();
 
-      for (Name = objName; Name != "" && !pObject; Name = Name.getRemainder())
-        pObject = pContainer->getObject(Name);
+      while (ContainerName.getRemainder() != "")
+        ContainerName = ContainerName.getRemainder();
+
+      if ((pos = objName.find(ContainerName)) == std::string::npos)
+        continue;
+
+      if (pos + ContainerName.length() == objName.length())
+        pObject = pContainer;
+      else
+        pObject = pContainer->getObject(objName.substr(pos + ContainerName.length() + 1));
     }
 
   // if not found search the root
