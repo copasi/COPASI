@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.69.2.6 $
+   $Revision: 1.69.2.7 $
    $Name:  $
-   $Author: jpahle $
-   $Date: 2006/05/30 11:57:48 $
+   $Author: ssahle $
+   $Date: 2006/06/02 19:03:38 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -188,7 +188,7 @@ const MESSAGES Messages[] =
     {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling Plots."},
 
     {MCSteadyState + 1, "CSteadyState (1): The model is explicitly time dependent. "
-     "Therefore, the calculation of a steady state is not very meaning full."},
+     "Therefore, the calculation of a steady state is not very meaningful."},
 
     {MCFitting + 1, "CFitting (1): Failed to determine work area size for matrix inversion. "
      "dsytrf returned with error '%d'."},
