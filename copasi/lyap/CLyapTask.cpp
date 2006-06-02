@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-   $Revision: 1.7.2.3 $
+   $Revision: 1.7.2.4 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/20 15:53:27 $
+   $Date: 2006/06/02 18:59:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -308,6 +308,12 @@ void CLyapTask::printResult(std::ostream * ostream) const
 
     os << "Lyapunov Exponents:" << std::endl;
 
+    if (!mpLyapProblem) //this means that task was not yet executed
+      {
+        os << "No results available." << std::endl;
+        return;
+      }
+
     unsigned C_INT32 i, imax = mpLyapProblem->getExponentNumber();
     for (i = 0; i < imax; ++i)
       os << mExponents[i] << " ";
@@ -315,24 +321,6 @@ void CLyapTask::printResult(std::ostream * ostream) const
 
     if (mpLyapProblem->divergenceRequested())
       os << std::endl << "Average divergence: " << mAverageDivergence << std::endl;
-    /*    if (mSolutionVariables.size() == 0)
-          {
-            return;
-          }
-        os << "    Objective Function Value:\t" << mSolutionValue << std::endl;
-
-        std::vector< COptItem * >::const_iterator itItem =
-          mpOptItems->begin();
-        std::vector< COptItem * >::const_iterator endItem =
-          mpOptItems->end();
-
-        unsigned C_INT32 i;
-
-        for (i = 0; itItem != endItem; ++itItem, i++)
-          {
-            os << "    " << (*itItem)->getObjectDisplayName() << ": "
-            << mSolutionVariables[i] << std::endl;
-          }*/
   }
 
 bool CLyapTask::resultAvailable() const
