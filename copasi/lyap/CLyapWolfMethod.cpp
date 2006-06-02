@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-   $Revision: 1.5.2.4 $
+   $Revision: 1.5.2.5 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/22 20:39:27 $
+   $Author: shoops $
+   $Date: 2006/06/02 00:45:37 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -337,7 +337,7 @@ bool CLyapWolfMethod::calculate()
   //unsigned C_INT32 StepCounter = 1;
 
   bool flagProceed = true;
-  C_FLOAT64 handlerFactor = 100.0 / (endTime - mTime);
+  C_FLOAT64 handlerFactor = 100.0 / (endTime - transientTime);
 
   //C_FLOAT64 Percentage = 0;
 
@@ -374,7 +374,7 @@ bool CLyapWolfMethod::calculate()
   //copy state to model
   mpProblem->getModel()->setState(*mpState);
   mpProblem->getModel()->applyAssignments();
-  mpTask->methodCallback((mTime - startTime) * handlerFactor);
+  mpTask->methodCallback((mTime - transientTime) * handlerFactor);
   //********
 
   orthonormalize();
@@ -419,7 +419,7 @@ bool CLyapWolfMethod::calculate()
       //copy state to model
       mpProblem->getModel()->setState(*mpState);
       mpProblem->getModel()->applyAssignments();
-      flagProceed &= mpTask->methodCallback((mTime - startTime) * handlerFactor);
+      flagProceed &= mpTask->methodCallback((mTime - transientTime) * handlerFactor);
     }
   while ((mTime < endTime) && flagProceed);
 
