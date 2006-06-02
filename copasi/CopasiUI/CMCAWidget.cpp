@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CMCAWidget.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.29.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:40 $
+   $Author: ssahle $
+   $Date: 2006/06/02 18:53:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -155,18 +155,18 @@ CMCAWidget::CMCAWidget(QWidget* parent, const char* name, WFlags fl)
   cancelChange = new QPushButton(this, "cancelChange");
   cancelChange->setText(trUtf8("Revert"));
   Layout2->addWidget(cancelChange);
-  /*
+
   reportDefinitionButton = new QPushButton(this, "ReportDefinition");
-  reportDefinitionButton->setText(trUtf8("ReportDefinition"));
+  reportDefinitionButton->setText(trUtf8("Report"));
   Layout2->addWidget(reportDefinitionButton);
-  */
+
   CMCAWidgetLayout->addMultiCellLayout(Layout2, 8, 8, 0, 2);
 
   // signals and slots connections
   connect(bRunButton, SIGNAL(clicked()), this, SLOT(runMCATask()));
   connect(cancelChange, SIGNAL(clicked()), this, SLOT(CancelButtonClicked()));
   connect(parameterTable, SIGNAL(valueChanged(int, int)), this, SLOT(parameterValueChanged()));
-  //connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
+  connect(reportDefinitionButton, SIGNAL(clicked()), this, SLOT(ReportDefinitionClicked()));
   connect(taskSteadyState, SIGNAL(toggled(bool)), this, SLOT(taskSteadyStateToggled()));
 
   // tab order
@@ -402,18 +402,16 @@ bool CMCAWidget::leave()
 
 void CMCAWidget::ReportDefinitionClicked()
 {
-  /*
   CMCATask* mcaTask =
     dynamic_cast< CMCATask * >(GlobalKeys.get(objKey));
   assert(mcaTask);
 
-  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pParent);
+  CReportDefinitionSelect * pSelectDlg = new CReportDefinitionSelect(pListView);
   pSelectDlg->setReport(&mcaTask->getReport());
   pSelectDlg->loadReportDefinitionVector();
   pSelectDlg->exec();
 
   delete pSelectDlg;
-  */
 }
 
 void CMCAWidget::taskSteadyStateToggled()
