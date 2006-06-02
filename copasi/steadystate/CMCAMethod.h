@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.17.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/04 19:20:50 $
+   $Author: ssahle $
+   $Date: 2006/06/02 22:53:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,6 +129,9 @@ class CMCAMethod: public CCopasiMethod
 
     const CMatrix<C_FLOAT64> & getScaledFluxCC() const
       {return mScaledFluxCC;}
+
+    const CArrayAnnotation* getUnscaledElasticitiesAnn() const
+      {return mUnscaledElasticitiesAnn;}
 
     /**
      * Scales the coefficients (i.e. Kacser format, rather than Reder)

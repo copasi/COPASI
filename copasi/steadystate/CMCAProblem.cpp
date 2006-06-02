@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.12.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Author: ssahle $
+   $Date: 2006/06/02 22:53:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 
 #include "copasi.h"
 #include "CMCAProblem.h"
+#include "CMCATask.h"
 #include "CSteadyStateTask.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -34,7 +35,7 @@
  *  @param "CModel *" pModel
  */
 CMCAProblem::CMCAProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::steadyState, pParent),
+    CCopasiProblem(CCopasiTask::mca, pParent),
     mInitialState()
 {
   //  addParameter("SteadyStateRequested", CCopasiParameter::BOOL, true);
@@ -142,4 +143,15 @@ CSteadyStateTask * CMCAProblem::getSubTask() const
       return dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(* getValue("Steady-State").pKEY));
     else
       return NULL;
+  }
+
+void CMCAProblem::printResult(std::ostream * ostream) const
+  {
+    //this functionality is expected from the problem. However it is implemented in
+    //the task.
+
+    CMCATask* parent = dynamic_cast<CMCATask*>(getObjectParent());
+    if (!parent) return;
+
+    parent->printResult(ostream);
   }

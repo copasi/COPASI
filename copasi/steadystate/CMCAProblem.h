@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.6.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Author: ssahle $
+   $Date: 2006/06/02 22:53:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,6 +104,14 @@ class CMCAProblem: public CCopasiProblem
      */
     void load(CReadConfig & configBuffer,
               CReadConfig::Mode mode = CReadConfig::NEXT);
+
+    /**
+     * This is the output method for any result of a problem. The default implementation
+     * is provided with CCopasiProblem. Does only print "Not implmented." To overide this
+     * default behaviour one needs to reimplement the virtual printResult function.
+     * @param std::ostream * ostream
+     */
+    virtual void printResult(std::ostream * ostream) const;
 
   private:
   };

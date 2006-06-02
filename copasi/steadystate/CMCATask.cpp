@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.10.2.2 $
+   $Revision: 1.10.2.3 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/02 20:07:53 $
+   $Author: ssahle $
+   $Date: 2006/06/02 22:53:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,7 +87,8 @@ bool CMCATask::initialize(const OutputFlag & of,
   CSteadyStateTask *pSubTask = pProblem->getSubTask();
 
   if (pSubTask)
-    success = pSubTask->initialize(of, mReport.getStream());
+    success = pSubTask->initialize(CCopasiTask::NO_OUTPUT, mReport.getStream());
+  //success = pSubTask->initialize(of, mReport.getStream());
 
   return success;
 }
@@ -157,3 +158,22 @@ std::ostream &operator<<(std::ostream &os, const CMCATask & C_UNUSED(A))
 
   return os;
 }
+
+void CMCATask::printResult(std::ostream * ostream) const
+  {
+    assert(mpProblem && mpMethod);
+
+    CMCAProblem* pProblem =
+      dynamic_cast<CMCAProblem *>(mpProblem);
+    assert(pProblem);
+
+    CMCAMethod* pMethod = dynamic_cast<CMCAMethod *>(mpMethod);
+    assert(pMethod);
+    pMethod->setModel(mpProblem->getModel());
+
+    std::ostream & os = *ostream;
+
+    os << *pMethod->getUnscaledElasticitiesAnn();
+
+    //TODO
+  }
