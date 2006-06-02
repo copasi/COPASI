@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.69.2.1 $
+   $Revision: 1.69.2.2 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/23 16:24:34 $
+   $Author: ssahle $
+   $Date: 2006/06/02 19:00:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -347,7 +347,7 @@ CNewtonMethod::processInternal()
 CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 {
   CNewtonMethod::NewtonReturnCode ReturnCode = CNewtonMethod::notFound;
-  C_INT32 i, j, k;
+  C_INT32 i, k;
   C_FLOAT64 oldMaxRate, newMaxRate;
 
   calculateDerivativesX();
