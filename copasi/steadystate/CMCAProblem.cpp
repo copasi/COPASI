@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
-   $Revision: 1.12.2.1 $
+   $Revision: 1.12.2.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/06/02 22:53:27 $
+   $Date: 2006/06/03 10:53:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -155,3 +155,35 @@ void CMCAProblem::printResult(std::ostream * ostream) const
 
     parent->printResult(ostream);
   }
+
+//print the description
+std::ostream &operator<<(std::ostream &os, const CMCAProblem & o)
+{
+  os << "Problem Description:" << std::endl;
+
+  //os << "Subtask: " << std::endl;
+
+  if (o.isSteadyStateRequested())
+    {
+      os << "Calculation of a steady state is requested before the MCA." << std::endl << std::endl;
+      if (o.getSubTask())
+        {
+          //os << "" << std::endl;
+          o.getSubTask()->getDescription().print(&os);
+        }
+      else
+        {
+          os << "However an error occurred. Please report this as a bug." << std::endl;
+        }
+    }
+  else
+    {
+      os << "MCA is performed on the current state (which is not necessarily a steady state)." << std::endl;
+    }
+  os << std::endl;
+
+  return os;
+}
+
+void CMCAProblem::print(std::ostream * ostream) const
+  {*ostream << *this;}
