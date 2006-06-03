@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.10.2.4 $
+   $Revision: 1.10.2.5 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/06/03 10:54:11 $
+   $Date: 2006/06/03 11:29:11 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -173,8 +173,52 @@ void CMCATask::printResult(std::ostream * ostream) const
 
     std::ostream & os = *ostream;
 
+    bool showCCs = false; //show CCs?
+    bool showSS = false; //show Steady State result?
+
+    if (pProblem->isSteadyStateRequested())
+      {
+        if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::found)
+          {
+            os << "A steady state was found. All coefficients are shown." << std::endl;
+            showCCs = true;
+            showSS = true;
+          }
+
+        if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::foundEquilibrium)
+          {
+            os << "Found equilibrium steady state. Only elasticities available." << std::endl;
+            showSS = true;
+          }
+
+        if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::foundNegative)
+          {
+            os << "Invalid steady state found (negative concentrations)." << std::endl;
+            showSS = true;
+          }
+
+        if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::notFound)
+          {
+            os << "No steady state found. Only elasticities available." << std::endl;
+          }
+      }
+    else
+      {
+        os << "Since no steady state calculation was requested only elasticities are shown." << std::endl;
+      }
+
+    os << std::endl;
     os << *pMethod->getUnscaledElasticitiesAnn() << std::endl;
     os << *pMethod->getScaledElasticitiesAnn() << std::endl;
 
-    //TODO
+    if (showCCs)
+      {
+        os << *pMethod->getUnscaledConcentrationCCAnn() << std::endl;
+        os << *pMethod->getScaledConcentrationCCAnn() << std::endl;
+
+        os << *pMethod->getUnscaledFluxCCAnn() << std::endl;
+        os << *pMethod->getScaledFluxCCAnn() << std::endl;
+      }
+
+    //TODO: show the steady state if showSS==true
   }
