@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.10.2.5 $
+   $Revision: 1.10.2.6 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/06/03 11:29:11 $
+   $Date: 2006/06/03 13:22:36 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -220,5 +220,15 @@ void CMCATask::printResult(std::ostream * ostream) const
         os << *pMethod->getScaledFluxCCAnn() << std::endl;
       }
 
-    //TODO: show the steady state if showSS==true
+    if (showSS)
+      {
+        if (!pProblem->getSubTask())
+          {
+            os << "Problem with steady state calculation. Please report as bug!" << std::endl;
+            return;
+          }
+
+        os << "Results of the steady state subtask (the state for which the MCA was performed):" << std::endl;
+        os << *pProblem->getSubTask();
+      }
   }
