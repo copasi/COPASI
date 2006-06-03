@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.10.2.3 $
+   $Revision: 1.10.2.4 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/06/02 22:53:27 $
+   $Date: 2006/06/03 10:54:11 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -173,7 +173,8 @@ void CMCATask::printResult(std::ostream * ostream) const
 
     std::ostream & os = *ostream;
 
-    os << *pMethod->getUnscaledElasticitiesAnn();
+    os << *pMethod->getUnscaledElasticitiesAnn() << std::endl;
+    os << *pMethod->getScaledElasticitiesAnn() << std::endl;
 
     //TODO
   }
