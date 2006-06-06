@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.139.2.1 $
+   $Revision: 1.139.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/23 15:57:00 $
+   $Date: 2006/06/06 17:31:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,14 @@
 /**********************************************************************
  **  $ CopasiUI/FunctionWidget1.cpp
  **  $ Author  : Mrinmayee Kulkarni
+
+
+
+
+
+
+
+
 
 
 
@@ -441,9 +449,11 @@ bool FunctionWidget1::loadUsageTable()
     {
       stringlist.push_back("At least one substrate");
     }
-  else
+  else if (mpFunction->getObjectName() != "Constant flux (irreversible)" &&
+           mpFunction->getObjectName() != "Constant flux (reversible)")
     {
       std::stringstream ss;
+
       if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) == 0)
         {
           ss << "No substrate";
@@ -466,10 +476,11 @@ bool FunctionWidget1::loadUsageTable()
         {
           stringlist.push_back("At least one product");
         }
-      else
+      else if (mpFunction->getObjectName() != "Constant flux (reversible)")
         {
           std::stringstream ss;
-          if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) == 0)
+          if (mpFunction->getVariables().getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) == 0 &&
+              mpFunction->getObjectName() != "Constant flux (reversible)")
             {
               ss << "No product";
             }
