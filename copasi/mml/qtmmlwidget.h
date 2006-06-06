@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mml/Attic/qtmmlwidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.2.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:04 $
+   $Author: ssahle $
+   $Date: 2006/06/06 13:43:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
