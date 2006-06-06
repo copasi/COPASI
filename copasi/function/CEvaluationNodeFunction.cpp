@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.35.2.1 $
+   $Revision: 1.35.2.2 $
    $Name:  $
    $Author: nsimus $
-   $Date: 2006/05/30 08:52:48 $
+   $Date: 2006/06/06 08:39:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -390,6 +390,7 @@ std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree
           case SQRT:
           case ABS:
           case NOT:
+            break;
           case MINUS:
             data = "-";
             break;
