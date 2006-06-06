@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.127.2.4 $ $Author: shoops $ $Date: 2006/05/22 13:28:33 $  
+# $Revision: 1.127.2.5 $ $Author: shoops $ $Date: 2006/06/06 22:42:00 $  
 ######################################################################
 
 TEMPLATE = app
@@ -18,7 +18,9 @@ COPASI_LIBS += elementaryFluxModes
 COPASI_LIBS += fitting
 COPASI_LIBS += function
 COPASI_LIBS += lyap
-COPASI_LIBS += mml
+contains(DEFINES, HAVE_MML) {
+  COPASI_LIBS += mml
+}
 COPASI_LIBS += model
 COPASI_LIBS += optimization
 COPASI_LIBS += plot
@@ -26,7 +28,7 @@ COPASI_LIBS += randomGenerator
 COPASI_LIBS += report
 COPASI_LIBS += sbmlimport
 COPASI_LIBS += scan
-debug { 
+contains(DEFINES, COPASI_SENS) {
   COPASI_LIBS += sensitivities
 }
 COPASI_LIBS += steadystate
@@ -259,6 +261,20 @@ SOURCES += \
            Tree.cpp \
            TSSWidget.cpp
 
+!contains(DEFINES, HAVE_MML) {
+  HEADERS -= DifferentialEquations.h
+  SOURCES -= DifferentialEquations.cpp
+}
+
+!contains(DEFINES, COPASI_SENS) {
+  SOURCES -= SensitivitiesWidget.cpp
+  HEADERS -= TSSWidget.h
+}
+
+!contains(DEFINES, COPASI_TSS) {
+  HEADERS -= SensitivitiesWidget.h
+  SOURCES -= TSSWidget.cpp
+}
 # FORMS += TimeSeriesSubwidget.ui
 # FORMS += StateSubwidget.ui
 # FORMS += CMCAResultSubwidget.ui

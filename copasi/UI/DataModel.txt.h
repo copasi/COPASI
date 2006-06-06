@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModel.txt.h,v $
-   $Revision: 1.27.2.1 $
+   $Revision: 1.27.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/16 16:30:31 $
+   $Date: 2006/06/06 22:42:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,9 @@ static char DataModeltxt[] =
   "11:116:Parameter overview\n"
   "1:12:Mathematical\n"
   //"12:122:Used Functions\n"
+#ifdef HAVE_MML
   "12:126:Differential Equations\n"
+#endif // HAVE_MML
   "0:2:Tasks\n"
   "2:21:Steady-State\n"
   "21:211:Result\n"

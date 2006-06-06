@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.49.2.3 $ $Author: shoops $ $Date: 2006/05/24 16:03:59 $  
+# $Revision: 1.49.2.4 $ $Author: shoops $ $Date: 2006/06/06 22:41:59 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -30,7 +30,15 @@ contains(USE_LICENSE, DE) {
 
 debug {
   DEFINES += COPASI_DEBUG
-  DEFINES += COPASI_TSS
+
+  isEmpty(COPASI_SRC_PACKAGE) {
+    DEFINES += COPASI_TSS
+    DEFINES += COPASI_SENS
+  }
+}
+
+isEmpty(COPASI_SRC_PACKAGE) {
+  DEFINES += HAVE_MML
 }
 
 contains(STATIC_LINKAGE, yes) {

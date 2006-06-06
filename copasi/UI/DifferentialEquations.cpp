@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.29.2.4 $
+   $Revision: 1.29.2.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/30 13:04:24 $
+   $Date: 2006/06/06 22:42:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,7 +45,9 @@
 
 #include "CopasiFileDialog.h"
 
-#include "mml/qtmmlwidget.h"
+#ifdef HAVE_MML
+# include "mml/qtmmlwidget.h"
+#endif // Have_MML
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for

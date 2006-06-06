@@ -106,7 +106,7 @@ AC_ARG_WITH([build-parser],
                  [Specify whether to build lex and yacc sources.]),
   [BUILD_PARSER=\$withval])
 
-QMAKE_ARG=""
+QMAKE_ARG="COPASI_SRC_PACKAGE=true"
 
 if test "x\$prefix" = "xNONE"; then
   prefix=\$ac_default_prefix
@@ -254,8 +254,8 @@ rem set subdirs=%subdirs% test
 echo executing in copasi:
 rem  echo   for %%d in (%subdirs%) do del %%d\\.qmake.internal.cache
 for %%d in (%subdirs%) do del %%d\\.qmake.internal.cache
-echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 %9
-%QTDIR%\\bin\\qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 %9
+echo   qmake "COPASI_SRC_PACKAGE=true" "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 %9
+%QTDIR%\\bin\\qmake "COPASI_SRC_PACKAGE=true" "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 %9
 
 nmake qmake_all
 

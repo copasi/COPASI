@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.64.2.6 $
+   $Revision: 1.64.2.7 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/02 18:50:35 $
+   $Author: shoops $
+   $Date: 2006/06/06 22:41:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,8 +31,12 @@
 #include "steadystate/CMCAProblem.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
-#include "tss/CTSSTask.h"
-#include "sensitivities/CSensTask.h"
+#ifdef COPASI_TSS
+# include "tss/CTSSTask.h"
+#endif
+#ifdef COPASI_SENS
+# include "sensitivities/CSensTask.h"
+#endif
 #include "lyap/CLyapTask.h"
 #include "tss/MMASCIIExporter.h"
 #include "utilities/CCopasiException.h"

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.h,v $
-   $Revision: 1.49 $
+   $Revision: 1.49.2.1 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/05/03 14:18:18 $
+   $Author: shoops $
+   $Date: 2006/06/06 22:42:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -113,10 +113,11 @@ class FunctionWidget1 : public CopasiWidget
 
     QWidgetStack* mStack;
     QVBox* mMmlViewBox;
-    QPushButton* mFormulaEditToggleButton;
     QScrollView* mScrollView;
+#ifdef HAVE_MML
+    QPushButton* mFormulaEditToggleButton;
     QtMmlWidget* mMmlWidget;
-
+#endif // HAVE_MML
     CFunction * mpFunction;
   };
 

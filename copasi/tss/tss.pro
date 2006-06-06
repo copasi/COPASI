@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.4.10.2 $ $Author: shoops $ $Date: 2006/05/22 13:28:34 $  
+# $Revision: 1.4.10.3 $ $Author: shoops $ $Date: 2006/06/06 22:42:01 $  
 ######################################################################
 
 LIB = tss
@@ -8,18 +8,18 @@ include(../lib.pri)
 include(../common.pri)
 
 # Input
-debug {
+contains(DEFINES, COPASI_TSS) {
   HEADERS += CTSSMethod.h
   HEADERS += CTSSProblem.h
   HEADERS += CTSSTask.h
-}
-HEADERS += MMASCIIExporter.h
 
-debug {
   SOURCES += CTSSMethod.cpp
   SOURCES += CTSSProblem.cpp
   SOURCES += CTSSTask.cpp
 }
+
+HEADERS += MMASCIIExporter.h
+
 SOURCES += MMASCIIExporter.cpp
 
 DISTFILES += tss.dsp

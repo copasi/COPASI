@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.139.2.2 $
+   $Revision: 1.139.2.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/06 17:31:35 $
+   $Date: 2006/06/06 22:42:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,22 +13,6 @@
 /**********************************************************************
  **  $ CopasiUI/FunctionWidget1.cpp
  **  $ Author  : Mrinmayee Kulkarni
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
  ** This file creates the GUI for the  information about an individual
  ** function obtained from the functions database.It is the second level
  ** widget for functions.
@@ -65,7 +49,9 @@
 #include "qtUtilities.h"
 #include "parametertable.h" // just for the table item widgets
 
-#include "mml/qtmmlwidget.h"
+#ifdef HAVE_MML
+# include "mml/qtmmlwidget.h"
+#endif // Have_MML
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CMetab.h"
@@ -125,7 +111,9 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   textBrowser->setTabChangesFocus(true);
   textBrowser->setTextFormat(PlainText);
   mStack->addWidget(textBrowser, 0);
+  mStack->raiseWidget(0);
 
+#ifdef HAVE_MML
   // A box which contains the MathML ScrollView with the Formula,
   //  and - if not ReadOnly -
   //   a button to switch to (editable) plain text view.
@@ -149,6 +137,7 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
 
   mFormulaEditToggleButton = new QPushButton("Edit", mMmlViewBox, "Formula Edit Toggle Button");
   //mMmlViewBox->insertChild(mFormulaEditToggleButton);
+#endif // HAVE_MML
 
   FunctionWidget1Layout->addWidget(mStack, 1, 1);
 
@@ -313,8 +302,10 @@ FunctionWidget1::FunctionWidget1(QWidget* parent, const char* name, WFlags fl):
   connect(RadioButton2, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
   connect(RadioButton3, SIGNAL(toggled(bool)), this, SLOT(slotReversibilityChanged()));
 
+#ifdef HAVE_MML
   connect(mFormulaEditToggleButton, SIGNAL(clicked()), this,
           SLOT(slotToggleFcnDescriptionEdit()));
+#endif // HAVE_MML
   connect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
 }
 
@@ -1079,6 +1070,7 @@ void FunctionWidget1::slotToggleFcnDescriptionEdit()
 
 void FunctionWidget1::updateMmlWidget()
 {
+#ifdef HAVE_MML
   std::ostringstream mml;
   std::vector<std::vector<std::string> > params;
 
@@ -1099,6 +1091,7 @@ void FunctionWidget1::updateMmlWidget()
   mMmlWidget->setContent(FROM_UTF8(mml.str()));
 
   mScrollView->resizeContents(mMmlWidget->sizeHint().width(), mMmlWidget->sizeHint().height());
+#endif // HAVE_MML
 }
 
 //************************  standard interface to copasi widgets ******************

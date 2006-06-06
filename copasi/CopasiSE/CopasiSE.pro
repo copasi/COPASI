@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.29.2.2 $ $Author: shoops $ $Date: 2006/05/22 13:28:33 $  
+# $Revision: 1.29.2.3 $ $Author: shoops $ $Date: 2006/06/06 22:42:00 $  
 ######################################################################
 
 TEMPLATE = app
@@ -27,7 +27,7 @@ COPASI_LIBS += randomGenerator
 COPASI_LIBS += report
 COPASI_LIBS += sbmlimport
 COPASI_LIBS += scan
-debug {
+contains(DEFINES, COPASI_SENS) {
   COPASI_LIBS += sensitivities
 }
 COPASI_LIBS += steadystate

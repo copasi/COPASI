@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.17.2.3 $ $Author: shoops $ $Date: 2006/05/22 13:28:33 $  
+# $Revision: 1.17.2.4 $ $Author: shoops $ $Date: 2006/06/06 22:41:59 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -13,7 +13,9 @@ SUBDIRS += elementaryFluxModes
 SUBDIRS += function
 SUBDIRS += lyap
 SUBDIRS += model
-SUBDIRS += mml
+contains(DEFINES, HAVE_MML) {
+  SUBDIRS += mml
+}
 SUBDIRS += odepack++
 SUBDIRS += optimization
 SUBDIRS += parameterFitting
@@ -22,7 +24,7 @@ SUBDIRS += randomGenerator
 SUBDIRS += report
 SUBDIRS += sbml
 SUBDIRS += scan
-debug {
+contains(DEFINES, COPASI_SENS) {
   SUBDIRS += sensitivities
 }
 SUBDIRS += steadystate
@@ -35,6 +37,9 @@ SUBDIRS += wizard
 # Now the excecutables
 SUBDIRS += CopasiSE
 SUBDIRS += CopasiUI
+
+DISTDIRS = $(SUBDIRS)
+DISTDIRS -= mml
 
 DISTFILES += \
         1_configure.dsp \
@@ -58,6 +63,6 @@ src_distribution.commands = \
   $(CHK_DIR_EXISTS) ../copasi_src || $(MKDIR) ../copasi_src; \
   $(CHK_DIR_EXISTS) ../copasi_src/copasi || $(MKDIR) ../copasi_src/copasi; \
   cp $$DISTFILES ../copasi_src/copasi/; \
-  $$join(SUBDIRS, "; $(MAKE) -f $(MAKEFILE) $@; cd ..; cd ", "cd ", "; $(MAKE) -f $(MAKEFILE) $@; cd ..;")
+  $$join(DISTDIRS, "; $(MAKE) -f $(MAKEFILE) $@; cd ..; cd ", "cd ", "; $(MAKE) -f $(MAKEFILE) $@; cd ..;")
 
 QMAKE_EXTRA_UNIX_TARGETS += src_distribution
