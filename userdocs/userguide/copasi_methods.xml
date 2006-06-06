@@ -15,7 +15,8 @@ simulation of your model.
 <para>
 COPASI supports three different methodologies to calculate a
 trajectory. The first method is to do a deterministic time course
-simulation of your model using the LSODA algorithm. For systems with
+simulation of your model using the LSODA
+<citation>Petzold83</citation> algorithm. For systems with  
 small particle numbers, it is sometimes better to do a stochastic
 simulation rather then a deterministic one. COPASI supports two
 methods for the stochastic calculation of time series, one is called
@@ -41,9 +42,10 @@ computationally less demanding than a pure stochastic simulation.
 <title>Deterministic (LSODA)</title>
 <para>
 The default method in COPASI to calculate a time course is
-LSODA. LSODA is part of the <ulink
-url="http://www.netlib.org/odepack/opkd-sum">ODEPACK </ulink>
-library. LSODA was written by Linda R. Petzold and Alan C. Hindmarsh.
+LSODA <citation>Petzold83</citation>. LSODA is part of the <ulink
+url="http://www.netlib.org/odepack/opkd-sum">
+ODEPACK</ulink> library <citation>Hindmarsh83</citation>.
+LSODA was written by Linda R. Petzold and Alan C. Hindmarsh.
 <!--
 	Computing and Mathematics Research Division,
 	Lawrence Livermore National Laboratory,
@@ -55,7 +57,7 @@ with a dense or banded Jacobian when the problem is stiff, but it
 automatically selects between non-stiff (Adams) and stiff (BDF)
 methods.  It uses the non-stiff method initially, and dynamically
 monitors data in order to decide which method to use.
- </para>
+</para>
 
 <variablelist><title>Options for LSODA</title>
 <varlistentry><term>Integrate Reduced Model</term>
@@ -128,7 +130,7 @@ switching to the stiff BDF method. The default and maximal order is '12'.
 <para>
 This parameter is a positive integer value specifying the maximal
 order the stiff BDF integration method shall attempt before switching
-to smaller internal stepsizes. The default and maximal order is '5'.
+to smaller internal step sizes. The default and maximal order is '5'.
 </para>
 </listitem>
 </varlistentry>
@@ -153,7 +155,7 @@ next desired reporting time. The default value is '10000'.
 To be written.
 </para>
 
-<variablelist><title>Stochastic (Gibson + Bruck)</title>
+<variablelist><title>Options for Stochastic (Gibson + Bruck)</title>
 <varlistentry><term>Max Internal Steps</term>
 <listitem>
 <para>
@@ -280,60 +282,283 @@ To be written
 </sect1>
 <sect1 id="methodSteadyState" xreflabel="Steady State">
 <title>Steady State Calculation</title>
-<para>To be written.</para>
+<para>
+The steady state is the state in which the state variables of the
+model, e.g. the metabolite concentrations do not change in
+time. Mathematically this is expressed 
+by setting the differential equations that describe the time evolution
+of the metabolic system to zero. This forms a system of algebraic
+non-linear equations. To solve them, COPASI can use a series of
+strategies using more than one numerical method. 
+</para>
 <variablelist><title>Options for Steady State Analysis</title>
 <varlistentry><term>Use Newton</term>
 <listitem>
 <para>
-To be written
+This parameter is a boolean value to determine whether to use the
+damped Newton method on the non-linear algebraic equations 
+defining the steady-state. The initial concentrations set by the user
+are taken as guesses for the solution. A value of '1' (the default)
+indicates that COPASI shall use the damped Newton method.
+</para>
+<para>
+The damped Newton method is a variant of the famous Newton method for
+the solution of systems of non-linear equations. The solution is
+obtained from an iterative procedure that refines an initial guess
+until the residual error is smaller than required. If a limit number
+of iterations is reached without an acceptable solution, the method
+halts without a solution.
+</para>
+<para>
+The iteration of the plain Newton  method is:
+</para>
+<para>
+<mml:math>
+ <mml:mrow>
+  <mml:msub>
+   <mml:mi>x</mml:mi>
+   <mml:mi>i</mml:mi>
+  </mml:msub>
+  <mml:mo>=</mml:mo>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mi>x</mml:mi>
+    <mml:mrow>
+     <mml:mi>i</mml:mi>
+     <mml:mo>-</mml:mo>
+     <mml:mn>1</mml:mn>
+    </mml:mrow>
+   </mml:msub>
+   <mml:mo>-</mml:mo>
+   <mml:mfrac>
+    <mml:mrow>
+     <mml:mi>f</mml:mi>
+     <mml:mrow>
+      <mml:mo>(</mml:mo>
+      <mml:msub>
+       <mml:mi>x</mml:mi>
+       <mml:mrow>
+        <mml:mi>i</mml:mi>
+        <mml:mo>-</mml:mo>
+        <mml:mn>1</mml:mn>
+       </mml:mrow>
+      </mml:msub>
+      <mml:mo>)</mml:mo>
+     </mml:mrow>
+    </mml:mrow>
+    <mml:mrow>
+     <mml:mi>f</mml:mi>
+     <mml:mi>&apos;</mml:mi>
+     <mml:mrow>
+      <mml:mo>(</mml:mo>
+      <mml:msub>
+       <mml:mi>x</mml:mi>
+       <mml:mrow>
+        <mml:mi>i</mml:mi>
+        <mml:mo>-</mml:mo>
+        <mml:mn>1</mml:mn>
+       </mml:mrow>
+      </mml:msub>
+      <mml:mo>)</mml:mo>
+     </mml:mrow>
+    </mml:mrow>
+   </mml:mfrac>
+  </mml:mrow>
+ </mml:mrow>
+</mml:math>
+</para>
+<para>
+In the damped method if 
+<mml:math>
+ <mml:msub>
+  <mml:mi>x</mml:mi>
+  <mml:mrow>
+   <mml:mi>i</mml:mi>
+   <mml:mo>-</mml:mo>
+   <mml:mn>1</mml:mn>
+  </mml:mrow>
+ </mml:msub>
+</mml:math> 
+has a larger residual error than
+<mml:math>
+ <mml:msub>
+  <mml:mi>x</mml:mi>
+  <mml:mi>i</mml:mi>
+ </mml:msub>
+</mml:math> one looks at
+</para>
+<para>
+<mml:math>
+ <mml:mrow>
+  <mml:msub>
+   <mml:mi>x</mml:mi>
+   <mml:mi>i</mml:mi>
+  </mml:msub>
+  <mml:mo>=</mml:mo>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mi>x</mml:mi>
+    <mml:mrow>
+     <mml:mi>i</mml:mi>
+     <mml:mo>-</mml:mo>
+     <mml:mn>1</mml:mn>
+    </mml:mrow>
+   </mml:msub>
+   <mml:mo>-</mml:mo>
+   <mml:mfrac>
+    <mml:mrow>
+     <mml:mi>f</mml:mi>
+     <mml:mrow>
+      <mml:mo>(</mml:mo>
+      <mml:msub>
+       <mml:mi>x</mml:mi>
+       <mml:mrow>
+        <mml:mi>i</mml:mi>
+        <mml:mo>-</mml:mo>
+        <mml:mn>1</mml:mn>
+       </mml:mrow>
+      </mml:msub>
+      <mml:mo>)</mml:mo>
+     </mml:mrow>
+    </mml:mrow>
+    <mml:mrow>
+     <mml:mi>f</mml:mi>
+     <mml:mi>&apos;</mml:mi>
+     <mml:mrow>
+      <mml:mo>(</mml:mo>
+      <mml:msub>
+       <mml:mi>x</mml:mi>
+       <mml:mrow>
+        <mml:mi>i</mml:mi>
+        <mml:mo>-</mml:mo>
+        <mml:mn>1</mml:mn>
+       </mml:mrow>
+      </mml:msub>
+      <mml:mo>)</mml:mo>
+     </mml:mrow>
+    </mml:mrow>
+   </mml:mfrac>
+   <mml:mo>*</mml:mo>
+   <mml:msup>
+    <mml:mn>2</mml:mn>
+    <mml:mrow>
+     <mml:mo>-</mml:mo>
+     <mml:mi>n</mml:mi>
+    </mml:mrow>
+   </mml:msup>
+  </mml:mrow>
+ </mml:mrow>
+</mml:math> where
+<mml:math>
+ <mml:mi>n</mml:mi>
+ <mml:mo>=</mml:mo>
+ <mml:mn>0,</mml:mn>
+ <mml:mn>...</mml:mn>
+ <mml:mi>,</mml:mi>
+ <mml:mn>32</mml:mn>
+</mml:math>
+</para>
+<para>
+and accepts the first such value that has a smaller residual
+error than
+<mml:math>
+ <mml:msub>
+  <mml:mi>x</mml:mi>
+  <mml:mi>i</mml:mi>
+ </mml:msub>
+</mml:math>. If none is found, the procedure halts without a
+solution (because it is at a local minimum). 
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Use Integration</term>
 <listitem>
 <para>
-To be written
+This parameter is a boolean value to determine whether to use the ODE
+solver (<xref linkend="LSODA">LSODA</xref>) to follow the time course
+defined by the differential equations until a steady state is
+reached. If at 
+<mml:math>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>10</mml:mn></mml:msup></mml:math>.
+units of time no steady state has been reached the method halts with
+no solution. If Use Newton is '1' an attempt to find the steady-state
+via the damped Newton method is made at each intermediate time point.
+A value of '1' (the default) indicates that COPASI shall use
+integration.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Use Back Integration</term>
 <listitem>
 <para>
-To be written
+This parameter is a boolean value to determine whether to use the ODE
+solver (<xref linkend="LSODA">LSODA</xref>) to reverse the time course
+(going backwards in time) defined by the differential equations until
+a steady state is reached. If at 
+<mml:math><mml:mn>-1</mml:mn><mml:mo>*</mml:mo>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>10</mml:mn></mml:msup></mml:math>.
+units of time no steady state has been reached the method halts with
+no solution. If Use Newton is '1' an attempt to find the steady-state
+via the damped Newton method is made at each intermediate time point.
+A value of '1' (the default) indicates that COPASI shall use
+back integration.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>Newton.AcceptNegativeConcentrations</term>
+<varlistentry><term>Accept Negative Concentrations</term>
 <listitem>
 <para>
-To be written
+This parameter is a boolean value to determine whether to accept a
+steady-state, which contains negative concentrations. A value of '1'
+indicates that negative concentrations are acceptable whereas a value
+of '0' (the default) indicates that such states are discarded.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Iteration Limit</term>
 <listitem>
 <para>
-To be written
+This parameter is a positive integer to determine the maximum number of
+iterations the damped Newton method shall perform before it fails. The
+default is '50'.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Derivation Factor</term>
 <listitem>
 <para>
-To be written
+This is a numeric value to determine the step size used to calculate
+<mml:math> 
+ <mml:mi>f</mml:mi>
+ <mml:mi>&apos;</mml:mi>
+ <mml:mrow>
+  <mml:mo>(</mml:mo>
+  <mml:msub>
+   <mml:mi>x</mml:mi>
+   <mml:mrow>
+    <mml:mi>i</mml:mi>
+    <mml:mo>-</mml:mo>
+    <mml:mn>1</mml:mn>
+   </mml:mrow>
+  </mml:msub>
+  <mml:mo>)</mml:mo>
+ </mml:mrow>
+</mml:math>. The default is '0.001'.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Resolution</term>
 <listitem>
 <para>
-To be written
+This is a positive numeric value to determine the resolution used to
+decide whether the current state is acceptable as a steady-state. If
+the absolute change of each state variable is smaller than the
+resolutions the state is accepted. The default is <mml:math>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>-9</mml:mn></mml:msup></mml:math>.
 </para>
 </listitem>
 </varlistentry>
 </variablelist>
-
-<para>The rest of the options is described in the section for <xref linkend="methodTimeCourse">Time Course Simulation</xref>.</para>
 
 </sect1>
 <sect1 id="methodMCA" xreflabel="Metabolic Control Analysis">
@@ -357,10 +582,357 @@ To be written
 
 <sect1 id="optimizationMethod" xreflabel="Optimization Method">
 <title>Optimization Methods</title>
-<para>The optimization method as described in <xref linkend="optimization">this chapter</xref> tries to minimize a given objective function. There are several ways to do this and COPASI supports 5 different methods for the minimization of an objective function.</para>
+<para>The optimization method as described in <xref
+linkend="optimization">this chapter</xref> tries to minimize a given
+objective function. There are several ways to do this and COPASI
+supports many different methods for the minimization of an objective
+function.</para>
+
+<sect2 id="GeneticAlgorithm" xreflabel="Genetic Algorithm">
+<title>Genetic Algorithm</title>
+
+<para>
+The genetic algorithm (GA)  
+<citation>Bäck97</citation><citation>Bäck93</citation><citation>Michalewicz94</citation><citation>Mitchell95</citation>
+ is a computational technique that mimics
+evolution and is based on reproduction and selection. A GA is composed
+of individuals that reproduce and compete, each one is a potential
+solution to the (optimization) problem and is represented by a 
+"genome" where each gene corresponds to one adjustable
+parameter. At each generation of the GA, each individual is paired
+with one other at random for reproduction. Two offspring are produced
+by combining their genomes and allowing for "cross-over",
+i.e., the two new individuals have genomes that are formed from a
+combination of the genomes of their parents. Also each new gene might
+have mutated, i.e. the parameter value might have changed slightly. At
+the end of the generation, the algorithm has double the number of
+individuals. Then each of the individuals is confronted with a number
+of others to count how many does it outperform (the number of wins is
+the number of these competitors that represent worse solutions than
+itself). All the individuals are ranked by their number of wins, and
+the population is again reduced to the original number of individuals
+by eliminating those which have worse fitness (solutions). 
+</para>
+<para>
+Many features of a GA may be varied. The details of this particular
+implementation of the GA for optimization of biochemical kinetics are:
+
+<itemizedlist mark='bullet'>
+<listitem>
+<para>
+Parameters are encoded in genes using floating-point representation,
+rather than the more usual binary representation. 
+</para>
+</listitem>
+
+<listitem>
+<para>
+Mutation is carried out by adding to the gene a random number drawn
+from a normal distribution with zero mean and a standard deviation of
+10% of the parameter value. Whenever this makes the parameter (gene)
+exceed one boundary, it is set to that boundary value.  
+</para>
+</listitem>
+
+<listitem>
+<para>
+Cross-over is always performed at gene boundaries so that no gene is
+ever disrupted. The number of cross-over points is a random number
+between zero and half the number of adjustable parameters (uniform
+distribution).
+</para>
+</listitem>
+
+<listitem>
+<para>
+Selection is done by a tournament where each individual competes with
+a number of others equal to 20% the population size. The competitors
+are chosen at random.
+</para>
+</listitem>
+
+<listitem>
+<para>
+The initial population contains one individual whose genes are the
+initial parameter values, the genes of all other individuals are
+initialized to a random value between their boundaries. If the
+boundaries span two orders of magnitude or more, the random
+distribution is exponential, otherwise normal.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Whenever the fittest individual has not changed for the last 10
+generations, the 10% less fit individuals are replaced by individuals
+with random genes. When the fittest individual has not changed for 30
+generations, the worse 30% are substituted by individuals with random
+genes. When the fittest individual has not changed for 50 generations,
+the worse 50% are substituted by individuals with random genes. This
+procedure helps the algorithm escape local minima and is somewhat
+equivalent to increasing the mutation rate when the population has
+become uniform.
+</para>
+</listitem>
+</itemizedlist>
+
+</para>
+<variablelist><title>Options for Genetic Algorithm</title>
+<varlistentry><term>Number of Generations</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the number of
+generations the algorithm shall evolve the population. The default is
+200. 
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Population Size</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the size of the
+population, i.e., the number of individuals that survive after each
+generation. The default is 20.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Random Number Generator</term>
+<listitem>
+<para>
+The parameter is an enumeration value to determine which random number
+generator this method shall use. COPASI provides two random number
+generators R250 <citation>Maier91</citation>
+ (selected through the value 0) and the
+<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
+Twister </ulink><citation>Matsumoto98</citation>
+ (selected through the value 1 (default)).
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Seed</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the seed for the
+random number generator. A value of zero instructs COPASI to select a
+"random" value.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="GeneticAlgorithmSR" xreflabel="Genetic Algorithm SR">
+<title>Genetic Algorithm SR</title>
+
+<para>
+To be written.
+</para>
+
+<variablelist><title>Options for Genetic Algorithm SR</title>
+<varlistentry><term>Number of Generations</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the number of
+generations the algorithm shall evolve the population. The default is
+200. 
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Population Size</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the size of the
+population, i.e., the number of individuals that survive after each
+generation. The default is 20.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Random Number Generator</term>
+<listitem>
+<para>
+The parameter is an enumeration value to determine which random number
+generator this method shall use. COPASI provides two random number
+generators R250 <citation>Maier91</citation>
+ (selected through the value 0) and the
+<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
+Twister </ulink><citation>Matsumoto98</citation>
+ (selected through the value 1 (default)).
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Seed</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the seed for the
+random number generator. A value of zero instructs COPASI to select a
+"random" value.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Pf</term>
+<listitem>
+<para>
+To be written
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="HookeJeeves" xreflabel="Hooke &amp; Jeeves">
+<title>Hooke &amp; Jeeves</title>
+
+<para>
+To be written.
+</para>
+
+<variablelist><title>Options for Hooke &amp; Jeeves</title>
+<varlistentry><term>Iteration Limit</term>
+<listitem>
+<para>
+To be written
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Tolerance</term>
+<listitem>
+<para>
+To be written
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Rho</term>
+<listitem>
+<para>
+To be written
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="LevenbergMarquardt" xreflabel="Levenberg - Marquardt">
+<title>Levenberg - Marquardt</title>
+
+<para>
+Levenberg-Marquardt <citation>Levenberg44</citation><citation>Marquardt63</citation> is a gradient descent method. It is a hybrid
+between the steepest descent and the Newton methods.
+</para>
+
+<para> 
+The Newton optimisation method searches for the minimum of a nonlinear
+function by following descent directions determined from the
+function's first and second partial derivatives. The steepest descent
+method searches for a minimum based only on the first derivatives of
+the function. While the Newton method converges quadratically towards
+the minimum in its vicinity, it may not converge at all if it is far
+away from it. On the other hand the steepest descent method only
+converges linearly but is guaranteed to converge.
+</para>
+
+<para>
+Levenberg first suggested an improvement to the Newton method in order
+to make it more robust, i.e. to overcome the problem of
+non-convergence. His suggestion was to add a factor to the diagonal
+elements of the Hessian matrix of second derivatives when not close to
+the minimum (this can be judged by how positive definite the matrix
+is). The effect when this factor is large compared to the elements of
+Hessian is that the method then becomes the steepest descent
+method. Later Marquardt suggested that the factor should be
+multiplicative rather than additive and also defined a heuristic to
+make this factor increase or decrease. The method known as
+Levenberg-Marquardt is thus an adaptive method that effectively
+changes between the steepest descent to the Newton method.
+</para>
+
+<para>
+The original suggestions of Levenberg and Marquardt were effective
+to enhace the Gauss-Newton method, a variant of the Newton method
+specifically for minimising least-squares functions. In this case the
+advantage is also that the second derivatives do not need to be
+calculated as they are estimated from the gradient of the
+residuals. Subsequently Goldfeld et
+al. <citation>Goldfeld66</citation> extended the method to the
+case of general non-linear functions.
+</para>
+
+
+
+<variablelist><title>Options for Levenberg - Marquardt</title>
+<varlistentry><term>Iteration Limit</term>
+<listitem>
+<para>
+To be written
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Tolerance</term>
+<listitem>
+<para>
+To be written
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="EvolutionaryProgramming" xreflabel="Evolutionary Programming">
+<title>Evolutionary Programming</title>
+
+<para>
+To be written.
+</para>
+
+<variablelist><title>Options for Evolutionary Programming</title>
+<varlistentry><term>Number of Generations</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the number of
+generations the algorithm shall evolve the population. The default is
+200. 
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Population Size</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the size of the
+population, i.e., the number of individuals that survive after each
+generation. The default is 20.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Random Number Generator</term>
+<listitem>
+<para>
+The parameter is an enumeration value to determine which random number
+generator this method shall use. COPASI provides two random number
+generators R250 <citation>Maier91</citation>
+ (selected through the value 0) and the
+<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
+Twister </ulink><citation>Matsumoto98</citation>
+ (selected through the value 1 (default)).
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Seed</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the seed for the
+random number generator. A value of zero instructs COPASI to select a
+"random" value.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
 <sect2 id="RandomSearch" xreflabel="Random Search">
 <title>Random Search</title>
-<para>To be written.</para>
+
+<para>
+To be written.
+</para>
 
 <variablelist><title>Options for Random Search</title>
 <varlistentry><term>Number of Iterations</term>
@@ -373,11 +945,77 @@ To be written
 <varlistentry><term>Random Number Generator</term>
 <listitem>
 <para>
-To be written
+The parameter is an enumeration value to determine which random number
+generator this method shall use. COPASI provides two random number
+generators R250 <citation>Maier91</citation>
+ (selected through the value 0) and the
+<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
+Twister </ulink><citation>Matsumoto98</citation>
+ (selected through the value 1 (default)).
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Seed</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the seed for the
+random number generator. A value of zero instructs COPASI to select a
+"random" value.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="EvolutionaryStrategySRES" xreflabel="Evolutionary Strategy (SRES)">
+<title>Evolutionary Strategy (SRES)</title>
+
+<para>
+To be written.
+</para>
+
+<variablelist><title>Options for Evolutionary Strategy (SRES)</title>
+<varlistentry><term>Number of Generations</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the number of
+generations the algorithm shall evolve the population. The default is
+200. 
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Population Size</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the size of the
+population, i.e., the number of individuals that survive after each
+generation. The default is 20.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Random Number Generator</term>
+<listitem>
+<para>
+The parameter is an enumeration value to determine which random number
+generator this method shall use. COPASI provides two random number
+generators R250 <citation>Maier91</citation>
+ (selected through the value 0) and the
+<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
+Twister </ulink><citation>Matsumoto98</citation>
+ (selected through the value 1 (default)).
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Seed</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the seed for the
+random number generator. A value of zero instructs COPASI to select a
+"random" value.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Pf</term>
 <listitem>
 <para>
 To be written
@@ -385,12 +1023,14 @@ To be written
 </listitem>
 </varlistentry>
 </variablelist>
-
 </sect2>
 
 <sect2 id="SteepestDescent" xreflabel="Steepest Descent">
 <title>Steepest Descent</title>
-<para>To be written.</para>
+
+<para>
+To be written.
+</para>
 
 <variablelist><title>Options for Steepest Descent</title>
 <varlistentry><term>Iteration Limit</term>
@@ -408,126 +1048,8 @@ To be written
 </listitem>
 </varlistentry>
 </variablelist>
-
 </sect2>
 
-<sect2 id="EvolutionaryProgram" xreflabel="Evolutionary Program">
-<title>Evolutionary Program</title>
-<para>To be written.</para>
-
-<variablelist><title>Options for Evolutionary Program</title>
-<varlistentry><term>Number of Generations</term>
-<listitem>
-<para>
-To be written
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Population Size</term>
-<listitem>
-<para>
-To be written
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Random Number Generator</term>
-<listitem>
-<para>
-To be written
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Seed</term>
-<listitem>
-<para>
-To be written
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-
-</sect2>
-
-<sect2 id="GeneticAlgorithmSR" xreflabel="Genetic Algorithm SR">
-<title>Genetic Algorithm SR</title>
-<para>To be written.</para>
-
-<variablelist><title>Options for Genetic Algorithm SR</title>
-<varlistentry><term>Number of Generations</term>
-<listitem>
-<para>
-To be written
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Population Size</term>
-<listitem>
-<para>
-To be written
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Random Number Generator</term>
-<listitem>
-<para>
-To be written
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Seed</term>
-<listitem>
-<para>
-To be written
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Pf</term>
-<listitem>
-<para>
-To be written
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-
-</sect2>
-
-<sect2 id="GeneticAlgorithm" xreflabel="Genetic Algorithm">
-<title>Genetic Algorithm</title>
-<para>To be written.</para>
-
-<variablelist><title>Options for Genetic Algorithm</title>
-<varlistentry><term>Number of Generations</term>
-<listitem>
-<para>
-To be written
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Population Size</term>
-<listitem>
-<para>
-To be written
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Random Number Generator</term>
-<listitem>
-<para>
-To be written
-</para>
-</listitem>
-</varlistentry>
-<varlistentry><term>Seed</term>
-<listitem>
-<para>
-To be written
-</para>
-</listitem>
-</varlistentry>
-</variablelist>
-
-</sect2>
 </sect1>
 </chapter>
 
