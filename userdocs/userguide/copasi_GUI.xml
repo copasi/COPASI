@@ -349,7 +349,7 @@ The list at the bottom of the metabolite widget shows the reactions in which thi
 </screenshot>
 </para>
 <para>
-    The easiest way to add a reaction is to type the chemical equation into an empty equation cell in the table. After you typed the equation, you hit the return key and automatically land in the next row where you can type the next reaction equation. This way you can enter all the reactions that make up your model. When you are finished with typing the reaction equations, you commit all the reactions. If any of the reactions contain metabolites that are not already present in the model, they are added automatically. If there was no compartment before, a compartment is also added and all new metabolites get added to this compartment. If there is already one or more compartment, all new metabolites get added to the first compartment that is listed in the object tree.
+    The easiest way to add a reaction is to type the chemical equation into an empty equation cell in the table. After you typed the equation, you hit the return key and automatically land in the next row where you can type the next reaction equation. This way you can enter all the reactions that make up your model. When you are finished with typing the reaction equations, you commit all the reactions. If any of the reactions contain metabolites that are not already present in the model, they are added automatically. If there was no compartment before, a compartment is also added and all new metabolites get added to this compartment. If there is already one or more compartments, all new metabolites get added to the first compartment that is listed in the object tree.
 </para>
 <caution>
 <para>
@@ -571,7 +571,7 @@ You have to specify the correct argument types to the function call. I.e. if you
 </listitem>
 <listitem>
 <para>
-Which brings me to the last point. The build in function names in Copasi often use characters list "-" or even spaces, so if you want to call one of those functions, you have to quote this function name. So calling "Henry-Michaelis-Menten (irreversible)" from another function would look like this:
+Which brings me to the last point. The built in function names in Copasi often use characters like "-" or even spaces, so if you want to call one of those functions, you have to quote this function name. So calling "Henry-Michaelis-Menten (irreversible)" from another function would look like this:
 </para>
 <para>
 <mml:math>
@@ -915,7 +915,7 @@ In addition to defining "normal" functions, Copasi allows the definition of piec
       <mml:mo> ( </mml:mo>
       <mml:mrow>
         <mml:mi> x </mml:mi>
-        <mml:mi> lt </mml:mi>
+        <mml:mo> lt </mml:mo>
         <mml:mn> 0.0 </mml:mn>
       </mml:mrow>
       <mml:mo> , </mml:mo>
@@ -926,7 +926,7 @@ In addition to defining "normal" functions, Copasi allows the definition of piec
       <mml:mo> ( </mml:mo>
       <mml:mrow>
          <mml:mi> x </mml:mi>
-         <mml:mi> gt </mml:mi>
+         <mml:mo> gt </mml:mo>
          <mml:mn> 0.0 </mml:mn>
       </mml:mrow>
       <mml:mo> , </mml:mo>
