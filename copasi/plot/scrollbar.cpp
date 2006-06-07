@@ -1,12 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/scrollbar.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.3.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:41 $
+   $Date: 2006/06/07 14:59:53 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 1997   Josef Wilgen
+// Copyright © 2002   Uwe Rathmann
+//
+// This file is published under the Qwt License, Version 1.0.
+// You should have received a copy of this licence in the file
+// QwtLicense.
+//
+// Modifications made to the original are
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 

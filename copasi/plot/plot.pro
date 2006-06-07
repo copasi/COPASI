@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.16.2.1 $ $Author: shoops $ $Date: 2006/05/18 15:43:55 $  
+# $Revision: 1.16.2.2 $ $Author: shoops $ $Date: 2006/06/07 14:59:53 $  
 ######################################################################
 
 LIB = plot
@@ -40,3 +40,4 @@ HEADERS +=  HistoWidget.ui.h
 INCLUDEPATH += $${QWT_PATH}/include
 
 DISTFILES += plot.dsp
+DISTFILES += QwtLicense

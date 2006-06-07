@@ -1,3 +1,8 @@
+The Qwt License applies to the following files, which are distributed
+with the COPASI src package:
+  scrollbar.cpp,  scrollbar.h, scrollzoomer.cpp, scrollzoomer.h
+
+
                              Qwt License
                            Version 1.0, January 1, 2003
 
