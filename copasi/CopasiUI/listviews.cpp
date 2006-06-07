@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.197.2.1 $
+   $Revision: 1.197.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/06 22:42:00 $
+   $Date: 2006/06/07 00:18:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,7 +63,9 @@
 #include "CopasiDefaultWidget.h"
 #include "CQTrajectoryWidget.h"
 #include "TimeSeriesWidget.h"
-#include "TSSWidget.h"
+#ifdef COPASI_TSS
+# include "TSSWidget.h"
+#endif
 #include "listviews.h"
 #include "qtUtilities.h"
 #include "CQFittingWidget.h"
