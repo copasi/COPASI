@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.17.2.4 $ $Author: shoops $ $Date: 2006/06/06 22:41:59 $  
+# $Revision: 1.17.2.5 $ $Author: shoops $ $Date: 2006/06/07 00:00:31 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -38,7 +38,7 @@ SUBDIRS += wizard
 SUBDIRS += CopasiSE
 SUBDIRS += CopasiUI
 
-DISTDIRS = $(SUBDIRS)
+DISTDIRS = $${SUBDIRS}
 DISTDIRS -= mml
 
 DISTFILES += \
