@@ -119,6 +119,27 @@ This may be used as a template:
    <pubdate>1961</pubdate>
   </biblioentry>
 
+  <biblioentry id="GB00" xreflabel="GB00">
+   <authorgroup>
+    <author>
+     <firstname>M.A.</firstname>
+     <surname>Gibson</surname>
+    </author>
+    <author>
+     <firstname>J.</firstname>
+     <surname>Bruck</surname>
+    </author>
+   </authorgroup>
+   <title>
+    Efficient Exact Stochastic Simulation of Chemical Systems with
+ Many Species and Many Channels
+   </title>
+   <publisher>J. Phys. Chem. </publisher>
+   <volumenum>A104(9)</volumenum>
+   <pagenums>1876-1889</pagenums>
+   <pubdate>2000</pubdate>
+  </biblioentry>
+
   <biblioentry id="Gillespie76" xreflabel="Gillespie76">
    <author>
     <firstname>D.T.</firstname>

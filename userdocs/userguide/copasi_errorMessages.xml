@@ -1,7 +1,7 @@
 <!-- Please don't remove, I want to use this to easily be able to check if messages has been changed in order to be able to update this file. -->
 <!--
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_errorMessages.xml,v $
-$Revision: 1.1.2.10 $
+$Revision: 1.1.2.11 $
 -->
 
 <appendix id="errorMessages" xreflabel="Error Messages">
@@ -10,7 +10,7 @@ $Revision: 1.1.2.10 $
 This section contains a list of COPASI error messages and an explanation when and/or why this error might have occurred. This is work in progress and not all error messages might have been fully documented here yet.
 </para>
 <para>
-Also keep in mind that the vast majority of error messages listed here are internal to COPASI and users will probably never see them at all. If you see one of those, you know that there is a bug in COPASI and you should provide a bug report that is as detailed as possible. At the very least, the bug report should include a description of what you did when the bug occurred, the operating system you are running COPASI on and the version of COPASI you were using. Naturally, if possible, we would also like to have some file that shows the error reproducibly since this makes finding bugs a lot easier for us. Error messages that you should never encounter will be marked INTERNAL in the description. So if you encounter any error message marked as INTERNAL please provide as with a bug report so we can fix it. There are two ways to provide a bug report. The first one is to go to COPASI's <ulink url="http://calvin.bioinformatics.vt.edu/bugzilla/createaccount.cgi">bugzilla web-page</ulink> and create a new account if you don't already have one and enter a full bug report into the bugzilla database. The other way to report is bug is to send an email to bugs@copasi.org with the information mentioned above. 
+Also keep in mind that the vast majority of error messages listed here are internal to COPASI and users will probably never see them at all. If you see one of those, you know that there is a bug in COPASI and you should provide a bug report that is as detailed as possible. At the very least, the bug report should include a description of what you did when the bug occurred, the operating system you are running COPASI on and the version of COPASI you were using. Naturally, if possible, we would also like to have some file that shows the error reproducibly since this makes finding bugs a lot easier for us. Error messages that you should never encounter will be marked INTERNAL in the description. So if you encounter any error message marked as INTERNAL please provide as with a bug report so we can fix it. There are two ways to provide a bug report. The first one is to go to COPASI's <ulink url="http://calvin.bioinformatics.vt.edu/bugzilla/createaccount.cgi">bugzilla web-page</ulink> and create a new account if you don't already have one and enter a full bug report into the bugzilla database. The other way to report a bug is to send an email to bugs@copasi.org with the information mentioned above. 
 </para>
 <sect1 id="configReaderErrors" xreflabel="Gepasi File Reader Error Messages">
 <title>Gepasi File Reader Error Messages</title>
