@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.13.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/08 21:59:12 $
+   $Date: 2006/06/07 14:04:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1078,7 +1078,7 @@ void CQExperimentData::slotCheckFrom(bool checked)
 {
   C_INT32 Current = this->mpBoxExperiment->currentItem();
 
-  if (checked && Current)
+  if (checked && Current && Current != C_INVALID_INDEX)
     {
       // Load the information from the previous experiment
       CExperiment * pPrevious =
