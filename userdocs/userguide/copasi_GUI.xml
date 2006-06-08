@@ -1101,12 +1101,26 @@ The wizard leads you in six steps from creating a model to doing a time course s
 <para>After you have <link linkend="addingReactions">defined all reactions</link> that make up your model, you could go ahead and do some calculations with your model. For some of the task this is fine since they show you the results in a separate results dialog and it might not be necessary to store those results into a file. For other tasks, like e.g. a time course, it is very likely that you want to store the resulting trajectory in a file or plot the result for visual inspection. So if you want Copasi to store the results or do a plot of them, you have to define either a report and associate it with a file or define a plot. (In the <xref linkend="calculatingTrajectory" /> section we will also offer an alternative, albeit less flexible, way for storing the results of a time course simulation.)
 </para>
 <para>
-Copasi already has a list of predefined output definitions. These should already cover most of the day to day output needs. But in case those predefined output definitions do not include the output you would like, there is always the possibility do define your output manually as described in the <xref linkend="manualOutputDefinitions" /> section. But first we will discuss how you can generate output from a task with one of the predefined output targets.
+Copasi already has a list of predefined reports suitable for some of the calculation task. These are described in the next paragraph.  If you want to create your own plots or reports you can either use the ouput assistent (the easy way) or you can define the output manually (the flexible way), as described in the <xref linkend="manualOutputDefinitions" /> section. 
 </para>
+
+<sect1 id="predefinedReports" xreflabel="Predefined Reports">
+<title>Predefined reports</title>
+<para>
+For some of the calculation tasks predefined reports exist in Copasi. They are automatically created when Copasi is started or when a file is loaded that does not already contain them. These reports have the same name as the task they are suitable for. E.g. the predefined report for steady state calculations is "Steady-State".
+The predefined reports print a description of the settings you provided for the calculation, usually (if it applies for the specific calculation) a table with intermediate results, and in the end a detailed report of the result.
+The report definitions can be changed or deleted using the mechanism descibed in the <xref linkend="manualOutputDefinitions" /> section. If you changed one of the predefined reports and want to go back to the original, just delete the report definition and save the file. When you load it again the now missing default report will be generated automatically.
+</para>
+<para>
+If you want to use the predefined reports you have to make sure that the report is selected for a task and that a filename is associated with it. For this you can use the "Report" button as described in the sections about the specific calculation tasks below.
+</para>
+</sect1>
+	
 <sect1 id="outputAssistant" xreflabel="Output Assistant">
 <title>Using the Output Assistant</title>
 <para>
-Almost all task dialogs in Copasi have a button at the lower right that is labeled <guibutton>Output Assistant</guibutton>. If you click on this button, a new dialog will open that presents you with a list of predefined output definitions on the left. If you select one of the output definitions from the list, you will get a short description of what the output does on the right side of the dialog. Above the description is the title of the output definition. This title can be changed in order to be able to identify the different output definitions in case you are plannning on creating more than one output definition of a certain type.
+The output assistant presents the easiest way to generate your own output definitions which you can later adapt to your wishes using the techniques described in <xref linkend="manualOutputDefinitions" />.
+Almost all task dialogs in Copasi have a button at the lower right that is labeled <guibutton>Output Assistant</guibutton>. If you click on this button, a new dialog will open that presents you with a list of predefined output definitions on the left. If you select one of the output definitions from the list, you will get a short description of what the output does on the right side of the dialog. Above the description is the title of the output definition. This title can be changed in order to be able to identify the different output definitions in case you are plannning on creating more than one output definition of a certain type. Using this dialog both plots and reports can be created. 
 <para>
 <screenshot>
 <screeninfo>Produced with Copasi Build 18 on MacOS X on 05/19/2006</screeninfo>
@@ -1126,13 +1140,17 @@ Almost all task dialogs in Copasi have a button at the lower right that is label
 </mediaobject>
 </screenshot>
 </para>
-Creating an instance of the selected output objects is as easy a clicking on <guibutton>Create!</guibutton> at the bottom of the dialog. Once you clicked this button, a new report or plot, depending on what you selected in the dialog, will appear in the corresponding branch of the <guilabel>Output</guilabel> section of the model tree. The Output branch is the second to last branch in the tree on the left. The name of the output definitions will be the title of the object which you selected from the list. If another output definition in this section already has the same name, a postfix will be appended to the name. The so created output can now be edited or deleted. How output definitions are created, edit and deleted manually is the topic of the next section.
+Creating an instance of the selected output objects is as easy a clicking on <guibutton>Create!</guibutton> at the bottom of the dialog. Once you clicked this button, a new report or plot, depending on what you selected in the dialog, will appear in the corresponding branch of the <guilabel>Output</guilabel> section of the model tree. The Output branch is the second to last branch in the tree on the left. The name of the output definitions will be the title of the object which you selected from the list. If another output definition in this section already has the same name, a postfix will be appended to the name. The so created output can now be edited or deleted. If the newly created output is a report it will automatically be selected as the active report for the current task. You then still have to select a filename for the output using the "report" button. This is described in the sections about the specific calculation tasks below. 
+How output definitions are created, edit and deleted manually is the topic of the next sections.
 </para>
 </sect1>
 <sect1 id="manualOutputDefinitions" xreflabel="Defining Output Manually">
 <title>Defining Output Manually</title>
 <sect2 id="reportDefinitions" xreflabel="Defining Reports">
 <title>Defining Reports</title>
+<para>
+This section describes how to create or edit a report definition. Keep in mind that you still have to select this report for the specific calculation task you want to perform. You can do this (and also choose a filename to write to) using the "Report" button as described below in the sections about the different tasks.
+</para>
 <para>
 <screenshot>
 <screeninfo>Produced with Copasi Build 18 on Linux on 05/18/2006</screeninfo>
