@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.26.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/02 19:30:19 $
+   $Date: 2006/06/08 15:58:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -257,6 +257,8 @@ bool COptMethodGASR::select()
     {
       wasSwapped = false;
 
+      // :TODO: since we are only interested in mPopulationSize highest ranked
+      // individuals the upper limit of the loop can be improved.
       for (j = 0; j < TotalPopulation - 1; j++)  // lambda is number of individuals
         {
           if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||              // within bounds
