@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.64.2.7 $
+   $Revision: 1.64.2.8 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/06 22:41:59 $
+   $Author: ssahle $
+   $Date: 2006/06/08 16:10:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -713,18 +713,6 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
 
       // Header
       pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Description"));
-      //pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Function Evaluations\\]"));
-      //pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      //pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Value\\]"));
-      //pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      //pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Parameters\\]"));
-
-      // Body
-      //pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Function Evaluations"));
-      //pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      //pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Value"));
-      //pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      //pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Parameters"));
 
       // Footer
       pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
@@ -761,9 +749,35 @@ bool CCopasiDataModel::addDefaultReports()
 {
   unsigned C_INT32 i;
   for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
-    if (mpReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
-      addReport((CCopasiTask::Type) i);
+    {
+      //try to create the report if it doesn't exist
+      if (mpReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
+        {
+          addReport((CCopasiTask::Type) i);
+        }
 
+      //see if the report exists now
+      CReportDefinition* pReportDef = NULL;
+      if (mpReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) != C_INVALID_INDEX)
+        pReportDef = (*mpReportDefinitionList)[CCopasiTask::TypeName[i]];
+
+      //see if the task exists
+      CCopasiTask* pTask = NULL;
+      if (mpTaskList->getIndex(CCopasiTask::TypeName[i]) != C_INVALID_INDEX)
+        pTask = (*mpTaskList)[CCopasiTask::TypeName[i]];
+
+      if (pTask && pReportDef) //task and report definition exist
+        {
+          //if there is no report definition set the default
+          if (!pTask->getReport().getReportDefinition())
+            {
+              pTask->getReport().setReportDefinition(pReportDef);
+            }
+
+          //TODO: also set the default report if no target file is set
+          //even if a report is already set?
+        }
+    }
   return true;
 }
 
