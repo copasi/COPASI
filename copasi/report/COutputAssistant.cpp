@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-   $Revision: 1.6.2.1 $
+   $Revision: 1.6.2.2 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/15 20:55:34 $
+   $Author: ssahle $
+   $Date: 2006/06/08 09:16:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -280,7 +280,7 @@ bool COutputAssistant::initialize()
 }
 
 //static
-CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * task)
+CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * task, bool activate)
 {
   if (!task)
     {
@@ -418,7 +418,13 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
   if (isReport)
     {
       data1.insert(data1.begin(), pTime);
-      return createTable(getItemName(id), data1, getItem(id).description, getItem(id).mTaskType);
+      CReportDefinition* pReportDef = createTable(getItemName(id), data1, getItem(id).description, getItem(id).mTaskType);
+      if (activate && pReportDef)
+        {
+          task->getReport().setReportDefinition(pReportDef);
+          //TODO: also set a default filename?
+        }
+      return pReportDef;
     }
   else //plot
     {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.h,v $
-   $Revision: 1.3.2.1 $
+   $Revision: 1.3.2.2 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/15 20:55:34 $
+   $Author: ssahle $
+   $Date: 2006/06/08 09:16:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,9 +66,11 @@ class COutputAssistant
     /**
      *  create a plot or report from template with index id.
      *  returns a pointer to the plot or report definition (or NULL)
+     *  if activate==true and the ouput is a report the report is set as
+     *  the current report for the task (possibly replacing an already set report)
      */
     static
-    CCopasiObject* createDefaultOutput(C_INT32 id, CCopasiTask * task);
+    CCopasiObject* createDefaultOutput(C_INT32 id, CCopasiTask * task, bool activate = true);
 
   private:           //************************************
 
