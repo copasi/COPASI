@@ -263,7 +263,7 @@ This parameter is a double value specifying the upper limit for particle numbers
 <varlistentry><term>Runge Kutta Stepsize</term>
 <listitem>
 <para>
-This positive double value is the stepsize of the Runge-Kutta solver for the integration of the deterministic part of the system. The default value is '0.001'.
+This positive double value is the step size of the Runge-Kutta solver for the integration of the deterministic part of the system. The default value is '0.001'.
 </para>
 </listitem>
 </varlistentry>
@@ -470,7 +470,7 @@ has a larger residual error than
  <mml:mo>=</mml:mo>
  <mml:mn>0,</mml:mn>
  <mml:mn>...</mml:mn>
- <mml:mi>,</mml:mi>
+ <mml:mi>, </mml:mi>
  <mml:mn>32</mml:mn>
 </mml:math>
 </para>
@@ -569,8 +569,8 @@ This is a numeric value to determine the step size used to calculate
 This is a positive numeric value to determine the resolution used to
 decide whether the current state is acceptable as a steady-state. If
 the absolute change of each state variable is smaller than the
-resolutions the state is accepted. The default is <mml:math>
-<mml:msup><mml:mn>10</mml:mn><mml:mn>-9</mml:mn></mml:msup></mml:math>.
+resolutions the state is accepted. The default is '<mml:math>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>-9</mml:mn></mml:msup></mml:math>'.
 </para>
 </listitem>
 </varlistentry>
@@ -609,7 +609,7 @@ function.</para>
 
 <para>
 The genetic algorithm (GA)  
-<citation>Bäck97</citation><citation>Bäck93</citation><citation>Michalewicz94</citation><citation>Mitchell95</citation>
+<citation>Baeck97</citation><citation>Baeck93</citation><citation>Michalewicz94</citation><citation>Mitchell95</citation>
  is a computational technique that mimics
 evolution and is based on reproduction and selection. A GA is composed
 of individuals that reproduce and compete, each one is a potential
@@ -699,7 +699,7 @@ become uniform.
 <para>
 The parameter is a positive integer value to determine the number of
 generations the algorithm shall evolve the population. The default is
-200. 
+'200'. 
 </para>
 </listitem>
 </varlistentry>
@@ -708,7 +708,7 @@ generations the algorithm shall evolve the population. The default is
 <para>
 The parameter is a positive integer value to determine the size of the
 population, i.e., the number of individuals that survive after each
-generation. The default is 20.
+generation. The default is '20'.
 </para>
 </listitem>
 </varlistentry>
@@ -741,8 +741,316 @@ random number generator. A value of zero instructs COPASI to select a
 <title>Genetic Algorithm SR</title>
 
 <para>
-To be written.
+The genetic algorithm with stochastic ranking is very similar to the
+before described <xref linkend="GeneticAlgorithm" /> with tournament
+selection. With two exception which are the mutations are not forced
+to be within the boundaries and the selection is done through a bubble
+sort with a random factor as described in
+<citation>Runarsson00</citation>.
 </para>
+
+<itemizedlist mark='bullet'>
+<listitem>
+<para>
+Mutation is carried out by adding to the gene a random number drawn
+from a normal distribution with zero mean and a standard deviation of
+10% of the parameter value. Parameters may exceed boundaries. Whenever
+this happens or a constraint to the solution is violated the square of
+the size of the violation is summed up, i.e., we calculate 
+</para>
+<para>
+<mml:math>
+ <mml:mrow>
+  <mml:mo>&phi;</mml:mo>
+  <mml:mo>=</mml:mo>
+  <mml:mrow>
+   <mml:mrow>
+    <mml:mrow>
+     <mml:mrow>
+      <mml:msub>
+       <mml:mo>&sum;</mml:mo>
+       <mml:mrow>
+        <mml:msub>
+         <mml:mi>p</mml:mi>
+         <mml:mi>i</mml:mi>
+        </mml:msub>
+        <mml:mo>&lt;</mml:mo>
+        <mml:msub>
+         <mml:mi>l</mml:mi>
+         <mml:msub>
+          <mml:mi>p</mml:mi>
+          <mml:mi>i</mml:mi>
+         </mml:msub>
+        </mml:msub>
+       </mml:mrow>
+      </mml:msub>
+      <mml:msup>
+       <mml:mrow>
+        <mml:mo>(</mml:mo>
+        <mml:mrow>
+         <mml:msub>
+          <mml:mi>l</mml:mi>
+          <mml:msub>
+           <mml:mi>p</mml:mi>
+           <mml:mi>i</mml:mi>
+          </mml:msub>
+         </mml:msub>
+         <mml:mo>-</mml:mo>
+         <mml:msub>
+          <mml:mi>p</mml:mi>
+          <mml:mi>i</mml:mi>
+         </mml:msub>
+        </mml:mrow>
+        <mml:mo>)</mml:mo>
+       </mml:mrow>
+       <mml:mn>2</mml:mn>
+      </mml:msup>
+     </mml:mrow>
+     <mml:mo>+</mml:mo>
+     <mml:mrow>
+      <mml:msub>
+       <mml:mo>&sum;</mml:mo>
+       <mml:mrow>
+        <mml:msub>
+         <mml:mi>p</mml:mi>
+         <mml:mi>i</mml:mi>
+        </mml:msub>
+        <mml:mo>&gt;</mml:mo>
+        <mml:msub>
+         <mml:mi>u</mml:mi>
+         <mml:msub>
+          <mml:mi>p</mml:mi>
+          <mml:mi>i</mml:mi>
+         </mml:msub>
+        </mml:msub>
+       </mml:mrow>
+      </mml:msub>
+      <mml:msup>
+       <mml:mrow>
+        <mml:mo>(</mml:mo>
+        <mml:mrow>
+         <mml:msub>
+          <mml:mi>p</mml:mi>
+          <mml:mi>i</mml:mi>
+         </mml:msub>
+         <mml:mo>-</mml:mo>
+         <mml:msub>
+          <mml:mi>u</mml:mi>
+          <mml:msub>
+           <mml:mi>p</mml:mi>
+           <mml:mi>i</mml:mi>
+          </mml:msub>
+         </mml:msub>
+        </mml:mrow>
+        <mml:mo>)</mml:mo>
+       </mml:mrow>
+       <mml:mn>2</mml:mn>
+      </mml:msup>
+     </mml:mrow>
+    </mml:mrow>
+    <mml:mo>+</mml:mo>
+    <mml:mrow>
+     <mml:msub>
+      <mml:mo>&sum;</mml:mo>
+      <mml:mrow>
+       <mml:msub>
+        <mml:mi>c</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+       <mml:mo>&lt;</mml:mo>
+       <mml:msub>
+        <mml:mi>l</mml:mi>
+        <mml:msub>
+         <mml:mi>c</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:msub>
+       </mml:msub>
+      </mml:mrow>
+     </mml:msub>
+     <mml:msup>
+      <mml:mrow>
+       <mml:mo>(</mml:mo>
+       <mml:mrow>
+        <mml:msub>
+         <mml:mi>l</mml:mi>
+         <mml:msub>
+          <mml:mi>c</mml:mi>
+          <mml:mi>j</mml:mi>
+         </mml:msub>
+        </mml:msub>
+        <mml:mo>-</mml:mo>
+        <mml:msub>
+         <mml:mi>c</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:msub>
+       </mml:mrow>
+       <mml:mo>)</mml:mo>
+      </mml:mrow>
+      <mml:mn>2</mml:mn>
+     </mml:msup>
+    </mml:mrow>
+   </mml:mrow>
+   <mml:mo>+</mml:mo>
+   <mml:mrow>
+    <mml:msub>
+     <mml:mo>&sum;</mml:mo>
+     <mml:mrow>
+      <mml:msub>
+       <mml:mi>c</mml:mi>
+       <mml:mi>j</mml:mi>
+      </mml:msub>
+      <mml:mo>&gt;</mml:mo>
+      <mml:msub>
+       <mml:mi>u</mml:mi>
+       <mml:msub>
+        <mml:mi>c</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+      </mml:msub>
+     </mml:mrow>
+    </mml:msub>
+    <mml:msup>
+     <mml:mrow>
+      <mml:mo>(</mml:mo>
+      <mml:mrow>
+       <mml:msub>
+        <mml:mi>c</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+       <mml:mo>-</mml:mo>
+       <mml:msub>
+        <mml:mi>u</mml:mi>
+        <mml:msub>
+         <mml:mi>c</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:msub>
+       </mml:msub>
+      </mml:mrow>
+      <mml:mo>)</mml:mo>
+     </mml:mrow>
+     <mml:mn>2</mml:mn>
+    </mml:msup>
+   </mml:mrow>
+  </mml:mrow>
+ </mml:mrow>
+</mml:math>
+</para>
+<para>
+where the parameters are given by 
+<mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mi>p</mml:mi>
+    <mml:mi>i</mml:mi>
+   </mml:msub>
+   <mml:mo>&in;</mml:mo>
+   <mml:mrow>
+    <mml:mo>(</mml:mo>
+    <mml:mrow>
+     <mml:msub>
+      <mml:mi>l</mml:mi>
+      <mml:msub>
+       <mml:mi>p</mml:mi>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:msub>
+     <mml:mi>,</mml:mi>
+     <mml:mtext>&ThinSpace;</mml:mtext>
+     <mml:msub>
+      <mml:mi>u</mml:mi>
+      <mml:msub>
+       <mml:mi>p</mml:mi>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:msub>
+    </mml:mrow>
+    <mml:mo>)</mml:mo>
+   </mml:mrow>
+  </mml:mrow>
+</mml:math> 
+and the constraints by
+<mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mi>c</mml:mi>
+    <mml:mi>j</mml:mi>
+   </mml:msub>
+   <mml:mo>&in;</mml:mo>
+   <mml:mrow>
+    <mml:mo>(</mml:mo>
+    <mml:mrow>
+     <mml:msub>
+      <mml:mi>l</mml:mi>
+      <mml:msub>
+       <mml:mi>c</mml:mi>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:msub>
+     <mml:mi>,</mml:mi>
+     <mml:mtext>&ThinSpace;</mml:mtext>
+     <mml:msub>
+      <mml:mi>u</mml:mi>
+      <mml:msub>
+       <mml:mi>c</mml:mi>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:msub>
+    </mml:mrow>
+    <mml:mo>)</mml:mo>
+   </mml:mrow>
+  </mml:mrow>
+</mml:math>.
+The value <mml:math><mml:mo>&phi;</mml:mo></mml:math> is used within
+the selection.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Selection is done by the bubble sort described in
+<citation>Runarsson00</citation>.
+This sort incorporates a probability to compare
+objective values for individuals with a 
+<mml:math>
+ <mml:mo>&phi;</mml:mo>
+ <mml:mo>&ne;</mml:mo>
+ <mml:mn>0</mml:mn>
+</mml:math>. The pseudo code for the sort
+is: <literallayout>  // Here sweepNum is optimal number of sweeps from paper, i.e., TotalPopulation
+  for (i = 0; i &lt; sweepNum; i++)
+    {
+      wasSwapped = false;
+
+      for (j = 0; j &lt; TotalPopulation - 1; j++)
+        {
+          // within bounds or random chance 
+          if ((phi(j) == 0 and phi(j + 1) == 0) or UniformRandom(0, 1) &lt; Pf)
+            {
+              // compare objective function values
+              if (Value(j) &gt; Value(j + 1))
+                {
+                  swap(j, j + 1);
+                  wasSwapped = true;
+                }
+            }
+          else // phi != 0 
+            {
+              // individual j further outside then j + 1
+              if (phi(j) &gt; phi(j + 1))
+                {
+                  swap(j, j + 1);
+                  wasSwapped = true;
+                }
+            }
+        }
+
+      // if no swap then break
+      if (wasSwapped == false) break;
+    }
+</literallayout>
+</para>
+</listitem>
+</itemizedlist>
 
 <variablelist><title>Options for Genetic Algorithm SR</title>
 <varlistentry><term>Number of Generations</term>
@@ -750,7 +1058,7 @@ To be written.
 <para>
 The parameter is a positive integer value to determine the number of
 generations the algorithm shall evolve the population. The default is
-200. 
+'200'. 
 </para>
 </listitem>
 </varlistentry>
@@ -759,7 +1067,7 @@ generations the algorithm shall evolve the population. The default is
 <para>
 The parameter is a positive integer value to determine the size of the
 population, i.e., the number of individuals that survive after each
-generation. The default is 20.
+generation. The default is '20'.
 </para>
 </listitem>
 </varlistentry>
@@ -788,7 +1096,10 @@ random number generator. A value of zero instructs COPASI to select a
 <varlistentry><term>Pf</term>
 <listitem>
 <para>
-To be written
+This parameter is a numerical value in the interval (0, 1) determining
+the chance that individuals either outside the parameter boundaries or
+violating the constraints are compared during the selection. The
+default is '4.75'. 
 </para>
 </listitem>
 </varlistentry>
@@ -799,28 +1110,44 @@ To be written
 <title>Hooke &amp; Jeeves</title>
 
 <para>
-To be written.
+The method of Hooke and Jeeves
+<citation>Bell66</citation><citation>Hooke61</citation><citation>Kaupe63</citation><citation>Swann72</citation>
+is a direct search algorithm that
+searches for the minimum of a nonlinear function without requiring (or
+attempting to calculate) derivatives of the function. Instead it is
+based on a heuristic that suggests a descent direction using the
+values of the function calculated in a number of previous iterations. 
 </para>
 
 <variablelist><title>Options for Hooke &amp; Jeeves</title>
 <varlistentry><term>Iteration Limit</term>
 <listitem>
 <para>
-To be written
+This parameter is positive integer determining the maximum number of
+iterations the algorithm Sharl perform. The default is '50'.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Tolerance</term>
 <listitem>
 <para>
-To be written
+This parameter is a positive value determining the tolerance with
+which the solution shall be determined. If the improvement between two
+steps is less than the tolerance the algorithm stops. The default is
+'<mml:math>
+ <mml:msup>
+  <mml:mn>10</mml:mn>
+  <mml:mn>-5</mml:mn>
+ </mml:msup>
+</mml:math>'. 
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Rho</term>
 <listitem>
 <para>
-To be written
+This parameter is a value in (0, 1) determining the factor with which
+the steps size is reduced between iterations. The default is '0.2'.
 </para>
 </listitem>
 </varlistentry>
@@ -836,7 +1163,7 @@ between the steepest descent and the Newton methods.
 </para>
 
 <para> 
-The Newton optimisation method searches for the minimum of a nonlinear
+The Newton optimization method searches for the minimum of a nonlinear
 function by following descent directions determined from the
 function's first and second partial derivatives. The steepest descent
 method searches for a minimum based only on the first derivatives of
@@ -863,8 +1190,8 @@ changes between the steepest descent to the Newton method.
 
 <para>
 The original suggestions of Levenberg and Marquardt were effective
-to enhace the Gauss-Newton method, a variant of the Newton method
-specifically for minimising least-squares functions. In this case the
+to enhance the Gauss-Newton method, a variant of the Newton method
+specifically for minimizing least-squares functions. In this case the
 advantage is also that the second derivatives do not need to be
 calculated as they are estimated from the gradient of the
 residuals. Subsequently Goldfeld et
@@ -878,14 +1205,23 @@ case of general non-linear functions.
 <varlistentry><term>Iteration Limit</term>
 <listitem>
 <para>
-To be written
+This parameter is positive integer determining the maximum number of
+iterations the algorithm shall perform. The default is '200'.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Tolerance</term>
 <listitem>
 <para>
-To be written
+This parameter is a positive value determining the tolerance with
+which the solution shall be determined. If the improvement between two
+steps is less than the tolerance the algorithm stops. The default is
+'<mml:math>
+ <mml:msup>
+  <mml:mn>10</mml:mn>
+  <mml:mn>-5</mml:mn>
+ </mml:msup>
+</mml:math>'. 
 </para>
 </listitem>
 </varlistentry>
@@ -896,7 +1232,24 @@ To be written
 <title>Evolutionary Programming</title>
 
 <para>
-To be written.
+Evolutionary programming (EP)
+<citation>Fogel92</citation><citation>Baeck93</citation><citation>Baeck97</citation>
+is a computational technique that mimics evolution and is based on
+reproduction and selection. An EP algorithm is composed of individuals
+that reproduce and compete, each one is a potential solution to the
+(optimization) problem and is represented by a "genome" where each
+gene corresponds to one adjustable parameter. At each generation of
+the EP, each individual reproduces asexually, i.e. divides into two
+individuals. One of these contains exactly the same "genome" as the
+parent while the other suffers some mutations (the parameter values of
+each gene change slightly). At the end of the generation, the
+algorithm has double the number of individuals. Then each of the
+individuals is confronted with a number of others to count how many
+does it outperform (the number of wins is the number of these
+competitors that represent worse solutions than itself). All the
+individuals are ranked by their number of wins, and the population is
+again reduced to the original number of individuals by eliminating
+those which have worse fitness (solutions).  
 </para>
 
 <variablelist><title>Options for Evolutionary Programming</title>
@@ -905,7 +1258,7 @@ To be written.
 <para>
 The parameter is a positive integer value to determine the number of
 generations the algorithm shall evolve the population. The default is
-200. 
+'200'. 
 </para>
 </listitem>
 </varlistentry>
@@ -914,7 +1267,7 @@ generations the algorithm shall evolve the population. The default is
 <para>
 The parameter is a positive integer value to determine the size of the
 population, i.e., the number of individuals that survive after each
-generation. The default is 20.
+generation. The default is '20'.
 </para>
 </listitem>
 </varlistentry>
@@ -947,7 +1300,20 @@ random number generator. A value of zero instructs COPASI to select a
 <title>Random Search</title>
 
 <para>
-To be written.
+Random search is an optimisation method that attempts to find the
+optimum by testing the objective function�s value on a series of
+combinations of random values of the adjustable parameters. The random
+vlues are generated complying with any boundaries selected by the
+user, furthermore, any combinations of parameter values that do not
+fulfill constraints on the variables are excluded. This means that the
+method is capable of handling bounds on the adjustable parameters and
+fulfilling constraints. 
+</para>
+
+<para>
+For infinite number of iterations this method is garanteed to find the
+global optimum of the objective function. In general one is interested
+in processing a very large number of iterations. 
 </para>
 
 <variablelist><title>Options for Random Search</title>
@@ -996,7 +1362,7 @@ To be written.
 <para>
 The parameter is a positive integer value to determine the number of
 generations the algorithm shall evolve the population. The default is
-200. 
+'200.' 
 </para>
 </listitem>
 </varlistentry>
@@ -1005,7 +1371,7 @@ generations the algorithm shall evolve the population. The default is
 <para>
 The parameter is a positive integer value to determine the size of the
 population, i.e., the number of individuals that survive after each
-generation. The default is 20.
+generation. The default is '20'.
 </para>
 </listitem>
 </varlistentry>
@@ -1034,7 +1400,10 @@ random number generator. A value of zero instructs COPASI to select a
 <varlistentry><term>Pf</term>
 <listitem>
 <para>
-To be written
+This parameter is a numerical value in the interval (0, 1) determining
+the chance that individuals either outside the parameter boundaries or
+violating the constraints are compared during the selection. The
+default is '4.75'. 
 </para>
 </listitem>
 </varlistentry>
@@ -1052,14 +1421,23 @@ To be written.
 <varlistentry><term>Iteration Limit</term>
 <listitem>
 <para>
-To be written
+This parameter is positive integer determining the maximum number of
+iterations the algorithm shall perform. The default is '100'.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Tolerance</term>
 <listitem>
 <para>
-To be written
+This parameter is a positive value determining the tolerance with
+which the solution shall be determined. If the improvement between two
+steps is less than the tolerance the algorithm stops. The default is
+'<mml:math>
+ <mml:msup>
+  <mml:mn>10</mml:mn>
+  <mml:mn>-6</mml:mn>
+ </mml:msup>
+</mml:math>'. 
 </para>
 </listitem>
 </varlistentry>

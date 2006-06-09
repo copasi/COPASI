@@ -1,8 +1,12 @@
 <!--
-The biblioentry attributes id and xreflabel are the surname of the 
-first author immediately followed by the last two numbers of the
-publishing year. If this leads to non-unique ids a lower case letter
-is appended in alphabetical order starting with the second id.
+The biblioentry attributes id the biblioentry attributes id is the
+surname of the first author immediately followed by the last two
+numbers of the publishing year. If this leads to non-unique ids a
+lower case letter is appended in alphabetical order starting with the
+second id.
+
+Please insert new entries in alphabetical order given by the
+biblioentry attribute id.
 
 Supported elements are:
 authorgroup, author, title, subtitle, volumenum, edition, copyright,
@@ -10,10 +14,12 @@ publisher, pubdate, pagenums, isbn, issn, pubsnumber
 
 This may be used as a template:
   <biblioentry id="" xreflabel="">
-   <author>
-    <firstname></firstname>
-    <surname></surname>
-   </author>
+   <authorgroup>
+    <author>
+     <firstname></firstname>
+     <surname></surname>
+    </author>
+   </authorgroup>
    <title>
    </title>
    <publisher>
@@ -29,7 +35,27 @@ This may be used as a template:
  <bibliodiv>
   <title>References </title>
 
-  <biblioentry id="Bäck97" xreflabel="Bäck97">
+  <biblioentry id="Baeck93" xreflabel="Baeck93">
+   <authorgroup>
+    <author>
+     <firstname>T.</firstname>
+     <surname>Bäck</surname>
+    </author>
+    <author>
+     <firstname>H.-P.</firstname>
+     <surname>Schwefel</surname>
+    </author>
+   </authorgroup>
+   <title>
+   An overview of evolutionary algorithms for parameter optimization
+   </title>
+   <publisher> Evolutionary Computation </publisher>
+   <volumenum>1</volumenum>
+   <pagenums>1 - 23</pagenums>
+   <pubdate>1997</pubdate>
+  </biblioentry>
+
+  <biblioentry id="Baeck97" xreflabel="Baeck97">
    <authorgroup>
     <author>
      <firstname>T.</firstname>
@@ -51,24 +77,86 @@ This may be used as a template:
    <pubdate>1997</pubdate>
   </biblioentry>
 
-  <biblioentry id="Bäck93" xreflabel="Bäck93">
+  <biblioentry id="Bell66" xreflabel="Bell66">
    <authorgroup>
     <author>
-     <firstname>T.</firstname>
-     <surname>Bäck</surname>
+     <firstname>M.</firstname>
+     <surname>Bell</surname>
     </author>
     <author>
-     <firstname>H.-P.</firstname>
-     <surname>Schwefel</surname>
+     <firstname>M.C.</firstname>
+     <surname>Pike</surname>
+    </author>
+   </authorgroup>
+   <title>Remark on algorithm 178 direct search</title>
+   <publisher>
+   Communications of the Association for Computing Machinery
+   </publisher>
+   <volumenum>9</volumenum>
+   <pagenums>684 - 685</pagenums>
+   <pubdate>1966</pubdate>
+  </biblioentry>
+
+  <biblioentry id="Fogel92" xreflabel="Fogel92">
+   <authorgroup>
+    <author>
+     <firstname>D.B.</firstname>
+     <surname>Fogel</surname>
+    </author>
+    <author>
+     <firstname>L.J.</firstname>
+     <surname>Fogel</surname>
+    </author>
+    <author>
+     <firstname>J.W.</firstname>
+     <surname>Atmar</surname>
     </author>
    </authorgroup>
    <title>
-   An overview of evolutionary algorithms for parameter optimization
+   Meta-evolutionary programming
    </title>
-   <publisher> Evolutionary Computation </publisher>
-   <volumenum>1</volumenum>
-   <pagenums>1 - 23</pagenums>
-   <pubdate>1997</pubdate>
+   <publisher>
+   25th Asiloma Conference on Signals, Systems and Computers. IEEE
+   Computer Society, Asilomar
+   </publisher>
+   <pagenums>540 - 545</pagenums>
+   <pubdate>1992</pubdate>
+  </biblioentry>
+
+  <biblioentry id="Gibson00" xreflabel="Gibson00">
+   <authorgroup>
+    <author>
+     <firstname>M.A.</firstname>
+     <surname>Gibson</surname>
+    </author>
+    <author>
+     <firstname>J.</firstname>
+     <surname>Bruck</surname>
+    </author>
+   </authorgroup>
+   <title>
+    Efficient Exact Stochastic Simulation of Chemical Systems with
+ Many Species and Many Channels
+   </title>
+   <publisher>J. Phys. Chem. </publisher>
+   <volumenum>A104(9)</volumenum>
+   <pagenums>1876-1889</pagenums>
+   <pubdate>2000</pubdate>
+  </biblioentry>
+
+  <biblioentry id="Gillespie76" xreflabel="Gillespie76">
+   <author>
+    <firstname>D.T.</firstname>
+    <surname>Gillespie</surname>
+   </author>
+   <title>
+    A General Method for Numerically Simulating the Stochastic Time
+ Evolution of Coupled Chemical Reactions
+   </title>
+   <publisher>J. Comp. Phys. </publisher>
+   <volumenum>22</volumenum>
+   <pagenums>403 - 434</pagenums>
+   <pubdate>1976</pubdate>
   </biblioentry>
 
   <biblioentry id="Goldberg89" xreflabel="Goldberg89">
@@ -81,6 +169,30 @@ This may be used as a template:
    </title>
    <publisher>Addison-Wesley, Reading, Mass. </publisher>
    <pubdate>1989</pubdate>
+  </biblioentry>
+
+  <biblioentry id="Goldfeld66" xreflabel="Goldfeld66">
+   <authorgroup>
+    <author>
+     <firstname>S. M.</firstname>
+     <surname>Goldfeld</surname>
+    </author>
+    <author>
+     <firstname>R. E.</firstname>
+     <surname>Quant</surname>
+    </author>
+    <author>
+     <firstname>H. F.</firstname>
+     <surname></surname>
+    </author>
+   </authorgroup>
+   <title>
+   Maximisation by quadratic hill-climbing
+   </title>
+   <publisher>Econometrica </publisher>
+   <volumenum>34</volumenum>
+   <pagenums>541 - 555</pagenums>
+   <pubdate>1966</pubdate>
   </biblioentry>
 
   <biblioentry id="Hindmarsh83" xreflabel="Hindmarsh83">
@@ -119,64 +231,18 @@ This may be used as a template:
    <pubdate>1961</pubdate>
   </biblioentry>
 
-  <biblioentry id="GB00" xreflabel="GB00">
-   <authorgroup>
-    <author>
-     <firstname>M.A.</firstname>
-     <surname>Gibson</surname>
-    </author>
-    <author>
-     <firstname>J.</firstname>
-     <surname>Bruck</surname>
-    </author>
-   </authorgroup>
-   <title>
-    Efficient Exact Stochastic Simulation of Chemical Systems with
- Many Species and Many Channels
-   </title>
-   <publisher>J. Phys. Chem. </publisher>
-   <volumenum>A104(9)</volumenum>
-   <pagenums>1876-1889</pagenums>
-   <pubdate>2000</pubdate>
-  </biblioentry>
-
-  <biblioentry id="Gillespie76" xreflabel="Gillespie76">
+  <biblioentry id="Kaupe63" xreflabel="Kaupe63">
    <author>
-    <firstname>D.T.</firstname>
-    <surname>Gillespie</surname>
+    <firstname></firstname>
+    <surname>Kaupe</surname>
    </author>
-   <title>
-    A General Method for Numerically Simulating the Stochastic Time
- Evolution of Coupled Chemical Reactions
-   </title>
-   <publisher>J. Comp. Phys. </publisher>
-   <volumenum>22</volumenum>
-   <pagenums>403 - 434</pagenums>
-   <pubdate>1976</pubdate>
-  </biblioentry>
-
-  <biblioentry id="Goldfeld66" xreflabel="Goldfeld66">
-   <authorgroup>
-    <author>
-     <firstname>S. M.</firstname>
-     <surname>Goldfeld</surname>
-    </author>
-    <author>
-     <firstname>R. E.</firstname>
-     <surname>Quant</surname>
-    </author>
-    <author>
-     <firstname>H. F.</firstname>
-     <surname></surname>
-    </author>
-   </authorgroup>
-   <title>
-   Maximisation by quadratic hill-climbing
-   </title>
-   <publisher>Econometrica </publisher>
-   <volumenum>34</volumenum>
-   <pagenums>541 - 555</pagenums>
-   <pubdate>1966</pubdate>
+   <title>Algorithm 178 direct search</title>
+   <publisher>
+   Communications of the Association of Computing Machinery 
+   </publisher>
+   <volumenum>6</volumenum>
+   <pagenums>313 - 314</pagenums>
+   <pubdate>1963</pubdate>
   </biblioentry>
 
   <biblioentry id="Levenberg44" xreflabel="Levenberg44">
@@ -281,6 +347,40 @@ This may be used as a template:
    <pagenums>136 - 148</pagenums>
    <pubdate>1983</pubdate>
   </biblioentry>
-  
+
+  <biblioentry id="Runarsson00" xreflabel="Runarsson00">
+   <authorgroup>
+    <author>
+     <firstname>T.</firstname>
+     <surname>Runarsson</surname>
+    </author>
+    <author>
+     <firstname>X.</firstname>
+     <surname>Yao</surname>
+    </author>
+   </authorgroup>
+   <title>
+   Stochastic ranking for constrained evolutionary optimization
+   </title>
+   <publisher>EEE Transactions on Evolutionary Computation </publisher>
+   <volumenum>4</volumenum>
+   <pagenums>284 - 294</pagenums>
+   <pubdate>2000</pubdate>
+  </biblioentry>
+
+  <biblioentry id="Swann72" xreflabel="Swann72">
+   <author>
+    <firstname>W.H.</firstname>
+    <surname>Swann</surname>
+   </author>
+   <title>Direct search methods</title>
+   <publisher>
+   Numerical methods for unconstrained optimization., W. Murray, ed.
+   (London &amp; New York: Academic Press)
+   </publisher>
+   <pagenums>13 - 28</pagenums>
+   <pubdate>1972</pubdate>
+  </biblioentry>
+
  </bibliodiv>
 </bibliography>
