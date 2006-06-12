@@ -305,7 +305,10 @@ time. Mathematically this is expressed
 by setting the differential equations that describe the time evolution
 of the metabolic system to zero. This forms a system of algebraic
 non-linear equations. To solve them, COPASI can use a series of
-strategies using more than one numerical method. 
+strategies using more than one numerical method.
+</para> 
+<para>
+  All calculations are done based on particle numbers and particle number rates rather than concentrations internally. The reduced model (see <xref linkend="deterministicModel" />) is used. The Jacobian (which is used in the Newton method and when eigenvalues of the Jacobian are requested) is calculated using finite differences. The eigenvalues of the Jacobian are calculated using CLAPACK.
 </para>
 <variablelist><title>Options for Steady State Analysis</title>
 <varlistentry><term>Use Newton</term>
@@ -569,8 +572,9 @@ This is a numeric value to determine the step size used to calculate
 This is a positive numeric value to determine the resolution used to
 decide whether the current state is acceptable as a steady-state. If
 the absolute change of each state variable is smaller than the
-resolutions the state is accepted. The default is '<mml:math>
-<mml:msup><mml:mn>10</mml:mn><mml:mn>-9</mml:mn></mml:msup></mml:math>'.
+resolutions the state is accepted. The default is <mml:math>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>-9</mml:mn></mml:msup></mml:math>.
+Note that this value is interpreted as a concentration value, even though the calculation internally uses particle numbers. The reason for that is purely heuristical: In many cases the modeler will choose the units in a way that concentration values are neither extremely large not extremely small numerically so that the default value for this parameter leads to useful results. However generally it is not save to just keep the default value without checking. 
 </para>
 </listitem>
 </varlistentry>
