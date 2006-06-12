@@ -353,7 +353,7 @@ The list at the bottom of the metabolite widget shows the reactions in which thi
 </para>
 <caution>
 <para>
-When typing reaction equations you should keep in mind that metabolite names in Copasi can contain characters like "+" or even whitespaces. Since these characters would make it very hard if not impossible to parse the chemical reaction equation, you have to place those metabolite names in double quotes. E.g. "Metabolite 1" + "Metabolite 2" -> "Metabolite 3"
+When typing reaction equations you should keep in mind that metabolite names in Copasi can contain characters like "+" or even whitespaces. Since these characters would make it very hard if not impossible to parse the chemical reaction equation, you have to place those metabolite names in double quotes. E.g. "Metabolite 1" + "Metabolite 2" -> "Metabolite 3". No matter if your species names contain special characters or not, the species names have to be separated from the reaction symbols ( "+" , "=" and "->" ) by whitespaces.
 </para>
 </caution>
 <para>
