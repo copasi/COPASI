@@ -396,5 +396,36 @@ This may be used as a template:
    <pubdate>1972</pubdate>
   </biblioentry>
 
+  <biblioentry id="Wolf85" xreflabel="Wolf85">
+    <authorgroup>
+      <author>
+        <firstname>A.</firstname>
+        <surname>Wolf</surname>
+      </author>
+      <author>
+        <firstname>J. B.</firstname>
+        <surname>Swift</surname>
+      </author>
+      <author>
+        <firstname>H.</firstname>
+        <surname>Swinney</surname>
+      </author>
+      <author>
+        <firstname>J. A.</firstname>
+        <surname>Vastano</surname>
+      </author>
+    </authorgroup>
+    <title>
+      Determining Lyapunov exponents from a time series
+    </title>
+    <publisher>
+      Physika
+    </publisher>
+    <volumenum>16D</volumenum>
+    <pagenums>285 - 317</pagenums>
+    <pubdate>1985</pubdate>
+  </biblioentry>
+  
+  
  </bibliodiv>
 </bibliography>
