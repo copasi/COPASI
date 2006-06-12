@@ -24,9 +24,10 @@ If the (chemically) same metabolite is present in several compartments it is tre
 A metabolite is characterized by how much of it is present at a given time. This can be expressed as a particle number or as a concentration. Copasi makes sure that those two are consistent at any time. An initial value can be provided for concentration or particle number of each metabolite. This initial value will be used as a starting point for simulations or other calculations. 
 A metabolite can be defined to be "fixed" which means it current value will always be the same as the initial value, even if the metabolite participates in a reaction.
 </para>
+<para>
+Associated to the metabolites is also a value called transition time. It is calculated as the current particle number of the metabolite devided by either the sum of all reaction fluxes going into the metabolite or the sum of all reaction fluxes going out of the metabolite, whichever is smaller (the fluxes also epxressed in number of particles per second). The transition time gives a rough heuristic measure for how long a particle of this metabolite will exist on average before it is consumed. A short transition time in a stable steady state may indicate that the equilibrium is a "fast" equilibrium which could be used for a simplification of the model. Note however that this calculation is inexact if any reversible reactions are involved.
+</para>
 </sect1>
-
-transition time
 
 <sect1 id="GlobalParameters" xreflabel="Global Parameters">
 <title>Global Parameters</title>
@@ -59,6 +60,17 @@ Reactions can be reversible or irreversible. Kinetic functions for irreversible 
 </para>
 </sect1>
 
+<sect1 id="deterministicModel" xreflabel="Deterministic Model">
+<title>Deterministic interpretation of the model</title>
+<para>
+</para>
+</sect1>
+  
+<sect1 id="stochasticModel" xreflabel="Stochastic Model">
+  <title>Stochastic interpretation of the model</title>
+  <para>
+  </para>
+</sect1>
 
 
 </chapter>
