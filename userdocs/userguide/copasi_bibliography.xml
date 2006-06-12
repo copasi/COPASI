@@ -22,6 +22,7 @@ This may be used as a template:
    </authorgroup>
    <title>
    </title>
+   <edition></edition>
    <publisher>
    </publisher>
    <volumenum></volumenum>
@@ -73,7 +74,7 @@ This may be used as a template:
    <title>
    Handbook of evolutionary computation
    </title>
-   <publisher>Oxford: IOP Publishing/Oxford University Press. </publisher>
+   <publisher>Oxford: IOP Publishing/Oxford University Press </publisher>
    <pubdate>1997</pubdate>
   </biblioentry>
 
@@ -90,11 +91,24 @@ This may be used as a template:
    </authorgroup>
    <title>Remark on algorithm 178 direct search</title>
    <publisher>
-   Communications of the Association for Computing Machinery
-   </publisher>
+   Communications of the Association for Computing Machinery </publisher>
    <volumenum>9</volumenum>
    <pagenums>684 - 685</pagenums>
    <pubdate>1966</pubdate>
+  </biblioentry>
+
+  <biblioentry id="Fletcher87" xreflabel="Fletcher87">
+   <author>
+    <firstname>R.</firstname>
+    <surname>Fletcher</surname>
+   </author>
+   <title>
+   Practical methods of optimization
+   </title>
+   <edition>2nd Edition</edition>
+   <publisher>
+   Chichester: John Wiley &amp; Sons </publisher>
+   <pubdate>1987</pubdate>
   </biblioentry>
 
   <biblioentry id="Fogel92" xreflabel="Fogel92">

@@ -752,6 +752,13 @@ sort with a random factor as described in
 <itemizedlist mark='bullet'>
 <listitem>
 <para>
+Parameters are encoded in genes using floating-point representation,
+rather than the more usual binary representation. 
+</para>
+</listitem>
+
+<listitem>
+<para>
 Mutation is carried out by adding to the gene a random number drawn
 from a normal distribution with zero mean and a standard deviation of
 10% of the parameter value. Parameters may exceed boundaries. Whenever
@@ -1005,6 +1012,16 @@ the selection.
 </para>
 </listitem>
 
+
+<listitem>
+<para>
+Cross-over is always performed at gene boundaries so that no gene is
+ever disrupted. The number of cross-over points is a random number
+between zero and half the number of adjustable parameters (uniform
+distribution).
+</para>
+</listitem>
+
 <listitem>
 <para>
 Selection is done by the bubble sort described in
@@ -1048,6 +1065,30 @@ is: <literallayout>  // Here sweepNum is optimal number of sweeps from paper, i.
       if (wasSwapped == false) break;
     }
 </literallayout>
+</para>
+</listitem>
+
+<listitem>
+<para>
+The initial population contains one individual whose genes are the
+initial parameter values, the genes of all other individuals are
+initialized to a random value between their boundaries. If the
+boundaries span two orders of magnitude or more, the random
+distribution is exponential, otherwise normal.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Whenever the fittest individual has not changed for the last 10
+generations, the 10% less fit individuals are replaced by individuals
+with random genes. When the fittest individual has not changed for 30
+generations, the worse 30% are substituted by individuals with random
+genes. When the fittest individual has not changed for 50 generations,
+the worse 50% are substituted by individuals with random genes. This
+procedure helps the algorithm escape local minima and is somewhat
+equivalent to increasing the mutation rate when the population has
+become uniform.
 </para>
 </listitem>
 </itemizedlist>
@@ -1320,7 +1361,9 @@ in processing a very large number of iterations.
 <varlistentry><term>Number of Iterations</term>
 <listitem>
 <para>
-To be written
+This parameter is a positeve interger to determine the number of
+parameter sets to be drawn before the algorithm stops. The default
+value is '100000'.
 </para>
 </listitem>
 </varlistentry>
@@ -1353,7 +1396,145 @@ random number generator. A value of zero instructs COPASI to select a
 <title>Evolutionary Strategy (SRES)</title>
 
 <para>
-To be written.
+Evolutionary Strategies with Stochastic Ranking (SRES)
+<citation>Runarsson00</citation> is similar to <xref
+linkend="EvolutionaryProgramming"/>. However, a parent has multiple
+offsprings during each generation. Each offspring will contain a
+recombination of genes with another parent and additional
+mutations. The algorithm assures that each parameter value will be
+within its boundaries. But constraints to the solutions may be
+violated. Whenever this happens the square of the size of the
+violation is summed up, i.e., we calculate  
+</para>
+<para>
+<mml:math>
+ <mml:mrow>
+  <mml:mo>&phi;</mml:mo>
+  <mml:mo>=</mml:mo>
+  <mml:mrow>
+   <mml:mrow>
+    <mml:mrow>
+     <mml:msub>
+      <mml:mo>&sum;</mml:mo>
+      <mml:mrow>
+       <mml:msub>
+        <mml:mi>c</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+       <mml:mo>&lt;</mml:mo>
+       <mml:msub>
+        <mml:mi>l</mml:mi>
+        <mml:msub>
+         <mml:mi>c</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:msub>
+       </mml:msub>
+      </mml:mrow>
+     </mml:msub>
+     <mml:msup>
+      <mml:mrow>
+       <mml:mo>(</mml:mo>
+       <mml:mrow>
+        <mml:msub>
+         <mml:mi>l</mml:mi>
+         <mml:msub>
+          <mml:mi>c</mml:mi>
+          <mml:mi>j</mml:mi>
+         </mml:msub>
+        </mml:msub>
+        <mml:mo>-</mml:mo>
+        <mml:msub>
+         <mml:mi>c</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:msub>
+       </mml:mrow>
+       <mml:mo>)</mml:mo>
+      </mml:mrow>
+      <mml:mn>2</mml:mn>
+     </mml:msup>
+    </mml:mrow>
+   </mml:mrow>
+   <mml:mo>+</mml:mo>
+   <mml:mrow>
+    <mml:msub>
+     <mml:mo>&sum;</mml:mo>
+     <mml:mrow>
+      <mml:msub>
+       <mml:mi>c</mml:mi>
+       <mml:mi>j</mml:mi>
+      </mml:msub>
+      <mml:mo>&gt;</mml:mo>
+      <mml:msub>
+       <mml:mi>u</mml:mi>
+       <mml:msub>
+        <mml:mi>c</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+      </mml:msub>
+     </mml:mrow>
+    </mml:msub>
+    <mml:msup>
+     <mml:mrow>
+      <mml:mo>(</mml:mo>
+      <mml:mrow>
+       <mml:msub>
+        <mml:mi>c</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+       <mml:mo>-</mml:mo>
+       <mml:msub>
+        <mml:mi>u</mml:mi>
+        <mml:msub>
+         <mml:mi>c</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:msub>
+       </mml:msub>
+      </mml:mrow>
+      <mml:mo>)</mml:mo>
+     </mml:mrow>
+     <mml:mn>2</mml:mn>
+    </mml:msup>
+   </mml:mrow>
+  </mml:mrow>
+ </mml:mrow>
+</mml:math>
+</para>
+<para>
+where the constraints are given by
+<mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mi>c</mml:mi>
+    <mml:mi>j</mml:mi>
+   </mml:msub>
+   <mml:mo>&in;</mml:mo>
+   <mml:mrow>
+    <mml:mo>(</mml:mo>
+    <mml:mrow>
+     <mml:msub>
+      <mml:mi>l</mml:mi>
+      <mml:msub>
+       <mml:mi>c</mml:mi>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:msub>
+     <mml:mi>,</mml:mi>
+     <mml:mtext>&ThinSpace;</mml:mtext>
+     <mml:msub>
+      <mml:mi>u</mml:mi>
+      <mml:msub>
+       <mml:mi>c</mml:mi>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:msub>
+    </mml:mrow>
+    <mml:mo>)</mml:mo>
+   </mml:mrow>
+  </mml:mrow>
+</mml:math>.
+The value <mml:math><mml:mo>&phi;</mml:mo></mml:math> is used within
+the selection. Which is done as described in <xref
+linkend="GeneticAlgorithmSR"/> 
 </para>
 
 <variablelist><title>Options for Evolutionary Strategy (SRES)</title>
@@ -1414,8 +1595,12 @@ default is '4.75'.
 <title>Steepest Descent</title>
 
 <para>
-To be written.
-</para>
+Steepest descent <citation>Fogel92</citation> is an optimisation
+method that follows the direction of steepest descent on the
+hyper-surface of the objective function to find a local minimum. The
+direction of steepest descent is defined by the negative of the
+gradient of the objective function.
+</para> 
 
 <variablelist><title>Options for Steepest Descent</title>
 <varlistentry><term>Iteration Limit</term>
