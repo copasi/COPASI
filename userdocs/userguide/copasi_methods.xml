@@ -1632,7 +1632,31 @@ steps is less than the tolerance the algorithm stops. The default is
 </varlistentry>
 </variablelist>
 </sect2>
-
 </sect1>
+
+
+<sect1 id="lyapunovExponents" xreflabel="Lyapunov exponents">
+  <title>Lyapunov exponents calculation</title>
+  <para>
+  </para> 
+  <variablelist><title>Options for Lyapunov exponents calculation</title>
+    <varlistentry><term>Orthonormalization interval</term>
+      <listitem>
+        <para>
+        </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry><term>Overall time</term>
+      <listitem>
+        <para>
+        </para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+  <para>
+    The rest of the options is described in the section for <xref linkend="LSODA">LSODA deterministic simulation</xref>.
+  </para>
+</sect1>
+
 </chapter>
 
