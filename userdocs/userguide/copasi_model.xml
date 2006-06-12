@@ -1,0 +1,64 @@
+<chapter id="model" xreflabel="Model">
+<title>The model in Copasi</title>
+
+
+<para>
+This section discusses the general properties of the model in Copasi and its mathematical interpretation. Generally a model consists of metabolites which are placed in a compartment. Metabolites are produced or consumed by reactions which happen with a speed given by kinetic functions.
+</para>
+
+<sect1 id="compartments" xreflabel="Compartments">
+<title>Compartments</title>
+<para>
+Every metabolite in copasi must be placed in a compartment. The compartment has to have a well defined volume because Copasi relies on being able to calculate particle numbers from concentrations and vice versa. 
+Copasi does not really support models without concentrations (i.e. dealing only with amounts of substance or particle numbers) but you can work around this limitation by setting the volume to be 1.0. But if you do this keep in mind that the dimensions of the different parameters as displayed in the copasi GUI are not correct.
+The volumes of compartments are constant in this version of Copasi. 
+</para>
+<para>
+If the (chemically) same metabolite is present in several compartments it is treated as several metabolites in Copasi. E.g. if you have a model that contains glucose inside a cell and outside a cell these are two metabolites in the model. They can however have the same name.
+</para>
+</sect1>
+
+<sect1 id="Metabolites" xreflabel="Metabolites">
+<title>Metabolites</title>
+<para>
+A metabolite is characterized by how much of it is present at a given time. This can be expressed as a particle number or as a concentration. Copasi makes sure that those two are consistent at any time. An initial value can be provided for concentration or particle number of each metabolite. This initial value will be used as a starting point for simulations or other calculations. 
+A metabolite can be defined to be "fixed" which means it current value will always be the same as the initial value, even if the metabolite participates in a reaction.
+</para>
+</sect1>
+
+transition time
+
+<sect1 id="GlobalParameters" xreflabel="Global Parameters">
+<title>Global Parameters</title>
+<para>
+The model also contains a list of global parameters. In this version of Copasi they are always constant. They can be used as kinetic parameters in reactions. The main use is if you want to use the same kinetic parameter in several reactions, or if you want to change several parameters synchronously e.g. in a parameter scan.
+</para>
+</sect1>
+
+<sect1 id="Reactions" xreflabel="Reactions">
+<title>Reactions</title>
+<para>
+A reaction is a process by which metabolites will be consumed or produced. It is characterized by a description of how fast this happens. It contains a list of substrates, i.e. the metabolites that are consumed if the reaction takes place, along with the information about how many molecules of each substrate are consumed when the reaction event happens once (the stoichiometry). Correspondingly there is a list of products with the respective stoichiometries. Reactions without substrates are possible, as well as reactions without products. However reactions without substrates and without products are not allowed. In addition so called modifiers can be specified which are neither produced nor consumed in the reaction but which have influence on the speed of the reaction.
+</para>
+<para>
+The speed of the reaction is always specified by a reference to a kinetic function. The kinetics can depend on the concentrations of the substrates, products, and modifiers, on the volume of a compartment, on local or global parameters, and on the simulation time. The difference between local and global parameters is that local parameters only specify a numerical value of a kinetic parameter for one specific reaction. Global parameters can be used in several reactions.
+</para>
+<para>
+Reactions can be reversible or irreversible. Kinetic functions for irreversible reactions should always be positive. Also they should not depend on the concentration of the products (only on the concentrations of the substrates and modifiers). While all built in kinetic functions satisfy these conditions, they are not enforced for user defined functions. 
+</para>
+</sect1>
+
+<sect1 id="Functions" xreflabel="Functions">
+<title>Functions</title>
+<para>
+  A function in copasi is a mathematical expression that calculates a value from a given list of other values. Generally functions can be used in two ways in copasi: As a kinetic function specified for a reaction or as a function that is called from another function or expression. 
+  The function contains a detailed list of parameters that specifies how many values (and what kind of values) need to be passed to the function. If a function is called from another function or expression only the number of values is checked, not the kind of value. 
+  In the case that a function is used as a kinetic function for a reaction copasi ensures consistency about the roles of the parameters in the model. Each parameter has one of six different roles: "Substrate", "Product", "Modifier", "Volume", "Time", "Parameter". The first three must be connected with the concentration of a species that has the respective role in the reaction. "Volume" must be connected with a compartment, "Time" is always the simulation time of the model. "Parameter" must be connected with a global parameter or a local value in the reaction.
+  A function also specifies if it is appropriate for a reversible or irreversible reaction. This information is not automatically infered from the mathematical description of the function, and copasi does not enforce restrictions like irreversible kinetics having to be strictly positive. 
+  
+</para>
+</sect1>
+
+
+
+</chapter>
