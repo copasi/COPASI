@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.8 $ $Author: shoops $ $Date: 2006/05/11 17:01:06 $  
+# $Revision: 1.8.2.1 $ $Author: gauges $ $Date: 2006/06/12 13:58:01 $  
 ######################################################################
 
 TEMPLATE = app
@@ -31,6 +31,10 @@ COPASI_LIBS = \
          tss \
          odepack++ \
          utilities                   
+
+contains(DEFINES, COPASI_SENS) {
+  COPASI_LIBS += sensitivities
+}
 
 contains(BUILD_OS, WIN32) {
   LIBS += $$join(COPASI_LIBS, ".lib  ../copasi/lib/", ../copasi/lib/, .lib)
