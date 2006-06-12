@@ -1301,7 +1301,7 @@ random number generator. A value of zero instructs COPASI to select a
 
 <para>
 Random search is an optimisation method that attempts to find the
-optimum by testing the objective function’s value on a series of
+optimum by testing the objective function's value on a series of
 combinations of random values of the adjustable parameters. The random
 vlues are generated complying with any boundaries selected by the
 user, furthermore, any combinations of parameter values that do not
