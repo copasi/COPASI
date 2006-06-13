@@ -396,6 +396,34 @@ This may be used as a template:
    <pubdate>1972</pubdate>
   </biblioentry>
 
+  <biblioentry id="Vallabhajosyula06" xreflabel="Vallabhajosyula06">
+    <authorgroup>
+      <author>
+        <firstname>R. R.</firstname>
+        <surname>Vallabhajosyula</surname>
+      </author>
+      <author>
+        <firstname>V.</firstname>
+        <surname>Chickarmane</surname>
+      </author>
+      <author>
+        <firstname>H. M.</firstname>
+        <surname>Sauro</surname>
+      </author>
+    </authorgroup>
+    <title>
+      Conservation analysis of large biochemical networks
+    </title>
+    <publisher>
+      Bioinformatics
+    </publisher>
+    <volumenum>22(3)</volumenum>
+    <pagenums>346 - 353</pagenums>
+    <pubdate>2006</pubdate>
+  </biblioentry>
+  
+
+  
   <biblioentry id="Wolf85" xreflabel="Wolf85">
     <authorgroup>
       <author>
