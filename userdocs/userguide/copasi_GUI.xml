@@ -439,7 +439,7 @@ When typing reaction equations you should keep in mind that metabolite names in 
 <sect1 id="globalParameters" xreflabel="Global Parameters">
 <title>Global Parameters</title>
 <para>
-In the model tree right below the <guibutton>Reaction</guibutton> branch is the <guibutton>Global paramters</guibutton> branch. If you select this branch, you see a table with all the global parameters that have been defined in your model. When you start a new model this table, just like all the others so far, is empty. The table has four columns and the ones named <guilabel>Status</guilabel> and <guilabel>Name</guilabel> should by now be already familiar.
+In the model tree right below the <guibutton>Reaction</guibutton> branch is the <guibutton>Global parameters</guibutton> branch. If you select this branch, you see a table with all the global parameters that have been defined in your model. When you start a new model this table, just like all the others so far, is empty. The table has four columns and the ones named <guilabel>Status</guilabel> and <guilabel>Name</guilabel> should by now be already familiar.
 </para>
 <para>
 As with all other model elements, you can choose how you want to add a global parameter. The most convenient way is to just enter a name in an empty cell of the column termed <guilabel>Name</guilabel>.
