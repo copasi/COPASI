@@ -362,6 +362,21 @@ This may be used as a template:
    <pubdate>1983</pubdate>
   </biblioentry>
 
+  <biblioentry id="Reder88" xreflabel="Reder88">
+    <author>
+      <firstname>C.</firstname>
+      <surname>Reder</surname>
+    </author>
+    <title>
+      Metabolic control theory: a structural approach
+    </title>
+    <publisher>J. Theor. Biol.</publisher>
+    <volumenum>135</volumenum>
+    <pagenums>175 - 201</pagenums>
+    <pubdate>1988</pubdate>
+  </biblioentry>
+  
+  
   <biblioentry id="Runarsson00" xreflabel="Runarsson00">
    <authorgroup>
     <author>
