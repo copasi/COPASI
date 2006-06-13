@@ -182,7 +182,34 @@ integer numbers and change discretely.
 Specifically the value of the kinetic function is interpreted as a so called
 propensity, that is a differential probability density that a reaction event will 
 happen in the next infinitesimal time interval.
-However there are subtle differences between reaction rates and reaction propensities. One of those differences that only matters for rather small particle numbers is that e.g. the rate of a second order mass action reaction is described as k*S^2, while the propensity of the same reaction is k*S*(S-1). Copasi will apply this kind of corrections automatically. In cases where these corrections have already been done by the modeler explicitly COPASI needs to be told not to apply this correction. This is described in the section
+However there are subtle differences between reaction rates and reaction propensities. One of those differences that only matters for rather small particle numbers is that e.g. the rate of a second order mass action reaction is described as  
+<mml:math>
+<mml:mrow>
+  <mml:mi>k</mml:mi>
+  <mml:mo>*</mml:mo>
+  <mml:msup>
+    <mml:mi>S</mml:mi>
+    <mml:mn>2</mml:mn>
+  </mml:msup>
+</mml:mrow>
+</mml:math>
+, while the propensity of the same reaction is 
+<mml:math>
+  <mml:mrow>
+    <mml:mi>k</mml:mi>
+    <mml:mo>*</mml:mo>
+    <mml:mi>S</mml:mi>
+    <mml:mo>*</mml:mo>
+    <mml:mfenced>
+      <mml:mrow>
+      <mml:mi>S</mml:mi>
+      <mml:mo>-</mml:mo>
+      <mml:mi>1</mml:mi>
+    </mml:mrow>
+    </mml:mfenced>
+  </mml:mrow>
+</mml:math>
+. Copasi will apply this kind of corrections automatically. In cases where these corrections have already been done by the modeler explicitly COPASI needs to be told not to apply this correction. This is described in the section
 <xref linkend="generalSettings">General model settings</xref>.
 </para>
 <para>
