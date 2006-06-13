@@ -588,14 +588,379 @@ Note that this value is interpreted as a concentration value, even though the ca
 <sect1 id="methodMCA" xreflabel="Metabolic Control Analysis">
 <title>Metabolic Control Analysis</title>
 <para>
-  COPASI calculates (non-normalised) elasticity coefficients by numerical derivation with
-  finite differences. To calculate control coefficients from steady-state data, Gepasi
-  applies the method described in <citation>Reder88</citation>. This method workes with the
-  reduced system where some variables are eliminated using conservation relations 
-  (see <xref linkend="deterministicModel" />).  All coefficients are obtained unscaled by
-  this method and are scaled with the appropriate steady state concentrations and fluxes (the
-  same with the elasticities). Both scaled and unscaled coefficients and elasticities are
-  displayed and available for ouput.
+Metabolic control analysis (MCA) is a sensitivity analysis of
+metabolic systems. In MCA one studies the relative control exerted by
+each step on the system's variables (e.g. fluxes and metabolite
+concentrations). This control is measured by applying a perturbation
+to the step being studied and then measuring the effect on the
+variable of interest after the system has settled to a new steady
+state. 
+</para>
+
+<sect2 id="ControlCoefficients" xreflabel="Control Coefficients">
+<title>Control Coefficients</title>
+<para>
+A control coefficient is a relative measure of how much a perturbation
+on a parameter affects a system variable (e.g. fluxes or
+concentrations). It is defined (Kacser &amp; Burns 1973, Heinrich &amp;
+Rapoport 1974, Burns et al. 1985) as: 
+</para>
+
+<para>
+ <mml:math>
+  <mml:mrow>
+   <mml:mrow>
+    <mml:msubsup>
+     <mml:mi>C</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+     <mml:mi>A</mml:mi>
+    </mml:msubsup>
+    <mml:mo>=</mml:mo>
+    <mml:mfrac>
+     <mml:mrow>
+      <mml:mo>&part;</mml:mo>
+      <mml:mi>A</mml:mi>
+     </mml:mrow>
+     <mml:mrow>
+      <mml:mo>&part;</mml:mo>
+      <mml:msub>
+       <mml:mo>&nu;</mml:mo>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:mrow>
+    </mml:mfrac>
+   </mml:mrow>
+   <mml:mfrac>
+    <mml:msub>
+     <mml:mo>&nu;</mml:mo>
+     <mml:mi>i</mml:mi>
+    </mml:msub>
+    <mml:mi>A</mml:mi>
+   </mml:mfrac>
+  </mml:mrow>
+ </mml:math>
+</para>
+
+<para>
+where A is the variable, i the step (enzyme) and v the steady-state
+rate of the perturbed step. The most common control coefficients are
+those for fluxes and metabolite concentrations, but any variable of
+the system can be analysed with MCA and have control coefficents
+defined by equations analogous to equation 1. In fact, there is no
+need even for the system to be in a steady state. Gepasi only
+calculates directly the steady-state concentration- and flux-control
+coefficients, those for other variables can still be estimated by
+simulating small perturbations. 
+</para>
+</sect2>
+
+<sect2 id="SummationTheorem" xreflabel="Summation Theorem">
+<title>Summation Theorem</title>
+<para>
+A very important property of steady-state metabolic systems was
+uncovered with the MCA formalism. This concerns the summation of all
+the flux control coefficients of a pathway. By various procedures
+(Kacser &amp; Burns 1973, Heinrich &amp; Rapoport 1975, Giersch 1988, Reder
+1988) it can be demonstrated that for a given reference flux the sum
+of all flux-control coefficients (of all steps) is equal to unity: 
+</para>
+
+<para>
+ <mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mo>&sum;</mml:mo>
+    <mml:mi>i</mml:mi>
+   </mml:msub>
+   <mml:mrow>
+    <mml:msubsup>
+     <mml:mi>C</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+     <mml:mi>J</mml:mi>
+    </mml:msubsup>
+    <mml:mo>=</mml:mo>
+    <mml:mn>1</mml:mn>
+   </mml:mrow>
+  </mml:mrow>
+ </mml:math>
+</para>
+
+<para>
+For a given reference metabolite concentration the sum of all
+concentration-control coefficients is zero: 
+</para>
+
+<para>
+ <mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mo>&sum;</mml:mo>
+    <mml:mi>i</mml:mi>
+   </mml:msub>
+   <mml:mrow>
+    <mml:msubsup>
+     <mml:mi>C</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+     <mml:mi>[M]</mml:mi>
+    </mml:msubsup>
+    <mml:mo>=</mml:mo>
+    <mml:mn>0</mml:mn>
+   </mml:mrow>
+  </mml:mrow>
+ </mml:math>
+</para>
+
+<para>
+where the summations are over all the steps of the system.
+</para>
+
+<para>
+According to the first summation theorem, increases in some of the
+flux-control coefficients imply decreases in the others so that the
+total remains unity. As a consequence of the summation theorems, one
+concludes that the control coefficients are global properties and that
+in metabolic systems, control is a systemic property, dependent on all
+of the system's elements (steps).  
+</para>
+</sect2>
+
+<sect2 id="EnzymeKineticsAndTheElasticityCoefficients"
+xreflabel="Enzyme Kinetics and the Elasticity Coefficients"> 
+<title>Enzyme Kinetics and the Elasticity Coefficients</title>
+<para>
+In enzyme kinetics the behaviour of isolated enzymes is studied
+through the dependence of the initial rates of reaction with the
+concentration of the substrate(s). Enzyme kinetic studies are centered
+on derivation of rate equations and the determination of their kinetic
+constants such as Michaelis constants or limiting-rates or even on the
+elementary rate constants of a specific reaction mechanism.
+</para>
+
+<para>
+In metabolic control analysis the properties of each (isolated) enzyme
+are measured in a way very similar to the flux-control properties:
+using a sensitivity, known as the elasticity coefficient (Kacser &amp;
+Burns 1973, Heinrich &amp; Rapoport 1974, Burns et al. 1985). In this
+case, one has to consider the effect of perturbations of a reaction
+parameter on the local reaction rate. By local one means that this
+sensitivity refers to the isolated reaction which has the same
+characteristics (effector and enzyme concentrations, temperature, and
+so on) as in the whole system at the operating point (steady state) of
+interest. The elasticity coefficients are defined as the ratio of
+relative change in local rate to the relative change in one parameter
+(normally the concentration of an effector). Infinitesimally, this is
+written as:  
+</para>
+
+<para>
+ <mml:math>
+  <mml:mrow>
+   <mml:mrow>
+    <mml:msubsup>
+     <mml:mo>&#x03B5;</mml:mo>
+     <mml:mi>p</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+    </mml:msubsup>
+    <mml:mo>=</mml:mo>
+    <mml:mfrac>
+     <mml:mrow>
+      <mml:mo>&part;</mml:mo>
+      <mml:msub>
+       <mml:mo>&nu;</mml:mo>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:mrow>
+     <mml:mrow>
+      <mml:mo>&part;</mml:mo>
+      <mml:mi>p</mml:mi>
+     </mml:mrow>
+    </mml:mfrac>
+   </mml:mrow>
+   <mml:mfrac>
+    <mml:mi>p</mml:mi>
+    <mml:msub>
+     <mml:mo>&nu;</mml:mo>
+     <mml:mi>i</mml:mi>
+    </mml:msub>
+   </mml:mfrac>
+  </mml:mrow>
+ </mml:math>
+</para>
+
+<para>
+where v is the rate of the enzyme in question and p is the parameter
+of the perturbation. Each enzyme has as many elasticity coefficients
+as the number of parameters that affect it. One can immediatly
+recognise the concentration of the reaction substrates, products and
+modifiers as parameters of the reaction. Unlike control coefficients,
+elasticity coefficients are not systemic properties but reather
+measure how isolated enzymes are sensitive to changes in their
+parameters. The elasticity coefficients can be obtained from the
+kinetic functions by partial derivation. Again like the control
+coefficients, the elasticity coefficients are not constants, they are
+dependent on the value of the relevant parameter and so are different
+for each steady-state. 
+</para>
+</sect2>
+
+<sect2 id="ConnectivityRelations" xreflabel="Connectivity Relations">
+<title>Connectivity Relations</title>
+<para>
+A particularly useful and important feature of MCA is that it can
+relate the kinetic properties of the individual reactions (local
+properties) with (global) properties of the whole intact pathway. This
+is done through the connectivity theorems (Kacser and Burns 1973) that
+relate the control coefficients and the elasticity coefficients of
+steps with common intermediate metabolites. 
+</para>
+
+<para>
+The connectivity theorem for flux-control coefficients (Kacser and
+Burns 1973) states that, for a common metabolite S, the sum of the
+products of the flux-control coefficient of all (i) steps affected by
+S and its elasticity coefficients towards S, is zero: 
+</para>
+
+<para>
+ <mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mo>&sum;</mml:mo>
+    <mml:mi>i</mml:mi>
+   </mml:msub>
+   <mml:mrow>
+    <mml:msubsup>
+     <mml:mi>C</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+     <mml:mi>J</mml:mi>
+    </mml:msubsup>
+    <mml:msubsup>
+     <mml:mo>&#x03B5;</mml:mo>
+     <mml:mi>[S]</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+    </mml:msubsup>
+    <mml:mo>=</mml:mo>
+    <mml:mn>0</mml:mn>
+   </mml:mrow>
+  </mml:mrow>
+ </mml:math>
+</para>
+
+<para>
+For the concentration-control coefficients, the following two
+equations apply (Westerhoff and Chen 1984): 
+</para>
+
+<para>
+ <mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mo>&sum;</mml:mo>
+    <mml:mi>i</mml:mi>
+   </mml:msub>
+   <mml:mrow>
+    <mml:msubsup>
+     <mml:mi>C</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+     <mml:mi>[A]</mml:mi>
+    </mml:msubsup>
+    <mml:msubsup>
+     <mml:mo>&#x03B5;</mml:mo>
+     <mml:mi>[S]</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+    </mml:msubsup>
+    <mml:mo>=</mml:mo>
+    <mml:mn>0</mml:mn>
+    <mml:text>, where&ensp;</mml:text>
+    <mml:mi>A</mml:mi>
+    <mml:mn>&ne;</mml:mn>
+    <mml:mi>S</mml:mi>
+   </mml:mrow>
+  </mml:mrow>
+ </mml:math>
+</para>
+
+<para>
+ <mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mo>&sum;</mml:mo>
+    <mml:mi>i</mml:mi>
+   </mml:msub>
+   <mml:mrow>
+    <mml:msubsup>
+     <mml:mi>C</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+     <mml:mi>[A]</mml:mi>
+    </mml:msubsup>
+    <mml:msubsup>
+     <mml:mo>&#x03B5;</mml:mo>
+     <mml:mi>[S]</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+    </mml:msubsup>
+    <mml:mo>=</mml:mo>
+    <mml:mn>-1</mml:mn>
+   </mml:mrow>
+  </mml:mrow>
+ </mml:math>
+</para>
+
+<para>
+The first equation applies to the case in which the reference metabolite (A)
+is different from the perturbed metabolite (S). Whereas the second applies to
+the case in which the reference metabolite is the same as the
+perturbed metabolite. 
+</para>
+
+<para>
+The connectivity theorems allow MCA to describe how perturbations on
+metabolites of a pathway propagate through the chain of enzymes. The
+local (kinetic) properties of each enzyme effectively propagate the
+perturbation to and from its immediate neighbours. 
+</para>
+</sect2>
+
+<para>
+COPASI calculates (non-normalised) elasticity coefficients by
+numerical derivation with finite differences. To calculate control
+coefficients from steady-state data, COPASI applies the method
+described in <citation>Reder88</citation>. This method workes with the
+reduced system where some variables are eliminated using conservation
+relations (see <xref linkend="deterministicModel" />). All
+coefficients are obtained unscaled by this method and are scaled with
+the appropriate steady state concentrations and fluxes (the same with
+the elasticities). Both scaled and unscaled coefficients and
+elasticities are displayed and available for ouput. 
 </para>
 
 <variablelist><title>Options for MCA</title>
@@ -1550,7 +1915,7 @@ where the constraints are given by
   </mml:mrow>
 </mml:math>.
 The value <mml:math><mml:mo>&phi;</mml:mo></mml:math> is used within
-the selection. Which is done as described in <xref
+the selection, which is perfomred as described in <xref
 linkend="GeneticAlgorithmSR"/> 
 </para>
 
@@ -1649,7 +2014,7 @@ steps is less than the tolerance the algorithm stops. The default is
 
 
 <sect1 id="lyapunovExponents" xreflabel="Lyapunov exponents">
-  <title>Lyapunov exponents calculation</title>
+  <title>Lyapunov Exponents Calculation</title>
   <para>
     Copasi allows the calculation of lyapunov exponents of a trajectory as well as the average divergence of the system. The exponents are calculated for the reduced system (see <xref linkend="deterministicModel" />), so the maximum number of exponents that can be calculated is the number of independent variables. If less than this number of exponents is requested, the largest exponents are calculated.
     Copasi uses the well known algorithm proposed by Wolf et al. (<citation>Wolf85</citation>). This algorithm integrates one reference trajectory and simultanously <mml:math><mml:mi>N</mml:mi></mml:math> difference trajectories (if <mml:math><mml:mi>N</mml:mi></mml:math> is the number of exponents requested) in a system linearized around the reference trajectory. This integration is carried out for a short time interval (the "Orthonormalization interval", see below) and then the difference vectors are reorthonormalized. The exponents for this time interval are calculated from how much each of the difference trajectories converged or diverged from the reference trajectory during the interval. This calculation is repeated and the "local" exponents are averaged over the the whole trajectory.
