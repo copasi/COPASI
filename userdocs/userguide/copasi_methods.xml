@@ -587,13 +587,22 @@ Note that this value is interpreted as a concentration value, even though the ca
 </sect1>
 <sect1 id="methodMCA" xreflabel="Metabolic Control Analysis">
 <title>Metabolic Control Analysis</title>
-<para>To be written.</para>
+<para>
+  COPASI calculates (non-normalised) elasticity coefficients by numerical derivation with
+  finite differences. To calculate control coefficients from steady-state data, Gepasi
+  applies the method described in <citation>Reder88</citation>. This method workes with the
+  reduced system where some variables are eliminated using conservation relations 
+  (see <xref linkend="deterministicModel" />).  All coefficients are obtained unscaled by
+  this method and are scaled with the appropriate steady state concentrations and fluxes (the
+  same with the elasticities). Both scaled and unscaled coefficients and elasticities are
+  displayed and available for ouput.
+</para>
 
 <variablelist><title>Options for MCA</title>
 <varlistentry><term>Modulation Factor</term>
 <listitem>
 <para>
-To be written
+This parameter is ignored in the current version of COPASI.
 </para>
 </listitem>
 </varlistentry>
