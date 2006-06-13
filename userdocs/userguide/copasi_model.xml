@@ -1,5 +1,5 @@
 <chapter id="model" xreflabel="Model">
-<title>The model in COPASI</title>
+<title>The Model in COPASI</title>
 
 
 <para>
@@ -129,7 +129,7 @@ restrictions like irreversible kinetics having to be strictly positive.
 </sect1>
 
 <sect1 id="deterministicModel" xreflabel="Deterministic Model">
-<title>Deterministic interpretation of the model</title>
+<title>Deterministic Interpretation of the Model</title>
 <para>
   One possible mathematical interpretation of the model is to convert it into a
 set of ordinary differential equations. The variables of the equation are the
@@ -168,7 +168,7 @@ this<citation>Vallabhajosyula06</citation>.
 </sect1>
   
 <sect1 id="stochasticModel" xreflabel="Stochastic Model">
-  <title>Stochastic interpretation of the model</title>
+  <title>Stochastic Interpretation of the Model</title>
   <para>
     An alternative interpretation is to consider the model as a stochastic
 process. In this case the reaction kinetics are not considered to describe the
