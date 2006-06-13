@@ -2172,7 +2172,7 @@ In order to export the set of differential equations to a C source code file, yo
 The Constants for TRUE, FALSE, and eulers number will be exported as numerical values where FALSE will be exported as 0 and TRUE will be exported as 1. Likewise infinity and "not a number" are exported as the strings "inf" and "nan" respectively.
 </para>
 <para>
-Copasi adds comments to variables in the ODE by using the semicolon to separate the comment from the actual code. Since this feature has been added to Berkeley Madonna in Version 7.0 the exported code cannot be used with older Versions of Berkeley Madonna.
+Copasi adds comments to variables in the ODE by using the semicolon to separate the comment from the actual code. Since this feature has been added to Berkeley Madonna in Version 7.0 the exported code cannot be used with older versions of Berkeley Madonna.
 </para>
 </caution>
 <para>
