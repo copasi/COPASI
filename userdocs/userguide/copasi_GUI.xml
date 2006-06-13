@@ -972,35 +972,29 @@ In addition to defining "normal" functions, COPASI allows the definition of piec
 <para>
 <mml:math>
     <mml:mrow>
-      <mml:mi> if </mml:mi>
-      <mml:mo> &ApplyFunction; </mml:mo>
-      <mml:mo> ( </mml:mo>
+      <mml:mi>if</mml:mi>
+      <mml:mo>(</mml:mo>
       <mml:mrow>
-        <mml:mi> x </mml:mi>
-        <mml:mpadded lspace="+40%" width="+80%">
-          <mml:mo> lt </mml:mo>
-        </mml:mpadded>  
-        <mml:mn> 0.0 </mml:mn>
+        <mml:mi>x</mml:mi>
+        <mml:mo>&ensp;lt&ensp;</mml:mo>
+        <mml:mn>0.0</mml:mn>
       </mml:mrow>
-      <mml:mo> , </mml:mo>
-      <mml:mn> 0.0 </mml:mn>
-      <mml:mo> , </mml:mo>
-      <mml:mi> if </mml:mi>
-      <mml:mo> &ApplyFunction; </mml:mo>
-      <mml:mo> ( </mml:mo>
+      <mml:mo>,&ensp;</mml:mo>
+      <mml:mn>0.0</mml:mn>
+      <mml:mo>,&ensp;</mml:mo>
+      <mml:mi>if</mml:mi>
+      <mml:mo>(</mml:mo>
       <mml:mrow>
-         <mml:mi> x </mml:mi>
-         <mml:mpadded lspace="+40%" width="+80%">
-           <mml:mo> gt </mml:mo>
-         </mml:mpadded>
-         <mml:mn> 0.0 </mml:mn>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&ensp;gt&ensp;</mml:mo>
+         <mml:mn>0.0</mml:mn>
       </mml:mrow>
-      <mml:mo> , </mml:mo>
-      <mml:mn> 1.0 </mml:mn>
-      <mml:mo> , </mml:mo>
-      <mml:mn> 0.5 </mml:mn>
-      <mml:mo> ) </mml:mo>
-      <mml:mo> ) </mml:mo>
+      <mml:mo>,&ensp;</mml:mo>
+      <mml:mn>1.0</mml:mn>
+      <mml:mo>,&ensp;</mml:mo>
+      <mml:mn>0.5</mml:mn>
+      <mml:mo>)</mml:mo>
+      <mml:mo>)</mml:mo>
     </mml:mrow>
   </mml:math>  
 </para>
