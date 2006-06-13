@@ -1,16 +1,16 @@
 <chapter id="model" xreflabel="Model">
-<title>The Model in COPASI</title>
+<title>The model in COPASI</title>
 
 
 <para>
-This section discusses the general properties of the model in COPASI and its mathematical interpretation. Generally a model consists of metabolites which are placed in a compartment. Metabolites are produced or consumed by reactions which happen with a speed given by kinetic functions.
+This section discusses the general properties of the model in COPASI and its mathematical interpretation. Generally a model consists of metabolites which are placed in a compartment. Metabolites are produced or consumed by reactions which happen with a speed given by kinetic functions. This model is interpreted mathematically in different ways in COPASI. 
 </para>
 
 <sect1 id="compartments" xreflabel="Compartments">
 <title>Compartments</title>
 <para>
-Every metabolite in copasi must be placed in a compartment. The compartment has to have a well defined volume because COPASI relies on being able to calculate particle numbers from concentrations and vice versa. 
-COPASI does not really support models without concentrations (i.e. dealing only with amounts of substance or particle numbers) but you can work around this limitation by setting the volume to be 1.0. But if you do this keep in mind that the dimensions of the different parameters as displayed in the copasi GUI are not correct.
+Every metabolite in COPASI must be placed in a compartment. The compartment has to have a well defined volume because COPASI relies on being able to calculate particle numbers from concentrations and vice versa. 
+COPASI does not really support models without concentrations (i.e. dealing only with amounts of substance or particle numbers) but you can work around this limitation by setting the volume to be 1.0. But if you do this keep in mind that the dimensions of the different parameters as displayed in the COPASI GUI are not correct.
 The volumes of compartments are constant in this version of COPASI. 
 </para>
 <para>
@@ -52,23 +52,30 @@ Reactions can be reversible or irreversible. Kinetic functions for irreversible 
 <sect1 id="Functions" xreflabel="Functions">
 <title>Functions</title>
 <para>
-  A function in copasi is a mathematical expression that calculates a value from a given list of other values. Generally functions can be used in two ways in copasi: As a kinetic function specified for a reaction or as a function that is called from another function or expression. 
+  A function in COPASI is a mathematical expression that calculates a value from a given list of other values. Generally functions can be used in two ways in COPASI: As a kinetic function specified for a reaction or as a function that is called from another function or expression. 
   The function contains a detailed list of parameters that specifies how many values (and what kind of values) need to be passed to the function. If a function is called from another function or expression only the number of values is checked, not the kind of value. 
-  In the case that a function is used as a kinetic function for a reaction copasi ensures consistency about the roles of the parameters in the model. Each parameter has one of six different roles: "Substrate", "Product", "Modifier", "Volume", "Time", "Parameter". The first three must be connected with the concentration of a species that has the respective role in the reaction. "Volume" must be connected with a compartment, "Time" is always the simulation time of the model. "Parameter" must be connected with a global parameter or a local value in the reaction.
-  A function also specifies if it is appropriate for a reversible or irreversible reaction. This information is not automatically infered from the mathematical description of the function, and copasi does not enforce restrictions like irreversible kinetics having to be strictly positive. 
+  In the case that a function is used as a kinetic function for a reaction COPASI ensures consistency about the roles of the parameters in the model. Each parameter has one of six different roles: "Substrate", "Product", "Modifier", "Volume", "Time", "Parameter". The first three must be connected with the concentration of a species that has the respective role in the reaction. "Volume" must be connected with a compartment, "Time" is always the simulation time of the model. "Parameter" must be connected with a global parameter or a local value in the reaction.
+  A function also specifies if it is appropriate for a reversible or irreversible reaction. This information is not automatically infered from the mathematical description of the function, and COPASI does not enforce restrictions like irreversible kinetics having to be strictly positive. 
   
 </para>
 </sect1>
 
 <sect1 id="deterministicModel" xreflabel="Deterministic Model">
-<title>Deterministic Interpretation of the Model</title>
+<title>Deterministic interpretation of the model</title>
 <para>
+  One possible mathematical interpretation of the model is to convert it into a set of ordinary differential equations. The variables of the equation are the particle numbers of the metabolites in the model. The right hand side of the differential equation are constructed as follows: The particle numbers are converted to concentrations taking into acount the unit for amounts of substance and dividing by compartment volume. These concentrations are used to calculate the reaction fluxes. The kinetic functions, as they are defined in COPASI give as result a value that is a concentration rate (for single compartment reactions) or an amount of substance rate (for multicompartment reactions), respectively. So for single compartment reactions the value of the kinetic function is multiplied by the compartment volume; kinetics for multi compartment reactions are assumed to already be expressed in units of amount of substance (e.g. moles) per time. The resulting value is then multiplied by a factor to convert amount of substance per time to particle numbers per time. Linear combinations of these values, using the stoichiometries as coefficients, result in particel number rates for all metabolites. These form the right hand side of the differential equations.
 </para>
+<para>
+COPASI automatically performs an analysis of the model by which conserved values are found. The conserved values COPASI is looking for are linear combinations of particle numbers that do not vary during the time evolution of the system. Each conservation relation can be used to eliminate one variable of the system, leading to a reduced system with a smaller number of variables. These variables are called the independent variables of the system; the dependent variables are defined as linear combinations of independent variables. COPASI handles this model reduction transparently, but it is displayed in the GUI which metabolites are treated as independent or dependent variables.
+Technically finding the conservation relation means finding rows in the stoichiometry matrix that can be expressed as linear combinations of other rows. COPASI uses Householder QR factorization to do this<citation>Vallabhajosyula06</citation>.
+</para>
+ 
 </sect1>
   
 <sect1 id="stochasticModel" xreflabel="Stochastic Model">
-  <title>Stochastic Interpretation of the Model</title>
+  <title>Stochastic interpretation of the model</title>
   <para>
+    An alternative interpretation is to consider the model as a stochastic process. In this case the reaction kinetics are not considered to describe the rates of change for the concentrations of involved species, but rather as a specification about the probability that a reaction event happens. If a reaction event happens the particle numbers of the involved metabolites are updated according to their stoichiometries. That means particle numbers are always integer numbers and change discretely. 
   </para>
 </sect1>
 
