@@ -155,35 +155,39 @@ next desired reporting time. The default value is '10000'.
 <sect3 id="NextReactionMethod" xreflabel="Next Reaction Method">
 <title>The Next-Reaction-Method</title>
 <para>
-To be written.
+This stochastic simulation method utilizes the algorithm developed by Gibson and Bruck (see <citation>Gibson00</citation> for details). For each reaction a putative stochastic reaction time is calculated and the reaction with the shortest reaction time will be realized. The set of reactions is organized in a priority queue to allow for the efficent search for the fastest reaction. In addition, by using a so-called dependency graph only those reaction times are recalculated in each step, that are dependent on the reaction, which has been realized. This simulation method requires all the reactions to be irreversibe. However, Copasi provides a tool, that converts all reversible reactions into irreversible ones. Because the algorithm internally works on discrete particle numbers rather than concentrations, the particle numbers in the system must not exceed a value of approximately <mml:math><mml:msup><mml:mn>2</mml:mn><mml:mn>64</mml:mn></mml:msup></mml:math>.
 </para>
 
 <variablelist><title>Options for Stochastic (Gibson + Bruck)</title>
 <varlistentry><term>Max Internal Steps</term>
 <listitem>
 <para>
-To be written
+This parameter is a positive integer value specifying the maximal
+number of internal steps the integrator is allowed to take before the
+next desired reporting time. The default value is '1000000'.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Subtype</term>
 <listitem>
 <para>
-To be written
+This parameter is ignored in the current version of Copasi.
 </para>
 </listitem>
 </varlistentry>
+
 <varlistentry><term>Use Random Seed</term>
 <listitem>
 <para>
-To be written
+This flag can be '0' or '1' and determines if the user-defined random seed should be used for the calculation. The default is '0' meaning that the random seed is set to a random value before each run and consecutively calculated trajectories will be different. If the value of this flag is set to '1', the user-defined random seed will be used and each calculated trajectory will be the same for the same value of the given random seed.
 </para>
 </listitem>
 </varlistentry>
+
 <varlistentry><term>Random Seed</term>
 <listitem>
 <para>
-To be written
+This unsigned integer is used as random seed in the calculations, if the flag Use Random Seed is set to '1'. The default value is '1'.
 </para>
 </listitem>
 </varlistentry>
@@ -229,7 +233,7 @@ To be written
 <sect3 id="HybridRungeKutta" xreflabel="Hybrid Runge Kutta">
 <title>Hybrid (Runge-Kutta)</title>
 <para>
-This hybrid simulation method developed by us combines a deterministic numerical integration of ODEs with a stochastic simulation algorithm. The whole biochemical network is partitioned into a deterministic and a stochastic subnet internally. The deterministic subnet contains all reactions, in which only metabolites with high particle numbers take part. All reactions with at least one low-numbered metabolite are in the stochastic subnet, because here stochastic effects are expected. Which particle numbers are considered low or high can be specified by the user with the Lower Limit and the Upper Limit parameters (Metabolites with particle numbers between those limits do not change their status. This leads to a hysteresis-like behavior and avoids many unnecessary swaps, if the particle numbers fluctuate in the middle range). The partitioning of the biochemical network can change dynamically during the simulation. After a certain number of steps, which the user can define using the parameter Partitioning Interval, the partitioning is recalculated using the current particle numbers in the system. During one run the deterministic subnet and the stochastic subnet are simulated in parallel. A 4th-order Runge-Kutta method is used to numerically integrate the deterministic part of the system. For the stochastic part the simulation method by Gibson and Bruck is utilized. The reaction probabilities of the stochastic subnet are approximated as constant during one stochastic step, even though in theory they can change due to the effects of the deterministic subnet.
+This hybrid simulation method developed by us combines a deterministic numerical integration of ODEs with a stochastic simulation algorithm. The whole biochemical network is partitioned into a deterministic and a stochastic subnet internally. The deterministic subnet contains all reactions, in which only metabolites with high particle numbers take part. All reactions with at least one low-numbered metabolite are in the stochastic subnet, because here stochastic effects are expected. Which particle numbers are considered low or high can be specified by the user with the Lower Limit and the Upper Limit parameters (Metabolites with particle numbers between those limits do not change their status. This leads to a hysteresis-like behavior and avoids many unnecessary swaps, if the particle numbers fluctuate in the middle range). The partitioning of the biochemical network can change dynamically during the simulation. After a certain number of steps, which the user can define using the parameter Partitioning Interval, the partitioning is recalculated using the current particle numbers in the system. During one run the deterministic subnet and the stochastic subnet are simulated in parallel. A 4th-order Runge-Kutta method is used to numerically integrate the deterministic part of the system. For the stochastic part the simulation method by Gibson and Bruck (<citation>Gibson00</citation>) is utilized. The reaction probabilities of the stochastic subnet are approximated as constant during one stochastic step, even though in theory they can change due to the effects of the deterministic subnet.
 </para>
 
 <variablelist><title>Options for Hybrid (Runge-Kutta)</title>
