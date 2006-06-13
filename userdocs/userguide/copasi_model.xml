@@ -1,27 +1,27 @@
 <chapter id="model" xreflabel="Model">
-<title>The model in Copasi</title>
+<title>The Model in COPASI</title>
 
 
 <para>
-This section discusses the general properties of the model in Copasi and its mathematical interpretation. Generally a model consists of metabolites which are placed in a compartment. Metabolites are produced or consumed by reactions which happen with a speed given by kinetic functions.
+This section discusses the general properties of the model in COPASI and its mathematical interpretation. Generally a model consists of metabolites which are placed in a compartment. Metabolites are produced or consumed by reactions which happen with a speed given by kinetic functions.
 </para>
 
 <sect1 id="compartments" xreflabel="Compartments">
 <title>Compartments</title>
 <para>
-Every metabolite in copasi must be placed in a compartment. The compartment has to have a well defined volume because Copasi relies on being able to calculate particle numbers from concentrations and vice versa. 
-Copasi does not really support models without concentrations (i.e. dealing only with amounts of substance or particle numbers) but you can work around this limitation by setting the volume to be 1.0. But if you do this keep in mind that the dimensions of the different parameters as displayed in the copasi GUI are not correct.
-The volumes of compartments are constant in this version of Copasi. 
+Every metabolite in copasi must be placed in a compartment. The compartment has to have a well defined volume because COPASI relies on being able to calculate particle numbers from concentrations and vice versa. 
+COPASI does not really support models without concentrations (i.e. dealing only with amounts of substance or particle numbers) but you can work around this limitation by setting the volume to be 1.0. But if you do this keep in mind that the dimensions of the different parameters as displayed in the copasi GUI are not correct.
+The volumes of compartments are constant in this version of COPASI. 
 </para>
 <para>
-If the (chemically) same metabolite is present in several compartments it is treated as several metabolites in Copasi. E.g. if you have a model that contains glucose inside a cell and outside a cell these are two metabolites in the model. They can however have the same name.
+If the (chemically) same metabolite is present in several compartments it is treated as several metabolites in COPASI. E.g. if you have a model that contains glucose inside a cell and outside a cell these are two metabolites in the model. They can however have the same name.
 </para>
 </sect1>
 
 <sect1 id="Metabolites" xreflabel="Metabolites">
 <title>Metabolites</title>
 <para>
-A metabolite is characterized by how much of it is present at a given time. This can be expressed as a particle number or as a concentration. Copasi makes sure that those two are consistent at any time. An initial value can be provided for concentration or particle number of each metabolite. This initial value will be used as a starting point for simulations or other calculations. 
+A metabolite is characterized by how much of it is present at a given time. This can be expressed as a particle number or as a concentration. COPASI makes sure that those two are consistent at any time. An initial value can be provided for concentration or particle number of each metabolite. This initial value will be used as a starting point for simulations or other calculations. 
 A metabolite can be defined to be "fixed" which means it current value will always be the same as the initial value, even if the metabolite participates in a reaction.
 </para>
 <para>
@@ -32,7 +32,7 @@ Associated to the metabolites is also a value called transition time. It is calc
 <sect1 id="GlobalParameters" xreflabel="Global Parameters">
 <title>Global Parameters</title>
 <para>
-The model also contains a list of global parameters. In this version of Copasi they are always constant. They can be used as kinetic parameters in reactions. The main use is if you want to use the same kinetic parameter in several reactions, or if you want to change several parameters synchronously e.g. in a parameter scan.
+The model also contains a list of global parameters. In this version of COPASI they are always constant. They can be used as kinetic parameters in reactions. The main use is if you want to use the same kinetic parameter in several reactions, or if you want to change several parameters synchronously e.g. in a parameter scan.
 </para>
 </sect1>
 
@@ -61,13 +61,13 @@ Reactions can be reversible or irreversible. Kinetic functions for irreversible 
 </sect1>
 
 <sect1 id="deterministicModel" xreflabel="Deterministic Model">
-<title>Deterministic interpretation of the model</title>
+<title>Deterministic Interpretation of the Model</title>
 <para>
 </para>
 </sect1>
   
 <sect1 id="stochasticModel" xreflabel="Stochastic Model">
-  <title>Stochastic interpretation of the model</title>
+  <title>Stochastic Interpretation of the Model</title>
   <para>
   </para>
 </sect1>
