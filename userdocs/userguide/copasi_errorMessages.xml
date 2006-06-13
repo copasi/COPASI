@@ -1,7 +1,7 @@
 <!-- Please don't remove, I want to use this to easily be able to check if messages has been changed in order to be able to update this file. -->
 <!--
 $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/userdocs/userguide/copasi_errorMessages.xml,v $
-$Revision: 1.1.2.12 $
+$Revision: 1.1.2.13 $
 -->
 
 <appendix id="errorMessages" xreflabel="Error Messages">
@@ -153,7 +153,7 @@ CReaction is COPASIs internal reaction representation. Many of the error message
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem>CReaction (4)</listitem></varlistentry>
 <varlistentry><term>Error Message:</term><listitem> Only Metabolites, Compartments or Parameter object nodes are allowed in kinetic functions.</listitem></varlistentry>
-<varlistentry><term>Description:</term><listitem>TO BE WRITTEN</listitem></varlistentry>
+<varlistentry><term>Description:</term><listitem>In kinetic functions, only references to compartments, metabolites and/or parameters are allowed. For explicit time dependent models, time can also be referenced from a kinetic function. If this error message occurs, COPASI has found a reference that is neither a reference to a compartment, a metabolite, a parameter or the time.</listitem></varlistentry>
 </variablelist>
 <variablelist>
 <varlistentry><term>Error Code:</term><listitem>CReaction (5)</listitem></varlistentry>
