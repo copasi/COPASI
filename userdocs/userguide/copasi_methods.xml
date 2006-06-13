@@ -1660,7 +1660,7 @@ steps is less than the tolerance the algorithm stops. The default is
         <para>
           This is the time interval after which an orthonormalization of the difference trajectories takes place. This parameter is critical for the accuracy of the lyapunov exponents. Smaller values generally lead to more accurate results, but take longer time (since the numerical integration needs to be restarted for many short calculations).
           One way to judge the adequacy of this parameter is to compare the sum of exponents with the divergence of the system. Those two values should be the same (only if you request the calculation of all exponents), and since the calculation of the divergence is very robust, a mismatch would typically mean that the orthonormalization interval needs to be smaller.
-          Note that this parameter mostly affects the accuracy of the exponents with the largest absolute values. Since large positive exponents are unusual, this means that the largest negative exponents suffer from accuracy problems related to this parameter. If you don't need the exact values of the stronly negative exponents you can chose a larger value for this parameter and enjoy a much faster calculation.
+          Note that this parameter mostly affects the accuracy of the exponents with the largest absolute values. Since large positive exponents are unusual, this means that the largest negative exponents suffer from accuracy problems related to this parameter. If you don't need the exact values of the stronly negative exponents you can chose a larger value for this parameter and enjoy a much faster calculation. The default value is <mml:math><mml:mn>1.0</mml:mn></mml:math>.
         </para>
       </listitem>
     </varlistentry>
@@ -1668,7 +1668,7 @@ steps is less than the tolerance the algorithm stops. The default is
       <listitem>
         <para>
           This parameter specifies the overall time of the calculation. The integration will be repeated in small steps given by the "Orthonormalization interval" parameter until the overall time is reached.
-          This value is also critical for the accuracy of the exponents. Since copasi cannot guess how fast the exponents converge, no save default value can be given for this parameter. One indication would be that if the system does not run into a steady state one of the exponents should be zero. If this is not the case in the result, probably the overal time was to short to allow the exponents to converge to their average value.
+          This value is also critical for the accuracy of the exponents. Since copasi cannot guess how fast the exponents converge, no save default value can be given for this parameter. One indication would be that if the system does not run into a steady state one of the exponents should be zero. If this is not the case in the result, probably the overal time was to short to allow the exponents to converge to their average value. The default value is <mml:math><mml:mn>1000</mml:mn></mml:math>.
         </para>
       </listitem>
     </varlistentry>
