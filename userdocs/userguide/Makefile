@@ -52,7 +52,8 @@ SOURCES = copasi.xml \
 	copasi_commandLine.xml \
 	copasi_fileFormats.xml \
 	copasi_methods.xml \
-	copasi_bibliography.xml
+	copasi_bibliography.xml \
+	copasi_model.xml
 
 IMAGES = images/Compartments_01.png \
          images/Compartments_02.png \
