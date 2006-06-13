@@ -97,6 +97,66 @@ This may be used as a template:
    <pubdate>1966</pubdate>
   </biblioentry>
 
+  <biblioentry id="Burns85" xreflabel="Burns85">
+   <authorgroup>
+    <author>
+     <firstname>J.A.</firstname>
+     <surname>Burns</surname>
+    </author>
+    <author>
+     <firstname>A.</firstname>
+     <surname>Cornish-Bowden</surname>
+    </author>
+    <author>
+     <firstname>A.K.</firstname>
+     <surname>Groen</surname>
+    </author>
+    <author>
+     <firstname>R.</firstname>
+     <surname>Heinrich</surname>
+    </author>
+    <author>
+     <firstname>H.</firstname>
+     <surname>Kacser</surname>
+    </author>
+    <author>
+     <firstname>J.W.</firstname>
+     <surname>Porteous</surname>
+    </author>
+    <author>
+     <firstname>S.M.</firstname>
+     <surname>Rapoport</surname>
+    </author>
+    <author>
+     <firstname>T.A.</firstname>
+     <surname>Rapoport</surname>
+    </author>
+    <author>
+     <firstname>J.W.</firstname>
+     <surname>Stucki</surname>
+    </author>
+    <author>
+     <firstname>J.M.</firstname>
+     <surname>Tager</surname>
+    </author>
+    <author>
+     <firstname>R.J.A</firstname>
+     <surname>Wanders</surname>
+    </author>
+    <author>
+     <firstname>H.V.</firstname>
+     <surname>Westerhoff</surname>
+    </author>
+   </authorgroup>
+   <title>Control of metabolic systems
+   </title>
+   <publisher>Trends Biochem. Sci. 
+   </publisher>
+   <volumenum>10</volumenum>
+   <pagenums>16</pagenums>
+   <pubdate>1985</pubdate>
+  </biblioentry>
+
   <biblioentry id="Fletcher87" xreflabel="Fletcher87">
    <author>
     <firstname>R.</firstname>
@@ -158,6 +218,19 @@ This may be used as a template:
    <pubdate>2000</pubdate>
   </biblioentry>
 
+  <biblioentry id="Giersch88" xreflabel="Giersch88">
+   <author>
+    <firstname>C.</firstname>
+    <surname>Giersch</surname>
+   </author>
+   <title>Control analysis of metabolic networks. 1. Homogeneous functions and the summation theorems for control coefficients</title>
+   <edition></edition>
+   <publisher>Eur. J. Biochem </publisher>
+   <volumenum>174</volumenum>
+   <pagenums>509 - 513</pagenums>
+   <pubdate>1988</pubdate>
+  </biblioentry>
+
   <biblioentry id="Gillespie76" xreflabel="Gillespie76">
    <author>
     <firstname>D.T.</firstname>
@@ -209,6 +282,44 @@ This may be used as a template:
    <pubdate>1966</pubdate>
   </biblioentry>
 
+  <biblioentry id="Heinrich74" xreflabel="Heinrich74">
+   <authorgroup>
+    <author>
+     <firstname>R.</firstname>
+     <surname>Heinrich</surname>
+    </author>
+    <author>
+     <firstname>T.A.</firstname>
+     <surname>Rapoport</surname>
+    </author>
+   </authorgroup>
+   <title>A linear steady-state treatment of enzymatic chains. General properties, control and effector strength</title>
+   <publisher>Eur. J. Biochem. </publisher>
+   <volumenum>42</volumenum>
+   <pagenums>89 - 95</pagenums>
+   <pubdate>1974</pubdate>
+  </biblioentry>
+
+  <biblioentry id="Heinrich75" xreflabel="Heinrich75">
+   <authorgroup>
+    <author>
+     <firstname>R.</firstname>
+     <surname>Heinrich</surname>
+    </author>
+    <author>
+     <firstname>T.A.</firstname>
+     <surname>Rapoport</surname>
+    </author>
+   </authorgroup>
+   <title>Mathematical analysis of multienzyme systems.
+    II. Steady-state and transient control</title>
+   <publisher>BioSystems </publisher>
+   <volumenum>7</volumenum>
+   <pagenums>130 - 136</pagenums>
+   <pubdate>1975</pubdate>
+  </biblioentry>
+	
+
   <biblioentry id="Hindmarsh83" xreflabel="Hindmarsh83">
    <author>
     <firstname>A.C.</firstname>
@@ -243,6 +354,24 @@ This may be used as a template:
    <volumenum>8</volumenum>
    <pagenums>212 - 229</pagenums>
    <pubdate>1961</pubdate>
+  </biblioentry>
+
+  <biblioentry id="Kacser73" xreflabel="Kacser73">
+   <authorgroup>
+    <author>
+     <firstname> H.</firstname>
+     <surname>Kacser</surname>
+    </author>
+    <author>
+     <firstname>J.A.</firstname>
+     <surname>Burns</surname>
+    </author>
+   </authorgroup>
+   <title>The control of flux.</title>
+   <publisher>Symp. Soc. Exp. Biol. </publisher>
+   <volumenum>27</volumenum>
+   <pagenums>65 - 104</pagenums>
+   <pubdate>1973</pubdate>
   </biblioentry>
 
   <biblioentry id="Kaupe63" xreflabel="Kaupe63">
@@ -437,8 +566,24 @@ This may be used as a template:
     <pubdate>2006</pubdate>
   </biblioentry>
   
+  <biblioentry id="Westerhoff84" xreflabel="Westerhoff84">
+   <authorgroup>
+    <author>
+     <firstname>H.V.</firstname>
+     <surname>Westerhoff</surname>
+    </author>
+    <author>
+     <firstname>Y.-D.</firstname>
+     <surname>Chen</surname>
+    </author>
+   </authorgroup>
+   <title>How do enzyme activities control metabolite concentrations? An additional theorem in the theory of metabolic control</title>
+   <publisher>Eur. J. Biochem. </publisher>
+   <volumenum>142</volumenum>
+   <pagenums>425 - 430</pagenums>
+   <pubdate>1984</pubdate>
+  </biblioentry>
 
-  
   <biblioentry id="Wolf85" xreflabel="Wolf85">
     <authorgroup>
       <author>
