@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 21:00:36 $
+   $Date: 2006/06/20 13:19:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -347,7 +347,7 @@ CNewtonMethod::processInternal()
 CNewtonMethod::NewtonReturnCode CNewtonMethod::processNewton ()
 {
   CNewtonMethod::NewtonReturnCode ReturnCode = CNewtonMethod::notFound;
-  C_INT32 i, j, k;
+  C_INT32 i, k;
   C_FLOAT64 oldMaxRate, newMaxRate;
 
   calculateDerivativesX();
@@ -674,6 +674,12 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
         tmp = fabs(*pIt / (*itMetab)->getCompartment()->getVolume());
         if (tmp > store)
           store = tmp;
+
+        if (isnan(tmp))
+          {
+            store = DBL_MAX;
+            break;
+          }
       }
 
     return store * mpModel->getNumber2QuantityFactor();

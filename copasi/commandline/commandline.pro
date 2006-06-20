@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.8 $ $Author: shoops $ $Date: 2006/05/01 14:24:06 $  
+# $Revision: 1.9 $ $Author: shoops $ $Date: 2006/06/20 13:16:13 $  
 ######################################################################
 
 LIB = commandline
@@ -16,7 +16,7 @@ SOURCES += CConfigurationFile.cpp \
            COptionParser.cpp \
            COptions.cpp
 
-!contains(BUILD_OS, WIN32) {
+contains(BUILD_PARSER, yes) {
   CLOPP = $$system(which clo++)
   count(CLOPP, 1) {
     1.target = COptionParser.cpp
@@ -35,3 +35,6 @@ SOURCES += CConfigurationFile.cpp \
   }
 }
 
+DISTFILES += \
+             commandline.dsp \
+             COptionParser.xml

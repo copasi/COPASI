@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/10 21:50:53 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:19:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -176,9 +176,14 @@ bool CScanTask::initSubtask()
                   ((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
       break;
 
+    case CCopasiTask::mca:
+      mpSubtask = dynamic_cast<CCopasiTask*>
+                  ((*CCopasiDataModel::Global->getTaskList())["Metabolic Control Analysis"]);
+      break;
+
     case CCopasiTask::lyap:
       mpSubtask = dynamic_cast<CCopasiTask*>
-                  ((*CCopasiDataModel::Global->getTaskList())["Lyapunov exponents"]);
+                  ((*CCopasiDataModel::Global->getTaskList())["Lyapunov Exponents"]);
       break;
 
     default:

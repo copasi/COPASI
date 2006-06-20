@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2006 sp1 U (http://www.altova.com) by Stefan Hoops (VBI) -->
+<!-- 
+  Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+  Properties, Inc. and EML Research, gGmbH.
+  All rights reserved.
+-->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
   <xs:element name="COPASI" id="copasi.COPASI">
     <xs:annotation>
-      <xs:documentation>The root of a COPASI xml file.</xs:documentation>
+      <xs:documentation>
+        <p>The root of a COPASI xml file.</p>
+      </xs:documentation>
     </xs:annotation>
     <xs:complexType>
       <xs:sequence>
         <xs:element name="ListOfFunctions" id="copasi.ListOfFunctions" minOccurs="0">
           <xs:annotation>
-            <xs:documentation>The list of functions used by the current model. If there are no functions in the model this element must not occur.</xs:documentation>
+            <xs:documentation>
+              <p>The list of functions used by the current model. If there are no functions in the model this element must not occur.</p>
+            </xs:documentation>
           </xs:annotation>
           <xs:complexType mixed="true">
             <xs:sequence>
@@ -23,7 +31,9 @@
         </xs:element>
         <xs:element name="Model" id="copasi.Model" minOccurs="0">
           <xs:annotation>
-            <xs:documentation>The model displayed, editied and used when loading this file. Note, this element may not be present as it is perfectly valid to save just a list of functions. </xs:documentation>
+            <xs:documentation>
+              <p>The model displayed, edited and used when loading this file. Note, this element may not be present as it is perfectly valid to save just a list of functions. </p>
+            </xs:documentation>
           </xs:annotation>
           <xs:complexType>
             <xs:sequence>
@@ -194,6 +204,11 @@
             <xs:attribute name="key" type="cMODEL_KEY" use="required" id="copasi.Model.key"/>
             <xs:attribute name="name" type="cNAME" use="required" id="copasi.Model.name"/>
             <xs:attribute name="timeUnit" use="required" id="copasi.Model.timeUnit">
+              <xs:annotation>
+                <xs:documentation>
+                  <p>The time unit for the model. This is a string which may take one of the following values: d, h, min, s, ms, µs, ns, ps, fs.</p>
+                </xs:documentation>
+              </xs:annotation>
               <xs:simpleType>
                 <xs:restriction base="xs:string">
                   <xs:enumeration value="d"/>
@@ -236,7 +251,9 @@
             </xs:attribute>
             <xs:attribute name="stateVariable" type="cSTATE_VARIABLE_KEYREF" use="optional" id="copasi.Model.stateVariable">
               <xs:annotation>
-                <xs:documentation>This attribute is deprecated and no longer used. It will be removed in future schema versions.</xs:documentation>
+                <xs:documentation>
+                  <p>This attribute is deprecated and no longer used. It will be removed in future schema versions.</p>
+                </xs:documentation>
               </xs:annotation>
             </xs:attribute>
             <xs:attribute name="type" use="optional" default="deterministic">
@@ -251,7 +268,9 @@
         </xs:element>
         <xs:element name="ListOfTasks" minOccurs="0">
           <xs:annotation>
-            <xs:documentation>The list of tasks defined for  the current model. If there are no tasks defined this element must not occur.</xs:documentation>
+            <xs:documentation>
+              <p>The list of tasks defined for  the current model. If there are no tasks defined this element must not occur.</p>
+            </xs:documentation>
           </xs:annotation>
           <xs:complexType>
             <xs:sequence>
@@ -297,7 +316,9 @@
         </xs:element>
         <xs:element name="ListOfReports" minOccurs="0">
           <xs:annotation>
-            <xs:documentation>The list of reports defined for  the current model. If there are no reports defined this element must not occur.</xs:documentation>
+            <xs:documentation>
+              <p>The list of reports defined for  the current model. If there are no reports defined this element must not occur.</p>
+            </xs:documentation>
           </xs:annotation>
           <xs:complexType>
             <xs:sequence>
@@ -337,7 +358,9 @@
         </xs:element>
         <xs:element name="ListOfPlots" minOccurs="0">
           <xs:annotation>
-            <xs:documentation>The list of plots defined for  the current model. If there are no plots defined this element must not occur.</xs:documentation>
+            <xs:documentation>
+              <p>The list of plots defined for  the current model. If there are no plots defined this element must not occur.</p>
+            </xs:documentation>
           </xs:annotation>
           <xs:complexType>
             <xs:sequence>
@@ -373,7 +396,9 @@
         </xs:element>
         <xs:element name="GUI" id="copasi.GUI" minOccurs="0">
           <xs:annotation>
-            <xs:documentation>GUI information associated with the model.</xs:documentation>
+            <xs:documentation>
+              <p>GUI information associated with the model.</p>
+            </xs:documentation>
           </xs:annotation>
           <xs:complexType>
             <xs:sequence>
@@ -424,7 +449,9 @@
         </xs:element>
         <xs:element name="SBMLReference" minOccurs="0">
           <xs:annotation>
-            <xs:documentation>The list of refernced SBML IDs defined for  the current model. If there are no IDs defined this element must not occur.</xs:documentation>
+            <xs:documentation>
+              <p>The list of refernced SBML IDs defined for  the current model. If there are no IDs defined this element must not occur.</p>
+            </xs:documentation>
           </xs:annotation>
           <xs:complexType>
             <xs:sequence>
@@ -505,7 +532,7 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
-    <xs:attribute name="positive" use="optional">
+    <xs:attribute name="reversible" use="optional" default="unspecified">
       <xs:simpleType>
         <xs:restriction base="xs:string">
           <xs:enumeration value="true"/>

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.155 $
+   $Revision: 1.156 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:22 $
+   $Date: 2006/06/20 13:18:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -337,6 +337,17 @@ void CReaction::clearParameterMapping(C_INT32 index)
   //mMap.clearCallParameter(parameterName);
 }
 
+const std::vector<std::string> & CReaction::getParameterMapping(const std::string & parameterName) const
+  {
+    if (!mpFunction) fatalError();
+    CFunctionParameter::DataType type;
+    unsigned C_INT32 index;
+    index = mMap.findParameterByName(parameterName, type);
+    //if (type != CFunctionParameter::FLOAT64) fatalError();
+
+    return mMetabKeyMap[index];
+  }
+
 bool CReaction::isLocalParameter(C_INT32 index) const
   {
     unsigned C_INT32 i, imax = mParameters.size();
@@ -348,6 +359,16 @@ bool CReaction::isLocalParameter(C_INT32 index) const
     return false;
   }
 
+bool CReaction::isLocalParameter(const std::string & parameterName) const
+  {
+    if (!mpFunction) fatalError();
+    CFunctionParameter::DataType type;
+    unsigned C_INT32 index;
+    index = mMap.findParameterByName(parameterName, type);
+    if (type != CFunctionParameter::FLOAT64) fatalError();
+
+    return isLocalParameter(index);
+  }
 //***********************************************************************************************
 
 void CReaction::initializeParameters()
@@ -695,6 +716,7 @@ void CReaction::initObjects()
 std::ostream & operator<<(std::ostream &os, const CReaction & d)
 {
   os << "CReaction:  " << d.getObjectName() << std::endl;
+  os << "   sbml id:  " << d.mSBMLId << std::endl;
 
   os << "   mChemEq " << std::endl;
   os << d.mChemEq;
@@ -710,9 +732,26 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
   if (d.mScalingFactor)
     os << "   *mScalingFactor " << *(d.mScalingFactor) << std::endl;
   else
-    os << "   mScalingFactor == 0 " << std::endl;
+    os << "   mScalingFactor == NULL " << std::endl;
 
-  os << "   mUnitScalingFactor: " << d.mUnitScalingFactor << std::endl;
+  if (d.mUnitScalingFactor)
+    os << "   *mUnitScalingFactor " << *(d.mUnitScalingFactor) << std::endl;
+  else
+    os << "   mUnitScalingFactor == NULL " << std::endl;
+
+  os << "   parameter group:" << std::endl;
+  os << d.mParameters;
+
+  os << "   key map:" << std::endl;
+  unsigned C_INT32 i, j;
+  for (i = 0; i < d.mMetabKeyMap.size(); ++i)
+    {
+      os << i << ": ";
+      for (j = 0; j < d.mMetabKeyMap[i].size(); ++j)
+        os << d.mMetabKeyMap[i][j] << ", ";
+      os << std::endl;
+    }
+
   os << "----CReaction" << std::endl;
 
   return os;
@@ -741,6 +780,20 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
               if (dynamic_cast<CMetab*>(object))
                 {
                   id = dynamic_cast<Species*>(pos->second)->getId();
+
+                  // We need to check that we have no reserved name.
+                  const char *Reserved[] =
+                    {"pi", "exponentiale", "true", "false", "infinity", "nan",
+                     "PI", "EXPONENTIALE", "TRUE", "FALSE", "INFINITY", "NAN"
+                    };
+
+                  unsigned C_INT32 j, jmax = 12;
+                  for (j = 0; j < jmax; j++)
+                    if (id == Reserved[j]) break;
+
+                  if (j != jmax)
+                    id = "\"" + id + "\"";
+
                   pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
                   if (replacementMap.find(id) == replacementMap.end())
                     {
@@ -835,11 +888,25 @@ CEvaluationNodeVariable* CReaction::object2variable(CEvaluationNodeObject* objec
       else if (dynamic_cast<CCopasiParameter*>(object))
         {
           id = object->getObjectName();
+          id = this->escapeId(id);
           pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
           if (replacementMap.find(id) == replacementMap.end())
             {
               CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
                                               CFunctionParameter::PARAMETER);
+              replacementMap[id] = std::make_pair(object, pFunParam);
+            }
+        }
+      else if (dynamic_cast<CModel*>(object))
+        {
+          // usage = "TIME"
+          id = object->getObjectName();
+          id = this->escapeId(id);
+          pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+          if (replacementMap.find(id) == replacementMap.end())
+            {
+              CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
+                                              CFunctionParameter::TIME);
               replacementMap[id] = std::make_pair(object, pFunParam);
             }
         }
@@ -981,7 +1048,7 @@ CEvaluationNode* CReaction::objects2variables(CEvaluationNode* expression, std::
       CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
       break;
     case CEvaluationNode::INVALID:
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 2);
+      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
       // create an error message
       break;
     default:
@@ -1028,6 +1095,7 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
           pFun->setType(CFunction::UserDefined);
           pFun->setRoot(pFunctionTree);
           pFun->setReversible(this->isReversible() ? TriTrue : TriFalse);
+
           pFunctionDB->add(pFun, true);
           // add the variables
           // and do the mapping
@@ -1046,6 +1114,8 @@ bool CReaction::setFunctionFromExpressionTree(CEvaluationTree* tree, std::map<CC
           while (it != endIt)
             {
               CFunctionParameter* pFunPar = it->second.second;
+              CCopasiObject* pObject = it->second.first;
+              std::string id = it->first;
               this->setParameterMapping(pFunPar->getObjectName(), it->second.first->getKey());
               delete pFunPar;
               ++it;
@@ -1190,7 +1260,7 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
       CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
       break;
     case CEvaluationNode::INVALID:
-      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 2);
+      CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
       // create an error message
       break;
     default:
@@ -1208,17 +1278,17 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
 
   if (index == C_INVALID_INDEX)
     {
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 8, (static_cast<std::string>(pVariableNode->getData())).c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 8, (static_cast<std::string>(pVariableNode->getData())).c_str());
     }
   if (type == CFunctionParameter::VFLOAT64 || type == CFunctionParameter::VINT32)
     {
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 10, (static_cast<std::string>(pVariableNode->getData())).c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 10, (static_cast<std::string>(pVariableNode->getData())).c_str());
     }
   const std::string& key = this->getParameterMappings()[index][0];
   CCopasiObject* pObject = GlobalKeys.get(key);
   if (!pObject)
     {
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9 , key.c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9 , key.c_str());
     }
   pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::ANY, "<" + pObject->getCN() + ">");
   return pObjectNode;
@@ -1238,3 +1308,30 @@ const std::string& CReaction::getSBMLId() const
   {
     return this->mSBMLId;
   }
+
+std::string CReaction::escapeId(const std::string& id)
+{
+  std::string s = id;
+  std::string::size_type idx = s.find('\\');
+  while (idx != std::string::npos)
+    {
+      s.insert(idx, "\\");
+      ++idx;
+      idx = s.find('\\', ++idx);
+    }
+  idx = s.find('"');
+  while (idx != std::string::npos)
+    {
+      s.insert(idx, "\\");
+      ++idx;
+      idx = s.find('"', ++idx);
+    }
+  if (s.find(' ') != std::string::npos || s.find('\t') != std::string::npos)
+    {
+      s = std::string("\"") + s + std::string("\"");
+    }
+  return s;
+}
+
+void CReaction::printDebug() const
+  {std::cout << *this;}

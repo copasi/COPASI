@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/10 16:24:14 $
+   $Date: 2006/06/20 13:20:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,12 +52,12 @@ const MESSAGES Messages[] =
     {MCReaction + 2, "CReaction (2): In Reaction '%s' the compartment could not be guessed."},
     {MCReaction + 3, "CReaction (3): Reaction '%s' has no substrates and no products."},
     {MCReaction + 4, "CReaction (4): Only Metabolites, Compartments or Parameter object nodes are allowed in kinetic functions."},
-    {MCReaction + 5, "CReaction (5): Nodes of type %s are not implemented yet."},
+    {MCReaction + 5, "CReaction (5): Nodes of type '%s' are not implemented yet."},
     {MCReaction + 6, "CReaction (6): Nodes of type VARIABLE must not appear in an expression."},
     {MCReaction + 7, "CReaction (7): CMetab object '%s' is neither substrate, product nor modifier to reaction '%s' but it is used in the kinetic law."},
-    {MCReaction + 8, "CReaction (8): Could not find variable with name \"%s\"."},
-    {MCReaction + 9, "CReaction (9): Could not find object for key \"%s\"."},
-    {MCReaction + 10, "CReaction (10): Parameter \"%s\" is a vector."},
+    {MCReaction + 8, "CReaction (8): Could not find variable with name '%s'."},
+    {MCReaction + 9, "CReaction (9): Could not find object for key '%s'."},
+    {MCReaction + 10, "CReaction (10): Parameter '%s' is a vector."},
 
     // CChemEq
     {MCChemEq + 1, "CChemEq (1): No Substrates and no Products."},
@@ -79,7 +79,7 @@ const MESSAGES Messages[] =
      "applicable, since reversible reactions exists."},
     {MCTrajectoryMethod + 3, "CTrajectoryMethod (3): Hybrid simulation not "
      "applicable, since more than one compartment is involved."},
-    {MCTrajectoryMethod + 4, "CTrajectoryMethod (4): mLowerStochLimit ('%.2f') is greater than mUpperStochLimit ('%.2f')."},
+    {MCTrajectoryMethod + 4, "CTrajectoryMethod (4): Lower Limit '%.2f' is greater than Upper Limit '%.2f'."},
     {MCTrajectoryMethod + 6, "CTrajectoryMethod (6): Deterministic integration failed. "
      "LSODA reported:\n%s \n\nPlease see result for indications of numerical instability."},
     {MCTrajectoryMethod + 7, "CTrajectoryMethod (7): pProblem == NULL"},
@@ -88,6 +88,9 @@ const MESSAGES Messages[] =
     {MCTrajectoryMethod + 10, "CTrajectoryMethod (10): The tau-Leap Method encountered numerical problems.\nYou can try to reduce the tau-value."},
     {MCTrajectoryMethod + 11, "CTrajectoryMethod (11): Invalid tau-value ('%.2f'). Tau must have a positive value."},
     {MCTrajectoryMethod + 12, "CTrajectoryMethod (12): Internal step limit exceeded."},
+    {MCTrajectoryMethod + 13, "CTrajectoryMethod (13): Runge Kutta Stepsize must be positive in hybrid method."},
+    {MCTrajectoryMethod + 14, "CTrajectoryMethod (14): Use Random Seed should be 0 or 1 since it is a boolean parameter."},
+    {MCTrajectoryMethod + 15, "CTrajectoryMethod (15): Max Internal Steps needs to be positive."},
 
     // XML Package
     {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},
@@ -121,7 +124,7 @@ const MESSAGES Messages[] =
     {MCOptimization + 8, "Optimization (8): '%d' Function Evaluation out of '%d' failed."},
 
     // SBML
-    // {MCSBML + 1, "SBML (1): Available"},
+    {MCSBML + 1, "SBML (1): SBML Level2 Version1 does not support initial times different from 0. This information will be lost in the exported file."},
     {MCSBML + 2, "SBML (2): The SBML document contains no model."},
     {MCSBML + 3, "SBML (3): The SBML document contains rules that were ignored."},
     {MCSBML + 4, "SBML (4): The SBML document contains events that were ignored."},
@@ -131,25 +134,25 @@ const MESSAGES Messages[] =
     {MCSBML + 8, "SBML (8): Expression tree for kinetic of reaction '%s' could not be converted."},
     {MCSBML + 9, "SBML (9): Could not set function from expression in reaction '%s'."},
     {MCSBML + 10, "SBML (10): Copasi does not support stoichiometric expressions yet."},
-    {MCSBML + 11, "SBML (11): Function \"%s\" does not start with a Lambda element."},
-    {MCSBML + 12, "SBML (12): Function \"%s\" contains invalid parameter list."},
-    {MCSBML + 13, "SBML (13): Could not read function definition for function \"%s\"."},
-    {MCSBML + 14, "SBML (14): Could not import function with id \"%s\"."},
-    {MCSBML + 15, "SBML (15): Could not find function with id \"%s\"."},
+    {MCSBML + 11, "SBML (11): Function '%s' does not start with a Lambda element."},
+    {MCSBML + 12, "SBML (12): Function '%s' contains invalid parameter list."},
+    {MCSBML + 13, "SBML (13): Could not read function definition for function '%s'."},
+    {MCSBML + 14, "SBML (14): Could not import function with id '%s'."},
+    {MCSBML + 15, "SBML (15): Could not find function with id '%s'."},
     {MCSBML + 16, "SBML (16): Loop found in function. That means a function calls itself either directly or indirectly."},
     {MCSBML + 17, "SBML (17): Single compartment reaction found where the kinetic law does not include a multiplication by the volume."},
-    {MCSBML + 18, "SBML (18): Support for \"hasOnlySubstanceUnit\" flag on species %s is experimental."},
+    {MCSBML + 18, "SBML (18): Support for 'hasOnlySubstanceUnit' flag on species %s is experimental."},
     {MCSBML + 19, "SBML (19): spatialSizeUnits on species %s ignored."},
-    {MCSBML + 20, "SBML (20): Setting an initial concentration on species %s which has the \"hasOnlySubstanceUnits\" flag set is not allowed."},
-    {MCSBML + 21, "SBML (21): Setting an initial concentration on species \"%s\" which is in a compartment with spatial dimensions 0 is not allowed."},
-    {MCSBML + 22, "SBML (22): Current versions of Copasi only supports three dimensional compartments. \"%s\" will be converted to three dimensions."},
-    {MCSBML + 23, "SBML (23): Unable to handle compartment \"%s\" which has spatial dimensions of 0."},
-    {MCSBML + 24, "SBML (24): Units for compartment \"%s\" ignored."},
-    {MCSBML + 25, "SBML (25): Units for species \"%s\" ignored."},
-    {MCSBML + 26, "SBML (26): Units for parameter \"%s\" ignored."},
-    {MCSBML + 27, "SBML (27): Error in kinetic law for reaction \"%s\"."},
-    {MCSBML + 28, "SBML (28): Error in function definition with id \"%s\"."},
-    {MCSBML + 29, "SBML (29): Unable to handle reactions with the \"fast\" flag set.\nThe flag has been set to false."},
+    {MCSBML + 20, "SBML (20): Setting an initial concentration on species %s which has the 'hasOnlySubstanceUnits' flag set is not allowed."},
+    {MCSBML + 21, "SBML (21): Setting an initial concentration on species '%s' which is in a compartment with spatial dimensions 0 is not allowed."},
+    {MCSBML + 22, "SBML (22): Current versions of Copasi only supports three dimensional compartments. '%s' will be converted to three dimensions."},
+    {MCSBML + 23, "SBML (23): Unable to handle compartment '%s' which has spatial dimensions of 0."},
+    {MCSBML + 24, "SBML (24): Units for compartment '%s' ignored."},
+    {MCSBML + 25, "SBML (25): Units for species '%s' ignored."},
+    {MCSBML + 26, "SBML (26): Units for parameter '%s' ignored."},
+    {MCSBML + 27, "SBML (27): Error in kinetic law for reaction '%s'."},
+    {MCSBML + 28, "SBML (28): Error in function definition with id '%s'."},
+    {MCSBML + 29, "SBML (29): Unable to handle reactions with the 'fast' flag set.\nThe flag has been set to false."},
     {MCSBML + 30, "SBML (30): Can't handle units of type item with scale set to 1.\n If this file was created with COPASI RC1 or older please see the COPASI FAQ."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
@@ -185,21 +188,28 @@ const MESSAGES Messages[] =
     {MCCopasiTask + 7, "CCopasiTask (7): Problems compiling Plots."},
 
     {MCSteadyState + 1, "CSteadyState (1): The model is explicitly time dependent. "
-     "Therefore, the calculation of a steady state is not very meaning full."},
+     "Therefore, the calculation of a steady state is not very meaningful."},
 
     {MCFitting + 1, "CFitting (1): Failed to determine work area size for matrix inversion. "
      "dsytrf returned with error '%d'."},
     {MCFitting + 2, "CFitting (2): Failed to invert Fisher information matrix. "
      "dsytrf returned with error '%d'."},
-    {MCFitting + 3, "CFitting (3); No column with type 'Time' specified for a time course experiment."},
-    {MCFitting + 4, "CFitting (4); Insufficient experimental data (columns requested '%d', columns found '%d')."},
-    {MCFitting + 5, "CFitting (5); Incomplete data mapping, column '%d' must be mapped."},
-    {MCFitting + 6, "CFitting (6); Object '%s' in column '%d' has no numeric value."},
-    {MCFitting + 7, "CFitting (7); Insufficient experimental data (rows requested '%d', rows found '%d')."},
-    {MCFitting + 8, "CFitting (8); Failure reading file '%s'."},
+    {MCFitting + 3, "CFitting (3): No column with type 'Time' specified for a time course experiment."},
+    {MCFitting + 4, "CFitting (4): Insufficient experimental data (columns requested '%d', columns found '%d')."},
+    {MCFitting + 5, "CFitting (5): Incomplete data mapping, column '%d' must be mapped."},
+    {MCFitting + 6, "CFitting (6): Object '%s' in column '%d' has no numeric value."},
+    {MCFitting + 7, "CFitting (7): Insufficient experimental data (rows requested '%d', rows found '%d')."},
+    {MCFitting + 8, "CFitting (8): Failure reading file '%s'."},
 
     // CCopasiObject
     {MCObject + 1, "CObject (1): Circular dependencies detected for object '%s'."},
+
+    // Lyapunov exponents
+    {MCLyap + 1, "CLyapMethod (1): Problem is not a lyapunov exponent problem."},
+    {MCLyap + 2, "CLyapMethod (2): Number of exponents needs to be at least one."},
+    {MCLyap + 3, "CLyapMethod (3): Only %d exponents can be calculated for this model because the model has only %d independent variables."},
+    {MCLyap + 4, "CLyapMethod (4): Transient time is larger than overall time."},
+    {MCLyap + 5, "CLyapMethod (5): Orthonormalization interval is larger than overall time."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Date: 2006/06/20 13:19:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,7 +77,7 @@ class CMCAProblem: public CCopasiProblem
      * Retrieve the initial state of the problem.
      * @return "const CState &" pInitialState
      */
-    const CState & getInitialState() const;
+    //const CState & getInitialState() const;
 
     /**
      * Set whether the steady state analysis is requested.
@@ -104,6 +104,28 @@ class CMCAProblem: public CCopasiProblem
      */
     void load(CReadConfig & configBuffer,
               CReadConfig::Mode mode = CReadConfig::NEXT);
+
+    /**
+     * This is the output method for any result of a problem. The default implementation
+     * is provided with CCopasiProblem. Does only print "Not implmented." To overide this
+     * default behaviour one needs to reimplement the virtual printResult function.
+     * @param std::ostream * ostream
+     */
+    virtual void printResult(std::ostream * ostream) const;
+
+    /**
+     * Output stream operator. Prints description of the problem incl. the subtask
+     * @param ostream & os
+     * @param const CMCAProblem & A
+     * @return ostream & os
+     */
+    friend std::ostream &operator<<(std::ostream &os, const CMCAProblem & o);
+
+    /**
+     * This is the output method for any object. It calls the insert operator<<
+     * @param std::ostream * ostream
+     */
+    virtual void print(std::ostream * ostream) const;
 
   private:
   };

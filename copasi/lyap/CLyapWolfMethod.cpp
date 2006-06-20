@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/14 16:52:24 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:18:41 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@ CLyapWolfMethod::CLyapWolfMethod(const CCopasiContainer * pParent):
 {
   mDim[1] = (C_INT) (void *) this;
 
-  addParameter("Orthonormalize Intervall",
+  addParameter("Orthonormalization Interval",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
   addParameter("Overall time",
                CCopasiParameter::UDOUBLE, (C_FLOAT64) 1000.0);
@@ -71,6 +71,7 @@ void CLyapWolfMethod::step(const double & deltaT)
 
   C_FLOAT64 EndTime = mTime + deltaT;
   C_INT one = 1;
+  C_INT two = 2;
   C_INT DSize = mDWork.size();
   C_INT ISize = mIWork.size();
 
@@ -79,9 +80,9 @@ void CLyapWolfMethod::step(const double & deltaT)
          mVariables.array(), //  3. the array of current concentrations
          &mTime ,          //  4. the current time
          &EndTime ,        //  5. the final time
-         &one ,            //  6. scalar error control
+         &two ,            //  6. vector absolute error, scalar relative error
          &mRtol ,          //  7. relative tolerance array
-         &mAtol ,          //  8. absolute tolerance array
+         mAtol.array() ,          //  8. absolute tolerance array
          &mState ,         //  9. output by overshoot & interpolatation
          &mLsodaStatus ,   // 10. the state control variable
          &one ,            // 11. futher options (one)
@@ -177,14 +178,22 @@ void CLyapWolfMethod::start(/*const CState * initialState*/)
 
   /* Configure lsoda */
   mRtol = * getValue("Relative Tolerance").pUDOUBLE;
+
   mDefaultAtol = * getValue("Use Default Absolute Tolerance").pBOOL;
+  C_FLOAT64 tmpATol;
   if (mDefaultAtol)
     {
-      mAtol = getDefaultAtol(mpProblem->getModel());
-      setValue("Absolute Tolerance", mAtol);
+      tmpATol = getDefaultAtol(mpProblem->getModel());
+      setValue("Absolute Tolerance", tmpATol);
     }
   else
-    mAtol = * getValue("Absolute Tolerance").pUDOUBLE;
+    tmpATol = * getValue("Absolute Tolerance").pUDOUBLE;
+
+  mAtol.resize(mDim[0]);
+  for (i = 0; i < mSystemSize; ++i)
+    mAtol[i] = tmpATol;
+  for (; i < mDim[0]; ++i)
+    mAtol[i] = 1e-25;
 
   mDWork.resize(22 + mDim[0] * std::max<C_INT>(16, mDim[0] + 9));
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
@@ -320,7 +329,7 @@ bool CLyapWolfMethod::calculate()
   //initialize LSODA
   start();
 
-  C_FLOAT64 stepSize = *getValue("Orthonormalize Intervall").pUDOUBLE;
+  C_FLOAT64 stepSize = *getValue("Orthonormalization Interval").pUDOUBLE;
   C_FLOAT64 transientTime = mpProblem->getTransientTime() + mTime;
   C_FLOAT64 endTime = mTime + *getValue("Overall time").pUDOUBLE;
   C_FLOAT64 startTime = mTime;
@@ -328,7 +337,7 @@ bool CLyapWolfMethod::calculate()
   //unsigned C_INT32 StepCounter = 1;
 
   bool flagProceed = true;
-  C_FLOAT64 handlerFactor = 100.0 / (endTime - mTime);
+  C_FLOAT64 handlerFactor = 100.0 / (endTime - transientTime);
 
   //C_FLOAT64 Percentage = 0;
 
@@ -365,10 +374,12 @@ bool CLyapWolfMethod::calculate()
   //copy state to model
   mpProblem->getModel()->setState(*mpState);
   mpProblem->getModel()->applyAssignments();
-  mpTask->methodCallback((mTime - startTime) * handlerFactor);
+  mpTask->methodCallback((mTime - transientTime) * handlerFactor);
   //********
 
   orthonormalize();
+  if (mDoDivergence)
+    *(mVariables.array() + mVariables.size() - 1) = 0; //divergence
   mLsodaStatus = 1; //the state has changed, we need to restart lsoda
 
   unsigned C_INT32 i;
@@ -386,7 +397,7 @@ bool CLyapWolfMethod::calculate()
           mpTask->mLocalExponents[i] = log(mNorms[i]);
           mSumExponents[i] += mpTask->mLocalExponents[i];
           mpTask->mLocalExponents[i] = mpTask->mLocalExponents[i] / stepSize;
-          mpTask->mExponents[i] = mSumExponents[i] / (mTime - startTime);
+          mpTask->mExponents[i] = mSumExponents[i] / (mTime - transientTime);
         }
 
       //process result of divergence integration
@@ -395,7 +406,7 @@ bool CLyapWolfMethod::calculate()
           mSumDivergence += *(mVariables.array() + mVariables.size() - 1);
           mpTask->mIntervalDivergence = *(mVariables.array() + mVariables.size() - 1) / stepSize;
           *(mVariables.array() + mVariables.size() - 1) = 0;
-          mpTask->mAverageDivergence = mSumDivergence / (mTime - startTime);
+          mpTask->mAverageDivergence = mSumDivergence / (mTime - transientTime);
         }
 
       //       std::cout << mTime << " "
@@ -408,7 +419,7 @@ bool CLyapWolfMethod::calculate()
       //copy state to model
       mpProblem->getModel()->setState(*mpState);
       mpProblem->getModel()->applyAssignments();
-      flagProceed &= mpTask->methodCallback((mTime - startTime) * handlerFactor);
+      flagProceed &= mpTask->methodCallback((mTime - transientTime) * handlerFactor);
     }
   while ((mTime < endTime) && flagProceed);
 
@@ -487,4 +498,33 @@ void CLyapWolfMethod::add(C_FLOAT64* dbl1, const C_FLOAT64* dbl1End,
   //calculate v1 = v1 + f * v2
   for (; dbl1 != dbl1End; ++dbl1, ++dbl2)
     *dbl1 += f * *dbl2;
+}
+
+//virtual
+bool CLyapWolfMethod::isValidProblem(const CCopasiProblem * pProblem)
+{
+  if (!CLyapMethod::isValidProblem(pProblem)) return false;
+
+  const CLyapProblem * pLP = dynamic_cast<const CLyapProblem *>(pProblem);
+  assert (pLP);
+
+  C_FLOAT64 stepSize = *getValue("Orthonormalization Interval").pUDOUBLE;
+  C_FLOAT64 transientTime = pLP->getTransientTime();
+  C_FLOAT64 endTime = *getValue("Overall time").pUDOUBLE;
+
+  if (transientTime >= endTime)
+    {
+      //
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCLyap + 4);
+      return false;
+    }
+
+  if (stepSize > (endTime - transientTime))
+    {
+      //
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCLyap + 5);
+      return false;
+    }
+
+  return true;
 }

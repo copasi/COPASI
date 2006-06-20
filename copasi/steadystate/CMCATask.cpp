@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Date: 2006/06/20 13:19:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,7 +87,8 @@ bool CMCATask::initialize(const OutputFlag & of,
   CSteadyStateTask *pSubTask = pProblem->getSubTask();
 
   if (pSubTask)
-    success = pSubTask->initialize(of, mReport.getStream());
+    success = pSubTask->initialize(CCopasiTask::NO_OUTPUT, mReport.getStream());
+  //success = pSubTask->initialize(of, mReport.getStream());
 
   return success;
 }
@@ -109,12 +110,22 @@ bool CMCATask::process(const bool & useInitialValues)
       pSubTask->setCallBack(mpCallBack);
       success &= pSubTask->process(useInitialValues);
 
-      if (!success) return false;
+      if (!success && useInitialValues)
+        {
+          mpProblem->getModel()->applyInitialValues();
+        }
 
       pMethod->setSteadyStateStatus(pSubTask->getResult());
     }
   else
-    pMethod->setSteadyStateStatus(CSteadyStateMethod::notFound);
+    {
+      pMethod->setSteadyStateStatus(CSteadyStateMethod::notFound);
+
+      if (useInitialValues)
+        {
+          mpProblem->getModel()->applyInitialValues();
+        }
+    }
 
   CCopasiTask::output(COutputInterface::BEFORE);
 
@@ -128,14 +139,13 @@ bool CMCATask::process(const bool & useInitialValues)
 
 bool CMCATask::restore()
 {
-  bool success = true;
+  bool success = CCopasiTask::restore();
 
   CSteadyStateTask *pSubTask =
     dynamic_cast<CMCAProblem *>(mpProblem)->getSubTask();
+
   if (pSubTask)
     success &= pSubTask->restore();
-
-  success &= CCopasiTask::restore();
 
   return success;
 }
@@ -148,3 +158,77 @@ std::ostream &operator<<(std::ostream &os, const CMCATask & C_UNUSED(A))
 
   return os;
 }
+
+void CMCATask::printResult(std::ostream * ostream) const
+  {
+    assert(mpProblem && mpMethod);
+
+    CMCAProblem* pProblem =
+      dynamic_cast<CMCAProblem *>(mpProblem);
+    assert(pProblem);
+
+    CMCAMethod* pMethod = dynamic_cast<CMCAMethod *>(mpMethod);
+    assert(pMethod);
+    pMethod->setModel(mpProblem->getModel());
+
+    std::ostream & os = *ostream;
+
+    bool showCCs = false; //show CCs?
+    bool showSS = false; //show Steady State result?
+
+    if (pProblem->isSteadyStateRequested())
+      {
+        if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::found)
+          {
+            os << "A steady state was found. All coefficients are shown." << std::endl;
+            showCCs = true;
+            showSS = true;
+          }
+
+        if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::foundEquilibrium)
+          {
+            os << "Found equilibrium steady state. Only elasticities available." << std::endl;
+            showSS = true;
+          }
+
+        if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::foundNegative)
+          {
+            os << "Invalid steady state found (negative concentrations)." << std::endl;
+            showSS = true;
+          }
+
+        if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::notFound)
+          {
+            os << "No steady state found. Only elasticities available." << std::endl;
+          }
+      }
+    else
+      {
+        os << "Since no steady state calculation was requested only elasticities are shown." << std::endl;
+      }
+
+    os << std::endl;
+    os << *pMethod->getUnscaledElasticitiesAnn() << std::endl;
+    os << *pMethod->getScaledElasticitiesAnn() << std::endl;
+
+    if (showCCs)
+      {
+        os << *pMethod->getUnscaledConcentrationCCAnn() << std::endl;
+        os << *pMethod->getScaledConcentrationCCAnn() << std::endl;
+
+        os << *pMethod->getUnscaledFluxCCAnn() << std::endl;
+        os << *pMethod->getScaledFluxCCAnn() << std::endl;
+      }
+
+    if (showSS)
+      {
+        if (!pProblem->getSubTask())
+          {
+            os << "Problem with steady state calculation. Please report as bug!" << std::endl;
+            return;
+          }
+
+        os << "Results of the steady state subtask (the state for which the MCA was performed):" << std::endl;
+        os << *pProblem->getSubTask();
+      }
+  }

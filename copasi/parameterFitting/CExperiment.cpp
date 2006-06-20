@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/08 15:55:36 $
+   $Date: 2006/06/20 13:19:32 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,7 +105,7 @@ CExperiment::CExperiment(const CExperiment & src,
     mNumDataRows(src.mNumDataRows),
     mpDataDependentCalculated(src.mpDataDependentCalculated),
     mDependentObjects(src.mDependentObjects),
-    mFittingPoints(src.mFittingPoints)
+    mFittingPoints(src.mFittingPoints, this)
 {initializeParameter();}
 
 CExperiment::CExperiment(const CCopasiParameterGroup & group,
@@ -217,7 +217,8 @@ void CExperiment::updateFittedPointValues(const unsigned C_INT32 & index)
   CCopasiVector< CFittingPoint >::iterator it = mFittingPoints.begin();
   CCopasiVector< CFittingPoint >::iterator end = mFittingPoints.end();
 
-  if (index >= mNumDataRows)
+  if (index >= mNumDataRows ||
+      mpDataDependentCalculated == NULL)
     {
       for (; it != end; ++it)
         (*it)->setValues(std::numeric_limits<C_FLOAT64>::quiet_NaN(),
@@ -362,6 +363,9 @@ bool CExperiment::calculateStatistics()
 
   unsigned C_INT32 i, j;
   C_FLOAT64 Residual;
+
+  if (mpDataDependentCalculated == NULL)
+    return false;
 
   C_FLOAT64 * pDataDependentCalculated = mpDataDependentCalculated;
   C_FLOAT64 * pDataDependent = mDataDependent.array();
@@ -1164,7 +1168,8 @@ C_FLOAT64 CExperiment::getErrorMean(CCopasiObject *const& pObject) const
     std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
     = mDependentObjects.find(pObject);
 
-    if (it == mDependentObjects.end())
+    if (it == mDependentObjects.end() ||
+        mpDataDependentCalculated == NULL)
       return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
     C_FLOAT64 Mean = 0;
@@ -1194,7 +1199,8 @@ C_FLOAT64 CExperiment::getErrorMeanSD(CCopasiObject *const& pObject,
     std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
     = mDependentObjects.find(pObject);
 
-    if (it == mDependentObjects.end())
+    if (it == mDependentObjects.end() ||
+        mpDataDependentCalculated == NULL)
       return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
     C_FLOAT64 MeanSD = 0;

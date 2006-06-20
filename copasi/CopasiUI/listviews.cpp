@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.197 $
+   $Revision: 1.198 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/12 13:48:10 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:18:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,9 @@
 #include "FunctionSymbols.h"
 #include "FunctionWidget.h"
 #include "FunctionWidget1.h"
-#include "DifferentialEquations.h"
+#ifdef HAVE_MML
+# include "DifferentialEquations.h"
+#endif // HAVE_MML
 #include "CQLyapWidget.h"
 #include "CQLyapResultWidget.h"
 #include "MetabolitesWidget.h"
@@ -51,7 +53,9 @@
 #include "SteadyStateWidget.h"
 #include "StateWidget.h"
 #include "ScanWidget.h"
-#include "SensitivitiesWidget.h"
+#ifdef COPASI_SENS
+# include "SensitivitiesWidget.h"
+#endif
 #include "CQOptimizationWidget.h"
 #include "OptimizationResultWidget.h"
 #include "TableDefinition.h"
@@ -59,7 +63,9 @@
 #include "CopasiDefaultWidget.h"
 #include "CQTrajectoryWidget.h"
 #include "TimeSeriesWidget.h"
-#include "TSSWidget.h"
+#ifdef COPASI_TSS
+# include "TSSWidget.h"
+#endif
 #include "listviews.h"
 #include "qtUtilities.h"
 #include "CQFittingWidget.h"
@@ -330,8 +336,10 @@ void ListViews::ConstructNodeWidgets()
   //  if (!constantSymbols) constantSymbols = new ConstantSymbols(this);
   //  constantSymbols->hide();
 
+#ifdef HAVE_MML
   if (!differentialEquations) differentialEquations = new DifferentialEquations(this);
   differentialEquations->hide();
+#endif // HAVE_MML
 
   //  if (!fixedMetaboliteSymbols) fixedMetaboliteSymbols = new FixedMetaboliteSymbols(this);
   //  fixedMetaboliteSymbols->hide();
@@ -494,9 +502,11 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         /*      case 125:
                 return metaboliteSymbols;
                 break;*/
+#ifdef HAVE_MML
       case 126:
         return differentialEquations;
         break;
+#endif // HAVE_MML
       case 21:
         return steadystateWidget;
         break;

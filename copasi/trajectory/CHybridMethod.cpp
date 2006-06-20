@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: jpahle $
-   $Date: 2006/05/05 17:44:02 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:20:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -87,7 +87,7 @@ void CHybridMethod::initializeParameter()
 {
   CCopasiParameter *pParm;
 
-  assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) MAX_STEPS);
+  assertParameter("Max Internal Steps", CCopasiParameter::INT, (C_INT32) MAX_STEPS);
   assertParameter("Lower Limit", CCopasiParameter::DOUBLE, (C_FLOAT64) LOWER_STOCH_LIMIT);
   assertParameter("Upper Limit", CCopasiParameter::DOUBLE, (C_FLOAT64) UPPER_STOCH_LIMIT);
   assertParameter("Runge Kutta Stepsize", CCopasiParameter::DOUBLE, (C_FLOAT64) RUNGE_KUTTA_STEPSIZE);
@@ -98,7 +98,7 @@ void CHybridMethod::initializeParameter()
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("HYBRID.MaxSteps")) != NULL)
     {
-      setValue("Max Internal Steps", *pParm->getValue().pUINT);
+      setValue("Max Internal Steps", *pParm->getValue().pINT);
       removeParameter("HYBRID.MaxSteps");
 
       if ((pParm = getParameter("HYBRID.LowerStochLimit")) != NULL)
@@ -267,7 +267,7 @@ void CHybridMethod::initMethod(C_FLOAT64 start_time)
   k4.resize(mNumVariableMetabs);
 
   /* get configuration data */
-  mMaxSteps = * getValue("Max Internal Steps").pUINT;
+  mMaxSteps = * getValue("Max Internal Steps").pINT;
   //std::cout << "HYBRID.MaxSteps: " << mMaxSteps << std::endl;
   mLowerStochLimit = * getValue("Lower Limit").pDOUBLE;
   //std::cout << "HYBRID.LowerStochLimit: " << mLowerStochLimit << std::endl;
@@ -1577,8 +1577,6 @@ std::ostream & operator<<(std::ostream & os, const CHybridBalance & d)
 //virtual
 bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
-  //TODO: rewrite CModel::suitableForStochasticSimulation() to use
-  //      CCopasiMessage
   if (!pProblem)
     {
       //no problem
@@ -1601,6 +1599,8 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
+  //TODO: rewrite CModel::suitableForStochasticSimulation() to use
+  //      CCopasiMessage
   std::string message = pTP->getModel()->suitableForStochasticSimulation();
   if (message != "")
     {
@@ -1609,10 +1609,39 @@ bool CHybridMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
+  /* Max Internal Steps */
+  if (* getValue("Max Internal Steps").pINT <= 0)
+    {
+      //max steps should be at least 1
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 15);
+      return false;
+    }
+
+  /* Lower Limit, Upper Limit */
   mLowerStochLimit = * getValue("Lower Limit").pDOUBLE;
   mUpperStochLimit = * getValue("Upper Limit").pDOUBLE;
   if (mLowerStochLimit > mUpperStochLimit)
-    CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 4, mLowerStochLimit, mUpperStochLimit);
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 4, mLowerStochLimit, mUpperStochLimit);
+      return false;
+    }
+
+  /* Runge Kutta Stepsize */
+  if (* getValue("Runge Kutta Stepsize").pDOUBLE <= 0.0)
+    {
+      // Runge Kutta Stepsize must be positive
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 13);
+      return false;
+    }
+
+  /* Partitioning Interval */
+  // nothing to be done here so far
+
+  /* Use Random Seed */
+  // should be checked in the widget later on
+
+  /* Random Seed */
+  // nothing to be done here
 
   return true;
 }

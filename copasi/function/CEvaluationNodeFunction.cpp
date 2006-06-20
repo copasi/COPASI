@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/05/05 12:45:34 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:18:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -347,11 +347,15 @@ std::string CEvaluationNodeFunction::getDisplay_C_String(const CEvaluationTree *
         switch (mType & 0x00FFFFFF)
           {
           case MINUS:
+            return "(" + data + mpLeft->getDisplay_C_String(pTree) + ")";
+            break;
           case PLUS:
-            return handleSign(mpLeft->getDisplay_C_String(pTree));
+            //return handleSign(mpLeft->getDisplay_C_String(pTree));
+            return mpLeft->getDisplay_C_String(pTree);
+            break;
 
           default:
-            return mData + "(" + mpLeft->getDisplay_C_String(pTree) + ")";
+            return data + "(" + mpLeft->getDisplay_C_String(pTree) + ")";
           }
       }
     else
@@ -386,7 +390,9 @@ std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree
           case SQRT:
           case ABS:
           case NOT:
+            break;
           case MINUS:
+            data = "-";
             break;
           case PLUS:
             data = "";
@@ -417,11 +423,14 @@ std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree
         switch (mType & 0x00FFFFFF)
           {
           case MINUS:
+            return "(" + data + mpLeft->getDisplay_MMD_String(pTree) + ")";
+            break;
           case PLUS:
-            return handleSign(mpLeft->getDisplay_C_String(pTree));
-
+            //return handleSign(mpLeft->getDisplay_MMD_String(pTree));
+            return mpLeft->getDisplay_MMD_String(pTree);
+            break;
           default:
-            return mData + "(" + mpLeft->getDisplay_C_String(pTree) + ")";
+            return data + "(" + mpLeft->getDisplay_MMD_String(pTree) + ")";
           }
       }
     else

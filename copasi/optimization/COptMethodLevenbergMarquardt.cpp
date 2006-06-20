@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/02 19:30:19 $
+   $Date: 2006/06/20 13:19:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -322,7 +322,7 @@ bool COptMethodLevenbergMarquardt::initialize()
   mGradient.resize(mVariableSize);
   mHessian.resize(mVariableSize, mVariableSize);
 
-  mBestValue = 2.0 * DBL_MAX;
+  mBestValue = mpOptProblem->getSolutionValue();
 
   mContinue = true;
 

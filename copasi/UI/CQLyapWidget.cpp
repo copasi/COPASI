@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQLyapWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/14 16:53:00 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:18:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,7 +65,7 @@ CQLyapWidget::CQLyapWidget(QWidget* parent, const char* name, WFlags fl)
 
   taskNameLabel = new QLabel(this, "taskNameLabel");
   //taskNameLabel->setText(trUtf8("Task Name"));
-  taskNameLabel->setText(trUtf8("<h2>Lyapunov exponents</h2>"));
+  taskNameLabel->setText(trUtf8("<h2>Lyapunov Exponents</h2>"));
   taskNameLabel->setAlignment(int(QLabel::AlignVCenter
                                   | QLabel::AlignLeft));
   //SteadyStateWidgetLayout->addWidget(taskNameLabel, 0, 0);
@@ -104,7 +104,7 @@ CQLyapWidget::CQLyapWidget(QWidget* parent, const char* name, WFlags fl)
   //QHBox* tmpBox = new QHBox(this);
 
   mCheckBoxStartOutput = new QCheckBox(this);
-  mCheckBoxStartOutput->setText(trUtf8("Start output after t="));
+  mCheckBoxStartOutput->setText(trUtf8("Start averaging after t="));
   tmpLayout->addWidget(mCheckBoxStartOutput);
 
   mLineEditStartOutput = new QLineEdit(this);
@@ -255,94 +255,6 @@ CQLyapWidget::~CQLyapWidget()
   //pdelete(mpProblem);
 }
 
-//**********************************************************
-
-#define TSMAX 10000000
-
-//this is left here for the case that I will enable the checkTimeseries later
-
-/*void CQLyapWidget::NumStepsSlot()
-{
-  try
-    {
-      mpProblem->setStepNumber(nStepNumber->text().toULong());
-    }
-  catch (...)
-    {
-      QMessageBox::warning(this, QString("File Warning"),
-                           FROM_UTF8(CCopasiMessage::getAllMessageText()),
-                           QMessageBox::Ok,
-                           QMessageBox::NoButton,
-                           QMessageBox::NoButton);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  nStepSize->setText(QString::number(mpProblem->getStepSize()));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  checkTimeSeries();
-}*/
-
-/*void CQLyapWidget::checkTimeSeries()
-{
-  //std::cout << "checkTimeSeries() " << nStepNumber->text().toLong() << " " << CCopasiDataModel::Global->getModel()->getIntMetab() << std::endl;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  if (nStepNumber->text().toLong() * CCopasiDataModel::Global->getModel()->getNumVariableMetabs() > TSMAX)
-    {
-      bStoreTimeSeries->setChecked(false);
-      bStoreTimeSeries->setEnabled(false);
-    }
-  else
-    {
-      bStoreTimeSeries->setEnabled(true);
-    }
-}*/
-
-#undef TSMAX
-
 //************************************************************
 
 void CQLyapWidget::CancelChange()
@@ -372,50 +284,49 @@ void CQLyapWidget::runLyapTask()
 
   CCopasiMessage::clearDeque();
 
-  try
-    {
-      success = tt->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
-    }
-  catch (CCopasiException)
-    {
-      success = false;
-    }
-
-  if (!success &&
-      CCopasiMessage::getHighestSeverity() > CCopasiMessage::WARNING)
-    {
-      QMessageBox::warning(this, "Simulation Error",
-                           CCopasiMessage::getAllMessageText().c_str(),
-                           QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-
-      return;
-    }
-
-  CCopasiMessage::clearDeque();
-  success = true;
-
-  CLyapProblem* trajectoryproblem =
-    dynamic_cast<CLyapProblem *>(tt->getProblem());
-  assert(trajectoryproblem);
-
-  if ((!tt->getReport().getStream())
-      && (CCopasiDataModel::Global->getPlotDefinitionList()->size() == 0)
-      /*&& (!trajectoryproblem->timeSeriesRequested())*/)
-    {
-      QMessageBox::information (NULL, "No output specified",
-                                "No output would be generated from this simulation. \nSpecify a report, a plot, or activate the \"Store time series in memory\" checkbox.");
-      //                                    QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
-      return;
-    }
-
-  CLyapMethod* trajectorymethod =
-    dynamic_cast<CLyapMethod *>(tt->getMethod());
-  assert(trajectorymethod);
-
   setCursor(Qt::WaitCursor);
   CCopasiMessage::clearDeque();
   CProgressBar * tmpBar = new CProgressBar();
   tt->setCallBack(tmpBar);
+
+  try
+    {
+      if (!tt->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL))
+        throw CCopasiException(CCopasiMessage::peekLastMessage());
+    }
+
+  catch (CCopasiException Exception)
+    {
+      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+        {
+          tmpBar->finish();
+          QMessageBox::critical(this, "Initialization Error",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+
+          success = false;
+          goto finish;
+        }
+    }
+
+  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
+    {
+      C_INT Result =
+        QMessageBox::warning(this, "Initialization Warning",
+                             CCopasiMessage::getAllMessageText().c_str(),
+                             QMessageBox::Ignore | QMessageBox::Default,
+                             QMessageBox::Abort);
+      CCopasiMessage::clearDeque();
+
+      if (Result == QMessageBox::Abort)
+        {
+          success = false;
+          goto finish;
+        }
+    }
+
+  CCopasiMessage::clearDeque();
 
   try
     {
@@ -435,10 +346,12 @@ void CQLyapWidget::runLyapTask()
         }
     }
 
+finish:
   tt->restore();
 
   tt->setCallBack(NULL);
   tmpBar->finish(); pdelete(tmpBar);
+  CCopasiMessage::clearDeque();
   CCopasiDataModel::Global->finish();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 
@@ -447,6 +360,8 @@ void CQLyapWidget::runLyapTask()
 
   loadLyapTask();
   unsetCursor();
+
+  if (success) pListView->switchToOtherWidget(261, ""); //change to the results window
 }
 
 void CQLyapWidget::ReportDefinitionClicked()

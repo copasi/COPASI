@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:10 $
+   $Date: 2006/06/20 13:19:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,8 @@
 #include <map>
 #include "copasi.h"
 
-class CCopasiTask;
+#include "utilities/CCopasiTask.h"
+
 class CCopasiProblem;
 class CPlotSpecification;
 class CReportDefinition;
@@ -29,12 +30,13 @@ class CDefaultOutputDescription
   public:
 
     CDefaultOutputDescription()
-        : name(""), description(""), isPlot(true) {}
+        : name(""), description(""), isPlot(true), mTaskType(CCopasiTask::steadyState) {}
 
     //C_INT32 id;
     std::string name;
     std::string description;
     bool isPlot;
+    CCopasiTask::Type mTaskType;
   };
 
 class COutputAssistant
@@ -64,9 +66,11 @@ class COutputAssistant
     /**
      *  create a plot or report from template with index id.
      *  returns a pointer to the plot or report definition (or NULL)
+     *  if activate==true and the ouput is a report the report is set as
+     *  the current report for the task (possibly replacing an already set report)
      */
     static
-    CCopasiObject* createDefaultOutput(C_INT32 id, CCopasiTask * task);
+    CCopasiObject* createDefaultOutput(C_INT32 id, CCopasiTask * task, bool activate = true);
 
   private:           //************************************
 
@@ -82,12 +86,14 @@ class COutputAssistant
     static
     CPlotSpecification* createPlot(const std::string & name,
                                    const CCopasiObject* x,
-                                   const std::vector<const CCopasiObject*> & y);
+                                   const std::vector<const CCopasiObject*> & y,
+                                   const CCopasiTask::Type & taskType);
 
     static
     CReportDefinition* createTable(const std::string & name,
                                    const std::vector<const CCopasiObject*> & d,
-                                   const std::string & comment);
+                                   const std::string & comment,
+                                   const CCopasiTask::Type & taskType);
 
     static const std::string emptyString;
     static const CDefaultOutputDescription emptyItem;

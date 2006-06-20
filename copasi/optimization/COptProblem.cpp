@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.81 $
+   $Revision: 1.82 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/08 15:58:29 $
+   $Date: 2006/06/20 13:19:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,6 +43,8 @@
 
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
+
+C_FLOAT64 COptProblem::mInfinity;
 
 //  Default constructor
 COptProblem::COptProblem(const CCopasiTask::Type & type,
@@ -183,19 +185,13 @@ bool COptProblem::setModel(CModel * pModel)
   return true;
 }
 
-#ifdef WIN32
-// warning C4056: overflow in floating-point constant arithmetic
-// warning C4756: overflow in constant arithmetic
-# pragma warning (disable: 4056 4756)
-#endif
-
 bool COptProblem::setCallBack(CProcessReport * pCallBack)
 {
   CCopasiProblem::setCallBack(pCallBack);
 
   if (pCallBack)
     {
-      mSolutionValue = DBL_MAX * 2;
+      mSolutionValue = mInfinity;
       mhSolutionValue =
         mpCallBack->addItem("Best Value",
                             CCopasiParameter::DOUBLE,
@@ -217,8 +213,16 @@ void COptProblem::initObjects()
   addVectorReference("Best Parameters", mSolutionVariables, CCopasiObject::ValueDbl);
 }
 
+#ifdef WIN32
+// warning C4056: overflow in floating-point constant arithmetic
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
+#endif
+
 bool COptProblem::initialize()
 {
+  mInfinity = 2.0 * DBL_MAX;
+
   if (!mpModel) return false;
   mpModel->compileIfNecessary();
 
@@ -227,7 +231,7 @@ bool COptProblem::initialize()
   mpReport = NULL;
   mCounter = 0;
   mFailedCounter = 0;
-  mSolutionValue = DBL_MAX * 2;
+  mSolutionValue = mInfinity;
 
   std::vector< CCopasiContainer * > ContainerList;
   ContainerList.push_back(mpModel);
@@ -417,7 +421,7 @@ bool COptProblem::calculate()
       success = false;
     }
 
-  if (!success || isnan(mCalculateValue)) mCalculateValue = DBL_MAX;
+  if (!success || isnan(mCalculateValue)) mCalculateValue = mInfinity;
 
   if (mpCallBack) return mpCallBack->progress(mhCounter);
 

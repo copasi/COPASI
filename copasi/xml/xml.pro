@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.6 $ $Author: shoops $ $Date: 2005/02/08 16:33:05 $  
+# $Revision: 1.7 $ $Author: shoops $ $Date: 2006/06/20 13:20:40 $  
 ######################################################################
 
 LIB = xml
@@ -12,6 +12,7 @@ TARGET = copasiXML
 # Input
 HEADERS += CCopasiXML.h \
            CCopasiXMLInterface.h \
+           CCopasiXMLVersion.h \
            CExpat.h \
            CXMLHandler.h  \
            CCopasiXMLParser.h
@@ -20,3 +21,6 @@ SOURCES += CCopasiXML.cpp \
            CCopasiXMLInterface.cpp \
            CExpat.cpp \
            CCopasiXMLParser.cpp
+
+DISTFILES += copasi.xsd \
+             copasiXML.dsp

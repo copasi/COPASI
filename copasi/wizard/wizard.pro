@@ -1,9 +1,10 @@
 LANGUAGE	= C++
 
+LIB= wizard
+
 include(../lib.pri)
 include(../common.pri)
 
-LIB= wizard
 CONFIG	+= qt 
 
 unix {
@@ -21,5 +22,6 @@ HEADERS += \
 SOURCES += \
            wizard.cpp
                    
-
-
+DISTFILES += wizard.dsp \
+             help_html/figures/*.jpg \
+             help_html/*.html

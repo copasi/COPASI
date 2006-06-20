@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Date: 2006/06/20 13:20:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,8 +64,8 @@ const std::string & CVersion::getVersion() const
 void CVersion::setString()
 {
 #ifdef COPASI_DEBUG
-  mVersion = StringPrint("%d.%d Debug %d++", mMajor, mMinor, mDevel);
+  mVersion = StringPrint("%d.%d (Debug %d++)", mMajor, mMinor, mDevel);
 #else
-  mVersion = StringPrint("%d.%d Build %d", mMajor, mMinor, mDevel);
+  mVersion = StringPrint("%d.%d (Build %d)", mMajor, mMinor, mDevel);
 #endif
 }

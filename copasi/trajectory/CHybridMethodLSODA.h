@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/05/15 12:38:23 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:20:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,7 +54,7 @@
 #include "odepack++/CLSODA.h"
 
 /* DEFINE ********************************************************************/
-#define MAX_STEPS                    10000
+#define MAX_STEPS                    1000000
 #define INT_EPSILON                  0.1
 #define LOWER_STOCH_LIMIT            800 //800
 #define UPPER_STOCH_LIMIT            1000 //1000
@@ -63,7 +63,7 @@
 #define OUTPUT_COUNTER               100
 #define DEFAULT_OUTPUT_FILE          "hybridLSODA.output"
 #define SUBTYPE                      1
-#define USE_RANDOM_SEED              1
+#define USE_RANDOM_SEED              false
 #define RANDOM_SEED                  1
 
 /* CLASSES *******************************************************************/

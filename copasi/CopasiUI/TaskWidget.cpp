@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TaskWidget.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/05 19:18:07 $
+   $Date: 2006/06/20 13:18:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,14 +119,19 @@ void TaskWidget::addMethodParameterTable(const unsigned C_INT32 & rows, unsigned
   mpLblParameter->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
 
   mpTblParameter = new QTable(pParent, "mpTblParameter");
-  mpTblParameter->setNumRows(rows);
+  mpTblParameter->setNumRows(std::max<unsigned C_INT32>(0, rows));
   mpTblParameter->setNumCols(1);
 
   mpTblParameter->horizontalHeader()->setLabel(0, tr("Value"));
   mpTblParameter->verticalHeader()->setMovingEnabled(false);
 
-  mpTblParameter->setFixedHeight(mpTblParameter->sizeHint().height() + 2);
-  mpTblParameter->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
+  if (rows)
+    {
+      mpTblParameter->setFixedHeight(mpTblParameter->sizeHint().height() + 2);
+      mpTblParameter->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
+    }
+  else
+    mpTblParameter->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, 0, 0, mpTblParameter->sizePolicy().hasHeightForWidth()));
 
   mpSpacer1 = new QSpacerItem(0, 20, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
 

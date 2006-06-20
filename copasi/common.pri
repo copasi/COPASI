@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.49 $ $Author: shoops $ $Date: 2006/03/16 18:53:02 $  
+# $Revision: 1.50 $ $Author: shoops $ $Date: 2006/06/20 13:16:12 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -14,8 +14,6 @@ DEFINES += $$BUILD_OS
 message("Configuring for $${BUILD_OS}.")
 
 TARGETDEPS += Makefile
-DEFINES+=XML_STATIC
-DEFINES+=LIBSBML_STATIC
 
 # Common configuration settings
 CONFIG += exceptions
@@ -32,7 +30,20 @@ contains(USE_LICENSE, DE) {
 
 debug {
   DEFINES += COPASI_DEBUG
-  DEFINES += COPASI_TSS
+
+  isEmpty(COPASI_SRC_PACKAGE) {
+    DEFINES += COPASI_TSS
+    DEFINES += COPASI_SENS
+  }
+}
+
+isEmpty(COPASI_SRC_PACKAGE) {
+  DEFINES += HAVE_MML
+}
+
+contains(STATIC_LINKAGE, yes) {
+  DEFINES+=XML_STATIC
+  DEFINES+=LIBSBML_STATIC
 }
 
 !contains(BUILD_OS, WIN32) {
@@ -175,8 +186,10 @@ contains(BUILD_OS, WIN32) {
 } 
 
 contains(BUILD_OS, SunOS) {
+contains(STATIC_LINKAGE, yes) {
 # :TODO: This should be set through configure.
   LIBS += -L/export/home/shoops/copasi/gcc/lib
+}
 
   release { 
     contains(TEMPLATE, app) {
@@ -285,3 +298,18 @@ DEP1.target   = depend
 DEP1.depends  = qmake
 
 QMAKE_EXTRA_UNIX_TARGETS += DEP1
+
+!equals(TEMPLATE, subdirs) {
+  # Copy the sources for the tar ball
+  src_distribution.depends = Makefile
+  src_distribution.commands =   \
+    $(CHK_DIR_EXISTS) ../../copasi_src || $(MKDIR) ../../copasi_src; \
+    $(CHK_DIR_EXISTS) ../../copasi_src/copasi || \
+      $(MKDIR) ../../copasi_src/copasi; \
+    $(CHK_DIR_EXISTS) ../../copasi_src/copasi/$$SRC_TARGET || \
+      $(MKDIR) ../../copasi_src/copasi/$$SRC_TARGET; \
+    $(COPY_FILE) --parents $(SOURCES) $(HEADERS) $(FORMS) $(DIST) \
+      ../../copasi_src/copasi/$$SRC_TARGET/
+
+  QMAKE_EXTRA_UNIX_TARGETS += src_distribution
+}

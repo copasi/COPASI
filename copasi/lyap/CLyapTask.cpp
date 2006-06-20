@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/14 16:52:24 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:18:41 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,7 +45,14 @@ CLyapTask::CLyapTask(const CCopasiContainer * pParent):
     mpLyapProblem(NULL),
     mpLyapMethod(NULL),
     mLocalExponents(),
-    mExponents()
+    mExponents(),
+    mSumOfExponents(0.0),
+    mSumOfLocalExponents(0.0),
+    mIntervalDivergence(0.0),
+    mAverageDivergence(0.0),
+    mResultAvailable(false),
+    mResultHasDivergence(false),
+    mModelVariablesInResult(0)
 {
   mpProblem = new CLyapProblem(this);
   mpMethod =
@@ -69,9 +76,11 @@ void CLyapTask::initObjects()
   unsigned C_INT32 i;
 
   mExponents.resize(LYAP_NUM_REF);
+  for (i = 0; i < LYAP_NUM_REF; ++i) mExponents[i] = 0.0;
   mvExpRef.resize(LYAP_NUM_REF);
 
   mLocalExponents.resize(LYAP_NUM_REF);
+  for (i = 0; i < LYAP_NUM_REF; ++i) mLocalExponents[i] = 0.0;
   mvLocExpRef.resize(LYAP_NUM_REF);
 
   addVectorReference("Exponents", mExponents, CCopasiObject::ValueDbl);
@@ -180,6 +189,11 @@ bool CLyapTask::process(const bool & useInitialValues)
 
   calculationsBeforeOutput();
   output(COutputInterface::AFTER);
+
+  mResultAvailable = true;
+  mResultHasDivergence = mpLyapProblem->divergenceRequested();
+  mModelVariablesInResult = mpLyapProblem->getModel()->getState().getNumIndependent();
+  mNumExponentsCalculated = mpLyapProblem->getExponentNumber();
 
   return true;
 }
@@ -292,7 +306,13 @@ void CLyapTask::printResult(std::ostream * ostream) const
     //     << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
     //     << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
 
-    os << "Lyapunov exponents:" << std::endl;
+    os << "Lyapunov Exponents:" << std::endl;
+
+    if (!mpLyapProblem) //this means that task was not yet executed
+      {
+        os << "No results available." << std::endl;
+        return;
+      }
 
     unsigned C_INT32 i, imax = mpLyapProblem->getExponentNumber();
     for (i = 0; i < imax; ++i)
@@ -301,22 +321,24 @@ void CLyapTask::printResult(std::ostream * ostream) const
 
     if (mpLyapProblem->divergenceRequested())
       os << std::endl << "Average divergence: " << mAverageDivergence << std::endl;
-    /*    if (mSolutionVariables.size() == 0)
-          {
-            return;
-          }
-        os << "    Objective Function Value:\t" << mSolutionValue << std::endl;
+  }
 
-        std::vector< COptItem * >::const_iterator itItem =
-          mpOptItems->begin();
-        std::vector< COptItem * >::const_iterator endItem =
-          mpOptItems->end();
+bool CLyapTask::resultAvailable() const
+  {
+    return mResultAvailable;
+  }
 
-        unsigned C_INT32 i;
+bool CLyapTask::resultHasDivergence() const
+  {
+    return mResultHasDivergence;
+  }
 
-        for (i = 0; itItem != endItem; ++itItem, i++)
-          {
-            os << "    " << (*itItem)->getObjectDisplayName() << ": "
-            << mSolutionVariables[i] << std::endl;
-          }*/
+unsigned C_INT32 CLyapTask::modelVariablesInResult() const
+  {
+    return mModelVariablesInResult;
+  }
+
+unsigned C_INT32 CLyapTask::numberOfExponentsCalculated() const
+  {
+    return mNumExponentsCalculated;
   }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiPlotSelectionDialog.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:40 $
+   $Date: 2006/06/20 13:18:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,8 +20,8 @@ class QWidget;
 class QPushButton;
 class QSplitter;
 class QCheckBox;
-class QHBox;
 class QVBox;
+class QHBoxLayout;
 class QVBoxLayout;
 class QLabel;
 class CCopasiObject;
@@ -53,7 +53,7 @@ class CCopasiPlotSelectionDialog: public QDialog
     CCopasiSelectionWidget* mpXAxisSelectionWidget;
     CCopasiSelectionWidget* mpYAxisSelectionWidget;
     QSplitter* mpSplitter;
-    QHBox* mpButtonBox;
+    QHBoxLayout* mpButtonBox;
     QVBoxLayout* mpMainLayout;
     QLabel* mpXAxisLabel;
     QLabel* mpYAxisLabel;

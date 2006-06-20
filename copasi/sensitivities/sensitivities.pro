@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.1 $ $Author: ssahle $ $Date: 2005/10/10 16:13:43 $  
+# $Revision: 1.2 $ $Author: shoops $ $Date: 2006/06/20 13:19:53 $  
 ######################################################################
 
 LIB = sensitivities
@@ -15,3 +15,5 @@ HEADERS += CSensMethod.h \
 SOURCES += CSensMethod.cpp \
            CSensProblem.cpp \
            CSensTask.cpp
+
+DISTFILES += sensitivities.dsp

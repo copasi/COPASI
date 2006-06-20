@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:41 $
+   $Date: 2006/06/20 13:19:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,6 +161,11 @@ class CopasiPlot : public QwtPlot, public COutputInterface
 
   private:
     /**
+     * The value for missing objects
+     */
+    static C_FLOAT64 MissingValue;
+
+    /**
      * Vector that contains pointers to vectors of data in the selected columns.
      */
     std::vector< std::vector< QMemArray< double > * > > mData;
@@ -169,6 +174,11 @@ class CopasiPlot : public QwtPlot, public COutputInterface
      * Vector of pointers to the current object values
      */
     std::vector< std::vector< const C_FLOAT64 * > > mObjectValues;
+
+    /**
+     * Vector of bool indicating whether the current object value is integer
+     */
+    std::vector< std::vector< bool > > mObjectInteger;
 
     /**
      * Vector of actual data lines in the local buffers

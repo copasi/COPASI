@@ -1,0 +1,221 @@
+<chapter id="model" xreflabel="Model">
+<title>The Model in COPASI</title>
+
+
+<para>
+This section discusses the general properties of the model in COPASI and its
+mathematical interpretation. Generally a model consists of metabolites which are
+placed in a compartment. Metabolites are produced or consumed by reactions which
+happen with a speed given by kinetic functions. This model is interpreted
+mathematically in different ways in COPASI. 
+</para>
+
+<sect1 id="compartments" xreflabel="Compartments">
+<title>Compartments</title>
+<para>
+Every metabolite in COPASI must be placed in a compartment. The compartment has
+to have a well defined volume because COPASI relies on being able to calculate
+particle numbers from concentrations and vice versa. 
+COPASI does not really support models without concentrations (i.e. dealing only
+with amounts of substance or particle numbers) but you can work around this
+limitation by setting the volume to be 1.0. But if you do this keep in mind that
+the dimensions of the different parameters as displayed in the COPASI GUI are
+not correct.
+The volumes of compartments are constant in this version of COPASI. 
+</para>
+<para>
+If the (chemically) same metabolite is present in several compartments it is
+treated as several metabolites in COPASI. E.g. if you have a model that contains
+glucose inside a cell and outside a cell these are two metabolites in the model.
+They can however have the same name.
+</para>
+</sect1>
+
+<sect1 id="Metabolites" xreflabel="Metabolites">
+<title>Metabolites</title>
+<para>
+A metabolite is characterized by how much of it is present at a given time. This
+can be expressed as a particle number or as a concentration. COPASI makes sure
+that those two are consistent at any time. An initial value can be provided for
+concentration or particle number of each metabolite. This initial value will be
+used as a starting point for simulations or other calculations. 
+A metabolite can be defined to be "fixed" which means it current value will
+always be the same as the initial value, even if the metabolite participates in
+a reaction.
+</para>
+<para>
+Associated to the metabolites is also a value called transition time. It is
+calculated as the current particle number of the metabolite devided by either
+the sum of all reaction fluxes going into the metabolite or the sum of all
+reaction fluxes going out of the metabolite, whichever is smaller (the fluxes
+also epxressed in number of particles per second). The transition time gives a
+rough heuristic measure for how long a particle of this metabolite will exist on
+average before it is consumed. A short transition time in a stable steady state
+may indicate that the equilibrium is a "fast" equilibrium which could be used
+for a simplification of the model. Note however that this calculation is inexact
+if any reversible reactions are involved.
+</para>
+</sect1>
+
+<sect1 id="GlobalParameters" xreflabel="Global Parameters">
+<title>Global Parameters</title>
+<para>
+The model also contains a list of global parameters. In this version of COPASI
+they are always constant. They can be used as kinetic parameters in reactions.
+The main use is if you want to use the same kinetic parameter in several
+reactions, or if you want to change several parameters synchronously e.g. in a
+parameter scan.
+</para>
+</sect1>
+
+<sect1 id="Reactions" xreflabel="Reactions">
+<title>Reactions</title>
+<para>
+A reaction is a process by which metabolites will be consumed or produced. It is
+characterized by a description of how fast this happens. It contains a list of
+substrates, i.e. the metabolites that are consumed if the reaction takes place,
+along with the information about how many molecules of each substrate are
+consumed when the reaction event happens once (the stoichiometry).
+Correspondingly there is a list of products with the respective stoichiometries.
+Reactions without substrates are possible, as well as reactions without
+products. However reactions without substrates and without products are not
+allowed. In addition so called modifiers can be specified which are neither
+produced nor consumed in the reaction but which have influence on the speed of
+the reaction.
+</para>
+<para>
+The speed of the reaction is always specified by a reference to a kinetic
+function. The kinetics can depend on the concentrations of the substrates,
+products, and modifiers, on the volume of a compartment, on local or global
+parameters, and on the simulation time. The difference between local and global
+parameters is that local parameters only specify a numerical value of a kinetic
+parameter for one specific reaction. Global parameters can be used in several
+reactions.
+</para>
+<para>
+Reactions can be reversible or irreversible. Kinetic functions for irreversible
+reactions should always be positive. Also they should not depend on the
+concentration of the products (only on the concentrations of the substrates and
+modifiers). While all built in kinetic functions satisfy these conditions, they
+are not enforced for user defined functions. 
+</para>
+</sect1>
+
+<sect1 id="Functions" xreflabel="Functions">
+<title>Functions</title>
+<para>
+  A function in COPASI is a mathematical expression that calculates a value from
+a given list of other values. Generally functions can be used in two ways in
+COPASI: As a kinetic function specified for a reaction or as a function that is
+called from another function or expression. 
+  The function contains a detailed list of parameters that specifies how many
+values (and what kind of values) need to be passed to the function. If a
+function is called from another function or expression only the number of values
+is checked, not the kind of value. 
+  In the case that a function is used as a kinetic function for a reaction
+COPASI ensures consistency about the roles of the parameters in the model. Each
+parameter has one of six different roles: "Substrate", "Product", "Modifier",
+"Volume", "Time", "Parameter". The first three must be connected with the
+concentration of a species that has the respective role in the reaction.
+"Volume" must be connected with a compartment, "Time" is always the simulation
+time of the model. "Parameter" must be connected with a global parameter or a
+local value in the reaction.
+  A function also specifies if it is appropriate for a reversible or
+irreversible reaction. This information is not automatically infered from the
+mathematical description of the function, and COPASI does not enforce
+restrictions like irreversible kinetics having to be strictly positive. 
+  
+</para>
+</sect1>
+
+<sect1 id="deterministicModel" xreflabel="Deterministic Model">
+<title>Deterministic Interpretation of the Model</title>
+<para>
+  One possible mathematical interpretation of the model is to convert it into a
+set of ordinary differential equations. The variables of the equation are the
+particle numbers of the metabolites in the model. The right hand side of the
+differential equation are constructed as follows: The particle numbers are
+converted to concentrations taking into acount the unit for amounts of substance
+and dividing by compartment volume. These concentrations are used to calculate
+the reaction fluxes. The kinetic functions, as they are defined in COPASI give
+as result a value that is a concentration rate (for single compartment
+reactions) or an amount of substance rate (for multicompartment reactions),
+respectively. So for single compartment reactions the value of the kinetic
+function is multiplied by the compartment volume; kinetics for multi compartment
+reactions are assumed to already be expressed in units of amount of substance
+(e.g. moles) per time. The resulting value is then multiplied by a factor to
+convert amount of substance per time to particle numbers per time. Linear
+combinations of these values, using the stoichiometries as coefficients, result
+in particel number rates for all metabolites. These form the right hand side of
+the differential equations.
+</para>
+<para>
+COPASI automatically performs an analysis of the model by which conserved values
+are found. The conserved values COPASI is looking for are linear combinations of
+particle numbers that do not vary during the time evolution of the system. Each
+conservation relation can be used to eliminate one variable of the system,
+leading to a reduced system with a smaller number of variables. These variables
+are called the independent variables of the system; the dependent variables are
+defined as linear combinations of independent variables. COPASI handles this
+model reduction transparently, but it is displayed in the GUI which metabolites
+are treated as independent or dependent variables.
+Technically finding the conservation relation means finding rows in the
+stoichiometry matrix that can be expressed as linear combinations of other rows.
+COPASI uses Householder QR factorization to do
+this<citation>Vallabhajosyula06</citation>.
+</para>
+ 
+</sect1>
+  
+<sect1 id="stochasticModel" xreflabel="Stochastic Model">
+  <title>Stochastic Interpretation of the Model</title>
+  <para>
+    An alternative interpretation is to consider the model as a stochastic
+process. In this case the reaction kinetics are not considered to describe the
+rates of change for the concentrations of involved species, but rather as a
+specification about the probability that a reaction event happens. If a reaction
+event happens the particle numbers of the involved metabolites are updated
+according to their stoichiometries. That means particle numbers are always
+integer numbers and change discretely. 
+</para>
+<para>
+Specifically the value of the kinetic function is interpreted as a so called
+propensity, that is a differential probability density that a reaction event will 
+happen in the next infinitesimal time interval.
+However there are subtle differences between reaction rates and reaction propensities. One of those differences that only matters for rather small particle numbers is that e.g. the rate of a second order mass action reaction is described as  
+<mml:math>
+<mml:mrow>
+  <mml:mi>k</mml:mi>
+  <mml:mo>*</mml:mo>
+  <mml:msup>
+    <mml:mi>S</mml:mi>
+    <mml:mn>2</mml:mn>
+  </mml:msup>
+</mml:mrow>
+</mml:math>
+, while the propensity of the same reaction is 
+<mml:math>
+  <mml:mrow>
+    <mml:mi>k</mml:mi>
+    <mml:mo>*</mml:mo>
+    <mml:mi>S</mml:mi>
+    <mml:mo>*</mml:mo>
+    <mml:mfenced>
+      <mml:mrow>
+      <mml:mi>S</mml:mi>
+      <mml:mo>-</mml:mo>
+      <mml:mi>1</mml:mi>
+    </mml:mrow>
+    </mml:mfenced>
+  </mml:mrow>
+</mml:math>
+. Copasi will apply this kind of corrections automatically. In cases where these corrections have already been done by the modeler explicitly COPASI needs to be told not to apply this correction. This is described in the section
+<xref linkend="generalSettings">General model settings</xref>.
+</para>
+<para>
+Another issue modelers should be aware of is that the rate laws for enzymatic reactions that are derived using the steady state approximation are not necessarily valid for stochastical simulation. In many cases they are, but the underlying assumptions for using them are not exactly the same as for deterministic simulations. 
+</para>
+</sect1>
+
+
+</chapter>

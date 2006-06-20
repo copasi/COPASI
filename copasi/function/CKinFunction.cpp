@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/01 16:12:25 $
+   $Date: 2006/06/20 13:18:40 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,6 @@
 #include "copasi.h"
 #include "mathematics.h"
 
-#include "CKinFunctionFlexLexer.h"
 #include "CKinFunction.h"
 #include "utilities/CCopasiException.h"
 #include "report/CCopasiContainer.h"
@@ -109,13 +108,13 @@ void CKinFunction::createParameters()
         {
           // We need to check that we have no reserved name.
           const char *Reserved[] =
-            {"pi", "exponentiale", "true", "false", "infinity",
-             "PI", "EXPONENTIALE", "TRUE", "FALSE", "INFINITY"
+            {"pi", "exponentiale", "true", "false", "infinity", "nan",
+             "PI", "EXPONENTIALE", "TRUE", "FALSE", "INFINITY", "NAN"
             };
 
           std::string Name = mNodes[i]->getName();
-          unsigned C_INT32 j, jmax = 10;
-          for (j = 0; j < 10; j++)
+          unsigned C_INT32 j, jmax = 12;
+          for (j = 0; j < jmax; j++)
             if (Name == Reserved[j]) break;
 
           if (j != jmax)
@@ -235,6 +234,34 @@ void CKinFunction::cleanupNodes()
 /*void CKinFunction::writeMathML(std::ostream & out) const
   {
     //if (!mNodes[0]->isLeftValid()) return;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

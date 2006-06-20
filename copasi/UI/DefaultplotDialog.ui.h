@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DefaultplotDialog.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:43 $
+   $Date: 2006/06/20 13:18:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,6 +67,8 @@ void DefaultPlotDialog::slotSelect()
   mIndex = mList[i];
   lineEditTitle->setText(FROM_UTF8(COutputAssistant::getItemName(mIndex)));
   textEdit->setText(FROM_UTF8(COutputAssistant::getItem(mIndex).description));
+
+  createButton->setEnabled(!lineEditTitle->text().startsWith("-- "));
 }
 
 void DefaultPlotDialog::newSlot()

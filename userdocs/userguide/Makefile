@@ -10,7 +10,7 @@ XHTML_STYLESHEET=copasi_xhtml.xsl
 
 PDF_STYLESHEET=/usr/share/xml/docbook/stylesheet/db2latex/latex/docbook.xsl
 
-JAVA=/cygdrive/c/WINDOWS/system32/java
+JAVA=/cygdrive/c/WINDOWS/system32/java -Xmx100000000
 
 # This is known to work with saxon 6.5.3, it is best to download the files from
 # the server since the debian packages seem to be broken.
@@ -52,7 +52,9 @@ SOURCES = copasi.xml \
 	copasi_commandLine.xml \
 	copasi_fileFormats.xml \
 	copasi_methods.xml \
-	copasi_bibliography.xml
+	copasi_errorMessages.xml \
+	copasi_bibliography.xml \
+	copasi_model.xml
 
 IMAGES = images/Compartments_01.png \
          images/Compartments_02.png \
@@ -70,6 +72,9 @@ IMAGES = images/Compartments_01.png \
          images/MassConservationTask_02.png \
          images/Metabolites_01.png \
          images/Metabolites_02.png \
+         images/ParameterEstimation_01.png \
+         images/ParameterEstimation_02.png \
+         images/ParameterEstimation_05.png \
          images/Platforms_01.png \
          images/PlotWindow_01.png \
          images/Plots_01.png \

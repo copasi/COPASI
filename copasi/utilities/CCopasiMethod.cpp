@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/05/15 12:40:36 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:20:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,23 +31,23 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Random Search (PVM)",
     "Simulated Annealing",
     "Genetic Algorithm",
-    "Evolutionary Program",
+    "Evolutionary Programming",
     "Steepest Descent",
     "Hybrid GA/SA",
     "Genetic Algorithm SR",
     "Hooke & Jeeves",
     "Levenberg - Marquardt",
-    "Evolutionary Strategy (SR)",
+    "Evolutionary Strategy (SRES)",
     "Enhanced Newton",
     "Deterministic (LSODA)",
-    "Stochastic",
-    "Hybrid",
+    "Stochastic (Gibson + Bruck)",
+    "Hybrid (Runge-Kutta)",
     "Hybrid (LSODA)",
-    "tau-Leap",
+    "Stochastic (\xcf\x84-Leap)",
     "MCA Method (Reder)",
     "Scan Framework",
-    "Wolf method",
-    "Time scale separation Method",
+    "Wolf Method",
+    "Time Scale Separation Method",
     "Sensitivities Method",
     ""
   };

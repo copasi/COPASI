@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQTrajectoryWidget.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/10 16:24:13 $
+   $Date: 2006/06/20 13:18:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,7 @@ void CQTrajectoryWidget::init()
   CQTrajectoryWidgetLayout->addWidget(mpBtnWidget);
 
   addMethodSelectionBox(CTrajectoryTask::ValidMethods);
-  addMethodParameterTable();
+  addMethodParameterTable(0);
 
   slotOutputDelay(false);
 
@@ -317,7 +317,27 @@ bool CQTrajectoryWidget::runTask()
 
 finish:
   try {pTask->restore();}
+
+  catch (CCopasiException Exception)
+    {
+      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+        {
+          mProgressBar->finish();
+          QMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+        }
+    }
+
   catch (...) {}
+
+  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
+    {
+      C_INT Result =
+        QMessageBox::warning(this, "Calculation Warning",
+                             CCopasiMessage::getAllMessageText().c_str(),
+                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+    }
 
   commonAfterRunTask();
 

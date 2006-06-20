@@ -1,23 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:43 $
+   $Date: 2006/06/20 13:18:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-/*******************************************************************
- **  $ CopasiUI/CopasiTableWidget.cpp
- **  $ Author  : Mudita Singhal
- **
- ** This file is used to create the GUI FrontPage for the
- ** information obtained from the data model about the
- ** Compartments----It is Basically the First level of Compartments
- ********************************************************************/
 #include "CopasiTableWidget.h"
 
 #include <qlayout.h>
@@ -219,7 +211,8 @@ void CopasiTableWidget::saveTable()
                                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
                 }
               tableLineToObject(j, pObj);
-              ListViews::notify(mOT, ListViews::ADD, pObj->getKey());
+              // ListViews::notify(mOT, ListViews::ADD, pObj->getKey());
+              protectedNotify(mOT, ListViews::ADD, pObj->getKey());
             }
         }
       else if (mFlagDelete[j])

@@ -1,41 +1,46 @@
 ######################################################################
-# $Revision: 1.127 $ $Author: ssahle $ $Date: 2006/05/12 13:47:31 $  
+# $Revision: 1.128 $ $Author: shoops $ $Date: 2006/06/20 13:18:05 $  
 ######################################################################
 
 TEMPLATE = app
+
+SRC_TARGET = CopasiUI
 
 include(../common.pri)
 
 DEPENDPATH += .. 
 INCLUDEPATH += ..
 
-COPASI_LIBS = \
-         copasiDM \
-         copasiXML \
-         commandline \
-         elementaryFluxModes \
-         fitting \
-         function \
-         lyap \
-         mml \
-         model \
-         optimization \
-         plot \
-         randomGenerator \
-         report \
-         sbmlimport \
-         scan \
-         sensitivities \
-         steadystate \
-         trajectory \
-         tss \
-         utilities \
-         odepack++ \
-         wizard
+COPASI_LIBS += copasiDM
+COPASI_LIBS += copasiXML
+COPASI_LIBS += commandline
+COPASI_LIBS += elementaryFluxModes
+COPASI_LIBS += fitting
+COPASI_LIBS += function
+COPASI_LIBS += lyap
+contains(DEFINES, HAVE_MML) {
+  COPASI_LIBS += mml
+}
+COPASI_LIBS += model
+COPASI_LIBS += optimization
+COPASI_LIBS += plot
+COPASI_LIBS += randomGenerator
+COPASI_LIBS += report
+COPASI_LIBS += sbmlimport
+COPASI_LIBS += scan
+contains(DEFINES, COPASI_SENS) {
+  COPASI_LIBS += sensitivities
+}
+COPASI_LIBS += steadystate
+COPASI_LIBS += trajectory
+COPASI_LIBS += tss
+COPASI_LIBS += utilities
+COPASI_LIBS += odepack++
+COPASI_LIBS += wizard
 
 contains(BUILD_OS, WIN32) {
   RC_FILE = CopasiUI.rc
-
+  
   LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
 
   TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
@@ -153,6 +158,7 @@ HEADERS += \
            CScanContainerWidget.h \
            CTimeSeriesTable.h \
            DataModelGUI.h \
+           DataModel.txt.h \
            DifferentialEquations.h \
            FunctionItemWidget.h \
            FunctionSymbols.h \
@@ -177,7 +183,6 @@ HEADERS += \
            ReactionsWidget.h \
            ReactionsWidget1.h \
            ScanItemWidget.h \
-           ScanScrollView.h \
            ScanWidget.h \
            SensitivitiesWidget.h \
            SliderDialog.h \
@@ -244,7 +249,6 @@ SOURCES += \
            ReactionsWidget.cpp \
            ReactionsWidget1.cpp \
            ScanItemWidget.cpp \
-           ScanScrollView.cpp \
            ScanWidget.cpp \
            SensitivitiesWidget.cpp \
            SliderDialog.cpp \
@@ -257,6 +261,20 @@ SOURCES += \
            Tree.cpp \
            TSSWidget.cpp
 
+!contains(DEFINES, HAVE_MML) {
+  HEADERS -= DifferentialEquations.h
+  SOURCES -= DifferentialEquations.cpp
+}
+
+!contains(DEFINES, COPASI_SENS) {
+  SOURCES -= SensitivitiesWidget.cpp
+  HEADERS -= TSSWidget.h
+}
+
+!contains(DEFINES, COPASI_TSS) {
+  HEADERS -= SensitivitiesWidget.h
+  SOURCES -= TSSWidget.cpp
+}
 # FORMS += TimeSeriesSubwidget.ui
 # FORMS += StateSubwidget.ui
 # FORMS += CMCAResultSubwidget.ui
@@ -291,11 +309,12 @@ SOURCES += \
 # headers generated from .ui files   
 HEADERS += \
            CMCAResultSubwidget.h \
-           CQFileDialogBtnGrp.h \
+           CMCAResultSubwidget.ui.h \
            CQExperimentData.h \
            CQExperimentData.ui.h \
            CQExperimentSelection.h \
            CQExperimentSelection.ui.h \
+           CQFileDialogBtnGrp.h \
            CQFittingItemWidget.h \
            CQFittingItemWidget.ui.h \
            CQFittingResult.h \
@@ -306,14 +325,14 @@ HEADERS += \
            CQFittingWidget.ui.h \
            CQOptimizationWidget.h \
            CQOptimizationWidget.ui.h \
-           CQProgressItem.h \
-           CQProgressItem.ui.h \
-           CQProgressItemBar.ui.h \
-           CQProgressItemBar.h \
-           CQProgressItemText.h \
-           CQProgressItemText.ui.h \
            CQProgressDialog.h \
            CQProgressDialog.ui.h \
+           CQProgressItem.h \
+           CQProgressItem.ui.h \
+           CQProgressItemBar.h \
+           CQProgressItemBar.ui.h \
+           CQProgressItemText.h \
+           CQProgressItemText.ui.h \
            CQReportDefinition.h \
            CQReportDefinition.ui.h \
            CQTaskBtnWidget.h \
@@ -323,17 +342,28 @@ HEADERS += \
            CQTextDialog.ui.h \
            CQTrajectoryWidget.h \
            CQTrajectoryWidget.ui.h \
-           CUpDownSubwidget.h \
            CScanWidgetBreak.h \
+           CScanWidgetBreak.ui.h \
            CScanWidgetRandom.h \
+           CScanWidgetRandom.ui.h \
            CScanWidgetRepeat.h \
+           CScanWidgetRepeat.ui.h \
            CScanWidgetScan.h \
+           CScanWidgetScan.ui.h \
            CScanWidgetTask.h  \ 
+           CScanWidgetTask.ui.h  \ 
+           CUpDownSubwidget.h \
+           CUpDownSubwidget.ui.h \
            DefaultplotDialog.h \
-           objectdebug.h \
+           DefaultplotDialog.ui.h \
            SliderSettingsDialog.h \
+           SliderSettingsDialog.ui.h \
            StateSubwidget.h \
-           TimeSeriesSubwidget.h 
+           StateSubwidget.ui.h \
+           TimeSeriesSubwidget.h \
+           TimeSeriesSubwidget.ui.h \
+           objectdebug.h \
+           objectdebug.ui.h
 
 # sources generated from .ui files   
 SOURCES += \
@@ -372,4 +402,41 @@ release {
   distribution.file = CopasiUI
 
   INSTALLS += distribution
+
+release {
+  HEADERS -= \
+           SensitivitiesWidget.h \
+           TSSWidget.h
+
+  SOURCES -= \
+           SensitivitiesWidget.cpp \
+           TSSWidget.cpp
 }
+
+
+DISTFILES += CopasiUI.dsp \
+             CopasiUI.rc \
+             resource.h \
+             icons/Copasi.ico \
+             icons/Copasi??-Alpha.xpm \
+             icons/CopasiDoc.ico \
+             icons/CopasiDoc??-Alpha.xpm \
+             icons/closeSlider.xpm \
+             icons/copasi_beta_background.xpm \
+             icons/copasi_rc.xpm \
+             icons/editSlider.xpm \
+             icons/filenew.xpm \
+             icons/fileopen.xpm \
+             icons/fileprint.xpm \
+             icons/filesave.xpm \
+             icons/locked.xpm \
+             icons/modifier.xpm \
+             icons/objectAll.xpm \
+             icons/objectNone.xpm \
+             icons/objectParts.xpm \
+             icons/product.xpm \
+             icons/scanwidgetbuttonicon.xpm \
+             icons/showSliders.xpm \
+             icons/substrate.xpm \
+             icons/unlocked.xpm \
+

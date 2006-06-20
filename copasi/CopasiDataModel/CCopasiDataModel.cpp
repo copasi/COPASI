@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/12 13:58:13 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:17:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,8 +31,12 @@
 #include "steadystate/CMCAProblem.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
-#include "tss/CTSSTask.h"
-#include "sensitivities/CSensTask.h"
+#ifdef COPASI_TSS
+# include "tss/CTSSTask.h"
+#endif
+#ifdef COPASI_SENS
+# include "sensitivities/CSensTask.h"
+#endif
 #include "lyap/CLyapTask.h"
 #include "tss/MMASCIIExporter.h"
 #include "utilities/CCopasiException.h"
@@ -101,6 +105,9 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
                         COPASI_VERSION_BUILD);
 
   mpUndefined = new CFunction("undefined");
+  mpUndefined->setInfix("nan");
+  mpUndefined->compile();
+
   GlobalKeys.remove(mpUndefined->getKey());
   GlobalKeys.addFix("UndefinedFunction_0", mpUndefined);
 
@@ -130,6 +137,8 @@ CCopasiDataModel::~CCopasiDataModel()
 
 bool CCopasiDataModel::loadModel(const std::string & fileName)
 {
+  CCopasiMessage::clearDeque();
+
   std::string PWD;
   COptions::getValue("PWD", PWD);
 
@@ -251,6 +260,8 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
 bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFile,
                                  const bool & autoSave)
 {
+  CCopasiMessage::clearDeque();
+
   std::string FileName = (fileName != "") ? fileName : mSaveFileName;
 
   std::string PWD;
@@ -343,6 +354,8 @@ bool CCopasiDataModel::newModel(CModel * pModel)
     mpModel = pModel;
   else
     {
+      CCopasiMessage::clearDeque();
+
       mpModel = new CModel();
       mSaveFileName = "";
       mSBMLFileName = "";
@@ -378,6 +391,8 @@ bool CCopasiDataModel::newModel(CModel * pModel)
 
 bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* pImportHandler)
 {
+  CCopasiMessage::clearDeque();
+
   std::string PWD;
   COptions::getValue("PWD", PWD);
 
@@ -432,6 +447,8 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
 
 bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFile, CProcessReport* pExportHandler)
 {
+  CCopasiMessage::clearDeque();
+
   if (fileName == "") return false;
 
   std::string PWD;
@@ -477,6 +494,8 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
 
 bool CCopasiDataModel::exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile)
 {
+  CCopasiMessage::clearDeque();
+
   if (fileName == "") return false;
 
   if (CDirEntry::exist(fileName))
@@ -693,28 +712,28 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       pReport->setSeparator(CCopasiReportSeparator("\t"));
 
       // Header
-      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov exponents],Object=Description"));
-      //pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Function Evaluations\\]"));
-      //pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      //pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Value\\]"));
-      //pReport->getHeaderAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      //pReport->getHeaderAddr()->push_back(CCopasiObjectName("String=\\[Best Parameters\\]"));
-
-      // Body
-      //pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Function Evaluations"));
-      //pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      //pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Value"));
-      //pReport->getBodyAddr()->push_back(CCopasiObjectName("Separator=\t"));
-      //pReport->getBodyAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Parameters"));
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Description"));
 
       // Footer
       pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
-      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov exponents],Object=Result"));
+      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
       break;
 
       //**************************************************************************
     case CCopasiTask::mca:
-      // :TODO: implement default report for MCA
+      pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
+      pReport->setTaskType(taskType);
+      pReport->setComment("Automatically generated report.");
+      pReport->setIsTable(false);
+      pReport->setTitle(false);
+      pReport->setSeparator(CCopasiReportSeparator("\t"));
+
+      // Header
+      pReport->getHeaderAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Description"));
+
+      // Footer
+      pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
+      pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
       break;
 
     default:
@@ -730,9 +749,35 @@ bool CCopasiDataModel::addDefaultReports()
 {
   unsigned C_INT32 i;
   for (i = 0; CCopasiTask::TypeName[i] != ""; i++)
-    if (mpReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
-      addReport((CCopasiTask::Type) i);
+    {
+      //try to create the report if it doesn't exist
+      if (mpReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) == C_INVALID_INDEX)
+        {
+          addReport((CCopasiTask::Type) i);
+        }
 
+      //see if the report exists now
+      CReportDefinition* pReportDef = NULL;
+      if (mpReportDefinitionList->getIndex(CCopasiTask::TypeName[i]) != C_INVALID_INDEX)
+        pReportDef = (*mpReportDefinitionList)[CCopasiTask::TypeName[i]];
+
+      //see if the task exists
+      CCopasiTask* pTask = NULL;
+      if (mpTaskList->getIndex(CCopasiTask::TypeName[i]) != C_INVALID_INDEX)
+        pTask = (*mpTaskList)[CCopasiTask::TypeName[i]];
+
+      if (pTask && pReportDef) //task and report definition exist
+        {
+          //if there is no report definition set the default
+          if (!pTask->getReport().getReportDefinition())
+            {
+              pTask->getReport().setReportDefinition(pReportDef);
+            }
+
+          //TODO: also set the default report if no target file is set
+          //even if a report is already set?
+        }
+    }
   return true;
 }
 

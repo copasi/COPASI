@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/02 19:30:19 $
+   $Date: 2006/06/20 13:19:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -237,7 +237,7 @@ bool COptMethodHookeJeeves::initialize()
   mNew.resize(mVariableSize);
   mDelta.resize(mVariableSize);
 
-  mBestValue = 2.0 * DBL_MAX;
+  mBestValue = mpOptProblem->getSolutionValue();
 
   return true;
 }

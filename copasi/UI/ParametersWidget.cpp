@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:45 $
+   $Date: 2006/06/20 13:18:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -257,6 +257,7 @@ bool ParametersWidget::loadFromModel()
       //calculate units
       CFindDimensions units(reac->getFunction());
       units.setUseHeuristics(true);
+      units.setChemicalEquation(&reac->getChemEq());
       units.findDimensions(reac->getCompartmentNumber() > 1);
 
       tmp = new CParameterListItem(mReacItem, FROM_UTF8(reac->getObjectName()));

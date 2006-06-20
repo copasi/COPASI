@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/14 16:52:24 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:18:41 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,7 @@ class CLyapWolfMethod : public CLyapMethod
     /**
      *  Number of variables in the model
      */
-    C_INT32 mSystemSize;
+    unsigned C_INT32 mSystemSize;
 
     /**
      *  Number of exponents to calculate
@@ -117,7 +117,8 @@ class CLyapWolfMethod : public CLyapMethod
     /**
      *  Absolute tolerance.
      */
-    C_FLOAT64 mAtol;
+    //C_FLOAT64 mAtol;
+    CVector<C_FLOAT64> mAtol;
 
     /**
      *  Maximum order for BDF method.
@@ -205,6 +206,12 @@ class CLyapWolfMethod : public CLyapMethod
      *  This evaluates the derivatives for the complete model
      */
     void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+
+    /**
+     * Check if the method is suitable for this problem
+     * @return bool suitability of the method
+     */
+    virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
   private:
     void orthonormalize();

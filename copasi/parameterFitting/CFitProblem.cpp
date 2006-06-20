@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/08 15:58:29 $
+   $Date: 2006/06/20 13:19:32 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -398,7 +398,7 @@ bool CFitProblem::calculate()
 
                   if (!Continue)
                     {
-                      mCalculateValue = DBL_MAX;
+                      mCalculateValue = mInfinity;
                       break;
                     }
 
@@ -475,16 +475,19 @@ bool CFitProblem::calculate()
       CCopasiMessage::getLastMessage();
 
       mFailedCounter++;
-      mCalculateValue = DBL_MAX;
+      mCalculateValue = mInfinity;
       if (pExp) pExp->restoreModelIndependentData();
     }
 
   catch (...)
     {
       mFailedCounter++;
-      mCalculateValue = DBL_MAX;
+      mCalculateValue = mInfinity;
       if (pExp) pExp->restoreModelIndependentData();
     }
+
+  if (isnan(mCalculateValue))
+    mCalculateValue = mInfinity;
 
   if (mpCallBack) return mpCallBack->progress(mhCounter);
 
@@ -672,10 +675,9 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   calculate();
 
   // Keep the results
-  assert (mSolutionValue == mCalculateValue);
   CVector< C_FLOAT64 > DependentValues = mDependentValues;
 
-  if (mSolutionValue == DBL_MAX)
+  if (mSolutionValue == mInfinity)
     return false;
 
   // The statistics need to be calculated for the result, i.e., now.

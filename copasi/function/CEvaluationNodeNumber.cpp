@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeNumber.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Date: 2006/06/20 13:18:40 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,27 +76,35 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
       subType = INTEGER;
       ss << node.getInteger();
       data = ss.str();
+
+      if (node.getInteger() < 0)
+        data = "(" + data + ")";
+
       pNode = new CEvaluationNodeNumber(subType, data);
       break;
     case AST_REAL:
       subType = DOUBLE;
       if (node.getReal() == (2*DBL_MAX))
         {
-          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, data);
+          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY");
         }
       else if (node.getReal() == (-2*DBL_MAX))
         {
           pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
-          pNode->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, ""));
+          pNode->addChild(new CEvaluationNodeConstant(CEvaluationNodeConstant::_INFINITY, "INFINITY"));
         }
       else if (isnan(node.getReal()))
         {
-          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, data);
+          pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
         }
       else
         {
           ss << node.getReal();
           data = ss.str();
+
+          if (node.getReal() < 0)
+            data = "(" + data + ")";
+
           pNode = new CEvaluationNodeNumber(subType, data);
         }
       break;
@@ -104,6 +112,10 @@ CEvaluationNode* CEvaluationNodeNumber::createNodeFromASTTree(const ASTNode& nod
       subType = ENOTATION;
       ss << node.getReal();
       data = ss.str();
+
+      if (node.getReal() < 0)
+        data = "(" + data + ")";
+
       pNode = new CEvaluationNodeNumber(subType, data);
       break;
     case AST_RATIONAL:

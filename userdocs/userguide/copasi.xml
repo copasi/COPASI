@@ -5,18 +5,19 @@
 [
  <!ENTITY gui SYSTEM "copasi_GUI.xml" >  
  <!ENTITY commandLine SYSTEM "copasi_commandLine.xml" >
+ <!ENTITY copasiModel SYSTEM "copasi_model.xml" >
  <!ENTITY copasi_methods SYSTEM "copasi_methods.xml" >  
  <!ENTITY fileFormats SYSTEM "copasi_fileFormats.xml" >  
  <!ENTITY bibliography SYSTEM "copasi_bibliography.xml" >  
+ <!ENTITY errors SYSTEM "copasi_errorMessages.xml" >  
 ]> 
 
 <book id="book" xmlns:mml="http://www.w3.org/1998/Math/MathML">
 <bookinfo>
   <title>COPASI Documentation</title>
-  <subtitle>Release Candidate 1 (Build 17)</subtitle>
+  <subtitle>Version 4.0 (Build 18)</subtitle>
   <author>
-    <firstname>Ralph</firstname>
-    <surname>Gauges</surname>
+    <surname>COPASI Development Team</surname>
   </author>
 </bookinfo>
 
@@ -24,11 +25,16 @@
 
 <!-- &commandLine; -->
 
-<!-- &copasi_methods; -->
+&copasiModel;
+
+&copasi_methods;
 
 <!-- &fileFormats; -->
 
-<!-- &bibliography; -->
+&errors;
+
+&bibliography;
+
 </book>
 
 

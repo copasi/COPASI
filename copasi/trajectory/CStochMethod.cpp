@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/05 15:06:34 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:20:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -596,7 +596,7 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
   if (* getValue("Max Internal Steps").pINT <= 0)
     {
       //max steps should be at least 1
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "MaxSteps needs to be positive.");
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 15);
       return false;
     }
 

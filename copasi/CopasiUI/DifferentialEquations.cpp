@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:43 $
+   $Date: 2006/06/20 13:18:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,8 @@
 #include <qscrollview.h>
 #include <qmessagebox.h>
 #include <qlayout.h>
+#include <qcursor.h>
+#include <qregexp.h>
 
 #include <sstream>
 
@@ -41,7 +43,11 @@
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
 
-#include "mml/qtmmlwidget.h"
+#include "CopasiFileDialog.h"
+
+#ifdef HAVE_MML
+# include "mml/qtmmlwidget.h"
+#endif // Have_MML
 
 /**
  *  Constructs a Widget for the Metabolites subsection of the tree for
@@ -93,6 +99,11 @@ DifferentialEquations::DifferentialEquations(QWidget *parent, const char * name,
   mMmlWidget->setFontName(QtMmlWidget::NormalFont, this->fontInfo().family());
 
   mScrollView->addChild(mMmlWidget);
+
+  btnSaveToFile = new QPushButton("Save (MathML Presentation Markup)", this);
+  connect(btnSaveToFile, SIGNAL(clicked()),
+          this, SLOT(saveToFileClicked()));
+  layout->addWidget(btnSaveToFile, 1, 0);
 
   //btnOK = new QPushButton("&OK", this);
   //btnCancel = new QPushButton("&Cancel", this);
@@ -204,7 +215,9 @@ void DifferentialEquations::writeRHS(std::ostream & out,
     {
       std::vector<std::vector<std::string> > params;
       createParameterMapping(pReac, params);
+      if (expand) out << SPC(l + 1) << "<mfenced>" << std::endl;
       pReac->getFunction()->writeMathML(out, params, expand, expandFull, l + 1);
+      if (expand) out << SPC(l + 1) << "</mfenced>" << std::endl;
     }
 
   out << SPC(l + 0) << "</mrow>" << std::endl;
@@ -284,7 +297,10 @@ void DifferentialEquations::createParameterMapping(const CReaction* pReac,
 
 void DifferentialEquations::loadDifferentialEquations(CModel * model)
 {
-  std::ostringstream mml;
+  //std::ostringstream mml;
+
+  mml.str("");
+
   unsigned C_INT32 l = 0;
   //pFunction->writeMathML(mml);
   mml << SPC(l) << "<mtable>" << std::endl;
@@ -324,9 +340,21 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
 
   mml << SPC(l) << "</mtable>" << std::endl;
 
+  QWidget* tmp = dynamic_cast<QWidget*>(parent());
+  if (tmp) tmp->setCursor(Qt::WaitCursor);
+
   mMmlWidget->setContent(FROM_UTF8(mml.str()));
   mScrollView->resizeContents(mMmlWidget->sizeHint().width(), mMmlWidget->sizeHint().height());
   //std::cout << mml.str() << std::endl;
+
+  if (tmp) tmp->unsetCursor();
+
+  bool hasContents = true;
+  if (model->getReactions().size() == 0)
+    {
+      hasContents = false;
+    }
+  btnSaveToFile->setEnabled(hasContents);
 }
 
 std::set<std::string> DifferentialEquations::listReactionsForMetab(const CModel* model,
@@ -382,4 +410,41 @@ bool DifferentialEquations::enter(const std::string & C_UNUSED(key))
 {
   loadDifferentialEquations(CCopasiDataModel::Global->getModel());
   return true;
+}
+
+void DifferentialEquations::saveToFileClicked()
+{
+  QString outfilename;
+
+  C_INT32 Answer = QMessageBox::No;
+
+  while (Answer == QMessageBox::No)
+    {
+      outfilename =
+        CopasiFileDialog::getSaveFileName(this,
+                                          "Save File Dialog",
+                                          QString::null,
+                                          "MathML (*.mml);;XML (*.xml);;All Files (*);;",
+                                          "Save Differential Equations to MathML File");
+
+      if (!outfilename) return;
+
+      if (!outfilename.endsWith(".mml") &&
+          !outfilename.endsWith(".xml") &&
+          !outfilename.endsWith("."))
+        outfilename += ".mml";
+
+      outfilename = outfilename.remove(QRegExp("\\.$"));
+
+      Answer = checkSelection(outfilename);
+
+      if (Answer == QMessageBox::Cancel)
+        return;
+    }
+
+  std::ofstream ofile;
+  ofile.open(outfilename.ascii(), std::ios::trunc);
+  ofile << mml.str();
+
+  ofile.close();
 }

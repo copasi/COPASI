@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSRES.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/02 20:30:39 $
+   $Date: 2006/06/20 13:19:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -257,7 +257,9 @@ void COptMethodSRES::select()
     {
       wasSwapped = false;
 
-      for (j = 0; j < TotalPopulation - 1 - i; j++)  // lambda is number of individuals
+      // :TODO: since we are only interested in mPopulationSize highest ranked
+      // individuals the upper limit of the loop can be improved.
+      for (j = 0; j < TotalPopulation - 1; j++)  // lambda is number of individuals
         {
           if ((mPhi[j] == 0 && mPhi[j + 1] == 0) || // within bounds
               (mpRandom->getRandomOO() < mPf))      // random chance to compare values outside bounds
@@ -562,8 +564,8 @@ bool COptMethodSRES::initialize()
     }
 
   mValue.resize(childrate * mPopulationSize);
-  mValue = 2 * DBL_MAX;
-  mBestValue = 2 * DBL_MAX;
+  mValue = mpOptProblem->getSolutionValue();
+  mBestValue = mpOptProblem->getSolutionValue();
 
   mPhi.resize(childrate * mPopulationSize);
 

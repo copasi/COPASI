@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:41 $
+   $Date: 2006/06/20 13:18:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Fri Mar 24 17:13:54 2006
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.15 2006/04/27 01:27:41 shoops Exp $)
+ ** Created: Fri May 19 12:46:21 2006
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.cpp,v 1.16 2006/06/20 13:18:06 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -615,6 +615,8 @@ CQFittingItemWidget::CQFittingItemWidget(QWidget* parent, const char* name, WFla
   connect(mpBtnCopy, SIGNAL(clicked()), this, SLOT(slotCopy()));
   connect(mpBtnNew, SIGNAL(clicked()), this, SLOT(slotNew()));
   connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
+  connect(mpEditLower, SIGNAL(lostFocus()), this, SLOT(slotLowerLostFocus()));
+  connect(mpEditUpper, SIGNAL(lostFocus()), this, SLOT(slotUpperLostFocus()));
   init();
 }
 

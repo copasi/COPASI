@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:10 $
+   $Date: 2006/06/20 13:19:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,6 +107,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "-- Plots";
   tmp.second.description = "";
   tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::unset;
   mMap.insert(tmp);
 
   //concentrations plot
@@ -114,6 +115,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Concentrations plot";
   tmp.second.description = "A plot of the variable metabolite concentrations vs. time. It does not contain the concentrations of fixed metabolites.";
   tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   //particle numbers plot
@@ -121,6 +123,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Particle numbers plot";
   tmp.second.description = "A plot of the variable metabolite particle numbers vs. time. It does not contain the particle numbers of fixed metabolites.";
   tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   //complete concentrations plot
@@ -128,6 +131,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Complete concentrations plot";
   tmp.second.description = "A plot of all the metabolite concentrations vs. time (including fixed metabolites).";
   tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   //complete particle numbers plot
@@ -135,6 +139,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Complete particle numbers plot";
   tmp.second.description = "A plot of all the metabolite particle numbers vs. time (including fixed metabolites).";
   tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   //concentration rate plot
@@ -142,6 +147,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Concentration rates plot";
   tmp.second.description = "A plot of the rate of change of all variable metabolite concentrations vs. time. It does not contain the rates of fixed metabolites.";
   tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp); //not possible at the moment
 
   //particle rate plot
@@ -149,6 +155,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Particle number rates plot";
   tmp.second.description = "A plot of the rate of change of all variable metabolite particle numbers vs. time. It does not contain the rates of fixed metabolites.";
   tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   //reaction particle flux
@@ -156,6 +163,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Plot of reaction fluxes";
   tmp.second.description = "A plot of the fluxes of all reactions vs. time, in concentration/time unit.";
   tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   //reaction particle flux
@@ -163,6 +171,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Plot of reaction event fluxes";
   tmp.second.description = "A plot of the fluxes of all reactions vs. time, in reaction events/time unit.";
   tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   //fitting result plots
@@ -170,6 +179,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Plots of parameter estimation results";
   tmp.second.description = "For each experiment of the parameter estimation a plot is created. Each plot contains the experimental data, the fitted curve, and the weighted error for each dependent vale.";
   tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::parameterFitting;
   mMap.insert(tmp);
 
   //empty plot
@@ -177,6 +187,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Empty plot";
   tmp.second.description = "A plot with nothing in it.";
   tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::unset;
   mMap.insert(tmp);
 
   //now the reports
@@ -184,6 +195,7 @@ bool COutputAssistant::initialize()
   tmp.second.name = "-- Reports";
   tmp.second.description = "";
   tmp.second.isPlot = true;
+  tmp.second.mTaskType = CCopasiTask::unset;
   mMap.insert(tmp);
 
   //concentrations report
@@ -191,73 +203,84 @@ bool COutputAssistant::initialize()
   tmp.second.name = "Concentrations table with time";
   tmp.second.description = "A table of the variable metabolite concentrations and time. It does not contain the concentrations of fixed metabolites.";
   tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1001;
   tmp.second.name = "Particle numbers table with time";
   tmp.second.description = "A table of the variable metabolite particle numbers and time. It does not contain the particle numbers of fixed metabolites.";
   tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1002;
   tmp.second.name = "Complete concentrations table with time";
   tmp.second.description = "A table of all metabolite concentrations (including fixed metabolites) and time.";
   tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1003;
   tmp.second.name = "Complete particle numbers table with time";
   tmp.second.description = "A table of all metabolite particle numbers (including fixed metabolites) and time.";
   tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1004;
   tmp.second.name = "Concentration rates table with time";
   tmp.second.description = "A table of the rate of change of all variable metabolite concentrations and time. It does not contain the rates of fixed metabolites.";
   tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);  //not possible at the moment
 
   tmp.first = 1005;
   tmp.second.name = "Particle number rates table with time";
   tmp.second.description = "A table of the rate of change of all variable metabolite particle numbers and time. It does not contain the rates of fixed metabolites.";
   tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1006;
   tmp.second.name = "Table of reaction fluxes with time";
   tmp.second.description = "A table of the fluxes of all reactions and time, in concentration/time unit.";
   tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1007;
   tmp.second.name = "Table of reaction event fluxes with time";
   tmp.second.description = "A table of the fluxes of all reactions and time, in reaction events/time unit.";
   tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1008;
   tmp.second.name = "Table of concentrations and fluxes with time";
   tmp.second.description = "A table of the concentrations of the variable metabolites, the fluxes of all reactions, and time. Fluxes are in concentration/time unit.";
   tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1009;
   tmp.second.name = "Table of particle numbers and fluxes with time";
   tmp.second.description = "A table of the particle numbers of the variable metabolites, the fluxes of all reactions, and time. Fluxes are in particle/time unit.";
   tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::timeCourse;
   mMap.insert(tmp);
 
   tmp.first = 1999;
   tmp.second.name = "Empty table";
   tmp.second.description = "A table with nothing in it.";
   tmp.second.isPlot = false; //report
+  tmp.second.mTaskType = CCopasiTask::unset;
   mMap.insert(tmp);
 
   return true;
 }
 
 //static
-CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * task)
+CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * task, bool activate)
 {
   if (!task)
     {
@@ -354,7 +377,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
             }
 
           pPlotSpecification =
-            createPlot(pExperiment->getObjectName(), data2, data1);
+            createPlot(pExperiment->getObjectName(), data2, data1, getItem(id).mTaskType);
 
           const CCopasiVector< CPlotItem > & Items = pPlotSpecification->getItems();
           CCopasiVector< CPlotItem >::const_iterator itItem = Items.begin();
@@ -395,12 +418,18 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
   if (isReport)
     {
       data1.insert(data1.begin(), pTime);
-      return createTable(getItemName(id), data1, getItem(id).description);
+      CReportDefinition* pReportDef = createTable(getItemName(id), data1, getItem(id).description, getItem(id).mTaskType);
+      if (activate && pReportDef)
+        {
+          task->getReport().setReportDefinition(pReportDef);
+          //TODO: also set a default filename?
+        }
+      return pReportDef;
     }
   else //plot
     {
       data2 = pTime;
-      return createPlot(getItemName(id), data2, data1);
+      return createPlot(getItemName(id), data2, data1, getItem(id).mTaskType);
     }
 
   return NULL;
@@ -411,7 +440,8 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 //static
 CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
     const CCopasiObject* x,
-    const std::vector<const CCopasiObject*> & y)
+    const std::vector<const CCopasiObject*> & y,
+    const CCopasiTask::Type & /* taskType */)
 {
   if (!x) return NULL;
 
@@ -440,6 +470,9 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
       sname << name << "_" << i;
     }
 
+  // Set the task type
+  // :TODO: This is currently not implmented for plots.
+
   //create curves
 
   CPlotDataChannelSpec name1 = x->getCN();
@@ -465,7 +498,8 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
 //static
 CReportDefinition* COutputAssistant::createTable(const std::string & name,
     const std::vector<const CCopasiObject*> & d,
-    const std::string & comment)
+    const std::string & comment,
+    const CCopasiTask::Type & taskType)
 {
   std::vector<const CCopasiObject*>::const_iterator it, itEnd = d.end();
 
@@ -488,7 +522,9 @@ CReportDefinition* COutputAssistant::createTable(const std::string & name,
       sname << name << "_" << i;
     }
 
-  //pReport->setTaskType(taskType);
+  // Set the task type
+  pReport->setTaskType(taskType);
+
   pReport->setIsTable(true);
   pReport->setSeparator(CCopasiReportSeparator("\t"));
 

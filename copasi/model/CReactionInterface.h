@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/14 13:33:45 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:18:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,6 +100,8 @@ class CReactionInterface
                          const CModel& model);
 
     std::string getChemEqString() const {return mChemEqI.getChemEqString(false);};
+
+    const CChemEqInterface & getChemEqInterface() const {return mChemEqI;};
 
     bool isReversible() const {return mChemEqI.getReversibility();};
 

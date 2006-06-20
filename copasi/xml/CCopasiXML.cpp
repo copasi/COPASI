@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.84 $
+   $Revision: 1.85 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/03 17:22:15 $
+   $Date: 2006/06/20 13:20:40 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -609,7 +609,21 @@ bool CCopasiXML::saveFunctionList()
       Attributes.add("type", CEvaluationTree::XMLType[pEvaluationTree->getType()]);
       if (pFunction)
         {
-          Attributes.add("positive", pFunction->isReversible() ? "true" : "false");
+          switch (pFunction->isReversible())
+            {
+            case TriUnspecified:
+              Attributes.add("reversible", "unspecified");
+              break;
+
+            case TriFalse:
+              Attributes.add("reversible", "false");
+              break;
+
+            case TriTrue:
+              Attributes.add("reversible", "true");
+              break;
+            }
+
           if (pFunction->getSBMLId() != "")
             mSBMLReference[pFunction->getSBMLId()] = pFunction->getKey();
         }

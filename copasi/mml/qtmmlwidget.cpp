@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mml/Attic/qtmmlwidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:04 $
+   $Date: 2006/06/20 13:18:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -5300,11 +5300,29 @@ QRect MmlMpaddedNode::symbolRect() const
     \class QtMmlWidget
 
 
+
+
+
+
+
+
     \brief The QtMmlWidget class renders mathematical formulas written in MathML 2.0.
+
+
+
+
+
+
 
 
     QtMmlWidget implements the Presentation Markup subset of the
     MathML 2.0 specification, with a few \link overview.html exceptions\endlink.
+
+
+
+
+
+
 
 
     \code
@@ -5320,14 +5338,32 @@ QRect MmlMpaddedNode::symbolRect() const
     \endcode
 
 
+
+
+
+
+
+
  */
 
 /*!
     \enum QtMmlWidget::MmlFont
 
 
+
+
+
+
+
+
     This ennumerated type is used in fontName() and setFontName() to
     specify a font type.
+
+
+
+
+
+
 
 
     \value NormalFont The default font type, used to render
@@ -5335,24 +5371,60 @@ QRect MmlMpaddedNode::symbolRect() const
     or for which the "normal" mathvariant is specified.
 
 
+
+
+
+
+
+
     \value FrakturFont The font type used to render expressions for
     which the "fraktur" mathvariant is specified.
+
+
+
+
+
+
 
 
     \value SansSerifFont    The font type used to render expressions
     for which the "sans-serif" mathvariant is specified.
 
 
+
+
+
+
+
+
     \value ScriptFont     The font type used to render expressions
     for which the "script" mathvariant is specified.
+
+
+
+
+
+
 
 
     \value MonospaceFont    The font type used to render expressions
     for which the "monospace" mathvariant is specified.
 
 
+
+
+
+
+
+
     \value DoublestruckFont The font type used to render expressions
     for which the "doublestruck" mathvariant is specified.
+
+
+
+
+
+
 
 
     \sa setFontName() fontName() setBaseFontPointSize() baseFontPointSize()
@@ -5382,6 +5454,12 @@ QtMmlWidget::~QtMmlWidget()
     Returns the name of the font used to render the font \a type.
 
 
+
+
+
+
+
+
     \sa setFontName()  setBaseFontPointSize() baseFontPointSize() QtMmlWidget::MmlFont
  */
 
@@ -5392,6 +5470,12 @@ QString QtMmlWidget::fontName(MmlFont type) const
 
 /*!
     Sets the name of the font used to render the font \a type to \a name.
+
+
+
+
+
+
 
 
     \sa fontName() setBaseFontPointSize() baseFontPointSize() QtMmlWidget::MmlFont
@@ -5410,6 +5494,12 @@ void QtMmlWidget::setFontName(MmlFont type, const QString &name)
     This is mostly useful for debugging MathML expressions.
 
 
+
+
+
+
+
+
     \sa drawFrames()
  */
 
@@ -5423,6 +5513,12 @@ void QtMmlWidget::setDrawFrames(bool b)
     Returns true if each expression should be drawn with a red
     bounding rectangle; otherwise returns false.
     This is mostly useful for debugging MathML expressions.
+
+
+
+
+
+
 
 
     \sa setDrawFrames()
@@ -5446,6 +5542,12 @@ void QtMmlWidget::clear()
     whose scriptlevel is 0.
 
 
+
+
+
+
+
+
     \sa setBaseFontPointSize() fontName() setFontName()
  */
 
@@ -5457,6 +5559,12 @@ int QtMmlWidget::baseFontPointSize() const
 /*!
     Sets the point \a size of the font used to render expressions
     whose scriptlevel is 0.
+
+
+
+
+
+
 
 
     \sa baseFontPointSize() fontName() setFontName()
@@ -5492,6 +5600,12 @@ QSize QtMmlWidget::sizeHint() const
     errorLine and \a errorColumn contain the location of the error.
     Any of \a errorMsg, \a errorLine and \a errorColumn may be 0,
     in which case they are not set.
+
+
+
+
+
+
 
 
     \a text should contain MathML 2.0 presentation markup elements enclosed
@@ -6040,6 +6154,12 @@ static OperSpecSearchResult _mmlFindOperSpec(const QStringList &name_list, Mml::
     job is to find an operator spec in the operator dictionary (g_oper_spec_data)
     that matches text. Things are further complicated by the fact, that many
     operators come in several forms (prefix, infix, postfix).
+
+
+
+
+
+
 
 
     If available, this function returns an operator spec matching text in the specified

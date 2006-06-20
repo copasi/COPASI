@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.13 $ $Author: shoops $ $Date: 2005/10/13 13:12:49 $  
+# $Revision: 1.14 $ $Author: shoops $ $Date: 2006/06/20 13:19:50 $  
 ######################################################################
 
 LIB = report
@@ -14,20 +14,22 @@ HEADERS += CCopasiContainer.h \
            CCopasiObjectReference.h \
            CCopasiStaticString.h \
            CCopasiTimer.h \
-		       CKeyFactory.h \
+           CKeyFactory.h \
            COutputAssistant.h \  
            CRenameHandler.h \
-		       CReportDefinition.h \
-		       CReportDefinitionVector.h \
-		       CReport.h 
+           CReportDefinition.h \
+           CReportDefinitionVector.h \
+           CReport.h 
 
 SOURCES += CCopasiContainer.cpp \
            CCopasiObject.cpp \
            CCopasiObjectName.cpp \
            CCopasiStaticString.cpp \
            CCopasiTimer.cpp \
-		       CKeyFactory.cpp \
+           CKeyFactory.cpp \
            COutputAssistant.cpp \  
-		       CReportDefinition.cpp \
-		       CReportDefinitionVector.cpp \
-		       CReport.cpp 
+           CReportDefinition.cpp \
+           CReportDefinitionVector.cpp \
+           CReport.cpp 
+
+DISTFILES += report.dsp

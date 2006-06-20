@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.3 $ $Author: shoops $ $Date: 2005/02/08 16:33:05 $  
+# $Revision: 1.4 $ $Author: shoops $ $Date: 2006/06/20 13:19:52 $  
 ######################################################################
 
 LIB = scan
@@ -15,3 +15,5 @@ HEADERS += CScanMethod.h \
 SOURCES += CScanMethod.cpp \
            CScanProblem.cpp \
            CScanTask.cpp
+
+DISTFILES += scan.dsp

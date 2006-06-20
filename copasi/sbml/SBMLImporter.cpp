@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.127 $
+   $Revision: 1.128 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/05/10 14:30:04 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:19:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -183,6 +183,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   for (counter = 0; counter < num; ++counter)
     {
       this->replaceCallNodeNames((*functions)[counter]->getRoot());
+      this->replaceTimeNodeNames((*functions)[counter]->getRoot());
       (*functions)[counter]->updateTree();
       ++step;
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
@@ -389,7 +390,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
           // get the number of children.
           // the first n-1 children are the parameters for the function
           // the last child is the actual function
-          pFun = new CFunction();
+          pFun = new CKinFunction();
           unsigned int i, iMax = root->getNumChildren() - 1;
           for (i = 0; i < iMax;++i)
             {
@@ -401,7 +402,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
                 }
               pFun->addVariable(pVarNode->getName());
             }
-          pFun->setTree(*root->getRightChild());
+          pFun->setTree(*root->getChild(iMax));
           CCopasiTree<CEvaluationNode>::iterator treeIt = pFun->getRoot();
           // if the root node already is an object node, this has to be dealt with separately
           if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
@@ -495,19 +496,26 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
       appendix = numberStream.str();
     }
   double value;
-  if (sbmlCompartment->isSetVolume())
+  if (mLevel == 1)
     {
       value = sbmlCompartment->getVolume();
     }
   else
     {
-      // Set value to NaN and create a warning if it is the first time
-      // this happend
-      value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-      if (!this->mIncompleteModel)
+      if (sbmlCompartment->isSetSize())
         {
-          this->mIncompleteModel = true;
-          CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
+          value = sbmlCompartment->getSize();
+        }
+      else
+        {
+          // Set value to NaN and create a warning if it is the first time
+          // this happend
+          value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+          if (!this->mIncompleteModel)
+            {
+              this->mIncompleteModel = true;
+              CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
+            }
         }
     }
 
@@ -829,7 +837,23 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
             {
               id = pSBMLParameter->getId();
             }
-          copasiReaction->getParameters().addParameter(id, CCopasiParameter::DOUBLE, pSBMLParameter->getValue());
+          double value;
+          if (pSBMLParameter->isSetValue())
+            {
+              value = pSBMLParameter->getValue();
+            }
+          else
+            {
+              // Set value to NaN and create a warning if it is the first time
+              // this happend
+              value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+              if (!this->mIncompleteModel)
+                {
+                  this->mIncompleteModel = true;
+                  CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
+                }
+            }
+          copasiReaction->getParameters().addParameter(id, CCopasiParameter::DOUBLE, value);
         }
 
       const ASTNode* kLawMath = kLaw->getMath();
@@ -904,6 +928,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       if (!sbmlId2CopasiCN(node, copasi2sbmlmap, copasiReaction->getParameters())) fatalError();
       CEvaluationNode* pExpressionTreeRoot = CEvaluationTree::convertASTNode(*node);
       this->replaceCallNodeNames(pExpressionTreeRoot);
+      this->replaceTimeNodeNames(pExpressionTreeRoot);
       if (pExpressionTreeRoot)
         {
           CEvaluationTree* pTmpTree = CEvaluationTree::create(CEvaluationTree::Expression);
@@ -1308,6 +1333,12 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument *&
       this->mLevel = pSBMLDocument->getLevel();
       if (mLevel == 1)
         {
+          unsigned int i, iMax = pSBMLDocument->getModel()->getNumCompartments();
+          for (i = 0;i < iMax;++i)
+            {
+              Compartment* pCompartment = pSBMLDocument->getModel()->getCompartment(i);
+              pCompartment->setSize(pCompartment->getVolume());
+            }
           pSBMLDocument->setLevel(2);
           mLevel = pSBMLDocument->getLevel();
         }
@@ -1838,6 +1869,27 @@ void SBMLImporter::restoreFunctionDB()
     }
 }
 
+void SBMLImporter::replaceTimeNodeNames(CEvaluationNode* node)
+{
+  if (node)
+    {
+      CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(node);
+      if (pObjectNode)
+        {
+          if (pObjectNode->getData() == "<Reference=Time>")
+            {
+              pObjectNode->setData(std::string("<") + this->mpCopasiModel->getCN() + std::string(">"));
+            }
+        }
+      CEvaluationNode* pChildNode = static_cast<CEvaluationNode*>(node->getChild());
+      while (pChildNode)
+        {
+          this->replaceTimeNodeNames(pChildNode);
+          pChildNode = static_cast<CEvaluationNode*>(pChildNode->getSibling());
+        }
+    }
+}
+
 void SBMLImporter::replaceCallNodeNames(CEvaluationNode* node)
 {
   if (node)
@@ -1849,7 +1901,9 @@ void SBMLImporter::replaceCallNodeNames(CEvaluationNode* node)
 
           if (pos == this->mFunctionNameMapping.end())
             {
-              fatalError();
+              //TODO: implement a specific check for "delay"
+              CCopasiMessage::CCopasiMessage(CCopasiMessage::EXCEPTION,
+                                             "An undefined function was used in a MathML expression. This could also mean \nthat the SBML model contains delay terms which copasi doesn't support yet.");
             }
           std::string newName = pos->second;
           pCallNode->setData(newName);
@@ -2122,7 +2176,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                         {
                           pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
                           assert(pChildNode);
-                          if (pChildNode->getType() == CEvaluationNode::NUMBER)
+                          if (CEvaluationNode::type(pChildNode->getType()) == CEvaluationNode::NUMBER)
                             {
                               const CMetab* pMetab = static_cast<const CMetab*>(pObject);
                               if (multiplicityMap.find(pMetab) != multiplicityMap.end())
@@ -2384,10 +2438,10 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
       pCopasiReaction->setParameterMapping("k1", objectKey);
       const CCopasiVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getSubstrates();
       unsigned int i, iMax = metabolites->size();
-      for (i = 0;i < iMax;++i)
-        {
+      unsigned int j, jMax;
+      for (i = 0; i < iMax; ++i)
+        for (j = 0, jMax = fabs((*metabolites)[i]->getMultiplicity()); j < jMax; j++)
           pCopasiReaction->addParameterMapping("substrate", (*metabolites)[i]->getMetaboliteKey());
-        }
 
       if (pCopasiReaction->isReversible())
         {
@@ -2405,10 +2459,9 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           pCopasiReaction->setParameterMapping("k2", objectKey);
           const CCopasiVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getProducts();
           iMax = metabolites->size();
-          for (i = 0;i < iMax;++i)
-            {
+          for (i = 0; i < iMax; ++i)
+            for (j = 0, jMax = fabs((*metabolites)[i]->getMultiplicity()); j < jMax; j++)
               pCopasiReaction->addParameterMapping("product", (*metabolites)[i]->getMetaboliteKey());
-            }
         }
     }
   else
@@ -2688,13 +2741,15 @@ void SBMLImporter::findFunctionCalls(const CEvaluationNode* pNode, std::set<std:
 
 bool SBMLImporter::isStochasticModel(const Model* pSBMLModel)
 {
-  bool stochastic = true;
+  bool stochastic = false;
   unsigned int i;
   const UnitDefinition* pUD = pSBMLModel->getUnitDefinition("substance");
   if (pUD)
     {
-      stochastic = (pUD->getNumUnits() == 1 && pUD->getUnit(0)->getKind() == UNIT_KIND_ITEM);
-      for (i = 0;(stochastic == true) && (i < pSBMLModel->getNumReactions());++i)
+      stochastic = (pUD->getNumUnits() == 1 &&
+                    pUD->getUnit(0)->getKind() == UNIT_KIND_ITEM);
+
+      for (i = 0; (stochastic == true) && (i < pSBMLModel->getNumReactions()); ++i)
         {
           stochastic = !pSBMLModel->getReaction(i)->getReversible();
         }

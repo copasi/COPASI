@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/08 15:58:29 $
+   $Date: 2006/06/20 13:19:32 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -294,6 +294,11 @@ class COptProblem : public CCopasiProblem
 
     //data member
   protected:
+    /**
+     * A static value containing Infinity.
+     */
+    static C_FLOAT64 mInfinity;
+
     /**
      * A pointer to the value of the CCopasiParameter holding the SteadyStateKey
      */

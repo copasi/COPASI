@@ -592,6 +592,18 @@
         <receiver>CQFittingItemWidget</receiver>
         <slot>slotSelectionChanged()</slot>
     </connection>
+    <connection>
+        <sender>mpEditLower</sender>
+        <signal>lostFocus()</signal>
+        <receiver>CQFittingItemWidget</receiver>
+        <slot>slotLowerLostFocus()</slot>
+    </connection>
+    <connection>
+        <sender>mpEditUpper</sender>
+        <signal>lostFocus()</signal>
+        <receiver>CQFittingItemWidget</receiver>
+        <slot>slotUpperLostFocus()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in declaration">TaskWidget.h</include>
@@ -646,6 +658,8 @@
     <slot access="private" specifier="non virtual">slotDuplicatePerExperiment()</slot>
     <slot access="private" specifier="non virtual">slotNew()</slot>
     <slot access="private" specifier="non virtual">slotSelectionChanged()</slot>
+    <slot access="private" specifier="non virtual">slotLowerLostFocus()</slot>
+    <slot access="private" specifier="non virtual">slotUpperLostFocus()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
@@ -656,10 +670,10 @@
     <function specifier="non virtual">setExperimentSet( const CExperimentSet * &amp; pExperimentSet )</function>
     <function access="private" specifier="non virtual">setTableText( const int &amp; row, const COptItem * pItem )</function>
     <function access="private" specifier="non virtual" returnType="unsigned int">currentRow()</function>
-    <function access="private" specifier="non virtual">selectRow( const unsigned int &amp; row )</function>
     <function access="private" specifier="non virtual">loadSelection()</function>
-    <function access="private" specifier="non virtual">saveSelection()</function>    <function access="private" specifier="non virtual">setSelection( const std::set&lt; unsigned int &gt; &amp; selection )</function>
-
+    <function access="private" specifier="non virtual">saveSelection()</function>
+    <function access="private" specifier="non virtual">selectRow( const unsigned int &amp; row )</function>
+    <function access="private" specifier="non virtual">setItemSelection( const std::set&lt;unsigned int&gt; &amp; selection )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

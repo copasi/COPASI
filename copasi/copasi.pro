@@ -1,10 +1,10 @@
 ######################################################################
-# $Revision: 1.17 $ $Author: ssahle $ $Date: 2006/05/04 11:02:19 $  
+# $Revision: 1.18 $ $Author: shoops $ $Date: 2006/06/20 13:16:12 $  
 ######################################################################
 
-include(common.pri)
-
 TEMPLATE = subdirs
+
+include(common.pri)
 
 # First build the libs
 SUBDIRS =  commandline
@@ -12,9 +12,10 @@ SUBDIRS += CopasiDataModel
 SUBDIRS += elementaryFluxModes
 SUBDIRS += function
 SUBDIRS += lyap
-#SUBDIRS += mathmodel
 SUBDIRS += model
-SUBDIRS += mml
+contains(DEFINES, HAVE_MML) {
+  SUBDIRS += mml
+}
 SUBDIRS += odepack++
 SUBDIRS += optimization
 SUBDIRS += parameterFitting
@@ -23,7 +24,9 @@ SUBDIRS += randomGenerator
 SUBDIRS += report
 SUBDIRS += sbml
 SUBDIRS += scan
-SUBDIRS += sensitivities
+contains(DEFINES, COPASI_SENS) {
+  SUBDIRS += sensitivities
+}
 SUBDIRS += steadystate
 SUBDIRS += trajectory
 SUBDIRS += tss
@@ -34,5 +37,32 @@ SUBDIRS += wizard
 # Now the excecutables
 SUBDIRS += CopasiSE
 SUBDIRS += CopasiUI
-#SUBDIRS += test2
-#SUBDIRS += test
+
+DISTDIRS = $${SUBDIRS}
+DISTDIRS -= mml
+
+DISTFILES += \
+        1_configure.dsp \
+        FlexLexer.h \
+        LicenseUS.txt.h \
+        LicenseDE.txt.h \
+        blas.h \
+        blaswrap.h \
+        clapackwrap.h \
+        copasi.dsp \
+        copasi.dsw \
+        copasi.h \
+        copasilicense.h \
+        copasiversion.h \
+        copasi.pro \
+        lapack.h \
+        mathematics.h
+
+src_distribution.commands = \
+  rm -rf ../copasi_src/copasi; \
+  $(CHK_DIR_EXISTS) ../copasi_src || $(MKDIR) ../copasi_src; \
+  $(CHK_DIR_EXISTS) ../copasi_src/copasi || $(MKDIR) ../copasi_src/copasi; \
+  cp $$DISTFILES ../copasi_src/copasi/; \
+  $$join(DISTDIRS, "; $(MAKE) -f $(MAKEFILE) $@; cd ..; cd ", "cd ", "; $(MAKE) -f $(MAKEFILE) $@; cd ..;")
+
+QMAKE_EXTRA_UNIX_TARGETS += src_distribution

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.1 $ $Author: ssahle $ $Date: 2006/05/04 10:54:43 $  
+# $Revision: 1.2 $ $Author: shoops $ $Date: 2006/06/20 13:18:41 $  
 ######################################################################
 
 LIB = lyap
@@ -19,3 +19,5 @@ SOURCES += CLyapWolfMethod.cpp \
            CLyapMethod.cpp \
            CLyapProblem.cpp \
            CLyapTask.cpp
+
+DISTFILES += lyaponov.dsp

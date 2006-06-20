@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:42 $
+   $Date: 2006/06/20 13:20:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -193,17 +193,14 @@ class CArrayAnnotation: public CCopasiContainer
 
     void printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const;
 
-  public:
     bool createAnnotationsFromCopasiVector(unsigned int d, const CCopasiContainer* v);
 
     void printDebug(std::ostream & out) const;
 
-    virtual void print(std::ostream * ostream) const
-      {
-        if (mOnTheFly)
-          const_cast<CArrayAnnotation*>(this)->updateAnnotations();
-        printDebug(*ostream);
-      }
+  public:
+    virtual void print(std::ostream * ostream) const;
+
+    friend std::ostream &operator<<(std::ostream &os, const CArrayAnnotation & o);
   };
 
 //**********************************************************************

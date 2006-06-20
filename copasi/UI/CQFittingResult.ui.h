@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingResult.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/08 13:27:29 $
+   $Date: 2006/06/20 13:18:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,10 @@
 #include "copasi.h"
 
 #include "qheader.h"
+#include "qmessagebox.h"
+#include "qregexp.h"
+
+#include "CopasiFileDialog.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "parameterFitting/CFitTask.h"
@@ -264,4 +268,190 @@ bool CQFittingResult::enter(const std::string & /* key */)
 }
 
 void CQFittingResult::slotSave(void)
-{}
+{
+  C_INT32 Answer = QMessageBox::No;
+  QString fileName;
+
+  while (Answer == QMessageBox::No)
+    {
+      fileName =
+        CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
+                                          QString::null, "TEXT Files (*.txt);;All Files (*.*);;", "Save to");
+
+      //std::cout << "fileName: " << fileName << std::endl;
+      if (fileName.isEmpty()) return;
+
+      if (!fileName.endsWith(".txt") &&
+          !fileName.endsWith(".")) fileName += ".txt";
+
+      fileName = fileName.remove(QRegExp("\\.$"));
+
+      Answer = checkSelection(fileName);
+
+      if (Answer == QMessageBox::Cancel) return;
+    }
+
+  std::ofstream file((const char *) fileName.utf8());
+  if (file.fail()) return;
+
+  unsigned C_INT32 i, imax;
+
+  // The global result and statistics
+  file << "Objective Value\tRoot Mean Square\tStandard Deviation" << std::endl;
+  file << mpProblem->getSolutionValue() << "\t";
+  file << mpProblem->getRMS() << "\t";
+  file << mpProblem->getStdDeviation() << std::endl;
+
+  file << "Function Evaluations\tCPU Time [s]\tEvaluations/second [1/s]" << std::endl;
+  const unsigned C_INT32 & FunctionEvaluations = mpProblem->getFunctionEvaluations();
+  const C_FLOAT64 & ExecutionTime = mpProblem->getExecutionTime();
+  file << FunctionEvaluations << "\t";
+  file << ExecutionTime << "\t";
+  file << FunctionEvaluations / ExecutionTime << std::endl;
+
+  // Set up the parameters table
+  file << std::endl << "Parameters:" << std::endl;
+  file << "Parameter\tValue\tStd. Deviation\tCoeff. of Variation [%]\tGradient" << std::endl;
+
+  // Loop over the optimization items
+  const std::vector< COptItem * > & Items = mpProblem->getOptItemList();
+  const CVector< C_FLOAT64 > & Solutions = mpProblem->getSolutionVariables();
+  const CVector< C_FLOAT64 > & StdDeviations = mpProblem->getVariableStdDeviations();
+  const CVector< C_FLOAT64 > & Gradients = mpProblem->getVariableGradients();
+
+  imax = Items.size();
+  if (mpProblem->getFunctionEvaluations() == 0)
+    imax = 0;
+
+  for (i = 0; i != imax; i++)
+    {
+      const CCopasiObject *pObject =
+        RootContainer.getObject(Items[i]->getObjectCN());
+      if (pObject)
+        {
+          std::string Experiments =
+            static_cast<CFitItem *>(Items[i])->getExperiments();
+
+          if (Experiments != "")
+            Experiments = "; {" + Experiments + "}";
+
+          file << pObject->getObjectDisplayName() << Experiments << "\t";
+        }
+      else
+        file << "Not Found\t";
+
+      const C_FLOAT64 & Solution = Solutions[i];
+      file << Solution << "\t";
+      const C_FLOAT64 & StdDeviation = StdDeviations[i];
+      file << StdDeviation << "\t";
+      file << fabs(100.0 * StdDeviation / Solution) << "\t";
+      file << Gradients[i] << std::endl;
+    }
+
+  // Set up the experiments table
+  file << std::endl << "Experiments:" << std::endl;
+  file << "Experiment\tObjective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
+
+  // Loop over the experiments
+  const CExperimentSet & Experiments = mpProblem->getExperiementSet();
+
+  imax = Experiments.size();
+  if (mpProblem->getFunctionEvaluations() == 0)
+    imax = 0;
+
+  mpExperiments->setNumRows(imax);
+  for (i = 0; i != imax; i++)
+    {
+      const CExperiment & Experiment = * Experiments.getExperiment(i);
+      file << Experiment.getObjectName() << "\t";
+      file << Experiment.getObjectiveValue() << "\t";
+      file << Experiment.getRMS() << "\t";
+      file << Experiment.getErrorMean() << "\t";
+      file << Experiment.getErrorMeanSD() << std::endl;
+    }
+
+  // Set up the fitted values table
+  file << std::endl << "Fitted Values:" << std::endl;
+  file << "Fitted Value\tObjective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
+
+  // Loop over the fitted values objects
+  imax = Experiments.getDependentObjects().size();
+  if (mpProblem->getFunctionEvaluations() == 0)
+    imax = 0;
+
+  mpValues->setNumRows(imax);
+  for (i = 0; i != imax; i++)
+    {
+      const CCopasiObject * pObject = Experiments.getDependentObjects()[i];
+      if (pObject)
+        file << pObject->getObjectDisplayName() << "\t";
+      else
+        file << "Not Found\t";
+
+      file << Experiments.getDependentObjectiveValues()[i] << "\t";
+      file << Experiments.getDependentRMS()[i] << "\t";
+      file << Experiments.getDependentErrorMean()[i] << "\t";
+      file << Experiments.getDependentErrorMeanSD()[i] << std::endl;
+    }
+
+  // Fill correlation matrix
+  file << std::endl << "Correlation Matrix:" << std::endl;
+  imax = Items.size();
+  if (mpProblem->getFunctionEvaluations() == 0)
+    imax = 0;
+
+  // Update the table headers
+  for (i = 0; i != imax; i++)
+    {
+      if (i) file << "\t";
+
+      const CCopasiObject *pObject =
+        RootContainer.getObject(Items[i]->getObjectCN());
+
+      if (pObject)
+        {
+          std::string Experiments =
+            static_cast<CFitItem *>(Items[i])->getExperiments();
+
+          file << pObject->getObjectDisplayName();
+
+          if (Experiments != "")
+            file << "; {" << Experiments << "}";
+        }
+      else
+        file << "Not Found";
+    }
+  file << std::endl;
+
+  // Fill the table
+  const C_FLOAT64 * pCorrelation = mpProblem->getVariableCorrelations().array();
+  unsigned C_INT32 j;
+  for (i = 0; i != imax; i++)
+    {
+      const CCopasiObject *pObject =
+        RootContainer.getObject(Items[i]->getObjectCN());
+
+      if (pObject)
+        {
+          std::string Experiments =
+            static_cast<CFitItem *>(Items[i])->getExperiments();
+
+          file << pObject->getObjectDisplayName();
+
+          if (Experiments != "")
+            file << "; {" << Experiments << "}";
+        }
+      else
+        file << "Not Found";
+
+      file << "\t";
+
+      for (j = 0; j != imax; j++)
+        {
+          if (j) file << "\t";
+          file << *pCorrelation++;
+        }
+
+      file << std::endl;
+    }
+}

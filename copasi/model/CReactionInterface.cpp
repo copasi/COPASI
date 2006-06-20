@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/14 13:33:45 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:18:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -437,8 +437,8 @@ void CReactionInterface::initMapping()
   mpParameters = new CFunctionParameters(mpFunction->getVariables());
   //make sure mpParameters is deleted! (e.g. in copyMapping())
   mNameMap.resize(size());
-  mValues.resize(size(), 0.1);
-  mIsLocal.resize(size(), false);
+  mValues.resize(size());
+  mIsLocal.resize(size());
   C_INT32 i, imax = size();
   for (i = 0; i < imax; ++i)
     {
@@ -452,6 +452,10 @@ void CReactionInterface::initMapping()
 
       if (getUsage(i) == CFunctionParameter::PARAMETER)
         mIsLocal[i] = true;
+      else
+        mIsLocal[i] = false;
+
+      mValues[i] = 0.1;
     }
 }
 
@@ -562,7 +566,8 @@ void CReactionInterface::connectNonMetabolites(const CModel & model)
 
 void CReactionInterface::setFunctionWithEmptyMapping(const std::string & fn)
 {
-  if (fn == "") {clearFunction(); return;}
+  if ((fn == "") || (fn == "undefined"))
+  {clearFunction(); return;}
   //get the function
   mpFunction = dynamic_cast<CFunction *>
                (CCopasiDataModel::Global->getFunctionList()->findLoadFunction(fn));
@@ -574,7 +579,8 @@ void CReactionInterface::setFunctionWithEmptyMapping(const std::string & fn)
 
 void CReactionInterface::setFunctionAndDoMapping(const std::string & fn, const CModel & model)
 {
-  if (fn == "") {clearFunction(); return;}
+  if ((fn == "") || (fn == "undefined"))
+  {clearFunction(); return;}
 
   //get the function
   mpFunction = dynamic_cast<CFunction *>
@@ -728,7 +734,8 @@ bool CReactionInterface::isValid() const
 
 void CReactionInterface::printDebug() const
   {
-    std::cout << "Reaction:   " << getReactionName() << std::endl;
+    std::cout << "Reaction interface   " << std::endl;
+    std::cout << " Reaction:   " << getReactionName() << std::endl;
     std::cout << "  Function: " << getFunctionName() << std::endl;
     std::cout << "  ChemEq:   " << getChemEqString() << std::endl;
 
@@ -736,11 +743,12 @@ void CReactionInterface::printDebug() const
     for (i = 0; i < imax; ++i)
       {
         std::cout << "    ---  " << i << ": " << getParameterName(i)
-        << ", " << isVector(i) << " " << isLocalValue(i)
-        << ", " << mValues[i] << std::endl;
+        << ", vector: " << isVector(i) << " local: " << isLocalValue(i)
+        << ", value: " << mValues[i] << std::endl;
 
         unsigned C_INT32 j, jmax = mNameMap[i].size();
         for (j = 0; j < jmax; ++j)
           std::cout << "            " << mNameMap[i][j] << std::endl;
       }
+    std::cout << std::endl;
   }

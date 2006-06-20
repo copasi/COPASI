@@ -125,6 +125,14 @@
     </widget>
     </grid>
 </widget>
+<connections>
+    <connection>
+        <sender>mpBtnSave</sender>
+        <signal>clicked()</signal>
+        <receiver>CQFittingResult</receiver>
+        <slot>slotSave()</slot>
+    </connection>
+</connections>
 <includes>
     <include location="local" impldecl="in declaration">copasiWidget.h</include>
     <include location="local" impldecl="in declaration">CQFittingResultTab1.h</include>

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapMethod.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/04 10:54:43 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:18:41 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 #include "CLyapProblem.h"
 #include "model/CState.h"
 #include "model/CCompartment.h"
+#include "model/CModel.h"
 
 CLyapValidSubTypes::CLyapValidSubTypes():
     std::vector< CCopasiMethod::SubType >()
@@ -131,11 +132,26 @@ bool CLyapMethod::isValidProblem(const CCopasiProblem * pProblem)
 {
   if (!CCopasiMethod::isValidProblem(pProblem)) return false;
 
-  const CLyapProblem * pTP = dynamic_cast<const CLyapProblem *>(pProblem);
-  if (!pTP)
+  const CLyapProblem * pLP = dynamic_cast<const CLyapProblem *>(pProblem);
+  if (!pLP)
     {
       //not a LyapProblem
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 8);
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCLyap + 1);
+      return false;
+    }
+
+  if (pLP->getExponentNumber() < 1)
+    {
+      //to few exponents
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCLyap + 2);
+      return false;
+    }
+
+  C_INT32 tmp = pLP->getModel()->getState().getNumIndependent();
+  if (pLP->getExponentNumber() > tmp)
+    {
+      //to few exponents
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCLyap + 3, tmp, tmp);
       return false;
     }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/05/15 12:44:13 $
+   $Author: shoops $
+   $Date: 2006/06/20 13:18:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -385,28 +385,40 @@ void CEvaluationNodeCall::writeMathML(std::ostream & out,
       case FUNCTION:
         {
 
+#if 0
           if (!expand)
             {
-
+#endif
               out << SPC(l) << "<mrow>" << std::endl;
 
-              out << SPC(l + 1) << "<mfunc>" << mData << "</mfunc>" << std::endl;
-              out << SPC(l + 1) << "<mfenced>" << std::endl;
+              out << SPC(l + 1) << "<mi>" << mData << "</mi>" << std::endl;
+              out << SPC(l + 1) << "<mo> &ApplyFunction; </mo>" << std::endl;
+              out << SPC(l + 1) << "<mrow>" << std::endl;
+              out << SPC(l + 2) << "<mo> (</mo>" << std::endl;
+              out << SPC(l + 2) << "<mrow>" << std::endl;
 
               std::vector< CEvaluationNode * >::const_iterator it = mCallNodes.begin();
               std::vector< CEvaluationNode * >::const_iterator end = mCallNodes.end();
 
+              if (it != end) (*it++)->writeMathML(out, env, expand, l + 3);
+
               for (; it != end; ++it)
                 {
-                  (*it)->writeMathML(out, env, expand, l + 2);
+
+                  out << SPC(l + 3) << "<mo> , </mo>" << std::endl;
+                  (*it)->writeMathML(out, env, expand, l + 3);
                 }
 
-              out << SPC(l + 1) << "</mfenced>" << std::endl;
-              out << SPC(l) << "</mrow>" << std::endl;
-            }
-          //else  :TODO
-        }
+              out << SPC(l + 2) << "</mrow>" << std::endl;
+              out << SPC(l + 2) << "<mo>) </mo>" << std::endl;
 
+              out << SPC(l + 1) << "</mrow>" << std::endl;
+              out << SPC(l) << "</mrow>" << std::endl;
+#if 0
+            }
+          // else  :TODO
+#endif
+        }
         break;
 
       case EXPRESSION:

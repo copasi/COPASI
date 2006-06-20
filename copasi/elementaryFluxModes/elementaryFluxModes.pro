@@ -21,3 +21,5 @@ SOURCES += CEFMAlgorithm.cpp \
            CFluxScore.cpp \
            CTableauLine.cpp \
            CTableauMatrix.cpp
+
+DISTFILES += elementaryFluxModes.dsp

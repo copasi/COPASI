@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.0 (Build 18) (http://www.copasi.org) at 2006-05-30 19:27:15 UTC -->
+<!-- generated with COPASI 4.0 (Build 18) (http://www.copasi.org) at 2006-05-30 21:03:07 UTC -->
 <COPASI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.copasi.org/static/schema.xsd" versionMajor="0" versionMinor="1">
   <ListOfFunctions>
     <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" reversible="false">
@@ -23,8 +23,8 @@
   </ListOfFunctions>
   <Model key="Model_1" name="MWC dimeric enzyme" timeUnit="s" volumeUnit="l" quantityUnit="Mol" type="deterministic">
     <Comment>
-      <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-size:10pt;font-family:Bitstream Vera Sans">
-<p style="margin-top:18px"><span style="font-size:20pt;font-weight:600">Example of very stiff biochemical model</span></p>
+      <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-size:8pt;font-family:MS Shell Dlg">
+<p style="margin-top:18px"><span style="font-size:16pt;font-weight:600">Example of very stiff biochemical model</span></p>
 <p>This is a model of an allosteric enzyme following the MWC dimeric model, in which the substrate S interacts only with the enzyme species in the R-state. The system of ODEs of this model is very stiff, and correct results can only be obtained with a stiff ODE solver.</p>
 <p>This example comes from Hayashi, K. and Sakamoto, N. (1986) <span style="font-style:italic">Dynamic Analysis of Enzyme Systems</span>, Japan Scientific Societies Press, Tokyo.</p>
 <p><span style="font-weight:600">Example for</span>: Time course simulation, plotting</p>
@@ -55,12 +55,12 @@
           <Product metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_69" name="k1" value="500"/>
+          <Constant key="Parameter_75" name="k1" value="500"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_69"/>
+              <SourceParameter reference="Parameter_75"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_0"/>
@@ -76,12 +76,12 @@
           <Product metabolite="Metabolite_0" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_68" name="k1" value="0.5"/>
+          <Constant key="Parameter_74" name="k1" value="0.5"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_68"/>
+              <SourceParameter reference="Parameter_74"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_1"/>
@@ -98,12 +98,12 @@
           <Product metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_67" name="k1" value="2e+07"/>
+          <Constant key="Parameter_73" name="k1" value="2e+007"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_67"/>
+              <SourceParameter reference="Parameter_73"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_3"/>
@@ -121,12 +121,12 @@
           <Product metabolite="Metabolite_0" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_66" name="k1" value="500"/>
+          <Constant key="Parameter_72" name="k1" value="500"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_66"/>
+              <SourceParameter reference="Parameter_72"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_2"/>
@@ -143,12 +143,12 @@
           <Product metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_65" name="k1" value="1000"/>
+          <Constant key="Parameter_71" name="k1" value="1000"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_65"/>
+              <SourceParameter reference="Parameter_71"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_5"/>
@@ -165,12 +165,12 @@
           <Product metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_64" name="k1" value="1e+07"/>
+          <Constant key="Parameter_70" name="k1" value="1e+007"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_64"/>
+              <SourceParameter reference="Parameter_70"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_2"/>
@@ -235,7 +235,7 @@
       <StateTemplateVariable objectReference="Compartment_0"/>
     </StateTemplate>
     <InitialState type="initialState">
-      0 0 6022141.500000001 6.022141500000001 0 6016.1193585 0 1e-15
+      0 0 6022141.500000001 6.022141500000001 0 6016.1193585 0 1e-015
     </InitialState>
   </Model>
   <ListOfTasks>
@@ -251,7 +251,7 @@
         <Parameter name="Accept Negative Concentrations" type="bool" value="0"/>
         <Parameter name="Iteration Limit" type="unsignedInteger" value="50"/>
         <Parameter name="Derivation Factor" type="unsignedFloat" value="0.001"/>
-        <Parameter name="Resolution" type="unsignedFloat" value="1e-09"/>
+        <Parameter name="Resolution" type="unsignedFloat" value="1e-009"/>
       </Method>
     </Task>
     <Task key="Task_8" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
@@ -265,7 +265,7 @@
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="1"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-006"/>
         <Parameter name="Use Default Absolute Tolerance" type="bool" value="1"/>
         <Parameter name="Absolute Tolerance" type="unsignedFloat" value="0.001"/>
         <Parameter name="Adams Max Order" type="unsignedInteger" value="12"/>
@@ -324,7 +324,7 @@
         <Parameter name="Steady-State" type="key" value="Task_7"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
-        <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-09"/>
+        <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-009"/>
       </Method>
     </Task>
     <Task key="Task_13" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
@@ -336,9 +336,9 @@
       <Method name="Wolf Method" type="WolfMethod">
         <Parameter name="Orthonormalization Interval" type="unsignedFloat" value="1"/>
         <Parameter name="Overall time" type="unsignedFloat" value="1000"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-006"/>
         <Parameter name="Use Default Absolute Tolerance" type="bool" value="1"/>
-        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e+09"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e+009"/>
         <Parameter name="Adams Max Order" type="unsignedInteger" value="12"/>
         <Parameter name="BDF Max Order" type="unsignedInteger" value="5"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>

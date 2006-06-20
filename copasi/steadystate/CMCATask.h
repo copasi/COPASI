@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCATask.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Date: 2006/06/20 13:19:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,6 +103,12 @@ class CMCATask : public CCopasiTask
     // Friend functions
     friend std::ostream &operator<<(std::ostream &os,
                                     const CMCATask &A);
+
+    /**
+     * This functionality is expected from the problem but has to be implemented
+     * here for the moment. This is called from the corresponding method of the problem
+     */
+    void printResult(std::ostream * ostream) const;
 
   private:
     /**

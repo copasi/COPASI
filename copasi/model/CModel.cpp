@@ -1,20 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.260 $
+   $Revision: 1.261 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/15 15:10:44 $
+   $Date: 2006/06/20 13:18:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-/////////////////////////////////////////////////////////////////////////////
-// CModel
-// model.cpp : interface of the CModel class
-//
-/////////////////////////////////////////////////////////////////////////////
 
 #ifdef SunOS
 # include <ieeefp.h>
@@ -1726,48 +1720,6 @@ CReaction* CModel::createReaction(const std::string & name)
   return pReaction;
 }
 
-/*bool CModel::addReaction(const CReaction & reaction)
-{
-  if (mSteps.getIndex(reaction.getObjectName()) != C_INVALID_INDEX)
-    return false;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  mSteps.add(reaction);
-  mSteps[reaction.getObjectName()]->compile();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  setCompileFlag();
-  return true;
-}*/
-
 bool CModel::removeReaction(const std::string & key)
 {
   CReaction * pReaction =
@@ -1871,15 +1823,17 @@ bool CModel::convert2NonReversible()
         //std::cout << i << "  ";
 
         //create the two new reactions
-        reac1 = new CReaction(/* *reac0, &steps*/);
         rn1 = reac0->getObjectName() + " (forward)";
-        reac1->setObjectName(rn1);
-        steps.add(reac1);
+        reac1 = createReaction(rn1);
+        //reac1 = new CReaction(/* *reac0, &steps*/);
+        //reac1->setObjectName(rn1);
+        //steps.add(reac1);
 
-        reac2 = new CReaction(/* *reac0, &steps*/);
         rn2 = reac0->getObjectName() + " (backward)";
-        reac2->setObjectName(rn2);
-        steps.add(reac2);
+        reac2 = createReaction(rn2);
+        //reac2 = new CReaction(/* *reac0, &steps*/);
+        //reac2->setObjectName(rn2);
+        //steps.add(reac2);
 
         ri1.initFromReaction(*this, reac0->getKey());
         ri1.setReactionName(rn1);
@@ -1914,8 +1868,16 @@ bool CModel::convert2NonReversible()
 
         if (fn == "Mass action (reversible)")
           {
-            reac1->setParameterValue("k1", reac0->getParameterValue("k1"));
-            reac2->setParameterValue("k1", reac0->getParameterValue("k2"));
+            if (reac0->isLocalParameter("k1"))
+              reac1->setParameterValue("k1", reac0->getParameterValue("k1"));
+            else
+              reac1->setParameterMapping("k1", reac0->getParameterMapping("k1")[0]);
+
+            if (reac0->isLocalParameter("k2"))
+              reac2->setParameterValue("k1", reac0->getParameterValue("k2"));
+            else
+              reac2->setParameterMapping("k1", reac0->getParameterMapping("k2")[0]);
+
             ret = true;
           }
         else
@@ -1924,7 +1886,6 @@ bool CModel::convert2NonReversible()
           }
 
         //remove the old reaction
-        //mSteps.remove(reac0->getName());
         reactionsToDelete.push_back(reac0->getObjectName());
       }
 

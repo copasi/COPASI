@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAProblem.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Date: 2006/06/20 13:19:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,6 +22,7 @@
 
 #include "copasi.h"
 #include "CMCAProblem.h"
+#include "CMCATask.h"
 #include "CSteadyStateTask.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -34,7 +35,7 @@
  *  @param "CModel *" pModel
  */
 CMCAProblem::CMCAProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::steadyState, pParent),
+    CCopasiProblem(CCopasiTask::mca, pParent),
     mInitialState()
 {
   //  addParameter("SteadyStateRequested", CCopasiParameter::BOOL, true);
@@ -143,3 +144,46 @@ CSteadyStateTask * CMCAProblem::getSubTask() const
     else
       return NULL;
   }
+
+void CMCAProblem::printResult(std::ostream * ostream) const
+  {
+    //this functionality is expected from the problem. However it is implemented in
+    //the task.
+
+    CMCATask* parent = dynamic_cast<CMCATask*>(getObjectParent());
+    if (!parent) return;
+
+    parent->printResult(ostream);
+  }
+
+//print the description
+std::ostream &operator<<(std::ostream &os, const CMCAProblem & o)
+{
+  os << "Problem Description:" << std::endl;
+
+  //os << "Subtask: " << std::endl;
+
+  if (o.isSteadyStateRequested())
+    {
+      os << "Calculation of a steady state is requested before the MCA." << std::endl << std::endl;
+      if (o.getSubTask())
+        {
+          //os << "" << std::endl;
+          o.getSubTask()->getDescription().print(&os);
+        }
+      else
+        {
+          os << "However an error occurred. Please report this as a bug." << std::endl;
+        }
+    }
+  else
+    {
+      os << "MCA is performed on the current state (which is not necessarily a steady state)." << std::endl;
+    }
+  os << std::endl;
+
+  return os;
+}
+
+void CMCAProblem::print(std::ostream * ostream) const
+  {*ostream << *this;}

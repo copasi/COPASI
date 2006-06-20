@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /home/cvs/copasi_dev/copasi/CopasiUI/TimeSeriesSubwidget.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9.2.2 $
    $Name:  $
-   $Author: stupe $
-   $Date: 2005/10/26 15:43:18 $
+   $Author: ssahle $
+   $Date: 2006/05/19 13:28:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'TimeSeriesSubwidget.ui'
  **
- ** Created: Mon Oct 24 12:45:57 2005
- **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.cpp,v 1.8 2005/10/26 15:43:18 stupe Exp $)
+ ** Created: Fr Mai 19 15:21:10 2006
+ **      by: The User Interface Compiler ($Id: TimeSeriesSubwidget.cpp,v 1.9.2.2 2006/05/19 13:28:34 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -50,18 +50,17 @@ TimeSeriesSubWidget::TimeSeriesSubWidget(QWidget* parent, const char* name, WFla
   toplayout = new QHBoxLayout(0, 1, 1, "toplayout");
 
   comboBox = new QComboBox(FALSE, this, "comboBox");
-  comboBox->setMinimumSize(QSize(0, 20));
+  comboBox->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, comboBox->sizePolicy().hasHeightForWidth()));
   toplayout->addWidget(comboBox);
   spacer = new QSpacerItem(170, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
   toplayout->addItem(spacer);
 
   ButtonSaveData = new QPushButton(this, "ButtonSaveData");
-  ButtonSaveData->setMinimumSize(QSize(0, 20));
+  ButtonSaveData->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)1, (QSizePolicy::SizeType)0, 0, 0, ButtonSaveData->sizePolicy().hasHeightForWidth()));
   toplayout->addWidget(ButtonSaveData);
   TimeSeriesSubWidgetLayout->addLayout(toplayout);
 
   tabWidget2 = new QTabWidget(this, "tabWidget2");
-  tabWidget2->setGeometry(QRect(10, 40, 550, 510));
 
   tab = new QWidget(tabWidget2, "tab");
   tabLayout = new QVBoxLayout(tab, 11, 6, "tabLayout");
@@ -69,18 +68,17 @@ TimeSeriesSubWidget::TimeSeriesSubWidget(QWidget* parent, const char* name, WFla
   optimizationResultText = new QTextEdit(tab, "optimizationResultText");
   optimizationResultText->setReadOnly(TRUE);
   tabLayout->addWidget(optimizationResultText);
-  tabWidget2->insertTab(tab, QString(""));
+  tabWidget2->insertTab(tab, QString::fromLatin1(""));
 
   tab_2 = new QWidget(tabWidget2, "tab_2");
   tabLayout_2 = new QVBoxLayout(tab_2, 11, 6, "tabLayout_2");
 
   dataTable = new CTimeSeriesTable(tab_2, "dataTable");
-  dataTable->setReadOnly(TRUE);
   tabLayout_2->addWidget(dataTable);
-  tabWidget2->insertTab(tab_2, QString(""));
+  tabWidget2->insertTab(tab_2, QString::fromLatin1(""));
   TimeSeriesSubWidgetLayout->addWidget(tabWidget2);
   languageChange();
-  resize(QSize(600, 497).expandedTo(minimumSizeHint()));
+  resize(QSize(600, 382).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.130 $
+   $Revision: 1.131 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 19:16:14 $
+   $Date: 2006/06/20 13:20:40 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -543,6 +543,7 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
   CEvaluationTree::Type Type;
   const char * Name;
   const char * Positive;
+  const char * Reversible;
   unsigned C_INT32 index;
   CFunction * pFunction;
   const char* SBMLId;
@@ -558,7 +559,10 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
       Name = mParser.getAttributeValue("name", papszAttrs);
       type = mParser.getAttributeValue("type", papszAttrs);
       Type = (CEvaluationTree::Type)toEnum(type, CEvaluationTree::XMLType);
+      // This is only here to load incorrect old files. The attribute
+      // positive no longer exists.
       Positive = mParser.getAttributeValue("positive", papszAttrs, "unspecified");
+      Reversible = mParser.getAttributeValue("reversible", papszAttrs, "unspecified");
 
       mCommon.mExistingFunction = false;
       mCommon.pFunction = CEvaluationTree::create(Type);
@@ -570,15 +574,22 @@ void CCopasiXMLParser::FunctionElement::start(const XML_Char *pszName,
         {
           mCommon.pFunction->setSBMLId(SBMLId);
         }
+
       if (pFunction)
         {
-          if (!strcmp(Positive, "unspecified"))
-            pFunction->setReversible(TriUnspecified);
-          else if (!strcmp(Positive, "true"))
+          if (!strcmp(Reversible, "true"))
             pFunction->setReversible(TriTrue);
-          else if (!strcmp(Positive, "false"))
+          else if (!strcmp(Reversible, "false"))
             pFunction->setReversible(TriFalse);
-          else fatalError();
+          else
+            {
+              if (!strcmp(Positive, "true"))
+                pFunction->setReversible(TriTrue);
+              else if (!strcmp(Positive, "false"))
+                pFunction->setReversible(TriFalse);
+              else
+                pFunction->setReversible(TriUnspecified);
+            }
         }
 
       /* We have a new function and add it to the list */
@@ -2049,6 +2060,9 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
 
 void CCopasiXMLParser::ReactionElement::end(const XML_Char *pszName)
 {
+  if (!strcmp(pszName, "Reaction"))
+    mCurrentElement = Reaction;
+
   switch (mCurrentElement)
     {
     case Reaction:

@@ -1,51 +1,148 @@
 <chapter id="methods" xreflabel="Methods">
 <title>Methods</title>
+
 <sect1 id="methodTimeCourse" xreflabel="Time Course">
 <title>Time Course Calculation</title>
-<para>With the time course simulation, you can calculate the trajectory for the species in your model over a given time interval. There are different methods to calculate such trajectories and depending on your model, one or several of them may be appropriate to do a time course simulation of your model.</para>
-<para>Copasi supports three different methodologies to calculate a trajectory. The first method is to do a deterministic time course simulation of your model using the LSODA algorithm. For systems with small particle numbers, it is sometimes better to do a stochastic simulation rather then a deterministic one. Copasi supports two methods for the stochastic calculation of time series, one is called <guilabel>stochastic</guilabel> and uses the next reaction method described by ???. The other method for stochastic simulation is the Tau-Leap method described in ???.</para>
-<para>Since the deterministic simulation is inappropriate for some systems but on the other hand, the stochastic simulation is too time consuming, there are some methods that try to combine the advantages of both deterministic and stochastic simulation. Most of those methods are termed hybrid methods. Copasi also includes such a hybrid method which in some systems where deterministic simulation would lead to incorrect results will give the correct time series but is still computationally less demanding than a pure stochastic simulation.</para>
+
+<para>
+With the time course simulation, you can calculate the trajectory for
+the species in your model over a given time interval. There are
+different methods to calculate such trajectories and depending on your
+model, one or several of them may be appropriate to do a time course
+simulation of your model.
+</para>
+
+<para>
+COPASI supports three different methodologies to calculate a
+trajectory. The first method is to do a deterministic time course
+simulation of your model using the LSODA
+<citation>Petzold83</citation> algorithm. For systems with  
+small particle numbers, it is sometimes better to do a stochastic
+simulation rather than a deterministic one. COPASI supports a method
+for the stochastic calculation of time series, which is called
+<guilabel>stochastic</guilabel> and uses the next reaction method
+described by Gibson and Bruck.
+<!--
+The other method for stochastic simulation is the
+Tau-Leap method described in ???.
+-->
+</para>
+
+<para>Since the deterministic simulation is inappropriate for some
+systems but on the other hand, the stochastic simulation is too time
+consuming, there are some methods that try to combine the advantages
+of both deterministic and stochastic simulation. Most of those methods
+are termed hybrid methods. COPASI also includes such a hybrid method
+which in some systems where deterministic simulation would lead to
+incorrect results will give the correct time series but is still
+computationally less demanding than a pure stochastic simulation.
+</para>
+
 <sect2 id="DeterministicSimulation" xreflabel="DeterministicSimulation">
 <title>Deterministic Simulation</title>
+
 <sect3 id="LSODA" xreflabel="LSODA">
-<title>LSODA</title>
+<title>Deterministic (LSODA)</title>
 <para>
-To be written.
+The default method in COPASI to calculate a time course is
+LSODA <citation>Petzold83</citation>. LSODA is part of the <ulink
+url="http://www.netlib.org/odepack/opkd-sum">
+ODEPACK</ulink> library <citation>Hindmarsh83</citation>.
+LSODA was written by Linda R. Petzold and Alan C. Hindmarsh.
+<!--
+	Computing and Mathematics Research Division,
+	Lawrence Livermore National Laboratory,
+	Livermore, CA 94550, U.S.A.
+-->
+It solves systems <mml:math><mml:mi>dy</mml:mi><mml:mo>/</mml:mo>
+<mml:mi>dt</mml:mi><mml:mo> = </mml:mo><mml:mi>f </mml:mi></mml:math> 
+with a dense or banded Jacobian when the problem is stiff, but it
+automatically selects between non-stiff (Adams) and stiff (BDF)
+methods.  It uses the non-stiff method initially, and dynamically
+monitors data in order to decide which method to use.
 </para>
 
 <variablelist><title>Options for LSODA</title>
-<varlistentry><term>LSODA.RelativeTolerance</term>
+<varlistentry><term>Integrate Reduced Model</term>
 <listitem>
 <para>
-To be written
+This parameter is a boolean value to determine whether the integration
+shall be performed using the mass conservation laws, i.e., reducing
+the number of system variables or to use the complete model. A value of
+'1' (the default) instructs COPASI to make use of the mass
+conservation laws, whereas a value of '0' instructs COPASI to
+determine all variables through ODEs. 
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>LSODA.AbsoluteTolerance</term>
+<varlistentry><term>Relative Tolerance</term>
 <listitem>
 <para>
-To be written
+This parameter is a numeric value specifying the desired relative
+tolerance the user wants to achieve. A smaller value means that the
+trajectory is calculated more accurate. The default value is
+<mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>-6</mml:mn></mml:msup></mml:math>.
+Please note that best achievable relative tolerance is approximately 
+<mml:math><mml:mn>2.22</mml:mn><mml:mo>*</mml:mo>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>-16</mml:mn></mml:msup></mml:math>.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>LSODA.AdamsMaxOrder</term>
+<varlistentry><term>Use Default Absolute Tolerance</term>
 <listitem>
 <para>
-To be written
+This parameter is a boolean value to determine whether COPASI shall
+make a guess for the absolute tolerance. The absolute tolerance
+determines whether numbers are considered to be zero during
+calculation. Numbers with an absolute values less than the absolute
+tolerance are treated as zero. A value of '1' (the default) instructs
+COPASI to make a guess which can be found in the Absolute Tolerance
+parameter after calculation. When specifying a value of '0' one needs
+also to provide a value for the absolute tolerance.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>LSODA.BDFMaxOrder</term>
+<varlistentry><term>Absolute Tolerance</term>
 <listitem>
 <para>
-To be written
+This parameter is a numeric value specifying the desired absolute
+tolerance the user wants to achieve or if Use Default Absolute
+Tolerance parameter is set '1' the value COPASI selected. Please note
+that COPASI internally calculates with particle numbers which might be
+quite large (<mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>23</mml:mn></mml:msup></mml:math>)
+and therefore an absolute tolerance of 
+<mml:math><mml:mn>1.0</mml:mn><mml:mo>*</mml:mo>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>9</mml:mn></mml:msup></mml:math>
+is already small.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>LSODA.MaxStepsInternal</term>
+<varlistentry><term>Adams Max Order</term>
 <listitem>
 <para>
-To be written
+This parameter is a positive integer value specifying the maximal
+order the non-stiff Adams integration method shall attempt before
+switching to the stiff BDF method. The default and maximal order is '12'.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>BDF Max Order</term>
+<listitem>
+<para>
+This parameter is a positive integer value specifying the maximal
+order the stiff BDF integration method shall attempt before switching
+to smaller internal step sizes. The default and maximal order is '5'.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Max Internal Steps</term>
+<listitem>
+<para>
+This parameter is a positive integer value specifying the maximal
+number of internal steps the integrator is allowed to take before the
+next desired reporting time. The default value is '10000'. 
 </para>
 </listitem>
 </varlistentry>
@@ -54,47 +151,52 @@ To be written
 </sect3>
 </sect2>
 <sect2 id="StochasticSimulation" xreflabel="Stochastic Simulation">
-<title>Deterministic Simulation</title>
+<title>Stochastic Simulation</title>
 <sect3 id="NextReactionMethod" xreflabel="Next Reaction Method">
 <title>The Next-Reaction-Method</title>
 <para>
-To be written.
+This stochastic simulation method utilizes the algorithm developed by Gibson and Bruck (see <citation>Gibson00</citation> for details). For each reaction a putative stochastic reaction time is calculated and the reaction with the shortest reaction time will be realized. The set of reactions is organized in a priority queue to allow for the efficent search for the fastest reaction. In addition, by using a so-called dependency graph only those reaction times are recalculated in each step, that are dependent on the reaction, which has been realized. This simulation method requires all the reactions to be irreversibe. However, Copasi provides a tool, that converts all reversible reactions into irreversible ones. Because the algorithm internally works on discrete particle numbers rather than concentrations, the particle numbers in the system must not exceed a value of approximately <mml:math><mml:msup><mml:mn>2</mml:mn><mml:mn>64</mml:mn></mml:msup></mml:math>.
 </para>
 
-<variablelist><title>Options for Next Reaction Method (stochastic)</title>
-<varlistentry><term>MaxSteps</term>
+<variablelist><title>Options for Stochastic (Gibson + Bruck)</title>
+<varlistentry><term>Max Internal Steps</term>
 <listitem>
 <para>
-To be written
+This parameter is a positive integer value specifying the maximal
+number of internal steps the integrator is allowed to take before the
+next desired reporting time. The default value is '1000000'.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Subtype</term>
 <listitem>
 <para>
-To be written
+This parameter is ignored in the current version of Copasi.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>UseRandomSeed</term>
+
+<varlistentry><term>Use Random Seed</term>
 <listitem>
 <para>
-To be written
+This flag can be '0' or '1' and determines if the user-defined random seed should be used for the calculation. The default is '0' meaning that the random seed is set to a random value before each run and consecutively calculated trajectories will be different. If the value of this flag is set to '1', the user-defined random seed will be used and each calculated trajectory will be the same for the same value of the given random seed.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>RandomSeed</term>
+
+<varlistentry><term>Random Seed</term>
 <listitem>
 <para>
-To be written
+This unsigned integer is used as random seed in the calculations, if the flag Use Random Seed is set to '1'. The default value is '1'.
 </para>
 </listitem>
 </varlistentry>
 </variablelist>
 
+<!--
 </sect3>
 <sect3 id="TauLeap" xreflabel="Tau Leap">
-<title>The Tau-Leap-Method</title>
+<title>Stochastic (Tau-Leap)</title>
 <para>
 To be written.
 </para>
@@ -122,62 +224,74 @@ To be written
 </listitem>
 </varlistentry>
 </variablelist>
+-->
 
 </sect3>
 </sect2>
 <sect2 id="HybridSimulation" xreflabel="Hybrid Simulation">
 <title>Hybrid Simulation</title>
-<sect3 id="JuergensHybrid" xreflabel="Juergens Hybrid">
-<title>Juergens Hybrid Method (Please change to the appropriate name)</title>
-<para>To be written</para>
+<sect3 id="HybridRungeKutta" xreflabel="Hybrid Runge Kutta">
+<title>Hybrid (Runge-Kutta)</title>
+<para>
+This hybrid simulation method developed by us combines a deterministic numerical integration of ODEs with a stochastic simulation algorithm. The whole biochemical network is partitioned into a deterministic and a stochastic subnet internally. The deterministic subnet contains all reactions, in which only metabolites with high particle numbers take part. All reactions with at least one low-numbered metabolite are in the stochastic subnet, because here stochastic effects are expected. Which particle numbers are considered low or high can be specified by the user with the Lower Limit and the Upper Limit parameters (Metabolites with particle numbers between those limits do not change their status. This leads to a hysteresis-like behavior and avoids many unnecessary swaps, if the particle numbers fluctuate in the middle range). The partitioning of the biochemical network can change dynamically during the simulation. After a certain number of steps, which the user can define using the parameter Partitioning Interval, the partitioning is recalculated using the current particle numbers in the system. During one run the deterministic subnet and the stochastic subnet are simulated in parallel. A 4th-order Runge-Kutta method is used to numerically integrate the deterministic part of the system. For the stochastic part the simulation method by Gibson and Bruck (<citation>Gibson00</citation>) is utilized. The reaction probabilities of the stochastic subnet are approximated as constant during one stochastic step, even though in theory they can change due to the effects of the deterministic subnet.
+</para>
 
-<variablelist><title>Options for Juergens Hybrid</title>
-<varlistentry><term>HYBRID.MaxSteps</term>
+<variablelist><title>Options for Hybrid (Runge-Kutta)</title>
+
+<varlistentry><term>Max Internal Steps</term>
 <listitem>
 <para>
-To be written
+This parameter is a positive integer value specifying the maximal
+number of internal steps the integrator is allowed to take before the
+next desired reporting time. The default value is '1000000'. 
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>HYBRID.LowerStochLimit</term>
+
+<varlistentry><term>Lower Limit</term>
 <listitem>
 <para>
-To be written
+This parameter is a double value specifying the lower limit for particle numbers. Metabolites with a particle number below this value are considered as having a low particle number. The lower limit cannot be higher than the upper limit. The default value is '800'.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>HYBRID.UpperStochLimit</term>
+
+<varlistentry><term>Upper Limit</term>
 <listitem>
 <para>
-To be written
+This parameter is a double value specifying the upper limit for particle numbers. Metabolites with a particle number above this value are considered as having a high particle number. The upper limit cannot be lower than the lower limit. The default value is '1000'.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>HYBRID.RungeKuttaStepSize</term>
+
+<varlistentry><term>Runge Kutta Stepsize</term>
 <listitem>
 <para>
-To be written
+This positive double value is the step size of the Runge-Kutta solver for the integration of the deterministic part of the system. The default value is '0.001'.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>HYBRID.PartitioningInterval</term>
+
+<varlistentry><term>Partitioning Interval</term>
 <listitem>
 <para>
-To be written
+This positive integer value specifies after how many steps the internal partitioning of the system should be recalculated. The default is '1', i.e. after every step the partitioning of the system is checked.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>HYBRID.UseRandomSeed</term>
+
+<varlistentry><term>Use Random Seed</term>
 <listitem>
 <para>
-To be written
+This flag can be '0' or '1' and determines if the user-defined random seed should be used for the calculation. The default is '0' meaning that the random seed is set to a random value before each run and consecutively calculated trajectories will be different. If the value of this flag is set to '1', the user-defined random seed will be used and each calculated trajectory will be the same for the same value of the given random seed.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>HYBRID.RandomSeed</term>
+
+<varlistentry><term>Random Seed</term>
 <listitem>
 <para>
-To be written
+This unsigned integer is used as random seed in the calculations, if the flag Use Random Seed is set to '1'. The default value is '1'.
 </para>
 </listitem>
 </varlistentry>
@@ -188,71 +302,681 @@ To be written
 </sect1>
 <sect1 id="methodSteadyState" xreflabel="Steady State">
 <title>Steady State Calculation</title>
-<para>To be written.</para>
+<para>
+The steady state is the state in which the state variables of the
+model, e.g. the metabolite concentrations do not change in
+time. Mathematically this is expressed 
+by setting the differential equations that describe the time evolution
+of the metabolic system to zero. This forms a system of algebraic
+non-linear equations. To solve them, COPASI can use a series of
+strategies using more than one numerical method.
+</para> 
+<para>
+  All calculations are done based on particle numbers and particle number rates rather than concentrations internally. The reduced model (see <xref linkend="deterministicModel" />) is used. The Jacobian (which is used in the Newton method and when eigenvalues of the Jacobian are requested) is calculated using finite differences. The eigenvalues of the Jacobian are calculated using CLAPACK.
+</para>
 <variablelist><title>Options for Steady State Analysis</title>
-<varlistentry><term>Newton.UseNewton</term>
+<varlistentry><term>Use Newton</term>
 <listitem>
 <para>
-To be written
+This parameter is a boolean value to determine whether to use the
+damped Newton method on the non-linear algebraic equations 
+defining the steady-state. The initial concentrations set by the user
+are taken as guesses for the solution. A value of '1' (the default)
+indicates that COPASI shall use the damped Newton method.
+</para>
+<para>
+The damped Newton method is a variant of the famous Newton method for
+the solution of systems of non-linear equations. The solution is
+obtained from an iterative procedure that refines an initial guess
+until the residual error is smaller than required. If a limit number
+of iterations is reached without an acceptable solution, the method
+halts without a solution.
+</para>
+<para>
+The iteration of the plain Newton  method is:
+</para>
+<para>
+<mml:math>
+ <mml:mrow>
+  <mml:msub>
+   <mml:mi>x</mml:mi>
+   <mml:mi>i</mml:mi>
+  </mml:msub>
+  <mml:mo>=</mml:mo>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mi>x</mml:mi>
+    <mml:mrow>
+     <mml:mi>i</mml:mi>
+     <mml:mo>-</mml:mo>
+     <mml:mn>1</mml:mn>
+    </mml:mrow>
+   </mml:msub>
+   <mml:mo>-</mml:mo>
+   <mml:mfrac>
+    <mml:mrow>
+     <mml:mi>f</mml:mi>
+     <mml:mrow>
+      <mml:mo>(</mml:mo>
+      <mml:msub>
+       <mml:mi>x</mml:mi>
+       <mml:mrow>
+        <mml:mi>i</mml:mi>
+        <mml:mo>-</mml:mo>
+        <mml:mn>1</mml:mn>
+       </mml:mrow>
+      </mml:msub>
+      <mml:mo>)</mml:mo>
+     </mml:mrow>
+    </mml:mrow>
+    <mml:mrow>
+     <mml:mi>f</mml:mi>
+     <mml:mi>&apos;</mml:mi>
+     <mml:mrow>
+      <mml:mo>(</mml:mo>
+      <mml:msub>
+       <mml:mi>x</mml:mi>
+       <mml:mrow>
+        <mml:mi>i</mml:mi>
+        <mml:mo>-</mml:mo>
+        <mml:mn>1</mml:mn>
+       </mml:mrow>
+      </mml:msub>
+      <mml:mo>)</mml:mo>
+     </mml:mrow>
+    </mml:mrow>
+   </mml:mfrac>
+  </mml:mrow>
+ </mml:mrow>
+</mml:math>
+</para>
+<para>
+In the damped method if 
+<mml:math>
+ <mml:msub>
+  <mml:mi>x</mml:mi>
+  <mml:mrow>
+   <mml:mi>i</mml:mi>
+   <mml:mo>-</mml:mo>
+   <mml:mn>1</mml:mn>
+  </mml:mrow>
+ </mml:msub>
+</mml:math> 
+has a larger residual error than
+<mml:math>
+ <mml:msub>
+  <mml:mi>x</mml:mi>
+  <mml:mi>i</mml:mi>
+ </mml:msub>
+</mml:math> one looks at
+</para>
+<para>
+<mml:math>
+ <mml:mrow>
+  <mml:msub>
+   <mml:mi>x</mml:mi>
+   <mml:mi>i</mml:mi>
+  </mml:msub>
+  <mml:mo>=</mml:mo>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mi>x</mml:mi>
+    <mml:mrow>
+     <mml:mi>i</mml:mi>
+     <mml:mo>-</mml:mo>
+     <mml:mn>1</mml:mn>
+    </mml:mrow>
+   </mml:msub>
+   <mml:mo>-</mml:mo>
+   <mml:mfrac>
+    <mml:mrow>
+     <mml:mi>f</mml:mi>
+     <mml:mrow>
+      <mml:mo>(</mml:mo>
+      <mml:msub>
+       <mml:mi>x</mml:mi>
+       <mml:mrow>
+        <mml:mi>i</mml:mi>
+        <mml:mo>-</mml:mo>
+        <mml:mn>1</mml:mn>
+       </mml:mrow>
+      </mml:msub>
+      <mml:mo>)</mml:mo>
+     </mml:mrow>
+    </mml:mrow>
+    <mml:mrow>
+     <mml:mi>f</mml:mi>
+     <mml:mi>&apos;</mml:mi>
+     <mml:mrow>
+      <mml:mo>(</mml:mo>
+      <mml:msub>
+       <mml:mi>x</mml:mi>
+       <mml:mrow>
+        <mml:mi>i</mml:mi>
+        <mml:mo>-</mml:mo>
+        <mml:mn>1</mml:mn>
+       </mml:mrow>
+      </mml:msub>
+      <mml:mo>)</mml:mo>
+     </mml:mrow>
+    </mml:mrow>
+   </mml:mfrac>
+   <mml:mo>*</mml:mo>
+   <mml:msup>
+    <mml:mn>2</mml:mn>
+    <mml:mrow>
+     <mml:mo>-</mml:mo>
+     <mml:mi>n</mml:mi>
+    </mml:mrow>
+   </mml:msup>
+  </mml:mrow>
+ </mml:mrow>
+</mml:math> where
+<mml:math>
+ <mml:mi>n</mml:mi>
+ <mml:mo>=</mml:mo>
+ <mml:mn>0,</mml:mn>
+ <mml:mn>...</mml:mn>
+ <mml:mi>, </mml:mi>
+ <mml:mn>32</mml:mn>
+</mml:math>
+</para>
+<para>
+and accepts the first such value that has a smaller residual
+error than
+<mml:math>
+ <mml:msub>
+  <mml:mi>x</mml:mi>
+  <mml:mi>i</mml:mi>
+ </mml:msub>
+</mml:math>. If none is found, the procedure halts without a
+solution (because it is at a local minimum). 
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>Newton.UseIntegration</term>
+<varlistentry><term>Use Integration</term>
 <listitem>
 <para>
-To be written
+This parameter is a boolean value to determine whether to use the ODE
+solver (<xref linkend="LSODA">LSODA</xref>) to follow the time course
+defined by the differential equations until a steady state is
+reached. If at 
+<mml:math>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>10</mml:mn></mml:msup></mml:math>.
+units of time no steady state has been reached the method halts with
+no solution. If Use Newton is '1' an attempt to find the steady-state
+via the damped Newton method is made at each intermediate time point.
+A value of '1' (the default) indicates that COPASI shall use
+integration.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>Newton.UseBackIntegration</term>
+<varlistentry><term>Use Back Integration</term>
 <listitem>
 <para>
-To be written
+This parameter is a boolean value to determine whether to use the ODE
+solver (<xref linkend="LSODA">LSODA</xref>) to reverse the time course
+(going backwards in time) defined by the differential equations until
+a steady state is reached. If at 
+<mml:math><mml:mn>-1</mml:mn><mml:mo>*</mml:mo>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>10</mml:mn></mml:msup></mml:math>.
+units of time no steady state has been reached the method halts with
+no solution. If Use Newton is '1' an attempt to find the steady-state
+via the damped Newton method is made at each intermediate time point.
+A value of '1' (the default) indicates that COPASI shall use
+back integration.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>Newton.AcceptNegativeConcentrations</term>
+<varlistentry><term>Accept Negative Concentrations</term>
 <listitem>
 <para>
-To be written
+This parameter is a boolean value to determine whether to accept a
+steady-state, which contains negative concentrations. A value of '1'
+indicates that negative concentrations are acceptable whereas a value
+of '0' (the default) indicates that such states are discarded.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>Newton.IterationLimit</term>
+<varlistentry><term>Iteration Limit</term>
 <listitem>
 <para>
-To be written
+This parameter is a positive integer to determine the maximum number of
+iterations the damped Newton method shall perform before it fails. The
+default is '50'.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>Newton.DerivationFactor</term>
+<varlistentry><term>Derivation Factor</term>
 <listitem>
 <para>
-To be written
+This is a numeric value to determine the step size used to calculate
+<mml:math> 
+ <mml:mi>f</mml:mi>
+ <mml:mi>&apos;</mml:mi>
+ <mml:mrow>
+  <mml:mo>(</mml:mo>
+  <mml:msub>
+   <mml:mi>x</mml:mi>
+   <mml:mrow>
+    <mml:mi>i</mml:mi>
+    <mml:mo>-</mml:mo>
+    <mml:mn>1</mml:mn>
+   </mml:mrow>
+  </mml:msub>
+  <mml:mo>)</mml:mo>
+ </mml:mrow>
+</mml:math>. The default is '0.001'.
 </para>
 </listitem>
 </varlistentry>
-<varlistentry><term>Newton.Resolution</term>
+<varlistentry><term>Resolution</term>
 <listitem>
 <para>
-To be written
+This is a positive numeric value to determine the resolution used to
+decide whether the current state is acceptable as a steady-state. If
+the absolute change of each state variable is smaller than the
+resolutions the state is accepted. The default is <mml:math>
+<mml:msup><mml:mn>10</mml:mn><mml:mn>-9</mml:mn></mml:msup></mml:math>.
+Note that this value is interpreted as a concentration value, even though the calculation internally uses particle numbers. The reason for that is purely heuristical: In many cases the modeler will choose the units in a way that concentration values are neither extremely large not extremely small numerically so that the default value for this parameter leads to useful results. However generally it is not save to just keep the default value without checking. 
 </para>
 </listitem>
 </varlistentry>
 </variablelist>
 
-<para>The rest of the options is described in the section for <xref linkend="methodTimeCourse">Time Course Simulation</xref>.</para>
-
 </sect1>
 <sect1 id="methodMCA" xreflabel="Metabolic Control Analysis">
 <title>Metabolic Control Analysis</title>
-<para>To be written.</para>
+<para>
+Metabolic control analysis (MCA) is a sensitivity analysis of
+metabolic systems. In MCA one studies the relative control exerted by
+each step on the system's variables (e.g. fluxes and metabolite
+concentrations). This control is measured by applying a perturbation
+to the step being studied and then measuring the effect on the
+variable of interest after the system has settled to a new steady
+state. 
+</para>
+
+<sect2 id="ControlCoefficients" xreflabel="Control Coefficients">
+<title>Control Coefficients</title>
+<para>
+A control coefficient is a relative measure of how much a perturbation
+on a parameter affects a system variable (e.g. fluxes or
+concentrations). It is defined <citation>Kacser73</citation>
+<citation>Heinrich74</citation>
+<citation>Burns85</citation> as: 
+</para>
+
+<para>
+ <mml:math>
+  <mml:mrow>
+   <mml:mrow>
+    <mml:msubsup>
+     <mml:mi>C</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+     <mml:mi>A</mml:mi>
+    </mml:msubsup>
+    <mml:mo>=</mml:mo>
+    <mml:mfrac>
+     <mml:mrow>
+      <mml:mo>&part;</mml:mo>
+      <mml:mi>A</mml:mi>
+     </mml:mrow>
+     <mml:mrow>
+      <mml:mo>&part;</mml:mo>
+      <mml:msub>
+       <mml:mo>&nu;</mml:mo>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:mrow>
+    </mml:mfrac>
+   </mml:mrow>
+   <mml:mfrac>
+    <mml:msub>
+     <mml:mo>&nu;</mml:mo>
+     <mml:mi>i</mml:mi>
+    </mml:msub>
+    <mml:mi>A</mml:mi>
+   </mml:mfrac>
+  </mml:mrow>
+ </mml:math>
+</para>
+
+<para>
+where A is the variable, i the step (enzyme) and v the steady-state
+rate of the perturbed step. The most common control coefficients are
+those for fluxes and metabolite concentrations, but any variable of
+the system can be analysed with MCA and have control coefficents
+defined by equations analogous to equation 1. In fact, there is no
+need even for the system to be in a steady state. Gepasi only
+calculates directly the steady-state concentration- and flux-control
+coefficients, those for other variables can still be estimated by
+simulating small perturbations. 
+</para>
+</sect2>
+
+<sect2 id="SummationTheorem" xreflabel="Summation Theorem">
+<title>Summation Theorem</title>
+<para>
+A very important property of steady-state metabolic systems was
+uncovered with the MCA formalism. This concerns the summation of all
+the flux control coefficients of a pathway. By various procedures
+<citation>Kacser73</citation>
+<citation>Heinrich75</citation>
+<citation>Giersch88</citation>
+<citation>Reder88</citation> it
+ can be demonstrated that for a given reference flux the sum 
+of all flux-control coefficients (of all steps) is equal to unity: 
+</para>
+
+<para>
+ <mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mo>&sum;</mml:mo>
+    <mml:mi>i</mml:mi>
+   </mml:msub>
+   <mml:mrow>
+    <mml:msubsup>
+     <mml:mi>C</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+     <mml:mi>J</mml:mi>
+    </mml:msubsup>
+    <mml:mo>=</mml:mo>
+    <mml:mn>1</mml:mn>
+   </mml:mrow>
+  </mml:mrow>
+ </mml:math>
+</para>
+
+<para>
+For a given reference metabolite concentration the sum of all
+concentration-control coefficients is zero: 
+</para>
+
+<para>
+ <mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mo>&sum;</mml:mo>
+    <mml:mi>i</mml:mi>
+   </mml:msub>
+   <mml:mrow>
+    <mml:msubsup>
+     <mml:mi>C</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+     <mml:mi>[M]</mml:mi>
+    </mml:msubsup>
+    <mml:mo>=</mml:mo>
+    <mml:mn>0</mml:mn>
+   </mml:mrow>
+  </mml:mrow>
+ </mml:math>
+</para>
+
+<para>
+where the summations are over all the steps of the system.
+</para>
+
+<para>
+According to the first summation theorem, increases in some of the
+flux-control coefficients imply decreases in the others so that the
+total remains unity. As a consequence of the summation theorems, one
+concludes that the control coefficients are global properties and that
+in metabolic systems, control is a systemic property, dependent on all
+of the system's elements (steps).  
+</para>
+</sect2>
+
+<sect2 id="EnzymeKineticsAndTheElasticityCoefficients"
+xreflabel="Enzyme Kinetics and the Elasticity Coefficients"> 
+<title>Enzyme Kinetics and the Elasticity Coefficients</title>
+<para>
+In enzyme kinetics the behaviour of isolated enzymes is studied
+through the dependence of the initial rates of reaction with the
+concentration of the substrate(s). Enzyme kinetic studies are centered
+on derivation of rate equations and the determination of their kinetic
+constants such as Michaelis constants or limiting-rates or even on the
+elementary rate constants of a specific reaction mechanism.
+</para>
+
+<para>
+In metabolic control analysis the properties of each (isolated) enzyme
+are measured in a way very similar to the flux-control properties:
+using a sensitivity, known as the elasticity coefficient
+<citation>Kacser73</citation>
+<citation>Heinrich74</citation>
+<citation>Burns85</citation>.
+In this
+case, one has to consider the effect of perturbations of a reaction
+parameter on the local reaction rate. By local one means that this
+sensitivity refers to the isolated reaction which has the same
+characteristics (effector and enzyme concentrations, temperature, and
+so on) as in the whole system at the operating point (steady state) of
+interest. The elasticity coefficients are defined as the ratio of
+relative change in local rate to the relative change in one parameter
+(normally the concentration of an effector). Infinitesimally, this is
+written as:  
+</para>
+
+<para>
+ <mml:math>
+  <mml:mrow>
+   <mml:mrow>
+    <mml:msubsup>
+     <mml:mo>&#x03B5;</mml:mo>
+     <mml:mi>p</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+    </mml:msubsup>
+    <mml:mo>=</mml:mo>
+    <mml:mfrac>
+     <mml:mrow>
+      <mml:mo>&part;</mml:mo>
+      <mml:msub>
+       <mml:mo>&nu;</mml:mo>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:mrow>
+     <mml:mrow>
+      <mml:mo>&part;</mml:mo>
+      <mml:mi>p</mml:mi>
+     </mml:mrow>
+    </mml:mfrac>
+   </mml:mrow>
+   <mml:mfrac>
+    <mml:mi>p</mml:mi>
+    <mml:msub>
+     <mml:mo>&nu;</mml:mo>
+     <mml:mi>i</mml:mi>
+    </mml:msub>
+   </mml:mfrac>
+  </mml:mrow>
+ </mml:math>
+</para>
+
+<para>
+where v is the rate of the enzyme in question and p is the parameter
+of the perturbation. Each enzyme has as many elasticity coefficients
+as the number of parameters that affect it. One can immediatly
+recognise the concentration of the reaction substrates, products and
+modifiers as parameters of the reaction. Unlike control coefficients,
+elasticity coefficients are not systemic properties but reather
+measure how isolated enzymes are sensitive to changes in their
+parameters. The elasticity coefficients can be obtained from the
+kinetic functions by partial derivation. Again like the control
+coefficients, the elasticity coefficients are not constants, they are
+dependent on the value of the relevant parameter and so are different
+for each steady-state. 
+</para>
+</sect2>
+
+<sect2 id="ConnectivityRelations" xreflabel="Connectivity Relations">
+<title>Connectivity Relations</title>
+<para>
+A particularly useful and important feature of MCA is that it can
+relate the kinetic properties of the individual reactions (local
+properties) with (global) properties of the whole intact pathway. This
+is done through the connectivity theorems 
+<citation>Kacser73</citation> that
+relate the control coefficients and the elasticity coefficients of
+steps with common intermediate metabolites. 
+</para>
+
+<para>
+The connectivity theorem for flux-control coefficients
+<citation>Kacser73</citation> states that, for a common metabolite S,
+the sum of the 
+products of the flux-control coefficient of all (i) steps affected by
+S and its elasticity coefficients towards S, is zero: 
+</para>
+
+<para>
+ <mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mo>&sum;</mml:mo>
+    <mml:mi>i</mml:mi>
+   </mml:msub>
+   <mml:mrow>
+    <mml:msubsup>
+     <mml:mi>C</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+     <mml:mi>J</mml:mi>
+    </mml:msubsup>
+    <mml:msubsup>
+     <mml:mo>&#x03B5;</mml:mo>
+     <mml:mi>[S]</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+    </mml:msubsup>
+    <mml:mo>=</mml:mo>
+    <mml:mn>0</mml:mn>
+   </mml:mrow>
+  </mml:mrow>
+ </mml:math>
+</para>
+
+<para>
+For the concentration-control coefficients, the following two
+equations apply <citation>Westerhoff84</citation>: 
+</para>
+
+<para>
+ <mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mo>&sum;</mml:mo>
+    <mml:mi>i</mml:mi>
+   </mml:msub>
+   <mml:mrow>
+    <mml:msubsup>
+     <mml:mi>C</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+     <mml:mi>[A]</mml:mi>
+    </mml:msubsup>
+    <mml:msubsup>
+     <mml:mo>&#x03B5;</mml:mo>
+     <mml:mi>[S]</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+    </mml:msubsup>
+    <mml:mo>=</mml:mo>
+    <mml:mn>0</mml:mn>
+    <mml:text>, where&ensp;</mml:text>
+    <mml:mi>A</mml:mi>
+    <mml:mn>&ne;</mml:mn>
+    <mml:mi>S</mml:mi>
+   </mml:mrow>
+  </mml:mrow>
+ </mml:math>
+</para>
+
+<para>
+ <mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mo>&sum;</mml:mo>
+    <mml:mi>i</mml:mi>
+   </mml:msub>
+   <mml:mrow>
+    <mml:msubsup>
+     <mml:mi>C</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+     <mml:mi>[A]</mml:mi>
+    </mml:msubsup>
+    <mml:msubsup>
+     <mml:mo>&#x03B5;</mml:mo>
+     <mml:mi>[S]</mml:mi>
+     <mml:msub>
+      <mml:mo>&nu;</mml:mo>
+      <mml:mi>i</mml:mi>
+     </mml:msub>
+    </mml:msubsup>
+    <mml:mo>=</mml:mo>
+    <mml:mn>-1</mml:mn>
+   </mml:mrow>
+  </mml:mrow>
+ </mml:math>
+</para>
+
+<para>
+The first equation applies to the case in which the reference metabolite (A)
+is different from the perturbed metabolite (S). Whereas the second applies to
+the case in which the reference metabolite is the same as the
+perturbed metabolite. 
+</para>
+
+<para>
+The connectivity theorems allow MCA to describe how perturbations on
+metabolites of a pathway propagate through the chain of enzymes. The
+local (kinetic) properties of each enzyme effectively propagate the
+perturbation to and from its immediate neighbours. 
+</para>
+</sect2>
+
+<para>
+COPASI calculates (non-normalised) elasticity coefficients by
+numerical derivation with finite differences. To calculate control
+coefficients from steady-state data, COPASI applies the method
+described in <citation>Reder88</citation>. This method workes with the
+reduced system where some variables are eliminated using conservation
+relations (see <xref linkend="deterministicModel" />). All
+coefficients are obtained unscaled by this method and are scaled with
+the appropriate steady state concentrations and fluxes (the same with
+the elasticities). Both scaled and unscaled coefficients and
+elasticities are displayed and available for ouput. 
+</para>
 
 <variablelist><title>Options for MCA</title>
-<varlistentry><term>MCA.ModulationFactor</term>
+<varlistentry><term>Modulation Factor</term>
 <listitem>
 <para>
-To be written
+This parameter is ignored in the current version of COPASI.
 </para>
 </listitem>
 </varlistentry>
@@ -265,177 +989,1077 @@ To be written
 
 <sect1 id="optimizationMethod" xreflabel="Optimization Method">
 <title>Optimization Methods</title>
-<para>The optimization method as described in <xref linkend="optimization">this chapter</xref> tries to minimize a given objective function. There are several ways to do this and copasi supports 5 different methods for the minimization of an objective function.</para>
-<sect2 id="RandomSearch" xreflabel="Random Search">
-<title>Random Search</title>
-<para>To be written.</para>
+<para>The optimization method as described in <xref
+linkend="optimization">this chapter</xref> tries to minimize a given
+objective function. There are several ways to do this and COPASI
+supports many different methods for the minimization of an objective
+function.</para>
 
-<variablelist><title>Options for Random Search</title>
-<varlistentry><term>Number of Iterations</term>
+<sect2 id="GeneticAlgorithm" xreflabel="Genetic Algorithm">
+<title>Genetic Algorithm</title>
+
+<para>
+The genetic algorithm (GA)  
+<citation>Baeck97</citation><citation>Baeck93</citation><citation>Michalewicz94</citation><citation>Mitchell95</citation>
+ is a computational technique that mimics
+evolution and is based on reproduction and selection. A GA is composed
+of individuals that reproduce and compete, each one is a potential
+solution to the (optimization) problem and is represented by a 
+"genome" where each gene corresponds to one adjustable
+parameter. At each generation of the GA, each individual is paired
+with one other at random for reproduction. Two offspring are produced
+by combining their genomes and allowing for "cross-over",
+i.e., the two new individuals have genomes that are formed from a
+combination of the genomes of their parents. Also each new gene might
+have mutated, i.e. the parameter value might have changed slightly. At
+the end of the generation, the algorithm has double the number of
+individuals. Then each of the individuals is confronted with a number
+of others to count how many does it outperform (the number of wins is
+the number of these competitors that represent worse solutions than
+itself). All the individuals are ranked by their number of wins, and
+the population is again reduced to the original number of individuals
+by eliminating those which have worse fitness (solutions). 
+</para>
+<para>
+Many features of a GA may be varied. The details of this particular
+implementation of the GA for optimization of biochemical kinetics are:
+
+<itemizedlist mark='bullet'>
 <listitem>
 <para>
-To be written
+Parameters are encoded in genes using floating-point representation,
+rather than the more usual binary representation. 
 </para>
 </listitem>
-</varlistentry>
-<varlistentry><term>Random Number Generator</term>
+
 <listitem>
 <para>
-To be written
+Mutation is carried out by adding to the gene a random number drawn
+from a normal distribution with zero mean and a standard deviation of
+10% of the parameter value. Whenever this makes the parameter (gene)
+exceed one boundary, it is set to that boundary value.  
 </para>
 </listitem>
-</varlistentry>
-<varlistentry><term>Seed</term>
+
 <listitem>
 <para>
-To be written
+Cross-over is always performed at gene boundaries so that no gene is
+ever disrupted. The number of cross-over points is a random number
+between zero and half the number of adjustable parameters (uniform
+distribution).
 </para>
 </listitem>
-</varlistentry>
-</variablelist>
 
-</sect2>
-
-<sect2 id="SteepestDescent" xreflabel="Steepest Descent">
-<title>Steepest Descent</title>
-<para>To be written.</para>
-
-<variablelist><title>Options for Steepest Descent</title>
-<varlistentry><term>Iteration Limit</term>
 <listitem>
 <para>
-To be written
+Selection is done by a tournament where each individual competes with
+a number of others equal to 20% the population size. The competitors
+are chosen at random.
 </para>
 </listitem>
-</varlistentry>
-<varlistentry><term>Tolerance</term>
+
 <listitem>
 <para>
-To be written
+The initial population contains one individual whose genes are the
+initial parameter values, the genes of all other individuals are
+initialized to a random value between their boundaries. If the
+boundaries span two orders of magnitude or more, the random
+distribution is exponential, otherwise normal.
 </para>
 </listitem>
-</varlistentry>
-</variablelist>
 
-</sect2>
+<listitem>
+<para>
+Whenever the fittest individual has not changed for the last 10
+generations, the 10% less fit individuals are replaced by individuals
+with random genes. When the fittest individual has not changed for 30
+generations, the worse 30% are substituted by individuals with random
+genes. When the fittest individual has not changed for 50 generations,
+the worse 50% are substituted by individuals with random genes. This
+procedure helps the algorithm escape local minima and is somewhat
+equivalent to increasing the mutation rate when the population has
+become uniform.
+</para>
+</listitem>
+</itemizedlist>
 
-<sect2 id="EvolutionaryProgram" xreflabel="Evolutionary Program">
-<title>Evolutionary Program</title>
-<para>To be written.</para>
-
-<variablelist><title>Options for Evolutionary Program</title>
+</para>
+<variablelist><title>Options for Genetic Algorithm</title>
 <varlistentry><term>Number of Generations</term>
 <listitem>
 <para>
-To be written
+The parameter is a positive integer value to determine the number of
+generations the algorithm shall evolve the population. The default is
+'200'. 
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Population Size</term>
 <listitem>
 <para>
-To be written
+The parameter is a positive integer value to determine the size of the
+population, i.e., the number of individuals that survive after each
+generation. The default is '20'.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Random Number Generator</term>
 <listitem>
 <para>
-To be written
+The parameter is an enumeration value to determine which random number
+generator this method shall use. COPASI provides two random number
+generators R250 <citation>Maier91</citation>
+ (selected through the value 0) and the
+<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
+Twister </ulink><citation>Matsumoto98</citation>
+ (selected through the value 1 (default)).
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Seed</term>
 <listitem>
 <para>
-To be written
+The parameter is a positive integer value to determine the seed for the
+random number generator. A value of zero instructs COPASI to select a
+"random" value.
 </para>
 </listitem>
 </varlistentry>
 </variablelist>
-
 </sect2>
 
 <sect2 id="GeneticAlgorithmSR" xreflabel="Genetic Algorithm SR">
 <title>Genetic Algorithm SR</title>
-<para>To be written.</para>
+
+<para>
+The genetic algorithm with stochastic ranking is very similar to the
+before described <xref linkend="GeneticAlgorithm" /> with tournament
+selection. With two exception which are the mutations are not forced
+to be within the boundaries and the selection is done through a bubble
+sort with a random factor as described in
+<citation>Runarsson00</citation>.
+</para>
+
+<itemizedlist mark='bullet'>
+<listitem>
+<para>
+Parameters are encoded in genes using floating-point representation,
+rather than the more usual binary representation. 
+</para>
+</listitem>
+
+<listitem>
+<para>
+Mutation is carried out by adding to the gene a random number drawn
+from a normal distribution with zero mean and a standard deviation of
+10% of the parameter value. Parameters may exceed boundaries. Whenever
+this happens or a constraint to the solution is violated the square of
+the size of the violation is summed up, i.e., we calculate 
+</para>
+<para>
+<mml:math>
+ <mml:mrow>
+  <mml:mo>&phi;</mml:mo>
+  <mml:mo>=</mml:mo>
+  <mml:mrow>
+   <mml:mrow>
+    <mml:mrow>
+     <mml:mrow>
+      <mml:msub>
+       <mml:mo>&sum;</mml:mo>
+       <mml:mrow>
+        <mml:msub>
+         <mml:mi>p</mml:mi>
+         <mml:mi>i</mml:mi>
+        </mml:msub>
+        <mml:mo>&lt;</mml:mo>
+        <mml:msub>
+         <mml:mi>l</mml:mi>
+         <mml:msub>
+          <mml:mi>p</mml:mi>
+          <mml:mi>i</mml:mi>
+         </mml:msub>
+        </mml:msub>
+       </mml:mrow>
+      </mml:msub>
+      <mml:msup>
+       <mml:mrow>
+        <mml:mo>(</mml:mo>
+        <mml:mrow>
+         <mml:msub>
+          <mml:mi>l</mml:mi>
+          <mml:msub>
+           <mml:mi>p</mml:mi>
+           <mml:mi>i</mml:mi>
+          </mml:msub>
+         </mml:msub>
+         <mml:mo>-</mml:mo>
+         <mml:msub>
+          <mml:mi>p</mml:mi>
+          <mml:mi>i</mml:mi>
+         </mml:msub>
+        </mml:mrow>
+        <mml:mo>)</mml:mo>
+       </mml:mrow>
+       <mml:mn>2</mml:mn>
+      </mml:msup>
+     </mml:mrow>
+     <mml:mo>+</mml:mo>
+     <mml:mrow>
+      <mml:msub>
+       <mml:mo>&sum;</mml:mo>
+       <mml:mrow>
+        <mml:msub>
+         <mml:mi>p</mml:mi>
+         <mml:mi>i</mml:mi>
+        </mml:msub>
+        <mml:mo>&gt;</mml:mo>
+        <mml:msub>
+         <mml:mi>u</mml:mi>
+         <mml:msub>
+          <mml:mi>p</mml:mi>
+          <mml:mi>i</mml:mi>
+         </mml:msub>
+        </mml:msub>
+       </mml:mrow>
+      </mml:msub>
+      <mml:msup>
+       <mml:mrow>
+        <mml:mo>(</mml:mo>
+        <mml:mrow>
+         <mml:msub>
+          <mml:mi>p</mml:mi>
+          <mml:mi>i</mml:mi>
+         </mml:msub>
+         <mml:mo>-</mml:mo>
+         <mml:msub>
+          <mml:mi>u</mml:mi>
+          <mml:msub>
+           <mml:mi>p</mml:mi>
+           <mml:mi>i</mml:mi>
+          </mml:msub>
+         </mml:msub>
+        </mml:mrow>
+        <mml:mo>)</mml:mo>
+       </mml:mrow>
+       <mml:mn>2</mml:mn>
+      </mml:msup>
+     </mml:mrow>
+    </mml:mrow>
+    <mml:mo>+</mml:mo>
+    <mml:mrow>
+     <mml:msub>
+      <mml:mo>&sum;</mml:mo>
+      <mml:mrow>
+       <mml:msub>
+        <mml:mi>c</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+       <mml:mo>&lt;</mml:mo>
+       <mml:msub>
+        <mml:mi>l</mml:mi>
+        <mml:msub>
+         <mml:mi>c</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:msub>
+       </mml:msub>
+      </mml:mrow>
+     </mml:msub>
+     <mml:msup>
+      <mml:mrow>
+       <mml:mo>(</mml:mo>
+       <mml:mrow>
+        <mml:msub>
+         <mml:mi>l</mml:mi>
+         <mml:msub>
+          <mml:mi>c</mml:mi>
+          <mml:mi>j</mml:mi>
+         </mml:msub>
+        </mml:msub>
+        <mml:mo>-</mml:mo>
+        <mml:msub>
+         <mml:mi>c</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:msub>
+       </mml:mrow>
+       <mml:mo>)</mml:mo>
+      </mml:mrow>
+      <mml:mn>2</mml:mn>
+     </mml:msup>
+    </mml:mrow>
+   </mml:mrow>
+   <mml:mo>+</mml:mo>
+   <mml:mrow>
+    <mml:msub>
+     <mml:mo>&sum;</mml:mo>
+     <mml:mrow>
+      <mml:msub>
+       <mml:mi>c</mml:mi>
+       <mml:mi>j</mml:mi>
+      </mml:msub>
+      <mml:mo>&gt;</mml:mo>
+      <mml:msub>
+       <mml:mi>u</mml:mi>
+       <mml:msub>
+        <mml:mi>c</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+      </mml:msub>
+     </mml:mrow>
+    </mml:msub>
+    <mml:msup>
+     <mml:mrow>
+      <mml:mo>(</mml:mo>
+      <mml:mrow>
+       <mml:msub>
+        <mml:mi>c</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+       <mml:mo>-</mml:mo>
+       <mml:msub>
+        <mml:mi>u</mml:mi>
+        <mml:msub>
+         <mml:mi>c</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:msub>
+       </mml:msub>
+      </mml:mrow>
+      <mml:mo>)</mml:mo>
+     </mml:mrow>
+     <mml:mn>2</mml:mn>
+    </mml:msup>
+   </mml:mrow>
+  </mml:mrow>
+ </mml:mrow>
+</mml:math>
+</para>
+<para>
+where the parameters are given by 
+<mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mi>p</mml:mi>
+    <mml:mi>i</mml:mi>
+   </mml:msub>
+   <mml:mo>&in;</mml:mo>
+   <mml:mrow>
+    <mml:mo>(</mml:mo>
+    <mml:mrow>
+     <mml:msub>
+      <mml:mi>l</mml:mi>
+      <mml:msub>
+       <mml:mi>p</mml:mi>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:msub>
+     <mml:mi>,</mml:mi>
+     <mml:mtext>&ThinSpace;</mml:mtext>
+     <mml:msub>
+      <mml:mi>u</mml:mi>
+      <mml:msub>
+       <mml:mi>p</mml:mi>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:msub>
+    </mml:mrow>
+    <mml:mo>)</mml:mo>
+   </mml:mrow>
+  </mml:mrow>
+</mml:math> 
+and the constraints by
+<mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mi>c</mml:mi>
+    <mml:mi>j</mml:mi>
+   </mml:msub>
+   <mml:mo>&in;</mml:mo>
+   <mml:mrow>
+    <mml:mo>(</mml:mo>
+    <mml:mrow>
+     <mml:msub>
+      <mml:mi>l</mml:mi>
+      <mml:msub>
+       <mml:mi>c</mml:mi>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:msub>
+     <mml:mi>,</mml:mi>
+     <mml:mtext>&ThinSpace;</mml:mtext>
+     <mml:msub>
+      <mml:mi>u</mml:mi>
+      <mml:msub>
+       <mml:mi>c</mml:mi>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:msub>
+    </mml:mrow>
+    <mml:mo>)</mml:mo>
+   </mml:mrow>
+  </mml:mrow>
+</mml:math>.
+The value <mml:math><mml:mo>&phi;</mml:mo></mml:math> is used within
+the selection.
+</para>
+</listitem>
+
+
+<listitem>
+<para>
+Cross-over is always performed at gene boundaries so that no gene is
+ever disrupted. The number of cross-over points is a random number
+between zero and half the number of adjustable parameters (uniform
+distribution).
+</para>
+</listitem>
+
+<listitem>
+<para>
+Selection is done by the bubble sort described in
+<citation>Runarsson00</citation>.
+This sort incorporates a probability to compare
+objective values for individuals with a 
+<mml:math>
+ <mml:mo>&phi;</mml:mo>
+ <mml:mo>&ne;</mml:mo>
+ <mml:mn>0</mml:mn>
+</mml:math>. The pseudo code for the sort
+is: <literallayout>  // Here sweepNum is optimal number of sweeps from paper, i.e., TotalPopulation
+  for (i = 0; i &lt; sweepNum; i++)
+    {
+      wasSwapped = false;
+
+      for (j = 0; j &lt; TotalPopulation - 1; j++)
+        {
+          // within bounds or random chance 
+          if ((phi(j) == 0 and phi(j + 1) == 0) or UniformRandom(0, 1) &lt; Pf)
+            {
+              // compare objective function values
+              if (Value(j) &gt; Value(j + 1))
+                {
+                  swap(j, j + 1);
+                  wasSwapped = true;
+                }
+            }
+          else // phi != 0 
+            {
+              // individual j further outside then j + 1
+              if (phi(j) &gt; phi(j + 1))
+                {
+                  swap(j, j + 1);
+                  wasSwapped = true;
+                }
+            }
+        }
+
+      // if no swap then break
+      if (wasSwapped == false) break;
+    }
+</literallayout>
+</para>
+</listitem>
+
+<listitem>
+<para>
+The initial population contains one individual whose genes are the
+initial parameter values, the genes of all other individuals are
+initialized to a random value between their boundaries. If the
+boundaries span two orders of magnitude or more, the random
+distribution is exponential, otherwise normal.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Whenever the fittest individual has not changed for the last 10
+generations, the 10% less fit individuals are replaced by individuals
+with random genes. When the fittest individual has not changed for 30
+generations, the worse 30% are substituted by individuals with random
+genes. When the fittest individual has not changed for 50 generations,
+the worse 50% are substituted by individuals with random genes. This
+procedure helps the algorithm escape local minima and is somewhat
+equivalent to increasing the mutation rate when the population has
+become uniform.
+</para>
+</listitem>
+</itemizedlist>
 
 <variablelist><title>Options for Genetic Algorithm SR</title>
 <varlistentry><term>Number of Generations</term>
 <listitem>
 <para>
-To be written
+The parameter is a positive integer value to determine the number of
+generations the algorithm shall evolve the population. The default is
+'200'. 
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Population Size</term>
 <listitem>
 <para>
-To be written
+The parameter is a positive integer value to determine the size of the
+population, i.e., the number of individuals that survive after each
+generation. The default is '20'.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Random Number Generator</term>
 <listitem>
 <para>
-To be written
+The parameter is an enumeration value to determine which random number
+generator this method shall use. COPASI provides two random number
+generators R250 <citation>Maier91</citation>
+ (selected through the value 0) and the
+<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
+Twister </ulink><citation>Matsumoto98</citation>
+ (selected through the value 1 (default)).
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Seed</term>
 <listitem>
 <para>
-To be written
+The parameter is a positive integer value to determine the seed for the
+random number generator. A value of zero instructs COPASI to select a
+"random" value.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Pf</term>
 <listitem>
 <para>
-To be written
+This parameter is a numerical value in the interval (0, 1) determining
+the chance that individuals either outside the parameter boundaries or
+violating the constraints are compared during the selection. The
+default is '4.75'. 
 </para>
 </listitem>
 </varlistentry>
 </variablelist>
-
 </sect2>
 
-<sect2 id="GeneticAlgorithm" xreflabel="Genetic Algorithm">
-<title>Genetic Algorithm</title>
-<para>To be written.</para>
+<sect2 id="HookeJeeves" xreflabel="Hooke &amp; Jeeves">
+<title>Hooke &amp; Jeeves</title>
 
-<variablelist><title>Options for Genetic Algorithm</title>
+<para>
+The method of Hooke and Jeeves
+<citation>Bell66</citation><citation>Hooke61</citation><citation>Kaupe63</citation><citation>Swann72</citation>
+is a direct search algorithm that
+searches for the minimum of a nonlinear function without requiring (or
+attempting to calculate) derivatives of the function. Instead it is
+based on a heuristic that suggests a descent direction using the
+values of the function calculated in a number of previous iterations. 
+</para>
+
+<variablelist><title>Options for Hooke &amp; Jeeves</title>
+<varlistentry><term>Iteration Limit</term>
+<listitem>
+<para>
+This parameter is positive integer determining the maximum number of
+iterations the algorithm Sharl perform. The default is '50'.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Tolerance</term>
+<listitem>
+<para>
+This parameter is a positive value determining the tolerance with
+which the solution shall be determined. If the improvement between two
+steps is less than the tolerance the algorithm stops. The default is
+'<mml:math>
+ <mml:msup>
+  <mml:mn>10</mml:mn>
+  <mml:mn>-5</mml:mn>
+ </mml:msup>
+</mml:math>'. 
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Rho</term>
+<listitem>
+<para>
+This parameter is a value in (0, 1) determining the factor with which
+the steps size is reduced between iterations. The default is '0.2'.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="LevenbergMarquardt" xreflabel="Levenberg - Marquardt">
+<title>Levenberg - Marquardt</title>
+
+<para>
+Levenberg-Marquardt <citation>Levenberg44</citation><citation>Marquardt63</citation> is a gradient descent method. It is a hybrid
+between the steepest descent and the Newton methods.
+</para>
+
+<para> 
+The Newton optimization method searches for the minimum of a nonlinear
+function by following descent directions determined from the
+function's first and second partial derivatives. The steepest descent
+method searches for a minimum based only on the first derivatives of
+the function. While the Newton method converges quadratically towards
+the minimum in its vicinity, it may not converge at all if it is far
+away from it. On the other hand the steepest descent method only
+converges linearly but is guaranteed to converge.
+</para>
+
+<para>
+Levenberg first suggested an improvement to the Newton method in order
+to make it more robust, i.e. to overcome the problem of
+non-convergence. His suggestion was to add a factor to the diagonal
+elements of the Hessian matrix of second derivatives when not close to
+the minimum (this can be judged by how positive definite the matrix
+is). The effect when this factor is large compared to the elements of
+Hessian is that the method then becomes the steepest descent
+method. Later Marquardt suggested that the factor should be
+multiplicative rather than additive and also defined a heuristic to
+make this factor increase or decrease. The method known as
+Levenberg-Marquardt is thus an adaptive method that effectively
+changes between the steepest descent to the Newton method.
+</para>
+
+<para>
+The original suggestions of Levenberg and Marquardt were effective
+to enhance the Gauss-Newton method, a variant of the Newton method
+specifically for minimizing least-squares functions. In this case the
+advantage is also that the second derivatives do not need to be
+calculated as they are estimated from the gradient of the
+residuals. Subsequently Goldfeld et
+al. <citation>Goldfeld66</citation> extended the method to the
+case of general non-linear functions.
+</para>
+
+
+
+<variablelist><title>Options for Levenberg - Marquardt</title>
+<varlistentry><term>Iteration Limit</term>
+<listitem>
+<para>
+This parameter is positive integer determining the maximum number of
+iterations the algorithm shall perform. The default is '200'.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Tolerance</term>
+<listitem>
+<para>
+This parameter is a positive value determining the tolerance with
+which the solution shall be determined. If the improvement between two
+steps is less than the tolerance the algorithm stops. The default is
+'<mml:math>
+ <mml:msup>
+  <mml:mn>10</mml:mn>
+  <mml:mn>-5</mml:mn>
+ </mml:msup>
+</mml:math>'. 
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="EvolutionaryProgramming" xreflabel="Evolutionary Programming">
+<title>Evolutionary Programming</title>
+
+<para>
+Evolutionary programming (EP)
+<citation>Fogel92</citation><citation>Baeck93</citation><citation>Baeck97</citation>
+is a computational technique that mimics evolution and is based on
+reproduction and selection. An EP algorithm is composed of individuals
+that reproduce and compete, each one is a potential solution to the
+(optimization) problem and is represented by a "genome" where each
+gene corresponds to one adjustable parameter. At each generation of
+the EP, each individual reproduces asexually, i.e. divides into two
+individuals. One of these contains exactly the same "genome" as the
+parent while the other suffers some mutations (the parameter values of
+each gene change slightly). At the end of the generation, the
+algorithm has double the number of individuals. Then each of the
+individuals is confronted with a number of others to count how many
+does it outperform (the number of wins is the number of these
+competitors that represent worse solutions than itself). All the
+individuals are ranked by their number of wins, and the population is
+again reduced to the original number of individuals by eliminating
+those which have worse fitness (solutions).  
+</para>
+
+<variablelist><title>Options for Evolutionary Programming</title>
 <varlistentry><term>Number of Generations</term>
 <listitem>
 <para>
-To be written
+The parameter is a positive integer value to determine the number of
+generations the algorithm shall evolve the population. The default is
+'200'. 
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Population Size</term>
 <listitem>
 <para>
-To be written
+The parameter is a positive integer value to determine the size of the
+population, i.e., the number of individuals that survive after each
+generation. The default is '20'.
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Random Number Generator</term>
 <listitem>
 <para>
-To be written
+The parameter is an enumeration value to determine which random number
+generator this method shall use. COPASI provides two random number
+generators R250 <citation>Maier91</citation>
+ (selected through the value 0) and the
+<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
+Twister </ulink><citation>Matsumoto98</citation>
+ (selected through the value 1 (default)).
 </para>
 </listitem>
 </varlistentry>
 <varlistentry><term>Seed</term>
 <listitem>
 <para>
-To be written
+The parameter is a positive integer value to determine the seed for the
+random number generator. A value of zero instructs COPASI to select a
+"random" value.
 </para>
 </listitem>
 </varlistentry>
 </variablelist>
+</sect2>
 
+<sect2 id="RandomSearch" xreflabel="Random Search">
+<title>Random Search</title>
+
+<para>
+Random search is an optimisation method that attempts to find the
+optimum by testing the objective function's value on a series of
+combinations of random values of the adjustable parameters. The random
+vlues are generated complying with any boundaries selected by the
+user, furthermore, any combinations of parameter values that do not
+fulfill constraints on the variables are excluded. This means that the
+method is capable of handling bounds on the adjustable parameters and
+fulfilling constraints. 
+</para>
+
+<para>
+For infinite number of iterations this method is garanteed to find the
+global optimum of the objective function. In general one is interested
+in processing a very large number of iterations. 
+</para>
+
+<variablelist><title>Options for Random Search</title>
+<varlistentry><term>Number of Iterations</term>
+<listitem>
+<para>
+This parameter is a positeve interger to determine the number of
+parameter sets to be drawn before the algorithm stops. The default
+value is '100000'.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Random Number Generator</term>
+<listitem>
+<para>
+The parameter is an enumeration value to determine which random number
+generator this method shall use. COPASI provides two random number
+generators R250 <citation>Maier91</citation>
+ (selected through the value 0) and the
+<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
+Twister </ulink><citation>Matsumoto98</citation>
+ (selected through the value 1 (default)).
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Seed</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the seed for the
+random number generator. A value of zero instructs COPASI to select a
+"random" value.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="EvolutionaryStrategySRES" xreflabel="Evolutionary Strategy (SRES)">
+<title>Evolutionary Strategy (SRES)</title>
+
+<para>
+Evolutionary Strategies with Stochastic Ranking (SRES)
+<citation>Runarsson00</citation> is similar to <xref
+linkend="EvolutionaryProgramming"/>. However, a parent has multiple
+offsprings during each generation. Each offspring will contain a
+recombination of genes with another parent and additional
+mutations. The algorithm assures that each parameter value will be
+within its boundaries. But constraints to the solutions may be
+violated. Whenever this happens the square of the size of the
+violation is summed up, i.e., we calculate  
+</para>
+<para>
+<mml:math>
+ <mml:mrow>
+  <mml:mo>&phi;</mml:mo>
+  <mml:mo>=</mml:mo>
+  <mml:mrow>
+   <mml:mrow>
+    <mml:mrow>
+     <mml:msub>
+      <mml:mo>&sum;</mml:mo>
+      <mml:mrow>
+       <mml:msub>
+        <mml:mi>c</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+       <mml:mo>&lt;</mml:mo>
+       <mml:msub>
+        <mml:mi>l</mml:mi>
+        <mml:msub>
+         <mml:mi>c</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:msub>
+       </mml:msub>
+      </mml:mrow>
+     </mml:msub>
+     <mml:msup>
+      <mml:mrow>
+       <mml:mo>(</mml:mo>
+       <mml:mrow>
+        <mml:msub>
+         <mml:mi>l</mml:mi>
+         <mml:msub>
+          <mml:mi>c</mml:mi>
+          <mml:mi>j</mml:mi>
+         </mml:msub>
+        </mml:msub>
+        <mml:mo>-</mml:mo>
+        <mml:msub>
+         <mml:mi>c</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:msub>
+       </mml:mrow>
+       <mml:mo>)</mml:mo>
+      </mml:mrow>
+      <mml:mn>2</mml:mn>
+     </mml:msup>
+    </mml:mrow>
+   </mml:mrow>
+   <mml:mo>+</mml:mo>
+   <mml:mrow>
+    <mml:msub>
+     <mml:mo>&sum;</mml:mo>
+     <mml:mrow>
+      <mml:msub>
+       <mml:mi>c</mml:mi>
+       <mml:mi>j</mml:mi>
+      </mml:msub>
+      <mml:mo>&gt;</mml:mo>
+      <mml:msub>
+       <mml:mi>u</mml:mi>
+       <mml:msub>
+        <mml:mi>c</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+      </mml:msub>
+     </mml:mrow>
+    </mml:msub>
+    <mml:msup>
+     <mml:mrow>
+      <mml:mo>(</mml:mo>
+      <mml:mrow>
+       <mml:msub>
+        <mml:mi>c</mml:mi>
+        <mml:mi>j</mml:mi>
+       </mml:msub>
+       <mml:mo>-</mml:mo>
+       <mml:msub>
+        <mml:mi>u</mml:mi>
+        <mml:msub>
+         <mml:mi>c</mml:mi>
+         <mml:mi>j</mml:mi>
+        </mml:msub>
+       </mml:msub>
+      </mml:mrow>
+      <mml:mo>)</mml:mo>
+     </mml:mrow>
+     <mml:mn>2</mml:mn>
+    </mml:msup>
+   </mml:mrow>
+  </mml:mrow>
+ </mml:mrow>
+</mml:math>
+</para>
+<para>
+where the constraints are given by
+<mml:math>
+  <mml:mrow>
+   <mml:msub>
+    <mml:mi>c</mml:mi>
+    <mml:mi>j</mml:mi>
+   </mml:msub>
+   <mml:mo>&in;</mml:mo>
+   <mml:mrow>
+    <mml:mo>(</mml:mo>
+    <mml:mrow>
+     <mml:msub>
+      <mml:mi>l</mml:mi>
+      <mml:msub>
+       <mml:mi>c</mml:mi>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:msub>
+     <mml:mi>,</mml:mi>
+     <mml:mtext>&ThinSpace;</mml:mtext>
+     <mml:msub>
+      <mml:mi>u</mml:mi>
+      <mml:msub>
+       <mml:mi>c</mml:mi>
+       <mml:mi>i</mml:mi>
+      </mml:msub>
+     </mml:msub>
+    </mml:mrow>
+    <mml:mo>)</mml:mo>
+   </mml:mrow>
+  </mml:mrow>
+</mml:math>.
+The value <mml:math><mml:mo>&phi;</mml:mo></mml:math> is used within
+the selection, which is perfomred as described in <xref
+linkend="GeneticAlgorithmSR"/> 
+</para>
+
+<variablelist><title>Options for Evolutionary Strategy (SRES)</title>
+<varlistentry><term>Number of Generations</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the number of
+generations the algorithm shall evolve the population. The default is
+'200.' 
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Population Size</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the size of the
+population, i.e., the number of individuals that survive after each
+generation. The default is '20'.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Random Number Generator</term>
+<listitem>
+<para>
+The parameter is an enumeration value to determine which random number
+generator this method shall use. COPASI provides two random number
+generators R250 <citation>Maier91</citation>
+ (selected through the value 0) and the
+<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
+Twister </ulink><citation>Matsumoto98</citation>
+ (selected through the value 1 (default)).
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Seed</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the seed for the
+random number generator. A value of zero instructs COPASI to select a
+"random" value.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Pf</term>
+<listitem>
+<para>
+This parameter is a numerical value in the interval (0, 1) determining
+the chance that individuals either outside the parameter boundaries or
+violating the constraints are compared during the selection. The
+default is '4.75'. 
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</sect2>
+
+<sect2 id="SteepestDescent" xreflabel="Steepest Descent">
+<title>Steepest Descent</title>
+
+<para>
+Steepest descent <citation>Fogel92</citation> is an optimisation
+method that follows the direction of steepest descent on the
+hyper-surface of the objective function to find a local minimum. The
+direction of steepest descent is defined by the negative of the
+gradient of the objective function.
+</para> 
+
+<variablelist><title>Options for Steepest Descent</title>
+<varlistentry><term>Iteration Limit</term>
+<listitem>
+<para>
+This parameter is positive integer determining the maximum number of
+iterations the algorithm shall perform. The default is '100'.
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Tolerance</term>
+<listitem>
+<para>
+This parameter is a positive value determining the tolerance with
+which the solution shall be determined. If the improvement between two
+steps is less than the tolerance the algorithm stops. The default is
+'<mml:math>
+ <mml:msup>
+  <mml:mn>10</mml:mn>
+  <mml:mn>-6</mml:mn>
+ </mml:msup>
+</mml:math>'. 
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
 </sect2>
 </sect1>
+
+
+<sect1 id="lyapunovExponents" xreflabel="Lyapunov exponents">
+  <title>Lyapunov Exponents Calculation</title>
+  <para>
+    Copasi allows the calculation of lyapunov exponents of a trajectory as well as the average divergence of the system. The exponents are calculated for the reduced system (see <xref linkend="deterministicModel" />), so the maximum number of exponents that can be calculated is the number of independent variables. If less than this number of exponents is requested, the largest exponents are calculated.
+    Copasi uses the well known algorithm proposed by Wolf et al. (<citation>Wolf85</citation>). This algorithm integrates one reference trajectory and simultanously <mml:math><mml:mi>N</mml:mi></mml:math> difference trajectories (if <mml:math><mml:mi>N</mml:mi></mml:math> is the number of exponents requested) in a system linearized around the reference trajectory. This integration is carried out for a short time interval (the "Orthonormalization interval", see below) and then the difference vectors are reorthonormalized. The exponents for this time interval are calculated from how much each of the difference trajectories converged or diverged from the reference trajectory during the interval. This calculation is repeated and the "local" exponents are averaged over the the whole trajectory.
+  </para>
+  <para>
+    The divergence is calculated (if requested) as the average of the trace of the jacobian. Although it is not numerically necessary the divergence is also calculated for the same short intervals that are used for the lyapunov exponents. This allows comparing the local values of the divergence with the local exponents.
+  </para> 
+  <para>
+    If you are only interested in the end result of the lyapunov exponents and the average divergence you can just use the default report that is provided by Copasi (or just look at the result in the GUI). If you want to have access to the "local" results for the single orthonormalization intervals however, you will have to define a plot or report manually. In this version of copasi you will need to used the "expert" feature of the object selection dialog to access the exponents. They are located in the "Lyapunov Exponents" branch under the "Task List" entry. Output takes place after each reorthonormalization interval. The output can contain each of the ten largest exponents, both the local value from the last interval and the and the average value of all intervals calculated so far. Correspondingly the divergence can be output both as an average over the last interval or as an average over the whole trajectory.
+  </para> 
+  <para>
+    The jacobian that is used for both lypunov exponents and divergence calculation is calculated using finite differences. The integration of the reference and difference trajectories is done using LSODA <citation>Hindmarsh83</citation>.
+  </para> 
+  <variablelist><title>Options for Lyapunov exponents calculation</title>
+    <varlistentry><term>Orthonormalization interval</term>
+      <listitem>
+        <para>
+          This is the time interval after which an orthonormalization of the difference trajectories takes place. This parameter is critical for the accuracy of the lyapunov exponents. Smaller values generally lead to more accurate results, but take longer time (since the numerical integration needs to be restarted for many short calculations).
+          One way to judge the adequacy of this parameter is to compare the sum of exponents with the divergence of the system. Those two values should be the same (only if you request the calculation of all exponents), and since the calculation of the divergence is very robust, a mismatch would typically mean that the orthonormalization interval needs to be smaller.
+          Note that this parameter mostly affects the accuracy of the exponents with the largest absolute values. Since large positive exponents are unusual, this means that the largest negative exponents suffer from accuracy problems related to this parameter. If you don't need the exact values of the stronly negative exponents you can chose a larger value for this parameter and enjoy a much faster calculation. The default value is <mml:math><mml:mn>1.0</mml:mn></mml:math>.
+        </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry><term>Overall time</term>
+      <listitem>
+        <para>
+          This parameter specifies the overall time of the calculation. The integration will be repeated in small steps given by the "Orthonormalization interval" parameter until the overall time is reached.
+          This value is also critical for the accuracy of the exponents. Since copasi cannot guess how fast the exponents converge, no save default value can be given for this parameter. One indication would be that if the system does not run into a steady state one of the exponents should be zero. If this is not the case in the result, probably the overal time was to short to allow the exponents to converge to their average value. The default value is <mml:math><mml:mn>1000</mml:mn></mml:math>.
+        </para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+  <para>
+    The rest of the options apply for the LSODA numerical integrator that is used for the calculation. They are described in the section for <xref linkend="LSODA">LSODA deterministic simulation</xref>.
+  </para>
+</sect1>
+
 </chapter>
 

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.2 $ $Author: shoops $ $Date: 2005/02/08 16:33:04 $  
+# $Revision: 1.3 $ $Author: shoops $ $Date: 2006/06/20 13:18:56 $  
 ######################################################################
 
 LIB = mml
@@ -12,3 +12,5 @@ CONFIG += qt
 # Input
 HEADERS += qtmmlwidget.h
 SOURCES += qtmmlwidget.cpp
+
+DISTFILES += MathML.dsp

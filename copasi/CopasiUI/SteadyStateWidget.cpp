@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.108 $
+   $Revision: 1.109 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Date: 2006/06/20 13:18:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -164,8 +164,7 @@ bool SteadyStateWidget::runTask()
       return success;
     }
 
-  if (!success &&
-      CCopasiMessage::getHighestSeverity() == CCopasiMessage::WARNING &&
+  if (CCopasiMessage::getHighestSeverity() >= CCopasiMessage::WARNING &&
       QMessageBox::warning (this, "Simulation Warning",
                             CCopasiMessage::getAllMessageText().c_str(),
                             "Continue", "Stop", NULL,
@@ -277,6 +276,12 @@ bool SteadyStateWidget::saveTask()
                                const std::string & C_UNUSED(key))
 {
   if (mIgnoreUpdates) return true;
+
+
+
+
+
+
 
 
   switch (objectType)
