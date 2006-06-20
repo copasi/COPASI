@@ -1,0 +1,407 @@
+<chapter id="NamingConventions" xreflabel="Naming Conventions">
+<title>Naming Conventions</title>
+<para>
+The intent of naming conventions is to allow programmers, which are
+not familiar with the code to easily grasp the meaning and scope of
+symbols in the source code. Each programmer of COPASI should adhere
+for its own benefit and to the advantage of the project to the
+following conventions.
+</para>
+
+<sect1 id="ClassNames" xreflabel="Class Names">
+<title>Class Names</title>
+<para>
+Class names must all start with a capital letter <literal>C</literal>. This is
+followed by a descriptive name. This name might be composed by
+different words. These words must all start with capital letters and
+are concatenated without underscores. Good examples for class names
+include: 
+  <literal>CCopasiXMLParser</literal> , <literal>CExpatTemplate</literal>, and <literal>CMathModel</literal>.
+</para>
+</sect1>
+
+<sect1 id="VariableNames" xreflabel="Variable Names">
+<title>Variable Names</title>
+<para>
+In general a variable name should be descriptive. This name might be
+composed by different words. These words must all start with capital
+letters and are concatenated without underscores. In addition the
+following standards should be followed:  
+</para>
+
+<variablelist>
+<varlistentry><term>Counters</term>
+<listitem> might be used such as <literal>i</literal>, <literal>k</literal>,
+and <literal>l</literal>, which may be used in loops.</listitem>
+</varlistentry>
+<varlistentry><term>Iterators</term><listitem> might be used such as <literal>it</literal> and <literal>end</literal>, which may be used in loops. 
+</listitem></varlistentry>
+<varlistentry><term>Pointers</term><listitem> are prepended with a lower case letter <literal>p</literal>. 
+</listitem></varlistentry>
+<varlistentry><term>Method Parameters</term><listitem> must start with a lower case letter.
+</listitem></varlistentry>
+<varlistentry><term>Class Member Variables</term><listitem> are prepended with a lower case
+  letter <literal>m</literal>.
+</listitem></varlistentry>
+<varlistentry><term>Class Member Pointers</term><listitem> must have the
+  prefix <literal>mp</literal>.
+</listitem></varlistentry>
+</variablelist>
+
+</sect1>
+
+<sect1 id="Method Name" xreflabel="Method Name">
+<title>Method Name</title>
+<para>
+Method names should have a descriptive name starting with a lower case
+letter. This name might be composed by different words. These words
+beginning with the second must start with capital letters and
+are concatenated without underscores. Good examples for method names
+include: 
+   <literal>createMetabolite</literal>, <literal>compileIfNecessary</literal>, and <literal>buildMoieties</literal>
+</para>
+
+<para>
+In addition the following standards should be followed:  
+</para>
+
+<variablelist>
+
+<varlistentry><term>Retrieval Methods</term><listitem> must start with <literal>get</literal> followed by
+  the member variable name without the prefix.
+</listitem></varlistentry>
+
+<varlistentry><term>Set Methods</term><listitem> must start with <literal>set</literal> followed by
+  the member variable name without the prefix.
+</listitem></varlistentry>
+
+<varlistentry><term>Boolean Query Functions</term><listitem> should start if applicable with
+  <literal>is</literal>.
+</listitem></varlistentry>
+</variablelist>
+</sect1>
+</chapter>
+
+<chapter id="ProgramCodeGuidelines" xreflabel="Program Code Guidelines">
+<title>Program Code Guidelines</title>
+
+<sect1 id="Loops" xreflabel="Loops">
+<title>Loops</title>
+</sect1>
+</chapter>
+
+<chapter id="CodeDocumentation" xreflabel="Code Documentation">
+<title>Code Documentation</title>
+<sect1 id="Class Documentation" xreflabel="Class Documentation">
+<title>Class Documentation</title>
+</sect1>
+
+<sect1 id="Variable Documentation" xreflabel="Variable Documentation">
+<title>Variable Documentation</title>
+</sect1>
+
+<sect1 id="Method Documentation" xreflabel="Method Documentation">
+<title>Method Documentation</title>
+</sect1>
+
+<sect1 id="Incline Code Documentation" xreflabel="Incline Code Documentation">
+<title>Incline Code Documentation</title>
+</sect1>
+</chapter>
+
+<chapter id="COPASIObjectStructure" xreflabel="COPASI Object Structure">
+<title>COPASI Object Structure</title>
+<para>
+COPASI has an object structure which is used to access all objects
+which can be calculated, ploted, or printed. Objects can be grouped to
+larger objects called containers. COPASI itself functions as a root
+container, i.e., it contains all objects which might be of interest
+for calculation or output. The access to any object is provided with
+an LDAP like common name (CN) which can be resolved starting from any
+container.
+</para>
+
+<sect1 id="Object" xreflabel="Object">
+<title>Object</title>
+<para>
+The object (<literal>class CCopasiObject</literal>) is the main
+building block of the object structure. Each object has the following
+main attributes: 
+
+<variablelist><title>Attribute List</title>
+
+<varlistentry><term><literal>std::string mObjectName</literal></term>
+<listitem>&nbsp;<sbr/>The name of the object.
+</listitem></varlistentry>
+
+<varlistentry>
+<term><literal>std::string mObjectType</literal></term>
+<listitem>&nbsp;<sbr/>The type of the object, e.g. Compartment.
+</listitem></varlistentry>
+
+<varlistentry>
+<term><literal>CCopasiContainer * mpObjectParent</literal></term>
+<listitem>&nbsp;<sbr/>A pointer to the objects parent container.
+</listitem></varlistentry>
+
+<varlistentry>
+<term><literal>unsigned int mObjectType</literal></term>
+<listitem>&nbsp;<sbr/>A flag indicating object properties.
+</listitem></varlistentry>
+</variablelist>
+
+</para>
+
+<para>
+In addition to the expected <literal>get</literal> and
+<literal>set</literal> methods the objects provides the following
+methods: 
+
+<variablelist><title>Method List</title>
+<varlistentry>
+<term><literal>CCopasiContainer * getObjectAncestor(const std::string
+&amp;type) const</literal></term>
+<listitem>&nbsp;<sbr/>This method retrieves the closest ancestor of the object of
+the specified type. 
+</listitem></varlistentry>
+
+<varlistentry>
+<term><literal>virtual CCopasiObjectName getCN() const</literal></term>
+<listitem>&nbsp;<sbr/>This method retrieve the common name (CN) of the object.
+</listitem></varlistentry>
+
+<varlistentry>
+<term><literal>
+
+</literal></term>
+<listitem>&nbsp;<sbr/>
+
+</listitem></varlistentry>
+
+</variablelist>
+
+</para>
+</sect1>
+
+<sect1 id="Container" xreflabel="Container">
+<title>Container</title>
+</sect1>
+
+<sect1 id="COPASI Vector" xreflabel="COPASI Vector">
+<title>COPASI Vector</title>
+</sect1>
+
+<sect1 id="Parameter" xreflabel="Parameter">
+<title>Parameter</title>
+</sect1>
+
+<sect1 id="Parameter Group" xreflabel="Parameter Group">
+<title>Parameter Group</title>
+</sect1>
+
+<sect1 id="Dependencies" xreflabel="Dependencies">
+<title>Dependencies</title>
+</sect1>
+</chapter>
+
+<chapter id="TheModelState" xreflabel="The Model State">
+<title>The Model State</title>
+<sect1 id="Setting the State" xreflabel="Setting the State">
+<title>Setting the State</title>
+</sect1>
+
+<sect1 id="Applying Assignemets" xreflabel="Applying Assignemets">
+<title>Applying Assignemets</title>
+</sect1>
+
+<sect1 id="Calculating Current Values" xreflabel="Calculating Current Values">
+<title>Calculating Current Values</title>
+</sect1>
+</chapter>
+
+<chapter id="InstallationStructure" xreflabel="Installation Structure">
+<title>Installation Structure</title>
+<para>
+This section defines the installation structure for COPASI on
+different platforms. Each platform will adhere to the platform
+specific requirements. 
+</para>
+
+<sect1 id="Unix" xreflabel="Unix">
+<title>Unix</title>
+<para>
+The installation location needs to be available to COPASI at runtime
+and therefore the environment variable <literal>COPASIDIR</literal> pointing to this
+location must be set by the user. 
+</para>
+<literallayout>
+  $COPASIDIR 
+   +- bin 
+   |  +- CopasiSE 
+   |  +- CopasiUI 
+   +- share 
+   |  +- copasi 
+   |     +- doc 
+   |     |  +- html 
+   |     |     +- figures 
+   |     |     |  +- DefaultPlotAdded.jpg 
+   |     |     |  +- ModelSettingsDialog.jpg 
+   |     |     |  +- ObjectBrowserSelection.jpg 
+   |     |     |  +- ObjectBrowserTree.jpg 
+   |     |     |  +- PlotDefinition.jpg 
+   |     |     |  +- PlotWindow.jpg 
+   |     |     |  +- ReactionDialog.jpg 
+   |     |     |  +- ReactionOverview.jpg 
+   |     |     |  +- ReactionOverviewEmpty.jpg 
+   |     |     |  +- ReportDefinitionDialog.jpg 
+   |     |     |  +- TimeCourseDialog.jpg 
+   |     |     |  +- ... 
+   |     |     +- TutWiz-Step1.html 
+   |     |     +- TutWiz-Step2.html 
+   |     |     +- TutWiz-Step3.html 
+   |     |     +- TutWiz-Step4.html 
+   |     |     +- TutWiz-Step5.html 
+   |     |     +- TutWiz-Step6.html 
+   |     |     +- ... 
+   |     +- examples 
+   |     |  +- CircadianClock.cps 
+   |     |  +- Metabolism-2000Poo.xml 
+   |     |  +- YeastGlycolysis.gps 
+   |     |  +- brusselator.cps 
+   |     |  +- ... 
+   |     +- icons 
+   |        +- copasi icon small.png 
+   +- README 
+   +- ChangeLog 
+</literallayout>
+</sect1>
+
+<sect1 id="MacOS X" xreflabel="MacOS X">
+<title>MacOS X</title>
+<para>
+The installation location must be available to COPASI at
+runtime. However it is possible to determine the location through MacOS
+X.
+</para>
+<literallayout>
+  $COPASIDIR 
+   +- CopasiSE.app 
+   |  +- Contents 
+   |  |  +- MacOS 
+   |  |     +- CopasiSE 
+   +- CopasiUI.app 
+   |  +- Contents 
+   |  |  +- MacOS 
+   |  |  |  +- CopasiUI 
+   |  |  +- Resources 
+   |  |  |  +- doc 
+   |  |  |     +- html 
+   |  |  |        +- figures 
+   |  |  |        |  +- DefaultPlotAdded.jpg 
+   |  |  |        |  +- ModelSettingsDialog.jpg 
+   |  |  |        |  +- ObjectBrowserSelection.jpg 
+   |  |  |        |  +- ObjectBrowserTree.jpg 
+   |  |  |        |  +- PlotDefinition.jpg 
+   |  |  |        |  +- PlotWindow.jpg 
+   |  |  |        |  +- ReactionDialog.jpg 
+   |  |  |        |  +- ReactionOverview.jpg 
+   |  |  |        |  +- ReactionOverviewEmpty.jpg 
+   |  |  |        |  +- ReportDefinitionDialog.jpg 
+   |  |  |        |  +- TimeCourseDialog.jpg 
+   |  |  |        |  +- ... 
+   |  |  |        +- TutWiz-Step1.html 
+   |  |  |        +- TutWiz-Step2.html 
+   |  |  |        +- TutWiz-Step3.html 
+   |  |  |        +- TutWiz-Step4.html 
+   |  |  |        +- TutWiz-Step5.html 
+   |  |  |        +- TutWiz-Step6.html 
+   |  |  |        +- ... 
+   |  |  +- Info.plist 
+   +- examples 
+   |  +- CircadianClock.cps 
+   |  +- Metabolism-2000Poo.xml 
+   |  +- YeastGlycolysis.gps 
+   |  +- brusselator.cps 
+   |  +- ... 
+   +- COPASI-README.rtf 
+</literallayout>
+</sect1>
+
+<sect1 id="Windows" xreflabel="Windows">
+<title>Windows</title>
+<para>
+The installation location must be available to COPASI at
+runtime. However it is possible to determine the location through
+Windows specific means.
+</para>
+<literallayout>
+  $COPASIDIR 
+   +- bin 
+   |  +- CopasiSE 
+   |  +- CopasiUI 
+   +- share 
+   |  +- copasi 
+   |     +- doc 
+   |     |  +- html 
+   |     |     +- figures 
+   |     |     |  +- DefaultPlotAdded.jpg 
+   |     |     |  +- ModelSettingsDialog.jpg 
+   |     |     |  +- ObjectBrowserSelection.jpg 
+   |     |     |  +- ObjectBrowserTree.jpg 
+   |     |     |  +- PlotDefinition.jpg 
+   |     |     |  +- PlotWindow.jpg 
+   |     |     |  +- ReactionDialog.jpg 
+   |     |     |  +- ReactionOverview.jpg 
+   |     |     |  +- ReactionOverviewEmpty.jpg 
+   |     |     |  +- ReportDefinitionDialog.jpg 
+   |     |     |  +- TimeCourseDialog.jpg 
+   |     |     |  +- ... 
+   |     |     +- TutWiz-Step1.html 
+   |     |     +- TutWiz-Step2.html 
+   |     |     +- TutWiz-Step3.html 
+   |     |     +- TutWiz-Step4.html 
+   |     |     +- TutWiz-Step5.html 
+   |     |     +- TutWiz-Step6.html 
+   |     |     +- ... 
+   |     +- examples 
+   |     |  +- CircadianClock.cps 
+   |     |  +- Metabolism-2000Poo.xml 
+   |     |  +- YeastGlycolysis.gps 
+   |     |  +- brusselator.cps 
+   |     |  +- ... 
+   |     +- icons
+   |        +- Copasi.ico
+   |        +- CopasiDoc.ico
+   +- LICENSE.txt 
+   +- README.txt
+   +- ChangeLog 
+</literallayout>
+</sect1>
+
+<sect1 id="Handling Installation Differences" xreflabel="Handling Installation Differences">
+<title>Handling Installation Differences</title>
+<para>
+The handling of differences in the installation structure must be
+dealt with in one place within the COPASI code. The place for this is
+the class <literal>COptions</literal>. In this class the method:
+<literallayout>
+   template&lt;class CType&gt; static void getValue(const std::string &amp;name, CType &amp;value)
+</literallayout>
+provides access to common options within COPASI. The following values
+will deal with installation dependent settings:
+<literal>CopasiDir</literal>, <literal>TempDir</literal>, <literal>ExampleDir</literal>, and <literal>WizardDir</literal>. The following code
+shows howe to retrieve the location of the examples files for COPASI: 
+<literallayout>
+   std::string ExampleDir;
+   COptions::getValue(``ExampleDir'', ExampleDir); 
+</literallayout>
+To assure that the values are correctly set any main program must
+call: 
+<literallayout>
+   COptions::init(argc, argv);
+</literallayout>
+</para>
+
+
+</sect1>
+</chapter>
