@@ -59,6 +59,14 @@ SOURCE=.\CHybridMethod.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CHybridMethodLSODA.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CHybridNextReactionLSODAMethod.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CHybridNextReactionRKMethod.cpp
 # End Source File
 # Begin Source File
@@ -104,6 +112,14 @@ SOURCE=.\CTrajectoryTask.cpp
 # Begin Source File
 
 SOURCE=.\CHybridMethod.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CHybridMethodLSODA.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CHybridNextReactionLSODAMethod.h
 # End Source File
 # Begin Source File
 
