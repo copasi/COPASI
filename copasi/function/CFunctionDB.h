@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Author: ssahle $
+   $Date: 2006/06/21 11:51:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,7 @@ class CFunctionDB : public CCopasiContainer
 
     void initObjects();
 
-    bool CFunctionDB::load();
+    bool load();
 
     /**
      *  Loads an object with data coming from a CReadConfig object.

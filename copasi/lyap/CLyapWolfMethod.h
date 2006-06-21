@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:41 $
+   $Author: ssahle $
+   $Date: 2006/06/21 11:51:38 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -220,7 +220,7 @@ class CLyapWolfMethod : public CLyapMethod
     static void scalarmult(C_FLOAT64* dbl1, const C_FLOAT64* dbl2, const C_FLOAT64 & f);
     static C_FLOAT64 product(const C_FLOAT64* dbl1, const C_FLOAT64* dbl1End,
                              const C_FLOAT64* dbl2);
-    static void CLyapWolfMethod::add(C_FLOAT64* dbl1, const C_FLOAT64* dbl1End,
-                                     const C_FLOAT64 & f, const C_FLOAT64* dbl2);
+    static void add(C_FLOAT64* dbl1, const C_FLOAT64* dbl1End,
+                    const C_FLOAT64 & f, const C_FLOAT64* dbl2);
   };
 #endif // COPASI_CLsodaMethod

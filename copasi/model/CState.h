@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:22 $
+   $Author: ssahle $
+   $Date: 2006/06/21 11:52:26 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,24 +54,24 @@ class CStateTemplate
     const CVector<unsigned C_INT32> & getUserOrder() const;
 
     CModelEntity ** getEntities();
-    CModelEntity ** CStateTemplate::beginIndependent();
-    CModelEntity ** CStateTemplate::endIndependent();
-    CModelEntity ** CStateTemplate::beginDependent();
-    CModelEntity ** CStateTemplate::endDependent();
-    CModelEntity ** CStateTemplate::beginFixed();
-    CModelEntity ** CStateTemplate::endFixed();
+    CModelEntity ** beginIndependent();
+    CModelEntity ** endIndependent();
+    CModelEntity ** beginDependent();
+    CModelEntity ** endDependent();
+    CModelEntity ** beginFixed();
+    CModelEntity ** endFixed();
 
-    CModelEntity **const CStateTemplate::beginIndependent() const;
-    CModelEntity **const CStateTemplate::endIndependent() const;
-    CModelEntity **const CStateTemplate::beginDependent() const;
-    CModelEntity **const CStateTemplate::endDependent() const;
-    CModelEntity **const CStateTemplate::beginFixed() const;
-    CModelEntity **const CStateTemplate::endFixed() const;
+    CModelEntity **const beginIndependent() const;
+    CModelEntity **const endIndependent() const;
+    CModelEntity **const beginDependent() const;
+    CModelEntity **const endDependent() const;
+    CModelEntity **const beginFixed() const;
+    CModelEntity **const endFixed() const;
 
-    unsigned C_INT32 CStateTemplate::getNumIndependent() const;
-    unsigned C_INT32 CStateTemplate::getNumDependent() const;
-    unsigned C_INT32 CStateTemplate::getNumVariable() const;
-    unsigned C_INT32 CStateTemplate::getNumFixed() const;
+    unsigned C_INT32 getNumIndependent() const;
+    unsigned C_INT32 getNumDependent() const;
+    unsigned C_INT32 getNumVariable() const;
+    unsigned C_INT32 getNumFixed() const;
 
     const unsigned C_INT32 & size() const;
 
