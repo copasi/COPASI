@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Author: ssahle $
+   $Date: 2006/06/21 16:04:01 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -113,7 +113,7 @@ class CSlider : public CCopasiContainer
      * Retrieve the slider object CN.
      * @return const std::string & sliderObjectCN
      */
-    const std::string & CSlider::getSliderObjectCN() const;
+    const std::string & getSliderObjectCN() const;
 
     /**
      * Set the slider type.
@@ -155,7 +155,7 @@ class CSlider : public CCopasiContainer
      * Sets the value of the slider back to it's original
      * value.
      */
-    void CSlider::resetValue();
+    void resetValue();
 
     /**
      * Retrieve the slider Value.

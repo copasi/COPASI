@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/01 14:23:35 $
+   $Author: ssahle $
+   $Date: 2006/06/21 16:01:54 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -3017,7 +3017,7 @@ class CCopasiXMLParser : public CExpat
      * Retrieve the list of loaded reports
      * @return CReportDefinitionVector * pReportList
      */
-    CReportDefinitionVector * CCopasiXMLParser::getReportList() const;
+    CReportDefinitionVector * getReportList() const;
 
     //Mrinmayee
     /**
