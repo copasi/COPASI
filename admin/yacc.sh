@@ -15,7 +15,7 @@ echo compiling $SOURCE_FILE '==>' $TARGET_FILE_C, $TARGET_FILE_H
 
 echo byacc -dt -b $FILE_PREFIX -p $FILE_PREFIX $SOURCE_FILE
 byacc -dt -b $FILE_PREFIX -p $FILE_PREFIX $SOURCE_FILE
-sed -e 's/'$FILE_PREFIX'parse/'$FILE_PREFIX'Base::yyparse/g' \
+sed -e 's/'$FILE_PREFIX'parse/yyparse/g' \
     -e '/#define yylex/d' \
     -e 's/'$FILE_PREFIX'.tab.c/'$TARGET_FILE_C'/g' \
     -e 's/int yydebug;/int yydebug = YYDEBUG;/' \

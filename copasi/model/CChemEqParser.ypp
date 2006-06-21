@@ -22,6 +22,8 @@
 
 #include "utilities/CCopasiMessage.h"
 
+#undef yyparse
+#define yyparse CChemEqParserBase::yyparse
 %}
 
 /* yacc Declarations */

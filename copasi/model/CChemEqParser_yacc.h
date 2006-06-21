@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqParser_yacc.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Date: 2006/06/21 14:02:02 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 

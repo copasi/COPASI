@@ -20,6 +20,8 @@
 #include "CEvaluationNode.h"
 #include "CEvaluationLexer.h"
 
+#undef yyparse
+#define yyparse CEvaluationParserBase::yyparse
 %}
 
 /* yacc Declarations */
