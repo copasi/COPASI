@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Author: ssahle $
+   $Date: 2006/06/21 16:14:43 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,7 +75,7 @@ class SliderDialog: public QDialog
 
     virtual void runTimeCourse();
     virtual void runScanTask();
-    virtual void SliderDialog::runSteadyStateTask();
+    virtual void runSteadyStateTask();
     virtual void closeEvent(QCloseEvent* e);
 
     virtual CCopasiTask* getTaskForFolderId(C_INT32 folderId);
@@ -88,7 +88,7 @@ class SliderDialog: public QDialog
     std::vector<CSlider*>* getCSlidersForCurrentFolderId();
     CopasiSlider* findCopasiSliderAtPosition(const QPoint& p);
     void setCurrentSlider(CopasiSlider* pSlider);
-    virtual bool SliderDialog::eventFilter(QObject*, QEvent* event);
+    virtual bool eventFilter(QObject*, QEvent* event);
     bool sliderObjectChanged(CSlider* pSlider) const;
 
   protected slots:

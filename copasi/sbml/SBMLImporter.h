@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:19:51 $
+   $Author: ssahle $
+   $Date: 2006/06/21 16:14:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -187,7 +187,7 @@ class SBMLImporter
     /**
      * Compares to CEvaluationNode based subtrees recursively.
      */
-    bool SBMLImporter::areEqualSubtrees(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2);
+    bool areEqualSubtrees(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2);
 
     std::vector<CEvaluationNodeObject*>* isMassAction(const CEvaluationTree* pTree, const CChemEq& chemicalEquation, const CEvaluationNodeCall* pCallNode = NULL);
 

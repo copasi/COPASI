@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:47 $
+   $Author: ssahle $
+   $Date: 2006/06/21 16:15:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,9 +91,9 @@ class ParameterTable : public QTable
         const CReactionInterface & ri);
 
     //convenience function.
-    static QStringList ParameterTable::getListOfAllGlobalParameterNames(const CModel & model);
+    static QStringList getListOfAllGlobalParameterNames(const CModel & model);
     //convenience function.
-    static QStringList ParameterTable::getListOfAllCompartmentNames(const CModel & model);
+    static QStringList getListOfAllCompartmentNames(const CModel & model);
 
     int mOldRow;
 
