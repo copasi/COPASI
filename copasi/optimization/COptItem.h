@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:52 $
+   $Author: ssahle $
+   $Date: 2006/06/21 16:00:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -191,14 +191,14 @@ class COptItem: public CCopasiParameterGroup
      * Retrieve the value of the lower bound.
      * @return const C_FLOAT64 * lowerBoundValue
      */
-    inline const C_FLOAT64 * COptItem::getLowerBoundValue() const
+    inline const C_FLOAT64 * getLowerBoundValue() const
       {return mpLowerBound;}
 
     /**
      * Retrieve the value of the upper bound.
      * @return const C_FLOAT64 * upperBoundValue
      */
-    inline const C_FLOAT64 * COptItem::getUpperBoundValue() const
+    inline const C_FLOAT64 * getUpperBoundValue() const
       {return mpUpperBound;}
 
     /**

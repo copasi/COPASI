@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:53 $
+   $Author: ssahle $
+   $Date: 2006/06/21 16:00:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,7 +83,7 @@ class COptMethodHookeJeeves : public COptMethod
      * Finds the best value in the neighborhood of mNew and updates mNew
      * @return C_FLOAT64 bestValue
      */
-    C_FLOAT64 COptMethodHookeJeeves::bestNearby();
+    C_FLOAT64 bestNearby();
 
     // Attributes
   private:

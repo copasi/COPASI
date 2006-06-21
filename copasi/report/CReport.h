@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:10 $
+   $Author: ssahle $
+   $Date: 2006/06/21 16:01:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -135,7 +135,7 @@ class CReport : public CCopasiContainer, public COutputInterface
      * Retrieve a pointer to the ostream
      * @return std::ostream * pOstream
      */
-    std::ostream * CReport::getStream() const;
+    std::ostream * getStream() const;
 
     /**
      * sets the reference to the report

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:19:33 $
+   $Author: ssahle $
+   $Date: 2006/06/21 16:00:47 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,7 +144,7 @@ class CopasiPlot : public QwtPlot, public COutputInterface
     /**
      * Redraw the plot
      */
-    void CopasiPlot::updatePlot();
+    void updatePlot();
 
     /**
      * Clear all allocate buffers and set reset values

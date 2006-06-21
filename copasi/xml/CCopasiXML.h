@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/28 13:10:45 $
+   $Author: ssahle $
+   $Date: 2006/06/21 16:01:41 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -237,7 +237,7 @@ class CCopasiXML : public CCopasiXMLInterface
      * Save the list of plots.
      * @return bool success
      */
-    bool CCopasiXML::savePlotList();
+    bool savePlotList();
 
     /**
      * Save the list of reports.
