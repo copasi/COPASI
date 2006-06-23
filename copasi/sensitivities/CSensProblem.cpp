@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/06/23 10:42:33 $
+   $Date: 2006/06/23 11:10:25 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,30 @@
 //#include "model/CModel.h"
 //#include "model/CState.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+
+bool CSensItem::isSingleObject() const
+  {
+    return mIsSingleObject;
+  }
+
+const CCopasiObjectName & CSensItem::getSingleObjectCN() const
+  {
+    return mSingleObjectCN;
+  }
+
+std::string CSensItem::getSingleObjectDisplayName() const
+  {
+  }
+
+const CObjectLists::ListType & CSensItem::getListType() const
+  {
+    return mListType;
+  }
+
+std::string CSensItem::getListTypeDisplayName() const
+  {}
+
+//************************ CSensProblem ***************************
 
 const std::string CSensProblem::SubTaskName[] =
   {

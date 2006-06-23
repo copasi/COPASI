@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/06/23 10:42:33 $
+   $Date: 2006/06/23 11:10:25 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,24 @@
 #include <string>
 
 #include "utilities/CCopasiProblem.h"
+#include "model/CObjectLists.h"
+
+class CSensItem
+  {
+  public:
+    bool isSingleObject() const;
+
+    const CCopasiObjectName & getSingleObjectCN() const;
+    std::string getSingleObjectDisplayName() const;
+
+    const CObjectLists::ListType & getListType() const;
+    std::string getListTypeDisplayName() const;
+
+  private:
+    bool mIsSingleObject;
+    CRegisteredObjectName mSingleObjectCN;
+    CObjectLists::ListType mListType;
+  };
 
 class CSensProblem: public CCopasiProblem
   {
@@ -77,8 +95,14 @@ class CSensProblem: public CCopasiProblem
 
     const CSensProblem::SubTaskType & getSubTaskType() const;
 
+    const CSensItem & getTargetFunctions() const;
+    const std::vector<CSensItem> & getVariables() const;
+
   private:
     CSensProblem::SubTaskType mSubTaskType;
+
+    CSensItem mTargetFunctions;
+    std::vector<CSensItem> mVariables;
   };
 
 #endif // COPASI_CSensProblem
