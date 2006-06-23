@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:39 $
+   $Author: tjohann $
+   $Date: 2006/06/23 10:02:26 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,22 @@
 //#include "model/CModel.h"
 //#include "model/CState.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+
+const std::string CSensProblem::SubTaskName[] =
+  {
+    "Not Set",
+    "Steady State",
+    "Time Series",
+    "Lyapunov Exponents",
+  };
+
+const char * CSensProblem::XMLSubTask[] =
+  {
+    "NotSet",
+    "SteadyState",
+    "TimeSeries",
+    "LyapunovExponents",
+  };
 
 /**
  *  Default constructor.
@@ -44,3 +60,16 @@ CSensProblem::CSensProblem(const CSensProblem & src,
  */
 CSensProblem::~CSensProblem()
 {DESTRUCTOR_TRACE;}
+
+/**
+ *   set the problem's SubTaskType:
+ */
+void
+CSensProblem::setSubTaskType(CSensProblem::SubTaskType & type)
+{mSubTaskType = type;}
+
+/**
+ *   get the problem's SubTaskType:
+ **/
+const CSensProblem::SubTaskType &
+CSensProblem::setSubTaskType() const {return mSubTaskType;}

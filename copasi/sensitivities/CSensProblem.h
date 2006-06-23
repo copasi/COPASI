@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:39 $
+   $Author: tjohann $
+   $Date: 2006/06/23 10:02:26 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,17 @@
 class CSensProblem: public CCopasiProblem
   {
   public:
+    enum SubTaskType {
+      unset = 0,
+      SteadyState,
+      TimeSeries,
+      LyapunovExp
+    };
+
+    const std::string CSensProblem::SubTaskName[];
+
+    const char * CSensProblem::XMLSubTask[];
+
     // Operations
 
     /**
@@ -61,6 +72,13 @@ class CSensProblem: public CCopasiProblem
      * @return "CModel *" pModel
      */
     //CModel * getModel() const;
+
+    void setSubTaskType(const CSensProblem::SubTaskType & type);
+
+    const CSensProblem::SubTaskType & getSubTaskType() const;
+
+  private:
+    CSensProblem::SubTaskType mSubTaskType;
   };
 
 #endif // COPASI_CSensProblem
