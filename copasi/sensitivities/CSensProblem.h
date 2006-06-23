@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/06/23 10:02:26 $
+   $Author: ssahle $
+   $Date: 2006/06/23 10:42:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,9 +35,9 @@ class CSensProblem: public CCopasiProblem
       LyapunovExp
     };
 
-    const std::string CSensProblem::SubTaskName[];
+    static const std::string SubTaskName[];
 
-    const char * CSensProblem::XMLSubTask[];
+    static const char * XMLSubTask[];
 
     // Operations
 

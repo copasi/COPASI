@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/06/23 10:02:26 $
+   $Author: ssahle $
+   $Date: 2006/06/23 10:42:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,11 +65,11 @@ CSensProblem::~CSensProblem()
  *   set the problem's SubTaskType:
  */
 void
-CSensProblem::setSubTaskType(CSensProblem::SubTaskType & type)
+CSensProblem::setSubTaskType(const CSensProblem::SubTaskType & type)
 {mSubTaskType = type;}
 
 /**
  *   get the problem's SubTaskType:
  **/
 const CSensProblem::SubTaskType &
-CSensProblem::setSubTaskType() const {return mSubTaskType;}
+CSensProblem::getSubTaskType() const {return mSubTaskType;}
