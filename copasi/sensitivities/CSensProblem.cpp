@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/23 12:43:23 $
+   $Author: ssahle $
+   $Date: 2006/06/23 13:26:38 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,14 +14,18 @@
 
 #include "copasi.h"
 #include "CSensProblem.h"
-//#include "model/CModel.h"
-//#include "model/CState.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 
 bool CSensItem::isSingleObject() const
   {
     return mIsSingleObject;
   }
+
+void CSensItem::setSingleObjectCN(const CCopasiObjectName & cn)
+{
+  mSingleObjectCN = cn;
+  mIsSingleObject = true;
+}
 
 const CCopasiObjectName & CSensItem::getSingleObjectCN() const
   {
@@ -32,6 +36,12 @@ std::string CSensItem::getSingleObjectDisplayName() const
   {
     return "";
   }
+
+void CSensItem::setListType(CObjectLists::ListType lt)
+{
+  mListType = lt;
+  mIsSingleObject = false;
+}
 
 const CObjectLists::ListType & CSensItem::getListType() const
   {
@@ -51,6 +61,7 @@ const std::string CSensProblem::SubTaskName[] =
     "Steady State",
     "Time Series",
     "Lyapunov Exponents",
+    ""
   };
 
 const char * CSensProblem::XMLSubTask[] =
@@ -59,6 +70,7 @@ const char * CSensProblem::XMLSubTask[] =
     "SteadyState",
     "TimeSeries",
     "LyapunovExponents",
+    NULL
   };
 
 /**
@@ -100,3 +112,13 @@ CSensProblem::setSubTaskType(const CSensProblem::SubTaskType & type)
  **/
 const CSensProblem::SubTaskType &
 CSensProblem::getSubTaskType() const {return mSubTaskType;}
+
+const CSensItem & CSensProblem::getTargetFunctions() const
+  {
+    return mTargetFunctions;
+  }
+
+const std::vector<CSensItem> & CSensProblem::getVariables() const
+  {
+    return mVariables;
+  }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/06/23 11:15:24 $
+   $Date: 2006/06/23 13:26:38 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,14 +26,21 @@
 #include "utilities/CCopasiProblem.h"
 #include "model/CObjectLists.h"
 
+/**
+ * This class describes either one specific copasi object (represented
+ * by a registered object CN internally) or a list of objects (see CObjectLists
+ * class).
+ */
 class CSensItem
   {
   public:
     bool isSingleObject() const;
 
+    void setSingleObjectCN(const CCopasiObjectName & cn);
     const CCopasiObjectName & getSingleObjectCN() const;
     std::string getSingleObjectDisplayName() const;
 
+    void setListType(CObjectLists::ListType lt);
     const CObjectLists::ListType & getListType() const;
     std::string getListTypeDisplayName() const;
 
@@ -48,6 +55,10 @@ class CSensItem
 class CSensProblem: public CCopasiProblem
   {
   public:
+    /**
+     * this enumeration
+     */
+
     enum SubTaskType {
       unset = 0,
       SteadyState,
@@ -84,20 +95,13 @@ class CSensProblem: public CCopasiProblem
     virtual ~CSensProblem();
 
     /**
-     * Set the model of the problem
-     * @param CModel * pModel
-     * @result bool succes
+     *   set the problem's SubTaskType:
      */
-    //virtual bool setModel(CModel * pModel);
-
-    /**
-     * Retrieve the model the problem is dealing with.
-     * @return "CModel *" pModel
-     */
-    //CModel * getModel() const;
-
     void setSubTaskType(const CSensProblem::SubTaskType & type);
 
+    /**
+     *   get the problem's SubTaskType:
+     */
     const CSensProblem::SubTaskType & getSubTaskType() const;
 
     const CSensItem & getTargetFunctions() const;
