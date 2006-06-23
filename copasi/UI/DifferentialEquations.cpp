@@ -1,23 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:23 $
+   $Author: ssahle $
+   $Date: 2006/06/23 13:31:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-/*******************************************************************
- **  $ CopasiUI/DifferentialEquations.cpp
- **  $ Author  : Mudita Singhal
- **
- ** This file is used to create the GUI FrontPage for the
- ** information obtained from the data model about the
- ** Differential Equations
- ********************************************************************/
 #include <qlayout.h>
 #include <qwidget.h>
 #include <qscrollview.h>
@@ -33,9 +25,6 @@
 //#include <qstylesheet.h>
 
 #include "DifferentialEquations.h"
-//#include "mathmodel/CMathModel.h"
-//#include "mathmodel/CMathVariable.h"
-//#include "mathmodel/CMathEq.h"
 #include "listviews.h"
 //#include "DataModelGUI.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -49,21 +38,6 @@
 # include "mml/qtmmlwidget.h"
 #endif // Have_MML
 
-/**
- *  Constructs a Widget for the Metabolites subsection of the tree for
- *  displaying the Metabolites in model 'model'.
- *  This widget is a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *  @param model The CModel class which contains the metabolites
- *  to be displayed.
- *  @param parent The widget which this widget is a child of.
- *  @param name The object name is a text that can be used to identify
- *  this QObject. It's particularly useful in conjunction with the Qt Designer.
- *  You can find an object by name (and type) using child(), and more than one
- *  using queryList().
- *  @param flags Flags for this widget. Redfer Qt::WidgetFlags of Qt documentation
- *  for more information about these flags.
- */
 DifferentialEquations::DifferentialEquations(QWidget *parent, const char * name, WFlags f)
     : CopasiWidget(parent, name, f)
 {

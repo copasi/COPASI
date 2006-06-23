@@ -1,21 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:23 $
+   $Author: ssahle $
+   $Date: 2006/06/23 13:31:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-/****************************************************************************
- **  $ CopasiUI/DifferentialEquations.h
- **  $ Author  : Mudita Singhal
- **
- ** This is the header file for the Differential Equations
- *****************************************************************************/
 
 #ifndef DIFFERENTIAL_EQUATIONS_H
 #define DIFFERENTIAL_EQUATIONS_H
@@ -23,11 +16,9 @@
 #include <sstream>
 
 #include <qpushbutton.h>
-//#include <qtextbrowser.h>
 
 #include "copasi.h"
 #include "copasiWidget.h"
-//class CMathModel;
 class CModel;
 class CMetab;
 class CReaction;
