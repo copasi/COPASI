@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/06/23 11:10:25 $
+   $Date: 2006/06/23 11:15:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,6 +43,8 @@ class CSensItem
     CObjectLists::ListType mListType;
   };
 
+//****************************************************************
+
 class CSensProblem: public CCopasiProblem
   {
   public:
@@ -56,6 +58,9 @@ class CSensProblem: public CCopasiProblem
     static const std::string SubTaskName[];
 
     static const char * XMLSubTask[];
+
+    static std::vector<CObjectLists::ListType> getPossibleTargetFunctions(CSensProblem::SubTaskType);
+    static std::vector<CObjectLists::ListType> getPossibleVariables(CSensProblem::SubTaskType);
 
     // Operations
 
