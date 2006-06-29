@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/10 21:50:21 $
+   $Date: 2006/06/29 09:01:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,7 +43,7 @@ class CScanProblem : public CCopasiProblem
   private:
 
     /**
-     *  The initial state, i.e., the starting conditions of the trajectroy/SS.
+     *  This holds the scan items
      */
     CCopasiParameterGroup * mpScanItems;
 

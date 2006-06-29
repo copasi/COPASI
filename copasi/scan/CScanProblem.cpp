@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanProblem.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/10 21:50:21 $
+   $Date: 2006/06/29 09:01:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,7 +12,6 @@
 
 /**
  *  CScanProblem class.
- *
  */
 
 #include <string>
@@ -169,8 +168,16 @@ void CScanProblem::clearScanItems()
 
 
 
+
+
+
+
   clearScanItems();
   setModel(model);
+
+
+
+
 
 
 
@@ -180,9 +187,17 @@ void CScanProblem::clearScanItems()
 
 
 
+
+
+
+
   CCopasiParameterGroup* tmp = createScanItem(SCAN_LINEAR, 15, model->getReactions()[0]->getParameters().getParameter(0));
   tmp->setValue("Minimum", 0.34);
   tmp->setValue("Maximum", 0.78);
+
+
+
+
 
 
 
