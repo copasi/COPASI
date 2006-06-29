@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/06/23 13:26:38 $
+   $Date: 2006/06/29 09:02:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,15 +73,69 @@ const char * CSensProblem::XMLSubTask[] =
     NULL
   };
 
+//static
+void CSensProblem::createParametersInGroup(CCopasiParameterGroup *pg)
+{
+  if (!pg) return;
+
+  pg->addParameter("SingleObject", CCopasiParameter::CN, CCopasiObjectName(""));
+  pg->addParameter("ObjectListType", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+}
+
+//static
+void CSensProblem::copySensItemToParameterGroup(const CSensItem * si, CCopasiParameterGroup *pg)
+{
+  if (!pg) return; if (!si) return;
+
+  if (si->isSingleObject())
+    pg->setValue("SingleObject", si->getSingleObjectCN());
+  else
+    pg->setValue("ObjectListType", (unsigned C_INT32)si->getListType());
+}
+
+//static
+void CSensProblem::copyParameterGroupToSensItem(const CCopasiParameterGroup *pg, CSensItem * si)
+{
+  if (!pg) return; if (!si) return;
+
+  CCopasiObjectName* pCN = pg->getValue("SingleObject").pCN;
+  CObjectLists::ListType* pLT = (CObjectLists::ListType*)pg->getValue("ObjectListType").pUINT;
+
+  CCopasiObjectName cn("");
+  if (pCN) cn = *pCN;
+
+  CObjectLists::ListType lt = (CObjectLists::ListType)0;
+  if (pLT) lt = *pLT;
+
+  if (cn != "")
+    si->setSingleObjectCN(cn);
+  else
+    si->setListType(lt);
+}
+
 /**
  *  Default constructor.
  *  @param "CModel *" pModel
  */
 CSensProblem::CSensProblem(const CCopasiContainer * pParent):
-    CCopasiProblem(CCopasiTask::steadyState, pParent)
+    CCopasiProblem(CCopasiTask::sens, pParent),
+    mpSubTaskType(NULL),
+    mpTargetFunctions(NULL),
+    mpVariablesGroup(NULL)
 {
-  //addParameter("JacobianRequested", CCopasiParameter::BOOL, true);
-  //addParameter("StabilityAnalysisRequested", CCopasiParameter::BOOL, true);
+  addParameter("SubtaskType", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  mpSubTaskType = (CSensProblem::SubTaskType*)getValue("SubtaskType").pUINT;
+
+  //---------------------------------------------------
+  addGroup("TargetFunctions");
+  mpTargetFunctions = dynamic_cast<CCopasiParameterGroup*>(getParameter("TargetFunctions"));
+  createParametersInGroup(mpTargetFunctions);
+
+  //---------------------------------------------------
+  addGroup("ListOfVariables");
+  mpVariablesGroup = dynamic_cast<CCopasiParameterGroup*>(getParameter("ListOfVariables"));
+
+  //initDebugProblem();
   CONSTRUCTOR_TRACE;
 }
 
@@ -91,8 +145,16 @@ CSensProblem::CSensProblem(const CCopasiContainer * pParent):
  */
 CSensProblem::CSensProblem(const CSensProblem & src,
                            const CCopasiContainer * pParent):
-    CCopasiProblem(src, pParent)
-{CONSTRUCTOR_TRACE;}
+    CCopasiProblem(src, pParent),
+    mpSubTaskType(NULL),
+    mpTargetFunctions(NULL),
+    mpVariablesGroup(NULL)
+{
+  mpSubTaskType = (CSensProblem::SubTaskType*)getValue("SubtaskType").pUINT;
+  mpTargetFunctions = dynamic_cast<CCopasiParameterGroup*>(getParameter("TargetFunctions"));
+  mpVariablesGroup = dynamic_cast<CCopasiParameterGroup*>(getParameter("ListOfVariables"));
+  CONSTRUCTOR_TRACE;
+}
 
 /**
  *  Destructor.
@@ -105,20 +167,52 @@ CSensProblem::~CSensProblem()
  */
 void
 CSensProblem::setSubTaskType(const CSensProblem::SubTaskType & type)
-{mSubTaskType = type;}
+{*mpSubTaskType = type;}
 
 /**
  *   get the problem's SubTaskType:
  **/
-const CSensProblem::SubTaskType &
-CSensProblem::getSubTaskType() const {return mSubTaskType;}
-
-const CSensItem & CSensProblem::getTargetFunctions() const
+const CSensProblem::SubTaskType
+CSensProblem::getSubTaskType() const
   {
-    return mTargetFunctions;
+    if (mpSubTaskType)
+      return *mpSubTaskType;
+    else
+      return CSensProblem::unset;
   }
 
-const std::vector<CSensItem> & CSensProblem::getVariables() const
+CSensItem CSensProblem::getTargetFunctions() const
   {
-    return mVariables;
+    //    return mTargetFunctions;
   }
+
+unsigned C_INT32 CSensProblem::getNumberOfVariables() const
+  {
+    return mpVariablesGroup->size();
+  }
+
+CSensItem CSensProblem::getVariables(unsigned C_INT32 index) const
+  {}
+
+void CSensProblem::addVariables(const CSensItem & item)
+{
+  //create parameter group corresponding to sens item
+  CCopasiParameterGroup* tmp;
+  mpVariablesGroup->addGroup("Variables");
+  tmp = (CCopasiParameterGroup*)(mpVariablesGroup->getParameter(getNumberOfVariables() - 1));
+
+  createParametersInGroup(tmp);
+
+  copySensItemToParameterGroup(&item, tmp);
+}
+
+void CSensProblem::initDebugProblem()
+{
+  CSensItem item;
+
+  item.setSingleObjectCN(this->getCN());
+  addVariables(item);
+
+  item.setListType(CObjectLists::NON_CONST_METABS);
+  addVariables(item);
+}

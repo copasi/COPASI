@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/06/23 13:26:38 $
+   $Date: 2006/06/29 09:02:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,7 @@ class CSensItem
 
   private:
     bool mIsSingleObject;
-    CRegisteredObjectName mSingleObjectCN;
+    CCopasiObjectName mSingleObjectCN;
     CObjectLists::ListType mListType;
   };
 
@@ -102,16 +102,41 @@ class CSensProblem: public CCopasiProblem
     /**
      *   get the problem's SubTaskType:
      */
-    const CSensProblem::SubTaskType & getSubTaskType() const;
+    const CSensProblem::SubTaskType getSubTaskType() const;
 
-    const CSensItem & getTargetFunctions() const;
-    const std::vector<CSensItem> & getVariables() const;
+    CSensItem getTargetFunctions() const;
+
+    unsigned C_INT32 getNumberOfVariables() const;
+    CSensItem getVariables(unsigned C_INT32 index) const;
+
+    void addVariables(const CSensItem & item);
 
   private:
-    CSensProblem::SubTaskType mSubTaskType;
 
-    CSensItem mTargetFunctions;
-    std::vector<CSensItem> mVariables;
+    /**
+     *  create the copasi parameters corresponding to the members of a CSensItem
+     */
+    static void createParametersInGroup(CCopasiParameterGroup *pg);
+
+    static void copySensItemToParameterGroup(const CSensItem * si, CCopasiParameterGroup *pg);
+
+    static void copyParameterGroupToSensItem(const CCopasiParameterGroup *pg, CSensItem * si);
+
+    /**
+     *  this sets up a problem for debugging purposes
+     */
+    void initDebugProblem();
+
+    CSensProblem::SubTaskType * mpSubTaskType;
+
+    CCopasiParameterGroup * mpTargetFunctions;
+
+    //std::vector<CSensItem> mVariables;
+
+    /**
+     *  This holds the variables items
+     */
+    CCopasiParameterGroup * mpVariablesGroup;
   };
 
 #endif // COPASI_CSensProblem
