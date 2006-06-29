@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/06/29 15:53:16 $
+   $Date: 2006/06/29 16:01:30 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,18 +123,32 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
 
 void CopasiTableWidget::handleSBMLId(const CCopasiObject* obj, unsigned C_INT32 row)
 {
-  QString tmp("N/A");
+  QString tmp("");
+  bool flag = false;
 
   const CModelEntity * pEntity = dynamic_cast<const CModelEntity *>(obj);
-  if (pEntity) tmp = FROM_UTF8(pEntity->getSBMLId());
+  if (pEntity)
+    {
+      tmp = FROM_UTF8(pEntity->getSBMLId());
+      flag = true;
+    }
 
   const CFunction * pFunction = dynamic_cast<const CFunction *>(obj);
-  if (pFunction) tmp = FROM_UTF8(pFunction->getSBMLId());
+  if (pFunction)
+    {
+      tmp = FROM_UTF8(pFunction->getSBMLId());
+      flag = true;
+    }
 
   const CReaction * pReaction = dynamic_cast<const CReaction *>(obj);
-  if (pReaction) tmp = FROM_UTF8(pReaction->getSBMLId());
+  if (pReaction)
+    {
+      tmp = FROM_UTF8(pReaction->getSBMLId());
+      flag = true;
+    }
 
-  table->setText(row, numCols - 1, tmp);
+  //only set the text if the object has an sbml id
+  if (flag) table->setText(row, numCols - 1, tmp);
 }
 
 void CopasiTableWidget::fillTable()
