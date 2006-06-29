@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.131 $
+   $Revision: 1.132 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:20:40 $
+   $Author: ssahle $
+   $Date: 2006/06/29 09:02:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,7 @@
 #include "parameterFitting/CFitTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "lyap/CLyapTask.h"
+#include "sensitivities/CSensTask.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
 #include "plot/CPlotItem.h"
@@ -4182,6 +4183,9 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
           break;
         case CCopasiTask::lyap:
           mCommon.pCurrentTask = new CLyapTask(mCommon.pTaskList);
+          break;
+        case CCopasiTask::sens:
+          mCommon.pCurrentTask = new CSensTask(mCommon.pTaskList);
           break;
         default:
           mParser.pushElementHandler(&mParser.mUnknownElement);
