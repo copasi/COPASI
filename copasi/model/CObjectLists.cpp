@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Author: tjohann $
+   $Date: 2006/06/29 13:25:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,34 @@
 #include "CObjectLists.h"
 #include "report/CCopasiObject.h"
 #include "model/CModel.h"
+
+//static
+const std::string CObjectLists::ListTypeName[] =
+  {
+    "Not Set",
+    "Metabolites",
+    "Non-Constant Metabolites",
+    "Concentrations of Metabolites",
+    "Non-Constant Concentrations of Metabolites",
+    "Numbers of Metabolites",
+    "Non-Constant Numbers of Metabolites",
+    "Non-Constant Concentration Rates",
+    "Non-Constant Particle Rates",
+    "Initial Concentrations",
+    "Initial Numbers",
+    "Reactions",
+    "Concentration Fluxes of Reactions",
+    "Particle Fluxes of Reactions",
+    "Global Parameters",
+    "Global Parameter Values",
+    "Compartments",
+    "Compartment Volumes",
+    "Local Parameter Values",
+    "All Parameter Values"
+    "All Parameter and Initial Values",
+    "Single Object",
+    ""
+  };
 
 //static
 std::vector<const CCopasiObject*>

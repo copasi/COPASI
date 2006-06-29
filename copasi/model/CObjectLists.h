@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:22 $
+   $Author: tjohann $
+   $Date: 2006/06/29 13:25:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@ class CObjectLists
 
     enum ListType
     {
+      EMPTY_LIST = 0,
       ALL_METABS,
       NON_CONST_METABS,
       ALL_METAB_CONCENTRATIONS,
@@ -52,8 +53,11 @@ class CObjectLists
       ALL_LOCAL_PARAMETER_VALUES,
 
       ALL_PARAMETER_VALUES,
-      ALL_PARAMETER_AND_INITIAL_VALUES
+      ALL_PARAMETER_AND_INITIAL_VALUES,
+      SINGLE_OBJECT
     };
+
+    static const std::string ListTypeName[];
 
     static
     std::vector<CCopasiObject*> getListOfObjects(ListType t, const CModel* model);
