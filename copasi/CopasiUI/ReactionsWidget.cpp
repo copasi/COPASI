@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.90 $
+   $Revision: 1.91 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/05/14 13:28:28 $
+   $Date: 2006/06/29 15:53:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,7 @@ std::vector<const CCopasiObject*> ReactionsWidget::getObjects() const
 void ReactionsWidget::init()
 {
   mOT = ListViews::REACTION;
-  numCols = 5;
+  numCols = 5 + 1;
   table->setNumCols(numCols);
   std::vector<const CCopasiObject*> objectstemp;
   //table->QTable::setNumRows(1);
@@ -58,6 +58,10 @@ void ReactionsWidget::init()
   tableHeader->setLabel(2, "Equation");
   tableHeader->setLabel(3, "Rate Law");
   tableHeader->setLabel(4, "Flux");
+
+  //for sbml ids
+  tableHeader->setLabel(numCols - 1, "SBML ID");
+  table->setColumnReadOnly(numCols - 1, true);
 
   //this restricts users from editing function names
   table->setColumnReadOnly (3, true);

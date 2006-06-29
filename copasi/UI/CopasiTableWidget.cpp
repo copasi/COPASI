@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:05 $
+   $Author: ssahle $
+   $Date: 2006/06/29 15:53:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -121,6 +121,22 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   //this->init(); //this has to be done by the constructor of the derived classes
 }
 
+void CopasiTableWidget::handleSBMLId(const CCopasiObject* obj, unsigned C_INT32 row)
+{
+  QString tmp("N/A");
+
+  const CModelEntity * pEntity = dynamic_cast<const CModelEntity *>(obj);
+  if (pEntity) tmp = FROM_UTF8(pEntity->getSBMLId());
+
+  const CFunction * pFunction = dynamic_cast<const CFunction *>(obj);
+  if (pFunction) tmp = FROM_UTF8(pFunction->getSBMLId());
+
+  const CReaction * pReaction = dynamic_cast<const CReaction *>(obj);
+  if (pReaction) tmp = FROM_UTF8(pReaction->getSBMLId());
+
+  table->setText(row, numCols - 1, tmp);
+}
+
 void CopasiTableWidget::fillTable()
 {
   std::vector<const CCopasiObject*> objects = getObjects();
@@ -134,6 +150,7 @@ void CopasiTableWidget::fillTable()
     {
       mFlagRO[j] = false;
       tableLineFromObject(objects[j], j);
+      handleSBMLId(objects[j], j);
       mKeys[j] = objects[j]->getKey();
       mFlagChanged[j] = false;
       mFlagDelete[j] = false;
@@ -368,6 +385,7 @@ void CopasiTableWidget::resizeTable(const unsigned C_INT32 numRows)
 
 void CopasiTableWidget::updateRow(const C_INT32 row)
 {
+  //status flags
   QString tmp;
   if (mFlagChanged[row]) tmp += "changed ";
   if (mFlagDelete[row]) tmp += "delete ";

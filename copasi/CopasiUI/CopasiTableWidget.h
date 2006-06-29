@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:43 $
+   $Author: ssahle $
+   $Date: 2006/06/29 15:53:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,6 +65,7 @@ class CopasiTableWidget : public CopasiWidget
     void saveTable();
     //void createNewObject();
     void updateRow(const C_INT32 row);
+    void handleSBMLId(const CCopasiObject* obj, unsigned C_INT32 row);
     QString createNewName(const QString name);
     void resizeTable(const unsigned C_INT32 numRows);
 

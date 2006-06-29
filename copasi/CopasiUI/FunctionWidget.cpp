@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:43 $
+   $Author: ssahle $
+   $Date: 2006/06/29 15:53:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,7 +44,7 @@ std::vector<const CCopasiObject*> FunctionWidget::getObjects() const
 void FunctionWidget::init()
 {
   mOT = ListViews::FUNCTION;
-  numCols = 4;
+  numCols = 4 + 1;
   table->setNumCols(numCols);
 
   //Setting table headers
@@ -53,6 +53,10 @@ void FunctionWidget::init()
   tableHeader->setLabel(1, "Name");
   tableHeader->setLabel(2, "Type");
   tableHeader->setLabel(3, "mathematical description");
+
+  //for sbml ids
+  tableHeader->setLabel(numCols - 1, "SBML ID");
+  table->setColumnReadOnly(numCols - 1, true);
 
   //this restricts users from editing function types or descriptions on the table
   table->setColumnReadOnly (2, true);

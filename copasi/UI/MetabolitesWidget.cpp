@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.129 $
+   $Revision: 1.130 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
+   $Author: ssahle $
+   $Date: 2006/06/29 15:53:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,7 +61,7 @@ void MetabolitesWidget::init()
   connect(btnToggle, SIGNAL(clicked ()), this,
           SLOT(slotBtnToggleClicked()));
 
-  numCols = 12;
+  numCols = 12 + 1; //+1 for sbml id
   table->setNumCols(numCols);
   //table->QTable::setNumRows(1);
 
@@ -111,6 +111,10 @@ void MetabolitesWidget::init()
   tableHeader->setLabel(COL_NRATE, "Number Rate");
   table->setColumnReadOnly (COL_NRATE, true);
 
+  //for sbml ids
+  tableHeader->setLabel(numCols - 1, "SBML ID");
+  table->setColumnReadOnly(numCols - 1, true);
+
   showHeaders(); //add the units to the headers
 
   // We start with the concentration showing.
@@ -140,7 +144,6 @@ void MetabolitesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   const CMetab* pMetab = static_cast<const CMetab *>(obj);
 
   //1: name
-
   table->setText(row, COL_NAME, FROM_UTF8(pMetab->getObjectName()));
 
   table->setText(row, COL_ICONCENTRATION, QString::number(pMetab->getInitialConcentration()));

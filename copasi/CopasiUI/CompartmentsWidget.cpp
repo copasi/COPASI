@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.102 $
+   $Revision: 1.103 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
+   $Author: ssahle $
+   $Date: 2006/06/29 15:53:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,7 @@ std::vector<const CCopasiObject*> CompartmentsWidget::getObjects() const
 void CompartmentsWidget::init()
 {
   mOT = ListViews::COMPARTMENT;
-  numCols = 3;
+  numCols = 3 + 1;
   table->setNumCols(numCols);
   //table->QTable::setNumRows(1);
 
@@ -63,6 +63,10 @@ void CompartmentsWidget::init()
   tableHeader->setLabel(0, "Status");
   tableHeader->setLabel(1, "Name");
   tableHeader->setLabel(2, "Volume");
+
+  //for sbml ids
+  tableHeader->setLabel(numCols - 1, "SBML ID");
+  table->setColumnReadOnly(numCols - 1, true);
 }
 
 void CompartmentsWidget::showHeaders()

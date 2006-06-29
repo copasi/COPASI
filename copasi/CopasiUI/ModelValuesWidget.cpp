@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelValuesWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
+   $Author: ssahle $
+   $Date: 2006/06/29 15:53:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,7 +42,7 @@ std::vector<const CCopasiObject*> ModelValuesWidget::getObjects() const
 void ModelValuesWidget::init()
 {
   mOT = ListViews::MODELVALUE;
-  numCols = 4;
+  numCols = 4 + 1;
   table->setNumCols(numCols);
   table->setColumnReadOnly (3, true);
 
@@ -55,6 +55,10 @@ void ModelValuesWidget::init()
   tableHeader->setLabel(1, "Name");
   tableHeader->setLabel(2, "Initial Value");
   tableHeader->setLabel(3, "Transient Value");
+
+  //for sbml ids
+  tableHeader->setLabel(numCols - 1, "SBML ID");
+  table->setColumnReadOnly(numCols - 1, true);
 }
 
 void ModelValuesWidget::showHeaders()
