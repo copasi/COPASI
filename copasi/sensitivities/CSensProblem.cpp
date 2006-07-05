@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/29 14:12:18 $
+   $Author: shoops $
+   $Date: 2006/07/05 15:07:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -187,7 +187,7 @@ CSensProblem::getSubTaskType() const
 
 CSensItem CSensProblem::getTargetFunctions() const
   {
-    //    return mTargetFunctions;
+    return CSensItem();
   }
 
 unsigned C_INT32 CSensProblem::getNumberOfVariables() const
@@ -196,7 +196,9 @@ unsigned C_INT32 CSensProblem::getNumberOfVariables() const
   }
 
 CSensItem CSensProblem::getVariables(unsigned C_INT32 index) const
-  {}
+  {
+    return CSensItem();
+  }
 
 void CSensProblem::addVariables(const CSensItem & item)
 {
