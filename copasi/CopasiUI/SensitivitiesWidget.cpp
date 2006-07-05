@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SensitivitiesWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/06/29 17:22:29 $
+   $Author: shoops $
+   $Date: 2006/07/05 15:24:30 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,8 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qmessagebox.h>
+
+#include <algorithm>
 
 #include "SensitivitiesWidget.h"
 #include "DataModelGUI.h"
@@ -140,13 +142,13 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   mpBtnWidget->mpBtnRun->setEnabled(false);
 
   connect(SubTaskChooser, SIGNAL(activated(int)),
-           this, SLOT(on_SubTaskChooser_activated(int)));
+          this, SLOT(on_SubTaskChooser_activated(int)));
   connect(FunctionChooser, SIGNAL(activated(int)),
-           this, SLOT(on_FunctionChooser_activated(int)));
+          this, SLOT(on_FunctionChooser_activated(int)));
   connect(VariableChooser, SIGNAL(activated(int)),
-           this, SLOT(on_VariableChooser_activated(int)));
+          this, SLOT(on_VariableChooser_activated(int)));
   connect(VariableChooser2, SIGNAL(activated(int)),
-           this, SLOT(on_VariableChooser2_activated(int)));
+          this, SLOT(on_VariableChooser2_activated(int)));
 
   mChoicesDone = 0;
 }
@@ -229,7 +231,7 @@ SensitivitiesWidget::initCombos()
   int i = 0;
   while (CSensProblem::SubTaskName[i].length() > 0)
     {
-      StringList.append(CSensProblem::SubTaskName[i]);
+      StringList.append(FROM_UTF8(CSensProblem::SubTaskName[i]));
       ++i;
     }
 
@@ -259,7 +261,7 @@ SensitivitiesWidget::updateFunctionsStringList(CSensProblem::SubTaskType type)
 
   for (fiter = functions.begin(); fiter != functions.end(); ++fiter)
     {
-      mFunctionsStringList.append(CObjectLists::ListTypeName[*fiter]);
+      mFunctionsStringList.append(FROM_UTF8(CObjectLists::ListTypeName[*fiter]));
       mFunctionsIndexTable.push_back(*fiter);
     }
 }
@@ -277,7 +279,7 @@ SensitivitiesWidget::updateVariablesStringList(CSensProblem::SubTaskType type)
 
   for (viter = variables.begin(); viter != variables.end(); ++viter)
     {
-      mVariablesStringList.append(CObjectLists::ListTypeName[*viter]);
+      mVariablesStringList.append(FROM_UTF8(CObjectLists::ListTypeName[*viter]));
       mVariablesIndexTable.push_back(*viter);
     }
 }
@@ -289,12 +291,18 @@ SensitivitiesWidget::initCheckboxes(CObjectLists::ListType type)
   std::vector<QCheckListItem *> choices;
 
 
+
+
   choices.clear();
+
+
 
 
   // if type is 'unset' return empty vector:
   //  if ((int) type == 0)
   //    return choices;
+
+
 
 
   QCheckListItem *test =
@@ -303,9 +311,13 @@ SensitivitiesWidget::initCheckboxes(CObjectLists::ListType type)
   FunctionChoiceBox->ensureItemVisible(test);
 
 
+
+
   QCheckListItem *test2 =
     new QCheckListItem(test, "child", QCheckListItem::CheckBox);
   choices.push_back(test2);
+
+
 
 
   return choices;
