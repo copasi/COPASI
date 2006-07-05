@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/drcheck.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/05 19:38:32 $
+   $Date: 2006/07/05 20:08:05 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,15 +51,6 @@ C_INT CInternalSolver::drchek_(const C_INT *job, evalG g, C_INT *neq, double *
   C_INT iflag, jflag;
   double hming;
   bool zroot;
-
-#ifdef XXXX
-  extern /* Subroutine */ int dcopy_(C_INT *, double *, C_INT *,
-                                       double *, C_INT *);
-  extern /* Subroutine */ int dintdy_(double *, C_INT *, double *,
-                                        C_INT *, double *, C_INT *), droots_(C_INT *,
-                                                                             double *, C_INT *, double *, double *, double *,
-                                                                             double *, double *, double *, C_INT *);
-#endif // XXXX
 
   /* ----------------------------------------------------------------------- */
   /* This routine checks for the presence of a root in the vicinity of */

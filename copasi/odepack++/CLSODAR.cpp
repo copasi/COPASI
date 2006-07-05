@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODAR.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/05 19:38:32 $
+   $Date: 2006/07/05 20:08:05 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -157,12 +157,6 @@ C_INT CLSODAR::operator() (evalF f, C_INT *neq, double *y, double
   C_INT leniwc;
   C_INT lenrwc;
   C_INT lyhnew;
-
-#ifdef XXXX
-  extern /* Subroutine */ int drchek_(C_INT *, evalG, C_INT *,
-                                        double *, double *, C_INT *, double *, double *,
-                                        double *, C_INT *, C_INT *);
-#endif XXXX
 
   /* ----------------------------------------------------------------------- */
   /* This is the 12 November 2003 version of */
