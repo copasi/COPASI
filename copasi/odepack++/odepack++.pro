@@ -14,11 +14,14 @@ SOURCES += common.cpp
 # Main routines
 HEADERS += CLSODA.h
 SOURCES += CLSODA.cpp
+HEADERS += CLSODAR.h
+SOURCES += CLSODAR.cpp
 
 # These files represent the code for the class CInternalSolver
 HEADERS += CInternalSolver.h
 SOURCES += dintdy.cpp
 SOURCES += dprja.cpp
+SOURCES += drcheck.cpp
 SOURCES += dsolsy.cpp
 SOURCES += dstoda.cpp
 

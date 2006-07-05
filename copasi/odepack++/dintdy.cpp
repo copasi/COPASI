@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dintdy.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:11 $
+   $Date: 2006/07/05 19:38:32 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,13 +23,13 @@
 #include "CInternalSolver.h"
 #include "Cxerrwd.h"
 
-#define dls001_1 (mdls001_._1)
-#define dls001_2 (mdls001_._2)
-#define dls001_3 (mdls001_._3)
+#define dls001_1 (mpdls001_->_1)
+#define dls001_2 (mpdls001_->_2)
+#define dls001_3 (mpdls001_->_3)
 
-#define dlsa01_1 (mdlsa01_._1)
-#define dlsa01_2 (mdlsa01_._2)
-#define dlsa01_3 (mdlsa01_._3)
+#define dlsa01_1 (mpdlsa01_->_1)
+#define dlsa01_2 (mpdlsa01_->_2)
+#define dlsa01_3 (mpdlsa01_->_3)
 
 double d_sign(const double & a, const double & b);
 
@@ -194,17 +194,17 @@ L55:
 
 L80:
   msg = "DINTDY-  K (=I1) illegal      ";
-  (*mpxerrwd)(msg, &c__30, &c__51, &c__0, &c__1, k, &c__0, &c__0, &c_b34, &
-              c_b34, (C_INT)80);
+  mxerrwd(msg, &c__30, &c__51, &c__0, &c__1, k, &c__0, &c__0, &c_b34, &
+          c_b34, (C_INT)80);
   *iflag = -1;
   return 0;
 L90:
   msg = "DINTDY-  T (=R1) illegal      ";
-  (*mpxerrwd)(msg, &c__30, &c__52, &c__0, &c__0, &c__0, &c__0, &c__1, t, &c_b34,
-              (C_INT)80);
+  mxerrwd(msg, &c__30, &c__52, &c__0, &c__0, &c__0, &c__0, &c__1, t, &c_b34,
+          (C_INT)80);
   msg = "      T not in interval TCUR - HU (= R1) to TCUR (=R2)      ";
-  (*mpxerrwd)(msg, &c__60, &c__52, &c__0, &c__0, &c__0, &c__0, &c__2, &tp, &
-              dls001_1.tn, (C_INT)80);
+  mxerrwd(msg, &c__60, &c__52, &c__0, &c__0, &c__0, &c__0, &c__2, &tp, &
+          dls001_1.tn, (C_INT)80);
   *iflag = -2;
   return 0;
   /* ----------------------- END OF SUBROUTINE DINTDY ---------------------- */

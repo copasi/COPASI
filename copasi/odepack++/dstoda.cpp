@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dstoda.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:11 $
+   $Date: 2006/07/05 19:38:32 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,13 +21,13 @@
 
 #include "CInternalSolver.h"
 
-#define dls001_1 (mdls001_._1)
-#define dls001_2 (mdls001_._2)
-#define dls001_3 (mdls001_._3)
+#define dls001_1 (mpdls001_->_1)
+#define dls001_2 (mpdls001_->_2)
+#define dls001_3 (mpdls001_->_3)
 
-#define dlsa01_1 (mdlsa01_._1)
-#define dlsa01_2 (mdlsa01_._2)
-#define dlsa01_3 (mdlsa01_._3)
+#define dlsa01_1 (mpdlsa01_->_1)
+#define dlsa01_2 (mpdlsa01_->_2)
+#define dlsa01_3 (mpdlsa01_->_3)
 
 static C_INT c__1 = 1;
 static C_INT c__2 = 2;

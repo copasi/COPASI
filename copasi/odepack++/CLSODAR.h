@@ -1,6 +1,6 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODA.h,v $
-   $Revision: 1.5 $
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODAR.h,v $
+   $Revision: 1.1 $
    $Name:  $
    $Author: shoops $
    $Date: 2006/07/05 19:38:32 $
@@ -13,19 +13,19 @@
 // This C++ code is based on an f2c conversion of the Fortran
 // library ODEPACK available at: http://www.netlib.org/odepack/
 
-#ifndef ODEPACK_CLSODA
-#define ODEPACK_CLSODA
+#ifndef ODEPACK_CLSODAR
+#define ODEPACK_CLSODAR
 
 #include "CInternalSolver.h"
 
 class PJAC;
 class SLVS;
 
-class CLSODA : public CInternalSolver
+class CLSODAR : public CInternalSolver
   {
   public:
-    CLSODA();
-    ~CLSODA();
+    CLSODAR();
+    ~CLSODAR();
 
     C_INT operator() (evalF f,       //  1. evaluate f
                       C_INT *neq,    //  2. number of equations
@@ -43,15 +43,18 @@ class CLSODA : public CInternalSolver
                       C_INT *iwork,  // 14. work array 20 + neq
                       C_INT *liw,    // 15. size of iwork
                       evalJ jac,     // 16. evaluate j
-                      C_INT *jt);    // 18. type of j evaluation 2 internal full matrix
+                      C_INT *jt,     // 18. type of j evaluation 2 internal full matrix
+                      evalG g,       // 19. evaluate constraint functions
+                      C_INT *ng,     // 20. number of constraint functions g(i)
+                      C_INT *jroot); // 21. integer array of length NG for output of root information
 
   private:
-    SLVS * mpSLVS;
     PJAC * mpPJAC;
+    SLVS * mpSLVS;
 
     static const C_INT mxstp0;
     static const C_INT mxhnl0;
     static const C_INT mord[2];
   };
 
-#endif // ODEPACK_CLSODA
+#endif // ODEPACK_CLSODAR

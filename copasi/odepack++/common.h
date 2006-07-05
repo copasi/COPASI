@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/common.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:11 $
+   $Date: 2006/07/05 19:38:32 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,8 @@
 typedef void (*evalF)(const C_INT*, const double*, const double*, double*);
 typedef void (*evalJ)(C_INT*, double*, double*, C_INT*,
                       C_INT*, double*, C_INT*);
+typedef void (*evalG)(const C_INT*, const double*, const double*,
+                      const C_INT*, const double*);
 
 union dls001 {
     struct
@@ -83,6 +85,33 @@ union dlsa01 {
         C_INT insufr, insufi, ixpr, iowns2[2], jtyp, mused, mxordn, mxords;
       }
     lsoda;
+  };
+
+union dlsr01 {
+    struct
+      {
+        double rownr3[2], t0, tlast, toutc;
+        C_INT iownd3[3], iownr3[2], irfnd, itaskc, ngc, nge;
+      }
+    _1;
+    struct
+      {
+        double alpha, x2, rdum3[3];
+        C_INT iownd3[3], imax, last, idum3[4];
+      }
+    _2;
+    struct
+      {
+        double rlsr[5];
+        C_INT ilsr[9];
+      }
+    _3;
+    struct
+      {
+        double rownr3[2], t0, tlast, toutc;
+        C_INT lg0, lg1, lgx, iownr3[2], irfnd, itaskc, ngc, nge;
+      }
+    lsodar;
   };
 
 class PJAC
