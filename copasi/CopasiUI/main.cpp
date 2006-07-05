@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/01 14:22:18 $
+   $Date: 2006/07/05 15:26:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,7 @@
 #include <stdexcept>
 
 #include <qapplication.h>
+#include <qmessagebox.h>
 
 #define COPASI_MAIN
 
@@ -32,6 +33,8 @@
 
 int main(int argc, char **argv)
 {
+  QApplication a(argc, argv);
+
   // Parse the commandline options
   try
     {
@@ -39,7 +42,10 @@ int main(int argc, char **argv)
     }
   catch (copasi::option_error & msg)
     {
-      std::cout << msg.what() << std::endl;
+      QMessageBox::critical(NULL, "Initialization Error",
+                            msg.what(),
+                            QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+
       return 1;
     }
 
@@ -49,10 +55,9 @@ int main(int argc, char **argv)
   // Create the global data model.
   CCopasiDataModel::Global = new CCopasiDataModel(true);
 
-  QApplication a(argc, argv);
-
   CopasiUI3Window window;
   a.setMainWidget(&window);
+
   window.getDataModel()->setQApp(&a);
 
   //  window.resize(800, 600);
