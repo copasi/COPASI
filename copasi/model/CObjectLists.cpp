@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: tjohann $
-   $Date: 2006/06/29 13:25:48 $
+   $Date: 2006/07/05 16:33:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,7 +38,7 @@ const std::string CObjectLists::ListTypeName[] =
     "Compartments",
     "Compartment Volumes",
     "Local Parameter Values",
-    "All Parameter Values"
+    "All Parameter Values",
     "All Parameter and Initial Values",
     "Single Object",
     ""
