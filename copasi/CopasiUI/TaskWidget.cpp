@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TaskWidget.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:23 $
+   $Date: 2006/07/06 20:29:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -119,6 +119,9 @@ void TaskWidget::addMethodParameterTable(const unsigned C_INT32 & rows, unsigned
   mpLblParameter->setAlignment(int(QLabel::AlignTop | QLabel::AlignRight));
 
   mpTblParameter = new QTable(pParent, "mpTblParameter");
+  mpTblParameter->setFocusPolicy(QWidget::WheelFocus);
+  mpTblParameter->setFocusStyle(QTable::SpreadSheet);
+  mpTblParameter->setSelectionMode(QTable::Single);
   mpTblParameter->setNumRows(std::max<unsigned C_INT32>(0, rows));
   mpTblParameter->setNumCols(1);
 
@@ -288,7 +291,6 @@ bool TaskWidget::loadMethod()
 
   if (mpTblParameter)
     {
-      QTableItem * pItem;
       QString value;
       QString strname;
 
@@ -303,8 +305,7 @@ bool TaskWidget::loadMethod()
           rowHeader->setLabel(i, strname);
 
           value = getParameterValue(mpMethod, i, &Type);
-          pItem = new QTableItem (mpTblParameter, QTableItem::Always, value);
-          mpTblParameter->setItem(i, 0, pItem);
+          mpTblParameter->setText(i, 0, value);
         }
     }
 
@@ -329,14 +330,12 @@ bool TaskWidget::saveMethod()
   mpMethod = mpTask->getMethod();
 
   unsigned C_INT32 i;
-  QTableItem * pItem;
   QString value;
   CCopasiParameter::Type Type;
 
   for (i = 0; i < mpMethod->size(); i++)
     {
-      pItem = mpTblParameter->item(i, 0);
-      value = pItem->text();
+      value = mpTblParameter->text(i, 0);
       if (value != getParameterValue(mpMethod, i, &Type))
         {
           setParameterValue(mpMethod, i, value);
