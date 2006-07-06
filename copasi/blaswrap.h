@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/blaswrap.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/06 15:55:40 $
+   $Date: 2006/07/06 17:02:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@ extern "C"
 #ifdef USE_MKL
 # include "mkl_blas.h"
 #  define daxpy_ daxpy
+#  define dcopy_ dcopy
 #  define ddot_ ddot
 #  define dgemm_ dgemm
 #  define dscal_ dscal
@@ -35,6 +36,7 @@ extern "C"
 #if (defined USE_CLAPACK || defined USE_LAPACK)
 # ifdef USE_CLAPACK
 #  define daxpy_ f2c_daxpy
+#  define dcopy_ f2c_dcopy
 #  define ddot_ f2c_ddot
 #  define dgemm_ f2c_dgemm
 #  define dscal_ f2c_dscal
