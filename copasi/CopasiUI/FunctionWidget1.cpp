@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.140 $
+   $Revision: 1.141 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:23 $
+   $Date: 2006/07/06 18:49:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -922,9 +922,11 @@ void FunctionWidget1::slotCommitButtonClicked()
     }
 
   if (isValid)
-    saveToFunction();
+    {
+      saveToFunction();
+      updateMmlWidget();
+    }
 
-  updateMmlWidget();
   //update pFunction values
 
   /* Remove line breaks from the function description */
