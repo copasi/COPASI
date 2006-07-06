@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/dmnorm.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:11 $
+   $Date: 2006/07/06 15:14:53 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,12 +20,18 @@
 #include "copasi.h"
 
 /* DECK DMNORM */
+/* ----------------------------------------------------------------------- */
+/* This function routine computes the weighted max-norm */
+/* of the vector of length N contained in the array V, with weights */
+/* contained in the array w of length N: */
+/*   DMNORM = MAX(i=1,...,N) ABS(V(i))*W(i) */
+/* ----------------------------------------------------------------------- */
 double dmnorm_(C_INT *n, double *v, double *w)
 {
   double vm = 0.0, tmp;
   double *tv = v, *tw = w, *end = tv + *n;
 
-  for (; tv != end; tv, tw)
+  while (tv != end)
     if ((tmp = fabs(*tv++) * *tw++) > vm) vm = tmp;
 
   return vm;
