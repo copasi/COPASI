@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryMethod.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/05/15 12:38:52 $
+   $Author: shoops $
+   $Date: 2006/07/06 17:03:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@
 
 #include "CTrajectoryMethod.h"
 #include "CLsodaMethod.h"
+#include "CLsodarMethod.h"
 #include "CStochMethod.h"
 #include "CHybridMethod.h"
 #include "CHybridMethodLSODA.h"
@@ -43,6 +44,10 @@ CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
     case unset:
     case deterministic:
       pMethod = new CLsodaMethod();
+      break;
+
+    case LSODAR:
+      pMethod = new CLsodarMethod();
       break;
 
     case stochastic:

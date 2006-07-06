@@ -75,6 +75,10 @@ SOURCE=.\CLsodaMethod.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CLsodarMethod.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CStochDirectMethod.cpp
 # End Source File
 # Begin Source File
@@ -128,6 +132,10 @@ SOURCE=.\CHybridNextReactionRKMethod.h
 # Begin Source File
 
 SOURCE=.\CLsodaMethod.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CLsodarMethod.h
 # End Source File
 # Begin Source File
 

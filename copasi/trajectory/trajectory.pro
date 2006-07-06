@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.7 $ $Author: shoops $ $Date: 2006/06/20 13:20:17 $  
+# $Revision: 1.8 $ $Author: shoops $ $Date: 2006/07/06 17:03:56 $  
 ######################################################################
 
 LIB = trajectory
@@ -13,6 +13,7 @@ HEADERS += CHybridMethod.h \
            CHybridNextReactionRKMethod.h \
            CHybridNextReactionLSODAMethod.h \
            CLsodaMethod.h \
+           CLsodarMethod.h \
            CStochDirectMethod.h \
            CStochMethod.h \
            CStochNextReactionMethod.h \
@@ -27,6 +28,7 @@ SOURCES += CHybridMethod.cpp \
            CHybridNextReactionRKMethod.cpp \
            CHybridNextReactionLSODAMethod.cpp \
            CLsodaMethod.cpp \
+           CLsodarMethod.cpp \
            CStochDirectMethod.cpp \
            CStochMethod.cpp \
            CStochNextReactionMethod.cpp \

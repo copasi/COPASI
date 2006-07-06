@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:20:18 $
+   $Date: 2006/07/06 17:03:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,7 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Evolutionary Strategy (SRES)",
     "Enhanced Newton",
     "Deterministic (LSODA)",
+    "Deterministic (LSODAR)",
     "Stochastic (Gibson + Bruck)",
     "Hybrid (Runge-Kutta)",
     "Hybrid (LSODA)",
@@ -68,6 +69,7 @@ const char* CCopasiMethod::XMLSubType[] =
     "EvolutionaryStrategySR",
     "EnhancedNewton",
     "Deterministic(LSODA)",
+    "Deterministic(LSODAR)",
     "Stochastic",
     "Hybrid",
     "Hybrid (LSODA)",

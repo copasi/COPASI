@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:20:17 $
+   $Date: 2006/07/06 17:03:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,7 @@ bool bl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 const unsigned C_INT32 CTrajectoryTask::ValidMethods[] =
   {
     CCopasiMethod::deterministic,
+    CCopasiMethod::LSODAR,
     CCopasiMethod::stochastic,
 #ifdef COPASI_DEBUG
     CCopasiMethod::tauLeap,
