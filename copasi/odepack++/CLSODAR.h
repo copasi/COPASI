@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODAR.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/05 19:38:32 $
+   $Date: 2006/07/06 17:01:37 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,10 +43,10 @@ class CLSODAR : public CInternalSolver
                       C_INT *iwork,  // 14. work array 20 + neq
                       C_INT *liw,    // 15. size of iwork
                       evalJ jac,     // 16. evaluate j
-                      C_INT *jt,     // 18. type of j evaluation 2 internal full matrix
-                      evalG g,       // 19. evaluate constraint functions
-                      C_INT *ng,     // 20. number of constraint functions g(i)
-                      C_INT *jroot); // 21. integer array of length NG for output of root information
+                      C_INT *jt,     // 17. type of j evaluation 2 internal full matrix
+                      evalG g,       // 18. evaluate constraint functions
+                      C_INT *ng,     // 19. number of constraint functions g(i)
+                      C_INT *jroot); // 20. integer array of length NG for output of root information
 
   private:
     PJAC * mpPJAC;
