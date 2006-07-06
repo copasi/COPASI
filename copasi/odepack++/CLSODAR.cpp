@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODAR.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/06 15:13:43 $
+   $Date: 2006/07/06 15:55:41 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -1735,9 +1735,9 @@ L110:
     {
       goto L180;
     }
-  tdist = (d__1 = *tout - *t, abs(d__1));
+  tdist = (d__1 = *tout - *t, fabs(d__1));
   /* Computing MAX */
-  d__1 = abs(*t), d__2 = abs(*tout);
+  d__1 = fabs(*t), d__2 = fabs(*tout);
   w0 = std::max(d__1, d__2);
   if (tdist < dls001_1.uround * 2. * w0)
     {
@@ -1769,7 +1769,7 @@ L140:
         {
           atoli = atol[i__];
         }
-      ayi = (d__1 = y[i__], abs(d__1));
+      ayi = (d__1 = y[i__], fabs(d__1));
       if (ayi != 0.)
         {
           /* Computing MAX */
@@ -1793,7 +1793,7 @@ L160:
   h0 = d_sign(h0, d__1);
   /* Adjust H0 if necessary to meet HMAX bound. --------------------------- */
 L180:
-  rh = abs(h0) * dls001_1.hmxi;
+  rh = fabs(h0) * dls001_1.hmxi;
   if (rh > 1.)
     {
       h0 /= rh;
@@ -1921,8 +1921,8 @@ L240:
       goto L624;
     }
 L245:
-  hmx = abs(dls001_1.tn) + abs(dls001_1.h__);
-  ihit = (d__1 = dls001_1.tn - tcrit, abs(d__1)) <= dls001_1.uround * 100. *
+  hmx = fabs(dls001_1.tn) + fabs(dls001_1.h__);
+  ihit = (d__1 = dls001_1.tn - tcrit, fabs(d__1)) <= dls001_1.uround * 100. *
          hmx;
   if (ihit)
     {
@@ -2145,8 +2145,8 @@ L340:
   *t = *tout;
   goto L420;
 L345:
-  hmx = abs(dls001_1.tn) + abs(dls001_1.h__);
-  ihit = (d__1 = dls001_1.tn - tcrit, abs(d__1)) <= dls001_1.uround * 100. *
+  hmx = fabs(dls001_1.tn) + fabs(dls001_1.h__);
+  ihit = (d__1 = dls001_1.tn - tcrit, fabs(d__1)) <= dls001_1.uround * 100. *
          hmx;
   if (ihit)
     {
@@ -2165,8 +2165,8 @@ L345:
   goto L250;
   /* ITASK = 5.  See if TCRIT was reached and jump to exit. --------------- */
 L350:
-  hmx = abs(dls001_1.tn) + abs(dls001_1.h__);
-  ihit = (d__1 = dls001_1.tn - tcrit, abs(d__1)) <= dls001_1.uround * 100. *
+  hmx = fabs(dls001_1.tn) + fabs(dls001_1.h__);
+  ihit = (d__1 = dls001_1.tn - tcrit, fabs(d__1)) <= dls001_1.uround * 100. *
          hmx;
   /* ----------------------------------------------------------------------- */
   /* Block G. */
@@ -2296,7 +2296,7 @@ L560:
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       size = (d__1 = rwork[i__ + dls001_1.lacor - 1] * rwork[i__ +
-                     dls001_1.lewt - 1], abs(d__1));
+                     dls001_1.lewt - 1], fabs(d__1));
       if (big >= size)
         {
           goto L570;
@@ -2409,7 +2409,7 @@ L613:
 L614:
   msg = "DLSODAR-  TOUT (=R1) behind T (=R2)     ";
   mxerrwd(msg, &c__40, &c__14, &c__0, &c__0, &c__0, &c__0, &c__2, tout, t, (
-            ftnlen)60);
+            C_INT)60);
   msg = "      Integration direction is given by H0 (=R1)  ";
   mxerrwd(msg, &c__50, &c__14, &c__0, &c__0, &c__0, &c__0, &c__1, &h0, &
           c_b76, (C_INT)60);
@@ -2453,7 +2453,7 @@ L621:
 L622:
   msg = "DLSODAR- TOUT(=R1) too close to T(=R2) to start integration.";
   mxerrwd(msg, &c__60, &c__22, &c__0, &c__0, &c__0, &c__0, &c__2, tout, t, (
-            ftnlen)60);
+            C_INT)60);
   goto L700;
 L623:
   msg = "DLSODAR-  ITASK = I1 and TOUT (=R1) behind TCUR - HU (= R2) ";

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/drcheck.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/05 20:08:05 $
+   $Date: 2006/07/06 15:55:41 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,7 +106,7 @@ C_INT CInternalSolver::drchek_(const C_INT *job, evalG g, C_INT *neq, double *
       /* L10: */
       jroot[i__] = 0;
     }
-  hming = (abs(dls001_1.tn) + abs(dls001_1.h__)) * dls001_1.uround * 100.;
+  hming = (fabs(dls001_1.tn) + fabs(dls001_1.h__)) * dls001_1.uround * 100.;
 
   switch (*job)
     {
@@ -125,7 +125,7 @@ L100:
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L110: */
-      if ((d__1 = g0[i__], abs(d__1)) <= 0.)
+      if ((d__1 = g0[i__], fabs(d__1)) <= 0.)
         {
           zroot = true;
         }
@@ -136,7 +136,7 @@ L100:
     }
   /* g has a zero at T.  Look at g at T + (small increment). -------------- */
   /* Computing MAX */
-  d__1 = hming / abs(dls001_1.h__);
+  d__1 = hming / fabs(dls001_1.h__);
   temp2 = std::max(d__1, .1);
   temp1 = temp2 * dls001_1.h__;
   dlsr01_1.t0 += temp1;
@@ -153,7 +153,7 @@ L100:
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L130: */
-      if ((d__1 = g0[i__], abs(d__1)) <= 0.)
+      if ((d__1 = g0[i__], fabs(d__1)) <= 0.)
         {
           zroot = true;
         }
@@ -183,7 +183,7 @@ L200:
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       /* L210: */
-      if ((d__1 = g0[i__], abs(d__1)) <= 0.)
+      if ((d__1 = g0[i__], fabs(d__1)) <= 0.)
         {
           zroot = true;
         }
@@ -216,7 +216,7 @@ L240:
   i__1 = dlsr01_1.ngc;
   for (i__ = 1; i__ <= i__1; ++i__)
     {
-      if ((d__1 = g0[i__], abs(d__1)) > 0.)
+      if ((d__1 = g0[i__], fabs(d__1)) > 0.)
         {
           goto L250;
         }
@@ -317,7 +317,7 @@ C_INT CInternalSolver::droots_(C_INT *ng, double *hmin, C_INT *jflag,
   /* Local variables */
   C_INT i__;
   double t2, tmax;
-  logical xroot, zroot, sgnchg;
+  bool xroot, zroot, sgnchg;
   C_INT imxold, nxlast;
   double fracsub, fracint;
 
@@ -409,15 +409,15 @@ C_INT CInternalSolver::droots_(C_INT *ng, double *hmin, C_INT *jflag,
   /* JFLAG .ne. 1.  Check for change in sign of g or zero at X1. ---------- */
   dlsr01_2.imax = 0;
   tmax = zero;
-  zroot = FALSE_;
+  zroot = false;
   i__1 = *ng;
   for (i__ = 1; i__ <= i__1; ++i__)
     {
-      if ((d__1 = g1[i__], abs(d__1)) > zero)
+      if ((d__1 = g1[i__], fabs(d__1)) > zero)
         {
           goto L110;
         }
-      zroot = TRUE_;
+      zroot = true;
       goto L120;
       /* At this point, G0(i) has been checked and cannot be zero. ------------ */
 L110:
@@ -425,7 +425,7 @@ L110:
         {
           goto L120;
         }
-      t2 = (d__1 = g1[i__] / (g1[i__] - g0[i__]), abs(d__1));
+      t2 = (d__1 = g1[i__] / (g1[i__] - g0[i__]), fabs(d__1));
       if (t2 <= tmax)
         {
           goto L120;
@@ -439,17 +439,17 @@ L120:
     {
       goto L130;
     }
-  sgnchg = FALSE_;
+  sgnchg = false;
   goto L140;
 L130:
-  sgnchg = TRUE_;
+  sgnchg = true;
 L140:
   if (! sgnchg)
     {
       goto L400;
     }
   /* There is a sign change.  Find the first root in the interval. -------- */
-  xroot = FALSE_;
+  xroot = false;
   nxlast = 0;
   dlsr01_2.last = 1;
 
@@ -479,9 +479,9 @@ L180:
                 - dlsr01_2.alpha * g0[dlsr01_2.imax]);
   /* If X2 is too close to X0 or X1, adjust it inward, by a fractional ---- */
   /* distance that is between 0.1 and 0.5. -------------------------------- */
-  if ((d__1 = dlsr01_2.x2 - *x0, abs(d__1)) < half * *hmin)
+  if ((d__1 = dlsr01_2.x2 - *x0, fabs(d__1)) < half * *hmin)
     {
-      fracint = (d__1 = *x1 - *x0, abs(d__1)) / *hmin;
+      fracint = (d__1 = *x1 - *x0, fabs(d__1)) / *hmin;
       fracsub = tenth;
       if (fracint <= five)
         {
@@ -489,9 +489,9 @@ L180:
         }
       dlsr01_2.x2 = *x0 + fracsub * (*x1 - *x0);
     }
-  if ((d__1 = *x1 - dlsr01_2.x2, abs(d__1)) < half * *hmin)
+  if ((d__1 = *x1 - dlsr01_2.x2, fabs(d__1)) < half * *hmin)
     {
-      fracint = (d__1 = *x1 - *x0, abs(d__1)) / *hmin;
+      fracint = (d__1 = *x1 - *x0, fabs(d__1)) / *hmin;
       fracsub = tenth;
       if (fracint <= five)
         {
@@ -508,15 +508,15 @@ L200:
   imxold = dlsr01_2.imax;
   dlsr01_2.imax = 0;
   tmax = zero;
-  zroot = FALSE_;
+  zroot = false;
   i__1 = *ng;
   for (i__ = 1; i__ <= i__1; ++i__)
     {
-      if ((d__1 = gx[i__], abs(d__1)) > zero)
+      if ((d__1 = gx[i__], fabs(d__1)) > zero)
         {
           goto L210;
         }
-      zroot = TRUE_;
+      zroot = true;
       goto L220;
       /* Neither G0(i) nor GX(i) can be zero at this point. ------------------- */
 L210:
@@ -524,7 +524,7 @@ L210:
         {
           goto L220;
         }
-      t2 = (d__1 = gx[i__] / (gx[i__] - g0[i__]), abs(d__1));
+      t2 = (d__1 = gx[i__] / (gx[i__] - g0[i__]), fabs(d__1));
       if (t2 <= tmax)
         {
           goto L220;
@@ -538,11 +538,11 @@ L220:
     {
       goto L230;
     }
-  sgnchg = FALSE_;
+  sgnchg = false;
   dlsr01_2.imax = imxold;
   goto L240;
 L230:
-  sgnchg = TRUE_;
+  sgnchg = true;
 L240:
   nxlast = dlsr01_2.last;
   if (! sgnchg)
@@ -553,7 +553,7 @@ L240:
   *x1 = dlsr01_2.x2;
   dcopy_(ng, &gx[1], &c__1, &g1[1], &c__1);
   dlsr01_2.last = 1;
-  xroot = FALSE_;
+  xroot = false;
   goto L270;
 L250:
   if (! zroot)
@@ -563,18 +563,18 @@ L250:
   /* Zero value at X2 and no sign change in (X0,X2), so X2 is a root. ----- */
   *x1 = dlsr01_2.x2;
   dcopy_(ng, &gx[1], &c__1, &g1[1], &c__1);
-  xroot = TRUE_;
+  xroot = true;
   goto L270;
   /* No sign change between X0 and X2.  Replace X0 with X2. --------------- */
 L260:
   dcopy_(ng, &gx[1], &c__1, &g0[1], &c__1);
   *x0 = dlsr01_2.x2;
   dlsr01_2.last = 0;
-  xroot = FALSE_;
+  xroot = false;
 L270:
-  if ((d__1 = *x1 - *x0, abs(d__1)) <= *hmin)
+  if ((d__1 = *x1 - *x0, fabs(d__1)) <= *hmin)
     {
-      xroot = TRUE_;
+      xroot = true;
     }
   goto L150;
 
@@ -587,7 +587,7 @@ L300:
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       jroot[i__] = 0;
-      if ((d__1 = g1[i__], abs(d__1)) > zero)
+      if ((d__1 = g1[i__], fabs(d__1)) > zero)
         {
           goto L310;
         }
@@ -617,7 +617,7 @@ L400:
   for (i__ = 1; i__ <= i__1; ++i__)
     {
       jroot[i__] = 0;
-      if ((d__1 = g1[i__], abs(d__1)) <= zero)
+      if ((d__1 = g1[i__], fabs(d__1)) <= zero)
         {
           jroot[i__] = 1;
         }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/blaswrap.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:34:21 $
+   $Date: 2006/07/06 15:55:40 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,11 +47,20 @@ extern "C"
 #ifdef Darwin
 # define vector
 # include "cblas.h"
+# define daxpy_(N, ALPHA, X, INCX, Y, INCY) \
+    cblas_daxpy(*N, *ALPHA, X, *INCX, Y, *INCY)
+# define dcopy_(N, X, INCX, Y, INCY) \
+    cblas_dcopy(*N, X, *INCX, Y, *INCY)
+# define ddot_(N, X, INCX, Y, INCY) \
+    cblas_ddot(*N, X, *INCX, Y, *INCY)
 # define dgemm_(TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC) \
     cblas_dgemm(CblasColMajor, \
-                (* TRANSA == 'N' ? CblasNoTrans: CblasTrans), \
-                (* TRANSB == 'N' ? CblasNoTrans: CblasTrans), \
-                * M, * N, * K, * ALPHA, A, * LDA, B, * LDB, * BETA, C, * LDC)
+                (*TRANSA == 'N' ? CblasNoTrans: CblasTrans), \
+                (*TRANSB == 'N' ? CblasNoTrans: CblasTrans), \
+                *M, *N, *K, *ALPHA, A, *LDA, B, *LDB, *BETA, C, *LDC)
+# define dscal_(N, ALPHA, X, INCX) cblas_dscal(*N, *ALPHA, X *INCX)
+# define idamax_(N, X, INCX) \
+    cblas_idamax(*N, X, *INCX)
 # define vector vector
 #endif // Darwin
   }
