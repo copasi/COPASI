@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODA.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/05 19:38:32 $
+   $Date: 2006/07/06 15:13:43 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,8 +97,8 @@ CLSODA::CLSODA() :
 {
   mpdls001_ = new dls001;
   mpdlsa01_ = new dlsa01;
-  mpPJAC = new PJACFunctor<CInternalSolver>(this, &CInternalSolver::dprja_);
-  mpSLVS = new SLVSFunctor<CInternalSolver>(this, &CInternalSolver::dsolsy_);
+  mpPJAC = new PJACFunctor<CLSODA>(this, &CLSODA::dprja_);
+  mpSLVS = new SLVSFunctor<CLSODA>(this, &CLSODA::dsolsy_);
 }
 
 CLSODA::~CLSODA()

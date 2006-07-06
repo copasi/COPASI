@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODA.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/05 19:38:32 $
+   $Date: 2006/07/06 15:13:43 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,8 +46,8 @@ class CLSODA : public CInternalSolver
                       C_INT *jt);    // 18. type of j evaluation 2 internal full matrix
 
   private:
-    SLVS * mpSLVS;
     PJAC * mpPJAC;
+    SLVS * mpSLVS;
 
     static const C_INT mxstp0;
     static const C_INT mxhnl0;

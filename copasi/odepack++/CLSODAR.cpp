@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODAR.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/05 20:08:05 $
+   $Date: 2006/07/06 15:13:43 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -102,8 +102,8 @@ CLSODAR::CLSODAR() :
   mpdls001_ = new dls001;
   mpdlsa01_ = new dlsa01;
   mpdlsr01_ = new dlsr01;
-  mpPJAC = new PJACFunctor<CInternalSolver>(this, &CInternalSolver::dprja_);
-  mpSLVS = new SLVSFunctor<CInternalSolver>(this, &CInternalSolver::dsolsy_);
+  mpPJAC = new PJACFunctor<CLSODAR>(this, &CLSODAR::dprja_);
+  mpSLVS = new SLVSFunctor<CLSODAR>(this, &CLSODAR::dsolsy_);
 }
 
 CLSODAR::~CLSODAR()
