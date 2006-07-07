@@ -1,20 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:40 $
+   $Date: 2006/07/07 18:51:22 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Wed Mar 8 14:51:48 2006
- **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.10 2006/04/27 01:27:40 shoops Exp $)
+ ** Created: Fri Jul 7 14:48:06 2006
+ **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.11 2006/07/07 18:51:22 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -235,6 +235,8 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   layout4->addItem(mpSpacer3, 3, 2);
 
   mpEditLast = new QLineEdit(this, "mpEditLast");
+  mpEditLast->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpEditLast->sizePolicy().hasHeightForWidth()));
+  mpEditLast->setMinimumSize(QSize(50, 0));
   mpEditLast->setFrameShape(QLineEdit::LineEditPanel);
   mpEditLast->setFrameShadow(QLineEdit::Sunken);
 
@@ -262,8 +264,6 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpCheckTo = new QCheckBox(this, "mpCheckTo");
 
   layout4->addWidget(mpCheckTo, 3, 1);
-  mpSpacer2 = new QSpacerItem(139, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout4->addMultiCell(mpSpacer2, 2, 2, 5, 6);
 
   mpEditSeparator = new QLineEdit(this, "mpEditSeparator");
   mpEditSeparator->setEnabled(FALSE);
@@ -279,6 +279,8 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   layout4->addWidget(mpLblFirst, 0, 5);
 
   mpEditFirst = new QLineEdit(this, "mpEditFirst");
+  mpEditFirst->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpEditFirst->sizePolicy().hasHeightForWidth()));
+  mpEditFirst->setMinimumSize(QSize(50, 0));
   mpEditFirst->setFrameShape(QLineEdit::LineEditPanel);
   mpEditFirst->setFrameShadow(QLineEdit::Sunken);
 
@@ -320,7 +322,7 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpEditHeader->setEnabled(FALSE);
 
   layout4->addWidget(mpEditHeader, 2, 8);
-  mpSpacer4 = new QSpacerItem(41, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  mpSpacer4 = new QSpacerItem(6, 20, QSizePolicy::Preferred, QSizePolicy::Minimum);
   layout4->addItem(mpSpacer4, 0, 4);
 
   mpCheckHeader = new QCheckBox(this, "mpCheckHeader");
@@ -333,7 +335,7 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   layout4->addWidget(mpCheckTab, 3, 9);
 
   mpEditName = new QLineEdit(this, "mpEditName");
-  mpEditName->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, mpEditName->sizePolicy().hasHeightForWidth()));
+  mpEditName->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)5, 0, 0, mpEditName->sizePolicy().hasHeightForWidth()));
   mpEditName->setFrameShape(QLineEdit::LineEditPanel);
   mpEditName->setFrameShadow(QLineEdit::Sunken);
 
@@ -370,7 +372,7 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpLayoutButton->addWidget(mpBtnCancel);
   CQExperimentDataLayout->addLayout(mpLayoutButton);
   languageChange();
-  resize(QSize(501, 378).expandedTo(minimumSizeHint()));
+  resize(QSize(549, 363).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>501</width>
-            <height>378</height>
+            <width>549</width>
+            <height>363</height>
         </rect>
     </property>
     <property name="caption">
@@ -247,6 +247,20 @@
                     <property name="name">
                         <cstring>mpEditLast</cstring>
                     </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>50</width>
+                            <height>0</height>
+                        </size>
+                    </property>
                     <property name="frameShape">
                         <enum>LineEditPanel</enum>
                     </property>
@@ -311,23 +325,6 @@
                         <string>to next</string>
                     </property>
                 </widget>
-                <spacer row="2" column="5" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>mpSpacer2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>139</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
                 <widget class="QLineEdit" row="3" column="8">
                     <property name="name">
                         <cstring>mpEditSeparator</cstring>
@@ -364,6 +361,20 @@
                 <widget class="QLineEdit" row="0" column="6">
                     <property name="name">
                         <cstring>mpEditFirst</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>50</width>
+                            <height>0</height>
+                        </size>
                     </property>
                     <property name="frameShape">
                         <enum>LineEditPanel</enum>
@@ -460,11 +471,11 @@
                         <enum>Horizontal</enum>
                     </property>
                     <property name="sizeType">
-                        <enum>Expanding</enum>
+                        <enum>Preferred</enum>
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>41</width>
+                            <width>6</width>
                             <height>20</height>
                         </size>
                     </property>
@@ -495,7 +506,7 @@
                     <property name="sizePolicy">
                         <sizepolicy>
                             <hsizetype>3</hsizetype>
-                            <vsizetype>0</vsizetype>
+                            <vsizetype>5</vsizetype>
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
                         </sizepolicy>

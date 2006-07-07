@@ -1,20 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:41 $
+   $Date: 2006/07/07 18:51:22 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Wed Mar 8 14:51:48 2006
- **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.10 2006/04/27 01:27:41 shoops Exp $)
+ ** Created: Fri Jul 7 14:48:06 2006
+ **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.11 2006/07/07 18:51:22 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -128,7 +128,6 @@ class CQExperimentData : public QDialog
     QGridLayout* layout4;
     QSpacerItem* mpSpacer1;
     QSpacerItem* mpSpacer3;
-    QSpacerItem* mpSpacer2;
     QSpacerItem* mpSpacer4;
     QHBoxLayout* mpBtnGroupLayout;
     QHBoxLayout* mpLayoutButton;
