@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CopasiTableWidget.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/29 16:01:30 $
+   $Author: shoops $
+   $Date: 2006/07/07 18:37:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,7 +41,7 @@ CopasiTableWidget::CopasiTableWidget(QWidget *parent, bool ro, const char * name
   table->setFocusPolicy(QWidget::WheelFocus);
   table->setColumnReadOnly(0, true);
 
-  table->verticalHeader()->setResizeEnabled(false);
+  //table->verticalHeader()->setResizeEnabled(false);
   //table->setSelectionMode(QTable::MultiRow);
   //table->setVScrollBarMode(QScrollView::AlwaysOn);
   if (mRO)
