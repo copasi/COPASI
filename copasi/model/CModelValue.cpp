@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:57 $
+   $Date: 2006/07/11 19:32:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,20 +16,39 @@
 #include <limits>
 
 #include "copasi.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "utilities/utility.h"
-#include "report/CCopasiObjectReference.h"
-#include "report/CKeyFactory.h"
+
 #include "CModel.h"
 #include "CModelValue.h"
 
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "function/CExpression.h"
+#include "report/CCopasiObjectReference.h"
+#include "report/CKeyFactory.h"
+#include "utilities/utility.h"
+
 //static
 const std::string CModelEntity::StatusName[] =
-  {"fixed", "independent variable modified by reactions", "determined by mass conservation", "unused", "ode", "assignment", ""};
+  {
+    "fixed",
+    "assignment",
+    "ode",
+    "independent variable modified by reactions",
+    "determined by mass conservation",
+    "unused",
+    ""
+  };
 
 //static
 const char * CModelEntity::XMLStatus[] =
-  {"fixed", "variable", "variable", "variable", "ode", "assignment", NULL};
+  {
+    "fixed",
+    "assignment",
+    "ode",
+    "variable",
+    "variable",
+    "variable",
+    NULL
+  };
 // the "variable" keyword is used for compatibility reasons. It actually means "this metab is part
 // of the reaction network, copasi needs to figure out if it is independent, dependent (moieties) or unused."
 
@@ -258,7 +277,8 @@ const std::string& CModelEntity::getSBMLId() const
 
 CModelValue::CModelValue(const std::string & name,
                          const CCopasiContainer * pParent):
-    CModelEntity(name, pParent, "ModelValue")
+    CModelEntity(name, pParent, "ModelValue"),
+    mpExpression(NULL)
 {
   mKey = GlobalKeys.add("ModelValue", this);
   initObjects();
@@ -268,7 +288,8 @@ CModelValue::CModelValue(const std::string & name,
 
 CModelValue::CModelValue(const CModelValue & src,
                          const CCopasiContainer * pParent):
-    CModelEntity(src, pParent)
+    CModelEntity(src, pParent),
+    mpExpression(NULL)
 {
   mKey = GlobalKeys.add("ModelValue", this);
   initObjects();
@@ -278,11 +299,95 @@ CModelValue::CModelValue(const CModelValue & src,
 CModelValue::~CModelValue()
 {
   GlobalKeys.remove(mKey);
+  pdelete(mpExpression);
+
   DESTRUCTOR_TRACE;
 }
 
 void CModelValue::initObjects()
 {}
+
+void CModelValue::setStatus(const CModelEntity::Status & status)
+{
+  CModelEntity::setStatus(status);
+
+  std::set< const CCopasiObject * > NoDependencies;
+
+  if (isFixed())
+    {
+      pdelete(mpExpression);
+    }
+  else if (mpExpression == NULL)
+    {
+      mpExpression = new CExpression;
+    }
+
+  switch (getStatus())
+    {
+    case ASSIGNMENT:
+      setDirectDependencies(mpExpression->getDirectDependencies());
+      mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
+      mpRateReference->setDirectDependencies(NoDependencies);
+      break;
+
+    case ODE:
+      setDirectDependencies(mpExpression->getDirectDependencies());
+      mpValueReference->setDirectDependencies(NoDependencies);
+      mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
+      break;
+
+    default:
+      setDirectDependencies(NoDependencies);
+      mpValueReference->setDirectDependencies(NoDependencies);
+      mpRateReference->setDirectDependencies(NoDependencies);
+      break;
+    }
+}
+
+bool CModelValue::compile(std::vector< CCopasiContainer * > listOfContainer)
+{
+  if (isFixed()) return true;
+
+  bool success = mpExpression->compile(listOfContainer);
+
+  setDirectDependencies(mpExpression->getDirectDependencies());
+
+  switch (getStatus())
+    {
+    case ASSIGNMENT:
+      mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
+      break;
+
+    case ODE:
+      mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
+      break;
+
+    default:
+      break;
+    }
+
+  return success;
+}
+
+void CModelValue::calculate()
+{
+  switch (getStatus())
+    {
+    case ASSIGNMENT:
+      *mpValueData = mpExpression->calcValue();
+      break;
+
+    case ODE:
+      mRate = mpExpression->calcValue();
+      break;
+
+    default:
+      break;
+    }
+}
+
+CExpression * CModelValue::getExpression()
+{return mpExpression;}
 
 std::ostream & operator<<(std::ostream &os, const CModelValue & d)
 {

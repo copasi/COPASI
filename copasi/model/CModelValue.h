@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/12 13:51:56 $
+   $Author: shoops $
+   $Date: 2006/07/11 19:32:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 #include "report/CCopasiContainer.h"
 
 class CModel;
+class CExpression;
 
 /**
  * CModelEntity is a base class for CCompartment, CMetab and CModelValue.
@@ -49,11 +50,11 @@ class CModelEntity : public CCopasiContainer
     enum Status
     {
       FIXED = 0,          //the entity is constant (for metabs even if they are part of a reaction)
+      ASSIGNMENT,         //the entity is changed by an assignment rule
+      ODE,                //the entity is changed by an ordinary differential equation
       REACTIONS,          //applies only for metabs, the metab concentration is changed by reactions
       DEPENDENT,          //applies only for metabs, the metab concentration is determined by conservation rules
       UNUSED,
-      ODE,                //the entity is changed by an ordinary differential equation
-      ASSIGNMENT,         //the entity is changed by an assignment rule
       TIME
     };
 
@@ -203,9 +204,17 @@ Table of possible CModelEntity objects with different Status
 
 
 
+
+
+
+
                         current status        corresponding sbml object
 -------------------------------------------------------------------------------------------------
 CMetab:                                       Species
+
+
+
+
 
 
 
@@ -221,7 +230,15 @@ TIME                    -
 
 
 
+
+
+
+
 CCompartment:                                 Compartment
+
+
+
+
 
 
 
@@ -237,7 +254,13 @@ TIME                    -
 
 
 
+
+
+
+
 CModelValue:                                  Parameter
+
+
 
 
 FIXED                   implemented           constant=true
@@ -251,7 +274,13 @@ TIME                    -
 
 
 
+
+
+
+
 CModel:                                       implicitly represented in sbml file
+
+
 
 
 FIXED                   -
@@ -261,6 +290,8 @@ DEPENDENT               -
 ODE                     -
 ASSIGNMENT              -
 TIME                    implemented
+
+
 
 
  */
@@ -295,6 +326,30 @@ class CModelValue : public CModelEntity
     ~CModelValue();
 
     /**
+     *
+     */
+    virtual void setStatus(const CModelEntity::Status & status);
+
+    /**
+     * Compile the model value. This is only needed for status ASIGNMENT and ODE.
+     * @param std::vector< CCopasiContainer * > listOfContainer (Default: CCopasiContainer::EmptyList)
+     * @return bool success
+     */
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer =
+                           CCopasiContainer::EmptyList);
+
+    /**
+     * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
+     */
+    void calculate();
+
+    /**
+     * Retrieve the expression for non FIXED model values.
+     * @return CExpression * expression
+     */
+    CExpression * getExpression();
+
+    /**
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CModelValue & d);
@@ -304,6 +359,13 @@ class CModelValue : public CModelEntity
      * Initialize the contained CCopasiObjects
      */
     void initObjects();
+
+    // Attributes
+  private:
+    /**
+     *
+     */
+    CExpression * mpExpression;
   };
 
 #endif
