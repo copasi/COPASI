@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.53 $
+   $Revision: 1.54 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:50 $
+   $Date: 2006/07/12 21:17:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -116,6 +116,10 @@ void CReport::separate(const Activity & activity)
 
 void CReport::finish()
 {
+  mState = FooterFooter;
+
+  printFooter();
+
   if (mStreamOwner) pdelete(mpOstream);
 
   mpOstream = NULL;
@@ -256,8 +260,7 @@ void CReport::printFooter()
         return;
       }
 
-  if (mState == FooterFooter) return;
-  mState = FooterFooter;
+  if (mState != FooterFooter) return;
 
   std::vector< CCopasiObject * >::iterator it = mFooterObjectList.begin();
   std::vector< CCopasiObject * >::iterator end = mFooterObjectList.end();
