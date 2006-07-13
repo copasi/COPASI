@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Date: 2006/07/13 18:00:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,23 @@ void CExpression::initObjects()
   assert (pObject != NULL);
 
   pObject->setRefresh(this, &CExpression::refresh);
+}
+
+bool CExpression::setInfix(const std::string & infix)
+{
+  if (!CEvaluationTree::setInfix(infix)) return false;
+
+  if (mpNodeList == NULL) return true;
+
+  // We need to check that the expression does not contain any variables
+  std::vector< CEvaluationNode * >::const_iterator it = mpNodeList->begin();
+  std::vector< CEvaluationNode * >::const_iterator end = mpNodeList->end();
+
+  for (; it != end; ++it)
+    if (((*it)->getType() & 0xFF000000) == CEvaluationNode::VARIABLE)
+      return false;
+
+  return true;
 }
 
 bool CExpression::compile(std::vector< CCopasiContainer * > listOfContainer)

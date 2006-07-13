@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Date: 2006/07/13 18:00:47 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -180,7 +180,7 @@ bool CEvaluationTree::parse()
   mpNodeList = NULL;
   mpRoot = NULL;
 
-  if (mType == MassAction) return true;
+  if (mType == MassAction || mInfix == "") return true;
 
   // parse the description into a linked node tree
   std::istringstream buffer(mInfix);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:40 $
+   $Date: 2006/07/13 18:00:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,7 +36,7 @@ CFunction::~CFunction()
 
 bool CFunction::setInfix(const std::string & infix)
 {
-  if (!CEvaluationTree::setInfix(infix) && infix != "") return false;
+  if (!CEvaluationTree::setInfix(infix)) return false;
   if (!initVariables()) return false;
 
   return true;

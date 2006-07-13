@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Date: 2006/07/13 18:00:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,6 +50,13 @@ class CExpression:
     void initObjects();
 
   public:
+    /**
+     * Set the infix description of the tree and compile it.
+     * @param const std::string & infix
+     * @return bool success
+     */
+    virtual bool setInfix(const std::string & infix);
+
     /**
      * Compile the function.
      * @param std::vector< CCopasiContainer * > listOfContainer (Default: CCopasiContainer::EmptyList)
