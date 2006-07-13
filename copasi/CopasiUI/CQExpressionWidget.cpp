@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExpressionWidget.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/13 18:02:22 $
+   $Date: 2006/07/13 18:32:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,10 +61,13 @@ CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * na
     mExpression()
 {}
 
-CQValidator< QTextEdit >::State CQValidatorExpression::validate(QString & input, int & pos) const
+QValidator::State CQValidatorExpression::validate(QString & input, int & pos) const
   {
     if (const_cast< CExpression * >(&mExpression)->setInfix((const char *) input.utf8()))
-      return CQValidator< QTextEdit >::validate(mpLineEdit->text(), pos);
+      {
+        QString Input = mpLineEdit->text();
+        return CQValidator< QTextEdit >::validate(Input, pos);
+      }
 
     setColor(Invalid);
     return Intermediate;
@@ -149,7 +152,8 @@ void CQExpressionWidget::slotSelectionChanged()
 void CQExpressionWidget::slotTextChanged()
 {
   int pos = 0;
-  emit valid(mpValidator->validate(FROM_UTF8(getExpression()), pos) == QValidator::Acceptable);
+  QString Expression = FROM_UTF8(getExpression());
+  emit valid(mpValidator->validate(Expression, pos) == QValidator::Acceptable);
 }
 
 void CQExpressionWidget::slotCursorPositionChanged(int para, int pos)
