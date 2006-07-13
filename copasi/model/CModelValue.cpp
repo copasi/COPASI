@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/11 19:32:21 $
+   $Date: 2006/07/13 18:04:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -289,7 +289,7 @@ CModelValue::CModelValue(const std::string & name,
 CModelValue::CModelValue(const CModelValue & src,
                          const CCopasiContainer * pParent):
     CModelEntity(src, pParent),
-    mpExpression(NULL)
+    mpExpression(src.isFixed() ? NULL : new CExpression(*src.mpExpression))
 {
   mKey = GlobalKeys.add("ModelValue", this);
   initObjects();
@@ -325,7 +325,7 @@ void CModelValue::setStatus(const CModelEntity::Status & status)
   switch (getStatus())
     {
     case ASSIGNMENT:
-      setDirectDependencies(mpExpression->getDirectDependencies());
+        setDirectDependencies(mpExpression->getDirectDependencies());
       mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
       mpRateReference->setDirectDependencies(NoDependencies);
       break;
@@ -386,8 +386,23 @@ void CModelValue::calculate()
     }
 }
 
-CExpression * CModelValue::getExpression()
-{return mpExpression;}
+bool CModelValue::setExpression(const std::string & expression)
+{
+  if (isFixed()) return false;
+
+  if (mpExpression == NULL)
+    mpExpression = new CExpression();
+
+  return mpExpression ->setInfix(expression);
+}
+
+std::string CModelValue::getExpression() const
+  {
+    if (isFixed() || mpExpression == NULL)
+      return "";
+
+    return mpExpression->getInfix();
+  }
 
 std::ostream & operator<<(std::ostream &os, const CModelValue & d)
 {

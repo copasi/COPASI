@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/11 19:32:21 $
+   $Date: 2006/07/13 18:04:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -208,9 +208,25 @@ Table of possible CModelEntity objects with different Status
 
 
 
+
+
+
+
+
+
+
+
                         current status        corresponding sbml object
 -------------------------------------------------------------------------------------------------
 CMetab:                                       Species
+
+
+
+
+
+
+
+
 
 
 
@@ -234,7 +250,23 @@ TIME                    -
 
 
 
+
+
+
+
+
+
+
+
 CCompartment:                                 Compartment
+
+
+
+
+
+
+
+
 
 
 
@@ -258,7 +290,19 @@ TIME                    -
 
 
 
+
+
+
+
+
+
+
+
 CModelValue:                                  Parameter
+
+
+
+
 
 
 
@@ -278,7 +322,19 @@ TIME                    -
 
 
 
+
+
+
+
+
+
+
+
 CModel:                                       implicitly represented in sbml file
+
+
+
+
 
 
 
@@ -290,6 +346,10 @@ DEPENDENT               -
 ODE                     -
 ASSIGNMENT              -
 TIME                    implemented
+
+
+
+
 
 
 
@@ -344,10 +404,17 @@ class CModelValue : public CModelEntity
     void calculate();
 
     /**
-     * Retrieve the expression for non FIXED model values.
-     * @return CExpression * expression
+     * Set the expression for non FIXED model values
+     * @param const std::string & expression
+     * @return bool success
      */
-    CExpression * getExpression();
+    bool setExpression(const std::string & expression);
+
+    /**
+     * Retrieve the expression for non FIXED model values.
+     * @return std::string expression
+     */
+    std::string getExpression() const;
 
     /**
      * insert operator
