@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelValuesWidget.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/29 15:53:16 $
+   $Author: shoops $
+   $Date: 2006/07/13 18:03:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,7 +101,7 @@ void ModelValuesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C
 
 QString ModelValuesWidget::defaultObjectName() const
   {
-    return "parameter";
+    return "quantity";
   }
 
 CCopasiObject* ModelValuesWidget::createNewObject(const std::string & name)
