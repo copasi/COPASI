@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.128 $ $Author: shoops $ $Date: 2006/06/20 13:18:05 $  
+# $Revision: 1.129 $ $Author: shoops $ $Date: 2006/07/13 18:06:04 $  
 ######################################################################
 
 TEMPLATE = app
@@ -305,6 +305,7 @@ SOURCES += \
 # FORMS += CQTaskHeaderWidget.ui
 # FORMS += CQTaskBtnWidget.ui
 # FORMS += CQTrajectoryWidget.ui
+# FORMS += CQModelValue.ui
 
 # headers generated from .ui files   
 HEADERS += \
@@ -342,6 +343,8 @@ HEADERS += \
            CQTextDialog.ui.h \
            CQTrajectoryWidget.h \
            CQTrajectoryWidget.ui.h \
+           CQModelValue.h \
+           CQModelValue.ui.h \
            CScanWidgetBreak.h \
            CScanWidgetBreak.ui.h \
            CScanWidgetRandom.h \
@@ -384,6 +387,7 @@ SOURCES += \
            CQTaskBtnWidget.cpp \
            CQTaskHeaderWidget.cpp \
            CQTrajectoryWidget.cpp \
+           CQModelValue.cpp \
            CQTextDialog.cpp \
            CUpDownSubwidget.cpp \
            CScanWidgetBreak.cpp \

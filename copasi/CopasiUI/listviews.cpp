@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.198 $
+   $Revision: 1.199 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:23 $
+   $Date: 2006/07/13 18:06:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,6 +44,7 @@
 #include "MetabolitesWidget1.h"
 #include "ModelWidget.h"
 #include "ModelValuesWidget.h"
+#include "CQModelValue.h"
 #include "ModesWidget.h"
 #include "MoietyWidget.h"
 #include "MoietyWidget1.h"
@@ -216,6 +217,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     metabolitesWidget1(NULL),
     modelWidget(NULL),
     modelValuesWidget(NULL),
+    mpModelValueWidget(NULL),
     modesWidget(NULL),
     moietyWidget(NULL),
     moietyWidget1(NULL),
@@ -370,6 +372,9 @@ void ListViews::ConstructNodeWidgets()
 
   if (!modelWidget) modelWidget = new ModelWidget(this);
   modelWidget->hide();
+
+  if (!mpModelValueWidget) mpModelValueWidget = new CQModelValue(this);
+  mpModelValueWidget->hide();
 
   if (!modelValuesWidget) modelValuesWidget = new ModelValuesWidget(this);
   modelValuesWidget->hide();
@@ -592,11 +597,14 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
       case 113:
         return moietyWidget1;
         break;
-      case 222:
-        return moietyWidget1;
-        break;
       case 114:
         return reactionsWidget1;
+        break;
+      case 115:
+        return mpModelValueWidget;
+        break;
+      case 222:
+        return moietyWidget1;
         break;
       case 43:
         return tableDefinition1;
