@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:06 $
+   $Date: 2006/07/13 18:02:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,6 +11,7 @@
 // All rights reserved.
 
 #include <qlabel.h>
+#include <qpushbutton.h>
 #include <qtoolbutton.h>
 #include <qmessagebox.h>
 
@@ -42,7 +43,16 @@ bool CQOptimizationWidget::saveTask()
     dynamic_cast<COptProblem *>(mpTask->getProblem());
   if (!pProblem) return false;
 
-  mChanged |= saveExpression();
+  if (pProblem->getObjectiveFunction() != mpEditExpression->getExpression())
+    {
+      if (!pProblem->setObjectiveFunction(mpEditExpression->getExpression()))
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
+          return false;
+        }
+
+      mChanged = true;
+    }
 
   if (mpBtnSteadystate->isChecked() &&
       *pProblem->getValue("Steady-State").pSTRING == "")
@@ -84,7 +94,7 @@ bool CQOptimizationWidget::loadTask()
     dynamic_cast<COptProblem *>(mpTask->getProblem());
   if (!pProblem) return false;
 
-  loadExpression();
+  mpEditExpression->setExpression(pProblem->getObjectiveFunction());
 
   if (*pProblem->getValue("Steady-State").pSTRING != "")
     {
@@ -210,9 +220,6 @@ void CQOptimizationWidget::slotPageChange(QWidget * currentPage)
     mpCurrentList = mpConstraints;
 }
 
-void CQOptimizationWidget::slotExpression()
-{}
-
 CCopasiMethod * CQOptimizationWidget::createMethod(const CCopasiMethod::SubType & type)
 {return COptMethod::createMethod(type);}
 
@@ -230,8 +237,6 @@ void CQOptimizationWidget::slotConstraintNumberChanged(int number)
 
 void CQOptimizationWidget::init()
 {
-  mpParseList = new std::vector< CCopasiObject * >;
-
   mpHeaderWidget->setTaskName("Optimization");
 
   CQOptimizationWidgetLayout->insertWidget(0, mpHeaderWidget);
@@ -254,154 +259,12 @@ void CQOptimizationWidget::init()
 }
 
 void CQOptimizationWidget::destroy()
-{
-  pdelete(mpParseList);
-}
-
-void CQOptimizationWidget::slotObjectSelect()
-{
-  std::vector<CCopasiObject*> Selection;
-
-  CCopasiSelectionDialog * pBrowseDialog = new CCopasiSelectionDialog(this);
-  pBrowseDialog->setModel(CCopasiDataModel::Global->getModel());
-  pBrowseDialog->setSingleSelection(true);
-  pBrowseDialog->setOutputVector(&Selection);
-
-  if (pBrowseDialog->exec () == QDialog::Accepted && Selection.size() != 0)
-    {
-      CCopasiObject * pObject = Selection[0];
-
-      if (pObject)
-        {
-          mpParseList->push_back(pObject);
-          std::string Insert = "<" + pObject->getObjectDisplayName() + ">";
-          mpEditExpression->insert(FROM_UTF8(Insert));
-        }
-    }
-}
-
-bool CQOptimizationWidget::saveExpression()
-{
-  COptProblem * pProblem =
-    dynamic_cast<COptProblem *>(mpTask->getProblem());
-  if (!pProblem) return false;
-
-  std::string DisplayName = "";
-  std::string InfixCN = "";
-
-  std::string InfixDispayName = (const char *)mpEditExpression->text().utf8();
-  std::vector<CCopasiObject *>::iterator it = mpParseList->begin();
-
-  for (unsigned int i = 0; i < InfixDispayName.length(); i++)
-    {
-      InfixCN += InfixDispayName[i];
-      DisplayName = "";
-
-      if (InfixDispayName[i] == '<')
-        {
-          i++;
-          while (i < InfixDispayName.length() && InfixDispayName[i] != '>')
-            {
-              if (InfixDispayName[i] == '\\') // '\' is an escape character.
-                DisplayName += InfixDispayName[i++];
-
-              DisplayName += InfixDispayName[i++];
-            }
-
-          it = mpParseList->begin();
-          while (it < mpParseList->end())
-            {
-              if ((*it)->getObjectDisplayName() == DisplayName)
-                {
-                  InfixCN += (*it)->getCN();
-                  break;
-                }
-
-              it++;
-            }
-
-          if (it == mpParseList->end())
-            {
-              CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
-              return false;
-            }
-
-          InfixCN += ">";
-        }
-    }
-
-  bool changed = false;
-
-  if (pProblem->getObjectiveFunction() != InfixCN)
-    {
-      if (!pProblem->setObjectiveFunction(InfixCN))
-        {
-          CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
-          return false;
-        }
-
-      changed = true;
-    }
-
-  // :TODO: need to handle errors.
-
-  return changed;
-}
-
-// load the expression
-
-bool CQOptimizationWidget::loadExpression()
-{
-  COptProblem * pProblem =
-    dynamic_cast<COptProblem *>(mpTask->getProblem());
-  if (!pProblem) return false;
-
-  std::string objFunc = pProblem->getObjectiveFunction();
-
-  unsigned C_INT32 i = 0;
-  mpParseList->clear();
-
-  std::string out_str = "";
-  while (i < objFunc.length())
-    {
-      if (objFunc[i] == '<')
-        {
-          i++;
-          std::string objectName = "";
-
-          while (objFunc[i] != '>' && i < objFunc.length())
-            {
-              if (objFunc[i] == '\\')
-                objectName += objFunc[i++];
-
-              objectName += objFunc[i];
-              i++;
-            }
-
-          CCopasiObjectName temp_CN(objectName);
-          CCopasiObject * temp_object = const_cast<CCopasiObject *>(RootContainer.getObject(temp_CN));
-          out_str += "<" + temp_object->getObjectDisplayName() + ">";
-          mpParseList->push_back(temp_object);
-          continue;
-        }
-
-      else if (objFunc[i] == '>')
-        {
-          //do nothing
-        }
-
-      else
-        {
-          out_str += objFunc[i];
-        }
-
-      i++;
-    }
-
-  mpEditExpression->setText(FROM_UTF8(out_str));
-
-  return true;
-}
+{}
 
 bool CQOptimizationWidget::isSteadyState()
 {return mpBtnSteadystate->isChecked();}
+
+void CQOptimizationWidget::slotExpressionValid(bool valid)
+{
+  mpBtnWidget->mpBtnRun->setEnabled(valid);
+}

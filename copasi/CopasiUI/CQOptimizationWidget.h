@@ -1,20 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQOptimizationWidget.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/10 13:06:38 $
+   $Author: shoops $
+   $Date: 2006/07/13 18:02:22 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQOptimizationWidget.ui'
  **
- ** Created: Mi Mai 10 15:05:11 2006
- **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.6 2006/05/10 13:06:38 ssahle Exp $)
+ ** Created: Thu Jul 13 13:57:39 2006
+ **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.7 2006/07/13 18:02:22 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -59,8 +59,6 @@ class CQOptimizationWidget : public TaskWidget
     QWidget* mpConstraintsPage;
 
     virtual bool runTask();
-    virtual bool saveExpression();
-    virtual bool loadExpression();
     bool isSteadyState();
 
   public slots:
@@ -76,14 +74,13 @@ class CQOptimizationWidget : public TaskWidget
     bool mTypeChanged;
     QHBoxLayout * mpConstraintPageLayout;
     QHBoxLayout * mpParameterPageLayout;
-    std::vector<CCopasiObject *> * mpParseList;
 
     virtual bool saveTask();
     virtual bool loadTask();
     virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
 
     QVBoxLayout* CQOptimizationWidgetLayout;
-    QGridLayout* layout2;
+    QGridLayout* mpGridLayout;
     QSpacerItem* mpSpacer2;
     QSpacerItem* mpSpacer;
     QHBoxLayout* mpBtnGroupLayout;
@@ -92,8 +89,7 @@ class CQOptimizationWidget : public TaskWidget
     virtual void languageChange();
 
     void slotPageChange(QWidget * currentPage);
-    void slotExpression();
-    void slotObjectSelect();
+    void slotExpressionValid(bool valid);
 
   private:
     QPixmap image0;

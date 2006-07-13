@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQValidator.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/06 03:07:17 $
+   $Date: 2006/07/13 18:02:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,25 +19,69 @@
 
 #include "copasi.h"
 
-class CQValidator : public QValidator
+template <typename Type> class CQValidator : public QValidator
   {
     // Operations
   public:
-    CQValidator(QLineEdit * parent, const char * name = 0);
+    CQValidator(Type * parent, const char * name = 0):
+        QValidator(parent, name),
+        mpLineEdit(parent),
+        mLastAccepted("")
+    {
+      int h, s, v;
 
-    virtual State validate(QString & input, int & pos) const;
+      mSavedColor = mpLineEdit->paletteBackgroundColor();
+      mSavedColor.getHsv(&h, &s, &v);
 
-    virtual State revalidate();
+      if (s < 20) s = 20;
 
-    virtual void force(const QString & input) const;
+      mAcceptableColor.setHsv(240, s, v);
+      mErrorColor.setHsv(0, s, v);
+    }
 
-    virtual void saved() const;
+    virtual State validate(QString & input, int & /* pos */) const
+      {
+        if (input == mLastAccepted)
+          mpLineEdit->setPaletteBackgroundColor(mSavedColor);
+        else
+          setColor(Acceptable);
+
+        return Acceptable;
+      }
+
+    virtual State revalidate()
+    {
+      QString Input = mpLineEdit->text();
+      int Pos = Input.length();
+
+      return validate(Input, Pos);
+    }
+
+    virtual void saved() const
+      {
+        const_cast<CQValidator *>(this)->mLastAccepted = mpLineEdit->text();
+        mpLineEdit->setPaletteBackgroundColor(mSavedColor);
+      }
+
+    virtual void force(const QString & input) const
+      {
+        const_cast<CQValidator *>(this)->mLastAccepted = input;
+        setColor(Acceptable);
+      }
 
   protected:
-    State setColor(const State & state) const;
+    State setColor(const State & state) const
+      {
+        if (state == Invalid)
+          mpLineEdit->setPaletteBackgroundColor(mErrorColor);
+        else
+          mpLineEdit->setPaletteBackgroundColor(mAcceptableColor);
+
+        return state;
+      }
 
     //Attributes
-    QLineEdit * mpLineEdit;
+    Type * mpLineEdit;
 
   private:
     QString mLastAccepted;
@@ -49,7 +93,7 @@ class CQValidator : public QValidator
     QColor mErrorColor;
   };
 
-class CQValidatorNotEmpty : public CQValidator
+class CQValidatorNotEmpty : public CQValidator< QLineEdit >
   {
     // Operations
   public:
@@ -58,7 +102,7 @@ class CQValidatorNotEmpty : public CQValidator
     virtual State validate(QString & input, int & pos) const;
   };
 
-class CQValidatorBound : public CQValidator
+class CQValidatorBound : public CQValidator< QLineEdit >
   {
     // Operations
   public:
@@ -75,7 +119,7 @@ class CQValidatorBound : public CQValidator
     QString mValidBound;
   };
 
-class CQValidatorDouble : public CQValidator
+class CQValidatorDouble : public CQValidator< QLineEdit >
   {
     // Operations
   public:
@@ -90,7 +134,7 @@ class CQValidatorDouble : public CQValidator
     QDoubleValidator * mpDoubleValidator;
   };
 
-class CQValidatorInt : public CQValidator
+class CQValidatorInt : public CQValidator< QLineEdit >
   {
     // Operations
   public:

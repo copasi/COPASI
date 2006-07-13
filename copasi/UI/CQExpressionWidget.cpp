@@ -1,16 +1,25 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:06 $
+   $Date: 2006/07/13 18:02:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include <iostream>
+
+#include "copasi.h"
+
 #include "CQExpressionWidget.h"
+#include "CCopasiSelectionDialog.h"
+#include "qtUtilities.h"
+
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "function/CExpression.h"
 
 CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget* ew)
     : QSyntaxHighlighter(ew)
@@ -47,6 +56,22 @@ int CQExpressionHighlighter::highlightParagraph (const QString & text, int endSt
 
 //***********************************************************************
 
+CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * name):
+    CQValidator< QTextEdit >(parent, name),
+    mExpression()
+{}
+
+CQValidator< QTextEdit >::State CQValidatorExpression::validate(QString & input, int & pos) const
+  {
+    if (const_cast< CExpression * >(&mExpression)->setInfix((const char *) input.utf8()))
+      return CQValidator< QTextEdit >::validate(mpLineEdit->text(), pos);
+
+    setColor(Invalid);
+    return Intermediate;
+  }
+
+//***********************************************************************
+
 CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
     : QTextEdit(parent, name),
     mOldPar(0), mOldPos(0)
@@ -54,10 +79,23 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
   setTextFormat(Qt::PlainText);
   new CQExpressionHighlighter(this);
 
+  int h, s, v;
+
+  mSavedColor = paletteBackgroundColor();
+  mSavedColor.getHsv(&h, &s, &v);
+
+  if (s < 20) s = 20;
+  mChangedColor.setHsv(240, s, v);
+
+  mpValidator = new CQValidatorExpression(this);
+  mpValidator->revalidate();
+
   connect(this, SIGNAL(cursorPositionChanged(int, int)),
           this, SLOT(slotCursorPositionChanged(int, int)));
   connect(this, SIGNAL(selectionChanged()),
           this, SLOT(slotSelectionChanged()));
+  connect(this, SIGNAL(textChanged()),
+          this, SLOT(slotTextChanged()));
 }
 
 void CQExpressionWidget::keyPressEvent (QKeyEvent * e)
@@ -70,8 +108,6 @@ void CQExpressionWidget::keyPressEvent (QKeyEvent * e)
 
   QTextEdit::keyPressEvent(e);
 }
-
-#include <iostream>
 
 void CQExpressionWidget::slotSelectionChanged()
 {
@@ -108,6 +144,12 @@ void CQExpressionWidget::slotSelectionChanged()
   //extended instead
 
   getSelection(&mOldPar1, &mOldPos1, &mOldPar2, &mOldPos2);
+}
+
+void CQExpressionWidget::slotTextChanged()
+{
+  int pos = 0;
+  emit valid(mpValidator->validate(FROM_UTF8(getExpression()), pos) == QValidator::Acceptable);
 }
 
 void CQExpressionWidget::slotCursorPositionChanged(int para, int pos)
@@ -241,5 +283,130 @@ void CQExpressionWidget::doKeyboardAction(QTextEdit::KeyboardAction action)
 
     default:
       break;
+    }
+}
+
+void CQExpressionWidget::setExpression(const std::string & expression)
+{
+  std::string Expression = expression;
+
+  unsigned C_INT32 i = 0;
+  mParseList.clear();
+
+  std::string out_str = "";
+  while (i < Expression.length())
+    {
+      if (Expression[i] == '<')
+        {
+          i++;
+          std::string objectName = "";
+
+          while (Expression[i] != '>' && i < Expression.length())
+            {
+              if (Expression[i] == '\\')
+                objectName += Expression[i++];
+
+              objectName += Expression[i];
+              i++;
+            }
+
+          CCopasiObjectName temp_CN(objectName);
+          CCopasiObject * temp_object = const_cast<CCopasiObject *>(RootContainer.getObject(temp_CN));
+          out_str += "<" + temp_object->getObjectDisplayName() + ">";
+          mParseList.push_back(temp_object);
+          continue;
+        }
+
+      else if (Expression[i] == '>')
+        {
+          //do nothing
+        }
+
+      else
+        {
+          out_str += Expression[i];
+        }
+
+      i++;
+    }
+
+  disconnect(this, SIGNAL(textChanged()), this, SLOT(slotTextChanged()));
+  setText(FROM_UTF8(out_str));
+  connect(this, SIGNAL(textChanged()), this, SLOT(slotTextChanged()));
+
+  mpValidator->saved();
+
+  return;
+}
+
+std::string CQExpressionWidget::getExpression() const
+  {
+    std::string DisplayName = "";
+    std::string InfixCN = "";
+
+    std::string InfixDispayName = (const char *)text().utf8();
+    std::vector<CCopasiObject *>::const_iterator it = mParseList.begin();
+
+    for (unsigned int i = 0; i < InfixDispayName.length(); i++)
+      {
+        InfixCN += InfixDispayName[i];
+        DisplayName = "";
+
+        if (InfixDispayName[i] == '<')
+          {
+            i++;
+            while (i < InfixDispayName.length() && InfixDispayName[i] != '>')
+              {
+                if (InfixDispayName[i] == '\\') // '\' is an escape character.
+                  DisplayName += InfixDispayName[i++];
+
+                DisplayName += InfixDispayName[i++];
+              }
+
+            it = mParseList.begin();
+            while (it < mParseList.end())
+              {
+                if ((*it)->getObjectDisplayName() == DisplayName)
+                  {
+                    InfixCN += (*it)->getCN();
+                    break;
+                  }
+
+                it++;
+              }
+
+            if (it == mParseList.end())
+              {
+                CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
+                return false;
+              }
+
+            InfixCN += ">";
+          }
+      }
+
+    return InfixCN;
+  }
+
+void CQExpressionWidget::slotSelectObject()
+{
+  std::vector<CCopasiObject*> Selection;
+
+  CCopasiSelectionDialog * pBrowseDialog = new CCopasiSelectionDialog(this);
+  pBrowseDialog->setModel(CCopasiDataModel::Global->getModel());
+  pBrowseDialog->setSingleSelection(true);
+  pBrowseDialog->setOutputVector(&Selection);
+
+  if (pBrowseDialog->exec () == QDialog::Accepted && Selection.size() != 0)
+    {
+      CCopasiObject * pObject = Selection[0];
+
+      if (pObject)
+        {
+          // :TODO: mpParseList must be a created.
+          mParseList.push_back(pObject);
+          std::string Insert = "<" + pObject->getObjectDisplayName() + ">";
+          insert(FROM_UTF8(Insert));
+        }
     }
 }
