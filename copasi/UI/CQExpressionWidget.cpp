@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/13 18:32:27 $
+   $Date: 2006/07/13 21:36:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,7 +79,9 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
     : QTextEdit(parent, name),
     mOldPar(0), mOldPos(0)
 {
-  setTextFormat(Qt::PlainText);
+  setTextFormat(PlainText);
+  setTabChangesFocus(true);
+
   new CQExpressionHighlighter(this);
 
   int h, s, v;
@@ -162,7 +164,7 @@ void CQExpressionWidget::slotCursorPositionChanged(int para, int pos)
   //std::cout << "cpc: " << para << ", " << pos << " . " << isInObject() << std::endl;
 
   //check if we are inside an object
-  if (isInObject())
+  if (isInObject(para, pos))
     {
       int newpos;
       //first decide in which direction we want to leave the object
@@ -286,6 +288,7 @@ void CQExpressionWidget::doKeyboardAction(QTextEdit::KeyboardAction action)
       break;
 
     default:
+      QTextEdit::doKeyboardAction(action);
       break;
     }
 }
