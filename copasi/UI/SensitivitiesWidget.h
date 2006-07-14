@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: tjohann $
-   $Date: 2006/06/29 17:22:29 $
+   $Date: 2006/07/14 12:52:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,6 +50,12 @@ class SensitivitiesWidget : public TaskWidget
     virtual bool saveTask();
     virtual CCopasiMethod * createMethod(const CCopasiMethod::SubType & type);
 
+    enum ChoiceType {
+      SubTask,
+      Function,
+      Variable,
+      SecondVariable
+    };
     //QCheckBox* taskJacobian;
     //QCheckBox* taskStability;
     //QLabel* taskDescriptionLabel;
@@ -95,7 +101,8 @@ class SensitivitiesWidget : public TaskWidget
 
   private:
     void initCombos();
-    //std::vector<QCheckListItem *> initCheckboxes(CObjectLists::ListType);
+    void initCombos(CSensProblem);
+    bool initCombos(CSensItem, SensitivitiesWidget::ChoiceType);
 
     void updateFunctionsStringList(CSensProblem::SubTaskType);
     void updateVariablesStringList(CSensProblem::SubTaskType);
@@ -112,6 +119,24 @@ class SensitivitiesWidget : public TaskWidget
     // 2 - FunctionChooser
     // 4 - VariableChooser
     int mChoicesDone;
+
+    enum Choice {
+      Choice_SubTask = 1,
+      Choice_Function = 2,
+      Choice_Variable = 4,
+      Choice_All = 7
+    };
+
+    CObjectLists::ListType mSubTask;
+    CObjectLists::ListType mFunction;
+    CObjectLists::ListType mVariable;
+    CObjectLists::ListType mVariable2;
+
+    CSensProblem * mpProblem;
+
+    CSensItem mFunctionItem;
+    CSensItem mVariableItem;
+    CSensItem mVariable2Item;
 
   private slots:
     void on_SubTaskChooser_activated(int);

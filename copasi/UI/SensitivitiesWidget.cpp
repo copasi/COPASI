@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/05 15:24:30 $
+   $Author: tjohann $
+   $Date: 2006/07/14 12:52:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,6 +151,14 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
           this, SLOT(on_VariableChooser2_activated(int)));
 
   mChoicesDone = 0;
+
+  mpProblem = new CSensProblem();
+
+  //  std::cout << mpProblem->getNumberOfVariables() << std::endl;
+
+  //std::cout << mpProblem->getVariables(0).getListType() << std::endl;
+
+  initCombos(mpProblem);
 }
 
 /*
@@ -249,6 +257,63 @@ SensitivitiesWidget::initCombos()
 }
 
 void
+SensitivitiesWidget::initCombos(CSensProblem problem)
+{
+  SubTaskChooser->setCurrentItem((int)problem.getSubTaskType());
+  on_SubTaskChooser_activated(problem.getSubTaskType());
+
+  // add assertions of return values here with an error message box...
+  initCombos(problem.getTargetFunctions(), SensitivitiesWidget::Function);
+
+  initCombos(problem.getVariables(0), SensitivitiesWidget::Variable);
+
+  if (problem.getNumberOfVariables() > 1)
+    initCombos(problem.getVariables(1), SensitivitiesWidget::SecondVariable);
+}
+
+bool
+SensitivitiesWidget::initCombos(CSensItem item, SensitivitiesWidget::ChoiceType type)
+{
+  std::vector<CObjectLists::ListType> listType;
+  std::vector<CObjectLists::ListType>::iterator liter;
+
+  if (type == SensitivitiesWidget::SubTask)
+    return false;
+
+  listType = mVariablesIndexTable;
+
+  if (type == SensitivitiesWidget::Function)
+    listType = mFunctionsIndexTable;
+
+  liter = std::find(listType.begin(), listType.end(), item.getListType());
+  int index = std::distance(listType.begin(), liter);
+
+  if (liter != listType.end())
+    {
+      switch (type)
+        {
+        case (SensitivitiesWidget::Function):
+                FunctionChooser->setCurrentItem(index);
+          on_FunctionChooser_activated(index);
+          break;
+
+        case (SensitivitiesWidget::Variable):
+                VariableChooser->setCurrentItem(index);
+          on_VariableChooser_activated(index);
+          break;
+
+        case (SensitivitiesWidget::SecondVariable):
+                VariableChooser2->setCurrentItem(index);
+          on_VariableChooser2_activated(index);
+        }
+    }
+  else
+    return false;
+
+  return true;
+}
+
+void
 SensitivitiesWidget::updateFunctionsStringList(CSensProblem::SubTaskType type)
 {
   std::vector<CObjectLists::ListType> functions;
@@ -284,46 +349,6 @@ SensitivitiesWidget::updateVariablesStringList(CSensProblem::SubTaskType type)
     }
 }
 
-/*
-std::vector<QCheckListItem *>
-SensitivitiesWidget::initCheckboxes(CObjectLists::ListType type)
-{
-  std::vector<QCheckListItem *> choices;
-
-
-
-
-  choices.clear();
-
-
-
-
-  // if type is 'unset' return empty vector:
-  //  if ((int) type == 0)
-  //    return choices;
-
-
-
-
-  QCheckListItem *test =
-    new QCheckListItem(FunctionChoiceBox, "parent", QCheckListItem::CheckBox);
-  choices.push_back(test);
-  FunctionChoiceBox->ensureItemVisible(test);
-
-
-
-
-  QCheckListItem *test2 =
-    new QCheckListItem(test, "child", QCheckListItem::CheckBox);
-  choices.push_back(test2);
-
-
-
-
-  return choices;
-}
- */
-
 // SLOTs
 void
 SensitivitiesWidget::on_SubTaskChooser_activated(int index)
@@ -335,12 +360,12 @@ SensitivitiesWidget::on_SubTaskChooser_activated(int index)
   if (index == 0)
     {
       enabled = false;
-      mChoicesDone &= ~1;
+      mChoicesDone &= ~Choice_SubTask;
     }
   else
     {
-      mChoicesDone |= 1;
-      enabled = mChoicesDone == 7;
+      mChoicesDone |= Choice_SubTask;
+      enabled = mChoicesDone == Choice_All;
     }
 
   mpBtnWidget->mpBtnRun->setEnabled(enabled);
@@ -391,21 +416,24 @@ SensitivitiesWidget::on_FunctionChooser_activated(int index)
   bool enabled = false;
   bool editenabled = false;
   if (index == 0)
-    mChoicesDone &= ~2;
+    mChoicesDone &= ~Choice_Function;
   else if (index == 1) // Single Object
     {
       editenabled = true;
-      mChoicesDone &= ~2;
+      mChoicesDone &= ~Choice_Function;
     }
   else
     {
-      mChoicesDone |= 2;
-      enabled = (mChoicesDone == 7);
+      mChoicesDone |= Choice_Function;
+      enabled = (mChoicesDone == Choice_All);
       FunctionLineEdit->setText(mFunctionsStringList[index]);
+      FunctionLineEdit->home(false);
     }
 
   FunctionLineEdit->setEnabled(editenabled);
   mpBtnWidget->mpBtnRun->setEnabled(enabled);
+
+  mFunction = mFunctionsIndexTable[index];
 }
 
 void
@@ -416,21 +444,24 @@ SensitivitiesWidget::on_VariableChooser_activated(int index)
   bool enabled = false;
   bool editenabled = false;
   if (index == 0)
-    mChoicesDone &= ~4;
+    mChoicesDone &= ~Choice_Variable;
   else if (index == 1) // Single Object
     {
       editenabled = true;
-      mChoicesDone &= ~4;
+      mChoicesDone &= ~Choice_Variable;
     }
   else
     {
-      mChoicesDone |= 4;
-      enabled = (mChoicesDone == 7);
+      mChoicesDone |= Choice_Variable;
+      enabled = (mChoicesDone == Choice_All);
       VariableLineEdit->setText(mVariablesStringList[index]);
+      VariableLineEdit->home(false);
     }
 
   VariableLineEdit->setEnabled(editenabled);
   mpBtnWidget->mpBtnRun->setEnabled(enabled);
+
+  mVariable = mVariablesIndexTable[index];
 }
 
 void
@@ -439,10 +470,15 @@ SensitivitiesWidget::on_VariableChooser2_activated(int index)
   VariableLineEdit2->clear();
 
   bool enabled = false;
-  if (index == 1) // Single Object
+  if (index == 1) // Single Object:  handled in the slots of LineEdit.
     enabled = true;
   else
-    VariableLineEdit2->setText(mVariablesStringList[index]);
+    {
+      VariableLineEdit2->setText(mVariablesStringList[index]);
+      VariableLineEdit2->home(false);
+    }
 
   VariableLineEdit2->setEnabled(enabled);
+
+  mVariable2 = mVariablesIndexTable[index];
 }
