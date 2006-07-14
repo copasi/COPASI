@@ -150,6 +150,10 @@ SOURCE=.\CQExperimentSelection.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQExpressionWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQFileDialogBtnGrp.cpp
 # End Source File
 # Begin Source File
@@ -171,6 +175,10 @@ SOURCE=.\CQFittingWidget.cpp
 # Begin Source File
 
 SOURCE=.\CQLyapWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQModelValue.cpp
 # End Source File
 # Begin Source File
 
@@ -586,6 +594,10 @@ SOURCE=.\CQExperimentSelection.ui.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQExpressionWidget.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQFileDialogBtnGrp.h
 # End Source File
 # Begin Source File
@@ -623,6 +635,14 @@ SOURCE=.\CQFittingWidget.ui.h
 # Begin Source File
 
 SOURCE=.\CQLyapWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQModelValue.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQModelValue.ui.h
 # End Source File
 # Begin Source File
 
@@ -1052,6 +1072,10 @@ SOURCE=.\CQFittingResult.ui
 # Begin Source File
 
 SOURCE=.\CQFittingResultTab1.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQModelValue.ui
 # End Source File
 # Begin Source File
 
