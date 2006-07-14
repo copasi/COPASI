@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/05 15:07:52 $
+   $Author: tjohann $
+   $Date: 2006/07/14 12:26:43 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@ void CSensItem::setSingleObjectCN(const CCopasiObjectName & cn)
 {
   mSingleObjectCN = cn;
   mIsSingleObject = true;
+  setListType(CObjectLists::SINGLE_OBJECT);
 }
 
 const CCopasiObjectName & CSensItem::getSingleObjectCN() const
@@ -187,7 +188,14 @@ CSensProblem::getSubTaskType() const
 
 CSensItem CSensProblem::getTargetFunctions() const
   {
-    return CSensItem();
+    CSensItem ret;
+    CCopasiParameterGroup* tmp;
+
+    tmp = (CCopasiParameterGroup*)(mpTargetFunctions);
+
+    copyParameterGroupToSensItem(tmp, &ret);
+
+    return ret;
   }
 
 unsigned C_INT32 CSensProblem::getNumberOfVariables() const
@@ -197,7 +205,14 @@ unsigned C_INT32 CSensProblem::getNumberOfVariables() const
 
 CSensItem CSensProblem::getVariables(unsigned C_INT32 index) const
   {
-    return CSensItem();
+    CSensItem ret;
+    CCopasiParameterGroup* tmp;
+
+    tmp = (CCopasiParameterGroup*)(mpVariablesGroup->getParameter(index));
+
+    copyParameterGroupToSensItem(tmp, &ret);
+
+    return ret;
   }
 
 void CSensProblem::addVariables(const CSensItem & item)
@@ -228,7 +243,8 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
     {
     case (CSensProblem::unset):
             // all available target functions
-            list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+            list.push_back(CObjectLists::SINGLE_OBJECT);
+      list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
       list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
       list.push_back(CObjectLists::NON_CONST_METAB_CONC_RATES);
       list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
@@ -237,21 +253,24 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
       break;
 
     case (CSensProblem::SteadyState):
-            list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
+            list.push_back(CObjectLists::SINGLE_OBJECT);
+      list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
       list.push_back(CObjectLists::NON_CONST_METAB_CONC_RATES);
       list.push_back(CObjectLists::REACTION_CONC_FLUXES);
       list.push_back(CObjectLists::REACTION_PART_FLUXES);
       break;
 
     case (CSensProblem::TimeSeries):
-            list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+            list.push_back(CObjectLists::SINGLE_OBJECT);
+      list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
       list.push_back(CObjectLists::NON_CONST_METAB_CONC_RATES);
       list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
       list.push_back(CObjectLists::REACTION_PART_FLUXES);
       break;
 
     case (CSensProblem::LyapunovExp):
-            list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
+            list.push_back(CObjectLists::SINGLE_OBJECT);
+      list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
       list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
       list.push_back(CObjectLists::REACTION_CONC_FLUXES);
       list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
@@ -259,53 +278,6 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
     }
 
   return list;
-}
-
-//static
-std::string
-CSensProblem::getTargetFunctionName(CObjectLists::ListType objtype)
-{
-  std::string ret;
-
-  switch (objtype)
-    {
-      // exception: here '0' means 'unset'
-    case ((CObjectLists::ListType) 0):
-            ret = "Not Set";
-      break;
-
-      // change the following!!!
-      // ret values for proof of concept in SensitivitiesWidget
-    case (CObjectLists::NON_CONST_METAB_CONCENTRATIONS):
-            ret = "not there in SteadyState";
-      break;
-
-    case (CObjectLists::NON_CONST_METAB_NUMBERS):
-            ret = "not there in TimeSeries";
-      break;
-
-    case (CObjectLists::NON_CONST_METAB_CONC_RATES):
-            ret = "not there in LyapunovExponents";
-      break;
-
-    case (CObjectLists::NON_CONST_METAB_PART_RATES):
-            ret = "not there in SteadyState";
-      break;
-
-    case (CObjectLists::REACTION_CONC_FLUXES):
-            ret = "not there in TimeSeries";
-      break;
-
-    case (CObjectLists::REACTION_PART_FLUXES):
-            ret = "not there in LyapunovExponents";
-      break;
-
-      //never get here
-    default:
-      ret = "Error:  Value not handled";
-    }
-
-  return ret;
 }
 
 //static
@@ -327,38 +299,12 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
             case (TimeSeries):
               case (LyapunovExp):
                   // all available target functions
-                  list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+                  list.push_back(CObjectLists::SINGLE_OBJECT);
+      list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
       list.push_back(CObjectLists::GLOBAL_PARAMETERS);
     }
 
   return list;
-}
-
-//static
-std::string
-CSensProblem::getVariableGroupName(CObjectLists::ListType objtype)
-{
-  std::string ret;
-
-  switch (objtype)
-    {
-    case ((CObjectLists::ListType) 0):
-            ret = "Not Set";
-      break;
-
-    case (CObjectLists::NON_CONST_METAB_CONCENTRATIONS):
-            ret = "Global Parameters";
-      break;
-
-    case (CObjectLists::GLOBAL_PARAMETERS):
-            ret = "Metabolite Concentrations";
-      break;
-
-    default:
-      ret = "Error:  Value not handled";
-    }
-
-  return ret;
 }
 
 void CSensProblem::initDebugProblem()
@@ -368,6 +314,6 @@ void CSensProblem::initDebugProblem()
   item.setSingleObjectCN(this->getCN());
   addVariables(item);
 
-  item.setListType(CObjectLists::NON_CONST_METABS);
+  item.setListType(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
   addVariables(item);
 }
