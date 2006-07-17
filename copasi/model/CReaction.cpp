@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.156 $
+   $Revision: 1.157 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:57 $
+   $Date: 2006/07/17 19:14:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -326,7 +326,6 @@ void CReaction::clearParameterMapping(const std::string & parameterName)
   index = mMap.findParameterByName(parameterName, type);
   if (type != CFunctionParameter::VFLOAT64) fatalError(); //wrong data type
   mMetabKeyMap[index].clear();
-  //mMap.clearCallParameter(parameterName);
 }
 
 void CReaction::clearParameterMapping(C_INT32 index)
@@ -334,7 +333,6 @@ void CReaction::clearParameterMapping(C_INT32 index)
   if (!mpFunction) fatalError();
   if (getFunctionParameters()[index]->getType() != CFunctionParameter::VFLOAT64) fatalError();
   mMetabKeyMap[index].clear();
-  //mMap.clearCallParameter(parameterName);
 }
 
 const std::vector<std::string> & CReaction::getParameterMapping(const std::string & parameterName) const
@@ -437,6 +435,9 @@ const CFunctionParameters & CReaction::getFunctionParameters() const
 void CReaction::compile()
 {
   //mChemEq.compile(compartments);
+  mDependencies.clear();
+
+  CCopasiObject * pObject;
 
   if (mpFunction)
     {
@@ -452,10 +453,18 @@ void CReaction::compile()
               mMap.clearCallParameter(paramName);
               jmax = mMetabKeyMap[i].size();
               for (j = 0; j < jmax; ++j)
-                mMap.addCallParameter(paramName, GlobalKeys.get(mMetabKeyMap[i][j]));
+                {
+                  pObject = GlobalKeys.get(mMetabKeyMap[i][j]);
+                  mMap.addCallParameter(paramName, pObject);
+                  mDependencies.insert(pObject);
+                }
             }
           else
-            mMap.setCallParameter(paramName, GlobalKeys.get(mMetabKeyMap[i][0]));
+            {
+              pObject = GlobalKeys.get(mMetabKeyMap[i][0]);
+              mMap.setCallParameter(paramName, pObject);
+              mDependencies.insert(pObject);
+            }
         }
     }
 
@@ -666,8 +675,11 @@ void CReaction::setScalingFactor()
   if (1 == getCompartmentNumber())
     {
       assert(mChemEq.getBalances()[0]->getMetabolite());
-      mScalingFactor =
-        (C_FLOAT64 *) mChemEq.getBalances()[0]->getMetabolite()->getCompartment()->getValuePointer();
+
+      const CCompartment * pCompartment =
+        mChemEq.getBalances()[0]->getMetabolite()->getCompartment();
+      mScalingFactor = (C_FLOAT64 *) pCompartment->getValuePointer();
+      mDependencies.insert(pCompartment->getObject(CCopasiObjectName("Reference=Volume")));
     }
   else
     mScalingFactor = &mDefaultScalingFactor;
@@ -704,13 +716,19 @@ void CReaction::setScalingFactor()
 void CReaction::initObjects()
 {
   CModel * pModel = (CModel *) getObjectAncestor("Model");
+
+  setRefresh(this, &CReaction::calculate);
+
+  std::set< const CCopasiObject * > Dependencies;
+  Dependencies.insert(this);
+
   CCopasiObject * pObject;
 
   pObject = addObjectReference("Flux", mFlux, CCopasiObject::ValueDbl);
-  if (pModel) pObject->setRefresh(pModel, &CModel::applyAssignments);
+  pObject->setDirectDependencies(Dependencies);
 
   pObject = addObjectReference("ParticleFlux", mParticleFlux, CCopasiObject::ValueDbl);
-  if (pModel) pObject->setRefresh(pModel, &CModel::applyAssignments);
+  pObject->setDirectDependencies(Dependencies);
 }
 
 std::ostream & operator<<(std::ostream &os, const CReaction & d)
