@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Date: 2006/07/17 17:30:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,7 +58,18 @@ CMoiety::~CMoiety()
 
 void CMoiety::initObjects()
 {
+  this->setRefresh(this, &CMoiety::refreshDependentNumber);
+
   addObjectReference("Value", mINumber, CCopasiObject::ValueDbl);
+
+  CCopasiObject * pObj =
+    addObjectReference("DependentValue", mNumber, CCopasiObject::ValueDbl);
+
+  std::set< const CCopasiObject * > Dependencies;
+  Dependencies.insert(this);
+
+  pObj->setDirectDependencies(Dependencies);
+
   return;
 }
 
@@ -71,12 +82,19 @@ void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite)
 
   pMetabolite->addMoiety(this);
 
+  if (!mEquation.size())
+    mDependencies.insert(pMetabolite->getObject(CCopasiObjectName("Reference=ParticleNumber")));
+
   mEquation.push_back(element);
 }
 
-void CMoiety::cleanup() {mEquation.clear();}
+void CMoiety::cleanup()
+{
+  mDependencies.clear();
+  mEquation.clear();
+}
 
-bool CMoiety::refreshDependentNumber()
+void CMoiety::refreshDependentNumber()
 {
   mNumber = mINumber;
 
@@ -85,7 +103,7 @@ bool CMoiety::refreshDependentNumber()
   for (; it != end; ++it)
     mNumber -= it->first * it->second->getValue();
 
-  return true;
+  return;
 }
 
 C_FLOAT64 CMoiety::dependentNumber()
@@ -119,11 +137,6 @@ std::string CMoiety::getDescription(const CModel * model) const
       }
     return Description;
   }
-
-bool CMoiety::setName(const std::string name)
-{
-  return setObjectName(name);
-}
 
 void CMoiety::setInitialValue()
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Date: 2006/07/17 17:30:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -101,33 +101,6 @@ class CMoiety : public CCopasiContainer
     /**
      *
      */
-    void cleanup(const std::string & name);
-
-    /**
-     *
-     */
-    void cleanup(C_INT32 index);
-
-    /**
-     *
-     */
-    void change(C_INT32 index,
-                C_FLOAT64 value);
-
-    /**
-     *
-     */
-    void change(const std::string & name,
-                C_FLOAT64 value);
-
-    /**
-     *
-     */
-    bool setName(const std::string name);
-
-    /**
-     *
-     */
     void setInitialValue();
 
     /**
@@ -153,9 +126,8 @@ class CMoiety : public CCopasiContainer
 
     /**
      * Refreshes the value of the dependent number
-     * @return bool success
      */
-    bool refreshDependentNumber();
+    void refreshDependentNumber();
 
   private:
     /**
