@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:22 $
+   $Date: 2006/07/17 16:30:36 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,9 @@ void CStateTemplate::remove(CModelEntity * entity)
   entity->setInitialValuePtr(NULL);
   entity->setValuePtr(NULL);
 
-  mIndexMap.erase(entity);
+  mpEntities[it->second] = NULL;
+
+  mIndexMap.erase(it);
 
   mModel.setCompileFlag(true);
 }
@@ -231,10 +233,11 @@ void CStateTemplate::resize()
   CModelEntity ** pEnd = pTmp + mInsert;
 
   for (; pTmp != pEnd; ++pTmp, ++pInitialValues, ++pCurrentValues)
-    {
-      (*pTmp)->setInitialValuePtr(pInitialValues);
-      (*pTmp)->setValuePtr(pCurrentValues);
-    }
+    if (*pTmp != NULL)
+      {
+        (*pTmp)->setInitialValuePtr(pInitialValues);
+        (*pTmp)->setValuePtr(pCurrentValues);
+      }
 }
 
 /*************************/
