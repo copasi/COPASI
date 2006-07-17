@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.132 $
+   $Revision: 1.133 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/29 09:02:53 $
+   $Author: shoops $
+   $Date: 2006/07/17 17:09:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1766,13 +1766,12 @@ CCopasiXMLParser::ModelValueElement::ModelValueElement(CCopasiXMLParser & parser
 
 CCopasiXMLParser::ModelValueElement::~ModelValueElement()
 {
-  pdelete(mpCurrentHandler);
+  pdelete(mpMathMLElement);
 }
 
 void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
     const XML_Char **papszAttrs)
 {
-  CModelValue * pMV;
   const char * Key;
   const char * Name;
   const char * status;
@@ -1793,17 +1792,30 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
       Status = (CMetab::Status) toEnum(status, CModelEntity::XMLStatus);
       StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs, "");
 
-      pMV = new CModelValue();
-      mCommon.KeyMap.addFix(Key, pMV);
-      pMV->setObjectName(Name);
-      pMV->setStatus(Status);
+      mpMV = new CModelValue();
+      mCommon.KeyMap.addFix(Key, mpMV);
+      mpMV->setObjectName(Name);
+      mpMV->setStatus(Status);
       SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
       if (SBMLId != "")
         {
-          pMV->setSBMLId(SBMLId);
+          mpMV->setSBMLId(SBMLId);
         }
 
-      mCommon.pModel->getModelValues().add(pMV, true);
+      mCommon.pModel->getModelValues().add(mpMV, true);
+      break;
+
+    case MathML:
+      if (strcmp(pszName, "MathML")) fatalError();
+
+      /* If we do not have a MathML element handler we create one. */
+      if (!mpMathMLElement)
+        mpMathMLElement = new MathMLElement(mParser, mCommon);
+
+      /* Push the MathML element handler on the stack and call it. */
+      mpCurrentHandler = mpMathMLElement;
+      mParser.pushElementHandler(mpCurrentHandler);
+      mpCurrentHandler->start(pszName, papszAttrs);
       break;
 
     default:
@@ -1828,6 +1840,12 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
 
       /* Tell the parent element we are done. */
       mParser.onEndElement(pszName);
+      break;
+
+    case MathML:
+      if (strcmp(pszName, "MathML")) fatalError();
+      mpMV->setExpression(mCommon.FunctionDescription);
+
       break;
 
     case UNKNOWN_ELEMENT:

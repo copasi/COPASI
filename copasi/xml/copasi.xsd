@@ -89,13 +89,17 @@
                   <xs:sequence>
                     <xs:element name="ModelValue" id="copasi.Model.ModelValue" maxOccurs="unbounded">
                       <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="MathML" type="cMATH" minOccurs="0"/>
+                        </xs:sequence>
                         <xs:attribute name="key" type="cMODELVALUE_KEY" use="required" id="copasi.Model.ModelValue.key"/>
                         <xs:attribute name="name" type="cNAME" use="required" id="copasi.Model.ModelValue.name"/>
                         <xs:attribute name="status" use="required">
                           <xs:simpleType>
                             <xs:restriction base="xs:string">
                               <xs:enumeration value="fixed"/>
-                              <xs:enumeration value="variable"/>
+                              <xs:enumeration value="assignment"/>
+                              <xs:enumeration value="ode"/>
                             </xs:restriction>
                           </xs:simpleType>
                         </xs:attribute>
@@ -490,19 +494,7 @@
   </xs:complexType>
   <xs:complexType name="cFUNCTION" id="copasi.FUNCTION">
     <xs:sequence>
-      <xs:element name="MathML">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="Text">
-              <xs:simpleType>
-                <xs:restriction base="xs:string">
-                  <xs:whiteSpace value="collapse"/>
-                </xs:restriction>
-              </xs:simpleType>
-            </xs:element>
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
+      <xs:element name="MathML" type="cMATH"/>
       <xs:element name="ListOfParameterDescriptions" id="copasi.FUNCTION.ListOfParameterDescriptions" minOccurs="0">
         <xs:complexType mixed="true">
           <xs:sequence>
@@ -603,18 +595,15 @@
     <xs:attribute name="functionParameter" type="cFUNCTION_PARAMETER_KEYREF" use="required" id="copasi.FUNCTION_CALL_PARAMETER.functionParameter"/>
   </xs:complexType>
   <xs:complexType name="cMATH">
-    <xs:choice>
+    <xs:sequence>
       <xs:element name="Text">
         <xs:simpleType>
           <xs:restriction base="xs:string">
-            <xs:whiteSpace value="collapse"/>
+            <xs:whiteSpace value="preserve"/>
           </xs:restriction>
         </xs:simpleType>
       </xs:element>
-      <xs:sequence>
-        <xs:any namespace="http://www.w3.org/Math/XMLSchema" processContents="skip" maxOccurs="unbounded"/>
-      </xs:sequence>
-    </xs:choice>
+    </xs:sequence>
   </xs:complexType>
   <xs:complexType name="cOBJECT">
     <xs:attribute name="cn" type="xs:string" use="required"/>

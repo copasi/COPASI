@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.85 $
+   $Revision: 1.86 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:20:40 $
+   $Date: 2006/07/17 17:09:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -387,7 +387,24 @@ bool CCopasiXML::saveModel()
           if (pMV->getSBMLId() != "")
             mSBMLReference[pMV->getSBMLId()] = pMV->getKey();
 
-          saveElement("ModelValue", Attributes);
+          if (pMV->isFixed())
+            {
+              saveElement("ModelValue", Attributes);
+            }
+          else
+            {
+              startSaveElement("ModelValue", Attributes);
+
+              startSaveElement("MathML");
+
+              startSaveElement("Text");
+              saveData(pMV->getExpression());
+              endSaveElement("Text");
+
+              endSaveElement("MathML");
+
+              endSaveElement("ModelValue");
+            }
         }
 
       endSaveElement("ListOfModelValues");

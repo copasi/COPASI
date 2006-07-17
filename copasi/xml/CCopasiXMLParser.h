@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/21 16:01:54 $
+   $Author: shoops $
+   $Date: 2006/07/17 17:09:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,7 @@
 #include "report/CKeyFactory.h"
 
 class CModel;
+class CModelValue;
 class CReaction;
 class CEvaluationTree;
 class CFunctionParameter;
@@ -1207,6 +1208,8 @@ class CCopasiXMLParser : public CExpat
         virtual void end(const XML_Char *pszName);
       };
 
+    class MathMLElement;
+
   class ModelValueElement:
           public CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >
       {
@@ -1217,8 +1220,12 @@ class CCopasiXMLParser : public CExpat
          */
         enum Element
         {
-          ModelValue = 0
+          ModelValue = 0,
+          MathML
         };
+
+        CModelValue * mpMV;
+        MathMLElement * mpMathMLElement;
 
         // Operations
       public:
