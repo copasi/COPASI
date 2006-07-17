@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:09 $
+   $Date: 2006/07/17 16:48:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,17 +170,19 @@ class CCopasiObject
 
     unsigned C_INT32 mObjectFlag;
 
+  protected:
     /**
      * A list of all objects the object depends on directly, i.e, the
      * objects which are used to calculate the object.
      */
     std::set< const CCopasiObject * > mDependencies;
 
+  private:
+
     UpdateMethod * mpUpdateMethod;
 
     Refresh * mpRefresh;
 
-  private:
     static const C_FLOAT64 DummyValue;
 
     static UpdateMethod mDefaultUpdateMethod;
