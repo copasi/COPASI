@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: tjohann $
-   $Date: 2006/07/14 12:52:16 $
+   $Date: 2006/07/17 14:34:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 #include "sensitivities/CSensProblem.h"
 
 class QComboBox;
+class QToolButton;
 //class QVBoxLayout;
 //class QHBoxLayout;
 //class QGridLayout;
@@ -90,14 +91,17 @@ class SensitivitiesWidget : public TaskWidget
 
     QComboBox* FunctionChooser;
     QLineEdit* FunctionLineEdit;
+    QToolButton *SingleFunctionChooser;
     //    QListView* FunctionChoiceBox;
 
     QComboBox* VariableChooser;
     QLineEdit* VariableLineEdit;
+    QToolButton *SingleVariableChooser;
     //    QListView* VariableChoiceBox;
 
-    QComboBox* VariableChooser2;
-    QLineEdit* VariableLineEdit2;
+    QComboBox* Variable2Chooser;
+    QLineEdit* Variable2LineEdit;
+    QToolButton *SingleVariable2Chooser;
 
   private:
     void initCombos();
@@ -132,6 +136,10 @@ class SensitivitiesWidget : public TaskWidget
     CObjectLists::ListType mVariable;
     CObjectLists::ListType mVariable2;
 
+    CCopasiObject * mpSingleFunction;
+    CCopasiObject * mpSingleVariable;
+    CCopasiObject * mpSingleVariable2;
+
     CSensProblem * mpProblem;
 
     CSensItem mFunctionItem;
@@ -142,7 +150,11 @@ class SensitivitiesWidget : public TaskWidget
     void on_SubTaskChooser_activated(int);
     void on_FunctionChooser_activated(int);
     void on_VariableChooser_activated(int);
-    void on_VariableChooser2_activated(int);
+    void on_Variable2Chooser_activated(int);
+
+    void on_SingleFunctionChooser_clicked();
+    void on_SingleVariableChooser_clicked();
+    void on_SingleVariable2Chooser_clicked();
   };
 
 #endif // SENSWIDGET_H
