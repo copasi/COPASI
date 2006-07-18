@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: tjohann $
-   $Date: 2006/07/17 14:34:50 $
+   $Date: 2006/07/18 13:24:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,10 @@
  *  name 'name' and widget flags set to 'f'.
  */
 SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFlags fl)
-    : TaskWidget(parent, name, fl)
+    : TaskWidget(parent, name, fl),
+    mpSingleFunction(NULL),
+    mpSingleVariable(NULL),
+    mpSingleVariable2(NULL)
 {
   // row where the header ends:
   const int fieldStart = 3;
@@ -440,39 +443,27 @@ SensitivitiesWidget::on_SubTaskChooser_activated(int index)
 void
 SensitivitiesWidget::on_FunctionChooser_activated(int index)
 {
-  FunctionLineEdit->clear();
-
-  QString displayText = "";
-
   bool enabled = false;
   bool editenabled = false;
+
   if (index == 0)
     mChoicesDone &= ~Choice_Function;
   else if (index == 1) // Single Object
     {
       editenabled = true;
       if (mpSingleFunction)
-        {
-          displayText = mpSingleFunction->getObjectDisplayName();
-          mChoicesDone |= Choice_Function;
-          enabled = (mChoicesDone == Choice_All);
-        }
+        mChoicesDone |= Choice_Function;
       else
         mChoicesDone &= ~Choice_Function;
     }
   else
-    {
-      mChoicesDone |= Choice_Function;
-      enabled = (mChoicesDone == Choice_All);
-      //      displayText = mFunctionsStringList[index];
-      //      FunctionLineEdit->home(false);
-    }
+    mChoicesDone |= Choice_Function;
+
+  enabled = (mChoicesDone == Choice_All);
 
   SingleFunctionChooser->setShown(editenabled);
   FunctionLineEdit->setShown(editenabled);
-  FunctionLineEdit->setText(displayText);
-  //   FunctionLineEdit->setEnabled(editenabled);
-  //   SingleFunctionChooser->setEnabled(editenabled);
+
   mpBtnWidget->mpBtnRun->setEnabled(enabled);
 
   mFunction = mFunctionsIndexTable[index];
@@ -481,10 +472,6 @@ SensitivitiesWidget::on_FunctionChooser_activated(int index)
 void
 SensitivitiesWidget::on_VariableChooser_activated(int index)
 {
-  VariableLineEdit->clear();
-
-  QString displayText = "";
-
   bool enabled = false;
   bool editenabled = false;
   if (index == 0)
@@ -493,26 +480,16 @@ SensitivitiesWidget::on_VariableChooser_activated(int index)
     {
       editenabled = true;
       if (mpSingleVariable)
-        {
-          displayText = mpSingleVariable->getObjectDisplayName();
-          mChoicesDone |= Choice_Variable;
-          enabled = (mChoicesDone == Choice_All);
-        }
+        mChoicesDone |= Choice_Variable;
       else
         mChoicesDone &= ~Choice_Variable;
     }
   else
-    {
-      mChoicesDone |= Choice_Variable;
-      enabled = (mChoicesDone == Choice_All);
-      //      displayText = mVariablesStringList[index];
-      //      VariableLineEdit->home(false);
-    }
+    mChoicesDone |= Choice_Variable;
+
+  enabled = (mChoicesDone == Choice_All);
 
   VariableLineEdit->setShown(editenabled);
-  //VariableLineEdit->setEnabled(editenabled);
-  VariableLineEdit->setText(displayText);
-
   SingleVariableChooser->setShown(editenabled);
 
   mpBtnWidget->mpBtnRun->setEnabled(enabled);
@@ -523,15 +500,10 @@ SensitivitiesWidget::on_VariableChooser_activated(int index)
 void
 SensitivitiesWidget::on_Variable2Chooser_activated(int index)
 {
-  Variable2LineEdit->clear();
-
   bool editenabled = false;
+
   if (index == 1) // Single Object:  handled in the slots of LineEdit.
-    {
-      editenabled = true;
-      if (mpSingleVariable2)
-        Variable2LineEdit->setText(mpSingleVariable2->getObjectDisplayName());
-    }
+    editenabled = true;
 
   SingleVariable2Chooser->setShown(editenabled);
   Variable2LineEdit->setShown(editenabled);
@@ -561,15 +533,6 @@ SensitivitiesWidget::on_SingleFunctionChooser_clicked()
           FunctionLineEdit->setText(FROM_UTF8(chosenObject->getObjectDisplayName()));
           mpSingleFunction = chosenObject;
         }
-      else
-        {
-          mChoicesDone &= ~Choice_Function;
-          FunctionLineEdit->setText("");
-        }
-    }
-  else
-    {
-      mChoicesDone &= ~Choice_Function;
     }
 
   mpBtnWidget->mpBtnRun->setEnabled((mChoicesDone == Choice_All));
@@ -597,14 +560,7 @@ SensitivitiesWidget::on_SingleVariableChooser_clicked()
           VariableLineEdit->setText(FROM_UTF8(chosenObject->getObjectDisplayName()));
           mpSingleVariable = chosenObject;
         }
-      else
-        {
-          mChoicesDone &= ~Choice_Variable;
-          VariableLineEdit->setText("");
-        }
     }
-  else
-    mChoicesDone &= ~Choice_Variable;
 
   mpBtnWidget->mpBtnRun->setEnabled((mChoicesDone == Choice_All));
 }
@@ -630,8 +586,5 @@ SensitivitiesWidget::on_SingleVariable2Chooser_clicked()
           Variable2LineEdit->setText(FROM_UTF8(chosenObject->getObjectDisplayName()));
           mpSingleVariable2 = chosenObject;
         }
-      else
-        Variable2LineEdit->setText("");
     }
-  else
-    {}}
+}
