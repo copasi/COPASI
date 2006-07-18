@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/05/10 11:39:10 $
+   $Author: shoops $
+   $Date: 2006/07/18 19:16:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -89,7 +89,15 @@ bool SBMLExporter::exportSBML(CModel* copasiModel, std::string sbmlFilename, boo
       /* check if the file already exisits.
          If yes, write if overwrite is true,
          else create an appropriate  CCopasiMessage. */
-      std::ifstream testInfile(sbmlFilename.c_str(), std::ios::in);
+      std::string Local;
+
+#ifdef WIN32
+      Local = utf8ToLocale(sbmlFilename);
+#else
+      Local = sbmlFilename;
+#endif
+
+      std::ifstream testInfile(Local.c_str(), std::ios::in);
       if (testInfile && !overwriteFile)
         {
           // create a CCopasiMessage with the appropriate error

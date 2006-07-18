@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:44 $
+   $Date: 2006/07/18 19:16:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -97,5 +97,9 @@ void FixXHTML(const std::string &original, std::string &fixed)
   */
 int toEnum(const char * attribute,
            const char ** enumNames);
+
+#ifdef WIN32
+std::string utf8ToLocale(const std::string & utf8);
+#endif
 
 #endif // COPASI_utilities
