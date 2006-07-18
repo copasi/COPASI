@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/18 19:16:14 $
+   $Date: 2006/07/18 19:37:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -588,27 +588,21 @@ std::string utf8ToLocale(const std::string & utf8)
   MultiByteToWideChar(CP_UTF8,              // code page
                       MB_ERR_INVALID_CHARS, // character-type options
                       utf8.c_str(),         // address of string to map
-                      -1,                   // NULL treminated
+                      -1,                   // NULL terminated
                       pWideChar,            // address of wide-character buffer
                       size);                // size of buffer
 
   int UsedDefaultChar = 0;
 
-  std::locale Global;
-  std::string Name = Global.name();
-
   size = WideCharToMultiByte(CP_THREAD_ACP,          // code page
                              WC_COMPOSITECHECK |
                              WC_DEFAULTCHAR,         // performance and mapping flags
                              pWideChar,              // address of wide-character string
-                             -1,                     // number of characters in string
+                             -1,                     // NULL terminated
                              NULL,                   // address of buffer for new string
                              0,                      // size of buffer
-                             "?",                    // address of default for unmappable
-                             // characters
-                             & UsedDefaultChar) + 1; // address of flag set when default
-  // char. used
-  DWORD Error = GetLastError();
+                             "?",                    // address of default for unmappable characters
+                             & UsedDefaultChar) + 1; // address of flag set when default char used
 
   char * pLocal = new char[size];
 
@@ -616,13 +610,11 @@ std::string utf8ToLocale(const std::string & utf8)
                       WC_COMPOSITECHECK |
                       WC_DEFAULTCHAR,         // performance and mapping flags
                       pWideChar,              // address of wide-character string
-                      -1,                     // number of characters in string
+                      -1,                     // NULL terminated
                       pLocal,                 // address of buffer for new string
                       size,                   // size of buffer
-                      "?",                    // address of default for unmappable
-                      // characters
-                      & UsedDefaultChar);     // address of flag set when default
-  // char. used
+                      "?",                    // address of default for unmappable characters
+                      & UsedDefaultChar);     // address of flag set when default char used
 
   std::string Local = pLocal;
 
