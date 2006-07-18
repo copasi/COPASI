@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/03 15:24:01 $
+   $Date: 2006/07/18 19:16:36 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -355,13 +355,13 @@ bool CDirEntry::makePathAbsolute(std::string & relativePath,
 
   if (!isDir(AbsoluteTo)) return false;
 
-  while (!relativePath.compare(0, 3, "../"))
+  while (!relativePath.compare(0, 2, ".."))
     {
       AbsoluteTo = dirName(AbsoluteTo);
       relativePath = relativePath.substr(3);
     }
 
-  relativePath = AbsoluteTo + "/" + relativePath;
+  relativePath = AbsoluteTo + Separator + relativePath;
 
   return true;
 }
