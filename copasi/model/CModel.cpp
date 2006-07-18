@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.261 $
+   $Revision: 1.262 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:57 $
+   $Author: ssahle $
+   $Date: 2006/07/18 10:07:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -737,7 +737,7 @@ void CModel::buildMoieties()
       if (mMetabolitesX[i]->getStatus() == CModelEntity::UNUSED) continue;
 
       pMoiety = new CMoiety;
-      pMoiety->setName(mMetabolitesX[i]->getObjectName());
+      pMoiety->setObjectName(mMetabolitesX[i]->getObjectName());
       pMoiety->add(1.0, mMetabolitesX[i]);
 
       for (j = 0; j < jmax; j++)
