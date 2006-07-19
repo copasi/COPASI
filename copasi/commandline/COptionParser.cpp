@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/28 14:40:33 $
+   $Date: 2006/07/19 15:55:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,13 +28,15 @@
 #define strcasecmp _stricmp
 #endif
 
-#include "COptionParser.h"
 #include <cstring>
 #include <cstdlib>
 #include <cctype>
 #include <fstream>
 #include <sstream>
 #include <errno.h>
+
+#include "COptionParser.h"
+#include "utilities/utility.h"
 
 namespace
   {
@@ -93,7 +95,7 @@ void copasi::COptionParser::parse(const char * fileName)
   std::string Option;
   std::string Value;
   std::string::size_type pos;
-  std::ifstream File(fileName);
+  std::ifstream File(utf8ToLocale(fileName).c_str());
 
   if (File.fail())
     {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:33 $
+   $Date: 2006/07/19 15:57:54 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -549,7 +549,7 @@ bool CopasiPlot::saveData(const std::string & filename)
   // No data
   if (ItemActivity == ActivitySize) return true;
 
-  std::ofstream fs(filename.c_str());
+  std::ofstream fs(utf8ToLocale(filename).c_str());
   if (!fs.good()) return false;
 
   // Write the table header

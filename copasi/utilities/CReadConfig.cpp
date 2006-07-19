@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CReadConfig.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Date: 2006/07/19 15:55:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,7 @@
 #include "copasi.h"
 #include "CCopasiMessage.h"
 #include "CReadConfig.h"
+#include "utility.h"
 
 // char *initInputBuffer(char *name);
 // static C_INT32 GetFileSize(const char *name);
@@ -270,7 +271,7 @@ C_INT32 CReadConfig::initInputBuffer()
   char c[] = " ";
 
   // read the configuration file into the configuration buffer
-  std::ifstream File(mFilename.c_str());
+  std::ifstream File(utf8ToLocale(mFilename).c_str());
 
   if (File.fail())
     CCopasiMessage(CCopasiMessage::ERROR, MCReadConfig + 2,

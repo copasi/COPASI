@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.129 $
+   $Revision: 1.130 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/18 19:16:14 $
+   $Date: 2006/07/19 15:54:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1281,15 +1281,7 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument *&
                                                   &mTotalSteps);
         }
 
-      std::string Local;
-
-#ifdef WIN32
-      Local = utf8ToLocale(filename);
-#else
-      Local = filename;
-#endif
-
-      SBMLDocument* sbmlDoc = reader->readSBML(Local);
+      SBMLDocument* sbmlDoc = reader->readSBML(utf8ToLocale(filename));
       sbmlDoc->validate();
       if (sbmlDoc->getNumFatals() > 0)
         {

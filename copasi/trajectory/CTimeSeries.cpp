@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:17 $
+   $Date: 2006/07/19 15:58:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -136,7 +136,7 @@ const std::string & CTimeSeries::getTitle(unsigned C_INT32 var) const
 
 int CTimeSeries::save(const std::string& fileName, bool writeParticleNumbers, const std::string& separator) const
   {
-    std::ofstream fileStream(fileName.c_str());
+    std::ofstream fileStream(utf8ToLocale(fileName).c_str());
     std::ostringstream* stringStream = new std::ostringstream();
     (*stringStream) << "# ";
     unsigned int counter2;

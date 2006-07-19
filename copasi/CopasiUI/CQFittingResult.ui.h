@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingResult.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:06 $
+   $Date: 2006/07/19 15:57:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -291,7 +291,7 @@ void CQFittingResult::slotSave(void)
       if (Answer == QMessageBox::Cancel) return;
     }
 
-  std::ofstream file((const char *) fileName.utf8());
+  std::ofstream file(utf8ToLocale((const char *) fileName.utf8()).c_str());
   if (file.fail()) return;
 
   unsigned C_INT32 i, imax;

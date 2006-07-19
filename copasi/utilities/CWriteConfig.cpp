@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CWriteConfig.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Date: 2006/07/19 15:55:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,7 +78,7 @@ C_INT32 CWriteConfig::commit(void)
   mOpenMode |= std::ios_base::binary;
 #endif
 
-  std::ofstream ConfigFile(mFileName.c_str(), mOpenMode);
+  std::ofstream ConfigFile(utf8ToLocale(mFileName).c_str(), mOpenMode);
 
   if (ConfigFile.fail())
     {

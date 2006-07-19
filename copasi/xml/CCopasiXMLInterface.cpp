@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/18 19:16:14 $
+   $Date: 2006/07/19 15:58:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,6 +190,22 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   if (isnan(dbl))
     value << "NaN";
   else if (finite(dbl))
@@ -198,6 +214,22 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
     value << "INF";
   else if (dbl < 0.0)
     value << "-INF";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -309,15 +341,7 @@ bool CCopasiXMLInterface::load(const std::string & fileName)
 {
   mFilename = fileName;
 
-  std::string Local;
-
-#ifdef WIN32
-  Local = utf8ToLocale(mFilename);
-#else
-  Local = mFilename;
-#endif
-
-  std::ifstream is(Local.c_str());
+  std::ifstream is(utf8ToLocale(mFilename).c_str());
 
   if (is.fail()) return false;
 
@@ -328,18 +352,10 @@ bool CCopasiXMLInterface::save(const std::string & fileName)
 {
   mFilename = fileName;
 
-  std::string Local;
-
-#ifdef WIN32
-  Local = utf8ToLocale(mFilename);
-#else
-  Local = mFilename;
-#endif
-
   std::ostringstream tmp;
   if (!save(tmp)) return false;
 
-  std::ofstream os(Local.c_str());
+  std::ofstream os(utf8ToLocale(mFilename).c_str());
   if (os.fail()) return false;
 
   os << tmp.str();

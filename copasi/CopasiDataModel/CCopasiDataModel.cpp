@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/18 19:16:13 $
+   $Date: 2006/07/19 15:56:20 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -148,15 +148,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
       !CDirEntry::makePathAbsolute(FileName, PWD))
     FileName = CDirEntry::fileName(FileName);
 
-  std::string Local;
-
-#ifdef WIN32
-  Local = utf8ToLocale(FileName);
-#else
-  Local = FileName;
-#endif
-
-  std::ifstream File(Local.c_str());
+  std::ifstream File(utf8ToLocale(FileName).c_str());
 
   if (File.fail())
     {
@@ -172,7 +164,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
   if (!Line.compare(0, 8, "Version="))
     {
       File.close();
-      CReadConfig inbuf(Local.c_str());
+      CReadConfig inbuf(FileName.c_str());
       if (inbuf.getVersion() >= "4")
         {
           CCopasiMessage(CCopasiMessage::ERROR,

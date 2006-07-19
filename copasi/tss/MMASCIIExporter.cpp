@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/01 19:25:39 $
+   $Date: 2006/07/19 15:54:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -578,7 +578,7 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
           If yes, write if overwrite is true,
           else create an appropriate  CCopasiMessage. */
 
-  std::ifstream testInfile(mmasciiFilename.c_str(), std::ios::in);
+  std::ifstream testInfile(utf8ToLocale(mmasciiFilename).c_str(), std::ios::in);
 
   if (testInfile && !overwriteFile)
     {
@@ -587,7 +587,7 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
       return false;
     }
 
-  std::ofstream outFile(mmasciiFilename.c_str(), std::ios::out);
+  std::ofstream outFile(utf8ToLocale(mmasciiFilename).c_str(), std::ios::out);
 
   if (Filter == "C Files (*.c)")
     return exportMathModelInC(copasiModel, outFile);
