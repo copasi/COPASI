@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelValuesWidget.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/13 18:03:34 $
+   $Date: 2006/07/19 18:51:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,6 +18,7 @@
 #include <qfont.h>
 #include <qpushbutton.h>
 #include <qaction.h>
+#include <qstringlist.h>
 
 //#include "MyTable.h"
 #include "model/CModel.h"
@@ -26,6 +27,12 @@
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+
+#define COL_NAME 1
+#define COL_TYPE 2
+#define COL_INITIAL 3
+#define COL_TRANSIENT 4
+#define COL_EXPRESSION 5
 
 std::vector<const CCopasiObject*> ModelValuesWidget::getObjects() const
   {
@@ -42,9 +49,10 @@ std::vector<const CCopasiObject*> ModelValuesWidget::getObjects() const
 void ModelValuesWidget::init()
 {
   mOT = ListViews::MODELVALUE;
-  numCols = 4 + 1;
+  numCols = 6 + 1;
   table->setNumCols(numCols);
-  table->setColumnReadOnly (3, true);
+  table->setColumnReadOnly (COL_TRANSIENT, true);
+  table->setColumnReadOnly (COL_EXPRESSION, true);
 
   //table->QTable::setNumRows(1);
 
@@ -52,9 +60,11 @@ void ModelValuesWidget::init()
   QHeader *tableHeader = table->horizontalHeader();
 
   tableHeader->setLabel(0, "Status");
-  tableHeader->setLabel(1, "Name");
-  tableHeader->setLabel(2, "Initial Value");
-  tableHeader->setLabel(3, "Transient Value");
+  tableHeader->setLabel(COL_NAME, "Name");
+  tableHeader->setLabel(COL_TYPE, "Type");
+  tableHeader->setLabel(COL_INITIAL, "Initial Value");
+  tableHeader->setLabel(COL_TRANSIENT, "Transient Value");
+  tableHeader->setLabel(COL_EXPRESSION, "Expression");
 
   //for sbml ids
   tableHeader->setLabel(numCols - 1, "SBML ID");
@@ -65,11 +75,11 @@ void ModelValuesWidget::showHeaders()
 {
   /*  QHeader *tableHeader = table->horizontalHeader();
     tableHeader->setLabel(0, "Status");
-    tableHeader->setLabel(1, "Name");
+    tableHeader->setLabel(COL_NAME "Name");
     if (CCopasiDataModel::Global->getModel())
       {
         std::string str = CCopasiDataModel::Global->getModel()->getVolumeUnit();
-        tableHeader->setLabel(2, "Volume\n(" + FROM_UTF8(str) + ")");
+        tableHeader->setLabel(COL_INITIAL "Volume\n(" + FROM_UTF8(str) + ")");
       }*/
 }
 
@@ -78,9 +88,61 @@ void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   if (!obj) return;
   const CModelValue* pMV = dynamic_cast<const CModelValue*>(obj);
   if (!pMV) return;
-  table->setText(row, 1, FROM_UTF8(pMV->getObjectName()));
-  table->setText(row, 2, QString::number(pMV->getInitialValue()));
-  table->setText(row, 3, QString::number(pMV->getValue()));
+  table->setText(row, COL_NAME, FROM_UTF8(pMV->getObjectName()));
+
+  QStringList Types;
+  Types.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
+  Types.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
+  Types.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
+  QComboTableItem * pComboBox = new QComboTableItem(table, Types);
+  pComboBox->setCurrentItem(pMV->getStatus());
+  table->setItem(row, COL_TYPE, pComboBox);
+
+  table->setText(row, COL_INITIAL, QString::number(pMV->getInitialValue()));
+  table->setText(row, COL_TRANSIENT, QString::number(pMV->getValue()));
+
+  std::string Expression = pMV->getExpression();
+
+  unsigned C_INT32 i = 0;
+
+  std::string out_str = "";
+  while (i < Expression.length())
+    {
+      if (Expression[i] == '<')
+        {
+          i++;
+          std::string objectName = "";
+
+          while (Expression[i] != '>' && i < Expression.length())
+            {
+              if (Expression[i] == '\\')
+                objectName += Expression[i++];
+
+              objectName += Expression[i];
+              i++;
+            }
+
+          CCopasiObjectName temp_CN(objectName);
+          CCopasiObject * temp_object = const_cast<CCopasiObject *>(RootContainer.getObject(temp_CN));
+          out_str += "<" + temp_object->getObjectDisplayName() + ">";
+          continue;
+        }
+
+      else if (Expression[i] == '>')
+        {
+          //do nothing
+        }
+
+      else
+        {
+          out_str += Expression[i];
+        }
+
+      i++;
+    }
+
+  table->setText(row, COL_EXPRESSION, FROM_UTF8(out_str));
+
   showHeaders();
 }
 
@@ -89,14 +151,24 @@ void ModelValuesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
   if (!obj) return;
   CModelValue* pMV = dynamic_cast<CModelValue*>(obj);
   if (!pMV) return;
-  pMV->setInitialValue(table->text(row, 2).toDouble());
-  pMV->setValue(table->text(row, 2).toDouble());
+  pMV->setStatus((CModelEntity::Status) static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem());
+  pMV->setInitialValue(table->text(row, COL_INITIAL).toDouble());
 }
 
 void ModelValuesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)
 {
-  if (exc != 2)
-    table->setText(row, 2, QString::number(0.0));
+  if (exc != COL_INITIAL)
+    table->setText(row, COL_INITIAL, QString::number(0.0));
+  if (exc != COL_TYPE)
+    {
+      QStringList Types;
+      Types.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
+      Types.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
+      Types.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
+      QComboTableItem * pComboBox = new QComboTableItem(table, Types);
+      pComboBox->setCurrentItem(0);
+      table->setItem(row, COL_TYPE, pComboBox);
+    }
 }
 
 QString ModelValuesWidget::defaultObjectName() const
