@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/17 17:30:42 $
+   $Date: 2006/07/19 20:58:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -109,9 +109,16 @@ class CMoiety : public CCopasiContainer
     std::string getDescription(const CModel* model) const;
 
     /**
-     *
+     * Retrieve and refresh the dependent number;
+     * @return const C_FLOAT64 & dependentNumber
      */
-    C_FLOAT64 dependentNumber();
+    const C_FLOAT64 & dependentNumber();
+
+    /**
+     * Retrieve the dependent number;
+     * @return const C_FLOAT64 & dependentNumber
+     */
+    const C_FLOAT64 & getDependentNumber() const;
 
     /**
      *

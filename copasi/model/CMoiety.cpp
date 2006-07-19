@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 19:02:45 $
+   $Date: 2006/07/19 20:58:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,11 +106,16 @@ void CMoiety::refreshDependentNumber()
   return;
 }
 
-C_FLOAT64 CMoiety::dependentNumber()
+const C_FLOAT64 & CMoiety::dependentNumber()
 {
   refreshDependentNumber();
   return mNumber;
 }
+
+const C_FLOAT64 & CMoiety::getDependentNumber() const
+  {
+    return mNumber;
+  }
 
 const std::string & CMoiety::getKey() const {return mKey;} //By G
 
