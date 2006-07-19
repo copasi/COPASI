@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 19:02:46 $
+   $Date: 2006/07/19 20:57:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -694,7 +694,7 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
       newNameMap[comps[i]->getKey()] = newName;
 
       outFile << newName
-      << " = " << comps[i]->getVolume()
+      << " = " << comps[i]->getValue()
       << '\t' << '\t' << "; compartment \'" << name << "\'"
       << std::endl;
     }
@@ -1103,7 +1103,7 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
   for (i = 0; i < comps_size; i++)
     {
       outFile << "c[" << i << "]="
-      << comps[i]->getVolume() << ";"
+      << comps[i]->getValue() << ";"
       << '\t' << "//" << comps[i]->getObjectName().c_str()
       << std::endl;
     }

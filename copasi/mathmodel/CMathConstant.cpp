@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathConstant.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:50 $
+   $Date: 2006/07/19 20:56:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -186,15 +186,15 @@ CMathConstantCompartment::~CMathConstantCompartment() {}
 
 bool CMathConstantCompartment::setValue(const C_FLOAT64 & value)
 {
-  ((CCompartment *) mpObject)->setInitialVolume(value);
+  ((CCompartment *) mpObject)->setInitialValue(value);
   return true;
 }
 
 const C_FLOAT64 & CMathConstantCompartment::getValue() const
-  {return ((CCompartment *) mpObject)->getInitialVolume();}
+  {return ((CCompartment *) mpObject)->getInitialValue();}
 
 const C_FLOAT64 & CMathConstantCompartment::getTransientValue() const
-  {return ((CCompartment *) mpObject)->getVolume();}
+  {return ((CCompartment *) mpObject)->getValue();}
 
 const std::vector< CMathSymbol * > &
 CMathConstantCompartment::getMetaboliteList() const

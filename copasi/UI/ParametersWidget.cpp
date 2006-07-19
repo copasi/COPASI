@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 19:02:45 $
+   $Date: 2006/07/19 20:56:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -232,7 +232,7 @@ bool ParametersWidget::loadFromModel()
   imax = comps.size();
   for (i = 0; i < imax; ++i)
     new CParameterListItem(mCompItem, FROM_UTF8(comps[i]->getObjectName()),
-                           comps[i], comps[i]->getInitialVolume(), unit);
+                           comps[i], comps[i]->getInitialValue(), unit);
 
   //Metabs
   mMetabItem = new CParameterListItem(listView, "Initial concentrations");
@@ -357,7 +357,7 @@ bool ParametersWidget::saveToModel() const
           {
             changed = true;
             CCompartment* tmp = dynamic_cast<CCompartment*>(child->getObject());
-            if (tmp) tmp->setInitialVolume(child->getValue());
+            if (tmp) tmp->setInitialValue(child->getValue());
           }
         child = (CParameterListItem *)child->nextSibling();
       }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Date: 2006/07/19 20:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -131,7 +131,7 @@ const CCompartment & CChemEq::getLargestCompartment() const
       {
         if (!mSubstrates[i]->getMetabolite()) continue;
 
-        tmp = mSubstrates[i]->getMetabolite()->getCompartment()->getVolume();
+        tmp = mSubstrates[i]->getMetabolite()->getCompartment()->getValue();
 
         if (tmp > maxVol)
           {
@@ -144,7 +144,7 @@ const CCompartment & CChemEq::getLargestCompartment() const
       {
         if (!mProducts[i]->getMetabolite()) continue;
 
-        tmp = mProducts[i]->getMetabolite()->getCompartment()->getVolume();
+        tmp = mProducts[i]->getMetabolite()->getCompartment()->getValue();
 
         if (tmp > maxVol)
           {

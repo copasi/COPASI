@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:55 $
+   $Date: 2006/07/19 20:57:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -606,7 +606,7 @@ bool CNewtonMethod::allPositive()
   = mpModel->getMetabolitesX().begin();
 
   for (; pIt != pEnd; ++pIt, itMetab++)
-    if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getVolume())
+    if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getValue())
       return false;
 
   // This is necessarry since the dependent numbers are ignored during calculation.
@@ -617,7 +617,7 @@ bool CNewtonMethod::allPositive()
   pEnd = mpSteadyState->endDependent();
 
   for (; pIt != pEnd; ++pIt, itMetab++)
-    if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getVolume())
+    if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getValue())
       return false;
 
   return true;
@@ -671,7 +671,7 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
 
     for (; pIt != pEnd; ++pIt, itMetab++)
       {
-        tmp = fabs(*pIt / (*itMetab)->getCompartment()->getVolume());
+        tmp = fabs(*pIt / (*itMetab)->getCompartment()->getValue());
         if (tmp > store)
           store = tmp;
 

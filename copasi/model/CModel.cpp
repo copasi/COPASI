@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.263 $
+   $Revision: 1.264 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 19:02:45 $
+   $Date: 2006/07/19 20:57:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1208,7 +1208,7 @@ void CModel::calculateElasticityMatrix(const C_FLOAT64 & factor,
       // :TODO: This only works for entities of type metabolites.
       //        The scaling factor for other entites should be 1.
       const C_FLOAT64 invVolume =
-        1.0 / static_cast<CMetab *>(*itEntity)->getCompartment()->getVolume();
+        1.0 / static_cast<CMetab *>(*itEntity)->getCompartment()->getValue();
       C_FLOAT64 * pX =
         const_cast<C_FLOAT64 *>(&static_cast<CMetab *>(*itEntity)->getConcentration());
 
@@ -1652,7 +1652,7 @@ CCompartment* CModel::createCompartment(const std::string & name,
 
   CCompartment * cpt = new CCompartment(name);
 
-  cpt->setInitialVolume(volume);
+  cpt->setInitialValue(volume);
   //cpt->setVolume(volume);
 
   if (!mCompartments.add(cpt, true))

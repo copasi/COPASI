@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.cpp,v $
-   $Revision: 1.89 $
+   $Revision: 1.90 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 14:21:42 $
+   $Date: 2006/07/19 20:56:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,10 +185,10 @@ bool CompartmentsWidget1::loadFromCompartment(const CCompartment * compartn)
     }
   ListBox1->triggerUpdate(true);
 
-  volumeSave = QString::number(compartn->getInitialVolume());
+  volumeSave = QString::number(compartn->getInitialValue());
   LineEdit3->setText(volumeSave);
 
-  LineEdit4->setText(QString::number(compartn->getVolume()));
+  LineEdit4->setText(QString::number(compartn->getValue()));
   LineEdit4->setReadOnly(true);
 
   /* <---for displaying units in the Widget */
@@ -257,7 +257,7 @@ bool CompartmentsWidget1::saveToCompartment()
     {
       double m1;
       m1 = volume.toDouble();
-      comp->setInitialVolume(m1);
+      comp->setInitialValue(m1);
       protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, objKey);
       volumeSave = volume;
     }

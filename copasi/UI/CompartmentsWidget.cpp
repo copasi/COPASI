@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.103 $
+   $Revision: 1.104 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/29 15:53:16 $
+   $Author: shoops $
+   $Date: 2006/07/19 20:56:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,7 +86,7 @@ void CompartmentsWidget::tableLineFromObject(const CCopasiObject* obj, unsigned 
   if (!obj) return;
   const CCompartment* pComp = (const CCompartment*)obj;
   table->setText(row, 1, FROM_UTF8(pComp->getObjectName()));
-  table->setText(row, 2, QString::number(pComp->getVolume()));
+  table->setText(row, 2, QString::number(pComp->getValue()));
   showHeaders();
 }
 
@@ -105,7 +105,7 @@ void CompartmentsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* 
       return;
     }
   CCompartment* pComp = (CCompartment*)obj;
-  pComp->setInitialVolume(table->text(row, 2).toDouble());
+  pComp->setInitialValue(table->text(row, 2).toDouble());
 }
 
 void CompartmentsWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)

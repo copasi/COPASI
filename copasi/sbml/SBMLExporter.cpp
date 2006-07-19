@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.82 $
+   $Revision: 1.83 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 15:54:08 $
+   $Date: 2006/07/19 20:56:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -545,7 +545,7 @@ Compartment* SBMLExporter::createSBMLCompartmentFromCCompartment(CCompartment* c
     }
   this->mHandledSBMLObjects.push_back(sbmlCompartment);
   sbmlCompartment->setName(copasiCompartment->getObjectName().c_str());
-  double value = copasiCompartment->getInitialVolume();
+  double value = copasiCompartment->getInitialValue();
   // if the value is NaN, unset the initial volume
   if (!isnan(value))
     {
@@ -599,7 +599,7 @@ Species* SBMLExporter::createSBMLSpeciesFromCMetab(CMetab* copasiMetabolite)
     {
       if (sbmlSpecies->isSetInitialAmount())
         {
-          sbmlSpecies->setInitialAmount(value*copasiMetabolite->getCompartment()->getInitialVolume());
+          sbmlSpecies->setInitialAmount(value*copasiMetabolite->getCompartment()->getInitialValue());
         }
       else
         {

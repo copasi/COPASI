@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.130 $
+   $Revision: 1.131 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 15:54:08 $
+   $Date: 2006/07/19 20:56:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -906,7 +906,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
                   tmpNode2->setName(compartment->getSBMLId().c_str());
                   tmpNode1->addChild(tmpNode2);
                   node = tmpNode1;
-                  if (!this->mDivisionByCompartmentWarning && compartment->getInitialVolume() == 1.0)
+                  if (!this->mDivisionByCompartmentWarning && compartment->getInitialValue() == 1.0)
                     {
                       this->mDivisionByCompartmentWarning = true;
                       if (node->getChild(0)->getType() == AST_FUNCTION && (!this->containsVolume(node->getChild(0), compartment->getSBMLId())))

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:20:16 $
+   $Date: 2006/07/19 20:57:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -357,7 +357,7 @@ C_FLOAT64 CHybridMethodLSODA::getDefaultAtol(const CModel * pModel) const
     C_FLOAT64 Volume = DBL_MAX;
 
     for (i = 0, imax = Compartment.size(); i < imax; i++)
-      if (Compartment[i]->getVolume() < Volume) Volume = Compartment[i]->getVolume();
+      if (Compartment[i]->getValue() < Volume) Volume = Compartment[i]->getValue();
 
     if (Volume == DBL_MAX) return 1.0e009;
 

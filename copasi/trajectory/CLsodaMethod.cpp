@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 20:56:50 $
+   $Date: 2006/07/19 20:57:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -198,7 +198,7 @@ C_FLOAT64 CLsodaMethod::getDefaultAtol(const CModel * pModel) const
     unsigned C_INT32 i, imax;
     C_FLOAT64 Volume = DBL_MAX;
     for (i = 0, imax = Compartment.size(); i < imax; i++)
-      if (Compartment[i]->getVolume() < Volume) Volume = Compartment[i]->getVolume();
+      if (Compartment[i]->getValue() < Volume) Volume = Compartment[i]->getValue();
 
     if (Volume == DBL_MAX) return 1.0e009;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:55 $
+   $Date: 2006/07/19 20:57:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -356,7 +356,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   mScaledElasticities.resize(mUnscaledElasticities.numRows(), mUnscaledElasticities.numCols());
   for (j = 0; j < mpModel->getNumMetabs(); j++)
     {
-      C_FLOAT64 VolumeInv = 1.0 / mpModel->getMetabolitesX()[j]->getCompartment()->getVolume();
+      C_FLOAT64 VolumeInv = 1.0 / mpModel->getMetabolitesX()[j]->getCompartment()->getValue();
       C_FLOAT64 Number = mpModel->getMetabolitesX()[j]->getValue();
 
       for (i = 0; i < mpModel->getTotSteps(); i++)
@@ -369,7 +369,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
               mScaledElasticities[i][j] = mUnscaledElasticities[i][j] * Number
                                           / mpModel->getReactions()[i]->getParticleFlux();
               //                                        * mpModel->getMetabolites()[j]->getConcentration()
-              //                                        * mpModel->getMetabolites()[j]->getCompartment()->getVolume()
+              //                                        * mpModel->getMetabolites()[j]->getCompartment()->getValue()
               //                                        / mpModel->getReactions()[i]->getFlux();
             }
           else
@@ -397,7 +397,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
                                 / mpModel->getMetabolitesX()[i]->getValue();
         //                                * mpModel->getReactions()[j]->getFlux()
         //                                / (mpModel->getMetabolites()[i]->getConcentration()
-        //                                   *mpModel->getMetabolites()[j]->getCompartment()->getVolume());
+        //                                   *mpModel->getMetabolites()[j]->getCompartment()->getValue());
         else
           mScaledConcCC[i][j] = 2.0 * DBL_MAX;
       }
@@ -414,7 +414,7 @@ void CMCAMethod::scaleMCA(int condition, C_FLOAT64 res)
   for (i = 0; i < mpModel->getTotSteps(); i++)
     for (j = 0; j < mpModel->getTotSteps(); j++)
       {
-        C_FLOAT64 tmp = 1.0 / mpModel->getReactions()[i]->getLargestCompartment().getVolume();
+        C_FLOAT64 tmp = 1.0 / mpModel->getReactions()[i]->getLargestCompartment().getValue();
 
         if (fabs(mpModel->getReactions()[i]->getFlux()*tmp) >= res)
           mScaledFluxCC[i][j] = mUnscaledFluxCC[i][j]

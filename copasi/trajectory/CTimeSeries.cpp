@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 15:58:17 $
+   $Date: 2006/07/19 20:57:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,7 +50,7 @@ bool CTimeSeries::init(C_INT32 n, CModel * pModel)
         {
           mTitles[i] = CMetabNameInterface::getDisplayName(pModel, *pMetab);
           mFactors[i] =
-            Number2QuantityFactor / pMetab->getCompartment()->getVolume();
+            Number2QuantityFactor / pMetab->getCompartment()->getValue();
         }
       else
         {

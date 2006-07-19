@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.130 $
+   $Revision: 1.131 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:23 $
+   $Date: 2006/07/19 20:56:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -599,7 +599,7 @@ void MetabolitesWidget1::slotConcChanged()
 
   C_FLOAT64 tmp = mEditInitConcentration->text().toDouble();
   mEditInitNumber->setText(QString::number(tmp
-                           * mpMetab->getCompartment()->getVolume()
+                           * mpMetab->getCompartment()->getValue()
                            * CCopasiDataModel::Global->getModel()->getQuantity2NumberFactor(), 'g', 10));
   //mChanged = true;
 }
@@ -610,7 +610,7 @@ void MetabolitesWidget1::slotNumberChanged()
 
   C_FLOAT64 tmp = mEditInitNumber->text().toDouble();
   mEditInitConcentration->setText(QString::number(tmp
-                                  / mpMetab->getCompartment()->getVolume()
+                                  / mpMetab->getCompartment()->getValue()
                                   * CCopasiDataModel::Global->getModel()->getNumber2QuantityFactor(), 'g', 10));
 }
 
@@ -620,10 +620,10 @@ void MetabolitesWidget1::slotCompChanged()
 
   QString Compartment = mComboCompartment->currentText();
 
-  C_FLOAT64 Factor = 1.0 / mpCurrentCompartment->getInitialVolume();
+  C_FLOAT64 Factor = 1.0 / mpCurrentCompartment->getInitialValue();
 
   mpCurrentCompartment = CCopasiDataModel::Global->getModel()->getCompartments()[(const char *)Compartment.utf8()];
-  Factor *= mpCurrentCompartment->getInitialVolume();
+  Factor *= mpCurrentCompartment->getInitialValue();
 
   mEditInitNumber->setText(QString::number(Factor * mEditInitNumber->text().toDouble(), 'g', 10));
   mEditNumber->setText(QString::number(Factor * mEditNumber->text().toDouble(), 'g', 10));
