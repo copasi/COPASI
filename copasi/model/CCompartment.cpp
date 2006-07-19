@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Date: 2006/07/19 20:59:36 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,7 +77,7 @@ C_INT32 CCompartment::load(CReadConfig & configbuffer)
                                        (void *) & tmpdbl)))
     return Fail;
 
-  setInitialVolume(tmpdbl);
+  setInitialValue(tmpdbl);
 
   return Fail;
 }

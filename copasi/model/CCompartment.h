@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.h,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Date: 2006/07/19 20:59:36 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,20 +79,6 @@ class CCompartment : public CModelEntity
     C_INT32 load(CReadConfig & configbuffer);
 
     /**
-     *  Returns a C_FLOAT64 with the volume of this compartment.
-     *  @return const C_FLOAT64 & InitialVolume
-     *  @see mInitialVolume
-     */
-    inline const C_FLOAT64 & getInitialVolume() const {return getInitialValue();};
-
-    /**
-     *  Returns a C_FLOAT64 with the volume of this compartment.
-     *  @return mVolume
-     *  @see mVolume
-     */
-    inline const C_FLOAT64 & getVolume() const {return getValue();};
-
-    /**
      *
      */
     CCopasiVectorNS < CMetab > & getMetabolites();
@@ -124,8 +110,6 @@ class CCompartment : public CModelEntity
      *  @return bool success
      *  @see mVolume
      */
-    inline void setInitialVolume(const C_FLOAT64 & volume) {setInitialValue(volume);};
-
     virtual void setInitialValue(const C_FLOAT64 & initialValue);
 
     /**
@@ -134,8 +118,6 @@ class CCompartment : public CModelEntity
      *  @return bool success
      *  @see mVolume
      */
-    inline void setVolume(const C_FLOAT64 & volume) {setValue(volume);};
-
     virtual void setValue(const C_FLOAT64 & value);
 
     friend std::ostream & operator<<(std::ostream &os, const CCompartment & d);
