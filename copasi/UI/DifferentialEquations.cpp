@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/23 13:31:28 $
+   $Author: shoops $
+   $Date: 2006/07/19 16:04:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -417,7 +417,7 @@ void DifferentialEquations::saveToFileClicked()
     }
 
   std::ofstream ofile;
-  ofile.open(outfilename.ascii(), std::ios::trunc);
+  ofile.open(utf8ToLocale((const char *)outfilename.utf8()).c_str(), std::ios::trunc);
   ofile << mml.str();
 
   ofile.close();

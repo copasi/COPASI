@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.54 $
+   $Revision: 1.55 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/12 21:17:09 $
+   $Date: 2006/07/19 16:05:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CDirEntry.h"
+#include "utilities/utility.h"
 
 //////////////////////////////////////////////////
 //
@@ -328,10 +329,10 @@ std::ostream * CReport::open(std::ostream * pOstream)
 
       if (mAppend)
         ((std::ofstream *) mpOstream)->
-        open(mTarget.c_str(), std::ios_base::out | std::ios_base::app);
+        open(utf8ToLocale(mTarget).c_str(), std::ios_base::out | std::ios_base::app);
       else
         ((std::ofstream *) mpOstream)->
-        open(mTarget.c_str(), std::ios_base::out);
+        open(utf8ToLocale(mTarget).c_str(), std::ios_base::out);
 
       if (!((std::ofstream *) mpOstream)->is_open()) pdelete(mpOstream);
 

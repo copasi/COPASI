@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:32 $
+   $Date: 2006/07/19 16:04:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -785,7 +785,7 @@ bool CExperiment::readColumnNames()
 
   // Open the file
   std::ifstream in;
-  in.open(getFileName().c_str(), std::ios::binary);
+  in.open(utf8ToLocale(getFileName()).c_str(), std::ios::binary);
   if (in.fail()) return false;
 
   // Forwind to header row.
@@ -811,7 +811,7 @@ unsigned C_INT32 CExperiment::guessColumnNumber() const
     unsigned C_INT32 tmp, count = 0;
 
     std::ifstream in;
-    in.open(getFileName().c_str(), std::ios::binary);
+    in.open(utf8ToLocale(getFileName()).c_str(), std::ios::binary);
     if (in.fail()) return false;
 
     // Forwind to first row.
