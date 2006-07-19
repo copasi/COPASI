@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/18 19:37:39 $
+   $Date: 2006/07/19 15:44:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,10 @@
 #include "mathematics.h"
 #include <stdio.h>
 #include <time.h>
+
+#ifdef WIN32
+# include <windows.h>
+#endif
 
 #include "copasi.h"
 
@@ -569,11 +573,9 @@ int toEnum(const char * attribute,
   return - 1;
 }
 
-#ifdef WIN32
-#include <windows.h>
-
 std::string utf8ToLocale(const std::string & utf8)
 {
+#ifdef WIN32
   C_INT32 size;
 
   size = MultiByteToWideChar(CP_UTF8,              // code page
@@ -622,5 +624,7 @@ std::string utf8ToLocale(const std::string & utf8)
   delete [] pLocal;
 
   return Local;
-}
+#else
+  return utf8;
 #endif
+}
