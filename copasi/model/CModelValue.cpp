@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 19:02:45 $
+   $Date: 2006/07/19 20:58:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -115,6 +115,12 @@ const C_FLOAT64 & CModelEntity::getInitialValue() const {return *mpIValue;}
 
 const CModelEntity::Status & CModelEntity::getStatus() const {return mStatus;}
 
+bool CModelEntity::compile(std::vector< CCopasiContainer * > listOfContainer)
+{return true;}
+
+void CModelEntity::calculate()
+{}
+
 /**
  * Return rate of production of this entity
  */
@@ -157,6 +163,15 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
     {
       mStatus = status;
       this->setValuePtr(mpValueData);
+
+      if (isFixed())
+        {
+          mDependencies.clear();
+          mpValueReference->setDirectDependencies(mDependencies);
+          mpValueReference->clearRefresh();
+          mpRateReference->setDirectDependencies(mDependencies);
+          mpRateReference->clearRefresh();
+        }
     }
 }
 

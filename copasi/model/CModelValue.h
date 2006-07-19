@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 19:02:45 $
+   $Date: 2006/07/19 20:58:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,7 +53,7 @@ class CModelEntity : public CCopasiContainer
       ASSIGNMENT,         //the entity is changed by an assignment rule
       ODE,                //the entity is changed by an ordinary differential equation
       REACTIONS,          //applies only for metabs, the metab concentration is changed by reactions
-      //      DEPENDENT,         //applies only for metabs, the metab concentration is determined by conservation rules
+      //      DEPENDENT,        //applies only for metabs, the metab concentration is determined by conservation rules
       //      UNUSED,
       TIME
     };
@@ -101,6 +101,19 @@ class CModelEntity : public CCopasiContainer
      *
      */
     const CModelEntity::Status & getStatus() const;
+
+    /**
+     * Compile the model value. This is only needed for status ASIGNMENT and ODE.
+     * @param std::vector< CCopasiContainer * > listOfContainer (Default: CCopasiContainer::EmptyList)
+     * @return bool success
+     */
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer =
+                           CCopasiContainer::EmptyList);
+
+    /**
+     * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
+     */
+    virtual void calculate();
 
     inline bool isFixed() const {return mStatus == FIXED;}
 
@@ -220,9 +233,13 @@ class CModelEntity : public CCopasiContainer
 Table of possible CModelEntity objects with different Status
 
 
+
+
   current status        corresponding sbml object
 -------------------------------------------------------------------------------------------------
 CMetab:                                       Species
+
+
 
 
 FIXED                   implemented           constant=true
@@ -234,7 +251,11 @@ ASSIGNMENT              not implemented       constant=false, boundaryCondition=
 TIME                    -
 
 
+
+
 CCompartment:                                 Compartment
+
+
 
 
 FIXED                   implemented           constant=true
@@ -246,7 +267,11 @@ ASSIGNMENT              not implemented       constant=false, assignment rule
 TIME                    -
 
 
+
+
 CModelValue:                                  Parameter
+
+
 
 
 FIXED                   implemented           constant=true
@@ -258,7 +283,11 @@ ASSIGNMENT              not implemented       constant=false, rate rule
 TIME                    -
 
 
+
+
 CModel:                                       implicitly represented in sbml file
+
+
 
 
 FIXED                   -
@@ -315,7 +344,7 @@ class CModelValue : public CModelEntity
     /**
      * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
      */
-    void calculate();
+    virtual void calculate();
 
     /**
      * Set the expression for non FIXED model values
