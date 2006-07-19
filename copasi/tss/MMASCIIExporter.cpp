@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 15:54:27 $
+   $Date: 2006/07/19 19:02:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -639,7 +639,7 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
 
       if (metab->getStatus() == CModelEntity::REACTIONS) outFile << "init ";
 
-      if (metab->getStatus() == CModelEntity::DEPENDENT)
+      if (metab->isDependent())
         {
           for (j = 0; j < indep_size; j++)
             if (L(i, j) != 0.0)
@@ -661,7 +661,7 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
               }
         }
 
-      if (metab->getStatus() == CModelEntity::UNUSED) continue;
+      if (!metab->isUsed()) continue;
 
       std::string name = metab->getObjectName();
       std::string newName;
@@ -1057,8 +1057,7 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
       std::ostringstream comment;
 
       metab = copasiModel->getMetabolitesX()[i];
-      if (metab->getStatus() == CModelEntity::UNUSED) continue;
-      if (metab->getStatus() == CModelEntity::FIXED) continue;
+      if (metab->isFixed() || !metab->isUsed()) continue;
 
       Value = metab->getInitialConcentration();
       comment << metab->getObjectName();

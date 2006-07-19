@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.98 $
+   $Revision: 1.99 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Date: 2006/07/19 19:02:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,7 @@ CMetab::CMetab(const std::string & name,
     mConcRate(0.0),
     mTT(0.0),
     mpCompartment(NULL),
+    mDependent(false),
     mMoieties()
 {
   mKey = GlobalKeys.add("Metabolite", this);
@@ -74,6 +75,7 @@ CMetab::CMetab(const CMetab & src,
     mConcRate(src.mConcRate),
     mTT(src.mTT),
     mpCompartment(NULL),
+    mDependent(src.mDependent),
     mMoieties()
 {
   mKey = GlobalKeys.add("Metabolite", this);
@@ -248,6 +250,21 @@ void CMetab::setStatus(const CModelEntity::Status & status)
 {
   CModelEntity::setStatus(status);
 
+  switch (getStatus())
+    {
+    case FIXED:
+      break;
+
+    case ASSIGNMENT:
+      break;
+
+    case ODE:
+      break;
+
+    case REACTIONS:
+      break;
+    }
+
   if (mpModel && mpCompartment) refreshConcentration();
 }
 
@@ -255,13 +272,6 @@ void CMetab::initObjects()
 {
   CCopasiObject * pObject;
 
-  pObject = addObjectReference("Concentration", mConc, CCopasiObject::ValueDbl);
-
-  if (mpModel)
-    pObject->setRefresh(mpModel, &CModel::applyAssignments);
-
-  pObject = addObjectReference("InitialConcentration", mIConc, CCopasiObject::ValueDbl);
-  pObject->setUpdateMethod(this, &CMetab::setInitialConcentration);
   // pObject->setRefresh(this, &CMetab::refreshInitialConcentration);
 
   mpValueReference->setObjectName("ParticleNumber");
@@ -269,12 +279,17 @@ void CMetab::initObjects()
   mpIValueReference->setUpdateMethod(this, &CMetab::setInitialValue);
   mpRateReference->setObjectName("ParticleNumberRate");
 
-  pObject = addObjectReference("Rate", mConcRate, CCopasiObject::ValueDbl);
+  addObjectReference("Concentration", mConc, CCopasiObject::ValueDbl);
+  pObject = addObjectReference("InitialConcentration", mIConc, CCopasiObject::ValueDbl);
+  pObject->setUpdateMethod(this, &CMetab::setInitialConcentration);
+
+  addObjectReference("Rate", mConcRate, CCopasiObject::ValueDbl);
   std::set< const CCopasiObject * > Dependencies;
   Dependencies.insert(mpRateReference);
   pObject->setDirectDependencies(Dependencies);
   pObject->setRefresh(this, &CMetab::refreshRate);
 
+  // :TODO: This will have to be replaced when ASSIGNMENTS and ODE are implemented
   pObject = addObjectReference("TransitionTime", mTT, CCopasiObject::ValueDbl);
   pObject->setDirectDependencies(Dependencies);
   if (mpModel)
@@ -283,8 +298,8 @@ void CMetab::initObjects()
 
 C_FLOAT64 CMetab::getConcentrationRate() const
   {
-    return mRate / getCompartment()->getVolume()
-    * mpModel->getNumber2QuantityFactor();
+    const_cast<CMetab *>(this)->refreshRate();
+    return mConcRate;
   }
 
 void CMetab::refreshRate()
@@ -382,11 +397,33 @@ std::string CMetab::getObjectDisplayName(bool regular, bool richtext) const
     return CCopasiObject::getObjectDisplayName(regular, richtext);
   }
 
+void CMetab::setDependent(const bool & dependent)
+{mDependent = dependent;}
+
+const bool & CMetab::isDependent() const
+  {return mDependent;}
+
 void CMetab::addMoiety(CMoiety * pMoiety)
-{mMoieties.insert(pMoiety);}
+{
+  if (getObjectName() == pMoiety->getObjectName())
+    {
+      mDependencies.insert(pMoiety);
+      mDependent = true;
+    }
+
+  mMoieties.insert(pMoiety);
+}
 
 void CMetab::clearMoieties()
-{mMoieties.clear();}
+{
+  std::set< CMoiety * >::iterator it = mMoieties.begin();
+  std::set< CMoiety * >::iterator end = mMoieties.end();
+
+  for (; it != end; ++it)
+    mDependencies.erase(*it);
+
+  mMoieties.clear();
+}
 
 //******************* CMetabOld ***************************************************
 

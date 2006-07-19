@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/17 17:30:42 $
+   $Date: 2006/07/19 19:02:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,7 +58,7 @@ CMoiety::~CMoiety()
 
 void CMoiety::initObjects()
 {
-  this->setRefresh(this, &CMoiety::refreshDependentNumber);
+  setRefresh(this, &CMoiety::refreshDependentNumber);
 
   addObjectReference("Value", mINumber, CCopasiObject::ValueDbl);
 

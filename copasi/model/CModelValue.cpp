@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/13 18:04:46 $
+   $Date: 2006/07/19 19:02:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,9 +32,7 @@ const std::string CModelEntity::StatusName[] =
     "fixed",
     "assignment",
     "ode",
-    "independent variable modified by reactions",
-    "determined by mass conservation",
-    "unused",
+    "determined by reactions",
     ""
   };
 
@@ -44,11 +42,10 @@ const char * CModelEntity::XMLStatus[] =
     "fixed",
     "assignment",
     "ode",
-    "variable",
-    "variable",
-    "variable",
+    "reactions",
     NULL
   };
+
 // the "variable" keyword is used for compatibility reasons. It actually means "this metab is part
 // of the reaction network, copasi needs to figure out if it is independent, dependent (moieties) or unused."
 
@@ -63,6 +60,7 @@ CModelEntity::CModelEntity(const std::string & name,
     mpIValue(NULL),
     mRate(0.0),
     mStatus(FIXED),
+    mUsed(true),
     mpModel(NULL)
 {
   initObjects();
@@ -81,7 +79,8 @@ CModelEntity::CModelEntity(const CModelEntity & src,
     mpValueData(NULL),
     mpIValue(NULL),
     mRate(src.mRate),
-    mStatus(),
+    mStatus(FIXED),
+    mUsed(src.mUsed),
     mpModel(NULL)
 {
   initObjects();
@@ -180,10 +179,6 @@ void CModelEntity::initObjects()
   mpRateReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Rate", mRate, CCopasiObject::ValueDbl));
 
-  std::set< const CCopasiObject * > Dependencies;
-  Dependencies.insert(mpValueReference);
-  mpRateReference->setDirectDependencies(Dependencies);
-
   addObjectReference("SBMLId", mSBMLId, CCopasiObject::ValueString);
 
   mpModel = static_cast<CModel *>(getObjectAncestor("Model"));
@@ -191,9 +186,6 @@ void CModelEntity::initObjects()
   if (mpModel)
     {
       mpModel->getStateTemplate().add(this);
-
-      mpValueReference->setRefresh(mpModel, &CModel::applyAssignments);
-      mpRateReference->setRefresh(mpModel, &CModel::refreshRates);
     }
   else
     {
@@ -236,8 +228,6 @@ bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
   if (mpModel)
     {
       mpModel->getStateTemplate().remove(this);
-      mpValueReference->clearRefresh();
-      mpRateReference->clearRefresh();
     }
   else
     {
@@ -248,8 +238,6 @@ bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
   if (pNewModel)
     {
       pNewModel->getStateTemplate().add(this);
-      mpValueReference->setRefresh(pNewModel, &CModel::applyAssignments);
-      mpRateReference->setRefresh(pNewModel, &CModel::refreshRates);
     }
   else
     {
@@ -273,6 +261,13 @@ const std::string& CModelEntity::getSBMLId() const
   {
     return this->mSBMLId;
   }
+
+void CModelEntity::setUsed(const bool & used)
+{mUsed = used;}
+
+const bool & CModelEntity::isUsed() const
+  {return mUsed;}
+
 //********************************************************************+
 
 CModelValue::CModelValue(const std::string & name,
@@ -312,6 +307,8 @@ void CModelValue::setStatus(const CModelEntity::Status & status)
   CModelEntity::setStatus(status);
 
   std::set< const CCopasiObject * > NoDependencies;
+  std::set< const CCopasiObject * > Self;
+  Self.insert(this);
 
   if (isFixed())
     {
@@ -326,18 +323,22 @@ void CModelValue::setStatus(const CModelEntity::Status & status)
     {
     case ASSIGNMENT:
         setDirectDependencies(mpExpression->getDirectDependencies());
-      mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
+      setRefresh(this, &CModelValue::calculate);
+      mpValueReference->setDirectDependencies(Self);
       mpRateReference->setDirectDependencies(NoDependencies);
       break;
 
     case ODE:
       setDirectDependencies(mpExpression->getDirectDependencies());
+      setRefresh(this, &CModelValue::calculate);
       mpValueReference->setDirectDependencies(NoDependencies);
-      mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
+      mpRateReference->setDirectDependencies(Self);
       break;
 
+    case FIXED:
     default:
       setDirectDependencies(NoDependencies);
+      clearRefresh();
       mpValueReference->setDirectDependencies(NoDependencies);
       mpRateReference->setDirectDependencies(NoDependencies);
       break;
@@ -351,20 +352,6 @@ bool CModelValue::compile(std::vector< CCopasiContainer * > listOfContainer)
   bool success = mpExpression->compile(listOfContainer);
 
   setDirectDependencies(mpExpression->getDirectDependencies());
-
-  switch (getStatus())
-    {
-    case ASSIGNMENT:
-      mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
-      break;
-
-    case ODE:
-      mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
-      break;
-
-    default:
-      break;
-    }
 
   return success;
 }
@@ -391,9 +378,9 @@ bool CModelValue::setExpression(const std::string & expression)
   if (isFixed()) return false;
 
   if (mpExpression == NULL)
-    mpExpression = new CExpression();
+    mpExpression = new CExpression;
 
-  return mpExpression ->setInfix(expression);
+  return mpExpression->setInfix(expression);
 }
 
 std::string CModelValue::getExpression() const

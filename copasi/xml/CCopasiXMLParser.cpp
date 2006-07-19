@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.133 $
+   $Revision: 1.134 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/17 17:09:44 $
+   $Date: 2006/07/19 19:02:47 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1626,7 +1626,10 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
       Name = mParser.getAttributeValue("name", papszAttrs);
       Compartment = mParser.getAttributeValue("compartment", papszAttrs);
       status = mParser.getAttributeValue("status", papszAttrs);
-      Status = (CMetab::Status) toEnum(status, CMetab::XMLStatus);
+      if (strcmp(status, "variable"))
+        Status = (CMetab::Status) toEnum(status, CMetab::XMLStatus);
+      else
+        Status = CMetab::REACTIONS;
       StateVariable = mParser.getAttributeValue("stateVariable", papszAttrs, "");
 
       pMetabolite = new CMetab();

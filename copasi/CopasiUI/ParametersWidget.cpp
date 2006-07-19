@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ParametersWidget.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:23 $
+   $Date: 2006/07/19 19:02:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,29 +68,28 @@ class CParameterListItem : public QListViewItem
       CModelEntity* me = dynamic_cast<CModelEntity*>(obj);
       if (me) //object is a CModelEntity
         {
-          CModelEntity::Status status = me->getStatus();
-          switch (status)
-            {
-            case CModelEntity::FIXED:
-              setText(COL_STATUS, "fixed");
-              break;
-            case CModelEntity::REACTIONS:
-              setText(COL_STATUS, "indep");
-              break;
-            case CModelEntity::DEPENDENT:
-              setText(COL_STATUS, "dep");
-              break;
-            case CModelEntity::UNUSED:
-              setText(COL_STATUS, "unused");
-              break;
-            case CModelEntity::ODE:
-              setText(COL_STATUS, "ode");
-              break;
-            case CModelEntity::ASSIGNMENT:
-              setText(COL_STATUS, "assign");
-              setRenameEnabled(COL_VALUE, false);
-              break;
-            }
+          if (me->isUsed())
+            switch (me->getStatus())
+              {
+              case CModelEntity::FIXED:
+                setText(COL_STATUS, "fixed");
+                break;
+              case CModelEntity::ODE:
+                setText(COL_STATUS, "ode");
+                break;
+              case CModelEntity::ASSIGNMENT:
+                setText(COL_STATUS, "assign");
+                setRenameEnabled(COL_VALUE, false);
+                break;
+              case CModelEntity::REACTIONS:
+                if (static_cast< CMetab * >(me)->isDependent())
+                  setText(COL_STATUS, "dep");
+                else
+                  setText(COL_STATUS, "indep");
+                break;
+              }
+          else
+            setText(COL_STATUS, "unused");
         }
     }
 

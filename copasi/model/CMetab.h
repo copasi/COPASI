@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Date: 2006/07/19 19:02:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,6 +88,11 @@ class CMetab : public CModelEntity
      *  The metab needs to know about volumes.
      */
     const CCompartment * mpCompartment;
+
+    /**
+     * Indicates whether the metoblite is dependent
+     */
+    bool mDependent;
 
     /**
      * The set of moieties the metabolite is part of
@@ -221,9 +226,17 @@ class CMetab : public CModelEntity
     void refreshRate();
 
     /**
-     * insert operator
+     * Set whether the metabolite is dependent, i.e., calculated
+     * by a moiety
+     * @param const bool & dependent
      */
-    friend std::ostream & operator<<(std::ostream &os, const CMetab & d);
+    void setDependent(const bool & dependent);
+
+    /**
+     * Retreive whether the metabolite dependent
+     * @return const bool & dependent
+     */
+    const bool & isDependent() const;
 
     /**
      * Add a moiety to the list
@@ -235,6 +248,11 @@ class CMetab : public CModelEntity
      * Clear the list of moieties
      */
     void clearMoieties();
+
+    /**
+     * ostream operator
+     */
+    friend std::ostream & operator<<(std::ostream &os, const CMetab & d);
 
   private:
     /**

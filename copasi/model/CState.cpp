@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/17 16:30:36 $
+   $Date: 2006/07/19 19:02:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -117,29 +117,42 @@ void CStateTemplate::reorder(const CVector< CModelEntity * > & entitiesX)
         }
 
       // Count numbers for each status type;
-      switch ((*it)->getStatus())
-        {
-        case CModelEntity::FIXED:
-        case CModelEntity::UNUSED:
-          Fixed++;
-          break;
+      if ((*it)->isUsed())
+        switch ((*it)->getStatus())
+          {
+          case CModelEntity::FIXED:
+            Fixed++;
+            break;
 
-        case CModelEntity::REACTIONS:
-        case CModelEntity::ODE:
-          assert (Dependent == 0);
-          Independent++;
-          break;
+          case CModelEntity::REACTIONS:
+            if (static_cast< CMetab * >(*it)->isDependent())
+              {
+                assert (Fixed == 0);
+                Dependent++;
+              }
+            else
+              {
+                assert (Dependent == 0);
+                Independent++;
+              }
+            break;
 
-        case CModelEntity::DEPENDENT:
-        case CModelEntity::ASSIGNMENT:
-          assert (Fixed == 0);
-          Dependent++;
-          break;
+          case CModelEntity::ODE:
+            assert (Dependent == 0);
+            Independent++;
+            break;
 
-        case CModelEntity::TIME:
-          assert (false);
-          break;
-        }
+          case CModelEntity::ASSIGNMENT:
+            assert (Fixed == 0);
+            Dependent++;
+            break;
+
+          case CModelEntity::TIME:
+            assert (false);
+            break;
+          }
+      else
+        Fixed++;
     }
 
   mpBeginIndependent = mpEntities + 1;

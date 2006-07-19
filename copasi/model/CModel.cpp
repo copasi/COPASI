@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.262 $
+   $Revision: 1.263 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/07/18 10:07:15 $
+   $Author: shoops $
+   $Date: 2006/07/19 19:02:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -493,10 +493,7 @@ bool CModel::handleUnusedMetabolites()
       if (itUnused != endUnused && i == *itUnused)
         {
           pMetab = mMetabolites[i];
-          if (listReactionsDependentOnMetab(pMetab->getKey()).size())
-            pMetab->setStatus(CModelEntity::FIXED);
-          else
-            pMetab->setStatus(CModelEntity::UNUSED);
+          pMetab->setUsed(false);
 
           UnusedMetabolites[k] = pMetab;
 
@@ -505,6 +502,7 @@ bool CModel::handleUnusedMetabolites()
         }
       else
         {
+          pMetab->setUsed(true);
           VariableMetabolites[i - k] = mMetabolites[i];
 
           // The row needs to be copied to the new stoichiometry matrix
@@ -557,7 +555,7 @@ void CModel::setMetabolitesStatus()
   // :TODO: use iterator
   for (i = 0; i < iIndependent; i++)
     {
-      mMetabolitesX[i]->setStatus(CModelEntity::REACTIONS);
+      mMetabolitesX[i]->setDependent(false);
       mMetabolitesInd[i] = mMetabolitesX[i];
       mMetabolitesVar[i] = mMetabolitesX[i];
     }
@@ -565,7 +563,7 @@ void CModel::setMetabolitesStatus()
   for (; i < iVariable; i++)
     {
       mMetabolitesVar[i] = mMetabolitesX[i];
-      mMetabolitesX[i]->setStatus(CModelEntity::DEPENDENT);
+      mMetabolitesX[i]->setDependent(true);
     }
 
   return;
@@ -733,25 +731,24 @@ void CModel::buildMoieties()
   mMoieties.cleanup();
 
   for (i = imin; i < imax; i++)
-    {
-      if (mMetabolitesX[i]->getStatus() == CModelEntity::UNUSED) continue;
+    if (mMetabolitesX[i]->isUsed())
+      {
+        pMoiety = new CMoiety;
+        pMoiety->setObjectName(mMetabolitesX[i]->getObjectName());
+        pMoiety->add(1.0, mMetabolitesX[i]);
 
-      pMoiety = new CMoiety;
-      pMoiety->setObjectName(mMetabolitesX[i]->getObjectName());
-      pMoiety->add(1.0, mMetabolitesX[i]);
+        for (j = 0; j < jmax; j++)
+          {
+            if (fabs(mLView(i, j)) > DBL_EPSILON)
+              pMoiety->add(- mLView(i, j), mMetabolitesX[j]);
+          }
 
-      for (j = 0; j < jmax; j++)
-        {
-          if (fabs(mLView(i, j)) > DBL_EPSILON)
-            pMoiety->add(- mLView(i, j), mMetabolitesX[j]);
-        }
+        //pMoiety->setInitialValue();
+        //      DebugFile << pMoiety->getDescription() << " = "
+        //      << pMoiety->getNumber() << std::endl;
 
-      //pMoiety->setInitialValue();
-      //      DebugFile << pMoiety->getDescription() << " = "
-      //      << pMoiety->getNumber() << std::endl;
-
-      mMoieties.add(pMoiety, true);
-    }
+        mMoieties.add(pMoiety, true);
+      }
 
   updateMoietyValues();
   return;
@@ -775,31 +772,24 @@ void CModel::setTransitionTimes()
 
   for (i = 0; i < imax; i++)
     {
-      switch (mMetabolites[i]->getStatus())
+      if (mMetabolites[i]->isFixed() ||
+          !mMetabolites[i]->isUsed())
         {
-        case CModelEntity::FIXED:
-        case CModelEntity::UNUSED:
           mMetabolites[i]->setTransitionTime(2 * DBL_MAX);
-          break;
-
-        default:
+        }
+      else
+        {
           TotalFlux_p = 0.0;
+          TotalFlux_n = 0.0;
+
           for (j = 0; j < jmax; j++)
             {
               PartialFlux = mStoi(i, j) * mParticleFluxes[j];
 
               if (PartialFlux > 0.0)
                 TotalFlux_p += PartialFlux;
-            }
-
-          //if (TotalFlux == 0.0) //TODO discuss
-          TotalFlux_n = 0.0;
-          for (j = 0; j < jmax; j++)
-            {
-              PartialFlux = - mStoi(i, j) * mParticleFluxes[j];
-
-              if (PartialFlux > 0.0)
-                TotalFlux_n += PartialFlux;
+              else
+                TotalFlux_n -= PartialFlux;
             }
 
           if (TotalFlux_p < TotalFlux_n)
@@ -819,8 +809,6 @@ void CModel::setTransitionTimes()
             mTransitionTime = TransitionTime;
           else
             mTransitionTime += TransitionTime;
-
-          break;
         }
     }
 }
