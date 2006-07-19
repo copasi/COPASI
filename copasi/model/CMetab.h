@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.69 $
+   $Revision: 1.70 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 19:02:45 $
+   $Date: 2006/07/19 20:59:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,14 +90,19 @@ class CMetab : public CModelEntity
     const CCompartment * mpCompartment;
 
     /**
-     * Indicates whether the metoblite is dependent
+     * If dependent the moiety the metabolite is calculated from
      */
-    bool mDependent;
+    CMoiety * mpMoiety;
 
     /**
      * The set of moieties the metabolite is part of
      */
     std::set< CMoiety * > mMoieties;
+
+  protected:
+    CCopasiObjectReference<C_FLOAT64> *mpIConcReference;
+    CCopasiObjectReference<C_FLOAT64> *mpConcReference;
+    CCopasiObjectReference<C_FLOAT64> *mpConcRateReference;
 
     // Operations
   public:
@@ -158,6 +163,19 @@ class CMetab : public CModelEntity
      *
      */
     virtual void setStatus(const CModelEntity::Status & status);
+
+    /**
+     * Compile the model value. This is only needed for status ASIGNMENT and ODE.
+     * @param std::vector< CCopasiContainer * > listOfContainer (Default: CCopasiContainer::EmptyList)
+     * @return bool success
+     */
+    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer =
+                           CCopasiContainer::EmptyList);
+
+    /**
+     * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
+     */
+    virtual void calculate();
 
     /**
      *
@@ -223,7 +241,7 @@ class CMetab : public CModelEntity
     /**
      * Calculate the conctration rate.
      */
-    void refreshRate();
+    void refreshConcentrationRate();
 
     /**
      * Set whether the metabolite is dependent, i.e., calculated
@@ -234,9 +252,9 @@ class CMetab : public CModelEntity
 
     /**
      * Retreive whether the metabolite dependent
-     * @return const bool & dependent
+     * @return bool dependent
      */
-    const bool & isDependent() const;
+    bool isDependent() const;
 
     /**
      * Add a moiety to the list
