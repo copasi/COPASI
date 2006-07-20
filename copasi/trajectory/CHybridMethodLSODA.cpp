@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethodLSODA.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:57:04 $
+   $Date: 2006/07/20 18:28:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -640,7 +640,7 @@ void CHybridMethodLSODA::updatePriorityQueue(C_INT32 rIndex, C_FLOAT64 time)
 
 C_FLOAT64 CHybridMethodLSODA::generateReactionTime(C_INT32 rIndex)
 {
-  C_FLOAT32 rand2 = mpRandomGenerator->getRandomOO();
+  C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
   return - 1 * log(rand2) / mAmu[rIndex];
 }
 
@@ -660,7 +660,7 @@ void CHybridMethodLSODA::calculateAmu(C_INT32 rIndex)
   // We need the product of the cmu and hmu for this step.
   // We calculate this in one go, as there are fewer steps to
   // perform and we eliminate some possible rounding errors.
-  C_FLOAT32 amu = 1; // initially
+  C_FLOAT64 amu = 1; // initially
   //C_INT32 total_substrates = 0;
   C_INT32 num_ident = 0;
   C_INT32 number = 0;

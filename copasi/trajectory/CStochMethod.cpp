@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:20:17 $
+   $Date: 2006/07/20 18:28:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -395,13 +395,13 @@ C_INT32 CStochMethod::generateReactionIndex()
 
 C_FLOAT64 CStochMethod::generateReactionTime()
 {
-  C_FLOAT32 rand2 = mpRandomGenerator->getRandomOO();
+  C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
   return - 1 * log(rand2) / mA0;
 }
 
 C_FLOAT64 CStochMethod::generateReactionTime(C_INT32 reaction_index)
 {
-  C_FLOAT32 rand2 = mpRandomGenerator->getRandomOO();
+  C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
   return - 1 * log(rand2) / mAmu[reaction_index];
 }
 
