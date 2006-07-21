@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 16:04:57 $
+   $Date: 2006/07/21 18:06:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,21 +56,39 @@ bool CExperimentFileInfo::setFileName(const std::string & fileName)
   in.open(utf8ToLocale(mFileName).c_str(), std::ios::binary);
   if (in.fail()) return false; // File can not be opened.
 
-  std::stringstream line;
+  bool isEmpty;
+
   // forwind to count lines in file
   while (!in.eof())
     {
-      line.str("");
-      in.get(*line.rdbuf(), '\x0a');
+      isEmpty = true;
+      char c;
 
-      // std::istream::get sets the failbit if it does not extract anything.
-      // We expect empty lines and have to correct for it.
-      if (in.fail() && !in.eof()) in.clear();
+      for (in.get(c); c != 0x0a && c != 0x0d; in.get(c))
+        {
+          if (in.fail() || in.eof()) break;
 
-      in.ignore(1);
+          switch (c)
+            {
+            case '\x20':
+            case '\x09':
+            case '\x0d':
+            case '\x0a':
+              break;
+
+            default:
+              isEmpty = false;
+              break;
+            }
+        }
+
+      // Eat additional line break characters only appearing on dos text format;
+      if ((c == 0x0d && in.peek() == 0x0a))
+        in.ignore(1);
+
       mLines++;
 
-      if (line.str().find_first_not_of("\x20\x09\x0d\x0a") == std::string::npos)
+      if (isEmpty)
         mEmptyLines.push_back(mLines);
     }
 

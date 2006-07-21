@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 16:04:57 $
+   $Date: 2006/07/21 18:06:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,8 @@
 #include "utilities/CSort.h"
 #include "utilities/CDirEntry.h"
 #include "utilities/utility.h"
+
+std::istream & skipLine(std::istream & in);
 
 const std::string CExperiment::TypeName[] =
   {
@@ -625,7 +627,7 @@ bool CExperiment::read(std::istream & in,
   // forwind to our first line
   for (j = currentLine; j < *mpFirstRow && !in.fail(); j++)
     {
-      in.ignore(LONG_MAX, '\x0a');
+      skipLine(in);
       currentLine++;
     }
 
@@ -791,7 +793,7 @@ bool CExperiment::readColumnNames()
   // Forwind to header row.
   unsigned C_INT32 i;
   for (i = 1; i < *mpHeaderRow && !in.fail(); i++)
-    in.ignore(LONG_MAX, '\x0a');
+    skipLine(in);
 
   // Read row
   CTableRow Row(*mpNumColumns, (*mpSeparator)[0]);
@@ -817,7 +819,7 @@ unsigned C_INT32 CExperiment::guessColumnNumber() const
     // Forwind to first row.
     unsigned C_INT32 i;
     for (i = 1; i < *mpFirstRow && !in.fail(); i++)
-      in.ignore(LONG_MAX, '\x0a');
+      skipLine(in);
 
     CTableRow Row(0, (*mpSeparator)[0]);
 
@@ -1274,4 +1276,20 @@ void CFittingPoint::initObjects()
   addObjectReference("Measured Value", mMeasuredValue, CCopasiObject::ValueDbl);
   addObjectReference("Fitted Value", mFittedValue, CCopasiObject::ValueDbl);
   addObjectReference("Weighted Error", mWeightedError, CCopasiObject::ValueDbl);
+}
+
+std::istream & skipLine(std::istream & in)
+{
+  char c;
+
+  for (in.get(c); c != 0x0a && c != 0x0d; in.get(c))
+    {
+      if (in.fail() || in.eof()) break;
+    }
+
+  // Eat additional line break characters only appearing on dos text format;
+  if ((c == 0x0d && in.peek() == 0x0a))
+    in.ignore(1);
+
+  return in;
 }
