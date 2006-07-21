@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.264 $
+   $Revision: 1.265 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:57:18 $
+   $Date: 2006/07/21 20:00:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -555,7 +555,6 @@ void CModel::setMetabolitesStatus()
   // :TODO: use iterator
   for (i = 0; i < iIndependent; i++)
     {
-      mMetabolitesX[i]->setDependent(false);
       mMetabolitesInd[i] = mMetabolitesX[i];
       mMetabolitesVar[i] = mMetabolitesX[i];
     }
@@ -563,7 +562,6 @@ void CModel::setMetabolitesStatus()
   for (; i < iVariable; i++)
     {
       mMetabolitesVar[i] = mMetabolitesX[i];
-      mMetabolitesX[i]->setDependent(true);
     }
 
   return;
