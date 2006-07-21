@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:58:48 $
+   $Date: 2006/07/21 19:58:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,6 +41,16 @@ class CMoiety : public CCopasiContainer
      *  Number of Particles of Moietiy.
      */
     C_FLOAT64 mNumber;
+
+    /**
+     *  Rate of change of particles of Moietiy.
+     */
+    C_FLOAT64 mRate;
+
+    /**
+     * A pointer to the reference of the dependent rate
+     */
+    CCopasiObjectReference<C_FLOAT64> *mpRateReference;
 
     /**
      *  Initial Number of Particles of Moietiy.
@@ -121,6 +131,12 @@ class CMoiety : public CCopasiContainer
     const C_FLOAT64 & getDependentNumber() const;
 
     /**
+     * Retrieve the dependent rate;
+     * @return const C_FLOAT64 & dependentRate
+     */
+    const C_FLOAT64 & getDependentRate() const;
+
+    /**
      *
      */
     C_FLOAT64 getNumber() const;
@@ -135,6 +151,11 @@ class CMoiety : public CCopasiContainer
      * Refreshes the value of the dependent number
      */
     void refreshDependentNumber();
+
+    /**
+     * Refreshes the value of the dependent rate
+     */
+    void refreshDependentRate();
 
   private:
     /**

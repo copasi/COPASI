@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:58:48 $
+   $Date: 2006/07/21 19:58:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,23 +67,35 @@ void CMoiety::initObjects()
 
   std::set< const CCopasiObject * > Dependencies;
   Dependencies.insert(this);
-
   pObj->setDirectDependencies(Dependencies);
+
+  mpRateReference =
+    static_cast< CCopasiObjectReference< C_FLOAT64 > * >(addObjectReference("DependentRate", mRate, CCopasiObject::ValueDbl));
+  mpRateReference->setRefresh(this, &CMoiety::refreshDependentRate);
 
   return;
 }
 
 void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite)
 {
+  pMetabolite->addMoiety(this);
+
+  if (!mEquation.size())
+    pMetabolite->setDependentOn(this);
+  else
+    {
+      mDependencies.insert(pMetabolite->getObject(CCopasiObjectName("Reference=ParticleNumber")));
+
+      std::set< const CCopasiObject * > Dependencies =
+        mpRateReference->getDirectDependencies();
+      Dependencies.insert(pMetabolite->getObject(CCopasiObjectName("Reference=ParticleNumberRate")));
+      mpRateReference->setDirectDependencies(Dependencies);
+    }
+
   std::pair<C_FLOAT64, CMetab *> element;
 
   element.first = value;
   element.second = pMetabolite;
-
-  pMetabolite->addMoiety(this);
-
-  if (!mEquation.size())
-    mDependencies.insert(pMetabolite->getObject(CCopasiObjectName("Reference=ParticleNumber")));
 
   mEquation.push_back(element);
 }
@@ -106,6 +118,18 @@ void CMoiety::refreshDependentNumber()
   return;
 }
 
+void CMoiety::refreshDependentRate()
+{
+  mRate = 0;
+
+  std::vector< std::pair< C_FLOAT64, CMetab * > >::iterator it = mEquation.begin() + 1;
+  std::vector< std::pair< C_FLOAT64, CMetab * > >::iterator end = mEquation.end();
+  for (; it != end; ++it)
+    mRate -= it->first * it->second->getRate();
+
+  return;
+}
+
 const C_FLOAT64 & CMoiety::dependentNumber()
 {
   refreshDependentNumber();
@@ -113,9 +137,10 @@ const C_FLOAT64 & CMoiety::dependentNumber()
 }
 
 const C_FLOAT64 & CMoiety::getDependentNumber() const
-  {
-    return mNumber;
-  }
+  {return mNumber;}
+
+const C_FLOAT64 & CMoiety::getDependentRate() const
+  {return mRate;}
 
 const std::string & CMoiety::getKey() const {return mKey;} //By G
 
