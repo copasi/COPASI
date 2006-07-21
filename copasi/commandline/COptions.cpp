@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/01 19:25:38 $
+   $Date: 2006/07/21 15:44:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,10 +30,12 @@
 #include <sstream>
 #include <errno.h>
 
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CDirEntry.h"
 #include "COptionParser.h"
 #include "COptions.h"
+
+#include "utilities/CCopasiMessage.h"
+#include "utilities/CDirEntry.h"
+#include "utilities/utility.h"
 
 COptions::optionType COptions::mOptions;
 COptions::nonOptionType COptions::mNonOptions;
@@ -54,29 +56,33 @@ void COptions::init(C_INT argc, char *argv[])
 
   const copasi::options &PreOptions = pPreParser->get_options();
 
-  setValue("CopasiDir", PreOptions.CopasiDir);
+  setValue("CopasiDir", localeToUtf8(PreOptions.CopasiDir));
   if (compareValue("CopasiDir", (std::string) ""))
     {
       setValue("CopasiDir", getCopasiDir());
     }
 
-  setValue("Home", PreOptions.Home);
+  setValue("Home", localeToUtf8(PreOptions.Home));
   if (compareValue("Home", (std::string) ""))
     setValue("Home", getHome());
 
-  setValue("Tmp", PreOptions.Tmp);
+  setValue("Tmp", localeToUtf8(PreOptions.Tmp));
   if (compareValue("Tmp", (std::string) ""))
     setValue("Tmp", getTemp());
 
-  setValue("ConfigDir", PreOptions.ConfigDir);
+  setValue("ConfigDir", localeToUtf8(PreOptions.ConfigDir));
   if (compareValue("ConfigDir", (std::string) ""))
     setValue("ConfigDir", getConfigDir());
 
-  setValue("ConfigFile", PreOptions.ConfigFile);
+  setValue("ConfigFile", localeToUtf8(PreOptions.ConfigFile));
   if (compareValue("ConfigFile", (std::string) ""))
     setValue("ConfigFile", getConfigFile());
 
-  mNonOptions = pPreParser->get_non_options();
+  mNonOptions.clear();
+  std::vector< std::string >::const_iterator it = pPreParser->get_non_options().begin();
+  std::vector< std::string >::const_iterator end = pPreParser->get_non_options().end();
+  for (; it != end; ++it)
+    mNonOptions.push_back(localeToUtf8(*it));
 
   const copasi::options &Options = pPreParser->get_options();
 
@@ -88,7 +94,6 @@ void COptions::init(C_INT argc, char *argv[])
   /* The values for ExampleDir and WizardDir are dependent on CopasiDir
      and on the OS. */
 
-  getValue("CopasiDir", CopasiDir);
 #ifdef Darwin
   setValue("ExampleDir", CDirEntry::dirName(CopasiDir) + "/examples");
   setValue("WizardDir", CopasiDir + "/Contents/Resources/doc/html");
@@ -107,11 +112,11 @@ void COptions::init(C_INT argc, char *argv[])
   if (Options.Tmp != "") setValue("Tmp", Options.Tmp);
   setValue("Verbose", Options.Verbose);
   setValue("License", Options.License);
-  setValue("Save", Options.Save);
-  setValue("ImportSBML", Options.ImportSBML);
-  setValue("ExportSBML", Options.ExportSBML);
-  setValue("ExportC", Options.ExportC);
-  setValue("ExportBerkeleyMadonna", Options.ExportBerkeleyMadonna);
+  setValue("Save", localeToUtf8(Options.Save));
+  setValue("ImportSBML", localeToUtf8(Options.ImportSBML));
+  setValue("ExportSBML", localeToUtf8(Options.ExportSBML));
+  setValue("ExportC", localeToUtf8(Options.ExportC));
+  setValue("ExportBerkeleyMadonna", localeToUtf8(Options.ExportBerkeleyMadonna));
 
   delete pPreParser;
 }
@@ -130,7 +135,7 @@ std::string COptions::getEnvironmentVariable(const std::string & name)
 {
   char * value = getenv(name.c_str());
 
-  if (value) return (std::string) value;
+  if (value) return localeToUtf8(value);
   else return "";
 }
 
@@ -208,7 +213,7 @@ std::string COptions::getPWD(void)
   else
     pwd = "";
 
-  return pwd;
+  return localeToUtf8(pwd);
 }
 
 std::string COptions::getHome(void)
