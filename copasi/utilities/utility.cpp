@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/21 15:43:14 $
+   $Date: 2006/07/21 16:42:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -636,7 +636,7 @@ std::string localeToUtf8(const std::string & locale)
 
   size = MultiByteToWideChar(CP_THREAD_ACP,        // code page
                              MB_ERR_INVALID_CHARS, // character-type options
-                             locale.c_str(),         // address of string to map
+                             locale.c_str(),       // address of string to map
                              -1,                   // NULL terminated
                              NULL,                 // address of wide-character buffer
                              0) + 1;               // size of buffer
@@ -645,34 +645,32 @@ std::string localeToUtf8(const std::string & locale)
 
   MultiByteToWideChar(CP_THREAD_ACP,        // code page
                       MB_ERR_INVALID_CHARS, // character-type options
-                      locale.c_str(),         // address of string to map
+                      locale.c_str(),       // address of string to map
                       -1,                   // NULL terminated
                       pWideChar,            // address of wide-character buffer
                       size);                // size of buffer
 
   int UsedDefaultChar = 0;
 
-  size = WideCharToMultiByte(CP_UTF8,                // code page
-                             WC_COMPOSITECHECK |
-                             WC_DEFAULTCHAR,         // performance and mapping flags
-                             pWideChar,              // address of wide-character string
-                             -1,                     // NULL terminated
-                             NULL,                   // address of buffer for new string
-                             0,                      // size of buffer
-                             "?",                    // address of default for unmappable characters
-                             & UsedDefaultChar) + 1; // address of flag set when default char used
+  size = WideCharToMultiByte(CP_UTF8,   // code page
+                             0,         // performance and mapping flags
+                             pWideChar, // address of wide-character string
+                             -1,        // NULL terminated
+                             NULL,      // address of buffer for new string
+                             0,         // size of buffer
+                             NULL,      // address of default for unmappable characters
+                             NULL) + 1; // address of flag set when default char used
 
   char * pUtf8 = new char[size];
 
-  WideCharToMultiByte(CP_UTF8,                // code page
-                      WC_COMPOSITECHECK |
-                      WC_DEFAULTCHAR,         // performance and mapping flags
-                      pWideChar,              // address of wide-character string
-                      -1,                     // NULL terminated
-                      pUtf8,                 // address of buffer for new string
-                      size,                   // size of buffer
-                      "?",                    // address of default for unmappable characters
-                      & UsedDefaultChar);     // address of flag set when default char used
+  WideCharToMultiByte(CP_UTF8,   // code page
+                      0,         // address of wide-character string
+                      pWideChar, // address of wide-character string
+                      -1,        // NULL terminated
+                      pUtf8,     // address of buffer for new string
+                      size,      // size of buffer
+                      NULL,      // address of default for unmappable characters
+                      NULL);     // address of flag set when default char used
 
   std::string Utf8 = pUtf8;
 
