@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:59 $
+   $Date: 2006/07/21 18:15:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -53,7 +53,8 @@ class CRandom
     enum Type
     {
       r250 = 0,
-      mt19937
+      mt19937,
+      mt19937HR
     };
 
     /**

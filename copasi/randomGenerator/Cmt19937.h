@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/Cmt19937.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:00 $
+   $Date: 2006/07/21 18:15:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,7 +64,7 @@
 
 #define Cmt19937_N 624
 
-class Cmt19937 : private CRandom
+class Cmt19937 : public CRandom
   {
     friend CRandom * CRandom::createGenerator(CRandom::Type type,
         unsigned C_INT32 seed);
@@ -78,7 +78,7 @@ class Cmt19937 : private CRandom
     unsigned C_INT32 *mNext;
 
     // Operations
-  private:
+  protected:
     /**
      * Default/Named constructor.
      * Seeds the random number generator with the given seed.
@@ -137,4 +137,40 @@ class Cmt19937 : private CRandom
 
     C_FLOAT64 genrand_res53();        // getRandomCO() with higher resolution
   };
+
+class Cmt19937HR : public Cmt19937
+  {
+    friend CRandom * CRandom::createGenerator(CRandom::Type type,
+        unsigned C_INT32 seed);
+
+    // Operations
+  protected:
+    /**
+     * Default/Named constructor.
+     * Seeds the random number generator with the given seed.
+     * @param C_INT32 seed
+     */
+    Cmt19937HR(unsigned C_INT32 seed);
+
+  public:
+    /**
+     * Produces a uniformly distributed random number in 0 <= x <= 1.
+     * @return C_FLOAT64 random
+     */
+    C_FLOAT64 getRandomCC();
+
+    /**
+     * Produces a uniformly distributed random number in 0 <= x < 1.
+     * Note: 0 < x <= 1 may be achieved by 1.0 - getRandomCO().
+     * @return C_FLOAT64 random
+     */
+    C_FLOAT64 getRandomCO();
+
+    /**
+     * Produces a uniformly distributed random number in 0 < x < 1.
+     * @return C_FLOAT64 random
+     */
+    C_FLOAT64 getRandomOO();
+  };
+
 #endif // COPASI_Cmt19937

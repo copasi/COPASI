@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/CRandom.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:59 $
+   $Date: 2006/07/21 18:15:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,7 @@ const std::string CRandom::TypeName[] =
   {
     "r250",
     "Mersenne Twister",
+    "Mersenne Twister (HR)",
     ""
   };
 
@@ -30,6 +31,7 @@ const char * CRandom::XMLType[] =
   {
     "r250",
     "MersenneTwister",
+    "MersenneTwisterHR",
     NULL
   };
 
@@ -68,6 +70,11 @@ CRandom * CRandom::createGenerator(CRandom::Type type,
 
     case mt19937:
       RandomGenerator = new Cmt19937(seed);
+      RandomGenerator->mType = type;
+      break;
+
+    case mt19937HR:
+      RandomGenerator = new Cmt19937HR(seed);
       RandomGenerator->mType = type;
       break;
 

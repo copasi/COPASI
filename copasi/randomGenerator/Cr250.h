@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/Cr250.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:00 $
+   $Date: 2006/07/21 18:15:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 #ifndef COPASI_Cr250
 #define COPASI_Cr250
 
-class Cr250 : private CRandom
+class Cr250 : public CRandom
   {
     friend CRandom * CRandom::createGenerator(CRandom::Type type,
         unsigned C_INT32 seed);

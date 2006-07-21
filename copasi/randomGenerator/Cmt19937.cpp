@@ -1,14 +1,63 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/Cmt19937.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:59 $
+   $Date: 2006/07/21 18:15:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+/**
+ * Cmt19937 class implementing the Mersenne Twister random number generator,
+ *
+ * Created for Copasi by Stefan Hoops
+ *
+ * A C-program for MT19937, with initialization improved 2002/2/10.
+ * Coded by Takuji Nishimura and Makoto Matsumoto.
+ * This is a faster version by taking Shawn Cokus's optimization,
+ * Matthe Bellew's simplification, Isaku Wada's real version.
+ *
+ * Before using, initialize the state by using init_genrand(seed)
+ * or init_by_array(init_key, key_length).
+ *
+ * Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura,
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *   1. Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *
+ *   2. Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *
+ *   3. The names of its contributors may not be used to endorse or promote
+ *      products derived from this software without specific prior written
+ *      permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * Any feedback is very welcome.
+ * http://www.math.keio.ac.jp/matumoto/emt.html
+ * email: matumoto@math.keio.ac.jp
+ */
 
 #include "copasi.h"
 #include "CRandom.h"
@@ -31,6 +80,7 @@ Cmt19937::Cmt19937(unsigned C_INT32 seed):
   setModulus(0xffffffffUL);
   initialize(seed);
 }
+
 Cmt19937::~Cmt19937(){}
 
 /* initializes mState[Cmt19937_N] with a seed */
@@ -193,6 +243,33 @@ C_FLOAT64 Cmt19937::genrand_res53()
   unsigned C_INT32 a = getRandomU() >> 5, b = getRandomU() >> 6;
   return mFloat = (a * 67108864.0 + b) * (1.0 / 9007199254740992.0);
 }
+/* These real versions are due to Isaku Wada, 2002/01/09 added */
+
+Cmt19937HR::Cmt19937HR(unsigned C_INT32 seed):
+    Cmt19937(seed)
+{}
+
+/* generates a random number on [0,1]-real-interval */
+C_FLOAT64 Cmt19937HR::getRandomCC()
+{
+  unsigned C_INT32 a = getRandomU() >> 5, b = getRandomU() >> 6;
+  return mFloat = (a * 67108864.0 + b) * (1.0 / 9007199254740991.0);
+}
+
+/* generates a random number on [0,1)-real-interval */
+C_FLOAT64 Cmt19937HR::getRandomCO()
+{
+  unsigned C_INT32 a = getRandomU() >> 5, b = getRandomU() >> 6;
+  return mFloat = (a * 67108864.0 + b) * (1.0 / 9007199254740992.0);
+}
+
+/* generates a random number on (0,1)-real-interval */
+C_FLOAT64 Cmt19937HR::getRandomOO()
+{
+  unsigned C_INT32 a = getRandomU() >> 5, b = getRandomU() >> 6;
+  return mFloat = (a * 67108864.0 + b + 0.5) * (1.0 / 9007199254740992.0);
+}
+
 /* These real versions are due to Isaku Wada, 2002/01/09 added */
 
 #ifdef XXXX
