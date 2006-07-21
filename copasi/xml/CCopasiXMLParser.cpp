@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.134 $
+   $Revision: 1.135 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 19:02:47 $
+   $Date: 2006/07/21 19:35:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -4205,9 +4205,11 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
         case CCopasiTask::lyap:
           mCommon.pCurrentTask = new CLyapTask(mCommon.pTaskList);
           break;
+#ifdef COPASI_SENS
         case CCopasiTask::sens:
           mCommon.pCurrentTask = new CSensTask(mCommon.pTaskList);
           break;
+#endif
         default:
           mParser.pushElementHandler(&mParser.mUnknownElement);
           mParser.onStartElement(pszName, papszAttrs);
