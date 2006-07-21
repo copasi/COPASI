@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/21 15:44:18 $
+   $Date: 2006/07/21 17:55:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,7 +48,7 @@ COptions::~COptions()
 
 void COptions::init(C_INT argc, char *argv[])
 {
-  setValue("Self", (std::string) argv[0]);
+  setValue("Self", localeToUtf8(argv[0]));
   setValue("PWD", getPWD());
 
   copasi::COptionParser * pPreParser = new copasi::COptionParser;
