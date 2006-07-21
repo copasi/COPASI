@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:59:06 $
+   $Date: 2006/07/21 19:58:54 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,7 +92,7 @@ class CMetab : public CModelEntity
     /**
      * If dependent the moiety the metabolite is calculated from
      */
-    CMoiety * mpMoiety;
+    const CMoiety * mpMoiety;
 
     /**
      * The set of moieties the metabolite is part of
@@ -166,11 +166,9 @@ class CMetab : public CModelEntity
 
     /**
      * Compile the model value. This is only needed for status ASIGNMENT and ODE.
-     * @param std::vector< CCopasiContainer * > listOfContainer (Default: CCopasiContainer::EmptyList)
      * @return bool success
      */
-    virtual bool compile(std::vector< CCopasiContainer * > listOfContainer =
-                           CCopasiContainer::EmptyList);
+    virtual bool compile();
 
     /**
      * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
@@ -244,11 +242,16 @@ class CMetab : public CModelEntity
     void refreshConcentrationRate();
 
     /**
+     * Calculate the conctration rate.
+     */
+    void refreshRate();
+
+    /**
      * Set whether the metabolite is dependent, i.e., calculated
      * by a moiety
-     * @param const bool & dependent
+     * @param const CMoiety * pMoiety
      */
-    void setDependent(const bool & dependent);
+    void setDependentOn(const CMoiety * pMoiety);
 
     /**
      * Retreive whether the metabolite dependent

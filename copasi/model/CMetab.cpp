@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.100 $
+   $Revision: 1.101 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:59:06 $
+   $Date: 2006/07/21 19:58:54 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -298,8 +298,38 @@ void CMetab::setStatus(const CModelEntity::Status & status)
   if (mpModel && mpCompartment) refreshConcentration();
 }
 
-bool CMetab::compile(std::vector< CCopasiContainer * > listOfContainer)
-{return true;}
+bool CMetab::compile()
+{
+  switch (getStatus())
+    {
+    case FIXED:
+      break;
+
+    case ASSIGNMENT:
+      // :TODO: This needs to be implemented when this status becomes available
+      break;
+
+    case ODE:
+      // :TODO: This needs to be implemented when this status becomes available
+      break;
+
+    case REACTIONS:
+      mDependencies.clear();
+      mpRateReference->clearRefresh();
+
+      if (isDependent())
+        {
+          mDependencies.insert(mpMoiety);
+
+          std::set< const CCopasiObject * > Dependencies;
+          Dependencies.insert(mpMoiety->getObject(CCopasiObjectName("Reference=DependentRate")));
+          mpRateReference->setDirectDependencies(Dependencies);
+          mpRateReference->setRefresh(this, &CMetab::refreshRate);
+        }
+    }
+
+  return true;
+}
 
 void CMetab::calculate()
 {
@@ -319,6 +349,28 @@ void CMetab::calculate()
     case REACTIONS:
       if (isDependent())
         *mpValueData = mpMoiety->getDependentNumber();
+      break;
+    }
+}
+
+void CMetab::refreshRate()
+{
+  switch (getStatus())
+    {
+    case FIXED:
+      break;
+
+    case ASSIGNMENT:
+      // :TODO: This needs to be implemented when this status becomes available
+      break;
+
+    case ODE:
+      // :TODO: This needs to be implemented when this status becomes available
+      break;
+
+    case REACTIONS:
+      if (isDependent())
+        mRate = mpMoiety->getDependentRate();
       break;
     }
 }
@@ -452,33 +504,19 @@ std::string CMetab::getObjectDisplayName(bool regular, bool richtext) const
     return CCopasiObject::getObjectDisplayName(regular, richtext);
   }
 
-void CMetab::setDependent(const bool & dependent)
-{
-  if (!dependent)
-    mpMoiety = NULL;
-}
+void CMetab::setDependentOn(const CMoiety * pMoiety)
+{mpMoiety = pMoiety;}
 
 bool CMetab::isDependent() const
-{return mpMoiety != NULL;}
+  {return mpMoiety != NULL;}
 
 void CMetab::addMoiety(CMoiety * pMoiety)
-{
-  if (getObjectName() == pMoiety->getObjectName())
-    {
-      mpMoiety = pMoiety;
-      mDependencies.insert(pMoiety);
-    }
-
-  mMoieties.insert(pMoiety);
-}
+{mMoieties.insert(pMoiety);}
 
 void CMetab::clearMoieties()
 {
   std::set< CMoiety * >::iterator it = mMoieties.begin();
   std::set< CMoiety * >::iterator end = mMoieties.end();
-
-  for (; it != end; ++it)
-    mDependencies.erase(*it);
 
   mMoieties.clear();
 }
