@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 15:44:22 $
+   $Date: 2006/07/21 15:43:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -626,5 +626,61 @@ std::string utf8ToLocale(const std::string & utf8)
   return Local;
 #else
   return utf8;
+#endif
+}
+
+std::string localeToUtf8(const std::string & locale)
+{
+#ifdef WIN32
+  C_INT32 size;
+
+  size = MultiByteToWideChar(CP_THREAD_ACP,        // code page
+                             MB_ERR_INVALID_CHARS, // character-type options
+                             locale.c_str(),         // address of string to map
+                             -1,                   // NULL terminated
+                             NULL,                 // address of wide-character buffer
+                             0) + 1;               // size of buffer
+
+  WCHAR * pWideChar = new WCHAR[size];
+
+  MultiByteToWideChar(CP_THREAD_ACP,        // code page
+                      MB_ERR_INVALID_CHARS, // character-type options
+                      locale.c_str(),         // address of string to map
+                      -1,                   // NULL terminated
+                      pWideChar,            // address of wide-character buffer
+                      size);                // size of buffer
+
+  int UsedDefaultChar = 0;
+
+  size = WideCharToMultiByte(CP_UTF8,                // code page
+                             WC_COMPOSITECHECK |
+                             WC_DEFAULTCHAR,         // performance and mapping flags
+                             pWideChar,              // address of wide-character string
+                             -1,                     // NULL terminated
+                             NULL,                   // address of buffer for new string
+                             0,                      // size of buffer
+                             "?",                    // address of default for unmappable characters
+                             & UsedDefaultChar) + 1; // address of flag set when default char used
+
+  char * pUtf8 = new char[size];
+
+  WideCharToMultiByte(CP_UTF8,                // code page
+                      WC_COMPOSITECHECK |
+                      WC_DEFAULTCHAR,         // performance and mapping flags
+                      pWideChar,              // address of wide-character string
+                      -1,                     // NULL terminated
+                      pUtf8,                 // address of buffer for new string
+                      size,                   // size of buffer
+                      "?",                    // address of default for unmappable characters
+                      & UsedDefaultChar);     // address of flag set when default char used
+
+  std::string Utf8 = pUtf8;
+
+  delete [] pWideChar;
+  delete [] pUtf8;
+
+  return Utf8;
+#else
+  return locale;
 #endif
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 15:44:22 $
+   $Date: 2006/07/21 15:43:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,5 +106,14 @@ int toEnum(const char * attribute,
  * @return std::string locale
  */
 std::string utf8ToLocale(const std::string & utf8);
+
+/**
+ * Convert a string in the local used code page to utf8
+ * This only has an effect on Windows as utf8 is the local
+ * code page everywhere else
+ * @param const std::string & locale
+ * @return std::string utf8
+ */
+std::string localeToUtf8(const std::string & locale);
 
 #endif // COPASI_utilities
