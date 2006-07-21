@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:58:19 $
+   $Date: 2006/07/21 19:57:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -115,7 +115,7 @@ const C_FLOAT64 & CModelEntity::getInitialValue() const {return *mpIValue;}
 
 const CModelEntity::Status & CModelEntity::getStatus() const {return mStatus;}
 
-bool CModelEntity::compile(std::vector< CCopasiContainer * > listOfContainer)
+bool CModelEntity::compile()
 {return true;}
 
 void CModelEntity::calculate()
@@ -360,9 +360,12 @@ void CModelValue::setStatus(const CModelEntity::Status & status)
     }
 }
 
-bool CModelValue::compile(std::vector< CCopasiContainer * > listOfContainer)
+bool CModelValue::compile()
 {
   if (isFixed()) return true;
+
+  std::vector< CCopasiContainer * > listOfContainer;
+  listOfContainer.push_back(getObjectAncestor("Model"));
 
   bool success = mpExpression->compile(listOfContainer);
 
