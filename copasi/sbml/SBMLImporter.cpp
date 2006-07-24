@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.131 $
+   $Revision: 1.132 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/19 20:56:51 $
+   $Author: gauges $
+   $Date: 2006/07/24 13:42:26 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2033,7 +2033,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassAction(const CEvaluatio
   return result;
 }
 
-std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const CEvaluationNode* pRootNode, const CChemEq& chemicalEquation)
+std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const CEvaluationNode* pRootNode, const CChemEq& chemicalEquation, bool substrateBranch)
 {
   bool result = true;
   std::vector<CEvaluationNodeObject*>* v = NULL;
@@ -2080,7 +2080,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                               const CChemEqElement* element = (*metabolites)[i];
                               tmpEq2.addMetabolite(element->getMetaboliteKey(), element->getMultiplicity(), CChemEq::SUBSTRATE);
                             }
-                          std::vector<CEvaluationNodeObject*>* v2 = this->isMassActionExpression(pChildNode, tmpEq2);
+                          std::vector<CEvaluationNodeObject*>* v2 = this->isMassActionExpression(pChildNode, tmpEq2, false);
                           if (!v2)
                             {
                               fatalError();
@@ -2210,11 +2210,16 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
         }
       if (result)
         {
-          const CCopasiVector<CChemEqElement>& substrates = chemicalEquation.getSubstrates();
-          unsigned i, iMax = substrates.size();
+          const CCopasiVector<CChemEqElement>& metabolites = (substrateBranch) ? chemicalEquation.getSubstrates() : chemicalEquation.getProducts();
+          unsigned i, iMax = metabolites.size();
+          // all metabolites must occur in the muliplicityMap so they have to have the same size
+          if (iMax != multiplicityMap.size()) result = false;
           for (i = 0;i < iMax && result;++i)
             {
-              if (fabs(multiplicityMap[substrates[i]->getMetabolite()] - substrates[i]->getMultiplicity()) >= 0.01)
+              // the metabolite has to be present in the multiplicityMap, otherwise it is not a mass action
+              // the stoichiometry also has to fit
+              std::map<const CMetab*, C_FLOAT64>::iterator pos = multiplicityMap.find(metabolites[i]->getMetabolite());
+              if (pos == multiplicityMap.end() || fabs(pos->second - metabolites[i]->getMultiplicity()) >= 0.01)
                 {
                   result = false;
                   break;
@@ -2440,7 +2445,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
       unsigned int i, iMax = metabolites->size();
       unsigned int j, jMax;
       for (i = 0; i < iMax; ++i)
-        for (j = 0, jMax = fabs((*metabolites)[i]->getMultiplicity()); j < jMax; j++)
+        for (j = 0, jMax = static_cast<int>(fabs((*metabolites)[i]->getMultiplicity())); j < jMax; j++)
           pCopasiReaction->addParameterMapping("substrate", (*metabolites)[i]->getMetaboliteKey());
 
       if (pCopasiReaction->isReversible())
@@ -2460,7 +2465,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           const CCopasiVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getProducts();
           iMax = metabolites->size();
           for (i = 0; i < iMax; ++i)
-            for (j = 0, jMax = fabs((*metabolites)[i]->getMultiplicity()); j < jMax; j++)
+            for (j = 0, jMax = static_cast<int>(fabs((*metabolites)[i]->getMultiplicity())); j < jMax; j++)
               pCopasiReaction->addParameterMapping("product", (*metabolites)[i]->getMetaboliteKey());
         }
     }
