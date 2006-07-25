@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSlider.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Author: ssahle $
+   $Date: 2006/07/25 14:36:41 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,11 +93,14 @@ const std::string & CSlider::getAssociatedEntityKey() const
 
 bool CSlider::setSliderObject(CCopasiObject * pObject)
 {
-  //if (!setObjectName(pObject->getCN())) return false;
-  if (!pObject) return false;
+  mpSliderObject = pObject;
+
+  if (!pObject)
+    {
+      return false;
+    }
   mCN = pObject->getCN();
 
-  mpSliderObject = pObject;
   if (mpSliderObject->isValueInt())
     {
       this->setSliderType(Integer);
