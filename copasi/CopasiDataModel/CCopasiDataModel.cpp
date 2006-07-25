@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.67 $
+   $Revision: 1.68 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/19 15:56:20 $
+   $Author: ssahle $
+   $Date: 2006/07/25 14:44:03 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,6 +120,7 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
 
 CCopasiDataModel::~CCopasiDataModel()
 {
+  CCopasiObject::setRenameHandler(NULL);
   if (mpConfiguration != NULL)
     mpConfiguration->save();
   pdelete(mpConfiguration);
