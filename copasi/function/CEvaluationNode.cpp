@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:25 $
+   $Author: ssahle $
+   $Date: 2006/07/26 11:13:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -231,12 +231,24 @@ void CEvaluationNode::printRecursively(std::ostream & os, int indent) const
     for (i = 0; i < indent; ++i) os << " ";
     os << "mValue: " << mValue << std::endl;
 
-    if (getChild())
-      ((CEvaluationNode*)getChild())->printRecursively(os, indent + 2);
+    CEvaluationNode* tmp;
 
-    if (getSibling())
-      ((CEvaluationNode*)getSibling())->printRecursively(os, indent);
+    tmp = (CEvaluationNode*)getChild();
+
+    while (tmp)
+      {
+        tmp -> printRecursively(os, indent + 2);
+        tmp = (CEvaluationNode*)tmp->getSibling();
+      }
+
+    /*    if (getChild())
+          ((CEvaluationNode*)getChild())->printRecursively(os, indent + 2);
+
+
+        if (getSibling())
+          ((CEvaluationNode*)getSibling())->printRecursively(os, indent);*/
   }
+
 void CEvaluationNode::printRecursively() const
   {
     this->printRecursively(std::cout, 0);
