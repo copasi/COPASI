@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.132 $
+   $Revision: 1.133 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/07/24 13:42:26 $
+   $Date: 2006/07/26 12:37:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2033,7 +2033,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassAction(const CEvaluatio
   return result;
 }
 
-std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const CEvaluationNode* pRootNode, const CChemEq& chemicalEquation, bool substrateBranch)
+std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const CEvaluationNode* pRootNode, const CChemEq& chemicalEquation)
 {
   bool result = true;
   std::vector<CEvaluationNodeObject*>* v = NULL;
@@ -2080,7 +2080,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                               const CChemEqElement* element = (*metabolites)[i];
                               tmpEq2.addMetabolite(element->getMetaboliteKey(), element->getMultiplicity(), CChemEq::SUBSTRATE);
                             }
-                          std::vector<CEvaluationNodeObject*>* v2 = this->isMassActionExpression(pChildNode, tmpEq2, false);
+                          std::vector<CEvaluationNodeObject*>* v2 = this->isMassActionExpression(pChildNode, tmpEq2);
                           if (!v2)
                             {
                               fatalError();
@@ -2210,7 +2210,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
         }
       if (result)
         {
-          const CCopasiVector<CChemEqElement>& metabolites = (substrateBranch) ? chemicalEquation.getSubstrates() : chemicalEquation.getProducts();
+          const CCopasiVector<CChemEqElement>& metabolites = chemicalEquation.getSubstrates();
           unsigned i, iMax = metabolites.size();
           // all metabolites must occur in the muliplicityMap so they have to have the same size
           if (iMax != multiplicityMap.size()) result = false;
