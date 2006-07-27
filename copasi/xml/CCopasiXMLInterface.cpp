@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 15:58:28 $
+   $Date: 2006/07/27 18:59:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -206,6 +206,38 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   if (isnan(dbl))
     value << "NaN";
   else if (finite(dbl))
@@ -246,6 +278,38 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return value.str();
 }
  */
@@ -253,7 +317,7 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
 CCopasiXMLInterface::DBL::DBL(const C_FLOAT64 & value):
     mValue(value)
 {
-  if (-mValue < DBL_MIN && mValue < DBL_MIN)
+  if (-mValue < DBL_MIN && mValue < DBL_MIN && !isnan(mValue))
     mValue = 0.0;
 }
 
