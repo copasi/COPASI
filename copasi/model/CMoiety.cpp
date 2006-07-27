@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/21 19:58:33 $
+   $Date: 2006/07/27 18:55:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,6 +104,9 @@ void CMoiety::cleanup()
 {
   mDependencies.clear();
   mEquation.clear();
+
+  std::set< const CCopasiObject *> NoDependencies;
+  mpRateReference->setDirectDependencies(NoDependencies);
 }
 
 void CMoiety::refreshDependentNumber()
