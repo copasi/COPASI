@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelWidget.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/11 14:36:58 $
+   $Date: 2006/07/27 18:54:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,7 @@
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
+#include "xml/CCopasiXMLInterface.h"
 
 /*
  *  Constructs a ModelWidget which is a child of 'parent', with the
@@ -263,9 +264,29 @@ bool ModelWidget::saveToModel()
       changed = true;
     }
 
-  if (mpEditComment->text() != FROM_UTF8(model->getComments()))
+  std::string Richtext = (const char *)mpEditComment->text().utf8();
+  std::ostringstream xhtml;
+
+  if (Richtext[0] == '<')
     {
-      model->setComments((const char *)mpEditComment->text().utf8());
+      std::string::size_type pos = Richtext.find('>');
+      std::string FirstElement = Richtext.substr(0, pos);
+
+      if (FirstElement.find("xmlns=\"http://www.w3.org/1999/xhtml\"") == std::string::npos)
+        FirstElement += " xmlns=\"http://www.w3.org/1999/xhtml\"";
+
+      xhtml << FirstElement << Richtext.substr(pos);
+    }
+  else
+    {
+      xhtml << "<body xmlns=\"http://www.w3.org/1999/xhtml\">";
+      xhtml << CCopasiXMLInterface::encode(Richtext);
+      xhtml << "</body>";
+    }
+
+  if (xhtml.str() != model->getComments())
+    {
+      model->setComments(xhtml.str());
       changed = true;
     }
 
