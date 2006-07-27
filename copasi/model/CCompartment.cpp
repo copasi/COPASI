@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:59:36 $
+   $Date: 2006/07/27 20:21:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -90,7 +90,8 @@ const CCopasiVectorNS < CMetab > & CCompartment::getMetabolites() const
 
 void CCompartment::setInitialValue(const C_FLOAT64 & initialValue)
 {
-  if (initialValue == *mpIValue) return;
+  if ((initialValue == *mpIValue) && !isnan(initialValue) ||
+      (isnan(initialValue) && isnan(*mpIValue))) return;
 
   *mpIValue = initialValue;
 
