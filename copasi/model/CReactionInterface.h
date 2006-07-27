@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:57 $
+   $Date: 2006/07/27 18:07:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -280,7 +280,7 @@ class CReactionInterface
     /**
      * guesses how to connect metabs with parameters for a specific usage
      */
-    void connectFromScratch(CFunctionParameter::Role role, bool pedantic);
+    void connectFromScratch(CFunctionParameter::Role role);
 
     /**
      * tries to determine the mapping for PARAMETER, VOLUME, TIME

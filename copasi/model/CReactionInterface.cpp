@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:57 $
+   $Date: 2006/07/27 18:07:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -343,7 +343,7 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction,
   setFunctionAndDoMapping(fl[0], model);
 }
 
-void CReactionInterface::connectFromScratch(CFunctionParameter::Role role, bool pedantic)
+void CReactionInterface::connectFromScratch(CFunctionParameter::Role role)
 {
   unsigned C_INT32 i, imax = mpParameters->getNumberOfParametersByUsage(role);
   if (!imax) return;
@@ -362,8 +362,6 @@ void CReactionInterface::connectFromScratch(CFunctionParameter::Role role, bool 
     }
   else if (Type == CFunctionParameter::FLOAT64)
     {
-      if ((imax != el.size()) && pedantic) fatalError();
-
       if (el.size() > 0)
         mNameMap[pos - 1][0] = el[0];
       else
@@ -591,9 +589,9 @@ void CReactionInterface::setFunctionAndDoMapping(const std::string & fn, const C
   connectNonMetabolites(model);
 
   //guess initial connections between metabs and function parameters
-  connectFromScratch(CFunctionParameter::SUBSTRATE, true);
-  connectFromScratch(CFunctionParameter::PRODUCT, true);
-  connectFromScratch(CFunctionParameter::MODIFIER, false); // we can not be pedantic about modifiers
+  connectFromScratch(CFunctionParameter::SUBSTRATE);
+  connectFromScratch(CFunctionParameter::PRODUCT);
+  connectFromScratch(CFunctionParameter::MODIFIER); // we can not be pedantic about modifiers
   // because modifiers are not taken into acount
   // when looking for suitable functions
 }
