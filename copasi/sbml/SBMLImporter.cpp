@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.133 $
+   $Revision: 1.134 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/07/26 12:37:02 $
+   $Date: 2006/07/28 15:07:03 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -502,7 +502,7 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
     }
   else
     {
-      if (sbmlCompartment->isSetSize())
+      if (sbmlCompartment->isSetSize() && sbmlCompartment->getSize() == sbmlCompartment->getSize()) // make sure it is not set to NaN
         {
           value = sbmlCompartment->getSize();
         }
@@ -604,11 +604,11 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
     {
       this->mSubstanceOnlySpecies.insert(std::make_pair(const_cast<Species*>(sbmlSpecies), pSBMLCompartment));
     }
-  if (sbmlSpecies->isSetInitialAmount())
+  if (sbmlSpecies->isSetInitialAmount() && sbmlSpecies->getInitialAmount() == sbmlSpecies->getInitialAmount()) // make sure it's not set to NaN
     {
       copasiMetabolite->setInitialValue(sbmlSpecies->getInitialAmount()*copasiModel->getQuantity2NumberFactor()); // CHECK UNITS !!!
     }
-  else if (sbmlSpecies->isSetInitialConcentration())
+  else if (sbmlSpecies->isSetInitialConcentration() && sbmlSpecies->getInitialConcentration() == sbmlSpecies->getInitialConcentration()) // make sure it is not set to NaN
     {
       if (sbmlSpecies->getHasOnlySubstanceUnits())
         {
@@ -838,7 +838,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               id = pSBMLParameter->getId();
             }
           double value;
-          if (pSBMLParameter->isSetValue())
+          if (pSBMLParameter->isSetValue() && pSBMLParameter->getValue() == pSBMLParameter->getValue()) // make sure it is not set to NaN
             {
               value = pSBMLParameter->getValue();
             }
@@ -1701,7 +1701,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
       appendix = numberStream.str();
     }
   double value;
-  if (sbmlParameter->isSetValue())
+  if (sbmlParameter->isSetValue() && sbmlParameter->getValue() == sbmlParameter->getValue()) // make sure it is not set to NaN
     {
       value = sbmlParameter->getValue();
     }
