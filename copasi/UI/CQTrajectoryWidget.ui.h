@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTrajectoryWidget.ui.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:06 $
+   $Date: 2006/07/28 21:20:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -179,11 +179,7 @@ bool CQTrajectoryWidget::saveTask()
       mChanged = true;
     }
 
-  C_FLOAT64 Delay;
-  if (mpCheckDelay->isChecked())
-    Delay = mpEditDelay->text().toDouble();
-  else
-    Delay = 0.0;
+  C_FLOAT64 Delay = mpEditDelay->text().toDouble();
 
   if (Delay != trajectoryproblem->getOutputStartTime())
     {
@@ -225,10 +221,17 @@ bool CQTrajectoryWidget::loadTask()
   mpEditIntervals->setText(QString::number(trajectoryproblem->getStepNumber()));
   mpEditDuration->setText(QString::number(trajectoryproblem->getDuration()));
 
-  bool tmpflag (CCopasiDataModel::Global->getModel()->getInitialTime()
-                == trajectoryproblem->getOutputStartTime());
-  mpCheckDelay->setChecked(!tmpflag);
-  mpEditDelay->setEnabled(!tmpflag);
+  bool Delayed;
+  if (trajectoryproblem->getStepSize() > 0.0)
+    Delayed =
+      (trajectoryproblem->getOutputStartTime() - CCopasiDataModel::Global->getModel()->getInitialTime()) > DBL_MIN;
+  else
+    Delayed =
+      (CCopasiDataModel::Global->getModel()->getInitialTime() - trajectoryproblem->getOutputStartTime()) > DBL_MIN;
+
+  mpCheckDelay->setChecked(Delayed);
+  mpEditDelay->setEnabled(Delayed);
+
   mpEditDelay->setText(QString::number(trajectoryproblem->getOutputStartTime()));
 
   //store time series checkbox
