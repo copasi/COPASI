@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.101 $
+   $Revision: 1.102 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/21 19:58:54 $
+   $Date: 2006/07/31 21:18:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -182,12 +182,10 @@ void CMetab::setConcentration(const C_FLOAT64 concentration)
 void CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
 {
   mIConc = initialConcentration;
-  *mpIValue = initialConcentration * mpCompartment->getValue()
-              * mpModel->getQuantity2NumberFactor();
-
-  // This is obsolete.
-  // if (isFixed())
-  //   setConcentration(initialConcentration);
+  if (!isnan(initialConcentration) &&
+      !isnan(mpCompartment->getInitialValue()))
+    *mpIValue =
+      initialConcentration * mpCompartment->getInitialValue() * mpModel->getQuantity2NumberFactor();
 
   std::set< CMoiety * >::iterator it = mMoieties.begin();
   std::set< CMoiety * >::iterator end = mMoieties.end();
@@ -216,8 +214,11 @@ void CMetab::setInitialValue(const C_FLOAT64 & initialValue)
 {
   if (*mpIValue == initialValue) return;
 
-  if (initialValue)
-    mIConc = initialValue / mpCompartment->getValue() * mpModel->getNumber2QuantityFactor();
+  if (initialValue != 0 &&
+      !isnan(initialValue) &&
+      !isnan(mpCompartment->getInitialValue()))
+    mIConc =
+      initialValue / mpCompartment->getInitialValue() * mpModel->getNumber2QuantityFactor();
 
   *mpIValue = initialValue;
 
@@ -236,7 +237,10 @@ void CMetab::setInitialValue(const C_FLOAT64 & initialValue)
 
 void CMetab::refreshInitialConcentration()
 {
-  mIConc = *mpIValue / mpCompartment->getValue() * mpModel->getNumber2QuantityFactor();
+  if (!isnan(mpCompartment->getInitialValue()) &&
+      !isnan(*mpIValue))
+    mIConc =
+      *mpIValue / mpCompartment->getInitialValue() * mpModel->getNumber2QuantityFactor();
 
   if (isFixed()) mConc = mIConc;
 }
