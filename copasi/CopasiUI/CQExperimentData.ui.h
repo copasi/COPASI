@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:06 $
+   $Date: 2006/07/31 21:01:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1027,7 +1027,7 @@ void CQExperimentData::slotSeparator()
 {
   if (!mpExperiment) return;
 
-  saveTable(mpExperiment);
+  //  saveTable(mpExperiment);
 
   if (mpCheckTab->isChecked())
     mpExperiment->setSeparator("\t");
