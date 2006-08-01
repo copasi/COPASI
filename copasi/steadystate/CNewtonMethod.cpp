@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:57:04 $
+   $Date: 2006/08/01 16:14:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -736,7 +736,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   //mInitialStateX = mpProblem->getInitialState();
   //*mpSteadyStateX = mInitialStateX; //not strictly necessary
 
-  mDimension = mpProblem->getModel()->getMetabolitesInd().size();
+  mDimension = mpProblem->getModel()->getNumIndependentMetabs();
 
   mH.resize(mDimension);
   mXold.resize(mDimension);

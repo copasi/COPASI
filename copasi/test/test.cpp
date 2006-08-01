@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test/test.cpp,v $
-   $Revision: 1.107 $
+   $Revision: 1.108 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:58 $
+   $Date: 2006/08/01 16:14:07 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -456,7 +456,7 @@ C_INT32 TestReadSample(void)
   model.buildRedStoi();
   model.buildMoieties();
 
-  size = model.getMetabolitesInd().size();
+  size = model.getNumIndependentMetabs();
   C_FLOAT64 *y;
   y = new double[size];
 
@@ -749,8 +749,12 @@ C_INT32 TestOptimization(void)
 /*
 
 
+
+
     C_INT32 size = 0;
     C_INT32 i;
+
+
 
 
     //CReadConfig inbuf("gps/BakkerComp.gps");
@@ -760,11 +764,17 @@ C_INT32 TestOptimization(void)
     //model.compile();
 
 
+
+
     //model.getReactions().size();
+
+
 
 
     COptimizer * opt = new COptimizer();
     opt->Optimise();
+
+
 
 
     //polymorphism, late binding
@@ -775,11 +785,15 @@ C_INT32 TestOptimization(void)
     optPtr->Optimise();
 
 
+
+
     //CGA ga;
     //opt.Set_nparam (100);
     //opt.Set_mn(-10.0);
     //opt.Set_mx(10.0);
     //ga.Optimise();
+
+
 
 
  */
@@ -874,10 +888,14 @@ InitMetabolites(CCopasiVectorN < CCompartment > & compartments)
   vector < CMetab * > Metabolites;
 
 
+
+
   for (unsigned C_INT32 i = 0; i < compartments.size(); i++)
     for (unsigned C_INT32 j = 0;
          j < compartments[i]->getMetabolites().size(); j++)
       Metabolites.push_back(compartments[i]->getMetabolites()[j]);
+
+
 
 
   return Metabolites;
@@ -1813,6 +1831,10 @@ C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins)
 
 
 
+
+
+
+
 C_INT32 TestDependencyGraph()
 {
   cout << "Testing dependency graph\n";
@@ -1826,10 +1848,14 @@ C_INT32 TestDependencyGraph()
   unsigned C_INT32 i = 0, j = 0;
 
 
+
+
   for (i = 0; i < NNODES; i++)
     {
       cout << "Adding node " << i << " with dependents ";
       dg.addNode(i);
+
+
 
 
       for (j = 0; j < NDEPS; j++)
@@ -1839,8 +1865,12 @@ C_INT32 TestDependencyGraph()
         }
 
 
+
+
       cout << endl;
     }
+
+
 
 
   // Display the vector of dependents for each node
@@ -1852,6 +1882,8 @@ C_INT32 TestDependencyGraph()
       set <C_INT32>::const_iterator jit = depvec.begin();
 
 
+
+
       while (jit != depvec.end())
         {
           cout << *jit << " ";
@@ -1859,13 +1891,19 @@ C_INT32 TestDependencyGraph()
         }
 
 
+
+
       cout << endl;
     }
+
+
 
 
   cout << "Done testing dependency graph\n\n";
   return 0;
 }
+
+
 
 
  */
@@ -2006,7 +2044,6 @@ C_INT32 Testmt19937(void)
 {
   /*
     CRandom * rand = CRandom::createGenerator();
-
 
     int i;
     unsigned C_INT32 init[4] = {0x123, 0x234, 0x345, 0x456}, length = 4;

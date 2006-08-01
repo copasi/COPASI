@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:23 $
+   $Date: 2006/08/01 16:14:07 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -157,7 +157,8 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
         tableJacobianX->setText(i, j, QString::number(jacobianX(i, j)));
       }
 
-  const CCopasiVector<CMetab>& metabsX = task->getProblem()->getModel()->getMetabolitesInd();
+  const CCopasiVector< CMetab > & metabsX =
+    task->getProblem()->getModel()->getMetabolitesX();
   for (i = 0; i < imax; ++i)
     {
       name = FROM_UTF8(CMetabNameInterface::getDisplayName(task->getProblem()->getModel(), *metabsX[i]));
