@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.120 $
+   $Revision: 1.121 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/14 13:32:35 $
+   $Author: shoops $
+   $Date: 2006/08/02 20:16:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,7 +67,7 @@ class CModel : public CModelEntity
     /**
      * Enum of valid model types.
      */
-    enum ModelType {deterministic, stochastic};
+    enum ModelType {deterministic = 0, stochastic};
 
     /**
      * String representation of the valid model types.
@@ -83,7 +83,7 @@ class CModel : public CModelEntity
 
       private:
         const CMatrix< C_FLOAT64 > & mA;
-        const CCopasiVector< CMetab > & mIndependent;
+        const unsigned C_INT32 & mNumIndependent;
         static const elementType mZero;
         static const elementType mUnit;
 
@@ -91,10 +91,10 @@ class CModel : public CModelEntity
         /**
          * Default constructor
          * @param const CMatrix< C_FLOAT64 > & A
-         * @param const CCopasiVectorN< CMetab > & independent
+         * @param const unsigned C_INT32 & mNumIndependent
          */
         CLinkMatrixView(const CMatrix< C_FLOAT64 > & A,
-                        const CCopasiVector< CMetab > & independent);
+                        const unsigned C_INT32 & numIndependent);
 
         /**
          * Destructor.
@@ -129,8 +129,8 @@ class CModel : public CModelEntity
         inline elementType & operator()(const unsigned C_INT32 & row,
                                         const unsigned C_INT32 & col) const
           {
-            if (row >= mIndependent.size())
-              return const_cast< elementType & >(mA(row - mIndependent.size(), col));
+            if (row >= mNumIndependent)
+              return const_cast< elementType & >(mA(row - mNumIndependent, col));
             else if (row != col)
               return const_cast< elementType & >(mZero);
             else
@@ -200,14 +200,9 @@ class CModel : public CModelEntity
     CCopasiVector< CMetab > mMetabolitesX;
 
     /**
-     *  Vector of reference to independent metabolites
+     * The number of independent metabolites determined by reactions
      */
-    CCopasiVector< CMetab > mMetabolitesInd;
-
-    /**
-     *  Vector of reference to dependent metabolites
-     */
-    CCopasiVector< CMetab > mMetabolitesVar;
+    unsigned C_INT32 mNumIndependent;
 
     /**
      *  for array of steps
@@ -384,11 +379,6 @@ class CModel : public CModelEntity
 #endif // XXXX
 
     /**
-     *  Set the status of the metabolites
-     */
-    void setMetabolitesStatus();
-
-    /**
      *  Build the Reduced Stoichiometry Matrix from the LU decomposition
      */
     void buildRedStoi();
@@ -406,11 +396,6 @@ class CModel : public CModelEntity
     void updateMoietyValues();
 
   public:
-    /**
-     *  This calculate the right hand side (ydot) of the ODE for LSODA
-     */
-    //void lSODAEval(C_INT32 n, C_FLOAT64 t, C_FLOAT64 * y, C_FLOAT64 * ydot);
-
     //********** Metabs *****************************
 
     /**
@@ -426,19 +411,6 @@ class CModel : public CModelEntity
      */
     const CCopasiVector< CMetab > & getMetabolitesX() const;
     CCopasiVector< CMetab > & getMetabolitesX();
-
-    /**
-     * Retrieves the vector of independent metabolites.
-     * @return vector < CMetab * > metabolites
-     */
-    const CCopasiVector< CMetab > & getMetabolitesInd() const;
-
-    /**
-     * Retrieves the vector of variable metabolites.
-     * This is a subset of MetabolitesX
-     * @return vector < CMetab * > metabolites
-     */
-    const CCopasiVector< CMetab > & getVariableMetabolites() const;
 
     /**
      *  Get the number of total metabolites
