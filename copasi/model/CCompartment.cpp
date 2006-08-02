@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CCompartment.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/27 20:21:22 $
+   $Author: ssahle $
+   $Date: 2006/08/02 11:31:03 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <float.h>
+#include <math.h>
 
 #include "copasi.h"
 #include "utilities/CReadConfig.h"
