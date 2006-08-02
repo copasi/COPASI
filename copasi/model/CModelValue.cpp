@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/21 19:57:55 $
+   $Date: 2006/08/02 20:10:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,12 +171,15 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
           mpValueReference->clearRefresh();
           mpRateReference->setDirectDependencies(mDependencies);
           mpRateReference->clearRefresh();
+          mUsed = false;
         }
+      else
+        mUsed = true; // We will detect during compilation whether this is actually correct.
     }
 }
 
 void * CModelEntity::getValuePointer() const
-  {return const_cast<C_FLOAT64 *>(mpValueAccess);}
+{return const_cast<C_FLOAT64 *>(mpValueAccess);}
 
 void CModelEntity::initObjects()
 {
