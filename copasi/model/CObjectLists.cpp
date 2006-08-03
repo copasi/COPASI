@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: tjohann $
-   $Date: 2006/07/05 16:33:57 $
+   $Date: 2006/08/03 12:42:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 const std::string CObjectLists::ListTypeName[] =
   {
     "Not Set",
+    "Single Object",
     "Metabolites",
     "Non-Constant Metabolites",
     "Concentrations of Metabolites",
@@ -40,7 +41,6 @@ const std::string CObjectLists::ListTypeName[] =
     "Local Parameter Values",
     "All Parameter Values",
     "All Parameter and Initial Values",
-    "Single Object",
     ""
   };
 
