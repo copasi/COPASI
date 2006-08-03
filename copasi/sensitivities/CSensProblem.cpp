@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: tjohann $
-   $Date: 2006/07/14 12:26:43 $
+   $Date: 2006/08/03 14:25:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,14 +18,14 @@
 
 bool CSensItem::isSingleObject() const
   {
-    return mIsSingleObject;
+    return (mListType == CObjectLists::SINGLE_OBJECT);
   }
 
 void CSensItem::setSingleObjectCN(const CCopasiObjectName & cn)
 {
   mSingleObjectCN = cn;
-  mIsSingleObject = true;
-  setListType(CObjectLists::SINGLE_OBJECT);
+  if (cn != "")
+    setListType(CObjectLists::SINGLE_OBJECT);
 }
 
 const CCopasiObjectName & CSensItem::getSingleObjectCN() const
@@ -45,7 +45,6 @@ std::string CSensItem::getSingleObjectDisplayName() const
 void CSensItem::setListType(CObjectLists::ListType lt)
 {
   mListType = lt;
-  mIsSingleObject = false;
 }
 
 const CObjectLists::ListType & CSensItem::getListType() const
@@ -53,9 +52,26 @@ const CObjectLists::ListType & CSensItem::getListType() const
     return mListType;
   }
 
-std::string CSensItem::getListTypeDisplayName() const
+bool CSensItem::operator==(const CSensItem & rhs) const
   {
-    return "";
+    if (isSingleObject() != rhs.isSingleObject())
+      return false;
+
+    if (isSingleObject())
+      {
+        if (getSingleObjectCN() != rhs.getSingleObjectCN())
+          return false;
+      }
+    else
+      if (getListType() != rhs.getListType())
+        return false;
+
+    return true;
+  }
+
+bool CSensItem::operator!=(const CSensItem & rhs) const
+  {
+    return !(*this == rhs);
   }
 
 //************************ CSensProblem ***************************
@@ -90,12 +106,15 @@ void CSensProblem::createParametersInGroup(CCopasiParameterGroup *pg)
 //static
 void CSensProblem::copySensItemToParameterGroup(const CSensItem * si, CCopasiParameterGroup *pg)
 {
+  std::string cn = "";
+
   if (!pg) return; if (!si) return;
 
   if (si->isSingleObject())
-    pg->setValue("SingleObject", si->getSingleObjectCN());
-  else
-    pg->setValue("ObjectListType", (unsigned C_INT32)si->getListType());
+    cn = si->getSingleObjectCN();
+
+  pg->setValue("SingleObject", cn);
+  pg->setValue("ObjectListType", (unsigned C_INT32)si->getListType());
 }
 
 //static
@@ -112,10 +131,10 @@ void CSensProblem::copyParameterGroupToSensItem(const CCopasiParameterGroup *pg,
   CObjectLists::ListType lt = (CObjectLists::ListType)0;
   if (pLT) lt = *pLT;
 
-  if (cn != "")
-    si->setSingleObjectCN(cn);
-  else
-    si->setListType(lt);
+  //  if (cn != "")
+  si->setSingleObjectCN(cn);
+  //  else
+  si->setListType(lt);
 }
 
 /**
@@ -140,7 +159,7 @@ CSensProblem::CSensProblem(const CCopasiContainer * pParent):
   addGroup("ListOfVariables");
   mpVariablesGroup = dynamic_cast<CCopasiParameterGroup*>(getParameter("ListOfVariables"));
 
-  //initDebugProblem();
+  //  initDebugProblem();
   CONSTRUCTOR_TRACE;
 }
 
@@ -198,6 +217,11 @@ CSensItem CSensProblem::getTargetFunctions() const
     return ret;
   }
 
+void CSensProblem::changeTargetFunctions(const CSensItem item)
+{
+  copySensItemToParameterGroup(&item, mpTargetFunctions);
+}
+
 unsigned C_INT32 CSensProblem::getNumberOfVariables() const
   {
     return mpVariablesGroup->size();
@@ -227,14 +251,37 @@ void CSensProblem::addVariables(const CSensItem & item)
   copySensItemToParameterGroup(&item, tmp);
 }
 
+bool CSensProblem::removeVariables(unsigned C_INT32 index)
+{
+  return mpVariablesGroup->removeParameter(index);
+}
+
+bool CSensProblem::changeVariables(unsigned C_INT32 index, const CSensItem & item)
+{
+  unsigned C_INT32 num = getNumberOfVariables();
+
+  if (index > num)
+    return false;
+
+  if (index == num)
+    addVariables(item);
+  else
+    {
+      CCopasiParameterGroup * tmp =
+        (CCopasiParameterGroup *)(mpVariablesGroup->getParameter(index));
+      copySensItemToParameterGroup(&item, tmp);
+    }
+
+  return true;
+}
+
 //static
 std::vector<CObjectLists::ListType>
 CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
 {
   std::vector<CObjectLists::ListType> list;
 
-  // the 'unset' type, abusing CObjectLists::ALL_METABS
-  list.push_back((CObjectLists::ListType) 0);
+  list.push_back(CObjectLists::EMPTY_LIST);
 
   // Add new functions here, under applicable SubTaskType case.
   // Don't forget to provide for a string value in

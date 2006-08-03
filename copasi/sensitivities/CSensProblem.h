@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: tjohann $
-   $Date: 2006/07/14 12:26:43 $
+   $Date: 2006/08/03 14:25:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,8 +44,10 @@ class CSensItem
     const CObjectLists::ListType & getListType() const;
     std::string getListTypeDisplayName() const;
 
+    bool operator==(const CSensItem & rhs) const;
+    bool operator!=(const CSensItem & rhs) const;
+
   private:
-    bool mIsSingleObject;
     CCopasiObjectName mSingleObjectCN;
     CObjectLists::ListType mListType;
   };
@@ -105,11 +107,16 @@ class CSensProblem: public CCopasiProblem
     const CSensProblem::SubTaskType getSubTaskType() const;
 
     CSensItem getTargetFunctions() const;
+    void changeTargetFunctions(const CSensItem item);
 
     unsigned C_INT32 getNumberOfVariables() const;
     CSensItem getVariables(unsigned C_INT32 index) const;
 
     void addVariables(const CSensItem & item);
+
+    bool changeVariables(unsigned C_INT32 index, const CSensItem & item);
+
+    bool removeVariables(unsigned C_INT32 index);
 
   private:
 
