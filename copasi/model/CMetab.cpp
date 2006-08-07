@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.102 $
+   $Revision: 1.103 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/31 21:18:08 $
+   $Date: 2006/08/07 19:27:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,10 +144,7 @@ bool CMetab::setObjectParent(const CCopasiContainer * pParent)
   CCopasiObject * pObject =
     const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=Concentration")));
 
-  if (mpModel)
-    pObject->setRefresh(mpModel, &CModel::applyAssignments);
-  else
-    pObject->clearRefresh();
+  pObject->setRefresh(this, &CMetab::refreshConcentration);
 
   pObject =
     const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=TransitionTime")));
@@ -319,17 +316,27 @@ bool CMetab::compile()
 
     case REACTIONS:
       mDependencies.clear();
-      mpRateReference->clearRefresh();
+
+      std::set< const CCopasiObject * > Dependencies;
+      CCopasiVector< CReaction >::iterator it = mpModel->getReactions().begin();
+      CCopasiVector< CReaction >::iterator end = mpModel->getReactions().end();
+
+      for (; it != end; ++it)
+        Dependencies.insert(*it);
 
       if (isDependent())
         {
           mDependencies.insert(mpMoiety);
+          setRefresh(this, &CMetab::calculate);
 
-          std::set< const CCopasiObject * > Dependencies;
-          Dependencies.insert(mpMoiety->getObject(CCopasiObjectName("Reference=DependentRate")));
-          mpRateReference->setDirectDependencies(Dependencies);
-          mpRateReference->setRefresh(this, &CMetab::refreshRate);
+          // This is according to the specification but a call to CModel::refreshRates
+          // calculates dependent and independent rates
+          // Dependencies.insert(mpMoiety->getObject(CCopasiObjectName("Reference=DependentRate")));
+          // mpRateReference->setRefresh(this, &CMetab::refreshRate);
         }
+
+      mpRateReference->setRefresh(mpModel, &CModel::refreshRates);
+      mpRateReference->setDirectDependencies(Dependencies);
     }
 
   return true;

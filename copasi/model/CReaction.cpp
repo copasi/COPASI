@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.157 $
+   $Revision: 1.158 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/17 19:14:02 $
+   $Date: 2006/08/07 19:27:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,17 +106,9 @@ bool CReaction::setObjectParent(const CCopasiContainer * pParent)
 
   pObject =
     const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=Flux")));
-  if (pModel)
-    pObject->setRefresh(pModel, &CModel::applyAssignments);
-  else
-    pObject->clearRefresh();
 
   pObject =
     const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=ParticleFlux")));
-  if (pModel)
-    pObject->setRefresh(pModel, &CModel::applyAssignments);
-  else
-    pObject->clearRefresh();
 
   return success;
 }
@@ -456,14 +448,18 @@ void CReaction::compile()
                 {
                   pObject = GlobalKeys.get(mMetabKeyMap[i][j]);
                   mMap.addCallParameter(paramName, pObject);
-                  mDependencies.insert(pObject);
+                  // :TODO: This does not suffice as it is actually the value pointer
+                  // which is used as the variable, i.e., we need to find the object
+                  // representing the value pointer.
+                  mDependencies.insert(pObject->getValueObject());
                 }
             }
           else
             {
               pObject = GlobalKeys.get(mMetabKeyMap[i][0]);
               mMap.setCallParameter(paramName, pObject);
-              mDependencies.insert(pObject);
+              // :TODO: This does not suffice
+              mDependencies.insert(pObject->getValueObject());
             }
         }
     }

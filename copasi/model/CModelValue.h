@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/21 19:57:55 $
+   $Date: 2006/08/07 19:27:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,10 +51,10 @@ class CModelEntity : public CCopasiContainer
     {
       FIXED = 0,          //the entity is constant (for metabs even if they are part of a reaction)
       ASSIGNMENT,         //the entity is changed by an assignment rule
-      ODE,                //the entity is changed by an ordinary differential equation
       REACTIONS,          //applies only for metabs, the metab concentration is changed by reactions
-      //      DEPENDENT,       //applies only for metabs, the metab concentration is determined by conservation rules
+      //      DEPENDENT,      //applies only for metabs, the metab concentration is determined by conservation rules
       //      UNUSED,
+      ODE,                //the entity is changed by an ordinary differential equation
       TIME
     };
 
@@ -237,9 +237,25 @@ Table of possible CModelEntity objects with different Status
 
 
 
+
+
+
+
+
+
+
+
   current status        corresponding sbml object
 -------------------------------------------------------------------------------------------------
 CMetab:                                       Species
+
+
+
+
+
+
+
+
 
 
 
@@ -263,7 +279,23 @@ TIME                    -
 
 
 
+
+
+
+
+
+
+
+
 CCompartment:                                 Compartment
+
+
+
+
+
+
+
+
 
 
 
@@ -287,7 +319,23 @@ TIME                    -
 
 
 
+
+
+
+
+
+
+
+
 CModelValue:                                  Parameter
+
+
+
+
+
+
+
+
 
 
 
@@ -311,7 +359,23 @@ TIME                    -
 
 
 
+
+
+
+
+
+
+
+
 CModel:                                       implicitly represented in sbml file
+
+
+
+
+
+
+
+
 
 
 

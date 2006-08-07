@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.266 $
+   $Revision: 1.267 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/02 20:16:28 $
+   $Date: 2006/08/07 19:27:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -80,17 +80,21 @@ CModel::CModel():
     mCompartments("Compartments", this),
     mMetabolites("Metabolites", this),
     mMetabolitesX("Reduced Model Metabolites", this),
-    mNumIndependent(0),
     mSteps("Reactions", this),
     mParticleFluxes(),
     mValues("Values", this),
-    mTransitionTime(0),
+    mTransitionTime(0.0),
     mMoieties("Moieties", this),
     mStoi(),
     mStoiReordered(),
     mRedStoi(),
+    mNumMetabolitesUnused(0),
+    mNumMetabolitesODE(0),
+    mNumMetabolitesReaction(0),
+    mNumMetabolitesAssignment(0),
+    mNumMetabolitesIndependent(0),
     mL(),
-    mLView(mL, mNumIndependent),
+    mLView(mL, mNumMetabolitesIndependent),
     mQuantity2NumberFactor(1.0),
     mNumber2QuantityFactor(1.0),
     mpCompileHandler(NULL)
@@ -133,7 +137,6 @@ CModel::CModel(const CModel & src):
     mCompartments(src.mCompartments, this),
     mMetabolites(src.mMetabolites, this),
     mMetabolitesX(src.mMetabolitesX, this),
-    mNumIndependent(src.mNumIndependent),
     mSteps(src.mSteps, this),
     mParticleFluxes(src.mParticleFluxes),
     mValues(src.mValues, this),
@@ -142,8 +145,13 @@ CModel::CModel(const CModel & src):
     mStoi(src.mStoi),
     mStoiReordered(src.mStoiReordered),
     mRedStoi(src.mRedStoi),
+    mNumMetabolitesUnused(src.mNumMetabolitesUnused),
+    mNumMetabolitesODE(src.mNumMetabolitesODE),
+    mNumMetabolitesReaction(src.mNumMetabolitesReaction),
+    mNumMetabolitesAssignment(src.mNumMetabolitesAssignment),
+    mNumMetabolitesIndependent(src.mNumMetabolitesIndependent),
     mL(src.mL),
-    mLView(mL, mNumIndependent),
+    mLView(mL, mNumMetabolitesIndependent),
     mQuantity2NumberFactor(src.mQuantity2NumberFactor),
     mNumber2QuantityFactor(src.mNumber2QuantityFactor),
     mpCompileHandler(NULL)
@@ -349,10 +357,7 @@ bool CModel::compile()
   CompileStep = 6;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
-  unsigned C_INT32 i, imax = mSteps.size();
-  for (i = 0; i < imax; i++)
-    mSteps[i]->compile(/*mCompartments*/);
-
+  buildApplySequence();
   if (mpCompileHandler) mpCompileHandler->finish(hCompileStep);
 
   mCompileIsNecessary = false;
@@ -396,7 +401,7 @@ void CModel::buildStoi()
   initializeMetabolites();
 
   unsigned C_INT32 numRows, numCols;
-  numRows = mMetabolites.size() - mNumFixed;
+  numRows = mNumMetabolitesReaction;
   numCols = mSteps.size();
 
   mParticleFluxes.resize(numCols);
@@ -436,7 +441,7 @@ void CModel::buildStoi()
         {
           const std::string & key = (*itBalance)->getMetaboliteKey();
 
-          for (pRow = pCol, itMetab = mMetabolites.begin(); pRow < pRowEnd; pRow += numCols, ++itMetab)
+          for (pRow = pCol, itMetab = mMetabolitesX.begin() + mNumMetabolitesODE; pRow < pRowEnd; pRow += numCols, ++itMetab)
             if ((*itMetab)->getKey() == key)
               {
                 *pRow = (*itBalance)->getMultiplicity();
@@ -471,7 +476,7 @@ bool CModel::handleUnusedMetabolites()
   pStoi = mStoi.array();
   pStoiEnd = mStoi.array() + numRows * numCols;
 
-  unsigned C_INT32 i;
+  unsigned C_INT32 i, NumUnused;
   C_FLOAT64 tmp;
   std::vector< unsigned C_INT32 > Unused;
 
@@ -485,27 +490,25 @@ bool CModel::handleUnusedMetabolites()
       if (tmp < DBL_MIN) Unused.push_back(i);
     }
 
-  unsigned C_INT32 k = 0, kmax = Unused.size();
-
-  if (kmax == 0) return false;
+  NumUnused = Unused.size();
+  if (NumUnused == 0) return false;
 
   // We treat unused variables in the same way as fixed, i.e.
   // they will be sorted to the end of the metabolite list.
 
-  numRows -= kmax;
-  mNumFixed += kmax;
+  numRows -= NumUnused;
 
   CMatrix< C_FLOAT64 > NewStoi(numRows, numCols);
   C_FLOAT64 * pNewStoi = NewStoi.array();
   std::vector< CMetab * > UsedMetabolites(numRows);
   std::vector< CMetab * >::iterator itUsedMetabolites = UsedMetabolites.begin();
-  std::vector< CMetab * > UnusedMetabolites(kmax);
+  std::vector< CMetab * > UnusedMetabolites(NumUnused);
   std::vector< CMetab * >::iterator itUnusedMetabolites = UnusedMetabolites.begin();
   std::vector< unsigned C_INT32 >::const_iterator itUnused = Unused.begin();
   std::vector< unsigned C_INT32 >::const_iterator endUnused = Unused.end();
   CMetab * pMetab;
-  CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
-  CCopasiVector< CMetab >::iterator endMetab = mMetabolites.end();
+  CCopasiVector< CMetab >::iterator itMetab = mMetabolitesX.begin() + mNumMetabolitesODE;
+  CCopasiVector< CMetab >::iterator endMetab = itMetab + mNumMetabolitesReaction;
 
   // Build new stoichiometry Matrix
   pStoi = mStoi.array();
@@ -532,11 +535,16 @@ bool CModel::handleUnusedMetabolites()
     }
 
   // Reorder metabolites
-  itMetab = mMetabolites.begin();
+  itMetab = mMetabolitesX.begin() + mNumMetabolitesODE;
   itUsedMetabolites = UsedMetabolites.begin();
   std::vector< CMetab * >::iterator itMetabolitesEnd = UsedMetabolites.end();
   for (; itUsedMetabolites != itMetabolitesEnd; ++itUsedMetabolites, ++itMetab)
     *itMetab = *itUsedMetabolites;
+
+  endMetab = itMetab + mNumMetabolitesAssignment + mNumMetabolitesUnused;
+  mNumMetabolitesUnused += NumUnused;
+  for (; itMetab != endMetab; ++itMetab)
+    *itMetab = *itMetab + NumUnused;
 
   itUnusedMetabolites = UnusedMetabolites.begin();
   itMetabolitesEnd = UnusedMetabolites.end();
@@ -557,7 +565,7 @@ void CModel::calculateReactions()
   C_FLOAT64 * pFlux = mParticleFluxes.array();
 
   for (;it != end; ++it, ++pFlux)
-    *pFlux = (*it)->calculateParticleFlux();
+    *pFlux = (*it)->getParticleFlux();
 
   // DebugFile << "CModel::calculateReactions()" << std::endl;
   // DebugFile << mParticleFluxes << std::endl;
@@ -565,10 +573,10 @@ void CModel::calculateReactions()
 
 void CModel::buildRedStoi()
 {
-  C_INT32 i, imax = mStoi.numRows() - mL.numRows();
+  C_INT32 i;
   C_INT32 numCols = mStoi.numCols();
 
-  mRedStoi.resize(imax, numCols);
+  mRedStoi.resize(mNumMetabolitesIndependent, numCols);
   mStoiReordered.resize(mStoi.numRows(), numCols);
 
   C_FLOAT64 * pStoi = mStoi.array();
@@ -576,29 +584,30 @@ void CModel::buildRedStoi()
   C_FLOAT64 * pStoiReordered = mStoiReordered.array();
   unsigned C_INT32 * pRow = mRowLU.array();
 
-  mMetabolitesX.resize(mMetabolites.size(), false);
-  CCopasiVector< CMetab >::iterator itMetabX = mMetabolitesX.begin();
+  // Create a temporary copy of the metabolites determined by reactions to reorder them
+  // accordingly.
+  CCopasiVector< CMetab >::iterator itMetabX = mMetabolitesX.begin() + mNumMetabolitesODE;
+  CCopasiVector< CMetab >::iterator endMetabX = itMetabX + mNumMetabolitesReaction;
+  std::vector< CMetab * > MetabolitesReaction;
+  MetabolitesReaction.resize(mNumMetabolitesReaction);
+  std::vector< CMetab * >::iterator itMetabolitesReaction = MetabolitesReaction.begin();
+
+  for (; itMetabX != endMetabX; ++itMetabX, ++itMetabolitesReaction)
+    *itMetabolitesReaction = *itMetabX;
 
   /* just have to swap rows */
-  for (i = 0; i < imax; i++, pRow++, pRedStoi += numCols, pStoiReordered += numCols, itMetabX++)
+  itMetabX = mMetabolitesX.begin() + mNumMetabolitesODE;
+  for (i = 0; i < mNumMetabolitesIndependent; i++, pRow++, pRedStoi += numCols, pStoiReordered += numCols, itMetabX++)
     {
       memcpy(pRedStoi, mStoi[*pRow], sizeof(C_FLOAT64) * numCols);
       memcpy(pStoiReordered, mStoi[*pRow], sizeof(C_FLOAT64) * numCols);
-      *itMetabX = mMetabolites[*pRow];
+      *itMetabX = MetabolitesReaction[*pRow];
     }
 
-  imax = mStoi.numRows();
-  for (; i < imax; i++, pRow++, pStoiReordered += numCols, itMetabX++)
+  for (; i < mNumMetabolitesReaction; i++, pRow++, pStoiReordered += numCols, itMetabX++)
     {
       memcpy(pStoiReordered, mStoi[*pRow], sizeof(C_FLOAT64) * numCols);
-      *itMetabX = mMetabolites[*pRow];
-    }
-
-  imax = mMetabolites.size();
-  CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin() + i;
-  for (; i < imax; i++, itMetab++, itMetabX++)
-    {
-      *itMetabX = *itMetab;
+      *itMetabX = MetabolitesReaction[*pRow];
     }
 
 #ifdef DEBUG_MATRIX
@@ -611,7 +620,7 @@ void CModel::buildRedStoi()
 
 void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
 {
-  C_INT N = mNumIndependent;
+  C_INT N = mNumMetabolitesIndependent;
   C_INT LDA = std::max((C_INT) 1, N);
   C_INT Info;
 
@@ -737,29 +746,28 @@ void CModel::buildMoieties()
   unsigned C_INT32 j;
 
   CCopasiVector< CMetab >::iterator it =
-    mMetabolitesX.begin() + mNumIndependent;
+    mMetabolitesX.begin() + mNumMetabolitesODE + mNumMetabolitesIndependent;
 
   CMoiety *pMoiety;
 
   mMoieties.cleanup();
 
-  for (i = mNumIndependent; i < imax; i++, ++it)
-    if ((*it)->isUsed())
-      {
-        pMoiety = new CMoiety;
-        pMoiety->setObjectName((*it)->getObjectName());
-        pMoiety->add(1.0, *it);
+  for (i = mNumMetabolitesIndependent; i < imax; i++, ++it)
+    {
+      pMoiety = new CMoiety;
+      pMoiety->setObjectName((*it)->getObjectName());
+      pMoiety->add(1.0, *it);
 
-        for (j = 0; j < mNumIndependent; j++)
-          {
-            const C_FLOAT64 & factor = mLView(i, j);
+      for (j = 0; j < mNumMetabolitesIndependent; j++)
+        {
+          const C_FLOAT64 & factor = mLView(i, j);
 
-            if (fabs(factor) > DBL_EPSILON)
-              pMoiety->add(- factor, mMetabolitesX[j]);
-          }
+          if (fabs(factor) > DBL_EPSILON)
+            pMoiety->add(- factor, mMetabolitesX[j] + mNumMetabolitesODE);
+        }
 
-        mMoieties.add(pMoiety, true);
-      }
+      mMoieties.add(pMoiety, true);
+    }
 
   updateMoietyValues();
   return;
@@ -855,7 +863,6 @@ void CModel::initializeMetabolites()
           mMetabolites.add(*itMetab);
         }
     }
-  unsigned C_INT32 imax = mMetabolites.size();
 
   // We sort the metabolites by type
   itMetab = mMetabolites.begin();
@@ -893,26 +900,30 @@ void CModel::initializeMetabolites()
         fatalError();
       }
 
-  mNumFixed = FixedMetabs.size();
-
-  // Update mMetabolites to reflect the reordering.
+  // Update mMetabolitesX to reflect the reordering.
   // We need to to this to allow the use of the full model for simulation.
-  itMetab = mMetabolites.begin();
+  mMetabolitesX.resize(mMetabolites.size(), false);
+
+  mNumMetabolitesODE = ODEMetabs.size();
+  itMetab = mMetabolitesX.begin();
   std::vector< CMetab *>::const_iterator itSorted = ODEMetabs.begin();
   std::vector< CMetab *>::const_iterator endSorted = ODEMetabs.end();
   for (;itSorted != endSorted; ++itSorted, ++itMetab)
     *itMetab = *itSorted;
 
+  mNumMetabolitesReaction = ReactionMetabs.size();
   itSorted = ReactionMetabs.begin();
   endSorted = ReactionMetabs.end();
   for (;itSorted != endSorted; ++itSorted, ++itMetab)
     *itMetab = *itSorted;
 
+  mNumMetabolitesAssignment = AssignmentMetabs.size();
   itSorted = AssignmentMetabs.begin();
   endSorted = AssignmentMetabs.end();
   for (;itSorted != endSorted; ++itSorted, ++itMetab)
     *itMetab = *itSorted;
 
+  mNumMetabolitesUnused = FixedMetabs.size();
   itSorted = FixedMetabs.begin();
   endSorted = FixedMetabs.end();
   for (;itSorted != endSorted; ++itSorted, ++itMetab)
@@ -951,13 +962,13 @@ unsigned C_INT32 CModel::getNumMetabs() const
   {return mMetabolites.size();}
 
 unsigned C_INT32 CModel::getNumVariableMetabs() const
-  {return mMetabolites.size() - mNumFixed;}
+  {return mNumMetabolitesReaction;}
 
 unsigned C_INT32 CModel::getNumIndependentMetabs() const
-  {CCHECK return mNumIndependent;}
+  {CCHECK return mNumMetabolitesIndependent;}
 
 unsigned C_INT32 CModel::getNumDependentMetabs() const
-  {CCHECK return mMetabolites.size() - mNumFixed - mNumIndependent;}
+  {CCHECK return mNumMetabolitesReaction - mNumMetabolitesIndependent;}
 
 unsigned C_INT32 CModel::getTotSteps() const
   {return mSteps.size();}
@@ -1006,6 +1017,9 @@ const CMatrix< C_FLOAT64 > & CModel::getL0() const
 
 CStateTemplate & CModel::getStateTemplate()
 {CCHECK return mStateTemplate;}
+
+std::set< const CCopasiObject * > & CModel::getUpToDateObjects()
+{CCHECK return mUpToDateObjects;}
 
 bool CModel::setTitle(const std::string &title)
 {
@@ -1083,22 +1097,52 @@ bool CModel::buildStateTemplate()
   CVector<CModelEntity *> Entities(mMetabolitesX.size() + mCompartments.size() + mValues.size());
   CModelEntity ** pEntity = Entities.array();
 
-  unsigned C_INT32 i;
-
-  CCopasiVector< CMetab >::iterator itMetab = mMetabolitesX.begin();
-  CCopasiVector< CMetab >::iterator endMetab = mMetabolitesX.end();
-  for (; itMetab != endMetab; ++itMetab)
-    *pEntity++ = *itMetab;
+  CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
+  CCopasiVector< CModelValue >::iterator endValue = mValues.end();
+  for (; itValue != endValue; ++itValue)
+    if ((*itValue)->getStatus() == CModelEntity::ODE &&
+        (*itValue)->isUsed())
+      *pEntity++ = *itValue;
 
   CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
   CCopasiVector< CCompartment >::iterator endCompartment = mCompartments.end();
   for (; itCompartment != endCompartment; ++itCompartment)
-    *pEntity++ = *itCompartment;
+    if ((*itCompartment)->getStatus() == CModelEntity::ODE &&
+        (*itCompartment)->isUsed())
+      *pEntity++ = *itCompartment;
 
-  CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
-  CCopasiVector< CModelValue >::iterator endValue = mValues.end();
+  CCopasiVector< CMetab >::iterator itMetab = mMetabolitesX.begin();
+  CCopasiVector< CMetab >::iterator endMetab = mMetabolitesX.end();
+  for (; itMetab != endMetab; ++itMetab)
+    {
+      if (!(*itMetab)->isUsed()) break;
+      *pEntity++ = *itMetab;
+    }
+
+  itValue = mValues.begin();
   for (; itValue != endValue; ++itValue)
-    *pEntity++ = *itValue;
+    if ((*itValue)->getStatus() == CModelEntity::ASSIGNMENT
+        && (*itValue)->isUsed())
+      *pEntity++ = *itValue;
+
+  itCompartment = mCompartments.begin();
+  for (; itCompartment != endCompartment; ++itCompartment)
+    if ((*itCompartment)->getStatus() == CModelEntity::ASSIGNMENT &&
+        (*itCompartment)->isUsed())
+      *pEntity++ = *itCompartment;
+
+  for (; itMetab != endMetab; ++itMetab)
+    *pEntity++ = *itMetab;
+
+  itValue = mValues.begin();
+  for (; itValue != endValue; ++itValue)
+    if (!(*itValue)->isUsed())
+      *pEntity++ = *itValue;
+
+  itCompartment = mCompartments.begin();
+  for (; itCompartment != endCompartment; ++itCompartment)
+    if (!(*itCompartment)->isUsed())
+      *pEntity++ = *itCompartment;
 
   mStateTemplate.reorder(Entities);
 
@@ -1109,7 +1153,6 @@ bool CModel::buildStateTemplate()
   for (; itMetab != endMetab; ++itMetab)
     *pEntity++ = *itMetab;;
 
-  // The following two loops are currently not needed.
   itCompartment = mCompartments.begin();
   endCompartment = mCompartments.end();
   for (; itCompartment != endCompartment; ++itCompartment)
@@ -1128,8 +1171,36 @@ bool CModel::buildStateTemplate()
   return true;
 }
 
+bool CModel::buildApplySequence()
+{
+  // We need to add each used model entity to the objects which need to be updated.
+  std::set< const CCopasiObject * > Objects;
+  CModelEntity **ppEntity = mStateTemplate.beginIndependent();
+  CModelEntity **ppEntityEnd = mStateTemplate.endDependent();
+
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    {
+      (*ppEntity)->compile();
+      Objects.insert(*ppEntity);
+    }
+
+  // Further more all reaction fluxes have to be calculated too
+  CCopasiVector< CReaction >::iterator itReaction = mSteps.begin();
+  CCopasiVector< CReaction >::iterator endReaction = mSteps.end();
+  for (; itReaction != endReaction; ++itReaction)
+    {
+      (*itReaction)->compile();
+      Objects.insert(*itReaction);
+    }
+
+  mUpToDateObjects.clear();
+  mApplyRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
+
+  return true;
+}
+
 const CState & CModel::getInitialState() const
-{return mInitialState;}
+  {return mInitialState;}
 
 const CState & CModel::getState() const
   {return mCurrentState;}
@@ -1201,7 +1272,13 @@ void CModel::refreshConcentrations()
 
 void CModel::applyAssignments(void)
 {
-  refreshConcentrations();
+  std::vector< Refresh * >::const_iterator itRefresh = mApplyRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mApplyRefreshes.end();
+
+  while (itRefresh != endRefresh)
+    (**itRefresh++)();
+
+  //  refreshConcentrations();
 
   // caluculate the fluxes
   calculateReactions();
@@ -1209,40 +1286,68 @@ void CModel::applyAssignments(void)
 
 void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
 {
+  C_FLOAT64 * pTmp = derivatives;
+
+  // First retreive derivatives of quantities determined by ODE
+  // The offset 1 is for the model time which is always the first
+  // state variable.
+  CModelEntity ** ppIt = mStateTemplate.getEntities() + 1;
+  CModelEntity ** ppEnd =
+    ppIt + mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent;
+
+  for (; ppIt != ppEnd; ++ppIt, ++pTmp)
+    *pTmp = (*ppIt)->getRate();
+
+  // Now calculate derivatives of the metabolites determined by reactions
   char T = 'N';
   C_INT M = 1;
-  C_INT N = getNumVariableMetabs();
+  C_INT N = mNumMetabolitesReaction;
   C_INT K = mSteps.size();
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 0.0;
 
   dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
-         mStoiReordered.array(), &K, &Beta, derivatives, &M);
+         mStoiReordered.array(), &K, &Beta, pTmp, &M);
 }
 
 void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
 {
+  C_FLOAT64 * pTmp = derivativesX;
+
+  // First retreive derivatives of quantities determined by ODE
+  // The offset 1 is for the model time which is always the first
+  // state variable.
+  CModelEntity ** ppIt = mStateTemplate.getEntities() + 1;
+  CModelEntity ** ppEnd =
+    ppIt + mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent;
+
+  for (; ppIt != ppEnd; ++ppIt, ++pTmp)
+    *pTmp = (*ppIt)->getRate();
+
+  // Now calculate derivatives of the metabolites determined by reactions
   char T = 'N';
   C_INT M = 1;
-  C_INT N = getNumIndependentMetabs();
+  C_INT N = mNumMetabolitesIndependent;
   C_INT K = mSteps.size();
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 0.0;
 
   dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
-         mRedStoi.array(), &K, &Beta, derivativesX, &M);
+         mRedStoi.array(), &K, &Beta, pTmp, &M);
 }
 
 void CModel::refreshRates()
 {
-  CVector< C_FLOAT64 > Rates(getNumVariableMetabs());
+  CVector< C_FLOAT64 > Rates(mNumMetabolitesReaction);
   C_FLOAT64 * pRate = Rates.array();
   calculateDerivatives(pRate);
 
   // The offset 1 is for the model time which is always the first
   // state variable.
-  CModelEntity ** ppIt = mStateTemplate.getEntities() + 1;
-  CModelEntity ** ppEnd = ppIt + Rates.size();
+  CModelEntity ** ppIt =
+    mStateTemplate.getEntities() + 1 + mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent;
+
+  CModelEntity ** ppEnd = ppIt + mNumMetabolitesReaction;
   for (; ppIt != ppEnd; ++ppIt, ++pRate)
     (*ppIt)->setRate(*pRate);
 }
@@ -1311,7 +1416,7 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian) const
 
     // We have to swap columns in the Jacobian since the elasticities
     // are calculated in the order given by the state template.
-    C_FLOAT64 * pTo, * pFrom, * pEnd = Jacobian.array() + M * M;;
+    C_FLOAT64 * pTo, * pFrom, * pEnd = Jacobian.array() + M * M;
     unsigned C_INT32 i;
 
     // DebugFile << Jacobian << std::endl;
@@ -2255,7 +2360,7 @@ void CModel::buildLinkZero()
          fabs(mRedStoi(independent, independent)) > 100 * DBL_EPSILON) independent++;
 
   // Resize mL
-  mNumIndependent = independent;
+  mNumMetabolitesIndependent = independent;
   mL.resize(N - independent, independent);
   if (N == independent || independent == 0) return;
 

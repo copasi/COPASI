@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/02 20:10:08 $
+   $Date: 2006/08/07 19:27:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,8 +31,8 @@ const std::string CModelEntity::StatusName[] =
   {
     "fixed",
     "assignment",
-    "ode",
     "determined by reactions",
+    "ode",
     ""
   };
 
@@ -41,8 +41,8 @@ const char * CModelEntity::XMLStatus[] =
   {
     "fixed",
     "assignment",
-    "ode",
     "reactions",
+    "ode",
     NULL
   };
 
@@ -53,14 +53,14 @@ CModelEntity::CModelEntity(const std::string & name,
                            const CCopasiContainer * pParent,
                            const std::string & type,
                            const unsigned C_INT32 & flag):
-    CCopasiContainer(name, pParent, type, (flag | CCopasiObject::Container | CCopasiObject::ValueDbl)),
+    CCopasiContainer(name, pParent, type, (flag | CCopasiObject::Container | CCopasiObject::ValueDbl | CCopasiObject::ModelEntity)),
     mKey(""),
     mpValueAccess(NULL),
     mpValueData(NULL),
     mpIValue(NULL),
     mRate(0.0),
     mStatus(FIXED),
-    mUsed(true),
+    mUsed(false),
     mpModel(NULL)
 {
   initObjects();
@@ -80,7 +80,7 @@ CModelEntity::CModelEntity(const CModelEntity & src,
     mpIValue(NULL),
     mRate(src.mRate),
     mStatus(FIXED),
-    mUsed(src.mUsed),
+    mUsed(false),
     mpModel(NULL)
 {
   initObjects();

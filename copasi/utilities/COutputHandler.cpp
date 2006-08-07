@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Date: 2006/08/07 19:27:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,8 @@
 #include "COutputHandler.h"
 #include "CCopasiTask.h"
 #include "report/CCopasiTimer.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "model/CModel.h"
 
 COutputHandler::COutputHandler():
     COutputInterface(),
@@ -58,7 +60,7 @@ bool COutputHandler::compile(std::vector< CCopasiContainer * > listOfContainer)
     }
 
   if (mpMaster == NULL)
-    success &= compileRefresh();
+    success &= compileRefresh(listOfContainer);
 
   return success;
 }
@@ -146,9 +148,12 @@ void COutputHandler::refresh()
   for (;it != end; ++it) (**it)();
 }
 
-bool COutputHandler::compileRefresh()
+bool COutputHandler::compileRefresh(const std::vector< CCopasiContainer * > & listOfContainer)
 {
-  mObjectRefreshes = CCopasiObject::buildUpdateSequence(mObjects);
+  CModel * pModel =
+    dynamic_cast< CModel * >(CCopasiContainer::ObjectFromName(listOfContainer, CCopasiObjectName("Model=" + CCopasiDataModel::Global->getModel()->getObjectName())));
+
+  mObjectRefreshes = CCopasiObject::buildUpdateSequence(mObjects, pModel);
 
   std::set< const CCopasiObject * >::const_iterator it = mObjects.begin();
   std::set< const CCopasiObject * >::const_iterator end = mObjects.end();

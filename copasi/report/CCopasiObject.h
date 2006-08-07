@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/17 16:48:28 $
+   $Date: 2006/08/07 19:27:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,6 +28,8 @@
 
 class CCopasiObjectName;
 class CCopasiContainer;
+class CModel;
+
 template <class CType> class CCopasiObjectReference;
 template <class CType> class CCopasiVectorReference;
 template <class CType> class CCopasiMatrixReference;
@@ -158,7 +160,8 @@ class CCopasiObject
       NonUniqueName = 0x100,
       StaticString = 0x200,
       ValueString = 0x400,
-      Separator = 0x800
+      Separator = 0x800,
+      ModelEntity = 0x1000
     };
 
   private:
@@ -274,9 +277,11 @@ class CCopasiObject
      * takes the dependencies of the objects in consideration. If circular dependencies
      * are detected an exception is thrown
      * @param const std::set< const CCopasiObject * > & objects
+     * @param CModel * pModel
      * @return std::vector< Refresh * > updateSequence
      */
-    static std::vector< Refresh * > buildUpdateSequence(const std::set< const CCopasiObject * > & objects);
+    static std::vector< Refresh * > buildUpdateSequence(const std::set< const CCopasiObject * > & objects,
+        CModel * pModel);
 
     /**
      * Comparison operator which can be used to sort objects based on their dependencies
@@ -308,6 +313,8 @@ class CCopasiObject
     bool isSeparator() const;
 
     virtual void * getValuePointer() const;
+
+    virtual const CCopasiObject * getValueObject() const;
 
     friend std::ostream &operator<<(std::ostream &os, const CCopasiObject & o);
 

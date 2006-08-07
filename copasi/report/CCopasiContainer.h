@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:09 $
+   $Date: 2006/08/07 19:27:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,6 +70,8 @@ class CCopasiContainer: public CCopasiObject
     static void init();
 
     virtual const CCopasiObject * getObject(const CCopasiObjectName & cn) const;
+
+    virtual const CCopasiObject * getValueObject() const;
 
     virtual const objectMap & getObjects() const;
 

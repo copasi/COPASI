@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiContainer.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:50 $
+   $Date: 2006/08/07 19:27:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -197,6 +197,21 @@ const CCopasiObject * CCopasiContainer::getObject(const CCopasiObjectName & cn) 
 
 const CCopasiContainer::objectMap & CCopasiContainer::getObjects() const
 {return mObjects;}
+
+const CCopasiObject * CCopasiContainer::getValueObject() const
+  {
+    void * ptr = getValuePointer();
+
+    if (ptr == NULL) return NULL;
+
+    std::multimap< const std::string, CCopasiObject * >::const_iterator it = mObjects.begin();
+    std::multimap< const std::string, CCopasiObject * >::const_iterator end = mObjects.end();
+
+    for (; it != end; ++it)
+      if (ptr == it->second->getValuePointer()) return it->second;
+
+    return NULL;
+  }
 
 void CCopasiContainer::initObjects() {}
 

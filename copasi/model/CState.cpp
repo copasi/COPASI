@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 19:02:45 $
+   $Date: 2006/08/07 19:27:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -194,7 +194,7 @@ CModelEntity ** CStateTemplate::endDependent() {return mpBeginFixed;}
 CModelEntity ** CStateTemplate::beginFixed() {return mpBeginFixed;}
 CModelEntity ** CStateTemplate::endFixed() {return mpEnd;}
 
-CModelEntity **const CStateTemplate::beginIndependent() const {return mpBeginIndependent;}
+CModelEntity *const* CStateTemplate::beginIndependent() const {return mpBeginIndependent;}
 CModelEntity **const CStateTemplate::endIndependent() const {return mpBeginDependent;}
 CModelEntity **const CStateTemplate::beginDependent() const {return mpBeginDependent;}
 CModelEntity **const CStateTemplate::endDependent() const {return mpBeginFixed;}

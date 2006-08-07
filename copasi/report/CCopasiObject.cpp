@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.56 $
+   $Revision: 1.57 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:09 $
+   $Date: 2006/08/07 19:27:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,6 +20,7 @@
 
 #include <sstream>
 #include <algorithm>
+#include <list>
 
 #include "copasi.h"
 #include "CCopasiObjectName.h"
@@ -27,6 +28,8 @@
 #include "CCopasiContainer.h"
 #include "CRenameHandler.h"
 #include "utilities/CCopasiVector.h"
+#include "model/CModelValue.h"
+#include "model/CModel.h"
 
 //static
 const C_FLOAT64 CCopasiObject::DummyValue = 0.0;
@@ -267,8 +270,12 @@ bool CCopasiObject::hasCircularDependencies(std::set<const CCopasiObject * > & c
 
 //static
 std::vector< Refresh * >
-CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & objects)
+CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & objects,
+                                   CModel * pModel)
 {
+  assert(pModel);
+  std::set< const CCopasiObject * > & Ignore = pModel->getUpToDateObjects();
+
   std::set< const CCopasiObject * > DependencySet;
 
   std::set< const CCopasiObject * >::const_iterator itSet;
@@ -291,37 +298,53 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
         (*itSet)->getAllDependencies(DependencySet);
     }
 
-  // The following fails to compile under Visual C++ 6.0 though
-  // it is according to the stl specifications.
-  // std::vector< const CCopasiObject * > DependencyVector(DependencySet.begin(), DependencySet.end());
-
-  std::vector< const CCopasiObject * > DependencyVector(DependencySet.size());
-  std::vector< const CCopasiObject * >::iterator itVector = DependencyVector.begin();
-  std::vector< const CCopasiObject * >::iterator endVector = DependencyVector.end();
+  // Create a properly sorted list.
+  std::list< const CCopasiObject * > SortedList;
+  std::list< const CCopasiObject * >::iterator itList;
+  std::list< const CCopasiObject * >::iterator endList;
 
   itSet = DependencySet.begin();
   endSet = DependencySet.end();
-  for (; itSet != endSet; ++itSet, ++itVector)
-    *itVector = *itSet;
+  for (; itSet != endSet; ++itSet)
+    {
+      if (Ignore.count(*itSet) != 0) continue;
 
-  std::sort(DependencyVector.begin(), DependencyVector.end(), CCopasiObject::compare);
+      itList = SortedList.begin();
+      endList = SortedList.end();
 
+      for (; itList != endList; ++itList)
+        if (compare(*itSet, *itList)) break;
+
+      SortedList.insert(itList, *itSet);
+    }
+
+  // Build the ignore list if it is empty.
+  if (Ignore.size() == 0)
+    Ignore = DependencySet;
+
+  // Build the vector of pointers to refresh methods
   Refresh * pRefresh;
+
   std::vector< Refresh * > UpdateVector;
   std::vector< Refresh * >::const_iterator itUpdate;
   std::vector< Refresh * >::const_iterator endUpdate;
 
-  for (itVector = DependencyVector.begin(); itVector != endVector; ++itVector)
-    if ((pRefresh = (*itVector)->getRefresh()) != NULL)
-      {
-        itUpdate = UpdateVector.begin();
-        endUpdate = UpdateVector.end();
+  itList = SortedList.begin();
+  endList = SortedList.end();
 
-        while (itUpdate != endUpdate && !(*itUpdate)->isEqual(pRefresh)) ++itUpdate;
+  for (; itList != endList; ++itList)
+    {
+      if ((pRefresh = (*itList)->getRefresh()) != NULL)
+        {
+          itUpdate = UpdateVector.begin();
+          endUpdate = UpdateVector.end();
 
-        if (itUpdate == endUpdate)
-          UpdateVector.push_back(pRefresh);
-      }
+          while (itUpdate != endUpdate && !(*itUpdate)->isEqual(pRefresh)) ++itUpdate;
+
+          if (itUpdate == endUpdate)
+            UpdateVector.push_back(pRefresh);
+        }
+    }
 
   return UpdateVector;
 }
@@ -336,8 +359,6 @@ bool CCopasiObject::compare(const CCopasiObject * lhs, const CCopasiObject * rhs
 
       if (rhs->hasCircularDependencies(Candidates))
         return true;
-
-      return ((void *) lhs < (void *) rhs);
     }
 
   return false;
@@ -345,7 +366,11 @@ bool CCopasiObject::compare(const CCopasiObject * lhs, const CCopasiObject * rhs
 
 void * CCopasiObject::getValuePointer() const
   {
-    //return const_cast<CCopasiObject *>(this);
+    return NULL;
+  }
+
+const CCopasiObject * CCopasiObject::getValueObject() const
+  {
     return NULL;
   }
 

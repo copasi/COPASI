@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/21 18:06:04 $
+   $Date: 2006/08/07 19:27:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -561,7 +561,10 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   mColumnCount.resize(numCols);
   mColumnCount = std::numeric_limits<unsigned C_INT32>::quiet_NaN();
 
-  mRefreshMethods = CCopasiObject::buildUpdateSequence(Dependencies);
+  CModel * pModel =
+    dynamic_cast< CModel * >(CCopasiContainer::ObjectFromName(listOfContainer, CCopasiObjectName("Model=" + CCopasiDataModel::Global->getModel()->getObjectName())));
+
+  mRefreshMethods = CCopasiObject::buildUpdateSequence(Dependencies, pModel);
 
   return success;
 }

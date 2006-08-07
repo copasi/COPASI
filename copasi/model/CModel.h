@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.121 $
+   $Revision: 1.122 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/02 20:16:28 $
+   $Date: 2006/08/07 19:27:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -158,6 +158,12 @@ class CModel : public CModelEntity
     CStateTemplate mStateTemplate;
 
     /**
+     * This is the list of objects which contains all objects which
+     * are up to date after a call to applyAssignments
+     */
+    std::set< const CCopasiObject * > mUpToDateObjects;
+
+    /**
      *  Comments
      */
     std::string mComments;
@@ -198,11 +204,6 @@ class CModel : public CModelEntity
      *  Vector of reference to metabolites in reduced model representation
      */
     CCopasiVector< CMetab > mMetabolitesX;
-
-    /**
-     * The number of independent metabolites determined by reactions
-     */
-    unsigned C_INT32 mNumIndependent;
 
     /**
      *  for array of steps
@@ -255,9 +256,30 @@ class CModel : public CModelEntity
     CVector< unsigned C_INT32 > mRowLU;
 
     /**
-     * Vector for storing the column interchanges during LU-Decomposition
+     * The number of unused metabs in the model
      */
-    //    CVector< unsigned C_INT32 > mColLU;
+    unsigned C_INT32 mNumMetabolitesUnused;
+
+    /**
+     * The number of metabs determined by ODEs in the model
+     */
+    unsigned C_INT32 mNumMetabolitesODE;
+
+    /**
+     * The number of metabs determined by reactions in the model
+     */
+    unsigned C_INT32 mNumMetabolitesReaction;
+
+    /**
+     * The number of metabs determined by assignements in the model
+     */
+    unsigned C_INT32 mNumMetabolitesAssignment;
+
+    /**
+     * The number of metabs determined by reactions which can be calculated
+     * through moieties
+     */
+    unsigned C_INT32 mNumMetabolitesIndependent;
 
     /**
      *   This matrix stores L
@@ -290,9 +312,9 @@ class CModel : public CModelEntity
     CProcessReport * mpCompileHandler;
 
     /**
-     * The number of fixed metabs in the model
+     * An ordered list of refresh methods needed by the master
      */
-    C_INT32 mNumFixed;
+    std::vector< Refresh * > mApplyRefreshes;
 
   public:
     /**
@@ -904,6 +926,17 @@ class CModel : public CModelEntity
      */
     CStateTemplate & getStateTemplate();
 
+    /**
+     * Retrieve the list of objects which are up to date after a call
+     * to apply assignment.
+     * @return std::set< const CCopasiObject * > & upToDateObjects
+     */
+    std::set< const CCopasiObject * > & getUpToDateObjects();
+
+    /**
+     * Check whether the model contains reversible reactions
+     * @return bool hasReversibleReaction
+     */
     bool hasReversibleReaction() const;
 
     /**
@@ -953,6 +986,12 @@ class CModel : public CModelEntity
      * @return bool success
      */
     bool buildStateTemplate();
+
+    /**
+     * Build the update seqeunce used by applyAssignments.
+     * @return bool success
+     */
+    bool buildApplySequence();
 
 #ifdef COPASI_DEBUG
   public:

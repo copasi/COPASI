@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Date: 2006/08/07 19:27:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -178,8 +178,10 @@ class COutputHandler: public COutputInterface
 
     /**
      * Compile the object refresh list
+     * @param const std::vector< CCopasiContainer * > & listOfContainer
+     * @return bool success
      */
-    bool compileRefresh();
+    bool compileRefresh(const std::vector< CCopasiContainer * > & listOfContainer);
 
     // Attributes
   protected:
