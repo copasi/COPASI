@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.135 $
+   $Revision: 1.136 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/21 19:35:19 $
+   $Date: 2006/08/08 21:26:01 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1764,7 +1764,8 @@ void CCopasiXMLParser::ListOfModelValuesElement::end(const XML_Char *pszName)
 
 CCopasiXMLParser::ModelValueElement::ModelValueElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
-    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common)
+    CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
+    mpMathMLElement(NULL)
 {}
 
 CCopasiXMLParser::ModelValueElement::~ModelValueElement()
@@ -1848,7 +1849,7 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
     case MathML:
       if (strcmp(pszName, "MathML")) fatalError();
       mpMV->setExpression(mCommon.FunctionDescription);
-
+      mCurrentElement--;
       break;
 
     case UNKNOWN_ELEMENT:
