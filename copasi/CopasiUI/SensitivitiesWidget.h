@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SensitivitiesWidget.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: tjohann $
-   $Date: 2006/07/17 14:34:50 $
+   $Date: 2006/08/08 13:29:07 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -105,8 +105,8 @@ class SensitivitiesWidget : public TaskWidget
 
   private:
     void initCombos();
-    void initCombos(CSensProblem);
-    bool initCombos(CSensItem, SensitivitiesWidget::ChoiceType);
+    void initCombos(CSensProblem *);
+    bool initCombos(CSensItem *, SensitivitiesWidget::ChoiceType);
 
     void updateFunctionsStringList(CSensProblem::SubTaskType);
     void updateVariablesStringList(CSensProblem::SubTaskType);
@@ -140,11 +140,7 @@ class SensitivitiesWidget : public TaskWidget
     CCopasiObject * mpSingleVariable;
     CCopasiObject * mpSingleVariable2;
 
-    CSensProblem * mpProblem;
-
-    CSensItem mFunctionItem;
-    CSensItem mVariableItem;
-    CSensItem mVariable2Item;
+    CSensProblem::SubTaskType mSubTaskType;
 
   private slots:
     void on_SubTaskChooser_activated(int);

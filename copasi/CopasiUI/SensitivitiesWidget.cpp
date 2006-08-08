@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SensitivitiesWidget.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: tjohann $
-   $Date: 2006/07/21 11:27:37 $
+   $Date: 2006/08/08 13:29:07 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -177,7 +177,7 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   SingleFunctionChooser = new QToolButton(this, "SingleFunctionChooser");
   mpMethodLayout->addWidget(SingleFunctionChooser, fieldStart + 5, 2);
   SingleFunctionChooser->setMaximumSize(lineEditFormat.height(),
-                                         lineEditFormat.height());
+                                        lineEditFormat.height());
   SingleFunctionChooser->setIconSet(QIconSet(img));
   SingleFunctionChooser->hide();
 
@@ -201,7 +201,7 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   SingleVariableChooser = new QToolButton(this, "SingleVariableChooser");
   mpMethodLayout->addWidget(SingleVariableChooser, fieldStart + 7, 2);
   SingleVariableChooser->setMaximumSize(lineEditFormat.height(),
-                                         lineEditFormat.height());
+                                        lineEditFormat.height());
   SingleVariableChooser->setIconSet(QIconSet(img));
   SingleVariableChooser->hide();
 
@@ -225,7 +225,7 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   SingleVariable2Chooser = new QToolButton(this, "SingleVariable2Chooser");
   mpMethodLayout->addWidget(SingleVariable2Chooser, fieldStart + 9, 2);
   SingleVariable2Chooser->setMaximumSize(lineEditFormat.height(),
-                                          lineEditFormat.height());
+                                         lineEditFormat.height());
   SingleVariable2Chooser->setIconSet(QIconSet(img));
   SingleVariable2Chooser->hide();
 
@@ -260,14 +260,6 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
           this, SLOT(on_SingleVariable2Chooser_clicked()));
 
   mChoicesDone = 0;
-
-  mpProblem = new CSensProblem();
-
-  //  std::cout << mpProblem->getNumberOfVariables() << std::endl;
-
-  //std::cout << mpProblem->getVariables(0).getListType() << std::endl;
-
-  initCombos(mpProblem);
 }
 
 /*
@@ -278,8 +270,8 @@ SensitivitiesWidget::~SensitivitiesWidget()
 
 bool SensitivitiesWidget::saveTask()
 {
-  //saveCommon();
-  //saveMethod();
+  saveCommon();
+  saveMethod();
 
   CSensTask* sensTask =
     dynamic_cast<CSensTask *>(GlobalKeys.get(mObjectKey));
@@ -293,7 +285,71 @@ bool SensitivitiesWidget::saveTask()
     dynamic_cast<CSensMethod *>(sensTask->getMethod());
   assert(method);
 
-  //...
+  problem->setSubTaskType(mSubTaskType);
+
+  CSensItem tmp;
+
+  // set the function type
+  if (mFunction == CObjectLists::SINGLE_OBJECT)
+    {
+      if (mpSingleFunction)
+        tmp.setSingleObjectCN(mpSingleFunction->getCN());
+    }
+  else
+    tmp.setListType(mFunction);
+
+  if (tmp != problem->getTargetFunctions())
+    {
+      mChanged = true;
+      problem->changeTargetFunctions(tmp);
+    }
+
+  if (mVariable == CObjectLists::SINGLE_OBJECT)
+    {
+      if (mpSingleVariable)
+        tmp.setSingleObjectCN(mpSingleVariable->getCN());
+    }
+  else
+    tmp.setListType(mVariable);
+
+  if (tmp != problem->getVariables(0))
+    {
+      mChanged = true;
+      if (problem->getNumberOfVariables() == 0)
+        problem->addVariables(tmp);
+      else
+        problem->changeVariables(0, tmp);
+    }
+
+  if (mVariable2) // if Variable2 is set
+    {
+      if (problem->getNumberOfVariables() < 2)
+        {
+          mChanged = true;
+          problem->addVariables(tmp);
+        }
+
+      if (mVariable2 == CObjectLists::SINGLE_OBJECT)
+        {
+          if (mpSingleVariable2)
+            tmp.setSingleObjectCN(mpSingleVariable2->getCN());
+        }
+      else
+        tmp.setListType(mVariable2);
+
+      if (tmp != problem->getVariables(1))
+        {
+          mChanged = true;
+          problem->changeVariables(1, tmp);
+        }
+    }
+  else   // i.e.: mVariable2 == CObjectLists::EMPTY_LIST
+    if (problem->getNumberOfVariables() > 1)  // was it set before?
+      {
+        mChanged = true;
+        tmp.setListType(mVariable2);
+        problem->changeVariables(1, tmp);
+      }
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
   if (mChanged) CCopasiDataModel::Global->changed();
@@ -305,9 +361,9 @@ CCopasiMethod * SensitivitiesWidget::createMethod(const CCopasiMethod::SubType &
 
 bool SensitivitiesWidget::runTask()
 {
-  //if (!commonBeforeRunTask()) return false;
+  if (!commonBeforeRunTask()) return false;
 
-  //commonAfterRunTask();
+  commonAfterRunTask();
 
   //pListView->switchToOtherWidget(211, ""); //change to the results window
 
@@ -316,8 +372,8 @@ bool SensitivitiesWidget::runTask()
 
 bool SensitivitiesWidget::loadTask()
 {
-  //loadCommon();
-  //loadMethod();
+  loadCommon();
+  loadMethod();
 
   CSensTask* sensTask =
     dynamic_cast<CSensTask *>(GlobalKeys.get(mObjectKey));
@@ -331,7 +387,34 @@ bool SensitivitiesWidget::loadTask()
     dynamic_cast<CSensMethod *>(sensTask->getMethod());
   assert(method);
 
-  //...
+  mSubTaskType = problem->getSubTaskType();
+
+  CSensItem tmp = problem->getTargetFunctions();
+
+  if (tmp.isSingleObject())
+    {
+      mFunction = CObjectLists::SINGLE_OBJECT;
+      mpSingleFunction = CCopasiContainer::ObjectFromName(tmp.getSingleObjectCN());
+    }
+
+  tmp = problem->getVariables(0);
+  if (tmp.isSingleObject())
+    {
+      mVariable = CObjectLists::SINGLE_OBJECT;
+      mpSingleVariable = CCopasiContainer::ObjectFromName(tmp.getSingleObjectCN());
+    }
+
+  if (problem->getNumberOfVariables() > 1)
+    {
+      tmp = problem->getVariables(1);
+      if (tmp.isSingleObject())
+        {
+          mVariable2 = CObjectLists::SINGLE_OBJECT;
+          mpSingleVariable2 = CCopasiContainer::ObjectFromName(tmp.getSingleObjectCN());
+        }
+    }
+
+  initCombos(problem);
 
   mChanged = false;
 
@@ -366,22 +449,27 @@ SensitivitiesWidget::initCombos()
 }
 
 void
-SensitivitiesWidget::initCombos(CSensProblem problem)
+SensitivitiesWidget::initCombos(CSensProblem * problem)
 {
-  SubTaskChooser->setCurrentItem((int)problem.getSubTaskType());
-  on_SubTaskChooser_activated(problem.getSubTaskType());
+  SubTaskChooser->setCurrentItem((int)problem->getSubTaskType());
+  on_SubTaskChooser_activated(problem->getSubTaskType());
 
   // add assertions of return values here with an error message box...
-  initCombos(problem.getTargetFunctions(), SensitivitiesWidget::Function);
+  CSensItem tmp = problem->getTargetFunctions();
+  initCombos(&tmp , SensitivitiesWidget::Function);
 
-  initCombos(problem.getVariables(0), SensitivitiesWidget::Variable);
+  tmp = problem->getVariables(0);
+  initCombos(&tmp, SensitivitiesWidget::Variable);
 
-  if (problem.getNumberOfVariables() > 1)
-    initCombos(problem.getVariables(1), SensitivitiesWidget::SecondVariable);
+  if (problem->getNumberOfVariables() > 1)
+    tmp = problem->getVariables(1);
+  else
+    tmp.setListType(CObjectLists::EMPTY_LIST);
+  initCombos(&tmp, SensitivitiesWidget::SecondVariable);
 }
 
 bool
-SensitivitiesWidget::initCombos(CSensItem item, SensitivitiesWidget::ChoiceType type)
+SensitivitiesWidget::initCombos(CSensItem * item, SensitivitiesWidget::ChoiceType type)
 {
   std::vector<CObjectLists::ListType> listType;
   std::vector<CObjectLists::ListType>::iterator liter;
@@ -394,9 +482,10 @@ SensitivitiesWidget::initCombos(CSensItem item, SensitivitiesWidget::ChoiceType 
   if (type == SensitivitiesWidget::Function)
     listType = mFunctionsIndexTable;
 
-  liter = std::find(listType.begin(), listType.end(), item.getListType());
+  liter = std::find(listType.begin(), listType.end(), item->getListType());
   int index = std::distance(listType.begin(), liter);
 
+  QLineEdit *lineEdit;
   if (liter != listType.end())
     {
       switch (type)
@@ -404,17 +493,23 @@ SensitivitiesWidget::initCombos(CSensItem item, SensitivitiesWidget::ChoiceType 
         case (SensitivitiesWidget::Function):
                 FunctionChooser->setCurrentItem(index);
           on_FunctionChooser_activated(index);
+          lineEdit = FunctionLineEdit;
           break;
 
         case (SensitivitiesWidget::Variable):
                 VariableChooser->setCurrentItem(index);
           on_VariableChooser_activated(index);
+          lineEdit = VariableLineEdit;
           break;
 
         case (SensitivitiesWidget::SecondVariable):
                 Variable2Chooser->setCurrentItem(index);
           on_Variable2Chooser_activated(index);
+          lineEdit = Variable2LineEdit;
         }
+
+      if (item->isSingleObject())
+        lineEdit->setText(item->getSingleObjectDisplayName());
     }
   else
     return false;
@@ -515,6 +610,8 @@ SensitivitiesWidget::on_SubTaskChooser_activated(int index)
       on_VariableChooser_activated(0);
       on_Variable2Chooser_activated(0);
     }
+
+  mSubTaskType = (CSensProblem::SubTaskType)index;
 }
 
 void
@@ -531,7 +628,12 @@ SensitivitiesWidget::on_FunctionChooser_activated(int index)
       if (mpSingleFunction)
         mChoicesDone |= Choice_Function;
       else
-        mChoicesDone &= ~Choice_Function;
+        {
+          mChoicesDone &= ~Choice_Function;
+
+          index = 0;                       // handled in
+          // on_SingleFunctionChooser_licked()
+        }
     }
   else
     mChoicesDone |= Choice_Function;
@@ -559,7 +661,10 @@ SensitivitiesWidget::on_VariableChooser_activated(int index)
       if (mpSingleVariable)
         mChoicesDone |= Choice_Variable;
       else
-        mChoicesDone &= ~Choice_Variable;
+        {
+          mChoicesDone &= ~Choice_Variable;
+          index = 0;                      // handled in LineEdit slots, see
+        }                                 // on_SingleVariableChooser_clicked()
     }
   else
     mChoicesDone |= Choice_Variable;
@@ -580,12 +685,16 @@ SensitivitiesWidget::on_Variable2Chooser_activated(int index)
   bool editenabled = false;
 
   if (index == 1) // Single Object:  handled in the slots of LineEdit.
-    editenabled = true;
+    {
+      editenabled = true;
+      if (!mpSingleVariable2)
+        index = 0;  // see on_SingleVariable2Chooser_clicked()
+    }
+
+  mVariable2 = mVariablesIndexTable[index];
 
   SingleVariable2Chooser->setShown(editenabled);
   Variable2LineEdit->setShown(editenabled);
-
-  mVariable2 = mVariablesIndexTable[index];
 }
 
 void
@@ -609,6 +718,7 @@ SensitivitiesWidget::on_SingleFunctionChooser_clicked()
           mChoicesDone |= Choice_Function;
           FunctionLineEdit->setText(FROM_UTF8(chosenObject->getObjectDisplayName()));
           mpSingleFunction = chosenObject;
+          mFunction = CObjectLists::SINGLE_OBJECT;
         }
     }
 
@@ -636,6 +746,7 @@ SensitivitiesWidget::on_SingleVariableChooser_clicked()
           mChoicesDone |= Choice_Variable;
           VariableLineEdit->setText(FROM_UTF8(chosenObject->getObjectDisplayName()));
           mpSingleVariable = chosenObject;
+          mVariable = CObjectLists::SINGLE_OBJECT;
         }
     }
 
@@ -662,6 +773,7 @@ SensitivitiesWidget::on_SingleVariable2Chooser_clicked()
         {
           Variable2LineEdit->setText(FROM_UTF8(chosenObject->getObjectDisplayName()));
           mpSingleVariable2 = chosenObject;
+          mVariable2 = CObjectLists::SINGLE_OBJECT;
         }
     }
 }
