@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/13 21:36:22 $
+   $Date: 2006/08/08 19:58:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,11 @@
 #include "copasi.h"
 
 #include "CQExpressionWidget.h"
+
+#ifdef Darwin
+# define FALSE false
+#endif
+
 #include "CCopasiSelectionDialog.h"
 #include "qtUtilities.h"
 
