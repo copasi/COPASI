@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/08/08 13:29:07 $
+   $Author: shoops $
+   $Date: 2006/08/08 20:18:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -509,7 +509,7 @@ SensitivitiesWidget::initCombos(CSensItem * item, SensitivitiesWidget::ChoiceTyp
         }
 
       if (item->isSingleObject())
-        lineEdit->setText(item->getSingleObjectDisplayName());
+        lineEdit->setText(FROM_UTF8(item->getSingleObjectDisplayName()));
     }
   else
     return false;
