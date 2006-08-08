@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.267 $
+   $Revision: 1.268 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/07 19:27:09 $
+   $Date: 2006/08/08 17:45:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -555,20 +555,6 @@ bool CModel::handleUnusedMetabolites()
   mStoi = NewStoi;
 
   return true;
-}
-
-void CModel::calculateReactions()
-{
-  CCopasiVector< CReaction >::iterator it = mSteps.begin();
-  CCopasiVector< CReaction >::iterator end = mSteps.end();
-
-  C_FLOAT64 * pFlux = mParticleFluxes.array();
-
-  for (;it != end; ++it, ++pFlux)
-    *pFlux = (*it)->getParticleFlux();
-
-  // DebugFile << "CModel::calculateReactions()" << std::endl;
-  // DebugFile << mParticleFluxes << std::endl;
 }
 
 void CModel::buildRedStoi()
@@ -1193,6 +1179,80 @@ bool CModel::buildApplySequence()
       Objects.insert(*itReaction);
     }
 
+  // We now detect unused assignments, i.e., the result of an assignment is not
+  // used during applyAssignments except for itself or another unused assignment.
+  bool UnusedFound = true;
+  bool ReorderNeeded = false;
+
+  std::set<const CCopasiObject * > Candidate;
+  std::set< const CCopasiObject * >::iterator it;
+  std::set< const CCopasiObject * >::iterator end = Objects.end();
+
+  while (UnusedFound)
+    {
+      UnusedFound = false;
+      ppEntity = mStateTemplate.beginDependent() + mNumMetabolitesReaction - mNumMetabolitesIndependent;
+
+      for (; ppEntity != ppEntityEnd; ++ppEntity)
+        if ((*ppEntity)->isUsed())
+          {
+            Candidate.insert(*ppEntity);
+
+            for (it = Objects.begin(); it != end; ++it)
+              if (*it != *ppEntity &&
+                  (*it)->hasCircularDependencies(Candidate))
+                break;
+
+            if (it == end)
+              {
+                UnusedFound = true;
+                ReorderNeeded = true;
+                (*ppEntity)->setUsed(false);
+                Objects.erase(*ppEntity);
+              }
+
+            Candidate.erase(*ppEntity);
+          }
+    }
+
+  if (ReorderNeeded)
+    {
+      CVector< CModelEntity * > Reorder(mStateTemplate.size() - 1);
+      CModelEntity ** ppReorder = Reorder.array();
+      ppEntity = mStateTemplate.beginIndependent();
+      ppEntityEnd = mStateTemplate.beginDependent() + mNumMetabolitesReaction - mNumMetabolitesIndependent;
+
+      for (; ppEntity != ppEntityEnd; ++ppEntity, ++ppReorder)
+        *ppReorder = *ppEntity;
+
+      ppEntityEnd = mStateTemplate.endDependent();
+      for (; ppEntity != ppEntityEnd; ++ppEntity)
+        if ((*ppEntity)->isUsed())
+          *ppReorder++ = *ppEntity;
+
+      ppEntity = mStateTemplate.beginDependent() + mNumMetabolitesReaction - mNumMetabolitesIndependent;
+      for (; ppEntity != ppEntityEnd; ++ppEntity)
+        if (!(*ppEntity)->isUsed())
+          *ppReorder++ = *ppEntity;
+
+      ppEntityEnd = mStateTemplate.endFixed();
+      for (; ppEntity != ppEntityEnd; ++ppEntity, ++ppReorder)
+        *ppReorder = *ppEntity;
+
+      mStateTemplate.reorder(Reorder);
+
+      // We need to recompile as pointers to values may have changed
+      ppEntity = mStateTemplate.beginIndependent();
+      ppEntityEnd = mStateTemplate.endDependent();
+      for (; ppEntity != ppEntityEnd; ++ppEntity)
+        (*ppEntity)->compile();
+
+      itReaction = mSteps.begin();
+      endReaction = mSteps.end();
+      for (; itReaction != endReaction; ++itReaction)
+        (*itReaction)->compile();
+    }
+
   mUpToDateObjects.clear();
   mApplyRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
 
@@ -1200,7 +1260,7 @@ bool CModel::buildApplySequence()
 }
 
 const CState & CModel::getInitialState() const
-  {return mInitialState;}
+{return mInitialState;}
 
 const CState & CModel::getState() const
   {return mCurrentState;}
@@ -1278,10 +1338,14 @@ void CModel::applyAssignments(void)
   while (itRefresh != endRefresh)
     (**itRefresh++)();
 
-  //  refreshConcentrations();
+  // Store the particle fluxes for further calculations
+  CCopasiVector< CReaction >::iterator it = mSteps.begin();
+  CCopasiVector< CReaction >::iterator end = mSteps.end();
 
-  // caluculate the fluxes
-  calculateReactions();
+  C_FLOAT64 * pFlux = mParticleFluxes.array();
+
+  for (;it != end; ++it, ++pFlux)
+    *pFlux = (*it)->getParticleFlux();
 }
 
 void CModel::calculateDerivatives(C_FLOAT64 * derivatives)

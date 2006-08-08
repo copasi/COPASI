@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.122 $
+   $Revision: 1.123 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/07 19:27:09 $
+   $Date: 2006/08/08 17:45:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -970,11 +970,6 @@ class CModel : public CModelEntity
      * @return bool found
      */
     bool handleUnusedMetabolites();
-
-    /**
-     * Calculates all reactions and updates the particle fluxes.
-     */
-    void calculateReactions();
 
     /**
      * Initialize the contained CCopasiObjects
