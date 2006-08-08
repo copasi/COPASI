@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.123 $
+   $Revision: 1.124 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/08 17:45:15 $
+   $Date: 2006/08/08 21:30:20 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -652,11 +652,6 @@ class CModel : public CModelEntity
      * @param const CState & state
      */
     void setState(const CState & state);
-
-    /**
-     * This method refreshes all metabolite concentrations.
-     */
-    void refreshConcentrations();
 
     /**
      * This method applies all assignments, which currently includes:

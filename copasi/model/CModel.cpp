@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.268 $
+   $Revision: 1.269 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/08 17:45:15 $
+   $Date: 2006/08/08 21:30:20 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1075,7 +1075,7 @@ C_INT32 CModel::findMoiety(std::string &Target) const
 void CModel::applyInitialValues()
 {
   setState(mInitialState);
-  refreshConcentrations();
+  applyAssignments();
 }
 
 bool CModel::buildStateTemplate()
@@ -1306,10 +1306,10 @@ void CModel::setState(const CState & state)
   return;
 }
 
-void CModel::refreshConcentrations()
+void CModel::applyAssignments(void)
 {
-  // The particle numbers for moiety dependent metabolites need to
-  // be calculated if needed.
+  // Depending on which model we are using we need to update
+  // the particle numbers for the dependent metabolites.
   if (mCurrentState.isUpdateDependentRequired())
     {
       C_FLOAT64 * pDependent = mCurrentState.beginDependent();
@@ -1322,16 +1322,6 @@ void CModel::refreshConcentrations()
       mCurrentState.setUpdateDependentRequired(false);
     }
 
-  // The concentrations for the metabolites need to be updated.
-  CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
-  CCopasiVector< CMetab >::iterator endMetab = mMetabolites.end();
-
-  for (; itMetab != endMetab; ++itMetab)
-    (*itMetab)->refreshConcentration();
-}
-
-void CModel::applyAssignments(void)
-{
   std::vector< Refresh * >::const_iterator itRefresh = mApplyRefreshes.begin();
   std::vector< Refresh * >::const_iterator endRefresh = mApplyRefreshes.end();
 

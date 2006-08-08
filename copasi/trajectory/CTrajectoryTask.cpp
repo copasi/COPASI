@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/06 17:03:56 $
+   $Date: 2006/08/08 21:30:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -241,7 +241,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
   catch (CCopasiException Exception)
     {
       mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-      mpTrajectoryProblem->getModel()->refreshConcentrations();
+      mpTrajectoryProblem->getModel()->applyAssignments();
 
       if ((*LE)(outputStartTime, *mpCurrentTime))
         {
@@ -294,7 +294,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & nextTime)
       while (true);
 
       mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-      mpTrajectoryProblem->getModel()->refreshConcentrations();
+      mpTrajectoryProblem->getModel()->applyAssignments();
 
       return true;
     }
@@ -316,7 +316,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & nextTime)
       while (true);
 
       mpTrajectoryProblem->getModel()->setState(*mpCurrentState);
-      mpTrajectoryProblem->getModel()->refreshConcentrations();
+      mpTrajectoryProblem->getModel()->applyAssignments();
 
       return true;
     }

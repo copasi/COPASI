@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/01 16:14:06 $
+   $Date: 2006/08/08 21:30:20 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -640,7 +640,7 @@ CNewtonMethod::NewtonReturnCode
 CNewtonMethod::returnNewton(const CNewtonMethod::NewtonReturnCode & returnCode)
 {
   mpProblem->getModel()->setState(*mpSteadyState);
-  mpProblem->getModel()->refreshConcentrations();
+  mpProblem->getModel()->applyAssignments();
 
   // This is necessarry since the dependent numbers are ignored during calculation.
 

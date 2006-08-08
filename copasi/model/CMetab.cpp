@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.103 $
+   $Revision: 1.104 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/07 19:27:09 $
+   $Date: 2006/08/08 21:30:20 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -323,17 +323,6 @@ bool CMetab::compile()
 
       for (; it != end; ++it)
         Dependencies.insert(*it);
-
-      if (isDependent())
-        {
-          mDependencies.insert(mpMoiety);
-          setRefresh(this, &CMetab::calculate);
-
-          // This is according to the specification but a call to CModel::refreshRates
-          // calculates dependent and independent rates
-          // Dependencies.insert(mpMoiety->getObject(CCopasiObjectName("Reference=DependentRate")));
-          // mpRateReference->setRefresh(this, &CMetab::refreshRate);
-        }
 
       mpRateReference->setRefresh(mpModel, &CModel::refreshRates);
       mpRateReference->setDirectDependencies(Dependencies);
