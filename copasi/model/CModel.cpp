@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.270 $
+   $Revision: 1.271 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/09 21:07:19 $
+   $Date: 2006/08/09 21:38:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1514,12 +1514,13 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
       pY1 = Y1.array();
       pY2 = Y2.array();
 
-      // :TODO: We need to assure that no value is +/- infinity
       for (; pJacobian < pJacobianEnd; pJacobian += Dim, ++pY1, ++pY2)
         * pJacobian = (*pY2 - *pY1) * InvDelta;
     }
 
   applyAssignments();
+
+  // :TODO: this can be incorporated into the above avoiding a temporary matrix.
 
   // We need to bring the jacobian into the expected order, i.e.,
   // reverse the reordering done to create the reduced stoichiometry matrix
@@ -1599,7 +1600,6 @@ void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
       pY1 = Y1.array();
       pY2 = Y2.array();
 
-      // :TODO: We need to assure that no value is +/- infinity
       for (; pJacobian < pJacobianEnd; pJacobian += Dim, ++pY1, ++pY2)
         * pJacobian = (*pY2 - *pY1) * InvDelta;
     }
