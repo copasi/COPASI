@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapWolfMethod.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/08 21:30:20 $
+   $Date: 2006/08/09 21:07:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -249,8 +249,7 @@ void CLyapWolfMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 
   //the linearized model
 
   //get jacobian
-  pModel->calculateElasticityMatrix(1e-6, 1e-12); //TODO configure parameters
-  pModel->calculateJacobianX(mJacobian);
+  pModel->calculateJacobianX(mJacobian, 1e-6, 1e-12);
 
   //empty dummy entries... to be removed later
   //C_FLOAT64 *dbl, *dblEnd = ydot + mDim[0];

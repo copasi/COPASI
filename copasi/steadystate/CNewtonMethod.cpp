@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.73 $
+   $Revision: 1.74 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/08 21:30:20 $
+   $Date: 2006/08/09 21:07:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -589,9 +589,9 @@ void CNewtonMethod::calculateJacobianX(const C_FLOAT64 & oldMaxRate)
 {
   mpModel->setState(*mpSteadyState);
   mpModel->applyAssignments();
-  mpModel->calculateElasticityMatrix(std::min(mFactor, oldMaxRate),
-                                     mResolution);
-  mpModel->calculateJacobianX(*mpJacobianX);
+  mpModel->calculateJacobianX(*mpJacobianX,
+                              std::min(mFactor, oldMaxRate),
+                              mResolution);
 }
 
 bool CNewtonMethod::allPositive()

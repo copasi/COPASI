@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.269 $
+   $Revision: 1.270 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/08 21:30:20 $
+   $Date: 2006/08/09 21:07:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1444,84 +1444,169 @@ void CModel::calculateElasticityMatrix(const C_FLOAT64 & factor,
   return;
 }
 
-void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian) const
-  {
-    // :TODO: This needs to be revisited when user defined ODEs are introduced.
-    char T = 'N';
-    C_INT M = mStoi.numRows(); /* LDA, LDC, N */
-    C_INT K = mStoi.numCols(); /* LDB */
+void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
+                               const C_FLOAT64 & derivationFactor,
+                               const C_FLOAT64 & resolution)
+{
+  if (mCurrentState.isUpdateDependentRequired())
+    {
+      C_FLOAT64 * pDependent = mCurrentState.beginDependent();
+      CCopasiVector< CMoiety >::iterator itMoiety = mMoieties.begin();
+      CCopasiVector< CMoiety >::iterator endMoiety = mMoieties.end();
 
-    C_FLOAT64 Alpha = 1.0;
-    C_FLOAT64 Beta = 0.0;
+      for (; itMoiety != endMoiety; ++itMoiety, ++pDependent)
+        *pDependent = (*itMoiety)->dependentNumber();
 
-    // Assure that the jacobian has the correct size.
-    jacobian.resize(M, M);
-    CMatrix<C_FLOAT64> Jacobian(M, M);
+      mCurrentState.setUpdateDependentRequired(false);
+    }
 
-    // DebugFile << "CModel::calculateJacobian" << std::endl;
-    // DebugFile << mElasticities << std::endl;
-    // DebugFile << mStoi << std::endl;
+  unsigned C_INT32 Dim =
+    mCurrentState.getNumIndependent() + mNumMetabolitesReaction - mNumMetabolitesIndependent;
+  unsigned C_INT32 Col;
 
-    // For documentation of DGEMM see:
-    // http://calvin.bioinformatics.vt.edu/copasi
+  jacobian.resize(Dim, Dim);
+  CMatrix< C_FLOAT64 > Jacobian(Dim, Dim);
 
-    dgemm_(&T, &T, &M, &M, &K, &Alpha, const_cast<C_FLOAT64 *>(mElasticities.array()), &M,
-           const_cast<C_FLOAT64 *>(mStoi.array()), &K, &Beta, Jacobian.array(), &M);
+  C_FLOAT64 Store;
+  C_FLOAT64 X1;
+  C_FLOAT64 X2;
+  C_FLOAT64 InvDelta;
 
-    // We have to swap columns in the Jacobian since the elasticities
-    // are calculated in the order given by the state template.
-    C_FLOAT64 * pTo, * pFrom, * pEnd = Jacobian.array() + M * M;
-    unsigned C_INT32 i;
+  CVector< C_FLOAT64 > Y1(Dim);
+  CVector< C_FLOAT64 > Y2(Dim);
 
-    // DebugFile << Jacobian << std::endl;
-    // DebugFile << mRowLU << std::endl;
+  C_FLOAT64 * pY1;
+  C_FLOAT64 * pY2;
 
-    for (i = 0; i < M; ++i)
-      for (pTo = jacobian.array() + mRowLU[i], pFrom = Jacobian.array() + i;
-           pFrom < pEnd; pTo += M, pFrom += M)
-        * pTo = *pFrom;
+  C_FLOAT64 * pX = mCurrentState.beginIndependent();
+  C_FLOAT64 * pXEnd = pX + Dim;
 
-    // DebugFile << jacobian << std::endl;
-  }
+  C_FLOAT64 * pJacobian;
+  C_FLOAT64 * pJacobianEnd = Jacobian.array() + Dim * Dim;
 
-void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX) const
-  {
-    // :TODO: This needs to be revisited when user defined ODEs are introduced.
-    CMatrix< C_FLOAT64 > tmp;
+  for (Col = 0; pX != pXEnd; ++pX, ++Col)
+    {
+      Store = *pX;
 
-    char T = 'N';
-    C_INT M = mStateTemplate.getNumIndependent(); /* LDA, LDC */
-    C_INT N = mRedStoi.numCols();
-    C_INT K = mStateTemplate.getNumDependent();
-    C_INT LD = mStateTemplate.getNumVariable();
+      if (fabs(Store * 2.0 * derivationFactor) < resolution)
+        {
+          X1 = resolution;
+          X2 = -resolution;
+        }
+      else
+        {
+          X1 = Store * (1.0 + derivationFactor);
+          X2 = Store * (1.0 - derivationFactor);
+        }
+      InvDelta = 1.0 / (X2 - X1);
 
-    C_FLOAT64 Alpha = 1.0;
-    C_FLOAT64 Beta = 1.0;
+      *pX = X1;
+      applyAssignments();
+      calculateDerivatives(Y1.array());
 
-    tmp.resize(N, LD);
+      *pX = X2;
+      applyAssignments();
+      calculateDerivatives(Y2.array());
 
-    // Assure that the jacobian has the correct size.
-    jacobianX.resize(M, M);
+      *pX = Store;
 
-    memcpy(tmp.array(), mElasticities.array(), N * LD * sizeof(C_FLOAT64));
+      pJacobian = Jacobian.array() + Col;
+      pY1 = Y1.array();
+      pY2 = Y2.array();
 
-    // For documentation of DGEMM see:
-    // http://calvin.bioinformatics.vt.edu/copasi
+      // :TODO: We need to assure that no value is +/- infinity
+      for (; pJacobian < pJacobianEnd; pJacobian += Dim, ++pY1, ++pY2)
+        * pJacobian = (*pY2 - *pY1) * InvDelta;
+    }
 
-    // tmp = (E1, E2) (I, L0')' = E1 + E2 * L0
-    dgemm_(&T, &T, &M, &N, &K, &Alpha, const_cast<C_FLOAT64 *>(mL.array()), &M,
-           const_cast<C_FLOAT64 *>(mElasticities.array()) + M, &LD, &Beta, tmp.array(), &LD);
+  applyAssignments();
 
-    // DebugFile << "CModel::calculateJacobianX" << std::endl;
-    // DebugFile << tmp << std::endl;
+  // We need to bring the jacobian into the expected order, i.e.,
+  // reverse the reordering done to create the reduced stoichiometry matrix
+  unsigned C_INT32 * pPermRow = mRowLU.array();
+  unsigned C_INT32 * pPermCol;
+  unsigned C_INT32 * pPermEnd = mRowLU.array() + Dim;
 
-    Beta = 0.0;
+  C_FLOAT64 * pTo;
+  pJacobian = Jacobian.array();
 
-    // j = R * tmp
-    dgemm_(&T, &T, &M, &M, &N, &Alpha, tmp.array(), &LD,
-           const_cast<C_FLOAT64 *>(mRedStoi.array()), &N, &Beta, jacobianX.array(), &M);
-    // DebugFile << jacobianX << std::endl;
-  }
+  for (; pPermRow < pPermEnd; ++pPermRow)
+    {
+      pTo = jacobian.array() + *pPermRow * Dim;
+
+      for (pPermCol = mRowLU.array(); pPermCol < pPermEnd; ++pPermCol, ++pJacobian)
+        *(pTo + *pPermCol) = *pJacobian;
+    }
+
+  // DebugFile << jacobian << std::endl;
+}
+
+void CModel::calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
+                                const C_FLOAT64 & derivationFactor,
+                                const C_FLOAT64 & resolution)
+{
+  unsigned C_INT32 Dim = mCurrentState.getNumIndependent();
+  unsigned C_INT32 Col;
+
+  jacobianX.resize(Dim, Dim);
+
+  C_FLOAT64 Store;
+  C_FLOAT64 X1;
+  C_FLOAT64 X2;
+  C_FLOAT64 InvDelta;
+
+  CVector< C_FLOAT64 > Y1(Dim);
+  CVector< C_FLOAT64 > Y2(Dim);
+
+  C_FLOAT64 * pY1;
+  C_FLOAT64 * pY2;
+
+  C_FLOAT64 * pX = mCurrentState.beginIndependent();
+  C_FLOAT64 * pXEnd = pX + Dim;
+
+  C_FLOAT64 * pJacobian;
+  C_FLOAT64 * pJacobianEnd = jacobianX.array() + Dim * Dim;
+
+  for (Col = 0; pX != pXEnd; ++pX, ++Col)
+    {
+      Store = *pX;
+
+      if (fabs(Store * 2.0 * derivationFactor) < resolution)
+        {
+          X1 = resolution;
+          X2 = -resolution;
+        }
+      else
+        {
+          X1 = Store * (1.0 + derivationFactor);
+          X2 = Store * (1.0 - derivationFactor);
+        }
+      InvDelta = 1.0 / (X2 - X1);
+
+      *pX = X1;
+      mCurrentState.setUpdateDependentRequired(true);
+      applyAssignments();
+      calculateDerivativesX(Y1.array());
+
+      *pX = X2;
+      mCurrentState.setUpdateDependentRequired(true);
+      applyAssignments();
+      calculateDerivativesX(Y2.array());
+
+      *pX = Store;
+
+      pJacobian = jacobianX.array() + Col;
+      pY1 = Y1.array();
+      pY2 = Y2.array();
+
+      // :TODO: We need to assure that no value is +/- infinity
+      for (; pJacobian < pJacobianEnd; pJacobian += Dim, ++pY1, ++pY2)
+        * pJacobian = (*pY2 - *pY1) * InvDelta;
+    }
+
+  mCurrentState.setUpdateDependentRequired(true);
+  applyAssignments();
+}
 
 C_FLOAT64 CModel::calculateDivergence() const
   {

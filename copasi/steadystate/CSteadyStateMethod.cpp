@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateMethod.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:57:04 $
+   $Date: 2006/08/09 21:07:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,10 +134,9 @@ CSteadyStateMethod::returnProcess(bool steadyStateFound,
     {
       mpModel->setState(*mpSteadyState);
       mpModel->applyAssignments();
-      mpModel->calculateElasticityMatrix(factor, resolution);
 
-      mpModel->calculateJacobian(*mpJacobian);
-      mpModel->calculateJacobianX(*mpJacobianX);
+      mpModel->calculateJacobian(*mpJacobian, factor, resolution);
+      mpModel->calculateJacobianX(*mpJacobianX, factor, resolution);
     }
 
   //mpProblem->getModel()->setState(mpSteadyState);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.124 $
+   $Revision: 1.125 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/08 21:30:20 $
+   $Date: 2006/08/09 21:07:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -700,16 +700,24 @@ class CModel : public CModelEntity
      * and stores it in the provided matrix. calculateElasticityMatrix()
      * needs to be called before.
      * @param CMatrix< C_FLOAT64 > & jacobian
+     * @param const C_FLOAT64 & derivationFactor,
+     * @param const C_FLOAT64 & resolution
      */
-    void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian) const;
+    void calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
+                           const C_FLOAT64 & derivationFactor,
+                           const C_FLOAT64 & resolution);
 
     /**
      * Calculates the jacobian of the reduced model for the current
      * state and stores it in the provided matrix. calculateElasticityMatrix()
      * needs to be called before.
+     * @param const C_FLOAT64 & derivationFactor,
+     * @param const C_FLOAT64 & resolution
      * @param CMatrix< C_FLOAT64 > & jacobianX
      */
-    void calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX) const;
+    void calculateJacobianX(CMatrix< C_FLOAT64 > & jacobianX,
+                            const C_FLOAT64 & derivationFactor,
+                            const C_FLOAT64 & resolution);
 
     /**
      * Calculates the divergence for the current state.
