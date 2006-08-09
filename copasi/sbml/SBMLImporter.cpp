@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.134 $
+   $Revision: 1.135 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/07/28 15:07:03 $
+   $Date: 2006/08/09 09:35:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -675,6 +675,14 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
   /* create a new reaction with the unique name */
   CReaction* copasiReaction = copasiModel->createReaction(name + appendix);
   copasiReaction->setReversible(sbmlReaction->getReversible());
+  if (this->mLevel == 1)
+    {
+      copasiReaction->setSBMLId(sbmlReaction->getName());
+    }
+  else
+    {
+      copasiReaction->setSBMLId(sbmlReaction->getId());
+    }
   copasi2sbmlmap[copasiReaction] = const_cast<Reaction*>(sbmlReaction);
   if (copasiReaction == NULL)
     {
@@ -1080,14 +1088,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       copasiReaction->setFunction(NULL);
     }
   //DebugFile << "Created reaction: " << copasiReaction->getObjectName() << std::endl;
-  if (this->mLevel == 1)
-    {
-      copasiReaction->setSBMLId(sbmlReaction->getName());
-    }
-  else
-    {
-      copasiReaction->setSBMLId(sbmlReaction->getId());
-    }
   return copasiReaction;
 }
 
