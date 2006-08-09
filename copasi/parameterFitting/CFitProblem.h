@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:29 $
+   $Date: 2006/08/09 14:08:03 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -241,14 +241,35 @@ class CFitProblem : public COptProblem
      */
     bool mStoreResults;
 
+    /**
+     * Indicates whether the statistics have been calculated for
+     * the current result
+     */
+    bool mHaveStatistics;
+
+    /**
+     * The gradient vector for the parameters
+     */
     CVector< C_FLOAT64 > mGradient;
 
+    /**
+     * The root mean square of the solution
+     */
     C_FLOAT64 mRMS;
 
+    /**
+     * The standard deviation of the solution
+     */
     C_FLOAT64 mSD;
 
+    /**
+     * The vector of standard deviations of the parameters
+     */
     CVector< C_FLOAT64 > mParameterSD;
 
+    /**
+     * The Fisher information or parameter correlation matrix
+     */
     CMatrix< C_FLOAT64 > mFisher;
   };
 

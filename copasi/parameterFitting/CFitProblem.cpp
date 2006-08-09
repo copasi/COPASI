@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:32 $
+   $Date: 2006/08/09 14:08:03 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,6 +40,7 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
     mDependentValues(0),
     mResiduals(0),
     mStoreResults(false),
+    mHaveStatistics(false),
     mGradient(0),
     mRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
@@ -57,6 +58,7 @@ CFitProblem::CFitProblem(const CFitProblem& src,
     mDependentValues(src.mDependentValues),
     mResiduals(src.mResiduals),
     mStoreResults(src.mStoreResults),
+    mHaveStatistics(src.mHaveStatistics),
     mGradient(src.mGradient),
     mRMS(src.mRMS),
     mSD(src.mSD),
@@ -180,6 +182,8 @@ bool CFitProblem::setCallBack(CProcessReport * pCallBack)
 
 bool CFitProblem::initialize()
 {
+  mHaveStatistics = false;
+
   if (!COptProblem::initialize())
     {
       while (CCopasiMessage::peekLastMessage().getNumber() == MCOptimization + 5 ||
@@ -573,22 +577,34 @@ void CFitProblem::printResult(std::ostream * ostream) const
             os << ")";
           }
 
-        os << ":\t" << mSolutionVariables[i];
-        os << "\t" << mGradient[i];
-        os << "\t" << mParameterSD[i];
+        if (mHaveStatistics)
+          {
+            os << ":\t" << mSolutionVariables[i];
+            os << "\t" << mGradient[i];
+            os << "\t" << mParameterSD[i];
+          }
+        else
+          {
+            os << ":\t" << std::numeric_limits<C_FLOAT64>::quiet_NaN();
+            os << "\t" << std::numeric_limits<C_FLOAT64>::quiet_NaN();
+            os << "\t" << std::numeric_limits<C_FLOAT64>::quiet_NaN();
+          }
         os << std::endl;
       }
 
     os << std::endl;
-    os << "Parameter Interdependence:" << std::endl;
-    os << "  " << mFisher << std::endl;
-
-    unsigned C_INT32 k, kmax = mpExperimentSet->size();
-
-    for (k = 0; k < kmax; k++)
+    if (mHaveStatistics)
       {
-        mpExperimentSet->getExperiment(k)->printResult(ostream);
-        os << std::endl;
+        os << "Parameter Interdependence:" << std::endl;
+        os << "  " << mFisher << std::endl;
+
+        unsigned C_INT32 k, kmax = mpExperimentSet->size();
+
+        for (k = 0; k < kmax; k++)
+          {
+            mpExperimentSet->getExperiment(k)->printResult(ostream);
+            os << std::endl;
+          }
       }
   }
 
@@ -682,6 +698,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   // The statistics need to be calculated for the result, i.e., now.
   mpExperimentSet->calculateStatistics();
+  mHaveStatistics = true;
 
   if (jmax)
     mRMS = sqrt(mSolutionValue / jmax);
@@ -883,9 +900,11 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   if (info)
     {
       mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mParameterSD[i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
       CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
 
-      return false; // :TODO: create error message
+      return false;
     }
 
   lwork = (C_INT) work[0];
@@ -895,6 +914,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   if (info)
     {
       mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mParameterSD[i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
       CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 2, info);
 
       return false;
