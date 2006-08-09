@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Date: 2006/08/09 16:18:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -198,20 +198,6 @@ class CEigen: public CCopasiContainer
      *           caused by underflow due to scaling
      */
     C_INT mInfo;
-
-    /**
-     * sorts two arrays using one as the criterion for sorting
-     */
-    C_INT32 qs_partition(CVector< C_FLOAT64 > & A, CVector< C_FLOAT64 > & B,
-                         C_INT32 p, C_INT32 r);
-
-    /**
-     * Do quicksort with 2 arrays of double.
-     * One is the array of the real part of the eigenvalues.
-     * another is the array of the imaginary part of the eigenvalues
-     */
-    void quicksort(CVector< C_FLOAT64 > & A, CVector< C_FLOAT64 > & B,
-                   C_INT32 p, C_INT32 r);
 
   public:
     /**

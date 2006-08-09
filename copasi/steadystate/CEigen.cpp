@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:55 $
+   $Date: 2006/08/09 16:18:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,12 +23,15 @@
 #include <cmath>
 
 #include "copasi.h"
-#include "clapackwrap.h"        //use CLAPACK
+
+#include "CEigen.h"
+
 #include "report/CCopasiObjectReference.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/CCopasiMessage.h"
+#include "utilities/CSort.h"
 
-#include "CEigen.h"
+#include "clapackwrap.h"        //use CLAPACK
 
 /**
  * Default constructor
@@ -352,7 +355,17 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
   mResolution = resolution;
 
   // sort the eigenvalues
-  quicksort(mR, mI, 0, mN - 1);
+  CVector<unsigned C_INT32> Pivot;
+  sortWithPivot(mR.array(), mR.array() + mR.size(), Pivot);
+
+  // The sort order is ascending however we need descending
+  unsigned C_INT32 *pPivot = Pivot.array();
+  unsigned C_INT32 *pPivotEnd = pPivot + mN;
+  for (; pPivot != pPivotEnd; ++pPivot)
+    *pPivot = mN - *pPivot - 1;
+
+  mR.applyPivot(Pivot);
+  mI.applyPivot(Pivot);
 
   // calculate various eigenvalue statistics
   mMaxrealpart = mR[0];
@@ -434,49 +447,6 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
         tott += fabs(1 / mR[i]);
       }
   mHierarchy = distt / tott / (mN - 1);
-}
-
-// routines for sorting one matrix taking along another one
-// useful to sort complex numbers by their real or imaginary parts
-C_INT32 CEigen::qs_partition(CVector< C_FLOAT64 > & A, CVector< C_FLOAT64 > & B,
-                             C_INT32 p, C_INT32 r)
-{
-  C_INT32 done = 0, i = p, j = r;
-  C_FLOAT64 a, b, x = A[p];
-  while (!done)
-    {
-      while ((A[j] <= x) && (j > p))
-        j--;
-      while ((A[i] > x) && (i < r))
-        i++;
-      if (i < j)
-        {
-          a = A[i];
-          A[i] = A[j];
-          A[j] = a;
-          b = B[i];
-          B[i] = B[j];
-          B[j] = b;
-        }
-      else
-        {
-          done = 1;
-          return j;
-        }
-    }
-  return 0;
-}
-
-void CEigen::quicksort(CVector< C_FLOAT64 > & A, CVector< C_FLOAT64 > & B,
-                       C_INT32 p, C_INT32 r)
-{
-  C_INT32 q;
-  if (p < r)
-    {
-      q = qs_partition(A, B, p, r);
-      quicksort(A, B, p, q);
-      quicksort(A, B, q + 1, r);
-    }
 }
 
 /**
