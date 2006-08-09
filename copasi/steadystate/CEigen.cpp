@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/09 21:05:48 $
+   $Date: 2006/08/09 21:38:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -206,7 +206,23 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
   if (!mN) return;
 
   // copy the jacobian into mA
-  mA = matrix;
+  mA.resize(matrix.numRows(), matrix.numCols());
+  C_FLOAT64 * pA = mA.array();
+  C_FLOAT64 * pAEnd = pA + mA.size();
+  const C_FLOAT64 * pMatrix = matrix.array();
+
+  for (; pA != pAEnd; ++pA, ++pMatrix)
+    {
+      *pA = *pMatrix;
+
+      if (!finite(*pA) && !isnan(*pA))
+        {
+          if (*pA > 0)
+            *pA = DBL_MAX;
+          else
+            *pA = - DBL_MAX;
+        }
+    }
 
   // Querry for the work array size.
   mLWork = -1;
