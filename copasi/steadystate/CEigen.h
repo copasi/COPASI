@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/09 16:18:42 $
+   $Date: 2006/08/09 21:05:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,7 +170,7 @@ class CEigen: public CCopasiContainer
      * #12: (workspace/output) double precision array, dimension (mLWork)
      * On exit, if mInfo=0; mWork(1) contains the optimal mLWork
      */
-    C_FLOAT64 * mpWork;
+    CVector< C_FLOAT64 > mWork;
 
     /**
      * #13: (input) Dimension of array Work, its value >= max(1,3*mN).

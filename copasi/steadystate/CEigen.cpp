@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/09 16:18:42 $
+   $Date: 2006/08/09 21:05:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,7 @@ CEigen::CEigen(const std::string & name,
     mI(),
     mpVS(NULL),
     mLdvs(1),
-    mpWork(NULL),
+    mWork(1),
     mLWork(4096),
     mpBWork(NULL),
     mInfo(0)
@@ -96,7 +96,7 @@ CEigen::CEigen(const CEigen & src,
     mI(src.mI),
     mpVS(NULL),
     mLdvs(src.mLdvs),
-    mpWork(NULL),
+    mWork(src.mWork),
     mLWork(src.mLWork),
     mpBWork(NULL),
     mInfo(src.mInfo)
@@ -192,16 +192,10 @@ void CEigen::initialize()
 
   mR.resize(mN);
   mI.resize(mN);
-
-  mLWork = mN > 1365 ? mN * 3 : 4096;
-
-  mpWork = new C_FLOAT64[mLWork];
 }
 
 void CEigen::cleanup()
-{
-  pdelete(mpWork);
-}
+{}
 
 void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
 {
@@ -213,6 +207,27 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
 
   // copy the jacobian into mA
   mA = matrix;
+
+  // Querry for the work array size.
+  mLWork = -1;
+  dgees_(&mJobvs,        // 'N'
+         &mSort,         // 'N'
+         NULL,           // NULL,
+         &mN,            // n,
+         mA.array(),
+         & mLDA,
+         & mSdim,        // output
+         mR.array(),
+         mI.array(),
+         mpVS,
+         & mLdvs,
+         mWork.array(),
+         & mLWork,
+         mpBWork,        // NULL
+         &mInfo);        // output
+
+  mLWork = (C_INT) mWork[0];
+  mWork.resize(mLWork);
 
   // calculate the eigenvalues
   /* int dgees_(char *jobvs,
@@ -326,21 +341,21 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
    *                   could also be caused by underflow due to scaling.
    *
    */
-  dgees_(&mJobvs,
-         &mSort,
-         NULL,                 // mSelect,          //NULL,
-         &mN,                                //&n,
+  dgees_(&mJobvs,        // 'N'
+         &mSort,         // 'N'
+         NULL,           // NULL,
+         &mN,            // n,
          mA.array(),
          & mLDA,
-         & mSdim,                        // output
+         & mSdim,        // output
          mR.array(),
          mI.array(),
          mpVS,
          & mLdvs,
-         mpWork,
+         mWork.array(),
          & mLWork,
-         mpBWork,                          //NULL
-         &mInfo);            //output
+         mpBWork,        // NULL
+         &mInfo);        // output
 
   if (mInfo) fatalError();
 }
@@ -359,10 +374,14 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
   sortWithPivot(mR.array(), mR.array() + mR.size(), Pivot);
 
   // The sort order is ascending however we need descending
-  unsigned C_INT32 *pPivot = Pivot.array();
-  unsigned C_INT32 *pPivotEnd = pPivot + mN;
-  for (; pPivot != pPivotEnd; ++pPivot)
-    *pPivot = mN - *pPivot - 1;
+  unsigned C_INT32 *pTo = Pivot.array();
+  unsigned C_INT32 *pFrom = pTo + mN - 1;
+  for (; pTo < pFrom; ++pTo, --pFrom)
+    {
+      unsigned C_INT32 Tmp = *pFrom;
+      *pFrom = *pTo;
+      *pTo = Tmp;
+    }
 
   mR.applyPivot(Pivot);
   mI.applyPivot(Pivot);
