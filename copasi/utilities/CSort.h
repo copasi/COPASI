@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSort.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Date: 2006/08/09 15:05:37 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,7 @@
 /**
  * The base functor providing the default compare method for the
  * sorting methods. This default comparison is done with the
- * operator <. to mimic the behaviour of STL sor algorithms
+ * operator <. to mimic the behaviour of STL sort algorithms
  */
 template <typename RandomAccessIterator>
 class FCompareBase
@@ -44,7 +44,7 @@ class FCompareBase
   };
 
 /**
- * This functor providing the means to specify acompare method
+ * This functor provids the means to specify a compare method
  * for the sorting methods.
  */
 template <typename RandomAccessIterator , typename LessThanCompare>
