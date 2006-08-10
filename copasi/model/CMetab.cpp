@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.104 $
+   $Revision: 1.105 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/08 21:30:20 $
+   $Date: 2006/08/10 16:23:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -291,7 +291,7 @@ void CMetab::setStatus(const CModelEntity::Status & status)
       if (pVolumeReference)
         Dependencies.insert(pVolumeReference);
 
-      mpConcRateReference->setDirectDependencies(mDependencies);
+      mpConcRateReference->setDirectDependencies(Dependencies);
       mpConcRateReference->setRefresh(this, &CMetab::refreshConcentrationRate);
       break;
     }
