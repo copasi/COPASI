@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQModelValue.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/13 18:05:25 $
+   $Date: 2006/08/10 15:45:55 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQModelValue.ui'
  **
- ** Created: Thu Jul 13 12:54:55 2006
- **      by: The User Interface Compiler ($Id: CQModelValue.h,v 1.1 2006/07/13 18:05:25 shoops Exp $)
+ ** Created: Thu Aug 10 11:17:13 2006
+ **      by: The User Interface Compiler ($Id: CQModelValue.h,v 1.2 2006/08/10 15:45:55 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -76,6 +76,7 @@ class CQModelValue : public CopasiWidget
     bool mChanged;
     std::string mKey;
     CModelValue * mpModelValue;
+    std::vector< unsigned int > mItemToType;
 
     QVBoxLayout* CQModelValueLayout;
     QSpacerItem* mpSpacer;

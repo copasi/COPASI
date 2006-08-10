@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 18:51:19 $
+   $Date: 2006/08/10 15:45:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,6 +69,14 @@ void ModelValuesWidget::init()
   //for sbml ids
   tableHeader->setLabel(numCols - 1, "SBML ID");
   table->setColumnReadOnly(numCols - 1, true);
+
+  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
+  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
+  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
+
+  mItemToType.push_back(CModelEntity::FIXED);
+  mItemToType.push_back(CModelEntity::ASSIGNMENT);
+  mItemToType.push_back(CModelEntity::ODE);
 }
 
 void ModelValuesWidget::showHeaders()
@@ -90,12 +98,8 @@ void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   if (!pMV) return;
   table->setText(row, COL_NAME, FROM_UTF8(pMV->getObjectName()));
 
-  QStringList Types;
-  Types.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
-  Types.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
-  Types.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
-  QComboTableItem * pComboBox = new QComboTableItem(table, Types);
-  pComboBox->setCurrentItem(pMV->getStatus());
+  QComboTableItem * pComboBox = new QComboTableItem(table, mTypes);
+  pComboBox->setCurrentItem(FROM_UTF8(CModelEntity::StatusName[pMV->getStatus()]));
   table->setItem(row, COL_TYPE, pComboBox);
 
   table->setText(row, COL_INITIAL, QString::number(pMV->getInitialValue()));
@@ -151,7 +155,7 @@ void ModelValuesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
   if (!obj) return;
   CModelValue* pMV = dynamic_cast<CModelValue*>(obj);
   if (!pMV) return;
-  pMV->setStatus((CModelEntity::Status) static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem());
+  pMV->setStatus((CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()]);
   pMV->setInitialValue(table->text(row, COL_INITIAL).toDouble());
 }
 

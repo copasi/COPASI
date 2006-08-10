@@ -414,6 +414,7 @@
     <variable>bool mChanged;</variable>
     <variable>std::string mKey;</variable>
     <variable>CModelValue * mpModelValue;</variable>
+    <variable>std::vector&lt; unsigned int &gt; mItemToType;</variable>
 </variables>
 <slots>
     <slot access="private" specifier="non virtual">slotBtnCommit()</slot>

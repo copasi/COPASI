@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQModelValue.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/13 18:05:25 $
+   $Date: 2006/08/10 15:45:55 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -135,6 +135,10 @@ void CQModelValue::init()
   mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
   mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
   mpComboBoxType->insertItem(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
+
+  mItemToType.push_back(CModelEntity::FIXED);
+  mItemToType.push_back(CModelEntity::ASSIGNMENT);
+  mItemToType.push_back(CModelEntity::ODE);
 }
 
 void CQModelValue::destroy()
@@ -170,7 +174,7 @@ void CQModelValue::load()
 
   mpEditName->setText(FROM_UTF8(mpModelValue->getObjectName()));
 
-  mpComboBoxType->setCurrentItem(mpModelValue->getStatus());
+  mpComboBoxType->setCurrentText(FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()]));
   slotTypeChanged(mpModelValue->getStatus());
 
   mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue()));
@@ -207,9 +211,9 @@ void CQModelValue::save()
         }
     }
 
-  if (mpModelValue->getStatus() != (CModelEntity::Status) mpComboBoxType->currentItem())
+  if (mpModelValue->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()])
     {
-      mpModelValue->setStatus((CModelEntity::Status) mpComboBoxType->currentItem());
+      mpModelValue->setStatus((CModelEntity::Status) mItemToType[mpComboBoxType->currentItem()]);
       mChanged = true;
     }
 

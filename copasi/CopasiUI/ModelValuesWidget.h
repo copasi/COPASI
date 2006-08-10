@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelValuesWidget.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
+   $Date: 2006/08/10 15:45:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,6 +68,18 @@ class ModelValuesWidget : public CopasiTableWidget
      * the prefix that is used to construct new object names
      */
     virtual QString defaultObjectName() const;
+
+    // Attributes
+  private:
+    /**
+     * A list containing the possible selections for type
+     */
+    QStringList mTypes;
+
+    /**
+     * A vector mapping the item index to a model valu type
+     */
+    std::vector< unsigned C_INT32 > mItemToType;
   };
 
 #endif
