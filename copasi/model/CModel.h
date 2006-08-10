@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.126 $
+   $Revision: 1.127 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/10 19:51:17 $
+   $Date: 2006/08/10 20:02:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -925,7 +925,7 @@ class CModel : public CModelEntity
 
     /**
      * Retreive the state template
-     * @return const CModel::CStateTemplate & stateTemplate
+     * @return CModel::CStateTemplate & stateTemplate
      */
     CStateTemplate & getStateTemplate();
 
