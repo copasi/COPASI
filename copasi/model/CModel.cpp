@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.272 $
+   $Revision: 1.273 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/10 16:24:04 $
+   $Date: 2006/08/10 19:51:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -334,30 +334,34 @@ bool CModel::compile()
                      &totalSteps);
     }
 
-  CompileStep = 1;
+  CompileStep = 0;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
   buildStoi();
-  CompileStep = 2;
+  CompileStep = 1;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
   buildLinkZero();
-  CompileStep = 3;
+  CompileStep = 2;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
   buildRedStoi();
-  CompileStep = 4;
+  CompileStep = 3;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
   buildMoieties();
-  CompileStep = 5;
+  CompileStep = 4;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
   buildStateTemplate();
-  CompileStep = 6;
+  CompileStep = 5;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
   buildApplySequence();
+  CompileStep = 6;
+  if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
+
+  buildUserOrder();
   if (mpCompileHandler) mpCompileHandler->finish(hCompileStep);
 
   mCompileIsNecessary = false;
@@ -1132,27 +1136,31 @@ bool CModel::buildStateTemplate()
 
   mStateTemplate.reorder(Entities);
 
-  pEntity = Entities.array();
+  return true;
+}
 
-  itMetab = mMetabolites.begin();
-  endMetab = mMetabolites.end();
+bool CModel::buildUserOrder()
+{
+  CVector<CModelEntity *> Entities(mMetabolitesX.size() + mCompartments.size() + mValues.size());
+  CModelEntity ** pEntity = Entities.array();
+
+  CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
+  CCopasiVector< CMetab >::iterator endMetab = mMetabolites.end();
   for (; itMetab != endMetab; ++itMetab)
     *pEntity++ = *itMetab;;
 
-  itCompartment = mCompartments.begin();
-  endCompartment = mCompartments.end();
+  CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
+  CCopasiVector< CCompartment >::iterator endCompartment = mCompartments.end();
   for (; itCompartment != endCompartment; ++itCompartment)
     *pEntity++ = *itCompartment;
 
-  itValue = mValues.begin();
-  endValue = mValues.end();
+  CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
+  CCopasiVector< CModelValue >::iterator endValue = mValues.end();
+
   for (; itValue != endValue; ++itValue)
     *pEntity++ = *itValue;
 
   mStateTemplate.setUserOrder(Entities);
-
-  // :TODO: Instead of the number of steps we need the number of ODEs.
-  mElasticities.resize(mSteps.size(), mStateTemplate.getNumVariable());
 
   return true;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.125 $
+   $Revision: 1.126 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/09 21:07:19 $
+   $Date: 2006/08/10 19:51:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -990,6 +990,12 @@ class CModel : public CModelEntity
      * @return bool success
      */
     bool buildApplySequence();
+
+    /**
+     * Build the user order for the state template
+     * @return bool success
+     */
+    bool buildUserOrder();
 
 #ifdef COPASI_DEBUG
   public:
