@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.271 $
+   $Revision: 1.272 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/09 21:38:18 $
+   $Date: 2006/08/10 16:24:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1392,7 +1392,7 @@ void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
 
 void CModel::refreshRates()
 {
-  CVector< C_FLOAT64 > Rates(mNumMetabolitesReaction);
+  CVector< C_FLOAT64 > Rates(mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent + mNumMetabolitesReaction);
   C_FLOAT64 * pRate = Rates.array();
   calculateDerivatives(pRate);
 
@@ -1402,6 +1402,8 @@ void CModel::refreshRates()
     mStateTemplate.getEntities() + 1 + mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent;
 
   CModelEntity ** ppEnd = ppIt + mNumMetabolitesReaction;
+  pRate += mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent;
+
   for (; ppIt != ppEnd; ++ppIt, ++pRate)
     (*ppIt)->setRate(*pRate);
 }
