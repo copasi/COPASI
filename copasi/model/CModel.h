@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.127 $
+   $Revision: 1.128 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/10 20:02:00 $
+   $Date: 2006/08/10 20:28:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -865,7 +865,7 @@ class CModel : public CModelEntity
     bool removeMetabolite(const std::string & key);
 
     /* Retreives list of Reactions Keys which are dependent on the Metabolite */
-    std::set<std::string> listReactionsDependentOnMetab(const std::string & key);
+    std::set<CReaction *> listReactionsDependentOnMetab(const std::string & key);
 
     /* Retreives list of Reactions Keys which are dependent on the Function */
     std::set<std::string> listReactionsDependentOnFunction(const std::string & key);

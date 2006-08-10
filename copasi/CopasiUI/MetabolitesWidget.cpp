@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.131 $
+   $Revision: 1.132 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:56:35 $
+   $Date: 2006/08/10 20:28:11 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -338,15 +338,15 @@ void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
       //CMetab* metab =
       //  dynamic_cast< CMetab *>(GlobalKeys.get(keys[i]));
 
-      std::set<std::string> effectedReacKeys = CCopasiDataModel::Global->getModel()->listReactionsDependentOnMetab(keys[i]);
+      std::set< CReaction * > effectedReacKeys = CCopasiDataModel::Global->getModel()->listReactionsDependentOnMetab(keys[i]);
 
       if (effectedReacKeys.size() > 0)
         {
           reacFound = 1;
-          std::set<std::string>::const_iterator it, itEnd = effectedReacKeys.end();
+          std::set< CReaction * >::const_iterator it, itEnd = effectedReacKeys.end();
           for (it = effectedReacKeys.begin(); it != itEnd; ++it)
             {
-              effectedReacList.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
+              effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
               effectedReacList.append(", ");
             }
           effectedReacList.remove(effectedReacList.length() - 2, 2);

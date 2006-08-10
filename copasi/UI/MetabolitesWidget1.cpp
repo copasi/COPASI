@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.131 $
+   $Revision: 1.132 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:56:35 $
+   $Date: 2006/08/10 20:28:11 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -426,18 +426,18 @@ bool MetabolitesWidget1::saveToMetabolite()
 
 bool MetabolitesWidget1::loadReactionsTable()
 {
-  std::set<std::string> reactions = CCopasiDataModel::Global->getModel()->listReactionsDependentOnMetab(objKey);
+  std::set< CReaction * > reactions = CCopasiDataModel::Global->getModel()->listReactionsDependentOnMetab(objKey);
   mReactionsTable->setNumRows(0);
   mReactionsTable->setNumRows(reactions.size() + 1);
   if (reactions.size() < 2) mReactionsTable->setNumRows(3);
   mReactionsTable->setText(0, 0, "none     ");
 
-  std::set<std::string>::const_iterator it, itEnd = reactions.end();
+  std::set< CReaction * >::const_iterator it, itEnd = reactions.end();
   C_INT32 i;
   CReaction* pReac;
   for (it = reactions.begin(), i = 0; it != itEnd; ++it, ++i)
     {
-      pReac = dynamic_cast< CReaction * >(GlobalKeys.get(*it));
+      pReac = *it;
       mReactionsTable->setText(i, 0, FROM_UTF8(pReac->getObjectName()) + ": ");
       mReactionsTable->setText(i, 1, FROM_UTF8(CChemEqInterface::getChemEqString(CCopasiDataModel::Global->getModel(), *pReac, false)));
     }
@@ -450,16 +450,16 @@ bool MetabolitesWidget1::loadReactionsTable()
 void MetabolitesWidget1::slotReactionTableCurrentChanged(int C_UNUSED(mRow), int C_UNUSED(mCol),
     int C_UNUSED(mButton), const QPoint & C_UNUSED(mCur))
 {
-  std::set<std::string> reactions = CCopasiDataModel::Global->getModel()->listReactionsDependentOnMetab(objKey);
+  std::set< CReaction * > reactions = CCopasiDataModel::Global->getModel()->listReactionsDependentOnMetab(objKey);
   CReaction* pReac;
   std::string s1, s2;
   C_INT32 i;
-  std::set<std::string>::const_iterator it, itEnd = reactions.end();
+  std::set< CReaction * >::const_iterator it, itEnd = reactions.end();
   s1 = mReactionsTable->text(mReactionsTable->currentRow(), 0).utf8();
   s1 = s1.substr(0, s1.length() - 2);
   for (it = reactions.begin(), i = 0; it != itEnd; ++it, ++i)
     {
-      pReac = dynamic_cast< CReaction * >(GlobalKeys.get(*it));
+      pReac = *it;
       s2 = pReac->getObjectName();
 
       if (s1 == s2)
@@ -526,15 +526,15 @@ void MetabolitesWidget1::slotBtnDeleteClicked()
   //CMetab* metab =
   //  dynamic_cast< CMetab *>(GlobalKeys.get(keys[i]));
 
-  std::set<std::string> effectedReacKeys = CCopasiDataModel::Global->getModel()->listReactionsDependentOnMetab(objKey);
+  std::set< CReaction * > effectedReacKeys = CCopasiDataModel::Global->getModel()->listReactionsDependentOnMetab(objKey);
 
   if (effectedReacKeys.size() > 0)
     {
       reacFound = 1;
-      std::set<std::string>::const_iterator it, itEnd = effectedReacKeys.end();
+      std::set< CReaction * >::const_iterator it, itEnd = effectedReacKeys.end();
       for (it = effectedReacKeys.begin(); it != itEnd; ++it)
         {
-          effectedReacList.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
+          effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
           effectedReacList.append(", ");
         }
       effectedReacList.remove(effectedReacList.length() - 2, 2);
