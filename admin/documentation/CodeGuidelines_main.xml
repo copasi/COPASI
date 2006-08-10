@@ -206,6 +206,83 @@ the specified type.
 
 <chapter id="TheModelState" xreflabel="The Model State">
 <title>The Model State</title>
+<sect1 id="State Template Order" xreflable="State Template Order">
+<title>State Template Order</title>
+<para>
+This section decribes whether and in which order the above calculated
+simulation objects appear in the initial and current state of the
+model. The order is described by the class CStateTemplate. Please note
+that all objects with the type "Fixed" are marked "Unused" as there is
+no need to calculate them during simulation.
+</para>
+<table frame="all"><title>State Template Order</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="2*" />
+<colspec colwidth="2*" />
+<thead>
+ <row>
+   <entry>Object</entry>
+   <entry>Type</entry>
+   <entry>Status</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Model</entry>
+   <entry>Time</entry>
+   <entry>Used</entry>
+ </row>
+ <row>
+   <entry>Model Value</entry>
+   <entry>ODE</entry>
+   <entry>Used</entry>
+ </row>
+ <row>
+   <entry>Compartment</entry>
+   <entry>ODE</entry>
+   <entry>Used</entry>
+ </row>
+ <row>
+   <entry>Metabolite</entry>
+   <entry>ODE</entry>
+   <entry>Used</entry>
+ </row>
+ <row>
+   <entry>Metabolite</entry>
+   <entry>Reaction</entry>
+   <entry>Independent</entry>
+ </row>
+ <row>
+   <entry>Metabolite</entry>
+   <entry>Reaction</entry>
+   <entry>Dependent</entry>
+ </row>
+ <row>
+   <entry>Metabolite</entry>
+   <entry>Assignement</entry>
+   <entry>Used</entry>
+ </row>
+ <row>
+   <entry>Compartment</entry>
+   <entry>Assignement</entry>
+   <entry>Used</entry>
+ </row>
+ <row>
+   <entry>Model Value</entry>
+   <entry>Assignement</entry>
+   <entry>Used</entry>
+ </row>
+ <row>
+   <entry>Any</entry>
+   <entry>Any</entry>
+   <entry>Unused</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+</sect1>
+
 <sect1 id="Setting the State" xreflabel="Setting the State">
 <title>Setting the State</title>
 </sect1>
@@ -217,6 +294,499 @@ the specified type.
 <sect1 id="Calculating Current Values" xreflabel="Calculating Current Values">
 <title>Calculating Current Values</title>
 </sect1>
+
+<sect1 id="Dependency Specifications" xreflabel="Dependency Specifications">
+<title>Dependency Specifications</title>
+
+<sect2 id="Metabolite Independent" xreflabel="Metabolite Independent">
+<title>Metabolite Independent</title>
+<table frame="all"><title>Metabolite Independent</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Self</entry>
+   <entry>none</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Particle Number</entry>
+   <entry>Self</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Concentration</entry>
+   <entry>Self, parent compartment Volume</entry>
+   <entry>refreshConcentration</entry>
+ </row>
+ <row>
+   <entry>Particle Rate</entry>
+   <entry>All reactions the metabolites paricipates in</entry>
+   <entry>refreshRate</entry>
+ </row>
+ <row>
+   <entry>Concentration Rate</entry>
+   <entry>Particle Rate, parent compartment Volume</entry>
+   <entry>refreshConcentrationRate</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+</sect2>
+
+<sect2 id="Metabolite Dependent" xreflabel="Metabolite Dependent">
+<title>Metabolite Dependent</title>
+<table frame="all"><title>Metabolite Dependent</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Self</entry>
+   <entry>none</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Particle Number</entry>
+   <entry>Self</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Concentration</entry>
+   <entry>self, parent compartment Volume</entry>
+   <entry>refreshConcentration</entry>
+ </row>
+ <row>
+   <entry>Particle Rate</entry>
+   <entry>All reactions the metabolites paricipates in</entry>
+   <entry>refreshRate</entry>
+ </row>
+ <row>
+   <entry>Concentration Rate</entry>
+   <entry>Particle Rate, parent compartment Volume</entry>
+   <entry>refreshConcentrationRate</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+</sect2>
+
+<sect2 id="Metabolite Assignment (Particle Number)" xreflabel="Metabolite Assignment (Particle Number)">
+<title>Metabolite Assignment (Particle Number)</title>
+<table frame="all"><title>Metabolite Assignment (Particle Number)</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Self</entry>
+   <entry>all objects in expression</entry>
+   <entry>calculate</entry>
+ </row>
+ <row>
+   <entry>Particle Number</entry>
+   <entry>Self</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Concentration</entry>
+   <entry>Particle Number, parent compartment Volume</entry>
+   <entry>non</entry>
+ </row>
+ <row>
+   <entry>Particle Rate (NA)</entry>
+   <entry>none</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Concentration Rate (NA)</entry>
+   <entry>none</entry>
+   <entry>none</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+<para>This will not be implemented</para>
+</sect2>
+
+<sect2 id="Metabolite Assignment (Concentration)" xreflabel="Metabolite Assignment (Concentration)">
+<title>Metabolite Assignment (Concentration)</title>
+<table frame="all"><title>Metabolite Assignment (Concentration)</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Self</entry>
+   <entry>all objects in expression</entry>
+   <entry>calculate</entry>
+ </row>
+ <row>
+   <entry>Particle Number</entry>
+   <entry>Concentration, parent compartment Volume</entry>
+   <entry>refreshNumber</entry>
+ </row>
+ <row>
+   <entry>Concentration</entry>
+   <entry>Self</entry>
+   <entry>non</entry>
+ </row>
+ <row>
+   <entry>Particle Rate (NA)</entry>
+   <entry>none</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Concentration Rate (NA)</entry>
+   <entry>none</entry>
+   <entry>none</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+<para>This will be implemented later</para>
+</sect2>
+
+<sect2 id="Metabolite ODE (Particle Number)" xreflabel="Metabolite ODE (Particle Number)">
+<title>Metabolite ODE (Particle Number)</title>
+<table frame="all"><title>Metabolite ODE (Particle Number)</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Self</entry>
+   <entry>all objects in expression</entry>
+   <entry>calculate</entry>
+ </row>
+ <row>
+   <entry>Particle Number</entry>
+   <entry>none</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Concentration</entry>
+   <entry>parent compartment Volume</entry>
+   <entry>refreshConcentration</entry>
+ </row>
+ <row>
+   <entry>Particle Rate</entry>
+   <entry>Self</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Concentration Rate</entry>
+   <entry>Particle Rate, parent compartment Volume</entry>
+   <entry>refreshConcentrationRate</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+<para>This will not be implemented</para>
+</sect2>
+
+<sect2 id="Metabolite ODE (Concentration)" xreflabel="Metabolite ODE (Concentration)">
+<title>Metabolite ODE (Concentration)</title>
+<table frame="all"><title>Metabolite ODE (Concentration)</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Self</entry>
+   <entry>all objects in expression</entry>
+   <entry>calculate</entry>
+ </row>
+ <row>
+   <entry>Particle Number</entry>
+   <entry>parent compartment Volume</entry>
+   <entry>refreshNumber</entry>
+ </row>
+ <row>
+   <entry>Concentration</entry>
+   <entry>none</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Particle Rate</entry>
+   <entry>Concentration Rate, parent compartment Volume</entry>
+   <entry>refreshRate</entry>
+ </row>
+ <row>
+   <entry>Concentration Rate</entry>
+   <entry>Self</entry>
+   <entry>none</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+<para>This will be implemented later</para>
+</sect2>
+
+<sect2 id="Moiety" xreflabel="Moiety">
+<title>Moiety</title>
+<table frame="all"><title>Moiety</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Self</entry>
+   <entry>Particle number of participating independent metabolites</entry>
+   <entry>refreshDependentNumber</entry>
+ </row>
+ <row>
+   <entry>Dependent Number</entry>
+   <entry>Self</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Dependent Rate</entry>
+   <entry>Rates of participating independent metabolites</entry>
+   <entry>refreshDependentRate</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+</sect2>
+
+<sect2 id="Reaction" xreflabel="Reaction">
+<title>Reaction</title>
+<table frame="all"><title>Reaction</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Self</entry>
+   <entry>all variables of the kinetic function,
+    associated compartment Volume</entry>
+   <entry>calculate</entry>
+ </row>
+ <row>
+   <entry>ParticleFlux</entry>
+   <entry>Self</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Flux</entry>
+   <entry>Self</entry>
+   <entry>none</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+</sect2>
+
+<sect2 id="Model Value Assignment" xreflabel="Model Value Assignment">
+<title>Model Value Assignment</title>
+<table frame="all"><title>Model Value Assignment</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Self</entry>
+   <entry>all objects in expression</entry>
+   <entry>calculate</entry>
+ </row>
+ <row>
+   <entry>Value</entry>
+   <entry>Self</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Rate (not available)</entry>
+   <entry>none</entry>
+   <entry>none</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+</sect2>
+
+<sect2 id="Model Value ODE" xreflabel="Model Value ODE">
+<title>Model Value ODE</title>
+<table frame="all"><title>Model Value ODE</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Self</entry>
+   <entry>all objects in expression</entry>
+   <entry>calculate</entry>
+ </row>
+ <row>
+   <entry>Value</entry>
+   <entry>none</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Rate</entry>
+   <entry>Self</entry>
+   <entry>none</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+</sect2>
+
+<sect2 id="Compartment Assignment" xreflabel="Compartment Assignment">
+<title>Compartment Assignment</title>
+<table frame="all"><title>Compartment Assignment</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Self</entry>
+   <entry>all objects in expression</entry>
+   <entry>calculate</entry>
+ </row>
+ <row>
+   <entry>Volume</entry>
+   <entry>Self</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Rate (not available)</entry>
+   <entry>none</entry>
+   <entry>none</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+<para>This will be implemented later</para>
+</sect2>
+
+<sect2 id="Compartment ODE" xreflabel="Compartment ODE">
+<title>Compartment ODE</title>
+<table frame="all"><title>Compartment ODE</title>
+<tgroup cols="3" align="left" colsep="1" rowsep="1">
+<colspec colwidth="2*" />
+<colspec colwidth="6*" />
+<colspec colwidth="3*" />
+<thead>
+ <row>
+   <entry>Attribute</entry>
+   <entry>Dependencies</entry>
+   <entry>Refresh Method</entry>
+ </row>
+</thead>
+<tbody>
+ <row>
+   <entry>Self</entry>
+   <entry>all objects in expression</entry>
+   <entry>calculate</entry>
+ </row>
+ <row>
+   <entry>Volume</entry>
+   <entry>none</entry>
+   <entry>none</entry>
+ </row>
+ <row>
+   <entry>Rate</entry>
+   <entry>Self</entry>
+   <entry>none</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+<para>This will be implemented later</para>
+</sect2>
+
+</sect1>
+
 </chapter>
 
 <chapter id="InstallationStructure" xreflabel="Installation Structure">

@@ -172,11 +172,12 @@ methods:
 \noindent
 \begin{description}
 \item[\texttt{CCopasiContainer * getObjectAncestor(const std::string
-\&type) const;}] ~\newline
+\&type) const}] ~\newline
 This method retrieves the closest ancestor of the object of
 the specified type. 
 \item[\texttt{virtual CCopasiObjectName getCN() const}] ~\newline
 This method retrieve the common name (CN) of the object.
+\item[\texttt{}] ~\newline
 \end{description}
 
 
@@ -196,11 +197,751 @@ This method retrieve the common name (CN) of the object.
 
 \chapter{The Model State}\label{TheModelState}\hyperlabel{TheModelState}
 
+\section{State Template Order}\label{State Template Order}\hyperlabel{State Template Order}
+
+This section decribes whether and in which order the above calculated
+simulation objects appear in the initial and current state of the
+model. The order is described by the class CStateTemplate. Please note
+that all objects with the type "Fixed" are marked "Unused" as there is
+no need to calculate them during simulation.
+
+\begin{center}
+
+\begingroup%
+  \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{6}}%
+\begin{longtable}{lll}\hline
+\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+O\-b\-j\-e\-c\-t%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+T\-y\-p\-e%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+S\-t\-a\-t\-u\-s%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+M\-o\-d\-e\-l%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+T\-i\-m\-e%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+U\-s\-e\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+M\-o\-d\-e\-l V\-a\-l\-u\-e%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+O\-D\-E%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+U\-s\-e\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+C\-o\-m\-p\-a\-r\-t\-m\-e\-n\-t%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+O\-D\-E%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+U\-s\-e\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+M\-e\-t\-a\-b\-o\-l\-i\-t\-e%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+O\-D\-E%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+U\-s\-e\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+M\-e\-t\-a\-b\-o\-l\-i\-t\-e%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+R\-e\-a\-c\-t\-i\-o\-n%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+I\-n\-d\-e\-p\-e\-n\-d\-e\-n\-t%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+M\-e\-t\-a\-b\-o\-l\-i\-t\-e%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+R\-e\-a\-c\-t\-i\-o\-n%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+D\-e\-p\-e\-n\-d\-e\-n\-t%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+M\-e\-t\-a\-b\-o\-l\-i\-t\-e%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+A\-s\-s\-i\-g\-n\-e\-m\-e\-n\-t%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+U\-s\-e\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+C\-o\-m\-p\-a\-r\-t\-m\-e\-n\-t%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+A\-s\-s\-i\-g\-n\-e\-m\-e\-n\-t%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+U\-s\-e\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+M\-o\-d\-e\-l V\-a\-l\-u\-e%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+A\-s\-s\-i\-g\-n\-e\-m\-e\-n\-t%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+U\-s\-e\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+A\-n\-y%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+A\-n\-y%
+}&\multicolumn{1}{m{2\newtblstarfactor}|}{\raggedright%
+U\-n\-u\-s\-e\-d%
+}\tabularnewline
+\hline
+
+\caption{State Template Order}
+\end{longtable}\endgroup%
+
+\end{center}
+
 \section{Setting the State}\label{Setting the State}\hyperlabel{Setting the State}
 
 \section{Applying Assignemets}\label{Applying Assignemets}\hyperlabel{Applying Assignemets}
 
 \section{Calculating Current Values}\label{Calculating Current Values}\hyperlabel{Calculating Current Values}
+
+\section{Dependency Specifications}\label{Dependency Specifications}\hyperlabel{Dependency Specifications}
+
+\subsection{Metabolite Independent}\label{Metabolite Independent}\hyperlabel{Metabolite Independent}
+\begin{center}
+
+\begingroup%
+  \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{11}}%
+\begin{longtable}{lll}\hline
+\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+A\-t\-t\-r\-i\-b\-u\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+D\-e\-p\-e\-n\-d\-e\-n\-c\-i\-e\-s%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+R\-e\-f\-r\-e\-s\-h M\-e\-t\-h\-o\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e N\-u\-m\-b\-e\-r%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f\-, p\-a\-r\-e\-n\-t c\-o\-m\-p\-a\-r\-t\-m\-e\-n\-t V\-o\-l\-u\-m\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+r\-e\-f\-r\-e\-s\-h\-C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e R\-a\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+A\-l\-l r\-e\-a\-c\-t\-i\-o\-n\-s t\-h\-e m\-e\-t\-a\-b\-o\-l\-i\-t\-e\-s p\-a\-r\-i\-c\-i\-p\-a\-t\-e\-s i\-n%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+r\-e\-f\-r\-e\-s\-h\-R\-a\-t\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n R\-a\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e R\-a\-t\-e\-, p\-a\-r\-e\-n\-t c\-o\-m\-p\-a\-r\-t\-m\-e\-n\-t V\-o\-l\-u\-m\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+r\-e\-f\-r\-e\-s\-h\-C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n\-R\-a\-t\-e%
+}\tabularnewline
+\hline
+
+\caption{Metabolite Independent}
+\end{longtable}\endgroup%
+
+\end{center}
+
+\subsection{Metabolite Dependent}\label{Metabolite Dependent}\hyperlabel{Metabolite Dependent}
+\begin{center}
+
+\begingroup%
+  \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{11}}%
+\begin{longtable}{lll}\hline
+\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+A\-t\-t\-r\-i\-b\-u\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+D\-e\-p\-e\-n\-d\-e\-n\-c\-i\-e\-s%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+R\-e\-f\-r\-e\-s\-h M\-e\-t\-h\-o\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e N\-u\-m\-b\-e\-r%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+s\-e\-l\-f\-, p\-a\-r\-e\-n\-t c\-o\-m\-p\-a\-r\-t\-m\-e\-n\-t V\-o\-l\-u\-m\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+r\-e\-f\-r\-e\-s\-h\-C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e R\-a\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+A\-l\-l r\-e\-a\-c\-t\-i\-o\-n\-s t\-h\-e m\-e\-t\-a\-b\-o\-l\-i\-t\-e\-s p\-a\-r\-i\-c\-i\-p\-a\-t\-e\-s i\-n%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+r\-e\-f\-r\-e\-s\-h\-R\-a\-t\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n R\-a\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e R\-a\-t\-e\-, p\-a\-r\-e\-n\-t c\-o\-m\-p\-a\-r\-t\-m\-e\-n\-t V\-o\-l\-u\-m\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+r\-e\-f\-r\-e\-s\-h\-C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n\-R\-a\-t\-e%
+}\tabularnewline
+\hline
+
+\caption{Metabolite Dependent}
+\end{longtable}\endgroup%
+
+\end{center}
+
+\subsection{Metabolite Assignment (Particle Number)}\label{Metabolite Assignment (Particle Number)}\hyperlabel{Metabolite Assignment (Particle Number)}
+\begin{center}
+
+\begingroup%
+  \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{11}}%
+\begin{longtable}{lll}\hline
+\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+A\-t\-t\-r\-i\-b\-u\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+D\-e\-p\-e\-n\-d\-e\-n\-c\-i\-e\-s%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+R\-e\-f\-r\-e\-s\-h M\-e\-t\-h\-o\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+a\-l\-l o\-b\-j\-e\-c\-t\-s i\-n e\-x\-p\-r\-e\-s\-s\-i\-o\-n%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+c\-a\-l\-c\-u\-l\-a\-t\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e N\-u\-m\-b\-e\-r%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e N\-u\-m\-b\-e\-r\-, p\-a\-r\-e\-n\-t c\-o\-m\-p\-a\-r\-t\-m\-e\-n\-t V\-o\-l\-u\-m\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e R\-a\-t\-e (\-N\-A\-)%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n R\-a\-t\-e (\-N\-A\-)%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\hline
+
+\caption{Metabolite Assignment (Particle Number)}
+\end{longtable}\endgroup%
+
+\end{center}
+
+This will not be implemented
+
+\subsection{Metabolite Assignment (Concentration)}\label{Metabolite Assignment (Concentration)}\hyperlabel{Metabolite Assignment (Concentration)}
+\begin{center}
+
+\begingroup%
+  \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{11}}%
+\begin{longtable}{lll}\hline
+\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+A\-t\-t\-r\-i\-b\-u\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+D\-e\-p\-e\-n\-d\-e\-n\-c\-i\-e\-s%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+R\-e\-f\-r\-e\-s\-h M\-e\-t\-h\-o\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+a\-l\-l o\-b\-j\-e\-c\-t\-s i\-n e\-x\-p\-r\-e\-s\-s\-i\-o\-n%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+c\-a\-l\-c\-u\-l\-a\-t\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e N\-u\-m\-b\-e\-r%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n\-, p\-a\-r\-e\-n\-t c\-o\-m\-p\-a\-r\-t\-m\-e\-n\-t V\-o\-l\-u\-m\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+r\-e\-f\-r\-e\-s\-h\-N\-u\-m\-b\-e\-r%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e R\-a\-t\-e (\-N\-A\-)%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n R\-a\-t\-e (\-N\-A\-)%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\hline
+
+\caption{Metabolite Assignment (Concentration)}
+\end{longtable}\endgroup%
+
+\end{center}
+
+This will be implemented later
+
+\subsection{Metabolite ODE (Particle Number)}\label{Metabolite ODE (Particle Number)}\hyperlabel{Metabolite ODE (Particle Number)}
+\begin{center}
+
+\begingroup%
+  \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{11}}%
+\begin{longtable}{lll}\hline
+\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+A\-t\-t\-r\-i\-b\-u\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+D\-e\-p\-e\-n\-d\-e\-n\-c\-i\-e\-s%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+R\-e\-f\-r\-e\-s\-h M\-e\-t\-h\-o\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+a\-l\-l o\-b\-j\-e\-c\-t\-s i\-n e\-x\-p\-r\-e\-s\-s\-i\-o\-n%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+c\-a\-l\-c\-u\-l\-a\-t\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e N\-u\-m\-b\-e\-r%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+p\-a\-r\-e\-n\-t c\-o\-m\-p\-a\-r\-t\-m\-e\-n\-t V\-o\-l\-u\-m\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+r\-e\-f\-r\-e\-s\-h\-C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e R\-a\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n R\-a\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e R\-a\-t\-e\-, p\-a\-r\-e\-n\-t c\-o\-m\-p\-a\-r\-t\-m\-e\-n\-t V\-o\-l\-u\-m\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+r\-e\-f\-r\-e\-s\-h\-C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n\-R\-a\-t\-e%
+}\tabularnewline
+\hline
+
+\caption{Metabolite ODE (Particle Number)}
+\end{longtable}\endgroup%
+
+\end{center}
+
+This will not be implemented
+
+\subsection{Metabolite ODE (Concentration)}\label{Metabolite ODE (Concentration)}\hyperlabel{Metabolite ODE (Concentration)}
+\begin{center}
+
+\begingroup%
+  \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{11}}%
+\begin{longtable}{lll}\hline
+\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+A\-t\-t\-r\-i\-b\-u\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+D\-e\-p\-e\-n\-d\-e\-n\-c\-i\-e\-s%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+R\-e\-f\-r\-e\-s\-h M\-e\-t\-h\-o\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+a\-l\-l o\-b\-j\-e\-c\-t\-s i\-n e\-x\-p\-r\-e\-s\-s\-i\-o\-n%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+c\-a\-l\-c\-u\-l\-a\-t\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e N\-u\-m\-b\-e\-r%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+p\-a\-r\-e\-n\-t c\-o\-m\-p\-a\-r\-t\-m\-e\-n\-t V\-o\-l\-u\-m\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+r\-e\-f\-r\-e\-s\-h\-N\-u\-m\-b\-e\-r%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e R\-a\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n R\-a\-t\-e\-, p\-a\-r\-e\-n\-t c\-o\-m\-p\-a\-r\-t\-m\-e\-n\-t V\-o\-l\-u\-m\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+r\-e\-f\-r\-e\-s\-h\-R\-a\-t\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+C\-o\-n\-c\-e\-n\-t\-r\-a\-t\-i\-o\-n R\-a\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\hline
+
+\caption{Metabolite ODE (Concentration)}
+\end{longtable}\endgroup%
+
+\end{center}
+
+This will be implemented later
+
+\subsection{Moiety}\label{Moiety}\hyperlabel{Moiety}
+\begin{center}
+
+\begingroup%
+  \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{11}}%
+\begin{longtable}{lll}\hline
+\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+A\-t\-t\-r\-i\-b\-u\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+D\-e\-p\-e\-n\-d\-e\-n\-c\-i\-e\-s%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+R\-e\-f\-r\-e\-s\-h M\-e\-t\-h\-o\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e n\-u\-m\-b\-e\-r o\-f p\-a\-r\-t\-i\-c\-i\-p\-a\-t\-i\-n\-g i\-n\-d\-e\-p\-e\-n\-d\-e\-n\-t m\-e\-t\-a\-b\-o\-l\-i\-t\-e\-s%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+r\-e\-f\-r\-e\-s\-h\-D\-e\-p\-e\-n\-d\-e\-n\-t\-N\-u\-m\-b\-e\-r%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+D\-e\-p\-e\-n\-d\-e\-n\-t N\-u\-m\-b\-e\-r%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+D\-e\-p\-e\-n\-d\-e\-n\-t R\-a\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+R\-a\-t\-e\-s o\-f p\-a\-r\-t\-i\-c\-i\-p\-a\-t\-i\-n\-g i\-n\-d\-e\-p\-e\-n\-d\-e\-n\-t m\-e\-t\-a\-b\-o\-l\-i\-t\-e\-s%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+r\-e\-f\-r\-e\-s\-h\-D\-e\-p\-e\-n\-d\-e\-n\-t\-R\-a\-t\-e%
+}\tabularnewline
+\hline
+
+\caption{Moiety}
+\end{longtable}\endgroup%
+
+\end{center}
+
+\subsection{Reaction}\label{Reaction}\hyperlabel{Reaction}
+\begin{center}
+
+\begingroup%
+  \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{11}}%
+\begin{longtable}{lll}\hline
+\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+A\-t\-t\-r\-i\-b\-u\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+D\-e\-p\-e\-n\-d\-e\-n\-c\-i\-e\-s%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+R\-e\-f\-r\-e\-s\-h M\-e\-t\-h\-o\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+a\-l\-l v\-a\-r\-i\-a\-b\-l\-e\-s o\-f t\-h\-e k\-i\-n\-e\-t\-i\-c f\-u\-n\-c\-t\-i\-o\-n\-,
+    a\-s\-s\-o\-c\-i\-a\-t\-e\-d c\-o\-m\-p\-a\-r\-t\-m\-e\-n\-t V\-o\-l\-u\-m\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+c\-a\-l\-c\-u\-l\-a\-t\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+P\-a\-r\-t\-i\-c\-l\-e\-F\-l\-u\-x%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+F\-l\-u\-x%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\hline
+
+\caption{Reaction}
+\end{longtable}\endgroup%
+
+\end{center}
+
+\subsection{Model Value Assignment}\label{Model Value Assignment}\hyperlabel{Model Value Assignment}
+\begin{center}
+
+\begingroup%
+  \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{11}}%
+\begin{longtable}{lll}\hline
+\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+A\-t\-t\-r\-i\-b\-u\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+D\-e\-p\-e\-n\-d\-e\-n\-c\-i\-e\-s%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+R\-e\-f\-r\-e\-s\-h M\-e\-t\-h\-o\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+a\-l\-l o\-b\-j\-e\-c\-t\-s i\-n e\-x\-p\-r\-e\-s\-s\-i\-o\-n%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+c\-a\-l\-c\-u\-l\-a\-t\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+V\-a\-l\-u\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+R\-a\-t\-e (\-n\-o\-t a\-v\-a\-i\-l\-a\-b\-l\-e\-)%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\hline
+
+\caption{Model Value Assignment}
+\end{longtable}\endgroup%
+
+\end{center}
+
+\subsection{Model Value ODE}\label{Model Value ODE}\hyperlabel{Model Value ODE}
+\begin{center}
+
+\begingroup%
+  \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{11}}%
+\begin{longtable}{lll}\hline
+\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+A\-t\-t\-r\-i\-b\-u\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+D\-e\-p\-e\-n\-d\-e\-n\-c\-i\-e\-s%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+R\-e\-f\-r\-e\-s\-h M\-e\-t\-h\-o\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+a\-l\-l o\-b\-j\-e\-c\-t\-s i\-n e\-x\-p\-r\-e\-s\-s\-i\-o\-n%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+c\-a\-l\-c\-u\-l\-a\-t\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+V\-a\-l\-u\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+R\-a\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\hline
+
+\caption{Model Value ODE}
+\end{longtable}\endgroup%
+
+\end{center}
+
+\subsection{Compartment Assignment}\label{Compartment Assignment}\hyperlabel{Compartment Assignment}
+\begin{center}
+
+\begingroup%
+  \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{11}}%
+\begin{longtable}{lll}\hline
+\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+A\-t\-t\-r\-i\-b\-u\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+D\-e\-p\-e\-n\-d\-e\-n\-c\-i\-e\-s%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+R\-e\-f\-r\-e\-s\-h M\-e\-t\-h\-o\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+a\-l\-l o\-b\-j\-e\-c\-t\-s i\-n e\-x\-p\-r\-e\-s\-s\-i\-o\-n%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+c\-a\-l\-c\-u\-l\-a\-t\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+V\-o\-l\-u\-m\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+R\-a\-t\-e (\-n\-o\-t a\-v\-a\-i\-l\-a\-b\-l\-e\-)%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\hline
+
+\caption{Compartment Assignment}
+\end{longtable}\endgroup%
+
+\end{center}
+
+This will be implemented later
+
+\subsection{Compartment ODE}\label{Compartment ODE}\hyperlabel{Compartment ODE}
+\begin{center}
+
+\begingroup%
+  \setlength{\newtblsparewidth}{\linewidth-2\tabcolsep-2\tabcolsep-2\tabcolsep-2\tabcolsep}%
+\setlength{\newtblstarfactor}{\newtblsparewidth / \real{11}}%
+\begin{longtable}{lll}\hline
+\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+A\-t\-t\-r\-i\-b\-u\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+D\-e\-p\-e\-n\-d\-e\-n\-c\-i\-e\-s%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright\bfseries\cellcolor[gray]{.9}%
+%
+R\-e\-f\-r\-e\-s\-h M\-e\-t\-h\-o\-d%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+a\-l\-l o\-b\-j\-e\-c\-t\-s i\-n e\-x\-p\-r\-e\-s\-s\-i\-o\-n%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+c\-a\-l\-c\-u\-l\-a\-t\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+V\-o\-l\-u\-m\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\cline{1-1}\cline{2-2}\cline{3-3}\multicolumn{1}{|m{2\newtblstarfactor}|}{\raggedright%
+R\-a\-t\-e%
+}&\multicolumn{1}{m{6\newtblstarfactor}|}{\raggedright%
+S\-e\-l\-f%
+}&\multicolumn{1}{m{3\newtblstarfactor}|}{\raggedright%
+n\-o\-n\-e%
+}\tabularnewline
+\hline
+
+\caption{Compartment ODE}
+\end{longtable}\endgroup%
+
+\end{center}
+
+This will be implemented later
 
 % ------- 
 % Chapter 
