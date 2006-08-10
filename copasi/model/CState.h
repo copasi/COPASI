@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/07 19:27:09 $
+   $Date: 2006/08/10 20:02:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,11 +62,11 @@ class CStateTemplate
     CModelEntity ** endFixed();
 
     CModelEntity *const* beginIndependent() const;
-    CModelEntity **const endIndependent() const;
-    CModelEntity **const beginDependent() const;
-    CModelEntity **const endDependent() const;
-    CModelEntity **const beginFixed() const;
-    CModelEntity **const endFixed() const;
+    CModelEntity *const* endIndependent() const;
+    CModelEntity *const* beginDependent() const;
+    CModelEntity *const* endDependent() const;
+    CModelEntity *const* beginFixed() const;
+    CModelEntity *const* endFixed() const;
 
     unsigned C_INT32 getNumIndependent() const;
     unsigned C_INT32 getNumDependent() const;

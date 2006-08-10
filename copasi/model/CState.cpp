@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/07 19:27:09 $
+   $Date: 2006/08/10 20:02:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,7 +138,7 @@ void CStateTemplate::reorder(const CVector< CModelEntity * > & entitiesX)
             break;
 
           case CModelEntity::ODE:
-            assert (Dependent == 0);
+            assert (Independent == 0);
             Independent++;
             break;
 
@@ -195,11 +195,11 @@ CModelEntity ** CStateTemplate::beginFixed() {return mpBeginFixed;}
 CModelEntity ** CStateTemplate::endFixed() {return mpEnd;}
 
 CModelEntity *const* CStateTemplate::beginIndependent() const {return mpBeginIndependent;}
-CModelEntity **const CStateTemplate::endIndependent() const {return mpBeginDependent;}
-CModelEntity **const CStateTemplate::beginDependent() const {return mpBeginDependent;}
-CModelEntity **const CStateTemplate::endDependent() const {return mpBeginFixed;}
-CModelEntity **const CStateTemplate::beginFixed() const {return mpBeginFixed;}
-CModelEntity **const CStateTemplate::endFixed() const {return mpEnd;}
+CModelEntity *const* CStateTemplate::endIndependent() const {return mpBeginDependent;}
+CModelEntity *const* CStateTemplate::beginDependent() const {return mpBeginDependent;}
+CModelEntity *const* CStateTemplate::endDependent() const {return mpBeginFixed;}
+CModelEntity *const* CStateTemplate::beginFixed() const {return mpBeginFixed;}
+CModelEntity *const* CStateTemplate::endFixed() const {return mpEnd;}
 
 unsigned C_INT32 CStateTemplate::getNumIndependent() const
   {return mpBeginDependent - mpBeginIndependent;}
