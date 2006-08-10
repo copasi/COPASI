@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:57:04 $
+   $Date: 2006/08/10 19:49:49 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,13 +37,16 @@ bool CTimeSeries::init(C_INT32 n, CModel * pModel)
   resize(n + 1);
   mIt = begin();
 
-  mTitles.resize(mpState->getNumVariable() + 1);
-  mFactors.resize(mpState->getNumVariable() + 1);
+  C_INT32 i, imax = Template.getNumVariable() + 1;
 
-  C_INT32 i;
+  mPivot.resize(imax);
+  mTitles.resize(imax);
+  mFactors.resize(imax);
+
   C_FLOAT64 Number2QuantityFactor = pModel->getNumber2QuantityFactor();
 
   CMetab * pMetab;
+
   for (i = 0; it != end; ++i, ++it)
     {
       if ((pMetab = dynamic_cast<CMetab *>(*it)) != NULL)
@@ -61,8 +64,16 @@ bool CTimeSeries::init(C_INT32 n, CModel * pModel)
 
   mTitles[0] = "Time";
 
-  mPivot.resize(mpState->getNumVariable() + 1);
-  memcpy(mPivot.array(), Template.getUserOrder().array(), sizeof(unsigned C_INT32) * mPivot.size());
+  const unsigned C_INT32 * pUserOrder = Template.getUserOrder().array();
+  const unsigned C_INT32 * pUserOrderEnd = pUserOrder + Template.getUserOrder().size();
+  it = Template.getEntities();
+
+  for (i = 0; pUserOrder != pUserOrderEnd; ++pUserOrder)
+    if (it[*pUserOrder]->isUsed())
+      mPivot[i++] = *pUserOrder;
+
+  DebugFile << Template.getUserOrder() << std::endl;
+  DebugFile << mPivot << std::endl;
 
   return true;
 }
