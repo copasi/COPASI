@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.105 $
+   $Revision: 1.106 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/10 16:23:10 $
+   $Date: 2006/08/10 21:15:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -316,15 +316,37 @@ bool CMetab::compile()
 
     case REACTIONS:
       mDependencies.clear();
+      mRateVector.clear();
 
       std::set< const CCopasiObject * > Dependencies;
-      CCopasiVector< CReaction >::iterator it = mpModel->getReactions().begin();
-      CCopasiVector< CReaction >::iterator end = mpModel->getReactions().end();
+
+      CCopasiVectorN< CReaction >::const_iterator it = mpModel->getReactions().begin();
+      CCopasiVectorN< CReaction >::const_iterator end = mpModel->getReactions().end();
 
       for (; it != end; ++it)
-        Dependencies.insert(*it);
+        {
+          const CCopasiVector< CChemEqElement > &Balances =
+            (*it)->getChemEq().getBalances();
+          CCopasiVector< CChemEqElement >::const_iterator itChem = Balances.begin();
+          CCopasiVector< CChemEqElement >::const_iterator endChem = Balances.end();
 
-      mpRateReference->setRefresh(mpModel, &CModel::refreshRates);
+          for (; itChem != endChem; ++itChem)
+            if ((*itChem)->getMetaboliteKey() == mKey)
+              break;
+
+          if (itChem != endChem)
+            {
+              Dependencies.insert(*it);
+
+              std::pair< C_FLOAT64, const C_FLOAT64 * > Insert;
+              Insert.first = (*itChem)->getMultiplicity();
+              Insert.second = &(*it)->getParticleFlux();
+
+              mRateVector.push_back(Insert);
+            }
+        }
+
+      mpRateReference->setRefresh(this, &CMetab::refreshRate);
       mpRateReference->setDirectDependencies(Dependencies);
     }
 
@@ -369,8 +391,17 @@ void CMetab::refreshRate()
       break;
 
     case REACTIONS:
-      if (isDependent())
-        mRate = mpMoiety->getDependentRate();
+      {
+        mRate = 0.0;
+
+        std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > >::const_iterator it =
+          mRateVector.begin();
+        std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > >::const_iterator end =
+          mRateVector.end();
+
+        for (; it != end; ++it)
+          mRate += it->first * *it->second;
+      }
       break;
     }
 }

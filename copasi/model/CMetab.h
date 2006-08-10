@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/21 19:58:54 $
+   $Date: 2006/08/10 21:15:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,6 +98,8 @@ class CMetab : public CModelEntity
      * The set of moieties the metabolite is part of
      */
     std::set< CMoiety * > mMoieties;
+
+    std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > > mRateVector;
 
   protected:
     CCopasiObjectReference<C_FLOAT64> *mpIConcReference;
