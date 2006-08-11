@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/07 19:27:09 $
+   $Date: 2006/08/11 16:43:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,7 @@ class CModelEntity : public CCopasiContainer
       FIXED = 0,          //the entity is constant (for metabs even if they are part of a reaction)
       ASSIGNMENT,         //the entity is changed by an assignment rule
       REACTIONS,          //applies only for metabs, the metab concentration is changed by reactions
-      //      DEPENDENT,      //applies only for metabs, the metab concentration is determined by conservation rules
+      //      DEPENDENT,     //applies only for metabs, the metab concentration is determined by conservation rules
       //      UNUSED,
       ODE,                //the entity is changed by an ordinary differential equation
       TIME
@@ -168,6 +168,32 @@ class CModelEntity : public CCopasiContainer
     virtual bool setObjectParent(const CCopasiContainer * pParent);
 
     /**
+     * Set the expression for non FIXED model values
+     * @param const std::string & expression
+     * @return bool success
+     */
+    bool setExpression(const std::string & expression);
+
+    /**
+     * Retrieve the expression for non FIXED model values.
+     * @return std::string expression
+     */
+    std::string getExpression() const;
+
+    /**
+     * Set the expression for ODE or REACTION model values
+     * @param const std::string & expression
+     * @return bool success
+     */
+    bool setInitialExpression(const std::string & expression);
+
+    /**
+     * Retrieve the expression for ODE or REACTION model values.
+     * @return std::string expression
+     */
+    std::string getInitialExpression() const;
+
+    /**
      * Set whether the model entity is used during simulation
      * @param const bool & used
      */
@@ -203,6 +229,16 @@ class CModelEntity : public CCopasiContainer
     C_FLOAT64 mRate;
 
   private:
+    /**
+     *
+     */
+    CExpression * mpExpression;
+
+    /**
+     *
+     */
+    CExpression * mpInitialExpression;
+
     /**
      *  Status of the model entity.
      */
@@ -245,9 +281,41 @@ Table of possible CModelEntity objects with different Status
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   current status        corresponding sbml object
 -------------------------------------------------------------------------------------------------
 CMetab:                                       Species
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -287,7 +355,39 @@ TIME                    -
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CCompartment:                                 Compartment
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -327,7 +427,39 @@ TIME                    -
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CModelValue:                                  Parameter
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -367,7 +499,39 @@ TIME                    -
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CModel:                                       implicitly represented in sbml file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -423,35 +587,6 @@ class CModelValue : public CModelEntity
     ~CModelValue();
 
     /**
-     *
-     */
-    virtual void setStatus(const CModelEntity::Status & status);
-
-    /**
-     * Compile the model value. This is only needed for status ASIGNMENT and ODE.
-     * @return bool success
-     */
-    virtual bool compile();
-
-    /**
-     * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
-     */
-    virtual void calculate();
-
-    /**
-     * Set the expression for non FIXED model values
-     * @param const std::string & expression
-     * @return bool success
-     */
-    bool setExpression(const std::string & expression);
-
-    /**
-     * Retrieve the expression for non FIXED model values.
-     * @return std::string expression
-     */
-    std::string getExpression() const;
-
-    /**
      * insert operator
      */
     friend std::ostream & operator<<(std::ostream &os, const CModelValue & d);
@@ -461,13 +596,6 @@ class CModelValue : public CModelEntity
      * Initialize the contained CCopasiObjects
      */
     void initObjects();
-
-    // Attributes
-  private:
-    /**
-     *
-     */
-    CExpression * mpExpression;
   };
 
 #endif
