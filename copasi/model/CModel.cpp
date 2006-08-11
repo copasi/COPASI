@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.274 $
+   $Revision: 1.275 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/10 20:28:12 $
+   $Date: 2006/08/11 21:41:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -357,6 +357,7 @@ bool CModel::compile()
   CompileStep = 5;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
 
+  buildConstantSequence();
   buildApplySequence();
   CompileStep = 6;
   if (mpCompileHandler && !mpCompileHandler->progress(hCompileStep)) return false;
@@ -1009,7 +1010,7 @@ CStateTemplate & CModel::getStateTemplate()
 {CCHECK return mStateTemplate;}
 
 std::set< const CCopasiObject * > & CModel::getUpToDateObjects()
-{CCHECK return mUpToDateObjects;}
+{CCHECK return mApplyUpToDateObjects;}
 
 bool CModel::setTitle(const std::string &title)
 {
@@ -1078,63 +1079,97 @@ C_INT32 CModel::findMoiety(std::string &Target) const
 
 void CModel::applyInitialValues()
 {
+  // Copy the initial state to the current state,
   setState(mInitialState);
+
+  // Update all "constant" dependend values.
+  // Here "constant" means do not change during simulation.
+  std::vector< Refresh * >::const_iterator itRefresh = mConstantRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endRefresh = mConstantRefreshes.end();
+  while (itRefresh != endRefresh)
+    (**itRefresh++)();
+
+  // Update all dependend objects needed for simulation.
   applyAssignments();
 }
 
 bool CModel::buildStateTemplate()
 {
   CVector<CModelEntity *> Entities(mMetabolitesX.size() + mCompartments.size() + mValues.size());
-  CModelEntity ** pEntity = Entities.array();
+  CModelEntity ** ppEntity = Entities.array();
 
   CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
   CCopasiVector< CModelValue >::iterator endValue = mValues.end();
   for (; itValue != endValue; ++itValue)
-    if ((*itValue)->getStatus() == CModelEntity::ODE &&
-        (*itValue)->isUsed())
-      *pEntity++ = *itValue;
+    if ((*itValue)->getStatus() == CModelEntity::ODE)
+      {
+        *ppEntity = *itValue;
+        (*ppEntity++)->setUsed(true);
+      }
 
   CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
   CCopasiVector< CCompartment >::iterator endCompartment = mCompartments.end();
   for (; itCompartment != endCompartment; ++itCompartment)
-    if ((*itCompartment)->getStatus() == CModelEntity::ODE &&
-        (*itCompartment)->isUsed())
-      *pEntity++ = *itCompartment;
+    if ((*itCompartment)->getStatus() == CModelEntity::ODE)
+      {
+        *ppEntity = *itCompartment;
+        (*ppEntity++)->setUsed(true);
+      }
 
   CCopasiVector< CMetab >::iterator itMetab = mMetabolitesX.begin();
   CCopasiVector< CMetab >::iterator endMetab = mMetabolitesX.end();
   for (; itMetab != endMetab; ++itMetab)
     {
       if (!(*itMetab)->isUsed()) break;
-      *pEntity++ = *itMetab;
+      *ppEntity++ = *itMetab;
     }
 
   itValue = mValues.begin();
   for (; itValue != endValue; ++itValue)
-    if ((*itValue)->getStatus() == CModelEntity::ASSIGNMENT
-        && (*itValue)->isUsed())
-      *pEntity++ = *itValue;
+    if ((*itValue)->getStatus() == CModelEntity::ASSIGNMENT)
+      {
+        *ppEntity = *itValue;
+        (*ppEntity++)->setUsed(true);
+      }
 
   itCompartment = mCompartments.begin();
   for (; itCompartment != endCompartment; ++itCompartment)
-    if ((*itCompartment)->getStatus() == CModelEntity::ASSIGNMENT &&
-        (*itCompartment)->isUsed())
-      *pEntity++ = *itCompartment;
+    if ((*itCompartment)->getStatus() == CModelEntity::ASSIGNMENT)
+      {
+        *ppEntity = *itCompartment;
+        (*ppEntity++)->setUsed(true);
+      }
 
   for (; itMetab != endMetab; ++itMetab)
-    *pEntity++ = *itMetab;
+    *ppEntity++ = *itMetab;
 
   itValue = mValues.begin();
   for (; itValue != endValue; ++itValue)
-    if (!(*itValue)->isUsed())
-      *pEntity++ = *itValue;
+    if ((*itValue)->isFixed())
+      *ppEntity++ = *itValue;
 
   itCompartment = mCompartments.begin();
   for (; itCompartment != endCompartment; ++itCompartment)
-    if (!(*itCompartment)->isUsed())
-      *pEntity++ = *itCompartment;
+    if ((*itCompartment)->isFixed())
+      *ppEntity++ = *itCompartment;
 
   mStateTemplate.reorder(Entities);
+  mReorderNeeded = false;
+
+  // Now all entities and reactions can be compiled
+  ppEntity = mStateTemplate.beginIndependent();
+  CModelEntity ** ppEntityEnd = mStateTemplate.endDependent();
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    (*ppEntity)->compile();
+
+  ppEntityEnd = mStateTemplate.endFixed();
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    (*ppEntity)->compile();
+
+  CCopasiVector< CReaction >::iterator itReaction = mSteps.begin();
+  CCopasiVector< CReaction >::iterator endReaction = mSteps.end();
+  for (; itReaction != endReaction; ++itReaction)
+    (*itReaction)->compile();
 
   return true;
 }
@@ -1142,25 +1177,42 @@ bool CModel::buildStateTemplate()
 bool CModel::buildUserOrder()
 {
   CVector<CModelEntity *> Entities(mMetabolitesX.size() + mCompartments.size() + mValues.size());
-  CModelEntity ** pEntity = Entities.array();
+  CModelEntity ** ppEntity = Entities.array();
 
   CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
   CCopasiVector< CMetab >::iterator endMetab = mMetabolites.end();
   for (; itMetab != endMetab; ++itMetab)
-    *pEntity++ = *itMetab;;
+    *ppEntity++ = *itMetab;;
 
   CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
   CCopasiVector< CCompartment >::iterator endCompartment = mCompartments.end();
   for (; itCompartment != endCompartment; ++itCompartment)
-    *pEntity++ = *itCompartment;
+    *ppEntity++ = *itCompartment;
 
   CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
   CCopasiVector< CModelValue >::iterator endValue = mValues.end();
 
   for (; itValue != endValue; ++itValue)
-    *pEntity++ = *itValue;
+    *ppEntity++ = *itValue;
 
   mStateTemplate.setUserOrder(Entities);
+
+  mJacobianPivot.resize(mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent + mNumMetabolitesReaction);
+  mJacobianPivot = 999;
+
+  const unsigned C_INT32 * pUserOrder = mStateTemplate.getUserOrder().array();
+  const unsigned C_INT32 * pUserOrderEnd = pUserOrder + mStateTemplate.getUserOrder().size();
+  ppEntity = mStateTemplate.getEntities();
+
+  for (unsigned C_INT32 i = 0; pUserOrder != pUserOrderEnd; ++pUserOrder)
+    {
+      const CModelEntity::Status & Status = ppEntity[*pUserOrder]->getStatus();
+      if (Status == CModelEntity::ODE || Status == CModelEntity::REACTIONS)
+        mJacobianPivot[i++] = *pUserOrder - 1;
+    }
+
+  DebugFile << mStateTemplate.getUserOrder() << std::endl;
+  DebugFile << mJacobianPivot << std::endl;
 
   return true;
 }
@@ -1173,24 +1225,17 @@ bool CModel::buildApplySequence()
   CModelEntity **ppEntityEnd = mStateTemplate.endDependent();
 
   for (; ppEntity != ppEntityEnd; ++ppEntity)
-    {
-      (*ppEntity)->compile();
-      Objects.insert(*ppEntity);
-    }
+    Objects.insert(*ppEntity);
 
   // Further more all reaction fluxes have to be calculated too
   CCopasiVector< CReaction >::iterator itReaction = mSteps.begin();
   CCopasiVector< CReaction >::iterator endReaction = mSteps.end();
   for (; itReaction != endReaction; ++itReaction)
-    {
-      (*itReaction)->compile();
-      Objects.insert(*itReaction);
-    }
+    Objects.insert(*itReaction);
 
   // We now detect unused assignments, i.e., the result of an assignment is not
   // used during applyAssignments except for itself or another unused assignment.
   bool UnusedFound = true;
-  bool ReorderNeeded = false;
 
   std::set<const CCopasiObject * > Candidate;
   std::set< const CCopasiObject * >::iterator it;
@@ -1214,7 +1259,7 @@ bool CModel::buildApplySequence()
             if (it == end)
               {
                 UnusedFound = true;
-                ReorderNeeded = true;
+                mReorderNeeded = true;
                 (*ppEntity)->setUsed(false);
                 Objects.erase(*ppEntity);
               }
@@ -1223,7 +1268,7 @@ bool CModel::buildApplySequence()
           }
     }
 
-  if (ReorderNeeded)
+  if (mReorderNeeded)
     {
       CVector< CModelEntity * > Reorder(mStateTemplate.size() - 1);
       CModelEntity ** ppReorder = Reorder.array();
@@ -1248,10 +1293,11 @@ bool CModel::buildApplySequence()
         *ppReorder = *ppEntity;
 
       mStateTemplate.reorder(Reorder);
+      mReorderNeeded = false;
 
       // We need to recompile as pointers to values may have changed
       ppEntity = mStateTemplate.beginIndependent();
-      ppEntityEnd = mStateTemplate.endDependent();
+      ppEntityEnd = mStateTemplate.endFixed();
       for (; ppEntity != ppEntityEnd; ++ppEntity)
         (*ppEntity)->compile();
 
@@ -1261,14 +1307,74 @@ bool CModel::buildApplySequence()
         (*itReaction)->compile();
     }
 
-  mUpToDateObjects.clear();
+  mApplyUpToDateObjects.clear();
   mApplyRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
+
+  // We have to remove the refresh calls already covered by mConstantRefreshes
+  std::vector< Refresh * >::const_iterator itInitialRefresh = mConstantRefreshes.begin();
+  std::vector< Refresh * >::const_iterator endInitialRefresh = mConstantRefreshes.end();
+
+  std::vector< Refresh * >::iterator itRefresh;
+  std::vector< Refresh * >::iterator endRefresh;
+
+  for (; itInitialRefresh != endInitialRefresh; ++itInitialRefresh)
+    {
+      itRefresh = mApplyRefreshes.begin();
+      endRefresh = mApplyRefreshes.end();
+
+      for (; itRefresh != endRefresh; ++itRefresh)
+        if ((*itRefresh)->isEqual(*itInitialRefresh))
+          {
+            mApplyRefreshes.erase(itRefresh);
+            break;
+          }
+    }
+
+  return true;
+}
+
+bool CModel::buildConstantSequence()
+{
+  // Now find all model entities which are assignments and which do
+  // not depend on simulated values, i.e., on model entities of type
+  // time, ode, reaction
+  std::set< const CCopasiObject * > Dependencies;
+  std::set< const CCopasiObject * >::const_iterator itDepend;
+  std::set< const CCopasiObject * >::const_iterator endDepend;
+  const CModelEntity * pEntity;
+  std::set< const CCopasiObject * > Objects;
+
+  CModelEntity ** ppEntity =
+    mStateTemplate.beginDependent() - mNumMetabolitesIndependent + mNumMetabolitesReaction;
+  CModelEntity ** ppEntityEnd = mStateTemplate.endDependent();
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    {
+      (*ppEntity)->getAllDependencies(Dependencies);
+
+      itDepend = Dependencies.begin();
+      endDepend = Dependencies.end();
+
+      for (; itDepend != endDepend; ++itDepend)
+        if ((pEntity = dynamic_cast< const CModelEntity * >(*itDepend)) != NULL &&
+            (pEntity->getStatus() != CModelEntity::ASSIGNMENT &&
+             pEntity->getStatus() != CModelEntity::FIXED)) break;
+
+      if (itDepend == endDepend)
+        {
+          mReorderNeeded = true;
+          (*ppEntity)->setUsed(false);
+          Objects.insert(*ppEntity);
+        }
+    }
+
+  mApplyUpToDateObjects.clear();
+  mConstantRefreshes = CCopasiObject::buildUpdateSequence(Objects, this);
 
   return true;
 }
 
 const CState & CModel::getInitialState() const
-{return mInitialState;}
+  {return mInitialState;}
 
 const CState & CModel::getState() const
   {return mCurrentState;}
@@ -1360,7 +1466,7 @@ void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
   for (; ppIt != ppEnd; ++ppIt, ++pTmp)
     *pTmp = (*ppIt)->getRate();
 
-  // Now calculate derivatives of the metabolites determined by reactions
+  // Now calculate derivatives of all metabolites determined by reactions
   char T = 'N';
   C_INT M = 1;
   C_INT N = mNumMetabolitesReaction;
@@ -1386,7 +1492,7 @@ void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
   for (; ppIt != ppEnd; ++ppIt, ++pTmp)
     *pTmp = (*ppIt)->getRate();
 
-  // Now calculate derivatives of the metabolites determined by reactions
+  // Now calculate derivatives of the independent metabolites determined by reactions
   char T = 'N';
   C_INT M = 1;
   C_INT N = mNumMetabolitesIndependent;
@@ -1530,23 +1636,26 @@ void CModel::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
 
   applyAssignments();
 
+  //  jacobian = Jacobian;
+  //  return;
+
   // :TODO: this can be incorporated into the above avoiding a temporary matrix.
 
   // We need to bring the jacobian into the expected order, i.e.,
-  // reverse the reordering done to create the reduced stoichiometry matrix
-  unsigned C_INT32 * pPermRow = mRowLU.array();
+  // convert it to the user defined order
+  unsigned C_INT32 * pPermRow = mJacobianPivot.array();
+  unsigned C_INT32 * pPermEnd = pPermRow + mJacobianPivot.size();
   unsigned C_INT32 * pPermCol;
-  unsigned C_INT32 * pPermEnd = mRowLU.array() + Dim;
 
   C_FLOAT64 * pTo;
-  pJacobian = Jacobian.array();
+  pTo = jacobian.array();
 
   for (; pPermRow < pPermEnd; ++pPermRow)
     {
-      pTo = jacobian.array() + *pPermRow * Dim;
+      pJacobian = Jacobian.array() + *pPermRow * Dim;
 
-      for (pPermCol = mRowLU.array(); pPermCol < pPermEnd; ++pPermCol, ++pJacobian)
-        *(pTo + *pPermCol) = *pJacobian;
+      for (pPermCol = mJacobianPivot.array(); pPermCol < pPermEnd; ++pPermCol, ++pTo)
+        *pTo = *(pJacobian + *pPermCol);
     }
 
   // DebugFile << jacobian << std::endl;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.128 $
+   $Revision: 1.129 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/10 20:28:12 $
+   $Date: 2006/08/11 21:41:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,7 +161,7 @@ class CModel : public CModelEntity
      * This is the list of objects which contains all objects which
      * are up to date after a call to applyAssignments
      */
-    std::set< const CCopasiObject * > mUpToDateObjects;
+    std::set< const CCopasiObject * > mApplyUpToDateObjects;
 
     /**
      *  Comments
@@ -256,6 +256,12 @@ class CModel : public CModelEntity
     CVector< unsigned C_INT32 > mRowLU;
 
     /**
+     * Vector for storing the row and column interchanges needed to calculate
+     * the full Jacobian in user order.
+     */
+    CVector< unsigned C_INT32 > mJacobianPivot;
+
+    /**
      * The number of unused metabs in the model
      */
     unsigned C_INT32 mNumMetabolitesUnused;
@@ -312,9 +318,20 @@ class CModel : public CModelEntity
     CProcessReport * mpCompileHandler;
 
     /**
-     * An ordered list of refresh methods needed by the master
+     * An ordered list of refresh methods needed by the applyAssignments
      */
     std::vector< Refresh * > mApplyRefreshes;
+
+    /**
+     * An ordered list of refresh methods needed by the applyInitialValues
+     * to update values which stay constant during simulation.
+     */
+    std::vector< Refresh * > mConstantRefreshes;
+
+    /**
+     * A flag indicating whether the state template has to be reordered
+     */
+    bool mReorderNeeded;
 
   public:
     /**
@@ -986,7 +1003,14 @@ class CModel : public CModelEntity
     bool buildStateTemplate();
 
     /**
-     * Build the update seqeunce used by applyAssignments.
+     * Build the update sequence used by applyInitialValues to update values
+     * "constant" during simulation
+     * @return bool success
+     */
+    bool buildConstantSequence();
+
+    /**
+     * Build the update sequence used by applyAssignments.
      * @return bool success
      */
     bool buildApplySequence();
