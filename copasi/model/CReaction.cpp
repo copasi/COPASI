@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.158 $
+   $Revision: 1.159 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/07 19:27:09 $
+   $Date: 2006/08/11 16:43:54 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -448,9 +448,6 @@ void CReaction::compile()
                 {
                   pObject = GlobalKeys.get(mMetabKeyMap[i][j]);
                   mMap.addCallParameter(paramName, pObject);
-                  // :TODO: This does not suffice as it is actually the value pointer
-                  // which is used as the variable, i.e., we need to find the object
-                  // representing the value pointer.
                   mDependencies.insert(pObject->getValueObject());
                 }
             }
@@ -458,7 +455,6 @@ void CReaction::compile()
             {
               pObject = GlobalKeys.get(mMetabKeyMap[i][0]);
               mMap.setCallParameter(paramName, pObject);
-              // :TODO: This does not suffice
               mDependencies.insert(pObject->getValueObject());
             }
         }
