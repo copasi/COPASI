@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/01 16:14:07 $
+   $Date: 2006/08/11 21:42:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -120,12 +120,29 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
     tableJacobian->adjustColumn(j);
 
   QString name;
-  const CCopasiVector<CMetab>& metabs = task->getProblem()->getModel()->getMetabolites();
-  for (i = 0; i < imax; ++i)
+  CStateTemplate & StateTemplate = task->getProblem()->getModel()->getStateTemplate();
+  CModelEntity **ppEntities = StateTemplate.getEntities();
+  const unsigned C_INT32 * pUserOrder = StateTemplate.getUserOrder().array();
+  const unsigned C_INT32 * pUserOrderEnd = pUserOrder + StateTemplate.getUserOrder().size();
+  CMetab * pMetab;
+
+  pUserOrder++; // We skip the time which is the first.
+
+  for (i = 0; i < imax && pUserOrder != pUserOrderEnd; pUserOrder++)
     {
-      name = FROM_UTF8(CMetabNameInterface::getDisplayName(task->getProblem()->getModel(), *metabs[i]));
-      tableJacobian->horizontalHeader()->setLabel(i, name);
-      tableJacobian->verticalHeader()->setLabel(i, name);
+      const CModelEntity::Status & Status = ppEntities[*pUserOrder]->getStatus();
+      if (Status == CModelEntity::ODE || Status == CModelEntity::REACTIONS)
+        {
+          if ((pMetab = dynamic_cast<CMetab *>(ppEntities[*pUserOrder])) != NULL)
+            name = FROM_UTF8(CMetabNameInterface::getDisplayName(task->getProblem()->getModel(), *pMetab));
+          else
+            name = FROM_UTF8(ppEntities[*pUserOrder]->getObjectDisplayName());
+
+          tableJacobian->horizontalHeader()->setLabel(i, name);
+          tableJacobian->verticalHeader()->setLabel(i, name);
+
+          i++;
+        }
     }
 
   //Eigenvalues...
@@ -157,11 +174,15 @@ void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
         tableJacobianX->setText(i, j, QString::number(jacobianX(i, j)));
       }
 
-  const CCopasiVector< CMetab > & metabsX =
-    task->getProblem()->getModel()->getMetabolitesX();
-  for (i = 0; i < imax; ++i)
+  ppEntities = StateTemplate.beginIndependent();
+
+  for (i = 0; i < imax; ++i, ++ppEntities)
     {
-      name = FROM_UTF8(CMetabNameInterface::getDisplayName(task->getProblem()->getModel(), *metabsX[i]));
+      if ((pMetab = dynamic_cast<CMetab *>(*ppEntities)) != NULL)
+        name = FROM_UTF8(CMetabNameInterface::getDisplayName(task->getProblem()->getModel(), *pMetab));
+      else
+        name = FROM_UTF8((*ppEntities)->getObjectDisplayName());
+
       tableJacobianX->horizontalHeader()->setLabel(i, name);
       tableJacobianX->verticalHeader()->setLabel(i, name);
     }
