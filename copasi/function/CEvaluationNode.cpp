@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/07/26 11:13:57 $
+   $Author: gauges $
+   $Date: 2006/08/12 13:13:52 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright ï¿½ 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,6 +14,8 @@
 #include "CEvaluationNode.h"
 
 #include "sbml/math/ASTNode.h"
+#include "sbml/ConverterASTNode.h"
+#include "sbml/util/List.h"
 
 CEvaluationNode::CPrecedence::CPrecedence(const unsigned C_INT32 & left,
     const unsigned C_INT32 & right):
@@ -244,7 +246,6 @@ void CEvaluationNode::printRecursively(std::ostream & os, int indent) const
     /*    if (getChild())
           ((CEvaluationNode*)getChild())->printRecursively(os, indent + 2);
 
-
         if (getSibling())
           ((CEvaluationNode*)getSibling())->printRecursively(os, indent);*/
   }
@@ -253,3 +254,57 @@ void CEvaluationNode::printRecursively() const
   {
     this->printRecursively(std::cout, 0);
   }
+
+/**
+ * Replaces all LOG10 (AST_FUNCTION_LOG) nodes that have two
+ * children with the quotient of two LOG10 nodes with the base
+ * as the argument for the divisor LOG10 node.
+ */
+void CEvaluationNode::replaceLog(ConverterASTNode* sourceNode)
+{
+  if (sourceNode->getType() == AST_FUNCTION_LOG && sourceNode->getNumChildren() == 2)
+    {
+      List* l = new List();
+      ConverterASTNode* child1 = (ConverterASTNode*)sourceNode->getChild(0);
+      ConverterASTNode* child2 = (ConverterASTNode*)sourceNode->getChild(1);
+      ConverterASTNode* logNode1 = new ConverterASTNode(AST_FUNCTION_LOG);
+      l->add(child1);
+      logNode1->setChildren(l);
+      ConverterASTNode* logNode2 = new ConverterASTNode(AST_FUNCTION_LOG);
+      l = new List();
+      l->add(child2);
+      logNode2->setChildren(l);
+      l = new List();
+      l->add(logNode2);
+      l->add(logNode1);
+      sourceNode->setChildren(l);
+      sourceNode->setType(AST_DIVIDE);
+    }
+}
+
+/**
+ * Replaces all root nodes with the corresponding power
+ * operator since COPASI does not have the ROOT function.
+ */
+void CEvaluationNode::replaceRoot(ConverterASTNode* sourceNode)
+{
+  if (sourceNode->getType() == AST_FUNCTION_ROOT && sourceNode->getNumChildren() == 2)
+    {
+      ConverterASTNode* child1 = (ConverterASTNode*)sourceNode->getChild(0);
+      ConverterASTNode* child2 = (ConverterASTNode*)sourceNode->getChild(1);
+      ConverterASTNode* divideNode = new ConverterASTNode(AST_DIVIDE);
+      ConverterASTNode* oneNode = new ConverterASTNode(AST_REAL);
+      oneNode->setValue(1.0);
+      List* l = new List();
+      l->add(divideNode);
+      divideNode->addChild(oneNode);
+      divideNode->addChild(child1);
+
+      List* l2 = new List();
+      l2->add(child2);
+      l2->add(divideNode);
+
+      sourceNode->setChildren(l2);
+      sourceNode->setType(AST_POWER);
+    }
+}

@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.135 $
+   $Revision: 1.136 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/09 09:35:35 $
+   $Date: 2006/08/12 13:13:51 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright ï¿½ 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -27,7 +27,6 @@
 #include "model/CModelValue.h"
 #include "copasi.h"
 #include "function/CNodeK.h"
-//#include "function/CKinFunction.h"
 #include "function/CFunctionDB.h"
 #include "function/CEvaluationTree.h"
 #include "report/CCopasiObjectReference.h"
@@ -164,30 +163,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
 
-  // now go through the temporary function db and replace all call nodes with the name of the
-  // copasi function.
-  if (mpImportHandler)
-    {
-      mpImportHandler->finish(hStep);
-      mImportStep = 2;
-      if (!mpImportHandler->progress(mhImportStep)) return false;
-      step = 0;
-      totalSteps = num;
-      hStep = mpImportHandler->addItem("Replacing function call names...",
-                                       CCopasiParameter::UINT,
-                                       & step,
-                                       &totalSteps);
-    }
-  functions = &(pTmpFunctionDB->loadedFunctions());
-  num = (*functions).size();
-  for (counter = 0; counter < num; ++counter)
-    {
-      this->replaceCallNodeNames((*functions)[counter]->getRoot());
-      this->replaceTimeNodeNames((*functions)[counter]->getRoot());
-      (*functions)[counter]->updateTree();
-      ++step;
-      if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
-    }
   std::map<std::string, CCompartment*> compartmentMap;
 
   /* Create the compartments */
@@ -349,6 +324,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
 CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB)
 {
+
   CFunction* pTmpFunction = this->createCFunctionFromFunctionTree(sbmlFunction);
   if (pTmpFunction)
     {
@@ -384,17 +360,18 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
   CFunction* pFun = NULL;
   if (pSBMLFunction->isSetMath())
     {
-      const ASTNode* root = pSBMLFunction->getMath();
-      if (root->getType() == AST_LAMBDA)
+      ConverterASTNode root(*pSBMLFunction->getMath());
+      this->preprocessNode(&root);
+      if (root.getType() == AST_LAMBDA)
         {
           // get the number of children.
           // the first n-1 children are the parameters for the function
           // the last child is the actual function
           pFun = new CKinFunction();
-          unsigned int i, iMax = root->getNumChildren() - 1;
+          unsigned int i, iMax = root.getNumChildren() - 1;
           for (i = 0; i < iMax;++i)
             {
-              ASTNode* pVarNode = root->getChild(i);
+              ASTNode* pVarNode = root.getChild(i);
               if (pVarNode->getType() != AST_NAME)
                 {
                   delete pFun;
@@ -402,7 +379,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
                 }
               pFun->addVariable(pVarNode->getName());
             }
-          pFun->setTree(*root->getChild(iMax));
+          pFun->setTree(*root.getChild(iMax));
           CCopasiTree<CEvaluationNode>::iterator treeIt = pFun->getRoot();
           // if the root node already is an object node, this has to be dealt with separately
           if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
@@ -869,7 +846,8 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
         {
           fatalError();
         }
-      ASTNode* node = new ConverterASTNode(*kLawMath);
+      ConverterASTNode* node = new ConverterASTNode(*kLawMath);
+      this->preprocessNode(node);
 
       if (node == NULL)
         {
@@ -877,10 +855,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
           fatalError();
         }
 
-      this->replacePowerFunctionNodes(node);
-      this->replaceLog((ConverterASTNode*)node);
-      this->replaceRoot((ConverterASTNode*)node);
-      this->replaceSubstanceOnlySpeciesNodes((ConverterASTNode*)node, mSubstanceOnlySpecies);
+      this->replaceSubstanceOnlySpeciesNodes(node, mSubstanceOnlySpecies);
 
       /* if it is a single compartment reaction, we have to divide the whole kinetic
       ** equation by the compartment because copasi expects
@@ -894,7 +869,7 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
               // check if the root node is a multiplication node and it's first child
               // is a compartment node, if so, drop those two and make the second child
               // new new root node
-              ASTNode* tmpNode1 = this->isMultipliedByVolume(node, compartment->getSBMLId());
+              ConverterASTNode* tmpNode1 = this->isMultipliedByVolume(node, compartment->getSBMLId());
               if (tmpNode1)
                 {
                   delete node;
@@ -935,8 +910,6 @@ SBMLImporter::createCReactionFromReaction(const Reaction* sbmlReaction, const Mo
       /* Create a new user defined CKinFunction */
       if (!sbmlId2CopasiCN(node, copasi2sbmlmap, copasiReaction->getParameters())) fatalError();
       CEvaluationNode* pExpressionTreeRoot = CEvaluationTree::convertASTNode(*node);
-      this->replaceCallNodeNames(pExpressionTreeRoot);
-      this->replaceTimeNodeNames(pExpressionTreeRoot);
       if (pExpressionTreeRoot)
         {
           CEvaluationTree* pTmpTree = CEvaluationTree::create(CEvaluationTree::Expression);
@@ -1230,27 +1203,6 @@ void SBMLImporter::replaceSubstanceOnlySpeciesNodes(ConverterASTNode* node, cons
             {
               this->replaceSubstanceOnlySpeciesNodes((ConverterASTNode*)node->getChild(counter), substanceOnlySpecies);
             }
-        }
-    }
-}
-
-/**
- * This function replaces the AST_FUNCTION_POWER ASTNodes in a ASTNode tree
- * with the AST_POWER node.
- */
-void SBMLImporter::replacePowerFunctionNodes(ASTNode* node)
-{
-  if (node != NULL)
-    {
-      if (node->getType() == AST_FUNCTION_POWER)
-        {
-          //node->setType(AST_POWER);
-          node->setCharacter('^');
-        }
-      unsigned int counter;
-      for (counter = 0; counter < node->getNumChildren(); counter++)
-        {
-          this->replacePowerFunctionNodes(node->getChild(counter));
         }
     }
 }
@@ -1607,75 +1559,6 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
   return vUnit;
 }
 
-void SBMLImporter::replaceLog(ConverterASTNode* sourceNode)
-{
-  if (sourceNode->getType() == AST_FUNCTION_LOG && sourceNode->getNumChildren() == 2)
-    {
-      List* l = new List();
-      ConverterASTNode* child1 = (ConverterASTNode*)sourceNode->getChild(0);
-      ConverterASTNode* child2 = (ConverterASTNode*)sourceNode->getChild(1);
-      ConverterASTNode* logNode1 = new ConverterASTNode(AST_FUNCTION_LOG);
-      l->add(child1);
-      logNode1->setChildren(l);
-      ConverterASTNode* logNode2 = new ConverterASTNode(AST_FUNCTION_LOG);
-      l = new List();
-      l->add(child2);
-      logNode2->setChildren(l);
-      l = new List();
-      l->add(logNode2);
-      l->add(logNode1);
-      sourceNode->setChildren(l);
-      sourceNode->setType(AST_DIVIDE);
-      // go down the children and replace logs
-      this->replaceLog(child1);
-      this->replaceLog(child2);
-    }
-  else
-    {
-      // go down to the children and replace logs
-      unsigned int i;
-      for (i = 0; i < sourceNode->getNumChildren();++i)
-        {
-          this->replaceLog((ConverterASTNode*)sourceNode->getChild(i));
-        }
-    }
-}
-
-void SBMLImporter::replaceRoot(ConverterASTNode* sourceNode)
-{
-  if (sourceNode->getType() == AST_FUNCTION_ROOT && sourceNode->getNumChildren() == 2)
-    {
-      ConverterASTNode* child1 = (ConverterASTNode*)sourceNode->getChild(0);
-      ConverterASTNode* child2 = (ConverterASTNode*)sourceNode->getChild(1);
-      ConverterASTNode* divideNode = new ConverterASTNode(AST_DIVIDE);
-      ConverterASTNode* oneNode = new ConverterASTNode(AST_REAL);
-      oneNode->setValue(1.0);
-      List* l = new List();
-      l->add(divideNode);
-      divideNode->addChild(oneNode);
-      divideNode->addChild(child1);
-
-      List* l2 = new List();
-      l2->add(child2);
-      l2->add(divideNode);
-
-      sourceNode->setChildren(l2);
-      sourceNode->setType(AST_POWER);
-      // go down the children and replace root functions
-      this->replaceRoot(child1);
-      this->replaceRoot(child2);
-    }
-  else
-    {
-      // go down to the children and replace root functions
-      unsigned int i;
-      for (i = 0; i < sourceNode->getNumChildren();++i)
-        {
-          this->replaceRoot((ConverterASTNode*)sourceNode->getChild(i));
-        }
-    }
-}
-
 CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlParameter, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   if (sbmlParameter->isSetUnits())
@@ -1869,35 +1752,37 @@ void SBMLImporter::restoreFunctionDB()
     }
 }
 
-void SBMLImporter::replaceTimeNodeNames(CEvaluationNode* node)
+void SBMLImporter::preprocessNode(ConverterASTNode* pNode)
 {
-  if (node)
+  this->replaceCallNodeNames(pNode);
+  this->replaceTimeNodeNames(pNode);
+}
+
+void SBMLImporter::replaceTimeNodeNames(ConverterASTNode* pNode)
+{
+  if (!pNode) return;
+  if (pNode->getType() == AST_NAME_TIME)
     {
-      CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(node);
-      if (pObjectNode)
+      pNode->setName(this->mpCopasiModel->getCN().c_str());
+    }
+  else
+    {
+      // go through all children and replace the time nodes names
+      unsigned int i, iMax = pNode->getNumChildren();
+      for (i = 0;i < iMax;++i)
         {
-          if (pObjectNode->getData() == "<Reference=Time>")
-            {
-              pObjectNode->setData(std::string("<") + this->mpCopasiModel->getCN() + std::string(">"));
-            }
-        }
-      CEvaluationNode* pChildNode = static_cast<CEvaluationNode*>(node->getChild());
-      while (pChildNode)
-        {
-          this->replaceTimeNodeNames(pChildNode);
-          pChildNode = static_cast<CEvaluationNode*>(pChildNode->getSibling());
+          this->replaceTimeNodeNames(dynamic_cast<ConverterASTNode*>(pNode->getChild(i)));
         }
     }
 }
 
-void SBMLImporter::replaceCallNodeNames(CEvaluationNode* node)
+void SBMLImporter::replaceCallNodeNames(ConverterASTNode* pNode)
 {
-  if (node)
+  if (pNode)
     {
-      CEvaluationNodeCall* pCallNode = dynamic_cast<CEvaluationNodeCall*>(node);
-      if (pCallNode)
+      if (pNode->getType() == AST_FUNCTION)
         {
-          std::map<std::string, std::string>::const_iterator pos = this->mFunctionNameMapping.find(pCallNode->getData());
+          std::map<std::string, std::string>::const_iterator pos = this->mFunctionNameMapping.find(pNode->getName());
 
           if (pos == this->mFunctionNameMapping.end())
             {
@@ -1906,14 +1791,14 @@ void SBMLImporter::replaceCallNodeNames(CEvaluationNode* node)
                                              "An undefined function was used in a MathML expression. This could also mean \nthat the SBML model contains delay terms which copasi doesn't support yet.");
             }
           std::string newName = pos->second;
-          pCallNode->setData(newName);
+          pNode->setName(newName.c_str());
           this->mUsedFunctions.insert(newName);
         }
-      CEvaluationNode* pChildNode = static_cast<CEvaluationNode*>(node->getChild());
-      while (pChildNode)
+      // go through all children and also replace the call node names
+      unsigned int i, iMax = pNode->getNumChildren();
+      for (i = 0;i < iMax;++i)
         {
-          this->replaceCallNodeNames(pChildNode);
-          pChildNode = static_cast<CEvaluationNode*>(pChildNode->getSibling());
+          this->replaceCallNodeNames(dynamic_cast<ConverterASTNode*>(pNode->getChild(i)));
         }
     }
 }
@@ -2525,12 +2410,12 @@ bool SBMLImporter::isSimpleFunctionCall(const CEvaluationNode* pRootNode)
   return result;
 }
 
-ASTNode* SBMLImporter::isMultipliedByVolume(const ASTNode* node, const std::string& compartmentSBMLId)
+ConverterASTNode* SBMLImporter::isMultipliedByVolume(const ASTNode* node, const std::string& compartmentSBMLId)
 {
-  ASTNode* result = NULL;
+  ConverterASTNode* result = NULL;
   if (node->getType() == AST_TIMES || node->getType() == AST_DIVIDE)
     {
-      ASTNode* pTmpResultNode = new ConverterASTNode(node->getType());
+      ConverterASTNode* pTmpResultNode = new ConverterASTNode(node->getType());
       unsigned int i, iMax = node->getNumChildren();
       bool found = false;
       for (i = 0; i < iMax;++i)

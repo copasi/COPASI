@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/05/05 12:46:34 $
+   $Author: gauges $
+   $Date: 2006/08/12 13:13:52 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright ï¿½ 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -225,6 +225,7 @@ CEvaluationNode* CEvaluationNodeOperator::createNodeFromASTTree(const ASTNode& n
       break;
     default:
       subType = INVALID;
+      fatalError();
       break;
     }
   CEvaluationNode* convertedNode = new CEvaluationNodeOperator(subType, data);

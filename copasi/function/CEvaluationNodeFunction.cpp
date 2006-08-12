@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:39 $
+   $Author: gauges $
+   $Date: 2006/08/12 13:13:52 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright ï¿½ 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -18,6 +18,8 @@
 #include "CEvaluationTree.h"
 
 #include "sbml/math/ASTNode.h"
+
+#include "sbml/ConverterASTNode.h"
 
 CEvaluationNodeFunction::CEvaluationNodeFunction():
     CEvaluationNode(CEvaluationNode::INVALID, "")
@@ -442,6 +444,18 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
   ASTNodeType_t type = node.getType();
   SubType subType;
   std::string data = "";
+  if (type == AST_FUNCTION_ROOT)
+    {
+      ConverterASTNode tmpNode(node);
+      CEvaluationNode::replaceRoot(&tmpNode);
+      return CEvaluationTree::convertASTNode(tmpNode);
+    }
+  else if (type == AST_FUNCTION_LOG && node.getNumChildren() == 2)
+    {
+      ConverterASTNode tmpNode(node);
+      CEvaluationNode::replaceLog(&tmpNode);
+      return CEvaluationTree::convertASTNode(tmpNode);
+    }
   switch (type)
     {
     case AST_FUNCTION_ABS:
@@ -544,11 +558,6 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
       subType = LOG10;
       data = "log10";
       break;
-      /*
-      case AST_FUNCTION_ROOT:
-          subType=ROOT;
-          break;
-          */
     case AST_FUNCTION_SEC:
       subType = SEC;
       data = "sec";
@@ -584,14 +593,20 @@ CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& n
   // all functions have one child
   // convert child and add the converted node as child
   // to the current node.
-  CEvaluationNodeFunction* convertedNode = new CEvaluationNodeFunction(subType, data);
   if (subType != INVALID)
     {
+      CEvaluationNodeFunction* convertedNode = new CEvaluationNodeFunction(subType, data);
       ASTNode* child = node.getLeftChild();
       CEvaluationNode* convertedChildNode = CEvaluationTree::convertASTNode(*child);
       convertedNode->addChild(convertedChildNode);
+      return convertedNode;
     }
-  return convertedNode;
+  else
+    {
+      // throw an eception
+      fatalError();
+    }
+  return NULL;
 }
 
 ASTNode* CEvaluationNodeFunction::toAST() const

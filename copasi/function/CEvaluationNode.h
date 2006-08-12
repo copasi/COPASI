@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:25 $
+   $Author: gauges $
+   $Date: 2006/08/12 13:13:52 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright ï¿½ 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -21,6 +21,7 @@
 
 class CEvaluationTree;
 class ASTNode;
+class ConverterASTNode;
 
 /**
  * This is the base class for nodes used in an evaluation trees
@@ -87,6 +88,19 @@ class CEvaluationNode : public CCopasiNode< std::string >
      */
     CEvaluationNode(const Type & type,
                     const Data & data);
+
+    /**
+     * Replaces all root nodes with the corresponding power
+     * operator since COPASI does not have the ROOT function.
+     */
+    static void replaceRoot(ConverterASTNode* sourceNode);
+
+    /**
+     * Replaces all LOG10 (AST_FUNCTION_LOG) nodes that have two
+     * children with the quotient of two LOG10 nodes with the base
+     * as the argument for the divisor LOG10 node.
+     */
+    static void replaceLog(ConverterASTNode* sourceNode);
 
   public:
     /**

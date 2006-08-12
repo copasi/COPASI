@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.47 $
+   $Revision: 1.48 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/07/26 12:37:02 $
+   $Date: 2006/08/12 13:13:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,11 +92,6 @@ class SBMLImporter
     CReaction* createCReactionFromReaction(const Reaction* sbmlReaction, const Model* sbmlModel, CModel* cmodel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB);
 
     /**
-     * Replaces SBML user defined functions with the actual funtcion definition.
-    ConverterASTNode* replaceUserDefinedFunctions(ASTNode* node, const Model* model);
-    */
-
-    /**
      * Creates a map of each parameter of the function definition and its
      * corresponding parameter in the function call.
      */
@@ -165,20 +160,27 @@ class SBMLImporter
 
     /**
      * Upon import a function object might change its name due to naming conflicts in the function
-     * database. So after importing all function, all call node data has to be replaced by new data
-     * which represents the new function name.
-     * The same has to be done later on for function call nodes in reaction kinetics.
+     * database. So each ASTNode tree has its call node names replaced
+     * before it will be processed further.
      */
-    void replaceCallNodeNames(CEvaluationNode* node);
+    void replaceCallNodeNames(ConverterASTNode* pNode);
 
     /**
-     * On import the data of object nodes referencing model time is set to
-     * <Reference=Time> since the common name of the model is not accesible at
-     * that time.
-     * The data has to be replaced later on which is done by calling this
-     * function.
+     * The data for a CEvaluationNodeObject needs to have the common
+     * name of the model it refers to as its data. Since this model is
+     * only known via a pointer in the SBMLImporter at the time of
+     * import, all AST_NAME_TIME nodes that are imported need to have
+     * their name replaced by the common name of this model.
      */
-    void replaceTimeNodeNames(CEvaluationNode* node);
+    void replaceTimeNodeNames(ConverterASTNode* pNode);
+
+    /**
+     * In a proeprocessing step each expression tree that is imported,
+     * e.g. for function definitions, rules, event or kinetic laws
+     * is preprocessed to replace some of the nodes data.
+     * See also replaceCallNodeNames and replaceTimeNodeNames.
+     */
+    void preprocessNode(ConverterASTNode* pNode);
 
     CFunction* findCorrespondingFunction(const CFunction* tree, const CReaction* reaction);
 
@@ -212,7 +214,7 @@ class SBMLImporter
      * Checks if a given tree is multiplied by a compartment identifier.
      * If so, a copy of the tree is returned in which the multiplication has been removed.
      */
-    ASTNode* isMultipliedByVolume(const ASTNode* node, const std::string& compartmentSBMLId);
+    ConverterASTNode* isMultipliedByVolume(const ASTNode* node, const std::string& compartmentSBMLId);
 
     CEvaluationNode* variables2objects(const CEvaluationNode* pOrigNode, const std::map<std::string, std::string>& replacementMap);
 
