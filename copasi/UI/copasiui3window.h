@@ -1,16 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/06 03:10:22 $
+   $Author: gauges $
+   $Date: 2006/08/13 17:00:12 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright ï¿½ 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #include <qmainwindow.h>
+#include <qdialog.h>
 #include <qtoolbar.h>
 #include "qvariant.h"
 
@@ -22,6 +23,56 @@ class SliderDialog;
 class CQTrajectoryWidget;
 class SteadyStateWidget;
 class ScanWidget;
+class QPushButton;
+class QLabel;
+class QHBox;
+class QScrollView;
+
+class MessageDialog : public QDialog
+  {
+    Q_OBJECT
+
+  public:
+    MessageDialog(QWidget* parent = NULL);
+    virtual ~MessageDialog();
+
+    static int warning(QWidget * parent,
+                       const QString & caption,
+                       const QString & text,
+                       int button0,
+                       int button1,
+                       int button2 = 0,
+                       int button3 = 0);
+
+  public slots:
+    virtual void reject();
+
+  protected:
+    int mEscapeValue;
+    int mReturnValue;
+    int mButton0_Type;
+    int mButton1_Type;
+    int mButton2_Type;
+    int mButton3_Type;
+    QVBoxLayout* mpMainLayout;
+    QScrollView* mpMessageView;
+    QHBox* mpMessageBox;
+    QLabel* mpIconLabel;
+    QLabel* mpMessageLabel;
+    QHBox* mpButtonBox;
+    QPushButton* mpButton0;
+    QPushButton* mpButton1;
+    QPushButton* mpButton2;
+    QPushButton* mpButton3;
+
+    virtual int setButtonProperties(QPushButton* pButton, int properties);
+
+  protected slots:
+    void slotButton0_clicked();
+    void slotButton1_clicked();
+    void slotButton2_clicked();
+    void slotButton3_clicked();
+  };
 
 class CopasiUI3Window : public QMainWindow
   {
