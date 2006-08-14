@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.139 $
+   $Revision: 1.140 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/14 15:46:37 $
+   $Date: 2006/08/14 17:51:42 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2754,35 +2754,35 @@ void SBMLImporter::importRateRule(const RateRule* rateRule, CModel* copasiModel,
   bool found = false;
   std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
   std::map<CCopasiObject*, SBase*>::iterator endit = copasi2sbmlmap.end();
-  while (it != endit)
+  Compartment* pC;
+  Species* pS;
+  Parameter* pP;
+  while (it != endit && !found)
     {
       switch (it->second->getTypeCode())
         {
         case SBML_COMPARTMENT:
-          Compartment* pC = dynamic_cast<Compartment*>(it->second);
+          pC = dynamic_cast<Compartment*>(it->second);
           if (pC->getId() == sbmlId)
             {
               type = SBML_COMPARTMENT;
               found = true;
-              break;
             }
           break;
         case SBML_SPECIES:
-          Species* pS = dynamic_cast<Species*>(it->second);
+          pS = dynamic_cast<Species*>(it->second);
           if (pS->getId() == sbmlId)
             {
               type = SBML_SPECIES;
               found = true;
-              break;
             }
           break;
         case SBML_PARAMETER:
-          Parameter* pR = dynamic_cast<Parameter*>(it->second);
-          if (pR->getId() == sbmlId)
+          pP = dynamic_cast<Parameter*>(it->second);
+          if (pP->getId() == sbmlId)
             {
               type = SBML_PARAMETER;
               found = true;
-              break;
             }
           break;
         default:
@@ -2792,19 +2792,20 @@ void SBMLImporter::importRateRule(const RateRule* rateRule, CModel* copasiModel,
     }
   if (found)
     {
+      CModelValue* pMV;
       switch (type)
         {
         case SBML_PARAMETER:
           // check if it really is a global parameter
-          CModelValue* pMV = dynamic_cast<CModelValue*>(it->first);
+          pMV = dynamic_cast<CModelValue*>(it->first);
           if (!pMV)
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 33, "RateRule", sbmlId.c_str());
             }
           // make sure the parameter is not declared constant
-          Parameter* pParam = dynamic_cast<Parameter*>(it->second);
-          if (!pParam) fatalError();
-          if (pParam->getConstant())
+          pP = dynamic_cast<Parameter*>(it->second);
+          if (!pP) fatalError();
+          if (pP->getConstant())
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "RateRule", "Parameter" , sbmlId.c_str());
             }
@@ -2828,37 +2829,37 @@ void SBMLImporter::importAssignmentRule(const AssignmentRule* assignmentRule, CM
   // find out to what kind of object the id belongs
   SBMLTypeCode_t type = SBML_UNKNOWN;
   bool found = false;
+  Compartment* pC;
+  Species* pS;
+  Parameter* pP;
   std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
   std::map<CCopasiObject*, SBase*>::iterator endit = copasi2sbmlmap.end();
-  while (it != endit)
+  while (it != endit && !found)
     {
       switch (it->second->getTypeCode())
         {
         case SBML_COMPARTMENT:
-          Compartment* pC = dynamic_cast<Compartment*>(it->second);
+          pC = dynamic_cast<Compartment*>(it->second);
           if (pC->getId() == sbmlId)
             {
               type = SBML_COMPARTMENT;
               found = true;
-              break;
             }
           break;
         case SBML_SPECIES:
-          Species* pS = dynamic_cast<Species*>(it->second);
+          pS = dynamic_cast<Species*>(it->second);
           if (pS->getId() == sbmlId)
             {
               type = SBML_SPECIES;
               found = true;
-              break;
             }
           break;
         case SBML_PARAMETER:
-          Parameter* pR = dynamic_cast<Parameter*>(it->second);
-          if (pR->getId() == sbmlId)
+          pP = dynamic_cast<Parameter*>(it->second);
+          if (pP->getId() == sbmlId)
             {
               type = SBML_PARAMETER;
               found = true;
-              break;
             }
           break;
         default:
@@ -2868,19 +2869,20 @@ void SBMLImporter::importAssignmentRule(const AssignmentRule* assignmentRule, CM
     }
   if (found)
     {
+      CModelValue* pMV;
       switch (type)
         {
         case SBML_PARAMETER:
           // check if it really is a global parameter
-          CModelValue* pMV = dynamic_cast<CModelValue*>(it->first);
+          pMV = dynamic_cast<CModelValue*>(it->first);
           if (!pMV)
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 33, "AssigmentRule", sbmlId.c_str());
             }
           // make sure the parameter is not declared constant
-          Parameter* pParam = dynamic_cast<Parameter*>(it->second);
-          if (!pParam) fatalError();
-          if (pParam->getConstant())
+          pP = dynamic_cast<Parameter*>(it->second);
+          if (!pP) fatalError();
+          if (pP->getConstant())
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "AssignmentRule", "Parameter", sbmlId.c_str());
             }
