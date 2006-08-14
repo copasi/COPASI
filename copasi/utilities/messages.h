@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/14 13:05:57 $
+   $Date: 2006/08/14 15:18:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -126,7 +126,7 @@ const MESSAGES Messages[] =
     // SBML
     {MCSBML + 1, "SBML (1): SBML Level2 Version1 does not support initial times different from 0. This information will be lost in the exported file."},
     {MCSBML + 2, "SBML (2): The SBML document contains no model."},
-    {MCSBML + 3, "SBML (3): The SBML document contains rules that were ignored."},
+    {MCSBML + 3, "SBML (3): The SBML document contains unsupported rules that were ignored.\nOnly rate and assignment rules for global parameters are currently supported."},
     {MCSBML + 4, "SBML (4): The SBML document contains events that were ignored."},
     {MCSBML + 5, "SBML (5): Compartment %s referenced by species %s does not exist."},
     {MCSBML + 6, "SBML (6): Annotations in SBase element of SBML Level 1 files, this is invalid and has been ignored."},
@@ -154,6 +154,11 @@ const MESSAGES Messages[] =
     {MCSBML + 28, "SBML (28): Error in function definition with id '%s'."},
     {MCSBML + 29, "SBML (29): Unable to handle reactions with the 'fast' flag set.\nThe flag has been set to false."},
     {MCSBML + 30, "SBML (30): Can't handle units of type item with scale set to 1.\n If this file was created with COPASI RC1 or older please see the COPASI FAQ."},
+    {MCSBML + 31, "SBML (31): %s are currently only supported for global parameters."},
+    {MCSBML + 32, "SBML (32): Error in %s variable id '%s' does not specify a Compartment, Species or global Parameter."},
+    {MCSBML + 33, "SBML (33): Error: %s is not allowed for local parameter '%s'."},
+    {MCSBML + 34, "SBML (34): Error: %s is not allowed for local constant %s identified by id '%s'."},
+    {MCSBML + 35, "SBML (35): Error: Only one AssignmentRule or RateRule is allowed for id '%s'."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "

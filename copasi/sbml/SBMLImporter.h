@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/12 13:13:51 $
+   $Date: 2006/08/14 15:18:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,7 @@ class Parameter;
 class FunctionDefinition;
 class SBase;
 class CProcessReport;
+class Rule;
 
 class SBMLImporter
   {
@@ -43,6 +44,9 @@ class SBMLImporter
     std::map<std::string, CMetab*> speciesMap;
     CFunctionDB* functionDB;
     bool mIncompleteModel;
+    bool mUnsupportedRuleFound;
+    bool mUnsupportedRateRuleFound;
+    bool mUnsupportedAssignmentRuleFound;
     unsigned int mLevel;
     std::map<CEvaluationTree*, std::string> sbmlIdMap;
     std::set<std::string> mUsedFunctions;
@@ -79,6 +83,36 @@ class SBMLImporter
      * Creates and returns a Copasi CMetab from the given SBML Species object.
      */
     CMetab* createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    /**
+     * Checks if no id is used in more than one Assignment and RateRule.
+     */
+    void areRulesUnique(const Model* copasiMode);
+
+    /**
+     * Imports the given Rule if Copasi supports this kind of Rule, otherwise a warning is created.
+     */
+    void importSBMLRule(const Rule* sbmlRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    /**
+     * Imports the given AssignmentRule which is for a global parameter.
+     */
+    void importAssignmentRuleForParameter(const AssignmentRule* assignmentRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    /**
+     * Imports the given RateRule which is for a global parameter.
+     */
+    void importRateRuleForParameter(const RateRule* rateRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    /**
+     * Imports the given RateRule if Copasi supports this kind of RateRule, otherwise a warning is created.
+     */
+    void importRateRule(const RateRule* rateRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    /**
+     * Imports the given AssignmentRule if Copasi supports this kind of AssignmentRule, otherwise a warning is created.
+     */
+    void importAssignmentRule(const AssignmentRule* assignmentRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Creates and returns a Copasi CModelValue from the given SBML Parameter object.
