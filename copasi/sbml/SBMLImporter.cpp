@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.140 $
+   $Revision: 1.141 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/14 17:51:42 $
+   $Date: 2006/08/14 18:29:53 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2757,7 +2757,7 @@ void SBMLImporter::importRateRule(const RateRule* rateRule, CModel* copasiModel,
   Compartment* pC;
   Species* pS;
   Parameter* pP;
-  while (it != endit && !found)
+  while (it != endit)
     {
       switch (it->second->getTypeCode())
         {
@@ -2781,6 +2781,11 @@ void SBMLImporter::importRateRule(const RateRule* rateRule, CModel* copasiModel,
           pP = dynamic_cast<Parameter*>(it->second);
           if (pP->getId() == sbmlId)
             {
+              // make sure the parameter is not declared constant
+              if (pP->getConstant())
+                {
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "RateRule", "Parameter" , sbmlId.c_str());
+                }
               type = SBML_PARAMETER;
               found = true;
             }
@@ -2788,6 +2793,7 @@ void SBMLImporter::importRateRule(const RateRule* rateRule, CModel* copasiModel,
         default:
           break;
         }
+      if (found) break;
       ++it;
     }
   if (found)
@@ -2801,13 +2807,6 @@ void SBMLImporter::importRateRule(const RateRule* rateRule, CModel* copasiModel,
           if (!pMV)
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 33, "RateRule", sbmlId.c_str());
-            }
-          // make sure the parameter is not declared constant
-          pP = dynamic_cast<Parameter*>(it->second);
-          if (!pP) fatalError();
-          if (pP->getConstant())
-            {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "RateRule", "Parameter" , sbmlId.c_str());
             }
           this->importRateRuleForParameter(rateRule, copasiModel, copasi2sbmlmap);
           break;
@@ -2832,9 +2831,10 @@ void SBMLImporter::importAssignmentRule(const AssignmentRule* assignmentRule, CM
   Compartment* pC;
   Species* pS;
   Parameter* pP;
+  CCopasiObject* pObject = NULL;
   std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
   std::map<CCopasiObject*, SBase*>::iterator endit = copasi2sbmlmap.end();
-  while (it != endit && !found)
+  while (it != endit)
     {
       switch (it->second->getTypeCode())
         {
@@ -2858,13 +2858,20 @@ void SBMLImporter::importAssignmentRule(const AssignmentRule* assignmentRule, CM
           pP = dynamic_cast<Parameter*>(it->second);
           if (pP->getId() == sbmlId)
             {
+              // make sure the parameter is not declared constant
+              if (pP->getConstant())
+                {
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "AssignmentRule", "Parameter", sbmlId.c_str());
+                }
               type = SBML_PARAMETER;
+              pObject = it->first;
               found = true;
             }
           break;
         default:
           break;
         }
+      if (found) break;
       ++it;
     }
   if (found)
@@ -2874,17 +2881,10 @@ void SBMLImporter::importAssignmentRule(const AssignmentRule* assignmentRule, CM
         {
         case SBML_PARAMETER:
           // check if it really is a global parameter
-          pMV = dynamic_cast<CModelValue*>(it->first);
+          pMV = dynamic_cast<CModelValue*>(pObject);
           if (!pMV)
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 33, "AssigmentRule", sbmlId.c_str());
-            }
-          // make sure the parameter is not declared constant
-          pP = dynamic_cast<Parameter*>(it->second);
-          if (!pP) fatalError();
-          if (pP->getConstant())
-            {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "AssignmentRule", "Parameter", sbmlId.c_str());
             }
           this->importAssignmentRuleForParameter(assignmentRule, copasiModel, copasi2sbmlmap);
           break;
