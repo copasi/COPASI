@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:20:18 $
+   $Author: gauges $
+   $Date: 2006/08/14 13:05:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -141,7 +141,7 @@ const MESSAGES Messages[] =
     {MCSBML + 15, "SBML (15): Could not find function with id '%s'."},
     {MCSBML + 16, "SBML (16): Loop found in function. That means a function calls itself either directly or indirectly."},
     {MCSBML + 17, "SBML (17): Single compartment reaction found where the kinetic law does not include a multiplication by the volume."},
-    {MCSBML + 18, "SBML (18): Support for 'hasOnlySubstanceUnit' flag on species %s is experimental."},
+    {MCSBML + 18, "SBML (18): Support for 'hasOnlySubstanceUnit' flag on species is experimental. Species in compartments of dimension 0 are also considered to have this flag set."},
     {MCSBML + 19, "SBML (19): spatialSizeUnits on species %s ignored."},
     {MCSBML + 20, "SBML (20): Setting an initial concentration on species %s which has the 'hasOnlySubstanceUnits' flag set is not allowed."},
     {MCSBML + 21, "SBML (21): Setting an initial concentration on species '%s' which is in a compartment with spatial dimensions 0 is not allowed."},

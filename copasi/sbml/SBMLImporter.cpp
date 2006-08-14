@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.136 $
+   $Revision: 1.137 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/12 13:13:51 $
+   $Date: 2006/08/14 13:05:57 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -309,6 +309,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->removeUnusedFunctions(pTmpFunctionDB);
 
   // unset the hasOnlySubstanceUnits flag on all such species
+  if (!this->mSubstanceOnlySpecies.empty())
+    {
+      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 18);
+    }
   std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
   std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
   while (it != endIt)
@@ -543,7 +547,6 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
   Compartment* pSBMLCompartment = (Compartment*)it->second;
   if (sbmlSpecies->getHasOnlySubstanceUnits() == true)
     {
-      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 18, sbmlSpecies->getId().c_str());
       this->mSubstanceOnlySpecies.insert(std::make_pair(const_cast<Species*>(sbmlSpecies), pSBMLCompartment));
     }
   std::string name = sbmlSpecies->getName();
