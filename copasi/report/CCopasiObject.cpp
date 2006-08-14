@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/07 19:27:10 $
+   $Date: 2006/08/14 16:55:26 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,6 @@
 
 #include <sstream>
 #include <algorithm>
-#include <list>
 
 #include "copasi.h"
 #include "CCopasiObjectName.h"
@@ -299,24 +298,11 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
     }
 
   // Create a properly sorted list.
-  std::list< const CCopasiObject * > SortedList;
+  std::list< const CCopasiObject * > SortedList =
+    sortObjectsByDependency(DependencySet.begin(), DependencySet.end());
+
   std::list< const CCopasiObject * >::iterator itList;
   std::list< const CCopasiObject * >::iterator endList;
-
-  itSet = DependencySet.begin();
-  endSet = DependencySet.end();
-  for (; itSet != endSet; ++itSet)
-    {
-      if (Ignore.count(*itSet) != 0) continue;
-
-      itList = SortedList.begin();
-      endList = SortedList.end();
-
-      for (; itList != endList; ++itList)
-        if (compare(*itSet, *itList)) break;
-
-      SortedList.insert(itList, *itSet);
-    }
 
   // Build the ignore list if it is empty.
   if (Ignore.size() == 0)

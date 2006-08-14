@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/07 19:27:10 $
+   $Date: 2006/08/14 16:55:26 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <list>
 
 class CCopasiObjectName;
 class CCopasiContainer;
@@ -405,5 +406,34 @@ createMatrixReference(const std::string & name,
                       CType & reference,
                       const unsigned C_INT32 & flag = 0)
 {return new CCopasiMatrixReference< CType >(name, pParent, reference, flag);}
+
+/**
+ * Sort the CCopasiObjects in the interval [begin, end) according to
+ * their dependencies
+ * @param RandomAccessIterator begin
+ * @param RandomAccessIterator end
+ * @return std::list< const CCopasiObject * >
+ */
+template <typename RandomAccessIterator>
+std::list< const CCopasiObject * > sortObjectsByDependency(RandomAccessIterator begin,
+    RandomAccessIterator end)
+{
+  std::list< const CCopasiObject * > SortedList;
+  std::list< const CCopasiObject * >::iterator itList;
+  std::list< const CCopasiObject * >::iterator endList;
+
+  for (; begin != end; ++begin)
+    {
+      itList = SortedList.begin();
+      endList = SortedList.end();
+
+      for (; itList != endList; ++itList)
+        if (CCopasiObject::compare(*begin, *itList)) break;
+
+      SortedList.insert(itList, *begin);
+    }
+
+  return SortedList;
+}
 
 #endif // COPASI_CCopasiObject
