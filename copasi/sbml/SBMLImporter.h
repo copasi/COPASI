@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.50 $
+   $Revision: 1.51 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/14 15:46:37 $
+   $Date: 2006/08/14 20:56:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@ class SBMLImporter
     bool mUnsupportedRateRuleFound;
     bool mUnsupportedAssignmentRuleFound;
     unsigned int mLevel;
+    unsigned int mVersion;
     std::map<CEvaluationTree*, std::string> sbmlIdMap;
     std::set<std::string> mUsedFunctions;
     CModel* mpCopasiModel;
@@ -97,12 +98,12 @@ class SBMLImporter
     /**
      * Imports the given AssignmentRule which is for a global parameter.
      */
-    void importAssignmentRuleForParameter(const AssignmentRule* assignmentRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void importAssignmentRuleForParameter(const AssignmentRule* assignmentRule, CModelValue* pMV, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Imports the given RateRule which is for a global parameter.
      */
-    void importRateRuleForParameter(const RateRule* rateRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void importRateRuleForParameter(const RateRule* rateRule, CModelValue* pMV, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Imports the given RateRule if Copasi supports this kind of RateRule, otherwise a warning is created.
@@ -113,6 +114,20 @@ class SBMLImporter
      * Imports the given AssignmentRule if Copasi supports this kind of AssignmentRule, otherwise a warning is created.
      */
     void importAssignmentRule(const AssignmentRule* assignmentRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+
+    /**
+     * Recurses an ASTNode tree and gets all SBML Ids in the tree.
+     * The ids are stored in the given set.
+     */
+    void getIdsFromNode(const ASTNode* pNode, std::set<std::string>& idSet);
+
+    /**
+     * Checks the expression for a give rate or assignment rule for
+     * consistency. This basically means it checks that no id present in the
+     * expression is the target for one of the following rate or assignment
+     * rules.
+     */
+    void checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Creates and returns a Copasi CModelValue from the given SBML Parameter object.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.141 $
+   $Revision: 1.142 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/14 18:29:53 $
+   $Date: 2006/08/14 20:56:09 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1327,6 +1327,7 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument *&
       delete reader;
       pSBMLDocument = sbmlDoc;
       this->mLevel = pSBMLDocument->getLevel();
+      this->mVersion = pSBMLDocument->getVersion();
       if (mLevel == 1)
         {
           unsigned int i, iMax = pSBMLDocument->getModel()->getNumCompartments();
@@ -2808,7 +2809,7 @@ void SBMLImporter::importRateRule(const RateRule* rateRule, CModel* copasiModel,
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 33, "RateRule", sbmlId.c_str());
             }
-          this->importRateRuleForParameter(rateRule, copasiModel, copasi2sbmlmap);
+          this->importRateRuleForParameter(rateRule, pMV, copasiModel, copasi2sbmlmap);
           break;
         default:
           mUnsupportedRateRuleFound = true;
@@ -2886,7 +2887,7 @@ void SBMLImporter::importAssignmentRule(const AssignmentRule* assignmentRule, CM
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 33, "AssigmentRule", sbmlId.c_str());
             }
-          this->importAssignmentRuleForParameter(assignmentRule, copasiModel, copasi2sbmlmap);
+          this->importAssignmentRuleForParameter(assignmentRule, pMV, copasiModel, copasi2sbmlmap);
           break;
         default:
           mUnsupportedAssignmentRuleFound = true;
@@ -2899,12 +2900,6 @@ void SBMLImporter::importAssignmentRule(const AssignmentRule* assignmentRule, CM
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 32, "AssignmentRule" , sbmlId.c_str());
     }
 }
-
-void SBMLImporter::importRateRuleForParameter(const RateRule* rateRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
-{}
-
-void SBMLImporter::importAssignmentRuleForParameter(const AssignmentRule* assignmentRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
-{}
 
 void SBMLImporter::areRulesUnique(const Model* sbmlModel)
 {
@@ -2938,5 +2933,79 @@ void SBMLImporter::areRulesUnique(const Model* sbmlModel)
               break;
             }
         }
+    }
+}
+
+void SBMLImporter::importRateRuleForParameter(const RateRule* rateRule, CModelValue* pMV, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  if (!rateRule->isSetMath())
+    {
+      rateRule->setMathFromFormula();
+    }
+  this->checkRuleMathConsistency(rateRule, copasi2sbmlmap);
+  ConverterASTNode tmpNode(*rateRule->getMath());
+  this->preprocessNode(&tmpNode);
+}
+
+void SBMLImporter::importAssignmentRuleForParameter(const AssignmentRule* assignmentRule, CModelValue* pMV, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{}
+
+void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  // only check if Level2 Version1 ?????
+  //if(this->mLevel==2 && this->mVersion==1)
+  {
+    // check if no nodes with ids of objects are used that are set in a later
+    // rule
+    std::set<std::string> idSet;
+    if (!pRule->isSetMath() && pRule->isSetFormula()) pRule->setMathFromFormula();
+    const ASTNode* pNode = pRule->getMath();
+    this->getIdsFromNode(pNode, idSet);
+    Model* sbmlModel = dynamic_cast<Model*>(copasi2sbmlmap[mpCopasiModel]);
+    if (!sbmlModel) fatalError();
+    unsigned int i, iMax = sbmlModel->getNumRules();
+    for (i = 0;i < iMax;++i)
+      {
+        if (sbmlModel->getRule(i) == pRule)
+          {
+            break;
+          }
+      }
+    Rule* pR;
+    SBMLTypeCode_t type;
+    while (i < iMax)
+      {
+        pR = sbmlModel->getRule(i);
+        type = pR->getTypeCode();
+        if (type == SBML_RATE_RULE)
+          {
+            if (std::find(idSet.begin(), idSet.end(), dynamic_cast<RateRule*>(pR)->getVariable()) != idSet.end())
+              {
+                CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 37, dynamic_cast<RateRule*>(pR)->getVariable().c_str());
+              }
+          }
+        else if (type == SBML_ASSIGNMENT_RULE)
+          {
+            if (std::find(idSet.begin(), idSet.end(), dynamic_cast<AssignmentRule*>(pR)->getVariable()) != idSet.end())
+              {
+                CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 37, dynamic_cast<AssignmentRule*>(pR)->getVariable().c_str());
+              }
+          }
+        ++i;
+      }
+  }
+}
+
+void SBMLImporter::getIdsFromNode(const ASTNode* pNode, std::set<std::string>& idSet)
+{
+  if (!pNode) return;
+  if (pNode->getType() == AST_NAME)
+    {
+      idSet.insert(pNode->getName());
+    }
+  unsigned int i, iMax = pNode->getNumChildren();
+  for (i = 0;i < iMax;++i)
+    {
+      this->getIdsFromNode(pNode->getChild(i), idSet);
     }
 }
