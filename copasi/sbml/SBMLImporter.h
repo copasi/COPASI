@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/14 15:18:57 $
+   $Date: 2006/08/14 15:46:37 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -207,6 +207,12 @@ class SBMLImporter
      * their name replaced by the common name of this model.
      */
     void replaceTimeNodeNames(ConverterASTNode* pNode);
+
+    /**
+     * COPASI can not handle the delay function yet, so if it is used in some expression, we
+     * have to abort reading the file.
+     */
+    void isDelayFunctionUsed(ConverterASTNode* pNode);
 
     /**
      * In a proeprocessing step each expression tree that is imported,

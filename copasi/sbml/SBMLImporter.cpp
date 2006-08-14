@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.138 $
+   $Revision: 1.139 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/14 15:18:57 $
+   $Date: 2006/08/14 15:46:37 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1798,8 +1798,29 @@ void SBMLImporter::restoreFunctionDB()
 
 void SBMLImporter::preprocessNode(ConverterASTNode* pNode)
 {
+  // this function goes through the tree three times.
+  // this can probably be handled more intelligently
+  this->isDelayFunctionUsed(pNode);
   this->replaceCallNodeNames(pNode);
   this->replaceTimeNodeNames(pNode);
+}
+
+void SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pNode)
+{
+  if (!pNode) return;
+  if (pNode->getType() == AST_FUNCTION_DELAY)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 36);
+    }
+  else
+    {
+      // go through all children and replace the time nodes names
+      unsigned int i, iMax = pNode->getNumChildren();
+      for (i = 0;i < iMax;++i)
+        {
+          this->isDelayFunctionUsed(dynamic_cast<ConverterASTNode*>(pNode->getChild(i)));
+        }
+    }
 }
 
 void SBMLImporter::replaceTimeNodeNames(ConverterASTNode* pNode)

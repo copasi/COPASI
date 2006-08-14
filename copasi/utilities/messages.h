@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/14 15:18:57 $
+   $Date: 2006/08/14 15:46:37 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -159,6 +159,7 @@ const MESSAGES Messages[] =
     {MCSBML + 33, "SBML (33): Error: %s is not allowed for local parameter '%s'."},
     {MCSBML + 34, "SBML (34): Error: %s is not allowed for local constant %s identified by id '%s'."},
     {MCSBML + 35, "SBML (35): Error: Only one AssignmentRule or RateRule is allowed for id '%s'."},
+    {MCSBML + 36, "SBML (36): COPASI can not handle models that use the delay function."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
