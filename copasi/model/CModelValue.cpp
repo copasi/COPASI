@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/11 21:09:15 $
+   $Author: gauges $
+   $Date: 2006/08/15 13:39:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,13 +55,13 @@ CModelEntity::CModelEntity(const std::string & name,
                            const unsigned C_INT32 & flag):
     CCopasiContainer(name, pParent, type, (flag | CCopasiObject::Container | CCopasiObject::ValueDbl | CCopasiObject::ModelEntity)),
     mKey(""),
-    mpValueAccess(NULL),
     mpValueData(NULL),
+    mpValueAccess(NULL),
     mpIValue(NULL),
     mRate(0.0),
-    mStatus(FIXED),
     mpExpression(NULL),
     mpInitialExpression(NULL),
+    mStatus(FIXED),
     mUsed(false),
     mpModel(NULL)
 {
@@ -77,13 +77,13 @@ CModelEntity::CModelEntity(const CModelEntity & src,
                            const CCopasiContainer * pParent):
     CCopasiContainer(src, pParent),
     mKey(""),
-    mpValueAccess(NULL),
     mpValueData(NULL),
+    mpValueAccess(NULL),
     mpIValue(NULL),
     mRate(src.mRate),
-    mStatus(FIXED),
     mpExpression(new CExpression(*src.mpExpression)),
     mpInitialExpression(new CExpression(*src.mpInitialExpression)),
+    mStatus(FIXED),
     mUsed(false),
     mpModel(NULL)
 {
@@ -169,6 +169,19 @@ std::string CModelEntity::getExpression() const
 
     return mpExpression->getInfix();
   }
+
+CExpression* CModelEntity::getExpressionPtr()
+{
+  return mpExpression;
+}
+
+bool CModelEntity::setExpressionPtr(CExpression* pExpression)
+{
+  if (isFixed()) return false;
+  if (mpExpression) pdelete(mpExpression);
+  mpExpression = pExpression;
+  return true;
+}
 
 bool CModelEntity::setInitialExpression(const std::string & expression)
 {

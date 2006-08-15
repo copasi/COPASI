@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/11 16:43:21 $
+   $Author: gauges $
+   $Date: 2006/08/15 13:39:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,7 @@ class CModelEntity : public CCopasiContainer
       FIXED = 0,          //the entity is constant (for metabs even if they are part of a reaction)
       ASSIGNMENT,         //the entity is changed by an assignment rule
       REACTIONS,          //applies only for metabs, the metab concentration is changed by reactions
-      //      DEPENDENT,     //applies only for metabs, the metab concentration is determined by conservation rules
+      //      DEPENDENT,    //applies only for metabs, the metab concentration is determined by conservation rules
       //      UNUSED,
       ODE,                //the entity is changed by an ordinary differential equation
       TIME
@@ -166,6 +166,19 @@ class CModelEntity : public CCopasiContainer
     void setInitialValuePtr(C_FLOAT64 * pInitialValue);
     void setValuePtr(C_FLOAT64 * pValue);
     virtual bool setObjectParent(const CCopasiContainer * pParent);
+
+    /**
+     * Set the expression for non FIXED model values
+     * @param CExpression*
+     * @return bool success
+     */
+    bool setExpressionPtr(CExpression* pExpression);
+
+    /**
+     * Retrieve the pointer to the expression for non FIXED model values.
+     * @return CExpression*
+     */
+    CExpression* getExpressionPtr();
 
     /**
      * Set the expression for non FIXED model values
@@ -297,9 +310,73 @@ Table of possible CModelEntity objects with different Status
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   current status        corresponding sbml object
 -------------------------------------------------------------------------------------------------
 CMetab:                                       Species
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -371,7 +448,71 @@ TIME                    -
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CCompartment:                                 Compartment
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -443,7 +584,71 @@ TIME                    -
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CModelValue:                                  Parameter
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -515,7 +720,71 @@ TIME                    -
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CModel:                                       implicitly represented in sbml file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
