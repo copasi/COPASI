@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.275 $
+   $Revision: 1.276 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/11 21:41:24 $
+   $Date: 2006/08/15 14:29:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -699,10 +699,10 @@ void CModel::buildL(const CMatrix< C_FLOAT64 > & LU)
   DebugFile << R << std::endl;
 #endif
 
-  mL.resize(getNumDependentMetabs(), getNumIndependentMetabs());
+  mL.resize(mNumMetabolitesReaction - mNumMetabolitesIndependent, mNumMetabolitesIndependent);
 
-  imin = getNumIndependentMetabs(), imax = getNumVariableMetabs();
-  jmax = getNumIndependentMetabs();
+  imin = mNumMetabolitesIndependent, imax = getNumVariableMetabs();
+  jmax = mNumMetabolitesIndependent;
 
   // Construct L_0
   for (i = imin; i < imax; i++)
