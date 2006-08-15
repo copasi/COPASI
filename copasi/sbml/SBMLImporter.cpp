@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.145 $
+   $Revision: 1.146 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/15 14:23:15 $
+   $Date: 2006/08/15 20:41:21 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,6 @@
 #include <sstream>
 #include <map>
 #include <limits>
-#include <algorithm>
 
 #include "mathematics.h"
 
@@ -2970,14 +2969,14 @@ void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiO
         type = pR->getTypeCode();
         if (type == SBML_RATE_RULE)
           {
-            if (std::find(idSet.begin(), idSet.end(), dynamic_cast<RateRule*>(pR)->getVariable()) != idSet.end())
+            if (idSet.find(dynamic_cast<RateRule*>(pR)->getVariable()) != idSet.end())
               {
                 CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 37, dynamic_cast<RateRule*>(pR)->getVariable().c_str());
               }
           }
         else if (type == SBML_ASSIGNMENT_RULE)
           {
-            if (std::find(idSet.begin(), idSet.end(), dynamic_cast<AssignmentRule*>(pR)->getVariable()) != idSet.end())
+            if (idSet.find(dynamic_cast<AssignmentRule*>(pR)->getVariable()) != idSet.end())
               {
                 CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 37, dynamic_cast<AssignmentRule*>(pR)->getVariable().c_str());
               }
