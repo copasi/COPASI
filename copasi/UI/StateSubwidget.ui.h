@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/11 21:42:06 $
+   $Date: 2006/08/15 20:17:01 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,6 +99,28 @@ bool StateSubwidget::loadReactions(const CModel * model)
       tableFlux->setText(i, 3, FROM_UTF8(CChemEqInterface::getChemEqString(model, *reacs[i], false)));
     }
   return true;
+}
+
+void StateSubwidget::loadModelValues(const CModel * model)
+{
+
+  CCopasiVectorN< CModelValue >::const_iterator it = model->getModelValues().begin();
+  CCopasiVectorN< CModelValue >::const_iterator end = model->getModelValues().end();
+  C_INT32 i = 0;
+
+  mpModelValueTable->setNumRows(model->getModelValues().size());
+  for (; it != end; ++it)
+    if ((*it)->isUsed())
+      {
+        mpModelValueTable->setText(i, 0, FROM_UTF8((*it)->getObjectName()));
+        mpModelValueTable->setText(i, 1, FROM_UTF8(CModelEntity::StatusName[(*it)->getStatus()]));
+        mpModelValueTable->setText(i, 2, QString::number((*it)->getValue()));
+        mpModelValueTable->setText(i, 3, QString::number((*it)->getRate()));
+        i++;
+      }
+
+  mpModelValueTable->setNumRows(i);
+  return;
 }
 
 void StateSubwidget::loadJacobian(const CSteadyStateTask * task)
@@ -266,6 +288,8 @@ bool StateSubwidget::loadAll(const CSteadyStateTask * task)
 
   if (!loadMetabolites(pModel)) return false;
   if (!loadReactions(pModel)) return false;
+
+  loadModelValues(pModel);
 
   const CSteadyStateProblem* pProblem =
     dynamic_cast<const CSteadyStateProblem *>(task->getProblem());

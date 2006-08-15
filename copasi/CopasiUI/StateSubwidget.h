@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Date: 2006/08/15 20:17:01 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form interface generated from reading ui file 'StateSubwidget.ui'
  **
  ** Created: Thu Feb 23 13:39:08 2006
- **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.10 2006/04/27 01:27:46 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: StateSubwidget.h,v 1.11 2006/08/15 20:17:01 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -53,6 +53,8 @@ class StateSubwidget : public QWidget
     QTable* concentrationsTable;
     QWidget* tab_2;
     QTable* numbersTable;
+    QWidget* mpModelValuePage;
+    QTable* mpModelValueTable;
     QWidget* TabPage_2;
     QTable* tableFlux;
     QWidget* TabPage_3;
@@ -78,6 +80,7 @@ class StateSubwidget : public QWidget
 
   public slots:
     virtual void loadJacobian(const CSteadyStateTask * task);
+    virtual void loadModelValues(const CModel *);
     virtual void showUnits();
 
   protected:
@@ -85,6 +88,7 @@ class StateSubwidget : public QWidget
     QVBoxLayout* TabPageLayout;
     QVBoxLayout* tabLayout;
     QVBoxLayout* tabLayout_2;
+    QVBoxLayout* mpModelValueLayout;
     QVBoxLayout* TabPageLayout_2;
     QVBoxLayout* TabPageLayout_3;
     QGridLayout* layoutJacobian;

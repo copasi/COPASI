@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Date: 2006/08/15 20:17:01 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form implementation generated from reading ui file 'StateSubwidget.ui'
  **
  ** Created: Thu Feb 23 13:39:08 2006
- **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.10 2006/04/27 01:27:46 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.11 2006/08/15 20:17:01 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -93,6 +93,15 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   numbersTable->setReadOnly(TRUE);
   tabLayout_2->addWidget(numbersTable);
   tabWidget->insertTab(tab_2, QString(""));
+
+  mpModelValuePage = new QWidget(tabWidget, "ModelValuePage");
+  mpModelValueLayout = new QVBoxLayout(mpModelValuePage, 11, 6, "tabLayout_2");
+  mpModelValueTable = new QTable(mpModelValuePage, "ModelValuetable");
+  mpModelValueTable->setNumCols(4);
+  mpModelValueTable->setNumRows(3);
+
+  mpModelValueLayout->addWidget(mpModelValueTable);
+  tabWidget->insertTab(mpModelValuePage, QString(""));
 
   TabPage_2 = new QWidget(tabWidget, "TabPage_2");
   TabPageLayout_2 = new QVBoxLayout(TabPage_2, 11, 6, "TabPageLayout_2");
@@ -243,6 +252,11 @@ void StateSubwidget::languageChange()
   numbersTable->horizontalHeader()->setLabel(2, tr("Number rate"));
   numbersTable->horizontalHeader()->setLabel(3, tr("Transition Time"));
   tabWidget->changeTab(tab_2, tr("Particle numbers"));
+  mpModelValueTable->horizontalHeader()->setLabel(0, tr("Name"));
+  mpModelValueTable->horizontalHeader()->setLabel(1, tr("Type"));
+  mpModelValueTable->horizontalHeader()->setLabel(2, tr("Value"));
+  mpModelValueTable->horizontalHeader()->setLabel(3, tr("Rate"));
+  tabWidget->changeTab(mpModelValuePage, tr("Model Quantities"));
   tableFlux->horizontalHeader()->setLabel(0, tr("Reaction name"));
   tableFlux->horizontalHeader()->setLabel(1, tr("Flux"));
   tableFlux->horizontalHeader()->setLabel(2, tr("Particle flux"));
