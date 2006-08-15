@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/09 21:07:19 $
+   $Date: 2006/08/15 15:23:36 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -596,11 +596,13 @@ void CNewtonMethod::calculateJacobianX(const C_FLOAT64 & oldMaxRate)
 
 bool CNewtonMethod::allPositive()
 {
+  // We need to check that all metabolites have positive particle numbers
+  // with respect to the given resolution.
   C_FLOAT64 ParticleResolution =
     - mResolution * mpModel->getQuantity2NumberFactor();
 
-  const C_FLOAT64 * pIt = mpSteadyState->beginIndependent();
   const C_FLOAT64 * pEnd = mpSteadyState->endIndependent();
+  const C_FLOAT64 * pIt = pEnd - mpModel->getNumIndependentMetabs() - mpModel->getNumODEMetabs();
 
   CCopasiVector< CMetab >::const_iterator itMetab
   = mpModel->getMetabolitesX().begin();
@@ -609,17 +611,28 @@ bool CNewtonMethod::allPositive()
     if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getValue())
       return false;
 
-  // This is necessarry since the dependent numbers are ignored during calculation.
+  // This is necessarry since the dependent numbers may be ignored during calculation.
   if (mpSteadyState->isUpdateDependentRequired())
-    mpModel->setState(*mpSteadyState);
+    {
+      CCopasiVector< CMoiety >::const_iterator itMoiety = mpModel->getMoieties().begin();
+      CCopasiVector< CMoiety >::const_iterator endMoiety = mpModel->getMoieties().end();
 
-  pIt = mpSteadyState->beginDependent();
-  pEnd = mpSteadyState->endDependent();
+      for (; itMoiety != endMoiety; ++itMoiety, itMetab++)
+        if ((*itMoiety)->dependentNumber() < ParticleResolution * (*itMetab)->getCompartment()->getValue())
+          return false;
+    }
+  else
+    {
+      pIt = mpSteadyState->beginDependent();
+      pEnd = pIt + mpModel->getNumDependentMetabs();
 
-  for (; pIt != pEnd; ++pIt, itMetab++)
-    if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getValue())
-      return false;
+      for (; pIt != pEnd; ++pIt, itMetab++)
+        if (*pIt < ParticleResolution * (*itMetab)->getCompartment()->getValue())
+          return false;
+    }
 
+  // :TODO: we need to implement checking for metabolites determined by assignments
+  // :TODO: when those are implemented.
   return true;
 }
 
@@ -662,16 +675,34 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
   {
     C_FLOAT64 tmp, store = 0;
 
+    // First we look at the ODE determined rates
     const C_FLOAT64 * pIt = particlefluxes.array();
-    const C_FLOAT64 * pEnd = pIt + particlefluxes.size();
-
-    // :TODO: This correct as long as we do not have userdefined assignments and ODEs
-    CCopasiVector< CMetab >::const_iterator itMetab
-    = mpModel->getMetabolitesX().begin();
-
-    for (; pIt != pEnd; ++pIt, itMetab++)
+    const C_FLOAT64 * pEnd =
+      pIt + mpModel->getStateTemplate().getNumIndependent() - mpModel->getNumIndependentMetabs();
+    for (; pIt != pEnd; ++pIt)
       {
-        tmp = fabs(*pIt / (*itMetab)->getCompartment()->getValue());
+        tmp = fabs(*pIt);
+        if (tmp > store)
+          store = tmp;
+
+        if (isnan(tmp))
+          {
+            store = DBL_MAX;
+            break;
+          }
+      }
+
+    // Scale to account for the scaling in the return value.
+    store /= mpModel->getNumber2QuantityFactor();
+
+    // Now we look at the independent metabolites determined by reactions
+    CModelEntity ** ppEnd = mpModel->getStateTemplate().beginDependent();
+    CModelEntity ** ppIt = ppEnd - mpModel->getNumIndependentMetabs();
+
+    pEnd += mpModel->getNumIndependentMetabs();
+    for (; pIt != pEnd; ++pIt, ++ppIt)
+      {
+        tmp = fabs(*pIt / static_cast< const CMetab * >(*ppIt)->getCompartment()->getValue());
         if (tmp > store)
           store = tmp;
 
@@ -730,13 +761,13 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   mResolution = * getValue("Resolution").pUDOUBLE;
   mScaledResolution =
     mResolution; // * initialState.getModel()->getQuantity2NumberFactor();
-  //TODO discuss scaling
+  // :TODO: discuss scaling
 
   // convert CState to CStateX
   //mInitialStateX = mpProblem->getInitialState();
   //*mpSteadyStateX = mInitialStateX; //not strictly necessary
 
-  mDimension = mpProblem->getModel()->getNumIndependentMetabs();
+  mDimension = mpProblem->getModel()->getStateTemplate().getNumIndependent();
 
   mH.resize(mDimension);
   mXold.resize(mDimension);
