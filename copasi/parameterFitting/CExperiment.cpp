@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/07 19:27:10 $
+   $Date: 2006/08/15 15:38:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -525,7 +525,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
           (C_FLOAT64 *) Objects[i]->getValuePointer();
         //TODO: do we have to check if getValuePointer() return a valid pointer?
         mDependentObjects[Objects[i]] = DependentCount++;
-        Dependencies.insert(Objects[i]);
+        Dependencies.insert(Objects[i]->getValueObject());
         break;
 
       case time:
