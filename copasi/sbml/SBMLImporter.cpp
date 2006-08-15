@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.144 $
+   $Revision: 1.145 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/15 13:50:58 $
+   $Author: gauges $
+   $Date: 2006/08/15 14:23:15 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2916,11 +2916,7 @@ void SBMLImporter::areRulesUnique(const Model* sbmlModel)
         }
       if (!id.empty())
         {
-          if (std::find(idSet.begin(), idSet.end(), id) == idSet.end())
-            {
-              idSet.insert(id);
-            }
-          else
+          if (!idSet.insert(id).second)
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 35);
               break;
