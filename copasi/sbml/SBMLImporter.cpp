@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.143 $
+   $Revision: 1.144 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/08/15 13:40:39 $
+   $Author: shoops $
+   $Date: 2006/08/15 13:50:58 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,7 @@
 #include <sstream>
 #include <map>
 #include <limits>
+#include <algorithm>
 
 #include "mathematics.h"
 
@@ -2895,6 +2896,7 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
 void SBMLImporter::areRulesUnique(const Model* sbmlModel)
 {
   std::set<std::string> idSet;
+
   // go through the rules and check that no id is used in more than one rule
   unsigned int i, iMax = sbmlModel->getNumRules();
   for (i = 0;i < iMax;++i)
