@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/19 20:57:05 $
+   $Author: nsimus $
+   $Date: 2006/08/15 11:37:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -139,7 +139,9 @@ C_INT32 MMASCIIExporter::findKinParamByName(const CReaction* reac, const std::st
 }
 
 /**
- **      This method adapt names for Berkeley Madonna syntax
+ **      This method adapt a Copasi name for Berkeley Madonna syntax:
+ **      Names can not start with a number.
+ **      Any other combination of letters and numbers is valid as is the underscore.
  **/
 std::string MMASCIIExporter::toMMDName(const std::string & realName, std::set<std::string> & NameSet,
                                        std::map< std::string, unsigned C_INT32 > & EncounterNumber)
@@ -200,9 +202,11 @@ std::string MMASCIIExporter::toMMDName(const std::string & realName, std::set<st
   return testMMDName(newName, NameSet, EncounterNumber);
 }
 /**
- **      This method investigates whether the given name already assigned,
- **      put the new name (in cappital letters) in the set of assigned names
- **      or  modify the name according to encounter number
+ **      This method tests whether the given Berkeley Madonna name already assigned,
+ **      put the new name (in cappital letters:
+ **      all names can be upper or lower case)
+ **      in the set of assigned names
+ **      or  modify the name
  **/
 std::string MMASCIIExporter::testMMDName(const std::string & name, std::set<std::string> & NameSet,
     std::map< std::string, unsigned C_INT32 > & EncounterNumber)
@@ -235,8 +239,238 @@ std::string MMASCIIExporter::testMMDName(const std::string & name, std::set<std:
     {
       EncounterNumber[tmp.str()]++;
       newname << name << "_" << EncounterNumber[tmp.str()];
-      return newname.str();
+
+      return testMMDName(newname.str(), NameSet, EncounterNumber);
     }
+}
+/**
+ **      This method adapt a Copasi name for XPPAUT syntax:
+ **      all XPPAUT names can have up to 9 letters each.
+ **      Names can not start with a number.
+ **      Any other combination of letters and numbers is valid as is the underscore.
+ **/
+std::string MMASCIIExporter::toXPPName(const std::string & realName, std::set<std::string> & NameSet,
+                                       std::map< std::string, unsigned C_INT32 > & Frequancy)
+{
+  std::locale C("C");
+  char ch;
+
+  std::string newName;
+  std::ostringstream tmpName;
+
+  unsigned C_INT32 realName_size = realName.size();
+  unsigned C_INT32 i;
+
+  ch = realName[0];
+
+  if (!std::isalpha(ch, C))
+    {
+      tmpName << "_";
+      if (std::isdigit(ch, C)) tmpName << ch;
+    }
+  else tmpName << ch;
+
+  for (i = 1; i < realName_size; i++)
+    {
+      ch = realName[i];
+
+      if (std::isalpha(ch, C))
+        {
+          if (std::isspace(realName[i - 1], C) && std::islower(ch, C))
+            tmpName << (char) toupper(ch);
+          else
+            tmpName << ch;
+        }
+
+      if (std::isdigit(ch, C)) tmpName << ch;
+      if (std::ispunct(ch, C))
+        switch (ch)
+          {
+          case '_':
+            tmpName << ch;
+            break;
+          case '-':
+            tmpName << "_";
+            break;
+          case '{':
+            tmpName << "_";
+            break;
+          case '}':
+            tmpName << "_";
+            break;
+          default:
+            break;
+          }
+    }
+
+  newName = tmpName.str();
+
+  unsigned C_INT32 newName_size = newName.size();
+  if (newName_size > 9)
+    {
+      std::ostringstream cutName;
+      for (i = 0; i < 9; i++)
+        cutName << newName[i];
+
+      newName = cutName.str();
+    }
+
+  return testXPPName(newName, NameSet, Frequancy);
+}
+/**
+ **      This method tests whether the given XPPAUT name already assigned,
+ **      put the new name (in cappital letters:
+ **      all names can be upper or lower case)
+ **      in the set of assigned names
+ **      or  modify the name
+ **/
+std::string MMASCIIExporter::testXPPName(const std::string & name, std::set<std::string> & NameSet,
+    std::map< std::string, unsigned C_INT32 > & Frequancy)
+{
+  std::locale C("C");
+  char ch;
+
+  std::ostringstream newname, tmp;
+
+  unsigned C_INT32 name_size = name.size();
+  unsigned C_INT32 i;
+
+  for (i = 0; i < name_size; i++)
+    {
+      ch = name[i];
+      if (std::isalpha(ch, C) && std::islower(ch, C))
+        tmp << (char) toupper(ch);
+      else
+        tmp << ch;
+    }
+
+  if (NameSet.find(tmp.str()) == NameSet.end())
+    {
+      NameSet.insert(tmp.str());
+      Frequancy[tmp.str()] = 0;
+
+      return name;
+    }
+  else
+    {
+
+      std::string ecount;
+      std::ostringstream tmpecount;
+      std::ostringstream tmpname;
+      unsigned C_INT32 ecount_size, tmpname_size;
+
+      Frequancy[tmp.str()]++;
+      tmpecount << Frequancy[tmp.str()];
+
+      ecount = tmpecount.str();
+
+      ecount_size = ecount.size();
+
+      if (ecount_size > 8)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, "too many repeated names to modify to XPP syntax");
+          fatalError();
+        }
+      tmpname_size = name_size + ecount_size;
+      if (tmpname_size > 9)
+        {
+          for (i = 0; i < (9 - ecount_size); i++)
+            tmpname << name[i];
+        }
+      else
+        tmpname << name << ecount;
+
+      return testXPPName(tmpname.str(), NameSet, Frequancy);
+    }
+}
+/**
+ **  Possible use of some XPP Reserved words as names in XPP ODE files has to be treated
+ **/
+void MMASCIIExporter::treatReservedXPPwords(std::set<std::string> & NameSet,
+    std::map< std::string, unsigned C_INT32 > & Frequancy)
+{
+
+  unsigned C_INT32 i;
+
+  const std::string reservedXPPwords[45] =
+    {"sin", "cos", "tan", "atan", "atan2", "sinh", "exp", "delay", "ln", "log10",
+     "log", "t", "pi", "if", "then", "else", "asin", "acos", "heav", "sign",
+     "ceil", "flr", "ran", "abs", "max", "min", "normal", "besselj", "bessely", "erf",
+     "erfs", "arg1", "arg2", "arg2", "arg4", "arg5", "arg6", "arg7", "arg8", "arg9",
+     "shift", "not", "int", "sum", "of"
+    };
+
+  for (i = 0; i < 45; i++)
+    {
+      NameSet.insert(reservedXPPwords[i]);
+      Frequancy[reservedXPPwords[i]] = 0;
+    }
+
+  return;
+}
+/*
+ **   The line length in XPPAUT ODE files (ASCII readable files) is limited to 256 characters.
+ **   Individual lines can be continued with the UNIX backslash character, "\".
+ **   The total length of any line cannot exceed 1000 characters.
+ */
+void MMASCIIExporter::toXPPLine(const std::string & line, std::ofstream & outFile)
+{
+
+  std::locale C("C");
+
+  unsigned C_INT32 limit = 256, total = 1000;
+  if (line.size() > total)
+    CCopasiMessage(CCopasiMessage::WARNING, "line total length exceeds 1000 characters"); //TODO
+
+  if (line.size() > limit)
+    {
+
+      unsigned C_INT32 i, pos0, pos, end = line.size();
+
+      pos0 = 0;
+      pos = limit - 1;
+
+      while (pos < end)
+        {
+
+          std::string part;
+          char ch;
+          ch = line[pos];
+
+          while (std::isalnum(ch, C) || ch == '_' || ch == ')')
+            {
+              pos--;
+              ch = line[pos];
+            }
+
+          for (i = pos0; i < pos; i++)
+            {
+              part += line[i];
+            }
+
+          part += " \\";
+
+          outFile << part.c_str() << std::endl;
+
+          pos0 = pos;
+          pos += limit;
+        }
+
+      if (pos > end)
+        {
+          std::string part;
+          for (i = pos0; i < end; i++)
+            {
+              part += line[i];
+            }
+
+          outFile << part.c_str() << std::endl;
+        }
+    }
+  else
+    outFile << line << std::endl;
+
+  return;
 }
 
 /**
@@ -495,7 +729,7 @@ void MMASCIIExporter::findFunctionsCallsC(const CEvaluationNode* pNode, std::set
 }
 
 /**
- **         This method exports the  functions in Berkeley Madonna format
+ **         This method exports internal functions in Berkeley Madonna syntax
  **/
 void MMASCIIExporter::functionExportMMD (CEvaluationNode* pNode, std::ofstream & outFile, unsigned C_INT32 &findex, std::map< std::string, std::string > &functionNameMap)
 {
@@ -515,7 +749,7 @@ void MMASCIIExporter::functionExportMMD (CEvaluationNode* pNode, std::ofstream &
               tmpFunc = new CFunction(*Func);
 
               std::ostringstream tmpName;
-              tmpName << "function_" << findex << "_";
+              tmpName << "func_" << findex << "_";
               functionNameMap[Func->getObjectName()] = tmpName.str();
               findex++;
 
@@ -569,6 +803,86 @@ void MMASCIIExporter::functionExportMMD (CEvaluationNode* pNode, std::ofstream &
     }
 }
 
+/**
+ **         This method exports internal functions in XPPAUT syntax
+ **/
+void MMASCIIExporter::functionExportXPP (CEvaluationNode* pNode, std::ofstream & outFile,
+    unsigned C_INT32 &findex, std::map< std::string, std::string > &newNameMap,
+    std::set<std::string> & NameSet, std::map< std::string, unsigned C_INT32 > & Frequancy)
+{
+  if (pNode)
+    {
+      CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+      CCopasiTree<CEvaluationNode>::iterator treeIt = pNode;
+
+      while (treeIt != NULL)
+        {
+          if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
+            {
+              const CFunction* Func;
+              Func = static_cast<CFunction*> (pFunctionDB->findFunction((*treeIt).getData()));
+
+              CFunction* tmpFunc = NULL;
+              tmpFunc = new CFunction(*Func);
+
+              std::string name = Func->getObjectName();
+              std::string newName;
+
+              std::ostringstream newKey;
+              newKey << "func_" << findex << "_";
+              findex++;
+
+              newName = toXPPName(name, NameSet, Frequancy);
+              newNameMap[newKey.str()] = newName;
+
+              treeIt->setData(newName);
+
+              modifyTreeForMassAction(tmpFunc);
+
+              unsigned C_INT32 i, vindex;
+              CEvaluationNode* tmproot = tmpFunc->getRoot();
+              CCopasiTree<CEvaluationNode>::iterator iIt, newIt = tmproot;
+              //CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
+
+              while (newIt != NULL)
+                {
+                  if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
+                    {
+                      vindex = tmpFunc->getVariableIndex((*newIt).getData());
+
+                      CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
+
+                      for (i = 0; i < vindex ; i++)
+                        child = dynamic_cast<CEvaluationNode*>((child)->getSibling());
+
+                      CEvaluationNode* parent = dynamic_cast<CEvaluationNode*>(newIt->getParent());
+                      CEvaluationNode* newnode = child->copyBranch();
+
+                      iIt = newIt;
+
+                      ++newIt;
+
+                      if (parent)
+                        {
+                          parent->addChild(newnode, &(*iIt));
+                          parent->removeChild(&(*iIt));
+                        }
+
+                      delete &(*iIt);
+                    }
+                  else
+                    ++newIt;
+                }
+              functionExportXPP(tmproot, outFile, findex, newNameMap, NameSet, Frequancy);
+
+              toXPPLine(newNameMap[newKey.str()] + "=" + tmproot->getDisplay_XPP_String(tmpFunc).c_str(), outFile);
+            }
+
+          ++treeIt;
+        }
+    }
+}
+
 /*
  **
  */
@@ -579,7 +893,6 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
           else create an appropriate  CCopasiMessage. */
 
   std::ifstream testInfile(utf8ToLocale(mmasciiFilename).c_str(), std::ios::in);
-
   if (testInfile && !overwriteFile)
     {
       // create a CCopasiMessage with the appropriate error
@@ -595,7 +908,400 @@ bool MMASCIIExporter::exportMathModel(const CModel* copasiModel, std::string mma
   if (Filter == "Berkeley Madonna Files (*.mmd)")
     return exportMathModelInMMD(copasiModel, outFile);
 
+  if (Filter == "XPPAUT (*.ode)")
+    return exportMathModelInXPPAUT(copasiModel, outFile);
+
   return false;
+}
+
+/*
+ **
+ */
+bool MMASCIIExporter::exportMathModelInXPPAUT(const CModel* copasiModel, std::ofstream & outFile)
+{
+  outFile << "@ t0=0,";
+
+  CTrajectoryTask * pTrajectory =
+    dynamic_cast<CTrajectoryTask *>((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+  CTrajectoryProblem * pTrajectoryProblem =
+    dynamic_cast<CTrajectoryProblem *>(pTrajectory->getProblem());
+
+  outFile << "total=" << pTrajectoryProblem->getDuration() << ",";
+  outFile << "dt=0.000000000001" << std::endl;
+  outFile << std::endl;
+
+  unsigned C_INT32 i, j;
+  std::map< std::string, std::string > newNameMap;
+  std::set<std::string> NameSet;
+  std::map< std::string, unsigned C_INT32 > Frequancy;
+
+  treatReservedXPPwords(NameSet, Frequancy);
+
+  CMetab* metab;
+  const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
+  unsigned C_INT32 metabs_size = metabs.size();
+  unsigned C_INT32 indep_size = copasiModel->getNumIndependentMetabs();
+  const CModel::CLinkMatrixView & L = copasiModel->getL();
+  C_FLOAT64 Value;
+
+  unsigned C_INT32 count = 0;
+
+  for (i = 0; i < metabs_size; i++)
+    {
+      std::ostringstream description;
+      metab = metabs[i];
+      Value = metab->getInitialConcentration();
+
+      // if (metab->getStatus() == CModelEntity::REACTIONS) outFile << "init ";
+
+      if (metab->isDependent())
+        {
+          for (j = 0; j < indep_size; j++)
+            if (L(i, j) != 0.0)
+              {
+                if (L(i, j) < 0.0)
+                  {
+                    description << "-";
+                  }
+                else
+                  {
+                    description << "+";
+                  }
+                if (fabs(L(i, j)) != 1.0)
+                  description << fabs(L(i, j)) << "*";
+
+                description << newNameMap[metabs[j]->getKey()];
+
+                Value -= L(i, j) * metabs[j]->getInitialConcentration();
+              }
+        }
+
+      if (!metab->isUsed()) continue;
+
+      std::string name = metab->getObjectName();
+      std::string newName;
+
+      newName = toXPPName(name, NameSet, Frequancy);
+
+      newNameMap[metab->getKey()] = newName;
+
+      outFile << "# metabolite \'" << CMetabNameInterface::getDisplayName(copasiModel, *metab) << "\': " << CModelEntity::StatusName[metab->getStatus()] << std::endl;
+
+      if (metab->getStatus() == CModelEntity::REACTIONS && !metab->isDependent()) outFile << "init ";
+
+      outFile << newName << "=" << Value << description.str() << std::endl;
+    }
+
+  outFile << std::endl;
+  unsigned C_INT32 comps_size = copasiModel->getCompartments().size();
+  const CCopasiVector< CCompartment > & comps = copasiModel->getCompartments();
+
+  count = 0;
+
+  for (i = 0; i < comps_size; i++)
+    {
+      std::ostringstream tmpName;
+      std::string newName;
+      std::string name = comps[i]->getObjectName();
+
+      newName = toXPPName(name, NameSet, Frequancy);
+
+      newNameMap[comps[i]->getKey()] = newName;
+
+      outFile << "# compartment \'" << name << "\'" << std::endl;
+      outFile << "param " << newName
+      << "=" << comps[i]->getValue()
+      << std::endl;
+    }
+
+  outFile << std::endl;
+
+  unsigned C_INT32 modvals_size = copasiModel->getModelValues().size();
+  const CCopasiVector< CModelValue > & modvals = copasiModel->getModelValues();
+
+  count = 0;
+
+  for (i = 0; i < modvals_size; i++)
+    {
+      std::ostringstream tmpName;
+      std::string newName;
+      std::string name = modvals[i]->getObjectName();
+
+      newName = toXPPName(name, NameSet, Frequancy);
+      newNameMap[modvals[i]->getKey()] = newName;
+
+      outFile << "#  global parameter \'" << name << "\'" << std::endl;
+      outFile << "param" << newName
+      << "="
+      << modvals[i]->getValue()
+      << std::endl;
+    }
+
+  unsigned C_INT32 reacs_size = copasiModel->getReactions().size();
+
+  const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
+  CReaction* reac;
+
+  count = 0;
+
+  for (i = 0; i < reacs_size; ++i)
+    {
+      unsigned C_INT32 params_size;
+      reac = reacs[i];
+
+      params_size = reac->getParameters().size();
+
+      for (j = 0; j < params_size; ++j)
+        {
+          std::ostringstream tmpName;
+          std::string newName;
+          std::string name = reac->getParameters().getParameter(j)->getObjectName();
+          newName = toXPPName(name, NameSet, Frequancy);
+          newNameMap[reac->getParameters().getParameter(j)->getKey()] = newName;
+        }
+    }
+
+  unsigned C_INT32 findex = 0;
+
+  for (i = 0; i < reacs_size; ++i)
+    {
+      unsigned C_INT32 params_size;
+      reac = reacs[i];
+
+      outFile << std::endl;
+
+      std::string reacname = reac->getObjectName();
+
+      outFile << "# " << "reaction \'" << reacname << "\': " << std::endl;
+
+      params_size = reac->getParameters().size();
+
+      for (j = 0; j < params_size; ++j)
+        {
+          std::string name = reac->getParameters().getParameter(j)->getObjectName();
+
+          outFile << "# kinetic parameter \'" << name << "\'" << std::endl;
+          outFile << "param " << newNameMap[reac->getParameters().getParameter(j)->getKey()]
+          << "="
+          << *reac->getParameters().getParameter(j)->getValue().pDOUBLE
+          << std::endl;
+        }
+
+      const CFunction* pFunc = (reac->getFunction());
+      outFile << std::endl;
+      //outFile << "# \'" << reac->getFunction()->getObjectName() << "\' :";
+      outFile << "# \'" << pFunc->getObjectName() << "\' :";
+      outFile << std::endl;
+
+      if (pFunc->getType() != CEvaluationTree::MassAction)
+        {
+          CFunction* tmpFunc;
+          tmpFunc = new CFunction(*pFunc);
+
+          const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
+          CCopasiTree< CEvaluationNode>::iterator treeIt = tmpFunc->getRoot();
+
+          modifyTreeForMassAction(tmpFunc);
+
+          while (treeIt != NULL)
+            {
+              if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::VARIABLE)
+                {
+                  unsigned C_INT32 index;
+                  CFunctionParameter::Role usage;
+                  std::string newName;
+                  std::string name;
+
+                  name = tmpFunc->getVariables()[treeIt->getData()]->getObjectName();
+                  index = tmpFunc->getVariableIndex(name);
+                  usage = tmpFunc->getVariables()[index]->getUsage();
+
+                  CCopasiObject * tmp = GlobalKeys.get(keyMap[index][0]);
+
+                  if ((usage == CFunctionParameter::SUBSTRATE)
+                      || (usage == CFunctionParameter::PRODUCT)
+                      || (usage == CFunctionParameter::MODIFIER))
+                    {
+                      CMetab* metab;
+                      metab = dynamic_cast< CMetab * >(tmp);
+
+                      newName = newNameMap[metab->getKey()];
+                    }
+
+                  if (usage == CFunctionParameter::PARAMETER)
+                    if (!(reac->isLocalParameter(index)))
+                      {
+                        CModelValue* modval;
+                        modval = dynamic_cast< CModelValue * >(tmp);
+                        newName = newNameMap[modval ->getKey()];
+                      }
+                    else
+                      {
+                        CCopasiParameter* param;
+                        param = dynamic_cast< CCopasiParameter * >(tmp);
+
+                        newName = newNameMap[param->getKey()];
+                      }
+
+                  if (usage == CFunctionParameter::VOLUME)
+                    {
+                      CCompartment* comp;
+                      comp = dynamic_cast< CCompartment * >(tmp);
+                      newName = newNameMap[comp->getKey()];
+                    }
+
+                  treeIt->setData(newName);
+                }
+
+              ++treeIt;
+            }
+
+          functionExportXPP(tmpFunc->getRoot(), outFile, findex, newNameMap, NameSet, Frequancy);
+
+          std::string name = pFunc->getObjectName();
+          std::string newName;
+          std::ostringstream newKey;
+
+          newKey << "Kin_" << i;
+
+          newName = toXPPName(name, NameSet, Frequancy);
+          newNameMap[newKey.str()] = newName;
+
+          toXPPLine(newNameMap[newKey.str()] + "=" + tmpFunc->getRoot()->getDisplay_XPP_String(tmpFunc).c_str(), outFile);
+        }
+      else
+        {
+
+          const CCopasiVector<CChemEqElement> & substrs = reac->getChemEq().getSubstrates();
+          const CCopasiVector<CChemEqElement> & prods = reac->getChemEq().getProducts();
+          const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
+          CCopasiObject * tmp;
+
+          unsigned C_INT32 substrs_size = substrs.size(), prods_size = prods.size();
+          unsigned C_INT32 k, m, mult;
+
+          CChemEqElement* substr;
+          CChemEqElement* prod;
+
+          const CMassAction cMassAction = *static_cast<const CMassAction*>(reac->getFunction());
+
+          std::string name = pFunc->getObjectName();
+          std::string newName;
+          std::ostringstream newKey;
+
+          newKey << "Kin_" << i;
+          newName = toXPPName(name, NameSet, Frequancy);
+          newNameMap[newKey.str()] = newName;
+
+          outFile << newName << "=";
+          outFile << "(";
+
+          tmp = GlobalKeys.get(keyMap[0][0]);
+
+          if (!(reac->isLocalParameter(0)))
+            {
+              CModelValue* modval;
+              modval = dynamic_cast< CModelValue * >(tmp);
+              outFile << newNameMap[modval ->getKey()];
+            }
+          else
+            {
+              CCopasiParameter* param;
+              param = dynamic_cast< CCopasiParameter * >(tmp);
+              outFile << newNameMap[param->getKey()];
+            }
+
+          for (k = 0; k < substrs_size; ++k)
+            {
+              substr = substrs[k];
+              mult = substr->getMultiplicity();
+
+              outFile << "*" << newNameMap[substr->getMetaboliteKey()];
+
+              if (mult > 1)
+                for (m = 1; m < mult; ++m)
+                  outFile << "*" << newNameMap[substr->getMetaboliteKey()];
+            }
+
+          if (cMassAction.isReversible() == TriTrue)
+            {
+              outFile << "-";
+
+              tmp = GlobalKeys.get(keyMap[2][0]);
+
+              if (!(reac->isLocalParameter(2)))
+                {
+                  CModelValue* modval;
+                  modval = dynamic_cast< CModelValue * >(tmp);
+                  outFile << newNameMap[modval ->getKey()];
+                }
+              else
+                {
+                  CCopasiParameter* param;
+                  param = dynamic_cast< CCopasiParameter * >(tmp);
+                  outFile << newNameMap[param->getKey()];
+                }
+
+              for (k = 0; k < prods_size; ++k)
+                {
+                  prod = prods[k];
+                  mult = prod->getMultiplicity();
+
+                  outFile << "*" << newNameMap[prod->getMetaboliteKey()];
+
+                  if (mult > 1)
+                    for (m = 1; m < mult; ++m)
+                      outFile << "*" << newNameMap[prod->getMetaboliteKey()];
+                }
+            }
+          outFile << ")";
+          outFile << std::endl;
+        }
+    }
+
+  outFile << std::endl;
+
+  const CMatrix< C_FLOAT64 > & redStoi = copasiModel->getRedStoi();
+
+  for (i = 0; i < indep_size; ++i)
+    {
+      std::ostringstream equation;
+      std::string tmpstr;
+
+      const CCompartment* compartment = metabs[i]->getCompartment();
+
+      for (j = 0; j < reacs_size; ++j)
+        {
+          tmpstr = equation.str();
+
+          reac = reacs[j];
+
+          if (fabs(redStoi[i][j]) > 0.0)
+            {
+              if (redStoi[i][j] < 0.0)
+                equation << "-";
+              else
+                if (!(isEmptyString(tmpstr)))
+                  equation << "+";
+
+              if (fabs(redStoi[i][j]) != 1.0)
+                equation << fabs(redStoi[i][j]) << "*";
+
+              std::ostringstream tmpKey;
+
+              tmpKey << "Kin_" << j;
+
+              equation << newNameMap[tmpKey.str()];
+
+              if (reac->getCompartmentNumber() != 1) equation << "/" << newNameMap[compartment->getKey()];
+            }
+        }
+
+      toXPPLine("d" + newNameMap[metabs[i]->getKey()] + "/dt=" + equation.str(), outFile);
+    }
+
+  outFile << "done" << std::endl;
+  return true;
 }
 
 /*
@@ -785,7 +1491,6 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
           CFunction* tmpFunc;
           tmpFunc = new CFunction(*pFunc);
 
-          CFunctionDB* pFunctionDB = CCopasiDataModel::Global->getFunctionList();
           const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
           CCopasiTree< CEvaluationNode>::iterator treeIt = tmpFunc->getRoot();
 
