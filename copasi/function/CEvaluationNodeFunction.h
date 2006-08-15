@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: nsimus $
-   $Date: 2006/05/15 12:45:02 $
+   $Date: 2006/08/15 11:39:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -145,6 +145,13 @@ class CEvaluationNodeFunction : public CEvaluationNode
      * @return const Data & value
      */
     virtual std::string getDisplay_MMD_String(const CEvaluationTree * pTree) const;
+
+    /**
+     ** Retrieve the display string of the node and its eventual child nodes
+     ** in XPPAUT format.
+     ** @return const Data & value
+     **/
+    virtual std::string getDisplay_XPP_String(const CEvaluationTree * pTree) const;
 
     /**
      * Creates a new CEvaluationNodeFunction from an ASTNode.

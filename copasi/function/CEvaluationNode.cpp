@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNode.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/08/12 13:13:52 $
+   $Author: nsimus $
+   $Date: 2006/08/15 11:39:31 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -156,6 +156,9 @@ std::string CEvaluationNode::getDisplay_C_String(const CEvaluationTree * /* pTre
   {return mData;}
 
 std::string CEvaluationNode::getDisplay_MMD_String(const CEvaluationTree * /* pTree */) const
+  {return mData;}
+
+std::string CEvaluationNode::getDisplay_XPP_String(const CEvaluationTree * /* pTree */) const
   {return mData;}
 
 const CEvaluationNode::Type & CEvaluationNode::getType() const

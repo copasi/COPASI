@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: nsimus $
-   $Date: 2006/05/05 12:45:53 $
+   $Date: 2006/08/15 11:39:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -246,6 +246,64 @@ std::string CEvaluationNodeLogical::getDisplay_MMD_String(const CEvaluationTree 
       }
     else
       return "@";
+  }
+
+std::string CEvaluationNodeLogical::getDisplay_XPP_String(const CEvaluationTree * pTree) const
+  {
+    if (const_cast<CEvaluationNodeLogical *>(this)->compile(NULL))
+      {
+        Data DisplayString;
+        Data data;
+
+        switch ((SubType)CEvaluationNode::subType(this->getType()))
+          {
+          case AND:
+            data = "&";
+            break;
+          case OR:
+            data = "|";
+            break;
+          case EQ:
+            data = "==";
+            break;
+          case GE:
+            data = ">=";
+            break;
+          case GT:
+            data = ">";
+            break;
+          case LE:
+            data = "<=";
+            break;
+          case LT:
+            data = "<";
+            break;
+          case NE:
+            data = "!=";
+            break;
+          default:
+            /* case XOR: */
+            CCopasiMessage(CCopasiMessage::WARNING, " TODO   ");
+            data = "@"; //TODO
+            break;
+          }
+
+        if (*mpLeft < *(CEvaluationNode *)this)
+          DisplayString = "(" + mpLeft->getDisplay_XPP_String(pTree) + ")";
+        else
+          DisplayString = mpLeft->getDisplay_XPP_String(pTree) + " ";
+
+        DisplayString += data;
+
+        if (!(*(CEvaluationNode *)this < *mpRight))
+          DisplayString += "(" + mpRight->getDisplay_XPP_String(pTree) + ")";
+        else
+          DisplayString += " " + mpRight->getDisplay_XPP_String(pTree);
+
+        return DisplayString;
+      }
+    else
+      return "@"; //TODO
   }
 
 CEvaluationNode* CEvaluationNodeLogical::createNodeFromASTTree(const ASTNode& node)

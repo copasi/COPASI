@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/08/12 13:13:52 $
+   $Author: nsimus $
+   $Date: 2006/08/15 11:39:31 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -437,6 +437,79 @@ std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree
       }
     else
       return "@";
+  }
+
+std::string CEvaluationNodeFunction::getDisplay_XPP_String(const CEvaluationTree * pTree) const
+  {
+    if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
+      {
+        std::string data = "";
+
+        switch ((SubType)CEvaluationNode::subType(this->getType()))
+          {
+          case LOG:
+          case LOG10:
+          case EXP:
+          case SIN:
+          case COS:
+          case TAN:
+          case SINH:
+          case COSH:
+          case TANH:
+          case ARCSIN:
+          case ARCCOS:
+          case ARCTAN:
+          case SQRT:
+          case ABS:
+          case NOT:
+          case PLUS:
+            break;
+          case MINUS:
+            data = "-";
+            break;
+          case FLOOR:
+            data = "flr";
+            break;
+          case CEIL:
+            data = "ceil";
+            break;
+          default:
+            /* case ARCSINH:
+            case ARCCOSH:
+               case ARCTANH:
+               case SEC:
+               case CSC:
+               case COT:
+               case SECH:
+               case CSCH:
+               case COTH:
+               case ARCSEC:
+               case ARCCSC:
+               case ARCCOT:
+               case ARCSECH:
+               case ARCCSCH:
+               case ARCCOTH:
+               case FACTORIAL: */
+
+            data = "@"; //TODO
+            break;
+          }
+
+        switch (mType & 0x00FFFFFF)
+          {
+          case MINUS:
+            return "(" + data + mpLeft->getDisplay_XPP_String(pTree) + ")";
+            break;
+          case PLUS:
+            return mpLeft->getDisplay_XPP_String(pTree);
+            break;
+
+          default:
+            return data + "(" + mpLeft->getDisplay_XPP_String(pTree) + ")";
+          }
+      }
+    else
+      return "@"; //TODO
   }
 
 CEvaluationNode* CEvaluationNodeFunction::createNodeFromASTTree(const ASTNode& node)

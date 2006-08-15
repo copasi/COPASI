@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:39 $
+   $Author: nsimus $
+   $Date: 2006/08/15 11:39:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,6 +134,34 @@ std::string CEvaluationNodeConstant::getDisplay_MMD_String(const CEvaluationTree
         data = "@";
         break;
       }
+    return data;
+  }
+
+std::string CEvaluationNodeConstant::getDisplay_XPP_String(const CEvaluationTree * pTree) const
+  {
+    std::ostringstream DisplayString;
+    std::string data = "";
+
+    SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+
+    switch (subType)
+      {
+      case PI:
+        data = "pi";
+        break;
+      case EXPONENTIALE:
+      case TRUE:
+      case FALSE:
+      case _INFINITY:
+      case _NaN:
+        DisplayString << mValue;
+        data = DisplayString.str();
+        break;
+      default:
+        data = "@"; //TODO
+        break;
+      }
+
     return data;
   }
 
