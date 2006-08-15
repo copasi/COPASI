@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.277 $
+   $Revision: 1.278 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/15 14:59:18 $
+   $Date: 2006/08/15 20:15:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1354,6 +1354,7 @@ bool CModel::buildConstantSequence()
   CModelEntity ** ppEntityEnd = mStateTemplate.endDependent();
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     {
+      Dependencies.clear();
       (*ppEntity)->getAllDependencies(Dependencies);
 
       itDepend = Dependencies.begin();
@@ -1362,7 +1363,8 @@ bool CModel::buildConstantSequence()
       for (; itDepend != endDepend; ++itDepend)
         if ((pEntity = dynamic_cast< const CModelEntity * >(*itDepend)) != NULL &&
             (pEntity->getStatus() != CModelEntity::ASSIGNMENT &&
-             pEntity->getStatus() != CModelEntity::FIXED)) break;
+             pEntity->getStatus() != CModelEntity::FIXED))
+          break;
 
       if (itDepend == endDepend)
         {
