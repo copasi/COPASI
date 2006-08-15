@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/14 20:56:09 $
+   $Date: 2006/08/15 13:40:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -93,27 +93,17 @@ class SBMLImporter
     /**
      * Imports the given Rule if Copasi supports this kind of Rule, otherwise a warning is created.
      */
-    void importSBMLRule(const Rule* sbmlRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Imports the given AssignmentRule which is for a global parameter.
      */
-    void importAssignmentRuleForParameter(const AssignmentRule* assignmentRule, CModelValue* pMV, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
-
-    /**
-     * Imports the given RateRule which is for a global parameter.
-     */
-    void importRateRuleForParameter(const RateRule* rateRule, CModelValue* pMV, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void importRuleForModelEntity(const Rule* rule, CModelEntity* pMV, CModelEntity::Status ruleType, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Imports the given RateRule if Copasi supports this kind of RateRule, otherwise a warning is created.
      */
-    void importRateRule(const RateRule* rateRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
-
-    /**
-     * Imports the given AssignmentRule if Copasi supports this kind of AssignmentRule, otherwise a warning is created.
-     */
-    void importAssignmentRule(const AssignmentRule* assignmentRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
+    void importRule(const Rule* rule, CModelEntity::Status ruleType, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
     /**
      * Recurses an ASTNode tree and gets all SBML Ids in the tree.

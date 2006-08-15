@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.142 $
+   $Revision: 1.143 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/14 20:56:09 $
+   $Date: 2006/08/15 13:40:39 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@
 #include "function/CNodeK.h"
 #include "function/CFunctionDB.h"
 #include "function/CEvaluationTree.h"
+#include "function/CExpression.h"
 #include "report/CCopasiObjectReference.h"
 #include "utilities/CCopasiTree.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -294,7 +295,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
         {
           fatalError();
         }
-      this->importSBMLRule(sbmlRule, this->mpCopasiModel, copasi2sbmlmap);
+      this->importSBMLRule(sbmlRule, copasi2sbmlmap);
       ++step;
       if (mpImportHandler && !mpImportHandler->progress(hStep)) return false;
     }
@@ -2713,7 +2714,7 @@ bool SBMLImporter::isStochasticModel(const Model* pSBMLModel)
   return stochastic;
 }
 
-void SBMLImporter::importSBMLRule(const Rule* sbmlRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   // so far we only support assignment rules and rate rules for global parameters only
   SBMLTypeCode_t type = sbmlRule->getTypeCode();
@@ -2722,7 +2723,7 @@ void SBMLImporter::importSBMLRule(const Rule* sbmlRule, CModel* copasiModel, std
       const AssignmentRule* pAssignmentRule = dynamic_cast<const AssignmentRule*>(sbmlRule);
       if (pAssignmentRule && pAssignmentRule->isSetVariable())
         {
-          this->importAssignmentRule(pAssignmentRule, copasiModel, copasi2sbmlmap);
+          this->importRule(pAssignmentRule, CModelEntity::ASSIGNMENT, copasi2sbmlmap);
         }
       else
         {
@@ -2734,7 +2735,7 @@ void SBMLImporter::importSBMLRule(const Rule* sbmlRule, CModel* copasiModel, std
       const RateRule* pRateRule = dynamic_cast<const RateRule*>(sbmlRule);
       if (pRateRule && pRateRule->isSetVariable())
         {
-          this->importRateRule(pRateRule, copasiModel, copasi2sbmlmap);
+          this->importRule(pRateRule, CModelEntity::ODE, copasi2sbmlmap);
         }
       else
         {
@@ -2747,85 +2748,27 @@ void SBMLImporter::importSBMLRule(const Rule* sbmlRule, CModel* copasiModel, std
     }
 }
 
-void SBMLImporter::importRateRule(const RateRule* rateRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
-  std::string sbmlId = rateRule->getVariable();
-  // find out to what kind of object the id belongs
-  SBMLTypeCode_t type = SBML_UNKNOWN;
-  bool found = false;
-  std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
-  std::map<CCopasiObject*, SBase*>::iterator endit = copasi2sbmlmap.end();
-  Compartment* pC;
-  Species* pS;
-  Parameter* pP;
-  while (it != endit)
+  std::string sbmlId;
+  const AssignmentRule* pARule = dynamic_cast<const AssignmentRule*>(rule);
+  if (pARule)
     {
-      switch (it->second->getTypeCode())
-        {
-        case SBML_COMPARTMENT:
-          pC = dynamic_cast<Compartment*>(it->second);
-          if (pC->getId() == sbmlId)
-            {
-              type = SBML_COMPARTMENT;
-              found = true;
-            }
-          break;
-        case SBML_SPECIES:
-          pS = dynamic_cast<Species*>(it->second);
-          if (pS->getId() == sbmlId)
-            {
-              type = SBML_SPECIES;
-              found = true;
-            }
-          break;
-        case SBML_PARAMETER:
-          pP = dynamic_cast<Parameter*>(it->second);
-          if (pP->getId() == sbmlId)
-            {
-              // make sure the parameter is not declared constant
-              if (pP->getConstant())
-                {
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "RateRule", "Parameter" , sbmlId.c_str());
-                }
-              type = SBML_PARAMETER;
-              found = true;
-            }
-          break;
-        default:
-          break;
-        }
-      if (found) break;
-      ++it;
-    }
-  if (found)
-    {
-      CModelValue* pMV;
-      switch (type)
-        {
-        case SBML_PARAMETER:
-          // check if it really is a global parameter
-          pMV = dynamic_cast<CModelValue*>(it->first);
-          if (!pMV)
-            {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 33, "RateRule", sbmlId.c_str());
-            }
-          this->importRateRuleForParameter(rateRule, pMV, copasiModel, copasi2sbmlmap);
-          break;
-        default:
-          mUnsupportedRateRuleFound = true;
-          break;
-        }
+      sbmlId == pARule->getVariable();
     }
   else
     {
-      // issue a warning
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 32, "RateRule", sbmlId.c_str());
+      const RateRule* pRRule = dynamic_cast<const RateRule*>(rule);
+      if (pRRule)
+        {
+          sbmlId = pRRule->getVariable();
+        }
+      else
+        {
+          // should never happen
+          fatalError();
+        }
     }
-}
-
-void SBMLImporter::importAssignmentRule(const AssignmentRule* assignmentRule, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
-{
-  std::string sbmlId = assignmentRule->getVariable();
   // find out to what kind of object the id belongs
   SBMLTypeCode_t type = SBML_UNKNOWN;
   bool found = false;
@@ -2862,7 +2805,19 @@ void SBMLImporter::importAssignmentRule(const AssignmentRule* assignmentRule, CM
               // make sure the parameter is not declared constant
               if (pP->getConstant())
                 {
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "AssignmentRule", "Parameter", sbmlId.c_str());
+                  if (ruleType == CModelEntity::ASSIGNMENT)
+                    {
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "AssignmentRule", "Parameter", sbmlId.c_str());
+                    }
+                  else if (ruleType == CModelEntity::ODE)
+                    {
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 34 , "RateRule", "Parameter", sbmlId.c_str());
+                    }
+                  else
+                    {
+                      // should never happen
+                      fatalError();
+                    }
                 }
               type = SBML_PARAMETER;
               pObject = it->first;
@@ -2885,19 +2840,55 @@ void SBMLImporter::importAssignmentRule(const AssignmentRule* assignmentRule, CM
           pMV = dynamic_cast<CModelValue*>(pObject);
           if (!pMV)
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 33, "AssigmentRule", sbmlId.c_str());
+              if (ruleType == CModelEntity::ASSIGNMENT)
+                {
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 33, "AssigmentRule", sbmlId.c_str());
+                }
+              else if (ruleType == CModelEntity::ODE)
+                {
+                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 33, "RateRule", sbmlId.c_str());
+                }
+              else
+                {
+                  // should never happen
+                  fatalError();
+                }
             }
-          this->importAssignmentRuleForParameter(assignmentRule, pMV, copasiModel, copasi2sbmlmap);
+          this->importRuleForModelEntity(rule, pMV, ruleType, copasi2sbmlmap);
           break;
         default:
-          mUnsupportedAssignmentRuleFound = true;
+          if (ruleType == CModelEntity::ASSIGNMENT)
+            {
+              mUnsupportedAssignmentRuleFound = true;
+            }
+          else if (ruleType == CModelEntity::ODE)
+            {
+              mUnsupportedRateRuleFound = true;
+            }
+          else
+            {
+              // should never happen
+              fatalError();
+            }
           break;
         }
     }
   else
     {
       // issue a warning
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 32, "AssignmentRule" , sbmlId.c_str());
+      if (ruleType == CModelEntity::ASSIGNMENT)
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 32, "AssignmentRule" , sbmlId.c_str());
+        }
+      else if (ruleType == CModelEntity::ODE)
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 32, "RateRule" , sbmlId.c_str());
+        }
+      else
+        {
+          // should never happen
+          fatalError();
+        }
     }
 }
 
@@ -2936,19 +2927,21 @@ void SBMLImporter::areRulesUnique(const Model* sbmlModel)
     }
 }
 
-void SBMLImporter::importRateRuleForParameter(const RateRule* rateRule, CModelValue* pMV, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME, CModelEntity::Status status, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
-  if (!rateRule->isSetMath())
+  if (!rule->isSetMath())
     {
-      rateRule->setMathFromFormula();
+      rule->setMathFromFormula();
     }
-  this->checkRuleMathConsistency(rateRule, copasi2sbmlmap);
-  ConverterASTNode tmpNode(*rateRule->getMath());
+  this->checkRuleMathConsistency(rule, copasi2sbmlmap);
+  ConverterASTNode tmpNode(*rule->getMath());
   this->preprocessNode(&tmpNode);
+  // now we convert the node to a CEvaluationNode
+  CExpression* pExpression = new CExpression;
+  pExpression->setTree(tmpNode);
+  pME->setStatus(status);
+  pME->setExpressionPtr(pExpression);
 }
-
-void SBMLImporter::importAssignmentRuleForParameter(const AssignmentRule* assignmentRule, CModelValue* pMV, CModel* copasiModel, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
-{}
 
 void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
