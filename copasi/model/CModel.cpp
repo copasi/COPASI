@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.276 $
+   $Revision: 1.277 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/15 14:29:59 $
+   $Date: 2006/08/15 14:59:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -955,6 +955,9 @@ unsigned C_INT32 CModel::getNumMetabs() const
 unsigned C_INT32 CModel::getNumVariableMetabs() const
   {return mNumMetabolitesReaction;}
 
+unsigned C_INT32 CModel::getNumODEMetabs() const
+  {CCHECK return mNumMetabolitesODE;}
+
 unsigned C_INT32 CModel::getNumIndependentMetabs() const
   {CCHECK return mNumMetabolitesIndependent;}
 
@@ -1278,6 +1281,8 @@ bool CModel::buildApplySequence()
       for (; ppEntity != ppEntityEnd; ++ppEntity, ++ppReorder)
         *ppReorder = *ppEntity;
 
+      // :TODO: This must be enhanced as the mMetaboliteX and the state template may get out of sync
+      // when we use assignments for metabolites.
       ppEntityEnd = mStateTemplate.endDependent();
       for (; ppEntity != ppEntityEnd; ++ppEntity)
         if ((*ppEntity)->isUsed())
