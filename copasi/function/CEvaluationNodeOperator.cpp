@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeOperator.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/08/12 13:13:52 $
+   $Author: nsimus $
+   $Date: 2006/08/15 11:40:44 $
    End CVS Header */
 
-// Copyright ï¿½ 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -193,6 +193,44 @@ std::string CEvaluationNodeOperator::getDisplay_MMD_String(const CEvaluationTree
       }
     else
       return "@";
+  }
+
+std::string CEvaluationNodeOperator::getDisplay_XPP_String(const CEvaluationTree * pTree) const
+  {
+    if (const_cast<CEvaluationNodeOperator *>(this)->compile(NULL))
+      {
+        Data DisplayString;
+        SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+
+        if (subType == MODULUS)
+          DisplayString = "mod(";
+
+        if (*mpLeft < *(CEvaluationNode *)this)
+          DisplayString += "(" + mpLeft->getDisplay_XPP_String(pTree) + ")";
+        else
+          DisplayString += mpLeft->getDisplay_XPP_String(pTree);
+
+        switch (subType)
+          {
+          case MODULUS:
+            DisplayString += ",";
+            break;
+          default:
+            DisplayString += mData;
+            break;
+          }
+        if (!(*(CEvaluationNode *)this < *mpRight))
+          DisplayString += "(" + mpRight->getDisplay_XPP_String(pTree) + ")";
+        else
+          DisplayString += mpRight->getDisplay_XPP_String(pTree);
+
+        if (subType == MODULUS)
+          DisplayString += ")";
+
+        return DisplayString;
+      }
+    else
+      return "@"; //TODO
   }
 
 CEvaluationNode* CEvaluationNodeOperator::createNodeFromASTTree(const ASTNode& node)
