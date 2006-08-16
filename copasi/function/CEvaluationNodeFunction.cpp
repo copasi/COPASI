@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeFunction.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: nsimus $
-   $Date: 2006/08/15 11:39:31 $
+   $Date: 2006/08/16 11:41:58 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -441,9 +441,10 @@ std::string CEvaluationNodeFunction::getDisplay_MMD_String(const CEvaluationTree
 
 std::string CEvaluationNodeFunction::getDisplay_XPP_String(const CEvaluationTree * pTree) const
   {
+    std::string data = "";
     if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
       {
-        std::string data = "";
+        data = mData;
 
         switch ((SubType)CEvaluationNode::subType(this->getType()))
           {
