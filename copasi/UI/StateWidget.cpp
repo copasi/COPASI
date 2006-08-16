@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/16 15:34:40 $
+   $Date: 2006/08/16 19:52:32 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -123,9 +123,4 @@ void StateWidget::runSetInitialState()
   const CState *currentState = mSteadyStateTask->getState();
   if (currentState)
     CCopasiDataModel::Global->getModel()->setInitialState(*currentState);
-}
-
-void StateWidget::setUpTodate()
-{
-  mUpToDate = true;
 }
