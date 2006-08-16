@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateWidget.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Date: 2006/08/16 15:34:40 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,8 @@
  */
 StateWidget::StateWidget(QWidget* parent, const char* name, WFlags fl)
     : CopasiWidget(parent, name, fl),
-    objKey("")
+    objKey(""),
+    mUpToDate(false)
 {
   if (!name)
     setName("StateWidget");
@@ -74,6 +75,7 @@ StateWidget::~StateWidget()
   clicked in the tree   */
 bool StateWidget::loadFromBackend()
 {
+  mUpToDate = true;
   mCentralWidget->showUnits();
   CSteadyStateTask * pSteadyStateTask
   = dynamic_cast<CSteadyStateTask *>((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
@@ -88,48 +90,42 @@ bool StateWidget::saveToBackend()
   return true;
 }
 
-/*void StateWidget::slotBtnCancelClicked()
-{
-  enter(objKey); // reload
-}*/
-
-/*void StateWidget::slotBtnOKClicked()
-{
-  saveToCompartment();
-}*/
-
-bool StateWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action
+bool StateWidget::update(ListViews::ObjectType objectType, ListViews::Action
                          C_UNUSED(action), const std::string & C_UNUSED(key))
 {
-  if (this->isShown())
-    return loadFromBackend();
-  else
-    return true;
+  if (objectType != ListViews::STATE)
+    mUpToDate = false;
+
+  // :TODO: update the validity indicator
+  // if (this->isShown())
+  //   ...;
+
+  return true;
 }
 
 bool StateWidget::leave()
 {
-  //return saveToCompartment();
   return true;
 }
 
 bool StateWidget::enter(const std::string & C_UNUSED(key))
 {
-  //objKey = key;
-  return loadFromBackend();
-  /*CCompartment* comp = dynamic_cast< CCompartment * >(GlobalKeys.get(key));
+  // :TODO: update the validity indicator
+  // ...;
 
-  if (comp) return loadFromCompartment(comp);
-  else return false;*/
+  return true;
 }
 
 void StateWidget::runSetInitialState()
 {
   CSteadyStateTask* mSteadyStateTask =
-    //dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(objKey));
-    //I need to remove this hardcoding -- sameer
     dynamic_cast<CSteadyStateTask *>(GlobalKeys.get("Task_2"));
   const CState *currentState = mSteadyStateTask->getState();
   if (currentState)
     CCopasiDataModel::Global->getModel()->setInitialState(*currentState);
+}
+
+void StateWidget::setUpTodate()
+{
+  mUpToDate = true;
 }

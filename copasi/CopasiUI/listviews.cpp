@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.199 $
+   $Revision: 1.200 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/13 18:06:17 $
+   $Date: 2006/08/16 15:34:40 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -463,7 +463,53 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
   {
     // first try ID
     C_INT32 id = item->getFolder()->getId();
+    CopasiWidget * pWidget = findWidgetFromId(id);
 
+    if (pWidget != NULL)
+      return pWidget;
+
+    // then try parent id:
+    FolderListItem* parent = (FolderListItem*)item->parent();
+    if (!parent) return NULL;
+    id = parent->getFolder()->getId();
+
+    switch (id)
+      {
+      case 111:
+        return compartmentsWidget1;
+        break;
+      case 112:
+        return metabolitesWidget1;
+        break;
+      case 113:
+        return moietyWidget1;
+        break;
+      case 114:
+        return reactionsWidget1;
+        break;
+      case 115:
+        return mpModelValueWidget;
+        break;
+      case 222:
+        return moietyWidget1;
+        break;
+      case 43:
+        return tableDefinition1;
+        break;
+      case 42:
+        return plotWidget1;
+        break;
+      case 5:
+        return functionWidget1;
+        break;
+      }
+
+    //give up
+    return NULL;
+  }
+
+CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
+  {
     switch (id)
       {
       case - 1:
@@ -581,43 +627,6 @@ CopasiWidget* ListViews::findWidgetFromItem(FolderListItem* item) const
         break;
       }
 
-    // then try parent id:
-    FolderListItem* parent = (FolderListItem*)item->parent();
-    if (!parent) return NULL;
-    id = parent->getFolder()->getId();
-
-    switch (id)
-      {
-      case 111:
-        return compartmentsWidget1;
-        break;
-      case 112:
-        return metabolitesWidget1;
-        break;
-      case 113:
-        return moietyWidget1;
-        break;
-      case 114:
-        return reactionsWidget1;
-        break;
-      case 115:
-        return mpModelValueWidget;
-        break;
-      case 222:
-        return moietyWidget1;
-        break;
-      case 43:
-        return tableDefinition1;
-        break;
-      case 42:
-        return plotWidget1;
-        break;
-      case 5:
-        return functionWidget1;
-        break;
-      }
-
-    //give up
     return NULL;
   }
 

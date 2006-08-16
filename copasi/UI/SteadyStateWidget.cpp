@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.cpp,v $
-   $Revision: 1.109 $
+   $Revision: 1.110 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:23 $
+   $Date: 2006/08/16 15:34:40 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,6 +33,7 @@
 #include "CQTaskBtnWidget.h"
 #include "CQTaskHeaderWidget.h"
 #include "CProgressBar.h"
+#include "StateWidget.h"
 //#include "copasiui3window.h"
 
 #include "copasi.h"
@@ -201,6 +202,9 @@ bool SteadyStateWidget::runTask()
 
   commonAfterRunTask();
 
+  StateWidget *pResult = dynamic_cast< StateWidget * >(pListView->findWidgetFromId(211));
+  if (pResult) pResult->loadFromBackend();
+
   if (success && isShown()) pListView->switchToOtherWidget(211, ""); //change to the results window
 
   return success;
@@ -276,6 +280,14 @@ bool SteadyStateWidget::saveTask()
                                const std::string & C_UNUSED(key))
 {
   if (mIgnoreUpdates) return true;
+
+
+
+
+
+
+
+
 
 
 

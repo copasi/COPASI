@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateWidget.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Date: 2006/08/16 15:34:40 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,7 @@ class StateWidget : public CopasiWidget
     virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
     virtual bool leave();
     virtual bool enter(const std::string & key = "");
+    bool loadFromBackend();
 
   public slots:
     virtual void runSetInitialState();
@@ -45,7 +46,6 @@ class StateWidget : public CopasiWidget
     //virtual void slotBtnOKClicked();
 
   protected:
-    bool loadFromBackend();
     bool saveToBackend();
     std::string objKey;
 
@@ -53,6 +53,7 @@ class StateWidget : public CopasiWidget
     QHBoxLayout* stateLayout;
     QVBoxLayout* parentLayout;
     StateSubwidget* mCentralWidget;
+    bool mUpToDate;
   };
 
 #endif
