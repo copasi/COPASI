@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/19 20:56:51 $
+   $Author: gauges $
+   $Date: 2006/08/17 07:29:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@
 #include "utilities/CCopasiTree.h"
 
 #include "function/CFunctionDB.h"
+#include "function/CExpression.h"
 
 #include "sbml/Unit.h"
 #include "sbml/UnitDefinition.h"
@@ -38,6 +39,9 @@
 
 #include "sbml/ModifierSpeciesReference.h"
 #include "sbml/SpeciesReference.h"
+#include "sbml/Rule.h"
+#include "sbml/RateRule.h"
+#include "sbml/AssignmentRule.h"
 #include "sbml/FunctionDefinition.h"
 #include "sbml/Event.h"
 #include "xml/CCopasiXMLInterface.h"
@@ -120,7 +124,7 @@ SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CModel* copasiModel, in
   if (mpExportHandler)
     {
       mStep = 0;
-      mTotalSteps = 6;
+      mTotalSteps = 7;
       mpExportHandler->setName("SBML Export");
       mHStep = mpExportHandler->addItem("Exporting model to SBML...",
                                         CCopasiParameter::UINT,
@@ -145,7 +149,7 @@ SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CModel* copasiModel, in
 
   if (mpExportHandler)
     {
-      mStep = 6;
+      mStep = 7;
       if (!mpExportHandler->progress(mHStep)) return false;
     }
   this->createFunctionDefinitions();
@@ -356,12 +360,39 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
       ++step;
       if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
+  /* create all rules */
+  iMax = copasiModel->getModelValues().size();
+  if (mpExportHandler)
+    {
+      mpExportHandler->finish(hStep);
+      mStep = 4;
+      mpExportHandler->progress(mHStep);
+      totalSteps = iMax;
+      step = 0;
+      hStep = mpExportHandler->addItem("Creating rate rules and assignment rules for global parameters...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
+    }
+  std::vector<Rule*> rules;
+  for (counter = 0; counter < iMax; counter++)
+    {
+      Rule* sbmlRule = this->createRuleFromCModelEntity(copasiModel->getModelValues()[counter]);
+      if (sbmlRule != NULL)
+        {
+          rules.push_back(sbmlRule);
+        }
+      ++step;
+      if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
+    }
+  this->exportRules(rules);
+
   /* create all reactions */
   iMax = copasiModel->getReactions().size();
   if (mpExportHandler)
     {
       mpExportHandler->finish(hStep);
-      mStep = 4;
+      mStep = 5;
       mpExportHandler->progress(mHStep);
       totalSteps = iMax;
       step = 0;
@@ -1485,6 +1516,7 @@ void SBMLExporter::setExportHandler(CProcessReport* pExportHandler)
   this->mpExportHandler = pExportHandler;
 }
 
+/*
 void SBMLExporter::fillCopasi2SBMLMap()
 {
   this->mCopasi2SBMLMap.clear();
@@ -1563,6 +1595,7 @@ void SBMLExporter::fillCopasi2SBMLMap()
                   sbmlMap[p->getId()] = p;
                 }
             }
+
 
           // go through the copasi model and create a map of all objects that already have an sbml id
           CFunctionDB* pFunDB = CCopasiDataModel::Global->getFunctionList();
@@ -1673,6 +1706,7 @@ void SBMLExporter::fillCopasi2SBMLMap()
         }
     }
 }
+ */
 
 void SBMLExporter::removeFromList(ListOf& list, SBase* pObject)
 {
@@ -1792,3 +1826,302 @@ const std::list<const CEvaluationTree*>* SBMLExporter::getUsedFunctionList() con
   {
     return this->mpUsedFunctions;
   }
+
+Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME)
+{
+  Rule* pRule = NULL;
+  Model* pModel = sbmlDocument->getModel();
+  if (!pModel) fatalError();
+  if (pME)
+    {
+      Rule* pOldRule = this->findExistingRuleForModelEntity(pME);
+      if (pME->getStatus() == CModelEntity::ODE)
+        {
+          // create a rate rule
+          RateRule* pRateRule = NULL;
+          if (pOldRule)
+            {
+              pRateRule = dynamic_cast<RateRule*>(pOldRule);
+              if (pRateRule)
+                {
+                  RateRule* pTmpRule = new RateRule();
+                  // copy the attributes from pAssignmentRule
+                  // that we want to keep
+                  if (pRateRule->isSetMetaId())
+                    {
+                      pTmpRule->setMetaId(pRateRule->getMetaId());
+                    }
+                  if (pRateRule->isSetNotes())
+                    {
+                      pTmpRule->setNotes(pRateRule->getNotes());
+                    }
+                  if (pRateRule->isSetAnnotation())
+                    {
+                      pTmpRule->setAnnotation(pRateRule->getAnnotation());
+                    }
+                  pTmpRule->setVariable(pRateRule->getVariable());
+                  pRateRule = pTmpRule;
+                }
+              // the rule needs to be removed because the rules need to be
+              // ordered in the list and reordering of list in SBML is not
+              // possible
+              this->removeFromList(pModel->getListOfRules(), pOldRule);
+            }
+          if (!pRateRule)
+            {
+              pRateRule = new RateRule();
+            }
+          // now we set the new expression
+          ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
+          pRateRule->setMath(pRootNode);
+          pRule = pRateRule;
+        }
+      else if (pME->getStatus() == CModelEntity::ASSIGNMENT)
+        {
+          // create an assignment rule
+          AssignmentRule* pAssignmentRule = NULL;
+          if (pOldRule)
+            {
+              pAssignmentRule = dynamic_cast<AssignmentRule*>(pOldRule);
+              if (pAssignmentRule)
+                {
+                  AssignmentRule* pTmpRule = new AssignmentRule();
+                  // copy the attributes from pAssignmentRule
+                  // that we want to keep
+                  if (pAssignmentRule->isSetMetaId())
+                    {
+                      pTmpRule->setMetaId(pAssignmentRule->getMetaId());
+                    }
+                  if (pAssignmentRule->isSetNotes())
+                    {
+                      pTmpRule->setNotes(pAssignmentRule->getNotes());
+                    }
+                  if (pAssignmentRule->isSetAnnotation())
+                    {
+                      pTmpRule->setAnnotation(pAssignmentRule->getAnnotation());
+                    }
+                  pTmpRule->setVariable(pAssignmentRule->getVariable());
+                  pAssignmentRule = pTmpRule;
+                }
+              // the rule needs to be removed because the rules need to be
+              // ordered in the list and reordering of list in SBML is not
+              // possible
+              this->removeFromList(pModel->getListOfRules(), pOldRule);
+            }
+          if (!pAssignmentRule)
+            {
+              pAssignmentRule = new AssignmentRule();
+            }
+          // now we set the new expression
+          ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
+          pAssignmentRule->setMath(pRootNode);
+          pRule = pAssignmentRule;
+        }
+      else
+        {
+          // remove and delete the old rule
+          if (pOldRule)
+            {
+              this->removeFromList(pModel->getListOfRules(), pOldRule);
+            }
+        }
+    }
+  return pRule;
+}
+
+void SBMLExporter::exportRules(std::vector<Rule*>& rules)
+{
+  // the rules first have to be ordered before they can be added to the model
+  // before adding a Rule, all other rules have to be removed and possibly
+  // deleted
+  std::vector<Rule*> sortedRules;
+  std::map<Rule*, std::vector<Rule*> > dependencyMap;
+  std::vector<Rule*>::iterator it = rules.begin();
+  std::vector<Rule*>::iterator endIt = rules.end();
+  while (it != endIt)
+    {
+      std::vector<Rule*> tmpRules2 = this->findDependenciesForRule(*it, rules);
+      if (tmpRules2.empty())
+        {
+          sortedRules.push_back(*it);
+        }
+      else
+        {
+          dependencyMap[*it] = tmpRules2;
+        }
+      ++it;
+    }
+  while (!dependencyMap.empty())
+    {
+      bool removedItem = false;
+      std::map<Rule*, std::vector<Rule*> >::iterator it2 = dependencyMap.begin();
+      std::map<Rule*, std::vector<Rule*> >::iterator endIt2 = dependencyMap.end();
+      while (it2 != endIt2)
+        {
+          it = it2->second.begin();
+          endIt = it2->second.end();
+          while (it != endIt)
+            {
+              if (std::find(sortedRules.begin(), sortedRules.end(), *it) == sortedRules.end())
+                {
+                  break;
+                }
+              ++it;
+            }
+          if (it == endIt)
+            {
+              // all rules are already in sortedRules, so we can add this
+              // rule as well and remove it from the map
+              sortedRules.push_back(it2->first);
+              dependencyMap.erase(it2);
+              removedItem = true;
+              break;
+            }
+          ++it2;
+        }
+      if (!removedItem)
+        {
+          break;
+        }
+    }
+  if (!dependencyMap.empty())
+    {
+      // there must be some dependency loops
+      fatalError();
+    }
+  // now we can add all rules in sorted Rules to the model
+}
+
+std::vector<Rule*> SBMLExporter::findDependenciesForRule(Rule* pRule, const std::vector<Rule*>& rules)
+{
+  const ASTNode* pNode = pRule->getMath();
+  std::vector<Rule*> dependencies;
+  std::set<std::string> nodeIds = this->getObjectNodeIds(pNode);
+  std::set<std::string>::iterator it = nodeIds.begin();
+  std::set<std::string>::iterator endIt = nodeIds.end();
+  while (it != endIt)
+    {
+      std::vector<Rule*>::const_iterator it2 = rules.begin();
+      std::vector<Rule*>::const_iterator endIt2 = rules.end();
+      while (it2 != endIt2)
+        {
+          SBMLTypeCode_t type = (*it2)->getTypeCode();
+          if (type == SBML_ASSIGNMENT_RULE)
+            {
+              if (dynamic_cast<const AssignmentRule*>(*it2)->getVariable() == *it)
+                {
+                  // the rules depends on itself, this is an error
+                  if ((*it2) == pRule)
+                    {
+                      fatalError();
+                    }
+                  break;
+                }
+            }
+          else if (type == SBML_RATE_RULE)
+            {
+              if (dynamic_cast<const RateRule*>(*it2)->getVariable() == *it)
+                {
+                  // the rules depends on itself, this is an error
+                  if ((*it2) == pRule)
+                    {
+                      fatalError();
+                    }
+                  break;
+                }
+            }
+          else
+            {
+              fatalError();
+            }
+          ++it2;
+        }
+      if (it2 != endIt2)
+        {
+          dependencies.push_back(*it2);
+        }
+      ++it;
+    }
+  return dependencies;
+}
+
+std::set<std::string> SBMLExporter::getObjectNodeIds(const ASTNode* pNode)
+{
+  std::set<std::string> ids;
+  if (pNode)
+    {
+      if (pNode->getType() == AST_NAME)
+        {
+          ids.insert(pNode->getName());
+        }
+      else
+        {
+          unsigned int i, iMax = pNode->getNumChildren();
+          for (i = 0;i < iMax;++i)
+            {
+              std::set<std::string> tmpSet = this->getObjectNodeIds(pNode->getChild(i));
+              std::set<std::string>::iterator it = tmpSet.begin();
+              std::set<std::string>::iterator endIt = tmpSet.end();
+              while (it != endIt)
+                {
+                  ids.insert(*it);
+                  ++it;
+                }
+            }
+        }
+    }
+  return ids;
+}
+
+Rule* SBMLExporter::findExistingRuleForModelEntity(const CModelEntity* pME)
+{
+  Rule* pOldRule = NULL;
+  Model* pModel = sbmlDocument->getModel();
+  if (!pModel) fatalError();
+  unsigned int i, iMax = pModel->getNumRules();
+  SBase* pObject = NULL;
+  std::map<CCopasiObject*, SBase*>::iterator pos = mCopasi2SBMLMap.find(const_cast<CModelEntity*>(pME));
+  if (pos != mCopasi2SBMLMap.end())
+    {
+      pObject = pos->second;
+    }
+  else
+    {
+      fatalError();
+    }
+  for (i = 0;i < iMax;++i)
+    {
+      Rule* pR = pModel->getRule(i);
+      std::string ruleVariable;
+      if (pR->getTypeCode() == SBML_ASSIGNMENT_RULE)
+        {
+          ruleVariable = dynamic_cast<AssignmentRule*>(pR)->getVariable();
+        }
+      else if (pR->getTypeCode() == SBML_RATE_RULE)
+        {
+          ruleVariable = dynamic_cast<RateRule*>(pR)->getVariable();
+        }
+      bool found = false;
+      switch (pObject->getTypeCode())
+        {
+        case SBML_COMPARTMENT:
+          found = (dynamic_cast<Compartment*>(pObject)->getId() == ruleVariable);
+          break;
+        case SBML_SPECIES:
+          found = (dynamic_cast<Species*>(pObject)->getId() == ruleVariable);
+          break;
+        case SBML_PARAMETER:
+          found = (dynamic_cast<Parameter*>(pObject)->getId() == ruleVariable);
+          break;
+        default:
+          fatalError();
+          break;
+        }
+      if (found)
+        {
+          pOldRule = pR;
+          break;
+        }
+    }
+  return pOldRule;
+}

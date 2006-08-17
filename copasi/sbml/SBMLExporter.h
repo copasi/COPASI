@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:21 $
+   $Author: gauges $
+   $Date: 2006/08/17 07:29:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,6 +32,7 @@
 #include "sbml/Parameter.h"
 
 class CProcessReport;
+class CModelEntity;
 
 class SBMLExporter
   {
@@ -212,7 +213,7 @@ class SBMLExporter
      * if a current SBMLDocument exists.
      * SBML objects that do not have a corresponding copasi object are deleted.
      */
-    void fillCopasi2SBMLMap();
+    //void fillCopasi2SBMLMap();
 
     /**
      * Translate a function with its arguments into an expression tree.
@@ -231,6 +232,39 @@ class SBMLExporter
     CEvaluationNode* createExpressionTree(const CFunction* const pFun, const std::map<std::string, std::string>& parameterMap);
 
     CEvaluationNode* createExpressionTree(const CEvaluationNode* const pNode, const std::map<std::string, std::string>& parameterMap);
+
+    /**
+     * Checks the SBML Model if there alreay exists a rule for the given
+     * ModelEntity, if yes, a pointer to the Rule object is returned, else NULL
+     * is returned.
+     */
+    Rule* findExistingRuleForModelEntity(const CModelEntity* pME);
+
+    /**
+     * This function takes a vector of rules and tries to sort them in correct
+     * order for export. Afterwards, the Rules are added to the Model.
+     */
+    void exportRules(std::vector<Rule*>& rules);
+
+    /**
+     * This method takes a COPASI CModelEntity and creates a SBML Rule for it
+     * if the status of the entity evaluates to ASSIGNMENT or ODE, otherwise
+     * a NULL pointer is returned.
+     */
+    Rule* createRuleFromCModelEntity(CModelEntity* pME);
+
+    /**
+     * This method returns a vector of Rules that the given Rule depends on.
+     * It goes through the expression tree of the given rule and checks if any
+     * of the object nodes in the tree have a rule.
+     */
+    std::vector<Rule*> findDependenciesForRule(Rule* pRule, const std::vector<Rule*>& rules);
+
+    /**
+     * This methods traverses the tree specified by the ASTNode and returns the
+     * ids of all object nodes as a set.
+     */
+    std::set<std::string> getObjectNodeIds(const ASTNode* pNode);
 
   public:
 
