@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:20:18 $
+   $Date: 2006/08/17 14:11:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -129,7 +129,8 @@ class CFindDimensions
      */
     void setChemicalEquation(const CChemEq* eq);
 
-    void setMolecularitiesForMassAction(const C_FLOAT64 & m1, const C_FLOAT64 & m2);
+    void setMolecularitiesForMassAction(const unsigned C_INT32 & m1,
+                                        const unsigned C_INT32 & m2);
 
   private:
 

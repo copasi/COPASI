@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Date: 2006/08/17 14:11:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -255,7 +255,7 @@ std::string CChemEqInterface::writeElement(const std::string & name, C_FLOAT64 m
     }
 }
 
-C_INT32 CChemEqInterface::getMolecularity(CFunctionParameter::Role role) const
+unsigned C_INT32 CChemEqInterface::getMolecularity(CFunctionParameter::Role role) const
   {
     const std::vector<C_FLOAT64> * tmpVector = NULL;
 
@@ -270,7 +270,12 @@ C_INT32 CChemEqInterface::getMolecularity(CFunctionParameter::Role role) const
     C_INT32 ccc, i, imax = tmpVector->size();
     ccc = 0;
     for (i = 0; i < imax; ++i)
-      ccc += (C_INT32)floor((*tmpVector)[i]);
+      {
+        if ((*tmpVector)[i] != (C_FLOAT64) (C_INT32) (*tmpVector)[i])
+          return C_INVALID_INDEX;
+
+        ccc += (C_INT32)floor((*tmpVector)[i]);
+      }
 
     return ccc;
   }

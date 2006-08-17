@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/27 18:07:27 $
+   $Date: 2006/08/17 14:11:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -313,9 +313,7 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction,
       //This is purely heuristics
       for (i = 0; i < imax; i++)
         {
-          C_INT32 findresult = fl[i].find(s);
-
-          if (findresult >= 0)    // if find succeeds, the return value is likely to be 0
+          if (fl[i].find(s) != std::string::npos)    // if find succeeds, the return value is likely to be 0
             //if (fl[i].find(s) >= 0) - for some reason this doesn't work
             {
               setFunctionAndDoMapping(fl[i], model);
@@ -328,9 +326,19 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction,
   s = "Mass action";
   for (i = 0; i < imax; i++)
     {
-      C_INT32 findresult = fl[i].find(s);
+      if (fl[i].find(s) != std::string::npos)    // if find succeeds, the return value is likely to be 0
+        //if (fl[i].find(s) >= 0) - for some reason this doesn't work
+        {
+          setFunctionAndDoMapping(fl[i], model);
+          return;
+        }
+    }
 
-      if (findresult >= 0)    // if find succeeds, the return value is likely to be 0
+  //try constant flux next
+  s = "Constant flux";
+  for (i = 0; i < imax; i++)
+    {
+      if (fl[i].find(s) != std::string::npos)    // if find succeeds, the return value is likely to be 0
         //if (fl[i].find(s) >= 0) - for some reason this doesn't work
         {
           setFunctionAndDoMapping(fl[i], model);
@@ -339,7 +347,7 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction,
     }
 
   //if everything else fails just take the first function from the list
-  //this should not be reached since mass action is a valid kinetic function for every reaction
+  //this should not be reached since constant flux is a valid kinetic function for every reaction
   setFunctionAndDoMapping(fl[0], model);
 }
 
@@ -671,8 +679,11 @@ std::vector<std::string> CReactionInterface::getExpandedMetabList(CFunctionParam
         if (role == CFunctionParameter::MODIFIER) jmax = 1;
         else jmax = (C_INT32)mults[i];
 
-        for (j = 0; j < jmax; ++j)
-          ret.push_back(names[i]);
+        do
+          {
+            ret.push_back(names[i]);
+          }
+        while (++j < jmax);
       }
     return ret;
   }

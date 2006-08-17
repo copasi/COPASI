@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDimension.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:20:18 $
+   $Date: 2006/08/17 14:11:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -327,9 +327,11 @@ void CFindDimensions::setChemicalEquation(const CChemEq* eq)
   mM2 = eq->getMolecularity(CChemEq::PRODUCT);
 }
 
-void CFindDimensions::setMolecularitiesForMassAction(const C_FLOAT64 & m1, const C_FLOAT64 & m2)
+void CFindDimensions::setMolecularitiesForMassAction(const unsigned C_INT32 & m1,
+    const unsigned C_INT32 & m2)
 {
-  mM1 = m1; mM2 = m2;
+  mM1 = (m1 != C_INVALID_INDEX) ? m1 : -1.0;
+  mM2 = (m2 != C_INVALID_INDEX) ? m2 : -1.0;
 }
 
 void CFindDimensions::findDimensionsMassAction()

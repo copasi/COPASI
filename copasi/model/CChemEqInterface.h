@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Date: 2006/08/17 14:11:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -83,7 +83,7 @@ class CChemEqInterface
 
     void reverse();
 
-    C_INT32 getMolecularity(CFunctionParameter::Role role) const;
+    unsigned C_INT32 getMolecularity(CFunctionParameter::Role role) const;
 
     std::set<std::string> listOfNonUniqueMetabNames(const CModel * model) const;
     std::set<std::string> listOfNonExistingMetabNames(const CModel * model) const;

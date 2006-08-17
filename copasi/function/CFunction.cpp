@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunction.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/27 18:55:47 $
+   $Date: 2006/08/17 14:11:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -181,12 +181,13 @@ bool CFunction::isSuitable(const unsigned C_INT32 noSubstrates,
   //check substrates
   if (mVariables.isVector(CFunctionParameter::SUBSTRATE))
     {
-      if (noSubstrates < 1)
+      if (noSubstrates == 0 || noSubstrates == C_INVALID_INDEX)
         return false;
     }
   else //is no vector
     {
-      if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) != noSubstrates)
+      if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) != noSubstrates &&
+          noSubstrates != C_INVALID_INDEX)
         return false;
     }
 
@@ -195,12 +196,13 @@ bool CFunction::isSuitable(const unsigned C_INT32 noSubstrates,
     {
       if (mVariables.isVector(CFunctionParameter::PRODUCT))
         {
-          if (noProducts < 1)
+          if (noProducts == 0 || noProducts == C_INVALID_INDEX)
             return false;
         }
       else //is no vector
         {
-          if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) != noProducts)
+          if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) != noProducts &&
+              noProducts != C_INVALID_INDEX)
             return false;
         }
     }
