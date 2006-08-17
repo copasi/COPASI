@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.146 $
+   $Revision: 1.147 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/15 20:41:21 $
+   $Date: 2006/08/17 07:28:19 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -279,7 +279,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   if (mpImportHandler)
     {
       mpImportHandler->finish(hStep);
-      mImportStep = 5;
+      mImportStep = 6;
       if (!mpImportHandler->progress(mhImportStep)) return false;
       step = 0;
       totalSteps = num;
@@ -305,7 +305,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   if (mpImportHandler)
     {
       mpImportHandler->finish(hStep);
-      mImportStep = 6;
+      mImportStep = 7;
       if (!mpImportHandler->progress(mhImportStep)) return false;
       step = 0;
       totalSteps = num;
@@ -341,7 +341,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   if (mpImportHandler)
     {
       mpImportHandler->finish(hStep);
-      mImportStep = 7;
+      mImportStep = 8;
       if (!mpImportHandler->progress(mhImportStep)) return false;
     }
 
@@ -1271,7 +1271,7 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument *&
       if (mpImportHandler)
         {
           mpImportHandler->setName("Importing SBML file...");
-          mTotalSteps = 7;
+          mTotalSteps = 8;
           mhImportStep = mpImportHandler->addItem("Step",
                                                   CCopasiParameter::UINT,
                                                   & mImportStep,
