@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSRES.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:31 $
+   $Date: 2006/08/18 21:01:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -185,7 +185,11 @@ bool COptMethodSRES::mutate()
       for (j = 0; pVariable != pVariableEnd; ++pVariable, ++pVariance, ++pMaxVariance, ++j)
         {
           C_FLOAT64 & mut = *pVariable;
+          C_FLOAT64 Store = mut;
+
           COptItem & OptItem = *(*mpOptItem)[j];
+
+          unsigned C_INT32 l;
 
           try
             {
@@ -193,8 +197,13 @@ bool COptMethodSRES::mutate()
               *pVariance =
                 std::min(*pVariance * exp(tau1 * v1 + tau2 * mpRandom->getRandomNormal01()), *pMaxVariance);
 
-              // calculate the mutated parameter
-              mut += sqrt(*pVariance) * mpRandom->getRandomNormal01();
+              for (l = 0; l < 10; l++)
+                {
+                  // calculate the mutated parameter
+                  mut = Store + *pVariance * mpRandom->getRandomNormal01();
+                  if (OptItem.checkConstraint(mut) == 0)
+                    break;
+                }
             }
 
           catch (...)
@@ -202,31 +211,8 @@ bool COptMethodSRES::mutate()
               mut = (*OptItem.getUpperBoundValue() + *OptItem.getLowerBoundValue()) * 0.5;
             }
 
-          // force it to be within the bounds
-          switch (OptItem.checkConstraint(mut))
-            {
-            case - 1:
-              mut = *OptItem.getLowerBoundValue();
-              if (!OptItem.checkLowerBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = DBL_MIN;
-                  else
-                    mut += mut * DBL_EPSILON;
-                }
-              break;
-
-            case 1:
-              mut = *OptItem.getUpperBoundValue();
-              if (!OptItem.checkUpperBound(mut)) // Inequality
-                {
-                  if (mut == 0.0)
-                    mut = - DBL_MIN;
-                  else
-                    mut -= mut * DBL_EPSILON;
-                }
-              break;
-            }
+          if (l == 10)
+            mut = Store;
 
           // We need to set the value here so that further checks take
           // account of the value.
@@ -555,7 +541,7 @@ bool COptMethodSRES::initialize()
         {
           C_FLOAT64 tmp =
             mMaxVariance[i] =
-              (*OptItem.getUpperBoundValue() - *OptItem.getLowerBoundValue()) / sqrt(childrate * mPopulationSize);
+              (*OptItem.getUpperBoundValue() - *OptItem.getLowerBoundValue()) / sqrt(mVariableSize);
         }
       catch (...)
         {
@@ -571,8 +557,8 @@ bool COptMethodSRES::initialize()
 
   try
     {
-      tau1 = 1 / sqrt(2 * sqrt(childrate * mPopulationSize));
-      tau2 = 1 / sqrt(2 * childrate * mPopulationSize);
+      tau1 = 1 / sqrt(2 * sqrt(mVariableSize));
+      tau2 = 1 / sqrt(2 * mVariableSize);
     }
   catch (...)
     {
