@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.129 $ $Author: shoops $ $Date: 2006/07/13 18:06:04 $  
+# $Revision: 1.130 $ $Author: shoops $ $Date: 2006/08/18 18:48:18 $  
 ######################################################################
 
 TEMPLATE = app
@@ -306,6 +306,7 @@ SOURCES += \
 # FORMS += CQTaskBtnWidget.ui
 # FORMS += CQTrajectoryWidget.ui
 # FORMS += CQModelValue.ui
+# FORMS += CQStartValueReset.ui
 
 # headers generated from .ui files   
 HEADERS += \
@@ -336,6 +337,8 @@ HEADERS += \
            CQProgressItemText.ui.h \
            CQReportDefinition.h \
            CQReportDefinition.ui.h \
+           CQStartValueReset.h \
+           CQStartValueReset.ui.h \
            CQTaskBtnWidget.h \
            CQTaskHeaderWidget.h \
            CQTaskHeaderWidget.ui.h \
@@ -378,16 +381,17 @@ SOURCES += \
            CQFittingResult.cpp \
            CQFittingResultTab1.cpp \
            CQFittingWidget.cpp \
+           CQModelValue.cpp \
            CQOptimizationWidget.cpp \
            CQProgressItem.cpp \
            CQProgressItemBar.cpp \
            CQProgressItemText.cpp \
            CQProgressDialog.cpp \
            CQReportDefinition.cpp \
+           CQStartValueReset.cpp \
            CQTaskBtnWidget.cpp \
            CQTaskHeaderWidget.cpp \
            CQTrajectoryWidget.cpp \
-           CQModelValue.cpp \
            CQTextDialog.cpp \
            CUpDownSubwidget.cpp \
            CScanWidgetBreak.cpp \
