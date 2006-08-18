@@ -1,0 +1,141 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>CQStartValueReset</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>CQStartValueReset</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>120</width>
+            <height>151</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Start Value Reset</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>mpBtnModel</cstring>
+            </property>
+            <property name="text">
+                <string>Model Value</string>
+            </property>
+            <property name="accel">
+                <string></string>
+            </property>
+            <property name="autoDefault">
+                <bool>true</bool>
+            </property>
+            <property name="default">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>mpBtnSolution</cstring>
+            </property>
+            <property name="text">
+                <string>Current Solution</string>
+            </property>
+            <property name="accel">
+                <string></string>
+            </property>
+            <property name="autoDefault">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>mpBtnRandom</cstring>
+            </property>
+            <property name="text">
+                <string>Random</string>
+            </property>
+            <property name="accel">
+                <string></string>
+            </property>
+            <property name="autoDefault">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>mpBtnCancel</cstring>
+            </property>
+            <property name="text">
+                <string>Cancel</string>
+            </property>
+            <property name="accel">
+                <string></string>
+            </property>
+            <property name="autoDefault">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>mpSpace</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>60</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>mpBtnCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>CQStartValueReset</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtnRandom</sender>
+        <signal>clicked()</signal>
+        <receiver>CQStartValueReset</receiver>
+        <slot>slotRandom()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtnModel</sender>
+        <signal>clicked()</signal>
+        <receiver>CQStartValueReset</receiver>
+        <slot>slotModel()</slot>
+    </connection>
+    <connection>
+        <sender>mpBtnSolution</sender>
+        <signal>clicked()</signal>
+        <receiver>CQStartValueReset</receiver>
+        <slot>slotSolution()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">CQStartValueReset.ui.h</include>
+</includes>
+<variables>
+    <variable access="public">enum Result {MODEL = QDialog::Accepted + QDialog::Rejected + 1, RANDOM, SOLUTION};</variable>
+</variables>
+<slots>
+    <slot access="private" specifier="non virtual">slotModel()</slot>
+    <slot access="private" specifier="non virtual">slotRandom()</slot>
+    <slot access="private" specifier="non virtual">slotSolution()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

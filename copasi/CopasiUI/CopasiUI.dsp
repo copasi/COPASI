@@ -210,6 +210,10 @@ SOURCE=.\CQReportListItem.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQStartValueReset.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQTaskBtnWidget.cpp
 # End Source File
 # Begin Source File
@@ -698,6 +702,14 @@ SOURCE=.\CQReportListItem.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQStartValueReset.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQStartValueReset.ui.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQTaskBtnWidget.h
 # End Source File
 # Begin Source File
@@ -1100,6 +1112,10 @@ SOURCE=.\CQProgressItemText.ui
 # Begin Source File
 
 SOURCE=.\CQReportDefinition.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQStartValueReset.ui
 # End Source File
 # Begin Source File
 
