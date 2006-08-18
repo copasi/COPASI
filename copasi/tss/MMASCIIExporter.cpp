@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: nsimus $
-   $Date: 2006/08/15 11:37:24 $
+   $Date: 2006/08/18 12:26:36 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -392,15 +392,15 @@ void MMASCIIExporter::treatReservedXPPwords(std::set<std::string> & NameSet,
 
   unsigned C_INT32 i;
 
-  const std::string reservedXPPwords[45] =
+  const std::string reservedXPPwords[46] =
     {"sin", "cos", "tan", "atan", "atan2", "sinh", "exp", "delay", "ln", "log10",
      "log", "t", "pi", "if", "then", "else", "asin", "acos", "heav", "sign",
      "ceil", "flr", "ran", "abs", "max", "min", "normal", "besselj", "bessely", "erf",
      "erfs", "arg1", "arg2", "arg2", "arg4", "arg5", "arg6", "arg7", "arg8", "arg9",
-     "shift", "not", "int", "sum", "of"
+     "shift", "not", "int", "sum", "of", "t" //to check: whether t really reserved time variable
     };
 
-  for (i = 0; i < 45; i++)
+  for (i = 0; i < 46; i++)
     {
       NameSet.insert(reservedXPPwords[i]);
       Frequancy[reservedXPPwords[i]] = 0;
@@ -621,6 +621,7 @@ void MMASCIIExporter::functionExportC(const CFunction *pFunc, std::set<std::stri
       constName[CFunctionParameter::MODIFIER] = "modif_"; tmpIndex[CFunctionParameter::MODIFIER] = 0;
       constName[CFunctionParameter::VOLUME] = "volume_"; tmpIndex[CFunctionParameter::VOLUME] = 0;
       constName[CFunctionParameter::VARIABLE] = "varb_"; tmpIndex[CFunctionParameter::VARIABLE] = 0;
+      constName[CFunctionParameter::TIME] = "time_"; tmpIndex[CFunctionParameter::VARIABLE] = 0;
 
       for (j = 0; j < varbs_size; ++j)
         {
@@ -760,37 +761,41 @@ void MMASCIIExporter::functionExportMMD (CEvaluationNode* pNode, std::ofstream &
               unsigned C_INT32 i, vindex;
               CEvaluationNode* tmproot = tmpFunc->getRoot();
               CCopasiTree<CEvaluationNode>::iterator iIt, newIt = tmproot;
-              //CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
 
-              while (newIt != NULL)
+              if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
                 {
-                  if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
-                    {
-                      vindex = tmpFunc->getVariableIndex((*newIt).getData());
-
-                      CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
-
-                      for (i = 0; i < vindex ; i++)
-                        child = dynamic_cast<CEvaluationNode*>((child)->getSibling());
-
-                      CEvaluationNode* parent = dynamic_cast<CEvaluationNode*>(newIt->getParent());
-                      CEvaluationNode* newnode = child->copyBranch();
-
-                      iIt = newIt;
-
-                      ++newIt;
-
-                      if (parent)
-                        {
-                          parent->addChild(newnode, &(*iIt));
-                          parent->removeChild(&(*iIt));
-                        }
-
-                      delete &(*iIt);
-                    }
-                  else
-                    ++newIt;
+                  CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
+                  tmproot = child->copyBranch();
                 }
+              else while (newIt != NULL)
+                  {
+                    if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
+                      {
+                        vindex = tmpFunc->getVariableIndex((*newIt).getData());
+
+                        CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
+
+                        for (i = 0; i < vindex ; i++)
+                          child = dynamic_cast<CEvaluationNode*>((child)->getSibling());
+
+                        CEvaluationNode* parent = dynamic_cast<CEvaluationNode*>(newIt->getParent());
+                        CEvaluationNode* newnode = child->copyBranch();
+
+                        iIt = newIt;
+
+                        ++newIt;
+
+                        if (parent)
+                          {
+                            parent->addChild(newnode, &(*iIt));
+                            parent->removeChild(&(*iIt));
+                          }
+
+                        delete &(*iIt);
+                      }
+                    else
+                      ++newIt;
+                  }
 
               functionExportMMD(tmproot, outFile, findex, functionNameMap);
 
@@ -842,37 +847,41 @@ void MMASCIIExporter::functionExportXPP (CEvaluationNode* pNode, std::ofstream &
               unsigned C_INT32 i, vindex;
               CEvaluationNode* tmproot = tmpFunc->getRoot();
               CCopasiTree<CEvaluationNode>::iterator iIt, newIt = tmproot;
-              //CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
 
-              while (newIt != NULL)
+              if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
                 {
-                  if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
-                    {
-                      vindex = tmpFunc->getVariableIndex((*newIt).getData());
-
-                      CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
-
-                      for (i = 0; i < vindex ; i++)
-                        child = dynamic_cast<CEvaluationNode*>((child)->getSibling());
-
-                      CEvaluationNode* parent = dynamic_cast<CEvaluationNode*>(newIt->getParent());
-                      CEvaluationNode* newnode = child->copyBranch();
-
-                      iIt = newIt;
-
-                      ++newIt;
-
-                      if (parent)
-                        {
-                          parent->addChild(newnode, &(*iIt));
-                          parent->removeChild(&(*iIt));
-                        }
-
-                      delete &(*iIt);
-                    }
-                  else
-                    ++newIt;
+                  CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
+                  tmproot = child->copyBranch();
                 }
+              else while (newIt != NULL)
+                  {
+                    if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
+                      {
+                        vindex = tmpFunc->getVariableIndex((*newIt).getData());
+
+                        CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
+
+                        for (i = 0; i < vindex ; i++)
+                          child = dynamic_cast<CEvaluationNode*>((child)->getSibling());
+
+                        CEvaluationNode* parent = dynamic_cast<CEvaluationNode*>(newIt->getParent());
+                        CEvaluationNode* newnode = child->copyBranch();
+
+                        iIt = newIt;
+
+                        ++newIt;
+
+                        if (parent)
+                          {
+                            parent->addChild(newnode, &(*iIt));
+                            parent->removeChild(&(*iIt));
+                          }
+
+                        delete &(*iIt);
+                      }
+                    else
+                      ++newIt;
+                  }
               functionExportXPP(tmproot, outFile, findex, newNameMap, NameSet, Frequancy);
 
               toXPPLine(newNameMap[newKey.str()] + "=" + tmproot->getDisplay_XPP_String(tmpFunc).c_str(), outFile);
@@ -951,8 +960,6 @@ bool MMASCIIExporter::exportMathModelInXPPAUT(const CModel* copasiModel, std::of
       std::ostringstream description;
       metab = metabs[i];
       Value = metab->getInitialConcentration();
-
-      // if (metab->getStatus() == CModelEntity::REACTIONS) outFile << "init ";
 
       if (metab->isDependent())
         {
@@ -1149,6 +1156,9 @@ bool MMASCIIExporter::exportMathModelInXPPAUT(const CModel* copasiModel, std::of
                       comp = dynamic_cast< CCompartment * >(tmp);
                       newName = newNameMap[comp->getKey()];
                     }
+
+                  if (usage == CFunctionParameter::TIME)
+                    newName = "t";
 
                   treeIt->setData(newName);
                 }
@@ -1543,6 +1553,9 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
                       newName = newNameMap[comp->getKey()];
                     }
 
+                  if (usage == CFunctionParameter::TIME)
+                    newName = "TIME";
+
                   treeIt->setData(newName);
                 }
 
@@ -1713,6 +1726,10 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
 
   outFile << "#endif // SIZE_DEFINITIONS" << std::endl;
   outFile << std::endl;
+
+  outFile << "#ifdef TIME" << std::endl;
+  outFile << "double t = <user name for time variable>; " << std::endl;
+  outFile << "#endif // TIME" << std::endl;
 
   outFile << "#ifdef METABOLITES" << std::endl;
 
@@ -1947,16 +1964,9 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
 
                           metab = dynamic_cast< CMetab * >(tmp);
 
-                          /* TO REMOVE : if (metab->getStatus() == CModelEntity::FIXED)
-                            {
-                              equation << metab->getInitialConcentration();
-                            }
-                          else
-                            {*/
                           name = metab ->getObjectName();
                           index = findMetabXByName(copasiModel, name);
                           equation << "y[" << index << "]";
-                          /* } */
                         }
                       if (usage == CFunctionParameter::PARAMETER)
                         if (!(reac->isLocalParameter(k)))
@@ -1985,6 +1995,10 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
                           index = findCompByName(copasiModel, name);
                           equation << "c[";
                           equation << index << "]";
+                        }
+                      if (usage == CFunctionParameter::TIME)
+                        {
+                          equation << "t";
                         }
                       if (usage == CFunctionParameter::VARIABLE)
                         {
@@ -2049,16 +2063,6 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
                       substr = substrs[k];
                       mult = substr->getMultiplicity();
 
-                      /* TO REMOVE : if (substr->getMetabolite().getStatus() == CModelEntity::FIXED)
-                        {
-                          massaction << " * " << substr->getMetabolite().getInitialConcentration();
-
-                          if (mult > 1)
-                            for (m = 1; m < mult; ++m)
-                              massaction << " * " << substr->getMetabolite().getInitialConcentration();
-                        }
-                      else
-                        {*/
                       assert(substr->getMetabolite());
                       name = substr->getMetabolite()->getObjectName();
                       index = findMetabXByName(copasiModel, name);
@@ -2067,7 +2071,6 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
                       if (mult > 1)
                         for (m = 1; m < mult; ++m)
                           massaction << " * y[" << index << "]";
-                      /* } */
                     }
 
                   if (cMassAction.isReversible() == TriTrue)
@@ -2099,16 +2102,6 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
                           prod = prods[k];
                           mult = prod->getMultiplicity();
 
-                          /* TO REMOVE: if (prod->getMetabolite().getStatus() == CModelEntity::FIXED)
-                            {
-                              massaction << " * " << prod->getMetabolite().getInitialConcentration();
-
-                              if (mult > 1)
-                                for (m = 1; m < mult; ++m)
-                                  massaction << " * " << prod->getMetabolite().getInitialConcentration();
-                            }
-                          else
-                            {*/
                           name = metab->getObjectName();
                           index = findMetabXByName(copasiModel, name);
                           massaction << " * y[" << index << "]";
@@ -2116,7 +2109,6 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
                           if (mult > 1)
                             for (m = 1; m < mult; ++m)
                               massaction << " * y[" << index << "]";
-                          /* } */
                         }
                     }
                   massaction << ") ";
