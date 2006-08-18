@@ -91,6 +91,10 @@ SOURCE=.\CDependencyGraph.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CDimension.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CDirEntry.cpp
 # End Source File
 # Begin Source File
@@ -196,6 +200,10 @@ SOURCE=.\CCopasiVector.h
 # Begin Source File
 
 SOURCE=.\CDependencyGraph.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CDimension.h
 # End Source File
 # Begin Source File
 
