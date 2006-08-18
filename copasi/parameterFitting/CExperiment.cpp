@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/15 15:38:06 $
+   $Date: 2006/08/18 18:33:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -716,6 +716,8 @@ bool CExperiment::read(std::istream & in,
       if (Count)
         Mean /= Count;
       else
+        // :TODO: We need to create an error message here to instruct the user
+        // :TODO: to mark this column as ignored as it contains no data.
         Mean = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
       C_FLOAT64 & WeightSquare = mWeightSquare[i];
@@ -730,7 +732,7 @@ bool CExperiment::read(std::istream & in,
                 WeightSquare += (Mean - Data) * (Mean - Data);
             }
 
-          if (WeightSquare > 0)
+          if (WeightSquare > sqrt(DBL_EPSILON))
             {
               WeightSquare = Count / WeightSquare;
 
@@ -744,6 +746,12 @@ bool CExperiment::read(std::istream & in,
         WeightSquare = -1.0; // Zero values
     }
 
+  if (MaxWeight < MinWeight) // Only constant values or no values
+    {
+      MaxWeight = 1.0;
+      MinWeight = 1.0;
+    }
+
   // We have to make a guess for the weights which could not be calculated
   for (i = 0; i < DependentCount; i++)
     {
@@ -752,7 +760,7 @@ bool CExperiment::read(std::istream & in,
       else if (mWeightSquare[i] < -0.5)
         mWeightSquare[i] = 0.5 * (MaxWeight + MinWeight); // One or less values
 
-      mWeight[i] = sqrt(mWeightSquare[i]);
+      mWeight[i] = sqrt(mWeightSquare[i] / MaxWeight);
     }
 
   // If it is a time course this is the place to assert that it is sorted.

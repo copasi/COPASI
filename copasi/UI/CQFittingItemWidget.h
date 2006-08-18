@@ -1,20 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:06 $
+   $Date: 2006/08/18 18:33:23 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Fri May 19 12:46:20 2006
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.16 2006/06/20 13:18:06 shoops Exp $)
+ ** Created: Fri Aug 18 12:41:10 2006
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.17 2006/08/18 18:33:23 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -32,12 +32,12 @@ class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
 class QTable;
-class QPushButton;
-class QCheckBox;
 class QLabel;
+class QCheckBox;
 class QToolButton;
-class QComboBox;
 class QLineEdit;
+class QPushButton;
+class QComboBox;
 class CCopasiSelectionDialog;
 class COptItem;
 class CCopasiObject;
@@ -58,27 +58,30 @@ class CQFittingItemWidget : public QWidget
     ~CQFittingItemWidget();
 
     QTable* mpTable;
-    QPushButton* mpBtnPerExperiment;
-    QCheckBox* mpCheckLowerInf;
-    QLabel* mpLblExperiments;
+    QLabel* mpLblLower;
+    QCheckBox* mpCheckUpperInf;
     QToolButton* mpBtnNew;
-    QToolButton* mpBtnDown;
+    QLineEdit* mpEditLower;
+    QToolButton* mpBtnLowerEdit;
     QToolButton* mpBtnDel;
-    QToolButton* mpBtnCopy;
+    QLineEdit* mpEditStart;
+    QToolButton* mpBtnReset;
+    QLabel* mpLblExperiments;
     QToolButton* mpBtnUp;
+    QLabel* mpLblUpper_2;
+    QPushButton* mpBtnPerExperiment;
+    QLineEdit* mpEditObject;
+    QToolButton* mpBtnObject;
+    QToolButton* mpBtnDown;
+    QToolButton* mpBtnCopy;
+    QCheckBox* mpCheckLowerInf;
+    QLineEdit* mpEditUpper;
+    QToolButton* mpBtnUpperEdit;
+    QLabel* mpLblUpper;
     QCheckBox* mpCheckAll;
     QComboBox* mpBoxExperiments;
     QToolButton* mpBtnExperiments;
     QLabel* mpLblObject;
-    QLabel* mpLblUpper;
-    QCheckBox* mpCheckUpperInf;
-    QLabel* mpLblLower;
-    QLineEdit* mpEditLower;
-    QToolButton* mpBtnLowerEdit;
-    QLineEdit* mpEditUpper;
-    QToolButton* mpBtnUpperEdit;
-    QLineEdit* mpEditObject;
-    QToolButton* mpBtnObject;
 
     virtual bool load(CCopasiParameterGroup * pItems, const std::map<std::string, std::string> * pKeyMap);
     virtual bool save(const std::map<std::string, std::string> * pKeyMap);
@@ -107,15 +110,16 @@ class CQFittingItemWidget : public QWidget
     std::set< unsigned int > mSelection;
 
     QVBoxLayout* CQFittingItemWidgetLayout;
-    QGridLayout* mpLayout;
-    QSpacerItem* mpSpacer1;
+    QGridLayout* layout11;
+    QSpacerItem* mpSpacer3;
     QSpacerItem* mpSpacerLeft;
     QSpacerItem* mpSpacer2;
-    QSpacerItem* mpSpacer3;
-    QHBoxLayout* mpLayoutExperiments;
+    QSpacerItem* mpSpacer1;
     QHBoxLayout* mpLayoutLower;
-    QHBoxLayout* mpLayoutUpper;
+    QHBoxLayout* mpLayoutStart;
     QHBoxLayout* mpLayoutObject;
+    QHBoxLayout* mpLayoutUpper;
+    QHBoxLayout* mpLayoutExperiments;
 
   protected slots:
     virtual void languageChange();
@@ -156,6 +160,8 @@ class CQFittingItemWidget : public QWidget
     void slotSelectionChanged();
     void slotLowerLostFocus();
     void slotUpperLostFocus();
+    void slotReset();
+    void slotStartLostFocus();
   };
 
 #endif // CQFITTINGITEMWIDGET_H

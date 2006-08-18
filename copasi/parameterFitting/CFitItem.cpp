@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:29 $
+   $Date: 2006/08/18 18:33:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,6 @@
 CFitItem::CFitItem(const std::string & name,
                    const CCopasiContainer * pParent):
     COptItem(name, pParent),
-    mpParmSavedValue(NULL),
     mpGrpAffectedExperiments(NULL),
     mLocalValue(0),
     mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
@@ -32,7 +31,6 @@ CFitItem::CFitItem(const std::string & name,
 CFitItem::CFitItem(const CFitItem & src,
                    const CCopasiContainer * pParent):
     COptItem(src, pParent),
-    mpParmSavedValue(NULL),
     mpGrpAffectedExperiments(NULL),
     mLocalValue(0),
     mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
@@ -41,7 +39,6 @@ CFitItem::CFitItem(const CFitItem & src,
 CFitItem::CFitItem(const CCopasiParameterGroup & group,
                    const CCopasiContainer * pParent):
     COptItem(group, pParent),
-    mpParmSavedValue(NULL),
     mpGrpAffectedExperiments(NULL),
     mLocalValue(0),
     mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
@@ -52,13 +49,23 @@ CFitItem::~CFitItem()
 
 void CFitItem::initializeParameter()
 {
-  mpParmSavedValue =
-    assertParameter("SavedValue", CCopasiParameter::DOUBLE, std::numeric_limits<C_FLOAT64>::quiet_NaN())->getValue().pDOUBLE;
   mpGrpAffectedExperiments = assertGroup("Affected Experiments");
+
+  elevateChildren();
 }
 
 bool CFitItem::elevateChildren()
 {
+  // The functionality of SavedValue is no handled more transparently
+  // through the StartValue. Therefore, in case we encounter an old file
+  // we need to copy its value.
+  CCopasiParameter *pSavedValue = getParameter("SavedValue");
+  if (pSavedValue)
+    {
+      setStartValue(*pSavedValue->getValue().pDOUBLE);
+      removeParameter("SavedValue");
+    }
+
   mpGrpAffectedExperiments =
     elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpAffectedExperiments);
   if (!mpGrpAffectedExperiments) return false;
@@ -80,13 +87,7 @@ bool CFitItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
 {
   if (!COptItem::compile(listOfContainer)) return false;
 
-  if (isnan(*mpParmSavedValue))
-    {
-      mLocalValue = * COptItem::getObjectValue();
-      *mpParmSavedValue = mLocalValue;
-    }
-  else
-    mLocalValue = *mpParmSavedValue;
+  mLocalValue = *mpParmStartValue;
 
   return true;
 }
@@ -127,15 +128,6 @@ const C_FLOAT64 & CFitItem::getLocalValue() const
 
 const C_FLOAT64 * CFitItem::getObjectValue() const
   {return & mLocalValue;}
-
-bool CFitItem::setSavedValue(const C_FLOAT64 & value)
-{
-  *mpParmSavedValue = value;
-  return true;
-}
-
-const C_FLOAT64 & CFitItem::getSavedValue() const
-  {return *mpParmSavedValue;}
 
 UpdateMethod * CFitItem::getUpdateMethod() const
   {return mpLocalMethod;}

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:06 $
+   $Date: 2006/08/18 18:33:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,7 @@
 #include "CCopasiSelectionDialog.h"
 #include "CQValidator.h"
 #include "CQExperimentSelection.h"
+#include "CQStartValueReset.h"
 #include "qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -458,6 +459,12 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pKeyMa
         {
           changed = true;
           (*target)->setUpperBound((*it)->getUpperBound());
+        }
+
+      if ((*target)->getStartValue() != (*it)->getStartValue())
+        {
+          changed = true;
+          (*target)->setStartValue((*it)->getStartValue());
         }
 
       if (mItemType)
@@ -961,6 +968,8 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
   else
     Item += "Not found: " + FROM_UTF8(pItem->getUpperBound());
 
+  Item += "; Start Value = " + QString::number(pItem->getStartValue());
+
   mpTable->setText(row, 0, Item);
 }
 
@@ -1011,6 +1020,8 @@ void CQFittingItemWidget::loadSelection()
       mpEditUpper->setText("");
       mpCheckUpperInf->setChecked(true);
       mpUpperObject = NULL;
+
+      mpEditStart->setText("");
 
       mpCheckAll->setChecked(true);
       mpBoxExperiments->setEnabled(false);
@@ -1069,6 +1080,8 @@ void CQFittingItemWidget::loadSelection()
 
       mpEditUpper->setText(Value);
       mpCheckUpperInf->setChecked(Value == "inf");
+
+      mpEditStart->setText(QString::number(pItem->getStartValue()));
 
       std::string Experiments;
       if (mItemType)
@@ -1140,6 +1153,9 @@ void CQFittingItemWidget::loadSelection()
               mpCheckUpperInf->setChecked(false);
             }
 
+          if (QString::number(pItem->getStartValue()) != mpEditStart->text())
+            mpEditStart->setText("");
+
           if (mItemType &&
               Experiments != static_cast<CFitItem *>(pItem)->getExperiments())
             {
@@ -1178,6 +1194,9 @@ void CQFittingItemWidget::saveSelection()
         pItem->setUpperBound(CCopasiObjectName("inf"));
       else if (isNumber((const char *) mpEditUpper->text().utf8()))
         pItem->setUpperBound(CCopasiObjectName((const char *) mpEditUpper->text().utf8()));
+
+      if (isNumber((const char *) mpEditStart->text().utf8()))
+        pItem->setStartValue(mpEditStart->text().toDouble());
 
       mpCheckLowerInf->setPaletteBackgroundColor(mSavedColor);
       mLowerInfChanged = false;
@@ -1260,6 +1279,73 @@ void CQFittingItemWidget::slotUpperLostFocus()
   for (; it != end; ++it)
     {
       (*mpItemsCopy)[*it]->setUpperBound(Number);
+      setTableText(*it, (*mpItemsCopy)[*it]);
+    }
+}
+
+void CQFittingItemWidget::slotReset()
+{
+  CQStartValueReset * pDialog = new CQStartValueReset(this);
+  pDialog->exec();
+
+  std::set< unsigned int >::const_iterator it = mSelection.begin();
+  std::set< unsigned int >::const_iterator end = mSelection.end();
+
+  switch (pDialog->result())
+    {
+    case QDialog::Rejected:
+      break;
+
+    case CQStartValueReset::MODEL:
+      for (; it != end; ++it)
+        {
+          (*mpItemsCopy)[*it]->setStartValue(std::numeric_limits<C_FLOAT64>::quiet_NaN());
+          mpEditStart->setText(QString::number((*mpItemsCopy)[*it]->getStartValue()));
+          setTableText(*it, (*mpItemsCopy)[*it]);
+        }
+      break;
+
+    case CQStartValueReset::RANDOM:
+      for (; it != end; ++it)
+        {
+          (*mpItemsCopy)[*it]->randomizeStartValue();
+          mpEditStart->setText(QString::number((*mpItemsCopy)[*it]->getStartValue()));
+          setTableText(*it, (*mpItemsCopy)[*it]);
+        }
+      break;
+
+    case CQStartValueReset::SOLUTION:
+      {
+        COptProblem * pProblem = dynamic_cast< COptProblem * >(mpItems->getObjectParent());
+        const CVector< C_FLOAT64 > & Solution = pProblem->getSolutionVariables();
+        if (Solution.size() == mpItems->size())
+          for (; it != end; ++it)
+            {
+              (*mpItemsCopy)[*it]->setStartValue(Solution[*it]);
+              mpEditStart->setText(QString::number((*mpItemsCopy)[*it]->getStartValue()));
+              setTableText(*it, (*mpItemsCopy)[*it]);
+            }
+      }
+      break;
+    }
+
+  pdelete(pDialog);
+
+  loadSelection();
+}
+
+void CQFittingItemWidget::slotStartLostFocus()
+{
+  if (!isNumber((const char *) mpEditStart->text().utf8())) return;
+
+  C_FLOAT64 Number = mpEditStart->text().toDouble();
+
+  std::set< unsigned int >::const_iterator it = mSelection.begin();
+  std::set< unsigned int >::const_iterator end = mSelection.end();
+
+  for (; it != end; ++it)
+    {
+      (*mpItemsCopy)[*it]->setStartValue(Number);
       setTableText(*it, (*mpItemsCopy)[*it]);
     }
 }

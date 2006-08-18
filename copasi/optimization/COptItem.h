@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/21 16:00:19 $
+   $Author: shoops $
+   $Date: 2006/08/18 18:33:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,7 @@
 
 class CCopasiObjectName;
 class COptProblem;
+class CRandom;
 
 class COptItem: public CCopasiParameterGroup
   {
@@ -202,6 +203,24 @@ class COptItem: public CCopasiParameterGroup
       {return mpUpperBound;}
 
     /**
+     * Set the value start value.
+     * @param const C_FLOAT64 & startValue
+     * @return bool succes
+     */
+    bool setStartValue(const C_FLOAT64 & value);
+
+    /**
+     * Retrieve the sart value of the optimization object.
+     * @return const C_FLOAT64 & startValue
+     */
+    const C_FLOAT64 & getStartValue() const;
+
+    /**
+     * Randomize the start value;
+     */
+    void randomizeStartValue();
+
+    /**
      * Output stream operator
      * @param ostream & os
      * @param const COptItem & A
@@ -232,6 +251,11 @@ class COptItem: public CCopasiParameterGroup
      * A pointer to the value of the CCopasiParameter holding the UpperBound
      */
     std::string * mpParmUpperBound;
+
+    /**
+     * A pointer to the value of the CCopasiParameter holding the start value
+     */
+    C_FLOAT64 * mpParmStartValue;
 
     /**
      * A pointer to the object
@@ -277,6 +301,11 @@ class COptItem: public CCopasiParameterGroup
      * The value of the upper bound (only if not on object)
      */
     C_FLOAT64 mUpperBound;
+
+    /**
+     * A pointer to the random number generator used in randomizeStartValue
+     */
+    static CRandom * mpRandom;
   };
 
 #endif // COPASI_COptItem

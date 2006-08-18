@@ -1,25 +1,32 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:52 $
+   $Date: 2006/08/18 18:33:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include <limits>
 #include <float.h>
 
 #include "copasi.h"
 
 #include "COptItem.h"
+
+#include "randomGenerator/CRandom.h"
 #include "report/CCopasiContainer.h"
 #include "report/CCopasiObjectName.h"
 #include "utilities/CCopasiParameterGroup.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/utility.h"
+
+C_FLOAT64 NaN = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+CRandom * COptItem::mpRandom = NULL;
 
 COptItem::COptItem(const std::string & name,
                    const CCopasiContainer * pParent):
@@ -27,6 +34,7 @@ COptItem::COptItem(const std::string & name,
     mpParmObjectCN(NULL),
     mpParmLowerBound(NULL),
     mpParmUpperBound(NULL),
+    mpParmStartValue(NULL),
     mpObject(NULL),
     mpMethod(NULL),
     mpObjectValue(NULL),
@@ -44,6 +52,7 @@ COptItem::COptItem(const COptItem & src,
     mpParmObjectCN(NULL),
     mpParmLowerBound(NULL),
     mpParmUpperBound(NULL),
+    mpParmStartValue(NULL),
     mpObject(NULL),
     mpMethod(NULL),
     mpObjectValue(NULL),
@@ -61,6 +70,7 @@ COptItem::COptItem(const CCopasiParameterGroup & group,
     mpParmObjectCN(NULL),
     mpParmLowerBound(NULL),
     mpParmUpperBound(NULL),
+    mpParmStartValue(NULL),
     mpObject(NULL),
     mpMethod(NULL),
     mpObjectValue(NULL),
@@ -83,6 +93,8 @@ void COptItem::initializeParameter()
     assertParameter("LowerBound", CCopasiParameter::CN, CCopasiObjectName("-inf"))->getValue().pCN;
   mpParmUpperBound =
     assertParameter("UpperBound", CCopasiParameter::CN, CCopasiObjectName("inf"))->getValue().pCN;
+  mpParmStartValue =
+    assertParameter("StartValue", CCopasiParameter::DOUBLE, std::numeric_limits<C_FLOAT64>::quiet_NaN())->getValue().pDOUBLE;
 }
 
 bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
@@ -149,6 +161,120 @@ bool COptItem::setUpperBound(const CCopasiObjectName & upperBound)
 
 const std::string COptItem::getUpperBound() const
   {return *mpParmUpperBound;}
+
+bool COptItem::setStartValue(const C_FLOAT64 & value)
+{
+  if (mpObjectValue == NULL)
+    {
+      CCopasiObject * pObject = CCopasiContainer::ObjectFromName(getObjectCN());
+
+      if (pObject == NULL ||
+          (mpObjectValue = (C_FLOAT64 *) pObject->getValuePointer()) == NULL)
+        {
+          *mpParmStartValue = value;
+          return true;
+        }
+    }
+
+  if (value != *mpObjectValue)
+    *mpParmStartValue = value;
+  else
+    *mpParmStartValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  return true;
+}
+
+const C_FLOAT64 & COptItem::getStartValue() const
+  {
+    if (!isnan(*mpParmStartValue))
+      return *mpParmStartValue;
+
+    if (mpObjectValue == NULL)
+      {
+        CCopasiObject * pObject = CCopasiContainer::ObjectFromName(getObjectCN());
+        if (pObject != NULL)
+          return * (C_FLOAT64 *) pObject->getValuePointer();
+
+        return NaN;
+      }
+
+    return *mpObjectValue;
+  }
+
+void COptItem::randomizeStartValue()
+{
+  if (mpLowerBound == NULL ||
+      mpUpperBound == NULL) compile();
+
+  if (mpLowerBound == NULL ||
+      mpUpperBound == NULL)
+    {
+      *mpParmStartValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      return;
+    }
+
+  if (mpRandom == NULL)
+    mpRandom = CRandom::createGenerator();
+
+  C_FLOAT64 mn = *mpLowerBound;
+  C_FLOAT64 mx = *mpUpperBound;
+
+  C_FLOAT64 la;
+
+  try
+    {
+      // First determine the location of the intervall
+      // Secondly determine whether to distribute the parameter linearly or not
+      // depending on the location and act uppon it.
+      if (0.0 <= mn) // the interval [mn, mx) is in [0, inf)
+        {
+          la = log10(mx) - log10(std::max(mn, DBL_MIN));
+
+          if (la < 1.8 || !(mn > 0.0)) // linear
+            *mpParmStartValue = mn + mpRandom->getRandomCC() * (mx - mn);
+          else
+            *mpParmStartValue = pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+        }
+      else if (mx > 0) // 0 is in the interval (mn, mx)
+        {
+          la = log10(mx) + log10(-mn);
+
+          if (la < 3.6) // linear
+            *mpParmStartValue = mn + mpRandom->getRandomCC() * (mx - mn);
+          else
+            {
+              C_FLOAT64 mean = (mx + mn) * 0.5;
+              C_FLOAT64 sigma = mean * 0.01;
+              do
+                {
+                  *mpParmStartValue = mpRandom->getRandomNormal(mean, sigma);
+                }
+              while ((*mpParmStartValue < mn) || (*mpParmStartValue > mx));
+            }
+        }
+      else // the interval (mn, mx] is in (-inf, 0]
+        {
+          // Switch lower and upper bound and change sign, i.e.,
+          // we can treat it similarly as location 1:
+          mx = - *mpLowerBound;
+          mn = - *mpUpperBound;
+
+          la = log10(mx) - log10(std::max(mn, DBL_MIN));
+
+          if (la < 1.8 || !(mn > 0.0)) // linear
+            *mpParmStartValue = - (mn + mpRandom->getRandomCC() * (mx - mn));
+          else
+            *mpParmStartValue = - pow(10, log10(std::max(mn, DBL_MIN)) + la * mpRandom->getRandomCC());
+        }
+    }
+
+  catch (...)
+    {
+      *mpParmStartValue = (mx + mn) * 0.5;
+    }
+
+  return;
+}
 
 UpdateMethod * COptItem::getUpdateMethod() const
   {return mpMethod;}
@@ -241,6 +367,9 @@ bool COptItem::compile(const std::vector< CCopasiContainer * > listOfContainer)
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 4, *mpLowerBound, *mpUpperBound);
       return false;
     }
+
+  if (isnan(*mpParmStartValue))
+    *mpParmStartValue = *COptItem::getObjectValue();
 
   return true;
 }

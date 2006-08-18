@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/07 19:27:09 $
+   $Date: 2006/08/18 18:33:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -333,19 +333,30 @@ bool COptProblem::initialize()
 
 bool COptProblem::restore(const bool & updateModel)
 {
-  unsigned C_INT32 i, imax = mpOptItems->size();
+  bool success = true;
 
-  if (updateModel)
-    for (i = 0; i < imax; i++)
-      (*(*mpOptItems)[i]->COptItem::getUpdateMethod())(mSolutionVariables[i]);
+  std::vector<COptItem * >::iterator it = mpOptItems->begin();
+  std::vector<COptItem * >::iterator end = mpOptItems->end();
+  C_FLOAT64 * pTmp;
+
+  if (!updateModel)
+    {
+      pTmp = mOriginalVariables.array();
+    }
   else
-    for (i = 0; i < imax; i++)
-      (*(*mpOptItems)[i]->COptItem::getUpdateMethod())(mOriginalVariables[i]);
+    {
+      pTmp = mSolutionVariables.array();
+    }
+
+  for (; it != end; ++it, pTmp++)
+    {
+      (*(*it)->COptItem::getUpdateMethod())(*pTmp);
+    }
 
   if (mFailedCounter != 0)
     CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 8, mFailedCounter, mCounter);
 
-  return true;
+  return success;
 }
 
 bool COptProblem::checkParametricConstraints()
