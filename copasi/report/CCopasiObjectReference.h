@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:09 $
+   $Date: 2006/08/18 17:46:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,6 +59,8 @@ template <class CType> class CCopasiObjectReference: public CCopasiObject
     virtual ~CCopasiObjectReference() {}
 
     virtual void * getValuePointer() const {return mpReference;}
+
+    virtual const CCopasiObject * getValueObject() const {return this;}
 
     virtual void setReference(referenceType & reference)
     {mpReference = &reference;}
@@ -197,6 +199,7 @@ template <class CType> class CCopasiVectorReference: public CCopasiObject
     }
 
     virtual void * getValuePointer() const {return &mReference;}
+    virtual const CCopasiObject * getValueObject() const {return this;}
 
     /**
      * This is the output method for any object. The default implementation
@@ -257,5 +260,6 @@ template <class CType> class CCopasiMatrixReference: public CCopasiObject
     }
 
     virtual void * getValuePointer() const {return &mReference;}
+    virtual const CCopasiObject * getValueObject() const {return this;}
   };
 #endif // COPASI_CCopasiObjectReference

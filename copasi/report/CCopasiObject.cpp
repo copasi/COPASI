@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/14 16:55:26 $
+   $Date: 2006/08/18 17:46:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -280,6 +280,8 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
   std::set< const CCopasiObject * >::const_iterator itSet;
   std::set< const CCopasiObject * >::const_iterator endSet = objects.end();
   std::pair<std::set< const CCopasiObject * >::iterator, bool> InsertedObject;
+
+  assert (objects.count(NULL) == 0);
 
   // Check whether we have any circular dependencies
   for (itSet = objects.begin(); itSet != endSet; ++itSet)
