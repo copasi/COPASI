@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: nsimus $
-   $Date: 2006/08/18 12:26:36 $
+   $Date: 2006/08/22 09:41:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -983,8 +983,6 @@ bool MMASCIIExporter::exportMathModelInXPPAUT(const CModel* copasiModel, std::of
               }
         }
 
-      if (!metab->isUsed()) continue;
-
       std::string name = metab->getObjectName();
       std::string newName;
 
@@ -1376,8 +1374,6 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
                 Value -= L(i, j) * metabs[j]->getInitialConcentration();
               }
         }
-
-      if (!metab->isUsed()) continue;
 
       std::string name = metab->getObjectName();
       std::string newName;
