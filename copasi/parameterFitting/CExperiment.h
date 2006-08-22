@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:29 $
+   $Date: 2006/08/22 18:26:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,6 +63,15 @@ class CExperiment: public CCopasiParameterGroup
       independent,
       dependent,
       time
+    };
+
+    /**
+     * Enumaration of methods to calculate the weight.
+     */
+    enum WeightMethod
+    {
+      SD = 0,
+      MEAN
     };
 
     /**
@@ -273,42 +282,6 @@ class CExperiment: public CCopasiParameterGroup
     void updateFittedPointValues(const unsigned C_INT32 & index);
 
     /**
-     * Retrieve the type fo the indexed column.
-     * @param const unsigned C_INT32 & index,
-     * @param const Type & type
-     * @return bool success
-     */
-    bool addColumnType(const unsigned C_INT32 & index, const Type & type);
-
-    /**
-     * Retrieve the type fo the indexed column.
-     * @param const unsigned C_INT32 & index,
-     * @return bool success
-     */
-    bool removeColumnType(const unsigned C_INT32 & index);
-
-    /**
-     * Retrieve the type fo the indexed column.
-     * @param const unsigned C_INT32 & index,
-     * @return const Type & columnType
-     */
-    const Type & getColumnType(const unsigned C_INT32 & index) const;
-
-    /**
-     * Set the type of the indexed column.
-     * @param const unsigned C_INT32 & index,
-     * @param const Type & type
-     * @return bool success
-     */
-    bool setColumnType(const unsigned C_INT32 & index, const Type & type);
-
-    /**
-     * Retrievet he last non ignored column
-     * @return unsigned C_INT32 lastNotIgnoredColumn
-     */
-    unsigned C_INT32 getLastNotIgnoredColumn() const;
-
-    /**
      * Retrieve the number of columns
      * @return const unsigned C_INT32 & numColumns
      */
@@ -444,11 +417,18 @@ class CExperiment: public CCopasiParameterGroup
     const C_FLOAT64 & getErrorMeanSD() const;
 
     /**
-     * Retrieve the objective valu&e for the object.
+     * Retrieve the objective value for the object.
      * @param CCopasiObject *const& pObject
      * @return C_FLOAT64 objectiveValue
      */
     C_FLOAT64 getObjectiveValue(CCopasiObject * const& pObject) const;
+
+    /**
+     * Retrieve the weight for the object.
+     * @param CCopasiObject *const& pObject
+     * @return C_FLOAT64 weight
+     */
+    C_FLOAT64 getWeight(CCopasiObject * const& pObject) const;
 
     /**
      * Retrieve the RMS for the object.
@@ -487,6 +467,12 @@ class CExperiment: public CCopasiParameterGroup
      */
     void initializeParameter();
 
+    /**
+     * Calculate/set the weights used in the sum of squares.
+     * @return bool success
+     */
+    bool calculateWeights();
+
   private:
     // Attributes
 
@@ -521,6 +507,11 @@ class CExperiment: public CCopasiParameterGroup
     std::string * mpSeparator;
 
     /**
+     * This is realized as a CCopasiParameter type UINT
+     */
+    WeightMethod * mpWeightMethod;
+
+    /**
      * This is realized as a CCopasiParameter type BOOL
      */
     bool * mpRowOriented;
@@ -538,7 +529,7 @@ class CExperiment: public CCopasiParameterGroup
     /**
      * This is realized as a CCopasiParameter type GROUP
      */
-    CCopasiParameterGroup * mpColumnType;
+    //    CCopasiParameterGroup * mpColumnType;
 
     /**
      * The column names if available after reading a file

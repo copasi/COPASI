@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/02 19:30:19 $
+   $Date: 2006/08/22 18:26:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -495,7 +495,7 @@ bool COptMethodEP::mutate(unsigned C_INT32 i)
             std::max(Variance[j] * exp(tau1 * v1 + tau2 * mpRandom->getRandomNormal01()), 1e-8);
 
           // calculate the mutatated parameter
-          mut += sqrt(Variance[j]) * mpRandom->getRandomNormal01();
+          mut += Variance[j] * mpRandom->getRandomNormal01();
         }
 
       catch (...)
@@ -508,24 +508,10 @@ bool COptMethodEP::mutate(unsigned C_INT32 i)
         {
         case - 1:
           mut = *OptItem.getLowerBoundValue();
-          if (!OptItem.checkLowerBound(mut)) // Inequality
-            {
-              if (mut == 0.0)
-                mut = DBL_MIN;
-              else
-                mut += mut * DBL_EPSILON;
-            }
           break;
 
         case 1:
           mut = *OptItem.getUpperBoundValue();
-          if (!OptItem.checkUpperBound(mut)) // Inequality
-            {
-              if (mut == 0.0)
-                mut = - DBL_MIN;
-              else
-                mut -= mut * DBL_EPSILON;
-            }
           break;
         }
 

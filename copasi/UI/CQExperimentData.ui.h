@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/31 21:01:42 $
+   $Date: 2006/08/22 18:26:58 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -283,7 +283,7 @@ void CQExperimentData::slotExprimentType(bool isSteadyState)
           static_cast<CExperiment::Type>(static_cast<QComboBox *>(mpTable->cellWidget(i, COL_TYPE))->currentItem());
 
         if (Type == CExperiment::time)
-          mpExperiment->removeColumnType(i);
+          mpExperiment->getObjectMap().setRole(i, CExperiment::ignore);
       };
 
   loadTable(mpExperiment, true);
@@ -915,9 +915,9 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
       if (guess && TimeRow == C_INVALID_INDEX &&
           mpBtnTimeCourse->isChecked() &&
           mpTable->text(i, COL_NAME).contains("time", false))
-        pExperiment->setColumnType(i, CExperiment::time);
+        ObjectMap.setRole(i, CExperiment::time);
 
-      Type = pExperiment->getColumnType(i);
+      Type = ObjectMap.getRole(i);
       if (Type == CExperiment::time) TimeRow = i;
       pComboBox->setCurrentItem(Type);
 
@@ -1046,6 +1046,8 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
   unsigned C_INT32 i, imax = mpTable->numRows();
   bool FoundTime = false;
 
+  ObjectMap.setNumCols(imax);
+
   for (i = 0; i < imax; i++)
     {
       CExperiment::Type Type =
@@ -1053,8 +1055,8 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
       if (Type == CExperiment::time)
         FoundTime = true;
 
-      if (pExperiment->getColumnType(i) != Type)
-        pExperiment->setColumnType(i, Type);
+      if (ObjectMap.getRole(i) != Type)
+        ObjectMap.setRole(i, Type);
 
       if (ObjectMap.getObjectCN(i) != (const char *) mpTable->text(i, COL_OBJECT_HIDDEN).utf8())
         ObjectMap.setObjectCN(i, (const char *) mpTable->text(i, COL_OBJECT_HIDDEN).utf8());

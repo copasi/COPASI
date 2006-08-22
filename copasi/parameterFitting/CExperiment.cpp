@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/18 18:33:22 $
+   $Date: 2006/08/22 18:26:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,7 +61,6 @@ CExperiment::CExperiment(const std::string & name,
     mpRowOriented(NULL),
     mpHeaderRow(NULL),
     mpNumColumns(NULL),
-    mpColumnType(NULL),
     mColumnName(),
     mpObjectMap(NULL),
     mDataTime(0),
@@ -91,7 +90,6 @@ CExperiment::CExperiment(const CExperiment & src,
     mpRowOriented(NULL),
     mpHeaderRow(NULL),
     mpNumColumns(NULL),
-    mpColumnType(NULL),
     mColumnName(src.mColumnName),
     mpObjectMap(NULL),
     mDataTime(src.mDataTime),
@@ -121,7 +119,6 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
     mpRowOriented(NULL),
     mpHeaderRow(NULL),
     mpNumColumns(NULL),
-    mpColumnType(NULL),
     mColumnName(),
     mpObjectMap(NULL),
     mDataTime(0),
@@ -146,8 +143,12 @@ CExperiment & CExperiment::operator = (const CExperiment & rhs)
 {
   std::string Key = *getValue("Key").pKEY;
 
+  clear();
+
   *static_cast<CCopasiParameterGroup *>(this) =
     *static_cast<const CCopasiParameterGroup *>(&rhs);
+
+  elevateChildren();
 
   setValue("Key", Key);
 
@@ -171,6 +172,8 @@ void CExperiment::initializeParameter()
                assertParameter("Experiment Type", CCopasiParameter::UINT, (unsigned C_INT32) CCopasiTask::unset)->getValue().pUINT;
   mpSeparator =
     assertParameter("Seperator", CCopasiParameter::STRING, std::string("\t"))->getValue().pSTRING;
+  mpWeightMethod = (WeightMethod *)
+                   assertParameter("Weight Method", CCopasiParameter::UINT, (unsigned C_INT32) SD)->getValue().pUINT;
   mpRowOriented =
     assertParameter("Data is Row Oriented", CCopasiParameter::BOOL, (bool) true)->getValue().pBOOL;
   mpHeaderRow =
@@ -178,7 +181,6 @@ void CExperiment::initializeParameter()
   mpNumColumns =
     assertParameter("Number of Columns", CCopasiParameter::UINT, (unsigned C_INT32) 0)->getValue().pUINT;
 
-  mpColumnType = assertGroup("Column Role");
   assertGroup("Object Map");
 
   elevateChildren();
@@ -186,13 +188,30 @@ void CExperiment::initializeParameter()
 
 bool CExperiment::elevateChildren()
 {
-  mpColumnType =
-    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpColumnType);
-  if (!mpColumnType) return false;
-
   mpObjectMap =
     elevate<CExperimentObjectMap, CCopasiParameterGroup>(getGroup("Object Map"));
   if (!mpObjectMap) return false;
+
+  CCopasiParameterGroup *pGroup = getGroup("Column Role");
+  if (pGroup) // We have an old data format
+    {
+      unsigned C_INT32 i, imax = pGroup->size();
+      CExperimentObjectMap Roles;
+      Roles.setNumCols(imax);
+
+      for (i = 0; i < imax; i++)
+        {
+          Roles.setRole(i, * (Type *) pGroup->getValue(StringPrint("%d", i)).pUINT);
+          Roles.setObjectCN(i, mpObjectMap->getObjectCN(i));
+        }
+
+      mpObjectMap->clear();
+      *mpObjectMap = Roles;
+      mpObjectMap =
+        elevate<CExperimentObjectMap, CCopasiParameterGroup>(getGroup("Object Map"));
+
+      removeParameter("Column Role");
+    }
 
   updateFittedPoints();
 
@@ -201,13 +220,13 @@ bool CExperiment::elevateChildren()
 
 void CExperiment::updateFittedPoints()
 {
-  unsigned C_INT32 i, imax = mpColumnType->size();
+  unsigned C_INT32 i, imax = mpObjectMap->size();
 
   mFittingPoints.resize(0);
   CFittingPoint * pPoint;
 
   for (i = 0; i < imax; i++)
-    if (getColumnType(i) == dependent)
+    if (mpObjectMap->getRole(i) == dependent)
       {
         pPoint = new CFittingPoint(mpObjectMap->getObjectCN(i));
         mFittingPoints.add(pPoint, true);
@@ -459,7 +478,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   unsigned C_INT32 LastMappedColumn = mpObjectMap->getLastColumn();
   const CVector< CCopasiObject * > & Objects = mpObjectMap->getMappedObjects();
 
-  unsigned C_INT32 i, imax = getLastNotIgnoredColumn();
+  unsigned C_INT32 i, imax = mpObjectMap->getLastNotIgnoredColumn();
   if (*mpNumColumns <= imax)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 4, imax + 1, *mpNumColumns + 1);
@@ -487,7 +506,7 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
   bool TimeFound = false;
 
   for (i = 0; i <= imax; i++)
-    switch (getColumnType(i))
+    switch (mpObjectMap->getRole(i))
       {
       case ignore:
         break;
@@ -573,7 +592,7 @@ bool CExperiment::read(std::istream & in,
                        unsigned C_INT32 & currentLine)
 {
   // Allocate for reading
-  unsigned C_INT32 i, imax = mpColumnType->size();
+  unsigned C_INT32 i, imax = mpObjectMap->size();
   if (*mpNumColumns < imax)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 4, imax, *mpNumColumns);
@@ -586,7 +605,7 @@ bool CExperiment::read(std::istream & in,
   unsigned C_INT32 IgnoreCount = 0;
 
   for (i = 0; i < imax; i++)
-    switch (getColumnType(i))
+    switch (mpObjectMap->getRole(i))
       {
       case ignore:
         IgnoreCount++;
@@ -643,7 +662,7 @@ bool CExperiment::read(std::istream & in,
 
           unsigned C_INT32 Column = 0;
           for (i = 0; i < *mpNumColumns; i++)
-            if (getColumnType(i) != ignore)
+            if (mpObjectMap->getRole(i) != ignore)
               mColumnName[Column++] = Cells[i].getName();
 
           continue;
@@ -654,7 +673,7 @@ bool CExperiment::read(std::istream & in,
 
       for (i = 0; i < imax; i++)
         {
-          switch (getColumnType(i))
+          switch (mpObjectMap->getRole(i))
             {
             case ignore:
               break;
@@ -688,64 +707,91 @@ bool CExperiment::read(std::istream & in,
       return false;
     }
 
-  // We need to calculate the means and the weights
+  // resize the vectors for the statistics
   mMeans.resize(DependentCount);
   mWeight.resize(DependentCount);
   mWeightSquare.resize(DependentCount);
+
+  return calculateWeights();
+}
+
+bool CExperiment::calculateWeights()
+{
+  // We need to calculate the means and the weights
   C_FLOAT64 MaxWeight = 0.0;
   C_FLOAT64 MinWeight = DBL_MAX;
 
-  unsigned C_INT32 Count;
+  unsigned C_INT32 DependentCount = mMeans.size();
+  CVector< unsigned C_INT32 > Counts(DependentCount);
+  unsigned C_INT32 i, j;
 
-  for (i = 0; i < DependentCount; i++)
+  mMeans = 0.0;
+  Counts = 0;
+  // Calculate the means
+  for (i = 0; i < mNumDataRows; i++)
+    for (j = 0; j < DependentCount; j++)
+      {
+        C_FLOAT64 & Data = mDataDependent[i][j];
+        if (!isnan(Data))
+          {
+            Counts[j]++;
+            mMeans[j] += Data;
+          }
+      }
+
+  // calculate the means;
+  for (j = 0; j < DependentCount; j++)
     {
-      C_FLOAT64 & Mean = mMeans[i];
-      Mean = 0.0;
-      Count = 0;
-
-      for (j = 0; j < mNumDataRows; j++)
-        {
-          C_FLOAT64 & Data = mDataDependent[j][i];
-          if (!isnan(Data))
-            {
-              Count++;
-              Mean += Data;
-            }
-        }
-
-      if (Count)
-        Mean /= Count;
+      if (Counts[j])
+        mMeans[j] /= Counts[j];
       else
         // :TODO: We need to create an error message here to instruct the user
         // :TODO: to mark this column as ignored as it contains no data.
-        Mean = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-
-      C_FLOAT64 & WeightSquare = mWeightSquare[i];
-      WeightSquare = 0;
-
-      if (Count)
-        {
-          for (j = 0; j < mNumDataRows; j++)
-            {
-              C_FLOAT64 & Data = mDataDependent[j][i];
-              if (!isnan(Data))
-                WeightSquare += (Mean - Data) * (Mean - Data);
-            }
-
-          if (WeightSquare > sqrt(DBL_EPSILON))
-            {
-              WeightSquare = Count / WeightSquare;
-
-              if (WeightSquare > MaxWeight) MaxWeight = WeightSquare;
-              if (WeightSquare < MinWeight) MinWeight = WeightSquare;
-            }
-          else
-            WeightSquare = -1.0 * Count; // All values where equal to the mean
-        }
-      else
-        WeightSquare = -1.0; // Zero values
+        mMeans[j] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
     }
 
+  // Guess missing dependent values
+  for (i = 0; i < mNumDataRows; i++)
+    for (j = 0; j < DependentCount; j++)
+      if (isnan(mDataDependent[i][j])) mDataDependent[i][j] = mMeans[j];
+
+  switch (*mpWeightMethod)
+    {
+    case SD:
+      for (i = 0; i < DependentCount; i++)
+        {
+          C_FLOAT64 & Mean = mMeans[i];
+          unsigned C_INT32 & Count = Counts[i];
+
+          C_FLOAT64 & WeightSquare = mWeightSquare[i];
+          WeightSquare = 0;
+
+          if (Count)
+            {
+              for (j = 0; j < mNumDataRows; j++)
+                {
+                  C_FLOAT64 & Data = mDataDependent[j][i];
+                  WeightSquare += (Mean - Data) * (Mean - Data);
+                }
+
+              if (WeightSquare > sqrt(DBL_EPSILON))
+                {
+                  WeightSquare = Count / WeightSquare;
+
+                  if (WeightSquare > MaxWeight) MaxWeight = WeightSquare;
+                  if (WeightSquare < MinWeight) MinWeight = WeightSquare;
+                }
+              else
+                WeightSquare = -1.0 * Count; // All values where equal to the mean
+            }
+          else
+            WeightSquare = -1.0; // Zero values
+        }
+      break;
+
+    case MEAN:
+      break;
+    }
   if (MaxWeight < MinWeight) // Only constant values or no values
     {
       MaxWeight = 1.0;
@@ -778,11 +824,6 @@ bool CExperiment::read(std::istream & in,
 
       mNumDataRows++;
     }
-
-  // Guess missing dependent values
-  for (i = 0; i < mNumDataRows; i++)
-    for (j = 0; j < DependentCount; j++)
-      if (isnan(mDataDependent[i][j])) mDataDependent[i][j] = mMeans[j];
 
   return true;
 }
@@ -951,52 +992,6 @@ bool CExperiment::setHeaderRow(const unsigned C_INT32 & header)
   return true;
 }
 
-bool CExperiment::addColumnType(const unsigned C_INT32 & index, const Type & type)
-{
-  std::string Index = StringPrint("%d", index);
-  if (mpColumnType->getParameter(Index)) return false;
-
-  return mpColumnType->addParameter(Index, CCopasiParameter::UINT,
-                                    (unsigned C_INT32) type);
-}
-
-bool CExperiment::removeColumnType(const unsigned C_INT32 & index)
-{return mpColumnType->removeParameter(StringPrint("%d", index));}
-
-const CExperiment::Type & CExperiment::getColumnType(const unsigned C_INT32 & index) const
-  {
-    CCopasiParameter * pParm = mpColumnType->getParameter(StringPrint("%d", index));
-
-    if (!pParm)
-      {
-        const_cast<CExperiment *>(this)->addColumnType(index, dependent);
-        pParm = mpColumnType->getParameter(StringPrint("%d", index));
-      }
-
-    return * static_cast<CExperiment::Type *>(pParm->getValue().pVOID);
-  }
-
-bool CExperiment::setColumnType(const unsigned C_INT32 & index,
-                                const CExperiment::Type & type)
-{
-  CCopasiParameter * pParm = mpColumnType->getParameter(StringPrint("%d", index));
-
-  if (pParm)
-    return pParm->setValue((unsigned C_INT32) type);
-  else
-    return addColumnType(index, type);
-}
-
-unsigned C_INT32 CExperiment::getLastNotIgnoredColumn() const
-  {
-    unsigned C_INT32 i = mpColumnType->size();
-
-    for (i = mpColumnType->size() - 1; i != C_INVALID_INDEX; i--)
-      if (getColumnType(i) != ignore) return i;
-
-    return C_INVALID_INDEX;
-  }
-
 const unsigned C_INT32 & CExperiment::getNumColumns() const
 {return *mpNumColumns;}
 
@@ -1063,7 +1058,7 @@ void CExperiment::printResult(std::ostream * ostream) const
 
     unsigned i, imax = mNumDataRows;
     unsigned j, jmax = mDataDependent.numCols();
-    unsigned k, kmax = getLastNotIgnoredColumn() + 1;
+    unsigned k, kmax = mpObjectMap->getLastNotIgnoredColumn() + 1;
 
     const CVector<CCopasiObject *> & Objects =
       mpObjectMap->getMappedObjects();
@@ -1073,7 +1068,7 @@ void CExperiment::printResult(std::ostream * ostream) const
       os << "Time\t";
 
     for (k = 0; k < kmax; k++)
-      if (getColumnType(k) == CExperiment::dependent)
+      if (mpObjectMap->getRole(k) == CExperiment::dependent)
         {
           std::string Name;
           if (Objects[k])
@@ -1163,6 +1158,17 @@ C_FLOAT64 CExperiment::getObjectiveValue(CCopasiObject *const& pObject) const
       return mColumnObjectiveValue[it->second];
     else
       return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  }
+
+C_FLOAT64 CExperiment::getWeight(CCopasiObject * const& pObject) const
+  {
+    std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
+    = mDependentObjects.find(pObject);
+
+    if (it == mDependentObjects.end())
+      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+    return mWeight[it->second];
   }
 
 C_FLOAT64 CExperiment::getRMS(CCopasiObject *const& pObject) const
