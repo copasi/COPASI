@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/22 18:26:59 $
+   $Date: 2006/08/24 14:16:37 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 
 class CExperimentObjectMap: public CCopasiParameterGroup
   {
-  protected:
+  public:
 
   class CDataColumn: public CCopasiParameterGroup
       {

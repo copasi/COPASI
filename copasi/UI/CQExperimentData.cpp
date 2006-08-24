@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/07 18:51:22 $
+   $Date: 2006/08/24 14:16:37 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Fri Jul 7 14:48:06 2006
- **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.11 2006/07/07 18:51:22 shoops Exp $)
+ ** Created: Thu Aug 24 10:10:38 2006
+ **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.12 2006/08/24 14:16:37 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -26,11 +26,12 @@
 #include <qtoolbutton.h>
 #include <qlabel.h>
 #include <qlistbox.h>
-#include <qcheckbox.h>
 #include <qlineedit.h>
+#include <qframe.h>
+#include <qcombobox.h>
+#include <qcheckbox.h>
 #include <qbuttongroup.h>
 #include <qradiobutton.h>
-#include <qframe.h>
 #include <qtable.h>
 #include <qlayout.h>
 #include <qtooltip.h>
@@ -219,20 +220,39 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpLayoutFile->addWidget(mpLblExperiment, 0, 3);
   CQExperimentDataLayout->addLayout(mpLayoutFile);
 
-  layout4 = new QGridLayout(0, 1, 1, 0, 6, "layout4");
+  layout23 = new QGridLayout(0, 1, 1, 0, 6, "layout23");
 
   mpLblHeader = new QLabel(this, "mpLblHeader");
   mpLblHeader->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
 
-  layout4->addWidget(mpLblHeader, 2, 7);
+  layout23->addMultiCellWidget(mpLblHeader, 3, 3, 3, 4);
 
-  mpCheckFrom = new QCheckBox(this, "mpCheckFrom");
+  mpEditName = new QLineEdit(this, "mpEditName");
+  mpEditName->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)5, 0, 0, mpEditName->sizePolicy().hasHeightForWidth()));
+  mpEditName->setFrameShape(QLineEdit::LineEditPanel);
+  mpEditName->setFrameShadow(QLineEdit::Sunken);
 
-  layout4->addWidget(mpCheckFrom, 2, 1);
-  mpSpacer1 = new QSpacerItem(42, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout4->addItem(mpSpacer1, 2, 2);
-  mpSpacer3 = new QSpacerItem(42, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  layout4->addItem(mpSpacer3, 3, 2);
+  layout23->addMultiCellWidget(mpEditName, 0, 0, 1, 2);
+
+  mpLine = new QFrame(this, "mpLine");
+  mpLine->setFrameShape(QFrame::HLine);
+  mpLine->setFrameShadow(QFrame::Sunken);
+  mpLine->setFrameShape(QFrame::HLine);
+
+  layout23->addMultiCellWidget(mpLine, 2, 2, 0, 8);
+
+  mpLblName = new QLabel(this, "mpLblName");
+  mpLblName->setAlignment(int(QLabel::AlignVCenter));
+
+  layout23->addWidget(mpLblName, 0, 0);
+
+  mpEditSeparator = new QLineEdit(this, "mpEditSeparator");
+  mpEditSeparator->setEnabled(FALSE);
+  mpEditSeparator->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, mpEditSeparator->sizePolicy().hasHeightForWidth()));
+  mpEditSeparator->setFrameShape(QLineEdit::LineEditPanel);
+  mpEditSeparator->setFrameShadow(QLineEdit::Sunken);
+
+  layout23->addMultiCellWidget(mpEditSeparator, 4, 4, 5, 7);
 
   mpEditLast = new QLineEdit(this, "mpEditLast");
   mpEditLast->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpEditLast->sizePolicy().hasHeightForWidth()));
@@ -240,7 +260,31 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpEditLast->setFrameShape(QLineEdit::LineEditPanel);
   mpEditLast->setFrameShadow(QLineEdit::Sunken);
 
-  layout4->addWidget(mpEditLast, 0, 8);
+  layout23->addMultiCellWidget(mpEditLast, 0, 0, 7, 8);
+
+  mpBoxWeightMethod = new QComboBox(FALSE, this, "mpBoxWeightMethod");
+
+  layout23->addWidget(mpBoxWeightMethod, 4, 2);
+
+  mpLblExperimentType = new QLabel(this, "mpLblExperimentType");
+  mpLblExperimentType->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+
+  layout23->addMultiCellWidget(mpLblExperimentType, 3, 3, 0, 1);
+
+  mpEditHeader = new QLineEdit(this, "mpEditHeader");
+  mpEditHeader->setEnabled(FALSE);
+
+  layout23->addMultiCellWidget(mpEditHeader, 3, 3, 5, 7);
+
+  mpLblFirst = new QLabel(this, "mpLblFirst");
+  mpLblFirst->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+
+  layout23->addWidget(mpLblFirst, 0, 3);
+
+  mpCheckTab = new QCheckBox(this, "mpCheckTab");
+  mpCheckTab->setChecked(TRUE);
+
+  layout23->addWidget(mpCheckTab, 4, 8);
 
   mpBtnGroup = new QButtonGroup(this, "mpBtnGroup");
   mpBtnGroup->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)0, (QSizePolicy::SizeType)4, 0, 0, mpBtnGroup->sizePolicy().hasHeightForWidth()));
@@ -259,24 +303,37 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpBtnTimeCourse = new QRadioButton(mpBtnGroup, "mpBtnTimeCourse");
   mpBtnGroupLayout->addWidget(mpBtnTimeCourse);
 
-  layout4->addMultiCellWidget(mpBtnGroup, 3, 3, 3, 5);
+  layout23->addWidget(mpBtnGroup, 3, 2);
+
+  layout16 = new QHBoxLayout(0, 0, 6, "layout16");
+
+  mpCheckFrom = new QCheckBox(this, "mpCheckFrom");
+  layout16->addWidget(mpCheckFrom);
 
   mpCheckTo = new QCheckBox(this, "mpCheckTo");
+  layout16->addWidget(mpCheckTo);
 
-  layout4->addWidget(mpCheckTo, 3, 1);
+  layout23->addLayout(layout16, 1, 2);
 
-  mpEditSeparator = new QLineEdit(this, "mpEditSeparator");
-  mpEditSeparator->setEnabled(FALSE);
-  mpEditSeparator->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, mpEditSeparator->sizePolicy().hasHeightForWidth()));
-  mpEditSeparator->setFrameShape(QLineEdit::LineEditPanel);
-  mpEditSeparator->setFrameShadow(QLineEdit::Sunken);
+  mpCheckHeader = new QCheckBox(this, "mpCheckHeader");
 
-  layout4->addWidget(mpEditSeparator, 3, 8);
+  layout23->addWidget(mpCheckHeader, 3, 8);
 
-  mpLblFirst = new QLabel(this, "mpLblFirst");
-  mpLblFirst->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+  mpLblSeperator = new QLabel(this, "mpLblSeperator");
+  mpLblSeperator->setMinimumSize(QSize(0, 0));
+  mpLblSeperator->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
 
-  layout4->addWidget(mpLblFirst, 0, 5);
+  layout23->addMultiCellWidget(mpLblSeperator, 4, 4, 3, 4);
+
+  mpLblCopy = new QLabel(this, "mpLblCopy");
+  mpLblCopy->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+
+  layout23->addMultiCellWidget(mpLblCopy, 1, 1, 0, 1);
+
+  mpLblWeightMethod = new QLabel(this, "mpLblWeightMethod");
+  mpLblWeightMethod->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
+
+  layout23->addMultiCellWidget(mpLblWeightMethod, 4, 4, 0, 1);
 
   mpEditFirst = new QLineEdit(this, "mpEditFirst");
   mpEditFirst->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpEditFirst->sizePolicy().hasHeightForWidth()));
@@ -284,63 +341,13 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpEditFirst->setFrameShape(QLineEdit::LineEditPanel);
   mpEditFirst->setFrameShadow(QLineEdit::Sunken);
 
-  layout4->addWidget(mpEditFirst, 0, 6);
-
-  mpLblName = new QLabel(this, "mpLblName");
-  mpLblName->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
-
-  layout4->addWidget(mpLblName, 0, 0);
-
-  mpLblCopy = new QLabel(this, "mpLblCopy");
-  mpLblCopy->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
-
-  layout4->addWidget(mpLblCopy, 2, 0);
-
-  mpLblExperimentType = new QLabel(this, "mpLblExperimentType");
-
-  layout4->addWidget(mpLblExperimentType, 2, 3);
-
-  line1 = new QFrame(this, "line1");
-  line1->setFrameShape(QFrame::HLine);
-  line1->setFrameShadow(QFrame::Sunken);
-  line1->setFrameShape(QFrame::HLine);
-
-  layout4->addMultiCellWidget(line1, 1, 1, 0, 9);
-
-  mpLblSeperator = new QLabel(this, "mpLblSeperator");
-  mpLblSeperator->setMinimumSize(QSize(0, 0));
-  mpLblSeperator->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
-
-  layout4->addWidget(mpLblSeperator, 3, 7);
+  layout23->addMultiCellWidget(mpEditFirst, 0, 0, 4, 5);
 
   mpLblLast = new QLabel(this, "mpLblLast");
   mpLblLast->setAlignment(int(QLabel::AlignVCenter | QLabel::AlignRight));
 
-  layout4->addWidget(mpLblLast, 0, 7);
-
-  mpEditHeader = new QLineEdit(this, "mpEditHeader");
-  mpEditHeader->setEnabled(FALSE);
-
-  layout4->addWidget(mpEditHeader, 2, 8);
-  mpSpacer4 = new QSpacerItem(6, 20, QSizePolicy::Preferred, QSizePolicy::Minimum);
-  layout4->addItem(mpSpacer4, 0, 4);
-
-  mpCheckHeader = new QCheckBox(this, "mpCheckHeader");
-
-  layout4->addWidget(mpCheckHeader, 2, 9);
-
-  mpCheckTab = new QCheckBox(this, "mpCheckTab");
-  mpCheckTab->setChecked(TRUE);
-
-  layout4->addWidget(mpCheckTab, 3, 9);
-
-  mpEditName = new QLineEdit(this, "mpEditName");
-  mpEditName->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)5, 0, 0, mpEditName->sizePolicy().hasHeightForWidth()));
-  mpEditName->setFrameShape(QLineEdit::LineEditPanel);
-  mpEditName->setFrameShadow(QLineEdit::Sunken);
-
-  layout4->addMultiCellWidget(mpEditName, 0, 0, 1, 3);
-  CQExperimentDataLayout->addLayout(layout4);
+  layout23->addWidget(mpLblLast, 0, 6);
+  CQExperimentDataLayout->addLayout(layout23);
 
   mpTable = new QTable(this, "mpTable");
   mpTable->setNumCols(mpTable->numCols() + 1);
@@ -355,8 +362,10 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpTable->horizontalHeader()->setLabel(mpTable->numCols() - 1, tr("Model Object"));
   mpTable->setNumCols(mpTable->numCols() + 1);
   mpTable->horizontalHeader()->setLabel(mpTable->numCols() - 1, tr("Hidden"));
+  mpTable->setNumCols(mpTable->numCols() + 1);
+  mpTable->horizontalHeader()->setLabel(mpTable->numCols() - 1, tr("Weight"));
   mpTable->setNumRows(3);
-  mpTable->setNumCols(6);
+  mpTable->setNumCols(7);
   mpTable->setSelectionMode(QTable::NoSelection);
   CQExperimentDataLayout->addWidget(mpTable);
 
@@ -372,7 +381,7 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpLayoutButton->addWidget(mpBtnCancel);
   CQExperimentDataLayout->addLayout(mpLayoutButton);
   languageChange();
-  resize(QSize(549, 363).expandedTo(minimumSizeHint()));
+  resize(QSize(515, 501).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
@@ -392,6 +401,7 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   connect(mpEditSeparator, SIGNAL(textChanged(const QString&)), this, SLOT(slotSeparator()));
   connect(mpCheckFrom, SIGNAL(toggled(bool)), this, SLOT(slotCheckFrom(bool)));
   connect(mpCheckTo, SIGNAL(toggled(bool)), this, SLOT(slotCheckTo(bool)));
+  connect(mpBoxWeightMethod, SIGNAL(activated(int)), this, SLOT(slotWeightMethod(int)));
 
   // tab order
   setTabOrder(mpBoxFile, mpBoxExperiment);
@@ -439,25 +449,27 @@ void CQExperimentData::languageChange()
   mpBoxExperiment->insertItem(QString::null);
   mpLblExperiment->setText(tr("Experiment"));
   mpLblHeader->setText(tr("Header"));
-  mpCheckFrom->setText(tr("from previous"));
+  mpLblName->setText(tr("Name"));
+  mpLblExperimentType->setText(tr("Experiment Type"));
+  mpLblFirst->setText(tr("First Row"));
+  mpCheckTab->setText(tr("<tab>"));
   mpBtnGroup->setTitle(QString::null);
   mpBtnSteadystate->setText(tr("Steady State"));
   mpBtnTimeCourse->setText(tr("Time Course"));
+  mpCheckFrom->setText(tr("from previous"));
   mpCheckTo->setText(tr("to next"));
-  mpLblFirst->setText(tr("First Row"));
-  mpLblName->setText(tr("Name"));
-  mpLblCopy->setText(tr("Copy"));
-  mpLblExperimentType->setText(tr("Experiment Type"));
-  mpLblSeperator->setText(tr("Separator"));
-  mpLblLast->setText(tr("Last Row"));
   mpCheckHeader->setText(QString::null);
-  mpCheckTab->setText(tr("<tab>"));
+  mpLblSeperator->setText(tr("Separator"));
+  mpLblCopy->setText(tr("Copy settings below"));
+  mpLblWeightMethod->setText(tr("Weight Method"));
+  mpLblLast->setText(tr("Last Row"));
   mpTable->horizontalHeader()->setLabel(0, tr("Column Name"));
   mpTable->horizontalHeader()->setLabel(1, tr("Type"));
   mpTable->horizontalHeader()->setLabel(2, tr("Hidden"));
   mpTable->horizontalHeader()->setLabel(3, tr("<>"));
   mpTable->horizontalHeader()->setLabel(4, tr("Model Object"));
   mpTable->horizontalHeader()->setLabel(5, tr("Hidden"));
+  mpTable->horizontalHeader()->setLabel(6, tr("Weight"));
   mpBtnOK->setText(tr("&OK"));
   mpBtnOK->setAccel(QKeySequence(tr("Alt+O")));
   mpBtnRevert->setText(tr("&Revert"));

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/07 18:51:22 $
+   $Date: 2006/08/24 14:16:37 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Fri Jul 7 14:48:06 2006
- **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.11 2006/07/07 18:51:22 shoops Exp $)
+ ** Created: Thu Aug 24 09:30:30 2006
+ **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.12 2006/08/24 14:16:37 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -36,11 +36,12 @@ class QToolButton;
 class QLabel;
 class QListBox;
 class QListBoxItem;
-class QCheckBox;
 class QLineEdit;
+class QFrame;
+class QComboBox;
+class QCheckBox;
 class QButtonGroup;
 class QRadioButton;
-class QFrame;
 class QTable;
 class QPushButton;
 class CExperimentSet;
@@ -66,25 +67,27 @@ class CQExperimentData : public QDialog
     QListBox* mpBoxExperiment;
     QLabel* mpLblExperiment;
     QLabel* mpLblHeader;
-    QCheckBox* mpCheckFrom;
+    QLineEdit* mpEditName;
+    QFrame* mpLine;
+    QLabel* mpLblName;
+    QLineEdit* mpEditSeparator;
     QLineEdit* mpEditLast;
+    QComboBox* mpBoxWeightMethod;
+    QLabel* mpLblExperimentType;
+    QLineEdit* mpEditHeader;
+    QLabel* mpLblFirst;
+    QCheckBox* mpCheckTab;
     QButtonGroup* mpBtnGroup;
     QRadioButton* mpBtnSteadystate;
     QRadioButton* mpBtnTimeCourse;
+    QCheckBox* mpCheckFrom;
     QCheckBox* mpCheckTo;
-    QLineEdit* mpEditSeparator;
-    QLabel* mpLblFirst;
-    QLineEdit* mpEditFirst;
-    QLabel* mpLblName;
-    QLabel* mpLblCopy;
-    QLabel* mpLblExperimentType;
-    QFrame* line1;
-    QLabel* mpLblSeperator;
-    QLabel* mpLblLast;
-    QLineEdit* mpEditHeader;
     QCheckBox* mpCheckHeader;
-    QCheckBox* mpCheckTab;
-    QLineEdit* mpEditName;
+    QLabel* mpLblSeperator;
+    QLabel* mpLblCopy;
+    QLabel* mpLblWeightMethod;
+    QLineEdit* mpEditFirst;
+    QLabel* mpLblLast;
     QTable* mpTable;
     QPushButton* mpBtnOK;
     QPushButton* mpBtnRevert;
@@ -101,20 +104,21 @@ class CQExperimentData : public QDialog
     void experimentChanged();
 
   protected:
-    QSignalMapper * mpComboMap;
-    CQExperimentDataValidator * mpValidatorName;
-    unsigned int mShown;
-    CQExperimentDataValidator * mpValidatorFirst;
-    std::map<std::string, std::string> mFileMap;
-    std::map<std::string, std::string> mKeyMap;
-    CExperimentSet * mpExperimentSetCopy;
-    CExperimentSet * mpExperimentSet;
-    CExperimentFileInfo * mpFileInfo;
-    CExperiment * mpExperiment;
-    CQExperimentDataValidator * mpValidatorLast;
-    CQExperimentDataValidator * mpValidatorHeader;
+    unsigned int mOldWeightMethod;
+    QPixmap mCopasi;
     QSignalMapper * mpBtnMap;
-    QPixmap mDots;
+    CQExperimentDataValidator * mpValidatorHeader;
+    CQExperimentDataValidator * mpValidatorLast;
+    CExperiment * mpExperiment;
+    CExperimentFileInfo * mpFileInfo;
+    CExperimentSet * mpExperimentSet;
+    CExperimentSet * mpExperimentSetCopy;
+    std::map<std::string, std::string> mKeyMap;
+    std::map<std::string, std::string> mFileMap;
+    CQExperimentDataValidator * mpValidatorFirst;
+    unsigned int mShown;
+    CQExperimentDataValidator * mpValidatorName;
+    QSignalMapper * mpComboMap;
 
     virtual bool loadExperiment(CExperiment * pExperiment);
     bool saveExperiment(CExperiment * pExperiment, const bool & full);
@@ -125,11 +129,9 @@ class CQExperimentData : public QDialog
 
     QVBoxLayout* CQExperimentDataLayout;
     QGridLayout* mpLayoutFile;
-    QGridLayout* layout4;
-    QSpacerItem* mpSpacer1;
-    QSpacerItem* mpSpacer3;
-    QSpacerItem* mpSpacer4;
+    QGridLayout* layout23;
     QHBoxLayout* mpBtnGroupLayout;
+    QHBoxLayout* layout16;
     QHBoxLayout* mpLayoutButton;
 
   protected slots:
@@ -163,6 +165,9 @@ class CQExperimentData : public QDialog
 
     void init();
     void destroy();
+
+  private slots:
+    void slotWeightMethod(int weightMethod);
   };
 
 #endif // CQEXPERIMENTDATA_H

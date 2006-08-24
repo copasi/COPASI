@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/22 18:26:59 $
+   $Date: 2006/08/24 14:16:37 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -301,7 +301,10 @@ bool CExperimentObjectMap::CDataColumn::setObjectCN(const std::string & objectCN
   if (objectCN == "")
     {
       if (mpObjectCN != NULL)
-        removeParameter("Object CN");
+        {
+          removeParameter("Object CN");
+          mpObjectCN = NULL;
+        }
     }
   else
     {
@@ -328,7 +331,10 @@ bool CExperimentObjectMap::CDataColumn::setWeight(const C_FLOAT64 & weight)
   if (isnan(weight))
     {
       if (mpWeight != NULL)
-        removeParameter("Weight");
+        {
+          removeParameter("Weight");
+          mpWeight = NULL;
+        }
       return true;
     }
 
@@ -375,5 +381,5 @@ C_FLOAT64 CExperimentObjectMap::CDataColumn::getDefaultWeight() const
     if (pObject == NULL)
       return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-    return pExperiment->getWeight(pObject);
+    return pExperiment->getDefaultWeight(pObject);
   }

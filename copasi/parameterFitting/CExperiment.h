@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/22 18:26:59 $
+   $Date: 2006/08/24 14:16:37 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -66,15 +66,6 @@ class CExperiment: public CCopasiParameterGroup
     };
 
     /**
-     * Enumaration of methods to calculate the weight.
-     */
-    enum WeightMethod
-    {
-      SD = 0,
-      MEAN
-    };
-
-    /**
      * String literals for the GUI to display type names of columns known
      * to COPASI.
      */
@@ -84,6 +75,27 @@ class CExperiment: public CCopasiParameterGroup
      * XML type names of tasks known to COPASI.
      */
     static const char* XMLType[];
+
+    /**
+     * Enumaration of methods to calculate the weight.
+     */
+    enum WeightMethod
+    {
+      MEAN = 0,
+      MEAN_SQUARE,
+      SD,
+    };
+
+    /**
+     * String literals for the GUI to display weight method known
+     * to COPASI.
+     */
+    static const std::string WeightMethodName[];
+
+    /**
+     * XML type names of weight methods known to COPASI.
+     */
+    static const char* WeightMethodType[];
 
     /**
      * Default constructor
@@ -144,6 +156,12 @@ class CExperiment: public CCopasiParameterGroup
      * @return bool success
      */
     bool read(std::istream & in, unsigned C_INT32 & currentLine);
+
+    /**
+     * Calculate/set the weights used in the sum of squares.
+     * @return bool success
+     */
+    bool calculateWeights();
 
     /**
      * Retrieve the list of dependent data objects
@@ -340,7 +358,7 @@ class CExperiment: public CCopasiParameterGroup
     const unsigned C_INT32 getNumDataRows() const;
 
     /**
-     * Retrieve the seperator
+     * Retrieve the separator
      * @return const std::string & separator
      */
     const std::string & getSeparator() const;
@@ -351,6 +369,19 @@ class CExperiment: public CCopasiParameterGroup
      * @return bool success
      */
     bool setSeparator(const std::string & seperator);
+
+    /**
+     * Retrieve the method used for calculating the default weights.
+     * @return const WeightMethod & weightMethod
+     */
+    const WeightMethod & getWeightMethod() const;
+
+    /**
+     * Set the weight calculation method and resets manual adjusted weights
+     * @param const WeightMethod & weightMethod
+     * @return bool success
+     */
+    bool setWeightMethod(const WeightMethod & weightMethod);
 
     /**
      * Check whter the data is row oriented.
@@ -424,11 +455,11 @@ class CExperiment: public CCopasiParameterGroup
     C_FLOAT64 getObjectiveValue(CCopasiObject * const& pObject) const;
 
     /**
-     * Retrieve the weight for the object.
+     * Retrieve the default weight for the object.
      * @param CCopasiObject *const& pObject
      * @return C_FLOAT64 weight
      */
-    C_FLOAT64 getWeight(CCopasiObject * const& pObject) const;
+    C_FLOAT64 getDefaultWeight(CCopasiObject * const& pObject) const;
 
     /**
      * Retrieve the RMS for the object.
@@ -466,12 +497,6 @@ class CExperiment: public CCopasiParameterGroup
      * properly initialized.
      */
     void initializeParameter();
-
-    /**
-     * Calculate/set the weights used in the sum of squares.
-     * @return bool success
-     */
-    bool calculateWeights();
 
   private:
     // Attributes
@@ -560,7 +585,7 @@ class CExperiment: public CCopasiParameterGroup
 
     CVector< C_FLOAT64 > mWeight;
 
-    CVector< C_FLOAT64 > mWeightSquare;
+    CVector< C_FLOAT64 > mDefaultWeight;
 
     CVector< C_FLOAT64 * > mDependentValues;
 

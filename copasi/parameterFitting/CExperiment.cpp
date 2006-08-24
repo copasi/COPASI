@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/22 18:26:59 $
+   $Date: 2006/08/24 14:16:37 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,6 +50,22 @@ const char* CExperiment::XMLType[] =
     NULL
   };
 
+const std::string CExperiment::WeightMethodName[] =
+  {
+    "Mean",
+    "Mean Square",
+    "Standard Deviation",
+    ""
+  };
+
+const char* CExperiment::WeightMethodType[] =
+  {
+    "Mean",
+    "MeanSquare",
+    "StandardDeviation",
+    NULL
+  };
+
 CExperiment::CExperiment(const std::string & name,
                          const CCopasiContainer * pParent):
     CCopasiParameterGroup(name, pParent),
@@ -68,7 +84,7 @@ CExperiment::CExperiment(const std::string & name,
     mDataDependent(0, 0),
     mMeans(0),
     mWeight(0),
-    mWeightSquare(0),
+    mDefaultWeight(0),
     mDependentValues(0),
     mIndependentUpdateMethods(0),
     mRefreshMethods(),
@@ -97,7 +113,7 @@ CExperiment::CExperiment(const CExperiment & src,
     mDataDependent(src.mDataDependent),
     mMeans(src.mMeans),
     mWeight(src.mWeight),
-    mWeightSquare(src.mWeightSquare),
+    mDefaultWeight(src.mDefaultWeight),
     mDependentValues(src.mDependentValues),
     mIndependentUpdateMethods(src.mIndependentUpdateMethods),
     mRefreshMethods(src.mRefreshMethods),
@@ -126,7 +142,7 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
     mDataDependent(0, 0),
     mMeans(0),
     mWeight(0),
-    mWeightSquare(0),
+    mDefaultWeight(0),
     mDependentValues(0),
     mIndependentUpdateMethods(0),
     mRefreshMethods(),
@@ -148,9 +164,19 @@ CExperiment & CExperiment::operator = (const CExperiment & rhs)
   *static_cast<CCopasiParameterGroup *>(this) =
     *static_cast<const CCopasiParameterGroup *>(&rhs);
 
-  elevateChildren();
-
   setValue("Key", Key);
+
+  mpFileName = getValue("File Name").pFILE;
+  mpFirstRow = getValue("First Row").pUINT;
+  mpLastRow = getValue("Last Row").pUINT;
+  mpTaskType = (CCopasiTask::Type *) getValue("Experiment Type").pUINT;
+  mpSeparator = getValue("Seperator").pSTRING;
+  mpWeightMethod = (WeightMethod *) getValue("Weight Method").pUINT;
+  mpRowOriented = getValue("Data is Row Oriented").pBOOL;
+  mpHeaderRow = getValue("Row containing Names").pUINT;
+  mpNumColumns = getValue("Number of Columns").pUINT;
+
+  elevateChildren();
 
   return *this;
 }
@@ -173,7 +199,7 @@ void CExperiment::initializeParameter()
   mpSeparator =
     assertParameter("Seperator", CCopasiParameter::STRING, std::string("\t"))->getValue().pSTRING;
   mpWeightMethod = (WeightMethod *)
-                   assertParameter("Weight Method", CCopasiParameter::UINT, (unsigned C_INT32) SD)->getValue().pUINT;
+                   assertParameter("Weight Method", CCopasiParameter::UINT, (unsigned C_INT32) MEAN_SQUARE)->getValue().pUINT;
   mpRowOriented =
     assertParameter("Data is Row Oriented", CCopasiParameter::BOOL, (bool) true)->getValue().pBOOL;
   mpHeaderRow =
@@ -211,6 +237,8 @@ bool CExperiment::elevateChildren()
         elevate<CExperimentObjectMap, CCopasiParameterGroup>(getGroup("Object Map"));
 
       removeParameter("Column Role");
+
+      *mpWeightMethod = SD;
     }
 
   updateFittedPoints();
@@ -524,9 +552,11 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
           }
         mIndependentUpdateMethods[IndependentCount] =
           Objects[i]->getUpdateMethod();
-        mIndependentValues[IndependentCount++] =
+        mIndependentValues[IndependentCount] =
           *(C_FLOAT64 *)Objects[i]->getValuePointer();
-        //TODO: do we have to check if getValuePointer() return a valid pointer?
+        // :TODO: do we have to check if getValuePointer() return a valid pointer?
+
+        IndependentCount++;
         break;
 
       case dependent:
@@ -542,9 +572,12 @@ bool CExperiment::compile(const std::vector< CCopasiContainer * > listOfContaine
           }
         mDependentValues[DependentCount] =
           (C_FLOAT64 *) Objects[i]->getValuePointer();
-        //TODO: do we have to check if getValuePointer() return a valid pointer?
-        mDependentObjects[Objects[i]] = DependentCount++;
+        // :TODO: do we have to check if getValuePointer() return a valid pointer?
+        mDependentObjects[Objects[i]] = DependentCount;
+        mWeight[DependentCount] = sqrt(mpObjectMap->getWeight(i));
         Dependencies.insert(Objects[i]->getValueObject());
+
+        DependentCount++;
         break;
 
       case time:
@@ -707,10 +740,26 @@ bool CExperiment::read(std::istream & in,
       return false;
     }
 
+  // If it is a time course this is the place to assert that it is sorted.
+  if (*mpTaskType == CCopasiTask::timeCourse)
+    {
+      CVector<unsigned C_INT32> Pivot;
+      sortWithPivot(mDataTime.array(), mDataTime.array() + mDataTime.size(), Pivot);
+
+      mDataTime.applyPivot(Pivot);
+      mDataIndependent.applyPivot(Pivot);
+      mDataDependent.applyPivot(Pivot);
+
+      for (mNumDataRows--; mNumDataRows != C_INVALID_INDEX; mNumDataRows--)
+        if (!isnan(mDataTime[mNumDataRows])) break;
+
+      mNumDataRows++;
+    }
+
   // resize the vectors for the statistics
   mMeans.resize(DependentCount);
   mWeight.resize(DependentCount);
-  mWeightSquare.resize(DependentCount);
+  mDefaultWeight.resize(DependentCount);
 
   return calculateWeights();
 }
@@ -718,15 +767,17 @@ bool CExperiment::read(std::istream & in,
 bool CExperiment::calculateWeights()
 {
   // We need to calculate the means and the weights
-  C_FLOAT64 MaxWeight = 0.0;
   C_FLOAT64 MinWeight = DBL_MAX;
 
   unsigned C_INT32 DependentCount = mMeans.size();
+  CVector< C_FLOAT64 > MeanSquares(DependentCount);
   CVector< unsigned C_INT32 > Counts(DependentCount);
   unsigned C_INT32 i, j;
 
   mMeans = 0.0;
+  MeanSquares = 0.0;
   Counts = 0;
+
   // Calculate the means
   for (i = 0; i < mNumDataRows; i++)
     for (j = 0; j < DependentCount; j++)
@@ -751,79 +802,49 @@ bool CExperiment::calculateWeights()
     }
 
   // Guess missing dependent values
-  for (i = 0; i < mNumDataRows; i++)
-    for (j = 0; j < DependentCount; j++)
-      if (isnan(mDataDependent[i][j])) mDataDependent[i][j] = mMeans[j];
-
-  switch (*mpWeightMethod)
+  for (j = 0; j < DependentCount; j++)
     {
-    case SD:
-      for (i = 0; i < DependentCount; i++)
+      C_FLOAT64 & Mean = mMeans[j];
+      C_FLOAT64 & MeanSquare = MeanSquares[j];
+
+      for (i = 0; i < mNumDataRows; i++)
         {
-          C_FLOAT64 & Mean = mMeans[i];
-          unsigned C_INT32 & Count = Counts[i];
+          C_FLOAT64 & Data = mDataDependent[i][j];
 
-          C_FLOAT64 & WeightSquare = mWeightSquare[i];
-          WeightSquare = 0;
+          if (isnan(Data)) Data = Mean;
 
-          if (Count)
-            {
-              for (j = 0; j < mNumDataRows; j++)
-                {
-                  C_FLOAT64 & Data = mDataDependent[j][i];
-                  WeightSquare += (Mean - Data) * (Mean - Data);
-                }
-
-              if (WeightSquare > sqrt(DBL_EPSILON))
-                {
-                  WeightSquare = Count / WeightSquare;
-
-                  if (WeightSquare > MaxWeight) MaxWeight = WeightSquare;
-                  if (WeightSquare < MinWeight) MinWeight = WeightSquare;
-                }
-              else
-                WeightSquare = -1.0 * Count; // All values where equal to the mean
-            }
-          else
-            WeightSquare = -1.0; // Zero values
+          MeanSquare += Data * Data;
         }
-      break;
 
-    case MEAN:
-      break;
-    }
-  if (MaxWeight < MinWeight) // Only constant values or no values
-    {
-      MaxWeight = 1.0;
-      MinWeight = 1.0;
+      MeanSquare /= mNumDataRows;
     }
 
-  // We have to make a guess for the weights which could not be calculated
   for (i = 0; i < DependentCount; i++)
     {
-      if (mWeightSquare[i] < -1.5)
-        mWeightSquare[i] *= -MaxWeight; // All values where equal to the mean
-      else if (mWeightSquare[i] < -0.5)
-        mWeightSquare[i] = 0.5 * (MaxWeight + MinWeight); // One or less values
+      C_FLOAT64 & DefaultWeight = mDefaultWeight[i];
 
-      mWeight[i] = sqrt(mWeightSquare[i] / MaxWeight);
+      switch (*mpWeightMethod)
+        {
+        case SD:
+          DefaultWeight = sqrt(MeanSquares[i] - mMeans[i] * mMeans[i]);
+          break;
+
+        case MEAN:
+          DefaultWeight = fabs(mMeans[i]);
+          break;
+
+        case MEAN_SQUARE:
+          DefaultWeight = sqrt(MeanSquares[i]);
+          break;
+        }
+
+      if (DefaultWeight < MinWeight) MinWeight = DefaultWeight;
     }
 
-  // If it is a time course this is the place to assert that it is sorted.
-  if (*mpTaskType == CCopasiTask::timeCourse)
-    {
-      CVector<unsigned C_INT32> Pivot;
-      sortWithPivot(mDataTime.array(), mDataTime.array() + mDataTime.size(), Pivot);
-
-      mDataTime.applyPivot(Pivot);
-      mDataIndependent.applyPivot(Pivot);
-      mDataDependent.applyPivot(Pivot);
-
-      for (mNumDataRows--; mNumDataRows != C_INVALID_INDEX; mNumDataRows--)
-        if (!isnan(mDataTime[mNumDataRows])) break;
-
-      mNumDataRows++;
-    }
+  // We have to calculate the default weights
+  for (i = 0; i < DependentCount; i++)
+    mDefaultWeight[i] =
+      (MinWeight + sqrt(DBL_EPSILON)) / (mDefaultWeight[i] + sqrt(DBL_EPSILON));
 
   return true;
 }
@@ -1013,8 +1034,26 @@ bool CExperiment::setSeparator(const std::string & separator)
   return true;
 }
 
+const CExperiment::WeightMethod & CExperiment::getWeightMethod() const
+  {return *mpWeightMethod;}
+
+bool CExperiment::setWeightMethod(const CExperiment::WeightMethod & weightMethod)
+{
+  if (*mpWeightMethod == weightMethod) return true;
+
+  // Reset to default weights
+  *mpWeightMethod = weightMethod;
+  std::vector< CCopasiParameter * >::iterator it = mpObjectMap->CCopasiParameter::getValue().pGROUP->begin();
+  std::vector< CCopasiParameter * >::iterator end = mpObjectMap->CCopasiParameter::getValue().pGROUP->end();
+
+  for (; it != end; ++ it)
+    static_cast< CExperimentObjectMap::CDataColumn * >(*it)->setWeight(std::numeric_limits<C_FLOAT64>::quiet_NaN());
+
+  return true;
+}
+
 const bool & CExperiment::isRowOriented() const
-  {return *mpRowOriented;}
+{return *mpRowOriented;}
 
 bool CExperiment::setIsRowOriented(const bool & isRowOriented)
 {
@@ -1160,7 +1199,7 @@ C_FLOAT64 CExperiment::getObjectiveValue(CCopasiObject *const& pObject) const
       return std::numeric_limits<C_FLOAT64>::quiet_NaN();
   }
 
-C_FLOAT64 CExperiment::getWeight(CCopasiObject * const& pObject) const
+C_FLOAT64 CExperiment::getDefaultWeight(CCopasiObject * const& pObject) const
   {
     std::map< CCopasiObject *, unsigned C_INT32>::const_iterator it
     = mDependentObjects.find(pObject);
@@ -1168,7 +1207,7 @@ C_FLOAT64 CExperiment::getWeight(CCopasiObject * const& pObject) const
     if (it == mDependentObjects.end())
       return std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-    return mWeight[it->second];
+    return mDefaultWeight[it->second];
   }
 
 C_FLOAT64 CExperiment::getRMS(CCopasiObject *const& pObject) const
