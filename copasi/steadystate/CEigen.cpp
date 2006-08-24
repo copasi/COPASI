@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CEigen.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/09 21:38:57 $
+   $Date: 2006/08/24 14:57:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,6 +19,10 @@
  *           It is to calculate eigenvalues and eigenvectors of a matrix.
  *
  */
+
+#ifdef SunOS
+# include <ieeefp.h>
+#endif
 
 #include <cmath>
 
