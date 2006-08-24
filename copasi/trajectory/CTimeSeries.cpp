@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTimeSeries.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/10 19:49:49 $
+   $Date: 2006/08/24 14:39:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,9 +71,6 @@ bool CTimeSeries::init(C_INT32 n, CModel * pModel)
   for (i = 0; pUserOrder != pUserOrderEnd; ++pUserOrder)
     if (it[*pUserOrder]->isUsed())
       mPivot[i++] = *pUserOrder;
-
-  DebugFile << Template.getUserOrder() << std::endl;
-  DebugFile << mPivot << std::endl;
 
   return true;
 }
