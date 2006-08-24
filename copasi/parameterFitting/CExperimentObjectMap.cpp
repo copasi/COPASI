@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/24 14:16:37 $
+   $Date: 2006/08/24 14:40:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,7 @@
 
 #include <vector>
 #include <limits>
+#include <math.h>
 
 #include "copasi.h"
 

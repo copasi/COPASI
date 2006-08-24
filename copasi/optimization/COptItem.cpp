@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/18 18:33:24 $
+   $Date: 2006/08/24 14:40:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,6 +11,7 @@
 // All rights reserved.
 
 #include <limits>
+#include <math.h>
 #include <float.h>
 
 #include "copasi.h"
