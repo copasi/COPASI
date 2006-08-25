@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MyLineEdit.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
+   $Date: 2006/08/25 18:19:25 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,3 +88,6 @@ void MyLineEdit::setText(const QString & text)
   QLineEdit::setText(text);
   updateColor();
 }
+
+bool MyLineEdit::isValid()
+{return (paletteBackgroundColor() != mErrorColor);}

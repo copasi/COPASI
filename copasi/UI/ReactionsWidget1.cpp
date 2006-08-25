@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.181 $
+   $Revision: 1.182 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:23 $
+   $Date: 2006/08/25 18:19:25 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,8 +58,8 @@
 
 ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
     : CopasiWidget(parent, name, f),
-    objKey("")
-
+    objKey(""),
+    mRi(CCopasiDataModel::Global->getModel())
 {
   if (!name)
     setName("ReactionsWidget1");
@@ -214,7 +214,7 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to the reaction
-  mRi.initFromReaction(*(CCopasiDataModel::Global->getModel()), reaction->getKey());
+  mRi.initFromReaction(reaction->getKey());
 
   // update the widget.
   FillWidgetFromRI();
@@ -227,18 +227,20 @@ bool ReactionsWidget1::saveToReaction()
   CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
   if (reac == NULL) return true;
 
+  if (!LineEdit2->isValid()) return false;
   LineEdit2->slotForceUpdate();
+
   //std::cout << "SaveToReaction " << std::endl;
   if (!mRi.isValid()) return false;
 
   //first check if new metabolites need to be created
-  bool createdMetabs = mRi.createMetabolites(*(CCopasiDataModel::Global->getModel()));
-  bool createdObjects = mRi.createOtherObjects(*(CCopasiDataModel::Global->getModel()));
+  bool createdMetabs = mRi.createMetabolites();
+  bool createdObjects = mRi.createOtherObjects();
 
   mRi.setReactionName((const char *)LineEdit1->text().utf8());
 
   //this writes all changes to the reaction
-  if (!mRi.writeBackToReaction(NULL, *(CCopasiDataModel::Global->getModel())))
+  if (!mRi.writeBackToReaction(NULL))
     {
       CCopasiObject * pReaction = GlobalKeys.get(objKey);
       if (mRi.getReactionName() != pReaction->getObjectName())
@@ -281,7 +283,6 @@ void ReactionsWidget1::slotBtnCancelClicked()
 
 void ReactionsWidget1::slotBtnOKClicked()
 {
-  LineEdit2->slotForceUpdate();
   saveToReaction();
 }
 
@@ -290,7 +291,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
   LineEdit2->slotForceUpdate();
 
   // tell the reaction interface
-  mRi.setReversibility(CheckBox->isChecked(), "", *(CCopasiDataModel::Global->getModel()));
+  mRi.setReversibility(CheckBox->isChecked(), "");
 
   // update the widget
   FillWidgetFromRI();
@@ -300,8 +301,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
 void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 {
   // tell the reaction interface
-  mRi.setFunctionAndDoMapping((const char *)p2.utf8(),
-                              *CCopasiDataModel::Global->getModel());
+  mRi.setFunctionAndDoMapping((const char *)p2.utf8());
 
   // update the widget
   FillWidgetFromRI();
@@ -325,7 +325,7 @@ void ReactionsWidget1::slotLineEditChanged()
   // tell the reaction interface
   //mRi.setReactionName(rName);
 
-  mRi.setChemEqString(eq, "", *(CCopasiDataModel::Global->getModel()));
+  mRi.setChemEqString(eq, "");
 
   // update the widget
   FillWidgetFromRI();

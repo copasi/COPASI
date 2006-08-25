@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/15 20:17:01 $
+   $Date: 2006/08/25 18:19:25 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,7 +84,7 @@ bool StateSubwidget::loadMetabolites(const CModel* model)
   return true;
 }
 
-bool StateSubwidget::loadReactions(const CModel * model)
+bool StateSubwidget::loadReactions(CModel * model)
 {
   const CCopasiVector<CReaction>& reacs = model->getReactions();
   C_INT32 i, imax = reacs.size();

@@ -1,20 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/StateSubwidget.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/15 20:17:01 $
+   $Date: 2006/08/25 18:19:25 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'StateSubwidget.ui'
  **
- ** Created: Thu Feb 23 13:39:08 2006
- **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.11 2006/08/15 20:17:01 shoops Exp $)
+ ** Created: Fri Aug 25 08:28:23 2006
+ **      by: The User Interface Compiler ($Id: StateSubwidget.cpp,v 1.12 2006/08/25 18:19:25 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -31,6 +31,9 @@
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qimage.h>
+#include <qpixmap.h>
+
 #include "StateSubwidget.ui.h"
 
 /*
@@ -56,7 +59,7 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   optimizationResultText = new QTextEdit(TabPage, "optimizationResultText");
   optimizationResultText->setReadOnly(TRUE);
   TabPageLayout->addWidget(optimizationResultText);
-  tabWidget->insertTab(TabPage, QString(""));
+  tabWidget->insertTab(TabPage, QString::fromLatin1(""));
 
   tab = new QWidget(tabWidget, "tab");
   tabLayout = new QVBoxLayout(tab, 11, 6, "tabLayout");
@@ -74,7 +77,7 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   concentrationsTable->setNumCols(4);
   concentrationsTable->setReadOnly(TRUE);
   tabLayout->addWidget(concentrationsTable);
-  tabWidget->insertTab(tab, QString(""));
+  tabWidget->insertTab(tab, QString::fromLatin1(""));
 
   tab_2 = new QWidget(tabWidget, "tab_2");
   tabLayout_2 = new QVBoxLayout(tab_2, 11, 6, "tabLayout_2");
@@ -92,21 +95,35 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   numbersTable->setNumCols(4);
   numbersTable->setReadOnly(TRUE);
   tabLayout_2->addWidget(numbersTable);
-  tabWidget->insertTab(tab_2, QString(""));
-
-  mpModelValuePage = new QWidget(tabWidget, "ModelValuePage");
-  mpModelValueLayout = new QVBoxLayout(mpModelValuePage, 11, 6, "tabLayout_2");
-  mpModelValueTable = new QTable(mpModelValuePage, "ModelValuetable");
-  mpModelValueTable->setNumCols(4);
-  mpModelValueTable->setNumRows(3);
-
-  mpModelValueLayout->addWidget(mpModelValueTable);
-  tabWidget->insertTab(mpModelValuePage, QString(""));
+  tabWidget->insertTab(tab_2, QString::fromLatin1(""));
 
   TabPage_2 = new QWidget(tabWidget, "TabPage_2");
-  TabPageLayout_2 = new QVBoxLayout(TabPage_2, 11, 6, "TabPageLayout_2");
+  TabPageLayout_2 = new QHBoxLayout(TabPage_2, 11, 6, "TabPageLayout_2");
 
-  tableFlux = new QTable(TabPage_2, "tableFlux");
+  mpModelValueTable = new QTable(TabPage_2, "mpModelValueTable");
+  mpModelValueTable->setNumCols(mpModelValueTable->numCols() + 1);
+  mpModelValueTable->horizontalHeader()->setLabel(mpModelValueTable->numCols() - 1, tr("Name"));
+  mpModelValueTable->setNumCols(mpModelValueTable->numCols() + 1);
+  mpModelValueTable->horizontalHeader()->setLabel(mpModelValueTable->numCols() - 1, tr("Type"));
+  mpModelValueTable->setNumCols(mpModelValueTable->numCols() + 1);
+  mpModelValueTable->horizontalHeader()->setLabel(mpModelValueTable->numCols() - 1, tr("Value"));
+  mpModelValueTable->setNumCols(mpModelValueTable->numCols() + 1);
+  mpModelValueTable->horizontalHeader()->setLabel(mpModelValueTable->numCols() - 1, tr("Rate"));
+  mpModelValueTable->setNumRows(mpModelValueTable->numRows() + 1);
+  mpModelValueTable->verticalHeader()->setLabel(mpModelValueTable->numRows() - 1, tr("1"));
+  mpModelValueTable->setNumRows(mpModelValueTable->numRows() + 1);
+  mpModelValueTable->verticalHeader()->setLabel(mpModelValueTable->numRows() - 1, tr("2"));
+  mpModelValueTable->setNumRows(mpModelValueTable->numRows() + 1);
+  mpModelValueTable->verticalHeader()->setLabel(mpModelValueTable->numRows() - 1, tr("3"));
+  mpModelValueTable->setNumRows(3);
+  mpModelValueTable->setNumCols(4);
+  TabPageLayout_2->addWidget(mpModelValueTable);
+  tabWidget->insertTab(TabPage_2, QString::fromLatin1(""));
+
+  TabPage_3 = new QWidget(tabWidget, "TabPage_3");
+  TabPageLayout_3 = new QVBoxLayout(TabPage_3, 11, 6, "TabPageLayout_3");
+
+  tableFlux = new QTable(TabPage_3, "tableFlux");
   tableFlux->setNumCols(tableFlux->numCols() + 1);
   tableFlux->horizontalHeader()->setLabel(tableFlux->numCols() - 1, tr("Reaction name"));
   tableFlux->setNumCols(tableFlux->numCols() + 1);
@@ -118,13 +135,13 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   tableFlux->setNumRows(3);
   tableFlux->setNumCols(4);
   tableFlux->setReadOnly(TRUE);
-  TabPageLayout_2->addWidget(tableFlux);
-  tabWidget->insertTab(TabPage_2, QString(""));
+  TabPageLayout_3->addWidget(tableFlux);
+  tabWidget->insertTab(TabPage_3, QString::fromLatin1(""));
 
-  TabPage_3 = new QWidget(tabWidget, "TabPage_3");
-  TabPageLayout_3 = new QVBoxLayout(TabPage_3, 11, 6, "TabPageLayout_3");
+  TabPage_4 = new QWidget(tabWidget, "TabPage_4");
+  TabPageLayout_4 = new QVBoxLayout(TabPage_4, 11, 6, "TabPageLayout_4");
 
-  splitterJacobian = new QSplitter(TabPage_3, "splitterJacobian");
+  splitterJacobian = new QSplitter(TabPage_4, "splitterJacobian");
   splitterJacobian->setOrientation(QSplitter::Vertical);
   splitterJacobian->setOpaqueResize(TRUE);
 
@@ -163,13 +180,13 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   textLabelEigenvalues = new QLabel(privateLayoutWidget_2, "textLabelEigenvalues");
 
   layoutEigenvalues->addWidget(textLabelEigenvalues, 0, 0);
-  TabPageLayout_3->addWidget(splitterJacobian);
-  tabWidget->insertTab(TabPage_3, QString(""));
+  TabPageLayout_4->addWidget(splitterJacobian);
+  tabWidget->insertTab(TabPage_4, QString::fromLatin1(""));
 
-  TabPage_4 = new QWidget(tabWidget, "TabPage_4");
-  TabPageLayout_4 = new QVBoxLayout(TabPage_4, 11, 6, "TabPageLayout_4");
+  TabPage_5 = new QWidget(tabWidget, "TabPage_5");
+  TabPageLayout_5 = new QVBoxLayout(TabPage_5, 11, 6, "TabPageLayout_5");
 
-  splitterJacobianX = new QSplitter(TabPage_4, "splitterJacobianX");
+  splitterJacobianX = new QSplitter(TabPage_5, "splitterJacobianX");
   splitterJacobianX->setOrientation(QSplitter::Vertical);
   splitterJacobianX->setOpaqueResize(TRUE);
 
@@ -208,16 +225,16 @@ StateSubwidget::StateSubwidget(QWidget* parent, const char* name, WFlags fl)
   textLabelEigenvaluesX = new QLabel(privateLayoutWidget_4, "textLabelEigenvaluesX");
 
   layoutEigenvaluesX->addWidget(textLabelEigenvaluesX, 0, 0);
-  TabPageLayout_4->addWidget(splitterJacobianX);
-  tabWidget->insertTab(TabPage_4, QString(""));
+  TabPageLayout_5->addWidget(splitterJacobianX);
+  tabWidget->insertTab(TabPage_5, QString::fromLatin1(""));
 
-  TabPage_5 = new QWidget(tabWidget, "TabPage_5");
-  TabPageLayout_5 = new QVBoxLayout(TabPage_5, 11, 6, "TabPageLayout_5");
+  TabPage_6 = new QWidget(tabWidget, "TabPage_6");
+  TabPageLayout_6 = new QVBoxLayout(TabPage_6, 11, 6, "TabPageLayout_6");
 
-  stabilityTextEdit = new QTextEdit(TabPage_5, "stabilityTextEdit");
+  stabilityTextEdit = new QTextEdit(TabPage_6, "stabilityTextEdit");
   stabilityTextEdit->setReadOnly(TRUE);
-  TabPageLayout_5->addWidget(stabilityTextEdit);
-  tabWidget->insertTab(TabPage_5, QString(""));
+  TabPageLayout_6->addWidget(stabilityTextEdit);
+  tabWidget->insertTab(TabPage_6, QString::fromLatin1(""));
   StateSubwidgetLayout->addWidget(tabWidget);
   languageChange();
   resize(QSize(600, 497).expandedTo(minimumSizeHint()));
@@ -241,7 +258,7 @@ void StateSubwidget::languageChange()
 {
   setCaption(tr("Form1"));
   topLabel->setText(tr("textLabel1"));
-  tabWidget->changeTab(TabPage, tr("OptimizationResult"));
+  tabWidget->changeTab(TabPage, tr("Optimization Result"));
   concentrationsTable->horizontalHeader()->setLabel(0, tr("Metabolite name"));
   concentrationsTable->horizontalHeader()->setLabel(1, tr("Concentration"));
   concentrationsTable->horizontalHeader()->setLabel(2, tr("Rate"));
@@ -251,26 +268,29 @@ void StateSubwidget::languageChange()
   numbersTable->horizontalHeader()->setLabel(1, tr("Numbers"));
   numbersTable->horizontalHeader()->setLabel(2, tr("Number rate"));
   numbersTable->horizontalHeader()->setLabel(3, tr("Transition Time"));
-  tabWidget->changeTab(tab_2, tr("Particle numbers"));
+  tabWidget->changeTab(tab_2, tr("Particle Numbers"));
   mpModelValueTable->horizontalHeader()->setLabel(0, tr("Name"));
   mpModelValueTable->horizontalHeader()->setLabel(1, tr("Type"));
   mpModelValueTable->horizontalHeader()->setLabel(2, tr("Value"));
   mpModelValueTable->horizontalHeader()->setLabel(3, tr("Rate"));
-  tabWidget->changeTab(mpModelValuePage, tr("Model Quantities"));
+  mpModelValueTable->verticalHeader()->setLabel(0, tr("1"));
+  mpModelValueTable->verticalHeader()->setLabel(1, tr("2"));
+  mpModelValueTable->verticalHeader()->setLabel(2, tr("3"));
+  tabWidget->changeTab(TabPage_2, tr("Model Quantities"));
   tableFlux->horizontalHeader()->setLabel(0, tr("Reaction name"));
   tableFlux->horizontalHeader()->setLabel(1, tr("Flux"));
   tableFlux->horizontalHeader()->setLabel(2, tr("Particle flux"));
   tableFlux->horizontalHeader()->setLabel(3, tr("Chemical equation"));
-  tabWidget->changeTab(TabPage_2, tr("Fluxes"));
+  tabWidget->changeTab(TabPage_3, tr("Fluxes"));
   textLabelJacobian->setText(tr("Jacobian (complete system)"));
   tableEigenValues->horizontalHeader()->setLabel(0, tr("Real"));
   tableEigenValues->horizontalHeader()->setLabel(1, tr("Imaginary"));
   textLabelEigenvalues->setText(tr("Eigenvalues (complete system)"));
-  tabWidget->changeTab(TabPage_3, tr("Jacobian"));
-  textLabelJacobianX->setText(tr("Jacobian (reduced system)"));
+  tabWidget->changeTab(TabPage_4, tr("Jacobian"));
+  textLabelJacobianX->setText(tr("Jacobian (Reduced System)"));
   tableEigenValuesX->horizontalHeader()->setLabel(0, tr("Real"));
   tableEigenValuesX->horizontalHeader()->setLabel(1, tr("Imaginary"));
-  textLabelEigenvaluesX->setText(tr("Eigenvalues (reduced system)"));
-  tabWidget->changeTab(TabPage_4, tr("Jacobian (reduced system)"));
-  tabWidget->changeTab(TabPage_5, tr("Stability"));
+  textLabelEigenvaluesX->setText(tr("Eigenvalues (Reduced System)"));
+  tabWidget->changeTab(TabPage_5, tr("Jacobian (Reduced System)"));
+  tabWidget->changeTab(TabPage_6, tr("Stability"));
 }

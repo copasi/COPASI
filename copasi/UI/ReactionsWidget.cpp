@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ReactionsWidget.cpp,v $
-   $Revision: 1.91 $
+   $Revision: 1.92 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/29 15:53:16 $
+   $Author: shoops $
+   $Date: 2006/08/25 18:19:25 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -95,8 +95,8 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to ri;
-  CReactionInterface ri;
-  ri.initFromReaction(*(CCopasiDataModel::Global->getModel()), obj->getKey());
+  CReactionInterface ri(CCopasiDataModel::Global->getModel());
+  ri.initFromReaction(obj->getKey());
 
   QString equation(table->text(row, 2));
   if ((const char *)equation.utf8() != ri.getChemEqString())
@@ -110,16 +110,15 @@ void ReactionsWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* obj
       else
         {
           //tell the reaction interface
-          ri.setChemEqString((const char *)equation.utf8(), "",
-                             *(CCopasiDataModel::Global->getModel()));
+          ri.setChemEqString((const char *)equation.utf8(), "");
         }
     }
 
   //first check if new metabolites need to be created
-  bool createdMetabs = ri.createMetabolites(*(CCopasiDataModel::Global->getModel()));
-  bool createdObjects = ri.createOtherObjects(*(CCopasiDataModel::Global->getModel()));
+  bool createdMetabs = ri.createMetabolites();
+  bool createdObjects = ri.createOtherObjects();
   //this writes all changes to the reaction
-  ri.writeBackToReaction(NULL, *(CCopasiDataModel::Global->getModel()));
+  ri.writeBackToReaction(NULL);
   //CCopasiDataModel::Global->getModel()->compile();
   //this tells the gui what it needs to know.
   if (createdObjects)

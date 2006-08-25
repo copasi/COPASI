@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/Attic/CElementaryFluxModes.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:09 $
+   $Date: 2006/08/25 18:19:25 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -107,7 +107,7 @@ class CElementaryFluxModes
 
     std::string getReactionEquation(unsigned C_INT32 index1,
                                     unsigned C_INT32 index2,
-                                    const CModel * model) const;
+                                    CModel * model) const;
 
     // Friend functions
     friend std::ostream &operator<<(std::ostream &os, const CElementaryFluxModes &A);

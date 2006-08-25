@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/MyLineEdit.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
+   $Date: 2006/08/25 18:19:25 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,7 @@ class MyLineEdit: public QLineEdit
   public:
     MyLineEdit(QWidget * parent = 0, const char * name = 0);
     MyLineEdit (const QString & contents, QWidget * parent, const char * name = 0);
+    bool isValid();
 
   protected:
     QColor mOldColor;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:23 $
+   $Date: 2006/08/25 18:19:25 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -173,7 +173,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
   units.setUseHeuristics(true);
   units.setMolecularitiesForMassAction(ri.getChemEqInterface().getMolecularity(CFunctionParameter::SUBSTRATE),
                                        ri.getChemEqInterface().getMolecularity(CFunctionParameter::PRODUCT));
-  units.findDimensions(ri.isMulticompartment(model));
+  units.findDimensions(ri.isMulticompartment());
 
   C_INT32 i, imax = ri.size();
   C_INT32 j, jmax;
@@ -265,7 +265,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
           && (usage != CFunctionParameter::VOLUME)
           && (usage != CFunctionParameter::TIME))
         {
-          if (ri.isLocked(i, model)) item->setPixmap(*pLocked); else item->setPixmap(*pUnlocked);
+          if (ri.isLocked(i)) item->setPixmap(*pLocked); else item->setPixmap(*pUnlocked);
         }
       setItem(rowCounter, 1, item);
 
@@ -296,7 +296,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
             vectorOfStrings2QStringList(getListOfAllMetabNames(model, ri), qsl);
           else //only get the modifiers from the ChemEq
             {
-              if (!ri.isLocked(i, model))
+              if (!ri.isLocked(i))
                 vectorOfStrings2QStringList(ri.getListOfMetabs(usage), qsl);
             }
 
@@ -304,7 +304,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
 
           if (!ri.isVector(i))
             {
-              if (ri.isLocked(i, model))
+              if (ri.isLocked(i))
                 {
                   item = new ColorTableItem(this, QTableItem::Never, color, FROM_UTF8((*metabNames)[0]));
                   setItem(rowCounter, 3, item);
@@ -320,7 +320,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CModel & m
             }
           else
             {
-              if (ri.isLocked(i, model))
+              if (ri.isLocked(i))
                 {
                   item = new ColorTableItem(this, QTableItem::Never, color, "");
                   setItem(rowCounter, 3, item);
