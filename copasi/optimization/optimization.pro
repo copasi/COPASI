@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.21 $ $Author: shoops $ $Date: 2006/06/20 13:19:32 $  
+# $Revision: 1.22 $ $Author: shoops $ $Date: 2006/08/25 22:19:26 $  
 ######################################################################
 
 LIB = optimization
@@ -17,6 +17,7 @@ HEADERS += COptMethod.h \
            COptMethodLevenbergMarquardt.h \
            COptMethodSRES.h \
            COptMethodSteepestDescent.h \
+           COptMethodStatistics.h \
            COptMethodEP.h \
            CRealProblem.h \
            COptFunction.h \
@@ -33,6 +34,7 @@ SOURCES += COptMethod.cpp \
            COptMethodLevenbergMarquardt.cpp \
            COptMethodSRES.cpp \
            COptMethodSteepestDescent.cpp \
+           COptMethodStatistics.cpp \
            COptMethodEP.cpp \
            CRealProblem.cpp \
            COptFunction.cpp \

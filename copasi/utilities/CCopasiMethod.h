@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/06 17:03:55 $
+   $Date: 2006/08/25 22:19:26 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,7 @@ class CCopasiMethod : public CCopasiParameterGroup
       HookeJeeves,
       LevenbergMarquardt,
       SRES,
+      Statistics,
       Newton,
       deterministic,
       LSODAR,
