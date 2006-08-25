@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:40 $
+   $Date: 2006/08/25 23:03:36 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -191,11 +191,11 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
 
       //item = new QListViewItem(this->initialVolumeSubtree,
       //                         FROM_UTF8((name + "(t=0)")));
-      //treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialValue"));
+      //treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialVolume"));
 
       item = new QListViewItem(this->volumeSubtree,
                                FROM_UTF8(name /*+ "(t)"*/));
-      treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Value"));
+      treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Volume"));
 
       //item = new QListViewItem(this->volumeRateSubtree,
       //                         FROM_UTF8(("d(" + name + ")/dt")));
