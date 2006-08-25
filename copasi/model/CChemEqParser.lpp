@@ -50,6 +50,16 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
   return TOKEN_MULTIPLY;
 %}
 
+"\{"   %{
+  COMMON_ACTION;
+  return TOKEN_BEGIN_COMPARTMENT;
+%}
+
+"\}"   %{
+  COMMON_ACTION;
+  return TOKEN_END_COMPARTMENT;
+%}
+
 ";" %{
   COMMON_ACTION;
   return TOKEN_BEGIN_MODIFIERS;
@@ -63,12 +73,12 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 \"([^\\\"]|\\.)*\" %{
   COMMON_ACTION;
   mpData->name = unQuote(mpData->name);
-  return TOKEN_METABOLITE;
+  return TOKEN_NAME;
 %}
 
-([^-;= ]|;[^ ]|-[^> ])*[-]* %{
+[^\"{} ]*[^\"{} ;] %{
   COMMON_ACTION;
-  return TOKEN_METABOLITE;
+  return TOKEN_NAME;
 %}
 
 [ \t\r\n]+ %{

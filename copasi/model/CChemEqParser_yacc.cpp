@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqParser_yacc.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/21 14:02:02 $
+   $Date: 2006/08/25 18:13:23 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,72 +78,122 @@ static int yygrowstack();
 #define TOKEN_NUMBER 257
 #define TOKEN_MULTIPLY 258
 #define TOKEN_PLUS 259
-#define TOKEN_METABOLITE 260
+#define TOKEN_NAME 260
 #define TOKEN_BEGIN_PRODUCTS 261
 #define TOKEN_BEGIN_MODIFIERS 262
+#define TOKEN_BEGIN_COMPARTMENT 263
+#define TOKEN_END_COMPARTMENT 264
 const short CChemEqParserlhs[] =
   {
     -1,
     0, 0, 0, 0, 0, 0, 1, 1, 2, 2,
-    3, 3, 4, 4, 4,
+    3, 3, 4, 4, 5, 5, 5, 6,
   };
 const short CChemEqParserlen[] =
   {
     2,
     3, 3, 2, 2, 2, 1, 1, 3, 2, 3,
-    2, 2, 1, 2, 3,
+    2, 2, 1, 2, 1, 2, 3, 3,
   };
 const short CChemEqParserdefred[] =
   {
     0,
-    0, 13, 0, 0, 0, 0, 7, 0, 14, 9,
-    0, 0, 0, 0, 0, 0, 15, 8, 0, 0,
-    10, 11, 12,
+    0, 15, 0, 0, 0, 0, 7, 0, 0, 16,
+    9, 0, 0, 0, 0, 0, 0, 0, 14, 17,
+    8, 0, 0, 10, 11, 12, 0, 18,
   };
 const short CChemEqParserdgoto[] =
   {
     4,
-    5, 6, 16, 23,
+    5, 6, 17, 26, 8, 19,
   };
 const short CChemEqParsersindex[] =
   {
-    -251,
-    -240, 0, -249, 0, -238, -245, 0, -258, 0, 0,
-    -249, -257, -245, -249, -249, -249, 0, 0, -249, -249,
-    0, 0, 0,
+    -250,
+    -239, 0, -248, 0, -237, -246, 0, -263, -256, 0,
+    0, -248, -254, -246, -248, -248, -248, -240, 0, 0,
+    0, -248, -248, 0, 0, 0, -241, 0,
   };
 const short CChemEqParserrindex[] =
   {
     0,
-    0, 0, 0, 0, 0, 7, 0, 0, 0, 0,
-    0, 19, 22, 0, 0, 26, 0, 0, 27, 28,
-    0, 0, 0,
+    0, 0, 0, 0, 0, 27, 0, 1, 0, 0,
+    0, 0, 28, 29, 0, 0, 30, 0, 0, 0,
+    0, 31, 32, 0, 0, 0, 0, 0,
   };
 const short CChemEqParsergindex[] =
   {
     0,
-    0, 24, 12, 1,
+    0, 33, 12, 2, 0, 0,
   };
-#define YYTABLESIZE 29
+#define YYTABLESIZE 263
 const short CChemEqParsertable[] =
   {
-    1,
-    7, 17, 2, 10, 15, 1, 6, 1, 2, 3,
-    2, 18, 10, 14, 21, 22, 15, 8, 4, 9,
-    11, 3, 12, 19, 20, 5, 2, 1, 13,
+    18,
+    13, 7, 1, 20, 11, 2, 1, 16, 1, 2,
+    3, 2, 15, 21, 11, 16, 24, 25, 9, 27,
+    10, 12, 28, 13, 22, 23, 6, 4, 3, 5,
+    2, 1, 0, 0, 0, 0, 0, 14, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 13, 0, 13,
+    13, 13, 13,
   };
 const short CChemEqParsercheck[] =
   {
-    257,
-    0, 260, 260, 3, 262, 257, 0, 257, 260, 261,
-    260, 11, 12, 259, 14, 15, 262, 258, 0, 260,
-    259, 0, 261, 12, 13, 0, 0, 0, 5,
+    263,
+    0, 0, 257, 260, 3, 260, 257, 262, 257, 260,
+    261, 260, 259, 12, 13, 262, 15, 16, 258, 260,
+    260, 259, 264, 261, 13, 14, 0, 0, 0, 0,
+    0, 0, -1, -1, -1, -1, -1, 5, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, 257, -1, 259,
+    260, 261, 262,
   };
 #define YYFINAL 4
 #ifndef YYDEBUG
 #define YYDEBUG 1
 #endif
-#define YYMAXTOKEN 262
+#define YYMAXTOKEN 264
 #if YYDEBUG
 const char * const CChemEqParsername[] =
   {
@@ -154,7 +204,8 @@ const char * const CChemEqParsername[] =
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "TOKEN_NUMBER", "TOKEN_MULTIPLY",
-    "TOKEN_PLUS", "TOKEN_METABOLITE", "TOKEN_BEGIN_PRODUCTS", "TOKEN_BEGIN_MODIFIERS",
+    "TOKEN_PLUS", "TOKEN_NAME", "TOKEN_BEGIN_PRODUCTS", "TOKEN_BEGIN_MODIFIERS",
+    "TOKEN_BEGIN_COMPARTMENT", "TOKEN_END_COMPARTMENT",
   };
 const char * const CChemEqParserrule[] =
   {
@@ -171,9 +222,12 @@ const char * const CChemEqParserrule[] =
     "products : products TOKEN_PLUS reactant",
     "modifiers : TOKEN_BEGIN_MODIFIERS reactant",
     "modifiers : modifiers reactant",
-    "reactant : TOKEN_METABOLITE",
-    "reactant : TOKEN_NUMBER TOKEN_METABOLITE",
-    "reactant : TOKEN_NUMBER TOKEN_MULTIPLY TOKEN_METABOLITE",
+    "reactant : prereactant",
+    "reactant : prereactant compartment",
+    "prereactant : TOKEN_NAME",
+    "prereactant : TOKEN_NUMBER TOKEN_NAME",
+    "prereactant : TOKEN_NUMBER TOKEN_MULTIPLY TOKEN_NAME",
+    "compartment : TOKEN_BEGIN_COMPARTMENT TOKEN_NAME TOKEN_END_COMPARTMENT",
   };
 #endif
 #ifndef YYSTYPE
@@ -206,9 +260,9 @@ short *yyss;
 short *yysslim;
 YYSTYPE *yyvs;
 int yystacksize;
-#line 139 "CChemEqParser.ypp"
+#line 164 "CChemEqParser.ypp"
 
-#line 181 "CChemEqParser_yacc.cpp"
+#line 235 "CChemEqParser_yacc.cpp"
 /* allocate initial stack or double stack size, up to YYMAXDEPTH */
 static int yygrowstack()
 {
@@ -404,63 +458,66 @@ YYPARSE_PARAM_DECL
   switch (yyn)
     {
     case 1:
-#line 50 "CChemEqParser.ypp"
+#line 47 "CChemEqParser.ypp"
       {
       }
       break;
     case 2:
-#line 53 "CChemEqParser.ypp"
+#line 50 "CChemEqParser.ypp"
       {
         mReversibility = (yyvsp[ -1]->name == "=") ? true : false;
           pdelete(yyvsp[ -1]);
         }
         break;
       case 3:
-#line 58 "CChemEqParser.ypp"
+#line 55 "CChemEqParser.ypp"
         {
         }
         break;
       case 4:
-#line 61 "CChemEqParser.ypp"
+#line 58 "CChemEqParser.ypp"
         {
           mReversibility = (yyvsp[0]->name == "=") ? true : false;
           pdelete(yyvsp[0]);
         }
         break;
       case 5:
-#line 66 "CChemEqParser.ypp"
+#line 63 "CChemEqParser.ypp"
         {
         }
         break;
       case 6:
-#line 70 "CChemEqParser.ypp"
+#line 67 "CChemEqParser.ypp"
         {
         }
         break;
       case 7:
-#line 74 "CChemEqParser.ypp"
+#line 71 "CChemEqParser.ypp"
         {
           mSubstrateNames.push_back(yyvsp[0]->name);
           mSubstrateMult.push_back(yyvsp[0]->multiplicity);
+          mSubstrateCompartments.push_back(yyvsp[0]->compartment);
           pdelete(yyvsp[0]);
         }
         break;
       case 8:
-#line 80 "CChemEqParser.ypp"
+#line 78 "CChemEqParser.ypp"
         {
           mSubstrateNames.push_back(yyvsp[0]->name);
           mSubstrateMult.push_back(yyvsp[0]->multiplicity);
+          mSubstrateCompartments.push_back(yyvsp[0]->compartment);
           pdelete(yyvsp[ -1]);
           pdelete(yyvsp[0]);
         }
         break;
       case 9:
-#line 88 "CChemEqParser.ypp"
+#line 87 "CChemEqParser.ypp"
         {
           mReversibility = (yyvsp[ -1]->name == "=") ? true : false;
 
           mProductNames.push_back(yyvsp[0]->name);
           mProductMult.push_back(yyvsp[0]->multiplicity);
+          mProductCompartments.push_back(yyvsp[0]->compartment);
           pdelete(yyvsp[ -1]);
           pdelete(yyvsp[0]);
         }
@@ -470,44 +527,64 @@ YYPARSE_PARAM_DECL
         {
           mProductNames.push_back(yyvsp[0]->name);
           mProductMult.push_back(yyvsp[0]->multiplicity);
+          mProductCompartments.push_back(yyvsp[0]->compartment);
           pdelete(yyvsp[ -1]);
           pdelete(yyvsp[0]);
         }
         break;
       case 11:
-#line 105 "CChemEqParser.ypp"
+#line 106 "CChemEqParser.ypp"
         {
           mModifierNames.push_back(yyvsp[0]->name);
           mModifierMult.push_back(yyvsp[0]->multiplicity);
+          mModifierCompartments.push_back(yyvsp[0]->compartment);
           pdelete(yyvsp[ -1]);
           pdelete(yyvsp[0]);
         }
         break;
       case 12:
-#line 112 "CChemEqParser.ypp"
+#line 114 "CChemEqParser.ypp"
         {
           mModifierNames.push_back(yyvsp[0]->name);
           mModifierMult.push_back(yyvsp[0]->multiplicity);
+          mModifierCompartments.push_back(yyvsp[0]->compartment);
           pdelete(yyvsp[0]);
         }
         break;
       case 13:
-#line 119 "CChemEqParser.ypp"
+#line 122 "CChemEqParser.ypp"
+        {
+          yyval = yyvsp[0];
+          yyval->multiplicity = 1.0;
+          yyval->compartment = "";
+        }
+        break;
+      case 14:
+#line 128 "CChemEqParser.ypp"
+        {
+          yyval = yyvsp[ -1];
+          yyval->multiplicity = 1.0;
+          yyval->compartment = yyvsp[0]->name;
+          pdelete(yyvsp[0]);
+        }
+        break;
+      case 15:
+#line 137 "CChemEqParser.ypp"
         {
           yyval = yyvsp[0];
           yyval->multiplicity = 1.0;
         }
         break;
-      case 14:
-#line 124 "CChemEqParser.ypp"
+      case 16:
+#line 142 "CChemEqParser.ypp"
         {
           yyval = yyvsp[0];
           yyval->multiplicity = strtod(yyvsp[ -1]->name.c_str(), NULL);
           pdelete(yyvsp[ -1]);
         }
         break;
-      case 15:
-#line 130 "CChemEqParser.ypp"
+      case 17:
+#line 148 "CChemEqParser.ypp"
         {
           yyval = yyvsp[0];
           yyval->multiplicity = strtod(yyvsp[ -2]->name.c_str(), NULL);
@@ -515,7 +592,15 @@ YYPARSE_PARAM_DECL
           pdelete(yyvsp[ -1]);
         }
         break;
-#line 488 "CChemEqParser_yacc.cpp"
+      case 18:
+#line 156 "CChemEqParser.ypp"
+        {
+          yyval = yyvsp[ -1];
+          pdelete(yyvsp[ -2]);
+          pdelete(yyvsp[0]);
+        }
+        break;
+#line 573 "CChemEqParser_yacc.cpp"
       }
   yyssp -= yym;
   yystate = *yyssp;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqElement.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Date: 2006/08/25 18:13:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,12 +98,6 @@ class CChemEqElement : public CCopasiContainer
     const CMetab * getMetabolite() const;
 
     const std::string & getMetaboliteKey() const;
-
-    /**
-     *  Retrieves the metabolite name.
-     *  @return "const string &" name
-     */
-    const std::string & getMetaboliteName() const;
 
     /**
      *  Write the element in the form mMultiplier * mMetaboliteName

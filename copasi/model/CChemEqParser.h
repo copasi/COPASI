@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqParser.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Date: 2006/08/25 18:13:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,12 +55,15 @@ class yyYaccParser
 
     const std::vector< std::string > & getSubstrateNames() const;
     const std::vector< C_FLOAT64 > & getSubstrateMulitplicities() const;
+    const std::vector< std::string > & getSubstrateCompartments() const;
 
     const std::vector< std::string > & getProductNames() const;
     const std::vector< C_FLOAT64 > & getProductMulitplicities() const;
+    const std::vector< std::string > & getProductCompartments() const;
 
     const std::vector< std::string > & getModifierNames() const;
     const std::vector< C_FLOAT64 > & getModifierMulitplicities() const;
+    const std::vector< std::string > & getModifierCompartments() const;
 
   protected:
     void correctErrorPosition();
@@ -71,6 +74,7 @@ class yyYaccParser
       {
         std::string name;
         C_FLOAT64 multiplicity;
+        std::string compartment;
       };
 
   protected:
@@ -81,12 +85,15 @@ class yyYaccParser
 
     std::vector< std::string > mSubstrateNames;
     std::vector< C_FLOAT64 > mSubstrateMult;
+    std::vector< std::string > mSubstrateCompartments;
 
     std::vector< std::string > mProductNames;
     std::vector< C_FLOAT64 > mProductMult;
+    std::vector< std::string > mProductCompartments;
 
     std::vector< std::string > mModifierNames;
     std::vector< C_FLOAT64 > mModifierMult;
+    std::vector< std::string > mModifierCompartments;
   };
 
 class CChemEqParser: public FlexLexer, public yyYaccParser

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.279 $
+   $Revision: 1.280 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/24 14:26:18 $
+   $Date: 2006/08/25 18:13:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2224,7 +2224,7 @@ bool CModel::convert2NonReversible()
   std::vector<std::string> reactionsToDelete;
 
   CReaction *reac0, *reac1, *reac2;
-  CReactionInterface ri1, ri2;
+  CReactionInterface ri1(this), ri2(this);
   std::string fn, rn1, rn2;
 
   //CModel* model = dynamic_cast< CModel * >(GlobalKeys.get(objKey));
@@ -2253,10 +2253,10 @@ bool CModel::convert2NonReversible()
         //reac2->setObjectName(rn2);
         //steps.add(reac2);
 
-        ri1.initFromReaction(*this, reac0->getKey());
+        ri1.initFromReaction(reac0->getKey());
         ri1.setReactionName(rn1);
 
-        ri2.initFromReaction(*this, reac0->getKey());
+        ri2.initFromReaction(reac0->getKey());
         ri2.setReactionName(rn2);
 
         //set the new function
@@ -2265,22 +2265,22 @@ bool CModel::convert2NonReversible()
 
         if (fn == "Mass action (reversible)")
           {
-            ri1.setReversibility(false, "Mass action (irreversible)", *this);
-            ri2.reverse(false, "Mass action (irreversible)", *this);
+            ri1.setReversibility(false, "Mass action (irreversible)");
+            ri2.reverse(false, "Mass action (irreversible)");
           }
         else if (fn == "Constant flux (reversible)")
           {
-            ri1.setReversibility(false, "Constant flux (irreversible)", *this);
-            ri2.reverse(false, "Constant flux (irreversible)", *this);
+            ri1.setReversibility(false, "Constant flux (irreversible)");
+            ri2.reverse(false, "Constant flux (irreversible)");
           }
         else
           {
             //ri1.setReversibility(false);
-            ri2.reverse(false, "Mass action (irreversible)", *this);
+            ri2.reverse(false, "Mass action (irreversible)");
           }
 
-        ri1.writeBackToReaction(reac1, *this);
-        ri2.writeBackToReaction(reac2, *this);
+        ri1.writeBackToReaction(reac1);
+        ri2.writeBackToReaction(reac2);
 
         //set the kinetic parameters
 

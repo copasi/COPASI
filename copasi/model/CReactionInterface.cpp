@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/17 14:11:46 $
+   $Date: 2006/08/25 18:13:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,10 +21,15 @@
 #include "report/CKeyFactory.h"
 #include "model/CMetabNameInterface.h"
 
-CReactionInterface::CReactionInterface():
+CReactionInterface::CReactionInterface(CModel * pModel):
+    mpModel(pModel),
+    mChemEqI(pModel),
     mpFunction(NULL),
     mpParameters(NULL)
-{emptyString = "";}
+{
+  assert(mpModel != NULL);
+  emptyString = "";
+}
 
 CReactionInterface::~CReactionInterface()
 {
@@ -34,7 +39,7 @@ CReactionInterface::~CReactionInterface()
 
 const std::vector<std::string> & CReactionInterface::getListOfMetabs(CFunctionParameter::Role role) const
   {
-    return mChemEqI.getListOfNames(role);
+    return mChemEqI.getListOfDisplayNames(role);
   }
 
 std::vector< std::string > CReactionInterface::getListOfPossibleFunctions() const
@@ -59,7 +64,7 @@ std::vector< std::string > CReactionInterface::getListOfPossibleFunctions() cons
     return ret;
   }
 
-void CReactionInterface::initFromReaction(const CModel & model, const std::string & key)
+void CReactionInterface::initFromReaction(const std::string & key)
 {
   mReactionReferenceKey = key;
 
@@ -71,7 +76,7 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
   mReactionName = rea->getObjectName();
 
   //chemical equation
-  mChemEqI.loadFromChemEq(&model, rea->getChemEq());
+  mChemEqI.loadFromChemEq(rea->getChemEq());
 
   if (rea->getFunction() && (rea->getFunction() != CCopasiDataModel::Global->mpUndefined))
     {
@@ -81,7 +86,7 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
       mpParameters = new CFunctionParameters(mpFunction->getVariables());
 
       //mapping
-      loadMappingAndValues(model, *rea);
+      loadMappingAndValues(*rea);
     }
   else
     {
@@ -90,7 +95,7 @@ void CReactionInterface::initFromReaction(const CModel & model, const std::strin
   printDebug();
 }
 
-bool CReactionInterface::loadMappingAndValues(const CModel & model, const CReaction & rea)
+bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
 {
   bool success = true;
   std::vector< std::vector<std::string> >::const_iterator it;
@@ -120,7 +125,7 @@ bool CReactionInterface::loadMappingAndValues(const CModel & model, const CReact
           SubList.clear();
           for (jt = it->begin(), jEnd = it->end(); jt != jEnd; ++jt)
             {
-              metabName = CMetabNameInterface::getDisplayName(&model, *jt);
+              metabName = CMetabNameInterface::getDisplayName(mpModel, *jt);
               assert(metabName != "");
               SubList.push_back(metabName);
             }
@@ -135,7 +140,7 @@ bool CReactionInterface::loadMappingAndValues(const CModel & model, const CReact
             case CFunctionParameter::SUBSTRATE:
             case CFunctionParameter::PRODUCT:
             case CFunctionParameter::MODIFIER:
-              metabName = CMetabNameInterface::getDisplayName(&model, *(it->begin()));
+              metabName = CMetabNameInterface::getDisplayName(mpModel, *(it->begin()));
               assert(metabName != "");
               SubList[0] = metabName;
               //TODO: check if the metabolite is in the chemical equation with the correct rule
@@ -167,7 +172,7 @@ bool CReactionInterface::loadMappingAndValues(const CModel & model, const CReact
   return success;
 }
 
-bool CReactionInterface::writeBackToReaction(CReaction * rea, CModel & model) const
+bool CReactionInterface::writeBackToReaction(CReaction * rea) const
   {
     if (!isValid()) return false; // do nothing
     if (!(*mpParameters == mpFunction->getVariables())) return false; // do nothing
@@ -181,13 +186,14 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea, CModel & model) co
     if (!rea->setObjectName(mReactionName))
       success = false;
 
-    mChemEqI.writeToChemEq(&model, rea->getChemEq());
+    mChemEqI.writeToChemEq(rea->getChemEq());
 
     // TODO. check if function has changed since it was set in the R.I.
     rea->setFunction(mpFunction->getObjectName());
 
     unsigned C_INT32 j, jmax;
     unsigned C_INT32 i, imax = size();
+    std::pair< std::string, std::string > Names;
     for (i = 0; i < imax; ++i)
       {
         switch (getUsage(i))
@@ -198,16 +204,16 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea, CModel & model) co
             else
               {
                 rea->setParameterValue(getParameterName(i), mValues[i], false);
-                rea->setParameterMapping(i, model.getModelValues()[mNameMap[i][0]]->getKey());
+                rea->setParameterMapping(i, mpModel->getModelValues()[mNameMap[i][0]]->getKey());
               }
             break;
 
           case CFunctionParameter::VOLUME:
-            rea->setParameterMapping(i, model.getCompartments()[mNameMap[i][0]]->getKey());
+            rea->setParameterMapping(i, mpModel->getCompartments()[mNameMap[i][0]]->getKey());
             break;
 
           case CFunctionParameter::TIME:
-            rea->setParameterMapping(i, model.getKey()); //time is the value of the model
+            rea->setParameterMapping(i, mpModel->getKey()); //time is the value of the model
             break;
 
           case CFunctionParameter::SUBSTRATE:
@@ -218,10 +224,16 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea, CModel & model) co
                 rea->clearParameterMapping(i);
                 jmax = mNameMap[i].size();
                 for (j = 0; j < jmax; ++j)
-                  rea->addParameterMapping(i, CMetabNameInterface::getMetaboliteKey(&model, mNameMap[i][j]));
+                  {
+                    Names = CMetabNameInterface::splitDisplayName(mNameMap[i][j]);
+                    rea->addParameterMapping(i, CMetabNameInterface::getMetaboliteKey(mpModel, Names.first, Names.second));
+                  }
               }
             else
-              rea->setParameterMapping(i, CMetabNameInterface::getMetaboliteKey(&model, mNameMap[i][0]));
+              {
+                Names = CMetabNameInterface::splitDisplayName(mNameMap[i][0]);
+                rea->addParameterMapping(i, CMetabNameInterface::getMetaboliteKey(mpModel, Names.first, Names.second));
+              }
             break;
 
           default:
@@ -229,7 +241,7 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea, CModel & model) co
           }
       }
     rea->compile();
-    model.setCompileFlag(); //TODO: check if really necessary
+    mpModel->setCompileFlag(); //TODO: check if really necessary
 
     return success;
   }
@@ -244,31 +256,27 @@ void CReactionInterface::clearFunction()
   mNameMap.clear();
 }
 
-void CReactionInterface::setChemEqString(const std::string & eq, const std::string & newFunction,
-    const CModel& model)
+void CReactionInterface::setChemEqString(const std::string & eq, const std::string & newFunction)
 {
   //std::cout << "setChemEqString: " << eq << std::endl;
   mChemEqI.setChemEqString(eq);
-  findAndSetFunction(newFunction, model);
+  findAndSetFunction(newFunction);
 }
 
-void CReactionInterface::setReversibility(bool rev, const std::string & newFunction,
-    const CModel& model)
+void CReactionInterface::setReversibility(bool rev, const std::string & newFunction)
 {
   mChemEqI.setReversibility(rev);
-  findAndSetFunction(newFunction, model);
+  findAndSetFunction(newFunction);
 }
 
-void CReactionInterface::reverse(bool rev, const std::string & newFunction,
-                                 const CModel& model)
+void CReactionInterface::reverse(bool rev, const std::string & newFunction)
 {
   mChemEqI.setReversibility(rev);
   mChemEqI.reverse();
-  findAndSetFunction(newFunction, model);
+  findAndSetFunction(newFunction);
 }
 
-void CReactionInterface::findAndSetFunction(const std::string & newFunction,
-    const CModel& model)
+void CReactionInterface::findAndSetFunction(const std::string & newFunction)
 {
   std::vector<std::string> fl = getListOfPossibleFunctions();
   unsigned C_INT32 i, imax = fl.size();
@@ -276,7 +284,7 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction,
   //no valid function?
   if (imax == 0)
     {
-      setFunctionAndDoMapping("", model);
+      setFunctionAndDoMapping("");
       return;
     }
 
@@ -286,7 +294,7 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction,
       for (i = 0; i < imax; ++i)
         if (fl[i] == newFunction)
           {
-            setFunctionAndDoMapping(fl[i], model);
+            setFunctionAndDoMapping(fl[i]);
             return;
           }
     }
@@ -298,7 +306,7 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction,
       for (i = 0; i < imax; ++i)
         if (fl[i] == currentFunctionName)
           {
-            setFunctionAndDoMapping(fl[i], model);
+            setFunctionAndDoMapping(fl[i]);
             return;
           }
     }
@@ -316,7 +324,7 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction,
           if (fl[i].find(s) != std::string::npos)    // if find succeeds, the return value is likely to be 0
             //if (fl[i].find(s) >= 0) - for some reason this doesn't work
             {
-              setFunctionAndDoMapping(fl[i], model);
+              setFunctionAndDoMapping(fl[i]);
               return;
             }
         }
@@ -329,7 +337,7 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction,
       if (fl[i].find(s) != std::string::npos)    // if find succeeds, the return value is likely to be 0
         //if (fl[i].find(s) >= 0) - for some reason this doesn't work
         {
-          setFunctionAndDoMapping(fl[i], model);
+          setFunctionAndDoMapping(fl[i]);
           return;
         }
     }
@@ -341,14 +349,14 @@ void CReactionInterface::findAndSetFunction(const std::string & newFunction,
       if (fl[i].find(s) != std::string::npos)    // if find succeeds, the return value is likely to be 0
         //if (fl[i].find(s) >= 0) - for some reason this doesn't work
         {
-          setFunctionAndDoMapping(fl[i], model);
+          setFunctionAndDoMapping(fl[i]);
           return;
         }
     }
 
   //if everything else fails just take the first function from the list
   //this should not be reached since constant flux is a valid kinetic function for every reaction
-  setFunctionAndDoMapping(fl[0], model);
+  setFunctionAndDoMapping(fl[0]);
 }
 
 void CReactionInterface::connectFromScratch(CFunctionParameter::Role role)
@@ -389,10 +397,10 @@ void CReactionInterface::connectFromScratch(CFunctionParameter::Role role)
   else fatalError();
 }
 
-bool CReactionInterface::isLocked(unsigned C_INT32 index, const CModel & model) const
-{return isLocked(getUsage(index), model);}
+bool CReactionInterface::isLocked(unsigned C_INT32 index) const
+{return isLocked(getUsage(index));}
 
-bool CReactionInterface::isLocked(CFunctionParameter::Role usage, const CModel & model) const
+bool CReactionInterface::isLocked(CFunctionParameter::Role usage) const
   {
     switch (usage)
       {
@@ -422,17 +430,17 @@ bool CReactionInterface::isLocked(CFunctionParameter::Role usage, const CModel &
             }
           else
             {
-              return (mChemEqI.getListOfNames(usage).size() == 1);
+              return (mChemEqI.getListOfDisplayNames(usage).size() == 1);
             }
         }
         break;
 
       case CFunctionParameter::PARAMETER:
-        return model.getModelValues().size() <= 1;
+        return mpModel->getModelValues().size() <= 1;
         break;
 
       case CFunctionParameter::VOLUME:
-        return model.getCompartments().size() <= 1;
+        return mpModel->getCompartments().size() <= 1;
         break;
       }
     return false;
@@ -528,7 +536,7 @@ void CReactionInterface::copyMapping()
   pdelete(oldParameters);
 }
 
-void CReactionInterface::connectNonMetabolites(const CModel & model)
+void CReactionInterface::connectNonMetabolites()
 {
   C_INT32 i, imax = size();
   for (i = 0; i < imax; ++i)
@@ -549,22 +557,22 @@ void CReactionInterface::connectNonMetabolites(const CModel & model)
           break;
 
         case CFunctionParameter::PARAMETER:
-          if (model.getModelValues().size() == 1)
-            mNameMap[i][0] = model.getModelValues()[0]->getObjectName();
+          if (mpModel->getModelValues().size() == 1)
+            mNameMap[i][0] = mpModel->getModelValues()[0]->getObjectName();
           break;
 
         case CFunctionParameter::VOLUME:
-          //if (model.getCompartments().size()==1)
-          //  mNameMap[i][0] = model.getCompartments()[0]->getObjectName();
+          //if (mpModel->getCompartments().size()==1)
+          //  mNameMap[i][0] = mpModel->getCompartments()[0]->getObjectName();
           {
-            const CCompartment* comp = mChemEqI.getCompartment(&model);
+            const CCompartment* comp = mChemEqI.getCompartment();
             if (comp)
               mNameMap[i][0] = comp->getObjectName();
           }
           break;
 
         case CFunctionParameter::TIME:
-          mNameMap[i][0] = model.getObjectName();
+          mNameMap[i][0] = mpModel->getObjectName();
           break;
         }
     }
@@ -583,7 +591,7 @@ void CReactionInterface::setFunctionWithEmptyMapping(const std::string & fn)
   initMapping(); //empty mapping
 }
 
-void CReactionInterface::setFunctionAndDoMapping(const std::string & fn, const CModel & model)
+void CReactionInterface::setFunctionAndDoMapping(const std::string & fn)
 {
   if ((fn == "") || (fn == "undefined"))
   {clearFunction(); return;}
@@ -594,7 +602,7 @@ void CReactionInterface::setFunctionAndDoMapping(const std::string & fn, const C
   if (!mpFunction) fatalError();
 
   copyMapping();
-  connectNonMetabolites(model);
+  connectNonMetabolites();
 
   //guess initial connections between metabs and function parameters
   connectFromScratch(CFunctionParameter::SUBSTRATE);
@@ -636,7 +644,7 @@ void CReactionInterface::setMapping(unsigned C_INT32 index, std::string mn)
 
           //TODO: check the following
           // if we have two parameters of this usage change the other one.
-          unsigned C_INT32 listSize = mChemEqI.getListOfNames(getUsage(index)).size();
+          unsigned C_INT32 listSize = mChemEqI.getListOfDisplayNames(getUsage(index)).size();
           if ((listSize == 2) && (mpParameters->getNumberOfParametersByUsage(getUsage(index)) == 2))
             {
               // get index of other parameter
@@ -666,7 +674,7 @@ void CReactionInterface::setMapping(unsigned C_INT32 index, std::string mn)
 
 std::vector<std::string> CReactionInterface::getExpandedMetabList(CFunctionParameter::Role role) const
   {
-    const std::vector<std::string> & names = mChemEqI.getListOfNames(role);
+    const std::vector<std::string> & names = mChemEqI.getListOfDisplayNames(role);
     const std::vector<C_FLOAT64> & mults = mChemEqI.getListOfMultiplicities(role);
 
     unsigned C_INT32 j, jmax;
@@ -688,12 +696,12 @@ std::vector<std::string> CReactionInterface::getExpandedMetabList(CFunctionParam
     return ret;
   }
 
-bool CReactionInterface::createMetabolites(CModel & model) const
+bool CReactionInterface::createMetabolites() const
   {
-    return mChemEqI.createNonExistingMetabs(&model);
+    return mChemEqI.createNonExistingMetabs();
   }
 
-bool CReactionInterface::createOtherObjects(CModel & model) const
+bool CReactionInterface::createOtherObjects() const
   {
     bool ret = false;
 
@@ -704,14 +712,14 @@ bool CReactionInterface::createOtherObjects(CModel & model) const
           {
           case CFunctionParameter::VOLUME:
             if (mNameMap[i][0] == "unknown" || mNameMap[i][0] == "") break;
-            if (model.createCompartment(mNameMap[i][0], 1.0))
+            if (mpModel->createCompartment(mNameMap[i][0], 1.0))
               ret = true;
             break;
 
           case CFunctionParameter::PARAMETER:
             if (mNameMap[i][0] == "unknown" || mNameMap[i][0] == "") break;
             if (!isLocalValue(i))
-              if (model.createModelValue(mNameMap[i][0], 1.0))
+              if (mpModel->createModelValue(mNameMap[i][0], 1.0))
                 ret = true;
             break;
 
@@ -722,9 +730,9 @@ bool CReactionInterface::createOtherObjects(CModel & model) const
     return ret;
   }
 
-bool CReactionInterface::isMulticompartment(const CModel & model) const
+bool CReactionInterface::isMulticompartment() const
   {
-    return mChemEqI.isMulticompartment(&model);
+    return mChemEqI.isMulticompartment();
   }
 
 bool CReactionInterface::isValid() const

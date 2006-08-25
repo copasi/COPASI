@@ -28,16 +28,13 @@
 
 /* yacc Declarations */
 %token TOKEN_NUMBER
-
 %token TOKEN_MULTIPLY
-
 %token TOKEN_PLUS
-
-%token TOKEN_METABOLITE
-
+%token TOKEN_NAME
 %token TOKEN_BEGIN_PRODUCTS
-
 %token TOKEN_BEGIN_MODIFIERS
+%token TOKEN_BEGIN_COMPARTMENT
+%token TOKEN_END_COMPARTMENT
 
 // Precedence
 
@@ -74,12 +71,14 @@ substrates: reactant
            {
              mSubstrateNames.push_back($1->name);
              mSubstrateMult.push_back($1->multiplicity);
+             mSubstrateCompartments.push_back($1->compartment);
              pdelete($1);
            }
          | substrates TOKEN_PLUS reactant
            {
              mSubstrateNames.push_back($3->name);
              mSubstrateMult.push_back($3->multiplicity);
+             mSubstrateCompartments.push_back($3->compartment);
              pdelete($2);
              pdelete($3);
            }
@@ -90,6 +89,7 @@ products: TOKEN_BEGIN_PRODUCTS reactant
 
              mProductNames.push_back($2->name);
              mProductMult.push_back($2->multiplicity);
+             mProductCompartments.push_back($2->compartment);
              pdelete($1);
              pdelete($2);
            }
@@ -97,6 +97,7 @@ products: TOKEN_BEGIN_PRODUCTS reactant
            {
              mProductNames.push_back($3->name);
              mProductMult.push_back($3->multiplicity);
+             mProductCompartments.push_back($3->compartment);
              pdelete($2);
              pdelete($3);
            }
@@ -105,6 +106,7 @@ modifiers: TOKEN_BEGIN_MODIFIERS reactant
            {
              mModifierNames.push_back($2->name);
              mModifierMult.push_back($2->multiplicity);
+             mModifierCompartments.push_back($2->compartment);
              pdelete($1);
              pdelete($2);
            }
@@ -112,27 +114,50 @@ modifiers: TOKEN_BEGIN_MODIFIERS reactant
            {
              mModifierNames.push_back($2->name);
              mModifierMult.push_back($2->multiplicity);
+             mModifierCompartments.push_back($2->compartment);
              pdelete($2);
            }
 
-reactant: TOKEN_METABOLITE
+reactant: prereactant
+          {
+            $$ = $1;
+            $$->multiplicity = 1.0;
+            $$->compartment = "";
+          }  
+        | prereactant compartment
+          {
+            $$ = $1;
+            $$->multiplicity = 1.0;
+            $$->compartment = $2->name;
+            pdelete($2);
+          }
+        
+
+prereactant: TOKEN_NAME
           {
             $$ = $1;
             $$->multiplicity = 1.0;
           }  
-        | TOKEN_NUMBER TOKEN_METABOLITE
+        | TOKEN_NUMBER TOKEN_NAME
           {
             $$ = $2;
             $$->multiplicity = strtod($1->name.c_str(), NULL);
             pdelete($1);
           }
-        | TOKEN_NUMBER TOKEN_MULTIPLY TOKEN_METABOLITE
+        | TOKEN_NUMBER TOKEN_MULTIPLY TOKEN_NAME
           {
             $$ = $3;
             $$->multiplicity = strtod($1->name.c_str(), NULL);
             pdelete($1);
             pdelete($2);
           }
+        
+compartment: TOKEN_BEGIN_COMPARTMENT TOKEN_NAME TOKEN_END_COMPARTMENT
+             {
+               $$ = $2;
+               pdelete($1);
+               pdelete($3);
+             }
 ;
 
 %%

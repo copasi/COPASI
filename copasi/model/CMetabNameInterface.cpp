@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetabNameInterface.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Date: 2006/08/25 18:13:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,11 +26,11 @@
 #include "copasi.h"
 
 #include "CMetabNameInterface.h"
-#include "report/CCopasiContainer.h"
-#include "model/CModel.h"
-#include "report/CKeyFactory.h"
+#include "CModel.h"
+#include "CChemEqParser.h"
 
-std::string CMetabNameInterface::empty_string = "";
+#include "report/CCopasiContainer.h"
+#include "report/CKeyFactory.h"
 
 CMetabNameInterface::~CMetabNameInterface()
 {}
@@ -41,51 +41,78 @@ std::string CMetabNameInterface::getDisplayName(const CModel* model, const std::
   if (metab)
     return getDisplayName(model, *metab);
   else
-    return empty_string;
+    return "";
 }
 
 std::string CMetabNameInterface::getDisplayName(const CModel* model, const CMetab & metab)
 {
-  if (CMetabNameInterface::isUnique(model, metab.getObjectName()))
-    return metab.getObjectName();
-  else
-    return metab.getObjectName() + '{' + metab.getCompartment()->getObjectName() + '}';
+  return getDisplayName(model, metab.getObjectName(), metab.getCompartment()->getObjectName());
 }
 
-std::string CMetabNameInterface::getMetaboliteKey(const CModel* model, const std::string & name)
+std::string CMetabNameInterface::getDisplayName(const CModel* model,
+    const std::string & metabolite,
+    const std::string & compartment)
 {
-  CMetab * metab = getMetabolite(model, name);
+  std::string DefaultCompartment;
+  if (model->getCompartments().size() == 0)
+    DefaultCompartment = "compartment";
+  else
+    DefaultCompartment = model->getCompartments()[0]->getObjectName();
+
+  std::string Metabolite = quote(metabolite, "{}");
+  if (isNumber(Metabolite))
+    Metabolite = "\"" + Metabolite + "\"";
+
+  if (CMetabNameInterface::isUnique(model, metabolite) &&
+      (compartment == DefaultCompartment ||
+       CMetabNameInterface::doesExist(model, metabolite, compartment)))
+    return Metabolite;
+
+  std::string Compartment = quote(compartment, "{}");
+  if (isNumber(Compartment))
+    Compartment = "\"" + Compartment + "\"";
+
+  return Metabolite + '{' + Compartment + '}';
+}
+
+std::string CMetabNameInterface::getMetaboliteKey(const CModel* model,
+    const std::string & metabolite,
+    const std::string & compartment)
+{
+  CMetab * metab = getMetabolite(model, metabolite, compartment);
   if (metab)
     return metab->getKey();
   else
-    return empty_string;
+    return "";
 }
 
-CMetab * CMetabNameInterface::getMetabolite(const CModel* model, const std::string & name)
+CMetab * CMetabNameInterface::getMetabolite(const CModel* model,
+    const std::string & metabolite,
+    const std::string & compartment)
 {
-  C_INT32 pos = name.find('{');
+  unsigned C_INT32 Index;
 
-  if (pos >= 0)
+  if (compartment != "")
     {
-      std::string metabName = CMetabNameInterface::extractMetabName(model, name);
-      std::string compName = CMetabNameInterface::extractCompartmentName(model, name);
-      return (model->getCompartments()[compName])->getMetabolites()[metabName];
-    }
-  else
-    {
-      C_INT32 index = model->findMetabByName(name);
-      if (index == -1)
-        return NULL;
-      else
-        return model->getMetabolites()[index];
+      Index = model->getCompartments().getIndex(compartment);
+      if (Index != C_INVALID_INDEX)
+        {
+          CCompartment *pCompartment = model->getCompartments()[Index];
+
+          Index = pCompartment->getMetabolites().getIndex(metabolite);
+          if (Index != C_INVALID_INDEX)
+            return pCompartment->getMetabolites()[Index];
+        }
+
+      return NULL;
     }
 
-  std::string metabName = CMetabNameInterface::extractMetabName(model, name);
-  C_INT32 index = model->findMetabByName(name);
-  if (index == -1)
-    return NULL;
-  else
-    return model->getMetabolites()[index];
+  Index = model->findMetabByName(metabolite);
+
+  if (Index != C_INVALID_INDEX)
+    return model->getMetabolites()[Index];
+
+  return NULL;
 }
 
 bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name)
@@ -110,121 +137,81 @@ bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name
   return true; //return unique;
 }
 
-bool CMetabNameInterface::doesExist(const CModel* model, const std::string & name)
+bool CMetabNameInterface::doesExist(const CModel* model,
+                                    const std::string & metabolite,
+                                    const std::string & compartment)
 {
-  C_INT32 pos = name.find('{');
-  unsigned C_INT32 i;
-  CCompartment *comp;
-  CCopasiVectorNS<CMetab> metabs;
-
-  if (pos >= 0)    //compartment specified, so check if the metabolite exists in this compartment
+  if (compartment != "")
     {
-      if (!pos)
-        return false;
+      unsigned C_INT32 Index = model->getCompartments().getIndex(compartment);
+      if (Index == C_INVALID_INDEX) return false;
 
-      std::string metabName = name. substr(0, pos), s;
-      C_INT32 len = name.find('}') - pos - 1;
+      Index = model->getCompartments()[Index]->getMetabolites().getIndex(metabolite);
 
-      C_INT32 index = model->getCompartments().getIndex(name.substr(pos + 1, len));
-      if (index < 0)   // the specified compartment does not exist
-        return false;
-
-      comp = (model->getCompartments())[index];
-      metabs = comp->getMetabolites();
-
-      for (i = 0; i < metabs.size(); i++)
-        {
-          s = metabs[i]->getObjectName();
-          if (s == metabName)
-            return true;
-        }
-
-      return false;
+      return (Index != C_INVALID_INDEX);
     }
   else
-    //model->findMetab returns -1 if the metabolite is not found and a non-negative integer otherwise
-    return (model->findMetabByName(name) != C_INVALID_INDEX); //TODO check why C_INV... is unsigned
+    return (model->findMetabByName(metabolite) != C_INVALID_INDEX);
 }
 
-std::string CMetabNameInterface::extractCompartmentName(const CModel* model, const std::string & name)
+std::pair< std::string, std::string > CMetabNameInterface::splitDisplayName(const std::string & name)
 {
-  // name is expected to be in the format of "metabolite{compartment}" or simply "metabolite"
-  C_INT32 pos1 = name.find('{'), pos2;
-  const CCompartment *comp;
+  // parse the description into a linked node tree
+  std::stringstream buffer(name + " ->");
 
-  if (pos1 > 0)  // extract the compartment name from the string if specified
+  CChemEqParser Parser(&buffer);
+
+  std::pair< std::string, std::string > Result;
+
+  if (Parser.yyparse() != 0)
     {
-      pos2 = name.find('}');
-      return name.substr(pos1 + 1, pos2 - pos1 - 1);
+      Result.first = "";
+      Result.second = "";
     }
   else
     {
-      const CCopasiVector< CMetab > & metabs = model->getMetabolites();
-      C_INT32 index = model->findMetabByName(name);
-
-      if (index < 0)  // the metabolite doesn't exist, so return the first compartment of the model
-        {
-          const CCopasiVectorNS< CCompartment > & comps = model->getCompartments();
-
-          if (comps.size() == 0)
-            return "compartment";  // default compartment name if none existed
-
-          comp = comps[0];
-          return comp->getObjectName();
-        }
-      else  //return the first compartment where the metabolite is present
-        {
-          const CMetab *metb = metabs[index];
-          comp = metb->getCompartment();
-          return comp->getObjectName();
-        }
+      Result.first = Parser.getSubstrateNames()[0];
+      Result.second = Parser.getSubstrateCompartments()[0];
     }
+
+  return Result;
 }
 
-std::string CMetabNameInterface::extractMetabName(const CModel* C_UNUSED(model),
-    const std::string & name)
+#ifdef XXXX
+std::string CMetabNameInterface::extractCompartmentName(const std::string & name)
 {
-  // name is expected to be in the format of "metabolite{compartment}" or simply "metabolite"
-  C_INT32 namelength = name.find('{');
+  // parse the description into a linked node tree
+  std::stringstream buffer(name);
+  buffer << " ->";
 
-  if (namelength >= 0) // compartment is specified, so strip that off
-    return name.substr(0, namelength);
-  else  //compartment is not specified
-    return name;
+  CChemEqParser Parser(&buffer);
+
+  if (Parser.yyparse() != 0) return "";
+
+  return Parser.getSubstrateCompartments()[0];
 }
 
-bool CMetabNameInterface::isValidMetabName(const std::string name)
+std::string CMetabNameInterface::extractMetabName(const std::string & name)
 {
-  // a valid name does not contain white spaces, and contains either matching or no curly braces
-  C_INT32 pos1, pos2, pos3, end;
-  end = name.find_last_not_of(" ") + 1;  // the end of the string
-  if (end < 0)   // the string consists of white spaces only
-    return false;
+  // parse the description into a linked node tree
+  std::stringstream buffer(name);
+  buffer << " ->";
 
-  // make sure the name is not an empty string
-  unsigned C_INT32 len = name.length();
-  if (len < 1)
-    return false;
+  CChemEqParser Parser(&buffer);
 
-  // check for white spaces before the end of the string
-  pos1 = name.find(" ");
-  if ((pos1 >= 0) && (pos1 < end))
-    return false;
+  if (Parser.yyparse() != 0) return "";
 
-  // curly braces: '{' is not the first character in the string, and appears before '}'
-  // if present, '}' should be the last character in the string
-  pos1 = name.find('{');
-  pos2 = name.find('}');
-  pos3 = name.rfind('{');
-
-  // ok if no braces appear
-  if ((pos1 < 0) && (pos2 < 0))
-    return true;
-
-  // ok  if only one '{' and one '}', braces match, neither metabolite name nor compartment name is an empty string, and '}' is the last character that is not a white space
-  if ((pos1 > 0) && (pos1 == pos3) && (pos2 > pos1 + 1) && (pos2 + 1 == end))
-    return true;
-
-  // otherwise the name is not valid
-  return false;
+  return Parser.getSubstrateNames()[0];
 }
+
+bool CMetabNameInterface::isValidMetabDisplayName(const std::string & name)
+{
+  // parse the description into a linked node tree
+  std::stringstream buffer(name);
+  buffer << " ->";
+
+  CChemEqParser Parser(&buffer);
+
+  return (Parser.yyparse() == 0);
+}
+#endif // XXXX
