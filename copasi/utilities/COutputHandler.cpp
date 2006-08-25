@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/COutputHandler.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/07 19:27:10 $
+   $Date: 2006/08/25 19:13:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,7 +151,7 @@ void COutputHandler::refresh()
 bool COutputHandler::compileRefresh(const std::vector< CCopasiContainer * > & listOfContainer)
 {
   CModel * pModel =
-    dynamic_cast< CModel * >(CCopasiContainer::ObjectFromName(listOfContainer, CCopasiObjectName("Model=" + CCopasiDataModel::Global->getModel()->getObjectName())));
+    dynamic_cast< CModel * >(CCopasiContainer::ObjectFromName(listOfContainer, CCopasiDataModel::Global->getModel()->getCN()));
 
   mObjectRefreshes = CCopasiObject::buildUpdateSequence(mObjects, pModel);
 
