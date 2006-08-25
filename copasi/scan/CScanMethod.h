@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/04 19:17:47 $
+   $Date: 2006/08/25 21:41:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -144,6 +144,11 @@ class CScanMethod : public CCopasiMethod
     const CScanProblem * mpProblem;
 
     /**
+     *  A pointer to the scan Task.
+     */
+    CScanTask * mpTask;
+
+    /**
      * A pointer to the random number generator
      */
     CRandom * mpRandomGenerator;
@@ -234,7 +239,7 @@ class CScanMethod : public CCopasiMethod
 
     bool loop(unsigned C_INT32 level);
 
-    bool calculate() const;
+    bool calculate();
 
     /**
      *  Set the value of the scan parameter based on the distribution

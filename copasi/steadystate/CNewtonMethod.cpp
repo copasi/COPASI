@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/15 15:23:36 $
+   $Date: 2006/08/25 21:41:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -216,7 +216,7 @@ CNewtonMethod::processInternal()
 
       unsigned C_INT32 hProcess;
       unsigned C_INT32 Step = 0;
-      unsigned C_INT32 MaxSteps = (unsigned C_INT32) ceil(log(1.0e12) / log(2.0));
+      unsigned C_INT32 MaxSteps = (unsigned C_INT32) ceil(log(1.0e10) / log(10.0));
 
       if (mpProgressHandler)
         hProcess = mpProgressHandler->addItem("forward integrating...",
@@ -224,7 +224,7 @@ CNewtonMethod::processInternal()
                                               & Step,
                                               & MaxSteps);
 
-      for (Duration = 0.01; Duration < 1.0e10; Duration *= 2, Step++)
+      for (Duration = 1.0; Duration < 1.0e10; Duration *= 10.0, Step++)
         {
           if (mpProgressHandler && !mpProgressHandler->progress(hProcess)) break;
 

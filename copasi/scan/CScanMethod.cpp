@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanMethod.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:30 $
+   $Date: 2006/08/25 21:41:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -237,6 +237,8 @@ void CScanItemRandom::step()
 }
 
 
+
+
 void CScanItemBreak::step()
 {
   //the index
@@ -249,6 +251,8 @@ void CScanItemBreak::step()
     }
 
 
+
+
   ++mIndex;
 }*/
 
@@ -259,6 +263,7 @@ CScanMethod * CScanMethod::createMethod() {return new CScanMethod;}
 CScanMethod::CScanMethod():
     CCopasiMethod(CCopasiTask::scan, CCopasiMethod::scanMethod),
     mpProblem(NULL),
+    mpTask(NULL),
     mpRandomGenerator(NULL),
     mTotalSteps(1)
     //    mVariableSize(0),
@@ -299,6 +304,9 @@ bool CScanMethod::cleanupScanItems()
 bool CScanMethod::init()
 {
   if (!mpProblem) return false;
+
+  mpTask = dynamic_cast< CScanTask * >(getObjectParent());
+  if (mpTask == NULL) return false;
 
   cleanupScanItems();
 
@@ -387,11 +395,11 @@ bool CScanMethod::loop(unsigned C_INT32 level)
   return true;
 }
 
-bool CScanMethod::calculate() const
-  {
-    //std::cout << "*********** Scan: calculate... ************" << std::endl;
-    return ((CScanTask*)(getObjectParent()))->processCallback();
-  }
+bool CScanMethod::calculate()
+{
+  //std::cout << "*********** Scan: calculate... ************" << std::endl;
+  return mpTask->processCallback();
+}
 
 void CScanMethod::setProblem(const CScanProblem * problem)
 {mpProblem = problem;}
