@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.148 $
+   $Revision: 1.149 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/28 14:36:44 $
+   $Date: 2006/08/28 15:06:38 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1629,6 +1629,15 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
       counter++;
       appendix = numberStream.str();
     }
+  std::string sbmlId;
+  if (this->mLevel == 1)
+    {
+      sbmlId = sbmlParameter->getName();
+    }
+  else
+    {
+      sbmlId = sbmlParameter->getId();
+    }
   double value;
   if (sbmlParameter->isSetValue() && sbmlParameter->getValue() == sbmlParameter->getValue()) // make sure it is not set to NaN
     {
@@ -1636,10 +1645,43 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
     }
   else
     {
+      // check if there is a rule for this entity
+      std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(copasiModel);
+      if (pos == copasi2sbmlmap.end()) fatalError();
+      bool ruleFound = false;
+      Model* pSBMLModel = dynamic_cast<Model*>(pos->second);
+      unsigned int k, kMax = pSBMLModel->getNumRules();
+      for (k = 0;k < kMax;++k)
+        {
+          Rule* pRule = pSBMLModel->getRule(k);
+          switch (pRule->getTypeCode())
+            {
+            case SBML_ASSIGNMENT_RULE:
+              if (dynamic_cast<AssignmentRule*>(pRule)->getVariable() == sbmlId)
+                {
+                  ruleFound = true;
+                  break;
+                }
+              break;
+              break;
+            case SBML_RATE_RULE:
+              if (dynamic_cast<RateRule*>(pRule)->getVariable() == sbmlId)
+                {
+                  ruleFound = true;
+                  break;
+                }
+              break;
+            case SBML_ALGEBRAIC_RULE:
+            default:
+              fatalError();
+              break;
+            }
+        }
+
       // Set value to NaN and create a warning if it is the first time
       // this happend
       value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-      if (!this->mIncompleteModel)
+      if ((!ruleFound) && (!this->mIncompleteModel))
         {
           this->mIncompleteModel = true;
           CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
@@ -1647,14 +1689,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
     }
   CModelValue* pMV = copasiModel->createModelValue(name + appendix, value);
   copasi2sbmlmap[pMV] = const_cast<Parameter*>(sbmlParameter);
-  if (this->mLevel == 1)
-    {
-      pMV->setSBMLId(sbmlParameter->getName());
-    }
-  else
-    {
-      pMV->setSBMLId(sbmlParameter->getId());
-    }
+  pMV->setSBMLId(sbmlId);
   return pMV;
 }
 
