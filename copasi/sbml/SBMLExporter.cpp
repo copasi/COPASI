@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/28 14:09:10 $
+   $Date: 2006/08/28 14:30:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1735,6 +1735,35 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME)
           if (pOldRule)
             {
               this->removeFromList(pModel->getListOfRules(), pOldRule);
+            }
+        }
+      if (pRule)
+        {
+          // set the corresponding SBML entity to non constant
+          std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = CCopasiDataModel::Global->getCopasi2SBMLMap();
+          std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(const_cast<CModelEntity*>(pME));
+          if (pos != copasi2sbmlmap.end())
+            {
+              SBase* pSBase = pos->second;
+              switch (pSBase->getTypeCode())
+                {
+                case SBML_PARAMETER:
+                  dynamic_cast<Parameter*>(pSBase)->setConstant(false);
+                  break;
+                case SBML_SPECIES:
+                  dynamic_cast<Species*>(pSBase)->setConstant(false);
+                  break;
+                case SBML_COMPARTMENT:
+                  dynamic_cast<Compartment*>(pSBase)->setConstant(false);
+                  break;
+                default:
+                  fatalError();
+                  break;
+                }
+            }
+          else
+            {
+              fatalError();
             }
         }
     }
