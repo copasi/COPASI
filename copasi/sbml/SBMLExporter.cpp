@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.85 $
+   $Revision: 1.86 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/28 13:24:38 $
+   $Date: 2006/08/28 14:09:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1680,6 +1680,7 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME)
           if (!pRateRule)
             {
               pRateRule = new RateRule();
+              pRateRule->setVariable(pME->getSBMLId());
             }
           // now we set the new expression
           ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
@@ -1721,6 +1722,7 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME)
           if (!pAssignmentRule)
             {
               pAssignmentRule = new AssignmentRule();
+              pAssignmentRule->setVariable(pME->getSBMLId());
             }
           // now we set the new expression
           ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
@@ -1806,6 +1808,7 @@ void SBMLExporter::exportRules(std::vector<Rule*>& rules)
   while (it != endIt)
     {
       pModel->addRule(*(*it));
+      ++it;
     }
 }
 

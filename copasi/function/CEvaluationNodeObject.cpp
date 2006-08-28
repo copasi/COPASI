@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/08/15 11:40:44 $
+   $Author: gauges $
+   $Date: 2006/08/28 14:09:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -134,6 +134,11 @@ ASTNode* CEvaluationNodeObject::toAST() const
     // assume that it will always be the current global model.
     CCopasiObject* object = CCopasiContainer::ObjectFromName(mRegisteredObjectCN);
     assert(object);
+    // if it is a reference, we get the parent of the reference
+    if (object->isReference())
+      {
+        object = object->getObjectParent();
+      }
     // actually we need to get the name from the key of the copasi object
     SBase* pSBase = CCopasiDataModel::Global->getCopasi2SBMLMap()[object];
     CModel* pModel = NULL;
