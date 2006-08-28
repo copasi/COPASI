@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.h,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/15 13:40:39 $
+   $Date: 2006/08/28 18:44:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -289,6 +289,8 @@ class SBMLImporter
      * will return true;
      */
     bool isStochasticModel(const Model* pSBMLModel);
+
+    void replaceObjectNames(ASTNode* pNode, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap);
 
   public:
     SBMLImporter();

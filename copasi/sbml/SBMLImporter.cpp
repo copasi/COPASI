@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.149 $
+   $Revision: 1.150 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/28 15:06:38 $
+   $Date: 2006/08/28 18:44:04 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2968,6 +2968,8 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
   this->checkRuleMathConsistency(rule, copasi2sbmlmap);
   ConverterASTNode tmpNode(*rule->getMath());
   this->preprocessNode(&tmpNode);
+  // replace the object names
+  this->replaceObjectNames(&tmpNode, copasi2sbmlmap);
   // now we convert the node to a CEvaluationNode
   CExpression* pExpression = new CExpression;
   pExpression->setTree(tmpNode);
@@ -3032,5 +3034,65 @@ void SBMLImporter::getIdsFromNode(const ASTNode* pNode, std::set<std::string>& i
   for (i = 0;i < iMax;++i)
     {
       this->getIdsFromNode(pNode->getChild(i), idSet);
+    }
+}
+
+void SBMLImporter::replaceObjectNames(ASTNode* pNode, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  if (pNode->getType() == AST_NAME)
+    {
+      std::string name = pNode->getName();
+      // the id can either belong to a compartment, a species, a reaction or a
+      // global parameter
+      std::map<CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
+      std::map<CCopasiObject*, SBase*>::iterator endit = copasi2sbmlmap.end();
+      CReaction* pReaction;
+      CModelEntity* pModelEntity;
+      while (it != endit)
+        {
+          pReaction = dynamic_cast<CReaction*>(it->first);
+          pModelEntity = dynamic_cast<CModelEntity*>(it->first);
+          std::string sbmlId;
+          if (pReaction)
+            {
+              sbmlId = pReaction->getSBMLId();
+            }
+          else if (pModelEntity)
+            {
+              sbmlId = pModelEntity->getSBMLId();
+            }
+          else
+            {
+              fatalError();
+            }
+          if (sbmlId == name)
+            {
+              // make sure it is only one of the allowed types
+              switch (it->second->getTypeCode())
+                {
+                case SBML_COMPARTMENT:
+                case SBML_SPECIES:
+                case SBML_REACTION:
+                case SBML_PARAMETER:
+                  pNode->setName(it->first->getCN().c_str());
+                  break;
+                default:
+                  fatalError();
+                  break;
+                }
+              break;
+            }
+          ++it;
+        }
+      // not found
+      if (it == endit) fatalError();
+    }
+  else
+    {
+      unsigned int i, iMax = pNode->getNumChildren();
+      for (i = 0;i < iMax;++i)
+        {
+          this->replaceObjectNames(pNode->getChild(i), copasi2sbmlmap);
+        }
     }
 }
