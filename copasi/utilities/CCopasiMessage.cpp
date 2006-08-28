@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:20:18 $
+   $Date: 2006/08/28 15:34:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -100,13 +100,25 @@ void CCopasiMessage::clearDeque()
 CCopasiMessage::Type CCopasiMessage::getHighestSeverity()
 {
   CCopasiMessage::Type HighestSeverity = RAW;
-  std::deque< CCopasiMessage >::iterator it = mMessageDeque.begin();
-  std::deque< CCopasiMessage >::iterator end = mMessageDeque.end();
+  std::deque< CCopasiMessage >::const_iterator it = mMessageDeque.begin();
+  std::deque< CCopasiMessage >::const_iterator end = mMessageDeque.end();
 
   for (; it != end; ++it)
     if (it->getType() > HighestSeverity) HighestSeverity = it->getType();
 
   return HighestSeverity;
+}
+
+bool CCopasiMessage::checkForMessage(const unsigned C_INT32 & number)
+{
+  CCopasiMessage::Type HighestSeverity = RAW;
+  std::deque< CCopasiMessage >::const_iterator it = mMessageDeque.begin();
+  std::deque< CCopasiMessage >::const_iterator end = mMessageDeque.end();
+
+  for (; it != end; ++it)
+    if (it->getNumber() == number) return true;
+
+  return false;
 }
 
 CCopasiMessage::CCopasiMessage(void):

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:17:03 $
+   $Date: 2006/08/28 15:34:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -280,6 +280,16 @@ int main(int argc, char *argv[])
                     TaskList[i]->getProblem()->setModel(CCopasiDataModel::Global->getModel());
 
                     TaskList[i]->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+                    // We need to check whether the result is saved in any form.
+                    // If not we need to stop right here to avoid wasting time.
+                    if (CCopasiMessage::checkForMessage(MCCopasiTask + 5) &&
+                        (!TaskList[i]->isUpdateModel() ||
+                         COptions::compareValue("Save", std::string(""))))
+                      {
+                        std::cout << CCopasiMessage::getAllMessageText() << std::endl;
+                        break;
+                      }
+
                     TaskList[i]->process(true);
                     TaskList[i]->restore();
                     CCopasiDataModel::Global->finish();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:20:18 $
+   $Date: 2006/08/28 15:34:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -166,6 +166,13 @@ class CCopasiMessage
      * @return const CCopasiMessage::Type & highestSeverity
      */
     static CCopasiMessage::Type getHighestSeverity();
+
+    /**
+     * Check whether a message with the given number is in the deque
+     * @param const unsigned C_INT32 & number
+     * @return bool found
+     */
+    static bool checkForMessage(const unsigned C_INT32 & number);
 
     /**
      *  Default consructor.
