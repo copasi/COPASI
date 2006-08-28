@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.147 $
+   $Revision: 1.148 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/17 07:28:19 $
+   $Date: 2006/08/28 14:36:44 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2754,7 +2754,7 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
   const AssignmentRule* pARule = dynamic_cast<const AssignmentRule*>(rule);
   if (pARule)
     {
-      sbmlId == pARule->getVariable();
+      sbmlId = pARule->getVariable();
     }
   else
     {
