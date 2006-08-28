@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: nsimus $
-   $Date: 2006/08/22 09:41:53 $
+   $Date: 2006/08/28 12:38:20 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -936,7 +936,7 @@ bool MMASCIIExporter::exportMathModelInXPPAUT(const CModel* copasiModel, std::of
     dynamic_cast<CTrajectoryProblem *>(pTrajectory->getProblem());
 
   outFile << "total=" << pTrajectoryProblem->getDuration() << ",";
-  outFile << "dt=0.000000000001" << std::endl;
+  outFile << "dt=" << pTrajectoryProblem->getStepSize() << std::endl;
   outFile << std::endl;
 
   unsigned C_INT32 i, j;
@@ -1329,7 +1329,7 @@ bool MMASCIIExporter::exportMathModelInMMD(const CModel* copasiModel, std::ofstr
     dynamic_cast<CTrajectoryProblem *>(pTrajectory->getProblem());
 
   outFile << "STOPTIME = " << pTrajectoryProblem->getDuration() << std::endl;
-  outFile << "DT = 0.000000000001" << std::endl;
+  outFile << "DT = " << pTrajectoryProblem->getStepSize() << std::endl;
   outFile << std::endl;
 
   unsigned C_INT32 i, j;
