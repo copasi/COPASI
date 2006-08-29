@@ -95,6 +95,10 @@ SOURCE=.\COptMethodLevenbergMarquardt.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\COptMethodNelderMead.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\COptMethodSA.cpp
 # End Source File
 # Begin Source File
@@ -172,6 +176,10 @@ SOURCE=.\COptMethodHookeJeeves.h
 # Begin Source File
 
 SOURCE=.\COptMethodLevenbergMarquardt.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COptMethodNelderMead.h
 # End Source File
 # Begin Source File
 
