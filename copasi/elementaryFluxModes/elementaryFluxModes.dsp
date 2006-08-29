@@ -59,6 +59,18 @@ SOURCE=.\CEFMAlgorithm.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CEFMMethod.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEFMProblem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEFMTask.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CElementaryFluxModes.cpp
 # End Source File
 # Begin Source File
@@ -84,6 +96,18 @@ SOURCE=.\CTableauMatrix.cpp
 # Begin Source File
 
 SOURCE=.\CEFMAlgorithm.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEFMMethod.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEFMProblem.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CEFMTask.h
 # End Source File
 # Begin Source File
 

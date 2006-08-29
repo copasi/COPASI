@@ -9,14 +9,18 @@ include(../common.pri)
 
 # Input
 HEADERS += CEFMAlgorithm.h \
-           CElementaryFluxModes.h \
+           CEFMMethod.h \
+           CEFMProblem.h \
+           CEFMTask.h \
            CFluxMode.h \
            CFluxScore.h \
            CTableauLine.h \
            CTableauMatrix.h
            
 SOURCES += CEFMAlgorithm.cpp \
-           CElementaryFluxModes.cpp \
+           CEFMMethod.cpp \
+           CEFMProblem.cpp \
+           CEFMTask.cpp \
            CFluxMode.cpp \
            CFluxScore.cpp \
            CTableauLine.cpp \
