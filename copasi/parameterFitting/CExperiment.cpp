@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/24 14:16:37 $
+   $Date: 2006/08/29 13:54:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -811,12 +811,12 @@ bool CExperiment::calculateWeights()
         {
           C_FLOAT64 & Data = mDataDependent[i][j];
 
-          if (isnan(Data)) Data = Mean;
+          if (isnan(Data)) continue;
 
           MeanSquare += Data * Data;
         }
 
-      MeanSquare /= mNumDataRows;
+      MeanSquare /= Counts[j];
     }
 
   for (i = 0; i < DependentCount; i++)
@@ -826,7 +826,7 @@ bool CExperiment::calculateWeights()
       switch (*mpWeightMethod)
         {
         case SD:
-          DefaultWeight = sqrt(MeanSquares[i] - mMeans[i] * mMeans[i]);
+          DefaultWeight = MeanSquares[i] - mMeans[i] * mMeans[i];
           break;
 
         case MEAN:
