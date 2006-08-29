@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.cpp,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
+   $Date: 2006/08/29 20:27:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,24 +23,25 @@
 #include <qwidget.h>
 #include <qmessagebox.h>
 #include <qfont.h>
+#include <qmessagebox.h>
+#include <qapplication.h>
+
 #include "copasi.h"
-#include "elementaryFluxModes/CElementaryFluxModes.h"
+
 #include "ModesWidget.h"
 #include "listviews.h"
 #include "DataModelGUI.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
 #include "qtUtilities.h"
-#include "qmessagebox.h"
-#include "qapplication.h"
 #include "copasiui3window.h"
+
+#include "elementaryFluxModes/CEFMTask.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "utilities/CCopasiVector.h"
 
 ModesWidget::ModesWidget(QWidget *parent, const char * name, WFlags f)
     : CopasiWidget(parent, name, f)
 
 {
-  //mModel = NULL;
-  modes = NULL;
-
   binitialized = true;
 
   listView = new QListView(this, "tblCompartments");
@@ -78,16 +79,18 @@ void ModesWidget::loadModes()
 {
   listView->clear();
 
-  CModel* model = CCopasiDataModel::Global->getModel();
   QListViewItem* item;
 
-  if (modes)
+  CEFMTask * pTask =
+    dynamic_cast< CEFMTask * >((*CCopasiDataModel::Global->getTaskList())["Elementary Flux Modes"]);
+
+  if (pTask)
     {
-      unsigned C_INT32 const noOfModesRows = modes->getFluxModeSize();
+      unsigned C_INT32 const noOfModesRows = pTask->getFluxModeSize();
       unsigned C_INT32 j;
       for (j = 0; j < noOfModesRows; j++)
         {
-          if (modes->isFluxModeReversible(j) == true)
+          if (pTask->isFluxModeReversible(j) == true)
             {
               item = new QListViewItem(listView, "Reversible");
             }
@@ -97,13 +100,13 @@ void ModesWidget::loadModes()
             }
           item->setMultiLinesEnabled(true);
 
-          item->setText(1, FROM_UTF8(modes->getFluxModeDescription(j)));
+          item->setText(1, FROM_UTF8(pTask->getFluxModeDescription(j)));
           std::string reactionEq = "";
-          unsigned int x, xmax = modes->getFluxModeSize(j);
-          //const CFluxMode & mode = modes->getFluxMode(j);
+          unsigned int x, xmax = pTask->getFluxModeSize(j);
+          //const CFluxMode & mode = pTask->getFluxMode(j);
           for (x = 0; x < xmax; x++)
             {
-              reactionEq += modes->getReactionEquation(j, x, model);
+              reactionEq += pTask->getReactionEquation(j, x);
               reactionEq += "\n";
             }
           item->setText(2, FROM_UTF8(reactionEq).stripWhiteSpace() + "\n");
@@ -112,45 +115,20 @@ void ModesWidget::loadModes()
 }
 
 void ModesWidget::slotTableSelectionChanged()
-{
-  /*  if (!listView->hasFocus())
-      {
-        listView->setFocus();
-      }*/
-}
-
-/*void ModesWidget::resizeEvent(QResizeEvent * re)
-{
-  if (isVisible())
-    {
-      if (binitialized)
-        {
-          int newWidth = re->size().width();
-          newWidth -= 35; //Accounting for the left (vertical) header width.
-          float weight0 = 3.5, weight1 = 6.5;
-          float weightSum = weight0 + weight1;
-          int w0, w1;
-          w0 = newWidth * (weight0 / weightSum);
-          //w1 = newWidth - w0 - table->verticalScrollBar()->width();
-          w1 = newWidth - w0 - listView->verticalScrollBar()->width();
-          //table->setColumnWidth(0, w0);
-          //table->setColumnWidth(1, w1);
-          listView->setColumnWidth(0, w0);
-          listView->setColumnWidth(1, w1);
-          binitialized = false;
-        }
-    }
-  CopasiWidget::resizeEvent(re);
-}*/
+{}
 
 void ModesWidget::slotBtnCalculateClicked()
 {
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->autoSave();
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(true);
 
-  pdelete(modes);
-  modes = new CElementaryFluxModes();
-  modes->calculate(CCopasiDataModel::Global->getModel());
+  CEFMTask * pTask =
+    dynamic_cast< CEFMTask * >((*CCopasiDataModel::Global->getTaskList())["Elementary Flux Modes"]);
+
+  pTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+  pTask->process(false);
+  pTask->restore();
+
   loadModes();
 
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
@@ -163,13 +141,10 @@ bool ModesWidget::update(ListViews::ObjectType C_UNUSED(objectType),
 
   //TODO: only if necessary
 
-  //pdelete(modes);
-  //loadModes();
   return true;
 }
 
 bool ModesWidget::enter(const std::string & C_UNUSED(key))
 {
-  //loadModes();
   return true;
 }

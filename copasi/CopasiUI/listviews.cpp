@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.200 $
+   $Revision: 1.201 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/16 15:34:40 $
+   $Date: 2006/08/29 20:27:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,6 +82,8 @@
 #include "report/CReportDefinitionVector.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/plotwidget1.h"
+#include "model/CModel.h"
+
 //#include "mathmodel/CMathModel.h"
 
 //QPixmap *folderLocked = 0;   // to store the image of locked icon folder

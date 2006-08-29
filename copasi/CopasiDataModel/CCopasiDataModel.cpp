@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.68 $
+   $Revision: 1.69 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/07/25 14:44:03 $
+   $Author: shoops $
+   $Date: 2006/08/29 20:28:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,6 +26,7 @@
 #include "sbml/SBMLExporter.h"
 #include "sbml/SBMLImporter.h"
 #include "scan/CScanTask.h"
+#include "elementaryFluxModes/CEFMTask.h"
 //#include "steadystate/CMCAMethod.h"
 #include "steadystate/CMCATask.h"
 #include "steadystate/CMCAProblem.h"
@@ -550,8 +551,7 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
       break;
 
     case CCopasiTask::fluxMode:
-      // :TODO: implement task for elementary flux mode analysis
-      return pTask;
+      pTask = new CEFMTask(mpTaskList);
       break;
 
     case CCopasiTask::optimization:
@@ -567,6 +567,10 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
       static_cast< CMCAProblem * >(pTask->getProblem())->setSteadyStateRequested(true);
       break;
 
+    case CCopasiTask::lyap:
+      pTask = new CLyapTask(mpTaskList);
+      break;
+
 #ifdef COPASI_TSS
     case CCopasiTask::tss:
       pTask = new CTSSTask(mpTaskList);
@@ -578,10 +582,6 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
       pTask = new CSensTask(mpTaskList);
       break;
 #endif
-
-    case CCopasiTask::lyap:
-      pTask = new CLyapTask(mpTaskList);
-      break;
 
     default:
       return pTask;

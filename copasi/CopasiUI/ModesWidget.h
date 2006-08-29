@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModesWidget.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:44 $
+   $Date: 2006/08/29 20:27:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,7 +30,6 @@
 //#include "MyTable.h"
 #include "copasi.h"
 #include "copasiWidget.h"
-#include "elementaryFluxModes/CElementaryFluxModes.h"
 
 class CModel;
 
@@ -40,7 +39,6 @@ class ModesWidget : public CopasiWidget
 
   protected:
     //CModel *mModel;
-    CElementaryFluxModes *modes;
     QListView *listView;
     QPushButton *btnCalculate;
     bool binitialized;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/29 13:38:54 $
+   $Date: 2006/08/29 20:27:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,8 @@ class CCopasiMethod : public CCopasiParameterGroup
       scanMethod,
       lyapWolf,
       tssMethod,
-      sensMethod
+      sensMethod,
+      EFMAlgorithm
     };
 
     /**

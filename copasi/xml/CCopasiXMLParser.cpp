@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.136 $
+   $Revision: 1.137 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/08 21:26:01 $
+   $Date: 2006/08/29 20:27:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,6 +38,7 @@
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
 #include "scan/CScanTask.h"
+#include "elementaryFluxModes/CEFMTask.h"
 #include "optimization/COptTask.h"
 #include "parameterFitting/CFitTask.h"
 #include "trajectory/CTrajectoryTask.h"
@@ -4194,14 +4195,17 @@ void CCopasiXMLParser::TaskElement::start(const XML_Char *pszName, const XML_Cha
         case CCopasiTask::scan:
           mCommon.pCurrentTask = new CScanTask(mCommon.pTaskList);
           break;
-        case CCopasiTask::mca:
-          mCommon.pCurrentTask = new CMCATask(mCommon.pTaskList);
+        case CCopasiTask::fluxMode:
+          mCommon.pCurrentTask = new CEFMTask(mCommon.pTaskList);
           break;
         case CCopasiTask::optimization:
           mCommon.pCurrentTask = new COptTask(Type, mCommon.pTaskList);
           break;
         case CCopasiTask::parameterFitting:
           mCommon.pCurrentTask = new CFitTask(Type, mCommon.pTaskList);
+          break;
+        case CCopasiTask::mca:
+          mCommon.pCurrentTask = new CMCATask(mCommon.pTaskList);
           break;
         case CCopasiTask::lyap:
           mCommon.pCurrentTask = new CLyapTask(mCommon.pTaskList);
