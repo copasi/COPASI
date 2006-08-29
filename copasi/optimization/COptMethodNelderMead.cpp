@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodNelderMead.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/29 13:38:55 $
+   $Date: 2006/08/29 14:43:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,6 +62,8 @@ void COptMethodNelderMead::initObjects()
   developed by:
 
 
+
+
        Peter & Nigel,
        Design Software,
        ----------------------
@@ -79,6 +81,8 @@ void COptMethodNelderMead::initObjects()
   Purpose ....
   -------
   Find the minimum value of a user-specified function.
+
+
 
 
   Input ...
@@ -104,6 +108,8 @@ void COptMethodNelderMead::initObjects()
   abstol : absolute tolerance on minimum check  (see note 6)
 
 
+
+
   Output ...
   ------
   xmin   : Array [id] of double; contains the
@@ -118,11 +124,15 @@ void COptMethodNelderMead::initObjects()
   = 3 could not allocate memory for workspace
 
 
+
+
   This C code written by ...  Peter & Nigel,
   ----------------------      Design Software,
   42 Gubberley St,
   Kenmore, 4069,
   Australia.
+
+
 
 
   Version ... 1.0 November 1987
@@ -135,6 +145,8 @@ void COptMethodNelderMead::initObjects()
   2.4 12 Dec   1989      fixed memory (de)allocation
 
 
+
+
   Notes ...
   -----
   1. This algorithm is a modified version of ..
@@ -142,11 +154,15 @@ void COptMethodNelderMead::initObjects()
   (1971) VOL.20. NO.3
 
 
+
+
   2. The data values of RCOEFF (reflection), ECOEFF (extension),
   and CCOEFF (contraction) can be changed by rewriting the
   assignment statements below.  The values currently set are 1.0,
   2.0 and 0.5 respectively.  These values have been recommended
   by Nelder and Mead as being best for a general situation.
+
+
 
 
   3. The value of REQMIN must be set larger than the rounding
@@ -157,12 +173,18 @@ void COptMethodNelderMead::initObjects()
   the minimum and the square of this value.
 
 
+
+
   4. Note that the elements [0 .. n-1] are utilized in this
   version of the routine.
 
 
+
+
   6. reltol and abstol should be set to zero for well behaved
   functions where restarts are not a problem.
+
+
 
 
   7. References ...
@@ -170,12 +192,18 @@ void COptMethodNelderMead::initObjects()
   minimization. Computer J. 7,308-313
 
 
+
+
   O'Neill, R. (1971) Algorithm AS47. Function minimization
   using a simplex algorithm. Appl. Statist. 20,338-345.
 
 
+
+
   Chambers, J.M. and Ertel, J.E. (1974) Remark AS R11.
   Appl. Statist. 23,250-251.
+
+
 
 
   Olsson, D.M. and Nelson, L.S. (1975) The Nelder - Mead
@@ -183,10 +211,16 @@ void COptMethodNelderMead::initObjects()
   Technometrics 17,45-51. (Examples of use.)
 
 
+
+
   Benyon, P.R. (1976) Remark AS R15. Appl. Statist. 25,97.
 
 
+
+
   Hill, I.D. (1978) Remark AS R28. Appl. Statist. 27,380-382.
+
+
 
 
   ----------------------------------------------------------------------
@@ -206,13 +240,25 @@ bool COptMethodNelderMead::optimise()
 
   unsigned C_INT32 iBest, iWorst;
 
-  double zero, half, one, delta;
-  double y2star, ccoeff;
-  double z, sum, ylo, rcoeff, ystar, ecoeff;
-  double curmin, del, x, yhi;
-  double small;
+  // double zero, half, one, delta;
+  C_FLOAT64 ccoeff, rcoeff, ecoeff;
 
-  int jcount, np1, i, j;
+  /* ---- reflection, extension and contraction coefficients. ---- */
+  /* parameters from Nelder and Mead */
+  //rcoeff = 1.0;
+  //ccoeff = 0.5;
+  //ecoeff = 2.0;
+
+  /* Parameters from Parkinson and Hutchinson */
+  rcoeff = 2.0;
+  ccoeff = 0.25;
+  ecoeff = 2.5;
+
+  C_FLOAT64 z, sum, ylo;
+  C_FLOAT64 curmin, del, x, yhi;
+  C_FLOAT64 small;
+
+  unsigned C_INT32 jcount, np1, i, j;
 
   bool ok, reflok, extnok, contok, quit, found;  /* boolean variables */
 
@@ -255,17 +301,6 @@ bool COptMethodNelderMead::optimise()
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
     }
-
-  /* ---- reflection, extension and contraction coefficients. ---- */
-  /* parameters from Nelder and Mead */
-  //rcoeff = 1.0;
-  //ccoeff = 0.5;
-  //ecoeff = 2.0;
-
-  /* Parameters from Parkinson and Hutchinson */
-  rcoeff = 2.0;
-  ccoeff = 0.25;
-  ecoeff = 2.5;
 
   quit = false;
   found = false;
@@ -534,8 +569,8 @@ First:
 
       if (!quit) /* then */
         {/* ---- check to see if minimum reached.
-                        calculation of the variance must be done in the highest
-                        precision available.  */
+                                  calculation of the variance must be done in the highest
+                                  precision available.  */
           /* mean */
           sum = 0.0;
           for (i = 0; i < np1; ++i)
@@ -557,7 +592,7 @@ First:
     }   /* while not found and not quit ... */
 
   /* **** bail out if necessary **** */
-  if (quit) goto Finish;
+  if (quit || !mContinue) goto Finish;
 
   /* ---- Check around the currently selected point to see if it is a local minimum.  */
   small = fabs(mBestValue) * reltol + abstol;
@@ -569,20 +604,19 @@ First:
     {/* ---- check along each dimension ---- */
       del = mStep[i] * 1.0e-03;
 
-      mCurrent[i] += del;         /* -- check along one direction -- */
-      (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+      /* -- check along one direction -- */
+      (*(*mpSetCalculateVariable)[i])(mCurrent[i] + del);
       evaluate();
       if ((mEvaluationValue - mBestValue) < -small)
         break;
 
-      mCurrent[i] -= (del + del);   /* -- now check the other way -- */
-      (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
+      /* -- now check the other way -- */
+      (*(*mpSetCalculateVariable)[i])(mCurrent[i] - del);
       evaluate();
-
       if ((mEvaluationValue - mBestValue) < -small)
         break;
 
-      mCurrent[i] += del;                     /* -- back to start -- */
+      /* -- back to start -- */
       (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
     }
 
