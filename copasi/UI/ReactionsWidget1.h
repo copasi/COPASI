@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.h,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:45 $
+   $Date: 2006/08/29 15:15:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,7 +69,7 @@ class ReactionsWidget1 : public CopasiWidget
     void FillWidgetFromRI();
 
     std::string objKey;
-    CReactionInterface mRi;
+    CReactionInterface * mpRi;
 
     QGridLayout* ReactionsWidget1Layout;
     QHBoxLayout* Layout1;

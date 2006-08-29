@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.182 $
+   $Revision: 1.183 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/25 18:19:25 $
+   $Date: 2006/08/29 15:15:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,7 @@
 ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, WFlags f)
     : CopasiWidget(parent, name, f),
     objKey(""),
-    mRi(CCopasiDataModel::Global->getModel())
+    mpRi(NULL)
 {
   if (!name)
     setName("ReactionsWidget1");
@@ -214,7 +214,10 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to the reaction
-  mRi.initFromReaction(reaction->getKey());
+  pdelete(mpRi);
+  mpRi = new CReactionInterface(CCopasiDataModel::Global->getModel());
+
+  mpRi->initFromReaction(reaction->getKey());
 
   // update the widget.
   FillWidgetFromRI();
@@ -231,31 +234,31 @@ bool ReactionsWidget1::saveToReaction()
   LineEdit2->slotForceUpdate();
 
   //std::cout << "SaveToReaction " << std::endl;
-  if (!mRi.isValid()) return false;
+  if (!mpRi->isValid()) return false;
 
   //first check if new metabolites need to be created
-  bool createdMetabs = mRi.createMetabolites();
-  bool createdObjects = mRi.createOtherObjects();
+  bool createdMetabs = mpRi->createMetabolites();
+  bool createdObjects = mpRi->createOtherObjects();
 
-  mRi.setReactionName((const char *)LineEdit1->text().utf8());
+  mpRi->setReactionName((const char *)LineEdit1->text().utf8());
 
   //this writes all changes to the reaction
-  if (!mRi.writeBackToReaction(NULL))
+  if (!mpRi->writeBackToReaction(NULL))
     {
       CCopasiObject * pReaction = GlobalKeys.get(objKey);
-      if (mRi.getReactionName() != pReaction->getObjectName())
+      if (mpRi->getReactionName() != pReaction->getObjectName())
         {
           QString msg;
           msg = "Unable to rename reaction '" + FROM_UTF8(pReaction->getObjectName()) + "'\n"
-                + "to '" + FROM_UTF8(mRi.getReactionName()) + "' since a reation with that name already exists.";
+                + "to '" + FROM_UTF8(mpRi->getReactionName()) + "' since a reation with that name already exists.";
 
           QMessageBox::warning(this,
                                "Unable to rename Reaction",
                                msg,
                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
 
-          mRi.setReactionName(pReaction->getObjectName());
-          LineEdit1->setText(FROM_UTF8(mRi.getReactionName()));
+          mpRi->setReactionName(pReaction->getObjectName());
+          LineEdit1->setText(FROM_UTF8(mpRi->getReactionName()));
         }
     }
 
@@ -270,7 +273,7 @@ bool ReactionsWidget1::saveToReaction()
       protectedNotify(ListViews::REACTION, ListViews::CHANGE, objKey);
     }
 
-  //TODO: detect rename events (mRi.writeBackToReaction has to do this)
+  //TODO: detect rename events (mpRi->writeBackToReaction has to do this)
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
   CCopasiDataModel::Global->changed();
@@ -291,7 +294,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
   LineEdit2->slotForceUpdate();
 
   // tell the reaction interface
-  mRi.setReversibility(CheckBox->isChecked(), "");
+  mpRi->setReversibility(CheckBox->isChecked(), "");
 
   // update the widget
   FillWidgetFromRI();
@@ -301,7 +304,7 @@ void ReactionsWidget1::slotCheckBoxClicked()
 void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 {
   // tell the reaction interface
-  mRi.setFunctionAndDoMapping((const char *)p2.utf8());
+  mpRi->setFunctionAndDoMapping((const char *)p2.utf8());
 
   // update the widget
   FillWidgetFromRI();
@@ -323,9 +326,9 @@ void ReactionsWidget1::slotLineEditChanged()
     }
 
   // tell the reaction interface
-  //mRi.setReactionName(rName);
+  //mpRi->setReactionName(rName);
 
-  mRi.setChemEqString(eq, "");
+  mpRi->setChemEqString(eq, "");
 
   // update the widget
   FillWidgetFromRI();
@@ -334,7 +337,7 @@ void ReactionsWidget1::slotLineEditChanged()
 void ReactionsWidget1::slotNameChanged()
 {
   std::string rName = (const char *)LineEdit1->text().utf8();
-  mRi.setReactionName(rName);
+  mpRi->setReactionName(rName);
 }
 
 // added 5/19/04
@@ -361,7 +364,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
   if (CCopasiDataModel::Global->getModel())
     {
       QString reacList = "Are you sure you want to delete the reaction?\n";
-      reacList.append(FROM_UTF8(mRi.getReactionName()));
+      reacList.append(FROM_UTF8(mpRi->getReactionName()));
 
       int choice = QMessageBox::warning(this, "CONFIRM DELETE",
                                         reacList,
@@ -374,7 +377,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             //unsigned C_INT32 size = CCopasiDataModel::Global->pFunctionDB->loadedFunctions().size();
             unsigned C_INT32 size = CCopasiDataModel::Global->getModel()->getReactions().size();
             //unsigned C_INT32 index = CCopasiDataModel::Global->pFunctionDB->loadedFunctions().getIndex(pFunction->getObjectName());
-            unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->getReactions().getIndex(mRi.getReactionName());
+            unsigned C_INT32 index = CCopasiDataModel::Global->getModel()->getReactions().getIndex(mpRi->getReactionName());
             //CCopasiDataModel::Global->getModel()->removeReaction(mKeys[ToBeDeleted[i]]);
             CCopasiDataModel::Global->getModel()->removeReaction(objKey);
             //enter(CCopasiDataModel::Global->pFunctionDB->loadedFunctions()[std::min(index, size - 1)]->getKey());
@@ -382,7 +385,7 @@ void ReactionsWidget1::slotBtnDeleteClicked()
             // this invalidates the reaction interface
             // so that the writeBackToReactionFunction is not called
             // after deleting a reaction.
-            mRi.setFunctionWithEmptyMapping("");
+            mpRi->setFunctionWithEmptyMapping("");
             if (size > 1)
               {
                 enter(CCopasiDataModel::Global->getModel()->getReactions()[std::min(index, size - 2)]->getKey());
@@ -402,9 +405,9 @@ void ReactionsWidget1::slotBtnDeleteClicked()
 void ReactionsWidget1::FillWidgetFromRI()
 {
   //std::cout << "FillWidget " << std::endl;
-  LineEdit1->setText(FROM_UTF8(mRi.getReactionName()));
+  LineEdit1->setText(FROM_UTF8(mpRi->getReactionName()));
 
-  LineEdit2->setText(FROM_UTF8(mRi.getChemEqString()));
+  LineEdit2->setText(FROM_UTF8(mpRi->getChemEqString()));
 
   CReaction* reac = dynamic_cast< CReaction * >(GlobalKeys.get(objKey));
   if (reac)
@@ -414,25 +417,25 @@ void ReactionsWidget1::FillWidgetFromRI()
 
   // the reversibility checkbox
   CheckBox->setChecked(false);
-  if (mRi.isReversible() == true)
+  if (mpRi->isReversible() == true)
     {
       CheckBox->setChecked(true);
     }
 
   // the function combobox
   QStringList comboEntries;
-  ParameterTable::vectorOfStrings2QStringList(mRi.getListOfPossibleFunctions(), comboEntries);
+  ParameterTable::vectorOfStrings2QStringList(mpRi->getListOfPossibleFunctions(), comboEntries);
 
   ComboBox1->clear();
   ComboBox1->insertStringList(comboEntries, -1);
 
   // if there is a current function the parameter table is initialized
-  if (mRi.getFunctionName() != "")
+  if (mpRi->getFunctionName() != "")
     {
-      ComboBox1->setCurrentText(FROM_UTF8(mRi.getFunctionName()));
-      QToolTip::add(ComboBox1, FROM_UTF8(mRi.getFunctionDescription()));
+      ComboBox1->setCurrentText(FROM_UTF8(mpRi->getFunctionName()));
+      QToolTip::add(ComboBox1, FROM_UTF8(mpRi->getFunctionDescription()));
 
-      table->updateTable(mRi, *CCopasiDataModel::Global->getModel());
+      table->updateTable(*mpRi, *CCopasiDataModel::Global->getModel());
     }
   else
     {
@@ -442,7 +445,7 @@ void ReactionsWidget1::FillWidgetFromRI()
     }
 
   //TODO isValid()
-  commitChanges->setEnabled(mRi.isValid());
+  commitChanges->setEnabled(mpRi->isValid());
 }
 
 void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
@@ -450,25 +453,25 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
   //std::cout << "slotValueChanged " << index << " " << sub << " " << newValue << std::endl;
 
   // setValue
-  if (mRi.getUsage(index) == CFunctionParameter::PARAMETER)
+  if (mpRi->getUsage(index) == CFunctionParameter::PARAMETER)
     {
       if (sub != 0) return;
 
-      if (mRi.isLocalValue(index))
-        mRi.setLocalValue(index, newValue.toDouble()); // TODO: check
+      if (mpRi->isLocalValue(index))
+        mpRi->setLocalValue(index, newValue.toDouble()); // TODO: check
       else
-        mRi.setMapping(index, (const char *)newValue.utf8());
+        mpRi->setMapping(index, (const char *)newValue.utf8());
     }
-  else if (mRi.getUsage(index) == CFunctionParameter::VOLUME)
+  else if (mpRi->getUsage(index) == CFunctionParameter::VOLUME)
     {
       if (sub != 0) return;
-      mRi.setMapping(index, (const char *)newValue.utf8());
+      mpRi->setMapping(index, (const char *)newValue.utf8());
     }
   else
     {
       if (sub == 0) //here we assume that vector parameters cannot be edited
         {
-          mRi.setMapping(index, (const char *)table->text(table->mIndex2Line[index], 3).utf8());
+          mpRi->setMapping(index, (const char *)table->text(table->mIndex2Line[index], 3).utf8());
         }
     }
 
@@ -482,9 +485,9 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
 {
   if (local)
-    mRi.setLocal(index);
+    mpRi->setLocal(index);
   else
-    mRi.setMapping(index, "unknown"); //TODO keep global parameter
+    mpRi->setMapping(index, "unknown"); //TODO keep global parameter
 
   // update the widget
   int rrr = table->currentRow();
