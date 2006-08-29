@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CState.cpp,v $
-   $Revision: 1.66 $
+   $Revision: 1.67 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/10 20:02:28 $
+   $Date: 2006/08/29 15:18:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,7 +138,7 @@ void CStateTemplate::reorder(const CVector< CModelEntity * > & entitiesX)
             break;
 
           case CModelEntity::ODE:
-            assert (Independent == 0);
+            assert (Dependent == 0);
             Independent++;
             break;
 
