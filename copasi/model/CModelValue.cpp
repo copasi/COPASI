@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/08/15 13:39:19 $
+   $Author: shoops $
+   $Date: 2006/08/29 15:17:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -158,6 +158,9 @@ bool CModelEntity::setExpression(const std::string & expression)
 
   if (mpExpression == NULL)
     mpExpression = new CExpression;
+
+  if (mpModel)
+    mpModel->setCompileFlag(true);
 
   return mpExpression->setInfix(expression);
 }
