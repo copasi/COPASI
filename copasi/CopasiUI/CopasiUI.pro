@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.130 $ $Author: shoops $ $Date: 2006/08/18 18:48:18 $  
+# $Revision: 1.131 $ $Author: shoops $ $Date: 2006/08/30 17:13:49 $  
 ######################################################################
 
 TEMPLATE = app
@@ -168,7 +168,6 @@ HEADERS += \
            MetabolitesWidget1.h \
            ModelWidget.h \
            ModelValuesWidget.h \
-           ModesWidget.h \
            MoietyWidget.h \
            MoietyWidget1.h \
            MyLineEdit.h \
@@ -235,7 +234,6 @@ SOURCES += \
            MetabolitesWidget1.cpp \
            ModelValuesWidget.cpp \
            ModelWidget.cpp \
-           ModesWidget.cpp \
            MoietyWidget.cpp \
            MoietyWidget1.cpp \
            MyLineEdit.cpp \
@@ -307,11 +305,14 @@ SOURCES += \
 # FORMS += CQTrajectoryWidget.ui
 # FORMS += CQModelValue.ui
 # FORMS += CQStartValueReset.ui
+# FORMS += CQEFMWidget.ui
 
 # headers generated from .ui files   
 HEADERS += \
            CMCAResultSubwidget.h \
            CMCAResultSubwidget.ui.h \
+           CQEFMWidget.h \
+           CQEFMWidget.ui.h \
            CQExperimentData.h \
            CQExperimentData.ui.h \
            CQExperimentSelection.h \
@@ -374,6 +375,7 @@ HEADERS += \
 # sources generated from .ui files   
 SOURCES += \
            CMCAResultSubwidget.cpp \
+           CQEFMWidget.cpp \
            CQExperimentData.cpp \
            CQExperimentSelection.cpp \
            CQFileDialogBtnGrp.cpp \

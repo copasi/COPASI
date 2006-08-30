@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-   $Revision: 1.109 $
+   $Revision: 1.110 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/16 15:34:40 $
+   $Date: 2006/08/30 17:13:49 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,7 +42,7 @@ class FunctionWidget;
 class CMathModel;
 class MetabolitesWidget1;
 class MetabolitesWidget;
-class ModesWidget;
+class CQEFMWidget;
 class ModelWidget;
 class ModelValuesWidget;
 class MoietyWidget1;
@@ -176,7 +176,7 @@ class ListViews : public QSplitter
     ModelWidget *modelWidget;
     ModelValuesWidget *modelValuesWidget;
     CQModelValue *mpModelValueWidget;
-    ModesWidget *modesWidget;
+    CQEFMWidget *modesWidget;
     MoietyWidget *moietyWidget;
     MoietyWidget1 *moietyWidget1;
     CQOptimizationWidget *optimizationWidget;

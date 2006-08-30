@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.201 $
+   $Revision: 1.202 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/29 20:27:28 $
+   $Date: 2006/08/30 17:13:49 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,7 +45,7 @@
 #include "ModelWidget.h"
 #include "ModelValuesWidget.h"
 #include "CQModelValue.h"
-#include "ModesWidget.h"
+#include "CQEFMWidget.h"
 #include "MoietyWidget.h"
 #include "MoietyWidget1.h"
 #include "ParametersWidget.h"
@@ -381,7 +381,7 @@ void ListViews::ConstructNodeWidgets()
   if (!modelValuesWidget) modelValuesWidget = new ModelValuesWidget(this);
   modelValuesWidget->hide();
 
-  if (!modesWidget) modesWidget = new ModesWidget(this);
+  if (!modesWidget) modesWidget = new CQEFMWidget(this);
   modesWidget->hide();
 
   if (!moietyWidget) moietyWidget = new MoietyWidget(this);
