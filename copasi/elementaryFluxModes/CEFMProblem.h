@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMProblem.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/29 20:15:14 $
+   $Date: 2006/08/30 17:12:41 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,6 +71,14 @@ class CEFMProblem : public CCopasiProblem
      * @result bool succes
      */
     virtual bool initialize();
+
+    /**
+     * This is the output method for any rsult of a problem. The default implementation
+     * provided with CCopasiProblem. Does only print "Not implmented." To overide this
+     * default behaviour one needs to reimplement the virtual printResult function.
+     * @param std::ostream * ostream
+     */
+    virtual void printResult(std::ostream * ostream) const;
 
   private:
     /**
