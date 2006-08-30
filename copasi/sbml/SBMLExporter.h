@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/28 13:24:38 $
+   $Date: 2006/08/30 14:45:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -209,13 +209,6 @@ class SBMLExporter
     void removeFromList(ListOf& list, SBase* pObject);
 
     /**
-     * Create a map that maps each copasi object to the corresponding sbml object
-     * if a current SBMLDocument exists.
-     * SBML objects that do not have a corresponding copasi object are deleted.
-     */
-    //void fillCopasi2SBMLMap();
-
-    /**
      * Translate a function with its arguments into an expression tree.
      * All function call will be expanded recursively.
      * The arguments are a parameter mapping vector as
@@ -265,6 +258,11 @@ class SBMLExporter
      * ids of all object nodes as a set.
      */
     std::set<std::string> getObjectNodeIds(const ASTNode* pNode);
+
+    /**
+     * Checks if the object nodes in a given rule expression ar of allowed types.
+     */
+    bool checkExpressionObjects(const CEvaluationNode* pNode) const;
 
   public:
 

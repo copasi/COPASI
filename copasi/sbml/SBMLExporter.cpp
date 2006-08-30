@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.87 $
+   $Revision: 1.88 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/28 14:30:27 $
+   $Date: 2006/08/30 14:45:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -141,13 +141,7 @@ SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CModel* copasiModel, in
   this->sbmlDocument->setLevel(sbmlLevel);
   this->sbmlDocument->setVersion(sbmlVersion);
   /* create the model object from the copasi model */
-  /*Model* sbmlModel =*/ this->createSBMLModelFromCModel(copasiModel);
-  /*
-  if (this->sbmlDocument->getModel() != sbmlModel)
-    {
-      this->sbmlDocument->setModel(sbmlModel);
-    }
-  */
+  this->createSBMLModelFromCModel(copasiModel);
   if (mpExportHandler)
     {
       mStep = 7;
@@ -176,6 +170,10 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
     {
       sbmlModel = dynamic_cast<Model*>(pos->second);
       assert(sbmlModel);
+      if (sbmlDocument->getModel() != sbmlModel)
+        {
+          sbmlDocument->setModel(sbmlModel);
+        }
       this->mpIdSet = SBMLExporter::createIdSet(sbmlModel);
     }
   else
@@ -362,12 +360,40 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
       ++step;
       if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
-  /* create all rules */
-  iMax = copasiModel->getModelValues().size();
+
+  /* create all reactions */
+  iMax = copasiModel->getReactions().size();
   if (mpExportHandler)
     {
       mpExportHandler->finish(hStep);
       mStep = 4;
+      mpExportHandler->progress(mHStep);
+      totalSteps = iMax;
+      step = 0;
+      hStep = mpExportHandler->addItem("Creating reactions...",
+                                       CCopasiParameter::UINT,
+                                       & step,
+                                       &totalSteps);
+    }
+  for (counter = 0; counter < iMax; counter++)
+    {
+      Reaction* sbmlReaction = this->createSBMLReactionFromCReaction(copasiModel->getReactions()[counter]);
+      if (!sbmlModel->getReaction(sbmlReaction->getId()))
+        {
+          sbmlModel->addReaction(*sbmlReaction);
+        }
+      ++step;
+      if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
+    }
+
+  /* create all rules */
+  // this is done last so that all reactions have already been created
+  // in case we have a rule that depends on a reaction
+  iMax = copasiModel->getModelValues().size();
+  if (mpExportHandler)
+    {
+      mpExportHandler->finish(hStep);
+      mStep = 5;
       mpExportHandler->progress(mHStep);
       totalSteps = iMax;
       step = 0;
@@ -388,31 +414,6 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
       if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
     }
   this->exportRules(rules);
-
-  /* create all reactions */
-  iMax = copasiModel->getReactions().size();
-  if (mpExportHandler)
-    {
-      mpExportHandler->finish(hStep);
-      mStep = 5;
-      mpExportHandler->progress(mHStep);
-      totalSteps = iMax;
-      step = 0;
-      hStep = mpExportHandler->addItem("Creating reactions...",
-                                       CCopasiParameter::UINT,
-                                       & step,
-                                       &totalSteps);
-    }
-  for (counter = 0; counter < iMax; counter++)
-    {
-      Reaction* sbmlReaction = this->createSBMLReactionFromCReaction(copasiModel->getReactions()[counter]);
-      if (!sbmlModel->getReaction(sbmlReaction->getId()))
-        {
-          sbmlModel->addReaction(*sbmlReaction);
-        }
-      ++step;
-      if (mpExportHandler && !mpExportHandler->progress(hStep)) return false;
-    }
   pdelete(this->mpIdSet);
   if (mpExportHandler)
     {
@@ -1682,6 +1683,10 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME)
               pRateRule = new RateRule();
               pRateRule->setVariable(pME->getSBMLId());
             }
+          // check if the expression contains references to objects that are not allowed
+          // only object nodes with references to Species, Compartments and global parameters and Time
+          // are allowed at the moment
+          this->checkExpressionObjects(pME->getExpressionPtr()->getRoot());
           // now we set the new expression
           ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
           pRateRule->setMath(pRootNode);
@@ -1724,6 +1729,10 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME)
               pAssignmentRule = new AssignmentRule();
               pAssignmentRule->setVariable(pME->getSBMLId());
             }
+          // check if the expression contains references to objects that are not allowed
+          // only object nodes with references to Species, Compartments and global parameters and Time
+          // are allowed at the moment
+          this->checkExpressionObjects(pME->getExpressionPtr()->getRoot());
           // now we set the new expression
           ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
           pAssignmentRule->setMath(pRootNode);
@@ -1975,3 +1984,34 @@ Rule* SBMLExporter::findExistingRuleForModelEntity(const CModelEntity* pME)
     }
   return pOldRule;
 }
+
+bool SBMLExporter::checkExpressionObjects(const CEvaluationNode* pNode) const
+  {
+    bool result = true;
+    if (!pNode) return false;
+    if (CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OBJECT)
+      {
+        std::vector<CCopasiContainer*> containerList;
+        containerList.push_back(this->mpCopasiModel);
+        CCopasiObjectName cn = dynamic_cast<const CEvaluationNodeObject*>(pNode)->getObjectCN();
+        const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containerList, cn);
+        assert(pObject);
+        if (pObject->isReference()) pObject = pObject->getObjectParent();
+        std::string objectType = pObject->getObjectType();
+        if (objectType != "ModelValue" && objectType != "Metabolite" && objectType != "Compartment" && objectType != "Model")
+          {
+            result = false;
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 38);
+          }
+      }
+    else
+      {
+        const CEvaluationNode* pChildNode = static_cast<const CEvaluationNode*>(pNode->getChild());
+        while (result && pChildNode)
+          {
+            result = this->checkExpressionObjects(pChildNode);
+            pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
+          }
+      }
+    return result;
+  }
