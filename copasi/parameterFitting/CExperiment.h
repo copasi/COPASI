@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/24 14:16:37 $
+   $Date: 2006/08/30 18:48:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -580,6 +580,11 @@ class CExperiment: public CCopasiParameterGroup
      * The relevant dependent experimental data after reading a file
      */
     CMatrix< C_FLOAT64 > mDataDependent;
+
+    /**
+     * Indicates whether we have missing data
+     */
+    bool mMissingData;
 
     CVector< C_FLOAT64 > mMeans;
 

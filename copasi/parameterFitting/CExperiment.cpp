@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/29 13:54:16 $
+   $Date: 2006/08/30 18:48:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -321,20 +321,44 @@ C_FLOAT64 CExperiment::sumOfSquares(const unsigned C_INT32 & index,
     for (; it != end; ++it)
       (**it)();
 
-    if (residuals)
-      for (; pDataDependent != pEnd;
-           pDataDependent++, ppDependentValues++, pWeight++, residuals++)
-        {
-          *residuals = (*pDataDependent - **ppDependentValues) * *pWeight;
-          s += *residuals * *residuals;
-        }
+    if (mMissingData)
+      {
+        if (residuals)
+          for (; pDataDependent != pEnd;
+               pDataDependent++, ppDependentValues++, pWeight++, residuals++)
+            {
+              if (isnan(*pDataDependent)) continue;
+
+              *residuals = (*pDataDependent - **ppDependentValues) * *pWeight;
+              s += *residuals * *residuals;
+            }
+        else
+          for (; pDataDependent != pEnd;
+               pDataDependent++, ppDependentValues++, pWeight++)
+            {
+              if (isnan(*pDataDependent)) continue;
+
+              Residual = (*pDataDependent - **ppDependentValues) * *pWeight;
+              s += Residual * Residual;
+            }
+      }
     else
-      for (; pDataDependent != pEnd;
-           pDataDependent++, ppDependentValues++, pWeight++)
-        {
-          Residual = (*pDataDependent - **ppDependentValues) * *pWeight;
-          s += Residual * Residual;
-        }
+      {
+        if (residuals)
+          for (; pDataDependent != pEnd;
+               pDataDependent++, ppDependentValues++, pWeight++, residuals++)
+            {
+              *residuals = (*pDataDependent - **ppDependentValues) * *pWeight;
+              s += *residuals * *residuals;
+            }
+        else
+          for (; pDataDependent != pEnd;
+               pDataDependent++, ppDependentValues++, pWeight++)
+            {
+              Residual = (*pDataDependent - **ppDependentValues) * *pWeight;
+              s += Residual * Residual;
+            }
+      }
 
     return s;
   }
@@ -359,14 +383,28 @@ C_FLOAT64 CExperiment::sumOfSquaresStore(const unsigned C_INT32 & index,
   for (; it != end; ++it)
     (**it)();
 
-  for (; pDataDependent != pEnd;
-       pDataDependent++, ppDependentValues++, pWeight++, dependentValues++)
+  if (mMissingData)
     {
-      *dependentValues = **ppDependentValues;
-      Residual = (*pDataDependent - *dependentValues) * *pWeight;
-      s += Residual * Residual;
-    }
+      for (; pDataDependent != pEnd;
+           pDataDependent++, ppDependentValues++, pWeight++, dependentValues++)
+        {
+          *dependentValues = **ppDependentValues;
+          if (isnan(*pDataDependent)) continue;
 
+          Residual = (*pDataDependent - *dependentValues) * *pWeight;
+          s += Residual * Residual;
+        }
+    }
+  else
+    {
+      for (; pDataDependent != pEnd;
+           pDataDependent++, ppDependentValues++, pWeight++, dependentValues++)
+        {
+          *dependentValues = **ppDependentValues;
+          Residual = (*pDataDependent - *dependentValues) * *pWeight;
+          s += Residual * Residual;
+        }
+    }
   return s;
 }
 
@@ -777,6 +815,7 @@ bool CExperiment::calculateWeights()
   mMeans = 0.0;
   MeanSquares = 0.0;
   Counts = 0;
+  mMissingData = false;
 
   // Calculate the means
   for (i = 0; i < mNumDataRows; i++)
@@ -788,6 +827,8 @@ bool CExperiment::calculateWeights()
             Counts[j]++;
             mMeans[j] += Data;
           }
+        else
+          mMissingData = true;
       }
 
   // calculate the means;
