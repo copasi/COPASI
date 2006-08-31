@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.150 $
+   $Revision: 1.151 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/28 18:44:04 $
+   $Date: 2006/08/31 10:46:55 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1645,10 +1645,10 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
     }
   else
     {
-      // check if there is a rule for this entity
+      // check if there is an assignment rule for this entity
       std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(copasiModel);
       if (pos == copasi2sbmlmap.end()) fatalError();
-      bool ruleFound = false;
+      bool assignmentRuleFound = false;
       Model* pSBMLModel = dynamic_cast<Model*>(pos->second);
       unsigned int k, kMax = pSBMLModel->getNumRules();
       for (k = 0;k < kMax;++k)
@@ -1659,19 +1659,14 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
             case SBML_ASSIGNMENT_RULE:
               if (dynamic_cast<AssignmentRule*>(pRule)->getVariable() == sbmlId)
                 {
-                  ruleFound = true;
+                  assignmentRuleFound = true;
                   break;
                 }
-              break;
               break;
             case SBML_RATE_RULE:
-              if (dynamic_cast<RateRule*>(pRule)->getVariable() == sbmlId)
-                {
-                  ruleFound = true;
-                  break;
-                }
               break;
             case SBML_ALGEBRAIC_RULE:
+              break;
             default:
               fatalError();
               break;
@@ -1681,7 +1676,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
       // Set value to NaN and create a warning if it is the first time
       // this happend
       value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-      if ((!ruleFound) && (!this->mIncompleteModel))
+      if ((!assignmentRuleFound) && (!this->mIncompleteModel))
         {
           this->mIncompleteModel = true;
           CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 7);
