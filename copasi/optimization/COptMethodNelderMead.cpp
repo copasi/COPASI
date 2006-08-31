@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodNelderMead.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/29 14:43:02 $
+   $Date: 2006/08/31 16:53:38 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,11 +22,6 @@
 
 #include "parameterFitting/CFitProblem.h"
 #include "report/CCopasiObjectReference.h"
-
-#include "clapackwrap.h"
-#include "blaswrap.h"
-
-#define LAMBDA_MAX 1e80
 
 COptMethodNelderMead::COptMethodNelderMead(const CCopasiContainer * pParent):
     COptMethod(CCopasiTask::optimization, CCopasiMethod::NelderMead, pParent)
@@ -64,6 +59,10 @@ void COptMethodNelderMead::initObjects()
 
 
 
+
+
+
+
        Peter & Nigel,
        Design Software,
        ----------------------
@@ -81,6 +80,10 @@ void COptMethodNelderMead::initObjects()
   Purpose ....
   -------
   Find the minimum value of a user-specified function.
+
+
+
+
 
 
 
@@ -110,6 +113,10 @@ void COptMethodNelderMead::initObjects()
 
 
 
+
+
+
+
   Output ...
   ------
   xmin   : Array [id] of double; contains the
@@ -126,11 +133,19 @@ void COptMethodNelderMead::initObjects()
 
 
 
+
+
+
+
   This C code written by ...  Peter & Nigel,
   ----------------------      Design Software,
   42 Gubberley St,
   Kenmore, 4069,
   Australia.
+
+
+
+
 
 
 
@@ -147,6 +162,10 @@ void COptMethodNelderMead::initObjects()
 
 
 
+
+
+
+
   Notes ...
   -----
   1. This algorithm is a modified version of ..
@@ -156,11 +175,19 @@ void COptMethodNelderMead::initObjects()
 
 
 
+
+
+
+
   2. The data values of RCOEFF (reflection), ECOEFF (extension),
   and CCOEFF (contraction) can be changed by rewriting the
   assignment statements below.  The values currently set are 1.0,
   2.0 and 0.5 respectively.  These values have been recommended
   by Nelder and Mead as being best for a general situation.
+
+
+
+
 
 
 
@@ -175,14 +202,26 @@ void COptMethodNelderMead::initObjects()
 
 
 
+
+
+
+
   4. Note that the elements [0 .. n-1] are utilized in this
   version of the routine.
 
 
 
 
+
+
+
+
   6. reltol and abstol should be set to zero for well behaved
   functions where restarts are not a problem.
+
+
+
+
 
 
 
@@ -194,14 +233,26 @@ void COptMethodNelderMead::initObjects()
 
 
 
+
+
+
+
   O'Neill, R. (1971) Algorithm AS47. Function minimization
   using a simplex algorithm. Appl. Statist. 20,338-345.
 
 
 
 
+
+
+
+
   Chambers, J.M. and Ertel, J.E. (1974) Remark AS R11.
   Appl. Statist. 23,250-251.
+
+
+
+
 
 
 
@@ -213,12 +264,24 @@ void COptMethodNelderMead::initObjects()
 
 
 
+
+
+
+
   Benyon, P.R. (1976) Remark AS R15. Appl. Statist. 25,97.
 
 
 
 
+
+
+
+
   Hill, I.D. (1978) Remark AS R28. Appl. Statist. 27,380-382.
+
+
+
+
 
 
 
@@ -569,8 +632,8 @@ First:
 
       if (!quit) /* then */
         {/* ---- check to see if minimum reached.
-                                  calculation of the variance must be done in the highest
-                                  precision available.  */
+                                            calculation of the variance must be done in the highest
+                                            precision available.  */
           /* mean */
           sum = 0.0;
           for (i = 0; i < np1; ++i)
