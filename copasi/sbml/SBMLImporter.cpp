@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.151 $
+   $Revision: 1.152 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/31 10:46:55 $
+   $Date: 2006/08/31 11:33:40 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -3045,6 +3045,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, std::map<CCopasiObject*, S
       CModelEntity* pModelEntity;
       while (it != endit)
         {
+          CCopasiObject* pObject = it->first;
           pReaction = dynamic_cast<CReaction*>(it->first);
           pModelEntity = dynamic_cast<CModelEntity*>(it->first);
           std::string sbmlId;
@@ -3056,18 +3057,14 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, std::map<CCopasiObject*, S
             {
               sbmlId = pModelEntity->getSBMLId();
             }
-          else
-            {
-              fatalError();
-            }
-          if (sbmlId == name)
+          if (!sbmlId.empty() && sbmlId == name)
             {
               // make sure it is only one of the allowed types
               switch (it->second->getTypeCode())
                 {
                 case SBML_COMPARTMENT:
                 case SBML_SPECIES:
-                case SBML_REACTION:
+                  //case SBML_REACTION:
                 case SBML_PARAMETER:
                   pNode->setName(it->first->getCN().c_str());
                   break;
