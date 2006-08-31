@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQEFMWidget.ui.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/30 17:13:49 $
+   $Date: 2006/08/31 16:49:19 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -182,7 +182,6 @@ finish:
     }
 
   commonAfterRunTask();
-
   if (success) loadFluxModes();
 
   return success;
