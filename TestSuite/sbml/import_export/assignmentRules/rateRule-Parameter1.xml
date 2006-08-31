@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created by COPASI version 4.0 (Debug 18++) on 2006-08-30 16:30 with libsbml version 2.3.4. -->
+<!-- Created by COPASI version 4.0 (Debug 18++) on 2006-08-31 11:55 with libsbml version 2.3.4. -->
 <sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
   <model id="Model_1" name="New Model">
     <notes>
-      <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-size:13pt;font-family:Lucida Grande">
+      <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1"></meta></head><body style="font-size:13pt;font-family:Lucida Grande">
 <p>K1 should grow with a slope of 1</p>
 </body></html>
-
     </notes>
     <listOfFunctionDefinitions>
       <functionDefinition id="function_0">
@@ -41,7 +40,7 @@
       <species id="species_2" name="C" compartment="compartment_0" initialConcentration="0"/>
     </listOfSpecies>
     <listOfParameters>
-      <parameter id="parameter_0" name="K1" value="50" constant="false"/>
+      <parameter id="parameter_0" name="K1" value="0" constant="false"/>
     </listOfParameters>
     <listOfRules>
       <rateRule variable="parameter_0">

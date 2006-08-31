@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created by COPASI version 4.0 (Debug 18++) on 2006-08-30 14:05 with libsbml version 2.3.4. -->
+<!-- Created by COPASI version 4.0 (Debug 18++) on 2006-08-31 11:54 with libsbml version 2.3.4. -->
 <sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
   <model id="Model_1" name="New Model">
     <notes>
@@ -38,7 +38,7 @@
       <species id="species_2" name="C" compartment="compartment_0" initialConcentration="0"/>
     </listOfSpecies>
     <listOfParameters>
-      <parameter id="parameter_0" name="K1" constant="false"/>
+      <parameter id="parameter_0" name="K1" value="0" constant="false"/>
     </listOfParameters>
     <listOfRules>
       <assignmentRule variable="parameter_0">

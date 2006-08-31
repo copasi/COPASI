@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created by COPASI version 4.0 (Debug 18++) on 2006-08-30 16:31 with libsbml version 2.3.4. -->
+<!-- Created by COPASI version 4.0 (Debug 18++) on 2006-08-31 11:55 with libsbml version 2.3.4. -->
 <sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
-  <model id="Model_0" name="New Model">
+  <model id="Model_1" name="New Model">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml"></body>
     </notes>
@@ -38,10 +38,10 @@
       <species id="species_2" name="C" compartment="compartment_0" initialConcentration="0"/>
     </listOfSpecies>
     <listOfParameters>
-      <parameter id="parameter_0" name="K1" constant="false"/>
-      <parameter id="parameter_1" name="K2" constant="false"/>
-      <parameter id="parameter_2" name="K3" constant="false"/>
-      <parameter id="parameter_3" name="K4" constant="false"/>
+      <parameter id="parameter_0" name="K1" value="0" constant="false"/>
+      <parameter id="parameter_1" name="K2" value="0" constant="false"/>
+      <parameter id="parameter_2" name="K3" value="0" constant="false"/>
+      <parameter id="parameter_3" name="K4" value="0" constant="false"/>
       <parameter id="parameter_4" name="K5" value="0"/>
     </listOfParameters>
     <listOfRules>
