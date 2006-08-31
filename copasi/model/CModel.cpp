@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.280 $
+   $Revision: 1.281 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/25 18:13:23 $
+   $Date: 2006/08/31 20:05:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2496,12 +2496,17 @@ void CModel::buildLinkZero()
   JPVT = 0;
 
   unsigned C_INT32 Dim = std::min(M, N);
+
   if (Dim == 0)
     {
       unsigned C_INT32 i;
       mRowLU.resize(N);
+
       for (i = 0; i < N; i++)
         mRowLU[i] = i;
+
+      mNumMetabolitesIndependent = 0;
+      mL.resize(N - 0, 0);
 
       return;
     }
