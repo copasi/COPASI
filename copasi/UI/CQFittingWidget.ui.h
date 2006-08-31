@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingWidget.ui.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:06 $
+   $Date: 2006/08/31 16:48:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -152,6 +152,8 @@ bool CQFittingWidget::runTask()
 
   if (!commonBeforeRunTask()) return false;
 
+  bool success = true;
+
   // Initialize the task
   try
     {
@@ -169,6 +171,7 @@ bool CQFittingWidget::runTask()
                                 QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
           CCopasiMessage::clearDeque();
 
+          success = false;
           goto finish;
         }
     }
@@ -182,7 +185,11 @@ bool CQFittingWidget::runTask()
                              QMessageBox::Abort);
       CCopasiMessage::clearDeque();
 
-      if (Result == QMessageBox::Abort) goto finish;
+      if (Result == QMessageBox::Abort)
+        {
+          success = false;
+          goto finish;
+        }
     }
 
   // Execute the task
@@ -200,6 +207,9 @@ bool CQFittingWidget::runTask()
           QMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
           CCopasiMessage::clearDeque();
         }
+
+      success = false;
+      goto finish;
     }
 
   if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
@@ -236,8 +246,9 @@ finish:
     }
 
   commonAfterRunTask();
+  loadTask();
 
-  return true;
+  return success;
 }
 
 void CQFittingWidget::slotExperimentData()
