@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.88 $
+   $Revision: 1.89 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/30 14:45:55 $
+   $Date: 2006/08/31 10:00:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -677,11 +677,11 @@ Parameter* SBMLExporter::createSBMLParameterFromCModelValue(CModelValue* pModelV
     }
   this->mHandledSBMLObjects.push_back(pParameter);
   pParameter->setName(pModelValue->getObjectName());
-  double value = pModelValue->getValue();
+  double value = pModelValue->getInitialValue();
   // if the value is NaN, unset the parameters value
   if (!isnan(value))
     {
-      pParameter->setValue(pModelValue->getValue());
+      pParameter->setValue(value);
     }
   else
     {
