@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptTask.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/29 13:38:55 $
+   $Date: 2006/08/31 16:50:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -36,6 +36,7 @@
 
 unsigned C_INT32 COptTask::ValidMethods[] =
   {
+    CCopasiMethod::Statistics,
     CCopasiMethod::GeneticAlgorithm,
     CCopasiMethod::GeneticAlgorithmSR,
     CCopasiMethod::HookeJeeves,
@@ -43,8 +44,8 @@ unsigned C_INT32 COptTask::ValidMethods[] =
     CCopasiMethod::EvolutionaryProgram,
     CCopasiMethod::RandomSearch,
     CCopasiMethod::NelderMead,
+    CCopasiMethod::SimulatedAnnealing,
     CCopasiMethod::SRES,
-    CCopasiMethod::Statistics,
     CCopasiMethod::SteepestDescent,
     CCopasiMethod::unset
   };

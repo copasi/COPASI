@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.23 $ $Author: shoops $ $Date: 2006/08/29 13:38:55 $  
+# $Revision: 1.24 $ $Author: shoops $ $Date: 2006/08/31 16:50:34 $  
 ######################################################################
 
 LIB = optimization
@@ -16,12 +16,11 @@ HEADERS += COptMethod.h \
            COptMethodGASR.h \
            COptMethodLevenbergMarquardt.h \
            COptMethodNelderMead.h \
+           COptMethodSA.h \
            COptMethodSRES.h \
            COptMethodSteepestDescent.h \
            COptMethodStatistics.h \
            COptMethodEP.h \
-           CRealProblem.h \
-           COptFunction.h \
            COptTask.h \ 
            COptItem.h \
            FminBrent.h
@@ -34,12 +33,11 @@ SOURCES += COptMethod.cpp \
            COptMethodGASR.cpp \
            COptMethodLevenbergMarquardt.cpp \
            COptMethodNelderMead.cpp \
+           COptMethodSA.cpp \
            COptMethodSRES.cpp \
            COptMethodSteepestDescent.cpp \
            COptMethodStatistics.cpp \
            COptMethodEP.cpp \
-           CRealProblem.cpp \
-           COptFunction.cpp \
            COptTask.cpp \
            COptItem.cpp \
            FminBrent.cpp

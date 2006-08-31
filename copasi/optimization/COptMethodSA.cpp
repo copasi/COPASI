@@ -1,296 +1,318 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:29:53 $
+   $Date: 2006/08/31 16:50:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-/* COptMethodSA code */
-
-/***************************************************************************************
- * This is the implementation of the Simulated Annealing for Optimization.  The
- * class is inherited from the COptAlgorithm class
- *
- *       Implemented by Dingjun Chen
- *  Starting Date: 09/22/03
- *
- ***************************************************************************************/
-
-#define BESTFOUNDSOFAR 2
-#define NumDirection 10
-#define TRUE 1
-#define FALSE 0
-
-#include <vector>
-#include "mathematics.h"
+// adapted by Stefan Hoops, August 2006, from the original Gepasi file
+// nelmea.cpp :
 
 #include "copasi.h"
-#include "COptMethod.h"
+
 #include "COptMethodSA.h"
-#include "CRealProblem.h"
+#include "COptProblem.h"
+#include "COptItem.h"
+#include "COptTask.h"
+
+#include "parameterFitting/CFitProblem.h"
+#include "report/CCopasiObjectReference.h"
 #include "randomGenerator/CRandom.h"
 
-//static double PI = 4.0 * atan(1.0);
+#define STORED 2
+#define NS 10
+#define K 1.0
 
-COptMethodSA::COptMethodSA():
-    COptMethod(CCopasiMethod::SimulatedAnnealing)
+COptMethodSA::COptMethodSA(const CCopasiContainer * pParent):
+    COptMethod(CCopasiTask::optimization, CCopasiMethod::SimulatedAnnealing, pParent)
 {
-  addParameter("SimulatedAnnealing.Iterations",
-               CCopasiParameter::UINT,
-               (unsigned C_INT32) 10000);
-  addParameter("SimulatedAnnealing.RandomGenerator.Type",
-               CCopasiParameter::INT,
-               (C_INT32) CRandom::mt19937);
-  addParameter("SimulatedAnnealing.RandomGenerator.Seed",
-               CCopasiParameter::INT,
-               (C_INT32) 0);
+  addParameter("Start Temperature", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
+  addParameter("Cooling Factor", CCopasiParameter::UDOUBLE, (C_FLOAT64) 0.85);
+  addParameter("Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.e-006);
+  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
+  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+
+  initObjects();
 }
 
-COptMethodSA::COptMethodSA(const COptMethodSA & src):
-    COptMethod(src)
-{}
+COptMethodSA::COptMethodSA(const COptMethodSA & src,
+                           const CCopasiContainer * pParent):
+    COptMethod(src, pParent)
+{initObjects();}
 
-/**
- * Destructor
- */
-COptMethodSA::~COptMethodSA(){}
+COptMethodSA::~COptMethodSA()
+{cleanup();}
 
-/**
- * Optimizer Function
- * Returns: nothing
- */
-
-C_INT32 COptMethodSA::optimise()
+void COptMethodSA::initObjects()
 {
-  C_FLOAT64 la;
-  C_INT32 NumSignificantPoint, NumTempChange, NumIteration = (C_INT32) getValue("SimulatedAnnealing.Iterations");
-  C_INT32 j, NumParameter = mOptProblem->getVariableSize();
+  addObjectReference("Current Temperature", mTemperature, CCopasiObject::ValueDbl);
+}
 
-  //variable settings neccessary for SA
-  CVector<double> candparameter(NumParameter);  //one-dimentional array of candidate value for parameters
-  double candFuncValue;                // candidate value of objective function
+bool COptMethodSA::optimise()
+{
+  if (!initialize()) return false;
 
-  CVector<double> thisparameter(NumParameter);  //current parameters
-  double thisFuncValue;                //current value of the objective function
+  unsigned C_INT32 i, j, k, m;
 
-  CVector <double> newparameter(NumParameter);   //new parameter value
-  double newFuncValue;     //function value of new point
+  C_INT32 h, a;
+  C_FLOAT64 xc, p, c, nt, New;
+  C_FLOAT64 fk[STORED];
+  bool ready;
 
-  CVector <double> step(NumParameter);   //array of maximum steps for each parameter
-  CVector <int> NumStepAccep(NumParameter);       //number of steps accepted
-
-  double TempDecreaseRate = 0.85; //temperature decrease rate
-  double BoltzmannConstant = 1.0; //Boltzmann constant
-
-  double InitialTemp = 1.0; //initial temperature
-  double t;  //current temperature
-
-  double ConvgCriterion = 0.00001; // convergence criterion or program termination criterion
-  double ChangeValue, EnergyDifference;
-
-  CVector <double> fk(BESTFOUNDSOFAR);
-  bool ready, linear;
-
-  /* Create a random number generator */
-  CRandom::Type Type;
-  Type = (CRandom::Type) (C_INT32) getValue("SimulatedAnnealing.RandomGenerator.Type");
-  unsigned C_INT32 Seed;
-  Seed = (unsigned C_INT32) getValue("SimulatedAnnealing.RandomGenerator.Seed");
-  CRandom * pRand = CRandom::createGenerator(Type, Seed);
-
-  assert(pRand);
-
-  const double ** Minimum = mOptProblem->getParameterMin().array();
-  const double ** Maximum = mOptProblem->getParameterMax().array();
-
-  CVector< C_FLOAT64 > & Parameter = mOptProblem->getCalculateVariables();
-
-  //dump_datafile_init()
-
-  //inital temperature
-  t = InitialTemp;
-
-  //inital point
-  NumSignificantPoint = 0;
-
-  //generate initial parameters randomly
-  for (j = 0; j < NumParameter; j++)
+  // initial point is first guess but we have to make sure that we
+  // are within the parameter domain
+  for (i = 0; i < mVariableSize; i++)
     {
-      linear = false;
-      la = 1.0;
+      const COptItem & OptItem = *(*mpOptItem)[i];
 
-      if ((*Maximum[j] <= 0.0) || (*Minimum[j] < 0.0)) linear = true;
-      else
+      switch (OptItem.checkConstraint())
         {
-          la = log10(*Maximum[j]) - log10(std::min(*Minimum[j], DBL_EPSILON));
-          if (la < 1.8) linear = true;
+        case - 1:
+          mCurrent[i] = *OptItem.getLowerBoundValue();
+          break;
+
+        case 1:
+          mCurrent[i] = *OptItem.getUpperBoundValue();
+          break;
+
+        case 0:
+          mCurrent[i] = *OptItem.getObjectValue();
+          break;
         }
 
-      if (linear)
-        Parameter[j] =
-          *Minimum[j] + pRand->getRandomCC() * (*Maximum[j] - *Minimum[j]);
-      else
-        Parameter[j] = *Minimum[j] * pow(10, la * pRand->getRandomCC());
-    } //  Initialization ends
-
-  for (int kk = 0; kk < NumParameter; kk++)
-    candparameter[kk] = thisparameter[kk] = newparameter[kk] = Parameter[kk];
-
-  // calculate the function fitness value
-  double FitnessValue = mOptProblem->calculate();
-  thisFuncValue = candFuncValue = FitnessValue;
-
-  //Remember them
-  for (int mm = 0; mm < BESTFOUNDSOFAR; mm++) fk[mm] = thisFuncValue;
-
-  //initial step sizes
-  for (int jj = 0; jj < NumParameter; jj++)
-    {
-      NumStepAccep[jj] = 0;
-      step[jj] = fabs(candparameter[jj]);
+      (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
     }
 
-  //no temperature reductions yet
-  NumTempChange = 0;
+  mCurrentValue = evaluate();
 
-  do
+  if (!isnan(mEvaluationValue))
     {
-      for (int ff = 0; ff < NumIteration; ff++) //step adjustments
+      // and store that value
+      mBestValue = mEvaluationValue;
+      mpOptProblem->setSolutionVariables(mCurrent);
+      mContinue &= mpOptProblem->setSolutionValue(mBestValue);
+
+      // We found a new best value lets report it.
+      mpParentTask->output(COutputInterface::DURING);
+    }
+
+  // store this in all positions
+  for (a = 0; a < STORED; a++)
+    fk[a] = mCurrentValue;
+
+  mAccepted = 0;
+  mStep = mCurrent;
+
+  // set the number of steps at one single temperature
+  nt = 5 * mVariableSize;
+  if (nt < 100) nt = 100;
+
+  // no temperature reductions yet
+  k = 0;
+
+  do // number of internal cycles: max(5*mVariableSize, 100) * NS * mVariableSize
+    {
+      for (m = 0; m < nt && mContinue; m++) // step adjustments
         {
-          std::cout << "New iteration begins ......" << std::endl;
-          std::cout << "Current Temperature: " << t << std::endl;
-          std::cout << "Number of Temperature Change: " << NumTempChange << std::endl;
-
-          for (j = 0; j < NumDirection; j++) // adjustment in all directions
+          for (j = 0; j < NS && mContinue; j++) // adjustment in all directions
             {
-              for (int hh = 0; hh < NumParameter; hh++)
+              for (h = 0; h < mVariableSize && mContinue; h++) // adjustment in one direction
                 {
-                  // ChangeValue=tan(2*PI*rand()/RAND_MAX)*(t/pow(pow(2,2.0)+t*t,(NumParameter+1)/2.0));
-                  ChangeValue = tan(2 * M_PI * pRand->getRandomCC()) * (t / pow(pow(2, 2.0) + t * t, (NumParameter + 1) / 2.0));
-                  newparameter[hh] = thisparameter[hh] + step[hh] * ChangeValue;
+                  // Calculate the step
+                  xc = (2.0 * mpRandom->getRandomCC() - 1) * mStep[h];
+                  New = mCurrent[h] + xc;
 
-                  if (newparameter[hh] < *Minimum[hh]) newparameter[hh] = *Minimum[hh] + pRand->getRandomCC() * (*Maximum[hh] - *Minimum[hh]);
-                  if (newparameter[hh] > *Maximum[hh]) newparameter[hh] = *Minimum[hh] + pRand->getRandomCC() * (*Maximum[hh] - *Minimum[hh]);
-                  for (int exchange = 0; exchange < NumParameter; exchange++)
+                  // Set the new parameter value
+                  (*(*mpSetCalculateVariable)[h])(New);
+
+                  // Check all parametric constraints
+                  if (!mpOptProblem->checkParametricConstraints())
                     {
-                      Parameter[exchange] = newparameter[exchange];
+                      // Undo since not accepted
+                      (*(*mpSetCalculateVariable)[h])(mCurrent[h]);
+                      continue;
                     }
 
-                  // calculate the function value
-                  double FitnessValue = mOptProblem->calculate();
-                  newFuncValue = FitnessValue;
+                  // evaluate the function
+                  evaluate();
 
-                  //Calculate the energy difference
-                  EnergyDifference = newFuncValue - thisFuncValue;
-
-                  //keep newparameter if energy is reduced
-                  if (newFuncValue <= thisFuncValue)
+                  // Check all functional constraints
+                  if (!mpOptProblem->checkFunctionalConstraints())
                     {
-                      for (int exchange = 0; exchange < NumParameter; exchange++)
+                      // Undo since not accepted
+                      (*(*mpSetCalculateVariable)[h])(mCurrent[h]);
+                      continue;
+                    }
+
+                  // here we have a completly feasible point
+                  // keep if energy is reduced
+                  if (mEvaluationValue <= mCurrentValue)
+                    {
+                      // only one value has changed...
+                      mCurrent[h] = New;
+                      mCurrentValue = mEvaluationValue;
+                      i++;  // a new point
+                      mAccepted[h]++; // a new point in this coordinate
+
+                      if (mCurrentValue < mBestValue)
                         {
-                          thisparameter[exchange] = newparameter[exchange];
-                        }
-                      thisFuncValue = newFuncValue;
+                          // and store that value
+                          mBestValue = mEvaluationValue;
+                          mpOptProblem->setSolutionVariables(mCurrent);
+                          mContinue &= mpOptProblem->setSolutionValue(mBestValue);
 
-                      NumSignificantPoint++; // a new point counted
-                      NumStepAccep[hh]++; //a new point in this coordinate counted
-
-                      if (thisFuncValue < candFuncValue)
-                        {
-                          for (int aa = 0; aa < NumParameter; aa++)
-                            Parameter[aa] = candparameter[aa] = thisparameter[aa];
-                          candFuncValue = thisFuncValue;
-
-                          if (!mOptProblem->checkFunctionalConstraints())
-                            continue;
-
-                          //set the  BestFoundSoFar function value
-                          mOptProblem->setSolutionValue(candFuncValue);
-
-                          //store the combination of the BestFoundSoFar parameter values found so far
-                          mOptProblem->getSolutionVariables() = Parameter;
-
-#ifdef XXXX
-                          std::cout << "the Best value (" << NumSignificantPoint << "): " << candFuncValue << std::endl;
-                          std::cout << "the Best Parameters: (";
-                          for (int kk = 0; kk < mOptProblem->getParameterNum(); kk++)
-                            std::cout << mOptProblem->getParameter(kk) << ", ";
-
-                          std::cout << ")" << std::endl;
-#endif // XXXX
+                          // We found a new best value lets report it.
+                          mpParentTask->output(COutputInterface::DURING);
                         }
                     }
                   else
                     {
-                      //keep newparameter with probability, if newFuncValue is increased
-                      double Probability = exp(-(newFuncValue - thisFuncValue) / (BoltzmannConstant * t));
-                      if (Probability > pRand->getRandomCC())
+                      // keep with probability p, if energy is increased
+                      p = exp((mCurrentValue - mEvaluationValue) / (K * mTemperature));
+                      if (p > mpRandom->getRandomCO())
                         {
-                          //Keep the new point
-                          for (int exchange = 0; exchange < NumParameter; exchange++)
-                            {
-                              thisparameter[exchange] = newparameter[exchange];
-                            }
-                          thisFuncValue = newFuncValue;
-                          NumSignificantPoint++; // a new point counted
-                          NumStepAccep[hh]++; //a new point in this coordinate counted
+                          // only one value has changed...
+                          mCurrent[h] = New;
+                          mCurrentValue = mEvaluationValue;
+                          i++;  // a new point
+                          mAccepted[h]++; // a new point in this coordinate
                         }
+                      else
+                        // Undo since not accepted
+                        (*(*mpSetCalculateVariable)[h])(mCurrent[h]);
                     }
                 }
             }
 
-          //update the step sizes
-          for (int nn = 0; nn < NumParameter; nn++)
+          // update the step sizes
+          for (a = 0; a < mVariableSize; a++)
             {
-              double StepAdjustment = (double) NumStepAccep[nn] / (double)NumDirection;
-              if (StepAdjustment > 0.6) step[nn] *= 1 + 5 * (StepAdjustment - 0.6);
-              if (StepAdjustment < 0.4) step[nn] /= 1 + 5 * (0.4 - StepAdjustment);
-              NumStepAccep[nn] = 0;
+              c = (C_FLOAT64) mAccepted[a] / (C_FLOAT64) NS;
+              if (c > 0.6)
+                mStep[a] *= 1 + 5 * (c - 0.6);
+              else if (c < 0.4)
+                mStep[a] /= 1 + 5 * (0.4 - c);
+              mAccepted[a] = 0;
             }
         }
+      // the equilibrium energy
 
-      //update the temperature
-      t *= TempDecreaseRate;
-      NumTempChange++;
-
-      // if this is the first cycle then ignore the convergence test
-      if (NumTempChange == 1) ready = FALSE;
+      k++;
+      // if this is the first cycle ignore the convergence tests
+      if (k == 1)
+        ready = false;
       else
         {
-          ready = TRUE;
-          //check if there is not much change for termination criterion since last BESTFOUNDSOFAR times
-          for (int ii = 0; ii < BESTFOUNDSOFAR; ii++)
-            if (fabs(fk[ii] - thisFuncValue) > ConvgCriterion)
+          ready = true;
+          // check termination criterion of not much change since last STORED times
+          for (a = 0; a < STORED; a++)
+            if (fabs(fk[a] - mCurrentValue) > mTolerance)
               {
-                ready = FALSE;
+                ready = false;
                 break;
               }
+
           if (!ready)
             {
-              for (int aa = 0; aa < BESTFOUNDSOFAR - 1; aa++)
-                fk[aa] = fk[aa + 1];
-              fk[BESTFOUNDSOFAR - 1] = thisFuncValue;
+              for (a = 0; a < STORED - 1; a++)
+                fk[a] = fk[a + 1];
+
+              fk[STORED - 1] = mCurrentValue;
             }
-          else
-            //check the termination criterion of not much larger than last optimal
-            if (fabs(thisFuncValue - candFuncValue) > ConvgCriterion)ready = FALSE;
+          // check the termination criterion of not much larger than last optimal
+          else if (fabs(mCurrentValue - mBestValue) > mTolerance)
+            ready = false;
         }
 
       if (!ready)
         {
-          NumSignificantPoint++;
-          for (int kk = 0; kk < NumParameter; kk++)
-            thisparameter[kk] = candparameter[kk];
-          thisFuncValue = candFuncValue;
-        }
-    }
-  while (!ready); // do-while loop ends
+          i++;
 
-  pdelete(pRand);
-  return 0;
+          mCurrent = mpOptProblem->getSolutionVariables();
+          for (a = 0; a < mVariableSize; a++)
+            (*(*mpSetCalculateVariable)[a])(mCurrent[a]);
+
+          mCurrentValue = mBestValue;
+        }
+
+      // update the temperature
+      mTemperature *= mCoolingFactor;
+      if (mpCallBack)
+        mContinue &= mpCallBack->progress(mhTemperature);
+    }
+  while (!ready && mContinue);
+
+  return true;
 }
+
+bool COptMethodSA::cleanup()
+{
+  return true;
+}
+
+#ifdef WIN32
+// warning C4056: overflow in floating-point constant arithmetic
+// warning C4756: overflow in constant arithmetic
+# pragma warning (disable: 4056 4756)
+#endif
+
+const C_FLOAT64 & COptMethodSA::evaluate()
+{
+  // We do not need to check whether the parametric constraints are fulfilled
+  // since the parameters are created within the bounds.
+
+  mContinue &= mpOptProblem->calculate();
+  mEvaluationValue = mpOptProblem->getCalculateValue();
+
+  // When we leave the either functional domain
+  // we set the objective value +Inf
+  if (!mpOptProblem->checkFunctionalConstraints())
+    mEvaluationValue = 2.0 * DBL_MAX;
+
+  return mEvaluationValue;
+}
+
+#ifdef WIN32
+# pragma warning (default: 4056 4756)
+#endif
+
+bool COptMethodSA::initialize()
+{
+  cleanup();
+
+  if (!COptMethod::initialize()) return false;
+
+  mTemperature = * getValue("Start Temperature").pUDOUBLE;
+  mCoolingFactor = * getValue("Cooling Factor").pUDOUBLE;
+  mTolerance = * getValue("Tolerance").pUDOUBLE;
+  mpRandom =
+    CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
+                             * (unsigned C_INT32 *) getValue("Seed").pUINT);
+
+  if (mpCallBack)
+    mhTemperature =
+      mpCallBack->addItem("Current Temperature",
+                          CCopasiParameter::UDOUBLE,
+                          & mTemperature,
+                          NULL);
+
+  mBestValue = mpOptProblem->getSolutionValue();
+  mContinue = true;
+
+  mVariableSize = mpOptItem->size();
+
+  mCurrent.resize(mVariableSize);
+  mStep.resize(mVariableSize);
+  mAccepted.resize(mVariableSize);
+
+  return true;
+}
+
+#ifdef WIN32
+# pragma warning (default: 4056 4756)
+#endif
