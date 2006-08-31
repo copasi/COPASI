@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/06 20:29:55 $
+   $Date: 2006/08/31 20:04:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -357,7 +357,6 @@ bool TaskWidget::commonBeforeRunTask()
       return false;
     }
 
-  CCopasiMessage::clearDeque();
   if (!mpTask) return false;
 
   //set mouse cursor
@@ -371,6 +370,7 @@ bool TaskWidget::commonBeforeRunTask()
   mProgressBar = new CProgressBar();
   mpTask->setCallBack(mProgressBar);
 
+  CCopasiMessage::clearDeque();
   return true;
 }
 
