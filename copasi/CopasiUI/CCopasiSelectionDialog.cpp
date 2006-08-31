@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSelectionDialog.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:05 $
+   $Author: gauges $
+   $Date: 2006/08/31 15:45:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -153,3 +153,14 @@ std::vector<CCopasiObject *> CCopasiSelectionDialog::getObjectVector(QWidget * p
 
   return Selection;
 }
+
+CCopasiRuleExpressionSelectionDialog::CCopasiRuleExpressionSelectionDialog(QWidget * parent, const char* name, bool modal): CCopasiSelectionDialog(parent, name, modal)
+{
+  this->mpModeCheckBox->hide();
+  pdelete(this->mpSelectionWidget);
+  this->mpSelectionWidget = new CCopasiRuleExpressionSelectionWidget(this);
+  mpMainLayout->insertWidget(0, this->mpSelectionWidget);
+}
+
+CCopasiRuleExpressionSelectionDialog::~CCopasiRuleExpressionSelectionDialog()
+{}

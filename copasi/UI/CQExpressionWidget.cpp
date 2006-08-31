@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpressionWidget.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/08 19:58:17 $
+   $Author: gauges $
+   $Date: 2006/08/31 15:45:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -404,7 +404,7 @@ void CQExpressionWidget::slotSelectObject()
 {
   std::vector<CCopasiObject*> Selection;
 
-  CCopasiSelectionDialog * pBrowseDialog = new CCopasiSelectionDialog(this);
+  CCopasiSelectionDialog * pBrowseDialog = new CCopasiRuleExpressionSelectionDialog(this);
   pBrowseDialog->setModel(CCopasiDataModel::Global->getModel());
   pBrowseDialog->setSingleSelection(true);
   pBrowseDialog->setOutputVector(&Selection);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:40 $
+   $Author: gauges $
+   $Date: 2006/08/31 15:45:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,10 +65,19 @@ class CCopasiSimpleSelectionTree: public QListView
 
     virtual bool treeHasSelection();
     virtual bool isMetaboliteNameUnique(const std::string & name, const CCopasiVector<CMetab> & metabolites);
-    //virtual void clearTree();
     virtual QListViewItem * findListViewItem(const CCopasiObject * object);
     virtual void selectObjects(std::vector<CCopasiObject *> * objects);
     virtual std::vector<CCopasiObject*>* getTreeSelection();
+  };
+
+class CCopasiRuleExpressionSelectionTree: public CCopasiSimpleSelectionTree
+  {
+    Q_OBJECT
+
+  public:
+    CCopasiRuleExpressionSelectionTree(QWidget* parent, const char* name = 0, WFlags fl = 0);
+    virtual ~CCopasiRuleExpressionSelectionTree(){};
+    virtual void populateTree(const CModel * model);
   };
 
 #endif

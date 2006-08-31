@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSelectionWidget.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:40 $
+   $Author: gauges $
+   $Date: 2006/08/31 15:45:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -142,4 +142,13 @@ void CCopasiSelectionWidget::commit()
           this->mpSimpleTree->commitClicked();
         }
     }
+}
+
+CCopasiRuleExpressionSelectionWidget::CCopasiRuleExpressionSelectionWidget(QWidget* parent, const char* name, WFlags fl): CCopasiSelectionWidget(parent, name, fl)
+{
+  this->CCopasiSelectionWidget::setSingleSelection(true);
+  this->removeWidget(this->mpSimpleTree);
+  pdelete(this->mpSimpleTree);
+  this->mpSimpleTree = new CCopasiRuleExpressionSelectionTree(this);
+  this->addWidget(this->mpSimpleTree);
 }

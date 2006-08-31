@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/25 23:03:36 $
+   $Author: gauges $
+   $Date: 2006/08/31 15:45:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,20 +60,7 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
 }
 
 CCopasiSimpleSelectionTree::~CCopasiSimpleSelectionTree()
-{
-  /*this->clearTree();
-  delete this->timeSubtree;
-  delete this->concentrationFluxSubtree;
-  delete this->particleFluxSubtree;
-  delete this->reactionParameterSubtree;
-  delete this->initialConcentrationSubtree;
-  delete this->initialParticleNumberSubtree;
-  delete this->transientParticleNumberSubtree;
-  delete this->transientConcentrationSubtree;
-  delete this->metaboliteSubtree;
-  delete this->reactionSubtree;
-  delete this->expertSubtree;*/
-}
+{}
 
 void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
 {
@@ -291,6 +278,7 @@ std::vector<CCopasiObject*>* CCopasiSimpleSelectionTree::getTreeSelection()
                         }
                       ++it2;
                       tmpItem = it2.current();
+                      if (!tmpItem) break;
 
                       // We continue as long as the current item is an
                       // ancestor of the tmp item, i.e., it is in the branch
@@ -330,82 +318,6 @@ bool CCopasiSimpleSelectionTree::isMetaboliteNameUnique(const std::string & name
   return unique;
 }
 
-/*void CCopasiSimpleSelectionTree::clearTree()
-{
-  QListViewItem* child = this->timeSubtree->firstChild();
-  QListViewItem* nextSibling;
-  while (child)
-    {
-      nextSibling = child->nextSibling();
-      delete child;
-      child = nextSibling;
-    }
-  child = this->concentrationFluxSubtree->firstChild();
-  while (child)
-    {
-      nextSibling = child->nextSibling();
-      delete child;
-      child = nextSibling;
-    }
-  child = this->particleFluxSubtree->firstChild();
-  while (child)
-    {
-      nextSibling = child->nextSibling();
-      delete child;
-      child = nextSibling;
-    }
-  child = this->initialConcentrationSubtree->firstChild();
-  while (child)
-    {
-      nextSibling = child->nextSibling();
-      delete child;
-      child = nextSibling;
-    }
-  child = this->initialParticleNumberSubtree->firstChild();
-  while (child)
-    {
-      nextSibling = child->nextSibling();
-      delete child;
-      child = nextSibling;
-    }
-  child = this->transientParticleNumberSubtree->firstChild();
-  while (child)
-    {
-      nextSibling = child->nextSibling();
-      delete child;
-      child = nextSibling;
-    }
-  child = this->transientConcentrationSubtree->firstChild();
-  while (child)
-    {
-      nextSibling = child->nextSibling();
-      delete child;
-      child = nextSibling;
-    }
-  child = this->reactionParameterSubtree->firstChild();
-  while (child)
-    {
-      nextSibling = child->firstChild();
-      if (!nextSibling)
-        {
-          nextSibling = child->nextSibling();
-          delete child;
-        }
-      child = nextSibling;
-    }
-  child = this->expertSubtree->firstChild();
-  while (child)
-    {
-      nextSibling = child->firstChild();
-      if (!nextSibling)
-        {
-          nextSibling = child->nextSibling();
-          delete child;
-        }
-      child = nextSibling;
-    }
-}*/
-
 QListViewItem * CCopasiSimpleSelectionTree::findListViewItem(const CCopasiObject * object)
 {
   QListViewItem* item = NULL;
@@ -437,7 +349,7 @@ void CCopasiSimpleSelectionTree::selectObjects(std::vector<CCopasiObject *> * ob
     {
       CCopasiObject* object = objects->at(i);
       QListViewItem* item = this->findListViewItem(object);
-      if (!item)
+      if (!item && this->expertSubtree)
         {
           // add the item to the expert branch
           item = new QListViewItem(this->expertSubtree,
@@ -486,5 +398,122 @@ void CCopasiSimpleSelectionTree::setOutputVector(std::vector<CCopasiObject*>* ou
   if (this->mpOutputVector)
     {
       this->selectObjects(this->mpOutputVector);
+    }
+}
+
+CCopasiRuleExpressionSelectionTree::CCopasiRuleExpressionSelectionTree(QWidget* parent, const char* name, WFlags fl): CCopasiSimpleSelectionTree(parent, name, fl)
+{
+  this->takeItem(this->expertSubtree);
+  pdelete(this->expertSubtree);
+#ifdef COPASI_DEBUG
+  this->takeItem(this->matrixSubtree);
+  pdelete(this->matrixSubtree);
+#endif
+  this->takeItem(this->reactionSubtree);
+  pdelete(this->reactionSubtree);
+  this->metaboliteSubtree->takeItem(this->initialParticleNumberSubtree);
+  pdelete(this->initialParticleNumberSubtree);
+  this->metaboliteSubtree->takeItem(this->initialConcentrationSubtree);
+  pdelete(this->initialConcentrationSubtree);
+  this->metaboliteSubtree->takeItem(this->transientParticleNumberSubtree);
+  pdelete(this->transientParticleNumberSubtree);
+  this->modelValueSubtree->takeItem(this->initialValueSubtree);
+  pdelete(this->initialValueSubtree);
+}
+
+void CCopasiRuleExpressionSelectionTree::populateTree(const CModel* model)
+{
+  if (!model) return;
+
+  QListViewItem* item = new QListViewItem(this->timeSubtree, "Model Time");
+  this->treeItems[item] =
+    const_cast< CCopasiObject * >(model->getObject(CCopasiObjectName("Reference=Time")));
+
+  // find all metabolites and create items in the metabolite subtree
+  const CCopasiVector<CMetab>& metabolites = model->getMetabolites();
+  unsigned int counter;
+  unsigned int maxCount = metabolites.size();
+  for (counter = maxCount; counter != 0;--counter)
+    {
+      const CMetab* metab = metabolites[counter - 1];
+      std::string name = metab->getObjectName();
+      bool unique = this->isMetaboliteNameUnique(name, metabolites);
+      if (!unique)
+        {
+          const CCompartment* comp = metab->getCompartment();
+          if (comp)
+            {
+              name = name + "(" + comp->getObjectName() + ")";
+            }
+        }
+      name = "[" + name + "]";
+      item = new QListViewItem(this->transientConcentrationSubtree,
+                               FROM_UTF8((name + "(t)")));
+      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=Concentration"));
+    }
+
+  // find all reactions and create items in the reaction subtree
+  /*
+  const CCopasiVectorNS<CReaction>& reactions = model->getReactions();
+  maxCount = reactions.size();
+  for (counter = maxCount; counter != 0; --counter)
+    {
+      const CReaction* react = reactions[counter - 1];
+      std::string name = react->getObjectName();
+      name = "flux(" + name + ")";
+      item = new QListViewItem(this->concentrationFluxSubtree,
+                               FROM_UTF8(name));
+      treeItems[item] = (CCopasiObject*)react->getObject(CCopasiObjectName("Reference=Flux"));
+      item = new QListViewItem(this->particleFluxSubtree,
+                               FROM_UTF8(("particle_" + name)));
+    }
+  */
+  // find all global parameters aka model variables
+  const CCopasiVector<CModelValue>& objects = model->getModelValues();
+  maxCount = objects.size();
+  for (counter = maxCount; counter != 0;--counter)
+    {
+      const CModelEntity* object = objects[counter - 1];
+      std::string name = object->getObjectName();
+
+      item = new QListViewItem(this->valueSubtree,
+                               FROM_UTF8(name + "(t)"));
+      treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Value"));
+    }
+
+  // find all compartments
+  const CCopasiVector<CCompartment>& objects2 = model->getCompartments();
+  maxCount = objects2.size();
+  for (counter = maxCount; counter != 0;--counter)
+    {
+      const CModelEntity* object = objects2[counter - 1];
+      std::string name = object->getObjectName();
+
+      item = new QListViewItem(this->volumeSubtree,
+                               FROM_UTF8(name /*+ "(t)"*/));
+      treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Volume"));
+    }
+
+  if (this->selectionMode() == QListView::NoSelection)
+    {
+      // see if some objects are there, if yes set to single selection
+      QListViewItemIterator it = QListViewItemIterator(this);
+      while (it.current())
+        {
+          if (this->treeItems.find(it.current()) != this->treeItems.end())
+            {
+              this->setSelectionMode(QListView::Single);
+              this->setCurrentItem(it.current());
+              it.current()->setSelected(true);
+              QListViewItem* parent = it.current()->parent();
+              while (parent)
+                {
+                  parent->setOpen(true);
+                  parent = parent->parent();
+                }
+              break;
+            }
+          ++it;
+        }
     }
 }

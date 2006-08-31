@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionWidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:40 $
+   $Author: gauges $
+   $Date: 2006/08/31 15:45:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -44,6 +44,19 @@ class CCopasiSelectionWidget: public QWidgetStack
     std::vector<CCopasiObject*>* mpOutputVector;
     bool mSingleSelect;
     bool mExpertMode;
+  };
+
+class CCopasiRuleExpressionSelectionWidget: public CCopasiSelectionWidget
+  {
+    Q_OBJECT
+
+  public:
+    CCopasiRuleExpressionSelectionWidget(QWidget* parent = 0, const char* name = 0, WFlags fl = 0);
+    virtual ~CCopasiRuleExpressionSelectionWidget(){};
+    virtual void setSingleSelection(bool){};
+    virtual bool isSingleSelection() const{return true;};
+    virtual void setExpertMode(bool){};
+    virtual bool expertMode() const{return false;};
   };
 
 #endif

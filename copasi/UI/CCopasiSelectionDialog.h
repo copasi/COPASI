@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CCopasiSelectionDialog.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:05 $
+   $Author: gauges $
+   $Date: 2006/08/31 15:45:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -43,20 +43,32 @@ class CCopasiSelectionDialog: public QDialog
     bool mExpertModeEnabled;
 
   protected slots:
-    void okButton_clicked();
-    void cancelButton_clicked();
-    void modeButton_toggled(bool checked);
+    virtual void okButton_clicked();
+    virtual void cancelButton_clicked();
+    virtual void modeButton_toggled(bool checked);
 
   public:
     CCopasiSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = FALSE);
     virtual ~CCopasiSelectionDialog();
-    void setOutputVector(std::vector<CCopasiObject*>* outputVector);
-    void setModel(const CModel* model);
-    void setSingleSelection(bool singleSelectionMode);
-    void enableExpertMode(bool enable);
+    virtual void setOutputVector(std::vector<CCopasiObject*>* outputVector);
+    virtual void setModel(const CModel* model);
+    virtual void setSingleSelection(bool singleSelectionMode);
+    virtual void enableExpertMode(bool enable);
 
     static CCopasiObject * getObjectSingle(QWidget * parent = 0);
     static std::vector<CCopasiObject *> getObjectVector(QWidget * parent = 0);
+  };
+
+class CCopasiRuleExpressionSelectionDialog: public CCopasiSelectionDialog
+  {
+    Q_OBJECT
+
+  public:
+    CCopasiRuleExpressionSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = false);
+    virtual ~CCopasiRuleExpressionSelectionDialog();
+    virtual void enableExpertMode(bool){};
+  protected:
+    virtual void modeButton_toggled(bool){};
   };
 
 #endif /* SimpleSelectionDialog_H__ */
