@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.84 $
+   $Revision: 1.85 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/18 18:33:24 $
+   $Date: 2006/08/31 16:43:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -339,21 +339,35 @@ bool COptProblem::restore(const bool & updateModel)
   std::vector<COptItem * >::iterator end = mpOptItems->end();
   C_FLOAT64 * pTmp;
 
-  if (!updateModel)
+  if (updateModel)
     {
-      pTmp = mOriginalVariables.array();
+      // Set the model values to the solution values
+      pTmp = mSolutionVariables.array();
+
+      for (; it != end; ++it, pTmp++)
+        (*(*it)->COptItem::getUpdateMethod())(*pTmp);
+
+      // Update the start values
+      // This can only be done after all model values are updated since
+      // the behaviour of setStartValue dependes on the model value and multiple
+      // variables may point to the same model value.
+      pTmp = mSolutionVariables.array();
+      it = mpOptItems->begin();
+      end = mpOptItems->end();
+
+      for (; it != end; ++it, pTmp++)
+        (*it)->setStartValue(*pTmp);
     }
   else
     {
-      pTmp = mSolutionVariables.array();
+      // Reset the model values to the starting values
+      pTmp = mOriginalVariables.array();
+
+      for (; it != end; ++it, pTmp++)
+        (*(*it)->COptItem::getUpdateMethod())(*pTmp);
     }
 
-  for (; it != end; ++it, pTmp++)
-    {
-      (*(*it)->COptItem::getUpdateMethod())(*pTmp);
-    }
-
-  if (mFailedCounter != 0)
+  if (mFailedCounter * 20 > mCounter) // > 5% failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 8, mFailedCounter, mCounter);
 
   return success;
