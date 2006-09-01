@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.281 $
+   $Revision: 1.282 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/31 20:05:02 $
+   $Date: 2006/09/01 15:50:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -540,21 +540,32 @@ bool CModel::handleUnusedMetabolites()
     }
 
   // Reorder metabolites
+  // Skip the metabolites determined by ODE
   itMetab = mMetabolitesX.begin() + mNumMetabolitesODE;
+
+  // Handle the metabolites determined by actually determined by reactions
   itUsedMetabolites = UsedMetabolites.begin();
   std::vector< CMetab * >::iterator itMetabolitesEnd = UsedMetabolites.end();
   for (; itUsedMetabolites != itMetabolitesEnd; ++itUsedMetabolites, ++itMetab)
     *itMetab = *itUsedMetabolites;
 
+  // Handle metabolites determined by assignement and marked as fixed
+  // This is just a shift of NumUnused.
   endMetab = itMetab + mNumMetabolitesAssignment + mNumMetabolitesUnused;
   mNumMetabolitesUnused += NumUnused;
   for (; itMetab != endMetab; ++itMetab)
-    *itMetab = *itMetab + NumUnused;
+    *itMetab = *(itMetab + NumUnused);
 
+  // Handle newly marked unused metabolites
   itUnusedMetabolites = UnusedMetabolites.begin();
   itMetabolitesEnd = UnusedMetabolites.end();
   for (; itUnusedMetabolites != itMetabolitesEnd; ++itUnusedMetabolites, ++itMetab)
     *itMetab = *itUnusedMetabolites;
+
+  // Now its time to update the number of metabolites determined by reactions
+  // and the one being unused.
+  mNumMetabolitesReaction -= NumUnused;
+  mNumMetabolitesUnused += NumUnused;
 
   // Update stoichiometry matrix
   mStoi = NewStoi;
@@ -775,12 +786,16 @@ void CModel::setTransitionTimes()
   unsigned C_INT32 i, imax = mMetabolites.size();
   unsigned C_INT32 j, jmax = mSteps.size();
 
+  // Since some metabolites are unused we need to keep track of
+  // the row of the stoichiometry matrix intependently.
+  unsigned C_INT32 k;
+
   C_FLOAT64 TotalFlux_p, TotalFlux_n, min_flux, PartialFlux;
   C_FLOAT64 TransitionTime;
 
   mTransitionTime = 0.0;
 
-  for (i = 0; i < imax; i++)
+  for (i = 0, k = 0; i < imax; i++)
     {
       if (mMetabolites[i]->isFixed() ||
           !mMetabolites[i]->isUsed())
@@ -794,13 +809,15 @@ void CModel::setTransitionTimes()
 
           for (j = 0; j < jmax; j++)
             {
-              PartialFlux = mStoi(i, j) * mParticleFluxes[j];
+              PartialFlux = mStoi(k, j) * mParticleFluxes[j];
 
               if (PartialFlux > 0.0)
                 TotalFlux_p += PartialFlux;
               else
                 TotalFlux_n -= PartialFlux;
             }
+
+          k++; // The next row in the stoichiometry matrix;
 
           if (TotalFlux_p < TotalFlux_n)
             min_flux = TotalFlux_p;
@@ -1201,7 +1218,6 @@ bool CModel::buildUserOrder()
   mStateTemplate.setUserOrder(Entities);
 
   mJacobianPivot.resize(mStateTemplate.getNumIndependent() - mNumMetabolitesIndependent + mNumMetabolitesReaction);
-  mJacobianPivot = 999;
 
   const unsigned C_INT32 * pUserOrder = mStateTemplate.getUserOrder().array();
   const unsigned C_INT32 * pUserOrderEnd = pUserOrder + mStateTemplate.getUserOrder().size();
@@ -1210,7 +1226,8 @@ bool CModel::buildUserOrder()
   for (unsigned C_INT32 i = 0; pUserOrder != pUserOrderEnd; ++pUserOrder)
     {
       const CModelEntity::Status & Status = ppEntity[*pUserOrder]->getStatus();
-      if (Status == CModelEntity::ODE || Status == CModelEntity::REACTIONS)
+      if (Status == CModelEntity::ODE ||
+          (Status == CModelEntity::REACTIONS && ppEntity[*pUserOrder]->isUsed()))
         mJacobianPivot[i++] = *pUserOrder - 1;
     }
 
