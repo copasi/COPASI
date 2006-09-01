@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.70 $
+   $Revision: 1.71 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/30 17:21:31 $
+   $Date: 2006/09/01 12:18:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -292,7 +292,16 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
         }
     }
 
-  mpModel->compileIfNecessary();
+  try
+    {
+      if (!mpModel->compileIfNecessary())
+        return false;
+    }
+
+  catch (...)
+    {
+      return false;
+    }
 
   CCopasiXML XML;
 
@@ -481,6 +490,17 @@ bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFi
         }
     }
 
+  try
+    {
+      if (!mpModel->compileIfNecessary())
+        return false;
+    }
+
+  catch (...)
+    {
+      return false;
+    }
+
   SBMLExporter exporter;
   exporter.setExportHandler(pExportHandler);
   if (!exporter.exportSBML(mpModel, FileName.c_str(), overwriteFile)) return false;
@@ -520,7 +540,17 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, const std::
     }
 
   MMASCIIExporter exporter;
-  if (!(mpModel->compileIfNecessary())) return false;
+
+  try
+    {
+      if (!mpModel->compileIfNecessary())
+        return false;
+    }
+
+  catch (...)
+    {
+      return false;
+    }
 
   return exporter.exportMathModel(mpModel, fileName.c_str(), filter.c_str(), overwriteFile);
 }
