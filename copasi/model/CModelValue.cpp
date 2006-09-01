@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/29 15:17:28 $
+   $Date: 2006/09/01 20:30:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,6 +170,7 @@ std::string CModelEntity::getExpression() const
     if (isFixed() || mpExpression == NULL)
       return "";
 
+    mpExpression->updateInfix();
     return mpExpression->getInfix();
   }
 
