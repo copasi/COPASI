@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExpressionWidget.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/08/31 15:45:46 $
+   $Author: shoops $
+   $Date: 2006/09/01 19:53:54 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -82,7 +82,10 @@ QValidator::State CQValidatorExpression::validate(QString & input, int & pos) co
 
 CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
     : QTextEdit(parent, name),
-    mOldPar(0), mOldPos(0)
+    mOldPar(0),
+    mOldPos(0),
+    mpCurrentObject(NULL),
+    mNewName("")
 {
   setTextFormat(PlainText);
   setTabChangesFocus(true);
@@ -324,8 +327,12 @@ void CQExpressionWidget::setExpression(const std::string & expression)
 
           CCopasiObjectName temp_CN(objectName);
           CCopasiObject * temp_object = const_cast<CCopasiObject *>(RootContainer.getObject(temp_CN));
-          out_str += "<" + temp_object->getObjectDisplayName() + ">";
-          mParseList.push_back(temp_object);
+          if (temp_object != NULL)
+            {
+              std::string DisplayName = temp_object->getObjectDisplayName();
+              out_str += "<" + DisplayName + ">";
+              mParseList[DisplayName] = temp_object;
+            }
           continue;
         }
 
@@ -357,7 +364,7 @@ std::string CQExpressionWidget::getExpression() const
     std::string InfixCN = "";
 
     std::string InfixDispayName = (const char *)text().utf8();
-    std::vector<CCopasiObject *>::const_iterator it = mParseList.begin();
+    std::map< std::string, const CCopasiObject *>::const_iterator it;
 
     for (unsigned int i = 0; i < InfixDispayName.length(); i++)
       {
@@ -375,25 +382,14 @@ std::string CQExpressionWidget::getExpression() const
                 DisplayName += InfixDispayName[i++];
               }
 
-            it = mParseList.begin();
-            while (it < mParseList.end())
-              {
-                if ((*it)->getObjectDisplayName() == DisplayName)
-                  {
-                    InfixCN += (*it)->getCN();
-                    break;
-                  }
+            it = mParseList.find(DisplayName);
 
-                it++;
-              }
-
-            if (it == mParseList.end())
-              {
-                CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 5);
-                return false;
-              }
-
-            InfixCN += ">";
+            if (it != mParseList.end())
+              InfixCN += it->second->getCN() + ">";
+            else if (mpCurrentObject != NULL)
+              InfixCN += mpCurrentObject->getCN() + ">";
+            else
+              InfixCN = InfixCN.substr(0, InfixCN.length() - 1);
           }
       }
 
@@ -415,10 +411,16 @@ void CQExpressionWidget::slotSelectObject()
 
       if (pObject)
         {
-          // :TODO: mpParseList must be a created.
-          mParseList.push_back(pObject);
-          std::string Insert = "<" + pObject->getObjectDisplayName() + ">";
-          insert(FROM_UTF8(Insert));
+          std::string Insert = pObject->getObjectDisplayName();
+          mParseList[Insert] = pObject;
+          insert(FROM_UTF8("<" + Insert + ">"));
         }
     }
+}
+
+void CQExpressionWidget::currentObjectRenamed(const CCopasiObject * pObject,
+    const QString & newName)
+{
+  mpCurrentObject = pObject;
+  mNewName = newName;
 }

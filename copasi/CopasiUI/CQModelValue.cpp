@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQModelValue.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/10 15:45:55 $
+   $Date: 2006/09/01 19:53:54 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQModelValue.ui'
  **
- ** Created: Thu Aug 10 11:20:33 2006
- **      by: The User Interface Compiler ($Id: CQModelValue.cpp,v 1.2 2006/08/10 15:45:55 shoops Exp $)
+ ** Created: Fri Sep 1 15:03:55 2006
+ **      by: The User Interface Compiler ($Id: CQModelValue.cpp,v 1.3 2006/09/01 19:53:54 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -227,6 +227,7 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
   connect(mpBtnDelete, SIGNAL(clicked()), this, SLOT(slotBtnDelete()));
   connect(mpBtnObject, SIGNAL(clicked()), mpEditExpression, SLOT(slotSelectObject()));
   connect(mpEditExpression, SIGNAL(valid(bool)), this, SLOT(slotExpressionValid(bool)));
+  connect(mpEditName, SIGNAL(lostFocus()), this, SLOT(slotNameLostFocus()));
 
   // tab order
   setTabOrder(mpEditName, mpComboBoxType);

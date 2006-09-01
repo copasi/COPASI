@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExpressionWidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/13 18:02:22 $
+   $Date: 2006/09/01 19:53:54 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -64,7 +64,9 @@ class CQExpressionWidget: public QTextEdit
     int mOldPar2;
     int mOldPos2;
 
-    std::vector<CCopasiObject *> mParseList;
+    std::map< std::string, const CCopasiObject * > mParseList;
+    const CCopasiObject * mpCurrentObject;
+    QString mNewName;
 
     QColor mSavedColor;
     QColor mChangedColor;
@@ -91,6 +93,14 @@ class CQExpressionWidget: public QTextEdit
      * @return std::string expression
      */
     std::string getExpression() const;
+
+    /**
+     * This function must be called when the current object is renamed
+     * @param const CCopasiObject * pObject
+     * @param const QString & newName
+     */
+    void currentObjectRenamed(const CCopasiObject * pObject,
+                              const QString & newName);
 
   protected slots:
     void slotCursorPositionChanged(int para, int pos);
