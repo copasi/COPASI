@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.283 $
+   $Revision: 1.284 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/04 15:12:25 $
+   $Date: 2006/09/04 20:04:11 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1994,38 +1994,41 @@ std::set<std::string> CModel::listReactionsDependentOnFunction(const std::string
   return reacKeys;
 }
 
-std::set<std::string> CModel::listReactionsDependentOnModelValue(const std::string & /* key */)
+std::set<std::string> CModel::listReactionsDependentOnModelValue(const std::string & key)
 {
   std::set<std::string> Keys;
 
-  /* :TODO:
   const CCopasiVectorN<CReaction> & Reactions = getReactions();
   C_INT32 j, jmax = Reactions.size();
+  C_INT32 k, kmax;
+  C_INT32 l, lmax;
 
   for (j = 0; j < jmax; j++)
-     {
-       const CCopasiVector <CChemEqElement> &Substrates = Reactions[j]->getChemEq().getSubstrates();
-       C_INT32 i, imax = Substrates.size();
-       for (i = 0; i < imax; i++)
-         if (key == Substrates[i]->getMetaboliteKey())
-           Keys.insert(Reactions[j]->getKey());
+    {
+      const std::vector< std::vector<std::string> > & ParameterMap =
+        Reactions[j]->getParameterMappings();
 
-       const CCopasiVector <CChemEqElement> &Products = Reactions[j]->getChemEq().getProducts();
-       imax = Products.size();
-       for (i = 0; i < imax; i++)
-         if (key == Products[i]->getMetaboliteKey())
-           Keys.insert(Reactions[j]->getKey());
-
-       const CCopasiVector <CChemEqElement> &Modifiers = Reactions[j]->getChemEq().getModifiers();
-       imax = Modifiers.size();
-       for (i = 0; i < imax; i++)
-         if (key == Modifiers[i]->getMetaboliteKey())
-           Keys.insert(Reactions[j]->getKey());
-     }
-  */
+      for (k = 0, kmax = Reactions[j]->getFunctionParameters().size(); k < kmax; k++)
+        for (l = 0, lmax = ParameterMap[k].size(); l < lmax; l++)
+          if (key == ParameterMap[k][l])
+            Keys.insert(Reactions[j]->getKey());
+    }
 
   return Keys;
 }
+
+void CModel::appendDependentModelValues(std::set< const CCopasiObject * > candidates,
+                                        std::set< const CCopasiObject * > & dependentModelValues) const
+  {
+    CCopasiVectorN< CModelValue >::const_iterator it = mValues.begin();
+    CCopasiVectorN< CModelValue >::const_iterator end = mValues.end();
+
+    for (; it != end; ++it)
+      if ((*it)->hasCircularDependencies(candidates))
+        dependentModelValues.insert((*it));
+
+    return;
+  }
 
 //**********************************************************************
 

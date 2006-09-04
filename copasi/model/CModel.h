@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.130 $
+   $Revision: 1.131 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/15 14:59:18 $
+   $Date: 2006/09/04 20:04:11 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -898,6 +898,15 @@ class CModel : public CModelEntity
 
     /* Retreives list of Reactions Keys which are dependent on the non concentration value*/
     std::set<std::string> listReactionsDependentOnModelValue(const std::string & key);
+
+    /**
+     * Appends a pointers to model values which are dependent on the candidates to the
+     * list.
+     * @param std::set< const CCopasiObject * > candidates
+     * @param std::set< const CCopasiObject * > & dependentModelValues
+     */
+    void appendDependentModelValues(std::set< const CCopasiObject * > candidates,
+                                    std::set< const CCopasiObject * > & dependentModelValues) const;
 
     /**
      * Add a compartment to the model
