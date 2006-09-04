@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/01 20:30:31 $
+   $Date: 2006/09/04 15:11:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,6 +63,7 @@ CModelEntity::CModelEntity(const std::string & name,
     mpInitialExpression(NULL),
     mStatus(FIXED),
     mUsed(false),
+    mUsedOnce(false),
     mpModel(NULL)
 {
   initObjects();
@@ -85,6 +86,7 @@ CModelEntity::CModelEntity(const CModelEntity & src,
     mpInitialExpression(new CExpression(*src.mpInitialExpression)),
     mStatus(FIXED),
     mUsed(false),
+    mUsedOnce(false),
     mpModel(NULL)
 {
   initObjects();
@@ -266,6 +268,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
           mpValueReference->setDirectDependencies(Self);
           mpRateReference->setDirectDependencies(NoDependencies);
           mUsed = true;
+          mUsedOnce = false;
           break;
 
         case ODE:
@@ -278,6 +281,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
           mpValueReference->setDirectDependencies(NoDependencies);
           mpRateReference->setDirectDependencies(Self);
           mUsed = true;
+          mUsedOnce = false;
           break;
 
         case REACTIONS:
@@ -289,6 +293,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
           mpValueReference->setDirectDependencies(NoDependencies);
           mpRateReference->setDirectDependencies(NoDependencies);
           mUsed = true;
+          mUsedOnce = false;
           break;
 
         case TIME:
@@ -300,6 +305,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
           mpValueReference->setDirectDependencies(NoDependencies);
           mpRateReference->setDirectDependencies(NoDependencies);
           mUsed = true;
+          mUsedOnce = false;
           break;
 
         case FIXED:
@@ -311,6 +317,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
           mpValueReference->setDirectDependencies(NoDependencies);
           mpRateReference->setDirectDependencies(NoDependencies);
           mUsed = false;
+          mUsedOnce = false;
           break;
         }
     }
@@ -423,6 +430,12 @@ void CModelEntity::setUsed(const bool & used)
 
 const bool & CModelEntity::isUsed() const
   {return mUsed;}
+
+void CModelEntity::setUsedOnce(const bool & usedOnce)
+{mUsedOnce = usedOnce;}
+
+const bool & CModelEntity::isUsedOnce() const
+  {return mUsedOnce;}
 
 //********************************************************************+
 

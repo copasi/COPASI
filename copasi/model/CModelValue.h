@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/08/15 13:39:19 $
+   $Author: shoops $
+   $Date: 2006/09/04 15:11:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,7 +52,7 @@ class CModelEntity : public CCopasiContainer
       FIXED = 0,          //the entity is constant (for metabs even if they are part of a reaction)
       ASSIGNMENT,         //the entity is changed by an assignment rule
       REACTIONS,          //applies only for metabs, the metab concentration is changed by reactions
-      //      DEPENDENT,    //applies only for metabs, the metab concentration is determined by conservation rules
+      //      DEPENDENT,   //applies only for metabs, the metab concentration is determined by conservation rules
       //      UNUSED,
       ODE,                //the entity is changed by an ordinary differential equation
       TIME
@@ -218,6 +218,18 @@ class CModelEntity : public CCopasiContainer
      */
     const bool & isUsed() const;
 
+    /**
+     * Set whether the model entity is used once prior to simulation
+     * @param const bool & used
+     */
+    void setUsedOnce(const bool & usedOnce);
+
+    /**
+     * Retreive whether the model value is used once prior to simulation
+     * @return const bool & usedOnce
+     */
+    const bool & isUsedOnce() const;
+
   protected:
     /**
      * Pointer to the value of the model entity.
@@ -262,6 +274,12 @@ class CModelEntity : public CCopasiContainer
      * calculated during the simulation
      */
     bool mUsed;
+
+    /**
+     * Indicates whether the model value is used once, i.e., must be
+     * calculated prior to the simulation
+     */
+    bool mUsedOnce;
 
   protected:
     CCopasiObjectReference<C_FLOAT64> *mpIValueReference;
@@ -342,9 +360,137 @@ Table of possible CModelEntity objects with different Status
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   current status        corresponding sbml object
 -------------------------------------------------------------------------------------------------
 CMetab:                                       Species
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -480,7 +626,135 @@ TIME                    -
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CCompartment:                                 Compartment
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -616,7 +890,135 @@ TIME                    -
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CModelValue:                                  Parameter
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -752,7 +1154,135 @@ TIME                    -
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 CModel:                                       implicitly represented in sbml file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
