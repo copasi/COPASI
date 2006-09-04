@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.282 $
+   $Revision: 1.283 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/01 15:50:31 $
+   $Date: 2006/09/04 15:12:25 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1384,8 +1384,11 @@ bool CModel::buildConstantSequence()
         {
           mReorderNeeded = true;
           (*ppEntity)->setUsed(false);
+          (*ppEntity)->setUsedOnce(true);
           Objects.insert(*ppEntity);
         }
+      else
+        (*ppEntity)->setUsedOnce(false);
     }
 
   mApplyUpToDateObjects.clear();
@@ -1395,7 +1398,7 @@ bool CModel::buildConstantSequence()
 }
 
 const CState & CModel::getInitialState() const
-  {return mInitialState;}
+{return mInitialState;}
 
 const CState & CModel::getState() const
   {return mCurrentState;}
