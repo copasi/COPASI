@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/08/31 15:45:46 $
+   $Author: shoops $
+   $Date: 2006/09/04 21:24:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,23 +40,26 @@ class CCopasiSimpleSelectionTree: public QListView
     virtual void commitClicked();
 
   protected:
-    QListViewItem* reactionParameterSubtree;
-    QListViewItem* timeSubtree;
-    QListViewItem* particleFluxSubtree;
-    QListViewItem* transientConcentrationSubtree;
-    QListViewItem* transientParticleNumberSubtree;
-    QListViewItem* initialConcentrationSubtree;
-    QListViewItem* initialParticleNumberSubtree;
-    QListViewItem* concentrationFluxSubtree;
-    QListViewItem* reactionSubtree;
-    QListViewItem* metaboliteSubtree;
-    QListViewItem* modelValueSubtree;
-    QListViewItem* valueSubtree;
-    QListViewItem* initialValueSubtree;
-    QListViewItem* compartmentSubtree;
-    QListViewItem* volumeSubtree;
-    QListViewItem* initialVolumeSubtree;
-    QListViewItem* expertSubtree;
+    QListViewItem* mpTimeSubtree;
+    QListViewItem* mpReactionSubtree;
+    QListViewItem* mpReactionParameterSubtree;
+    QListViewItem* mpReactionFluxConcentrationSubtree;
+    QListViewItem* mpReactionFluxNumberSubtree;
+    QListViewItem* mpMetaboliteSubtree;
+    QListViewItem* mpMetaboliteTransientConcentrationSubtree;
+    QListViewItem* mpMetaboliteTransientNumberSubtree;
+    QListViewItem* mpMetaboliteInitialConcentrationSubtree;
+    QListViewItem* mpMetaboliteInitialNumberSubtree;
+    QListViewItem* mpMetaboliteRateConcentrationSubtree;
+    QListViewItem* mpMetaboliteRateNumberSubtree;
+    QListViewItem* mpModelQuantitySubtree;
+    QListViewItem* mpModelQuantityTransientValueSubtree;
+    QListViewItem* mpModelQuantityInitialValueSubtree;
+    QListViewItem* mpModelQuantityRateSubtree;
+    QListViewItem* mpCompartmentSubtree;
+    QListViewItem* mpCompartmentVolumeSubtree;
+    QListViewItem* mpCompartmentInitialVolumeSubtree;
+    QListViewItem* mpExpertSubtree;
 #ifdef COPASI_DEBUG
     QListViewItem* matrixSubtree;
 #endif //COPASI_DEBUG

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/08/31 15:45:46 $
+   $Author: shoops $
+   $Date: 2006/09/04 21:24:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,33 +28,49 @@ CCopasiSimpleSelectionTree::CCopasiSimpleSelectionTree(QWidget* parent, const ch
   this->setRootIsDecorated(true);
   this->addColumn("");
   this->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 0, 0, this->sizePolicy().hasHeightForWidth()));
-  this->expertSubtree = new QListViewItem(this, "expert");
+  this->mpExpertSubtree = new QListViewItem(this, "expert");
 
 #ifdef COPASI_DEBUG
   this->matrixSubtree = new QListViewItem(this, "matrices");
 #endif // COPASI_DEBUG
 
-  this->modelValueSubtree = new QListViewItem(this, "global parameters");
-  this->valueSubtree = new QListViewItem(this->modelValueSubtree, "transient values");
-  this->initialValueSubtree = new QListViewItem(this->modelValueSubtree, "initial values");
+  this->mpModelQuantitySubtree = new QListViewItem(this, "global parameters");
+  this->mpModelQuantityRateSubtree =
+    new QListViewItem(this->mpModelQuantitySubtree, "rates");
+  this->mpModelQuantityTransientValueSubtree =
+    new QListViewItem(this->mpModelQuantitySubtree, "transient values");
+  this->mpModelQuantityInitialValueSubtree =
+    new QListViewItem(this->mpModelQuantitySubtree, "initial values");
 
-  this->reactionSubtree = new QListViewItem(this, "reactions");
-  this->particleFluxSubtree = new QListViewItem(this->reactionSubtree, "particle fluxes");
-  this->concentrationFluxSubtree = new QListViewItem(this->reactionSubtree, "concentration fluxes");
-  this->reactionParameterSubtree = new QListViewItem(this->reactionSubtree, "reaction parameters");
+  this->mpReactionSubtree = new QListViewItem(this, "reactions");
+  this->mpReactionFluxNumberSubtree =
+    new QListViewItem(this->mpReactionSubtree, "particle fluxes");
+  this->mpReactionFluxConcentrationSubtree =
+    new QListViewItem(this->mpReactionSubtree, "concentration fluxes");
+  this->mpReactionParameterSubtree =
+    new QListViewItem(this->mpReactionSubtree, "reaction parameters");
 
-  this->metaboliteSubtree = new QListViewItem(this, "metabolites");
-  this->transientParticleNumberSubtree = new QListViewItem(this->metaboliteSubtree, "transient particle numbers");
-  this->transientConcentrationSubtree = new QListViewItem(this->metaboliteSubtree, "transient concentrations");
-  this->initialParticleNumberSubtree = new QListViewItem(this->metaboliteSubtree, "initial particle numbers");
-  this->initialConcentrationSubtree = new QListViewItem(this->metaboliteSubtree, "initial concentrations");
+  this->mpMetaboliteSubtree = new QListViewItem(this, "metabolites");
+  this->mpMetaboliteRateNumberSubtree =
+    new QListViewItem(this->mpMetaboliteSubtree, "rates (particle numbers)");
+  this->mpMetaboliteRateConcentrationSubtree =
+    new QListViewItem(this->mpMetaboliteSubtree, "rates (concentrations)");
+  this->mpMetaboliteTransientNumberSubtree =
+    new QListViewItem(this->mpMetaboliteSubtree, "transient particle numbers");
+  this->mpMetaboliteTransientConcentrationSubtree =
+    new QListViewItem(this->mpMetaboliteSubtree, "transient concentrations");
+  this->mpMetaboliteInitialNumberSubtree =
+    new QListViewItem(this->mpMetaboliteSubtree, "initial particle numbers");
+  this->mpMetaboliteInitialConcentrationSubtree =
+    new QListViewItem(this->mpMetaboliteSubtree, "initial concentrations");
 
-  this->compartmentSubtree = new QListViewItem(this, "compartments");
-  //this->volumeSubtree = new QListViewItem(this->compartmentSubtree, "transient volumes");
-  //this->initialVolumeSubtree = new QListViewItem(this->compartmentSubtree, "initial volumes");
-  this->volumeSubtree = new QListViewItem(this->compartmentSubtree, "volumes");
+  this->mpCompartmentSubtree = new QListViewItem(this, "compartments");
+  this->mpCompartmentVolumeSubtree =
+    new QListViewItem(this->mpCompartmentSubtree, "volumes");
+  // this->mpCompartmentVolumeSubtree = new QListViewItem(this->mpCompartmentSubtree, "transient volumes");
+  // this->mpCompartmentInitialVolumeSubtree = new QListViewItem(this->mpCompartmentSubtree, "initial volumes");
 
-  this->timeSubtree = new QListViewItem(this, "time");
+  this->mpTimeSubtree = new QListViewItem(this, "time");
 
   //TODO enable initial values for compartments and global parameters when we need them.
 }
@@ -66,20 +82,20 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
 {
   if (!model) return;
 
-  QListViewItem* item = new QListViewItem(this->timeSubtree, "Model Time");
+  QListViewItem* item = new QListViewItem(this->mpTimeSubtree, "Model Time");
   this->treeItems[item] =
     const_cast< CCopasiObject * >(model->getObject(CCopasiObjectName("Reference=Time")));
 
-  item = new QListViewItem(this->timeSubtree, "Model Initial Time");
+  item = new QListViewItem(this->mpTimeSubtree, "Model Initial Time");
   this->treeItems[item] =
     const_cast< CCopasiObject * >(model->getObject(CCopasiObjectName("Reference=Initial Time")));
 
-  item = new QListViewItem(this->timeSubtree, "cpu time");
+  item = new QListViewItem(this->mpTimeSubtree, "cpu time");
   CCopasiObject* obj =
     const_cast< CCopasiObject * >(CCopasiContainer::Root->getObject(CCopasiObjectName("Timer=CPU Time")));
   this->treeItems[item] = obj;
 
-  item = new QListViewItem(this->timeSubtree, "real time");
+  item = new QListViewItem(this->mpTimeSubtree, "real time");
   obj =
     const_cast< CCopasiObject * >(CCopasiContainer::Root->getObject(CCopasiObjectName("Timer=Wall Clock Time")));
   this->treeItems[item] = obj;
@@ -101,20 +117,30 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
               name = name + "(" + comp->getObjectName() + ")";
             }
         }
-      name = "[" + name + "]";
-      item = new QListViewItem(this->initialConcentrationSubtree,
+      item = new QListViewItem(mpMetaboliteInitialNumberSubtree,
                                FROM_UTF8((name + "(t=0)")));
-      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=InitialConcentration"));
-      item = new QListViewItem(this->transientConcentrationSubtree,
-                               FROM_UTF8((name + "(t)")));
-      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=Concentration"));
-      item = new QListViewItem(initialParticleNumberSubtree,
-                               FROM_UTF8((name + "(t=0)")));
-
       treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=InitialParticleNumber"));
-      item = new QListViewItem(this->transientParticleNumberSubtree,
+
+      item = new QListViewItem(this->mpMetaboliteTransientNumberSubtree,
                                FROM_UTF8((name + "(t)")));
       treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=ParticleNumber"));
+
+      item = new QListViewItem(this->mpMetaboliteRateNumberSubtree,
+                               FROM_UTF8(("d(" + name + ")/dt")));
+      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=ParticleNumberRate"));
+
+      name = "[" + name + "]"; // Concetration
+      item = new QListViewItem(this->mpMetaboliteInitialConcentrationSubtree,
+                               FROM_UTF8((name + "(t=0)")));
+      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=InitialConcentration"));
+
+      item = new QListViewItem(this->mpMetaboliteTransientConcentrationSubtree,
+                               FROM_UTF8((name + "(t)")));
+      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=Concentration"));
+
+      item = new QListViewItem(this->mpMetaboliteRateConcentrationSubtree,
+                               FROM_UTF8(("d(" + name + ")/dt")));
+      treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=Rate"));
     }
 
   // find all reactions and create items in the reaction subtree
@@ -125,14 +151,14 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
       const CReaction* react = reactions[counter - 1];
       std::string name = react->getObjectName();
       name = "flux(" + name + ")";
-      item = new QListViewItem(this->concentrationFluxSubtree,
+      item = new QListViewItem(this->mpReactionFluxConcentrationSubtree,
                                FROM_UTF8(name));
       treeItems[item] = (CCopasiObject*)react->getObject(CCopasiObjectName("Reference=Flux"));
-      item = new QListViewItem(this->particleFluxSubtree,
+      item = new QListViewItem(this->mpReactionFluxNumberSubtree,
                                FROM_UTF8(("particle_" + name)));
       treeItems[item] = (CCopasiObject*)react->getObject(CCopasiObjectName("Reference=ParticleFlux"));
       // create items for the reaction parameters
-      item = new QListViewItem(this->reactionParameterSubtree,
+      item = new QListViewItem(this->mpReactionParameterSubtree,
                                FROM_UTF8(react->getObjectName()));
       const CCopasiParameterGroup& parameters = react->getParameters();
       unsigned int j;
@@ -155,17 +181,20 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
       const CModelEntity* object = objects[counter - 1];
       std::string name = object->getObjectName();
 
-      item = new QListViewItem(this->initialValueSubtree,
-                               FROM_UTF8((name + "(t=0)")));
-      treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialValue"));
+      if (object->getStatus() == CModelEntity::ODE)
+        {
+          item = new QListViewItem(this->mpModelQuantityInitialValueSubtree,
+                                   FROM_UTF8((name + "(t=0)")));
+          treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialValue"));
 
-      item = new QListViewItem(this->valueSubtree,
+          item = new QListViewItem(this->mpModelQuantityRateSubtree,
+                                   FROM_UTF8(("d(" + name + ")/dt")));
+          treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Rate"));
+        }
+
+      item = new QListViewItem(this->mpModelQuantityTransientValueSubtree,
                                FROM_UTF8(name + "(t)"));
       treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Value"));
-
-      //item = new QListViewItem(this->valueRateSubtree,
-      //                         FROM_UTF8(("d(" + name + ")/dt")));
-      //treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Rate"));
     }
 
   // find all compartments
@@ -176,15 +205,15 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
       const CModelEntity* object = objects2[counter - 1];
       std::string name = object->getObjectName();
 
-      //item = new QListViewItem(this->initialVolumeSubtree,
+      //item = new QListViewItem(this->mpCompartmentInitialVolumeSubtree,
       //                         FROM_UTF8((name + "(t=0)")));
       //treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialVolume"));
 
-      item = new QListViewItem(this->volumeSubtree,
+      item = new QListViewItem(this->mpCompartmentVolumeSubtree,
                                FROM_UTF8(name /*+ "(t)"*/));
       treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Volume"));
 
-      //item = new QListViewItem(this->volumeRateSubtree,
+      //item = new QListViewItem(this->volumempModelValueRate,
       //                         FROM_UTF8(("d(" + name + ")/dt")));
       //treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Rate"));
     }
@@ -349,10 +378,10 @@ void CCopasiSimpleSelectionTree::selectObjects(std::vector<CCopasiObject *> * ob
     {
       CCopasiObject* object = objects->at(i);
       QListViewItem* item = this->findListViewItem(object);
-      if (!item && this->expertSubtree)
+      if (!item && this->mpExpertSubtree)
         {
           // add the item to the expert branch
-          item = new QListViewItem(this->expertSubtree,
+          item = new QListViewItem(this->mpExpertSubtree,
                                    FROM_UTF8(object->getObjectDisplayName()));
           treeItems[item] = object;
         }
@@ -403,29 +432,29 @@ void CCopasiSimpleSelectionTree::setOutputVector(std::vector<CCopasiObject*>* ou
 
 CCopasiRuleExpressionSelectionTree::CCopasiRuleExpressionSelectionTree(QWidget* parent, const char* name, WFlags fl): CCopasiSimpleSelectionTree(parent, name, fl)
 {
-  this->takeItem(this->expertSubtree);
-  pdelete(this->expertSubtree);
+  this->takeItem(this->mpExpertSubtree);
+  pdelete(this->mpExpertSubtree);
 #ifdef COPASI_DEBUG
   this->takeItem(this->matrixSubtree);
   pdelete(this->matrixSubtree);
 #endif
-  this->takeItem(this->reactionSubtree);
-  pdelete(this->reactionSubtree);
-  this->metaboliteSubtree->takeItem(this->initialParticleNumberSubtree);
-  pdelete(this->initialParticleNumberSubtree);
-  this->metaboliteSubtree->takeItem(this->initialConcentrationSubtree);
-  pdelete(this->initialConcentrationSubtree);
-  this->metaboliteSubtree->takeItem(this->transientParticleNumberSubtree);
-  pdelete(this->transientParticleNumberSubtree);
-  this->modelValueSubtree->takeItem(this->initialValueSubtree);
-  pdelete(this->initialValueSubtree);
+  this->takeItem(this->mpReactionSubtree);
+  pdelete(this->mpReactionSubtree);
+  this->mpMetaboliteSubtree->takeItem(this->mpMetaboliteInitialNumberSubtree);
+  pdelete(this->mpMetaboliteInitialNumberSubtree);
+  this->mpMetaboliteSubtree->takeItem(this->mpMetaboliteInitialConcentrationSubtree);
+  pdelete(this->mpMetaboliteInitialConcentrationSubtree);
+  this->mpMetaboliteSubtree->takeItem(this->mpMetaboliteTransientNumberSubtree);
+  pdelete(this->mpMetaboliteTransientNumberSubtree);
+  this->mpModelQuantitySubtree->takeItem(this->mpModelQuantityInitialValueSubtree);
+  pdelete(this->mpModelQuantityInitialValueSubtree);
 }
 
 void CCopasiRuleExpressionSelectionTree::populateTree(const CModel* model)
 {
   if (!model) return;
 
-  QListViewItem* item = new QListViewItem(this->timeSubtree, "Model Time");
+  QListViewItem* item = new QListViewItem(this->mpTimeSubtree, "Model Time");
   this->treeItems[item] =
     const_cast< CCopasiObject * >(model->getObject(CCopasiObjectName("Reference=Time")));
 
@@ -447,7 +476,7 @@ void CCopasiRuleExpressionSelectionTree::populateTree(const CModel* model)
             }
         }
       name = "[" + name + "]";
-      item = new QListViewItem(this->transientConcentrationSubtree,
+      item = new QListViewItem(this->mpMetaboliteTransientConcentrationSubtree,
                                FROM_UTF8((name + "(t)")));
       treeItems[item] = (CCopasiObject*)metab->getObject(CCopasiObjectName("Reference=Concentration"));
     }
@@ -461,10 +490,10 @@ void CCopasiRuleExpressionSelectionTree::populateTree(const CModel* model)
       const CReaction* react = reactions[counter - 1];
       std::string name = react->getObjectName();
       name = "flux(" + name + ")";
-      item = new QListViewItem(this->concentrationFluxSubtree,
+      item = new QListViewItem(this->mpReactionFluxConcentrationSubtree,
                                FROM_UTF8(name));
       treeItems[item] = (CCopasiObject*)react->getObject(CCopasiObjectName("Reference=Flux"));
-      item = new QListViewItem(this->particleFluxSubtree,
+      item = new QListViewItem(this->mpReactionFluxNumberSubtree,
                                FROM_UTF8(("particle_" + name)));
     }
   */
@@ -476,7 +505,7 @@ void CCopasiRuleExpressionSelectionTree::populateTree(const CModel* model)
       const CModelEntity* object = objects[counter - 1];
       std::string name = object->getObjectName();
 
-      item = new QListViewItem(this->valueSubtree,
+      item = new QListViewItem(this->mpModelQuantityTransientValueSubtree,
                                FROM_UTF8(name + "(t)"));
       treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Value"));
     }
@@ -489,7 +518,7 @@ void CCopasiRuleExpressionSelectionTree::populateTree(const CModel* model)
       const CModelEntity* object = objects2[counter - 1];
       std::string name = object->getObjectName();
 
-      item = new QListViewItem(this->volumeSubtree,
+      item = new QListViewItem(this->mpCompartmentVolumeSubtree,
                                FROM_UTF8(name /*+ "(t)"*/));
       treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Volume"));
     }
