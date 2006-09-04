@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/04 15:11:21 $
+   $Date: 2006/09/04 20:03:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -414,6 +414,17 @@ bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
 
   return true;
 }
+
+std::set< const CCopasiObject * > CModelEntity::getDeletedObjects() const
+  {
+    std::set< const CCopasiObject * > Deleted;
+
+    Deleted.insert(mpIValueReference);
+    Deleted.insert(mpValueReference);
+    Deleted.insert(mpRateReference);
+
+    return Deleted;
+  }
 
 void CModelEntity::setSBMLId(const std::string& id)
 {
