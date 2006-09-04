@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CLsodarMethod.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:57:04 $
+   $Date: 2006/09/04 17:41:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,8 @@
 
 #include "CLsodarMethod.h"
 #include "CTrajectoryProblem.h"
+
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 
@@ -46,9 +48,8 @@ void CLsodarMethod::initializeParameter()
   CCopasiParameter *pParm;
 
   assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) true);
-  assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-006);
-  assertParameter("Use Default Absolute Tolerance", CCopasiParameter::BOOL, (bool) true);
-  assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e009);
+  assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
+  assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-12);
   assertParameter("Adams Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 12);
   assertParameter("BDF Max Order", CCopasiParameter::UINT, (unsigned C_INT32) 5);
   assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000);
@@ -83,6 +84,48 @@ void CLsodarMethod::initializeParameter()
           removeParameter("LSODA.MaxStepsInternal");
         }
     }
+
+  // Check whether we have a method with "Use Default Absolute Tolerance"
+  if ((pParm = getParameter("Use Default Absolute Tolerance")) != NULL)
+    {
+      C_FLOAT64 NewValue;
+
+      if (*pParm->getValue().pBOOL)
+        {
+          // The default
+          NewValue = 1.e-12;
+        }
+      else
+        {
+          C_FLOAT64 OldValue = *getValue("Absolute Tolerance").pUDOUBLE;
+
+          CModel * pModel = CCopasiDataModel::Global->getModel();
+
+          if (pModel == NULL)
+            // The default
+            NewValue = 1.e-12;
+          else
+            {
+              const CCopasiVectorNS< CCompartment > & Compartment = pModel->getCompartments();
+              unsigned C_INT32 i, imax;
+              C_FLOAT64 Volume = DBL_MAX;
+
+              for (i = 0, imax = Compartment.size(); i < imax; i++)
+                if (Compartment[i]->getValue() < Volume)
+                  Volume = Compartment[i]->getValue();
+
+              if (Volume == DBL_MAX)
+                // The default
+                NewValue = 1.e-12;
+              else
+                // Invert the scaling as best as we can
+                NewValue = OldValue / (Volume * pModel->getQuantity2NumberFactor());
+            }
+        }
+
+      setValue("Absolute Tolerance", NewValue);
+      removeParameter("Use Default Absolute Tolerance");
+    }
 }
 
 bool CLsodarMethod::elevateChildren()
@@ -103,6 +146,7 @@ void CLsodarMethod::step(const double & deltaT)
     }
 
   C_FLOAT64 EndTime = mTime + deltaT;
+  C_INT ITOL = 2; // mRtol scalar, mAtol vector
   C_INT one = 1;
   C_INT DSize = mDWork.size();
   C_INT ISize = mIWork.size();
@@ -112,9 +156,9 @@ void CLsodarMethod::step(const double & deltaT)
           mY,              //  3. the array of current concentrations
           &mTime,          //  4. the current time
           &EndTime,        //  5. the final time
-          &one,            //  6. scalar error control
+          &ITOL,           //  6. error control
           &mRtol,          //  7. relative tolerance array
-          &mAtol,          //  8. absolute tolerance array
+          mAtol.array(),   //  8. absolute tolerance array
           &mState,         //  9. output by overshoot & interpolatation
           &mLsodarStatus,  // 10. the state control variable
           &one,            // 11. further options (one)
@@ -143,7 +187,10 @@ void CLsodarMethod::step(const double & deltaT)
 
 void CLsodarMethod::start(const CState * initialState)
 {
-  /* Reset lsodar */
+  /* Retrieve the model to calculate */
+  mpModel = mpProblem->getModel();
+
+  /* Reset lsoda */
   mLsodarStatus = 1;
   mState = 1;
   mJType = 2;
@@ -165,7 +212,7 @@ void CLsodarMethod::start(const CState * initialState)
   else
     {
       mpState->setUpdateDependentRequired(false);
-      mDim[0] = mpState->getNumVariable();
+      mDim[0] = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
     }
 
   mYdot.resize(mDim[0]);
@@ -175,14 +222,7 @@ void CLsodarMethod::start(const CState * initialState)
 
   /* Configure lsodar */
   mRtol = * getValue("Relative Tolerance").pUDOUBLE;
-  mDefaultAtol = * getValue("Use Default Absolute Tolerance").pBOOL;
-  if (mDefaultAtol)
-    {
-      mAtol = getDefaultAtol(mpProblem->getModel());
-      setValue("Absolute Tolerance", mAtol);
-    }
-  else
-    mAtol = * getValue("Absolute Tolerance").pUDOUBLE;
+  initializeAtol();
 
   mDWork.resize(22 + mDim[0] * std::max<C_INT>(16, mDim[0] + 9));
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
@@ -196,20 +236,29 @@ void CLsodarMethod::start(const CState * initialState)
   return;
 }
 
-C_FLOAT64 CLsodarMethod::getDefaultAtol(const CModel * pModel) const
-  {
-    if (!pModel) return 1.0e009;
+void CLsodarMethod::initializeAtol()
+{
+  C_FLOAT64 * pTolerance = getValue("Absolute Tolerance").pUDOUBLE;
 
-    const CCopasiVectorNS< CCompartment > & Compartment = pModel->getCompartments();
-    unsigned C_INT32 i, imax;
-    C_FLOAT64 Volume = DBL_MAX;
-    for (i = 0, imax = Compartment.size(); i < imax; i++)
-      if (Compartment[i]->getValue() < Volume) Volume = Compartment[i]->getValue();
+  mAtol.resize(mDim[0]);
+  C_FLOAT64 * pAtol = mAtol.array();
+  C_FLOAT64 * pEnd = pAtol + mAtol.size();
 
-    if (Volume == DBL_MAX) return 1.0e009;
+  CModelEntity **ppEntity = mpModel->getStateTemplate().beginIndependent();
+  CMetab * pMetab;
 
-    return Volume * pModel->getQuantity2NumberFactor() * 1.e-12;
-  }
+  for (; pAtol != pEnd; ++pAtol, ++ppEntity)
+    {
+      *pAtol = *pTolerance;
+
+      // Rescale for metabolites as we are using particle numbers
+      if ((pMetab = dynamic_cast< CMetab * >(*ppEntity)) != NULL)
+        {
+          *pAtol *=
+            pMetab->getCompartment()->getValue() * mpModel->getQuantity2NumberFactor();
+        }
+    }
+}
 
 void CLsodarMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {static_cast<CLsodarMethod *>((void *) n[1])->evalF(t, y, ydot);}
@@ -220,14 +269,13 @@ void CLsodarMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * 
 
   mpState->setTime(*t);
 
-  CModel * pModel = mpProblem->getModel();
-  pModel->setState(*mpState);
-  pModel->applyAssignments();
+  mpModel->setState(*mpState);
+  mpModel->applyAssignments();
 
   if (mReducedModel)
-    pModel->calculateDerivativesX(ydot);
+    mpModel->calculateDerivativesX(ydot);
   else
-    pModel->calculateDerivatives(ydot);
+    mpModel->calculateDerivatives(ydot);
 
   return;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CLsodarMethod.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/06 17:03:56 $
+   $Date: 2006/09/04 17:41:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,17 +69,12 @@ class CLsodarMethod : public CTrajectoryMethod
     C_FLOAT64 mTime;
 
     /**
-     *  Requested end time.
-     */
-    C_FLOAT64 mEndt;
-
-    /**
      *  LSODA state.
      */
     C_INT mLsodarStatus;
 
     /**
-     *
+     * Whether to use the reduced model
      */
     bool mReducedModel;
 
@@ -89,40 +84,44 @@ class CLsodarMethod : public CTrajectoryMethod
     C_FLOAT64 mRtol;
 
     /**
-     *
+     * A vector of absolute tolerances.
      */
-    bool mDefaultAtol;
+    CVector< C_FLOAT64 > mAtol;
 
     /**
-     *  Absolute tolerance.
-     */
-    C_FLOAT64 mAtol;
-
-    /**
-     *  Maximum order for BDF method.
-     */
-    //    C_INT32 mBDF;
-
-    /**
-     *  Maximum order for Adams method.
-     */
-    //    C_INT32 mAdams;
-
-    /**
-     *  Maximum number of steps for one call of lsodar.
-     */
-    //    C_INT32 mMaxSteps;
-
-    /**
-     *
+     * Stream to capture LSODA error messages
      */
     std::ostringstream mErrorMsg;
 
+    /**
+     * The LSODA integrator
+     */
     CLSODAR mLSODAR;
+
+    /**
+     * The state of the integrator
+     */
     C_INT mState;
+
+    /**
+     * LSODA C_FLOAT64 work area
+     */
     CVector< C_FLOAT64 > mDWork;
+
+    /**
+     * LSODA C_INT work area
+     */
     CVector< C_INT > mIWork;
+
+    /**
+     * The way LSODAR calculates the jacobian
+     */
     C_INT mJType;
+
+    /**
+     * A pointer to the model
+     */
+    CModel * mpModel;
 
     // Operations
   private:
@@ -171,11 +170,9 @@ class CLsodarMethod : public CTrajectoryMethod
     virtual void start(const CState * initialState);
 
     /**
-     * Calculate the default absolute tolerance
-     * @param const CModel * pModel
-     * @return C_FLOAT64 defaultAtol
+     * Calculate the individual absolute tolerance
      */
-    C_FLOAT64 getDefaultAtol(const CModel * pModel) const;
+    void initializeAtol();
 
     static void EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
 
