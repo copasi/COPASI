@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQModelValue.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/01 19:53:54 $
+   $Date: 2006/09/04 20:05:07 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,13 +63,71 @@ void CQModelValue::slotBtnNew()
 
 void CQModelValue::slotBtnDelete()
 {
-  bool DependentFound = false;
+  QString valuesList = "Are you sure you want to delete listed quantity(s) ?\n";
+  QString effectedReacList = "Following reation(s) reference above quantity(s) and will be deleted -\n";
+  QString effectedModelValuesList = "Following global quantities(s) reference above quantity(s) and will be deleted -\n";
+  std::set<std::string> effectedKeys;
+  std::set< const CCopasiObject * > effectedObjects;
+  bool dependentReactionFound = false;
+  bool dependentModelValuesFound = false;
 
-  // :TODO: Check whether other entities depend on this model value.
-  QString msg;
+  valuesList.append(FROM_UTF8(mpModelValue->getObjectName()));
+  valuesList.append(", ");
+
+  effectedKeys =
+    CCopasiDataModel::Global->getModel()->listReactionsDependentOnModelValue(mpModelValue->getKey());
+
+  if (effectedKeys.size() > 0)
+    {
+      dependentReactionFound = true;
+      std::set<std::string>::const_iterator it, itEnd = effectedKeys.end();
+      for (it = effectedKeys.begin(); it != itEnd; ++it)
+        {
+          effectedReacList.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
+          effectedReacList.append(", ");
+        }
+
+      effectedReacList.remove(effectedReacList.length() - 2, 2);
+      effectedReacList.append("  ---> ");
+      effectedReacList.append(FROM_UTF8(mpModelValue->getObjectName()));
+      effectedReacList.append("\n");
+    }
+
+  CCopasiDataModel::Global->getModel()->appendDependentModelValues(mpModelValue->getDeletedObjects(), effectedObjects);
+
+  if (effectedObjects.size() > 0)
+    {
+      dependentModelValuesFound = true;
+      std::set< const CCopasiObject * >::const_iterator it, itEnd = effectedObjects.end();
+      for (it = effectedObjects.begin(); it != itEnd; ++it)
+        {
+          effectedModelValuesList.append(FROM_UTF8((*it)->getObjectName()));
+          effectedModelValuesList.append(", ");
+        }
+
+      effectedModelValuesList.remove(effectedModelValuesList.length() - 2, 2);
+      effectedModelValuesList.append("  ---> ");
+      effectedModelValuesList.append(FROM_UTF8(mpModelValue->getObjectName()));
+      effectedModelValuesList.append("\n");
+    }
+
+  valuesList.remove(valuesList.length() - 2, 2);
+
+  QString msg = valuesList;
+  if (dependentReactionFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedReacList);
+    }
+
+  if (dependentModelValuesFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedModelValuesList);
+    }
 
   C_INT32 choice;
-  if (DependentFound == 1)
+  if (dependentReactionFound || dependentModelValuesFound)
     choice = QMessageBox::warning(this,
                                   "CONFIRM DELETE",
                                   msg,

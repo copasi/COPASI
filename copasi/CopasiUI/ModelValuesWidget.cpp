@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelValuesWidget.cpp,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/10 15:45:55 $
+   $Date: 2006/09/04 20:05:07 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -204,8 +204,13 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
     return;
 
   QString valuesList = "Are you sure you want to delete listed parameter(s) ?\n";
-  QString effectedReacList = "Following reation(s) reference above parameter(s) and will be deleted -\n";
-  int reacFound = 0;
+  QString effectedReacList = "Following reation(s) reference above quantity(s) and will be deleted -\n";
+  QString effectedModelValuesList = "Following global quantities(s) reference above quantity(s) and will be deleted -\n";
+  std::set<std::string> effectedKeys;
+  std::set< const CCopasiObject * > effectedObjects;
+
+  bool dependentReactionFound = false;
+  bool dependentModelValuesFound = false;
 
   unsigned C_INT32 i, imax = keys.size();
   for (i = 0; i < imax; i++) //all modelValues
@@ -216,12 +221,14 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
       CModelValue* mv =
         dynamic_cast< CModelValue *>(GlobalKeys.get(keys[i]));
 
-      std::set<std::string> effectedReacKeys = CCopasiDataModel::Global->getModel()->listReactionsDependentOnModelValue(keys[i]);
-      if (effectedReacKeys.size() > 0)
+      effectedKeys =
+        CCopasiDataModel::Global->getModel()->listReactionsDependentOnModelValue(keys[i]);
+
+      if (effectedKeys.size() > 0)
         {
-          reacFound = 1;
-          std::set<std::string>::const_iterator it, itEnd = effectedReacKeys.end();
-          for (it = effectedReacKeys.begin(); it != itEnd; ++it)
+          dependentReactionFound = true;
+          std::set<std::string>::const_iterator it, itEnd = effectedKeys.end();
+          for (it = effectedKeys.begin(); it != itEnd; ++it)
             {
               effectedReacList.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
               effectedReacList.append(", ");
@@ -232,19 +239,43 @@ void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
           effectedReacList.append(FROM_UTF8(mv->getObjectName()));
           effectedReacList.append("\n");
         }
+
+      CCopasiDataModel::Global->getModel()->appendDependentModelValues(mv->getDeletedObjects(), effectedObjects);
+
+      if (effectedObjects.size() > 0)
+        {
+          dependentModelValuesFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = effectedObjects.end();
+          for (it = effectedObjects.begin(); it != itEnd; ++it)
+            {
+              effectedModelValuesList.append(FROM_UTF8((*it)->getObjectName()));
+              effectedModelValuesList.append(", ");
+            }
+
+          effectedModelValuesList.remove(effectedModelValuesList.length() - 2, 2);
+          effectedModelValuesList.append("  ---> ");
+          effectedModelValuesList.append(FROM_UTF8(mv->getObjectName()));
+          effectedModelValuesList.append("\n");
+        }
     }
 
   valuesList.remove(valuesList.length() - 2, 2);
 
   QString msg = valuesList;
-  if (reacFound == 1)
+  if (dependentReactionFound)
     {
       msg.append("\n \n");
       msg.append(effectedReacList);
     }
 
+  if (dependentModelValuesFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedModelValuesList);
+    }
+
   C_INT32 choice;
-  if (reacFound == 1)
+  if (dependentReactionFound || dependentModelValuesFound)
     choice = QMessageBox::warning(this,
                                   "CONFIRM DELETE",
                                   msg,
