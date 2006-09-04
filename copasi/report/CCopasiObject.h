@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/14 16:55:26 $
+   $Date: 2006/09/04 15:10:43 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -410,13 +410,13 @@ createMatrixReference(const std::string & name,
 /**
  * Sort the CCopasiObjects in the interval [begin, end) according to
  * their dependencies
- * @param RandomAccessIterator begin
- * @param RandomAccessIterator end
+ * @param ForwardAccessIterator begin
+ * @param ForwardAccessIterator end
  * @return std::list< const CCopasiObject * >
  */
-template <typename RandomAccessIterator>
-std::list< const CCopasiObject * > sortObjectsByDependency(RandomAccessIterator begin,
-    RandomAccessIterator end)
+template <typename ForwardAccessIterator>
+std::list< const CCopasiObject * > sortObjectsByDependency(ForwardAccessIterator begin,
+    ForwardAccessIterator end)
 {
   std::list< const CCopasiObject * > SortedList;
   std::list< const CCopasiObject * >::iterator itList;
