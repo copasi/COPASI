@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.107 $
+   $Revision: 1.108 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/05 13:04:51 $
+   $Date: 2006/09/05 17:23:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,6 @@ CMetab::CMetab(const std::string & name,
 
   if (getObjectParent())
     {
-      initModel();
       initCompartment(NULL);
 
       setInitialConcentration(1.0);
@@ -82,7 +81,6 @@ CMetab::CMetab(const CMetab & src,
 
   initObjects();
 
-  initModel();
   initCompartment(src.mpCompartment);
   CONSTRUCTOR_TRACE;
 }
@@ -111,17 +109,13 @@ CMetab::~CMetab()
 
 void CMetab::cleanup() {}
 
-void CMetab::initModel()
-{
-  //  mpModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
-  //  if (!mpModel && CCopasiDataModel::Global) mpModel = CCopasiDataModel::Global->getModel();
-}
-
 void CMetab::initCompartment(const CCompartment * pCompartment)
 {
-  mpCompartment = (const CCompartment *) getObjectAncestor("Compartment");
-  if (!mpCompartment) mpCompartment = pCompartment;
-  //  if (!mpCompartment) mpCompartment = mpParentCompartment;
+  mpCompartment =
+    dynamic_cast< const CCompartment * >(getObjectAncestor("Compartment"));
+
+  if (!mpCompartment)
+    mpCompartment = pCompartment;
 }
 
 const C_FLOAT64 & CMetab::getConcentration() const {return mConc;}
@@ -140,22 +134,17 @@ const C_FLOAT64 & CMetab::getTransitionTime() const {return mTT;}
 bool CMetab::setObjectParent(const CCopasiContainer * pParent)
 {
   CModelEntity::setObjectParent(pParent);
+  initCompartment(NULL);
+
+  setStatus(getStatus());
 
   CCopasiObject * pObject =
-    const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=Concentration")));
-
-  pObject->setRefresh(this, &CMetab::refreshConcentration);
-
-  pObject =
     const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=TransitionTime")));
 
   if (mpModel)
     pObject->setRefresh(mpModel, &CModel::setTransitionTimes);
   else
     pObject->clearRefresh();
-
-  initCompartment(NULL);
-  initModel();
 
   return true;
 }

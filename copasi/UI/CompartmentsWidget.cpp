@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget.cpp,v $
-   $Revision: 1.104 $
+   $Revision: 1.105 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:56:35 $
+   $Date: 2006/09/05 17:23:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -152,37 +152,62 @@ CCopasiObject* CompartmentsWidget::createNewObject(const std::string & name)
 
 void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!CCopasiDataModel::Global->getModel())
+  CModel * pModel = CCopasiDataModel::Global->getModel();
+  if (pModel == NULL)
     return;
 
   if (keys.size() == 0)
     return;
 
   QString compartmentList = "Are you sure you want to delete listed COMPARTMENT(S) ?\n";
+  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above COMPARTMENT(S) and will be deleted -\n";
   QString effectedMetabList = "Following METABOLITE(S) reference above COMPARTMENT(S) and will be deleted -\n";
-  QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
-  int metabFound = 0;
-  int reacFound = 0;
+  QString effectedReacList = "Following REACTION(S) reference above COMPARTMENT(S) and will be deleted -\n";
+  QString effectedValueList = "Following MODEL VALUE(S) reference above COMPARTMENT(S) and will be deleted -\n";
+
+  bool compartmentFound = false;
+  bool metabFound = false;
+  bool reacFound = false;
+  bool valueFound = false;
 
   unsigned C_INT32 i, imax = keys.size();
   for (i = 0; i < imax; i++) //all compartments
     {
-      compartmentList.append(FROM_UTF8(GlobalKeys.get(keys[i])->getObjectName()));
-      compartmentList.append(", ");
-
       CCompartment* comp =
         dynamic_cast< CCompartment *>(GlobalKeys.get(keys[i]));
 
-      const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
-      unsigned C_INT32 noOfMetabs = Metabs.size();
+      compartmentList.append(FROM_UTF8(comp->getObjectName()));
+      compartmentList.append(", ");
 
-      if (noOfMetabs > 0)
+      std::set< const CCopasiObject * > Reactions;
+      pModel->appendDependentReactions(comp->getDeletedObjects(), Reactions);
+
+      if (Reactions.size() > 0)
         {
-          metabFound = 1;
-          unsigned C_INT32 k;
-          for (k = 0; k < noOfMetabs; k++)
+          reacFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+          for (it = Reactions.begin(); it != itEnd; ++it)
             {
-              effectedMetabList.append(FROM_UTF8(Metabs[k]->getObjectName()));
+              effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
+              effectedReacList.append(", ");
+            }
+
+          effectedReacList.remove(effectedReacList.length() - 2, 2);
+          effectedReacList.append("  ---> ");
+          effectedReacList.append(FROM_UTF8(comp->getObjectName()));
+          effectedReacList.append("\n");
+        }
+
+      std::set< const CCopasiObject * > Metabolites;
+      pModel->appendDependentMetabolites(comp->getDeletedObjects(), Metabolites);
+
+      if (Metabolites.size() > 0)
+        {
+          metabFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+          for (it = Metabolites.begin(); it != itEnd; ++it)
+            {
+              effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
               effectedMetabList.append(", ");
             }
 
@@ -190,42 +215,77 @@ void CompartmentsWidget::deleteObjects(const std::vector<std::string> & keys)
           effectedMetabList.append("  ---> ");
           effectedMetabList.append(FROM_UTF8(comp->getObjectName()));
           effectedMetabList.append("\n");
+        }
 
-          std::set<std::string> effectedReacKeys = CCopasiDataModel::Global->getModel()->listReactionsDependentOnCompartment(keys[i]);
-          if (effectedReacKeys.size() > 0)
+      std::set< const CCopasiObject * > Values;
+      pModel->appendDependentModelValues(comp->getDeletedObjects(), Values);
+
+      if (Values.size() > 0)
+        {
+          valueFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+          for (it = Values.begin(); it != itEnd; ++it)
             {
-              reacFound = 1;
-              std::set<std::string>::const_iterator it, itEnd = effectedReacKeys.end();
-              for (it = effectedReacKeys.begin(); it != itEnd; ++it)
-                {
-                  effectedReacList.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
-                  effectedReacList.append(", ");
-                }
-
-              effectedReacList.remove(effectedReacList.length() - 2, 2);
-              effectedReacList.append("  ---> ");
-              effectedReacList.append(FROM_UTF8(comp->getObjectName()));
-              effectedReacList.append("\n");
+              effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
+              effectedValueList.append(", ");
             }
+
+          effectedValueList.remove(effectedValueList.length() - 2, 2);
+          effectedValueList.append("  ---> ");
+          effectedValueList.append(FROM_UTF8(comp->getObjectName()));
+          effectedValueList.append("\n");
+        }
+
+      std::set< const CCopasiObject * > Compartments;
+      pModel->appendDependentCompartments(comp->getDeletedObjects(), Compartments);
+
+      if (Compartments.size() > 0)
+        {
+          compartmentFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+          for (it = Compartments.begin(); it != itEnd; ++it)
+            {
+              effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
+              effectedCompartmentList.append(", ");
+            }
+
+          effectedCompartmentList.remove(effectedCompartmentList.length() - 2, 2);
+          effectedCompartmentList.append("  ---> ");
+          effectedCompartmentList.append(FROM_UTF8(comp->getObjectName()));
+          effectedCompartmentList.append("\n");
         }
     }
 
   compartmentList.remove(compartmentList.length() - 2, 2);
 
   QString msg = compartmentList;
-  if (metabFound == 1)
+
+  if (compartmentFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedCompartmentList);
+    }
+
+  if (metabFound)
     {
       msg.append("\n \n");
       msg.append(effectedMetabList);
-      if (reacFound == 1)
-        {
-          msg.append("\n \n");
-          msg.append(effectedReacList);
-        }
+    }
+
+  if (reacFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedReacList);
+    }
+
+  if (valueFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedValueList);
     }
 
   C_INT32 choice;
-  if (metabFound == 1)
+  if (metabFound || reacFound || valueFound || valueFound)
     choice = QMessageBox::warning(this,
                                   "CONFIRM DELETE",
                                   msg,

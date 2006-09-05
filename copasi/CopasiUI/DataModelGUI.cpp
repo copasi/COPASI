@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/09/01 07:55:25 $
+   $Author: shoops $
+   $Date: 2006/09/05 17:23:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -178,6 +178,7 @@ void DataModelGUI::updateReactions()
   for (j = 0; j < jmax; j++)
     {
       obj = objects[j];
+      obj->compile();
       parent->addChild(-1,
                         FROM_UTF8(obj->getObjectName()),
                         obj->getKey());

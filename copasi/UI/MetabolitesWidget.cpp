@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget.cpp,v $
-   $Revision: 1.132 $
+   $Revision: 1.133 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/10 20:28:11 $
+   $Date: 2006/09/05 17:23:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -319,54 +319,140 @@ CCopasiObject* MetabolitesWidget::createNewObject(const std::string & name)
 
 void MetabolitesWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!CCopasiDataModel::Global->getModel())
+  CModel * pModel = CCopasiDataModel::Global->getModel();
+  if (pModel == NULL)
     return;
 
   if (keys.size() == 0)
     return;
 
-  QString metabList = "Are you sure you want to delete listed METABOLITE(S) ?\n";
+  QString metaboliteList = "Are you sure you want to delete listed METABOLITE(S) ?\n";
+  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above METABOLITE(S) and will be deleted -\n";
+  QString effectedMetabList = "Following METABOLITE(S) reference above METABOLITE(S) and will be deleted -\n";
   QString effectedReacList = "Following REACTION(S) reference above METABOLITE(S) and will be deleted -\n";
-  int reacFound = 0;
+  QString effectedValueList = "Following MODEL VALUE(S) reference above METABOLITE(S) and will be deleted -\n";
+
+  bool compartmentFound = false;
+  bool metabFound = false;
+  bool reacFound = false;
+  bool valueFound = false;
 
   unsigned C_INT32 i, imax = keys.size();
-  for (i = 0; i < imax; i++)
+  for (i = 0; i < imax; i++) //all compartments
     {
-      metabList.append(FROM_UTF8(GlobalKeys.get(keys[i])->getObjectName()));
-      metabList.append(", ");
+      CMetab* pMetab =
+        dynamic_cast< CMetab *>(GlobalKeys.get(keys[i]));
 
-      //CMetab* metab =
-      //  dynamic_cast< CMetab *>(GlobalKeys.get(keys[i]));
+      metaboliteList.append(FROM_UTF8(pMetab->getObjectName()));
+      metaboliteList.append(", ");
 
-      std::set< CReaction * > effectedReacKeys = CCopasiDataModel::Global->getModel()->listReactionsDependentOnMetab(keys[i]);
+      std::set< const CCopasiObject * > Reactions;
+      pModel->appendDependentReactions(pMetab->getDeletedObjects(), Reactions);
 
-      if (effectedReacKeys.size() > 0)
+      if (Reactions.size() > 0)
         {
-          reacFound = 1;
-          std::set< CReaction * >::const_iterator it, itEnd = effectedReacKeys.end();
-          for (it = effectedReacKeys.begin(); it != itEnd; ++it)
+          reacFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+          for (it = Reactions.begin(); it != itEnd; ++it)
             {
               effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
               effectedReacList.append(", ");
             }
+
           effectedReacList.remove(effectedReacList.length() - 2, 2);
           effectedReacList.append("  ---> ");
-          effectedReacList.append(FROM_UTF8(GlobalKeys.get(keys[i])->getObjectName()));
+          effectedReacList.append(FROM_UTF8(pMetab->getObjectName()));
           effectedReacList.append("\n");
+        }
+
+      std::set< const CCopasiObject * > Metabolites;
+      pModel->appendDependentMetabolites(pMetab->getDeletedObjects(), Metabolites);
+
+      if (Metabolites.size() > 0)
+        {
+          metabFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+          for (it = Metabolites.begin(); it != itEnd; ++it)
+            {
+              effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
+              effectedMetabList.append(", ");
+            }
+
+          effectedMetabList.remove(effectedMetabList.length() - 2, 2);
+          effectedMetabList.append("  ---> ");
+          effectedMetabList.append(FROM_UTF8(pMetab->getObjectName()));
+          effectedMetabList.append("\n");
+        }
+
+      std::set< const CCopasiObject * > Values;
+      pModel->appendDependentModelValues(pMetab->getDeletedObjects(), Values);
+
+      if (Values.size() > 0)
+        {
+          valueFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+          for (it = Values.begin(); it != itEnd; ++it)
+            {
+              effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
+              effectedValueList.append(", ");
+            }
+
+          effectedValueList.remove(effectedValueList.length() - 2, 2);
+          effectedValueList.append("  ---> ");
+          effectedValueList.append(FROM_UTF8(pMetab->getObjectName()));
+          effectedValueList.append("\n");
+        }
+
+      std::set< const CCopasiObject * > Compartments;
+      pModel->appendDependentCompartments(pMetab->getDeletedObjects(), Compartments);
+
+      if (Compartments.size() > 0)
+        {
+          compartmentFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+          for (it = Compartments.begin(); it != itEnd; ++it)
+            {
+              effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
+              effectedCompartmentList.append(", ");
+            }
+
+          effectedCompartmentList.remove(effectedCompartmentList.length() - 2, 2);
+          effectedCompartmentList.append("  ---> ");
+          effectedCompartmentList.append(FROM_UTF8(pMetab->getObjectName()));
+          effectedCompartmentList.append("\n");
         }
     }
 
-  metabList.remove(metabList.length() - 2, 2);
+  metaboliteList.remove(metaboliteList.length() - 2, 2);
 
-  QString msg = metabList;
-  if (reacFound == 1)
+  QString msg = metaboliteList;
+
+  if (compartmentFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedCompartmentList);
+    }
+
+  if (metabFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedMetabList);
+    }
+
+  if (reacFound)
     {
       msg.append("\n \n");
       msg.append(effectedReacList);
     }
 
+  if (valueFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedValueList);
+    }
+
   C_INT32 choice;
-  if (reacFound == 1)
+  if (metabFound || reacFound || valueFound || valueFound)
     choice = QMessageBox::warning(this,
                                   "CONFIRM DELETE",
                                   msg,

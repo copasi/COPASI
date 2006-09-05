@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.285 $
+   $Revision: 1.286 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/05 13:08:58 $
+   $Date: 2006/09/05 17:23:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1922,61 +1922,6 @@ std::string CModel::getQuantityRateUnitName() const
 
 //**********************************************************************
 
-std::set< CReaction * > CModel::listReactionsDependentOnMetab(const std::string & key)
-{
-  std::set< CReaction * > Keys;
-  const CCopasiVectorN<CReaction> & Reactions = getReactions();
-  C_INT32 j, jmax = Reactions.size();
-
-  for (j = 0; j < jmax; j++)
-    {
-      const CCopasiVector <CChemEqElement> &Substrates = Reactions[j]->getChemEq().getSubstrates();
-      C_INT32 i, imax = Substrates.size();
-      for (i = 0; i < imax; i++)
-        if (key == Substrates[i]->getMetaboliteKey())
-          Keys.insert(Reactions[j]);
-
-      const CCopasiVector <CChemEqElement> &Products = Reactions[j]->getChemEq().getProducts();
-      imax = Products.size();
-      for (i = 0; i < imax; i++)
-        if (key == Products[i]->getMetaboliteKey())
-          Keys.insert(Reactions[j]);
-
-      const CCopasiVector <CChemEqElement> &Modifiers = Reactions[j]->getChemEq().getModifiers();
-      imax = Modifiers.size();
-      for (i = 0; i < imax; i++)
-        if (key == Modifiers[i]->getMetaboliteKey())
-          Keys.insert(Reactions[j]);
-    }
-
-  return Keys;
-}
-
-std::set<std::string> CModel::listReactionsDependentOnCompartment(const std::string & key)
-{
-  std::set< CReaction * > metabReacKeys;
-  std::set< CReaction * >::iterator it, end;
-
-  std::set<std::string> compReacKeys;
-
-  CCompartment* comp = dynamic_cast< CCompartment *>(GlobalKeys.get(key));
-  const CCopasiVectorNS < CMetab > & Metabs = comp->getMetabolites();
-  C_INT32 j, jmax = Metabs.size();
-
-  for (j = 0; j < jmax; j++)
-    {
-      metabReacKeys = listReactionsDependentOnMetab(Metabs[j]->getKey());
-
-      // Visual C++ does not implement insert(iterator first, iterator last)
-      // Therfore the following does not compile:
-      // compReacKeys.insert(metabReacKeys.begin(), metabReacKeys.end());
-      for (it = metabReacKeys.begin(), end = metabReacKeys.end(); it != end; ++it)
-        compReacKeys.insert((*it)->getKey());
-    }
-
-  return compReacKeys;
-}
-
 std::set<std::string> CModel::listReactionsDependentOnFunction(const std::string & key)
 {
   std::set<std::string> reacKeys;
@@ -1992,29 +1937,6 @@ std::set<std::string> CModel::listReactionsDependentOnFunction(const std::string
     }
 
   return reacKeys;
-}
-
-std::set<std::string> CModel::listReactionsDependentOnModelValue(const std::string & key)
-{
-  std::set<std::string> Keys;
-
-  const CCopasiVectorN<CReaction> & Reactions = getReactions();
-  C_INT32 j, jmax = Reactions.size();
-  C_INT32 k, kmax;
-  C_INT32 l, lmax;
-
-  for (j = 0; j < jmax; j++)
-    {
-      const std::vector< std::vector<std::string> > & ParameterMap =
-        Reactions[j]->getParameterMappings();
-
-      for (k = 0, kmax = Reactions[j]->getFunctionParameters().size(); k < kmax; k++)
-        for (l = 0, lmax = ParameterMap[k].size(); l < lmax; l++)
-          if (key == ParameterMap[k][l])
-            Keys.insert(Reactions[j]->getKey());
-    }
-
-  return Keys;
 }
 
 void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidates,
@@ -2045,7 +1967,8 @@ void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
         end = (*itComp)->getMetabolites().end();
 
         for (; it != end; ++it)
-          if ((*it)->hasCircularDependencies(candidates))
+          if (candidates.find((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))) != candidates.end() ||
+              (*it)->hasCircularDependencies(candidates))
             dependentMetabolites.insert((*it));
       }
 
@@ -2116,7 +2039,8 @@ CMetab* CModel::createMetabolite(const std::string & name,
 
   return pMetab;
 }
-bool CModel::removeMetabolite(const std::string & key)
+bool CModel::removeMetabolite(const std::string & key,
+                              const bool & recursive)
 {
   CMetab* pMetabolite =
     dynamic_cast<CMetab *>(GlobalKeys.get(key));
@@ -2124,11 +2048,31 @@ bool CModel::removeMetabolite(const std::string & key)
   if (!pMetabolite)
     return false;
 
-  /* Before deleting the metabolite, delete all the reactions that are dependent */
-  std::set< CReaction * > reacKeys = listReactionsDependentOnMetab(key);
-  std::set< CReaction * >::const_iterator it, itEnd = reacKeys.end();
-  for (it = reacKeys.begin(); it != itEnd; ++it)
-    removeReaction((*it)->getKey());
+  if (recursive)
+    {
+      /* Before deleting  delete all the objects that are dependent */
+      std::set< const CCopasiObject * > ToBeDeleted;
+      std::set< const CCopasiObject * >::const_iterator it, end;
+
+      appendDependentReactions(pMetabolite->getDeletedObjects(), ToBeDeleted);
+      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
+        removeReaction((*it)->getKey(), false);
+
+      ToBeDeleted.clear();
+      appendDependentMetabolites(pMetabolite->getDeletedObjects(), ToBeDeleted);
+      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
+        removeMetabolite((*it)->getKey(), false);
+
+      ToBeDeleted.clear();
+      appendDependentCompartments(pMetabolite->getDeletedObjects(), ToBeDeleted);
+      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
+        removeCompartment((*it)->getKey(), false);
+
+      ToBeDeleted.clear();
+      appendDependentModelValues(pMetabolite->getDeletedObjects(), ToBeDeleted);
+      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
+        removeModelValue((*it)->getKey(), false);
+    }
 
   /* Check if metabolite with that name exists */
   unsigned C_INT32 index = mMetabolites.getIndex(pMetabolite);
@@ -2165,7 +2109,8 @@ CCompartment* CModel::createCompartment(const std::string & name,
   return cpt;
 }
 
-bool CModel::removeCompartment(const std::string & key)
+bool CModel::removeCompartment(const std::string & key,
+                               const bool & recursive)
 {
   CCompartment *pCompartment =
     dynamic_cast< CCompartment * >(GlobalKeys.get(key));
@@ -2173,11 +2118,31 @@ bool CModel::removeCompartment(const std::string & key)
   if (!pCompartment)
     return false;
 
-  /* Delete the dependent Metabolites before deleting the Compartment */
-  const CCopasiVectorNS <CMetab> &Metabs = pCompartment->getMetabolites();
+  if (recursive)
+    {
+      /* Before deleting  delete all the objects that are dependent */
+      std::set< const CCopasiObject * > ToBeDeleted;
+      std::set< const CCopasiObject * >::const_iterator it, end;
 
-  for (unsigned C_INT32 i = Metabs.size() - 1; i != C_INVALID_INDEX; i--)
-    removeMetabolite(Metabs[i]->getKey());
+      appendDependentReactions(pCompartment->getDeletedObjects(), ToBeDeleted);
+      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
+        removeReaction((*it)->getKey(), false);
+
+      ToBeDeleted.clear();
+      appendDependentMetabolites(pCompartment->getDeletedObjects(), ToBeDeleted);
+      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
+        removeMetabolite((*it)->getKey(), false);
+
+      ToBeDeleted.clear();
+      appendDependentCompartments(pCompartment->getDeletedObjects(), ToBeDeleted);
+      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
+        removeCompartment((*it)->getKey(), false);
+
+      ToBeDeleted.clear();
+      appendDependentModelValues(pCompartment->getDeletedObjects(), ToBeDeleted);
+      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
+        removeModelValue((*it)->getKey(), false);
+    }
 
   //Check if Compartment with that name exists
   unsigned C_INT32 index =
@@ -2209,7 +2174,8 @@ CReaction* CModel::createReaction(const std::string & name)
   return pReaction;
 }
 
-bool CModel::removeReaction(const std::string & key)
+bool CModel::removeReaction(const std::string & key,
+                            const bool & recursive)
 {
   CReaction * pReaction =
     dynamic_cast< CReaction * >(GlobalKeys.get(key));
@@ -2256,7 +2222,8 @@ CModelValue* CModel::createModelValue(const std::string & name,
   return cmv;
 }
 
-bool CModel::removeModelValue(const std::string & key)
+bool CModel::removeModelValue(const std::string & key,
+                              const bool & recursive)
 {
   CModelValue *pModelValue =
     dynamic_cast< CModelValue * >(GlobalKeys.get(key));
@@ -2264,11 +2231,31 @@ bool CModel::removeModelValue(const std::string & key)
   if (!pModelValue)
     return false;
 
-  /* Before deleting the value, delete all the reactions that are dependent */
-  std::set<std::string> reacKeys = listReactionsDependentOnModelValue(key);
-  std::set<std::string>::const_iterator it, itEnd = reacKeys.end();
-  for (it = reacKeys.begin(); it != itEnd; ++it)
-    removeReaction(*it);
+  if (recursive)
+    {
+      /* Before deleting  delete all the objects that are dependent */
+      std::set< const CCopasiObject * > ToBeDeleted;
+      std::set< const CCopasiObject * >::const_iterator it, end;
+
+      appendDependentReactions(pModelValue->getDeletedObjects(), ToBeDeleted);
+      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
+        removeReaction((*it)->getKey(), false);
+
+      ToBeDeleted.clear();
+      appendDependentMetabolites(pModelValue->getDeletedObjects(), ToBeDeleted);
+      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
+        removeMetabolite((*it)->getKey(), false);
+
+      ToBeDeleted.clear();
+      appendDependentCompartments(pModelValue->getDeletedObjects(), ToBeDeleted);
+      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
+        removeCompartment((*it)->getKey(), false);
+
+      ToBeDeleted.clear();
+      appendDependentModelValues(pModelValue->getDeletedObjects(), ToBeDeleted);
+      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
+        removeModelValue((*it)->getKey(), false);
+    }
 
   //Check if Value with that name exists
   unsigned C_INT32 index =

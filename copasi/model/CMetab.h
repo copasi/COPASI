@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.73 $
+   $Revision: 1.74 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/05 13:04:51 $
+   $Date: 2006/09/05 17:23:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,7 +138,6 @@ class CMetab : public CModelEntity
      *  Cleanup
      */
     void cleanup();
-    void initModel();
     void initCompartment(const CCompartment * pCompartment = NULL);
 
     /**

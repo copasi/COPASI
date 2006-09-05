@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReactionInterface.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/25 18:13:23 $
+   $Date: 2006/09/05 17:23:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -232,7 +232,7 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea) const
             else
               {
                 Names = CMetabNameInterface::splitDisplayName(mNameMap[i][0]);
-                rea->addParameterMapping(i, CMetabNameInterface::getMetaboliteKey(mpModel, Names.first, Names.second));
+                rea->setParameterMapping(i, CMetabNameInterface::getMetaboliteKey(mpModel, Names.first, Names.second));
               }
             break;
 

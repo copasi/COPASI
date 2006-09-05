@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.160 $
+   $Revision: 1.161 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/05 13:04:51 $
+   $Date: 2006/09/05 17:23:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -214,8 +214,6 @@ bool CReaction::setFunction(CFunction * pFunction)
   mMap.initializeFromFunctionParameters(mpFunction->getVariables());
   initializeMetaboliteKeyMap(); //needs to be called before initializeParamters();
   initializeParameters();
-
-  compile();
 
   return true;
 }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/04 20:05:07 $
+   $Date: 2006/09/05 17:23:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -197,85 +197,140 @@ CCopasiObject* ModelValuesWidget::createNewObject(const std::string & name)
 
 void ModelValuesWidget::deleteObjects(const std::vector<std::string> & keys)
 {
-  if (!CCopasiDataModel::Global->getModel())
+  CModel * pModel = CCopasiDataModel::Global->getModel();
+  if (pModel == NULL)
     return;
 
   if (keys.size() == 0)
     return;
 
-  QString valuesList = "Are you sure you want to delete listed parameter(s) ?\n";
-  QString effectedReacList = "Following reation(s) reference above quantity(s) and will be deleted -\n";
-  QString effectedModelValuesList = "Following global quantities(s) reference above quantity(s) and will be deleted -\n";
-  std::set<std::string> effectedKeys;
-  std::set< const CCopasiObject * > effectedObjects;
+  QString valueList = "Are you sure you want to delete listed MODEL VALUE(S) ?\n";
+  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above MODEL VALUE(S) and will be deleted -\n";
+  QString effectedMetabList = "Following METABOLITE(S) reference above MODEL VALUE(S) and will be deleted -\n";
+  QString effectedReacList = "Following REACTION(S) reference above MODEL VALUE(S) and will be deleted -\n";
+  QString effectedValueList = "Following MODEL VALUE(S) reference above MODEL VALUE(S) and will be deleted -\n";
 
-  bool dependentReactionFound = false;
-  bool dependentModelValuesFound = false;
+  bool compartmentFound = false;
+  bool metabFound = false;
+  bool reacFound = false;
+  bool valueFound = false;
 
   unsigned C_INT32 i, imax = keys.size();
-  for (i = 0; i < imax; i++) //all modelValues
+  for (i = 0; i < imax; i++) //all compartments
     {
-      valuesList.append(FROM_UTF8(GlobalKeys.get(keys[i])->getObjectName()));
-      valuesList.append(", ");
-
-      CModelValue* mv =
+      CModelValue * pValue =
         dynamic_cast< CModelValue *>(GlobalKeys.get(keys[i]));
 
-      effectedKeys =
-        CCopasiDataModel::Global->getModel()->listReactionsDependentOnModelValue(keys[i]);
+      valueList.append(FROM_UTF8(pValue->getObjectName()));
+      valueList.append(", ");
 
-      if (effectedKeys.size() > 0)
+      std::set< const CCopasiObject * > Reactions;
+      pModel->appendDependentReactions(pValue->getDeletedObjects(), Reactions);
+
+      if (Reactions.size() > 0)
         {
-          dependentReactionFound = true;
-          std::set<std::string>::const_iterator it, itEnd = effectedKeys.end();
-          for (it = effectedKeys.begin(); it != itEnd; ++it)
+          reacFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+          for (it = Reactions.begin(); it != itEnd; ++it)
             {
-              effectedReacList.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
+              effectedReacList.append(FROM_UTF8((*it)->getObjectName()));
               effectedReacList.append(", ");
             }
 
           effectedReacList.remove(effectedReacList.length() - 2, 2);
           effectedReacList.append("  ---> ");
-          effectedReacList.append(FROM_UTF8(mv->getObjectName()));
+          effectedReacList.append(FROM_UTF8(pValue->getObjectName()));
           effectedReacList.append("\n");
         }
 
-      CCopasiDataModel::Global->getModel()->appendDependentModelValues(mv->getDeletedObjects(), effectedObjects);
+      std::set< const CCopasiObject * > Metabolites;
+      pModel->appendDependentMetabolites(pValue->getDeletedObjects(), Metabolites);
 
-      if (effectedObjects.size() > 0)
+      if (Metabolites.size() > 0)
         {
-          dependentModelValuesFound = true;
-          std::set< const CCopasiObject * >::const_iterator it, itEnd = effectedObjects.end();
-          for (it = effectedObjects.begin(); it != itEnd; ++it)
+          metabFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+          for (it = Metabolites.begin(); it != itEnd; ++it)
             {
-              effectedModelValuesList.append(FROM_UTF8((*it)->getObjectName()));
-              effectedModelValuesList.append(", ");
+              effectedMetabList.append(FROM_UTF8((*it)->getObjectName()));
+              effectedMetabList.append(", ");
             }
 
-          effectedModelValuesList.remove(effectedModelValuesList.length() - 2, 2);
-          effectedModelValuesList.append("  ---> ");
-          effectedModelValuesList.append(FROM_UTF8(mv->getObjectName()));
-          effectedModelValuesList.append("\n");
+          effectedMetabList.remove(effectedMetabList.length() - 2, 2);
+          effectedMetabList.append("  ---> ");
+          effectedMetabList.append(FROM_UTF8(pValue->getObjectName()));
+          effectedMetabList.append("\n");
+        }
+
+      std::set< const CCopasiObject * > Values;
+      pModel->appendDependentModelValues(pValue->getDeletedObjects(), Values);
+
+      if (Values.size() > 0)
+        {
+          valueFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+          for (it = Values.begin(); it != itEnd; ++it)
+            {
+              effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
+              effectedValueList.append(", ");
+            }
+
+          effectedValueList.remove(effectedValueList.length() - 2, 2);
+          effectedValueList.append("  ---> ");
+          effectedValueList.append(FROM_UTF8(pValue->getObjectName()));
+          effectedValueList.append("\n");
+        }
+
+      std::set< const CCopasiObject * > Compartments;
+      pModel->appendDependentCompartments(pValue->getDeletedObjects(), Compartments);
+
+      if (Compartments.size() > 0)
+        {
+          compartmentFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+          for (it = Compartments.begin(); it != itEnd; ++it)
+            {
+              effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
+              effectedCompartmentList.append(", ");
+            }
+
+          effectedCompartmentList.remove(effectedCompartmentList.length() - 2, 2);
+          effectedCompartmentList.append("  ---> ");
+          effectedCompartmentList.append(FROM_UTF8(pValue->getObjectName()));
+          effectedCompartmentList.append("\n");
         }
     }
 
-  valuesList.remove(valuesList.length() - 2, 2);
+  valueList.remove(valueList.length() - 2, 2);
 
-  QString msg = valuesList;
-  if (dependentReactionFound)
+  QString msg = valueList;
+
+  if (compartmentFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedCompartmentList);
+    }
+
+  if (metabFound)
+    {
+      msg.append("\n \n");
+      msg.append(effectedMetabList);
+    }
+
+  if (reacFound)
     {
       msg.append("\n \n");
       msg.append(effectedReacList);
     }
 
-  if (dependentModelValuesFound)
+  if (valueFound)
     {
       msg.append("\n \n");
-      msg.append(effectedModelValuesList);
+      msg.append(effectedValueList);
     }
 
   C_INT32 choice;
-  if (dependentReactionFound || dependentModelValuesFound)
+  if (metabFound || reacFound || valueFound || valueFound)
     choice = QMessageBox::warning(this,
                                   "CONFIRM DELETE",
                                   msg,

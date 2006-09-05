@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.132 $
+   $Revision: 1.133 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/05 13:08:58 $
+   $Date: 2006/09/05 17:23:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -885,19 +885,11 @@ class CModel : public CModelEntity
                              const CModelEntity::Status & status = CModelEntity::REACTIONS);
 
     /* Remove a metabolite from the model */
-    bool removeMetabolite(const std::string & key);
-
-    /* Retreives list of Reactions Keys which are dependent on the Metabolite */
-    std::set<CReaction *> listReactionsDependentOnMetab(const std::string & key);
+    bool removeMetabolite(const std::string & key,
+                          const bool & recursive = true);
 
     /* Retreives list of Reactions Keys which are dependent on the Function */
     std::set<std::string> listReactionsDependentOnFunction(const std::string & key);
-
-    /* Retreives list of Reactions Keys which are dependent on the Compartment*/
-    std::set<std::string> listReactionsDependentOnCompartment(const std::string & key);
-
-    /* Retreives list of Reactions Keys which are dependent on the non concentration value*/
-    std::set<std::string> listReactionsDependentOnModelValue(const std::string & key);
 
     /**
      * Appends pointers to reactions which are dependent on the candidates to the
@@ -945,7 +937,8 @@ class CModel : public CModelEntity
                                     const C_FLOAT64 & volume = 1.0);
 
     /* Remove a Compartment from the model */
-    bool removeCompartment(const std::string & key);
+    bool removeCompartment(const std::string & key,
+                           const bool & recursive = true);
 
     /**
      * Add a new rection to the model
@@ -962,7 +955,8 @@ class CModel : public CModelEntity
     //bool addReaction(const CReaction & reaction);
 
     /* Remove a reaction from the model*/
-    bool removeReaction(const std::string & key);
+    bool removeReaction(const std::string & key,
+                        const bool & recursive = true);
 
     /**
      * Add a non concentration value to the model
@@ -972,7 +966,8 @@ class CModel : public CModelEntity
     CModelValue* createModelValue(const std::string & name,
                                   const C_FLOAT64 & value = 0.0);
 
-    bool removeModelValue(const std::string & key);
+    bool removeModelValue(const std::string & key,
+                          const bool & recursive = true);
 
     //*************************
 
