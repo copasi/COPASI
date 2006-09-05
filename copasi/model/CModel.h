@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.131 $
+   $Revision: 1.132 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/04 20:04:11 $
+   $Date: 2006/09/05 13:08:58 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -898,6 +898,33 @@ class CModel : public CModelEntity
 
     /* Retreives list of Reactions Keys which are dependent on the non concentration value*/
     std::set<std::string> listReactionsDependentOnModelValue(const std::string & key);
+
+    /**
+     * Appends pointers to reactions which are dependent on the candidates to the
+     * list.
+     * @param std::set< const CCopasiObject * > candidates
+     * @param std::set< const CCopasiObject * > & dependentReactions
+     */
+    void appendDependentReactions(std::set< const CCopasiObject * > candidates,
+                                  std::set< const CCopasiObject * > & dependentReactions) const;
+
+    /**
+     * Appends pointers to metabolites which are dependent on the candidates to the
+     * list.
+     * @param std::set< const CCopasiObject * > candidates
+     * @param std::set< const CCopasiObject * > & dependentMetabolites
+     */
+    void appendDependentMetabolites(std::set< const CCopasiObject * > candidates,
+                                    std::set< const CCopasiObject * > & dependentMetabolites) const;
+
+    /**
+     * Appends pointers to compartments which are dependent on the candidates to the
+     * list.
+     * @param std::set< const CCopasiObject * > candidates
+     * @param std::set< const CCopasiObject * > & dependentCompartments
+     */
+    void appendDependentCompartments(std::set< const CCopasiObject * > candidates,
+                                     std::set< const CCopasiObject * > & dependentCompartments) const;
 
     /**
      * Appends a pointers to model values which are dependent on the candidates to the

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.284 $
+   $Revision: 1.285 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/04 20:04:11 $
+   $Date: 2006/09/05 13:08:58 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2016,6 +2016,54 @@ std::set<std::string> CModel::listReactionsDependentOnModelValue(const std::stri
 
   return Keys;
 }
+
+void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidates,
+                                      std::set< const CCopasiObject * > & dependentReactions) const
+  {
+    CCopasiVectorN< CReaction >::const_iterator it = mSteps.begin();
+    CCopasiVectorN< CReaction >::const_iterator end = mSteps.end();
+
+    for (; it != end; ++it)
+      if ((*it)->hasCircularDependencies(candidates))
+        dependentReactions.insert((*it));
+
+    return;
+  }
+
+void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candidates,
+                                        std::set< const CCopasiObject * > & dependentMetabolites) const
+  {
+    CCopasiVectorN< CCompartment >::const_iterator itComp = mCompartments.begin();
+    CCopasiVectorN< CCompartment >::const_iterator endComp = mCompartments.end();
+
+    CCopasiVectorN< CMetab >::const_iterator it;
+    CCopasiVectorN< CMetab >::const_iterator end;
+
+    for (; itComp != endComp; ++itComp)
+      {
+        it = (*itComp)->getMetabolites().begin();
+        end = (*itComp)->getMetabolites().end();
+
+        for (; it != end; ++it)
+          if ((*it)->hasCircularDependencies(candidates))
+            dependentMetabolites.insert((*it));
+      }
+
+    return;
+  }
+
+void CModel::appendDependentCompartments(std::set< const CCopasiObject * > candidates,
+    std::set< const CCopasiObject * > & dependentCompartments) const
+  {
+    CCopasiVectorN< CCompartment >::const_iterator it = mCompartments.begin();
+    CCopasiVectorN< CCompartment >::const_iterator end = mCompartments.end();
+
+    for (; it != end; ++it)
+      if ((*it)->hasCircularDependencies(candidates))
+        dependentCompartments.insert((*it));
+
+    return;
+  }
 
 void CModel::appendDependentModelValues(std::set< const CCopasiObject * > candidates,
                                         std::set< const CCopasiObject * > & dependentModelValues) const
