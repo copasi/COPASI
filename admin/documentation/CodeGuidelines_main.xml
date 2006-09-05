@@ -330,7 +330,7 @@ no need to calculate them during simulation.
  </row>
  <row>
    <entry>Particle Rate</entry>
-   <entry>All reactions the metabolites paricipates in</entry>
+   <entry>All particle fluxes of reactions the metabolites paricipates in</entry>
    <entry>refreshRate</entry>
  </row>
  <row>
@@ -375,7 +375,7 @@ no need to calculate them during simulation.
  </row>
  <row>
    <entry>Particle Rate</entry>
-   <entry>All reactions the metabolites paricipates in</entry>
+   <entry>All particle fluxes of reactions the metabolites paricipates in</entry>
    <entry>refreshRate</entry>
  </row>
  <row>
