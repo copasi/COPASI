@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/10 21:15:16 $
+   $Date: 2006/09/05 13:04:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -176,6 +176,12 @@ class CMetab : public CModelEntity
      * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
      */
     virtual void calculate();
+
+    /**
+     * Retreive the list of deleted numeric child objects;
+     * @return std::set< const CCopasiObject * > deletedObjects
+     */
+    virtual std::set< const CCopasiObject * > getDeletedObjects() const;
 
     /**
      *

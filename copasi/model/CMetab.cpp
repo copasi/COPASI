@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.106 $
+   $Revision: 1.107 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/10 21:15:16 $
+   $Date: 2006/09/05 13:04:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -336,7 +336,7 @@ bool CMetab::compile()
 
           if (itChem != endChem)
             {
-              Dependencies.insert(*it);
+              Dependencies.insert((*it)->getObject(CCopasiObjectName("Reference=ParticleFlux")));
 
               std::pair< C_FLOAT64, const C_FLOAT64 * > Insert;
               Insert.first = (*itChem)->getMultiplicity();
@@ -433,6 +433,18 @@ void CMetab::initObjects()
   if (mpModel)
     pObject->setRefresh(mpModel, &CModel::setTransitionTimes);
 }
+
+std::set< const CCopasiObject * > CMetab::getDeletedObjects() const
+  {
+    std::set< const CCopasiObject * > Deleted = CModelEntity::getDeletedObjects();
+
+    Deleted.insert(mpIConcReference);
+    Deleted.insert(mpConcReference);
+    Deleted.insert(mpConcRateReference);
+    Deleted.insert(getObject(CCopasiObjectName("Reference=TransitionTime")));
+
+    return Deleted;
+  }
 
 C_FLOAT64 CMetab::getConcentrationRate() const
   {

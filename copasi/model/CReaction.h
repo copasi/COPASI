@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.94 $
+   $Revision: 1.95 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:57 $
+   $Date: 2006/09/05 13:04:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -153,6 +153,12 @@ class CReaction : public CCopasiContainer
      * @return bool success
      */
     virtual bool setObjectParent(const CCopasiContainer * pParent);
+
+    /**
+     * Retreive the list of deleted numeric child objects;
+     * @return std::set< const CCopasiObject * > deletedObjects
+     */
+    virtual std::set< const CCopasiObject * > getDeletedObjects() const;
 
     /**
      *  Retrieves the key of the reaction
