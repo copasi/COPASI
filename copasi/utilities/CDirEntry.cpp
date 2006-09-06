@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/21 15:44:19 $
+   $Date: 2006/09/06 17:38:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,8 @@
 
 #include "CDirEntry.h"
 #include "utility.h"
+
+#include "randomGenerator/CRandom.h"
 
 #ifdef WIN32
 const std::string CDirEntry::Separator = "\\";
@@ -172,6 +174,53 @@ bool CDirEntry::createDir(const std::string & dir,
 #else
   return (mkdir(utf8ToLocale(Dir).c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == 0);
 #endif
+}
+
+std::string CDirEntry::createTmpName(const std::string & dir,
+                                     const std::string & suffix)
+{
+  CRandom * pRandom = CRandom::createGenerator();
+
+  std::string RandomName;
+
+  do
+    {
+      RandomName = dir + Separator;
+      unsigned C_INT32 Char;
+
+      for (unsigned C_INT32 i = 0; i < 8; i++)
+        {
+          Char = pRandom->getRandomU(35);
+          if (Char < 10)
+            RandomName += '0' + Char;
+          else
+            RandomName += 'a' - 10 + Char;
+        }
+
+      RandomName += suffix;
+    }
+  while (exist(RandomName));
+
+  return RandomName;
+}
+
+bool CDirEntry::move(const std::string & from,
+                     const std::string & to)
+{
+  if (!isFile(from)) return false;
+
+  std::string To = to;
+
+  // Check whether To is a directory and append the
+  // filename of from
+  if (isDir(To))
+    To += Separator + fileName(from);
+
+  // Check whether To is an existing file and remove it.
+  if (exist(To) && isFile(To))
+    remove(To);
+
+  return (rename(utf8ToLocale(from).c_str(), utf8ToLocale(To).c_str()) == 0);
 }
 
 bool CDirEntry::remove(const std::string & path)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Date: 2006/09/06 17:38:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,6 +106,26 @@ class CDirEntry
      */
     static bool createDir(const std::string & dir,
                           const std::string & parent = "");
+
+    /**
+     * Create a name for a temporary directory entry. The directory entry
+     * will be located in the directory given
+     * @param const std::string & dir
+     * @param const std::string & suffix
+     * @return std::string tmpName
+     */
+    static std::string createTmpName(const std::string & dir,
+                                     const std::string & suffix);
+
+    /**
+     * Move a file from. If to is the directory the filename of from is
+     * appended.
+     * @param const std::string & from
+     * @param const std::string & to
+     * @return bool success
+     */
+    static bool move(const std::string & from,
+                     const std::string & to);
 
     /**
      * Removes a file or directory specified by path.
