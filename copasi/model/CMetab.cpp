@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.108 $
+   $Revision: 1.109 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/05 17:23:19 $
+   $Date: 2006/09/06 14:02:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -604,7 +604,10 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
   Fail = configbuffer.getVariable("Type", "C_INT32",
                                   (void *) & Status);
 
-  mStatus = (CMetab::Status) Status;
+  if (Status == 0)
+    mStatus = CModelEntity::FIXED;
+  else
+    mStatus = CModelEntity::REACTIONS;
 
   // sanity check
   if ((mStatus < 0) || (mStatus > 7))
