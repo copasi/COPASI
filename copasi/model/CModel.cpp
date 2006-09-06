@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.286 $
+   $Revision: 1.287 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/05 17:23:19 $
+   $Date: 2006/09/06 17:41:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -744,29 +744,26 @@ void CModel::updateMoietyValues()
 
 void CModel::buildMoieties()
 {
-  unsigned C_INT32 i, imax = getNumVariableMetabs();
+  unsigned C_INT32 i, imax = mNumMetabolitesReaction - mNumMetabolitesIndependent;
   unsigned C_INT32 j;
 
   CCopasiVector< CMetab >::iterator it =
     mMetabolitesX.begin() + mNumMetabolitesODE + mNumMetabolitesIndependent;
+  C_FLOAT64 * pFactor = mL.array();
 
   CMoiety *pMoiety;
 
   mMoieties.cleanup();
 
-  for (i = mNumMetabolitesIndependent; i < imax; i++, ++it)
+  for (i = 0; i < imax; i++, ++it)
     {
       pMoiety = new CMoiety;
       pMoiety->setObjectName((*it)->getObjectName());
       pMoiety->add(1.0, *it);
 
-      for (j = 0; j < mNumMetabolitesIndependent; j++)
-        {
-          const C_FLOAT64 & factor = mLView(i, j);
-
-          if (fabs(factor) > DBL_EPSILON)
-            pMoiety->add(- factor, mMetabolitesX[j] + mNumMetabolitesODE);
-        }
+      for (j = 0; j < mNumMetabolitesIndependent; j++, pFactor++)
+        if (fabs(*pFactor) > DBL_EPSILON)
+          pMoiety->add(- *pFactor, mMetabolitesX[j + mNumMetabolitesODE]);
 
       mMoieties.add(pMoiety, true);
     }
