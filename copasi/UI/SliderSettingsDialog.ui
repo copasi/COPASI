@@ -535,7 +535,7 @@ when setting the "Number of Minor Ticks".</string>
         <sender>mpObjectValueEdit</sender>
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>SliderSettingsDialog</receiver>
-        <slot>lineEditChanged()</slot>
+        <slot>valueTextChanged()</slot>
     </connection>
     <connection>
         <sender>mpMinorTickSizeEdit</sender>
@@ -553,13 +553,13 @@ when setting the "Number of Minor Ticks".</string>
         <sender>mpMinorTickSizeEdit</sender>
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>SliderSettingsDialog</receiver>
-        <slot>lineEditChanged()</slot>
+        <slot>tickSizeTextChanged()</slot>
     </connection>
     <connection>
         <sender>mpMinorMajorFactorEdit</sender>
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>SliderSettingsDialog</receiver>
-        <slot>lineEditChanged()</slot>
+        <slot>tickFactorTextChanged()</slot>
     </connection>
     <connection>
         <sender>mpNumMinorTicksEdit</sender>
@@ -577,7 +577,7 @@ when setting the "Number of Minor Ticks".</string>
         <sender>mpNumMinorTicksEdit</sender>
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>SliderSettingsDialog</receiver>
-        <slot>lineEditChanged()</slot>
+        <slot>numTicksTextChanged()</slot>
     </connection>
     <connection>
         <sender>mpMinValueEdit</sender>
@@ -589,7 +589,7 @@ when setting the "Number of Minor Ticks".</string>
         <sender>mpMinValueEdit</sender>
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>SliderSettingsDialog</receiver>
-        <slot>lineEditChanged()</slot>
+        <slot>minValueTextChanged()</slot>
     </connection>
     <connection>
         <sender>mpMaxValueEdit</sender>
@@ -601,7 +601,7 @@ when setting the "Number of Minor Ticks".</string>
         <sender>mpMaxValueEdit</sender>
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>SliderSettingsDialog</receiver>
-        <slot>lineEditChanged()</slot>
+        <slot>maxValueTextChanged()</slot>
     </connection>
     <connection>
         <sender>mpObjectBrowseButton</sender>
@@ -625,13 +625,19 @@ when setting the "Number of Minor Ticks".</string>
         <sender>mpOriginalValueEdit</sender>
         <signal>textChanged(const QString&amp;)</signal>
         <receiver>SliderSettingsDialog</receiver>
-        <slot>lineEditChanged()</slot>
+        <slot>origValueTextChanged()</slot>
     </connection>
     <connection>
         <sender>mpOriginalValueEdit</sender>
         <signal>lostFocus()</signal>
         <receiver>SliderSettingsDialog</receiver>
         <slot>originalValueChanged()</slot>
+    </connection>
+    <connection>
+        <sender>mpMinValueEdit</sender>
+        <signal>returnPressed()</signal>
+        <receiver>SliderSettingsDialog</receiver>
+        <slot>minValueChanged()</slot>
     </connection>
 </connections>
 <tabstops>
@@ -650,25 +656,27 @@ when setting the "Number of Minor Ticks".</string>
 </tabstops>
 <includes>
     <include location="global" impldecl="in declaration">vector</include>
+    <include location="local" impldecl="in implementation">SliderSettingsDialog.ui.h</include>
 </includes>
 <forwards>
     <forward>class CModel;</forward>
     <forward>class CSlider;</forward>
 </forwards>
 <variables>
-    <variable>int mScaling;</variable>
-    <variable>CModel* mpModel;</variable>
-    <variable>int mCurrentTaskId;</variable>
-    <variable>CSlider* mpSlider;</variable>
-    <variable>std::vector&lt; CSlider* &gt; mDefinedSliders;</variable>
-    <variable>unsigned int mNumMinorTicks;</variable>
-    <variable>unsigned int mMinorMajorFactor;</variable>
-    <variable>double mOriginalValue;</variable>
-    <variable>double mValue;</variable>
-    <variable>double mMinValue;</variable>
-    <variable>double mMaxValue;</variable>
+    <variable>enum CHANGETYPE {NONE, OBJECT, MIN,MAX,NUMTICKS,TICKSIZE,TICKFACTOR,ORIGVAL,VALUE,LOGARITHMIC};</variable>
+    <variable>CHANGETYPE mChanged;</variable>
     <variable>double mMinorTickSize;</variable>
-    <variable>bool mChanged;</variable>
+    <variable>double mMaxValue;</variable>
+    <variable>double mMinValue;</variable>
+    <variable>double mValue;</variable>
+    <variable>double mOriginalValue;</variable>
+    <variable>unsigned int mMinorMajorFactor;</variable>
+    <variable>unsigned int mNumMinorTicks;</variable>
+    <variable>std::vector&lt; CSlider* &gt; mDefinedSliders;</variable>
+    <variable>CSlider* mpSlider;</variable>
+    <variable>int mCurrentTaskId;</variable>
+    <variable>CModel* mpModel;</variable>
+    <variable>int mScaling;</variable>
 </variables>
 <signals>
     <signal>sliderChanged(CSlider* slider)</signal>
@@ -678,16 +686,22 @@ when setting the "Number of Minor Ticks".</string>
     <slot access="protected">cancelButtonPressed()</slot>
     <slot access="protected">minorTickSizeChanged()</slot>
     <slot access="protected">numMinorTicksChanged()</slot>
-    <slot access="protected">minValueChanged()</slot>
     <slot access="protected">maxValueChanged()</slot>
     <slot access="protected">objectValueChanged()</slot>
     <slot access="protected">minorMajorFactorChanged()</slot>
     <slot access="protected">browseButtonPressed()</slot>
-    <slot>lineEditChanged()</slot>
     <slot access="protected">extendedOptionsClicked()</slot>
     <slot access="protected">logCheckBoxToggled( bool on )</slot>
     <slot access="protected">globalCheckBoxToggled()</slot>
     <slot access="protected">originalValueChanged()</slot>
+    <slot access="protected">minValueChanged()</slot>
+    <slot access="protected">minValueTextChanged()</slot>
+    <slot access="protected">maxValueTextChanged()</slot>
+    <slot access="protected">numTicksTextChanged()</slot>
+    <slot access="protected">tickSizeTextChanged()</slot>
+    <slot access="protected">tickFactorTextChanged()</slot>
+    <slot access="protected">origValueTextChanged()</slot>
+    <slot access="protected">valueTextChanged()</slot>
 </slots>
 <functions>
     <function returnType="CSlider *">getSlider()</function>

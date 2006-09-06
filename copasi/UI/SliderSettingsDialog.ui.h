@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Author: gauges $
+   $Date: 2006/09/06 09:04:47 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -183,7 +183,7 @@ void SliderSettingsDialog::minorTickSizeChanged()
       this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
     }
   this->mpNumMinorTicksEdit->setText(QString::number(this->mNumMinorTicks));
-  this->mChanged = false;
+  this->mChanged = NONE;
 }
 
 void SliderSettingsDialog::numMinorTicksChanged()
@@ -197,7 +197,7 @@ void SliderSettingsDialog::numMinorTicksChanged()
     }
   this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
   this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
-  this->mChanged = false;
+  this->mChanged = NONE;
 }
 
 void SliderSettingsDialog::minValueChanged()
@@ -235,7 +235,7 @@ void SliderSettingsDialog::minValueChanged()
           this->mScaling = CSlider::linear;
         }
     }
-  this->mChanged = false;
+  this->mChanged = NONE;
 }
 
 void SliderSettingsDialog::maxValueChanged()
@@ -248,7 +248,7 @@ void SliderSettingsDialog::maxValueChanged()
       if (QMessageBox::warning(this, "Range to small.", "The maximum value you set is smaller than the default value\n of the slider. The new default will be set to the maximum.\n\n Do you want to procceed?", QMessageBox::Yes, QMessageBox::No | QMessageBox::Default) != QMessageBox::Yes)
         {
           this->mpMaxValueEdit->setText(QString::number(this->mMaxValue));
-          this->mChanged = false;
+          this->mChanged = NONE;
           return;
         }
       this->mOriginalValue = value;
@@ -267,7 +267,7 @@ void SliderSettingsDialog::maxValueChanged()
     }
   this->mMinorTickSize = (this->mMaxValue - this->mMinValue) / this->mNumMinorTicks;
   this->mpMinorTickSizeEdit->setText(QString::number(this->mMinorTickSize));
-  this->mChanged = false;
+  this->mChanged = NONE;
 }
 
 void SliderSettingsDialog::objectValueChanged()
@@ -285,20 +285,20 @@ void SliderSettingsDialog::objectValueChanged()
       this->mMinValue = this->mValue;
       this->mpMinValueEdit->setText(QString::number(this->mMinValue));
     }
-  this->mChanged = false;
+  this->mChanged = NONE;
 }
 
 void SliderSettingsDialog::minorMajorFactorChanged()
 {
   // get the value and set it in the current slider
   this->mMinorMajorFactor = this->mpMinorMajorFactorEdit->text().toUInt();
-  this->mChanged = false;
+  this->mChanged = NONE;
 }
 
 void SliderSettingsDialog::init()
 {
   this->mpSlider = NULL;
-  this->mChanged = false;
+  this->mChanged = NONE;
   this->mScaling = CSlider::linear;
   this->mpExtendedOptionsButton->setText("Advanced >>");
   this->mpExtendedOptionsFrame->hide();
@@ -416,10 +416,7 @@ void SliderSettingsDialog::disableObjectChoosing(bool disableChoosing)
 
 void SliderSettingsDialog::updateSlider()
 {
-  if (this->mChanged)
-    {
-      this->updateInternalValues();
-    }
+  this->updateInternalValues();
   if (this->mpSlider)
     {
       if (this->mMinValue < this->mpSlider->getMaxValue())
@@ -440,11 +437,6 @@ void SliderSettingsDialog::updateSlider()
     }
 }
 
-void SliderSettingsDialog::lineEditChanged()
-{
-  this->mChanged = true;
-}
-
 void SliderSettingsDialog::extendedOptionsClicked()
 {
   if (this->mpExtendedOptionsFrame->isHidden())
@@ -461,11 +453,8 @@ void SliderSettingsDialog::extendedOptionsClicked()
 
 void SliderSettingsDialog::logCheckBoxToggled(bool on)
 {
-  if (this->mChanged)
-    {
-      this->updateInternalValues();
-    }
-  this->mChanged = true;
+  this->updateInternalValues();
+  this->mChanged = LOGARITHMIC;
   if (on)
     {
       // check if the minValue is 0.0 or negative if so, issue an error message and uncheck the checkbox again
@@ -488,21 +477,37 @@ void SliderSettingsDialog::logCheckBoxToggled(bool on)
 
 void SliderSettingsDialog::globalCheckBoxToggled()
 {
-  if (this->mChanged)
-    {
-      this->updateInternalValues();
-    }
+  this->updateInternalValues();
 }
 
 void SliderSettingsDialog::updateInternalValues()
 {
-  objectValueChanged();
-  originalValueChanged();
-  minValueChanged();
-  maxValueChanged();
-  minorMajorFactorChanged();
-  minorTickSizeChanged();
-  numMinorTicksChanged();
+  switch (this->mChanged)
+    {
+    case VALUE:
+      objectValueChanged();
+      break;
+    case ORIGVAL:
+      originalValueChanged();
+      break;
+    case MIN:
+      minValueChanged();
+      break;
+    case MAX:
+      maxValueChanged();
+      break;
+    case TICKFACTOR:
+      minorMajorFactorChanged();
+      break;
+    case TICKSIZE:
+      minorTickSizeChanged();
+      break;
+    case NUMTICKS:
+      numMinorTicksChanged();
+      break;
+    default:
+      break;
+    }
 }
 
 void SliderSettingsDialog::originalValueChanged()
@@ -520,5 +525,40 @@ void SliderSettingsDialog::originalValueChanged()
       this->mMinValue = this->mOriginalValue;
       this->mpMinValueEdit->setText(QString::number(this->mMinValue));
     }
-  this->mChanged = false;
+  this->mChanged = NONE;
+}
+
+void SliderSettingsDialog::minValueTextChanged()
+{
+  this->mChanged = MIN;
+}
+
+void SliderSettingsDialog::maxValueTextChanged()
+{
+  this->mChanged = MAX;
+}
+
+void SliderSettingsDialog::numTicksTextChanged()
+{
+  this->mChanged = NUMTICKS;
+}
+
+void SliderSettingsDialog::tickSizeTextChanged()
+{
+  this->mChanged = TICKSIZE;
+}
+
+void SliderSettingsDialog::tickFactorTextChanged()
+{
+  this->mChanged = TICKFACTOR;
+}
+
+void SliderSettingsDialog::origValueTextChanged()
+{
+  this->mChanged = ORIGVAL;
+}
+
+void SliderSettingsDialog::valueTextChanged()
+{
+  this->mChanged = VALUE;
 }

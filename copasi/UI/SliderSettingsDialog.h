@@ -1,20 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderSettingsDialog.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Author: gauges $
+   $Date: 2006/09/06 09:04:47 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'SliderSettingsDialog.ui'
  **
- ** Created: Tue Mar 28 14:42:13 2006
- **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.11 2006/04/27 01:27:46 shoops Exp $)
+ ** Created: Wed Sep 6 10:57:55 2006
+ **      by: The User Interface Compiler ($Id: SliderSettingsDialog.h,v 1.12 2006/09/06 09:04:47 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -76,26 +76,24 @@ class SliderSettingsDialog : public QDialog
     virtual void disableObjectChoosing(bool disableChoosing);
     virtual void updateSlider();
 
-  public slots:
-    virtual void lineEditChanged();
-
   signals:
     void sliderChanged(CSlider* slider);
 
   protected:
-    int mScaling;
-    CModel* mpModel;
-    int mCurrentTaskId;
-    CSlider* mpSlider;
-    std::vector< CSlider* > mDefinedSliders;
-    unsigned int mNumMinorTicks;
-    unsigned int mMinorMajorFactor;
-    double mOriginalValue;
-    double mValue;
-    double mMinValue;
-    double mMaxValue;
+    enum CHANGETYPE {NONE, OBJECT, MIN, MAX, NUMTICKS, TICKSIZE, TICKFACTOR, ORIGVAL, VALUE, LOGARITHMIC};
+    CHANGETYPE mChanged;
     double mMinorTickSize;
-    bool mChanged;
+    double mMaxValue;
+    double mMinValue;
+    double mValue;
+    double mOriginalValue;
+    unsigned int mMinorMajorFactor;
+    unsigned int mNumMinorTicks;
+    std::vector< CSlider* > mDefinedSliders;
+    CSlider* mpSlider;
+    int mCurrentTaskId;
+    CModel* mpModel;
+    int mScaling;
 
     virtual void updateInputFieldsValues();
     virtual void updateInputFields();
@@ -123,7 +121,6 @@ class SliderSettingsDialog : public QDialog
     virtual void cancelButtonPressed();
     virtual void minorTickSizeChanged();
     virtual void numMinorTicksChanged();
-    virtual void minValueChanged();
     virtual void maxValueChanged();
     virtual void objectValueChanged();
     virtual void minorMajorFactorChanged();
@@ -132,6 +129,14 @@ class SliderSettingsDialog : public QDialog
     virtual void logCheckBoxToggled(bool on);
     virtual void globalCheckBoxToggled();
     virtual void originalValueChanged();
+    virtual void minValueChanged();
+    virtual void minValueTextChanged();
+    virtual void maxValueTextChanged();
+    virtual void numTicksTextChanged();
+    virtual void tickSizeTextChanged();
+    virtual void tickFactorTextChanged();
+    virtual void origValueTextChanged();
+    virtual void valueTextChanged();
   };
 
 #endif // SLIDERSETTINGSDIALOG_H
