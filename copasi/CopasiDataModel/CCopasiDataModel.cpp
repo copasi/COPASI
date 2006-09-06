@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.71 $
+   $Revision: 1.72 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/01 12:18:09 $
+   $Date: 2006/09/06 17:40:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -313,8 +313,21 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
 
   // We are first writing to a temporary stream to prevent accidental
   // destruction of an existing file in case the save command fails.
+  std::string TmpFileName;
+  COptions::getValue("Tmp", TmpFileName);
+  TmpFileName = CDirEntry::createTmpName(TmpFileName, ".cps");
 
-  if (!XML.CCopasiXMLInterface::save(FileName)) return false;
+  if (!XML.CCopasiXMLInterface::save(TmpFileName))
+    {
+      CDirEntry::remove(TmpFileName);
+      return false;
+    }
+
+  if (!CDirEntry::move(TmpFileName, FileName))
+    {
+      CDirEntry::remove(TmpFileName);
+      return false;
+    }
 
   if (!autoSave)
     {

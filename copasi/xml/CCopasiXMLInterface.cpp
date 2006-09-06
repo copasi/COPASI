@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/27 18:59:15 $
+   $Date: 2006/09/06 17:40:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -238,6 +238,70 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   if (isnan(dbl))
     value << "NaN";
   else if (finite(dbl))
@@ -246,6 +310,70 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
     value << "INF";
   else if (dbl < 0.0)
     value << "-INF";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -416,14 +544,10 @@ bool CCopasiXMLInterface::save(const std::string & fileName)
 {
   mFilename = fileName;
 
-  std::ostringstream tmp;
-  if (!save(tmp)) return false;
-
   std::ofstream os(utf8ToLocale(mFilename).c_str());
   if (os.fail()) return false;
 
-  os << tmp.str();
-  if (os.fail()) return false;
+  if (!save(os)) return false;
 
   return true;
 }
@@ -466,12 +590,7 @@ bool CCopasiXMLInterface::saveElement(const std::string & name,
                                       CXMLAttributeList & attributeList)
 {
   *mpOstream << mIndent << "<" << name;
-
-  unsigned C_INT32 i, imax;
-
-  for (i = 0, imax = attributeList.size(); i < imax; i++)
-    *mpOstream << attributeList.getAttribute(i);
-
+  *mpOstream << attributeList;
   *mpOstream << "/>" << std::endl;
 
   return true;
@@ -489,11 +608,7 @@ bool CCopasiXMLInterface::startSaveElement(const std::string & name,
     CXMLAttributeList & attributeList)
 {
   *mpOstream << mIndent << "<" << name;
-
-  unsigned C_INT32 i, imax;
-  for (i = 0, imax = attributeList.size(); i < imax; i++)
-    *mpOstream << attributeList.getAttribute(i);
-
+  *mpOstream << attributeList;
   *mpOstream << ">" << std::endl;
 
   mIndent += "  ";
@@ -655,3 +770,21 @@ std::string CXMLAttributeList::getAttribute(const unsigned C_INT32 & index) cons
     else
       return "";
   }
+
+std::ostream &operator<<(std::ostream &os, const CXMLAttributeList & attr)
+{
+  std::vector< std::string >::const_iterator itAttr = attr.mAttributeList.begin();
+  std::vector< bool >::const_iterator itSave = attr.mSaveList.begin();
+  std::vector< bool >::const_iterator endSave = attr.mSaveList.end();
+
+  for (; itSave != endSave; ++itSave)
+    if (*itSave)
+      {
+        os << " " << *itAttr++;
+        os << "=\"" << *itAttr++ << "\"";
+      }
+    else
+      itAttr += 2;
+
+  return os;
+}

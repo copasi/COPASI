@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/28 13:10:45 $
+   $Date: 2006/09/06 17:40:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -476,6 +476,8 @@ class CXMLAttributeList
      * @return std::string attribute
      */
     std::string getAttribute(const unsigned C_INT32 & index) const;
+
+    friend std::ostream &operator<<(std::ostream &os, const CXMLAttributeList & attr);
   };
 
 #endif // COPASI_CCopasiXMLInterface
