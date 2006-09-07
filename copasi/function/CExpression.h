@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/13 18:00:48 $
+   $Date: 2006/09/07 15:27:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,13 +76,19 @@ class CExpression:
      */
     void refresh();
 
+  private:
     /**
-     * Retrieve a pointer to the object define by CN.
+     * Retrieve a pointer to the object defined by CN. This method may only be called
+     * during compile() sinces the list mpListOfContainer is only valid then.
      * @param const CCopasiObjectName & CN
      * @return const CCopasiObject * value
      */
     virtual const CCopasiObject * getNodeObject(const CCopasiObjectName & CN) const;
 
+    // This is needed so that the tree compiles
+    friend bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree);
+
+  public:
     /**
      * Retrieve the list of container used for compile
      * @return const std::vector< CCopasiContainer * > & listOfContainer

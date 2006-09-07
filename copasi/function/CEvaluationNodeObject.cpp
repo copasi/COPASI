@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/08/28 14:09:10 $
+   $Author: shoops $
+   $Date: 2006/09/07 15:27:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -88,7 +88,7 @@ std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTre
     if (!pExpression) return false;
 
     const CCopasiObject * pObject =
-      pExpression->getNodeObject(mRegisteredObjectCN);
+      CCopasiContainer::ObjectFromName(mRegisteredObjectCN);
 
     if (pObject == NULL) return "<" + mRegisteredObjectCN + ">";
 
