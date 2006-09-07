@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/05 13:04:16 $
+   $Author: gauges $
+   $Date: 2006/09/07 14:13:30 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -182,6 +182,11 @@ CExpression* CModelEntity::getExpressionPtr()
 {
   return mpExpression;
 }
+
+const CExpression* CModelEntity::getExpressionPtr() const
+  {
+    return mpExpression;
+  }
 
 bool CModelEntity::setExpressionPtr(CExpression* pExpression)
 {

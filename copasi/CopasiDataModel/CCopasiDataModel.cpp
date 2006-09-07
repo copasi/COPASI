@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/06 17:40:42 $
+   $Author: gauges $
+   $Date: 2006/09/07 14:13:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -568,6 +568,9 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, const std::
   return exporter.exportMathModel(mpModel, fileName.c_str(), filter.c_str(), overwriteFile);
 }
 
+const CModel * CCopasiDataModel::getModel() const
+  {return mpModel;}
+
 CModel * CCopasiDataModel::getModel()
 {return mpModel;}
 
@@ -893,3 +896,8 @@ void CCopasiDataModel::removeSBMLIdFromFunctions()
       pFunDB->loadedFunctions()[i]->setSBMLId("");
     }
 }
+
+std::vector<std::string> CCopasiDataModel::isSBMLCompatible(int sbmlLevel, int sbmlVersion) const
+  {
+    return SBMLExporter::isModelSBMLCompatible(this, sbmlLevel, sbmlVersion);
+  }

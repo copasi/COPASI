@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.89 $
+   $Revision: 1.90 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/31 10:00:09 $
+   $Date: 2006/09/07 14:13:30 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -47,6 +47,7 @@
 #include "xml/CCopasiXMLInterface.h"
 
 #include <fstream>
+#include <sstream>
 
 const char* SBMLExporter::HTML_HEADER = "<body xmlns=\"http://www.w3.org/1999/xhtml\">";
 
@@ -2015,3 +2016,93 @@ bool SBMLExporter::checkExpressionObjects(const CEvaluationNode* pNode) const
       }
     return result;
   }
+
+std::vector<std::string> SBMLExporter::isModelSBMLCompatible(const CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion)
+{
+  std::vector<std::string> result;
+  std::ostringstream ss;
+  switch (sbmlLevel)
+    {
+    case 2:
+      switch (sbmlVersion)
+        {
+        case 1:
+          result = SBMLExporter::isModelSBMLL2V1Compatible(pDataModel);
+          break;
+        default:
+          ss << "Export to SBML Level " << sbmlLevel << " Version " << sbmlVersion << " is currently not supported in COPASI.";
+          result.push_back(ss.str());
+        }
+      break;
+    default:
+      ss << "Export to SBML Level " << sbmlLevel << " Version " << sbmlVersion << " is currently not supported in COPASI.";
+      result.push_back(ss.str());
+      break;
+    }
+  return result;
+}
+
+std::vector<std::string> SBMLExporter::isModelSBMLL2V1Compatible(const CCopasiDataModel* pDataModel)
+{
+  std::vector<std::string> result;
+  // go through all assignment expressions and check if object nodes only contain
+  // either a transient species concentration, a (transient) compartment volume,
+  // a transient parameter value or the model time
+  assert(pDataModel);
+  const CModel* pModel = pDataModel->getModel();
+  assert(pModel);
+  const CCopasiVectorN<CModelValue>& modelValues = pModel->getModelValues();
+  unsigned int i, iMax = modelValues.size();
+  for (i = 0;i < iMax;++i)
+    {
+      const CModelValue* pModelValue = modelValues[i];
+      assert(pModelValue);
+      CModelEntity::Status status = pModelValue->getStatus();
+      if (status == CModelEntity::ASSIGNMENT || status == CModelEntity::ODE)
+        {
+          const CExpression* pExpression = pModelValue->getExpressionPtr();
+          assert(pExpression);
+          const std::vector<CEvaluationNode*>& objectNodes = pExpression->getNodeList();
+          unsigned j, jMax = objectNodes.size();
+          for (j = 0;j < jMax;++j)
+            {
+              if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+                {
+                  const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(objectNodes[j]);
+                  assert(pObjectNode);
+                  const CCopasiObject* pObject = pExpression->getNodeObject(pObjectNode->getObjectCN());
+                  assert(pObject);
+                  if (pObject->isReference())
+                    {
+                      const CCopasiObject* pObjectParent = pObject->getObjectParent();
+                      assert(pObjectParent);
+                      std::string typeString = pObjectParent->getObjectType();
+                      if (typeString == "Compartment")
+                        {
+                          // must be a reference to the (transient) volume
+                        }
+                      else if (typeString == "Metabolite")
+                        {
+                          // must be a reference to the transient concentration
+                        }
+                      else if (typeString == "Modelvalue")
+                        {
+                          // must be a reference to the transient value
+                        }
+                      else if (typeString == "Model")
+                        {
+                          // must be a reference to the model time
+                        }
+                      else
+                        {
+                          result.push_back("Rule for global parameter \"" + pModelValue->getObjectName() + "\" contains reference to a value in object \"" + pObjectParent->getObjectName() + "\" of type \"" + typeString + "\" which is not supported in SBML Level2 Version1.");
+                        }
+                    }
+                  else
+                  {}
+                }
+            }
+        }
+    }
+  return result;
+}

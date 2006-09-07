@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/01 14:32:09 $
+   $Author: gauges $
+   $Date: 2006/09/07 14:13:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,6 +76,7 @@ class CCopasiDataModel: public COutputHandler
     bool exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
 
     CModel * getModel();
+    const CModel * getModel() const;
     CCopasiVectorN< CCopasiTask > * getTaskList();
     CCopasiTask * addTask(const CCopasiTask::Type & taskType);
     bool addDefaultTasks();
@@ -101,6 +102,13 @@ class CCopasiDataModel: public COutputHandler
     const std::string & getSBMLFileName() const;
 
     std::map<CCopasiObject*, SBase*>& getCopasi2SBMLMap();
+
+    /**
+     * Checks wether the model can be exported to a certain version of SBML.
+     * If it can be exported, the result vector will be empty, otherwise it will
+     * contain a number of messages that specify why it can't be exported.
+     */
+    std::vector<std::string> isSBMLCompatible(int sbmlLevel = 2, int sbmlVersion = 1) const;
 
     // Attributes
   protected:

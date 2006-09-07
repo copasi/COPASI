@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/30 14:45:55 $
+   $Date: 2006/09/07 14:13:30 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -264,6 +264,13 @@ class SBMLExporter
      */
     bool checkExpressionObjects(const CEvaluationNode* pNode) const;
 
+    /**
+     * Checks wether the given data model can be exported to SBML Level2 Version1.
+     * If it can be exported, the result vector will be empty, otherwise it will
+     * contain a number of messages that specify why it can't be exported.
+     */
+    static std::vector<std::string> isModelSBMLL2V1Compatible(const CCopasiDataModel* pDataModel);
+
   public:
 
     /**
@@ -308,6 +315,13 @@ class SBMLExporter
     void setExportExpressions(bool value);
     bool isSetExportExpressions() const;
     const std::list<const CEvaluationTree*>* getUsedFunctionList() const;
+
+    /**
+     * Checks wether the given data model can be exported to a certain version of SBML.
+     * If it can be exported, the result vector will be empty, otherwise it will
+     * contain a number of messages that specify why it can't be exported.
+     */
+    static std::vector<std::string> isModelSBMLCompatible(const CCopasiDataModel* pDataModel, int sbmlLevel, int sbmlVersion);
   };
 
 #endif
