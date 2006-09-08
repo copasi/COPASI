@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/08 20:18:50 $
+   $Author: ssahle $
+   $Date: 2006/09/08 00:55:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -362,6 +362,13 @@ CCopasiMethod * SensitivitiesWidget::createMethod(const CCopasiMethod::SubType &
 bool SensitivitiesWidget::runTask()
 {
   if (!commonBeforeRunTask()) return false;
+
+  CSensTask* sensTask =
+    dynamic_cast<CSensTask *>(GlobalKeys.get(mObjectKey));
+  assert(sensTask);
+
+  sensTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
+  sensTask->process(true);
 
   commonAfterRunTask();
 
