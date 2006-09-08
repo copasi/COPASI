@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/06 17:38:52 $
+   $Date: 2006/09/08 14:14:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 
 #include "CDirEntry.h"
 #include "utility.h"
+#include "CCopasiMessage.h"
 
 #include "randomGenerator/CRandom.h"
 
@@ -216,11 +217,24 @@ bool CDirEntry::move(const std::string & from,
   if (isDir(To))
     To += Separator + fileName(from);
 
-  // Check whether To is an existing file and remove it.
-  if (exist(To) && isFile(To))
-    remove(To);
+  bool success =
+    (rename(utf8ToLocale(from).c_str(), utf8ToLocale(To).c_str()) == 0);
 
-  return (rename(utf8ToLocale(from).c_str(), utf8ToLocale(To).c_str()) == 0);
+  if (!success)
+    {
+      {
+        std::ifstream in(utf8ToLocale(from).c_str());
+        std::ofstream out(utf8ToLocale(To).c_str());
+
+        out << in.rdbuf();
+
+        success = out.good();
+      }
+
+      remove(from);
+    }
+
+  return success;
 }
 
 bool CDirEntry::remove(const std::string & path)
