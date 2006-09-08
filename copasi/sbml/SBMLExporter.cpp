@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.92 $
+   $Revision: 1.93 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/09/08 12:32:23 $
+   $Date: 2006/09/08 13:11:43 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2179,7 +2179,7 @@ std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEnti
                   // must be a reference to the (transient) volume
                   if (pObject->getObjectName() != "Volume")
                     {
-                      result.push_back("Error. Reference to property other than transient volume for compartment \"" + pObjectParent->getObjectName() + "\" in rule for \"" + typeString + "\" \"" + pME->getObjectName() + "\".");
+                      result.push_back("Error. Reference to property other than transient volume for compartment \"" + pObjectParent->getObjectName() + "\" in rule for \"" + pME->getObjectType() + "\" \"" + pME->getObjectName() + "\".");
                     }
                 }
               else if (typeString == "Metabolite")
@@ -2187,7 +2187,7 @@ std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEnti
                   // must be a reference to the transient concentration
                   if (pObject->getObjectName() != "Concentration")
                     {
-                      result.push_back("Error. Reference to property other than transient concentration for metabolite \"" + pObjectParent->getObjectName() + "\" in rule for \"" + typeString + "\" \"" + pME->getObjectName() + "\".");
+                      result.push_back("Error. Reference to property other than transient concentration for metabolite \"" + pObjectParent->getObjectName() + "\" in rule for \"" + pME->getObjectType() + "\" \"" + pME->getObjectName() + "\".");
                     }
                 }
               else if (typeString == "ModelValue")
@@ -2195,7 +2195,7 @@ std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEnti
                   // must be a reference to the transient value
                   if (pObject->getObjectName() != "Value")
                     {
-                      result.push_back("Error. Reference to property other than transient value for \"" + typeString + "\" \"" + pObjectParent->getObjectName() + "\" in rule for global parameter \"" + pME->getObjectName() + "\".");
+                      result.push_back("Error. Reference to property other than transient value for \"" + typeString + "\" \"" + pObjectParent->getObjectName() + "\" in rule for \"" + pME->getObjectType() + "\" \"" + pME->getObjectName() + "\".");
                     }
                 }
               else if (typeString == "Model")
@@ -2203,12 +2203,12 @@ std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEnti
                   // must be a reference to the model time
                   if (pObject->getObjectName() != "Time")
                     {
-                      result.push_back("Error. Reference to property other than transient time for model \"" + pObjectParent->getObjectName() + "\" in rule for \"" + typeString + "\" \"" + pME->getObjectName() + "\".");
+                      result.push_back("Error. Reference to property other than transient time for model \"" + pObjectParent->getObjectName() + "\" in rule for \"" + pME->getObjectType() + "\" \"" + pME->getObjectName() + "\".");
                     }
                 }
               else
                 {
-                  result.push_back("Rule for \"" + typeString + "\" \"" + pME->getObjectName() + "\" contains reference to a value in object \"" + pObjectParent->getObjectName() + "\" of type \"" + typeString + "\" which is not supported in SBML Level2 Version1.");
+                  result.push_back("Rule for \"" + pME->getObjectType() + "\" \"" + pME->getObjectName() + "\" contains reference to a value in object \"" + pObjectParent->getObjectName() + "\" of type \"" + typeString + "\" which is not supported in SBML Level2 Version1.");
                 }
             }
           else
