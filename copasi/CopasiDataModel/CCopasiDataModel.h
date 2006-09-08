@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/09/07 14:13:31 $
+   $Date: 2006/09/08 12:32:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,7 +72,7 @@ class CCopasiDataModel: public COutputHandler
     bool newModel(CModel * pModel = NULL);
 
     bool importSBML(const std::string & fileName, CProcessReport* pImportHandler = NULL);
-    bool exportSBML(const std::string & fileName, bool overwriteFile = false, CProcessReport* pExportHandler = NULL);
+    bool exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, CProcessReport* pExportHandler = NULL);
     bool exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
 
     CModel * getModel();

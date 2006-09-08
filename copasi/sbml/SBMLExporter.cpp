@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.91 $
+   $Revision: 1.92 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/09/08 09:16:49 $
+   $Date: 2006/09/08 12:32:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -77,12 +77,12 @@ SBMLExporter::~SBMLExporter()
  ** argument to the function. The function return "true" on success and
  ** "false" on failure.
  */
-bool SBMLExporter::exportSBML(CModel* copasiModel, std::string sbmlFilename, bool overwriteFile, int sbmlLevel, int sbmlVersion)
+bool SBMLExporter::exportSBML(CModel* copasiModel, std::string sbmlFilename, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool incompleteExport)
 {
   this->mHandledSBMLObjects.clear();
   this->mpCopasiModel = copasiModel;
   /* create the SBMLDocument from the copasi model */
-  this->createSBMLDocumentFromCModel(copasiModel, sbmlLevel, sbmlVersion);
+  this->createSBMLDocumentFromCModel(copasiModel, sbmlLevel, sbmlVersion, incompleteExport);
   this->removeUnusedObjects();
   if (this->sbmlDocument->getModel() != NULL)
     {
@@ -120,7 +120,7 @@ bool SBMLExporter::exportSBML(CModel* copasiModel, std::string sbmlFilename, boo
  ** Optionally the method takes two integers that specify the level and the
  ** version number of the SBMLDocument that will be generated.
  */
-SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CModel* copasiModel, int sbmlLevel, int sbmlVersion)
+SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CModel* copasiModel, int sbmlLevel, int sbmlVersion, bool incompleteExport)
 {
   if (mpExportHandler)
     {
@@ -142,7 +142,7 @@ SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CModel* copasiModel, in
   this->sbmlDocument->setLevel(sbmlLevel);
   this->sbmlDocument->setVersion(sbmlVersion);
   /* create the model object from the copasi model */
-  this->createSBMLModelFromCModel(copasiModel);
+  this->createSBMLModelFromCModel(copasiModel, sbmlLevel, sbmlVersion, incompleteExport);
   if (mpExportHandler)
     {
       mStep = 7;
@@ -160,7 +160,7 @@ SBMLDocument* SBMLExporter::createSBMLDocumentFromCModel(CModel* copasiModel, in
  ** This method taked a copasi CModel and generates a SBML Model object
  **  which is returned. On failure NULL is returned.
  */
-Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
+Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel, int sbmlLevel, int sbmlVersion, bool incompleteExport)
 {
   unsigned C_INT32 step = 0, totalSteps, hStep;
   Model* sbmlModel = NULL;
@@ -406,7 +406,7 @@ Model* SBMLExporter::createSBMLModelFromCModel(CModel* copasiModel)
   std::vector<Rule*> rules;
   for (counter = 0; counter < iMax; counter++)
     {
-      Rule* sbmlRule = this->createRuleFromCModelEntity(copasiModel->getModelValues()[counter]);
+      Rule* sbmlRule = this->createRuleFromCModelEntity(copasiModel->getModelValues()[counter], sbmlLevel, sbmlVersion, incompleteExport);
       if (sbmlRule != NULL)
         {
           rules.push_back(sbmlRule);
@@ -1639,7 +1639,7 @@ const std::list<const CEvaluationTree*>* SBMLExporter::getUsedFunctionList() con
     return this->mpUsedFunctions;
   }
 
-Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME)
+Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME, int sbmlLevel, int sbmlVersion, bool incompleteExport)
 {
   Rule* pRule = NULL;
   Model* pModel = sbmlDocument->getModel();
@@ -1647,6 +1647,11 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME)
   if (pME)
     {
       Rule* pOldRule = this->findExistingRuleForModelEntity(pME);
+      std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = CCopasiDataModel::Global->getCopasi2SBMLMap();
+      std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(const_cast<CModelEntity*>(pME));
+      if (pos == copasi2sbmlmap.end()) fatalError();
+      SBase* pSBase = pos->second;
+      Species* pSpecies = NULL;
       if (pME->getStatus() == CModelEntity::ODE)
         {
           // create a rate rule
@@ -1687,6 +1692,32 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME)
           // check if the expression contains references to objects that are not allowed
           // only object nodes with references to Species, Compartments and global parameters and Time
           // are allowed at the moment
+          if (incompleteExport)
+            {
+              if (!this->isRuleSBMLCompatible(pME, sbmlLevel, sbmlVersion).empty())
+                {
+                  // reset some attributes
+                  switch (pSBase->getTypeCode())
+                    {
+                    case SBML_PARAMETER:
+                      dynamic_cast<Parameter*>(pSBase)->setConstant(true);
+                      break;
+                    case SBML_COMPARTMENT:
+                      dynamic_cast<Compartment*>(pSBase)->setConstant(true);
+                      break;
+                    case SBML_SPECIES:
+                      // boundary condition should remain true
+                      pSpecies = dynamic_cast<Species*>(pSBase);
+                      pSpecies->setConstant(false);
+                      break;
+                    default:
+                      fatalError();
+                      break;
+                    }
+                  pdelete(pRateRule);
+                  return NULL;
+                }
+            }
           this->checkExpressionObjects(pME->getExpressionPtr()->getRoot());
           // now we set the new expression
           ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
@@ -1733,6 +1764,33 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME)
           // check if the expression contains references to objects that are not allowed
           // only object nodes with references to Species, Compartments and global parameters and Time
           // are allowed at the moment
+          if (incompleteExport)
+            {
+              if (!this->isRuleSBMLCompatible(pME, sbmlLevel, sbmlVersion).empty())
+                {
+                  // reset some attributes
+                  switch (pSBase->getTypeCode())
+                    {
+                    case SBML_PARAMETER:
+                      dynamic_cast<Parameter*>(pSBase)->setConstant(true);
+                      break;
+                    case SBML_COMPARTMENT:
+                      dynamic_cast<Compartment*>(pSBase)->setConstant(true);
+                      break;
+                    case SBML_SPECIES:
+                      pSpecies = dynamic_cast<Species*>(pSBase);
+                      pSpecies->setConstant(false);
+                      // boundary condition should remain true
+                      pSpecies->setBoundaryCondition(true);
+                      break;
+                    default:
+                      fatalError();
+                      break;
+                    }
+                  pdelete(pAssignmentRule);
+                  return NULL;
+                }
+            }
           this->checkExpressionObjects(pME->getExpressionPtr()->getRoot());
           // now we set the new expression
           ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
@@ -1750,30 +1808,24 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME)
       if (pRule)
         {
           // set the corresponding SBML entity to non constant
-          std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = CCopasiDataModel::Global->getCopasi2SBMLMap();
-          std::map<CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(const_cast<CModelEntity*>(pME));
-          if (pos != copasi2sbmlmap.end())
+          switch (pSBase->getTypeCode())
             {
-              SBase* pSBase = pos->second;
-              switch (pSBase->getTypeCode())
-                {
-                case SBML_PARAMETER:
-                  dynamic_cast<Parameter*>(pSBase)->setConstant(false);
-                  break;
-                case SBML_SPECIES:
-                  dynamic_cast<Species*>(pSBase)->setConstant(false);
-                  break;
-                case SBML_COMPARTMENT:
-                  dynamic_cast<Compartment*>(pSBase)->setConstant(false);
-                  break;
-                default:
-                  fatalError();
-                  break;
-                }
-            }
-          else
-            {
+            case SBML_PARAMETER:
+              dynamic_cast<Parameter*>(pSBase)->setConstant(false);
+              break;
+            case SBML_SPECIES:
+              pSpecies = dynamic_cast<Species*>(pSBase);
+              pSpecies->setConstant(false);
+              // if it is a species and it has a rule, we need to set boundary condition to true
+              // even if the species is not part of any reaction, this should not be incorrect
+              pSpecies->setBoundaryCondition(true);
+              break;
+            case SBML_COMPARTMENT:
+              dynamic_cast<Compartment*>(pSBase)->setConstant(false);
+              break;
+            default:
               fatalError();
+              break;
             }
         }
     }
@@ -2060,48 +2112,108 @@ std::vector<std::string> SBMLExporter::isModelSBMLL2V1Compatible(const CCopasiDa
       CModelEntity::Status status = pModelValue->getStatus();
       if (status == CModelEntity::ASSIGNMENT || status == CModelEntity::ODE)
         {
-          const CExpression* pExpression = pModelValue->getExpressionPtr();
-          assert(pExpression);
-          const std::vector<CEvaluationNode*>& objectNodes = pExpression->getNodeList();
-          unsigned j, jMax = objectNodes.size();
-          for (j = 0;j < jMax;++j)
+          std::vector<std::string> tmpVect = isRuleSBMLL2V1Compatible(pModelValue);
+          if (tmpVect.size() != 0)
             {
-              if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+              std::vector<std::string>::iterator it = tmpVect.begin();
+              std::vector<std::string>::iterator endit = tmpVect.end();
+              while (it != endit)
                 {
-                  const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(objectNodes[j]);
-                  assert(pObjectNode);
-                  std::vector<CCopasiContainer*> containers;
-                  containers.push_back(CCopasiDataModel::Global->getModel());
-                  const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, pObjectNode->getObjectCN());
-                  assert(pObject);
-                  if (pObject->isReference())
+                  result.push_back(*it);
+                  ++it;
+                }
+            }
+        }
+    }
+  return result;
+}
+
+std::vector<std::string> SBMLExporter::isRuleSBMLCompatible(const CModelEntity* pME, int sbmlLevel, int sbmlVersion)
+{
+  std::vector<std::string> result;
+  std::ostringstream ss;
+  switch (sbmlLevel)
+    {
+    case 2:
+      switch (sbmlVersion)
+        {
+        case 1:
+          result = SBMLExporter::isRuleSBMLL2V1Compatible(pME);
+          break;
+        default:
+          fatalError();
+          break;
+        }
+      break;
+    default:
+      fatalError();
+      break;
+    }
+  return result;
+}
+
+std::vector<std::string> SBMLExporter::isRuleSBMLL2V1Compatible(const CModelEntity* pME)
+{
+  std::vector<std::string> result;
+  const CExpression* pExpression = pME->getExpressionPtr();
+  assert(pExpression);
+  const std::vector<CEvaluationNode*>& objectNodes = pExpression->getNodeList();
+  unsigned j, jMax = objectNodes.size();
+  for (j = 0;j < jMax;++j)
+    {
+      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+        {
+          const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(objectNodes[j]);
+          assert(pObjectNode);
+          std::vector<CCopasiContainer*> containers;
+          containers.push_back(CCopasiDataModel::Global->getModel());
+          const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, pObjectNode->getObjectCN());
+          assert(pObject);
+          if (pObject->isReference())
+            {
+              const CCopasiObject* pObjectParent = pObject->getObjectParent();
+              assert(pObjectParent);
+              std::string typeString = pObjectParent->getObjectType();
+              if (typeString == "Compartment")
+                {
+                  // must be a reference to the (transient) volume
+                  if (pObject->getObjectName() != "Volume")
                     {
-                      const CCopasiObject* pObjectParent = pObject->getObjectParent();
-                      assert(pObjectParent);
-                      std::string typeString = pObjectParent->getObjectType();
-                      if (typeString == "Compartment")
-                        {
-                          // must be a reference to the (transient) volume
-                        }
-                      else if (typeString == "Metabolite")
-                        {
-                          // must be a reference to the transient concentration
-                        }
-                      else if (typeString == "Modelvalue")
-                        {
-                          // must be a reference to the transient value
-                        }
-                      else if (typeString == "Model")
-                        {
-                          // must be a reference to the model time
-                        }
-                      else
-                        {
-                          result.push_back("Rule for global parameter \"" + pModelValue->getObjectName() + "\" contains reference to a value in object \"" + pObjectParent->getObjectName() + "\" of type \"" + typeString + "\" which is not supported in SBML Level2 Version1.");
-                        }
+                      result.push_back("Error. Reference to property other than transient volume for compartment \"" + pObjectParent->getObjectName() + "\" in rule for \"" + typeString + "\" \"" + pME->getObjectName() + "\".");
                     }
-                  else
-                    {}}
+                }
+              else if (typeString == "Metabolite")
+                {
+                  // must be a reference to the transient concentration
+                  if (pObject->getObjectName() != "Concentration")
+                    {
+                      result.push_back("Error. Reference to property other than transient concentration for metabolite \"" + pObjectParent->getObjectName() + "\" in rule for \"" + typeString + "\" \"" + pME->getObjectName() + "\".");
+                    }
+                }
+              else if (typeString == "ModelValue")
+                {
+                  // must be a reference to the transient value
+                  if (pObject->getObjectName() != "Value")
+                    {
+                      result.push_back("Error. Reference to property other than transient value for \"" + typeString + "\" \"" + pObjectParent->getObjectName() + "\" in rule for global parameter \"" + pME->getObjectName() + "\".");
+                    }
+                }
+              else if (typeString == "Model")
+                {
+                  // must be a reference to the model time
+                  if (pObject->getObjectName() != "Time")
+                    {
+                      result.push_back("Error. Reference to property other than transient time for model \"" + pObjectParent->getObjectName() + "\" in rule for \"" + typeString + "\" \"" + pME->getObjectName() + "\".");
+                    }
+                }
+              else
+                {
+                  result.push_back("Rule for \"" + typeString + "\" \"" + pME->getObjectName() + "\" contains reference to a value in object \"" + pObjectParent->getObjectName() + "\" of type \"" + typeString + "\" which is not supported in SBML Level2 Version1.");
+                }
+            }
+          else
+            {
+              result.push_back("Rule for \"" + pME->getObjectType() + "\" \"" + pME->getObjectName() + "\" contains reference to a object named \"" + pObject->getObjectName() + "\" of type \"" + pObject->getObjectType() + "\" which is not supported in SBML Level2 Version1.");
             }
         }
     }

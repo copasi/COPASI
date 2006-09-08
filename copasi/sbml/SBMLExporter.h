@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/09/07 14:13:30 $
+   $Date: 2006/09/08 12:32:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,13 +78,13 @@ class SBMLExporter
      ** Optionally the method takes two integers that specify the level and the
      ** version number of the SBMLDocument that will be generated.
      */
-    SBMLDocument* createSBMLDocumentFromCModel(CModel* copasiModel, int sbmlLevel = 2, int sbmlVersion = 1);
+    SBMLDocument* createSBMLDocumentFromCModel(CModel* copasiModel, int sbmlLevel = 2, int sbmlVersion = 1, bool incompleteExport = false);
 
     /**
      ** This method taked a copasi CModel and generates a SBML Model object
      **  which is returned. On failure NULL is returned.
      */
-    Model* createSBMLModelFromCModel(CModel* copasiModel);
+    Model* createSBMLModelFromCModel(CModel* copasiModel, int sbmlLevel, int sbmlVersion, bool incompleteExport = false);
 
     /**
      ** This method takes a pointer to a copasi CCompartment object and creates
@@ -244,7 +244,7 @@ class SBMLExporter
      * if the status of the entity evaluates to ASSIGNMENT or ODE, otherwise
      * a NULL pointer is returned.
      */
-    Rule* createRuleFromCModelEntity(CModelEntity* pME);
+    Rule* createRuleFromCModelEntity(CModelEntity* pME, int sbmlLevel, int sbmlVersion, bool exportIncomplete);
 
     /**
      * This method returns a vector of Rules that the given Rule depends on.
@@ -271,6 +271,21 @@ class SBMLExporter
      */
     static std::vector<std::string> isModelSBMLL2V1Compatible(const CCopasiDataModel* pDataModel);
 
+    /**
+     * Checks wether the rule in the given model entity can be exported to
+     * the specified version of SBML.
+     * If it can be exported, the result vector will be empty, otherwise it will
+     * contain a number of messages that specify why it can't be exported.
+     */
+    static std::vector<std::string> isRuleSBMLCompatible(const CModelEntity* pME, int sbmlLevel, int sbmlVersion);
+
+    /**
+     * Checks wether the rule in the given model entity can be exported to SBML Level2 Version1.
+     * If it can be exported, the result vector will be empty, otherwise it will
+     * contain a number of messages that specify why it can't be exported.
+     */
+    static std::vector<std::string> isRuleSBMLL2V1Compatible(const CModelEntity* pME);
+
   public:
 
     /**
@@ -289,7 +304,7 @@ class SBMLExporter
      ** argument to the function. The function return "true" on success and
      ** "false" on failure.
      */
-    bool exportSBML(CModel* copasiModel, std::string sbmlFilename, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1);
+    bool exportSBML(CModel* copasiModel, std::string sbmlFilename, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool incompleteExport = false);
 
     /**
     ** This method tests if a string only consists of whitespace characters

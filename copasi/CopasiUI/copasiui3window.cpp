@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.177 $
+   $Revision: 1.178 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/08/15 12:19:40 $
+   $Author: gauges $
+   $Date: 2006/09/08 12:32:23 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1039,6 +1039,9 @@ void CopasiUI3Window::slotExportSBML()
 
   C_INT32 Answer = QMessageBox::No;
   QString tmp;
+  bool exportIncomplete = false;
+  int sbmlLevel = 2;
+  int sbmlVersion = 1;
 
   while (Answer == QMessageBox::No)
     {
@@ -1049,6 +1052,9 @@ void CopasiUI3Window::slotExportSBML()
                     + CDirEntry::Separator
                     + CDirEntry::baseName(CCopasiDataModel::Global->getFileName())
                     + ".xml");
+
+      // we need a new dialog the lets the user choose different levels of sbml as soon as support for export to those versions
+      // has been implemented.
 
       tmp =
         CopasiFileDialog::getSaveFileName(this, "Save File Dialog",
@@ -1061,6 +1067,18 @@ void CopasiUI3Window::slotExportSBML()
         tmp += ".xml";
 
       tmp = tmp.remove(QRegExp("\\.$"));
+      std::vector<std::string> errorList = CCopasiDataModel::Global->isSBMLCompatible(2, 1);
+      if (!errorList.empty())
+        {
+          if (QMessageBox::warning(this, "SBML Incompatible", "Not all parts of the model are compatible with SBML Level2 Version1.\n\nContinue anyway?", QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton) == QMessageBox::Yes)
+            {
+              exportIncomplete = true;
+            }
+          else
+            {
+              return;
+            }
+        }
 
       Answer = checkSelection(tmp);
 
@@ -1074,7 +1092,7 @@ void CopasiUI3Window::slotExportSBML()
       bool success = false;
       try
         {
-          success = dataModel->exportSBML((const char *) tmp.utf8(), true);
+          success = dataModel->exportSBML((const char *) tmp.utf8(), true, sbmlLevel, sbmlVersion, exportIncomplete);
         }
       catch (CCopasiException except)
         {
