@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.90 $
+   $Revision: 1.91 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/09/07 14:13:30 $
+   $Date: 2006/09/08 09:16:49 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2070,7 +2070,9 @@ std::vector<std::string> SBMLExporter::isModelSBMLL2V1Compatible(const CCopasiDa
                 {
                   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(objectNodes[j]);
                   assert(pObjectNode);
-                  const CCopasiObject* pObject = pExpression->getNodeObject(pObjectNode->getObjectCN());
+                  std::vector<CCopasiContainer*> containers;
+                  containers.push_back(CCopasiDataModel::Global->getModel());
+                  const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(containers, pObjectNode->getObjectCN());
                   assert(pObject);
                   if (pObject->isReference())
                     {
@@ -2099,8 +2101,7 @@ std::vector<std::string> SBMLExporter::isModelSBMLL2V1Compatible(const CCopasiDa
                         }
                     }
                   else
-                  {}
-                }
+                    {}}
             }
         }
     }
