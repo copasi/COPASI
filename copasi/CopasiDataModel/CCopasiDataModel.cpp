@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/09/08 12:32:24 $
+   $Author: shoops $
+   $Date: 2006/09/08 14:15:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -311,22 +311,47 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
   XML.setPlotList(*mpPlotDefinitionList);
   XML.setGUI(*mpGUI);
 
-  // We are first writing to a temporary stream to prevent accidental
-  // destruction of an existing file in case the save command fails.
-  std::string TmpFileName;
-  COptions::getValue("Tmp", TmpFileName);
-  TmpFileName = CDirEntry::createTmpName(TmpFileName, ".cps");
+  bool success = true;
 
-  if (!XML.CCopasiXMLInterface::save(TmpFileName))
+  if (!autoSave)
     {
-      CDirEntry::remove(TmpFileName);
-      return false;
+      // We are first writing to a temporary file to prevent accidental
+      // destruction of an existing file in case the save command fails.
+      std::string TmpFileName;
+      COptions::getValue("Tmp", TmpFileName);
+      TmpFileName = CDirEntry::createTmpName(TmpFileName, ".cps");
+
+      try
+        {
+          if (!XML.CCopasiXMLInterface::save(TmpFileName))
+            {
+              CDirEntry::remove(TmpFileName);
+              success = false;
+            }
+        }
+
+      catch (...)
+        {
+          CDirEntry::remove(TmpFileName);
+          return false;
+        }
+
+      if (success && !CDirEntry::move(TmpFileName, FileName))
+        success = false;
     }
 
-  if (!CDirEntry::move(TmpFileName, FileName))
+  if (autoSave || !success)
     {
-      CDirEntry::remove(TmpFileName);
-      return false;
+      try
+        {
+          if (!XML.CCopasiXMLInterface::save(FileName))
+            return false;
+        }
+
+      catch (...)
+        {
+          return false;
+        }
     }
 
   if (!autoSave)
