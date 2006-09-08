@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/18 17:46:23 $
+   $Date: 2006/09/08 20:36:54 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -299,6 +299,18 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
         (*itSet)->getAllDependencies(DependencySet);
     }
 
+  // Remove all objects which do not have any refresh method as they will
+  // be ignored anyway, i.e., no need to sort them.
+  for (itSet = DependencySet.begin(), endSet = DependencySet.end(); itSet != endSet;)
+    if (((*itSet)->getRefresh()) == NULL)
+      {
+        const CCopasiObject * pObject = *itSet;
+        ++itSet;
+        DependencySet.erase(pObject);
+      }
+    else
+      ++itSet;
+
   // Create a properly sorted list.
   std::list< const CCopasiObject * > SortedList =
     sortObjectsByDependency(DependencySet.begin(), DependencySet.end());
@@ -322,16 +334,14 @@ CCopasiObject::buildUpdateSequence(const std::set< const CCopasiObject * > & obj
 
   for (; itList != endList; ++itList)
     {
-      if ((pRefresh = (*itList)->getRefresh()) != NULL)
-        {
-          itUpdate = UpdateVector.begin();
-          endUpdate = UpdateVector.end();
+      pRefresh = (*itList)->getRefresh();
+      itUpdate = UpdateVector.begin();
+      endUpdate = UpdateVector.end();
 
-          while (itUpdate != endUpdate && !(*itUpdate)->isEqual(pRefresh)) ++itUpdate;
+      while (itUpdate != endUpdate && !(*itUpdate)->isEqual(pRefresh)) ++itUpdate;
 
-          if (itUpdate == endUpdate)
-            UpdateVector.push_back(pRefresh);
-        }
+      if (itUpdate == endUpdate)
+        UpdateVector.push_back(pRefresh);
     }
 
   return UpdateVector;
