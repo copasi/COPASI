@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapMethod.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:41 $
+   $Author: ssahle $
+   $Date: 2006/09/08 00:52:04 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,7 +69,7 @@ CLyapMethod::createLyapMethod(CCopasiMethod::SubType subType,
  */
 CLyapMethod::CLyapMethod(const CCopasiMethod::SubType & subType,
                          const CCopasiContainer * pParent) :
-    CCopasiMethod(CCopasiTask::timeCourse, subType, pParent),
+    CCopasiMethod(CCopasiTask::lyap, subType, pParent),
     //mpCurrentState(NULL),
     mpProblem(NULL)
 {CONSTRUCTOR_TRACE;}
