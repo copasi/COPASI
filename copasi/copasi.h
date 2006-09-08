@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/copasi.h,v $
-   $Revision: 1.52 $
+   $Revision: 1.53 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:34:21 $
+   $Date: 2006/09/08 20:17:47 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,7 +138,7 @@ extern std::ofstream DebugFile;
 #    define TIME_TRACE(f, l) {\
        ftime(&C_init_time); \
        C_this_time = C_init_time.time * 1000 + C_init_time.millitm; \
-       std::cout << f <<"(" << l << "):\t" << C_this_time - C_last_time  << std::endl; \
+       DebugFile << f <<"(" << l << "):\t" << C_this_time - C_last_time  << std::endl; \
        C_last_time = C_this_time;\
      }
 #  endif // !Darwin
