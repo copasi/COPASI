@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.178 $
+   $Revision: 1.179 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/09/08 12:32:23 $
+   $Date: 2006/09/08 13:12:25 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1070,7 +1070,16 @@ void CopasiUI3Window::slotExportSBML()
       std::vector<std::string> errorList = CCopasiDataModel::Global->isSBMLCompatible(2, 1);
       if (!errorList.empty())
         {
-          if (QMessageBox::warning(this, "SBML Incompatible", "Not all parts of the model are compatible with SBML Level2 Version1.\n\nContinue anyway?", QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton) == QMessageBox::Yes)
+          std::string tmpMessage = "Not all parts of the model are compatible with SBML Level2 Version1.\n\nContinue anyway?\n\nDetails:\n\n";
+          std::vector<std::string>::iterator it = errorList.begin();
+          std::vector<std::string>::iterator endit = errorList.end();
+          while (it != endit)
+            {
+              tmpMessage += *it;
+              tmpMessage += "\n";
+              ++it;
+            }
+          if (MessageDialog::warning(this, "SBML Incompatible", tmpMessage.c_str(), QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape, QMessageBox::NoButton) == QMessageBox::Yes)
             {
               exportIncomplete = true;
             }
