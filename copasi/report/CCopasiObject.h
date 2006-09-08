@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/04 15:10:43 $
+   $Date: 2006/09/08 20:21:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -422,15 +422,24 @@ std::list< const CCopasiObject * > sortObjectsByDependency(ForwardAccessIterator
   std::list< const CCopasiObject * >::iterator itList;
   std::list< const CCopasiObject * >::iterator endList;
 
+  std::set< const CCopasiObject * > AllDependencies;
+  std::list< std::set< const CCopasiObject * > > DependencyList;
+  std::list< std::set< const CCopasiObject * > >::iterator itDependencies;
+
   for (; begin != end; ++begin)
     {
+      AllDependencies.clear();
+      (*begin)->getAllDependencies(AllDependencies);
+
       itList = SortedList.begin();
       endList = SortedList.end();
+      itDependencies = DependencyList.begin();
 
-      for (; itList != endList; ++itList)
-        if (CCopasiObject::compare(*begin, *itList)) break;
+      for (; itList != endList; ++itList, ++itDependencies)
+        if (itDependencies->count(*begin)) break;
 
       SortedList.insert(itList, *begin);
+      DependencyList.insert(itDependencies, AllDependencies);
     }
 
   return SortedList;
