@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:39 $
+   $Author: ssahle $
+   $Date: 2006/09/08 00:55:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,6 @@
 #include "utilities/CReadConfig.h"
 #include "CSensMethod.h"
 
-//class CTSSProblem;
 class CState;
 class CReportDefinitionVector;
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/08/03 14:25:27 $
+   $Author: ssahle $
+   $Date: 2006/09/08 00:55:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,6 +25,7 @@
 
 #include "utilities/CCopasiProblem.h"
 #include "model/CObjectLists.h"
+#include "utilities/CAnnotatedMatrix.h"
 
 /**
  * This class describes either one specific copasi object (represented
@@ -43,6 +44,8 @@ class CSensItem
     void setListType(CObjectLists::ListType lt);
     const CObjectLists::ListType & getListType() const;
     std::string getListTypeDisplayName() const;
+
+    std::vector<CCopasiObject*> getVariablesPointerList(CModel* pModel);
 
     bool operator==(const CSensItem & rhs) const;
     bool operator!=(const CSensItem & rhs) const;
@@ -118,7 +121,34 @@ class CSensProblem: public CCopasiProblem
 
     bool removeVariables(unsigned C_INT32 index);
 
+    CCopasiArray & getResult();
+    const CCopasiArray & getResult() const;
+
+    /**
+     * This is the output method for any result of a problem. The default implementation
+     * provided with CCopasiProblem. Does only print "Not implemented." To overide this
+     * default behaviour one needs to reimplement the virtual printResult function.
+     * @param std::ostream * ostream
+     */
+    virtual void printResult(std::ostream * ostream) const;
+
+    /**
+     * Output stream operator. Prints description of the problem
+     * @param ostream & os
+     * @param const Problem & A
+     * @return ostream & os
+     */
+    friend std::ostream &operator<<(std::ostream &os, const CSensProblem & o);
+
+    /**
+     * This is the output method for any object. It calls the insert operator<<
+     * @param std::ostream * ostream
+     */
+    virtual void print(std::ostream * ostream) const;
+
   private:
+
+    void initObjects();
 
     /**
      *  create the copasi parameters corresponding to the members of a CSensItem
@@ -144,6 +174,13 @@ class CSensProblem: public CCopasiProblem
      *  This holds the variables items
      */
     CCopasiParameterGroup * mpVariablesGroup;
+
+    /**
+     *  This holds the result
+     */
+    CCopasiArray mResult;
+
+    CArrayAnnotation * mResultAnnotation;
   };
 
 #endif // COPASI_CSensProblem

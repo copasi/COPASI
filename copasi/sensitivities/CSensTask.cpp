@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensTask.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:39 $
+   $Author: ssahle $
+   $Date: 2006/09/08 00:55:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,7 +35,6 @@ CSensTask::CSensTask(const CCopasiContainer * pParent):
   mpMethod = CSensMethod::createSensMethod(CCopasiMethod::sensMethod);
   this->add(mpMethod, true);
   //mpMethod->setObjectParent(this);
-  //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
 }
 
 CSensTask::CSensTask(const CSensTask & src,
@@ -48,7 +47,6 @@ CSensTask::CSensTask(const CSensTask & src,
     CSensMethod::createSensMethod(src.mpMethod->getSubType());
   this->add(mpMethod, true);
   //mpMethod->setObjectParent(this);
-  //((CSteadyStateMethod *) mpMethod)->setProblem((CSteadyStateProblem *) mpProblem);
 }
 
 CSensTask::~CSensTask()
@@ -57,6 +55,7 @@ CSensTask::~CSensTask()
 void CSensTask::cleanup()
 {}
 
+//TODO: really necessary?
 void CSensTask::print(std::ostream * ostream) const {(*ostream) << (*this);}
 
 bool CSensTask::initialize(const OutputFlag & of, std::ostream * pOstream)
@@ -89,6 +88,9 @@ bool CSensTask::process(const bool & /* useInitialValues */)
   CSensMethod* pMethod =
     dynamic_cast<CSensMethod *>(mpMethod);
   assert(pMethod);
+
+  //TODO: move to Task::initialize() ?
+  pMethod->initialize(pProblem);
 
   mReport.output(COutputInterface::BEFORE);
 

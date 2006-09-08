@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:39 $
+   $Author: ssahle $
+   $Date: 2006/09/08 00:55:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,14 +16,19 @@
 #include <string>
 
 #include "utilities/CCopasiMethod.h"
-//#include "utilities/CMatrix.h"
-
 #include "utilities/CAnnotatedMatrix.h"
 
 class CSensProblem;
-class CState;
-class CStateX;
 //class CProcessReport;
+
+class CSensMethodLocalData
+  {
+  public:
+    CCopasiArray tmp1;
+    CCopasiArray tmp2;
+
+    std::vector<CCopasiObject*> variables;
+  };
 
 class CSensMethod : public CCopasiMethod
   {
@@ -31,7 +36,7 @@ class CSensMethod : public CCopasiMethod
     /**
      *  A pointer to the sensitivities problem.
      */
-    const CSensProblem * mpProblem;
+    CSensProblem * mpProblem;
 
     /**
      * A pointer to the progress bar handler
@@ -77,13 +82,6 @@ class CSensMethod : public CCopasiMethod
     ~CSensMethod();
 
     /**
-     *  Set a pointer to the problem.
-     *  This method is used by CSteadyState
-     *  @param "CSteadyStateProblem *" problem
-     */
-    //void setProblem(CSteadyStateProblem * problem);
-
-    /**
      */
     bool process(CProcessReport * handler);
 
@@ -97,26 +95,17 @@ class CSensMethod : public CCopasiMethod
 
   protected:
 
-    /**
-     * This instructs the method to calculate a the steady state
-     * starting with the initialState given.
-     * The steady state is returned in the object pointed to by steadyState.
-     * @return CTSSMethod::ReturnCode returnCode
-     */
-    bool processInternal();
+    std::vector<CSensMethodLocalData> mLocalData;
 
-    bool doOneCalculation();
-    bool storeTargetValues(CCopasiArray & target);
+    std::vector<CCopasiObject*> mTargetfunctionPointers;
 
-    CCopasiArray mTarget1, mTarget2;
+    void calculate_one_level(unsigned C_INT32 level, CCopasiArray & result);
+    void do_target_calculation(CCopasiArray & result);
 
-    CCopasiArray mResult;
+    C_FLOAT64 do_variation(CCopasiObject* variable);
 
-    std::vector<std::vector<CCopasiObject*> > mTargetObjects, mVariableObjects;
-
-    std::vector<unsigned int> mTargetSizes, mVariableSizes, mIndex, mTargetIndex, mVariableIndex;
-
-    unsigned int mTargetDim, mVariableDim;
+    void calculate_difference(unsigned C_INT32 level, const C_FLOAT64 & delta,
+                              CCopasiArray & result, CCopasiArray::index_type & resultindex);
   };
 
-#endif // COPASI_CTSSMethod
+#endif

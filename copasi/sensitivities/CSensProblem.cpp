@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/08/03 14:25:27 $
+   $Author: ssahle $
+   $Date: 2006/09/08 00:55:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,6 +73,25 @@ bool CSensItem::operator!=(const CSensItem & rhs) const
   {
     return !(*this == rhs);
   }
+
+std::vector<CCopasiObject*> CSensItem::getVariablesPointerList(CModel* pModel)
+{
+  std::vector<CCopasiObject*> ret;
+
+  if (isSingleObject())
+    {
+      CCopasiObject* tmpObject = CCopasiContainer::ObjectFromName(getSingleObjectCN());
+      if (!tmpObject) {return ret;}  //return empty list
+      if (!tmpObject->isValueDbl()) {return ret;}  //return empty list
+      ret.push_back(tmpObject);
+    }
+  else
+    {
+      ret = CObjectLists::getListOfObjects(getListType(), pModel);
+    }
+
+  return ret;
+}
 
 //************************ CSensProblem ***************************
 
@@ -160,6 +179,7 @@ CSensProblem::CSensProblem(const CCopasiContainer * pParent):
   mpVariablesGroup = dynamic_cast<CCopasiParameterGroup*>(getParameter("ListOfVariables"));
 
   //  initDebugProblem();
+  initObjects();
   CONSTRUCTOR_TRACE;
 }
 
@@ -177,7 +197,16 @@ CSensProblem::CSensProblem(const CSensProblem & src,
   mpSubTaskType = (CSensProblem::SubTaskType*)getValue("SubtaskType").pUINT;
   mpTargetFunctions = dynamic_cast<CCopasiParameterGroup*>(getParameter("TargetFunctions"));
   mpVariablesGroup = dynamic_cast<CCopasiParameterGroup*>(getParameter("ListOfVariables"));
+
+  initObjects();
   CONSTRUCTOR_TRACE;
+}
+
+void CSensProblem::initObjects()
+{
+  mResultAnnotation = new CArrayAnnotation("Sensitivities array", this, &mResult);
+  mResultAnnotation->setOnTheFly(false);
+  mResultAnnotation->setDescription("");
 }
 
 /**
@@ -275,6 +304,16 @@ bool CSensProblem::changeVariables(unsigned C_INT32 index, const CSensItem & ite
   return true;
 }
 
+CCopasiArray & CSensProblem::getResult()
+{
+  return mResult;
+}
+
+const CCopasiArray & CSensProblem::getResult() const
+  {
+    return mResult;
+  }
+
 //static
 std::vector<CObjectLists::ListType>
 CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
@@ -353,6 +392,23 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
 
   return list;
 }
+
+void CSensProblem::printResult(std::ostream * ostream) const
+{
+    std::ostream & os = *ostream;
+
+    os << "Sensitivities result." << std::endl;
+  }
+
+std::ostream &operator<<(std::ostream &os, const CSensProblem & o)
+{
+  os << "Sensitivities description" << std::endl;
+
+  return os;
+}
+
+void CSensProblem::print(std::ostream * ostream) const
+  {*ostream << *this;}
 
 void CSensProblem::initDebugProblem()
 {
