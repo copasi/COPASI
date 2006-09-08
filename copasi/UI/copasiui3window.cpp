@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.179 $
+   $Revision: 1.180 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/09/08 13:12:25 $
+   $Author: shoops $
+   $Date: 2006/09/08 14:13:51 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -700,7 +700,7 @@ void CopasiUI3Window::CleanUp()
   std::string tempDir;
   COptions::getValue("Tmp", tempDir);
 
-  CDirEntry::removeFiles("tmp_*.cps", tempDir);
+  CDirEntry::removeFiles("*.cps", tempDir);
   CDirEntry::remove(tempDir);
 }
 
