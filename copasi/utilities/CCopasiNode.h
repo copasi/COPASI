@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiNode.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:42 $
+   $Date: 2006/09/08 20:19:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -159,7 +159,9 @@ template < class _Data > class CCopasiNode
           return mpChild->removeSibling(pChild);
 
         mpChild = mpChild->getSibling();
+
         pChild->setParent(NULL);
+        pChild->setSibling(NULL);
 
         return true;
       }
@@ -226,8 +228,6 @@ template < class _Data > class CCopasiNode
               return false;                  // Root can not be removed
           }
 
-        pSibling->setParent(NULL);
-
         CCopasiNode< Data > * pTmp = this;
         CCopasiNode< Data > * pTmpSibling = this->mpSibling;
 
@@ -237,10 +237,15 @@ template < class _Data > class CCopasiNode
             pTmpSibling = pTmpSibling->getSibling();
           }
 
-        if (pTmpSibling)
-          return pTmp->setSibling(pSibling->getSibling());
-        else
-          return false;                      // We did not find pSibling.
+        if (!pTmpSibling)
+          return false; // We did not find a sibling.
+
+        pTmp->setSibling(pSibling->getSibling());
+
+        pSibling->setParent(NULL);
+        pSibling->setSibling(NULL);
+
+        return true;
       }
 
     public:
