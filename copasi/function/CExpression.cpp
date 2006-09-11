@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/13 18:00:48 $
+   $Date: 2006/09/11 19:46:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -70,7 +70,7 @@ bool CExpression::compile(std::vector< CCopasiContainer * > listOfContainer)
 
   bool success = compileNodes();
 
-  if (success)
+  if (success && mpNodeList)
     {
       const CCopasiObject * pObject;
       std::set< const CCopasiObject * > Dependencies;
