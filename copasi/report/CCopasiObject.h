@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.h,v $
-   $Revision: 1.65 $
+   $Revision: 1.66 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/08 20:21:29 $
+   $Date: 2006/09/11 14:24:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -253,6 +253,12 @@ class CCopasiObject
      * @return const std::set< const CCopasiObject * > & directDependencies
      */
     const std::set< const CCopasiObject * > & getDirectDependencies() const;
+
+    /**
+     * Add a the object to the direct dependencies
+     * @param const CCopasiObject * pObject
+     */
+    void addDirectDependency(const CCopasiObject * pObject);
 
     /**
      * If called with an empty set of dependencies it retrieves the complete list

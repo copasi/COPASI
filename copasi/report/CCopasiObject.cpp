@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/08 20:36:54 $
+   $Date: 2006/09/11 14:24:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -220,6 +220,12 @@ void CCopasiObject::setDirectDependencies(const std::set< const CCopasiObject * 
 
 const std::set< const CCopasiObject * > & CCopasiObject::getDirectDependencies() const
   {return mDependencies;}
+
+void CCopasiObject::addDirectDependency(const CCopasiObject * pObject)
+{
+  mDependencies.insert(pObject);
+  return;
+}
 
 void CCopasiObject::getAllDependencies(std::set< const CCopasiObject * > & dependencies) const
   {
