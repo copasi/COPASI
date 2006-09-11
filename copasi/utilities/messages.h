@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/08/30 14:45:55 $
+   $Author: shoops $
+   $Date: 2006/09/11 16:29:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -208,6 +208,8 @@ const MESSAGES Messages[] =
     {MCFitting + 6, "CFitting (6): Object '%s' in column '%d' has no numeric value."},
     {MCFitting + 7, "CFitting (7): Insufficient experimental data (rows requested '%d', rows found '%d')."},
     {MCFitting + 8, "CFitting (8): Failure reading file '%s'."},
+    {MCFitting + 9, "CFitting (9): Experiment '%s' has no data rows."},
+    {MCFitting + 10, "CFitting (10): Experiment '%s' has no dependent data."},
 
     // CCopasiObject
     {MCObject + 1, "CObject (1): Circular dependencies detected for object '%s'."},
