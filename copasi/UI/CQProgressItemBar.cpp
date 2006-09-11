@@ -1,20 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressItemBar.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:41 $
+   $Date: 2006/09/11 13:05:30 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQProgressItemBar.ui'
  **
- ** Created: Tue Jul 5 17:03:30 2005
- **      by: The User Interface Compiler ($Id: CQProgressItemBar.cpp,v 1.6 2006/04/27 01:27:41 shoops Exp $)
+ ** Created: Mon Sep 11 08:57:47 2006
+ **      by: The User Interface Compiler ($Id: CQProgressItemBar.cpp,v 1.7 2006/09/11 13:05:30 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -60,6 +60,7 @@ CQProgressItemBar::CQProgressItemBar(QWidget* parent, const char* name)
   languageChange();
   resize(QSize(200, 33).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
+  init();
 }
 
 /*
@@ -67,6 +68,7 @@ CQProgressItemBar::CQProgressItemBar(QWidget* parent, const char* name)
  */
 CQProgressItemBar::~CQProgressItemBar()
 {
+  destroy();
   // no need to delete child widgets, Qt does it all for us
 }
 

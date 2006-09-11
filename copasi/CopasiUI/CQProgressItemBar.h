@@ -1,20 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQProgressItemBar.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:41 $
+   $Date: 2006/09/11 13:05:30 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQProgressItemBar.ui'
  **
- ** Created: Tue Jul 5 17:03:30 2005
- **      by: The User Interface Compiler ($Id: CQProgressItemBar.h,v 1.7 2006/04/27 01:27:41 shoops Exp $)
+ ** Created: Mon Sep 11 08:50:36 2006
+ **      by: The User Interface Compiler ($Id: CQProgressItemBar.h,v 1.8 2006/09/11 13:05:30 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -71,6 +71,8 @@ class CQProgressItemBar : public CQProgressItem
     virtual void setValueFromDOUBLE();
     virtual void setValueFromINT();
     virtual void setValueFromUINT();
+    void destroy();
+    void init();
   };
 
 #endif // CQPROGRESSITEMBAR_H

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQProgressItemBar.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:41 $
+   $Date: 2006/09/11 13:05:30 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,9 @@ bool CQProgressItemBar::initFromProcessReportItem(CProcessReportItem * pItem)
 
   mLastSet = -1; // indcates was never set;
 
-  mStart.pDOUBLE = NULL; // needed so that reset() does allocation
+  // needed so that reset() does allocation
+  if (mStart.pVOID != NULL) destroy();
+
   return reset();
 }
 
@@ -87,3 +89,33 @@ void CQProgressItemBar::setValueFromINT()
 
 void CQProgressItemBar::setValueFromUINT()
 {mCurrentValue = (C_INT32)(mFactor * (* mValue.pUINT - * mStart.pUINT));}
+
+void CQProgressItemBar::destroy()
+{
+  if (mpItem == NULL) return;
+
+  switch (mpItem->getType())
+    {
+    case CCopasiParameter::DOUBLE:
+    case CCopasiParameter::UDOUBLE:
+      pdelete(mStart.pDOUBLE);
+      break;
+
+    case CCopasiParameter::INT:
+      pdelete(mStart.pINT);
+      break;
+
+    case CCopasiParameter::UINT:
+      pdelete(mStart.pUINT);
+      break;
+
+    default:
+      break;
+    }
+}
+
+void CQProgressItemBar::init()
+{
+  mpItem = NULL;
+  mStart.pVOID = NULL;
+}
