@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 15:57:54 $
+   $Date: 2006/09/11 17:22:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -133,13 +133,15 @@ C_FLOAT64 CopasiPlot::MissingValue = std::numeric_limits<C_FLOAT64>::quiet_NaN()
 CopasiPlot::CopasiPlot(QWidget* parent):
     QwtPlot(parent),
     mpPlotSpecification(NULL),
-    mpZoomer(NULL)
+    mpZoomer(NULL),
+    mCurveMap()
 {}
 
 CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
     QwtPlot(parent),
     mpPlotSpecification(NULL),
-    mpZoomer(NULL)
+    mpZoomer(NULL),
+    mCurveMap()
 {
   QwtLegend *legend = new QwtLegend;
   legend->setItemMode(QwtLegend::CheckableItem);
@@ -183,7 +185,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   if (mpZoomer) mpZoomer->setEnabled(false);
 
   //removeCurves();
-  detachItems();
+  //detachItems();
   mHistograms.clear();
 
   // createIndices(plotspec);
@@ -200,23 +202,30 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   mCurveActivities.resize(kmax);
   mHistoIndices.resize(kmax);
 
+  std::map< const CPlotItem *, QwtPlotCurve * >::iterator found;
+
   for (k = 0; k < kmax; k++)
     {
       pItem = mpPlotSpecification->getItems()[k];
 
+      QwtPlotCurve * pCurve;
+      if ((found = mCurveMap.find(pItem)) == mCurveMap.end())
+        {
+          // set up the curve
+          pCurve = new MyQwtPlotCurve(FROM_UTF8(pItem->getTitle()));
+          mCurves[k] = pCurve;
+          mCurveMap[pItem] = pCurve;
+
+          pCurve->setPen(curveColours[k % 5]);
+          pCurve->attach(this);
+
+          showCurve(pCurve, true);
+        }
+      else
+        pCurve = found->second;
+
       mCurveTypes[k] = pItem->getType();
       mCurveActivities[k] = pItem->getActivity();
-
-      // set up the curve
-      QwtPlotCurve* pCurve = new MyQwtPlotCurve(FROM_UTF8(pItem->getTitle()));
-      mCurves[k] = pCurve;
-
-      pCurve->setPen(curveColours[k % 5]);
-      pCurve->attach(this);
-
-      // activate the legend button
-      QwtLegendItem *li = dynamic_cast<QwtLegendItem*>(legend()->find(pCurve));
-      if (li) li->setChecked(true);
 
       switch (mCurveTypes[k])
         {
