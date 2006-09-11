@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/21 19:58:33 $
+   $Date: 2006/09/11 14:25:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,9 +23,10 @@
 #include <string>
 #include <vector>
 
-#include "CMetab.h"
 #include "CChemEqElement.h"
 #include "utilities/CCopasiVector.h"
+
+class CMetab;
 
 /** @dia:pos 52.0066,117.162 */
 class CMoiety : public CCopasiContainer

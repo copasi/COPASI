@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.74 $
+   $Revision: 1.75 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/05 17:23:19 $
+   $Date: 2006/09/11 14:25:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,20 +23,22 @@
 #include <iostream>
 #include <set>
 
-#include "model/CModelValue.h"
+#include "CModelValue.h"
+#include "CMoiety.h"
 
 class CCompartment;
 class CReadConfig;
 //class CWriteConfig;
 class CMetabOld;
 class CModel;
-class CMoiety;
 
 #define METAB_MOIETY 7
 
 /** @dia:pos 80.8289,51.5961 */
 class CMetab : public CModelEntity
   {
+    friend void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite);
+
   public:
 
     /**

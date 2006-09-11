@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMoiety.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/27 18:55:12 $
+   $Date: 2006/09/11 14:25:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,12 +84,8 @@ void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite)
     pMetabolite->setDependentOn(this);
   else
     {
-      mDependencies.insert(pMetabolite->getObject(CCopasiObjectName("Reference=ParticleNumber")));
-
-      std::set< const CCopasiObject * > Dependencies =
-        mpRateReference->getDirectDependencies();
-      Dependencies.insert(pMetabolite->getObject(CCopasiObjectName("Reference=ParticleNumberRate")));
-      mpRateReference->setDirectDependencies(Dependencies);
+      mDependencies.insert(pMetabolite->mpValueReference);
+      mpRateReference->addDirectDependency(pMetabolite->mpRateReference);
     }
 
   std::pair<C_FLOAT64, CMetab *> element;
