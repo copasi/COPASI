@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxScore.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:09 $
+   $Date: 2006/09/12 17:10:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,38 +27,36 @@ CFluxScore::CFluxScore(const std::vector < C_FLOAT64 > & fluxMode)
 {
   CONSTRUCTOR_TRACE;
   unsigned C_INT32 Remainder = fluxMode.size() % (8 * sizeof(int));
-  unsigned C_INT32 i, imax = fluxMode.size() / (8 * sizeof(int));
-  unsigned C_INT32 j, k;
-  int * Score;
+  unsigned C_INT32 imax = fluxMode.size() / (8 * sizeof(int));
+  unsigned C_INT32 k, kmax = 8 * sizeof(unsigned C_INT32);
 
   // Size the scoring vector.
   // Note we have to allocate an extra int if Remainder != 0
   mScore.resize(imax + (Remainder ? 1 : 0));
 
-  // Set the bits to 1 if the corresponding fluxMode coefficient is non zero.
-  for (i = 0, j = 0; i < imax; i++)
-    {
-      Score = &mScore[i];
-      *Score = 0;
+  std::vector < C_FLOAT64 >::const_iterator itMode = fluxMode.begin();
+  unsigned C_INT32 * pScore = mScore.array();
+  unsigned C_INT32 * pScoreEnd = pScore + imax;
 
-      for (k = 8 * sizeof(int); k > 0;)
-        {
-          k--;
-          fluxMode[j++] ? (*Score) += 1 << k : 0;
-        }
+  // Set the bits to 1 if the corresponding fluxMode coefficient is non zero.
+  for (; pScore != pScoreEnd; ++pScore)
+    {
+      *pScore = 0;
+
+      for (k = kmax; k > 0; ++itMode)
+        (*itMode) ? (*pScore) += 1 << --k : --k;
     }
 
   // Do the same for the remaining fluxMode coefficients.
   if (Remainder)
     {
-      Score = &mScore[i];
-      *Score = 0;
+      k = kmax;
+      kmax -= Remainder;
 
-      for (k = 8 * sizeof(int); k > 8 * sizeof(int) - Remainder;)
-        {
-          k--;
-          fluxMode[j++] ? (*Score) += 1 << k : 0;
-        }
+      *pScore = 0;
+
+      for (; k > kmax; ++itMode)
+        (*itMode) ? (*pScore) += 1 << --k : --k;
     }
 }
 
@@ -66,17 +64,13 @@ CFluxScore::~CFluxScore(){DESTRUCTOR_TRACE;}
 
 bool CFluxScore::operator <(const CFluxScore & rhs) const
   {
-    unsigned C_INT32 i, imax = mScore.size();
-    const int * lhsScore;
-    const int * rhsScore;
+    const unsigned C_INT32 * pScoreLhs = mScore.array();
+    const unsigned C_INT32 * pScoreRhs = rhs.mScore.array();
+    const unsigned C_INT32 * pScoreEnd = pScoreLhs + mScore.size();
 
-    for (i = 0; i < imax; i++)
-      {
-        lhsScore = &mScore[i];
-        rhsScore = &rhs.mScore[i];
-
-        if (*lhsScore != (*lhsScore & *rhsScore)) return false;
-      }
+    for (; pScoreLhs != pScoreEnd; ++pScoreLhs, ++pScoreRhs)
+      if (*pScoreLhs != (*pScoreLhs & *pScoreRhs))
+        return false;
 
     return true;
   }

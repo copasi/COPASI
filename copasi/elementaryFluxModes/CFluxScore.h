@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxScore.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:09 $
+   $Date: 2006/09/12 17:10:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,6 +23,8 @@
 
 #include <vector>
 
+#include "utilities/CVector.h"
+
 class CFluxScore
   {
     // Attributes
@@ -31,7 +33,7 @@ class CFluxScore
     /**
      *  The score of a flux mode
      */
-    std::vector <int> mScore;
+    CVector< unsigned C_INT32 > mScore;
 
     // Operations
 
