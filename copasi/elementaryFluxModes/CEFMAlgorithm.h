@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/12 12:23:44 $
+   $Author: shoops $
+   $Date: 2006/09/12 13:21:04 $
    End CVS Header */
 
-// Copyright  2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -39,8 +39,13 @@ class CEFMAlgorithm: public CEFMMethod
      */
     CEFMAlgorithm(const CCopasiContainer * pParent = NULL);
 
+    /**
+     * Constructor to be called by derived methods
+     * @param const CCopasiMethod::SubType subType
+     * @param const CCopasiContainer * pParent (Default: NULL)
+     */
     CEFMAlgorithm(const CCopasiMethod::SubType subType,
-                   const CCopasiContainer * pParent = NULL);
+                  const CCopasiContainer * pParent = NULL);
 
   public:
     /**
@@ -63,7 +68,7 @@ class CEFMAlgorithm: public CEFMMethod
      */
     virtual bool calculate();
 
-  protected:
+  private:
     void initObjects();
 
     /**

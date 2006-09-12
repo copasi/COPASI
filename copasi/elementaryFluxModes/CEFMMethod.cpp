@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMMethod.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/12 12:23:44 $
+   $Author: shoops $
+   $Date: 2006/09/12 13:21:04 $
    End CVS Header */
 
-// Copyright  2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -38,7 +38,7 @@ CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType)
       break;
 #ifdef COPASI_EXTREMECURRENTS
     case extremeCurrents:
-      pMethod = static_cast<CEFMMethod *>(new CExtremeCurrentCalculator());
+      pMethod = new CExtremeCurrentCalculator();
       break;
 #endif
     default:

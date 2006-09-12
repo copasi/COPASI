@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/Attic/CExtremeCurrentCalculator.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/12 12:23:44 $
+   $Author: shoops $
+   $Date: 2006/09/12 13:21:04 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,10 +26,14 @@
 
 CExtremeCurrentCalculator::CExtremeCurrentCalculator(const CCopasiContainer * pParent) :
     CEFMAlgorithm(CCopasiMethod::extremeCurrents, pParent)
-{initObjects();}
+{}
 
-bool
-CExtremeCurrentCalculator::initialize()
+CExtremeCurrentCalculator::CExtremeCurrentCalculator(const CExtremeCurrentCalculator & src,
+    const CCopasiContainer * pParent):
+    CEFMAlgorithm(src, pParent)
+{}
+
+bool CExtremeCurrentCalculator::initialize()
 {
   CCopasiTask * pTask = dynamic_cast< CCopasiTask * >(getObjectParent());
   if (pTask == NULL) return false;

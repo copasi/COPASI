@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/12 12:23:44 $
+   $Author: shoops $
+   $Date: 2006/09/12 13:21:04 $
    End CVS Header */
 
-// Copyright  2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -52,9 +52,6 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Wolf Method",
     "Time Scale Separation Method",
     "Sensitivities Method",
-#ifdef COPASI_SSA
-    "Stoichiometric Stability Analysis",
-#endif // COPASI_SSA
 #ifdef COPASI_EXTREMECURRENTS
     "Extreme Current Calculator"
 #endif // COPAISI_EXTREMECURRENTS
