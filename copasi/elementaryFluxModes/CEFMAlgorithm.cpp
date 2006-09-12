@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/12 17:11:18 $
+   $Date: 2006/09/12 18:01:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -189,7 +189,7 @@ void CEFMAlgorithm::calculateNextTableau()
   bool Continue = true;
 
   while (a != mpCurrentTableau->getEnd() && Continue)
-    if ((*a)->getReaction(0) == 0.0)
+    if ((*a)->getMultiplier() == 0.0)
       {
         /* We have to make sure that "a" points to the next element in the */
         /* list after the removal of itself */
@@ -239,17 +239,17 @@ void CEFMAlgorithm::calculateNextTableau()
 
       while (b != mpCurrentTableau->getEnd() && Continue)
         {
-          mb = (*a)->getReaction(0);
+          mb = (*a)->getMultiplier();
 
           /* We make sure that "mb" is positive */
 
           if (mb < 0.0)
             {
               mb *= -1;
-              ma = (*b)->getReaction(0);
+              ma = (*b)->getMultiplier();
             }
           else
-            ma = - (*b)->getReaction(0);
+            ma = - (*b)->getMultiplier();
 
           /* The multiplier "ma" for irreversible reactions must be positive */
           if ((*a)->isReversible() || ma > 0.0)

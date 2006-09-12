@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauLine.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:09 $
+   $Date: 2006/09/12 18:01:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 
 #include "copasi.h"
 #include "CTableauLine.h"
-CTableauLine::CTableauLine() {CONSTRUCTOR_TRACE; mFluxScore = NULL;}
+CTableauLine::CTableauLine() {CONSTRUCTOR_TRACE; mpFluxScore = NULL;}
 
 CTableauLine::CTableauLine(const std::vector <C_FLOAT64> & reaction,
                            bool reversible,
@@ -36,7 +36,7 @@ CTableauLine::CTableauLine(const std::vector <C_FLOAT64> & reaction,
   mFluxMode.resize(reactionNumber, 0);
   mFluxMode[reactionCounter] = 1;
 
-  mFluxScore = new CFluxScore(mFluxMode);
+  mpFluxScore = new CFluxScore(mFluxMode);
 }
 
 CTableauLine::CTableauLine(const C_FLOAT64 & m1,
@@ -45,34 +45,37 @@ CTableauLine::CTableauLine(const C_FLOAT64 & m1,
                            const CTableauLine & src2)
 {
   CONSTRUCTOR_TRACE;
-  unsigned C_INT32 i, imax = src1.mReaction.size();
-  unsigned C_INT32 j, jmax = src2.mFluxMode.size();
 
-  if (src1.mReversible == false || src2.mReversible == false)
-    mReversible = false;
-  else
-    mReversible = true;
+  mReversible = (src1.mReversible && src2.mReversible);
 
-  for (i = 1, mReaction.resize(imax); i < imax; i++)
-    mReaction[i] = m1 * src1.mReaction[i] + m2 * src2.mReaction[i];
+  mReaction.resize(src1.mReaction.size());
+  mFluxMode.resize(src1.mFluxMode.size());
 
-  for (j = 0, mFluxMode.resize(jmax); j < jmax; j++)
-    mFluxMode[j] = m1 * src1.mFluxMode[j] + m2 * src2.mFluxMode[j];
+  std::vector< C_FLOAT64 >::const_iterator it1 = src1.mReaction.begin();
+  std::vector< C_FLOAT64 >::const_iterator it2 = src2.mReaction.begin();
+  std::vector< C_FLOAT64 >::iterator it = mReaction.begin();
+  std::vector< C_FLOAT64 >::iterator end = mReaction.end();
+  for (; it != end; ++it, ++it1, ++it2)
+    *it = m1 * *it1 + m2 * *it2;
 
-  mFluxScore = new CFluxScore(mFluxMode);
+  it1 = src1.mFluxMode.begin();
+  it2 = src2.mFluxMode.begin();
+  it = mFluxMode.begin();
+  end = mFluxMode.end();
+  for (; it != end; ++it, ++it1, ++it2)
+    *it = m1 * *it1 + m2 * *it2;
+
+  mpFluxScore = new CFluxScore(mFluxMode);
 }
-CTableauLine::~CTableauLine() {DESTRUCTOR_TRACE; pdelete(mFluxScore);}
+CTableauLine::~CTableauLine() {DESTRUCTOR_TRACE; pdelete(mpFluxScore);}
 
 const CFluxScore & CTableauLine::getScore() const
   {
-    return *mFluxScore;
+    return *mpFluxScore;
   }
 
-const C_FLOAT64 &
-CTableauLine::getReaction(const unsigned C_INT32 & index) const
-  {
-    return mReaction[index];
-  }
+const C_FLOAT64 & CTableauLine::getMultiplier() const
+  {return mReaction.back();}
 
 const std::vector < C_FLOAT64 > & CTableauLine::getFluxMode() const
   {
@@ -86,9 +89,7 @@ bool CTableauLine::isReversible() const
 
 void CTableauLine::truncate()
 {
-  std::vector < C_FLOAT64 >::iterator i = mReaction.begin();
-
-  mReaction.erase(i, i + 1);
+  mReaction.pop_back();
 }
 
 #ifdef XXXX

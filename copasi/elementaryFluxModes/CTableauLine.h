@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauLine.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:09 $
+   $Date: 2006/09/12 18:01:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -32,7 +32,7 @@ class CTableauLine
     /**
      *
      */
-    std::vector <double> mReaction;
+    std::vector <C_FLOAT64> mReaction;
 
     /**
      *
@@ -42,12 +42,12 @@ class CTableauLine
     /**
      *
      */
-    std::vector <double> mFluxMode;
+    std::vector <C_FLOAT64> mFluxMode;
 
     /**
      *
      */
-    CFluxScore *mFluxScore;
+    CFluxScore *mpFluxScore;
 
     // Operations
 
@@ -84,10 +84,9 @@ class CTableauLine
     const CFluxScore & getScore() const;
 
     /**
-     *  Retreives the "index" coefficient of the reaction
-     *  @param "const unsigned C_INT32 &" index
+     * Retreive the multiplier for this reaction
      */
-    const C_FLOAT64 & getReaction(const unsigned C_INT32 & index) const;
+    const C_FLOAT64 & getMultiplier() const;
 
     /**
      *  Retreives the flux mode
