@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ModelValuesWidget.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/05 17:23:19 $
+   $Date: 2006/09/12 14:26:37 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,6 +27,7 @@
 #include "report/CKeyFactory.h"
 #include "qtUtilities.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "function/CExpression.h"
 
 #define COL_NAME 1
 #define COL_TYPE 2
@@ -102,9 +103,20 @@ void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
   pComboBox->setCurrentItem(FROM_UTF8(CModelEntity::StatusName[pMV->getStatus()]));
   table->setItem(row, COL_TYPE, pComboBox);
 
-  table->setText(row, COL_INITIAL, QString::number(pMV->getInitialValue()));
+  if (pMV->getStatus() == CModelEntity::ASSIGNMENT)
+    {
+      table->setText(row, COL_INITIAL, "nan");
+      table->item(row, COL_INITIAL)->setEnabled(false);
+    }
+  else
+    {
+      table->setText(row, COL_INITIAL, QString::number(pMV->getInitialValue()));
+      table->item(row, COL_INITIAL)->setEnabled(true);
+    }
+
   table->setText(row, COL_TRANSIENT, QString::number(pMV->getValue()));
 
+#ifdef XXXX
   std::string Expression = pMV->getExpression();
 
   unsigned C_INT32 i = 0;
@@ -146,6 +158,14 @@ void ModelValuesWidget::tableLineFromObject(const CCopasiObject* obj, unsigned C
     }
 
   table->setText(row, COL_EXPRESSION, FROM_UTF8(out_str));
+#endif
+
+  const CExpression * pExpression = pMV->getExpressionPtr();
+
+  if (pExpression != NULL)
+    table->setText(row, COL_EXPRESSION, FROM_UTF8(pExpression->getDisplayString()));
+  else
+    table->setText(row, COL_EXPRESSION, "");
 
   showHeaders();
 }
@@ -155,8 +175,13 @@ void ModelValuesWidget::tableLineToObject(unsigned C_INT32 row, CCopasiObject* o
   if (!obj) return;
   CModelValue* pMV = dynamic_cast<CModelValue*>(obj);
   if (!pMV) return;
+
+  CModelEntity::Status OldStatus = pMV->getStatus();
   pMV->setStatus((CModelEntity::Status) mItemToType[static_cast<QComboTableItem *>(table->item(row, COL_TYPE))->currentItem()]);
-  pMV->setInitialValue(table->text(row, COL_INITIAL).toDouble());
+
+  if (pMV->getStatus() != CModelEntity::ASSIGNMENT &&
+      OldStatus != CModelEntity::ASSIGNMENT)
+    pMV->setInitialValue(table->text(row, COL_INITIAL).toDouble());
 }
 
 void ModelValuesWidget::defaultTableLineContent(unsigned C_INT32 row, unsigned C_INT32 exc)

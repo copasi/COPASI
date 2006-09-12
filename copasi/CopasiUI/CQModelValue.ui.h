@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQModelValue.ui.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/05 17:23:19 $
+   $Date: 2006/09/12 14:26:37 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -226,20 +226,37 @@ void CQModelValue::slotBtnDelete()
 
 void CQModelValue::slotTypeChanged(int type)
 {
-  if (CModelEntity::FIXED == (CModelEntity::Status) type)
+  switch ((CModelEntity::Status) mItemToType[type])
     {
+    case CModelEntity::FIXED:
       mpLblExpression->hide();
       mpEditExpression->hide();
       mpBtnObject->hide();
-    }
-  else
-    {
+      mpEditInitialValue->setEnabled(true);
+
+      mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue()));
+      break;
+
+    case CModelEntity::ASSIGNMENT:
       mpLblExpression->show();
       mpEditExpression->show();
       mpBtnObject->show();
-    }
+      mpEditInitialValue->setEnabled(false);
 
-  mpEditExpression->setExpression(mpModelValue->getExpression());
+      mpEditInitialValue->setText("nan");
+      mpEditExpression->setExpression(mpModelValue->getExpression());
+      break;
+
+    case CModelEntity::ODE:
+      mpLblExpression->show();
+      mpEditExpression->show();
+      mpBtnObject->show();
+      mpEditInitialValue->setEnabled(true);
+
+      mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue()));
+      mpEditExpression->setExpression(mpModelValue->getExpression());
+      break;
+    }
 }
 
 void CQModelValue::slotExpressionValid(bool valid)
@@ -292,9 +309,8 @@ void CQModelValue::load()
   mpEditName->setText(FROM_UTF8(mpModelValue->getObjectName()));
 
   mpComboBoxType->setCurrentText(FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()]));
-  slotTypeChanged(mpModelValue->getStatus());
+  slotTypeChanged(mpComboBoxType->currentItem());
 
-  mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue()));
   mpEditCurrentValue->setText(QString::number(mpModelValue->getValue()));
 
   mpEditExpression->setExpression(mpModelValue->getExpression());
@@ -334,7 +350,8 @@ void CQModelValue::save()
       mChanged = true;
     }
 
-  if (QString::number(mpModelValue->getInitialValue()) != mpEditInitialValue->text())
+  if (QString::number(mpModelValue->getInitialValue()) != mpEditInitialValue->text() &&
+      mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
     {
       mpModelValue->setInitialValue(mpEditInitialValue->text().toDouble());
       mChanged = true;
