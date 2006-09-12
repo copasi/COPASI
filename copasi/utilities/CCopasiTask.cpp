@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.cpp,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:20:18 $
+   $Author: tjohann $
+   $Date: 2006/09/12 15:16:20 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,6 +45,9 @@ const std::string CCopasiTask::TypeName[] =
     "Time Scale Separation",
     "Sensitivities",
 #endif // COPASI_DEBUG
+#ifdef COPASI_SSA
+    "Stoichiometric Stability Analysis",
+#endif // COPASI_SSA
     ""
   };
 
@@ -62,6 +65,9 @@ const char* CCopasiTask::XMLType[] =
     "timeScaleSeparation",
     "sensitivities",
 #endif // COPASI_DEBUG
+#ifdef COPASI_SSA
+    "stoichiometricStabilityAnalysis",
+#endif // COPASI_SSA
     NULL
   };
 
