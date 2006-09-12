@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:09 $
+   $Date: 2006/09/12 17:10:58 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,6 +59,9 @@ CTableauMatrix::~CTableauMatrix()
        i != mLine.end(); i++)
     pdelete(*i);
 }
+
+unsigned C_INT32 CTableauMatrix::size() const
+{return mLine.size();}
 
 std::list< const CTableauLine * >::iterator
 CTableauMatrix::getFirst()

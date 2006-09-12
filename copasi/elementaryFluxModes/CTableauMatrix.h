@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:28:09 $
+   $Date: 2006/09/12 17:10:58 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,6 +63,12 @@ class CTableauMatrix
      *  Destructor
      */
     ~CTableauMatrix();
+
+    /**
+     * Retreive the number of tableau lines
+     * @return unsigned C_INT32 size
+     */
+    unsigned C_INT32 size() const;
 
     /**
      *  Retrieves the first line from the matrix
