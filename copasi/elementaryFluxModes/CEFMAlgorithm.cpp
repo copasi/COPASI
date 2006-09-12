@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/12 13:21:04 $
+   $Date: 2006/09/12 17:11:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -161,11 +161,15 @@ bool CEFMAlgorithm::calculate()
         }
 
       /* Build the elementary flux modes to be returned */
-      buildFluxModes(mFluxModes);
+      if (Continue)
+        buildFluxModes(mFluxModes);
 
       /* Delete the current / final tableu matrix */
       pdelete(mpCurrentTableau);
     }
+
+  if (mpCallBack)
+    Continue &= mpCallBack->finish(mhSteps);
 
   return true;
 }
@@ -182,7 +186,9 @@ void CEFMAlgorithm::calculateNextTableau()
   /* and remove them from the current tableau matrix */
   a = mpCurrentTableau->getFirst();
 
-  while (a != mpCurrentTableau->getEnd())
+  bool Continue = true;
+
+  while (a != mpCurrentTableau->getEnd() && Continue)
     if ((*a)->getReaction(0) == 0.0)
       {
         /* We have to make sure that "a" points to the next element in the */
@@ -203,6 +209,9 @@ void CEFMAlgorithm::calculateNextTableau()
             mpCurrentTableau->removeLine(b);
             a++;
           }
+
+        if (mpCallBack)
+          Continue &= mpCallBack->proceed();
       }
     else
       a++;
@@ -211,12 +220,24 @@ void CEFMAlgorithm::calculateNextTableau()
   /* current tableau */
   a = mpCurrentTableau->getFirst();
 
-  while (a != mpCurrentTableau->getEnd())
+  unsigned C_INT32 Counter, MaxCounter, hCounter;
+
+  Counter = 0;
+  MaxCounter = mpCurrentTableau->size();
+
+  if (mpCallBack)
+    hCounter =
+      mpCallBack->addItem("Current Line",
+                          CCopasiParameter::UINT,
+                          & Counter,
+                          & MaxCounter);
+
+  while (a != mpCurrentTableau->getEnd() && Continue)
     {
       b = a;
       b++;
 
-      while (b != mpCurrentTableau->getEnd())
+      while (b != mpCurrentTableau->getEnd() && Continue)
         {
           mb = (*a)->getReaction(0);
 
@@ -235,10 +256,20 @@ void CEFMAlgorithm::calculateNextTableau()
             mpNextTableau->addLine(new CTableauLine(ma, **a, mb, **b));
 
           b++;
+
+          if (mpCallBack)
+            Continue &= mpCallBack->proceed();
         }
 
       a++;
+      Counter++;
+
+      if (mpCallBack)
+        Continue &= mpCallBack->progress(hCounter);
     }
+
+  if (mpCallBack)
+    Continue &= mpCallBack->finish(hCounter);
 
   /* Assigne the next tableau to the current tableau and cleanup */
   pdelete(mpCurrentTableau);
