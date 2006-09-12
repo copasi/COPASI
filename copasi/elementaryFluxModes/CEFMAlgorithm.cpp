@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/12 18:01:48 $
+   $Date: 2006/09/12 20:02:43 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -188,38 +188,6 @@ void CEFMAlgorithm::calculateNextTableau()
 
   bool Continue = true;
 
-  while (a != mpCurrentTableau->getEnd() && Continue)
-    if ((*a)->getMultiplier() == 0.0)
-      {
-        /* We have to make sure that "a" points to the next element in the */
-        /* list after the removal of itself */
-
-        if (a == mpCurrentTableau->getFirst())
-          {
-            mpNextTableau->addLine(*a);
-            mpCurrentTableau->removeLine(a);
-            a = mpCurrentTableau->getFirst();
-          }
-        else
-          {
-            /* We have to remember the previous element so that a++ points to */
-            /* past the removed one */
-            b = a--;
-            mpNextTableau->addLine(*b);
-            mpCurrentTableau->removeLine(b);
-            a++;
-          }
-
-        if (mpCallBack)
-          Continue &= mpCallBack->proceed();
-      }
-    else
-      a++;
-
-  /* Now we create all linear combinations of the remaining lines in the */
-  /* current tableau */
-  a = mpCurrentTableau->getFirst();
-
   unsigned C_INT32 Counter, MaxCounter, hCounter;
 
   Counter = 0;
@@ -233,26 +201,61 @@ void CEFMAlgorithm::calculateNextTableau()
                           & MaxCounter);
 
   while (a != mpCurrentTableau->getEnd() && Continue)
+    if ((*a)->getMultiplier() == 0.0)
+      {
+        /* We have to make sure that "a" points to the next element in the */
+        /* list after the removal of itself */
+
+        if (a == mpCurrentTableau->getFirst())
+          {
+            mpNextTableau->addLine(*a, false);
+            mpCurrentTableau->removeLine(a);
+            a = mpCurrentTableau->getFirst();
+          }
+        else
+          {
+            /* We have to remember the previous element so that a++ points to */
+            /* past the removed one */
+            b = a--;
+            mpNextTableau->addLine(*b, false);
+            mpCurrentTableau->removeLine(b);
+            a++;
+          }
+
+        Counter++;
+        if (mpCallBack)
+          Continue &= mpCallBack->progress(hCounter);
+      }
+    else
+      a++;
+
+  C_FLOAT64 Sign;
+
+  /* Now we create all linear combinations of the remaining lines in the */
+  /* current tableau */
+  a = mpCurrentTableau->getFirst();
+
+  while (a != mpCurrentTableau->getEnd() && Continue)
     {
       b = a;
       b++;
 
+      /* We make sure that "mb" is positive */
+      mb = (*a)->getMultiplier();
+      if (mb < 0.0)
+        {
+          mb *= -1.0;
+          Sign = 1.0;
+        }
+      else
+        Sign = -1.0;
+
       while (b != mpCurrentTableau->getEnd() && Continue)
         {
-          mb = (*a)->getMultiplier();
-
-          /* We make sure that "mb" is positive */
-
-          if (mb < 0.0)
-            {
-              mb *= -1;
-              ma = (*b)->getMultiplier();
-            }
-          else
-            ma = - (*b)->getMultiplier();
+          ma = Sign * (*b)->getMultiplier();
 
           /* The multiplier "ma" for irreversible reactions must be positive */
-          if ((*a)->isReversible() || ma > 0.0)
+          if (ma > 0.0 || (*a)->isReversible())
             mpNextTableau->addLine(new CTableauLine(ma, **a, mb, **b));
 
           b++;
@@ -261,7 +264,10 @@ void CEFMAlgorithm::calculateNextTableau()
             Continue &= mpCallBack->proceed();
         }
 
-      a++;
+      // We no longer need a since all linear combinations have been build;
+      mpCurrentTableau->removeLine(a);
+      a = mpCurrentTableau->getFirst();
+
       Counter++;
 
       if (mpCallBack)

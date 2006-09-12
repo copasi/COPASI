@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/12 17:10:58 $
+   $Date: 2006/09/12 20:02:43 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,7 +75,8 @@ CTableauMatrix::getEnd()
   return mLine.end();
 }
 
-void CTableauMatrix::addLine(const CTableauLine * src)
+void CTableauMatrix::addLine(const CTableauLine * src,
+                             const bool & check)
 {
   /* The first element in reaction is always 0 so we can remove it */
   /* This really breaks the "const" but it is the only place tableau */
@@ -83,7 +84,7 @@ void CTableauMatrix::addLine(const CTableauLine * src)
   const_cast <CTableauLine *>(src)->truncate();
 
   /* First we check whether we have a valid new flux mode */
-  if (isValid(src))
+  if (!check || isValid(src))
     {
       if (src->isReversible())
         {

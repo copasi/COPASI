@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/12 17:10:58 $
+   $Date: 2006/09/12 20:02:43 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -84,9 +84,11 @@ class CTableauMatrix
 
     /**
      *  Add a line to the matrix
-     *  @param "const CTableauLine *" src
+     *  @param const CTableauLine * src
+     *  @param const bool & check (Default: true)
      */
-    void addLine(const CTableauLine * src);
+    void addLine(const CTableauLine * src,
+                 const bool & check = true);
 
     /**
      *  Remove the indexed line of the matrix
