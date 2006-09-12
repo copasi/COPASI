@@ -16,6 +16,10 @@ HEADERS += CEFMAlgorithm.h \
            CFluxScore.h \
            CTableauLine.h \
            CTableauMatrix.h
+
+contains(DEFINES, COPASI_EXTREMECURRENTS) {
+   HEADERS += CExtremeCurrentCalculator.h
+}
            
 SOURCES += CEFMAlgorithm.cpp \
            CEFMMethod.cpp \
@@ -24,6 +28,10 @@ SOURCES += CEFMAlgorithm.cpp \
            CFluxMode.cpp \
            CFluxScore.cpp \
            CTableauLine.cpp \
-           CTableauMatrix.cpp
+           CTableauMatrix.cpp 
+
+contains(DEFINES, COPASI_EXTREMECURRENTS) {
+   SOURCES += CExtremeCurrentCalculator.cpp
+}
 
 DISTFILES += elementaryFluxModes.dsp

@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/29 20:27:27 $
+   $Author: tjohann $
+   $Date: 2006/09/12 12:23:44 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright  2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -63,6 +63,9 @@ class CCopasiMethod : public CCopasiParameterGroup
       lyapWolf,
       tssMethod,
       sensMethod,
+#ifdef COPASI_EXTREMECURRENTS
+      extremeCurrents,
+#endif
       EFMAlgorithm
     };
 

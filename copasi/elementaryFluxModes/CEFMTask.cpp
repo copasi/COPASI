@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMTask.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/29 20:15:14 $
+   $Author: tjohann $
+   $Date: 2006/09/12 12:23:44 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright  2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,6 +30,9 @@
 const unsigned C_INT32 CEFMTask::ValidMethods[] =
   {
     CCopasiMethod::EFMAlgorithm
+#ifdef COPASI_EXTREMECURRENTS
+    , CCopasiMethod::extremeCurrents
+#endif
   };
 
 CEFMTask::CEFMTask(const CCopasiContainer * pParent):
@@ -110,12 +113,25 @@ CEFMTask::getFluxModeDescription(unsigned C_INT32 index) const
     unsigned C_INT32 j, jmax = FluxModes[index].size();
     const CCopasiVectorNS< CReaction > & Reactions = mpProblem->getModel()->getReactions();
 
-    for (j = 0; j < jmax; j++)
+#ifdef COPASI_EXTREMECURRENTS
+    if (mpMethod->getSubType() == CCopasiMethod::extremeCurrents)
       {
-        if (j) tmp << "\n";
-        tmp << FluxModes[index].getMultiplier(j) << " * "
-        << Reactions[Index[FluxModes[index].getReactionIndex(j)]]->getObjectName();
+        for (j = 0; j < jmax; j++)
+          {
+            if (j) tmp << "\n";
+            if (Reactions[Index[FluxModes[index].getReactionIndex(j)]]->isReversible())
+              tmp << FluxModes[index].getMultiplier(j) << " * "
+              << Reactions[Index[FluxModes[index].getReactionIndex(j)]]->getObjectName();
+          }
       }
+    else
+#endif
+      for (j = 0; j < jmax; j++)
+        {
+          if (j) tmp << "\n";
+          tmp << FluxModes[index].getMultiplier(j) << " * "
+          << Reactions[Index[FluxModes[index].getReactionIndex(j)]]->getObjectName();
+        }
 
     return tmp.str();
   }
