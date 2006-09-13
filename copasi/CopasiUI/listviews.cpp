@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.202 $
+   $Revision: 1.203 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/30 17:13:49 $
+   $Author: tjohann $
+   $Date: 2006/09/13 16:30:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -48,6 +48,7 @@
 #include "CQEFMWidget.h"
 #include "MoietyWidget.h"
 #include "MoietyWidget1.h"
+#include "SSAWidget.h"
 #include "ParametersWidget.h"
 #include "ReactionsWidget.h"
 #include "ReactionsWidget1.h"
@@ -242,6 +243,9 @@ ListViews::ListViews(QWidget *parent, const char *name):
     tssWidget(NULL),
     timeSeriesWidget(NULL),
     trajectoryWidget(NULL)
+#ifdef COPASI_SSA
+    , mSSAWidget(NULL)
+#endif
 {
   this->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, 1, 1));
   setChildrenCollapsible(false);
@@ -389,6 +393,11 @@ void ListViews::ConstructNodeWidgets()
 
   if (!moietyWidget1) moietyWidget1 = new MoietyWidget1(this);
   moietyWidget1->hide();
+
+#ifdef COPASI_SSA
+  if (!mSSAWidget) mSSAWidget = new SSAWidget(this);
+  mSSAWidget->hide();
+#endif // COPASI_SSA
 
   if (!parametersWidget) parametersWidget = new ParametersWidget(this);
   parametersWidget->hide();
@@ -572,6 +581,11 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 222:
         return moietyWidget;
         break;
+#ifdef COPASI_SSA
+      case 223:
+        return mSSAWidget;
+        break;
+#endif // COPASI_SSA
       case 23:
         return trajectoryWidget;
         break;

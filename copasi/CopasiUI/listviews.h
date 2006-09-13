@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.110 $
+   $Revision: 1.111 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/30 17:13:49 $
+   $Author: tjohann $
+   $Date: 2006/09/13 16:30:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -72,6 +72,9 @@ class CQReportDefinition;
 class CQLyapWidget;
 class CQLyapResultWidget;
 class CQModelValue;
+#ifdef COPASI_SSA
+class SSAWidget;
+#endif
 
 //*********************************************************************************
 
@@ -198,6 +201,9 @@ class ListViews : public QSplitter
     TSSWidget *tssWidget;
     TimeSeriesWidget *timeSeriesWidget;
     CQTrajectoryWidget *trajectoryWidget;
+#ifdef COPASI_SSA
+    SSAWidget * mSSAWidget;
+#endif // COPASI_SSA
   };
 
 #endif

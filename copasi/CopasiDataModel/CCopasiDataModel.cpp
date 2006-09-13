@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/08 14:15:55 $
+   $Author: tjohann $
+   $Date: 2006/09/13 16:30:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,9 @@
 #endif
 #ifdef COPASI_SENS
 # include "sensitivities/CSensTask.h"
+#endif
+#ifdef COPASI_SSA
+# include "ssa/CSSATask.h"
 #endif
 #include "lyap/CLyapTask.h"
 #include "tss/MMASCIIExporter.h"
@@ -651,6 +654,12 @@ CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
 #ifdef COPASI_SENS
     case CCopasiTask::sens:
       pTask = new CSensTask(mpTaskList);
+      break;
+#endif
+
+#ifdef COPASI_SSA
+    case CCopasiTask::ssa:
+      pTask = new CSSATask(mpTaskList);
       break;
 #endif
 
