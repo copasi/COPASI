@@ -634,9 +634,7 @@ You have to specify the correct argument types to the function call. I.e. if you
 <listitem>
 <para>
 Which brings me to the last point. The built in function names in COPASI often use characters like "-" or even spaces, so if you want to call one of those functions, you have to quote this function name. So calling "Henry-Michaelis-Menten (irreversible)" from another function would look like this:
-</para>
-<para>
-<mml:math>
+ <mml:math display="block">
     <mml:mrow>
       <mml:mi>"Henry-Michaelis-Menten (irreversible)"</mml:mi>
       <mml:mo> &ApplyFunction; </mml:mo>
@@ -968,9 +966,7 @@ In addition to the function above, COPASI knows some predefined constant names:
 </para>
 <para>
 In addition to defining "normal" functions, COPASI allows the definition of piecewise defined functions. Piecewise defined functions are constructed with the IF statement. The IF statement in COPASI is used like a function with three arguments. The first argument is a conditional expression that evaluates to either TRUE or FALSE, the second argument is an expression that is evaluated if the condition evaluates to TRUE otherwise the third argument, which can also be an expression, determines the value of the function. The second and third argument to the IF statement must evaluate to a double value, that means it can not be a conditional expression like the first argument. On the other hand, the second and third arguments themselves can be IF statements. So in order to make this a little more clear, we will look at how one would implement the Heaviside step function in COPASI:
-</para>
-<para>
-<mml:math>
+<mml:math display="block">
     <mml:mrow>
       <mml:mi>if</mml:mi>
       <mml:mo>(</mml:mo>

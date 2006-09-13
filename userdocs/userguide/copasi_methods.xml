@@ -334,9 +334,7 @@ halts without a solution.
 </para>
 <para>
 The iteration of the plain Newton  method is:
-</para>
-<para>
-<mml:math>
+<mml:math display="block">
  <mml:mrow>
   <mml:msub>
    <mml:mi>x</mml:mi>
@@ -389,8 +387,6 @@ The iteration of the plain Newton  method is:
   </mml:mrow>
  </mml:mrow>
 </mml:math>
-</para>
-<para>
 In the damped method if 
 <mml:math>
  <mml:msub>
@@ -409,9 +405,7 @@ has a larger residual error than
   <mml:mi>i</mml:mi>
  </mml:msub>
 </mml:math> one looks at
-</para>
-<para>
-<mml:math>
+<mml:math display="block">
  <mml:mrow>
   <mml:msub>
    <mml:mi>x</mml:mi>
@@ -471,8 +465,7 @@ has a larger residual error than
    </mml:msup>
   </mml:mrow>
  </mml:mrow>
-</mml:math> where
-<mml:math>
+ <mml:mtext>&ThinSpace; where &ThinSpace;</mml:mtext>
  <mml:mi>n</mml:mi>
  <mml:mo>=</mml:mo>
  <mml:mn>0,</mml:mn>
@@ -480,8 +473,6 @@ has a larger residual error than
  <mml:mi>, </mml:mi>
  <mml:mn>32</mml:mn>
 </mml:math>
-</para>
-<para>
 and accepts the first such value that has a smaller residual
 error than
 <mml:math>
@@ -605,10 +596,7 @@ on a parameter affects a system variable (e.g. fluxes or
 concentrations). It is defined <citation>Kacser73</citation>
 <citation>Heinrich74</citation>
 <citation>Burns85</citation> as: 
-</para>
-
-<para>
- <mml:math>
+ <mml:math display="block">
   <mml:mrow>
    <mml:mrow>
     <mml:msubsup>
@@ -643,9 +631,6 @@ concentrations). It is defined <citation>Kacser73</citation>
    </mml:mfrac>
   </mml:mrow>
  </mml:math>
-</para>
-
-<para>
 where A is the variable, i the step (enzyme) and v the steady-state
 rate of the perturbed step. The most common control coefficients are
 those for fluxes and metabolite concentrations, but any variable of
@@ -670,10 +655,7 @@ the flux control coefficients of a pathway. By various procedures
 <citation>Reder88</citation> it
  can be demonstrated that for a given reference flux the sum 
 of all flux-control coefficients (of all steps) is equal to unity: 
-</para>
-
-<para>
- <mml:math>
+ <mml:math display="block">
   <mml:mrow>
    <mml:msub>
     <mml:mo>&sum;</mml:mo>
@@ -693,15 +675,9 @@ of all flux-control coefficients (of all steps) is equal to unity:
    </mml:mrow>
   </mml:mrow>
  </mml:math>
-</para>
-
-<para>
 For a given reference metabolite concentration the sum of all
 concentration-control coefficients is zero: 
-</para>
-
-<para>
- <mml:math>
+ <mml:math display="block">
   <mml:mrow>
    <mml:msub>
     <mml:mo>&sum;</mml:mo>
@@ -721,9 +697,6 @@ concentration-control coefficients is zero:
    </mml:mrow>
   </mml:mrow>
  </mml:math>
-</para>
-
-<para>
 where the summations are over all the steps of the system.
 </para>
 
@@ -766,10 +739,7 @@ interest. The elasticity coefficients are defined as the ratio of
 relative change in local rate to the relative change in one parameter
 (normally the concentration of an effector). Infinitesimally, this is
 written as:  
-</para>
-
-<para>
- <mml:math>
+ <mml:math display="block">
   <mml:mrow>
    <mml:mrow>
     <mml:msubsup>
@@ -804,9 +774,6 @@ written as:
    </mml:mfrac>
   </mml:mrow>
  </mml:math>
-</para>
-
-<para>
 where v is the rate of the enzyme in question and p is the parameter
 of the perturbation. Each enzyme has as many elasticity coefficients
 as the number of parameters that affect it. One can immediatly
@@ -840,10 +807,7 @@ The connectivity theorem for flux-control coefficients
 the sum of the 
 products of the flux-control coefficient of all (i) steps affected by
 S and its elasticity coefficients towards S, is zero: 
-</para>
-
-<para>
- <mml:math>
+ <mml:math display="block">
   <mml:mrow>
    <mml:msub>
     <mml:mo>&sum;</mml:mo>
@@ -871,15 +835,9 @@ S and its elasticity coefficients towards S, is zero:
    </mml:mrow>
   </mml:mrow>
  </mml:math>
-</para>
-
-<para>
 For the concentration-control coefficients, the following two
 equations apply <citation>Westerhoff84</citation>: 
-</para>
-
-<para>
- <mml:math>
+ <mml:math display="block">
   <mml:mrow>
    <mml:msub>
     <mml:mo>&sum;</mml:mo>
@@ -904,17 +862,15 @@ equations apply <citation>Westerhoff84</citation>:
     </mml:msubsup>
     <mml:mo>=</mml:mo>
     <mml:mn>0</mml:mn>
-    <mml:text>, where&ensp;</mml:text>
+    <mml:mtext>, where&ensp;</mml:mtext>
     <mml:mi>A</mml:mi>
     <mml:mn>&ne;</mml:mn>
     <mml:mi>S</mml:mi>
    </mml:mrow>
   </mml:mrow>
  </mml:math>
-</para>
 
-<para>
- <mml:math>
+ <mml:math display="block">
   <mml:mrow>
    <mml:msub>
     <mml:mo>&sum;</mml:mo>
@@ -942,9 +898,6 @@ equations apply <citation>Westerhoff84</citation>:
    </mml:mrow>
   </mml:mrow>
  </mml:math>
-</para>
-
-<para>
 The first equation applies to the case in which the reference metabolite (A)
 is different from the perturbed metabolite (S). Whereas the second applies to
 the case in which the reference metabolite is the same as the
@@ -1155,9 +1108,7 @@ from a normal distribution with zero mean and a standard deviation of
 10% of the parameter value. Parameters may exceed boundaries. Whenever
 this happens or a constraint to the solution is violated the square of
 the size of the violation is summed up, i.e., we calculate 
-</para>
-<para>
-<mml:math>
+<mml:math display="block">
  <mml:mrow>
   <mml:mo>&phi;</mml:mo>
   <mml:mo>=</mml:mo>
@@ -1332,8 +1283,6 @@ the size of the violation is summed up, i.e., we calculate
   </mml:mrow>
  </mml:mrow>
 </mml:math>
-</para>
-<para>
 where the parameters are given by 
 <mml:math>
   <mml:mrow>
@@ -1796,9 +1745,7 @@ mutations. The algorithm assures that each parameter value will be
 within its boundaries. But constraints to the solutions may be
 violated. Whenever this happens the square of the size of the
 violation is summed up, i.e., we calculate  
-</para>
-<para>
-<mml:math>
+<mml:math display="block">
  <mml:mrow>
   <mml:mo>&phi;</mml:mo>
   <mml:mo>=</mml:mo>
@@ -1889,8 +1836,6 @@ violation is summed up, i.e., we calculate
   </mml:mrow>
  </mml:mrow>
 </mml:math>
-</para>
-<para>
 where the constraints are given by
 <mml:math>
   <mml:mrow>
@@ -2022,7 +1967,7 @@ steps is less than the tolerance the algorithm stops. The default is
 </sect1>
 
 
-<sect1 id="lyapunovExponents" xreflabel="Lyapunov exponents">
+<sect1 id="lyapunovExponentsMethod" xreflabel="Lyapunov exponents">
   <title>Lyapunov Exponents Calculation</title>
   <para>
     Copasi allows the calculation of lyapunov exponents of a trajectory as well as the average divergence of the system. The exponents are calculated for the reduced system (see <xref linkend="deterministicModel" />), so the maximum number of exponents that can be calculated is the number of independent variables. If less than this number of exponents is requested, the largest exponents are calculated.
