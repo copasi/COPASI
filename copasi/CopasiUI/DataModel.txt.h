@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModel.txt.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/13 16:30:50 $
+   $Author: shoops $
+   $Date: 2006/09/13 21:55:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,8 +17,8 @@ static char DataModeltxt[] =
   "11:112:Metabolites\n"
   "11:113:Moiety\n"
   "11:114:Reactions\n"
-  "11:115:Global parameters\n"
-  "11:116:Parameter overview\n"
+  "11:115:Global Quantities\n"
+  "11:116:Parameter Overview\n"
   "1:12:Mathematical\n"
   //"12:122:Used Functions\n"
 #ifdef HAVE_MML
@@ -38,7 +38,7 @@ static char DataModeltxt[] =
   "2:24:Metabolic Control Analysis\n"
   "24:241:Result\n"
 #ifdef COPASI_TSS
-  "2:25:Time scale separation\n"
+  "2:25:Time Scale Separation\n"
 #endif
   "2:26:Lyapunov Exponents\n"
   "26:261:Result\n"

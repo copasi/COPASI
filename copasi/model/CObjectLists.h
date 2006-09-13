@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/08/03 12:42:46 $
+   $Author: shoops $
+   $Date: 2006/09/13 21:55:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,9 +42,10 @@ class CObjectLists
       REACTION_PART_FLUXES,
 
       GLOBAL_PARAMETERS,
+      GLOBAL_PARAMETER_INITIAL_VALUES,
       GLOBAL_PARAMETER_VALUES,
-      //GLOBAL_PARAMETER_INITIAL_VALUES,
-      //GLOBAL_PARAMETER_RATES,
+      NON_CONST_GLOBAL_PARAMETER_VALUES,
+      GLOBAL_PARAMETER_RATES,
 
       COMPARTMENTS,
       COMPARTMENT_VOLUMES,

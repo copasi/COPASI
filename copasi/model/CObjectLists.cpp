@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/08/03 12:42:46 $
+   $Author: shoops $
+   $Date: 2006/09/13 21:55:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -34,8 +34,11 @@ const std::string CObjectLists::ListTypeName[] =
     "Reactions",
     "Concentration Fluxes of Reactions",
     "Particle Fluxes of Reactions",
-    "Global Parameters",
-    "Global Parameter Values",
+    "Global Quantity",
+    "Global Quantity Initial Values",
+    "Global Quantity Values",
+    "Non-Constant Global Quantity Values",
+    "Global Quantity Rates",
     "Compartments",
     "Compartment Volumes",
     "Local Parameter Values",
@@ -158,6 +161,16 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
       }
       break;
 
+    case GLOBAL_PARAMETER_INITIAL_VALUES:
+      {
+        const CCopasiVectorN< CModelValue > & params = model->getModelValues();
+        for (i = 0; i < params.size(); ++i)
+          if (params[i]->getStatus() != CModelEntity::ASSIGNMENT)
+            ret.push_back(const_cast<CCopasiObject*>
+                          (params[i]->getObject(CCopasiObjectName("Reference=InitialValue"))));
+      }
+      break;
+
     case GLOBAL_PARAMETER_VALUES:
       {
         const CCopasiVectorN< CModelValue > & params = model->getModelValues();
@@ -167,8 +180,25 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
       }
       break;
 
-      //case GLOBAL_PARAMETER_INITIAL_VALUES:
-      //case GLOBAL_PARAMETER_RATES:
+    case NON_CONST_GLOBAL_PARAMETER_VALUES:
+      {
+        const CCopasiVectorN< CModelValue > & params = model->getModelValues();
+        for (i = 0; i < params.size(); ++i)
+          if (params[i]->getStatus() != CModelEntity::FIXED)
+            ret.push_back(const_cast<CCopasiObject*>
+                          (params[i]->getObject(CCopasiObjectName("Reference=Value"))));
+      }
+      break;
+
+    case GLOBAL_PARAMETER_RATES:
+      {
+        const CCopasiVectorN< CModelValue > & params = model->getModelValues();
+        for (i = 0; i < params.size(); ++i)
+          if (params[i]->getStatus() == CModelEntity::ODE)
+            ret.push_back(const_cast<CCopasiObject*>
+                          (params[i]->getObject(CCopasiObjectName("Reference=Rate"))));
+      }
+      break;
 
     case COMPARTMENTS:
     case COMPARTMENT_VOLUMES:
