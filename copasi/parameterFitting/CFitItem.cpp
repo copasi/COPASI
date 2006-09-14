@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/18 18:33:22 $
+   $Date: 2006/09/14 13:31:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -143,7 +143,14 @@ bool CFitItem::addExperiment(const std::string & key)
 }
 
 const std::string & CFitItem::getExperiment(const unsigned C_INT32 & index) const
-{return *mpGrpAffectedExperiments->getValue(index).pKEY;}
+  {
+    static const std::string Empty("");
+
+    if (index < mpGrpAffectedExperiments->size())
+      return *mpGrpAffectedExperiments->getValue(index).pKEY;
+
+    return Empty;
+  }
 
 bool CFitItem::removeExperiment(const unsigned C_INT32 & index)
 {return mpGrpAffectedExperiments->removeParameter(index);}
