@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/13 16:30:50 $
+   $Author: shoops $
+   $Date: 2006/09/14 18:48:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -326,7 +326,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
 
       try
         {
-          if (!XML.CCopasiXMLInterface::save(TmpFileName))
+          if (!XML.CCopasiXMLInterface::save(TmpFileName, FileName))
             {
               CDirEntry::remove(TmpFileName);
               success = false;
@@ -347,7 +347,7 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, bool overwriteFil
     {
       try
         {
-          if (!XML.CCopasiXMLInterface::save(FileName))
+          if (!XML.CCopasiXMLInterface::save(FileName, FileName))
             return false;
         }
 

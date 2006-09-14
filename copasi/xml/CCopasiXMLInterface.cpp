@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/06 17:40:42 $
+   $Date: 2006/09/14 18:48:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -302,6 +302,134 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   if (isnan(dbl))
     value << "NaN";
   else if (finite(dbl))
@@ -310,6 +438,134 @@ std::string CCopasiXMLInterface::encodeDBL(const C_FLOAT64 & dbl)
     value << "INF";
   else if (dbl < 0.0)
     value << "-INF";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -540,11 +796,12 @@ bool CCopasiXMLInterface::load(const std::string & fileName)
   return load(is);
 }
 
-bool CCopasiXMLInterface::save(const std::string & fileName)
+bool CCopasiXMLInterface::save(const std::string & fileName,
+                               const std::string & relativeTo)
 {
-  mFilename = fileName;
+  mFilename = relativeTo;
 
-  std::ofstream os(utf8ToLocale(mFilename).c_str());
+  std::ofstream os(utf8ToLocale(fileName).c_str());
   if (os.fail()) return false;
 
   if (!save(os)) return false;

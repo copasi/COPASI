@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLInterface.h,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/06 17:40:42 $
+   $Date: 2006/09/14 18:48:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -163,9 +163,11 @@ class CCopasiXMLInterface
     /**
      * Save information to a file.
      * @param const std::string & fileName
+     * @param const std::string & relativeTo
      * @return bool success
      */
-    bool save(const std::string & fileName);
+    bool save(const std::string & fileName,
+              const std::string & relativeTo);
 
     /**
      * Encode a given string to a valid XML string

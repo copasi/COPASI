@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/03 15:42:58 $
+   $Date: 2006/09/14 18:48:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -140,7 +140,7 @@ bool CConfigurationFile::save()
 
   XML.setConfiguration(*this);
 
-  bool success = XML.CCopasiXMLInterface::save(ConfigFile);
+  bool success = XML.CCopasiXMLInterface::save(ConfigFile, ConfigFile);
 
   return success;
 }
