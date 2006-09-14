@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.93 $
+   $Revision: 1.94 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/09/08 13:11:43 $
+   $Date: 2006/09/14 09:18:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1003,12 +1003,15 @@ KineticLaw* SBMLExporter::createSBMLKineticLawFromCReaction(CReaction* copasiRea
                 }
               kLaw->addParameter(*sbmlPara);
             }
+          /* the code below is responsible for bug 646, that's why I put it in comments
+             Currently I don't know why it is there at all. RG
           else
             {
               // the corresponding node has to be changed
               std::string modelValueKey = copasiReaction->getParameterMappings()[counter][0];
               this->replaceNodeName(node, para->getObjectName(), modelValueKey);
             }
+            */
         }
     }
   return kLaw;

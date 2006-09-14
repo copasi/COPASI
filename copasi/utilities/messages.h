@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/11 16:29:53 $
+   $Author: gauges $
+   $Date: 2006/09/14 09:18:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -162,6 +162,7 @@ const MESSAGES Messages[] =
     {MCSBML + 36, "SBML (36): COPASI can not handle models that use the delay function."},
     {MCSBML + 37, "SBML (37): The id '%s' is used in the expression of a rule, although it is later defined by a rule itself."},
     {MCSBML + 38, "SBML (38): Only references to compartments, species, global parameters or the time are allowed in SBML rule expressions."},
+    {MCSBML + 39, "SBML (39): Object with id \"%s\" referenced in kinetic law, but no object with that id found in model."},
 
     {MCTrajectoryProblem + 1, "CTrajectoryProblem (1): Invalid step size = '%f'."},
     {MCTrajectoryProblem + 2, "CTrajectoryProblem (2): The step number '%f' "
