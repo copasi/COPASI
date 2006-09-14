@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.287 $
+   $Revision: 1.288 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/06 17:41:48 $
+   $Author: ssahle $
+   $Date: 2006/09/14 16:42:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -61,8 +61,14 @@ const char * CModel::VolumeUnitNames[] =
 const char * CModel::TimeUnitNames[] =
   {"d", "h", "min", "s", "ms", "\xc2\xb5s", "ns", "ps", "fs", NULL};
 
-const char * CModel::QuantityUnitNames[] =
+// "mol" is the correct name, however in the copasi xml files "Mol" is used
+// up to build 18
+
+const char * CModel::QuantityUnitOldXMLNames[] =
   {"Mol", "mMol", "\xc2\xb5Mol", "nMol", "pMol", "fMol", "#", NULL};
+
+const char * CModel::QuantityUnitNames[] =
+  {"mol", "mmol", "\xc2\xb5mol", "nmol", "pmol", "fmol", "#", NULL};
 
 const char * CModel::ModelTypeNames[] =
   {"deterministic", "stochastic", NULL};
@@ -1813,6 +1819,8 @@ CModel::TimeUnit CModel::getTimeUnitEnum() const
 bool CModel::setQuantityUnit(const std::string & name)
 {
   int unit = toEnum(name.c_str(), QuantityUnitNames);
+  if (-1 == unit)
+    unit = toEnum(name.c_str(), QuantityUnitOldXMLNames);
 
   if (-1 == unit)
     return setQuantityUnit(mMol);
@@ -1878,6 +1886,11 @@ bool CModel::setQuantityUnit(const CModel::QuantityUnit & unit)
 std::string CModel::getQuantityUnitName() const
   {
     return QuantityUnitNames[mQuantityUnit];
+  }
+
+std::string CModel::getQuantityUnitOldXMLName() const
+  {
+    return QuantityUnitOldXMLNames[mQuantityUnit];
   }
 
 CModel::QuantityUnit CModel::getQuantityUnitEnum() const

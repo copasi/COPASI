@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.133 $
+   $Revision: 1.134 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/05 17:23:19 $
+   $Author: ssahle $
+   $Date: 2006/09/14 16:42:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,6 +58,12 @@ class CModel : public CModelEntity
      *  Enum of valid quantitye units
      */
     enum QuantityUnit {Mol = 0, mMol, microMol, nMol, pMol, fMol, number};
+
+    /**
+     * String representation of valid quantity units as used in old (up to Build 18)
+     * copasi files
+     */
+    static const char * QuantityUnitOldXMLNames[];
 
     /**
      * String representation of valid quantity units
@@ -834,6 +840,7 @@ class CModel : public CModelEntity
      * @return std::string quantityUnit
      */
     std::string getQuantityUnitName() const;
+    std::string getQuantityUnitOldXMLName() const;
 
     /**
      * Get the unit for quantities

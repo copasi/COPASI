@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.138 $
+   $Revision: 1.139 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/12 15:16:20 $
+   $Author: ssahle $
+   $Date: 2006/09/14 16:44:57 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1128,6 +1128,9 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
       quantityUnit = mParser.getAttributeValue("quantityUnit", papszAttrs);
       QuantityUnit =
         (CModel::QuantityUnit) toEnum(quantityUnit, CModel::QuantityUnitNames);
+      if (QuantityUnit == -1)
+        QuantityUnit =
+          (CModel::QuantityUnit) toEnum(quantityUnit, CModel::QuantityUnitOldXMLNames);
       if (QuantityUnit == -1) fatalError();
 
       ModelType = (CModel::ModelType)
