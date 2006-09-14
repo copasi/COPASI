@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/13 21:55:05 $
+   $Date: 2006/09/14 16:28:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -408,77 +408,235 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         CObjectLists::getListOfConstObjects(CObjectLists::REACTION_PART_FLUXES, pModel);
       data1.insert(data1.end(), tmpdata.begin(), tmpdata.end());
       break;
-    case 10:
+    case 10: // :TODO: Implement me!
+      {
+        CPlotSpecification * pPlotSpecification = NULL;
+        CCopasiTask * pTask = (*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"];
+        if (pTask == NULL) return NULL;
+
+        CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pTask->getProblem());
+        if (pFitProblem == NULL) return NULL;
+
+        const CExperimentSet & ExperimentSet = pFitProblem->getExperiementSet();
+        unsigned C_INT32 i, imax = ExperimentSet.size();
+
+        std::vector< std::string > ChannelX;
+        std::vector< std::string > Names;
+        std::vector< unsigned C_INT32 > LineTypes;
+
+        for (i = 0; i < imax; i++)
+          {
+            const CExperiment * pExperiment = ExperimentSet.getExperiment(i);
+            const CCopasiVector< CFittingPoint > & FittingPoints = pExperiment->getFittingPoints();
+
+            CCopasiVector< CFittingPoint >::const_iterator it = FittingPoints.begin();
+            CCopasiVector< CFittingPoint >::const_iterator end = FittingPoints.end();
+
+            if (it == end) continue;
+
+            data2 = (*it)->getObject(CCopasiObjectName("Reference=Independent Value"));
+
+            for (; it != end; ++it)
+              {
+                std::string Name = (*it)->getObjectName();
+                CCopasiObject * pObject = CCopasiContainer::ObjectFromName(Name);
+                if (pObject != NULL)
+                  Name = pObject->getObjectDisplayName();
+                Name = pExperiment->getObjectName() + "," + Name;
+
+                data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Measured Value")));
+                ChannelX.push_back(data2->getCN());
+                Names.push_back(Name + "(Measured Value)");
+                LineTypes.push_back(2);
+
+                data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Fitted Value")));
+                ChannelX.push_back(data2->getCN());
+                Names.push_back(Name + "(Fitted Value)");
+                if (pExperiment->getExperimentType() == CCopasiTask::timeCourse)
+                  LineTypes.push_back(0);
+                else
+                  LineTypes.push_back(2);
+
+                data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Weighted Error")));
+                ChannelX.push_back(data2->getCN());
+                Names.push_back(Name + "(Weighted Error)");
+                LineTypes.push_back(2);
+              }
+          }
+
+        pPlotSpecification =
+          createPlot(getItemName(id), data2, data1, getItem(id).mTaskType);
+
+        CCopasiVector< CPlotItem > & Items = pPlotSpecification->getItems();
+        CCopasiVector< CPlotItem >::const_iterator itItem = Items.begin();
+        CCopasiVector< CPlotItem >::const_iterator endItem = Items.end();
+        std::vector< std::string >::const_iterator itChannelX = ChannelX.begin();
+        std::vector< std::string >::const_iterator itName = Names.begin();
+        std::vector< unsigned C_INT32 >::const_iterator itLineType = LineTypes.begin();
+
+        while (itItem != endItem)
+          {
+            (*itItem)->getChannels()[0] = CPlotDataChannelSpec(*itChannelX++);
+            (*itItem)->setTitle(*itName++);
+            (*itItem)->setActivity(COutputInterface::AFTER);
+            (*itItem++)->setValue("Line type", *itLineType++);
+          }
+
+        return pPlotSpecification;
+      }
       break;
     case 11:
+      {
+        CPlotSpecification * pPlotSpecification = NULL;
+        CCopasiTask * pTask = (*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"];
+        if (pTask == NULL) return NULL;
+
+        CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pTask->getProblem());
+        if (pFitProblem == NULL) return NULL;
+
+        const CExperimentSet & ExperimentSet = pFitProblem->getExperiementSet();
+        unsigned C_INT32 i, imax = ExperimentSet.size();
+
+        for (i = 0; i < imax; i++)
+          {
+            const CExperiment * pExperiment = ExperimentSet.getExperiment(i);
+            const CCopasiVector< CFittingPoint > & FittingPoints = pExperiment->getFittingPoints();
+
+            CCopasiVector< CFittingPoint >::const_iterator it = FittingPoints.begin();
+            CCopasiVector< CFittingPoint >::const_iterator end = FittingPoints.end();
+
+            if (it == end) continue;
+
+            data2 = (*it)->getObject(CCopasiObjectName("Reference=Independent Value"));
+            data1.clear();
+
+            for (; it != end; ++it)
+              {
+                data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Measured Value")));
+                data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Fitted Value")));
+                data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Weighted Error")));
+              }
+
+            pPlotSpecification =
+              createPlot(pExperiment->getObjectName(), data2, data1, getItem(id).mTaskType);
+
+            CCopasiVector< CPlotItem > & Items = pPlotSpecification->getItems();
+            CCopasiVector< CPlotItem >::const_iterator itItem = Items.begin();
+            CCopasiVector< CPlotItem >::const_iterator endItem = Items.end();
+            it = FittingPoints.begin();
+
+            unsigned C_INT32 LineType;
+            if (pExperiment->getExperimentType() == CCopasiTask::timeCourse)
+              LineType = 0;
+            else
+              LineType = 2;
+
+            while (itItem != endItem)
+              {
+                std::string Name = (*it++)->getObjectName();
+                CCopasiObject * pObject = CCopasiContainer::ObjectFromName(Name);
+                if (pObject != NULL)
+                  Name = pObject->getObjectDisplayName();
+
+                (*itItem)->setTitle(Name + "(Measured Value)");
+                (*itItem)->setActivity(COutputInterface::AFTER);
+                (*itItem++)->setValue("Line type", (unsigned C_INT32) 2);
+
+                (*itItem)->setTitle(Name + "(Fitted Value)");
+                (*itItem)->setActivity(COutputInterface::AFTER);
+                (*itItem++)->setValue("Line type", (unsigned C_INT32) LineType);
+
+                (*itItem)->setTitle(Name + "(Weighted Error)");
+                (*itItem)->setActivity(COutputInterface::AFTER);
+                (*itItem++)->setValue("Line type", (unsigned C_INT32) 2);
+              }
+          }
+
+        return pPlotSpecification;
+      }
       break;
     case 12:
-      CPlotSpecification * pPlotSpecification = NULL;
-      CCopasiTask * pTask = (*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"];
-      if (pTask == NULL) return NULL;
+      {
+        CPlotSpecification * pPlotSpecification = NULL;
+        CCopasiTask * pTask = (*CCopasiDataModel::Global->getTaskList())["Parameter Estimation"];
+        if (pTask == NULL) return NULL;
 
-      CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pTask->getProblem());
-      if (pFitProblem == NULL) return NULL;
+        CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pTask->getProblem());
+        if (pFitProblem == NULL) return NULL;
 
-      const CExperimentSet & ExperimentSet = pFitProblem->getExperiementSet();
-      unsigned C_INT32 i, imax = ExperimentSet.size();
+        const CExperimentSet & ExperimentSet = pFitProblem->getExperiementSet();
+        unsigned C_INT32 i, imax = ExperimentSet.size();
 
-      for (i = 0; i < imax; i++)
-        {
-          const CExperiment * pExperiment = ExperimentSet.getExperiment(i);
-          const CCopasiVector< CFittingPoint > & FittingPoints = pExperiment->getFittingPoints();
+        std::map< const CCopasiObject *, CPlotSpecification * > PlotSpecMap;
+        std::map< const CCopasiObject *, CPlotSpecification * >::iterator Found;
+        for (i = 0; i < imax; i++)
+          {
+            const CExperiment * pExperiment = ExperimentSet.getExperiment(i);
+            const CCopasiVector< CFittingPoint > & FittingPoints = pExperiment->getFittingPoints();
 
-          CCopasiVector< CFittingPoint >::const_iterator it = FittingPoints.begin();
-          CCopasiVector< CFittingPoint >::const_iterator end = FittingPoints.end();
+            CCopasiVector< CFittingPoint >::const_iterator it = FittingPoints.begin();
+            CCopasiVector< CFittingPoint >::const_iterator end = FittingPoints.end();
 
-          if (it == end) continue;
+            if (it == end) continue;
 
-          data2 = (*it)->getObject(CCopasiObjectName("Reference=Independent Value"));
-          data1.clear();
+            std::string Name = pExperiment->getObjectName();
+            CPlotDataChannelSpec ChannelX =
+              (*it)->getObject(CCopasiObjectName("Reference=Independent Value"))->getCN();
+            unsigned C_INT32 LineType;
+            if (pExperiment->getExperimentType() == CCopasiTask::timeCourse)
+              LineType = 0;
+            else
+              LineType = 2;
 
-          for (; it != end; ++it)
-            {
-              data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Measured Value")));
-              data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Fitted Value")));
-              data1.push_back((*it)->getObject(CCopasiObjectName("Reference=Weighted Error")));
-            }
+            for (; it != end; ++it)
+              {
+                const CCopasiObject * pObject =
+                  CCopasiContainer::ObjectFromName((*it)->getObjectName());
+                if (pObject == NULL) continue;
 
-          pPlotSpecification =
-            createPlot(pExperiment->getObjectName(), data2, data1, getItem(id).mTaskType);
+                if ((Found = PlotSpecMap.find(pObject)) != PlotSpecMap.end())
+                  pPlotSpecification = Found->second;
+                else
+                  {
+                    unsigned C_INT32 i = 0;
+                    std::ostringstream sname;
+                    sname << pObject->getObjectDisplayName();
+                    while (!(pPlotSpecification =
+                               CCopasiDataModel::Global->getPlotDefinitionList()->createPlotSpec(sname.str(),
+                                   CPlotItem::plot2d)))
+                      {
+                        i++;
+                        sname.str("");
+                        sname << pObject->getObjectDisplayName() << "_" << i;
+                      }
 
-          const CCopasiVector< CPlotItem > & Items = pPlotSpecification->getItems();
-          CCopasiVector< CPlotItem >::const_iterator itItem = Items.begin();
-          CCopasiVector< CPlotItem >::const_iterator endItem = Items.end();
-          it = FittingPoints.begin();
+                    PlotSpecMap[pObject] = pPlotSpecification;
+                  }
 
-          unsigned C_INT32 LineType;
-          if (pExperiment->getExperimentType() == CCopasiTask::timeCourse)
-            LineType = 0;
-          else
-            LineType = 2;
+                CPlotItem * pItem =
+                  pPlotSpecification->createItem(Name + "(Measured Value)", CPlotItem::curve2d);
+                pItem->setActivity(COutputInterface::AFTER);
+                pItem->setValue("Line type", (unsigned C_INT32) 2);
+                pItem->addChannel(ChannelX);
+                pItem->addChannel((*it)->getObject(CCopasiObjectName("Reference=Measured Value"))->getCN());
 
-          while (itItem != endItem)
-            {
-              std::string Name = (*it++)->getObjectName();
-              CCopasiObject * pObject = CCopasiContainer::ObjectFromName(Name);
-              if (pObject != NULL)
-                Name = pObject->getObjectDisplayName();
+                pItem =
+                  pPlotSpecification->createItem(Name + "(Fitted Value)", CPlotItem::curve2d);
+                pItem->setActivity(COutputInterface::AFTER);
+                pItem->setValue("Line type", LineType);
+                pItem->addChannel(ChannelX);
+                pItem->addChannel((*it)->getObject(CCopasiObjectName("Reference=Fitted Value"))->getCN());
 
-              const_cast< CPlotItem *>(*itItem)->setTitle(Name + "(Measured Value)");
-              const_cast< CPlotItem *>(*itItem)->setActivity(COutputInterface::AFTER);
-              const_cast< CPlotItem *>(*itItem++)->setValue("Line type", (unsigned C_INT32) 2);
-
-              const_cast< CPlotItem *>(*itItem)->setTitle(Name + "(Fitted Value)");
-              const_cast< CPlotItem *>(*itItem)->setActivity(COutputInterface::AFTER);
-              const_cast< CPlotItem *>(*itItem++)->setValue("Line type", (unsigned C_INT32) LineType);
-
-              const_cast< CPlotItem *>(*itItem)->setTitle(Name + "(Weighted Error)");
-              const_cast< CPlotItem *>(*itItem)->setActivity(COutputInterface::AFTER);
-              const_cast< CPlotItem *>(*itItem++)->setValue("Line type", (unsigned C_INT32) 2);
-            }
-        }
-
-      return pPlotSpecification;
+                pItem =
+                  pPlotSpecification->createItem(Name + "(Weighted Error)", CPlotItem::curve2d);
+                pItem->setActivity(COutputInterface::AFTER);
+                pItem->setValue("Line type", (unsigned C_INT32) 2);
+                pItem->addChannel(ChannelX);
+                pItem->addChannel((*it)->getObject(CCopasiObjectName("Reference=Weighted Error"))->getCN());
+              }
+          }
+        return pPlotSpecification;
+      }
       break;
     }
 

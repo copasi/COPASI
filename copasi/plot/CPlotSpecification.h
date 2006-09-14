@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:41 $
+   $Date: 2006/09/14 16:28:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,8 @@ class CPlotSpecification : public CPlotItem
     virtual void cleanup();
 
     const CCopasiVector<CPlotItem> & getItems() const {return items;};
+
+    CCopasiVector<CPlotItem> & getItems() {return items;};
 
     CPlotItem* createItem(const std::string & name, CPlotItem::Type type);
 
