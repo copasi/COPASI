@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 16:04:57 $
+   $Date: 2006/09/15 16:01:38 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,7 +91,11 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
             }
 
           in.open(utf8ToLocale(CurrentFileName).c_str(), std::ios::binary);
-          if (in.fail()) return false; // File can not be opened.
+          if (in.fail())
+            {
+              CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 8, CurrentFileName.c_str());
+              return false; // File can not be opened.
+            }
         }
 
       if (!(*it)->read(in, CurrentLineNumber)) return false;
