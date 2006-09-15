@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/01 14:24:06 $
+   $Date: 2006/09/15 12:28:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -169,16 +169,20 @@ class CConfigurationFile : public CCopasiParameterGroup
         /**
          * Save information to a given ostream.
          * @param std::ostream & os
+         * @param const std::string & relativeTo
          * @return bool success
          */
-        virtual bool save(std::ostream & os);
+        virtual bool save(std::ostream & os,
+                          const std::string & relativeTo);
 
         /**
          * Load information from a given istream.
          * @param std::istream & is
+         * @param const std::string & relativeTo
          * @return bool success
          */
-        virtual bool load(std::istream & is);
+        virtual bool load(std::istream & is,
+                          const std::string & relativeTo);
 
         /**
          * Set the configuration contents

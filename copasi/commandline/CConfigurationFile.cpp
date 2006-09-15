@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/14 18:48:28 $
+   $Date: 2006/09/15 12:28:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -152,7 +152,7 @@ bool CConfigurationFile::load()
 
   CConfigurationFile::CXML XML;
 
-  bool success = XML.CCopasiXMLInterface::load(ConfigFile);
+  bool success = XML.CCopasiXMLInterface::load(ConfigFile, ConfigFile);
 
   if (success)
     {
@@ -177,8 +177,11 @@ CConfigurationFile::CXML::CXML():
 CConfigurationFile::CXML::~CXML()
 {}
 
-bool CConfigurationFile::CXML::save(std::ostream & os)
+bool CConfigurationFile::CXML::save(std::ostream & os,
+                                    const std::string & relativeTo)
 {
+  mFilename = relativeTo;
+
   os.imbue(std::locale::classic());
   os.precision(16);
 
@@ -200,8 +203,11 @@ bool CConfigurationFile::CXML::save(std::ostream & os)
   return true;
 }
 
-bool CConfigurationFile::CXML::load(std::istream & is)
+bool CConfigurationFile::CXML::load(std::istream & is,
+                                    const std::string & relativeTo)
 {
+  mFilename = relativeTo;
+
   is.imbue(std::locale::classic());
   is.precision(16);
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/21 16:01:41 $
+   $Author: shoops $
+   $Date: 2006/09/15 12:28:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,16 +46,20 @@ class CCopasiXML : public CCopasiXMLInterface
     /**
      * Save information to a given ostream.
      * @param std::ostream & os
+     * @param const std::string & relativeTo
      * @return bool success
      */
-    virtual bool save(std::ostream & os);
+    virtual bool save(std::ostream & os,
+                      const std::string & relativeTo);
 
     /**
      * Load information from a given istream.
      * @param std::istream & is
+     * @param const std::string & relativeTo
      * @return bool success
      */
-    virtual bool load(std::istream & is);
+    virtual bool load(std::istream & is,
+                      const std::string & relativeTo);
 
     /**
      * Retrieve the version of the current XML file.

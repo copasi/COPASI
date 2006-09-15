@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/14 18:48:28 $
+   $Date: 2006/09/15 12:28:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -212,7 +212,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
           XML.setGUI(*pGUI);
         }
 
-      if (!XML.load(File))
+      if (!XML.load(File, FileName))
         {
           XML.freeModel();
           XML.freeTaskList();

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/17 17:09:44 $
+   $Date: 2006/09/15 12:28:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,8 +63,11 @@ CCopasiXML::CCopasiXML():
 
 CCopasiXML::~CCopasiXML() {}
 
-bool CCopasiXML::save(std::ostream & os)
+bool CCopasiXML::save(std::ostream & os,
+                      const std::string & relativeTo)
 {
+  mFilename = relativeTo;
+
   os.imbue(std::locale::classic());
   os.precision(16);
 
@@ -87,6 +90,7 @@ bool CCopasiXML::save(std::ostream & os)
                  "http://www.copasi.org/static/schema.xsd");
   Attributes.add("versionMajor", mVersion.getVersionMajor());
   Attributes.add("versionMinor", mVersion.getVersionMinor());
+  Attributes.add("versionDevel", mVersion.getVersionDevel());
 
   startSaveElement("COPASI", Attributes);
 
@@ -111,8 +115,11 @@ bool CCopasiXML::save(std::ostream & os)
   return success;
 }
 
-bool CCopasiXML::load(std::istream & is)
+bool CCopasiXML::load(std::istream & is,
+                      const std::string & relativeTo)
 {
+  mFilename = relativeTo;
+
   is.imbue(std::locale::classic());
   is.precision(16);
 
@@ -120,7 +127,8 @@ bool CCopasiXML::load(std::istream & is)
   bool success = true;
   bool done = false;
 
-  CCopasiXMLParser Parser(mVersion);
+  CVersion FileVersion;
+  CCopasiXMLParser Parser(FileVersion);
 
   Parser.setFunctionList(mpFunctionList);
   Parser.setModel(mpModel);
@@ -159,22 +167,17 @@ bool CCopasiXML::load(std::istream & is)
       mpReportList = Parser.getReportList();
       mpTaskList = Parser.getTaskList();
       mpPlotList = Parser.getPlotList();
-      if (mpPlotList)
-        {
-          //std::cout << "Number of Plots: " << mpPlotList->size() << std::endl;
-          unsigned int count;
-          for (count = 0; count < mpPlotList->size(); count++)
-            {
-              //std::cout << "Number of PlotItems for plot @" << (*mpPlotList)[count] << ": " << (*mpPlotList)[count]->getItems().size() << std::endl;
-            }
-        }
     }
+
+  if (FileVersion.getVersionDevel() > mVersion.getVersionDevel())
+    CCopasiMessage(CCopasiMessage::WARNING, MCXML + 9,
+                   mFilename.c_str(), FileVersion.getVersion().c_str());
 
   return success;
 }
 
 const CVersion & CCopasiXML::getVersion() const
-  {return mVersion;}
+{return mVersion;}
 
 bool CCopasiXML::setModel(const CModel & model)
 {

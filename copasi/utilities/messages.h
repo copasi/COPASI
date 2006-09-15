@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.77 $
+   $Revision: 1.78 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/09/14 09:18:18 $
+   $Author: shoops $
+   $Date: 2006/09/15 12:28:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -102,6 +102,9 @@ const MESSAGES Messages[] =
     {MCXML + 7, "XML (7): Unknown function '%s' in reaction '%s' encountered at line '%d'."},
     {MCXML + 8, "XML (8): Unknown variable '%s' in function '%s' encountered at line '%d'. "
      "A possible reason is that the variable is a reserved string within the function description."},
+    {MCXML + 9, "XML (9): The file '%s'\nis written in a newer version '%s' of the COPASI file format.\n"
+     "This file might include features your version of COPASI does not support.\n"
+     "To assure full compatibility please download the newest version at http://www.copasi.org."},
 
     // CCopasiMessage
     {MCCopasiMessage + 1, "Message (1): No more messages."},
