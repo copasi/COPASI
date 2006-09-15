@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.94 $
+   $Revision: 1.95 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/09/14 09:18:18 $
+   $Date: 2006/09/15 08:10:01 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1722,6 +1722,9 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME, int sbmlLevel,
                 }
             }
           this->checkExpressionObjects(pME->getExpressionPtr()->getRoot());
+          std::list<const CEvaluationTree*>* usedFunctionList = new std::list<const CEvaluationTree*>;
+          this->findUsedFunctions(pME->getExpressionPtr()->getRoot(), usedFunctionList);
+          pdelete(usedFunctionList);
           // now we set the new expression
           ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
           pRateRule->setMath(pRootNode);
@@ -1795,6 +1798,9 @@ Rule* SBMLExporter::createRuleFromCModelEntity(CModelEntity* pME, int sbmlLevel,
                 }
             }
           this->checkExpressionObjects(pME->getExpressionPtr()->getRoot());
+          std::list<const CEvaluationTree*>* usedFunctionList = new std::list<const CEvaluationTree*>;
+          this->findUsedFunctions(pME->getExpressionPtr()->getRoot(), usedFunctionList);
+          pdelete(usedFunctionList);
           // now we set the new expression
           ASTNode* pRootNode = pME->getExpressionPtr()->getRoot()->toAST();
           pAssignmentRule->setMath(pRootNode);
