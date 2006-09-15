@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/24 14:40:31 $
+   $Date: 2006/09/15 19:54:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -339,7 +339,8 @@ bool CExperimentObjectMap::CDataColumn::setWeight(const C_FLOAT64 & weight)
       return true;
     }
 
-  if (weight != getDefaultWeight())
+  C_FLOAT64 DefaultWeight = getDefaultWeight();
+  if (weight != DefaultWeight || isnan(DefaultWeight))
     {
       if (mpWeight != NULL)
         *mpWeight = weight;
