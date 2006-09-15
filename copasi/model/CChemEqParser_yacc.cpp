@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqParser_yacc.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/25 18:13:23 $
+   $Date: 2006/09/15 12:51:01 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -260,7 +260,7 @@ short *yyss;
 short *yysslim;
 YYSTYPE *yyvs;
 int yystacksize;
-#line 164 "CChemEqParser.ypp"
+#line 162 "CChemEqParser.ypp"
 
 #line 235 "CChemEqParser_yacc.cpp"
 /* allocate initial stack or double stack size, up to YYMAXDEPTH */
@@ -555,28 +555,26 @@ YYPARSE_PARAM_DECL
 #line 122 "CChemEqParser.ypp"
         {
           yyval = yyvsp[0];
-          yyval->multiplicity = 1.0;
           yyval->compartment = "";
         }
         break;
       case 14:
-#line 128 "CChemEqParser.ypp"
+#line 127 "CChemEqParser.ypp"
         {
           yyval = yyvsp[ -1];
-          yyval->multiplicity = 1.0;
           yyval->compartment = yyvsp[0]->name;
           pdelete(yyvsp[0]);
         }
         break;
       case 15:
-#line 137 "CChemEqParser.ypp"
+#line 135 "CChemEqParser.ypp"
         {
           yyval = yyvsp[0];
           yyval->multiplicity = 1.0;
         }
         break;
       case 16:
-#line 142 "CChemEqParser.ypp"
+#line 140 "CChemEqParser.ypp"
         {
           yyval = yyvsp[0];
           yyval->multiplicity = strtod(yyvsp[ -1]->name.c_str(), NULL);
@@ -584,7 +582,7 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 17:
-#line 148 "CChemEqParser.ypp"
+#line 146 "CChemEqParser.ypp"
         {
           yyval = yyvsp[0];
           yyval->multiplicity = strtod(yyvsp[ -2]->name.c_str(), NULL);
@@ -593,14 +591,14 @@ YYPARSE_PARAM_DECL
         }
         break;
       case 18:
-#line 156 "CChemEqParser.ypp"
+#line 154 "CChemEqParser.ypp"
         {
           yyval = yyvsp[ -1];
           pdelete(yyvsp[ -2]);
           pdelete(yyvsp[0]);
         }
         break;
-#line 573 "CChemEqParser_yacc.cpp"
+#line 571 "CChemEqParser_yacc.cpp"
       }
   yyssp -= yym;
   yystate = *yyssp;

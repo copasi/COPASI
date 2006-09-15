@@ -121,13 +121,11 @@ modifiers: TOKEN_BEGIN_MODIFIERS reactant
 reactant: prereactant
           {
             $$ = $1;
-            $$->multiplicity = 1.0;
             $$->compartment = "";
           }  
         | prereactant compartment
           {
             $$ = $1;
-            $$->multiplicity = 1.0;
             $$->compartment = $2->name;
             pdelete($2);
           }
