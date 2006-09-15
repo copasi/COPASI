@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/24 14:16:37 $
+   $Date: 2006/09/15 19:55:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -265,8 +265,6 @@ void CQExperimentData::slotFirst()
 
 void CQExperimentData::slotLast()
 {
-  qWarning("CQExperimentData::slotLast(): Not implemented yet");
-
   unsigned C_INT32 Row = C_INVALID_INDEX;
 
   if (mpEditLast->text() != "")
@@ -1108,6 +1106,7 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
   CExperimentObjectMap & ObjectMap = pExperiment->getObjectMap();
   unsigned C_INT32 i, imax = mpTable->numRows();
   bool FoundTime = false;
+  bool Changed = false;
 
   ObjectMap.setNumCols(imax);
 
@@ -1119,14 +1118,23 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
         FoundTime = true;
 
       if (ObjectMap.getRole(i) != Type)
-        ObjectMap.setRole(i, Type);
+        {
+          ObjectMap.setRole(i, Type);
+          Changed = true;
+        }
 
       if (ObjectMap.getObjectCN(i) != (const char *) mpTable->text(i, COL_OBJECT_HIDDEN).utf8())
-        ObjectMap.setObjectCN(i, (const char *) mpTable->text(i, COL_OBJECT_HIDDEN).utf8());
+        {
+          ObjectMap.setObjectCN(i, (const char *) mpTable->text(i, COL_OBJECT_HIDDEN).utf8());
+          Changed = true;
+        }
 
       if (Type == CExperiment::dependent &&
           QString::number(ObjectMap.getWeight(i)) != mpTable->text(i, COL_WEIGHT))
-        ObjectMap.setWeight(i, mpTable->text(i, COL_WEIGHT).toDouble());
+        {
+          ObjectMap.setWeight(i, mpTable->text(i, COL_WEIGHT).toDouble());
+          Changed = true;
+        }
     }
 
   pExperiment->updateFittedPoints();
@@ -1140,7 +1148,7 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
       CCopasiMessage::clearDeque();
     }
 
-  return true;
+  return Changed;
 }
 
 void CQExperimentData::slotCheckFrom(bool checked)
@@ -1274,6 +1282,21 @@ void CQExperimentData::enableEdit(const bool & enable)
 
 void CQExperimentData::slotWeightMethod(int weightMethod)
 {
+  if ((CExperiment::WeightMethod) weightMethod ==
+      mpExperiment->getWeightMethod()) return;
+
+  bool Changed = saveTable(mpExperiment);
+
+  if (Changed)
+    {
+      std::ifstream File;
+      File.open(utf8ToLocale(mpExperiment->getFileName()).c_str());
+
+      unsigned C_INT32 CurrentLine = 1;
+      mpExperiment->read(File, CurrentLine);
+      mpExperiment->compile();
+    }
+
   mpExperiment->setWeightMethod((CExperiment::WeightMethod) weightMethod);
   mpExperiment->calculateWeights();
 
