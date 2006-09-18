@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TaskWidget.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/31 20:04:09 $
+   $Author: ssahle $
+   $Date: 2006/09/18 13:02:43 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -393,6 +393,104 @@ bool TaskWidget::commonAfterRunTask()
   static_cast<CopasiUI3Window *>(qApp->mainWidget())->suspendAutoSave(false);
 
   return true;
+}
+
+bool TaskWidget::commonRunTask()
+{
+  bool success = true;
+
+  // Initialize the task
+  try
+    {
+      if (!mpTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL))
+        throw CCopasiException(CCopasiMessage::peekLastMessage());
+    }
+
+  catch (CCopasiException Exception)
+    {
+      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+        {
+          mProgressBar->finish();
+          QMessageBox::critical(this, "Initialization Error",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+
+          success = false;
+          goto finish;
+        }
+    }
+
+  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
+    {
+      C_INT Result =
+        QMessageBox::warning(this, "Initialization Warning",
+                             CCopasiMessage::getAllMessageText().c_str(),
+                             QMessageBox::Ignore | QMessageBox::Default,
+                             QMessageBox::Abort);
+      CCopasiMessage::clearDeque();
+
+      if (Result == QMessageBox::Abort)
+        {
+          success = false;
+          goto finish;
+        }
+    }
+
+  // Execute the task
+  try
+    {
+      if (!mpTask->process(true))
+        throw CCopasiException(CCopasiMessage::peekLastMessage());
+    }
+
+  catch (CCopasiException Exception)
+    {
+      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+        {
+          mProgressBar->finish();
+          QMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+        }
+
+      success = false;
+      goto finish;
+    }
+
+  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
+    {
+      C_INT Result =
+        QMessageBox::warning(this, "Calculation Warning",
+                             CCopasiMessage::getAllMessageText().c_str(),
+                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+    }
+
+finish:
+  try {mpTask->restore();}
+
+  catch (CCopasiException Exception)
+    {
+      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
+        {
+          mProgressBar->finish();
+          QMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+        }
+    }
+
+  catch (...) {}
+
+  if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::COMMANDLINE)
+    {
+      C_INT Result =
+        QMessageBox::warning(this, "Calculation Warning",
+                             CCopasiMessage::getAllMessageText().c_str(),
+                             QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+    }
+
+  return success;
 }
 
 //*********************************************************************
