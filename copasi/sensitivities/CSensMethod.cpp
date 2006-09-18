@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/09/08 00:55:56 $
+   $Date: 2006/09/18 12:58:07 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,7 @@
 #include "copasi.h"
 
 //#include "utilities/CCopasiVector.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
 #include "CSensMethod.h"
 #include "CSensProblem.h"
 
@@ -72,8 +73,13 @@ CSensMethod::~CSensMethod()
 void CSensMethod::do_target_calculation(CCopasiArray & result)
 {
   //****** do subtask ******************
-  mpProblem->getModel()->applyAssignments();
-  mpProblem->getModel()->refreshRates();
+  if (mpSubTask)
+    mpSubTask->process(true);
+  else
+    {
+      mpProblem->getModel()->applyAssignments();
+      mpProblem->getModel()->refreshRates();
+    }
 
   //****** retrieve results ************
 
@@ -90,6 +96,7 @@ void CSensMethod::do_target_calculation(CCopasiArray & result)
       if (imax > 1)
         resultindex[0] = i;
       result[resultindex] = *(C_FLOAT64*)mTargetfunctionPointers[i]->getValuePointer();
+      std::cout << *(C_FLOAT64*)mTargetfunctionPointers[i]->getValuePointer() << std::endl;
     }
 }
 
@@ -98,10 +105,15 @@ C_FLOAT64 CSensMethod::do_variation(CCopasiObject* variable)
   C_FLOAT64 value;
   value = *(C_FLOAT64*)variable->getValuePointer();
   C_FLOAT64 delta;
-  delta = fabs(value) * 1e-9;
+  delta = fabs(value) * 1e-4;
   if (delta < 1e-12) delta = 1e-12;
 
   variable->setObjectValue(delta + value);
+
+  //debug
+  std::cout << variable->getObjectDisplayName() << "  " << value << " -> ";
+  value = *(C_FLOAT64*)variable->getValuePointer();
+  std::cout << value << std::endl;
 
   return delta;
 }
@@ -212,6 +224,39 @@ bool CSensMethod::initialize(CSensProblem* problem)
 {
   mpProblem = problem; assert(mpProblem);
 
+  //initialize the target calculation
+  mpSubTask = NULL;
+
+  switch (mpProblem->getSubTaskType())
+    {
+    case CSensProblem::unset:
+    case CSensProblem::Evaluation:
+      mpSubTask = NULL;
+      break;
+
+    case CSensProblem::SteadyState:
+      mpSubTask = dynamic_cast<CCopasiTask*>
+                  ((*CCopasiDataModel::Global->getTaskList())["Steady-State"]);
+      break;
+
+    case CSensProblem::TimeSeries:
+      mpSubTask = dynamic_cast<CCopasiTask*>
+                  ((*CCopasiDataModel::Global->getTaskList())["Time-Course"]);
+      break;
+
+    case CSensProblem::LyapunovExp:
+      mpSubTask = dynamic_cast<CCopasiTask*>
+                  ((*CCopasiDataModel::Global->getTaskList())["Lyapunov Exponents"]);
+      break;
+    }
+
+  if (mpSubTask)
+    {
+      mpSubTask->getProblem()->setModel(mpProblem->getModel());
+      mpSubTask->setCallBack(NULL);
+      mpSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL);
+    }
+
   //initialize the variables pointers
   C_INT32 i, imax = mpProblem->getNumberOfVariables();
   mLocalData.resize(imax);
@@ -220,10 +265,55 @@ bool CSensMethod::initialize(CSensProblem* problem)
       mLocalData[i].variables = mpProblem->getVariables(i).getVariablesPointerList(mpProblem->getModel());
     }
 
-  //initialize the target calculation
-
   //initialize the target function pointers
   mTargetfunctionPointers = mpProblem->getTargetFunctions().getVariablesPointerList(mpProblem->getModel());
+
+  //****** initialize result annotations ****************
+
+  //determine dimensions of result
+  CCopasiArray::index_type s;
+  if (mTargetfunctionPointers.size() > 1)
+    {
+      s.push_back(mTargetfunctionPointers.size());
+    }
+  for (i = 0; i < imax; ++i)
+    {
+      if (mLocalData[i].variables.size() > 1)
+        {
+          s.push_back(mLocalData[i].variables.size());
+        }
+    }
+
+  //resize result & annotations
+  mpProblem->getResult().resize(s);
+  mpProblem->getResultAnnotated()->resize();
+
+  unsigned C_INT32 dim = 0;
+  unsigned C_INT32 j;
+  //target function annotations //TODO: only implemented for scalar and vector
+  if (mTargetfunctionPointers.size() > 1)
+    {
+      std::ostringstream tmp;
+      tmp << "Target functions, " << mpProblem->getTargetFunctions().getListTypeDisplayName();
+      mpProblem->getResultAnnotated()->setDimensionDescription(dim, tmp.str());
+      for (j = 0; j < mTargetfunctionPointers.size(); ++j)
+        mpProblem->getResultAnnotated()->setAnnotation(dim, j, mTargetfunctionPointers[j]->getCN());
+      ++dim;
+    }
+
+  //variables annotiation
+  for (i = 0; i < imax; ++i)
+    {
+      if (mLocalData[i].variables.size() > 1)
+        {
+          std::ostringstream tmp;
+          tmp << "Variables " << i + 1 << ", " << mpProblem->getVariables(i).getListTypeDisplayName();
+          mpProblem->getResultAnnotated()->setDimensionDescription(dim, tmp.str());
+          for (j = 0; j < mLocalData[i].variables.size(); ++j)
+            mpProblem->getResultAnnotated()->setAnnotation(dim, j, mLocalData[i].variables[j]->getCN());
+          ++dim;
+        }
+    }
 
   return true;
 }

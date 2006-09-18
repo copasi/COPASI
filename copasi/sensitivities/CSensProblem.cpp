@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/09/08 00:55:56 $
+   $Date: 2006/09/18 12:58:07 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -52,6 +52,11 @@ const CObjectLists::ListType & CSensItem::getListType() const
     return mListType;
   }
 
+std::string CSensItem::getListTypeDisplayName() const
+  {
+    return CObjectLists::ListTypeName[mListType];
+  }
+
 bool CSensItem::operator==(const CSensItem & rhs) const
   {
     if (isSingleObject() != rhs.isSingleObject())
@@ -93,11 +98,16 @@ std::vector<CCopasiObject*> CSensItem::getVariablesPointerList(CModel* pModel)
   return ret;
 }
 
+// unsigned C_INT32 CSensItem::dimensionality() const
+// {
+//}
+
 //************************ CSensProblem ***************************
 
 const std::string CSensProblem::SubTaskName[] =
   {
     "Not Set",
+    "Evaluation",
     "Steady State",
     "Time Series",
     "Lyapunov Exponents",
@@ -107,6 +117,7 @@ const std::string CSensProblem::SubTaskName[] =
 const char * CSensProblem::XMLSubTask[] =
   {
     "NotSet",
+    "Evaluation",
     "SteadyState",
     "TimeSeries",
     "LyapunovExponents",
@@ -125,7 +136,7 @@ void CSensProblem::createParametersInGroup(CCopasiParameterGroup *pg)
 //static
 void CSensProblem::copySensItemToParameterGroup(const CSensItem * si, CCopasiParameterGroup *pg)
 {
-  std::string cn = "";
+  CCopasiObjectName cn("");
 
   if (!pg) return; if (!si) return;
 
@@ -204,9 +215,9 @@ CSensProblem::CSensProblem(const CSensProblem & src,
 
 void CSensProblem::initObjects()
 {
-  mResultAnnotation = new CArrayAnnotation("Sensitivities array", this, &mResult);
-  mResultAnnotation->setOnTheFly(false);
-  mResultAnnotation->setDescription("");
+  mpResultAnnotation = new CArrayAnnotation("Sensitivities array", this, &mResult);
+  mpResultAnnotation->setOnTheFly(false);
+  mpResultAnnotation->setDescription("");
 }
 
 /**
@@ -314,6 +325,16 @@ const CCopasiArray & CSensProblem::getResult() const
     return mResult;
   }
 
+CArrayAnnotation * CSensProblem::getResultAnnotated()
+{
+  return mpResultAnnotation;
+}
+
+const CArrayAnnotation * CSensProblem::getResultAnnotated() const
+  {
+    return mpResultAnnotation;
+  }
+
 //static
 std::vector<CObjectLists::ListType>
 CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
@@ -327,8 +348,7 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
   //   getTargetFunctionName()
   switch (type)
     {
-    case (CSensProblem::unset):
-            // all available target functions
+    case (CSensProblem::unset):  // all available target functions
             list.push_back(CObjectLists::SINGLE_OBJECT);
       list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
       list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
@@ -338,10 +358,16 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
       list.push_back(CObjectLists::REACTION_PART_FLUXES);
       break;
 
+    case (CSensProblem::Evaluation):
+            list.push_back(CObjectLists::SINGLE_OBJECT);
+      list.push_back(CObjectLists::REACTION_CONC_FLUXES);
+
     case (CSensProblem::SteadyState):
             list.push_back(CObjectLists::SINGLE_OBJECT);
+      list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
       list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
       list.push_back(CObjectLists::NON_CONST_METAB_CONC_RATES);
+      list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
       list.push_back(CObjectLists::REACTION_CONC_FLUXES);
       list.push_back(CObjectLists::REACTION_PART_FLUXES);
       break;
@@ -381,13 +407,17 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
   switch (type)
     {
     case (unset):
-          case (SteadyState):
-            case (TimeSeries):
-              case (LyapunovExp):
-                  // all available target functions
-                  list.push_back(CObjectLists::SINGLE_OBJECT);
+          case (Evaluation):
+            case (SteadyState):
+              case (TimeSeries):
+                case (LyapunovExp):
+                    // all available target functions
+                    list.push_back(CObjectLists::SINGLE_OBJECT);
       list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
-      list.push_back(CObjectLists::GLOBAL_PARAMETERS);
+      list.push_back(CObjectLists::GLOBAL_PARAMETER_VALUES);
+      list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
+      list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
+      list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
     }
 
   return list;
@@ -397,12 +427,34 @@ void CSensProblem::printResult(std::ostream * ostream) const
 {
     std::ostream & os = *ostream;
 
-    os << "Sensitivities result." << std::endl;
+    //os << "Sensitivities result." << std::endl;
+    os << *mpResultAnnotation << std::endl;
   }
+
+std::ostream &operator<<(std::ostream &os, const CSensItem & si)
+{
+  if (si.isSingleObject())
+    os << si.getSingleObjectDisplayName();
+  else
+    os << si.getListTypeDisplayName();
+
+  return os;
+}
 
 std::ostream &operator<<(std::ostream &os, const CSensProblem & o)
 {
-  os << "Sensitivities description" << std::endl;
+  os << "Function(s) to be derived:" << std::endl;
+  os << o.getTargetFunctions() << std::endl << std::endl;
+
+  os << "Calculation to perform: "
+  << CSensProblem::SubTaskName[o.getSubTaskType()] << std::endl << std::endl;
+
+  unsigned C_INT32 i, imax = o.getNumberOfVariables();
+  for (i = 0; i < imax; ++i)
+    {
+      os << "Variable(s) for " << i + 1 << ". derivation:" << std::endl;
+      os << o.getVariables(i) << std::endl << std::endl;
+    }
 
   return os;
 }

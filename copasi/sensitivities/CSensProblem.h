@@ -1,22 +1,14 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/09/08 00:55:56 $
+   $Date: 2006/09/18 12:58:07 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-/**
- *  CSensProblem class.
- *  This class describes the steady state problem, i.e., it allows to specify
- *  for example initial conditions.
- *
- *  Created for Copasi by Stefan Hoops 2002
- */
 
 #ifndef COPASI_CSensProblem
 #define COPASI_CSensProblem
@@ -47,6 +39,8 @@ class CSensItem
 
     std::vector<CCopasiObject*> getVariablesPointerList(CModel* pModel);
 
+    //unsigned C_INT32 dimensionality() const;
+
     bool operator==(const CSensItem & rhs) const;
     bool operator!=(const CSensItem & rhs) const;
 
@@ -57,6 +51,9 @@ class CSensItem
 
 //****************************************************************
 
+/**
+ *  CSensProblem class.
+ */
 class CSensProblem: public CCopasiProblem
   {
   public:
@@ -66,6 +63,7 @@ class CSensProblem: public CCopasiProblem
 
     enum SubTaskType {
       unset = 0,
+      Evaluation,
       SteadyState,
       TimeSeries,
       LyapunovExp
@@ -123,6 +121,8 @@ class CSensProblem: public CCopasiProblem
 
     CCopasiArray & getResult();
     const CCopasiArray & getResult() const;
+    CArrayAnnotation * getResultAnnotated();
+    const CArrayAnnotation * getResultAnnotated() const;
 
     /**
      * This is the output method for any result of a problem. The default implementation
@@ -180,7 +180,7 @@ class CSensProblem: public CCopasiProblem
      */
     CCopasiArray mResult;
 
-    CArrayAnnotation * mResultAnnotation;
+    CArrayAnnotation * mpResultAnnotation;
   };
 
 #endif // COPASI_CSensProblem

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/09/08 00:55:56 $
+   $Date: 2006/09/18 12:58:07 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -98,6 +98,8 @@ class CSensMethod : public CCopasiMethod
     std::vector<CSensMethodLocalData> mLocalData;
 
     std::vector<CCopasiObject*> mTargetfunctionPointers;
+
+    CCopasiTask * mpSubTask;
 
     void calculate_one_level(unsigned C_INT32 level, CCopasiArray & result);
     void do_target_calculation(CCopasiArray & result);
