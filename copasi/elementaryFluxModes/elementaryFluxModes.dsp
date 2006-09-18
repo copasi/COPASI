@@ -75,6 +75,10 @@ SOURCE=.\CElementaryFluxModes.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CExtremeCurrentCalculator.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CFluxMode.cpp
 # End Source File
 # Begin Source File
@@ -112,6 +116,10 @@ SOURCE=.\CEFMTask.h
 # Begin Source File
 
 SOURCE=.\CElementaryFluxModes.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CExtremeCurrentCalculator.h
 # End Source File
 # Begin Source File
 
