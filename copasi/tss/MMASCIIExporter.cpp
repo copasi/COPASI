@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: nsimus $
-   $Date: 2006/08/28 12:38:20 $
+   $Date: 2006/09/18 10:52:43 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1724,7 +1724,7 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
   outFile << std::endl;
 
   outFile << "#ifdef TIME" << std::endl;
-  outFile << "double t = <user name for time variable>; " << std::endl;
+  outFile << "#define T  <set here a user name for the time variable> " << std::endl;
   outFile << "#endif // TIME" << std::endl;
 
   outFile << "#ifdef METABOLITES" << std::endl;
@@ -1994,7 +1994,7 @@ bool MMASCIIExporter::exportMathModelInC(const CModel* copasiModel, std::ofstrea
                         }
                       if (usage == CFunctionParameter::TIME)
                         {
-                          equation << "t";
+                          equation << "T";
                         }
                       if (usage == CFunctionParameter::VARIABLE)
                         {
