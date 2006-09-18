@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CAnnotatedMatrix.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/06/21 16:03:41 $
+   $Date: 2006/09/18 12:53:54 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -139,10 +139,10 @@ class CArrayAnnotation: public CCopasiContainer
   private:
     CCopasiAbstractArray * mArray;
 
-    std::vector< std::vector<CRegisteredObjectName> > mAnnotations;
+    mutable std::vector< std::vector<CRegisteredObjectName> > mAnnotations;
 
-    std::vector< std::string > mDimensionDescriptions;
-    std::vector< const CCopasiContainer * > mCopasiVectors;
+    mutable std::vector< std::string > mDimensionDescriptions;
+    mutable std::vector< const CCopasiContainer * > mCopasiVectors;
 
     std::string mDescription;
 
@@ -160,6 +160,12 @@ class CArrayAnnotation: public CCopasiContainer
 
   public:
 
+    CCopasiAbstractArray * array()
+    {return mArray;}
+
+    const CCopasiAbstractArray * array() const
+      {return mArray;}
+
     bool onTheFly() const
       {return mOnTheFly;}
 
@@ -171,13 +177,13 @@ class CArrayAnnotation: public CCopasiContainer
     CCopasiAbstractArray::index_type size() const
       {return mArray->size();}
 
-    const std::vector<CRegisteredObjectName> & getAnnotations(unsigned int d);
+    const std::vector<CRegisteredObjectName> & getAnnotations(unsigned int d) const;
     void setAnnotation(unsigned int d, unsigned int i, const std::string cn);
 
-    std::vector<std::string> getAnnotationsDisplay(unsigned int d);
-    std::vector<std::string> getAnnotationsNames(unsigned int d);
+    std::vector<std::string> getAnnotationsDisplay(unsigned int d) const;
+    std::vector<std::string> getAnnotationsNames(unsigned int d) const;
 
-    const std::string & getDimensionDescription(unsigned int d);
+    const std::string & getDimensionDescription(unsigned int d) const;
     void setDimensionDescription(unsigned int d, const std::string & s);
 
     void setCopasiVector(unsigned int d, const CCopasiContainer* v);
@@ -188,14 +194,21 @@ class CArrayAnnotation: public CCopasiContainer
     void resize(/*const CCopasiAbstractArray::index_type & sizes*/);
 
   private:
-    void resizeAnnotations();
-    bool updateAnnotations();
+    void resizeAnnotations() const;
+
+    /**
+     * this generates the annotations if onTheFly() == true.
+     */
+    bool updateAnnotations() const;
 
     void printDebugLoop(std::ostream & out, CCopasiAbstractArray::index_type & index, unsigned int level) const;
 
-    bool createAnnotationsFromCopasiVector(unsigned int d, const CCopasiContainer* v);
+    bool createAnnotationsFromCopasiVector(unsigned int d, const CCopasiContainer* v) const;
 
     void printDebug(std::ostream & out) const;
+
+    void printRecursively(std::ostream & ostream, C_INT32 level,
+                          CCopasiAbstractArray::index_type & index) const;
 
   public:
     virtual void print(std::ostream * ostream) const;
