@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/13 21:55:05 $
+   $Author: ssahle $
+   $Date: 2006/09/18 12:51:03 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,12 +15,14 @@
 #include "CObjectLists.h"
 #include "report/CCopasiObject.h"
 #include "model/CModel.h"
+#include "report/CKeyFactory.h"
 
 //static
 const std::string CObjectLists::ListTypeName[] =
   {
     "Not Set",
     "Single Object",
+
     "Metabolites",
     "Non-Constant Metabolites",
     "Concentrations of Metabolites",
@@ -31,16 +33,22 @@ const std::string CObjectLists::ListTypeName[] =
     "Non-Constant Particle Rates",
     "Initial Concentrations",
     "Initial Numbers",
+
     "Reactions",
     "Concentration Fluxes of Reactions",
     "Particle Fluxes of Reactions",
+
     "Global Quantity",
     "Global Quantity Initial Values",
     "Global Quantity Values",
     "Non-Constant Global Quantity Values",
+    "Values of Global Quantities with ODE",
+    "Values of Global Quantities with Assignment",
     "Global Quantity Rates",
+
     "Compartments",
     "Compartment Volumes",
+
     "Local Parameter Values",
     "All Parameter Values",
     "All Parameter and Initial Values",
@@ -71,6 +79,10 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
 
   switch (t)
     {
+    case EMPTY_LIST:
+    case SINGLE_OBJECT:
+      break;
+
     case ALL_METABS:
       for (i = 0; i < imax; ++i)
         ret.push_back(metabs[i]);
@@ -153,6 +165,8 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
                       (reacs[i]->getObject(CCopasiObjectName("Reference=ParticleFlux"))));
       break;
 
+      // global parameters
+
     case GLOBAL_PARAMETERS:
       {
         const CCopasiVectorN< CModelValue > & params = model->getModelValues();
@@ -190,6 +204,26 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
       }
       break;
 
+    case ODE_GLOBAL_PARAMETER_VALUES:
+      {
+        const CCopasiVectorN< CModelValue > & params = model->getModelValues();
+        for (i = 0; i < params.size(); ++i)
+          if (params[i]->getStatus() == CModelEntity::ODE)
+            ret.push_back(const_cast<CCopasiObject*>
+                          (params[i]->getObject(CCopasiObjectName("Reference=Value"))));
+      }
+      break;
+
+    case ASS_GLOBAL_PARAMETER_VALUES:
+      {
+        const CCopasiVectorN< CModelValue > & params = model->getModelValues();
+        for (i = 0; i < params.size(); ++i)
+          if (params[i]->getStatus() == CModelEntity::ASSIGNMENT)
+            ret.push_back(const_cast<CCopasiObject*>
+                          (params[i]->getObject(CCopasiObjectName("Reference=Value"))));
+      }
+      break;
+
     case GLOBAL_PARAMETER_RATES:
       {
         const CCopasiVectorN< CModelValue > & params = model->getModelValues();
@@ -200,12 +234,39 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
       }
       break;
 
+      // compartments
+
     case COMPARTMENTS:
     case COMPARTMENT_VOLUMES:
       //case COMPARTMENT_INITIAL_VOLUMES:
       //case COMPARTMENT_RATES:
+      break;
 
     case ALL_LOCAL_PARAMETER_VALUES:
+      {
+        for (i = 0; i < reacMax; ++i)
+          {
+            const CFunctionParameters & params = reacs[i]->getFunctionParameters();
+            unsigned C_INT32 j, jmax = params.size();
+            for (j = 0; j < jmax; ++j)
+              if (params[j]->getUsage() == CFunctionParameter::PARAMETER)
+                if (reacs[i]->isLocalParameter(j))
+                  {
+                    CCopasiParameter * par =
+                      dynamic_cast<CCopasiParameter*>
+                      (GlobalKeys.get(reacs[i]->getParameterMappings()[j][0]));
+                    if (par)
+                      ret.push_back(const_cast<CCopasiObject*>
+                                    (par->getObject(CCopasiObjectName("Reference=Value"))));
+                  }
+          }
+
+        //ret.push_back(reacs[i]);
+      }
+      break;
+
+    case ALL_PARAMETER_VALUES:
+    case ALL_PARAMETER_AND_INITIAL_VALUES:
       break;
     }
 
@@ -214,7 +275,7 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
 #ifdef COPASI_DEBUG
   std::vector<CCopasiObject*>::const_iterator it, itEnd = ret.end();
   for (it = ret.begin(); it != itEnd; ++it)
-    std::cout << (*it)->getObjectName() << std::endl;
+    std::cout << (*it)->getObjectDisplayName() << std::endl;
 #endif // COPASI_DEBUG
 
   return ret;
