@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/18 13:06:03 $
+   $Author: shoops $
+   $Date: 2006/09/18 15:04:20 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -114,13 +114,13 @@ void ArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
   mpContentTable->setNumCols(1);
   mpContentTable->setNumRows(mpArray->size()[rowIndex]);
 
-  std::vector<std::string> rowdescr = mpArray->getAnnotationsDisplay(rowIndex);
+  const std::vector<std::string> & rowdescr = mpArray->getAnnotationsDisplay(rowIndex);
 
   unsigned C_INT32 i, imax = mpArray->size()[rowIndex];
   for (i = 0; i < imax; ++i)
     {
       index[rowIndex] = i;
-      mpContentTable->verticalHeader()->setLabel(i, rowdescr[i]);
+      mpContentTable->verticalHeader()->setLabel(i, FROM_UTF8(rowdescr[i]));
       mpContentTable->setText(i, 0, QString::number((*mpArray->array())[index]));
     }
 }
@@ -154,7 +154,6 @@ CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, WFlags
   /*  QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
     mWidgetLayout->addItem(spacer, 5, 0);
 
-
     mTableExponents = new QTable(this, "mTableExponents");
     mWidgetLayout->addMultiCellWidget(mTableExponents, 4, 5, 1, 2);
     mTableExponents->setNumRows(0);
@@ -164,17 +163,12 @@ CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, WFlags
     mTableExponents->setColumnStretchable(0, true);
     mTableExponents->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-
-
-
     // ************* comment ******************
     mLabelComment = new QLabel(this, "mLabelComment");
     mLabelComment->setAlignment(int(QLabel::WordBreak));
     mLabelComment->setText("");
 
-
     mWidgetLayout->addWidget(mLabelComment, 8, 1);
-
 
     spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
     mWidgetLayout->addItem(spacer, 9, 0);*/
