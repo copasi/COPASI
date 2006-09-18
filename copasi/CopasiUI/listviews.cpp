@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.cpp,v $
-   $Revision: 1.203 $
+   $Revision: 1.204 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/13 16:30:50 $
+   $Author: ssahle $
+   $Date: 2006/09/18 13:06:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -11,10 +11,10 @@
 // All rights reserved.
 
 /****************************************************************************
- **  $ CopasiUI/listviews.cpp                 Modified on : 18th March, 2002
+ **  $ CopasiUI/listviews.cpp
  **  $ Author  : Ankur Gupta
  **  $ Author  : Mudita Singhal
- **  $ Author  : Mrinmayee Kulkarni           Modified on : 17th Sept ,2002
+ **  $ Author  : Mrinmayee Kulkarni
  **
  ** This file contains the defination of the routines declared in listviews.h header
  ** file.
@@ -25,10 +25,6 @@
 #include <qobjectlist.h>
 #include <qimage.h>
 
-//#include "CompartmentSymbols.h"
-//#include "ConstantSymbols.h"
-//#include "FixedMetaboliteSymbols.h"
-//#include "MetaboliteSymbols.h"
 #include "DataModelGUI.h"
 #include "CompartmentsWidget.h"
 #include "CompartmentsWidget1.h"
@@ -57,6 +53,7 @@
 #include "ScanWidget.h"
 #ifdef COPASI_SENS
 # include "SensitivitiesWidget.h"
+# include "CQSensResultWidget.h"
 #endif
 #include "CQOptimizationWidget.h"
 #include "OptimizationResultWidget.h"
@@ -84,8 +81,6 @@
 #include "plot/COutputDefinitionVector.h"
 #include "plot/plotwidget1.h"
 #include "model/CModel.h"
-
-//#include "mathmodel/CMathModel.h"
 
 //QPixmap *folderLocked = 0;   // to store the image of locked icon folder
 //QPixmap *folderClosed = 0;   // to store the image of closed icon folder
@@ -236,6 +231,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
     reactionsWidget1(NULL),
     scanWidget(NULL),
     sensWidget(NULL),
+    sensResultWidget(NULL),
     stateWidget(NULL),
     steadystateWidget(NULL),
     tableDefinition(NULL),
@@ -249,11 +245,6 @@ ListViews::ListViews(QWidget *parent, const char *name):
 {
   this->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred, 1, 1));
   setChildrenCollapsible(false);
-
-  // creates the image to be displayed when folder is closed/locked/open
-  //folderLocked = new QPixmap((const char**)folderlocked);
-  //folderClosed = new QPixmap((const char**)folderclosed);
-  //folderOpen = new QPixmap((const char**)folderopen);
 
   // create a new QListview to be displayed on the screen..and set its property
   folders = new QListView(this);
@@ -458,6 +449,9 @@ void ListViews::ConstructNodeWidgets()
 #ifdef COPASI_SENS
   if (!sensWidget) sensWidget = new SensitivitiesWidget(this);
   sensWidget->hide();
+
+  if (!sensResultWidget) sensResultWidget = new CQSensResultWidget(this);
+  sensResultWidget->hide();
 #endif
 
   if (!timeSeriesWidget) timeSeriesWidget = new TimeSeriesWidget(this);
@@ -549,21 +543,9 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
       case 116:
         return parametersWidget;
         break;
-        /*      case 121:
-                return compartmentSymbols;
-                break;*/
       case 122:
         return functionSymbols;
         break;
-        /*      case 123:
-                return constantSymbols;
-                break;*/
-        /*      case 124:
-                return fixedMetaboliteSymbols;
-                break;*/
-        /*      case 125:
-                return metaboliteSymbols;
-                break;*/
 #ifdef HAVE_MML
       case 126:
         return differentialEquations;
@@ -630,6 +612,9 @@ CopasiWidget* ListViews::findWidgetFromId(const C_INT32 & id) const
 #ifdef COPASI_SENS
       case 34:
         return sensWidget;
+        break;
+      case 341:
+        return sensResultWidget;
         break;
 #endif
       case 43:                                        //Report
@@ -740,26 +725,6 @@ void ListViews::slotFolderChanged(QListViewItem *i)
 
   currentWidget = newWidget;
   lastKey = itemKey;
-
-  //Icon Synchronization implemented.
-  //To show the folders Open or Close or locked -- By G
-  /*QListViewItemIterator it(folders);
-  for (; it.current(); ++it)
-    {
-      QPixmap *icon = (QPixmap *)it.current()->pixmap(0);
-      QImage image1 = icon->convertToImage ();
-      QImage image2 = folderOpen->convertToImage ();
-
-      if (image1 == image2)
-        it.current()->setPixmap(0, *folderClosed);
-    }
-
-  QPixmap *icon = (QPixmap *)item->pixmap(0);
-  QImage image1 = icon->convertToImage ();
-  QImage image2 = folderLocked->convertToImage ();
-
-  if (image1 != image2)
-    item->setPixmap(0, *folderOpen);*/
 }
 
 void ListViews::switchToOtherWidget(C_INT32 id, const std::string & key)
@@ -768,13 +733,6 @@ void ListViews::switchToOtherWidget(C_INT32 id, const std::string & key)
 }
 
 //**********************************************************************
-
-/*void ListViews::setTheRightPixmap(QListViewItem* lvi)
-{
-  if (lvi->isSelected())
-    if (lvi->childCount() != 0)
-      lvi->setPixmap(0, *folderOpen);
-}*/
 
 // this reconstructs the childrens of the listViewItems in all listviews
 bool ListViews::updateAllListviews(C_INT32 id) //static
@@ -849,20 +807,6 @@ bool ListViews::updateDataModelAndListviews(ObjectType objectType,
   //std::cout << "ListViews::updateDataModelAndListviews " << std::endl;
 
   bool success = true;
-
-  //update math model
-  //   switch (objectType)
-  //     {
-  //     case ListViews::MODEL:
-  //     case ListViews::STATE:
-  //     case ListViews::COMPARTMENT:
-  //     case ListViews::METABOLITE:
-  //     case ListViews::REACTION:
-  //     case ListViews::MODELVALUE:
-  //       dataModel->scheduleMathModelUpdate();
-  //       break;
-  //     default:;
-  //}
 
   //maintain the "changed" flag
   switch (objectType)

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.131 $ $Author: shoops $ $Date: 2006/08/30 17:13:49 $  
+# $Revision: 1.132 $ $Author: ssahle $ $Date: 2006/09/18 13:05:34 $  
 ######################################################################
 
 TEMPLATE = app
@@ -154,6 +154,7 @@ HEADERS += \
            CQLyapWidget.h \
            CQLyapResultWidget.h \
            CQReportListItem.h \
+           CQSensResultWidget.h \
            CQValidator.h \
            CScanContainerWidget.h \
            CTimeSeriesTable.h \
@@ -219,6 +220,7 @@ SOURCES += \
            CQLyapWidget.cpp \
            CQLyapResultWidget.cpp \
            CQReportListItem.cpp \
+           CQSensResultWidget.cpp \
            CQValidator.cpp \
            CScanContainerWidget.cpp \
            CTimeSeriesTable.cpp \

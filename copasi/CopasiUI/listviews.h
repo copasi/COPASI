@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.111 $
+   $Revision: 1.112 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/13 16:30:50 $
+   $Author: ssahle $
+   $Date: 2006/09/18 13:06:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,13 +26,6 @@
 
 class DataModelGUI;
 
-//class CSteadyStateTask;
-//class CTrajectoryTask;
-
-//class CompartmentSymbols;
-//class ConstantSymbols;
-//class FixedMetaboliteSymbols;
-//class MetaboliteSymbols;
 class CompartmentsWidget1;
 class CompartmentsWidget;
 class DifferentialEquations;
@@ -53,6 +46,7 @@ class ReactionsWidget;
 class SteadyStateWidget;
 class ScanWidget;
 class SensitivitiesWidget;
+class CQSensResultWidget;
 class StateWidget;
 class CQTrajectoryWidget;
 class TableDefinition;
@@ -194,6 +188,7 @@ class ListViews : public QSplitter
     ReactionsWidget1 *reactionsWidget1;
     ScanWidget *scanWidget;
     SensitivitiesWidget *sensWidget;
+    CQSensResultWidget *sensResultWidget;
     StateWidget *stateWidget;
     SteadyStateWidget *steadystateWidget;
     TableDefinition *tableDefinition;
