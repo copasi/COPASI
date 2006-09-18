@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.132 $ $Author: ssahle $ $Date: 2006/09/18 13:05:34 $  
+# $Revision: 1.133 $ $Author: ssahle $ $Date: 2006/09/18 13:40:16 $  
 ######################################################################
 
 TEMPLATE = app
@@ -268,7 +268,9 @@ SOURCES += \
 
 !contains(DEFINES, COPASI_SENS) {
   SOURCES -= SensitivitiesWidget.cpp
-  HEADERS -= TSSWidget.h
+  HEADERS -= SensitivitiesWidget.h
+  SOURCES -= CQSensResultWidget.cpp
+  HEADERS -= CQSensResultWidget.h
 }
 
 !contains(DEFINES, COPASI_TSS) {
@@ -278,7 +280,6 @@ SOURCES += \
 # FORMS += TimeSeriesSubwidget.ui
 # FORMS += StateSubwidget.ui
 # FORMS += CMCAResultSubwidget.ui
-# FORMS += SimpleSelectionWidget.ui
 # FORMS += SliderSettingsDialog.ui 
 # FORMS += objectdebug.ui
 # FORMS += CUpDownSubwidget.ui

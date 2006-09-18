@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/09/18 12:56:53 $
+   $Date: 2006/09/18 13:36:54 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -823,6 +823,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       break;
 
       //**************************************************************************
+#ifdef COPASI_SENS
     case CCopasiTask::sens:
       pReport = new CReportDefinition(CCopasiTask::TypeName[taskType]);
       pReport->setTaskType(taskType);
@@ -838,7 +839,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CCopasiTask::Type & taskTy
       pReport->getFooterAddr()->push_back(CCopasiObjectName("String=\n"));
       pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
       break;
-
+#endif
     default:
       return pReport;
     }
