@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/15 12:28:28 $
+   $Author: ssahle $
+   $Date: 2006/09/18 12:55:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -186,7 +186,7 @@ bool CConfigurationFile::CXML::save(std::ostream & os,
   os.precision(16);
 
   mpOstream = &os;
-  bool success = true;
+  //bool success = true;
 
   *mpOstream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
   << std::endl;
