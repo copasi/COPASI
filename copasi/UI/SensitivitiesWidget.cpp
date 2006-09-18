@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/09/08 00:55:12 $
+   $Date: 2006/09/18 13:07:26 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,7 +46,8 @@
 #include "model/CModel.h"
 #include "utilities/CCopasiException.h"
 #include "report/CKeyFactory.h"
-#include "parametertable.h"
+//#include "parametertable.h"
+#include "CQSensResultWidget.h"
 
 static const unsigned char button_image_data[] =
   {
@@ -363,18 +364,19 @@ bool SensitivitiesWidget::runTask()
 {
   if (!commonBeforeRunTask()) return false;
 
-  CSensTask* sensTask =
-    dynamic_cast<CSensTask *>(GlobalKeys.get(mObjectKey));
-  assert(sensTask);
+  bool success = true;
+  if (!commonRunTask()) success = false;
 
-  sensTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
-  sensTask->process(true);
+  if (!commonAfterRunTask()) success = false;
 
-  commonAfterRunTask();
+  //setup the result widget
+  CQSensResultWidget *pResult =
+    dynamic_cast<CQSensResultWidget*>(pListView->findWidgetFromId(341));
+  if (pResult) pResult->newResult();
 
-  //pListView->switchToOtherWidget(211, ""); //change to the results window
+  if (success && isShown()) pListView->switchToOtherWidget(341, ""); //change to the results window
 
-  return true;
+  return success;
 }
 
 bool SensitivitiesWidget::loadTask()
