@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridMethod.cpp,v $
-   $Revision: 1.46 $
+   $Revision: 1.46.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/20 18:28:22 $
+   $Date: 2006/09/19 14:19:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,7 @@ CHybridMethod::CHybridMethod(const CCopasiContainer * pParent):
     CTrajectoryMethod(CCopasiMethod::hybrid, pParent)
 {
   /* Set version number */
-  mVersion.setVersion(1, 0, 102);
+  mVersion.setVersion(1, 0, 102, "");
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
   initializeParameter();
 }
@@ -69,7 +69,7 @@ CHybridMethod::CHybridMethod(const CHybridMethod & src,
     CTrajectoryMethod(src, pParent)
 {
   /* Set version number */
-  mVersion.setVersion(1, 0, 102);
+  mVersion.setVersion(1, 0, 102, "");
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
   initializeParameter();
 }

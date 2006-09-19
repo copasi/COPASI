@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.cpp,v $
-   $Revision: 1.87 $
+   $Revision: 1.87.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/15 12:28:29 $
+   $Date: 2006/09/19 14:19:39 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -58,7 +58,8 @@ CCopasiXML::CCopasiXML():
 {
   mVersion.setVersion(COPASI_XML_VERSION_MAJOR,
                       COPASI_XML_VERSION_MINOR,
-                      COPASI_XML_VERSION_BUILD);
+                      COPASI_XML_VERSION_BUILD,
+                      COPASI_XML_VERSION_COMMENT);
 }
 
 CCopasiXML::~CCopasiXML() {}

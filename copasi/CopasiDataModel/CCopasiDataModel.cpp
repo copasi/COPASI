@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.80.2.1 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/18 13:36:54 $
+   $Author: shoops $
+   $Date: 2006/09/19 14:19:38 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,7 +106,8 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
 {
   mpVersion->setVersion(COPASI_VERSION_MAJOR,
                         COPASI_VERSION_MINOR,
-                        COPASI_VERSION_BUILD);
+                        COPASI_VERSION_BUILD,
+                        COPASI_VERSION_COMMENT);
 
   mpUndefined = new CFunction("undefined");
   mpUndefined->setInfix("nan");

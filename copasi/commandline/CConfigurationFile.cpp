@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.5.2.1 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/18 12:55:59 $
+   $Author: shoops $
+   $Date: 2006/09/19 14:19:38 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -216,7 +216,6 @@ bool CConfigurationFile::CXML::load(std::istream & is,
   bool done = false;
 
   CVersion Version;
-  Version.setVersion(0, 0, 0);
   CCopasiXMLParser Parser(Version);
 
 #define BUFFER_SIZE 0xfffe
