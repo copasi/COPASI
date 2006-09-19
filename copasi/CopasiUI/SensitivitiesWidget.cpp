@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SensitivitiesWidget.cpp,v $
-   $Revision: 1.13 $
+   $Revision: 1.13.2.1 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/18 13:07:26 $
+   $Author: tjohann $
+   $Date: 2006/09/19 12:53:43 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -314,46 +314,37 @@ bool SensitivitiesWidget::saveTask()
     tmp.setListType(mVariable);
 
   if (tmp != problem->getVariables(0))
-    {
-      mChanged = true;
-      if (problem->getNumberOfVariables() == 0)
-        problem->addVariables(tmp);
-      else
-        problem->changeVariables(0, tmp);
-    }
+    mChanged = true;
 
+  CSensItem tmp2;
   if (mVariable2) // if Variable2 is set
     {
-      if (problem->getNumberOfVariables() < 2)
-        {
-          mChanged = true;
-          problem->addVariables(tmp);
-        }
-
       if (mVariable2 == CObjectLists::SINGLE_OBJECT)
         {
           if (mpSingleVariable2)
-            tmp.setSingleObjectCN(mpSingleVariable2->getCN());
+            tmp2.setSingleObjectCN(mpSingleVariable2->getCN());
         }
       else
-        tmp.setListType(mVariable2);
+        tmp2.setListType(mVariable2);
 
-      if (tmp != problem->getVariables(1))
-        {
-          mChanged = true;
-          problem->changeVariables(1, tmp);
-        }
-    }
-  else   // i.e.: mVariable2 == CObjectLists::EMPTY_LIST
-    if (problem->getNumberOfVariables() > 1)  // was it set before?
-      {
+      if (problem->getNumberOfVariables() < 2)
         mChanged = true;
-        tmp.setListType(mVariable2);
-        problem->changeVariables(1, tmp);
-      }
+      else
+        if (tmp2 != problem->getVariables(1))
+          mChanged = true;
+    }
+
+  // delete saved variables:
+  problem->removeVariables();
+
+  problem->addVariables(tmp);
+
+  if (mVariable2)
+    problem->addVariables(tmp2);
 
   // :TODO Bug 322: This should only be called when actual changes have been saved.
   if (mChanged) CCopasiDataModel::Global->changed();
+
   return true;
 }
 
