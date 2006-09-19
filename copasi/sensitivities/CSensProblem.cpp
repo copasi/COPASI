@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/18 12:58:07 $
+   $Author: tjohann $
+   $Date: 2006/09/19 12:07:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -289,6 +289,14 @@ void CSensProblem::addVariables(const CSensItem & item)
   createParametersInGroup(tmp);
 
   copySensItemToParameterGroup(&item, tmp);
+}
+
+bool CSensProblem::removeVariables()
+{
+  C_INT32 imax = mpVariablesGroup->size();
+  for (C_INT32 i = 0; i < imax; ++i)
+    mpVariablesGroup->removeParameter(0);
+  return true;
 }
 
 bool CSensProblem::removeVariables(unsigned C_INT32 index)

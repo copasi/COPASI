@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/18 12:58:07 $
+   $Author: tjohann $
+   $Date: 2006/09/19 12:07:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -118,6 +118,9 @@ class CSensProblem: public CCopasiProblem
     bool changeVariables(unsigned C_INT32 index, const CSensItem & item);
 
     bool removeVariables(unsigned C_INT32 index);
+
+    //remove all variables:
+    bool removeVariables();
 
     CCopasiArray & getResult();
     const CCopasiArray & getResult() const;
