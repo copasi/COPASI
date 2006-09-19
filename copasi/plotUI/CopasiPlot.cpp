@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.43.2.1 $
+   $Revision: 1.43.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/19 16:11:45 $
+   $Date: 2006/09/19 16:52:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -214,12 +214,14 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
       QwtPlotCurve * pCurve;
       bool Visible = true;
 
+      // Qwt does not like it to reuse the curve as this may lead to access
+      // violation. We therefore delete the curves but remember their visibility.
       if ((found = CurveMap.find(pItem->getObjectName())) != CurveMap.end())
         {
           pCurve = found->second;
           Visible = pCurve->isVisible();
-          delete pCurve;
-          CurveMap.erase(pItem->getObjectName());
+          pdelete(pCurve);
+          CurveMap.erase(found);
         }
 
       // set up the curve
