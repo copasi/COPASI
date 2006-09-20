@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.cpp,v $
-   $Revision: 1.183 $
+   $Revision: 1.183.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/29 15:15:27 $
+   $Author: ssahle $
+   $Date: 2006/09/20 12:02:03 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -424,7 +424,7 @@ void ReactionsWidget1::FillWidgetFromRI()
 
   // the function combobox
   QStringList comboEntries;
-  ParameterTable::vectorOfStrings2QStringList(mpRi->getListOfPossibleFunctions(), comboEntries);
+  vectorOfStrings2QStringList(mpRi->getListOfPossibleFunctions(), comboEntries);
 
   ComboBox1->clear();
   ComboBox1->insertStringList(comboEntries, -1);

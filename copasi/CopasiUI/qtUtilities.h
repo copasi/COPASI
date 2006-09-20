@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/qtUtilities.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.7.6.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:47 $
+   $Author: ssahle $
+   $Date: 2006/09/20 12:01:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -78,5 +78,10 @@ bool setParameterValue(CCopasiParameterGroup * group,
  * @return C_INT32 overwrite
  */
 C_INT32 checkSelection(const QString & file);
+
+/**
+ * This converts a std::vector<std::string> into a QStringList
+ */
+void vectorOfStrings2QStringList(std::vector<std::string> vs, QStringList & qsl);
 
 #endif // COPASI_qtUtilities

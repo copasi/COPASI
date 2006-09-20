@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.cpp,v $
-   $Revision: 1.22 $
+   $Revision: 1.22.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/25 18:19:25 $
+   $Author: ssahle $
+   $Date: 2006/09/20 12:01:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,13 +28,6 @@
 #include "./icons/modifier.xpm"
 #include "./icons/locked.xpm"
 #include "./icons/unlocked.xpm"
-
-void ParameterTable::vectorOfStrings2QStringList(std::vector<std::string> vs, QStringList & qsl)
-{
-  qsl.clear();
-  C_INT32 i, imax = vs.size();
-  for (i = 0; i < imax; ++i) qsl += FROM_UTF8(vs[i]);
-}
 
 ParameterTable::ParameterTable(QWidget * parent, const char * name)
     : QTable(parent, name),
