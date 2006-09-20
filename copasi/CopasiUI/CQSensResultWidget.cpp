@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQSensResultWidget.cpp,v $
-   $Revision: 1.2.2.1 $
+   $Revision: 1.2.2.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/09/20 12:00:36 $
+   $Date: 2006/09/20 12:32:11 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -225,9 +225,34 @@ void ArrayAnnotationsWidget::selectionTableChanged(int row, int col)
           }
     }
 
-  //TODO call fillTable()
-
 finish:
+  //call fillTable()
+  {
+    CCopasiAbstractArray::index_type index; index.resize(mpArray->dimensionality());
+    C_INT32 rowindex, colindex;
+    C_INT32 i, imax = mpArray->dimensionality();
+    for (i = 0; i < imax; ++i)
+      {
+        C_INT32 tmp = currentItem(i);
+
+        //set index
+        if (tmp < 2)  //row or column
+          index[i] = 0;
+        else
+          index[i] = tmp - 2;
+
+        //set rowindex
+        if (0 == tmp)
+          rowindex = i;
+
+        //set colindex
+        if (1 == tmp)
+          colindex = i;
+      }
+
+    fillTable(rowindex, colindex, index);
+  }
+
   storeCurrentCombos();
 }
 
