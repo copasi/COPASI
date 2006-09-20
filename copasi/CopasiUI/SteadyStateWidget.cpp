@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SteadyStateWidget.cpp,v $
-   $Revision: 1.110 $
+   $Revision: 1.110.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/16 15:34:40 $
+   $Author: ssahle $
+   $Date: 2006/09/20 12:09:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,12 +19,10 @@
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
-//#include <qtable.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 #include <qmessagebox.h>
-//#include <qapplication.h>
 
 #include "DataModelGUI.h"
 
@@ -34,7 +32,6 @@
 #include "CQTaskHeaderWidget.h"
 #include "CProgressBar.h"
 #include "StateWidget.h"
-//#include "copasiui3window.h"
 
 #include "copasi.h"
 #include "qtUtilities.h"
@@ -45,10 +42,6 @@
 #include "model/CModel.h"
 #include "utilities/CCopasiException.h"
 #include "report/CKeyFactory.h"
-//#include "report/CReportDefinitionVector.h"
-//#include "report/CReport.h"
-//#include "report/CReportDefinition.h"
-//#include "CReportDefinitionSelect.h"
 
 /**
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the
@@ -73,12 +66,6 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
 
   //*************************
 
-  /*setInitialState = new QCheckBox(this, "setInitialState");
-  setInitialState->setText(trUtf8("Use result as new initial state"));
-  setInitialState->setChecked(parent == NULL);
-  setInitialState->setEnabled(parent != NULL);
-  mpMethodLayout->addWidget(setInitialState, 2, 1);*/
-
   taskJacobian = new QCheckBox(this, "taskJacobian");
   taskJacobian->setText(trUtf8("calculate Jacobian"));
   mpMethodLayout->addWidget(taskJacobian, 3, 1);
@@ -89,11 +76,6 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
   taskStability->setEnabled(false);
 
   addHLineToGrid(mpMethodLayout, 4, 2);
-
-  /*line_ss = new QFrame(this, "line_ss");
-  line_ss->setFrameShape(QFrame::HLine);
-  line_ss->setFrameShadow(QFrame::Sunken);
-  TaskWidgetLayout->addMultiCellWidget(line_ss, 4, 4, 0, 2);*/
 
   //************* parameter table ****************
   addMethodParameterTable(10, 5);
@@ -125,82 +107,17 @@ SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, WFlags f
 SteadyStateWidget::~SteadyStateWidget()
 {}
 
-/*void SteadyStateWidget::parameterValueChanged()
-{
-  qWarning("SteadyStateWidget::parameterValueChanged(): Not implemented yet!");
-}*/
-
-CCopasiMethod * SteadyStateWidget::createMethod(const CCopasiMethod::SubType & type)
+CCopasiMethod * SteadyStateWidget::createMethod(const CCopasiMethod::SubType & /*type*/)
 {return NULL; /*CTSSMethod::createTSSMethod(type);*/}
 
 bool SteadyStateWidget::runTask()
 {
-  bool success = true;
-  CCopasiMessage::clearDeque();
-
   if (!commonBeforeRunTask()) return false;
 
-  CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(mObjectKey));
-  assert(mSteadyStateTask);
+  bool success = true;
+  if (!commonRunTask()) success = false;
 
-  try
-    {
-      success = mSteadyStateTask->initialize(CCopasiTask::OUTPUT_COMPLETE, NULL);
-    }
-  catch (CCopasiException)
-    {
-      success = false;
-    }
-
-  if (!success &&
-      CCopasiMessage::getHighestSeverity() > CCopasiMessage::WARNING)
-    {
-      mProgressBar->finish();
-      QMessageBox::warning(this, "Simulation Error",
-                           CCopasiMessage::getAllMessageText().c_str(),
-                           QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-      commonAfterRunTask();
-
-      return success;
-    }
-
-  if (CCopasiMessage::getHighestSeverity() >= CCopasiMessage::WARNING &&
-      QMessageBox::warning (this, "Simulation Warning",
-                            CCopasiMessage::getAllMessageText().c_str(),
-                            "Continue", "Stop", NULL,
-                            0, 1) == 1)
-    {
-      mProgressBar->finish();
-      commonAfterRunTask();
-
-      return success;
-    }
-
-  CCopasiMessage::clearDeque();
-  success = true;
-
-  try
-    {
-      if (!mSteadyStateTask->process(true))
-        throw CCopasiException(CCopasiMessage::peekLastMessage());
-    }
-
-  catch (CCopasiException Exception)
-    {
-      success = false;
-      mProgressBar->finish();
-      if (CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-        {
-          mProgressBar->finish();
-          QMessageBox::warning(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-          CCopasiMessage::clearDeque();
-        }
-    }
-
-  mSteadyStateTask->restore();
-
-  commonAfterRunTask();
+  if (!commonAfterRunTask()) success = false;
 
   StateWidget *pResult = dynamic_cast< StateWidget * >(pListView->findWidgetFromId(211));
   if (pResult) pResult->loadFromBackend();
@@ -214,8 +131,6 @@ bool SteadyStateWidget::loadTask()
 {
   loadCommon();
   loadMethod();
-  //loadExecutable();
-  //loadMethodParameters();
 
   CSteadyStateTask* mSteadyStateTask =
     dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(mObjectKey));
@@ -245,8 +160,6 @@ bool SteadyStateWidget::saveTask()
 {
   saveCommon();
   saveMethod();
-  //saveExecutable();
-  //saveMethodParameters();
 
   CSteadyStateTask* mSteadyStateTask =
     dynamic_cast<CSteadyStateTask *>(GlobalKeys.get(mObjectKey));
@@ -275,42 +188,6 @@ bool SteadyStateWidget::saveTask()
   CCopasiDataModel::Global->changed();
   return true;
 }
-
-/*bool SteadyStateWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action),
-                               const std::string & C_UNUSED(key))
-{
-  if (mIgnoreUpdates) return true;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  switch (objectType)
-    {
-    case ListViews::FUNCTION:
-      break;
-    case ListViews::MODEL:
-      CReportDefinitionVector* pReportDefinitionVector;
-      pReportDefinitionVector = CCopasiDataModel::Global->getReportDefinitionList();
-      if (pReportDefinitionVector)
-        reportDefinitionButton->setEnabled(true);
-      break;
-    default:
-      break;
-    }
-  return true;
-}*/
 
 void SteadyStateWidget::taskJacobianToggled()
 {
