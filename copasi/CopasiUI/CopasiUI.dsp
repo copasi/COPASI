@@ -142,6 +142,10 @@ SOURCE=.\CProgressBar.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQEFMWidget.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQExperimentData.cpp
 # End Source File
 # Begin Source File
@@ -579,6 +583,14 @@ SOURCE=.\CPlotSelectionDialog.h
 # Begin Source File
 
 SOURCE=.\CProgressBar.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQEFMWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQEFMWidget.ui.h
 # End Source File
 # Begin Source File
 
