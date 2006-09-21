@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.25.2.1 $
+   $Revision: 1.25.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/21 17:53:41 $
+   $Date: 2006/09/21 20:39:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -663,6 +663,10 @@ std::string utf8ToLocale(const std::string & utf8)
         switch (errno)
           {
           case EILSEQ:
+            pUtf8 = Utf8;
+            LocaleLength = 0;
+            break;
+
           case EINVAL:
             pLocale = Locale;
             Utf8Length = 0;
@@ -758,8 +762,8 @@ std::string localeToUtf8(const std::string & locale)
 
   if (Converter == NULL)
     {
-      char From[] = "UTF-8";
-      const char * To = findLocale();
+      char To[] = "UTF-8";
+      const char * From = findLocale();
 
       Converter = iconv_open(To, From);
     }
@@ -783,6 +787,10 @@ std::string localeToUtf8(const std::string & locale)
         switch (errno)
           {
           case EILSEQ:
+            pUtf8 = Utf8;
+            LocaleLength = 0;
+            break;
+
           case EINVAL:
             pUtf8 = Utf8;
             LocaleLength = 0;
@@ -827,7 +835,7 @@ const char * findLocale()
   static char * Locale = NULL;
 
   if (Locale == NULL)
-    Locale = strdup("US-ASCII");
+    Locale = strdup("8859_1");
 
   return Locale;
 }
