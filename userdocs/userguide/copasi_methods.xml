@@ -1927,6 +1927,207 @@ default is '4.75'.
 </variablelist>
 </sect2>
 
+<sect2 id="SimulatedAnnealing" xreflabel="Simulated Annealing">
+<title>Simulated Annealing</title>
+
+<para>
+Simulated annealing is an optimization algorithm first proposed by
+Kirkpatrick et al. <citation>Kirkpatrick83</citation> and was inspired
+by statistical mechanics
+and the way in which perfect crystals are formed. Perfect crystals are
+formed by first melting the substance of interest, and then cooling it
+very slowly. At large temperatures the particles vibrate with wide
+amplitude and this allows a search for global optima. As the
+temperature decreases so do the vibrations until the system settles to
+the global optimum (the perfect crystal).
+</para>
+
+<para>
+The simulated annealing optimization algorithm uses a similar concept:
+the objective function is considered a measure of the energy of the
+system and this is maintained constant for a certain number of
+iterations (a temperature cycle). In each iteration, the parameters
+are changed to a nearby location in parameter space and the new
+objective function value calculated; if it decreased, then the new
+state is accepted, if it increased then the new state is accepted with
+a probability that follows a Boltzmann distribution (higher
+temperature means higher probability of accepting the new
+state). After a fixed number of iterations, the stopping criterion is
+checked; if it is not time to stop, then the system's temperature is
+reduced and the algorithm continues.
+</para>
+
+<para>
+Simulated annealing is a stochastic algorithm that is guaranteed to
+converge if ran for an infinite number of iterations. It is one of the
+most robust global optimization algorithms, although it is also one of
+the slowest. (Be warned that simulated annealing can run for hours or
+even days!).
+</para>
+
+<para>
+This implementation of simulated annealing is based on the code of
+Corana et al. <citation>Corana87</citation>. This implementation has
+tuned some of the parameters of the original implementation as
+follows: 
+
+<itemizedlist mark="bullet">
+<listitem>
+<para>
+Each temperature cycle takes 
+<mml:math>
+  <mml:mrow>
+   <mml:mrow>
+    <mml:mn>10</mml:mn>
+    <mml:mo>*</mml:mo>
+    <mml:mi mml:fontstyle="italic">max</mml:mi>
+   </mml:mrow>
+   <mml:mrow>
+    <mml:mrow>
+     <mml:mo>(</mml:mo>
+     <mml:mrow>
+      <mml:mrow>
+       <mml:mn>5</mml:mn>
+       <mml:mo>*</mml:mo>
+       <mml:mi>p</mml:mi>
+      </mml:mrow>
+      <mml:mi>,</mml:mi>
+      <mml:mn>100</mml:mn>
+     </mml:mrow>
+     <mml:mo>)</mml:mo>
+    </mml:mrow>
+    <mml:mo>*</mml:mo>
+    <mml:mi>p</mml:mi>
+   </mml:mrow>
+  </mml:mrow>
+</mml:math>
+ random steps, with
+ <mml:math><mml:mi>p</mml:mi></mml:math> being the number of
+ optimization parameters.  
+</para>
+</listitem>
+
+<listitem>
+<para>
+At each step, a new candidate solution is accepted if: a) it reduced
+the objective function value, or b) with a probability equal to
+<mml:math>
+  <mml:msup>
+   <mml:mo>e</mml:mo>
+   <mml:mrow>
+    <mml:mo>-</mml:mo>
+    <mml:mfrac>
+     <mml:mrow>
+      <mml:mo>&Delta;</mml:mo>
+      <mml:mi>f</mml:mi>
+     </mml:mrow>
+     <mml:mi>T</mml:mi>
+    </mml:mfrac>
+   </mml:mrow>
+  </mml:msup>
+</mml:math>,
+where <mml:math><mml:mo>&Delta;</mml:mo><mml:mi>f</mml:mi>
+</mml:math> is the increase in objective function value, and
+<mml:math><mml:mi>T</mml:mi></mml:math> is the current temperature.
+</para>
+</listitem>
+
+<listitem>
+<para>
+The stopping criterion is applied to the last two temperature cycles
+(i.e. the change in objective function between this temperature and
+the previous must have been smaller than the Tolerance in the last two
+cycles). 
+</para>
+</listitem>
+</itemizedlist>
+</para>
+
+<variablelist><title>Options for Simulated Annealing</title>
+
+<varlistentry><term>Start Temperature</term>
+<listitem>
+<para>
+Initial temperature of the system. The higher the temperature, the
+larger the probability that a global optimum is found. Note that the
+temperature should be very high in the beginning of the method (the
+system should be above the "melting" temperature). This value
+has the same units as the objective function, so what represents
+"high" is different from problem to problem. The default is '1'.
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>Cooling Factor</term>
+<listitem>
+<para>
+Rate by which the temperature is reduced from one cycle to the next,
+given by the formula:
+<mml:math>
+ <mml:msub>
+  <mml:mi>T</mml:mi>
+  <mml:mi>new</mml:mi>
+ </mml:msub>
+ <mml:mo>=</mml:mo> 
+ <mml:msub>
+  <mml:mi>T</mml:mi>
+  <mml:mi>old</mml:mi>
+ </mml:msub>
+ <mml:mo>*</mml:mo> 
+ <mml:mtext>"Cooling Factor"</mml:mtext> 
+</mml:math>.
+The simulated annealing algorithm works best if the temperature is
+reduced at a slow rate, so this value should be close to 1. (but
+values closer to 1 will also cause the algorithm to run longer). The
+default is '0.85'.   
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>Tolerance</term>
+<listitem>
+<para>
+Convergence stopping criterium: the method stops when the change in
+the objective function has been smaller than this value in the last
+two temperature steps. The default is
+'<mml:math>
+ <mml:msup>
+  <mml:mn>10</mml:mn>
+  <mml:mn>-6</mml:mn>
+ </mml:msup>
+</mml:math>'. (This is an absolute tolerance)
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>Random Number Generator</term>
+<listitem>
+<para>
+The parameter is an enumeration value to determine which random number
+generator this method shall use. COPASI provides two random number
+generators R250 <citation>Maier91</citation>
+ (selected through the value 0) and the
+<ulink url="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne
+Twister </ulink><citation>Matsumoto98</citation>
+ (selected through the value 1 (default)).
+</para>
+</listitem>
+</varlistentry>
+
+<varlistentry><term>Seed</term>
+<listitem>
+<para>
+The parameter is a positive integer value to determine the seed for the
+random number generator. A value of zero instructs COPASI to select a
+"random" value.
+</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+</sect2>
+
 <sect2 id="SteepestDescent" xreflabel="Steepest Descent">
 <title>Steepest Descent</title>
 
