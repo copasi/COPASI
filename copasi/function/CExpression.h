@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.9.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/07 15:27:35 $
+   $Author: ssahle $
+   $Date: 2006/09/22 15:06:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,6 +75,13 @@ class CExpression:
      * Refresh the value of the expression
      */
     void refresh();
+
+    /**
+     * Write display mathml of the expression into the ostream "out"
+     * level specifies indentation
+     * fullExpand==true means function calls are expanded
+     */
+    void writeMathML(std::ostream & out, bool fullExpand, unsigned C_INT32 l) const;
 
   private:
     /**

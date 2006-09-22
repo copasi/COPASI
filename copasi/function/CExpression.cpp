@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.16.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/11 19:46:05 $
+   $Author: ssahle $
+   $Date: 2006/09/22 15:06:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,3 +124,19 @@ bool CExpression::updateInfix()
 
 const std::string & CExpression::getDisplayString() const
 {return mDisplayString;}
+
+#include "utilities/copasimathml.h"
+
+void CExpression::writeMathML(std::ostream & out, bool fullExpand, unsigned C_INT32 l) const
+  {
+    if (mpRoot)
+      {
+        //create empty environment. Variable nodes should not occur in an expression
+        std::vector<std::vector<std::string> > env;
+
+        bool flag = false; //TODO include check if parantheses are necessary
+        if (flag) out << SPC(l) << "<mfenced>" << std::endl;
+        mpRoot->writeMathML(out, env, fullExpand, l + 1);
+        if (flag) out << SPC(l) << "</mfenced>" << std::endl;
+      }
+  }
