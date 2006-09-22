@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.25.2.2 $
+   $Revision: 1.25.2.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/21 20:39:33 $
+   $Date: 2006/09/22 13:14:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,13 +21,12 @@
 #if (defined SunOS || defined Linux)
 # include <errno.h>
 # include <iconv.h>
+# include <langinfo.h>
 #endif // SunOS || Linux
 
 #include "copasi.h"
 
 #include "utility.h"
-
-const char * findLocale();
 
 std::string ISODateTime(tm * pTime)
 {
@@ -580,6 +579,21 @@ int toEnum(const char * attribute,
   return - 1;
 }
 
+#if (defined SunOS || defined Linux)
+const char * findLocale()
+{
+  static char * Locale = NULL;
+
+  if (Locale == NULL)
+    Locale = strdup(nl_langinfo(CODESET));
+
+  if (Locale == NULL)
+    Locale = strdup("ISO-8859-1");
+
+  return Locale;
+}
+#endif // SunOS || Linux
+
 std::string utf8ToLocale(const std::string & utf8)
 {
 #ifdef WIN32
@@ -828,14 +842,4 @@ std::string localeToUtf8(const std::string & locale)
 #endif // SunOS || Linux
 
   return locale;
-}
-
-const char * findLocale()
-{
-  static char * Locale = NULL;
-
-  if (Locale == NULL)
-    Locale = strdup("8859_1");
-
-  return Locale;
 }
