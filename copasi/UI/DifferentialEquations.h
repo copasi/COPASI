@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.16.2.1 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/06/23 13:31:28 $
+   $Date: 2006/09/22 15:07:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,7 @@
 #include "copasiWidget.h"
 class CModel;
 class CMetab;
+class CModelEntity;
 class CReaction;
 class QtMmlWidget;
 class QScrollView;
@@ -65,6 +66,13 @@ class DifferentialEquations : public CopasiWidget
 
     static void createParameterMapping(const CReaction* pReac,
                                        std::vector<std::vector<std::string> > & params);
+
+    void writeLHS_ModelValue(std::ostream & out,
+                             const std::string & valueName, unsigned C_INT32 l);
+
+    void writeRHS_ModelEntity(std::ostream & out,
+                              const CModelEntity* pEntity,
+                              bool expandFull, unsigned C_INT32 l);
 
     std::ostringstream mml;
   };
