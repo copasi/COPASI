@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.25.2.3 $
+   $Revision: 1.25.2.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/22 13:14:42 $
+   $Date: 2006/09/22 17:12:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -663,7 +663,11 @@ std::string utf8ToLocale(const std::string & utf8)
 
   size_t Utf8Length = utf8.length();
   char * Utf8 = strdup(utf8.c_str());
+#ifdef SunOS // non standard iconv declaration :(
+  const char * pUtf8 = Utf8;
+#else
   char * pUtf8 = Utf8;
+#endif
 
   size_t LocaleLength = Utf8Length + 1;
   size_t SpaceLeft = Utf8Length;
@@ -787,7 +791,11 @@ std::string localeToUtf8(const std::string & locale)
 
   size_t LocaleLength = locale.length();
   char * Locale = strdup(locale.c_str());
+#ifdef SunOS // non standard iconv declaration :(
+  const char * pLocale = Locale;
+#else
   char * pLocale = Locale;
+#endif
 
   size_t Utf8Length = LocaleLength + 1;
   size_t SpaceLeft = LocaleLength;
