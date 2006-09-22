@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-   $Revision: 1.5.2.1 $
+   $Revision: 1.5.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/19 14:19:38 $
+   $Date: 2006/09/22 18:31:01 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,6 +55,16 @@ void CRecentFiles::initializeParameter()
 void CRecentFiles::addFile(const std::string & file)
 {
   std::string FileName = file;
+
+#ifdef WIN32
+  std::string::size_type pos = FileName.find('\\');
+
+  while (pos != std::string::npos)
+    {
+      FileName[pos] = '/';
+      pos = FileName.find('\\', pos);
+    }
+#endif
 
   std::string PWD;
   COptions::getValue("PWD", PWD);
