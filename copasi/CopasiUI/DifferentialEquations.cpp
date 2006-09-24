@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.32.2.1 $
+   $Revision: 1.32.2.2 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/09/22 15:07:44 $
+   $Date: 2006/09/24 00:04:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -358,7 +358,7 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
         mml << SPC(l + 1) << "<mtr>" << std::endl;
 
         //first column (lhs)
-        mml << SPC(l + 2) << "<mtd>" << std::endl;
+        mml << SPC(l + 2) << "<mtd columnalign='right'>" << std::endl;
         writeLHS_ModelValue(mml, model->getModelValues()[i]->getObjectName(), l + 3);
         mml << SPC(l + 2) << "</mtd>" << std::endl;
 
