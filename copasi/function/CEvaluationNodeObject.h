@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.13.2.1 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/08/15 11:40:44 $
+   $Author: ssahle $
+   $Date: 2006/09/24 00:03:01 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -138,6 +138,14 @@ class CEvaluationNodeObject : public CEvaluationNode
      * @return const CRegisteredObjectName & objectCN
      */
     const CRegisteredObjectName & getObjectCN() const;
+
+    /**
+     * generate display MathML recursively
+     */
+    virtual void writeMathML(std::ostream & out,
+                             const std::vector<std::vector<std::string> > & env,
+                             bool expand = true,
+                             unsigned C_INT32 l = 0) const;
 
     //Attributes
   private:
