@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.183.2.1 $
+   $Revision: 1.183.2.2 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/20 12:02:03 $
+   $Author: shoops $
+   $Date: 2006/09/25 14:49:58 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -432,6 +432,9 @@ void ReactionsWidget1::FillWidgetFromRI()
   // if there is a current function the parameter table is initialized
   if (mpRi->getFunctionName() != "")
     {
+      if (comboEntries.grep(FROM_UTF8(mpRi->getFunctionName())).size() == 0)
+        ComboBox1->insertItem(FROM_UTF8(mpRi->getFunctionName()));
+
       ComboBox1->setCurrentText(FROM_UTF8(mpRi->getFunctionName()));
       QToolTip::add(ComboBox1, FROM_UTF8(mpRi->getFunctionDescription()));
 
