@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.19.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/12 20:02:43 $
+   $Date: 2006/09/25 19:44:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -158,6 +158,8 @@ bool CEFMAlgorithm::calculate()
 
           if (mpCallBack)
             Continue &= mpCallBack->progress(mhSteps);
+
+          static_cast<CCopasiTask *>(getObjectParent())->output(COutputInterface::DURING);
         }
 
       /* Build the elementary flux modes to be returned */
