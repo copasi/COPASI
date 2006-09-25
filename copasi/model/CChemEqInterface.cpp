@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.33.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/25 18:13:23 $
+   $Date: 2006/09/25 17:01:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -285,15 +285,22 @@ const std::vector<std::string> & CChemEqInterface::getListOfDisplayNames(CFuncti
 
 void CChemEqInterface::addModifier(const std::string & name)
 {
+  std::pair< std::string, std::string > Modifier =
+    CMetabNameInterface::splitDisplayName(name);
+
   //is the name already in the list
   std::vector< std::string >::const_iterator it, itEnd = mModifierNames.end();
-  for (it = mModifierNames.begin(); it != itEnd; ++it)
-    if (name == *it) break;
+  std::vector< std::string >::const_iterator itComp = mModifierCompartments.end();
+  for (it = mModifierNames.begin(); it != itEnd; ++it, ++itComp)
+    if (Modifier.first == *it &&
+        Modifier.second == *itComp) break;
 
   if (it == itEnd)
     {
-      mModifierNames.push_back(name);
+      mModifierNames.push_back(Modifier.first);
       mModifierMult.push_back(1.0);
+      mModifierCompartments.push_back(Modifier.second);
+      mModifierDisplayNames.push_back(name);
     }
 }
 
@@ -301,6 +308,8 @@ void CChemEqInterface::clearModifiers()
 {
   mModifierNames.clear();
   mModifierMult.clear();
+  mModifierCompartments.clear();
+  mModifierDisplayNames.clear();
 }
 
 std::string CChemEqInterface::writeElement(const std::string & name, C_FLOAT64 mult, bool expanded)
