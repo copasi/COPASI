@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.140.2.1 $
+   $Revision: 1.140.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/19 14:19:39 $
+   $Date: 2006/09/25 17:14:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1863,6 +1863,10 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
     case MathML:
       if (strcmp(pszName, "MathML")) fatalError();
       mpMV->setExpression(mCommon.FunctionDescription);
+      // Remove error messages created by setExpression as this may fail
+      // due to incomplete model specification at this time.
+      if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 3)
+        CCopasiMessage::getLastMessage();
       mCurrentElement--;
       break;
 
