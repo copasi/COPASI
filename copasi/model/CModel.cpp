@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.288 $
+   $Revision: 1.288.2.1 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/14 16:42:15 $
+   $Author: shoops $
+   $Date: 2006/09/26 15:43:03 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1956,7 +1956,8 @@ void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
     CCopasiVectorN< CReaction >::const_iterator end = mSteps.end();
 
     for (; it != end; ++it)
-      if ((*it)->hasCircularDependencies(candidates))
+      if (candidates.find(*it) == candidates.end() &&
+          (*it)->hasCircularDependencies(candidates))
         dependentReactions.insert((*it));
 
     return;
@@ -1977,8 +1978,9 @@ void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
         end = (*itComp)->getMetabolites().end();
 
         for (; it != end; ++it)
-          if (candidates.find((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))) != candidates.end() ||
-              (*it)->hasCircularDependencies(candidates))
+          if (candidates.find(*it) == candidates.end() &&
+              (candidates.find((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))) != candidates.end() ||
+               (*it)->hasCircularDependencies(candidates)))
             dependentMetabolites.insert((*it));
       }
 
@@ -1992,7 +1994,8 @@ void CModel::appendDependentCompartments(std::set< const CCopasiObject * > candi
     CCopasiVectorN< CCompartment >::const_iterator end = mCompartments.end();
 
     for (; it != end; ++it)
-      if ((*it)->hasCircularDependencies(candidates))
+      if (candidates.find(*it) == candidates.end() &&
+          (*it)->hasCircularDependencies(candidates))
         dependentCompartments.insert((*it));
 
     return;
@@ -2005,7 +2008,8 @@ void CModel::appendDependentModelValues(std::set< const CCopasiObject * > candid
     CCopasiVectorN< CModelValue >::const_iterator end = mValues.end();
 
     for (; it != end; ++it)
-      if ((*it)->hasCircularDependencies(candidates))
+      if (candidates.find(*it) == candidates.end() &&
+          (*it)->hasCircularDependencies(candidates))
         dependentModelValues.insert((*it));
 
     return;

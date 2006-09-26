@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.72.2.1 $
+   $Revision: 1.72.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/26 13:11:38 $
+   $Date: 2006/09/26 15:43:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -312,7 +312,8 @@ void CFunctionDB::appendDependentFunctions(std::set< const CCopasiObject * > can
     CCopasiVectorN< CEvaluationTree >::const_iterator end = mLoadedFunctions.end();
 
     for (; it != end; ++it)
-      if ((*it)->hasCircularDependencies(candidates))
+      if (candidates.find(*it) == candidates.end() &&
+          (*it)->hasCircularDependencies(candidates))
         dependentFunctions.insert((*it));
 
     return;
