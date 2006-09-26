@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.180 $
+   $Revision: 1.180.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/08 14:13:51 $
+   $Date: 2006/09/26 17:11:52 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1129,6 +1129,34 @@ void CopasiUI3Window::slotExportSBML()
 void CopasiUI3Window::slotExportMathModel()
 {
   ListViews::commit();
+
+  CModel * pModel = CCopasiDataModel::Global->getModel();
+  pModel->compileIfNecessary();
+
+  CCopasiVector< CModelValue >::const_iterator it = pModel->getModelValues().begin();
+  CCopasiVector< CModelValue >::const_iterator end = pModel->getModelValues().end();
+
+  for (; it != end; ++it)
+    if ((*it)->isUsed()) break;
+
+  if (it != end)
+    {
+      QString Message =
+        "The model depends on model quantities, which can currently not be exported.\n"
+        "This means that export will be incomplete.\n\n"
+        "Export?";
+
+      switch (QMessageBox::warning(this, QString("Export Incomplete"), Message,
+                                   QMessageBox::Ok, QMessageBox::No | QMessageBox::Default, QMessageBox::NoButton))
+        {
+        case QMessageBox::Ok: //
+          break;
+
+        default:
+          return;
+          break;
+        }
+    }
 
   C_INT32 Answer = QMessageBox::No;
   QString tmp;
