@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.43.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/13 18:00:47 $
+   $Date: 2006/09/26 13:10:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -212,6 +212,8 @@ bool CEvaluationTree::parse()
 
 bool CEvaluationTree::compileNodes()
 {
+  mDependencies.clear();
+
   if (mInfix == "") return true;
   if (mpNodeList == NULL) return false;
 
@@ -233,6 +235,27 @@ bool CEvaluationTree::compileNodes()
 
       mErrorPosition -= (*--it)->getData().length();
       CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 3, mErrorPosition);
+    }
+  else
+    {
+      const CCopasiObject * pObject;
+
+      for (it = mpNodeList->begin(); it != end; ++it)
+        switch ((*it)->getType() & 0xFF000000)
+          {
+          case CEvaluationNode::OBJECT:
+            if (mType == Expression &&
+                (pObject = static_cast<CExpression *>(this)->getNodeObject(static_cast< CEvaluationNodeObject *>(*it)->getObjectCN())) != NULL)
+              mDependencies.insert(pObject);
+            break;
+
+          case CEvaluationNode::CALL:
+            mDependencies.insert(static_cast< CEvaluationNodeCall *>(*it)->getCalledTree());
+            break;
+
+          default:
+            break;
+          }
     }
 
   return success;
@@ -391,7 +414,13 @@ CEvaluationNode* CEvaluationTree::getRoot()
 
 void CEvaluationTree::initObjects()
 {
-  addObjectReference("Value", mValue, CCopasiObject::ValueDbl);
+  std::set< const CCopasiObject * > Self;
+  Self.insert(this);
+
+  CCopasiObject * pObject =
+    addObjectReference("Value", mValue, CCopasiObject::ValueDbl);
+
+  pObject->setDirectDependencies(Self);
 }
 
 ASTNode* CEvaluationTree::toAST() const

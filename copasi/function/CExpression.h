@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-   $Revision: 1.9.2.1 $
+   $Revision: 1.9.2.2 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/22 15:06:48 $
+   $Author: shoops $
+   $Date: 2006/09/26 13:10:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -94,6 +94,7 @@ class CExpression:
 
     // This is needed so that the tree compiles
     friend bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree);
+    friend bool CEvaluationTree::compileNodes();
 
   public:
     /**

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-   $Revision: 1.16.2.1 $
+   $Revision: 1.16.2.2 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/22 15:06:48 $
+   $Author: shoops $
+   $Date: 2006/09/26 13:10:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,28 +68,7 @@ bool CExpression::compile(std::vector< CCopasiContainer * > listOfContainer)
   else
     mDisplayString = "";
 
-  bool success = compileNodes();
-
-  if (success && mpNodeList)
-    {
-      const CCopasiObject * pObject;
-      std::set< const CCopasiObject * > Dependencies;
-
-      std::vector< CEvaluationNode * >::const_iterator it = mpNodeList->begin();
-      std::vector< CEvaluationNode * >::const_iterator end = mpNodeList->end();
-
-      for (; it != end; ++it)
-        if (((*it)->getType() & 0xFF000000) == CEvaluationNode::OBJECT &&
-            (pObject = getNodeObject(static_cast< CEvaluationNodeObject *>(*it)->getObjectCN())) != NULL)
-          Dependencies.insert(pObject);
-        else if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL)
-          Dependencies.insert(static_cast< CEvaluationNodeCall *>(*it)->getCalledTree());
-
-      setDirectDependencies(Dependencies);
-      const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=Value")))->setDirectDependencies(Dependencies);
-    }
-
-  return success;
+  return compileNodes();
 }
 
 const C_FLOAT64 & CExpression::calcValue()
