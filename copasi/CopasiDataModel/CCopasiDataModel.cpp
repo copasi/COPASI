@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.80.2.1 $
+   $Revision: 1.80.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/19 14:19:38 $
+   $Date: 2006/09/26 16:12:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -258,8 +258,10 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
       mSaveFileName = FileName;
     }
 
-  if (mpModel) mpModel->setCompileFlag();
+  if (mpModel)
+    mpModel->compileIfNecessary();
   changed(false);
+
   return true;
 }
 
@@ -437,6 +439,8 @@ bool CCopasiDataModel::newModel(CModel * pModel)
       mpGUI = new SCopasiXMLGUI;
     }
 
+  if (mpModel)
+    mpModel->compileIfNecessary();
   changed(false);
 
   return true;
