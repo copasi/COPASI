@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/MMASCIIExporter.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: nsimus $
-   $Date: 2006/09/18 10:52:43 $
+   $Date: 2006/09/27 07:37:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1036,7 +1036,7 @@ bool MMASCIIExporter::exportMathModelInXPPAUT(const CModel* copasiModel, std::of
       newNameMap[modvals[i]->getKey()] = newName;
 
       outFile << "#  global parameter \'" << name << "\'" << std::endl;
-      outFile << "param" << newName
+      outFile << "param " << newName
       << "="
       << modvals[i]->getValue()
       << std::endl;
