@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.78 $
+   $Revision: 1.78.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/15 12:28:29 $
+   $Date: 2006/09/27 16:53:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -91,6 +91,7 @@ const MESSAGES Messages[] =
     {MCTrajectoryMethod + 13, "CTrajectoryMethod (13): Runge Kutta Stepsize must be positive in hybrid method."},
     {MCTrajectoryMethod + 14, "CTrajectoryMethod (14): Use Random Seed should be 0 or 1 since it is a boolean parameter."},
     {MCTrajectoryMethod + 15, "CTrajectoryMethod (15): Max Internal Steps needs to be positive."},
+    {MCTrajectoryMethod + 16, "CTrajectoryMethod (16): Numerical Error encoutered."},
 
     // XML Package
     {MCXML + 1, "XML (1): Required attribute '%s' not found (line: '%d')."},
