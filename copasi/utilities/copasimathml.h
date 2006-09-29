@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/copasimathml.h,v $
-   $Revision: 1.3.6.1 $
+   $Revision: 1.3.6.2 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/24 00:03:50 $
+   $Author: shoops $
+   $Date: 2006/09/29 17:31:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -50,23 +50,23 @@ class CMathMl
         + "</mi></msub>";
 
       //reference
-      if (obj->getObjectType() == "Reference");
-      {
-        //model value
-        if (obj->getObjectName() == "Value")
-          {
-            mv = dynamic_cast<const CModelValue*>(obj->getObjectParent());
-            if (mv) return "<mi>" + fixName(mv->getObjectName()) + "</mi>";
-          }
+      if (obj->getObjectType() == "Reference")
+        {
+          //model value
+          if (obj->getObjectName() == "Value")
+            {
+              mv = dynamic_cast<const CModelValue*>(obj->getObjectParent());
+              if (mv) return "<mi>" + fixName(mv->getObjectName()) + "</mi>";
+            }
 
-        //compartment
-        if (obj->getObjectName() == "Volume")
-          {
-            comp = dynamic_cast<const CCompartment*>(obj->getObjectParent());
-            if (comp) return "<msub><mi>V</mi><mi>" + comp->getObjectName()
-              + "</mi></msub>";
-          }
-      }
+          //compartment
+          if (obj->getObjectName() == "Volume")
+            {
+              comp = dynamic_cast<const CCompartment*>(obj->getObjectParent());
+              if (comp) return "<msub><mi>V</mi><mi>" + comp->getObjectName()
+                + "</mi></msub>";
+            }
+        }
 
       return "<mi>" + fixName(obj->getObjectDisplayName()) + "</mi>";
     }
