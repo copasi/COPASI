@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/TaskWidget.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.23.2.1 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/18 13:02:43 $
+   $Author: shoops $
+   $Date: 2006/09/29 23:56:23 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -414,7 +414,6 @@ bool TaskWidget::commonRunTask()
           QMessageBox::critical(this, "Initialization Error",
                                 CCopasiMessage::getAllMessageText().c_str(),
                                 QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-          CCopasiMessage::clearDeque();
 
           success = false;
           goto finish;
@@ -428,7 +427,6 @@ bool TaskWidget::commonRunTask()
                              CCopasiMessage::getAllMessageText().c_str(),
                              QMessageBox::Ignore | QMessageBox::Default,
                              QMessageBox::Abort);
-      CCopasiMessage::clearDeque();
 
       if (Result == QMessageBox::Abort)
         {
@@ -436,6 +434,8 @@ bool TaskWidget::commonRunTask()
           goto finish;
         }
     }
+
+  CCopasiMessage::clearDeque();
 
   // Execute the task
   try
@@ -450,7 +450,6 @@ bool TaskWidget::commonRunTask()
         {
           mProgressBar->finish();
           QMessageBox::critical(this, "Calculation Error", CCopasiMessage::getAllMessageText().c_str(), QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-          CCopasiMessage::clearDeque();
         }
 
       success = false;
@@ -463,10 +462,12 @@ bool TaskWidget::commonRunTask()
         QMessageBox::warning(this, "Calculation Warning",
                              CCopasiMessage::getAllMessageText().c_str(),
                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-      CCopasiMessage::clearDeque();
     }
 
 finish:
+
+  CCopasiMessage::clearDeque();
+
   try {mpTask->restore();}
 
   catch (CCopasiException Exception)
@@ -487,8 +488,9 @@ finish:
         QMessageBox::warning(this, "Calculation Warning",
                              CCopasiMessage::getAllMessageText().c_str(),
                              QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-      CCopasiMessage::clearDeque();
     }
+
+  CCopasiMessage::clearDeque();
 
   return success;
 }
