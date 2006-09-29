@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/parametertable.cpp,v $
-   $Revision: 1.22.2.1 $
+   $Revision: 1.22.2.2 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/20 12:01:46 $
+   $Author: shoops $
+   $Date: 2006/09/29 17:43:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,7 @@ void ParameterTable::initTable()
   setSelectionMode(QTable::NoSelection);
   //setFocusStyle(QTable::FollowStyle);
 
-  setNumRows(3);
+  //setNumRows(3);
   setNumCols(5);
   horizontalHeader()->setLabel(0, "Description");
   horizontalHeader()->setLabel(1, "Name");
