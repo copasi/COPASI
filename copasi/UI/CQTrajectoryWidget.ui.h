@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQTrajectoryWidget.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.6.2.1 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/18 13:08:12 $
+   $Author: shoops $
+   $Date: 2006/09/30 02:29:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -180,6 +180,8 @@ bool CQTrajectoryWidget::saveTask()
     }
 
   C_FLOAT64 Delay = mpEditDelay->text().toDouble();
+  if (!mpCheckDelay->isChecked())
+    Delay = CCopasiDataModel::Global->getModel()->getInitialTime();
 
   if (Delay != trajectoryproblem->getOutputStartTime())
     {
