@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.20.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 20:56:35 $
+   $Date: 2006/09/30 01:24:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,28 +68,30 @@ class CParameterListItem : public QListViewItem
       CModelEntity* me = dynamic_cast<CModelEntity*>(obj);
       if (me) //object is a CModelEntity
         {
-          if (me->isUsed())
-            switch (me->getStatus())
-              {
-              case CModelEntity::FIXED:
-                setText(COL_STATUS, "fixed");
-                break;
-              case CModelEntity::ODE:
-                setText(COL_STATUS, "ode");
-                break;
-              case CModelEntity::ASSIGNMENT:
-                setText(COL_STATUS, "assign");
-                setRenameEnabled(COL_VALUE, false);
-                break;
-              case CModelEntity::REACTIONS:
-                if (static_cast< CMetab * >(me)->isDependent())
-                  setText(COL_STATUS, "dep");
-                else
-                  setText(COL_STATUS, "indep");
-                break;
-              }
-          else
-            setText(COL_STATUS, "unused");
+          switch (me->getStatus())
+            {
+            case CModelEntity::FIXED:
+              setText(COL_STATUS, "fixed");
+              break;
+
+            case CModelEntity::ODE:
+              setText(COL_STATUS, "ode");
+              break;
+
+            case CModelEntity::ASSIGNMENT:
+              setText(COL_STATUS, "assign");
+              setRenameEnabled(COL_VALUE, false);
+              break;
+
+            case CModelEntity::REACTIONS:
+              if (static_cast< CMetab * >(me)->isDependent())
+                setText(COL_STATUS, "dep");
+              else if (me->isUsed())
+                setText(COL_STATUS, "indep");
+              else
+                setText(COL_STATUS, "unused");
+              break;
+            }
         }
     }
 
@@ -220,13 +222,13 @@ bool ParametersWidget::loadFromModel()
   QString unit;
 
   //Time
-  mTimeItem = new CParameterListItem(listView, "Initial time");
+  mTimeItem = new CParameterListItem(listView, "Initial Time");
   unit = FROM_UTF8(model->getTimeUnitName());
   new CParameterListItem(mTimeItem, "Model",
                          model, model->getInitialTime(), unit);
 
   //Compartments
-  mCompItem = new CParameterListItem(listView, "Initial volumes");
+  mCompItem = new CParameterListItem(listView, "Initial Volumes");
   unit = FROM_UTF8(model->getVolumeUnitName());
   const CCopasiVector< CCompartment > & comps = model->getCompartments();
   imax = comps.size();
@@ -235,7 +237,7 @@ bool ParametersWidget::loadFromModel()
                            comps[i], comps[i]->getInitialValue(), unit);
 
   //Metabs
-  mMetabItem = new CParameterListItem(listView, "Initial concentrations");
+  mMetabItem = new CParameterListItem(listView, "Initial Concentrations");
   unit = FROM_UTF8(model->getConcentrationUnitName());
   const CCopasiVector< CMetab > & metabs = model->getMetabolites();
   imax = metabs.size();
@@ -244,7 +246,7 @@ bool ParametersWidget::loadFromModel()
                            metabs[i], metabs[i]->getInitialConcentration(), unit);
 
   //Reactions
-  mReacItem = new CParameterListItem(listView, "Kinetic parameters");
+  mReacItem = new CParameterListItem(listView, "Kinetic Parameters");
   const CCopasiVector< CReaction > & reacs = model->getReactions();
   CReaction* reac;
   CParameterListItem* tmp;
@@ -295,14 +297,23 @@ bool ParametersWidget::loadFromModel()
     }
 
   //global Parameters
-  mParamItem = new CParameterListItem(listView, "Global parameters");
+  mParamItem = new CParameterListItem(listView, "Global Quantities");
   unit = "";
   const CCopasiVector< CModelValue > & params = model->getModelValues();
   imax = params.size();
   for (i = 0; i < imax; ++i)
-    new CParameterListItem(mParamItem, FROM_UTF8(params[i]->getObjectName()),
-                           params[i], params[i]->getInitialValue(), unit);
+    switch (params[i]->getStatus())
+      {
+      case CModelEntity::ASSIGNMENT:
+        new CParameterListItem(mParamItem, FROM_UTF8(params[i]->getObjectName()),
+                               params[i], params[i]->getValue(), unit);
+        break;
 
+      default:
+        new CParameterListItem(mParamItem, FROM_UTF8(params[i]->getObjectName()),
+                               params[i], params[i]->getInitialValue(), unit);
+        break;
+      }
   return true;
 }
 
