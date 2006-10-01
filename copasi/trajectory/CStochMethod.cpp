@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.60.2.1 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/20 18:28:22 $
+   $Author: ssahle $
+   $Date: 2006/10/01 10:40:27 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -580,6 +580,13 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
     {
       //back integration not possible
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 9);
+      return false;
+    }
+
+  if (pTP->getModel()->getTotSteps() < 1)
+    {
+      //at least one reaction necessary
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 17);
       return false;
     }
 
