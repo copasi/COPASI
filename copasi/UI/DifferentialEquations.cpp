@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.32.2.2 $
+   $Revision: 1.32.2.3 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/09/24 00:04:34 $
+   $Date: 2006/10/02 21:47:11 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -377,6 +377,31 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
       }
 
   //write assignment rules
+  imax = model->getModelValues().size();
+  for (i = 0; i < imax; ++i)
+    if (model->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+      {
+        mml << SPC(l + 1) << "<mtr>" << std::endl;
+
+        //first column (lhs)
+        mml << SPC(l + 2) << "<mtd columnalign='right'>" << std::endl;
+        mml << SPC(l + 3) << "<mi>" << CMathMl::fixName(model->getModelValues()[i]->getObjectName()) << "</mi>" << std::endl;
+        //writeLHS_ModelValue(mml, model->getModelValues()[i]->getObjectName(), l + 3);
+        mml << SPC(l + 2) << "</mtd>" << std::endl;
+
+        //second column ("=")
+        mml << SPC(l + 2) << "<mtd>" << std::endl;
+        mml << SPC(l + 3) << "<mo>=</mo>" << std::endl;
+        mml << SPC(l + 2) << "</mtd>" << std::endl;
+
+        //third column (rhs)
+        mml << SPC(l + 2) << "<mtd columnalign='left'>" << std::endl;
+        writeRHS_ModelEntity(mml, model->getModelValues()[i],
+                             false, l + 3); //TODO make configurable
+        mml << SPC(l + 2) << "</mtd>" << std::endl;
+
+        mml << SPC(l + 1) << "</mtr>" << std::endl;
+      }
 
   mml << SPC(l) << "</mtable>" << std::endl;
 
