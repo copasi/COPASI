@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/COutputAssistant.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.9.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/14 16:28:17 $
+   $Date: 2006/10/02 21:20:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -322,7 +322,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
   const CCopasiObject* pTime = pModel->getObject(CCopasiObjectName("Reference=Time"));
 
   std::vector<const CCopasiObject*> data1, tmpdata;
-  const CCopasiObject* data2;
+  const CCopasiObject* data2 = NULL;
 
   switch (idMod)
     {
@@ -467,19 +467,22 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
         pPlotSpecification =
           createPlot(getItemName(id), data2, data1, getItem(id).mTaskType);
 
-        CCopasiVector< CPlotItem > & Items = pPlotSpecification->getItems();
-        CCopasiVector< CPlotItem >::const_iterator itItem = Items.begin();
-        CCopasiVector< CPlotItem >::const_iterator endItem = Items.end();
-        std::vector< std::string >::const_iterator itChannelX = ChannelX.begin();
-        std::vector< std::string >::const_iterator itName = Names.begin();
-        std::vector< unsigned C_INT32 >::const_iterator itLineType = LineTypes.begin();
-
-        while (itItem != endItem)
+        if (pPlotSpecification != NULL)
           {
-            (*itItem)->getChannels()[0] = CPlotDataChannelSpec(*itChannelX++);
-            (*itItem)->setTitle(*itName++);
-            (*itItem)->setActivity(COutputInterface::AFTER);
-            (*itItem++)->setValue("Line type", *itLineType++);
+            CCopasiVector< CPlotItem > & Items = pPlotSpecification->getItems();
+            CCopasiVector< CPlotItem >::const_iterator itItem = Items.begin();
+            CCopasiVector< CPlotItem >::const_iterator endItem = Items.end();
+            std::vector< std::string >::const_iterator itChannelX = ChannelX.begin();
+            std::vector< std::string >::const_iterator itName = Names.begin();
+            std::vector< unsigned C_INT32 >::const_iterator itLineType = LineTypes.begin();
+
+            while (itItem != endItem)
+              {
+                (*itItem)->getChannels()[0] = CPlotDataChannelSpec(*itChannelX++);
+                (*itItem)->setTitle(*itName++);
+                (*itItem)->setActivity(COutputInterface::AFTER);
+                (*itItem++)->setValue("Line type", *itLineType++);
+              }
           }
 
         return pPlotSpecification;
@@ -520,35 +523,38 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
             pPlotSpecification =
               createPlot(pExperiment->getObjectName(), data2, data1, getItem(id).mTaskType);
 
-            CCopasiVector< CPlotItem > & Items = pPlotSpecification->getItems();
-            CCopasiVector< CPlotItem >::const_iterator itItem = Items.begin();
-            CCopasiVector< CPlotItem >::const_iterator endItem = Items.end();
-            it = FittingPoints.begin();
-
-            unsigned C_INT32 LineType;
-            if (pExperiment->getExperimentType() == CCopasiTask::timeCourse)
-              LineType = 0;
-            else
-              LineType = 2;
-
-            while (itItem != endItem)
+            if (pPlotSpecification != NULL)
               {
-                std::string Name = (*it++)->getObjectName();
-                CCopasiObject * pObject = CCopasiContainer::ObjectFromName(Name);
-                if (pObject != NULL)
-                  Name = pObject->getObjectDisplayName();
+                CCopasiVector< CPlotItem > & Items = pPlotSpecification->getItems();
+                CCopasiVector< CPlotItem >::const_iterator itItem = Items.begin();
+                CCopasiVector< CPlotItem >::const_iterator endItem = Items.end();
+                it = FittingPoints.begin();
 
-                (*itItem)->setTitle(Name + "(Measured Value)");
-                (*itItem)->setActivity(COutputInterface::AFTER);
-                (*itItem++)->setValue("Line type", (unsigned C_INT32) 2);
+                unsigned C_INT32 LineType;
+                if (pExperiment->getExperimentType() == CCopasiTask::timeCourse)
+                  LineType = 0;
+                else
+                  LineType = 2;
 
-                (*itItem)->setTitle(Name + "(Fitted Value)");
-                (*itItem)->setActivity(COutputInterface::AFTER);
-                (*itItem++)->setValue("Line type", (unsigned C_INT32) LineType);
+                while (itItem != endItem)
+                  {
+                    std::string Name = (*it++)->getObjectName();
+                    CCopasiObject * pObject = CCopasiContainer::ObjectFromName(Name);
+                    if (pObject != NULL)
+                      Name = pObject->getObjectDisplayName();
 
-                (*itItem)->setTitle(Name + "(Weighted Error)");
-                (*itItem)->setActivity(COutputInterface::AFTER);
-                (*itItem++)->setValue("Line type", (unsigned C_INT32) 2);
+                    (*itItem)->setTitle(Name + "(Measured Value)");
+                    (*itItem)->setActivity(COutputInterface::AFTER);
+                    (*itItem++)->setValue("Line type", (unsigned C_INT32) 2);
+
+                    (*itItem)->setTitle(Name + "(Fitted Value)");
+                    (*itItem)->setActivity(COutputInterface::AFTER);
+                    (*itItem++)->setValue("Line type", (unsigned C_INT32) LineType);
+
+                    (*itItem)->setTitle(Name + "(Weighted Error)");
+                    (*itItem)->setActivity(COutputInterface::AFTER);
+                    (*itItem++)->setValue("Line type", (unsigned C_INT32) 2);
+                  }
               }
           }
 
@@ -613,26 +619,29 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
                     PlotSpecMap[pObject] = pPlotSpecification;
                   }
 
-                CPlotItem * pItem =
-                  pPlotSpecification->createItem(Name + "(Measured Value)", CPlotItem::curve2d);
-                pItem->setActivity(COutputInterface::AFTER);
-                pItem->setValue("Line type", (unsigned C_INT32) 2);
-                pItem->addChannel(ChannelX);
-                pItem->addChannel((*it)->getObject(CCopasiObjectName("Reference=Measured Value"))->getCN());
+                if (pPlotSpecification != NULL)
+                  {
+                    CPlotItem * pItem =
+                      pPlotSpecification->createItem(Name + "(Measured Value)", CPlotItem::curve2d);
+                    pItem->setActivity(COutputInterface::AFTER);
+                    pItem->setValue("Line type", (unsigned C_INT32) 2);
+                    pItem->addChannel(ChannelX);
+                    pItem->addChannel((*it)->getObject(CCopasiObjectName("Reference=Measured Value"))->getCN());
 
-                pItem =
-                  pPlotSpecification->createItem(Name + "(Fitted Value)", CPlotItem::curve2d);
-                pItem->setActivity(COutputInterface::AFTER);
-                pItem->setValue("Line type", LineType);
-                pItem->addChannel(ChannelX);
-                pItem->addChannel((*it)->getObject(CCopasiObjectName("Reference=Fitted Value"))->getCN());
+                    pItem =
+                      pPlotSpecification->createItem(Name + "(Fitted Value)", CPlotItem::curve2d);
+                    pItem->setActivity(COutputInterface::AFTER);
+                    pItem->setValue("Line type", LineType);
+                    pItem->addChannel(ChannelX);
+                    pItem->addChannel((*it)->getObject(CCopasiObjectName("Reference=Fitted Value"))->getCN());
 
-                pItem =
-                  pPlotSpecification->createItem(Name + "(Weighted Error)", CPlotItem::curve2d);
-                pItem->setActivity(COutputInterface::AFTER);
-                pItem->setValue("Line type", (unsigned C_INT32) 2);
-                pItem->addChannel(ChannelX);
-                pItem->addChannel((*it)->getObject(CCopasiObjectName("Reference=Weighted Error"))->getCN());
+                    pItem =
+                      pPlotSpecification->createItem(Name + "(Weighted Error)", CPlotItem::curve2d);
+                    pItem->setActivity(COutputInterface::AFTER);
+                    pItem->setValue("Line type", (unsigned C_INT32) 2);
+                    pItem->addChannel(ChannelX);
+                    pItem->addChannel((*it)->getObject(CCopasiObjectName("Reference=Weighted Error"))->getCN());
+                  }
               }
           }
         return pPlotSpecification;
