@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.154 $
+   $Revision: 1.154.2.1 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/09/14 09:18:18 $
+   $Date: 2006/10/02 15:36:50 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1285,7 +1285,11 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument *&
       sbmlDoc->validate();
       if (sbmlDoc->getNumFatals() > 0)
         {
-          ParseMessage * pSBMLMessage = sbmlDoc->getFatal(0);
+          ParseMessage * pSBMLMessage = sbmlDoc->getFatal(1);
+          if (pSBMLMessage->getMessage() != "This file probably contains a model of an unsupported SBML version.")
+            {
+              pSBMLMessage = sbmlDoc->getFatal(0);
+            }
 
           CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
                                  pSBMLMessage->getLine(),
