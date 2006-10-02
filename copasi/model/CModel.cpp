@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.288.2.1 $
+   $Revision: 1.288.2.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/26 15:43:03 $
+   $Date: 2006/10/02 21:33:11 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1501,8 +1501,9 @@ void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 0.0;
 
-  dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
-         mStoiReordered.array(), &K, &Beta, pTmp, &M);
+  if (K != 0)
+    dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
+           mStoiReordered.array(), &K, &Beta, pTmp, &M);
 }
 
 void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
@@ -1527,8 +1528,9 @@ void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 0.0;
 
-  dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
-         mRedStoi.array(), &K, &Beta, pTmp, &M);
+  if (K != 0)
+    dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
+           mRedStoi.array(), &K, &Beta, pTmp, &M);
 }
 
 void CModel::refreshRates()
