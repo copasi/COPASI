@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.288.2.2 $
+   $Revision: 1.288.2.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/02 21:33:11 $
+   $Date: 2006/10/03 13:46:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2541,7 +2541,7 @@ std::string CModel::suitableForStochasticSimulation() const
     for (i = 0; i < mMetabolites.size(); ++i)
       {
         if (mMetabolites[i]->getInitialValue() > LLONG_MAX)
-          return "At least one particle number in the inial state is too big.";
+          return "At least one particle number in the initial state is too big.";
       }
 
     return ""; // Model is appropriate for hybrid simulation
