@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.0 (Build 18) (http://www.copasi.org) at 2006-05-30 17:23:19 UTC -->
-<COPASI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.copasi.org/static/schema.xsd" versionMajor="0" versionMinor="1">
+<!-- generated with COPASI 4.1 (Build 19 Feature Preview) (http://www.copasi.org) at 2006-10-03 16:42:20 UTC -->
+<COPASI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.copasi.org/static/schema.xsd" versionMajor="1" versionMinor="0" versionDevel="19">
   <ListOfFunctions>
     <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" reversible="false">
       <MathML>
@@ -13,14 +13,14 @@
         <ParameterDescription key="FunctionParameter_79" name="substrate" order="1" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_37" name="Objective Function" type="Expression">
+    <Function key="Function_40" name="Objective Function" type="Expression">
       <MathML>
         <Text>
           
         </Text>
       </MathML>
     </Function>
-    <Function key="Function_38" name="Transcription" type="UserDefined" reversible="false">
+    <Function key="Function_41" name="Transcription" type="UserDefined" reversible="false">
       <MathML>
         <Text>
           V*K^n/(K^n+modifier^n)
@@ -33,7 +33,7 @@
         <ParameterDescription key="FunctionParameter_261" name="modifier" order="3" role="modifier"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_39" name="linear activation" type="UserDefined" reversible="false">
+    <Function key="Function_42" name="linear activation" type="UserDefined" reversible="false">
       <MathML>
         <Text>
           k*modifier
@@ -57,7 +57,7 @@
       </ListOfParameterDescriptions>
     </Function>
   </ListOfFunctions>
-  <Model key="Model_1" name="Circadian Clock" timeUnit="h" volumeUnit="l" quantityUnit="nMol" type="deterministic">
+  <Model key="Model_1" name="Circadian Clock" timeUnit="h" volumeUnit="l" quantityUnit="nmol" type="deterministic">
     <Comment>
       <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-size:8pt;font-family:MS Shell Dlg">
 <p>This is a model of the Drosophila circadian clock based on the PER and TIM genes, as published in Leloup J.-C. &amp; Goldbeter A. (1999) &quot;Chaos and birhythmicity in a model of circadian oscillations of the PER and TIM proteins in Drosophila&quot; J. Theor. Biol. 198, 445-459 </p>
@@ -68,16 +68,16 @@
       <Compartment key="Compartment_0" name="cell"/>
     </ListOfCompartments>
     <ListOfMetabolites>
-      <Metabolite key="Metabolite_0" name="P0" compartment="Compartment_0" status="variable"/>
-      <Metabolite key="Metabolite_1" name="Mt" compartment="Compartment_0" status="variable"/>
-      <Metabolite key="Metabolite_2" name="Mp" compartment="Compartment_0" status="variable"/>
-      <Metabolite key="Metabolite_3" name="T0" compartment="Compartment_0" status="variable"/>
-      <Metabolite key="Metabolite_4" name="P1" compartment="Compartment_0" status="variable"/>
-      <Metabolite key="Metabolite_5" name="P2" compartment="Compartment_0" status="variable"/>
-      <Metabolite key="Metabolite_6" name="T1" compartment="Compartment_0" status="variable"/>
-      <Metabolite key="Metabolite_7" name="T2" compartment="Compartment_0" status="variable"/>
-      <Metabolite key="Metabolite_8" name="C" compartment="Compartment_0" status="variable"/>
-      <Metabolite key="Metabolite_9" name="Cn" compartment="Compartment_0" status="variable"/>
+      <Metabolite key="Metabolite_0" name="P0" compartment="Compartment_0" status="reactions"/>
+      <Metabolite key="Metabolite_1" name="Mt" compartment="Compartment_0" status="reactions"/>
+      <Metabolite key="Metabolite_2" name="Mp" compartment="Compartment_0" status="reactions"/>
+      <Metabolite key="Metabolite_3" name="T0" compartment="Compartment_0" status="reactions"/>
+      <Metabolite key="Metabolite_4" name="P1" compartment="Compartment_0" status="reactions"/>
+      <Metabolite key="Metabolite_5" name="P2" compartment="Compartment_0" status="reactions"/>
+      <Metabolite key="Metabolite_6" name="T1" compartment="Compartment_0" status="reactions"/>
+      <Metabolite key="Metabolite_7" name="T2" compartment="Compartment_0" status="reactions"/>
+      <Metabolite key="Metabolite_8" name="C" compartment="Compartment_0" status="reactions"/>
+      <Metabolite key="Metabolite_9" name="Cn" compartment="Compartment_0" status="reactions"/>
     </ListOfMetabolites>
     <ListOfReactions>
       <Reaction key="Reaction_0" name="sP" reversible="false">
@@ -88,12 +88,12 @@
           <Modifier metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_75" name="k" value="0.9"/>
+          <Constant key="Parameter_74" name="k" value="0.9"/>
         </ListOfConstants>
-        <KineticLaw function="Function_39">
+        <KineticLaw function="Function_42">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_262">
-              <SourceParameter reference="Parameter_75"/>
+              <SourceParameter reference="Parameter_74"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_246">
               <SourceParameter reference="Metabolite_2"/>
@@ -109,20 +109,20 @@
           <Modifier metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_74" name="V" value="1"/>
-          <Constant key="Parameter_73" name="K" value="0.9"/>
-          <Constant key="Parameter_72" name="n" value="4"/>
+          <Constant key="Parameter_73" name="V" value="1"/>
+          <Constant key="Parameter_72" name="K" value="0.9"/>
+          <Constant key="Parameter_71" name="n" value="4"/>
         </ListOfConstants>
-        <KineticLaw function="Function_38">
+        <KineticLaw function="Function_41">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_260">
-              <SourceParameter reference="Parameter_74"/>
-            </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_243">
               <SourceParameter reference="Parameter_73"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_250">
+            <CallParameter functionParameter="FunctionParameter_243">
               <SourceParameter reference="Parameter_72"/>
+            </CallParameter>
+            <CallParameter functionParameter="FunctionParameter_250">
+              <SourceParameter reference="Parameter_71"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_261">
               <SourceParameter reference="Metabolite_9"/>
@@ -135,19 +135,19 @@
           <Substrate metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_71" name="Km" value="0.2"/>
-          <Constant key="Parameter_70" name="V" value="0.7"/>
+          <Constant key="Parameter_70" name="Km" value="0.2"/>
+          <Constant key="Parameter_69" name="V" value="0.7"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_70"/>
+              <SourceParameter reference="Parameter_69"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_41">
               <SourceParameter reference="Metabolite_2"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_71"/>
+              <SourceParameter reference="Parameter_70"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -160,20 +160,20 @@
           <Modifier metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_61" name="V" value="1"/>
-          <Constant key="Parameter_62" name="K" value="0.9"/>
-          <Constant key="Parameter_65" name="n" value="4"/>
+          <Constant key="Parameter_60" name="V" value="1"/>
+          <Constant key="Parameter_61" name="K" value="0.9"/>
+          <Constant key="Parameter_64" name="n" value="4"/>
         </ListOfConstants>
-        <KineticLaw function="Function_38">
+        <KineticLaw function="Function_41">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_260">
-              <SourceParameter reference="Parameter_61"/>
+              <SourceParameter reference="Parameter_60"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_243">
-              <SourceParameter reference="Parameter_62"/>
+              <SourceParameter reference="Parameter_61"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_250">
-              <SourceParameter reference="Parameter_65"/>
+              <SourceParameter reference="Parameter_64"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_261">
               <SourceParameter reference="Metabolite_9"/>
@@ -186,19 +186,19 @@
           <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_66" name="Km" value="0.2"/>
-          <Constant key="Parameter_67" name="V" value="0.7"/>
+          <Constant key="Parameter_65" name="Km" value="0.2"/>
+          <Constant key="Parameter_66" name="V" value="0.7"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_67"/>
+              <SourceParameter reference="Parameter_66"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_41">
               <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_66"/>
+              <SourceParameter reference="Parameter_65"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -211,12 +211,12 @@
           <Modifier metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_68" name="k" value="0.9"/>
+          <Constant key="Parameter_67" name="k" value="0.9"/>
         </ListOfConstants>
-        <KineticLaw function="Function_39">
+        <KineticLaw function="Function_42">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_262">
-              <SourceParameter reference="Parameter_68"/>
+              <SourceParameter reference="Parameter_67"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_246">
               <SourceParameter reference="Metabolite_1"/>
@@ -232,19 +232,19 @@
           <Product metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_76" name="Km" value="2"/>
-          <Constant key="Parameter_77" name="V" value="8"/>
+          <Constant key="Parameter_75" name="Km" value="2"/>
+          <Constant key="Parameter_76" name="V" value="8"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_77"/>
+              <SourceParameter reference="Parameter_76"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_41">
               <SourceParameter reference="Metabolite_0"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_76"/>
+              <SourceParameter reference="Parameter_75"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -257,19 +257,19 @@
           <Product metabolite="Metabolite_0" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_78" name="Km" value="2"/>
-          <Constant key="Parameter_79" name="V" value="1"/>
+          <Constant key="Parameter_77" name="Km" value="2"/>
+          <Constant key="Parameter_78" name="V" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_79"/>
+              <SourceParameter reference="Parameter_78"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_41">
               <SourceParameter reference="Metabolite_4"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_78"/>
+              <SourceParameter reference="Parameter_77"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -282,19 +282,19 @@
           <Product metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_80" name="Km" value="2"/>
-          <Constant key="Parameter_81" name="V" value="8"/>
+          <Constant key="Parameter_79" name="Km" value="2"/>
+          <Constant key="Parameter_80" name="V" value="8"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_81"/>
+              <SourceParameter reference="Parameter_80"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_41">
               <SourceParameter reference="Metabolite_4"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_80"/>
+              <SourceParameter reference="Parameter_79"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -307,19 +307,19 @@
           <Product metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_93" name="Km" value="2"/>
-          <Constant key="Parameter_92" name="V" value="1"/>
+          <Constant key="Parameter_92" name="Km" value="2"/>
+          <Constant key="Parameter_91" name="V" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_92"/>
+              <SourceParameter reference="Parameter_91"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_41">
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_93"/>
+              <SourceParameter reference="Parameter_92"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -332,19 +332,19 @@
           <Product metabolite="Metabolite_6" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_91" name="Km" value="2"/>
-          <Constant key="Parameter_90" name="V" value="8"/>
+          <Constant key="Parameter_90" name="Km" value="2"/>
+          <Constant key="Parameter_89" name="V" value="8"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_90"/>
+              <SourceParameter reference="Parameter_89"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_41">
               <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_91"/>
+              <SourceParameter reference="Parameter_90"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -357,19 +357,19 @@
           <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_89" name="Km" value="2"/>
-          <Constant key="Parameter_88" name="V" value="1"/>
+          <Constant key="Parameter_88" name="Km" value="2"/>
+          <Constant key="Parameter_87" name="V" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_88"/>
+              <SourceParameter reference="Parameter_87"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_41">
               <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_89"/>
+              <SourceParameter reference="Parameter_88"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -382,19 +382,19 @@
           <Product metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_98" name="Km" value="2"/>
-          <Constant key="Parameter_99" name="V" value="8"/>
+          <Constant key="Parameter_97" name="Km" value="2"/>
+          <Constant key="Parameter_98" name="V" value="8"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_99"/>
+              <SourceParameter reference="Parameter_98"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_41">
               <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_98"/>
+              <SourceParameter reference="Parameter_97"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -407,19 +407,19 @@
           <Product metabolite="Metabolite_6" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_100" name="Km" value="2"/>
-          <Constant key="Parameter_101" name="V" value="1"/>
+          <Constant key="Parameter_99" name="Km" value="2"/>
+          <Constant key="Parameter_100" name="V" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_101"/>
+              <SourceParameter reference="Parameter_100"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_41">
               <SourceParameter reference="Metabolite_7"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_100"/>
+              <SourceParameter reference="Parameter_99"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -429,19 +429,19 @@
           <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_102" name="Km" value="0.2"/>
-          <Constant key="Parameter_103" name="V" value="2"/>
+          <Constant key="Parameter_101" name="Km" value="0.2"/>
+          <Constant key="Parameter_102" name="V" value="2"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_103"/>
+              <SourceParameter reference="Parameter_102"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_41">
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_102"/>
+              <SourceParameter reference="Parameter_101"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -451,19 +451,19 @@
           <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_104" name="Km" value="0.2"/>
-          <Constant key="Parameter_105" name="V" value="2"/>
+          <Constant key="Parameter_103" name="Km" value="0.2"/>
+          <Constant key="Parameter_104" name="V" value="2"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_105"/>
+              <SourceParameter reference="Parameter_104"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_41">
               <SourceParameter reference="Metabolite_7"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_104"/>
+              <SourceParameter reference="Parameter_103"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -473,12 +473,12 @@
           <Substrate metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_106" name="k1" value="0.01"/>
+          <Constant key="Parameter_105" name="k1" value="0.01"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_106"/>
+              <SourceParameter reference="Parameter_105"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_1"/>
@@ -491,12 +491,12 @@
           <Substrate metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_107" name="k1" value="0.01"/>
+          <Constant key="Parameter_106" name="k1" value="0.01"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_107"/>
+              <SourceParameter reference="Parameter_106"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_2"/>
@@ -509,12 +509,12 @@
           <Substrate metabolite="Metabolite_0" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_108" name="k1" value="0.01"/>
+          <Constant key="Parameter_107" name="k1" value="0.01"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_108"/>
+              <SourceParameter reference="Parameter_107"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_0"/>
@@ -527,12 +527,12 @@
           <Substrate metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_109" name="k1" value="0.01"/>
+          <Constant key="Parameter_108" name="k1" value="0.01"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_109"/>
+              <SourceParameter reference="Parameter_108"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_4"/>
@@ -545,12 +545,12 @@
           <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_110" name="k1" value="0.01"/>
+          <Constant key="Parameter_109" name="k1" value="0.01"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_110"/>
+              <SourceParameter reference="Parameter_109"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_5"/>
@@ -563,12 +563,12 @@
           <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_111" name="k1" value="0.01"/>
+          <Constant key="Parameter_110" name="k1" value="0.01"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_111"/>
+              <SourceParameter reference="Parameter_110"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_3"/>
@@ -581,12 +581,12 @@
           <Substrate metabolite="Metabolite_6" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_112" name="k1" value="0.01"/>
+          <Constant key="Parameter_111" name="k1" value="0.01"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_112"/>
+              <SourceParameter reference="Parameter_111"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_6"/>
@@ -599,12 +599,12 @@
           <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_113" name="k1" value="0.01"/>
+          <Constant key="Parameter_112" name="k1" value="0.01"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_113"/>
+              <SourceParameter reference="Parameter_112"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_7"/>
@@ -617,12 +617,12 @@
           <Substrate metabolite="Metabolite_8" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_114" name="k1" value="0.01"/>
+          <Constant key="Parameter_113" name="k1" value="0.01"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_114"/>
+              <SourceParameter reference="Parameter_113"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_8"/>
@@ -635,12 +635,12 @@
           <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_115" name="k1" value="0.01"/>
+          <Constant key="Parameter_114" name="k1" value="0.01"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_115"/>
+              <SourceParameter reference="Parameter_114"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_9"/>
@@ -653,19 +653,19 @@
           <Substrate metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_116" name="Km" value="0.2"/>
-          <Constant key="Parameter_117" name="V" value="2"/>
+          <Constant key="Parameter_115" name="Km" value="0.2"/>
+          <Constant key="Parameter_116" name="V" value="2"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_117"/>
+              <SourceParameter reference="Parameter_116"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_41">
               <SourceParameter reference="Metabolite_7"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_116"/>
+              <SourceParameter reference="Parameter_115"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -675,19 +675,19 @@
           <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_118" name="Km" value="0.2"/>
-          <Constant key="Parameter_119" name="V" value="2"/>
+          <Constant key="Parameter_117" name="Km" value="0.2"/>
+          <Constant key="Parameter_118" name="V" value="2"/>
         </ListOfConstants>
         <KineticLaw function="Function_8">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_45">
-              <SourceParameter reference="Parameter_119"/>
+              <SourceParameter reference="Parameter_118"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_41">
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_30">
-              <SourceParameter reference="Parameter_118"/>
+              <SourceParameter reference="Parameter_117"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -701,12 +701,12 @@
           <Product metabolite="Metabolite_8" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_120" name="k1" value="1.2"/>
+          <Constant key="Parameter_119" name="k1" value="1.2"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_120"/>
+              <SourceParameter reference="Parameter_119"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_5"/>
@@ -724,12 +724,12 @@
           <Product metabolite="Metabolite_7" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_121" name="k1" value="0.6"/>
+          <Constant key="Parameter_120" name="k1" value="0.6"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_121"/>
+              <SourceParameter reference="Parameter_120"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_8"/>
@@ -745,12 +745,12 @@
           <Product metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_122" name="k1" value="0.6"/>
+          <Constant key="Parameter_121" name="k1" value="0.6"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_122"/>
+              <SourceParameter reference="Parameter_121"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_8"/>
@@ -766,12 +766,12 @@
           <Product metabolite="Metabolite_8" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_123" name="k1" value="0.2"/>
+          <Constant key="Parameter_122" name="k1" value="0.2"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_123"/>
+              <SourceParameter reference="Parameter_122"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_9"/>
@@ -799,7 +799,8 @@
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_7" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+    <Task key="Task_8" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+      <Report reference="Report_6" target="" append="1"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
@@ -814,7 +815,7 @@
         <Parameter name="Resolution" type="unsignedFloat" value="1e-009"/>
       </Method>
     </Task>
-    <Task key="Task_8" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
+    <Task key="Task_9" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="960"/>
         <Parameter name="StepSize" type="float" value="0.1"/>
@@ -825,22 +826,22 @@
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="1"/>
         <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-006"/>
-        <Parameter name="Use Default Absolute Tolerance" type="bool" value="1"/>
         <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-012"/>
         <Parameter name="Adams Max Order" type="unsignedInteger" value="12"/>
         <Parameter name="BDF Max Order" type="unsignedInteger" value="5"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_9" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+    <Task key="Task_10" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_1" target="" append="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_7"/>
+        <Parameter name="Steady-State" type="key" value="Task_8"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-009"/>
       </Method>
     </Task>
-    <Task key="Task_10" name="Scan" type="scan" scheduled="false" updateModel="false">
+    <Task key="Task_11" name="Scan" type="scan" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
@@ -851,11 +852,12 @@
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_11" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+    <Task key="Task_12" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+      <Report reference="Report_7" target="" append="1"/>
       <Problem>
         <Parameter name="Steady-State" type="key" value=""/>
-        <Parameter name="Time-Course" type="key" value="Task_8"/>
-        <Parameter name="ObjectiveFunction" type="key" value="Function_37"/>
+        <Parameter name="Time-Course" type="key" value="Task_9"/>
+        <Parameter name="ObjectiveFunction" type="key" value="Function_40"/>
         <Parameter name="Maximize" type="bool" value="0"/>
         <ParameterGroup name="OptimizationItemList">
         </ParameterGroup>
@@ -868,10 +870,11 @@
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_12" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+    <Task key="Task_13" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+      <Report reference="Report_8" target="" append="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_7"/>
-        <Parameter name="Time-Course" type="key" value="Task_8"/>
+        <Parameter name="Steady-State" type="key" value="Task_8"/>
+        <Parameter name="Time-Course" type="key" value="Task_9"/>
         <ParameterGroup name="OptimizationItemList">
         </ParameterGroup>
         <ParameterGroup name="OptimizationConstraintList">
@@ -886,7 +889,8 @@
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_13" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+    <Task key="Task_14" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+      <Report reference="Report_9" target="" append="1"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -904,9 +908,16 @@
         <Parameter name="Orthonormalize Intervall" type="unsignedFloat" value="1"/>
       </Method>
     </Task>
+    <Task key="Task_0" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
+      <Report reference="Report_0" target="" append="1"/>
+      <Problem>
+      </Problem>
+      <Method name="EFM Algorithm" type="EFMAlgorithm">
+      </Method>
+    </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_4" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_6" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -916,7 +927,7 @@
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_5" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_7" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -942,7 +953,7 @@
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_6" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_8" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -968,7 +979,7 @@
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_7" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_9" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -980,6 +991,30 @@
       <Footer>
         <Object cn="String=&#x0a;"/>
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
+      </Footer>
+    </Report>
+    <Report key="Report_0" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+      <Comment>
+        <body xmlns="http://www.w3.org/1999/xhtml">
+          Automatically generated report.
+        </body>
+      </Comment>
+      <Footer>
+        <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
+      </Footer>
+    </Report>
+    <Report key="Report_1" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+      <Comment>
+        <body xmlns="http://www.w3.org/1999/xhtml">
+          Automatically generated report.
+        </body>
+      </Comment>
+      <Header>
+        <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Description"/>
+      </Header>
+      <Footer>
+        <Object cn="String=&#x0a;"/>
+        <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
   </ListOfReports>
