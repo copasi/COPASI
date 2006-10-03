@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.18.2.1 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/15 19:55:17 $
+   $Date: 2006/10/03 16:54:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -499,17 +499,19 @@ void CQExperimentData::slotFileChanged(QListBoxItem * pItem)
   if (pItem)
     {
       slotExperimentChanged(NULL); // Assure that changes are saved.
-      mpFileInfo->setFileName(mFileMap[(const char *) pItem->text().utf8()]);
-
-      // fill experiment list box
       mpBoxExperiment->clear();
 
-      std::vector< std::string > ExperimentNames = mpFileInfo->getExperimentNames();
-      std::vector< std::string >::const_iterator it = ExperimentNames.begin();
-      std::vector< std::string >::const_iterator end = ExperimentNames.end();
+      if (mpFileInfo->setFileName(mFileMap[(const char *) pItem->text().utf8()]))
+        {
+          // fill experiment list box
 
-      for (; it != end; ++it)
-        mpBoxExperiment->insertItem(FROM_UTF8((*it)));
+          std::vector< std::string > ExperimentNames = mpFileInfo->getExperimentNames();
+          std::vector< std::string >::const_iterator it = ExperimentNames.begin();
+          std::vector< std::string >::const_iterator end = ExperimentNames.end();
+
+          for (; it != end; ++it)
+            mpBoxExperiment->insertItem(FROM_UTF8((*it)));
+        }
 
       if (mpBoxExperiment->count())
         mpBoxExperiment->setSelected(0, true);
@@ -1130,6 +1132,7 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
         }
 
       if (Type == CExperiment::dependent &&
+          mpTable->text(i, COL_WEIGHT) != "" &&
           QString::number(ObjectMap.getWeight(i)) != mpTable->text(i, COL_WEIGHT))
         {
           ObjectMap.setWeight(i, mpTable->text(i, COL_WEIGHT).toDouble());
