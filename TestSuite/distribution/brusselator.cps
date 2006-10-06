@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.0 (Build 18) (http://www.copasi.org) at 2006-05-30 17:22:49 UTC -->
-<COPASI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.copasi.org/static/schema.xsd" versionMajor="0" versionMinor="1">
+<!-- generated with COPASI 4.1 (Build 19 Feature Preview) (http://www.copasi.org) at 2006-10-03 16:40:15 UTC -->
+<COPASI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.copasi.org/static/schema.xsd" versionMajor="1" versionMinor="0" versionDevel="19">
   <ListOfFunctions>
     <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" reversible="false">
       <MathML>
@@ -13,7 +13,7 @@
         <ParameterDescription key="FunctionParameter_79" name="substrate" order="1" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_37" name="Objective Function 1" type="Expression">
+    <Function key="Function_40" name="Objective Function 1" type="Expression">
       <MathML>
         <Text>
           
@@ -21,7 +21,7 @@
       </MathML>
     </Function>
   </ListOfFunctions>
-  <Model key="Model_1" name="The Brusselator" timeUnit="s" volumeUnit="ml" quantityUnit="mMol" type="deterministic">
+  <Model key="Model_1" name="The Brusselator" timeUnit="s" volumeUnit="ml" quantityUnit="mmol" type="deterministic">
     <Comment>
       <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-size:8pt;font-family:MS Shell Dlg">
 <p>The famous Brusselator model in which a chemical species X catalyses its own formation. In a certain region of parameter space the Brusselator can function in a limit cycle regime around an unstable steady state. Run this simulation and then check the report file to see how Gepasi can find an unstable steady state, and calculate the eigenvalues of the Jacobian matrix. </p>
@@ -32,31 +32,31 @@
       <Compartment key="Compartment_0" name="compartment"/>
     </ListOfCompartments>
     <ListOfMetabolites>
-      <Metabolite key="Metabolite_0" name="X" compartment="Compartment_0" status="variable"/>
-      <Metabolite key="Metabolite_1" name="Y" compartment="Compartment_0" status="variable"/>
-      <Metabolite key="Metabolite_5" name="A" compartment="Compartment_0" status="fixed"/>
-      <Metabolite key="Metabolite_4" name="B" compartment="Compartment_0" status="fixed"/>
-      <Metabolite key="Metabolite_3" name="D" compartment="Compartment_0" status="fixed"/>
-      <Metabolite key="Metabolite_2" name="E" compartment="Compartment_0" status="fixed"/>
+      <Metabolite key="Metabolite_0" name="X" compartment="Compartment_0" status="reactions"/>
+      <Metabolite key="Metabolite_1" name="Y" compartment="Compartment_0" status="reactions"/>
+      <Metabolite key="Metabolite_2" name="A" compartment="Compartment_0" status="fixed"/>
+      <Metabolite key="Metabolite_3" name="B" compartment="Compartment_0" status="fixed"/>
+      <Metabolite key="Metabolite_4" name="D" compartment="Compartment_0" status="fixed"/>
+      <Metabolite key="Metabolite_5" name="E" compartment="Compartment_0" status="fixed"/>
     </ListOfMetabolites>
     <ListOfReactions>
       <Reaction key="Reaction_0" name="R1" reversible="false">
         <ListOfSubstrates>
-          <Substrate metabolite="Metabolite_5" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
           <Product metabolite="Metabolite_0" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_75" name="k1" value="1"/>
+          <Constant key="Parameter_74" name="k1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_75"/>
+              <SourceParameter reference="Parameter_74"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
-              <SourceParameter reference="Metabolite_5"/>
+              <SourceParameter reference="Metabolite_2"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -70,12 +70,12 @@
           <Product metabolite="Metabolite_0" stoichiometry="3"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_74" name="k1" value="1"/>
+          <Constant key="Parameter_73" name="k1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_74"/>
+              <SourceParameter reference="Parameter_73"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_0"/>
@@ -88,23 +88,23 @@
       <Reaction key="Reaction_2" name="R3" reversible="false">
         <ListOfSubstrates>
           <Substrate metabolite="Metabolite_0" stoichiometry="1"/>
-          <Substrate metabolite="Metabolite_4" stoichiometry="1"/>
+          <Substrate metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
           <Product metabolite="Metabolite_1" stoichiometry="1"/>
-          <Product metabolite="Metabolite_3" stoichiometry="1"/>
+          <Product metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_73" name="k1" value="1"/>
+          <Constant key="Parameter_72" name="k1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_73"/>
+              <SourceParameter reference="Parameter_72"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_0"/>
-              <SourceParameter reference="Metabolite_4"/>
+              <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -114,15 +114,15 @@
           <Substrate metabolite="Metabolite_0" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfProducts>
-          <Product metabolite="Metabolite_2" stoichiometry="1"/>
+          <Product metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_72" name="k1" value="1"/>
+          <Constant key="Parameter_71" name="k1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_13">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_81">
-              <SourceParameter reference="Parameter_72"/>
+              <SourceParameter reference="Parameter_71"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_0"/>
@@ -135,10 +135,10 @@
       <StateTemplateVariable objectReference="Model_1"/>
       <StateTemplateVariable objectReference="Metabolite_0"/>
       <StateTemplateVariable objectReference="Metabolite_1"/>
-      <StateTemplateVariable objectReference="Metabolite_5"/>
-      <StateTemplateVariable objectReference="Metabolite_4"/>
-      <StateTemplateVariable objectReference="Metabolite_3"/>
       <StateTemplateVariable objectReference="Metabolite_2"/>
+      <StateTemplateVariable objectReference="Metabolite_3"/>
+      <StateTemplateVariable objectReference="Metabolite_4"/>
+      <StateTemplateVariable objectReference="Metabolite_5"/>
       <StateTemplateVariable objectReference="Compartment_0"/>
     </StateTemplate>
     <InitialState type="initialState">
@@ -146,7 +146,8 @@
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_7" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+    <Task key="Task_8" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+      <Report reference="Report_6" target="" append="1"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
@@ -161,7 +162,7 @@
         <Parameter name="Resolution" type="unsignedFloat" value="1e-009"/>
       </Method>
     </Task>
-    <Task key="Task_8" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
+    <Task key="Task_9" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="200"/>
         <Parameter name="StepSize" type="float" value="0.5"/>
@@ -172,22 +173,22 @@
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="1"/>
         <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-006"/>
-        <Parameter name="Use Default Absolute Tolerance" type="bool" value="1"/>
         <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-012"/>
         <Parameter name="Adams Max Order" type="unsignedInteger" value="12"/>
         <Parameter name="BDF Max Order" type="unsignedInteger" value="5"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_9" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+    <Task key="Task_10" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_1" target="" append="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_7"/>
+        <Parameter name="Steady-State" type="key" value="Task_8"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-009"/>
       </Method>
     </Task>
-    <Task key="Task_10" name="Scan" type="scan" scheduled="false" updateModel="false">
+    <Task key="Task_11" name="Scan" type="scan" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
@@ -198,11 +199,12 @@
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_11" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+    <Task key="Task_12" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+      <Report reference="Report_7" target="" append="1"/>
       <Problem>
         <Parameter name="Steady-State" type="key" value=""/>
-        <Parameter name="Time-Course" type="key" value="Task_8"/>
-        <Parameter name="ObjectiveFunction" type="key" value="Function_37"/>
+        <Parameter name="Time-Course" type="key" value="Task_9"/>
+        <Parameter name="ObjectiveFunction" type="key" value="Function_40"/>
         <Parameter name="Maximize" type="bool" value="0"/>
         <ParameterGroup name="OptimizationItemList">
         </ParameterGroup>
@@ -215,10 +217,11 @@
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_12" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+    <Task key="Task_13" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+      <Report reference="Report_8" target="" append="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_7"/>
-        <Parameter name="Time-Course" type="key" value="Task_8"/>
+        <Parameter name="Steady-State" type="key" value="Task_8"/>
+        <Parameter name="Time-Course" type="key" value="Task_9"/>
         <ParameterGroup name="OptimizationItemList">
         </ParameterGroup>
         <ParameterGroup name="OptimizationConstraintList">
@@ -233,7 +236,8 @@
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_13" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+    <Task key="Task_14" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+      <Report reference="Report_9" target="" append="1"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -251,9 +255,16 @@
         <Parameter name="Orthonormalize Intervall" type="unsignedFloat" value="1"/>
       </Method>
     </Task>
+    <Task key="Task_0" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
+      <Report reference="Report_0" target="" append="1"/>
+      <Problem>
+      </Problem>
+      <Method name="EFM Algorithm" type="EFMAlgorithm">
+      </Method>
+    </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_4" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_6" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -263,7 +274,7 @@
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_5" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_7" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -289,7 +300,7 @@
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_6" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_8" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -315,7 +326,7 @@
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_7" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_9" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         <body xmlns="http://www.w3.org/1999/xhtml">
           Automatically generated report.
@@ -327,6 +338,30 @@
       <Footer>
         <Object cn="String=&#x0a;"/>
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
+      </Footer>
+    </Report>
+    <Report key="Report_0" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+      <Comment>
+        <body xmlns="http://www.w3.org/1999/xhtml">
+          Automatically generated report.
+        </body>
+      </Comment>
+      <Footer>
+        <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
+      </Footer>
+    </Report>
+    <Report key="Report_1" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+      <Comment>
+        <body xmlns="http://www.w3.org/1999/xhtml">
+          Automatically generated report.
+        </body>
+      </Comment>
+      <Header>
+        <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Description"/>
+      </Header>
+      <Footer>
+        <Object cn="String=&#x0a;"/>
+        <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
   </ListOfReports>

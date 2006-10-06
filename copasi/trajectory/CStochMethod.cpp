@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.cpp,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/20 18:28:22 $
+   $Date: 2006/10/06 16:03:47 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -581,6 +581,33 @@ bool CStochMethod::isValidProblem(const CCopasiProblem * pProblem)
       //back integration not possible
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 9);
       return false;
+    }
+
+  if (pTP->getModel()->getTotSteps() < 1)
+    {
+      //at least one reaction necessary
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 17);
+      return false;
+    }
+
+  //check for rules
+  C_INT32 i, imax = pTP->getModel()->getNumModelValues();
+  for (i = 0; i < imax; ++i)
+    {
+      if (pTP->getModel()->getModelValues()[i]->getStatus() == CModelEntity::ODE)
+        {
+          //ode rule found
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 18);
+          return false;
+        }
+
+      if (pTP->getModel()->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+        if (pTP->getModel()->getModelValues()[i]->isUsed())
+          {
+            //used assignment found
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 19);
+            return false;
+          }
     }
 
   //TODO: rewrite CModel::suitableForStochasticSimulation() to use

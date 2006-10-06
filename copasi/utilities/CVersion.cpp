@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:20:18 $
+   $Date: 2006/10/06 16:03:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,24 +20,28 @@
 #include "CVersion.h"
 #include "utility.h"
 
-CVersion::CVersion()
+CVersion::CVersion():
+    mMajor(0),
+    mMinor(0),
+    mDevel(0),
+    mComment("")
 {
-  mMajor = 0L;
-  mMinor = 0L;
-  mDevel = 101L;
   setString();
 }
 
 CVersion::~CVersion()
-{
-  /* get out of here!*/
-}
+{}
 
-void CVersion::setVersion(C_INT32 major, C_INT32 minor, C_INT32 devel)
+void CVersion::setVersion(const C_INT32 & major,
+                          const C_INT32 & minor,
+                          const C_INT32 & devel,
+                          const std::string & comment)
 {
   mMajor = major;
   mMinor = minor;
   mDevel = devel;
+  mComment = comment;
+
   setString();
 }
 
@@ -64,8 +68,11 @@ const std::string & CVersion::getVersion() const
 void CVersion::setString()
 {
 #ifdef COPASI_DEBUG
-  mVersion = StringPrint("%d.%d (Debug %d++)", mMajor, mMinor, mDevel);
+  mVersion = StringPrint("%d.%d.%d++ (Debug)", mMajor, mMinor, mDevel);
 #else
-  mVersion = StringPrint("%d.%d (Build %d)", mMajor, mMinor, mDevel);
+  if (mComment != "")
+    mVersion = StringPrint("%d.%d.%d (%s)", mMajor, mMinor, mDevel, mComment.c_str());
+  else
+    mVersion = StringPrint("%d.%d.%d", mMajor, mMinor, mDevel);
 #endif
 }

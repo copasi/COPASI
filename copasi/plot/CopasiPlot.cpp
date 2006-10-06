@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/CopasiPlot.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/11 17:22:23 $
+   $Date: 2006/10/06 16:03:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,27 +202,37 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   mCurveActivities.resize(kmax);
   mHistoIndices.resize(kmax);
 
-  std::map< const CPlotItem *, QwtPlotCurve * >::iterator found;
+  std::map< CRegisteredObjectName, QwtPlotCurve * >::iterator found;
+
+  std::map< CRegisteredObjectName, QwtPlotCurve * > CurveMap = mCurveMap;
+  mCurveMap.clear();
 
   for (k = 0; k < kmax; k++)
     {
       pItem = mpPlotSpecification->getItems()[k];
 
       QwtPlotCurve * pCurve;
-      if ((found = mCurveMap.find(pItem)) == mCurveMap.end())
+      bool Visible = true;
+
+      // Qwt does not like it to reuse the curve as this may lead to access
+      // violation. We therefore delete the curves but remember their visibility.
+      if ((found = CurveMap.find(pItem->getObjectName())) != CurveMap.end())
         {
-          // set up the curve
-          pCurve = new MyQwtPlotCurve(FROM_UTF8(pItem->getTitle()));
-          mCurves[k] = pCurve;
-          mCurveMap[pItem] = pCurve;
-
-          pCurve->setPen(curveColours[k % 5]);
-          pCurve->attach(this);
-
-          showCurve(pCurve, true);
+          pCurve = found->second;
+          Visible = pCurve->isVisible();
+          pdelete(pCurve);
+          CurveMap.erase(found);
         }
-      else
-        pCurve = found->second;
+
+      // set up the curve
+      pCurve = new MyQwtPlotCurve(FROM_UTF8(pItem->getTitle()));
+      mCurves[k] = pCurve;
+      mCurveMap[pItem->getObjectName()] = pCurve;
+
+      pCurve->setPen(curveColours[k % 5]);
+      pCurve->attach(this);
+
+      showCurve(pCurve, Visible);
 
       mCurveTypes[k] = pItem->getType();
       mCurveActivities[k] = pItem->getActivity();
@@ -259,6 +269,12 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
           fatalError();
         }
     }
+
+  // Remove unused curves if definitioan has changed
+  std::map< CRegisteredObjectName, QwtPlotCurve * >::iterator it = CurveMap.begin();
+  std::map< CRegisteredObjectName, QwtPlotCurve * >::iterator end = CurveMap.end();
+  for (; it != end; ++it)
+    pdelete(it->second);
 
   if (plotspec->isLogX())
     setAxisScaleEngine(xBottom, new QwtLog10ScaleEngine());

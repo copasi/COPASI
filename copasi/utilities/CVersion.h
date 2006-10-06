@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CVersion.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Date: 2006/10/06 16:03:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,6 +46,11 @@ class CVersion
      *  Release versions are always 300
      */
     C_INT32 mDevel;
+
+    /**
+     *  Comment appendended to the version string, e.g. RC 1
+     */
+    std::string mComment;
 
     /**
      *  Version string.
@@ -97,11 +102,15 @@ class CVersion
 
     /**
      *  Sets a version number
-     *  @param major major version number.
-     *  @param minor minor version number.
-     *  @param devel development version number.
+     *  @param const C_INT32 & major
+     *  @param const C_INT32 & minor
+     *  @param const C_INT32 & devel
+     *  @param const std::string & comment
      */
-    void setVersion(C_INT32 major, C_INT32 minor, C_INT32 devel);
+    void setVersion(const C_INT32 & major,
+                    const C_INT32 & minor,
+                    const C_INT32 & devel,
+                    const std::string & comment);
 
   private:
     /**

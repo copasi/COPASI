@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp1 U (http://www.altova.com) by Stefan Hoops (VBI) -->
 <!-- 
   Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
   Properties, Inc. and EML Research, gGmbH.
@@ -243,12 +244,12 @@
             <xs:attribute name="quantityUnit" use="required" id="copasi.Model.quantityUnit">
               <xs:simpleType>
                 <xs:restriction base="xs:string">
-                  <xs:enumeration value="Mol"/>
-                  <xs:enumeration value="mMol"/>
-                  <xs:enumeration value="µMol"/>
-                  <xs:enumeration value="nMol"/>
-                  <xs:enumeration value="pMol"/>
-                  <xs:enumeration value="fMol"/>
+                  <xs:enumeration value="mol"/>
+                  <xs:enumeration value="mmol"/>
+                  <xs:enumeration value="µmol"/>
+                  <xs:enumeration value="nmol"/>
+                  <xs:enumeration value="pmol"/>
+                  <xs:enumeration value="fmol"/>
                   <xs:enumeration value="#"/>
                 </xs:restriction>
               </xs:simpleType>
@@ -472,6 +473,7 @@
       </xs:sequence>
       <xs:attribute name="versionMajor" type="xs:integer" use="required"/>
       <xs:attribute name="versionMinor" type="xs:integer" use="required"/>
+      <xs:attribute name="versionDevel" type="xs:integer" use="required"/>
     </xs:complexType>
     <xs:unique name="ModelStateVariableReference">
       <xs:selector xpath="Model| Model/*/*"/>
@@ -838,6 +840,7 @@
       <xs:enumeration value="parameterFitting"/>
       <xs:enumeration value="metabolicControlAnalysis"/>
       <xs:enumeration value="timeScaleSeparation"/>
+      <xs:enumeration value="lyapunovExponents"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="cNAME" id="copasi.NAME">

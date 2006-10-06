@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/18 12:55:59 $
+   $Author: shoops $
+   $Date: 2006/10/06 16:03:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -55,6 +55,16 @@ void CRecentFiles::initializeParameter()
 void CRecentFiles::addFile(const std::string & file)
 {
   std::string FileName = file;
+
+#ifdef WIN32
+  std::string::size_type pos = FileName.find('\\');
+
+  while (pos != std::string::npos)
+    {
+      FileName[pos] = '/';
+      pos = FileName.find('\\', pos);
+    }
+#endif
 
   std::string PWD;
   COptions::getValue("PWD", PWD);
@@ -216,7 +226,6 @@ bool CConfigurationFile::CXML::load(std::istream & is,
   bool done = false;
 
   CVersion Version;
-  Version.setVersion(0, 0, 0);
   CCopasiXMLParser Parser(Version);
 
 #define BUFFER_SIZE 0xfffe

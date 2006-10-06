@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/AboutDialog.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:18:05 $
+   $Date: 2006/10/06 16:03:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,7 @@ const char* AboutDialog::text =
   "COPASI is a simulator for biochemical networks. It is a joint project\n"
   "by the Mendes and Kummer groups at VBI and EML Research, respectively.\n"
   "\n"
-  "This is COPASI version 4.0 (Build 18). Please check for\n"
+  "This is COPASI version 4.0.19 (development). Please check for\n"
   "new release at http://www.copasi.org where new releases will be made\n"
   "available for download.\n"
   "\n"

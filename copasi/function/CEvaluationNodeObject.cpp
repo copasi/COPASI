@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/07 15:27:35 $
+   $Date: 2006/10/06 16:03:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -186,3 +186,15 @@ ASTNode* CEvaluationNodeObject::toAST() const
 
 const CRegisteredObjectName & CEvaluationNodeObject::getObjectCN() const
   {return mRegisteredObjectCN;}
+
+#include "utilities/copasimathml.h"
+
+void CEvaluationNodeObject::writeMathML(std::ostream & out,
+                                        const std::vector<std::vector<std::string> > & env,
+                                        bool expand,
+                                        unsigned C_INT32 l) const
+  {
+    const CCopasiObject* obj = CCopasiContainer::ObjectFromName(mRegisteredObjectCN);
+    out << SPC(l) << CMathMl::getMMLName(obj) << std::endl;
+    //or use mValue instead?
+  }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationTree.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/13 18:00:47 $
+   $Date: 2006/10/06 16:03:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -111,7 +111,10 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
     mpNodeList(NULL),
     mpRoot(NULL),
     mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN())
-{initObjects();}
+{
+  initObjects();
+  setInfix("");
+}
 
 CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
                                  const CCopasiContainer * pParent):
@@ -123,16 +126,19 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
     mpNodeList(NULL),
     mpRoot(NULL),
     mValue(src.mValue)
-{initObjects(); setInfix(src.mInfix);}
+{
+  initObjects();
+  setInfix(src.mInfix);
+}
 
 CEvaluationTree::~CEvaluationTree()
 {
-  if (mpNodeList != NULL) CEvaluationLexer::freeNodeList(mpNodeList);
+  CEvaluationLexer::freeNodeList(mpNodeList);
   GlobalKeys.remove(mKey);
 }
 
 const CEvaluationTree::Type & CEvaluationTree::getType() const
-{return mType;}
+  {return mType;}
 
 void CEvaluationTree::setType(const CEvaluationTree::Type & type)
 {mType = type;}
@@ -142,7 +148,8 @@ const std::string & CEvaluationTree::getKey() const
 
 bool CEvaluationTree::setInfix(const std::string & infix)
 {
-  if (infix == mInfix) return true;
+  if (infix == mInfix &&
+      infix != "") return true;
 
   mInfix = infix;
 
@@ -180,7 +187,14 @@ bool CEvaluationTree::parse()
   mpNodeList = NULL;
   mpRoot = NULL;
 
-  if (mType == MassAction || mInfix == "") return true;
+  if (mType == MassAction) return true;
+  if (mInfix == "")
+    {
+      mpNodeList = new std::vector< CEvaluationNode * >;
+      mpRoot = new CEvaluationNode();
+      mpNodeList->push_back(mpRoot);
+      return true;
+    }
 
   // parse the description into a linked node tree
   std::istringstream buffer(mInfix);
@@ -212,6 +226,8 @@ bool CEvaluationTree::parse()
 
 bool CEvaluationTree::compileNodes()
 {
+  mDependencies.clear();
+
   if (mInfix == "") return true;
   if (mpNodeList == NULL) return false;
 
@@ -233,6 +249,27 @@ bool CEvaluationTree::compileNodes()
 
       mErrorPosition -= (*--it)->getData().length();
       CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 3, mErrorPosition);
+    }
+  else
+    {
+      const CCopasiObject * pObject;
+
+      for (it = mpNodeList->begin(); it != end; ++it)
+        switch ((*it)->getType() & 0xFF000000)
+          {
+          case CEvaluationNode::OBJECT:
+            if (mType == Expression &&
+                (pObject = static_cast<CExpression *>(this)->getNodeObject(static_cast< CEvaluationNodeObject *>(*it)->getObjectCN())) != NULL)
+              mDependencies.insert(pObject);
+            break;
+
+          case CEvaluationNode::CALL:
+            mDependencies.insert(static_cast< CEvaluationNodeCall *>(*it)->getCalledTree());
+            break;
+
+          default:
+            break;
+          }
     }
 
   return success;
@@ -391,7 +428,13 @@ CEvaluationNode* CEvaluationTree::getRoot()
 
 void CEvaluationTree::initObjects()
 {
-  addObjectReference("Value", mValue, CCopasiObject::ValueDbl);
+  std::set< const CCopasiObject * > Self;
+  Self.insert(this);
+
+  CCopasiObject * pObject =
+    addObjectReference("Value", mValue, CCopasiObject::ValueDbl);
+
+  pObject->setDirectDependencies(Self);
 }
 
 ASTNode* CEvaluationTree::toAST() const

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.109 $
+   $Revision: 1.110 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/06 14:02:00 $
+   $Date: 2006/10/06 16:03:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -547,9 +547,7 @@ void CMetab::addMoiety(CMoiety * pMoiety)
 
 void CMetab::clearMoieties()
 {
-  std::set< CMoiety * >::iterator it = mMoieties.begin();
-  std::set< CMoiety * >::iterator end = mMoieties.end();
-
+  mpMoiety = NULL;
   mMoieties.clear();
 }
 

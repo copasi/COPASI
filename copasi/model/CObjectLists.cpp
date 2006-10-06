@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/18 12:51:03 $
+   $Author: shoops $
+   $Date: 2006/10/06 16:03:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -198,7 +198,8 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
       {
         const CCopasiVectorN< CModelValue > & params = model->getModelValues();
         for (i = 0; i < params.size(); ++i)
-          if (params[i]->getStatus() != CModelEntity::FIXED)
+          if (params[i]->getStatus() != CModelEntity::FIXED
+              && !params[i]->isUsedOnce())
             ret.push_back(const_cast<CCopasiObject*>
                           (params[i]->getObject(CCopasiObjectName("Reference=Value"))));
       }

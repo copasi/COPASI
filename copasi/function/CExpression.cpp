@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/11 19:46:05 $
+   $Date: 2006/10/06 16:03:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -68,28 +68,7 @@ bool CExpression::compile(std::vector< CCopasiContainer * > listOfContainer)
   else
     mDisplayString = "";
 
-  bool success = compileNodes();
-
-  if (success && mpNodeList)
-    {
-      const CCopasiObject * pObject;
-      std::set< const CCopasiObject * > Dependencies;
-
-      std::vector< CEvaluationNode * >::const_iterator it = mpNodeList->begin();
-      std::vector< CEvaluationNode * >::const_iterator end = mpNodeList->end();
-
-      for (; it != end; ++it)
-        if (((*it)->getType() & 0xFF000000) == CEvaluationNode::OBJECT &&
-            (pObject = getNodeObject(static_cast< CEvaluationNodeObject *>(*it)->getObjectCN())) != NULL)
-          Dependencies.insert(pObject);
-        else if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL)
-          Dependencies.insert(static_cast< CEvaluationNodeCall *>(*it)->getCalledTree());
-
-      setDirectDependencies(Dependencies);
-      const_cast< CCopasiObject * >(getObject(CCopasiObjectName("Reference=Value")))->setDirectDependencies(Dependencies);
-    }
-
-  return success;
+  return compileNodes();
 }
 
 const C_FLOAT64 & CExpression::calcValue()
@@ -124,3 +103,19 @@ bool CExpression::updateInfix()
 
 const std::string & CExpression::getDisplayString() const
 {return mDisplayString;}
+
+#include "utilities/copasimathml.h"
+
+void CExpression::writeMathML(std::ostream & out, bool fullExpand, unsigned C_INT32 l) const
+  {
+    if (mpRoot)
+      {
+        //create empty environment. Variable nodes should not occur in an expression
+        std::vector<std::vector<std::string> > env;
+
+        bool flag = false; //TODO include check if parantheses are necessary
+        if (flag) out << SPC(l) << "<mfenced>" << std::endl;
+        mpRoot->writeMathML(out, env, fullExpand, l + 1);
+        if (flag) out << SPC(l) << "</mfenced>" << std::endl;
+      }
+  }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodNelderMead.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/31 16:53:38 $
+   $Date: 2006/10/06 16:03:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,13 +56,6 @@ void COptMethodNelderMead::initObjects()
   The code for COptMethodNelderMead::optimize() is derived from nelmin.c
   developed by:
 
-
-
-
-
-
-
-
        Peter & Nigel,
        Design Software,
        ----------------------
@@ -80,13 +73,6 @@ void COptMethodNelderMead::initObjects()
   Purpose ....
   -------
   Find the minimum value of a user-specified function.
-
-
-
-
-
-
-
 
   Input ...
   -----
@@ -110,13 +96,6 @@ void COptMethodNelderMead::initObjects()
   reltol : relative tolerance on minimum check  (see note 6)
   abstol : absolute tolerance on minimum check  (see note 6)
 
-
-
-
-
-
-
-
   Output ...
   ------
   xmin   : Array [id] of double; contains the
@@ -130,25 +109,11 @@ void COptMethodNelderMead::initObjects()
   = 2 Termination because KCOUNT exceeded before convergence.
   = 3 could not allocate memory for workspace
 
-
-
-
-
-
-
-
   This C code written by ...  Peter & Nigel,
   ----------------------      Design Software,
   42 Gubberley St,
   Kenmore, 4069,
   Australia.
-
-
-
-
-
-
-
 
   Version ... 1.0 November 1987
   -------     2.0 March    1989      reltol, abstol added
@@ -159,38 +124,17 @@ void COptMethodNelderMead::initObjects()
   2.3 7  August  89      fixed true min. check
   2.4 12 Dec   1989      fixed memory (de)allocation
 
-
-
-
-
-
-
-
   Notes ...
   -----
   1. This algorithm is a modified version of ..
   Algorithm AS 47 Applied Statistics (J. R. Statist. Soc. C),
   (1971) VOL.20. NO.3
 
-
-
-
-
-
-
-
   2. The data values of RCOEFF (reflection), ECOEFF (extension),
   and CCOEFF (contraction) can be changed by rewriting the
   assignment statements below.  The values currently set are 1.0,
   2.0 and 0.5 respectively.  These values have been recommended
   by Nelder and Mead as being best for a general situation.
-
-
-
-
-
-
-
 
   3. The value of REQMIN must be set larger than the rounding
   error in computing the variance at the minimum.  This holds
@@ -199,92 +143,29 @@ void COptMethodNelderMead::initObjects()
   somewhere between the required accuracy of the function at
   the minimum and the square of this value.
 
-
-
-
-
-
-
-
   4. Note that the elements [0 .. n-1] are utilized in this
   version of the routine.
 
-
-
-
-
-
-
-
   6. reltol and abstol should be set to zero for well behaved
   functions where restarts are not a problem.
-
-
-
-
-
-
-
 
   7. References ...
   Nelder, J.A. and Mead, R. (1965) A simplex method for function
   minimization. Computer J. 7,308-313
 
-
-
-
-
-
-
-
   O'Neill, R. (1971) Algorithm AS47. Function minimization
   using a simplex algorithm. Appl. Statist. 20,338-345.
 
-
-
-
-
-
-
-
   Chambers, J.M. and Ertel, J.E. (1974) Remark AS R11.
   Appl. Statist. 23,250-251.
-
-
-
-
-
-
-
 
   Olsson, D.M. and Nelson, L.S. (1975) The Nelder - Mead
   simplex procedure for function minimization.
   Technometrics 17,45-51. (Examples of use.)
 
-
-
-
-
-
-
-
   Benyon, P.R. (1976) Remark AS R15. Appl. Statist. 25,97.
 
-
-
-
-
-
-
-
   Hill, I.D. (1978) Remark AS R28. Appl. Statist. 27,380-382.
-
-
-
-
-
-
-
 
   ----------------------------------------------------------------------
  */
@@ -320,6 +201,7 @@ bool COptMethodNelderMead::optimise()
   C_FLOAT64 z, sum, ylo;
   C_FLOAT64 curmin, del, x, yhi;
   C_FLOAT64 small;
+  C_FLOAT64 factor = 0.8;
 
   unsigned C_INT32 jcount, np1, i, j;
 
@@ -349,7 +231,7 @@ bool COptMethodNelderMead::optimise()
       (*(*mpSetCalculateVariable)[i])(mCurrent[i]);
 
       // set the magnitude of each parameter
-      mStep[i] = fabs(mCurrent[i] * mScale);
+      mStep[i] = (*OptItem.getUpperBoundValue() - *OptItem.getLowerBoundValue()) / mScale;
     }
 
   evaluate();
@@ -387,16 +269,9 @@ First:
 
       // Check constraint
       const COptItem & OptItem = *(*mpOptItem)[j];
-      switch (OptItem.checkConstraint(mCurrent[j]))
-        {
-        case - 1:
-          mCurrent[j] = *OptItem.getLowerBoundValue();
-          break;
 
-        case 1:
-          mCurrent[j] = *OptItem.getUpperBoundValue();
-          break;
-        }
+      if (mCurrent[j] > *OptItem.getUpperBoundValue())
+        mCurrent[j] = x - (mStep[j] * del);
 
       // Store the simplex corner
       for (i = 0; i < mVariableSize; ++i)
@@ -631,26 +506,28 @@ First:
       quit = (mIteration >= mIterationLimit);
 
       if (!quit) /* then */
-        {/* ---- check to see if minimum reached.
-                                            calculation of the variance must be done in the highest
-                                            precision available.  */
+        {
+          /* ---- check to see if minimum reached.
+            calculation of the variance must be done in the highest
+            precision available. ---- */
+
           /* mean */
           sum = 0.0;
-          for (i = 0; i < np1; ++i)
-            sum += mValue[i];
-          sum /= np1;
-
-          /* variance */
           curmin = 0.0;
-          for (i = 0; i < np1; ++i)
-            curmin += ((mValue[i] - sum) * (mValue[i] - sum));
 
-          curmin /= mVariableSize;
+          for (i = 0; i < np1; ++i)
+            {
+              sum += mValue[i];
+              curmin += mValue[i] * mValue[i];
+            }
+
+          sum /= np1;
+          curmin /= np1;
 
           /* ---- curmin is the variance of the n+1 Fnelmin values at the
              vertices.  If we haven't reached the minimum to the
              required accuracy then take a few more steps.    */
-          found = (curmin < mTolerance);
+          found = (sqrt(curmin - sum * sum) < mTolerance);
         }
     }   /* while not found and not quit ... */
 
@@ -665,16 +542,16 @@ First:
 
   for (i = 0; i < mVariableSize; ++i)
     {/* ---- check along each dimension ---- */
-      del = mStep[i] * 1.0e-03;
+      C_FLOAT64 delta = mStep[i] * 1.0e-03;
 
       /* -- check along one direction -- */
-      (*(*mpSetCalculateVariable)[i])(mCurrent[i] + del);
+      (*(*mpSetCalculateVariable)[i])(mCurrent[i] + delta);
       evaluate();
       if ((mEvaluationValue - mBestValue) < -small)
         break;
 
       /* -- now check the other way -- */
-      (*(*mpSetCalculateVariable)[i])(mCurrent[i] - del);
+      (*(*mpSetCalculateVariable)[i])(mCurrent[i] - delta);
       evaluate();
       if ((mEvaluationValue - mBestValue) < -small)
         break;
@@ -695,7 +572,8 @@ First:
   /* ---- Reduce the size of the simplex and restart the procedure. ---- */
 
   found = 0;   /* -- we did not find a 1 minimum -- */
-  del = 1.0e-03;
+  del = std::max(del * factor, 100.0 * DBL_EPSILON);
+
   goto First;
 
 Finish:  /* end of procedure */

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CCopasiSimpleSelectionTree.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/04 21:24:06 $
+   $Date: 2006/10/06 16:03:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -181,20 +181,34 @@ void CCopasiSimpleSelectionTree::populateTree(const CModel * model)
       const CModelEntity* object = objects[counter - 1];
       std::string name = object->getObjectName();
 
-      if (object->getStatus() == CModelEntity::ODE)
+      switch (object->getStatus())
         {
+        case CModelEntity::ODE:
           item = new QListViewItem(this->mpModelQuantityInitialValueSubtree,
                                    FROM_UTF8((name + "(t=0)")));
           treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialValue"));
 
+          item = new QListViewItem(this->mpModelQuantityTransientValueSubtree,
+                                   FROM_UTF8(name + "(t)"));
+          treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Value"));
+
           item = new QListViewItem(this->mpModelQuantityRateSubtree,
                                    FROM_UTF8(("d(" + name + ")/dt")));
           treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Rate"));
-        }
+          break;
 
-      item = new QListViewItem(this->mpModelQuantityTransientValueSubtree,
-                               FROM_UTF8(name + "(t)"));
-      treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Value"));
+        case CModelEntity::ASSIGNMENT:
+          item = new QListViewItem(this->mpModelQuantityTransientValueSubtree,
+                                   FROM_UTF8(name + "(t)"));
+          treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=Value"));
+          break;
+
+        default:
+          item = new QListViewItem(this->mpModelQuantityInitialValueSubtree,
+                                   FROM_UTF8((name + "(t=0)")));
+          treeItems[item] = (CCopasiObject*)object->getObject(CCopasiObjectName("Reference=InitialValue"));
+          break;
+        }
     }
 
   // find all compartments

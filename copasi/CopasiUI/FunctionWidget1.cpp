@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.141 $
+   $Revision: 1.142 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/06 18:49:31 $
+   $Date: 2006/10/06 16:03:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -967,100 +967,203 @@ void FunctionWidget1::slotNewButtonClicked()
 
 void FunctionWidget1::slotDeleteButtonClicked()
 {
-  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(GlobalKeys.get(objKey));
-  if (pFunction == NULL) return;
-
-  std::set<std::string> dependentReactions;
-  std::set<std::string> dependentTrees;
-  if (dataModel && CCopasiDataModel::Global->getModel())
-    {
-      dependentReactions =
-        CCopasiDataModel::Global->getModel()->listReactionsDependentOnFunction(objKey);
-      dependentTrees =
-        CCopasiDataModel::Global->getFunctionList()->listDependentTrees(pFunction->getObjectName());
-    }
-  else
+  CModel * pModel = CCopasiDataModel::Global->getModel();
+  if (pModel == NULL)
     return;
 
-  QString reactions;
-  std::set<std::string>::iterator it = dependentReactions.begin();
-  std::set<std::string>::iterator end = dependentReactions.end();
-  for (; it != end; it++)
+  CFunctionDB * pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+  if (pFunctionDB == NULL)
+    return;
+
+  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(GlobalKeys.get(objKey));
+  if (pFunction == NULL)
+    return;
+
+  QString functionList;
+  QString effectedFunctionList = "Following FUNCTION(S) reference above FUNCTION(S) -\n";
+  QString effectedReactionList = "Following REACTION(S) reference above FUNCTION(S) -\n";
+  QString effectedMetaboliteList = "Following METABOLITE(S) reference above FUNCTION(S) -\n";
+  QString effectedCompartmentList = "Following COMPARTMENT(S) reference above FUNCTION(S) -\n";
+  QString effectedValueList = "Following MODEL QUANTIT(S) reference above FUNCTION(S) -\n";
+
+  bool functionFound = false;
+  bool reactionFound = false;
+  bool metaboliteFound = false;
+  bool compartmentFound = false;
+  bool valueFound = false;
+
+  std::set< const CCopasiObject * > ToBeDeleted;
+  ToBeDeleted.insert(pFunction);
+  ToBeDeleted.insert(pFunction->getObject(CCopasiObjectName("Reference=Value")));
+
+  functionList.append(FROM_UTF8(pFunction->getObjectName()));
+  functionList.append(", ");
+
+  std::set< const CCopasiObject * > Functions;
+  pFunctionDB->appendDependentFunctions(ToBeDeleted, Functions);
+
+  if (Functions.size() > 0)
     {
-      reactions.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
-      reactions.append(" ---> ");
-      reactions.append(FROM_UTF8(mpFunction->getObjectName()));
-      reactions.append("\n");
+      functionFound = true;
+      std::set< const CCopasiObject * >::const_iterator it, itEnd = Functions.end();
+      for (it = Functions.begin(); it != itEnd; ++it)
+        {
+          effectedFunctionList.append(FROM_UTF8((*it)->getObjectName()));
+          effectedFunctionList.append(", ");
+        }
+
+      effectedFunctionList.remove(effectedFunctionList.length() - 2, 2);
+      effectedFunctionList.append("  ---> ");
+      effectedFunctionList.append(FROM_UTF8(pFunction->getObjectName()));
+      effectedFunctionList.append("\n");
     }
 
-  QString trees;
-  it = dependentTrees.begin();
-  end = dependentTrees.end();
-  for (; it != end; it++)
+  std::set< const CCopasiObject * > Reactions;
+  pModel->appendDependentReactions(ToBeDeleted, Reactions);
+
+  if (Reactions.size() > 0)
     {
-      trees.append(FROM_UTF8(*it));
-      trees.append(" ---> ");
-      trees.append(FROM_UTF8(mpFunction->getObjectName()));
-      trees.append("\n");
+      reactionFound = true;
+      std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+      for (it = Reactions.begin(); it != itEnd; ++it)
+        {
+          effectedReactionList.append(FROM_UTF8((*it)->getObjectName()));
+          effectedReactionList.append(", ");
+        }
+
+      effectedReactionList.remove(effectedReactionList.length() - 2, 2);
+      effectedReactionList.append("  ---> ");
+      effectedReactionList.append(FROM_UTF8(pFunction->getObjectName()));
+      effectedReactionList.append("\n");
     }
 
-  QString Reason;
-  if (dependentReactions.size() > 0)
+  std::set< const CCopasiObject * > Metabolites;
+  pModel->appendDependentMetabolites(ToBeDeleted, Metabolites);
+
+  if (Metabolites.size() > 0)
     {
-      Reason = "Cannot delete Function. ";
-      Reason.append("Following dependencies with listed Reaction(s) exist:\n");
-      Reason.append(reactions);
+      metaboliteFound = true;
+      std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+      for (it = Metabolites.begin(); it != itEnd; ++it)
+        {
+          effectedMetaboliteList.append(FROM_UTF8((*it)->getObjectName()));
+          effectedMetaboliteList.append(", ");
+        }
+
+      effectedMetaboliteList.remove(effectedMetaboliteList.length() - 2, 2);
+      effectedMetaboliteList.append("  ---> ");
+      effectedMetaboliteList.append(FROM_UTF8(pFunction->getObjectName()));
+      effectedMetaboliteList.append("\n");
     }
 
-  if (dependentTrees.size() > 0)
-    {
-      if (Reason == "")
-        Reason = "Cannot delete Function. ";
-      else
-        Reason.append("\n");
+  std::set< const CCopasiObject * > Compartments;
+  pModel->appendDependentCompartments(ToBeDeleted, Compartments);
 
-      Reason.append("Following dependencies with listed Function(s) exist:\n");
-      Reason.append(trees);
+  if (Compartments.size() > 0)
+    {
+      compartmentFound = true;
+      std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+      for (it = Compartments.begin(); it != itEnd; ++it)
+        {
+          effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
+          effectedCompartmentList.append(", ");
+        }
+
+      effectedCompartmentList.remove(effectedCompartmentList.length() - 2, 2);
+      effectedCompartmentList.append("  ---> ");
+      effectedCompartmentList.append(FROM_UTF8(pFunction->getObjectName()));
+      effectedCompartmentList.append("\n");
     }
 
-  if (Reason != "")
+  std::set< const CCopasiObject * > Values;
+  pModel->appendDependentModelValues(ToBeDeleted, Values);
+
+  if (Values.size() > 0)
     {
+      valueFound = true;
+      std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+      for (it = Values.begin(); it != itEnd; ++it)
+        {
+          effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
+          effectedValueList.append(", ");
+        }
+
+      effectedValueList.remove(effectedValueList.length() - 2, 2);
+      effectedValueList.append("  ---> ");
+      effectedValueList.append(FROM_UTF8(pFunction->getObjectName()));
+      effectedValueList.append("\n");
+    }
+
+  functionList.remove(functionList.length() - 2, 2);
+
+  QString msg;
+
+  if (functionFound || reactionFound || metaboliteFound || compartmentFound || valueFound)
+    {
+      msg = "Cannot delete FUNCTION(S).\n" + functionList;
+
+      if (functionFound)
+        {
+          msg.append("\n \n");
+          msg.append(effectedFunctionList);
+        }
+
+      if (reactionFound)
+        {
+          msg.append("\n \n");
+          msg.append(effectedReactionList);
+        }
+
+      if (metaboliteFound)
+        {
+          msg.append("\n \n");
+          msg.append(effectedMetaboliteList);
+        }
+
+      if (compartmentFound)
+        {
+          msg.append("\n \n");
+          msg.append(effectedCompartmentList);
+        }
+
+      if (valueFound)
+        {
+          msg.append("\n \n");
+          msg.append(effectedValueList);
+        }
+
       QMessageBox::warning(this, "Sorry, Cannot Delete",
-                           Reason, "OK", 0, 0, 0, 1);
+                           msg, "OK", 0, 0, 0, 1);
 
       return;
     }
 
-  QString msg2 = "Are you sure to delete listed Function(s)?\n";
-  msg2.append(FROM_UTF8(mpFunction->getObjectName()));
-  msg2.append("\n");
+  msg = "Are you sure to delete listed Function(s)?\n" + functionList;
 
-  if (msg2 != "")
+  int choice = QMessageBox::warning(this,
+                                    "CONFIRM DELETE",
+                                    msg,
+                                    "Continue", "Cancel", 0, 0, 1);
+
+  /* Check if user chooses to deleted Functions */
+  switch (choice)
     {
-      int choice = QMessageBox::warning(this,
-                                        "CONFIRM DELETE",
-                                        msg2,
-                                        "Continue", "Cancel", 0, 0, 1);
+    case 0:                                                    // Yes or Enter
+      {
+        unsigned C_INT32 size = CCopasiDataModel::Global->getFunctionList()->loadedFunctions().size();
+        unsigned C_INT32 index = CCopasiDataModel::Global->getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());
 
-      /* Check if user chooses to deleted Functions */
-      switch (choice)
-        {
-        case 0:                                                    // Yes or Enter
-          {
-            unsigned C_INT32 size = CCopasiDataModel::Global->getFunctionList()->loadedFunctions().size();
-            unsigned C_INT32 index = CCopasiDataModel::Global->getFunctionList()->loadedFunctions().getIndex(mpFunction->getObjectName());
+        CCopasiDataModel::Global->getFunctionList()->removeFunction(objKey);
 
-            CCopasiDataModel::Global->getFunctionList()->removeFunction(objKey);
+        enter(CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[std::min(index, size - 2)]->getKey());
 
-            enter(CCopasiDataModel::Global->getFunctionList()->loadedFunctions()[std::min(index, size - 2)]->getKey());
+        protectedNotify(ListViews::FUNCTION, ListViews::DELETE, objKey);
 
-            protectedNotify(ListViews::FUNCTION, ListViews::DELETE, objKey);
+        break;
+      }
 
-            break;
-          }
-        case 1:                                                    // No or Escape
-          break;
-        }
+    case 1:                                                    // No or Escape
+      break;
     }
 }
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/21 16:42:39 $
+   $Date: 2006/10/06 16:03:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,13 @@
 
 #ifdef WIN32
 # include <windows.h>
-#endif
+#endif // WIN32
+
+#if (defined SunOS || defined Linux)
+# include <errno.h>
+# include <iconv.h>
+# include <langinfo.h>
+#endif // SunOS || Linux
 
 #include "copasi.h"
 
@@ -71,7 +77,7 @@ bool isNumber(const std::string & str)
   if (str.find_first_of("+-.0123456789")) return false;
 
   char * Tail;
-  double Value = strtod(str.c_str(), & Tail);
+  strtod(str.c_str(), & Tail);
 
   if (*Tail) return false;
   return true;
@@ -573,6 +579,21 @@ int toEnum(const char * attribute,
   return - 1;
 }
 
+#if (defined SunOS || defined Linux)
+const char * findLocale()
+{
+  static char * Locale = NULL;
+
+  if (Locale == NULL)
+    Locale = strdup(nl_langinfo(CODESET));
+
+  if (Locale == NULL)
+    Locale = strdup("ISO-8859-1");
+
+  return Locale;
+}
+#endif // SunOS || Linux
+
 std::string utf8ToLocale(const std::string & utf8)
 {
 #ifdef WIN32
@@ -624,9 +645,83 @@ std::string utf8ToLocale(const std::string & utf8)
   delete [] pLocal;
 
   return Local;
+#endif // WIN32
+
+#if (defined SunOS || defined Linux)
+  static iconv_t Converter = NULL;
+
+  if (Converter == NULL)
+    {
+      char From[] = "UTF-8";
+      const char * To = findLocale();
+
+      Converter = iconv_open(To, From);
+    }
+
+  if (Converter == (iconv_t)(-1))
+    return utf8;
+
+  size_t Utf8Length = utf8.length();
+  char * Utf8 = strdup(utf8.c_str());
+#ifdef SunOS // non standard iconv declaration :(
+  const char * pUtf8 = Utf8;
 #else
-  return utf8;
+  char * pUtf8 = Utf8;
 #endif
+
+  size_t LocaleLength = Utf8Length + 1;
+  size_t SpaceLeft = Utf8Length;
+  char * Locale = new char[LocaleLength];
+  char * pLocale = Locale;
+
+  while (Utf8Length)
+    if ((size_t)(-1) ==
+        iconv(Converter, &pUtf8, &Utf8Length, &pLocale, &SpaceLeft))
+      {
+        switch (errno)
+          {
+          case EILSEQ:
+            pUtf8 = Utf8;
+            LocaleLength = 0;
+            break;
+
+          case EINVAL:
+            pLocale = Locale;
+            Utf8Length = 0;
+            break;
+
+          case E2BIG:
+            char * pTmp = Locale;
+            size_t OldLength = LocaleLength;
+            LocaleLength += 2 * Utf8Length;
+
+            Locale = new char[LocaleLength];
+            memcpy(Locale, pTmp,
+                   sizeof(char) * (OldLength - SpaceLeft - 1));
+            pLocale = Locale + OldLength - SpaceLeft - 1;
+            SpaceLeft += 2 * Utf8Length;
+            delete [] pTmp;
+
+            break;
+          }
+
+        continue;
+      }
+
+  *pLocale = 0x00; // NULL terminate the string.
+  std::string Result = Locale;
+
+  // Reset the Converter
+  iconv(Converter, NULL, &Utf8Length, NULL, &LocaleLength);
+
+  // Release memory
+  free(Utf8);
+  delete [] Locale;
+
+  return Result;
+#endif // SunOS || Linux
+
+  return utf8;
 }
 
 std::string localeToUtf8(const std::string & locale)
@@ -678,7 +773,81 @@ std::string localeToUtf8(const std::string & locale)
   delete [] pUtf8;
 
   return Utf8;
+#endif // WIN32
+
+#if (defined SunOS || defined Linux)
+  static iconv_t Converter = NULL;
+
+  if (Converter == NULL)
+    {
+      char To[] = "UTF-8";
+      const char * From = findLocale();
+
+      Converter = iconv_open(To, From);
+    }
+
+  if (Converter == (iconv_t)(-1))
+    return locale;
+
+  size_t LocaleLength = locale.length();
+  char * Locale = strdup(locale.c_str());
+#ifdef SunOS // non standard iconv declaration :(
+  const char * pLocale = Locale;
 #else
-  return locale;
+  char * pLocale = Locale;
 #endif
+
+  size_t Utf8Length = LocaleLength + 1;
+  size_t SpaceLeft = LocaleLength;
+  char * Utf8 = new char[Utf8Length];
+  char * pUtf8 = Utf8;
+
+  while (LocaleLength)
+    if ((size_t)(-1) ==
+        iconv(Converter, &pLocale, &LocaleLength, &pUtf8, &SpaceLeft))
+      {
+        switch (errno)
+          {
+          case EILSEQ:
+            pUtf8 = Utf8;
+            LocaleLength = 0;
+            break;
+
+          case EINVAL:
+            pUtf8 = Utf8;
+            LocaleLength = 0;
+            break;
+
+          case E2BIG:
+            char * pTmp = Utf8;
+            size_t OldLength = Utf8Length;
+            Utf8Length += 2 * LocaleLength;
+
+            Utf8 = new char[Utf8Length];
+            memcpy(Utf8, pTmp,
+                   sizeof(char) * (OldLength - SpaceLeft - 1));
+            pUtf8 = Utf8 + OldLength - SpaceLeft - 1;
+            SpaceLeft += 2 * LocaleLength;
+            delete [] pTmp;
+
+            break;
+          }
+
+        continue;
+      }
+
+  *pUtf8 = 0x00; // NULL terminate the string.
+  std::string Result = Utf8;
+
+  // Reset the Converter
+  iconv(Converter, NULL, &LocaleLength, NULL, &Utf8Length);
+
+  // Release memory
+  free(Locale);
+  delete [] Utf8;
+
+  return Result;
+#endif // SunOS || Linux
+
+  return locale;
 }

@@ -157,6 +157,37 @@ This may be used as a template:
    <pubdate>1985</pubdate>
   </biblioentry>
 
+  <biblioentry id="Corana87" xreflabel="Corana87">
+   <authorgroup>
+    <author>
+     <firstname>A.</firstname>
+     <surname>Corana</surname>
+    </author>
+    <author>
+     <firstname>M.</firstname>
+     <surname>Marchesi</surname>
+    </author>
+    <author>
+     <firstname>C.</firstname>
+     <surname>Martini</surname>
+    </author>
+    <author>
+     <firstname>S.</firstname>
+     <surname>Ridella</surname>
+    </author>
+   </authorgroup>
+   <title>
+   Minimizing multimodal functions of continuous variables with the
+  &quot;simulated annealing&quot; algorithm 
+   </title>
+   <publisher>
+   ACM Trans. Math. Softw.
+   </publisher>
+   <volumenum>13</volumenum>
+   <pagenums>262 - 280</pagenums>
+   <pubdate>1987</pubdate>
+  </biblioentry>
+
   <biblioentry id="Fletcher87" xreflabel="Fletcher87">
    <author>
     <firstname>R.</firstname>
@@ -386,6 +417,30 @@ This may be used as a template:
    <volumenum>6</volumenum>
    <pagenums>313 - 314</pagenums>
    <pubdate>1963</pubdate>
+  </biblioentry>
+
+  <biblioentry id="Kirkpatrick83" xreflabel="Kirkpatrick83">
+   <authorgroup>
+    <author>
+     <firstname>S.</firstname>
+     <surname>Kirkpatrick</surname>
+    </author>
+    <author>
+     <firstname>J., C.D.</firstname>
+     <surname>Gelatt</surname>
+    </author>
+    <author>
+     <firstname>M. P.</firstname>
+     <surname>Vecchi</surname>
+    </author>
+   </authorgroup>
+   <title>
+   Optimization by simulated annealing
+   </title>
+   <publisher>Science</publisher>
+   <volumenum>220</volumenum>
+   <pagenums>671 - 680</pagenums>
+   <pubdate>1983</pubdate>
   </biblioentry>
 
   <biblioentry id="Levenberg44" xreflabel="Levenberg44">

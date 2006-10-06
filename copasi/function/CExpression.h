@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/07 15:27:35 $
+   $Date: 2006/10/06 16:03:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,6 +76,13 @@ class CExpression:
      */
     void refresh();
 
+    /**
+     * Write display mathml of the expression into the ostream "out"
+     * level specifies indentation
+     * fullExpand==true means function calls are expanded
+     */
+    void writeMathML(std::ostream & out, bool fullExpand, unsigned C_INT32 l) const;
+
   private:
     /**
      * Retrieve a pointer to the object defined by CN. This method may only be called
@@ -87,6 +94,7 @@ class CExpression:
 
     // This is needed so that the tree compiles
     friend bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree);
+    friend bool CEvaluationTree::compileNodes();
 
   public:
     /**

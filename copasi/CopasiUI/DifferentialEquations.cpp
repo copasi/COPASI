@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DifferentialEquations.cpp,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 16:04:46 $
+   $Date: 2006/10/06 16:03:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -30,6 +30,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "qtUtilities.h"
 #include "model/CModel.h"
+#include "function/CExpression.h"
 #include "report/CKeyFactory.h"
 
 #include "CopasiFileDialog.h"
@@ -269,16 +270,53 @@ void DifferentialEquations::createParameterMapping(const CReaction* pReac,
     }
 }
 
+void DifferentialEquations::writeLHS_ModelValue(std::ostream & out,
+    const std::string & valueName, unsigned C_INT32 l)
+{
+  out << SPC(l + 0) << "<mfrac>" << std::endl;
+  out << SPC(l + 1) << "<mrow>" << std::endl;
+  out << SPC(l + 2) << "<mo>d</mo>" << std::endl;
+  out << SPC(l + 2) << "<mi>" << CMathMl::fixName(valueName) << "</mi>" << std::endl;
+  out << SPC(l + 1) << "</mrow>" << std::endl;
+  out << SPC(l + 1) << "<mrow>" << std::endl;
+  out << SPC(l + 2) << "<mo>d</mo><mi>t</mi>" << std::endl;
+  out << SPC(l + 1) << "</mrow>" << std::endl;
+  out << SPC(l + 0) << "</mfrac>" << std::endl;
+}
+
+void DifferentialEquations::writeRHS_ModelEntity(std::ostream & out,
+    const CModelEntity* pEntity,
+    bool expandFull, unsigned C_INT32 l)
+{
+  if (!pEntity)
+    {
+      out << SPC(l + 0) << "Error: invalid model entity" << std::endl;
+      return;
+    }
+
+  if (!pEntity->getExpressionPtr())
+    {
+      out << SPC(l + 0) << "Error: no expression" << std::endl;
+      return;
+    }
+
+  out << SPC(l + 0) << "<mrow>" << std::endl;
+
+  pEntity->getExpressionPtr()->writeMathML(out, expandFull, l + 1);
+  pEntity->getExpressionPtr()->writeMathML(std::cout, expandFull, l + 1);
+  std::cout << std::endl;
+
+  out << SPC(l + 0) << "</mrow>" << std::endl;
+}
+
 void DifferentialEquations::loadDifferentialEquations(CModel * model)
 {
-  //std::ostringstream mml;
-
   mml.str("");
 
   unsigned C_INT32 l = 0;
-  //pFunction->writeMathML(mml);
   mml << SPC(l) << "<mtable>" << std::endl;
 
+  //write equations for metabs
   C_INT32 i, imax = model->getMetabolites().size();
   for (i = 0; i < imax; i++)
     {
@@ -311,6 +349,59 @@ void DifferentialEquations::loadDifferentialEquations(CModel * model)
           mml << SPC(l + 1) << "</mtr>" << std::endl;
         }
     }
+
+  //write differential equations for model values
+  imax = model->getModelValues().size();
+  for (i = 0; i < imax; ++i)
+    if (model->getModelValues()[i]->getStatus() == CModelEntity::ODE)
+      {
+        mml << SPC(l + 1) << "<mtr>" << std::endl;
+
+        //first column (lhs)
+        mml << SPC(l + 2) << "<mtd columnalign='right'>" << std::endl;
+        writeLHS_ModelValue(mml, model->getModelValues()[i]->getObjectName(), l + 3);
+        mml << SPC(l + 2) << "</mtd>" << std::endl;
+
+        //second column ("=")
+        mml << SPC(l + 2) << "<mtd>" << std::endl;
+        mml << SPC(l + 3) << "<mo>=</mo>" << std::endl;
+        mml << SPC(l + 2) << "</mtd>" << std::endl;
+
+        //third column (rhs)
+        mml << SPC(l + 2) << "<mtd columnalign='left'>" << std::endl;
+        writeRHS_ModelEntity(mml, model->getModelValues()[i],
+                             false, l + 3); //TODO make configurable
+        mml << SPC(l + 2) << "</mtd>" << std::endl;
+
+        mml << SPC(l + 1) << "</mtr>" << std::endl;
+      }
+
+  //write assignment rules
+  imax = model->getModelValues().size();
+  for (i = 0; i < imax; ++i)
+    if (model->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+      {
+        mml << SPC(l + 1) << "<mtr>" << std::endl;
+
+        //first column (lhs)
+        mml << SPC(l + 2) << "<mtd columnalign='right'>" << std::endl;
+        mml << SPC(l + 3) << "<mi>" << CMathMl::fixName(model->getModelValues()[i]->getObjectName()) << "</mi>" << std::endl;
+        //writeLHS_ModelValue(mml, model->getModelValues()[i]->getObjectName(), l + 3);
+        mml << SPC(l + 2) << "</mtd>" << std::endl;
+
+        //second column ("=")
+        mml << SPC(l + 2) << "<mtd>" << std::endl;
+        mml << SPC(l + 3) << "<mo>=</mo>" << std::endl;
+        mml << SPC(l + 2) << "</mtd>" << std::endl;
+
+        //third column (rhs)
+        mml << SPC(l + 2) << "<mtd columnalign='left'>" << std::endl;
+        writeRHS_ModelEntity(mml, model->getModelValues()[i],
+                             false, l + 3); //TODO make configurable
+        mml << SPC(l + 2) << "</mtd>" << std::endl;
+
+        mml << SPC(l + 1) << "</mtr>" << std::endl;
+      }
 
   mml << SPC(l) << "</mtable>" << std::endl;
 

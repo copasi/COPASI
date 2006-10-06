@@ -1,10 +1,10 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.155 $
-   $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/02 15:33:43 $
-   End CVS Header */
+﻿ /* Begin CVS Header
+$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
+$Revision: 1.156 $
+$Name:  $
+$Author: shoops $
+$Date: 2006/10/06 16:08:46 $
+End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.

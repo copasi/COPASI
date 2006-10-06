@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.140 $
+   $Revision: 1.141 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/15 12:28:29 $
+   $Date: 2006/10/06 16:03:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -141,13 +141,7 @@ CCopasiXMLParser::CCopasiXMLParser(CVersion & version) :
 {
   create();
 
-  if (version.getVersionMajor() == 0 &&
-      version.getVersionMinor() == 0 &&
-      version.getVersionDevel() == 0)
-    // We read the configuration file.
-    mElementHandlerStack.push(new ParameterGroupElement(*this, mCommon));
-  else
-    mElementHandlerStack.push(new COPASIElement(*this, mCommon));
+  mElementHandlerStack.push(new COPASIElement(*this, mCommon));
 
   //  mCommon.pParser = this;
   mCommon.pVersion = & version;
@@ -361,7 +355,17 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
   switch (mCurrentElement)
     {
     case COPASI:
-      if (strcmp(pszName, "COPASI")) fatalError();
+      if (strcmp(pszName, "COPASI"))
+        {
+          // We may have a configuration file which starts with a parameter group
+          if (strcmp(pszName, "ParameterGroup"))
+            {
+              fatalError();
+            }
+
+          mpCurrentHandler = new ParameterGroupElement(mParser, mCommon);
+          break;
+        }
 
       versionMajor = mParser.getAttributeValue("versionMajor", papszAttrs, "0");
       VersionMajor = atoi(versionMajor);
@@ -370,7 +374,7 @@ void CCopasiXMLParser::COPASIElement::start(const XML_Char *pszName,
       versionDevel = mParser.getAttributeValue("versionDevel", papszAttrs, "0");
       VersionDevel = atoi(versionDevel);
 
-      mCommon.pVersion->setVersion(VersionMajor, VersionMinor, VersionDevel);
+      mCommon.pVersion->setVersion(VersionMajor, VersionMinor, VersionDevel, "");
 
       return;
 
@@ -1859,6 +1863,10 @@ void CCopasiXMLParser::ModelValueElement::end(const XML_Char *pszName)
     case MathML:
       if (strcmp(pszName, "MathML")) fatalError();
       mpMV->setExpression(mCommon.FunctionDescription);
+      // Remove error messages created by setExpression as this may fail
+      // due to incomplete model specification at this time.
+      if (CCopasiMessage::peekLastMessage().getNumber() == MCFunction + 3)
+        CCopasiMessage::getLastMessage();
       mCurrentElement--;
       break;
 

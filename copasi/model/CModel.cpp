@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.288 $
+   $Revision: 1.289 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/14 16:42:15 $
+   $Author: shoops $
+   $Date: 2006/10/06 16:03:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1501,8 +1501,9 @@ void CModel::calculateDerivatives(C_FLOAT64 * derivatives)
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 0.0;
 
-  dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
-         mStoiReordered.array(), &K, &Beta, pTmp, &M);
+  if (K != 0)
+    dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
+           mStoiReordered.array(), &K, &Beta, pTmp, &M);
 }
 
 void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
@@ -1527,8 +1528,9 @@ void CModel::calculateDerivativesX(C_FLOAT64 * derivativesX)
   C_FLOAT64 Alpha = 1.0;
   C_FLOAT64 Beta = 0.0;
 
-  dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
-         mRedStoi.array(), &K, &Beta, pTmp, &M);
+  if (K != 0)
+    dgemm_(&T, &T, &M, &N, &K, &Alpha, mParticleFluxes.array(), &M,
+           mRedStoi.array(), &K, &Beta, pTmp, &M);
 }
 
 void CModel::refreshRates()
@@ -1956,7 +1958,8 @@ void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
     CCopasiVectorN< CReaction >::const_iterator end = mSteps.end();
 
     for (; it != end; ++it)
-      if ((*it)->hasCircularDependencies(candidates))
+      if (candidates.find(*it) == candidates.end() &&
+          (*it)->hasCircularDependencies(candidates))
         dependentReactions.insert((*it));
 
     return;
@@ -1977,8 +1980,9 @@ void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
         end = (*itComp)->getMetabolites().end();
 
         for (; it != end; ++it)
-          if (candidates.find((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))) != candidates.end() ||
-              (*it)->hasCircularDependencies(candidates))
+          if (candidates.find(*it) == candidates.end() &&
+              (candidates.find((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))) != candidates.end() ||
+               (*it)->hasCircularDependencies(candidates)))
             dependentMetabolites.insert((*it));
       }
 
@@ -1992,7 +1996,8 @@ void CModel::appendDependentCompartments(std::set< const CCopasiObject * > candi
     CCopasiVectorN< CCompartment >::const_iterator end = mCompartments.end();
 
     for (; it != end; ++it)
-      if ((*it)->hasCircularDependencies(candidates))
+      if (candidates.find(*it) == candidates.end() &&
+          (*it)->hasCircularDependencies(candidates))
         dependentCompartments.insert((*it));
 
     return;
@@ -2005,7 +2010,8 @@ void CModel::appendDependentModelValues(std::set< const CCopasiObject * > candid
     CCopasiVectorN< CModelValue >::const_iterator end = mValues.end();
 
     for (; it != end; ++it)
-      if ((*it)->hasCircularDependencies(candidates))
+      if (candidates.find(*it) == candidates.end() &&
+          (*it)->hasCircularDependencies(candidates))
         dependentModelValues.insert((*it));
 
     return;
@@ -2535,7 +2541,7 @@ std::string CModel::suitableForStochasticSimulation() const
     for (i = 0; i < mMetabolites.size(); ++i)
       {
         if (mMetabolites[i]->getInitialValue() > LLONG_MAX)
-          return "At least one particle number in the inial state is too big.";
+          return "At least one particle number in the initial state is too big.";
       }
 
     return ""; // Model is appropriate for hybrid simulation

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/21 11:51:05 $
+   $Author: shoops $
+   $Date: 2006/10/06 16:03:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -162,6 +162,15 @@ class CFunctionDB : public CCopasiContainer
     suitableFunctions(const unsigned C_INT32 noSubstrates,
                       const unsigned C_INT32 noProducts,
                       const TriLogic reversibility);
+
+    /**
+     * Appends pointers to function, which are dependent on any of the candidates
+     * to the list dependentFunctions.
+     * @param std::set< const CCopasiObject * > candidates
+     * @param std::set< const CCopasiObject * > & dependentFunctions
+     */
+    void appendDependentFunctions(std::set< const CCopasiObject * > candidates,
+                                  std::set< const CCopasiObject * > & dependentFunctions) const;
 
     /**
      * Retrieve a list of evaluation trees depending on the tree with the

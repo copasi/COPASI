@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CNewtonMethod.cpp,v $
-   $Revision: 1.76 $
+   $Revision: 1.77 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/25 21:41:23 $
+   $Date: 2006/10/06 16:03:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -686,10 +686,7 @@ C_FLOAT64 CNewtonMethod::targetFunction(const CVector< C_FLOAT64 > & particleflu
           store = tmp;
 
         if (isnan(tmp))
-          {
-            store = DBL_MAX;
-            break;
-          }
+          return DBL_MAX;
       }
 
     // Scale to account for the scaling in the return value.

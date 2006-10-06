@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/11 17:22:23 $
+   $Date: 2006/10/06 16:03:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -204,7 +204,7 @@ class CopasiPlot : public QwtPlot, public COutputInterface
     /**
      * A map between a specification and a curve
      */
-    std::map< const CPlotItem *, QwtPlotCurve * > mCurveMap;
+    std::map< CRegisteredObjectName, QwtPlotCurve * > mCurveMap;
 
     /**
      * Vector of type of each item (curve)

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.161 $
+   $Revision: 1.162 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/05 17:23:19 $
+   $Date: 2006/10/06 16:03:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -433,6 +433,8 @@ void CReaction::compile()
 
   if (mpFunction)
     {
+      mDependencies.insert(mpFunction);
+
       unsigned C_INT32 i, j, jmax;
       unsigned C_INT32 imax = mMap.getFunctionParameters().size();
       std::string paramName;

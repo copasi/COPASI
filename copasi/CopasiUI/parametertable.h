@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/parametertable.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/21 16:15:06 $
+   $Author: shoops $
+   $Date: 2006/10/06 16:03:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -69,7 +69,6 @@ class ParameterTable : public QTable
   public:
     ParameterTable(QWidget * parent = 0, const char * name = 0);
 
-    static void vectorOfStrings2QStringList(std::vector<std::string> vs, QStringList & qsl);
     void initTable();
 
   public slots:

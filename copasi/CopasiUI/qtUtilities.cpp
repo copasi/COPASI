@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/qtUtilities.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:47 $
+   $Date: 2006/10/06 16:03:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -179,4 +179,11 @@ C_INT32 checkSelection(const QString & file)
     }
   else
     return QMessageBox::Yes;
+}
+
+void vectorOfStrings2QStringList(std::vector<std::string> vs, QStringList & qsl)
+{
+  qsl.clear();
+  C_INT32 i, imax = vs.size();
+  for (i = 0; i < imax; ++i) qsl += FROM_UTF8(vs[i]);
 }

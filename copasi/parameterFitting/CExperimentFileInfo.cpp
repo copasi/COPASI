@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/21 18:06:04 $
+   $Date: 2006/10/06 16:03:47 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,7 +54,11 @@ bool CExperimentFileInfo::setFileName(const std::string & fileName)
 
   std::ifstream in;
   in.open(utf8ToLocale(mFileName).c_str(), std::ios::binary);
-  if (in.fail()) return false; // File can not be opened.
+  if (in.fail())  // File can not be opened.
+    {
+      mLines = 0;
+      return sync();
+    }
 
   bool isEmpty;
 

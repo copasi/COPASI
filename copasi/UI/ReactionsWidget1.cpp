@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ReactionsWidget1.cpp,v $
-   $Revision: 1.183 $
+   $Revision: 1.184 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/29 15:15:27 $
+   $Date: 2006/10/06 16:03:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -424,7 +424,7 @@ void ReactionsWidget1::FillWidgetFromRI()
 
   // the function combobox
   QStringList comboEntries;
-  ParameterTable::vectorOfStrings2QStringList(mpRi->getListOfPossibleFunctions(), comboEntries);
+  vectorOfStrings2QStringList(mpRi->getListOfPossibleFunctions(), comboEntries);
 
   ComboBox1->clear();
   ComboBox1->insertStringList(comboEntries, -1);
@@ -432,6 +432,9 @@ void ReactionsWidget1::FillWidgetFromRI()
   // if there is a current function the parameter table is initialized
   if (mpRi->getFunctionName() != "")
     {
+      if (comboEntries.grep(FROM_UTF8(mpRi->getFunctionName())).size() == 0)
+        ComboBox1->insertItem(FROM_UTF8(mpRi->getFunctionName()));
+
       ComboBox1->setCurrentText(FROM_UTF8(mpRi->getFunctionName()));
       QToolTip::add(ComboBox1, FROM_UTF8(mpRi->getFunctionDescription()));
 

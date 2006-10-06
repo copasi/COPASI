@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/18 13:36:54 $
+   $Author: shoops $
+   $Date: 2006/10/06 16:03:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,7 +106,8 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
 {
   mpVersion->setVersion(COPASI_VERSION_MAJOR,
                         COPASI_VERSION_MINOR,
-                        COPASI_VERSION_BUILD);
+                        COPASI_VERSION_BUILD,
+                        COPASI_VERSION_COMMENT);
 
   mpUndefined = new CFunction("undefined");
   mpUndefined->setInfix("nan");
@@ -257,8 +258,10 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
       mSaveFileName = FileName;
     }
 
-  if (mpModel) mpModel->setCompileFlag();
+  if (mpModel)
+    mpModel->compileIfNecessary();
   changed(false);
+
   return true;
 }
 
@@ -436,6 +439,8 @@ bool CCopasiDataModel::newModel(CModel * pModel)
       mpGUI = new SCopasiXMLGUI;
     }
 
+  if (mpModel)
+    mpModel->compileIfNecessary();
   changed(false);
 
   return true;

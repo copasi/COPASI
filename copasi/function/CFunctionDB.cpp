@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.cpp,v $
-   $Revision: 1.72 $
+   $Revision: 1.73 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/15 12:28:29 $
+   $Date: 2006/10/06 16:03:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -304,6 +304,20 @@ CFunctionDB::suitableFunctions(const unsigned C_INT32 noSubstrates,
 
   return ret;
 }
+
+void CFunctionDB::appendDependentFunctions(std::set< const CCopasiObject * > candidates,
+    std::set< const CCopasiObject * > & dependentFunctions) const
+  {
+    CCopasiVectorN< CEvaluationTree >::const_iterator it = mLoadedFunctions.begin();
+    CCopasiVectorN< CEvaluationTree >::const_iterator end = mLoadedFunctions.end();
+
+    for (; it != end; ++it)
+      if (candidates.find(*it) == candidates.end() &&
+          (*it)->hasCircularDependencies(candidates))
+        dependentFunctions.insert((*it));
+
+    return;
+  }
 
 std::set<std::string>
 CFunctionDB::listDependentTrees(const std::string & name) const

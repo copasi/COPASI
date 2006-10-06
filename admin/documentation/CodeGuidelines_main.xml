@@ -625,7 +625,7 @@ no need to calculate them during simulation.
  <row>
    <entry>Self</entry>
    <entry>all variables of the kinetic function,
-    associated compartment Volume</entry>
+    associated compartment Volume, kinetic function</entry>
    <entry>calculate</entry>
  </row>
  <row>
