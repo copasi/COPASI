@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethod.cpp,v $
-   $Revision: 1.30 $
+   $Revision: 1.31 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/31 16:50:34 $
+   $Date: 2006/10/06 15:56:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,7 @@
 #include "COptMethodHookeJeeves.h"
 #include "COptMethodLevenbergMarquardt.h"
 #include "COptMethodNelderMead.h"
+#include "COptMethodPS.h"
 #include "COptMethodSA.h"
 #include "COptMethodSRES.h"
 #include "COptMethodStatistics.h"
@@ -85,6 +86,10 @@ COptMethod * COptMethod::createMethod(CCopasiMethod::SubType subType)
 
     case SteepestDescent:
       pMethod = new COptMethodSteepestDescent();
+      break;
+
+    case ParticleSwarm:
+      pMethod = new COptMethodPS();
       break;
 
     default:

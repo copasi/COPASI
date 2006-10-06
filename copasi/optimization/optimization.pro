@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.24 $ $Author: shoops $ $Date: 2006/08/31 16:50:34 $  
+# $Revision: 1.25 $ $Author: shoops $ $Date: 2006/10/06 15:56:08 $  
 ######################################################################
 
 LIB = optimization
@@ -8,38 +8,40 @@ include(../lib.pri)
 include(../common.pri)
 
 # Input
-HEADERS += COptMethod.h \
+HEADERS += COptItem.h \
+           COptMethod.h \
+           COptMethodEP.h \
            COptMethodGA.h \
-           COptMethodHookeJeeves.h \
-           COptProblem.h \
-           CRandomSearch.h \
            COptMethodGASR.h \
+           COptMethodHookeJeeves.h \
            COptMethodLevenbergMarquardt.h \
            COptMethodNelderMead.h \
+           COptMethodPS.h \
            COptMethodSA.h \
            COptMethodSRES.h \
            COptMethodSteepestDescent.h \
            COptMethodStatistics.h \
-           COptMethodEP.h \
+           COptProblem.h \
            COptTask.h \ 
-           COptItem.h \
+           CRandomSearch.h \
            FminBrent.h
            
-SOURCES += COptMethod.cpp \
+SOURCES += COptItem.cpp \
+           COptMethod.cpp \
+           COptMethodEP.cpp \
            COptMethodGA.cpp \
-           COptMethodHookeJeeves.cpp \
-           COptProblem.cpp \
-           CRandomSearch.cpp \
            COptMethodGASR.cpp \
+           COptMethodHookeJeeves.cpp \
            COptMethodLevenbergMarquardt.cpp \
            COptMethodNelderMead.cpp \
+           COptMethodPS.cpp \
            COptMethodSA.cpp \
            COptMethodSRES.cpp \
            COptMethodSteepestDescent.cpp \
            COptMethodStatistics.cpp \
-           COptMethodEP.cpp \
+           COptProblem.cpp \
            COptTask.cpp \
-           COptItem.cpp \
+           CRandomSearch.cpp \
            FminBrent.cpp
 
 DISTFILES += optimization.dsp

@@ -99,6 +99,10 @@ SOURCE=.\COptMethodNelderMead.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\COptMethodPS.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\COptMethodSA.cpp
 # End Source File
 # Begin Source File
@@ -180,6 +184,10 @@ SOURCE=.\COptMethodLevenbergMarquardt.h
 # Begin Source File
 
 SOURCE=.\COptMethodNelderMead.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\COptMethodPS.h
 # End Source File
 # Begin Source File
 
