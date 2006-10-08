@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.181 $
+   $Revision: 1.182 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:42 $
+   $Author: gauges $
+   $Date: 2006/10/08 10:25:01 $
    End CVS Header */
 
-// Copyright ï¿½ 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -270,7 +270,8 @@ CopasiUI3Window::CopasiUI3Window():
   listViews->show();
   this->setCentralWidget(listViews);
 
-  this->sliders = new SliderDialog(this);
+  this->sliders = new SliderDialog(NULL);
+  this->sliders->setParentWindow(this);
   C_INT32 id = ((FolderListItem*)listViews->folders->currentItem())->getFolder()->getId();
   this->sliders->setCurrentFolderId(id);
   this->sliders->resize(350, 250);

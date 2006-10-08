@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SliderDialog.cpp,v $
-   $Revision: 1.64 $
+   $Revision: 1.65 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/06 03:10:23 $
+   $Author: gauges $
+   $Date: 2006/10/08 10:25:01 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -61,6 +61,7 @@ char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course", "MCA" , "
 
 SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, WFlags fl):
     QDialog(parent, name, modal, fl),
+    pParentWindow(NULL),
     runTaskButton(NULL),
     newSliderButton(NULL),
     autoRunCheckBox(NULL),
@@ -542,40 +543,36 @@ void SliderDialog::sliderPressed()
 
 void SliderDialog::runTimeCourse()
 {
-  CopasiUI3Window* p = dynamic_cast<CopasiUI3Window*>(this->parent());
-  if (p)
+  if (pParentWindow)
     {
-      p->getTrajectoryWidget()->enter((*CCopasiDataModel::Global->getTaskList())["Time-Course"]->getKey());
-      p->getTrajectoryWidget()->runTask();
+      pParentWindow->getTrajectoryWidget()->enter((*CCopasiDataModel::Global->getTaskList())["Time-Course"]->getKey());
+      pParentWindow->getTrajectoryWidget()->runTask();
     }
 }
 
 void SliderDialog::runSteadyStateTask()
 {
-  CopasiUI3Window* p = dynamic_cast<CopasiUI3Window*>(this->parent());
-  if (p)
+  if (pParentWindow)
     {
-      p->getSteadyStateWidget()->runTask();
+      pParentWindow->getSteadyStateWidget()->runTask();
     }
 }
 
 void SliderDialog::runScanTask()
 {
-  CopasiUI3Window* p = dynamic_cast<CopasiUI3Window*>(this->parent());
-  if (p)
+  if (pParentWindow)
     {
-      p->getScanWidget()->enter((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
-      p->getScanWidget()->runScanTask();
+      pParentWindow->getScanWidget()->enter((*CCopasiDataModel::Global->getTaskList())["Scan"]->getKey());
+      pParentWindow->getScanWidget()->runScanTask();
     }
 }
 
 void SliderDialog::closeEvent(QCloseEvent* e)
 {
   QDialog::closeEvent(e);
-  CopasiUI3Window* p = dynamic_cast<CopasiUI3Window*>(this->parent());
-  if (p)
+  if (pParentWindow)
     {
-      p->slotToggleSliders();
+      pParentWindow->slotToggleSliders();
     }
 }
 
@@ -720,3 +717,8 @@ bool SliderDialog::sliderObjectChanged(CSlider* pSlider) const
     listOfContainers.push_back(pModel);
     return !pSlider->compile(listOfContainers);
   }
+
+void SliderDialog::setParentWindow(CopasiUI3Window* pPW)
+{
+  this->pParentWindow = pPW;
+}

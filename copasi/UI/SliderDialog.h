@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SliderDialog.h,v $
-   $Revision: 1.32 $
+   $Revision: 1.33 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/21 16:14:43 $
+   $Author: gauges $
+   $Date: 2006/10/08 10:25:01 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -34,6 +34,7 @@ class DataModelGUI;
 class CopasiSlider;
 class CCopasiTask;
 class CSlider;
+class CopasiUI3Window;
 
 class SliderDialog: public QDialog
   {
@@ -44,8 +45,10 @@ class SliderDialog: public QDialog
     virtual ~SliderDialog();
     void addSlider(CSlider* slider);
     void setCurrentFolderId(C_INT32 id);
+    void setParentWindow(CopasiUI3Window* pPW);
 
   protected:
+    CopasiUI3Window* pParentWindow;
     QPushButton* runTaskButton;
     QPushButton* newSliderButton;
     QCheckBox* autoRunCheckBox;
