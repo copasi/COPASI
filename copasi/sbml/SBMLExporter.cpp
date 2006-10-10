@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.95 $
+   $Revision: 1.96 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/09/15 08:10:01 $
+   $Date: 2006/10/10 13:51:37 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1846,20 +1846,23 @@ void SBMLExporter::exportRules(std::vector<Rule*>& rules)
   // the rules first have to be ordered before they can be added to the model
   // before adding a Rule, all other rules have to be removed and possibly
   // deleted
-  std::vector<Rule*> sortedRules;
+  std::vector<Rule*> sortedAssignmentRules;
   std::map<Rule*, std::vector<Rule*> > dependencyMap;
   std::vector<Rule*>::iterator it = rules.begin();
   std::vector<Rule*>::iterator endIt = rules.end();
   while (it != endIt)
     {
-      std::vector<Rule*> tmpRules2 = this->findDependenciesForRule(*it, rules);
-      if (tmpRules2.empty())
+      if ((*it)->getTypeCode() == SBML_ASSIGNMENT_RULE)
         {
-          sortedRules.push_back(*it);
-        }
-      else
-        {
-          dependencyMap[*it] = tmpRules2;
+          std::vector<Rule*> tmpRules2 = this->findDependenciesForRule(*it, rules);
+          if (tmpRules2.empty())
+            {
+              sorteAssignmentdRules.push_back(*it);
+            }
+          else
+            {
+              dependencyMap[*it] = tmpRules2;
+            }
         }
       ++it;
     }
@@ -1874,7 +1877,7 @@ void SBMLExporter::exportRules(std::vector<Rule*>& rules)
           endIt = it2->second.end();
           while (it != endIt)
             {
-              if (std::find(sortedRules.begin(), sortedRules.end(), *it) == sortedRules.end())
+              if (std::find(sortedAssignmentRules.begin(), sortedAssignmentRules.end(), *it) == sortedAssignmentRules.end())
                 {
                   break;
                 }
@@ -1884,7 +1887,7 @@ void SBMLExporter::exportRules(std::vector<Rule*>& rules)
             {
               // all rules are already in sortedRules, so we can add this
               // rule as well and remove it from the map
-              sortedRules.push_back(it2->first);
+              sortedAssignmentRules.push_back(it2->first);
               dependencyMap.erase(it2);
               removedItem = true;
               break;
@@ -1902,12 +1905,23 @@ void SBMLExporter::exportRules(std::vector<Rule*>& rules)
       fatalError();
     }
   // now we can add all rules in sorted Rules to the model
-  it = sortedRules.begin();
-  endIt = sortedRules.end();
+  it = sortedAssignmentRules.begin();
+  endIt = sortedAssignmentRules.end();
   Model* pModel = sbmlDocument->getModel();
   while (it != endIt)
     {
       pModel->addRule(*(*it));
+      ++it;
+    }
+  // now we add all the RateRules in the order they appear in rules
+  if = rules.begin();
+  endIt = rules.end();
+  while (it != endIt)
+    {
+      if ((*it)->getTypeCode() != SBML_ASSIGNMENT_RULE)
+        {
+          pModel->addRule(*(*it));
+        }
       ++it;
     }
 }
@@ -1940,15 +1954,7 @@ std::vector<Rule*> SBMLExporter::findDependenciesForRule(Rule* pRule, const std:
             }
           else if (type == SBML_RATE_RULE)
             {
-              if (dynamic_cast<const RateRule*>(*it2)->getVariable() == *it)
-                {
-                  // the rules depends on itself, this is an error
-                  if ((*it2) == pRule)
-                    {
-                      fatalError();
-                    }
-                  break;
-                }
+              // do nothing
             }
           else
             {
