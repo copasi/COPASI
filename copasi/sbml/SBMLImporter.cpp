@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.154.2.1 $
+   $Revision: 1.154.2.2 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/10/02 15:36:50 $
+   $Date: 2006/10/10 02:39:48 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -348,10 +348,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->removeUnusedFunctions(pTmpFunctionDB);
 
   // unset the hasOnlySubstanceUnits flag on all such species
-  if (!this->mSubstanceOnlySpecies.empty())
-    {
-      CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 18);
-    }
+  //if (!this->mSubstanceOnlySpecies.empty())
+  //  {
+  //    CCopasiMessage Message(CCopasiMessage::WARNING, MCSBML + 18);
+  //}
   std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
   std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
   while (it != endIt)
@@ -2976,7 +2976,10 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, CModelEntity* pME,
     {
       rule->setMathFromFormula();
     }
-  this->checkRuleMathConsistency(rule, copasi2sbmlmap);
+  if (rule->getTypeCode() == SBML_ASSIGNMENT_RULE)
+    {
+      this->checkRuleMathConsistency(rule, copasi2sbmlmap);
+    }
   ConverterASTNode tmpNode(*rule->getMath());
   this->preprocessNode(&tmpNode);
   // replace the object names
@@ -2993,8 +2996,8 @@ void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiO
   // only check if Level2 Version1 ?????
   //if(this->mLevel==2 && this->mVersion==1)
   {
-    // check if no nodes with ids of objects are used that are set in a later
-    // rule
+    // check if no nodes with ids of objects are used in an assignmet that are
+    // set in another assignment rule later on
     std::set<std::string> idSet;
     if (!pRule->isSetMath() && pRule->isSetFormula()) pRule->setMathFromFormula();
     const ASTNode* pNode = pRule->getMath();
@@ -3015,14 +3018,7 @@ void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<CCopasiO
       {
         pR = sbmlModel->getRule(i);
         type = pR->getTypeCode();
-        if (type == SBML_RATE_RULE)
-          {
-            if (idSet.find(dynamic_cast<RateRule*>(pR)->getVariable()) != idSet.end())
-              {
-                CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 37, dynamic_cast<RateRule*>(pR)->getVariable().c_str());
-              }
-          }
-        else if (type == SBML_ASSIGNMENT_RULE)
+        if (type == SBML_ASSIGNMENT_RULE)
           {
             if (idSet.find(dynamic_cast<AssignmentRule*>(pR)->getVariable()) != idSet.end())
               {
