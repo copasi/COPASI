@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.96 $
+   $Revision: 1.97 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/10/10 13:51:37 $
+   $Date: 2006/10/10 14:03:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1857,7 +1857,7 @@ void SBMLExporter::exportRules(std::vector<Rule*>& rules)
           std::vector<Rule*> tmpRules2 = this->findDependenciesForRule(*it, rules);
           if (tmpRules2.empty())
             {
-              sorteAssignmentdRules.push_back(*it);
+              sortedAssignmentRules.push_back(*it);
             }
           else
             {
@@ -1914,7 +1914,7 @@ void SBMLExporter::exportRules(std::vector<Rule*>& rules)
       ++it;
     }
   // now we add all the RateRules in the order they appear in rules
-  if = rules.begin();
+  it = rules.begin();
   endIt = rules.end();
   while (it != endIt)
     {
