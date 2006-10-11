@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.154.2.2 $
+   $Revision: 1.154.2.3 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/10/10 02:39:48 $
+   $Date: 2006/10/11 02:44:08 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2085,6 +2085,10 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                             {
                               v->push_back((*v2)[0]);
                             }
+                          else
+                            {
+                              v->clear();
+                            }
                           pdelete(v2);
                         }
                     }
@@ -2104,39 +2108,52 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
       std::map<const CMetab*, C_FLOAT64> multiplicityMap;
       this->separateProductArguments(pRootNode, arguments);
       unsigned int numParameters = 0, i, iMax = arguments.size();
-      std::vector<CCopasiContainer*> listOfContainers;
-      listOfContainers.push_back(this->mpCopasiModel);
       v = new std::vector<CEvaluationNodeObject*>;
-      for (i = 0;(i < iMax) && (numParameters < 2);++i)
+      if (iMax != 0)
         {
-          const CEvaluationNode* pNode = arguments[i];
-          // the node can either be an object node
-          // or it can be a power function node
-          if (pNode->getType() == CEvaluationNode::OBJECT)
+          std::vector<CCopasiContainer*> listOfContainers;
+          listOfContainers.push_back(this->mpCopasiModel);
+          for (i = 0;(i < iMax) && (numParameters < 2);++i)
             {
-              // it can be a global or a local parameter or an metabolite
-              std::string objectCN = pNode->getData().substr(1, pNode->getData().length() - 2);
-              const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
-              if (!pObject)
+              const CEvaluationNode* pNode = arguments[i];
+              // the node can either be an object node
+              // or it can be a power function node
+              if (pNode->getType() == CEvaluationNode::OBJECT)
                 {
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 39, objectCN.c_str());
-                }
-              if (pObject->isReference())
-                {
-                  pObject = pObject->getObjectParent();
-                  if (dynamic_cast<const CMetab*>(pObject))
+                  // it can be a global or a local parameter or an metabolite
+                  std::string objectCN = pNode->getData().substr(1, pNode->getData().length() - 2);
+                  const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
+                  if (!pObject)
                     {
-                      const CMetab* pMetab = static_cast<const CMetab*>(pObject);
-                      if (multiplicityMap.find(pMetab) != multiplicityMap.end())
+                      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 39, objectCN.c_str());
+                    }
+                  if (pObject->isReference())
+                    {
+                      pObject = pObject->getObjectParent();
+                      if (dynamic_cast<const CMetab*>(pObject))
                         {
-                          multiplicityMap[pMetab] = multiplicityMap[pMetab] + 1.0;
+                          const CMetab* pMetab = static_cast<const CMetab*>(pObject);
+                          if (multiplicityMap.find(pMetab) != multiplicityMap.end())
+                            {
+                              multiplicityMap[pMetab] = multiplicityMap[pMetab] + 1.0;
+                            }
+                          else
+                            {
+                              multiplicityMap[pMetab] = 1.0;
+                            }
+                        }
+                      else if (dynamic_cast<const CModelValue*>(pObject))
+                        {
+                          ++numParameters;
+                          v->push_back(new CEvaluationNodeObject((CEvaluationNodeObject::SubType)(CEvaluationNode::subType(pNode->getType())), pNode->getData()));
                         }
                       else
                         {
-                          multiplicityMap[pMetab] = 1.0;
+                          result = false;
+                          break;
                         }
                     }
-                  else if (dynamic_cast<const CModelValue*>(pObject))
+                  else if (dynamic_cast<const CCopasiParameter*>(pObject))
                     {
                       ++numParameters;
                       v->push_back(new CEvaluationNodeObject((CEvaluationNodeObject::SubType)(CEvaluationNode::subType(pNode->getType())), pNode->getData()));
@@ -2147,45 +2164,40 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                       break;
                     }
                 }
-              else if (dynamic_cast<const CCopasiParameter*>(pObject))
+              else if (pNode->getType() == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)(CEvaluationNode::subType(pNode->getType())) == CEvaluationNodeOperator::POWER)
                 {
-                  ++numParameters;
-                  v->push_back(new CEvaluationNodeObject((CEvaluationNodeObject::SubType)(CEvaluationNode::subType(pNode->getType())), pNode->getData()));
-                }
-              else
-                {
-                  result = false;
-                  break;
-                }
-            }
-          else if (pNode->getType() == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)(CEvaluationNode::subType(pNode->getType())) == CEvaluationNodeOperator::POWER)
-            {
-              // the two children must be a metabolite node and a number node in this order
-              const CEvaluationNode* pChildNode = static_cast<const CEvaluationNode*>(pNode->getChild());
-              if (pChildNode->getType() == CEvaluationNode::OBJECT)
-                {
-                  std::string objectCN = pChildNode->getData().substr(1, pChildNode->getData().length() - 2);
-                  const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
-                  assert(pObject);
-                  if (pObject->isReference())
+                  // the two children must be a metabolite node and a number node in this order
+                  const CEvaluationNode* pChildNode = static_cast<const CEvaluationNode*>(pNode->getChild());
+                  if (pChildNode->getType() == CEvaluationNode::OBJECT)
                     {
-                      pObject = pObject->getObjectParent();
-                      if (dynamic_cast<const CMetab*>(pObject))
+                      std::string objectCN = pChildNode->getData().substr(1, pChildNode->getData().length() - 2);
+                      const CCopasiObject* pObject = CCopasiContainer::ObjectFromName(listOfContainers, objectCN);
+                      assert(pObject);
+                      if (pObject->isReference())
                         {
-                          pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
-                          assert(pChildNode);
-                          if (CEvaluationNode::type(pChildNode->getType()) == CEvaluationNode::NUMBER)
+                          pObject = pObject->getObjectParent();
+                          if (dynamic_cast<const CMetab*>(pObject))
                             {
-                              const CMetab* pMetab = static_cast<const CMetab*>(pObject);
-                              if (multiplicityMap.find(pMetab) != multiplicityMap.end())
+                              pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
+                              assert(pChildNode);
+                              if (CEvaluationNode::type(pChildNode->getType()) == CEvaluationNode::NUMBER)
                                 {
-                                  multiplicityMap[pMetab] = multiplicityMap[pMetab] + pChildNode->value();
-                                }
-                              else
-                                {
-                                  multiplicityMap[pMetab] = pChildNode->value();
+                                  const CMetab* pMetab = static_cast<const CMetab*>(pObject);
+                                  if (multiplicityMap.find(pMetab) != multiplicityMap.end())
+                                    {
+                                      multiplicityMap[pMetab] = multiplicityMap[pMetab] + pChildNode->value();
+                                    }
+                                  else
+                                    {
+                                      multiplicityMap[pMetab] = pChildNode->value();
+                                    }
                                 }
                             }
+                        }
+                      else
+                        {
+                          result = false;
+                          break;
                         }
                     }
                   else
@@ -2200,11 +2212,10 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                   break;
                 }
             }
-          else
-            {
-              result = false;
-              break;
-            }
+        }
+      if (numParameters != 1)
+        {
+          result = false;
         }
       if (result)
         {
@@ -2224,7 +2235,10 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                 }
             }
         }
-      if (!result) v->clear();
+      if (!result)
+        {
+          v->clear();
+        }
     }
   return v;
 }
