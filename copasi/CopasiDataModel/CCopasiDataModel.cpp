@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.80.2.2 $
+   $Revision: 1.80.2.3 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/26 16:12:02 $
+   $Author: gauges $
+   $Date: 2006/10/11 03:05:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -458,6 +458,16 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
   if (CDirEntry::isRelativePath(FileName) &&
       !CDirEntry::makePathAbsolute(FileName, PWD))
     FileName = CDirEntry::fileName(FileName);
+
+  std::ifstream File(utf8ToLocale(FileName).c_str());
+
+  if (File.fail())
+    {
+      CCopasiMessage Message(CCopasiMessage::RAW,
+                             "File error when importing '%s'.",
+                             FileName.c_str());
+      return false;
+    }
 
   SBMLImporter importer;
   importer.setImportHandler(pImportHandler);
