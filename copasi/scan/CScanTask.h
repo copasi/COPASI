@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/scan/CScanTask.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/10 21:50:53 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:02:47 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,9 +22,9 @@
 #define COPASI_CScanTask
 
 #include "utilities/CReadConfig.h"
-#include "CScanMethod.h"
+#include "scan/CScanMethod.h"
 #include "utilities/CVector.h"
-#include "CScanProblem.h"
+#include "scan/CScanProblem.h"
 
 class CScanMethod;
 class CReport;
