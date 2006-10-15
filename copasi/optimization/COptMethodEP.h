@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/02 19:30:19 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:43:32 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 #ifndef COPASI_COptMethodEP
 #define COPASI_COptMethodEP
 
-#include "COptMethod.h"
+#include "optimization/COptMethod.h"
 
 #include "utilities/CVector.h"
 

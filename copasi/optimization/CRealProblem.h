@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRealProblem.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:53 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:43:32 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -40,7 +40,7 @@
 #include "mathematics.h"
 #include <float.h>
 
-#include "COptProblem.h"
+#include "optimization/COptProblem.h"
 
 //
 /** @dia:pos 3.05,34.05 */

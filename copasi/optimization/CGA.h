@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CGA.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:52 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:43:32 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,8 +27,8 @@
 
 #include "r250.h"
 
-#include "COptAlgorithm.h"
-#include "CRealProblem.h"
+#include "optimization/COptAlgorithm.h"
+#include "optimization/CRealProblem.h"
 
 //using namespace std;
 

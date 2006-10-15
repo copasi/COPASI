@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/21 16:00:19 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:43:32 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 #ifndef COPASI_COptMethodHookeJeeves
 #define COPASI_COptMethodHookeJeeves
 
-#include "COptMethod.h"
+#include "optimization/COptMethod.h"
 #include "utilities/CVector.h"
 
 class CRandom;

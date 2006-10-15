@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/31 16:50:34 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:43:32 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 
 #include <vector>
 #include "utilities/CMatrix.h"
-#include "COptMethod.h"
+#include "optimization/COptMethod.h"
 
 class CRandom;
 
