@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinition.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:10 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:00:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,9 +24,9 @@
 #include <string>
 #include <vector>
 
-#include "CCopasiObject.h"
-#include "CCopasiObjectName.h"
-#include "CCopasiStaticString.h"
+#include "report/CCopasiObject.h"
+#include "report/CCopasiObjectName.h"
+#include "report/CCopasiStaticString.h"
 #include "utilities/CCopasiTask.h"
 
 class CReportDefinition;

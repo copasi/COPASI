@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiTimer.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:09 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:00:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 #ifndef COPASI_CCopasiTimer
 #define COPASI_CCopasiTimer
 
-#include "CCopasiObject.h"
+#include "report/CCopasiObject.h"
 #include "utilities/CopasiTime.h"
 
 class CCopasiTimer: public CCopasiObject

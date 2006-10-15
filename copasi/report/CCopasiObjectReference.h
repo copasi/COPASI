@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectReference.h,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/18 17:46:23 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:00:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,8 +21,8 @@
 #ifndef COPASI_CCopasiObjectReference
 #define COPASI_CCopasiObjectReference
 
-#include "CCopasiObject.h"
-#include "CCopasiObjectName.h"
+#include "report/CCopasiObject.h"
+#include "report/CCopasiObjectName.h"
 
 template <class CType> class CCopasiObjectReference: public CCopasiObject
   {

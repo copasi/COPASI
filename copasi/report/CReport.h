@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.h,v $
-   $Revision: 1.36 $
+   $Revision: 1.37 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/21 16:01:19 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:00:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,8 +25,8 @@
 #include <vector>
 #include <iostream>
 
-#include "CCopasiContainer.h"
-#include "CCopasiObjectName.h"
+#include "report/CCopasiContainer.h"
+#include "report/CCopasiObjectName.h"
 
 #include "utilities/COutputHandler.h"
 
