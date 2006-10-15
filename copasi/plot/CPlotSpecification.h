@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/CPlotSpecification.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/14 16:28:18 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:48:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,7 +19,7 @@
 
 #include <string>
 
-#include "CPlotItem.h"
+#include "plot/CPlotItem.h"
 #include "utilities/CCopasiVector.h"
 
 class CModel;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plot/Attic/HistoWidget.ui.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:30:41 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:48:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,7 @@
 
 #include "copasi.h"
 
-#include "CPlotItem.h"
+#include "plot/CPlotItem.h"
 
 #include "report/CCopasiContainer.h"
 #include "CopasiUI/CCopasiSelectionDialog.h"
