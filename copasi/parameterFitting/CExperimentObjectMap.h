@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/24 14:16:37 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:45:25 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 #ifndef COPASI_CExperimentObjectMap
 #define COPASI_CExperimentObjectMap
 
-#include "CExperiment.h"
+#include "parameterFitting/CExperiment.h"
 
 #include "utilities/CCopasiParameterGroup.h"
 #include "utilities/CVector.h"
