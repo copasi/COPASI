@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathEq.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:50 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:23:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 #define COPASI_CMathEq
 
 #include "utilities/CCopasiTree.h"
-#include "CMathNode.h"
+#include "mathmodel/CMathNode.h"
 
 class CMathVariable;
 

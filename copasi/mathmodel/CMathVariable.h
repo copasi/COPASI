@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/mathmodel/Attic/CMathVariable.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:50 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:23:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,7 @@
 
 #include <string>
 
-#include "CMathSymbol.h"
+#include "mathmodel/CMathSymbol.h"
 
 class CModel;
 class CMetab;
