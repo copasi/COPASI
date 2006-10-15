@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.134 $
+   $Revision: 1.135 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/14 16:42:15 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:32:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -19,10 +19,10 @@
 #include <string>
 
 #include "copasi.h"
-#include "CState.h"
-#include "CReaction.h"
-#include "CMoiety.h"
-#include "CModelValue.h"
+#include "model/CState.h"
+#include "model/CReaction.h"
+#include "model/CMoiety.h"
+#include "model/CModelValue.h"
 
 #include "utilities/CVector.h"
 #include "utilities/CMatrix.h"

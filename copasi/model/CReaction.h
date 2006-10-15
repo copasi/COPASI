@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.95 $
+   $Revision: 1.96 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/05 13:04:51 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:32:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,10 +28,10 @@
 #include "function/CFunction.h"
 #include "function/CCallParameters.h"
 #include "function/CFunctionParameters.h"
-#include "CMetab.h"
-#include "CChemEq.h"
-#include "CChemEqElement.h"
-#include "CCompartment.h"
+#include "model/CMetab.h"
+#include "model/CChemEq.h"
+#include "model/CChemEqElement.h"
+#include "model/CCompartment.h"
 
 class CReadConfig;
 class SBase;

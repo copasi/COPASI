@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CDeTerm.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:21 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:32:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 #define CDETERM_H
 
 #include <vector>
-#include "CSpecLine.h"
+#include "model/CSpecLine.h"
 
 /**
  * This class describes a term in the differential equation.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.h,v $
-   $Revision: 1.75 $
+   $Revision: 1.76 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/11 14:25:42 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:32:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,8 +23,8 @@
 #include <iostream>
 #include <set>
 
-#include "CModelValue.h"
-#include "CMoiety.h"
+#include "model/CModelValue.h"
+#include "model/CMoiety.h"
 
 class CCompartment;
 class CReadConfig;

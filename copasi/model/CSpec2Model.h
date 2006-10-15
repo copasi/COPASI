@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/CSpec2Model.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:22 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:32:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,8 +17,8 @@
 #include <vector>
 #include <list>
 
-#include "CSpecLine.h"
-#include "CDeTerm.h"
+#include "model/CSpecLine.h"
+#include "model/CDeTerm.h"
 /**
  * CSpec2Model
  *

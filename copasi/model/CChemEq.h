@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEq.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/11 14:24:13 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:32:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,7 @@
 
 #include <string>
 
-#include "CChemEqElement.h"
+#include "model/CChemEqElement.h"
 #include "utilities/CCopasiVector.h"
 
 class CCompartment;

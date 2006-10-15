@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/Attic/model.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:29:22 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:32:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,13 +12,13 @@
 
 /* include files for the package model */
 
-#include "CCompartment.h"
-#include "CMetab.h"
-#include "CModel.h"
-#include "CMoiety.h"
-#include "CChemEqElement.h"
-#include "CChemEq.h"
-#include "CReaction.h"
-// #include "CSpecLine.h"
-// #include "CDeTerm.h"
-// #include "CSpec2Model.h"
+#include "model/CCompartment.h"
+#include "model/CMetab.h"
+#include "model/CModel.h"
+#include "model/CMoiety.h"
+#include "model/CChemEqElement.h"
+#include "model/CChemEq.h"
+#include "model/CReaction.h"
+// #include "model/CSpecLine.h"
+// #include "model/CDeTerm.h"
+// #include "model/CSpec2Model.h"
