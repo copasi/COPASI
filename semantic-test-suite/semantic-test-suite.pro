@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.9 $ $Author: shoops $ $Date: 2006/06/20 13:20:41 $  
+# $Revision: 1.10 $ $Author: gauges $ $Date: 2006/10/15 06:17:50 $  
 ######################################################################
 
 TEMPLATE = app
@@ -11,30 +11,31 @@ include(../copasi/common.pri)
 DEPENDPATH += ../copasi/ 
 INCLUDEPATH += ../copasi/
 
-COPASI_LIBS = \
-         copasiDM \
-         copasiXML \
-         commandline \
-         elementaryFluxModes \
-         fitting \
-         function \
-         lyap \
-         model \
-         optimization \
-         plot \
-         randomGenerator \
-         report \
-         sbmlimport \
-         scan \
-         steadystate \
-         trajectory \
-         tss \
-         odepack++ \
-         utilities                   
+
+COPASI_LIBS += copasiDM 
+COPASI_LIBS += copasiXML 
+COPASI_LIBS += commandline 
+COPASI_LIBS += elementaryFluxModes 
+COPASI_LIBS += fitting 
+COPASI_LIBS += function 
+COPASI_LIBS += lyap 
+COPASI_LIBS += optimization 
+COPASI_LIBS += plot 
+COPASI_LIBS += randomGenerator 
+COPASI_LIBS += report 
+COPASI_LIBS += sbmlimport 
+COPASI_LIBS += scan 
+COPASI_LIBS += steadystate 
+COPASI_LIBS += trajectory 
+COPASI_LIBS += tss 
+COPASI_LIBS += odepack++ 
+COPASI_LIBS += utilities                   
 
 contains(DEFINES, COPASI_SENS) {
   COPASI_LIBS += sensitivities
 }
+
+COPASI_LIBS += model
 
 contains(BUILD_OS, WIN32) {
   LIBS += $$join(COPASI_LIBS, ".lib  ../copasi/lib/", ../copasi/lib/, .lib)
