@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.18 $ $Author: gauges $ $Date: 2006/10/15 06:25:23 $  
+# $Revision: 1.19 $ $Author: gauges $ $Date: 2006/10/15 09:20:58 $  
 ######################################################################
 
 LIB = plot
@@ -50,7 +50,7 @@ contains(BUILD_OS, Linux){
     GUIOBJECTS += scrollbar.o
     GUIOBJECTS += scrollzoomer.o
 
-    OBJECTS += CoutputDefinitionVector.o
+    OBJECTS += COutputDefinitionVector.o
     OBJECTS += CPlotItem.o
     OBJECTS += CPlotSpecification.o
 
@@ -77,7 +77,7 @@ contains(BUILD_OS, Darwin){
     GUIOBJECTS += scrollbar.o
     GUIOBJECTS += scrollzoomer.o
 
-    OBJECTS += CoutputDefinitionVector.o
+    OBJECTS += COutputDefinitionVector.o
     OBJECTS += CPlotItem.o
     OBJECTS += CPlotSpecification.o
 
