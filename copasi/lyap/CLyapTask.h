@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/lyap/CLyapTask.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:41 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:21:25 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 #ifndef COPASI_CLyapTask
 #define COPASI_CLyapTask
 
-#include "CLyapMethod.h"
+#include "lyap/CLyapMethod.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CReadConfig.h"
 //#include "trajectory/CTimeSeries.h"
