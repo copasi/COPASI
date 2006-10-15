@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:46 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:16:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 #ifndef COPASI_CExpression
 #define COPASI_CExpression
 
-#include "CEvaluationTree.h"
+#include "function/CEvaluationTree.h"
 #include "report/CCopasiContainer.h"
 
 class CExpression:

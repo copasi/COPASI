@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CKinFunction.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:16:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,9 +22,9 @@
 
 #include <vector>
 
-#include "CFunction.h"
+#include "function/CFunction.h"
 
-#include "CNodeK.h"
+#include "function/CNodeK.h"
 #include "utilities/CReadConfig.h"
 
 class CCopasiObject;

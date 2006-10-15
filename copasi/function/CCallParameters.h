@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:25 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:16:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,8 +21,8 @@
 #define COPASI_CCallParameters
 
 #include <vector>
-#include "CFunctionParameter.h"
-#include "CFunctionParameters.h"
+#include "function/CFunctionParameter.h"
+#include "function/CFunctionParameters.h"
 #include "report/CCopasiObject.h"
 
 /**

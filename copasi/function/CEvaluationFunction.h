@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/Attic/CEvaluationFunction.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:25 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:16:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,9 +13,9 @@
 #ifndef COPASI_CEvaluationFunction
 #define COPASI_CEvaluationFunction
 
-#include "CEvaluationTree.h"
-#include "CFunctionParameters.h"
-#include "CCallParameters.h"
+#include "function/CEvaluationTree.h"
+#include "function/CFunctionParameters.h"
+#include "function/CCallParameters.h"
 #include "report/CCopasiContainer.h"
 #include "utilities/CCopasiVector.h"
 

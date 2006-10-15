@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:27 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:16:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,7 @@
 
 #include "utilities/CReadConfig.h"
 //#include "utilities/CWriteConfig.h"
-#include "CCallParameters.h"
+#include "function/CCallParameters.h"
 
 // symbols for CNodeK types and values
 #define N_NOP '@'

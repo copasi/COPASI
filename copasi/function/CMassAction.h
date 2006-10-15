@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/01 18:02:10 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:16:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 #ifndef COPASI_CMassAction
 #define COPASI_CMassAction
 
-#include "CFunction.h"
+#include "function/CFunction.h"
 
 /** @dia:pos 62.0314,41.4407 */
 /** @dia:route CFunction; v,58.2,35.55,39.4413,82.281,41.4407 */

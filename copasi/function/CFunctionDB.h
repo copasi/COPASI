@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionDB.h,v $
-   $Revision: 1.46 $
+   $Revision: 1.47 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:46 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:16:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 
 #include <string>
 
-#include "CEvaluationTree.h"
+#include "function/CEvaluationTree.h"
 
 #include "report/CCopasiContainer.h"
 #include "utilities/CReadConfig.h"

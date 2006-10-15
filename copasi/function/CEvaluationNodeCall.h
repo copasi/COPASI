@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeCall.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/08/15 11:39:31 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:16:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 
 #include "mathematics.h"
 
-#include "CCallParameters.h"
+#include "function/CCallParameters.h"
 #include "utilities/CCopasiMessage.h"
 
 class CFunction;

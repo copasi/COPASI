@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameters.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:28:26 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:16:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 
 #include "utilities/CReadConfig.h"
 #include "utilities/CCopasiVector.h"
-#include "CFunctionParameter.h"
+#include "function/CFunctionParameter.h"
 #include "report/CCopasiContainer.h"
 
 /** @dia:pos 10.7176,6.51973 */
