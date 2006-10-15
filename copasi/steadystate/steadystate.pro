@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.7 $ $Author: shoops $ $Date: 2006/06/20 13:19:55 $  
+# $Revision: 1.8 $ $Author: gauges $ $Date: 2006/10/15 06:25:28 $  
 ######################################################################
 
 LIB = steadystate
@@ -25,5 +25,28 @@ SOURCES += CEigen.cpp \
            CSteadyStateMethod.cpp \
            CSteadyStateProblem.cpp \
            CSteadyStateTask.cpp
+
+contains(BUILD_OS, Linux){
+    libCOPASI.target   = ../lib/libCOPASI.a
+    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)   
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
+
+    POST_TARGETDEPS += ../lib/libCOPASI.a
+     
+}
+
+contains(BUILD_OS, Darwin){
+    libCOPASI.target   = ../lib/libCOPASI.a
+    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)  
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
+
+    POST_TARGETDEPS += ../lib/libCOPASI.a
+        
+}   
+
 
 DISTFILES +=steadystate.dsp

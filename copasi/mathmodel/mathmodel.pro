@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.4 $ $Author: shoops $ $Date: 2005/02/08 16:33:04 $  
+# $Revision: 1.5 $ $Author: gauges $ $Date: 2006/10/15 06:25:20 $  
 ######################################################################
 
 LIB = mathmodel
@@ -21,3 +21,28 @@ SOURCES += CMathConstant.cpp \
            CMathNode.cpp \
            CMathSymbol.cpp \
            CMathVariable.cpp
+
+
+contains(BUILD_OS, Linux){
+    libCOPASI.target   = ../lib/libCOPASI.a
+    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)   
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
+
+    POST_TARGETDEPS += ../lib/libCOPASI.a
+     
+}
+
+contains(BUILD_OS, Darwin){
+    libCOPASI.target   = ../lib/libCOPASI.a
+    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)  
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
+
+    POST_TARGETDEPS += ../lib/libCOPASI.a
+        
+}   
+
+           

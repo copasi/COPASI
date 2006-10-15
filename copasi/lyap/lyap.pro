@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.2 $ $Author: shoops $ $Date: 2006/06/20 13:18:41 $  
+# $Revision: 1.3 $ $Author: gauges $ $Date: 2006/10/15 06:25:20 $  
 ######################################################################
 
 LIB = lyap
@@ -19,5 +19,28 @@ SOURCES += CLyapWolfMethod.cpp \
            CLyapMethod.cpp \
            CLyapProblem.cpp \
            CLyapTask.cpp
+
+contains(BUILD_OS, Linux){
+    libCOPASI.target   = ../lib/libCOPASI.a
+    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)   
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
+
+    POST_TARGETDEPS += ../lib/libCOPASI.a
+     
+}
+
+contains(BUILD_OS, Darwin){
+    libCOPASI.target   = ../lib/libCOPASI.a
+    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)  
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
+
+    POST_TARGETDEPS += ../lib/libCOPASI.a
+        
+}   
+
 
 DISTFILES += lyaponov.dsp

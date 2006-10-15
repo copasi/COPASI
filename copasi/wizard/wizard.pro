@@ -21,6 +21,29 @@ HEADERS += \
            
 SOURCES += \
            wizard.cpp
+
+contains(BUILD_OS, Linux){
+    libCOPASIGUI.target   = ../lib/libCOPASIGUI.a
+    libCOPASIGUI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASIGUI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)   
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASIGUI
+
+    POST_TARGETDEPS += ../lib/libCOPASIGUI.a
+     
+}
+
+contains(BUILD_OS, Darwin){
+    libCOPASIGUI.target   = ../lib/libCOPASIGUI.a
+    libCOPASIGUI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASIGUI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)  
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASIGUI
+
+    POST_TARGETDEPS += ../lib/libCOPASIGUI.a
+        
+}   
+
                    
 DISTFILES += wizard.dsp \
              help_html/figures/*.jpg \

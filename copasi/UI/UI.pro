@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.133 $ $Author: ssahle $ $Date: 2006/09/18 13:40:16 $  
+# $Revision: 1.134 $ $Author: gauges $ $Date: 2006/10/15 06:25:18 $  
 ######################################################################
 
 TEMPLATE = app
@@ -21,7 +21,6 @@ COPASI_LIBS += lyap
 contains(DEFINES, HAVE_MML) {
   COPASI_LIBS += mml
 }
-COPASI_LIBS += model
 COPASI_LIBS += optimization
 COPASI_LIBS += plot
 COPASI_LIBS += randomGenerator
@@ -37,6 +36,7 @@ COPASI_LIBS += tss
 COPASI_LIBS += utilities
 COPASI_LIBS += odepack++
 COPASI_LIBS += wizard
+COPASI_LIBS += model
 
 contains(BUILD_OS, WIN32) {
   RC_FILE = CopasiUI.rc
@@ -426,7 +426,29 @@ release {
            TSSWidget.cpp
 }
 
+contains(BUILD_OS, Linux){
+    libCOPASIGUI.target   = ../lib/libCOPASIGUI.a
+    libCOPASIGUI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASIGUI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP); ar d $@ main.o   
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASIGUI
 
+    POST_TARGETDEPS += ../lib/libCOPASIGUI.a
+     
+}
+
+contains(BUILD_OS, Darwin){
+    libCOPASIGUI.target   = ../lib/libCOPASIGUI.a
+    libCOPASIGUI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASIGUI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP) ; ar d $@ main.o 
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASIGUI
+
+    POST_TARGETDEPS += ../lib/libCOPASIGUI.a
+        
+}   
+
+ 
 DISTFILES += CopasiUI.dsp \
              CopasiUI.rc \
              resource.h \

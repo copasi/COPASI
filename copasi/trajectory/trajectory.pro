@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.8 $ $Author: shoops $ $Date: 2006/07/06 17:03:56 $  
+# $Revision: 1.9 $ $Author: gauges $ $Date: 2006/10/15 06:25:28 $  
 ######################################################################
 
 LIB = trajectory
@@ -37,5 +37,31 @@ SOURCES += CHybridMethod.cpp \
            CTrajectoryMethod.cpp \
            CTrajectoryProblem.cpp \
            CTrajectoryTask.cpp
+
+contains(BUILD_OS, Linux){
+    libCOPASI.target   = ../lib/libCOPASI.a
+    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)   
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
+
+    POST_TARGETDEPS += ../lib/libCOPASI.a
+     
+}
+
+contains(BUILD_OS, Darwin){
+
+    message($$OBJECTS)
+
+    libCOPASI.target   = ../lib/libCOPASI.a
+    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)  
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
+
+    POST_TARGETDEPS += ../lib/libCOPASI.a
+        
+}   
+
 
 DISTFILES += trajectory.dsp

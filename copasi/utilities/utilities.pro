@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.21 $ $Author: shoops $ $Date: 2006/06/20 13:20:18 $  
+# $Revision: 1.22 $ $Author: gauges $ $Date: 2006/10/15 06:25:29 $  
 ######################################################################
 
 LIB = utilities
@@ -61,5 +61,28 @@ SOURCES += CAnnotatedMatrix.cpp \
            CTableCell.cpp \
            CVersion.cpp \
            utility.cpp
+
+contains(BUILD_OS, Linux){
+    libCOPASI.target   = ../lib/libCOPASI.a
+    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)   
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
+
+    POST_TARGETDEPS += ../lib/libCOPASI.a
+     
+}
+
+contains(BUILD_OS, Darwin){
+    libCOPASI.target   = ../lib/libCOPASI.a
+    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)  
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
+
+    POST_TARGETDEPS += ../lib/libCOPASI.a
+        
+}   
+
 
 DISTFILES += utilities.dsp

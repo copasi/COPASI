@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.14 $ $Author: shoops $ $Date: 2006/06/20 13:19:50 $  
+# $Revision: 1.15 $ $Author: gauges $ $Date: 2006/10/15 06:25:24 $  
 ######################################################################
 
 LIB = report
@@ -31,5 +31,28 @@ SOURCES += CCopasiContainer.cpp \
            CReportDefinition.cpp \
            CReportDefinitionVector.cpp \
            CReport.cpp 
+
+contains(BUILD_OS, Linux){
+    libCOPASI.target   = ../lib/libCOPASI.a
+    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)   
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
+
+    POST_TARGETDEPS += ../lib/libCOPASI.a
+     
+}
+
+contains(BUILD_OS, Darwin){
+    libCOPASI.target   = ../lib/libCOPASI.a
+    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
+    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)  
+    
+    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
+
+    POST_TARGETDEPS += ../lib/libCOPASI.a
+        
+}   
+
 
 DISTFILES += report.dsp

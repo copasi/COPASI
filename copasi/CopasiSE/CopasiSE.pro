@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.30 $ $Author: shoops $ $Date: 2006/06/20 13:17:03 $  
+# $Revision: 1.31 $ $Author: gauges $ $Date: 2006/10/15 06:25:18 $  
 ######################################################################
 
 TEMPLATE = app
@@ -20,7 +20,6 @@ COPASI_LIBS += elementaryFluxModes
 COPASI_LIBS += fitting
 COPASI_LIBS += function
 COPASI_LIBS += lyap
-COPASI_LIBS += model
 COPASI_LIBS += optimization
 COPASI_LIBS += plot
 COPASI_LIBS += randomGenerator
@@ -35,6 +34,7 @@ COPASI_LIBS += trajectory
 COPASI_LIBS += tss
 COPASI_LIBS += odepack++
 COPASI_LIBS += utilities                   
+COPASI_LIBS += model
 
 contains(BUILD_OS, WIN32) {
   CONFIG += console
