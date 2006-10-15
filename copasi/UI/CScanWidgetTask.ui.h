@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CScanWidgetTask.ui.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:06 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,7 +26,7 @@
 
 #include "copasi.h"
 
-#include "CCopasiSelectionDialog.h"
+#include "CopasiUI/CCopasiSelectionDialog.h"
 
 #include "utilities/CCopasiParameterGroup.h"
 #include "scan/CScanProblem.h"

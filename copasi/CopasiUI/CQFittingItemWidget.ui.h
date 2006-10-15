@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/18 18:33:23 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,11 +12,11 @@
 
 #include <qapplication.h>
 
-#include "CCopasiSelectionDialog.h"
-#include "CQValidator.h"
-#include "CQExperimentSelection.h"
-#include "CQStartValueReset.h"
-#include "qtUtilities.h"
+#include "CopasiUI/CCopasiSelectionDialog.h"
+#include "CopasiUI/CQValidator.h"
+#include "CopasiUI/CQExperimentSelection.h"
+#include "CopasiUI/CQStartValueReset.h"
+#include "CopasiUI/qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"

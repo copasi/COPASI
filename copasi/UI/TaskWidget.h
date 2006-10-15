@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/18 13:02:43 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 #include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
-#include "copasiWidget.h"
+#include "CopasiUI/copasiWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

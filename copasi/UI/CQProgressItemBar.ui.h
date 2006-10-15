@@ -1,16 +1,16 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQProgressItemBar.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/11 13:05:30 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "qtUtilities.h"
+#include "CopasiUI/qtUtilities.h"
 
 bool CQProgressItemBar::initFromProcessReportItem(CProcessReportItem * pItem)
 {

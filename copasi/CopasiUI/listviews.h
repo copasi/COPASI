@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/listviews.h,v $
-   $Revision: 1.112 $
+   $Revision: 1.113 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/09/18 13:06:29 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 #include <qlistview.h>
 
 #include "copasi.h"
-#include "Tree.h"
+#include "CopasiUI/Tree.h"
 
 class DataModelGUI;
 

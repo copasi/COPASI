@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingResult.ui.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/19 15:57:09 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,7 @@
 #include "qmessagebox.h"
 #include "qregexp.h"
 
-#include "CopasiFileDialog.h"
+#include "CopasiUI/CopasiFileDialog.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "parameterFitting/CFitTask.h"
@@ -37,7 +37,7 @@
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
 
-#include "qtUtilities.h"
+#include "CopasiUI/qtUtilities.h"
 
 void CQFittingResult::init()
 {

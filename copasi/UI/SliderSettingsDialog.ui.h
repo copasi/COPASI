@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/SliderSettingsDialog.ui.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/09/06 09:04:47 $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,8 +29,8 @@
 
 #include "copasi.h"
 
-#include "qtUtilities.h"
-#include "CCopasiSelectionDialog.h"
+#include "CopasiUI/qtUtilities.h"
+#include "CopasiUI/CCopasiSelectionDialog.h"
 
 #include "utilities/CSlider.h"
 

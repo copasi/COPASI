@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SensitivitiesWidget.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/08/08 13:29:07 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 #include "copasi.h"
 //#include <qvariant.h>
 //#include <qwidget.h>
-#include "TaskWidget.h"
+#include "CopasiUI/TaskWidget.h"
 #include "sensitivities/CSensProblem.h"
 
 class QComboBox;

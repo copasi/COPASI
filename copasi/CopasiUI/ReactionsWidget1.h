@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/ReactionsWidget1.h,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/29 15:15:27 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 #ifndef REACTIONS_WIDGET1_H
 #define REACTIONS_WIDGET1_H
 
-#include "copasiWidget.h"
+#include "CopasiUI/copasiWidget.h"
 #include "model/CReactionInterface.h"
 
 class QVBoxLayout;

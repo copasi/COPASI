@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQFittingItemWidget.h,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/18 18:33:23 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
  ** Created: Fri Aug 18 12:41:10 2006
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.17 2006/08/18 18:33:23 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.18 2006/10/15 06:57:33 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,7 +25,7 @@
 #include <qvariant.h>
 #include <qpixmap.h>
 #include <qwidget.h>
-#include "TaskWidget.h"
+#include "CopasiUI/TaskWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

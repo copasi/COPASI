@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:43 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 #ifndef FUNCTION_WIDGET_H
 #define FUNCTION_WIDGET_H
 
-#include "CopasiTableWidget.h"
+#include "CopasiUI/CopasiTableWidget.h"
 
 class FunctionWidget : public CopasiTableWidget
   {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CReportDefinitionSelect.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:42 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,7 @@ Contact: Please contact lixu1@vt.edu.
 
 #include <qvariant.h>
 #include <qdialog.h>
-#include <CopasiFileDialog.h>
+#include "CopasiUI/CopasiFileDialog.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

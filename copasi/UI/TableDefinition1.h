@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition1.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  **
  ** Created: Wed Aug 6 22:43:06 2003
  **      by: Liang Xu
-($Id: TableDefinition1.h,v 1.13 2006/04/27 01:27:46 shoops Exp $)
+($Id: TableDefinition1.h,v 1.14 2006/10/15 06:57:33 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -27,7 +27,7 @@
 #include <qvariant.h>
 #include <qwidget.h>
 #include <qlistbox.h>
-#include "copasiWidget.h"
+#include "CopasiUI/copasiWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQOptimizationWidget.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/13 18:02:22 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form interface generated from reading ui file 'CQOptimizationWidget.ui'
  **
  ** Created: Thu Jul 13 13:57:39 2006
- **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.7 2006/07/13 18:02:22 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQOptimizationWidget.h,v 1.8 2006/10/15 06:57:33 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -24,7 +24,7 @@
 
 #include <qvariant.h>
 #include <qpixmap.h>
-#include "TaskWidget.h"
+#include "CopasiUI/TaskWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

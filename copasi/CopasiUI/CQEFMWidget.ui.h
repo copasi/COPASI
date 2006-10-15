@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQEFMWidget.ui.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:42 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,10 +13,10 @@
 #include <qmessagebox.h>
 #include <qcheckbox.h>
 
-#include "CQTaskBtnWidget.h"
-#include "CQTaskHeaderWidget.h"
-#include "CProgressBar.h"
-#include "qtUtilities.h"
+#include "CopasiUI/CQTaskBtnWidget.h"
+#include "CopasiUI/CQTaskHeaderWidget.h"
+#include "CopasiUI/CProgressBar.h"
+#include "CopasiUI/qtUtilities.h"
 
 #include "copasi.h"
 

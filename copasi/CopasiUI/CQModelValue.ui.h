@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQModelValue.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/12 14:26:37 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,7 @@
 
 #include <qmessagebox.h>
 
-#include "qtUtilities.h"
+#include "CopasiUI/qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"

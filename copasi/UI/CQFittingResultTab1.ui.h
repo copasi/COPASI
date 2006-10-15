@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingResultTab1.ui.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:41 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,7 +29,7 @@
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
 
-#include "qtUtilities.h"
+#include "CopasiUI/qtUtilities.h"
 
 void CQFittingResultTab1::load(const CFitProblem * pProblem)
 {

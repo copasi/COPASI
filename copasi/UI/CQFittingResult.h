@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /home/cvs/copasi_dev/copasi/CopasiUI/CQFittingResult.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/03/22 16:52:54 $
+   $Date: 2006/04/27 01:27:41 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form interface generated from reading ui file 'CQFittingResult.ui'
  **
  ** Created: Wed Mar 22 11:31:14 2006
- **      by: The User Interface Compiler ($Id: CQFittingResult.h,v 1.1 2006/03/22 16:52:54 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQFittingResult.h,v 1.2 2006/04/27 01:27:41 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,8 +23,8 @@
 #define CQFITTINGRESULT_H
 
 #include <qvariant.h>
-#include "copasiWidget.h"
-#include "CQFittingResultTab1.h"
+#include "CopasiUI/copasiWidget.h"
+#include "CopasiUI/CQFittingResultTab1.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

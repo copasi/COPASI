@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQTrajectoryWidget.ui.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:42 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,11 +26,11 @@
 
 #include "copasi.h"
 
-#include "CQTaskBtnWidget.h"
-#include "CQTaskHeaderWidget.h"
-#include "CProgressBar.h"
-#include "CQValidator.h"
-#include "qtUtilities.h"
+#include "CopasiUI/CQTaskBtnWidget.h"
+#include "CopasiUI/CQTaskHeaderWidget.h"
+#include "CopasiUI/CProgressBar.h"
+#include "CopasiUI/CQValidator.h"
+#include "CopasiUI/qtUtilities.h"
 
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"

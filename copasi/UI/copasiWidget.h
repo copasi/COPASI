@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiWidget.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:18:05 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 #if !defined COPASI_WIDGET_H
 #define COPASI_WIDGET_H
 #include <qwidget.h>
-#include "listviews.h"
+#include "CopasiUI/listviews.h"
 
 class DataModelGUI;
 class QResizeEvent;

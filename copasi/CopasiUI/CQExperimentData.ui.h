@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:42 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,10 +18,10 @@
 
 #include "copasi.h"
 
-#include "CCopasiSelectionDialog.h"
-#include "CopasiFileDialog.h"
-#include "CQValidator.h"
-#include "qtUtilities.h"
+#include "CopasiUI/CCopasiSelectionDialog.h"
+#include "CopasiUI/CopasiFileDialog.h"
+#include "CopasiUI/CQValidator.h"
+#include "CopasiUI/qtUtilities.h"
 
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"

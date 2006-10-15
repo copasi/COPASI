@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TimeSeriesSubwidget.ui.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
  ** destructor.
  *****************************************************************************/
 
-#include "qtUtilities.h"
+#include "CopasiUI/qtUtilities.h"
 #include <CopasiFileDialog.h>
 #include "optimization/COptProblem.h"
 #include "optimization/COptTask.h"

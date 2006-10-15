@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CQOptimizationWidget.ui.h,v $
-   $Revision: 1.13 $
+   $Revision: 1.14 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/31 16:48:55 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,12 +15,12 @@
 #include <qtoolbutton.h>
 #include <qmessagebox.h>
 
-#include "CQTaskBtnWidget.h"
-#include "CQTaskHeaderWidget.h"
-#include "CQFittingItemWidget.h"
-#include "CProgressBar.h"
-#include "CCopasiSelectionDialog.h"
-#include "qtUtilities.h"
+#include "CopasiUI/CQTaskBtnWidget.h"
+#include "CopasiUI/CQTaskHeaderWidget.h"
+#include "CopasiUI/CQFittingItemWidget.h"
+#include "CopasiUI/CProgressBar.h"
+#include "CopasiUI/CCopasiSelectionDialog.h"
+#include "CopasiUI/qtUtilities.h"
 
 #include "report/CKeyFactory.h"
 #include "optimization/COptTask.h"

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CopasiTableWidget.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/06/29 15:53:16 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,7 @@
 
 #include <qtable.h>
 #include "copasi.h"
-#include "copasiWidget.h"
+#include "CopasiUI/copasiWidget.h"
 
 class QPushButton;
 class QGridLayout;

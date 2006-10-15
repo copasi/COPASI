@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/ModelValuesWidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/10 15:45:55 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 #ifndef MODELVALUES_WIDGET_H
 #define MODELVALUES_WIDGET_H
 
-#include "CopasiTableWidget.h"
+#include "CopasiUI/CopasiTableWidget.h"
 
 class ModelValuesWidget : public CopasiTableWidget
   {

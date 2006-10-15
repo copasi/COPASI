@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/StateSubwidget.ui.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/25 18:19:25 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,8 +26,8 @@
 
 #include "copasi.h"
 
-#include "qtUtilities.h"
-#include "listviews.h"
+#include "CopasiUI/qtUtilities.h"
+#include "CopasiUI/listviews.h"
 
 #include "model/CChemEqInterface.h"
 #include "model/CModel.h"

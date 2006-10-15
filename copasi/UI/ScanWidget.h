@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ScanWidget.h,v $
-   $Revision: 1.57 $
+   $Revision: 1.58 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:45 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 #include "copasi.h"
 #include <qvariant.h>
 #include <qwidget.h>
-#include "copasiWidget.h"
+#include "CopasiUI/copasiWidget.h"
 #include "utilities/CVector.h"
 #include <vector>
 

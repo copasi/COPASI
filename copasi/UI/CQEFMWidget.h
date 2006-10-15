@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQEFMWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/30 17:13:49 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form interface generated from reading ui file 'CQEFMWidget.ui'
  **
  ** Created: Wed Aug 30 12:09:12 2006
- **      by: The User Interface Compiler ($Id: CQEFMWidget.h,v 1.1 2006/08/30 17:13:49 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: CQEFMWidget.h,v 1.2 2006/10/15 06:57:33 gauges Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,7 +23,7 @@
 #define CQEFMWIDGET_H
 
 #include <qvariant.h>
-#include "TaskWidget.h"
+#include "CopasiUI/TaskWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

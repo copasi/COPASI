@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SteadyStateWidget.h,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:27:46 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 #include "copasi.h"
 //#include <qvariant.h>
 //#include <qwidget.h>
-#include "TaskWidget.h"
+#include "CopasiUI/TaskWidget.h"
 
 class QCheckBox;
 class QFrame;

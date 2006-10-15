@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/SSAWidget.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/12 15:16:20 $
+   $Author: gauges $
+   $Date: 2006/10/15 06:57:33 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
 #define SSAWIDGET_H
 
 //#include "copasi.h"
-#include "TaskWidget.h"
+#include "CopasiUI/TaskWidget.h"
 //#include "ssa/CSSATask.h"
 
 class CSSATask;
