@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridNextReactionLSODAMethod.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/05/15 12:38:24 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:31:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,7 @@
 #ifndef COPASI_CHybridNextReactionLSODAMethod
 #define COPASI_CHybridNextReactionLSODAMethod
 
-#include "CHybridMethodLSODA.h"
+#include "trajectory/CHybridMethodLSODA.h"
 
 class CHybridNextReactionLSODAMethod : public CHybridMethodLSODA
   {

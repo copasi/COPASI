@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.h,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 15:56:07 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:31:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,9 +23,9 @@
 
 #include <string>
 
-#include "CCopasiParameterGroup.h"
-#include "CCopasiTask.h"
-#include "CReadConfig.h"
+#include "utilities/CCopasiParameterGroup.h"
+#include "utilities/CCopasiTask.h"
+#include "utilities/CReadConfig.h"
 
 class CProcessReport;
 

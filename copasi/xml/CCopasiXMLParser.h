@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.h,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/17 17:09:44 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:31:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,8 +26,8 @@
 #include <string>
 #include <sstream>
 
-#include "CExpat.h"
-#include "CXMLHandler.h"
+#include "xml/CExpat.h"
+#include "xml/CXMLHandler.h"
 #include "utilities/CCopasiVector.h"
 #include "report/CKeyFactory.h"
 

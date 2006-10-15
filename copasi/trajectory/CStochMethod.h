@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CStochMethod.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: ssahle $
-   $Date: 2006/05/05 15:06:34 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:31:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,7 +15,7 @@
 
 #include <set>
 #include <vector>
-#include "CTrajectoryMethod.h"
+#include "trajectory/CTrajectoryMethod.h"
 #include "utilities/CDependencyGraph.h"
 
 class CModel;

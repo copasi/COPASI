@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.h,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/05/06 03:10:24 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:31:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,10 +23,10 @@
 #ifndef COPASI_CTrajectoryTask
 #define COPASI_CTrajectoryTask
 
-#include "CTrajectoryMethod.h"
+#include "trajectory/CTrajectoryMethod.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CReadConfig.h"
-#include "CTimeSeries.h"
+#include "trajectory/CTimeSeries.h"
 
 class CTrajectoryProblem;
 class CTrajectoryMethod;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/CTSSTask.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:27 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:31:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,7 @@
 #include "utilities/CCopasiTask.h"
 #include "utilities/CMatrix.h"
 #include "utilities/CReadConfig.h"
-#include "CTSSMethod.h"
+#include "tss/CTSSMethod.h"
 
 class CTSSProblem;
 class CState;

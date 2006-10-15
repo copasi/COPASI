@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXML.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/15 12:28:29 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:31:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 #ifndef COPASI_CCopasiXML
 #define COPASI_CCopasiXML
 
-#include "CCopasiXMLInterface.h"
+#include "xml/CCopasiXMLInterface.h"
 #include "utilities/CVersion.h"
 
 class CCopasiParameter;

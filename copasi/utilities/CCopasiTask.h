@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTask.h,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/12 15:16:20 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:31:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -23,7 +23,7 @@
 
 #include <string>
 
-#include "COutputHandler.h"
+#include "utilities/COutputHandler.h"
 
 #include "report/CCopasiContainer.h"
 #include "report/CReport.h"

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:31:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,8 +28,8 @@
 #include "utilities/CCopasiTask.h"
 #include "utilities/CMatrix.h"
 #include "utilities/CReadConfig.h"
-#include "CSteadyStateMethod.h"
-#include "CEigen.h"
+#include "steadystate/CSteadyStateMethod.h"
+#include "steadystate/CEigen.h"
 
 class CSteadyStateProblem;
 class CState;

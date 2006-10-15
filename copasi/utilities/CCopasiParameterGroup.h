@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiParameterGroup.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:42 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:31:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,8 +16,8 @@
 #include <string>
 #include <vector>
 
-#include "CCopasiParameter.h"
-#include "CCopasiMessage.h"
+#include "utilities/CCopasiParameter.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  *  CCopasiParameterGroup class.

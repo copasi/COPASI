@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSort.h,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/08/09 15:05:37 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:31:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 #include <algorithm>
 #include <float.h>
 
-#include "CVector.h"
+#include "utilities/CVector.h"
 
 /**
  * The base functor providing the default compare method for the

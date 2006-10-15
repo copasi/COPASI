@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CHybridNextReactionRKMethod.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:16 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:31:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,7 @@
 #ifndef COPASI_CHybridNextReactionRKMethod
 #define COPASI_CHybridNextReactionRKMethod
 
-#include "CHybridMethod.h"
+#include "trajectory/CHybridMethod.h"
 
 class CHybridNextReactionRKMethod : public CHybridMethod
   {

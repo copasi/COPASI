@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CMCAMethod.h,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/06/20 13:19:55 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:31:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,7 +17,7 @@
 #include "utilities/CMatrix.h"
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CAnnotatedMatrix.h"
-#include "CSteadyStateMethod.h"
+#include "steadystate/CSteadyStateMethod.h"
 
 #define MCA_OK 0
 #define MCA_SINGULAR 1

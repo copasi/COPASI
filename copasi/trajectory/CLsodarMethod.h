@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CLsodarMethod.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/04 17:41:45 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:31:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 #include <sstream>
 #include "utilities/CVector.h"
 
-#include "CTrajectoryMethod.h"
+#include "trajectory/CTrajectoryMethod.h"
 
 #include "odepack++/CLSODAR.h"
 

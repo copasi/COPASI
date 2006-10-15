@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CMatrix.h,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Author: gauges $
+   $Date: 2006/10/15 08:31:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -18,7 +18,7 @@
 
 #include "copasi.h"
 
-#include "CVector.h"
+#include "utilities/CVector.h"
 
 template<typename CType> class CMatrix;
 
