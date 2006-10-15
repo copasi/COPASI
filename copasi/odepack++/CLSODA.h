@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/odepack++/CLSODA.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/06 15:13:43 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:38:41 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 #ifndef ODEPACK_CLSODA
 #define ODEPACK_CLSODA
 
-#include "CInternalSolver.h"
+#include "odepack++/CInternalSolver.h"
 
 class PJAC;
 class SLVS;
