@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/Attic/CExtremeCurrentCalculator.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/12 13:21:04 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:04:06 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 #ifndef COPASI_EXTREME_CURRENT_CALCULATOR
 #define COPASI_EXTREME_CURRENT_CALCULATOR
 
-#include "CEFMAlgorithm.h"
+#include "elementaryFluxModes/CEFMAlgorithm.h"
 
 class CExtremeCurrentCalculator : public CEFMAlgorithm
   {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMAlgorithm.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/12 13:21:04 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:04:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,8 +21,8 @@
 #ifndef COPASI_CEFMAlgorithm
 #define COPASI_CEFMAlgorithm
 
-#include "CEFMMethod.h"
-#include "CFluxMode.h"
+#include "elementaryFluxModes/CEFMMethod.h"
+#include "elementaryFluxModes/CFluxMode.h"
 
 #include "utilities/CMatrix.h"
 

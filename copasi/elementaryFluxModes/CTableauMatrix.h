@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CTableauMatrix.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/09/12 20:02:43 $
+   $Author: gauges $
+   $Date: 2006/10/15 07:04:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -22,7 +22,7 @@
 #define COPASI_CTableauMatrix
 
 #include <list>
-#include "CTableauLine.h"
+#include "elementaryFluxModes/CTableauLine.h"
 
 class CTableauMatrix
   {
