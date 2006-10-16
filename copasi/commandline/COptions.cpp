@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/21 17:55:22 $
+   $Date: 2006/10/16 13:03:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -180,10 +180,20 @@ std::string COptions::getCopasiDir(void)
 #ifdef Darwin
   if (CopasiDir == "")
     {
-      CFURLRef pluginRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-      CFStringRef macPath = CFURLCopyFileSystemPath(pluginRef,
-                            kCFURLPOSIXPathStyle);
-      CopasiDir = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+      CFBundleRef MainBundleRef = NULL;
+      MainBundleRef = CFBundleGetMainBundle();
+
+      if (MainBundleRef != NULL)
+        {
+          CFURLRef pluginRef = NULL;
+          pluginRef = CFBundleCopyBundleURL(MainBundleRef);
+
+          if (pluginRef != NULL)
+            {
+              CFStringRef macPath = CFURLCopyFileSystemPath(pluginRef, kCFURLPOSIXPathStyle);
+              CopasiDir = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+            }
+        }
     }
 #endif // Darwin
 
