@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/copasiui3window.cpp,v $
-   $Revision: 1.182 $
+   $Revision: 1.183 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/10/08 10:25:01 $
+   $Date: 2006/10/16 11:04:03 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -930,6 +930,95 @@ void CopasiUI3Window::slotTutorialWizard()
   tutorialWizard->show();
 }
 
+void CopasiUI3Window::importSBMLFromString(const std::string& sbmlDocumentText)
+{
+  bool success = true;
+
+  ListViews::commit();
+
+  if (!sbmlDocumentText.empty())
+    {
+      if (dataModel && CCopasiDataModel::Global->isChanged())
+        {
+          switch (QMessageBox::information(this, "COPASI",
+                                           "The document contains unsaved changes\n"
+                                           "Do you want to save the changes before exiting?",
+                                           "&Save", "&Discard", "Cancel", 0, 2))
+            {
+            case 0:                                                                                     // Save clicked or Alt+S pressed or Enter pressed.
+              slotFileSave();
+              break;
+
+            case 1:                                                                                     // Discard clicked or Alt+D pressed
+              break;
+
+            case 2:                                                                                     // Cancel clicked or Escape pressed
+              return;
+              break;
+            }
+
+          ListViews::notify(ListViews::MODEL, ListViews::DELETE,
+                            CCopasiDataModel::Global->getModel()->getKey());
+        }
+
+      ListViews::switchAllListViewsToWidget(0, "");
+
+      if (!dataModel)
+        {
+          dataModel = new DataModelGUI(); // create a new data model
+        }
+
+      QCursor oldCursor = cursor();
+      setCursor(Qt::WaitCursor);
+
+      try
+        {
+          success = dataModel->importSBMLFromString(sbmlDocumentText);
+        }
+
+      catch (CCopasiException except)
+        {
+          success = false;
+        }
+
+      setCursor(oldCursor);
+
+      if (!success)
+        {
+          QString Message = "Error while importing SBML model!\n\n";
+          Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
+
+          QMessageBox::critical(this, QString("Import Error"), Message,
+                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+
+          dataModel->createModel();
+        }
+
+      /* still check for warnings.
+       * Maybe events or rules were ignored while reading
+       * the file.
+       */
+      if (success)
+        {
+          this->checkPendingMessages();
+        }
+
+      ListViews::notify(ListViews::MODEL, ListViews::ADD,
+                        CCopasiDataModel::Global->getModel()->getKey());
+
+      //if (!bobject_browser_open)
+      mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
+      msave_button->setEnabled(true);
+      mpFileMenu->setItemEnabled(nsave_menu_id, true);
+
+      ListViews::switchAllListViewsToWidget(1, "");
+    }
+  updateTitle();
+
+  mSaveAsRequired = true;
+}
+
 void CopasiUI3Window::slotImportSBML(QString file)
 {
   bool success = true;
@@ -1401,4 +1490,41 @@ void CopasiUI3Window::refreshRecentSBMLFileMenu()
                                       SLOT(slotOpenRecentSBMLFile(int)),
                                       0,
                                       Index);
+}
+
+std::string CopasiUI3Window::exportSBMLToString()
+{
+  ListViews::commit();
+
+  std::string ret;
+
+  if (dataModel)
+    {
+      QCursor oldCursor = cursor();
+      setCursor(Qt::WaitCursor);
+      bool success = true;
+      try
+        {
+          ret = dataModel->exportSBMLToString();
+        }
+      catch (CCopasiException except)
+        {
+          success = false;
+          setCursor(oldCursor);
+          QMessageBox::critical(this, QString("File Error"), QString("Error. Could not do SBML export!"), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        }
+
+      setCursor(oldCursor);
+
+      if (!success)
+        {
+          QString Message = "Error while SBML model!\n\n";
+          Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
+
+          QMessageBox::critical(this, QString("File Error"), Message,
+                                QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+          CCopasiMessage::clearDeque();
+        }
+    }
+  return ret;
 }

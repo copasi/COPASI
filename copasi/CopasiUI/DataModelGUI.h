@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/10/15 06:57:33 $
+   $Date: 2006/10/16 11:04:03 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,9 @@ class DataModelGUI
     bool createModel();
     bool saveModel(const std::string & fileName, bool overwriteFile = false);
 
+    bool importSBMLFromString(const std::string & sbmlDocumentText);
     bool importSBML(const std::string & fileName);
+    std::string exportSBMLToString();
     bool exportSBML(const std::string & fileName, bool overwriteFile , int sbmlLevel, int sbmlVersion, bool exportIncomplete);
     bool exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
 

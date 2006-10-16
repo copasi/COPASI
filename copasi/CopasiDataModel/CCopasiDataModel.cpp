@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.82 $
+   $Revision: 1.83 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/10/11 03:29:45 $
+   $Date: 2006/10/16 11:04:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -446,6 +446,42 @@ bool CCopasiDataModel::newModel(CModel * pModel)
   return true;
 }
 
+bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText, CProcessReport* pImportHandler)
+{
+  CCopasiMessage::clearDeque();
+
+  SBMLImporter importer;
+  importer.setImportHandler(pImportHandler);
+  mCopasi2SBMLMap.clear();
+  CModel* pModel = NULL;
+
+  SBMLDocument * pSBMLDocument = NULL;
+  std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
+
+  try
+    {
+      pModel = importer.parseSBML(sbmlDocumentText, mpFunctionList, pSBMLDocument, Copasi2SBMLMap);
+    }
+  catch (CCopasiException except)
+    {
+      importer.restoreFunctionDB();
+      throw except;
+    }
+
+  if (pModel == NULL)
+    {
+      importer.restoreFunctionDB();
+      return false;
+    }
+
+  pdelete(mpCurrentSBMLDocument);
+
+  mpCurrentSBMLDocument = pSBMLDocument;
+  mCopasi2SBMLMap = Copasi2SBMLMap;
+
+  return newModel(pModel);
+}
+
 bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* pImportHandler)
 {
   CCopasiMessage::clearDeque();
@@ -510,6 +546,22 @@ bool CCopasiDataModel::importSBML(const std::string & fileName, CProcessReport* 
   mCopasi2SBMLMap = Copasi2SBMLMap;
 
   return newModel(pModel);
+}
+
+std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler)
+{
+  CCopasiMessage::clearDeque();
+
+  SBMLExporter exporter;
+  exporter.setExportHandler(pExportHandler);
+  std::string str = exporter.exportSBMLToString(mpModel);
+
+  if (mpCurrentSBMLDocument != exporter.getSBMLDocument())
+    pdelete(mpCurrentSBMLDocument);
+
+  mpCurrentSBMLDocument = exporter.getSBMLDocument();
+
+  return str;
 }
 
 bool CCopasiDataModel::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete, CProcessReport* pExportHandler)

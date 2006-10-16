@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.h,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/09/08 12:32:23 $
+   $Date: 2006/10/16 11:04:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -297,6 +297,13 @@ class SBMLExporter
      ** Destructor for the exporter.
      */
     virtual ~SBMLExporter();
+
+    /**
+     ** This method takes a copasi CModel object, crerates an SBMLDocument from
+     ** it and returns it as a string.
+     ** On failure an empty string is returned.
+     */
+    std::string exportSBMLToString(CModel* copasiModel, int sbmlLevel = 2, int sbmlVersion = 1, bool incompleteExport = false);
 
     /**
      ** This method takes a copasi CModel object, crerates an SBMLDocument from

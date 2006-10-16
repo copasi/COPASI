@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.159 $
+   $Revision: 1.160 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/10/11 03:25:13 $
+   $Date: 2006/10/16 11:04:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1257,11 +1257,33 @@ void SBMLImporter::replaceSubstanceOnlySpeciesNodes(ConverterASTNode* node, cons
 
 /**
  * Function reads an SBML file with libsbml and converts it to a Copasi CModel
+ */
+CModel* SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument*& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+{
+  // convert filename to the locale encoding
+  std::ifstream file(utf8ToLocale(filename).c_str());
+  if (!file)
+    {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 31, filename.c_str());
+    }
+  std::ostringstream stringStream;
+  char c;
+  while (file.get(c))
+    {
+      stringStream << c;
+    }
+  file.clear();
+  file.close();
+  return this->parseSBML(stringStream.str(), funDB, pSBMLDocument, copasi2sbmlmap);
+}
+
+/**
+ * Function parses an SBML document with libsbml and converts it to a Copasi CModel
  * object which is returned. Deletion of the returned pointer is up to the
  * caller.
  */
 CModel*
-SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument *& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
+SBMLImporter::parseSBML(const std::string& sbmlDocumentText, CFunctionDB* funDB, SBMLDocument *& pSBMLDocument, std::map<CCopasiObject*, SBase*>& copasi2sbmlmap)
 {
   this->mFastReactionsEncountered = false;
   this->mpCopasiModel = NULL;
@@ -1281,7 +1303,7 @@ SBMLImporter::readSBML(std::string filename, CFunctionDB* funDB, SBMLDocument *&
                                                   &mTotalSteps);
         }
 
-      SBMLDocument* sbmlDoc = reader->readSBML(utf8ToLocale(filename));
+      SBMLDocument* sbmlDoc = reader->readSBMLFromString(sbmlDocumentText);
       sbmlDoc->validate();
       if (sbmlDoc->getNumFatals() > 0)
         {

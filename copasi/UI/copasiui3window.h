@@ -1,14 +1,15 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.58 $
+   $Revision: 1.59 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/08/13 17:00:12 $
+   $Date: 2006/10/16 11:04:03 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+#include <string>
 
 #include <qmainwindow.h>
 #include <qdialog.h>
@@ -90,6 +91,8 @@ class CopasiUI3Window : public QMainWindow
     ScanWidget* getScanWidget();
     void checkPendingMessages();
     void suspendAutoSave(const bool & suspend);
+    void importSBMLFromString(const std::string& sbmlDocumentText);
+    std::string exportSBMLToString();
 
   protected:
     DataModelGUI* dataModel; // to keep track of the data model..

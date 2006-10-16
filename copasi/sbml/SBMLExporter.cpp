@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/Attic/SBMLExporter.cpp,v $
-   $Revision: 1.97 $
+   $Revision: 1.98 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/10/10 14:03:59 $
+   $Date: 2006/10/16 11:04:02 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -73,11 +73,10 @@ SBMLExporter::~SBMLExporter()
 
 /**
  ** This method takes a copasi CModel object, creates an SBMLDocument from
- ** it and writes it to a file. The filename is given as the second
- ** argument to the function. The function return "true" on success and
- ** "false" on failure.
+ ** it and returns it as a string.
+ ** On failure an empty string is returned.
  */
-bool SBMLExporter::exportSBML(CModel* copasiModel, std::string sbmlFilename, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool incompleteExport)
+std::string SBMLExporter::exportSBMLToString(CModel* copasiModel, int sbmlLevel , int sbmlVersion , bool incompleteExport)
 {
   this->mHandledSBMLObjects.clear();
   this->mpCopasiModel = copasiModel;
@@ -91,10 +90,37 @@ bool SBMLExporter::exportSBML(CModel* copasiModel, std::string sbmlFilename, boo
       writer->setProgramName("COPASI");
       writer->setProgramVersion(CCopasiDataModel::Global->getVersion()->getVersion().c_str());
 
+      char* d = writer->writeToString(*this->sbmlDocument);
+      std::string returnValue = d;
+      if (d) free(d);
+      pdelete(writer);
+      return returnValue;
+    }
+  else
+    {
+      /* if no SBMLDocument could be created return false */
+      return std::string();
+    }
+}
+
+/**
+ ** This method takes a copasi CModel object, creates an SBMLDocument from
+ ** it and writes it to a file. The filename is given as the second
+ ** argument to the function. The function return "true" on success and
+ ** "false" on failure.
+ */
+bool SBMLExporter::exportSBML(CModel* copasiModel, std::string sbmlFilename, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool incompleteExport)
+{
+  bool success = true;
+  this->mHandledSBMLObjects.clear();
+  this->mpCopasiModel = copasiModel;
+  /* create a string that represents the SBMLDocument */
+  std::string str = this->exportSBMLToString(copasiModel, sbmlLevel, sbmlVersion, incompleteExport);
+  if (!str.empty())
+    {
       /* check if the file already exisits.
          If yes, write if overwrite is true,
          else create an appropriate  CCopasiMessage. */
-
       std::ifstream testInfile(utf8ToLocale(sbmlFilename).c_str(), std::ios::in);
       if (testInfile && !overwriteFile)
         {
@@ -103,15 +129,16 @@ bool SBMLExporter::exportSBML(CModel* copasiModel, std::string sbmlFilename, boo
           return false;
         }
       /* write the document to a file */
-      bool returnValue = writer->write(*this->sbmlDocument, utf8ToLocale(sbmlFilename));
-      pdelete(writer);
-      return returnValue;
+      std::ofstream outfile(utf8ToLocale(sbmlFilename).c_str(), std::ios::out | std::ios::trunc);
+      outfile << str;
+      outfile.close();
     }
   else
     {
       /* if no SBMLDocument could be created return false */
-      return false;
+      success = false;
     }
+  return success;
 }
 
 /**

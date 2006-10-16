@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/DataModelGUI.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
-   $Author: tjohann $
-   $Date: 2006/09/13 16:30:50 $
+   $Author: gauges $
+   $Date: 2006/10/16 11:04:03 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -326,6 +326,28 @@ bool DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
   return true;
 }
 
+bool DataModelGUI::importSBMLFromString(const std::string & sbmlDocumentText)
+{
+  CProgressBar* tmpBar = new CProgressBar();
+  bool success = false;
+  try
+    {
+      success = CCopasiDataModel::Global->importSBMLFromString(sbmlDocumentText, tmpBar);
+    }
+  catch (CCopasiException except)
+    {
+      pdelete(tmpBar);
+      throw except;
+    }
+
+  mOutputHandlerPlot.setOutputDefinitionVector(CCopasiDataModel::Global->getPlotDefinitionList());
+
+  pdelete(tmpBar);
+
+  linkDataModelToGUI();
+  return success;
+}
+
 bool DataModelGUI::importSBML(const std::string & fileName)
 {
   CProgressBar* tmpBar = new CProgressBar();
@@ -348,6 +370,25 @@ bool DataModelGUI::importSBML(const std::string & fileName)
 
   linkDataModelToGUI();
   return success;
+}
+
+std::string DataModelGUI::exportSBMLToString()
+{
+  CProgressBar* tmpBar = new CProgressBar();
+  std::string str;
+  try
+    {
+      str = CCopasiDataModel::Global->exportSBMLToString(tmpBar);
+    }
+  catch (CCopasiException except)
+    {
+      pdelete(tmpBar);
+      throw except;
+    }
+
+  pdelete(tmpBar);
+
+  return str;
 }
 
 bool DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile, int sbmlLevel, int sbmlVersion, bool exportIncomplete)
