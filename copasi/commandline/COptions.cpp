@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/16 13:03:31 $
+   $Date: 2006/10/23 14:10:41 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,8 +190,11 @@ std::string COptions::getCopasiDir(void)
 
           if (pluginRef != NULL)
             {
-              CFStringRef macPath = CFURLCopyFileSystemPath(pluginRef, kCFURLPOSIXPathStyle);
-              CopasiDir = CFStringGetCStringPtr(macPath, CFStringGetSystemEncoding());
+              CFStringRef macPath = NULL;
+              macPath = CFURLCopyFileSystemPath(pluginRef, kCFURLPOSIXPathStyle);
+
+              if (macPath != NULL)
+                CopasiDir = CFStringGetCStringPtr(macPath, kCFStringEncodingUTF8);
             }
         }
     }
