@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/SBMLImporter.cpp,v $
-   $Revision: 1.154.2.3 $
+   $Revision: 1.154.2.4 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/10/11 02:44:08 $
+   $Date: 2006/10/24 18:18:13 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -3089,10 +3089,17 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, std::map<CCopasiObject*, S
               switch (it->second->getTypeCode())
                 {
                 case SBML_COMPARTMENT:
+                  pNode->setName((pObject->getCN() + ",Reference=Volume").c_str());
+                  break;
                 case SBML_SPECIES:
+                  // !!!! Check if this is always correct. Maybe if
+                  // hasOnlySubstanceUnits is set we have to use the amount
+                  // instead. !!!!
+                  pNode->setName((pObject->getCN() + ",Reference=Concentration").c_str());
+                  break;
                   //case SBML_REACTION:
                 case SBML_PARAMETER:
-                  pNode->setName(pObject->getCN().c_str());
+                  pNode->setName((pObject->getCN() + ",Reference=Value").c_str());
                   break;
                 default:
                   fatalError();
