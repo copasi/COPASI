@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.19 $ $Author: gauges $ $Date: 2006/10/15 09:20:58 $  
+# $Revision: 1.20 $ $Author: gauges $ $Date: 2006/10/24 07:09:45 $  
 ######################################################################
 
 LIB = plot
@@ -58,6 +58,10 @@ contains(BUILD_OS, Linux){
     libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
     libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)   
     
+    libCOPASIGUI.target   = ../lib/libCOPASIGUI.a
+    libCOPASIGUI.depends  = $$GUIOBJECTS $(OBJCOMP)
+    libCOPASIGUI.commands = ar crs $@ $$GUIOBJECTS $(GUIOBJCOMP)  
+
     QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
     QMAKE_EXTRA_UNIX_TARGETS += libCOPASIGUI
 
