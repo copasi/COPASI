@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.18 $ $Author: shoops $ $Date: 2006/06/20 13:16:12 $  
+# $Revision: 1.19 $ $Author: gauges $ $Date: 2006/10/25 14:05:52 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -37,6 +37,8 @@ SUBDIRS += wizard
 # Now the excecutables
 SUBDIRS += CopasiSE
 SUBDIRS += CopasiUI
+
+SUBDIRS += bindings
 
 DISTDIRS = $${SUBDIRS}
 DISTDIRS -= mml
