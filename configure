@@ -2343,8 +2343,36 @@ if test x"${QWT_PATH}" != x""; then
   QMAKE_ARG="$QMAKE_ARG QWT_PATH=$QWT_PATH"
 fi
 
+if test x"${SWIG_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG SWIG_PATH=$SWIG_PATH"
+fi
+
+if test x"${ENABLE_JAVA}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG ENABLE_JAVA=$ENABLE_JAVA"
+fi
+
+if test x"${ENABLE_PYTHON}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG ENABLE_PYTHON=$ENABLE_PYTHON"
+fi
+
 if test x"${SBML_PATH}" != x""; then
   QMAKE_ARG="$QMAKE_ARG SBML_PATH=$SBML_PATH"
+fi
+
+if test x"${PYTHON_INCLUDE_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG PYTHON_INCLUDE_PATH=$PYTHON_INCLUDE_PATH"
+fi
+
+if test x"${PYTHON_LIB_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG PYTHON_LIB_PATH=$PYTHON_LIB_PATH"
+fi
+
+if test x"${JAVA_INCLUDE_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG JAVA_INCLUDE_PATH=$JAVA_INCLUDE_PATH"
+fi
+
+if test x"${JAVA_LIB_PATH}" != x""; then
+  QMAKE_ARG="$QMAKE_ARG JAVA_LIB_PATH=$JAVA_LIB_PATH"
 fi
 
 

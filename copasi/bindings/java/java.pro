@@ -12,7 +12,7 @@ COPASI_LIBS += -L../../lib
 LIBS = $$COPASI_LIBS $$LIBS
 
 
-INCLUDEPATH += ../../COPASIGUI
+INCLUDEPATH += ../../
 
 
 isEmpty(SWIG_PATH){
@@ -32,7 +32,7 @@ isEmpty(SWIG_PATH){
 
     wrapper_source.target = copasi_wrapper.cpp
     wrapper_source.depends = java.i
-    wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; mkdir -p java_files ; $$SWIG_PATH/bin/swig -c++ -java -o $$wrapper_source.target -outdir java_files  $$wrapper_source.depends
+    wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; mkdir -p java_files ; $$SWIG_PATH/bin/swig -I../.. -c++ -java -o $$wrapper_source.target -outdir java_files  $$wrapper_source.depends
 
     QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
     PRE_TARGETDEPS += copasi_wrapper.cpp

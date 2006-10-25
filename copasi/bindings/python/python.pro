@@ -12,7 +12,7 @@ COPASI_LIBS += -L../../lib
 LIBS = $$COPASI_LIBS $$LIBS
 
 
-INCLUDEPATH += ../../COPASIGUI
+INCLUDEPATH += ../..
 
 isEmpty(SWIG_PATH){
     # check if the wrapper file is there
@@ -31,7 +31,7 @@ isEmpty(SWIG_PATH){
 
     wrapper_source.target = copasi_wrapper.cpp
     wrapper_source.depends = python.i
-    wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig -c++ -python -o $$wrapper_source.target $$wrapper_source.depends
+    wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig -I../.. -c++ -python -o $$wrapper_source.target $$wrapper_source.depends
 
     QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
     PRE_TARGETDEPS += copasi_wrapper.cpp
