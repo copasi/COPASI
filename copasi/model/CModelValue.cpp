@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModelValue.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/09/07 14:13:30 $
+   $Author: shoops $
+   $Date: 2006/10/25 15:09:38 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -132,14 +132,26 @@ bool CModelEntity::compile()
 
   bool success = mpExpression->compile(listOfContainer);
 
-  setDirectDependencies(mpExpression->getDirectDependencies());
+  switch (mStatus)
+    {
+    case ASSIGNMENT:
+      mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
+      break;
+
+    case ODE:
+      mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
+      break;
+
+    default:
+      break;
+    }
 
   return success;
 }
 
 void CModelEntity::calculate()
 {
-  switch (getStatus())
+  switch (mStatus)
     {
     case ASSIGNMENT:
       *mpValueData = mpExpression->calcValue();
@@ -229,6 +241,12 @@ const C_FLOAT64 & CModelEntity::getRate() const
     return mRate;
   }
 
+CCopasiObject * CModelEntity::getValueReference()
+{return mpValueReference;}
+
+CCopasiObject * CModelEntity::getRateReference()
+{return mpRateReference;}
+
 //***********
 
 void CModelEntity::setValue(const C_FLOAT64 & value)
@@ -268,19 +286,26 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
         mpModel->setCompileFlag(true);
 
       std::set< const CCopasiObject * > NoDependencies;
-      std::set< const CCopasiObject * > Self;
-      Self.insert(this);
 
-      switch (getStatus())
+      setDirectDependencies(NoDependencies);
+      clearRefresh();
+
+      mpValueReference->setDirectDependencies(NoDependencies);
+      mpValueReference->clearRefresh();
+
+      mpRateReference->setDirectDependencies(NoDependencies);
+      mpRateReference->clearRefresh();
+
+      switch (mStatus)
         {
         case ASSIGNMENT:
           if (mpExpression == NULL)
             mpExpression = new CExpression;
           pdelete(mpInitialExpression)
-          setDirectDependencies(mpExpression->getDirectDependencies());
-          setRefresh(this, &CModelEntity::calculate);
-          mpValueReference->setDirectDependencies(Self);
-          mpRateReference->setDirectDependencies(NoDependencies);
+
+          mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
+          mpValueReference->setRefresh(this, &CModelEntity::calculate);
+
           mUsed = true;
           mUsedOnce = false;
           break;
@@ -290,10 +315,10 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
             mpExpression = new CExpression;
           if (mpInitialExpression == NULL)
             mpInitialExpression = new CExpression;
-          setDirectDependencies(mpExpression->getDirectDependencies());
-          setRefresh(this, &CModelEntity::calculate);
-          mpValueReference->setDirectDependencies(NoDependencies);
-          mpRateReference->setDirectDependencies(Self);
+
+          mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
+          mpRateReference->setRefresh(this, &CModelEntity::calculate);
+
           mUsed = true;
           mUsedOnce = false;
           break;
@@ -302,10 +327,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
           pdelete(mpExpression);
           if (mpInitialExpression == NULL)
             mpInitialExpression = new CExpression;
-          setDirectDependencies(NoDependencies);
-          clearRefresh();
-          mpValueReference->setDirectDependencies(NoDependencies);
-          mpRateReference->setDirectDependencies(NoDependencies);
+
           mUsed = true;
           mUsedOnce = false;
           break;
@@ -314,10 +336,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
           pdelete(mpExpression);
           if (mpInitialExpression == NULL)
             mpInitialExpression = new CExpression;
-          setDirectDependencies(NoDependencies);
-          clearRefresh();
-          mpValueReference->setDirectDependencies(NoDependencies);
-          mpRateReference->setDirectDependencies(NoDependencies);
+
           mUsed = true;
           mUsedOnce = false;
           break;
@@ -326,10 +345,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
           pdelete(mpExpression);
           if (mpInitialExpression == NULL)
             mpInitialExpression = new CExpression;
-          setDirectDependencies(NoDependencies);
-          clearRefresh();
-          mpValueReference->setDirectDependencies(NoDependencies);
-          mpRateReference->setDirectDependencies(NoDependencies);
+
           mUsed = false;
           mUsedOnce = false;
           break;
@@ -433,6 +449,7 @@ std::set< const CCopasiObject * > CModelEntity::getDeletedObjects() const
   {
     std::set< const CCopasiObject * > Deleted;
 
+    Deleted.insert(this);
     Deleted.insert(mpIValueReference);
     Deleted.insert(mpValueReference);
     Deleted.insert(mpRateReference);

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CMetab.cpp,v $
-   $Revision: 1.110 $
+   $Revision: 1.111 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 16:03:44 $
+   $Date: 2006/10/25 15:09:37 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -260,26 +260,23 @@ void CMetab::setStatus(const CModelEntity::Status & status)
       break;
 
     case REACTIONS:
-      Dependencies.insert(this);
-
       mpValueReference->setDirectDependencies(Dependencies);
       mpValueReference->clearRefresh();
 
       if (pVolumeReference)
         Dependencies.insert(pVolumeReference);
+
+      Dependencies.insert(mpValueReference);
       mpConcReference->setDirectDependencies(Dependencies);
       mpConcReference->setRefresh(this, &CMetab::refreshConcentration);
 
-      if (mpModel)
-        mpRateReference->setRefresh(mpModel, &CModel::refreshRates);
-      else
-        mpRateReference->clearRefresh();
+      mpRateReference->setRefresh(this, &CMetab::refreshRate);
 
       Dependencies.clear();
-      Dependencies.insert(mpRateReference);
       if (pVolumeReference)
         Dependencies.insert(pVolumeReference);
 
+      Dependencies.insert(mpRateReference);
       mpConcRateReference->setDirectDependencies(Dependencies);
       mpConcRateReference->setRefresh(this, &CMetab::refreshConcentrationRate);
       break;
@@ -451,6 +448,36 @@ void * CMetab::getValuePointer() const
     //std::cout << "CMetab::getValuePointer();" << std::endl;
     return const_cast<C_FLOAT64 *>(&mConc);
   }
+
+CCopasiObject * CMetab::getValueReference()
+{
+  switch (getStatus())
+    {
+    case ODE:
+    case ASSIGNMENT:
+      return mpConcReference;
+      break;
+
+    default:
+      return CModelEntity::getValueReference();
+      break;
+    }
+}
+
+CCopasiObject * CMetab::getRateReference()
+{
+  switch (getStatus())
+    {
+    case ODE:
+    case ASSIGNMENT:
+      return mpConcRateReference;
+      break;
+
+    default:
+      return CModelEntity::getRateReference();
+      break;
+    }
+}
 
 std::ostream & operator<<(std::ostream &os, const CMetab & d)
 {

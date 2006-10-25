@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.h,v $
-   $Revision: 1.96 $
+   $Revision: 1.97 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:32:22 $
+   $Author: shoops $
+   $Date: 2006/10/25 15:09:38 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -65,11 +65,13 @@ class CReaction : public CCopasiContainer
      *  The flux of the reaction, as amount of substance/time
      */
     C_FLOAT64 mFlux;
+    CCopasiObjectReference<C_FLOAT64> *mpFluxReference;
 
     /**
      *  The scaled flux of the reaction, as particle number/time
      */
     C_FLOAT64 mParticleFlux;
+    CCopasiObjectReference<C_FLOAT64> *mpParticleFluxReference;
 
     /**
      *  A pointer to the scaling factor for the flux to calculate the particle number
@@ -323,6 +325,12 @@ class CReaction : public CCopasiContainer
      * @return const C_FLOAT64 & ParticleFlux
      */
     const C_FLOAT64 & calculateParticleFlux();
+
+    /**
+     * Retreive object referencing the particle flux
+     * @return CCopasiObject * particleFluxReference
+     */
+    CCopasiObject * getParticleFluxReference();
 
   private:
     /**

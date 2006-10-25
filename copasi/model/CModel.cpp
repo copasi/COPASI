@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.289 $
+   $Revision: 1.290 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 16:03:44 $
+   $Date: 2006/10/25 15:09:37 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1241,17 +1241,31 @@ bool CModel::buildApplySequence()
 {
   // We need to add each used model entity to the objects which need to be updated.
   std::set< const CCopasiObject * > Objects;
-  CModelEntity **ppEntity = mStateTemplate.beginIndependent();
-  CModelEntity **ppEntityEnd = mStateTemplate.endDependent();
 
+  // For CModelValues and CCompartment ODEs we need to add the Rate
+  // For CMetab ODEs we need to add the Concentration Rate
+  // Since getRateReference is overloaded for CMetab the following suffices
+  CModelEntity **ppEntity = mStateTemplate.beginIndependent();
+  CModelEntity **ppEntityEnd = mStateTemplate.endIndependent() - mNumMetabolitesIndependent;
   for (; ppEntity != ppEntityEnd; ++ppEntity)
-    Objects.insert(*ppEntity);
+    Objects.insert((*ppEntity)->getRateReference());
+
+  // For CMetab REACTIONs we currently do not need to add anything as these
+  // changes are calculated with dgemm in caculateDerivatives for perfromance reasons.
+
+  // For CMetab ASSIGNMENTs we need to add the Concentration
+  // For CModelValues and CCompartment ASSIGNMENTs we need to add the Value
+  // Since getValueReference is overloaded for CMetab the following suffices
+  ppEntity = mStateTemplate.beginDependent() - mNumMetabolitesIndependent + mNumMetabolitesReaction;
+  ppEntityEnd = mStateTemplate.endDependent();
+  for (; ppEntity != ppEntityEnd; ++ppEntity)
+    Objects.insert((*ppEntity)->getValueReference());
 
   // Further more all reaction fluxes have to be calculated too
   CCopasiVector< CReaction >::iterator itReaction = mSteps.begin();
   CCopasiVector< CReaction >::iterator endReaction = mSteps.end();
   for (; itReaction != endReaction; ++itReaction)
-    Objects.insert(*itReaction);
+    Objects.insert((*itReaction)->getParticleFluxReference());
 
   // We now detect unused assignments, i.e., the result of an assignment is not
   // used during applyAssignments except for itself or another unused assignment.
@@ -1372,7 +1386,7 @@ bool CModel::buildConstantSequence()
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     {
       Dependencies.clear();
-      (*ppEntity)->getAllDependencies(Dependencies);
+      (*ppEntity)->getValueObject()->getAllDependencies(Dependencies);
 
       itDepend = Dependencies.begin();
       endDepend = Dependencies.end();
@@ -1934,33 +1948,36 @@ std::string CModel::getQuantityRateUnitName() const
 
 //**********************************************************************
 
-std::set<std::string> CModel::listReactionsDependentOnFunction(const std::string & key)
-{
-  std::set<std::string> reacKeys;
-  std::set<std::string>::iterator it, end;
-
-  const CCopasiVectorN<CReaction> & Reactions = getReactions();
-  C_INT32 j, jmax = Reactions.size();
-
-  for (j = 0; j < jmax; j++)
-    {
-      if (key == Reactions[j]->getFunction()->getKey())
-        reacKeys.insert(Reactions[j]->getKey());
-    }
-
-  return reacKeys;
-}
-
 void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidates,
                                       std::set< const CCopasiObject * > & dependentReactions) const
   {
     CCopasiVectorN< CReaction >::const_iterator it = mSteps.begin();
     CCopasiVectorN< CReaction >::const_iterator end = mSteps.end();
 
+    std::set< const CCopasiObject * >::const_iterator itSet;
+    std::set< const CCopasiObject * >::const_iterator endSet;
+
     for (; it != end; ++it)
-      if (candidates.find(*it) == candidates.end() &&
-          (*it)->hasCircularDependencies(candidates))
-        dependentReactions.insert((*it));
+      if (candidates.find(*it) == candidates.end())
+        {
+          if ((*it)->hasCircularDependencies(candidates))
+            {
+              dependentReactions.insert((*it));
+              continue;
+            }
+
+          std::set< const CCopasiObject * > DeletedObjects = (*it)->getDeletedObjects();
+          itSet = DeletedObjects.begin();
+          endSet = DeletedObjects.end();
+
+          for (; itSet != endSet; ++itSet)
+            if (candidates.find(*itSet) == candidates.end() &&
+                (*itSet)->hasCircularDependencies(candidates))
+              {
+                dependentReactions.insert((*it));
+                break;
+              }
+        }
 
     return;
   }
@@ -1974,16 +1991,36 @@ void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
     CCopasiVectorN< CMetab >::const_iterator it;
     CCopasiVectorN< CMetab >::const_iterator end;
 
+    std::set< const CCopasiObject * >::const_iterator itSet;
+    std::set< const CCopasiObject * >::const_iterator endSet;
+
     for (; itComp != endComp; ++itComp)
       {
         it = (*itComp)->getMetabolites().begin();
         end = (*itComp)->getMetabolites().end();
 
         for (; it != end; ++it)
-          if (candidates.find(*it) == candidates.end() &&
-              (candidates.find((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))) != candidates.end() ||
-               (*it)->hasCircularDependencies(candidates)))
-            dependentMetabolites.insert((*it));
+          if (candidates.find(*it) == candidates.end())
+            {
+              if (candidates.find((*it)->getCompartment()->getObject(CCopasiObjectName("Reference=Volume"))) != candidates.end() ||
+                  (*it)->hasCircularDependencies(candidates))
+                {
+                  dependentMetabolites.insert((*it));
+                  continue;
+                }
+
+              std::set< const CCopasiObject * > DeletedObjects = (*it)->getDeletedObjects();
+              itSet = DeletedObjects.begin();
+              endSet = DeletedObjects.end();
+
+              for (; itSet != endSet; ++itSet)
+                if (candidates.find(*itSet) == candidates.end() &&
+                    (*itSet)->hasCircularDependencies(candidates))
+                  {
+                    dependentMetabolites.insert((*it));
+                    break;
+                  }
+            }
       }
 
     return;
@@ -1995,10 +2032,30 @@ void CModel::appendDependentCompartments(std::set< const CCopasiObject * > candi
     CCopasiVectorN< CCompartment >::const_iterator it = mCompartments.begin();
     CCopasiVectorN< CCompartment >::const_iterator end = mCompartments.end();
 
+    std::set< const CCopasiObject * >::const_iterator itSet;
+    std::set< const CCopasiObject * >::const_iterator endSet;
+
     for (; it != end; ++it)
-      if (candidates.find(*it) == candidates.end() &&
-          (*it)->hasCircularDependencies(candidates))
-        dependentCompartments.insert((*it));
+      if (candidates.find(*it) == candidates.end())
+        {
+          if ((*it)->hasCircularDependencies(candidates))
+            {
+              dependentCompartments.insert((*it));
+              continue;
+            }
+
+          std::set< const CCopasiObject * > DeletedObjects = (*it)->getDeletedObjects();
+          itSet = DeletedObjects.begin();
+          endSet = DeletedObjects.end();
+
+          for (; itSet != endSet; ++itSet)
+            if (candidates.find(*itSet) == candidates.end() &&
+                (*itSet)->hasCircularDependencies(candidates))
+              {
+                dependentCompartments.insert((*it));
+                break;
+              }
+        }
 
     return;
   }
@@ -2009,10 +2066,30 @@ void CModel::appendDependentModelValues(std::set< const CCopasiObject * > candid
     CCopasiVectorN< CModelValue >::const_iterator it = mValues.begin();
     CCopasiVectorN< CModelValue >::const_iterator end = mValues.end();
 
+    std::set< const CCopasiObject * >::const_iterator itSet;
+    std::set< const CCopasiObject * >::const_iterator endSet;
+
     for (; it != end; ++it)
-      if (candidates.find(*it) == candidates.end() &&
-          (*it)->hasCircularDependencies(candidates))
-        dependentModelValues.insert((*it));
+      if (candidates.find(*it) == candidates.end())
+        {
+          if ((*it)->hasCircularDependencies(candidates))
+            {
+              dependentModelValues.insert((*it));
+              continue;
+            }
+
+          std::set< const CCopasiObject * > DeletedObjects = (*it)->getDeletedObjects();
+          itSet = DeletedObjects.begin();
+          endSet = DeletedObjects.end();
+
+          for (; itSet != endSet; ++itSet)
+            if (candidates.find(*itSet) == candidates.end() &&
+                (*itSet)->hasCircularDependencies(candidates))
+              {
+                dependentModelValues.insert((*it));
+                break;
+              }
+        }
 
     return;
   }
@@ -2231,9 +2308,6 @@ CModelValue* CModel::createModelValue(const std::string & name,
       delete cmv;
       return NULL;
     }
-
-  //compile();
-  mStateTemplate.add(cmv);
 
   return cmv;
 }

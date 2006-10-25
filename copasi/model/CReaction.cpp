@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CReaction.cpp,v $
-   $Revision: 1.162 $
+   $Revision: 1.163 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 16:03:44 $
+   $Date: 2006/10/25 15:09:38 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -51,7 +51,9 @@ CReaction::CReaction(const std::string & name,
     mChemEq("Chemical Equation", this),
     mpFunction(NULL),
     mFlux(0),
+    mpFluxReference(NULL),
     mParticleFlux(0),
+    mpParticleFluxReference(NULL),
     mScalingFactor(&mDefaultScalingFactor),
     mUnitScalingFactor(&mDefaultScalingFactor),
     mMetabKeyMap(),
@@ -69,7 +71,9 @@ CReaction::CReaction(const CReaction & src,
     mChemEq(src.mChemEq, this),
     mpFunction(src.mpFunction),
     mFlux(src.mFlux),
+    mpFluxReference(NULL),
     mParticleFlux(src.mParticleFlux),
+    mpParticleFluxReference(NULL),
     mScalingFactor(src.mScalingFactor),
     mUnitScalingFactor(src.mUnitScalingFactor),
     mMap(src.mMap),
@@ -160,6 +164,9 @@ const C_FLOAT64 & CReaction::getFlux() const
 const C_FLOAT64 & CReaction::getParticleFlux() const
   {return mParticleFlux;}
 
+CCopasiObject * CReaction::getParticleFluxReference()
+{return mpParticleFluxReference;}
+
 //****************************************
 
 const CChemEq & CReaction::getChemEq() const
@@ -206,10 +213,14 @@ bool CReaction::setFunction(const std::string & functionName)
 
 bool CReaction::setFunction(CFunction * pFunction)
 {
+  mDependencies.erase(mpFunction);
+
   if (!pFunction)
     mpFunction = CCopasiDataModel::Global->mpUndefined;
   else
     mpFunction = pFunction;
+
+  mDependencies.insert(mpFunction);
 
   mMap.initializeFromFunctionParameters(mpFunction->getVariables());
   initializeMetaboliteKeyMap(); //needs to be called before initializeParamters();
@@ -426,8 +437,8 @@ const CFunctionParameters & CReaction::getFunctionParameters() const
 
 void CReaction::compile()
 {
-  //mChemEq.compile(compartments);
   mDependencies.clear();
+  std::set< const CCopasiObject * > Dependencies;
 
   CCopasiObject * pObject;
 
@@ -450,17 +461,32 @@ void CReaction::compile()
                 {
                   pObject = GlobalKeys.get(mMetabKeyMap[i][j]);
                   mMap.addCallParameter(paramName, pObject);
-                  mDependencies.insert(pObject->getValueObject());
+                  Dependencies.insert(pObject->getValueObject());
                 }
             }
           else
             {
               pObject = GlobalKeys.get(mMetabKeyMap[i][0]);
               mMap.setCallParameter(paramName, pObject);
-              mDependencies.insert(pObject->getValueObject());
+              Dependencies.insert(pObject->getValueObject());
             }
         }
     }
+
+  CCopasiVector < CChemEqElement >::const_iterator it = mChemEq.getSubstrates().begin();
+  CCopasiVector < CChemEqElement >::const_iterator end = mChemEq.getSubstrates().end();
+
+  for (; it != end; ++it)
+    mDependencies.insert((*it)->getMetabolite());
+
+  it = mChemEq.getProducts().begin();
+  end = mChemEq.getProducts().end();
+
+  for (; it != end; ++it)
+    mDependencies.insert((*it)->getMetabolite());
+
+  mpFluxReference->setDirectDependencies(Dependencies);
+  mpParticleFluxReference->setDirectDependencies(Dependencies);
 
   setScalingFactor();
 }
@@ -666,14 +692,26 @@ const CCompartment & CReaction::getLargestCompartment() const
 
 void CReaction::setScalingFactor()
 {
+  const CCompartment * pCompartment = NULL;
+
   if (1 == getCompartmentNumber())
     {
-      assert(mChemEq.getBalances()[0]->getMetabolite());
+      if (mChemEq.getSubstrates().size())
+        pCompartment = mChemEq.getSubstrates()[0]->getMetabolite()->getCompartment();
+      else if (mChemEq.getProducts().size())
+        pCompartment = mChemEq.getProducts()[0]->getMetabolite()->getCompartment();
+    }
 
-      const CCompartment * pCompartment =
-        mChemEq.getBalances()[0]->getMetabolite()->getCompartment();
+  if (pCompartment != NULL)
+    {
       mScalingFactor = (C_FLOAT64 *) pCompartment->getValuePointer();
-      mDependencies.insert(pCompartment->getObject(CCopasiObjectName("Reference=Volume")));
+
+      std::set< const CCopasiObject * > Dependencies = mpFluxReference->getDirectDependencies();
+
+      Dependencies.insert(pCompartment->getObject(CCopasiObjectName("Reference=Volume")));
+
+      mpFluxReference->setDirectDependencies(Dependencies);
+      mpParticleFluxReference->setDirectDependencies(Dependencies);
     }
   else
     mScalingFactor = &mDefaultScalingFactor;
@@ -711,26 +749,22 @@ void CReaction::initObjects()
 {
   CModel * pModel = (CModel *) getObjectAncestor("Model");
 
-  setRefresh(this, &CReaction::calculate);
+  mpFluxReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Flux", mFlux, CCopasiObject::ValueDbl));
+  mpFluxReference->setRefresh(this, &CReaction::calculate);
 
-  std::set< const CCopasiObject * > Dependencies;
-  Dependencies.insert(this);
-
-  CCopasiObject * pObject;
-
-  pObject = addObjectReference("Flux", mFlux, CCopasiObject::ValueDbl);
-  pObject->setDirectDependencies(Dependencies);
-
-  pObject = addObjectReference("ParticleFlux", mParticleFlux, CCopasiObject::ValueDbl);
-  pObject->setDirectDependencies(Dependencies);
+  mpParticleFluxReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("ParticleFlux", mParticleFlux, CCopasiObject::ValueDbl));
+  mpParticleFluxReference->setRefresh(this, &CReaction::calculate);
 }
 
 std::set< const CCopasiObject * > CReaction::getDeletedObjects() const
   {
     std::set< const CCopasiObject * > Deleted;
 
-    Deleted.insert(getObject(CCopasiObjectName("Reference=Flux")));
-    Deleted.insert(getObject(CCopasiObjectName("Reference=ParticleFlux")));
+    Deleted.insert(this);
+    Deleted.insert(mpFluxReference);
+    Deleted.insert(mpParticleFluxReference);
 
     return Deleted;
   }
