@@ -1,0 +1,2 @@
+
+%include "../swig/copasi.i"
