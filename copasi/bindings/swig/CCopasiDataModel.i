@@ -43,5 +43,9 @@ class CCopasiDataModel
    // CModel* getModel();
 
     CVersion* getVersion();
+
+    static CCopasiDataModel * Global;
+
 };
 
+CCopasiDataModel* CCopasiDataModel::Global=NULL;

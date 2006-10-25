@@ -14,4 +14,16 @@
 %include "CVersion.i"
 %include "CCopasiDataModel.i"
 
+%init %{
+
+#include "report/CCopasiContainer.h"
+// Taken from CopasiSE.cpp
+
+// Create the root container
+CCopasiContainer::init();
+
+// Create the global data model
+CCopasiDataModel::Global = new CCopasiDataModel;
+
+%}
 
