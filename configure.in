@@ -63,6 +63,53 @@ AC_ARG_WITH([mkl],
   [MKL_PATH=$withval])
 
 
+AC_ARG_WITH([swig],
+  AS_HELP_STRING([--with-swig=PATH],
+                 [Path to swig]),
+  [SWIG_PATH=$withval])
+
+AC_ARG_ENABLE([python],
+  AS_HELP_STRING([--enable-python],
+                 [build python wrappers (default: disabled)]),
+  [ENABLE_PYTHON=$enable_python],
+  [ENABLE_PYTHON="no"])
+
+AC_ARG_WITH([python],
+  AS_HELP_STRING([--with-python=PATH],
+                 [Path to python]),
+  [PYTHON_PATH=$withval;PYTHON_INCLUDE_PATH=$PYTHON_PATH/include;PYTHON_LIB_PATH=$PYTHON_PATH/lib])
+
+AC_ARG_WITH([python-libs],
+  AS_HELP_STRING([--with-python-libs=PATH],
+                 [Path to python library files]),
+  [PYTHON_LIB_PATH=$withval])
+
+AC_ARG_WITH([python-includes],
+  AS_HELP_STRING([--with-python-includes=PATH],
+                 [Path to python include files]),
+  [PYTHON_INCLUDE_PATH=$withval])
+
+AC_ARG_ENABLE([java],
+  AS_HELP_STRING([--enable-java],
+                 [build java wrappers (default: disabled)]),
+  [ENABLE_JAVA=$enable_java],
+  [ENABLE_JAVA="no"])
+
+AC_ARG_WITH([java],
+  AS_HELP_STRING([--with-java=PATH],
+                 [Path to Java]),
+  [JAVA_PATH=$withval;JAVA_INCLUDE_PATH=$JAVA_PATH/include;JAVA_LIB_PATH=$JAVA_PATH/lib])
+
+AC_ARG_WITH([java-includes],
+  AS_HELP_STRING([--with-java-includes=PATH],
+                 [Path to Java include files]),
+  [JAVA_INCLUDE_PATH=$withval])
+
+AC_ARG_WITH([java-libs],
+  AS_HELP_STRING([--with-java-libs=PATH],
+                 [Path to Java libraries]),
+  [JAVA_LIB_PATH=$withval])
+
 AC_ARG_WITH([qwt],
   AS_HELP_STRING([--with-qwt=PATH],
                  [Path to QWT Library ]),
