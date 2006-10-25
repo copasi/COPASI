@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/FunctionWidget1.cpp,v $
-   $Revision: 1.142 $
+   $Revision: 1.143 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 16:03:42 $
+   $Date: 2006/10/25 15:07:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -853,70 +853,176 @@ void FunctionWidget1::slotCancelButtonClicked()
 
 void FunctionWidget1::slotCommitButtonClicked()
 {
+  CModel * pModel = CCopasiDataModel::Global->getModel();
+  if (pModel == NULL)
+    return;
+
   // :TODO: We should check what changes have been done to the function //
+  CFunctionDB * pFunctionDB = CCopasiDataModel::Global->getFunctionList();
+  if (pFunctionDB == NULL)
+    return;
+
   CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(GlobalKeys.get(objKey));
   if (pFunction == NULL) return;
 
   if (functionParametersChanged())
     {
-      std::set<std::string> dependentReactions;
-      std::set<std::string> dependentTrees;
-      if (dataModel && CCopasiDataModel::Global->getModel())
-        {
-          dependentReactions =
-            CCopasiDataModel::Global->getModel()->listReactionsDependentOnFunction(objKey);
-          dependentTrees =
-            CCopasiDataModel::Global->getFunctionList()->listDependentTrees(pFunction->getObjectName());
-        }
-      else
-        return;
+      QString functionList;
+      QString effectedFunctionList = "Following FUNCTION(S) reference above FUNCTION(S) -\n";
+      QString effectedReactionList = "Following REACTION(S) reference above FUNCTION(S) -\n";
+      QString effectedMetaboliteList = "Following METABOLITE(S) reference above FUNCTION(S) -\n";
+      QString effectedCompartmentList = "Following COMPARTMENT(S) reference above FUNCTION(S) -\n";
+      QString effectedValueList = "Following MODEL QUANTIT(S) reference above FUNCTION(S) -\n";
 
-      QString reactions;
-      std::set<std::string>::iterator it = dependentReactions.begin();
-      std::set<std::string>::iterator end = dependentReactions.end();
-      for (; it != end; it++)
-        {
-          reactions.append(FROM_UTF8(GlobalKeys.get(*it)->getObjectName()));
-          reactions.append(" ---> ");
-          reactions.append(FROM_UTF8(mpFunction->getObjectName()));
-          reactions.append("\n");
-        }
+      bool functionFound = false;
+      bool reactionFound = false;
+      bool metaboliteFound = false;
+      bool compartmentFound = false;
+      bool valueFound = false;
 
-      QString trees;
-      it = dependentTrees.begin();
-      end = dependentTrees.end();
-      for (; it != end; it++)
-        {
-          trees.append(FROM_UTF8(*it));
-          trees.append(" ---> ");
-          trees.append(FROM_UTF8(mpFunction->getObjectName()));
-          trees.append("\n");
-        }
+      std::set< const CCopasiObject * > ToBeDeleted;
+      ToBeDeleted.insert(pFunction);
+      ToBeDeleted.insert(pFunction->getObject(CCopasiObjectName("Reference=Value")));
 
-      QString msg1;
-      if (dependentReactions.size() > 0)
+      functionList.append(FROM_UTF8(pFunction->getObjectName()));
+      functionList.append(", ");
+
+      std::set< const CCopasiObject * > Functions;
+      pFunctionDB->appendDependentFunctions(ToBeDeleted, Functions);
+
+      if (Functions.size() > 0)
         {
-          msg1 = "Cannot change Function. ";
-          msg1.append("Following dependencies with listed Reaction(s) exist:\n");
-          msg1.append(reactions);
+          functionFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Functions.end();
+          for (it = Functions.begin(); it != itEnd; ++it)
+            {
+              effectedFunctionList.append(FROM_UTF8((*it)->getObjectName()));
+              effectedFunctionList.append(", ");
+            }
+
+          effectedFunctionList.remove(effectedFunctionList.length() - 2, 2);
+          effectedFunctionList.append("  ---> ");
+          effectedFunctionList.append(FROM_UTF8(pFunction->getObjectName()));
+          effectedFunctionList.append("\n");
         }
 
-      if (dependentTrees.size() > 0)
-        {
-          if (msg1 == "")
-            msg1 = "Cannot change Function. ";
-          else
-            msg1.append("\n");
+      std::set< const CCopasiObject * > Reactions;
+      pModel->appendDependentReactions(ToBeDeleted, Reactions);
 
-          msg1.append("Following dependencies with listed Function(s) exist:\n");
-          msg1.append(trees);
+      if (Reactions.size() > 0)
+        {
+          reactionFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Reactions.end();
+          for (it = Reactions.begin(); it != itEnd; ++it)
+            {
+              effectedReactionList.append(FROM_UTF8((*it)->getObjectName()));
+              effectedReactionList.append(", ");
+            }
+
+          effectedReactionList.remove(effectedReactionList.length() - 2, 2);
+          effectedReactionList.append("  ---> ");
+          effectedReactionList.append(FROM_UTF8(pFunction->getObjectName()));
+          effectedReactionList.append("\n");
         }
 
-      if (msg1 != "")
+      std::set< const CCopasiObject * > Metabolites;
+      pModel->appendDependentMetabolites(ToBeDeleted, Metabolites);
+
+      if (Metabolites.size() > 0)
         {
-          QMessageBox::warning(this, "Sorry, Cannot Change",
-                               msg1,
-                               "OK", 0, 0, 0, 1);
+          metaboliteFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Metabolites.end();
+          for (it = Metabolites.begin(); it != itEnd; ++it)
+            {
+              effectedMetaboliteList.append(FROM_UTF8((*it)->getObjectName()));
+              effectedMetaboliteList.append(", ");
+            }
+
+          effectedMetaboliteList.remove(effectedMetaboliteList.length() - 2, 2);
+          effectedMetaboliteList.append("  ---> ");
+          effectedMetaboliteList.append(FROM_UTF8(pFunction->getObjectName()));
+          effectedMetaboliteList.append("\n");
+        }
+
+      std::set< const CCopasiObject * > Compartments;
+      pModel->appendDependentCompartments(ToBeDeleted, Compartments);
+
+      if (Compartments.size() > 0)
+        {
+          compartmentFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Compartments.end();
+          for (it = Compartments.begin(); it != itEnd; ++it)
+            {
+              effectedCompartmentList.append(FROM_UTF8((*it)->getObjectName()));
+              effectedCompartmentList.append(", ");
+            }
+
+          effectedCompartmentList.remove(effectedCompartmentList.length() - 2, 2);
+          effectedCompartmentList.append("  ---> ");
+          effectedCompartmentList.append(FROM_UTF8(pFunction->getObjectName()));
+          effectedCompartmentList.append("\n");
+        }
+
+      std::set< const CCopasiObject * > Values;
+      pModel->appendDependentModelValues(ToBeDeleted, Values);
+
+      if (Values.size() > 0)
+        {
+          valueFound = true;
+          std::set< const CCopasiObject * >::const_iterator it, itEnd = Values.end();
+          for (it = Values.begin(); it != itEnd; ++it)
+            {
+              effectedValueList.append(FROM_UTF8((*it)->getObjectName()));
+              effectedValueList.append(", ");
+            }
+
+          effectedValueList.remove(effectedValueList.length() - 2, 2);
+          effectedValueList.append("  ---> ");
+          effectedValueList.append(FROM_UTF8(pFunction->getObjectName()));
+          effectedValueList.append("\n");
+        }
+
+      functionList.remove(functionList.length() - 2, 2);
+
+      QString msg;
+
+      if (functionFound || reactionFound || metaboliteFound || compartmentFound || valueFound)
+        {
+          msg = "Cannot modify FUNCTION(S).\n" + functionList;
+
+          if (functionFound)
+            {
+              msg.append("\n \n");
+              msg.append(effectedFunctionList);
+            }
+
+          if (reactionFound)
+            {
+              msg.append("\n \n");
+              msg.append(effectedReactionList);
+            }
+
+          if (metaboliteFound)
+            {
+              msg.append("\n \n");
+              msg.append(effectedMetaboliteList);
+            }
+
+          if (compartmentFound)
+            {
+              msg.append("\n \n");
+              msg.append(effectedCompartmentList);
+            }
+
+          if (valueFound)
+            {
+              msg.append("\n \n");
+              msg.append(effectedValueList);
+            }
+
+          QMessageBox::warning(this, "Sorry, Cannot Modify",
+                               msg, "OK", 0, 0, 0, 1);
+
           return;
         }
     }
