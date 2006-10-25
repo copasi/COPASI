@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 15:56:08 $
+   $Date: 2006/10/25 15:40:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,7 @@ COptMethodPS::COptMethodPS(const CCopasiContainer * pParent):
     COptMethod(CCopasiTask::optimization, CCopasiMethod::ParticleSwarm, pParent),
     mIterationLimit(0),
     mSwarmSize(0),
-    mTolerance(0.0),
+    mVariance(0.0),
     mpRandom(NULL),
     mIteration(0),
     mhIteration(C_INVALID_INDEX),
@@ -38,14 +38,17 @@ COptMethodPS::COptMethodPS(const CCopasiContainer * pParent):
     mVelocities(),
     mBestValues(),
     mBestPositions(),
+    mShuffle(),
     mInformants(),
+    mNumInformedMin(0),
+    mNumInformed(0),
     mBestIndex(0),
     mEvaluationValue(0),
     mContinue(true)
 {
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 2000);
   addParameter("Swarm Size", CCopasiParameter::UINT, (unsigned C_INT32) 50);
-  addParameter("Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-9);
+  addParameter("Std. Deviation", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
@@ -57,7 +60,7 @@ COptMethodPS::COptMethodPS(const COptMethodPS & src,
     COptMethod(src, pParent),
     mIterationLimit(0),
     mSwarmSize(0),
-    mTolerance(0.0),
+    mVariance(0.0),
     mpRandom(NULL),
     mIteration(0),
     mhIteration(C_INVALID_INDEX),
@@ -67,7 +70,10 @@ COptMethodPS::COptMethodPS(const COptMethodPS & src,
     mVelocities(),
     mBestValues(),
     mBestPositions(),
+    mShuffle(),
     mInformants(),
+    mNumInformedMin(0),
+    mNumInformed(0),
     mBestIndex(0),
     mEvaluationValue(0),
     mContinue(true)
@@ -115,7 +121,8 @@ bool COptMethodPS::move(const unsigned C_INT32 & index)
   std::set< unsigned C_INT32 >::const_iterator itInformant = mInformants[index].begin();
   std::set< unsigned C_INT32 >::const_iterator endInformant = mInformants[index].end();
 
-  for (; itInformant != endInformant; ++itInformant)
+  unsigned C_INT32 i = mNumInformed + mNumInformedMin;
+  for (; i && itInformant != endInformant; --i, ++itInformant)
     if (mBestValues[*itInformant] < BestInformantValue)
       {
         BestInformantValue = mBestValues[*itInformant];
@@ -337,7 +344,8 @@ bool COptMethodPS::initialize()
                           & mIterationLimit);
 
   mSwarmSize = * getValue("Swarm Size").pUINT;
-  mTolerance = * getValue("Tolerance").pUDOUBLE;
+  mVariance = *getValue("Std. Deviation").pUDOUBLE;
+  mVariance *= mVariance;
 
   mpRandom =
     CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
@@ -347,7 +355,8 @@ bool COptMethodPS::initialize()
 
   mIndividuals.resize(mSwarmSize);
 
-  for (unsigned C_INT32 i = 0; i < mSwarmSize; i++)
+  unsigned C_INT32 i;
+  for (i = 0; i < mSwarmSize; i++)
     mIndividuals[i].resize(mVariableSize);
 
   mValues.resize(mSwarmSize);
@@ -355,7 +364,12 @@ bool COptMethodPS::initialize()
   mBestValues.resize(mSwarmSize);
   mBestPositions.resize(mSwarmSize, mVariableSize);
 
-  mNumInformed = std::max<unsigned C_INT32>(mSwarmSize / 10, 5);
+  mNumInformedMin = std::max<unsigned C_INT32>(mSwarmSize / 10, 5) - 1;
+  mNumInformed = mNumInformedMin;
+
+  mShuffle.resize(mSwarmSize);
+  for (i = 0; i < mSwarmSize; i++)
+    mShuffle[i] = i;
 
   mContinue = true;
 
@@ -375,42 +389,111 @@ bool COptMethodPS::cleanup()
 
 void COptMethodPS::buildInformants()
 {
+  if (mNumInformed < mSwarmSize)
+    mNumInformed++;
+  else
+    return;
+
   mInformants.clear();
   mInformants.resize(mSwarmSize);
 
   unsigned C_INT32 i, j;
-  unsigned C_INT32 Informed;
+  unsigned C_INT32 * pShuffle;
+  unsigned C_INT32 * pEnd = mShuffle.array() + mSwarmSize;
+
+  for (pShuffle = mShuffle.array(); pShuffle != pEnd; pShuffle++)
+    {
+      j = mpRandom->getRandomU(mSwarmSize - 1);
+
+      // swap j and i
+      unsigned C_INT32 tmp = mShuffle[j];
+      mShuffle[j] = *pShuffle;
+      *pShuffle = tmp;
+    }
 
   for (i = 0; i < mSwarmSize; i++)
     {
       mInformants[i].insert(i);
 
-      for (j = 1; j < mNumInformed; j++)
+      pShuffle = mShuffle.array() + mpRandom->getRandomU(mSwarmSize - 2);
+      for (j = 1; j < mNumInformed; j++, pShuffle++)
         {
-          Informed = (i + 1 + mpRandom->getRandomU(mSwarmSize - 2)) % mSwarmSize;
-          mInformants[Informed].insert(i);
+          if (pShuffle == pEnd)
+            pShuffle = mShuffle.array();
+
+          if (*pShuffle != i)
+            mInformants[*pShuffle].insert(i);
+          else
+            j--;
         }
     }
 
   return;
 }
 
-bool COptMethodPS::reachedTolerance()
+bool COptMethodPS::reachedStdDeviation()
 {
-  // Check whether the swarm has settled
-  C_FLOAT64 sum = 0.0;
-  C_FLOAT64 curmin = 0.0;
+  if (mNumInformed > mNumInformedMin + 1)
+    mNumInformed--;
 
-  for (unsigned C_INT32 i = 0; i < mSwarmSize; ++i)
+  // Check whether the swarm has settled
+  C_FLOAT64 * pValue = mValues.array();
+  C_FLOAT64 * pEnd = pValue + mSwarmSize;
+
+  C_FLOAT64 Delta;
+
+  C_FLOAT64 Mean = 0.0;
+  C_FLOAT64 Variance = 0.0;
+  unsigned C_INT32 N = 0;
+
+  for (; pValue != pEnd; ++pValue)
     {
-      sum += mValues[i];
-      curmin += mValues[i] * mValues[i];
+      Delta = *pValue - Mean;
+      Mean += Delta / ++N;
+      // This uses the new mean, i.e., not Delta * Delta
+      Variance += Delta * (*pValue - Mean);
     }
 
-  sum /= mSwarmSize;
-  curmin /= mSwarmSize;
+  Variance /= (N - 1);
 
-  return (sqrt(curmin - sum * sum) < mTolerance);
+  if (Variance > mVariance) return false;
+
+  // The variance of the function value is smaller than requiered. We now
+  // Check the variance of the flock positions.
+  CVector< C_FLOAT64 > FirstMoments(mVariableSize);
+  CVector< C_FLOAT64 > SecondMoments(mVariableSize);
+  FirstMoments = 0.0;
+  SecondMoments = 0.0;
+
+  CVector< C_FLOAT64 > * pIndividual = mIndividuals.array();
+  CVector< C_FLOAT64 > * pIndividualEnd = pIndividual + mSwarmSize;
+
+  C_FLOAT64 * pFirstMoment;
+  C_FLOAT64 * pSecondMoment;
+  pEnd = FirstMoments.array() + mVariableSize;
+
+  for (; pIndividual != pIndividualEnd; ++pIndividual)
+    {
+      pFirstMoment = FirstMoments.array();
+      pSecondMoment = SecondMoments.array();
+      pValue = pIndividual->array();
+
+      for (; pFirstMoment != pEnd; ++pFirstMoment, ++pSecondMoment, ++pValue)
+        {
+          *pFirstMoment += *pValue;
+          *pSecondMoment += *pValue * *pValue;
+        }
+    }
+
+  pFirstMoment = FirstMoments.array();
+  pSecondMoment = SecondMoments.array();
+  for (; pFirstMoment != pEnd; ++pFirstMoment, ++pSecondMoment)
+    {
+      Variance = (*pSecondMoment - *pFirstMoment * *pFirstMoment / mSwarmSize) / (mSwarmSize - 1);
+      if (Variance > mVariance) return false;
+    }
+
+  return true;
 }
 
 bool COptMethodPS::optimise()
@@ -484,7 +567,7 @@ bool COptMethodPS::optimise()
 
       if (!Improved)
         buildInformants();
-      else if (reachedTolerance())
+      else if (reachedStdDeviation())
         break;
 
       if (mpCallBack)

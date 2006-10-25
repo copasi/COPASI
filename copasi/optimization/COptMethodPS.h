@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:43:32 $
+   $Author: shoops $
+   $Date: 2006/10/25 15:40:52 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,7 +99,7 @@ class COptMethodPS : public COptMethod
      */
     void buildInformants();
 
-    bool reachedTolerance();
+    bool reachedStdDeviation();
 
     // Attributes
   private:
@@ -114,9 +114,9 @@ class COptMethodPS : public COptMethod
     unsigned C_INT32 mSwarmSize;
 
     /**
-     * The tolerance acceptable for the solution
+     * The variance acceptable for the solution
      */
-    C_FLOAT64 mTolerance;
+    C_FLOAT64 mVariance;
 
     /**
      * a pointer to the random number generator.
@@ -141,7 +141,7 @@ class COptMethodPS : public COptMethod
     /**
      * Matrix of individuals with candidate values for the parameters
      */
-    CVector< CVector<C_FLOAT64 > > mIndividuals;
+    CVector< CVector< C_FLOAT64 > > mIndividuals;
 
     /**
      * Vector of values of objective function of each individual
@@ -164,9 +164,19 @@ class COptMethodPS : public COptMethod
     CMatrix< C_FLOAT64 > mBestPositions;
 
     /**
+     * Vector of shuffled integers used to create the informants;
+     */
+    CVector< unsigned C_INT32 > mShuffle;
+
+    /**
      * Vector containing the set of informants for each individual.
      */
     std::vector< std::set< unsigned C_INT32 > > mInformants;
+
+    /**
+     * The minimal number of individuals informed by each individual
+     */
+    unsigned C_INT32 mNumInformedMin;
 
     /**
      * The number of individual informed by each individual
