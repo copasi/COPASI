@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.133 $
+   $Revision: 1.134 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/05 17:23:19 $
+   $Date: 2006/10/25 15:33:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -171,7 +171,7 @@ MetabolitesWidget1::MetabolitesWidget1(QWidget* parent, const char* name, WFlags
   //***************************************
 
   mReactionsLabel = new QLabel(this, "ReactionsLabel");
-  mReactionsLabel->setText("Reactions\naffecting this\nmetabolite");
+  mReactionsLabel->setText("Reactions\ninvolving this\nmetabolite");
   mReactionsLabel->setAlignment(int(QLabel::AlignTop
                                     | QLabel::AlignRight));
   //mReactionsLabel->setAlignment(Qt::AlignTop);
@@ -438,8 +438,7 @@ bool MetabolitesWidget1::loadReactionsTable()
   pModel->appendDependentReactions(pMetab->getDeletedObjects(), reactions);
 
   mReactionsTable->setNumRows(0);
-  mReactionsTable->setNumRows(reactions.size() + 1);
-  if (reactions.size() < 2) mReactionsTable->setNumRows(3);
+  mReactionsTable->setNumRows(reactions.size());
   mReactionsTable->setText(0, 0, "none     ");
 
   std::set< const CCopasiObject * >::const_iterator it, itEnd = reactions.end();
