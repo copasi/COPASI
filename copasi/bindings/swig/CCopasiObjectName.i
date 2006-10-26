@@ -5,7 +5,6 @@
 
 %}
 
-%include "string"
 
 class CCopasiObjectName : public std::string
 {
