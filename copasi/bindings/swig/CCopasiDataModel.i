@@ -46,6 +46,15 @@ class CCopasiDataModel
 
     static CCopasiDataModel * Global;
 
+    CCopasiVectorN<CCopasiTask>* getTaskList();
+
+    bool addDefaultTasks();
+
+    bool addDefaultReports();
+
+    const std::string& getFileName() const; 
+    const std::string& getSBMLFileName() const; 
 };
 
 CCopasiDataModel* CCopasiDataModel::Global=NULL;
+

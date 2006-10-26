@@ -8,10 +8,17 @@
 
 %}
 
-%include std_string.i
-// %include std_vector.i
+%import "copasi.h"
 
+%include std_string.i
+%include std_vector.i
+
+%include "CCopasiObjectName.i"
+%include "CCopasiObject.i"
+%include "CCopasiContainer.i"
+%include "CCopasiVector.i"
 %include "CVersion.i"
+%include "CCopasiTask.i"
 %include "CCopasiDataModel.i"
 
 %init %{

@@ -14,6 +14,17 @@ LIBS = $$COPASI_LIBS $$LIBS
 
 INCLUDEPATH += ../..
 
+HEADERS += ../swig/copasi.i
+HEADERS += ../swig/CCopasiObjectName.i
+HEADERS += ../swig/CCopasiObject.i
+HEADERS += ../swig/CCopasiVector.i
+HEADERS += ../swig/CCopasiContainer.i
+HEADERS += ../swig/CVersion.i
+HEADERS += ../swig/CCopasiTask.i
+HEADERS += ../swig/CCopasiDataModel.i
+
+SOURCES += copasi_wrapper.cpp
+
 
 isEmpty(SWIG_PATH){
     # check if the wrapper file is there
@@ -30,9 +41,11 @@ isEmpty(SWIG_PATH){
     }
     system(touch python.i)
 
+    DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
+
     wrapper_source.target = copasi_wrapper.cpp
     wrapper_source.depends = python.i
-    wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig -classic -I../.. -c++ -python -o $$wrapper_source.target $$wrapper_source.depends
+    wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -classic -I../.. -c++ -python -o $$wrapper_source.target $$wrapper_source.depends
 
     QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
     PRE_TARGETDEPS += copasi_wrapper.cpp
@@ -79,4 +92,5 @@ contains(BUILD_OS,Darwin){
   QMAKE_POST_LINK += ln -sf libCopasiPython.dylib _COPASI.so
 }
 
-SOURCES += copasi_wrapper.cpp
+
+
