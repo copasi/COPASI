@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/Attic/CProgressBar.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 06:57:33 $
+   $Author: shoops $
+   $Date: 2006/10/27 14:23:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -108,7 +108,7 @@ class CProgressBar : public CProcessReport, public CQProgressDialog
   private:
     CVector< CQProgressItem * > mProgressItemList;
 
-    QTime mNextEventProcessing;
+    QDateTime mNextEventProcessing;
   };
 
 #endif

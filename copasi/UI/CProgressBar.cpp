@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.cpp,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:40 $
+   $Date: 2006/10/27 14:23:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,7 +31,7 @@ CProgressBar::CProgressBar(QWidget* parent, const char* name,
     CProcessReport(),
     CQProgressDialog(parent, name, modal, fl | WStyle_Minimize),
     mProgressItemList(1),
-    mNextEventProcessing(QTime::currentTime())
+    mNextEventProcessing(QDateTime::currentDateTime())
 {
   mProgressItemList[0] = NULL;
 
@@ -102,9 +102,9 @@ bool CProgressBar::progress(const unsigned C_INT32 & handle)
 
   bool Proceed = mProgressItemList[handle]->process() && mProceed;
 
-  if (mNextEventProcessing < QTime::currentTime())
+  if (mNextEventProcessing < QDateTime::currentDateTime())
     {
-      mNextEventProcessing = QTime::currentTime().addMSecs(1000);
+      mNextEventProcessing = QDateTime::currentDateTime().addSecs(1);
       qApp->processEvents();
     }
 
@@ -143,9 +143,9 @@ bool CProgressBar::finish(const unsigned C_INT32 & handle)
 
 bool CProgressBar::proceed()
 {
-  if (mNextEventProcessing < QTime::currentTime())
+  if (mNextEventProcessing < QDateTime::currentDateTime())
     {
-      mNextEventProcessing = QTime::currentTime().addMSecs(1000);
+      mNextEventProcessing = QDateTime::currentDateTime().addSecs(1);
       qApp->processEvents();
     }
 
