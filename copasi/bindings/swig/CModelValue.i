@@ -4,6 +4,13 @@
 
 %}
 
+#ifndef COPASI_DEBUG
+
+%nodefaultctor
+%nodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
 
 class CModelEntity : public CCopasiContainer
 {
@@ -32,6 +39,7 @@ class CModelEntity : public CCopasiContainer
      */
     //static const char * XMLStatus[];
 
+#ifdef COPASI_DEBUG
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")
@@ -54,7 +62,7 @@ class CModelEntity : public CCopasiContainer
      *  Destructor.
      */
     ~CModelEntity();
-
+#endif /* COPASI_DEBUG */
     /**
      *  Retrieve the key
      * @return std::string key
@@ -70,7 +78,7 @@ class CModelEntity : public CCopasiContainer
      * Compile the model value. This is only needed for status ASIGNMENT and ODE.
      * @return bool success
      */
-    virtual bool compile();
+    // virtual bool compile();
 
     /**
      * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
@@ -230,6 +238,8 @@ class CModelEntity : public CCopasiContainer
 class CModelValue : public CModelEntity
 {
   public:
+
+#ifdef COPASI_DEBUG
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")
@@ -250,5 +260,14 @@ class CModelValue : public CModelEntity
      *  Destructor.
      */
     ~CModelValue();
-
+#endif /* COPASI_DEBUG */
 };
+
+#ifndef COPASI_DEBUG
+
+%clearnodefaultctor
+%clearnodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
+

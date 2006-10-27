@@ -4,10 +4,19 @@
 
 %}
 
+#ifndef COPASI_DEBUG
+
+%nodefaultctor
+%nodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
 
 class CCopasiProblem : public CCopasiParameterGroup
 {
-  protected:
+#ifdef COPASI_DEBUG
+ protected:
+
     /**
      * Specific constructor
      * @param const CCopasiTask::Type & type
@@ -15,8 +24,10 @@ class CCopasiProblem : public CCopasiParameterGroup
      */
     CCopasiProblem(const CCopasiTask::Type & type,
                    const CCopasiContainer * pParent = NULL);
+#endif /* COPASI_DEBUG */
 
   public:
+#ifdef COPASI_DEBUG
     /**
      * Copy constructor
      * @param const CCopasiProblemr & src
@@ -29,6 +40,7 @@ class CCopasiProblem : public CCopasiParameterGroup
      * Destructor
      */
     virtual ~CCopasiProblem();
+#endif /* COPASI_DEBUG */
 
     /**
      * Retrieve the type of the problem
@@ -85,3 +97,12 @@ class CCopasiProblem : public CCopasiParameterGroup
 
 
 };
+
+#ifndef COPASI_DEBUG
+
+%clearnodefaultctor
+%clearnodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
+

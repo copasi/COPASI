@@ -4,6 +4,13 @@
 
 %}
 
+#ifndef COPASI_DEBUG
+
+%nodefaultctor
+%nodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
 
 class CMetab : public CModelEntity
 {
@@ -30,7 +37,7 @@ class CMetab : public CModelEntity
                                             const CCompartment & compartment,
                                             const CModel & model);
 
-
+#ifdef COPASI_DEBUG
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")
@@ -51,6 +58,7 @@ class CMetab : public CModelEntity
      *  Destructor.
      */
     ~CMetab();
+#endif /* COPASI_DEBUG */
 
     virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
 
@@ -164,3 +172,12 @@ class CMetab : public CModelEntity
     void clearMoieties();
 
 };
+
+#ifndef COPASI_DEBUG
+
+%clearnodefaultctor
+%clearnodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
+

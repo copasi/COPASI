@@ -4,6 +4,13 @@
 
 %}
 
+#ifndef COPASI_DEBUG
+
+%nodefaultctor
+%nodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
 
 class CCopasiParameterGroup : public CCopasiParameter
 {
@@ -12,13 +19,16 @@ class CCopasiParameterGroup : public CCopasiParameter
     typedef parameterGroup::iterator index_iterator;
     typedef CCopasiContainer::objectMap::iterator name_iterator;
 
-  protected:
+#ifdef COPASI_DEBUG
+ protected:
     /**
      * Default constructor
      */
     CCopasiParameterGroup();
+#endif /* COPASI_DEBUG */
 
   public:
+#ifdef COPASI_DEBUG
     /**
      * Copy constructor
      * @param "const CCopasiParameterGroup &" src
@@ -41,6 +51,7 @@ class CCopasiParameterGroup : public CCopasiParameter
      * Destructor
      */
     virtual ~CCopasiParameterGroup();
+#endif /* COPASI_DEBUG */
 
     /**
      * This methods must be called to elevate subgroups to
@@ -199,28 +210,28 @@ class CCopasiParameterGroup : public CCopasiParameter
      * @param const std::string & name
      * @return const CCopasiParameter::Value & Value
      */
-    const CCopasiParameter::Value & getValue(const std::string & name) const;
+    //const CCopasiParameter::Value & getValue(const std::string & name) const;
 
     /**
      * Retreive a pointer to the value of a parameter or subgroup
      * @param const unsigned C_INT32 & index
      * @return const CCopasiParameter::Value & Value
      */
-    const CCopasiParameter::Value & getValue(const unsigned C_INT32 & index) const;
+    //const CCopasiParameter::Value & getValue(const unsigned C_INT32 & index) const;
 
     /**
      * Retreive a pointer to the value of a parameter or subgroup
      * @param const std::string & name
      * @return CCopasiParameter::Value & Value
      */
-    CCopasiParameter::Value & getValue(const std::string & name);
+    //CCopasiParameter::Value & getValue(const std::string & name);
 
     /**
      * Retreive a pointer to the value of a parameter or subgroup
      * @param const unsigned C_INT32 & index
      * @return CCopasiParameter::Value & Value
      */
-    CCopasiParameter::Value & getValue(const unsigned C_INT32 & index);
+    //CCopasiParameter::Value & getValue(const unsigned C_INT32 & index);
 
     /**
      * Retreive the type of a parameter or subgroup
@@ -324,3 +335,12 @@ class CCopasiParameterGroup : public CCopasiParameter
 
 
 };
+
+#ifndef COPASI_DEBUG
+
+%clearnodefaultctor
+%clearnodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
+

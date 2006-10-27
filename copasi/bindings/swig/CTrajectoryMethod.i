@@ -4,6 +4,13 @@
 
 %}
 
+#ifndef COPASI_DEBUG
+
+%nodefaultctor
+%nodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
 
 class CTrajectoryMethod : public CCopasiMethod
 {
@@ -13,6 +20,7 @@ class CTrajectoryMethod : public CCopasiMethod
                            = CCopasiMethod::deterministic,
                            CTrajectoryProblem * pProblem = NULL);
 
+#ifdef COPASI_DEBUG
     /**
      * Copy constructor.
      * @param "const CTrajectoryMethod &" src
@@ -40,6 +48,7 @@ class CTrajectoryMethod : public CCopasiMethod
      *  @param "CTrajectoryProblem *" problem
      */
     void setProblem(CTrajectoryProblem * problem);
+#endif /* COPASI_DEBUG */
 
     /**
      *  This instructs the method to calculate a time step of deltaT
@@ -66,3 +75,12 @@ class CTrajectoryMethod : public CCopasiMethod
 
 
 };
+
+#ifndef COPASI_DEBUG
+
+%clearnodefaultctor
+%clearnodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
+

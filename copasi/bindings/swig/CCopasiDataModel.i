@@ -16,12 +16,21 @@
 %ignore CCopasiDataModel::exportSBML(const std::string& fileName,bool overwriteFile=false,int sbmlLevel, int sbmlVersion,bool exportIncomplete = false, CProcessReport* pExportHandler);
 %ignore CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler);
 
+#ifndef COPASI_DEBUG
+
+%nodefaultctor
+%nodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
+
 class CCopasiDataModel 
 {
   public:
+#ifdef COPASI_DEBUG
     CCopasiDataModel(const bool withGUI = false);
     ~CCopasiDataModel();
-  
+#endif /* COPASI_DEBUG */  
     bool loadModel(const std::string& fileName);
     bool saveModel(const std::string& fileName,
                    bool overwriteFile = false,
@@ -61,6 +70,14 @@ class CCopasiDataModel
     const std::string& getFileName() const; 
     const std::string& getSBMLFileName() const; 
 };
+
+#ifndef COPASI_DEBUG
+
+%clearnodefaultctor
+%clearnodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
 
 CCopasiDataModel* CCopasiDataModel::Global=NULL;
 

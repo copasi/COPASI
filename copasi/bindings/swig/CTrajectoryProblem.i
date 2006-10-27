@@ -4,10 +4,18 @@
 
 %}
 
+#ifndef COPASI_DEBUG
+
+%nodefaultctor
+%nodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
+
 class CTrajectoryProblem : public CCopasiProblem
 {
   public:
-
+#ifdef COPASI_DEBUG
     /**
      * Default constructor.
      * @param const CCopasiContainer * pParent (default: NULL)
@@ -26,6 +34,7 @@ class CTrajectoryProblem : public CCopasiProblem
      *  Destructor.
      */
     ~CTrajectoryProblem();
+#endif /* COPASI_DEBUG */
 
     /**
      * This methods must be called to elevate subgroups to
@@ -96,4 +105,12 @@ class CTrajectoryProblem : public CCopasiProblem
     bool timeSeriesRequested() const;
 
 };
+
+#ifndef COPASI_DEBUG
+
+%clearnodefaultctor
+%clearnodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
 

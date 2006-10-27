@@ -4,9 +4,17 @@
   
 %}
 
+#ifndef COPASI_DEBUG
+
+%nodefaultctor
+%nodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
 class CCompartment : public CModelEntity
 {
   public:
+#ifdef COPASI_DEBUG
     /**
      * Default constructor.
      * @param const std::string & name (default: "NoName")
@@ -28,6 +36,7 @@ class CCompartment : public CModelEntity
      *  The destructor does nothing.
      */
     ~CCompartment();
+#endif /* COPASI_DEBUG */
 
     /**
      *
@@ -71,3 +80,12 @@ class CCompartment : public CModelEntity
     virtual void setValue(const C_FLOAT64 & value);
 
 };
+
+#ifndef COPASI_DEBUG
+
+%clearnodefaultctor
+%clearnodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
+

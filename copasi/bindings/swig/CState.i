@@ -4,14 +4,23 @@
 
 %}
 
+#ifndef COPASI_DEBUG
+
+%nodefaultctor
+%nodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
+
 
 class CState
 {
   public:
+#ifdef COPASI_DEBUG
     CState();
     CState(const CState & src);
     ~CState();
-
+#endif /* COPASI_DEBUG */
     const C_FLOAT64 & getTime() const;
     void setTime(const C_FLOAT64 & time);
 
@@ -43,3 +52,12 @@ class CState
 
 
 };
+
+#ifndef COPASI_DEBUG
+
+%clearnodefaultctor
+%clearnodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
+

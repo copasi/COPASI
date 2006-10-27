@@ -4,10 +4,18 @@
 
 %}
 
+#ifndef COPASI_DEBUG
+
+%nodefaultctor
+%nodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
 
 class CReportDefinition : public CCopasiObject
 {
   public:
+#ifdef COPASI_DEBUG
     /**
      *  Default constructor.
      */
@@ -24,11 +32,11 @@ class CReportDefinition : public CCopasiObject
      *  Destructor.
      */
     ~CReportDefinition();
-
+#endif /* COPASI_DEBUG */
     /**
      *cleanup
      */
-    void cleanup();
+    //void cleanup();
 
     /**
      * Convert the table list into a header and body list.
@@ -127,3 +135,12 @@ class CReportDefinition : public CCopasiObject
 
 
 };
+
+#ifndef COPASI_DEBUG
+
+%clearnodefaultctor
+%clearnodefaultdtor
+
+#endif /* !COPASI_DEBUG */
+
+
