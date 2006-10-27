@@ -16,6 +16,8 @@
 %include "CCopasiObjectName.i"
 %include "CCopasiObject.i"
 %include "CCopasiContainer.i"
+%include "CCopasiParameter.i"
+%include "CCopasiParameterGroup.i"
 %include "CMoiety.i"
 %include "CModelValue.i"
 %include "CMetab.i"
@@ -26,8 +28,14 @@
 %include "CReaction.i"
 %include "CModel.i"
 %include "CVersion.i"
+%include "CCopasiMethod.i"
+%include "CCopasiProblem.i"
 %include "CCopasiTask.i"
 %include "CCopasiDataModel.i"
+%include "CTimeSeries.i"
+%include "CTrajectoryProblem.i"
+%include "CTrajectoryMethod.i"
+%include "CTrajectoryTask.i"
 
 %init %{
 
