@@ -89,6 +89,9 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
 %template(ModelValueVector) CCopasiVector<CModelValue>;
 %template(ModelValueVectorN) CCopasiVectorN<CModelValue>;
 
+%template(ReportDefinitionVector) CCopasiVector<CReportDefinition>;
+%template(ReportDefinitionVectorN) CCopasiVectorN<CReportDefinition>;
+
 %template(MoietyVector) CCopasiVector<CMoiety>;
 
 %template(MetabVector) CCopasiVector<CMetab>;
@@ -97,9 +100,9 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
 %template(CompartmentVectorN) CCopasiVectorN<CCompartment>;
 %template(CompartmentVectorNS) CCopasiVectorNS<CCompartment>;
 
-//%template(ReactionVector) CCopasiVector<CReaction>;
-//%template(ReactionVectorN) CCopasiVectorN<CReaction>;
-//%template(ReactionVectorNS) CCopasiVectorNS<CReaction>;
+%template(ReactionVector) CCopasiVector<CReaction>;
+%template(ReactionVectorN) CCopasiVectorN<CReaction>;
+%template(ReactionVectorNS) CCopasiVectorNS<CReaction>;
 
 
 typedef CCopasiVectorN<CCopasiTask> TaskVectorN;
@@ -112,5 +115,5 @@ typedef CCopasiVector<CMetab> MetabVector;
 
 typedef CCopasiVectorNS<CCompartment> CompartmentVectorNS;
 
-//typedef CCopasiVectorNS<CReaction> ReactionVectorNS;
+typedef CCopasiVectorNS<CReaction> ReactionVectorNS;
 

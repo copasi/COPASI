@@ -34,3 +34,20 @@ class CCopasiObjectName : public std::string
      static std::string unescape(const std::string & name);
 };
 
+
+class CRegisteredObjectName: public CCopasiObjectName
+{
+  public:
+    CRegisteredObjectName();
+
+    CRegisteredObjectName(const std::string & name);
+
+    CRegisteredObjectName(const CRegisteredObjectName & src);
+
+    ~CRegisteredObjectName();
+
+    // static const std::set<CRegisteredObjectName*> & getSet();
+
+};
+
+
