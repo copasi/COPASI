@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSA.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/31 16:50:34 $
+   $Date: 2006/10/27 15:38:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -292,7 +292,7 @@ bool COptMethodSA::initialize()
   mTolerance = * getValue("Tolerance").pUDOUBLE;
   mpRandom =
     CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
-                             * (unsigned C_INT32 *) getValue("Seed").pUINT);
+                             * getValue("Seed").pUINT);
 
   if (mpCallBack)
     mhTemperature =

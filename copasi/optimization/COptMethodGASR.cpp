@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:31 $
+   $Date: 2006/10/27 15:38:58 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -447,7 +447,7 @@ bool COptMethodGASR::initialize()
     }
   mpRandom =
     CRandom::createGenerator(* (CRandom::Type *) getValue("Random Number Generator").pUINT,
-                             * (unsigned C_INT32 *) getValue("Seed").pUINT);
+                             * getValue("Seed").pUINT);
 
   mVariableSize = mpOptItem->size();
 
