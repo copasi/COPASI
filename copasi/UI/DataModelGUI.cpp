@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.cpp,v $
-   $Revision: 1.63 $
+   $Revision: 1.64 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/16 11:04:03 $
+   $Author: shoops $
+   $Date: 2006/10/28 00:18:41 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,7 @@
 #include "model/CModel.h"
 #include "model/CModelValue.h"
 #include "model/CMetabNameInterface.h"
-#include "plot/COutputHandlerPlot.h"
+#include "plotUI/COutputHandlerPlot.h"
 #include "plot/COutputDefinitionVector.h"
 #include "report/CReportDefinitionVector.h"
 #include "scan/CScanTask.h"

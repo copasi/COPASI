@@ -1,12 +1,12 @@
 ######################################################################
-# $Revision: 1.19 $ $Author: gauges $ $Date: 2006/10/25 14:05:52 $  
+# $Revision: 1.20 $ $Author: shoops $ $Date: 2006/10/28 00:32:13 $  
 ######################################################################
 
 TEMPLATE = subdirs
 
 include(common.pri)
 
-# First build the libs
+# First build the SE libs
 SUBDIRS =  commandline
 SUBDIRS += CopasiDataModel
 SUBDIRS += elementaryFluxModes
@@ -34,10 +34,18 @@ SUBDIRS += utilities
 SUBDIRS += xml
 SUBDIRS += wizard
 
+# Now the UI libraries
+SUBDIRS += plotUI
+SUBDIRS += UI
+
+# Now build the libs
+SUBDIRS += libs
+
 # Now the excecutables
 SUBDIRS += CopasiSE
 SUBDIRS += CopasiUI
 
+# Finally the bindings
 SUBDIRS += bindings
 
 DISTDIRS = $${SUBDIRS}

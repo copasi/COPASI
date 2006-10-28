@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CompartmentsWidget1.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 06:57:33 $
+   $Author: shoops $
+   $Date: 2006/10/28 00:20:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -20,7 +20,7 @@
 #ifndef COMPARTMENTSWIDGET1_H
 #define COMPARTMENTSWIDGET1_H
 
-#include "CopasiUI/copasiWidget.h"
+#include "UI/copasiWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

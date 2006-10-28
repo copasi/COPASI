@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 06:57:33 $
+   $Author: shoops $
+   $Date: 2006/10/28 00:26:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form interface generated from reading ui file 'CQTrajectoryWidget.ui'
  **
  ** Created: Fri May 5 22:14:49 2006
- **      by: The User Interface Compiler ($Id: CQTrajectoryWidget.h,v 1.2 2006/10/15 06:57:33 gauges Exp $)
+ **      by: The User Interface Compiler ($Id: CQTrajectoryWidget.h,v 1.3 2006/10/28 00:26:44 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -24,7 +24,7 @@
 
 #include <qvariant.h>
 #include <qpixmap.h>
-#include "CopasiUI/TaskWidget.h"
+#include "UI/TaskWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

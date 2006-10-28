@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/TableDefinition.h,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 06:57:33 $
+   $Author: shoops $
+   $Date: 2006/10/28 00:21:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 #ifndef TABLE_WIDGET_H
 #define TABLE_WIDGET_H
 
-#include "CopasiUI/CopasiTableWidget.h"
+#include "UI/CopasiTableWidget.h"
 
 class TableDefinition : public CopasiTableWidget
   {

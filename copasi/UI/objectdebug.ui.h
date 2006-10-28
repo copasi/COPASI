@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/objectdebug.ui.h,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 06:57:34 $
+   $Author: shoops $
+   $Date: 2006/10/28 00:24:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,7 +21,7 @@
 
 #include "copasi.h"
 
-#include "CopasiUI/qtUtilities.h"
+#include "UI/qtUtilities.h"
 
 #include "report/CCopasiObject.h"
 #include "report/CCopasiContainer.h"

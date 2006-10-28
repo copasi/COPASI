@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.cpp,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 16:03:52 $
+   $Date: 2006/10/28 00:31:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,8 +25,8 @@
 #include "scrollzoomer.h"
 
 #include "CopasiPlot.h"
-#include "CPlotSpecification.h"
-#include "CopasiUI/qtUtilities.h"
+#include "plot/CPlotSpecification.h"
+#include "UI/qtUtilities.h"
 
 #define ActivitySize 8
 

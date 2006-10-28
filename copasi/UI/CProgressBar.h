@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CProgressBar.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/27 14:23:45 $
+   $Date: 2006/10/28 00:20:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 #include <qdatetime.h>
 
 #include "utilities/CProcessReport.h"
-#include "CopasiUI/CQProgressDialog.h"
+#include "UI/CQProgressDialog.h"
 
 template < typename > class CVector;
 class CQProgressItem;

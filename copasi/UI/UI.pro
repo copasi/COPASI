@@ -1,134 +1,16 @@
 ######################################################################
-# $Revision: 1.134 $ $Author: gauges $ $Date: 2006/10/15 06:25:18 $  
+# $Revision: 1.135 $ $Author: shoops $ $Date: 2006/10/28 00:28:03 $  
 ######################################################################
 
-TEMPLATE = app
+LIB = UI
 
-SRC_TARGET = CopasiUI
-
+include(../lib.pri)
 include(../common.pri)
+
+CONFIG += qt
 
 DEPENDPATH += .. 
 INCLUDEPATH += ..
-
-COPASI_LIBS += copasiDM
-COPASI_LIBS += copasiXML
-COPASI_LIBS += commandline
-COPASI_LIBS += elementaryFluxModes
-COPASI_LIBS += fitting
-COPASI_LIBS += function
-COPASI_LIBS += lyap
-contains(DEFINES, HAVE_MML) {
-  COPASI_LIBS += mml
-}
-COPASI_LIBS += optimization
-COPASI_LIBS += plot
-COPASI_LIBS += randomGenerator
-COPASI_LIBS += report
-COPASI_LIBS += sbmlimport
-COPASI_LIBS += scan
-contains(DEFINES, COPASI_SENS) {
-  COPASI_LIBS += sensitivities
-}
-COPASI_LIBS += steadystate
-COPASI_LIBS += trajectory
-COPASI_LIBS += tss
-COPASI_LIBS += utilities
-COPASI_LIBS += odepack++
-COPASI_LIBS += wizard
-COPASI_LIBS += model
-
-contains(BUILD_OS, WIN32) {
-  RC_FILE = CopasiUI.rc
-  
-  LIBS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
-
-  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../lib/", ../lib/, .lib)
-
-  release {
-    distribution.extra = bash ../../admin/mkbuild.sh $${BUILD_OS}
-  }
-} 
-
-contains(BUILD_OS, Linux) {
-  LIBS = -L../lib \
-         -Wl,--start-group \
-         $$join(COPASI_LIBS, " -l", -l) \
-         -Wl,--end-group \
-         $${LIBS}
-
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
-
-  LIBS += -Wl,-lqt-mt \
-          -Wl,-lXcursor \
-          -Wl,-lXft \
-          -Wl,-lfontconfig \
-          -Wl,-lpthread
-
-  release {
-    dynamic_LFLAGS = $${QMAKE_LFLAGS}
-    dynamic_LFLAGS -= -static
-
-    dynamic_LIBS = -Wl,-Bstatic $${LIBS} -Wl,-Bdynamic 
-    dynamic_LIBS -= -Wl,-lqt-mt
-    dynamic_LIBS -= -Wl,-lXcursor
-    dynamic_LIBS -= -Wl,-lXft
-    dynamic_LIBS -= -Wl,-lfontconfig
-    dynamic_LIBS -= -Wl,-lpthread
- 
-    dynamic.target   = CopasiUI-dynamic
-    dynamic.depends  = $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${TARGETDEPS}
-    dynamic.commands = \
-      $(LINK) $${dynamic_LFLAGS} -L$(QTDIR)/lib -L/usr/X11R6/lib \
-              -o $@ $(OBJECTS) $(OBJMOC) $(OBJCOMP) $${dynamic_LIBS} \
-              -Wl,--start-group -Wl,-Bstatic \
-              -lqt-mt -lXrender -lXrandr -lXcursor -lXinerama -lXft \ 
-              -lfreetype -lfontconfig -lSM -lICE -lXext -lX11 -lm \
-              -Wl,--end-group -Wl,-Bdynamic \
-              -ldl -lpthread && \
-              strip $@
-
-    QMAKE_EXTRA_UNIX_TARGETS += dynamic
-
-    distribution.extra = make $${dynamic.target}; \
-                         ../../admin/mkbuild.sh $${BUILD_OS}
-
-  }
-}
-
-contains(BUILD_OS, SunOS) {
-  QMAKE_LFLAGS += -z rescan
-
-  LIBS = -L../lib \
-         $$join(COPASI_LIBS, " -l", -l) \
-         $${LIBS}
-
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
-
-  LIBS += -lICE -ldl
-
-  release {
-    distribution.extra = ../../admin/mkbuild.sh $${BUILD_OS}
-  }
-}  
-
-contains(BUILD_OS, Darwin){
-  QMAKE_LFLAGS += -Wl,-search_paths_first
-  
-  COPASI_LIBS += model
-  COPASI_LIBS += randomGenerator
-  COPASI_LIBS += function
-  COPASI_LIBS += utilities
-  
-  LIBS = $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a) \
-         $$LIBS
-  
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
-
-  release {
-    distribution.extra = ../../admin/mkbuild.sh $${BUILD_OS}
-  }
-}
 
 # Input
 HEADERS += \
@@ -231,7 +113,6 @@ SOURCES += \
            FunctionWidget.cpp \
            FunctionWidget1.cpp \
            listviews.cpp \
-           main.cpp \
            MetabolitesWidget.cpp \
            MetabolitesWidget1.cpp \
            ModelValuesWidget.cpp \
@@ -411,12 +292,6 @@ SOURCES += \
            TimeSeriesSubwidget.cpp 
 
 release {
-  distribution.path = .
-  distribution.file = CopasiUI
-
-  INSTALLS += distribution
-
-release {
   HEADERS -= \
            SensitivitiesWidget.h \
            TSSWidget.h
@@ -426,32 +301,7 @@ release {
            TSSWidget.cpp
 }
 
-contains(BUILD_OS, Linux){
-    libCOPASIGUI.target   = ../lib/libCOPASIGUI.a
-    libCOPASIGUI.depends  = $(OBJECTS) $(OBJCOMP)
-    libCOPASIGUI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP); ar d $@ main.o   
-    
-    QMAKE_EXTRA_UNIX_TARGETS += libCOPASIGUI
-
-    POST_TARGETDEPS += ../lib/libCOPASIGUI.a
-     
-}
-
-contains(BUILD_OS, Darwin){
-    libCOPASIGUI.target   = ../lib/libCOPASIGUI.a
-    libCOPASIGUI.depends  = $(OBJECTS) $(OBJCOMP)
-    libCOPASIGUI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP) ; ar d $@ main.o 
-    
-    QMAKE_EXTRA_UNIX_TARGETS += libCOPASIGUI
-
-    POST_TARGETDEPS += ../lib/libCOPASIGUI.a
-        
-}   
-
- 
-DISTFILES += CopasiUI.dsp \
-             CopasiUI.rc \
-             resource.h \
+DISTFILES += UI.dsp \
              icons/Copasi.ico \
              icons/Copasi??-Alpha.xpm \
              icons/CopasiDoc.ico \

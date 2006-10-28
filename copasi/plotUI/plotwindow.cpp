@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/plotwindow.cpp,v $
-   $Revision: 1.29 $
+   $Revision: 1.30 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:41 $
+   $Date: 2006/10/28 00:31:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,10 +21,10 @@
 
 #include "plotwindow.h"
 #include "CopasiPlot.h"
-#include "CPlotSpecification.h"
+#include "plot/CPlotSpecification.h"
 #include "COutputHandlerPlot.h"
 
-#include "CopasiUI/qtUtilities.h"
+#include "UI/qtUtilities.h"
 
 // taken from qwt examples/bode
 class PrintFilter: public QwtPlotPrintFilter
@@ -96,7 +96,6 @@ bool PlotWindow::initFromSpec(const CPlotSpecification* ptrSpec)
 /*void PlotWindow::mouseReleased(const QMouseEvent &e)
 {
   //TODO: if midbutton is clicked and we're zoomed out completely, zoomButton need to be enabled as well
-
 
   if (e.button() == RightButton)
     zoomButton->setEnabled(true);

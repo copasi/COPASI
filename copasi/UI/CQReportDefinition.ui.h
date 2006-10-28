@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQReportDefinition.ui.h,v $
-   $Revision: 1.14 $
+   $Revision: 1.15 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 06:57:33 $
+   $Author: shoops $
+   $Date: 2006/10/28 00:18:41 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,10 +12,10 @@
 
 #include <qmessagebox.h>
 
-#include "CopasiUI/CQReportListItem.h"
-#include "CopasiUI/CCopasiSelectionDialog.h"
-#include "CopasiUI/CQTextDialog.h"
-#include "CopasiUI/qtUtilities.h"
+#include "UI/CQReportListItem.h"
+#include "UI/CCopasiSelectionDialog.h"
+#include "UI/CQTextDialog.h"
+#include "UI/qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CKeyFactory.h"

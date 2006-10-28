@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressDialog.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 06:57:33 $
+   $Author: shoops $
+   $Date: 2006/10/28 00:26:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form interface generated from reading ui file 'CQProgressDialog.ui'
  **
  ** Created: Fri Jul 15 14:54:32 2005
- **      by: The User Interface Compiler ($Id: CQProgressDialog.h,v 1.5 2006/10/15 06:57:33 gauges Exp $)
+ **      by: The User Interface Compiler ($Id: CQProgressDialog.h,v 1.6 2006/10/28 00:26:44 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,7 +25,7 @@
 #include <qvariant.h>
 #include <qpixmap.h>
 #include <qdialog.h>
-#include "CopasiUI/CQProgressItem.h"
+#include "UI/CQProgressItem.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

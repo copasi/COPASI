@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressItemBar.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 06:57:33 $
+   $Author: shoops $
+   $Date: 2006/10/28 00:26:44 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form interface generated from reading ui file 'CQProgressItemBar.ui'
  **
  ** Created: Mon Sep 11 08:50:36 2006
- **      by: The User Interface Compiler ($Id: CQProgressItemBar.h,v 1.9 2006/10/15 06:57:33 gauges Exp $)
+ **      by: The User Interface Compiler ($Id: CQProgressItemBar.h,v 1.10 2006/10/28 00:26:44 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -24,7 +24,7 @@
 
 #include <qvariant.h>
 #include <qpixmap.h>
-#include "CopasiUI/CQProgressItem.h"
+#include "UI/CQProgressItem.h"
 #include "utilities/CVector.h"
 #include "utilities/CProcessReport.h"
 

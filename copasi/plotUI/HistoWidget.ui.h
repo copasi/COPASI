@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/HistoWidget.ui.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:48:56 $
+   $Author: shoops $
+   $Date: 2006/10/28 00:31:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,8 +27,8 @@
 #include "plot/CPlotItem.h"
 
 #include "report/CCopasiContainer.h"
-#include "CopasiUI/CCopasiSelectionDialog.h"
-#include "CopasiUI/qtUtilities.h"
+#include "UI/CCopasiSelectionDialog.h"
+#include "UI/qtUtilities.h"
 
 void HistoWidget::buttonPressedX()
 {

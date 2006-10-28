@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:41 $
+   $Date: 2006/10/28 00:31:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form implementation generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Fri Sep 26 16:01:29 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.45 2006/04/27 01:30:41 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.cpp,v 1.46 2006/10/28 00:31:05 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -38,13 +38,13 @@
 #include "curve2dwidget.h"
 #include "HistoWidget.h"
 #include "plotwindow.h"
-#include "CPlotSpecification.h"
-#include "COutputDefinitionVector.h"
+#include "plot/CPlotSpecification.h"
+#include "plot/COutputDefinitionVector.h"
 #include "report/CKeyFactory.h"
-#include "CopasiUI/CCopasiPlotSelectionDialog.h"
+#include "UI/CCopasiPlotSelectionDialog.h"
 #include "model/CMetabNameInterface.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
-#include "CopasiUI/DataModelGUI.h"
+#include "UI/DataModelGUI.h"
 
 //temporary
 #include "mathematics.h"

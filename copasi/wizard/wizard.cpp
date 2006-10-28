@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/wizard/wizard.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:54 $
+   $Date: 2006/10/28 00:32:50 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form implementation generated from reading ui file 'wizard.ui'
  **
  ** Created: Tue Sep 28 23:32:28 2004
- **      by: The User Interface Compiler ($Id: wizard.cpp,v 1.9 2006/04/27 01:32:54 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: wizard.cpp,v 1.10 2006/10/28 00:32:50 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -31,7 +31,7 @@
 #include <qwhatsthis.h>
 #include "qmessagebox.h"
 #include "qdir.h"
-#include "../CopasiUI/listviews.h"
+#include "UI/listviews.h"
 #include "wizard.ui.h"
 
 /*

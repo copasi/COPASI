@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/ParametersWidget.h,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 06:57:33 $
+   $Author: shoops $
+   $Date: 2006/10/28 00:21:45 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -16,7 +16,7 @@
 #include <qvariant.h>
 #include <qdialog.h>
 
-#include "CopasiUI/copasiWidget.h"
+#include "UI/copasiWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;

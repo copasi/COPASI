@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/DataModelGUI.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/16 11:04:03 $
+   $Author: shoops $
+   $Date: 2006/10/28 00:24:53 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,8 +15,8 @@
 
 #include <qobject.h>
 
-#include "CopasiUI/Tree.h"
-#include "plot/COutputHandlerPlot.h"
+#include "UI/Tree.h"
+#include "plotUI/COutputHandlerPlot.h"
 
 //class CMathModel;
 class QTimer;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/Attic/plotwidget1.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:41 $
+   $Date: 2006/10/28 00:31:05 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form interface generated from reading ui file 'plotwidget1.ui'
  **
  ** Created: Mon Sep 29 10:43:24 2003
- **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.15 2006/04/27 01:30:41 shoops Exp $)
+ **      by: The User Interface Compiler ($Id: plotwidget1.h,v 1.16 2006/10/28 00:31:05 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -27,7 +27,7 @@
 #include <fstream>
 #include <qvariant.h>
 
-#include "CopasiUI/copasiWidget.h"
+#include "UI/copasiWidget.h"
 #include "plot/CPlotSpecification.h"
 
 class QVBoxLayout;

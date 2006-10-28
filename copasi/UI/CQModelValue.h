@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQModelValue.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 06:57:33 $
+   $Author: shoops $
+   $Date: 2006/10/28 00:26:44 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,7 +14,7 @@
  ** Form interface generated from reading ui file 'CQModelValue.ui'
  **
  ** Created: Fri Sep 1 14:45:19 2006
- **      by: The User Interface Compiler ($Id: CQModelValue.h,v 1.4 2006/10/15 06:57:33 gauges Exp $)
+ **      by: The User Interface Compiler ($Id: CQModelValue.h,v 1.5 2006/10/28 00:26:44 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,7 +25,7 @@
 #include <qvariant.h>
 #include <qpixmap.h>
 #include <string>
-#include "CopasiUI/copasiWidget.h"
+#include "UI/copasiWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
