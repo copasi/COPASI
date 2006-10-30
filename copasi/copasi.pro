@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.21 $ $Author: shoops $ $Date: 2006/10/30 14:31:13 $  
+# $Revision: 1.22 $ $Author: shoops $ $Date: 2006/10/30 21:19:01 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -29,7 +29,6 @@ SUBDIRS += trajectory
 SUBDIRS += tss
 SUBDIRS += utilities
 SUBDIRS += xml
-SUBDIRS += wizard
 
 # Now the UI libraries
 contains(DEFINES, HAVE_MML) {

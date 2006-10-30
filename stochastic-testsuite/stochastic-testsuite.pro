@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.7 $ $Author: gauges $ $Date: 2006/10/15 09:28:40 $  
+# $Revision: 1.8 $ $Author: shoops $ $Date: 2006/10/30 21:21:19 $  
 ######################################################################
 
 TEMPLATE = app
@@ -11,32 +11,7 @@ include(../copasi/common.pri)
 DEPENDPATH += ../copasi/ 
 INCLUDEPATH += ../copasi/
 
-COPASI_LIBS += COPASI
-
-#COPASI_LIBS += copasiDM 
-#COPASI_LIBS += copasiXML 
-#COPASI_LIBS += commandline 
-#COPASI_LIBS += elementaryFluxModes 
-#COPASI_LIBS += fitting 
-#COPASI_LIBS += function 
-#COPASI_LIBS += lyap 
-#COPASI_LIBS += optimization 
-#COPASI_LIBS += plot 
-#COPASI_LIBS += randomGenerator 
-#COPASI_LIBS += report 
-#COPASI_LIBS += sbmlimport 
-#COPASI_LIBS += scan 
-#COPASI_LIBS += steadystate 
-#COPASI_LIBS += trajectory 
-#COPASI_LIBS += tss 
-#COPASI_LIBS += odepack++ 
-#COPASI_LIBS += utilities                   
-
-#contains(DEFINES, COPASI_SENS) {
-#  COPASI_LIBS += sensitivities
-#}
-
-#COPASI_LIBS += model
+COPASI_LIBS += COPASISE
 
 
 contains(BUILD_OS, WIN32) {
@@ -47,9 +22,7 @@ contains(BUILD_OS, WIN32) {
 
 contains(BUILD_OS, Linux) {
   LIBS = -L../copasi/lib \
-         -Wl,--start-group \
          $$join(COPASI_LIBS, " -l", -l) \
-         -Wl,--end-group \
          $${LIBS}
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../copasi/lib/lib", ../copasi/lib/lib, .a)
@@ -67,9 +40,6 @@ contains(BUILD_OS, SunOS) {
 
 contains(BUILD_OS, Darwin){
   QMAKE_LFLAGS += -Wl,-search_paths_first
-  
-#  COPASI_LIBS += randomGenerator
-#  COPASI_LIBS += function
   
   LIBS = $$join(COPASI_LIBS, ".a  ../copasi/lib/lib", ../copasi/lib/lib, .a) \
          $${LIBS}
