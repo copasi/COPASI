@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.32 $ $Author: shoops $ $Date: 2006/10/30 20:10:43 $  
+# $Revision: 1.33 $ $Author: shoops $ $Date: 2006/10/30 20:16:02 $  
 ######################################################################
 
 TEMPLATE = app
@@ -25,11 +25,8 @@ contains(BUILD_OS, WIN32) {
 
 contains(BUILD_OS, Linux) {
   LIBS = -L../lib \
-         -Wl,--start-group \
          $$join(COPASI_LIBS, " -l", -l) \
-         -Wl,--end-group \
-         $${LIBS} \
-         -lexpat
+         $${LIBS}
 
   TARGETDEPS += $$join(COPASI_LIBS, ".a  ../lib/lib", ../lib/lib, .a)
 
