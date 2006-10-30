@@ -1,40 +1,19 @@
 ######################################################################
-# $Revision: 1.31 $ $Author: gauges $ $Date: 2006/10/15 06:25:18 $  
+# $Revision: 1.32 $ $Author: shoops $ $Date: 2006/10/30 20:10:43 $  
 ######################################################################
 
 TEMPLATE = app
 
 SRC_TARGET = CopasiSE
 
-# CONFIG -= qt
+CONFIG -= qt
 
 include(../common.pri)
 
 DEPENDPATH += .. 
 INCLUDEPATH += ..
 
-COPASI_LIBS += copasiDM
-COPASI_LIBS += copasiXML
-COPASI_LIBS += commandline
-COPASI_LIBS += elementaryFluxModes
-COPASI_LIBS += fitting
-COPASI_LIBS += function
-COPASI_LIBS += lyap
-COPASI_LIBS += optimization
-COPASI_LIBS += plot
-COPASI_LIBS += randomGenerator
-COPASI_LIBS += report
-COPASI_LIBS += sbmlimport
-COPASI_LIBS += scan
-contains(DEFINES, COPASI_SENS) {
-  COPASI_LIBS += sensitivities
-}
-COPASI_LIBS += steadystate
-COPASI_LIBS += trajectory
-COPASI_LIBS += tss
-COPASI_LIBS += odepack++
-COPASI_LIBS += utilities                   
-COPASI_LIBS += model
+COPASI_LIBS += COPASISE
 
 contains(BUILD_OS, WIN32) {
   CONFIG += console

@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.20 $ $Author: gauges $ $Date: 2006/10/24 07:09:45 $  
+# $Revision: 1.21 $ $Author: shoops $ $Date: 2006/10/30 20:10:44 $  
 ######################################################################
 
 LIB = plot
@@ -9,35 +9,21 @@ include(../common.pri)
 
 CONFIG += qt
 
-HEADERS += CHistogram.h \
-           plotwidget1.h \
-           CopasiPlot.h \
-           COutputHandlerPlot.h \
-           CPlotItem.h \
+HEADERS += CPlotItem.h \
            CPlotSpecification.h \
-           COutputDefinitionVector.h \
-           plotwindow.h \
-           scrollbar.h \
-           scrollzoomer.h
+           COutputDefinitionVector.h
 
-SOURCES += CHistogram.cpp \
-           CopasiPlot.cpp \
-           plotwidget1.cpp \
-           plotwindow.cpp \
-           COutputHandlerPlot.cpp \
-           CPlotItem.cpp \
+SOURCES += CPlotItem.cpp \
            CPlotSpecification.cpp \
            COutputDefinitionVector.cpp \
-           scrollbar.cpp \
-           scrollzoomer.cpp
 
-FORMS +=  curve2dwidget.ui
-FORMS +=  HistoWidget.ui
+# FORMS +=  curve2dwidget.ui
+# FORMS +=  HistoWidget.ui
 
-HEADERS += curve2dwidget.ui.h
-HEADERS +=  HistoWidget.ui.h
+# HEADERS += curve2dwidget.ui.h
+# HEADERS +=  HistoWidget.ui.h
 
-INCLUDEPATH += $${QWT_PATH}/include
+# INCLUDEPATH += $${QWT_PATH}/include
 
 
 contains(BUILD_OS, Linux){
