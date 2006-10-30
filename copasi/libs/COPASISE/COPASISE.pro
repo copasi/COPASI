@@ -4,20 +4,22 @@
 
 TEMPLATE = lib
 
+DESTDIR = ../../lib
+TARGET = $$LIB
+
 include(../../common.pri)
 
 CONFIG += staticlib
 
-DESTDIR = ../../lib
-TARGET = $$LIB
-
+COPASI_LIBS += commandline
 COPASI_LIBS += copasiDM
 COPASI_LIBS += copasiXML
-COPASI_LIBS += commandline
 COPASI_LIBS += elementaryFluxModes
 COPASI_LIBS += fitting
 COPASI_LIBS += function
 COPASI_LIBS += lyap
+COPASI_LIBS += model
+COPASI_LIBS += odepack++
 COPASI_LIBS += optimization
 COPASI_LIBS += plot
 COPASI_LIBS += randomGenerator
@@ -30,22 +32,23 @@ contains(DEFINES, COPASI_SENS) {
 COPASI_LIBS += steadystate
 COPASI_LIBS += trajectory
 COPASI_LIBS += tss
-COPASI_LIBS += odepack++
 COPASI_LIBS += utilities                   
-COPASI_LIBS += model
+
+BuildLib.commands = \
+  rm -rf $@; \
+  $$join(COPASI_LIBS, ".a; $$QMAKE_AR $@ *.o; rm *.o;  ar -x $$DESTDIR/lib", "ar -x $$DESTDIR/lib", ".a; $$QMAKE_AR $@ *.o; rm *.o");
+BuildLib.target = $$DESTDIR/$(TARGET)
+BuildLib.depends = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+QMAKE_EXTRA_UNIX_TARGETS += BuildLib
+
+QMAKE_ALL += BuildLib
 
 contains(BUILD_OS, WIN32) {
   OBJECTS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
 }
 
-contains(BUILD_OS, Linux) {
-  OBJECTS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+!contains(BUILD_OS, WIN32) {
+  TARGETDEPS += $$DESTDIR/$(TARGET)
+  DESTDIR = .
 }
 
-contains(BUILD_OS, SunOS) {
-  OBJECTS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
-}  
-
-contains(BUILD_OS, Darwin){
-  OBJECTS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
-}
