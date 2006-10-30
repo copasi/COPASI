@@ -33,6 +33,7 @@ contains(BUILD_OS, WIN32) {
 }
 
 !contains(BUILD_OS, WIN32) {
+  OBJECTS += COPASIUI.pro
   TARGETDEPS += $$DESTDIR/$(TARGET)
   DESTDIR = .
 }

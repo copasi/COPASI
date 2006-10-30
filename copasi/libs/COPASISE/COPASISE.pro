@@ -48,6 +48,7 @@ contains(BUILD_OS, WIN32) {
 }
 
 !contains(BUILD_OS, WIN32) {
+  OBJECTS += COPASISE.pro
   TARGETDEPS += $$DESTDIR/$(TARGET)
   DESTDIR = .
 }
