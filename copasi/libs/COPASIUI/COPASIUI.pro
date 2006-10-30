@@ -19,21 +19,24 @@ COPASI_LIBS += plotUI
 COPASI_LIBS += UI
 COPASI_LIBS += wizard
 
+
 BuildLib.commands = \
   rm -rf $@; \
   $$join(COPASI_LIBS, ".a; $$QMAKE_AR $@ *.o; rm *.o;  ar -x $$DESTDIR/lib", "ar -x $$DESTDIR/lib", ".a; $$QMAKE_AR $@ *.o; rm *.o");
+contains(BUILD_OS, Darwin) {
+  BuildLib.commands += ranlib -s $@
+}
 BuildLib.target = $$DESTDIR/$(TARGET)
-BuildLib.depends = $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+BuildLib.depends = Makefile $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 QMAKE_EXTRA_UNIX_TARGETS += BuildLib
 
-QMAKE_ALL += BuildLib
 
 contains(BUILD_OS, WIN32) {
   OBJECTS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
 }
 
 !contains(BUILD_OS, WIN32) {
-  OBJECTS += COPASIUI.pro
+  OBJECTS += Makefile
   TARGETDEPS += $$DESTDIR/$(TARGET)
   DESTDIR = .
 }
