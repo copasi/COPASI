@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/utility.cpp,v $
-   $Revision: 1.26 $
+   $Revision: 1.27 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 16:03:50 $
+   $Date: 2006/10/30 19:37:19 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -587,8 +587,16 @@ const char * findLocale()
   if (Locale == NULL)
     Locale = strdup(nl_langinfo(CODESET));
 
+#ifdef SunOS
+  if (strcmp(Locale, "646") == 0)
+    pfree(Locale);
+
+  if (Locale == NULL)
+    Locale = strdup("8859-1");
+#else
   if (Locale == NULL)
     Locale = strdup("ISO-8859-1");
+#endif
 
   return Locale;
 }
