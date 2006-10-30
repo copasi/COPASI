@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.4 $ $Author: gauges $ $Date: 2006/10/15 06:25:21 $  
+# $Revision: 1.5 $ $Author: shoops $ $Date: 2006/10/30 21:12:17 $  
 ######################################################################
 
 LIB = mml
@@ -12,28 +12,6 @@ CONFIG += qt
 # Input
 HEADERS += qtmmlwidget.h
 SOURCES += qtmmlwidget.cpp
-
-contains(BUILD_OS, Linux){
-    libCOPASI.target   = ../lib/libCOPASI.a
-    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
-    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)   
-    
-    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
-
-    POST_TARGETDEPS += ../lib/libCOPASI.a
-     
-}
-
-contains(BUILD_OS, Darwin){
-    libCOPASI.target   = ../lib/libCOPASI.a
-    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
-    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)  
-    
-    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
-
-    POST_TARGETDEPS += ../lib/libCOPASI.a
-        
-}   
 
 
 DISTFILES += MathML.dsp

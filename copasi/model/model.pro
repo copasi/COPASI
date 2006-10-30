@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.16 $ $Author: gauges $ $Date: 2006/10/15 06:25:22 $  
+# $Revision: 1.17 $ $Author: shoops $ $Date: 2006/10/30 21:12:16 $  
 ######################################################################
 
 LIB = model
@@ -50,33 +50,6 @@ else {
   SOURCES += CChemEqParser_yacc.cpp \
              CChemEqParser_lex.cpp
 }
-
-# 1.target = CScanInputFlexLexer.cpp
-# 1.depends = CScanInputFlexLexer.lpp 
-# 1.commands = $$myLex
-# QMAKE_EXTRA_UNIX_TARGETS += 1
-
-contains(BUILD_OS, Linux){
-    libCOPASI.target   = ../lib/libCOPASI.a
-    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
-    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)   
-    
-    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
-
-    POST_TARGETDEPS += ../lib/libCOPASI.a
-     
-}
-
-contains(BUILD_OS, Darwin){
-    libCOPASI.target   = ../lib/libCOPASI.a
-    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
-    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)  
-    
-    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
-
-    POST_TARGETDEPS += ../lib/libCOPASI.a
-        
-}   
 
 
 DISTFILES += model.dsp \

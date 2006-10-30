@@ -4,10 +4,11 @@ include(../../common.pri)
 
 TARGET = CopasiPython
 
-COPASI_LIBS += -lCOPASIGUI 
-COPASI_LIBS += -lCOPASI 
-
 COPASI_LIBS += -L../../lib
+
+COPASI_LIBS += -lCOPASIUI 
+COPASI_LIBS += -lCOPASISE 
+
 
 LIBS = $$COPASI_LIBS $$LIBS
 

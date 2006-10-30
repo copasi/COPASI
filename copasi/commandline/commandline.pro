@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.10 $ $Author: gauges $ $Date: 2006/10/15 06:25:19 $  
+# $Revision: 1.11 $ $Author: shoops $ $Date: 2006/10/30 21:12:20 $  
 ######################################################################
 
 LIB = commandline
@@ -35,27 +35,6 @@ contains(BUILD_PARSER, yes) {
   }
 }
 
-contains(BUILD_OS, Linux){
-    libCOPASI.target   = ../lib/libCOPASI.a
-    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
-    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)   
-    
-    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
-
-    POST_TARGETDEPS += ../lib/libCOPASI.a
-     
-}
-
-contains(BUILD_OS, Darwin){
-    libCOPASI.target   = ../lib/libCOPASI.a
-    libCOPASI.depends  = $(OBJECTS) $(OBJCOMP)
-    libCOPASI.commands = ar crs $@ $(OBJECTS) $(OBJCOMP)  
-    
-    QMAKE_EXTRA_UNIX_TARGETS += libCOPASI
-
-    POST_TARGETDEPS += ../lib/libCOPASI.a
-        
-}   
 
 DISTFILES += \
              commandline.dsp \
