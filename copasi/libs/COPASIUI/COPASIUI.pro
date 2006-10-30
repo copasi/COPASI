@@ -20,22 +20,18 @@ COPASI_LIBS += UI
 COPASI_LIBS += wizard
 
 contains(BUILD_OS, WIN32) {
-  TARGETDEPS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
-  QMAKE_LIB += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  OBJECTS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
 }
 
 contains(BUILD_OS, Linux) {
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
   OBJECTS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 }
 
 contains(BUILD_OS, SunOS) {
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
   OBJECTS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 }  
 
 contains(BUILD_OS, Darwin){
-  TARGETDEPS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
   OBJECTS += $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
 }
 

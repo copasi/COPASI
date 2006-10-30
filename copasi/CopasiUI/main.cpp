@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiUI/main.cpp,v $
-   $Revision: 1.27 $
+   $Revision: 1.28 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/05 15:26:02 $
+   $Date: 2006/10/30 14:31:51 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,15 +21,15 @@
 #include "copasilicense.h"
 #include "copasiversion.h"
 
-#include "copasiui3window.h"
-#include "objectdebug.h"
+#include "UI/copasiui3window.h"
+#include "UI/objectdebug.h"
+#include "UI/DataModelGUI.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunction.h"
 #include "commandline/COptionParser.h"
 #include "commandline/COptions.h"
-#include "DataModelGUI.h"
 
 int main(int argc, char **argv)
 {

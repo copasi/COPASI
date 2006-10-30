@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.20 $ $Author: shoops $ $Date: 2006/10/28 00:32:13 $  
+# $Revision: 1.21 $ $Author: shoops $ $Date: 2006/10/30 14:31:13 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -13,9 +13,6 @@ SUBDIRS += elementaryFluxModes
 SUBDIRS += function
 SUBDIRS += lyap
 SUBDIRS += model
-contains(DEFINES, HAVE_MML) {
-  SUBDIRS += mml
-}
 SUBDIRS += odepack++
 SUBDIRS += optimization
 SUBDIRS += parameterFitting
@@ -35,8 +32,12 @@ SUBDIRS += xml
 SUBDIRS += wizard
 
 # Now the UI libraries
+contains(DEFINES, HAVE_MML) {
+  SUBDIRS += mml
+}
 SUBDIRS += plotUI
 SUBDIRS += UI
+SUBDIRS += wizard
 
 # Now build the libs
 SUBDIRS += libs
