@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/plotUI/CopasiPlot.h,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:48:56 $
+   $Author: shoops $
+   $Date: 2006/10/31 16:06:03 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +27,7 @@
 #include <qwt_data.h>
 #include <qwt_plot_curve.h>
 
-#include "plot/CHistogram.h"
+#include "plotUI/CHistogram.h"
 #include "plot/CPlotItem.h"
 
 #include "report/CCopasiObject.h"
