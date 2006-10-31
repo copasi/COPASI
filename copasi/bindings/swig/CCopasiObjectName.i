@@ -5,18 +5,10 @@
 
 %}
 
-#ifndef COPASI_DEBUG
-
-%nodefaultctor
-%nodefaultdtor
-
-#endif /* !COPASI_DEBUG */
-
 
 class CCopasiObjectName : public std::string
 {
    public:
-#ifdef COPASI_DEBUG
      CCopasiObjectName();
      
      CCopasiObjectName(const std::string& name);
@@ -24,7 +16,6 @@ class CCopasiObjectName : public std::string
      CCopasiObjectName(const CCopasiObjectName& src);
      
      ~CCopasiObjectName();
-#endif /* COPASI_DEBUG */
 
      CCopasiObjectName getPrimary() const;
 
@@ -58,12 +49,5 @@ class CRegisteredObjectName: public CCopasiObjectName
     // static const std::set<CRegisteredObjectName*> & getSet();
 
 };
-
-#ifndef COPASI_DEBUG
-
-%clearnodefaultctor
-%clearnodefaultdtor
-
-#endif /* !COPASI_DEBUG */
 
 

@@ -4,13 +4,6 @@
 #include "utilities/CCopasiVector.h"
 
 %}
-#ifndef COPASI_DEBUG
-
-%nodefaultctor
-%nodefaultdtor
-
-#endif /* !COPASI_DEBUG */
-
 
 template < class CType > class CCopasiVector:
         protected std::vector< CType * >, public CCopasiContainer
@@ -20,7 +13,6 @@ template < class CType > class CCopasiVector:
       typedef typename std::vector< CType * >::iterator iterator;
       typedef typename std::vector< CType * >::const_iterator const_iterator;
 
-#ifdef COPASI_DEBUG 
       CCopasiVector(const std::string & name = "NoName",
                     const CCopasiContainer * pParent = NULL,
                     const unsigned C_INT32 &
@@ -30,7 +22,6 @@ template < class CType > class CCopasiVector:
                     const CCopasiContainer * pParent = NULL);
 
       virtual ~CCopasiVector();
-#endif /* COPASI_DEBUG */      
       virtual void swap(unsigned C_INT32 indexFrom, unsigned C_INT32 indexTo);
       virtual bool add(CType * src, bool adopt = false);
       virtual void remove(const unsigned C_INT32 & index);
@@ -49,7 +40,6 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       typedef typename std::vector< CType * >::value_type value_type;
       typedef typename std::vector< CType * >::iterator iterator;
       typedef typename std::vector< CType * >::const_iterator const_iterator;
-#ifdef COPASI_DEBUG 
       CCopasiVectorN(const std::string & name = "NoName",
                      const CCopasiContainer * pParent = NULL);
 
@@ -57,7 +47,6 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
                      const CCopasiContainer * pParent = NULL);
 
       virtual ~CCopasiVectorN();
-#endif /* COPASI_DEBUG */
       virtual bool add(CType * src, bool adopt = false);
       virtual void remove(const std::string & name);
       virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const;
@@ -71,7 +60,6 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
       typedef typename std::vector< CType * >::value_type value_type;
       typedef typename std::vector< CType * >::iterator iterator;
       typedef typename std::vector< CType * >::const_iterator const_iterator;
-#ifdef COPASI_DEBUG
       /**
        *  Default constructor
        */
@@ -88,28 +76,34 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
        *  Destructor
        */
       virtual ~CCopasiVectorNS();
-#endif /* COPASI_DEBUG */
 
 };
 
 
+%template(TaskStdVector) std::vector<CCopasiTask*>;
 %template(TaskVector) CCopasiVector<CCopasiTask>;
 %template(TaskVectorN) CCopasiVectorN<CCopasiTask>;
 
+%template(ModelValueStdVector) std::vector<CModelValue*>;
 %template(ModelValueVector) CCopasiVector<CModelValue>;
 %template(ModelValueVectorN) CCopasiVectorN<CModelValue>;
 
+%template(ReportDefinitionStdVector) std::vector<CReportDefinition*>;
 %template(ReportDefinitionVector) CCopasiVector<CReportDefinition>;
 %template(ReportDefinitionVectorN) CCopasiVectorN<CReportDefinition>;
 
+%template(MoietyStdVector) std::vector<CMoiety*>;
 %template(MoietyVector) CCopasiVector<CMoiety>;
 
+%template(MetabStdVector) std::vector<CMetab*>;
 %template(MetabVector) CCopasiVector<CMetab>;
 
+%template(CompartmentStdVector) std::vector<CCompartment*>;
 %template(CompartmentVector) CCopasiVector<CCompartment>;
 %template(CompartmentVectorN) CCopasiVectorN<CCompartment>;
 %template(CompartmentVectorNS) CCopasiVectorNS<CCompartment>;
 
+%template(ReactionStdVector) std::vector<CReaction*>;
 %template(ReactionVector) CCopasiVector<CReaction>;
 %template(ReactionVectorN) CCopasiVectorN<CReaction>;
 %template(ReactionVectorNS) CCopasiVectorNS<CReaction>;
@@ -126,12 +120,5 @@ typedef CCopasiVector<CMetab> MetabVector;
 typedef CCopasiVectorNS<CCompartment> CompartmentVectorNS;
 
 typedef CCopasiVectorNS<CReaction> ReactionVectorNS;
-
-#ifndef COPASI_DEBUG
-
-%clearnodefaultctor
-%clearnodefaultdtor
-
-#endif /* !COPASI_DEBUG */
 
 

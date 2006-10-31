@@ -4,14 +4,6 @@
 
 %}
 
-#ifndef COPASI_DEBUG
-
-%nodefaultctor
-%nodefaultdtor
-
-#endif /* !COPASI_DEBUG */
-
-
 class CModel : public CModelEntity
 {
     public:
@@ -62,7 +54,6 @@ class CModel : public CModelEntity
     //static const char * ModelTypeNames[];
 
 
-#ifdef COPASI_DEBUG
     /**
      *  Default constructor
      */
@@ -78,7 +69,6 @@ class CModel : public CModelEntity
      * Destructor
      */
     ~CModel();        
-#endif /* COPASI_DEBUG */
 
     /**
      * Converts the set of reactions to a set of reaction where all reactions are irreversible.
@@ -517,12 +507,5 @@ class CModel : public CModelEntity
 
 
 };
-
-#ifndef COPASI_DEBUG
-
-%clearnodefaultctor
-%clearnodefaultdtor
-
-#endif /* !COPASI_DEBUG */
 
 

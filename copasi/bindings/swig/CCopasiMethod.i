@@ -4,13 +4,6 @@
 
 %}
 
-#ifndef COPASI_DEBUG
-
-%nodefaultctor
-%nodefaultdtor
-
-#endif /* !COPASI_DEBUG */
-
 
 class CCopasiMethod : public CCopasiParameterGroup
 {
@@ -71,7 +64,6 @@ class CCopasiMethod : public CCopasiParameterGroup
     static
     CCopasiMethod::SubType TypeNameToEnum(const std::string & subTypeName);
 
-#ifdef COPASI_DEBUG
 
     /**
      * Copy constructor
@@ -86,7 +78,6 @@ class CCopasiMethod : public CCopasiParameterGroup
      */
     virtual ~CCopasiMethod();
 
-#endif /* COPASI_DEBUG */
 
     /**
      * Retrieve the type of the method
@@ -107,12 +98,5 @@ class CCopasiMethod : public CCopasiParameterGroup
     virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
 };
-
-#ifndef COPASI_DEBUG
-
-%clearnodefaultctor
-%clearnodefaultdtor
-
-#endif /* !COPASI_DEBUG */
 
 

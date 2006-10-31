@@ -4,39 +4,22 @@
 
 %}
 
-#ifndef COPASI_DEBUG
-
-%nodefaultctor
-%nodefaultdtor
-
-#endif /* !COPASI_DEBUG */
-
-
 
 class CState
 {
   public:
-#ifdef COPASI_DEBUG
     CState();
     CState(const CState & src);
     ~CState();
-#endif /* COPASI_DEBUG */
     const C_FLOAT64 & getTime() const;
     void setTime(const C_FLOAT64 & time);
 
-    C_FLOAT64 * beginIndependent();
-    C_FLOAT64 * endIndependent();
-    C_FLOAT64 * beginDependent();
-    C_FLOAT64 * endDependent();
-    C_FLOAT64 * beginFixed();
-    C_FLOAT64 * endFixed();
-
-    const C_FLOAT64 * beginIndependent() const;
-    const C_FLOAT64 * endIndependent() const;
-    const C_FLOAT64 * beginDependent() const;
-    const C_FLOAT64 * endDependent() const;
-    const C_FLOAT64 * beginFixed() const;
-    const C_FLOAT64 * endFixed() const;
+    //C_FLOAT64 * beginIndependent();
+    //C_FLOAT64 * endIndependent();
+    //C_FLOAT64 * beginDependent();
+    //C_FLOAT64 * endDependent();
+    //C_FLOAT64 * beginFixed();
+    //C_FLOAT64 * endFixed();
 
     unsigned C_INT32 getNumIndependent() const;
     unsigned C_INT32 getNumDependent() const;
@@ -52,12 +35,5 @@ class CState
 
 
 };
-
-#ifndef COPASI_DEBUG
-
-%clearnodefaultctor
-%clearnodefaultdtor
-
-#endif /* !COPASI_DEBUG */
 
 

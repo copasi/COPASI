@@ -4,19 +4,11 @@
 
 %}
 
-#ifndef COPASI_DEBUG
-
-%nodefaultctor
-%nodefaultdtor
-
-#endif /* !COPASI_DEBUG */
-
 
 class CTrajectoryTask : public CCopasiTask
 {
   public:
 
-#ifdef COPASI_DEBUG 
     /**
      * Default constructor
      * @param const CCopasiContainer * pParent (default: NULL)
@@ -35,7 +27,6 @@ class CTrajectoryTask : public CCopasiTask
      * Destructor
      */
     ~CTrajectoryTask();
-#endif /* COPASI_DEBUG */
 
     /**
      * Process the task with or without initializing to the initial state.
@@ -91,12 +82,5 @@ class CTrajectoryTask : public CCopasiTask
     }
 
 };
-
-#ifndef COPASI_DEBUG
-
-%clearnodefaultctor
-%clearnodefaultdtor
-
-#endif /* !COPASI_DEBUG */
 
 

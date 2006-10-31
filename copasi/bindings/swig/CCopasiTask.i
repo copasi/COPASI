@@ -3,14 +3,6 @@
 #include "utilities/CCopasiTask.h"
 %}
 
-#ifndef COPASI_DEBUG
-
-%nodefaultctor
-%nodefaultdtor
-
-#endif /* !COPASI_DEBUG */
-
-
 class CCopasiTask : public CCopasiContainer
 {
   public:
@@ -43,7 +35,6 @@ class CCopasiTask : public CCopasiContainer
       OUTPUT,                              //do output, but do not initialize/finish
       OUTPUT_COMPLETE          //do output, including initialization and closing
     };
-#ifdef COPASI_DEBUG
     /**
      * Default constructor
      */
@@ -73,7 +64,6 @@ class CCopasiTask : public CCopasiContainer
      * Destructor
      */
     virtual ~CCopasiTask();
-#endif /*COPASI_DEBUG */
 
     /**
      * Retrieve the type of the task
@@ -131,11 +121,5 @@ class CCopasiTask : public CCopasiContainer
 };
 
 
-#ifndef COPASI_DEBUG
-
-%clearnodefaultctor
-%clearnodefaultdtor
-
-#endif /* !COPASI_DEBUG */
 
 

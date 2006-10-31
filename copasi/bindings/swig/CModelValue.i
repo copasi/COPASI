@@ -4,14 +4,6 @@
 
 %}
 
-#ifndef COPASI_DEBUG
-
-%nodefaultctor
-%nodefaultdtor
-
-#endif /* !COPASI_DEBUG */
-
-
 class CModelEntity : public CCopasiContainer
 {
   public:
@@ -39,7 +31,6 @@ class CModelEntity : public CCopasiContainer
      */
     //static const char * XMLStatus[];
 
-#ifdef COPASI_DEBUG
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")
@@ -62,7 +53,7 @@ class CModelEntity : public CCopasiContainer
      *  Destructor.
      */
     ~CModelEntity();
-#endif /* COPASI_DEBUG */
+    
     /**
      *  Retrieve the key
      * @return std::string key
@@ -239,7 +230,6 @@ class CModelValue : public CModelEntity
 {
   public:
 
-#ifdef COPASI_DEBUG
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")
@@ -260,14 +250,6 @@ class CModelValue : public CModelEntity
      *  Destructor.
      */
     ~CModelValue();
-#endif /* COPASI_DEBUG */
 };
-
-#ifndef COPASI_DEBUG
-
-%clearnodefaultctor
-%clearnodefaultdtor
-
-#endif /* !COPASI_DEBUG */
 
 

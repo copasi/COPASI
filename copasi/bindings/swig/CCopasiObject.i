@@ -3,12 +3,15 @@
 #include "report/CCopasiObject.h"
 %}
 
-%nodefaultctor CCopasiObject;
-%nodefaultdtor CCopasiObject;
 
 class CCopasiObject
 {
   public:
+    CCopasiObject(const CCopasiObject & src,
+                  const CCopasiContainer * pParent = NULL);
+
+    virtual ~CCopasiObject();
+
     bool setObjectName(const std::string& name);
     const std::string& getObjectName() const;
     virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;

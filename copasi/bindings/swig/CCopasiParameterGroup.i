@@ -4,13 +4,6 @@
 
 %}
 
-#ifndef COPASI_DEBUG
-
-%nodefaultctor
-%nodefaultdtor
-
-#endif /* !COPASI_DEBUG */
-
 
 class CCopasiParameterGroup : public CCopasiParameter
 {
@@ -19,16 +12,13 @@ class CCopasiParameterGroup : public CCopasiParameter
     typedef parameterGroup::iterator index_iterator;
     typedef CCopasiContainer::objectMap::iterator name_iterator;
 
-#ifdef COPASI_DEBUG
  protected:
     /**
      * Default constructor
      */
     CCopasiParameterGroup();
-#endif /* COPASI_DEBUG */
 
   public:
-#ifdef COPASI_DEBUG
     /**
      * Copy constructor
      * @param "const CCopasiParameterGroup &" src
@@ -51,7 +41,6 @@ class CCopasiParameterGroup : public CCopasiParameter
      * Destructor
      */
     virtual ~CCopasiParameterGroup();
-#endif /* COPASI_DEBUG */
 
     /**
      * This methods must be called to elevate subgroups to
@@ -336,11 +325,5 @@ class CCopasiParameterGroup : public CCopasiParameter
 
 };
 
-#ifndef COPASI_DEBUG
-
-%clearnodefaultctor
-%clearnodefaultdtor
-
-#endif /* !COPASI_DEBUG */
 
 

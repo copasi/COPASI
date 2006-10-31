@@ -4,19 +4,11 @@
   
 %}
 
-#ifndef COPASI_DEBUG
-
-%nodefaultctor
-%nodefaultdtor
-
-#endif /* !COPASI_DEBUG */
-
 
 class CMoiety : public CCopasiContainer
 {
   public:
 
-#ifdef COPASI_DEBUG
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")
@@ -37,7 +29,6 @@ class CMoiety : public CCopasiContainer
      *  Destructor
      */
     ~CMoiety();
-#endif /*COPASI_DEBUG */
 
     /**
      * Add a metabolite to a moiety
@@ -97,12 +88,5 @@ class CMoiety : public CCopasiContainer
 
 
 };
-
-#ifndef COPASI_DEBUG
-
-%clearnodefaultctor
-%clearnodefaultdtor
-
-#endif /* !COPASI_DEBUG */
 
 

@@ -4,13 +4,6 @@
 
 %}
 
-#ifndef COPASI_DEBUG
-
-%nodefaultctor
-%nodefaultdtor
-
-#endif /* !COPASI_DEBUG */
-
 
 class CCopasiParameter : public CCopasiContainer
 {
@@ -36,16 +29,13 @@ class CCopasiParameter : public CCopasiContainer
      */
     static const std::string TypeName[];
 
-#ifdef COPASI_DEBUG
   private:
     /**
      * Default constructor
      */
     CCopasiParameter();
-#endif  /* COPASI_DEBUG */
 
   public:
-#ifdef COPASI_DEBUG
     /**
      * Copy constructor
      * @param const CCopasiParameter & src
@@ -72,7 +62,6 @@ class CCopasiParameter : public CCopasiContainer
      * Destructor
      */
     virtual ~CCopasiParameter();
-#endif /* COPASI_DEBUG */
 
     /**
      * Return the key of this model

@@ -4,20 +4,13 @@
 
 %}
 
-#ifndef COPASI_DEBUG
-
-%nodefaultctor
-%nodefaultdtor
-
-#endif /* !COPASI_DEBUG */
-
 
 template <class CType>
 class CMatrix
   {
   public:
     typedef CType elementType;
-#ifdef COPASI_DEBUG
+    
     /**
      * Default constructor
      * @param unsigned C_INT32 rows (default = 0)
@@ -35,7 +28,6 @@ class CMatrix
      * Destructor.
      */
     virtual ~CMatrix();
-#endif /* COPASI_DEBUG */
     /**
      * The number of elements stored in the matrix.
      * @return unsigned C_INT32 size
@@ -66,13 +58,5 @@ class CMatrix
 %template(FloatMatrix) CMatrix<C_FLOAT64>;
 
 typedef CMatrix<C_FLOAT64> FloatMatrix;
-
-
-#ifndef COPASI_DEBUG
-
-%clearnodefaultctor
-%clearnodefaultdtor
-
-#endif /* !COPASI_DEBUG */
 
 

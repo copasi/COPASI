@@ -4,18 +4,10 @@
 
 %}
 
-#ifndef COPASI_DEBUG
-
-%nodefaultctor
-%nodefaultdtor
-
-#endif /* !COPASI_DEBUG */
-
 
 class CReaction : public CCopasiContainer
 {
   public:
-#ifdef COPASI_DEBUG
     /**
      * Default constructor
      * @param const std::string & name (default: "NoName")
@@ -44,7 +36,6 @@ class CReaction : public CCopasiContainer
      * @return bool success
      */
     virtual bool setObjectParent(const CCopasiContainer * pParent);
-#endif /* COPASI_DEBUG */
 
     /**
      *  Retrieves the key of the reaction
@@ -236,12 +227,4 @@ class CReaction : public CCopasiContainer
 
 
 };
-
-#ifndef COPASI_DEBUG
-
-%clearnodefaultctor
-%clearnodefaultdtor
-
-#endif /* !COPASI_DEBUG */
-
 
