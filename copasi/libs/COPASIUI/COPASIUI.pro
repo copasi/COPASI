@@ -32,7 +32,7 @@ QMAKE_EXTRA_UNIX_TARGETS += BuildLib
 
 
 contains(BUILD_OS, WIN32) {
-  OBJECTS += $$join(COPASI_LIBS, ".lib  ../../lib/", ../../lib/, .lib)
+  OBJECTS += $$join(COPASI_LIBS, ".lib  ..\..\lib\", ..\..\lib\, .lib)
 }
 
 !contains(BUILD_OS, WIN32) {

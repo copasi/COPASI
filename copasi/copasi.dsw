@@ -36,70 +36,10 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name commandline
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name elementaryFluxModes
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name function
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mathmodel
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name model
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name optimization
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name output
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name randomGenerator
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name report
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name scan
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name steadystate
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name trajectory
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name utilities
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name CopasiDataModel
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name copasiXML
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name sbml
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name plot
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name tss
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name fitting
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name sensitivities
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name odepack
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name lyaponov
+    Project_Dep_Name libSE
     End Project Dependency
 }}}
 
@@ -114,79 +54,28 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name commandline
+    Project_Dep_Name libSE
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name elementaryFluxModes
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name function
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mathmodel
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name model
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name optimization
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name randomGenerator
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name report
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name scan
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name steadystate
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name trajectory
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name utilities
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name copasiXML
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name plot
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name sbml
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name wizard
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name MathML
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name CopasiDataModel
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name tss
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name fitting
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name sensitivities
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name odepack
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name lyaponov
+    Project_Dep_Name libUI
     End Project Dependency
 }}}
 
 ###############################################################################
 
 Project: "MathML"=.\mml\MathML.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "UI"=.\UI\UI.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -258,6 +147,102 @@ Package=<4>
 
 ###############################################################################
 
+Project: "libSE"=.\LIBS\COPASISE\libSE.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name commandline
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name CopasiDataModel
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name copasiXML
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name elementaryFluxModes
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name fitting
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name lyaponov
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name model
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name odepack
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name optimization
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name plot
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name randomGenerator
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name report
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name sbml
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name scan
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name sensitivities
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name steadystate
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name trajectory
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name tss
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name utilities
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name function
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "libUI"=.\LIBS\COPASIUI\libUI.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name MathML
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name plotUI
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name UI
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name wizard
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "lyaponov"=.\lyap\lyaponov.dsp - Package Owner=<4>
 
 Package=<5>
@@ -319,6 +304,18 @@ Package=<4>
 ###############################################################################
 
 Project: "plot"=.\plot\plot.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "plotUI"=.\plotUI\plotUI.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

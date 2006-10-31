@@ -24,7 +24,7 @@ CFG=1_configure - Win32 Build
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
-# PROP BASE Use_MFC
+# PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
 # PROP BASE Output_Dir "Build"
 # PROP BASE Intermediate_Dir "Build"
@@ -33,7 +33,7 @@ CFG=1_configure - Win32 Build
 # PROP BASE Target_File "1_configure.exe"
 # PROP BASE Bsc_Name "1_configure.bsc"
 # PROP BASE Target_Dir ""
-# PROP Use_MFC
+# PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Build"
 # PROP Intermediate_Dir "Build"
@@ -65,10 +65,34 @@ SOURCE=..\configure.bat
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\copasi.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\copasiversion.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=.\common.pri
+# End Source File
+# Begin Source File
+
+SOURCE=.\copasi.pro
+# End Source File
+# Begin Source File
+
+SOURCE=.\lib.pri
+# End Source File
+# Begin Source File
+
+SOURCE=.\libs\libs.pro
+# End Source File
 # End Target
 # End Project
