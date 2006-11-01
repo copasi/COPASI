@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.50 $ $Author: shoops $ $Date: 2006/06/20 13:16:12 $  
+# $Revision: 1.51 $ $Author: shoops $ $Date: 2006/11/01 16:00:17 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -11,7 +11,7 @@ isEmpty(BUILD_OS) {
   }
 }
 DEFINES += $$BUILD_OS
-message("Configuring for $${BUILD_OS}.")
+message("Configuring for $${BUILD_OS} with QTDIR=$(QTDIR).")
 
 TARGETDEPS += Makefile
 
