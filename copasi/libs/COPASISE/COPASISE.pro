@@ -37,17 +37,17 @@ COPASI_LIBS += utilities
 
 BuildLib.commands = \
   rm -rf $@; \
-  $$join(COPASI_LIBS, ".a; $$QMAKE_AR $@ *.o; rm *.o;  ar -x $$DESTDIR/lib", "ar -x $$DESTDIR/lib", ".a; $$QMAKE_AR $@ *.o; rm *.o");
+  $$join(COPASI_LIBS, ".a; $$QMAKE_AR $@ *.o; rm *.o; ar -x $$DESTDIR/lib", "ar -x $$DESTDIR/lib", ".a; $$QMAKE_AR $@ *.o; rm *.o");
 contains(BUILD_OS, Darwin) {
   BuildLib.commands += ranlib -s $@
 }
 BuildLib.target = $$DESTDIR/$(TARGET)
-BuildLib.depends = Makefile $$join(COPASI_LIBS, ".a  ../../lib/lib", ../../lib/lib, .a)
+BuildLib.depends = Makefile $$join(COPASI_LIBS, ".a ../../lib/lib", ../../lib/lib, .a)
 QMAKE_EXTRA_UNIX_TARGETS += BuildLib
 
 
 contains(BUILD_OS, WIN32) {
-  OBJECTS += $$join(COPASI_LIBS, ".lib  ..\..\lib\", ..\..\lib\, .lib)
+  OBJECTS += $$join(COPASI_LIBS, ".lib ..\..\lib\", ..\..\lib\, .lib)
 }
 
 !contains(BUILD_OS, WIN32) {
