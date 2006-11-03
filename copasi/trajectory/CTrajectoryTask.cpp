@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CTrajectoryTask.cpp,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 16:03:47 $
+   $Date: 2006/11/03 19:50:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -187,7 +187,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
 
   unsigned C_INT32 StepCounter = 1;
 
-  C_FLOAT64 outputStartTime = *mpCurrentTime + mpTrajectoryProblem->getOutputStartTime();
+  C_FLOAT64 outputStartTime = mpTrajectoryProblem->getOutputStartTime();
 
   if (StepSize == 0.0 && mpTrajectoryProblem->getDuration() != 0.0)
     {
