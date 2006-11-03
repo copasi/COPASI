@@ -1,20 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQTrajectoryWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/09 11:51:40 $
+   $Date: 2006/11/03 19:48:48 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQTrajectoryWidget.ui'
  **
- ** Created: Fri May 5 22:55:10 2006
- **      by: The User Interface Compiler ($Id: CQTrajectoryWidget.cpp,v 1.1 2006/05/09 11:51:40 shoops Exp $)
+ ** Created: Fri Nov 3 14:47:07 2006
+ **      by: The User Interface Compiler ($Id: CQTrajectoryWidget.cpp,v 1.2 2006/11/03 19:48:48 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -132,9 +132,9 @@ CQTrajectoryWidget::~CQTrajectoryWidget()
 void CQTrajectoryWidget::languageChange()
 {
   setCaption(tr("Time Course"));
-  mpLblDeltaT->setText(tr("Start Output Delayed"));
+  mpLblDeltaT->setText(tr("Start Output Time"));
   mpLblIntervals->setText(tr("Intervals"));
-  mpCheckDelay->setText(QString::null);
+  mpCheckDelay->setText(tr("delayed"));
   mpLblDuration->setText(tr("Duration"));
   mpLblIntervalSize->setText(tr("Interval Size"));
   mpCheckSave->setText(tr("Save Result in Memory"));

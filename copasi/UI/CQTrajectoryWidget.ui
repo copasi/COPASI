@@ -42,7 +42,7 @@
                         <cstring>mpLblDeltaT</cstring>
                     </property>
                     <property name="text">
-                        <string>Start Output Delayed</string>
+                        <string>Start Output Time</string>
                     </property>
                     <property name="alignment">
                         <set>AlignVCenter|AlignRight</set>
@@ -69,7 +69,7 @@
                         <cstring>mpCheckDelay</cstring>
                     </property>
                     <property name="text">
-                        <string></string>
+                        <string>delayed</string>
                     </property>
                 </widget>
                 <widget class="QLineEdit" row="2" column="1">
