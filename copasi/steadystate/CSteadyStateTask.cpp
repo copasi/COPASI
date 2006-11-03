@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/steadystate/CSteadyStateTask.cpp,v $
-   $Revision: 1.62 $
+   $Revision: 1.63 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:31:49 $
+   $Date: 2006/11/03 19:49:49 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -156,6 +156,11 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
 
   *mpSteadyState = mpProblem->getModel()->getState();
 
+  // A steady-state makes only sense in an autonomous model,
+  // i.e., the time of the steady-state must not be changed
+  // during simulation.
+  C_FLOAT64 InitialTime = mpSteadyState->getTime();
+
   CSteadyStateMethod* pMethod =
     dynamic_cast<CSteadyStateMethod *>(mpMethod);
   assert(pMethod);
@@ -168,6 +173,9 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
                              mEigenValues,
                              mEigenValuesX,
                              mpCallBack);
+
+  // Reset the time.
+  mpSteadyState->setTime(InitialTime);
 
   output(COutputInterface::AFTER);
 
