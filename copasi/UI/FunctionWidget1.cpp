@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/FunctionWidget1.cpp,v $
-   $Revision: 1.143 $
+   $Revision: 1.144 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/25 15:07:55 $
+   $Date: 2006/11/06 14:29:47 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -581,10 +581,13 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
       while (l > n)
         {
           char ch = desc.at(l);
-          if ((ch == '+') || (ch == '-') || (ch == '*') || (ch == '/'))
+          if ((ch == '+') || (ch == '-') || (ch == '*') || (ch == '/') || (ch == ',') || (ch == ' '))
             break;
           l--;
         }
+      // We did not find a suitable place to break the line
+      if (l == n) l += 65;
+
       desc.insert(l, 1, '\n');
     }
   disconnect(textBrowser, SIGNAL(textChanged()), this, SLOT(slotFcnDescriptionChanged()));
