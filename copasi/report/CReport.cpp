@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReport.cpp,v $
-   $Revision: 1.55 $
+   $Revision: 1.56 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 16:05:05 $
+   $Date: 2006/11/06 16:35:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -279,6 +279,7 @@ void CReport::printFooter()
 bool CReport::compile(std::vector< CCopasiContainer * > listOfContainer)
 {
   bool success = true;
+  COutputInterface::mObjects.clear();
 
   // check if there is a Report Definition Defined
   if (!mpReportDef) return false;
