@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/TaskWidget.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:42 $
+   $Author: tjohann $
+   $Date: 2006/11/10 17:26:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -307,9 +307,8 @@ bool TaskWidget::loadMethod()
           value = getParameterValue(mpMethod, i, &Type);
           mpTblParameter->setText(i, 0, value);
         }
+      mpTblParameter->setFixedWidth(mpTblParameter->sizeHint().width() + 20);
     }
-
-  mpTblParameter->setFixedWidth(mpTblParameter->sizeHint().width() + 20);
 
   return true;
 }
