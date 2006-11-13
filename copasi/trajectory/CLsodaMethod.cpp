@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/CLsodaMethod.cpp,v $
-   $Revision: 1.43 $
+   $Revision: 1.44 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/04 17:41:45 $
+   $Date: 2006/11/13 14:50:36 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,7 +24,9 @@ CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent):
     mpState(NULL),
     mY(NULL)
 {
-  mDim[1] = (C_INT) (void *) this;
+  assert((void *) &mData == (void *) &mData.dim);
+
+  mData.pMethod = this;
   initializeParameter();
 }
 
@@ -34,7 +36,9 @@ CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
     mpState(NULL),
     mY(NULL)
 {
-  mDim[1] = (C_INT) (void *) this;
+  assert((void *) &mData == (void *) &mData.dim);
+
+  mData.pMethod = this;
   initializeParameter();
 }
 
@@ -136,7 +140,7 @@ bool CLsodaMethod::elevateChildren()
 
 void CLsodaMethod::step(const double & deltaT)
 {
-  if (!mDim[0]) //just do nothing if there are no variables
+  if (!mData.dim) //just do nothing if there are no variables
     {
       mTime = mTime + deltaT;
       mpState->setTime(mTime);
@@ -152,7 +156,7 @@ void CLsodaMethod::step(const double & deltaT)
   C_INT ISize = mIWork.size();
 
   mLSODA(&EvalF,          //  1. evaluate F
-         mDim,            //  2. number of variables
+         &mData.dim,      //  2. number of variables
          mY,              //  3. the array of current concentrations
          &mTime,          //  4. the current time
          &EndTime,        //  5. the final time
@@ -204,23 +208,23 @@ void CLsodaMethod::start(const CState * initialState)
   if (mReducedModel)
     {
       mpState->setUpdateDependentRequired(true);
-      mDim[0] = mpState->getNumIndependent();
+      mData.dim = mpState->getNumIndependent();
     }
   else
     {
       mpState->setUpdateDependentRequired(false);
-      mDim[0] = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
+      mData.dim = mpState->getNumIndependent() + mpModel->getNumDependentMetabs();
     }
 
-  mYdot.resize(mDim[0]);
+  mYdot.resize(mData.dim);
 
   /* Configure lsoda */
   mRtol = * getValue("Relative Tolerance").pUDOUBLE;
   initializeAtol();
 
-  mDWork.resize(22 + mDim[0] * std::max<C_INT>(16, mDim[0] + 9));
+  mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9));
   mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
-  mIWork.resize(20 + mDim[0]);
+  mIWork.resize(20 + mData.dim);
   mIWork[4] = mIWork[6] = mIWork[9] = 0;
 
   mIWork[5] = * getValue("Max Internal Steps").pUINT;
@@ -234,7 +238,7 @@ void CLsodaMethod::initializeAtol()
 {
   C_FLOAT64 * pTolerance = getValue("Absolute Tolerance").pUDOUBLE;
 
-  mAtol.resize(mDim[0]);
+  mAtol.resize(mData.dim);
   C_FLOAT64 * pAtol = mAtol.array();
   C_FLOAT64 * pEnd = pAtol + mAtol.size();
 
@@ -255,7 +259,7 @@ void CLsodaMethod::initializeAtol()
 }
 
 void CLsodaMethod::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
-{static_cast<CLsodaMethod *>((void *) n[1])->evalF(t, y, ydot);}
+{static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);}
 
 void CLsodaMethod::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {

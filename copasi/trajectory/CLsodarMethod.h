@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/trajectory/Attic/CLsodarMethod.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 08:31:13 $
+   $Author: shoops $
+   $Date: 2006/11/13 14:50:36 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,13 @@ class CLsodarMethod : public CTrajectoryMethod
     CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType,
         CTrajectoryProblem * pProblem);
 
+  public:
+    struct Data
+      {
+        C_INT dim;
+        CLsodarMethod * pMethod;
+      };
+
     // Attributes
   private:
     /**
@@ -37,11 +44,10 @@ class CLsodarMethod : public CTrajectoryMethod
     CState * mpState;
 
     /**
-     * mDim[0] is the dimension of the ODE system.
-     * mDim[1] contains CLsodarMethod * this to be used in the static methods EvalF and EvalR
-     * Note: this works only if sizeof(C_INT) == ptr_size;
+     * mData.dim is the dimension of the ODE system.
+     * mData.pMethod contains CLsodarMethod * this to be used in the static method EvalF
      */
-    C_INT mDim[2];
+    Data mData;
 
     /**
      *  Pointer to the array with left hand side values.
