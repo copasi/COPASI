@@ -29,10 +29,6 @@ class CModelEntity : public CCopasiContainer
      */
     static const std::string StatusName[];
 
-    /**
-     * XML representation of the states
-     */
-    //static const char * XMLStatus[];
 
     /**
      *  Retrieve the key
@@ -44,12 +40,6 @@ class CModelEntity : public CCopasiContainer
      *
      */
     const CModelEntity::Status & getStatus() const;
-
-    /**
-     * Compile the model value. This is only needed for status ASIGNMENT and ODE.
-     * @return bool success
-     */
-    // virtual bool compile();
 
     /**
      * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
@@ -80,40 +70,10 @@ class CModelEntity : public CCopasiContainer
     virtual void setStatus(const CModelEntity::Status & status);
 
     /**
-     * Set the value
-     * @param const C_FLOAT64 & value
-     */
-    virtual void setValue(const C_FLOAT64 & value);
-
-    /**
      * Set the initial value
      * @param const C_FLOAT64 & initialValue
      */
     virtual void setInitialValue(const C_FLOAT64 & initialValue);
-
-    /**
-     * Set the rate (dmValue/dt)
-     * @param "const C_FLOAT64 &" rate
-     */
-    void setRate(const C_FLOAT64 & rate);
-
-    /**
-     * Retreive a pointer to the value;
-     */
-    //virtual void * getValuePointer() const;
-
-    /**
-     * Set the object parent
-     * @param const CCopasiContainer * pParent
-     * @return bool success
-     */
-    virtual bool setObjectParent(const CCopasiContainer * pParent);
-
-    /**
-     * Retreive the list of deleted numeric child objects;
-     * @return std::set< const CCopasiObject * > deletedObjects
-     */
-    //virtual std::set< const CCopasiObject * > getDeletedObjects() const;
 
     /**
      * Sets the SBMLId.
@@ -125,21 +85,6 @@ class CModelEntity : public CCopasiContainer
      */
     const std::string& getSBMLId() const;
 
-    //void setInitialValuePtr(C_FLOAT64 * pInitialValue);
-    //void setValuePtr(C_FLOAT64 * pValue);
-
-    /**
-     * Set the expression for non FIXED model values
-     * @param CExpression*
-     * @return bool success
-     */
-    //bool setExpressionPtr(CExpression* pExpression);
-
-    /**
-     * Retrieve the pointer to the expression for non FIXED model values.
-     * @return CExpression*
-     */
-    //CExpression* getExpressionPtr();
 
     /**
      * Set the expression for non FIXED model values

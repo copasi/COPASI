@@ -1,7 +1,7 @@
 import COPASI
 import unittests
 from types import *
-
+import math
 
 class Test_CMetab(unittests.TestCase):
   def setUp(self):
@@ -20,7 +20,7 @@ class Test_CMetab(unittests.TestCase):
   def test_setInitialConcentration(self):
     value=5.0
     self.metab.setInitialConcentration(value)
-    self._assert(math.abs(self.getInitialConcentration()-value/value)<0.001)
+    self._assert(math.fabs(self.getInitialConcentration()-value/value)<0.001)
 
   def test_getInitialConcentration(self):
     value=self.metab.getInitialConcentration()
@@ -29,7 +29,7 @@ class Test_CMetab(unittests.TestCase):
   def test_setInitialValue(self):
     value=5.0
     self.metab.setInitialValue(value)
-    self._assert(math.abs(self.getInitialValue()-value/value)<0.001)
+    self._assert(math.fabs(self.getInitialValue()-value/value)<0.001)
 
   def test_getCompartment(self):
     c=self.metab.getCompartment()
@@ -53,4 +53,18 @@ class Test_CMetab(unittests.TestCase):
     value=self.metab.isDependent()
     self._assert(type(value)==BooleanType)
 
+def suite():
+  tests=[
+          'test_getObjectDisplayName'
+         ,'test_getConcentration'
+         ,'test_getInitialConcentration'
+         ,'test_setInitialConcentration'
+         ,'test_setInitialValue'
+         ,'test_getCompartment'
+         ,'test_getModel'
+         ,'test_getTransitionTime'
+         ,'test_getConcentrationRate'
+         ,'test_isDependent'
+        ]
+  return unittests.TestSuite(map(Test_CMetab,tests))
 

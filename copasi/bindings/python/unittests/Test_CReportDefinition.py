@@ -89,3 +89,26 @@ class Test_CReportDefinition(unittests.TestCase):
   def test_getBodyAddr(self):
     self._assert(false)
 
+
+def suite():
+  tests=[
+          'test_getComment'
+         ,'test_setComment'
+         ,'test_getTaskType'
+         ,'test_setTaskType'
+         ,'test_getSeparator'
+         ,'test_setSeparator'
+         ,'test_getTitle'
+         ,'test_setTitle'
+         ,'test_isTable'
+         ,'test_setIsTable'
+         ,'test_getPrecision'
+         ,'test_setPrecision'
+         ,'test_getKey'
+         ,'test_getTableAddr'
+         ,'test_getFooterAddr'
+         ,'test_getHeaderAddr'
+         ,'test_getBodyAddr'
+        ]
+  return unittests.TestSuite(map(Test_CReportDefinition,tests))
+

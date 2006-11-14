@@ -43,4 +43,16 @@ class Test_CState(unittest.TestCase):
     self.cstate.setUpdateDependentRequired(UPDATE_REQUIRED)
     self.assert_(self.cstate.isUpdateDependentRequired()==UPDATE_REQUIRED)
 
+def suite():
+  tests=[
+          'test_getTime'
+         ,'test_setTime'
+         ,'test_getNumIndependent'
+         ,'test_getNumDependent'
+         ,'test_getNumVariable'
+         ,'test_getNumFixed'
+         ,'test_isUpdateDependentRequired'
+         ,'test_setUpdateDependentRequired'
+        ]
+  return unittests.TestSuite(map(Test_CState,tests))
     

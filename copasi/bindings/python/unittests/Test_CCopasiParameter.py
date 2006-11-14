@@ -1,7 +1,7 @@
 import COPASI
 import unittests
 from types import *
-
+import math
 
 class Test_CCopasiParameter(unittests.TestCase):
   def setUp(self):
@@ -15,7 +15,7 @@ class Test_CCopasiParameter(unittests.TestCase):
   def test_setValue(self):
     value=15.3
     self.param.setValue(value)
-    self._assert(math.abs(self.param.getValue()-value/value)<0.001)
+    self._assert(math.fabs(self.param.getValue()-value/value)<0.001)
 
 
   def test_getValue(self):
@@ -43,4 +43,14 @@ class Test_CCopasiParameter(unittests.TestCase):
     self._assert(false)
      
 
+
+def suite():
+  tests=[
+          'test_getKey'
+         ,'test_getValue'
+         ,'test_setValue'
+         ,'test_getType'
+         ,'test_isValidValue'
+        ]
+  return unittests.TestSuite(map(Test_CCopasiParameter,tests))
 

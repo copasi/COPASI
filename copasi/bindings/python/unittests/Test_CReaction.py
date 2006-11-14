@@ -62,14 +62,6 @@ class Test_CReaction(unittests.TestCase):
     self._assert(comp.__class__==COPASI.CCompartment)
     self._assert(comp.getObjectName()=="comp2")
 
-  def test_getSmallestCompartment(self):
-    self.reac.addSubstrate(self.substrate)
-    self.reac.addProduct(self.product)
-    self.reac.addModifier(self.product)
-    comp=self.reac.getSmallestCompartment()
-    self._assert(comp.__class__==COPASI.CCompartment)
-    self._assert(comp.getObjectName()=="comp1")
-
   def test_setSBMLId(self):
     id="react_1"
     self.reac.setSBMLId(id)
@@ -80,4 +72,20 @@ class Test_CReaction(unittests.TestCase):
     self._assert(type(id)==StringType)
 
 
+def suite():
+  tests=[
+          'test_getKey'
+         ,'test_getFlux'
+         ,'test_getParticleFlux'
+         ,'test_isReversible'
+         ,'test_addSubstrate'
+         ,'test_addProduct'
+         ,'test_addModifier'
+         ,'test_setReversible'
+         ,'test_getCompartmentNumber'
+         ,'test_getLargetCompartment'
+         ,'test_getSBMLId'
+         ,'test_setSBMLId'
+        ]
+  return unittests.TestSuite(map(Test_CReaction,tests))
 

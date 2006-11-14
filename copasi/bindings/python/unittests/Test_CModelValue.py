@@ -37,25 +37,10 @@ class Test_CModelValue(unittests.TestCase):
     self.mv.setStatus(status)
     self._assert(self.getStatus()==status)
 
-  def test_setValue(self):
-    v=3.14159
-    self.mv.setValue(v)
-    self._assert(self.mv.getValue()==v)
-
   def test_setInitialValue(self):
     v=3.14159
     self.mv.setInitialValue(v)
     self._assert(self.mv.getInitialValue()==v)
-
-  def test_setRate(self):
-    rate=3.14159
-    self.mv.setRate(rate)
-    self._assert(self.mv.getRate()==rate)
-
-  def test_setObjectParent(self):
-    container=COPASI.CCopasiContainer()
-    self.mv.setObjectParent(container)
-    self._assert(self.mv.getObjectParent().getKey()==container.getKey())
 
   def test_setSBMLId(self):
     id="TESTtestTEST"
@@ -102,9 +87,32 @@ class Test_CModelValue(unittests.TestCase):
 		# that test will be implemented later
 		self._assert(false)
 
-	def test_getExpression(self):
-		expr=self.mv.getExpression()		
-		self._assert(type(expr)==StringType)
+	def test_setInitialExpression(self):
+		# that test will be implemented later
+		self._assert(false)
 
 
+
+def suite():
+  tests=[
+          'test_getKey'
+         ,'test_getStatus'
+         ,'test_isFixed'
+         ,'test_getValue'
+         ,'test_getInitialValue'
+         ,'test_getRate'
+         ,'test_setStatus'
+         ,'test_setInitialValue'
+         ,'test_getSBMLId'
+         ,'test_setSBMLId'
+         ,'test_getExpression'
+         ,'test_getInitialExpression'
+         ,'test_isUsed'
+         ,'test_setUsed'
+         ,'test_isUsedOnce'
+         ,'test_setUsedOnce'
+         ,'test_setExpression'
+         ,'test_setInitialExpression'
+        ]
+  return unittests.TestSuite(map(Test_CModelValue,tests))
 

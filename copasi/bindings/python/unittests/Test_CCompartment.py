@@ -1,7 +1,7 @@
 import COPASI
 import unittests
 from types import *
-
+import math
 
 class Test_CCompartment(unittests.TestCase):
   def setUp(self):
@@ -13,7 +13,7 @@ class Test_CCompartment(unittests.TestCase):
     self.model.createMetabolite("metab4","Comp1")
     self.model.createMetabolite("metab5","Comp1")
 
-  def getMetabolites(self):
+  def test_getMetabolites(self):
     metabolites=self.compartment.getMetabolites()
     self._assert(false)
 
@@ -24,9 +24,14 @@ class Test_CCompartment(unittests.TestCase):
   def test_setInitialValue(self):
     value=5.0
     self.compartment.setInitialValue(value)
-    self._assert(math.abs((self.compartment.getInitialValue()-value)/value)<0.001)
+    self._assert(math.fabs((self.compartment.getInitialValue()-value)/value)<0.001)
     
 
-
-
+def suite():
+  tests=[
+          'test_getMetabolites'
+         ,'test_removeMetabolite'
+         ,'test_setInitialValue'
+        ]
+  return unittests.TestSuite(map(Test_CCompartment,tests))
 

@@ -1,6 +1,7 @@
 import COPASI
 import unittests
 from types import *
+import math
 
 
 class Test_CTrajectoryProblem(unittests.TestCase):
@@ -14,7 +15,7 @@ class Test_CTrajectoryProblem(unittests.TestCase):
   def test_setStepNumber(self):
     t=42
     self.problem.setStepNumber(t)
-    self._assert(math.abs((self.problem.getStepNumber()-t)/t))
+    self._assert(math.fabs((self.problem.getStepNumber()-t)/t))
 
   def test_getStepSize(self):
     v=self.problem.getStepSize()
@@ -24,7 +25,7 @@ class Test_CTrajectoryProblem(unittests.TestCase):
   def test_setStepSize(self):
     t=13.7
     self.problem.setStepSize(t)
-    self._assert(math.abs((self.problem.getStepSize()-t)/t))
+    self._assert(math.fabs((self.problem.getStepSize()-t)/t))
 
   def test_getDuration(self):
     v=self.problem.getDuration()
@@ -33,7 +34,7 @@ class Test_CTrajectoryProblem(unittests.TestCase):
   def test_setDuration(self):
     t=13.7
     self.problem.setDuration(t)
-    self._assert(math.abs((self.problem.getDuration()-t)/t))
+    self._assert(math.fabs((self.problem.getDuration()-t)/t))
 
   def test_getOutputStartTime(self):
     v=self.problem.getOutputStartTime()
@@ -42,7 +43,7 @@ class Test_CTrajectoryProblem(unittests.TestCase):
   def test_setOutputStartTime(self):
     t=13.7
     self.problem.setOutputStartTime(t)
-    self._assert(math.abs((self.problem.getOutputStartTime()-t)/t))
+    self._assert(math.fabs((self.problem.getOutputStartTime()-t)/t))
 
   def test_setTimeSeriesRequested(self):
     v=false
@@ -57,4 +58,18 @@ class Test_CTrajectoryProblem(unittests.TestCase):
     self._assert(type(v)==BooleanType)
 
 
+def suite():
+  tests=[
+          'test_getStepNumber'
+         ,'test_setStepNumber'
+         ,'test_getStepSize'
+         ,'test_setStepSize'
+         ,'test_getDuration'
+         ,'test_setDuration'
+         ,'test_getOutputStartTime'
+         ,'test_setOutputStartTime'
+         ,'test_timeSeriesRequested'
+         ,'test_setTimeSeriesRequested'
+        ]
+  return unittests.TestSuite(map(Test_CTrajectoryProblem,tests))
 
