@@ -77,14 +77,6 @@ class CCopasiTask : public CCopasiContainer
      */
     void setType(const Type & type);
 
-    /**
-     * Convert an XMLType string to the matching enum value
-     * Returns CCopasiTask::unset if no match is found.
-     * @param (const char * xmlTypeName)
-     * @return CCopasiTask::Type type
-     */
-    static
-    CCopasiTask::Type XMLNameToEnum(const char * xmlTypeName);
 
     /**
      * Retrieve the key for the task.

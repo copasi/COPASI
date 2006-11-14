@@ -14,12 +14,6 @@ class CState
     const C_FLOAT64 & getTime() const;
     void setTime(const C_FLOAT64 & time);
 
-    //C_FLOAT64 * beginIndependent();
-    //C_FLOAT64 * endIndependent();
-    //C_FLOAT64 * beginDependent();
-    //C_FLOAT64 * endDependent();
-    //C_FLOAT64 * beginFixed();
-    //C_FLOAT64 * endFixed();
 
     unsigned C_INT32 getNumIndependent() const;
     unsigned C_INT32 getNumDependent() const;
@@ -29,9 +23,6 @@ class CState
     void setUpdateDependentRequired(const bool & required);
     const bool & isUpdateDependentRequired() const;
 
-#ifdef COPASI_DEBUG
-//    void check(const std::string & m = "") const;
-#endif
 
 
 };

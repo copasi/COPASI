@@ -28,13 +28,6 @@ class CTrajectoryProblem : public CCopasiProblem
     ~CTrajectoryProblem();
 
     /**
-     * This methods must be called to elevate subgroups to
-     * derived objects. The default implementation does nothing.
-     * @return bool success
-     */
-    virtual bool elevateChildren();
-
-    /**
      * Set the number of time steps the trajectory method should integrate.
      * @param "const unsigned C_INT32 &" stepNumber
      * @parem bool success

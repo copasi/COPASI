@@ -31,14 +31,6 @@ class CReportDefinition : public CCopasiObject
     //void cleanup();
 
     /**
-     * Convert the table list into a header and body list.
-     * @param const std::vector< CCopasiContainer * > & listOfContainer
-     * (default: CCopasiContainer::EmptyList)
-     * @return bool success
-     */
-    bool preCompileTable(const std::vector< CCopasiContainer * > & listOfContainer = CCopasiContainer::EmptyList);
-
-    /**
      *Returns the comments in the report tag
      */
     const std::string & getComment() const;

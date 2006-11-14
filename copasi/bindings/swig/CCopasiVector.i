@@ -97,6 +97,8 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
 
 %template(MetabStdVector) std::vector<CMetab*>;
 %template(MetabVector) CCopasiVector<CMetab>;
+%template(MetabVectorN) CCopasiVectorN<CMetab>;
+%template(MetabVectorNS) CCopasiVectorNS<CMetab>;
 
 %template(CompartmentStdVector) std::vector<CCompartment*>;
 %template(CompartmentVector) CCopasiVector<CCompartment>;
@@ -116,6 +118,7 @@ typedef CCopasiVectorN<CModelValue> ModelValueVectorN;
 typedef CCopasiVector<CMoiety> MoietyVector;
 
 typedef CCopasiVector<CMetab> MetabVector;
+typedef CCopasiVectorNS<CMetab> MetabVectorNS;
 
 typedef CCopasiVectorNS<CCompartment> CompartmentVectorNS;
 

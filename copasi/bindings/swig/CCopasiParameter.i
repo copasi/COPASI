@@ -87,12 +87,6 @@ class CCopasiParameter : public CCopasiContainer
 
     /**
      * Retrieve the private value of the parameter.
-     * @return const CCopasiParameter::Value & Value
-     */
-    //const Value & getValue() const;
-
-    /**
-     * Retrieve the private value of the parameter.
      * @return CCopasiParameter::Value & Value
      */
     //Value & getValue();
@@ -154,12 +148,5 @@ class CCopasiParameter : public CCopasiContainer
 
 
 };
-
-#ifndef COPASI_DEBUG
-
-%clearnodefaultctor
-%clearnodefaultdtor
-
-#endif /* !COPASI_DEBUG */
 
 

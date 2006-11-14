@@ -4,7 +4,6 @@
 
 %}
 
-
 class CTrajectoryTask : public CCopasiTask
 {
   public:
@@ -28,30 +27,6 @@ class CTrajectoryTask : public CCopasiTask
      */
     ~CTrajectoryTask();
 
-    /**
-     * Process the task with or without initializing to the initial state.
-     * @param const bool & useInitialValues
-     * @return bool success
-     */
-    virtual bool process(const bool & useInitialValues);
-
-    /**
-     * Starts the process of integration by calling CTrajectoryMethod::start
-     * @param const bool & useInitialValues
-     */
-    void processStart(const bool & useInitialValues);
-
-    /**
-     * Integrates one step
-     * @param const C_FLOAT64 & nextTime
-     * @return bool success;
-     */
-    bool processStep(const C_FLOAT64 & nextTime);
-
-    /**
-     * Perform neccessary cleaup procedures
-     */
-    virtual bool restore();
 
     /**
      * Set the method type applied to solve the task
@@ -74,9 +49,11 @@ class CTrajectoryTask : public CCopasiTask
 
     %extend{
     
-      bool initialize(const OutputFlag & of)
+      bool process(bool useInitialValues)
       {
-        return self->initialize(of,NULL);
+        self->initialize(CCopasiTask::OUTPUT_COMPLETE,NULL);
+        self->process(useInitialValues);
+        return self->restore();
       }  
     
     }

@@ -4,6 +4,9 @@
 
 %}
 
+%nodefaultctor CModelEntity;
+%nodefaultdtor CModelEntity;
+
 class CModelEntity : public CCopasiContainer
 {
   public:
@@ -31,29 +34,6 @@ class CModelEntity : public CCopasiContainer
      */
     //static const char * XMLStatus[];
 
-    /**
-     * Default constructor
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CModelEntity(const std::string & name = "NoName",
-                 const CCopasiContainer * pParent = NULL,
-                 const std::string & type = "ModelEntity",
-                 const unsigned C_INT32 & flag = CCopasiObject::Container | CCopasiObject::ValueDbl);
-
-    /**
-     * Copy constructor
-     * @param const CModelValue & src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CModelEntity(const CModelEntity & src,
-                 const CCopasiContainer * pParent = NULL);
-
-    /**
-     *  Destructor.
-     */
-    ~CModelEntity();
-    
     /**
      *  Retrieve the key
      * @return std::string key
@@ -224,6 +204,8 @@ class CModelEntity : public CCopasiContainer
     //virtual CCopasiObject * getRateReference();
 
 };
+
+
 
 
 class CModelValue : public CModelEntity

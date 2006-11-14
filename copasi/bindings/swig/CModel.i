@@ -23,35 +23,15 @@ class CModel : public CModelEntity
     enum TimeUnit {d = 0, h, min, s, ms, micros, ns, ps, fs};
 
     /**
-     * String representation of valid time units
-     */
-    //static const char * TimeUnitNames[];
-
-    /**
      *  Enum of valid quantitye units
      */
     enum QuantityUnit {Mol = 0, mMol, microMol, nMol, pMol, fMol, number};
 
-    /**
-     * String representation of valid quantity units as used in old (up to Build 18)
-     * copasi files
-     */
-    //static const char * QuantityUnitOldXMLNames[];
-
-    /**
-     * String representation of valid quantity units
-     */
-    //static const char * QuantityUnitNames[];
 
     /**
      * Enum of valid model types.
      */
     enum ModelType {deterministic = 0, stochastic};
-
-    /**
-     * String representation of the valid model types.
-     */
-    //static const char * ModelTypeNames[];
 
 
     /**
@@ -69,35 +49,6 @@ class CModel : public CModelEntity
      * Destructor
      */
     ~CModel();        
-
-    /**
-     * Converts the set of reactions to a set of reaction where all reactions are irreversible.
-    */
-    bool convert2NonReversible();
-
-    /**
-     *  This function must be called to initialize the vector of Metabolites
-     *  after finishing adding metabolites to compartments.
-     */
-    void initializeMetabolites();
-
-    /**
-     *  This must be called whenever something is changed in the model
-     *  that would make it necessary to recalculate the matrix decomposition
-     */
-    void setCompileFlag(bool flag = true);
-
-    /**
-     * Compile the model if necessary
-     * @return bool success
-     */
-    bool compileIfNecessary();
-
-    /**
-     * Force a compile the model.
-     * @return bool success
-     */
-    bool forceCompile();
 
     /**
      *  Build the Stoichiometry Matrix from the chemical equations of the steps
@@ -121,7 +72,7 @@ class CModel : public CModelEntity
     CCopasiVector< CMetab > & getMetabolites();
 
     /**
-     * Retrieves the vector of metabolites at it is used in the reduced model.
+     * Retrieves the vector of metabolites as it is used in the reduced model.
      * @return const CCopasiVectorN< CMetab > &metabolites
      */
     CCopasiVector< CMetab > & getMetabolitesX();
@@ -218,11 +169,6 @@ class CModel : public CModelEntity
      */
     const C_FLOAT64 & getInitialTime() const;
 
-    /**
-     * Set the actual model time
-     * @param const C_FLOAT64 & time
-     */
-    void setTime(const C_FLOAT64 & time);
 
     /**
      * Retreive the actual model time
@@ -270,11 +216,6 @@ class CModel : public CModelEntity
     C_INT32 findMoiety(std::string &Target) const;
 
     /**
-     * initialize all values of the model with their initial values
-     */
-    void applyInitialValues();
-
-    /**
      * Get the current state of the model, i.e., all current model
      * quantities.
      * @return const CState & initialState
@@ -294,18 +235,6 @@ class CModel : public CModelEntity
      * @param const CState & state
      */
     void setInitialState(const CState & state);
-
-    /**
-     * Set all independent current model quantities to the one given by the
-     * state.
-     * @param const CState & state
-     */
-    void setState(const CState & state);
-
-    /**
-     * Calculates and assignes the rates for all model entitities if possible
-     */
-    void refreshRates();
 
     /**
      * Set the unit for volumes. If copasi recognises
@@ -390,7 +319,6 @@ class CModel : public CModelEntity
      * @return std::string quantityUnit
      */
     std::string getQuantityUnitName() const;
-    std::string getQuantityUnitOldXMLName() const;
 
     /**
      * Get the unit for quantities
@@ -466,12 +394,6 @@ class CModel : public CModelEntity
      */
     CReaction* createReaction(const std::string &name);
 
-    /**
-     * Add a new rection to the model
-     * @param const CReaction & reaction
-     * @return bool success (false if failed)
-     */
-    //bool addReaction(const CReaction & reaction);
 
     /* Remove a reaction from the model*/
     bool removeReaction(const std::string & key,

@@ -4,43 +4,12 @@
   
 %}
 
+%nodefaultctor CMoiety;
+%nodefaultdtor CMoiety;
 
 class CMoiety : public CCopasiContainer
 {
   public:
-
-    /**
-     * Default constructor
-     * @param const std::string & name (default: "NoName")
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CMoiety(const std::string & name = "NoName",
-            const CCopasiContainer * pParent = NULL);
-
-    /**
-     * Copy constructor
-     * @param "const CMoiety &" src
-     * @param const CCopasiContainer * pParent (default: NULL)
-     */
-    CMoiety(const CMoiety & src,
-            const CCopasiContainer * pParent = NULL);
-
-    /**
-     *  Destructor
-     */
-    ~CMoiety();
-
-    /**
-     * Add a metabolite to a moiety
-     * @param C_FLOAT64 value
-     * @param CMetab * metabolite
-     */
-    void add(C_FLOAT64 value, CMetab * metabolite);
-
-    /**
-     *
-     */
-    void setInitialValue();
 
     /**
      * get the string representation of the moiety using the CMetabNameInterface
@@ -54,18 +23,6 @@ class CMoiety : public CCopasiContainer
     const C_FLOAT64 & dependentNumber();
 
     /**
-     * Retrieve the dependent number;
-     * @return const C_FLOAT64 & dependentNumber
-     */
-    const C_FLOAT64 & getDependentNumber() const;
-
-    /**
-     * Retrieve the dependent rate;
-     * @return const C_FLOAT64 & dependentRate
-     */
-    const C_FLOAT64 & getDependentRate() const;
-
-    /**
      *
      */
     C_FLOAT64 getNumber() const;
@@ -76,15 +33,22 @@ class CMoiety : public CCopasiContainer
      */
     virtual const std::string & getKey() const; //By G
 
-    /**
-     * Refreshes the value of the dependent number
-     */
-    void refreshDependentNumber();
+%extend
+{
+  
+  C_FLOAT64 getDependentRate()
+  {
+    self->refreshDependentRate();
+    return self->getDependentRate();
+  }  
 
-    /**
-     * Refreshes the value of the dependent rate
-     */
-    void refreshDependentRate();
+  C_FLOAT64 getDependentNumber()
+  {
+    self->refreshDependentNumber();
+    return self->getDependentNumber();
+  }  
+
+}
 
 
 };

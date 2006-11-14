@@ -50,12 +50,6 @@ class CCopasiMethod : public CCopasiParameterGroup
     };
 
     /**
-     * String literals for the GUI to display sub type names of methods known
-     * to COPASI.
-     */
-    static const std::string SubTypeName[];
-
-    /**
      * Convert a SubTypeName to the matching enum value.
      * Returns CCopasiMethod::unset if no match is found.
      * @param (const std::string & subTypeName)
@@ -90,12 +84,6 @@ class CCopasiMethod : public CCopasiParameterGroup
      * @return CCopasiMethod::SubType & subType
      */
     const CCopasiMethod::SubType & getSubType() const;
-
-    /**
-     * Check if the method is suitable for this problem
-     * @return bool suitability of the method
-     */
-    virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
 };
 

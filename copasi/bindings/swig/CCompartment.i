@@ -35,24 +35,6 @@ class CCompartment : public CModelEntity
      */
     CCopasiVectorNS < CMetab > & getMetabolites();
 
-    /**
-     *  Adds a metabolite to the compartment. Only the concentration is taken from
-     *  the metabolite, the number of particles is calculated according to the
-     *  volume of the compartment
-     *  @param const CMetab & metabolite;
-     *  @return bool success
-     */
-    bool createMetabolite(const CMetab & metabolite);
-
-    /**
-     *  Adds a metabolite to the compartment. Only the concentration is taken from
-     *  the metabolite, the number of particles is calculated according to the
-     *  volume of the compartment
-     *  @param CMetab * metabolite;
-     *  @return bool success
-     */
-    bool addMetabolite(CMetab * metabolite);
-
     bool removeMetabolite(CMetab *metabolite);
 
     /**
@@ -62,14 +44,6 @@ class CCompartment : public CModelEntity
      *  @see mVolume
      */
     virtual void setInitialValue(const C_FLOAT64 & initialValue);
-
-    /**
-     *  Sets the volume of this compartment.
-     *  @param const C_FLOAT64 & volume
-     *  @return bool success
-     *  @see mVolume
-     */
-    virtual void setValue(const C_FLOAT64 & value);
 
 };
 
