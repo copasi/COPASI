@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+  <model id="Model_1" name="Kummer calcium model">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        Simplified (3-variable) calcium oscillation model
+Kummer et al. (2000) Biophys. J. 79, 1188-1195
+      </body>
+    </notes>
+    <listOfFunctionDefinitions>
+      <functionDefinition id="function_3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> substrate </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> substrate </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> substrate </ci>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> E </ci>
+            </bvar>
+            <bvar>
+              <ci> S </ci>
+            </bvar>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> E </ci>
+                <ci> S </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <ci> S </ci>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> Activator </ci>
+            </bvar>
+            <bvar>
+              <ci> k </ci>
+            </bvar>
+            <apply>
+              <times/>
+              <ci> Activator </ci>
+              <ci> k </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="function_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> v </ci>
+            </bvar>
+            <ci> v </ci>
+          </lambda>
+        </math>
+      </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfUnitDefinitions>
+      <unitDefinition id="volume">
+        <listOfUnits>
+          <unit kind="litre" scale="-3" multiplier="1" offset="0"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="substance">
+        <listOfUnits>
+          <unit kind="mole" scale="-3" multiplier="1" offset="0"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="compartment_0" name="compartment" size="1e-18"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="species_0" name="a" compartment="compartment_0" initialConcentration="7.99999468627564"/>
+      <species id="species_1" name="b" compartment="compartment_0" initialConcentration="7.99999468627564"/>
+      <species id="species_2" name="c" compartment="compartment_0" initialConcentration="7.99999468627564"/>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction id="reaction_0" name="R1" reversible="false">
+        <listOfProducts>
+          <speciesReference species="species_0"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_0 </ci>
+              <apply>
+                <ci> function_0 </ci>
+                <ci> v </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="v" value="0.212"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_1" name="R2" reversible="false">
+        <listOfProducts>
+          <speciesReference species="species_0"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="species_0"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_0 </ci>
+              <apply>
+                <ci> function_1 </ci>
+                <ci> species_0 </ci>
+                <ci> k </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k" value="2.9"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_2" name="R3" reversible="false">
+        <listOfReactants>
+          <speciesReference species="species_0"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="species_1"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_0 </ci>
+              <apply>
+                <ci> function_2 </ci>
+                <ci> V </ci>
+                <ci> species_1 </ci>
+                <ci> species_0 </ci>
+                <ci> Km </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="V" value="1.52"/>
+            <parameter id="Km" value="0.19"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_3" name="R4" reversible="false">
+        <listOfReactants>
+          <speciesReference species="species_0"/>
+        </listOfReactants>
+        <listOfModifiers>
+          <modifierSpeciesReference species="species_2"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_0 </ci>
+              <apply>
+                <ci> function_2 </ci>
+                <ci> V </ci>
+                <ci> species_2 </ci>
+                <ci> species_0 </ci>
+                <ci> Km </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="V" value="4.88"/>
+            <parameter id="Km" value="1.18"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_4" name="R5" reversible="false">
+        <listOfProducts>
+          <speciesReference species="species_1"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="species_0"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_0 </ci>
+              <apply>
+                <ci> function_1 </ci>
+                <ci> species_0 </ci>
+                <ci> k </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k" value="1.24"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_5" name="R6" reversible="false">
+        <listOfReactants>
+          <speciesReference species="species_1"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_0 </ci>
+              <apply>
+                <ci> function_3 </ci>
+                <ci> V </ci>
+                <ci> species_1 </ci>
+                <ci> Km </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="V" value="32.24"/>
+            <parameter id="Km" value="29.09"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_6" name="R7" reversible="false">
+        <listOfProducts>
+          <speciesReference species="species_2"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="species_0"/>
+        </listOfModifiers>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_0 </ci>
+              <apply>
+                <ci> function_1 </ci>
+                <ci> species_0 </ci>
+                <ci> k </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k" value="13.58"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_7" name="R8" reversible="false">
+        <listOfReactants>
+          <speciesReference species="species_2"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_0 </ci>
+              <apply>
+                <ci> function_3 </ci>
+                <ci> V </ci>
+                <ci> species_2 </ci>
+                <ci> Km </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="V" value="153"/>
+            <parameter id="Km" value="0.16"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>
