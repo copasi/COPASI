@@ -23,7 +23,7 @@ class Test_CMatrix(unittest.TestCase):
   def test_size(self):
     n=self.matrix.size()
     self.assert_(type(n)==IntType)
-    seld.assert_(n=self.numCols*self.numRows)
+    self.assert_(n==(self.numCols*self.numRows))
 
   def test_resize(self):
     nr=13
@@ -41,4 +41,8 @@ def suite():
          ,'test_resize'
         ]
   return unittest.TestSuite(map(Test_CMatrix,tests))
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
 

@@ -23,10 +23,10 @@ class Test_CCopasiTask(unittest.TestCase):
     self.assert_(type(key)==StringType)
 
   def test_setScheduled(self):
-    v=false
+    v=0
     self.task.setScheduled(v)
     self.assert_(self.task.isScheduled()==v)
-    v=true
+    v=1
     self.task.setScheduled(v)
     self.assert_(self.task.isScheduled()==v)
 
@@ -35,10 +35,10 @@ class Test_CCopasiTask(unittest.TestCase):
     self.assert_(type(v)==BooleanType)
 
   def test_setUpdateModel(self):
-    v=false
+    v=0
     self.task.setUpdateModel(v)
     self.assert_(self.task.isUpdateModel()==v)
-    v=true
+    v=1
     self.task.setUpdateModel(v)
     self.assert_(self.task.isUpdateModel()==v)
 
@@ -58,4 +58,10 @@ def suite():
          ,'test_setUpdateModel'
         ]
   return unittest.TestSuite(map(Test_CCopasiTask,tests))
+
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
+
                                       

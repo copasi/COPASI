@@ -58,6 +58,10 @@ suites=[
          ,Test_CCopasiDataModel.suite()
        ]
 
-alltests=unittest.TestSuite(suites)
+def suite():
+    return unittest.TestSuite(suites)
 
-unittest.TextTestRunner(verbosity=2).run(alltests)
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
+

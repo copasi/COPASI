@@ -6,11 +6,11 @@ from types import *
 class Test_CReaction(unittest.TestCase):
   def setUp(self):
     self.model=COPASI.CModel()
-    self.comp=model.createCompartment("comp1",1.0)
-    self.comp=model.createCompartment("comp2",2.0)
-    self.substrate=model.createMetabolite("A","comp1")
-    self.product=model.createMetabolite("B","comp2")
-    self.reac=model.createReaction("testReaction");
+    self.comp=self.model.createCompartment("comp1",1.0)
+    self.comp=self.model.createCompartment("comp2",2.0)
+    self.substrate=self.model.createMetabolite("A","comp1")
+    self.product=self.model.createMetabolite("B","comp2")
+    self.reac=self.model.createReaction("testReaction");
 
 
   def test_getKey(self):
@@ -30,34 +30,34 @@ class Test_CReaction(unittest.TestCase):
     self.assert_(type(v)==BooleanType)
 
   def test_addSubstrate(self):
-    self.reac.addSubstrate(self.substrate)
+    self.reac.addSubstrate(self.substrate.getKey())
 
   def test_addProduct(self):
-    self.reac.addProduct(self.product)
+    self.reac.addProduct(self.product.getKey())
 
   def test_addModifier(self):
-    self.reac.addModifier(self.product)
+    self.reac.addModifier(self.product.getKey())
 
   def test_setReversible(self):
-    v=false
+    v=0
     self.reac.setReversible(v)
     self.assert_(self.reac.getReversible()==v)
-    v=true
+    v=1
     self.reac.setReversible(v)
     self.assert_(self.reac.getReversible()==v)
 
   def test_getCompartmentNumber(self):
-    self.reac.addSubstrate(self.substrate)
-    self.reac.addProduct(self.product)
-    self.reac.addModifier(self.product)
+    self.reac.addSubstrate(self.substrate.getKey())
+    self.reac.addProduct(self.product.getKey())
+    self.reac.addModifier(self.product.getKey())
     n=self.reac.getCompartmentNumber()
     self.assert_(type(n)==IntType)
     self.assert_(n==2)
 
   def test_getLargestCompartment(self):
-    self.reac.addSubstrate(self.substrate)
-    self.reac.addProduct(self.product)
-    self.reac.addModifier(self.product)
+    self.reac.addSubstrate(self.substrate.getKey())
+    self.reac.addProduct(self.product.getKey())
+    self.reac.addModifier(self.product.getKey())
     comp=self.reac.getLargestCompartment()
     self.assert_(comp.__class__==COPASI.CCompartment)
     self.assert_(comp.getObjectName()=="comp2")
@@ -65,7 +65,7 @@ class Test_CReaction(unittest.TestCase):
   def test_setSBMLId(self):
     id="react_1"
     self.reac.setSBMLId(id)
-    self.assert_(self.reac.getSBMLid()==id)
+    self.assert_(self.reac.getSBMLId()==id)
 
   def test_getSBMLId(self):
     id=self.reac.getSBMLId()
@@ -88,4 +88,8 @@ def suite():
          ,'test_setSBMLId'
         ]
   return unittest.TestSuite(map(Test_CReaction,tests))
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
 

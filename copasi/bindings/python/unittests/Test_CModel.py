@@ -15,15 +15,15 @@ class Test_CModel(unittest.TestCase):
     m5=self.model.createMetabolite("E","comp2")
     m6=self.model.createMetabolite("F","comp2")
     m7=self.model.createMetabolite("G","comp2")
-    r=self.createReaction("react1")
-    r.addSubstrate(m1)
-    r.addProduct(m2)
-    r=self.createReaction("react2")
-    r.addSubstrate(m3)
-    r.addProduct(m5)
-    r=self.createReaction("react3")
-    r.addSubstrate(m6)
-    r.addProduct(m2)
+    r=self.model.createReaction("react1")
+    r.addSubstrate(m1.getKey())
+    r.addProduct(m2.getKey())
+    r=self.model.createReaction("react2")
+    r.addSubstrate(m3.getKey())
+    r.addProduct(m5.getKey())
+    r=self.model.createReaction("react3")
+    r.addSubstrate(m6.getKey())
+    r.addProduct(m2.getKey())
     self.model.buildStoi()
     self.model.buildRedStoi()
     self.model.buildMoieties()
@@ -159,7 +159,7 @@ class Test_CModel(unittest.TestCase):
 
   def test_setInitialState(self):
     # this can not be tested yet since there is no way to manipulate a CState object
-    self.assert_(false)
+    self.assert_(0)
 
 
   def test_setVolumeUnit(self):
@@ -369,4 +369,8 @@ def suite():
          ,'test_isAutonomous'
         ]
   return unittest.TestSuite(map(Test_CModel,tests))
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
 

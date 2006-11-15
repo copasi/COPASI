@@ -12,28 +12,28 @@ class Test_CTimeSeries(unittest.TestCase):
 
   def test_getNumSteps(self):
     steps=self.ctimeseries.getNumSteps()
-    self.assert__(type(steps)==IntType)
-    self.assert__(steps==1)
+    self.assert_(type(steps)==IntType)
+    self.assert_(steps==1)
 
   def test_getNumVariables(self):
     variables=self.ctimeseries.getNumVariables()
-    self.assert__(type(variables)==IntType)
+    self.assert_(type(variables)==IntType)
     self.assert_(variables==4)
 
   def test_getData(self):
     data=self.ctimeseries.getData(0,1)
-    self.assert__(type(data)==DoubleType)
-    self.assert__(data==float("nan"))
+    self.assert_(type(data)==DoubleType)
+    self.assert_(data==float("nan"))
 
   def test_getConcentrationData(self):
     data=self.ctimeseries.getConcentrationData(0,1)
-    self.assert__(type(data)==DoubleType)
-    self.assert__(data==float("nan"))
+    self.assert_(type(data)==DoubleType)
+    self.assert_(data==float("nan"))
 
   def test_getTitle(self):
     title=self.ctimeseries.getTitle(1)
-    self.assert__(type(title)==StringType)
-    self.assert__(title=="a")
+    self.assert_(type(title)==StringType)
+    self.assert_(title=="a")
 
 
 def suite():
@@ -45,4 +45,8 @@ def suite():
          ,'test_getTitle'
         ]
   return unittest.TestSuite(map(Test_CTimeSeries,tests))
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
 

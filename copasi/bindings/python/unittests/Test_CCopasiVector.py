@@ -15,7 +15,7 @@ class Test_CCopasiVector(unittest.TestCase):
     self.vector=self.compartment.getMetabolites()
 
   def test_add(self):
-    self.assert_(false)
+    self.assert_(0)
 
   def test_remove(self):
     n=self.vector.size()  
@@ -27,7 +27,7 @@ class Test_CCopasiVector(unittest.TestCase):
   def test_getObject(self):
     #object=self.vector.getObject(self.metab.getCN())
     #self.assert_(object==self.metab)
-		self.assert_(false)
+		self.assert_(0)
 
   def test_size(self):
     n=self.vector.size()
@@ -50,4 +50,8 @@ def suite():
          ,'test_getIndex'
         ]
   return unittest.TestSuite(map(Test_CCopasiVector,tests))
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
 

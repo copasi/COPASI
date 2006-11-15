@@ -6,7 +6,7 @@ from types import *
 class Test_CReportDefinition(unittest.TestCase):
   def setUp(self):
     self.repdef=COPASI.CReportDefinition("reportDefinition")
-    self.setComment("This is a test")
+    self.repdef.setComment("This is a test")
 
   def test_getComment(self):
     comment=self.repdef.getComment()
@@ -43,10 +43,10 @@ class Test_CReportDefinition(unittest.TestCase):
     self.assert_(type(v)==BooleanType)
 
   def test_setTitle(self):
-    v=true
+    v=1
     self.repdef.setTitle(v)
     self.assert_(self.repdef.getTitle()==v)
-    v=false
+    v=0
     self.repdef.setTitle(v)
     self.assert_(self.repdef.getTitle()==v)
 
@@ -56,10 +56,10 @@ class Test_CReportDefinition(unittest.TestCase):
     
 
   def test_setIsTable(self):
-    v=true
+    v=1
     self.repdef.setIsTable(v)
     self.assert_(self.repdef.isTable()==v)
-    v=false
+    v=0
     self.repdef.setIsTable(v)
     self.assert_(self.repdef.isTable()==v)
 
@@ -78,16 +78,16 @@ class Test_CReportDefinition(unittest.TestCase):
     self.assert_(type(key)==StringType) 
 
   def test_getTableAddr(self):
-    self.assert_(false)
+    self.assert_(0)
 
   def test_getFooterAddr(self):
-    self.assert_(false)
+    self.assert_(0)
   
   def test_getHeaderAddr(self):
-    self.assert_(false)
+    self.assert_(0)
   
   def test_getBodyAddr(self):
-    self.assert_(false)
+    self.assert_(0)
 
 
 def suite():
@@ -111,4 +111,8 @@ def suite():
          ,'test_getBodyAddr'
         ]
   return unittest.TestSuite(map(Test_CReportDefinition,tests))
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
 

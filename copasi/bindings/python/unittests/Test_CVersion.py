@@ -39,3 +39,7 @@ def suite():
         ]
   return unittest.TestSuite(map(Test_CVersion,tests))
 
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
+

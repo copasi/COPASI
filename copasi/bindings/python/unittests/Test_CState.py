@@ -8,7 +8,7 @@ class Test_CState(unittest.TestCase):
 
   def test_getTime(self):
     time=self.cstate.getTime()
-    self.assert_(type(time)==DoubleType,"Error. The time value returned by CState.getTime() is not a double value.")
+    self.assert_(type(time)==FloatType,"Error. The time value returned by CState.getTime() is not a double value.")
 
   def test_setTime(self):
     TIME=27.96
@@ -36,10 +36,10 @@ class Test_CState(unittest.TestCase):
     self.assert_(type(result)==BooleanType)
 
   def test_setUpdateDependentRequired(self):
-    UPDATE_REQUIRED=false
+    UPDATE_REQUIRED=0
     self.cstate.setUpdateDependentRequired(UPDATE_REQUIRED)
     self.assert_(self.cstate.isUpdateDependentRequired()==UPDATE_REQUIRED)
-    UPDATE_REQUIRED=true
+    UPDATE_REQUIRED=1
     self.cstate.setUpdateDependentRequired(UPDATE_REQUIRED)
     self.assert_(self.cstate.isUpdateDependentRequired()==UPDATE_REQUIRED)
 
@@ -55,4 +55,8 @@ def suite():
          ,'test_setUpdateDependentRequired'
         ]
   return unittest.TestSuite(map(Test_CState,tests))
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
     

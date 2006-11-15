@@ -26,3 +26,7 @@ def suite():
         ]
   return unittest.TestSuite(map(Test_CCopasiProblem,tests))
 
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
+

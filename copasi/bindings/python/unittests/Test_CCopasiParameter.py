@@ -33,14 +33,14 @@ class Test_CCopasiParameter(unittest.TestCase):
     self.assert_(self.param.isValidValue(value))
     value=3
     self.assert_(not self.param.isValidValue(value))
-    value=false
+    value=0
     self.assert_(not self.param.isValidValue(value))
     value="test"
     self.assert_(not self.param.isValidValue(value))
     value=COPASI.CCopasiObjectName("myObject")
     self.assert_(not self.param.isValidValue(value))
     # other types should be tested as well as vectors of parameters
-    self.assert_(false)
+    self.assert_(0)
      
 
 
@@ -53,4 +53,8 @@ def suite():
          ,'test_isValidValue'
         ]
   return unittest.TestSuite(map(Test_CCopasiParameter,tests))
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
 

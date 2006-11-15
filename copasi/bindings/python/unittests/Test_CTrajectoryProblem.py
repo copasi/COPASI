@@ -46,10 +46,10 @@ class Test_CTrajectoryProblem(unittest.TestCase):
     self.assert_(math.fabs((self.problem.getOutputStartTime()-t)/t))
 
   def test_setTimeSeriesRequested(self):
-    v=false
+    v=0
     self.problem.setTimeSeriesRequested(v)
     self.assert_(self.problem.getTimeSeriesRequested()==v)
-    v=true
+    v=1
     self.problem.setTimeSeriesRequested(v)
     self.assert_(self.problem.getTimeSeriesRequested()==v)
 
@@ -72,4 +72,8 @@ def suite():
          ,'test_setTimeSeriesRequested'
         ]
   return unittest.TestSuite(map(Test_CTrajectoryProblem,tests))
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
 

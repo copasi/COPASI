@@ -60,10 +60,10 @@ class Test_CModelValue(unittest.TestCase):
     self.assert_(type(ex)==StringType)
 
   def test_setUsed(self):
-    v=true
+    v=1
     self.mv.setUsed(value)
     self.assert_(v==self.mv.getIsUsedOnce())
-    v=false
+    v=0
     self.mv.setUsed(value)
     self.assert_(v==self.mv.getIsUsedOnce())
 
@@ -72,10 +72,10 @@ class Test_CModelValue(unittest.TestCase):
     self.assert_(type(value)==BooleanType)
 
   def test_setUsedOnce(self):
-    v=true
+    v=1
     self.mv.setUsedOnce(value)
     self.assert_(v==self.mv.getIsUsedOnce())
-    v=false
+    v=0
     self.mv.setUsedOnce(value)
     self.assert_(v==self.mv.getIsUsedOnce())
 
@@ -85,11 +85,11 @@ class Test_CModelValue(unittest.TestCase):
 
   def test_setExpression(self):
     # that test will be implemented later
-    self.assert_(false)
+    self.assert_(0)
 
   def test_setInitialExpression(self):
     # that test will be implemented later
-    self.assert_(false)
+    self.assert_(0)
 
 
 
@@ -115,4 +115,8 @@ def suite():
          ,'test_setInitialExpression'
         ]
   return unittest.TestSuite(map(Test_CModelValue,tests))
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
 

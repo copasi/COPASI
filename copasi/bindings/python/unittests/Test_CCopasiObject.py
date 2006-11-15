@@ -24,7 +24,7 @@ class Test_CCopasiObject(unittest.TestCase):
       self.assert_(type(t)==StringType)
 
     def test_getObjectParent(self):
-      self.assert_(false)
+      self.assert_(0)
 
     def test_getCN(self):
       cn=self.object.getCN()
@@ -105,4 +105,8 @@ def suite():
          ,'test_getKey'
         ]
   return unittest.TestSuite(map(Test_CCopasiObject,tests))
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
 

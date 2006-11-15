@@ -15,11 +15,11 @@ class Test_CCompartment(unittest.TestCase):
 
   def test_getMetabolites(self):
     metabolites=self.compartment.getMetabolites()
-    self.assert_(false)
+    self.assert_(0)
 
   def test_removeMetabolite(self):
     self.compartment.removeMetabolite(self.metab)
-    self.assert_(false)
+    self.assert_(0)
 
   def test_setInitialValue(self):
     value=5.0
@@ -34,4 +34,8 @@ def suite():
          ,'test_setInitialValue'
         ]
   return unittest.TestSuite(map(Test_CCompartment,tests))
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
 

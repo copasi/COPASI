@@ -12,4 +12,8 @@ def suite():
   tests=[
         ]
   return unittest.TestSuite(map(Test_CTrajectoryMethod,tests))
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
     

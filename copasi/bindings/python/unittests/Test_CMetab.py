@@ -7,7 +7,7 @@ class Test_CMetab(unittest.TestCase):
   def setUp(self):
     self.model=COPASI.CModel()
     self.compartment=self.model.createCompartment("Comp1")
-    self.metab=self.compartment.createMetabolite("Metab1",self.compartment.getObjectName())
+    self.metab=self.model.createMetabolite("Metab1","Comp1")
 
   def test_getObjectDisplayName(self):
     s=self.metab.getObjectDisplayName()
@@ -67,4 +67,8 @@ def suite():
          ,'test_isDependent'
         ]
   return unittest.TestSuite(map(Test_CMetab,tests))
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
 

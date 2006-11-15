@@ -14,7 +14,7 @@ class Test_CReportDefinitionVector(unittest.TestCase):
   def test_createReportDefinition(self):
     name="testReport"
     comment="test test test"
-    size=self.vect.size()
+    size=self.vec.size()
     repdef=self.vec.createReportDefinition(name,comment)
     self.assert_(self.vec.size()==size+1)
     self.assert_(repdef.__class__==COPASI.CReportDefinition)
@@ -41,4 +41,8 @@ def suite():
          ,'test_removeReportDefinition'
         ]
   return unittest.TestSuite(map(Test_CReportDefinitionVector,tests))
+
+if(__name__ == '__main__'):
+    unittest.TextTestRunner(verbosity=2).run(suite())
+
 
