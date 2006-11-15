@@ -23,4 +23,11 @@ class Test_CCopasiMethod(unittests.TestCase):
     self._assert(type(t)==IntType)
 
 
+def suite():
+  tests=[
+          'test_TypeNameToEnum'
+         ,'test_getType'
+         ,'test_getSubType'
+        ]
+  return unittests.TestSuite(map(Test_CCopasiMethod,tests))
 

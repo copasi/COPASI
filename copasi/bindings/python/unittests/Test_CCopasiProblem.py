@@ -19,4 +19,10 @@ class Test_CCopasiProblem(unittests.TestCase):
     self._assert(model.__class__==COPASI.CModel)
     self._assert(model.getKey()==self.datamodel.getModel().getKey())
 
+def suite():
+  tests=[
+          'test_getType'
+         ,'test_getModel'
+        ]
+  return unittests.TestSuite(map(Test_CCopasiProblem,tests))
 

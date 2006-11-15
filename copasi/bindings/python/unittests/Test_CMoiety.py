@@ -31,4 +31,14 @@ class Test_CMoiety(unittests.TestCase):
     v=self.moiety.getDependentNumber()
     self._assert(type(v)==FloatType)
 
+def suite():
+  tests=[
+          'test_getDescription'
+         ,'test_getDependentNumber'
+         ,'test_getNumber'
+         ,'test_getKey'
+         ,'test_getDependentRate'
+         ,'test_getDependentNumber'
+        ]
+  return unittests.TestSuite(map(Test_CMoiety,tests))
 

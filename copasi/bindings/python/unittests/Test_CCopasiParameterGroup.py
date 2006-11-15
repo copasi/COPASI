@@ -90,4 +90,19 @@ class Test_CCopasiParameterGroup(unittests.TestCase):
     self._assert(type(index)=IntType)
     self._assert(index==2)
 
+def suite():
+  tests=[
+         ,'test_size'
+         ,'test_clear'
+          'test_addParameter'
+         ,'test_getParameter'
+         ,'test_addGroup'
+         ,'test_removeParameter'
+         ,'test_getGroup'
+         ,'test_getType'
+         ,'test_getKey'
+         ,'test_getName'
+         ,'test_getIndex'
+        ]
+  return unittests.TestSuite(map(Test_CCopasiParameterGroup,tests))
 

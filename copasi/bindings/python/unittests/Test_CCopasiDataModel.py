@@ -107,4 +107,25 @@ class Test_CCopasiDataModel(unittest.TestCase):
     # test getModel
     model=datamodel.getModel()
 
+def suite():
+  tests=[
+          'test_loadModel'
+         ,'test_saveModel'
+         ,'test_newModel'
+         ,'test_importSBMLFromString'
+         ,'test_importSBML'
+         ,'test_exportSBMLToString'
+         ,'test_exportSBML'
+         ,'test_getModel'
+         ,'test_getVersion'
+         ,'test_getTaskList'
+         ,'test_addTask'
+         ,'test_addDefaultTasks'
+         ,'test_getReportDefinitionList'
+         ,'test_addReport'
+         ,'test_addDefaultReports'
+         ,'test_getFileName'
+         ,'test_getSBMLFileName'
+        ]
+  return unittests.TestSuite(map(Test_CCopasiDataModel,tests))
 

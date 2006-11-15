@@ -32,3 +32,13 @@ class Test_CMatrix(unittests.TestCase):
     self._assert(self.matrix.numRows()==nr)
     self._assert(self.matrix.numCols()==nc)
     self._assert(self.matrix.size()==nr*nc)
+
+def suite():
+  tests=[
+          'test_numRows'
+         ,'test_numCols'
+         ,'test_size'
+         ,'test_resize'
+        ]
+  return unittests.TestSuite(map(Test_CMatrix,tests))
+

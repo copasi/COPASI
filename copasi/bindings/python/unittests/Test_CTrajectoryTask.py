@@ -25,4 +25,12 @@ class Test_CTrajectoryTask(unittests.TestCase):
     # can only be tested once we can get the correct object type from the vector
     self._assert(false)
 
+def suite():
+  tests=[
+          'test_process'
+         ,'test_getState'
+         ,'test_getTimeSeries'
+         ,'test_setMethodType'
+        ]
+  return unittests.TestSuite(map(Test_CTrajectoryTask,tests))
 

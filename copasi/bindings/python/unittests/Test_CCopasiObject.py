@@ -81,3 +81,28 @@ class Test_CCopasiObject(unittests.TestCase):
     def test_getKey(self):
       key=self.object.getKey()
       self.assert_(type(key)==StringType) 
+
+def suite():
+  tests=[
+          'test_getObjectName'
+         ,'test_setObjectName'
+         ,'test_getObjectDisplayName'
+         ,'test_getObjectType'
+         ,'test_getObjectParent'
+         ,'test_getCN'
+         ,'test_isContainer'
+         ,'test_isVector'
+         ,'test_isMatrix'
+         ,'test_isNameVector'
+         ,'test_isReference'
+         ,'test_isValueBool'
+         ,'test_isValueInt'
+         ,'test_isValueDbl'
+         ,'test_isNonUniqueName'
+         ,'test_isStaticString'
+         ,'test_isValueString'
+         ,'test_isSeparator'
+         ,'test_getKey'
+        ]
+  return unittests.TestSuite(map(Test_CCopasiObject,tests))
+

@@ -40,4 +40,13 @@ class Test_CCopasiVector(unittests.TestCase):
 
 
 
+def suite():
+  tests=[
+          'test_add'
+         ,'test_remove'
+         ,'test_getObject'
+         ,'test_size'
+         ,'test_getIndex'
+        ]
+  return unittests.TestSuite(map(Test_CCopasiVector,tests))
 

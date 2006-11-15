@@ -36,4 +36,13 @@ class Test_CTimeSeries(unittests.TestCase):
     self.assert_(title=="a")
 
 
+def suite():
+  tests=[
+          'test_getNumSteps'
+         ,'test_getNumVariables'
+         ,'test_getData'
+         ,'test_getConcentrationData'
+         ,'test_getTitle'
+        ]
+  return unittests.TestSuite(map(Test_CTimeSeries,tests))
 

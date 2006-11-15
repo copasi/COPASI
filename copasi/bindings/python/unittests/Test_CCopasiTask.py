@@ -46,3 +46,16 @@ class Test_CCopasiTask(unittests.TestCase):
     v=self.task.isUpdateModel()
     self._assert(type(v)==BooleanType)
 
+
+def suite():
+  tests=[
+          'test_getType'
+         ,'test_setType'
+         ,'test_getKey'
+         ,'test_isScheduled'
+         ,'test_setScheduled'
+         ,'test_isUpdateModel'
+         ,'test_setUpdateModel'
+        ]
+  return unittests.TestSuite(map(Test_CCopasiTask,tests))
+                                      

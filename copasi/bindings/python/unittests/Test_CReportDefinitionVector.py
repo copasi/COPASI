@@ -34,4 +34,11 @@ class Test_CReportDefinitionVector(unittests.TestCase):
 
 
 
+def suite():
+  tests=[
+          'test_getKey'
+         ,'test_createReportDefinition'
+         ,'test_removeReportDefinition'
+        ]
+  return unittests.TestSuite(map(Test_CReportDefinitionVector,tests))
 

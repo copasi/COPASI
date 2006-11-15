@@ -18,3 +18,11 @@ class Test_CCopasiStaticString(unittests.TestCase):
     self._assert(type(st)==StringType)
     self._assert(st==self.s)
 
+
+def suite():
+  tests=[
+          'test_getObjectDisplayName'
+         ,'test_getStaticString'
+        ]
+  return unittests.TestSuite(map(Test_CCopasiStaticString,tests))
+

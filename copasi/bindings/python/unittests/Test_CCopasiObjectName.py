@@ -47,4 +47,18 @@ class Test_CCopasiObjectName(unittests.TestCase):
     o=COPASI.CCopasiObjectName.unescape(a)
     self._assert(type(o)==StringType)
     self._assert(len(o)==len(a)-2)
+                                  
+
+def suite():
+  tests=[
+          'test_getPrimary'
+         ,'test_getRemainder'
+         ,'test_getObjectType'
+         ,'test_getObjectName'
+         ,'test_getElementName'
+         ,'test_escape'
+         ,'test_unescape'
+        ]
+  return unittests.TestSuite(map(Test_CCopasiObjectName,tests))
+
 
