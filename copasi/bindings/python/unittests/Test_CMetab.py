@@ -1,15 +1,15 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 import math
 
-class Test_CMetab(unittests.TestCase):
+class Test_CMetab(unittest.TestCase):
   def setUp(self):
     self.model=COPASI.CModel()
     self.compartment=self.model.createCompartment("Comp1")
     self.metab=self.compartment.createMetabolite("Metab1",self.compartment.getObjectName())
 
-  def test_getObjectDisplayname(self):
+  def test_getObjectDisplayName(self):
     s=self.metab.getObjectDisplayName()
     self._assert(type(s)==StringType)
 
@@ -66,5 +66,5 @@ def suite():
          ,'test_getConcentrationRate'
          ,'test_isDependent'
         ]
-  return unittests.TestSuite(map(Test_CMetab,tests))
+  return unittest.TestSuite(map(Test_CMetab,tests))
 

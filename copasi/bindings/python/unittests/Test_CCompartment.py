@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 import math
 
-class Test_CCompartment(unittests.TestCase):
+class Test_CCompartment(unittest.TestCase):
   def setUp(self):
     self.model=COPASI.CModel()
     self.compartment=self.model.createCompartment("Comp1")
@@ -33,5 +33,5 @@ def suite():
          ,'test_removeMetabolite'
          ,'test_setInitialValue'
         ]
-  return unittests.TestSuite(map(Test_CCompartment,tests))
+  return unittest.TestSuite(map(Test_CCompartment,tests))
 

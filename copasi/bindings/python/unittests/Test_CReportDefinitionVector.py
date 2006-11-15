@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 
 
-class Test_CReportDefinitionVector(unittests.TestCase):
+class Test_CReportDefinitionVector(unittest.TestCase):
   def setUp(self):
     self.vec=COPASI.CReportDefinitionVector();
 
@@ -40,5 +40,5 @@ def suite():
          ,'test_createReportDefinition'
          ,'test_removeReportDefinition'
         ]
-  return unittests.TestSuite(map(Test_CReportDefinitionVector,tests))
+  return unittest.TestSuite(map(Test_CReportDefinitionVector,tests))
 

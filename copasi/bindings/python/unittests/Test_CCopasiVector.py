@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 
 
-class Test_CCopasiVector(unittests.TestCase):
+class Test_CCopasiVector(unittest.TestCase):
   def setUp(self):
     self.model=COPASI.CModel()
     self.compartment=self.model.createCompartment("Comp1")
@@ -48,5 +48,5 @@ def suite():
          ,'test_size'
          ,'test_getIndex'
         ]
-  return unittests.TestSuite(map(Test_CCopasiVector,tests))
+  return unittest.TestSuite(map(Test_CCopasiVector,tests))
 

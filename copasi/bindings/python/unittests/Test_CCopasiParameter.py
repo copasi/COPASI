@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 import math
 
-class Test_CCopasiParameter(unittests.TestCase):
+class Test_CCopasiParameter(unittest.TestCase):
   def setUp(self):
     self.param=COPASI.CCopasiParameter("testParameter",COPASI.CCopasiParameter.DOUBLE,34.0)
 
@@ -32,13 +32,13 @@ class Test_CCopasiParameter(unittests.TestCase):
     value=1.5
     self._assert(self.param.isValidValue(value))
     value=3
-    self._assert(!self.param.isValidValue(value))
+    self._assert(not self.param.isValidValue(value))
     value=false
-    self._assert(!self.param.isValidValue(value))
+    self._assert(not self.param.isValidValue(value))
     value="test"
-    self._assert(!self.param.isValidValue(value))
+    self._assert(not self.param.isValidValue(value))
     value=COPASI.CCopasiObjectName("myObject")
-    self._assert(!self.param.isValidValue(value))
+    self._assert(not self.param.isValidValue(value))
     # other types should be tested as well as vectors of parameters
     self._assert(false)
      
@@ -52,5 +52,5 @@ def suite():
          ,'test_getType'
          ,'test_isValidValue'
         ]
-  return unittests.TestSuite(map(Test_CCopasiParameter,tests))
+  return unittest.TestSuite(map(Test_CCopasiParameter,tests))
 

@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 
 
-class Test_CModel(unittests.TestCase):
+class Test_CModel(unittest.TestCase):
   def setUp(self):
     self.model=COPASI.CModel()
     self.model.createCompartment("comp1",1.0)
@@ -65,7 +65,7 @@ class Test_CModel(unittests.TestCase):
 
   def test_getModelValues(self):
     v=self.model.getModelValues()
-    self._assert(v.__class__=COPASI.ModelValueVector)
+    self._assert(v.__class__==COPASI.ModelValueVector)
     self._assert(v.size()==0)
 
   def test_getNumModelValues(self):
@@ -75,7 +75,7 @@ class Test_CModel(unittests.TestCase):
 
   def test_getReactions(self):
     v=self.model.getReactions()
-    self._assert(v.__class__=COPASI.ReactionVector)
+    self._assert(v.__class__==COPASI.ReactionVector)
     self._assert(v.size()==3)
 
   def test_getTotSteps(self):
@@ -151,11 +151,11 @@ class Test_CModel(unittests.TestCase):
 
   def test_getInitialState(self):
     state=self.model.getInitialState()
-    self._assert(state.__class__=COPASI.CState)
+    self._assert(state.__class__==COPASI.CState)
 
   def test_getState(self):
     state=self.model.getInitialState()
-    self._assert(state.__class__=COPASI.CState)
+    self._assert(state.__class__==COPASI.CState)
 
   def test_setInitialState(self):
     # this can not be tested yet since there is no way to manipulate a CState object
@@ -219,7 +219,7 @@ class Test_CModel(unittests.TestCase):
     t=self.model.getModelType()
     self._assert(type(t)==IntType)
 
-  def test_getQunatity2NumberFactor(self):
+  def test_getQuantity2NumberFactor(self):
     v=self.model.getQuantity2NumberFactor()
     self._assert(type(v)==FloatType)
 
@@ -231,11 +231,11 @@ class Test_CModel(unittests.TestCase):
     name=self.model.getConcentrationUnitName()
     self._assert(type(name)==StringType)
 
-  def getConcentrationRateUnitName(self):
+  def test_getConcentrationRateUnitName(self):
     name=self.model.getConcentrationRateUnitName()
     self._assert(type(name)==StringType)
 
-  def getQuantityRateUnitName(self):
+  def test_getQuantityRateUnitName(self):
     name=self.model.getQuantityRateUnitName()
     self._assert(type(name)==StringType)
 
@@ -368,5 +368,5 @@ def suite():
          ,'test_suitableForStochasticSimulation'
          ,'test_isAutonomous'
         ]
-  return unittests.TestSuite(map(Test_CModel,tests))
+  return unittest.TestSuite(map(Test_CModel,tests))
 

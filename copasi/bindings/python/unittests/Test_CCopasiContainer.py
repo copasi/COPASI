@@ -1,8 +1,8 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 
-class Test_CCopasiContainer(unittests.TestCase):
+class Test_CCopasiContainer(unittest.TestCase):
 
   def  test_ObjectFromName(self):
     self._assert(false)
@@ -12,5 +12,5 @@ def suite():
   tests=[
           'test_ObjectFromName'
         ]
-  return unittests.TestSuite(map(Test_CCopasiContainer,tests))
+  return unittest.TestSuite(map(Test_CCopasiContainer,tests))
 

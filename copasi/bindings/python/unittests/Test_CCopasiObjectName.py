@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 
 
-class Test_CCopasiObjectName(unittests.TestCase):
+class Test_CCopasiObjectName(unittest.TestCase):
   def setUp(self):
     self.model=COPASI.CModel()
     self.compartment=self.model.createCompartment("Comp1")
@@ -59,6 +59,6 @@ def suite():
          ,'test_escape'
          ,'test_unescape'
         ]
-  return unittests.TestSuite(map(Test_CCopasiObjectName,tests))
+  return unittest.TestSuite(map(Test_CCopasiObjectName,tests))
 
 

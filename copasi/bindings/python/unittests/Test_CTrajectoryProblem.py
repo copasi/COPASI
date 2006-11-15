@@ -1,10 +1,10 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 import math
 
 
-class Test_CTrajectoryProblem(unittests.TestCase):
+class Test_CTrajectoryProblem(unittest.TestCase):
   def setUp(self):
     self.problem=COPASI.CTrajectoryProblem()
 
@@ -71,5 +71,5 @@ def suite():
          ,'test_timeSeriesRequested'
          ,'test_setTimeSeriesRequested'
         ]
-  return unittests.TestSuite(map(Test_CTrajectoryProblem,tests))
+  return unittest.TestSuite(map(Test_CTrajectoryProblem,tests))
 

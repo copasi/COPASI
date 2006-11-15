@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 
 
-class Test_CReaction(unittests.TestCase):
+class Test_CReaction(unittest.TestCase):
   def setUp(self):
     self.model=COPASI.CModel()
     self.comp=model.createCompartment("comp1",1.0)
@@ -83,9 +83,9 @@ def suite():
          ,'test_addModifier'
          ,'test_setReversible'
          ,'test_getCompartmentNumber'
-         ,'test_getLargetCompartment'
+         ,'test_getLargestCompartment'
          ,'test_getSBMLId'
          ,'test_setSBMLId'
         ]
-  return unittests.TestSuite(map(Test_CReaction,tests))
+  return unittest.TestSuite(map(Test_CReaction,tests))
 

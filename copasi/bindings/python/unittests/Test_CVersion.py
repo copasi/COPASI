@@ -37,5 +37,5 @@ def suite():
          ,'test_getVersion'
          ,'test_setVersion'
         ]
-  return unittests.TestSuite(map(Test_CVersion,tests))
+  return unittest.TestSuite(map(Test_CVersion,tests))
 

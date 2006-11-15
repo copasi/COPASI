@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 
 
-class Test_CCopasiProblem(unittests.TestCase):
+class Test_CCopasiProblem(unittest.TestCase):
   def setUp(self):
     self.datamodel=COPASI.CCopasiDataModel.GLOBAL
     self.problem=self.datamodel.getTaskList().get(0).getProblem()
@@ -24,5 +24,5 @@ def suite():
           'test_getType'
          ,'test_getModel'
         ]
-  return unittests.TestSuite(map(Test_CCopasiProblem,tests))
+  return unittest.TestSuite(map(Test_CCopasiProblem,tests))
 

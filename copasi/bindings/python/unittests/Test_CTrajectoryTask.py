@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 
 
-class Test_CTrajectoryTask(unittests.TestCase):
+class Test_CTrajectoryTask(unittest.TestCase):
   def setUp(self):
     self.datamodel=COPASI.CCopasiDataModel.GLOBAL
     self.datamodel.loadModel("calcium_juergen.cps")
@@ -32,5 +32,5 @@ def suite():
          ,'test_getTimeSeries'
          ,'test_setMethodType'
         ]
-  return unittests.TestSuite(map(Test_CTrajectoryTask,tests))
+  return unittest.TestSuite(map(Test_CTrajectoryTask,tests))
 

@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 
 
-class Test_CCopasiParameterGroup(unittests.TestCase):
+class Test_CCopasiParameterGroup(unittest.TestCase):
   def setUp(self):
     self.paramgroup=COPASI.CCopasiParameterGroup("ParameterGroup")
     self.paramgroup.addParameter("param1",CCopasiParameter.DOUBLE)
@@ -87,14 +87,14 @@ class Test_CCopasiParameterGroup(unittests.TestCase):
 
   def test_getIndex(self):
     index=self.paramgroup.getIndex("param3")
-    self._assert(type(index)=IntType)
+    self._assert(type(index)==IntType)
     self._assert(index==2)
 
 def suite():
   tests=[
-         ,'test_size'
+          'test_size'
          ,'test_clear'
-          'test_addParameter'
+         ,'test_addParameter'
          ,'test_getParameter'
          ,'test_addGroup'
          ,'test_removeParameter'
@@ -104,5 +104,5 @@ def suite():
          ,'test_getName'
          ,'test_getIndex'
         ]
-  return unittests.TestSuite(map(Test_CCopasiParameterGroup,tests))
+  return unittest.TestSuite(map(Test_CCopasiParameterGroup,tests))
 

@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 
 
-class Test_CReportDefinition(unittests.TestCase):
+class Test_CReportDefinition(unittest.TestCase):
   def setUp(self):
     self.repdef=COPASI.CReportDefinition("reportDefinition")
     self.setComment("This is a test")
@@ -110,5 +110,5 @@ def suite():
          ,'test_getHeaderAddr'
          ,'test_getBodyAddr'
         ]
-  return unittests.TestSuite(map(Test_CReportDefinition,tests))
+  return unittest.TestSuite(map(Test_CReportDefinition,tests))
 

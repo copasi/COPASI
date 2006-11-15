@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 
 
-class Test_CCopasiStaticString(unittests.TestCase):
+class Test_CCopasiStaticString(unittest.TestCase):
   def setUp(self):
     self.s="this_is_a_test"
     self.string=COPASI.CCopasiStaticString(self.s)
@@ -24,5 +24,5 @@ def suite():
           'test_getObjectDisplayName'
          ,'test_getStaticString'
         ]
-  return unittests.TestSuite(map(Test_CCopasiStaticString,tests))
+  return unittest.TestSuite(map(Test_CCopasiStaticString,tests))
 

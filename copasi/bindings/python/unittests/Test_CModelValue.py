@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 
 
-class Test_CModelValue(unittests.TestCase):
+class Test_CModelValue(unittest.TestCase):
   def setUp(self):
     self.model=COPASI.CModel()
     self.mv=self.model.createModelValue("mv")
@@ -83,13 +83,13 @@ class Test_CModelValue(unittests.TestCase):
     value=self.mv.isUsedOnce()
     self._assert(type(value)==BooleanType)
 
-	def test_setExpression(self):
-		# that test will be implemented later
-		self._assert(false)
+  def test_setExpression(self):
+    # that test will be implemented later
+    self._assert(false)
 
-	def test_setInitialExpression(self):
-		# that test will be implemented later
-		self._assert(false)
+  def test_setInitialExpression(self):
+    # that test will be implemented later
+    self._assert(false)
 
 
 
@@ -114,5 +114,5 @@ def suite():
          ,'test_setExpression'
          ,'test_setInitialExpression'
         ]
-  return unittests.TestSuite(map(Test_CModelValue,tests))
+  return unittest.TestSuite(map(Test_CModelValue,tests))
 

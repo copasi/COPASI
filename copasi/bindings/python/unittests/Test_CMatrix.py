@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 
 
-class Test_CMatrix(unittests.TestCase):
+class Test_CMatrix(unittest.TestCase):
   def setUp(self):
     self.numRows=5
     self.numCols=11
@@ -40,5 +40,5 @@ def suite():
          ,'test_size'
          ,'test_resize'
         ]
-  return unittests.TestSuite(map(Test_CMatrix,tests))
+  return unittest.TestSuite(map(Test_CMatrix,tests))
 

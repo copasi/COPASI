@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 
 
-class Test_CMoiety(unittests.TestCase):
+class Test_CMoiety(unittest.TestCase):
   def setUp(self):
     self.moiety=COPASI.CMoiety()
 
@@ -40,5 +40,5 @@ def suite():
          ,'test_getDependentRate'
          ,'test_getDependentNumber'
         ]
-  return unittests.TestSuite(map(Test_CMoiety,tests))
+  return unittest.TestSuite(map(Test_CMoiety,tests))
 

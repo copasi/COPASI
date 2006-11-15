@@ -1,9 +1,9 @@
 import COPASI
-import unittests
+import unittest
 from types import *
 
 
-class Test_CTrajectoryMethod(unittests.TestCase):
+class Test_CTrajectoryMethod(unittest.TestCase):
   def setUp(self):
     self.method=COPASI.CTrajectoryMethod.createTrajectoryMethod(COPASI.CCopasiMethod.deterministic,CTrajectoryProblem())
 
@@ -11,5 +11,5 @@ class Test_CTrajectoryMethod(unittests.TestCase):
 def suite():
   tests=[
         ]
-  return unittests.TestSuite(map(Test_CTrajectoryMethod,tests))
+  return unittest.TestSuite(map(Test_CTrajectoryMethod,tests))
     

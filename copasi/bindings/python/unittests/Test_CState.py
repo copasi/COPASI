@@ -54,5 +54,5 @@ def suite():
          ,'test_isUpdateDependentRequired'
          ,'test_setUpdateDependentRequired'
         ]
-  return unittests.TestSuite(map(Test_CState,tests))
+  return unittest.TestSuite(map(Test_CState,tests))
     

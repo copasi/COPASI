@@ -2,7 +2,7 @@ import COPASI
 import unittest
 from types import *
 
-class Test_CCopasiObject(unittests.TestCase):
+class Test_CCopasiObject(unittest.TestCase):
     def setUp(self):
       self.object=COPASI.CMoiety()
 
@@ -104,5 +104,5 @@ def suite():
          ,'test_isSeparator'
          ,'test_getKey'
         ]
-  return unittests.TestSuite(map(Test_CCopasiObject,tests))
+  return unittest.TestSuite(map(Test_CCopasiObject,tests))
 

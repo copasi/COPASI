@@ -127,5 +127,5 @@ def suite():
          ,'test_getFileName'
          ,'test_getSBMLFileName'
         ]
-  return unittests.TestSuite(map(Test_CCopasiDataModel,tests))
+  return unittest.TestSuite(map(Test_CCopasiDataModel,tests))
 
