@@ -48,13 +48,13 @@ class Test_CTrajectoryProblem(unittest.TestCase):
   def test_setTimeSeriesRequested(self):
     v=0
     self.problem.setTimeSeriesRequested(v)
-    self.assert_(self.problem.getTimeSeriesRequested()==v)
+    self.assert_(self.problem.timeSeriesRequested()==v)
     v=1
     self.problem.setTimeSeriesRequested(v)
-    self.assert_(self.problem.getTimeSeriesRequested()==v)
+    self.assert_(self.problem.timeSeriesRequested()==v)
 
   def test_timeSeriesRequested(self):
-    v=self.problem.getTimeSeriesRequested()
+    v=self.problem.timeSeriesRequested()
     self.assert_(type(v)==BooleanType)
 
 

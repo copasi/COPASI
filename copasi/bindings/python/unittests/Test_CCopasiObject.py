@@ -13,7 +13,7 @@ class Test_CCopasiObject(unittest.TestCase):
     def test_setObjectName(self):
       NAME="MyObject"
       self.object.setObjectName(NAME)
-      self.assert_(self.getObjectName()==NAME)
+      self.assert_(self.object.getObjectName()==NAME)
 
     def test_getObjectDisplayName(self):
       t=self.object.getObjectDisplayName()

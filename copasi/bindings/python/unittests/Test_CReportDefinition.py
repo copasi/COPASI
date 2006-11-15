@@ -19,7 +19,7 @@ class Test_CReportDefinition(unittest.TestCase):
     
 
   def test_setTaskType(self):
-    tt=CCopasiTask.mca
+    tt=COPASI.CCopasiTask.mca
     self.repdef.setTaskType(tt)
     self.assert_(self.repdef.getTaskType()==tt)
 

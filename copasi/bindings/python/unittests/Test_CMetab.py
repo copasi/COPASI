@@ -14,13 +14,13 @@ class Test_CMetab(unittest.TestCase):
     self.assert_(type(s)==StringType)
 
   def test_getConcentration(self):
-    conc=self.metab.getConentration()
+    conc=self.metab.getConcentration()
     self.assert_(type(conc)==FloatType)
 
   def test_setInitialConcentration(self):
     value=5.0
     self.metab.setInitialConcentration(value)
-    self.assert_(math.fabs(self.getInitialConcentration()-value/value)<0.001)
+    self.assert_(math.fabs(self.metab.getInitialConcentration()-value/value)<0.001)
 
   def test_getInitialConcentration(self):
     value=self.metab.getInitialConcentration()
@@ -29,7 +29,7 @@ class Test_CMetab(unittest.TestCase):
   def test_setInitialValue(self):
     value=5.0
     self.metab.setInitialValue(value)
-    self.assert_(math.fabs(self.getInitialValue()-value/value)<0.001)
+    self.assert_(math.fabs(self.metab.getInitialValue()-value/value)<0.001)
 
   def test_getCompartment(self):
     c=self.metab.getCompartment()

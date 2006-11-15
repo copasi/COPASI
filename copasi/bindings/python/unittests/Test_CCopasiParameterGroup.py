@@ -6,24 +6,24 @@ from types import *
 class Test_CCopasiParameterGroup(unittest.TestCase):
   def setUp(self):
     self.paramgroup=COPASI.CCopasiParameterGroup("ParameterGroup")
-    self.paramgroup.addParameter("param1",CCopasiParameter.DOUBLE)
-    self.paramgroup.addParameter("param2",CCopasiParameter.DOUBLE)
-    self.paramgroup.addParameter("param3",CCopasiParameter.DOUBLE)
+    self.paramgroup.addParameter("param1",COPASI.CCopasiParameter.DOUBLE)
+    self.paramgroup.addParameter("param2",COPASI.CCopasiParameter.DOUBLE)
+    self.paramgroup.addParameter("param3",COPASI.CCopasiParameter.DOUBLE)
 
 
    
   def test_addParameter(self):
     self.paramgroup.clear()
-    self.paramgroup.addParameter("testparam1",CCopasiParameter.DOUBLE)
-    self.paramgroup.addParameter("testparam2",CCopasiParameter.UDOUBLE)
-    self.paramgroup.addParameter("testparam3",CCopasiParameter.INT)
-    self.paramgroup.addParameter("testparam4",CCopasiParameter.UINT)
-    self.paramgroup.addParameter("testparam5",CCopasiParameter.BOOL)
-    self.paramgroup.addParameter("testparam6",CCopasiParameter.GROUP)
-    self.paramgroup.addParameter("testparam7",CCopasiParameter.CN)
-    self.paramgroup.addParameter("testparam8",CCopasiParameter.STRING)
-    self.paramgroup.addParameter("testparam9",CCopasiParameter.KEY)
-    self.paramgroup.addParameter("testparam10",CCopasiParameter.FILE)
+    self.paramgroup.addParameter("testparam1",COPASI.CCopasiParameter.DOUBLE)
+    self.paramgroup.addParameter("testparam2",COPASI.CCopasiParameter.UDOUBLE)
+    self.paramgroup.addParameter("testparam3",COPASI.CCopasiParameter.INT)
+    self.paramgroup.addParameter("testparam4",COPASI.CCopasiParameter.UINT)
+    self.paramgroup.addParameter("testparam5",COPASI.CCopasiParameter.BOOL)
+    self.paramgroup.addParameter("testparam6",COPASI.CCopasiParameter.GROUP)
+    self.paramgroup.addParameter("testparam7",COPASI.CCopasiParameter.CN)
+    self.paramgroup.addParameter("testparam8",COPASI.CCopasiParameter.STRING)
+    self.paramgroup.addParameter("testparam9",COPASI.CCopasiParameter.KEY)
+    self.paramgroup.addParameter("testparam10",COPASI.CCopasiParameter.FILE)
     self.assert_(self.paramgroup.size()==10)
 
 
@@ -60,10 +60,10 @@ class Test_CCopasiParameterGroup(unittest.TestCase):
   def test_getType(self):
     t=self.paramgroup.getType(0)
     self.assert_(type(t)==IntType)
-    self.assert_(t==CCopasiParameter.DOUBLE)
+    self.assert_(t==COPASI.CCopasiParameter.DOUBLE)
     t2=self.paramgroup.getType("param2")
     self.assert_(type(t2)==IntType)
-    self.assert_(t2==CCopasiParameter.DOUBLE)
+    self.assert_(t2==COPASI.CCopasiParameter.DOUBLE)
 
   def test_getKey(self):
     key=self.paramgroup.getKey("param1")

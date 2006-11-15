@@ -41,10 +41,10 @@ class Test_CReaction(unittest.TestCase):
   def test_setReversible(self):
     v=0
     self.reac.setReversible(v)
-    self.assert_(self.reac.getReversible()==v)
+    self.assert_(self.reac.isReversible()==v)
     v=1
     self.reac.setReversible(v)
-    self.assert_(self.reac.getReversible()==v)
+    self.assert_(self.reac.isReversible()==v)
 
   def test_getCompartmentNumber(self):
     self.reac.addSubstrate(self.substrate.getKey())

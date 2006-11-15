@@ -35,7 +35,7 @@ class Test_CModelValue(unittest.TestCase):
   def test_setStatus(self):
     status=COPASI.CModelEntity.ASSIGNMENT
     self.mv.setStatus(status)
-    self.assert_(self.getStatus()==status)
+    self.assert_(self.mv.getStatus()==status)
 
   def test_setInitialValue(self):
     v=3.14159
@@ -61,10 +61,10 @@ class Test_CModelValue(unittest.TestCase):
 
   def test_setUsed(self):
     v=1
-    self.mv.setUsed(value)
+    self.mv.setUsed(v)
     self.assert_(v==self.mv.getIsUsedOnce())
     v=0
-    self.mv.setUsed(value)
+    self.mv.setUsed(v)
     self.assert_(v==self.mv.getIsUsedOnce())
 
   def test_isUsed(self):
@@ -73,10 +73,10 @@ class Test_CModelValue(unittest.TestCase):
 
   def test_setUsedOnce(self):
     v=1
-    self.mv.setUsedOnce(value)
+    self.mv.setUsedOnce(v)
     self.assert_(v==self.mv.getIsUsedOnce())
     v=0
-    self.mv.setUsedOnce(value)
+    self.mv.setUsedOnce(v)
     self.assert_(v==self.mv.getIsUsedOnce())
 
   def test_isUsedOnce(self):

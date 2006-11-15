@@ -61,5 +61,4 @@ class CCopasiDataModel
 };
 
 
-//CCopasiDataModel* CCopasiDataModel::Global=NULL;
 

@@ -1,7 +1,7 @@
 import COPASI
 import unittest
 from types import *
-
+import math
 
 class Test_CModel(unittest.TestCase):
   def setUp(self):
@@ -44,7 +44,7 @@ class Test_CModel(unittest.TestCase):
     self.assert_(n==7)
 
   def test_getNumVariableMetabs(self):
-    n=self.model.getNumVeriableMetabs()
+    n=self.model.getNumVariableMetabs()
     self.assert_(type(n)==IntType)
     self.assert_(n==7)
 
@@ -95,7 +95,7 @@ class Test_CModel(unittest.TestCase):
   def test_setTitle(self):
     title="MyTitle"
     self.model.setTitle(title)
-    self.assert_(self.model.getTitle()==title)
+    self.assert_(self.model.getObjectName()==title)
 
   def test_setComments(self):
     comment="MyComment"
@@ -164,14 +164,14 @@ class Test_CModel(unittest.TestCase):
 
   def test_setVolumeUnit(self):
     u=COPASI.CModel.l
-    self.setQuantityUnit(u)
-    self.assert_(self.getQuantityUnitEnum()==u)
-    self.model.setQuantityUnit("nl")
-    self.assert_(self.model.getQuantityUnitEnum()==COPASI.CModel.nl)
+    self.model.setVolumeUnit(u)
+    self.assert_(self.getVolumeUnitEnum()==u)
+    self.model.setVolumeUnit("nl")
+    self.assert_(self.model.getVolumeUnitEnum()==COPASI.CModel.nl)
 
   def test_getVolumeUnitName(self):
     n=self.model.getVolumeUnitName()
-    self.assert_(type(e)==StringType)
+    self.assert_(type(n)==StringType)
 
   def test_getVolumeUnitEnum(self):
     e=self.model.getVolumeUnitEnum()
@@ -179,14 +179,14 @@ class Test_CModel(unittest.TestCase):
 
   def test_setTimeUnit(self):
     u=COPASI.CModel.micros
-    self.setQuantityUnit(u)
-    self.assert_(self.getQuantityUnitEnum()==u)
-    self.model.setQuantityUnit("ms")
-    self.assert_(self.model.getQuantityUnitEnum()==COPASI.CModel.ms)
+    self.model.setTimeUnit(u)
+    self.assert_(self.getTimeUnitEnum()==u)
+    self.model.setTimeUnit("ms")
+    self.assert_(self.model.getTimeUnitEnum()==COPASI.CModel.ms)
 
   def test_getTimeUnitName(self):
     n=self.model.getTimeUnitName()
-    self.assert_(type(e)==StringType)
+    self.assert_(type(n)==StringType)
 
   def test_getTimeUnitEnum(self):
     e=self.model.getTimeUnitEnum()
@@ -194,14 +194,14 @@ class Test_CModel(unittest.TestCase):
 
   def test_setQuantityUnit(self):
     u=COPASI.CModel.microMol
-    self.setQuantityUnit(u)
+    self.model.setQuantityUnit(u)
     self.assert_(self.getQuantityUnitEnum()==u)
     self.model.setQuantityUnit("nMol")
     self.assert_(self.model.getQuantityUnitEnum()==COPASI.CModel.nMol)
 
   def test_getQuantityUnitName(self):
     n=self.model.getQuantityUnitName()
-    self.assert_(type(e)==StringType)
+    self.assert_(type(n)==StringType)
 
   def test_getQuantityUnitEnum(self):
     e=self.model.getQuantityUnitEnum()
@@ -241,20 +241,20 @@ class Test_CModel(unittest.TestCase):
 
   def test_createMetabolite(self):
     c=self.model.createCompartment("testCompartment")
-    size=self.model.getNumMetabolites()
+    size=self.model.getNumMetabs()
     m=self.model.createMetabolite("testMetabolite","testCompartment")
-    self.assert_(self.model.getNumMetabolites()==size+1)
+    self.assert_(self.model.getNumMetabs()==size+1)
     self.assert_(m.__class__==COPASI.CMetab)
     self.assert_(m.getObjectName()=="testMetabolite")
     self.assert_(m.getCompartment().getObjectName()=="testCompartment")
 
   def test_removeMetabolite(self):
     c=self.model.createCompartment("testCompartment")
-    size=self.model.getNumMetabolites()
+    size=self.model.getNumMetabs()
     m=self.model.createMetabolite("testMetabolite","testCompartment")
-    self.assert_(self.model.getNumMetabolites()==size+1)
+    self.assert_(self.model.getNumMetabs()==size+1)
     self.model.removeMetabolite(m.getKey())
-    self.assert_(self.model.getNumMetabolites()==size)
+    self.assert_(self.model.getNumMetabs()==size)
 
   def test_createCompartment(self):
     size=self.model.getNumCompartments()

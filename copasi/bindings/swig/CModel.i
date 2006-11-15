@@ -427,6 +427,29 @@ class CModel : public CModelEntity
      */
     bool isAutonomous() const;
 
+%extend
+{
+    /**
+     *  Get the number of compartments 
+     *  @return C_INT32 getCompartments().size()
+     */
+    unsigned C_INT32 getNumCompartments() const
+    {
+    	return self->getCompartments().size();
+    }
+
+    /**
+     *  Get the number of reactions
+     *  @return C_INT32 getReactions().size()
+     */
+    unsigned C_INT32 getNumReactions() const
+    {
+    	return self->getReactions().size();
+    }
+
+		
+}
+
 
 };
 

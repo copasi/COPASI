@@ -1,6 +1,6 @@
 import COPASI
 import unittest
-import types
+from types import *
 import string
 
 CPS_FILE="calcium_juergen.cps"
@@ -39,12 +39,12 @@ class Test_CCopasiDataModel(unittest.TestCase):
   def test_exportSBMLToString(self):
     self.assert_(self.datamodel.loadModel(CPS_FILE))
     modelString=self.datamodel.exportSBMLToString()
-    self.assert_(types.type(modelString)==types.StringType)
+    self.assert_(type(modelString)==StringType)
     self.assert_(modelString!="")
 
   def test_exportSBML(self):
     self.datamodel.loadModel(CPS_FILE)
-    FILENAME=calcium_juergen2.xml
+    FILENAME="calcium_juergen2.xml"
     self.assert_(self.datamodel.exportSBML(FILENAME,1))
 
   def test_getModel(self):
@@ -65,7 +65,7 @@ class Test_CCopasiDataModel(unittest.TestCase):
   def test_addTask(self):
     self.assert_(0)
 
-  def test_addDefaultTasks():
+  def test_addDefaultTasks(self):
     self.assert_(0)
 
   def test_getReportDefinitionList(self):
@@ -82,13 +82,13 @@ class Test_CCopasiDataModel(unittest.TestCase):
   def test_getFileName(self):
     self.datamodel.loadModel(CPS_FILE)
     fileName=self.datamodel.getFileName()
-    self.assert_(types.type(fileName)==types.StringType)
+    self.assert_(type(fileName)==StringType)
     self.assert_(fileName==CPS_FILE)
 
   def test_getSBMLFileName(self):
     #self.datamodel.importSBML(CPS_FILE)
     #fileName=self.datamodel.getSBMLFileName()
-    #self.assert_(types.type(fileName)==types.StringType)
+    #self.assert_(type(fileName)==StringType)
     #self.assert_(fileName==SBML_FILE)
 	  self.assert_(0)
 
