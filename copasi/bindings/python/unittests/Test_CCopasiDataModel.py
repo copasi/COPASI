@@ -15,11 +15,12 @@ class Test_CCopasiDataModel(unittest.TestCase):
     self.CHECK_CALCIUM_JUERGEN()
 
   def test_saveModel(self):
-    self.assert_(self.datamodel.loadModel(CPS_FILE),"Error. Could not load model.")
-    TMPFILE="calcium_juergen2.cps"
-    self.assert_(self.datamodel.saveModel(TMPFILE,1),"Error. Could not save model.")
-    self.assert_(self.datamodel.loadModel(TMPFILE),"Error. Could not reload saved model.")
-    self.CHECK_CALCIUM_JUERGEN()
+    #self.assert_(self.datamodel.loadModel(CPS_FILE),"Error. Could not load model.")
+    #TMPFILE="calcium_juergen2.cps"
+    #self.assert_(self.datamodel.saveModel(TMPFILE,1),"Error. Could not save model.")
+    #self.assert_(self.datamodel.loadModel(TMPFILE),"Error. Could not reload saved model.")
+    #self.CHECK_CALCIUM_JUERGEN()
+    self.assert_(False)
 
   def test_newModel(self):
     self.assert_(self.datamodel.newModel())
@@ -43,9 +44,10 @@ class Test_CCopasiDataModel(unittest.TestCase):
     self.assert_(modelString!="")
 
   def test_exportSBML(self):
-    self.datamodel.loadModel(CPS_FILE)
-    FILENAME="calcium_juergen2.xml"
-    self.assert_(self.datamodel.exportSBML(FILENAME,1))
+    #self.datamodel.loadModel(CPS_FILE)
+    #FILENAME="calcium_juergen2.xml"
+    #self.assert_(self.datamodel.exportSBML(FILENAME,1))
+    self.assert_(False)
 
   def test_getModel(self):
    # test getModel

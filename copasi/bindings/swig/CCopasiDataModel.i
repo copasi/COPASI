@@ -9,11 +9,11 @@
 #include <string>
 
 %ignore CCopasiDataModel::CCopasiDataModel(const bool);
-%ignore CCopasiDataModel::saveModel(const std::string& fileName,bool overwriteFile = false, const bool& autoSave);
+%ignore CCopasiDataModel::saveModel(const std::string& fileName,bool overwriteFile , const bool& autoSave);
 %ignore CCopasiDataModel::newModel(CModel* pModel);
 %ignore CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler);
 %ignore CCopasiDataModel::importSBML(const std::string& fileName,CProcessReport* pImportHandler);
-%ignore CCopasiDataModel::exportSBML(const std::string& fileName,bool overwriteFile=false,int sbmlLevel, int sbmlVersion,bool exportIncomplete = false, CProcessReport* pExportHandler);
+%ignore CCopasiDataModel::exportSBML(const std::string& fileName,bool overwriteFile,int sbmlLevel, int sbmlVersion,bool exportIncomplete = false, CProcessReport* pExportHandler);
 %ignore CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler);
 
 

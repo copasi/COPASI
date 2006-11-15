@@ -8,6 +8,9 @@
 template < class CType > class CCopasiVector:
         protected std::vector< CType * >, public CCopasiContainer
 {
+
+%rename(removeObject) remove(CCopasiObject* pObject);
+
     public:
       typedef typename std::vector< CType * >::value_type value_type;
       typedef typename std::vector< CType * >::iterator iterator;
@@ -42,6 +45,10 @@ template < class CType > class CCopasiVector:
 
 template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
 {
+
+%rename(removeByName) remove(const std::string& name);
+%rename(getIndexByName) getIndex(const std::string& name) const;
+
     public:
       typedef typename std::vector< CType * >::value_type value_type;
       typedef typename std::vector< CType * >::iterator iterator;

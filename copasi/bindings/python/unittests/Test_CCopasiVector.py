@@ -19,14 +19,14 @@ class Test_CCopasiVector(unittest.TestCase):
 
   def test_remove(self):
     n=self.vector.size()  
-    self.vector.remove(self.metab)
+    self.vector.removeObject(self.metab)
     self.assert_(self.vector.size()==n-1)
     self.vector.remove(0)
     self.assert_(self.vector.size()==n-2)
 
   def test_remove_viaName(self):
     n=self.vector.size()  
-    self.vector.remove(self.metab.getObjectName())
+    self.vector.removeByName(self.metab.getObjectName())
     self.assert_(self.vector.size()==n-1)
 
 
@@ -41,10 +41,10 @@ class Test_CCopasiVector(unittest.TestCase):
     self.assert_(n==5)
 
   def test_getIndex(self):
-   index=self.vector.getIndex(self.metab())
+   index=self.vector.getIndex(self.metab)
    self.assert_(type(index)==IntType)
    self.assert_(index==2)
-   index=self.vector.getIndex(self.metab().getObjectName())
+   index=self.vector.getIndexByName(self.metab.getObjectName())
    self.assert_(type(index)==IntType)
    self.assert_(index==2)
 
