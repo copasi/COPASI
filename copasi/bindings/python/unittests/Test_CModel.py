@@ -25,8 +25,8 @@ class Test_CModel(unittest.TestCase):
     r.addSubstrate(m6.getKey())
     r.addProduct(m2.getKey())
     self.model.buildStoi()
-    self.model.buildRedStoi()
     self.model.buildMoieties()
+    #self.model.buildRedStoi()
 
   def test_getMetabolites(self):
     v=self.model.getMetabolites()

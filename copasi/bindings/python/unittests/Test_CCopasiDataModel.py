@@ -86,10 +86,11 @@ class Test_CCopasiDataModel(unittest.TestCase):
     self.assert_(fileName==CPS_FILE)
 
   def test_getSBMLFileName(self):
-    self.datamodel.importSBML(CPS_FILE)
-    fileName=self.datamodel.getSBMLFileName()
-    self.assert_(types.type(fileName)==types.StringType)
-    self.assert_(fileName==SBML_FILE)
+    #self.datamodel.importSBML(CPS_FILE)
+    #fileName=self.datamodel.getSBMLFileName()
+    #self.assert_(types.type(fileName)==types.StringType)
+    #self.assert_(fileName==SBML_FILE)
+	  self.assert_(0)
 
   def CHECK_CALCIUM_JUERGEN(self):
     # check the model
