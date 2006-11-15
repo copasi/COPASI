@@ -52,6 +52,14 @@ class CMatrix
      * @param unsigned C_INT32 cols
      */
     virtual void resize(unsigned C_INT32 rows, unsigned C_INT32 cols);
+
+    %extend
+    {
+        virtual elementType& get(const unsigned C_INT32& row,const unsigned C_INT32& col)
+        {
+            return (*self)(row,col);
+        }
+    }
   };
 
 

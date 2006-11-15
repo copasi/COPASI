@@ -105,7 +105,7 @@ class Test_CModel(unittest.TestCase):
   def test_setInitialTime(self):
     d=12.4
     self.model.setInitialTime(d)
-    self.assert_(math.abs((self.model.getInitialTime()-d)/d)<0.001)
+    self.assert_(math.fabs((self.model.getInitialTime()-d)/d)<0.001)
 
   def test_getInitialTime(self):
     d=self.model.getInitialTime()
@@ -165,7 +165,7 @@ class Test_CModel(unittest.TestCase):
   def test_setVolumeUnit(self):
     u=COPASI.CModel.l
     self.model.setVolumeUnit(u)
-    self.assert_(self.getVolumeUnitEnum()==u)
+    self.assert_(self.model.getVolumeUnitEnum()==u)
     self.model.setVolumeUnit("nl")
     self.assert_(self.model.getVolumeUnitEnum()==COPASI.CModel.nl)
 
@@ -180,7 +180,7 @@ class Test_CModel(unittest.TestCase):
   def test_setTimeUnit(self):
     u=COPASI.CModel.micros
     self.model.setTimeUnit(u)
-    self.assert_(self.getTimeUnitEnum()==u)
+    self.assert_(self.model.getTimeUnitEnum()==u)
     self.model.setTimeUnit("ms")
     self.assert_(self.model.getTimeUnitEnum()==COPASI.CModel.ms)
 
@@ -195,7 +195,7 @@ class Test_CModel(unittest.TestCase):
   def test_setQuantityUnit(self):
     u=COPASI.CModel.microMol
     self.model.setQuantityUnit(u)
-    self.assert_(self.getQuantityUnitEnum()==u)
+    self.assert_(self.model.getQuantityUnitEnum()==u)
     self.model.setQuantityUnit("nMol")
     self.assert_(self.model.getQuantityUnitEnum()==COPASI.CModel.nMol)
 

@@ -14,7 +14,7 @@ class Test_CCopasiTask(unittest.TestCase):
     self.assert_(type(t)==IntType)
 
   def test_setType(self):
-    task=CCopasiTask("TestTask")
+    task=COPASI.CCopasiTask("TestTask")
     task.setType(COPASI.CCopasiTask.scan)
     self.assert_(task.getType()==COPASI.CCopasiTask.scan)
 

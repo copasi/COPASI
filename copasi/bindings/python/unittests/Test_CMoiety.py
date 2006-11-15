@@ -27,7 +27,7 @@ class Test_CMoiety(unittest.TestCase):
     self.model.buildStoi()
     self.model.buildMoieties()
     self.moieties=self.model.getMoieties()
-    self.moiety=self.moieties[0]
+    self.moiety=self.moieties.get(0)
 
   def test_getDescription(self):
     desc=self.moiety.getDescription()

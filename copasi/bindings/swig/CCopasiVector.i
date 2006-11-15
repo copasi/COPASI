@@ -30,7 +30,13 @@ template < class CType > class CCopasiVector:
       virtual unsigned C_INT32 size() const;
       virtual unsigned C_INT32 getIndex(const CCopasiObject * pObject) const;
 
-
+      %extend
+      {
+        virtual value_type& get(unsigned C_INT32 index)
+        {
+            return (*self)[index];
+        }
+      }
 };
 
 
@@ -51,6 +57,14 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       virtual void remove(const std::string & name);
       virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const;
       virtual unsigned C_INT32 getIndex(const std::string &name) const;
+
+      %extend
+      {
+        virtual value_type& getByName(const std::string& name)
+        {
+            return (*self)[name];
+        }
+      }
 };
 
 

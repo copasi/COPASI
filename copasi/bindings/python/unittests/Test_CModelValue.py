@@ -62,10 +62,10 @@ class Test_CModelValue(unittest.TestCase):
   def test_setUsed(self):
     v=1
     self.mv.setUsed(v)
-    self.assert_(v==self.mv.getIsUsedOnce())
+    self.assert_(v==self.mv.isUsed())
     v=0
     self.mv.setUsed(v)
-    self.assert_(v==self.mv.getIsUsedOnce())
+    self.assert_(v==self.mv.isUsed())
 
   def test_isUsed(self):
     value=self.mv.isUsed()

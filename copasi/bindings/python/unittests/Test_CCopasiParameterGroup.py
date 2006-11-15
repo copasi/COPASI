@@ -32,9 +32,9 @@ class Test_CCopasiParameterGroup(unittest.TestCase):
     self.assert_(self.paramgroup.size()==4)
 
   def test_removeParameter(self):
-    self.removeParameter("param1")
+    self.paramgroup.removeParameter("param1")
     self.assert_(self.paramgroup.size()==2)
-    self.removeParameter(0)
+    self.paramgroup.removeParameter(0)
     self.assert_(self.paramgroup.size()==1)
 
   def test_getParameter(self):
