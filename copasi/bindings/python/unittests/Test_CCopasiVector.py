@@ -15,28 +15,29 @@ class Test_CCopasiVector(unittest.TestCase):
     self.vector=self.compartment.getMetabolites()
 
   def test_add(self):
-    self._assert(false)
+    self.assert_(false)
 
   def test_remove(self):
     n=self.vector.size()  
     self.vector.remove(self.metab)
-    self._assert(self.vector.size()==n-1)
+    self.assert_(self.vector.size()==n-1)
     self.vector.remove(0)
-    self._assert(self.vector.size()==n-2)
+    self.assert_(self.vector.size()==n-2)
 
   def test_getObject(self):
-    object=self.vector.getObject(self.metab.getCN())
-    self._assert(object==self.metab)
+    #object=self.vector.getObject(self.metab.getCN())
+    #self.assert_(object==self.metab)
+		self.assert_(false)
 
   def test_size(self):
     n=self.vector.size()
-    self._assert(type(n)==IntType)
-    self._assert(n==5)
+    self.assert_(type(n)==IntType)
+    self.assert_(n==5)
 
   def test_getIndex(self):
    index=self.vector.getIndex(self.metab)
-   self._assert(type(index)==IntType)
-   self._assert(index==2)
+   self.assert_(type(index)==IntType)
+   self.assert_(index==2)
 
 
 

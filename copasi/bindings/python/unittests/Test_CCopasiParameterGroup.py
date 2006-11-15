@@ -24,71 +24,71 @@ class Test_CCopasiParameterGroup(unittest.TestCase):
     self.paramgroup.addParameter("testparam8",CCopasiParameter.STRING)
     self.paramgroup.addParameter("testparam9",CCopasiParameter.KEY)
     self.paramgroup.addParameter("testparam10",CCopasiParameter.FILE)
-    self._assert(self.paramgroup.size()==10)
+    self.assert_(self.paramgroup.size()==10)
 
 
   def test_addGroup(self):
     self.paramgroup.addGroup("testgroup")
-    self._assert(self.paramgroup.size()==4)
+    self.assert_(self.paramgroup.size()==4)
 
   def test_removeParameter(self):
     self.removeParameter("param1")
-    self._assert(self.paramgroup.size()==2)
+    self.assert_(self.paramgroup.size()==2)
     self.removeParameter(0)
-    self._assert(self.paramgroup.size()==1)
+    self.assert_(self.paramgroup.size()==1)
 
   def test_getParameter(self):
     param=self.paramgroup.getParameter("param2")
-    self._assert(param.__class__==COPASI.CCopasiParameter)
-    self._assert(param.getObjectName()=="param2")
+    self.assert_(param.__class__==COPASI.CCopasiParameter)
+    self.assert_(param.getObjectName()=="param2")
     param=self.paramgroup.getParameter(0)
-    self._assert(param.__class__==COPASI.CCopasiParameter)
-    self._assert(param.getObjectName()=="param1")
+    self.assert_(param.__class__==COPASI.CCopasiParameter)
+    self.assert_(param.getObjectName()=="param1")
 
   def test_getGroup(self):
     self.paramgroup.addGroup("testgroup")
     self.paramgroup.addGroup("testgroup_2")
     group=self.paramgroup.getGroup("testgroup")
-    self._assert(group.__class__==COPASI.CCopasiParameterGroup)
-    self._assert(group.getObjectName()=="testgroup")
+    self.assert_(group.__class__==COPASI.CCopasiParameterGroup)
+    self.assert_(group.getObjectName()=="testgroup")
     group=self.paramgroup.getGroup(5)
-    self._assert(group.__class__==COPASI.CCopasiParameterGroup)
-    self._assert(group.getObjectName()=="testgroup_2")
+    self.assert_(group.__class__==COPASI.CCopasiParameterGroup)
+    self.assert_(group.getObjectName()=="testgroup_2")
 
 
 
   def test_getType(self):
     t=self.paramgroup.getType(0)
-    self._assert(type(t)==IntType)
-    self._assert(t==CCopasiParameter.DOUBLE)
+    self.assert_(type(t)==IntType)
+    self.assert_(t==CCopasiParameter.DOUBLE)
     t2=self.paramgroup.getType("param2")
-    self._assert(type(t2)==IntType)
-    self._assert(t2==CCopasiParameter.DOUBLE)
+    self.assert_(type(t2)==IntType)
+    self.assert_(t2==CCopasiParameter.DOUBLE)
 
   def test_getKey(self):
     key=self.paramgroup.getKey("param1")
-    self._assert(type(key)==StringType)
+    self.assert_(type(key)==StringType)
     key=self.paramgroup.getKey(2)
-    self._assert(type(key)==StringType)
+    self.assert_(type(key)==StringType)
 
   def test_getName(self):
     name=self.paramgroup.getName(1)
-    self._assert(type(name)==StringType)
-    self._assert(name=="param2")
+    self.assert_(type(name)==StringType)
+    self.assert_(name=="param2")
 
   def test_size(self):
     size=self.paramgroup.size()
-    self._assert(type(size)==IntType)
-    self._assert(size==3)
+    self.assert_(type(size)==IntType)
+    self.assert_(size==3)
 
   def test_clear(self):
     self.paramgroup.clear()
-    self._assert(self.paramgroup.size()==0)
+    self.assert_(self.paramgroup.size()==0)
 
   def test_getIndex(self):
     index=self.paramgroup.getIndex("param3")
-    self._assert(type(index)==IntType)
-    self._assert(index==2)
+    self.assert_(type(index)==IntType)
+    self.assert_(index==2)
 
 def suite():
   tests=[

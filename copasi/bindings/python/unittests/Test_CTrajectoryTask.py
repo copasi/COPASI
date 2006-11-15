@@ -11,19 +11,19 @@ class Test_CTrajectoryTask(unittest.TestCase):
 
   def test_process(self):
     # can only be tested once we can get the correct object type from the vector
-    self._assert(false)
+    self.assert_(false)
 
   def test_getState(self):
     # can only be tested once we can get the correct object type from the vector
-    self._assert(false)
+    self.assert_(false)
 
   def test_setMethodType(self):
     # can only be tested once we can get the correct object type from the vector
-    self._assert(false)
+    self.assert_(false)
 
   def test_getTimeSeries(self):
     # can only be tested once we can get the correct object type from the vector
-    self._assert(false)
+    self.assert_(false)
 
 def suite():
   tests=[

@@ -5,7 +5,7 @@ from types import *
 class Test_CCopasiContainer(unittest.TestCase):
 
   def  test_ObjectFromName(self):
-    self._assert(false)
+    self.assert_(false)
 
 
 def suite():

@@ -15,16 +15,16 @@ class Test_CCompartment(unittest.TestCase):
 
   def test_getMetabolites(self):
     metabolites=self.compartment.getMetabolites()
-    self._assert(false)
+    self.assert_(false)
 
   def test_removeMetabolite(self):
     self.compartment.removeMetabolite(self.metab)
-    self._assert(false)
+    self.assert_(false)
 
   def test_setInitialValue(self):
     value=5.0
     self.compartment.setInitialValue(value)
-    self._assert(math.fabs((self.compartment.getInitialValue()-value)/value)<0.001)
+    self.assert_(math.fabs((self.compartment.getInitialValue()-value)/value)<0.001)
     
 
 def suite():

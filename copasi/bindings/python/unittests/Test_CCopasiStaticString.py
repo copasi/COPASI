@@ -10,13 +10,13 @@ class Test_CCopasiStaticString(unittest.TestCase):
 
   def test_getObjectDisplayName(self):
     st=this.string.getObjectDisplayName()
-    self._assert(type(st)==StringType)
-    self._assert(st==self.s)
+    self.assert_(type(st)==StringType)
+    self.assert_(st==self.s)
 
   def test_getStaticString(self):
     st=this.string.getStaticString()
-    self._assert(type(st)==StringType)
-    self._assert(st==self.s)
+    self.assert_(type(st)==StringType)
+    self.assert_(st==self.s)
 
 
 def suite():

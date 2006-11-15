@@ -11,13 +11,13 @@ class Test_CCopasiProblem(unittest.TestCase):
 
   def test_getType(self):
     t=self.problem.getType()
-    self._assert(type(t)==IntType)
+    self.assert_(type(t)==IntType)
 
 
   def test_getModel(self):
     model=self.problem.getModel()
-    self._assert(model.__class__==COPASI.CModel)
-    self._assert(model.getKey()==self.datamodel.getModel().getKey())
+    self.assert_(model.__class__==COPASI.CModel)
+    self.assert_(model.getKey()==self.datamodel.getModel().getKey())
 
 def suite():
   tests=[

@@ -4,11 +4,11 @@ from types import *
 
 class Test_CState(unittest.TestCase):
   def setUp(self):
-    self.cstate=CState()
+    self.cstate=COPASI.CCopasiDataModel.GLOBAL.getModel().getInitialState()
 
   def test_getTime(self):
     time=self.cstate.getTime()
-    self.assert_(type(time)==DoubleType)
+    self.assert_(type(time)==DoubleType,"Error. The time value returned by CState.getTime() is not a double value.")
 
   def test_setTime(self):
     TIME=27.96

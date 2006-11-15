@@ -11,47 +11,47 @@ class Test_CMetab(unittest.TestCase):
 
   def test_getObjectDisplayName(self):
     s=self.metab.getObjectDisplayName()
-    self._assert(type(s)==StringType)
+    self.assert_(type(s)==StringType)
 
   def test_getConcentration(self):
     conc=self.metab.getConentration()
-    self._assert(type(conc)==FloatType)
+    self.assert_(type(conc)==FloatType)
 
   def test_setInitialConcentration(self):
     value=5.0
     self.metab.setInitialConcentration(value)
-    self._assert(math.fabs(self.getInitialConcentration()-value/value)<0.001)
+    self.assert_(math.fabs(self.getInitialConcentration()-value/value)<0.001)
 
   def test_getInitialConcentration(self):
     value=self.metab.getInitialConcentration()
-    self._assert(type(value)==FloatType)
+    self.assert_(type(value)==FloatType)
 
   def test_setInitialValue(self):
     value=5.0
     self.metab.setInitialValue(value)
-    self._assert(math.fabs(self.getInitialValue()-value/value)<0.001)
+    self.assert_(math.fabs(self.getInitialValue()-value/value)<0.001)
 
   def test_getCompartment(self):
     c=self.metab.getCompartment()
-    self._assert(c.__class__==COPASI.CCompartment)
-    self._assert(self.compartment.getKey()==c.getKey())
+    self.assert_(c.__class__==COPASI.CCompartment)
+    self.assert_(self.compartment.getKey()==c.getKey())
 
   def test_getModel(self):
     m=self.metab.getTransitionTime()
-    self._assert(m.__class__==COPASI.CModel)
-    self._assert(self.model.getKey()==m.getKey())
+    self.assert_(m.__class__==COPASI.CModel)
+    self.assert_(self.model.getKey()==m.getKey())
 
   def test_getTransitionTime(self):
     value=self.metab.getTransitionTime()
-    self._assert(type(value)==FloatType)
+    self.assert_(type(value)==FloatType)
 
   def test_getConcentrationRate(self):
     value=self.metab.getConcentrationRate()
-    self._assert(type(value)==FloatType)
+    self.assert_(type(value)==FloatType)
 
   def test_isDependent(self):
     value=self.metab.isDependent()
-    self._assert(type(value)==BooleanType)
+    self.assert_(type(value)==BooleanType)
 
 def suite():
   tests=[

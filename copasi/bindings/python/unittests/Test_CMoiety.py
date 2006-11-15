@@ -9,27 +9,27 @@ class Test_CMoiety(unittest.TestCase):
 
   def test_getDescription(self):
     desc=self.moiety.getDescription()
-    self._assert(type(desc)==StringType)
+    self.assert_(type(desc)==StringType)
 
   def test_dependentNumber(self):
     v=self.moiety.dependentNumber()
-    self._assert(type(v)==FloatType)
+    self.assert_(type(v)==FloatType)
 
   def test_getNumber(self):
     v=self.moiety.getNumber()
-    self._assert(type(v)==FloatType)
+    self.assert_(type(v)==FloatType)
 
   def test_getKey(self):
     key=self.moiety.getKey()
-    self._assert(type(key)==StringType)
+    self.assert_(type(key)==StringType)
 
   def test_getDependentRate(self):
     v=self.moiety.getDependentRate()
-    self._assert(type(v)==FloatType)
+    self.assert_(type(v)==FloatType)
 
   def test_getDependentNumber(self):
     v=self.moiety.getDependentNumber()
-    self._assert(type(v)==FloatType)
+    self.assert_(type(v)==FloatType)
 
 def suite():
   tests=[

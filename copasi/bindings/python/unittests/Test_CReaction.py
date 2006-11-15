@@ -15,19 +15,19 @@ class Test_CReaction(unittest.TestCase):
 
   def test_getKey(self):
     key=self.reac.getKey()
-    self._assert(type(key)==StringType)
+    self.assert_(type(key)==StringType)
 
   def test_getFlux(self):
     v=self.reac.getFlux()
-    self._assert(type(v)==FloatType)
+    self.assert_(type(v)==FloatType)
 
   def test_getParticleFlux(self):
     v=self.reac.getParticleFlux()
-    self._assert(type(v)==FloatType)
+    self.assert_(type(v)==FloatType)
 
   def test_isReversible(self):
     v=self.reac.getParticleFlux()
-    self._assert(type(v)==BooleanType)
+    self.assert_(type(v)==BooleanType)
 
   def test_addSubstrate(self):
     self.reac.addSubstrate(self.substrate)
@@ -41,35 +41,35 @@ class Test_CReaction(unittest.TestCase):
   def test_setReversible(self):
     v=false
     self.reac.setReversible(v)
-    self._assert(self.reac.getReversible()==v)
+    self.assert_(self.reac.getReversible()==v)
     v=true
     self.reac.setReversible(v)
-    self._assert(self.reac.getReversible()==v)
+    self.assert_(self.reac.getReversible()==v)
 
   def test_getCompartmentNumber(self):
     self.reac.addSubstrate(self.substrate)
     self.reac.addProduct(self.product)
     self.reac.addModifier(self.product)
     n=self.reac.getCompartmentNumber()
-    self._assert(type(n)==IntType)
-    self._assert(n==2)
+    self.assert_(type(n)==IntType)
+    self.assert_(n==2)
 
   def test_getLargestCompartment(self):
     self.reac.addSubstrate(self.substrate)
     self.reac.addProduct(self.product)
     self.reac.addModifier(self.product)
     comp=self.reac.getLargestCompartment()
-    self._assert(comp.__class__==COPASI.CCompartment)
-    self._assert(comp.getObjectName()=="comp2")
+    self.assert_(comp.__class__==COPASI.CCompartment)
+    self.assert_(comp.getObjectName()=="comp2")
 
   def test_setSBMLId(self):
     id="react_1"
     self.reac.setSBMLId(id)
-    self._assert(self.reac.getSBMLid()==id)
+    self.assert_(self.reac.getSBMLid()==id)
 
   def test_getSBMLId(self):
     id=self.reac.getSBMLId()
-    self._assert(type(id)==StringType)
+    self.assert_(type(id)==StringType)
 
 
 def suite():

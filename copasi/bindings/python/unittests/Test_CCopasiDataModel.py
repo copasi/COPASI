@@ -63,10 +63,10 @@ class Test_CCopasiDataModel(unittest.TestCase):
     self.assert_(taskList.__class__==COPASI.TaskVectorN)
 
   def test_addTask(self):
-    self._assert(false)
+    self.assert_(false)
 
   def test_addDefaultTasks():
-    self._assert(false)
+    self.assert_(false)
 
   def test_getReportDefinitionList(self):
     # test getReportDefinitionList
@@ -74,10 +74,10 @@ class Test_CCopasiDataModel(unittest.TestCase):
     self.assert_(reportDefinitionList.__class__==COPASI.CReportDefinitionVector)
 
   def test_addReport(self):
-    self._assert(false)
+    self.assert_(false)
 
   def test_addDefaultReports(self):
-    self._assert(false)
+    self.assert_(false)
 
   def test_getFileName(self):
     datamodel.loadModel(CPS_FILE)

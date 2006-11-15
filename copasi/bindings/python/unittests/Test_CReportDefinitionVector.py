@@ -9,17 +9,17 @@ class Test_CReportDefinitionVector(unittest.TestCase):
 
   def test_getKey(self):
     key=self.vec.getKey()
-    self._assert(type(key)==StringType)
+    self.assert_(type(key)==StringType)
 
   def test_createReportDefinition(self):
     name="testReport"
     comment="test test test"
     size=self.vect.size()
     repdef=self.vec.createReportDefinition(name,comment)
-    self._assert(self.vec.size()==size+1)
-    self._assert(repdef.__class__==COPASI.CReportDefinition)
-    self._assert(repdef.getObjectName()==name)
-    self._assert(repdef.getComment()==comment)
+    self.assert_(self.vec.size()==size+1)
+    self.assert_(repdef.__class__==COPASI.CReportDefinition)
+    self.assert_(repdef.getObjectName()==name)
+    self.assert_(repdef.getComment()==comment)
 
 
   def test_removeReportDefinition(self):
@@ -27,10 +27,10 @@ class Test_CReportDefinitionVector(unittest.TestCase):
     comment="test test test"
     size=self.vec.size()
     repdef=self.vec.createReportDefinition(name,comment)
-    self._assert(self.vec.size()==size+1)
+    self.assert_(self.vec.size()==size+1)
     key=repdef.getKey()
     self.vec.removeReportDefinition(key)
-    self._assert(self.vec.size()==size)
+    self.assert_(self.vec.size()==size)
 
 
 

@@ -4,7 +4,7 @@ from types import *
 
 class Test_CCopasiObject(unittest.TestCase):
     def setUp(self):
-      self.object=COPASI.CMoiety()
+      self.object=COPASI.CMetab()
 
     def test_getObjectName(self):
       t=self.object.getObjectName()
@@ -24,7 +24,7 @@ class Test_CCopasiObject(unittest.TestCase):
       self.assert_(type(t)==StringType)
 
     def test_getObjectParent(self):
-      self._assert(false)
+      self.assert_(false)
 
     def test_getCN(self):
       cn=self.object.getCN()

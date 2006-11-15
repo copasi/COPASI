@@ -11,40 +11,40 @@ class Test_CCopasiTask(unittest.TestCase):
 
   def test_getType(self):
     t=self.task.getType()
-    self._assert(type(t)==IntType)
+    self.assert_(type(t)==IntType)
 
   def test_setType(self):
     task=CCopasiTask("TestTask")
     task.setType(COPASI.CCopasiTask.scan)
-    self._assert(task.getType()==COPASI.CCopasiTask.scan)
+    self.assert_(task.getType()==COPASI.CCopasiTask.scan)
 
   def test_getKey(self):
     key=self.task.getKey()
-    self._assert(type(key)==StringType)
+    self.assert_(type(key)==StringType)
 
   def test_setScheduled(self):
     v=false
     self.task.setScheduled(v)
-    self._assert(self.task.isScheduled()==v)
+    self.assert_(self.task.isScheduled()==v)
     v=true
     self.task.setScheduled(v)
-    self._assert(self.task.isScheduled()==v)
+    self.assert_(self.task.isScheduled()==v)
 
   def test_isScheduled(self):
     v=self.task.isScheduled()
-    self._assert(type(v)==BooleanType)
+    self.assert_(type(v)==BooleanType)
 
   def test_setUpdateModel(self):
     v=false
     self.task.setUpdateModel(v)
-    self._assert(self.task.isUpdateModel()==v)
+    self.assert_(self.task.isUpdateModel()==v)
     v=true
     self.task.setUpdateModel(v)
-    self._assert(self.task.isUpdateModel()==v)
+    self.assert_(self.task.isUpdateModel()==v)
 
   def test_isUpdateModel(self):
     v=self.task.isUpdateModel()
-    self._assert(type(v)==BooleanType)
+    self.assert_(type(v)==BooleanType)
 
 
 def suite():

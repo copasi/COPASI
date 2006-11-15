@@ -11,27 +11,27 @@ class Test_CMatrix(unittest.TestCase):
 
   def test_numRows(self):
     n=self.matrix.numRows()
-    self._assert(type(n)==IntType)
-    self._assert(n==self.numRows)
+    self.assert_(type(n)==IntType)
+    self.assert_(n==self.numRows)
 
   def test_numCols(self):
     n=self.matrix.numCols()
-    self._assert(type(n)==IntType)
-    self._assert(n==self.numCols)
+    self.assert_(type(n)==IntType)
+    self.assert_(n==self.numCols)
 
 
   def test_size(self):
     n=self.matrix.size()
-    self._assert(type(n)==IntType)
-    seld._assert(n=self.numCols*self.numRows)
+    self.assert_(type(n)==IntType)
+    seld.assert_(n=self.numCols*self.numRows)
 
   def test_resize(self):
     nr=13
     nc=2
     self.matrix.resize(nr,nc)
-    self._assert(self.matrix.numRows()==nr)
-    self._assert(self.matrix.numCols()==nc)
-    self._assert(self.matrix.size()==nr*nc)
+    self.assert_(self.matrix.numRows()==nr)
+    self.assert_(self.matrix.numCols()==nc)
+    self.assert_(self.matrix.size()==nr*nc)
 
 def suite():
   tests=[

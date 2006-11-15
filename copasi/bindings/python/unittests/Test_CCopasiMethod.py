@@ -11,16 +11,16 @@ class Test_CCopasiMethod(unittest.TestCase):
   def test_TypeNameToEnum(self):
     typename="Enhanced Newton"
     e=COPASI.CCopasiMethod.TypeNameToEnum(typename)
-    self._assert(type(e)==IntType)
-    self._assert(e==COPASI.CCopasiMethod.Newton)
+    self.assert_(type(e)==IntType)
+    self.assert_(e==COPASI.CCopasiMethod.Newton)
 
   def test_getType(self):
     t=self.method.getType()
-    self._assert(type(t)==IntType)
+    self.assert_(type(t)==IntType)
 
   def test_getSubType(self):
     t=self.method.getSubType()
-    self._assert(type(t)==IntType)
+    self.assert_(type(t)==IntType)
 
 
 def suite():
