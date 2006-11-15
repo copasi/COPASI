@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSRES.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/27 15:38:59 $
+   $Date: 2006/11/15 15:57:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -663,8 +663,7 @@ bool COptMethodSRES::optimise()
     {
       // and store that value
       mBestValue = mValue[BestIndex];
-      mpOptProblem->setSolutionVariables(*mIndividual[BestIndex]);
-      Continue = mpOptProblem->setSolutionValue(mBestValue);
+      Continue = mpOptProblem->setSolution(mBestValue, *mIndividual[BestIndex]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -725,8 +724,7 @@ bool COptMethodSRES::optimise()
 #endif // RANDOMIZE
           mBestValue = mValue[BestIndex];
 
-          mpOptProblem->setSolutionVariables(*mIndividual[BestIndex]);
-          Continue = mpOptProblem->setSolutionValue(mBestValue);
+          Continue = mpOptProblem->setSolution(mBestValue, *mIndividual[BestIndex]);
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);

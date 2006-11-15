@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodNelderMead.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 16:03:55 $
+   $Date: 2006/11/15 15:57:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -240,8 +240,7 @@ bool COptMethodNelderMead::optimise()
     {
       // and store that value
       mBestValue = mEvaluationValue;
-      mpOptProblem->setSolutionVariables(mCurrent);
-      mContinue &= mpOptProblem->setSolutionValue(mBestValue);
+      mContinue &= mpOptProblem->setSolution(mBestValue, mCurrent);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -285,8 +284,7 @@ First:
         {
           // and store that value
           mBestValue = mEvaluationValue;
-          mpOptProblem->setSolutionVariables(mCurrent);
-          mContinue &= mpOptProblem->setSolutionValue(mBestValue);
+          mContinue &= mpOptProblem->setSolution(mBestValue, mCurrent);
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
@@ -364,8 +362,7 @@ First:
               if (mEvaluationValue < mBestValue)
                 {
                   mBestValue = mEvaluationValue;
-                  mpOptProblem->setSolutionVariables(mCurrent);
-                  mContinue &= mpOptProblem->setSolutionValue(mBestValue);
+                  mContinue &= mpOptProblem->setSolution(mBestValue, mCurrent);
 
                   // We found a new best value lets report it.
                   mpParentTask->output(COutputInterface::DURING);
@@ -395,8 +392,7 @@ First:
                   if (mEvaluationValue < mBestValue)
                     {
                       mBestValue = mEvaluationValue;
-                      mpOptProblem->setSolutionVariables(mCurrent);
-                      mContinue &= mpOptProblem->setSolutionValue(mBestValue);
+                      mContinue &= mpOptProblem->setSolution(mBestValue, mCurrent);
 
                       // We found a new best value lets report it.
                       mpParentTask->output(COutputInterface::DURING);
@@ -474,8 +470,7 @@ First:
                             {/* ---- retain extension ---- */
                               // and store that value
                               mBestValue = mEvaluationValue;
-                              mpOptProblem->setSolutionVariables(mCurrent);
-                              mContinue &= mpOptProblem->setSolutionValue(mBestValue);
+                              mContinue &= mpOptProblem->setSolution(mBestValue, mCurrent);
 
                               // We found a new best value lets report it.
                               mpParentTask->output(COutputInterface::DURING);

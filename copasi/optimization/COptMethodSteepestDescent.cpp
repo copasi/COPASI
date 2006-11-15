@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSteepestDescent.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:31 $
+   $Date: 2006/11/15 15:57:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,8 +75,7 @@ bool COptMethodSteepestDescent::optimise()
 
   fmx = mBestValue = evaluate();
 
-  mpOptProblem->setSolutionVariables(mIndividual);
-  mContinue = mpOptProblem->setSolutionValue(mBestValue);
+  mContinue = mpOptProblem->setSolution(mBestValue, mIndividual);
 
   // We found a new best value lets report it.
   //if (mpReport) mpReport->printBody();
@@ -164,8 +163,7 @@ bool COptMethodSteepestDescent::optimise()
         {
           mBestValue = fmx;
 
-          mpOptProblem->setSolutionVariables(mIndividual);
-          mContinue = mpOptProblem->setSolutionValue(mBestValue);
+          mContinue = mpOptProblem->setSolution(mBestValue, mIndividual);
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();

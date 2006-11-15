@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.cpp,v $
-   $Revision: 1.85 $
+   $Revision: 1.86 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/31 16:43:10 $
+   $Date: 2006/11/15 15:57:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -506,15 +506,15 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 const C_FLOAT64 & COptProblem::getCalculateValue() const
   {return mCalculateValue;}
 
-void COptProblem::setSolutionVariables(const CVector< C_FLOAT64 > & variables)
-{mSolutionVariables = variables;}
-
 const CVector< C_FLOAT64 > & COptProblem::getSolutionVariables() const
   {return mSolutionVariables;}
 
-bool COptProblem::setSolutionValue(const C_FLOAT64 & value)
+bool COptProblem::setSolution(const C_FLOAT64 & value,
+                              const CVector< C_FLOAT64 > & variables)
 {
   mSolutionValue = value;
+  mSolutionVariables = variables;
+
   if (mpCallBack) return mpCallBack->progress(mhSolutionValue);
 
   return true;

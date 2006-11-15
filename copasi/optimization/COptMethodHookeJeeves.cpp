@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodHookeJeeves.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:31 $
+   $Date: 2006/11/15 15:57:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -92,8 +92,7 @@ bool COptMethodHookeJeeves::optimise()
 
   // The first value is also the best
   mBestValue = mEvaluationValue;
-  mpOptProblem->setSolutionVariables(mIndividual);
-  mpOptProblem->setSolutionValue(mBestValue);
+  mpOptProblem->setSolution(mBestValue, mIndividual);
   mpParentTask->output(COutputInterface::DURING);
 
   if (!mContinue)
@@ -134,8 +133,7 @@ bool COptMethodHookeJeeves::optimise()
         {
           // We found a better value
           mBestValue = newf;
-          mpOptProblem->setSolutionVariables(mNew);
-          mpOptProblem->setSolutionValue(mBestValue);
+          mpOptProblem->setSolution(mBestValue, mNew);
           mpParentTask->output(COutputInterface::DURING);
 
           iadj = 0;

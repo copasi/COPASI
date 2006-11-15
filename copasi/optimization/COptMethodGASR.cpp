@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGASR.cpp,v $
-   $Revision: 1.28 $
+   $Revision: 1.29 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/27 15:38:58 $
+   $Date: 2006/11/15 15:57:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -527,8 +527,7 @@ bool COptMethodGASR::optimise()
     {
       // and store that value
       mBestValue = mValue[mBestIndex];
-      mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
-      Continue = mpOptProblem->setSolutionValue(mBestValue);
+      Continue = mpOptProblem->setSolution(mBestValue, *mIndividual[mBestIndex]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -580,8 +579,7 @@ bool COptMethodGASR::optimise()
           Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
           mBestValue = mValue[mBestIndex];
 
-          mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
-          Continue = mpOptProblem->setSolutionValue(mBestValue);
+          Continue = mpOptProblem->setSolution(mBestValue, *mIndividual[mBestIndex]);
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);

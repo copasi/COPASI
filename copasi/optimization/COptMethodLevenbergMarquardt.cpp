@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodLevenbergMarquardt.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/06/20 13:19:31 $
+   $Date: 2006/11/15 15:57:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -115,8 +115,7 @@ bool COptMethodLevenbergMarquardt::optimise()
     {
       // and store that value
       mBestValue = mEvaluationValue;
-      mpOptProblem->setSolutionVariables(mBest);
-      mContinue &= mpOptProblem->setSolutionValue(mBestValue);
+      mContinue &= mpOptProblem->setSolution(mBestValue, mBest);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -225,8 +224,7 @@ bool COptMethodLevenbergMarquardt::optimise()
           mBest = mCurrent;
 
           // Inform the problem about the new solution.
-          mpOptProblem->setSolutionVariables(mBest);
-          mContinue &= mpOptProblem->setSolutionValue(mBestValue);
+          mContinue &= mpOptProblem->setSolution(mBestValue, mBest);
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);

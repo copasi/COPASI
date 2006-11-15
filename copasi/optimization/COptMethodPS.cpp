@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/27 15:38:59 $
+   $Date: 2006/11/15 15:57:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -176,8 +176,7 @@ bool COptMethodPS::move(const unsigned C_INT32 & index)
         {
           // and store that value
           mBestIndex = index;
-          mpOptProblem->setSolutionVariables(mIndividuals[index]);
-          mContinue &= mpOptProblem->setSolutionValue(mBestValues[index]);
+          mContinue &= mpOptProblem->setSolution(mBestValues[index], mIndividuals[index]);
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
@@ -306,8 +305,7 @@ bool COptMethodPS::create(const unsigned C_INT32 & index)
     {
       // and store that value
       mBestIndex = index;
-      mpOptProblem->setSolutionVariables(mIndividuals[index]);
-      mContinue &= mpOptProblem->setSolutionValue(mBestValues[index]);
+      mContinue &= mpOptProblem->setSolution(mBestValues[index], mIndividuals[index]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -543,8 +541,7 @@ bool COptMethodPS::optimise()
 
   // and store that value
   mBestIndex = 0;
-  mpOptProblem->setSolutionVariables(mIndividuals[0]);
-  mContinue &= mpOptProblem->setSolutionValue(mBestValues[0]);
+  mContinue &= mpOptProblem->setSolution(mBestValues[0], mIndividuals[0]);
 
   // We found a new best value lets report it.
   mpParentTask->output(COutputInterface::DURING);

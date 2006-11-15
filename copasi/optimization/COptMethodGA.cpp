@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodGA.cpp,v $
-   $Revision: 1.45 $
+   $Revision: 1.46 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/27 15:38:58 $
+   $Date: 2006/11/15 15:57:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -494,8 +494,7 @@ bool COptMethodGA::optimise()
     {
       // and store that value
       mBestValue = mValue[0];
-      mpOptProblem->setSolutionVariables(*mIndividual[0]);
-      Continue &= mpOptProblem->setSolutionValue(mBestValue);
+      Continue &= mpOptProblem->setSolution(mBestValue, *mIndividual[0]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -512,8 +511,7 @@ bool COptMethodGA::optimise()
     {
       // and store that value
       mBestValue = mValue[mBestIndex];
-      mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
-      Continue = mpOptProblem->setSolutionValue(mBestValue);
+      Continue = mpOptProblem->setSolution(mBestValue, *mIndividual[mBestIndex]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -564,8 +562,7 @@ bool COptMethodGA::optimise()
           Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
           mBestValue = mValue[mBestIndex];
 
-          mpOptProblem->setSolutionVariables(*mIndividual[mBestIndex]);
-          Continue &= mpOptProblem->setSolutionValue(mBestValue);
+          Continue &= mpOptProblem->setSolution(mBestValue, *mIndividual[mBestIndex]);
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();

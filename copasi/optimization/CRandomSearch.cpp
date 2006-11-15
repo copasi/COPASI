@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRandomSearch.cpp,v $
-   $Revision: 1.31 $
+   $Revision: 1.32 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/25 22:17:47 $
+   $Date: 2006/11/15 15:57:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,37 +13,6 @@
 /***************************************************************************
                   CRandomSearch.cpp  -  Random Optimizer
                      -------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 Programmer           : Rohan Luktuke
 email                : rluktuke@vt.edu
@@ -173,8 +142,7 @@ bool CRandomSearch::optimise()
 
   Continue = evaluate(mIndividual);
   mBestValue = mValue;
-  mpOptProblem->setSolutionVariables(mIndividual);
-  Continue = mpOptProblem->setSolutionValue(mBestValue);
+  Continue = mpOptProblem->setSolution(mBestValue, mIndividual);
 
   // We found a new best value lets report it.
   //if (mpReport) mpReport->printBody();
@@ -249,8 +217,7 @@ bool CRandomSearch::optimise()
       if (mValue < mBestValue)
         {
           mBestValue = mValue;
-          mpOptProblem->setSolutionVariables(mIndividual);
-          Continue = mpOptProblem->setSolutionValue(mBestValue);
+          Continue = mpOptProblem->setSolution(mBestValue, mIndividual);
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();
