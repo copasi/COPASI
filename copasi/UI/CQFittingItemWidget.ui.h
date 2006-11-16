@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/16 15:45:13 $
+   $Date: 2006/11/16 17:04:54 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1472,6 +1472,7 @@ void CQFittingItemWidget::slotStartLostFocus()
 
 void CQFittingItemWidget::slotCrossValidations()
 {
+#ifdef COPASI_CROSSVALIDATION
   if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
     {
       CQExperimentSelection * pDialog = new CQExperimentSelection(this);
@@ -1503,6 +1504,7 @@ void CQFittingItemWidget::slotCrossValidations()
 
       delete pDialog;
     }
+#endif // COPASI_CROSSVALIDATION
 }
 
 void CQFittingItemWidget::slotCrossValidationChanged()
@@ -1543,6 +1545,7 @@ void CQFittingItemWidget::slotCrossValidationChanged()
 
 void CQFittingItemWidget::setCrossValidationSet(const CCrossValidationSet * & pCrossValidationSet)
 {
+#ifdef COPASI_CROSSVALIDATION
   mppCrossValidationSet = &pCrossValidationSet;
 
   bool Enabled = (*mppCrossValidationSet)->getExperimentCount() != 0;
@@ -1551,6 +1554,7 @@ void CQFittingItemWidget::setCrossValidationSet(const CCrossValidationSet * & pC
   mpCheckCrossValidationsAll->setEnabled(Enabled);
   mpBoxCrossValidations->setEnabled(Enabled && !mpCheckCrossValidationsAll->isChecked());
   mpLblCrossValidations->setEnabled(Enabled);
+#endif // COPASI_CROSSVALIDATION
 }
 
 void CQFittingItemWidget::slotCheckAllCrossValidations(bool checked)
