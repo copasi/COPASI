@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObject.cpp,v $
-   $Revision: 1.61 $
+   $Revision: 1.62 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/11 14:24:33 $
+   $Date: 2006/11/16 15:36:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,7 @@ CCopasiObject::CCopasiObject(const std::string & name,
     mpUpdateMethod(&this->mDefaultUpdateMethod),
     mpRefresh(NULL)
 {
-  if (mpObjectParent)
+  if (mpObjectParent != NULL)
     if (mpObjectParent->isContainer()) mpObjectParent->add(this);
 }
 
@@ -71,7 +71,7 @@ mpObjectParent(const_cast<CCopasiContainer *>(pParent)),
 mObjectFlag(src.mObjectFlag),
 mpUpdateMethod(&this->mDefaultUpdateMethod),
 mpRefresh(NULL)
-{if (mpObjectParent) mpObjectParent->add(this);}
+{if (mpObjectParent != NULL) mpObjectParent->add(this);}
 
 CCopasiObject::~CCopasiObject()
 {
