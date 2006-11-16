@@ -8,6 +8,7 @@ class Test_CMetab(unittest.TestCase):
     self.model=COPASI.CModel()
     self.compartment=self.model.createCompartment("Comp1")
     self.metab=self.model.createMetabolite("Metab1","Comp1")
+    self.model.compileIfNecessary()
 
   def test_getObjectDisplayName(self):
     s=self.metab.getObjectDisplayName()

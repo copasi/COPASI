@@ -78,16 +78,20 @@ class Test_CReportDefinition(unittest.TestCase):
     self.assert_(type(key)==StringType) 
 
   def test_getTableAddr(self):
-    self.assert_(False)
+    a=self.repdef.getTableAddr()
+    self.assert_(a.__class__==COPASI.ReportItemVector)
 
   def test_getFooterAddr(self):
-    self.assert_(False)
+    a=self.repdef.getFooterAddr()
+    self.assert_(a.__class__==COPASI.ReportItemVector)
   
   def test_getHeaderAddr(self):
-    self.assert_(False)
+    a=self.repdef.getHeaderAddr()
+    self.assert_(a.__class__==COPASI.ReportItemVector)
   
   def test_getBodyAddr(self):
-    self.assert_(False)
+    a=self.repdef.getBodyAddr()
+    self.assert_(a.__class__==COPASI.ReportItemVector)
 
 
 def suite():

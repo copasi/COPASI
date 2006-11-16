@@ -3,9 +3,17 @@ import unittest
 from types import *
 
 class Test_CCopasiContainer(unittest.TestCase):
+  def setUp(self):
+    self.datamodel=COPASI.CCopasiDataModel.GLOBAL
+    self.datamodel.loadModel("calcium_juergen.cps")
+
 
   def  test_ObjectFromName(self):
-    self.assert_(False)
+    metab=self.datamodel.getModel().getMetabolite(1)
+    object=COPASI.CCopasiContainer.ObjectFromName(metab.getCN())
+    self.assert_(object!=None)
+    self.assert_(object.__class__==COPASI.CCopasiObject)
+    self.assert_(metab.getCN().getString()==object.getCN().getString())
 
 
 def suite():

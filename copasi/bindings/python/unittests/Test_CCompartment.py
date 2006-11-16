@@ -15,11 +15,12 @@ class Test_CCompartment(unittest.TestCase):
 
   def test_getMetabolites(self):
     metabolites=self.compartment.getMetabolites()
-    self.assert_(False)
+    self.assert_(metabolites.__class__==COPASI.MetabVectorNS)
 
   def test_removeMetabolite(self):
+    size=self.compartment.getMetabolites().size()
     self.compartment.removeMetabolite(self.metab)
-    self.assert_(False)
+    self.assert_(self.compartment.getMetabolites().size()==size-1)
 
   def test_setInitialValue(self):
     value=5.0

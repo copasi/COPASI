@@ -4,7 +4,10 @@ from types import *
 
 class Test_CCopasiObject(unittest.TestCase):
     def setUp(self):
-      self.object=COPASI.CMetab()
+      self.model=COPASI.CModel()
+      self.compartment=self.model.createCompartment("Comp1")
+      self.object=self.model.createMetabolite("Metab1","Comp1")
+      self.model.compileIfNecessary()
 
     def test_getObjectName(self):
       t=self.object.getObjectName()
@@ -24,7 +27,10 @@ class Test_CCopasiObject(unittest.TestCase):
       self.assert_(type(t)==StringType)
 
     def test_getObjectParent(self):
-      self.assert_(False)
+      parent=self.object.getObjectParent()  
+      self.assert_(parent!=None)
+      self.assert_(parent.__class__==COPASI.CCopasiContainer)
+      self.assert_(parent.getKey()==self.compartment.getKey())
 
     def test_getCN(self):
       cn=self.object.getCN()

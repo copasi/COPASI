@@ -10,4 +10,6 @@ CCopasiObjectName.unescape=_COPASI.CCopasiObjectName_unescape
 
 CCopasiMethod.TypeNameToEnum=_COPASI.CCopasiMethod_TypeNameToEnum
 
+CCopasiContainer.ObjectFromName=_COPASI.CCopasiContainer_ObjectFromName
+
 %}

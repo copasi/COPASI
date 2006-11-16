@@ -15,7 +15,10 @@ class Test_CCopasiVector(unittest.TestCase):
     self.vector=self.compartment.getMetabolites()
 
   def test_add(self):
-    self.assert_(False)
+    v=COPASI.CompartmentVectorNS()
+    comp=COPASI.CCompartment("test_compartment")
+    self.assert_(v.add(comp))
+    self.assert_(v.size()==1)
 
   def test_remove(self):
     n=self.vector.size()  
@@ -31,10 +34,11 @@ class Test_CCopasiVector(unittest.TestCase):
 
 
   def test_getObject(self):
-    #object=self.vector.getObject(self.metab.getCN())
+    #cn=self.metab.getCN()
+    #object=self.vector.getObject(cn)
+    #self.assert_(object!=None)
     #self.assert_(object==self.metab)
     self.assert_(False)
-
   def test_size(self):
     n=self.vector.size()
     self.assert_(type(n)==IntType)

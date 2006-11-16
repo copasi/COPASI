@@ -39,6 +39,7 @@ template < class CType > class CCopasiVector:
         {
             return (*self)[index];
         }
+
       }
 };
 
@@ -131,6 +132,7 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
 %template(ReactionVectorN) CCopasiVectorN<CReaction>;
 %template(ReactionVectorNS) CCopasiVectorNS<CReaction>;
 
+%template(ReportItemVector) std::vector<CRegisteredObjectName>;
 
 typedef CCopasiVectorN<CCopasiTask> TaskVectorN;
 
@@ -145,4 +147,5 @@ typedef CCopasiVectorNS<CCompartment> CompartmentVectorNS;
 
 typedef CCopasiVectorNS<CReaction> ReactionVectorNS;
 
+typedef std::vector<CRegisteredObjectName> ReportItemVector;
 

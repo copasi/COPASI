@@ -9,6 +9,7 @@ class Test_CCopasiObjectName(unittest.TestCase):
     self.compartment=self.model.createCompartment("Comp1")
     self.metab=self.model.createMetabolite("metab3","Comp1")
     self.cn=self.metab.getCN()
+    self.model.compileIfNecessary()
 
   def test_getPrimary(self):
     prim=self.cn.getPrimary()
