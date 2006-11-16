@@ -65,10 +65,10 @@ class Test_CCopasiDataModel(unittest.TestCase):
     self.assert_(taskList.__class__==COPASI.TaskVectorN)
 
   def test_addTask(self):
-    self.assert_(0)
+    self.assert_(False)
 
   def test_addDefaultTasks(self):
-    self.assert_(0)
+    self.assert_(False)
 
   def test_getReportDefinitionList(self):
     # test getReportDefinitionList
@@ -76,10 +76,10 @@ class Test_CCopasiDataModel(unittest.TestCase):
     self.assert_(reportDefinitionList.__class__==COPASI.CReportDefinitionVector)
 
   def test_addReport(self):
-    self.assert_(0)
+    self.assert_(False)
 
   def test_addDefaultReports(self):
-    self.assert_(0)
+    self.assert_(False)
 
   def test_getFileName(self):
     self.datamodel.loadModel(CPS_FILE)
@@ -92,7 +92,7 @@ class Test_CCopasiDataModel(unittest.TestCase):
     #fileName=self.datamodel.getSBMLFileName()
     #self.assert_(type(fileName)==StringType)
     #self.assert_(fileName==SBML_FILE)
-	  self.assert_(0)
+    self.assert_(False)
 
   def CHECK_CALCIUM_JUERGEN(self):
     # check the model

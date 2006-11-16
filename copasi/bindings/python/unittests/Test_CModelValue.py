@@ -60,10 +60,10 @@ class Test_CModelValue(unittest.TestCase):
     self.assert_(type(ex)==StringType)
 
   def test_setUsed(self):
-    v=1
+    v=True
     self.mv.setUsed(v)
     self.assert_(v==self.mv.isUsed())
-    v=0
+    v=False
     self.mv.setUsed(v)
     self.assert_(v==self.mv.isUsed())
 
@@ -72,10 +72,10 @@ class Test_CModelValue(unittest.TestCase):
     self.assert_(type(value)==BooleanType)
 
   def test_setUsedOnce(self):
-    v=1
+    v=True
     self.mv.setUsedOnce(v)
     self.assert_(v==self.mv.isUsedOnce())
-    v=0
+    v=False
     self.mv.setUsedOnce(v)
     self.assert_(v==self.mv.isUsedOnce())
 
@@ -85,11 +85,11 @@ class Test_CModelValue(unittest.TestCase):
 
   def test_setExpression(self):
     # that test will be implemented later
-    self.assert_(0)
+    self.assert_(False)
 
   def test_setInitialExpression(self):
     # that test will be implemented later
-    self.assert_(0)
+    self.assert_(False)
 
 
 

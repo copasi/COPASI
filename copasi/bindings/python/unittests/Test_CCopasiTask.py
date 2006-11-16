@@ -6,7 +6,7 @@ from types import *
 class Test_CCopasiTask(unittest.TestCase):
   def setUp(self):
     self.datamodel=COPASI.CCopasiDataModel.GLOBAL
-    self.task=self.datamodel.getTaskList().get(0)
+    self.task=self.datamodel.getTask(0)
 
 
   def test_getType(self):
@@ -23,10 +23,10 @@ class Test_CCopasiTask(unittest.TestCase):
     self.assert_(type(key)==StringType)
 
   def test_setScheduled(self):
-    v=0
+    v=False
     self.task.setScheduled(v)
     self.assert_(self.task.isScheduled()==v)
-    v=1
+    v=True
     self.task.setScheduled(v)
     self.assert_(self.task.isScheduled()==v)
 
@@ -35,10 +35,10 @@ class Test_CCopasiTask(unittest.TestCase):
     self.assert_(type(v)==BooleanType)
 
   def test_setUpdateModel(self):
-    v=0
+    v=False
     self.task.setUpdateModel(v)
     self.assert_(self.task.isUpdateModel()==v)
-    v=1
+    v=True
     self.task.setUpdateModel(v)
     self.assert_(self.task.isUpdateModel()==v)
 

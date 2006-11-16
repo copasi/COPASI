@@ -15,7 +15,7 @@ class Test_CCopasiVector(unittest.TestCase):
     self.vector=self.compartment.getMetabolites()
 
   def test_add(self):
-    self.assert_(0)
+    self.assert_(False)
 
   def test_remove(self):
     n=self.vector.size()  
@@ -33,7 +33,7 @@ class Test_CCopasiVector(unittest.TestCase):
   def test_getObject(self):
     #object=self.vector.getObject(self.metab.getCN())
     #self.assert_(object==self.metab)
-		self.assert_(0)
+    self.assert_(False)
 
   def test_size(self):
     n=self.vector.size()

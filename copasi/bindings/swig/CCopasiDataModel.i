@@ -58,6 +58,19 @@ class CCopasiDataModel
 
     const std::string& getFileName() const; 
     const std::string& getSBMLFileName() const; 
+
+    %extend
+    {
+      CReportDefinition* getReportDefinition(unsigned C_INT32 index)
+      {
+        return (*self->getReportDefinitionList())[index];
+      }
+
+      CCopasiTask* getTask(unsigned C_INT32 index)
+      {
+        return (*self->getTaskList())[index];
+      }
+    }
 };
 
 

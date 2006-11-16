@@ -6,7 +6,7 @@ from types import *
 class Test_CCopasiProblem(unittest.TestCase):
   def setUp(self):
     self.datamodel=COPASI.CCopasiDataModel.GLOBAL
-    self.problem=self.datamodel.getTaskList().get(0).getProblem()
+    self.problem=self.datamodel.getTask(0).getProblem()
 
 
   def test_getType(self):

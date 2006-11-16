@@ -24,7 +24,7 @@ class Test_CCopasiObject(unittest.TestCase):
       self.assert_(type(t)==StringType)
 
     def test_getObjectParent(self):
-      self.assert_(0)
+      self.assert_(False)
 
     def test_getCN(self):
       cn=self.object.getCN()

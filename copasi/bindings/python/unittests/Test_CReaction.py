@@ -39,10 +39,10 @@ class Test_CReaction(unittest.TestCase):
     self.reac.addModifier(self.product.getKey())
 
   def test_setReversible(self):
-    v=0
+    v=False
     self.reac.setReversible(v)
     self.assert_(self.reac.isReversible()==v)
-    v=1
+    v=True
     self.reac.setReversible(v)
     self.assert_(self.reac.isReversible()==v)
 

@@ -13,27 +13,27 @@ class Test_CCopasiObjectName(unittest.TestCase):
   def test_getPrimary(self):
     prim=self.cn.getPrimary()
     self.assert_(type(prim)==StringType)
-    self.assert_(0)
+    self.assert_(False)
 
   def test_getRemainder(self):
     prim=self.cn.getRemainder()
     self.assert_(type(prim)==StringType)
-    self.assert_(0)
+    self.assert_(False)
 
   def test_getObjectType(self):
     prim=self.cn.getObjectType()
     self.assert_(type(prim)==StringType)
-    self.assert_(0)
+    self.assert_(False)
 
   def test_getObjectName(self):
     prim=self.cn.getObjectName()
     self.assert_(type(prim)==StringType)
-    self.assert_(0)
+    self.assert_(False)
 
   def test_getElementName(self):
     #prim=self.cn.getElementName(1)
     #self.assert_(type(prim)==StringType)
-    self.assert_(0)
+    self.assert_(False)
 
   def test_escape(self):
     a="This- \ \ is a test--!"

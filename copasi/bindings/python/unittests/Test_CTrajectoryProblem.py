@@ -46,10 +46,10 @@ class Test_CTrajectoryProblem(unittest.TestCase):
     self.assert_(math.fabs((self.problem.getOutputStartTime()-t)/t))
 
   def test_setTimeSeriesRequested(self):
-    v=0
+    v=False
     self.problem.setTimeSeriesRequested(v)
     self.assert_(self.problem.timeSeriesRequested()==v)
-    v=1
+    v=True
     self.problem.setTimeSeriesRequested(v)
     self.assert_(self.problem.timeSeriesRequested()==v)
 

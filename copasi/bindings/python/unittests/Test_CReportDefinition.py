@@ -43,10 +43,10 @@ class Test_CReportDefinition(unittest.TestCase):
     self.assert_(type(v)==BooleanType)
 
   def test_setTitle(self):
-    v=1
+    v=True
     self.repdef.setTitle(v)
     self.assert_(self.repdef.getTitle()==v)
-    v=0
+    v=False
     self.repdef.setTitle(v)
     self.assert_(self.repdef.getTitle()==v)
 
@@ -56,10 +56,10 @@ class Test_CReportDefinition(unittest.TestCase):
     
 
   def test_setIsTable(self):
-    v=1
+    v=True
     self.repdef.setIsTable(v)
     self.assert_(self.repdef.isTable()==v)
-    v=0
+    v=False
     self.repdef.setIsTable(v)
     self.assert_(self.repdef.isTable()==v)
 
@@ -78,16 +78,16 @@ class Test_CReportDefinition(unittest.TestCase):
     self.assert_(type(key)==StringType) 
 
   def test_getTableAddr(self):
-    self.assert_(0)
+    self.assert_(False)
 
   def test_getFooterAddr(self):
-    self.assert_(0)
+    self.assert_(False)
   
   def test_getHeaderAddr(self):
-    self.assert_(0)
+    self.assert_(False)
   
   def test_getBodyAddr(self):
-    self.assert_(0)
+    self.assert_(False)
 
 
 def suite():

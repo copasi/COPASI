@@ -24,9 +24,7 @@ class Test_CModel(unittest.TestCase):
     r=self.model.createReaction("react3")
     r.addSubstrate(m6.getKey())
     r.addProduct(m2.getKey())
-    self.model.buildStoi()
-    self.model.buildMoieties()
-    #self.model.buildRedStoi()
+    self.model.compileIfNecessary()
 
   def test_getMetabolites(self):
     v=self.model.getMetabolites()
@@ -143,8 +141,7 @@ class Test_CModel(unittest.TestCase):
     self.assert_(index==3) 
 
   def test_findMoiety(self):
-    v=self.model.getMoieties()
-    moiety=v.get(1)
+    moiety=self.model.getMoiety(0)
     index=self.model.findMoiety(moiety.getObjectName()) 
     self.assert_(type(index)==IntType)
     self.assert_(index==1)
@@ -159,7 +156,7 @@ class Test_CModel(unittest.TestCase):
 
   def test_setInitialState(self):
     # this can not be tested yet since there is no way to manipulate a CState object
-    self.assert_(0)
+    self.assert_(False)
 
 
   def test_setVolumeUnit(self):

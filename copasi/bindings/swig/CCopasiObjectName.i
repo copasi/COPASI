@@ -30,6 +30,14 @@ class CCopasiObjectName : public std::string
      static std::string escape(const std::string & name);
 
      static std::string unescape(const std::string & name);
+
+     %extend
+     {
+       std::string getString()
+       {
+        return *self;
+       }
+     }
 };
 
 
@@ -44,7 +52,6 @@ class CRegisteredObjectName: public CCopasiObjectName
 
     ~CRegisteredObjectName();
 
-    // static const std::set<CRegisteredObjectName*> & getSet();
 
 };
 

@@ -108,6 +108,16 @@ class CCopasiTask : public CCopasiContainer
      */
     const bool & isUpdateModel() const;
 
+    /**
+     * Retrieve the problem
+     */
+    CCopasiProblem * getProblem();
+
+    /**
+     * Retrieve the method
+     */
+    CCopasiMethod * getMethod();
+
     
 
 };

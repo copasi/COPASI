@@ -6,7 +6,7 @@ from types import *
 class Test_CCopasiMethod(unittest.TestCase):
   def setUp(self):
     self.datamodel=COPASI.CCopasiDataModel.GLOBAL
-    self.method=self.datamodel.getTaskList().get(0).getMethod()
+    self.method=self.datamodel.getTask(0).getMethod()
 
   def test_TypeNameToEnum(self):
     typename="Enhanced Newton"

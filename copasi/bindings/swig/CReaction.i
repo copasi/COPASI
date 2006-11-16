@@ -7,6 +7,9 @@
 
 class CReaction : public CCopasiContainer
 {
+    
+%rename(parameterWithNameIsLocal) isLocalParameter(const std::string & parameterName) const; 
+
   public:
     /**
      * Default constructor
@@ -108,6 +111,15 @@ class CReaction : public CCopasiContainer
      * Returns a reference to the SBML Id.
      */
     const std::string& getSBMLId() const;
+
+    /**
+     *  Gets the list of kinetic parameter objects of the reaction/function
+     */
+    CCopasiParameterGroup & getParameters();
+
+    bool isLocalParameter(C_INT32 index) const;
+    
+    bool isLocalParameter(const std::string & parameterName) const;
 
 
 };

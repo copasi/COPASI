@@ -5,7 +5,9 @@ import math
 
 class Test_CCopasiParameter(unittest.TestCase):
   def setUp(self):
-    self.param=COPASI.CCopasiParameter("testParameter",COPASI.CCopasiParameter.DOUBLE,34.0)
+    self.datamodel=COPASI.CCopasiDataModel.GLOBAL
+    self.datamodel.loadModel("calcium_juergen.cps")
+    self.param=self.datamodel.getModel().getReaction(0).getParameters().getParameter(0)
 
   def test_getKey(self):
     key=self.param.getKey()
@@ -13,20 +15,20 @@ class Test_CCopasiParameter(unittest.TestCase):
 
 
   def test_setValue(self):
-    value=15.3
-    self.param.setValue(value)
-    self.assert_(math.fabs(self.param.getValue()-value/value)<0.001)
-
+    #value=15.3
+    #self.param.setValue(value)
+    #self.assert_(math.fabs(self.param.getValue()-value/value)<0.001)
+    self.assert_(False)
 
   def test_getValue(self):
-    value=self.param.getValue()
-    self.assert_(type(value)==FloatType)
+    #value=self.param.getValue()
+    #self.assert_(type(value)==FloatType)
+    self.assert_(False)
 
   def test_getType(self):
     t=self.param.getType()
     self.assert_(type(t)==IntType)
     self.assert_(t==COPASI.CCopasiParameter.DOUBLE)
-
 
   def test_isValidValue(self):
     value=1.5
@@ -40,7 +42,7 @@ class Test_CCopasiParameter(unittest.TestCase):
     value=COPASI.CCopasiObjectName("myObject")
     self.assert_(not self.param.isValidValue(value))
     # other types should be tested as well as vectors of parameters
-    self.assert_(0)
+    self.assert_(False)
      
 
 

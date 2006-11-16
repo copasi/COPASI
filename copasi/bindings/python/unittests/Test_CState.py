@@ -36,10 +36,10 @@ class Test_CState(unittest.TestCase):
     self.assert_(type(result)==BooleanType)
 
   def test_setUpdateDependentRequired(self):
-    UPDATE_REQUIRED=0
+    UPDATE_REQUIRED=False
     self.cstate.setUpdateDependentRequired(UPDATE_REQUIRED)
     self.assert_(self.cstate.isUpdateDependentRequired()==UPDATE_REQUIRED)
-    UPDATE_REQUIRED=1
+    UPDATE_REQUIRED=True
     self.cstate.setUpdateDependentRequired(UPDATE_REQUIRED)
     self.assert_(self.cstate.isUpdateDependentRequired()==UPDATE_REQUIRED)
 

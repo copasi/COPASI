@@ -15,11 +15,11 @@ class Test_CCompartment(unittest.TestCase):
 
   def test_getMetabolites(self):
     metabolites=self.compartment.getMetabolites()
-    self.assert_(0)
+    self.assert_(False)
 
   def test_removeMetabolite(self):
     self.compartment.removeMetabolite(self.metab)
-    self.assert_(0)
+    self.assert_(False)
 
   def test_setInitialValue(self):
     value=5.0

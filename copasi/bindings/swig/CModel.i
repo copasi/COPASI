@@ -51,19 +51,17 @@ class CModel : public CModelEntity
     ~CModel();        
 
     /**
-     *  Build the Stoichiometry Matrix from the chemical equations of the steps
+     * Compile the model if necessary
+     * @return bool success
      */
-    void buildStoi();
+    bool compileIfNecessary();
 
     /**
-     *  Build the Reduced Stoichiometry Matrix from the LU decomposition
+     * Force a compile the model.
+     * @return bool success
      */
-    void buildRedStoi();
+    bool forceCompile();
 
-    /**
-     *  Build the Moities based on the LU decomposition
-     */
-    void buildMoieties();
 
     /**
      * Return the metabolites of this model
@@ -209,11 +207,6 @@ class CModel : public CModelEntity
      * Returns the index of the metab
      */
     C_INT32 findMetabByName(const std::string & Target) const;
-
-    /**
-     * Returns the index of the Moiety
-     */
-    C_INT32 findMoiety(std::string &Target) const;
 
     /**
      * Get the current state of the model, i.e., all current model
@@ -427,6 +420,12 @@ class CModel : public CModelEntity
      */
     bool isAutonomous() const;
 
+    /**
+     * Returns the index of the Moiety
+     */
+    C_INT32 findMoiety(const std::string &Target) const;
+
+
 %extend
 {
     /**
@@ -447,7 +446,31 @@ class CModel : public CModelEntity
     	return self->getReactions().size();
     }
 
-		
+    CReaction* getReaction(unsigned C_INT32 index)
+    {
+        return self->getReactions()[index];
+    }
+
+    CCompartment* getCompartment(unsigned C_INT32 index)
+    {
+        return self->getCompartments()[index];
+    }
+
+    CMetab* getMetabolite(unsigned C_INT32 index)
+    {
+        return self->getMetabolites()[index];
+    }
+
+    CModelValue* getModelValue(unsigned C_INT32 index)
+    {
+        return self->getModelValues()[index];
+    }
+
+    CMoiety* getMoiety(unsigned C_INT32 index)
+    {
+        return self->getMoieties()[index];
+    }
+
 }
 
 

@@ -24,13 +24,11 @@ class Test_CMoiety(unittest.TestCase):
     r=self.model.createReaction("react3")
     r.addSubstrate(m6.getKey())
     r.addProduct(m2.getKey())
-    self.model.buildStoi()
-    self.model.buildMoieties()
-    self.moieties=self.model.getMoieties()
-    self.moiety=self.moieties.get(0)
+    self.model.compileIfNecessary()
+    self.moiety=self.model.getMoiety(0)
 
   def test_getDescription(self):
-    desc=self.moiety.getDescription()
+    desc=self.moiety.getDescription(self.model)
     self.assert_(type(desc)==StringType)
 
   def test_dependentNumber(self):

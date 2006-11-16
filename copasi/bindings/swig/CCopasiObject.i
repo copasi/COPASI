@@ -13,7 +13,6 @@ class CCopasiObject
     virtual ~CCopasiObject();
 
     bool setObjectName(const std::string& name);
-    const std::string& getObjectName() const;
     virtual std::string getObjectDisplayName(bool regular = true, bool richtext = false) const;
     const std::string& getObjectType() const;
     CCopasiContainer* getObjectParent() const;
@@ -33,6 +32,8 @@ class CCopasiObject
     bool isSeparator() const; 
 
     virtual const std::string& getKey() const;
+    virtual const std::string& getObjectName() const;
+
 };
 
 
