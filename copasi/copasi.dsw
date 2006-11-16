@@ -36,9 +36,6 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name output
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name libSE
     End Project Dependency
 }}}
