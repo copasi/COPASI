@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.83 $
+   $Revision: 1.84 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/10/16 11:04:02 $
+   $Date: 2006/11/16 16:51:26 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -213,6 +213,9 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
           XML.setGUI(*pGUI);
         }
 
+      // save the copasi2sbml map somewhere and clear it
+      std::map<CCopasiObject*, SBase*> mapBackup(this->mCopasi2SBMLMap);
+      this->mCopasi2SBMLMap.clear();
       if (!XML.load(File, FileName))
         {
           XML.freeModel();
@@ -220,7 +223,9 @@ bool CCopasiDataModel::loadModel(const std::string & fileName)
           XML.freeReportList();
           XML.freePlotList();
           XML.freeGUI();
-
+          // restore the copasi2sbml map
+          this->mCopasi2SBMLMap.clear();
+          this->mCopasi2SBMLMap.insert(mapBackup.begin(), mapBackup.end());
           mSBMLFileName = SBMLFileNameBkp;
           return false;
         }
