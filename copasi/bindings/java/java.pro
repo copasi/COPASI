@@ -6,7 +6,7 @@ TARGET = CopasiJava
 
 COPASI_LIBS += -L../../lib
 
-COPASI_LIBS += -lCOPASIUI 
+#COPASI_LIBS += -lCOPASIUI 
 COPASI_LIBS += -lCOPASISE 
 
 LIBS = $$COPASI_LIBS $$LIBS
@@ -38,8 +38,8 @@ isEmpty(SWIG_PATH){
     PRE_TARGETDEPS += copasi_wrapper.cpp
 }
 
-PRE_TARGETDEPS += ../../lib/libCOPASI.a
-PRE_TARGETDEPS += ../../lib/libCOPASIGUI.a
+PRE_TARGETDEPS += ../../lib/libCOPASISE.a
+#PRE_TARGETDEPS += ../../lib/libCOPASIUI.a
 
 contains(BUILD_OS,Linux){
 
