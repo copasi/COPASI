@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.136 $
+   $Revision: 1.137 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/25 15:09:38 $
+   $Author: gauges $
+   $Date: 2006/11/16 03:19:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -629,7 +629,7 @@ class CModel : public CModelEntity
     /**
      * Returns the index of the Moiety
      */
-    C_INT32 findMoiety(std::string &Target) const;
+    C_INT32 findMoiety(const std::string &Target) const;
 
     /**
      * Get the LU decomposition matrix of this model

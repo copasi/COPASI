@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.290 $
+   $Revision: 1.291 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/25 15:09:37 $
+   $Author: gauges $
+   $Date: 2006/11/16 03:19:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1083,7 +1083,7 @@ C_INT32 CModel::findMetabByName(const std::string & Target) const
 /**
  *        Returns the index of the Moiety
  */
-C_INT32 CModel::findMoiety(std::string &Target) const
+C_INT32 CModel::findMoiety(const std::string &Target) const
   {
     unsigned C_INT32 i, s;
     std::string name;
