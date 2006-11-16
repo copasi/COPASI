@@ -23,12 +23,14 @@ class Test_CTimeSeries(unittest.TestCase):
   def test_getData(self):
     data=self.ctimeseries.getData(0,1)
     self.assert_(type(data)==FloatType)
-    self.assert_(data==float("nan"))
+    # check if it is NaN since NaN != NaN
+    self.assert_(data!=data)
 
   def test_getConcentrationData(self):
     data=self.ctimeseries.getConcentrationData(0,1)
     self.assert_(type(data)==FloatType)
-    self.assert_(data==float("nan"))
+    # check if it is NaN since NaN != NaN
+    self.assert_(data!=data)
 
   def test_getTitle(self):
     title=self.ctimeseries.getTitle(1)
