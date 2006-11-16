@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/18 18:33:22 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -151,6 +151,41 @@ class CFitItem : public COptItem
      */
     std::string getExperiments() const;
 
+#ifdef COPASI_CROSSVALIDATION
+    /**
+     * Add an experiment to the list of affected cross validations.
+     * @param const std::string & key
+     * @return bool success
+     */
+    bool addCrossValidation(const std::string & key);
+
+    /**
+     * Retreive the key of the indexed experiment.
+     * @param const unsigned C_INT32 & index
+     * @return const std::string & key
+     */
+    const std::string & getCrossValidation(const unsigned C_INT32 & index) const;
+
+    /**
+     * Remove the indexed experiment from the affected cross validations
+     * @param const unsigned C_INT32 & index
+     * @return bool success
+     */
+    bool removeCrossValidation(const unsigned C_INT32 & index);
+
+    /**
+     * Retrieve the number of cross validations
+     * @return unsigned C_INT32 size
+     */
+    unsigned C_INT32 getCrossValidationCount() const;
+
+    /**
+     * Retrieve a string listing all cross validations the item applies to
+     * @return std::string crossValidations
+     */
+    std::string getCrossValidations() const;
+#endif // COPASI_CROSSVALIDATION
+
     /**
      * Update bounds
      * @param std::vector<COptItem * >::iterator it
@@ -172,6 +207,14 @@ class CFitItem : public COptItem
      * list of AffectedExperiments
      */
     CCopasiParameterGroup * mpGrpAffectedExperiments;
+
+#ifdef COPASI_CROSSVALIDATION
+    /**
+     * A pointer to the value of the CCopasiParameterGroup holding the
+     * list of Affected Cross Validation Experiments
+     */
+    CCopasiParameterGroup * mpGrpAffectedCrossValidations;
+#endif // COPASI_CROSSVALIDATION
 
     /**
      * The value for local items, which affect the experiments in the list.

@@ -1,20 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:27:41 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingWidget.ui'
  **
- ** Created: Wed Mar 8 13:45:32 2006
- **      by: The User Interface Compiler ($Id: CQFittingWidget.cpp,v 1.9 2006/04/27 01:27:41 shoops Exp $)
+ ** Created: Tue Nov 14 09:55:49 2006
+ **      by: The User Interface Compiler ($Id: CQFittingWidget.cpp,v 1.10 2006/11/16 15:45:13 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -46,29 +46,38 @@ CQFittingWidget::CQFittingWidget(QWidget* parent, const char* name)
 
   mpGridLayout = new QGridLayout(0, 1, 1, 0, 6, "mpGridLayout");
 
-  mpBtnExperiment = new QPushButton(this, "mpBtnExperiment");
+  mpBtnCrossValidation = new QPushButton(this, "mpBtnCrossValidation");
 
-  mpGridLayout->addWidget(mpBtnExperiment, 0, 2);
-  mpSpacer = new QSpacerItem(311, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-  mpGridLayout->addItem(mpSpacer, 0, 1);
+  mpGridLayout->addWidget(mpBtnCrossValidation, 0, 2);
 
   mpTabWidget = new QTabWidget(this, "mpTabWidget");
 
   mpParametersPage = new QWidget(mpTabWidget, "mpParametersPage");
-  mpTabWidget->insertTab(mpParametersPage, QString(""));
+  mpTabWidget->insertTab(mpParametersPage, QString::fromLatin1(""));
 
   mpConstraintsPage = new QWidget(mpTabWidget, "mpConstraintsPage");
-  mpTabWidget->insertTab(mpConstraintsPage, QString(""));
+  mpTabWidget->insertTab(mpConstraintsPage, QString::fromLatin1(""));
 
   mpGridLayout->addMultiCellWidget(mpTabWidget, 1, 1, 0, 2);
+
+  mpBtnExperiment = new QPushButton(this, "mpBtnExperiment");
+
+  mpGridLayout->addWidget(mpBtnExperiment, 0, 1);
+  mpSpacer = new QSpacerItem(90, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+  mpGridLayout->addItem(mpSpacer, 0, 0);
   CQFittingWidgetLayout->addLayout(mpGridLayout);
   languageChange();
-  resize(QSize(319, 116).expandedTo(minimumSizeHint()));
+  resize(QSize(324, 114).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
   connect(mpBtnExperiment, SIGNAL(clicked()), this, SLOT(slotExperimentData()));
   connect(mpTabWidget, SIGNAL(currentChanged(QWidget*)), this, SLOT(slotPageChange(QWidget*)));
+  connect(mpBtnCrossValidation, SIGNAL(clicked()), this, SLOT(slotCrossValidationData()));
+
+  // tab order
+  setTabOrder(mpBtnExperiment, mpBtnCrossValidation);
+  setTabOrder(mpBtnCrossValidation, mpTabWidget);
   init();
 }
 
@@ -88,7 +97,8 @@ CQFittingWidget::~CQFittingWidget()
 void CQFittingWidget::languageChange()
 {
   setCaption(tr("Fitting"));
-  mpBtnExperiment->setText(tr("Experimental Data"));
+  mpBtnCrossValidation->setText(tr("Cross Validation Data"));
   mpTabWidget->changeTab(mpParametersPage, tr("Parameters (0)"));
   mpTabWidget->changeTab(mpConstraintsPage, tr("Constraints (0)"));
+  mpBtnExperiment->setText(tr("Experimental Data"));
 }

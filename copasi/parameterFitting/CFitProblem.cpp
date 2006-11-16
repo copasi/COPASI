@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.37 $
+   $Revision: 1.38 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/11 16:28:06 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,9 +35,17 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
                          const CCopasiContainer * pParent):
     COptProblem(type, pParent),
     mpExperimentSet(NULL),
+    mExperimentUpdateMethods(0, 0),
+    mExperimentConstraints(0, 0),
+    mExperimentDependentValues(0),
+#ifdef COPASI_CROSSVALIDATION
+    mpCrossValidationSet(NULL),
+    mCrossValidationUpdateMethods(0, 0),
+    mCrossValidationConstraints(0, 0),
+    mCrossValidationDependentValues(0),
+#endif // COPASI_CROSSVALIDATION
     mpTrajectoryProblem(NULL),
     mpInitialState(NULL),
-    mDependentValues(0),
     mResiduals(0),
     mStoreResults(false),
     mHaveStatistics(false),
@@ -53,9 +61,17 @@ CFitProblem::CFitProblem(const CFitProblem& src,
                          const CCopasiContainer * pParent):
     COptProblem(src, pParent),
     mpExperimentSet(NULL),
+    mExperimentUpdateMethods(0, 0),
+    mExperimentConstraints(0, 0),
+    mExperimentDependentValues(src.mExperimentDependentValues),
+#ifdef COPASI_CROSSVALIDATION
+    mpCrossValidationSet(NULL),
+    mCrossValidationUpdateMethods(0, 0),
+    mCrossValidationConstraints(0, 0),
+    mCrossValidationDependentValues(src.mCrossValidationDependentValues),
+#endif // COPASI_CROSSVALIDATION
     mpTrajectoryProblem(NULL),
     mpInitialState(NULL),
-    mDependentValues(src.mDependentValues),
     mResiduals(src.mResiduals),
     mStoreResults(src.mStoreResults),
     mHaveStatistics(src.mHaveStatistics),
@@ -107,6 +123,10 @@ void CFitProblem::initializeParameter()
 
   assertGroup("Experiment Set");
 
+#ifdef COPASI_CROSSVALIDATION
+  assertGroup("Cross Validation Set");
+#endif // COPASI_CROSSVALIDATION
+
   elevateChildren();
 }
 
@@ -115,7 +135,9 @@ bool CFitProblem::elevateChildren()
   // This call is necessarry since CFitProblem is derived from COptProblem.
   if (!COptProblem::elevateChildren()) return false;
 
-  std::map<std::string, std::string> KeyMap;
+  std::map<std::string, std::string> ExperimentMap;
+  CCopasiParameterGroup * pGroup;
+  CExperiment * pExperiment;
 
   std::vector<CCopasiParameter *> * pExperiments =
     getGroup("Experiment Set")->CCopasiParameter::getValue().pGROUP;
@@ -123,9 +145,9 @@ bool CFitProblem::elevateChildren()
   std::vector<CCopasiParameter *>::iterator endExp;
 
   for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
-    if (static_cast<CCopasiParameterGroup *>(*itExp)->getValue("Key").pKEY)
-      KeyMap[*static_cast<CCopasiParameterGroup *>(*itExp)->getValue("Key").pKEY] =
-        (*itExp)->getObjectName();
+    if ((pGroup = dynamic_cast< CCopasiParameterGroup * >(*itExp)) != NULL &&
+        pGroup->getParameter("Key") != NULL)
+      ExperimentMap[*pGroup->getValue("Key").pKEY] = (*itExp)->getObjectName();
 
   mpExperimentSet =
     elevate<CExperimentSet, CCopasiParameterGroup>(getGroup("Experiment Set"));
@@ -133,13 +155,39 @@ bool CFitProblem::elevateChildren()
 
   std::map<std::string, std::string>::iterator itMap;
   std::map<std::string, std::string>::iterator endMap;
-  CExperiment * pExperiment;
-  for (itMap = KeyMap.begin(), endMap = KeyMap.end(); itMap != endMap; ++itMap)
+  for (itMap = ExperimentMap.begin(), endMap = ExperimentMap.end(); itMap != endMap; ++itMap)
     {
       pExperiment = mpExperimentSet->getExperiment(itMap->second);
       itMap->second = pExperiment->CCopasiParameter::getKey();
       pExperiment->setValue("Key", itMap->second);
     }
+
+#ifdef COPASI_CROSSVALIDATION
+  std::map<std::string, std::string> CrossValidationMap;
+
+  pExperiments =
+    getGroup("Cross Validation Set")->CCopasiParameter::getValue().pGROUP;
+
+  for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
+    if ((pGroup = dynamic_cast< CCopasiParameterGroup * >(*itExp)) != NULL &&
+        pGroup->getParameter("Key") != NULL)
+      CrossValidationMap[*pGroup->getValue("Key").pKEY] = (*itExp)->getObjectName();
+
+  // This intermediate elevation step should be not needed but Viusal C fails when directly
+  // going to the CCrossValidationSet.
+  elevate< CExperimentSet, CCopasiParameterGroup >(getGroup("Cross Validation Set"));
+  mpCrossValidationSet =
+    elevate< CCrossValidationSet, CCopasiParameterGroup >(getGroup("Cross Validation Set"));
+
+  if (!mpCrossValidationSet) return false;
+
+  for (itMap = CrossValidationMap.begin(), endMap = CrossValidationMap.end(); itMap != endMap; ++itMap)
+    {
+      pExperiment = mpCrossValidationSet->getExperiment(itMap->second);
+      itMap->second = pExperiment->CCopasiParameter::getKey();
+      pExperiment->setValue("Key", itMap->second);
+    }
+#endif // COPASI_CROSSVALIDATION
 
   std::vector<COptItem * >::iterator it = mpOptItems->begin();
   std::vector<COptItem * >::iterator end = mpOptItems->end();
@@ -153,7 +201,15 @@ bool CFitProblem::elevateChildren()
         (*it)->getParameter("Affected Experiments")->getValue().pGROUP;
 
       for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
-        (*itExp)->setValue(KeyMap[*(*itExp)->getValue().pKEY]);
+        (*itExp)->setValue(ExperimentMap[*(*itExp)->getValue().pKEY]);
+
+#ifdef COPASI_CROSSVALIDATION
+      pExperiments =
+        (*it)->getParameter("Affected Cross Validation Experiments")->getValue().pGROUP;
+
+      for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
+        (*itExp)->setValue(CrossValidationMap[*(*itExp)->getValue().pKEY]);
+#endif // COPASI_CROSSVALIDATION
     }
 
   it = mpConstraintItems->begin();
@@ -168,7 +224,15 @@ bool CFitProblem::elevateChildren()
         (*it)->getParameter("Affected Experiments")->getValue().pGROUP;
 
       for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
-        (*itExp)->setValue(KeyMap[*(*itExp)->getValue().pKEY]);
+        (*itExp)->setValue(ExperimentMap[*(*itExp)->getValue().pKEY]);
+
+#ifdef COPASI_CROSSVALIDATION
+      pExperiments =
+        (*it)->getParameter("Affected Cross Validation Experiments")->getValue().pGROUP;
+
+      for (itExp = pExperiments->begin(), endExp = pExperiments->end(); itExp != endExp; ++itExp)
+        (*itExp)->setValue(CrossValidationMap[*(*itExp)->getValue().pKEY]);
+#endif // COPASI_CROSSVALIDATION
     }
 
   return true;
@@ -221,7 +285,7 @@ bool CFitProblem::initialize()
   if (!mpExperimentSet->compile(ContainerList)) return false;
 
   // Build a matrix of experiment and experiment local items.
-  mExperimentUpdateMethods.resize(mpExperimentSet->size(),
+  mExperimentUpdateMethods.resize(mpExperimentSet->getExperimentCount(),
                                   mpOptItems->size());
   mExperimentUpdateMethods = NULL;
 
@@ -243,7 +307,7 @@ bool CFitProblem::initialize()
       imax = pItem->getExperimentCount();
       if (imax == 0)
         {
-          for (i = 0, imax = mpExperimentSet->size(); i < imax; i++)
+          for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
             mExperimentUpdateMethods(i, j) = pItem->COptItem::getUpdateMethod();
         }
       else
@@ -258,7 +322,7 @@ bool CFitProblem::initialize()
     }
 
   // Build a matrix of experiment and constraint items;
-  mExperimentConstraints.resize(mpExperimentSet->size(),
+  mExperimentConstraints.resize(mpExperimentSet->getExperimentCount(),
                                 mpConstraintItems->size());
   mExperimentConstraints = NULL;
 
@@ -274,7 +338,7 @@ bool CFitProblem::initialize()
       imax = pConstraint->getExperimentCount();
       if (imax == 0)
         {
-          for (i = 0, imax = mpExperimentSet->size(); i < imax; i++)
+          for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
             mExperimentConstraints(i, j) = pConstraint;
         }
       else
@@ -287,6 +351,76 @@ bool CFitProblem::initialize()
             };
         }
     }
+
+  mExperimentDependentValues.resize(mpExperimentSet->getDataPointCount());
+
+#ifdef COPASI_CROSSVALIDATION
+  if (!mpCrossValidationSet->compile(ContainerList)) return false;
+
+  // Build a matrix of cross validation experiments  and local items.
+  mCrossValidationUpdateMethods.resize(mpCrossValidationSet->getExperimentCount(),
+                                       mpOptItems->size());
+  mCrossValidationUpdateMethods = NULL;
+
+  it = mpOptItems->begin();
+  end = mpOptItems->end();
+
+  for (j = 0; it != end; ++it, j++)
+    {
+      pItem = static_cast<CFitItem *>(*it);
+      pItem->updateBounds(mpOptItems->begin());
+
+      imax = pItem->getCrossValidationCount();
+      if (imax == 0)
+        {
+          for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
+            mCrossValidationUpdateMethods(i, j) = pItem->COptItem::getUpdateMethod();
+        }
+      else
+        {
+          for (i = 0; i < imax; i++)
+            {
+              if ((Index = mpCrossValidationSet->keyToIndex(pItem->getCrossValidation(i))) == C_INVALID_INDEX)
+                return false;
+              mCrossValidationUpdateMethods(Index, j) = pItem->COptItem::getUpdateMethod();
+            };
+        }
+    }
+
+  // Build a matrix of cross validation experiments and constraint items;
+  mCrossValidationConstraints.resize(mpCrossValidationSet->getExperimentCount(),
+                                     mpConstraintItems->size());
+  mCrossValidationConstraints = NULL;
+
+  it = mpConstraintItems->begin();
+  end = mpConstraintItems->end();
+
+  for (j = 0; it != end; ++it, j++)
+    {
+      pConstraint = static_cast<CFitConstraint *>(*it);
+
+      imax = pConstraint->getCrossValidationCount();
+      if (imax == 0)
+        {
+          for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
+            mCrossValidationConstraints(i, j) = pConstraint;
+        }
+      else
+        {
+          for (i = 0; i < imax; i++)
+            {
+              if ((Index = mpCrossValidationSet->keyToIndex(pConstraint->getCrossValidation(i))) == C_INVALID_INDEX)
+                return false;
+              mCrossValidationConstraints(Index, j) = pConstraint;
+            };
+        }
+    }
+
+  mCrossValidationDependentValues.resize(mpCrossValidationSet->getDataPointCount());
+
+  mCrossValidationObjective = mInfinity;
+  mThresholdCounter = 0;
+#endif // COPASI_CROSSVALIDATION
 
   if (!mpSteadyState)
     {
@@ -321,8 +455,6 @@ bool CFitProblem::initialize()
   pdelete(mpInitialState);
   mpInitialState = new CState(mpModel->getInitialState());
 
-  mDependentValues.resize(mpExperimentSet->getDataPointCount());
-
   return true;
 }
 
@@ -354,7 +486,7 @@ bool CFitProblem::calculate()
   mCounter += 1;
   bool Continue = true;
 
-  unsigned i, imax = mpExperimentSet->size();
+  unsigned i, imax = mpExperimentSet->getExperimentCount();
   unsigned j, jmax = mpOptItems->size();
   unsigned kmax;
   mCalculateValue = 0.0;
@@ -362,7 +494,7 @@ bool CFitProblem::calculate()
   CExperiment * pExp = NULL;
 
   C_FLOAT64 * Residuals = mResiduals.array();
-  C_FLOAT64 * DependentValues = mDependentValues.array();
+  C_FLOAT64 * DependentValues = mExperimentDependentValues.array();
   UpdateMethod ** pUpdate = mExperimentUpdateMethods.array();
   std::vector<COptItem *>::iterator itItem;
   std::vector<COptItem *>::iterator endItem = mpOptItems->end();
@@ -584,7 +716,7 @@ void CFitProblem::printResult(std::ostream * ostream) const
         os << "Parameter Interdependence:" << std::endl;
         os << "  " << mFisher << std::endl;
 
-        unsigned C_INT32 k, kmax = mpExperimentSet->size();
+        unsigned C_INT32 k, kmax = mpExperimentSet->getExperimentCount();
 
         for (k = 0; k < kmax; k++)
           {
@@ -633,9 +765,6 @@ std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
 bool CFitProblem::createObjectiveFunction()
 {return true;}
 
-const CVector< C_FLOAT64 > & CFitProblem::getDependentValues() const
-  {return mDependentValues;}
-
 bool CFitProblem::setResidualsRequired(const bool & required)
 {
   if (required)
@@ -654,9 +783,9 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 {
   // Set the current values to the solution values.
   unsigned C_INT32 i, imax = mSolutionVariables.size();
-  unsigned C_INT32 j, jmax = mDependentValues.size();
+  unsigned C_INT32 j, jmax = mExperimentDependentValues.size();
   unsigned C_INT32 l;
-  unsigned C_INT32 k, kmax = mpExperimentSet->size();
+  unsigned C_INT32 k, kmax = mpExperimentSet->getExperimentCount();
 
   mRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -677,7 +806,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   calculate();
 
   // Keep the results
-  CVector< C_FLOAT64 > DependentValues = mDependentValues;
+  CVector< C_FLOAT64 > DependentValues = mExperimentDependentValues;
 
   if (mSolutionValue == mInfinity)
     return false;
@@ -719,7 +848,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       mGradient[i] = (mCalculateValue - mSolutionValue) * Delta;
 
       for (j = 0; j < jmax; j++)
-        dyp(i, j) = (mDependentValues[j] - DependentValues[j]) * Delta;
+        dyp(i, j) = (mExperimentDependentValues[j] - DependentValues[j]) * Delta;
 
       // Restore the value
       (*mUpdateMethods[i])(Current);
@@ -1012,3 +1141,184 @@ const CMatrix< C_FLOAT64 > & CFitProblem::getVariableCorrelations() const
 
 const CExperimentSet & CFitProblem::getExperiementSet() const
   {return *mpExperimentSet;}
+
+#ifdef COPASI_CROSSVALIDATION
+const CCrossValidationSet & CFitProblem::getCrossValidationSet() const
+  {return *mpCrossValidationSet;}
+
+bool CFitProblem::setSolution(const C_FLOAT64 & value,
+                              const CVector< C_FLOAT64 > & variables)
+{
+  bool Continue = COptProblem::setSolution(value, variables);
+
+  if (Continue && mpCrossValidationSet->getExperimentCount() > 0)
+    Continue = calculateCrossValidation();
+
+  return Continue;
+}
+
+bool CFitProblem::calculateCrossValidation()
+{
+  mCounter += 1;
+  bool Continue = true;
+
+  unsigned i, imax = mpCrossValidationSet->getExperimentCount();
+  unsigned j, jmax = mpOptItems->size();
+  unsigned kmax;
+  C_FLOAT64 CalculateValue = 0.0;
+
+  CExperiment * pExp = NULL;
+
+  C_FLOAT64 * Residuals = NULL;
+  C_FLOAT64 * DependentValues = mCrossValidationDependentValues.array();
+
+  UpdateMethod ** pUpdate = mCrossValidationUpdateMethods.array();
+  C_FLOAT64 * pSolution = mSolutionVariables.array();
+  C_FLOAT64 * pSolutionEnd = pSolution + mSolutionVariables.size();
+
+  std::vector<COptItem *>::iterator itConstraint;
+  std::vector<COptItem *>::iterator endConstraint = mpConstraintItems->end();
+
+  // Reset the constraints memory
+  for (itConstraint = mpConstraintItems->begin(); itConstraint != endConstraint; ++itConstraint)
+    static_cast<CFitConstraint *>(*itConstraint)->setLocalValue(0.0);
+
+  CFitConstraint **ppConstraint = mCrossValidationConstraints.array();
+  CFitConstraint **ppConstraintEnd;
+
+  try
+    {
+      for (i = 0; i < imax && Continue; i++) // For each CrossValidation
+        {
+          pExp = mpCrossValidationSet->getExperiment(i);
+
+          mpModel->setInitialState(*mpInitialState);
+
+          // set the global and CrossValidation local fit item values.
+          for (; pSolution != pSolutionEnd; pSolution++, pUpdate++)
+            if (*pUpdate)
+              (**pUpdate)(*pSolution);
+
+          kmax = pExp->getNumDataRows();
+
+          switch (pExp->getExperimentType())
+            {
+            case CCopasiTask::steadyState:
+              // set independent data
+              for (j = 0; j < kmax && Continue; j++) // For each data row;
+                {
+                  pExp->updateModelWithIndependentData(j);
+                  Continue &= mpSteadyState->process(true);
+
+                  if (!Continue)
+                    {
+                      CalculateValue = mInfinity;
+                      break;
+                    }
+
+                  // We check after each simulation whether the constraints are violated.
+                  ppConstraint = mCrossValidationConstraints[i];
+                  ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();
+                  for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
+                    if (*ppConstraint) (*ppConstraint)->checkConstraint();
+
+                  if (mStoreResults)
+                    CalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
+                  else
+                    CalculateValue += pExp->sumOfSquares(j, Residuals);
+                }
+              break;
+
+            case CCopasiTask::timeCourse:
+              for (j = 0; j < kmax && Continue; j++) // For each data row;
+                {
+                  if (j)
+                    {
+                      Continue &= mpTrajectory->processStep(pExp->getTimeData()[j]);
+                    }
+                  else
+                    {
+                      // set independent data
+                      pExp->updateModelWithIndependentData(j);
+                      mpTrajectory->processStart(true);
+
+                      if (pExp->getTimeData()[0] != mpModel->getInitialTime())
+                        {
+                          Continue &= mpTrajectory->processStep(pExp->getTimeData()[0]);
+                        }
+                    }
+
+                  if (mStoreResults)
+                    CalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
+                  else
+                    CalculateValue += pExp->sumOfSquares(j, Residuals);
+                }
+
+              // We check after each simulation whether the constraints are violated.
+              ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();
+              for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
+                if (*ppConstraint) (*ppConstraint)->checkConstraint();
+              break;
+
+            default:
+              break;
+            }
+
+          // restore independent data
+          pExp->restoreModelIndependentData();
+
+          switch (pExp->getExperimentType())
+            {
+            case CCopasiTask::steadyState:
+              mpSteadyState->restore();
+              break;
+
+            case CCopasiTask::timeCourse:
+              mpTrajectory->restore();
+              break;
+
+            default:
+              break;
+            }
+        }
+    }
+
+  catch (CCopasiException)
+    {
+      // We do not want to clog the message cue.
+      CCopasiMessage::getLastMessage();
+
+      mFailedCounter++;
+      CalculateValue = mInfinity;
+      if (pExp) pExp->restoreModelIndependentData();
+    }
+
+  catch (...)
+    {
+      mFailedCounter++;
+      CalculateValue = mInfinity;
+      if (pExp) pExp->restoreModelIndependentData();
+    }
+
+  if (isnan(CalculateValue))
+    CalculateValue = mInfinity;
+
+  if (mpCallBack)
+    Continue &= mpCallBack->progress(mhCounter);
+
+  C_FLOAT64 CurrentObjective =
+    mSolutionValue + mpCrossValidationSet->getWeight() * CalculateValue * mpCrossValidationSet->getDataPointCount() / mpExperimentSet->getDataPointCount();
+
+  if (CurrentObjective > mCrossValidationObjective)
+    mThresholdCounter++;
+  else
+    {
+      mThresholdCounter = 0;
+      mCrossValidationObjective = CurrentObjective;
+    }
+
+  Continue &= mThresholdCounter < mpCrossValidationSet->getThreshold();
+
+  return Continue;
+}
+#endif // COPASI_CROSSVALIDATION

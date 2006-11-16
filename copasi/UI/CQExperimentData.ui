@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>515</width>
-            <height>501</height>
+            <width>522</width>
+            <height>421</height>
         </rect>
     </property>
     <property name="caption">
@@ -22,6 +22,62 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>mpLayoutCrossValidation</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>mpLblWeight</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Weight</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>mpEditWeight</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>LineEditPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>mpLblThreshold</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Threshold</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>mpEditThreshold</cstring>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>mpLineCrossValidation</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
         <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>mpLayoutFile</cstring>
@@ -739,6 +795,7 @@
     <forward>class CExperiment</forward>
     <forward>class CQExperimentDataValidator</forward>
     <forward>class QSignalMapper</forward>
+    <forward>class CCrossValidationSet</forward>
 </forwards>
 <variables>
     <variable>unsigned int mOldWeightMethod;</variable>
@@ -757,6 +814,7 @@
     <variable>unsigned int mShown;</variable>
     <variable>CQExperimentDataValidator * mpValidatorName;</variable>
     <variable>QSignalMapper * mpComboMap;</variable>
+    <variable>bool mCrossValidation;</variable>
 </variables>
 <signals>
     <signal>experimentChanged()</signal>
@@ -787,7 +845,7 @@
     <slot access="private" specifier="non virtual">slotWeightMethod( int weightMethod )</slot>
 </slots>
 <functions>
-    <function specifier="non virtual" returnType="bool">load( CExperimentSet * &amp; pExperimentSet )</function>
+    <function returnType="bool">load( CExperimentSet * pExperimentSet )</function>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
     <function access="protected" returnType="bool">loadExperiment( CExperiment * pExperiment )</function>

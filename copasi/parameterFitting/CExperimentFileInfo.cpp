@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 16:03:47 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -114,7 +114,7 @@ bool CExperimentFileInfo::sync()
   mList.clear();
 
   // Find the desired file name
-  for (i = 0, imax = mpSet->size(); i < imax; i++)
+  for (i = 0, imax = mpSet->getExperimentCount(); i < imax; i++)
     if (mpSet->getExperiment(i)->getFileName() == mFileName) break;
 
   // Continue as long as the file name does not change

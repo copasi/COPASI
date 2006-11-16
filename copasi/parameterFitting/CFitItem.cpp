@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitItem.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/14 13:31:19 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -24,6 +24,9 @@ CFitItem::CFitItem(const std::string & name,
                    const CCopasiContainer * pParent):
     COptItem(name, pParent),
     mpGrpAffectedExperiments(NULL),
+#ifdef COPASI_CROSSVALIDATION
+    mpGrpAffectedCrossValidations(NULL),
+#endif // COPASI_CROSSVALIDATION
     mLocalValue(0),
     mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
 {initializeParameter();}
@@ -32,6 +35,9 @@ CFitItem::CFitItem(const CFitItem & src,
                    const CCopasiContainer * pParent):
     COptItem(src, pParent),
     mpGrpAffectedExperiments(NULL),
+#ifdef COPASI_CROSSVALIDATION
+    mpGrpAffectedCrossValidations(NULL),
+#endif // COPASI_CROSSVALIDATION
     mLocalValue(0),
     mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
 {initializeParameter();}
@@ -40,6 +46,9 @@ CFitItem::CFitItem(const CCopasiParameterGroup & group,
                    const CCopasiContainer * pParent):
     COptItem(group, pParent),
     mpGrpAffectedExperiments(NULL),
+#ifdef COPASI_CROSSVALIDATION
+    mpGrpAffectedCrossValidations(NULL),
+#endif // COPASI_CROSSVALIDATION
     mLocalValue(0),
     mpLocalMethod(new SpecificUpdateMethod<CFitItem, C_FLOAT64>(this, &CFitItem::setLocalValue))
 {initializeParameter();}
@@ -50,6 +59,10 @@ CFitItem::~CFitItem()
 void CFitItem::initializeParameter()
 {
   mpGrpAffectedExperiments = assertGroup("Affected Experiments");
+
+#ifdef COPASI_CROSSVALIDATION
+  mpGrpAffectedCrossValidations = assertGroup("Affected Cross Validation Experiments");
+#endif // COPASI_CROSSVALIDATION
 
   elevateChildren();
 }
@@ -69,6 +82,12 @@ bool CFitItem::elevateChildren()
   mpGrpAffectedExperiments =
     elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpAffectedExperiments);
   if (!mpGrpAffectedExperiments) return false;
+
+#ifdef COPASI_CROSSVALIDATION
+  mpGrpAffectedCrossValidations =
+    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpAffectedCrossValidations);
+  if (!mpGrpAffectedCrossValidations) return false;
+#endif // COPASI_CROSSVALIDATION
 
   return true;
 }
@@ -113,6 +132,19 @@ std::ostream &operator<<(std::ostream &os, const CFitItem & o)
       if (i) os << ", ";
       os << o.getExperiment(i);
     }
+
+#ifdef COPASI_CROSSVALIDATION
+  imax = o.mpGrpAffectedCrossValidations->size();
+
+  os << "    Affected Cross Validation Experiments:" << std::endl << "      ";
+  if (imax == 0) os << "all";
+
+  for (i = 0; i < imax; i++)
+    {
+      if (i) os << ", ";
+      os << o.getCrossValidation(i);
+    }
+#endif // COPASI_CROSSVALIDATION
 
   return os;
 }
@@ -176,6 +208,53 @@ std::string CFitItem::getExperiments() const
 
     return Experiments;
   }
+
+#ifdef COPASI_CROSSVALIDATION
+bool CFitItem::addCrossValidation(const std::string & key)
+{
+  unsigned C_INT32 i, imax = mpGrpAffectedCrossValidations->size();
+
+  for (i = 0; i < imax; i++)
+    if (*mpGrpAffectedCrossValidations->getValue(i).pKEY == key) return false; // The key already exists.
+
+  return mpGrpAffectedCrossValidations->addParameter("Experiment Key", CCopasiParameter::KEY, key);
+}
+
+const std::string & CFitItem::getCrossValidation(const unsigned C_INT32 & index) const
+  {
+    static const std::string Empty("");
+
+    if (index < mpGrpAffectedCrossValidations->size())
+      return *mpGrpAffectedCrossValidations->getValue(index).pKEY;
+
+    return Empty;
+  }
+
+bool CFitItem::removeCrossValidation(const unsigned C_INT32 & index)
+{return mpGrpAffectedCrossValidations->removeParameter(index);}
+
+unsigned C_INT32 CFitItem::getCrossValidationCount() const
+  {return mpGrpAffectedCrossValidations->size();}
+
+std::string CFitItem::getCrossValidations() const
+  {
+    std::string CrossValidations;
+    unsigned C_INT32 i, imax = mpGrpAffectedCrossValidations->size();
+    const CCopasiObject * pObject;
+
+    for (i = 0; i < imax; i++)
+      {
+        pObject = GlobalKeys.get(*mpGrpAffectedCrossValidations->getValue(i).pKEY);
+
+        if (i && pObject)
+          CrossValidations += ", ";
+
+        CrossValidations += pObject->getObjectName();
+      }
+
+    return CrossValidations;
+  }
+#endif // COPASI_CROSSVALIDATION
 
 bool CFitItem::updateBounds(std::vector<COptItem * >::iterator it)
 {

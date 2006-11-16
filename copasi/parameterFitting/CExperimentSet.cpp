@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/15 16:01:38 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -26,19 +26,22 @@
 CExperimentSet::CExperimentSet(const std::string & name,
                                const CCopasiContainer * pParent):
     CCopasiParameterGroup(name, pParent, "CExperimentSet"),
-    mpExperiments(NULL)
+    mpExperiments(NULL),
+    mNonExperiments(0)
 {initializeParameter();}
 
 CExperimentSet::CExperimentSet(const CExperimentSet & src,
                                const CCopasiContainer * pParent):
     CCopasiParameterGroup(src, pParent),
-    mpExperiments(NULL)
+    mpExperiments(NULL),
+    mNonExperiments(0)
 {initializeParameter();}
 
 CExperimentSet::CExperimentSet(const CCopasiParameterGroup & group,
                                const CCopasiContainer * pParent):
     CCopasiParameterGroup(group, pParent),
-    mpExperiments(NULL)
+    mpExperiments(NULL),
+    mNonExperiments(0)
 {initializeParameter();}
 
 CExperimentSet::~CExperimentSet() {}
@@ -52,7 +55,10 @@ bool CExperimentSet::elevateChildren()
   index_iterator end = mValue.pGROUP->end();
 
   for (; it != end; ++it)
-    if (!elevate<CExperiment, CCopasiParameterGroup>(*it)) return false;
+    {
+      if (dynamic_cast< CCopasiParameterGroup * >(*it) == NULL) continue;
+      if (!elevate<CExperiment, CCopasiParameterGroup>(*it)) return false;
+    }
 
   mpExperiments = static_cast<std::vector<CExperiment * > * >(mValue.pVOID);
 
@@ -75,10 +81,10 @@ bool CExperimentSet::compile(const std::vector< CCopasiContainer * > listOfConta
   std::string CurrentFileName("");
   unsigned C_INT32 CurrentLineNumber = 1;
 
-  std::vector< CExperiment * >::iterator it = mpExperiments->begin();
+  std::vector< CExperiment * >::iterator it = mpExperiments->begin() + mNonExperiments;
   std::vector< CExperiment * >::iterator end = mpExperiments->end();
 
-  for (it = mpExperiments->begin(); it != end; ++it)
+  for (; it != end; ++it)
     {
       if (CurrentFileName != (*it)->getFileName())
         {
@@ -157,7 +163,7 @@ bool CExperimentSet::calculateStatistics()
   mDependentDataCount = 0;
 
   // calclate the per experiment and per dependent value statistics.
-  std::vector< CExperiment * >::iterator it = mpExperiments->begin();
+  std::vector< CExperiment * >::iterator it = mpExperiments->begin() + mNonExperiments;
   std::vector< CExperiment * >::iterator end = mpExperiments->end();
 
   unsigned C_INT32 i, Count;
@@ -204,7 +210,7 @@ bool CExperimentSet::calculateStatistics()
         }
     }
 
-  it = mpExperiments->begin();
+  it = mpExperiments->begin() + mNonExperiments;
 
   // We need to loop again to calculate the std. deviation.
   for (; it != end; ++it)
@@ -233,12 +239,12 @@ bool CExperimentSet::calculateStatistics()
     }
 
   // This is the time to call the output handler to plot the fitted points.
-  for (it = mpExperiments->begin(), imax = 0; it != end; ++it)
+  for (it = mpExperiments->begin() + mNonExperiments, imax = 0; it != end; ++it)
     imax = std::max(imax, (*it)->getDependentData().numRows());
 
   for (i = 0; i < imax; i++)
     {
-      for (it = mpExperiments->begin(); it != end; ++it)
+      for (it = mpExperiments->begin() + mNonExperiments; it != end; ++it)
         (*it)->updateFittedPointValues(i);
 
       CCopasiDataModel::Global->output(COutputInterface::AFTER);
@@ -262,6 +268,9 @@ const CVector< C_FLOAT64 > & CExperimentSet::getDependentErrorMean() const
 const CVector< C_FLOAT64 > & CExperimentSet::getDependentErrorMeanSD() const
   {return mDependentErrorMeanSD;}
 
+unsigned C_INT32 CExperimentSet::getExperimentCount() const
+  {return size() - mNonExperiments;}
+
 CExperiment * CExperimentSet::addExperiment(const CExperiment & experiment)
 {
   // We need to make sure that the experiment name is unique.
@@ -283,11 +292,14 @@ CExperiment * CExperimentSet::addExperiment(const CExperiment & experiment)
   return pExperiment;
 }
 
+void CExperimentSet::removeExperiment(const unsigned C_INT32 & index)
+{removeParameter(index + mNonExperiments);}
+
 CExperiment * CExperimentSet::getExperiment(const unsigned C_INT32 & index)
-{return (*mpExperiments)[index];}
+{return (*mpExperiments)[index + mNonExperiments];}
 
 const CExperiment * CExperimentSet::getExperiment(const unsigned C_INT32 & index) const
-  {return (*mpExperiments)[index];}
+  {return (*mpExperiments)[index + mNonExperiments];}
 
 CExperiment * CExperimentSet::getExperiment(const std::string & name)
 {return static_cast<CExperiment *>(getGroup(name));}
@@ -320,10 +332,35 @@ unsigned C_INT32 CExperimentSet::keyToIndex(const std::string & key) const
 
 void CExperimentSet::sort()
 {
-  std::vector< CExperiment * >::iterator it = mpExperiments->begin();
-  std::vector< CExperiment * >::iterator end = mpExperiments->end();
+  // First we make sure that all experiments are at the end of the group
+  std::vector< CCopasiParameter * > Grp = *mValue.pGROUP;
 
-  std::sort(it, end, &CExperiment::compare);
+  std::vector< CCopasiParameter * >::iterator it = Grp.begin();
+  std::vector< CCopasiParameter * >::iterator end = Grp.end();
+
+  std::vector< CCopasiParameter * >::iterator insert = Grp.begin();
+  mNonExperiments = 0;
+
+  for (; it != end; ++it)
+    if (dynamic_cast< CExperiment * >(*it) == NULL)
+      {
+        *insert = *it;
+        ++insert;
+        ++mNonExperiments;
+      }
+
+  for (it = Grp.begin(); it != end; ++it)
+    if (dynamic_cast< CExperiment * >(*it) != NULL)
+      {
+        *insert = *it;
+        ++insert;
+      }
+
+  // Now sort the experiments
+  std::vector< CExperiment * >::iterator startSort = mpExperiments->begin() + mNonExperiments;
+  std::vector< CExperiment * >::iterator endSort = mpExperiments->end();
+
+  std::sort(startSort, endSort, &CExperiment::compare);
 
   return;
 }
@@ -333,7 +370,7 @@ std::vector< std::string > CExperimentSet::getFileNames() const
     std::vector< std::string > List;
     std::string currentFile = "";
 
-    std::vector< CExperiment * >::iterator it = mpExperiments->begin();
+    std::vector< CExperiment * >::iterator it = mpExperiments->begin() + mNonExperiments;
     std::vector< CExperiment * >::iterator end = mpExperiments->end();
 
     for (; it != end; ++it)
@@ -349,7 +386,7 @@ std::vector< std::string > CExperimentSet::getFileNames() const
 unsigned C_INT32 CExperimentSet::getDataPointCount() const
   {
     unsigned C_INT32 Count = 0;
-    std::vector< CExperiment * >::iterator it = mpExperiments->begin();
+    std::vector< CExperiment * >::iterator it = mpExperiments->begin() + mNonExperiments;
     std::vector< CExperiment * >::iterator end = mpExperiments->end();
 
     for (; it != end; ++it)
@@ -357,3 +394,52 @@ unsigned C_INT32 CExperimentSet::getDataPointCount() const
 
     return Count;
   }
+
+#ifdef COPASI_CROSSVALIDATION
+CCrossValidationSet::CCrossValidationSet(const std::string & name,
+    const CCopasiContainer * pParent):
+    CExperimentSet(name, pParent),
+    mpWeight(NULL),
+    mpThreshold(NULL)
+{initializeParameter();}
+
+CCrossValidationSet::CCrossValidationSet(const CCrossValidationSet & src,
+    const CCopasiContainer * pParent):
+    CExperimentSet(src, pParent),
+    mpWeight(NULL),
+    mpThreshold(NULL)
+{initializeParameter();}
+
+CCrossValidationSet::CCrossValidationSet(const CCopasiParameterGroup & group,
+    const CCopasiContainer * pParent):
+    CExperimentSet(group, pParent),
+    mpWeight(NULL),
+    mpThreshold(NULL)
+{initializeParameter();}
+
+CCrossValidationSet::~CCrossValidationSet() {}
+
+void CCrossValidationSet::setWeight(const C_FLOAT64 & weight)
+{*mpWeight = weight;}
+
+const C_FLOAT64 & CCrossValidationSet::getWeight() const
+  {return *mpWeight;}
+
+void CCrossValidationSet::setThreshold(const unsigned C_INT32 & threshold)
+{*mpThreshold = threshold;}
+
+const unsigned C_INT32 & CCrossValidationSet::getThreshold() const
+  {return *mpThreshold;}
+
+void CCrossValidationSet::initializeParameter()
+{
+  mpWeight =
+    assertParameter("Weight", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0)->getValue().pUDOUBLE;
+
+  mpThreshold =
+    assertParameter("Threshold", CCopasiParameter::UINT, (unsigned C_INT32) 5)->getValue().pUINT;
+
+  elevateChildren();
+}
+
+#endif // COPASI_CROSSVALIDATION

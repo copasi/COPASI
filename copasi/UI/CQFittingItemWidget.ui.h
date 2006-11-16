@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/28 00:18:41 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -28,7 +28,9 @@
 
 void CQFittingItemWidget::init()
 {
-  mppSet = NULL;
+  mppExperimentSet = NULL;
+  mppCrossValidationSet = NULL;
+
   mpItemsCopy = new std::vector<COptItem *>;
   mCurrentRow = C_INVALID_INDEX;
 
@@ -59,6 +61,13 @@ void CQFittingItemWidget::init()
   mpUpperValidator = new CQValidatorBound(mpEditUpper);
   mpEditUpper->setValidator(mpUpperValidator);
   mpUpperValidator->revalidate();
+
+#ifndef COPASI_CROSSVALIDATION
+  mpBtnCrossValidations->hide();
+  mpCheckCrossValidationsAll->hide();
+  mpBoxCrossValidations->hide();
+  mpLblCrossValidations->hide();
+#endif // COPASI_CROSSVALIDATION
 }
 
 void CQFittingItemWidget::destroy()
@@ -239,11 +248,14 @@ void CQFittingItemWidget::slotParamEdit()
           switch (mItemType)
             {
             case OPT_ITEM:
+            case OPT_CONSTRAINT:
               pItem = new COptItem();
               break;
+
             case FIT_ITEM:
               pItem = new CFitItem();
               break;
+
             case FIT_CONSTRAINT:
               pItem = new CFitConstraint();
               break;
@@ -281,11 +293,14 @@ void CQFittingItemWidget::slotParamEdit()
           switch (mItemType)
             {
             case OPT_ITEM:
+            case OPT_CONSTRAINT:
               pItem = new COptItem(*pSrc);
               break;
+
             case FIT_ITEM:
               pItem = new CFitItem(*pSrc);
               break;
+
             case FIT_CONSTRAINT:
               pItem = new CFitConstraint(*pSrc);
               break;
@@ -317,10 +332,10 @@ void CQFittingItemWidget::slotParamEdit()
 
 void CQFittingItemWidget::slotExperiments()
 {
-  if (mItemType)
+  if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
     {
       CQExperimentSelection * pDialog = new CQExperimentSelection(this);
-      pDialog->load(mpBoxExperiments, * mppSet);
+      pDialog->load(mpBoxExperiments, * mppExperimentSet);
 
       if (pDialog->exec() == QDialog::Accepted)
         {
@@ -335,8 +350,8 @@ void CQFittingItemWidget::slotExperiments()
               (*mpItemsCopy)[*it]->getGroup("Affected Experiments")->clear();
               unsigned C_INT32 i, imax = mpBoxExperiments->count();
 
-              for (i = 0; i < imax && imax < (*mppSet)->size(); i++)
-                static_cast<CFitItem *>((*mpItemsCopy)[*it])->addExperiment((*mppSet)->getExperiment((const char *) mpBoxExperiments->text(i).utf8())->CCopasiParameter::getKey());
+              for (i = 0; i < imax && imax < (*mppExperimentSet)->getExperimentCount(); i++)
+                static_cast<CFitItem *>((*mpItemsCopy)[*it])->addExperiment((*mppExperimentSet)->getExperiment((const char *) mpBoxExperiments->text(i).utf8())->CCopasiParameter::getKey());
 
               setTableText(*it, (*mpItemsCopy)[*it]);
             }
@@ -350,8 +365,7 @@ void CQFittingItemWidget::slotExperiments()
     }
 }
 
-bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems,
-                               const std::map<std::string, std::string> * pKeyMap)
+bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems, const std::map<std::string, std::string> * pExperimentMap, const std::map<std::string, std::string> * pCrossValidationMap)
 {
   mpItems = pItems;
   mSelection.clear();
@@ -382,29 +396,46 @@ bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems,
       switch (mItemType)
         {
         case OPT_ITEM:
+        case OPT_CONSTRAINT:
           *it = new COptItem(**src);
           break;
+
         case FIT_ITEM:
           *it = new CFitItem(**src);
           break;
+
         case FIT_CONSTRAINT:
           *it = new CFitConstraint(**src);
           break;
         }
 
-      if (mItemType)
+      if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
         {
-          if (!pKeyMap) return false;
+          if (!pExperimentMap) return false;
 
-          // Change the key to reflect the local copy *mppSet
+          // Change the key to reflect the local copy *mppExperimentSet
           unsigned C_INT32 j, jmax = static_cast<CFitItem *>(*it)->getExperimentCount();
 
           for (j = 0; j < jmax; j++)
             {
               std::string & Key =
                 *const_cast<std::string *>(&static_cast<CFitItem *>(*it)->getExperiment(j));
-              Key = pKeyMap->find(Key)->second;
+              Key = pExperimentMap->find(Key)->second;
             }
+
+#ifdef COPASI_CROSSVALIDATION
+          if (!pCrossValidationMap) return false;
+
+          // Change the key to reflect the local copy *mppCrossValidationSet
+          jmax = static_cast<CFitItem *>(*it)->getCrossValidationCount();
+
+          for (j = 0; j < jmax; j++)
+            {
+              std::string & Key =
+                *const_cast<std::string *>(&static_cast<CFitItem *>(*it)->getCrossValidation(j));
+              Key = pCrossValidationMap->find(Key)->second;
+            }
+#endif // COPASI_CROSSVALIDATION
         }
 
       setTableText(i, *it);
@@ -422,7 +453,7 @@ bool CQFittingItemWidget::load(CCopasiParameterGroup * pItems,
   return true;
 }
 
-bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pKeyMap)
+bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pExperimentMap, const std::map<std::string, std::string> * pCrossValidationMap)
 {
   // Make sure that the current items is saved.
   saveSelection();
@@ -467,9 +498,9 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pKeyMa
           (*target)->setStartValue((*it)->getStartValue());
         }
 
-      if (mItemType)
+      if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
         {
-          if (!pKeyMap) return false;
+          if (pExperimentMap == NULL) return false;
 
           unsigned C_INT32 j, jmax =
             std::min(static_cast<CFitItem *>(*it)->getExperimentCount(),
@@ -481,7 +512,7 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pKeyMa
               std::string & Target =
                 *const_cast<std::string *>(&static_cast<CFitItem *>(*target)->getExperiment(j));
               const std::string & Source =
-                pKeyMap->find(static_cast<CFitItem *>(*it)->getExperiment(j))->second;
+                pExperimentMap->find(static_cast<CFitItem *>(*it)->getExperiment(j))->second;
 
               if (Target != Source)
                 {
@@ -504,10 +535,52 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pKeyMa
               changed = true;
 
               const std::string & Source =
-                pKeyMap->find(static_cast<CFitItem *>(*it)->getExperiment(j))->second;
+                pExperimentMap->find(static_cast<CFitItem *>(*it)->getExperiment(j))->second;
 
               static_cast<CFitItem *>(*target)->addExperiment(Source);
             }
+
+#ifdef COPASI_CROSSVALIDATION
+          if (pCrossValidationMap == NULL) return false;
+
+          jmax =
+            std::min(static_cast<CFitItem *>(*it)->getCrossValidationCount(),
+                     static_cast<CFitItem *>(*target)->getCrossValidationCount());
+
+          // Compare and assign common cross validations
+          for (j = 0; j < jmax; j++)
+            {
+              std::string & Target =
+                *const_cast<std::string *>(&static_cast<CFitItem *>(*target)->getCrossValidation(j));
+              const std::string & Source =
+                pCrossValidationMap->find(static_cast<CFitItem *>(*it)->getCrossValidation(j))->second;
+
+              if (Target != Source)
+                {
+                  changed = true;
+                  Target = Source;
+                }
+            }
+
+          // Remove exceeding cross validations starting from the last
+          for (jmax = static_cast<CFitItem *>(*target)->getCrossValidationCount() - 1;
+               j <= jmax && jmax != C_INVALID_INDEX; jmax--)
+            {
+              changed = true;
+              static_cast<CFitItem *>(*target)->removeCrossValidation(jmax);
+            }
+
+          // Add missing cross validations
+          for (jmax = static_cast<CFitItem *>(*it)->getCrossValidationCount(); j < jmax; j++)
+            {
+              changed = true;
+
+              const std::string & Source =
+                pCrossValidationMap->find(static_cast<CFitItem *>(*it)->getCrossValidation(j))->second;
+
+              static_cast<CFitItem *>(*target)->addCrossValidation(Source);
+            }
+#endif // COPASI_CROSSVALIDATION
         }
     }
 
@@ -528,19 +601,23 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pKeyMa
       switch (mItemType)
         {
         case OPT_ITEM:
+        case OPT_CONSTRAINT:
           pItem = new COptItem(**it);
           break;
+
         case FIT_ITEM:
           pItem = new CFitItem(**it);
           break;
+
         case FIT_CONSTRAINT:
           pItem = new CFitConstraint(**it);
           break;
         }
 
-      if (mItemType)
+      if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
         {
-          if (!pKeyMap) return false;
+          if (pExperimentMap == NULL ||
+              pCrossValidationMap == NULL) return false;
 
           unsigned C_INT32 j, jmax =
             static_cast<CFitItem *>(pItem)->getExperimentCount();
@@ -551,7 +628,7 @@ bool CQFittingItemWidget::save(const std::map<std::string, std::string> * pKeyMa
               std::string & Target =
                 *const_cast<std::string *>(&static_cast<CFitItem *>(pItem)->getExperiment(j));
               const std::string & Source =
-                pKeyMap->find(static_cast<CFitItem *>(*it)->getExperiment(j))->second;
+                pExperimentMap->find(static_cast<CFitItem *>(*it)->getExperiment(j))->second;
 
               Target = Source;
             }
@@ -567,13 +644,20 @@ void CQFittingItemWidget::setItemType(const ItemType & type)
 {
   mItemType = type;
 
-  if (mItemType)
+  if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
     {
       mpLblExperiments->show();
       mpCheckAll->show();
       mpBoxExperiments->show();
       mpBtnExperiments->show();
       mpBtnPerExperiment->show();
+
+#ifdef COPASI_CROSSVALIDATION
+      mpLblCrossValidations->show();
+      mpCheckCrossValidationsAll->show();
+      mpBoxCrossValidations->show();
+      mpBtnCrossValidations->show();
+#endif // COPASI_CROSSVALIDATION
     }
   else
     {
@@ -582,6 +666,26 @@ void CQFittingItemWidget::setItemType(const ItemType & type)
       mpBoxExperiments->hide();
       mpBtnExperiments->hide();
       mpBtnPerExperiment->hide();
+
+#ifdef COPASI_CROSSVALIDATION
+      mpLblCrossValidations->hide();
+      mpCheckCrossValidationsAll->hide();
+      mpBoxCrossValidations->hide();
+      mpBtnCrossValidations->hide();
+#endif // COPASI_CROSSVALIDATION
+    }
+
+  if (mItemType == OPT_CONSTRAINT || mItemType == FIT_CONSTRAINT)
+    {
+      mpLblStart->hide();
+      mpEditStart->hide();
+      mpBtnReset->hide();
+    }
+  else
+    {
+      mpLblStart->show();
+      mpEditStart->show();
+      mpBtnReset->show();
     }
 
   qApp->processEvents();
@@ -592,7 +696,7 @@ void CQFittingItemWidget::slotExperimentChanged()
   // This slot is trigered when an experiment is deleted or changed,
   // but before new experiments are created.
 
-  if (!mItemType) return;
+  if (mItemType == OPT_ITEM || mItemType == OPT_CONSTRAINT) return;
 
   // Remove all references to deleted experiments.
   std::vector< COptItem * >::iterator it = mpItemsCopy->begin();
@@ -619,30 +723,7 @@ void CQFittingItemWidget::slotExperimentChanged()
 }
 
 void CQFittingItemWidget::setExperimentSet(const CExperimentSet * & pExperimentSet)
-{mppSet = &pExperimentSet;}
-
-void CQFittingItemWidget::slotCheckAll(bool checked)
-{
-  if (!mItemType) return;
-
-  if (!checked && mpBoxExperiments->count() == 0)
-    slotExperiments();
-  else if (checked)
-    {
-      std::set< unsigned int >::const_iterator it = mSelection.begin();
-      std::set< unsigned int >::const_iterator end = mSelection.end();
-
-      for (; it != end; ++it)
-        {
-          (*mpItemsCopy)[*it]->getGroup("Affected Experiments")->clear();
-          setTableText(*it, (*mpItemsCopy)[*it]);
-        }
-    }
-
-  mpTable->adjustColumn(0);
-
-  loadSelection();
-}
+{mppExperimentSet = &pExperimentSet;}
 
 void CQFittingItemWidget::slotDelete()
 {
@@ -703,6 +784,7 @@ void CQFittingItemWidget::slotCopy()
   switch (mItemType)
     {
     case OPT_ITEM:
+    case OPT_CONSTRAINT:
       pItem = new COptItem(*pSrc);
       break;
     case FIT_ITEM:
@@ -798,7 +880,7 @@ void CQFittingItemWidget::slotDown()
 
 void CQFittingItemWidget::slotDuplicatePerExperiment()
 {
-  if (!mItemType) return;
+  if (mItemType == OPT_ITEM || mItemType == OPT_CONSTRAINT) return;
 
   // Save the changes to  the current items
   saveSelection();
@@ -858,11 +940,11 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
   else
     {
       // We have ALL
-      imax = (*mppSet)->size();
+      imax = (*mppExperimentSet)->getExperimentCount();
       for (i = imax - 1; i != 0; i--)
         {
           pItem = new CFitItem(*(*mpItemsCopy)[*mSelection.begin()]);
-          pItem->addExperiment((*mppSet)->getExperiment(i)->CCopasiParameter::getKey());
+          pItem->addExperiment((*mppExperimentSet)->getExperiment(i)->CCopasiParameter::getKey());
 
           mpItemsCopy->insert(mpItemsCopy->begin() + row, pItem);
 
@@ -873,7 +955,7 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
 
       // Update the current item only when we have more than one experiment.
       if (imax > 1)
-        static_cast<CFitItem *>((*mpItemsCopy)[*mSelection.begin()])->addExperiment((*mppSet)->getExperiment(0)->CCopasiParameter::getKey());
+        static_cast<CFitItem *>((*mpItemsCopy)[*mSelection.begin()])->addExperiment((*mppExperimentSet)->getExperiment(0)->CCopasiParameter::getKey());
     }
 
   connect(mpTable, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
@@ -900,11 +982,14 @@ void CQFittingItemWidget::slotNew()
   switch (mItemType)
     {
     case OPT_ITEM:
+    case OPT_CONSTRAINT:
       pItem = new COptItem();
       break;
+
     case FIT_ITEM:
       pItem = new CFitItem();
       break;
+
     case FIT_CONSTRAINT:
       pItem = new CFitConstraint();
       break;
@@ -950,7 +1035,7 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
   else
     Item += "Not found: " + FROM_UTF8(pItem->getObjectCN());
 
-  if (mItemType)
+  if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
     {
       QString Experiments =
         FROM_UTF8(static_cast<const CFitItem *>(pItem)->getExperiments());
@@ -968,7 +1053,8 @@ void CQFittingItemWidget::setTableText(const int & row, const COptItem * pItem)
   else
     Item += "Not found: " + FROM_UTF8(pItem->getUpperBound());
 
-  Item += "; Start Value = " + QString::number(pItem->getStartValue());
+  if (mItemType == OPT_ITEM || mItemType == FIT_ITEM)
+    Item += "; Start Value = " + QString::number(pItem->getStartValue());
 
   mpTable->setText(row, 0, Item);
 }
@@ -1026,13 +1112,17 @@ void CQFittingItemWidget::loadSelection()
       mpCheckAll->setChecked(true);
       mpBoxExperiments->setEnabled(false);
 
+      mpCheckCrossValidationsAll->setChecked(true);
+      mpBoxCrossValidations->setEnabled(false);
+
       QString Empty("");
       int Pos = 0;
       mpObjectValidator->validate(Empty, Pos);
     }
   else
     {
-      disconnect(mpCheckAll, SIGNAL(toggled(bool)), this, SLOT(slotCheckAll(bool)));
+      disconnect(mpCheckAll, SIGNAL(toggled(bool)), this, SLOT(slotCheckAllExperiments(bool)));
+      disconnect(mpCheckCrossValidationsAll, SIGNAL(toggled(bool)), this, SLOT(slotCheckAllCrossValidations(bool)));
       QString Value;
 
       COptItem * pItem = (*mpItemsCopy)[*it];
@@ -1084,7 +1174,8 @@ void CQFittingItemWidget::loadSelection()
       mpEditStart->setText(QString::number(pItem->getStartValue()));
 
       std::string Experiments;
-      if (mItemType)
+      std::string CrossValidations;
+      if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
         {
           Experiments = static_cast<CFitItem *>(pItem)->getExperiments();
 
@@ -1100,8 +1191,27 @@ void CQFittingItemWidget::loadSelection()
                 mpBoxExperiments->insertItem(FROM_UTF8(pObject->getObjectName()));
             }
 
-          mpCheckAll->setChecked(!static_cast<CFitItem *>(pItem)->getExperimentCount());
-          mpBoxExperiments->setEnabled(static_cast<CFitItem *>(pItem)->getExperimentCount());
+          mpCheckAll->setChecked(imax == 0);
+          mpBoxExperiments->setEnabled(imax != 0);
+
+#ifdef COPASI_CROSSVALIDATION
+          CrossValidations = static_cast<CFitItem *>(pItem)->getCrossValidations();
+
+          mpBoxCrossValidations->clear();
+
+          imax = static_cast<CFitItem *>(pItem)->getCrossValidationCount();
+          for (i = 0; i < imax; i++)
+            {
+              const CCopasiObject * pObject =
+                GlobalKeys.get(static_cast<CFitItem *>(pItem)->getCrossValidation(i));
+
+              if (pObject)
+                mpBoxCrossValidations->insertItem(FROM_UTF8(pObject->getObjectName()));
+            }
+
+          mpCheckCrossValidationsAll->setChecked(imax == 0);
+          mpBoxCrossValidations->setEnabled(imax != 0);
+#endif // COPASI_CROSSVALIDATION
         }
 
       for (++it; it != end; ++it)
@@ -1156,15 +1266,25 @@ void CQFittingItemWidget::loadSelection()
           if (QString::number(pItem->getStartValue()) != mpEditStart->text())
             mpEditStart->setText("");
 
-          if (mItemType &&
+          if ((mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT) &&
               Experiments != static_cast<CFitItem *>(pItem)->getExperiments())
             {
               mpCheckAll->setChecked(false);
               mpBoxExperiments->setEnabled(false);
             }
+
+#ifdef COPASI_CROSSVALIDATION
+          if ((mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT) &&
+              CrossValidations != static_cast<CFitItem *>(pItem)->getCrossValidations())
+            {
+              mpCheckCrossValidationsAll->setChecked(false);
+              mpBoxCrossValidations->setEnabled(false);
+            }
+#endif // COPASI_CROSSVALIDATION
         }
 
-      connect(mpCheckAll, SIGNAL(toggled(bool)), this, SLOT(slotCheckAll(bool)));
+      connect(mpCheckAll, SIGNAL(toggled(bool)), this, SLOT(slotCheckAllExperiments(bool)));
+      connect(mpCheckCrossValidationsAll, SIGNAL(toggled(bool)), this, SLOT(slotCheckAllCrossValidations(bool)));
     }
 
   mpLowerValidator->saved();
@@ -1348,4 +1468,133 @@ void CQFittingItemWidget::slotStartLostFocus()
       (*mpItemsCopy)[*it]->setStartValue(Number);
       setTableText(*it, (*mpItemsCopy)[*it]);
     }
+}
+
+void CQFittingItemWidget::slotCrossValidations()
+{
+  if (mItemType == FIT_ITEM || mItemType == FIT_CONSTRAINT)
+    {
+      CQExperimentSelection * pDialog = new CQExperimentSelection(this);
+      pDialog->load(mpBoxCrossValidations, * mppCrossValidationSet);
+
+      if (pDialog->exec() == QDialog::Accepted)
+        {
+          if (!mSelection.size())
+            slotNew();
+
+          std::set< unsigned int >::const_iterator it = mSelection.begin();
+          std::set< unsigned int >::const_iterator end = mSelection.end();
+
+          for (; it != end; ++it)
+            {
+              (*mpItemsCopy)[*it]->getGroup("Affected Cross Validation Experiments")->clear();
+              unsigned C_INT32 i, imax = mpBoxCrossValidations->count();
+
+              for (i = 0; i < imax && imax < (*mppCrossValidationSet)->getExperimentCount(); i++)
+                static_cast<CFitItem *>((*mpItemsCopy)[*it])->addCrossValidation((*mppCrossValidationSet)->getExperiment((const char *) mpBoxCrossValidations->text(i).utf8())->CCopasiParameter::getKey());
+
+              setTableText(*it, (*mpItemsCopy)[*it]);
+            }
+
+          mpTable->adjustColumn(0);
+        }
+
+      loadSelection();
+
+      delete pDialog;
+    }
+}
+
+void CQFittingItemWidget::slotCrossValidationChanged()
+{
+#ifdef COPASI_CROSSVALIDATION
+  // This slot is trigered when an experiment is deleted or changed,
+  // but before new experiments are created.
+
+  if (mItemType == OPT_ITEM || mItemType == OPT_CONSTRAINT) return;
+
+  // Remove all references to deleted experiments.
+  std::vector< COptItem * >::iterator it = mpItemsCopy->begin();
+  std::vector< COptItem * >::iterator end = mpItemsCopy->end();
+
+  unsigned C_INT32 i, imax;
+  unsigned C_INT32 Row;
+
+  for (Row = 0; it != end; ++it, ++Row)
+    {
+      for (i = 0, imax = static_cast<CFitItem *>(*it)->getCrossValidationCount(); i < imax; ++i)
+        if (!GlobalKeys.get(static_cast<CFitItem *>(*it)->getCrossValidation(i)))
+          static_cast<CFitItem *>(*it)->removeCrossValidation(i);
+
+      setTableText(Row, *it);
+    }
+
+  mpTable->adjustColumn(0);
+
+  // Reload the current item.
+  loadSelection();
+
+  // Enable/disable the interface to affected cross validations.
+  setCrossValidationSet(*mppCrossValidationSet);
+
+#endif // COPASI_CROSSVALIDATION
+  return;
+}
+
+void CQFittingItemWidget::setCrossValidationSet(const CCrossValidationSet * & pCrossValidationSet)
+{
+  mppCrossValidationSet = &pCrossValidationSet;
+
+  bool Enabled = (*mppCrossValidationSet)->getExperimentCount() != 0;
+
+  mpBtnCrossValidations->setEnabled(Enabled);
+  mpCheckCrossValidationsAll->setEnabled(Enabled);
+  mpBoxCrossValidations->setEnabled(Enabled && !mpCheckCrossValidationsAll->isChecked());
+  mpLblCrossValidations->setEnabled(Enabled);
+}
+
+void CQFittingItemWidget::slotCheckAllCrossValidations(bool checked)
+{
+  if (mItemType == OPT_ITEM || mItemType == OPT_CONSTRAINT) return;
+
+  if (!checked && mpBoxCrossValidations->count() == 0)
+    slotCrossValidations();
+  else if (checked)
+    {
+      std::set< unsigned int >::const_iterator it = mSelection.begin();
+      std::set< unsigned int >::const_iterator end = mSelection.end();
+
+      for (; it != end; ++it)
+        {
+          (*mpItemsCopy)[*it]->getGroup("Affected Cross Validation Experiments")->clear();
+          setTableText(*it, (*mpItemsCopy)[*it]);
+        }
+    }
+
+  mpTable->adjustColumn(0);
+
+  loadSelection();
+}
+
+void CQFittingItemWidget::slotCheckAllExperiments(bool checked)
+{
+  if (mItemType == OPT_ITEM || mItemType == OPT_CONSTRAINT) return;
+
+  if (!checked && mpBoxExperiments->count() == 0)
+    slotExperiments();
+  else if (checked)
+    {
+      std::set< unsigned int >::const_iterator it = mSelection.begin();
+      std::set< unsigned int >::const_iterator end = mSelection.end();
+
+      for (; it != end; ++it)
+        {
+          (*mpItemsCopy)[*it]->getGroup("Affected Experiments")->clear();
+          setTableText(*it, (*mpItemsCopy)[*it]);
+        }
+    }
+
+  mpTable->adjustColumn(0);
+
+  loadSelection();
 }

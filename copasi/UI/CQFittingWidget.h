@@ -1,20 +1,20 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/28 00:21:45 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingWidget.ui'
  **
- ** Created: Wed Mar 8 13:45:31 2006
- **      by: The User Interface Compiler ($Id: CQFittingWidget.h,v 1.10 2006/10/28 00:21:45 shoops Exp $)
+ ** Created: Thu Nov 9 10:10:22 2006
+ **      by: The User Interface Compiler ($Id: CQFittingWidget.h,v 1.11 2006/11/16 15:45:13 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -24,7 +24,7 @@
 
 #include <qvariant.h>
 #include <qpixmap.h>
-#include "UI/TaskWidget.h"
+#include "TaskWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -35,6 +35,7 @@ class QTabWidget;
 class QWidget;
 class CExperimentSet;
 class CQFittingItemWidget;
+class CCrossValidationSet;
 
 class CQFittingWidget : public TaskWidget
   {
@@ -44,10 +45,11 @@ class CQFittingWidget : public TaskWidget
     CQFittingWidget(QWidget* parent = 0, const char* name = 0);
     ~CQFittingWidget();
 
-    QPushButton* mpBtnExperiment;
+    QPushButton* mpBtnCrossValidation;
     QTabWidget* mpTabWidget;
     QWidget* mpParametersPage;
     QWidget* mpConstraintsPage;
+    QPushButton* mpBtnExperiment;
 
     virtual bool runTask();
 
@@ -62,7 +64,9 @@ class CQFittingWidget : public TaskWidget
     CQFittingItemWidget * mpParameters;
     QHBoxLayout * mpConstraintPageLayout;
     CExperimentSet * mpExperimentSet;
-    std::map<std::string, std::string> mKeyMap;
+    std::map<std::string, std::string> mExperimentKeyMap;
+    CCrossValidationSet * mpCrossValidationSet;
+    std::map<std::string, std::string> mCrossValidationKeyMap;
 
     virtual bool saveTask();
     virtual bool loadTask();
@@ -77,6 +81,7 @@ class CQFittingWidget : public TaskWidget
 
     void slotExperimentData();
     void slotPageChange(QWidget * currentPage);
+    void slotCrossValidationData();
 
   private:
     QPixmap image0;

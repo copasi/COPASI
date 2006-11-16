@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.21 $
+   $Revision: 1.22 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/28 00:21:45 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -417,7 +417,7 @@ void CQExperimentData::slotExperimentDelete()
     slotExperimentChanged(NULL);
 
   // remove experiment
-  mpExperimentSetCopy->removeParameter(mpExperimentSetCopy->keyToIndex(key));
+  mpExperimentSetCopy->removeExperiment(mpExperimentSetCopy->keyToIndex(key));
   syncExperiments();
 
   unsigned C_INT32 First, Last;
@@ -552,10 +552,10 @@ void CQExperimentData::slotFileDelete()
   mpBoxFile->removeItem(index);
 
   // delete all experiments in current file.
-  unsigned C_INT32 i = mpExperimentSetCopy->size() - 1;
+  unsigned C_INT32 i = mpExperimentSetCopy->getExperimentCount() - 1;
   for (; i < C_INVALID_INDEX; i--)
     if (mpExperimentSetCopy->getExperiment(i)->getFileName() == FileName)
-      mpExperimentSetCopy->removeParameter(i);
+      mpExperimentSetCopy->removeExperiment(i);
 }
 
 void CQExperimentData::slotCancel()
@@ -571,7 +571,7 @@ void CQExperimentData::slotOK()
 
   CExperiment * pExperiment;
 
-  unsigned C_INT32 i = mpExperimentSet->size() - 1;
+  unsigned C_INT32 i = mpExperimentSet->getExperimentCount() - 1;
   for (; i < C_INVALID_INDEX; i--)
     {
       pExperiment =
@@ -582,20 +582,64 @@ void CQExperimentData::slotOK()
           mpExperimentSetCopy->removeParameter(pExperiment->getObjectName());
         }
       else
-        mpExperimentSet->removeParameter(i);
+        mpExperimentSet->removeExperiment(i);
     }
 
   emit experimentChanged();
 
-  for (i = 0; i < mpExperimentSetCopy->size(); i++)
+  for (i = 0; i < mpExperimentSetCopy->getExperimentCount(); i++)
     mpExperimentSet->addExperiment(*mpExperimentSetCopy->getExperiment(i));
+
+#ifdef COPASI_CROSSVALIDATION
+  if (mCrossValidation)
+    {
+      CCrossValidationSet * pSet = static_cast< CCrossValidationSet * >(mpExperimentSet);
+
+      if (QString::number(pSet->getWeight()) != mpEditWeight->text())
+        {
+          pSet->setWeight(mpEditWeight->text().toDouble());
+        }
+
+      if (QString::number(pSet->getThreshold()) != mpEditThreshold->text())
+        {
+          pSet->setThreshold(mpEditThreshold->text().toUInt());
+        }
+    }
+#endif // COPASI_CROSSVALIDATION
 
   pdelete(mpExperimentSetCopy);
   accept();
 }
 
-bool CQExperimentData::load(CExperimentSet *& pExperimentSet)
+bool CQExperimentData::load(CExperimentSet * pExperimentSet)
 {
+#ifdef COPASI_CROSSVALIDATION
+  mCrossValidation = (dynamic_cast< CCrossValidationSet * >(pExperimentSet) != NULL);
+#endif // COPASI_CROSSVALIDATION
+
+  if (mCrossValidation)
+    {
+      setCaption("Cross Validation Data");
+      mpLblWeight->show();
+      mpEditWeight->show();
+      mpLblThreshold->show();
+      mpEditThreshold->show();
+      mpLineCrossValidation->show();
+
+#ifdef COPASI_CROSSVALIDATION
+      mpEditWeight->setText(QString::number(static_cast< CCrossValidationSet * >(pExperimentSet)->getWeight()));
+      mpEditThreshold->setText(QString::number(static_cast< CCrossValidationSet * >(pExperimentSet)->getThreshold()));
+#endif // COPASI_CROSSVALIDATION
+    }
+  else
+    {
+      mpLblWeight->hide();
+      mpEditWeight->hide();
+      mpLblThreshold->hide();
+      mpEditThreshold->hide();
+      mpLineCrossValidation->hide();
+    }
+
   if (!pExperimentSet) return false;
 
   mpExperiment = NULL;
@@ -604,7 +648,13 @@ bool CQExperimentData::load(CExperimentSet *& pExperimentSet)
   mpExperimentSet = pExperimentSet;
 
   pdelete(mpExperimentSetCopy);
+
   mpExperimentSetCopy = new CExperimentSet(*pExperimentSet);
+
+#ifdef COPASI_CROSSVALIDATION
+  if (mCrossValidation)
+    mpExperimentSetCopy = elevate< CCrossValidationSet, CExperimentSet >(mpExperimentSetCopy);
+#endif // COPASI_CROSSVALIDATION
 
   pdelete(mpFileInfo);
   mpFileInfo = new CExperimentFileInfo(*mpExperimentSetCopy);
@@ -612,7 +662,7 @@ bool CQExperimentData::load(CExperimentSet *& pExperimentSet)
   // Build the key map so that we are able to update the correct experiments
   // on OK.
   mKeyMap.clear();
-  unsigned C_INT32 i, imax = mpExperimentSet->size();
+  unsigned C_INT32 i, imax = mpExperimentSet->getExperimentCount();
 
   for (i = 0; i < imax; i++)
     mKeyMap[mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey()] =
@@ -683,6 +733,7 @@ void CQExperimentData::init()
   mpEditHeader->setValidator(mpValidatorHeader);
 
   mShown = C_INVALID_INDEX;
+  mCrossValidation = false;
 }
 
 void CQExperimentData::destroy()
@@ -760,7 +811,7 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
 
       mpCheckFrom->setChecked(isLikePreviousExperiment(pExperiment));
 
-      if (Next < mpExperimentSetCopy->size())
+      if (Next < mpExperimentSetCopy->getExperimentCount())
         mpCheckTo->setChecked(isLikePreviousExperiment(mpExperimentSetCopy->getExperiment(Next)));
       else
         mpCheckTo->setChecked(false);
@@ -789,7 +840,7 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
   unsigned C_INT32 Next =
     mpExperimentSetCopy->keyToIndex(pExperiment->CCopasiParameter::getKey()) + 1;
 
-  if (Next < mpExperimentSetCopy->size() && mpCheckTo->isChecked())
+  if (Next < mpExperimentSetCopy->getExperimentCount() && mpCheckTo->isChecked())
     {
       CExperiment * pNext = mpExperimentSetCopy->getExperiment(Next);
 
@@ -1229,7 +1280,7 @@ void CQExperimentData::slotCheckTo(bool checked)
   unsigned C_INT32 Next =
     mpExperimentSetCopy->keyToIndex(mpExperiment->CCopasiParameter::getKey()) + 1;
 
-  if (Next < mpExperimentSetCopy->size())
+  if (Next < mpExperimentSetCopy->getExperimentCount())
     {
       CExperiment * pNext = mpExperimentSetCopy->getExperiment(Next);
       unsigned C_INT32 OldWeightMethod = mOldWeightMethod;

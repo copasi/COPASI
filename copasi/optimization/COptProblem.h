@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptProblem.h,v $
-   $Revision: 1.51 $
+   $Revision: 1.52 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/15 15:57:16 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -175,8 +175,8 @@ class COptProblem : public CCopasiProblem
      * @param const CVector< C_FLOAT64 > & variables
      * @return bool continue;
      */
-    bool setSolution(const C_FLOAT64 & value,
-                     const CVector< C_FLOAT64 > & variables);
+    virtual bool setSolution(const C_FLOAT64 & value,
+                             const CVector< C_FLOAT64 > & variables);
 
     /**
      * Retrieve the result for the solution

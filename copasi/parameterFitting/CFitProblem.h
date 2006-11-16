@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/09 14:08:03 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,6 +17,7 @@
 #include "utilities/CMatrix.h"
 
 class CExperimentSet;
+class CCrossValidationSet;
 class CTrajectoryProblem;
 class CState;
 class CFitConstraint;
@@ -75,7 +76,7 @@ class CFitProblem : public COptProblem
     virtual bool initialize();
 
     /**
-     * Do the calculatting based on CalculateVariables and fill
+     * Do the calculation based on CalculateVariables and fill
      * CalculateResults with the results.
      * @result bool continue
      */
@@ -119,12 +120,6 @@ class CFitProblem : public COptProblem
      * @param std::ostream * ostream
      */
     virtual void printResult(std::ostream * ostream) const;
-
-    /**
-     * Retrieve the vector of residuals
-     * @return const CVector< C_FLOAT64 > & dependentValues
-     */
-    const CVector< C_FLOAT64 > & getDependentValues() const;
 
     /**
      * Set residual required
@@ -183,6 +178,23 @@ class CFitProblem : public COptProblem
      */
     const CExperimentSet & getExperiementSet() const;
 
+#ifdef COPASI_CROSSVALIDATION
+    /**
+     * Retreive the cross validation set.
+     * @return const CCrossValidationSet & crossValidationSet
+     */
+    const CCrossValidationSet & getCrossValidationSet() const;
+
+    /**
+     * Set the solution.
+     * @param const C_FLOAT64 & value
+     * @param const CVector< C_FLOAT64 > & variables
+     * @return bool continue;
+     */
+    virtual bool setSolution(const C_FLOAT64 & value,
+                             const CVector< C_FLOAT64 > & variables);
+#endif // COPASI_CROSSVALIDATION
+
     /**
      * Restore the trajectory problem
      * @result bool succes
@@ -197,6 +209,15 @@ class CFitProblem : public COptProblem
     void initializeParameter();
 
     virtual bool createObjectiveFunction();
+
+#ifdef COPASI_CROSSVALIDATION
+    /**
+     * Do the calculation for the cross validation based on the solution variables
+     * and determine wheter to continue parameter fitting
+     * @result bool continue
+     */
+    bool calculateCrossValidation();
+#endif // COPASI_CROSSVALIDATION
 
   private:
     // Attributes
@@ -216,6 +237,43 @@ class CFitProblem : public COptProblem
     CMatrix< CFitConstraint * > mExperimentConstraints;
 
     /**
+     * The simulation values for the experiments.
+     */
+    CVector< C_FLOAT64 > mExperimentDependentValues;
+
+#ifdef COPASI_CROSSVALIDATION
+    /**
+     * The experiment set to which the model is fitted.
+     */
+    CCrossValidationSet * mpCrossValidationSet;
+
+    /**
+     * Matrix of update methods for items for each cross validation.
+     */
+    CMatrix< UpdateMethod * > mCrossValidationUpdateMethods;
+
+    /**
+     * Matrix of constraints for each experiment.
+     */
+    CMatrix< CFitConstraint * > mCrossValidationConstraints;
+
+    /**
+     * The simulation values for the experiments.
+     */
+    CVector< C_FLOAT64 > mCrossValidationDependentValues;
+
+    /**
+     * The objective value of the cross validation
+     */
+    C_FLOAT64 mCrossValidationObjective;
+
+    /**
+     * A counter to determine whether the treshold is reached.
+     */
+    unsigned C_INT32 mThresholdCounter;
+#endif // COPASI_CROSSVALIDATION
+
+    /**
      * Copy of the trajectory problem so that we can restore the defaults
      */
     CTrajectoryProblem * mpTrajectoryProblem;
@@ -224,11 +282,6 @@ class CFitProblem : public COptProblem
      * Copy of the initial state needed for calculate
      */
     CState * mpInitialState;
-
-    /**
-     * The simulation values
-     */
-    CVector< C_FLOAT64 > mDependentValues;
 
     /**
      * Matrix of the residuals.

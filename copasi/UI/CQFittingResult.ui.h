@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingResult.ui.h,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/28 00:18:41 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -170,7 +170,7 @@ bool CQFittingResult::enter(const std::string & /* key */)
   // Loop over the experiments
   const CExperimentSet & Experiments = mpProblem->getExperiementSet();
 
-  imax = Experiments.size();
+  imax = Experiments.getExperimentCount();
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
@@ -355,7 +355,7 @@ void CQFittingResult::slotSave(void)
   // Loop over the experiments
   const CExperimentSet & Experiments = mpProblem->getExperiementSet();
 
-  imax = Experiments.size();
+  imax = Experiments.getExperimentCount();
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 

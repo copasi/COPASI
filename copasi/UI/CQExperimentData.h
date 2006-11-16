@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/24 14:16:37 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Thu Aug 24 09:30:30 2006
- **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.12 2006/08/24 14:16:37 shoops Exp $)
+ ** Created: Thu Nov 9 09:21:41 2006
+ **      by: The User Interface Compiler ($Id: CQExperimentData.h,v 1.13 2006/11/16 15:45:13 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -32,12 +32,12 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
-class QToolButton;
 class QLabel;
-class QListBox;
-class QListBoxItem;
 class QLineEdit;
 class QFrame;
+class QToolButton;
+class QListBox;
+class QListBoxItem;
 class QComboBox;
 class QCheckBox;
 class QButtonGroup;
@@ -49,6 +49,7 @@ class CExperimentFileInfo;
 class CExperiment;
 class CQExperimentDataValidator;
 class QSignalMapper;
+class CCrossValidationSet;
 
 class CQExperimentData : public QDialog
   {
@@ -58,6 +59,11 @@ class CQExperimentData : public QDialog
     CQExperimentData(QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0);
     ~CQExperimentData();
 
+    QLabel* mpLblWeight;
+    QLineEdit* mpEditWeight;
+    QLabel* mpLblThreshold;
+    QLineEdit* mpEditThreshold;
+    QFrame* mpLineCrossValidation;
     QToolButton* mpBtnFileAdd;
     QLabel* mpLblFile;
     QListBox* mpBoxFile;
@@ -95,7 +101,7 @@ class CQExperimentData : public QDialog
 
     friend class CQExperimentDataValidator;
 
-    bool load(CExperimentSet * & pExperimentSet);
+    virtual bool load(CExperimentSet * pExperimentSet);
 
   public slots:
     virtual void loadTable(CExperiment * pExperiment, const bool & guess);
@@ -119,6 +125,7 @@ class CQExperimentData : public QDialog
     unsigned int mShown;
     CQExperimentDataValidator * mpValidatorName;
     QSignalMapper * mpComboMap;
+    bool mCrossValidation;
 
     virtual bool loadExperiment(CExperiment * pExperiment);
     bool saveExperiment(CExperiment * pExperiment, const bool & full);
@@ -128,6 +135,7 @@ class CQExperimentData : public QDialog
     void enableEdit(const bool & enable);
 
     QVBoxLayout* CQExperimentDataLayout;
+    QHBoxLayout* mpLayoutCrossValidation;
     QGridLayout* mpLayoutFile;
     QGridLayout* layout23;
     QHBoxLayout* mpBtnGroupLayout;

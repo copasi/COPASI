@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>319</width>
-            <height>116</height>
+            <width>324</width>
+            <height>114</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -43,29 +43,12 @@
                 </property>
                 <widget class="QPushButton" row="0" column="2">
                     <property name="name">
-                        <cstring>mpBtnExperiment</cstring>
+                        <cstring>mpBtnCrossValidation</cstring>
                     </property>
                     <property name="text">
-                        <string>Experimental Data</string>
+                        <string>Cross Validation Data</string>
                     </property>
                 </widget>
-                <spacer row="0" column="1">
-                    <property name="name">
-                        <cstring>mpSpacer</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>311</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
                 <widget class="QTabWidget" row="1" column="0" rowspan="1" colspan="3">
                     <property name="name">
                         <cstring>mpTabWidget</cstring>
@@ -87,6 +70,31 @@
                         </attribute>
                     </widget>
                 </widget>
+                <widget class="QPushButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>mpBtnExperiment</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Experimental Data</string>
+                    </property>
+                </widget>
+                <spacer row="0" column="0">
+                    <property name="name">
+                        <cstring>mpSpacer</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>90</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
             </grid>
         </widget>
     </vbox>
@@ -127,7 +135,18 @@
         <receiver>CQFittingWidget</receiver>
         <slot>slotPageChange(QWidget*)</slot>
     </connection>
+    <connection>
+        <sender>mpBtnCrossValidation</sender>
+        <signal>clicked()</signal>
+        <receiver>CQFittingWidget</receiver>
+        <slot>slotCrossValidationData()</slot>
+    </connection>
 </connections>
+<tabstops>
+    <tabstop>mpBtnExperiment</tabstop>
+    <tabstop>mpBtnCrossValidation</tabstop>
+    <tabstop>mpTabWidget</tabstop>
+</tabstops>
 <includes>
     <include location="local" impldecl="in declaration">TaskWidget.h</include>
     <include location="local" impldecl="in implementation">CQFittingWidget.ui.h</include>
@@ -135,6 +154,7 @@
 <forwards>
     <forward>class CExperimentSet</forward>
     <forward>class CQFittingItemWidget</forward>
+    <forward>class CCrossValidationSet</forward>
 </forwards>
 <variables>
     <variable>CQFittingItemWidget * mpCurrentList;</variable>
@@ -143,13 +163,16 @@
     <variable>CQFittingItemWidget * mpParameters;</variable>
     <variable>QHBoxLayout * mpConstraintPageLayout;</variable>
     <variable>CExperimentSet * mpExperimentSet;</variable>
-    <variable>std::map&lt;std::string, std::string&gt; mKeyMap;</variable>
+    <variable>std::map&lt;std::string, std::string&gt; mExperimentKeyMap;</variable>
+    <variable>CCrossValidationSet * mpCrossValidationSet;</variable>
+    <variable>std::map&lt;std::string, std::string&gt; mCrossValidationKeyMap;</variable>
 </variables>
 <slots>
     <slot access="protected" specifier="non virtual">slotExperimentData()</slot>
     <slot access="protected" specifier="non virtual">slotPageChange( QWidget * currentPage )</slot>
     <slot specifier="non virtual">slotParameterNumberChanged( int number )</slot>
     <slot specifier="non virtual">slotConstraintNumberChanged( int number )</slot>
+    <slot access="protected" specifier="non virtual">slotCrossValidationData()</slot>
 </slots>
 <functions>
     <function access="protected" returnType="bool">saveTask()</function>
@@ -161,6 +184,6 @@
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>taskwidget.h</includehint>
+    <includehint>TaskWidget.h</includehint>
 </includehints>
 </UI>

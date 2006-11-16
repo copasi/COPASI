@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.h,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:30:29 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -76,10 +76,23 @@ class CExperimentSet: public CCopasiParameterGroup
     bool calculateStatistics();
 
     /**
+     * Retreive the number of the experiments in the set
+     * @return unsigned C_INT32 experimentCount
+     */
+    unsigned C_INT32 getExperimentCount() const;
+
+  public:
+    /**
      * Add an experiment
      * @return CExperiment * experiment
      */
     CExperiment * addExperiment(const CExperiment & experiment);
+
+    /**
+     * Remove an experiment from the set
+     * @param const unsigned C_INT32 & index
+     */
+    void removeExperiment(const unsigned C_INT32 & index);
 
     /**
      * Retrieve the indexed experiment
@@ -199,6 +212,11 @@ class CExperimentSet: public CCopasiParameterGroup
     std::vector< CExperiment * > * mpExperiments;
 
     /**
+     * The number of parameters which are not of type CExperiment
+     */
+    unsigned C_INT32 mNonExperiments;
+
+    /**
      * A set of all dependent data objects;
      */
     CVector< CCopasiObject * > mDependentObjects;
@@ -228,5 +246,86 @@ class CExperimentSet: public CCopasiParameterGroup
      */
     CVector< unsigned C_INT32 > mDependentDataCount;
   };
+
+#ifdef COPASI_CROSSVALIDATION
+class CCrossValidationSet : public CExperimentSet
+  {
+  public:
+    /**
+     * Default constructor
+     * @param const std::string & name (default: Cross Validation Set)
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CCrossValidationSet(const std::string & name = "Cross Validation Set",
+                        const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Copy constructor
+     * @param const CCrossValidationSet & src
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CCrossValidationSet(const CCrossValidationSet & src,
+                        const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Specific constructor used for reading copasi files
+     * @param const CCopasiParameterGroup & group
+     * @param const CCopasiContainer * pParent (default: NULL)
+     */
+    CCrossValidationSet(const CCopasiParameterGroup & group,
+                        const CCopasiContainer * pParent = NULL);
+
+    /**
+     * Destructor
+     */
+    virtual ~CCrossValidationSet();
+
+    /**
+     * Set the weight
+     * @param const C_FLOAT64 & weight
+     */
+    void setWeight(const C_FLOAT64 & weight);
+
+    /**
+     * Retreive the weight
+     * @return const C_FLOAT64 & weight
+     */
+    const C_FLOAT64 & getWeight() const;
+
+    /**
+     * Set the threshold
+     * @param const unsigned C_INT32 & threshold
+     */
+    void setThreshold(const unsigned C_INT32 & threshold);
+
+    /**
+     * Retreive the threshold
+     * @return const unsigned C_INT32 & threshold
+     */
+    const unsigned C_INT32 & getThreshold() const;
+
+  private:
+    /**
+     * Allocates all group parameters and assures that they are
+     * properly initialized.
+     */
+    void initializeParameter();
+
+  private:
+    // Attributes
+    /**
+     * The weight of each datapoint relative to a data point of the
+     * experiment set, i.e. 1 gives each point the same weight
+     */
+    C_FLOAT64 * mpWeight;
+
+    /**
+     * The threshold indicates the number of failed successive checks for which
+     * the objective function has not improved needed to terminate the
+     * parameter estimation.
+     */
+    unsigned C_INT32 * mpThreshold;
+  };
+#endif // COPASI_CROSSVALIDATION
 
 #endif // COPASI_CExperimentSet

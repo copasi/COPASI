@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingItemWidget.h,v $
-   $Revision: 1.19 $
+   $Revision: 1.20 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/28 00:21:45 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingItemWidget.ui'
  **
- ** Created: Fri Aug 18 12:41:10 2006
- **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.19 2006/10/28 00:21:45 shoops Exp $)
+ ** Created: Tue Nov 14 11:17:23 2006
+ **      by: The User Interface Compiler ($Id: CQFittingItemWidget.h,v 1.20 2006/11/16 15:45:13 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -25,7 +25,7 @@
 #include <qvariant.h>
 #include <qpixmap.h>
 #include <qwidget.h>
-#include "UI/TaskWidget.h"
+#include "TaskWidget.h"
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -36,8 +36,8 @@ class QLabel;
 class QCheckBox;
 class QToolButton;
 class QLineEdit;
-class QPushButton;
 class QComboBox;
+class QPushButton;
 class CCopasiSelectionDialog;
 class COptItem;
 class CCopasiObject;
@@ -47,7 +47,8 @@ class CQValidatorNotEmpty;
 class QColor;
 class CExperimentSet;
 class CCopasiParameterGroup;
-enum ItemType {OPT_ITEM = 0, FIT_ITEM, FIT_CONSTRAINT};
+enum ItemType {OPT_ITEM = 0, OPT_CONSTRAINT, FIT_ITEM, FIT_CONSTRAINT};
+class CCrossValidationSet;
 
 class CQFittingItemWidget : public QWidget
   {
@@ -58,68 +59,75 @@ class CQFittingItemWidget : public QWidget
     ~CQFittingItemWidget();
 
     QTable* mpTable;
-    QLabel* mpLblLower;
-    QCheckBox* mpCheckUpperInf;
-    QToolButton* mpBtnNew;
-    QLineEdit* mpEditLower;
-    QToolButton* mpBtnLowerEdit;
-    QToolButton* mpBtnDel;
-    QLineEdit* mpEditStart;
-    QToolButton* mpBtnReset;
-    QLabel* mpLblExperiments;
-    QToolButton* mpBtnUp;
-    QLabel* mpLblUpper_2;
-    QPushButton* mpBtnPerExperiment;
-    QLineEdit* mpEditObject;
-    QToolButton* mpBtnObject;
-    QToolButton* mpBtnDown;
-    QToolButton* mpBtnCopy;
+    QLabel* mpLblCrossValidations;
     QCheckBox* mpCheckLowerInf;
+    QToolButton* mpBtnDel;
+    QLabel* mpLblStart;
+    QToolButton* mpBtnUp;
     QLineEdit* mpEditUpper;
     QToolButton* mpBtnUpperEdit;
+    QToolButton* mpBtnNew;
     QLabel* mpLblUpper;
+    QToolButton* mpBtnDown;
+    QLabel* mpLblLower;
+    QLabel* mpLblExperiments;
+    QToolButton* mpBtnCopy;
+    QLineEdit* mpEditStart;
+    QToolButton* mpBtnReset;
+    QLineEdit* mpEditLower;
+    QToolButton* mpBtnLowerEdit;
     QCheckBox* mpCheckAll;
     QComboBox* mpBoxExperiments;
     QToolButton* mpBtnExperiments;
     QLabel* mpLblObject;
+    QCheckBox* mpCheckCrossValidationsAll;
+    QComboBox* mpBoxCrossValidations;
+    QToolButton* mpBtnCrossValidations;
+    QCheckBox* mpCheckUpperInf;
+    QLineEdit* mpEditObject;
+    QToolButton* mpBtnObject;
+    QPushButton* mpBtnPerExperiment;
 
-    virtual bool load(CCopasiParameterGroup * pItems, const std::map<std::string, std::string> * pKeyMap);
-    virtual bool save(const std::map<std::string, std::string> * pKeyMap);
+    virtual bool load(CCopasiParameterGroup * pItems, const std::map<std::string, std::string> * pExperimentMap, const std::map<std::string, std::string> * pCrossValidationMap);
+    virtual bool save(const std::map<std::string, std::string> * pExperimentMap, const std::map<std::string, std::string> * pCrossValidationMap);
     void setItemType(const ItemType & type);
     void setExperimentSet(const CExperimentSet * & pExperimentSet);
+    void setCrossValidationSet(const CCrossValidationSet * & pCrossValidationSet);
 
   signals:
     void numberChanged(int);
 
   protected:
-    CCopasiParameterGroup * mpItems;
-    const CExperimentSet ** mppSet;
-    CCopasiObjectName* mpObjectCN;
-    const CCopasiObject* mpLowerObject;
-    const CCopasiObject* mpUpperObject;
-    CQValidatorNotEmpty * mpObjectValidator;
-    CQValidatorBound * mpLowerValidator;
-    CQValidatorBound * mpUpperValidator;
-    bool mLowerInfChanged;
-    bool mUpperInfChanged;
-    QColor mSavedColor;
-    QColor mChangedColor;
-    ItemType mItemType;
-    std::vector< COptItem * > * mpItemsCopy;
-    unsigned int mCurrentRow;
+    const CCrossValidationSet **mppCrossValidationSet;
     std::set< unsigned int > mSelection;
+    unsigned int mCurrentRow;
+    std::vector< COptItem * > * mpItemsCopy;
+    ItemType mItemType;
+    QColor mChangedColor;
+    QColor mSavedColor;
+    bool mUpperInfChanged;
+    bool mLowerInfChanged;
+    CQValidatorBound * mpUpperValidator;
+    CQValidatorBound * mpLowerValidator;
+    CQValidatorNotEmpty * mpObjectValidator;
+    const CCopasiObject* mpUpperObject;
+    const CCopasiObject* mpLowerObject;
+    CCopasiObjectName* mpObjectCN;
+    const CExperimentSet ** mppExperimentSet;
+    CCopasiParameterGroup * mpItems;
 
     QVBoxLayout* CQFittingItemWidgetLayout;
-    QGridLayout* layout11;
+    QGridLayout* layout18;
     QSpacerItem* mpSpacer3;
-    QSpacerItem* mpSpacerLeft;
     QSpacerItem* mpSpacer2;
     QSpacerItem* mpSpacer1;
-    QHBoxLayout* mpLayoutLower;
-    QHBoxLayout* mpLayoutStart;
-    QHBoxLayout* mpLayoutObject;
+    QSpacerItem* mpSpacerLeft;
     QHBoxLayout* mpLayoutUpper;
+    QHBoxLayout* mpLayoutStart;
+    QHBoxLayout* mpLayoutLower;
     QHBoxLayout* mpLayoutExperiments;
+    QHBoxLayout* mpLayoutCrossValidations;
+    QHBoxLayout* mpLayoutObject;
 
   protected slots:
     virtual void languageChange();
@@ -150,7 +158,6 @@ class CQFittingItemWidget : public QWidget
     void slotParamEdit();
     void slotExperiments();
     void slotExperimentChanged();
-    void slotCheckAll(bool checked);
     void slotDelete();
     void slotCopy();
     void slotUp();
@@ -162,6 +169,10 @@ class CQFittingItemWidget : public QWidget
     void slotUpperLostFocus();
     void slotReset();
     void slotStartLostFocus();
+    void slotCrossValidations();
+    void slotCrossValidationChanged();
+    void slotCheckAllCrossValidations(bool checked);
+    void slotCheckAllExperiments(bool checked);
   };
 
 #endif // CQFITTINGITEMWIDGET_H

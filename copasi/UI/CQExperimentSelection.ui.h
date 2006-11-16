@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentSelection.ui.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/28 00:21:45 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -75,7 +75,7 @@ void CQExperimentSelection::load(QComboBox * pBox, const CExperimentSet * pExper
   QCheckBox * pCheckBox;
   QString Name;
 
-  unsigned C_INT32 i, imax = pExperimentSet->size();
+  unsigned C_INT32 i, imax = pExperimentSet->getExperimentCount();
   unsigned C_INT32 j, jmax = mpBox->count();
   mpTable->setNumRows(imax);
   bool All = (jmax == 0);

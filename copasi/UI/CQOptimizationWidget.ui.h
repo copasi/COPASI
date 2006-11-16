@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQOptimizationWidget.ui.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/28 00:18:41 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,8 +71,8 @@ bool CQOptimizationWidget::saveTask()
       pProblem->setValue("Steady-State", std::string(""));
     }
 
-  mChanged |= mpParameters->save(NULL);
-  mChanged |= mpConstraints->save(NULL);
+  mChanged |= mpParameters->save(NULL, NULL);
+  mChanged |= mpConstraints->save(NULL, NULL);
 
   if (mChanged) CCopasiDataModel::Global->changed();
 
@@ -107,9 +107,9 @@ bool CQOptimizationWidget::loadTask()
       mpBtnTimeCourse->setChecked(true);
     }
 
-  mpParameters->load(pProblem->getGroup("OptimizationItemList"), NULL);
+  mpParameters->load(pProblem->getGroup("OptimizationItemList"), NULL, NULL);
 
-  mpConstraints->load(pProblem->getGroup("OptimizationConstraintList"), NULL);
+  mpConstraints->load(pProblem->getGroup("OptimizationConstraintList"), NULL, NULL);
 
   mChanged = false;
 
@@ -258,11 +258,13 @@ void CQOptimizationWidget::init()
 
   mpParameterPageLayout = new QHBoxLayout(mpParametersPage, 0, 6, "mpParameterPageLayout");
   mpParameters = new CQFittingItemWidget(mpParametersPage);
+  mpParameters->setItemType(OPT_ITEM);
   mpParameterPageLayout->addWidget(mpParameters);
   connect(mpParameters, SIGNAL(numberChanged(int)), this, SLOT(slotParameterNumberChanged(int)));
 
   mpConstraintPageLayout = new QHBoxLayout(mpConstraintsPage, 0, 6, "mpConstraintsPageLayout");
   mpConstraints = new CQFittingItemWidget(mpConstraintsPage);
+  mpConstraints->setItemType(OPT_CONSTRAINT);
   mpConstraintPageLayout->addWidget(mpConstraints);
   connect(mpConstraints, SIGNAL(numberChanged(int)), this, SLOT(slotConstraintNumberChanged(int)));
 

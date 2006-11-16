@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExperimentData.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/24 14:16:37 $
+   $Date: 2006/11/16 15:45:13 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQExperimentData.ui'
  **
- ** Created: Thu Aug 24 10:10:38 2006
- **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.12 2006/08/24 14:16:37 shoops Exp $)
+ ** Created: Thu Nov 9 09:21:42 2006
+ **      by: The User Interface Compiler ($Id: CQExperimentData.cpp,v 1.13 2006/11/16 15:45:13 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -23,11 +23,11 @@
 
 #include <qvariant.h>
 #include <qpushbutton.h>
-#include <qtoolbutton.h>
 #include <qlabel.h>
-#include <qlistbox.h>
 #include <qlineedit.h>
 #include <qframe.h>
+#include <qtoolbutton.h>
+#include <qlistbox.h>
 #include <qcombobox.h>
 #include <qcheckbox.h>
 #include <qbuttongroup.h>
@@ -170,6 +170,29 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
     setName("CQExperimentData");
   setSizeGripEnabled(TRUE);
   CQExperimentDataLayout = new QVBoxLayout(this, 11, 6, "CQExperimentDataLayout");
+
+  mpLayoutCrossValidation = new QHBoxLayout(0, 0, 6, "mpLayoutCrossValidation");
+
+  mpLblWeight = new QLabel(this, "mpLblWeight");
+  mpLayoutCrossValidation->addWidget(mpLblWeight);
+
+  mpEditWeight = new QLineEdit(this, "mpEditWeight");
+  mpEditWeight->setFrameShape(QLineEdit::LineEditPanel);
+  mpEditWeight->setFrameShadow(QLineEdit::Sunken);
+  mpLayoutCrossValidation->addWidget(mpEditWeight);
+
+  mpLblThreshold = new QLabel(this, "mpLblThreshold");
+  mpLayoutCrossValidation->addWidget(mpLblThreshold);
+
+  mpEditThreshold = new QLineEdit(this, "mpEditThreshold");
+  mpLayoutCrossValidation->addWidget(mpEditThreshold);
+  CQExperimentDataLayout->addLayout(mpLayoutCrossValidation);
+
+  mpLineCrossValidation = new QFrame(this, "mpLineCrossValidation");
+  mpLineCrossValidation->setFrameShape(QFrame::HLine);
+  mpLineCrossValidation->setFrameShadow(QFrame::Sunken);
+  mpLineCrossValidation->setFrameShape(QFrame::HLine);
+  CQExperimentDataLayout->addWidget(mpLineCrossValidation);
 
   mpLayoutFile = new QGridLayout(0, 1, 1, 0, 3, "mpLayoutFile");
 
@@ -381,7 +404,7 @@ CQExperimentData::CQExperimentData(QWidget* parent, const char* name, bool modal
   mpLayoutButton->addWidget(mpBtnCancel);
   CQExperimentDataLayout->addLayout(mpLayoutButton);
   languageChange();
-  resize(QSize(515, 501).expandedTo(minimumSizeHint()));
+  resize(QSize(522, 421).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
   // signals and slots connections
@@ -438,6 +461,8 @@ CQExperimentData::~CQExperimentData()
 void CQExperimentData::languageChange()
 {
   setCaption(tr("Experimental Data"));
+  mpLblWeight->setText(tr("Weight"));
+  mpLblThreshold->setText(tr("Threshold"));
   mpBtnFileAdd->setText(QString::null);
   mpLblFile->setText(tr("File"));
   mpBoxFile->clear();
