@@ -1,14 +1,20 @@
 /* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/Attic/python.cpp,v $
+   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/local.cpp,v $
    $Revision: 1.1 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/11/16 05:32:07 $
+   $Date: 2006/11/16 06:34:36 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#include "utilities/CCopasiMethod.h"
+#include "utilities/CCopasiProblem.h"
+#include "utilities/CCopasiTask.h"
+
+#include <iostream>
 
 /**
  * @return the most specific Swig type for the given Task object.

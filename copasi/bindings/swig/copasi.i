@@ -6,6 +6,8 @@
 #include "copasi.h"
 #undef COPASI_MAIN
 
+#include "local.cpp"
+
 %}
 
 %import "copasi.h"
