@@ -11,7 +11,7 @@ class Test_CCopasiStaticString(unittest.TestCase):
   def test_getObjectDisplayName(self):
     st=self.string.getObjectDisplayName()
     self.assert_(type(st)==StringType)
-    self.assert_(st==self.s)
+    self.assert_(st=="'"+self.s+"'")
 
   def test_getStaticString(self):
     st=self.string.getStaticString()

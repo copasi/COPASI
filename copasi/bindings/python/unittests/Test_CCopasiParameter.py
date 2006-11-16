@@ -9,21 +9,22 @@ class Test_CCopasiParameter(unittest.TestCase):
     self.datamodel.loadModel("calcium_juergen.cps")
     self.param=self.datamodel.getModel().getReaction(0).getParameters().getParameter(0)
 
+  def test_setUp(self):
+    self.assert_(self.param.getType()==COPASI.CCopasiParameter.DOUBLE)
+
   def test_getKey(self):
     key=self.param.getKey()
     self.assert_(type(key)==StringType)
 
 
   def test_setValue(self):
-    #value=15.3
-    #self.param.setValue(value)
-    #self.assert_(math.fabs(self.param.getValue()-value/value)<0.001)
-    self.assert_(False)
+    value=15.3
+    self.param.setValue(value)
+    self.assert_(math.fabs((self.param.getValue()-value)/value)<0.001)
 
   def test_getValue(self):
-    #value=self.param.getValue()
-    #self.assert_(type(value)==FloatType)
-    self.assert_(False)
+    value=self.param.getValue()
+    self.assert_(type(value)==FloatType)
 
   def test_getType(self):
     t=self.param.getType()
@@ -41,14 +42,13 @@ class Test_CCopasiParameter(unittest.TestCase):
     self.assert_(not self.param.isValidValue(value))
     value=COPASI.CCopasiObjectName("myObject")
     self.assert_(not self.param.isValidValue(value))
-    # other types should be tested as well as vectors of parameters
-    self.assert_(False)
      
 
 
 def suite():
   tests=[
-          'test_getKey'
+          'test_setUp'
+         ,'test_getKey'
          ,'test_getValue'
          ,'test_setValue'
          ,'test_getType'

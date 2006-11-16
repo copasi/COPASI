@@ -13,28 +13,24 @@ class Test_CCopasiObjectName(unittest.TestCase):
 
   def test_getPrimary(self):
     prim=self.cn.getPrimary()
-    self.assert_(type(prim)==StringType)
-    self.assert_(False)
+    self.assert_(prim.__class__==COPASI.CCopasiObjectName)
+    self.assert_(prim.getString()=="CN=Root") 
 
   def test_getRemainder(self):
     prim=self.cn.getRemainder()
-    self.assert_(type(prim)==StringType)
-    self.assert_(False)
+    self.assert_(prim.__class__==COPASI.CCopasiObjectName)
+    self.assert_(prim.getString()=='Model=New Model,Vector=Compartments[Comp1],Vector=Metabolites[metab3]')
 
   def test_getObjectType(self):
     prim=self.cn.getObjectType()
     self.assert_(type(prim)==StringType)
-    self.assert_(False)
+    self.assert_(prim=="CN")
 
   def test_getObjectName(self):
     prim=self.cn.getObjectName()
     self.assert_(type(prim)==StringType)
-    self.assert_(False)
+    self.assert_(prim=="Root")
 
-  def test_getElementName(self):
-    #prim=self.cn.getElementName(1)
-    #self.assert_(type(prim)==StringType)
-    self.assert_(False)
 
   def test_escape(self):
     a="This- \ \ is a test--!"
@@ -56,7 +52,6 @@ def suite():
          ,'test_getRemainder'
          ,'test_getObjectType'
          ,'test_getObjectName'
-         ,'test_getElementName'
          ,'test_escape'
          ,'test_unescape'
         ]

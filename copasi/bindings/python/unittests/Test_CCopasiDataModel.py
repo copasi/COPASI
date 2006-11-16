@@ -15,12 +15,11 @@ class Test_CCopasiDataModel(unittest.TestCase):
     self.CHECK_CALCIUM_JUERGEN()
 
   def test_saveModel(self):
-    #self.assert_(self.datamodel.loadModel(CPS_FILE),"Error. Could not load model.")
-    #TMPFILE="calcium_juergen2.cps"
-    #self.assert_(self.datamodel.saveModel(TMPFILE,1),"Error. Could not save model.")
-    #self.assert_(self.datamodel.loadModel(TMPFILE),"Error. Could not reload saved model.")
-    #self.CHECK_CALCIUM_JUERGEN()
-    self.assert_(False)
+    self.assert_(self.datamodel.loadModel(CPS_FILE),"Error. Could not load model.")
+    TMPFILE="calcium_juergen2.cps"
+    self.assert_(self.datamodel.saveModel(TMPFILE,1),"Error. Could not save model.")
+    self.assert_(self.datamodel.loadModel(TMPFILE),"Error. Could not reload saved model.")
+    self.CHECK_CALCIUM_JUERGEN()
 
   def test_newModel(self):
     self.assert_(self.datamodel.newModel())
@@ -44,28 +43,21 @@ class Test_CCopasiDataModel(unittest.TestCase):
     self.assert_(modelString!="")
 
   def test_exportSBML(self):
-    #self.datamodel.loadModel(CPS_FILE)
-    #FILENAME="calcium_juergen2.xml"
-    #self.assert_(self.datamodel.exportSBML(FILENAME,1))
-    self.assert_(False)
+    self.assert_(self.datamodel.loadModel(CPS_FILE))
+    FILENAME="calcium_juergen2.xml"
+    self.assert_(self.datamodel.exportSBML(FILENAME,True))
 
   def test_getModel(self):
-   # test getModel
     model=self.datamodel.getModel()
     self.assert_(model.__class__==COPASI.CModel)
 
   def test_getVersion(self):
-    # test getVersion
     version=self.datamodel.getVersion()
     self.assert_(version.__class__==COPASI.CVersion)
 
   def test_getTaskList(self):
-    # test getTaskList
     taskList=self.datamodel.getTaskList()
     self.assert_(taskList.__class__==COPASI.TaskVectorN)
-
-  def test_addTask(self):
-    self.assert_(False)
 
   def test_addDefaultTasks(self):
     while(self.datamodel.getTaskList().size()!=0):
@@ -76,12 +68,8 @@ class Test_CCopasiDataModel(unittest.TestCase):
 
 
   def test_getReportDefinitionList(self):
-    # test getReportDefinitionList
     reportDefinitionList=self.datamodel.getReportDefinitionList()
     self.assert_(reportDefinitionList.__class__==COPASI.CReportDefinitionVector)
-
-  def test_addReport(self):
-    self.assert_(False)
 
   def test_addDefaultReports(self):
     while(self.datamodel.getReportDefinitionList().size()!=0):
@@ -97,11 +85,10 @@ class Test_CCopasiDataModel(unittest.TestCase):
     self.assert_(fileName==CPS_FILE)
 
   def test_getSBMLFileName(self):
-    #self.datamodel.importSBML(CPS_FILE)
-    #fileName=self.datamodel.getSBMLFileName()
-    #self.assert_(type(fileName)==StringType)
-    #self.assert_(fileName==SBML_FILE)
-    self.assert_(False)
+    self.datamodel.importSBML(SBML_FILE)
+    fileName=self.datamodel.getSBMLFileName()
+    self.assert_(type(fileName)==StringType)
+    self.assert_(fileName==SBML_FILE)
 
   def CHECK_CALCIUM_JUERGEN(self):
     # check the model
@@ -132,10 +119,8 @@ def suite():
          ,'test_getModel'
          ,'test_getVersion'
          ,'test_getTaskList'
-         ,'test_addTask'
          ,'test_addDefaultTasks'
          ,'test_getReportDefinitionList'
-         ,'test_addReport'
          ,'test_addDefaultReports'
          ,'test_getFileName'
          ,'test_getSBMLFileName'

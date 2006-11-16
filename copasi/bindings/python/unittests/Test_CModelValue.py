@@ -84,12 +84,16 @@ class Test_CModelValue(unittest.TestCase):
     self.assert_(type(value)==BooleanType)
 
   def test_setExpression(self):
-    # that test will be implemented later
-    self.assert_(False)
+    self.mv.setStatus(COPASI.CModelEntity.ASSIGNMENT)
+    expr="17"
+    self.assert_(self.mv.setExpression(expr))
+    self.assert_(self.mv.getExpression()==expr)
+
 
   def test_setInitialExpression(self):
-    # that test will be implemented later
-    self.assert_(False)
+    expr="42.6"
+    self.assert_(self.mv.setInitialExpression(expr))
+    self.assert_(self.mv.getInitialExpression()==expr)
 
 
 

@@ -26,7 +26,7 @@ class Test_CReaction(unittest.TestCase):
     self.assert_(type(v)==FloatType)
 
   def test_isReversible(self):
-    v=self.reac.getParticleFlux()
+    v=self.reac.isReversible()
     self.assert_(type(v)==BooleanType)
 
   def test_addSubstrate(self):

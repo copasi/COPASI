@@ -29,7 +29,6 @@ template < class CType > class CCopasiVector:
       virtual bool add(CType * src, bool adopt = false);
       virtual void remove(const unsigned C_INT32 & index);
       virtual bool remove(CCopasiObject * pObject);
-      virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const;
       virtual unsigned C_INT32 size() const;
       virtual unsigned C_INT32 getIndex(const CCopasiObject * pObject) const;
 
@@ -63,7 +62,6 @@ template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
       virtual ~CCopasiVectorN();
       virtual bool add(CType * src, bool adopt = false);
       virtual void remove(const std::string & name);
-      virtual const CCopasiObject * getObject(const CCopasiObjectName &name) const;
       virtual unsigned C_INT32 getIndex(const std::string &name) const;
 
       %extend
@@ -148,4 +146,5 @@ typedef CCopasiVectorNS<CCompartment> CompartmentVectorNS;
 typedef CCopasiVectorNS<CReaction> ReactionVectorNS;
 
 typedef std::vector<CRegisteredObjectName> ReportItemVector;
+typedef std::vector<CCopasiParameter*> ParameterVector;
 

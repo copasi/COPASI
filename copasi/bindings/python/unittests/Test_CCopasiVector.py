@@ -33,12 +33,6 @@ class Test_CCopasiVector(unittest.TestCase):
     self.assert_(self.vector.size()==n-1)
 
 
-  def test_getObject(self):
-    #cn=self.metab.getCN()
-    #object=self.vector.getObject(cn)
-    #self.assert_(object!=None)
-    #self.assert_(object==self.metab)
-    self.assert_(False)
   def test_size(self):
     n=self.vector.size()
     self.assert_(type(n)==IntType)
@@ -59,7 +53,6 @@ def suite():
           'test_add'
          ,'test_remove'
          ,'test_remove_viaName'
-         ,'test_getObject'
          ,'test_size'
          ,'test_getIndex'
         ]

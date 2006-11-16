@@ -46,13 +46,9 @@ class CCopasiDataModel
 
     CCopasiVectorN<CCopasiTask>* getTaskList();
     
-    CCopasiTask * addTask(const CCopasiTask::Type & taskType);
-
     bool addDefaultTasks();
 
     CReportDefinitionVector * getReportDefinitionList();
-    
-    CReportDefinition * addReport(const CCopasiTask::Type & taskType);
     
     bool addDefaultReports();
 

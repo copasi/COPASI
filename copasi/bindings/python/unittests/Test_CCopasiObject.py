@@ -30,7 +30,7 @@ class Test_CCopasiObject(unittest.TestCase):
       parent=self.object.getObjectParent()  
       self.assert_(parent!=None)
       self.assert_(parent.__class__==COPASI.CCopasiContainer)
-      self.assert_(parent.getKey()==self.compartment.getKey())
+      self.assert_(parent.getKey()==self.compartment.getMetabolites().getKey())
 
     def test_getCN(self):
       cn=self.object.getCN()

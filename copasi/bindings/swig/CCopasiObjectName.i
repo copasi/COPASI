@@ -25,8 +25,6 @@ class CCopasiObjectName : public std::string
 
      std::string getObjectName() const;
 
-     std::string getElementName(const unsigned C_INT32 & pos, const bool & unescape = true) const;
-  
      static std::string escape(const std::string & name);
 
      static std::string unescape(const std::string & name);

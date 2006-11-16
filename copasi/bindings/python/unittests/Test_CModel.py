@@ -44,26 +44,26 @@ class Test_CModel(unittest.TestCase):
   def test_getNumVariableMetabs(self):
     n=self.model.getNumVariableMetabs()
     self.assert_(type(n)==IntType)
-    self.assert_(n==7)
+    self.assert_(n==5)
 
   def test_getNumODEMetabs(self):
     n=self.model.getNumODEMetabs()
     self.assert_(type(n)==IntType)
-    self.assert_(n==6)
+    self.assert_(n==0)
 
   def test_getNumIndependentMetabs(self):
-    n=self.model.getNumODEMetabs()
-    self.assert_(type(n)==IntType)
-    self.assert_(n==4)
-
-  def test_getNumDependentMetabs(self):
-    n=self.model.getNumODEMetabs()
+    n=self.model.getNumIndependentMetabs()
     self.assert_(type(n)==IntType)
     self.assert_(n==3)
 
+  def test_getNumDependentMetabs(self):
+    n=self.model.getNumDependentMetabs()
+    self.assert_(type(n)==IntType)
+    self.assert_(n==2)
+
   def test_getModelValues(self):
     v=self.model.getModelValues()
-    self.assert_(v.__class__==COPASI.ModelValueVector)
+    self.assert_(v.__class__==COPASI.ModelValueVectorN)
     self.assert_(v.size()==0)
 
   def test_getNumModelValues(self):
@@ -73,7 +73,7 @@ class Test_CModel(unittest.TestCase):
 
   def test_getReactions(self):
     v=self.model.getReactions()
-    self.assert_(v.__class__==COPASI.ReactionVector)
+    self.assert_(v.__class__==COPASI.ReactionVectorNS)
     self.assert_(v.size()==3)
 
   def test_getTotSteps(self):
@@ -115,7 +115,7 @@ class Test_CModel(unittest.TestCase):
 
   def test_getCompartments(self):
     v=self.model.getCompartments()
-    self.assert_(v.__class__==COPASI.CompartmentVector)
+    self.assert_(v.__class__==COPASI.CompartmentVectorNS)
     self.assert_(v.size()==2)
 
   def test_getStoi(self):
@@ -133,7 +133,7 @@ class Test_CModel(unittest.TestCase):
   def test_getMoieties(self):
     v=self.model.getMoieties()
     self.assert_(v.__class__==COPASI.MoietyVector)
-    self.assert_(v.size()==3)
+    self.assert_(v.size()==2)
 
   def test_findMetabByName(self):
     index=self.model.findMetabByName("D")
@@ -141,7 +141,7 @@ class Test_CModel(unittest.TestCase):
     self.assert_(index==3) 
 
   def test_findMoiety(self):
-    moiety=self.model.getMoiety(0)
+    moiety=self.model.getMoiety(1)
     index=self.model.findMoiety(moiety.getObjectName()) 
     self.assert_(type(index)==IntType)
     self.assert_(index==1)
@@ -155,8 +155,20 @@ class Test_CModel(unittest.TestCase):
     self.assert_(state.__class__==COPASI.CState)
 
   def test_setInitialState(self):
-    # this can not be tested yet since there is no way to manipulate a CState object
-    self.assert_(False)
+    datamodel=COPASI.CCopasiDataModel.GLOBAL
+    datamodel.loadModel("calcium_juergen.cps")
+    initialTime=datamodel.getModel().getInitialState().getTime()
+    trajectoryTask=None
+    for x in range(0,datamodel.getTaskList().size()):
+      if(datamodel.getTask(x).__class__==COPASI.CTrajectoryTask):
+        trajectoryTask=datamodel.getTask(x)
+    self.assert_(trajectoryTask!=None)
+    trajectoryTask.process(True)
+    newState=datamodel.getModel().getState()
+    datamodel.getModel().setInitialState(newState)
+    newInitialState=datamodel.getModel().getInitialState()
+    self.assert_(newInitialState.getTime()!=initialTime)
+    self.assert_(newInitialState.getTime()==newState.getTime())
 
 
   def test_setVolumeUnit(self):
@@ -264,8 +276,8 @@ class Test_CModel(unittest.TestCase):
     size=self.model.getNumCompartments()
     c=self.model.createCompartment("testCompartment")
     self.assert_(self.model.getNumCompartments()==size+1)
-    self.model.removeCompartment(c.getKey())
-    self.assert_(self.model.getCompartments()==size)
+    self.assert_(self.model.removeCompartment(c.getKey()))
+    self.assert_(self.model.getNumCompartments()==size)
 
   def test_createReaction(self):
     size=self.model.getNumReactions()
@@ -301,7 +313,7 @@ class Test_CModel(unittest.TestCase):
 
   def test_suitableForStochasticSimulation(self):
     v=self.model.suitableForStochasticSimulation()
-    self.assert_(type(v)==BooleanType)
+    self.assert_(type(v)==StringType)
 
   def test_isAutonomous(self):
     v=self.model.isAutonomous()

@@ -21,7 +21,7 @@ class Test_CMetab(unittest.TestCase):
   def test_setInitialConcentration(self):
     value=5.0
     self.metab.setInitialConcentration(value)
-    self.assert_(math.fabs(self.metab.getInitialConcentration()-value/value)<0.001)
+    self.assert_(math.fabs((self.metab.getInitialConcentration()-value)/value)<0.001)
 
   def test_getInitialConcentration(self):
     value=self.metab.getInitialConcentration()
@@ -30,7 +30,7 @@ class Test_CMetab(unittest.TestCase):
   def test_setInitialValue(self):
     value=5.0
     self.metab.setInitialValue(value)
-    self.assert_(math.fabs(self.metab.getInitialValue()-value/value)<0.001)
+    self.assert_(math.fabs((self.metab.getInitialValue()-value)/value)<0.001)
 
   def test_getCompartment(self):
     c=self.metab.getCompartment()
@@ -38,7 +38,7 @@ class Test_CMetab(unittest.TestCase):
     self.assert_(self.compartment.getKey()==c.getKey())
 
   def test_getModel(self):
-    m=self.metab.getTransitionTime()
+    m=self.metab.getModel()
     self.assert_(m.__class__==COPASI.CModel)
     self.assert_(self.model.getKey()==m.getKey())
 

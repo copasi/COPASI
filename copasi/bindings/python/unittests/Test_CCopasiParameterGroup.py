@@ -51,7 +51,7 @@ class Test_CCopasiParameterGroup(unittest.TestCase):
     group=self.paramgroup.getGroup("testgroup")
     self.assert_(group.__class__==COPASI.CCopasiParameterGroup)
     self.assert_(group.getObjectName()=="testgroup")
-    group=self.paramgroup.getGroup(5)
+    group=self.paramgroup.getGroup(4)
     self.assert_(group.__class__==COPASI.CCopasiParameterGroup)
     self.assert_(group.getObjectName()=="testgroup_2")
 
@@ -105,4 +105,9 @@ def suite():
          ,'test_getIndex'
         ]
   return unittest.TestSuite(map(Test_CCopasiParameterGroup,tests))
+
+
+if __name__=='__main__':
+    unittest.TextTestRunner(verbosity=2).run(suite())
+  
 
