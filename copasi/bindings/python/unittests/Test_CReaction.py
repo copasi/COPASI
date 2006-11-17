@@ -5,9 +5,10 @@ from types import *
 
 class Test_CReaction(unittest.TestCase):
   def setUp(self):
-    self.model=COPASI.CCopasiDataModel.GLOBAL.getModell()
-    self.comp=self.model.createCompartment("comp1",1.0)
-    self.comp=self.model.createCompartment("comp2",2.0)
+    COPASI.CCopasiDataModel.GLOBAL.newModel()
+    self.model=COPASI.CCopasiDataModel.GLOBAL.getModel()
+    self.comp1=self.model.createCompartment("comp1",1.0)
+    self.comp2=self.model.createCompartment("comp2",2.0)
     self.substrate=self.model.createMetabolite("A","comp1")
     self.product=self.model.createMetabolite("B","comp2")
     self.reac=self.model.createReaction("testReaction");
@@ -74,7 +75,7 @@ class Test_CReaction(unittest.TestCase):
   def test_getChemEq(self):
     chemEq=self.reac.getChemEq()
     self.assert_(chemEq!=None)
-    self.assert_(chemEq.__class__==COPASI.ChemEq)
+    self.assert_(chemEq.__class__==COPASI.CChemEq)
 
   def test_getFunction(self):
     f=self.reac.getFunction()
@@ -83,11 +84,11 @@ class Test_CReaction(unittest.TestCase):
 
   def test_setFunction(self):
     functionList=COPASI.CCopasiDataModel.GLOBAL.getFunctionList()
-    functions.suitableFunctions(self.reac.getChemEq().getSubstrates().size(),self.reac.getChemEq().getProducts().size(),self.reac.isReversible())              
+    functions=functionList.suitableFunctions(self.reac.getChemEq().getSubstrates().size(),self.reac.getChemEq().getProducts().size(),self.reac.isReversible())              
     self.assert_(functions.size()!=0)
     function=functions[0]
     self.assert_(function!=None)
-    self.assert_(self.reac.setFunction(function))
+    self.assert_(self.reac.setFunction(function.getObjectName()))
     f=self.reac.getFunction()
     self.assert_(f.getKey()==function.getKey())
 

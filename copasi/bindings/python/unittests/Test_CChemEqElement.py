@@ -17,9 +17,9 @@ class Test_CChemEqElement(unittest.TestCase):
     r.addModifier(self.m3.getKey())
     self.model.compileIfNecessary()
     self.chemeq=r.getChemEq()
-    self.element=self.chemeq.getSubstrates()[0]
+    self.element=self.chemeq.getSubstrate(0)
     self.assert_(self.element!=None)
-    self.assert_(self.element.__class__==COPASI.ChemEqElement)
+    self.assert_(self.element.__class__==COPASI.CChemEqElement)
 
   def test_getMultiplicity(self):
     n=self.element.getMultiplicity()

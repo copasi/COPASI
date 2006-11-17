@@ -23,7 +23,7 @@ class Test_CChemEq(unittest.TestCase):
 
   def test_getReversibility(self):
     b=self.chemeq.getReversibility()
-    self.assert_(type(b)==BooleanTyp)
+    self.assert_(type(b)==BooleanType)
 
   def test_setReversibility(self):
     b=True
@@ -71,6 +71,18 @@ class Test_CChemEq(unittest.TestCase):
     self.assert_(comp.__class__==COPASI.CCompartment)
     self.assert_(comp.getKey()==self.comp2.getKey())
 
+  def test_getSubstrate(self):
+    self.fail()
+
+  def test_getProduct(self):
+    self.fail()
+
+  def test_getModifier(self):
+    self.fail()
+
+  def test_getBalance(self):
+    self.fail()
+
 
 def suite():
   tests=[
@@ -81,6 +93,10 @@ def suite():
           ,"test_getProducts"
           ,"test_getModifiers"
           ,"test_getBalances"
+          ,"test_getSubstrate"
+          ,"test_getProduct"
+          ,"test_getModifier"
+          ,"test_getBalance"
           ,"test_getCompartmentNumber"
           ,"test_getLargestCompartment"
         ]

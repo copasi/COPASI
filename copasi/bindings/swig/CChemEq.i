@@ -79,6 +79,29 @@ class CChemEq : public CCopasiContainer
      */
     const CCompartment & getLargestCompartment() const;
 
+    %extend
+    {
+        CChemEqElement* getSubstrate(unsigned C_INT32 index)
+        {
+          return self->getSubstrates()[index];
+        }
+
+        CChemEqElement* getProduct(unsigned C_INT32 index)
+        {
+          return self->getProducts()[index];
+        }
+
+        CChemEqElement* getModifier(unsigned C_INT32 index)
+        {
+          return self->getModifiers()[index];
+        }
+
+        CChemEqElement const* getBalance(unsigned C_INT32 index)
+        {
+          return self->getBalances()[index];
+        }
+    }
+
 
 };
 

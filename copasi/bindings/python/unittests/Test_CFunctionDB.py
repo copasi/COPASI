@@ -7,7 +7,7 @@ class Test_CFunctionDB(unittest.TestCase):
   def setUp(self):
     self.functions=COPASI.CCopasiDataModel.GLOBAL.getFunctionList()
     self.assert_(self.functions!=None)
-    self.assert_(self.function.__class__==COPASI.CFunctionDB)
+    self.assert_(self.functions.__class__==COPASI.CFunctionDB)
 
   def test_add(self):
     self.fail()
