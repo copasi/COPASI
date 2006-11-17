@@ -90,6 +90,11 @@ class Test_CCopasiDataModel(unittest.TestCase):
     self.assert_(type(fileName)==StringType)
     self.assert_(fileName==SBML_FILE)
 
+  def test_getFunctionList(self):
+    functions=self.datamodel.getFunctionList()
+    self.assert_(functions!=None)
+    self.assert_(functions.__class__==COPASI.CFunctionDB)
+
   def CHECK_CALCIUM_JUERGEN(self):
     # check the model
     self.CHECK_CALCIUM_JUERGEN_MODEL()
@@ -124,6 +129,7 @@ def suite():
          ,'test_addDefaultReports'
          ,'test_getFileName'
          ,'test_getSBMLFileName'
+         ,'test_getFunctionList'
         ]
   return unittest.TestSuite(map(Test_CCopasiDataModel,tests))
 

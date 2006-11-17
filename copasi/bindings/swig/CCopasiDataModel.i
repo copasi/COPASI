@@ -54,6 +54,8 @@ class CCopasiDataModel
 
     const std::string& getFileName() const; 
     const std::string& getSBMLFileName() const; 
+    
+    CFunctionDB * getFunctionList();
 
     %extend
     {

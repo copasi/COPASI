@@ -5,13 +5,13 @@ from types import *
 
 class Test_CReaction(unittest.TestCase):
   def setUp(self):
-    self.model=COPASI.CModel()
+    self.model=COPASI.CCopasiDataModel.GLOBAL.getModell()
     self.comp=self.model.createCompartment("comp1",1.0)
     self.comp=self.model.createCompartment("comp2",2.0)
     self.substrate=self.model.createMetabolite("A","comp1")
     self.product=self.model.createMetabolite("B","comp2")
     self.reac=self.model.createReaction("testReaction");
-
+    self.model.compileIfNecessary()
 
   def test_getKey(self):
     key=self.reac.getKey()
@@ -71,6 +71,50 @@ class Test_CReaction(unittest.TestCase):
     id=self.reac.getSBMLId()
     self.assert_(type(id)==StringType)
 
+  def test_getChemEq(self):
+    chemEq=self.reac.getChemEq()
+    self.assert_(chemEq!=None)
+    self.assert_(chemEq.__class__==COPASI.ChemEq)
+
+  def test_getFunction(self):
+    f=self.reac.getFunction()
+    self.assert_(f!=None)
+    self.assert_(f.__class__==COPASI.CFunction)
+
+  def test_setFunction(self):
+    functionList=COPASI.CCopasiDataModel.GLOBAL.getFunctionList()
+    functions.suitableFunctions(self.reac.getChemEq().getSubstrates().size(),self.reac.getChemEq().getProducts().size(),self.reac.isReversible())              
+    self.assert_(functions.size()!=0)
+    function=functions[0]
+    self.assert_(function!=None)
+    self.assert_(self.reac.setFunction(function))
+    f=self.reac.getFunction()
+    self.assert_(f.getKey()==function.getKey())
+
+
+  def test_getParameterValue(self):
+    parameters=self.reac.getParameters()
+    self.assert_(parameters.size()!=0)
+    parameter=parameters.getParameter(0)
+    self.assert_(parameter!=None)
+    value=self.reac.getParameterValue(parameter.getObjectName())                                 
+    self.assert_(type(value)==types.FloatType)
+    self.assert_(value==parameter.getValue())
+
+  def test_setParameterValue(self):
+    parameters=self.reac.getParameters()
+    self.assert_(parameters.size()!=0)
+    parameter=parameters.getParameter(0)
+    self.assert_(parameter!=None)
+    value=34.67
+    self.reac.setParameterValue(parameter.getObjectName(),value)
+    self.assert_(parameter.getValue()==value)
+
+  def test_getFunctionParameters(self):
+    params=self.reac.getFunctionParameters()
+    self.assert_(params!=None)
+    self.assert_(params.__class__==COPASI.CFunctionParameters)
+
 
 def suite():
   tests=[
@@ -86,6 +130,12 @@ def suite():
          ,'test_getLargestCompartment'
          ,'test_getSBMLId'
          ,'test_setSBMLId'
+         ,'test_getChemEq'
+         ,'test_getFunction'
+         ,'test_setFunction'
+         ,'test_getParameterValue'
+         ,'test_setParameterValue'
+         ,'test_getFunctionParameters'
         ]
   return unittest.TestSuite(map(Test_CReaction,tests))
 

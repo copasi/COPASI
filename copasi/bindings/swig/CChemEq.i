@@ -37,8 +37,8 @@ class CChemEq : public CCopasiContainer
     ~CChemEq();
 
 
-    void setReversibility(bool revers) {mReversible = revers;}
-    bool getReversibility() const {return mReversible;}
+    void setReversibility(bool revers);
+    bool getReversibility() const;
 
     bool addMetabolite(const std::string & key, const C_FLOAT64 mult, const MetaboliteRole role);
 

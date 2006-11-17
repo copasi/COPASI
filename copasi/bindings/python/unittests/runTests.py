@@ -2,6 +2,8 @@
 
 import unittest
 
+import Test_CChemEq
+import Test_CChemEqElement
 import Test_CCompartment
 import Test_CCopasiContainer
 import Test_CCopasiDataModel
@@ -14,6 +16,11 @@ import Test_CCopasiProblem
 import Test_CCopasiStaticString
 import Test_CCopasiTask
 import Test_CCopasiVector
+import Test_CEvaluationTree
+import Test_CFunction
+import Test_CFunctionDB
+import Test_CFunctionParameter
+import Test_CFunctionParameters
 import Test_CMatrix
 import Test_CMetab
 import Test_CModel
@@ -39,6 +46,8 @@ suites=[
          ,Test_CMoiety.suite()
          ,Test_CModelValue.suite()
          ,Test_CMetab.suite()
+				 ,Test_CChemEq.suite()
+				 ,Test_CChemEqElement.suite()
          ,Test_CCopasiVector.suite()
          ,Test_CMatrix.suite()
          ,Test_CCopasiStaticString.suite()
@@ -56,6 +65,11 @@ suites=[
          ,Test_CTrajectoryMethod.suite()
          ,Test_CTrajectoryTask.suite()
          ,Test_CCopasiDataModel.suite()
+				 ,Test_CFunctionDB.suite()
+				 ,Test_CEvaluationTree.suite()
+				 ,Test_CFunction.suite()
+				 ,Test_CFunctionParameters.suite()
+				 ,Test_CFunctionParameter.suite()
        ]
 
 def suite():

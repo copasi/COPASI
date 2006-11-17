@@ -7,7 +7,8 @@
 
 class CReaction : public CCopasiContainer
 {
-    
+
+%ignore setParameterValue(const std::string & parameterName, C_FLOAT64 value, bool updateStatus);
 %rename(parameterWithNameIsLocal) isLocalParameter(const std::string & parameterName) const; 
 
   public:
@@ -120,6 +121,45 @@ class CReaction : public CCopasiContainer
     bool isLocalParameter(C_INT32 index) const;
     
     bool isLocalParameter(const std::string & parameterName) const;
+
+    /**
+     *  Retrieves the chemical equation of the reaction
+     */
+    CChemEq & getChemEq();
+
+    /**
+     *  Retrieves the rate function of the reaction
+     *  @return "CBaseFunction &"
+     */
+    const CFunction * getFunction() const;
+
+    /**
+     * Sets the rate function of the reaction
+     * @param const string & functionName
+     * @return bool success
+     */
+    bool setFunction(const std::string & functionName);
+
+    /**
+     *  Sets a parameter value
+     *  if updateStatus==true the status is also updated to make shure
+     *  the value is actually used (instead of a global value that may
+     *  have been used before).
+     *  if updateStatus==false only the value of the local parameter is
+     *  set, even if it is not used
+     */
+    void setParameterValue(const std::string & parameterName, C_FLOAT64 value,
+                           bool updateStatus = true);
+
+    /**
+     *  Gets a parameter value
+     */
+    const C_FLOAT64 & getParameterValue(const std::string & parameterName) const;
+
+    /**
+     *  Gets the description of what parameters the function expects.
+     */
+    const CFunctionParameters & getFunctionParameters() const;
 
 
 };

@@ -132,6 +132,8 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
 
 %template(ReportItemVector) std::vector<CRegisteredObjectName>;
 
+%template(CFunctionStdVector) std::vector<CFunction*>;
+
 %template(CEvaluationTreeStdVector) std::vector<CEvaluationTree*>;
 %template(CEvaluationTreeVector) CCopasiVector<CEvaluationTree>;
 %template(CEvaluationTreeVectorN) CCopasiVectorN<CEvaluationTree>;
@@ -156,6 +158,8 @@ typedef std::vector<CRegisteredObjectName> ReportItemVector;
 typedef std::vector<CCopasiParameter*> ParameterVector;
 
 typedef CCopasiVectorN<CEvaluationTree> CEvaluationTreeVectorN;
+
+typedef std::vector<CFunction> CFunctionStdVector;
 
 typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
 
