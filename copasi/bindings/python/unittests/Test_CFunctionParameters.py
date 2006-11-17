@@ -14,20 +14,20 @@ class Test_CFunctionParameters(unittest.TestCase):
     self.assert_(self.parameters.__class__==COPASI.CFunctionParameters)
 
   def test_add(self):
-    n=self.params.size()
-    self.assert_(self.params.add("test",COPASI.CFunctionParameter.FLOAT64,COPASI.CFunctionParameter.VOLUME))
-    self.assert_(self.params.size()==n+1)
+    n=self.parameters.size()
+    self.assert_(self.parameters.add("test",COPASI.CFunctionParameter.FLOAT64,COPASI.CFunctionParameter.VOLUME))
+    self.assert_(self.parameters.size()==n+1)
     p=COPASI.CFunctionParameter("another")
-    self.assert_(self.params.add(p))
-    self.assert_(self.params.size()==n+2)
+    self.assert_(self.parameters.add(p))
+    self.assert_(self.parameters.size()==n+2)
 
 
   def test_remove(self):
-    n=self.params.size()
-    self.assert_(self.params.add("test",COPASI.CFunctionParameter.FLOAT64,COPASI.CFunctionParameter.VOLUME))
-    self.assert_(self.params.size()==n+1)
-    self.params.remove("test")
-    self.assert_(self.params.size()==n)
+    n=self.parameters.size()
+    self.assert_(self.parameters.add("test",COPASI.CFunctionParameter.FLOAT64,COPASI.CFunctionParameter.VOLUME))
+    self.assert_(self.parameters.size()==n+1)
+    self.parameters.remove("test")
+    self.assert_(self.parameters.size()==n)
 
   def test_size(self):
     n=self.parameters.size()
@@ -44,7 +44,7 @@ class Test_CFunctionParameters(unittest.TestCase):
     p=f.getVariables()
     self.assert_(p!=None)
     self.assert_(p.__class__==COPASI.CFunctionParameters)
-    b=p.isVector(COPASI.CFunctionParameter.SUBSTRATES)
+    b=p.isVector(COPASI.CFunctionParameter.SUBSTRATE)
     self.assert_(type(b)==BooleanType)
     self.assert_(b==True)
 
@@ -60,7 +60,7 @@ class Test_CFunctionParameters(unittest.TestCase):
     self.assert_(n==5)
 
   def test_findParameterByName(self):
-    n=self.parameters.findParameterByName("Kms")
+    n=self.parameters.findParameterByName("Kms",COPASI.CFunctionParameter.FLOAT64)
     self.assert_(type(n)==IntType)
     self.assert_(n==5)
 

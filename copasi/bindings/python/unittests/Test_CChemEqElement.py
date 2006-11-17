@@ -33,7 +33,7 @@ class Test_CChemEqElement(unittest.TestCase):
     
 
   def test_addToMultiplicity(self):
-    n=self.getMultiplicity()
+    n=self.element.getMultiplicity()
     self.element.addToMultiplicity()
     self.assert_(self.element.getMultiplicity()==n+1)
     n2=2.3
@@ -42,7 +42,7 @@ class Test_CChemEqElement(unittest.TestCase):
 
   def test_setMetabolite(self):
     self.element.setMetabolite(self.m3.getKey())
-    self.assert_(self.getMetabolite().getKey()==self.m3.getKey())
+    self.assert_(self.element.getMetabolite().getKey()==self.m3.getKey())
 
   def test_getMetabolite(self):
     m=self.element.getMetabolite()
@@ -54,10 +54,6 @@ class Test_CChemEqElement(unittest.TestCase):
     key=self.element.getMetaboliteKey()
     self.assert_(type(key)==StringType)
 
-  def test_writeElement(self):
-    text=self.element.writeElement()
-    self.assert_(type(text)==StringType)
-
 
 def suite():
   tests=[
@@ -68,7 +64,6 @@ def suite():
           ,"test_getMetabolite"
           ,"test_setMetabolite"
           ,"test_getMetaboliteKey"
-          ,"test_writeElement"
         ]
   return unittest.TestSuite(map(Test_CChemEqElement,tests))
 

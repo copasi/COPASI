@@ -6,6 +6,7 @@
 
 class CChemEqElement : public CCopasiContainer
 {
+  public:
     /**
      *  Default constructor
      * @param const std::string & name (default: "NoName")
@@ -60,11 +61,6 @@ class CChemEqElement : public CCopasiContainer
 
     const std::string & getMetaboliteKey() const;
 
-    /**
-     *  Write the element in the form mMultiplier * mMetaboliteName
-     *  @return "string"
-     */
-    std::string writeElement() const;
 
 };
 

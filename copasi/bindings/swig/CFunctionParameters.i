@@ -65,6 +65,14 @@ class CFunctionParameters : public CCopasiContainer
     bool isVector(CFunctionParameter::Role role) const;
 
     /**
+     * gets the number of Parameters with a specific usage
+     */
+    unsigned C_INT32 getNumberOfParametersByUsage(CFunctionParameter::Role usage) const;
+
+
+%extend
+{
+    /**
      *  Retrieves the first parameter with the specified usage after pos
      *  In a normal situation pos is set to 0 for the first call.
      *  It is increment by the method to allow subsequent searches to start
@@ -75,18 +83,25 @@ class CFunctionParameters : public CCopasiContainer
      *  @return "CFunctionParameter &" usageRange
      */
     const CFunctionParameter * getParameterByUsage(CFunctionParameter::Role usage,
-        unsigned C_INT32 & pos) const;
-
-    /**
-     * gets the number of Parameters with a specific usage
-     */
-    unsigned C_INT32 getNumberOfParametersByUsage(CFunctionParameter::Role usage) const;
+        unsigned C_INT32  pos) const
+    {
+        return self->getParameterByUsage(usage,pos);
+    }
 
     /**
      * find a parameter by its name and return its index
      */
-    unsigned C_INT32 findParameterByName(const std::string & name,
-                                         CFunctionParameter::DataType & dataType) const;
+    unsigned C_INT32 findParameterByName(const std::string & name, CFunctionParameter::DataType  dataType) const
+    {
+        return self->findParameterByName(name,dataType);
+    }
+
+    CFunctionParameter* getParameter(unsigned C_INT32 index)
+    {
+        (*self)[index];
+    }
+
+}
 
 };
 

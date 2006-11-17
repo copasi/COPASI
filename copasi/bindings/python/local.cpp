@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/local.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/11/16 06:34:36 $
+   $Date: 2006/11/17 20:49:21 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,8 @@
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiProblem.h"
 #include "utilities/CCopasiTask.h"
+#include "function/CEvaluationTree.h"
+#include "function/CFunction.h"
 
 #include <iostream>
 
@@ -246,6 +248,22 @@ struct swig_type_info*
         */
       default:
         break;
+      }
+    return pInfo;
+  }
+
+/**
+ * @return the most specific Swig type for the given CEvaluationTree object.
+ */
+struct swig_type_info*
+      GetDowncastSwigTypeForCEvaluationTree (CEvaluationTree* tree)
+  {
+    if (tree == NULL) return SWIGTYPE_p_CEvaluationTree;
+
+    struct swig_type_info* pInfo = SWIGTYPE_p_CEvaluationTree;
+    if (dynamic_cast<CFunction*>(tree))
+      {
+        pInfo = SWIGTYPE_p_CFunction;
       }
     return pInfo;
   }

@@ -12,8 +12,10 @@ class Test_CFunctionParameter(unittest.TestCase):
     self.parameters=self.function.getVariables()
     self.assert_(self.parameters!=None)
     self.assert_(self.parameters.__class__==COPASI.CFunctionParameters)
-    self.parameter=self.parameters.findParameterByName("Keq")
+    index=self.parameters.findParameterByName("Keq",COPASI.CFunctionParameter.FLOAT64)
+    self.parameter=self.parameters.getParameter(index)
     self.assert_(self.parameter!=None)
+    print self.parameter.__class__
     self.assert_(self.parameter.__class__==COPASI.CFunctionParameter)
 
   def test_getKey(self):

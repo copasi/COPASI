@@ -1,6 +1,14 @@
 
 
 /**
+ * Convert VCeEvaluationTree objects into the most specific type possible.
+ */
+%typemap(out) CEvaluationTree*
+{
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCEvaluationTree($1), 0);
+}
+
+/**
  * Convert Task objects into the most specific type possible.
  */
 %typemap(out) CCopasiTask*
