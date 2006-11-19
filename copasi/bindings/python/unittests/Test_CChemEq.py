@@ -72,16 +72,24 @@ class Test_CChemEq(unittest.TestCase):
     self.assert_(comp.getKey()==self.comp2.getKey())
 
   def test_getSubstrate(self):
-    self.fail()
+    element=self.chemeq.getSubstrate(0)
+    self.assert_(element!=None)
+    self.assert_(element.__class__==COPASI.CChemEqElement)
 
   def test_getProduct(self):
-    self.fail()
+    element=self.chemeq.getProduct(0)
+    self.assert_(element!=None)
+    self.assert_(element.__class__==COPASI.CChemEqElement)
 
   def test_getModifier(self):
-    self.fail()
+    element=self.chemeq.getModifier(0)
+    self.assert_(element!=None)
+    self.assert_(element.__class__==COPASI.CChemEqElement)
 
   def test_getBalance(self):
-    self.fail()
+    element=self.chemeq.getBalance(0)
+    self.assert_(element!=None)
+    self.assert_(element.__class__==COPASI.CChemEqElement)
 
 
 def suite():

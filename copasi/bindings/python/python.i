@@ -55,6 +55,9 @@ CCopasiMethod.TypeNameToEnum=_COPASI.CCopasiMethod_TypeNameToEnum
 
 CCopasiContainer.ObjectFromName=_COPASI.CCopasiContainer_ObjectFromName
 
+CEvaluationTree.create=_COPASI.CEvaluationTree_create
+CEvaluationTree.copy=_COPASI.CEvaluationTree_copy
+
 %}
 
 %extend CCopasiParameter

@@ -67,8 +67,7 @@ class Test_CFunctionParameters(unittest.TestCase):
 
 def suite():
   tests=[
-          "setUp"
-         ,"test_size"
+          "test_size"
          ,"test_add"
          ,"test_remove"
          ,"test_isVector"

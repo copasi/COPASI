@@ -15,7 +15,6 @@ class Test_CFunctionParameter(unittest.TestCase):
     index=self.parameters.findParameterByName("Keq",COPASI.CFunctionParameter.FLOAT64)
     self.parameter=self.parameters.getParameter(index)
     self.assert_(self.parameter!=None)
-    print self.parameter.__class__
     self.assert_(self.parameter.__class__==COPASI.CFunctionParameter)
 
   def test_getKey(self):
@@ -47,8 +46,7 @@ class Test_CFunctionParameter(unittest.TestCase):
 
 def suite():
   tests=[
-          "setUp"
-         ,"test_getKey"        
+          "test_getKey"        
          ,"test_getType"        
          ,"test_setType"        
          ,"test_getUsage"        

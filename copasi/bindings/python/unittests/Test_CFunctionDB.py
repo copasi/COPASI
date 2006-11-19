@@ -10,22 +10,44 @@ class Test_CFunctionDB(unittest.TestCase):
     self.assert_(self.functions.__class__==COPASI.CFunctionDB)
 
   def test_add(self):
-    self.fail()
+    function=COPASI.CFunction("testFunction")
+    size=self.functions.loadedFunctions().size()
+    self.assert_(self.functions.add(function,True))
+    self.assert_(self.functions.loadedFunctions().size()==size+1)
 
   def test_removeFunction(self):
+    #function=COPASI.CFunction("testFunction")
+    #size=self.functions.loadedFunctions().size()
+    #self.assert_(self.functions.add(function,True))
+    #self.assert_(self.functions.loadedFunctions().size()==size+1)
+    #self.assert_(self.functions.removeFunction(function.getKey()))
+    #self.assert_(self.functions.loadedFunctions().size()==size)
     self.fail()
+
 
   def test_findFunction(self):
-    self.fail()
+    function=self.functions.findFunction("Iso Uni Uni")
+    self.assert_(function!=None)
+    self.assert_(function.__class__==COPASI.CFunction)
+    self.assert_(function.getObjectName()=="Iso Uni Uni")
 
   def test_findLoadFunction(self):
-    self.fail()
+    function=self.functions.findLoadFunction("Iso Uni Uni")
+    self.assert_(function!=None)
+    self.assert_(function.__class__==COPASI.CFunction)
+    self.assert_(function.getObjectName()=="Iso Uni Uni")
 
   def test_loadedFunctions(self):
-    self.fail()
+    loadedFunctions=self.functions.loadedFunctions()
+    self.assert_(loadedFunctions!=None)
+    self.assert_(loadedFunctions.__class__==COPASI.CEvaluationTreeVectorN)
+
 
   def test_suitableFunctions(self):
-    self.fail()
+    sfs=self.functions.suitableFunctions(2,1,COPASI.TriFalse)
+    self.assert_(sfs!=None)
+    self.assert_(sfs.__class__==COPASI.CFunctionStdVector)
+    self.assert_(sfs.size()!=0)
 
 def suite():
   tests=[

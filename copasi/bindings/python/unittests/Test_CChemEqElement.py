@@ -57,8 +57,7 @@ class Test_CChemEqElement(unittest.TestCase):
 
 def suite():
   tests=[
-           "setUp"
-          ,"test_getMultiplicity"
+          "test_getMultiplicity"
           ,"test_setMultiplicity"
           ,"test_addToMultiplicity"
           ,"test_getMetabolite"

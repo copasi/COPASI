@@ -1,39 +1,85 @@
 import COPASI
 import unittest
 from types import *
+import string
 
 
 class Test_CFunction(unittest.TestCase):
   def setUp(self):
-    pass
+    self.functions=COPASI.CCopasiDataModel.GLOBAL.getFunctionList()
+    self.function=self.functions.findFunction("Iso Uni Uni")
+
+  def test_setUp(self):
+    self.assert_(self.function!=None)
+    self.assert_(self.function.__class__==COPASI.CFunction)
+    self.assert_(self.function.getObjectName()=="Iso Uni Uni")
 
   def test_setInfix(self):
-    pass
+    function=COPASI.CEvaluationTree.create(COPASI.CEvaluationTree.Function)
+    self.assert_(function!=None)
+    self.assert_(function.__class__==COPASI.CFunction)
+    expr="B + (7.0 / A)"
+    self.assert_(function.setInfix(expr))
+    infix=function.getInfix()
+    expr2=""
+    for x in expr:
+        if x not in string.whitespace:
+            expr2+=x
+    expr3=""
+    for x in infix:
+        if x not in string.whitespace:
+            expr3+=x
+    self.assert_(expr2==expr3)
 
   def test_getVariableIndex(self):
-    self.fail()
+    index=self.function.getVariableIndex("Kmp")
+    self.assert_(type(index)==IntType)
+    self.assert_(index==6)
 
   def test_getVariableValue(self):
     self.fail()
+    #v=self.function.getVariableValue(3)
+    #self.assert_(type(v)==FloatType)
+    #self.assert_(v==1.0)
 
   def test_isReversible(self):
-    self.fail()
+    b=self.function.isReversible()
+    self.assert_(type(b)==IntType)
 
   def test_setReversible(self):
-    self.fail()
+    function=COPASI.CEvaluationTree.create(COPASI.CEvaluationTree.Function)
+    self.assert_(function!=None)
+    self.assert_(function.__class__==COPASI.CFunction)
+    v=True
+    function.setReversible(v)
+    self.assert_(function.isReversible()==v)
+    v=False
+    function.setReversible(v)
+    self.assert_(function.isReversible()==v)
 
   def test_getVariables(self):
-    self.fail()
+    params=self.function.getVariables()
+    self.assert_(params!=None)
+    self.assert_(params.__class__==COPASI.CFunctionParameters)
 
   def test_addVariable(self):
-    self.fail()  
+    params=self.function.getVariables()
+    size=params.size()
+    self.function.addVariable("testVar")
+    self.assert_(params.size()==size+1)
 
   def test_isSuitable(self):
-    self.fail()  
+    b=self.function.isSuitable(1,1,COPASI.TriTrue)
+    self.assert_(type(b)==BooleanType)
+    self.assert_(b==True)
+    b=self.function.isSuitable(0,1,COPASI.TriTrue)
+    self.assert_(b==False)
+    b=self.function.isSuitable(1,1,COPASI.TriFalse)
+    self.assert_(b==False)
 
 def suite():
   tests=[
-          "setUp"
+          "test_setUp"
          ,"test_setInfix"
          ,"test_getVariableIndex"
          ,"test_getVariableValue"
