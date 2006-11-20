@@ -98,7 +98,7 @@ CEvaluationTree.copy=_COPASI.CEvaluationTree_copy
            result=self.setIntValue(arg) 
         elif(type(arg)==types.FloatType):
            result=self.setDblValue(arg) 
-        elif(type(arg)==types.BoolType):
+        elif(type(arg)==types.BooleanType):
            result=self.setBoolValue(arg) 
         elif(type(arg)==types.StringType):
            result=self.setStringValue(arg) 
