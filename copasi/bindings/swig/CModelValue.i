@@ -136,18 +136,6 @@ class CModelEntity : public CCopasiContainer
      */
     const bool & isUsedOnce() const;
 
-    /**
-     * Retreive object referencing the value
-     * @return CCopasiObject * valueReference
-     */
-    //virtual CCopasiObject * getValueReference();
-
-    /**
-     * Retreive object referencing the rate
-     * @return CCopasiObject * rateReference
-     */
-    //virtual CCopasiObject * getRateReference();
-
 };
 
 

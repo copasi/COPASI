@@ -9,30 +9,21 @@ class Test_CFunctionDB(unittest.TestCase):
     self.assert_(self.functions!=None)
     self.assert_(self.functions.__class__==COPASI.CFunctionDB)
 
-  def test_add(self):
-    function=COPASI.CFunction("testFunction")
+  def test_createFunction(self):
     size=self.functions.loadedFunctions().size()
-    function.this.disown()
-    result=self.functions.add(function,True)
-    if(result==False):
-      function.this.own()
-    self.assert_(result==True)
+    function=self.functions.createFunction("testFunction",COPASI.CEvaluationTree.Function)
+    self.assert_(function!=None)
+    self.assert_(function.__class__==COPASI.CFunction)
     self.assert_(self.functions.loadedFunctions().size()==size+1)
 
   def test_removeFunction(self):
-    function=COPASI.CFunction("testFunction2")
+    size=self.functions.loadedFunctions().size()
+    function=self.functions.createFunction("testFunction2",COPASI.CEvaluationTree.Function)
     self.assert_(function!=None)
     self.assert_(function.__class__==COPASI.CFunction)
     size=self.functions.loadedFunctions().size()
-    function.this.disown()
-    result=self.functions.add(function,True)
-    if(result==False):
-      function.this.own()
-    self.assert_(result==True)
-    self.assert_(self.functions.loadedFunctions().size()==size+1)
     self.assert_(self.functions.removeFunction(function.getKey()))
-    self.assert_(self.functions.loadedFunctions().size()==size)
-
+    self.assert_(self.functions.loadedFunctions().size()==size-1)
 
   def test_findFunction(self):
     function=self.functions.findFunction("Iso Uni Uni")
@@ -61,7 +52,7 @@ class Test_CFunctionDB(unittest.TestCase):
 def suite():
   tests=[
           "setUp"
-         ,"test_add"
+         ,"test_createFunction"
          ,"test_removeFunction"
          ,"test_findFunction"
          ,"test_findLoadFunction"

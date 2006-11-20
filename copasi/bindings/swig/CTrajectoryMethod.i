@@ -4,6 +4,8 @@
 
 %}
 
+%newobject CTrajectoryMethod::createTrajectoryMethod(CCopasiMethod::SubType subType = CCopasiMethod::deterministic,CTrajectoryProblem * pProblem = NULL);
+
 
 class CTrajectoryMethod : public CCopasiMethod
 {

@@ -26,11 +26,6 @@ class CReportDefinition : public CCopasiObject
     ~CReportDefinition();
     
     /**
-     *cleanup
-     */
-    //void cleanup();
-
-    /**
      *Returns the comments in the report tag
      */
     const std::string & getComment() const;

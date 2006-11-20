@@ -33,6 +33,33 @@
   $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForMethod($1), 0);
 }
 
+/**
+ * Convert Method objects into the most specific type possible.
+ */
+%typemap(out) CCopasiParameterGroup*
+{
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCCopasiParameterGroup($1), 0);
+}
+
+
+/**
+ * Convert Method objects into the most specific type possible.
+ */
+%typemap(out) CCopasiParameter*
+{
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCCopasiParameter($1), 0);
+}
+
+/**
+ * Convert Method objects into the most specific type possible.
+ */
+%typemap(out) CCopasiContainer*
+{
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCCopasiContainer($1), 0);
+}
+
+
+
 %pythoncode
 %{
 import types

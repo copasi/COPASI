@@ -13,11 +13,6 @@ class CModel : public CModelEntity
     enum VolumeUnit {m3 = 0, l, ml, microl, nl, pl, fl};
 
     /**
-     * String representation of valid volume units
-     */
-    //static const char * VolumeUnitNames[];
-
-    /**
      *  Enum of valid time units
      */
     enum TimeUnit {d = 0, h, min, s, ms, micros, ns, ps, fs};

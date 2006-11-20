@@ -4,6 +4,10 @@
 
 %}
 
+%newobject CEvaluationTree::create(CEvaluationTree::Type type);
+%newobject CEvaluationTree::copy(const CEvaluationTree& src);
+
+
 class CEvaluationTree : public CCopasiContainer
 {
   public:
