@@ -1,20 +1,20 @@
 /* Begin CVS Header
-   $Source: /home/cvs/copasi_dev/copasi/CopasiUI/CQFittingResult.cpp,v $
-   $Revision: 1.3.2.1 $
+   $Source: /home/cvs/copasi_dev/cvs_admin/c++style,v $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/05/23 17:28:12 $
+   $Date: 2006/10/04 15:58:17 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingResult.ui'
  **
- ** Created: Tue May 23 12:44:20 2006
- **      by: The User Interface Compiler ($Id: CQFittingResult.cpp,v 1.3.2.1 2006/05/23 17:28:12 shoops Exp $)
+ ** Created: Mon Nov 20 11:26:45 2006
+ **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.6   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/
@@ -62,15 +62,19 @@ CQFittingResult::CQFittingResult(QWidget* parent, const char* name)
   mpCorrelations = new QTable(mpTabWidget, "mpCorrelations");
   mpTabWidget->insertTab(mpCorrelations, QString::fromLatin1(""));
 
+  mpCrossValidations = new QTable(mpTabWidget, "mpCrossValidations");
+  mpTabWidget->insertTab(mpCrossValidations, QString::fromLatin1(""));
+
+  mpCrossValidationValues = new QTable(mpTabWidget, "mpCrossValidationValues");
+  mpTabWidget->insertTab(mpCrossValidationValues, QString::fromLatin1(""));
+
   CQFittingResultLayout->addMultiCellWidget(mpTabWidget, 1, 1, 0, 1);
 
   mpBtnSave = new QPushButton(this, "mpBtnSave");
-  mpBtnSave->setGeometry(QRect(290, 10, 101, 31));
 
-  CQFittingResultLayout->addWidget(mpBtnSave, 0, 1);
+  CQFittingResultLayout->addWidget(mpBtnSave, 0, 0);
 
   mpLblResult = new QLabel(this, "mpLblResult");
-  mpLblResult->setGeometry(QRect(10, 10, 260, 31));
   mpLblResult->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)5, 0, 0, mpLblResult->sizePolicy().hasHeightForWidth()));
 
   CQFittingResultLayout->addWidget(mpLblResult, 0, 0);
@@ -103,6 +107,8 @@ void CQFittingResult::languageChange()
   mpTabWidget->changeTab(mpExperiments, tr("Experiments"));
   mpTabWidget->changeTab(mpValues, tr("Fitted Values"));
   mpTabWidget->changeTab(mpCorrelations, tr("Correlation Matrix"));
+  mpTabWidget->changeTab(mpCrossValidations, tr("CV Experiments"));
+  mpTabWidget->changeTab(mpCrossValidationValues, tr("CV Fitted Values"));
   mpBtnSave->setText(tr("save data"));
   mpLblResult->setText(tr("<h2>Parameter Estimation Result</h2>"));
 }

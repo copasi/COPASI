@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/16 15:45:13 $
+   $Date: 2006/11/20 16:39:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -21,6 +21,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "model/CState.h"
+#include "report/CCopasiObjectReference.h"
 #include "report/CKeyFactory.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
@@ -43,6 +44,11 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
     mCrossValidationUpdateMethods(0, 0),
     mCrossValidationConstraints(0, 0),
     mCrossValidationDependentValues(0),
+    mCrossValidationSolutionValue(mInfinity),
+    mCrossValidationRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+    mCrossValidationSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+    mCrossValidationObjective(mInfinity),
+    mThresholdCounter(0),
 #endif // COPASI_CROSSVALIDATION
     mpTrajectoryProblem(NULL),
     mpInitialState(NULL),
@@ -69,6 +75,11 @@ CFitProblem::CFitProblem(const CFitProblem& src,
     mCrossValidationUpdateMethods(0, 0),
     mCrossValidationConstraints(0, 0),
     mCrossValidationDependentValues(src.mCrossValidationDependentValues),
+    mCrossValidationSolutionValue(mInfinity),
+    mCrossValidationRMS(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+    mCrossValidationSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
+    mCrossValidationObjective(mInfinity),
+    mThresholdCounter(0),
 #endif // COPASI_CROSSVALIDATION
     mpTrajectoryProblem(NULL),
     mpInitialState(NULL),
@@ -790,6 +801,11 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   mRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
+#ifdef COPASI_CROSSVALIDATION
+  mCrossValidationRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  mCrossValidationSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+#endif // COPASI_CROSSVALIDATION
+
   mParameterSD.resize(imax);
   mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
@@ -813,13 +829,28 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   // The statistics need to be calculated for the result, i.e., now.
   mpExperimentSet->calculateStatistics();
-  mHaveStatistics = true;
 
   if (jmax)
     mRMS = sqrt(mSolutionValue / jmax);
 
   if (jmax > imax)
     mSD = sqrt(mSolutionValue / (jmax - imax));
+
+#ifdef COPASI_CROSSVALIDATION
+  calculateCrossValidation();
+
+  mpCrossValidationSet->calculateStatistics();
+
+  unsigned C_INT32 lmax = this->mCrossValidationDependentValues.size();
+
+  if (lmax)
+    mCrossValidationRMS = sqrt(mCrossValidationSolutionValue / lmax);
+
+  if (lmax > imax)
+    mCrossValidationSD = sqrt(mCrossValidationSolutionValue / (lmax - imax));
+#endif // COPASI_CROSSVALIDATION
+
+  mHaveStatistics = true;
 
   CMatrix< C_FLOAT64 > dyp;
   dyp.resize(imax, jmax);
@@ -1157,6 +1188,21 @@ bool CFitProblem::setSolution(const C_FLOAT64 & value,
   return Continue;
 }
 
+const C_FLOAT64 & CFitProblem::getCrossValidationSolutionValue() const
+{return mCrossValidationSolutionValue;}
+
+const C_FLOAT64 & CFitProblem::getCrossValidationRMS() const
+  {return mCrossValidationRMS;}
+
+const C_FLOAT64 & CFitProblem::getCrossValidationSD() const
+  {return mCrossValidationSD;}
+
+void CFitProblem::initObjects()
+{
+  addObjectReference("Cross Validation Solution", mCrossValidationSolutionValue, CCopasiObject::ValueDbl);
+  addObjectReference("Cross Validation Objective", mCrossValidationObjective, CCopasiObject::ValueDbl);
+}
+
 bool CFitProblem::calculateCrossValidation()
 {
   mCounter += 1;
@@ -1303,6 +1349,9 @@ bool CFitProblem::calculateCrossValidation()
   if (isnan(CalculateValue))
     CalculateValue = mInfinity;
 
+  if (!checkFunctionalConstraints())
+    CalculateValue = mInfinity;
+
   if (mpCallBack)
     Continue &= mpCallBack->progress(mhCounter);
 
@@ -1315,9 +1364,10 @@ bool CFitProblem::calculateCrossValidation()
     {
       mThresholdCounter = 0;
       mCrossValidationObjective = CurrentObjective;
+      mCrossValidationSolutionValue = CalculateValue;
     }
 
-  Continue &= mThresholdCounter < mpCrossValidationSet->getThreshold();
+  Continue &= (mThresholdCounter < mpCrossValidationSet->getThreshold());
 
   return Continue;
 }

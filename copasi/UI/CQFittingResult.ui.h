@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingResult.ui.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/16 15:45:13 $
+   $Date: 2006/11/20 16:39:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -99,6 +99,50 @@ void CQFittingResult::init()
 
   for (i = 0, imax = mpValues->numCols(); i != imax; i++)
     mpValues->adjustColumn(i);
+
+#ifdef COPASI_CROSSVALIDATION
+  // Set up the cross validation table
+  mpCrossValidations->setNumCols(mpCrossValidations->numCols() + 1);
+  mpCrossValidations->horizontalHeader()->setLabel(mpCrossValidations->numCols() - 1, tr("CV Experiment"));
+  mpCrossValidations->setNumCols(mpCrossValidations->numCols() + 1);
+  mpCrossValidations->horizontalHeader()->setLabel(mpCrossValidations->numCols() - 1, tr("Objective Value"));
+  mpCrossValidations->setNumCols(mpCrossValidations->numCols() + 1);
+  mpCrossValidations->horizontalHeader()->setLabel(mpCrossValidations->numCols() - 1, tr("Root Mean Square"));
+  mpCrossValidations->setNumCols(mpCrossValidations->numCols() + 1);
+  mpCrossValidations->horizontalHeader()->setLabel(mpCrossValidations->numCols() - 1, tr("Error Mean"));
+  mpCrossValidations->setNumCols(mpCrossValidations->numCols() + 1);
+  mpCrossValidations->horizontalHeader()->setLabel(mpCrossValidations->numCols() - 1, tr("Error Mean Std. Deviation"));
+  mpCrossValidations->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpExperiments->sizePolicy().hasHeightForWidth()));
+  mpCrossValidations->setNumRows(0);
+  mpCrossValidations->setNumCols(5);
+  mpCrossValidations->setReadOnly(TRUE);
+
+  for (i = 0, imax = mpExperiments->numCols(); i != imax; i++)
+    mpCrossValidations->adjustColumn(i);
+
+  // Set up the experiments table
+  mpCrossValidationValues->setNumCols(mpCrossValidationValues->numCols() + 1);
+  mpCrossValidationValues->horizontalHeader()->setLabel(mpCrossValidationValues->numCols() - 1, tr("CV Fitted Value"));
+  mpCrossValidationValues->setNumCols(mpCrossValidationValues->numCols() + 1);
+  mpCrossValidationValues->horizontalHeader()->setLabel(mpCrossValidationValues->numCols() - 1, tr("Objective Value"));
+  mpCrossValidationValues->setNumCols(mpCrossValidationValues->numCols() + 1);
+  mpCrossValidationValues->horizontalHeader()->setLabel(mpCrossValidationValues->numCols() - 1, tr("Root Mean Square"));
+  mpCrossValidationValues->setNumCols(mpCrossValidationValues->numCols() + 1);
+  mpCrossValidationValues->horizontalHeader()->setLabel(mpCrossValidationValues->numCols() - 1, tr("Error Mean"));
+  mpCrossValidationValues->setNumCols(mpCrossValidationValues->numCols() + 1);
+  mpCrossValidationValues->horizontalHeader()->setLabel(mpCrossValidationValues->numCols() - 1, tr("Error Mean Std. Deviation"));
+  mpCrossValidationValues->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)7, (QSizePolicy::SizeType)5, 0, 0, mpValues->sizePolicy().hasHeightForWidth()));
+  mpCrossValidationValues->setNumRows(0);
+  mpCrossValidationValues->setNumCols(5);
+  mpCrossValidationValues->setReadOnly(TRUE);
+
+  for (i = 0, imax = mpValues->numCols(); i != imax; i++)
+    mpCrossValidationValues->adjustColumn(i);
+
+#else
+  pdelete(mpCrossValidations);
+  pdelete(mpCrossValidationValues);
+#endif // COPASI_CROSSVALIDATION
 }
 
 bool CQFittingResult::update(ListViews::ObjectType /* objectType */,
@@ -264,6 +308,59 @@ bool CQFittingResult::enter(const std::string & /* key */)
   for (i = 0; i != imax; i++)
     mpCorrelations->adjustColumn(i);
 
+#ifdef COPASI_CROSSVALIDATION
+  bool Enable = (mpProblem->getCrossValidationSet().getExperimentCount() > 0);
+
+  mpTabWidget->setTabEnabled(mpCrossValidations, Enable);
+  mpTabWidget->setTabEnabled(mpCrossValidationValues, Enable);
+
+  // Loop over the cross validation
+  const CCrossValidationSet & CrossValidations = mpProblem->getCrossValidationSet();
+
+  imax = CrossValidations.getExperimentCount();
+  if (mpProblem->getFunctionEvaluations() == 0)
+    imax = 0;
+
+  mpCrossValidations->setNumRows(imax);
+  for (i = 0; i != imax; i++)
+    {
+      const CExperiment & Experiment = * CrossValidations.getExperiment(i);
+      mpCrossValidations->setText(i, 0, FROM_UTF8(Experiment.getObjectName()));
+      mpCrossValidations->setText(i, 1, QString::number(Experiment.getObjectiveValue()));
+      mpCrossValidations->setText(i, 2, QString::number(Experiment.getRMS()));
+
+      mpCrossValidations->setText(i, 3, QString::number(Experiment.getErrorMean()));
+      mpCrossValidations->setText(i, 4, QString::number(Experiment.getErrorMeanSD()));
+    }
+
+  for (i = 0, imax = mpCrossValidations->numCols(); i != imax; i++)
+    mpCrossValidations->adjustColumn(i);
+
+  // Loop over the dependent objects
+  imax = CrossValidations.getDependentObjects().size();
+  if (mpProblem->getFunctionEvaluations() == 0)
+    imax = 0;
+
+  mpCrossValidationValues->setNumRows(imax);
+  for (i = 0; i != imax; i++)
+    {
+      const CCopasiObject * pObject = CrossValidations.getDependentObjects()[i];
+      if (pObject)
+        mpCrossValidationValues->setText(i, 0, FROM_UTF8(pObject->getObjectDisplayName()));
+      else
+        mpCrossValidationValues->setText(i, 0, "Not Found");
+
+      mpCrossValidationValues->setText(i, 1, QString::number(CrossValidations.getDependentObjectiveValues()[i]));
+      mpCrossValidationValues->setText(i, 2, QString::number(CrossValidations.getDependentRMS()[i]));
+
+      mpCrossValidationValues->setText(i, 3, QString::number(CrossValidations.getDependentErrorMean()[i]));
+      mpCrossValidationValues->setText(i, 4, QString::number(CrossValidations.getDependentErrorMeanSD()[i]));
+    }
+
+  for (i = 0, imax = mpCrossValidationValues->numCols(); i != imax; i++)
+    mpCrossValidationValues->adjustColumn(i);
+#endif // COPASI_CROSSVALIDATION
+
   return true;
 }
 
@@ -359,7 +456,6 @@ void CQFittingResult::slotSave(void)
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpExperiments->setNumRows(imax);
   for (i = 0; i != imax; i++)
     {
       const CExperiment & Experiment = * Experiments.getExperiment(i);
@@ -379,7 +475,6 @@ void CQFittingResult::slotSave(void)
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpValues->setNumRows(imax);
   for (i = 0; i != imax; i++)
     {
       const CCopasiObject * pObject = Experiments.getDependentObjects()[i];
@@ -454,4 +549,51 @@ void CQFittingResult::slotSave(void)
 
       file << std::endl;
     }
+
+#ifdef COPASI_CROSSVALIDATION
+  // Set up the cross validations table
+  file << std::endl << "Cross Validations:" << std::endl;
+  file << "Cross Validation Experiment\t Objective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
+
+  // Loop over the cross validations
+  const CCrossValidationSet & CrossValidations = mpProblem->getCrossValidationSet();
+
+  imax = CrossValidations.getExperimentCount();
+  if (mpProblem->getFunctionEvaluations() == 0)
+    imax = 0;
+
+  for (i = 0; i != imax; i++)
+    {
+      const CExperiment & Experiment = * CrossValidations.getExperiment(i);
+      file << Experiment.getObjectName() << "\t";
+      file << Experiment.getObjectiveValue() << "\t";
+      file << Experiment.getRMS() << "\t";
+      file << Experiment.getErrorMean() << "\t";
+      file << Experiment.getErrorMeanSD() << std::endl;
+    }
+
+  // Set up the fitted values table
+  file << std::endl << "Cross Validation Fitted Values:" << std::endl;
+  file << "CV Fitted Value\tObjective Value\tRoot Mean Square\tError Mean\tError Mean Std. Deviation" << std::endl;
+
+  // Loop over the fitted values objects
+  imax = CrossValidations.getDependentObjects().size();
+  if (mpProblem->getFunctionEvaluations() == 0)
+    imax = 0;
+
+  for (i = 0; i != imax; i++)
+    {
+      const CCopasiObject * pObject = CrossValidations.getDependentObjects()[i];
+      if (pObject)
+        file << pObject->getObjectDisplayName() << "\t";
+      else
+        file << "Not Found\t";
+
+      file << CrossValidations.getDependentObjectiveValues()[i] << "\t";
+      file << CrossValidations.getDependentRMS()[i] << "\t";
+      file << CrossValidations.getDependentErrorMean()[i] << "\t";
+      file << CrossValidations.getDependentErrorMeanSD()[i] << std::endl;
+    }
+  file << std::endl;
+#endif // COPASI_CROSSVALIDATION
 }

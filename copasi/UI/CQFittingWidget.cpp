@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFittingWidget.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/16 15:45:13 $
+   $Date: 2006/11/20 16:39:13 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingWidget.ui'
  **
- ** Created: Tue Nov 14 09:55:49 2006
- **      by: The User Interface Compiler ($Id: CQFittingWidget.cpp,v 1.10 2006/11/16 15:45:13 shoops Exp $)
+ ** Created: Thu Nov 16 12:12:04 2006
+ **      by: The User Interface Compiler ($Id: CQFittingWidget.cpp,v 1.11 2006/11/20 16:39:13 shoops Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

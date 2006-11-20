@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.h,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/16 15:45:13 $
+   $Date: 2006/11/20 16:39:12 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -193,6 +193,23 @@ class CFitProblem : public COptProblem
      */
     virtual bool setSolution(const C_FLOAT64 & value,
                              const CVector< C_FLOAT64 > & variables);
+
+    /**
+     * Retrieve the result for the cross validation solution
+     */
+    const C_FLOAT64 & getCrossValidationSolutionValue() const;
+
+    /**
+     * Retreive the root mean square of the cross validation solution
+     * @return const C_FLOAT64 & RMS
+     */
+    const C_FLOAT64 & getCrossValidationRMS() const;
+
+    /**
+     * Retreive the standard deviation of the cross validation solution
+     * @return const C_FLOAT64 & RMS
+     */
+    const C_FLOAT64 & getCrossValidationSD() const;
 #endif // COPASI_CROSSVALIDATION
 
     /**
@@ -211,6 +228,11 @@ class CFitProblem : public COptProblem
     virtual bool createObjectiveFunction();
 
 #ifdef COPASI_CROSSVALIDATION
+    /**
+     * Initialize objects
+     */
+    void initObjects();
+
     /**
      * Do the calculation for the cross validation based on the solution variables
      * and determine wheter to continue parameter fitting
@@ -263,7 +285,23 @@ class CFitProblem : public COptProblem
     CVector< C_FLOAT64 > mCrossValidationDependentValues;
 
     /**
-     * The objective value of the cross validation
+     * The objective value of the cross validation set.
+     */
+    C_FLOAT64 mCrossValidationSolutionValue;
+
+    /**
+     * The RMS of the cross validation set.
+     */
+    C_FLOAT64 mCrossValidationRMS;
+
+    /**
+     * The standard deviation of the cross validation set.
+     */
+    C_FLOAT64 mCrossValidationSD;
+
+    /**
+     * The objective value of the cross validation used to determine when to stop
+     * parameter estimation due to overfitting
      */
     C_FLOAT64 mCrossValidationObjective;
 
