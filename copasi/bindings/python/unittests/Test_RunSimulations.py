@@ -3,13 +3,14 @@ import unittest
 from types import *
 import Test_CreateSimpleModel
 
-def runSimulation(taskType,problemParameters,methodParameters):
+def runSimulation(methodType,problemParameters,methodParameters):
     task=None
     for x in range(0,COPASI.CCopasiDataModel.GLOBAL.getTaskList().size()):
         if(COPASI.CCopasiDataModel.GLOBAL.getTask(x).getType()==COPASI.CCopasiTask.timeCourse):
             task=COPASI.CCopasiDataModel.GLOBAL.getTask(x)
     if(task==None):
         return False
+    task.setMethodType(methodType)
     problem=task.getProblem()
     if(problem == None):
         return None
@@ -26,21 +27,22 @@ def runSimulation(taskType,problemParameters,methodParameters):
         if(param == None):
             return None
         param.setValue(methodParameters[key])
-    task.process(True)
+    if(not task.process(True)):
+        return None
     return task
 
 def runDeterministicSimulation():
-   problemParameters={"StepNumber":10000,"Duration":100.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
+   problemParameters={"StepNumber":1000,"Duration":10.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
    methodParameters={"Absolute Tolerance":1.0e-20}
    return runSimulation(COPASI.CCopasiMethod.deterministic,problemParameters,methodParameters)
 
 def runStochasticSimulation():
-   problemParameters={"StepNumber":10000,"Duration":100.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
+   problemParameters={"StepNumber":1000,"Duration":10.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
    methodParameters={}
    return runSimulation(COPASI.CCopasiMethod.stochastic,problemParameters,methodParameters)
 
 def runHybridSimulation():
-   problemParameters={"StepNumber":10000,"Duration":100.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
+   problemParameters={"StepNumber":1000,"Duration":10.0,"TimeSeriesRequested":True,"OutputStartTime":0.0}
    methodParameters={}
    return runSimulation(COPASI.CCopasiMethod.hybrid,problemParameters,methodParameters)
 
@@ -55,7 +57,7 @@ class Test_RunSimulations(unittest.TestCase):
     timeseries=task.getTimeSeries()
     self.assert_(timeseries!=None)
     self.assert_(timeseries.__class__==COPASI.CTimeSeries)
-    self.assert_(timeseries.getNumSteps()==10001)
+    self.assert_(timeseries.getNumSteps()==1001)
     self.assert_(timeseries.getNumVariables()==3)
 
    def test_runHybridSimulationOnSimpleModel(self):
@@ -65,7 +67,7 @@ class Test_RunSimulations(unittest.TestCase):
     timeseries=task.getTimeSeries()
     self.assert_(timeseries!=None)
     self.assert_(timeseries.__class__==COPASI.CTimeSeries)
-    self.assert_(timeseries.getNumSteps()==10001)
+    self.assert_(timeseries.getNumSteps()==1001)
     self.assert_(timeseries.getNumVariables()==3)
 
    def test_runDeterministicSimulationOnSimpleModel(self):
@@ -75,8 +77,18 @@ class Test_RunSimulations(unittest.TestCase):
     timeseries=task.getTimeSeries()
     self.assert_(timeseries!=None)
     self.assert_(timeseries.__class__==COPASI.CTimeSeries)
-    self.assert_(timeseries.getNumSteps()==10001)
+    self.assert_(timeseries.getNumSteps()==1001)
     self.assert_(timeseries.getNumVariables()==3)
+    value=timeseries.getConcentrationData(1387,0)
+    print "value: ",value
+    #self.assertAlmostEqual(value,1.386,8)
+    value=timeseries.getConcentrationData(1387,1)
+    print "value: ",value
+    #self.assertAlmostEqual(value,0.001,6)
+    value=timeseries.getConcentrationData(1387,2)
+    print "value: ",value
+    #self.assertAlmostEqual(value,0.001,6)
+
 
    def test_runStochasticSimulationOnExtendedModel(self):
     Test_CreateSimpleModel.extendModel(self.model)
@@ -86,7 +98,7 @@ class Test_RunSimulations(unittest.TestCase):
     timeseries=task.getTimeSeries()
     self.assert_(timeseries!=None)
     self.assert_(timeseries.__class__==COPASI.CTimeSeries)
-    self.assert_(timeseries.getNumSteps()==10001)
+    self.assert_(timeseries.getNumSteps()==1001)
     self.assert_(timeseries.getNumVariables()==4)
 
    def test_runHybridSimulationOnExtendedModel(self):
@@ -97,7 +109,7 @@ class Test_RunSimulations(unittest.TestCase):
     timeseries=task.getTimeSeries()
     self.assert_(timeseries!=None)
     self.assert_(timeseries.__class__==COPASI.CTimeSeries)
-    self.assert_(timeseries.getNumSteps()==10001)
+    self.assert_(timeseries.getNumSteps()==1001)
     self.assert_(timeseries.getNumVariables()==4)
 
    def test_runDeterministicSimulationOnExtendedModel(self):
@@ -108,7 +120,7 @@ class Test_RunSimulations(unittest.TestCase):
     timeseries=task.getTimeSeries()
     self.assert_(timeseries!=None)
     self.assert_(timeseries.__class__==COPASI.CTimeSeries)
-    self.assert_(timeseries.getNumSteps()==10001)
+    self.assert_(timeseries.getNumSteps()==1001)
     self.assert_(timeseries.getNumVariables()==4)
 
 

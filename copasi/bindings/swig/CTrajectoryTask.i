@@ -51,9 +51,16 @@ class CTrajectoryTask : public CCopasiTask
     
       bool process(bool useInitialValues)
       {
-        self->initialize(CCopasiTask::OUTPUT_COMPLETE,NULL);
-        self->process(useInitialValues);
-        return self->restore();
+        bool result=self->initialize(CCopasiTask::OUTPUT_COMPLETE,NULL);
+        if(result)
+        {
+          result=self->process(useInitialValues);
+        }
+        if(result)
+        {
+          result=self->restore();
+        }
+        return result;
       }  
     
     }
