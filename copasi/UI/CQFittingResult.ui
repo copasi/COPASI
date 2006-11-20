@@ -99,17 +99,33 @@
             </attribute>
         </widget>
     </widget>
-    <widget class="QPushButton">
+    <widget class="QPushButton" row="0" column="1">
         <property name="name">
             <cstring>mpBtnSave</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>290</x>
+                <y>10</y>
+                <width>101</width>
+                <height>31</height>
+            </rect>
         </property>
         <property name="text">
             <string>save data</string>
         </property>
     </widget>
-    <widget class="QLabel">
+    <widget class="QLabel" row="0" column="0">
         <property name="name">
             <cstring>mpLblResult</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>260</width>
+                <height>31</height>
+            </rect>
         </property>
         <property name="sizePolicy">
             <sizepolicy>

@@ -13,7 +13,7 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQFittingResult.ui'
  **
- ** Created: Mon Nov 20 11:26:45 2006
+ ** Created: Mon Nov 20 11:50:14 2006
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.6   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
@@ -71,10 +71,12 @@ CQFittingResult::CQFittingResult(QWidget* parent, const char* name)
   CQFittingResultLayout->addMultiCellWidget(mpTabWidget, 1, 1, 0, 1);
 
   mpBtnSave = new QPushButton(this, "mpBtnSave");
+  mpBtnSave->setGeometry(QRect(290, 10, 101, 31));
 
-  CQFittingResultLayout->addWidget(mpBtnSave, 0, 0);
+  CQFittingResultLayout->addWidget(mpBtnSave, 0, 1);
 
   mpLblResult = new QLabel(this, "mpLblResult");
+  mpLblResult->setGeometry(QRect(10, 10, 260, 31));
   mpLblResult->setSizePolicy(QSizePolicy((QSizePolicy::SizeType)3, (QSizePolicy::SizeType)5, 0, 0, mpLblResult->sizePolicy().hasHeightForWidth()));
 
   CQFittingResultLayout->addWidget(mpLblResult, 0, 0);

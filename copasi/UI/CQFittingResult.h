@@ -13,7 +13,7 @@
 /****************************************************************************
  ** Form interface generated from reading ui file 'CQFittingResult.ui'
  **
- ** Created: Mon Nov 20 10:18:09 2006
+ ** Created: Mon Nov 20 11:50:13 2006
  **      by: The User Interface Compiler ($Id: qt/main.cpp   3.3.6   edited Aug 31 2005 $)
  **
  ** WARNING! All changes made in this file will be lost!
