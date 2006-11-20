@@ -99,13 +99,6 @@ class CEvaluationTree : public CCopasiContainer
      */
     virtual unsigned C_INT32 getVariableIndex(const std::string & name) const;
 
-    /**
-     * Retrieve the value of the indexed variable
-     * @param const unsigned C_INT32 & index
-     * @return const C_FLOAT64 & variableValue
-     */
-    virtual const C_FLOAT64 & getVariableValue(const unsigned C_INT32 & index) const;
-
 
     /**
      * Sets the SBMLId.
@@ -128,6 +121,7 @@ class CEvaluationTree : public CCopasiContainer
       {
         return (C_INT32)self->getErrorPosition();
       }
+
     }
 
 };

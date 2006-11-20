@@ -20,14 +20,7 @@ class CFunctionDB : public CCopasiContainer
      */
     ~CFunctionDB();
 
-    /**
-     * Add the function to the database
-     * @param CEvaluationTree * pFunction
-     * @param const bool & adopt (default = false)
-     * @return bool success
-     */
-    bool add(CEvaluationTree * pFunction, const bool & adopt);
-    
+   
     bool removeFunction(const std::string &key);
 
     /**
@@ -67,6 +60,13 @@ class CFunctionDB : public CCopasiContainer
                       const unsigned C_INT32 noProducts,
                       const TriLogic reversibility);
 
+    /**
+     * Add the function to the database
+     * @param CEvaluationTree * pFunction
+     * @param const bool & adopt (default = false)
+     * @return bool success
+     */
+    bool add(CEvaluationTree * pFunction, const bool & adopt);
 
 };
 

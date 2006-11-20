@@ -45,15 +45,6 @@ class CFunction : public CEvaluationTree
     virtual unsigned C_INT32 getVariableIndex(const std::string & name) const;
 
     /**
-     * Retrieve the value of the indexed variable.
-     * Note this function is only usable during calcValue, since the values
-     * of the call parameters are only defined during that time.
-     * @param const unsigned C_INT32 & index
-     * @return const C_FLOAT64 & variableValue
-     */
-    virtual const C_FLOAT64 & getVariableValue(const unsigned C_INT32 & index) const;
-
-    /**
      *  Set whether the function is reversible.
      */
     void setReversible(const TriLogic & reversible);
