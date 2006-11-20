@@ -12,7 +12,7 @@ class Test_CEvaluationTree(unittest.TestCase):
     self.assert_(self.tree.__class__==COPASI.CFunction)
 
   def test_copy(self):
-    t=COPASI.CEvaluationTree.copy(tree)
+    t=COPASI.CEvaluationTree.copy(self.tree)
     self.assert_(t!=None)
     self.assert_(t.__class__==COPASI.CFunction)
 

@@ -30,13 +30,6 @@ class CFunctionParameters : public CCopasiContainer
     ~CFunctionParameters();
 
     /**
-     *  Add a parameter to the parameter list
-     *  @param "const CFunctionParameter &" parameter
-     */
-
-    void add(const CFunctionParameter & parameter);
-
-    /**
      * Add a parameter to the parameter list
      * @param "const string & name
      * @param "const CFunctionParameter::DataType &" type
@@ -98,7 +91,7 @@ class CFunctionParameters : public CCopasiContainer
 
     CFunctionParameter* getParameter(unsigned C_INT32 index)
     {
-        (*self)[index];
+        return (*self)[index];
     }
 
 }

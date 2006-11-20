@@ -17,17 +17,17 @@ class Test_CFunctionParameters(unittest.TestCase):
     n=self.parameters.size()
     self.assert_(self.parameters.add("test",COPASI.CFunctionParameter.FLOAT64,COPASI.CFunctionParameter.VOLUME))
     self.assert_(self.parameters.size()==n+1)
-    p=COPASI.CFunctionParameter("another")
-    self.assert_(self.parameters.add(p))
-    self.assert_(self.parameters.size()==n+2)
 
 
   def test_remove(self):
     n=self.parameters.size()
-    self.assert_(self.parameters.add("test",COPASI.CFunctionParameter.FLOAT64,COPASI.CFunctionParameter.VOLUME))
+    self.assert_(self.parameters.add("test2",COPASI.CFunctionParameter.FLOAT64,COPASI.CFunctionParameter.VOLUME))
     self.assert_(self.parameters.size()==n+1)
-    self.parameters.remove("test")
+    self.parameters.remove("test2")
     self.assert_(self.parameters.size()==n)
+    self.parameters.remove("test")
+    self.assert_(self.parameters.size()==n-1)
+
 
   def test_size(self):
     n=self.parameters.size()

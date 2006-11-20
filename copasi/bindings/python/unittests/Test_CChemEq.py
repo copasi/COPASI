@@ -58,7 +58,7 @@ class Test_CChemEq(unittest.TestCase):
     vect=self.chemeq.getBalances()
     self.assert_(vect!=None)
     self.assert_(vect.__class__==COPASI.CChemEqElementVector)
-    self.assert_(vect.size()==1)
+    self.assert_(vect.size()==3)
 
   def test_getCompartmentNumber(self):
     n=self.chemeq.getCompartmentNumber()

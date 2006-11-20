@@ -94,15 +94,27 @@ class Test_CReaction(unittest.TestCase):
 
 
   def test_getParameterValue(self):
+    self.reac.addSubstrate(self.substrate.getKey())
+    self.reac.addProduct(self.product.getKey())
+    self.reac.setReversible(True)
+    function=COPASI.CCopasiDataModel.GLOBAL.getFunctionList().findFunction("Iso Uni Uni")
+    self.assert_(function!=None)
+    self.assert_(self.reac.setFunction(function.getObjectName()))
     parameters=self.reac.getParameters()
     self.assert_(parameters.size()!=0)
     parameter=parameters.getParameter(0)
     self.assert_(parameter!=None)
     value=self.reac.getParameterValue(parameter.getObjectName())                                 
-    self.assert_(type(value)==types.FloatType)
+    self.assert_(type(value)==FloatType)
     self.assert_(value==parameter.getValue())
 
   def test_setParameterValue(self):
+    self.reac.addSubstrate(self.substrate.getKey())
+    self.reac.addProduct(self.product.getKey())
+    self.reac.setReversible(True)
+    function=COPASI.CCopasiDataModel.GLOBAL.getFunctionList().findFunction("Iso Uni Uni")
+    self.assert_(function!=None)
+    self.assert_(self.reac.setFunction(function.getObjectName()))
     parameters=self.reac.getParameters()
     self.assert_(parameters.size()!=0)
     parameter=parameters.getParameter(0)

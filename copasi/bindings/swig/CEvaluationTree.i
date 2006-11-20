@@ -93,13 +93,6 @@ class CEvaluationTree : public CCopasiContainer
     const std::string & getInfix() const;
 
     /**
-     * Retrieve the position of the error in the string description.
-     * std::string::npos indicates no error.
-     * @return std::string::size_type errorPosition
-     */
-    std::string::size_type getErrorPosition() const;
-
-    /**
      * Retrieve the index to the value of the named variable.
      * @param const std::string & name
      * @return unsigned C_INT32
@@ -124,6 +117,18 @@ class CEvaluationTree : public CCopasiContainer
      */
     const std::string& getSBMLId() const;
 
+    %extend
+    {
+      /**
+       * Retrieve the position of the error in the string description.
+       * std::string::npos indicates no error.
+       * @return std::string::size_type errorPosition
+       */
+      C_INT32 getErrorPosition() const
+      {
+        return (C_INT32)self->getErrorPosition();
+      }
+    }
 
 };
 

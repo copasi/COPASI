@@ -67,6 +67,7 @@ class Test_CFunction(unittest.TestCase):
     size=params.size()
     self.function.addVariable("testVar")
     self.assert_(params.size()==size+1)
+    self.function.getVariables().remove("testVar")
 
   def test_isSuitable(self):
     b=self.function.isSuitable(1,1,COPASI.TriTrue)
