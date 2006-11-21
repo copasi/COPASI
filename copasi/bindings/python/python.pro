@@ -6,12 +6,10 @@ TARGET = CopasiPython
 
 COPASI_LIBS += -L../../lib
 
-#COPASI_LIBS += -lCOPASIUI 
 COPASI_LIBS += -lCOPASISE 
 
 
 LIBS = $$COPASI_LIBS $$LIBS
-
 
 
 INCLUDEPATH += ../..
@@ -67,12 +65,11 @@ isEmpty(SWIG_PATH){
     !exists($$SWIG_PATH/bin/swig){
         error(Unable to find swig excecutable in $$SWIG_PATH/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
     }
-    #system(touch python.i)
 
     DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
 
     wrapper_source.target = copasi_wrapper.cpp
-    wrapper_source.depends = $$SWIG_INTERFACE_FILES python.i
+    wrapper_source.depends = $$SWIG_INTERFACE_FILES python.i local.cpp
     wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -classic -I../.. -c++ -python -o $$wrapper_source.target python.i
 
     QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
@@ -107,7 +104,7 @@ contains(BUILD_OS,Linux){
 
 }
 
-contains(BUILD_OS,Darwin){
+contains(BUILD_OS, Darwin) {
     LIBS += -framework Python
     LIBS += -framework Quicktime
     LIBS += -framework Carbon

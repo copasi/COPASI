@@ -6,13 +6,49 @@ TARGET = CopasiJava
 
 COPASI_LIBS += -L../../lib
 
-#COPASI_LIBS += -lCOPASIUI 
 COPASI_LIBS += -lCOPASISE 
 
 LIBS = $$COPASI_LIBS $$LIBS
 
 
-INCLUDEPATH += ../../
+INCLUDEPATH += ../..
+
+SWIG_INTERFACE_FILES=../swig/CChemEq.i \
+                     ../swig/CChemEqElement.i \
+                     ../swig/CCompartment.i \
+                     ../swig/CCopasiContainer.i \
+                     ../swig/CCopasiDataModel.i \
+                     ../swig/CCopasiMethod.i \
+                     ../swig/CCopasiObject.i \
+                     ../swig/CCopasiObjectName.i \
+                     ../swig/CCopasiParameter.i \
+                     ../swig/CCopasiParameterGroup.i \
+                     ../swig/CCopasiProblem.i \
+                     ../swig/CCopasiStaticString.i \
+                     ../swig/CCopasiTask.i \
+                     ../swig/CCopasiVector.i \
+                     ../swig/CEvaluationTree.i \
+                     ../swig/CFunction.i \
+                     ../swig/CFunctionDB.i \
+                     ../swig/CFunctionParameter.i \
+                     ../swig/CFunctionParameters.i \
+                     ../swig/CMatrix.i \
+                     ../swig/CMetab.i \
+                     ../swig/CModel.i \
+                     ../swig/CModelValue.i \
+                     ../swig/CMoiety.i \
+                     ../swig/CReaction.i \
+                     ../swig/CReportDefinition.i \
+                     ../swig/CReportDefinitionVector.i \
+                     ../swig/CState.i \
+                     ../swig/CTimeSeries.i \
+                     ../swig/CTrajectoryMethod.i \
+                     ../swig/CTrajectoryProblem.i \
+                     ../swig/CTrajectoryTask.i \
+                     ../swig/CVersion.i \
+                     ../swig/copasi.i 
+
+
 
 
 isEmpty(SWIG_PATH){
@@ -28,11 +64,12 @@ isEmpty(SWIG_PATH){
     !exists($$SWIG_PATH/bin/swig){
         error(Unable to find swig excecutable in $$SWIG_PATH/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
     }
-    system(touch java.i)
+
+    DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
 
     wrapper_source.target = copasi_wrapper.cpp
-    wrapper_source.depends = java.i
-    wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; mkdir -p java_files ; $$SWIG_PATH/bin/swig -I../.. -c++ -java -o $$wrapper_source.target -outdir java_files  $$wrapper_source.depends
+    wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
+    wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; mkdir -p java_files ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -java -o $$wrapper_source.target -outdir java_files  java.i
 
     QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
     PRE_TARGETDEPS += copasi_wrapper.cpp
@@ -73,6 +110,7 @@ contains(BUILD_OS, Darwin) {
   !isEmpty(JAVA_INCLUDE_PATH){
     INCLUDEPATH += $$JAVA_INCLUDE_PATH
   }
+  
 
 }
 

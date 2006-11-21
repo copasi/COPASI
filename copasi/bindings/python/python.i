@@ -67,6 +67,19 @@ import types
 
 %include "../swig/copasi.i"
 
+%init %{
+
+#include "report/CCopasiContainer.h"
+// Taken from CopasiSE.cpp
+
+// Create the root container
+CCopasiContainer::init();
+
+// Create the global data model
+CCopasiDataModel::Global = new CCopasiDataModel;
+
+%}
+
 %pythoncode %{
 
 TriUnspecified=-1
