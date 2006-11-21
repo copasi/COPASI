@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.291 $
+   $Revision: 1.292 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/11/16 03:19:14 $
+   $Author: shoops $
+   $Date: 2006/11/21 16:46:37 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -2147,24 +2147,22 @@ bool CModel::removeMetabolite(const std::string & key,
       std::set< const CCopasiObject * > ToBeDeleted;
       std::set< const CCopasiObject * >::const_iterator it, end;
 
+      // We need to build the list first and then delete to avoid
+      // crashes in the appendDependent... methods caused by the deletion.
       appendDependentReactions(pMetabolite->getDeletedObjects(), ToBeDeleted);
-      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        removeReaction((*it)->getKey(), false);
-
-      ToBeDeleted.clear();
       appendDependentMetabolites(pMetabolite->getDeletedObjects(), ToBeDeleted);
-      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        removeMetabolite((*it)->getKey(), false);
-
-      ToBeDeleted.clear();
       appendDependentCompartments(pMetabolite->getDeletedObjects(), ToBeDeleted);
-      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        removeCompartment((*it)->getKey(), false);
-
-      ToBeDeleted.clear();
       appendDependentModelValues(pMetabolite->getDeletedObjects(), ToBeDeleted);
+
       for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        removeModelValue((*it)->getKey(), false);
+        if (dynamic_cast< const CReaction *>(*it) != NULL)
+          removeReaction((*it)->getKey(), false);
+        else if (dynamic_cast< const CMetab *>(*it) != NULL)
+          removeMetabolite((*it)->getKey(), false);
+        else if (dynamic_cast< const CCompartment *>(*it) != NULL)
+          removeCompartment((*it)->getKey(), false);
+        else
+          removeModelValue((*it)->getKey(), false);
     }
 
   /* Check if metabolite with that name exists */
@@ -2217,24 +2215,22 @@ bool CModel::removeCompartment(const std::string & key,
       std::set< const CCopasiObject * > ToBeDeleted;
       std::set< const CCopasiObject * >::const_iterator it, end;
 
+      // We need to build the list first and then delete to avoid
+      // crashes in the appendDependent... methods caused by the deletion.
       appendDependentReactions(pCompartment->getDeletedObjects(), ToBeDeleted);
-      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        removeReaction((*it)->getKey(), false);
-
-      ToBeDeleted.clear();
       appendDependentMetabolites(pCompartment->getDeletedObjects(), ToBeDeleted);
-      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        removeMetabolite((*it)->getKey(), false);
-
-      ToBeDeleted.clear();
       appendDependentCompartments(pCompartment->getDeletedObjects(), ToBeDeleted);
-      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        removeCompartment((*it)->getKey(), false);
-
-      ToBeDeleted.clear();
       appendDependentModelValues(pCompartment->getDeletedObjects(), ToBeDeleted);
+
       for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        removeModelValue((*it)->getKey(), false);
+        if (dynamic_cast< const CReaction *>(*it) != NULL)
+          removeReaction((*it)->getKey(), false);
+        else if (dynamic_cast< const CMetab *>(*it) != NULL)
+          removeMetabolite((*it)->getKey(), false);
+        else if (dynamic_cast< const CCompartment *>(*it) != NULL)
+          removeCompartment((*it)->getKey(), false);
+        else
+          removeModelValue((*it)->getKey(), false);
     }
 
   //Check if Compartment with that name exists
@@ -2327,24 +2323,22 @@ bool CModel::removeModelValue(const std::string & key,
       std::set< const CCopasiObject * > ToBeDeleted;
       std::set< const CCopasiObject * >::const_iterator it, end;
 
+      // We need to build the list first and then delete to avoid
+      // crashes in the appendDependent... methods caused by the deletion.
       appendDependentReactions(pModelValue->getDeletedObjects(), ToBeDeleted);
-      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        removeReaction((*it)->getKey(), false);
-
-      ToBeDeleted.clear();
       appendDependentMetabolites(pModelValue->getDeletedObjects(), ToBeDeleted);
-      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        removeMetabolite((*it)->getKey(), false);
-
-      ToBeDeleted.clear();
       appendDependentCompartments(pModelValue->getDeletedObjects(), ToBeDeleted);
-      for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        removeCompartment((*it)->getKey(), false);
-
-      ToBeDeleted.clear();
       appendDependentModelValues(pModelValue->getDeletedObjects(), ToBeDeleted);
+
       for (it = ToBeDeleted.begin(), end = ToBeDeleted.end(); it != end; ++it)
-        removeModelValue((*it)->getKey(), false);
+        if (dynamic_cast< const CReaction *>(*it) != NULL)
+          removeReaction((*it)->getKey(), false);
+        else if (dynamic_cast< const CMetab *>(*it) != NULL)
+          removeMetabolite((*it)->getKey(), false);
+        else if (dynamic_cast< const CCompartment *>(*it) != NULL)
+          removeCompartment((*it)->getKey(), false);
+        else
+          removeModelValue((*it)->getKey(), false);
     }
 
   //Check if Value with that name exists
