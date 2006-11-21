@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqInterface.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 16:03:44 $
+   $Date: 2006/11/21 16:49:58 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -118,19 +118,152 @@ void CChemEqInterface::completeCompartments()
   else
     DefaultCompartment = mpModel->getCompartments()[0]->getObjectName();
 
-  std::vector< std::string >::iterator it, end;
+  // We try to find a reaction compartment. Note, it is not possible to use
+  // getCompartment as writeToChemEq may fail;
+  std::string ReactionCompartment = "";
+  bool first = true;
+  bool HaveReactionCompartment = true;
 
-  for (it = mSubstrateCompartments.begin(), end = mSubstrateCompartments.end(); it != end; ++it)
-    if (*it == "")
-      *it = DefaultCompartment;
+  std::vector< std::string >::iterator itCompartment, endCompartment;
 
-  for (it = mProductCompartments.begin(), end = mProductCompartments.end(); it != end; ++it)
-    if (*it == "")
-      *it = DefaultCompartment;
+  itCompartment = mSubstrateCompartments.begin();
+  endCompartment = mSubstrateCompartments.end();
+  for (; itCompartment != endCompartment && HaveReactionCompartment; ++itCompartment)
+    {
+      if (*itCompartment == "") continue;
 
-  for (it = mModifierCompartments.begin(), end = mModifierCompartments.end(); it != end; ++it)
-    if (*it == "")
-      *it = DefaultCompartment;
+      if (first)
+        {
+          ReactionCompartment = *itCompartment;
+          first = false;
+        }
+      else if (ReactionCompartment != *itCompartment)
+        HaveReactionCompartment = false;
+    }
+
+  itCompartment = mProductCompartments.begin();
+  endCompartment = mProductCompartments.end();
+  for (; itCompartment != endCompartment && HaveReactionCompartment; ++itCompartment)
+    {
+      if (*itCompartment == "") continue;
+
+      if (first)
+        {
+          ReactionCompartment = *itCompartment;
+          first = false;
+        }
+      else if (ReactionCompartment != *itCompartment)
+        HaveReactionCompartment = false;
+    }
+
+  itCompartment = mModifierCompartments.begin();
+  endCompartment = mModifierCompartments.end();
+  for (; itCompartment != endCompartment && HaveReactionCompartment; ++itCompartment)
+    {
+      if (*itCompartment == "") continue;
+
+      if (first)
+        {
+          ReactionCompartment = *itCompartment;
+          first = false;
+        }
+      else if (ReactionCompartment != *itCompartment)
+        HaveReactionCompartment = false;
+    }
+
+  if (first)
+    ReactionCompartment = DefaultCompartment;
+
+  CMetab * pMetab;
+
+  std::vector< std::string >::iterator itMetab;
+
+  itMetab = mSubstrateNames.begin();
+  itCompartment = mSubstrateCompartments.begin();
+  endCompartment = mSubstrateCompartments.end();
+  for (; itCompartment != endCompartment; ++itCompartment, ++itMetab)
+    if (*itCompartment == "")
+      {
+        pMetab = CMetabNameInterface::getMetabolite(mpModel, *itMetab, "");
+
+        if (pMetab == NULL)
+          *itCompartment = ReactionCompartment;
+        else if (CMetabNameInterface::isUnique(mpModel, *itMetab))
+          *itCompartment = pMetab->getCompartment()->getObjectName();
+        else // Multiple metabolites with the given name exist.
+          {
+            // 1. Metabolite in the reaction compartment
+            pMetab = CMetabNameInterface::getMetabolite(mpModel, *itMetab, ReactionCompartment);
+
+            // 2. Metabolite in the default compartment if different from reaction compartment
+            if (pMetab == NULL && ReactionCompartment != DefaultCompartment)
+              pMetab = CMetabNameInterface::getMetabolite(mpModel, *itMetab, DefaultCompartment);
+
+            // 3. The first metabolite found
+            if (pMetab == NULL)
+              pMetab = CMetabNameInterface::getMetabolite(mpModel, *itMetab, "");
+
+            *itCompartment = pMetab->getCompartment()->getObjectName();
+          }
+      }
+
+  itMetab = mProductNames.begin();
+  itCompartment = mProductCompartments.begin();
+  endCompartment = mProductCompartments.end();
+  for (; itCompartment != endCompartment; ++itCompartment, ++itMetab)
+    if (*itCompartment == "")
+      {
+        pMetab = CMetabNameInterface::getMetabolite(mpModel, *itMetab, "");
+
+        if (pMetab == NULL)
+          *itCompartment = ReactionCompartment;
+        else if (CMetabNameInterface::isUnique(mpModel, *itMetab))
+          *itCompartment = pMetab->getCompartment()->getObjectName();
+        else // Multiple metabolites with the given name exist.
+          {
+            // 1. Metabolite in the reaction compartment
+            pMetab = CMetabNameInterface::getMetabolite(mpModel, *itMetab, ReactionCompartment);
+
+            // 2. Metabolite in the default compartment if different from reaction compartment
+            if (pMetab == NULL && ReactionCompartment != DefaultCompartment)
+              pMetab = CMetabNameInterface::getMetabolite(mpModel, *itMetab, DefaultCompartment);
+
+            // 3. The first metabolite found
+            if (pMetab == NULL)
+              pMetab = CMetabNameInterface::getMetabolite(mpModel, *itMetab, "");
+
+            *itCompartment = pMetab->getCompartment()->getObjectName();
+          }
+      }
+
+  itMetab = mModifierNames.begin();
+  itCompartment = mModifierCompartments.begin();
+  endCompartment = mModifierCompartments.end();
+  for (; itCompartment != endCompartment; ++itCompartment, ++itMetab)
+    if (*itCompartment == "")
+      {
+        pMetab = CMetabNameInterface::getMetabolite(mpModel, *itMetab, "");
+
+        if (pMetab == NULL)
+          *itCompartment = ReactionCompartment;
+        else if (CMetabNameInterface::isUnique(mpModel, *itMetab))
+          *itCompartment = pMetab->getCompartment()->getObjectName();
+        else // Multiple metabolites with the given name exist.
+          {
+            // 1. Metabolite in the reaction compartment
+            pMetab = CMetabNameInterface::getMetabolite(mpModel, *itMetab, ReactionCompartment);
+
+            // 2. Metabolite in the default compartment if different from reaction compartment
+            if (pMetab == NULL && ReactionCompartment != DefaultCompartment)
+              pMetab = CMetabNameInterface::getMetabolite(mpModel, *itMetab, DefaultCompartment);
+
+            // 3. The first metabolite found
+            if (pMetab == NULL)
+              pMetab = CMetabNameInterface::getMetabolite(mpModel, *itMetab, "");
+
+            *itCompartment = pMetab->getCompartment()->getObjectName();
+          }
+      }
 }
 
 bool CChemEqInterface::loadFromChemEq(const CChemEq & ce)
