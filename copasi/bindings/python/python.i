@@ -95,7 +95,10 @@ CEvaluationTree.copy=_COPASI.CEvaluationTree_copy
       def setValue(self,arg):
         result=False
         if(type(arg)==types.IntType):
-           result=self.setIntValue(arg) 
+           if((self.getType()==self.INT) or (arg < 0)):
+             result=self.setIntValue(arg)
+           else:
+             result=self.setUIntValue(arg) 
         elif(type(arg)==types.FloatType):
            result=self.setDblValue(arg) 
         elif(type(arg)==types.BooleanType):
