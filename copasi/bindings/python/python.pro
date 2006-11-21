@@ -72,7 +72,7 @@ isEmpty(SWIG_PATH){
     DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
 
     wrapper_source.target = copasi_wrapper.cpp
-    wrapper_source.depends = $$SWIG_INTERFACE_FILES 
+    wrapper_source.depends = $$SWIG_INTERFACE_FILES python.i
     wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -classic -I../.. -c++ -python -o $$wrapper_source.target python.i
 
     QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
