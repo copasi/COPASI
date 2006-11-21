@@ -1,6 +1,7 @@
 import COPASI
 import unittest
 from types import *
+import sys
 
 class Test_CTimeSeries(unittest.TestCase):
   def setUp(self):
@@ -23,14 +24,22 @@ class Test_CTimeSeries(unittest.TestCase):
   def test_getData(self):
     data=self.ctimeseries.getData(0,1)
     self.assert_(type(data)==FloatType)
-    # check if it is NaN since NaN != NaN
-    self.assert_(data!=data)
+    version=sys.version.split(".")
+    major=int(version[0])
+    minor=int(version[1])
+    if(major>2 or (major==2 and minor>3)):
+      # check if it is NaN since NaN != NaN
+      self.assert_(data!=data)
 
   def test_getConcentrationData(self):
     data=self.ctimeseries.getConcentrationData(0,1)
     self.assert_(type(data)==FloatType)
-    # check if it is NaN since NaN != NaN
-    self.assert_(data!=data)
+    version=sys.version.split(".")
+    major=int(version[0])
+    minor=int(version[1])
+    if(major>2 or (major==2 and minor>3)):
+      # check if it is NaN since NaN != NaN
+      self.assert_(data!=data)
 
   def test_getTitle(self):
     title=self.ctimeseries.getTitle(1)
