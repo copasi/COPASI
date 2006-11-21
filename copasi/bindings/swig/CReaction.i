@@ -5,6 +5,14 @@
 %}
 
 
+%template(ParameterMapping) std::vector<std::string>;
+%template(ParameterMappings) std::vector<std::vector<std::string> >;
+
+typedef std::vector<std::string> ParameterMapping;
+typedef std::vector<ParameterMapping> ParameterMappings;
+
+
+
 class CReaction : public CCopasiContainer
 {
 
@@ -155,6 +163,28 @@ class CReaction : public CCopasiContainer
      *  Gets a parameter value
      */
     const C_FLOAT64 & getParameterValue(const std::string & parameterName) const;
+
+    /**
+     *  sets a function parameter->metab mapping.
+     */
+    void setParameterMapping(C_INT32 index, const std::string & key);
+    void addParameterMapping(C_INT32 index, const std::string & key);
+    void setParameterMapping(const std::string & parameterName, const std::string & key);
+    void addParameterMapping(const std::string & parameterName, const std::string & key);
+
+    void setParameterMappingVector(const std::string & parameterName,
+                                   const std::vector<std::string> & keys);
+
+    /**
+     *  Clears a function parameter->metab mapping (only for vector parameters).
+     */
+    void clearParameterMapping(const std::string & parameterName);
+    void clearParameterMapping(C_INT32 index);
+
+    const std::vector<std::vector<std::string> > & getParameterMappings() const;
+
+    const std::vector<std::string> & getParameterMapping(const std::string & parameterName) const;
+
 
     /**
      *  Gets the description of what parameters the function expects.
