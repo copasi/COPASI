@@ -1,7 +1,7 @@
 
 
 /**
- * Convert VCeEvaluationTree objects into the most specific type possible.
+ * Convert CEvaluationTree objects into the most specific type possible.
  */
 %typemap(out) CEvaluationTree*
 {
