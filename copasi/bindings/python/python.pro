@@ -13,18 +13,45 @@ COPASI_LIBS += -lCOPASISE
 LIBS = $$COPASI_LIBS $$LIBS
 
 
+
 INCLUDEPATH += ../..
 
-HEADERS += ../swig/copasi.i
-HEADERS += ../swig/CCopasiObjectName.i
-HEADERS += ../swig/CCopasiObject.i
-HEADERS += ../swig/CCopasiVector.i
-HEADERS += ../swig/CCopasiContainer.i
-HEADERS += ../swig/CVersion.i
-HEADERS += ../swig/CCopasiTask.i
-HEADERS += ../swig/CCopasiDataModel.i
-
 SOURCES += copasi_wrapper.cpp
+
+SWIG_INTERFACE_FILES=../swig/CChemEq.i \
+                     ../swig/CChemEqElement.i \
+                     ../swig/CCompartment.i \
+                     ../swig/CCopasiContainer.i \
+                     ../swig/CCopasiDataModel.i \
+                     ../swig/CCopasiMethod.i \
+                     ../swig/CCopasiObject.i \
+                     ../swig/CCopasiObjectName.i \
+                     ../swig/CCopasiParameter.i \
+                     ../swig/CCopasiParameterGroup.i \
+                     ../swig/CCopasiProblem.i \
+                     ../swig/CCopasiStaticString.i \
+                     ../swig/CCopasiTask.i \
+                     ../swig/CCopasiVector.i \
+                     ../swig/CEvaluationTree.i \
+                     ../swig/CFunction.i \
+                     ../swig/CFunctionDB.i \
+                     ../swig/CFunctionParameter.i \
+                     ../swig/CFunctionParameters.i \
+                     ../swig/CMatrix.i \
+                     ../swig/CMetab.i \
+                     ../swig/CModel.i \
+                     ../swig/CModelValue.i \
+                     ../swig/CMoiety.i \
+                     ../swig/CReaction.i \
+                     ../swig/CReportDefinition.i \
+                     ../swig/CReportDefinitionVector.i \
+                     ../swig/CState.i \
+                     ../swig/CTimeSeries.i \
+                     ../swig/CTrajectoryMethod.i \
+                     ../swig/CTrajectoryProblem.i \
+                     ../swig/CTrajectoryTask.i \
+                     ../swig/CVersion.i \
+                     ../swig/copasi.i 
 
 
 isEmpty(SWIG_PATH){
@@ -40,13 +67,13 @@ isEmpty(SWIG_PATH){
     !exists($$SWIG_PATH/bin/swig){
         error(Unable to find swig excecutable in $$SWIG_PATH/bin/. Please use --with-swig=PATH to specify the path where PATH/bin/swig is located.) 
     }
-    system(touch python.i)
+    #system(touch python.i)
 
     DEFINE_COMMANDLINE = $$join(DEFINES," -D",-D)
 
     wrapper_source.target = copasi_wrapper.cpp
-    wrapper_source.depends = python.i
-    wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -classic -I../.. -c++ -python -o $$wrapper_source.target $$wrapper_source.depends
+    wrapper_source.depends = $$SWIG_INTERFACE_FILES 
+    wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -classic -I../.. -c++ -python -o $$wrapper_source.target python.i
 
     QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
     PRE_TARGETDEPS += copasi_wrapper.cpp
