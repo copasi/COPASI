@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.52 $ $Author: shoops $ $Date: 2006/11/13 14:13:33 $  
+# $Revision: 1.53 $ $Author: shoops $ $Date: 2006/11/22 14:01:35 $  
 ######################################################################
 
 # In the case the BUILD_OS is not specified we make a guess.
@@ -30,7 +30,7 @@ contains(USE_LICENSE, DE) {
 
 QMAKE_CFLAGS   += $$(CFLAGS)
 QMAKE_CXXFLAGS += $$(CXXFLAGS)
-QMAKE_LDFLAGS  += $$(LDFLAGS)
+QMAKE_LFLAGS  += $$(LDFLAGS)
 
 debug {
   DEFINES += COPASI_DEBUG
