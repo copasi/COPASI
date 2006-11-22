@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/local.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/11/20 12:20:37 $
+   $Date: 2006/11/22 14:45:58 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -364,6 +364,10 @@ struct swig_type_info*
     if (dynamic_cast<CModelEntity*>(container))
       {
         pInfo = GetDowncastSwigTypeForCModelEntity(static_cast<CModelEntity*>(container));
+      }
+    else if (dynamic_cast<CCopasiParameter*>(container))
+      {
+        pInfo = GetDowncastSwigTypeForCCopasiParameter(static_cast<CCopasiParameter*>(container));
       }
     else if (container->isNameVector())
       {
