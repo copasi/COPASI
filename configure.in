@@ -125,7 +125,6 @@ AC_ARG_WITH([build-parser],
                  [Specify whether to build lex and yacc sources.]),
   [BUILD_PARSER=$withval])
 
-QMAKE_ARG=""
 
 if test "x$prefix" = "xNONE"; then
   prefix=$ac_default_prefix
@@ -133,7 +132,7 @@ if test "x$prefix" = "xNONE"; then
 fi
 
 if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US"; then
-  QMAKE_ARG="USE_LICENSE=$COPASI_LICENSE"
+  QMAKE_ARG="$QMAKE_ARG USE_LICENSE=$COPASI_LICENSE"
 fi
 
 if test x"$BUILD_PARSER" = x"yes"; then
