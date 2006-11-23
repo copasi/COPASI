@@ -1,3 +1,10 @@
+/**
+ * Make COPASI and wrapper constants Java compile-time
+ * constants so they may be used in switch statements.
+ */
+%include "enumsimple.swg"
+%javaconst(1);
+
 
 /**
  * @return the most specific Java object possible for the given SBase
@@ -5,11 +12,63 @@
  */
 %pragma(java) modulecode =
 %{
+  enum CLASS_TYPE
+  {
+  CHEMICALEQUATION
+  , CHEMICALEQUATIONELEMENT
+  , CHEMICALEQUATIONELEMENTVECTOR
+  , COMPARTMENT
+  , COMPARTMENTVECTOR
+  , COMPARTMENTVECTORN
+  , COMPARTMENTVECTORNS
+  , CONTAINER
+  , EVALUATIONTREE
+  , EVALUATIONTREEVECTOR
+  , EVALUATIONTREEVECTORN
+  , FUNCTION
+  , FUNCTIONDB
+  , FUNCTIONPARAMETER
+  , FUNCTIONPARAMETERS
+  , METABOLITE
+  , METABVECTOR
+  , METABVECTORN
+  , METABVECTORNS
+  , METHOD
+  , MODEL
+  , MODELENTITY
+  , MODELVALUE
+  , MODELVALUEVECTOR
+  , MODELVALUEVECTORN
+  , MOIETY
+  , MOIETYVECTOR
+  , OBJECT
+  , OBJECTNAME
+  , PARAMETER
+  , PARAMETERGROUP
+  , PARAMETERVECTOR
+  , PROBLEM
+  , REACTION
+  , REACTIONVECTOR
+  , REACTIONVECTORN
+  , REACTIONVECTORNS
+  , REPORTDEFINITION
+  , REPORTDEFINITIONVECTOR
+  , REPORTDEFINITIONVECTORN
+  , STATICSTRING
+  , TASK
+  , TASKVECTOR
+  , TASKVECTORN
+  , TRAJECTORYMETHOD
+  , TRAJECTORYPROBLEM
+  , TRAJECTORYTASK
+  }
+
+
   public static CCopasiObject DowncastObject(long cPtr, boolean owner)
   {
     if (cPtr == 0) return null;
 
-    switch(getClassTypeForObject(cPtr) )
+    switch((CLASS_TYPE)getClassTypeForObject(cPtr) )
     {
       
       case OBJECT:
@@ -230,7 +289,7 @@
     }
   }
 
-  public static CCopasiObject DowncastModelEntity(long cPtr, boolean owner)
+  public static CModelEntity DowncastModelEntity(long cPtr, boolean owner)
   {
     if (cPtr == 0) return null;
 
@@ -257,7 +316,7 @@
     }
   }
 
-  public static CCopasiObject DowncastParameterGroup(long cPtr, boolean owner)
+  public static CCopasiParameterGroup DowncastParameterGroup(long cPtr, boolean owner)
   {
     if (cPtr == 0) return null;
 
@@ -284,7 +343,7 @@
     }
   }
 
-  public static CCopasiObject DowncastParameter(long cPtr, boolean owner)
+  public static CCopasiParameter DowncastParameter(long cPtr, boolean owner)
   {
     if (cPtr == 0) return null;
 
@@ -314,7 +373,7 @@
     }
   }
 
-  public static CCopasiObject DowncastMethod(long cPtr, boolean owner)
+  public static CCopasiMethod DowncastMethod(long cPtr, boolean owner)
   {
     if (cPtr == 0) return null;
 
@@ -332,7 +391,7 @@
     }
   }
 
-  public static CCopasiObject DowncastProblem(long cPtr, boolean owner)
+  public static CCopasiProblem DowncastProblem(long cPtr, boolean owner)
   {
     if (cPtr == 0) return null;
 
@@ -350,7 +409,7 @@
     }
   }
 
-  public static CCopasiObject DowncastTask(long cPtr, boolean owner)
+  public static CCopasiTask DowncastTask(long cPtr, boolean owner)
   {
     if (cPtr == 0) return null;
 
@@ -368,7 +427,7 @@
     }
   }
 
-  public static CCopasiObject DowncastEvaluationTree(long cPtr, boolean owner)
+  public static CEvaluationTree DowncastEvaluationTree(long cPtr, boolean owner)
   {
     if (cPtr == 0) return null;
 
@@ -395,7 +454,7 @@
  */
 %typemap("javaout") CCopasiObject*
 {
-  return DowncastObject($jnicall, $owner);
+  return COPASI.DowncastObject($jnicall, $owner);
 }
 
 /**
@@ -403,7 +462,7 @@
  */
 %typemap("javaout") CCopasiContainer*
 {
-  return DowncastContainer($jnicall, $owner);
+  return COPASI.DowncastContainer($jnicall, $owner);
 }
 
 
@@ -412,7 +471,7 @@
  */
 %typemap("javaout") CEvaluationTree*
 {
-  return DowncastEvaluationTree($jnicall, $owner);
+  return COPASI.DowncastEvaluationTree($jnicall, $owner);
 }
 
 
@@ -421,7 +480,7 @@
  */
 %typemap("javaout") CCopasiParameter*
 {
-  return DowncastParameter($jnicall, $owner);
+  return COPASI.DowncastParameter($jnicall, $owner);
 }
 
 
@@ -430,7 +489,7 @@
  */
 %typemap("javaout") CCopasiParameterGroup*
 {
-  return DowncastParameterGroup($jnicall, $owner);
+  return COPASI.DowncastParameterGroup($jnicall, $owner);
 }
 
 
@@ -439,7 +498,7 @@
  */
 %typemap("javaout") CCopasiMethod*
 {
-  return DowncastMethod($jnicall, $owner);
+  return COPASI.DowncastMethod($jnicall, $owner);
 }
 
 
@@ -448,7 +507,7 @@
  */
 %typemap("javaout") CCopasiProblem*
 {
-  return DowncastProblem($jnicall, $owner);
+  return COPASI.DowncastProblem($jnicall, $owner);
 }
 
 
@@ -457,7 +516,7 @@
  */
 %typemap("javaout") CCopasiTask*
 {
-  return DowncastTask($jnicall, $owner);
+  return COPASI.DowncastTask($jnicall, $owner);
 }
 
 /**
@@ -465,10 +524,8 @@
  */
 %typemap("javaout") CModelEntity*
 {
-  return DowncastModelEntity($jnicall, $owner);
+  return COPASI.DowncastModelEntity($jnicall, $owner);
 }
-
-
 
 
 
