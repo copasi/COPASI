@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.h,v $
-   $Revision: 1.137 $
+   $Revision: 1.138 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/11/16 03:19:14 $
+   $Author: shoops $
+   $Date: 2006/11/23 03:00:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1036,6 +1036,11 @@ class CModel : public CModelEntity
      * Initialize the contained CCopasiObjects
      */
     void initObjects();
+
+    /**
+     * Clear all references to moieties
+     */
+    void clearMoieties();
 
     /**
      * Build the state template for the model.

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.292 $
+   $Revision: 1.293 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/21 16:46:37 $
+   $Date: 2006/11/23 03:00:59 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1116,6 +1116,27 @@ void CModel::applyInitialValues()
   applyAssignments();
 }
 
+void CModel::clearMoieties()
+{
+  if (mMoieties.size() == 0) return;
+
+  CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
+  CCopasiVector< CCompartment >::iterator endCompartment = mCompartments.end();
+  CCopasiVector< CMetab >::iterator itMetab;
+  CCopasiVector< CMetab >::iterator endMetab;
+
+  for (; itCompartment != endCompartment; ++itCompartment)
+    {
+      itMetab = (*itCompartment)->getMetabolites().begin();
+      endMetab = (*itCompartment)->getMetabolites().end();
+
+      for (; itMetab != endMetab; ++itMetab)
+        (*itMetab)->clearMoieties();
+    }
+
+  mMoieties.resize(0);
+}
+
 bool CModel::buildStateTemplate()
 {
   CVector<CModelEntity *> Entities(mMetabolitesX.size() + mCompartments.size() + mValues.size());
@@ -2174,6 +2195,7 @@ bool CModel::removeMetabolite(const std::string & key,
 
   pdelete(pMetabolite);
 
+  clearMoieties();
   setCompileFlag();
 
   return true;
@@ -2281,8 +2303,8 @@ bool CModel::removeReaction(const std::string & key,
 
   mSteps.CCopasiVector< CReaction >::remove(index);
 
+  clearMoieties();
   setCompileFlag();
-  mMoieties.resize(0);
 
   return true;
 }
