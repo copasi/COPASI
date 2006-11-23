@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/MetabolitesWidget1.cpp,v $
-   $Revision: 1.134 $
+   $Revision: 1.135 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/25 15:33:06 $
+   $Date: 2006/11/23 00:39:24 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -437,9 +437,7 @@ bool MetabolitesWidget1::loadReactionsTable()
   std::set< const CCopasiObject * > reactions;
   pModel->appendDependentReactions(pMetab->getDeletedObjects(), reactions);
 
-  mReactionsTable->setNumRows(0);
-  mReactionsTable->setNumRows(reactions.size());
-  mReactionsTable->setText(0, 0, "none     ");
+  mReactionsTable->setNumRows(std::max<unsigned C_INT32>(1, reactions.size()));
 
   std::set< const CCopasiObject * >::const_iterator it, itEnd = reactions.end();
   C_INT32 i;
@@ -450,6 +448,13 @@ bool MetabolitesWidget1::loadReactionsTable()
       mReactionsTable->setText(i, 0, FROM_UTF8(pReac->getObjectName()) + ": ");
       mReactionsTable->setText(i, 1, FROM_UTF8(CChemEqInterface::getChemEqString(CCopasiDataModel::Global->getModel(), *pReac, false)));
     }
+
+  if (i == 0)
+    {
+      mReactionsTable->setText(0, 0, "none");
+      mReactionsTable->setText(0, 1, "");
+    }
+
   mReactionsTable->adjustColumn(0);
   mReactionsTable->adjustColumn(1);
 
