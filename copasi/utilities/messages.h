@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.79 $
+   $Revision: 1.80 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:50 $
+   $Author: nsimus $
+   $Date: 2006/11/23 10:28:17 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -228,6 +228,9 @@ const MESSAGES Messages[] =
     {MCLyap + 3, "CLyapMethod (3): Only %d exponents can be calculated for this model because the model has only %d independent variables."},
     {MCLyap + 4, "CLyapMethod (4): Transient time is larger than overall time."},
     {MCLyap + 5, "CLyapMethod (5): Orthonormalization interval is larger than overall time."},
+
+    // ODEExporter
+    {MCODEExporter + 1, "_XPPAUT_ODEExporter (1): Length of exporting line exeeds 1000 characters."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}
