@@ -67,7 +67,19 @@ SOURCE=.\CTSSTask.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\MMASCIIExporter.cpp
+SOURCE=.\ODEExporter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\_C_ODEExporter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\_BM_ODEExporter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\_XPPAUT_ODEExporter.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -85,9 +97,21 @@ SOURCE=.\CTSSProblem.h
 
 SOURCE=.\CTSSTask.h
 # End Source File
+# Begin Source Filei
+ 
+SOURCE=.\ODEExporter.h
+# End Source File
 # Begin Source File
 
-SOURCE=.\MMASCIIExporter.h
+SOURCE=.\_C_ODEExporter.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\_BM_ODEExporter.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\_XPPAUT_ODEExporter.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

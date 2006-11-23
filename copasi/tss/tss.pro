@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.7 $ $Author: shoops $ $Date: 2006/10/30 21:12:10 $  
+# $Revision: 1.8 $ $Author: nsimus $ $Date: 2006/11/23 10:33:34 $  
 ######################################################################
 
 LIB = tss
@@ -18,9 +18,15 @@ contains(DEFINES, COPASI_TSS) {
   SOURCES += CTSSTask.cpp
 }
 
-HEADERS += MMASCIIExporter.h
+HEADERS += ODEExporter.h
+HEADERS += _C_ODEExporter.h
+HEADERS += _BM_ODEExporter.h
+HEADERS += _XPPAUT_ODEExporter.h
 
-SOURCES += MMASCIIExporter.cpp
+SOURCES += ODEExporter.cpp
+SOURCES += _C_ODEExporter.cpp
+SOURCES += _BM_ODEExporter.cpp
+SOURCES += _XPPAUT_ODEExporter.cpp
 
 
 DISTFILES += tss.dsp
