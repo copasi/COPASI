@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeObject.cpp,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:46 $
+   $Author: nsimus $
+   $Date: 2006/11/23 10:16:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -81,7 +81,7 @@ bool CEvaluationNodeObject::setData(const Data & data)
 
 std::string CEvaluationNodeObject::getInfix() const
   {return "<" + mRegisteredObjectCN + ">";}
-
+#if 0
 std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTree) const
   {
     const CExpression * pExpression = dynamic_cast< const CExpression * >(pTree);
@@ -94,20 +94,24 @@ std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTre
 
     return "<" + pObject->getObjectDisplayName() + ">";
   }
+#endif
+
+std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTree) const
+{return mData;}
 
 std::string CEvaluationNodeObject::getDisplay_C_String(const CEvaluationTree * pTree) const
   {
-    return "@";
+    return mData;
   }
 
 std::string CEvaluationNodeObject::getDisplay_MMD_String(const CEvaluationTree * pTree) const
   {
-    return "@";
+    return mData;
   }
 
 std::string CEvaluationNodeObject::getDisplay_XPP_String(const CEvaluationTree * pTree) const
   {
-    return "@";
+    return mData;
   }
 
 CEvaluationNode* CEvaluationNodeObject::createNodeFromASTTree(const ASTNode& node)
