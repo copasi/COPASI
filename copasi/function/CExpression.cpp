@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CExpression.cpp,v $
-   $Revision: 1.17 $
+   $Revision: 1.18 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:46 $
+   $Author: nsimus $
+   $Date: 2006/11/23 10:19:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,6 +103,42 @@ bool CExpression::updateInfix()
 
 const std::string & CExpression::getDisplayString() const
 {return mDisplayString;}
+
+const std::string & CExpression::getDisplay_C_String() const
+  {
+    std::string str1;
+
+    if (mpRoot)
+      str1 = mpRoot->getDisplay_C_String(this);
+    else
+      str1 = "";
+
+    return str1;
+  }
+
+const std::string & CExpression::getDisplay_MMD_String() const
+  {
+    std::string str1;
+
+    if (mpRoot)
+      str1 = mpRoot->getDisplay_MMD_String(this);
+    else
+      str1 = "";
+
+    return str1;
+  }
+
+const std::string & CExpression::getDisplay_XPP_String() const
+  {
+    std::string str1;
+
+    if (mpRoot)
+      str1 = mpRoot->getDisplay_XPP_String(this);
+    else
+      str1 = "";
+
+    return str1;
+  }
 
 #include "utilities/copasimathml.h"
 
