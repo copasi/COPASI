@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/tss/Attic/ODEExporter.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/11/23 10:34:34 $
+   $Author: shoops $
+   $Date: 2006/11/27 15:23:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -332,7 +332,7 @@ bool ODEExporter::exportModelValues(const CModel* copasiModel)
             break;
           }
         default:
-          return " ";
+          return false;
           break;
         }
     }
@@ -429,7 +429,7 @@ bool ODEExporter::exportModelValuesExpressions(const CModel* copasiModel, std::m
             break;
           }
         default:
-          return " ";
+          return false;
           break;
         }
     }
