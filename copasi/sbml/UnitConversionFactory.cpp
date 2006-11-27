@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/UnitConversionFactory.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:21 $
+   $Author: ssahle $
+   $Date: 2006/11/27 15:57:48 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1001,7 +1001,7 @@ UnitDefinition* UnitConversionFactory::combine(const UnitDefinition& uDef1, cons
                   delete pResult;
                   return NULL;
                 }
-              pResultUnit->setMultiplier(pResultUnit->getMultiplier()*pSrcUnit->getMultiplier()*pow(10, pResultUnit->getScale() - pSrcUnit->getScale()));
+              pResultUnit->setMultiplier(pResultUnit->getMultiplier()*pSrcUnit->getMultiplier()*pow(10.0, pResultUnit->getScale() - pSrcUnit->getScale()));
               pResultUnit->setExponent(pResultUnit->getExponent() + pSrcUnit->getExponent());
               // if the resulting scale is 0, the units have canceled each other out
               // and we set the kind to dimensionless so that it can be eliminated
@@ -1037,7 +1037,7 @@ UnitDefinition* UnitConversionFactory::combine(const UnitDefinition& uDef1, cons
                   delete pResult;
                   return NULL;
                 }
-              pResultUnit->setMultiplier(pResultUnit->getMultiplier()*pSrcUnit->getMultiplier()*pow(10, pResultUnit->getScale() - pSrcUnit->getScale()));
+              pResultUnit->setMultiplier(pResultUnit->getMultiplier()*pSrcUnit->getMultiplier()*pow(10.0, pResultUnit->getScale() - pSrcUnit->getScale()));
               pResultUnit->setExponent(pResultUnit->getExponent() + pSrcUnit->getExponent());
               // if the resulting scale is 0, the units have canceled each other out
               // and we set the kind to dimensionless so that it can be eliminated
@@ -1288,7 +1288,7 @@ bool UnitConversionFactory::convertValue(double *value, const UnitDefinition& sr
       // both UnitDefinitions should only differ in the multiplier of the first unit
       double factor = pTmpUdef1->getUnit(0)->getMultiplier() / pTmpUdef2->getUnit(0)->getMultiplier();
       int scaleDiff = pTmpUdef1->getUnit(0)->getScale() - pTmpUdef2->getUnit(0)->getScale();
-      factor = factor * pow(10, scaleDiff);;
+      factor = factor * pow(10.0, scaleDiff);
       *value = (*value) * factor;
       delete pTmpUdef1;
       delete pTmpUdef2;
