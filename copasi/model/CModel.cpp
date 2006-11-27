@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CModel.cpp,v $
-   $Revision: 1.293 $
+   $Revision: 1.294 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/23 03:00:59 $
+   $Date: 2006/11/27 16:10:22 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1972,6 +1972,9 @@ std::string CModel::getQuantityRateUnitName() const
 void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidates,
                                       std::set< const CCopasiObject * > & dependentReactions) const
   {
+    if (mCompileIsNecessary)
+      const_cast< CModel * >(this)->compile();
+
     CCopasiVectorN< CReaction >::const_iterator it = mSteps.begin();
     CCopasiVectorN< CReaction >::const_iterator end = mSteps.end();
 
@@ -2006,6 +2009,9 @@ void CModel::appendDependentReactions(std::set< const CCopasiObject * > candidat
 void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candidates,
                                         std::set< const CCopasiObject * > & dependentMetabolites) const
   {
+    if (mCompileIsNecessary)
+      const_cast< CModel * >(this)->compile();
+
     CCopasiVectorN< CCompartment >::const_iterator itComp = mCompartments.begin();
     CCopasiVectorN< CCompartment >::const_iterator endComp = mCompartments.end();
 
@@ -2050,6 +2056,9 @@ void CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candid
 void CModel::appendDependentCompartments(std::set< const CCopasiObject * > candidates,
     std::set< const CCopasiObject * > & dependentCompartments) const
   {
+    if (mCompileIsNecessary)
+      const_cast< CModel * >(this)->compile();
+
     CCopasiVectorN< CCompartment >::const_iterator it = mCompartments.begin();
     CCopasiVectorN< CCompartment >::const_iterator end = mCompartments.end();
 
@@ -2084,6 +2093,9 @@ void CModel::appendDependentCompartments(std::set< const CCopasiObject * > candi
 void CModel::appendDependentModelValues(std::set< const CCopasiObject * > candidates,
                                         std::set< const CCopasiObject * > & dependentModelValues) const
   {
+    if (mCompileIsNecessary)
+      const_cast< CModel * >(this)->compile();
+
     CCopasiVectorN< CModelValue >::const_iterator it = mValues.begin();
     CCopasiVectorN< CModelValue >::const_iterator end = mValues.end();
 
