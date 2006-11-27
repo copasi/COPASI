@@ -7,6 +7,7 @@ TEMPLATE = lib
 DESTDIR = ../../lib
 TARGET = $$LIB
 
+
 include(../../common.pri)
 
 CONFIG += staticlib
@@ -37,7 +38,7 @@ COPASI_LIBS += utilities
 
 BuildLib.commands = \
   rm -rf $@; \
-  $$join(COPASI_LIBS, ".a; $$QMAKE_AR $@ *.o; rm *.o; ar -x $$DESTDIR/lib", "ar -x $$DESTDIR/lib", ".a; $$QMAKE_AR $@ *.o; rm *.o");
+  $$join(COPASI_LIBS, ".a; $$QMAKE_AR $@ *.o; rm *.o; tar -xzf $$DESTDIR/lib", "tar -xzf $$DESTDIR/lib", ".a; $$QMAKE_AR $@ *.o; rm *.o");
 contains(BUILD_OS, Darwin) {
   BuildLib.commands += ranlib -s $@
 }

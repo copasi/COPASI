@@ -180,6 +180,7 @@ echo "Set the icon in the Info.plist file."
     sleep 10
     hdiutil eject ${drive} || (sleep 10; hdiutil eject ${drive} -force)
 
+    [ -e Copasi-$build-$1.dmg ] && rm -rf Copasi-$build-$1.dmg
     hdiutil convert -format UDCO Copasi-tmp.dmg -o Copasi-$build-$1.dmg
     rm -rf Copasi-tmp.dmg
     ;;
@@ -241,7 +242,7 @@ echo "Set the icon in the Info.plist file."
   esac
 
   scp Copasi-$build-$1*.* \
-    calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/alpha-test/$1/$license
+    shoops@calvin.bioinformatics.vt.edu:/usr/local/apache/htdocs/calvin/copasi/alpha-test/$1/$license
 
 else
   echo usage: mkbuild.sh BUILD_OS

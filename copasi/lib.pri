@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.6 $ $Author: shoops $ $Date: 2006/06/20 13:16:12 $  
+# $Revision: 1.7 $ $Author: shoops $ $Date: 2006/11/27 17:30:29 $  
 ######################################################################
 
 TEMPLATE = lib
@@ -7,13 +7,18 @@ TEMPLATE = lib
 CONFIG -= qt 
 CONFIG += staticlib
 
-DEPENDPATH += .. 
+DEPENDPATH  += .. 
 INCLUDEPATH += ..
-OBJECTS_DIR = .
-DESTDIR = ../lib
-TARGET = $$LIB
+OBJECTS_DIR  = .
+DESTDIR      = ../lib
+TARGET       = $$LIB
 
 isEmpty(SRC_TARGET) {
   SRC_TARGET = $$LIB
+}
+
+!contains(BUILD_OS, WIN32) {
+  QMAKE_AR     = tar -czf
+  QMAKE_RANLIB = 
 }
 
