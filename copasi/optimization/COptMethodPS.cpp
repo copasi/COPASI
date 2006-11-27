@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodPS.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/15 15:57:16 $
+   $Author: ssahle $
+   $Date: 2006/11/27 15:50:18 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -103,8 +103,8 @@ const C_FLOAT64 & COptMethodPS::evaluate()
 // move an individual
 bool COptMethodPS::move(const unsigned C_INT32 & index)
 {
-  const C_FLOAT64 w = 1 / (2 * log(2));
-  const C_FLOAT64 c = 0.5 + log(2);
+  const C_FLOAT64 w = 1 / (2 * log(2.0));
+  const C_FLOAT64 c = 0.5 + log(2.0);
 
   bool Improved = false;
 

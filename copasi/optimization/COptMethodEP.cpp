@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodEP.cpp,v $
-   $Revision: 1.16 $
+   $Revision: 1.17 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/15 15:57:16 $
+   $Author: ssahle $
+   $Date: 2006/11/27 15:46:15 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -175,8 +175,8 @@ bool COptMethodEP::initialize()
   mLosses.resize(2*mPopulationSize);
 
   // initialise the parameters to update the variances
-  tau1 = 1.0 / sqrt(2 * mVariableSize);
-  tau2 = 1.0 / sqrt(2 * sqrt(mVariableSize));
+  tau1 = 1.0 / sqrt(2 * double(mVariableSize));
+  tau2 = 1.0 / sqrt(2 * sqrt(double(mVariableSize)));
 
   return true;
 }

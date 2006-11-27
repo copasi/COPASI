@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptMethodSRES.cpp,v $
-   $Revision: 1.5 $
+   $Revision: 1.6 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/11/15 15:57:16 $
+   $Author: ssahle $
+   $Date: 2006/11/27 15:52:41 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -541,7 +541,7 @@ bool COptMethodSRES::initialize()
         {
           C_FLOAT64 tmp =
             mMaxVariance[i] =
-              (*OptItem.getUpperBoundValue() - *OptItem.getLowerBoundValue()) / sqrt(mVariableSize);
+              (*OptItem.getUpperBoundValue() - *OptItem.getLowerBoundValue()) / sqrt(double(mVariableSize));
         }
       catch (...)
         {
@@ -557,8 +557,8 @@ bool COptMethodSRES::initialize()
 
   try
     {
-      tau1 = 1 / sqrt(2 * sqrt(mVariableSize));
-      tau2 = 1 / sqrt(2 * mVariableSize);
+      tau1 = 1 / sqrt(2 * sqrt(double(mVariableSize)));
+      tau2 = 1 / sqrt(2 * double(mVariableSize));
     }
   catch (...)
     {
