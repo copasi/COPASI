@@ -164,6 +164,7 @@ ID       [a-z_A-Z][a-z_A-Z0-9]*
 %}
 
 <sOPERATOR>(or|OR)   %{
+  BEGIN(sSIGN); 
   mpNode = new CEvaluationNodeLogical(CEvaluationNodeLogical::OR,
                                        yytext);
   COMMON_ACTION;
