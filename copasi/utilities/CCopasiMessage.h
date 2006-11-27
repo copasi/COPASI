@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.h,v $
-   $Revision: 1.44 $
+   $Revision: 1.45 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/11/23 10:25:57 $
+   $Author: shoops $
+   $Date: 2006/11/27 13:54:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -104,11 +104,13 @@ class CCopasiMessage
      */
     unsigned C_INT32 mNumber;
 
+#ifndef WIN32
     /**
      * The stack of messages. Each message created with one of
      * the specific constructors is automically added to the stack.
      */
     static std::deque< CCopasiMessage > mMessageDeque;
+#endif // not WIN32
 
     // Operations
 

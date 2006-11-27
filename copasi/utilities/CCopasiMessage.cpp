@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMessage.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/28 15:34:18 $
+   $Date: 2006/11/27 13:54:28 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -33,7 +33,15 @@
 
 #define INITIALTEXTSIZE 1024
 
+#ifdef WIN32
+/**
+ * The stack of messages. Each message created with one of
+ * the specific constructors is automically added to the stack.
+ */
+static std::deque< CCopasiMessage > mMessageDeque;
+#else
 std::deque< CCopasiMessage > CCopasiMessage::mMessageDeque;
+#endif
 
 const CCopasiMessage & CCopasiMessage::peekFirstMessage()
 {
