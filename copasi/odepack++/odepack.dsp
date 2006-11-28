@@ -39,7 +39,7 @@ CFG=odepack - Win32 Build
 # PROP Intermediate_Dir "Build"
 # PROP Cmd_Line "nmake /f Makefile"
 # PROP Rebuild_Opt "clean all"
-# PROP Target_File "../lib/odepack++.lib"
+# PROP Target_File "../tmp/odepack++.lib"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 # Begin Target

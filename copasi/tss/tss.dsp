@@ -39,7 +39,7 @@ CFG=tss - Win32 Build
 # PROP Intermediate_Dir "Build"
 # PROP Cmd_Line "nmake /f Makefile"
 # PROP Rebuild_Opt "clean all"
-# PROP Target_File "../lib/tss.lib"
+# PROP Target_File "../tmp/tss.lib"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 # Begin Target
@@ -53,6 +53,18 @@ CFG=tss - Win32 Build
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=.\_BM_ODEExporter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\_C_ODEExporter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\_XPPAUT_ODEExporter.cpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\CTSSMethod.cpp
@@ -69,22 +81,22 @@ SOURCE=.\CTSSTask.cpp
 
 SOURCE=.\ODEExporter.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=.\_C_ODEExporter.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\_BM_ODEExporter.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\_XPPAUT_ODEExporter.cpp
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\_BM_ODEExporter.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\_C_ODEExporter.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\_XPPAUT_ODEExporter.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\CTSSMethod.h
@@ -97,21 +109,9 @@ SOURCE=.\CTSSProblem.h
 
 SOURCE=.\CTSSTask.h
 # End Source File
-# Begin Source Filei
- 
+# Begin Source File
+
 SOURCE=.\ODEExporter.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\_C_ODEExporter.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\_BM_ODEExporter.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\_XPPAUT_ODEExporter.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

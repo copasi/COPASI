@@ -39,7 +39,7 @@ CFG=CopasiDataModel - Win32 Build
 # PROP Intermediate_Dir "Build"
 # PROP Cmd_Line "nmake /f "Makefile""
 # PROP Rebuild_Opt "clean all"
-# PROP Target_File "../lib/copasiDM.lib"
+# PROP Target_File "../tmp/copasiDM.lib"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 # Begin Target

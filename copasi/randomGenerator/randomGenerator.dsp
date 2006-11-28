@@ -39,7 +39,7 @@ CFG=randomGenerator - Win32 Build
 # PROP Intermediate_Dir "Build"
 # PROP Cmd_Line "nmake /f Makefile"
 # PROP Rebuild_Opt "clean all"
-# PROP Target_File "../lib/randomGenerator.lib"
+# PROP Target_File "../tmp/randomGenerator.lib"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 # Begin Target

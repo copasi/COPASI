@@ -24,7 +24,7 @@ CFG=plotUI - Win32 Build
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
-# PROP BASE Use_MFC
+# PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
 # PROP BASE Output_Dir "Build"
 # PROP BASE Intermediate_Dir "Build"
@@ -33,13 +33,13 @@ CFG=plotUI - Win32 Build
 # PROP BASE Target_File "plotUI.exe"
 # PROP BASE Bsc_Name ""
 # PROP BASE Target_Dir ""
-# PROP Use_MFC
+# PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Build"
 # PROP Intermediate_Dir "Build"
 # PROP Cmd_Line "nmake /f Makefile"
 # PROP Rebuild_Opt "clean all"
-# PROP Target_File "../lib/plotUI.lib"
+# PROP Target_File "../tmp/plotUI.lib"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 # Begin Target
