@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.7 $ $Author: shoops $ $Date: 2006/11/27 17:30:29 $  
+# $Revision: 1.8 $ $Author: shoops $ $Date: 2006/11/28 14:49:41 $  
 ######################################################################
 
 TEMPLATE = lib
@@ -10,7 +10,7 @@ CONFIG += staticlib
 DEPENDPATH  += .. 
 INCLUDEPATH += ..
 OBJECTS_DIR  = .
-DESTDIR      = ../lib
+DESTDIR      = ../tmp
 TARGET       = $$LIB
 
 isEmpty(SRC_TARGET) {
