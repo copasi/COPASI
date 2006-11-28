@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/16 15:45:13 $
+   $Date: 2006/11/28 14:17:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1157,6 +1157,7 @@ void CQExperimentData::slotSeparator()
 bool CQExperimentData::saveTable(CExperiment * pExperiment)
 {
   CExperimentObjectMap & ObjectMap = pExperiment->getObjectMap();
+  CExperimentObjectMap & MasterObjectMap = mpExperiment->getObjectMap();
   unsigned C_INT32 i, imax = mpTable->numRows();
   bool FoundTime = false;
   bool Changed = false;
@@ -1184,7 +1185,7 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
 
       if (Type == CExperiment::dependent &&
           mpTable->text(i, COL_WEIGHT) != "" &&
-          QString::number(ObjectMap.getWeight(i)) != mpTable->text(i, COL_WEIGHT))
+          QString::number(MasterObjectMap.getWeight(i)) != mpTable->text(i, COL_WEIGHT))
         {
           ObjectMap.setWeight(i, mpTable->text(i, COL_WEIGHT).toDouble());
           Changed = true;
