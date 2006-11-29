@@ -16,6 +16,7 @@
 %ignore CCopasiDataModel::exportSBML(const std::string& fileName,bool overwriteFile,int sbmlLevel, int sbmlVersion,bool exportIncomplete = false, CProcessReport* pExportHandler);
 %ignore CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler);
 
+%immutable CCopasiDataModel::Global;
 
 class CCopasiDataModel 
 {

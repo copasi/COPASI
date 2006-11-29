@@ -141,6 +141,8 @@ template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
 %template(CChemEqElementStdVector) std::vector<CChemEqElement*>;
 %template(CChemEqElementVector) CCopasiVector<CChemEqElement>;
 
+%template(ParameterVector) std::vector<CCopasiParameter*>;
+
 typedef CCopasiVectorN<CCopasiTask> TaskVectorN;
 
 typedef CCopasiVectorN<CModelValue> ModelValueVectorN;

@@ -10,6 +10,7 @@
                                            const CCopasiContainer * pParent = NULL,
                                            const std::string & type = "CN",
                                            const unsigned C_INT32 & flag);
+%immutable CCopasiContainer::Root;
 
 class CCopasiContainer: public CCopasiObject
 {
