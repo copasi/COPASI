@@ -91,7 +91,7 @@ contains(BUILD_OS,Linux){
 
  LIBS += -llapack
  LIBS += -lblas
- LIBS += -lF77
+# LIBS += -lF77
  LIBS += -lfl
  LIBS += -lsbml
  LIBS += -lfl

@@ -5,13 +5,78 @@
 %include "enumsimple.swg"
 %javaconst(1);
 
+enum CLASS_TYPE
+{
+  CHEMICALEQUATION
+  , CHEMICALEQUATIONELEMENT
+  , CHEMICALEQUATIONELEMENTVECTOR
+  , COMPARTMENT
+  , COMPARTMENTVECTOR
+  , COMPARTMENTVECTORN
+  , COMPARTMENTVECTORNS
+  , CONTAINER
+  , EVALUATIONTREE
+  , EVALUATIONTREEVECTOR
+  , EVALUATIONTREEVECTORN
+  , FUNCTION
+  , FUNCTIONDB
+  , FUNCTIONPARAMETER
+  , FUNCTIONPARAMETERS
+  , METABOLITE
+  , METABVECTOR
+  , METABVECTORN
+  , METABVECTORNS
+  , METHOD
+  , MODEL
+  , MODELENTITY
+  , MODELVALUE
+  , MODELVALUEVECTOR
+  , MODELVALUEVECTORN
+  , MOIETY
+  , MOIETYVECTOR
+  , OBJECT
+  , OBJECTNAME
+  , PARAMETER
+  , PARAMETERGROUP
+  , PARAMETERVECTOR
+  , PROBLEM
+  , REACTION
+  , REACTIONVECTOR
+  , REACTIONVECTORN
+  , REACTIONVECTORNS
+  , REPORTDEFINITION
+  , REPORTDEFINITIONVECTOR
+  , REPORTDEFINITIONVECTORN
+  , STATICSTRING
+  , TASK
+  , TASKVECTOR
+  , TASKVECTORN
+  , TRAJECTORYMETHOD
+  , TRAJECTORYPROBLEM
+  , TRAJECTORYTASK
+};
+
+
+
+CLASS_TYPE getClassTypeForObject(const CCopasiObject* pTree);
+CLASS_TYPE getClassTypeForContainer(const CCopasiContainer* pTree);
+CLASS_TYPE getClassTypeForModelEntity(const CModelEntity* pTree);
+CLASS_TYPE getClassTypeForParameterGroup(const CCopasiParameterGroup* pTree);
+CLASS_TYPE getClassTypeForParameter(const CCopasiParameter* pTree);
+CLASS_TYPE getClassTypeForMethod(const CCopasiMethod* pTree);
+CLASS_TYPE getClassTypeForProblem(const CCopasiProblem* pTree);
+CLASS_TYPE getClassTypeForTask(const CCopasiTask* pTree);
+CLASS_TYPE getClassTypeForCEvaluationTree(const CEvaluationTree* pTree);
+
 
 /**
  * @return the most specific Java object possible for the given SBase
  * object.
  */
+ 
 %pragma(java) modulecode =
 %{
+/*
   enum CLASS_TYPE
   {
   CHEMICALEQUATION
@@ -62,13 +127,13 @@
   , TRAJECTORYPROBLEM
   , TRAJECTORYTASK
   }
-
+*/
 
   public static CCopasiObject DowncastObject(long cPtr, boolean owner)
   {
     if (cPtr == 0) return null;
 
-    switch((CLASS_TYPE)getClassTypeForObject(cPtr) )
+    switch(COPASIJNI.getClassTypeForObject(cPtr) )
     {
       
       case OBJECT:
@@ -105,15 +170,12 @@
         return new CEvaluationTreeVectorN(cPtr, owner);
 
       case MOIETYVECTOR:
-        return new CMoietyVector(cPtr, owner);
+        return new MoietyVector(cPtr, owner);
 
       case METABVECTOR:
-        return new CMetabVector(cPtr, owner);
+        return new MetabVector(cPtr, owner);
 
-      case PARAMETERVECTOR:
-        return new CCopasiParameterVector(cPtr, owner);
-
-      case CHEMEQELEMENTVECTOR:
+      case CHEMICALEQUATIONELEMENTVECTOR:
         return new CChemEqElementVector(cPtr, owner);
 
       case EVALUATIONTREE:
@@ -185,7 +247,7 @@
   {
     if (cPtr == 0) return null;
 
-    switch(getClassTypeForContainer(cPtr) )
+    switch(COPASIJNI.getClassTypeForContainer(cPtr) )
     {
       
       case CONTAINER:
@@ -213,15 +275,12 @@
         return new CEvaluationTreeVectorN(cPtr, owner);
 
       case MOIETYVECTOR:
-        return new CMoietyVector(cPtr, owner);
+        return new MoietyVector(cPtr, owner);
 
       case METABVECTOR:
-        return new CMetabVector(cPtr, owner);
+        return new MetabVector(cPtr, owner);
 
-      case PARAMETERVECTOR:
-        return new CCopasiParameterVector(cPtr, owner);
-
-      case CHEMEQELEMENTVECTOR:
+      case CHEMICALEQUATIONELEMENTVECTOR:
         return new CChemEqElementVector(cPtr, owner);
 
       case EVALUATIONTREE:
@@ -293,7 +352,7 @@
   {
     if (cPtr == 0) return null;
 
-    switch(getClassTypeForModelEntity(cPtr) )
+    switch(COPASIJNI.getClassTypeForModelEntity(cPtr) )
     {
       
       case MODELENTITY:
@@ -320,7 +379,7 @@
   {
     if (cPtr == 0) return null;
 
-    switch(getClassTypeForParameterGroup(cPtr) )
+    switch(COPASIJNI.getClassTypeForParameterGroup(cPtr) )
     {
       
       case TRAJECTORYMETHOD:
@@ -347,7 +406,7 @@
   {
     if (cPtr == 0) return null;
 
-    switch(getClassTypeForParameter(cPtr) )
+    switch(COPASIJNI.getClassTypeForParameter(cPtr) )
     {
       
       case PARAMETER:
@@ -377,7 +436,7 @@
   {
     if (cPtr == 0) return null;
 
-    switch(getClassTypeForMethod(cPtr) )
+    switch(COPASIJNI.getClassTypeForMethod(cPtr) )
     {
       
       case TRAJECTORYMETHOD:
@@ -395,7 +454,7 @@
   {
     if (cPtr == 0) return null;
 
-    switch(getClassTypeForProblem(cPtr) )
+    switch(COPASIJNI.getClassTypeForProblem(cPtr) )
     {
       
       case TRAJECTORYPROBLEM:
@@ -413,7 +472,7 @@
   {
     if (cPtr == 0) return null;
 
-    switch(getClassTypeForTask(cPtr) )
+    switch(COPASIJNI.getClassTypeForTask(cPtr) )
     {
       
       case TRAJECTORYTASK:
@@ -431,7 +490,7 @@
   {
     if (cPtr == 0) return null;
 
-    switch(getClassTypeForCEvaluationTree(cPtr) )
+    switch(COPASIJNI.getClassTypeForCEvaluationTree(cPtr) )
     {
       
       case EVALUATIONTREE:
