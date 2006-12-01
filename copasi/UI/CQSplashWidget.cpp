@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSplashWidget.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/12/01 15:24:00 $
+   $Author: ssahle $
+   $Date: 2006/12/01 16:09:09 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,8 +13,8 @@
 /****************************************************************************
  ** Form implementation generated from reading ui file 'CQSplashWidget.ui'
  **
- ** Created: Fri Dec 1 09:18:05 2006
- **      by: The User Interface Compiler ($Id: CQSplashWidget.cpp,v 1.1 2006/12/01 15:24:00 shoops Exp $)
+ ** Created: Fr Dez 1 17:03:36 2006
+ **      by: The User Interface Compiler ($Id: CQSplashWidget.cpp,v 1.2 2006/12/01 16:09:09 ssahle Exp $)
  **
  ** WARNING! All changes made in this file will be lost!
  ****************************************************************************/

@@ -83,7 +83,7 @@
     </image>
 </images>
 <includes>
-    <include location="local" impldecl="in declaration">CopasiWidget.h</include>
+    <include location="local" impldecl="in declaration">copasiWidget.h</include>
     <include location="local" impldecl="in implementation">CQSplashWidget.ui.h</include>
 </includes>
 <functions>
