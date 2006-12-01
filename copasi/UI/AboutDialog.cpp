@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/AboutDialog.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 16:03:42 $
+   $Date: 2006/12/01 15:24:41 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -17,14 +17,18 @@
 #include "qtextedit.h"
 #include "qlayout.h"
 #include "qsizepolicy.h"
-#include "copasi.h"
 #include "icons/copasi_beta_background.xpm"
+
+#include "copasi.h"
+#include "qtUtilities.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "utilities/CVersion.h"
 
 const char* AboutDialog::text =
   "COPASI is a simulator for biochemical networks. It is a joint project\n"
   "by the Mendes and Kummer groups at VBI and EML Research, respectively.\n"
   "\n"
-  "This is COPASI version 4.0.19 (development). Please check for\n"
+  "This is COPASI %1. Please check for\n"
   "new release at http://www.copasi.org where new releases will be made\n"
   "available for download.\n"
   "\n"
@@ -42,8 +46,8 @@ const char* AboutDialog::text =
   "  - Qt3 GUI framework\n"
   "  - QWT 5.0 Beta (Snapshot 2006-01-25)\n"
   "  - Expat 1.95.7 XML parser\n"
-  "  - libsbml 2.3.2\n"
-  "  - CLAPACK 3.0, LAPACK 3.0, or Intel Math Kernel Library\n"
+  "  - libsbml 2.3.4\n"
+  "  - CLAPACK 3.0, LAPACK 3.1.0, or Intel Math Kernel Library\n"
   "  - LSODA from ODEPACK\n"
   "  - Mersenne Twister random number generator,\n"
   "    Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura\n"
@@ -74,7 +78,7 @@ AboutDialog::AboutDialog(QWidget* parent,
   int h = heigth * FontMetrics.lineSpacing();
   this->textEdit->setFixedSize(w, h);
   this->textEdit->setReadOnly(true);
-  this->textEdit->setText(text);
+  this->textEdit->setText(QString(text).arg(FROM_UTF8(CCopasiDataModel::Global->getVersion()->getVersion())));
   this->closeButton = new QPushButton(this);
   this->closeButton->setText("close");
   this->mainLayout->addWidget(this->textEdit);
