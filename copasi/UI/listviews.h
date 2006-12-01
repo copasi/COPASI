@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.h,v $
-   $Revision: 1.114 $
+   $Revision: 1.115 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/28 00:24:53 $
+   $Date: 2006/12/01 15:24:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -56,7 +56,7 @@ class OptimizationResultWidget;
 class CopasiWidget;
 class PlotWidget1;
 class PlotWidget;
-class CopasiDefaultWidget;
+class CQSplashWidget;
 class TimeSeriesWidget;
 class CQFittingWidget;
 class CQFittingResult;
@@ -161,7 +161,7 @@ class ListViews : public QSplitter
     CMCAWidget* mpCMCAWidget;
     CompartmentsWidget *compartmentsWidget;
     CompartmentsWidget1 *compartmentsWidget1;
-    CopasiDefaultWidget *defaultWidget;
+    CQSplashWidget *defaultWidget;
     DifferentialEquations *differentialEquations;
     FunctionSymbols *functionSymbols;
     FunctionWidget *functionWidget;

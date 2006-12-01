@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/listviews.cpp,v $
-   $Revision: 1.205 $
+   $Revision: 1.206 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/28 00:18:41 $
+   $Date: 2006/12/01 15:24:00 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -59,7 +59,7 @@
 #include "OptimizationResultWidget.h"
 #include "TableDefinition.h"
 #include "TableDefinition1.h"
-#include "CopasiDefaultWidget.h"
+#include "CQSplashWidget.h"
 #include "CQTrajectoryWidget.h"
 #include "TimeSeriesWidget.h"
 #ifdef COPASI_TSS
@@ -254,7 +254,7 @@ ListViews::ListViews(QWidget *parent, const char *name):
   folders->addColumn("Select");
   //  folders->setMinimumWidth(160);
 
-  defaultWidget = new CopasiDefaultWidget(this);
+  defaultWidget = new CQSplashWidget(this);
 
   moveToFirst(folders);
   moveToLast(defaultWidget);

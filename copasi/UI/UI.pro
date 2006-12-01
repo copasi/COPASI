@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.135 $ $Author: shoops $ $Date: 2006/10/28 00:28:03 $  
+# $Revision: 1.136 $ $Author: shoops $ $Date: 2006/12/01 15:24:00 $  
 ######################################################################
 
 LIB = UI
@@ -25,7 +25,6 @@ HEADERS += \
            CReportDefinitionSelect.h \
            CompartmentsWidget.h \
            CompartmentsWidget1.h \
-           CopasiDefaultWidget.h \
            CopasiFileDialog.h \
            CopasiSlider.h \
            CopasiTableWidget.h \
@@ -90,7 +89,6 @@ SOURCES += \
            CReportDefinitionSelect.cpp \
            CompartmentsWidget.cpp \
            CompartmentsWidget1.cpp \
-           CopasiDefaultWidget.cpp \
            CopasiFileDialog.cpp \
            CopasiSlider.cpp \
            CopasiTableWidget.cpp \
@@ -184,6 +182,7 @@ SOURCES += \
 # FORMS += CQFittingItemWidget.ui
 # FORMS += CQFittingWidget.ui
 # FORMS += CQOptimizationWidget.ui
+# FORMS += CQSplashWidget.ui
 # FORMS += CQTaskHeaderWidget.ui
 # FORMS += CQTaskBtnWidget.ui
 # FORMS += CQTrajectoryWidget.ui
@@ -222,6 +221,8 @@ HEADERS += \
            CQProgressItemText.ui.h \
            CQReportDefinition.h \
            CQReportDefinition.ui.h \
+           CQSplashWidget.h \
+           CQSplashWidget.ui.h \
            CQStartValueReset.h \
            CQStartValueReset.ui.h \
            CQTaskBtnWidget.h \
@@ -274,6 +275,7 @@ SOURCES += \
            CQProgressItemText.cpp \
            CQProgressDialog.cpp \
            CQReportDefinition.cpp \
+           CQSplashWidget.cpp \
            CQStartValueReset.cpp \
            CQTaskBtnWidget.cpp \
            CQTaskHeaderWidget.cpp \

@@ -103,10 +103,6 @@ SOURCE=.\ConstantSymbols.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\CopasiDefaultWidget.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\CopasiFileDialog.cpp
 # End Source File
 # Begin Source File
@@ -212,6 +208,10 @@ SOURCE=.\CQReportListItem.cpp
 # Begin Source File
 
 SOURCE=.\CQSensResultWidget.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQSplashWidget.cpp
 # End Source File
 # Begin Source File
 
@@ -511,10 +511,6 @@ SOURCE=.\ConstantSymbols.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\CopasiDefaultWidget.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\CopasiFileDialog.h
 # End Source File
 # Begin Source File
@@ -676,6 +672,14 @@ SOURCE=.\CQReportListItem.h
 # Begin Source File
 
 SOURCE=.\CQSensResultWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQSplashWidget.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQSplashWidget.ui.h
 # End Source File
 # Begin Source File
 
@@ -1053,6 +1057,10 @@ SOURCE=.\CQProgressItemText.ui
 # Begin Source File
 
 SOURCE=.\CQReportDefinition.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQSplashWidget.ui
 # End Source File
 # Begin Source File
 
