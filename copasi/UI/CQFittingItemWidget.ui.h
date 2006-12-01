@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.22 $
+   $Revision: 1.23 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/16 17:04:54 $
+   $Date: 2006/12/01 17:17:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -914,6 +914,7 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
       for (i = imax - 1; i != C_INVALID_INDEX; i--)
         pTemplate->removeExperiment(i);
 
+      // Create imax - 1 copies
       for (i = imax - 1; i != 0; i--)
         {
           switch (mItemType)
@@ -941,16 +942,21 @@ void CQFittingItemWidget::slotDuplicatePerExperiment()
     {
       // We have ALL
       imax = (*mppExperimentSet)->getExperimentCount();
-      for (i = imax - 1; i != 0; i--)
+
+      if (imax > 0)
         {
-          pItem = new CFitItem(*(*mpItemsCopy)[*mSelection.begin()]);
-          pItem->addExperiment((*mppExperimentSet)->getExperiment(i)->CCopasiParameter::getKey());
+          // Create imax - 1 copies
+          for (i = imax - 1; i != 0; i--)
+            {
+              pItem = new CFitItem(*(*mpItemsCopy)[*mSelection.begin()]);
+              pItem->addExperiment((*mppExperimentSet)->getExperiment(i)->CCopasiParameter::getKey());
 
-          mpItemsCopy->insert(mpItemsCopy->begin() + row, pItem);
+              mpItemsCopy->insert(mpItemsCopy->begin() + row, pItem);
 
-          // Update the table
-          mpTable->insertRows(row);
-          setTableText(row, pItem);
+              // Update the table
+              mpTable->insertRows(row);
+              setTableText(row, pItem);
+            }
         }
 
       // Update the current item only when we have more than one experiment.
