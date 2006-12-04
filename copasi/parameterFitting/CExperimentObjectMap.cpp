@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/15 19:54:16 $
+   $Date: 2006/12/04 15:45:49 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -174,6 +174,17 @@ C_FLOAT64 CExperimentObjectMap::getWeight(const unsigned C_INT32 & index) const
 
     if (pColumn)
       return pColumn->getWeight();
+    else
+      return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  }
+
+C_FLOAT64 CExperimentObjectMap::getDefaultWeight(const unsigned C_INT32 & index) const
+  {
+    const CDataColumn * pColumn =
+      dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
+
+    if (pColumn)
+      return pColumn->getDefaultWeight();
     else
       return std::numeric_limits<C_FLOAT64>::quiet_NaN();
   }

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentObjectMap.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/15 07:45:25 $
+   $Author: shoops $
+   $Date: 2006/12/04 15:45:49 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -115,7 +115,6 @@ class CExperimentObjectMap: public CCopasiParameterGroup
          */
         C_FLOAT64 getWeight() const;
 
-      private:
         /**
          * Retreive the default weight of the column
          * @return C_FLOAT64 weight
@@ -236,6 +235,14 @@ class CExperimentObjectMap: public CCopasiParameterGroup
      * @return C_FLOAT64 weight
      */
     C_FLOAT64 getWeight(const unsigned C_INT32 & index) const;
+
+    /**
+     * Retreive the default weight according to the saelected weight method
+     * of the indexed column
+     * @param const unsigned C_INT32 & index
+     * @return C_FLOAT64 weight
+     */
+    C_FLOAT64 getDefaultWeight(const unsigned C_INT32 & index) const;
 
     /**
      * Compile the map. This function must be called
