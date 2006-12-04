@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.39 $
+   $Revision: 1.40 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/20 16:39:12 $
+   $Date: 2006/12/04 15:43:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1356,7 +1356,8 @@ bool CFitProblem::calculateCrossValidation()
     Continue &= mpCallBack->progress(mhCounter);
 
   C_FLOAT64 CurrentObjective =
-    mSolutionValue + mpCrossValidationSet->getWeight() * CalculateValue * mpCrossValidationSet->getDataPointCount() / mpExperimentSet->getDataPointCount();
+    (1.0 - mpCrossValidationSet->getWeight()) * mSolutionValue
+    + mpCrossValidationSet->getWeight() * CalculateValue * mpCrossValidationSet->getDataPointCount() / mpExperimentSet->getDataPointCount();
 
   if (CurrentObjective > mCrossValidationObjective)
     mThresholdCounter++;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentSet.cpp,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/16 15:45:13 $
+   $Date: 2006/12/04 15:43:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -420,10 +420,17 @@ CCrossValidationSet::CCrossValidationSet(const CCopasiParameterGroup & group,
 CCrossValidationSet::~CCrossValidationSet() {}
 
 void CCrossValidationSet::setWeight(const C_FLOAT64 & weight)
-{*mpWeight = weight;}
+{
+  if (weight < 0.0)
+    *mpWeight = 0.0;
+  else if (weight > 1.0)
+    *mpWeight = 1.0;
+  else
+    *mpWeight = weight;
+}
 
 const C_FLOAT64 & CCrossValidationSet::getWeight() const
-  {return *mpWeight;}
+{return *mpWeight;}
 
 void CCrossValidationSet::setThreshold(const unsigned C_INT32 & threshold)
 {*mpThreshold = threshold;}
