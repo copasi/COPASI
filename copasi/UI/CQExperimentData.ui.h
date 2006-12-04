@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/28 14:17:14 $
+   $Date: 2006/12/04 15:46:56 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1072,7 +1072,20 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
       if (Type != CExperiment::dependent)
         mpTable->setText(i, COL_WEIGHT, "");
       else
-        mpTable->setText(i, COL_WEIGHT, QString::number(ObjectMap.getWeight(i)));
+        {
+          C_FLOAT64 DefaultWeight = ObjectMap.getDefaultWeight(i);
+          C_FLOAT64 Weight = ObjectMap.getWeight(i);
+
+          QString WeightText;
+
+          if (isnan(DefaultWeight) && isnan(Weight) ||
+              DefaultWeight == Weight)
+            WeightText = "(" + QString::number(DefaultWeight) + ")";
+          else
+            WeightText = QString::number(Weight);
+
+          mpTable->setText(i, COL_WEIGHT, WeightText);
+        }
     }
 
   if (TimeRow != C_INVALID_INDEX)
@@ -1183,11 +1196,13 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
           Changed = true;
         }
 
+      QString WeightText = mpTable->text(i, COL_WEIGHT);
+
       if (Type == CExperiment::dependent &&
-          mpTable->text(i, COL_WEIGHT) != "" &&
-          QString::number(MasterObjectMap.getWeight(i)) != mpTable->text(i, COL_WEIGHT))
+          WeightText[0] != '(' &&
+          QString::number(MasterObjectMap.getWeight(i)) != WeightText)
         {
-          ObjectMap.setWeight(i, mpTable->text(i, COL_WEIGHT).toDouble());
+          ObjectMap.setWeight(i, WeightText.toDouble());
           Changed = true;
         }
     }
@@ -1269,6 +1284,7 @@ bool CQExperimentData::isLikePreviousExperiment(CExperiment * pExperiment)
     {
       if ((CExperiment::WeightMethod) mOldWeightMethod != pPrevious->getWeightMethod()) return false;
     }
+
   if (!(pExperiment->getObjectMap() == pPrevious->getObjectMap())) return false;
 
   return true;
@@ -1337,23 +1353,49 @@ void CQExperimentData::enableEdit(const bool & enable)
 
 void CQExperimentData::slotWeightMethod(int weightMethod)
 {
+  if (mpExperiment == NULL) return;
+
   if ((CExperiment::WeightMethod) weightMethod ==
       mpExperiment->getWeightMethod()) return;
 
-  bool Changed = saveTable(mpExperiment);
+  unsigned C_INT32 Current =
+    mpExperimentSetCopy->keyToIndex(mpExperiment->CCopasiParameter::getKey());
+  unsigned C_INT32 Next = Current + 1;
 
-  if (Changed)
+  // Find all experiments which are like this.
+  while (Next < mpExperimentSetCopy->getExperimentCount() && mpCheckTo->isChecked())
     {
-      std::ifstream File;
-      File.open(utf8ToLocale(mpExperiment->getFileName()).c_str());
+      CExperiment * pNext = mpExperimentSetCopy->getExperiment(Next);
 
-      unsigned C_INT32 CurrentLine = 1;
-      mpExperiment->read(File, CurrentLine);
-      mpExperiment->compile();
+      if (!isLikePreviousExperiment(pNext)) break;
+
+      Next++;
     }
 
-  mpExperiment->setWeightMethod((CExperiment::WeightMethod) weightMethod);
-  mpExperiment->calculateWeights();
+  // Update each of them.
+  while (true)
+    {
+      Next--;
+
+      CExperiment * pNext = mpExperimentSetCopy->getExperiment(Next);
+
+      bool Changed = saveTable(pNext);
+
+      if (Changed)
+        {
+          std::ifstream File;
+          File.open(utf8ToLocale(pNext->getFileName()).c_str());
+
+          unsigned C_INT32 CurrentLine = 1;
+          pNext->read(File, CurrentLine);
+          pNext->compile();
+        }
+
+      pNext->setWeightMethod((CExperiment::WeightMethod) weightMethod);
+      pNext->calculateWeights();
+
+      if (Next == Current) break;
+    }
 
   loadTable(mpExperiment, false);
 }
