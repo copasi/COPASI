@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.24 $
+   $Revision: 1.25 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/04 15:46:56 $
+   $Date: 2006/12/05 13:05:29 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <math.h>
 
 #include <qsignalmapper.h>
 #include <qcombobox.h>
