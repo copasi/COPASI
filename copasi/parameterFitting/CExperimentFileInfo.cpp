@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/11/16 15:45:13 $
+   $Date: 2006/12/06 16:46:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -86,8 +86,9 @@ bool CExperimentFileInfo::setFileName(const std::string & fileName)
             }
         }
 
-      // Eat additional line break characters only appearing on dos text format;
-      if ((c == 0x0d && in.peek() == 0x0a))
+      // Eat additional line break characters appearing on DOS and Mac text format;
+      if ((c == 0x0d && in.peek() == 0x0a) || // DOS
+          (c == 0x0a && in.peek() == 0x0d))   // Mac
         in.ignore(1);
 
       mLines++;

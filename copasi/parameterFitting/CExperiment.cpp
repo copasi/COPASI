@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.48 $
+   $Revision: 1.49 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/11 16:29:52 $
+   $Date: 2006/12/06 16:46:55 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1396,8 +1396,9 @@ std::istream & skipLine(std::istream & in)
       if (in.fail() || in.eof()) break;
     }
 
-  // Eat additional line break characters only appearing on dos text format;
-  if ((c == 0x0d && in.peek() == 0x0a))
+  // Eat additional line break characters appearing on DOS and Mac text format;
+  if ((c == 0x0d && in.peek() == 0x0a) || // DOS
+      (c == 0x0a && in.peek() == 0x0d))   // Mac
     in.ignore(1);
 
   return in;
