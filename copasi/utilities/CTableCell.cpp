@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CTableCell.cpp,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:32:43 $
+   $Date: 2006/12/06 16:46:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -190,12 +190,13 @@ std::istream & CTableRow::readLine(std::istream & is)
   char c;
   for (is.get(c); c != 0x0a && c != 0x0d; is.get(c))
     {
-      if (is.fail() || is.eof()) return is;
+      if (is.fail() || is.eof()) break;
       line.put(c);
     }
 
-  // Eat additional line break characters only appearing on dos text format;
-  if ((c == 0x0d && is.peek() == 0x0a))
+  // Eat additional line break characters appearing on DOS and Mac text format;
+  if ((c == 0x0d && is.peek() == 0x0a) || // DOS
+      (c == 0x0a && is.peek() == 0x0d))   // Mac
     is.ignore(1);
 
   mIsEmpty = true;
