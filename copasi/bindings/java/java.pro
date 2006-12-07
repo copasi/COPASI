@@ -69,7 +69,7 @@ isEmpty(SWIG_PATH){
 
     wrapper_source.target = copasi_wrapper.cpp
     wrapper_source.depends = $$SWIG_INTERFACE_FILES java.i local.cpp
-    wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; mkdir -p java_files ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -java -o $$wrapper_source.target -outdir java_files  java.i
+    wrapper_source.commands = $(DEL_FILE) $$wrapper_source.target ; mkdir -p java_files ; $$SWIG_PATH/bin/swig $$DEFINE_COMMANDLINE -I../.. -c++ -java -o $$wrapper_source.target -package org.eml.COPASI -outdir java_files  java.i
 
     QMAKE_EXTRA_UNIX_TARGETS += wrapper_source
     PRE_TARGETDEPS += copasi_wrapper.cpp
