@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.40 $
+   $Revision: 1.41 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/04 15:43:44 $
+   $Date: 2006/12/07 16:07:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -60,7 +60,12 @@ CFitProblem::CFitProblem(const CCopasiTask::Type & type,
     mSD(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
     mParameterSD(0),
     mFisher(0, 0)
-{initializeParameter();}
+{
+#ifdef COPASI_CROSSVALIDATION
+  initObjects();
+#endif // COPASI_CROSSVALIDATION
+  initializeParameter();
+}
 
 // copy constructor
 CFitProblem::CFitProblem(const CFitProblem& src,
@@ -91,7 +96,12 @@ CFitProblem::CFitProblem(const CFitProblem& src,
     mSD(src.mSD),
     mParameterSD(src.mParameterSD),
     mFisher(src.mFisher)
-{initializeParameter();}
+{
+#ifdef COPASI_CROSSVALIDATION
+  initObjects();
+#endif // COPASI_CROSSVALIDATION
+  initializeParameter();
+}
 
 // Destructor
 CFitProblem::~CFitProblem()
@@ -567,7 +577,7 @@ bool CFitProblem::calculate()
                 {
                   if (j)
                     {
-                      Continue = mpTrajectory->processStep(pExp->getTimeData()[j]);
+                      mpTrajectory->processStep(pExp->getTimeData()[j]);
                     }
                   else
                     {
@@ -577,7 +587,7 @@ bool CFitProblem::calculate()
 
                       if (pExp->getTimeData()[0] != mpModel->getInitialTime())
                         {
-                          Continue = mpTrajectory->processStep(pExp->getTimeData()[0]);
+                          mpTrajectory->processStep(pExp->getTimeData()[0]);
                         }
                     }
 
@@ -1280,7 +1290,7 @@ bool CFitProblem::calculateCrossValidation()
                 {
                   if (j)
                     {
-                      Continue &= mpTrajectory->processStep(pExp->getTimeData()[j]);
+                      mpTrajectory->processStep(pExp->getTimeData()[j]);
                     }
                   else
                     {
@@ -1290,7 +1300,7 @@ bool CFitProblem::calculateCrossValidation()
 
                       if (pExp->getTimeData()[0] != mpModel->getInitialTime())
                         {
-                          Continue &= mpTrajectory->processStep(pExp->getTimeData()[0]);
+                          mpTrajectory->processStep(pExp->getTimeData()[0]);
                         }
                     }
 
