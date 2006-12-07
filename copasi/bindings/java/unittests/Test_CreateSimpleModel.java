@@ -14,11 +14,11 @@ class Test_CreateSimpleModel extends TestCase
 
    public static CCpasiDataModel createModel()
    {
-    COPASI.CCopasiDataModel.GLOBAL.newModel();
-    CCopasiDataModel model=COPASI.CCopasiDataModel.GLOBAL.getModel();
-    model.setVolumeUnit(COPASI.CModel.fl);
-    model.setTimeUnit(COPASI.CModel.s);
-    model.setQuantityUnit(COPASI.CModel.fMol);
+    CCopasiDataModel.GLOBAL.newModel();
+    CCopasiDataModel model=CCopasiDataModel.GLOBAL.getModel();
+    model.setVolumeUnit(CModel.fl);
+    model.setTimeUnit(CModel.s);
+    model.setQuantityUnit(CModel.fMol);
     CCompartment comp=model.createCompartment("CompartmentA");
     CMetab A=model.createMetabolite("A",comp.getObjectName());
     A.setInitialConcentration(2.0e-4);
@@ -30,7 +30,7 @@ class Test_CreateSimpleModel extends TestCase
     react.setReversible(False);
     react.setFunction("Mass action (irreversible)");
     react.setParameterValue("k1",0.5);
-    ParameterMapping mapping=COPASI.ParameterMapping();
+    ParameterMapping mapping=ParameterMapping();
     mapping.append(react.getChemEq().getSubstrate(0).getMetabolite().getKey());
     react.setParameterMappingVector(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);;
     model.compileIfNecessary();
@@ -47,7 +47,7 @@ class Test_CreateSimpleModel extends TestCase
       react.setReversible(False);
       react.setFunction("Mass action (irreversible)");
       react.getParameters().getParameter(0).setValue(0.1);
-      ParameterMapping mapping=COPASI.ParameterMapping();
+      ParameterMapping mapping=ParameterMapping();
       mapping.append(react.getChemEq().getSubstrate(0).getMetabolite().getKey());
       react.setParameterMappingVector(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);;
       model.compileIfNecessary();
@@ -62,7 +62,7 @@ class Test_CreateSimpleModel extends TestCase
   public void test_createModel()
   {
      Assert.assertFalse(this.model.equals(null));
-     Assert.assertTrue(this.model.__class__==COPASI.CModel);
+     Assert.assertTrue(this.model.getClass()==CModel);
      Assert.assertTrue(this.model.getCompartments().size()==1);
      Assert.assertTrue(this.model.getCompartment(0).getObjectName().equals("CompartmentA"));
      Assert.assertTrue(this.model.getMetabolites().size()==2);
