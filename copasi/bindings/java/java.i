@@ -67,7 +67,7 @@ CLASS_TYPE getClassTypeForMethod(const CCopasiMethod* pTree);
 CLASS_TYPE getClassTypeForProblem(const CCopasiProblem* pTree);
 CLASS_TYPE getClassTypeForTask(const CCopasiTask* pTree);
 CLASS_TYPE getClassTypeForCEvaluationTree(const CEvaluationTree* pTree);
-
+void       initCopasi();
 
 /**
  * @return the most specific Java object possible for the given SBase
@@ -76,58 +76,6 @@ CLASS_TYPE getClassTypeForCEvaluationTree(const CEvaluationTree* pTree);
  
 %pragma(java) modulecode =
 %{
-/*
-  enum CLASS_TYPE
-  {
-  CHEMICALEQUATION
-  , CHEMICALEQUATIONELEMENT
-  , CHEMICALEQUATIONELEMENTVECTOR
-  , COMPARTMENT
-  , COMPARTMENTVECTOR
-  , COMPARTMENTVECTORN
-  , COMPARTMENTVECTORNS
-  , CONTAINER
-  , EVALUATIONTREE
-  , EVALUATIONTREEVECTOR
-  , EVALUATIONTREEVECTORN
-  , FUNCTION
-  , FUNCTIONDB
-  , FUNCTIONPARAMETER
-  , FUNCTIONPARAMETERS
-  , METABOLITE
-  , METABVECTOR
-  , METABVECTORN
-  , METABVECTORNS
-  , METHOD
-  , MODEL
-  , MODELENTITY
-  , MODELVALUE
-  , MODELVALUEVECTOR
-  , MODELVALUEVECTORN
-  , MOIETY
-  , MOIETYVECTOR
-  , OBJECT
-  , OBJECTNAME
-  , PARAMETER
-  , PARAMETERGROUP
-  , PARAMETERVECTOR
-  , PROBLEM
-  , REACTION
-  , REACTIONVECTOR
-  , REACTIONVECTORN
-  , REACTIONVECTORNS
-  , REPORTDEFINITION
-  , REPORTDEFINITIONVECTOR
-  , REPORTDEFINITIONVECTORN
-  , STATICSTRING
-  , TASK
-  , TASKVECTOR
-  , TASKVECTORN
-  , TRAJECTORYMETHOD
-  , TRAJECTORYPROBLEM
-  , TRAJECTORYTASK
-  }
-*/
 
   public static CCopasiObject DowncastObject(long cPtr, boolean owner)
   {
@@ -586,7 +534,19 @@ CLASS_TYPE getClassTypeForCEvaluationTree(const CEvaluationTree* pTree);
   return COPASI.DowncastModelEntity($jnicall, $owner);
 }
 
-
+%pragma(java) jniclasscode=%{
+  static {
+    try {
+        System.loadLibrary("CopasiJava");
+        initCopasi();
+    } 
+    catch (UnsatisfiedLinkError e) 
+    {
+      System.err.println("Native code library failed to load. \n" + e);
+      System.exit(1);
+    }
+  }
+%}
 
 %include "../swig/copasi.i"
 

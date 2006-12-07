@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/local.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: gauges $
-   $Date: 2006/11/23 16:41:08 $
+   $Date: 2006/12/07 14:11:19 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -331,4 +331,12 @@ CLASS_TYPE getClassTypeForObject(const CCopasiObject* pObject)
         }
     }
   return type;
+}
+
+#include "CopasiDataModel/CCopasiDataModel.h"
+
+void initCopasi()
+{
+  CCopasiContainer::init();
+  CCopasiDataModel::Global = new CCopasiDataModel();
 }
