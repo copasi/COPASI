@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQExperimentData.ui.h,v $
-   $Revision: 1.25 $
+   $Revision: 1.26 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/05 13:05:29 $
+   $Date: 2006/12/07 16:09:36 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -1198,6 +1198,10 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
         }
 
       QString WeightText = mpTable->text(i, COL_WEIGHT);
+
+      // Empty fields are treated as default.
+      if (WeightText == "")
+        WeightText = QString::number(std::numeric_limits<C_FLOAT64>::quiet_NaN());
 
       if (Type == CExperiment::dependent &&
           WeightText[0] != '(' &&
