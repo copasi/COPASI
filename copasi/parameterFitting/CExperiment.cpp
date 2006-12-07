@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperiment.cpp,v $
-   $Revision: 1.49 $
+   $Revision: 1.50 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/06 16:46:55 $
+   $Date: 2006/12/07 15:53:49 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -695,6 +695,15 @@ bool CExperiment::read(std::istream & in,
         break;
       }
 
+  mNumDataRows = *mpLastRow - *mpFirstRow +
+                 ((*mpHeaderRow < *mpFirstRow || *mpLastRow < *mpHeaderRow) ? 1 : 0);
+
+  mDataTime.resize(TimeCount ? mNumDataRows : 0);
+  mDataIndependent.resize(mNumDataRows, IndependentCount);
+  mDataDependent.resize(mNumDataRows, DependentCount);
+  mpDataDependentCalculated = NULL;
+  mColumnName.resize(IndependentCount + DependentCount + TimeCount);
+
   if (!TimeCount && *mpTaskType == CCopasiTask::timeCourse)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 3);
@@ -707,20 +716,11 @@ bool CExperiment::read(std::istream & in,
       return false;
     }
 
-  mNumDataRows = *mpLastRow - *mpFirstRow +
-                 ((*mpHeaderRow < *mpFirstRow || *mpLastRow < *mpHeaderRow) ? 1 : 0);
-
   if (mNumDataRows == 0)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 9, getObjectName().c_str());
       return false;
     }
-
-  mDataTime.resize(TimeCount ? mNumDataRows : 0);
-  mDataIndependent.resize(mNumDataRows, IndependentCount);
-  mDataDependent.resize(mNumDataRows, DependentCount);
-  mpDataDependentCalculated = NULL;
-  mColumnName.resize(IndependentCount + DependentCount + TimeCount);
 
   CTableRow Row(*mpNumColumns, (*mpSeparator)[0]);
   const std::vector< CTableCell > & Cells = Row.getCells();
