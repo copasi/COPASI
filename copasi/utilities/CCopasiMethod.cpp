@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiMethod.cpp,v $
-   $Revision: 1.38 $
+   $Revision: 1.39 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 15:56:07 $
+   $Date: 2006/12/07 14:23:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,7 +13,7 @@
 /**
  *  CCopasiMethod class.
  *  This class is used to describe a task in COPASI. This class is
- *  intended to be used as the parent class for all tasks whithin COPASI.
+ *  intended to be used as the parent class for all methods whithin COPASI.
  *
  *  Created for Copasi by Stefan Hoops 2003
  */
@@ -38,7 +38,7 @@ const std::string CCopasiMethod::SubTypeName[] =
     "Hooke & Jeeves",
     "Levenberg - Marquardt",
     "Nelder - Mead",
-    "Evolutionary Strategy (SRES)",
+    "Evolution Strategy (SRES)",
     "Current Solution Statistics",
     "Particle Swarm",
     "Enhanced Newton",
