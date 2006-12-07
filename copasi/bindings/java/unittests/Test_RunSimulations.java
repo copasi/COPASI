@@ -2,12 +2,14 @@ package org.eml.COPASI.unittests;
 
 import java.lang.Math;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.Iterator;
 import org.eml.COPASI.*;
 import junit.framework.*;
 
 class Test_RunSimulations extends TestCase
 {
-   protected CCopasiDataModel model;
+   protected CModel model;
    protected int NUM_REPEATS;
 
    public Test_RunSimulations(String name)
@@ -15,14 +17,14 @@ class Test_RunSimulations extends TestCase
     super(name);
    }
 
-   public static CCopasiTask runSimulation(CCopasiTask.type methodType,HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters)
+   public static CTrajectoryTask runSimulation(int methodType,HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters)
    {
-    CCopasiTask task=null;
-    for(int  x=0;x < CCopasiDataModel.GLOBAL.getTaskList().size();x++)
+    CTrajectoryTask task=null;
+    for(int  x=0;x < CCopasiDataModel.getGlobal().getTaskList().size();x++)
     {
-        if(CCopasiDataModel.GLOBAL.getTask(x).getType()==CCopasiTask.timeCourse)
+        if(CCopasiDataModel.getGlobal().getTask(x).getType()==CCopasiTask.timeCourse)
         {
-          task=CCopasiDataModel.GLOBAL.getTask(x);
+          task=(CTrajectoryTask)CCopasiDataModel.getGlobal().getTask(x);
         }
     }
     if(task.equals(null))
@@ -37,22 +39,22 @@ class Test_RunSimulations extends TestCase
     }
     Set<String> keySet=problemParameters.keySet();
     keySet=methodParameters.keySet();
-    for(Iterator<String> it=keySet.iterator();it.hasNext;)
+    for(Iterator<String> it=keySet.iterator();it.hasNext();)
     {
-      key=(String)it.next();
+      String key=(String)it.next();
       CCopasiParameter param=problem.getParameter(key);
       if(param.equals(null))
       {
         return null;
       }
       Object o=problemParameters.get(key);
-      if(o.getClass()==Double)
+      if(o.getClass().getName().equals("Double"))
       {
-        param.setValue(((Double)o).doubleValue());
+        param.setDblValue(((Double)o).doubleValue());
       }
-      else if(o.getClass()==Boolean)
+      else if(o.getClass().getName().equals("Boolean"))
       {
-        param.setValue(((Boolean)o).boolValue());
+        param.setBoolValue(((Boolean)o).booleanValue());
       }
       else
       {
@@ -65,22 +67,22 @@ class Test_RunSimulations extends TestCase
       return null;
     }
     keySet=methodParameters.keySet();
-    for(Iterator<String> it=keySet.iterator();it.hasNext;)
+    for(Iterator<String> it=keySet.iterator();it.hasNext();)
     {
-      key=(String)it.next();
+      String key=(String)it.next();
       CCopasiParameter param=method.getParameter(key);
       if(param.equals(null))
       {
         return null;
       }
       Object o=methodParameters.get(key);
-      if(o.getClass()==Double)
+      if(o.getClass().getName().equals("Double"))
       {
-        param.setValue(((Double)o).doubleValue());
+        param.setDblValue(((Double)o).doubleValue());
       }
-      else if(o.getClass()==Boolean)
+      else if(o.getClass().getName().equals("Boolean"))
       {
-        param.setValue(((Boolean)o).boolValue());
+        param.setBoolValue(((Boolean)o).booleanValue());
       }
       else
       {
@@ -94,41 +96,41 @@ class Test_RunSimulations extends TestCase
     return task;
    }
 
-  public static CCopasiTask runDeterministicSimulation()
+  public static CTrajectoryTask runDeterministicSimulation()
   {
-   HashMap<String,Object> problemParameters;
-   problemParameters.put("StepSize",Double(0.001));
-   problemParameters.put("Duration",Double(10.0));
-   problemParameters.put("TimeSeriesRequested",Boolean(true));
-   problemParameters.put("OutputStartTime",Double(0.0));
-   HashMap<String,Object> methodParameters;
-   methodParameters.put("Absolute Tolerance",Double(1.0e-20));
+   HashMap<String,Object> problemParameters=new HashMap<String,Object>();
+   problemParameters.put("StepSize",new Double(0.001));
+   problemParameters.put("Duration",new Double(10.0));
+   problemParameters.put("TimeSeriesRequested",new Boolean(true));
+   problemParameters.put("OutputStartTime",new Double(0.0));
+   HashMap<String,Object> methodParameters=new HashMap<String,Object>();
+   methodParameters.put("Absolute Tolerance",new Double(1.0e-20));
    return runSimulation(CCopasiMethod.deterministic,problemParameters,methodParameters);
   }
 
-  public static CCopasiTask runStochasticSimulation()
+  public static CTrajectoryTask runStochasticSimulation()
   {
-   HashMap<String,Object> problemParameters;
-   problemParameters.put("StepSize",Double(0.001));
-   problemParameters.put("Duration",Double(10.0));
-   problemParameters.put("TimeSeriesRequested",Boolean(true));
-   problemParameters.put("OutputStartTime",Double(0.0));
-   HashMap<String,Object> methodParameters;
+   HashMap<String,Object> problemParameters=new HashMap<String,Object>();
+   problemParameters.put("StepSize",new Double(0.001));
+   problemParameters.put("Duration",new Double(10.0));
+   problemParameters.put("TimeSeriesRequested",new Boolean(true));
+   problemParameters.put("OutputStartTime",new Double(0.0));
+   HashMap<String,Object> methodParameters=new HashMap<String,Object>();
    return runSimulation(CCopasiMethod.stochastic,problemParameters,methodParameters);
   }
 
-  public static CCopasiTask runHybridSimulation()
+  public static CTrajectoryTask runHybridSimulation()
   {
-   HashMap<String,Object> problemParameters;
-   problemParameters.put("StepSize",Double(0.001));
-   problemParameters.put("Duration",Double(10.0));
-   problemParameters.put("TimeSeriesRequested",Boolean(true));
-   problemParameters.put("OutputStartTime",Double(0.0));
-   HashMap<String,Object> methodParameters;
+   HashMap<String,Object> problemParameters=new HashMap<String,Object>();
+   problemParameters.put("StepSize",new Double(0.001));
+   problemParameters.put("Duration",new Double(10.0));
+   problemParameters.put("TimeSeriesRequested",new Boolean(true));
+   problemParameters.put("OutputStartTime",new Double(0.0));
+   HashMap<String,Object> methodParameters=new HashMap<String,Object>();
    return runSimulation(CCopasiMethod.hybrid,problemParameters,methodParameters);
   }
 
-  public void setUp(self)
+  public void setUp()
   {
     this.model=Test_CreateSimpleModel.createModel();
     this.NUM_REPEATS=20;
@@ -136,20 +138,22 @@ class Test_RunSimulations extends TestCase
 
   public void test_runStochasticSimulationOnSimpleModel()
   {
-    values=[];
+    double[][] values=new double[this.NUM_REPEATS][3];
     for(int x=0;x < this.NUM_REPEATS;x++)
     {
-      CCopasiTask task=runStochasticSimulation();
-      Assert.assertTrue(!task.equals(null));
-      Assert.assertTrue(task.getClass()==CTrajectoryTask);
-      timeseries=task.getTimeSeries();
-      Assert.assertTrue(!timeseries.equals(null));
-      Assert.assertTrue(timeseries.getClass()==CTimeSeries);
-      Assert.assertTrue(timeseries.getNumSteps()==10001);
-      Assert.assertTrue(timeseries.getNumVariables()==3);
-      values.append([timeseries.getConcentrationData(1386,0),timeseries.getConcentrationData(1386,1),timeseries.getConcentrationData(1386,2)]);
+      CTrajectoryTask task=runStochasticSimulation();
+      assertTrue(!task.equals(null));
+      assertTrue(task.getClass().getName().equals("CTrajectoryTask"));
+      CTimeSeries timeseries=task.getTimeSeries();
+      assertTrue(!timeseries.equals(null));
+      assertTrue(timeseries.getClass().getName().equals("CTimeSeries"));
+      assertTrue(timeseries.getNumSteps()==10001);
+      assertTrue(timeseries.getNumVariables()==3);
+      values[x][0]=timeseries.getConcentrationData(1386,0);
+      values[x][1]=timeseries.getConcentrationData(1386,1);
+      values[x][2]=timeseries.getConcentrationData(1386,2);
     }
-    average=[0.0,0.0,0.0];
+    double[] average={0.0,0.0,0.0};
     for(int x=0;x < values.length;x++)
     {
       average[0]+=values[x][0];
@@ -159,28 +163,30 @@ class Test_RunSimulations extends TestCase
     average[0]=average[0]/values.length;
     average[1]=average[1]/values.length;
     average[2]=average[2]/values.length;
-    Assert.assertTrue(Math.abs((average[0]-1.386)/1.386)<0.001)
-    Assert.assertTrue(Math.abs((average[1]-0.0001)/0.0001)<0.01)
-    Assert.assertTrue(Math.abs((average[2]-0.0001)/0.0001)<0.01)
+    assertTrue(Math.abs((average[0]-1.386)/1.386)<0.001);
+    assertTrue(Math.abs((average[1]-0.0001)/0.0001)<0.01);
+    assertTrue(Math.abs((average[2]-0.0001)/0.0001)<0.01);
    }
 
    public void test_runHybridSimulationOnSimpleModel()
    {
-    values=[];
+    double[][] values=new double[this.NUM_REPEATS][3];
     for(int x=0;x < this.NUM_REPEATS; x++)
     {
-      CCopasiTask task=runHybridSimulation();
-      Assert.assertTrue(!task.equals(null));
-      Assert.assertTrue(task.getClass()==CTrajectoryTask);
-      timeseries=task.getTimeSeries();
-      Assert.assertTrue(!timeseries.equals(null));
-      Assert.assertTrue(timeseries.getClass()==CTimeSeries);
-      Assert.assertTrue(timeseries.getNumSteps()==10001);
-      Assert.assertTrue(timeseries.getNumVariables()==3)
-      values.append([timeseries.getConcentrationData(1386,0),timeseries.getConcentrationData(1386,1),timeseries.getConcentrationData(1386,2)]);
+      CTrajectoryTask task=runHybridSimulation();
+      assertTrue(!task.equals(null));
+      assertTrue(task.getClass().getName().equals("CTrajectoryTask"));
+      CTimeSeries timeseries=task.getTimeSeries();
+      assertTrue(!timeseries.equals(null));
+      assertTrue(timeseries.getClass().getName().equals("CTimeSeries"));
+      assertTrue(timeseries.getNumSteps()==10001);
+      assertTrue(timeseries.getNumVariables()==3);
+      values[x][0]=timeseries.getConcentrationData(1386,0);
+      values[x][1]=timeseries.getConcentrationData(1386,1);
+      values[x][2]=timeseries.getConcentrationData(1386,2);
     }
-    average=[0.0,0.0,0.0];
-    for(int x=0 x < values.length;x++)
+    double[] average={0.0,0.0,0.0};
+    for(int x=0; x < values.length;x++)
     {
       average[0]+=values[x][0];
       average[1]+=values[x][1];
@@ -189,76 +195,48 @@ class Test_RunSimulations extends TestCase
     average[0]=average[0]/values.length;
     average[1]=average[1]/values.length;
     average[2]=average[2]/values.length;
-    Assert.assertTrue(Math.abs((average[0]-1.386)/1.386)<0.001);
-    Assert.assertTrue(Math.abs((average[1]-0.0001)/0.0001)<0.01);
-    Assert.assertTrue(Math.abs((average[2]-0.0001)/0.0001)<0.01);
+    assertTrue(Math.abs((average[0]-1.386)/1.386)<0.001);
+    assertTrue(Math.abs((average[1]-0.0001)/0.0001)<0.01);
+    assertTrue(Math.abs((average[2]-0.0001)/0.0001)<0.01);
    }
 
    public void test_runDeterministicSimulationOnSimpleModel()
    {
-    CCopasiTask task=runDeterministicSimulation();
-    Assert.assertTrue(!task.equals(null));
-    Assert.assertTrue(task.getClass()==CTrajectoryTask);
-    timeseries=task.getTimeSeries();
-    Assert.assertTrue(!timeseries.equals(null));
-    Assert.assertTrue(timeseries.getClass()==CTimeSeries);
-    Assert.assertTrue(timeseries.getNumSteps()==10001);
-    Assert.assertTrue(timeseries.getNumVariables()==3);
-    value=timeseries.getConcentrationData(1386,0);
-    Assert.assertTrue(Math.abs((value-1.386)/1.386)<0.001);
+    CTrajectoryTask task=runDeterministicSimulation();
+    assertTrue(!task.equals(null));
+    assertTrue(task.getClass().getName().equals("CTrajectoryTask"));
+    CTimeSeries timeseries=task.getTimeSeries();
+    assertTrue(!timeseries.equals(null));
+    assertTrue(timeseries.getClass().getName().equals("CTimeSeries"));
+    assertTrue(timeseries.getNumSteps()==10001);
+    assertTrue(timeseries.getNumVariables()==3);
+    double value=timeseries.getConcentrationData(1386,0);
+    assertTrue(Math.abs((value-1.386)/1.386)<0.001);
     value=timeseries.getConcentrationData(1386,1);
-    Assert.assertTrue(Math.abs((value-0.0001)/0.0001)<0.001)
+    assertTrue(Math.abs((value-0.0001)/0.0001)<0.001);
     value=timeseries.getConcentrationData(1386,2);
-    Assert.assertTrue(Math.abs((value-0.0001)/0.0001)<0.001);
+    assertTrue(Math.abs((value-0.0001)/0.0001)<0.001);
    }
 
    public void test_runStochasticSimulationOnExtendedModel()
    {
     Test_CreateSimpleModel.extendModel(this.model);
-    values=[];
+    double[][] values=new double[this.NUM_REPEATS][3];
     for(int x=0;x < this.NUM_REPEATS;x++)
     {
-      CCopasiTask task=runStochasticSimulation();
-      Assert.assertTrue(!task.equals(null));
-      Assert.assertTrue(task.getClass()==CTrajectoryTask);
-      timeseries=task.getTimeSeries();
-      Assert.assertTrue(!timeseries.equals(null));
-      Assert.assertTrue(timeseries.getClass()==CTimeSeries);
-      Assert.assertTrue(timeseries.getNumSteps()==10001);
-      Assert.assertTrue(timeseries.getNumVariables()==4);
-      values.append([timeseries.getConcentrationData(3574,0),timeseries.getConcentrationData(3574,1),timeseries.getConcentrationData(3574,3)]);
+      CTrajectoryTask task=runStochasticSimulation();
+      assertTrue(!task.equals(null));
+      assertTrue(task.getClass().getName().equals("CTrajectoryTask"));
+      CTimeSeries timeseries=task.getTimeSeries();
+      assertTrue(!timeseries.equals(null));
+      assertTrue(timeseries.getClass().getName().equals("CTimeSeries"));
+      assertTrue(timeseries.getNumSteps()==10001);
+      assertTrue(timeseries.getNumVariables()==4);
+      values[x][0]=timeseries.getConcentrationData(3574,0);
+      values[x][1]=timeseries.getConcentrationData(3574,1);
+      values[x][2]=timeseries.getConcentrationData(3574,3);
     }
-    average=[0.0,0.0,0.0];
-    for(int x=0;x < values.length)
-    {
-      average[0]+=values[x][0];
-      average[1]+=values[x][1];
-      average[2]+=values[x][2];
-    }
-    average[0]=average[0]/values.length;
-    average[1]=average[1]/values.length;
-    average[2]=average[2]/values.length;
-    Assert.assertTrue(Math.abs((average[0]-3.574)/3.574)<0.001);
-    Assert.assertTrue(Math.abs((average[1]-average[2])/average[1])<0.01);
-   }
-
-   public void test_runHybridSimulationOnExtendedModel()
-   {
-    Test_CreateSimpleModel.extendModel(this.model);
-    values=[];
-    for(int x=0;x < this.NUM_REPEATS;x++)
-    {
-      CCopasiTask task=runHybridSimulation();
-      Assert.assertTrue(!task.equals(null));
-      Assert.assertTrue(task.getClass()==CTrajectoryTask);
-      timeseries=task.getTimeSeries();
-      Assert.assertTrue(!timeseries.equals(null));
-      Assert.assertTrue(timeseries.getClass()==CTimeSeries);
-      Assert.assertTrue(timeseries.getNumSteps()==10001);
-      Assert.assertTrue(timeseries.getNumVariables()==4);
-      values.append([timeseries.getConcentrationData(3574,0),timeseries.getConcentrationData(3574,1),timeseries.getConcentrationData(3574,3)]);
-    }
-    average=[0.0,0.0,0.0];
+    double[] average={0.0,0.0,0.0};
     for(int x=0;x < values.length;x++)
     {
       average[0]+=values[x][0];
@@ -268,26 +246,58 @@ class Test_RunSimulations extends TestCase
     average[0]=average[0]/values.length;
     average[1]=average[1]/values.length;
     average[2]=average[2]/values.length;
-    Assert.assertTrue(Math.abs((average[0]-3.574)/3.574)<0.001);
-    Assert.assertTrue(Math.abs((average[1]-average[2])/average[1])<0.01);
+    assertTrue(Math.abs((average[0]-3.574)/3.574)<0.001);
+    assertTrue(Math.abs((average[1]-average[2])/average[1])<0.01);
+   }
+
+   public void test_runHybridSimulationOnExtendedModel()
+   {
+    Test_CreateSimpleModel.extendModel(this.model);
+    double[][] values=new double[this.NUM_REPEATS][3];
+    for(int x=0;x < this.NUM_REPEATS;x++)
+    {
+      CTrajectoryTask task=runHybridSimulation();
+      assertTrue(!task.equals(null));
+      assertTrue(task.getClass().getName().equals("CTrajectoryTask"));
+      CTimeSeries timeseries=task.getTimeSeries();
+      assertTrue(!timeseries.equals(null));
+      assertTrue(timeseries.getClass().getName().equals("CTimeSeries"));
+      assertTrue(timeseries.getNumSteps()==10001);
+      assertTrue(timeseries.getNumVariables()==4);
+      values[x][0]=timeseries.getConcentrationData(3574,0);
+      values[x][1]=timeseries.getConcentrationData(3574,1);
+      values[x][2]=timeseries.getConcentrationData(3574,3);
+    }
+    double[] average={0.0,0.0,0.0};
+    for(int x=0;x < values.length;x++)
+    {
+      average[0]+=values[x][0];
+      average[1]+=values[x][1];
+      average[2]+=values[x][2];
+    }
+    average[0]=average[0]/values.length;
+    average[1]=average[1]/values.length;
+    average[2]=average[2]/values.length;
+    assertTrue(Math.abs((average[0]-3.574)/3.574)<0.001);
+    assertTrue(Math.abs((average[1]-average[2])/average[1])<0.01);
    }
 
    public void test_runDeterministicSimulationOnExtendedModel()
    {
     Test_CreateSimpleModel.extendModel(this.model);
-    CCopasiTask task=runDeterministicSimulation();
-    Assert.assertTrue(!task.equals(null));
-    Assert.assertTrue(task.getClass()==CTrajectoryTask);
-    timeseries=task.getTimeSeries();
-    Assert.assertTrue(!timeseries.equals(null));
-    Assert.assertTrue(timeseries.getClass()==CTimeSeries);
-    Assert.assertTrue(timeseries.getNumSteps()==10001);
-    Assert.assertTrue(timeseries.getNumVariables()==4);
-    value=timeseries.getConcentrationData(3574,0);
-    Assert.assertTrue(Math.abs((value-3.574)/3.574)<0.001);
+    CTrajectoryTask task=runDeterministicSimulation();
+    assertTrue(!task.equals(null));
+    assertTrue(task.getClass().getName().equals("CTrajectoryTask"));
+    CTimeSeries timeseries=task.getTimeSeries();
+    assertTrue(!timeseries.equals(null));
+    assertTrue(timeseries.getClass().getName().equals("CTimeSeries"));
+    assertTrue(timeseries.getNumSteps()==10001);
+    assertTrue(timeseries.getNumVariables()==4);
+    double value=timeseries.getConcentrationData(3574,0);
+    assertTrue(Math.abs((value-3.574)/3.574)<0.001);
     value=timeseries.getConcentrationData(3574,1);
-    value2=timeseries.getConcentrationData(3574,3);
-    Assert.assertTrue(Math.abs((value-value2)/value)<0.001);
+    double value2=timeseries.getConcentrationData(3574,3);
+    assertTrue(Math.abs((value-value2)/value)<0.001);
    }
 
 /*
@@ -304,7 +314,7 @@ def suite():
 */
 
   public static void main(String[] args) {
-    junit.swingui.TestRunner.run(Test_RunSimulations.class);
+    junit.textui.TestRunner.run(Test_RunSimulations.class);
   }
 
 
