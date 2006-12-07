@@ -7,8 +7,10 @@ import java.util.Iterator;
 import org.eml.COPASI.*;
 import junit.framework.*;
 
-class Test_RunSimulations extends TestCase
+public class Test_RunSimulations extends TestCase
 {
+
+
    protected CModel model;
    protected int NUM_REPEATS;
 
@@ -27,32 +29,31 @@ class Test_RunSimulations extends TestCase
           task=(CTrajectoryTask)CCopasiDataModel.getGlobal().getTask(x);
         }
     }
-    if(task.equals(null))
+    if(task==null)
     {
       return task;
     }
     task.setMethodType(methodType);
     CCopasiProblem problem=task.getProblem();
-    if(problem.equals(null))
+    if(problem==null)
     {
       return null;
     }
     Set<String> keySet=problemParameters.keySet();
-    keySet=methodParameters.keySet();
     for(Iterator<String> it=keySet.iterator();it.hasNext();)
     {
       String key=(String)it.next();
       CCopasiParameter param=problem.getParameter(key);
-      if(param.equals(null))
+      if(param==null)
       {
         return null;
       }
       Object o=problemParameters.get(key);
-      if(o.getClass().getName().equals("Double"))
+      if(o instanceof Double)
       {
         param.setDblValue(((Double)o).doubleValue());
       }
-      else if(o.getClass().getName().equals("Boolean"))
+      else if(o instanceof Boolean)
       {
         param.setBoolValue(((Boolean)o).booleanValue());
       }
@@ -62,7 +63,7 @@ class Test_RunSimulations extends TestCase
       }
     }
     CCopasiMethod method=task.getMethod();
-    if(method.equals(null))
+    if(method==null)
     {
       return null;
     }
@@ -71,16 +72,16 @@ class Test_RunSimulations extends TestCase
     {
       String key=(String)it.next();
       CCopasiParameter param=method.getParameter(key);
-      if(param.equals(null))
+      if(param==null)
       {
         return null;
       }
       Object o=methodParameters.get(key);
-      if(o.getClass().getName().equals("Double"))
+      if(o instanceof Double)
       {
         param.setDblValue(((Double)o).doubleValue());
       }
-      else if(o.getClass().getName().equals("Boolean"))
+      else if(o instanceof Boolean)
       {
         param.setBoolValue(((Boolean)o).booleanValue());
       }
@@ -142,11 +143,11 @@ class Test_RunSimulations extends TestCase
     for(int x=0;x < this.NUM_REPEATS;x++)
     {
       CTrajectoryTask task=runStochasticSimulation();
-      assertTrue(!task.equals(null));
-      assertTrue(task.getClass().getName().equals("CTrajectoryTask"));
+      assertTrue(task!=null);
+      assertTrue(task.getClass().getName().equals("org.eml.COPASI.CTrajectoryTask"));
       CTimeSeries timeseries=task.getTimeSeries();
-      assertTrue(!timeseries.equals(null));
-      assertTrue(timeseries.getClass().getName().equals("CTimeSeries"));
+      assertTrue(timeseries!=null);
+      assertTrue(timeseries.getClass().getName().equals("org.eml.COPASI.CTimeSeries"));
       assertTrue(timeseries.getNumSteps()==10001);
       assertTrue(timeseries.getNumVariables()==3);
       values[x][0]=timeseries.getConcentrationData(1386,0);
@@ -174,11 +175,11 @@ class Test_RunSimulations extends TestCase
     for(int x=0;x < this.NUM_REPEATS; x++)
     {
       CTrajectoryTask task=runHybridSimulation();
-      assertTrue(!task.equals(null));
-      assertTrue(task.getClass().getName().equals("CTrajectoryTask"));
+      assertTrue(task!=null);
+      assertTrue(task.getClass().getName().equals("org.eml.COPASI.CTrajectoryTask"));
       CTimeSeries timeseries=task.getTimeSeries();
-      assertTrue(!timeseries.equals(null));
-      assertTrue(timeseries.getClass().getName().equals("CTimeSeries"));
+      assertTrue(timeseries!=null);
+      assertTrue(timeseries.getClass().getName().equals("org.eml.COPASI.CTimeSeries"));
       assertTrue(timeseries.getNumSteps()==10001);
       assertTrue(timeseries.getNumVariables()==3);
       values[x][0]=timeseries.getConcentrationData(1386,0);
@@ -203,11 +204,11 @@ class Test_RunSimulations extends TestCase
    public void test_runDeterministicSimulationOnSimpleModel()
    {
     CTrajectoryTask task=runDeterministicSimulation();
-    assertTrue(!task.equals(null));
-    assertTrue(task.getClass().getName().equals("CTrajectoryTask"));
+    assertTrue(task!=null);
+    assertTrue(task.getClass().getName().equals("org.eml.COPASI.CTrajectoryTask"));
     CTimeSeries timeseries=task.getTimeSeries();
-    assertTrue(!timeseries.equals(null));
-    assertTrue(timeseries.getClass().getName().equals("CTimeSeries"));
+    assertTrue(timeseries!=null);
+    assertTrue(timeseries.getClass().getName().equals("org.eml.COPASI.CTimeSeries"));
     assertTrue(timeseries.getNumSteps()==10001);
     assertTrue(timeseries.getNumVariables()==3);
     double value=timeseries.getConcentrationData(1386,0);
@@ -225,11 +226,11 @@ class Test_RunSimulations extends TestCase
     for(int x=0;x < this.NUM_REPEATS;x++)
     {
       CTrajectoryTask task=runStochasticSimulation();
-      assertTrue(!task.equals(null));
-      assertTrue(task.getClass().getName().equals("CTrajectoryTask"));
+      assertTrue(task!=null);
+      assertTrue(task.getClass().getName().equals("org.eml.COPASI.CTrajectoryTask"));
       CTimeSeries timeseries=task.getTimeSeries();
-      assertTrue(!timeseries.equals(null));
-      assertTrue(timeseries.getClass().getName().equals("CTimeSeries"));
+      assertTrue(timeseries!=null);
+      assertTrue(timeseries.getClass().getName().equals("org.eml.COPASI.CTimeSeries"));
       assertTrue(timeseries.getNumSteps()==10001);
       assertTrue(timeseries.getNumVariables()==4);
       values[x][0]=timeseries.getConcentrationData(3574,0);
@@ -257,11 +258,11 @@ class Test_RunSimulations extends TestCase
     for(int x=0;x < this.NUM_REPEATS;x++)
     {
       CTrajectoryTask task=runHybridSimulation();
-      assertTrue(!task.equals(null));
-      assertTrue(task.getClass().getName().equals("CTrajectoryTask"));
+      assertTrue(task!=null);
+      assertTrue(task.getClass().getName().equals("org.eml.COPASI.CTrajectoryTask"));
       CTimeSeries timeseries=task.getTimeSeries();
-      assertTrue(!timeseries.equals(null));
-      assertTrue(timeseries.getClass().getName().equals("CTimeSeries"));
+      assertTrue(timeseries!=null);
+      assertTrue(timeseries.getClass().getName().equals("org.eml.COPASI.CTimeSeries"));
       assertTrue(timeseries.getNumSteps()==10001);
       assertTrue(timeseries.getNumVariables()==4);
       values[x][0]=timeseries.getConcentrationData(3574,0);
@@ -286,11 +287,11 @@ class Test_RunSimulations extends TestCase
    {
     Test_CreateSimpleModel.extendModel(this.model);
     CTrajectoryTask task=runDeterministicSimulation();
-    assertTrue(!task.equals(null));
-    assertTrue(task.getClass().getName().equals("CTrajectoryTask"));
+    assertTrue(task!=null);
+    assertTrue(task.getClass().getName().equals("org.eml.COPASI.CTrajectoryTask"));
     CTimeSeries timeseries=task.getTimeSeries();
-    assertTrue(!timeseries.equals(null));
-    assertTrue(timeseries.getClass().getName().equals("CTimeSeries"));
+    assertTrue(timeseries!=null);
+    assertTrue(timeseries.getClass().getName().equals("org.eml.COPASI.CTimeSeries"));
     assertTrue(timeseries.getNumSteps()==10001);
     assertTrue(timeseries.getNumVariables()==4);
     double value=timeseries.getConcentrationData(3574,0);
@@ -300,18 +301,6 @@ class Test_RunSimulations extends TestCase
     assertTrue(Math.abs((value-value2)/value)<0.001);
    }
 
-/*
-def suite():
-  tests=[
-          'test_runDeterministicSimulationOnSimpleModel'
-         ,'test_runStochasticSimulationOnSimpleModel'
-         ,'test_runHybridSimulationOnSimpleModel'
-         ,'test_runDeterministicSimulationOnExtendedModel'
-         ,'test_runStochasticSimulationOnExtendedModel'
-         ,'test_runHybridSimulationOnExtendedModel'
-        ]
-  return unittest.TestSuite(map(Test_RunSimulations,tests))
-*/
 
   public static void main(String[] args) {
     junit.textui.TestRunner.run(Test_RunSimulations.class);

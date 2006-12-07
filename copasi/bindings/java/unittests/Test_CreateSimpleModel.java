@@ -3,8 +3,9 @@ package org.eml.COPASI.unittests;
 import org.eml.COPASI.*;
 import junit.framework.*;
 
-class Test_CreateSimpleModel extends TestCase
+public class Test_CreateSimpleModel extends TestCase
 {
+
    CModel model;
 
    public Test_CreateSimpleModel(String name)
@@ -61,8 +62,8 @@ class Test_CreateSimpleModel extends TestCase
 
   public void test_createModel()
   {
-     assertFalse(this.model.equals(null));
-     assertTrue(this.model.getClass().getName().equals("CModel"));
+     assertFalse(this.model==null);
+     assertTrue(this.model.getClass().getName().equals("org.eml.COPASI.CModel"));
      assertTrue(this.model.getCompartments().size()==1);
      assertTrue(this.model.getCompartment(0).getObjectName().equals("CompartmentA"));
      assertTrue(this.model.getMetabolites().size()==2);
@@ -80,7 +81,7 @@ class Test_CreateSimpleModel extends TestCase
      assertTrue(this.model.getReaction(0).getChemEq().getProduct(0).getMetabolite().getObjectName().equals("B"));
      assertTrue(this.model.getReaction(0).getChemEq().getProduct(0).getMultiplicity()==1.0);
      assertTrue(this.model.getReaction(0).getChemEq().getModifiers().size()==0);
-     assertFalse(this.model.getReaction(0).getFunction().equals(null));
+     assertFalse(this.model.getReaction(0).getFunction()==null);
      assertTrue(this.model.getReaction(0).getFunction().getObjectName().equals("Mass action (irreversible)"));
      assertTrue(this.model.getReaction(0).getParameters().size()==1);
      assertTrue(this.model.getReaction(0).getParameters().getParameter(0).getObjectName().equals("k1"));
@@ -103,7 +104,7 @@ class Test_CreateSimpleModel extends TestCase
      assertTrue(this.model.getReaction(1).getChemEq().getProduct(0).getMetabolite().getObjectName().equals("C"));
      assertTrue(this.model.getReaction(1).getChemEq().getProduct(0).getMultiplicity()==1.0);
      assertTrue(this.model.getReaction(1).getChemEq().getModifiers().size()==0);
-     assertFalse(this.model.getReaction(1).getFunction().equals(null));
+     assertFalse(this.model.getReaction(1).getFunction()==null);
      assertTrue(this.model.getReaction(1).getFunction().getObjectName().equals("Mass action (irreversible)"));
      assertTrue(this.model.getReaction(1).getParameters().size()==1);
      assertTrue(this.model.getReaction(1).getParameters().getParameter(0).getObjectName().equals("k1"));
@@ -115,12 +116,4 @@ class Test_CreateSimpleModel extends TestCase
     junit.textui.TestRunner.run(Test_CreateSimpleModel.class);
   }
 
-/*
- def suite():
-  tests=[
-          'test_createModel'
-         ,'test_extendModel'
-        ]
-  return unittest.TestSuite(map(Test_CreateSimpleModel,tests))
-*/
 }
