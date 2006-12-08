@@ -814,8 +814,8 @@ Optional Packages:
                           Path to Java include files
   --with-java-libs=PATH   Path to Java libraries
   --with-qwt=PATH         Path to QWT Library
-  --with-copasi-license   Specify whether to use the German (DE) or US (US)
-                          license.
+  --with-copasi-license   Specify whether to use the German (DE), US (US) or
+                          Commercial (COM) license.
   --with-build-parser     Specify whether to build lex and yacc sources.
 
 _ACEOF
@@ -1880,7 +1880,7 @@ if test "x$prefix" = "xNONE"; then
   ac_configure_args="$ac_configure_args --prefix $prefix"
 fi
 
-if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US"; then
+if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US" -o x"${COPASI_LICENSE}" = x"COM"; then
   QMAKE_ARG="$QMAKE_ARG USE_LICENSE=$COPASI_LICENSE"
 fi
 
