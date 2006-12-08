@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/Attic/copasilicense.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/08 17:23:33 $
+   $Date: 2006/12/08 17:44:32 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,8 +25,8 @@
 # include "LicenseCOM.txt.h"
 #endif // COPASI_LICENSE_COM
 
-#ifndef CopasiLicense
+#ifndef COPASI_LICENSE
 # include "LicenseUS.txt.h"
-#endif // CopasiLicense
+#endif // COPASI_LICENSE
 
 #endif // COPASI_license

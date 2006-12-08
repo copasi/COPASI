@@ -1,14 +1,17 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/Attic/LicenseUS.txt.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/27 01:34:21 $
+   $Date: 2006/12/08 17:44:32 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
+
+#ifndef COPASI_LICENSE
+#define COPASI_LICENSE
 
 extern const char * CopasiLicense =
     "\n"
@@ -149,3 +152,4 @@ extern const char * CopasiLicense =
     "    Address all correspondence regarding this license to electronic mail\n"
     "    address:  license@copasi.org\n"
 ;
+#endif // COPASI_LICENSE
