@@ -117,7 +117,7 @@ AC_ARG_WITH([qwt],
 
 AC_ARG_WITH([copasi-license],
   AS_HELP_STRING([--with-copasi-license],
-                 [Specify whether to use the German (DE) or US (US) license.]),
+                 [Specify whether to use the German (DE), US (US) or Commercial (COM) license.]),
   [COPASI_LICENSE=$withval])
 
 AC_ARG_WITH([build-parser],
@@ -131,7 +131,7 @@ if test "x$prefix" = "xNONE"; then
   ac_configure_args="$ac_configure_args --prefix $prefix"
 fi
 
-if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US"; then
+if test x"${COPASI_LICENSE}" = x"DE" -o x"${COPASI_LICENSE}" = x"US" -o x"${COPASI_LICENSE}" = x"COM"; then
   QMAKE_ARG="$QMAKE_ARG USE_LICENSE=$COPASI_LICENSE"
 fi
 
