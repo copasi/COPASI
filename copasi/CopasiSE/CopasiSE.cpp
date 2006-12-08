@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.33 $
+   $Revision: 1.34 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 16:03:54 $
+   $Date: 2006/12/08 18:27:06 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -67,8 +67,10 @@ int main(int argc, char *argv[])
                      COPASI_VERSION_MINOR,
                      COPASI_VERSION_BUILD,
                      COPASI_VERSION_COMMENT);
-
   std::cout << "COPASI "
+#ifdef COPASI_LICENSE_COM
+  << "(commercial) "
+#endif
   << Version.getVersion()
   << std::endl << std::endl;
 

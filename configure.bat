@@ -54,7 +54,7 @@ echo   qmake "CONFIG+=%cps_plus%" "CONFIG-=%cps_minus%" %1 %2 %3 %4 %5 %6 %7 %8 
 nmake qmake_all
 
 rem force relink
-del CopasiUI\main.obj CopasiSE\CopasiSE.obj
+del UI\copasiui3window.obj CopasiUI\main.obj CopasiSE\CopasiSE.obj
 
 
 cd ..
