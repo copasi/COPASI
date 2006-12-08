@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.cpp,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/13 18:02:22 $
+   $Date: 2006/12/08 17:01:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,16 +29,20 @@ QValidator::State CQValidatorNotEmpty::validate(QString & input, int & pos) cons
     return Intermediate;
   }
 
-CQValidatorBound::CQValidatorBound(QLineEdit * parent, const char * name):
-    CQValidator< QLineEdit >(parent, name),
+CQValidatorBound::CQValidatorBound(QLineEdit * parent, const QString & sign):
+    CQValidator< QLineEdit >(parent, NULL),
     mpDoubleValidator(new QDoubleValidator(-DBL_MAX, DBL_MAX, DBL_DIG, this)),
+    mSign(sign),
     mValidBound("\t") // It is not possible to insert a tab.
 {}
 
 QValidator::State CQValidatorBound::validate (QString & input, int & pos) const
   {
     if (input == mValidBound ||
-        mpDoubleValidator->validate(input, pos) == Acceptable)
+        mpDoubleValidator->validate(input, pos) == Acceptable ||
+        (input.startsWith(mSign) &&
+         input.endsWith("%")) &&
+        mpDoubleValidator->validate(input.mid(1, input.length() - 2), pos))
       {
         force(input);
         return Acceptable;

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/Attic/CQFittingItemWidget.ui.h,v $
-   $Revision: 1.23 $
+   $Revision: 1.24 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/01 17:17:31 $
+   $Date: 2006/12/08 17:01:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -54,11 +54,11 @@ void CQFittingItemWidget::init()
   mpEditObject->setValidator(mpObjectValidator);
   mpObjectValidator->revalidate();
 
-  mpLowerValidator = new CQValidatorBound(mpEditLower);
+  mpLowerValidator = new CQValidatorBound(mpEditLower, "-");
   mpEditLower->setValidator(mpLowerValidator);
   mpLowerValidator->revalidate();
 
-  mpUpperValidator = new CQValidatorBound(mpEditUpper);
+  mpUpperValidator = new CQValidatorBound(mpEditUpper, "+");
   mpEditUpper->setValidator(mpUpperValidator);
   mpUpperValidator->revalidate();
 
@@ -1377,10 +1377,17 @@ void CQFittingItemWidget::setItemSelection(const std::set< unsigned int > & sele
 
 void CQFittingItemWidget::slotLowerLostFocus()
 {
-  if (!isNumber((const char *) mpEditLower->text().utf8())) return;
+  std::string Number = (const char *) mpEditLower->text().utf8();
+
+  if (!isNumber(Number) &&
+      !(Number[0] == '-' &&
+        Number[Number.length() - 1] == '%' &&
+        isNumber(Number.substr(1, Number.length() - 2)))) return;
 
   mpLowerObject = NULL;
-  std::string Number = (const char *) mpEditLower->text().utf8();
+
+  bool first = true;
+  std::string NewValue = "";
 
   std::set< unsigned int >::const_iterator it = mSelection.begin();
   std::set< unsigned int >::const_iterator end = mSelection.end();
@@ -1388,25 +1395,52 @@ void CQFittingItemWidget::slotLowerLostFocus()
   for (; it != end; ++it)
     {
       (*mpItemsCopy)[*it]->setLowerBound(Number);
+      if (first)
+        {
+          NewValue = (*mpItemsCopy)[*it]->getLowerBound();
+          first = false;
+        }
+      else if (NewValue != (*mpItemsCopy)[*it]->getLowerBound())
+        NewValue = "";
+
       setTableText(*it, (*mpItemsCopy)[*it]);
     }
+
+  mpEditLower->setText(FROM_UTF8(NewValue));
 }
 
 void CQFittingItemWidget::slotUpperLostFocus()
 {
-  if (!isNumber((const char *) mpEditUpper->text().utf8())) return;
+  std::string Number = (const char *) mpEditUpper->text().utf8();
+
+  if (!isNumber(Number) &&
+      !(Number[0] == '+' &&
+        Number[Number.length() - 1] == '%' &&
+        isNumber(Number.substr(1, Number.length() - 2)))) return;
 
   mpUpperObject = NULL;
-  std::string Number = (const char *) mpEditUpper->text().utf8();
 
   std::set< unsigned int >::const_iterator it = mSelection.begin();
   std::set< unsigned int >::const_iterator end = mSelection.end();
 
+  bool first = true;
+  std::string NewValue = "";
+
   for (; it != end; ++it)
     {
       (*mpItemsCopy)[*it]->setUpperBound(Number);
+      if (first)
+        {
+          NewValue = (*mpItemsCopy)[*it]->getUpperBound();
+          first = false;
+        }
+      else if (NewValue != (*mpItemsCopy)[*it]->getUpperBound())
+        NewValue = "";
+
       setTableText(*it, (*mpItemsCopy)[*it]);
     }
+
+  mpEditUpper->setText(FROM_UTF8(NewValue));
 }
 
 void CQFittingItemWidget::slotReset()

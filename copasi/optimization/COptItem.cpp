@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/COptItem.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/08/24 14:40:42 $
+   $Date: 2006/12/08 17:01:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -13,6 +13,7 @@
 #include <limits>
 #include <math.h>
 #include <float.h>
+#include <sstream>
 
 #include "copasi.h"
 
@@ -127,6 +128,19 @@ bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound)
 {
   const CCopasiObject * pObject;
 
+  if (lowerBound[0] == '-' &&
+      lowerBound[lowerBound.length() - 1] == '%' &&
+      isNumber(lowerBound.substr(1, lowerBound.length() - 2)))
+    {
+      std::stringstream LowerBound;
+      C_FLOAT64 StartValue = getStartValue();
+
+      LowerBound << StartValue + fabs(StartValue) * strtod(lowerBound.c_str(), NULL) / 100.0;
+      *mpParmLowerBound = LowerBound.str();
+
+      return true;
+    }
+
   if (lowerBound != "-inf" &&
       !isNumber(lowerBound) &&
       ((pObject = RootContainer.getObject(lowerBound)) == NULL ||
@@ -146,6 +160,19 @@ const std::string COptItem::getLowerBound() const
 bool COptItem::setUpperBound(const CCopasiObjectName & upperBound)
 {
   const CCopasiObject * pObject;
+
+  if (upperBound[0] == '+' &&
+      upperBound[upperBound.length() - 1] == '%' &&
+      isNumber(upperBound.substr(1, upperBound.length() - 2)))
+    {
+      std::stringstream UpperBound;
+      C_FLOAT64 StartValue = getStartValue();
+
+      UpperBound << StartValue + fabs(StartValue) * strtod(upperBound.c_str(), NULL) / 100.0;
+      *mpParmUpperBound = UpperBound.str();
+
+      return true;
+    }
 
   if (upperBound != "inf" &&
       !isNumber(upperBound) &&

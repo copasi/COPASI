@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.h,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/13 18:02:23 $
+   $Date: 2006/12/08 17:01:16 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,7 +106,7 @@ class CQValidatorBound : public CQValidator< QLineEdit >
   {
     // Operations
   public:
-    CQValidatorBound(QLineEdit * parent, const char * name = 0);
+    CQValidatorBound(QLineEdit * parent, const QString & sign);
 
     virtual State validate(QString & input, int & pos) const;
 
@@ -115,6 +115,8 @@ class CQValidatorBound : public CQValidator< QLineEdit >
     //Attributes
   protected:
     QDoubleValidator * mpDoubleValidator;
+
+    QString mSign;
 
     QString mValidBound;
   };
