@@ -1972,7 +1972,7 @@ fi
  mv $$.tmp Makefile && \
  echo depend:  >> Makefile && \
  echo "	touch Makefile" >> Makefile && \
- rm -f CopasiSE/CopasiSE.o CopasiUI/main.o && \
+ rm -f UI/copasiui3window.o CopasiSE/CopasiSE.o CopasiUI/main.o && \
  cd ..
  cd semantic-test-suite && \
  echo executing in `pwd`: && \
