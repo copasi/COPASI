@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQValidator.cpp,v $
-   $Revision: 1.9 $
+   $Revision: 1.10 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/08 17:01:16 $
+   $Date: 2006/12/08 17:39:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -38,11 +38,13 @@ CQValidatorBound::CQValidatorBound(QLineEdit * parent, const QString & sign):
 
 QValidator::State CQValidatorBound::validate (QString & input, int & pos) const
   {
+    QString Input;
+
     if (input == mValidBound ||
         mpDoubleValidator->validate(input, pos) == Acceptable ||
         (input.startsWith(mSign) &&
-         input.endsWith("%")) &&
-        mpDoubleValidator->validate(input.mid(1, input.length() - 2), pos))
+         input.endsWith("%") &&
+         mpDoubleValidator->validate(Input = input.mid(1, input.length() - 2), pos)))
       {
         force(input);
         return Acceptable;
