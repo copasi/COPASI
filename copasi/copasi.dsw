@@ -96,6 +96,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "commercial"=.\commercial\commercial.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "copasiXML"=.\xml\copasiXML.dsp - Package Owner=<4>
 
 Package=<5>
@@ -211,6 +223,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name function
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name commercial
     End Project Dependency
 }}}
 
