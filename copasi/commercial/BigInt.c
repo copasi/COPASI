@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/BigInt.c,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/12 21:28:29 $
+   $Date: 2006/12/12 21:41:32 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,8 +37,6 @@
 
 //Implementaion of functions used for performing
 //arithmetic operations on large integers.
-#define DEBUG
-
 #include "BigInt.h"
 
 #include <stdio.h>
