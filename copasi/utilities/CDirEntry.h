@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.h,v $
-   $Revision: 1.10 $
+   $Revision: 1.11 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/06 17:38:52 $
+   $Date: 2006/12/12 19:25:20 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -202,6 +202,15 @@ class CDirEntry
                               const std::string pattern,
                               std::string::size_type & at,
                               std::string::size_type & after);
+
+    /**
+     * This method normalizes the path, i.e.,
+     * it converts all '\' to '/' (only on WIN32)
+     * and collapses '^./' to '^', '/./' to '/', and '[^/]+/../' to '/'
+     * @param const std::string & path
+     * @return std::string normalizedPath
+     */
+    static std::string normalize(const std::string & path);
   };
 
 #endif // COPASI_CDirEntry

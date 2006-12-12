@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/14 18:25:29 $
+   $Date: 2006/12/12 19:25:20 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -372,10 +372,12 @@ bool CDirEntry::makePathRelative(std::string & absolutePath,
   if (isRelativePath(absolutePath) ||
       isRelativePath(relativeTo)) return false; // Nothing can be done.
 
-  std:: string RelativeTo = relativeTo;
-  if (isFile(RelativeTo)) RelativeTo = dirName(RelativeTo);
+  std:: string RelativeTo = normalize(relativeTo);
 
+  if (isFile(RelativeTo)) RelativeTo = dirName(RelativeTo);
   if (!isDir(RelativeTo)) return false;
+
+  absolutePath = normalize(absolutePath);
 
   unsigned C_INT32 i, imax = std::min(absolutePath.length(), RelativeTo.length());
 
@@ -400,11 +402,6 @@ bool CDirEntry::makePathRelative(std::string & absolutePath,
   else
     absolutePath = absolutePath.substr(i + 1);
 
-#ifdef WIN32
-  for (i = 0, imax = absolutePath.length(); i < imax; i++)
-    if (absolutePath[i] == '\\') absolutePath[i] = '/';
-#endif
-
   return true;
 }
 
@@ -414,24 +411,20 @@ bool CDirEntry::makePathAbsolute(std::string & relativePath,
   if (!isRelativePath(relativePath) ||
       isRelativePath(absoluteTo)) return false; // Nothing can be done.
 
-  std:: string AbsoluteTo = absoluteTo;
-  if (isFile(AbsoluteTo)) AbsoluteTo = dirName(AbsoluteTo);
+  std:: string AbsoluteTo = normalize(absoluteTo);
 
+  if (isFile(AbsoluteTo)) AbsoluteTo = dirName(AbsoluteTo);
   if (!isDir(AbsoluteTo)) return false;
 
-  while (!relativePath.compare(0, 2, ".."))
+  relativePath = normalize(relativePath);
+
+  while (!relativePath.compare(0, 3, "../"))
     {
       AbsoluteTo = dirName(AbsoluteTo);
       relativePath = relativePath.substr(3);
     }
 
-  relativePath = AbsoluteTo + Separator + relativePath;
-
-#ifdef WIN32
-  unsigned C_INT32 i, imax;
-  for (i = 0, imax = relativePath.length(); i < imax; i++)
-    if (relativePath[i] == '\\') relativePath[i] = '/';
-#endif
+  relativePath = AbsoluteTo + "/" + relativePath;
 
   return true;
 }
@@ -483,4 +476,61 @@ bool CDirEntry::matchInternal(const std::string & name,
     }
 
   return Match;
+}
+
+std::string CDirEntry::normalize(const std::string & path)
+{
+  std::string Normalized = path;
+
+#ifdef WIN32
+  // converts all '\' to '/' (only on WIN32)
+  unsigned C_INT32 i, imax;
+  for (i = 0, imax = Normalized.length(); i < imax; i++)
+    if (Normalized[i] == '\\') Normalized[i] = '/';
+#endif
+
+  // Remove leading './'
+  while (!Normalized.compare(0, 2, "./"))
+    Normalized = Normalized.substr(2);
+
+  // Collapse '//' to '/'
+  std::string::size_type pos = 1;
+  while (true)
+    {
+      pos = Normalized.find("//", pos);
+
+      if (pos == std::string::npos) break;
+
+      Normalized.erase(pos, 1);
+    }
+
+  // Collapse '/./' to '/'
+  pos = 0;
+  while (true)
+    {
+      pos = Normalized.find("/./", pos);
+
+      if (pos == std::string::npos) break;
+
+      Normalized.erase(pos, 2);
+    }
+
+  // Collapse '[^/]+/../' to '/'
+  std::string::size_type start = Normalized.length();
+
+  while (true)
+    {
+      pos = Normalized.rfind("/../", start);
+      if (pos == std::string::npos) break;
+
+      start = Normalized.rfind('/', pos - 1);
+      if (start == std::string::npos) break;
+
+      if (!Normalized.compare(start, 4, "/../")) continue;
+
+      Normalized.erase(start, pos - start + 3);
+      start = Normalized.length();
+    }
+
+  return Normalized;
 }
