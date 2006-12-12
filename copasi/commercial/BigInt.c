@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/BigInt.c,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/12 21:22:08 $
+   $Date: 2006/12/12 21:28:29 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,6 +37,7 @@
 
 //Implementaion of functions used for performing
 //arithmetic operations on large integers.
+#define DEBUG
 
 #include "BigInt.h"
 
@@ -118,203 +119,203 @@ int * multiply(int* multiplicand, int size, char* baseNumb)
       *(multiplicand2 + i) = *(multiplicand + i);
     }
 #ifdef DEBUG
-  debugBufferCount = sprintf (debugBuffer, ("\tMultiplying  ");
-                              setDebugMessage(debugBufferCount, debugBuffer);
-                              for (i = 0 ; i < newlength ; i++)
-                              {
-                                debugBufferCount = sprintf (debugBuffer, ("%d", *(multiplicand + i));
-                                                            setDebugMessage(debugBufferCount, debugBuffer);
-                                                          }
-                                                        debugBufferCount = sprintf (debugBuffer, (" * %d: \t", multiplier);
-                                                                                    setDebugMessage(debugBufferCount, debugBuffer);
+  debugBufferCount = sprintf (debugBuffer, "\tMultiplying  ");
+  setDebugMessage(debugBufferCount, debugBuffer);
+  for (i = 0 ; i < newlength ; i++)
+    {
+      debugBufferCount = sprintf (debugBuffer, "%d", *(multiplicand + i));
+      setDebugMessage(debugBufferCount, debugBuffer);
+    }
+  debugBufferCount = sprintf (debugBuffer, " * %d: \t", multiplier);
+  setDebugMessage(debugBufferCount, debugBuffer);
 #endif
-                                                                                    //add the multiplicand multiplier times
-                                                                                    for (x = 0 ; x < multiplier ; ++x)
-                                                                                      {
+  //add the multiplicand multiplier times
+  for (x = 0 ; x < multiplier ; ++x)
+    {
 #ifdef DEBUG
-                                                                                        debugBufferCount = sprintf (debugBuffer, ("Adding ");
-                                                                                                                    setDebugMessage(debugBufferCount, debugBuffer);
-                                                                                                                    for (i = 0 ; i < len ; i++)
-                                                                                                                      {
-                                                                                                                        debugBufferCount = sprintf (debugBuffer, ("%d", *(result + i));
-                                                                                                                                                    setDebugMessage(debugBufferCount, debugBuffer);
-                                                                                                                                                  }
-                                                                                                                                                debugBufferCount = sprintf (debugBuffer, (" + ", *(result + i));
-                                                                                                                                                                            setDebugMessage(debugBufferCount, debugBuffer);
-                                                                                                                                                                            for (i = 0 ; i < size ; i++)
-                                                                                                                                                                              {
-                                                                                                                                                                                debugBufferCount = sprintf (debugBuffer, ("%d", *(multiplicand2 + i));
-                                                                                                                                                                                                            setDebugMessage(debugBufferCount, debugBuffer);
-                                                                                                                                                                                                          }
-                                                                                                                                                                                                        debugBufferCount = sprintf (debugBuffer, ("\n");
-                                                                                                                                                                                                                                    setDebugMessage(debugBufferCount, debugBuffer);
+      debugBufferCount = sprintf (debugBuffer, "Adding ");
+      setDebugMessage(debugBufferCount, debugBuffer);
+      for (i = 0 ; i < len ; i++)
+        {
+          debugBufferCount = sprintf (debugBuffer, "%d", *(result + i));
+          setDebugMessage(debugBufferCount, debugBuffer);
+        }
+      debugBufferCount = sprintf (debugBuffer, " + ", *(result + i));
+      setDebugMessage(debugBufferCount, debugBuffer);
+      for (i = 0 ; i < size ; i++)
+        {
+          debugBufferCount = sprintf (debugBuffer, "%d", *(multiplicand2 + i));
+          setDebugMessage(debugBufferCount, debugBuffer);
+        }
+      debugBufferCount = sprintf (debugBuffer, "\n");
+      setDebugMessage(debugBufferCount, debugBuffer);
 #endif
-                                                                                                                                                                                                                                    newResult = add(result, len, multiplicand2, size);
-                                                                                                                                                                                                                                    free(result);
-                                                                                                                                                                                                                                    result = newResult;
-                                                                                                                                                                                                                                    //get the new length of the result
-                                                                                                                                                                                                                                    len = newlength;
-                                                                                                                                                                                                                                  }
+      newResult = add(result, len, multiplicand2, size);
+      free(result);
+      result = newResult;
+      //get the new length of the result
+      len = newlength;
+    }
 #ifdef DEBUG
-                                                                                                                                                                                                                                debugBufferCount = sprintf (debugBuffer, ("Result =");
-                                                                                                                                                                                                                                                            setDebugMessage(debugBufferCount, debugBuffer);
-                                                                                                                                                                                                                                                            for (i = 0 ; i < newlength ; i++)
-                                                                                                                                                                                                                                                              {
-                                                                                                                                                                                                                                                                debugBufferCount = sprintf (debugBuffer, ("%d ", *(result + i));
-                                                                                                                                                                                                                                                                                            setDebugMessage(debugBufferCount, debugBuffer);
-                                                                                                                                                                                                                                                                                          }
-                                                                                                                                                                                                                                                                                        debugBufferCount = sprintf (debugBuffer, ("\n");
-                                                                                                                                                                                                                                                                                                                    setDebugMessage(debugBufferCount, debugBuffer);
+  debugBufferCount = sprintf (debugBuffer, "Result =");
+  setDebugMessage(debugBufferCount, debugBuffer);
+  for (i = 0 ; i < newlength ; i++)
+    {
+      debugBufferCount = sprintf (debugBuffer, "%d ", *(result + i));
+      setDebugMessage(debugBufferCount, debugBuffer);
+    }
+  debugBufferCount = sprintf (debugBuffer, "\n");
+  setDebugMessage(debugBufferCount, debugBuffer);
 #endif
-                                                                                                                                                                                                                                                                                                                    //allocate memory and copy the result
-                                                                                                                                                                                                                                                                                                                    mresult = (int *)allocateMemory(newlength, INT_TYPE);
-                                                                                                                                                                                                                                                                                                                    for (i = 0; i < (newlength) ;i++)
-                                                                                                                                                                                                                                                                                                                      {
-                                                                                                                                                                                                                                                                                                                        *(mresult + i) = *(result + i);
-                                                                                                                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                                                                                                                      free(result);
-                                                                                                                                                                                                                                                                                                                      free(multiplicand2);
-                                                                                                                                                                                                                                                                                                                      return mresult;
-                                                                                                                                                                                                                                                                                                                    }
+  //allocate memory and copy the result
+  mresult = (int *)allocateMemory(newlength, INT_TYPE);
+  for (i = 0; i < (newlength) ;i++)
+    {
+      *(mresult + i) = *(result + i);
+    }
+  free(result);
+  free(multiplicand2);
+  return mresult;
+}
 
-                                                                                                                                                                                                                                                                                                                    /**This function adds two numbers and returns the result as an
-                                                                                                                                                                                                                                                                                                                    integer array. Add number stored in operand1 to number stored
-                                                                                                                                                                                                                                                                                                                    in operand2 and resturn the result
-                                                                                                                                                                                                                                                                                                                    */
-                                                                                                                                                                                                                                                                                                                    int * add(int operand1[] , int l1, int operand2[], int l2)
-                                                                                                                                                                                                                                                                                                                    {
+/**This function adds two numbers and returns the result as an
+integer array. Add number stored in operand1 to number stored
+in operand2 and resturn the result
+ */
+int * add(int operand1[] , int l1, int operand2[], int l2)
+{
 
-                                                                                                                                                                                                                                                                                                                      int *op1;
-                                                                                                                                                                                                                                                                                                                      int *op2;
-                                                                                                                                                                                                                                                                                                                      int i, k, j, x;
-                                                                                                                                                                                                                                                                                                                      int *result;
-                                                                                                                                                                                                                                                                                                                      int carry = 0; //carry produced by adding two digits
-                                                                                                                                                                                                                                                                                                                      int sum ; //result of adding two digits
+  int *op1;
+  int *op2;
+  int i, k, j, x;
+  int *result;
+  int carry = 0; //carry produced by adding two digits
+  int sum ; //result of adding two digits
 
-                                                                                                                                                                                                                                                                                                                      //determine which number has more digits and accordingle designate
-                                                                                                                                                                                                                                                                                                                      //it as the the op1, the other number is op2
-                                                                                                                                                                                                                                                                                                                      // assign to k the last index of the larger of the
-                                                                                                                                                                                                                                                                                                                      // two operands.
-                                                                                                                                                                                                                                                                                                                      if (l1 >= l2)
-                                                                                                                                                                                                                                                                                                                        {
-                                                                                                                                                                                                                                                                                                                          k = l1 - 1;
-                                                                                                                                                                                                                                                                                                                          j = l2 - 1;
-                                                                                                                                                                                                                                                                                                                          op1 = (int *)allocateMemory(l1, INT_TYPE);
-                                                                                                                                                                                                                                                                                                                          op2 = (int *)allocateMemory(l2, INT_TYPE);
-                                                                                                                                                                                                                                                                                                                          for (i = 0 ; i < l1 ; i++)
-                                                                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                                                                              *(op1 + i) = *(operand1 + i);
-                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                          for (i = 0 ; i < l2 ; i++)
-                                                                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                                                                              *(op2 + i) = *(operand2 + i);
-                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                          newlength = l1;
-                                                                                                                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                                                                                                                      else
-                                                                                                                                                                                                                                                                                                                        {
-                                                                                                                                                                                                                                                                                                                          k = l2 - 1;
-                                                                                                                                                                                                                                                                                                                          j = l1 - 1;
-                                                                                                                                                                                                                                                                                                                          op1 = (int *)allocateMemory(l2, INT_TYPE);
-                                                                                                                                                                                                                                                                                                                          op2 = (int *)allocateMemory(l1, INT_TYPE);
-                                                                                                                                                                                                                                                                                                                          for (i = 0 ; i < l2 ; i++)
-                                                                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                                                                              *(op1 + i) = *(operand2 + i);
-                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                          for (i = 0 ; i < l1 ; i++)
-                                                                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                                                                              *(op2 + i) = *(operand1 + i);
-                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                          newlength = l2;
-                                                                                                                                                                                                                                                                                                                          i = l1;
-                                                                                                                                                                                                                                                                                                                          l1 = l2;
-                                                                                                                                                                                                                                                                                                                          l2 = i;
-                                                                                                                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                                                                                                                      // repeat the loop until k is >= "0".
-                                                                                                                                                                                                                                                                                                                      // The other operand is smaller.
-                                                                                                                                                                                                                                                                                                                      for (i = k ; i >= 0 ; --i)
-                                                                                                                                                                                                                                                                                                                        {
-                                                                                                                                                                                                                                                                                                                          //if the inner operand has digits
-                                                                                                                                                                                                                                                                                                                          //then use them to find the sum.
-                                                                                                                                                                                                                                                                                                                          if (j >= 0)
-                                                                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                                                                              sum = *(op1 + i) + *(op2 + j) + carry;
-                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                          else
-                                                                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                                                                              // there are no digits in the smaller number
-                                                                                                                                                                                                                                                                                                                              // so the sum is obtained by adding the digit of the
-                                                                                                                                                                                                                                                                                                                              // larger number and the carry if it is greater than zero.
-                                                                                                                                                                                                                                                                                                                              if (carry > 0)
-                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                  sum = *(op1 + i) + carry;
-                                                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                                                              else
-                                                                                                                                                                                                                                                                                                                                sum = *(op1 + i);
-                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                          //reset the carry.
-                                                                                                                                                                                                                                                                                                                          carry = 0;
-                                                                                                                                                                                                                                                                                                                          if (sum > 9)
-                                                                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                                                                              // seperate the unit and tens digit.
-                                                                                                                                                                                                                                                                                                                              *(op1 + i) = sum % 10;
-                                                                                                                                                                                                                                                                                                                              carry = sum / 10;
-                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                          else
-                                                                                                                                                                                                                                                                                                                            *(op1 + i) = sum;
-                                                                                                                                                                                                                                                                                                                          // printf("%d ",*(op1+i));
-                                                                                                                                                                                                                                                                                                                          --j;
-                                                                                                                                                                                                                                                                                                                        } //for
-                                                                                                                                                                                                                                                                                                                      //if we run out of digits and there is a carry,then
-                                                                                                                                                                                                                                                                                                                      // we have to increase the number of digits.
-                                                                                                                                                                                                                                                                                                                      if (carry != 0)
-                                                                                                                                                                                                                                                                                                                        {
-                                                                                                                                                                                                                                                                                                                          //l1 = l1+1;
-                                                                                                                                                                                                                                                                                                                          // Need one more digit --AE 02/05
-                                                                                                                                                                                                                                                                                                                          result = (int *)allocateMemory(l1 + 1, INT_TYPE);
-                                                                                                                                                                                                                                                                                                                          *(result) = carry;
-                                                                                                                                                                                                                                                                                                                          //now copy the remaining number into the new array
-                                                                                                                                                                                                                                                                                                                          for (x = 0; x < (l1) ;x++)
-                                                                                                                                                                                                                                                                                                                            *(result + x + 1) = *(op1 + x);
+  //determine which number has more digits and accordingle designate
+  //it as the the op1, the other number is op2
+  // assign to k the last index of the larger of the
+  // two operands.
+  if (l1 >= l2)
+    {
+      k = l1 - 1;
+      j = l2 - 1;
+      op1 = (int *)allocateMemory(l1, INT_TYPE);
+      op2 = (int *)allocateMemory(l2, INT_TYPE);
+      for (i = 0 ; i < l1 ; i++)
+        {
+          *(op1 + i) = *(operand1 + i);
+        }
+      for (i = 0 ; i < l2 ; i++)
+        {
+          *(op2 + i) = *(operand2 + i);
+        }
+      newlength = l1;
+    }
+  else
+    {
+      k = l2 - 1;
+      j = l1 - 1;
+      op1 = (int *)allocateMemory(l2, INT_TYPE);
+      op2 = (int *)allocateMemory(l1, INT_TYPE);
+      for (i = 0 ; i < l2 ; i++)
+        {
+          *(op1 + i) = *(operand2 + i);
+        }
+      for (i = 0 ; i < l1 ; i++)
+        {
+          *(op2 + i) = *(operand1 + i);
+        }
+      newlength = l2;
+      i = l1;
+      l1 = l2;
+      l2 = i;
+    }
+  // repeat the loop until k is >= "0".
+  // The other operand is smaller.
+  for (i = k ; i >= 0 ; --i)
+    {
+      //if the inner operand has digits
+      //then use them to find the sum.
+      if (j >= 0)
+        {
+          sum = *(op1 + i) + *(op2 + j) + carry;
+        }
+      else
+        {
+          // there are no digits in the smaller number
+          // so the sum is obtained by adding the digit of the
+          // larger number and the carry if it is greater than zero.
+          if (carry > 0)
+            {
+              sum = *(op1 + i) + carry;
+            }
+          else
+            sum = *(op1 + i);
+        }
+      //reset the carry.
+      carry = 0;
+      if (sum > 9)
+        {
+          // seperate the unit and tens digit.
+          *(op1 + i) = sum % 10;
+          carry = sum / 10;
+        }
+      else
+        *(op1 + i) = sum;
+      // printf("%d ",*(op1+i));
+      --j;
+    } //for
+  //if we run out of digits and there is a carry,then
+  // we have to increase the number of digits.
+  if (carry != 0)
+    {
+      //l1 = l1+1;
+      // Need one more digit --AE 02/05
+      result = (int *)allocateMemory(l1 + 1, INT_TYPE);
+      *(result) = carry;
+      //now copy the remaining number into the new array
+      for (x = 0; x < (l1) ;x++)
+        *(result + x + 1) = *(op1 + x);
 
-                                                                                                                                                                                                                                                                                                                          l1 = l1 + 1;
-                                                                                                                                                                                                                                                                                                                          newlength = l1;
-                                                                                                                                                                                                                                                                                                                          free(op2);
-                                                                                                                                                                                                                                                                                                                          free(op1);
-                                                                                                                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                                                                                                                      else
-                                                                                                                                                                                                                                                                                                                        {
-                                                                                                                                                                                                                                                                                                                          // Double assignment?? --AE 02/05
-                                                                                                                                                                                                                                                                                                                          //result = (int *)allocateMemory(l1, INT_TYPE);
-                                                                                                                                                                                                                                                                                                                          result = op1;
-                                                                                                                                                                                                                                                                                                                          free(op2);
-                                                                                                                                                                                                                                                                                                                        }
+      l1 = l1 + 1;
+      newlength = l1;
+      free(op2);
+      free(op1);
+    }
+  else
+    {
+      // Double assignment?? --AE 02/05
+      //result = (int *)allocateMemory(l1, INT_TYPE);
+      result = op1;
+      free(op2);
+    }
 #ifdef DEBUG
-                                                                                                                                                                                                                                                                                                                      for (i = 0 ; i < newlength ; i++)
-                                                                                                                                                                                                                                                                                                                        {
-                                                                                                                                                                                                                                                                                                                          debugBufferCount = sprintf (debugBuffer, "%d", *(result + i));
-                                                                                                                                                                                                                                                                                                                          setDebugMessage(debugBufferCount, debugBuffer);
-                                                                                                                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                                                                                                                      debugBufferCount = sprintf (debugBuffer, "\n\n");
-                                                                                                                                                                                                                                                                                                                      setDebugMessage(debugBufferCount, debugBuffer);
+  for (i = 0 ; i < newlength ; i++)
+    {
+      debugBufferCount = sprintf (debugBuffer, "%d", *(result + i));
+      setDebugMessage(debugBufferCount, debugBuffer);
+    }
+  debugBufferCount = sprintf (debugBuffer, "\n\n");
+  setDebugMessage(debugBufferCount, debugBuffer);
 #endif
-                                                                                                                                                                                                                                                                                                                      return result;
-                                                                                                                                                                                                                                                                                                                    }
+  return result;
+}
 
-                                                                                                                                                                                                                                                                                                                    /**
-                                                                                                                                                                                                                                                                                                                     This function returns the number of digits in the number
-                                                                                                                                                                                                                                                                                                                     obtained after calculating base ^ exponent
-                                                                                                                                                                                                                                                                                                                     */
-                                                                                                                                                                                                                                                                                                                    int getResultSize()
-                                                                                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                                                                                      return resultLen;
-                                                                                                                                                                                                                                                                                                                    }
+/**
+ This function returns the number of digits in the number
+ obtained after calculating base ^ exponent
+ */
+int getResultSize()
+{
+  return resultLen;
+}
 
-                                                                                                                                                                                                                                                                                                                    /**
-                                                                                                                                                                                                                                                                                                                     This method returns the number of digits in the number
-                                                                                                                                                                                                                                                                                                                     obtained after adding two numbers or multiplying two numbers
-                                                                                                                                                                                                                                                                                                                     */
-                                                                                                                                                                                                                                                                                                                    int getResultLength()
-                                                                                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                                                                                      return newlength;
-                                                                                                                                                                                                                                                                                                                    }
+/**
+ This method returns the number of digits in the number
+ obtained after adding two numbers or multiplying two numbers
+ */
+int getResultLength()
+{
+  return newlength;
+}
