@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.142 $
+   $Revision: 1.143 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/13 18:20:10 $
+   $Date: 2006/12/13 21:53:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -4841,7 +4841,7 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
       if (sType == "float")
         {
           type = CCopasiParameter::DOUBLE;
-          double d = CCopasiXMLInterface::DBL(sValue.c_str());
+          d = CCopasiXMLInterface::DBL(sValue.c_str());
           pValue = &d;
         }
       else if (sType == "unsignedFloat")
