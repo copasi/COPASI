@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.23 $ $Author: shoops $ $Date: 2006/12/12 21:44:01 $  
+# $Revision: 1.24 $ $Author: shoops $ $Date: 2006/12/13 18:45:19 $  
 ######################################################################
 
 TEMPLATE = subdirs
@@ -49,7 +49,9 @@ SUBDIRS += CopasiSE
 SUBDIRS += CopasiUI
 
 # Finally the bindings
-SUBDIRS += bindings
+isEmpty(COPASI_SRC_PACKAGE) {
+  SUBDIRS += bindings
+}
 
 DISTDIRS = $${SUBDIRS}
 DISTDIRS -= mml
