@@ -4,6 +4,8 @@
 
 TEMPLATE = lib
 
+SRC_TARGET = COPASISE
+
 include(../../common.pri)
 
 COPASI_LIBS += commandline

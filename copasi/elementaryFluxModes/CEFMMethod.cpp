@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CEFMMethod.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/12 13:21:04 $
+   $Date: 2006/12/13 18:20:09 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -25,7 +25,10 @@
 #include "CEFMMethod.h"
 
 #include "CEFMAlgorithm.h"
-#include "CExtremeCurrentCalculator.h"
+
+#ifdef COPASI_EXTREMECURRENTS
+# include "CExtremeCurrentCalculator.h"
+#endif
 
 CEFMMethod * CEFMMethod::createMethod(CCopasiMethod::SubType subType)
 {

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/xml/CCopasiXMLParser.cpp,v $
-   $Revision: 1.141 $
+   $Revision: 1.142 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 16:03:45 $
+   $Date: 2006/12/13 18:20:10 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -37,15 +37,21 @@
 #include "utilities/CSlider.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CMCATask.h"
+#ifdef COPASI_SSA
 #include "ssa/CSSATask.h"
+#endif
+#ifdef COPASI_TSS
 #include "tss/CTSSTask.h"
+#endif
 #include "scan/CScanTask.h"
 #include "elementaryFluxModes/CEFMTask.h"
 #include "optimization/COptTask.h"
 #include "parameterFitting/CFitTask.h"
 #include "trajectory/CTrajectoryTask.h"
 #include "lyap/CLyapTask.h"
+#ifdef COPASI_SENS
 #include "sensitivities/CSensTask.h"
+#endif
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
 #include "plot/CPlotItem.h"

@@ -4,6 +4,8 @@
 
 TEMPLATE = lib
 
+SRC_TARGET = COPASIUI
+
 include(../../common.pri)
 
 CONFIG += qt

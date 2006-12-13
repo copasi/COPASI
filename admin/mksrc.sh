@@ -232,25 +232,6 @@ set cps_minus=debug
 :QMAKE
 cd copasi
 
-rem set subdirs=.
-rem set subdirs=%subdirs% commandline
-rem set subdirs=%subdirs% elementaryFluxModes
-rem set subdirs=%subdirs% function
-rem set subdirs=%subdirs% mathmodel
-rem set subdirs=%subdirs% model
-rem set subdirs=%subdirs% optimization
-rem set subdirs=%subdirs% output
-rem set subdirs=%subdirs% randomGenerator
-rem set subdirs=%subdirs% report
-rem set subdirs=%subdirs% scan
-rem set subdirs=%subdirs% steadystate
-rem set subdirs=%subdirs% trajectory
-rem set subdirs=%subdirs% utilities
-rem set subdirs=%subdirs% xml
-rem set subdirs=%subdirs% CopasiUI
-rem set subdirs=%subdirs% CopasiSE
-rem set subdirs=%subdirs% test
-
 echo executing in copasi:
 rem  echo   for %%d in (%subdirs%) do del %%d\\.qmake.internal.cache
 for %%d in (%subdirs%) do del %%d\\.qmake.internal.cache
