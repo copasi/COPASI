@@ -9,6 +9,9 @@ SRC_TARGET = COPASISE
 include(../../common.pri)
 
 COPASI_LIBS += commandline
+contains(USE_LICENSE, COM) {
+  COPASI_LIBS += commercial
+}
 COPASI_LIBS += copasiDM
 COPASI_LIBS += copasiXML
 COPASI_LIBS += elementaryFluxModes
