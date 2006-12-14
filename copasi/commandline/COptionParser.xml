@@ -197,5 +197,32 @@
     <comment>Default settings.</comment>
    </option>
 -->
+   <option id="RegistrationCode"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="yes">
+    <name>RegistrationCode</name>
+    <comment>The License Registration Code.</comment>
+   </option>
+   <option id="RegisteredEmail"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="yes">
+    <name>RegisteredEmail</name>
+    <comment>The Registered Email.</comment>
+   </option>
+   <option id="RegisteredUser"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="yes">
+    <name>RegisteredUser</name>
+    <comment>The Registered User.</comment>
+   </option>
  </options>
 </cloxx>
