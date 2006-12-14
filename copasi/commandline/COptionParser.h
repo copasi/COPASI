@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.17 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/04/28 14:40:33 $
+   $Date: 2006/12/15 14:14:30 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -65,6 +65,9 @@ namespace copasi
       std::string Home;
       std::string ImportSBML;
       bool License;
+      std::string RegisteredEmail;
+      std::string RegisteredUser;
+      std::string RegistrationCode;
       std::string Save;
       std::string Tmp;
       bool Verbose;
@@ -86,6 +89,9 @@ namespace copasi
       size_type Home;
       size_type ImportSBML;
       size_type License;
+      size_type RegisteredEmail;
+      size_type RegisteredUser;
+      size_type RegistrationCode;
       size_type Save;
       size_type Tmp;
       size_type Verbose;
@@ -174,7 +180,10 @@ namespace copasi
         option_ImportSBML,
         option_ExportSBML,
         option_ExportBerkeleyMadonna,
-        option_ExportC
+        option_ExportC,
+        option_RegistrationCode,
+        option_RegisteredEmail,
+        option_RegisteredUser
       } openum_;
 
       enum parser_state {state_option, state_value, state_consume } state_;

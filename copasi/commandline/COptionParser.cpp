@@ -1,12 +1,12 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.cpp,v $
-   $Revision: 1.20 $
+   $Revision: 1.21 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/07/19 15:55:35 $
+   $Date: 2006/12/14 17:42:49 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,15 +28,13 @@
 #define strcasecmp _stricmp
 #endif
 
+#include "COptionParser.h"
 #include <cstring>
 #include <cstdlib>
 #include <cctype>
 #include <fstream>
 #include <sstream>
 #include <errno.h>
-
-#include "COptionParser.h"
-#include "utilities/utility.h"
 
 namespace
   {
@@ -95,7 +93,7 @@ void copasi::COptionParser::parse(const char * fileName)
   std::string Option;
   std::string Value;
   std::string::size_type pos;
-  std::ifstream File(utf8ToLocale(fileName).c_str());
+  std::ifstream File(fileName);
 
   if (File.fail())
     {
@@ -194,6 +192,12 @@ void copasi::COptionParser::finalize (void)
           throw option_error("missing value for 'importSBML' option");
         case option_License:
           throw option_error("missing value for 'license' option");
+        case option_RegisteredEmail:
+          throw option_error("missing value for 'RegisteredEmail' option");
+        case option_RegisteredUser:
+          throw option_error("missing value for 'RegisteredUser' option");
+        case option_RegistrationCode:
+          throw option_error("missing value for 'RegistrationCode' option");
         case option_Save:
           throw option_error("missing value for 'save' option");
         case option_Tmp:
@@ -346,7 +350,43 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
 {
   option = expand_long_name(option);
 
-  if (strcmp(option, "configdir") == 0)
+  if (strcmp(option, "RegisteredEmail") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'RegisteredEmail' option is only allowed on the command line");
+      if (locations_.RegisteredEmail)
+        {
+          throw option_error("the 'RegisteredEmail' option is only allowed once");
+        }
+      openum_ = option_RegisteredEmail;
+      locations_.RegisteredEmail = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "RegisteredUser") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'RegisteredUser' option is only allowed on the command line");
+      if (locations_.RegisteredUser)
+        {
+          throw option_error("the 'RegisteredUser' option is only allowed once");
+        }
+      openum_ = option_RegisteredUser;
+      locations_.RegisteredUser = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "RegistrationCode") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'RegistrationCode' option is only allowed on the command line");
+      if (locations_.RegistrationCode)
+        {
+          throw option_error("the 'RegistrationCode' option is only allowed once");
+        }
+      openum_ = option_RegistrationCode;
+      locations_.RegistrationCode = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "configdir") == 0)
     {
       if (source != source_cl) throw option_error("the 'configdir' option is only allowed on the command line");
       if (locations_.ConfigDir)
@@ -545,6 +585,21 @@ void copasi::COptionParser::parse_value (const char *value)
       break;
     case option_License:
       break;
+    case option_RegisteredEmail:
+      {
+        options_.RegisteredEmail = value;
+      }
+      break;
+    case option_RegisteredUser:
+      {
+        options_.RegisteredUser = value;
+      }
+      break;
+    case option_RegistrationCode:
+      {
+        options_.RegistrationCode = value;
+      }
+      break;
     case option_Save:
       {
         options_.Save = value;
@@ -571,6 +626,15 @@ namespace
   {
     std::string::size_type name_size = name.size();
     std::vector<const char*> matches;
+
+    if (name_size <= 15 && name.compare("RegisteredEmail") == 0)
+      matches.push_back("RegisteredEmail");
+
+    if (name_size <= 14 && name.compare("RegisteredUser") == 0)
+      matches.push_back("RegisteredUser");
+
+    if (name_size <= 16 && name.compare("RegistrationCode") == 0)
+      matches.push_back("RegistrationCode");
 
     if (name_size <= 9 && name.compare("configdir") == 0)
       matches.push_back("configdir");
