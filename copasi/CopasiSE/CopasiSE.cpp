@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.34 $
+   $Revision: 1.35 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/08 18:27:06 $
+   $Date: 2006/12/15 16:49:03 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -45,8 +45,15 @@
 #include "utilities/CDirEntry.h"
 #include "utilities/CSparseMatrix.h"
 
+#ifdef COPASI_LICENSE_COM
+# include "commandline/CConfigurationFile.h"
+# include "commercial/CRegistration.h"
+#endif
+
 int main(int argc, char *argv[])
 {
+  int retcode = 0;
+
 #ifdef XXXX
   C_FLOAT64 sparseness = 0.00;
   SparseMatrixTest(10, sparseness, 0, false, true, true, false);
@@ -89,7 +96,8 @@ int main(int argc, char *argv[])
           std::cout << e.what();
         }
 
-      return 0;
+      retcode = 0;
+      goto finish;
     }
 
   catch (copasi::option_error &e)
@@ -97,7 +105,8 @@ int main(int argc, char *argv[])
       std::cerr << CDirEntry::baseName(argv[0]) << ": " << e.what() << "\n";
       std::cerr << e.get_help_comment() << std::endl;
 
-      return 1;
+      retcode = 1;
+      goto finish;
     }
 
   bool License;
@@ -106,7 +115,9 @@ int main(int argc, char *argv[])
   if (License)
     {
       std::cout << CopasiLicense << std::endl;
-      return 0;
+
+      retcode = 0;
+      goto finish;
     }
 
   try
@@ -116,6 +127,62 @@ int main(int argc, char *argv[])
 
       // Create the global data model.
       CCopasiDataModel::Global = new CCopasiDataModel;
+
+#ifdef COPASI_LICENSE_COM
+      CRegistration * pRegistration =
+        dynamic_cast< CRegistration * >(CCopasiDataModel::Global->getConfiguration()->getGroup("Registration"));
+
+      bool RegistrationChanged = false;
+      std::string RegistrationValue;
+
+      if (!COptions::compareValue("RegistrationCode", std::string("")))
+        {
+          COptions::getValue("RegistrationCode", RegistrationValue);
+          pRegistration->setRegistrationCode(RegistrationValue);
+          RegistrationChanged = true;
+        }
+
+      if (!COptions::compareValue("RegisteredEmail", std::string("")))
+        {
+          COptions::getValue("RegisteredEmail", RegistrationValue);
+          pRegistration->setRegisteredEmail(RegistrationValue);
+          RegistrationChanged = true;
+        }
+
+      if (!COptions::compareValue("RegisteredUser", std::string("")))
+        {
+          COptions::getValue("RegisteredUser", RegistrationValue);
+          pRegistration->setRegisteredUser(RegistrationValue);
+          RegistrationChanged = true;
+        }
+
+      if (!RegistrationChanged && !pRegistration->isValidSignature())
+        {
+          std::cerr << "No license registration." << std::endl;
+          std::cerr << "Please add the following arguments to CopasiSE:" << std::endl;
+          std::cerr << "   --rUser <Your Name as in registration.>" << std::endl;
+          std::cerr << "   --rEmail <Your Email as in registration.>" << std::endl;
+          std::cerr << "   --rCode <Your Registration Code.>" << std::endl;
+
+          retcode = 1;
+          goto finish;
+        }
+
+      if (!pRegistration->isValidRegistration())
+        {
+          std::cerr << "Invalid license registration." << std::endl;
+          std::cerr << CCopasiMessage::getLastMessage().getText() << std::endl;
+          std::cerr << "To correct the problem please add one or more of the" << std::endl;
+          std::cerr << "following arguments to CopasiSE:" << std::endl;
+          std::cerr << "   --rUser <Your Name as in registration.>" << std::endl;
+          std::cerr << "   --rEmail <Your Email as in registration.>" << std::endl;
+          std::cerr << "   --rCode <Your Registration Code.>" << std::endl;
+
+          retcode = 1;
+          goto finish;
+        }
+
+#endif // COPASI_LICENSE_COM
 
 #ifdef XXXX
       CCallParameters<C_FLOAT64> Variables(20);
@@ -228,7 +295,8 @@ int main(int argc, char *argv[])
                     }
                 }
 
-              return 1;
+              retcode = 1;
+              goto finish;
             }
 
           for (; it != end; ++it)
@@ -318,9 +386,10 @@ int main(int argc, char *argv[])
       std::cout << Exception.getMessage().getText() << std::endl;
     }
 
+finish:
   pdelete(CCopasiDataModel::Global);
   pdelete(CCopasiContainer::Root);
 
   //std::cout << "Leaving main program." << std::endl;
-  return 0;
+  return retcode;
 }
