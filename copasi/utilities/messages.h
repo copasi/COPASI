@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/messages.h,v $
-   $Revision: 1.80 $
+   $Revision: 1.81 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/11/23 10:28:17 $
+   $Author: shoops $
+   $Date: 2006/12/15 16:20:31 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -231,6 +231,10 @@ const MESSAGES Messages[] =
 
     // ODEExporter
     {MCODEExporter + 1, "_XPPAUT_ODEExporter (1): Length of exporting line exeeds 1000 characters."},
+
+    {MCRegistration + 1, "CRegistration (1): Invalid registration code."},
+    {MCRegistration + 2, "CRegistration (2): Email and/or user name do not match registration code."},
+    {MCRegistration + 3, "CRegistration (3): Trial license expired on: '%s'."},
 
     // This must be the last element of the message list! Do not delete!
     {0, NULL}

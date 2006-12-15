@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/09/15 12:28:28 $
+   $Date: 2006/12/15 16:17:58 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -15,6 +15,10 @@
 
 #include "utilities/CCopasiParameterGroup.h"
 #include "xml/CCopasiXMLInterface.h"
+
+#ifdef COPASI_LICENSE_COM
+class CRegistration;
+#endif // COPASI_LICENSE_COM
 
 class CRecentFiles : public CCopasiParameterGroup
   {
@@ -213,6 +217,13 @@ class CConfigurationFile : public CCopasiParameterGroup
      * A pointer to the list of recent files
      */
     CRecentFiles * mpRecentSBMLFiles;
+
+#ifdef COPASI_LICENSE_COM
+    /**
+     * Apointer to the registration information
+     */
+    CRegistration * mpRegistration;
+#endif // COPASI_LICENSE_COM;
   };
 
 #endif // COPASI_CConfigurationFile

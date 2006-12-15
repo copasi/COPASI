@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/CConfigurationFile.cpp,v $
-   $Revision: 1.6 $
+   $Revision: 1.7 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/10/06 16:03:44 $
+   $Date: 2006/12/15 16:17:58 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -14,6 +14,10 @@
 
 #include "CConfigurationFile.h"
 #include "COptions.h"
+
+#ifdef COPASI_LICENSE_COM
+# include "commercial/CRegistration.h"
+#endif // COPASI_LICENSE_COM
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CVersion.h"
@@ -99,18 +103,27 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
                                        const CCopasiContainer * pParent):
     CCopasiParameterGroup(name, pParent),
     mpRecentFiles(NULL)
+#ifdef COPASI_LICENSE_COM
+    , mpRegistration(NULL)
+#endif // COPASI_LICENSE_COM
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
                                        const CCopasiContainer * pParent):
     CCopasiParameterGroup(src, pParent),
     mpRecentFiles(NULL)
+#ifdef COPASI_LICENSE_COM
+    , mpRegistration(NULL)
+#endif // COPASI_LICENSE_COM
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CCopasiParameterGroup & group,
                                        const CCopasiContainer * pParent):
     CCopasiParameterGroup(group, pParent),
     mpRecentFiles(NULL)
+#ifdef COPASI_LICENSE_COM
+    , mpRegistration(NULL)
+#endif // COPASI_LICENSE_COM
 {initializeParameter();}
 
 CConfigurationFile::~CConfigurationFile()
@@ -128,6 +141,11 @@ bool CConfigurationFile::elevateChildren()
     elevate<CRecentFiles, CCopasiParameterGroup>(getGroup("Recent SBML Files"));
   if (!mpRecentSBMLFiles) success = false;
 
+#ifdef COPASI_LICENSE_COM
+  mpRegistration =
+    elevate<CRegistration, CCopasiParameterGroup>(getGroup("Registration"));
+#endif // COPASI_LICENSE_COM
+
   return success;
 }
 
@@ -135,6 +153,9 @@ void CConfigurationFile::initializeParameter()
 {
   assertGroup("Recent Files");
   assertGroup("Recent SBML Files");
+#ifdef COPASI_LICENSE_COM
+  assertGroup("Registration");
+#endif // COPASI_LICENSE_COM
 
   elevateChildren();
 }
@@ -145,8 +166,6 @@ bool CConfigurationFile::save()
   COptions::getValue("ConfigFile", ConfigFile);
 
   CConfigurationFile::CXML XML;
-
-  //  mpRecentFiles->addFile("laber");
 
   XML.setConfiguration(*this);
 
@@ -196,7 +215,6 @@ bool CConfigurationFile::CXML::save(std::ostream & os,
   os.precision(16);
 
   mpOstream = &os;
-  //bool success = true;
 
   *mpOstream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
   << std::endl;
