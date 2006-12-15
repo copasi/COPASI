@@ -203,7 +203,7 @@
            strict="yes"
            location="commandline"
            hidden="yes">
-    <name>RegistrationCode</name>
+    <name>rCode</name>
     <comment>The License Registration Code.</comment>
    </option>
    <option id="RegisteredEmail"
@@ -212,7 +212,7 @@
            strict="yes"
            location="commandline"
            hidden="yes">
-    <name>RegisteredEmail</name>
+    <name>rEmail</name>
     <comment>The Registered Email.</comment>
    </option>
    <option id="RegisteredUser"
@@ -221,7 +221,7 @@
            strict="yes"
            location="commandline"
            hidden="yes">
-    <name>RegisteredUser</name>
+    <name>rUser</name>
     <comment>The Registered User.</comment>
    </option>
  </options>
