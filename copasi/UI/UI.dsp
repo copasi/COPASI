@@ -199,6 +199,10 @@ SOURCE=.\CQProgressItemText.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQRegistrationDialog.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQReportDefinition.cpp
 # End Source File
 # Begin Source File
@@ -659,6 +663,14 @@ SOURCE=.\CQProgressItemText.ui.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CQRegistrationDialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQRegistrationDialog.ui.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\CQReportDefinition.h
 # End Source File
 # Begin Source File
@@ -1053,6 +1065,10 @@ SOURCE=.\CQProgressItemBar.ui
 # Begin Source File
 
 SOURCE=.\CQProgressItemText.ui
+# End Source File
+# Begin Source File
+
+SOURCE=.\CQRegistrationDialog.ui
 # End Source File
 # Begin Source File
 

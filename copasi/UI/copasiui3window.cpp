@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.185 $
+   $Revision: 1.186 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/08 20:11:06 $
+   $Date: 2006/12/15 21:25:53 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -201,6 +201,18 @@ void MessageDialog::reject()
 {
   this->mReturnValue = this->mEscapeValue;
   QDialog::reject();
+}
+
+CopasiUI3Window * CopasiUI3Window::create()
+{
+  CopasiUI3Window * pWindow = new CopasiUI3Window;
+
+#ifdef COPASI_LICENSE_COM
+  if (!pWindow->checkRegistration())
+    pdelete(pWindow);
+#endif // COPASI_LICENSE_COM
+
+  return pWindow;
 }
 
 /**
@@ -898,6 +910,12 @@ void CopasiUI3Window::createMenuBar()
   tools->insertItem("Object &Browser", this, SLOT(slotObjectBrowserDialog()), 0, 2);
   this->mShowSlidersMenuEntry = tools->insertItem("Show Sliders", this, SLOT(slotToggleSliders()));
   tools->setItemChecked(this->mShowSlidersMenuEntry, false);
+
+#ifdef COPASI_LICENSE_COM
+  tools->insertSeparator();
+  tools->insertItem("&Registration", this, SLOT(slotRegistration()));
+#endif // COPASI_LICENSE_COM
+
   menuBar()->insertSeparator();
 
   QPopupMenu * help = new QPopupMenu(this);
@@ -1531,3 +1549,56 @@ std::string CopasiUI3Window::exportSBMLToString()
     }
   return ret;
 }
+
+#ifdef COPASI_LICENSE_COM
+
+#include "CQRegistrationDialog.h"
+#include "commercial/CRegistration.h"
+
+bool CopasiUI3Window::checkRegistration()
+{
+  CRegistration * pRegistration =
+    elevate< CRegistration, CCopasiParameterGroup >(CCopasiDataModel::Global->getConfiguration()->assertGroup("Registration"));
+
+  bool RegistrationChanged = false;
+  std::string RegistrationValue;
+
+  if (!COptions::compareValue("RegistrationCode", std::string("")))
+    {
+      COptions::getValue("RegistrationCode", RegistrationValue);
+      pRegistration->setRegistrationCode(RegistrationValue);
+      RegistrationChanged = true;
+    }
+
+  if (!COptions::compareValue("RegisteredEmail", std::string("")))
+    {
+      COptions::getValue("RegisteredEmail", RegistrationValue);
+      pRegistration->setRegisteredEmail(RegistrationValue);
+      RegistrationChanged = true;
+    }
+
+  if (!COptions::compareValue("RegisteredUser", std::string("")))
+    {
+      COptions::getValue("RegisteredUser", RegistrationValue);
+      pRegistration->setRegisteredUser(RegistrationValue);
+      RegistrationChanged = true;
+    }
+
+  if ((!RegistrationChanged && !pRegistration->isValidSignature()) ||
+      !pRegistration->isValidRegistration())
+    return slotRegistration();
+
+  return true;
+}
+
+bool CopasiUI3Window::slotRegistration()
+{
+  CQRegistrationDialog *pDialog = new CQRegistrationDialog(this);
+
+  if (pDialog->exec() == QDialog::Accepted)
+    return true;
+  else
+    return false;
+}
+
+#endif // COPASI_LICENSE_COM

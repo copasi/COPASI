@@ -1,5 +1,5 @@
 ######################################################################
-# $Revision: 1.136 $ $Author: shoops $ $Date: 2006/12/01 15:24:00 $  
+# $Revision: 1.137 $ $Author: shoops $ $Date: 2006/12/15 21:26:32 $  
 ######################################################################
 
 LIB = UI
@@ -292,6 +292,15 @@ SOURCES += \
            SliderSettingsDialog.cpp \
            StateSubwidget.cpp \
            TimeSeriesSubwidget.cpp 
+
+contains(USE_LICENSE, COM) {
+# FORMS += CQRegistrationDialog.ui
+
+HEADERS += CQRegistrationDialog.h \
+           CQRegistrationDialog.ui.h
+
+SOURCES += CQRegistrationDialog.cpp
+}
 
 release {
   HEADERS -= \

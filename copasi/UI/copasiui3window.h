@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.59 $
+   $Revision: 1.60 $
    $Name:  $
-   $Author: gauges $
-   $Date: 2006/10/16 11:04:03 $
+   $Author: shoops $
+   $Date: 2006/12/15 21:25:53 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -80,7 +80,7 @@ class CopasiUI3Window : public QMainWindow
     Q_OBJECT
 
   public:
-    CopasiUI3Window();
+    static CopasiUI3Window * create();
     ~CopasiUI3Window();
     void enable_object_browser_menu();
     void disable_object_browser_menu();
@@ -95,6 +95,7 @@ class CopasiUI3Window : public QMainWindow
     std::string exportSBMLToString();
 
   protected:
+    CopasiUI3Window();
     DataModelGUI* dataModel; // to keep track of the data model..
     //QSplitter *splitter; // to hold different views...
     ListViews *listViews; // to create different list views...
@@ -123,6 +124,9 @@ class CopasiUI3Window : public QMainWindow
     void listViewsFolderChanged(QListViewItem* item);
     void slotOpenRecentFile(int index);
     void slotOpenRecentSBMLFile(int index);
+#ifdef COPASI_LICENSE_COM
+    bool slotRegistration();
+#endif // COPASI_LICENSE_COM
 
   private:
     int newFlag;
@@ -152,4 +156,8 @@ class CopasiUI3Window : public QMainWindow
 
     QPopupMenu * mpMenuRecentSBMLFiles;
     void refreshRecentSBMLFileMenu();
+
+#ifdef COPASI_LICENSE_COM
+    bool checkRegistration();
+#endif // COPASI_LICENSE_COM
   };
