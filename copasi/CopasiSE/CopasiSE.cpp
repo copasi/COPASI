@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiSE/CopasiSE.cpp,v $
-   $Revision: 1.35 $
+   $Revision: 1.36 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/15 16:49:03 $
+   $Date: 2006/12/15 21:26:14 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
 
 #ifdef COPASI_LICENSE_COM
       CRegistration * pRegistration =
-        dynamic_cast< CRegistration * >(CCopasiDataModel::Global->getConfiguration()->getGroup("Registration"));
+        elevate< CRegistration, CCopasiParameterGroup >(CCopasiDataModel::Global->getConfiguration()->assertGroup("Registration"));
 
       bool RegistrationChanged = false;
       std::string RegistrationValue;
