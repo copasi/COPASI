@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/CRegistration.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/15 16:21:08 $
+   $Date: 2006/12/15 21:25:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,7 +57,8 @@ CRegistration::CRegistration(const std::string & name,
     mpRegisteredEmail(NULL),
     mpRegisteredUser(NULL),
     mpRegistrationCode(NULL),
-    mpSignature(NULL)
+    mpSignature(NULL),
+    mExpirationDate(-1)
 {initializeParameter();}
 
 CRegistration::CRegistration(const CRegistration & src,
@@ -66,7 +67,8 @@ CRegistration::CRegistration(const CRegistration & src,
     mpRegisteredEmail(NULL),
     mpRegisteredUser(NULL),
     mpRegistrationCode(NULL),
-    mpSignature(NULL)
+    mpSignature(NULL),
+    mExpirationDate(src.mExpirationDate)
 {initializeParameter();}
 
 CRegistration::CRegistration(const CCopasiParameterGroup & group,
@@ -75,7 +77,8 @@ CRegistration::CRegistration(const CCopasiParameterGroup & group,
     mpRegisteredEmail(NULL),
     mpRegisteredUser(NULL),
     mpRegistrationCode(NULL),
-    mpSignature(NULL)
+    mpSignature(NULL),
+    mExpirationDate(-1)
 {initializeParameter();}
 
 CRegistration::~CRegistration() {}
@@ -113,7 +116,6 @@ const std::string & CRegistration::getRegistrationCode() const
 bool CRegistration::isValidRegistration() const
   {
     bool Trial = false;
-    time_t ExpirationDate = 0;
 
     // Check whether the registration code is correct.
     if (!decodeGenericRegCode(config, mpRegistrationCode->c_str()))
@@ -147,16 +149,16 @@ bool CRegistration::isValidRegistration() const
             pLocalTime->tm_year = Year;
             pLocalTime->tm_mday += Day + 31 - pLocalTime->tm_yday;
 
-            ExpirationDate = mktime(pLocalTime);
+            mExpirationDate = mktime(pLocalTime);
           }
         else
           {
-            ExpirationDate = C_INVALID_INDEX;
+            mExpirationDate = -1;
           }
       }
     else
       {
-        CCopasiMessage(CCopasiMessage::ERROR, MCRegistration + 1);
+        CCopasiMessage(CCopasiMessage::RAW, MCRegistration + 1);
         return false;
       }
 
@@ -167,7 +169,7 @@ bool CRegistration::isValidRegistration() const
 
     if (strcmp(getUserSeed(), getCreatedUserSeed()))
       {
-        CCopasiMessage(CCopasiMessage::ERROR, MCRegistration + 2);
+        CCopasiMessage(CCopasiMessage::RAW, MCRegistration + 2);
         return false;
       }
 
@@ -176,13 +178,13 @@ bool CRegistration::isValidRegistration() const
       {
         unsigned C_INT32 CurrentTime = time(NULL);
 
-        if (CurrentTime > ExpirationDate)
+        if (CurrentTime > mExpirationDate)
           {
-            std::string ExpirationStr = ctime(&ExpirationDate);
+            std::string ExpirationStr = ctime(&mExpirationDate);
             // Remove the line break character '\n'
             ExpirationStr.erase(ExpirationStr.length() - 1);
 
-            CCopasiMessage(CCopasiMessage::ERROR, MCRegistration + 3, ExpirationStr.c_str());
+            CCopasiMessage(CCopasiMessage::RAW, MCRegistration + 3, ExpirationStr.c_str());
             return false;
           }
       }
@@ -223,4 +225,22 @@ bool CRegistration::isValidSignature() const
       }
 
     return false;
+  }
+
+std::string CRegistration::getExpirationDate() const
+  {
+    std::string ExpirationDate;
+
+    if (mExpirationDate != -1)
+      {
+        ExpirationDate = ctime(&mExpirationDate);
+        // Remove the line break character '\n'
+        ExpirationDate.erase(ExpirationDate.length() - 1);
+      }
+    else
+      {
+        ExpirationDate = "unlimited";
+      }
+
+    return ExpirationDate;
   }

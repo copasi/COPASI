@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/CRegistration.h,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/15 16:21:08 $
+   $Date: 2006/12/15 21:25:34 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -12,6 +12,8 @@
 
 #ifndef COPASI_CRegistration
 #define COPASI_CRegistration
+
+#include <time.h>
 
 #include "utilities/CCopasiParameterGroup.h"
 
@@ -96,6 +98,12 @@ class CRegistration : public CCopasiParameterGroup
      */
     bool isValidSignature() const;
 
+    /**
+     * Retrieve the expiration date.
+     * @return std::string ExpirationDate
+     */
+    std::string getExpirationDate() const;
+
   private:
     /**
      * Allocates all group parameters and assures that they are
@@ -124,6 +132,11 @@ class CRegistration : public CCopasiParameterGroup
      * The Signature
      */
     std::string *mpSignature;
+
+    /**
+     * The expiration date
+     */
+    mutable time_t mExpirationDate;
   };
 
 #endif // COPASI_CRegistration
