@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.cpp,v $
-   $Revision: 1.186 $
+   $Revision: 1.187 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/15 21:25:53 $
+   $Date: 2006/12/15 21:39:04 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -338,7 +338,7 @@ CopasiUI3Window::~CopasiUI3Window()
  *******************************************************************************************/
 bool CopasiUI3Window::slotFileSaveAs(QString str)
 {
-  bool success;
+  bool success = true;
   ListViews::commit();
 
   C_INT32 Answer = QMessageBox::No;
@@ -1600,5 +1600,9 @@ bool CopasiUI3Window::slotRegistration()
   else
     return false;
 }
+#else
+
+bool CopasiUI3Window::slotRegistration()
+{return true;}
 
 #endif // COPASI_LICENSE_COM
