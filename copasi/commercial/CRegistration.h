@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/CRegistration.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/12 21:22:08 $
+   $Date: 2006/12/15 16:21:08 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -49,6 +49,18 @@ class CRegistration : public CCopasiParameterGroup
     virtual ~CRegistration();
 
     /**
+     * Set the registered email
+     * @param const std::string & registeredEmail
+     */
+    void setRegisteredEmail(const std::string & registeredEmail);
+
+    /**
+     * Retrieve the registered email
+     * @return const std::string & registeredEmail
+     */
+    const std::string & getRegisteredEmail() const;
+
+    /**
      * Set the registered user
      * @param const std::string & registeredUser
      */
@@ -74,9 +86,15 @@ class CRegistration : public CCopasiParameterGroup
 
     /**
      * Check whether the registration is valid;
-     * @return bool isValid
+     * @return bool isValidRegistration
      */
-    bool isValid() const;
+    bool isValidRegistration() const;
+
+    /**
+     * Check whether the signature is valid;
+     * @return bool isValidSignature
+     */
+    bool isValidSignature() const;
 
   private:
     /**
@@ -87,6 +105,11 @@ class CRegistration : public CCopasiParameterGroup
 
     // Attributes
   private:
+    /**
+     * Registered Email
+     */
+    std::string *mpRegisteredEmail;
+
     /**
      * Registered User
      */

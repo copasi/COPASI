@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/BigInt.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/12 21:22:08 $
+   $Date: 2006/12/15 16:21:08 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -41,51 +41,60 @@
 #ifndef BigInt_H
 #define BigInt_H
 
-/**
- * Returns the value of the first argument raised to the power of the second argument.
- * @param base : the number whose power is to be calculated
- * @param index: exponent to which the base is to be raised.
- */
-int * power(char *base, int index);
-/**
- * Returns the value of the first argument multiplied by the
- * multiplier
- * @param multiplicand : the number to be multiplied
- * @param size: the number of digit s n the multiplicand
- * @param multiplier: the number to multiply with.
- */
-int * multiply(int *multiplicand, int size, char *multiplier);
+#ifdef  __cplusplus
+extern "C"
+  {
+#endif
 
-/**
- * Converts a string to an integer array
- * @param number : string representation of the number
- * @returns the pointer to the resultant array.
- */
-int *toArray(char * number);
+    /**
+     * Returns the value of the first argument raised to the power of the second argument.
+     * @param base : the number whose power is to be calculated
+     * @param index: exponent to which the base is to be raised.
+     */
+    int * power(char *base, int index);
+    /**
+     * Returns the value of the first argument multiplied by the
+     * multiplier
+     * @param multiplicand : the number to be multiplied
+     * @param size: the number of digit s n the multiplicand
+     * @param multiplier: the number to multiply with.
+     */
+    int * multiply(int *multiplicand, int size, char *multiplier);
 
-/**
- * Adds to two numbers
- * @param number1 the number to which to add another number
- * @param number2 the number to be added.
- * @size1 the digits in number1
- * @size2 the digits in number2
- * @return the result of adding number1 and number2
- */
-int * add(int number1[], int size1, int number2 [], int size2);
-/** Prints the specified integer array to std out
- * @param number the number to be printed
- * @size the digits in number1
- */
+    /**
+     * Converts a string to an integer array
+     * @param number : string representation of the number
+     * @returns the pointer to the resultant array.
+     */
+    int *toArray(char * number);
 
-void print(int number[], int size);
-/**
-  * Returns the size of  the number after addition
-  */
-int getResultSize(void);
+    /**
+     * Adds to two numbers
+     * @param number1 the number to which to add another number
+     * @param number2 the number to be added.
+     * @size1 the digits in number1
+     * @size2 the digits in number2
+     * @return the result of adding number1 and number2
+     */
+    int * add(int number1[], int size1, int number2 [], int size2);
+    /** Prints the specified integer array to std out
+     * @param number the number to be printed
+     * @size the digits in number1
+     */
 
-/**
- * Returns the size of the number after multiplication.
- */
-int getResultLength(void);
+    void print(int number[], int size);
+    /**
+      * Returns the size of  the number after addition
+      */
+    int getResultSize(void);
+
+    /**
+     * Returns the size of the number after multiplication.
+     */
+    int getResultLength(void);
+
+#ifdef  __cplusplus
+  }
+#endif
 
 #endif

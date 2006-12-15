@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commercial/Attic/GenericDecode.c,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/12 21:22:08 $
+   $Date: 2006/12/15 16:21:08 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -71,9 +71,47 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
+
+int regcodelength; //length of unformatted regcode
+int namelength; //length of name seed
+int emaillength; //length of email seed
+int hotsynclength; //length of email seed
+char* seedcombo; //the seed combo ee en ne nn hh
+int userseedlength; //lenght of user seed
+int seedlength;  //length of the seed
+int constlength; //lenght of teh constant
+char* constvalue; // value of the constant
+int seqlength; //length of the sequence
+char* scrambleSequence; //scrambling order for the seed
+char* asciidigit; //number of digits fro ascii to number conversion
+char* mathoperations; //string containing list of math operations
+char* base; //the base into which the number was converted
+char* basedigit; //the base character set
+char* regformat; //the format of the registration code
+char checkdigit; // the check digit received with the registration code
+char* regcode; // the unformatted registration code
+char* operations[40]; // stores the arithmetic operation for the seed characters
+char* scrambleOrder[40]; //stores the scramble order information about the seed characters
+int seedasinteger[40]; //the seed in numeric format
+char seed[31]; // the user seed
+char date[5]; // the date the regisration code was created
+char sequence[4]; // the sequence
+char constant[4]; // the constant
+char baseTenNumber[130]; // the number after converting to baseten
+char* configuration;
+char* registrationcode;
+int CHAR_TYPE = 1;
+int INT_TYPE = 2;
+char debugBuffer[200];
+char * debugMessage = 0;
+int debugBufferCount;
+char userName[21];
+char userEmail[21];
+char createdUserSeed[31];
 
 /** Decodes the registration code */
-int decodeGenericRegCode(char * c , char* r)
+int decodeGenericRegCode(const char * c , const char * r)
 {
 
   int size = strlen(c);
@@ -581,7 +619,7 @@ void convertToBaseTen()
  It then undoes the arithmetic operation performed while generatig the registration
  code
  */
-void undoarithmetic(char* baseten)
+void undoarithmetic(const char * baseten)
 {
 
   int ascii ; //number of digit for text to number conversion
@@ -837,7 +875,7 @@ void * allocateMemory(int size, int dataType)
 }
 
 /*This method stores the debug message in a buffer */
-void setDebugMessage(int size, char * msg)
+void setDebugMessage(int size, const char * msg)
 {
 
   int msgLength;
@@ -850,7 +888,7 @@ void setDebugMessage(int size, char * msg)
     {
       msgLength = strlen(debugMessage);
       debugMessage = (char *)realloc(debugMessage ,
-                                      (msgLength + size + 1) * sizeof(char));
+                                     (msgLength + size + 1) * sizeof(char));
       strcat(debugMessage , msg);
       free(msg);
     }
@@ -863,7 +901,7 @@ char* getDebugMessage()
 }
 
 /**Set the user name for generating reg code */
-void setUserName(char* name)
+void setUserName(const char * name)
 {
   int i;
   //reset the data
@@ -888,7 +926,7 @@ void setUserName(char* name)
 }
 
 /** This method sets the user email */
-void setUserEmail(char* email)
+void setUserEmail(const char * email)
 {
   int i;
   //reset the data
@@ -916,7 +954,6 @@ void setUserEmail(char* email)
   * and using the user name and/or user email */
 void createUserSeed()
 {
-
   int length , charCount, i;
   char* seedbasis;
   int maxSize = strlen(userName) + strlen(userEmail);
@@ -950,8 +987,8 @@ void createUserSeed()
     }
   if (*seedbasis == 0)
     {
-      printf("bad arguments: an empty seed basis (name \"%s\", mail \"%s\", mode %c%c)\n", userName, userEmail, seedcombo[0], seedcombo[1]);
-      exit(1);
+      free(seedbasis);
+      return;
     }
   strncat(createdUserSeed, seedbasis, userseedlength);
   length = strlen(createdUserSeed);
