@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/copasiui3window.h,v $
-   $Revision: 1.60 $
+   $Revision: 1.61 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/15 21:25:53 $
+   $Date: 2006/12/19 17:31:04 $
    End CVS Header */
 
 // Copyright � 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -124,9 +124,7 @@ class CopasiUI3Window : public QMainWindow
     void listViewsFolderChanged(QListViewItem* item);
     void slotOpenRecentFile(int index);
     void slotOpenRecentSBMLFile(int index);
-#ifdef COPASI_LICENSE_COM
     bool slotRegistration();
-#endif // COPASI_LICENSE_COM
 
   private:
     int newFlag;
