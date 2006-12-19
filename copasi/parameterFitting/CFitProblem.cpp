@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.42 $
+   $Revision: 1.43 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/19 17:19:42 $
+   $Date: 2006/12/19 20:41:44 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -896,7 +896,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       (*mUpdateMethods[i])(Current);
     }
 
-  DebugFile << dyp << std::endl;
   // This is necessary so that CExperiment::printResult shows the correct data.
   calculate();
   mStoreResults = false;
@@ -917,9 +916,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
         if (l != i)
           mFisher(l, i) = tmp;
       }
-  DebugFile << mFisher << std::endl;
-  CMatrix< C_FLOAT64 > A(mFisher);
 
+#ifdef XXXX
   /* int dgetrf_(integer *m,
    *             integer *n,
    *             doublereal *a,
@@ -985,9 +983,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       return false;
     }
-
-  DebugFile << "LU Factorization" << std::endl;
-  DebugFile << mFisher << std::endl;
 
   /* dgetri_(integer *n, doublereal *a, integer *lda, integer *ipiv,
    *         doublereal *work, integer *lwork, integer *info);
@@ -1070,6 +1065,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       return false;
     }
 
+#endif // XXXX
+
 #ifdef XXXX
   // The Fisher Information matrix is a symmetric positive semidefinit matrix.
 
@@ -1139,9 +1136,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       return false;
     }
 
-  DebugFile << "Cholesky Factorization" << std::endl;
-  DebugFile << mFisher << std::endl;
-
   /* int dpotri_(char *uplo, integer *n, doublereal *a,
    *             integer *lda, integer *info);
    *
@@ -1191,9 +1185,13 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       return false;
     }
+  // Assure that the inverse is completed.
+
+  for (i = 0; i < imax; i++)
+    for (l = 0; l < i; l++)
+      mFisher(l, i) = mFisher(i, l);
 #endif // XXXX
 
-#ifdef XXXX
   // We invert the Fisher information matrix with the help of singular
   // value decomposition.
 
@@ -1328,7 +1326,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   CVector< C_FLOAT64 > S(imax);
   CMatrix< C_FLOAT64 > U(imax, imax);
   CMatrix< C_FLOAT64 > VT(imax, imax);
-  CMatrix< C_FLOAT64 > Tmp(imax, imax);
 
   C_INT lwork = -1; // Instruct dgesvd_ to determine work array size.
   CVector< C_FLOAT64 > work;
@@ -1355,214 +1352,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   dgesvd_(&job, &job, &N, &N, mFisher.array(), &N, S.array(), U.array(),
           &N, VT.array(), &N, work.array(), &lwork, &info);
 
-  mFisher = 0.0;
-  for (i = 0; i < imax; i++)
-    mFisher(i, i) = 1.0 / S[i];
-
   // Even if info is not zero we are still able to invert
-  if (info)
-    for (i = 1; i < imax; i++)
-      mFisher(i - 1, i) = - work[i] * mFisher(i, i) * mFisher(i - 1, i - 1);
-
-  DebugFile << "inv(B)" << std::endl;
-  DebugFile << mFisher << std::endl;
-  DebugFile << "U" << std::endl;
-  DebugFile << U << std::endl;
-  DebugFile << "VT" << std::endl;
-  DebugFile << VT << std::endl;
-
-  // Now we invert the Fisher Information Matrix. Please note that mFisher
-  // now contains B^(-1) therefore we need to compute: VT^T * mFisher * U^T
-  // For this we will use dgemm 2 times.
-
-  char opN = 'N';
-  char opT = 'T';
-
-  C_FLOAT64 Alpha = 1.0;
-  C_FLOAT64 Beta = 0.0;
-
-  mFisher = 0.0;
-  for (i = 0; i < imax; i++)
-    mFisher(i, i) = S[i];
-
-  dgemm_(&opN, &opN, &N, &N, &N, &Alpha, U.array(), &N,
-         mFisher.array(), &N, &Beta, Tmp.array(), &N);
-  DebugFile << Tmp << std::endl;
-
-  dgemm_(&opN, &opN, &N, &N, &N, &Alpha, Tmp.array(), &N,
-         VT.array(), &N, &Beta, mFisher.array(), &N);
-
-  DebugFile << "A = VT * B * U" << std::endl;
-  DebugFile << mFisher << std::endl;
-
-  mFisher = 0.0;
-  for (i = 0; i < imax; i++)
-    mFisher(i, i) = 1.0 / S[i];
-
-  dgemm_(&opT, &opN, &N, &N, &N, &Alpha, VT.array(), &N,
-         mFisher.array(), &N, &Beta, Tmp.array(), &N);
-  DebugFile << Tmp << std::endl;
-
-  dgemm_(&opN, &opT, &N, &N, &N, &Alpha, Tmp.array(), &N,
-         U.array(), &N, &Beta, mFisher.array(), &N);
-
-  DebugFile << "inv(A) = inv(U) * inv(B) * inv(VT)" << std::endl;
-  DebugFile << mFisher << std::endl;
-
-  mFisher = 0.0;
-  for (i = 0; i < imax; i++)
-    mFisher(i, i) = sqrt(1.0 / S[i]);
-
-  dgemm_(&opN, &opN, &N, &N, &N, &Alpha, U.array(), &N,
-         mFisher.array(), &N, &Beta, Tmp.array(), &N);
-  DebugFile << Tmp << std::endl;
-
-  dgemm_(&opN, &opT, &N, &N, &N, &Alpha, Tmp.array(), &N,
-         Tmp.array(), &N, &Beta, mFisher.array(), &N);
-
-  DebugFile << "inv(A) = (sqrt(inv(B)) * inv(U))^T * sqrt(inv(B)) * inv(U)" << std::endl;
-  DebugFile << mFisher << std::endl;
-#endif // XXXX
-
-#ifdef XXXX
-  // This has numericl problems
-  /* We use dsytrf_ and dsytri_ to invert the symmetric fisher information matrix */
-
-  /* int dsytrf_(char *uplo,
-   *             integer *n,
-   *             doublereal *a,
-   *             integer * lda,
-   *             integer *ipiv,
-   *             doublereal *work,
-   *             integer *lwork,
-   *             integer *info);
-   *
-   *  -- LAPACK routine (version 3.0) --
-   *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-   *     Courant Institute, Argonne National Lab, and Rice University
-   *     June 30, 1999
-   *
-   *  Purpose
-   *  =======
-   *
-   *  DSYTRF computes the factorization of a real symmetric matrix A using
-   *  the Bunch-Kaufman diagonal pivoting method.  The form of the
-   *  factorization is
-   *
-   *     A = U*D*U**T  or  A = L*D*L**T
-   *
-   *  where U (or L) is a product of permutation and unit upper (lower)
-   *  triangular matrices, and D is symmetric and block diagonal with
-   *  1-by-1 and 2-by-2 diagonal blocks.
-   *
-   *  This is the blocked version of the algorithm, calling Level 3 BLAS.
-   *
-   *  Arguments
-   *  =========
-   *
-   *  UPLO    (input) CHARACTER*1
-   *          = 'U':  Upper triangle of A is stored;
-   *          = 'L':  Lower triangle of A is stored.
-   *
-   *  N       (input) INTEGER
-   *          The order of the matrix A.  N >= 0.
-   *
-   *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
-   *          On entry, the symmetric matrix A.  If UPLO = 'U', the leading
-   *          N-by-N upper triangular part of A contains the upper
-   *          triangular part of the matrix A, and the strictly lower
-   *          triangular part of A is not referenced.  If UPLO = 'L', the
-   *          leading N-by-N lower triangular part of A contains the lower
-   *          triangular part of the matrix A, and the strictly upper
-   *          triangular part of A is not referenced.
-   *
-   *          On exit, the block diagonal matrix D and the multipliers used
-   *          to obtain the factor U or L (see below for further details).
-   *
-   *  LDA     (input) INTEGER
-   *          The leading dimension of the array A.  LDA >= max(1,N).
-   *
-   *  IPIV    (output) INTEGER array, dimension (N)
-   *          Details of the interchanges and the block structure of D.
-   *          If IPIV(k) > 0, then rows and columns k and IPIV(k) were
-   *          interchanged and D(k,k) is a 1-by-1 diagonal block.
-   *          If UPLO = 'U' and IPIV(k) = IPIV(k-1) < 0, then rows and
-   *          columns k-1 and -IPIV(k) were interchanged and D(k-1:k,k-1:k)
-   *          is a 2-by-2 diagonal block.  If UPLO = 'L' and IPIV(k) =
-   *          IPIV(k+1) < 0, then rows and columns k+1 and -IPIV(k) were
-   *          interchanged and D(k:k+1,k:k+1) is a 2-by-2 diagonal block.
-   *
-   *  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
-   *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
-   *
-   *  LWORK   (input) INTEGER
-   *          The length of WORK.  LWORK >=1.  For best performance
-   *          LWORK >= N*NB, where NB is the block size returned by ILAENV.
-   *
-   *          If LWORK = -1, then a workspace query is assumed; the routine
-   *          only calculates the optimal size of the WORK array, returns
-   *          this value as the first entry of the WORK array, and no error
-   *          message related to LWORK is issued by XERBLA.
-   *
-   *  INFO    (output) INTEGER
-   *          = 0:  successful exit
-   *          < 0:  if INFO = -i, the i-th argument had an illegal value
-   *          > 0:  if INFO = i, D(i,i) is exactly zero.  The factorization
-   *                has been completed, but the block diagonal matrix D is
-   *                exactly singular, and division by zero will occur if it
-   *                is used to solve a system of equations.
-   *
-   *  Further Details
-   *  ===============
-   *
-   *  If UPLO = 'U', then A = U*D*U', where
-   *     U = P(n)*U(n)* ... *P(k)U(k)* ...,
-   *  i.e., U is a product of terms P(k)*U(k), where k decreases from n to
-   *  1 in steps of 1 or 2, and D is a block diagonal matrix with 1-by-1
-   *  and 2-by-2 diagonal blocks D(k).  P(k) is a permutation matrix as
-   *  defined by IPIV(k), and U(k) is a unit upper triangular matrix, such
-   *  that if the diagonal block D(k) is of order s (s = 1 or 2), then
-   *
-   *             (I    v    0)   k-s
-   *     U(k) =  (0    I    0)   s
-   *             (0    0    I)   n-k
-   *             k-s   s   n-k
-   *
-   *  If s = 1, D(k) overwrites A(k,k), and v overwrites A(1:k-1,k).
-   *  If s = 2, the upper triangle of D(k) overwrites A(k-1,k-1), A(k-1,k),
-   *  and A(k,k), and v overwrites A(1:k-2,k-1:k).
-   *
-   *  If UPLO = 'L', then A = L*D*L', where
-   *     L = P(1)*L(1)* ... *P(k)*L(k)* ...,
-   *  i.e., L is a product of terms P(k)*L(k), where k increases from 1 to
-   *  n in steps of 1 or 2, and D is a block diagonal matrix with 1-by-1
-   *  and 2-by-2 diagonal blocks D(k).  P(k) is a permutation matrix as
-   *  defined by IPIV(k), and L(k) is a unit lower triangular matrix, such
-   *  that if the diagonal block D(k) is of order s (s = 1 or 2), then
-   *
-   *             (I    0     0)  k-1
-   *     L(k) =  (0    I     0)  s
-   *             (0    v     I)  n-k-s+1
-   *                k-1   s  n-k-s+1
-   *
-   *  If s = 1, D(k) overwrites A(k,k), and v overwrites A(k+1:n,k).
-   *  If s = 2, the lower triangle of D(k) overwrites A(k,k), A(k+1,k),
-   *  and A(k+1,k+1), and v overwrites A(k+2:n,k:k+1).
-   *
-   */
-
-  char U = 'U';
-  C_INT info = 0;
-  C_INT N = imax;
-
-  CVector< C_INT > ipiv;
-  ipiv.resize(imax);
-
-  C_INT lwork = -1; // Instruct dsytrf_ to determine work array size.
-  CVector< C_FLOAT64 > work;
-  work.resize(1);
-
-  dsytrf_(&U, &N, mFisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
   if (info)
     {
       mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1573,107 +1363,51 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       return false;
     }
 
-  lwork = (C_INT) work[0];
-  work.resize(lwork);
+  // Now we invert the Fisher Information Matrix. Please note,
+  // that we are calculating a pseudo inverse in the case that one or
+  // more singular values are zero.
 
-  dsytrf_(&U, &N, mFisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
-  if (info)
-    {
-      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-      mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  mFisher = 0.0;
+  for (i = 0; i < imax; i++)
+    if (S[i] == 0.0)
+      mFisher(i, i) = 0.0;
+    else
+      mFisher(i, i) = 1.0 / S[i];
 
-      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 2, info);
+  CMatrix< C_FLOAT64 > Tmp(imax, imax);
 
-      return false;
-    }
+  char opN = 'N';
 
-  DebugFile << mFisher << std::endl;
-  DebugFile << ipiv << std::endl;
+  C_FLOAT64 Alpha = 1.0;
+  C_FLOAT64 Beta = 0.0;
 
-  /* int dsytri_(char *uplo,
-   *             integer *n,
-   *             doublereal *a,
-   *             integer * lda,
-   *             integer *ipiv,
-   *             doublereal *work,
-   *             integer *info);
-   *
-   *  -- LAPACK routine (version 3.0) --
-   *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-   *     Courant Institute, Argonne National Lab, and Rice University
-   *     March 31, 1993
-   *
-   *  Purpose
-   *  =======
-   *
-   *  DSYTRI computes the inverse of a real symmetric indefinite matrix
-   *  A using the factorization A = U*D*U**T or A = L*D*L**T computed by
-   *  DSYTRF.
-   *
-   *  Arguments
-   *  =========
-   *
-   *  UPLO    (input) CHARACTER*1
-   *          Specifies whether the details of the factorization are stored
-   *          as an upper or lower triangular matrix.
-   *          = 'U':  Upper triangular, form is A = U*D*U**T;
-   *          = 'L':  Lower triangular, form is A = L*D*L**T.
-   *
-   *  N       (input) INTEGER
-   *          The order of the matrix A.  N >= 0.
-   *
-   *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
-   *          On entry, the block diagonal matrix D and the multipliers
-   *          used to obtain the factor U or L as computed by DSYTRF.
-   *
-   *          On exit, if INFO = 0, the (symmetric) inverse of the original
-   *          matrix.  If UPLO = 'U', the upper triangular part of the
-   *          inverse is formed and the part of A below the diagonal is not
-   *          referenced; if UPLO = 'L' the lower triangular part of the
-   *          inverse is formed and the part of A above the diagonal is
-   *          not referenced.
-   *
-   *  LDA     (input) INTEGER
-   *          The leading dimension of the array A.  LDA >= max(1,N).
-   *
-   *  IPIV    (input) INTEGER array, dimension (N)
-   *          Details of the interchanges and the block structure of D
-   *          as determined by DSYTRF.
-   *
-   *  WORK    (workspace) DOUBLE PRECISION array, dimension (N)
-   *
-   *  INFO    (output) INTEGER
-   *          = 0: successful exit
-   *          < 0: if INFO = -i, the i-th argument had an illegal value
-   *          > 0: if INFO = i, D(i,i) = 0; the matrix is singular and its
-   *               inverse could not be computed.
-   *
-   */
-  dsytri_(&U, &N, mFisher.array(), &N, ipiv.array(), work.array(), &info);
-  if (info)
-    return false; // :TODO: create error message
-#endif // XXXX
+  dgemm_(&opN, &opN, &N, &N, &N, &Alpha, U.array(), &N,
+         mFisher.array(), &N, &Beta, Tmp.array(), &N);
 
-  DebugFile << mFisher << std::endl;
+  dgemm_(&opN, &opN, &N, &N, &N, &Alpha, Tmp.array(), &N,
+         VT.array(), &N, &Beta, mFisher.array(), &N);
 
   // rescale the lower bound of the covariant matrix to have unit diagonal
   for (i = 0; i < imax; i++)
     {
-      C_FLOAT64 & tmp = mFisher(i, i);
+      C_FLOAT64 & tmp = S[i];
 
-      tmp = sqrt(tmp);
-      mParameterSD[i] = mSD * tmp;
+      if (mFisher(i, i) != 0.0)
+        {
+          tmp = 1.0 / sqrt(mFisher(i, i));
+          mParameterSD[i] = mSD / tmp;
+        }
+      else
+        {
+          mParameterSD[i] = mInfinity;
+          tmp = 1.0;
+          mFisher(i, i) = 1.0;
+        }
     }
 
   for (i = 0; i < imax; i++)
-    for (l = 0; l < i; l++)
-      {
-        mFisher(i, l) /= mFisher(i, i) * mFisher(l, l);
-        mFisher(l, i) = mFisher(i, l);
-      }
-
-  for (i = 0; i < imax; i++)
-    mFisher(i, i) = 1.0;
+    for (l = 0; l < imax; l++)
+      mFisher(i, l) *= S[i] * S[l];
 
   // Make sure the timer is acurate.
   (*mCPUTime.getRefresh())();
