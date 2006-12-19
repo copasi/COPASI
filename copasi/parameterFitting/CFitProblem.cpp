@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CFitProblem.cpp,v $
-   $Revision: 1.41 $
+   $Revision: 1.42 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/07 16:07:21 $
+   $Date: 2006/12/19 17:19:42 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -29,6 +29,7 @@
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
 
+#include "blaswrap.h"           //use blas
 #include "clapackwrap.h"        //use CLAPACK
 
 //  Default constructor
@@ -895,6 +896,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       (*mUpdateMethods[i])(Current);
     }
 
+  DebugFile << dyp << std::endl;
   // This is necessary so that CExperiment::printResult shows the correct data.
   calculate();
   mStoreResults = false;
@@ -912,10 +914,518 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
         tmp *= 2.0;
 
-        //        if (l != i)
-        //          mFisher(l, i) = tmp;
+        if (l != i)
+          mFisher(l, i) = tmp;
       }
+  DebugFile << mFisher << std::endl;
+  CMatrix< C_FLOAT64 > A(mFisher);
 
+  /* int dgetrf_(integer *m,
+   *             integer *n,
+   *             doublereal *a,
+   *             integer * lda,
+   *             integer *ipiv,
+   *             integer *info)
+   *
+   *  Purpose
+   *  =======
+   *
+   *  DGETRF computes an LU factorization of a general M-by-N matrix A
+   *  using partial pivoting with row interchanges.
+   *
+   *  The factorization has the form
+   *     A = P * L * U
+   *  where P is a permutation matrix, L is lower triangular with unit
+   *  diagonal elements (lower trapezoidal if m > n), and U is upper
+   *  triangular (upper trapezoidal if m < n).
+   *
+   *  This is the right-looking Level 3 BLAS version of the algorithm.
+   *
+   *  Arguments
+   *  =========
+   *
+   *  m       (input) INTEGER
+   *          The number of rows of the matrix A.  m >= 0.
+   *
+   *  n       (input) INTEGER
+   *          The number of columns of the matrix A.  n >= 0.
+   *
+   *  a       (input/output) DOUBLE PRECISION array, dimension (lda,n)
+   *          On entry, the m by n matrix to be factored.
+   *          On exit, the factors L and U from the factorization
+   *          A = P*L*U; the unit diagonal elements of L are not stored.
+   *
+   *  lda     (input) INTEGER
+   *          The leading dimension of the array A.  lda >= max(1,m).
+   *
+   *  ipiv    (output) INTEGER array, dimension (min(m,n))
+   *          The pivot indices; for 1 <= i <= min(m,n), row i of the
+   *          matrix was interchanged with row ipiv(i).
+   *
+   *  info    (output) INTEGER
+   *          = 0: successful exit
+   *          < 0: if info = -k, the k-th argument had an illegal value
+   *          > 0: if info = k, U(k,k) is exactly zero. The factorization
+   *               has been completed, but the factor U is exactly
+   *               singular, and division by zero will occur if it is used
+   *               to solve a system of equations.
+   */
+  C_INT info = 0;
+  C_INT N = imax;
+
+  CVector< C_INT > ipiv(imax);
+
+  dgetrf_(&N, &N, mFisher.array(), &N, ipiv.array(), &info);
+  if (info)
+    {
+      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
+
+      return false;
+    }
+
+  DebugFile << "LU Factorization" << std::endl;
+  DebugFile << mFisher << std::endl;
+
+  /* dgetri_(integer *n, doublereal *a, integer *lda, integer *ipiv,
+   *         doublereal *work, integer *lwork, integer *info);
+   *
+   *
+   *  Purpose
+   *  =======
+   *
+   *  DGETRI computes the inverse of a matrix using the LU factorization
+   *  computed by DGETRF.
+   *
+   *  This method inverts U and then computes inv(A) by solving the system
+   *  inv(A)*L = inv(U) for inv(A).
+   *
+   *  Arguments
+   *  =========
+   *
+   *  N       (input) INTEGER
+   *          The order of the matrix A.  N >= 0.
+   *
+   *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+   *          On entry, the factors L and U from the factorization
+   *          A = P*L*U as computed by DGETRF.
+   *          On exit, if INFO = 0, the inverse of the original matrix A.
+   *
+   *  LDA     (input) INTEGER
+   *          The leading dimension of the array A.  LDA >= max(1,N).
+   *
+   *  IPIV    (input) INTEGER array, dimension (N)
+   *          The pivot indices from DGETRF; for 1<=i<=N, row i of the
+   *          matrix was interchanged with row IPIV(i).
+   *
+   *  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
+   *          On exit, if INFO=0, then WORK(1) returns the optimal LWORK.
+   *
+   *  LWORK   (input) INTEGER
+   *          The dimension of the array WORK.  LWORK >= max(1,N).
+   *          For optimal performance LWORK >= N*NB, where NB is
+   *          the optimal blocksize returned by ILAENV.
+   *
+   *          If LWORK = -1, then a workspace query is assumed; the routine
+   *          only calculates the optimal size of the WORK array, returns
+   *          this value as the first entry of the WORK array, and no error
+   *          message related to LWORK is issued by XERBLA.
+   *
+   *  INFO    (output) INTEGER
+   *          = 0:  successful exit
+   *          < 0:  if INFO = -i, the i-th argument had an illegal value
+   *          > 0:  if INFO = i, U(i,i) is exactly zero; the matrix is
+   *                singular and its inverse could not be computed.
+   *
+   */
+
+  C_INT lwork = -1; // Instruct dgesvd_ to determine work array size.
+  CVector< C_FLOAT64 > work;
+  work.resize(1);
+
+  dgetri_(&N, mFisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
+  if (info)
+    {
+      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
+
+      return false;
+    }
+
+  lwork = (C_INT) work[0];
+  work.resize(lwork);
+
+  dgetri_(&N, mFisher.array(), &N, ipiv.array(), work.array(), &lwork, &info);
+  if (info)
+    {
+      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
+
+      return false;
+    }
+
+#ifdef XXXX
+  // The Fisher Information matrix is a symmetric positive semidefinit matrix.
+
+  /* int dpotrf_(char *uplo, integer *n, doublereal *a,
+   *             integer *lda, integer *info);
+   *
+   *
+   *  Purpose
+   *  =======
+   *
+   *  DPOTRF computes the Cholesky factorization of a real symmetric
+   *  positive definite matrix A.
+   *
+   *  The factorization has the form
+   *     A = U**T * U,  if UPLO = 'U', or
+   *     A = L  * L**T,  if UPLO = 'L',
+   *  where U is an upper triangular matrix and L is lower triangular.
+   *
+   *  This is the block version of the algorithm, calling Level 3 BLAS.
+   *
+   *  Arguments
+   *  =========
+   *
+   *  UPLO    (input) CHARACTER*1
+   *          = 'U':  Upper triangle of A is stored;
+   *          = 'L':  Lower triangle of A is stored.
+   *
+   *  N       (input) INTEGER
+   *          The order of the matrix A.  N >= 0.
+   *
+   *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+   *          On entry, the symmetric matrix A.  If UPLO = 'U', the leading
+   *          N-by-N upper triangular part of A contains the upper
+   *          triangular part of the matrix A, and the strictly lower
+   *          triangular part of A is not referenced.  If UPLO = 'L', the
+   *          leading N-by-N lower triangular part of A contains the lower
+   *          triangular part of the matrix A, and the strictly upper
+   *          triangular part of A is not referenced.
+   *
+   *          On exit, if INFO = 0, the factor U or L from the Cholesky
+   *          factorization A = U**T*U or A = L*L**T.
+   *
+   *  LDA     (input) INTEGER
+   *          The leading dimension of the array A.  LDA >= max(1,N).
+   *
+   *  INFO    (output) INTEGER
+   *          = 0:  successful exit
+   *          < 0:  if INFO = -i, the i-th argument had an illegal value
+   *          > 0:  if INFO = i, the leading minor of order i is not
+   *                positive definite, and the factorization could not be
+   *                completed.
+   *
+   */
+
+  char U = 'U';
+  C_INT info = 0;
+  C_INT N = imax;
+
+  dpotrf_(&U, &N, mFisher.array(), &N, &info);
+  if (info)
+    {
+      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
+
+      return false;
+    }
+
+  DebugFile << "Cholesky Factorization" << std::endl;
+  DebugFile << mFisher << std::endl;
+
+  /* int dpotri_(char *uplo, integer *n, doublereal *a,
+   *             integer *lda, integer *info);
+   *
+   *
+   *  Purpose
+   *  =======
+   *
+   *  DPOTRI computes the inverse of a real symmetric positive definite
+   *  matrix A using the Cholesky factorization A = U**T*U or A = L*L**T
+   *  computed by DPOTRF.
+   *
+   *  Arguments
+   *  =========
+   *
+   *  UPLO    (input) CHARACTER*1
+   *          = 'U':  Upper triangle of A is stored;
+   *          = 'L':  Lower triangle of A is stored.
+   *
+   *  N       (input) INTEGER
+   *          The order of the matrix A.  N >= 0.
+   *
+   *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+   *          On entry, the triangular factor U or L from the Cholesky
+   *          factorization A = U**T*U or A = L*L**T, as computed by
+   *          DPOTRF.
+   *          On exit, the upper or lower triangle of the (symmetric)
+   *          inverse of A, overwriting the input factor U or L.
+   *
+   *  LDA     (input) INTEGER
+   *          The leading dimension of the array A.  LDA >= max(1,N).
+   *
+   *  INFO    (output) INTEGER
+   *          = 0:  successful exit
+   *          < 0:  if INFO = -i, the i-th argument had an illegal value
+   *          > 0:  if INFO = i, the (i,i) element of the factor U or L is
+   *                zero, and the inverse could not be computed.
+   *
+   */
+
+  dpotri_(&U, &N, mFisher.array(), &N, &info);
+  if (info)
+    {
+      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
+
+      return false;
+    }
+#endif // XXXX
+
+#ifdef XXXX
+  // We invert the Fisher information matrix with the help of singular
+  // value decomposition.
+
+  /* int dgesvd_(char *jobu, char *jobvt, integer *m, integer *n,
+   *            doublereal *a, integer *lda, doublereal *s, doublereal *u,
+   *            integer *ldu, doublereal *vt, integer *ldvt,
+   *            doublereal *work, integer *lwork, integer *info);
+   *
+   *
+   *  Purpose
+   *  =======
+   *
+   *  DGESVD computes the singular value decomposition (SVD) of a real
+   *  M-by-N matrix A, optionally computing the left and/or right singular
+   *  vectors. The SVD is written
+   *
+   *       A = U * SIGMA * transpose(V)
+   *
+   *  where SIGMA is an M-by-N matrix which is zero except for its
+   *  min(m,n) diagonal elements, U is an M-by-M orthogonal matrix, and
+   *  V is an N-by-N orthogonal matrix.  The diagonal elements of SIGMA
+   *  are the singular values of A; they are real and non-negative, and
+   *  are returned in descending order.  The first min(m,n) columns of
+   *  U and V are the left and right singular vectors of A.
+   *
+   *  Note that the routine returns V**T, not V.
+   *
+   *  Arguments
+   *  =========
+   *
+   *  JOBU    (input) CHARACTER*1
+   *          Specifies options for computing all or part of the matrix U:
+   *          = 'A':  all M columns of U are returned in array U:
+   *          = 'S':  the first min(m,n) columns of U (the left singular
+   *                  vectors) are returned in the array U;
+   *          = 'O':  the first min(m,n) columns of U (the left singular
+   *                  vectors) are overwritten on the array A;
+   *          = 'N':  no columns of U (no left singular vectors) are
+   *                  computed.
+   *
+   *  JOBVT   (input) CHARACTER*1
+   *          Specifies options for computing all or part of the matrix
+   *          V**T:
+   *          = 'A':  all N rows of V**T are returned in the array VT;
+   *          = 'S':  the first min(m,n) rows of V**T (the right singular
+   *                  vectors) are returned in the array VT;
+   *          = 'O':  the first min(m,n) rows of V**T (the right singular
+   *                  vectors) are overwritten on the array A;
+   *          = 'N':  no rows of V**T (no right singular vectors) are
+   *                  computed.
+   *
+   *          JOBVT and JOBU cannot both be 'O'.
+   *
+   *  M       (input) INTEGER
+   *          The number of rows of the input matrix A.  M >= 0.
+   *
+   *  N       (input) INTEGER
+   *          The number of columns of the input matrix A.  N >= 0.
+   *
+   *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+   *          On entry, the M-by-N matrix A.
+   *          On exit,
+   *          if JOBU = 'O',  A is overwritten with the first min(m,n)
+   *                          columns of U (the left singular vectors,
+   *                          stored columnwise);
+   *          if JOBVT = 'O', A is overwritten with the first min(m,n)
+   *                          rows of V**T (the right singular vectors,
+   *                          stored rowwise);
+   *          if JOBU .ne. 'O' and JOBVT .ne. 'O', the contents of A
+   *                          are destroyed.
+   *
+   *  LDA     (input) INTEGER
+   *          The leading dimension of the array A.  LDA >= max(1,M).
+   *
+   *  S       (output) DOUBLE PRECISION array, dimension (min(M,N))
+   *          The singular values of A, sorted so that S(i) >= S(i+1).
+   *
+   *  U       (output) DOUBLE PRECISION array, dimension (LDU,UCOL)
+   *          (LDU,M) if JOBU = 'A' or (LDU,min(M,N)) if JOBU = 'S'.
+   *          If JOBU = 'A', U contains the M-by-M orthogonal matrix U;
+   *          if JOBU = 'S', U contains the first min(m,n) columns of U
+   *          (the left singular vectors, stored columnwise);
+   *          if JOBU = 'N' or 'O', U is not referenced.
+   *
+   *  LDU     (input) INTEGER
+   *          The leading dimension of the array U.  LDU >= 1; if
+   *          JOBU = 'S' or 'A', LDU >= M.
+   *
+   *  VT      (output) DOUBLE PRECISION array, dimension (LDVT,N)
+   *          If JOBVT = 'A', VT contains the N-by-N orthogonal matrix
+   *          V**T;
+   *          if JOBVT = 'S', VT contains the first min(m,n) rows of
+   *          V**T (the right singular vectors, stored rowwise);
+   *          if JOBVT = 'N' or 'O', VT is not referenced.
+   *
+   *  LDVT    (input) INTEGER
+   *          The leading dimension of the array VT.  LDVT >= 1; if
+   *          JOBVT = 'A', LDVT >= N; if JOBVT = 'S', LDVT >= min(M,N).
+   *
+   *  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
+   *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK;
+   *          if INFO > 0, WORK(2:MIN(M,N)) contains the unconverged
+   *          superdiagonal elements of an upper bidiagonal matrix B
+   *          whose diagonal is in S (not necessarily sorted). B
+   *          satisfies A = U * B * VT, so it has the same singular values
+   *          as A, and singular vectors related by U and VT.
+   *
+   *  LWORK   (input) INTEGER
+   *          The dimension of the array WORK.
+   *          LWORK >= MAX(1,3*MIN(M,N)+MAX(M,N),5*MIN(M,N)).
+   *          For good performance, LWORK should generally be larger.
+   *
+   *          If LWORK = -1, then a workspace query is assumed; the routine
+   *          only calculates the optimal size of the WORK array, returns
+   *          this value as the first entry of the WORK array, and no error
+   *          message related to LWORK is issued by XERBLA.
+   *
+   *  INFO    (output) INTEGER
+   *          = 0:  successful exit.
+   *          < 0:  if INFO = -i, the i-th argument had an illegal value.
+   *          > 0:  if DBDSQR did not converge, INFO specifies how many
+   *                superdiagonals of an intermediate bidiagonal form B
+   *                did not converge to zero. See the description of WORK
+   *                above for details.
+   *
+   */
+
+  char job = 'A';
+  C_INT info = 0;
+  C_INT N = imax;
+
+  CVector< C_FLOAT64 > S(imax);
+  CMatrix< C_FLOAT64 > U(imax, imax);
+  CMatrix< C_FLOAT64 > VT(imax, imax);
+  CMatrix< C_FLOAT64 > Tmp(imax, imax);
+
+  C_INT lwork = -1; // Instruct dgesvd_ to determine work array size.
+  CVector< C_FLOAT64 > work;
+  work.resize(1);
+
+  dgesvd_(&job, &job, &N, &N, mFisher.array(), &N, S.array(), U.array(),
+          &N, VT.array(), &N, work.array(), &lwork, &info);
+
+  if (info)
+    {
+      mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+      mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+      CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, info);
+
+      return false;
+    }
+
+  lwork = (C_INT) work[0];
+  work.resize(lwork);
+
+  // This actually calculates the SVD of mFisher^T, since dgesvd uses
+  // fortran notation, i.e., mFisher = V^T * B^T * U
+  dgesvd_(&job, &job, &N, &N, mFisher.array(), &N, S.array(), U.array(),
+          &N, VT.array(), &N, work.array(), &lwork, &info);
+
+  mFisher = 0.0;
+  for (i = 0; i < imax; i++)
+    mFisher(i, i) = 1.0 / S[i];
+
+  // Even if info is not zero we are still able to invert
+  if (info)
+    for (i = 1; i < imax; i++)
+      mFisher(i - 1, i) = - work[i] * mFisher(i, i) * mFisher(i - 1, i - 1);
+
+  DebugFile << "inv(B)" << std::endl;
+  DebugFile << mFisher << std::endl;
+  DebugFile << "U" << std::endl;
+  DebugFile << U << std::endl;
+  DebugFile << "VT" << std::endl;
+  DebugFile << VT << std::endl;
+
+  // Now we invert the Fisher Information Matrix. Please note that mFisher
+  // now contains B^(-1) therefore we need to compute: VT^T * mFisher * U^T
+  // For this we will use dgemm 2 times.
+
+  char opN = 'N';
+  char opT = 'T';
+
+  C_FLOAT64 Alpha = 1.0;
+  C_FLOAT64 Beta = 0.0;
+
+  mFisher = 0.0;
+  for (i = 0; i < imax; i++)
+    mFisher(i, i) = S[i];
+
+  dgemm_(&opN, &opN, &N, &N, &N, &Alpha, U.array(), &N,
+         mFisher.array(), &N, &Beta, Tmp.array(), &N);
+  DebugFile << Tmp << std::endl;
+
+  dgemm_(&opN, &opN, &N, &N, &N, &Alpha, Tmp.array(), &N,
+         VT.array(), &N, &Beta, mFisher.array(), &N);
+
+  DebugFile << "A = VT * B * U" << std::endl;
+  DebugFile << mFisher << std::endl;
+
+  mFisher = 0.0;
+  for (i = 0; i < imax; i++)
+    mFisher(i, i) = 1.0 / S[i];
+
+  dgemm_(&opT, &opN, &N, &N, &N, &Alpha, VT.array(), &N,
+         mFisher.array(), &N, &Beta, Tmp.array(), &N);
+  DebugFile << Tmp << std::endl;
+
+  dgemm_(&opN, &opT, &N, &N, &N, &Alpha, Tmp.array(), &N,
+         U.array(), &N, &Beta, mFisher.array(), &N);
+
+  DebugFile << "inv(A) = inv(U) * inv(B) * inv(VT)" << std::endl;
+  DebugFile << mFisher << std::endl;
+
+  mFisher = 0.0;
+  for (i = 0; i < imax; i++)
+    mFisher(i, i) = sqrt(1.0 / S[i]);
+
+  dgemm_(&opN, &opN, &N, &N, &N, &Alpha, U.array(), &N,
+         mFisher.array(), &N, &Beta, Tmp.array(), &N);
+  DebugFile << Tmp << std::endl;
+
+  dgemm_(&opN, &opT, &N, &N, &N, &Alpha, Tmp.array(), &N,
+         Tmp.array(), &N, &Beta, mFisher.array(), &N);
+
+  DebugFile << "inv(A) = (sqrt(inv(B)) * inv(U))^T * sqrt(inv(B)) * inv(U)" << std::endl;
+  DebugFile << mFisher << std::endl;
+#endif // XXXX
+
+#ifdef XXXX
+  // This has numericl problems
   /* We use dsytrf_ and dsytri_ to invert the symmetric fisher information matrix */
 
   /* int dsytrf_(char *uplo,
@@ -1016,7 +1526,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
    *             (I    v    0)   k-s
    *     U(k) =  (0    I    0)   s
    *             (0    0    I)   n-k
-   *                k-s   s   n-k
+   *             k-s   s   n-k
    *
    *  If s = 1, D(k) overwrites A(k,k), and v overwrites A(1:k-1,k).
    *  If s = 2, the upper triangle of D(k) overwrites A(k-1,k-1), A(k-1,k),
@@ -1076,6 +1586,9 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       return false;
     }
+
+  DebugFile << mFisher << std::endl;
+  DebugFile << ipiv << std::endl;
 
   /* int dsytri_(char *uplo,
    *             integer *n,
@@ -1139,6 +1652,9 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   dsytri_(&U, &N, mFisher.array(), &N, ipiv.array(), work.array(), &info);
   if (info)
     return false; // :TODO: create error message
+#endif // XXXX
+
+  DebugFile << mFisher << std::endl;
 
   // rescale the lower bound of the covariant matrix to have unit diagonal
   for (i = 0; i < imax; i++)
