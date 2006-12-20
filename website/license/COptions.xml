@@ -32,7 +32,7 @@
            strict="yes"
            location="commandline"
            hidden="no"
-           default="trial"
+           default="Trial"
            argname="Type">
     <name>t</name>
     <name>type</name>
@@ -76,8 +76,8 @@
            strict="yes"
            location="commandline"
            hidden="no">
-    <name>c</name>
-    <name>code</name>
+    <name>r</name>
+    <name>registration</name>
     <comment>The License Registration Code.</comment>
    </option>
  </options>
