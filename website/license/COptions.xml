@@ -1,0 +1,84 @@
+<!--
+    This file demostrates how to specify options to clo++
+-->
+<cloxx>
+ <program>
+   <comment>Program comment</comment>
+   <description>Program description</description>
+ </program>
+ <config>
+   <autohelp/>
+   <variable name="cxx_namespace" value="license"></variable>
+   <variable name="cxx_header_file" value="COptions.h"></variable>
+   <variable name="cxx_header_def" value="LICENSE_COptions"></variable>
+   <variable name="cxx_class" value="COptions"></variable>
+   <variable name="cxx_source_file" value="COptions.cpp"></variable>
+ </config>
+ <options>
+   <option id="Create"
+           type="flag"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="no"
+           default="false">
+    <name>c</name>
+    <name>create</name>
+    <comment>Create a license code for given user and email.</comment>
+   </option>
+   <option id="Type"
+           type="enum"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="no"
+           default="trial"
+           argname="Type">
+    <name>t</name>
+    <name>type</name>
+    <enum id="Trial" name="trial"/>
+    <enum id="Full" name="full"/>
+    <comment>Create a license of the specified type (default: trial).</comment>
+   </option>
+   <option id="StartDate"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="no">
+    <name>d</name>
+    <name>date</name>
+    <comment>The start date in ISO format YYYY-MM-DD.</comment>
+   </option>
+   <option id="RegisteredUser"
+           type="string"
+           mandatory="yes"
+           strict="yes"
+           location="commandline"
+           hidden="no">
+    <name>u</name>
+    <name>user</name>
+    <comment>The Registered User.</comment>
+   </option>
+   <option id="RegisteredEmail"
+           type="string"
+           mandatory="yes"
+           strict="yes"
+           location="commandline"
+           hidden="no">
+    <name>e</name>
+    <name>email</name>
+    <comment>The Registered Email.</comment>
+   </option>
+   <option id="RegistrationCode"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="no">
+    <name>c</name>
+    <name>code</name>
+    <comment>The License Registration Code.</comment>
+   </option>
+ </options>
+</cloxx>
