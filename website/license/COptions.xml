@@ -80,5 +80,25 @@
     <name>registration</name>
     <comment>The License Registration Code.</comment>
    </option>
+   <option id="Input"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="no">
+    <name>i</name>
+    <name>input</name>
+    <comment>The input file.</comment>
+   </option>
+   <option id="Output"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           hidden="no">
+    <name>o</name>
+    <name>output</name>
+    <comment>The output file.</comment>
+   </option>
  </options>
 </cloxx>

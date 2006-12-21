@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/COptions.h,v $
-   $Revision: 1.1 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/20 20:05:04 $
+   $Date: 2006/12/21 14:21:23 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -63,6 +63,8 @@ namespace license
           Type(Type_Trial)
       {}
       bool Create;
+      std::string Input;
+      std::string Output;
       std::string RegisteredEmail;
       std::string RegisteredUser;
       std::string RegistrationCode;
@@ -78,6 +80,8 @@ namespace license
     {
       typedef int size_type;
       size_type Create;
+      size_type Input;
+      size_type Output;
       size_type RegisteredEmail;
       size_type RegisteredUser;
       size_type RegistrationCode;
@@ -162,7 +166,9 @@ namespace license
         option_StartDate,
         option_RegisteredUser,
         option_RegisteredEmail,
-        option_RegistrationCode
+        option_RegistrationCode,
+        option_Input,
+        option_Output
       } openum_;
 
       enum parser_state {state_option, state_value, state_consume } state_;

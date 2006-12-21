@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/COptions.cpp,v $
-   $Revision: 1.1 $
+   $Revision: 1.2 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/20 20:05:04 $
+   $Date: 2006/12/21 14:13:48 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,6 +42,8 @@ namespace
     "  -c, --create               Create a license code for given user and email.\n"
     "  -d, --date string          The start date in ISO format YYYY-MM-DD.\n"
     "  -e, --email string         The Registered Email.\n"
+    "  -i, --input string         The input file.\n"
+    "  -o, --output string        The output file.\n"
     "  -r, --registration string  The License Registration Code.\n"
     "  -t, --type Type            Create a license of the specified type\n"
     "                             (default: trial).\n"
@@ -167,6 +169,10 @@ void license::COptions::finalize (void)
         {
         case option_Create:
           throw option_error("missing value for 'c' option");
+        case option_Input:
+          throw option_error("missing value for 'i' option");
+        case option_Output:
+          throw option_error("missing value for 'o' option");
         case option_RegisteredEmail:
           throw option_error("missing value for 'e' option");
         case option_RegisteredUser:
@@ -293,6 +299,26 @@ void license::COptions::parse_short_option (char option, int position, opsource 
       state_ = state_value;
       locations_.RegisteredEmail = position;
       return;
+    case 'i':
+      if (source != source_cl) throw option_error("the 'i' option can only be used on the command line");
+      if (locations_.Input)
+        {
+          throw option_error("the 'i' option is only allowed once");
+        }
+      openum_ = option_Input;
+      state_ = state_value;
+      locations_.Input = position;
+      return;
+    case 'o':
+      if (source != source_cl) throw option_error("the 'o' option can only be used on the command line");
+      if (locations_.Output)
+        {
+          throw option_error("the 'o' option is only allowed once");
+        }
+      openum_ = option_Output;
+      state_ = state_value;
+      locations_.Output = position;
+      return;
     case 'r':
       if (source != source_cl) throw option_error("the 'r' option can only be used on the command line");
       if (locations_.RegistrationCode)
@@ -375,6 +401,30 @@ void license::COptions::parse_long_option (const char *option, int position, ops
       state_ = state_value;
       return;
     }
+  else if (strcmp(option, "input") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'i' option is only allowed on the command line");
+      if (locations_.Input)
+        {
+          throw option_error("the 'i' option is only allowed once");
+        }
+      openum_ = option_Input;
+      locations_.Input = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "output") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'o' option is only allowed on the command line");
+      if (locations_.Output)
+        {
+          throw option_error("the 'o' option is only allowed once");
+        }
+      openum_ = option_Output;
+      locations_.Output = position;
+      state_ = state_value;
+      return;
+    }
   else if (strcmp(option, "registration") == 0)
     {
       if (source != source_cl) throw option_error("the 'r' option is only allowed on the command line");
@@ -425,6 +475,16 @@ void license::COptions::parse_value (const char *value)
   switch (openum_)
     {
     case option_Create:
+      break;
+    case option_Input:
+      {
+        options_.Input = value;
+      }
+      break;
+    case option_Output:
+      {
+        options_.Output = value;
+      }
       break;
     case option_RegisteredEmail:
       {
@@ -490,6 +550,12 @@ namespace
 
     if (name_size <= 5 && name.compare("email") == 0)
       matches.push_back("email");
+
+    if (name_size <= 5 && name.compare("input") == 0)
+      matches.push_back("input");
+
+    if (name_size <= 6 && name.compare("output") == 0)
+      matches.push_back("output");
 
     if (name_size <= 12 && name.compare("registration") == 0)
       matches.push_back("registration");
