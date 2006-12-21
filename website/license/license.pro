@@ -1,14 +1,22 @@
 ######################################################################
-# $Revision: 1.1 $ $Author: shoops $ $Date: 2006/12/20 19:57:27 $  
+# $Revision: 1.2 $ $Author: shoops $ $Date: 2006/12/21 18:28:55 $  
 ######################################################################
 
 CONFIG -= qt
+CONFIG += exceptions
+CONFIG += debug
+
+QMAKE_QMAKE = $(QTDIR)/bin/qmake
 
 #Input
-HEADERS += COptions.h
+HEADERS += COptions.h \
+           ../../copasi/commercial/BigInt.h \
+           ../../copasi/commercial/GenericDecode.h
 
 SOURCES += COptions.cpp \
-           license.cpp
+           license.cpp \
+           ../../copasi/commercial/BigInt.c \
+           ../../copasi/commercial/GenericDecode.c
 
 CLOPP = $$system(which clo++)
 

@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/COptions.cpp,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/21 18:07:25 $
+   $Date: 2006/12/21 18:28:55 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -361,37 +361,34 @@ void license::COptions::parse_long_option (const char *option, int position, ops
 
   if (strcmp(option, "create") == 0)
     {
-      source = source; // kill compiler unused variable warning
       if (locations_.Create)
         {
           throw option_error("the 'c' option is only allowed once");
         }
       openum_ = option_Create;
-      locations_.Create = position;
+      locations_.Create = source;
       options_.Create = !options_.Create;
       return;
     }
   else if (strcmp(option, "date") == 0)
     {
-      source = source; // kill compiler unused variable warning
       if (locations_.StartDate)
         {
           throw option_error("the 'd' option is only allowed once");
         }
       openum_ = option_StartDate;
-      locations_.StartDate = position;
+      locations_.StartDate = source;
       state_ = state_value;
       return;
     }
   else if (strcmp(option, "email") == 0)
     {
-      source = source; // kill compiler unused variable warning
       if (locations_.RegisteredEmail)
         {
           throw option_error("the 'e' option is only allowed once");
         }
       openum_ = option_RegisteredEmail;
-      locations_.RegisteredEmail = position;
+      locations_.RegisteredEmail = source;
       state_ = state_value;
       return;
     }
@@ -403,7 +400,7 @@ void license::COptions::parse_long_option (const char *option, int position, ops
           throw option_error("the 'i' option is only allowed once");
         }
       openum_ = option_Input;
-      locations_.Input = position;
+      locations_.Input = source;
       state_ = state_value;
       return;
     }
@@ -415,43 +412,40 @@ void license::COptions::parse_long_option (const char *option, int position, ops
           throw option_error("the 'o' option is only allowed once");
         }
       openum_ = option_Output;
-      locations_.Output = position;
+      locations_.Output = source;
       state_ = state_value;
       return;
     }
   else if (strcmp(option, "registration") == 0)
     {
-      source = source; // kill compiler unused variable warning
       if (locations_.RegistrationCode)
         {
           throw option_error("the 'r' option is only allowed once");
         }
       openum_ = option_RegistrationCode;
-      locations_.RegistrationCode = position;
+      locations_.RegistrationCode = source;
       state_ = state_value;
       return;
     }
   else if (strcmp(option, "type") == 0)
     {
-      source = source; // kill compiler unused variable warning
       if (locations_.Type)
         {
           throw option_error("the 't' option is only allowed once");
         }
       openum_ = option_Type;
-      locations_.Type = position;
+      locations_.Type = source;
       state_ = state_value;
       return;
     }
   else if (strcmp(option, "user") == 0)
     {
-      source = source; // kill compiler unused variable warning
       if (locations_.RegisteredUser)
         {
           throw option_error("the 'u' option is only allowed once");
         }
       openum_ = option_RegisteredUser;
-      locations_.RegisteredUser = position;
+      locations_.RegisteredUser = source;
       state_ = state_value;
       return;
     }
