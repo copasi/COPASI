@@ -19,7 +19,7 @@
            type="flag"
            mandatory="no"
            strict="yes"
-           location="commandline"
+           location="both"
            hidden="no"
            default="false">
     <name>c</name>
@@ -30,7 +30,7 @@
            type="enum"
            mandatory="no"
            strict="yes"
-           location="commandline"
+           location="both"
            hidden="no"
            default="Trial"
            argname="Type">
@@ -44,7 +44,7 @@
            type="string"
            mandatory="no"
            strict="yes"
-           location="commandline"
+           location="both"
            hidden="no">
     <name>d</name>
     <name>date</name>
@@ -54,7 +54,7 @@
            type="string"
            mandatory="yes"
            strict="yes"
-           location="commandline"
+           location="both"
            hidden="no">
     <name>u</name>
     <name>user</name>
@@ -64,7 +64,7 @@
            type="string"
            mandatory="yes"
            strict="yes"
-           location="commandline"
+           location="both"
            hidden="no">
     <name>e</name>
     <name>email</name>
@@ -74,7 +74,7 @@
            type="string"
            mandatory="no"
            strict="yes"
-           location="commandline"
+           location="both"
            hidden="no">
     <name>r</name>
     <name>registration</name>

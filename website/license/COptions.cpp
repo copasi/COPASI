@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/COptions.cpp,v $
-   $Revision: 1.2 $
+   $Revision: 1.3 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/21 14:13:48 $
+   $Date: 2006/12/21 14:21:23 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -270,7 +270,7 @@ void license::COptions::parse_short_option (char option, int position, opsource 
   switch (option)
     {
     case 'c':
-      if (source != source_cl) throw option_error("the 'c' option can only be used on the command line");
+      source = source; // kill compiler unused variable warning
       if (locations_.Create)
         {
           throw option_error("the 'c' option is only allowed once");
@@ -280,7 +280,7 @@ void license::COptions::parse_short_option (char option, int position, opsource 
       locations_.Create = position;
       return;
     case 'd':
-      if (source != source_cl) throw option_error("the 'd' option can only be used on the command line");
+      source = source; // kill compiler unused variable warning
       if (locations_.StartDate)
         {
           throw option_error("the 'd' option is only allowed once");
@@ -290,7 +290,7 @@ void license::COptions::parse_short_option (char option, int position, opsource 
       locations_.StartDate = position;
       return;
     case 'e':
-      if (source != source_cl) throw option_error("the 'e' option can only be used on the command line");
+      source = source; // kill compiler unused variable warning
       if (locations_.RegisteredEmail)
         {
           throw option_error("the 'e' option is only allowed once");
@@ -320,7 +320,7 @@ void license::COptions::parse_short_option (char option, int position, opsource 
       locations_.Output = position;
       return;
     case 'r':
-      if (source != source_cl) throw option_error("the 'r' option can only be used on the command line");
+      source = source; // kill compiler unused variable warning
       if (locations_.RegistrationCode)
         {
           throw option_error("the 'r' option is only allowed once");
@@ -330,7 +330,7 @@ void license::COptions::parse_short_option (char option, int position, opsource 
       locations_.RegistrationCode = position;
       return;
     case 't':
-      if (source != source_cl) throw option_error("the 't' option can only be used on the command line");
+      source = source; // kill compiler unused variable warning
       if (locations_.Type)
         {
           throw option_error("the 't' option is only allowed once");
@@ -340,7 +340,7 @@ void license::COptions::parse_short_option (char option, int position, opsource 
       locations_.Type = position;
       return;
     case 'u':
-      if (source != source_cl) throw option_error("the 'u' option can only be used on the command line");
+      source = source; // kill compiler unused variable warning
       if (locations_.RegisteredUser)
         {
           throw option_error("the 'u' option is only allowed once");
@@ -367,7 +367,7 @@ void license::COptions::parse_long_option (const char *option, int position, ops
 
   if (strcmp(option, "create") == 0)
     {
-      if (source != source_cl) throw option_error("the 'c' option is only allowed on the command line");
+      source = source; // kill compiler unused variable warning
       if (locations_.Create)
         {
           throw option_error("the 'c' option is only allowed once");
@@ -379,7 +379,7 @@ void license::COptions::parse_long_option (const char *option, int position, ops
     }
   else if (strcmp(option, "date") == 0)
     {
-      if (source != source_cl) throw option_error("the 'd' option is only allowed on the command line");
+      source = source; // kill compiler unused variable warning
       if (locations_.StartDate)
         {
           throw option_error("the 'd' option is only allowed once");
@@ -391,7 +391,7 @@ void license::COptions::parse_long_option (const char *option, int position, ops
     }
   else if (strcmp(option, "email") == 0)
     {
-      if (source != source_cl) throw option_error("the 'e' option is only allowed on the command line");
+      source = source; // kill compiler unused variable warning
       if (locations_.RegisteredEmail)
         {
           throw option_error("the 'e' option is only allowed once");
@@ -427,7 +427,7 @@ void license::COptions::parse_long_option (const char *option, int position, ops
     }
   else if (strcmp(option, "registration") == 0)
     {
-      if (source != source_cl) throw option_error("the 'r' option is only allowed on the command line");
+      source = source; // kill compiler unused variable warning
       if (locations_.RegistrationCode)
         {
           throw option_error("the 'r' option is only allowed once");
@@ -439,7 +439,7 @@ void license::COptions::parse_long_option (const char *option, int position, ops
     }
   else if (strcmp(option, "type") == 0)
     {
-      if (source != source_cl) throw option_error("the 't' option is only allowed on the command line");
+      source = source; // kill compiler unused variable warning
       if (locations_.Type)
         {
           throw option_error("the 't' option is only allowed once");
@@ -451,7 +451,7 @@ void license::COptions::parse_long_option (const char *option, int position, ops
     }
   else if (strcmp(option, "user") == 0)
     {
-      if (source != source_cl) throw option_error("the 'u' option is only allowed on the command line");
+      source = source; // kill compiler unused variable warning
       if (locations_.RegisteredUser)
         {
           throw option_error("the 'u' option is only allowed once");
