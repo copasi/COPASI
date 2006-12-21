@@ -158,7 +158,22 @@ void initCopasi();
     }
 }
 
-
+%pragma(java) jniclasscode=
+%{
+  static 
+  {
+    try 
+    {
+      System.loadLibrary("CopasiJava");
+    }
+    catch(UnsatisfiedLinkError e)
+    {
+      System.err.println("Native code library failed to load. \n" + e);
+      System.exit(1);
+    }
+		initCopasi();
+  }
+%}
 
 /*  
 %typemap(jni) CModelEntity* "jobject"
