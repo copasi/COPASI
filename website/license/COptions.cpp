@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/COptions.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/21 14:21:23 $
+   $Date: 2006/12/21 18:07:25 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -79,7 +79,7 @@ void license::COptions::parse(int argc, char *argv[], bool call_finalize)
   if (call_finalize) finalize();
 }
 //#########################################################################
-void license::COptions::parse(const char * fileName)
+void license::COptions::parse(const char * fileName, bool call_finalize)
 {
   int LineCounter = 0;
   std::string Line;
@@ -97,9 +97,9 @@ void license::COptions::parse(const char * fileName)
       throw option_error(error.str());
     }
 
-  while (true)
+  try
     {
-      try
+      while (true)
         {
           std::getline(File, Line);
           LineCounter++;
@@ -143,18 +143,18 @@ void license::COptions::parse(const char * fileName)
 
               if (Value.length()) parse_element(Value.c_str(), 0, source_cf);
             }
-
-          finalize();
         }
 
-      catch (license::option_error &e)
-        {
-          std::ostringstream error;
-          error << "error reading file: '" << fileName << "(" << LineCounter
-          << ")': " << e.what();
+      if (call_finalize) finalize();
+    }
 
-          throw option_error(error.str());
-        }
+  catch (license::option_error &e)
+    {
+      std::ostringstream error;
+      error << "error reading file: '" << fileName << "(" << LineCounter
+      << ")': " << e.what();
+
+      throw option_error(error.str());
     }
 
   File.clear();
@@ -270,34 +270,31 @@ void license::COptions::parse_short_option (char option, int position, opsource 
   switch (option)
     {
     case 'c':
-      source = source; // kill compiler unused variable warning
       if (locations_.Create)
         {
           throw option_error("the 'c' option is only allowed once");
         }
       openum_ = option_Create;
       options_.Create = !options_.Create;
-      locations_.Create = position;
+      locations_.Create = source;
       return;
     case 'd':
-      source = source; // kill compiler unused variable warning
       if (locations_.StartDate)
         {
           throw option_error("the 'd' option is only allowed once");
         }
       openum_ = option_StartDate;
       state_ = state_value;
-      locations_.StartDate = position;
+      locations_.StartDate = source;
       return;
     case 'e':
-      source = source; // kill compiler unused variable warning
       if (locations_.RegisteredEmail)
         {
           throw option_error("the 'e' option is only allowed once");
         }
       openum_ = option_RegisteredEmail;
       state_ = state_value;
-      locations_.RegisteredEmail = position;
+      locations_.RegisteredEmail = source;
       return;
     case 'i':
       if (source != source_cl) throw option_error("the 'i' option can only be used on the command line");
@@ -307,7 +304,7 @@ void license::COptions::parse_short_option (char option, int position, opsource 
         }
       openum_ = option_Input;
       state_ = state_value;
-      locations_.Input = position;
+      locations_.Input = source;
       return;
     case 'o':
       if (source != source_cl) throw option_error("the 'o' option can only be used on the command line");
@@ -317,37 +314,34 @@ void license::COptions::parse_short_option (char option, int position, opsource 
         }
       openum_ = option_Output;
       state_ = state_value;
-      locations_.Output = position;
+      locations_.Output = source;
       return;
     case 'r':
-      source = source; // kill compiler unused variable warning
       if (locations_.RegistrationCode)
         {
           throw option_error("the 'r' option is only allowed once");
         }
       openum_ = option_RegistrationCode;
       state_ = state_value;
-      locations_.RegistrationCode = position;
+      locations_.RegistrationCode = source;
       return;
     case 't':
-      source = source; // kill compiler unused variable warning
       if (locations_.Type)
         {
           throw option_error("the 't' option is only allowed once");
         }
       openum_ = option_Type;
       state_ = state_value;
-      locations_.Type = position;
+      locations_.Type = source;
       return;
     case 'u':
-      source = source; // kill compiler unused variable warning
       if (locations_.RegisteredUser)
         {
           throw option_error("the 'u' option is only allowed once");
         }
       openum_ = option_RegisteredUser;
       state_ = state_value;
-      locations_.RegisteredUser = position;
+      locations_.RegisteredUser = source;
       return;
     case 'h':
       if (source != source_cl) break;

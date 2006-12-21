@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/website/license/Attic/COptions.h,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
    $Author: shoops $
-   $Date: 2006/12/21 14:21:23 $
+   $Date: 2006/12/21 18:07:25 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -139,7 +139,7 @@ namespace license
       void parse(int argc, char *argv[], bool call_finalize = true);
 
       /// parse a file
-      void parse(const char * fileName);
+      void parse(const char * fileName, bool call_finalize = true);
 
       /// finalize all parsing (eg. check for mandatory options)
       void finalize (void);
