@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.h,v $
-   $Revision: 1.8 $
+   $Revision: 1.9 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:21:45 $
+   $Author: ssahle $
+   $Date: 2007/01/02 12:01:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -57,18 +57,6 @@ class SensitivitiesWidget : public TaskWidget
       Variable,
       SecondVariable
     };
-    //QCheckBox* taskJacobian;
-    //QCheckBox* taskStability;
-    //QLabel* taskDescriptionLabel;
-    //QLabel* parameterValueLabel;
-    //QCheckBox* bExecutable;
-    // QCheckBox* setInitialState;
-    //QLineEdit* taskName;
-    //QTable* parameterTable;
-    //QPushButton* bRunButton;
-    //QPushButton* cancelChange;
-    //QPushButton* ExportFileButton;
-    //QPushButton* reportDefinitionButton;
 
   public slots:
     //virtual void CancelButtonClicked();
@@ -108,6 +96,28 @@ class SensitivitiesWidget : public TaskWidget
     void initCombos(CSensProblem *);
     bool initCombos(CSensItem *, SensitivitiesWidget::ChoiceType);
 
+    /*
+     * This checks if the combo box is set to "single object" and only then enables
+     * the two given widgets.
+     */
+    void updateLineeditEnable(const QComboBox* box, QWidget* w1, QWidget* w2);
+
+    /*
+     * This calls updateLineeditEnable() for all three combo boxes
+     */
+    void updateAllLineditEnable();
+
+    /*
+     * if the combo box is set to "single object" check if the lineedit
+     * contains a valid CN. Returns FALSE if invalid
+     */
+    bool checkSingleObject(const QComboBox* box, CCopasiObject * object);
+
+    /*
+     * enables the run button if the contents of the widget is valid
+     */
+    void updateRunButton();
+
     void updateFunctionsStringList(CSensProblem::SubTaskType);
     void updateVariablesStringList(CSensProblem::SubTaskType);
 
@@ -118,20 +128,6 @@ class SensitivitiesWidget : public TaskWidget
     std::vector<CObjectLists::ListType> mVariablesIndexTable;
     std::vector<CObjectLists::ListType> mFunctionsIndexTable;
 
-    // bitfield for checking if all mandatory choices are done:
-    // 1 - SubTaskChooser
-    // 2 - FunctionChooser
-    // 4 - VariableChooser
-    int mChoicesDone;
-
-    enum Choice {
-      Choice_SubTask = 1,
-      Choice_Function = 2,
-      Choice_Variable = 4,
-      Choice_All = 7
-    };
-
-    CObjectLists::ListType mSubTask;
     CObjectLists::ListType mFunction;
     CObjectLists::ListType mVariable;
     CObjectLists::ListType mVariable2;

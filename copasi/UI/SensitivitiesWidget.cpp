@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/SensitivitiesWidget.cpp,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:08:46 $
+   $Author: ssahle $
+   $Date: 2007/01/02 12:01:46 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -137,13 +137,15 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   mpHeaderWidget->setTaskName("Sensitivities");
   addHeaderToGrid();
 
-  addHLineToGrid(mpMethodLayout, 2, 2);
+  //addHLineToGrid(mpMethodLayout, 2, 2);
 
-  QSpacerItem* spacer1 = new QSpacerItem(0, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
-  mpMethodLayout->addItem(spacer1, 3, 3);
+  //QSpacerItem* spacer1 = new QSpacerItem(0, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
+  //mpMethodLayout->addItem(spacer1, 3, 3);
+
+  //******** subtask ******************
 
   TextLabel1 = new QLabel(this, "TextLabel1");
-  TextLabel1->setText(trUtf8("Subtask Method:"));
+  TextLabel1->setText(trUtf8("Subtask Method"));
   TextLabel1->setAlignment(int(QLabel::AlignVCenter
                                | QLabel::AlignRight));
   mpMethodLayout->addWidget(TextLabel1, fieldStart + 1, 0);
@@ -157,8 +159,10 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
 
   addHLineToGrid(mpMethodLayout, fieldStart + 3, 2);
 
+  //*********** function *******************
+
   TextLabel2 = new QLabel(this, "TextLabel2");
-  TextLabel2->setText(trUtf8("Function:"));
+  TextLabel2->setText(trUtf8("Function"));
   TextLabel2->setAlignment(int(QLabel::AlignVCenter
                                | QLabel::AlignRight));
   mpMethodLayout->addWidget(TextLabel2, fieldStart + 4, 0);
@@ -173,17 +177,19 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   mpMethodLayout->addMultiCellWidget(FunctionLineEdit, fieldStart + 5, fieldStart + 5, 1, 1);
   FunctionLineEdit->setText("[Please Choose Object.] --->");
   FunctionLineEdit->setReadOnly(true);
-  FunctionLineEdit->hide();
+  FunctionLineEdit->setEnabled(false); //hide();
 
   SingleFunctionChooser = new QToolButton(this, "SingleFunctionChooser");
   mpMethodLayout->addWidget(SingleFunctionChooser, fieldStart + 5, 2);
   SingleFunctionChooser->setMaximumSize(lineEditFormat.height(),
                                         lineEditFormat.height());
   SingleFunctionChooser->setIconSet(QIconSet(img));
-  SingleFunctionChooser->hide();
+  SingleFunctionChooser->setEnabled(false); //hide();
+
+  //*********** variable 1 **********************
 
   TextLabel3 = new QLabel(this, "TextLabel3");
-  TextLabel3->setText(trUtf8("Variable:"));
+  TextLabel3->setText(trUtf8("Variable"));
   TextLabel3->setAlignment(int(QLabel::AlignVCenter
                                | QLabel::AlignRight));
   mpMethodLayout->addWidget(TextLabel3, fieldStart + 6, 0);
@@ -197,14 +203,16 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   mpMethodLayout->addMultiCellWidget(VariableLineEdit, fieldStart + 7, fieldStart + 7, 1, 1);
   VariableLineEdit->setText("[Please Choose Object.] --->");
   VariableLineEdit->setReadOnly(true);
-  VariableLineEdit->hide();
+  VariableLineEdit->setEnabled(false); //hide();
 
   SingleVariableChooser = new QToolButton(this, "SingleVariableChooser");
   mpMethodLayout->addWidget(SingleVariableChooser, fieldStart + 7, 2);
   SingleVariableChooser->setMaximumSize(lineEditFormat.height(),
                                         lineEditFormat.height());
   SingleVariableChooser->setIconSet(QIconSet(img));
-  SingleVariableChooser->hide();
+  SingleVariableChooser->setEnabled(false); //hide();
+
+  //********** variable 2 **********************
 
   TextLabel4 = new QLabel(this, "TextLabel4");
   TextLabel4->setText(trUtf8("Second Variable"));
@@ -221,14 +229,16 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   mpMethodLayout->addMultiCellWidget(Variable2LineEdit, fieldStart + 9, fieldStart + 9, 1, 1);
   Variable2LineEdit->setText("[Please Choose Object.] --->");
   Variable2LineEdit->setReadOnly(true);
-  Variable2LineEdit->hide();
+  Variable2LineEdit->setEnabled(false); //hide();
 
   SingleVariable2Chooser = new QToolButton(this, "SingleVariable2Chooser");
   mpMethodLayout->addWidget(SingleVariable2Chooser, fieldStart + 9, 2);
   SingleVariable2Chooser->setMaximumSize(lineEditFormat.height(),
                                          lineEditFormat.height());
   SingleVariable2Chooser->setIconSet(QIconSet(img));
-  SingleVariable2Chooser->hide();
+  SingleVariable2Chooser->setEnabled(false); //hide();
+
+  //**********************************************
 
   QSpacerItem* spacer3 = new QSpacerItem(0, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
   mpMethodLayout->addItem(spacer3, fieldStart + 10, fieldStart + 10);
@@ -260,7 +270,7 @@ SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, WFla
   connect(SingleVariable2Chooser, SIGNAL(clicked()),
           this, SLOT(on_SingleVariable2Chooser_clicked()));
 
-  mChoicesDone = 0;
+  //mChoicesDone = 0;
 }
 
 /*
@@ -397,11 +407,14 @@ bool SensitivitiesWidget::loadTask()
       mpSingleFunction = CCopasiContainer::ObjectFromName(tmp.getSingleObjectCN());
     }
 
-  tmp = problem->getVariables(0);
-  if (tmp.isSingleObject())
+  if (problem->getNumberOfVariables() > 0)
     {
-      mVariable = CObjectLists::SINGLE_OBJECT;
-      mpSingleVariable = CCopasiContainer::ObjectFromName(tmp.getSingleObjectCN());
+      tmp = problem->getVariables(0);
+      if (tmp.isSingleObject())
+        {
+          mVariable = CObjectLists::SINGLE_OBJECT;
+          mpSingleVariable = CCopasiContainer::ObjectFromName(tmp.getSingleObjectCN());
+        }
     }
 
   if (problem->getNumberOfVariables() > 1)
@@ -418,14 +431,67 @@ bool SensitivitiesWidget::loadTask()
 
   mChanged = false;
 
+  updateAllLineditEnable();
+  updateRunButton();
   return true;
 }
+
+//**************************************************************************
+
+void SensitivitiesWidget::updateLineeditEnable(const QComboBox* box, QWidget* w1, QWidget* w2)
+{
+  if (!box) return;
+  bool enable = false;
+
+  if (box->currentText() == CObjectLists::ListTypeName[CObjectLists::SINGLE_OBJECT])
+    enable = true;
+
+  if (w1) w1->setEnabled(enable);
+  if (w2) w2->setEnabled(enable);
+}
+
+void SensitivitiesWidget::updateAllLineditEnable()
+{
+  updateLineeditEnable(FunctionChooser, FunctionLineEdit, SingleFunctionChooser);
+  updateLineeditEnable(VariableChooser, VariableLineEdit, SingleVariableChooser);
+  updateLineeditEnable(Variable2Chooser, Variable2LineEdit, SingleVariable2Chooser);
+}
+
+bool SensitivitiesWidget::checkSingleObject(const QComboBox* box, CCopasiObject * object)
+{
+  if (box->currentText() != CObjectLists::ListTypeName[CObjectLists::SINGLE_OBJECT])
+    return true;
+
+  if (object) return true;
+
+  return false;
+}
+
+void SensitivitiesWidget::updateRunButton()
+{
+  bool enable = true;
+
+  if (VariableChooser->currentText() == CObjectLists::ListTypeName[CObjectLists::EMPTY_LIST])
+    enable = false;
+
+  //single object case
+  if (!checkSingleObject(FunctionChooser, mpSingleFunction))
+    enable = false;
+  if (!checkSingleObject(VariableChooser, mpSingleVariable))
+    enable = false;
+  if (!checkSingleObject(Variable2Chooser, mpSingleVariable2))
+    enable = false;
+
+  mpBtnWidget->mpBtnRun->setEnabled(enable);
+}
+
+//************************************************************************
 
 void
 SensitivitiesWidget::initCombos()
 {
   QStringList StringList;
-  std::vector<int> mFunctionIndexTable, mVariableIndexTable;
+  //std::vector<int> mFunctionIndexTable, mVariableIndexTable;
 
   // SubTaskChooser combo
   int i = 0;
@@ -436,14 +502,14 @@ SensitivitiesWidget::initCombos()
     }
 
   SubTaskChooser->insertStringList(StringList);
+  StringList.clear();
 
   // FunctionChooser combo
-  StringList.clear();
-  updateFunctionsStringList(CSensProblem::unset);
+  updateFunctionsStringList(CSensProblem::Evaluation);
   FunctionChooser->insertStringList(mFunctionsStringList);
 
   // VariableChooser combo
-  updateVariablesStringList(CSensProblem::unset);
+  updateVariablesStringList(CSensProblem::Evaluation);
   VariableChooser->insertStringList(mVariablesStringList);
   Variable2Chooser->insertStringList(mVariablesStringList);
 }
@@ -553,26 +619,13 @@ SensitivitiesWidget::updateVariablesStringList(CSensProblem::SubTaskType type)
     }
 }
 
-// SLOTs
+// ******************* SLOTs *******************************+
+
 void
 SensitivitiesWidget::on_SubTaskChooser_activated(int index)
 {
   QStringList list;
   std::vector<CObjectLists::ListType>::iterator iter;
-
-  bool enabled = true;
-  if (index == 0)
-    {
-      enabled = false;
-      mChoicesDone &= ~Choice_SubTask;
-    }
-  else
-    {
-      mChoicesDone |= Choice_SubTask;
-      enabled = mChoicesDone == Choice_All;
-    }
-
-  mpBtnWidget->mpBtnRun->setEnabled(enabled);
 
   // memorise the state of the other combo boxes:
   CObjectLists::ListType oldChoiceFunc =
@@ -612,89 +665,44 @@ SensitivitiesWidget::on_SubTaskChooser_activated(int index)
     }
 
   mSubTaskType = (CSensProblem::SubTaskType)index;
+
+  updateAllLineditEnable();
+  updateRunButton();
 }
 
 void
 SensitivitiesWidget::on_FunctionChooser_activated(int index)
 {
-  bool enabled = false;
-  bool editenabled = false;
-
-  if (index == 0)
-    mChoicesDone &= ~Choice_Function;
-  else if (index == 1) // Single Object
-    {
-      editenabled = true;
-      if (mpSingleFunction)
-        mChoicesDone |= Choice_Function;
-      else
-        {
-          mChoicesDone &= ~Choice_Function;
-
-          index = 0;                       // handled in
-          // on_SingleFunctionChooser_licked()
-        }
-    }
-  else
-    mChoicesDone |= Choice_Function;
-
-  enabled = (mChoicesDone == Choice_All);
-
-  SingleFunctionChooser->setShown(editenabled);
-  FunctionLineEdit->setShown(editenabled);
-
-  mpBtnWidget->mpBtnRun->setEnabled(enabled);
 
   mFunction = mFunctionsIndexTable[index];
+
+  updateAllLineditEnable();
+  updateRunButton();
 }
 
 void
 SensitivitiesWidget::on_VariableChooser_activated(int index)
 {
-  bool enabled = false;
-  bool editenabled = false;
-  if (index == 0)
-    mChoicesDone &= ~Choice_Variable;
-  else if (index == 1) // Single Object
-    {
-      editenabled = true;
-      if (mpSingleVariable)
-        mChoicesDone |= Choice_Variable;
-      else
-        {
-          mChoicesDone &= ~Choice_Variable;
-          index = 0;                      // handled in LineEdit slots, see
-        }                                 // on_SingleVariableChooser_clicked()
-    }
-  else
-    mChoicesDone |= Choice_Variable;
-
-  enabled = (mChoicesDone == Choice_All);
-
-  VariableLineEdit->setShown(editenabled);
-  SingleVariableChooser->setShown(editenabled);
-
-  mpBtnWidget->mpBtnRun->setEnabled(enabled);
-
   mVariable = mVariablesIndexTable[index];
+
+  updateAllLineditEnable();
+  updateRunButton();
 }
 
 void
 SensitivitiesWidget::on_Variable2Chooser_activated(int index)
 {
-  bool editenabled = false;
-
   if (index == 1) // Single Object:  handled in the slots of LineEdit.
     {
-      editenabled = true;
+      //  editenabled = true;
       if (!mpSingleVariable2)
         index = 0;  // see on_SingleVariable2Chooser_clicked()
     }
 
   mVariable2 = mVariablesIndexTable[index];
 
-  SingleVariable2Chooser->setShown(editenabled);
-  Variable2LineEdit->setShown(editenabled);
+  updateAllLineditEnable();
+  updateRunButton();
 }
 
 void
@@ -715,14 +723,14 @@ SensitivitiesWidget::on_SingleFunctionChooser_clicked()
       chosenObject = selection->at(0);
       if (chosenObject)
         {
-          mChoicesDone |= Choice_Function;
+          //          mChoicesDone |= Choice_Function;
           FunctionLineEdit->setText(FROM_UTF8(chosenObject->getObjectDisplayName()));
           mpSingleFunction = chosenObject;
           mFunction = CObjectLists::SINGLE_OBJECT;
         }
     }
 
-  mpBtnWidget->mpBtnRun->setEnabled((mChoicesDone == Choice_All));
+  updateRunButton();
 }
 
 void
@@ -743,14 +751,13 @@ SensitivitiesWidget::on_SingleVariableChooser_clicked()
       chosenObject = selection->at(0);
       if (chosenObject)
         {
-          mChoicesDone |= Choice_Variable;
           VariableLineEdit->setText(FROM_UTF8(chosenObject->getObjectDisplayName()));
           mpSingleVariable = chosenObject;
           mVariable = CObjectLists::SINGLE_OBJECT;
         }
     }
 
-  mpBtnWidget->mpBtnRun->setEnabled((mChoicesDone == Choice_All));
+  updateRunButton();
 }
 
 void
@@ -776,4 +783,6 @@ SensitivitiesWidget::on_SingleVariable2Chooser_clicked()
           mVariable2 = CObjectLists::SINGLE_OBJECT;
         }
     }
+
+  updateRunButton();
 }
