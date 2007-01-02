@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.cpp,v $
-   $Revision: 1.3 $
+   $Revision: 1.4 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:42 $
+   $Author: ssahle $
+   $Date: 2007/01/02 12:02:13 $
    End CVS Header */
 
 // Copyright © 2006 by Pedro Mendes, Virginia Tech Intellectual
@@ -31,6 +31,8 @@
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "utilities/CCopasiVector.h"
+
+#include "parametertable.h" //for color table item
 //#include "report/CKeyFactory.h"
 //#include "model/CModel.h"
 
@@ -44,6 +46,8 @@ ArrayAnnotationsWidget::ArrayAnnotationsWidget(QWidget* parent, const char* name
   mpSelectionTable->setTopMargin(0);
   mpSelectionTable->setNumCols(2);
   mpSelectionTable->setColumnStretchable(1, true);
+
+  mpSelectionTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
   mpContentTable = new QTable(this);
   mpContentTable->setReadOnly(true);
@@ -256,6 +260,27 @@ finish:
   storeCurrentCombos();
 }
 
+QColor ArrayAnnotationsWidget::getColor(const C_FLOAT64 & number)
+{
+  QColor color;
+  switch (mColorCoding)
+    {
+    case NOCODING:
+      color = QColor(250, 250, 250);
+      break;
+
+    case CODING1:
+      if (fabs(number) < 1e-10)
+        color = QColor(250, 250, 250);
+      else if (number > 0)
+        color = QColor(200, 255, 200);
+      else
+        color = QColor(255, 200, 200);
+      break;
+    }
+  return color;
+}
+
 void ArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_INT32 colIndex,
                                        CCopasiAbstractArray::index_type & index)
 {
@@ -288,7 +313,18 @@ void ArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex, unsigned C_INT
       {
         index[rowIndex] = i;
         index[colIndex] = j;
-        mpContentTable->setText(i, j, QString::number((*mpArray->array())[index]));
+
+        if (mColorCoding == NOCODING)
+          {
+            mpContentTable->setText(i, j, QString::number((*mpArray->array())[index]));
+          }
+        else
+          {
+            C_FLOAT64 number = (*mpArray->array())[index];
+            QColor color = getColor(number);
+            mpContentTable->setItem(i, j, new ColorTableItem(mpContentTable, QTableItem::Never, color,
+                                    QString::number(number)));
+          }
       }
 }
 
@@ -314,6 +350,8 @@ void ArrayAnnotationsWidget::fillTable(unsigned C_INT32 rowIndex,
 
 //*******************************************************************************************
 
+#include <qtabwidget.h>
+
 /*
  *  Constructs a CQSensResultWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -328,15 +366,29 @@ CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, WFlags
 
   mWidgetLayout = new QGridLayout(this, 1, 1, 11, 6, "CQSensResultWidgetLayout");
 
-  // **********  Exponents **************
+  // **********  Label **************
   mLabelTitle = new QLabel(this, "SensLabel");
   mLabelTitle->setText("Sensitivities");
   mLabelTitle->setAlignment(int(QLabel::AlignVCenter
-                                | QLabel::AlignRight));
+                                | QLabel::AlignLeft));
+  mLabelTitle->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   mWidgetLayout->addWidget(mLabelTitle, 0, 0);
 
-  mArrayWidget = new ArrayAnnotationsWidget(this, "ArrayWidget");
-  mWidgetLayout->addMultiCellWidget(mArrayWidget, 1, 2, 0, 2);
+  // tab widget
+  mpTab = new QTabWidget(this, "TabWidget");
+  mWidgetLayout->addMultiCellWidget(mpTab, 1, 2, 0, 2);
+
+  // unscaled array
+  mArrayWidget = new ArrayAnnotationsWidget(mpTab, "ArrayWidget");
+  mArrayWidget->setColorCoding(ArrayAnnotationsWidget::CODING1);
+  //mWidgetLayout->addMultiCellWidget(mArrayWidget, 1, 2, 0, 2);
+  mpTab->addTab(mArrayWidget, "unscaled");
+
+  //scaled array
+  mArrayWidgetScaled = new ArrayAnnotationsWidget(mpTab, "ArrayWidget2");
+  mArrayWidgetScaled->setColorCoding(ArrayAnnotationsWidget::CODING1);
+  //mWidgetLayout->addMultiCellWidget(mArrayWidget, 1, 2, 0, 2);
+  mpTab->addTab(mArrayWidgetScaled, "scaled");
 
   /*  QSpacerItem* spacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
     mWidgetLayout->addItem(spacer, 5, 0);
@@ -373,21 +425,31 @@ void CQSensResultWidget::newResult()
     dynamic_cast<CSensTask*>((*CCopasiDataModel::Global->getTaskList())["Sensitivities"]);
   if (!pTask)
     {
-      mArrayWidget->setArrayAnnotation(NULL);
+      clearArrays();
       return;
     }
 
   CSensProblem * pProblem = dynamic_cast< CSensProblem * >(pTask->getProblem());
   if (!pProblem)
     {
-      mArrayWidget->setArrayAnnotation(NULL);
+      clearArrays();
       return;
     }
 
   mpResult = pProblem->getResultAnnotated();
+  mpScaledResult = pProblem->getScaledResultAnnotated();
 
   mArrayWidget->setArrayAnnotation(mpResult);
+  mArrayWidgetScaled->setArrayAnnotation(mpScaledResult);
 }
+
+void CQSensResultWidget::clearArrays()
+{
+  mArrayWidget->setArrayAnnotation(NULL);
+  mArrayWidgetScaled->setArrayAnnotation(NULL);
+}
+
+//*************************************
 
 bool CQSensResultWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action
                                 C_UNUSED(action), const std::string & C_UNUSED(key))
@@ -411,20 +473,20 @@ bool CQSensResultWidget::enter(const std::string & C_UNUSED(key))
     dynamic_cast<CSensTask*>((*CCopasiDataModel::Global->getTaskList())["Sensitivities"]);
   if (!pTask)
     {
-      mArrayWidget->setArrayAnnotation(NULL);
+      clearArrays();
       return false;
     }
 
   CSensProblem * pProblem = dynamic_cast< CSensProblem * >(pTask->getProblem());
   if (!pProblem)
     {
-      mArrayWidget->setArrayAnnotation(NULL);
+      clearArrays();
       return false;
     }
 
   if (mpResult != pProblem->getResultAnnotated())
     {
-      mArrayWidget->setArrayAnnotation(NULL);
+      clearArrays();
       return false;
     }
 

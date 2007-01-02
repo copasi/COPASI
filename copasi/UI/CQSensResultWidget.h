@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQSensResultWidget.h,v $
-   $Revision: 1.4 $
+   $Revision: 1.5 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/28 00:20:16 $
+   $Author: ssahle $
+   $Date: 2007/01/02 12:02:13 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -35,6 +35,10 @@ class ArrayAnnotationsWidget : public QVBox
     ~ArrayAnnotationsWidget();
 
     void setArrayAnnotation(const CArrayAnnotation * pArray);
+
+    enum ColorCoding {NOCODING, CODING1 };
+
+    void setColorCoding(ColorCoding cc) {mColorCoding = cc;};
 
   protected slots:
 
@@ -76,11 +80,22 @@ class ArrayAnnotationsWidget : public QVBox
 
     const CArrayAnnotation * mpArray;
 
+    ColorCoding mColorCoding;
+
     /**
      * the current active item of all the combo boxes
      */
     std::vector<C_INT32> combos;
+
+    /**
+     * construct a color for a number
+     */
+    QColor getColor(const C_FLOAT64 & number);
   };
+
+//*****************************************************
+
+class QTabWidget;
 
 class CQSensResultWidget : public CopasiWidget
   {
@@ -99,15 +114,20 @@ class CQSensResultWidget : public CopasiWidget
   protected slots:
 
   protected:
-    bool loadFromBackend();
+    //bool loadFromBackend();
+    void clearArrays();
 
     QGridLayout* mWidgetLayout;
 
     QLabel* mLabelTitle;
 
+    QTabWidget* mpTab;
+
     ArrayAnnotationsWidget* mArrayWidget;
+    ArrayAnnotationsWidget* mArrayWidgetScaled;
 
     const CArrayAnnotation * mpResult;
+    const CArrayAnnotation * mpScaledResult;
 
     //QLabel* mLabelSum;
     //QLabel* mLabelDivergence;
