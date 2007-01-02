@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.h,v $
-   $Revision: 1.7 $
+   $Revision: 1.8 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/09/18 12:51:03 $
+   $Date: 2007/01/02 11:59:11 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -46,15 +46,17 @@ class CObjectLists
       GLOBAL_PARAMETER_INITIAL_VALUES,
       GLOBAL_PARAMETER_VALUES,
       NON_CONST_GLOBAL_PARAMETER_VALUES,
+      CONST_GLOBAL_PARAMETER_VALUES,
       ODE_GLOBAL_PARAMETER_VALUES,
       ASS_GLOBAL_PARAMETER_VALUES,
       GLOBAL_PARAMETER_RATES,
 
       COMPARTMENTS,
       COMPARTMENT_VOLUMES,
-      //COMPARTMENT_INITIAL_VOLUMES,
-      //COMPARTMENT_RATES,
+      COMPARTMENT_INITIAL_VOLUMES,
+      COMPARTMENT_RATES,
 
+      ALL_INITIAL_VALUES,
       ALL_LOCAL_PARAMETER_VALUES,
 
       ALL_PARAMETER_VALUES,

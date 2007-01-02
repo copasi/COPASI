@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.cpp,v $
-   $Revision: 1.12 $
+   $Revision: 1.13 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:44 $
+   $Author: ssahle $
+   $Date: 2007/01/02 11:59:11 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -42,13 +42,17 @@ const std::string CObjectLists::ListTypeName[] =
     "Global Quantity Initial Values",
     "Global Quantity Values",
     "Non-Constant Global Quantity Values",
+    "Constant Global Quantity Values",
     "Values of Global Quantities with ODE",
     "Values of Global Quantities with Assignment",
     "Global Quantity Rates",
 
     "Compartments",
     "Compartment Volumes",
+    "Compartment Initial Volumes",
+    "Compartment Volume Rates",
 
+    "All initial Values",
     "Local Parameter Values",
     "All Parameter Values",
     "All Parameter and Initial Values",
@@ -205,6 +209,17 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
       }
       break;
 
+    case CONST_GLOBAL_PARAMETER_VALUES:
+      {
+        const CCopasiVectorN< CModelValue > & params = model->getModelValues();
+        for (i = 0; i < params.size(); ++i)
+          if (params[i]->getStatus() == CModelEntity::FIXED
+              || params[i]->isUsedOnce())
+            ret.push_back(const_cast<CCopasiObject*>
+                          (params[i]->getObject(CCopasiObjectName("Reference=Value"))));
+      }
+      break;
+
     case ODE_GLOBAL_PARAMETER_VALUES:
       {
         const CCopasiVectorN< CModelValue > & params = model->getModelValues();
@@ -239,8 +254,20 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
 
     case COMPARTMENTS:
     case COMPARTMENT_VOLUMES:
-      //case COMPARTMENT_INITIAL_VOLUMES:
-      //case COMPARTMENT_RATES:
+    case COMPARTMENT_INITIAL_VOLUMES:
+    case COMPARTMENT_RATES:
+      break;
+
+    case ALL_INITIAL_VALUES:
+      {
+        ret = getListOfObjects(ALL_METAB_INITIAL_CONCENTRATIONS, model);
+        ObjectList l2 = getListOfObjects(GLOBAL_PARAMETER_INITIAL_VALUES, model);
+
+        ObjectList::const_iterator it;
+        for (it = l2.begin(); it != l2.end(); ++it) ret.push_back(*it);
+
+        //TODO: Compartments
+      }
       break;
 
     case ALL_LOCAL_PARAMETER_VALUES:
@@ -261,13 +288,27 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
                                     (par->getObject(CCopasiObjectName("Reference=Value"))));
                   }
           }
-
-        //ret.push_back(reacs[i]);
       }
       break;
 
     case ALL_PARAMETER_VALUES:
+      {
+        ret = getListOfObjects(CONST_GLOBAL_PARAMETER_VALUES, model);
+        ObjectList l2 = getListOfObjects(ALL_LOCAL_PARAMETER_VALUES, model);
+
+        ObjectList::const_iterator it;
+        for (it = l2.begin(); it != l2.end(); ++it) ret.push_back(*it);
+      }
+      break;
+
     case ALL_PARAMETER_AND_INITIAL_VALUES:
+      {
+        ret = getListOfObjects(ALL_PARAMETER_VALUES, model);
+        ObjectList l2 = getListOfObjects(ALL_INITIAL_VALUES, model);
+
+        ObjectList::const_iterator it;
+        for (it = l2.begin(); it != l2.end(); ++it) ret.push_back(*it);
+      }
       break;
     }
 
