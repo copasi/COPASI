@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/CopasiDataModel/CCopasiDataModel.cpp,v $
-   $Revision: 1.86 $
+   $Revision: 1.87 $
    $Name:  $
-   $Author: nsimus $
-   $Date: 2006/11/23 10:10:57 $
+   $Author: ssahle $
+   $Date: 2007/01/02 12:05:35 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -697,7 +697,6 @@ CModel * CCopasiDataModel::getModel()
 CCopasiVectorN< CCopasiTask > * CCopasiDataModel::getTaskList()
 {return mpTaskList;}
 
-// static
 CCopasiTask * CCopasiDataModel::addTask(const CCopasiTask::Type & taskType)
 {
   CCopasiTask * pTask = NULL;
