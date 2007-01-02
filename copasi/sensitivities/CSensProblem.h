@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.h,v $
-   $Revision: 1.15 $
+   $Revision: 1.16 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:56 $
+   $Author: ssahle $
+   $Date: 2007/01/02 12:03:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -62,7 +62,6 @@ class CSensProblem: public CCopasiProblem
      */
 
     enum SubTaskType {
-      unset = 0,
       Evaluation,
       SteadyState,
       TimeSeries,
@@ -127,6 +126,11 @@ class CSensProblem: public CCopasiProblem
     CArrayAnnotation * getResultAnnotated();
     const CArrayAnnotation * getResultAnnotated() const;
 
+    CCopasiArray & getScaledResult();
+    const CCopasiArray & getScaledResult() const;
+    CArrayAnnotation * getScaledResultAnnotated();
+    const CArrayAnnotation * getScaledResultAnnotated() const;
+
     /**
      * This is the output method for any result of a problem. The default implementation
      * provided with CCopasiProblem. Does only print "Not implemented." To overide this
@@ -184,6 +188,13 @@ class CSensProblem: public CCopasiProblem
     CCopasiArray mResult;
 
     CArrayAnnotation * mpResultAnnotation;
+
+    /**
+     *  This holds the scaled result
+     */
+    CCopasiArray mScaledResult;
+
+    CArrayAnnotation * mpScaledResultAnnotation;
   };
 
 #endif // COPASI_CSensProblem

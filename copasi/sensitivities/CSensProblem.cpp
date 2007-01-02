@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensProblem.cpp,v $
-   $Revision: 1.18 $
+   $Revision: 1.19 $
    $Name:  $
-   $Author: shoops $
-   $Date: 2006/10/06 16:03:56 $
+   $Author: ssahle $
+   $Date: 2007/01/02 12:03:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -106,7 +106,6 @@ std::vector<CCopasiObject*> CSensItem::getVariablesPointerList(CModel* pModel)
 
 const std::string CSensProblem::SubTaskName[] =
   {
-    "Not Set",
     "Evaluation",
     "Steady State",
     "Time Series",
@@ -116,7 +115,6 @@ const std::string CSensProblem::SubTaskName[] =
 
 const char * CSensProblem::XMLSubTask[] =
   {
-    "NotSet",
     "Evaluation",
     "SteadyState",
     "TimeSeries",
@@ -189,6 +187,17 @@ CSensProblem::CSensProblem(const CCopasiContainer * pParent):
   addGroup("ListOfVariables");
   mpVariablesGroup = dynamic_cast<CCopasiParameterGroup*>(getParameter("ListOfVariables"));
 
+  //create a useful default problem
+  setSubTaskType(SteadyState);
+
+  CSensItem item;
+
+  item.setListType(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+  changeTargetFunctions(item);
+
+  item.setListType(CObjectLists::ALL_PARAMETER_VALUES);
+  addVariables(item);
+
   //  initDebugProblem();
   initObjects();
   CONSTRUCTOR_TRACE;
@@ -218,6 +227,10 @@ void CSensProblem::initObjects()
   mpResultAnnotation = new CArrayAnnotation("Sensitivities array", this, &mResult);
   mpResultAnnotation->setOnTheFly(false);
   mpResultAnnotation->setDescription("");
+
+  mpScaledResultAnnotation = new CArrayAnnotation("Scaled sensitivities array", this, &mScaledResult);
+  mpScaledResultAnnotation->setOnTheFly(false);
+  mpScaledResultAnnotation->setDescription("");
 }
 
 /**
@@ -242,7 +255,7 @@ CSensProblem::getSubTaskType() const
     if (mpSubTaskType)
       return *mpSubTaskType;
     else
-      return CSensProblem::unset;
+      return CSensProblem::Evaluation;
   }
 
 CSensItem CSensProblem::getTargetFunctions() const
@@ -343,32 +356,47 @@ const CArrayAnnotation * CSensProblem::getResultAnnotated() const
     return mpResultAnnotation;
   }
 
+CCopasiArray & CSensProblem::getScaledResult()
+{
+  return mScaledResult;
+}
+
+const CCopasiArray & CSensProblem::getScaledResult() const
+  {
+    return mScaledResult;
+  }
+
+CArrayAnnotation * CSensProblem::getScaledResultAnnotated()
+{
+  return mpScaledResultAnnotation;
+}
+
+const CArrayAnnotation * CSensProblem::getScaledResultAnnotated() const
+  {
+    return mpScaledResultAnnotation;
+  }
+
 //static
 std::vector<CObjectLists::ListType>
 CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
 {
   std::vector<CObjectLists::ListType> list;
 
-  list.push_back(CObjectLists::EMPTY_LIST);
+  //list.push_back(CObjectLists::EMPTY_LIST);
 
   // Add new functions here, under applicable SubTaskType case.
   // Don't forget to provide for a string value in
   //   getTargetFunctionName()
   switch (type)
     {
-    case (CSensProblem::unset):  // all available target functions
-            list.push_back(CObjectLists::SINGLE_OBJECT);
-      list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
-      list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
-      list.push_back(CObjectLists::NON_CONST_METAB_CONC_RATES);
-      list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
-      list.push_back(CObjectLists::REACTION_CONC_FLUXES);
-      list.push_back(CObjectLists::REACTION_PART_FLUXES);
-      break;
-
     case (CSensProblem::Evaluation):
             list.push_back(CObjectLists::SINGLE_OBJECT);
       list.push_back(CObjectLists::REACTION_CONC_FLUXES);
+      list.push_back(CObjectLists::REACTION_PART_FLUXES);
+      list.push_back(CObjectLists::NON_CONST_METAB_CONC_RATES);
+      list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
+      list.push_back(CObjectLists::GLOBAL_PARAMETER_RATES);
+      break;
 
     case (CSensProblem::SteadyState):
             list.push_back(CObjectLists::SINGLE_OBJECT);
@@ -376,6 +404,7 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
       list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
       list.push_back(CObjectLists::NON_CONST_METAB_CONC_RATES);
       list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
+      list.push_back(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES);
       list.push_back(CObjectLists::REACTION_CONC_FLUXES);
       list.push_back(CObjectLists::REACTION_PART_FLUXES);
       break;
@@ -383,17 +412,21 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
     case (CSensProblem::TimeSeries):
             list.push_back(CObjectLists::SINGLE_OBJECT);
       list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+      list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
       list.push_back(CObjectLists::NON_CONST_METAB_CONC_RATES);
       list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
+      list.push_back(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES);
+      list.push_back(CObjectLists::REACTION_CONC_FLUXES);
       list.push_back(CObjectLists::REACTION_PART_FLUXES);
+      //TODO all model variables
       break;
 
     case (CSensProblem::LyapunovExp):
             list.push_back(CObjectLists::SINGLE_OBJECT);
-      list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
-      list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
-      list.push_back(CObjectLists::REACTION_CONC_FLUXES);
-      list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
+      /*      list.push_back(CObjectLists::NON_CONST_METAB_NUMBERS);
+            list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+            list.push_back(CObjectLists::REACTION_CONC_FLUXES);
+            list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);*/
       break;
     }
 
@@ -414,18 +447,40 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
   //   getVariableName()
   switch (type)
     {
-    case (unset):
-          case (Evaluation):
-            case (SteadyState):
-              case (TimeSeries):
-                case (LyapunovExp):
-                    // all available target functions
-                    list.push_back(CObjectLists::SINGLE_OBJECT);
+    case (Evaluation):
+            list.push_back(CObjectLists::SINGLE_OBJECT);
       list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+      list.push_back(CObjectLists::ALL_METAB_CONCENTRATIONS);
+      list.push_back(CObjectLists::NON_CONST_GLOBAL_PARAMETER_VALUES);
       list.push_back(CObjectLists::GLOBAL_PARAMETER_VALUES);
       list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
       list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
+      break;
+
+    case (SteadyState):
+            list.push_back(CObjectLists::SINGLE_OBJECT);
+      list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
+      list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
+      //TODO all const values, all model parameters
+      break;
+
+    case (TimeSeries):
+            list.push_back(CObjectLists::SINGLE_OBJECT);
+      list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
+      list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
+      list.push_back(CObjectLists::ALL_METAB_INITIAL_CONCENTRATIONS);
       list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
+      //TODO all const values, all model parameters, all initial values
+      break;
+
+    case (LyapunovExp):
+            list.push_back(CObjectLists::SINGLE_OBJECT);
+      /*      list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
+            list.push_back(CObjectLists::GLOBAL_PARAMETER_VALUES);
+            list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
+            list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
+            list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);*/
+      break;
     }
 
   return list;
@@ -436,7 +491,10 @@ void CSensProblem::printResult(std::ostream * ostream) const
     std::ostream & os = *ostream;
 
     //os << "Sensitivities result." << std::endl;
-    os << *mpResultAnnotation << std::endl;
+    if (mpResultAnnotation)
+      os << *mpResultAnnotation << std::endl;
+    if (mpScaledResultAnnotation)
+      os << *mpScaledResultAnnotation << std::endl;
   }
 
 std::ostream &operator<<(std::ostream &os, const CSensItem & si)

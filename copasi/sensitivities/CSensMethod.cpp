@@ -1,9 +1,9 @@
 /* Begin CVS Header
    $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sensitivities/CSensMethod.cpp,v $
-   $Revision: 1.11 $
+   $Revision: 1.12 $
    $Name:  $
    $Author: ssahle $
-   $Date: 2006/09/18 12:58:07 $
+   $Date: 2007/01/02 12:03:21 $
    End CVS Header */
 
 // Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
@@ -122,7 +122,7 @@ void CSensMethod::calculate_difference(unsigned C_INT32 level, const C_FLOAT64 &
                                        CCopasiArray & result, CCopasiArray::index_type & resultindex)
 {
   assert (delta != 0.0);
-  assert (mLocalData[level].tmp1.size() == mLocalData[level].tmp1.size());
+  assert (mLocalData[level].tmp1.size() == mLocalData[level].tmp2.size());
   unsigned C_INT32 dim = mLocalData[level].tmp1.dimensionality();
   assert (resultindex.size() >= dim);
 
@@ -173,7 +173,6 @@ void CSensMethod::calculate_difference(unsigned C_INT32 level, const C_FLOAT64 &
 
 void CSensMethod::calculate_one_level(unsigned C_INT32 level, CCopasiArray & result)
 {
-
   //do first calculation
   if (level == 0)
     {
@@ -220,6 +219,91 @@ void CSensMethod::calculate_one_level(unsigned C_INT32 level, CCopasiArray & res
     }
 }
 
+//********** SCALING *************************************************************
+
+void CSensMethod::scaling_targetfunction(const C_FLOAT64 & factor,
+    CCopasiArray::index_type & resultindex)
+{
+  unsigned C_INT32 dim = mLocalData[0].tmp1.dimensionality();
+  assert (resultindex.size() >= dim);
+
+  CCopasiArray::index_type indexmax = mLocalData[0].tmp1.size();
+  //init index with zero
+  CCopasiArray::index_type indexit; indexit.resize(dim);
+  unsigned C_INT32 i;
+  for (i = 0; i < dim; ++i)
+    indexit[i] = 0;
+
+  //handle scalars separately
+  if (dim == 0)
+    {
+      mpProblem->getScaledResult()[resultindex] = mpProblem->getResult()[resultindex] * factor / mLocalData[0].tmp1[indexit];
+      return;
+    }
+
+  //now for all higher dimensionalities
+  for (;;)
+    {
+      for (i = 0; i < dim; ++i)
+        resultindex[i] = indexit[i];  //TODO: use stl algorithm
+
+      mpProblem->getScaledResult()[resultindex] = mpProblem->getResult()[resultindex] * factor / mLocalData[0].tmp1[indexit];
+
+      //increase index
+      ++indexit[dim - 1];
+
+      //check overflow
+      C_INT32 j;
+      for (j = dim - 1; j >= 0; --j)
+        {
+          if (indexit[j] >= indexmax[j])
+            {
+              indexit[j] = 0;
+              if (j > 0)
+                ++indexit[j - 1];
+              else
+                return;
+            }
+          else
+            break;
+        }
+    }
+}
+
+void CSensMethod::scaling_variables(C_INT32 level, const C_FLOAT64 & factor,
+                                    CCopasiArray::index_type & resultindex)
+{
+  //loop over all variables
+  C_INT32 i, imax = mLocalData[level].variables.size();
+  for (i = 0; i < imax; ++i)
+    {
+      //get Value
+      C_FLOAT64 value = *(C_FLOAT64 *)mLocalData[level].variables[i]->getValuePointer() * factor;
+
+      //do recursive calculation
+      if (imax > 1)
+        resultindex[mLocalData[level].index] = i;
+
+      if (level == 0)
+        {
+          scaling_targetfunction(value, resultindex);
+        }
+      else
+        {
+          scaling_variables(level - 1, value, resultindex);
+        }
+    }
+}
+
+void CSensMethod::do_scaling()
+{
+  CCopasiArray::index_type index;
+  index.resize(mpProblem->getResult().dimensionality());
+  scaling_variables(mLocalData.size() - 1, 1.0, index);
+}
+
+//****************************************************************************
+
 bool CSensMethod::initialize(CSensProblem* problem)
 {
   mpProblem = problem; assert(mpProblem);
@@ -229,7 +313,6 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
   switch (mpProblem->getSubTaskType())
     {
-    case CSensProblem::unset:
     case CSensProblem::Evaluation:
       mpSubTask = NULL;
       break;
@@ -280,13 +363,19 @@ bool CSensMethod::initialize(CSensProblem* problem)
     {
       if (mLocalData[i].variables.size() > 1)
         {
+          mLocalData[i].index = s.size();
           s.push_back(mLocalData[i].variables.size());
         }
+      else
+        mLocalData[i].index = -1;
     }
 
   //resize result & annotations
   mpProblem->getResult().resize(s);
   mpProblem->getResultAnnotated()->resize();
+
+  mpProblem->getScaledResult().resize(s);
+  mpProblem->getScaledResultAnnotated()->resize();
 
   unsigned C_INT32 dim = 0;
   unsigned C_INT32 j;
@@ -296,8 +385,12 @@ bool CSensMethod::initialize(CSensProblem* problem)
       std::ostringstream tmp;
       tmp << "Target functions, " << mpProblem->getTargetFunctions().getListTypeDisplayName();
       mpProblem->getResultAnnotated()->setDimensionDescription(dim, tmp.str());
+      mpProblem->getScaledResultAnnotated()->setDimensionDescription(dim, tmp.str());
       for (j = 0; j < mTargetfunctionPointers.size(); ++j)
-        mpProblem->getResultAnnotated()->setAnnotation(dim, j, mTargetfunctionPointers[j]->getCN());
+        {
+          mpProblem->getResultAnnotated()->setAnnotation(dim, j, mTargetfunctionPointers[j]->getCN());
+          mpProblem->getScaledResultAnnotated()->setAnnotation(dim, j, mTargetfunctionPointers[j]->getCN());
+        }
       ++dim;
     }
 
@@ -309,8 +402,12 @@ bool CSensMethod::initialize(CSensProblem* problem)
           std::ostringstream tmp;
           tmp << "Variables " << i + 1 << ", " << mpProblem->getVariables(i).getListTypeDisplayName();
           mpProblem->getResultAnnotated()->setDimensionDescription(dim, tmp.str());
+          mpProblem->getScaledResultAnnotated()->setDimensionDescription(dim, tmp.str());
           for (j = 0; j < mLocalData[i].variables.size(); ++j)
-            mpProblem->getResultAnnotated()->setAnnotation(dim, j, mLocalData[i].variables[j]->getCN());
+            {
+              mpProblem->getResultAnnotated()->setAnnotation(dim, j, mLocalData[i].variables[j]->getCN());
+              mpProblem->getScaledResultAnnotated()->setAnnotation(dim, j, mLocalData[i].variables[j]->getCN());
+            }
           ++dim;
         }
     }
@@ -322,6 +419,8 @@ bool CSensMethod::process(CProcessReport * handler)
 {
   if (!mLocalData.size()) return false;
   calculate_one_level(mLocalData.size() - 1, mpProblem->getResult());
+
+  do_scaling();
   return true;
 }
 
