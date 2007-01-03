@@ -634,7 +634,7 @@ concentrations). It is defined <citation>Kacser73</citation>
 where A is the variable, i the step (enzyme) and v the steady-state
 rate of the perturbed step. The most common control coefficients are
 those for fluxes and metabolite concentrations, but any variable of
-the system can be analysed with MCA and have control coefficents
+the system can be analysed with MCA and have control coefficients
 defined by equations analogous to equation 1. In fact, there is no
 need even for the system to be in a steady state. Gepasi only
 calculates directly the steady-state concentration- and flux-control
@@ -776,10 +776,10 @@ written as:
  </mml:math>
 where v is the rate of the enzyme in question and p is the parameter
 of the perturbation. Each enzyme has as many elasticity coefficients
-as the number of parameters that affect it. One can immediatly
+as the number of parameters that affect it. One can immediately
 recognise the concentration of the reaction substrates, products and
 modifiers as parameters of the reaction. Unlike control coefficients,
-elasticity coefficients are not systemic properties but reather
+elasticity coefficients are not systemic properties but rather
 measure how isolated enzymes are sensitive to changes in their
 parameters. The elasticity coefficients can be obtained from the
 kinetic functions by partial derivation. Again like the control
@@ -916,13 +916,13 @@ perturbation to and from its immediate neighbours.
 COPASI calculates (non-normalised) elasticity coefficients by
 numerical derivation with finite differences. To calculate control
 coefficients from steady-state data, COPASI applies the method
-described in <citation>Reder88</citation>. This method workes with the
+described in <citation>Reder88</citation>. This method works with the
 reduced system where some variables are eliminated using conservation
 relations (see <xref linkend="deterministicModel" />). All
 coefficients are obtained unscaled by this method and are scaled with
 the appropriate steady state concentrations and fluxes (the same with
 the elasticities). Both scaled and unscaled coefficients and
-elasticities are displayed and available for ouput. 
+elasticities are displayed and available for output. 
 </para>
 
 <variablelist><title>Options for MCA</title>
